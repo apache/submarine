@@ -169,7 +169,7 @@
               </filters>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>org.apache.hadoop.yarn.submarine.client.cli.Cli</mainClass>
+                  <mainClass>org.apache.submarine.client.cli.Cli</mainClass>
                 </transformer>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
               </transformers>

@@ -47,7 +47,7 @@ To use the TonY runtime, please set below value in the submarine configuration.
 
 |Configuration Name | Description |
 |:---- |:---- |
-| `submarine.runtime.class` | org.apache.hadoop.yarn.submarine.runtimes.tony.TonyRuntimeFactory |
+| `submarine.runtime.class` | TonyRuntimeFactory |
 
 For more details of TonY runtime, please check [TonY runtime guide](TonYRuntimeGuide.html)
 
@@ -185,7 +185,7 @@ and the uber jar, submarine-all-*.jar, to submit the job.
 
 ```
 java -cp /path-to/hadoop-conf:/path-to/submarine-all-*.jar \
-  org.apache.hadoop.yarn.submarine.client.cli.Cli job run \
+  Cli job run \
   --env DOCKER_JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/ \
   --env DOCKER_HADOOP_HDFS_HOME=/hadoop-3.1.0 --name tf-job-001 \
   --docker_image <your-docker-image> \
@@ -217,7 +217,7 @@ yarn jar hadoop-yarn-applications-submarine-<version>.jar job run \
 Or
 ```
 java -cp /path-to/hadoop-conf:/path-to/submarine-all-*.jar \
- org.apache.hadoop.yarn.submarine.client.cli.Cli job run \
+ Cli job run \
  --name tf-job-001 --docker_image <your docker image> \
  --input_path hdfs://default/dataset/cifar-10-data \
  --checkpoint_path hdfs://default/tmp/cifar-10-jobdir \
@@ -247,7 +247,7 @@ yarn jar hadoop-yarn-applications-submarine-3.2.0-SNAPSHOT.jar job show --name t
 Or
 ```
 java -cp /path-to/hadoop-conf:/path-to/submarine-all-*.jar \
- org.apache.hadoop.yarn.submarine.client.cli.Cli job show --name tf-job-001
+ Cli job show --name tf-job-001
 ```
 Output looks like:
 ```
@@ -278,7 +278,7 @@ Or
 # Cleanup previous service if needed
 yarn app -destroy tensorboard-service; \
 java -cp /path-to/hadoop-conf:/path-to/submarine-all-*.jar \
-  org.apache.hadoop.yarn.submarine.client.cli.Cli job run \
+  Cli job run \
   --name tensorboard-service --verbose --docker_image wtan/tf-1.8.0-cpu:0.0.3 \
   --env DOCKER_JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/ \
   --env DOCKER_HADOOP_HDFS_HOME=/hadoop-3.1.0 \

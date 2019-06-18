@@ -138,7 +138,7 @@
         <configuration>
            <archive>
              <manifest>
-               <mainClass>org.apache.hadoop.yarn.submarine.client.cli.Cli</mainClass>
+               <mainClass>org.apache.submarine.client.cli.Cli</mainClass>
              </manifest>
            </archive>
         </configuration>

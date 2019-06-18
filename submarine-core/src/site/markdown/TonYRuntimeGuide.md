@@ -96,11 +96,11 @@ Details: [tony configurations](https://github.com/linkedin/TonY/wiki/TonY-Config
 ### Submarine Configuration
 
 For submarine internal configuration, please create a `submarine.xml` which should be placed under `$HADOOP_CONF_DIR`.
-Make sure you set `submarine.runtime.class` to `org.apache.hadoop.yarn.submarine.runtimes.tony.TonyRuntimeFactory`
+Make sure you set `submarine.runtime.class` to `TonyRuntimeFactory`
 
 |Configuration Name | Description |
 |:---- |:---- |
-| `submarine.runtime.class` | org.apache.hadoop.yarn.submarine.runtimes.tony.TonyRuntimeFactory
+| `submarine.runtime.class` | TonyRuntimeFactory
 | `submarine.localization.max-allowed-file-size-mb` | Optional. This sets a size limit to the file/directory to be localized in "-localization" CLI option. 2GB by default. |
 
 
@@ -153,7 +153,7 @@ CLASSPATH=$(hadoop classpath --glob): \
 ./submarine-tony-runtime/target/submarine-tony-runtime-0.2.0-SNAPSHOT.jar: \
 /home/pi/hadoop/TonY/tony-cli/build/libs/tony-cli-0.3.11-all.jar \
 
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run --name tf-job-001 \
+java Cli job run --name tf-job-001 \
  --framework tensorflow \
  --num_workers 2 \
  --worker_resources memory=3G,vcores=2 \
@@ -191,7 +191,7 @@ CLASSPATH=$(hadoop classpath --glob): \
 ./submarine-tony-runtime/target/submarine-tony-runtime-0.2.0-SNAPSHOT.jar: \
 /home/pi/hadoop/TonY/tony-cli/build/libs/tony-cli-0.3.11-all.jar \
 
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run --name tf-job-001 \
+java Cli job run --name tf-job-001 \
  --framework tensorflow \
  --docker_image hadoopsubmarine/tf-1.8.0-cpu:0.0.3 \
  --input_path hdfs://pi-aw:9000/dataset/cifar-10-data \
@@ -254,7 +254,7 @@ CLASSPATH=$(hadoop classpath --glob): \
 ./submarine-tony-runtime/target/submarine-tony-runtime-0.2.0-SNAPSHOT.jar: \
 /home/pi/hadoop/TonY/tony-cli/build/libs/tony-cli-0.3.11-all.jar \
 
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run --name tf-job-001 \
+java Cli job run --name tf-job-001 \
  --num_workers 2 \
  --worker_resources memory=3G,vcores=2 \
  --num_ps 2 \
@@ -291,7 +291,7 @@ CLASSPATH=$(hadoop classpath --glob): \
 ./submarine-tony-runtime/target/submarine-tony-runtime-0.2.0-SNAPSHOT.jar: \
 /home/pi/hadoop/TonY/tony-cli/build/libs/tony-cli-0.3.11-all.jar \
 
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run --name tf-job-001 \
+java Cli job run --name tf-job-001 \
  --docker_image hadoopsubmarine/tf-1.8.0-cpu:0.0.3 \
  --input_path hdfs://pi-aw:9000/dataset/cifar-10-data \
  --worker_resources memory=3G,vcores=2 \
