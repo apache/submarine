@@ -125,6 +125,7 @@ public class TestTonyJob {
       }
     }
     Assert.assertTrue(counter == 3);
-    Assert.assertTrue(paths.contains(new File(tonyJob.getWorkingDirectory(), "_tony-conf-test_tony_job_class_path").toString()));
+    Assert.assertTrue(paths.contains(new File(tonyJob.getWorkingDirectory(),
+        "_tony-conf-test_tony_job_class_path").toString()));
   }
 }

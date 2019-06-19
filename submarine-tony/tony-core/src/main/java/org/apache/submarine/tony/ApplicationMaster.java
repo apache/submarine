@@ -7,14 +7,14 @@ package org.apache.submarine.tony;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import org.apache.submarine.tony.events.TaskFinished;
-import org.apache.submarine.tony.events.TaskStarted;
+import org.apache.submarine.tony.events.avro.TaskFinished;
+import org.apache.submarine.tony.events.avro.TaskStarted;
+import org.apache.submarine.tony.events.avro.Event;
 import org.apache.submarine.tony.models.JobMetadata;
-import org.apache.submarine.tony.events.ApplicationFinished;
-import org.apache.submarine.tony.events.ApplicationInited;
-import org.apache.submarine.tony.events.Event;
+import org.apache.submarine.tony.events.avro.ApplicationFinished;
+import org.apache.submarine.tony.events.avro.ApplicationInited;
 import org.apache.submarine.tony.events.EventHandler;
-import org.apache.submarine.tony.events.EventType;
+import org.apache.submarine.tony.events.avro.EventType;
 import org.apache.submarine.tony.rpc.ApplicationRpc;
 import org.apache.submarine.tony.rpc.ApplicationRpcServer;
 import org.apache.submarine.tony.rpc.MetricsRpc;
@@ -102,10 +102,14 @@ public class ApplicationMaster {
   private ApplicationAttemptId appAttemptID = null;
   private String appIdString;
   private String amHostPort;
-  private FileSystem resourceFs; // FileSystem used to access resources for the job, like jars and zips
-  private FileSystem historyFs;  // FileSystem used to write history-related files like config and events.
-                                 // In some HDFS setups, operators may wish to write history files to a different
-                                 // NameNode instance than data and other files.
+
+  // FileSystem used to access resources for the job, like jars and zips
+  private FileSystem resourceFs;
+
+  // FileSystem used to write history-related files like config and events.
+  // In some HDFS setups, operators may wish to write history files to a different
+  // NameNode instance than data and other files.
+  private FileSystem historyFs;
   private String tonyHistoryFolder;
   private Path jobDir = null;
   private String user = null;
@@ -131,9 +135,9 @@ public class ApplicationMaster {
   /** Node manager delegates **/
   private NMCallbackHandler containerListener;
   private NMClientAsync nmClientAsync;
-   /** Resource manager **/
+  /** Resource manager **/
   private AMRMClientAsync<ContainerRequest> amRMClient;
-   /** Job progress **/
+  /** Job progress **/
   private AtomicInteger numCompletedTrackedTasks = new AtomicInteger();
   private long numTotalTrackedTasks = 1;
 
@@ -514,7 +518,7 @@ public class ApplicationMaster {
 
     // Perform the preprocess job.
     if (enablePreprocessing || singleNode) {
-       exitCode = doPreprocessingJob();
+      exitCode = doPreprocessingJob();
     }
 
     // Early exit for single node training.
@@ -837,14 +841,14 @@ public class ApplicationMaster {
      * This method was used to workaround an issue that the Python script finished while the container failed to
      * close due to GPU allocation issue, which doesn't exist anymore.
      *
-     * Discussion: A benefit of decoupling registering execution result from container exit status is that we can decouple
-     * tony from a specific resource manager's callback logic.
-     * However, this easily introduces lots of bugs since we'd have 3 places to handle failures - register call, container
-     * complete callback and heartbeat.
-     * To make things easier, we decide to go back and piggyback on container completion to dictate the execution result
-     * of a task. However, we use this method to unregister a completed task from the heartbeat monitor to avoid a race
-     * condition where the container complete callback is delayed, too many heartbeats are missed, and the task is
-     * marked as failed.
+     * Discussion: A benefit of decoupling registering execution result from container exit status is that
+     * we can decouple tony from a specific resource manager's callback logic.
+     * However, this easily introduces lots of bugs since we'd have 3 places to handle failures -
+     * register call, container complete callback and heartbeat.
+     * To make things easier, we decide to go back and piggyback on container completion to dictate the
+     * execution result of a task. However, we use this method to unregister a completed task from the
+     * heartbeat monitor to avoid a race condition where the container complete callback is delayed,
+     * too many heartbeats are missed, and the task is marked as failed.
      */
     @Override
     public String registerExecutionResult(int exitCode, String jobName, String jobIndex, String sessionId) {

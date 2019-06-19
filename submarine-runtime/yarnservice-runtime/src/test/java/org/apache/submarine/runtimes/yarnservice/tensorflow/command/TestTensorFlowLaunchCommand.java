@@ -245,6 +245,4 @@ public class TestTensorFlowLaunchCommand
     assertScriptContainsLineWithRegex(fileContents, ".*ps.*:\\[.*,.*\\].*");
     assertTypeInJson(fileContents);
   }
-
-
 }

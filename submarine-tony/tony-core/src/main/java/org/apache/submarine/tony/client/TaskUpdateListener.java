@@ -9,6 +9,6 @@ import org.apache.submarine.tony.rpc.TaskInfo;
 import java.util.Set;
 
 public interface TaskUpdateListener {
-    // Called when TonyClient gets a set of taskUrls from TonyAM.
-    public void onTaskInfosUpdated(Set<TaskInfo> taskInfoSet);
+  // Called when TonyClient gets a set of taskUrls from TonyAM.
+  void onTaskInfosUpdated(Set<TaskInfo> taskInfoSet);
 }

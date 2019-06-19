@@ -202,6 +202,43 @@
           <target>${java.version}</target>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+          <skip>true</skip>
+          <failOnViolation>false</failOnViolation>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <sourceDirectories>${basedir}/src/main/java,${basedir}/src/main/scala</sourceDirectories>
+          <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
+          <configLocation>_tools/checkstyle.xml</configLocation>
+          <outputFile>${basedir}/target/checkstyle-output.xml</outputFile>
+          <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+          <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>
+        </configuration>
+        <executions>
+          <execution>
+            <id>checkstyle-fail-build</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <failOnViolation>true</failOnViolation>
+              <excludes>org/apache/submarine/tony/rpc/proto/*,org/apache/submarine/tony/events/avro/*</excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>checkstyle-gen-html-report</id>
+            <phase>install</phase>
+            <goals>
+              <goal>checkstyle-aggregate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>

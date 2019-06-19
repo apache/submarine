@@ -76,13 +76,14 @@ public class LocalizableResource {
     String filePath = completeResourceString;
     resourceType = LocalResourceType.FILE;
     if (completeResourceString.toLowerCase().endsWith(Constants.ARCHIVE_SUFFIX)) {
-        resourceType = LocalResourceType.ARCHIVE;
-        filePath = completeResourceString.substring(0, completeResourceString.length() - Constants.ARCHIVE_SUFFIX.length());
+      resourceType = LocalResourceType.ARCHIVE;
+      filePath = completeResourceString
+          .substring(0, (completeResourceString.length() - Constants.ARCHIVE_SUFFIX.length()));
     }
 
     String[] tuple = filePath.split(Constants.RESOURCE_DIVIDER);
     if (tuple.length > 2) {
-        throw new ParseException("Failed to parse file: " + completeResourceString);
+      throw new ParseException("Failed to parse file: " + completeResourceString);
     }
     sourceFilePath = new Path(tuple[0]);
     if (isLocalFile()) {
@@ -94,10 +95,10 @@ public class LocalizableResource {
     localizedFileName = sourceFilePath.getName();
 
     if (tuple.length == 2) {
-        localizedFileName = tuple[1];
+      localizedFileName = tuple[1];
     }
     if (sourceFileStatus.isDirectory()) {
-        isDirectory = true;
+      isDirectory = true;
     }
   }
 

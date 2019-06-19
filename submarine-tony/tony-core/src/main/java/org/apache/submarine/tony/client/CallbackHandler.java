@@ -11,6 +11,6 @@ import org.apache.hadoop.yarn.api.records.ApplicationId;
  * asynchronous information becomes available.
  */
 public interface CallbackHandler {
-    // Called when TonyClient gets an application id response from RM.
-    public void onApplicationIdReceived(ApplicationId appId);
+  // Called when TonyClient gets an application id response from RM.
+  void onApplicationIdReceived(ApplicationId appId);
 }

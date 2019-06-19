@@ -28,19 +28,41 @@ public class TestTFConfigGenerator {
     String json = TensorFlowCommons.getTFConfigEnv("worker", 5, 3, "wtan",
         "tf-job-001", "example.com");
     String expected =
-        "{\\\"cluster\\\":{\\\"master\\\":[\\\"master-0.wtan.tf-job-001.example.com:8000\\\"],\\\"worker\\\":[\\\"worker-0.wtan.tf-job-001.example.com:8000\\\",\\\"worker-1.wtan.tf-job-001.example.com:8000\\\",\\\"worker-2.wtan.tf-job-001.example.com:8000\\\",\\\"worker-3.wtan.tf-job-001.example.com:8000\\\"],\\\"ps\\\":[\\\"ps-0.wtan.tf-job-001.example.com:8000\\\",\\\"ps-1.wtan.tf-job-001.example.com:8000\\\",\\\"ps-2.wtan.tf-job-001.example.com:8000\\\"]},\\\"task\\\":{ \\\"type\\\":\\\"worker\\\", \\\"index\\\":$_TASK_INDEX},\\\"environment\\\":\\\"cloud\\\"}";
+        "{\\\"cluster\\\":{\\\"master\\\":[\\\"master-0.wtan.tf-job-001.example.com:8000\\\"]," +
+            "\\\"worker\\\":[\\\"worker-0.wtan.tf-job-001.example.com:8000\\\"," +
+            "\\\"worker-1.wtan.tf-job-001.example.com:8000\\\"," +
+            "\\\"worker-2.wtan.tf-job-001.example.com:8000\\\"," +
+            "\\\"worker-3.wtan.tf-job-001.example.com:8000\\\"]," +
+            "\\\"ps\\\":[\\\"ps-0.wtan.tf-job-001.example.com:8000\\\"," +
+            "\\\"ps-1.wtan.tf-job-001.example.com:8000\\\"," +
+            "\\\"ps-2.wtan.tf-job-001.example.com:8000\\\"]}," +
+            "\\\"task\\\":{ \\\"type\\\":\\\"worker\\\", \\\"index\\\":$_TASK_INDEX}," +
+            "\\\"environment\\\":\\\"cloud\\\"}";
     Assert.assertEquals(expected, json);
 
     json = TensorFlowCommons.getTFConfigEnv("ps", 5, 3, "wtan", "tf-job-001",
         "example.com");
     expected =
-        "{\\\"cluster\\\":{\\\"master\\\":[\\\"master-0.wtan.tf-job-001.example.com:8000\\\"],\\\"worker\\\":[\\\"worker-0.wtan.tf-job-001.example.com:8000\\\",\\\"worker-1.wtan.tf-job-001.example.com:8000\\\",\\\"worker-2.wtan.tf-job-001.example.com:8000\\\",\\\"worker-3.wtan.tf-job-001.example.com:8000\\\"],\\\"ps\\\":[\\\"ps-0.wtan.tf-job-001.example.com:8000\\\",\\\"ps-1.wtan.tf-job-001.example.com:8000\\\",\\\"ps-2.wtan.tf-job-001.example.com:8000\\\"]},\\\"task\\\":{ \\\"type\\\":\\\"ps\\\", \\\"index\\\":$_TASK_INDEX},\\\"environment\\\":\\\"cloud\\\"}";
+        "{\\\"cluster\\\":{\\\"master\\\":[\\\"master-0.wtan.tf-job-001.example.com:8000\\\"]," +
+            "\\\"worker\\\":[\\\"worker-0.wtan.tf-job-001.example.com:8000\\\"," +
+            "\\\"worker-1.wtan.tf-job-001.example.com:8000\\\"," +
+            "\\\"worker-2.wtan.tf-job-001.example.com:8000\\\"," +
+            "\\\"worker-3.wtan.tf-job-001.example.com:8000\\\"]," +
+            "\\\"ps\\\":[\\\"ps-0.wtan.tf-job-001.example.com:8000\\\"," +
+            "\\\"ps-1.wtan.tf-job-001.example.com:8000\\\"," +
+            "\\\"ps-2.wtan.tf-job-001.example.com:8000\\\"]}," +
+            "\\\"task\\\":{ \\\"type\\\":\\\"ps\\\", \\\"index\\\":$_TASK_INDEX}," +
+            "\\\"environment\\\":\\\"cloud\\\"}";
     Assert.assertEquals(expected, json);
 
     json = TensorFlowCommons.getTFConfigEnv("master", 2, 1, "wtan", "tf-job-001",
         "example.com");
     expected =
-        "{\\\"cluster\\\":{\\\"master\\\":[\\\"master-0.wtan.tf-job-001.example.com:8000\\\"],\\\"worker\\\":[\\\"worker-0.wtan.tf-job-001.example.com:8000\\\"],\\\"ps\\\":[\\\"ps-0.wtan.tf-job-001.example.com:8000\\\"]},\\\"task\\\":{ \\\"type\\\":\\\"master\\\", \\\"index\\\":$_TASK_INDEX},\\\"environment\\\":\\\"cloud\\\"}";
+        "{\\\"cluster\\\":{\\\"master\\\":[\\\"master-0.wtan.tf-job-001.example.com:8000\\\"]," +
+            "\\\"worker\\\":[\\\"worker-0.wtan.tf-job-001.example.com:8000\\\"]," +
+            "\\\"ps\\\":[\\\"ps-0.wtan.tf-job-001.example.com:8000\\\"]}," +
+            "\\\"task\\\":{ \\\"type\\\":\\\"master\\\", \\\"index\\\":$_TASK_INDEX}," +
+            "\\\"environment\\\":\\\"cloud\\\"}";
     Assert.assertEquals(expected, json);
   }
 }

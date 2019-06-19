@@ -56,7 +56,10 @@ import org.apache.hadoop.yarn.ipc.RPCUtil;
 public class TensorFlowClusterPBClientImpl implements TensorFlowCluster, Closeable {
   private TensorFlowClusterPB proxy;
 
-  public TensorFlowClusterPBClientImpl(long clientVersion, InetSocketAddress addr, Configuration conf) throws IOException {
+  public TensorFlowClusterPBClientImpl(long clientVersion,
+                                       InetSocketAddress addr,
+                                       Configuration conf)
+      throws IOException {
     RPC.setProtocolEngine(conf, TensorFlowClusterPB.class, ProtobufRpcEngine.class);
     proxy = RPC.getProxy(TensorFlowClusterPB.class, clientVersion, addr, conf);
   }
@@ -69,7 +72,8 @@ public class TensorFlowClusterPBClientImpl implements TensorFlowCluster, Closeab
   }
 
   @Override
-  public GetTaskInfosResponse getTaskInfos(GetTaskInfosRequest request) throws IOException, YarnException {
+  public GetTaskInfosResponse getTaskInfos(GetTaskInfosRequest request)
+      throws IOException, YarnException {
     GetTaskInfosRequestProto requestProto = ((GetTaskInfosRequestPBImpl) request).getProto();
     try {
       return new GetTaskInfosResponsePBImpl(proxy.getTaskInfos(null, requestProto));
@@ -80,7 +84,8 @@ public class TensorFlowClusterPBClientImpl implements TensorFlowCluster, Closeab
   }
 
   @Override
-  public GetClusterSpecResponse getClusterSpec(GetClusterSpecRequest request) throws YarnException, IOException {
+  public GetClusterSpecResponse getClusterSpec(GetClusterSpecRequest request)
+      throws YarnException, IOException {
     GetClusterSpecRequestProto requestProto = ((GetClusterSpecRequestPBImpl) request).getProto();
     try {
       return new GetClusterSpecResponsePBImpl(proxy.getClusterSpec(null, requestProto));
@@ -91,7 +96,8 @@ public class TensorFlowClusterPBClientImpl implements TensorFlowCluster, Closeab
   }
 
   @Override
-  public RegisterWorkerSpecResponse registerWorkerSpec(RegisterWorkerSpecRequest request) throws YarnException, IOException {
+  public RegisterWorkerSpecResponse registerWorkerSpec(RegisterWorkerSpecRequest request)
+      throws YarnException, IOException {
     RegisterWorkerSpecRequestProto requestProto = ((RegisterWorkerSpecRequestPBImpl) request).getProto();
     try {
       return new RegisterWorkerSpecResponsePBImpl(proxy.registerWorkerSpec(null, requestProto));
@@ -102,8 +108,10 @@ public class TensorFlowClusterPBClientImpl implements TensorFlowCluster, Closeab
   }
 
   @Override
-  public RegisterTensorBoardUrlResponse registerTensorBoardUrl(RegisterTensorBoardUrlRequest request) throws YarnException, IOException {
-    YarnTensorFlowClusterProtos.RegisterTensorBoardUrlRequestProto requestProto = ((RegisterTensorBoardUrlRequestPBImpl) request).getProto();
+  public RegisterTensorBoardUrlResponse registerTensorBoardUrl(RegisterTensorBoardUrlRequest request)
+      throws YarnException, IOException {
+    YarnTensorFlowClusterProtos.RegisterTensorBoardUrlRequestProto requestProto
+        = ((RegisterTensorBoardUrlRequestPBImpl) request).getProto();
     try {
       return new RegisterTensorBoardUrlResponsePBImpl(proxy.registerTensorBoardUrl(null, requestProto));
     } catch (ServiceException e) {
@@ -113,8 +121,10 @@ public class TensorFlowClusterPBClientImpl implements TensorFlowCluster, Closeab
   }
 
   @Override
-  public RegisterExecutionResultResponse registerExecutionResult(RegisterExecutionResultRequest request) throws YarnException, IOException {
-    YarnTensorFlowClusterProtos.RegisterExecutionResultRequestProto requestProto = ((RegisterExecutionResultRequestPBImpl) request).getProto();
+  public RegisterExecutionResultResponse registerExecutionResult(RegisterExecutionResultRequest request)
+      throws YarnException, IOException {
+    YarnTensorFlowClusterProtos.RegisterExecutionResultRequestProto requestProto
+        = ((RegisterExecutionResultRequestPBImpl) request).getProto();
     try {
       return new RegisterExecutionResultResponsePBImpl(proxy.registerExecutionResult(null, requestProto));
     } catch (ServiceException e) {

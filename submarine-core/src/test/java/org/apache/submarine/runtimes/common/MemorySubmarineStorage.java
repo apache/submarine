@@ -45,7 +45,7 @@ public class MemorySubmarineStorage extends SubmarineStorage {
 
   @Override
   public synchronized void addNewModel(String modelName, String version,
-      Map<String, String> modelInfo) throws IOException {
+                                       Map<String, String> modelInfo) throws IOException {
     if (!modelsInfo.containsKey(modelName)) {
       modelsInfo.put(modelName, new HashMap<>());
     }
@@ -54,12 +54,12 @@ public class MemorySubmarineStorage extends SubmarineStorage {
 
   @Override
   public synchronized Map<String, String> getModelInfoByName(String modelName,
-      String version) throws IOException {
+                                                             String version) throws IOException {
 
     boolean notFound = false;
     Map<String, String> info = null;
     try {
-       info = modelsInfo.get(modelName).get(version);
+      info = modelsInfo.get(modelName).get(version);
     } catch (NullPointerException e) {
       notFound = true;
     }

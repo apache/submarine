@@ -4,6 +4,9 @@
  */
 package org.apache.submarine.tony.events;
 
+import org.apache.submarine.tony.events.avro.ApplicationInited;
+import org.apache.submarine.tony.events.avro.Event;
+import org.apache.submarine.tony.events.avro.EventType;
 import org.apache.submarine.tony.models.JobMetadata;
 import org.apache.submarine.tony.util.Utils;
 import java.io.IOException;
@@ -19,10 +22,13 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import static org.apache.submarine.tony.util.ParserUtils.*;
-import static org.mockito.Mockito.*;
-import static org.testng.Assert.*;
-
+import static org.apache.submarine.tony.util.ParserUtils.parseEvents;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 public class TestEventHandler {
   private FileSystem fs = null;

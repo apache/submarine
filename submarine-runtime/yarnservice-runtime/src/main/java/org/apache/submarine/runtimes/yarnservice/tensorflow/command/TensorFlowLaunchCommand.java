@@ -49,7 +49,7 @@ public abstract class TensorFlowLaunchCommand extends AbstractLaunchCommand {
                           TensorFlowRunJobParameters parameters,
                           Configuration yarnConfig) throws IOException {
     super(hadoopEnvSetup, component, parameters,
-        role != null ? role.getName(): "");
+        role != null ? role.getName() : "");
     Objects.requireNonNull(role, "TensorFlowRole must not be null!");
     this.role = role;
     this.name = parameters.getName();

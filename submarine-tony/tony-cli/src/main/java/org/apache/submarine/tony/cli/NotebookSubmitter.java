@@ -26,7 +26,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 
-import static org.apache.submarine.tony.Constants.*;
+import static org.apache.submarine.tony.Constants.TONY_FOLDER;
 
 /**
  * NotebookSubmitter is used to submit a python pex file (for example Jupyter Notebook) to run inside a cluster.
@@ -70,7 +70,8 @@ public class NotebookSubmitter extends TonySubmitter {
   public int submit(String[] args)
       throws ParseException, URISyntaxException, IOException, InterruptedException {
     LOG.info("Starting NotebookSubmitter..");
-    String jarPath = new File(NotebookSubmitter.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+    String jarPath = new File(NotebookSubmitter.class.getProtectionDomain().getCodeSource().getLocation().toURI())
+        .getPath();
 
     int exitCode = 0;
     Path cachedLibPath;

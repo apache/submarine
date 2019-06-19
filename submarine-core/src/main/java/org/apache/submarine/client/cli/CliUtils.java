@@ -30,14 +30,15 @@ import java.util.Map;
 public class CliUtils {
   private static final Logger LOG =
       LoggerFactory.getLogger(CliUtils.class);
+
   /**
    * Replace patterns inside cli
    *
    * @return launch command after pattern replace
    */
   public static String replacePatternsInLaunchCommand(String specifiedCli,
-      RunJobParameters jobRunParameters,
-      RemoteDirectoryManager directoryManager) throws IOException {
+                                                      RunJobParameters jobRunParameters,
+                                                      RemoteDirectoryManager directoryManager) throws IOException {
     String input = jobRunParameters.getInputPath();
     String jobDir = jobRunParameters.getCheckpointPath();
     String savedModelDir = jobRunParameters.getSavedModelPath();
@@ -96,7 +97,7 @@ public class CliUtils {
       }
 
       UserGroupInformation user = UserGroupInformation.getCurrentUser();
-      if(user == null || user.getAuthenticationMethod() ==
+      if (user == null || user.getAuthenticationMethod() ==
           UserGroupInformation.AuthenticationMethod.SIMPLE) {
         SubmarineRuntimeException e = new SubmarineRuntimeException("Failed " +
             "to authenticate in secure environment. Please run kinit " +
@@ -111,7 +112,7 @@ public class CliUtils {
 
     File keytabFile = new File(keytab);
     if (!keytabFile.exists()) {
-      SubmarineRuntimeException e =  new SubmarineRuntimeException("No " +
+      SubmarineRuntimeException e = new SubmarineRuntimeException("No " +
           "keytab localized at  " + keytab);
       LOG.error(e.getMessage(), e);
       throw e;

@@ -5,6 +5,7 @@
 package org.apache.submarine.tony.events;
 
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.submarine.tony.events.avro.Event;
 import org.apache.submarine.tony.models.JobMetadata;
 import org.apache.submarine.tony.util.HistoryFileUtils;
 import java.io.IOException;
@@ -17,7 +18,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-
 
 public class EventHandler extends Thread {
   private static final Log LOG = LogFactory.getLog(EventHandler.class);

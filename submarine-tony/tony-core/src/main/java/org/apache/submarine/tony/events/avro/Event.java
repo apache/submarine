@@ -3,17 +3,17 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package org.apache.submarine.tony.events;
+package org.apache.submarine.tony.events.avro;
 
 import org.apache.avro.specific.SpecificData;
 
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class Event extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -1540113451075745929L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Event\",\"namespace\":\"org.apache.submarine.tony.events\",\"fields\":[{\"name\":\"type\",\"type\":{\"type\":\"enum\",\"name\":\"EventType\",\"symbols\":[\"APPLICATION_INITED\",\"APPLICATION_FINISHED\",\"TASK_STARTED\",\"TASK_FINISHED\"]}},{\"name\":\"event\",\"type\":[{\"type\":\"record\",\"name\":\"ApplicationInited\",\"fields\":[{\"name\":\"applicationId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"numTasks\",\"type\":\"int\"},{\"name\":\"host\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]},{\"type\":\"record\",\"name\":\"ApplicationFinished\",\"fields\":[{\"name\":\"applicationId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"finishedTasks\",\"type\":\"int\"},{\"name\":\"failedTasks\",\"type\":\"int\"},{\"name\":\"metrics\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Metric\",\"fields\":[{\"name\":\"name\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"value\",\"type\":\"double\"}]}}}]},{\"type\":\"record\",\"name\":\"TaskStarted\",\"fields\":[{\"name\":\"taskType\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"taskIndex\",\"type\":\"int\"},{\"name\":\"host\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]},{\"type\":\"record\",\"name\":\"TaskFinished\",\"fields\":[{\"name\":\"taskType\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"taskIndex\",\"type\":\"int\"},{\"name\":\"status\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"metrics\",\"type\":{\"type\":\"array\",\"items\":\"Metric\"}}]}]},{\"name\":\"timestamp\",\"type\":\"long\"}]}");
+  private static final long serialVersionUID = -6973238944517117632L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Event\",\"namespace\":\"org.apache.submarine.tony.events.avro\",\"fields\":[{\"name\":\"type\",\"type\":{\"type\":\"enum\",\"name\":\"EventType\",\"symbols\":[\"APPLICATION_INITED\",\"APPLICATION_FINISHED\",\"TASK_STARTED\",\"TASK_FINISHED\"]}},{\"name\":\"event\",\"type\":[{\"type\":\"record\",\"name\":\"ApplicationInited\",\"fields\":[{\"name\":\"applicationId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"numTasks\",\"type\":\"int\"},{\"name\":\"host\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]},{\"type\":\"record\",\"name\":\"ApplicationFinished\",\"fields\":[{\"name\":\"applicationId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"finishedTasks\",\"type\":\"int\"},{\"name\":\"failedTasks\",\"type\":\"int\"},{\"name\":\"metrics\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Metric\",\"fields\":[{\"name\":\"name\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"value\",\"type\":\"double\"}]}}}]},{\"type\":\"record\",\"name\":\"TaskStarted\",\"fields\":[{\"name\":\"taskType\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"taskIndex\",\"type\":\"int\"},{\"name\":\"host\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]},{\"type\":\"record\",\"name\":\"TaskFinished\",\"fields\":[{\"name\":\"taskType\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"taskIndex\",\"type\":\"int\"},{\"name\":\"status\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"metrics\",\"type\":{\"type\":\"array\",\"items\":\"Metric\"}}]}]},{\"name\":\"timestamp\",\"type\":\"long\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-  @Deprecated public org.apache.submarine.tony.events.EventType type;
+  @Deprecated public org.apache.submarine.tony.events.avro.EventType type;
   @Deprecated public Object event;
   @Deprecated public long timestamp;
 
@@ -30,7 +30,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
    * @param event The new value for event
    * @param timestamp The new value for timestamp
    */
-  public Event(org.apache.submarine.tony.events.EventType type, Object event, Long timestamp) {
+  public Event(org.apache.submarine.tony.events.avro.EventType type, Object event, Long timestamp) {
     this.type = type;
     this.event = event;
     this.timestamp = timestamp;
@@ -51,7 +51,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
   @SuppressWarnings(value="unchecked")
   public void put(int field$, Object value$) {
     switch (field$) {
-    case 0: type = (org.apache.submarine.tony.events.EventType)value$; break;
+    case 0: type = (org.apache.submarine.tony.events.avro.EventType)value$; break;
     case 1: event = (Object)value$; break;
     case 2: timestamp = (Long)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
@@ -62,7 +62,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
    * Gets the value of the 'type' field.
    * @return The value of the 'type' field.
    */
-  public org.apache.submarine.tony.events.EventType getType() {
+  public org.apache.submarine.tony.events.avro.EventType getType() {
     return type;
   }
 
@@ -70,7 +70,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
    * Sets the value of the 'type' field.
    * @param value the value to set.
    */
-  public void setType(org.apache.submarine.tony.events.EventType value) {
+  public void setType(org.apache.submarine.tony.events.avro.EventType value) {
     this.type = value;
   }
 
@@ -110,8 +110,8 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
    * Creates a new Event RecordBuilder.
    * @return A new Event RecordBuilder
    */
-  public static org.apache.submarine.tony.events.Event.Builder newBuilder() {
-    return new org.apache.submarine.tony.events.Event.Builder();
+  public static org.apache.submarine.tony.events.avro.Event.Builder newBuilder() {
+    return new org.apache.submarine.tony.events.avro.Event.Builder();
   }
 
   /**
@@ -119,8 +119,8 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
    * @param other The existing builder to copy.
    * @return A new Event RecordBuilder
    */
-  public static org.apache.submarine.tony.events.Event.Builder newBuilder(org.apache.submarine.tony.events.Event.Builder other) {
-    return new org.apache.submarine.tony.events.Event.Builder(other);
+  public static org.apache.submarine.tony.events.avro.Event.Builder newBuilder(org.apache.submarine.tony.events.avro.Event.Builder other) {
+    return new org.apache.submarine.tony.events.avro.Event.Builder(other);
   }
 
   /**
@@ -128,8 +128,8 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
    * @param other The existing instance to copy.
    * @return A new Event RecordBuilder
    */
-  public static org.apache.submarine.tony.events.Event.Builder newBuilder(org.apache.submarine.tony.events.Event other) {
-    return new org.apache.submarine.tony.events.Event.Builder(other);
+  public static org.apache.submarine.tony.events.avro.Event.Builder newBuilder(org.apache.submarine.tony.events.avro.Event other) {
+    return new org.apache.submarine.tony.events.avro.Event.Builder(other);
   }
 
   /**
@@ -138,7 +138,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<Event>
     implements org.apache.avro.data.RecordBuilder<Event> {
 
-    private org.apache.submarine.tony.events.EventType type;
+    private org.apache.submarine.tony.events.avro.EventType type;
     private Object event;
     private long timestamp;
 
@@ -151,7 +151,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(org.apache.submarine.tony.events.Event.Builder other) {
+    private Builder(org.apache.submarine.tony.events.avro.Event.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.type)) {
         this.type = data().deepCopy(fields()[0].schema(), other.type);
@@ -171,7 +171,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
      * Creates a Builder by copying an existing Event instance
      * @param other The existing instance to copy.
      */
-    private Builder(org.apache.submarine.tony.events.Event other) {
+    private Builder(org.apache.submarine.tony.events.avro.Event other) {
             super(SCHEMA$);
       if (isValidValue(fields()[0], other.type)) {
         this.type = data().deepCopy(fields()[0].schema(), other.type);
@@ -191,7 +191,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
       * Gets the value of the 'type' field.
       * @return The value.
       */
-    public org.apache.submarine.tony.events.EventType getType() {
+    public org.apache.submarine.tony.events.avro.EventType getType() {
       return type;
     }
 
@@ -200,7 +200,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
       * @param value The value of 'type'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.Event.Builder setType(org.apache.submarine.tony.events.EventType value) {
+    public org.apache.submarine.tony.events.avro.Event.Builder setType(org.apache.submarine.tony.events.avro.EventType value) {
       validate(fields()[0], value);
       this.type = value;
       fieldSetFlags()[0] = true;
@@ -220,7 +220,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
       * Clears the value of the 'type' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.Event.Builder clearType() {
+    public org.apache.submarine.tony.events.avro.Event.Builder clearType() {
       type = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -239,7 +239,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
       * @param value The value of 'event'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.Event.Builder setEvent(Object value) {
+    public org.apache.submarine.tony.events.avro.Event.Builder setEvent(Object value) {
       validate(fields()[1], value);
       this.event = value;
       fieldSetFlags()[1] = true;
@@ -259,7 +259,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
       * Clears the value of the 'event' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.Event.Builder clearEvent() {
+    public org.apache.submarine.tony.events.avro.Event.Builder clearEvent() {
       event = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -278,7 +278,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
       * @param value The value of 'timestamp'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.Event.Builder setTimestamp(long value) {
+    public org.apache.submarine.tony.events.avro.Event.Builder setTimestamp(long value) {
       validate(fields()[2], value);
       this.timestamp = value;
       fieldSetFlags()[2] = true;
@@ -298,7 +298,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
       * Clears the value of the 'timestamp' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.Event.Builder clearTimestamp() {
+    public org.apache.submarine.tony.events.avro.Event.Builder clearTimestamp() {
       fieldSetFlags()[2] = false;
       return this;
     }
@@ -307,7 +307,7 @@ public class Event extends org.apache.avro.specific.SpecificRecordBase implement
     public Event build() {
       try {
         Event record = new Event();
-        record.type = fieldSetFlags()[0] ? this.type : (org.apache.submarine.tony.events.EventType) defaultValue(fields()[0]);
+        record.type = fieldSetFlags()[0] ? this.type : (org.apache.submarine.tony.events.avro.EventType) defaultValue(fields()[0]);
         record.event = fieldSetFlags()[1] ? this.event : (Object) defaultValue(fields()[1]);
         record.timestamp = fieldSetFlags()[2] ? this.timestamp : (Long) defaultValue(fields()[2]);
         return record;

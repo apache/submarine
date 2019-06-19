@@ -17,8 +17,11 @@ public class ProtoUtils {
   }
 
   public static TaskInfoProto taskInfoToTaskInfoProto(TaskInfo taskInfo) {
-    return TaskInfoProto.newBuilder().setName(taskInfo.getName()).setIndex(taskInfo.getIndex())
-        .setUrl(taskInfo.getUrl()).setTaskStatus(TaskInfoProto.TaskStatus.values()[taskInfo.getStatus().ordinal()]).build();
+    return TaskInfoProto.newBuilder()
+        .setName(taskInfo.getName())
+        .setIndex(taskInfo.getIndex())
+        .setUrl(taskInfo.getUrl())
+        .setTaskStatus(TaskInfoProto.TaskStatus.values()[taskInfo.getStatus().ordinal()]).build();
   }
 
   private ProtoUtils() { }

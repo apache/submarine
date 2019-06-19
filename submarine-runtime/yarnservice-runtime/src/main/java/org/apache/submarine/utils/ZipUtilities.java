@@ -65,7 +65,7 @@ public final class ZipUtilities {
         continue;
       }
       byte[] buffer = new byte[1024];
-      try(FileInputStream fis = new FileInputStream(file)) {
+      try (FileInputStream fis = new FileInputStream(file)) {
         String name = base.toURI().relativize(file.toURI()).getPath();
         LOG.info("Adding file {} to zip", name);
         zos.putNextEntry(new ZipEntry(name));

@@ -52,7 +52,8 @@ public class TensorFlowClusterPBServiceImpl implements TensorFlowClusterPB {
 
   @Override
   public YarnTensorFlowClusterProtos.GetTaskInfosResponseProto getTaskInfos(RpcController controller,
-                                                                           GetTaskInfosRequestProto proto) throws ServiceException {
+                                                                           GetTaskInfosRequestProto proto)
+      throws ServiceException {
     GetTaskInfosRequestPBImpl request = new GetTaskInfosRequestPBImpl(proto);
     try {
       GetTaskInfosResponse response = real.getTaskInfos(request);
@@ -64,7 +65,8 @@ public class TensorFlowClusterPBServiceImpl implements TensorFlowClusterPB {
 
   @Override
   public GetClusterSpecResponseProto getClusterSpec(RpcController controller,
-                                                    GetClusterSpecRequestProto proto) throws ServiceException {
+                                                    GetClusterSpecRequestProto proto)
+      throws ServiceException {
     GetClusterSpecRequestPBImpl request = new GetClusterSpecRequestPBImpl(proto);
     try {
       GetClusterSpecResponse response = real.getClusterSpec(request);
@@ -76,7 +78,8 @@ public class TensorFlowClusterPBServiceImpl implements TensorFlowClusterPB {
 
   @Override
   public RegisterWorkerSpecResponseProto registerWorkerSpec(RpcController controller,
-                                                            RegisterWorkerSpecRequestProto proto) throws ServiceException {
+                                                            RegisterWorkerSpecRequestProto proto)
+      throws ServiceException {
     RegisterWorkerSpecRequestPBImpl request = new RegisterWorkerSpecRequestPBImpl(proto);
     try {
       RegisterWorkerSpecResponse response = real.registerWorkerSpec(request);

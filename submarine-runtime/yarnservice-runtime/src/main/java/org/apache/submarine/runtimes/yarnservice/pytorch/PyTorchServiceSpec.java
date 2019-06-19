@@ -18,7 +18,6 @@ package org.apache.submarine.runtimes.yarnservice.pytorch;
 
 import java.io.IOException;
 
-import org.apache.hadoop.yarn.service.api.records.Service;
 import org.apache.submarine.client.cli.param.runjob.PyTorchRunJobParameters;
 import org.apache.submarine.client.cli.runjob.Framework;
 import org.apache.submarine.common.ClientContext;
@@ -32,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class contains all the logic to create an instance
- * of a {@link Service} object for PyTorch.
+ * of a {Service} object for PyTorch.
  * Please note that currently, only single-node (non-distributed)
  * support is implemented for PyTorch.
  */

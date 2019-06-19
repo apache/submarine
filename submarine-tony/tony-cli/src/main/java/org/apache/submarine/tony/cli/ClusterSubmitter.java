@@ -21,8 +21,11 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.api.records.LocalResourceType;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 
-import static org.apache.submarine.tony.Constants.*;
-
+import static org.apache.submarine.tony.Constants.CORE_SITE_CONF;
+import static org.apache.submarine.tony.Constants.HADOOP_CONF_DIR;
+import static org.apache.submarine.tony.Constants.HDFS_SITE_CONF;
+import static org.apache.submarine.tony.Constants.TONY_FOLDER;
+import static org.apache.submarine.tony.Constants.TONY_JAR_NAME;
 
 /**
  * ClusterSubmitter is used to submit a distributed Tony
@@ -47,7 +50,8 @@ public class ClusterSubmitter extends TonySubmitter {
 
   public int submit(String[] args) throws ParseException, URISyntaxException {
     LOG.info("Starting ClusterSubmitter..");
-    String jarLocation = new File(ClusterSubmitter.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+    String jarLocation = new File(ClusterSubmitter.class.getProtectionDomain().getCodeSource().getLocation().toURI())
+        .getPath();
     Configuration hdfsConf = new Configuration();
     hdfsConf.addResource(new Path(System.getenv(HADOOP_CONF_DIR) + File.separatorChar + CORE_SITE_CONF));
     hdfsConf.addResource(new Path(System.getenv(HADOOP_CONF_DIR) + File.separatorChar + HDFS_SITE_CONF));

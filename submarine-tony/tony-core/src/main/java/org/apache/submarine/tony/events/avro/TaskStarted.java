@@ -3,15 +3,15 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package org.apache.submarine.tony.events;
+package org.apache.submarine.tony.events.avro;
 
 import org.apache.avro.specific.SpecificData;
 
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 1792335799667702162L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TaskStarted\",\"namespace\":\"org.apache.submarine.tony.events\",\"fields\":[{\"name\":\"taskType\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"taskIndex\",\"type\":\"int\"},{\"name\":\"host\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}");
+  private static final long serialVersionUID = 3618835329986439076L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TaskStarted\",\"namespace\":\"org.apache.submarine.tony.events.avro\",\"fields\":[{\"name\":\"taskType\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"taskIndex\",\"type\":\"int\"},{\"name\":\"host\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public String taskType;
   @Deprecated public int taskIndex;
@@ -110,8 +110,8 @@ public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase imp
    * Creates a new TaskStarted RecordBuilder.
    * @return A new TaskStarted RecordBuilder
    */
-  public static org.apache.submarine.tony.events.TaskStarted.Builder newBuilder() {
-    return new org.apache.submarine.tony.events.TaskStarted.Builder();
+  public static org.apache.submarine.tony.events.avro.TaskStarted.Builder newBuilder() {
+    return new org.apache.submarine.tony.events.avro.TaskStarted.Builder();
   }
 
   /**
@@ -119,8 +119,8 @@ public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase imp
    * @param other The existing builder to copy.
    * @return A new TaskStarted RecordBuilder
    */
-  public static org.apache.submarine.tony.events.TaskStarted.Builder newBuilder(org.apache.submarine.tony.events.TaskStarted.Builder other) {
-    return new org.apache.submarine.tony.events.TaskStarted.Builder(other);
+  public static org.apache.submarine.tony.events.avro.TaskStarted.Builder newBuilder(org.apache.submarine.tony.events.avro.TaskStarted.Builder other) {
+    return new org.apache.submarine.tony.events.avro.TaskStarted.Builder(other);
   }
 
   /**
@@ -128,8 +128,8 @@ public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase imp
    * @param other The existing instance to copy.
    * @return A new TaskStarted RecordBuilder
    */
-  public static org.apache.submarine.tony.events.TaskStarted.Builder newBuilder(org.apache.submarine.tony.events.TaskStarted other) {
-    return new org.apache.submarine.tony.events.TaskStarted.Builder(other);
+  public static org.apache.submarine.tony.events.avro.TaskStarted.Builder newBuilder(org.apache.submarine.tony.events.avro.TaskStarted other) {
+    return new org.apache.submarine.tony.events.avro.TaskStarted.Builder(other);
   }
 
   /**
@@ -151,7 +151,7 @@ public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase imp
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(org.apache.submarine.tony.events.TaskStarted.Builder other) {
+    private Builder(org.apache.submarine.tony.events.avro.TaskStarted.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.taskType)) {
         this.taskType = data().deepCopy(fields()[0].schema(), other.taskType);
@@ -171,7 +171,7 @@ public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase imp
      * Creates a Builder by copying an existing TaskStarted instance
      * @param other The existing instance to copy.
      */
-    private Builder(org.apache.submarine.tony.events.TaskStarted other) {
+    private Builder(org.apache.submarine.tony.events.avro.TaskStarted other) {
             super(SCHEMA$);
       if (isValidValue(fields()[0], other.taskType)) {
         this.taskType = data().deepCopy(fields()[0].schema(), other.taskType);
@@ -200,7 +200,7 @@ public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase imp
       * @param value The value of 'taskType'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskStarted.Builder setTaskType(String value) {
+    public org.apache.submarine.tony.events.avro.TaskStarted.Builder setTaskType(String value) {
       validate(fields()[0], value);
       this.taskType = value;
       fieldSetFlags()[0] = true;
@@ -220,7 +220,7 @@ public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase imp
       * Clears the value of the 'taskType' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskStarted.Builder clearTaskType() {
+    public org.apache.submarine.tony.events.avro.TaskStarted.Builder clearTaskType() {
       taskType = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -239,7 +239,7 @@ public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase imp
       * @param value The value of 'taskIndex'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskStarted.Builder setTaskIndex(int value) {
+    public org.apache.submarine.tony.events.avro.TaskStarted.Builder setTaskIndex(int value) {
       validate(fields()[1], value);
       this.taskIndex = value;
       fieldSetFlags()[1] = true;
@@ -259,7 +259,7 @@ public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase imp
       * Clears the value of the 'taskIndex' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskStarted.Builder clearTaskIndex() {
+    public org.apache.submarine.tony.events.avro.TaskStarted.Builder clearTaskIndex() {
       fieldSetFlags()[1] = false;
       return this;
     }
@@ -277,7 +277,7 @@ public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase imp
       * @param value The value of 'host'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskStarted.Builder setHost(String value) {
+    public org.apache.submarine.tony.events.avro.TaskStarted.Builder setHost(String value) {
       validate(fields()[2], value);
       this.host = value;
       fieldSetFlags()[2] = true;
@@ -297,7 +297,7 @@ public class TaskStarted extends org.apache.avro.specific.SpecificRecordBase imp
       * Clears the value of the 'host' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskStarted.Builder clearHost() {
+    public org.apache.submarine.tony.events.avro.TaskStarted.Builder clearHost() {
       host = null;
       fieldSetFlags()[2] = false;
       return this;

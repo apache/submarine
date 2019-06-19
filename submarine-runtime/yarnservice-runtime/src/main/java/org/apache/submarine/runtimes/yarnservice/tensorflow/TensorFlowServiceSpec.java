@@ -16,8 +16,6 @@
 
 package org.apache.submarine.runtimes.yarnservice.tensorflow;
 
-import org.apache.hadoop.yarn.service.api.records.Service;
-import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.client.cli.runjob.Framework;
 import org.apache.submarine.common.ClientContext;
@@ -37,9 +35,9 @@ import static org.apache.submarine.runtimes.yarnservice.tensorflow.component.Ten
 
 /**
  * This class contains all the logic to create an instance
- * of a {@link Service} object for TensorFlow.
+ * of a Service object for TensorFlow.
  * Worker,PS and Tensorboard components are added to the Service
- * based on the value of the received {@link RunJobParameters}.
+ * based on the value of the received RunJobParameters.
  */
 public class TensorFlowServiceSpec extends AbstractServiceSpec {
   private static final Logger LOG =

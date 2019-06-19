@@ -4,7 +4,7 @@
  */
 package org.apache.submarine.tony.rpc.impl;
 
-import org.apache.submarine.tony.events.Metric;
+import org.apache.submarine.tony.events.avro.Metric;
 import org.apache.submarine.tony.rpc.MetricWritable;
 import java.io.DataInput;
 import java.io.DataOutput;

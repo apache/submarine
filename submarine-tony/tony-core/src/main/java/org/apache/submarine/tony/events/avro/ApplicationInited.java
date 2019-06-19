@@ -3,15 +3,15 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package org.apache.submarine.tony.events;
+package org.apache.submarine.tony.events.avro;
 
 import org.apache.avro.specific.SpecificData;
 
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -7031823521817385670L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"ApplicationInited\",\"namespace\":\"org.apache.submarine.tony.events\",\"fields\":[{\"name\":\"applicationId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"numTasks\",\"type\":\"int\"},{\"name\":\"host\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}");
+  private static final long serialVersionUID = -8206748288938470777L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"ApplicationInited\",\"namespace\":\"org.apache.submarine.tony.events.avro\",\"fields\":[{\"name\":\"applicationId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"numTasks\",\"type\":\"int\"},{\"name\":\"host\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public String applicationId;
   @Deprecated public int numTasks;
@@ -110,8 +110,8 @@ public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBa
    * Creates a new ApplicationInited RecordBuilder.
    * @return A new ApplicationInited RecordBuilder
    */
-  public static org.apache.submarine.tony.events.ApplicationInited.Builder newBuilder() {
-    return new org.apache.submarine.tony.events.ApplicationInited.Builder();
+  public static org.apache.submarine.tony.events.avro.ApplicationInited.Builder newBuilder() {
+    return new org.apache.submarine.tony.events.avro.ApplicationInited.Builder();
   }
 
   /**
@@ -119,8 +119,8 @@ public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBa
    * @param other The existing builder to copy.
    * @return A new ApplicationInited RecordBuilder
    */
-  public static org.apache.submarine.tony.events.ApplicationInited.Builder newBuilder(org.apache.submarine.tony.events.ApplicationInited.Builder other) {
-    return new org.apache.submarine.tony.events.ApplicationInited.Builder(other);
+  public static org.apache.submarine.tony.events.avro.ApplicationInited.Builder newBuilder(org.apache.submarine.tony.events.avro.ApplicationInited.Builder other) {
+    return new org.apache.submarine.tony.events.avro.ApplicationInited.Builder(other);
   }
 
   /**
@@ -128,8 +128,8 @@ public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBa
    * @param other The existing instance to copy.
    * @return A new ApplicationInited RecordBuilder
    */
-  public static org.apache.submarine.tony.events.ApplicationInited.Builder newBuilder(org.apache.submarine.tony.events.ApplicationInited other) {
-    return new org.apache.submarine.tony.events.ApplicationInited.Builder(other);
+  public static org.apache.submarine.tony.events.avro.ApplicationInited.Builder newBuilder(org.apache.submarine.tony.events.avro.ApplicationInited other) {
+    return new org.apache.submarine.tony.events.avro.ApplicationInited.Builder(other);
   }
 
   /**
@@ -151,7 +151,7 @@ public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBa
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(org.apache.submarine.tony.events.ApplicationInited.Builder other) {
+    private Builder(org.apache.submarine.tony.events.avro.ApplicationInited.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.applicationId)) {
         this.applicationId = data().deepCopy(fields()[0].schema(), other.applicationId);
@@ -171,7 +171,7 @@ public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBa
      * Creates a Builder by copying an existing ApplicationInited instance
      * @param other The existing instance to copy.
      */
-    private Builder(org.apache.submarine.tony.events.ApplicationInited other) {
+    private Builder(org.apache.submarine.tony.events.avro.ApplicationInited other) {
             super(SCHEMA$);
       if (isValidValue(fields()[0], other.applicationId)) {
         this.applicationId = data().deepCopy(fields()[0].schema(), other.applicationId);
@@ -200,7 +200,7 @@ public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBa
       * @param value The value of 'applicationId'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationInited.Builder setApplicationId(String value) {
+    public org.apache.submarine.tony.events.avro.ApplicationInited.Builder setApplicationId(String value) {
       validate(fields()[0], value);
       this.applicationId = value;
       fieldSetFlags()[0] = true;
@@ -220,7 +220,7 @@ public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBa
       * Clears the value of the 'applicationId' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationInited.Builder clearApplicationId() {
+    public org.apache.submarine.tony.events.avro.ApplicationInited.Builder clearApplicationId() {
       applicationId = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -239,7 +239,7 @@ public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBa
       * @param value The value of 'numTasks'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationInited.Builder setNumTasks(int value) {
+    public org.apache.submarine.tony.events.avro.ApplicationInited.Builder setNumTasks(int value) {
       validate(fields()[1], value);
       this.numTasks = value;
       fieldSetFlags()[1] = true;
@@ -259,7 +259,7 @@ public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBa
       * Clears the value of the 'numTasks' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationInited.Builder clearNumTasks() {
+    public org.apache.submarine.tony.events.avro.ApplicationInited.Builder clearNumTasks() {
       fieldSetFlags()[1] = false;
       return this;
     }
@@ -277,7 +277,7 @@ public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBa
       * @param value The value of 'host'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationInited.Builder setHost(String value) {
+    public org.apache.submarine.tony.events.avro.ApplicationInited.Builder setHost(String value) {
       validate(fields()[2], value);
       this.host = value;
       fieldSetFlags()[2] = true;
@@ -297,7 +297,7 @@ public class ApplicationInited extends org.apache.avro.specific.SpecificRecordBa
       * Clears the value of the 'host' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationInited.Builder clearHost() {
+    public org.apache.submarine.tony.events.avro.ApplicationInited.Builder clearHost() {
       host = null;
       fieldSetFlags()[2] = false;
       return this;

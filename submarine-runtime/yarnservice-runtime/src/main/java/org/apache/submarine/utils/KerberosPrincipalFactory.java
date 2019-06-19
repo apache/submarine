@@ -42,8 +42,8 @@ public final class KerberosPrincipalFactory {
       LoggerFactory.getLogger(KerberosPrincipalFactory.class);
 
   public static KerberosPrincipal create(FileSystemOperations fsOperations,
-      RemoteDirectoryManager remoteDirectoryManager,
-      RunJobParameters parameters) throws IOException {
+                                         RemoteDirectoryManager remoteDirectoryManager,
+                                         RunJobParameters parameters) throws IOException {
     Objects.requireNonNull(fsOperations,
         "FileSystemOperations must not be null!");
     Objects.requireNonNull(remoteDirectoryManager,
@@ -77,15 +77,14 @@ public final class KerberosPrincipalFactory {
         fsOperations.uploadToRemoteFile(stagingDir, keytab);
     // Only the owner has read access
     fsOperations.setPermission(remoteKeytabPath,
-        FsPermission.createImmutable((short)Integer.parseInt("400", 8)));
+        FsPermission.createImmutable((short) Integer.parseInt("400", 8)));
     return new KerberosPrincipal()
         .keytab(remoteKeytabPath.toString())
         .principalName(principal);
   }
 
-  private static KerberosPrincipal handleNormalKeytab(String keytab,
-      String principal) {
-    if(!keytab.startsWith("file")) {
+  private static KerberosPrincipal handleNormalKeytab(String keytab, String principal) {
+    if (!keytab.startsWith("file")) {
       keytab = "file://" + keytab;
     }
     return new KerberosPrincipal()

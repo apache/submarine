@@ -26,7 +26,7 @@ import org.junit.Test;
 import java.util.Map;
 
 import static org.apache.hadoop.fs.CommonConfigurationKeysPublic.HADOOP_SECURITY_AUTHENTICATION;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -52,8 +52,7 @@ public class TestEnvironmentUtilities {
         resultEnvs.get(EnvironmentUtilities.ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME));
   }
 
-  private org.apache.hadoop.conf.Configuration
-  createYarnConfigWithSecurityValue(String value) {
+  private org.apache.hadoop.conf.Configuration createYarnConfigWithSecurityValue(String value) {
     org.apache.hadoop.conf.Configuration mockConfig =
         mock(org.apache.hadoop.conf.Configuration.class);
     when(mockConfig.get(HADOOP_SECURITY_AUTHENTICATION)).thenReturn(value);

@@ -4,8 +4,8 @@
  */
 package org.apache.submarine.tony.models;
 
-import org.apache.submarine.tony.events.Event;
-import org.apache.submarine.tony.events.EventType;
+import org.apache.submarine.tony.events.avro.Event;
+import org.apache.submarine.tony.events.avro.EventType;
 import java.util.Date;
 
 

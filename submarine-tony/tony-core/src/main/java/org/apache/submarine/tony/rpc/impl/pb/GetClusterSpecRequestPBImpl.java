@@ -16,8 +16,8 @@ public class GetClusterSpecRequestPBImpl implements GetClusterSpecRequest {
   private boolean rebuild = false;
 
   public GetClusterSpecRequestPBImpl() {
-        builder = GetClusterSpecRequestProto.newBuilder();
-    }
+    builder = GetClusterSpecRequestProto.newBuilder();
+  }
 
   public GetClusterSpecRequestPBImpl(GetClusterSpecRequestProto proto) {
     this.proto = proto;
@@ -34,9 +34,9 @@ public class GetClusterSpecRequestPBImpl implements GetClusterSpecRequest {
   }
 
   public GetClusterSpecRequestProto getProto() {
-     if (rebuild) {
-       mergeLocalToProto();
-     }
+    if (rebuild) {
+      mergeLocalToProto();
+    }
     proto = viaProto ? proto : builder.build();
     viaProto = true;
     return proto;

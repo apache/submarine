@@ -13,11 +13,11 @@ import org.apache.hadoop.security.authorize.Service;
  * PolicyProvider for Client to AM protocol.
  **/
 public class TonyPolicyProvider extends PolicyProvider {
-    @Override
-    public Service[] getServices() {
-        return new Service[]{
-            new Service("tony.cluster", TensorFlowCluster.class),
-            new Service("tony.metrics", MetricsRpc.class)
-        };
-    }
+  @Override
+  public Service[] getServices() {
+    return new Service[]{
+        new Service("tony.cluster", TensorFlowCluster.class),
+        new Service("tony.metrics", MetricsRpc.class)
+    };
+  }
 }

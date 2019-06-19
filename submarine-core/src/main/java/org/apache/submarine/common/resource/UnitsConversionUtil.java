@@ -6,9 +6,9 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,8 @@ import java.util.Set;
  */
 public final class UnitsConversionUtil {
 
-  private UnitsConversionUtil() {}
+  private UnitsConversionUtil() {
+  }
 
   /**
    * Helper class for encapsulating conversion values.
@@ -81,39 +82,39 @@ public final class UnitsConversionUtil {
 
   private static Converter getConverter(String unit) {
     switch (unit) {
-    case "p":
-      return PICO;
-    case "n":
-      return NANO;
-    case "u":
-      return MICRO;
-    case "m":
-      return MILLI;
-    case "":
-      return BASE;
-    case "k":
-      return KILO;
-    case "M":
-      return MEGA;
-    case "G":
-      return GIGA;
-    case "T":
-      return TERA;
-    case "P":
-      return PETA;
-    case "Ki":
-      return KILO_BINARY;
-    case "Mi":
-      return MEGA_BINARY;
-    case "Gi":
-      return GIGA_BINARY;
-    case "Ti":
-      return TERA_BINARY;
-    case "Pi":
-      return PETA_BINARY;
-    default:
-      throw new IllegalArgumentException(
-          "Unknown unit '" + unit + "'. Known units are " + KNOWN_UNITS);
+      case "p":
+        return PICO;
+      case "n":
+        return NANO;
+      case "u":
+        return MICRO;
+      case "m":
+        return MILLI;
+      case "":
+        return BASE;
+      case "k":
+        return KILO;
+      case "M":
+        return MEGA;
+      case "G":
+        return GIGA;
+      case "T":
+        return TERA;
+      case "P":
+        return PETA;
+      case "Ki":
+        return KILO_BINARY;
+      case "Mi":
+        return MEGA_BINARY;
+      case "Gi":
+        return GIGA_BINARY;
+      case "Ti":
+        return TERA_BINARY;
+      case "Pi":
+        return PETA_BINARY;
+      default:
+        throw new IllegalArgumentException(
+            "Unknown unit '" + unit + "'. Known units are " + KNOWN_UNITS);
     }
   }
 

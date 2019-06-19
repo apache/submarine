@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,21 +36,21 @@ public class YarnServiceJobMonitor extends JobMonitor {
   public JobStatus getTrainingJobStatus(String jobName)
       throws IOException, YarnException {
     if (this.serviceClient == null) {
-      synchronized(this) {
+      synchronized (this) {
         if (this.serviceClient == null) {
           this.serviceClient = YarnServiceUtils.createServiceClient(
               clientContext.getYarnConfig());
         }
       }
     }
-    String appStatus=serviceClient.getStatusString(jobName);
-    Service serviceSpec= ServiceApiUtil.jsonSerDeser.fromJson(appStatus);
+    String appStatus = serviceClient.getStatusString(jobName);
+    Service serviceSpec = ServiceApiUtil.jsonSerDeser.fromJson(appStatus);
     JobStatus jobStatus = JobStatusBuilder.fromServiceSpec(serviceSpec);
     return jobStatus;
   }
 
   @Override
-  public void cleanup() throws IOException{
+  public void cleanup() throws IOException {
     if (this.serviceClient != null) {
       this.serviceClient.close();
     }

@@ -3,20 +3,20 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package org.apache.submarine.tony.events;
+package org.apache.submarine.tony.events.avro;
 
 import org.apache.avro.specific.SpecificData;
 
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class ApplicationFinished extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -8449488367775084462L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"ApplicationFinished\",\"namespace\":\"org.apache.submarine.tony.events\",\"fields\":[{\"name\":\"applicationId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"finishedTasks\",\"type\":\"int\"},{\"name\":\"failedTasks\",\"type\":\"int\"},{\"name\":\"metrics\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Metric\",\"fields\":[{\"name\":\"name\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"value\",\"type\":\"double\"}]}}}]}");
+  private static final long serialVersionUID = -2520778832148846717L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"ApplicationFinished\",\"namespace\":\"org.apache.submarine.tony.events.avro\",\"fields\":[{\"name\":\"applicationId\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"finishedTasks\",\"type\":\"int\"},{\"name\":\"failedTasks\",\"type\":\"int\"},{\"name\":\"metrics\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Metric\",\"fields\":[{\"name\":\"name\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"value\",\"type\":\"double\"}]}}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public String applicationId;
   @Deprecated public int finishedTasks;
   @Deprecated public int failedTasks;
-  @Deprecated public java.util.List<org.apache.submarine.tony.events.Metric> metrics;
+  @Deprecated public java.util.List<Metric> metrics;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -32,7 +32,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
    * @param failedTasks The new value for failedTasks
    * @param metrics The new value for metrics
    */
-  public ApplicationFinished(String applicationId, Integer finishedTasks, Integer failedTasks, java.util.List<org.apache.submarine.tony.events.Metric> metrics) {
+  public ApplicationFinished(String applicationId, Integer finishedTasks, Integer failedTasks, java.util.List<Metric> metrics) {
     this.applicationId = applicationId;
     this.finishedTasks = finishedTasks;
     this.failedTasks = failedTasks;
@@ -58,7 +58,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
     case 0: applicationId = (String)value$; break;
     case 1: finishedTasks = (Integer)value$; break;
     case 2: failedTasks = (Integer)value$; break;
-    case 3: metrics = (java.util.List<org.apache.submarine.tony.events.Metric>)value$; break;
+    case 3: metrics = (java.util.List<Metric>)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -115,7 +115,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
    * Gets the value of the 'metrics' field.
    * @return The value of the 'metrics' field.
    */
-  public java.util.List<org.apache.submarine.tony.events.Metric> getMetrics() {
+  public java.util.List<Metric> getMetrics() {
     return metrics;
   }
 
@@ -123,7 +123,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
    * Sets the value of the 'metrics' field.
    * @param value the value to set.
    */
-  public void setMetrics(java.util.List<org.apache.submarine.tony.events.Metric> value) {
+  public void setMetrics(java.util.List<Metric> value) {
     this.metrics = value;
   }
 
@@ -131,8 +131,8 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
    * Creates a new ApplicationFinished RecordBuilder.
    * @return A new ApplicationFinished RecordBuilder
    */
-  public static org.apache.submarine.tony.events.ApplicationFinished.Builder newBuilder() {
-    return new org.apache.submarine.tony.events.ApplicationFinished.Builder();
+  public static org.apache.submarine.tony.events.avro.ApplicationFinished.Builder newBuilder() {
+    return new org.apache.submarine.tony.events.avro.ApplicationFinished.Builder();
   }
 
   /**
@@ -140,8 +140,8 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
    * @param other The existing builder to copy.
    * @return A new ApplicationFinished RecordBuilder
    */
-  public static org.apache.submarine.tony.events.ApplicationFinished.Builder newBuilder(org.apache.submarine.tony.events.ApplicationFinished.Builder other) {
-    return new org.apache.submarine.tony.events.ApplicationFinished.Builder(other);
+  public static org.apache.submarine.tony.events.avro.ApplicationFinished.Builder newBuilder(org.apache.submarine.tony.events.avro.ApplicationFinished.Builder other) {
+    return new org.apache.submarine.tony.events.avro.ApplicationFinished.Builder(other);
   }
 
   /**
@@ -149,8 +149,8 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
    * @param other The existing instance to copy.
    * @return A new ApplicationFinished RecordBuilder
    */
-  public static org.apache.submarine.tony.events.ApplicationFinished.Builder newBuilder(org.apache.submarine.tony.events.ApplicationFinished other) {
-    return new org.apache.submarine.tony.events.ApplicationFinished.Builder(other);
+  public static org.apache.submarine.tony.events.avro.ApplicationFinished.Builder newBuilder(org.apache.submarine.tony.events.avro.ApplicationFinished other) {
+    return new org.apache.submarine.tony.events.avro.ApplicationFinished.Builder(other);
   }
 
   /**
@@ -162,7 +162,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
     private String applicationId;
     private int finishedTasks;
     private int failedTasks;
-    private java.util.List<org.apache.submarine.tony.events.Metric> metrics;
+    private java.util.List<Metric> metrics;
 
     /** Creates a new Builder */
     private Builder() {
@@ -173,7 +173,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(org.apache.submarine.tony.events.ApplicationFinished.Builder other) {
+    private Builder(org.apache.submarine.tony.events.avro.ApplicationFinished.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.applicationId)) {
         this.applicationId = data().deepCopy(fields()[0].schema(), other.applicationId);
@@ -197,7 +197,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
      * Creates a Builder by copying an existing ApplicationFinished instance
      * @param other The existing instance to copy.
      */
-    private Builder(org.apache.submarine.tony.events.ApplicationFinished other) {
+    private Builder(org.apache.submarine.tony.events.avro.ApplicationFinished other) {
             super(SCHEMA$);
       if (isValidValue(fields()[0], other.applicationId)) {
         this.applicationId = data().deepCopy(fields()[0].schema(), other.applicationId);
@@ -230,7 +230,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'applicationId'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationFinished.Builder setApplicationId(String value) {
+    public org.apache.submarine.tony.events.avro.ApplicationFinished.Builder setApplicationId(String value) {
       validate(fields()[0], value);
       this.applicationId = value;
       fieldSetFlags()[0] = true;
@@ -250,7 +250,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'applicationId' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationFinished.Builder clearApplicationId() {
+    public org.apache.submarine.tony.events.avro.ApplicationFinished.Builder clearApplicationId() {
       applicationId = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -269,7 +269,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'finishedTasks'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationFinished.Builder setFinishedTasks(int value) {
+    public org.apache.submarine.tony.events.avro.ApplicationFinished.Builder setFinishedTasks(int value) {
       validate(fields()[1], value);
       this.finishedTasks = value;
       fieldSetFlags()[1] = true;
@@ -289,7 +289,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'finishedTasks' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationFinished.Builder clearFinishedTasks() {
+    public org.apache.submarine.tony.events.avro.ApplicationFinished.Builder clearFinishedTasks() {
       fieldSetFlags()[1] = false;
       return this;
     }
@@ -307,7 +307,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'failedTasks'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationFinished.Builder setFailedTasks(int value) {
+    public org.apache.submarine.tony.events.avro.ApplicationFinished.Builder setFailedTasks(int value) {
       validate(fields()[2], value);
       this.failedTasks = value;
       fieldSetFlags()[2] = true;
@@ -327,7 +327,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'failedTasks' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationFinished.Builder clearFailedTasks() {
+    public org.apache.submarine.tony.events.avro.ApplicationFinished.Builder clearFailedTasks() {
       fieldSetFlags()[2] = false;
       return this;
     }
@@ -336,7 +336,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
       * Gets the value of the 'metrics' field.
       * @return The value.
       */
-    public java.util.List<org.apache.submarine.tony.events.Metric> getMetrics() {
+    public java.util.List<Metric> getMetrics() {
       return metrics;
     }
 
@@ -345,7 +345,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
       * @param value The value of 'metrics'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationFinished.Builder setMetrics(java.util.List<org.apache.submarine.tony.events.Metric> value) {
+    public org.apache.submarine.tony.events.avro.ApplicationFinished.Builder setMetrics(java.util.List<Metric> value) {
       validate(fields()[3], value);
       this.metrics = value;
       fieldSetFlags()[3] = true;
@@ -365,7 +365,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
       * Clears the value of the 'metrics' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.ApplicationFinished.Builder clearMetrics() {
+    public org.apache.submarine.tony.events.avro.ApplicationFinished.Builder clearMetrics() {
       metrics = null;
       fieldSetFlags()[3] = false;
       return this;
@@ -378,7 +378,7 @@ public class ApplicationFinished extends org.apache.avro.specific.SpecificRecord
         record.applicationId = fieldSetFlags()[0] ? this.applicationId : (String) defaultValue(fields()[0]);
         record.finishedTasks = fieldSetFlags()[1] ? this.finishedTasks : (Integer) defaultValue(fields()[1]);
         record.failedTasks = fieldSetFlags()[2] ? this.failedTasks : (Integer) defaultValue(fields()[2]);
-        record.metrics = fieldSetFlags()[3] ? this.metrics : (java.util.List<org.apache.submarine.tony.events.Metric>) defaultValue(fields()[3]);
+        record.metrics = fieldSetFlags()[3] ? this.metrics : (java.util.List<Metric>) defaultValue(fields()[3]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

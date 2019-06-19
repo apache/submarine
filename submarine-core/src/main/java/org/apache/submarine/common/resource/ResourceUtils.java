@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,18 +35,18 @@ import java.util.Map;
  */
 public final class ResourceUtils {
 
-  private final static String RES_PATTERN = "^[^=]+=\\d+\\s?\\w*$";
-  private final static String SET_RESOURCE_VALUE_METHOD = "setResourceValue";
-  private final static String SET_MEMORY_SIZE_METHOD = "setMemorySize";
-  private final static String DEPRECATED_SET_MEMORY_SIZE_METHOD =
+  private static final String RES_PATTERN = "^[^=]+=\\d+\\s?\\w*$";
+  private static final String SET_RESOURCE_VALUE_METHOD = "setResourceValue";
+  private static final String SET_MEMORY_SIZE_METHOD = "setMemorySize";
+  private static final String DEPRECATED_SET_MEMORY_SIZE_METHOD =
       "setMemory";
-  private final static String GET_MEMORY_SIZE_METHOD = "getMemorySize";
-  private final static String DEPRECATED_GET_MEMORY_SIZE_METHOD =
+  private static final String GET_MEMORY_SIZE_METHOD = "getMemorySize";
+  private static final String DEPRECATED_GET_MEMORY_SIZE_METHOD =
       "getMemory";
-  private final static String GET_RESOURCE_VALUE_METHOD = "getResourceValue";
-  private final static String GET_RESOURCE_TYPE_METHOD =
+  private static final String GET_RESOURCE_VALUE_METHOD = "getResourceValue";
+  private static final String GET_RESOURCE_TYPE_METHOD =
       "getResourcesTypeInfo";
-  private final static String REINITIALIZE_RESOURCES_METHOD =
+  private static final String REINITIALIZE_RESOURCES_METHOD =
       "reinitializeResources";
   public static final String MEMORY_URI = "memory-mb";
   public static final String VCORES_URI = "vcores";
@@ -56,13 +56,14 @@ public final class ResourceUtils {
   private static final Logger LOG =
       LoggerFactory.getLogger(ResourceUtils.class);
 
-  private ResourceUtils() {}
+  private ResourceUtils() {
+  }
 
   public static Resource createResourceFromString(String resourceStr) {
     Map<String, Long> typeToValue = parseResourcesString(resourceStr);
     Resource resource = Resource.newInstance(0, 0);
     for (Map.Entry<String, Long> entry : typeToValue.entrySet()) {
-      if(entry.getKey().equals(VCORES_URI)) {
+      if (entry.getKey().equals(VCORES_URI)) {
         resource.setVirtualCores(entry.getValue().intValue());
         continue;
       } else if (entry.getKey().equals(MEMORY_URI)) {
@@ -89,7 +90,7 @@ public final class ResourceUtils {
       String units = getUnits(value);
 
       String valueWithoutUnit = value.substring(0,
-          value.length()- units.length()).trim();
+          value.length() - units.length()).trim();
       long resourceValue = Long.parseLong(valueWithoutUnit);
 
       // Convert commandline unit to standard YARN unit.
@@ -97,7 +98,7 @@ public final class ResourceUtils {
         units = "Mi";
       } else if (units.equals("G") || units.equals("g")) {
         units = "Gi";
-      } else if (!units.isEmpty()){
+      } else if (!units.isEmpty()) {
         throw new IllegalArgumentException("Acceptable units are M/G or empty");
       }
 
@@ -218,7 +219,7 @@ public final class ResourceUtils {
         memory = ((Integer) method.invoke(resource)).longValue();
       } catch (NoSuchMethodException e) {
         LOG.error("There is no '" + DEPRECATED_GET_MEMORY_SIZE_METHOD +
-                "' API in this version of YARN", e);
+            "' API in this version of YARN", e);
         throw new SubmarineRuntimeException(e.getMessage(), e.getCause());
       } catch (IllegalAccessException | InvocationTargetException e) {
         LOG.error("Failed to invoke '" + DEPRECATED_GET_MEMORY_SIZE_METHOD +
@@ -268,7 +269,7 @@ public final class ResourceUtils {
    */
   public static void configureResourceType(String resrouceName) {
     Class resourceTypeInfo;
-    try{
+    try {
       resourceTypeInfo = Class.forName(
           "org.apache.hadoop.yarn.api.records.ResourceTypeInfo");
       Class resourceUtils = Class.forName(
@@ -279,7 +280,7 @@ public final class ResourceUtils {
       Method resourceTypeInstance = resourceTypeInfo.getMethod("newInstance",
           String.class, String.class);
       Object resourceType = resourceTypeInstance.invoke(null, resrouceName, "");
-      ((ArrayList)resTypes).add(resourceType);
+      ((ArrayList) resTypes).add(resourceType);
 
       Method reInitialMethod = resourceUtils.getMethod(
           REINITIALIZE_RESOURCES_METHOD, List.class);

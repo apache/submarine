@@ -16,7 +16,7 @@ public class GetClusterSpecResponsePBImpl implements GetClusterSpecResponse {
   private String clusterSpec = null;
 
   public GetClusterSpecResponsePBImpl() {
-      builder = GetClusterSpecResponseProto.newBuilder();
+    builder = GetClusterSpecResponseProto.newBuilder();
   }
 
   public GetClusterSpecResponsePBImpl(GetClusterSpecResponseProto proto) {

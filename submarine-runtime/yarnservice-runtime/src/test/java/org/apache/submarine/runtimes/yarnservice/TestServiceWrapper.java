@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -90,6 +90,5 @@ public class TestServiceWrapper {
         serviceWrapper.getLocalLaunchCommandPathForComponent("testComponent2");
     assertEquals("testLocalScriptFile2", launchCommand2);
   }
-
 
 }

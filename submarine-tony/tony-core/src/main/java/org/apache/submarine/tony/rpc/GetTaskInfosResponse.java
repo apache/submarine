@@ -6,9 +6,8 @@ package org.apache.submarine.tony.rpc;
 
 import java.util.Set;
 
-
 public interface GetTaskInfosResponse {
-    Set<TaskInfo> getTaskInfos();
+  Set<TaskInfo> getTaskInfos();
 
-    void setTaskInfos(Set<TaskInfo> taskInfos);
+  void setTaskInfos(Set<TaskInfo> taskInfos);
 }

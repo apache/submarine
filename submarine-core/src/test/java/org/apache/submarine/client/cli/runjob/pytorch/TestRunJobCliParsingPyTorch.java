@@ -53,13 +53,13 @@ public class TestRunJobCliParsingPyTorch {
     assertFalse(SubmarineLogs.isVerbose());
 
     runJobCli.run(
-        new String[] {"--framework", "pytorch",
+        new String[]{"--framework", "pytorch",
             "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
             "--input_path", "hdfs://input", "--checkpoint_path",
             "hdfs://output",
             "--num_workers", "1", "--worker_launch_cmd", "python run-job.py",
             "--worker_resources", "memory=4g,vcores=2", "--verbose",
-            "--wait_job_finish" });
+            "--wait_job_finish"});
 
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
     assertTrue(RunJobParameters.class +
@@ -88,14 +88,14 @@ public class TestRunJobCliParsingPyTorch {
     expectedException.expect(ParseException.class);
     expectedException.expectMessage("cannot be defined for PyTorch jobs");
     runJobCli.run(
-        new String[] {"--framework", "pytorch",
+        new String[]{"--framework", "pytorch",
             "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
             "--input_path", "hdfs://input",
-            "--checkpoint_path","hdfs://output",
+            "--checkpoint_path", "hdfs://output",
             "--num_workers", "3",
             "--worker_launch_cmd",
             "python run-job.py", "--worker_resources", "memory=2048M,vcores=2",
-            "--num_ps", "2" });
+            "--num_ps", "2"});
   }
 
   @Test
@@ -106,14 +106,14 @@ public class TestRunJobCliParsingPyTorch {
     expectedException.expect(ParseException.class);
     expectedException.expectMessage("cannot be defined for PyTorch jobs");
     runJobCli.run(
-        new String[] {"--framework", "pytorch",
+        new String[]{"--framework", "pytorch",
             "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
             "--input_path", "hdfs://input",
             "--checkpoint_path", "hdfs://output",
             "--num_workers", "3",
             "--worker_launch_cmd",
             "python run-job.py", "--worker_resources", "memory=2048M,vcores=2",
-            "--ps_resources", "memory=2048M,vcores=2" });
+            "--ps_resources", "memory=2048M,vcores=2"});
   }
 
   @Test
@@ -124,14 +124,14 @@ public class TestRunJobCliParsingPyTorch {
     expectedException.expect(ParseException.class);
     expectedException.expectMessage("cannot be defined for PyTorch jobs");
     runJobCli.run(
-        new String[] {"--framework", "pytorch",
+        new String[]{"--framework", "pytorch",
             "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
             "--input_path", "hdfs://input",
             "--checkpoint_path", "hdfs://output",
             "--num_workers", "3",
             "--worker_launch_cmd",
             "python run-job.py", "--worker_resources", "memory=2048M,vcores=2",
-            "--ps_docker_image", "psDockerImage" });
+            "--ps_docker_image", "psDockerImage"});
   }
 
   @Test
@@ -142,14 +142,14 @@ public class TestRunJobCliParsingPyTorch {
     expectedException.expect(ParseException.class);
     expectedException.expectMessage("cannot be defined for PyTorch jobs");
     runJobCli.run(
-        new String[] {"--framework", "pytorch",
+        new String[]{"--framework", "pytorch",
             "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
             "--input_path", "hdfs://input",
             "--checkpoint_path", "hdfs://output",
             "--num_workers", "3",
             "--worker_launch_cmd",
             "python run-job.py", "--worker_resources", "memory=2048M,vcores=2",
-            "--ps_launch_cmd", "psLaunchCommand" });
+            "--ps_launch_cmd", "psLaunchCommand"});
   }
 
   @Test
@@ -160,14 +160,14 @@ public class TestRunJobCliParsingPyTorch {
     expectedException.expect(ParseException.class);
     expectedException.expectMessage("cannot be defined for PyTorch jobs");
     runJobCli.run(
-        new String[] {"--framework", "pytorch",
+        new String[]{"--framework", "pytorch",
             "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
             "--input_path", "hdfs://input",
             "--checkpoint_path", "hdfs://output",
             "--num_workers", "3",
             "--worker_launch_cmd",
             "python run-job.py", "--worker_resources", "memory=2048M,vcores=2",
-            "--tensorboard" });
+            "--tensorboard"});
   }
 
   @Test
@@ -178,14 +178,14 @@ public class TestRunJobCliParsingPyTorch {
     expectedException.expect(ParseException.class);
     expectedException.expectMessage("cannot be defined for PyTorch jobs");
     runJobCli.run(
-        new String[] {"--framework", "pytorch",
+        new String[]{"--framework", "pytorch",
             "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
             "--input_path", "hdfs://input",
             "--checkpoint_path", "hdfs://output",
             "--num_workers", "3",
             "--worker_launch_cmd",
             "python run-job.py", "--worker_resources", "memory=2048M,vcores=2",
-            "--tensorboard_resources", "memory=2048M,vcores=2" });
+            "--tensorboard_resources", "memory=2048M,vcores=2"});
   }
 
   @Test
@@ -196,14 +196,14 @@ public class TestRunJobCliParsingPyTorch {
     expectedException.expect(ParseException.class);
     expectedException.expectMessage("cannot be defined for PyTorch jobs");
     runJobCli.run(
-        new String[] {"--framework", "pytorch",
+        new String[]{"--framework", "pytorch",
             "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
             "--input_path", "hdfs://input",
             "--checkpoint_path", "hdfs://output",
             "--num_workers", "3",
             "--worker_launch_cmd",
             "python run-job.py", "--worker_resources", "memory=2048M,vcores=2",
-            "--tensorboard_docker_image", "TBDockerImage" });
+            "--tensorboard_docker_image", "TBDockerImage"});
   }
 
 }

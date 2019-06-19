@@ -277,7 +277,8 @@ public class Utils {
    * @throws IOException
    * @throws InterruptedException
    */
-  public static int executeShell(String taskCommand, long timeout, Map<String, String> env) throws IOException, InterruptedException {
+  public static int executeShell(String taskCommand, long timeout, Map<String, String> env)
+      throws IOException, InterruptedException {
     LOG.info("Executing command: " + taskCommand);
     String executablePath = taskCommand.trim().split(" ")[0];
     File executable = new File(executablePath);
@@ -544,9 +545,13 @@ public class Utils {
     return !Arrays.asList(getUntrackedJobTypes(tonyConf)).contains(taskName);
   }
 
-  public static void uploadFileAndSetConfResources(Path hdfsPath, Path filePath, String fileName,
-                                                   Configuration tonyConf, FileSystem fs,
-                                                   LocalResourceType resourceType, String resourceKey) throws IOException {
+  public static void uploadFileAndSetConfResources(Path hdfsPath,
+                                                   Path filePath,
+                                                   String fileName,
+                                                   Configuration tonyConf,
+                                                   FileSystem fs,
+                                                   LocalResourceType resourceType,
+                                                   String resourceKey) throws IOException {
     Path dst = new Path(hdfsPath, fileName);
     HdfsUtils.copySrcToDest(filePath, dst, tonyConf);
     fs.setPermission(dst, new FsPermission((short) 0770));

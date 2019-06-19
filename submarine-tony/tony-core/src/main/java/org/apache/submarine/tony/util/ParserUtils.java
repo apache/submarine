@@ -8,7 +8,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.apache.submarine.tony.Constants;
-import org.apache.submarine.tony.events.Event;
+import org.apache.submarine.tony.events.avro.Event;
 import org.apache.submarine.tony.models.JobConfig;
 import org.apache.submarine.tony.models.JobEvent;
 import org.apache.submarine.tony.models.JobMetadata;
@@ -150,7 +150,10 @@ public class ParserUtils {
    * @return a {@code JobMetadata} object or {@code null} if a jhist file could not be found or an error occurred
    * during processing.
    */
-  public static JobMetadata parseMetadata(FileSystem fs, YarnConfiguration yarnConf, Path jobFolderPath, String jobIdRegex) {
+  public static JobMetadata parseMetadata(FileSystem fs,
+                                          YarnConfiguration yarnConf,
+                                          Path jobFolderPath,
+                                          String jobIdRegex) {
     if (!pathExists(fs, jobFolderPath)) {
       return null;
     }

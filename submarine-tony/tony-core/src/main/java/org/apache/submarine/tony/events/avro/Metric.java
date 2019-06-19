@@ -3,15 +3,15 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package org.apache.submarine.tony.events;
+package org.apache.submarine.tony.events.avro;
 
 import org.apache.avro.specific.SpecificData;
 
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class Metric extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -9162028195383819778L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Metric\",\"namespace\":\"org.apache.submarine.tony.events\",\"fields\":[{\"name\":\"name\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"value\",\"type\":\"double\"}]}");
+  private static final long serialVersionUID = -8567827862235850144L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Metric\",\"namespace\":\"org.apache.submarine.tony.events.avro\",\"fields\":[{\"name\":\"name\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"value\",\"type\":\"double\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public String name;
   @Deprecated public double value;
@@ -89,8 +89,8 @@ public class Metric extends org.apache.avro.specific.SpecificRecordBase implemen
    * Creates a new Metric RecordBuilder.
    * @return A new Metric RecordBuilder
    */
-  public static org.apache.submarine.tony.events.Metric.Builder newBuilder() {
-    return new org.apache.submarine.tony.events.Metric.Builder();
+  public static org.apache.submarine.tony.events.avro.Metric.Builder newBuilder() {
+    return new org.apache.submarine.tony.events.avro.Metric.Builder();
   }
 
   /**
@@ -98,8 +98,8 @@ public class Metric extends org.apache.avro.specific.SpecificRecordBase implemen
    * @param other The existing builder to copy.
    * @return A new Metric RecordBuilder
    */
-  public static org.apache.submarine.tony.events.Metric.Builder newBuilder(org.apache.submarine.tony.events.Metric.Builder other) {
-    return new org.apache.submarine.tony.events.Metric.Builder(other);
+  public static org.apache.submarine.tony.events.avro.Metric.Builder newBuilder(org.apache.submarine.tony.events.avro.Metric.Builder other) {
+    return new org.apache.submarine.tony.events.avro.Metric.Builder(other);
   }
 
   /**
@@ -107,8 +107,8 @@ public class Metric extends org.apache.avro.specific.SpecificRecordBase implemen
    * @param other The existing instance to copy.
    * @return A new Metric RecordBuilder
    */
-  public static org.apache.submarine.tony.events.Metric.Builder newBuilder(org.apache.submarine.tony.events.Metric other) {
-    return new org.apache.submarine.tony.events.Metric.Builder(other);
+  public static org.apache.submarine.tony.events.avro.Metric.Builder newBuilder(org.apache.submarine.tony.events.avro.Metric other) {
+    return new org.apache.submarine.tony.events.avro.Metric.Builder(other);
   }
 
   /**
@@ -129,7 +129,7 @@ public class Metric extends org.apache.avro.specific.SpecificRecordBase implemen
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(org.apache.submarine.tony.events.Metric.Builder other) {
+    private Builder(org.apache.submarine.tony.events.avro.Metric.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.name)) {
         this.name = data().deepCopy(fields()[0].schema(), other.name);
@@ -145,7 +145,7 @@ public class Metric extends org.apache.avro.specific.SpecificRecordBase implemen
      * Creates a Builder by copying an existing Metric instance
      * @param other The existing instance to copy.
      */
-    private Builder(org.apache.submarine.tony.events.Metric other) {
+    private Builder(org.apache.submarine.tony.events.avro.Metric other) {
             super(SCHEMA$);
       if (isValidValue(fields()[0], other.name)) {
         this.name = data().deepCopy(fields()[0].schema(), other.name);
@@ -170,7 +170,7 @@ public class Metric extends org.apache.avro.specific.SpecificRecordBase implemen
       * @param value The value of 'name'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.Metric.Builder setName(String value) {
+    public org.apache.submarine.tony.events.avro.Metric.Builder setName(String value) {
       validate(fields()[0], value);
       this.name = value;
       fieldSetFlags()[0] = true;
@@ -190,7 +190,7 @@ public class Metric extends org.apache.avro.specific.SpecificRecordBase implemen
       * Clears the value of the 'name' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.Metric.Builder clearName() {
+    public org.apache.submarine.tony.events.avro.Metric.Builder clearName() {
       name = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -209,7 +209,7 @@ public class Metric extends org.apache.avro.specific.SpecificRecordBase implemen
       * @param value The value of 'value'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.Metric.Builder setValue(double value) {
+    public org.apache.submarine.tony.events.avro.Metric.Builder setValue(double value) {
       validate(fields()[1], value);
       this.value = value;
       fieldSetFlags()[1] = true;
@@ -229,7 +229,7 @@ public class Metric extends org.apache.avro.specific.SpecificRecordBase implemen
       * Clears the value of the 'value' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.Metric.Builder clearValue() {
+    public org.apache.submarine.tony.events.avro.Metric.Builder clearValue() {
       fieldSetFlags()[1] = false;
       return this;
     }

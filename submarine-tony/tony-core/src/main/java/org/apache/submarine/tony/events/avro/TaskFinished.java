@@ -3,15 +3,15 @@
  *
  * DO NOT EDIT DIRECTLY
  */
-package org.apache.submarine.tony.events;
+package org.apache.submarine.tony.events.avro;
 
 import org.apache.avro.specific.SpecificData;
 
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -7930824749272249974L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TaskFinished\",\"namespace\":\"org.apache.submarine.tony.events\",\"fields\":[{\"name\":\"taskType\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"taskIndex\",\"type\":\"int\"},{\"name\":\"status\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"metrics\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Metric\",\"fields\":[{\"name\":\"name\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"value\",\"type\":\"double\"}]}}}]}");
+  private static final long serialVersionUID = 414794786281816805L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"TaskFinished\",\"namespace\":\"org.apache.submarine.tony.events.avro\",\"fields\":[{\"name\":\"taskType\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"taskIndex\",\"type\":\"int\"},{\"name\":\"status\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"metrics\",\"type\":{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"Metric\",\"fields\":[{\"name\":\"name\",\"type\":{\"type\":\"string\",\"avro.java.string\":\"String\"}},{\"name\":\"value\",\"type\":\"double\"}]}}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public String taskType;
   @Deprecated public int taskIndex;
@@ -131,8 +131,8 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
    * Creates a new TaskFinished RecordBuilder.
    * @return A new TaskFinished RecordBuilder
    */
-  public static org.apache.submarine.tony.events.TaskFinished.Builder newBuilder() {
-    return new org.apache.submarine.tony.events.TaskFinished.Builder();
+  public static org.apache.submarine.tony.events.avro.TaskFinished.Builder newBuilder() {
+    return new org.apache.submarine.tony.events.avro.TaskFinished.Builder();
   }
 
   /**
@@ -140,8 +140,8 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
    * @param other The existing builder to copy.
    * @return A new TaskFinished RecordBuilder
    */
-  public static org.apache.submarine.tony.events.TaskFinished.Builder newBuilder(org.apache.submarine.tony.events.TaskFinished.Builder other) {
-    return new org.apache.submarine.tony.events.TaskFinished.Builder(other);
+  public static org.apache.submarine.tony.events.avro.TaskFinished.Builder newBuilder(org.apache.submarine.tony.events.avro.TaskFinished.Builder other) {
+    return new org.apache.submarine.tony.events.avro.TaskFinished.Builder(other);
   }
 
   /**
@@ -149,8 +149,8 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
    * @param other The existing instance to copy.
    * @return A new TaskFinished RecordBuilder
    */
-  public static org.apache.submarine.tony.events.TaskFinished.Builder newBuilder(org.apache.submarine.tony.events.TaskFinished other) {
-    return new org.apache.submarine.tony.events.TaskFinished.Builder(other);
+  public static org.apache.submarine.tony.events.avro.TaskFinished.Builder newBuilder(org.apache.submarine.tony.events.avro.TaskFinished other) {
+    return new org.apache.submarine.tony.events.avro.TaskFinished.Builder(other);
   }
 
   /**
@@ -173,7 +173,7 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(org.apache.submarine.tony.events.TaskFinished.Builder other) {
+    private Builder(org.apache.submarine.tony.events.avro.TaskFinished.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.taskType)) {
         this.taskType = data().deepCopy(fields()[0].schema(), other.taskType);
@@ -197,7 +197,7 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
      * Creates a Builder by copying an existing TaskFinished instance
      * @param other The existing instance to copy.
      */
-    private Builder(org.apache.submarine.tony.events.TaskFinished other) {
+    private Builder(org.apache.submarine.tony.events.avro.TaskFinished other) {
             super(SCHEMA$);
       if (isValidValue(fields()[0], other.taskType)) {
         this.taskType = data().deepCopy(fields()[0].schema(), other.taskType);
@@ -230,7 +230,7 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
       * @param value The value of 'taskType'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskFinished.Builder setTaskType(String value) {
+    public org.apache.submarine.tony.events.avro.TaskFinished.Builder setTaskType(String value) {
       validate(fields()[0], value);
       this.taskType = value;
       fieldSetFlags()[0] = true;
@@ -250,7 +250,7 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
       * Clears the value of the 'taskType' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskFinished.Builder clearTaskType() {
+    public org.apache.submarine.tony.events.avro.TaskFinished.Builder clearTaskType() {
       taskType = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -269,7 +269,7 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
       * @param value The value of 'taskIndex'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskFinished.Builder setTaskIndex(int value) {
+    public org.apache.submarine.tony.events.avro.TaskFinished.Builder setTaskIndex(int value) {
       validate(fields()[1], value);
       this.taskIndex = value;
       fieldSetFlags()[1] = true;
@@ -289,7 +289,7 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
       * Clears the value of the 'taskIndex' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskFinished.Builder clearTaskIndex() {
+    public org.apache.submarine.tony.events.avro.TaskFinished.Builder clearTaskIndex() {
       fieldSetFlags()[1] = false;
       return this;
     }
@@ -307,7 +307,7 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
       * @param value The value of 'status'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskFinished.Builder setStatus(String value) {
+    public org.apache.submarine.tony.events.avro.TaskFinished.Builder setStatus(String value) {
       validate(fields()[2], value);
       this.status = value;
       fieldSetFlags()[2] = true;
@@ -327,7 +327,7 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
       * Clears the value of the 'status' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskFinished.Builder clearStatus() {
+    public org.apache.submarine.tony.events.avro.TaskFinished.Builder clearStatus() {
       status = null;
       fieldSetFlags()[2] = false;
       return this;
@@ -346,7 +346,7 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
       * @param value The value of 'metrics'.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskFinished.Builder setMetrics(java.util.List<Metric> value) {
+    public org.apache.submarine.tony.events.avro.TaskFinished.Builder setMetrics(java.util.List<Metric> value) {
       validate(fields()[3], value);
       this.metrics = value;
       fieldSetFlags()[3] = true;
@@ -366,7 +366,7 @@ public class TaskFinished extends org.apache.avro.specific.SpecificRecordBase im
       * Clears the value of the 'metrics' field.
       * @return This builder.
       */
-    public org.apache.submarine.tony.events.TaskFinished.Builder clearMetrics() {
+    public org.apache.submarine.tony.events.avro.TaskFinished.Builder clearMetrics() {
       metrics = null;
       fieldSetFlags()[3] = false;
       return this;

@@ -74,9 +74,11 @@ public class ApplicationRpcServer extends Thread implements TensorFlowCluster {
   }
 
   @Override
-  public RegisterExecutionResultResponse registerExecutionResult(RegisterExecutionResultRequest request) throws Exception {
+  public RegisterExecutionResultResponse registerExecutionResult(RegisterExecutionResultRequest request)
+      throws Exception {
     RegisterExecutionResultResponse response = RECORD_FACTORY.newRecordInstance(RegisterExecutionResultResponse.class);
-    String msg = this.appRpc.registerExecutionResult(request.getExitCode(), request.getJobName(), request.getJobIndex(), request.getSessionId());
+    String msg = this.appRpc.registerExecutionResult(request.getExitCode(),
+        request.getJobName(), request.getJobIndex(), request.getSessionId());
     response.setMessage(msg);
     return response;
   }
@@ -119,7 +121,7 @@ public class ApplicationRpcServer extends Thread implements TensorFlowCluster {
               .newReflectiveBlockingService(translator);
       server = new RPC.Builder(conf).setProtocol(TensorFlowClusterPB.class)
               .setInstance(service).setBindAddress(rpcAddress)
-              .setPort(rpcPort) // TODO: let RPC randomly generate it
+              .setPort(rpcPort) // TODO(johndoe): let RPC randomly generate it
               .setSecretManager(secretManager).build();
       server.start();
       if (conf.getBoolean(

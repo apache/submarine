@@ -128,7 +128,7 @@ public class TestYarnServiceRunJobCli {
   }
 
   private void verifyQuicklink(Service serviceSpec,
-      Map<String, String> expectedQuicklinks) {
+                               Map<String, String> expectedQuicklinks) {
     Map<String, String> actualQuicklinks = serviceSpec.getQuicklinks();
     if (actualQuicklinks == null || actualQuicklinks.isEmpty()) {
       assertTrue(
@@ -156,7 +156,7 @@ public class TestYarnServiceRunJobCli {
   private void saveServiceSpecJsonToTempFile(Service service)
       throws IOException {
     String jsonFileName = ServiceSpecFileGenerator.generateJson(service);
-//    testCommons.getFileUtils().addTrackedFile(new File(jsonFileName));
+    // testCommons.getFileUtils().addTrackedFile(new File(jsonFileName));
     LOG.info("Saved json file: " + jsonFileName);
   }
 
@@ -380,7 +380,7 @@ public class TestYarnServiceRunJobCli {
   }
 
   private void verifyTensorboardComponent(RunJobCli runJobCli,
-      ServiceWrapper serviceWrapper, Resource resource) throws Exception {
+                                          ServiceWrapper serviceWrapper, Resource resource) throws Exception {
     Service serviceSpec = serviceWrapper.getService();
     assertNotNull(
         serviceSpec.getComponent(TensorFlowRole.TENSORBOARD
@@ -428,7 +428,7 @@ public class TestYarnServiceRunJobCli {
   }
 
   private void verifyLaunchScriptForComponent(ServiceWrapper serviceWrapper,
-      TensorFlowRole taskType, String expectedLaunchScriptContent)
+                                              TensorFlowRole taskType, String expectedLaunchScriptContent)
       throws Exception {
 
     String path = serviceWrapper
@@ -626,7 +626,7 @@ public class TestYarnServiceRunJobCli {
   /**
    * Test zip function.
    * A dir "/user/yarn/mydir" has two files and one subdir
-   * */
+   */
   @Test
   public void testYarnServiceSubmitterZipFunction()
       throws Exception {

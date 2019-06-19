@@ -38,7 +38,8 @@ public class LocalSubmitter {
 
   public static void main(String[] args) throws  Exception {
     LOG.info("Starting LocalSubmitter..");
-    String jarLocation = new File(ClusterSubmitter.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getPath();
+    String jarLocation = new File(ClusterSubmitter.class.getProtectionDomain().getCodeSource().getLocation().toURI())
+        .getPath();
     MiniCluster cluster = new MiniCluster(NUM_NODE_MANAGERS);
     cluster.start();
     String yarnConf = Files.createTempFile("yarn", ".xml").toString();

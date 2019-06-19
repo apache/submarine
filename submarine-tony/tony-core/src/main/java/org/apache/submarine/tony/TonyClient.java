@@ -190,17 +190,20 @@ public class TonyClient implements AutoCloseable {
     if (srcDir != null) {
       if (Utils.isArchive(srcDir)) {
         Utils.uploadFileAndSetConfResources(appResourcesPath, new Path(srcDir),
-            Constants.TONY_SRC_ZIP_NAME, tonyConf, fs, LocalResourceType.FILE, TonyConfigurationKeys.getContainerResourcesKey());
+            Constants.TONY_SRC_ZIP_NAME, tonyConf, fs, LocalResourceType.FILE,
+            TonyConfigurationKeys.getContainerResourcesKey());
       } else {
         Utils.zipFolder(Paths.get(srcDir), Paths.get(Constants.TONY_SRC_ZIP_NAME));
         Utils.uploadFileAndSetConfResources(appResourcesPath, new Path(Constants.TONY_SRC_ZIP_NAME),
-            Constants.TONY_SRC_ZIP_NAME, tonyConf, fs, LocalResourceType.FILE, TonyConfigurationKeys.getContainerResourcesKey());
+            Constants.TONY_SRC_ZIP_NAME, tonyConf, fs, LocalResourceType.FILE,
+            TonyConfigurationKeys.getContainerResourcesKey());
       }
     }
 
     if (pythonVenv != null) {
       Utils.uploadFileAndSetConfResources(appResourcesPath,
-          new Path(pythonVenv), Constants.PYTHON_VENV_ZIP, tonyConf, fs, LocalResourceType.FILE, TonyConfigurationKeys.getContainerResourcesKey());
+          new Path(pythonVenv), Constants.PYTHON_VENV_ZIP, tonyConf, fs, LocalResourceType.FILE,
+          TonyConfigurationKeys.getContainerResourcesKey());
     }
 
 
@@ -295,8 +298,10 @@ public class TonyClient implements AutoCloseable {
 
   private void initHdfsConf() {
     if (System.getenv(Constants.HADOOP_CONF_DIR) != null) {
-      hdfsConf.addResource(new Path(System.getenv(Constants.HADOOP_CONF_DIR) + File.separatorChar + Constants.CORE_SITE_CONF));
-      hdfsConf.addResource(new Path(System.getenv(Constants.HADOOP_CONF_DIR) + File.separatorChar + Constants.HDFS_SITE_CONF));
+      hdfsConf.addResource(new Path(System.getenv(Constants.HADOOP_CONF_DIR)
+          + File.separatorChar + Constants.CORE_SITE_CONF));
+      hdfsConf.addResource(new Path(System.getenv(Constants.HADOOP_CONF_DIR)
+          + File.separatorChar + Constants.HDFS_SITE_CONF));
     }
     if (hdfsConfAddress != null) {
       hdfsConf.addResource(new Path(hdfsConfAddress));
@@ -305,8 +310,10 @@ public class TonyClient implements AutoCloseable {
 
   private void createYarnClient() {
     if (System.getenv(Constants.HADOOP_CONF_DIR) != null) {
-      yarnConf.addResource(new Path(System.getenv(Constants.HADOOP_CONF_DIR) + File.separatorChar + Constants.CORE_SITE_CONF));
-      yarnConf.addResource(new Path(System.getenv(Constants.HADOOP_CONF_DIR) + File.separatorChar + Constants.YARN_SITE_CONF));
+      yarnConf.addResource(new Path(System.getenv(Constants.HADOOP_CONF_DIR)
+          + File.separatorChar + Constants.CORE_SITE_CONF));
+      yarnConf.addResource(new Path(System.getenv(Constants.HADOOP_CONF_DIR)
+          + File.separatorChar + Constants.YARN_SITE_CONF));
     }
 
     if (this.yarnConfAddress != null) {
@@ -479,12 +486,15 @@ public class TonyClient implements AutoCloseable {
         }
         if (dockerRuntimeClass != null) {
           try {
-            String envContainerType = (String) containerRuntimeClass.getField(Constants.ENV_CONTAINER_TYPE).get(null);
-            String envDockerImage = (String) dockerRuntimeClass.getField(Constants.ENV_DOCKER_CONTAINER_IMAGE).get(null);
+            String envContainerType = (String) containerRuntimeClass
+                .getField(Constants.ENV_CONTAINER_TYPE).get(null);
+            String envDockerImage = (String) dockerRuntimeClass
+                .getField(Constants.ENV_DOCKER_CONTAINER_IMAGE).get(null);
             containerEnv.put(envContainerType, "docker");
             containerEnv.put(envDockerImage, imagePath);
           } catch (NoSuchFieldException e) {
-            LOG.error("Field " + Constants.ENV_CONTAINER_TYPE + " or " + Constants.ENV_DOCKER_CONTAINER_IMAGE + " not "
+            LOG.error("Field " + Constants.ENV_CONTAINER_TYPE + " or "
+                + Constants.ENV_DOCKER_CONTAINER_IMAGE + " not "
                 + "found in " + containerRuntimeClass.getName());
             return false;
           } catch (IllegalAccessException e) {
@@ -659,7 +669,8 @@ public class TonyClient implements AutoCloseable {
     // check that we don't request more than the max allowed for any task type
     for (Map.Entry<String, TensorFlowContainerRequest> entry : containerRequestMap.entrySet()) {
       int numInstancesRequested = entry.getValue().getNumInstances();
-      int maxAllowedInstances = tonyConf.getInt(TonyConfigurationKeys.getMaxInstancesKey(entry.getKey()), -1);
+      int maxAllowedInstances
+          = tonyConf.getInt(TonyConfigurationKeys.getMaxInstancesKey(entry.getKey()), -1);
       if (maxAllowedInstances >= 0 && numInstancesRequested > maxAllowedInstances) {
         throw new RuntimeException("Job requested " + numInstancesRequested + " " + entry.getKey() + " task instances "
             + "but the limit is " + maxAllowedInstances + " " + entry.getKey() + " task instances.");
@@ -669,7 +680,8 @@ public class TonyClient implements AutoCloseable {
     // check that we don't request more than the allowed total tasks
     int maxTotalInstances = tonyConf.getInt(TonyConfigurationKeys.MAX_TOTAL_INSTANCES,
         TonyConfigurationKeys.DEFAULT_MAX_TOTAL_INSTANCES);
-    int totalRequestedInstances = containerRequestMap.values().stream().mapToInt(TensorFlowContainerRequest::getNumInstances).sum();
+    int totalRequestedInstances
+        = containerRequestMap.values().stream().mapToInt(TensorFlowContainerRequest::getNumInstances).sum();
     if (maxTotalInstances >= 0 && totalRequestedInstances > maxTotalInstances) {
       throw new RuntimeException("Job requested " + totalRequestedInstances + " total task instances but limit is "
           + maxTotalInstances + ".");
@@ -701,13 +713,16 @@ public class TonyClient implements AutoCloseable {
             int instances = tonyConf.getInt(TonyConfigurationKeys.getInstancesKey(jobType), 0);
             String value = tonyConf.get(TonyConfigurationKeys.getResourceKey(jobType, resource), null);
             if (value != null) {
-              long amountPerTask = resource.equals(Constants.MEMORY) ? Long.parseLong(Utils.parseMemoryString(value)) : Long.parseLong(value);
+              long amountPerTask = resource.equals(Constants.MEMORY)
+                  ? Long.parseLong(Utils.parseMemoryString(value))
+                  : Long.parseLong(value);
               totalRequested += amountPerTask * instances;
             }
           }
 
           if (totalRequested > maxResourceValue) {
-            throw new RuntimeException("Total amount of " + resource + " (" + totalRequested + ") requested exceeds " + "maximum allowed of "
+            throw new RuntimeException("Total amount of " + resource + " (" + totalRequested
+                + ") requested exceeds " + "maximum allowed of "
                 + maxResourceValue);
           }
         }
@@ -767,8 +782,10 @@ public class TonyClient implements AutoCloseable {
     // Set class name
     arguments.add("com.linkedin.tony.ApplicationMaster");
 
-    arguments.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + File.separatorChar + Constants.AM_STDOUT_FILENAME);
-    arguments.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR + File.separatorChar + Constants.AM_STDERR_FILENAME);
+    arguments.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR
+        + File.separatorChar + Constants.AM_STDOUT_FILENAME);
+    arguments.add("2>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR
+        + File.separatorChar + Constants.AM_STDERR_FILENAME);
     return String.join(" ", arguments);
   }
 
@@ -836,10 +853,11 @@ public class TonyClient implements AutoCloseable {
       if (tokenRenewer == null) {
         throw new RuntimeException("Failed to get RM principal.");
       }
-      final Token<?> rmToken = ConverterUtils.convertFromYarn(yarnClient.getRMDelegationToken(new Text(tokenRenewer)),
-                                                     yarnConf.getSocketAddr(YarnConfiguration.RM_ADDRESS,
-                                                                            YarnConfiguration.DEFAULT_RM_ADDRESS,
-                                                                            YarnConfiguration.DEFAULT_RM_PORT));
+      final Token<?> rmToken = ConverterUtils.convertFromYarn(
+          yarnClient.getRMDelegationToken(new Text(tokenRenewer)),
+          yarnConf.getSocketAddr(YarnConfiguration.RM_ADDRESS,
+              YarnConfiguration.DEFAULT_RM_ADDRESS,
+              YarnConfiguration.DEFAULT_RM_PORT));
       cred.addToken(rmToken.getService(), rmToken);
       LOG.info("RM delegation token fetched.");
 
@@ -1119,7 +1137,8 @@ public class TonyClient implements AutoCloseable {
   public static void main(String[] args) {
     int exitCode = 0;
 
-    // Adds hadoop-inject.xml as a default resource so Azkaban metadata will be present in the new Configuration created
+    // Adds hadoop-inject.xml as a default resource so Azkaban metadata
+    // will be present in the new Configuration created
     HadoopConfigurationInjector.injectResources(new Props() /* ignored */);
     try (TonyClient client = new TonyClient(new Configuration())) {
       boolean sanityCheck = client.init(args);

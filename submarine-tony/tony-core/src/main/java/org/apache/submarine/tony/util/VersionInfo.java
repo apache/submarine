@@ -13,8 +13,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 
-import static org.apache.submarine.tony.TonyConfigurationKeys.*;
-
+import static org.apache.submarine.tony.TonyConfigurationKeys.TONY_VERSION_INFO_BRANCH;
+import static org.apache.submarine.tony.TonyConfigurationKeys.TONY_VERSION_INFO_CHECKSUM;
+import static org.apache.submarine.tony.TonyConfigurationKeys.TONY_VERSION_INFO_DATE;
+import static org.apache.submarine.tony.TonyConfigurationKeys.TONY_VERSION_INFO_REVISION;
+import static org.apache.submarine.tony.TonyConfigurationKeys.TONY_VERSION_INFO_URL;
+import static org.apache.submarine.tony.TonyConfigurationKeys.TONY_VERSION_INFO_USER;
+import static org.apache.submarine.tony.TonyConfigurationKeys.TONY_VERSION_INFO_VERSION;
 
 /**
  * This class returns build information by reading the version-info.properties file.

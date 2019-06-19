@@ -22,7 +22,8 @@ public class TestTonyConfigurationFields extends TestConfigurationFieldsBase {
     errorIfMissingXmlProps = true;
 
     xmlPropsToSkipCompare = xmlPropsToSkipCompare == null ? new HashSet<>() : xmlPropsToSkipCompare;
-    configurationPropsToSkipCompare = configurationPropsToSkipCompare == null ? new HashSet<>() : configurationPropsToSkipCompare;
+    configurationPropsToSkipCompare
+        = configurationPropsToSkipCompare == null ? new HashSet<>() : configurationPropsToSkipCompare;
 
     // We don't explicitly declare constants for these, since the configured TensorFlow job names
     // are determined at runtime. But we still need default values for them in tony-default.xml.

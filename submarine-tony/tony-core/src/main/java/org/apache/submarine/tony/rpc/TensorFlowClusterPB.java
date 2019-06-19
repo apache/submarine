@@ -7,8 +7,6 @@ package org.apache.submarine.tony.rpc;
 import org.apache.hadoop.ipc.ProtocolInfo;
 import org.apache.submarine.tony.rpc.proto.TensorFlowCluster.TensorFlowClusterService;
 
-@ProtocolInfo(
-  protocolName = "org.apache.submarine.tony.rpc.TensorFlowCluster",
-  protocolVersion = 1)
+@ProtocolInfo(protocolName = "org.apache.submarine.tony.rpc.TensorFlowCluster", protocolVersion = 1)
 public interface TensorFlowClusterPB extends TensorFlowClusterService.BlockingInterface {
 }

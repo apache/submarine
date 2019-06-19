@@ -107,7 +107,8 @@ public class TaskExecutor {
     executor.metricsProxy = RPC.getProxy(MetricsRpc.class, RPC.getProtocolVersion(MetricsRpc.class),
             new InetSocketAddress(executor.amHost, executor.metricsRPCPort), executor.yarnConf);
     executor.scheduledThreadPool.scheduleAtFixedRate(
-        new TaskMonitor(executor.jobName, executor.taskIndex, executor.yarnConf, executor.tonyConf, executor.metricsProxy),
+        new TaskMonitor(executor.jobName, executor.taskIndex, executor.yarnConf,
+            executor.tonyConf, executor.metricsProxy),
         0,
         executor.metricsIntervalMs,
         TimeUnit.MILLISECONDS);
@@ -126,7 +127,8 @@ public class TaskExecutor {
         executor.shellEnv.put(Constants.JOB_NAME, String.valueOf(executor.jobName));
         executor.shellEnv.put(Constants.TASK_INDEX, String.valueOf(executor.taskIndex));
         executor.shellEnv.put(Constants.CLUSTER_SPEC, String.valueOf(executor.clusterSpec));
-        executor.shellEnv.put(Constants.TF_CONFIG, Utils.constructTFConfig(executor.clusterSpec, executor.jobName, executor.taskIndex));
+        executor.shellEnv.put(Constants.TF_CONFIG,
+            Utils.constructTFConfig(executor.clusterSpec, executor.jobName, executor.taskIndex));
         break;
       case PYTORCH:
         LOG.info("Setting up PyTorch job...");
@@ -197,7 +199,8 @@ public class TaskExecutor {
   }
 
   private String registerAndGetClusterSpec() {
-    ContainerId containerId = ContainerId.fromString(System.getenv(ApplicationConstants.Environment.CONTAINER_ID.name()));
+    String CONTAINER_ID = System.getenv(ApplicationConstants.Environment.CONTAINER_ID.name());
+    ContainerId containerId = ContainerId.fromString(CONTAINER_ID);
     String hostName = Utils.getCurrentHostName();
     LOG.info("ContainerId is: " + containerId + " HostName is: " + hostName);
 

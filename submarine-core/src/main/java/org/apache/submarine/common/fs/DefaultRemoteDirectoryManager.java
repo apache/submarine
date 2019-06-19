@@ -28,7 +28,7 @@ import java.net.URI;
 
 /**
  * Manages remote directories for staging, log, etc.
- * TODO, need to properly handle permission / name validation, etc.
+ * TODO(keqiu), need to properly handle permission / name validation, etc.
  */
 public class DefaultRemoteDirectoryManager implements RemoteDirectoryManager {
   private FileSystem fs;

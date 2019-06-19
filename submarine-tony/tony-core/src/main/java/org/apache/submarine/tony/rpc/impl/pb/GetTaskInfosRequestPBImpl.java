@@ -11,15 +11,16 @@ import org.apache.submarine.tony.rpc.proto.YarnTensorFlowClusterProtos.GetTaskIn
 
 
 public class GetTaskInfosRequestPBImpl implements GetTaskInfosRequest {
-  private YarnTensorFlowClusterProtos.GetTaskInfosRequestProto proto = YarnTensorFlowClusterProtos.GetTaskInfosRequestProto.getDefaultInstance();
+  private YarnTensorFlowClusterProtos.GetTaskInfosRequestProto proto
+      = YarnTensorFlowClusterProtos.GetTaskInfosRequestProto.getDefaultInstance();
   private YarnTensorFlowClusterProtos.GetTaskInfosRequestProto.Builder builder = null;
   private boolean viaProto = false;
 
   private boolean rebuild = false;
 
   public GetTaskInfosRequestPBImpl() {
-        builder = GetTaskInfosRequestProto.newBuilder();
-    }
+    builder = GetTaskInfosRequestProto.newBuilder();
+  }
 
   public GetTaskInfosRequestPBImpl(YarnTensorFlowClusterProtos.GetTaskInfosRequestProto proto) {
     this.proto = proto;
@@ -36,9 +37,9 @@ public class GetTaskInfosRequestPBImpl implements GetTaskInfosRequest {
   }
 
   public YarnTensorFlowClusterProtos.GetTaskInfosRequestProto getProto() {
-     if (rebuild) {
-       mergeLocalToProto();
-     }
+    if (rebuild) {
+      mergeLocalToProto();
+    }
     proto = viaProto ? proto : builder.build();
     viaProto = true;
     return proto;

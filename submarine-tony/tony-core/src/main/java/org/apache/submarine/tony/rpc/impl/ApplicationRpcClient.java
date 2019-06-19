@@ -107,7 +107,8 @@ public class ApplicationRpcClient implements ApplicationRpc {
   }
 
   @Override
-  public String registerExecutionResult(int exitCode, String jobName, String jobIndex, String sessionId) throws Exception {
+  public String registerExecutionResult(int exitCode, String jobName, String jobIndex, String sessionId)
+      throws Exception {
     RegisterExecutionResultRequest request = recordFactory.newRecordInstance(RegisterExecutionResultRequest.class);
     request.setExitCode(exitCode);
     request.setJobName(jobName);
