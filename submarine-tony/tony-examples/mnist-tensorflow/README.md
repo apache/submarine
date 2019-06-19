@@ -71,7 +71,7 @@ Once you've installed Hadoop and built your Python virtual environment zip, you 
 ```
 gradlew :tony-cli:build
 
-java -cp `hadoop classpath`:/path/to/TonY/tony-cli/build/libs/tony-cli-x.x.x-all.jar com.linkedin.tony.cli.ClusterSubmitter \
+java -cp `hadoop classpath`:/path/to/TonY/tony-cli/build/libs/tony-cli-x.x.x-all.jar ClusterSubmitter \
 --python_venv=/path/to/venv.zip \
 --src_dir=/path/to/TonY/tony-examples/mnist-tensorflow \
 --executes=mnist_distributed.py \ # relative path inside src/
@@ -87,7 +87,7 @@ You could also alternative try this MNIST Keras example:
 ```
 gradlew :tony-cli:build
 
-java -cp `hadoop classpath`:/path/to/TonY/tony-cli/build/libs/tony-cli-x.x.x-all.jar com.linkedin.tony.cli.ClusterSubmitter \
+java -cp `hadoop classpath`:/path/to/TonY/tony-cli/build/libs/tony-cli-x.x.x-all.jar ClusterSubmitter \
 --python_venv=/path/to/venv.zip \
 --src_dir=/path/to/TonY/tony-examples/mnist-tensorflow \
 --executes=mnist_keras_distributed.py \ # relative path inside src/

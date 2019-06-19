@@ -19,12 +19,12 @@
 
 rm -rf gen-java
 mkdir gen-java
-rm -rf ../java/com/linkedin/tony/rpc/proto
+rm -rf ../java/org/apache/submarine/tony/rpc/proto
 protoc --java_out=gen-java tensorflow_cluster_service_protos.proto
 protoc --java_out=gen-java yarn_tensorflow_cluster_protos.proto
-for file in gen-java/com/linkedin/tony/rpc/proto/* ; do
+for file in gen-java/org/apache/submarine/tony/rpc/proto/* ; do
   cat java_license_header.txt ${file} > ${file}.tmp
   mv -f ${file}.tmp ${file}
 done
-mv gen-java/com/linkedin/tony/rpc/proto ../java/com/linkedin/tony/rpc/proto
+mv gen-java/org/apache/submarine/tony/rpc/proto ../java/org/apache/submarine/tony/rpc/proto
 rm -rf gen-java

@@ -156,7 +156,7 @@ Use the following `gcloud` command to create a new job. Once launched, you can m
 export TONY_JARFILE=tony-cli-<version>-all.jar
 
 gcloud dataproc jobs submit hadoop --cluster "$CLUSTER_NAME" \
---class com.linkedin.tony.cli.ClusterSubmitter \
+--class ClusterSubmitter \
 --jars file:///opt/tony/TonY-samples/"${TONY_JARFILE}" -- \
 --src_dir=/opt/tony/TonY-samples/jobs/TFJob/src \
 --task_params='--data_dir /tmp/ --working_dir /tmp/' \
@@ -196,7 +196,7 @@ The following folder structure was created during installation in the `TONY_SAMP
 export TONY_JARFILE=tony-cli-<version>-all.jar
 
 gcloud dataproc jobs submit hadoop --cluster "$CLUSTER_NAME" \
---class com.linkedin.tony.cli.ClusterSubmitter \
+--class ClusterSubmitter \
 --jars file:///opt/tony/TonY-samples/"${TONY_JARFILE}" -- \
 --src_dir=/opt/tony/TonY-samples/jobs/PTJob/src \
 --task_params='--root /tmp/' \
@@ -285,7 +285,7 @@ export TONY_JARFILE=gs://tony-staging/tony-cli-0.3.1-all.jar
 for i in {1..10}; do
 job_id=`head /dev/urandom | tr -dc A-Z0-9 | head -c 6 ; echo ''`
 gcloud dataproc jobs submit hadoop --cluster ${CLUSTER_NAME} \
---class com.linkedin.tony.cli.ClusterSubmitter \
+--class ClusterSubmitter \
 --jars "${TONY_JARFILE}" -- \
 --src_dir=/opt/tony/TonY-samples/jobs/TFJob/src \
 --task_params="--steps 1000 --data_dir gs://tony-staging/tensorflow/data --working_dir /tmp/"${job_id}"/model" \

@@ -104,7 +104,7 @@ For a full list of configurations, please see the [wiki](https://github.com/link
 Now you're ready to launch your job:
 
     $ java -cp "`hadoop classpath --glob`:MyJob/*:MyJob/" \
-            com.linkedin.tony.cli.ClusterSubmitter \
+            ClusterSubmitter \
             -executes models/mnist_distributed.py \
             -task_params '--input_dir /path/to/hdfs/input --output_dir /path/to/hdfs/output' \
             -src_dir src \
@@ -167,7 +167,7 @@ A similar `tony.xml` but without Docker related configurations:
 Then you can launch your job:
 
     $ java -cp "`hadoop classpath --glob`:MyJob/*:MyJob" \
-                com.linkedin.tony.cli.ClusterSubmitter \
+                ClusterSubmitter \
                 -executes models/mnist_distributed.py \ # relative path to model program inside the src_dir
                 -task_params '--input_dir /path/to/hdfs/input --output_dir /path/to/hdfs/output \
                 -python_venv my-venv.zip \

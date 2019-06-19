@@ -17,7 +17,7 @@
 export CLUSTER_NAME="tony-staging-1"
 export BUCKET="tony-staging"
 export TONY_JARFILE="gs://${BUCKET}/tony-cli-0.3.1-all.jar"
-export TONY_CLASS="com.linkedin.tony.cli.ClusterSubmitter"
+export TONY_CLASS="ClusterSubmitter"
 export LC_CTYPE=C
 
 
@@ -49,7 +49,7 @@ function execute_tensorflow() {
     # Executes the following code inside container:
     # [tf] src_dir $python mnist_distributed.py --task_params ...
     gcloud dataproc --quiet jobs submit hadoop --cluster "${CLUSTER_NAME}" \
-    --class com.linkedin.tony.cli.ClusterSubmitter \
+    --class ClusterSubmitter \
     --jars "${TONY_JARFILE}" -- \
     --python_venv=/opt/tony/TonY-samples/deps/tf.zip \
     --python_binary_path=tf/bin/python3.5 \
@@ -75,7 +75,7 @@ function execute_pytorch() {
     # [pytorch] src_dir $python3.5 mnist_distributed.py --task_params ...
 
     gcloud dataproc --quiet jobs submit hadoop --cluster "${CLUSTER_NAME}" \
-    --class com.linkedin.tony.cli.ClusterSubmitter \
+    --class ClusterSubmitter \
     --jars "${TONY_JARFILE}" -- \
     --python_venv=/opt/tony/TonY-samples/deps/pytorch.zip \
     --python_binary_path=pytorch/bin/python3.5 \

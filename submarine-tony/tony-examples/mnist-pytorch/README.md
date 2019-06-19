@@ -64,7 +64,7 @@ Once you've installed Hadoop and built your Python virtual environment zip, you 
 ```
 gradlew :tony-cli:build
 
-java -cp `hadoop classpath`:/path/to/TonY/tony-cli/build/libs/tony-cli-x.x.x-all.jar com.linkedin.tony.cli.ClusterSubmitter \
+java -cp `hadoop classpath`:/path/to/TonY/tony-cli/build/libs/tony-cli-x.x.x-all.jar ClusterSubmitter \
 --python_venv=/path/to/venv.zip \
 --src_dir=/path/to/TonY/tony-examples/mnist-pytorch \
 --executes=mnist_distributed.py \
