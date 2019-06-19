@@ -1,0 +1,343 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!--
+   Copyright 2018 LinkedIn Corporation. All rights reserved. Licensed under the BSD-2 Clause license.
+   See LICENSE in the project root for license information.
+-->
+<configuration>
+  <property>
+    <description>Namenode URIs to get delegation tokens from.</description>
+    <name>tony.other.namenodes</name>
+  </property>
+
+  <!-- Application configurations -->
+  <property>
+    <description>Default queue to submit to YARN.</description>
+    <name>tony.yarn.queue</name>
+    <value>default</value>
+  </property>
+
+  <property>
+    <description>Name of your YARN application.</description>
+    <name>tony.application.name</name>
+    <value>TensorFlowApplication</value>
+  </property>
+
+  <property>
+    <description>Tags of your YARN application.</description>
+    <name>tony.application.tags</name>
+    <value></value>
+  </property>
+
+  <property>
+    <description>YARN partition which this application should run in.</description>
+    <name>tony.application.node-label</name>
+  </property>
+
+  <property>
+    <description>Whether this is single node training or not.</description>
+    <name>tony.application.single-node</name>
+    <value>false</value>
+  </property>
+
+  <property>
+    <description>Whether the AM should invoke the user's python script or not.</description>
+    <name>tony.application.enable-preprocess</name>
+    <value>false</value>
+  </property>
+
+  <property>
+    <description>Max runtime of the application before killing it, in milliseconds.</description>
+    <name>tony.application.timeout</name>
+    <value>0</value>
+  </property>
+
+  <property>
+    <description>The machine learning framework that will be used for this job - tensorflow or pytorch.</description>
+    <name>tony.application.framework</name>
+    <value>tensorflow</value>
+  </property>
+
+  <property>
+    <description>
+      How many times the proxies in TonyClient should retry on connection failure. Note that this controls the number of
+      retries from the retry policy, not the internal Hadoop IPC client, e.g. if your IPC client is configured to retry
+      50 times via ipc.client.connect.max.retries and tony.application.num-rm-connect-retries is set to 1, the retry
+      policy will try to connect once, but the IPC client will still try to connect 50 times.
+    </description>
+    <name>tony.application.num-client-rm-connect-retries</name>
+    <value>3</value>
+  </property>
+
+  <!-- Task configurations -->
+  <property>
+    <name>tony.task.max-total-instances</name>
+    <value>-1</value>
+    <description>Maximum number of tasks that can be requested across all tony.X.instances configs.</description>
+  </property>
+
+  <property>
+    <name>tony.task.max-total-gpus</name>
+    <value>-1</value>
+    <description>Maximum number of GPUs that can be requested across all tasks. -1 means no limit.</description>
+  </property>
+
+  <property>
+    <description>JVM opts for each TaskExecutor.</description>
+    <name>tony.task.executor.jvm.opts</name>
+    <value>-Xmx1536m</value>
+  </property>
+
+  <property>
+    <description>Frequency, in milliseconds, for which TaskExecutors should heartbeat with AM.</description>
+    <name>tony.task.heartbeat-interval-ms</name>
+    <value>1000</value>
+  </property>
+
+  <property>
+    <description>How many missed heartbeats before declaring a TaskExecutor dead.</description>
+    <name>tony.task.max-missed-heartbeats</name>
+    <value>25</value>
+  </property>
+
+  <property>
+    <description>Frequency, in milliseconds, for which TaskExecutors should report metrics to the AM.</description>
+    <name>tony.task.metrics-interval-ms</name>
+    <value>5000</value>
+  </property>
+
+  <!-- AM configurations -->
+  <property>
+    <description>How many times a failed AM should retry.</description>
+    <name>tony.am.retry-count</name>
+    <value>0</value>
+  </property>
+
+  <property>
+    <description>AM memory size, requested as a string (e.g. '2g' or '2048m').</description>
+    <name>tony.am.memory</name>
+    <value>2g</value>
+  </property>
+
+  <property>
+    <description>Number of AM vcores to use.</description>
+    <name>tony.am.vcores</name>
+    <value>1</value>
+  </property>
+
+  <property>
+    <description>Number of AM GPUs to use. (In general, should only be applicable in single node mode.)</description>
+    <name>tony.am.gpus</name>
+    <value>0</value>
+  </property>
+
+  <!-- PS configurations -->
+  <property>
+    <description>Parameter server memory size, requested as a string (e.g. '2g' or '2048m').</description>
+    <name>tony.ps.memory</name>
+    <value>2g</value>
+  </property>
+
+  <property>
+    <description>Number of vcores per parameter server.</description>
+    <name>tony.ps.vcores</name>
+    <value>1</value>
+  </property>
+
+  <!-- Worker configurations -->
+  <property>
+    <description>Timeout, in milliseconds for the user's python processes before forcibly killing them.</description>
+    <name>tony.worker.timeout</name>
+    <value>0</value>
+  </property>
+
+  <property>
+    <description>Worker memory size, requested as a string (e.g. '2g' or '2048m').</description>
+    <name>tony.worker.memory</name>
+    <value>2g</value>
+  </property>
+
+  <property>
+    <description>Number of vcores per worker.</description>
+    <name>tony.worker.vcores</name>
+    <value>1</value>
+  </property>
+
+  <property>
+    <description>Number of GPUs per worker.</description>
+    <name>tony.worker.gpus</name>
+    <value>0</value>
+  </property>
+
+  <!-- Untracked job type configurations -->
+  <property>
+    <description>Job types that we don't track to finish</description>
+    <name>tony.application.untracked.jobtypes</name>
+    <value>ps</value>
+  </property>
+
+  <!-- Docker configurations -->
+  <property>
+    <description>Whether we use docker container to launch the tasks</description>
+    <name>tony.docker.enabled</name>
+    <value>false</value>
+  </property>
+
+  <!-- Local testing configurations -->
+  <property>
+    <description>
+      Whether this application is running in a Kerberized grid. Enabling this will fetch tokens from the cluster as
+      well as between the client and AM.
+    </description>
+    <name>tony.application.security.enabled</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <description>
+      Path to HDFS configuration, to be passed as an environment variable to the python training scripts.
+    </description>
+    <name>tony.application.hdfs-conf-path</name>
+  </property>
+
+  <property>
+    <description>
+      Path to YARN configuration, to be passed as an environment variable to the python training scripts.
+    </description>
+    <name>tony.application.yarn-conf-path</name>
+  </property>
+
+  <!--History Server configurations-->
+  <!--All the configurations below should be set in $TONY_CONF_DIR/tony-site.xml-->
+  <property>
+    <description>
+      URL of the TonY Portal
+    </description>
+    <name>tony.portal.url</name>
+    <value>https://localhost:19886</value>
+  </property>
+
+  <property>
+    <description>
+      Location for Tony AM to write config and events on HDFS
+    </description>
+    <name>tony.history.location</name>
+    <value>/path/to/tony-history</value>
+  </property>
+
+  <property>
+    <description>
+      Location of intermediate folder
+    </description>
+    <name>tony.history.intermediate</name>
+    <value>/path/to/tony-history/intermediate</value>
+  </property>
+
+  <property>
+    <description>
+      Location of finished folder
+    </description>
+    <name>tony.history.finished</name>
+    <value>/path/to/tony-history/finished</value>
+  </property>
+
+  <property>
+    <name>tony.history.mover-interval-ms</name>
+    <value>300000</value>
+    <description>Frequency at which to scan the intermediate directory for completed jobs to move to the
+    finished directory.</description>
+  </property>
+
+  <property>
+    <name>tony.history.retention-sec</name>
+    <value>2592000</value>
+    <description>How many seconds to retain history files for. Default is 30 days.</description>
+  </property>
+
+  <property>
+    <name>tony.history.purger-interval-ms</name>
+    <value>21600000</value>
+    <description>Frequency at which to run the purger thread. Default is 6 hours.</description>
+  </property>
+
+  <property>
+    <name>tony.history.finished-dir-timezone</name>
+    <value>UTC</value>
+    <description>ZoneId used to create/purge finished directory in /yyyy/MM/dd format.</description>
+  </property>
+
+  <property>
+    <description>
+      Maximum (approximate) number of cache entries TonY Portal
+      will store for each cache (config, metadata, event)
+    </description>
+    <name>tony.portal.cache.max-entries</name>
+    <value>10000</value>
+  </property>
+
+  <property>
+    <description>
+      Tony keytab principal
+    </description>
+    <name>tony.keytab.user</name>
+    <value>user1</value>
+  </property>
+
+  <property>
+    <description>
+      Location of Tony keytab file
+    </description>
+    <name>tony.keytab.location</name>
+    <value>/location/to/tony.keytab</value>
+  </property>
+
+  <property>
+    <name>tony.https.port</name>
+    <value>19886</value>
+  </property>
+
+  <property>
+    <description>
+      Location of keystore file. Usually as JKS.
+      For more info: https://www.playframework.com/documentation/2.6.x/ConfiguringHttps
+    </description>
+    <name>tony.https.keystore.path</name>
+    <value>/location/to/tony.jks</value>
+  </property>
+
+  <property>
+    <name>tony.https.keystore.type</name>
+    <value>JKS</value>
+  </property>
+
+  <property>
+    <name>tony.https.keystore.password</name>
+    <value>password</value>
+  </property>
+
+  <property>
+    <name>tony.https.keystore.algorithm</name>
+    <value>SunX509</value>
+  </property>
+
+  <property>
+    <description>
+      Whether or not http port is open for Tony history server.
+      In development, this should be set to enabled.
+      In production, this should always be disabled.
+    </description>
+    <name>tony.http.port</name>
+    <value>disabled</value>
+  </property>
+
+  <property>
+    <description>
+      Secret key for Play framework.
+      In development, this is optional.
+      In production, this is mandatory.
+    </description>
+    <name>tony.secret.key</name>
+    <value>changeme</value>
+  </property>
+</configuration>

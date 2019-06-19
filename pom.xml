@@ -66,11 +66,10 @@
   </properties>
 
   <modules>
+    <module>submarine-tony</module>
     <module>submarine-core</module>
     <module>submarine-all</module>
     <module>submarine-dist</module>
-    <module>tony-runtime</module>
-    <module>yarnservice-runtime</module>
   </modules>
 
   <dependencyManagement>
@@ -136,8 +135,8 @@
         <hadoop.version>3.2.0</hadoop.version>
       </properties>
       <modules>
-        <module>yarnservice-runtime</module>
-        <module>tony-runtime</module>
+        <module>submarine-runtime/yarnservice-runtime</module>
+        <module>submarine-runtime/tony-runtime</module>
       </modules>
     </profile>
 
@@ -151,8 +150,8 @@
         <hadoop.version>3.1.2</hadoop.version>
       </properties>
       <modules>
-        <module>yarnservice-runtime</module>
-        <module>tony-runtime</module>
+        <module>submarine-runtime/yarnservice-runtime</module>
+        <module>submarine-runtime/tony-runtime</module>
       </modules>
     </profile>
 
@@ -162,7 +161,7 @@
         <hadoop.version>2.9.2</hadoop.version>
       </properties>
       <modules>
-        <module>tony-runtime</module>
+        <module>submarine-runtime/tony-runtime</module>
       </modules>
     </profile>
 
@@ -172,7 +171,7 @@
         <hadoop.version>2.7.3</hadoop.version>
       </properties>
       <modules>
-        <module>tony-runtime</module>
+        <module>submarine-runtime/tony-runtime</module>
       </modules>
     </profile>
 
