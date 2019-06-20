@@ -7453,8 +7453,9 @@ public final class YarnTensorFlowClusterProtos {
       "RegisterExecutionResultResponseProto\022\017\n\007" +
       "message\030\001 \002(\t\"\014\n\nEmptyProto\"\'\n\025Heartbeat" +
       "RequestProto\022\016\n\006taskId\030\001 \002(\t\"\030\n\026Heartbea" +
-      "tResponseProtoB:\n\033org.apache.submarine.tony.rpc." +
-      "protoB\033YarnTensorFlowClusterProtos"
+      "tResponseProtoBB\n#org.apache.submarine.t" +
+      "ony.rpc.protoB\033YarnTensorFlowClusterProt" +
+      "os"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

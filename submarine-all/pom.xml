@@ -77,9 +77,6 @@
     <!-- Default profile-->
     <profile>
       <id>hadoop-3.1</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
       <dependencies>
         <dependency>
           <groupId>org.apache.submarine</groupId>
@@ -101,6 +98,9 @@
 
     <profile>
       <id>hadoop-2.9</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <dependencies>
         <dependency>
           <groupId>org.apache.submarine</groupId>
@@ -181,6 +181,10 @@
         <configuration>
           <skip>false</skip>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
       </plugin>
     </plugins>
   </build>

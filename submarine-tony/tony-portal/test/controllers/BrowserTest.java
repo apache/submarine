@@ -1,7 +1,7 @@
 package controllers;
 
 import com.google.common.collect.ImmutableMap;
-import com.linkedin.tony.TonyConfigurationKeys;
+import org.apache.submarine.tony.TonyConfigurationKeys;
 import org.junit.Test;
 import play.Application;
 import play.test.Helpers;

@@ -4,13 +4,12 @@
  */
 package org.apache.submarine.tony;
 
-import java.util.HashSet;
+public class TestTonyConfigurationFields
+{
 
-import org.apache.hadoop.conf.TestConfigurationFieldsBase;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-
-public class TestTonyConfigurationFields extends TestConfigurationFieldsBase {
+}
+// TODO(submarine)
+/*extends TestConfigurationFieldsBase {
 
   @Override
   public void initializeMemberVariables() {
@@ -63,3 +62,4 @@ public class TestTonyConfigurationFields extends TestConfigurationFieldsBase {
     super.testCompareXmlAgainstConfigurationClass();
   }
 }
+ */

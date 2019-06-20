@@ -2,12 +2,12 @@ package cache;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.linkedin.tony.TonyConfigurationKeys;
-import com.linkedin.tony.models.JobConfig;
-import com.linkedin.tony.models.JobEvent;
-import com.linkedin.tony.models.JobMetadata;
-import com.linkedin.tony.util.HdfsUtils;
-import com.linkedin.tony.util.ParserUtils;
+import org.apache.submarine.tony.TonyConfigurationKeys;
+import org.apache.submarine.tony.models.JobConfig;
+import org.apache.submarine.tony.models.JobEvent;
+import org.apache.submarine.tony.models.JobMetadata;
+import org.apache.submarine.tony.util.HdfsUtils;
+import org.apache.submarine.tony.util.ParserUtils;
 import com.typesafe.config.Config;
 import hadoop.Configuration;
 import hadoop.Requirements;

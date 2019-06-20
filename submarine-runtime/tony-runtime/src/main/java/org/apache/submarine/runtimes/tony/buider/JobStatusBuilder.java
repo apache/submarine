@@ -13,7 +13,7 @@
  */
 package org.apache.submarine.runtimes.tony.buider;
 
-import com.linkedin.tony.rpc.TaskInfo;
+import org.apache.submarine.tony.rpc.TaskInfo;
 import org.apache.submarine.common.api.JobComponentStatus;
 import org.apache.submarine.common.api.JobStatus;
 

@@ -105,7 +105,7 @@ public class TonyJob extends HadoopJavaJob {
 
   @Override
   public String getJavaClass() {
-    return "com.linkedin.tony.TonyClient";
+    return "org.apache.submarine.tony.TonyClient";
   }
 
   @Override

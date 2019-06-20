@@ -2,7 +2,7 @@
  * Copyright 2018 LinkedIn Corporation. All rights reserved. Licensed under the BSD-2 Clause license.
  * See LICENSE in the project root for license information.
  */
-option java_package = "com.linkedin.tony.rpc.proto";
+option java_package = "org.apache.submarine.tony.rpc.proto";
 option java_outer_classname = "TensorFlowCluster";
 
 option java_generic_services = true;

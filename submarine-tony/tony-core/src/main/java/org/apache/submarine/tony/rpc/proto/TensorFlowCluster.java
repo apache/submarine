@@ -724,9 +724,9 @@ public final class TensorFlowCluster {
       "erExecutionResultResponseProto\022-\n\021finish" +
       "Application\022\013.EmptyProto\032\013.EmptyProto\022H\n" +
       "\025taskExecutorHeartbeat\022\026.HeartbeatReques" +
-      "tProto\032\027.HeartbeatResponseProtoB3\n\033com.l" +
-      "inkedin.tony.rpc.protoB\021TensorFlowCluste" +
-      "r\210\001\001"
+      "tProto\032\027.HeartbeatResponseProtoB;\n#org.a" +
+      "pache.submarine.tony.rpc.protoB\021TensorFl" +
+      "owCluster\210\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {

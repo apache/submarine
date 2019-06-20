@@ -2,7 +2,7 @@ package controllers;
 
 import cache.CacheWrapper;
 import com.google.common.cache.Cache;
-import com.linkedin.tony.models.JobConfig;
+import org.apache.submarine.tony.models.JobConfig;
 import hadoop.Requirements;
 import java.util.Collections;
 import java.util.List;
@@ -12,8 +12,8 @@ import org.apache.hadoop.fs.Path;
 import play.mvc.Controller;
 import play.mvc.Result;
 
-import static com.linkedin.tony.util.HdfsUtils.getJobDirPath;
-import static com.linkedin.tony.util.ParserUtils.parseConfig;
+import static org.apache.submarine.tony.util.HdfsUtils.getJobDirPath;
+import static org.apache.submarinen.tony.util.ParserUtils.parseConfig;
 
 
 public class JobConfigPageController extends Controller {

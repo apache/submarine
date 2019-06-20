@@ -1,5 +1,5 @@
 {
-  "namespace": "com.linkedin.tony.events",
+  "namespace": "org.apache.submarine.events.avro",
   "type": "record",
   "name": "TaskStarted",
   "fields": [

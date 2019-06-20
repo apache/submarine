@@ -13,9 +13,9 @@
  */
 package org.apache.submarine.runtimes.tony;
 
-import com.linkedin.tony.TonyClient;
-import com.linkedin.tony.client.TaskUpdateListener;
-import com.linkedin.tony.rpc.TaskInfo;
+import org.apache.submarine.tony.TonyClient;
+import org.apache.submarine.tony.client.TaskUpdateListener;
+import org.apache.submarine.tony.rpc.TaskInfo;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.common.ClientContext;
 import org.apache.submarine.common.api.JobStatus;

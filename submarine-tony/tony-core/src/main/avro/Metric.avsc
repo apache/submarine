@@ -1,5 +1,5 @@
 {
-  "namespace": "com.linkedin.tony.events",
+  "namespace": "org.apache.submarine.tony.events.avro",
   "type": "record",
   "name": "Metric",
   "fields": [

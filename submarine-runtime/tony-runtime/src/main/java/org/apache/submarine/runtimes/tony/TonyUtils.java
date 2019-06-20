@@ -13,9 +13,9 @@
  */
 package org.apache.submarine.runtimes.tony;
 
-import com.linkedin.tony.Constants;
-import com.linkedin.tony.TonyConfigurationKeys;
-import com.linkedin.tony.util.Utils;
+import org.apache.submarine.tony.Constants;
+import org.apache.submarine.tony.TonyConfigurationKeys;
+import org.apache.submarine.tony.util.Utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;

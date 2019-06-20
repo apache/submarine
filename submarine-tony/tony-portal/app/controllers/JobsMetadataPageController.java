@@ -2,7 +2,7 @@ package controllers;
 
 import cache.CacheWrapper;
 import com.google.common.cache.Cache;
-import com.linkedin.tony.models.JobMetadata;
+import org.apache.submarine.tony.models.JobMetadata;
 import javax.inject.Inject;
 import play.mvc.Controller;
 import play.mvc.Result;

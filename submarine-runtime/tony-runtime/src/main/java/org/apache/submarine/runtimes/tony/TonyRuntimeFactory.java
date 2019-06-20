@@ -13,7 +13,7 @@
  */
 package org.apache.submarine.runtimes.tony;
 
-import com.linkedin.tony.TonyClient;
+import org.apache.submarine.tony.TonyClient;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.submarine.common.ClientContext;
 import org.apache.submarine.runtimes.RuntimeFactory;

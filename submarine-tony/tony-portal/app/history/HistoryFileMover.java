@@ -1,10 +1,10 @@
 package history;
 
 import cache.CacheWrapper;
-import com.linkedin.tony.Constants;
-import com.linkedin.tony.TonyConfigurationKeys;
-import com.linkedin.tony.util.ParserUtils;
-import com.linkedin.tony.util.Utils;
+import org.apache.submarine.tony.Constants;
+import org.apache.submarine.tony.TonyConfigurationKeys;
+import org.apache.submarine.tony.util.ParserUtils;
+import org.apache.submarine.tony.util.Utils;
 import com.typesafe.config.Config;
 import hadoop.Requirements;
 import java.io.IOException;

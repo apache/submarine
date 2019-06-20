@@ -1,7 +1,7 @@
 package history;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.linkedin.tony.TonyConfigurationKeys;
+import org.apache.submarine.tony.TonyConfigurationKeys;
 import com.typesafe.config.Config;
 import hadoop.Requirements;
 import java.io.IOException;

@@ -4,8 +4,6 @@
  */
 package org.apache.submarine.tony;
 
-import azkaban.jobtype.HadoopConfigurationInjector;
-import azkaban.utils.Props;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.Files;
@@ -780,7 +778,7 @@ public class TonyClient implements AutoCloseable {
     arguments.add("-D" + YarnConfiguration.YARN_APP_CONTAINER_LOG_DIR + "="
         + ApplicationConstants.LOG_DIR_EXPANSION_VAR);
     // Set class name
-    arguments.add("com.linkedin.tony.ApplicationMaster");
+    arguments.add("org.apache.submarine.tony.ApplicationMaster");
 
     arguments.add("1>" + ApplicationConstants.LOG_DIR_EXPANSION_VAR
         + File.separatorChar + Constants.AM_STDOUT_FILENAME);
@@ -1139,7 +1137,9 @@ public class TonyClient implements AutoCloseable {
 
     // Adds hadoop-inject.xml as a default resource so Azkaban metadata
     // will be present in the new Configuration created
-    HadoopConfigurationInjector.injectResources(new Props() /* ignored */);
+    // TODO(submarine)
+    // HadoopConfigurationInjector.injectResources(new Props() /* ignored */);
+
     try (TonyClient client = new TonyClient(new Configuration())) {
       boolean sanityCheck = client.init(args);
       if (!sanityCheck) {

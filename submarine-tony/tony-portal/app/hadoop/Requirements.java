@@ -1,8 +1,8 @@
 package hadoop;
 
-import com.linkedin.tony.Constants;
-import com.linkedin.tony.TonyConfigurationKeys;
-import com.linkedin.tony.util.Utils;
+import org.apache.submarine.tony.Constants;
+import org.apache.submarine.tony.TonyConfigurationKeys;
+import org.apache.submarine.tony.util.Utils;
 import com.typesafe.config.Config;
 import java.io.IOException;
 import javax.inject.Inject;

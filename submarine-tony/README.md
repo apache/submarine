@@ -30,7 +30,7 @@ The jar required to run TonY will be located in `./tony-cli/build/libs/`.
 
 Follow [this guide](https://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/) to generate a key pair using GPG. Publish your public key.
 
-Create a Nexus account at https://oss.sonatype.org/ and request access to publish to com.linkedin.tony. Here's an example Jira ticket: https://issues.sonatype.org/browse/OSSRH-47350.
+Create a Nexus account at https://oss.sonatype.org/ and request access to publish to org.apache.submarine.tony. Here's an example Jira ticket: https://issues.sonatype.org/browse/OSSRH-47350.
 
 Configure your `~/.gradle/gradle.properties` file:
 

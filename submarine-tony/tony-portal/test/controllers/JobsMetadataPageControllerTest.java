@@ -1,6 +1,6 @@
 package controllers;
 
-import com.linkedin.tony.TonyConfigurationKeys;
+import org.apache.submarine.tony.TonyConfigurationKeys;
 import org.junit.Test;
 import play.Application;
 import play.inject.guice.GuiceApplicationBuilder;

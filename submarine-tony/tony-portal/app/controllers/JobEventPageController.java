@@ -2,9 +2,9 @@ package controllers;
 
 import cache.CacheWrapper;
 import com.google.common.cache.Cache;
-import com.linkedin.tony.models.JobEvent;
-import com.linkedin.tony.util.HdfsUtils;
-import com.linkedin.tony.util.ParserUtils;
+import org.apache.submarine.tony.models.JobEvent;
+import org.apache.submarine.tony.util.HdfsUtils;
+import org.apache.submarine.tony.util.ParserUtils;
 import hadoop.Requirements;
 import java.util.List;
 import javax.inject.Inject;
