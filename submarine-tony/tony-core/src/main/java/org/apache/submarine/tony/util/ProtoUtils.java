@@ -11,7 +11,8 @@ import org.apache.submarine.tony.rpc.proto.YarnTensorFlowClusterProtos.GetTaskIn
 
 public class ProtoUtils {
   public static TaskInfo taskInfoProtoToTaskInfo(TaskInfoProto taskInfoProto) {
-    TaskInfo taskInfo = new TaskInfo(taskInfoProto.getName(), taskInfoProto.getIndex(), taskInfoProto.getUrl());
+    TaskInfo taskInfo
+        = new TaskInfo(taskInfoProto.getName(), taskInfoProto.getIndex(), taskInfoProto.getUrl());
     taskInfo.setState(TaskStatus.values()[taskInfoProto.getTaskStatus().ordinal()]);
     return taskInfo;
   }

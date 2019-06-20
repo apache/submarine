@@ -38,7 +38,8 @@ public class CliUtils {
    */
   public static String replacePatternsInLaunchCommand(String specifiedCli,
                                                       RunJobParameters jobRunParameters,
-                                                      RemoteDirectoryManager directoryManager) throws IOException {
+                                                      RemoteDirectoryManager directoryManager)
+      throws IOException {
     String input = jobRunParameters.getInputPath();
     String jobDir = jobRunParameters.getCheckpointPath();
     String savedModelDir = jobRunParameters.getSavedModelPath();

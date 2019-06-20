@@ -100,13 +100,15 @@ public class Constants {
 
   public static final String TEST_AM_CRASH = "TEST_AM_CRASH";
   public static final String TEST_WORKER_TERMINATED = "TEST_WORKER_TERMINATION";
-  public static final String TEST_TASK_COMPLETION_NOTIFICATION_DELAYED = "TEST_TASK_COMPLETION_NOTIFICATION_DELAYED";
+  public static final String TEST_TASK_COMPLETION_NOTIFICATION_DELAYED
+      = "TEST_TASK_COMPLETION_NOTIFICATION_DELAYED";
   public static final String TEST_TASK_EXECUTOR_NUM_HB_MISS = "TEST_TASK_EXECUTOR_NUM_HB_MISS";
   // Should be of the form type#id#ms
   public static final String TEST_TASK_EXECUTOR_SKEW = "TEST_TASK_EXECUTOR_SKEW";
 
   // Used to get all Hadoop jar paths. Reference: https://www.tensorflow.org/deploy/hadoop
-  public static final String HADOOP_CLASSPATH_COMMAND = "CLASSPATH=$(${HADOOP_HDFS_HOME}/bin/hadoop classpath --glob) ";
+  public static final String HADOOP_CLASSPATH_COMMAND
+      = "CLASSPATH=$(${HADOOP_HDFS_HOME}/bin/hadoop classpath --glob) ";
   public static final String SKIP_HADOOP_PATH = "SKIP_HADOOP_PATH";
 
   public static final String TONY_FOLDER = ".tony";

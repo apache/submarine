@@ -65,7 +65,8 @@ class TaskMonitor implements Runnable {
 
     isGpuMachine = checkIsGpuMachine(tonyConf);
 
-    this.resourceCalculator = ResourceCalculatorProcessTree.getResourceCalculatorProcessTree(pid, null, yarnConf);
+    this.resourceCalculator
+        = ResourceCalculatorProcessTree.getResourceCalculatorProcessTree(pid, null, yarnConf);
     if (isGpuMachine) {
       this.gpuDiscoverer = GpuDiscoverer.getInstance();
       this.gpuDiscoverer.initialize(yarnConf);
@@ -156,7 +157,8 @@ class TaskMonitor implements Runnable {
       setAvgMetrics(AVG_GPU_MAIN_MEMORY_USAGE_INDEX, avgGpuMainMemoryUsage);
     } catch (GpuInfoException e) {
       // Follow YARN's GPUDiscoverer mechanism of capping number of gpu metrics query
-      if (gpuDiscoverer.getNumOfErrorExecutionSinceLastSucceed() >= Constants.MAX_REPEATED_GPU_ERROR_ALLOWED) {
+      if (gpuDiscoverer.getNumOfErrorExecutionSinceLastSucceed()
+          >= Constants.MAX_REPEATED_GPU_ERROR_ALLOWED) {
         LOG.warn("Failed to collect GPU metrics", e);
         isGpuMachine = false;
         return;

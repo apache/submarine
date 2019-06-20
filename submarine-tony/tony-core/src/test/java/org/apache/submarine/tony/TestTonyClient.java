@@ -19,7 +19,8 @@ public class TestTonyClient {
     String[] args = { "-conf", TonyConfigurationKeys.AM_GPUS + "=1" };
     TonyClient client = new TonyClient();
     client.init(args);
-    assertEquals(1, client.getTonyConf().getInt(TonyConfigurationKeys.AM_GPUS, TonyConfigurationKeys.DEFAULT_AM_GPUS));
+    assertEquals(1, client.getTonyConf().getInt(TonyConfigurationKeys.AM_GPUS,
+        TonyConfigurationKeys.DEFAULT_AM_GPUS));
   }
 
   @Test
@@ -79,7 +80,8 @@ public class TestTonyClient {
   }
 
   /**
-   * 6 GPUs requested (1 each for the 3 workers and 1 each for the 3 ps), max total is 5. Validation should fail.
+   * 6 GPUs requested (1 each for the 3 workers and 1 each for the 3 ps),
+   * max total is 5. Validation should fail.
    */
   @Test(expectedExceptions = RuntimeException.class,
       expectedExceptionsMessageRegExp = ".*amount of " + Constants.GPUS + ".*requested exceeds.*")

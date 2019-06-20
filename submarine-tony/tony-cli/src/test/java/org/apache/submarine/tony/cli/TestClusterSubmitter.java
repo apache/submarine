@@ -24,8 +24,8 @@ public class TestClusterSubmitter {
     ClusterSubmitter submitter = new ClusterSubmitter(client);
     int exitCode = submitter.submit(new String[] {"--src_dir", "src"});
     assertEquals(exitCode, 0);
-    assertTrue(
-        client.getTonyConf().get(TonyConfigurationKeys.getContainerResourcesKey()).contains(Constants.TONY_JAR_NAME));
+    assertTrue(client.getTonyConf().get(TonyConfigurationKeys.getContainerResourcesKey())
+        .contains(Constants.TONY_JAR_NAME));
   }
 }
 

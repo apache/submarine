@@ -52,9 +52,12 @@ public class ParserUtils {
   /**
    * Checks if {@code fileName} string contains valid metadata.
    * Ex: If {@code jobIdRegex} is "^application_\\d+_\\d+$",
-   * {@code fileName} = "application_1541469337545_0031-1542325695566-1542325733637-user1-FAILED.jhist" -> true
-   * {@code fileName} = "application_1541469337545_0031-1542325695566-user1.jhist.inprogress" -> true
-   * {@code fileName} = "application_1541469337545_0031-1542325695566-1542325733637-user2-succeeded.jhist" -> false
+   * {@code fileName} =
+   *        "application_1541469337545_0031-1542325695566-1542325733637-user1-FAILED.jhist" -> true
+   * {@code fileName} =
+   *        "application_1541469337545_0031-1542325695566-user1.jhist.inprogress" -> true
+   * {@code fileName} =
+   *        "application_1541469337545_0031-1542325695566-1542325733637-user2-succeeded.jhist" -> false
    * because status should be upper-cased.
    * {@code fileName} = "job_01_01-1542325695566-1542325733637-user3-SUCCEEDED.jhist" -> false
    * because the job ID portion doesn't match {@code jobIdRegex}.
@@ -142,12 +145,14 @@ public class ParserUtils {
   }
 
   /**
-   * Parses the latest (by start time) jhist file in {@code jobFolderPath} and returns a {@code JobMetadata} object
+   * Parses the latest (by start time) jhist file in {@code jobFolderPath}
+   * and returns a {@code JobMetadata} object
    * for the jhist file.
    * @param fs FileSystem object.
    * @param jobFolderPath Path object of job directory.
    * @param jobIdRegex Regular expression string to validate metadata.
-   * @return a {@code JobMetadata} object or {@code null} if a jhist file could not be found or an error occurred
+   * @return a {@code JobMetadata} object or {@code null} if a jhist file
+   * could not be found or an error occurred
    * during processing.
    */
   public static JobMetadata parseMetadata(FileSystem fs,
@@ -253,7 +258,8 @@ public class ParserUtils {
   }
 
   /**
-   * Parses the newest (by start time) jhist file in {@code jobFolderPath}, and returns a list of {@link Event}s
+   * Parses the newest (by start time) jhist file in {@code jobFolderPath},
+   * and returns a list of {@link Event}s
    * @param fs FileSystem object.
    * @param jobFolderPath Path object of job directory.
    * @return a list of {@link Event} objects.
@@ -292,7 +298,8 @@ public class ParserUtils {
   }
 
   /**
-   * Given a {@link Date} and {@link ZoneId}, returns a "yyyy/mm/dd" string representation in the time zone specified.
+   * Given a {@link Date} and {@link ZoneId}, returns a "yyyy/mm/dd" string
+   * representation in the time zone specified.
    */
   public static String getYearMonthDayDirectory(Date date, ZoneId zoneId) {
     StringBuilder dirString = new StringBuilder();

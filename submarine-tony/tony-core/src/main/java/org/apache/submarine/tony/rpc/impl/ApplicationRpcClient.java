@@ -100,7 +100,8 @@ public class ApplicationRpcClient implements ApplicationRpc {
 
   @Override
   public String registerTensorBoardUrl(String spec) throws Exception {
-    RegisterTensorBoardUrlRequest request = recordFactory.newRecordInstance(RegisterTensorBoardUrlRequest.class);
+    RegisterTensorBoardUrlRequest request
+        = recordFactory.newRecordInstance(RegisterTensorBoardUrlRequest.class);
     request.setSpec(spec);
     RegisterTensorBoardUrlResponse response = tensorflow.registerTensorBoardUrl(request);
     return response.getSpec();
@@ -109,7 +110,8 @@ public class ApplicationRpcClient implements ApplicationRpc {
   @Override
   public String registerExecutionResult(int exitCode, String jobName, String jobIndex, String sessionId)
       throws Exception {
-    RegisterExecutionResultRequest request = recordFactory.newRecordInstance(RegisterExecutionResultRequest.class);
+    RegisterExecutionResultRequest request
+        = recordFactory.newRecordInstance(RegisterExecutionResultRequest.class);
     request.setExitCode(exitCode);
     request.setJobName(jobName);
     request.setJobIndex(jobIndex);

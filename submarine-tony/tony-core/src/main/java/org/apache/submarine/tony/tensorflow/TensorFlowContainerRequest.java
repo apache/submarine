@@ -13,7 +13,8 @@ public class TensorFlowContainerRequest {
   private int gpu;
   private String jobName;
 
-  public TensorFlowContainerRequest(String jobName, int numInstances, long memory, int vCores, int gpu, int priority) {
+  public TensorFlowContainerRequest(String jobName, int numInstances,
+                                    long memory, int vCores, int gpu, int priority) {
     this.numInstances = numInstances;
     this.memory = memory;
     this.vCores = vCores;

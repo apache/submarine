@@ -28,7 +28,8 @@ public interface TensorFlowCluster extends VersionedProtocol {
       throws YarnException, IOException;
   RegisterTensorBoardUrlResponse registerTensorBoardUrl(RegisterTensorBoardUrlRequest request)
       throws Exception;
-  RegisterExecutionResultResponse registerExecutionResult(RegisterExecutionResultRequest request) throws Exception;
+  RegisterExecutionResultResponse registerExecutionResult(RegisterExecutionResultRequest request)
+      throws Exception;
   Empty finishApplication(Empty request) throws YarnException, IOException;
 
   HeartbeatResponse taskExecutorHeartbeat(HeartbeatRequest request) throws YarnException, IOException;

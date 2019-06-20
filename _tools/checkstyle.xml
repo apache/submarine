@@ -170,7 +170,7 @@ limitations under the License.
       <!-- Checks if a line is too long. -->
       <property name="max"
         value="${com.puppycrawl.tools.checkstyle.checks.sizes.LineLength.max}"
-        default="120"/>
+        default="110"/>
       <property name="severity" value="error"/>
 
       <!-- The default ignore pattern exempts the following elements: - import

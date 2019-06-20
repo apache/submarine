@@ -138,7 +138,8 @@ public class TestHdfsUtils {
     List<Path> expectedRes = new ArrayList<>();
 
     for (int i = 1; i < 6; ++i) {
-      String sb = "file:" + System.getProperty("user.dir") + "/tony-core/src/test/resources/typicalHistFolder/job" + i;
+      String sb = "file:" + System.getProperty("user.dir")
+          + "/tony-core/src/test/resources/typicalHistFolder/job" + i;
       expectedRes.add(new Path(sb));
     }
     List<Path> actualRes = HdfsUtils.getJobDirs(fs, histFolder, regex);
@@ -153,7 +154,8 @@ public class TestHdfsUtils {
     Path histFolder = new Path(Constants.TONY_CORE_SRC + "test/resources/nestedHistFolder");
     String regex = "^job.*";
     List<Path> expectedRes = new ArrayList<>();
-    String baseDir = "file:" + System.getProperty("user.dir") + "/tony-core/src/test/resources/nestedHistFolder/";
+    String baseDir = "file:" + System.getProperty("user.dir")
+        + "/tony-core/src/test/resources/nestedHistFolder/";
 
     expectedRes.add(new Path(baseDir, "2018/01/02/job0"));
     expectedRes.add(new Path(baseDir, "2018/01/01/job1"));

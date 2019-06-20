@@ -257,8 +257,9 @@ public class TestTonyE2E  {
    * Test that makes sure if a worker is killed due to OOM, AM should stop the training (or retry).
    * This test might hang if there is a regression in handling the OOM scenario.
    *
-   * The reason why we use a Constants.TEST_WORKER_TERMINATED flag instead of simply requesting more memory than
-   * allocated is that Physical Memory Enforcement doesn't seem to work under MiniYARN.
+   * The reason why we use a Constants.TEST_WORKER_TERMINATED flag instead
+   * of simply requesting more memory than allocated is that Physical Memory Enforcement
+   * doesn't seem to work under MiniYARN.
    */
   @Test
   public void testAMStopsJobAfterWorker0Killed() throws ParseException, IOException {

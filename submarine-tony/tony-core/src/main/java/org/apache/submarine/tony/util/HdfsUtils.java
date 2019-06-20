@@ -55,7 +55,8 @@ public class HdfsUtils {
   public static String contentOfHdfsFile(FileSystem fs, Path filePath) {
     StringBuilder fileContent = new StringBuilder();
     try (FSDataInputStream inStrm = fs.open(filePath);
-        BufferedReader bufReader = new BufferedReader(new InputStreamReader(inStrm, StandardCharsets.UTF_8))) {
+        BufferedReader bufReader
+            = new BufferedReader(new InputStreamReader(inStrm, StandardCharsets.UTF_8))) {
       String line;
       while ((line = bufReader.readLine()) != null) {
         fileContent.append(line);
@@ -144,7 +145,8 @@ public class HdfsUtils {
   }
 
   /**
-   * Copies {@code src} to {@code dst}. If {@code src} does not have a scheme, it is assumed to be on local filesystem.
+   * Copies {@code src} to {@code dst}. If {@code src} does not have a scheme,
+   * it is assumed to be on local filesystem.
    * @param src  Source {@code Path}
    * @param dst  Destination {@code Path}
    * @param conf  HDFS configuration

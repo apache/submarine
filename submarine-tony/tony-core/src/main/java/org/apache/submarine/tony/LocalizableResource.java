@@ -21,11 +21,12 @@ import java.net.URI;
  * SOURCE_FILE_PATH::PATH_IN_CONTAINER#archive
  * only SOURCE_FILE_PATH is required.
  *
- * SOURCE_FILE_PATH: location of the file to be localized to containers. This could be either local resources or remote
- *                   resources.
- * PATH_IN_CONTAINER: optional, default to source file name. If specified, source_file_path will be localized as name
- *                   file_in_container in container.
- * ARCHIVE: if #archive is put at the end, the file will be uploaded as ARCHIVE type and unzipped upon localization.
+ * SOURCE_FILE_PATH: location of the file to be localized to containers.
+ * This could be either local resources or remote resources.
+ * PATH_IN_CONTAINER: optional, default to source file name. If specified, source_file_path will
+ * be localized as name file_in_container in container.
+ * ARCHIVE: if #archive is put at the end, the file will be uploaded as ARCHIVE type
+ * and unzipped upon localization.
  */
 public class LocalizableResource {
 
@@ -67,7 +68,8 @@ public class LocalizableResource {
     return localizedFileName;
   }
 
-  public LocalizableResource(String completeResourceString, FileSystem fs) throws ParseException, IOException  {
+  public LocalizableResource(String completeResourceString, FileSystem fs)
+      throws ParseException, IOException  {
     this.completeResourceString = completeResourceString;
     this.parse(fs);
   }
@@ -104,7 +106,8 @@ public class LocalizableResource {
 
   public LocalResource toLocalResource() {
     if (isDirectory) {
-      throw new RuntimeException("Resource is directory and cannot be converted to LocalResource.");
+      throw new RuntimeException("Resource is directory and cannot " +
+          "be converted to LocalResource.");
     }
     return LocalResource.newInstance(ConverterUtils.getYarnUrlFromURI(
       URI.create(sourceFileStatus.getPath().toString())),

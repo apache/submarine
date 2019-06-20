@@ -29,7 +29,8 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import static org.apache.submarine.tony.Constants.TONY_FOLDER;
 
 /**
- * NotebookSubmitter is used to submit a python pex file (for example Jupyter Notebook) to run inside a cluster.
+ * NotebookSubmitter is used to submit a python pex file (for example Jupyter Notebook)
+ * to run inside a cluster.
  *
  * It would first kick off a container inside the cluster that matches the resource request
  * (am GPU/Memory/CPU) and run the specified script inside that node. To make it easier for
@@ -37,9 +38,12 @@ import static org.apache.submarine.tony.Constants.TONY_FOLDER;
  * proxy the request to that node.
  *
  * Usage:
- * // Suppose you have a folder named bin/ at root directory which contains a notebook pex file: linotebook, you can use
- * // this command to start the notebook and follow the output message to visit the jupyter notebook page.
- * CLASSPATH=$(${HADOOP_HDFS_HOME}/bin/hadoop classpath --glob):./:/home/khu/notebook/tony-cli-0.1.0-all.jar \
+ * // Suppose you have a folder named bin/ at root directory which contains a notebook
+ *    pex file: linotebook, you can use
+ * // this command to start the notebook and follow the output message to
+ *    visit the jupyter notebook page.
+ * CLASSPATH=$(${HADOOP_HDFS_HOME}/bin/hadoop classpath --glob):
+ *    ./:/home/khu/notebook/tony-cli-0.1.0-all.jar \
  * java NotebookSubmitter --src_dir bin/ --executes "'bin/linotebook --ip=* $DISABLE_TOKEN'"
  */
 public class NotebookSubmitter extends TonySubmitter {
@@ -70,14 +74,15 @@ public class NotebookSubmitter extends TonySubmitter {
   public int submit(String[] args)
       throws ParseException, URISyntaxException, IOException, InterruptedException {
     LOG.info("Starting NotebookSubmitter..");
-    String jarPath = new File(NotebookSubmitter.class.getProtectionDomain().getCodeSource().getLocation().toURI())
-        .getPath();
+    String jarPath = new File(NotebookSubmitter.class.getProtectionDomain()
+        .getCodeSource().getLocation().toURI()).getPath();
 
     int exitCode = 0;
     Path cachedLibPath;
     Configuration hdfsConf = new Configuration();
     try (FileSystem fs = FileSystem.get(hdfsConf)) {
-      cachedLibPath = new Path(fs.getHomeDirectory(), TONY_FOLDER + Path.SEPARATOR + UUID.randomUUID().toString());
+      cachedLibPath = new Path(fs.getHomeDirectory(),
+          TONY_FOLDER + Path.SEPARATOR + UUID.randomUUID().toString());
       fs.mkdirs(cachedLibPath);
       fs.copyFromLocalFile(new Path(jarPath), cachedLibPath);
       LOG.info("Copying " + jarPath + " to: " + cachedLibPath);
@@ -90,7 +95,8 @@ public class NotebookSubmitter extends TonySubmitter {
     updatedArgs[args.length] = "--hdfs_classpath";
     updatedArgs[args.length + 1] = cachedLibPath.toString();
     updatedArgs[args.length + 2] = "--conf";
-    updatedArgs[args.length + 3] = TonyConfigurationKeys.APPLICATION_TIMEOUT + "=" + (24 * 60 * 60 * 1000);
+    updatedArgs[args.length + 3]
+        = TonyConfigurationKeys.APPLICATION_TIMEOUT + "=" + (24 * 60 * 60 * 1000);
 
     client.init(updatedArgs);
     Thread clientThread = new Thread(client::start);
@@ -116,11 +122,13 @@ public class NotebookSubmitter extends TonySubmitter {
             int localPort = localSocket.getLocalPort();
             localSocket.close();
             ProxyServer server = new ProxyServer(host, port, localPort);
-            LOG.info("If you are running NotebookSubmitter in your local box, please open [localhost:" + localPort
-                + "] in your browser to visit the page. Otherwise, if you're running NotebookSubmitter in a remote "
+            LOG.info("If you are running NotebookSubmitter in your local box, please open " +
+                "[localhost:" + localPort + "] in your browser to visit the page. Otherwise, " +
+                "if you're running NotebookSubmitter in a remote "
                 + "machine (like a gateway), please run" + " [ssh -L 18888:localhost:" + localPort
-                + " name_of_this_host] in your laptop and open [localhost:18888] in your browser to visit Jupyter "
-                + "Notebook. If the 18888 port is occupied, replace that number with another number.");
+                + " name_of_this_host] in your laptop and open [localhost:18888] " +
+                "in your browser to visit Jupyter Notebook. If the 18888 port is occupied, " +
+                "replace that number with another number.");
             server.start();
             break;
           }

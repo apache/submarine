@@ -27,8 +27,10 @@ import org.apache.hadoop.yarn.api.records.ContainerId;
 import static org.apache.submarine.tony.TonyConfigurationKeys.MLFramework;
 
 /**
- * Content that we want to run in the containers. TaskExecutor will register itself with AM and fetch cluster spec from
- * AM. After the cluster spec is collected, TaskExecutor will set up local environment and start the worker task.
+ * Content that we want to run in the containers. TaskExecutor
+ * will register itself with AM and fetch cluster spec from
+ * AM. After the cluster spec is collected, TaskExecutor will set up
+ * local environment and start the worker task.
  */
 public class TaskExecutor {
   private static final Log LOG = LogFactory.getLog(TaskExecutor.class);
@@ -72,7 +74,8 @@ public class TaskExecutor {
 
   /**
    * We bind to random ports and then release them, and these are the ports used by the task.
-   * However, there is the possibility that another process grabs the port between when it's released and used again.
+   * However, there is the possibility that another process grabs the port between
+   * when it's released and used again.
    */
   private void setupPorts() throws IOException {
     // Reserve a rpcSocket rpcPort.
@@ -100,12 +103,16 @@ public class TaskExecutor {
     executor.initConfigs();
     Utils.extractResources();
 
-    LOG.info("Setting up application RPC client, connecting to: " + executor.amHost + ":" + executor.amPort);
-    executor.proxy = ApplicationRpcClient.getInstance(executor.amHost, executor.amPort, executor.yarnConf);
+    LOG.info("Setting up application RPC client, connecting to: "
+        + executor.amHost + ":" + executor.amPort);
+    executor.proxy
+        = ApplicationRpcClient.getInstance(executor.amHost, executor.amPort, executor.yarnConf);
 
-    LOG.info("Setting up metrics RPC client, connecting to: " + executor.amHost + ":" + executor.metricsRPCPort);
-    executor.metricsProxy = RPC.getProxy(MetricsRpc.class, RPC.getProtocolVersion(MetricsRpc.class),
-            new InetSocketAddress(executor.amHost, executor.metricsRPCPort), executor.yarnConf);
+    LOG.info("Setting up metrics RPC client, connecting to: "
+        + executor.amHost + ":" + executor.metricsRPCPort);
+    executor.metricsProxy = RPC.getProxy(MetricsRpc.class,
+        RPC.getProtocolVersion(MetricsRpc.class),
+        new InetSocketAddress(executor.amHost, executor.metricsRPCPort), executor.yarnConf);
     executor.scheduledThreadPool.scheduleAtFixedRate(
         new TaskMonitor(executor.jobName, executor.taskIndex, executor.yarnConf,
             executor.tonyConf, executor.metricsProxy),
@@ -188,7 +195,8 @@ public class TaskExecutor {
     }
     LOG.info("Task command: " + taskCommand);
     framework = MLFramework.valueOf(
-        tonyConf.get(TonyConfigurationKeys.FRAMEWORK_NAME, TonyConfigurationKeys.DEFAULT_FRAMEWORK_NAME).toUpperCase());
+        tonyConf.get(TonyConfigurationKeys.FRAMEWORK_NAME,
+            TonyConfigurationKeys.DEFAULT_FRAMEWORK_NAME).toUpperCase());
 
     metricsRPCPort = Integer.parseInt(System.getenv(Constants.METRICS_RPC_PORT));
     metricsIntervalMs = tonyConf.getInt(TonyConfigurationKeys.TASK_METRICS_UPDATE_INTERVAL_MS,
@@ -208,8 +216,8 @@ public class TaskExecutor {
     scheduledThreadPool.scheduleAtFixedRate(new Heartbeater(),
         0, hbInterval, TimeUnit.MILLISECONDS);
 
-    LOG.info("Connecting to " + amHost + ":" + amPort + " to register worker spec: " + jobName + " " + taskIndex + " "
-             + hostName + ":" + rpcPort);
+    LOG.info("Connecting to " + amHost + ":" + amPort + " to register worker spec: "
+        + jobName + " " + taskIndex + " " + hostName + ":" + rpcPort);
     return Utils.pollTillNonNull(() ->
         proxy.registerWorkerSpec(jobName + ":" + taskIndex,
             hostName + ":" + rpcPort), 3, 0);

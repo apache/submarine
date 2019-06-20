@@ -11,7 +11,8 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 
 public interface ApplicationRpc {
   /**
-   * Returns all the task URLs once all tasks have been allocated. Before all tasks have been allocated, this will
+   * Returns all the task URLs once all tasks have been allocated.
+   * Before all tasks have been allocated, this will
    * return an empty set.
    */
   Set<TaskInfo> getTaskInfos() throws IOException, YarnException;
@@ -19,7 +20,8 @@ public interface ApplicationRpc {
   String getClusterSpec() throws IOException, YarnException;
   String registerWorkerSpec(String worker, String spec) throws IOException, YarnException;
   String registerTensorBoardUrl(String spec) throws Exception;
-  String registerExecutionResult(int exitCode, String jobName, String jobIndex, String sessionId) throws Exception;
+  String registerExecutionResult(int exitCode, String jobName, String jobIndex, String sessionId)
+      throws Exception;
   void finishApplication() throws YarnException, IOException;
   void taskExecutorHeartbeat(String taskId) throws YarnException, IOException;
   void reset();

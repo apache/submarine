@@ -203,7 +203,9 @@ public class ApplicationMaster {
             break;
           }
         }
-        setExpireInterval(hbInterval * Math.max(3, maxConsecutiveHBMiss)); // Be at least == monitoring interval
+
+        // Be at least == monitoring interval
+        setExpireInterval(hbInterval * Math.max(3, maxConsecutiveHBMiss));
         super.serviceStart();
       }
     };
@@ -653,7 +655,8 @@ public class ApplicationMaster {
   }
 
   /**
-   * Returns the tasks whose containers have launched but not called {@link ApplicationRpc#registerWorkerSpec} yet.
+   * Returns the tasks whose containers have launched but not called
+   * {@link ApplicationRpc#registerWorkerSpec} yet.
    */
   private Set<TonyTask> getUnregisteredTasks() {
     return session.getTonyTasks().values().stream().flatMap(Arrays::stream)
@@ -767,8 +770,8 @@ public class ApplicationMaster {
       if (singleNode && proxyUrl != null) {
         HashSet<TaskInfo> additionalTasks = new HashSet<>();
         additionalTasks.add(new TaskInfo(Constants.DRIVER_JOB_NAME, "0", Utils.constructContainerUrl(
-                          Utils.getCurrentHostName() + ":"
-                          + System.getenv(ApplicationConstants.Environment.NM_HTTP_PORT.name()), containerId)));
+            Utils.getCurrentHostName() + ":"
+                + System.getenv(ApplicationConstants.Environment.NM_HTTP_PORT.name()), containerId)));
         additionalTasks.add(new TaskInfo(Constants.NOTEBOOK_JOB_NAME, "0", proxyUrl));
         return additionalTasks;
       }
@@ -838,8 +841,8 @@ public class ApplicationMaster {
     }
 
     /**
-     * This method was used to workaround an issue that the Python script finished while the container failed to
-     * close due to GPU allocation issue, which doesn't exist anymore.
+     * This method was used to workaround an issue that the Python script finished while the container
+     * failed to close due to GPU allocation issue, which doesn't exist anymore.
      *
      * Discussion: A benefit of decoupling registering execution result from container exit status is that
      * we can decouple tony from a specific resource manager's callback logic.
@@ -852,7 +855,8 @@ public class ApplicationMaster {
      */
     @Override
     public String registerExecutionResult(int exitCode, String jobName, String jobIndex, String sessionId) {
-      LOG.info("Received result registration request with exit code " + exitCode + " from " + jobName + " " + jobIndex);
+      LOG.info("Received result registration request with exit code "
+          + exitCode + " from " + jobName + " " + jobIndex);
 
       // Unregister task after completion..
       // Since in the case of asynchronous exec, containers might
@@ -889,8 +893,8 @@ public class ApplicationMaster {
         Method method = AMRMClientAsync.class.getMethod("updateTrackingUrl", String.class);
         method.invoke(amRMClient, spec);
       } catch (NoSuchMethodException nsme) {
-        LOG.warn("This Hadoop version doesn't have the YARN-7974 patch, TonY won't register TensorBoard URL with"
-                 + "application's tracking URL");
+        LOG.warn("This Hadoop version doesn't have the YARN-7974 patch, " +
+            "TonY won't register TensorBoard URL with application's tracking URL");
       }
       return "SUCCEEDED";
     } else {
@@ -913,7 +917,8 @@ public class ApplicationMaster {
     Priority priority = Priority.newInstance(request.getPriority());
     Resource capability = Resource.newInstance((int) request.getMemory(), request.getVCores());
     Utils.setCapabilityGPU(capability, request.getGPU());
-    AMRMClient.ContainerRequest containerRequest = new AMRMClient.ContainerRequest(capability, null, null, priority);
+    AMRMClient.ContainerRequest containerRequest
+        = new AMRMClient.ContainerRequest(capability, null, null, priority);
     LOG.info("Requested container ask: " + containerRequest.toString());
     return containerRequest;
   }

@@ -66,7 +66,8 @@ public class ApplicationRpcServer extends Thread implements TensorFlowCluster {
   @Override
   public RegisterTensorBoardUrlResponse registerTensorBoardUrl(RegisterTensorBoardUrlRequest request)
           throws Exception {
-    RegisterTensorBoardUrlResponse response = RECORD_FACTORY.newRecordInstance(RegisterTensorBoardUrlResponse.class);
+    RegisterTensorBoardUrlResponse response
+        = RECORD_FACTORY.newRecordInstance(RegisterTensorBoardUrlResponse.class);
     String clusterSpec = this.appRpc.registerTensorBoardUrl(request.getSpec());
     response.setSpec(clusterSpec);
     return response;
@@ -76,7 +77,8 @@ public class ApplicationRpcServer extends Thread implements TensorFlowCluster {
   @Override
   public RegisterExecutionResultResponse registerExecutionResult(RegisterExecutionResultRequest request)
       throws Exception {
-    RegisterExecutionResultResponse response = RECORD_FACTORY.newRecordInstance(RegisterExecutionResultResponse.class);
+    RegisterExecutionResultResponse response
+        = RECORD_FACTORY.newRecordInstance(RegisterExecutionResultResponse.class);
     String msg = this.appRpc.registerExecutionResult(request.getExitCode(),
         request.getJobName(), request.getJobIndex(), request.getSessionId());
     response.setMessage(msg);
@@ -117,12 +119,12 @@ public class ApplicationRpcServer extends Thread implements TensorFlowCluster {
       RPC.setProtocolEngine(conf, TensorFlowClusterPB.class, ProtobufRpcEngine.class);
       TensorFlowClusterPBServiceImpl
               translator = new TensorFlowClusterPBServiceImpl(this);
-      BlockingService service = org.apache.submarine.tony.rpc.proto.TensorFlowCluster.TensorFlowClusterService
-              .newReflectiveBlockingService(translator);
+      BlockingService service = org.apache.submarine.tony.rpc.proto.TensorFlowCluster
+          .TensorFlowClusterService.newReflectiveBlockingService(translator);
       server = new RPC.Builder(conf).setProtocol(TensorFlowClusterPB.class)
-              .setInstance(service).setBindAddress(rpcAddress)
-              .setPort(rpcPort) // TODO(johndoe): let RPC randomly generate it
-              .setSecretManager(secretManager).build();
+          .setInstance(service).setBindAddress(rpcAddress)
+          .setPort(rpcPort) // TODO(johndoe): let RPC randomly generate it
+          .setSecretManager(secretManager).build();
       server.start();
       if (conf.getBoolean(
               CommonConfigurationKeysPublic.HADOOP_SECURITY_AUTHORIZATION,
@@ -147,8 +149,9 @@ public class ApplicationRpcServer extends Thread implements TensorFlowCluster {
 
   @Override
   public ProtocolSignature getProtocolSignature(String protocol,
-                                                long clientVersion, int clientMethodsHash) throws IOException {
+                                                long clientVersion,
+                                                int clientMethodsHash) throws IOException {
     return ProtocolSignature.getProtocolSignature(this,
-            protocol, clientVersion, clientMethodsHash);
+        protocol, clientVersion, clientMethodsHash);
   }
 }

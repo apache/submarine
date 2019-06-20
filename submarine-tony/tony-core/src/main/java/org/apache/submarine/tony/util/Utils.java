@@ -101,9 +101,10 @@ public class Utils {
   }
 
   /**
-   * Polls the function {@code func} every {@code interval} seconds until the function returns non-null or until
-   * {@code timeout} seconds is reached, and which point this function returns null. If {@code timeout} is 0, the
-   * function will be polled forever until it returns non-null.
+   * Polls the function {@code func} every {@code interval} seconds until the function
+   * returns non-null or until
+   * {@code timeout} seconds is reached, and which point this function returns null.
+   * If {@code timeout} is 0, the function will be polled forever until it returns non-null.
    *
    * @param func  the function to poll
    * @param interval  the interval, in seconds, at which to poll the function
@@ -148,10 +149,12 @@ public class Utils {
     return memory;
   }
 
-  public static void zipFolder(java.nio.file.Path sourceFolderPath, java.nio.file.Path zipPath) throws IOException {
+  public static void zipFolder(java.nio.file.Path sourceFolderPath, java.nio.file.Path zipPath)
+      throws IOException {
     ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipPath.toFile()));
     Files.walkFileTree(sourceFolderPath, new SimpleFileVisitor<java.nio.file.Path>() {
-      public FileVisitResult visitFile(java.nio.file.Path file, BasicFileAttributes attrs) throws IOException {
+      public FileVisitResult visitFile(java.nio.file.Path file, BasicFileAttributes attrs)
+          throws IOException {
         zos.putNextEntry(new ZipEntry(sourceFolderPath.relativize(file).toString()));
         Files.copy(file, zos);
         zos.closeEntry();
@@ -182,14 +185,16 @@ public class Utils {
       return;
     }
     try {
-      Method method = resource.getClass().getMethod(Constants.SET_RESOURCE_VALUE_METHOD, String.class, long.class);
+      Method method = resource.getClass().getMethod(
+          Constants.SET_RESOURCE_VALUE_METHOD, String.class, long.class);
       method.invoke(resource, Constants.GPU_URI, gpuCount);
     } catch (NoSuchMethodException nsme) {
       LOG.error("There is no '" + Constants.SET_RESOURCE_VALUE_METHOD + "' API in this version ("
               + VersionInfo.getVersion() + ") of YARN", nsme);
       throw new RuntimeException(nsme);
     } catch (IllegalAccessException | InvocationTargetException e) {
-      LOG.error("Failed to invoke '" + Constants.SET_RESOURCE_VALUE_METHOD + "' method to set GPU resources", e);
+      LOG.error("Failed to invoke '" + Constants.SET_RESOURCE_VALUE_METHOD
+          + "' method to set GPU resources", e);
       throw new RuntimeException(e);
     }
     return;
@@ -216,11 +221,13 @@ public class Utils {
   }
 
   public static void printTaskUrl(TaskInfo taskInfo, Log log) {
-    log.info(String.format("Logs for %s %s at: %s", taskInfo.getName(), taskInfo.getIndex(), taskInfo.getUrl()));
+    log.info(String.format("Logs for %s %s at: %s",
+        taskInfo.getName(), taskInfo.getIndex(), taskInfo.getUrl()));
   }
 
   public static void printTonyPortalUrl(String portalUrl, String appId, Log log) {
-    log.info(String.format("Link for %s's events/metrics: %s/%s/%s", appId, portalUrl, Constants.JOBS_SUFFIX, appId));
+    log.info(String.format("Link for %s's events/metrics: %s/%s/%s",
+        appId, portalUrl, Constants.JOBS_SUFFIX, appId));
   }
 
   /**
@@ -458,7 +465,9 @@ public class Utils {
    * @param resourcesMap  map where resource path to {@Link LocalResource} mapping will be added
    * @param fs  {@link FileSystem} used to list the resources
    */
-  public static void addResources(String[] resources, Map<String, LocalResource> resourcesMap, FileSystem fs) {
+  public static void addResources(String[] resources,
+                                  Map<String, LocalResource> resourcesMap,
+                                  FileSystem fs) {
     if (null != resources) {
       for (String dir : resources) {
         Utils.addResource(dir, resourcesMap, fs);
@@ -467,7 +476,8 @@ public class Utils {
   }
 
   /**
-   * Add files inside a path to local resources. If the path is a directory, its first level files will be added
+   * Add files inside a path to local resources. If the path is a directory,
+   * its first level files will be added
    * to the local resources. Note that we don't add nested files.
    * @param path the directory whose contents will be localized.
    * @param resourcesMap map where resource path to {@link LocalResource} mapping will be added
@@ -506,7 +516,8 @@ public class Utils {
       LOG.info("Completed all " + totalWTasks + " worker tasks.");
       return;
     }
-    LOG.info("Completed worker tasks: " + completedWTasks.get() + " out of " + totalWTasks + " worker tasks.");
+    LOG.info("Completed worker tasks: " + completedWTasks.get()
+        + " out of " + totalWTasks + " worker tasks.");
   }
 
   public static String parseClusterSpecForPytorch(String clusterSpec) throws IOException {
@@ -538,7 +549,8 @@ public class Utils {
   }
 
   public static String[] getUntrackedJobTypes(Configuration conf) {
-    return conf.getStrings(TonyConfigurationKeys.UNTRACKED_JOBTYPES, TonyConfigurationKeys.UNTRACKED_JOBTYPES_DEFAULT);
+    return conf.getStrings(TonyConfigurationKeys.UNTRACKED_JOBTYPES,
+        TonyConfigurationKeys.UNTRACKED_JOBTYPES_DEFAULT);
   }
 
   public static boolean isJobTypeTracked(String taskName, Configuration tonyConf) {

@@ -50,18 +50,22 @@ public class ClusterSubmitter extends TonySubmitter {
 
   public int submit(String[] args) throws ParseException, URISyntaxException {
     LOG.info("Starting ClusterSubmitter..");
-    String jarLocation = new File(ClusterSubmitter.class.getProtectionDomain().getCodeSource().getLocation().toURI())
-        .getPath();
+    String jarLocation = new File(ClusterSubmitter.class.getProtectionDomain()
+        .getCodeSource().getLocation().toURI()).getPath();
     Configuration hdfsConf = new Configuration();
-    hdfsConf.addResource(new Path(System.getenv(HADOOP_CONF_DIR) + File.separatorChar + CORE_SITE_CONF));
-    hdfsConf.addResource(new Path(System.getenv(HADOOP_CONF_DIR) + File.separatorChar + HDFS_SITE_CONF));
+    hdfsConf.addResource(new Path(System.getenv(HADOOP_CONF_DIR)
+        + File.separatorChar + CORE_SITE_CONF));
+    hdfsConf.addResource(new Path(System.getenv(HADOOP_CONF_DIR)
+        + File.separatorChar + HDFS_SITE_CONF));
     LOG.info(hdfsConf);
     int exitCode;
     Path cachedLibPath = null;
     try (FileSystem fs = FileSystem.get(hdfsConf)) {
-      cachedLibPath = new Path(fs.getHomeDirectory(), TONY_FOLDER + Path.SEPARATOR + UUID.randomUUID().toString());
-      Utils.uploadFileAndSetConfResources(cachedLibPath, new Path(jarLocation), TONY_JAR_NAME, client.getTonyConf(), fs,
-          LocalResourceType.FILE, TonyConfigurationKeys.getContainerResourcesKey());
+      cachedLibPath = new Path(fs.getHomeDirectory(),
+          TONY_FOLDER + Path.SEPARATOR + UUID.randomUUID().toString());
+      Utils.uploadFileAndSetConfResources(cachedLibPath, new Path(jarLocation), TONY_JAR_NAME,
+          client.getTonyConf(), fs, LocalResourceType.FILE,
+          TonyConfigurationKeys.getContainerResourcesKey());
       LOG.info("Copying " + jarLocation + " to: " + cachedLibPath);
       boolean sanityCheck = client.init(args);
       if (!sanityCheck) {

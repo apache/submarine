@@ -40,7 +40,8 @@ public class TonyConfigurationKeys {
   public static final String DEFAULT_TONY_HISTORY_LOCATION = "/path/to/tony-history";
 
   public static final String TONY_HISTORY_INTERMEDIATE = TONY_HISTORY_PREFIX + "intermediate";
-  public static final String DEFAULT_TONY_HISTORY_INTERMEDIATE = DEFAULT_TONY_HISTORY_LOCATION + "/intermediate";
+  public static final String DEFAULT_TONY_HISTORY_INTERMEDIATE
+      = DEFAULT_TONY_HISTORY_LOCATION + "/intermediate";
 
   public static final String TONY_HISTORY_FINISHED = TONY_HISTORY_PREFIX + "finished";
   public static final String DEFAULT_TONY_HISTORY_FINISHED = DEFAULT_TONY_HISTORY_LOCATION + "/finished";
@@ -48,7 +49,8 @@ public class TonyConfigurationKeys {
   public static final String TONY_HISTORY_MOVER_INTERVAL_MS = TONY_HISTORY_PREFIX + "mover-interval-ms";
   public static final int DEFAULT_TONY_HISTORY_MOVER_INTERVAL_MS = 5 * 60 * 1000;
 
-  public static final String TONY_HISTORY_FINISHED_DIR_TIMEZONE = TONY_HISTORY_PREFIX + "finished-dir-timezone";
+  public static final String TONY_HISTORY_FINISHED_DIR_TIMEZONE
+      = TONY_HISTORY_PREFIX + "finished-dir-timezone";
   public static final String DEFAULT_TONY_HISTORY_FINISHED_DIR_TIMEZONE = "UTC";
 
   // How many seconds to retain history files for

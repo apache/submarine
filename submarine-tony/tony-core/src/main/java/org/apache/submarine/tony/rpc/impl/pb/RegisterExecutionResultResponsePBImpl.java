@@ -10,7 +10,8 @@ import org.apache.submarine.tony.rpc.proto.YarnTensorFlowClusterProtos.RegisterE
 
 
 public class RegisterExecutionResultResponsePBImpl implements RegisterExecutionResultResponse {
-  private RegisterExecutionResultResponseProto proto = RegisterExecutionResultResponseProto.getDefaultInstance();
+  private RegisterExecutionResultResponseProto proto
+      = RegisterExecutionResultResponseProto.getDefaultInstance();
   private RegisterExecutionResultResponseProto.Builder builder = null;
   private boolean viaProto = false;
 

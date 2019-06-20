@@ -10,7 +10,8 @@ import org.apache.submarine.tony.rpc.proto.YarnTensorFlowClusterProtos.RegisterT
 
 
 public class RegisterTensorBoardUrlResponsePBImpl implements RegisterTensorBoardUrlResponse {
-  private RegisterTensorBoardUrlResponseProto proto = RegisterTensorBoardUrlResponseProto.getDefaultInstance();
+  private RegisterTensorBoardUrlResponseProto proto
+      = RegisterTensorBoardUrlResponseProto.getDefaultInstance();
   private RegisterTensorBoardUrlResponseProto.Builder builder = null;
   private boolean viaProto = false;
 

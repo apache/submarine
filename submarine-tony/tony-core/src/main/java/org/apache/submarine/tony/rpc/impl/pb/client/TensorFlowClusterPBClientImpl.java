@@ -162,7 +162,8 @@ public class TensorFlowClusterPBClientImpl implements TensorFlowCluster, Closeab
 
   @Override
   public ProtocolSignature getProtocolSignature(String protocol,
-                                                long clientVersion, int clientMethodsHash) throws IOException {
+                                                long clientVersion,
+                                                int clientMethodsHash) throws IOException {
     return ProtocolSignature.getProtocolSignature(this,
         protocol, clientVersion, clientMethodsHash);
   }
