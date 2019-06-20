@@ -23,7 +23,7 @@
     <version>0.3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  <artifactId>submarine-yarnservice-runtime</artifactId>
+  <artifactId>yarnservice-runtime</artifactId>
   <version>0.3.0-SNAPSHOT</version>
   <name>Submarine: YARN Service Runtime</name>
 
@@ -40,7 +40,6 @@
       <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>

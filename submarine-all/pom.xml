@@ -53,7 +53,7 @@
         </dependency>
         <dependency>
           <groupId>org.apache.submarine</groupId>
-          <artifactId>submarine-tony-runtime</artifactId>
+          <artifactId>tony-runtime</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -85,7 +85,7 @@
         </dependency>
         <dependency>
           <groupId>org.apache.submarine</groupId>
-          <artifactId>submarine-tony-runtime</artifactId>
+          <artifactId>tony-runtime</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -104,7 +104,7 @@
       <dependencies>
         <dependency>
           <groupId>org.apache.submarine</groupId>
-          <artifactId>submarine-tony-runtime</artifactId>
+          <artifactId>tony-runtime</artifactId>
           <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -120,7 +120,7 @@
       <dependencies>
         <dependency>
           <groupId>org.apache.submarine</groupId>
-          <artifactId>submarine-tony-runtime</artifactId>
+          <artifactId>tony-runtime</artifactId>
           <version>${project.version}</version>
         </dependency>
       </dependencies>

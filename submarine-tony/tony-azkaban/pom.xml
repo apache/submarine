@@ -21,13 +21,13 @@
 
   <parent>
     <groupId>org.apache.submarine</groupId>
-    <artifactId>submarine-tony-parent</artifactId>
+    <artifactId>submarine-tony</artifactId>
     <version>0.3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <groupId>org.apache.submarine</groupId>
-  <artifactId>submarine-tony-azkaban</artifactId>
+  <artifactId>tony-azkaban</artifactId>
   <packaging>jar</packaging>
   <version>0.3.0-SNAPSHOT</version>
   <name>Submarine: Tony Azkaban</name>

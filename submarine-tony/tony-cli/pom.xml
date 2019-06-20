@@ -21,13 +21,13 @@
 
   <parent>
     <groupId>org.apache.submarine</groupId>
-    <artifactId>submarine-tony-parent</artifactId>
+    <artifactId>submarine-tony</artifactId>
     <version>0.3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <groupId>org.apache.submarine</groupId>
-  <artifactId>submarine-tony-cli</artifactId>
+  <artifactId>tony-cli</artifactId>
   <packaging>jar</packaging>
   <version>0.3.0-SNAPSHOT</version>
   <name>Submarine: Tony Cli</name>
@@ -36,13 +36,13 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>submarine-tony-core</artifactId>
+      <artifactId>tony-core</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>submarine-tony-mini</artifactId>
+      <artifactId>tony-mini</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
       <exclusions>
@@ -54,7 +54,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>submarine-tony-proxy</artifactId>
+      <artifactId>tony-proxy</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
@@ -72,7 +72,7 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.4</version>
+      <version>${testng.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>

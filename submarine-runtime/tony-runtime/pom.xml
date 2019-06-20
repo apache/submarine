@@ -19,12 +19,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.submarine</groupId>
-    <artifactId>submarine-runtime-parent</artifactId>
+    <artifactId>submarine-runtime</artifactId>
     <version>0.3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>submarine-tony-runtime</artifactId>
+  <artifactId>tony-runtime</artifactId>
   <version>0.3.0-SNAPSHOT</version>
   <name>Submarine: Tony Runtime</name>
   <dependencies>
@@ -51,7 +51,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>submarine-tony-core</artifactId>
+      <artifactId>tony-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -102,6 +102,10 @@
         <exclusion>
           <groupId>org.apache.avro</groupId>
           <artifactId>avro</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.tukaani</groupId>
+          <artifactId>xz</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

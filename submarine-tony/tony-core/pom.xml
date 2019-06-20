@@ -21,13 +21,13 @@
 
   <parent>
     <groupId>org.apache.submarine</groupId>
-    <artifactId>submarine-tony-parent</artifactId>
+    <artifactId>submarine-tony</artifactId>
     <version>0.3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <groupId>org.apache.submarine</groupId>
-  <artifactId>submarine-tony-core</artifactId>
+  <artifactId>tony-core</artifactId>
   <packaging>jar</packaging>
   <version>0.3.0-SNAPSHOT</version>
   <name>Submarine: Tony Core</name>
@@ -37,7 +37,7 @@
     <dependency>
       <groupId>org.apache.avro</groupId>
       <artifactId>avro</artifactId>
-      <version>1.8.2</version>
+      <version>${avro.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.slf4j</groupId>
@@ -47,16 +47,17 @@
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-compress</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>org.tukaani</groupId>
-          <artifactId>xz</artifactId>
-        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>${commons-collections.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
-      <version>4.5.3</version>
+      <version>${httpclient.version}</version>
       <exclusions>
         <exclusion>
           <groupId>commons-logging</groupId>
@@ -71,17 +72,17 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.7.8</version>
+      <version>${jackson-databind.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
-      <version>1.4</version>
+      <version>${commons-text.version}</version>
     </dependency>
     <dependency>
       <groupId>net.lingala.zip4j</groupId>
       <artifactId>zip4j</artifactId>
-      <version>1.3.2</version>
+      <version>${zip4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.hadoop</groupId>
@@ -193,7 +194,7 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>6.4</version>
+      <version>${testng.version}</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -204,7 +205,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>submarine-tony-mini</artifactId>
+      <artifactId>tony-mini</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
       <exclusions>
