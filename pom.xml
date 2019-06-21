@@ -91,7 +91,7 @@
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>2.23.4</version>
+        <version>${mockito.version}</version>
       </dependency>
       <dependency>
         <groupId>log4j</groupId>
@@ -198,6 +198,16 @@
        </dependency>
      </dependencies>
     </profile>
+
+
+    <profile>
+      <id>rat</id>
+      <activation>
+        <property>
+          <name>skipRat</name>
+        </property>
+      </activation>
+    </profile>
   </profiles>
 
   <build>
@@ -265,6 +275,37 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <excludes>
+            <exclude>.git/</exclude>
+            <exclude>.github/*</exclude>
+            <exclude>.gitignore</exclude>
+            <exclude>LICENSE</exclude>
+            <exclude>license_header</exclude>
+            <exclude> _tools/site/css/*</exclude>
+            <exclude> _tools/site/images/*</exclude>
+            <exclude>**/*.avsc</exclude>
+            <exclude>**/log4j.properties</exclude>
+            <exclude>**/*.md</exclude>
+            <exclude>**/*.proto</exclude>
+            <exclude>**/*.txt</exclude>
+            <exclude>**/*.xml</exclude>
+            <exclude>**/*.html</exclude>
+            <exclude>**/*.xsd</exclude>
+            <exclude>**/*.json</exclude>
+            <exclude>**/*.conf</exclude>
+            <exclude>**/src/main/java/org/apache/submarine/tony/events/avro/*</exclude>
+            <exclude>**/src/main/resources/META-INF/services/org.apache.hadoop.security.SecurityInfo</exclude>
+            <exclude>**/src/test/resources/typicalHistFolder/job1/application123-1-1-user1-SUCCEEDED.jhist</exclude>
+            <exclude>**/conf/routes</exclude>
+          </excludes>
+        </configuration>
       </plugin>
     </plugins>
   </build>

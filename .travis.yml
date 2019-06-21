@@ -1,0 +1,64 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements. See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+language: java
+
+sudo: false
+
+before_cache:
+  - sudo chown -R travis:travis $HOME/.m2
+
+cache:
+  apt: true
+  directories:
+    - ${HOME}/.m2
+
+matrix:
+  include:
+    # Test License compliance using RAT tool
+    - jdk: "openjdk7"
+      dist: trusty
+      env: NAME="Check RAT" PROFILE="" BUILD_FLAG="clean" TEST_FLAG="org.apache.rat:apache-rat-plugin:check" TEST_PROJECTS=""
+
+    # Compile
+    - jdk: "oraclejdk8"
+      dist: trusty
+      env: NAME="Compile Project" PROFILE="" BUILD_FLAG="clean install package -DskipTests" TEST_FLAG="" MODULES="" TEST_PROJECTS=""
+
+    # Test modules
+    - jdk: "oraclejdk8"
+      dist: trusty
+      env: NAME="Test Project" PROFILE="" BUILD_FLAG="clean install package -DskipTests" TEST_FLAG="test" MODULES="" TEST_PROJECTS=""
+
+install:
+  - echo "[$NAME] > mvn $BUILD_FLAG $MODULES $PROFILE -B"
+  - mvn $BUILD_FLAG $MODULES $PROFILE -B
+
+before_script:
+  # display info log for debugging
+  - if [[ -n $TEST_MODULES ]]; then echo "MAVEN_OPTS='-Xms1024M -Xmx2048M -XX:MaxPermSize=1024m -XX:-UseGCOverheadLimit -Dorg.slf4j.simpleLogger.defaultLogLevel=info'" > ~/.mavenrc; fi
+
+script:
+  - if [[ -n $TEST_MODULES ]]; then export MODULES="${TEST_MODULES}"; fi
+  - if [[ -n $TEST_FLAG ]]; then echo "[$NAME] > mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS"; fi
+  - if [[ -n $TEST_FLAG ]]; then mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS; fi
+
+after_success:
+  - echo "Travis exited with ${TRAVIS_TEST_RESULT}"
+
+after_failure:
+  - echo "Travis exited with ${TRAVIS_TEST_RESULT}"
+  - find . -name rat.txt | xargs cat
+  - cat logs/*

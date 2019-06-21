@@ -38,7 +38,7 @@
     <module>tony-proxy</module>
     <module>tony-cli</module>
     <module>tony-portal</module>
-    <!--module>tony-azkaban</module-->
+    <module>tony-azkaban</module>
   </modules>
 
 </project>
