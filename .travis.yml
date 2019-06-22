@@ -32,10 +32,15 @@ matrix:
       dist: trusty
       env: NAME="Check RAT" PROFILE="" BUILD_FLAG="clean" TEST_FLAG="org.apache.rat:apache-rat-plugin:check" TEST_PROJECTS=""
 
-    # Compile
+    # Compile hadoop-2.7
     - jdk: "oraclejdk8"
       dist: trusty
-      env: NAME="Compile Project" PROFILE="" BUILD_FLAG="clean install package -DskipTests" TEST_FLAG="" MODULES="" TEST_PROJECTS=""
+      env: NAME="Compile hadoop-2.7" PROFILE="" BUILD_FLAG="clean install package -DskipTests -Phadoop-2.7" TEST_FLAG="" MODULES="" TEST_PROJECTS=""
+
+    # Compile hadoop-2.9(default)
+    - jdk: "oraclejdk8"
+      dist: trusty
+      env: NAME="Compile hadoop-2.9" PROFILE="" BUILD_FLAG="clean install package -DskipTests" TEST_FLAG="" MODULES="" TEST_PROJECTS=""
 
     # Test modules
     - jdk: "oraclejdk8"
