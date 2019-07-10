@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
 public class TestGpuDeviceInformationParser {
   @Test
   public void testParse() throws IOException, GpuInfoException {
-    File f = new File("tony-core/src/test/resources/nvidia-smi-sample-xml-output");
+    File f = new File("src/test/resources/nvidia-smi-sample-xml-output");
     String s = FileUtils.readFileToString(f, "UTF-8");
 
     GpuDeviceInformationParser parser = new GpuDeviceInformationParser();

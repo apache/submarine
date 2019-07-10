@@ -52,6 +52,17 @@
     </dependency>
     <dependency>
       <groupId>com.linkedin.azkaban</groupId>
+      <artifactId>azkaban-hadoop-security-plugin</artifactId>
+      <version>3.58.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.linkedin.azkaban</groupId>
+          <artifactId>azkaban-spi</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.linkedin.azkaban</groupId>
       <artifactId>az-hadoop-jobtype-plugin</artifactId>
       <version>3.58.0</version>
     </dependency>

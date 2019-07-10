@@ -136,7 +136,7 @@ public class Constants {
   public static final String TONY_FINAL_XML = "tony-final.xml";
 
   // Module relative path
-  public static final String TONY_CORE_SRC = "./tony-core/src/";
+  public static final String TONY_CORE_SRC = "src/";
 
   // YARN resources
   public static final String MEMORY = "memory";
