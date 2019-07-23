@@ -4,3 +4,6 @@ target
 *.properties
 *.gradle
 submarine-tony/tony-core/build
+*.tgz
+*.tar.gz
+*.jar
