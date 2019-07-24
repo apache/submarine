@@ -19,47 +19,32 @@ spark_v=2.4.3
 submarine_v=0.2.0
 image_name="local/hadoop-docker:submarine"
 
+download_package() {
+  if [ -f "$1" ]; then
+    echo "Found $1"
+  else
+    echo "Start downloading the package $1 from $2"
+    if type wget >/dev/null 2>&1; then
+      wget $2/$1
+    elif type curl >/dev/null 2>&1; then
+      curl -O $2/$1
+    else
+      echo 'We need a tool to transfer data from or to a server. Such as wget/curl.'
+      echo 'Bye, bye!'
+      exit -1
+    fi
+  fi
+}
+
 # download hadoop
-file="hadoop-${hadoop_v}.tar.gz"
-if [ -e "$file" ]
-then
-  echo "$file found."
-else
-  echo "$file not found."
-  wget http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-${hadoop_v}/hadoop-${hadoop_v}.tar.gz
-fi
+download_package "hadoop-${hadoop_v}.tar.gz" "http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-${hadoop_v}"
 # download spark
-file2="spark-${spark_v}-bin-hadoop2.7.tgz"
-if [ -e "$file2" ]
-then
-  echo "$file2 found."
-else
-  echo "$file2 not found."
-  wget http://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-${spark_v}/spark-${spark_v}-bin-hadoop2.7.tgz
-fi
-
+download_package "spark-${spark_v}-bin-hadoop2.7.tgz" "http://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-${spark_v}"
 # download zookeeper
-file3="zookeeper-3.4.14.tar.gz"
-if [ -e "$file3" ]
-then
-  echo "$file3 found."
-else
-  echo "$file3 not found."
-  wget http://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.4.14/zookeeper-3.4.14.tar.gz
-fi
-
-
+download_package "zookeeper-3.4.14.tar.gz" "http://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.4.14"
 # download submarine
-file4="hadoop-submarine-${submarine_v}.tar.gz"
-if [ -e "$file4" ]
-then
-  echo "$file4 found."
-else
-  echo "$file4 not found."
-  wget http://mirror.bit.edu.cn/apache/hadoop/submarine/submarine-${submarine_v}/hadoop-submarine-${submarine_v}.tar.gz
-fi
-
+download_package "hadoop-submarine-${submarine_v}.tar.gz" "http://mirror.bit.edu.cn/apache/hadoop/submarine/submarine-${submarine_v}"
 
 # build image
+echo "Start building the docker image..."
 docker build --build-arg HADOOP_VERSION=${hadoop_v} --build-arg SPARK_VERSION=${spark_v} --build-arg SUBMARINE_VERSION=${submarine_v} --build-arg IMAGE_NAME=${image_name} -t ${image_name} .
-
