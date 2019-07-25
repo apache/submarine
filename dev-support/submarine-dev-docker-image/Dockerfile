@@ -117,7 +117,9 @@ ADD hadoop-submarine-${SUBMARINE_VER}.tar.gz /opt
 ADD submarine /home/yarn/submarine
 
 # Build virtual python env
-RUN cd /home/yarn/submarine && /home/yarn/submarine/build_python_virtual_env.sh
+RUN cd /home/yarn/submarine && \
+    chmod +x /home/yarn/submarine/* && \
+    /home/yarn/submarine/build_python_virtual_env.sh
 
 # Grant read permission for submarine job
 RUN chown yarn /home/yarn/submarine
