@@ -4,7 +4,14 @@
 target
 *.properties
 *.gradle
-submarine-tony/tony-core/build
 *.tgz
 *.tar.gz
 *.jar
+submarine-tony/tony-core/build
+submarine-web/node_modules
+submarine-web/dist
+submarine-web/.env.local
+submarine-web/.env.*.local
+submarine-web/npm-debug.log*
+submarine-web/yarn-debug.log*
+submarine-web/yarn-error.log*

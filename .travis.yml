@@ -13,8 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-language: java
-
 sudo: false
 
 before_cache:
@@ -28,24 +26,40 @@ cache:
 matrix:
   include:
     # Test License compliance using RAT tool
-    - jdk: "openjdk7"
-      dist: trusty
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
       env: NAME="Check RAT" PROFILE="" BUILD_FLAG="clean" TEST_FLAG="org.apache.rat:apache-rat-plugin:check" TEST_PROJECTS=""
 
     # Compile hadoop-2.7
-    - jdk: "oraclejdk8"
-      dist: trusty
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
       env: NAME="Compile hadoop-2.7" PROFILE="" BUILD_FLAG="clean install package -DskipTests -Phadoop-2.7" TEST_FLAG="" MODULES="" TEST_PROJECTS=""
 
     # Compile hadoop-2.9(default)
-    - jdk: "oraclejdk8"
-      dist: trusty
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
       env: NAME="Compile hadoop-2.9" PROFILE="" BUILD_FLAG="clean install package -DskipTests" TEST_FLAG="" MODULES="" TEST_PROJECTS=""
 
     # Test modules
-    - jdk: "oraclejdk8"
-      dist: trusty
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
       env: NAME="Test Project" PROFILE="" BUILD_FLAG="clean install package -DskipTests" TEST_FLAG="test" MODULES="" TEST_PROJECTS=""
+
+    # Compile submarine-web modules
+    - language: node_js
+      node_js:
+        - 10.15.0
+      before_install:
+        - cd submarine-web
+      install:
+        - yarn install
+      script:
+        - yarn
+        - yarn run lint --no-fix && yarn run build
 
 install:
   - echo "[$NAME] > mvn $BUILD_FLAG $MODULES $PROFILE -B"
