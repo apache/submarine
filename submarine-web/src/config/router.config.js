@@ -9,8 +9,15 @@ export const asyncRouterMap = [
     name: 'index',
     component: BasicLayout,
     meta: { title: '首页' },
-    redirect: '/dashboard/workplace',
+    redirect: '/workbench/home',
     children: [
+      {
+        path: '/workbench/home',
+        name: 'WorkbenchHome',
+        component: () => import('@/views/workbench/Home'),
+        meta: { title: 'Home', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] }
+      },
+
       // dashboard
       {
         path: '/dashboard',
