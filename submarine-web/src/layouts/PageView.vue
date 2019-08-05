@@ -154,7 +154,7 @@ export default {
     margin-bottom: 16px;
   }
   .page-menu-tabs {
-    margin-top: 48px;
+    margin-top: 0px;
   }
 
   .extra-img {

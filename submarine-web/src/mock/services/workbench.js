@@ -1,5 +1,40 @@
 import Mock from 'mockjs2'
-import { builder } from '../util'
+import { builder, getQueryParameters } from '../util'
+
+const totalCount = 5701
+
+const workspaceRecentFiles = (options) => {
+  const parameters = getQueryParameters(options)
+
+  const result = []
+  const pageNo = parseInt(parameters.pageNo)
+  const pageSize = parseInt(parameters.pageSize)
+  const totalPage = Math.ceil(totalCount / pageSize)
+  const key = (pageNo - 1) * pageSize
+  const next = (pageNo >= totalPage ? (totalCount % pageSize) : pageSize) + 1
+
+  for (let i = 1; i < next; i++) {
+    const tmpKey = key + i
+    result.push({
+      key: tmpKey,
+      id: tmpKey,
+      commit: 'Commit ' + tmpKey + ' info ...',
+      description: 'test' + tmpKey + '.py',
+      owner: 'neo',
+      status: Mock.mock('@integer(0, 3)'),
+      updatedAt: Mock.mock('@datetime'),
+      editable: false
+    })
+  }
+
+  return builder({
+    pageSize: pageSize,
+    pageNo: pageNo,
+    totalCount: totalCount,
+    totalPage: totalPage,
+    data: result
+  })
+}
 
 const recentProjects = () => {
   return builder([
@@ -179,5 +214,123 @@ const news = () => {
   ])
 }
 
+const workspaceRecent = () => {
+  return builder([{
+    'key': 'key-01',
+    'title': 'Tensorflow test1',
+    'icon': 'folder-open',
+    'children': [{
+      'key': 'key-01-01',
+      'title': 'Python',
+      'icon': 'folder-open'
+    }, {
+      'key': 'key-01-02',
+      'title': 'Script',
+      'icon': 'folder-open'
+    }, {
+      'key': 'key-01-03',
+      'title': 'Data',
+      'icon': 'folder-open',
+      'children': [{
+        'key': 'key-01-03-01',
+        'title': 'Sample',
+        'icon': 'folder-open'
+      },
+      {
+        'key': 'key-01-03-02',
+        'title': 'Test',
+        'icon': 'folder-open'
+      }
+      ]
+    }]
+  }, {
+    'key': 'key-02',
+    'title': 'Tensorflow test2',
+    'icon': 'folder-open',
+    'children': [{
+      'key': 'key-02-01',
+      'title': 'Python',
+      'icon': 'folder-open'
+    }, {
+      'key': 'key-02-02',
+      'title': 'Script',
+      'icon': 'folder-open'
+    }, {
+      'key': 'key-02-03',
+      'title': 'Data',
+      'icon': 'folder-open',
+      'children': [{
+        'key': 'key-02-03-01',
+        'title': 'Sample',
+        'icon': 'folder-open'
+      },
+      {
+        'key': 'key-02-03-02',
+        'title': 'Test',
+        'icon': 'folder-open'
+      }
+      ]
+    }]
+  }, {
+    'key': 'key-03',
+    'title': 'Tensorflow test3',
+    'icon': 'folder-open',
+    'children': [{
+      'key': 'key-03-01',
+      'title': 'Python',
+      'icon': 'folder-open'
+    }, {
+      'key': 'key-03-02',
+      'title': 'Script',
+      'icon': 'folder-open'
+    }, {
+      'key': 'key-03-03',
+      'title': 'Data',
+      'icon': 'folder-open',
+      'children': [{
+        'key': 'key-03-03-01',
+        'title': 'Sample',
+        'icon': 'folder-open'
+      },
+      {
+        'key': 'key-03-03-02',
+        'title': 'Test',
+        'icon': 'folder-open'
+      }
+      ]
+    }]
+  }, {
+    'key': 'key-04',
+    'title': 'Tensorflow test4',
+    'icon': 'folder-open',
+    'children': [{
+      'key': 'key-04-01',
+      'title': 'Python',
+      'icon': 'folder-open'
+    }, {
+      'key': 'key-04-02',
+      'title': 'Script',
+      'icon': 'folder-open'
+    }, {
+      'key': 'key-04-03',
+      'title': 'Data',
+      'icon': 'folder-open',
+      'children': [{
+        'key': 'key-04-03-01',
+        'title': 'Sample',
+        'icon': 'folder-open'
+      },
+      {
+        'key': 'key-04-03-02',
+        'title': 'Test',
+        'icon': 'folder-open'
+      }
+      ]
+    }]
+  }])
+}
+
 Mock.mock(/\/workbench\/recentProjects/, 'get', recentProjects)
 Mock.mock(/\/workbench\/news/, 'get', news)
+Mock.mock(/\/workbench\/workspace\/recent/, 'get', workspaceRecent)
+Mock.mock(/\/workspace\/recent\/files/, 'get', workspaceRecentFiles)

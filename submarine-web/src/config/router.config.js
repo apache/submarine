@@ -8,7 +8,7 @@ export const asyncRouterMap = [
     path: '/',
     name: 'index',
     component: BasicLayout,
-    meta: { title: '首页' },
+    meta: { title: 'Home' },
     redirect: '/workbench/home',
     children: [
       {
@@ -18,6 +18,63 @@ export const asyncRouterMap = [
         meta: { title: 'Home', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] }
       },
 
+      {
+        path: '/workbench/workspace',
+        name: 'workspace',
+        component: PageView,
+        redirect: '/workbench/workspace/index',
+        meta: { title: 'Workspace', icon: 'profile', permission: [ 'profile' ] },
+        hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+        children: [
+          {
+            path: '/workbench/workspace/index',
+            name: 'workbench',
+            component: () => import('@/views/workbench/workspace/WorkspaceLayout'),
+            redirect: '/workbench/workspace/project',
+            meta: { title: 'Workspace', icon: 'profile', permission: [ 'profile' ] },
+            hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+            children: [
+              {
+                path: '/workbench/workspace/project',
+                name: 'workspaceProject',
+                component: () => import('../views/workbench/workspace/Project'),
+                meta: { title: 'Project', permission: [ 'profile' ] }
+              },
+              {
+                path: '/workbench/workspace/release',
+                name: 'workspaceRelase',
+                component: () => import('../views/workbench/workspace/Release'),
+                meta: { title: 'Relase', permission: [ 'profile' ] }
+              },
+              {
+                path: '/workbench/workspace/training',
+                name: 'workspaceTraining',
+                component: () => import('../views/workbench/workspace/Training'),
+                meta: { title: 'Training', permission: [ 'profile' ] }
+              },
+              {
+                path: '/workbench/workspace/team',
+                name: 'workspaceTeam',
+                component: () => import('../views/workbench/workspace/Team'),
+                meta: { title: 'Team', permission: [ 'profile' ] }
+              },
+              {
+                path: '/workbench/workspace/shared',
+                name: 'workspaceShared',
+                component: () => import('../views/workbench/workspace/Shared'),
+                meta: { title: 'Shared', permission: [ 'profile' ] }
+              }
+            ]
+          }
+        ]
+      },
+
+      {
+        path: '/workbench/workspace2',
+        name: 'WorkbenchWorkspace2',
+        component: () => import('@/views/workbench/workspace/Index'),
+        meta: { title: 'Workspace', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] }
+      },
       // dashboard
       {
         path: '/dashboard',
