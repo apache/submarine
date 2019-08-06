@@ -70,6 +70,23 @@ export const asyncRouterMap = [
       },
 
       {
+        path: '/workbench/actuator',
+        name: 'Actuator',
+        component: PageView,
+        redirect: '/workbench/actuator',
+        hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+        meta: { title: 'Actuator', icon: 'table', permission: [ 'table' ] },
+        children: [
+          {
+            path: '/workbench/actuator/:pageNo([1-9]\\d*)?',
+            name: 'ActuatorWrapper',
+            component: () => import('@/views/workbench/actuator/Actuator'),
+            meta: { title: 'Actuator', keepAlive: true, permission: [ 'table' ] }
+          }
+        ]
+      },
+
+      {
         path: '/workbench/workspace2',
         name: 'WorkbenchWorkspace2',
         component: () => import('@/views/workbench/workspace/Index'),
