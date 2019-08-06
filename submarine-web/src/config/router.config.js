@@ -87,6 +87,23 @@ export const asyncRouterMap = [
       },
 
       {
+        path: '/workbench/job',
+        name: 'Job',
+        component: PageView,
+        redirect: '/workbench/job',
+        hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+        meta: { title: 'Job', icon: 'table', permission: [ 'table' ] },
+        children: [
+          {
+            path: '/workbench/job/:pageNo([1-9]\\d*)?',
+            name: 'JobWrapper',
+            component: () => import('@/views/workbench/job/Job'),
+            meta: { title: 'Job', keepAlive: true, permission: [ 'table' ] }
+          }
+        ]
+      },
+
+      {
         path: '/workbench/workspace2',
         name: 'WorkbenchWorkspace2',
         component: () => import('@/views/workbench/workspace/Index'),

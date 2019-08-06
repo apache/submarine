@@ -3,7 +3,8 @@ import { axios } from '@/utils/request'
 const api = {
   workspaceRecent: '/workbench/workspace/recent',
   workspaceRecentFiles: '/workspace/recent/files',
-  actuatorList: '/workspace/actuator/list'
+  actuatorList: '/workspace/actuator/list',
+  jobList: '/workspace/job/list'
 }
 
 // export default api
@@ -27,6 +28,14 @@ export function getWorkspaceRecentFiles (parameter) {
 export function getActuatorList (parameter) {
   return axios({
     url: api.actuatorList,
+    method: 'get',
+    params: parameter
+  })
+}
+
+export function getJobList (parameter) {
+  return axios({
+    url: api.jobList,
     method: 'get',
     params: parameter
   })
