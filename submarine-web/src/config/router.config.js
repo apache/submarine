@@ -116,6 +116,12 @@ export const asyncRouterMap = [
             name: 'DataWrapper',
             component: () => import('@/views/workbench/data/Data'),
             meta: { title: 'Data', permission: [ 'table' ] }
+          },
+          {
+            path: '/workbench/newTable',
+            name: 'NewTableWrapper',
+            component: () => import('@/views/workbench/data/NewTable'),
+            meta: { title: 'Data', permission: [ 'table' ] }
           }
         ]
       },
