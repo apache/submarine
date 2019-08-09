@@ -4,7 +4,12 @@ const api = {
   workspaceRecent: '/workbench/workspace/recent',
   workspaceRecentFiles: '/workspace/recent/files',
   actuatorList: '/workspace/actuator/list',
-  jobList: '/workspace/job/list'
+  jobList: '/workspace/job/list',
+  dataTables: '/workspace/data/tables',
+  databases: '/workspace/data/databases',
+  schemaColumnsData: '/workspace/data/columns',
+  tableColumns: '/workspace/data/tableColumns',
+  sampleData: '/workspace/data/sample'
 }
 
 // export default api
@@ -36,6 +41,46 @@ export function getActuatorList (parameter) {
 export function getJobList (parameter) {
   return axios({
     url: api.jobList,
+    method: 'get',
+    params: parameter
+  })
+}
+
+export function getDatabases (parameter) {
+  return axios({
+    url: api.databases,
+    method: 'get',
+    params: parameter
+  })
+}
+
+export function getDataTables (parameter) {
+  return axios({
+    url: api.dataTables,
+    method: 'get',
+    params: parameter
+  })
+}
+
+export function getSchemaColumnsData (parameter) {
+  return axios({
+    url: api.schemaColumnsData,
+    method: 'get',
+    params: parameter
+  })
+}
+
+export function getTableColumns (parameter) {
+  return axios({
+    url: api.tableColumns,
+    method: 'get',
+    params: parameter
+  })
+}
+
+export function getSampleData (parameter) {
+  return axios({
+    url: api.sampleData,
     method: 'get',
     params: parameter
   })

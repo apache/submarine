@@ -406,9 +406,140 @@ const jobList = (options) => {
   })
 }
 
+const databases = (options) => {
+  return builder(['default', 'db1', 'db2', 'db3', 'db4'])
+}
+
+const dataTables = (options) => {
+  return builder([{
+    'key': 'key-01',
+    'title': 'Table1',
+    'icon': 'table'
+  }, {
+    'key': 'key-02',
+    'title': 'Table2',
+    'icon': 'table'
+  }, {
+    'key': 'key-03',
+    'title': 'Table3',
+    'icon': 'table'
+  }, {
+    'key': 'key-04',
+    'title': 'Table4',
+    'icon': 'table'
+  }, {
+    'key': 'key-05',
+    'title': 'Table5',
+    'icon': 'table'
+  }, {
+    'key': 'key-06',
+    'title': 'Table6',
+    'icon': 'table'
+  }, {
+    'key': 'key-07',
+    'title': 'Table7',
+    'icon': 'table'
+  }, {
+    'key': 'key-08',
+    'title': 'Table8',
+    'icon': 'table'
+  }, {
+    'key': 'key-09',
+    'title': 'Table9',
+    'icon': 'table'
+  }])
+}
+
+const schemaColumnsData = (options) => {
+  return builder([{
+    'key': 'key-01',
+    'name': 'col_1',
+    'type': 'string',
+    'comment': 'comment ...'
+  }, {
+    'key': 'key-02',
+    'name': 'col_2',
+    'type': 'string',
+    'comment': 'comment ...'
+  }, {
+    'key': 'key-03',
+    'name': 'col_3',
+    'type': 'string',
+    'comment': 'comment ...'
+  }, {
+    'key': 'key-04',
+    'name': 'col_4',
+    'type': 'string',
+    'comment': 'comment ...'
+  }])
+}
+
+const tableColumns = (options) => {
+  return builder([{
+    'title': 'key',
+    'dataIndex': 'key'
+  }, {
+    'title': 'col1',
+    'dataIndex': 'col1'
+  }, {
+    'title': 'col2',
+    'dataIndex': 'col2'
+  }, {
+    'title': 'col3',
+    'dataIndex': 'col3'
+  }, {
+    'title': 'col4',
+    'dataIndex': 'col4'
+  }, {
+    'title': 'col5',
+    'dataIndex': 'col5'
+  }, {
+    'title': 'col6',
+    'dataIndex': 'col6'
+  }])
+}
+
+const sampleData = (options) => {
+  const parameters = getQueryParameters(options)
+
+  const result = []
+  const pageNo = parseInt(parameters.pageNo)
+  const pageSize = parseInt(parameters.pageSize)
+  const totalPage = Math.ceil(totalCount / pageSize)
+  const key = (pageNo - 1) * pageSize
+  const next = (pageNo >= totalPage ? (totalCount % pageSize) : pageSize) + 1
+
+  for (let i = 1; i < next; i++) {
+    const tmpKey = key + i
+    result.push({
+      key: tmpKey,
+      col1: tmpKey,
+      col2: 'Commit ' + tmpKey + ' info ...',
+      col3: 'test' + tmpKey + '.py',
+      col4: 'neo',
+      col5: Mock.mock('@integer(0, 3)'),
+      col6: Mock.mock('@datetime'),
+      editable: false
+    })
+  }
+
+  return builder({
+    pageSize: pageSize,
+    pageNo: pageNo,
+    totalCount: totalCount,
+    totalPage: totalPage,
+    data: result
+  })
+}
+
 Mock.mock(/\/workbench\/recentProjects/, 'get', recentProjects)
 Mock.mock(/\/workbench\/news/, 'get', news)
 Mock.mock(/\/workbench\/workspace\/recent/, 'get', workspaceRecent)
 Mock.mock(/\/workspace\/recent\/files/, 'get', workspaceRecentFiles)
 Mock.mock(/\/workspace\/actuator\/list/, 'get', actuatorList)
 Mock.mock(/\/workspace\/job\/list/, 'get', jobList)
+Mock.mock(/\/workspace\/data\/databases/, 'get', databases)
+Mock.mock(/\/workspace\/data\/tables/, 'get', dataTables)
+Mock.mock(/\/workspace\/data\/columns/, 'get', schemaColumnsData)
+Mock.mock(/\/workspace\/data\/tableColumns/, 'get', tableColumns)
+Mock.mock(/\/workspace\/data\/sample/, 'get', sampleData)

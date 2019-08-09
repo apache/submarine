@@ -23,7 +23,7 @@ export const asyncRouterMap = [
         name: 'workspace',
         component: PageView,
         redirect: '/workbench/workspace/index',
-        meta: { title: 'Workspace', icon: 'profile', permission: [ 'profile' ] },
+        meta: { title: 'Workspace', icon: 'cluster', permission: [ 'profile' ] },
         hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
         children: [
           {
@@ -75,7 +75,7 @@ export const asyncRouterMap = [
         component: PageView,
         redirect: '/workbench/actuator',
         hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
-        meta: { title: 'Actuator', icon: 'table', permission: [ 'table' ] },
+        meta: { title: 'Interpreter', icon: 'rocket', permission: [ 'table' ] },
         children: [
           {
             path: '/workbench/actuator/:pageNo([1-9]\\d*)?',
@@ -92,13 +92,47 @@ export const asyncRouterMap = [
         component: PageView,
         redirect: '/workbench/job',
         hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
-        meta: { title: 'Job', icon: 'table', permission: [ 'table' ] },
+        meta: { title: 'Job', icon: 'cluster', permission: [ 'table' ] },
         children: [
           {
             path: '/workbench/job/:pageNo([1-9]\\d*)?',
             name: 'JobWrapper',
             component: () => import('@/views/workbench/job/Job'),
             meta: { title: 'Job', keepAlive: true, permission: [ 'table' ] }
+          }
+        ]
+      },
+
+      {
+        path: '/workbench/data',
+        name: 'Data',
+        component: RouteView,
+        redirect: '/workbench/data',
+        hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+        meta: { title: 'Data', icon: 'table', permission: [ 'table' ] },
+        children: [
+          {
+            path: '/workbench/data',
+            name: 'DataWrapper',
+            component: () => import('@/views/workbench/data/Data'),
+            meta: { title: 'Data', permission: [ 'table' ] }
+          }
+        ]
+      },
+
+      {
+        path: '/workbench/data2',
+        name: 'Data',
+        component: RouteView,
+        redirect: '/workbench/data',
+        hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+        meta: { title: 'Model', icon: 'experiment', permission: [ 'table' ] },
+        children: [
+          {
+            path: '/workbench/data2',
+            name: 'DataWrapper',
+            component: () => import('@/views/workbench/data/Data'),
+            meta: { title: 'Data', permission: [ 'table' ] }
           }
         ]
       },
