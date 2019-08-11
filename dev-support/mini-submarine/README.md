@@ -12,19 +12,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-# README
+# mini-submarine
 
-This is a docker image built for submarine development and quick start
+This is a docker image built for submarine development and quick start.
 
 Please Note: don't use the image in production environment. It's only for test purpose.
 
 ### Build the image
 
+#### Use the image we provide
+
+> Tag 0.2.0 indicates the version number of hadoop submarine in images
+
+```
+docker push hadoopsubmarine/mini-submarine:0.2.0 
+```
+
+#### Create image by yourself
+
 > you may need a VPN if your network is limited
 
 ```
-./build_submarine_dev_env.sh
+./build_mini-submarine.sh
+```
 
+#### Run mini-submarine image
+
+```
 docker run -it -h submarine-dev --net=bridge --privileged local/hadoop-docker:submarine /bin/bash
 
 # In the container, use root user to bootstrap hdfs and yarn
@@ -34,7 +48,7 @@ docker run -it -h submarine-dev --net=bridge --privileged local/hadoop-docker:su
 yarn node -list -showDetails
 ```
 
-#### You should see info like this:
+##### You should see info like this:
 
 ```
 Total Nodes:1
@@ -53,6 +67,8 @@ hdfs dfs -ls /user
 ```
 
 > drwxr-xr-x   - yarn supergroup          0 2019-07-22 07:59 /user/yarn
+
+
 
 ### Use yarn user to run job
 

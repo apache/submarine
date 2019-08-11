@@ -17,7 +17,7 @@
 hadoop_v=2.9.2
 spark_v=2.4.3
 submarine_v=0.2.0
-image_name="local/hadoop-docker:submarine"
+image_name="local/mini-submarine:${submarine_v}"
 
 download_package() {
   if [ -f "$1" ]; then
@@ -46,5 +46,5 @@ download_package "zookeeper-3.4.14.tar.gz" "http://mirror.bit.edu.cn/apache/zook
 download_package "hadoop-submarine-${submarine_v}.tar.gz" "http://mirror.bit.edu.cn/apache/hadoop/submarine/submarine-${submarine_v}"
 
 # build image
-echo "Start building the docker image..."
+echo "Start building the mini-submarine docker image..."
 docker build --build-arg HADOOP_VERSION=${hadoop_v} --build-arg SPARK_VERSION=${spark_v} --build-arg SUBMARINE_VERSION=${submarine_v} --build-arg IMAGE_NAME=${image_name} -t ${image_name} .
