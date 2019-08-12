@@ -5,20 +5,19 @@
    The ASF licenses this file to You under the Apache License, Version 2.0
    (the "License"); you may not use this file except in compliance with
    the License.  You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
+   http://www.apache.org/licenses/LICENSE-2.0
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-# Tutorial: Running Distributed Cifar10 Tensorflow Estimator Example.
+
+# Cifar10 Tensorflow Estimator Example With YARN Service
 
 ## Prepare data for training
 
-CIFAR-10 is a common benchmark in machine learning for image recognition. The example below is based on CIFAR-10 dataset.
+CIFAR-10 is a common benchmark in machine learning for image recognition. Below example is based on CIFAR-10 dataset.
 
 1) Checkout https://github.com/tensorflow/models/:
 ```
@@ -41,7 +40,7 @@ hadoop fs -put cifar-10-data/ /dataset/cifar-10-data
 
 **Warning:**
 
-Please note that YARN service does not allow multiple services with the same name, so please run following command
+Please note that YARN service doesn't allow multiple services with the same name, so please run following command
 ```
 yarn application -destroy <service-name>
 ```
@@ -49,18 +48,25 @@ to delete services if you want to reuse the same service name.
 
 ## Prepare Docker images
 
-Refer to [Write Dockerfile](WriteDockerfileTF.html) to build a Docker image or use prebuilt one.
+Refer to [Write Dockerfile](WriteDockerfileTF.md) to build a Docker image or use prebuilt one:
+
+- hadoopsubmarine/tensorflow1.13.1-hadoop3.1.2-cpu:1.0.0
+- hadoopsubmarine/tensorflow1.13.1-hadoop3.1.2-gpu:1.0.0
 
 ## Run Tensorflow jobs
 
 ### Run standalone training
 
 ```
-yarn jar path/to/hadoop-yarn-applications-submarine-3.2.0-SNAPSHOT.jar \
-   job run --name tf-job-001 --verbose --docker_image tf-1.13.1-gpu:0.0.1 \
+SUBMARINE_VERSION=0.2.0
+CLASSPATH=`path-to/hadoop classpath --glob`:path-to/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:
+path-to/hadoop-submarine-yarnservice-runtime-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-tony-
+runtime-${SUBMARINE_VERSION}.jar \
+java org.apache.hadoop.yarn.submarine.client.cli.Cli job run \
+   --name tf-job-001 --verbose --docker_image <image> \
    --input_path hdfs://default/dataset/cifar-10-data \
-   --env DOCKER_JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/ \
-   --env DOCKER_HADOOP_HDFS_HOME=/hadoop-current \
+   --env DOCKER_JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
+   --env DOCKER_HADOOP_HDFS_HOME=/hadoop-current
    --num_workers 1 --worker_resources memory=8G,vcores=2,gpu=1 \
    --worker_launch_cmd "cd /test/models/tutorials/image/cifar10_estimator && python cifar10_main.py --data-dir=%input_path% --job-dir=%checkpoint_path% --train-steps=10000 --eval-batch-size=16 --train-batch-size=16 --num-gpus=2 --sync" \
    --tensorboard --tensorboard_docker_image tf-1.13.1-cpu:0.0.1
@@ -68,16 +74,20 @@ yarn jar path/to/hadoop-yarn-applications-submarine-3.2.0-SNAPSHOT.jar \
 
 Explanations:
 
-- When access of HDFS is required, the two environments are required to indicate: JAVA_HOME and HDFS_HOME to access libhdfs libraries *inside Docker image*. We will try to eliminate specifying this in the future.
-- Docker image for worker and tensorboard can be specified separately. For this case, Tensorboard does not need GPU, so we will use the CPU Docker image for Tensorboard. (Same for parameter-server in the distributed example below).
+- When access of HDFS is required, the two environments are required to indicate: DOCKER_JAVA_HOME and DOCKER_HADOOP_HDFS_HOME to access libhdfs libraries *inside Docker image*. We will try to eliminate specifying this in the future.
+- Docker image for worker and tensorboard can be specified separately. For this case, Tensorboard doesn't need GPU, so we will use cpu Docker image for Tensorboard. (Same for parameter-server in the distributed example below).
 
 ### Run distributed training
 
 ```
-yarn jar path/to/hadoop-yarn-applications-submarine-3.2.0-SNAPSHOT.jar \
-   job run --name tf-job-001 --verbose --docker_image tf-1.13.1-gpu:0.0.1 \
+SUBMARINE_VERSION=0.2.0
+CLASSPATH=`path-to/hadoop classpath --glob`:path-to/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:
+path-to/hadoop-submarine-yarnservice-runtime-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-tony-
+runtime-${SUBMARINE_VERSION}.jar \
+java org.apache.hadoop.yarn.submarine.client.cli.Cli job run \
+   --name tf-job-001 --verbose --docker_image tf-1.13.1-gpu:0.0.1 \
    --input_path hdfs://default/dataset/cifar-10-data \
-   --env(s) (same as standalone) \
+   --env(s) (same as standalone)
    --num_workers 2 \
    --worker_resources memory=8G,vcores=2,gpu=1 \
    --worker_launch_cmd "cd /test/models/tutorials/image/cifar10_estimator && python cifar10_main.py --data-dir=%input_path% --job-dir=%checkpoint_path% --train-steps=10000 --eval-batch-size=16 --train-batch-size=16 --num-gpus=2 --sync"  \
@@ -90,9 +100,9 @@ yarn jar path/to/hadoop-yarn-applications-submarine-3.2.0-SNAPSHOT.jar \
 Explanations:
 
 - `>1` num_workers indicates it is a distributed training.
-- Parameters / resources / Docker image of parameter server can be specified separately. For many cases, parameter server does not require GPU.
+- Parameters / resources / Docker image of parameter server can be specified separately. For many cases, parameter server doesn't require GPU.
 
-For the meaning of the individual parameters, see the [QuickStart](QuickStart.html) page!
+For the meaning of the individual parameters, see the [QuickStart](QuickStart.md) page!
 
 *Outputs of distributed training*
 
@@ -150,7 +160,7 @@ INFO:tensorflow:Average examples/sec: 54.1082 (55.2134), step = 50
 INFO:tensorflow:Average examples/sec: 54.3141 (55.3676), step = 60
 ```
 
-Sample output of PS:
+Sample output of ps:
 ```
 ...
 , '_tf_random_seed': None, '_task_type': u'ps', '_environment': u'cloud', '_is_chief': False, '_cluster_spec': <tensorflow.python.training.server_lib.ClusterSpec object at 0x7f4be54dff90>, '_tf_config': gpu_options {
@@ -161,4 +171,27 @@ Sample output of PS:
 2018-05-06 22:28:42.562408: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job ps -> {0 -> localhost:8000}
 2018-05-06 22:28:42.562433: I tensorflow/core/distributed_runtime/rpc/grpc_channel.cc:215] Initialize GrpcChannelCache for job worker -> {0 -> worker-0.distributed-tf.root.tensorflow.site:8000}
 2018-05-06 22:28:42.564242: I tensorflow/core/distributed_runtime/rpc/grpc_server_lib.cc:316] Started server with target: grpc://localhost:8000
+```
+#### Notes:
+When using YARN native service runtime, you can view multiple job training history like from the `Tensorboard` link:
+
+![alt text](./assets/multiple-tensorboard-jobs.png "Tensorboard for multiple jobs")
+
+## Run tensorboard to monitor your jobs
+
+```shell
+# Cleanup previous tensorboard service if needed
+
+SUBMARINE_VERSION=0.2.0
+CLASSPATH=`path-to/hadoop classpath --glob`:path-to/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-yarnservice-runtime-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar \
+java org.apache.hadoop.yarn.submarine.client.cli.Cli job run \
+  --name tensorboard-service \
+  --verbose \
+  --docker_image <your-docker-image> \
+  --env DOCKER_JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/ \
+  --env DOCKER_HADOOP_HDFS_HOME=/hadoop-current \
+  --checkpoint_path hdfs://default/tmp/cifar-10-jobdir \
+  --worker_resources memory=2G,vcores=2 \
+  --worker_launch_cmd "pwd" \
+  --tensorboard
 ```

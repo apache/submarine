@@ -5,9 +5,7 @@
    The ASF licenses this file to You under the Apache License, Version 2.0
    (the "License"); you may not use this file except in compliance with
    the License.  You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
+   http://www.apache.org/licenses/LICENSE-2.0
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,9 +13,9 @@
    limitations under the License.
 -->
 
-# Creating Docker Images for Running Tensorflow on YARN
+## Creating Docker Images for Running Tensorflow on YARN
 
-## How to create docker images to run Tensorflow on YARN
+### How to create docker images to run Tensorflow on YARN
 
 Dockerfile to run Tensorflow on YARN need two part:
 
@@ -36,7 +34,7 @@ Dockerfile to run Tensorflow on YARN need two part:
 2) Hadoop
 
 Here's an example of a base image (w/o GPU support) to install Tensorflow:
-```
+```shell
 FROM ubuntu:16.04
 
 # Pick up some TF dependencies
@@ -80,10 +78,10 @@ RUN pip --no-cache-dir install \
 ```
 
 On top of above image, add files, install packages to access HDFS
-```
+```shell
 RUN apt-get update && apt-get install -y openjdk-8-jdk wget
 # Install hadoop
-ENV HADOOP_VERSION="3.1.2"
+ENV HADOOP_VERSION="2.9.2"
 RUN wget http://mirrors.hust.edu.cn/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
 RUN tar zxf hadoop-${HADOOP_VERSION}.tar.gz
 RUN ln -s hadoop-${HADOOP_VERSION} hadoop-current
@@ -92,7 +90,7 @@ RUN rm hadoop-${HADOOP_VERSION}.tar.gz
 
 Build and push to your own docker registry: Use ```docker build ... ``` and ```docker push ...``` to finish this step.
 
-## Use examples to build your own Tensorflow docker images
+### Use examples to build your own Tensorflow docker images
 
 We provided following examples for you to build tensorflow docker images.
 
@@ -103,9 +101,9 @@ For Tensorflow 1.13.1 (Precompiled to CUDA 10.x)
 - *docker/tensorflow/base/ubuntu-16.04/Dockerfile.gpu.tf_1.13.1*: Tensorflow 1.13.1 supports GPU, which is prebuilt to CUDA10.
 - *docker/tensorflow/with-cifar10-models/ubuntu-16.04/Dockerfile.gpu.tf_1.13.1*: Tensorflow 1.13.1 supports GPU, which is prebuilt to CUDA10, with models.
 
-## Build Docker images
+### Build Docker images
 
-### Manually build Docker image:
+#### Manually build Docker image:
 
 Under `docker/` directory, run `build-all.sh` to build Docker images. It will build following images:
 
@@ -114,7 +112,7 @@ Under `docker/` directory, run `build-all.sh` to build Docker images. It will bu
 - `tf-1.13.1-gpu:0.0.1` which includes cifar10 model
 - `tf-1.13.1-cpu:0.0.1` which inclues cifar10 model (cpu only).
 
-### Use prebuilt images
+#### Use prebuilt images
 
 (No liability)
 You can also use prebuilt images for convenience:

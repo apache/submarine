@@ -49,6 +49,3 @@ Goals of Submarine:
 - Support launch tensorboard for training jobs if user specified.
 - Support customized DNS name for roles (like tensorboard.$user.$domain:6006)
 
-Please jump to [QuickStart](src/site/markdown/QuickStart.md) guide to quickly understand how to use this framework.
-
-Please jump to [Examples](src/site/markdown/Examples.md) to try other examples like running Distributed Tensorflow Training for CIFAR 10.

@@ -14,9 +14,9 @@ limitations under the License.
 
 # mini-submarine
 
-This is a docker image built for submarine development and quick start.
+This is a docker image built for submarine development and quick start test.
 
-Please Note: don't use the image in production environment. It's only for test purpose.
+**Please Note: don't use the image in production environment. It's only for test purpose.**
 
 ### Build the image
 

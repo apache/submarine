@@ -1,15 +1,16 @@
-<!---
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
    http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License. See accompanying LICENSE file.
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 -->
 
 # Submarine 安装说明
@@ -293,7 +294,7 @@ https://github.com/NVIDIA/nvidia-docker
 
 ### Tensorflow Image
 
-CUDNN 和 CUDA 其实不需要在物理机上安装，因为 Submarine 中提供了已经包含了CUDNN 和 CUDA 的镜像文件，基础的Dockfile可参见WriteDockerfileTF.md
+CUDNN 和 CUDA 其实不需要在物理机上安装，因为 Submarine 中提供了已经包含了CUDNN 和 CUDA 的镜像文件，基础的Dockfile可参见[WriteDockerfile](docs/0.2.0/WriteDockerfileTF)
 
 ### 测试 TF 环境
 
@@ -407,7 +408,7 @@ YARN_LOGFILE=timeline.log ./sbin/yarn-daemon.sh start timelineserver
 YARN_LOGFILE=mr-historyserver.log ./sbin/mr-jobhistory-daemon.sh start historyserver
 ```
 
-### 启动 registery dns 服务
+### 启动 registery dns 服务 (只有YARN native service 需要)
 
 ```
 sudo YARN_LOGFILE=registrydns.log ./yarn-daemon.sh start registrydns
@@ -423,69 +424,7 @@ sudo YARN_LOGFILE=registrydns.log ./yarn-daemon.sh start registrydns
 ./bin/hadoop jar /home/hadoop/hadoop-current/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.0-SNAPSHOT.jar wordcount /tmp/wordcount.txt /tmp/wordcount-output4
 ```
 
-
-
-## 使用CUP的Tensorflow任务
-
-### 单机模式
-
-#### 清理重名程序
-
-```bash
-# 每次提交前需要执行：
-./bin/yarn app -destroy standalone-tf
-# 并删除hdfs路径：
-./bin/hdfs dfs -rmr hdfs://${dfs_name_service}/tmp/cifar-10-jobdir
-# 确保之前的任务已经结束
-```
-其中，变量${dfs_name_service}请根据环境，用你的hdfs name service名称替换
-
-#### 执行单机模式的tensorflow任务
-
-```bash
-./bin/yarn jar /home/hadoop/hadoop-current/share/hadoop/yarn/hadoop-yarn-submarine-3.2.0-SNAPSHOT.jar job run \
- --env DOCKER_JAVA_HOME=/opt/java \
- --env DOCKER_HADOOP_HDFS_HOME=/hadoop-current --name standalone-tf \
- --docker_image tf-1.13.1-cpu:0.0.1 \
- --input_path hdfs://${dfs_name_service}/tmp/cifar-10-data \
- --checkpoint_path hdfs://${dfs_name_service}/user/hadoop/tf-checkpoint \
- --worker_resources memory=4G,vcores=2 --verbose \
- --worker_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=%input_path% --job-dir=%checkpoint_path% --train-steps=500 --eval-batch-size=16 --train-batch-size=16 --num-gpus=0"
-```
-
-
-### 分布式模式
-
-#### 清理重名程序
-
-```bash
-# 每次提交前需要执行：
-./bin/yarn app -destroy distributed-tf
-# 并删除hdfs路径：
-./bin/hdfs dfs -rmr hdfs://${dfs_name_service}/tmp/cifar-10-jobdir
-# 确保之前的任务已经结束
-```
-
-#### 提交分布式模式 tensorflow 任务
-
-```bash
-./bin/yarn jar /home/hadoop/hadoop-current/share/hadoop/yarn/hadoop-yarn-submarine-3.2.0-SNAPSHOT.jar job run \
- --env DOCKER_JAVA_HOME=/opt/java \
- --env DOCKER_HADOOP_HDFS_HOME=/hadoop-current --name distributed-tf \
- --env YARN_CONTAINER_RUNTIME_DOCKER_CONTAINER_NETWORK=calico-network \
- --docker_image tf-1.13.1-cpu:0.0.1 \
- --input_path hdfs://${dfs_name_service}/tmp/cifar-10-data \
- --checkpoint_path hdfs://${dfs_name_service}/user/hadoop/tf-distributed-checkpoint \
- --worker_resources memory=4G,vcores=2 --verbose \
- --num_ps 1 \
- --ps_resources memory=4G,vcores=2 \
- --ps_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=%input_path% --job-dir=%checkpoint_path% --num-gpus=0" \
- --num_workers 4 \
- --worker_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=%input_path% --job-dir=%checkpoint_path% --train-steps=500 --eval-batch-size=16 --train-batch-size=16 --sync --num-gpus=0"
-```
-
-
-## 使用GPU的Tensorflow任务
+## 在YARN上使用GPU
 
 ### Resourcemanager, Nodemanager 中添加GPU支持
 
@@ -560,19 +499,19 @@ resourcemanager 使用的 scheduler 必须是 capacity scheduler，在 capacity-
 Distributed-shell + GPU + cgroup
 
 ```bash
- ./yarn jar /home/hadoop/hadoop-current/share/hadoop/yarn/hadoop-yarn-submarine-3.2.0-SNAPSHOT.jar job run \
+ ... job run \
  --env DOCKER_JAVA_HOME=/opt/java \
  --env DOCKER_HADOOP_HDFS_HOME=/hadoop-current --name distributed-tf-gpu \
  --env YARN_CONTAINER_RUNTIME_DOCKER_CONTAINER_NETWORK=calico-network \
  --docker_image tf-1.13.1-gpu:0.0.1 \
- --input_path hdfs://${dfs_name_service}/tmp/cifar-10-data \
- --checkpoint_path hdfs://${dfs_name_service}/user/hadoop/tf-distributed-checkpoint \
+ --input_path hdfs://default/tmp/cifar-10-data \
+ --checkpoint_path hdfs://default/user/hadoop/tf-distributed-checkpoint \
  --num_ps 0 \
  --ps_resources memory=4G,vcores=2,gpu=0 \
- --ps_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=hdfs://${dfs_name_service}/tmp/cifar-10-data --job-dir=hdfs://${dfs_name_service}/tmp/cifar-10-jobdir --num-gpus=0" \
+ --ps_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=%input_path% --job-dir=%checkpoint_path% --num-gpus=0" \
  --worker_resources memory=4G,vcores=2,gpu=1 --verbose \
  --num_workers 1 \
- --worker_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=hdfs://${dfs_name_service}/tmp/cifar-10-data --job-dir=hdfs://${dfs_name_service}/tmp/cifar-10-jobdir --train-steps=500 --eval-batch-size=16 --train-batch-size=16 --sync --num-gpus=1"
+ --worker_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=%%input_path%% --job-dir=%checkpoint_path% --train-steps=500 --eval-batch-size=16 --train-batch-size=16 --sync --num-gpus=1"
 ```
 
 

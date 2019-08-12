@@ -1,15 +1,16 @@
-<!---
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
    http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License. See accompanying LICENSE file.
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 -->
 
 #### Test with a tensorflow job
@@ -17,7 +18,8 @@
 Distributed-shell + GPU + cgroup
 
 ```bash
- ./yarn jar /home/hadoop/hadoop-current/share/hadoop/yarn/hadoop-yarn-submarine-3.2.0-SNAPSHOT.jar job run \
+ ... \
+ job run \
  --env DOCKER_JAVA_HOME=/opt/java \
  --env DOCKER_HADOOP_HDFS_HOME=/hadoop-current --name distributed-tf-gpu \
  --env YARN_CONTAINER_RUNTIME_DOCKER_CONTAINER_NETWORK=calico-network \
@@ -37,7 +39,7 @@ Distributed-shell + GPU + cgroup
 
 ## Issues:
 
-### Issue 1: Fail to start NodeManager after system reboot
+### Issue 1: Fail to start nodemanager after system reboot
 
 ```
 2018-09-20 18:54:39,785 ERROR org.apache.hadoop.yarn.server.nodemanager.LinuxContainerExecutor: Failed to bootstrap configured resource subsystems!
@@ -62,7 +64,7 @@ chown :yarn -R /sys/fs/cgroup/cpu,cpuacct
 chmod g+rwx -R /sys/fs/cgroup/cpu,cpuacct
 ```
 
-If GPUs are used, access to cgroup devices folder is required as well.
+If GPUs are used，the access to cgroup devices folder is neede as well
 
 ```
 chown :yarn -R /sys/fs/cgroup/devices
@@ -140,7 +142,6 @@ $ chmod +x find-busy-mnt.sh
 $ kill -9 5007
 ```
 
-### Issue 5：YARN fails to start containers
+### Issue 5：Yarn failed to start containers
 
-If the number of GPUs required by an application is greater than the number of GPUs in the cluster, some container will not be created.
-
+if the number of GPUs required by applications is larger than the number of GPUs in the cluster, there would be some containers can't be created.

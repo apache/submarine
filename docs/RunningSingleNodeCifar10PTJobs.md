@@ -5,15 +5,14 @@
    The ASF licenses this file to You under the Apache License, Version 2.0
    (the "License"); you may not use this file except in compliance with
    the License.  You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
+   http://www.apache.org/licenses/LICENSE-2.0
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
+
 # Tutorial: Running a standalone Cifar10 PyTorch Estimator Example.
 
 Currently, PyTorch integration with Submarine only supports PyTorch in standalone (non-distributed mode).
@@ -32,15 +31,15 @@ to delete services if you want to reuse the same service name.
 
 ## Prepare Docker images
 
-Refer to [Write Dockerfile](WriteDockerfilePT.html) to build a Docker image or use prebuilt one.
+Refer to [Write Dockerfile](WriteDockerfilePT.md) to build a Docker image or use prebuilt one.
 
 ## Running PyTorch jobs
 
 ### Run standalone training
 
-```
-export HADOOP_CLASSPATH="/home/systest/submarine-core-yarnservice-runtime-0.2.0-SNAPSHOT.jar:/home/systest/submarine-core-0.2.0-SNAPSHOT.jar"
-/opt/hadoop/bin/yarn jar /home/systest/submarine-core-0.2.0-SNAPSHOT.jar job run \
+```shell
+export HADOOP_CLASSPATH="/home/systest/hadoop-submarine-score-yarnservice-runtime-0.2.0-SNAPSHOT.jar:/home/systest/hadoop-submarine-core-0.2.0-SNAPSHOT.jar"
+/opt/hadoop/bin/yarn jar /home/systest/hadoop-submarine-core-0.2.0-SNAPSHOT.jar job run \
 --name pytorch-job-001 \
 --verbose \
 --framework pytorch \
@@ -53,10 +52,9 @@ export HADOOP_CLASSPATH="/home/systest/submarine-core-yarnservice-runtime-0.2.0-
 --num_workers 1 \
 --worker_resources memory=5G,vcores=2 \
 --worker_launch_cmd "cd /test/ && python cifar10_tutorial.py"
-
 ```
 
-For the meaning of the individual parameters, see the [QuickStart](QuickStart.html) page!
+For the meaning of the individual parameters, see the [QuickStart](QuickStart.md) page!
 
 **Remarks:**
 Please note that the input path parameter is mandatory, but not yet used by the PyTorch docker container.

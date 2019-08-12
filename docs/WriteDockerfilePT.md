@@ -5,9 +5,7 @@
    The ASF licenses this file to You under the Apache License, Version 2.0
    (the "License"); you may not use this file except in compliance with
    the License.  You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
+   http://www.apache.org/licenses/LICENSE-2.0
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +34,7 @@ Dockerfile to run PyTorch on YARN needs two parts:
 2) Hadoop
 
 Here's an example of a base image (with GPU support) to install PyTorch:
-```
+```shell
 FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
 ARG PYTHON_VERSION=3.6
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -76,10 +74,10 @@ RUN git clone https://github.com/pytorch/vision.git && cd vision && pip install 
 ```
 
 On top of above image, add files, install packages to access HDFS
-```
+```shell
 RUN apt-get update && apt-get install -y openjdk-8-jdk wget
 # Install hadoop
-ENV HADOOP_VERSION="3.1.2"
+ENV HADOOP_VERSION="2.9.2"
 RUN wget http://mirrors.hust.edu.cn/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
 RUN tar zxf hadoop-${HADOOP_VERSION}.tar.gz
 RUN ln -s hadoop-${HADOOP_VERSION} hadoop-current
