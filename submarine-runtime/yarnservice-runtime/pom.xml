@@ -19,7 +19,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.submarine</groupId>
-    <artifactId>submarine-runtime-parent</artifactId>
+    <artifactId>submarine-runtime</artifactId>
     <version>0.3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
