@@ -291,6 +291,9 @@
             <exclude>license_header</exclude>
             <exclude> _tools/site/css/*</exclude>
             <exclude> _tools/site/images/*</exclude>
+            <exclude>**/*.la</exclude>
+            <exclude>**/*.svg</exclude>
+            <exclude>**/*.png</exclude>
             <exclude>**/*.avsc</exclude>
             <exclude>**/log4j.properties</exclude>
             <exclude>**/*.md</exclude>
