@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+ 
+<configuration>
+
+  <!-- file system properties -->
+  <property>
+    <name>fs.defaultFS</name>
+    <value>FS_DEFAULTFS_REPLACE</value>
+    <description>The name of the default file system. Either the literal string "local" or a host:port for NDFS. </description>
+    <final>true</final>
+  </property>
+
+  <!-- add LZO,LZ4 compression support -->
+  <property>
+    <name>io.compression.codecs</name>
+    <value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,com.hadoop.compression.lzo.LzoCodec,com.hadoop.compression.lzo.LzopCodec,org.apache.hadoop.io.compress.BZip2Codec,org.apache.hadoop.io.compress.Lz4Codec,org.apache.hadoop.io.compress.SnappyCodec</value>
+  </property>
+
+  <property>
+    <name>io.compression.codec.lzo.class</name>
+    <value>com.hadoop.compression.lzo.LzoCodec</value>
+  </property>
+
+  <!-- Web Interface Configuration -->
+  <property>
+    <name>webinterface.private.actions</name>
+    <value>false</value>
+    <description> If set to true, the web interfaces of JT and NN may
+      contain
+      actions, such as kill job, delete file, etc., that should
+      not be exposed to public. Enable this option if the interfaces
+      are only reachable by those who have the right authorization.
+    </description>
+  </property>
+
+  <property>
+    <name>hadoop.security.authentication</name>
+    <value>simple</value>
+    <description>
+      Set the authentication for the cluster. Valid values are: simple or
+      kerberos.
+    </description>
+  </property>
+
+  <property>
+    <name>hadoop.security.authorization</name>
+    <value>false</value>
+    <description>
+      Enable authorization for different protocols.
+    </description>
+  </property>
+
+  <property>
+    <name>hadoop.security.groups.cache.secs</name>
+    <value>14400</value>
+  </property>
+
+  <!-- Authentication for Hadoop HTTP web-consoles -->
+  <property>
+    <name>hadoop.http.filter.initializers</name>
+    <value>org.apache.hadoop.security.AuthenticationFilterInitializer</value>
+  </property>
+  <property>
+    <name>hadoop.http.authentication.type</name>
+    <value>simple</value>
+  </property>
+
+  <property>
+    <name>hadoop.http.authentication.token.validity</name>
+    <value>36000</value>
+  </property>
+  <property>
+    <name>hadoop.http.authentication.signature.secret.file</name>
+    <value>HADOOP_HTTP_AUTHENTICATION_SIGNATURE_SECRET_FILE_REPLACE</value>
+    <description>
+      The signature secret for signing the authentication tokens.
+      If not set a random secret is generated at startup time.
+      The same secret should be used for JT/NN/DN/TT configurations.
+    </description>
+  </property>
+
+  <property>
+    <name>hadoop.http.authentication.simple.anonymous.allowed</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>hadoop.tmp.dir</name>
+    <value>/tmp/hadoop-${user.name}</value>
+  </property>
+
+  <property>
+    <name>io.bytes.per.checksum</name>
+    <value>4096</value>
+  </property>
+
+  <property>
+    <name>fs.inmemory.size.mb</name>
+    <value>200</value>
+  </property>
+
+  <property>
+    <name>io.file.buffer.size</name>
+    <value>131072</value>
+  </property>
+
+  <property>
+    <name>hadoop.proxyuser.mapred.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.mapred.groups</name>
+    <value>*</value>
+  </property>
+  
+  <property>
+    <name>hadoop.proxyuser.hive.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hive.groups</name>
+    <value>*</value>
+  </property>
+
+  <property>
+    <name>hadoop.proxyuser.hadoop.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.hadoop.groups</name>
+    <value>*</value>
+  </property>
+
+  <property>
+    <name>hadoop.proxyuser.yarn.hosts</name>
+    <value>*</value>
+  </property>
+  <property>
+    <name>hadoop.proxyuser.yarn.groups</name>
+    <value>*</value>
+  </property> 
+
+  <!--yarn registery config-->
+  <property>
+    <description>
+      Is the registry enabled in the YARN Resource Manager?
+      If true, the YARN RM will, as needed.
+      create the user and system paths, and purge
+      service records when containers, application attempts
+      and applications complete.
+      If false, the paths must be created by other means,
+      and no automatic cleanup of service records will take place.
+    </description>
+    <name>hadoop.registry.rm.enabled</name>
+    <value>false</value>
+  </property>
+
+  <property>
+    <description>
+      A comma separated list of hostname:port pairs defining the
+      zookeeper quorum binding for the registry
+    </description>
+    <name>hadoop.registry.zk.quorum</name>
+    <value>YARN_ZK_ADDRESS_REPLACE</value>
+  </property>
+
+  <property>
+    <description>
+      The root zookeeper node for the registry
+    </description>
+    <name>hadoop.registry.zk.root</name>
+    <value>/registry</value>
+  </property>
+
+  <property>
+    <description>
+      Zookeeper connection retry count before failing
+    </description>
+    <name>hadoop.registry.zk.retry.times</name>
+    <value>5</value>
+  </property>
+
+  <property>
+    <description>
+    </description>
+    <name>hadoop.registry.zk.retry.interval.ms</name>
+    <value>1000</value>
+  </property>
+
+  <property>
+    <description>
+      Zookeeper session timeout in milliseconds
+    </description>
+    <name>hadoop.registry.zk.connection.timeout.ms</name>
+    <value>15000</value>
+  </property>
+</configuration>
