@@ -51,7 +51,7 @@ Once the applicable runtime is chosen and environment is ready, a `submarine.xml
 
 |Configuration Name | Description |
 |:---- |:---- |
-| `submarine.runtime.class` | "org.apache.hadoop.yarn.submarine.runtimes.tony.TonyRuntimeFactory" or "org.apache.hadoop.yarn.submarine.runtimes.yarnservice.YarnServiceRuntimeFactory" |
+| `submarine.runtime.class` | "org.apache.submarine.runtimes.tony.TonyRuntimeFactory" or "org.apache.submarine.runtimes.yarnservice.YarnServiceRuntimeFactory" |
 
 <br />
 
@@ -61,9 +61,9 @@ A sample `submarine.xml` is here:
 <configuration>
   <property>
     <name>submarine.runtime.class</name>
-    <value>org.apache.hadoop.yarn.submarine.runtimes.tony.TonyRuntimeFactory</value>
+    <value>org.apache.submarine.runtimes.tony.TonyRuntimeFactory</value>
     <!-- Alternatively, you can use:
-    <value>org.apache.hadoop.yarn.submarine.runtimes.yarnservice.YarnServiceRuntimeFactory</value>
+    <value>org.apache.submarine.runtimes.yarnservice.YarnServiceRuntimeFactory</value>
     -->
   </property>
 </configuration>
@@ -96,7 +96,7 @@ For a quick try on Cifar10 example with YARN native service runtime, check [YARN
 
 ```shell
 CLASSPATH=path-to/hadoop-conf:path-to/hadoop-submarine-all-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}.jar \
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job show --name tf-job-001
+java org.apache.submarine.client.cli.Cli job show --name tf-job-001
 ```
 
 Output looks like:

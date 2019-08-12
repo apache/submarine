@@ -61,7 +61,7 @@ Get mnist_distributed.py from https://github.com/linkedin/TonY/tree/master/tony-
 SUBMARINE_VERSION=0.2.0
 SUBMARINE_HOME=path-to/hadoop-submarine-dist-0.2.0-hadoop-3.1
 CLASSPATH=$(hadoop classpath --glob):${SUBMARINE_HOME}/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:${SUBMARINE_HOME}/hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar:path-to/tony-cli-0.3.13-all.jar \
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run --name tf-job-001 \
+java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
  --framework tensorflow \
  --verbose \
  --input_path "" \
@@ -96,7 +96,7 @@ You should then be able to see links and status of the jobs from command line:
 SUBMARINE_VERSION=0.2.0
 SUBMARINE_HOME=path-to/hadoop-submarine-dist-0.2.0-hadoop-3.1
 CLASSPATH=$(hadoop classpath --glob):${SUBMARINE_HOME}/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:${SUBMARINE_HOME}/hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar:path-to/tony-cli-0.3.13-all.jar \
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run --name tf-job-001 \
+java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
  --framework tensorflow \
  --docker_image hadoopsubmarine/tf-1.8.0-cpu:0.0.3 \
  --input_path hdfs://pi-aw:9000/dataset/cifar-10-data \
@@ -156,7 +156,7 @@ Get mnist_distributed.py from https://github.com/linkedin/TonY/tree/master/tony-
 SUBMARINE_VERSION=0.2.0
 SUBMARINE_HOME=path-to/hadoop-submarine-dist-0.2.0-hadoop-3.1
 CLASSPATH=$(hadoop classpath --glob):${SUBMARINE_HOME}/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:${SUBMARINE_HOME}/hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar:path-to/tony-cli-0.3.13-all.jar \
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run --name tf-job-001 \
+java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
  --num_workers 2 \
  --worker_resources memory=3G,vcores=2 \
  --num_ps 2 \
@@ -190,7 +190,7 @@ You should then be able to see links and status of the jobs from command line:
 SUBMARINE_VERSION=0.2.0
 SUBMARINE_HOME=path-to/hadoop-submarine-dist-0.2.0-hadoop-3.1
 CLASSPATH=$(hadoop classpath --glob):${SUBMARINE_HOME}/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:${SUBMARINE_HOME}/hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar:path-to/tony-cli-0.3.13-all.jar \
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run --name tf-job-001 \
+java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
  --docker_image hadoopsubmarine/tf-1.8.0-cpu:0.0.3 \
  --input_path hdfs://pi-aw:9000/dataset/cifar-10-data \
  --worker_resources memory=3G,vcores=2 \

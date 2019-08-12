@@ -62,7 +62,7 @@ SUBMARINE_VERSION=0.2.0
 CLASSPATH=`path-to/hadoop classpath --glob`:path-to/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:
 path-to/hadoop-submarine-yarnservice-runtime-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-tony-
 runtime-${SUBMARINE_VERSION}.jar \
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run \
+java org.apache.submarine.client.cli.Cli job run \
    --name tf-job-001 --verbose --docker_image <image> \
    --input_path hdfs://default/dataset/cifar-10-data \
    --env DOCKER_JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre/
@@ -84,7 +84,7 @@ SUBMARINE_VERSION=0.2.0
 CLASSPATH=`path-to/hadoop classpath --glob`:path-to/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:
 path-to/hadoop-submarine-yarnservice-runtime-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-tony-
 runtime-${SUBMARINE_VERSION}.jar \
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run \
+java org.apache.submarine.client.cli.Cli job run \
    --name tf-job-001 --verbose --docker_image tf-1.13.1-gpu:0.0.1 \
    --input_path hdfs://default/dataset/cifar-10-data \
    --env(s) (same as standalone)
@@ -184,7 +184,7 @@ When using YARN native service runtime, you can view multiple job training histo
 
 SUBMARINE_VERSION=0.2.0
 CLASSPATH=`path-to/hadoop classpath --glob`:path-to/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-yarnservice-runtime-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar \
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run \
+java org.apache.submarine.client.cli.Cli job run \
   --name tensorboard-service \
   --verbose \
   --docker_image <your-docker-image> \
