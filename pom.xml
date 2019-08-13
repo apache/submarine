@@ -251,7 +251,7 @@
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <sourceDirectories>${basedir}/src/main/java,${basedir}/src/main/scala</sourceDirectories>
           <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
-          <configLocation>_tools/checkstyle.xml</configLocation>
+          <configLocation>dev-support/maven-config/checkstyle.xml</configLocation>
           <outputFile>${basedir}/target/checkstyle-output.xml</outputFile>
           <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
           <outputEncoding>${project.reporting.outputEncoding}</outputEncoding>
@@ -289,8 +289,6 @@
             <exclude>.gitignore</exclude>
             <exclude>LICENSE</exclude>
             <exclude>license_header</exclude>
-            <exclude> _tools/site/css/*</exclude>
-            <exclude> _tools/site/images/*</exclude>
             <exclude>**/*.la</exclude>
             <exclude>**/*.svg</exclude>
             <exclude>**/*.png</exclude>
