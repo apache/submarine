@@ -80,10 +80,15 @@ su yarn
 ```
 cd && cd submarine && ./run_submarine_minist_tony.sh
 ```
+When run_submarine_minist_tony.sh is executed, mnist data is download from the url, [google mnist](https://storage.googleapis.com/cvdf-datasets/mnist/), by default. If the url is unaccessible, you can use parameter "-d" to specify a customized url.
+For example, if you are in mainland China, you can use the following command
+```
+cd && cd submarine && ./run_submarine_minist_tony.sh -d http://yann.lecun.com/exdb/mnist/
+```
 
 ### To try your own submarine program
 
-run container with your source code. You can also use "docker cp" to an existing running container
+Run container with your source code. You can also use "docker cp" to an existing running container
 
 1. `docker run -it -h submarine-dev --net=bridge --privileged -v pathToMyScrit.py:/home/yarn/submarine/myScript.py local/hadoop-docker:submarine /bin/bash`
 

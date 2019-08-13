@@ -14,6 +14,20 @@
 # limitations under the License.
 
 #!/bin/bash
+while getopts 'd:' OPT; do
+  case $OPT in
+    d)
+      DATA_URL="$OPTARG";;
+  esac
+done
+shift $(($OPTIND - 1))
+
+if [[ -n "$DATA_URL" ]]; then
+  WORKER_CMD="myvenv.zip/venv/bin/python mnist_distributed.py --steps 2 --data_dir /tmp/data --working_dir /tmp/mode --mnist_data_url ${DATA_URL}"
+else
+  WORKER_CMD="myvenv.zip/venv/bin/python mnist_distributed.py --steps 2 --data_dir /tmp/data --working_dir /tmp/mode"
+fi 
+
 SUBMARINE_VERSION=${SUBMARINE_VER}-hadoop-3.1
 SUBMARINE_HOME=/opt/hadoop-submarine-dist-${SUBMARINE_VERSION}
 CLASSPATH=$(hadoop classpath --glob):${SUBMARINE_HOME}/hadoop-submarine-core-${SUBMARINE_VER}.jar:${SUBMARINE_HOME}/hadoop-submarine-tony-runtime-${SUBMARINE_VER}.jar:${SUBMARINE_HOME}/tony-cli-0.3.18-all.jar \
@@ -25,7 +39,7 @@ java org.apache.hadoop.yarn.submarine.client.cli.Cli job run --name tf-job-001 \
  --worker_resources memory=1G,vcores=1 \
  --num_ps 1 \
  --ps_resources memory=1G,vcores=1 \
- --worker_launch_cmd "myvenv.zip/venv/bin/python mnist_distributed.py --steps 2 --data_dir /tmp/data --working_dir /tmp/mode" \
+ --worker_launch_cmd "${WORKER_CMD}" \
  --ps_launch_cmd "myvenv.zip/venv/bin/python mnist_distributed.py --steps 2 --data_dir /tmp/data --working_dir /tmp/mode" \
  --insecure \
  --conf tony.containers.resources=/home/yarn/submarine/myvenv.zip#archive,/home/yarn/submarine/mnist_distributed.py,${SUBMARINE_HOME}/tony-cli-0.3.18-all.jar

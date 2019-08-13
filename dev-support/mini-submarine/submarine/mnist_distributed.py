@@ -41,6 +41,10 @@ import tensorflow as tf
 # Environment variable containing port to launch TensorBoard on, set by TonY.
 TB_PORT_ENV_VAR = 'TB_PORT'
 
+# mnist data url
+tf.flags.DEFINE_string('mnist_data_url', '',
+                       'Url for mnist handwritten digits dataset')
+
 # Input/output directories
 tf.flags.DEFINE_string('data_dir', '/tmp/tensorflow/mnist/input_data',
                        'Directory for storing input data')
@@ -232,7 +236,13 @@ def main(_):
             # Import data
             logging.info('Extracting and loading input data...')
             # Use a different data dir name to workaround "file already exists issue" when downloading dataset in the same single node
-            mnist = input_data.read_data_sets(FLAGS.data_dir + str(task_index))
+            if FLAGS.mnist_data_url == '':
+                logging.info('Getting mnist data from default url')
+                mnist = input_data.read_data_sets(FLAGS.data_dir + str(task_index))
+            else:
+                logging.info('Getting mnist data from ' + FLAGS.mnist_data_url)
+                mnist = input_data.read_data_sets(FLAGS.data_dir + str(task_index),
+                                                  source_url=FLAGS.mnist_data_url)
 
             # Train
             logging.info('Starting training')
