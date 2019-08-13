@@ -8,6 +8,7 @@ target
 *.tar.gz
 *.jar
 submarine-tony/tony-core/build
+submarine-web/node
 submarine-web/node_modules
 submarine-web/dist
 submarine-web/.env.local
