@@ -16,6 +16,7 @@ package org.apache.submarine.rest;
 import com.google.gson.Gson;
 import org.apache.submarine.annotation.SubmarineApi;
 import org.apache.submarine.entity.User;
+import org.apache.submarine.server.JsonResponse;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -46,17 +47,7 @@ public class LoginRestApi {
         .deleted(0).roleId("admin").lang("zh-CN")
         .token("4291d7da9005377ec9aec4a71ea837f").build();
 
-    ResponseBody body = new ResponseBody();
-    body.result = user;
-    body.message = "";
-    body.code = 200;
-    body.status = 200;
-    body._headers = "{ 'Custom-Header': 2342332424 }";
-    String jsonBody = gson.toJson(body);
-
-    // return new JsonResponse<>(Response.Status.OK, "", json).build();
-    return Response.ok().status(Response.Status.OK)
-        .type(MediaType.APPLICATION_JSON).entity(jsonBody).build();
+    return new JsonResponse<>(Response.Status.OK, "", user).build();
   }
 
   @POST

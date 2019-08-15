@@ -11,13 +11,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. See accompanying LICENSE file.
  */
-package org.apache.submarine.rest;
+package org.apache.submarine.entity;
 
-public class ResponseBody {
-  String message;
-  Long timestamp;
-  Object result;
-  int code;
-  int status;
-  String _headers;
+public class Action {
+  private String action;
+  private boolean defaultCheck = false;
+  private String describe;
+
+  public Action(String action, boolean defaultCheck, String describe) {
+    this.action = action;
+    this.defaultCheck = defaultCheck;
+    this.describe = describe;
+  }
+
+  public void setAction(String action) {
+    this.action = action;
+  }
+
+  public void setDefaultCheck(boolean defaultCheck) {
+    this.defaultCheck = defaultCheck;
+  }
+
+  public void setDescribe(String describe) {
+    this.describe = describe;
+  }
 }
