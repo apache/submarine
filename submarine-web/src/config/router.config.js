@@ -128,7 +128,7 @@ export const asyncRouterMap = [
 
       {
         path: '/workbench/data2',
-        name: 'Data',
+        name: 'Data2',
         component: RouteView,
         redirect: '/workbench/data',
         hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
@@ -136,7 +136,7 @@ export const asyncRouterMap = [
         children: [
           {
             path: '/workbench/data2',
-            name: 'DataWrapper',
+            name: 'DataWrapper2',
             component: () => import('@/views/workbench/data/Data'),
             meta: { title: 'Data', permission: [ 'table' ] }
           }

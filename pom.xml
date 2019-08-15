@@ -48,10 +48,20 @@
     <!-- plugin versions -->
     <plugin.jar.version>2.4</plugin.jar.version>
     <plugin.compiler.version>3.1</plugin.compiler.version>
-    <plugin.shade.version>3.1.1</plugin.shade.version>
+    <plugin.shade.version>3.2.1</plugin.shade.version>
     <plugin.enforcer.version>1.3.1</plugin.enforcer.version>
     <plugin.checkstyle.version>2.17</plugin.checkstyle.version>
     <plugin.war.version>2.3</plugin.war.version>
+
+    <!--library versions-->
+    <jersey.version>2.27</jersey.version>
+    <jersey.servlet.version>1.13</jersey.servlet.version>
+    <jetty.version>9.4.18.v20190429</jetty.version>
+
+    <gson.version>2.8.1</gson.version>
+    <jackson-databind.version>2.9.9.1</jackson-databind.version>
+    <jackson-annotations.version>2.9.9</jackson-annotations.version>
+    <commons-configuration.version>1.10</commons-configuration.version>
 
     <!-- frontend maven plugin related versions-->
     <plugin.frontend.version>1.6</plugin.frontend.version>
@@ -90,6 +100,7 @@
     <module>submarine-core</module>
     <module>submarine-all</module>
     <module>submarine-web</module>
+    <module>submarine-server</module>
     <module>submarine-dist</module>
   </modules>
 

@@ -42,7 +42,7 @@
             <a-checkbox v-decorator="['rememberMe']">remember</a-checkbox>
           </a-col>
           <a-col class="gutter-row" :span="8">
-            <router-link :to="{ name: 'recover', params: { user: 'aaa'} }">forget password?</router-link>
+            <router-link :to="{ name: 'register', params: { user: 'aaa'} }">forget password?</router-link>
           </a-col>
           <a-col class="gutter-row" :span="8">
             <router-link :to="{ name: 'register' }">register account!</router-link>
@@ -205,7 +205,7 @@ export default {
     },
     loginSuccess (res) {
       console.log(res)
-      this.$router.push({ name: 'dashboard' })
+      this.$router.push({ name: 'workspace' })
       // 延迟 1 秒显示欢迎信息
       setTimeout(() => {
         this.$notification.success({
