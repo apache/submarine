@@ -30,7 +30,7 @@ docker pull hadoopsubmarine/mini-submarine:0.2.0
 
 #### Create image by yourself
 
-> you may need a VPN if your network is limited
+> You may need a VPN if your network is limited
 
 ```
 ./build_mini-submarine.sh
@@ -135,6 +135,86 @@ cd /home/yarn/submarine
 ./run_customized_submarine-all_mnist.sh
 ```
 
+### Debug Submarine
+
+When using mini-submarine, you can debug submarine client, applicationMaster and executor for trouble shooting.
+
+#### <span id="debug">Debug submarine client</span>
+
+Run the following command to start mini-submarine.
+
+```
+docker run -it -P -h submarine-dev --net=bridge --expose=8000 --privileged local/mini-submarine:0.2.0 /bin/bash
+```
+
+Debug submarine client with the parameter "--debug"
+
+```
+./run_submarine_mnist_tony.sh --debug
+```
+
+Port 8000 is used in the mini-submarine.
+You need to find the debug port mapping between mini-subamrine and the host on which run mini-subamrine.
+
+```
+docker port <SUBMARINE_CONTAINER_ID>
+```
+
+For example, we can get some info like this
+
+```
+8000/tcp -> 0.0.0.0:32804
+```
+
+Then port 32804 can be used for remote debug.
+
+#### Debug submarine job applicationMaster
+
+Run the following command to start mini-submarine.
+
+```
+docker run -it -P -h submarine-dev --net=bridge --expose=8001 --privileged local/mini-submarine:0.2.0 /bin/bash
+```
+
+Add the following configuration in the file /usr/local/hadoop/etc/hadoop/tony.xml.
+
+```
+<property>
+  <name>tony.task.am.jvm.opts</name>
+  <value>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8001</value>
+</property>
+```
+
+You can use run_submarine_mnist_tony.sh to submit a job. Port 8001 is used for AM debugging in mini-submarine.
+And the debug port mapping can be obtained using the way as [Debug submarine client](#debug) shows.
+
+#### Debug submarine job executor
+
+Run the following command to start mini-submarine.
+
+```
+docker run -it -P -h submarine-dev --net=bridge --expose=8002 --privileged local/mini-submarine:0.2.0 /bin/bash
+```
+
+Add the following configuration in the file /usr/local/hadoop/etc/hadoop/tony.xml.
+
+```
+<property>
+  <name>tony.task.executor.jvm.opts</name>
+  <value>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8002</value>
+</property>
+```
+
+Port 8002 is used for executor debugging in mini-submarine.
+To avoid port confliction, you need to use only one executor, which means the parameter of
+submarine job should be like this
+
+```
+--num_workers 1 \
+--num_ps 0 \
+```
+
+You can get the debug port mapping using the way as [Debug submarine client](#debug) shows.
 
 ### Run a distributedShell job with docker container
 

@@ -16,6 +16,25 @@
 #!/bin/bash
 
 # Need to modify environment variables based on version
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --debug*)
+      DEBUG=$1
+      shift
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+DEBUG_PORT=8000
+if [ "$DEBUG" ]; then
+  JAVA_CMD="java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${DEBUG_PORT}"
+else
+  JAVA_CMD="java"
+fi
+
 while getopts 'd:' OPT; do
   case $OPT in
     d)
@@ -33,7 +52,7 @@ fi
 SUBMARINE_VERSION=0.3.0-SNAPSHOT
 HADOOP_VERSION=2.9
 
-java -cp /tmp/submarine-all-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}.jar:/usr/local/hadoop/etc/hadoop \
+${JAVA_CMD} -cp /tmp/submarine-all-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}.jar:/usr/local/hadoop/etc/hadoop \
 org.apache.submarine.client.cli.Cli job run --name tf-job-002 \
 --framework tensorflow \
 --verbose \

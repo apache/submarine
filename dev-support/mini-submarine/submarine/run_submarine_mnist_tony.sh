@@ -14,6 +14,25 @@
 # limitations under the License.
 
 #!/bin/bash
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --debug*)
+      DEBUG=$1
+      shift
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+DEBUG_PORT=8000
+if [ "$DEBUG" ]; then
+  JAVA_CMD="java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${DEBUG_PORT}"
+else
+  JAVA_CMD="java"
+fi
+
 while getopts 'd:' OPT; do
   case $OPT in
     d)
@@ -31,7 +50,7 @@ fi
 SUBMARINE_VERSION=${SUBMARINE_VER}-hadoop-3.1
 SUBMARINE_HOME=/opt/hadoop-submarine-dist-${SUBMARINE_VERSION}
 CLASSPATH=$(hadoop classpath --glob):${SUBMARINE_HOME}/hadoop-submarine-core-${SUBMARINE_VER}.jar:${SUBMARINE_HOME}/hadoop-submarine-tony-runtime-${SUBMARINE_VER}.jar:${SUBMARINE_HOME}/tony-cli-0.3.18-all.jar \
-java org.apache.hadoop.yarn.submarine.client.cli.Cli job run --name tf-job-001 \
+${JAVA_CMD} org.apache.hadoop.yarn.submarine.client.cli.Cli job run --name tf-job-001 \
  --framework tensorflow \
  --verbose \
  --input_path "" \

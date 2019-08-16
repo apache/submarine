@@ -36,6 +36,8 @@ public final class TonyUtils {
   public static Configuration tonyConfFromClientContext(
       TensorFlowRunJobParameters parameters) {
     Configuration tonyConf = new Configuration();
+    // Add tony.xml for configuration.
+    tonyConf.addResource(Constants.TONY_XML);
     tonyConf.setInt(
         TonyConfigurationKeys.getInstancesKey(Constants.WORKER_JOB_NAME),
         parameters.getNumWorkers());
