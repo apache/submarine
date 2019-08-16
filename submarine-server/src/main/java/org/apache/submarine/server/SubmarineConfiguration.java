@@ -208,6 +208,22 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return path.matches("^[A-Za-z]:\\\\.*");
   }
 
+  public String getJdbcDriverClassName() {
+    return getString(ConfVars.JDBC_DRIVERCLASSNAME);
+  }
+
+  public String getJdbcUrl() {
+    return getString(ConfVars.JDBC_URL);
+  }
+
+  public String getJdbcUserName() {
+    return getString(ConfVars.JDBC_USERNAME);
+  }
+
+  public String getJdbcPassword() {
+    return getString(ConfVars.JDBC_PASSWORD);
+  }
+
   private String getStringValue(String name, String d) {
     String value = this.properties.get(name);
     if (value != null) {
@@ -339,6 +355,11 @@ public class SubmarineConfiguration extends XMLConfiguration {
     SERVER_SSL_TRUSTSTORE_PATH("submarine.ssl.truststore.path", null),
     SERVER_SSL_TRUSTSTORE_TYPE("submarine.ssl.truststore.type", null),
     SERVER_SSL_TRUSTSTORE_PASSWORD("submarine.ssl.truststore.password", null),
+    JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
+    JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarine" +
+        "?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true"),
+    JDBC_USERNAME("jdbc.username", "submarine"),
+    JDBC_PASSWORD("jdbc.password", "password"),
     SUBMARINE_WAR("submarine.war", "submarine-web/dist"),
     SUBMARINE_WAR_TEMPDIR("submarine.war.tempdir", "webapps");
 

@@ -63,6 +63,9 @@
     <jackson-annotations.version>2.9.9</jackson-annotations.version>
     <commons-configuration.version>1.10</commons-configuration.version>
 
+    <mybatis.version>3.2.8</mybatis.version>
+    <mysql-connector-java.version>5.1.39</mysql-connector-java.version>
+
     <!-- frontend maven plugin related versions-->
     <plugin.frontend.version>1.6</plugin.frontend.version>
     <node.version>v10.12.0</node.version>
