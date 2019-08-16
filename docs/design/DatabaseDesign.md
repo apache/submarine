@@ -36,25 +36,28 @@ developmenet and test
 1. Run docker
 
 ```
-docker run -p 3306:3306 -d --name mysql -e MYSQL_ROOT_PASSWORD=password mysql:5.7.27
-docker exec -it mysql bash
+~bash> docker run -p 3306:3306 -d --name mysql -e MYSQL_ROOT_PASSWORD=password mysql:5.7.27
+~bash> docker exec -it mysql bash
 ```
 
 2. Create mysql user submarine
 
 ```
 # in mysql container
-mysql -uroot -ppassword
-CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';
-GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';
-quit
+~bash> mysql -uroot -ppassword
+mysql> CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';
+mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';
+mysql> create database submarineDB;
+mysql> quit
 ```
 
 3. Create submarine database
 
 ```
-root:> mysql -u submarine -p -Dsubmarine
-mysql> create database submarine;
+~bash> mysql -u submarine -ppassword -DsubmarineDB
+mysql> source ./docs/database/submarine.sql;
+mysql> source ./docs/database/submarine-test.sql;
+mysql> show tables;
 ```
 
 

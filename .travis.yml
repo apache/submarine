@@ -22,6 +22,32 @@ cache:
   apt: true
   directories:
     - ${HOME}/.m2
+    -  submarine-web/node
+    -  submarine-web/node_modules
+
+addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+      - mysql-client
+
+services:
+  - mysql
+
+env:
+  global:
+    # submarine core does not required by submarine-server integration tests
+    # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-runtime/yarnservice-runtime` in EXCLUDE_SUBMARINE_CORE
+    - EXCLUDE_SUBMARINE_CORE="\"!submarine-all,!submarine-core,!submarine-dist,!submarine-runtime/tony-runtime,!submarine-tony,!submarine-tony/tony-mini,!submarine-tony/tony-core,!submarine-tony/tony-proxy,!submarine-tony/tony-portal,!submarine-tony/tony-azkaban,!submarine-tony/tony-cli\""
+
+before_install:
+  - sudo service mysql restart
+  - mysql -e "create database submarineDB;"
+  - mysql -e "CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';"
+  - mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';"
+  - mysql -e "use submarineDB; source ./docs/database/submarine.sql; source ./docs/database/submarine-test.sql; show tables;"
 
 matrix:
   include:
@@ -31,25 +57,19 @@ matrix:
       dist: xenial
       env: NAME="Check RAT" PROFILE="" BUILD_FLAG="clean" TEST_FLAG="org.apache.rat:apache-rat-plugin:check" TEST_PROJECTS=""
 
-    # Compile hadoop-2.7
+    # Build hadoop-2.7
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Compile hadoop-2.7" PROFILE="" BUILD_FLAG="clean install package -DskipTests -Phadoop-2.7" TEST_FLAG="" MODULES="" TEST_PROJECTS=""
+      env: NAME="Build hadoop-2.7" PROFILE="-Phadoop-2.7" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-web,!submarine-server\"" TEST_PROJECTS=""
 
-    # Compile hadoop-2.9(default)
+    # Build hadoop-2.9(default)
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Compile hadoop-2.9" PROFILE="" BUILD_FLAG="clean install package -DskipTests" TEST_FLAG="" MODULES="" TEST_PROJECTS=""
+      env: NAME="Build hadoop-2.9" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-web,!submarine-server\"" TEST_PROJECTS=""
 
-    # Test modules
-    - language: java
-      jdk: "openjdk8"
-      dist: xenial
-      env: NAME="Test Project" PROFILE="" BUILD_FLAG="clean install package -DskipTests" TEST_FLAG="test" MODULES="" TEST_PROJECTS=""
-
-    # Compile submarine-web modules
+    # Build submarine-web
     - language: node_js
       node_js:
         - 10.15.0
@@ -60,19 +80,35 @@ matrix:
       script:
         - yarn
         - yarn run lint --no-fix && yarn run build
+      env: NAME="Build submarine-web"
+
+    # Test submarine-server
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
+      env: NAME="Test submarine-server" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE_CORE}" TEST_MODULES="-pl submarine-server" TEST_PROJECTS=""
+
+    # Test submarine-web
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
+      env: NAME="Test submarine-web" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE_CORE}" TEST_MODULES="-pl submarine-web" TEST_PROJECTS=""
 
 install:
+  - mvn --version
   - echo "[$NAME] > mvn $BUILD_FLAG $MODULES $PROFILE -B"
   - mvn $BUILD_FLAG $MODULES $PROFILE -B
 
 before_script:
+  # https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
+  - if [[ -n $TEST_MODULES ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi
   # display info log for debugging
   - if [[ -n $TEST_MODULES ]]; then echo "MAVEN_OPTS='-Xms1024M -Xmx2048M -XX:MaxPermSize=1024m -XX:-UseGCOverheadLimit -Dorg.slf4j.simpleLogger.defaultLogLevel=info'" > ~/.mavenrc; fi
 
 script:
   - if [[ -n $TEST_MODULES ]]; then export MODULES="${TEST_MODULES}"; fi
-  - if [[ -n $TEST_FLAG ]]; then echo "[$NAME] > mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS"; fi
-  - if [[ -n $TEST_FLAG ]]; then mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS; fi
+  - echo "mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS"
+  - mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS
 
 after_success:
   - echo "Travis exited with ${TRAVIS_TEST_RESULT}"

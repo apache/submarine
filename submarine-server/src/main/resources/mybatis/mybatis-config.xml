@@ -31,6 +31,5 @@
   </environments>
   <mappers>
     <mapper resource='mybatis/mapper/SysUserMapper.xml'/>
-    <mapper resource='mybatis/mapper/SysDictMapper.xml'/>
   </mappers>
 </configuration>

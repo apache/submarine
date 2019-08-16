@@ -37,9 +37,3 @@ CREATE TABLE `sys_user` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `index_user_name` USING BTREE (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='system user';
-
--- ----------------------------
--- Records of sys_user
--- ----------------------------
-INSERT INTO `sys_user` VALUES ('e9ca23d68d884d4ebb19d07889727dae', 'admin', '管理员', '21232f297a57a5a743894a0e4a801fc3', 'https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png',
-'2018-12-05 00:00:00', 1, '11@qq.com', '18566666661', 'A01', 1, 1, '127.0.0.1', '2038-06-21 17:54:10', 'admin', '2019-07-05 14:47:22', 'admin', '2019-07-05 14:47:22');
