@@ -14,9 +14,13 @@
 package org.apache.submarine.rest;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.apache.submarine.annotation.SubmarineApi;
-import org.apache.submarine.entity.User;
+import org.apache.submarine.database.entity.SysUser;
+import org.apache.submarine.database.mappers.SysUserMapper;
 import org.apache.submarine.server.JsonResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -25,11 +29,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.HashMap;
 
 @Path("/auth")
 @Produces("application/json")
 @Singleton
 public class LoginRestApi {
+  private static final Logger LOG = LoggerFactory.getLogger(LoginRestApi.class);
+  private SysUserMapper sysUserMapper = new SysUserMapper();
   private static final Gson gson = new Gson();
 
   @Inject
@@ -40,14 +47,20 @@ public class LoginRestApi {
   @Path("/login")
   @SubmarineApi
   public Response login(String loginParams) {
-    User.Builder userBuilder = new User.Builder("4291d7da9005377ec9aec4a71ea837f", "liuxun");
-    User user = userBuilder.avatar("https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png")
-        .status(1).telephone("").lastLoginIp("27.154.74.117")
-        .lastLoginTime(1534837621348L).creatorId("admin").createTime(1497160610259L)
-        .deleted(0).roleId("admin").lang("zh-CN")
-        .token("4291d7da9005377ec9aec4a71ea837f").build();
+    HashMap<String, String> mapParams
+        = gson.fromJson(loginParams, new TypeToken<HashMap<String, String>>() {}.getType());
+    String username = mapParams.get("username");
+    String password = mapParams.get("password");
 
-    return new JsonResponse<>(Response.Status.OK, "", user).build();
+    SysUser sysUser = sysUserMapper.getUserByName(username, password);
+    if (null == sysUser) {
+      LOG.error("Cannot get data from the database");
+    } else {
+      sysUser.setRoleId("admin");
+      sysUser.setToken("mock_token");
+    }
+
+    return new JsonResponse<>(Response.Status.OK, "", sysUser).build();
   }
 
   @POST
