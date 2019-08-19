@@ -155,6 +155,12 @@ export const asyncRouterMap = [
             name: 'UserManager',
             component: () => import('@/views/system/UserList'),
             meta: { title: 'User Manager', keepAlive: true, permission: [ 'table' ] }
+          },
+          {
+            path: '/manager/dict',
+            name: 'DictManager',
+            component: () => import('@/views/system/DictList'),
+            meta: { title: 'Dict Manager', keepAlive: true, permission: [ 'table' ] }
           }
         ]
       },
