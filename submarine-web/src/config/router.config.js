@@ -144,11 +144,21 @@ export const asyncRouterMap = [
       },
 
       {
-        path: '/workbench/workspace2',
-        name: 'WorkbenchWorkspace2',
-        component: () => import('@/views/workbench/workspace/Index'),
-        meta: { title: 'Workspace', keepAlive: true, icon: bxAnaalyse, permission: [ 'dashboard' ] }
+        path: '/manager',
+        name: 'Manager',
+        component: PageView,
+        redirect: '/manager/user',
+        meta: { title: 'Manager', icon: 'setting', permission: [ 'table' ] },
+        children: [
+          {
+            path: '/manager/user',
+            name: 'UserManager',
+            component: () => import('@/views/system/UserList'),
+            meta: { title: 'User Manager', keepAlive: true, permission: [ 'table' ] }
+          }
+        ]
       },
+
       // dashboard
       {
         path: '/dashboard',

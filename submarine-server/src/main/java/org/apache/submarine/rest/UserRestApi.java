@@ -20,6 +20,8 @@ import org.apache.submarine.entity.Permission;
 import org.apache.submarine.entity.Role;
 import org.apache.submarine.entity.UserInfo;
 import org.apache.submarine.server.JsonResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -27,6 +29,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -36,6 +39,8 @@ import java.util.List;
 @Produces("application/json")
 @Singleton
 public class UserRestApi {
+  private static final Logger LOG = LoggerFactory.getLogger(UserRestApi.class);
+
   private static final Gson gson = new Gson();
 
   @Inject
@@ -129,6 +134,20 @@ public class UserRestApi {
     String data = "{stepCode:1}";
 
     // return new JsonResponse<>(Response.Status.OK, "", json).build();
+    return Response.ok().status(Response.Status.OK).type(MediaType.APPLICATION_JSON).entity(data).build();
+  }
+
+  @GET
+  @Path("/list")
+  @SubmarineApi
+  public Response queryPageList(@QueryParam("column") String column,
+                                @QueryParam("field") String field,
+                                @QueryParam("pageNo") int pageNo,
+                                @QueryParam("pageSize") int pageSize) {
+    LOG.info("userList column:{}, field:{}, pageNo:{}, pageSize:{}", column, field, pageNo, pageSize);
+
+    String data = "";
+
     return Response.ok().status(Response.Status.OK).type(MediaType.APPLICATION_JSON).entity(data).build();
   }
 }
