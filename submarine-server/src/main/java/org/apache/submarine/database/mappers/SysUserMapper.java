@@ -30,7 +30,7 @@ public class SysUserMapper {
 
   public SysUser getUserByName(String name, String password) {
     SysUser sysUser = null;
-    SqlSession sqlSession = MyBatisUtil.getSqlSessionFactory().openSession();
+    SqlSession sqlSession = MyBatisUtil.getSqlSession();
     try {
       HashMap<String, Object> mapParams = new HashMap<>();
       mapParams.put("name", name);

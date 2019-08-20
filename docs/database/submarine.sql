@@ -35,5 +35,44 @@ CREATE TABLE `sys_user` (
   `update_by` varchar(32) default NULL COMMENT '更新人',
   `update_time` datetime default NULL COMMENT '更新时间',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `index_user_name` USING BTREE (`username`)
+  UNIQUE KEY `sys_user_name` USING BTREE (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='system user';
+
+-- ----------------------------
+-- Table structure for sys_dict
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dict`;
+CREATE TABLE `sys_dict` (
+  `id` varchar(32) NOT NULL,
+  `dict_code` varchar(100) default NULL COMMENT '字典编码',
+  `dict_name` varchar(100) default NULL COMMENT '字典名称',
+  `description` varchar(255) default NULL COMMENT '描述',
+  `deleted` int(1) default NULL COMMENT '删除状态（1，正常，2已删除）',
+  `type` int(1) default '0' COMMENT '字典类型:0为string,1为number',
+  `create_by` varchar(32) default NULL COMMENT '创建人',
+  `create_time` datetime default NULL COMMENT '创建时间',
+  `update_by` varchar(32) default NULL COMMENT '更新人',
+  `update_time` datetime default NULL COMMENT '更新时间',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `sys_dict_dict_code` USING BTREE (`dict_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for sys_dict_item
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dict_item`;
+CREATE TABLE `sys_dict_item` (
+  `id` varchar(32) NOT NULL,
+  `dict_id` varchar(32) default NULL COMMENT '字典id',
+  `item_text` varchar(100) default NULL COMMENT '字典项文本',
+  `item_value` varchar(100) default NULL COMMENT '字典项值',
+  `description` varchar(255) default NULL COMMENT '描述',
+  `sort_order` int(10) default NULL COMMENT '排序',
+  `status` int(1) default NULL COMMENT '状态（1启用,0不启用）',
+  `create_by` varchar(32) default NULL,
+  `create_time` datetime default NULL,
+  `update_by` varchar(32) default NULL,
+  `update_time` datetime default NULL,
+  PRIMARY KEY  (`id`),
+  CONSTRAINT `FK_SYS_DICT_ITEM_DICT_ID` FOREIGN KEY (`dict_id`) REFERENCES `sys_dict` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

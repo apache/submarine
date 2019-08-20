@@ -40,18 +40,55 @@ developmenet and test
 ~bash> docker exec -it mysql bash
 ```
 
-2. Create mysql user submarine
+2. Modify character set
+
+```
+bash > mysql -uroot -ppassword
+
+mysql>SHOW VARIABLES LIKE 'character_set_%'; //查看数据库字符集
+mysql>SHOW VARIABLES LIKE 'collation_%';
+
+
+SET NAMES 'utf8';
+```
+
+```
+
+# install vim
+apt-get update
+apt-get install vim
+
+vi etc/mysql/mysql.conf.d/mysql.cnf
+
+[mysqld]
+default-character-set = utf8
+character_set_server = utf8
+
+[mysql]
+default-character-set = utf8
+
+[mysql.server]
+default-character-set = utf8
+
+[mysqld_safe]
+default-character-set = utf8
+
+[client]
+default-character-set = utf8
+```
+
+3. Create mysql user submarine
 
 ```
 # in mysql container
-~bash> mysql -uroot -ppassword
+bash > mysql -uroot -ppassword
 mysql> CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';
-mysql> create database submarineDB;
+mysql> CREATE DATABASE submarineDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> quit
 ```
 
-3. Create submarine database
+4. Create submarine database
 
 ```
 ~bash> mysql -u submarine -ppassword -DsubmarineDB

@@ -14,6 +14,7 @@
 package org.apache.submarine.database;
 
 import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.submarine.server.SubmarineConfiguration;
@@ -27,36 +28,45 @@ import java.util.Properties;
 public class MyBatisUtil {
   private static final Logger LOG = LoggerFactory.getLogger(MyBatisUtil.class);
 
-  private static SqlSessionFactory factory = null;
+  private static SqlSessionFactory sqlSessionFactory;
 
-  public static SqlSessionFactory getSqlSessionFactory() {
-    synchronized (MyBatisUtil.class) {
-      if (null == factory) {
-        Reader reader = null;
-        try {
-          reader = Resources.getResourceAsReader("mybatis/mybatis-config.xml");
-        } catch (IOException e) {
-          LOG.error(e.getMessage(), e);
-          throw new RuntimeException(e.getMessage());
-        }
-
-        SubmarineConfiguration conf = SubmarineConfiguration.create();
-        String jdbcClassName = conf.getJdbcDriverClassName();
-        String jdbcUrl = conf.getJdbcUrl();
-        String jdbcUserName = conf.getJdbcUserName();
-        String jdbcPassword = conf.getJdbcPassword();
-        LOG.info("MyBatisUtil -> jdbcClassName: {}, jdbcUrl: {}, jdbcUserName: {}, jdbcPassword: {}",
-            jdbcClassName, jdbcUrl, jdbcUserName, jdbcPassword);
-
-        Properties props = new Properties();
-        props.setProperty("jdbc.driverClassName", jdbcClassName);
-        props.setProperty("jdbc.url", jdbcUrl);
-        props.setProperty("jdbc.username", jdbcUserName);
-        props.setProperty("jdbc.password", jdbcPassword);
-
-        factory = new SqlSessionFactoryBuilder().build(reader, props);
+  static {
+    Reader reader = null;
+    try {
+      try {
+        reader = Resources.getResourceAsReader("mybatis/mybatis-config.xml");
+      } catch (IOException e) {
+        LOG.error(e.getMessage(), e);
+        throw new RuntimeException(e.getMessage());
       }
-      return factory;
+
+      SubmarineConfiguration conf = SubmarineConfiguration.create();
+      String jdbcClassName = conf.getJdbcDriverClassName();
+      String jdbcUrl = conf.getJdbcUrl();
+      String jdbcUserName = conf.getJdbcUserName();
+      String jdbcPassword = conf.getJdbcPassword();
+      LOG.info("MyBatisUtil -> jdbcClassName: {}, jdbcUrl: {}, jdbcUserName: {}, jdbcPassword: {}",
+          jdbcClassName, jdbcUrl, jdbcUserName, jdbcPassword);
+
+      Properties props = new Properties();
+      props.setProperty("jdbc.driverClassName", jdbcClassName);
+      props.setProperty("jdbc.url", jdbcUrl);
+      props.setProperty("jdbc.username", jdbcUserName);
+      props.setProperty("jdbc.password", jdbcPassword);
+
+      sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, props);
+      reader.close();
+    } catch (IOException e) {
+      LOG.error(e.getMessage(), e);
     }
+  }
+
+  /**
+   * 获取Session
+   *
+   * @return
+   */
+  public static SqlSession getSqlSession() {
+    return sqlSessionFactory.openSession();
   }
 }

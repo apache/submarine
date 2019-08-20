@@ -357,7 +357,8 @@ public class SubmarineConfiguration extends XMLConfiguration {
     SERVER_SSL_TRUSTSTORE_PASSWORD("submarine.ssl.truststore.password", null),
     JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
     JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarineDB" +
-        "?useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true"),
+        "?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
+        "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
     JDBC_USERNAME("jdbc.username", "submarine"),
     JDBC_PASSWORD("jdbc.password", "password"),
     SUBMARINE_WAR("submarine.war", "submarine-web/dist"),
