@@ -92,6 +92,18 @@ public class SysUser extends BaseEntity {
     this.name = name;
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
   @Override
   public String toString() {
     return "User{" +

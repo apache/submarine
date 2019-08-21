@@ -27,7 +27,6 @@ import javax.inject.Singleton;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
 
@@ -60,7 +59,7 @@ public class LoginRestApi {
       sysUser.setToken("mock_token");
     }
 
-    return new JsonResponse<>(Response.Status.OK, "", sysUser).build();
+    return new JsonResponse.Builder<SysUser>(Response.Status.OK).success(true).result(sysUser).build();
   }
 
   @POST
@@ -69,8 +68,6 @@ public class LoginRestApi {
   public Response step() {
     String data = "{stepCode:1}";
 
-    // return new JsonResponse<>(Response.Status.OK, "", json).build();
-    return Response.ok().status(Response.Status.OK)
-        .type(MediaType.APPLICATION_JSON).entity(data).build();
+    return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result(data).build();
   }
 }

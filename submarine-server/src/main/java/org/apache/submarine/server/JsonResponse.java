@@ -18,10 +18,12 @@ package org.apache.submarine.server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
 
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Json response builder.
@@ -29,70 +31,76 @@ import java.util.ArrayList;
  * @param <T>
  */
 public class JsonResponse<T> {
-  private int code;
-  private javax.ws.rs.core.Response.Status status;
-  private String message;
-  private T result;
-  transient ArrayList<NewCookie> cookies;
-  transient boolean pretty = false;
+  private final javax.ws.rs.core.Response.Status status;
+  private final int code;
+  private final Boolean success;
+  private final String message;
+  private final T result;
+  private final transient ArrayList<NewCookie> cookies;
+  private final transient boolean pretty = false;
 
-  public JsonResponse(javax.ws.rs.core.Response.Status status) {
-    this.code = status.getStatusCode();
-    this.status = status;
-    this.message = null;
-    this.result = null;
+  private JsonResponse(Builder builder) {
+    this.status = builder.status;
+    this.code = builder.code;
+    this.success = builder.success;
+    this.message = builder.message;
+    this.result = (T) builder.result;
+    this.cookies = builder.cookies;
   }
 
-  public JsonResponse(javax.ws.rs.core.Response.Status status, String message) {
-    this.code = status.getStatusCode();
-    this.status = status;
-    this.message = message;
-    this.result = null;
+  public T getResult() {
+    return result;
   }
 
-  public JsonResponse(javax.ws.rs.core.Response.Status status, T body) {
-    this.code = status.getStatusCode();
-    this.status = status;
-    this.message = null;
-    this.result = body;
+  public Boolean getSuccess() {
+    return success;
   }
 
-  public JsonResponse(javax.ws.rs.core.Response.Status status, String message, T body) {
-    this.code = status.getStatusCode();
-    this.status = status;
-    this.message = message;
-    this.result = body;
-  }
+  public static class Builder<T> {
+    private javax.ws.rs.core.Response.Status status;
+    private int code;
+    private Boolean success;
+    private String message;
+    private T result;
+    private transient ArrayList<NewCookie> cookies;
+    private transient boolean pretty = false;
 
-  public JsonResponse<T> setPretty(boolean pretty) {
-    this.pretty = pretty;
-    return this;
-  }
-
-  /**
-   * Add cookie for building.
-   *
-   * @param newCookie
-   * @return
-   */
-  public JsonResponse<T> addCookie(NewCookie newCookie) {
-    if (cookies == null) {
-      cookies = new ArrayList<>();
+    public Builder(javax.ws.rs.core.Response.Status status) {
+      this.status = status;
+      this.code = status.getStatusCode();
     }
-    cookies.add(newCookie);
 
-    return this;
-  }
+    public Builder(int code) {
+      this.code = code;
+    }
 
-  /**
-   * Add cookie for building.
-   *
-   * @param name
-   * @param value
-   * @return
-   */
-  public JsonResponse<?> addCookie(String name, String value) {
-    return addCookie(new NewCookie(name, value));
+    public Builder success(Boolean success){
+      this.success = success;
+      return this;
+    }
+
+    public Builder message(String message){
+      this.message = message;
+      return this;
+    }
+
+    public Builder result(T result){
+      this.result = result;
+      return this;
+    }
+
+    public Builder cookies(ArrayList<NewCookie> newCookies){
+      if (cookies == null) {
+        cookies = new ArrayList<>();
+      }
+      cookies.addAll(newCookies);
+      return this;
+    }
+
+    public javax.ws.rs.core.Response build(){
+      JsonResponse jsonResponse = new JsonResponse(this);
+      return jsonResponse.build();
+    }
   }
 
   @Override
@@ -102,36 +110,25 @@ public class JsonResponse<T> {
       gsonBuilder.setPrettyPrinting();
     }
     gsonBuilder.setExclusionStrategies(new JsonExclusionStrategy());
-    Gson gson = gsonBuilder.create();
 
-    return gson.toJson(this);
+    // Trick to get the DefaultDateTypeAdatpter instance
+    // Create a first instance a Gson
+    Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
+
+    // Get the date adapter
+    TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
+
+    // Ensure the DateTypeAdapter is null safe
+    TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
+
+    Gson safeGson = new GsonBuilder()
+        .registerTypeAdapter(Date.class, safeDateTypeAdapter)
+        .create();
+
+    return safeGson.toJson(this);
   }
 
-  public javax.ws.rs.core.Response.Status getCode() {
-    return status;
-  }
-
-  public void setCode(javax.ws.rs.core.Response.Status status) {
-    this.status = status;
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public void setMessage(String message) {
-    this.message = message;
-  }
-
-  public T getResult() {
-    return result;
-  }
-
-  public void setResult(T result) {
-    this.result = result;
-  }
-
-  public javax.ws.rs.core.Response build() {
+  private javax.ws.rs.core.Response build() {
     ResponseBuilder r = javax.ws.rs.core.Response.status(status).entity(this.toString());
     if (cookies != null) {
       for (NewCookie nc : cookies) {

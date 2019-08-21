@@ -30,7 +30,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +123,7 @@ public class UserRestApi {
         .createTime(1497160610259L).merchantCode("TLif2btpzg079h15bk")
         .deleted(0).roleId("admin").role(role).build();
 
-    return new JsonResponse<>(Response.Status.OK, "", userInfo).build();
+    return new JsonResponse.Builder<UserInfo>(Response.Status.OK).success(true).result(userInfo).build();
   }
 
   @POST
@@ -133,8 +132,7 @@ public class UserRestApi {
   public Response step() {
     String data = "{stepCode:1}";
 
-    // return new JsonResponse<>(Response.Status.OK, "", json).build();
-    return Response.ok().status(Response.Status.OK).type(MediaType.APPLICATION_JSON).entity(data).build();
+    return new JsonResponse.Builder<>(Response.Status.OK).success(true).result(data).build();
   }
 
   @GET
@@ -148,6 +146,6 @@ public class UserRestApi {
 
     String data = "";
 
-    return Response.ok().status(Response.Status.OK).type(MediaType.APPLICATION_JSON).entity(data).build();
+    return new JsonResponse.Builder<>(Response.Status.OK).success(true).result(data).build();
   }
 }
