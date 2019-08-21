@@ -16,7 +16,7 @@
 
 The hadoop submarine repository is a temporary development repository forked from the [hadoop/hadoop-submarine](https://github.com/apache/hadoop/tree/trunk/hadoop-submarine).
 
-The creation of this temporary temporary is mainly because more and more people from different companies and organizations want to work together to participate in the development of the hadoop submarine project, but the hadoop submarine committers are difficult to quickly complete the review work of the newly submitted PR. In order to speed up the development speed of the project, this temporary repository, allows the hadoop submarine developers to review the code here.
+The creation of this temporary is mainly because more and more people from different companies and organizations want to work together to participate in the development of the hadoop submarine project, but the hadoop submarine committers are difficult to quickly complete the review work of the newly submitted PR. In order to speed up the development speed of the project, this temporary repository, allows the hadoop submarine developers to review the code here.
 
 If all goes well, this should be a short-lived fork rather than a long-lived one.
 
