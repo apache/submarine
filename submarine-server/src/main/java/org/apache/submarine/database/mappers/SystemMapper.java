@@ -15,6 +15,6 @@ package org.apache.submarine.database.mappers;
 
 import java.util.Map;
 
-public interface CommonMapper {
+public interface SystemMapper {
   Long duplicateCheck(Map params);
 }

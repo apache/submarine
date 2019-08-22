@@ -61,4 +61,3 @@ public class SysDict extends BaseEntity {
     return deleted;
   }
 }
-

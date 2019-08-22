@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 public class JsonResponseTest {
 
@@ -67,18 +68,19 @@ public class JsonResponseTest {
     List<SysDict> list = new ArrayList();
     list.add(sysDict);
 
-    QueryResult queryResult = new QueryResult(list, 1);
+    QueryResult<SysDict> queryResult = new QueryResult(list, 1);
 
     Response response = new JsonResponse.Builder<QueryResult>(Response.Status.OK)
         .success(true).result(queryResult).build();
 
     String entity = (String) response.getEntity();
 
-    Type type = new TypeToken<JsonResponse<QueryResult>>(){}.getType();
+    Type type = new TypeToken<JsonResponse<QueryResult<SysDict>>>(){}.getType();
 
-    JsonResponse<QueryResult> jsonResponse = gson.fromJson(entity, type);
+    JsonResponse<QueryResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
 
     QueryResult check = jsonResponse.getResult();
+    assertTrue(check.getRecords().get(0) instanceof SysDict);
     assertEquals(check.getRecords().size(), queryResult.getRecords().size());
     assertEquals(check.getTotal(), queryResult.getTotal());
   }

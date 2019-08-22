@@ -1,13 +1,13 @@
 <template>
   <a-card :bordered="false">
-    <!-- 抽屉 -->
+
     <a-drawer
       title="Dict Item List"
       :width="screenWidth"
       @close="onClose"
       :visible="visible"
     >
-      <!-- 抽屉内容的border -->
+
       <div
         :style="{
           padding:'10px',
@@ -23,20 +23,15 @@
                   <a-input style="width: 120px;" placeholder="Dict name" v-model="queryParam.itemText"></a-input>
                 </a-form-item>
               </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="Status" style="width: 170px" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                  <a-select
-                    v-model="queryParam.status"
-                  >
-                    <a-select-option value="1">Enable</a-select-option>
-                    <a-select-option value="0">Disable</a-select-option>
-                  </a-select>
+              <a-col :md="8" :sm="12">
+                <a-form-item label="Value">
+                  <a-input style="width: 120px;" placeholder="Dict value" v-model="queryParam.itemValue"></a-input>
                 </a-form-item>
               </a-col>
               <a-col :md="8" :sm="24">
                 <span style="float: left;" class="table-page-search-submitButtons">
                   <a-button type="primary" @click="searchQuery">Query</a-button>
-                  <a-button @click="handleAdd" style="margin-left: 8px">New</a-button>
+                  <a-button @click="handleAdd" style="margin-left: 8px" icon="plus">New</a-button>
                 </span>
               </a-col>
             </a-row>
@@ -53,45 +48,64 @@
             :loading="loading"
             @change="handleTableChange"
           >
-
+            <span slot="deleted" slot-scope="text">
+              <a-tag v-if="text==0" color="blue">available</a-tag>
+              <a-tag v-if="text==1" color="red">deleted</a-tag>
+            </span>
             <span slot="action" slot-scope="text, record">
-              <a @click="handleEdit(record)">Edit</a>
+              <a @click="handleEdit(record)"><a-icon type="edit"/> Edit</a>
+              <!-- delete/restore menu
               <a-divider type="vertical"/>
-              <a-popconfirm title="Confirm delete?" @confirm="() => handleDelete(record.id)">
+              <a-popconfirm v-if="record.deleted==1" title="Confirm restore?" @confirm="() =>handleDelete(record.id, 0)" okText="Yes" cancelText="No">
+                <a>Restore</a>
+              </a-popconfirm>
+              <a-popconfirm v-else title="Confirm delete?" @confirm="() =>handleDelete(record.id, 1)" okText="Yes" cancelText="No">
                 <a>Delete</a>
               </a-popconfirm>
+              -->
             </span>
-
+            <span slot="description" slot-scope="text">
+              <ellipsis :length="14" tooltip>{{ text }}</ellipsis>
+            </span>
           </a-table>
         </div>
       </div>
     </a-drawer>
-    <dict-item-modal ref="modalForm" @ok="modalFormOk"></dict-item-modal> <!-- 字典数据 -->
+    <dict-item-modal ref="modalForm" @ok="modalFormOk"></dict-item-modal>
   </a-card>
 </template>
 
 <script>
 import pick from 'lodash.pick'
 import { filterObj } from '@/utils/util'
-import DictItemModal from './modules/DictItemModal'
 import { ListMixin } from '@/mixins/ListMixin'
+import { Ellipsis } from '@/components'
+import DictItemModal from './modules/DictItemModal'
 
 export default {
   name: 'DictItemList',
   mixins: [ListMixin],
-  components: { DictItemModal },
+  components: { Ellipsis, DictItemModal },
   data () {
     return {
       columns: [
         {
           title: 'Name',
           align: 'center',
-          dataIndex: 'itemText'
+          dataIndex: 'itemText',
+          scopedSlots: { customRender: 'description' }
         },
         {
-          title: 'Data value',
+          title: 'Value',
           align: 'center',
-          dataIndex: 'itemValue'
+          dataIndex: 'itemValue',
+          scopedSlots: { customRender: 'description' }
+        },
+        {
+          title: 'Status',
+          align: 'center',
+          dataIndex: 'deleted',
+          scopedSlots: { customRender: 'deleted' }
         },
         {
           title: 'Action',
@@ -104,15 +118,14 @@ export default {
         dictId: '',
         dictName: '',
         itemText: '',
-        delFlag: '1',
-        status: []
+        deleted: '1'
       },
       title: 'action',
       visible: false,
       screenWidth: 800,
       model: {},
       dictId: '',
-      status: 1,
+      deleted: 1,
       labelCol: {
         xs: { span: 5 },
         sm: { span: 5 }
@@ -150,7 +163,7 @@ export default {
       this.form.resetFields()
       this.model = Object.assign({}, record)
       this.model.dictId = this.dictId
-      this.model.status = this.status
+      this.model.deleted = this.deleted
       this.visible = true
       this.$nextTick(() => {
         this.form.setFieldsValue(pick(this.model, 'itemText', 'itemValue'))

@@ -24,35 +24,35 @@ import org.junit.Test;
 
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 public class SysDictRestApiTest {
-  private static SysDictRestApi systemRestApi = new SysDictRestApi();
+  private static SysDictRestApi sysDictRestApi = new SysDictRestApi();
+  private static SystemRestApi systemRestApi = new SystemRestApi();
   private static final Gson gson = new Gson();
   private static final int NEW_SYS_DICT_COUNT = 3;
 
   @BeforeClass
   public static void init() {
     for (int i = 0; i < NEW_SYS_DICT_COUNT; i++) {
-      HashMap<String, String> mapParams = new HashMap<>();
-      mapParams.put("dictCode", "dictCode-SysDictRestApiTest-" + i);
-      mapParams.put("dictName", "dictName-SysDictRestApiTest-" + i);
-      mapParams.put("description", "description-SysDictRestApiTest-" + i);
-
-      String json = gson.toJson(mapParams);
-      systemRestApi.addDict(json);
+      SysDict sysDict = new SysDict();
+      sysDict.setDictCode("dictCode-SysDictRestApiTest-" + i);
+      sysDict.setDictName("dictName-SysDictRestApiTest-" + i);
+      sysDict.setDescription("desc-SysDictRestApiTest-" + i);
+      sysDictRestApi.add(sysDict);
     }
   }
 
   @AfterClass
   public static void exit() {
-    QueryResult queryResult = queryTestDictList();
+    QueryResult<SysDict> queryResult = queryTestDictList();
+    assertTrue(queryResult.getRecords().size() > 0);
+    assertTrue(queryResult.getTotal() > 0);
     for (SysDict sysDict : queryResult.getRecords()) {
-      systemRestApi.removeDict(sysDict.getId());
+      sysDictRestApi.remove(sysDict.getId());
     }
 
     //recheck
@@ -64,7 +64,7 @@ public class SysDictRestApiTest {
   @Test
   public void hasDuplicateCheckTest() {
     Response response = systemRestApi.duplicateCheck(
-        "sys_dict", "dict_code", "dictCode-SysDictRestApiTest-0", null);
+        "sys_dict", "dict_code", "dictCode-SysDictRestApiTest-0", null, null, null);
     String entity = (String) response.getEntity();
     JsonResponse jsonResponse = gson.fromJson(entity, JsonResponse.class);
     assertFalse(jsonResponse.getSuccess());
@@ -72,7 +72,8 @@ public class SysDictRestApiTest {
 
   @Test
   public void notDuplicateCheckTest() {
-    Response response = systemRestApi.duplicateCheck("sys_dict", "dict_code", "not-exist-code", null);
+    Response response = systemRestApi.duplicateCheck("sys_dict", "dict_code", "not-exist-code",
+        null, null, null);
     String entity = (String) response.getEntity();
     JsonResponse jsonResponse = gson.fromJson(entity, JsonResponse.class);
     assertTrue(jsonResponse.getSuccess());
@@ -80,40 +81,41 @@ public class SysDictRestApiTest {
 
   @Test
   public void queryDictListTest() {
-    QueryResult queryResult = queryTestDictList();
+    QueryResult<SysDict> queryResult = queryTestDictList();
     assertEquals(queryResult.getTotal(), NEW_SYS_DICT_COUNT);
     assertEquals(queryResult.getRecords().size(), NEW_SYS_DICT_COUNT);
+    assertTrue(queryResult.getRecords().get(0) instanceof SysDict);
   }
 
   @Test
   public void setDeletedTest() {
-    QueryResult queryResult = queryTestDictList();
+    QueryResult<SysDict> queryResult = queryTestDictList();
     for (SysDict dict : queryResult.getRecords()) {
-      systemRestApi.deleteDict(dict.getId(), 1);
+      sysDictRestApi.delete(dict.getId(), 1);
     }
 
-    QueryResult queryResult2 = queryTestDictList();
+    QueryResult<SysDict> queryResult2 = queryTestDictList();
     for (SysDict dict : queryResult2.getRecords()) {
       assertEquals((int) dict.getDeleted(), 1);
     }
 
     for (SysDict dict : queryResult2.getRecords()) {
-      systemRestApi.deleteDict(dict.getId(), 0);
+      sysDictRestApi.delete(dict.getId(), 0);
     }
 
-    QueryResult queryResult3 = queryTestDictList();
+    QueryResult<SysDict> queryResult3 = queryTestDictList();
     for (SysDict dict : queryResult3.getRecords()) {
       assertEquals((int) dict.getDeleted(), 0);
     }
   }
 
-  public static QueryResult queryTestDictList() {
-    Response response = systemRestApi.queryDictList("-SysDictRestApiTest-", "", "", "", "", 1, 10);
+  public static QueryResult<SysDict> queryTestDictList() {
+    Response response = sysDictRestApi.list("-SysDictRestApiTest-", "", "", "", "", 1, 10);
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<QueryResult>>(){}.getType();
-    JsonResponse<QueryResult> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<QueryResult<SysDict>>>(){}.getType();
+    JsonResponse<QueryResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
 
-    QueryResult queryResult = jsonResponse.getResult();
+    QueryResult<SysDict> queryResult = jsonResponse.getResult();
     return queryResult;
   }
 }

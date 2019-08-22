@@ -21,7 +21,7 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="Data value">
+          label="Value">
           <a-input placeholder="Please entry data value" v-decorator="['itemValue', validatorRules.itemValue]"/>
         </a-form-item>
 
@@ -37,15 +37,15 @@
           :wrapperCol="wrapperCol"
           label="sort value">
           <a-input-number :min="1" v-decorator="['sortOrder',{'initialValue':1}]"/>
-          The smaller the value, the higher the front, the support for decimals
+          &nbsp;Sorting in the list
         </a-form-item>
 
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="Whether to enable"
+          label="Status"
           hasFeedback>
-          <a-switch checkedChildren="Enable" unCheckedChildren="Disable" @change="onChose" v-model="visibleCheck"/>
+          <a-switch checkedChildren="available" unCheckedChildren="deleted" @change="onChose" v-model="visibleCheck"/>
         </a-form-item>
 
       </a-form>
@@ -55,7 +55,7 @@
 
 <script>
 import pick from 'lodash.pick'
-import { addDictItem, editDictItem } from '@/api/system'
+import { addDictItem, editDictItem, duplicateCheck } from '@/api/system'
 
 export default {
   name: 'DictItemModal',
@@ -66,7 +66,7 @@ export default {
       visibleCheck: true,
       model: {},
       dictId: '',
-      status: 1,
+      deleted: 0,
       labelCol: {
         xs: { span: 24 },
         sm: { span: 5 }
@@ -78,14 +78,52 @@ export default {
       confirmLoading: false,
       form: this.$form.createForm(this),
       validatorRules: {
-        itemText: { rules: [{ required: true, message: 'Please entry name!' }] },
-        itemValue: { rules: [{ required: true, message: 'Please entry data value!' }] }
+        itemText: { rules: [{ required: true, message: 'Please entry name!' },
+          { validator: this.validateItemText }] },
+        itemValue: { rules: [{ required: true, message: 'Please entry data value!' },
+          { validator: this.validateItemValue }] }
       }
     }
   },
   created () {
   },
   methods: {
+    validateItemText (rule, value, callback) {
+      // 重复校验
+      var params = {
+        tableName: 'sys_dict_item',
+        fieldName: 'item_text',
+        fieldVal: value,
+        equalFieldName: 'dict_id',
+        equalFieldVal: this.dictId,
+        dataId: this.model.id
+      }
+      duplicateCheck(params).then((res) => {
+        if (res.success) {
+          callback()
+        } else {
+          callback(res.message)
+        }
+      })
+    },
+    validateItemValue (rule, value, callback) {
+      // 重复校验
+      var params = {
+        tableName: 'sys_dict_item',
+        fieldName: 'item_value',
+        fieldVal: value,
+        equalFieldName: 'dict_id',
+        equalFieldVal: this.dictId,
+        dataId: this.model.id
+      }
+      duplicateCheck(params).then((res) => {
+        if (res.success) {
+          callback()
+        } else {
+          callback(res.message)
+        }
+      })
+    },
     add (dictId) {
       this.dictId = dictId
       this.edit({})
@@ -93,12 +131,12 @@ export default {
     edit (record) {
       if (record.id) {
         this.dictId = record.dictId
-        this.visibleCheck = (record.status === 1)
+        this.visibleCheck = (record.deleted === 0)
       }
       this.form.resetFields()
       this.model = Object.assign({}, record)
       this.model.dictId = this.dictId
-      this.model.status = this.status
+      this.model.deleted = this.deleted
       this.visible = true
       this.$nextTick(() => {
         this.form.setFieldsValue(pick(this.model, 'itemText', 'itemValue', 'description', 'sortOrder'))
@@ -106,10 +144,10 @@ export default {
     },
     onChose (checked) {
       if (checked) {
-        this.status = 1
+        this.deleted = 0
         this.visibleCheck = true
       } else {
-        this.status = 0
+        this.deleted = 1
         this.visibleCheck = false
       }
     },
@@ -124,7 +162,7 @@ export default {
           values.itemValue = (values.itemValue || '').trim()
           values.description = (values.description || '').trim()
           const formData = Object.assign(this.model, values)
-          formData.status = this.status
+          formData.deleted = this.deleted
           let obj
           if (!this.model.id) {
             obj = addDictItem(formData)

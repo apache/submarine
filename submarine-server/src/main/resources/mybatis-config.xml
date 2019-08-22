@@ -50,7 +50,7 @@
   </environments>
 
   <mappers>
-    <mapper resource='org/apache/submarine/database/mappers/CommonMapper.xml'/>
+    <mapper resource='org/apache/submarine/database/mappers/SystemMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/SysUserMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/SysDictMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/SysDictItemMapper.xml'/>

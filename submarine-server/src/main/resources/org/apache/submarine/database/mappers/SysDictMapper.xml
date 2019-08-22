@@ -31,7 +31,7 @@
     WHERE 1=1
     <if test="dictCode!=null and dictCode!=''"> AND `dict_code` like '%${dictCode}%'</if>
     <if test="dictName!=null and dictName!=''"> AND `dict_name` like '%${dictName}%'</if>
-    ORDER BY id DESC
+    ORDER BY id
   </select>
   <resultMap id="resultMap" type="org.apache.submarine.database.entity.SysDict" extends="BaseEntityResultMap">
     <result column="dict_code" property="dictCode"/>
@@ -46,7 +46,16 @@
     <if test="deleted!=null"> `deleted`, </if>
     <if test="type!=null"> `type`, </if>
     `create_by`, `create_time`, `update_time`)
-    VALUES (REPLACE(UUID(), '-', ''), #{dictCode}, #{dictName}, #{description},
+    VALUES (
+    <choose>
+      <when test="id!=null and id!=''">
+        #{id},
+      </when>
+      <otherwise>
+        REPLACE(UUID(), '-', ''),
+      </otherwise>
+    </choose>
+    #{dictCode}, #{dictName}, #{description},
     <if test="deleted!=null">#{deleted}, </if>
     <if test="type!=null">#{type}, </if>
     #{createBy}, now(), now())

@@ -16,10 +16,13 @@
   ~ limitations under the License.
   -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.apache.submarine.database.mappers.CommonMapper">
+<mapper namespace="org.apache.submarine.database.mappers.SystemMapper">
 
   <select id="duplicateCheck" resultType="Long"  parameterType="java.util.Map">
     SELECT COUNT(*) FROM ${tableName} WHERE ${fieldName} = #{fieldVal}
+    <if test="equalFieldName!=null and equalFieldName!='' and equalFieldVal!=null and equalFieldVal!=''">
+      and ${equalFieldName} = #{equalFieldVal}
+    </if>
     <if test="dataId!=null and dataId!=''">
       and id &lt;&gt; #{dataId}
     </if>

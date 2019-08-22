@@ -25,7 +25,7 @@ public class SysDictItem extends BaseEntity {
 
   private Integer sortOrder;
 
-  private Integer status;
+  private Integer deleted;
 
   public void setDictId(String dictId) {
     this.dictId = dictId;
@@ -47,8 +47,11 @@ public class SysDictItem extends BaseEntity {
     this.sortOrder = sortOrder;
   }
 
-  public void setStatus(Integer status) {
-    this.status = status;
+  public void setDeleted(Integer deleted) {
+    this.deleted = deleted;
+  }
+
+  public Integer getDeleted() {
+    return deleted;
   }
 }
-

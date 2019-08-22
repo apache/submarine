@@ -13,6 +13,8 @@
  */
 package org.apache.submarine.database.entity;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -33,6 +35,7 @@ public abstract class BaseEntity implements Serializable {
     return id;
   }
 
+  @VisibleForTesting
   public void setId(String id) {
     this.id = id;
   }

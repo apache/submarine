@@ -13,9 +13,20 @@
  */
 package org.apache.submarine.database.mappers;
 
-import org.apache.submarine.database.entity.SysDict;
+import org.apache.ibatis.session.RowBounds;
+import org.apache.submarine.database.entity.SysDictItem;
+
 import java.util.List;
+import java.util.Map;
 
 public interface SysDictItemMapper {
-  List<SysDict> selectAll();
+  List<SysDictItem> selectAll(Map where, RowBounds rowBounds);
+
+  int insertSysDictItem(SysDictItem sysDictItem);
+
+  boolean updateBy(SysDictItem sysDictItem);
+
+  SysDictItem getById(String id);
+
+  void deleteById(String id);
 }

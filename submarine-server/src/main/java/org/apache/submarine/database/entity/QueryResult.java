@@ -18,16 +18,16 @@ package org.apache.submarine.database.entity;
 
 import java.util.List;
 
-public class QueryResult {
-  private List<SysDict> records;
+public class QueryResult<T> {
+  private List<T> records;
   private long total;
 
-  public QueryResult(List<SysDict> records, long total) {
+  public QueryResult(List<T> records, long total) {
     this.records = records;
     this.total = total;
   }
 
-  public List<SysDict> getRecords() {
+  public List<T> getRecords() {
     return records;
   }
 
