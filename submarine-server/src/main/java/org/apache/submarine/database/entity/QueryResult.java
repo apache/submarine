@@ -19,15 +19,15 @@ package org.apache.submarine.database.entity;
 import java.util.List;
 
 public class QueryResult {
-  private List<SysUser> records;
+  private List<SysDict> records;
   private long total;
 
-  public QueryResult(List<SysUser> records, long total) {
+  public QueryResult(List<SysDict> records, long total) {
     this.records = records;
     this.total = total;
   }
 
-  public List<SysUser> getRecords() {
+  public List<SysDict> getRecords() {
     return records;
   }
 

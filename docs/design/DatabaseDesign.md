@@ -58,10 +58,9 @@ SET NAMES 'utf8';
 apt-get update
 apt-get install vim
 
-vi etc/mysql/mysql.conf.d/mysql.cnf
+vi /etc/mysql/mysql.conf.d/mysqld.cnf
 
 [mysqld]
-default-character-set = utf8
 character_set_server = utf8
 
 [mysql]

@@ -2,7 +2,7 @@
   <a-card :bordered="false">
     <!-- 抽屉 -->
     <a-drawer
-      title="Dict List"
+      title="Dict Item List"
       :width="screenWidth"
       @close="onClose"
       :visible="visible"
@@ -20,13 +20,12 @@
             <a-row :gutter="10">
               <a-col :md="8" :sm="12">
                 <a-form-item label="Name">
-                  <a-input style="width: 120px;" placeholder="Please entry name" v-model="queryParam.itemText"></a-input>
+                  <a-input style="width: 120px;" placeholder="Dict name" v-model="queryParam.itemText"></a-input>
                 </a-form-item>
               </a-col>
-              <a-col :md="9" :sm="24">
+              <a-col :md="8" :sm="24">
                 <a-form-item label="Status" style="width: 170px" :labelCol="labelCol" :wrapperCol="wrapperCol">
                   <a-select
-                    placeholder="Please select"
                     v-model="queryParam.status"
                   >
                     <a-select-option value="1">Enable</a-select-option>
@@ -34,16 +33,11 @@
                   </a-select>
                 </a-form-item>
               </a-col>
-              <a-col :md="7" :sm="24">
+              <a-col :md="8" :sm="24">
                 <span style="float: left;" class="table-page-search-submitButtons">
                   <a-button type="primary" @click="searchQuery">Query</a-button>
-                  <a-button type="primary" @click="searchReset" style="margin-left: 8px">Reset</a-button>
+                  <a-button @click="handleAdd" style="margin-left: 8px">New</a-button>
                 </span>
-              </a-col>
-            </a-row>
-            <a-row>
-              <a-col :md="2" :sm="24">
-                <a-button style="margin-bottom: 10px" type="primary" @click="handleAdd">New</a-button>
               </a-col>
             </a-row>
           </a-form>
@@ -61,7 +55,7 @@
           >
 
             <span slot="action" slot-scope="text, record">
-              <a @click="handleEdit(record)">编辑</a>
+              <a @click="handleEdit(record)">Edit</a>
               <a-divider type="vertical"/>
               <a-popconfirm title="Confirm delete?" @confirm="() => handleDelete(record.id)">
                 <a>Delete</a>
@@ -199,5 +193,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-</style>

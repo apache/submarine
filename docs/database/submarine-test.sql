@@ -24,3 +24,6 @@ INSERT INTO `sys_dict` VALUES ('fc6cd58fde2e8481db10d3a1e68ce70c', 'user_status'
 -- ----------------------------
 -- Records of sys_dict_item
 -- ----------------------------
+INSERT INTO `sys_dict_item` VALUES ('0072d115e07c875d76c9b022e2179128', 'fc6cd58fde2e8481db10d3a1e68ce70c', 'registered', 'registered', 'User just registered, need to be reviewed to use', 1, 1, 'admin', '2019-04-16 17:04:59', null, null);
+INSERT INTO `sys_dict_item` VALUES ('1ce390c52453891f93514c1bd2795d44', 'fc6cd58fde2e8481db10d3a1e68ce70c', 'unlock', 'unlock', 'Users can use normally', 2, 1, 'admin', '2019-04-16 17:04:59', null, null);
+INSERT INTO `sys_dict_item` VALUES ('1b8a6341163062dad8cb2fddd34e0c3b', 'fc6cd58fde2e8481db10d3a1e68ce70c', 'lock', 'lock', 'User cannot use the system', 3, 1, 'admin', '2019-04-16 17:04:59', null, null);

@@ -6,37 +6,23 @@
       <a-form layout="inline">
         <a-row :gutter="12">
           <a-col :md="7" :sm="8">
-            <a-form-item label="Dict Name" :labelCol="{span: 6}" :wrapperCol="{span: 14, offset: 1}">
+            <a-form-item label="Dict Name" :labelCol="{span: 4}" :wrapperCol="{span: 14, offset: 1}">
               <a-input placeholder="Please entry dict name" v-model="queryParam.dictName"></a-input>
             </a-form-item>
           </a-col>
           <a-col :md="7" :sm="8">
-            <a-form-item label="Dict Code" :labelCol="{span: 6}" :wrapperCol="{span: 14, offset: 1}">
+            <a-form-item label="Dict Code" :labelCol="{span: 4}" :wrapperCol="{span: 14, offset: 1}">
               <a-input placeholder="Please entry dict code" v-model="queryParam.dictCode"></a-input>
             </a-form-item>
           </a-col>
           <a-col :md="7" :sm="8">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="search">Query</a-button>
-              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">Reset</a-button>
+              <a-button type="primary" @click="handleAdd" icon="plus" style="margin-left: 8px">Add</a-button>
             </span>
           </a-col>
         </a-row>
       </a-form>
-
-      <div class="table-operator" style="border-top: 5px">
-        <a-button @click="handleAdd" type="primary" icon="plus">Add new dict</a-button>
-        <a-button type="primary" icon="download" @click="handleExportXls('DictInformation')">Export</a-button>
-        <a-upload
-          name="file"
-          :showUploadList="false"
-          :multiple="false"
-          :headers="tokenHeader"
-          :action="importExcelUrl"
-          @change="handleImportExcel">
-          <a-button type="primary" icon="import">Import</a-button>
-        </a-upload>
-      </div>
 
       <a-table
         ref="table"
@@ -47,15 +33,22 @@
         :pagination="ipagination"
         :loading="loading"
         @change="handleTableChange">
+        <span slot="deleted" slot-scope="text">
+          <a-tag v-if="text==0" color="blue">available</a-tag>
+          <a-tag v-if="text==1" color="red">deleted</a-tag>
+        </span>
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">
             <a-icon type="edit"/>
             Edit
           </a>
           <a-divider type="vertical"/>
-          <a @click="editDictItem(record)"><a-icon type="setting"/> Dictionary configuration</a>
+          <a @click="editDictItem(record)"><a-icon type="setting"/> Configuration</a>
           <a-divider type="vertical"/>
-          <a-popconfirm title="Confirm delete?" @confirm="() =>handleDelete(record.id)">
+          <a-popconfirm v-if="record.deleted==1" title="Confirm restore?" @confirm="() =>handleDelete(record.id, 0)" okText="Yes" cancelText="No">
+            <a>Restore</a>
+          </a-popconfirm>
+          <a-popconfirm v-else title="Confirm delete?" @confirm="() =>handleDelete(record.id, 1)" okText="Yes" cancelText="No">
             <a>Delete</a>
           </a-popconfirm>
         </span>
@@ -99,19 +92,25 @@ export default {
           }
         },
         {
-          title: 'Dict Name',
-          align: 'left',
-          dataIndex: 'dictName'
-        },
-        {
           title: 'Dict Code',
           align: 'left',
           dataIndex: 'dictCode'
         },
         {
+          title: 'Dict Name',
+          align: 'left',
+          dataIndex: 'dictName'
+        },
+        {
           title: 'Description',
           align: 'left',
           dataIndex: 'description'
+        },
+        {
+          title: 'Status',
+          align: 'left',
+          dataIndex: 'deleted',
+          scopedSlots: { customRender: 'deleted' }
         },
         {
           title: 'Action',

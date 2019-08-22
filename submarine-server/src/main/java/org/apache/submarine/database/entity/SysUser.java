@@ -119,10 +119,10 @@ public class SysUser extends BaseEntity {
         ", lastLoginIp=" + lastLoginIp +
         ", lastLoginTime=" + lastLoginTime +
         ", deleted='" + deleted + '\'' +
-        ", createBy='" + create_by + '\'' +
-        ", createTime='" + create_time + '\'' +
-        ", updateBy='" + update_by + '\'' +
-        ", updateTime='" + update_time + '\'' +
+        ", createBy='" + createBy + '\'' +
+        ", createTime='" + createTime + '\'' +
+        ", updateBy='" + updateBy + '\'' +
+        ", updateTime='" + updateTime + '\'' +
         ", roleId='" + roleId + '\'' +
         ", lang='" + lang + '\'' +
         ", token='" + token + '\'' +

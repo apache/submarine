@@ -21,13 +21,13 @@ public abstract class BaseEntity implements Serializable {
 
   protected String id;
 
-  protected String create_by;
+  protected String createBy;
 
-  protected Date create_time;
+  protected Date createTime;
 
-  protected String update_by;
+  protected String updateBy;
 
-  protected Date update_time;
+  protected Date updateTime;
 
   public String getId() {
     return id;
@@ -38,34 +38,34 @@ public abstract class BaseEntity implements Serializable {
   }
 
   public String getCreateBy() {
-    return create_by;
+    return createBy;
   }
 
   public void setCreateBy(String userId) {
-    this.create_by = userId;
+    this.createBy = userId;
   }
 
   public Date getCreateTime() {
-    return create_time;
+    return createTime;
   }
 
   public void setCreateTime(Date createTime) {
-    this.create_time = createTime;
+    this.createTime = createTime;
   }
 
   public String getUpdateBy() {
-    return update_by;
+    return updateBy;
   }
 
   public void setUpdateBy(String userId) {
-    this.update_by = userId;
+    this.updateBy = userId;
   }
 
   public Date getUpdateTime() {
-    return update_time;
+    return updateTime;
   }
 
   public void setUpdateTime(Date updateTime) {
-    this.update_time = updateTime;
+    this.updateTime = updateTime;
   }
 }

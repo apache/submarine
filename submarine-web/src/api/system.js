@@ -18,6 +18,8 @@ const treeList = (params) => getAction('/sys/dict/treeList', params)
 const addDictItem = (params) => postAction('/sys/dictItem/add', params)
 const editDictItem = (params) => putAction('/sys/dictItem/edit', params)
 
+const duplicateCheck = (params) => getAction('/sys/duplicateCheck', params)
+
 export {
   addUser,
   editUser,
@@ -30,5 +32,6 @@ export {
   editDict,
   treeList,
   addDictItem,
-  editDictItem
+  editDictItem,
+  duplicateCheck
 }

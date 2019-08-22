@@ -7,16 +7,10 @@
     @ok="handleOk"
     @cancel="handleCancel"
     cancelText="Close"
+    okText="Ok"
   >
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
-
-        <a-form-item
-          :labelCol="labelCol"
-          :wrapperCol="wrapperCol"
-          label="Dict Name">
-          <a-input placeholder="Please entry dict name" v-decorator="[ 'dictName', validatorRules.dictName]"/>
-        </a-form-item>
 
         <a-form-item
           :labelCol="labelCol"
@@ -28,7 +22,14 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="description">
+          label="Dict Name">
+          <a-input placeholder="Please entry dict name" v-decorator="[ 'dictName', validatorRules.dictName]"/>
+        </a-form-item>
+
+        <a-form-item
+          :labelCol="labelCol"
+          :wrapperCol="wrapperCol"
+          label="Description">
           <a-input v-decorator="[ 'description']"/>
         </a-form-item>
 
@@ -46,7 +47,7 @@ export default {
   data () {
     return {
       value: 1,
-      title: '操作',
+      title: 'Operation',
       visible: false,
       model: {},
       labelCol: {
@@ -60,7 +61,8 @@ export default {
       confirmLoading: false,
       form: this.$form.createForm(this),
       validatorRules: {
-        dictName: { rules: [{ required: true, message: 'Please entry dict name!' }] },
+        dictName: {
+          rules: [{ required: true, message: 'Please entry dict name!' }] },
         dictCode: {
           rules: [{ required: true, message: 'Please entry dict code!' },
             { validator: this.validateDictCode }]
@@ -80,6 +82,7 @@ export default {
         dataId: this.model.id
       }
       duplicateCheck(params).then((res) => {
+        console.log(res)
         if (res.success) {
           callback()
         } else {

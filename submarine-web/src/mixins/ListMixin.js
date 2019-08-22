@@ -161,13 +161,13 @@ export const ListMixin = {
         })
       }
     },
-    handleDelete: function (id) {
+    handleDelete: function (id, deleted) {
       if (!this.url.delete) {
         this.$message.error('Please set the url.delete property!')
         return
       }
       var that = this
-      deleteAction(that.url.delete, { id: id }).then((res) => {
+      deleteAction(that.url.delete, { id: id, deleted: deleted }).then((res) => {
         if (res.success) {
           that.$message.success(res.message)
           that.loadData()
