@@ -18,31 +18,35 @@ Click below contents if you want to understand more.
 
 ## Quick Start Guide
 
-[Quick Start Guide](QuickStart.md)
+[Quick Start Guide](./helper/QuickStart.md)
 
 ## Build From Code
 
-[Build From Code Guide](BuildFromCode.md)
+[Build From Code Guide](./development/BuildFromCode.md)
 
 ## Examples
 
 Here're some examples about Submarine usage.
 
-[Running Distributed CIFAR 10 Tensorflow Job](RunningDistributedCifar10TFJobs.md)
+[Running Distributed CIFAR 10 Tensorflow Job](./helper/RunningDistributedCifar10TFJobs.md)
 
-[Running Standalone CIFAR 10 PyTorch Job](RunningSingleNodeCifar10PTJobs.md)
+[Running Standalone CIFAR 10 PyTorch Job](./helper/RunningSingleNodeCifar10PTJobs.md)
+
+## Development
+
+[Submarine Project Development Guide](./development/README.md)
 
 ## Dockerfile
 
-[How to write Dockerfile for Submarine TensorFlow jobs](WriteDockerfileTF.md)
+[How to write Dockerfile for Submarine TensorFlow jobs](./helper/WriteDockerfileTF.md)
 
-[How to write Dockerfile for Submarine PyTorch jobs](WriteDockerfilePT.md)
+[How to write Dockerfile for Submarine PyTorch jobs](./helper/WriteDockerfilePT.md)
 
 ## Install Dependencies
 
 **Note: You need to install dependencies when using hadoop yarn 3.1.x + or above.**
 
-Submarine project may uses YARN Service (When Submarine YARN service runtime is being used, see [QuickStart](QuickStart.md), Docker container, and GPU (when GPU hardware available and properly configured).
+Submarine project may uses YARN Service (When Submarine YARN service runtime is being used, see [QuickStart](./helper/QuickStart.md), Docker container, and GPU (when GPU hardware available and properly configured).
 
 That means as an admin, you may have to properly setup YARN Service related dependencies, including:
 
@@ -62,7 +66,7 @@ For your convenience, we provided installation documents to help you to setup yo
 
 Use Submarine installer to install dependencies: [EN](../submarine-installer/README.md) [CN](../submarine-installer/README-CN.md)
 
-Alternatively, you can follow manual install dependencies: [EN](InstallationGuide.md) [CN](InstallationGuideChineseVersion.md)
+Alternatively, you can follow manual install dependencies: [EN](./helper/InstallationGuide.md) [CN](./helper/InstallationGuideChineseVersion.md)
 
-Once you have installed dependencies, please follow following guide to [TestAndTroubleshooting](TestAndTroubleshooting.md).
+Once you have installed dependencies, please follow following guide to [TestAndTroubleshooting](./helper/TestAndTroubleshooting.md).
 
