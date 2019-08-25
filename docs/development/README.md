@@ -115,7 +115,7 @@ Submarine-server has a built-in jetty server service, so you don't need to insta
 
 + **Run / Debug** : In the IDEA, add a Run/Debug Configuration, `Main Class:` select `org.apache.submarine.server.SubmarineServer`, `Use classpath of module:` select `submarine-server`. 
 
-![img](assets/Run-Debug-Configuration.png)
+![img](../assets/Run-Debug-Configuration.png)
 
 So you can pass http://127.0.0.1:8080 debugging or running to submarine-workbench.
 
@@ -128,4 +128,3 @@ So you can pass http://127.0.0.1:8080 debugging or running to submarine-workbenc
 3. The submarine-workbench, IP and 8080 ports that are accessible locally through the port 8080 of 127.0.0.1 are configured via  `Submarine-site.xml`, but we do not recommend you to modify it.
 
 4. When you modify the `vue` or `js` of submarine-web, you need to execute the yarn run build command in the submarine-web directory, and let your modified code update to the dist directory, so that you can see the effect of your code modification in the workbench.
-

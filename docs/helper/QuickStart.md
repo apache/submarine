@@ -116,7 +116,7 @@ After that, you can run ```tensorboard --logdir=<checkpoint-path>``` to view Ten
 We can use `yarn logs -applicationId <applicationId>` to get logs from CLI.
 Or from YARN UI:
 
-![alt text](./assets/job-logs-ui.png "Job logs UI")
+![alt text](../assets/job-logs-ui.png "Job logs UI")
 
 <br />
 
@@ -208,4 +208,4 @@ reported from `entry_script.py`.
 
 ## Build From Source
 
-If you want to build the Submarine project by yourself, you can follow it [here](BuildFromCode.md)
+If you want to build the Submarine project by yourself, you can follow it [here](../development/BuildFromCode.md)

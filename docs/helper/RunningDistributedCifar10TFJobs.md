@@ -175,7 +175,7 @@ Sample output of ps:
 #### Notes:
 When using YARN native service runtime, you can view multiple job training history like from the `Tensorboard` link:
 
-![alt text](./assets/multiple-tensorboard-jobs.png "Tensorboard for multiple jobs")
+![alt text](../assets/multiple-tensorboard-jobs.png "Tensorboard for multiple jobs")
 
 ## Run tensorboard to monitor your jobs
 

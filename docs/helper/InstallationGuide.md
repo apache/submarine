@@ -519,3 +519,4 @@ Add configurations in container-executor.cfg
  --num_workers 1 \
  --worker_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=%input_path% --job-dir=%checkpoint_path% --train-steps=500 --eval-batch-size=16 --train-batch-size=16 --sync --num-gpus=1"
 ```
+
