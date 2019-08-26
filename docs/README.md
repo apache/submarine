@@ -36,6 +36,8 @@ Here're some examples about Submarine usage.
 
 [Submarine Project Development Guide](./development/README.md)
 
+[Submarine Project Database Guide](./database/README.md)
+
 ## Dockerfile
 
 [How to write Dockerfile for Submarine TensorFlow jobs](./helper/WriteDockerfileTF.md)
