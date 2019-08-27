@@ -13,6 +13,7 @@
  */
 package org.apache.submarine.server;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.tree.ConfigurationNode;
@@ -216,12 +217,27 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getString(ConfVars.JDBC_URL);
   }
 
+  @VisibleForTesting
+  public void setJdbcUrl(String testJdbcUrl) {
+    properties.put(ConfVars.JDBC_URL.getVarName(), testJdbcUrl);
+  }
+
   public String getJdbcUserName() {
     return getString(ConfVars.JDBC_USERNAME);
   }
 
+  @VisibleForTesting
+  public void setJdbcUserName(String userName) {
+    properties.put(ConfVars.JDBC_USERNAME.getVarName(), userName);
+  }
+
   public String getJdbcPassword() {
     return getString(ConfVars.JDBC_PASSWORD);
+  }
+
+  @VisibleForTesting
+  public void setJdbcPassword(String password) {
+    properties.put(ConfVars.JDBC_PASSWORD.getVarName(), password);
   }
 
   private String getStringValue(String name, String d) {

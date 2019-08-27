@@ -40,6 +40,8 @@ public class MyBatisUtil {
         throw new RuntimeException(e.getMessage());
       }
 
+      checkCalledByTestMethod();
+
       SubmarineConfiguration conf = SubmarineConfiguration.create();
       String jdbcClassName = conf.getJdbcDriverClassName();
       String jdbcUrl = conf.getJdbcUrl();
@@ -68,5 +70,26 @@ public class MyBatisUtil {
    */
   public static SqlSession getSqlSession() {
     return sqlSessionFactory.openSession();
+  }
+
+  private static void checkCalledByTestMethod() {
+    StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+    for (StackTraceElement element : stackTraceElements) {
+      if (element.getClassName().endsWith("Test")) {
+        usingTestDatabase();
+        return;
+      }
+    }
+  }
+
+  private static void usingTestDatabase() {
+    LOG.info("Run the test unit using the test database");
+    // Run the test unit using the test database
+    SubmarineConfiguration conf = SubmarineConfiguration.create();
+    conf.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/submarineDB_test?" +
+        "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
+        "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false");
+    conf.setJdbcUserName("submarine_test");
+    conf.setJdbcPassword("password_test");
   }
 }

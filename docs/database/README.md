@@ -78,7 +78,9 @@ If you need to store Chinese character data in mysql, you need to execute the fo
 
 ## Create Submarine Database
 
-### Create mysql database user
+### Create development database
+
+Development database for development environment.
 
 ```
 # in mysql container
@@ -86,28 +88,38 @@ bash > mysql -uroot -ppassword
 mysql> CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';
 mysql> CREATE DATABASE submarineDB CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> use submarineDB;
+mysql> source ./docs/database/submarine.sql;
 mysql> quit
 ```
 
->  NOTE: submarine database name is  `submarineDB` and user name is `submarine`, password is `password`, This is the default value in the system's `submarine-site.xml` configuration file and is not recommended for modification in the development environment.
+>  NOTE: submarine development database name is  `submarineDB` and user name is `submarine`, password is `password`, This is the default value in the system's `submarine-site.xml` configuration file and is not recommended for modification.
 
-### Create submarine database
 
-```bash
-~bash> mysql -u submarine -ppassword -DsubmarineDB
+### Create test database
+
+Test database for program unit testing and Travis test environment.
+
+```
+# in mysql container
+bash > mysql -uroot -ppassword
+mysql> CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';
+mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';
+mysql> CREATE DATABASE `submarineDB_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> use `submarineDB_test`;
 mysql> source ./docs/database/submarine.sql;
-mysql> source ./docs/database/submarine-test.sql;
-mysql> show tables;
+mysql> quit
 ```
 
-> NOTE: As the submarine system changes, the contents of the submarine.sql and submarine-test.sql files may change.
+>  NOTE: submarine test database name is  `submarineDB_test` and user name is `submarine_test`, password is `password_test`, Cannot be configured, values that cannot be modified.
+
 
 ## Travis
 
-1. In the submarine's Travis, the mysql database, database name, username, and password are automatically created as per the contents of this document. 
+1. In the submarine's Travis, the `test database`, `database name`, `username` and `password` will be automatically created based on the contents of this document. 
 
-   Therefore, we recommend that developers do not modify the configuration of the username and password to avoid introducing some problems.
+   Therefore, do not modify the database's `database name`, `username` and `password` configuration to avoid introducing some problems.
 
-2. In the mysql database in Travis, the `submarine.sql` and `submarine-test.sql` files are executed to create the submarine database table structure and test data.
+2. In the mysql database in Travis, the `submarine.sql` and `submarine_test.sql` files are executed to create the submarine database table structure and test data.
 
 3. The submarine database test case written in the `submarine-server` module will also be unit tested in the mysql database in travis.
