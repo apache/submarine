@@ -1,3 +1,0 @@
-# This is an intentionally empty folder for TestHdfsUtils.
-# Need to put a .gitignore file here in order to commit this directory.
-!.gitignore

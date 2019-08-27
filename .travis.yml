@@ -40,7 +40,7 @@ env:
   global:
     # submarine core does not required by submarine-server integration tests
     # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-runtime/yarnservice-runtime` in EXCLUDE_SUBMARINE_CORE
-    - EXCLUDE_SUBMARINE_CORE="\"!submarine-all,!submarine-core,!submarine-dist,!submarine-runtime/tony-runtime,!submarine-tony,!submarine-tony/tony-mini,!submarine-tony/tony-core,!submarine-tony/tony-proxy,!submarine-tony/tony-portal,!submarine-tony/tony-azkaban,!submarine-tony/tony-cli\""
+    - EXCLUDE_SUBMARINE_CORE="\"!submarine-all,!submarine-core,!submarine-dist,!submarine-runtime/tony-runtime,!submodules/tony,!submodules/tony/tony-mini,!submodules/tony/tony-core,!submodules/tony/tony-proxy,!submodules/tony/tony-portal,!submodules/tony/tony-azkaban,!submodules/tony/tony-cli\""
 
 before_install:
   - sudo service mysql restart

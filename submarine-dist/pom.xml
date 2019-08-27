@@ -34,6 +34,16 @@
     <project.version>0.3.0-SNAPSHOT</project.version>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.hadoop</groupId>
+        <artifactId>hadoop-yarn-services-core</artifactId>
+        <version>${hadoop.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
@@ -48,8 +58,14 @@
       <dependencies>
         <dependency>
           <groupId>org.apache.submarine</groupId>
-          <artifactId>submarine-yarnservice-runtime</artifactId>
+          <artifactId>yarnservice-runtime</artifactId>
           <version>${project.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.avro</groupId>
+              <artifactId>avro</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.submarine</groupId>
@@ -65,8 +81,14 @@
       <dependencies>
         <dependency>
           <groupId>org.apache.submarine</groupId>
-          <artifactId>submarine-yarnservice-runtime</artifactId>
+          <artifactId>yarnservice-runtime</artifactId>
           <version>${project.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.avro</groupId>
+              <artifactId>avro</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
         <dependency>
           <groupId>org.apache.submarine</groupId>

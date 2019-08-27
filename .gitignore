@@ -7,7 +7,7 @@ target
 *.tgz
 *.tar.gz
 *.jar
-submarine-tony/tony-core/build
+submodules/tony/tony-core/build
 submarine-web/node
 submarine-web/node_modules
 submarine-web/dist

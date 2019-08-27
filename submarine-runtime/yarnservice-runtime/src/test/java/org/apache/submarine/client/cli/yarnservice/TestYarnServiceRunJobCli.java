@@ -121,8 +121,12 @@ public class TestYarnServiceRunJobCli {
     assertEquals(4096, psComp.getResource().calcMemoryMB());
     assertEquals(4, psComp.getResource().getCpus().intValue());
 
-    Assert.assertEquals(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_DOCKER_IMAGE, workerComp.getArtifact().getId());
-    Assert.assertEquals(TestYarnServiceRunJobCliCommons.DEFAULT_PS_DOCKER_IMAGE, psComp.getArtifact().getId());
+    Assert.assertEquals(
+        TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_DOCKER_IMAGE,
+        workerComp.getArtifact().getId());
+    Assert.assertEquals(
+        TestYarnServiceRunJobCliCommons.DEFAULT_PS_DOCKER_IMAGE,
+        psComp.getArtifact().getId());
 
     assertTrue(SubmarineLogs.isVerbose());
   }

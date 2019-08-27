@@ -22,6 +22,24 @@ To build the code, install
 + Oracle Java 8
 + Apache Maven
 
+#### Prerequistion
+
++ Update tony project
+
+LinkedIn tony project is included in submarine as a submodule. If you just clone
+submarine project, please initialze tony project using the following command.
+
+```
+git submodule update --init --recursive
+```
+
+After the initialization, when you want to update tony project, please execute a
+command like this.
+
+```
+git submodule update --recursive
+```
+
 #### Building the code
 
 + To skip test
@@ -60,3 +78,7 @@ clean install package -DskipTests -Phadoop-3.1
 clean install package -DskipTests -Phadoop-3.2
 ```
 
+#### Tony code modification
+
+If it is needed to make modifications to tony project, please make sure
+both submarine and tony project are commited.

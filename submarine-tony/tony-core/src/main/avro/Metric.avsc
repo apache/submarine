@@ -1,9 +1,0 @@
-{
-  "namespace": "org.apache.submarine.tony.events.avro",
-  "type": "record",
-  "name": "Metric",
-  "fields": [
-    {"name": "name", "type": "string"},
-    {"name": "value", "type": "double"}
-  ]
-}

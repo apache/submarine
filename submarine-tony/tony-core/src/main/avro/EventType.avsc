@@ -1,5 +1,0 @@
-{
-  "namespace": "org.apache.submarine.tony.events.avro",
-  "type": "enum", "name": "EventType",
-  "symbols": [ "APPLICATION_INITED", "APPLICATION_FINISHED", "TASK_STARTED", "TASK_FINISHED" ]
-}

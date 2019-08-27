@@ -54,6 +54,7 @@
     <plugin.war.version>2.3</plugin.war.version>
 
     <!--library versions-->
+    <tony.version>0.3.21</tony.version>
     <jersey.version>2.27</jersey.version>
     <jersey.servlet.version>1.13</jersey.servlet.version>
     <jetty.version>9.4.18.v20190429</jetty.version>
@@ -97,10 +98,12 @@
     <commons-text.version>1.4</commons-text.version>
     <zip4j.version>1.3.2</zip4j.version>
     <commons-collections.version>3.2.2</commons-collections.version>
+    <nimbus-jose-jwt.version>4.41.1</nimbus-jose-jwt.version>
+    <commons-io.version>2.4</commons-io.version>
   </properties>
 
   <modules>
-    <module>submarine-tony</module>
+    <module>submodules/tony</module>
     <module>submarine-core</module>
     <module>submarine-all</module>
     <module>submarine-web</module>
@@ -155,6 +158,51 @@
         <artifactId>commons-lang3</artifactId>
         <version>3.7</version>
       </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>${jaxb-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${commons-compress.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject.extensions</groupId>
+        <artifactId>guice-servlet</artifactId>
+        <version>${guice-servlet.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson-annotations.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${guice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.nimbusds</groupId>
+        <artifactId>nimbus-jose-jwt</artifactId>
+        <version>${nimbus-jose-jwt.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.zookeeper</groupId>
+        <artifactId>zookeeper</artifactId>
+        <version>${zookeeper.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -163,6 +211,12 @@
       <id>hadoop-3.2</id>
       <properties>
         <hadoop.version>3.2.0</hadoop.version>
+        <jaxb-api.version>2.2.11</jaxb-api.version>
+        <commons-compress.version>1.18</commons-compress.version>
+        <guice-servlet.version>4.0</guice-servlet.version>
+        <jackson-annotations.version>2.9.5</jackson-annotations.version>
+        <guice.version>4.0</guice.version>
+        <zookeeper.version>3.4.13</zookeeper.version>
       </properties>
       <modules>
         <module>submarine-runtime/yarnservice-runtime</module>
@@ -175,6 +229,12 @@
       <id>hadoop-3.1</id>
       <properties>
         <hadoop.version>3.1.2</hadoop.version>
+        <jaxb-api.version>2.2.11</jaxb-api.version>
+        <commons-compress.version>1.18</commons-compress.version>
+        <guice-servlet.version>4.0</guice-servlet.version>
+        <jackson-annotations.version>2.7.8</jackson-annotations.version>
+        <guice.version>4.0</guice.version>
+        <zookeeper.version>3.4.13</zookeeper.version>
       </properties>
       <modules>
         <module>submarine-runtime/yarnservice-runtime</module>
@@ -189,6 +249,12 @@
       </activation>
       <properties>
         <hadoop.version>2.9.2</hadoop.version>
+        <jaxb-api.version>2.2.11</jaxb-api.version>
+        <commons-compress.version>1.4.1</commons-compress.version>
+        <guice-servlet.version>3.0</guice-servlet.version>
+        <jackson-annotations.version>2.7.8</jackson-annotations.version>
+        <guice.version>3.0</guice.version>
+        <zookeeper.version>3.4.6</zookeeper.version>
       </properties>
       <modules>
         <module>submarine-runtime/tony-runtime</module>
@@ -199,6 +265,12 @@
       <id>hadoop-2.7</id>
       <properties>
         <hadoop.version>2.7.3</hadoop.version>
+        <jaxb-api.version>2.2.2</jaxb-api.version>
+        <commons-compress.version>1.4.1</commons-compress.version>
+        <guice-servlet.version>3.0</guice-servlet.version>
+        <jackson-annotations.version>2.7.0</jackson-annotations.version>
+        <guice.version>3.0</guice.version>
+        <zookeeper.version>3.4.6</zookeeper.version>
       </properties>
       <modules>
         <module>submarine-runtime/tony-runtime</module>
@@ -286,7 +358,7 @@
             </goals>
             <configuration>
               <failOnViolation>true</failOnViolation>
-              <excludes>org/apache/submarine/tony/rpc/proto/*,org/apache/submarine/tony/events/avro/*</excludes>
+              <excludes>com/linkedin/tony/rpc/proto/*,com/linkedin/tony/events/*</excludes>
             </configuration>
           </execution>
           <execution>
@@ -308,6 +380,7 @@
             <exclude>.git/</exclude>
             <exclude>.github/*</exclude>
             <exclude>.gitignore</exclude>
+            <exclude>.gitmodules</exclude>
             <exclude>LICENSE</exclude>
             <exclude>license_header</exclude>
             <exclude>**/*.la</exclude>
@@ -323,10 +396,11 @@
             <exclude>**/*.xsd</exclude>
             <exclude>**/*.json</exclude>
             <exclude>**/*.conf</exclude>
-            <exclude>**/src/main/java/org/apache/submarine/tony/events/avro/*</exclude>
+            <exclude>**/src/main/java/com/linkedin/tony/events/*</exclude>
             <exclude>**/src/main/resources/META-INF/services/org.apache.hadoop.security.SecurityInfo</exclude>
             <exclude>**/src/test/resources/typicalHistFolder/job1/application123-1-1-user1-SUCCEEDED.jhist</exclude>
             <exclude>**/conf/routes</exclude>
+            <exclude>submarine-runtime/yarnservice-runtime/target/**</exclude>
           </excludes>
         </configuration>
       </plugin>

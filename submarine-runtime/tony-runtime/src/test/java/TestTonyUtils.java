@@ -11,8 +11,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. See accompanying LICENSE file.
  */
-import org.apache.submarine.tony.Constants;
-import org.apache.submarine.tony.TonyConfigurationKeys;
+import com.linkedin.tony.Constants;
+import com.linkedin.tony.TonyConfigurationKeys;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.exceptions.YarnException;
