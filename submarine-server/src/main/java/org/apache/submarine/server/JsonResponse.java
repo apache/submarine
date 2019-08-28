@@ -16,6 +16,7 @@
  */
 package org.apache.submarine.server;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
@@ -24,6 +25,8 @@ import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Json response builder.
@@ -38,12 +41,16 @@ public class JsonResponse<T> {
   private final T result;
   private final transient ArrayList<NewCookie> cookies;
   private final transient boolean pretty = false;
+  private final Map<String, Object> attributes;
+
+  private static Gson safeGson = null;
 
   private JsonResponse(Builder builder) {
     this.status = builder.status;
     this.code = builder.code;
     this.success = builder.success;
     this.message = builder.message;
+    this.attributes = builder.attributes;
     this.result = (T) builder.result;
     this.cookies = builder.cookies;
   }
@@ -56,12 +63,18 @@ public class JsonResponse<T> {
     return success;
   }
 
+  @VisibleForTesting
+  public Map<String, Object> getAttributes() {
+    return attributes;
+  }
+
   public static class Builder<T> {
     private javax.ws.rs.core.Response.Status status;
     private int code;
     private Boolean success;
     private String message;
     private T result;
+    private Map<String, Object> attributes = new HashMap<>();
     private transient ArrayList<NewCookie> cookies;
     private transient boolean pretty = false;
 
@@ -72,6 +85,11 @@ public class JsonResponse<T> {
 
     public Builder(int code) {
       this.code = code;
+    }
+
+    public Builder attribute(String key, Object value) {
+      this.attributes.put(key, value);
+      return this;
     }
 
     public Builder success(Boolean success){
@@ -86,6 +104,11 @@ public class JsonResponse<T> {
 
     public Builder result(T result){
       this.result = result;
+      return this;
+    }
+
+    public Builder code(int code){
+      this.code = code;
       return this;
     }
 
@@ -105,30 +128,32 @@ public class JsonResponse<T> {
 
   @Override
   public String toString() {
-    GsonBuilder gsonBuilder = new GsonBuilder();
-    if (pretty) {
-      gsonBuilder.setPrettyPrinting();
+    if (safeGson == null) {
+      GsonBuilder gsonBuilder = new GsonBuilder();
+      if (pretty) {
+        gsonBuilder.setPrettyPrinting();
+      }
+      gsonBuilder.setExclusionStrategies(new JsonExclusionStrategy());
+
+      // Trick to get the DefaultDateTypeAdatpter instance
+      // Create a first instance a Gson
+      Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
+
+      // Get the date adapter
+      TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
+
+      // Ensure the DateTypeAdapter is null safe
+      TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
+
+      safeGson = new GsonBuilder()
+          .registerTypeAdapter(Date.class, safeDateTypeAdapter)
+          .serializeNulls().create();
     }
-    gsonBuilder.setExclusionStrategies(new JsonExclusionStrategy());
-
-    // Trick to get the DefaultDateTypeAdatpter instance
-    // Create a first instance a Gson
-    Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
-
-    // Get the date adapter
-    TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);
-
-    // Ensure the DateTypeAdapter is null safe
-    TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
-
-    Gson safeGson = new GsonBuilder()
-        .registerTypeAdapter(Date.class, safeDateTypeAdapter)
-        .create();
 
     return safeGson.toJson(this);
   }
 
-  private javax.ws.rs.core.Response build() {
+  private synchronized javax.ws.rs.core.Response build() {
     ResponseBuilder r = javax.ws.rs.core.Response.status(status).entity(this.toString());
     if (cookies != null) {
       for (NewCookie nc : cookies) {

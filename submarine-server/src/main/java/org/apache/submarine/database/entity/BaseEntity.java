@@ -16,6 +16,7 @@ package org.apache.submarine.database.entity;
 import com.google.common.annotations.VisibleForTesting;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Date;
 
 public abstract class BaseEntity implements Serializable {
@@ -70,5 +71,37 @@ public abstract class BaseEntity implements Serializable {
 
   public void setUpdateTime(Date updateTime) {
     this.updateTime = updateTime;
+  }
+
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+
+    Class clazz = getClass();
+    String fullName = clazz.getName();
+    int position = fullName.lastIndexOf(".");
+    String shortName = fullName.substring(position + 1);
+
+    buffer.append(shortName);
+    buffer.append(": [");
+
+    Field[] fields = clazz.getDeclaredFields();
+    Field.setAccessible(fields, true);
+    for (int i = 0; i < fields.length; i++) {
+      Field field = fields[i];
+      try {
+        buffer.append(field.getName());
+        buffer.append("=");
+        buffer.append(field.get(this));
+        buffer.append(", ");
+      } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      }
+    }
+    buffer.setLength(buffer.length() - 2);
+    buffer.append("]");
+
+    return buffer.toString();
   }
 }

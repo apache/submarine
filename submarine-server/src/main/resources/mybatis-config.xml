@@ -22,7 +22,7 @@
     <setting name="cacheEnabled" value="true"/>
     <setting name="lazyLoadingEnabled" value="false"/>
     <setting name="aggressiveLazyLoading" value="true"/>
-    <!--<setting name="logImpl" value="LOG4J"/>-->
+    <setting name="logImpl" value="STDOUT_LOGGING"/>
   </settings>
 
   <typeAliases>
@@ -54,6 +54,7 @@
     <mapper resource='org/apache/submarine/database/mappers/SysUserMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/SysDictMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/SysDictItemMapper.xml'/>
+    <mapper resource='org/apache/submarine/database/mappers/SysDeptMapper.xml'/>
   </mappers>
 </configuration>
 

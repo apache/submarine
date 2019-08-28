@@ -47,7 +47,8 @@ export const ListMixin = {
       /* 高级查询条件生效状态 */
       superQueryFlag: false,
       /* 高级查询条件 */
-      superQueryParams: ''
+      superQueryParams: '',
+      responseAttributes: {}
     }
   },
   created () {
@@ -58,7 +59,8 @@ export const ListMixin = {
   methods: {
     loadData (arg) {
       if (!this.url.list) {
-        this.$message.error('Please set the url.list property!')
+        console.log('Please set the url.list property!')
+        // this.$message.error('Please set the url.list property!')
         return
       }
       // 加载数据 若传入参数1则加载第一页的内容
@@ -68,11 +70,11 @@ export const ListMixin = {
       var params = this.getQueryParams()// 查询条件
       this.loading = true
       getAction(this.url.list, params).then((res) => {
+        this.responseAttributes = Object.assign({}, res.attributes)
         if (res.success) {
           this.dataSource = res.result.records
           this.ipagination.total = res.result.total
-        }
-        if (res.code === 510) {
+        } else {
           this.$message.warning(res.message)
         }
         this.loading = false

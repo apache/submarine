@@ -53,7 +53,7 @@ public class SysDictRestApi {
   }
 
   @GET
-  @Path("list")
+  @Path("/list")
   @SubmarineApi
   public Response list(@QueryParam("dictCode") String dictCode,
                        @QueryParam("dictName") String dictName,
@@ -105,7 +105,7 @@ public class SysDictRestApi {
       }
 
       return new JsonResponse.Builder<>(Response.Status.OK)
-          .message("Save the dictionary successfully!").success(true).build();
+          .message("Save dictionary successfully!").success(true).build();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
