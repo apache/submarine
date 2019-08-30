@@ -31,13 +31,19 @@
     <dependencySet>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>org.apache.submarine:submarine-tony-runtime</include>
+        <include>org.apache.submarine:tony-runtime</include>
       </includes>
     </dependencySet>
     <dependencySet>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>org.apache.submarine:submarine-yarnservice-runtime</include>
+        <include>org.apache.submarine:yarnservice-runtime</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>com.linkedin.tony:tony-core</include>
       </includes>
     </dependencySet>
   </dependencySets>
