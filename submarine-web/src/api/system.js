@@ -29,7 +29,11 @@ const deleteByDepartId = (params) => deleteAction('/sys/dept/delete', params)
 const queryIdTree = (params) => getAction('/sys/dept/queryIdTree', params)
 const resetParentDept = (params) => putAction('/sys/dept/resetParentDept', params)
 
+// Dict
+const ajaxGetDictItems = (code, params) => getAction(`/dictItem/getDictItems/${code}`, params)
+
 export {
+  ajaxGetDictItems,
   addUser,
   editUser,
   queryUserRole,

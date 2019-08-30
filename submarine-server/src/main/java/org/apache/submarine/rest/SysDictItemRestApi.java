@@ -22,6 +22,7 @@ import org.apache.submarine.database.MyBatisUtil;
 import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDictItem;
 import org.apache.submarine.database.mappers.SysDictItemMapper;
+import org.apache.submarine.database.service.SysDictItemService;
 import org.apache.submarine.server.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -198,5 +200,19 @@ public class SysDictItemRestApi {
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Delete dict item failed!").success(false).build();
     }
+  }
+
+  @GET
+  @Path("/getDictItems/{dictCode}")
+  @SubmarineApi
+  public Response getDictItems(@PathParam("dictCode") String dictCode) {
+    LOG.info("dictCode : " + dictCode);
+
+    SysDictItemService sysDictItemService = new SysDictItemService();
+    List<SysDictItem>  dictItems = sysDictItemService.queryDictByCode(dictCode);
+    QueryResult<SysDictItem> queryResult = new QueryResult(dictItems, dictItems.size());
+
+    return new JsonResponse.Builder<QueryResult>(Response.Status.OK)
+        .success(true).result(queryResult).build();
   }
 }
