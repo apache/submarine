@@ -14,15 +14,15 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="Name">
-          <a-input placeholder="Please entry name" v-decorator="['itemText', validatorRules.itemText]"/>
+          label="Code">
+          <a-input placeholder="Please entry code" v-decorator="['itemCode', validatorRules.itemCode]"/>
         </a-form-item>
 
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="Value">
-          <a-input placeholder="Please entry data value" v-decorator="['itemValue', validatorRules.itemValue]"/>
+          label="Name">
+          <a-input placeholder="Please entry name" v-decorator="['itemName', validatorRules.itemName]"/>
         </a-form-item>
 
         <a-form-item
@@ -35,9 +35,8 @@
         <a-form-item
           :labelCol="labelCol"
           :wrapperCol="wrapperCol"
-          label="sort value">
+          label="sort order">
           <a-input-number :min="1" v-decorator="['sortOrder',{'initialValue':1}]"/>
-          &nbsp;Sorting in the list
         </a-form-item>
 
         <a-form-item
@@ -65,7 +64,7 @@ export default {
       visible: false,
       visibleCheck: true,
       model: {},
-      dictId: '',
+      dictCode: '',
       deleted: 0,
       labelCol: {
         xs: { span: 24 },
@@ -78,24 +77,24 @@ export default {
       confirmLoading: false,
       form: this.$form.createForm(this),
       validatorRules: {
-        itemText: { rules: [{ required: true, message: 'Please entry name!' },
-          { validator: this.validateItemText }] },
-        itemValue: { rules: [{ required: true, message: 'Please entry data value!' },
-          { validator: this.validateItemValue }] }
+        itemCode: { rules: [{ required: true, message: 'Please entry name!' },
+          { validator: this.validateItemCode }] },
+        itemName: { rules: [{ required: true, message: 'Please entry data value!' },
+          { validator: this.validateItemName }] }
       }
     }
   },
   created () {
   },
   methods: {
-    validateItemText (rule, value, callback) {
-      // 重复校验
+    validateItemCode (rule, value, callback) {
+      // Check if the dict item code is duplicated
       var params = {
         tableName: 'sys_dict_item',
-        fieldName: 'item_text',
+        fieldName: 'item_code',
         fieldVal: value,
-        equalFieldName: 'dict_id',
-        equalFieldVal: this.dictId,
+        equalFieldName: 'dict_code',
+        equalFieldVal: this.dictCode,
         dataId: this.model.id
       }
       duplicateCheck(params).then((res) => {
@@ -106,14 +105,14 @@ export default {
         }
       })
     },
-    validateItemValue (rule, value, callback) {
-      // 重复校验
+    validateItemName (rule, value, callback) {
+      // Check if the dict item name is duplicated
       var params = {
         tableName: 'sys_dict_item',
-        fieldName: 'item_value',
+        fieldName: 'item_name',
         fieldVal: value,
-        equalFieldName: 'dict_id',
-        equalFieldVal: this.dictId,
+        equalFieldName: 'dict_code',
+        equalFieldVal: this.dictCode,
         dataId: this.model.id
       }
       duplicateCheck(params).then((res) => {
@@ -124,22 +123,22 @@ export default {
         }
       })
     },
-    add (dictId) {
-      this.dictId = dictId
+    add (dictCode) {
+      this.dictCode = dictCode
       this.edit({})
     },
     edit (record) {
       if (record.id) {
-        this.dictId = record.dictId
+        this.dictCode = record.dictCode
         this.visibleCheck = (record.deleted === 0)
       }
       this.form.resetFields()
       this.model = Object.assign({}, record)
-      this.model.dictId = this.dictId
+      this.model.dictCode = this.dictCode
       this.model.deleted = this.deleted
       this.visible = true
       this.$nextTick(() => {
-        this.form.setFieldsValue(pick(this.model, 'itemText', 'itemValue', 'description', 'sortOrder'))
+        this.form.setFieldsValue(pick(this.model, 'itemCode', 'itemName', 'description', 'sortOrder'))
       })
     },
     onChose (checked) {
@@ -158,8 +157,8 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           that.confirmLoading = true
-          values.itemText = (values.itemText || '').trim()
-          values.itemValue = (values.itemValue || '').trim()
+          values.itemCode = (values.itemCode || '').trim()
+          values.itemName = (values.itemName || '').trim()
           values.description = (values.description || '').trim()
           const formData = Object.assign(this.model, values)
           formData.deleted = this.deleted

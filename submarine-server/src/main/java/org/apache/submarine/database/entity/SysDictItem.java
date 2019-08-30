@@ -15,11 +15,11 @@ package org.apache.submarine.database.entity;
 
 public class SysDictItem extends BaseEntity {
 
-  private String dictId;
+  private String dictCode;
 
-  private String itemText;
+  private String itemCode;
 
-  private String itemValue;
+  private String itemName;
 
   private String description;
 
@@ -27,31 +27,51 @@ public class SysDictItem extends BaseEntity {
 
   private Integer deleted;
 
-  public void setDictId(String dictId) {
-    this.dictId = dictId;
+  public String getDictCode() {
+    return dictCode;
   }
 
-  public void setItemText(String itemText) {
-    this.itemText = itemText;
+  public void setDictCode(String dictCode) {
+    this.dictCode = dictCode;
   }
 
-  public void setItemValue(String itemValue) {
-    this.itemValue = itemValue;
+  public String getItemCode() {
+    return itemCode;
+  }
+
+  public void setItemCode(String itemCode) {
+    this.itemCode = itemCode;
+  }
+
+  public String getItemName() {
+    return itemName;
+  }
+
+  public void setItemName(String itemName) {
+    this.itemName = itemName;
+  }
+
+  public String getDescription() {
+    return description;
   }
 
   public void setDescription(String description) {
     this.description = description;
   }
 
+  public Integer getSortOrder() {
+    return sortOrder;
+  }
+
   public void setSortOrder(Integer sortOrder) {
     this.sortOrder = sortOrder;
   }
 
-  public void setDeleted(Integer deleted) {
-    this.deleted = deleted;
-  }
-
   public Integer getDeleted() {
     return deleted;
+  }
+
+  public void setDeleted(Integer deleted) {
+    this.deleted = deleted;
   }
 }

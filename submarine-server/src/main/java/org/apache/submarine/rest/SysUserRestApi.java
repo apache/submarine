@@ -13,8 +13,15 @@
  */
 package org.apache.submarine.rest;
 
+import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.annotation.SubmarineApi;
+import org.apache.submarine.database.MyBatisUtil;
+import org.apache.submarine.database.entity.QueryResult;
+import org.apache.submarine.database.entity.SysUser;
+import org.apache.submarine.database.mappers.SysUserMapper;
 import org.apache.submarine.entity.Action;
 import org.apache.submarine.entity.Permission;
 import org.apache.submarine.entity.Role;
@@ -32,18 +39,20 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Path("/user")
 @Produces("application/json")
 @Singleton
-public class UserRestApi {
-  private static final Logger LOG = LoggerFactory.getLogger(UserRestApi.class);
+public class SysUserRestApi {
+  private static final Logger LOG = LoggerFactory.getLogger(SysUserRestApi.class);
 
   private static final Gson gson = new Gson();
 
   @Inject
-  public UserRestApi() {
+  public SysUserRestApi() {
   }
 
   @GET
@@ -144,8 +153,22 @@ public class UserRestApi {
                                 @QueryParam("pageSize") int pageSize) {
     LOG.info("userList column:{}, field:{}, pageNo:{}, pageSize:{}", column, field, pageNo, pageSize);
 
-    String data = "";
+    List<SysUser> list = null;
+    SqlSession sqlSession = MyBatisUtil.getSqlSession();
+    SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
+    try {
+      Map<String, Object> where = new HashMap<>();
+      list = sysUserMapper.selectAll(where, new RowBounds(pageNo, pageSize));
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
+    } finally {
+      sqlSession.close();
+    }
+    PageInfo<SysUser> page = new PageInfo<SysUser>(list);
+    QueryResult<SysUser> queryResult = new QueryResult(list, page.getTotal());
 
-    return new JsonResponse.Builder<>(Response.Status.OK).success(true).result(data).build();
+    return new JsonResponse.Builder<QueryResult<SysUser>>(Response.Status.OK)
+        .success(true).result(queryResult).build();
   }
 }

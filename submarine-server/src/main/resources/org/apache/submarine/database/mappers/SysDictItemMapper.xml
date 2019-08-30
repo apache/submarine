@@ -27,26 +27,26 @@
   </resultMap>
 
   <select id="selectAll" resultMap="resultMap">
-    SELECT * FROM sys_dict_item WHERE dict_id = #{dictId}
-    <if test="itemText!=null and itemText!=''"> AND `item_text` like '%${itemText}%'</if>
-    <if test="itemValue!=null and itemValue!=''"> AND `item_value` like '%${itemValue}%'</if>
+    SELECT * FROM sys_dict_item WHERE dict_code = #{dictCode}
+    <if test="itemCode!=null and itemCode!=''"> AND `item_code` like '%${itemCode}%'</if>
+    <if test="itemName!=null and itemName!=''"> AND `item_name` like '%${itemName}%'</if>
     ORDER BY sort_order
   </select>
   <resultMap id="resultMap" type="org.apache.submarine.database.entity.SysDictItem" extends="BaseEntityResultMap">
-    <result column="dict_id" property="dictId"/>
-    <result column="item_text" property="itemText"/>
-    <result column="item_value" property="itemValue"/>
+    <result column="dict_code" property="dictCode"/>
+    <result column="item_code" property="itemCode"/>
+    <result column="item_name" property="itemName"/>
     <result column="description" property="description"/>
     <result column="sort_order" property="sortOrder"/>
     <result column="deleted" property="deleted"/>
   </resultMap>
 
   <insert id="insertSysDictItem" parameterType="org.apache.submarine.database.entity.SysDictItem">
-    INSERT INTO sys_dict_item (`id`, `dict_id`, `item_text`, `item_value`, `description`,
+    INSERT INTO sys_dict_item (`id`, `dict_code`, `item_code`, `item_name`, `description`,
     <if test="sortOrder!=null"> `sort_order`, </if>
     <if test="deleted!=null"> `deleted`, </if>
     `create_by`, `create_time`, `update_by`, `update_time`)
-    VALUES (REPLACE(UUID(), '-', ''), #{dictId}, #{itemText}, #{itemValue}, #{description},
+    VALUES (REPLACE(UUID(), '-', ''), #{dictCode}, #{itemCode}, #{itemName}, #{description},
     <if test="sortOrder!=null">#{sortOrder}, </if>
     <if test="deleted!=null">#{deleted}, </if>
     #{createBy}, now(), #{updateBy}, now())
@@ -62,16 +62,20 @@
 
   <update id="updateBy" parameterType="org.apache.submarine.database.entity.SysDictItem">
     UPDATE sys_dict_item SET
-    <if test="dictId!=null and dictId!=''">`dict_id`=#{dictId},</if>
-    <if test="itemText!=null and itemText!=''">`item_text`=#{itemText},</if>
-    <if test="itemValue!=null and itemValue!=''">`item_value`=#{itemValue},</if>
-    <if test="description!=null and description!=''">`description`=#{description},</if>
-    <if test="sortOrder!=null">`sort_order`=#{sortOrder},</if>
-    <if test="deleted!=null">`deleted`=#{deleted},</if>
-    <if test="createBy!=null">`create_by`=#{createBy},</if>
-    <if test="createTime!=null">`create_time`=#{createTime},</if>
-    <if test="updateBy!=null">`update_by`=#{updateBy},</if>
-    `update_time`=now()
+    <if test="dictCode!=null and dictCode!=''">`dict_code` = #{dictCode},</if>
+    <if test="itemCode!=null and itemCode!=''">`item_code` = #{itemCode},</if>
+    <if test="itemName!=null and itemName!=''">`item_name` = #{itemName},</if>
+    <if test="description!=null and description != ''">`description` = #{description},</if>
+    <if test="sortOrder!=null">`sort_order` = #{sortOrder},</if>
+    <if test="deleted!=null">`deleted` = #{deleted},</if>
+    <if test="createBy!=null">`create_by` = #{createBy},</if>
+    <if test="createTime!=null">`create_time` = #{createTime},</if>
+    <if test="updateBy!=null">`update_by` = #{updateBy},</if>
+    `update_time` = now()
     WHERE id = #{id}
   </update>
+
+  <select id="queryDictByCode" parameterType="java.util.Map" resultMap="resultMap">
+    SELECT `item_code`, `item_name` FROM sys_dict_item WHERE `dict_code` = #{dictCode}
+  </select>
 </mapper>

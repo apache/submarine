@@ -12,18 +12,17 @@
 -- limitations under the License.
 
 -- ----------------------------
--- Records of sys_user
--- ----------------------------
-INSERT INTO `sys_user` VALUES ('e9ca23d68d884d4ebb19d07889727dae', 'admin', '管理员', '21232f297a57a5a743894a0e4a801fc3', 'https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png','2018-12-05 00:00:00', 1, '11@qq.com', '18566666661', 'A01', 1, 1, '127.0.0.1', '2038-06-21 17:54:10', 'admin', '2019-07-05 14:47:22', 'admin', '2019-07-05 14:47:22');
-
--- ----------------------------
 -- Records of sys_dict
 -- ----------------------------
-INSERT INTO `sys_dict` VALUES ('fc6cd58fde2e8481db10d3a1e68ce70c', 'user_status', '用户状态', '用户是否可以使用系统', '1', '0', 'admin', '2019-03-18 21:57:25', 'admin', '2019-03-18 23:11:58');
+INSERT INTO `sys_dict` VALUES ('ca2dd544ca4c11e9a71e0242ac110002','SEX','SEX','',0,0,NULL,'2019-08-29 11:04:36',NULL,'2019-08-29 11:04:36');
 
 -- ----------------------------
 -- Records of sys_dict_item
 -- ----------------------------
-INSERT INTO `sys_dict_item` VALUES ('0072d115e07c875d76c9b022e2179128', 'fc6cd58fde2e8481db10d3a1e68ce70c', 'registered', 'registered', 'User just registered, need to be reviewed to use', 1, 1, 'admin', '2019-04-16 17:04:59', null, null);
-INSERT INTO `sys_dict_item` VALUES ('1ce390c52453891f93514c1bd2795d44', 'fc6cd58fde2e8481db10d3a1e68ce70c', 'unlock', 'unlock', 'Users can use normally', 2, 1, 'admin', '2019-04-16 17:04:59', null, null);
-INSERT INTO `sys_dict_item` VALUES ('1b8a6341163062dad8cb2fddd34e0c3b', 'fc6cd58fde2e8481db10d3a1e68ce70c', 'lock', 'lock', 'User cannot use the system', 3, 1, 'admin', '2019-04-16 17:04:59', null, null);
+INSERT INTO `sys_dict_item` VALUES ('d018e2b0ca4c11e9a71e0242ac110002','SEX-MALE','MALE','SEX','desc',1,0,NULL,'2019-08-29 11:04:46',NULL,'2019-08-29 15:42:30');
+INSERT INTO `sys_dict_item` VALUES ('d94410adca4c11e9a71e0242ac110002','SEX-FEMALE','FEMALE','SEX','FEMALE',2,0,NULL,'2019-08-29 11:05:02',NULL,'2019-08-29 15:41:12');
+
+-- ----------------------------
+-- Records of sys_user
+-- ----------------------------
+INSERT INTO `sys_user` VALUES ('e9ca23d68d884d4ebb19d07889727dae', 'admin', 'administrator', '21232f297a57a5a743894a0e4a801fc3', 'avatar.png', '2018-12-05 00:00:00', 'SEX-MALE', 'dev@submarine.org', '18566666661', 'A01', 1, 1, '127.0.0.1', '2038-06-21 17:54:10', 'admin', '2019-07-05 14:47:22', 'admin', '2019-07-05 14:47:22');

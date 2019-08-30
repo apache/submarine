@@ -17,7 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.submarine.annotation.SubmarineApi;
 import org.apache.submarine.database.entity.SysUser;
-import org.apache.submarine.database.mappers.SysUserMapper;
+import org.apache.submarine.database.service.SysUserService;
 import org.apache.submarine.server.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ import java.util.HashMap;
 @Singleton
 public class LoginRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(LoginRestApi.class);
-  private SysUserMapper sysUserMapper = new SysUserMapper();
+  private SysUserService userService = new SysUserService();
   private static final Gson gson = new Gson();
 
   @Inject
@@ -51,7 +51,7 @@ public class LoginRestApi {
     String username = mapParams.get("username");
     String password = mapParams.get("password");
 
-    SysUser sysUser = sysUserMapper.getUserByName(username, password);
+    SysUser sysUser = userService.getUserByName(username, password);
     if (null == sysUser) {
       LOG.error("Cannot get data from the database");
     } else {

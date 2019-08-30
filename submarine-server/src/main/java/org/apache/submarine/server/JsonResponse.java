@@ -20,6 +20,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
+import org.apache.submarine.database.utils.DictAnnotation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -34,6 +37,8 @@ import java.util.Map;
  * @param <T>
  */
 public class JsonResponse<T> {
+  private static final Logger LOG = LoggerFactory.getLogger(JsonResponse.class);
+
   private final javax.ws.rs.core.Response.Status status;
   private final int code;
   private final Boolean success;
@@ -44,6 +49,8 @@ public class JsonResponse<T> {
   private final Map<String, Object> attributes;
 
   private static Gson safeGson = null;
+
+  private static final String CGLIB_PROPERTY_PREFIX = "\\$cglib_prop_";
 
   private JsonResponse(Builder builder) {
     this.status = builder.status;
@@ -150,7 +157,19 @@ public class JsonResponse<T> {
           .serializeNulls().create();
     }
 
-    return safeGson.toJson(this);
+    boolean haveDictAnnotation = false;
+    try {
+      haveDictAnnotation = DictAnnotation.parseDictAnnotation(this.getResult());
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+    }
+
+    String json = safeGson.toJson(this);
+    if (haveDictAnnotation) {
+      json = json.replaceAll(CGLIB_PROPERTY_PREFIX, "");
+    }
+
+    return json;
   }
 
   private synchronized javax.ws.rs.core.Response build() {

@@ -180,14 +180,14 @@ export default {
         {
           title: 'Account Name',
           align: 'center',
-          dataIndex: 'username',
+          dataIndex: 'name',
           width: 120
         },
         {
           title: 'User Name',
           align: 'center',
           width: 120,
-          dataIndex: 'realname'
+          dataIndex: 'username'
         },
         {
           title: 'Department',
@@ -205,6 +205,18 @@ export default {
           title: 'Email',
           align: 'center',
           dataIndex: 'email'
+        },
+        {
+          title: 'Sex',
+          align: 'center',
+          width: 120,
+          dataIndex: 'sex'
+        },
+        {
+          title: 'Sex',
+          align: 'center',
+          width: 120,
+          dataIndex: 'sex@dict'
         },
         {
           title: 'Status',

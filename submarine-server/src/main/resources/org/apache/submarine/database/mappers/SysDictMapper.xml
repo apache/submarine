@@ -19,7 +19,7 @@
 <mapper namespace="org.apache.submarine.database.mappers.SysDictMapper">
 
   <resultMap id="BaseEntityResultMap" type="org.apache.submarine.database.entity.BaseEntity">
-    <id property="id" column="id" />
+    <id property="id" column="id"/>
     <result column="create_by" property="createBy"/>
     <result column="create_time" property="createTime"/>
     <result column="update_by" property="updateBy"/>
@@ -29,8 +29,8 @@
   <select id="selectAll" parameterType="java.util.Map" resultMap="resultMap">
     SELECT * FROM sys_dict
     WHERE 1=1
-    <if test="dictCode!=null and dictCode!=''"> AND `dict_code` like '%${dictCode}%'</if>
-    <if test="dictName!=null and dictName!=''"> AND `dict_name` like '%${dictName}%'</if>
+    <if test="dictCode!=null and dictCode!=''">AND `dict_code` like '%${dictCode}%'</if>
+    <if test="dictName!=null and dictName!=''">AND `dict_name` like '%${dictName}%'</if>
     ORDER BY id
   </select>
   <resultMap id="resultMap" type="org.apache.submarine.database.entity.SysDict" extends="BaseEntityResultMap">
@@ -43,8 +43,8 @@
 
   <insert id="insertSysDict" parameterType="org.apache.submarine.database.entity.SysDict">
     INSERT INTO sys_dict(`id`, `dict_code`, `dict_name`, `description`,
-    <if test="deleted!=null"> `deleted`, </if>
-    <if test="type!=null"> `type`, </if>
+    <if test="deleted!=null">`deleted`,</if>
+    <if test="type!=null">`type`,</if>
     `create_by`, `create_time`, `update_time`)
     VALUES (
     <choose>
@@ -56,8 +56,8 @@
       </otherwise>
     </choose>
     #{dictCode}, #{dictName}, #{description},
-    <if test="deleted!=null">#{deleted}, </if>
-    <if test="type!=null">#{type}, </if>
+    <if test="deleted!=null">#{deleted},</if>
+    <if test="type!=null">#{type},</if>
     #{createBy}, now(), now())
   </insert>
 

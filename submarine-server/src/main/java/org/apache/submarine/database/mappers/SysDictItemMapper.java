@@ -29,4 +29,6 @@ public interface SysDictItemMapper {
   SysDictItem getById(String id);
 
   void deleteById(String id);
+
+  List<SysDictItem> queryDictByCode(String dictCode);
 }

@@ -13,6 +13,8 @@
  */
 package org.apache.submarine.database.entity;
 
+import org.apache.submarine.annotation.Dict;
+
 import java.util.Date;
 
 public class SysUser extends BaseEntity {
@@ -20,11 +22,13 @@ public class SysUser extends BaseEntity {
   private String username;
   private String password;
   private String avatar;
-  private Integer sex;
+
+  @Dict(Code = "SEX")
+  private String sex;
   private Integer status;
   private String phone;
   private String email;
-  private String org_code;
+  private String deptCode;
   private String lastLoginIp;
   private Date lastLoginTime;
   private Integer deleted;
@@ -32,100 +36,123 @@ public class SysUser extends BaseEntity {
   private String lang;
   private String token;
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public void setAvatar(String avatar) {
-    this.avatar = avatar;
-  }
-
-  public void setSex(Integer sex) {
-    this.sex = sex;
-  }
-
-  public void setStatus(Integer status) {
-    this.status = status;
-  }
-
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
-  public void setOrgCode(String orgCode) {
-    this.org_code = orgCode;
-  }
-
-  public void setLastLoginIp(String lastLoginIp) {
-    this.lastLoginIp = lastLoginIp;
-  }
-
-  public void setLastLoginTime(Date lastLoginTime) {
-    this.lastLoginTime = lastLoginTime;
-  }
-
-  public void setDeleted(Integer deleted) {
-    this.deleted = deleted;
-  }
-
-  public void setRoleId(String roleId) {
-    this.roleId = roleId;
-  }
-
-  public void setLang(String lang) {
-    this.lang = lang;
-  }
-
-  public void setToken(String token) {
-    this.token = token;
+  public String getName() {
+    return name;
   }
 
   public void setName(String name) {
     this.name = name;
   }
 
-  public String getName() {
-    return name;
+  public String getUsername() {
+    return username;
   }
 
-  public String getToken() {
-    return token;
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public String getAvatar() {
+    return avatar;
+  }
+
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
+  }
+
+  public String getSex() {
+    return sex;
+  }
+
+  public void setSex(String sex) {
+    this.sex = sex;
+  }
+
+  public Integer getStatus() {
+    return status;
+  }
+
+  public void setStatus(Integer status) {
+    this.status = status;
+  }
+
+  public String getPhone() {
+    return phone;
+  }
+
+  public void setPhone(String phone) {
+    this.phone = phone;
   }
 
   public String getEmail() {
     return email;
   }
 
-  @Override
-  public String toString() {
-    return "User{" +
-        "id='" + id + '\'' +
-        ", name='" + name + '\'' +
-        ", username=" + username +
-        ", password='" + password + '\'' +
-        ", avatar=" + avatar +
-        ", status='" + status + '\'' +
-        ", phone='" + phone + '\'' +
-        ", email='" + email + '\'' +
-        ", org_code=" + org_code +
-        ", lastLoginIp=" + lastLoginIp +
-        ", lastLoginTime=" + lastLoginTime +
-        ", deleted='" + deleted + '\'' +
-        ", createBy='" + createBy + '\'' +
-        ", createTime='" + createTime + '\'' +
-        ", updateBy='" + updateBy + '\'' +
-        ", updateTime='" + updateTime + '\'' +
-        ", roleId='" + roleId + '\'' +
-        ", lang='" + lang + '\'' +
-        ", token='" + token + '\'' +
-        '}';
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getDeptCode() {
+    return deptCode;
+  }
+
+  public void setDeptCode(String deptCode) {
+    this.deptCode = deptCode;
+  }
+
+  public String getLastLoginIp() {
+    return lastLoginIp;
+  }
+
+  public void setLastLoginIp(String lastLoginIp) {
+    this.lastLoginIp = lastLoginIp;
+  }
+
+  public Date getLastLoginTime() {
+    return lastLoginTime;
+  }
+
+  public void setLastLoginTime(Date lastLoginTime) {
+    this.lastLoginTime = lastLoginTime;
+  }
+
+  public Integer getDeleted() {
+    return deleted;
+  }
+
+  public void setDeleted(Integer deleted) {
+    this.deleted = deleted;
+  }
+
+  public String getRoleId() {
+    return roleId;
+  }
+
+  public void setRoleId(String roleId) {
+    this.roleId = roleId;
+  }
+
+  public String getLang() {
+    return lang;
+  }
+
+  public void setLang(String lang) {
+    this.lang = lang;
+  }
+
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
   }
 }

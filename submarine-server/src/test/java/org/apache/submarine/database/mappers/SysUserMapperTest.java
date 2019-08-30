@@ -14,6 +14,7 @@
 package org.apache.submarine.database.mappers;
 
 import org.apache.submarine.database.entity.SysUser;
+import org.apache.submarine.database.service.SysUserService;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ import static junit.framework.TestCase.assertNotNull;
 public class SysUserMapperTest {
   private static final Logger LOG = LoggerFactory.getLogger(SysUserMapperTest.class);
 
-  private SysUserMapper sysUserMapper = new SysUserMapper();
+  private SysUserService sysUserMapper = new SysUserService();
 
   @Test
   public void getUserByNameTest() {

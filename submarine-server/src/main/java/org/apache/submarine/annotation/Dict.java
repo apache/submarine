@@ -14,32 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.submarine.database.entity;
+package org.apache.submarine.annotation;
 
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class QueryResult<T> {
-  private List<T> records;
-  private long total;
-
-  public QueryResult(List<T> records, long total) {
-    this.records = records;
-    this.total = total;
-  }
-
-  public List<T> getRecords() {
-    return records;
-  }
-
-  public void setRecords(List<T> records) {
-    this.records = records;
-  }
-
-  public long getTotal() {
-    return total;
-  }
-
-  public void setTotal(long total) {
-    this.total = total;
-  }
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Dict {
+    String Code();
 }

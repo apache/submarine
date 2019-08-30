@@ -18,8 +18,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.apache.submarine.database.mappers.SysUserMapper">
 
+  <resultMap id="BaseEntityResultMap" type="org.apache.submarine.database.entity.BaseEntity">
+    <id property="id" column="id" />
+    <result column="create_by" property="createBy"/>
+    <result column="create_time" property="createTime"/>
+    <result column="update_by" property="updateBy"/>
+    <result column="update_time" property="updateTime"/>
+  </resultMap>
+
+  <resultMap id="resultMap" type="org.apache.submarine.database.entity.SysUser" extends="BaseEntityResultMap">
+    <result column="name" property="name"/>
+    <result column="username" property="username"/>
+    <result column="avatar" property="avatar"/>
+    <result column="birthday" property="birthday"/>
+    <result column="sex" property="sex"/>
+    <result column="email" property="email"/>
+    <result column="phone" property="phone"/>
+    <result column="org_code" property="orgCode"/>
+    <result column="status" property="status"/>
+    <result column="deleted" property="deleted"/>
+    <result column="phone" property="phone"/>
+  </resultMap>
+
   <!-- get user info by user name -->
-  <select id="getUserByName" parameterType="java.util.Map" resultType="org.apache.submarine.database.entity.SysUser">
-    SELECT * FROM sys_user WHERE name = #{mapParams.name} AND password = #{mapParams.password}
+  <select id="getUserByName" parameterType="java.util.Map" resultMap="resultMap">
+    SELECT id, name, username FROM sys_user WHERE name = #{mapParams.name} AND password = #{mapParams.password}
+  </select>
+
+  <select id="selectAll" parameterType="java.util.Map" resultMap="resultMap">
+    SELECT id, name, username, sex FROM sys_user
   </select>
 </mapper>

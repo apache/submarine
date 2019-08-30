@@ -66,6 +66,7 @@
     <jackson-annotations.version>2.9.9</jackson-annotations.version>
     <commons-configuration.version>1.10</commons-configuration.version>
 
+    <cglib.version>2.2.2</cglib.version>
     <mybatis.version>3.2.8</mybatis.version>
     <mysql-connector-java.version>5.1.39</mysql-connector-java.version>
 

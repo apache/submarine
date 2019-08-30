@@ -39,6 +39,7 @@
           ref="table"
           rowKey="id"
           size="middle"
+          bordered
           :columns="columns"
           :dataSource="dataSource"
           :pagination="false"

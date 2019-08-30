@@ -15,13 +15,10 @@ package org.apache.submarine.database.entity;
 
 import com.google.common.annotations.VisibleForTesting;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Date;
 
-public abstract class BaseEntity implements Serializable {
-  private static final long serialVersionUID = 1L;
-
+public abstract class BaseEntity {
   protected String id;
 
   protected String createBy;

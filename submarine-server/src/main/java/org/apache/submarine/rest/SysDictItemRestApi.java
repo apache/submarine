@@ -55,7 +55,7 @@ public class SysDictItemRestApi {
   @GET
   @Path("/list")
   @SubmarineApi
-  public Response list(@QueryParam("dictId") String dictId,
+  public Response list(@QueryParam("dictCode") String dictCode,
                        @QueryParam("itemText") String itemText,
                        @QueryParam("itemValue") String itemValue,
                        @QueryParam("column") String column,
@@ -64,14 +64,14 @@ public class SysDictItemRestApi {
                        @QueryParam("pageNo") int pageNo,
                        @QueryParam("pageSize") int pageSize) {
     LOG.info("queryList dictId:{}, itemText:{}, itemValue:{}, pageNo:{}, pageSize:{}",
-        dictId, itemText, itemValue, pageNo, pageSize);
+        dictCode, itemText, itemValue, pageNo, pageSize);
 
     List<SysDictItem> list = null;
     SqlSession sqlSession = MyBatisUtil.getSqlSession();
     SysDictItemMapper sysDictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
     try {
       Map<String, Object> where = new HashMap<>();
-      where.put("dictId", dictId);
+      where.put("dictCode", dictCode);
       where.put("itemText", itemText);
       where.put("itemValue", itemValue);
       list = sysDictItemMapper.selectAll(where, new RowBounds(pageNo, pageSize));

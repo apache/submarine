@@ -28,6 +28,7 @@
         ref="table"
         rowKey="id"
         size="middle"
+        bordered
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
@@ -108,7 +109,7 @@ export default {
         },
         {
           title: 'Status',
-          align: 'left',
+          align: 'center',
           dataIndex: 'deleted',
           scopedSlots: { customRender: 'deleted' }
         },

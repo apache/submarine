@@ -20,6 +20,7 @@ import org.apache.submarine.database.entity.SysDict;
 import org.apache.submarine.database.entity.SysDictItem;
 import org.apache.submarine.server.JsonResponse;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -36,24 +37,25 @@ public class SysDictItemRestApiTest {
   private static SystemRestApi systemRestApi = new SystemRestApi();
   private static final Gson gson = new Gson();
   private static final int NEW_SYS_DICT_ITEM_COUNT = 3;
-  private static final String DICT_ID = "id-SysDictItemRestApiTest";
+  private static final String DICT_CODE = "dictCode-SysDictItemRestApiTest";
 
   @BeforeClass
   public static void init() {
     SysDict sysDict = new SysDict();
-    sysDict.setId(DICT_ID);
-    sysDict.setDictCode("dictCode-SysDictItemRestApiTest");
+    sysDict.setDictCode(DICT_CODE);
     sysDict.setDictName("dictName-SysDictItemRestApiTest");
     sysDict.setDescription("description-SysDictItemRestApiTest");
-    sysDictRestApi.add(sysDict);
+    Response response = sysDictRestApi.add(sysDict);
+    assertResponseSuccess(response);
 
     for (int i = 0; i < NEW_SYS_DICT_ITEM_COUNT; i++) {
       SysDictItem sysDictItem = new SysDictItem();
-      sysDictItem.setDictId(DICT_ID);
-      sysDictItem.setItemText("text-SysDictItemRestApiTest-" + i);
-      sysDictItem.setItemValue("value-SysDictItemRestApiTest-" + i);
+      sysDictItem.setDictCode(DICT_CODE);
+      sysDictItem.setItemCode("text-SysDictItemRestApiTest-" + i);
+      sysDictItem.setItemName("value-SysDictItemRestApiTest-" + i);
       sysDictItem.setDescription("desc-SysDictItemRestApiTest-" + i);
-      sysDictItemRestApi.add(sysDictItem);
+      Response response2 = sysDictItemRestApi.add(sysDictItem);
+      assertResponseSuccess(response2);
     }
   }
 
@@ -61,7 +63,8 @@ public class SysDictItemRestApiTest {
   public static void exit() {
     QueryResult<SysDictItem> queryResult = queryTestDictItemList();
     for (SysDictItem sysDictItem : queryResult.getRecords()) {
-      sysDictItemRestApi.remove(sysDictItem.getId());
+      Response response = sysDictItemRestApi.remove(sysDictItem.getId());
+      assertResponseSuccess(response);
     }
     //recheck
     QueryResult queryResult2 = queryTestDictItemList();
@@ -73,7 +76,8 @@ public class SysDictItemRestApiTest {
     assertTrue(queryResult3.getRecords().size() > 0);
     assertTrue(queryResult3.getTotal() > 0);
     for (SysDict sysDict : queryResult3.getRecords()) {
-      sysDictRestApi.remove(sysDict.getId());
+      Response response = sysDictRestApi.remove(sysDict.getId());
+      assertResponseSuccess(response);
     }
     QueryResult<SysDict> queryResult4 = queryTestDictList();
     assertEquals(queryResult4.getTotal(), 0);
@@ -81,36 +85,36 @@ public class SysDictItemRestApiTest {
   }
 
   @Test
-  public void hasDuplicateCheckItemTextTest() {
+  public void hasDuplicateCheckItemCodeTest() {
     Response response = systemRestApi.duplicateCheck(
-        "sys_dict_item", "item_text", "text-SysDictItemRestApiTest-0", "dict_id", DICT_ID, null);
+        "sys_dict_item", "item_code", "text-SysDictItemRestApiTest-0", "dict_code", DICT_CODE, null);
     String entity = (String) response.getEntity();
     JsonResponse jsonResponse = gson.fromJson(entity, JsonResponse.class);
     assertFalse(jsonResponse.getSuccess());
   }
 
   @Test
-  public void hasDuplicateCheckItemValueTest() {
+  public void hasDuplicateCheckItemNameTest() {
     Response response = systemRestApi.duplicateCheck(
-        "sys_dict_item", "item_value", "value-SysDictItemRestApiTest-0", "dict_id", DICT_ID, null);
+        "sys_dict_item", "item_name", "value-SysDictItemRestApiTest-0", "dict_code", DICT_CODE, null);
     String entity = (String) response.getEntity();
     JsonResponse jsonResponse = gson.fromJson(entity, JsonResponse.class);
     assertFalse(jsonResponse.getSuccess());
   }
 
   @Test
-  public void notDuplicateCheckItemTextTest() {
+  public void notDuplicateCheckItemCodeTest() {
     Response response = systemRestApi.duplicateCheck(
-        "sys_dict_item", "item_value", "not-exist-code", "dict_id", DICT_ID, null);
+        "sys_dict_item", "item_name", "not-exist-code", "dict_code", DICT_CODE, null);
     String entity = (String) response.getEntity();
     JsonResponse jsonResponse = gson.fromJson(entity, JsonResponse.class);
     assertTrue(jsonResponse.getSuccess());
   }
 
   @Test
-  public void notDuplicateCheckItemValueTest() {
+  public void notDuplicateCheckItemNameTest() {
     Response response = systemRestApi.duplicateCheck(
-        "sys_dict_item", "item_value", "not-exist-code", "dict_id", DICT_ID, null);
+        "sys_dict_item", "item_name", "not-exist-code", "dict_code", DICT_CODE, null);
     String entity = (String) response.getEntity();
     JsonResponse jsonResponse = gson.fromJson(entity, JsonResponse.class);
     assertTrue(jsonResponse.getSuccess());
@@ -147,7 +151,7 @@ public class SysDictItemRestApiTest {
   }
 
   public static QueryResult<SysDictItem> queryTestDictItemList() {
-    Response response = sysDictItemRestApi.list(DICT_ID, "", "", "", "", "", 0, 10);
+    Response response = sysDictItemRestApi.list(DICT_CODE, "", "", "", "", "", 0, 10);
     String entity = (String) response.getEntity();
     Type type = new TypeToken<JsonResponse<QueryResult<SysDictItem>>>(){}.getType();
     JsonResponse<QueryResult<SysDictItem>> jsonResponse = gson.fromJson(entity, type);
@@ -164,5 +168,18 @@ public class SysDictItemRestApiTest {
 
     QueryResult queryResult = jsonResponse.getResult();
     return queryResult;
+  }
+
+  private static JsonResponse<QueryResult<SysDict>> wrapResponse(Response response) {
+    String entity = (String) response.getEntity();
+    Type type = new TypeToken<JsonResponse<QueryResult<SysDict>>>() {}.getType();
+    JsonResponse<QueryResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
+
+    return jsonResponse;
+  }
+
+  private static void assertResponseSuccess(Response response) {
+    JsonResponse<QueryResult<SysDict>> jsonResponse = wrapResponse(response);
+    Assert.assertTrue(jsonResponse.getSuccess());
   }
 }
