@@ -7,6 +7,8 @@
     :closable="true"
     @close="handleCancel"
     :visible="visible"
+    cancelText="Close"
+    okText="Ok"
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
 
     <template slot="title">

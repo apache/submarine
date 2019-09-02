@@ -15,13 +15,11 @@ package org.apache.submarine.rest;
 
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
-import org.apache.ibatis.session.RowBounds;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.annotation.SubmarineApi;
-import org.apache.submarine.database.MyBatisUtil;
 import org.apache.submarine.database.entity.QueryResult;
+import org.apache.submarine.database.entity.SysDept;
 import org.apache.submarine.database.entity.SysUser;
-import org.apache.submarine.database.mappers.SysUserMapper;
+import org.apache.submarine.database.service.SysUserService;
 import org.apache.submarine.entity.Action;
 import org.apache.submarine.entity.Permission;
 import org.apache.submarine.entity.Role;
@@ -32,27 +30,126 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-@Path("/user")
+@Path("/sys/user")
 @Produces("application/json")
 @Singleton
 public class SysUserRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(SysUserRestApi.class);
 
+  private SysUserService userService = new SysUserService();
   private static final Gson gson = new Gson();
 
   @Inject
   public SysUserRestApi() {
+  }
+
+  @GET
+  @Path("/list")
+  @SubmarineApi
+  public Response queryPageList(@QueryParam("userName") String userName,
+                                @QueryParam("email") String email,
+                                @QueryParam("deptCode") String deptCode,
+                                @QueryParam("column") String column,
+                                @QueryParam("field") String field,
+                                @QueryParam("pageNo") int pageNo,
+                                @QueryParam("pageSize") int pageSize) {
+    LOG.info("queryDictList userName:{}, email:{}, deptCode:{}, " +
+            "column:{}, field:{}, pageNo:{}, pageSize:{}",
+        userName, email, deptCode, column, field, pageNo, pageSize);
+
+    List<SysUser> list = null;
+    try {
+      list = userService.queryPageList(userName, email, deptCode, column, field, pageNo, pageSize);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
+    }
+    PageInfo<SysUser> page = new PageInfo<>(list);
+    QueryResult<SysUser> queryResult = new QueryResult(list, page.getTotal());
+
+    return new JsonResponse.Builder<QueryResult<SysUser>>(Response.Status.OK)
+        .success(true).result(queryResult).build();
+  }
+
+  @PUT
+  @Path("/edit")
+  @SubmarineApi
+  public Response edit(SysUser sysUser) {
+    LOG.info("edit({})", sysUser.toString());
+
+    try {
+      userService.edit(sysUser);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      return new JsonResponse.Builder<>(Response.Status.OK)
+          .message("Update user failed!").success(false).build();
+    }
+    return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
+        .success(true).message("Update user successfully!").build();
+  }
+
+  @POST
+  @Path("/add")
+  @SubmarineApi
+  public Response add(SysUser sysUser) {
+    LOG.info("add({})", sysUser.toString());
+
+    try {
+      userService.add(sysUser);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      return new JsonResponse.Builder<>(Response.Status.OK).success(false)
+          .message("Save user failed!").build();
+    }
+    QueryResult<SysUser> queryResult = new QueryResult(Arrays.asList(sysUser), 1);
+    return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
+        .success(true).message("Save user successfully!").result(queryResult).build();
+  }
+
+  @DELETE
+  @Path("/delete")
+  @SubmarineApi
+  public Response delete(@QueryParam("id") String id) {
+    LOG.info("delete({})", id);
+
+    try {
+      userService.delete(id);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      return new JsonResponse.Builder<>(Response.Status.OK).success(false)
+          .message("delete user failed!").build();
+    }
+    return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
+        .success(true).message("delete  user successfully!").build();
+  }
+
+  @PUT
+  @Path("/changePassword")
+  @SubmarineApi
+  public Response changePassword(SysUser sysUser) {
+    LOG.info("changePassword({})", sysUser.toString());
+
+    try {
+      userService.changePassword(sysUser);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      return new JsonResponse.Builder<>(Response.Status.OK).success(false)
+          .message("delete user failed!").build();
+    }
+    return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
+        .success(true).message("delete  user successfully!").build();
   }
 
   @GET
@@ -142,33 +239,5 @@ public class SysUserRestApi {
     String data = "{stepCode:1}";
 
     return new JsonResponse.Builder<>(Response.Status.OK).success(true).result(data).build();
-  }
-
-  @GET
-  @Path("/list")
-  @SubmarineApi
-  public Response queryPageList(@QueryParam("column") String column,
-                                @QueryParam("field") String field,
-                                @QueryParam("pageNo") int pageNo,
-                                @QueryParam("pageSize") int pageSize) {
-    LOG.info("userList column:{}, field:{}, pageNo:{}, pageSize:{}", column, field, pageNo, pageSize);
-
-    List<SysUser> list = null;
-    SqlSession sqlSession = MyBatisUtil.getSqlSession();
-    SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
-    try {
-      Map<String, Object> where = new HashMap<>();
-      list = sysUserMapper.selectAll(where, new RowBounds(pageNo, pageSize));
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
-    } finally {
-      sqlSession.close();
-    }
-    PageInfo<SysUser> page = new PageInfo<SysUser>(list);
-    QueryResult<SysUser> queryResult = new QueryResult(list, page.getTotal());
-
-    return new JsonResponse.Builder<QueryResult<SysUser>>(Response.Status.OK)
-        .success(true).result(queryResult).build();
   }
 }

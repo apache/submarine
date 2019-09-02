@@ -14,8 +14,10 @@
 package org.apache.submarine.database.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
+import org.apache.submarine.rest.CommonDataTest;
 import org.apache.submarine.rest.SysUserRestApi;
 import org.apache.submarine.server.JsonResponse;
 import org.junit.Test;
@@ -27,14 +29,15 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertTrue;
 
-public class DictAnnotationTest {
+public class DictAnnotationTest extends CommonDataTest {
   private SysUserRestApi userRestApi = new SysUserRestApi();
 
-  private static final Gson gson = new Gson();
+  private static GsonBuilder gsonBuilder = new GsonBuilder();
+  private static Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
   @Test
   public void userSexDictAnnotationTest() {
-    Response response = userRestApi.queryPageList(null, null, 1, 10);
+    Response response = userRestApi.queryPageList(null, null, null, null, null, 1, 10);
 
     String entity = (String) response.getEntity();
     Type type = new TypeToken<JsonResponse>() {}.getType();
@@ -46,5 +49,8 @@ public class DictAnnotationTest {
 
     assertTrue(arrayList.get(0).containsKey("sex"));
     assertTrue(arrayList.get(0).containsKey("sex" + DictAnnotation.DICT_SUFFIX));
+
+    assertTrue(arrayList.get(0).containsKey("status"));
+    assertTrue(arrayList.get(0).containsKey("status" + DictAnnotation.DICT_SUFFIX));
   }
 }

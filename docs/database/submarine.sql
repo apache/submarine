@@ -17,10 +17,10 @@
 DROP TABLE IF EXISTS `sys_dict`;
 CREATE TABLE `sys_dict` (
   `id` varchar(32) NOT NULL,
-  `dict_code` varchar(32) default NULL COMMENT 'dict code',
-  `dict_name` varchar(100) default NULL COMMENT 'dict name',
+  `dict_code` varchar(32) NOT NULL COMMENT 'dict code',
+  `dict_name` varchar(100) NOT NULL COMMENT 'dict name',
   `description` varchar(255) default NULL COMMENT 'dict description',
-  `deleted` int(1) default 0 COMMENT 'delete status(0:normal,1:already deleted)',
+  `deleted` int(1) default 0 COMMENT 'delete status(0:normal, 1:already deleted)',
   `type` int(1) default 0 COMMENT 'dict type (0:string,1:number)',
   `create_by` varchar(32) default NULL COMMENT 'create user',
   `create_time` datetime default NULL COMMENT 'create time',
@@ -36,9 +36,9 @@ CREATE TABLE `sys_dict` (
 DROP TABLE IF EXISTS `sys_dict_item`;
 CREATE TABLE `sys_dict_item` (
   `id` varchar(32) NOT NULL,
-  `item_code` varchar(32) default NULL COMMENT 'dict item code',
-  `item_name` varchar(100) default NULL COMMENT 'dict item name',
-  `dict_code` varchar(32) default NULL COMMENT 'dict code',
+  `item_code` varchar(32) NOT NULL COMMENT 'dict item code',
+  `item_name` varchar(100) NOT NULL COMMENT 'dict item name',
+  `dict_code` varchar(32) NOT NULL COMMENT 'dict code',
   `description` varchar(255) default NULL COMMENT 'description',
   `sort_order` int(3) default 0 COMMENT 'sort order',
   `deleted` int(1) default 0 COMMENT 'delete status(0:normal,1:already deleted)',
@@ -57,7 +57,7 @@ CREATE TABLE `sys_dict_item` (
 DROP TABLE IF EXISTS `sys_department`;
 CREATE TABLE `sys_department` (
   `id` varchar(32) NOT NULL COMMENT 'ID',
-  `dept_code` varchar(64) NOT NULL COMMENT 'department code',
+  `dept_code` varchar(32) NOT NULL COMMENT 'department code',
   `dept_name` varchar(100) NOT NULL COMMENT 'department name',
   `parent_code` varchar(32) default NULL COMMENT 'parent dept code',
   `sort_order` int(3) default 0 COMMENT 'sort order',
@@ -78,24 +78,25 @@ CREATE TABLE `sys_department` (
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
   `id` varchar(32) NOT NULL COMMENT 'id',
-  `name` varchar(100) default NULL COMMENT 'real name',
-  `username` varchar(100) default NULL COMMENT 'login name',
-  `password` varchar(255) default NULL COMMENT 'password',
+  `user_name` varchar(100) NOT NULL COMMENT 'login name',
+  `real_name` varchar(100) NOT NULL COMMENT 'real name',
+  `password` varchar(255) NOT NULL COMMENT 'password',
   `avatar` varchar(255) default NULL COMMENT 'avatar',
   `birthday` datetime default NULL COMMENT 'birthday',
   `sex` varchar(32) default NULL COMMENT 'sex',
   `email` varchar(32) default NULL COMMENT 'email',
   `phone` varchar(32) default NULL COMMENT 'telphone',
-  `org_code` varchar(64) default NULL COMMENT 'dept_code',
-  `status` int(1) default NULL COMMENT 'status(1:normal, 0:lock)',
+  `dept_code` varchar(32) default NULL COMMENT 'department code',
+  `role_code` varchar(32) default NULL COMMENT 'role code',
+  `status` varchar(32) default NULL COMMENT 'status',
   `deleted` int(1) default 0 COMMENT 'deleted status(0:normal, 1:already deleted)',
-  `lastLoginIp` varchar(32) default NULL COMMENT 'last login ip',
-  `lastLoginTime` datetime default NULL COMMENT 'last login time',
   `create_by` varchar(32) default NULL COMMENT 'create user',
   `create_time` datetime default NULL COMMENT 'create time',
   `update_by` varchar(32) default NULL COMMENT 'last update user',
   `update_time` datetime default NULL COMMENT 'last update time',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `sys_user_name` (`username`),
-  CONSTRAINT `FK_SYS_USER_SEX` FOREIGN KEY (`sex`) REFERENCES `sys_dict_item` (`item_code`)
+  UNIQUE KEY `sys_user_name` (`user_name`),
+  CONSTRAINT `FK_SYS_USER_DEPT_CODE` FOREIGN KEY (`dept_code`) REFERENCES `sys_department` (`dept_code`),
+  CONSTRAINT `FK_SYS_USER_SEX` FOREIGN KEY (`sex`) REFERENCES `sys_dict_item` (`item_code`),
+  CONSTRAINT `FK_SYS_USER_STATUS` FOREIGN KEY (`status`) REFERENCES `sys_dict_item` (`item_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -48,8 +48,11 @@ public class SysDeptTree extends SysDept {
     this.children = children;
   }
 
+  public String getKey() {
+    return key;
+  }
+
   public void setKey(String key) {
     this.key = key;
   }
-
 }

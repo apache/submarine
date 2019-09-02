@@ -1,14 +1,28 @@
 <template>
   <a-card :bordered="false">
 
-    <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="24">
 
+          <a-col :md="6" :sm="8">
+            <a-form-item label="Department">
+              <a-tree-select
+                style="width:100%"
+                :dropdownStyle="{maxHeight:'200px',overflow:'auto'}"
+                :treeData="treeSelectData"
+                showSearch
+                allowClear
+                treeDefaultExpandAll
+                v-model="queryParam.deptCode"
+                @change="onChangeDeptCode">
+              </a-tree-select>
+            </a-form-item>
+          </a-col>
+
           <a-col :md="6" :sm="12">
-            <a-form-item label="User Name">
-              <a-input></a-input>
+            <a-form-item label="Account Name">
+              <a-input v-model="queryParam.userName"></a-input>
             </a-form-item>
           </a-col>
 
@@ -19,67 +33,17 @@
           </a-col>
 
           <a-col :md="6" :sm="8">
-            <a-form-item label="Status">
-              <a-select v-model="queryParam.sex">
-                <a-select-option value="">All status</a-select-option>
-                <a-select-option value="1">lock</a-select-option>
-                <a-select-option value="2">unlock</a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-
-          <a-col :md="6" :sm="8">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" icon="search">Query</a-button>
-              <a-button type="primary" icon="reload" style="margin-left: 8px">Reset</a-button>
+              <a-button type="primary" @click="searchQuery" icon="search">Query</a-button>
+              <a-button @click="handleAdd" icon="plus" style="margin-left: 8px">Add User</a-button>
             </span>
           </a-col>
-
         </a-row>
+
       </a-form>
     </div>
 
-    <!-- 操作按钮区域 -->
-    <div class="table-operator" style="border-top: 5px">
-      <a-button @click="handleAdd" type="primary" icon="plus">Add User</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('User Information')">Export</a-button>
-      <a-upload
-        name="file"
-        :showUploadList="false"
-        :multiple="false"
-        :headers="tokenHeader"
-        :action="importExcelUrl"
-        @change="handleImportExcel">
-        <a-button type="primary" icon="import">Import Excel</a-button>
-      </a-upload>
-      <a-dropdown v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay" @click="handleMenuClick">
-          <a-menu-item key="1">
-            <a-icon type="delete" @click="batchDel"/>
-            Delete
-          </a-menu-item>
-          <a-menu-item key="2">
-            <a-icon type="lock" @click="batchFrozen('2')"/>
-            Frozen
-          </a-menu-item>
-          <a-menu-item key="3">
-            <a-icon type="unlock" @click="batchFrozen('1')"/>
-            thaw
-          </a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px">
-          batch operation
-          <a-icon type="down"/>
-        </a-button>
-      </a-dropdown>
-    </div>
-
-    <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i>Selectd&nbsp;<a style="font-weight: 600">{{ selectedRowKeys.length }}</a> items&nbsp;&nbsp;
-        <a style="margin-left: 24px" @click="onClearSelected">Clean selected</a>
-      </div>
 
       <a-table
         ref="table"
@@ -89,15 +53,7 @@
         :columns="columns"
         :dataSource="dataSource"
         :pagination="ipagination"
-        :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-        @change="handleTableChange">
-
-        <template slot="avatarslot" slot-scope="text, record">
-          <div class="anty-img-wrap">
-            <a-avatar shape="square" :src="getAvatarView(record.avatar)" icon="user"/>
-          </div>
-        </template>
+        :loading="loading">
 
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">Edit</a>
@@ -113,11 +69,11 @@
               </a-menu-item>
 
               <a-menu-item>
-                <a href="javascript:;" @click="handleChangePassword(record.username)">Password</a>
+                <a href="javascript:;" @click="handleChangePassword(record)">Password</a>
               </a-menu-item>
 
               <a-menu-item>
-                <a-popconfirm title="Confirm to delete?" @confirm="() => handleDelete(record.id)">
+                <a-popconfirm title="Confirm to delete?" @confirm="() => handleDelete(record.id)" okText="Ok" cancelText="Cancel">
                   <a>delete</a>
                 </a-popconfirm>
               </a-menu-item>
@@ -140,7 +96,6 @@
 
       </a-table>
     </div>
-    <!-- table区域-end -->
 
     <user-modal ref="modalForm" @ok="modalFormOk"></user-modal>
 
@@ -151,7 +106,7 @@
 <script>
 import UserModal from './modules/UserModal'
 import PasswordModal from './modules/PasswordModal'
-import { frozenBatch } from '@/api/system'
+import { frozenBatch, queryIdTree } from '@/api/system'
 import { ListMixin } from '@/mixins/ListMixin'
 
 export default {
@@ -163,54 +118,40 @@ export default {
   },
   data () {
     return {
+      treeSelectData: [],
       selectedRowKeys: [],
       description: 'You can check the user, delete the user, lock and unlock the user, etc.',
       queryParam: {},
       columns: [
-        /* {
-            title: '#',
-            dataIndex: '',
-            key:'rowIndex',
-            width:60,
-            align:"center",
-            customRender:function (t,r,index) {
-              return parseInt(index)+1;
-            }
-          }, */
         {
           title: 'Account Name',
           align: 'center',
-          dataIndex: 'name',
-          width: 120
+          width: 150,
+          dataIndex: 'userName'
         },
         {
-          title: 'User Name',
+          title: 'Real Name',
           align: 'center',
-          width: 120,
-          dataIndex: 'username'
+          width: 150,
+          dataIndex: 'realName'
         },
         {
           title: 'Department',
           align: 'center',
-          width: 120,
-          dataIndex: 'department'
+          width: 150,
+          dataIndex: 'deptName'
         },
         {
-          title: 'Phone',
+          title: 'Role',
           align: 'center',
-          width: 120,
-          dataIndex: 'phone'
+          width: 150,
+          dataIndex: 'roleCode'
         },
         {
-          title: 'Email',
-          align: 'center',
-          dataIndex: 'email'
-        },
-        {
-          title: 'Sex',
+          title: 'Status',
           align: 'center',
           width: 120,
-          dataIndex: 'sex'
+          dataIndex: 'status@dict'
         },
         {
           title: 'Sex',
@@ -219,15 +160,15 @@ export default {
           dataIndex: 'sex@dict'
         },
         {
-          title: 'Status',
+          title: 'Email',
           align: 'center',
           width: 120,
-          dataIndex: 'status_dictText'
+          dataIndex: 'email'
         },
         {
           title: 'Create Time',
           align: 'center',
-          width: 150,
+          width: 180,
           dataIndex: 'createTime'
         },
         {
@@ -235,16 +176,18 @@ export default {
           dataIndex: 'action',
           scopedSlots: { customRender: 'action' },
           align: 'center',
-          width: 170
+          width: 120
         }
-
       ],
       url: {
-        list: '/user/list',
-        delete: '/user/delete',
-        deleteBatch: '/user/deleteBatch'
+        list: '/sys/user/list',
+        delete: '/sys/user/delete',
+        deleteBatch: '/sys/user/deleteBatch'
       }
     }
+  },
+  created () {
+    this.loadTreeSelectData()
   },
   computed: {
     importExcelUrl: function () {
@@ -253,10 +196,21 @@ export default {
     }
   },
   methods: {
-    getAvatarView: function (avatar) {
-      return this.url.imgerver + '/' + avatar
+    loadTreeSelectData () {
+      var that = this
+      that.treeSelectData = []
+      var params
+      console.log('params', params)
+      queryIdTree(params).then((res) => {
+        if (res.success) {
+          console.log('loadTreeSelectData:', res.result)
+          for (let i = 0; i < res.result.length; i++) {
+            const temp = res.result[i]
+            that.treeSelectData.push(temp)
+          }
+        }
+      })
     },
-
     batchFrozen: function (status) {
       if (this.selectedRowKeys.length <= 0) {
         this.$message.warning('Please select a record！')
@@ -275,7 +229,6 @@ export default {
               if (res.success) {
                 that.$message.success(res.message)
                 that.loadData()
-                that.onClearSelected()
               } else {
                 that.$message.warning(res.message)
               }
@@ -304,11 +257,8 @@ export default {
         }
       })
     },
-    handleChangePassword (username) {
-      this.$refs.passwordmodal.show(username)
-    },
-    handleAgentSettings (username) {
-
+    handleChangePassword (record) {
+      this.$refs.passwordmodal.show(record.id, record.userName)
     },
     passwordModalOk () {
 

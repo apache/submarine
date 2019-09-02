@@ -14,6 +14,7 @@
 package org.apache.submarine.rest;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDict;
@@ -35,7 +36,8 @@ public class SysDictItemRestApiTest {
   private static SysDictRestApi sysDictRestApi = new SysDictRestApi();
   private static SysDictItemRestApi sysDictItemRestApi = new SysDictItemRestApi();
   private static SystemRestApi systemRestApi = new SystemRestApi();
-  private static final Gson gson = new Gson();
+  private static GsonBuilder gsonBuilder = new GsonBuilder();
+  private static Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
   private static final int NEW_SYS_DICT_ITEM_COUNT = 3;
   private static final String DICT_CODE = "dictCode-SysDictItemRestApiTest";
 
@@ -73,8 +75,8 @@ public class SysDictItemRestApiTest {
 
     //recheck
     QueryResult<SysDict> queryResult3 = queryTestDictList();
-    assertTrue(queryResult3.getRecords().size() > 0);
-    assertTrue(queryResult3.getTotal() > 0);
+    assertTrue(queryResult3.getRecords().size() == 1);
+    assertTrue(queryResult3.getTotal() == 1);
     for (SysDict sysDict : queryResult3.getRecords()) {
       Response response = sysDictRestApi.remove(sysDict.getId());
       assertResponseSuccess(response);
@@ -105,7 +107,7 @@ public class SysDictItemRestApiTest {
   @Test
   public void notDuplicateCheckItemCodeTest() {
     Response response = systemRestApi.duplicateCheck(
-        "sys_dict_item", "item_name", "not-exist-code", "dict_code", DICT_CODE, null);
+        "sys_dict_item", "item_code", "not-exist-code", "dict_code", DICT_CODE, null);
     String entity = (String) response.getEntity();
     JsonResponse jsonResponse = gson.fromJson(entity, JsonResponse.class);
     assertTrue(jsonResponse.getSuccess());
@@ -161,7 +163,7 @@ public class SysDictItemRestApiTest {
   }
 
   public static QueryResult<SysDict> queryTestDictList() {
-    Response response = sysDictRestApi.list("SysDictItemRestApiTest", "", "", "", "", 1, 10);
+    Response response = sysDictRestApi.list(DICT_CODE, "", "", "", "", 1, 10);
     String entity = (String) response.getEntity();
     Type type = new TypeToken<JsonResponse<QueryResult<SysDict>>>(){}.getType();
     JsonResponse<QueryResult<SysDict>> jsonResponse = gson.fromJson(entity, type);

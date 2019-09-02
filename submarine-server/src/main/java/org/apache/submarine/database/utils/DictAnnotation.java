@@ -159,6 +159,11 @@ public class DictAnnotation {
         }
       }
 
+      if (mapDictItems.size() == 0) {
+        // don't contain dict Annotation
+        return false;
+      }
+
       for (Object record : queryResult.getRecords()) {
         Object newObj = mergeDictText(record, mapDictItems);
         dicts.add(newObj);

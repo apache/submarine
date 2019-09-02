@@ -15,9 +15,11 @@ package org.apache.submarine.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.annotation.SubmarineApi;
+import org.apache.submarine.database.MyBatisUtil;
 import org.apache.submarine.database.entity.SysUser;
-import org.apache.submarine.database.service.SysUserService;
+import org.apache.submarine.database.mappers.SysUserMapper;
 import org.apache.submarine.server.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,6 @@ import java.util.HashMap;
 @Singleton
 public class LoginRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(LoginRestApi.class);
-  private SysUserService userService = new SysUserService();
   private static final Gson gson = new Gson();
 
   @Inject
@@ -48,16 +49,20 @@ public class LoginRestApi {
   public Response login(String loginParams) {
     HashMap<String, String> mapParams
         = gson.fromJson(loginParams, new TypeToken<HashMap<String, String>>() {}.getType());
-    String username = mapParams.get("username");
-    String password = mapParams.get("password");
 
-    SysUser sysUser = userService.getUserByName(username, password);
-    if (null == sysUser) {
-      LOG.error("Cannot get data from the database");
-    } else {
-      sysUser.setRoleId("admin");
-      sysUser.setToken("mock_token");
+    SysUser sysUser = null;
+    SqlSession sqlSession = null;
+    try {
+      sqlSession = MyBatisUtil.getSqlSession();
+      SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
+      sysUser = sysUserMapper.login(mapParams);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
+    } finally {
+      sqlSession.close();
     }
+    sysUser.setToken("mock_token");
 
     return new JsonResponse.Builder<SysUser>(Response.Status.OK).success(true).result(sysUser).build();
   }

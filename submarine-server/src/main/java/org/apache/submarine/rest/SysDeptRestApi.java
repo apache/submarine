@@ -150,8 +150,9 @@ public class SysDeptRestApi {
     } finally {
       sqlSession.close();
     }
+    QueryResult<SysDept> queryResult = new QueryResult(Arrays.asList(sysDept), 1);
     return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
-        .success(true).message("Save department successfully!").result(sysDept).build();
+        .success(true).message("Save department successfully!").result(queryResult).build();
   }
 
   @PUT

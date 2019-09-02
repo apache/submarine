@@ -117,29 +117,26 @@ public class SysDictRestApi {
   @Path("/edit")
   @SubmarineApi
   public Response edit(SysDict sysDict) {
+    SqlSession sqlSession = null;
     try {
-      SqlSession sqlSession = MyBatisUtil.getSqlSession();
+      sqlSession = MyBatisUtil.getSqlSession();
       SysDictMapper sysDictMapper = sqlSession.getMapper(SysDictMapper.class);
-      try {
-        SysDict dict = sysDictMapper.getById(sysDict.getId());
-        if (dict == null) {
-          return new JsonResponse.Builder<>(Response.Status.OK)
-              .message("Can not found dict:" + sysDict.getId()).success(false).build();
-        }
-        sysDictMapper.updateBy(sysDict);
-        sqlSession.commit();
-      } catch (Exception e) {
-        LOG.error(e.getMessage(), e);
-      } finally {
-        sqlSession.close();
+      SysDict dict = sysDictMapper.getById(sysDict.getId());
+      if (dict == null) {
+        return new JsonResponse.Builder<>(Response.Status.OK)
+            .message("Can not found dict:" + sysDict.getId()).success(false).build();
       }
-      return new JsonResponse.Builder<>(Response.Status.OK)
-          .message("Update the dictionary successfully!").success(true).build();
+      sysDictMapper.updateBy(sysDict);
+      sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Update dictionary failed!").success(false).build();
+    } finally {
+      sqlSession.close();
     }
+    return new JsonResponse.Builder<>(Response.Status.OK)
+        .message("Update the dictionary successfully!").success(true).build();
   }
 
   @DELETE

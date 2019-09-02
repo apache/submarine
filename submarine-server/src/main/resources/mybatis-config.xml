@@ -57,5 +57,3 @@
     <mapper resource='org/apache/submarine/database/mappers/SysDeptMapper.xml'/>
   </mappers>
 </configuration>
-
-

@@ -7,13 +7,14 @@
     @ok="handleSubmit"
     @cancel="handleCancel"
     cancelText="Close"
+    okText="Ok"
     style="top:20px;"
   >
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">
 
         <a-form-item label="Account Name" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input placeholder="Please input account name" v-decorator="[ 'username', {}]" :readOnly="true"/>
+          <a-input placeholder="Please input account name" v-decorator="[ 'userName', {}]" :readOnly="true"/>
         </a-form-item>
 
         <a-form-item label="Password" :labelCol="labelCol" :wrapperCol="wrapperCol" hasFeedback >
@@ -30,7 +31,8 @@
 </template>
 
 <script>
-import { changPassword } from '@/api/system'
+import md5 from 'md5'
+import { changePassword } from '@/api/system'
 
 export default {
   name: 'PasswordModal',
@@ -76,12 +78,15 @@ export default {
   },
 
   methods: {
-    show (username) {
+    show (id, userName) {
+      console.log('id', id)
+      console.log('userName', userName)
       this.form.resetFields()
       this.visible = true
-      this.model.username = username
+      this.model.id = id
+      this.model.userName = userName
       this.$nextTick(() => {
-        this.form.setFieldsValue({ username: username })
+        this.form.setFieldsValue({ userName: userName })
       })
     },
     close () {
@@ -95,8 +100,11 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.confirmLoading = true
-          const formData = Object.assign(this.model, values)
-          changPassword(formData).then((res) => {
+          const formData = Object.assign({})
+          formData.id = this.model.id
+          formData.password = md5(values.password)
+
+          changePassword(formData).then((res) => {
             if (res.success) {
               this.$message.success(res.message)
               this.$emit('ok')

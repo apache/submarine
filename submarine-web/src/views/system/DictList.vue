@@ -116,6 +116,7 @@ export default {
         {
           title: 'Action',
           dataIndex: 'action',
+          width: 200,
           align: 'center',
           scopedSlots: { customRender: 'action' }
         }

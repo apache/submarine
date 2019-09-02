@@ -57,9 +57,14 @@ public class MyBatisUtil {
       props.setProperty("jdbc.password", jdbcPassword);
 
       sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, props);
-      reader.close();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
+    } finally {
+      try {
+        if (null != reader) {
+          reader.close();
+        }
+      } catch (IOException e) {
+        LOG.error(e.getMessage(), e);
+      }
     }
   }
 

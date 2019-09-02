@@ -20,5 +20,17 @@ import java.util.List;
 import java.util.Map;
 
 public interface SysUserMapper {
-  List<SysUser> selectAll(Map<String, Object> where, RowBounds bounds);
+  SysUser login(Map<String, String> where);
+
+  List<SysUser> selectAll(Map<String, Object> where, RowBounds rowBounds);
+
+  void add(SysUser sysOrg);
+
+  SysUser getById(String id);
+
+  void updateBy(SysUser sysUser);
+
+  void deleteById(String id);
+
+  void changePassword(SysUser sysUser);
 }

@@ -144,7 +144,7 @@ public class JsonResponse<T> {
 
       // Trick to get the DefaultDateTypeAdatpter instance
       // Create a first instance a Gson
-      Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
+      Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
       // Get the date adapter
       TypeAdapter<Date> dateTypeAdapter = gson.getAdapter(Date.class);

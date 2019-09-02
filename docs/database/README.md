@@ -113,6 +113,12 @@ mysql> quit
 
 >  NOTE: submarine test database name is  `submarineDB_test` and user name is `submarine_test`, password is `password_test`, Cannot be configured, values that cannot be modified.
 
+### mysqldump
+
+```$xslt
+mysqldump -uroot -ppassword --databases submarineDB > submarineDB.sql;
+```
+
 
 ## Travis
 
@@ -120,6 +126,6 @@ mysql> quit
 
    Therefore, do not modify the database's `database name`, `username` and `password` configuration to avoid introducing some problems.
 
-2. In the mysql database in Travis, the `submarine.sql` and `submarine_test.sql` files are executed to create the submarine database table structure and test data.
+2. In the mysql database in Travis, the `submarine.sql` are executed to create the submarine database table structure and test data.
 
 3. The submarine database test case written in the `submarine-server` module will also be unit tested in the mysql database in travis.

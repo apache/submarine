@@ -13,43 +13,49 @@
  */
 package org.apache.submarine.database.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.apache.submarine.annotation.Dict;
+import org.apache.submarine.database.utils.CustomJsonDateDeserializer;
 
 import java.util.Date;
 
 public class SysUser extends BaseEntity {
-  private String name;
-  private String username;
+  private String userName;
+  private String realName;
   private String password;
   private String avatar;
 
-  @Dict(Code = "SEX")
+  @Dict(Code = "SYS_USER_SEX")
   private String sex;
-  private Integer status;
+  @Dict(Code = "SYS_USER_STATUS")
+  private String status;
   private String phone;
   private String email;
   private String deptCode;
-  private String lastLoginIp;
-  private Date lastLoginTime;
+  private String deptName;
+
+  private String roleCode;
+
+  @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+  protected Date birthday = new Date();
+
   private Integer deleted;
-  private String roleId;
-  private String lang;
   private String token;
 
-  public String getName() {
-    return name;
+  public String getUserName() {
+    return userName;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setUserName(String userName) {
+    this.userName = userName;
   }
 
-  public String getUsername() {
-    return username;
+  public String getRealName() {
+    return realName;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setRealName(String realName) {
+    this.realName = realName;
   }
 
   public String getPassword() {
@@ -76,11 +82,11 @@ public class SysUser extends BaseEntity {
     this.sex = sex;
   }
 
-  public Integer getStatus() {
+  public String getStatus() {
     return status;
   }
 
-  public void setStatus(Integer status) {
+  public void setStatus(String status) {
     this.status = status;
   }
 
@@ -108,20 +114,12 @@ public class SysUser extends BaseEntity {
     this.deptCode = deptCode;
   }
 
-  public String getLastLoginIp() {
-    return lastLoginIp;
+  public String getRoleCode() {
+    return roleCode;
   }
 
-  public void setLastLoginIp(String lastLoginIp) {
-    this.lastLoginIp = lastLoginIp;
-  }
-
-  public Date getLastLoginTime() {
-    return lastLoginTime;
-  }
-
-  public void setLastLoginTime(Date lastLoginTime) {
-    this.lastLoginTime = lastLoginTime;
+  public void setRoleCode(String roleCode) {
+    this.roleCode = roleCode;
   }
 
   public Integer getDeleted() {
@@ -132,22 +130,6 @@ public class SysUser extends BaseEntity {
     this.deleted = deleted;
   }
 
-  public String getRoleId() {
-    return roleId;
-  }
-
-  public void setRoleId(String roleId) {
-    this.roleId = roleId;
-  }
-
-  public String getLang() {
-    return lang;
-  }
-
-  public void setLang(String lang) {
-    this.lang = lang;
-  }
-
   public String getToken() {
     return token;
   }
@@ -155,4 +137,21 @@ public class SysUser extends BaseEntity {
   public void setToken(String token) {
     this.token = token;
   }
+
+  public String getDeptName() {
+    return deptName;
+  }
+
+  public void setDeptName(String deptName) {
+    this.deptName = deptName;
+  }
+
+  public Date getBirthday() {
+    return birthday;
+  }
+
+  public void setBirthday(Date birthday) {
+    this.birthday = birthday;
+  }
+
 }

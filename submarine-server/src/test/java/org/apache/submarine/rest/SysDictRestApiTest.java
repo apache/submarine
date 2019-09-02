@@ -14,11 +14,13 @@
 package org.apache.submarine.rest;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDict;
 import org.apache.submarine.server.JsonResponse;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -32,7 +34,10 @@ import static junit.framework.TestCase.assertTrue;
 public class SysDictRestApiTest {
   private static SysDictRestApi sysDictRestApi = new SysDictRestApi();
   private static SystemRestApi systemRestApi = new SystemRestApi();
-  private static final Gson gson = new Gson();
+
+  private static GsonBuilder gsonBuilder = new GsonBuilder();
+  private static Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+
   private static final int NEW_SYS_DICT_COUNT = 3;
 
   @BeforeClass
@@ -42,7 +47,8 @@ public class SysDictRestApiTest {
       sysDict.setDictCode("dictCode-SysDictRestApiTest-" + i);
       sysDict.setDictName("dictName-SysDictRestApiTest-" + i);
       sysDict.setDescription("desc-SysDictRestApiTest-" + i);
-      sysDictRestApi.add(sysDict);
+      Response response = sysDictRestApi.add(sysDict);
+      assertResponseSuccess(response);
     }
   }
 
@@ -52,7 +58,8 @@ public class SysDictRestApiTest {
     assertTrue(queryResult.getRecords().size() > 0);
     assertTrue(queryResult.getTotal() > 0);
     for (SysDict sysDict : queryResult.getRecords()) {
-      sysDictRestApi.remove(sysDict.getId());
+      Response response = sysDictRestApi.remove(sysDict.getId());
+      assertResponseSuccess(response);
     }
 
     //recheck
@@ -91,7 +98,8 @@ public class SysDictRestApiTest {
   public void setDeletedTest() {
     QueryResult<SysDict> queryResult = queryTestDictList();
     for (SysDict dict : queryResult.getRecords()) {
-      sysDictRestApi.delete(dict.getId(), 1);
+      Response response = sysDictRestApi.delete(dict.getId(), 1);
+      assertResponseSuccess(response);
     }
 
     QueryResult<SysDict> queryResult2 = queryTestDictList();
@@ -100,7 +108,8 @@ public class SysDictRestApiTest {
     }
 
     for (SysDict dict : queryResult2.getRecords()) {
-      sysDictRestApi.delete(dict.getId(), 0);
+      Response response = sysDictRestApi.delete(dict.getId(), 0);
+      assertResponseSuccess(response);
     }
 
     QueryResult<SysDict> queryResult3 = queryTestDictList();
@@ -117,5 +126,18 @@ public class SysDictRestApiTest {
 
     QueryResult<SysDict> queryResult = jsonResponse.getResult();
     return queryResult;
+  }
+
+  private static JsonResponse<QueryResult<SysDict>> wrapResponse(Response response) {
+    String entity = (String) response.getEntity();
+    Type type = new TypeToken<JsonResponse<QueryResult<SysDict>>>() {}.getType();
+    JsonResponse<QueryResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
+
+    return jsonResponse;
+  }
+
+  private static void assertResponseSuccess(Response response) {
+    JsonResponse<QueryResult<SysDict>> jsonResponse = wrapResponse(response);
+    Assert.assertEquals(jsonResponse.getSuccess(), true);
   }
 }

@@ -7,6 +7,7 @@
     @ok="handleOk"
     @cancel="handleCancel"
     cancelText="Close"
+    okText="Ok"
   >
     <a-spin :spinning="confirmLoading">
       <a-form :form="form">

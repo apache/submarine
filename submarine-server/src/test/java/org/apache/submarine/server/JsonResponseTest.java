@@ -23,33 +23,34 @@ import org.junit.Test;
 import javax.ws.rs.core.Response;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
 public class JsonResponseTest {
+  private GsonBuilder gsonBuilder = new GsonBuilder();
+  private Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
   @Test
   public void serializObject() {
-    GsonBuilder gsonBuilder = new GsonBuilder();
-    Gson gson = gsonBuilder.create();
-
     SysDict sysDict = new SysDict();
     sysDict.setDictCode("code");
     sysDict.setDictName("name");
     sysDict.setDescription("desc");
 
-    Response response = new JsonResponse.Builder<SysDict>(Response.Status.OK)
-        .success(true).result(sysDict).build();
+    QueryResult<SysDict> queryResult = new QueryResult(Arrays.asList(sysDict), 1);
+    Response response = new JsonResponse.Builder<QueryResult<SysDict>>(Response.Status.OK)
+        .success(true).result(queryResult).build();
 
     String entity = (String) response.getEntity();
 
-    Type type = new TypeToken<JsonResponse<SysDict>>(){}.getType();
+    Type type = new TypeToken<JsonResponse<QueryResult<SysDict>>>(){}.getType();
 
-    JsonResponse<SysDict> jsonResponse = gson.fromJson(entity, type);
+    JsonResponse<QueryResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
 
-    SysDict checkDict = jsonResponse.getResult();
+    SysDict checkDict = jsonResponse.getResult().getRecords().get(0);
     assertEquals(checkDict.getDictCode(), "code");
     assertEquals(checkDict.getDictName(), "name");
     assertEquals(checkDict.getDescription(), "desc");
@@ -57,9 +58,6 @@ public class JsonResponseTest {
 
   @Test
   public void serializQueryResult() {
-    GsonBuilder gsonBuilder = new GsonBuilder();
-    Gson gson = gsonBuilder.create();
-
     SysDict sysDict = new SysDict();
     sysDict.setDictCode("code");
     sysDict.setDictName("name");
@@ -70,7 +68,7 @@ public class JsonResponseTest {
 
     QueryResult<SysDict> queryResult = new QueryResult(list, 1);
 
-    Response response = new JsonResponse.Builder<QueryResult>(Response.Status.OK)
+    Response response = new JsonResponse.Builder<QueryResult<SysDict>>(Response.Status.OK)
         .success(true).result(queryResult).build();
 
     String entity = (String) response.getEntity();

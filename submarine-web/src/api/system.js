@@ -1,15 +1,15 @@
 import { getAction, putAction, postAction, deleteAction } from '@/api/manage'
 
 // 用户管理
-const addUser = (params) => postAction('/system/user/add', params)
-const editUser = (params) => putAction('/system/user/edit', params)
-const queryUserRole = (params) => getAction('/system/user/queryUserRole', params)
-const getUserList = (params) => getAction('/system/user/list', params)
-const frozenBatch = (params) => putAction('/system/user/frozenBatch', params)
+const addUser = (params) => postAction('/sys/user/add', params)
+const editUser = (params) => putAction('/sys/user/edit', params)
+const queryUserRole = (params) => getAction('/sys/user/queryUserRole', params)
+const getUserList = (params) => getAction('/sys/user/list', params)
+const frozenBatch = (params) => putAction('/sys/user/frozenBatch', params)
 // 验证用户是否存在
-const checkOnlyUser = (params) => getAction('/system/user/checkOnlyUser', params)
-// 改变密码
-const changPassword = (params) => putAction('/system/user/changPassword', params)
+const checkOnlyUser = (params) => getAction('/sys/user/checkOnlyUser', params)
+// change Password
+const changePassword = (params) => putAction('/sys/user/changePassword', params)
 
 // 数据字典
 const addDict = (params) => postAction('/sys/dict/add', params)
@@ -30,7 +30,7 @@ const queryIdTree = (params) => getAction('/sys/dept/queryIdTree', params)
 const resetParentDept = (params) => putAction('/sys/dept/resetParentDept', params)
 
 // Dict
-const ajaxGetDictItems = (code, params) => getAction(`/dictItem/getDictItems/${code}`, params)
+const ajaxGetDictItems = (code, params) => getAction(`/sys/dictItem/getDictItems/${code}`, params)
 
 export {
   ajaxGetDictItems,
@@ -40,7 +40,7 @@ export {
   getUserList,
   frozenBatch,
   checkOnlyUser,
-  changPassword,
+  changePassword,
   addDict,
   editDict,
   treeList,

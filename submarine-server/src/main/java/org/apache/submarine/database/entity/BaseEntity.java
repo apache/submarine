@@ -13,7 +13,9 @@
  */
 package org.apache.submarine.database.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.annotations.VisibleForTesting;
+import org.apache.submarine.database.utils.CustomJsonDateDeserializer;
 
 import java.lang.reflect.Field;
 import java.util.Date;
@@ -23,11 +25,13 @@ public abstract class BaseEntity {
 
   protected String createBy;
 
-  protected Date createTime;
+  @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+  protected Date createTime = new Date();
 
   protected String updateBy;
 
-  protected Date updateTime;
+  @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+  protected Date updateTime = new Date();
 
   public String getId() {
     return id;
