@@ -69,6 +69,18 @@ matrix:
       dist: xenial
       env: NAME="Build hadoop-2.9" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-web,!submarine-server\"" TEST_PROJECTS=""
 
+    # Build hadoop-3.1
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
+      env: NAME="Build hadoop-3.1" PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-web,!submarine-server\"" TEST_PROJECTS=""
+
+    # Build hadoop-3.2
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
+      env: NAME="Build hadoop-3.2" PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-web,!submarine-server\"" TEST_PROJECTS=""
+
     # Build submarine-web
     - language: node_js
       node_js:
