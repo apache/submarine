@@ -107,8 +107,7 @@
     <module>submodules/tony</module>
     <module>submarine-core</module>
     <module>submarine-all</module>
-    <module>submarine-web</module>
-    <module>submarine-server</module>
+    <module>submarine-workbench</module>
     <module>submarine-dist</module>
   </modules>
 

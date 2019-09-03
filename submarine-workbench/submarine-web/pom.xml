@@ -24,14 +24,14 @@
     <groupId>org.apache.submarine</groupId>
     <artifactId>submarine</artifactId>
     <version>0.3.0-SNAPSHOT</version>
-    <relativePath>..</relativePath>
+    <relativePath>../../pom.xml</relativePath>
   </parent>
 
   <groupId>org.apache.submarine</groupId>
   <artifactId>submarine-web</artifactId>
   <packaging>war</packaging>
   <version>0.3.0-SNAPSHOT</version>
-  <name>Submarine: web Application</name>
+  <name>Submarine: Workbench Web</name>
 
   <!-- See https://github.com/eirslett/frontend-maven-plugin/issues/229 -->
   <prerequisites>

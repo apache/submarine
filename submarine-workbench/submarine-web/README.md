@@ -1,6 +1,6 @@
 English | [简体中文](./README.zh-CN.md)
 
-<h1 align="center">Submarine Workbench</h1>
+<h1 align="center">Submarine Workbench Web</h1>
 ### Env and dependencies
 
 - node
@@ -21,7 +21,7 @@ English | [简体中文](./README.zh-CN.md)
 - Clone repo
 ```bash
 git https://github.com/hadoopsubmarine/submarine.git
-cd submarine/submarine-web
+cd submarine/submarine-workbench/submarine-web
 ```
 
 - Install dependencies

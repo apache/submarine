@@ -377,7 +377,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
     JDBC_USERNAME("jdbc.username", "submarine"),
     JDBC_PASSWORD("jdbc.password", "password"),
-    SUBMARINE_WAR("submarine.war", "submarine-web/dist"),
+    SUBMARINE_WAR("submarine.war", "submarine-workbench/submarine-web/dist"),
     SUBMARINE_WAR_TEMPDIR("submarine.war.tempdir", "webapps");
 
     private String varName;
