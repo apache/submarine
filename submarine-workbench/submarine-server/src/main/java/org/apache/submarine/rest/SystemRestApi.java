@@ -13,11 +13,15 @@
  */
 package org.apache.submarine.rest;
 
-import com.google.gson.Gson;
+import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.annotation.SubmarineApi;
 import org.apache.submarine.database.MyBatisUtil;
+import org.apache.submarine.database.entity.QueryResult;
+import org.apache.submarine.database.entity.SysUser;
 import org.apache.submarine.database.mappers.SystemMapper;
+import org.apache.submarine.database.service.SysUserService;
 import org.apache.submarine.server.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +30,12 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Path("/sys")
@@ -38,7 +44,7 @@ import java.util.Map;
 public class SystemRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(SystemRestApi.class);
 
-  private static final Gson gson = new Gson();
+  private SysUserService userService = new SysUserService();
 
   @Inject
   public SystemRestApi() {
@@ -83,5 +89,30 @@ public class SystemRestApi {
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("This value already exists is not available!").success(false).build();
     }
+  }
+
+  @GET
+  @Path("/searchSelect/{tableName}")
+  @SubmarineApi
+  public Response searchSelect(@PathParam("tableName") String tableName,
+                               @QueryParam("keyword") String keyword) {
+
+    if (StringUtils.equals(tableName, "sys_user")) {
+      List<SysUser> list = null;
+      try {
+        list = userService.queryPageList(keyword, null, null, null, null, 1, 1000);
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+        return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
+      }
+      PageInfo<SysUser> page = new PageInfo<>(list);
+      QueryResult<SysUser> queryResult = new QueryResult(list, page.getTotal());
+
+      return new JsonResponse.Builder<QueryResult<SysUser>>(Response.Status.OK)
+          .success(true).result(queryResult).build();
+    }
+
+    return new JsonResponse.Builder<QueryResult<SysUser>>(Response.Status.OK)
+        .success(false).build();
   }
 }

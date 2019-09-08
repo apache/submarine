@@ -19,6 +19,7 @@ const addDictItem = (params) => postAction('/sys/dictItem/add', params)
 const editDictItem = (params) => putAction('/sys/dictItem/edit', params)
 
 const duplicateCheck = (params) => getAction('/sys/duplicateCheck', params)
+const searchSelect = (tableName, params) => getAction(`/sys/searchSelect/${tableName}`, params)
 
 // department
 const addDept = (params) => postAction('/sys/dept/add', params)
@@ -47,6 +48,7 @@ export {
   addDictItem,
   editDictItem,
   duplicateCheck,
+  searchSelect,
   addDept,
   editDept,
   queryDepartTreeList,
