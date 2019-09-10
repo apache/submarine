@@ -15,24 +15,23 @@
 
 ## Build Submarine From Source Code
 
-#### Build Tools
+## Prerequisites
 
-To build the code, install
++ JDK 1.8
++ Maven 3.3 or later
 
-+ Oracle Java 8
-+ Apache Maven
+## Quick Start
 
-#### Prerequistion
-
-+ Update tony project
-
-LinkedIn tony project is included in submarine as a submodule. If you just clone
-submarine project, please initialze tony project using the following command.
+### Init submodule
+LinkedIn TensorFlow on YARN (TonY) project is included in submarine as a 
+submodule. If you just clone submarine project, please initialize the tony
+project using the following command.
 
 ```
 git submodule update --init --recursive
 ```
 
+### Update submodule
 After the initialization, when you want to update tony project, please execute a
 command like this.
 
@@ -40,45 +39,45 @@ command like this.
 git submodule update --recursive
 ```
 
-#### Building the code
+### Building the code
 
-+ To skip test
-
-```
-mvn install package -DskipTests
-```
-
-+ To check RAT
++ Checking releases for licenses
 
 ```
 mvn clean org.apache.rat:apache-rat-plugin:check
 ```
 
-+ To Compile hadoop-2.7.x version
++ Create binary distribution with default hadoop version
 
 ```
-clean install package -DskipTests -Phadoop-2.7
+mvn clean install package -DskipTests
 ```
 
-+ Recommend: To Compile hadoop-2.9.x version
++ Create binary distribution with hadoop-2.7.x version
 
 ```
-clean install package -DskipTests -Phadoop-2.9
+mvn clean install package -DskipTests -Phadoop-2.7
 ```
 
-+ To Compile hadoop-3.1.x version
++ Create binary distribution with hadoop-2.9.x version
 
 ```
-clean install package -DskipTests -Phadoop-3.1
+mvn clean install package -DskipTests -Phadoop-2.9
 ```
 
-- To Compile hadoop-3.2.x version
++ Create binary distribution with hadoop-3.1.x version
 
 ```
-clean install package -DskipTests -Phadoop-3.2
+mvn clean install package -DskipTests -Phadoop-3.1
 ```
 
-#### Tony code modification
+- Create binary distribution with hadoop-3.2.x version
 
-If it is needed to make modifications to tony project, please make sure
-both submarine and tony project are commited.
+```
+mvn clean install package -DskipTests -Phadoop-3.2
+```
+
+## TonY code modification
+
+If it is needed to make modifications to TonY project, please make sure
+both submarine and tony project are committed.

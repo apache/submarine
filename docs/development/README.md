@@ -12,61 +12,63 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
+# Development Guide
 
-# 1. Introduction
+## 1. Introduction
 
-This document mainly describes the structure of each module of the submarine project, the development and test description of each module.
+This document mainly describes the structure of each module of the submarine 
+project, the development and test description of each module.
 
-# 2. Submarine Project Structure
+## 2. Submarine Project Structure
 
-### 2.1 dev-support
+### 2.1. dev-support
 
-+ **mini-submarine** : by using the docker image provided by submarine, you can experience all the functions of submarine in a single docker environment, while mini-submarine also provides developers with a development and testing environment, Avoid the hassle of installing and deploying the runtime environment.
-+ **submarine-installer**: Submarine-installer is our submarine runtime environment installation tool for yarn-3.1+ and above.By using submarine-installer, it is easy to install and deploy system services such as `docker`, `nvidia-docker`, `nvidia driver`, `ETCD`, `Calico network` etc. required by yarn-3.1+.
++ **mini-submarine**: by using the docker image provided by submarine, you can 
+experience all the functions of submarine in a single docker environment, while 
+mini-submarine also provides developers with a development and testing 
+environment, Avoid the hassle of installing and deploying the runtime 
+environment.
++ **submarine-installer**: Submarine-installer is our submarine runtime 
+environment installation tool for yarn-3.1+ and above.By using 
+submarine-installer, it is easy to install and deploy system services such as
+`docker`, `nvidia-docker`, `nvidia driver`, `ETCD`, `Calico network` etc. 
+required by yarn-3.1+.
 
-### 2.2 submarine-all
-
-Waiting for supplement
-
-### 2.3 submarine-core
-
-Waiting for supplement
-
-### 2.4 submarine-dist
-
-Waiting for supplement
-
-### 2.5 submarine-dist
+### 2.2. submarine-all
 
 Waiting for supplement
 
-### 2.6 submarine-runtime
+### 2.3. submarine-core
 
 Waiting for supplement
 
-### 2.7 submarine-dist
+### 2.4. submarine-dist
 
 Waiting for supplement
 
-### 2.8 submarine-server
-
-+ **submarine-server**: is a Jetty-based web server service. Submarine-server provides RESTful interface and Websocket interface. The RESTful interface provides submarine-web with management capabilities for databases such as project, department, user, and role.
-
-### 2.9 submarine-tony
+### 2.5. submarine-runtime
 
 Waiting for supplement
 
-### 2.10 submarine-web
+### 2.6. submarine-sdk
++ **pysubmarine**: By using submarine's python sdk library, you can output 
+metrics such as metrics when the algorithm is executed in your python program by
+importing pysubmarine during the development of the machine learning algorithm.
 
-+ **submarine-web** : is a web front-end service based on `VUE.js` framework. With `submarine-web` users can manage submarine project, department, user, role through browser. You can also use the notebook to develop machine learning algorithms, model release and other lifecycle management.
+### 2.7. submarine-workbench
++ **submarine-server**: is a Jetty-based web server service. Submarine-server 
+provides RESTful interface and Websocket interface. The RESTful interface 
+provides submarine-web with management capabilities for databases such as 
+project, department, user, and role.
++ **submarine-web**: is a web front-end service based on `VUE.js` framework. 
+With `submarine-web` users can manage submarine project, department, user, role 
+through browser. You can also use the notebook to develop machine learning 
+algorithms, model release and other lifecycle management.
 
-### 2.11 submarine-sdk
+## 3. Submarine Workbench Development Guide
 
-+ **pysubmarine**: By using submarine's python sdk library, you can output metrics such as metrics when the algorithm is executed in your python program by importing pysubmarine during the development of the machine learning algorithm.
-
-# 3. Submarine Workbench Development Guide
-
-Submarine workbench consists of three modules: submarine-server, submarine-web and database. 
+Submarine workbench consists of three modules: submarine-server, submarine-web
+and database. 
 
 First, you need to clone the entire submarine project: 
 
@@ -76,13 +78,19 @@ git clone https://github.com/hadoopsubmarine/submarine.git
 
 ## 3.1 Database
 
-Submarine selects mysql as the workbench database, and stores the table structure and information of all the data in workbench in mysql. Please browse the project's [Submarine Database Guide](../database/) documentation and follow the instructions to install a mysql database via docker in your development and test environment.
+Submarine selects mysql as the workbench database, and stores the table 
+structure and information of all the data in workbench in mysql. Please browse 
+the project's [Submarine Database Guide](../database/) documentation and follow 
+the instructions to install a mysql database via docker in your development and 
+test environment.
 
 ## 3.2 Submarine-web
 
 + **Install dependencies**
 
-You only need to execute the following command when you run submarine-web for the first time, so you can follow the depend. environment of node.js in the submarine-web directory.
+You only need to execute the following command when you run submarine-web for 
+the first time, so you can follow the depend. environment of node.js in the 
+submarine-web directory.
 
 ```bash
 cd submarine/submarine-web

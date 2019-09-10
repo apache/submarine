@@ -27,16 +27,16 @@ If all goes well, this should be a short-lived fork rather than a long-lived one
 Submarine is a new subproject of Apache Hadoop.
 
 Submarine is a project which allows infra engineer / data scientist to run
-*unmodified* Tensorflow or PyTorch programs on YARN or Kubernetes.
+*unmodified* TensorFlow or PyTorch programs on YARN or Kubernetes.
 
 Goals of Submarine:
 - It allows jobs easy access data/models in HDFS and other storages.
-- Can launch services to serve Tensorflow/PyTorch models.
-- Support run distributed Tensorflow jobs with simple configs.
+- Can launch services to serve TensorFlow/PyTorch models.
+- Support run distributed TensorFlow jobs with simple configs.
 - Support run user-specified Docker images.
 - Support specify GPU and other resources.
-- Support launch tensorboard for training jobs if user specified.
-- Support customized DNS name for roles (like tensorboard.$user.$domain:6006)
+- Support launch TensorBoard for training jobs if user specified.
+- Support customized DNS name for roles (like TensorBoard.$user.$domain:6006)
 
 # Architecture
 
@@ -104,7 +104,7 @@ This is a docker image built for submarine development and quick start test.
 
 ### Installation and deployment
 
-Read the [Quick Start Guide](./docs/QuickStart.md), 
+Read the [Quick Start Guide](./docs/helper/QuickStart.md), 
 
 
 
