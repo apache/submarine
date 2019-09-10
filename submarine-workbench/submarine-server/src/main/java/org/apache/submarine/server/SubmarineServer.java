@@ -46,7 +46,7 @@ public class SubmarineServer extends ResourceConfig {
   private static SubmarineConfiguration conf = SubmarineConfiguration.create();
 
   public static void main(String[] args) throws InterruptedException {
-    PropertyConfigurator.configure("log4j.properties");
+    PropertyConfigurator.configure(ClassLoader.getSystemResource("log4j.properties"));
 
     final SubmarineConfiguration conf = SubmarineConfiguration.create();
 
