@@ -411,6 +411,10 @@
             <exclude>**/src/test/resources/typicalHistFolder/job1/application123-1-1-user1-SUCCEEDED.jhist</exclude>
             <exclude>**/conf/routes</exclude>
             <exclude>submarine-runtime/yarnservice-runtime/target/**</exclude>
+            <exclude>submarine-runtime/target/**</exclude>
+            <exclude>licenses/**</exclude>
+            <exclude>licenses-binary/**</exclude>
+            <exclude>NOTICE-binary</exclude>
           </excludes>
         </configuration>
       </plugin>
