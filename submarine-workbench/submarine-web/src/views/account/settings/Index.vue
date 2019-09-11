@@ -25,9 +25,9 @@
                 个性化
               </router-link>
             </a-menu-item>
-            <a-menu-item key="/account/settings/binding">
-              <router-link :to="{ name: 'BindingSettings' }">
-                账户绑定
+            <a-menu-item key="/account/settings/team">
+              <router-link :to="{ name: 'TeamSettings' }">
+                Team Settings
               </router-link>
             </a-menu-item>
             <a-menu-item key="/account/settings/notification">

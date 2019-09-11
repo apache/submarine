@@ -100,3 +100,57 @@ CREATE TABLE `sys_user` (
   CONSTRAINT `FK_SYS_USER_SEX` FOREIGN KEY (`sex`) REFERENCES `sys_dict_item` (`item_code`),
   CONSTRAINT `FK_SYS_USER_STATUS` FOREIGN KEY (`status`) REFERENCES `sys_dict_item` (`item_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for sys_message
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_message`;
+CREATE TABLE `sys_message` (
+  `id` varchar(32) NOT NULL COMMENT 'id',
+  `sender` varchar(32) default NULL COMMENT 'sender user',
+  `receiver` varchar(32) default NULL COMMENT 'receiver user',
+  `type` varchar(32) default NULL COMMENT 'dict_code:MESSAGE_TYPE',
+  `context` text COMMENT 'message context',
+  `status` int(1) default 0 COMMENT '0:unread, 1:read',
+  `create_by` varchar(32) default NULL COMMENT 'create user',
+  `create_time` datetime default NULL COMMENT 'create time',
+  `update_by` varchar(32) default NULL COMMENT 'last update user',
+  `update_time` datetime default NULL COMMENT 'last update time',
+  PRIMARY KEY  (`id`),
+  CONSTRAINT `FK_SYS_MSG_SENDER` FOREIGN KEY (`sender`) REFERENCES `sys_user` (`user_name`),
+  CONSTRAINT `FK_SYS_MSG_RECEIVER` FOREIGN KEY (`receiver`) REFERENCES `sys_user` (`user_name`),
+  CONSTRAINT `FK_SYS_MSG_TYPE` FOREIGN KEY (`type`) REFERENCES `sys_dict_item` (`item_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for team
+-- ----------------------------
+DROP TABLE IF EXISTS `team`;
+CREATE TABLE `team` (
+  `id` varchar(32) NOT NULL,
+  `owner` varchar(100) NOT NULL COMMENT 'owner name',
+  `team_name` varchar(64) NOT NULL COMMENT 'team name',
+  `create_by` varchar(32) default NULL COMMENT 'create user',
+  `create_time` datetime default NULL COMMENT 'create time',
+  `update_by` varchar(32) default NULL COMMENT 'last update user',
+  `update_time` datetime default NULL COMMENT 'last update time',
+  PRIMARY KEY  (`id`),
+  UNIQUE KEY `UK_TEAM_NAME` (`team_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for team_member
+-- ----------------------------
+DROP TABLE IF EXISTS `team_member`;
+CREATE TABLE `team_member` (
+  `id` varchar(32) NOT NULL,
+  `team_name` varchar(64) NOT NULL COMMENT 'team name',
+  `member` varchar(100) NOT NULL COMMENT 'member name',
+  `inviter` int(1) default 0 COMMENT '0:inviter, 1:accept',
+  `create_by` varchar(32) default NULL,
+  `create_time` datetime default NULL,
+  `update_by` varchar(32) default NULL,
+  `update_time` datetime default NULL,
+  PRIMARY KEY  (`id`),
+  CONSTRAINT `FK_TEAM_MEMBER_USER` FOREIGN KEY (`member`) REFERENCES `sys_user` (`user_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

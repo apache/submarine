@@ -33,6 +33,11 @@ const resetParentDept = (params) => putAction('/sys/dept/resetParentDept', param
 // Dict
 const ajaxGetDictItems = (code, params) => getAction(`/sys/dictItem/getDictItems/${code}`, params)
 
+// team
+const addTeam = (params) => postAction('/team/add', params)
+const editTeam = (params) => putAction('/team/edit', params)
+const deleteTeam = (params) => deleteAction('/team/delete', params)
+
 export {
   ajaxGetDictItems,
   addUser,
@@ -55,5 +60,8 @@ export {
   searchByKeywords,
   deleteByDepartId,
   queryIdTree,
-  resetParentDept
+  resetParentDept,
+  addTeam,
+  editTeam,
+  deleteTeam
 }

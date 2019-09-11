@@ -1,12 +1,13 @@
 <template>
   <a-select
     mode="multiple"
+    style="width: 100%"
     labelInValue
-    :value="value"
     :placeholder="placeholder"
     :disabled="disabled"
-    style="width: 100%"
+    :id="id"
     :filterOption="false"
+    :defaultValue="initSelectValue"
     @search="fetchUser"
     @change="handleChange"
     :notFoundContent="fetching ? undefined : null"
@@ -28,10 +29,41 @@ export default {
       default: 'Please input keyword',
       required: false
     },
+    initValue: {
+      type: String,
+      default: '',
+      required: false
+    },
+    id: {
+      type: String,
+      default: '',
+      required: false
+    },
     disabled: {
       type: Boolean,
       default: false,
       required: false
+    }
+  },
+  watch: {
+    initValue: {
+      immediate: true,
+      handler (val) {
+        console.log('val = ', val)
+        if (val && this.initSelectValue.length === 0) {
+          for (var i = 0; i < val.length; i++) {
+            var option = {}
+            option.key = val[i].id
+            option.value = val[i].id
+            option.label = val[i].member
+            option.text = val[i].member
+            // console.log('option = ', option)
+            this.initSelectValue.push(option)
+          }
+          // console.log('this.initSelectValue = ', this.initSelectValue)
+          this.data = Object.assign({}, this.initSelectValue)
+        }
+      }
     }
   },
   data () {
@@ -40,12 +72,17 @@ export default {
     return {
       data: [],
       value: [],
+      initSelectValue: [],
       fetching: false
     }
   },
   methods: {
     fetchUser (value) {
-      console.log('fetching user', value)
+      // console.log('fetching user', value)
+      if (value === null || value === '') {
+        return
+      }
+
       this.lastFetchId += 1
       const fetchId = this.lastFetchId
       this.data = []
@@ -67,12 +104,7 @@ export default {
       })
     },
     handleChange (value) {
-      Object.assign(this, {
-        value,
-        data: [],
-        fetching: false
-      })
-      this.$emit('change', this.value)
+      this.$emit('change', this.id, value)
     }
   }
 }

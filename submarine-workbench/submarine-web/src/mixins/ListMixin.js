@@ -74,14 +74,18 @@ export const ListMixin = {
         if (res.success) {
           this.dataSource = res.result.records
           this.ipagination.total = res.result.total
+          this.loadDataSuccess()
         } else {
           this.$message.warning(res.message)
         }
         this.loading = false
       })
     },
+    loadDataSuccess () {
+      console.log('-- This is Mock loadDataSuccess function!')
+    },
     initDictConfig () {
-      console.log('-- This is Mock function!')
+      console.log('-- This is Mock initDictConfig function!')
     },
     handleSuperQuery (arg) {
       // 高级查询方法

@@ -411,6 +411,12 @@ export const asyncRouterMap = [
                 name: 'NotificationSettings',
                 component: () => import('@/views/account/settings/Notification'),
                 meta: { title: '新消息通知', hidden: true, keepAlive: true, permission: [ 'user' ] }
+              },
+              {
+                path: '/account/settings/team',
+                name: 'TeamSettings',
+                component: () => import('@/views/account/settings/Team'),
+                meta: { title: 'Team', hidden: true, keepAlive: true, permission: [ 'user' ] }
               }
             ]
           }
