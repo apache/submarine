@@ -16,7 +16,6 @@ package org.apache.submarine.rest;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import org.apache.submarine.annotation.SubmarineApi;
-import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDept;
 import org.apache.submarine.database.entity.SysUser;
 import org.apache.submarine.database.service.SysUserService;
@@ -25,6 +24,7 @@ import org.apache.submarine.entity.Permission;
 import org.apache.submarine.entity.Role;
 import org.apache.submarine.entity.UserInfo;
 import org.apache.submarine.server.JsonResponse;
+import org.apache.submarine.server.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Path("/sys/user")
@@ -77,10 +76,10 @@ public class SysUserRestApi {
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
     }
     PageInfo<SysUser> page = new PageInfo<>(list);
-    QueryResult<SysUser> queryResult = new QueryResult(list, page.getTotal());
+    ListResult<SysUser> listResult = new ListResult(list, page.getTotal());
 
-    return new JsonResponse.Builder<QueryResult<SysUser>>(Response.Status.OK)
-        .success(true).result(queryResult).build();
+    return new JsonResponse.Builder<ListResult<SysUser>>(Response.Status.OK)
+        .success(true).result(listResult).build();
   }
 
   @PUT
@@ -96,7 +95,7 @@ public class SysUserRestApi {
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Update user failed!").success(false).build();
     }
-    return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
+    return new JsonResponse.Builder<>(Response.Status.OK)
         .success(true).message("Update user successfully!").build();
   }
 
@@ -113,9 +112,9 @@ public class SysUserRestApi {
       return new JsonResponse.Builder<>(Response.Status.OK).success(false)
           .message("Save user failed!").build();
     }
-    QueryResult<SysUser> queryResult = new QueryResult(Arrays.asList(sysUser), 1);
-    return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
-        .success(true).message("Save user successfully!").result(queryResult).build();
+
+    return new JsonResponse.Builder<SysDept>(Response.Status.OK)
+        .success(true).message("Save user successfully!").result(sysUser).build();
   }
 
   @DELETE
@@ -131,7 +130,7 @@ public class SysUserRestApi {
       return new JsonResponse.Builder<>(Response.Status.OK).success(false)
           .message("delete user failed!").build();
     }
-    return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
+    return new JsonResponse.Builder<>(Response.Status.OK)
         .success(true).message("delete  user successfully!").build();
   }
 
@@ -148,7 +147,7 @@ public class SysUserRestApi {
       return new JsonResponse.Builder<>(Response.Status.OK).success(false)
           .message("delete user failed!").build();
     }
-    return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
+    return new JsonResponse.Builder<>(Response.Status.OK)
         .success(true).message("delete  user successfully!").build();
   }
 

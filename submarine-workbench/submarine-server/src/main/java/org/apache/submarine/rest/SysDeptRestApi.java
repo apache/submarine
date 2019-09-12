@@ -19,12 +19,12 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.annotation.SubmarineApi;
 import org.apache.submarine.database.MyBatisUtil;
 import org.apache.submarine.database.entity.SysDeptSelect;
-import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDeptTree;
 import org.apache.submarine.database.entity.SysDept;
 import org.apache.submarine.database.mappers.SysDeptMapper;
 import org.apache.submarine.database.utils.DepartmentUtil;
 import org.apache.submarine.server.JsonResponse;
+import org.apache.submarine.server.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,10 +86,10 @@ public class SysDeptRestApi {
 
     long sizeDeptTreeList = DepartmentUtil.getDeptTreeSize(sysDeptTreeList);
     if (sysDeptList.size() != sizeDeptTreeList) {
-      QueryResult<SysDept> queryResult = new QueryResult(sysDeptList, page.getTotal());
+      ListResult<SysDept> listResult = new ListResult(sysDeptList, page.getTotal());
 
-      JsonResponse.Builder builder = new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
-          .success(true).result(queryResult);
+      JsonResponse.Builder builder = new JsonResponse.Builder<ListResult<SysDept>>(Response.Status.OK)
+          .success(true).result(listResult);
       if (StringUtils.isEmpty(likeDeptCode) && StringUtils.isEmpty(likeDeptName)) {
         // Query some data, may not be a configuration error
         builder.attribute(SHOW_ALERT, Boolean.TRUE);
@@ -97,9 +97,9 @@ public class SysDeptRestApi {
       }
       return builder.build();
     } else {
-      QueryResult<SysDeptTree> queryResult = new QueryResult(sysDeptTreeList, page.getTotal());
-      return new JsonResponse.Builder<QueryResult<SysDeptTree>>(Response.Status.OK)
-          .success(true).result(queryResult).build();
+      ListResult<SysDeptTree> listResult = new ListResult(sysDeptTreeList, page.getTotal());
+      return new JsonResponse.Builder<ListResult<SysDeptTree>>(Response.Status.OK)
+          .success(true).result(listResult).build();
     }
   }
 
@@ -109,26 +109,27 @@ public class SysDeptRestApi {
   public Response queryIdTree(@QueryParam("disableDeptCode") String disableDeptCode) {
     LOG.info("queryIdTree({})", disableDeptCode);
 
+    List<SysDeptSelect> sysDeptSelects = new ArrayList<>();
     SqlSession sqlSession = null;
     try {
       sqlSession = MyBatisUtil.getSqlSession();
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
       List<SysDept> sysDeptList = sysDeptMapper.selectAll(new HashMap<>());
 
-      List<SysDeptSelect> sysDeptSelects = new ArrayList<>();
       DepartmentUtil.wrapDeptListToTree(sysDeptList, sysDeptSelects);
 
       if (!StringUtils.isEmpty(disableDeptCode)) {
         DepartmentUtil.disableTagetDeptCode(sysDeptSelects, disableDeptCode);
       }
-      return new JsonResponse.Builder<QueryResult<List<SysDeptSelect>>>(Response.Status.OK)
-          .success(true).result(sysDeptSelects).build();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
     } finally {
       sqlSession.close();
     }
+
+    return new JsonResponse.Builder<ListResult<List<SysDeptSelect>>>(Response.Status.OK)
+        .success(true).result(sysDeptSelects).build();
   }
 
   @POST
@@ -150,9 +151,9 @@ public class SysDeptRestApi {
     } finally {
       sqlSession.close();
     }
-    QueryResult<SysDept> queryResult = new QueryResult(Arrays.asList(sysDept), 1);
-    return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
-        .success(true).message("Save department successfully!").result(queryResult).build();
+
+    return new JsonResponse.Builder<SysDept>(Response.Status.OK)
+        .success(true).message("Save department successfully!").result(sysDept).build();
   }
 
   @PUT
@@ -179,8 +180,9 @@ public class SysDeptRestApi {
     } finally {
       sqlSession.close();
     }
-    return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
-        .success(true).message("Update department successfully!").build();
+
+    return new JsonResponse.Builder<>(Response.Status.OK).success(true)
+        .message("Update department successfully!").build();
   }
 
   @PUT
@@ -201,8 +203,9 @@ public class SysDeptRestApi {
     } finally {
       sqlSession.close();
     }
-    return new JsonResponse.Builder<QueryResult<SysDept>>(Response.Status.OK)
-        .success(true).message("Reset department level successfully!").build();
+
+    return new JsonResponse.Builder<>(Response.Status.OK).success(true)
+        .message("Reset department level successfully!").build();
   }
 
   @DELETE

@@ -29,12 +29,13 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Json response builder.
  *
- * @param <T>
+ * @param <T> can be an object or a ListResult
  */
 public class JsonResponse<T> {
   private static final Logger LOG = LoggerFactory.getLogger(JsonResponse.class);
@@ -159,7 +160,9 @@ public class JsonResponse<T> {
 
     boolean haveDictAnnotation = false;
     try {
-      haveDictAnnotation = DictAnnotation.parseDictAnnotation(this.getResult());
+      if (null != getResult()) {
+        haveDictAnnotation = DictAnnotation.parseDictAnnotation(getResult());
+      }
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
     }
@@ -180,5 +183,33 @@ public class JsonResponse<T> {
       }
     }
     return r.build();
+  }
+
+  // list result type response
+  // Used to return a list of records
+  public static class ListResult<T> {
+    private List<T> records;
+    private long total;
+
+    public ListResult(List<T> records, long total) {
+      this.records = records;
+      this.total = total;
+    }
+
+    public List<T> getRecords() {
+      return records;
+    }
+
+    public void setRecords(List<T> records) {
+      this.records = records;
+    }
+
+    public long getTotal() {
+      return total;
+    }
+
+    public void setTotal(long total) {
+      this.total = total;
+    }
   }
 }

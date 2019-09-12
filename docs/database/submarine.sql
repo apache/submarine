@@ -47,8 +47,8 @@ CREATE TABLE `sys_dict_item` (
   `update_by` varchar(32) default NULL,
   `update_time` datetime default NULL,
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `UK_SYS_DICT_ITEM_CODE` (`item_code`),
-  CONSTRAINT `FK_SYS_DICT_ITEM_DICT_CODE` FOREIGN KEY (`dict_code`) REFERENCES `sys_dict` (`dict_code`)
+  UNIQUE KEY `UK_SYS_DICT_ITEM_CODE` (`item_code`)/*,
+  CONSTRAINT `FK_SYS_DICT_ITEM_DICT_CODE` FOREIGN KEY (`dict_code`) REFERENCES `sys_dict` (`dict_code`)*/
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -68,8 +68,8 @@ CREATE TABLE `sys_department` (
   `update_by` varchar(32) default NULL COMMENT 'last update user',
   `update_time` datetime default NULL COMMENT 'last update time',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `UK_DEPT_CODE` (`dept_code`),
-  CONSTRAINT `FK_SYS_DEPT_PARENT_CODE` FOREIGN KEY (`parent_code`) REFERENCES `sys_department` (`dept_code`)
+  UNIQUE KEY `UK_DEPT_CODE` (`dept_code`)/*,
+  CONSTRAINT `FK_SYS_DEPT_PARENT_CODE` FOREIGN KEY (`parent_code`) REFERENCES `sys_department` (`dept_code`)*/
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -95,10 +95,10 @@ CREATE TABLE `sys_user` (
   `update_by` varchar(32) default NULL COMMENT 'last update user',
   `update_time` datetime default NULL COMMENT 'last update time',
   PRIMARY KEY  (`id`),
-  UNIQUE KEY `sys_user_name` (`user_name`),
+  UNIQUE KEY `sys_user_name` (`user_name`)/*,
   CONSTRAINT `FK_SYS_USER_DEPT_CODE` FOREIGN KEY (`dept_code`) REFERENCES `sys_department` (`dept_code`),
   CONSTRAINT `FK_SYS_USER_SEX` FOREIGN KEY (`sex`) REFERENCES `sys_dict_item` (`item_code`),
-  CONSTRAINT `FK_SYS_USER_STATUS` FOREIGN KEY (`status`) REFERENCES `sys_dict_item` (`item_code`)
+  CONSTRAINT `FK_SYS_USER_STATUS` FOREIGN KEY (`status`) REFERENCES `sys_dict_item` (`item_code`)*/
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -116,10 +116,10 @@ CREATE TABLE `sys_message` (
   `create_time` datetime default NULL COMMENT 'create time',
   `update_by` varchar(32) default NULL COMMENT 'last update user',
   `update_time` datetime default NULL COMMENT 'last update time',
-  PRIMARY KEY  (`id`),
+  PRIMARY KEY  (`id`)/*,
   CONSTRAINT `FK_SYS_MSG_SENDER` FOREIGN KEY (`sender`) REFERENCES `sys_user` (`user_name`),
   CONSTRAINT `FK_SYS_MSG_RECEIVER` FOREIGN KEY (`receiver`) REFERENCES `sys_user` (`user_name`),
-  CONSTRAINT `FK_SYS_MSG_TYPE` FOREIGN KEY (`type`) REFERENCES `sys_dict_item` (`item_code`)
+  CONSTRAINT `FK_SYS_MSG_TYPE` FOREIGN KEY (`type`) REFERENCES `sys_dict_item` (`item_code`)*/
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

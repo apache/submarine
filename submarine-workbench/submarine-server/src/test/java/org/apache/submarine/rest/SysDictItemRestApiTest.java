@@ -16,12 +16,11 @@ package org.apache.submarine.rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDict;
 import org.apache.submarine.database.entity.SysDictItem;
 import org.apache.submarine.server.JsonResponse;
+import org.apache.submarine.server.JsonResponse.ListResult;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -48,7 +47,7 @@ public class SysDictItemRestApiTest {
     sysDict.setDictName("dictName-SysDictItemRestApiTest");
     sysDict.setDescription("description-SysDictItemRestApiTest");
     Response response = sysDictRestApi.add(sysDict);
-    assertResponseSuccess(response);
+    CommonDataTest.assertResponseSuccess(response);
 
     for (int i = 0; i < NEW_SYS_DICT_ITEM_COUNT; i++) {
       SysDictItem sysDictItem = new SysDictItem();
@@ -57,33 +56,33 @@ public class SysDictItemRestApiTest {
       sysDictItem.setItemName("value-SysDictItemRestApiTest-" + i);
       sysDictItem.setDescription("desc-SysDictItemRestApiTest-" + i);
       Response response2 = sysDictItemRestApi.add(sysDictItem);
-      assertResponseSuccess(response2);
+      CommonDataTest.assertResponseSuccess(response2);
     }
   }
 
   @AfterClass
   public static void exit() {
-    QueryResult<SysDictItem> queryResult = queryTestDictItemList();
-    for (SysDictItem sysDictItem : queryResult.getRecords()) {
+    ListResult<SysDictItem> listResult = queryTestDictItemList();
+    for (SysDictItem sysDictItem : listResult.getRecords()) {
       Response response = sysDictItemRestApi.remove(sysDictItem.getId());
-      assertResponseSuccess(response);
+      CommonDataTest.assertResponseSuccess(response);
     }
     //recheck
-    QueryResult queryResult2 = queryTestDictItemList();
-    assertEquals(queryResult2.getTotal(), 0);
-    assertEquals(queryResult2.getRecords().size(), 0);
+    ListResult listResult2 = queryTestDictItemList();
+    assertEquals(listResult2.getTotal(), 0);
+    assertEquals(listResult2.getRecords().size(), 0);
 
     //recheck
-    QueryResult<SysDict> queryResult3 = queryTestDictList();
-    assertTrue(queryResult3.getRecords().size() == 1);
-    assertTrue(queryResult3.getTotal() == 1);
-    for (SysDict sysDict : queryResult3.getRecords()) {
+    ListResult<SysDict> listResult3 = queryTestDictList();
+    assertTrue(listResult3.getRecords().size() == 1);
+    assertTrue(listResult3.getTotal() == 1);
+    for (SysDict sysDict : listResult3.getRecords()) {
       Response response = sysDictRestApi.remove(sysDict.getId());
-      assertResponseSuccess(response);
+      CommonDataTest.assertResponseSuccess(response);
     }
-    QueryResult<SysDict> queryResult4 = queryTestDictList();
-    assertEquals(queryResult4.getTotal(), 0);
-    assertEquals(queryResult4.getRecords().size(), 0);
+    ListResult<SysDict> listResult4 = queryTestDictList();
+    assertEquals(listResult4.getTotal(), 0);
+    assertEquals(listResult4.getRecords().size(), 0);
   }
 
   @Test
@@ -124,64 +123,51 @@ public class SysDictItemRestApiTest {
 
   @Test
   public void queryDictItemListTest() {
-    QueryResult<SysDictItem> queryResult = queryTestDictItemList();
-    assertEquals(queryResult.getTotal(), NEW_SYS_DICT_ITEM_COUNT);
-    assertEquals(queryResult.getRecords().size(), NEW_SYS_DICT_ITEM_COUNT);
-    assertTrue(queryResult.getRecords().get(0) instanceof SysDictItem);
+    ListResult<SysDictItem> listResult = queryTestDictItemList();
+    assertEquals(listResult.getTotal(), NEW_SYS_DICT_ITEM_COUNT);
+    assertEquals(listResult.getRecords().size(), NEW_SYS_DICT_ITEM_COUNT);
+    assertTrue(listResult.getRecords().get(0) instanceof SysDictItem);
   }
 
   @Test
   public void setDeletedTest() {
-    QueryResult<SysDictItem> queryResult = queryTestDictItemList();
-    for (SysDictItem item : queryResult.getRecords()) {
+    ListResult<SysDictItem> listResult = queryTestDictItemList();
+    for (SysDictItem item : listResult.getRecords()) {
       sysDictItemRestApi.delete(item.getId(), 1);
     }
 
-    QueryResult<SysDictItem> queryResult2 = queryTestDictItemList();
-    for (SysDictItem item : queryResult2.getRecords()) {
+    ListResult<SysDictItem> listResult2 = queryTestDictItemList();
+    for (SysDictItem item : listResult2.getRecords()) {
       assertEquals((int) item.getDeleted(), 1);
     }
 
-    for (SysDictItem item : queryResult2.getRecords()) {
+    for (SysDictItem item : listResult2.getRecords()) {
       sysDictItemRestApi.delete(item.getId(), 0);
     }
 
-    QueryResult<SysDictItem> queryResult3 = queryTestDictItemList();
-    for (SysDictItem item : queryResult3.getRecords()) {
+    ListResult<SysDictItem> listResult3 = queryTestDictItemList();
+    for (SysDictItem item : listResult3.getRecords()) {
       assertEquals((int) item.getDeleted(), 0);
     }
   }
 
-  public static QueryResult<SysDictItem> queryTestDictItemList() {
+  public static ListResult<SysDictItem> queryTestDictItemList() {
     Response response = sysDictItemRestApi.list(DICT_CODE, "", "", "", "", "", 0, 10);
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<QueryResult<SysDictItem>>>(){}.getType();
-    JsonResponse<QueryResult<SysDictItem>> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<ListResult<SysDictItem>>>(){}.getType();
+    JsonResponse<ListResult<SysDictItem>> jsonResponse = gson.fromJson(entity, type);
 
-    QueryResult<SysDictItem> queryResult = jsonResponse.getResult();
-    return queryResult;
+    ListResult<SysDictItem> listResult = jsonResponse.getResult();
+    return listResult;
   }
 
-  public static QueryResult<SysDict> queryTestDictList() {
+  public static ListResult<SysDict> queryTestDictList() {
     Response response = sysDictRestApi.list(DICT_CODE, "", "", "", "", 1, 10);
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<QueryResult<SysDict>>>(){}.getType();
-    JsonResponse<QueryResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>(){}.getType();
+    JsonResponse<ListResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
 
-    QueryResult queryResult = jsonResponse.getResult();
-    return queryResult;
-  }
-
-  private static JsonResponse<QueryResult<SysDict>> wrapResponse(Response response) {
-    String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<QueryResult<SysDict>>>() {}.getType();
-    JsonResponse<QueryResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
-
-    return jsonResponse;
-  }
-
-  private static void assertResponseSuccess(Response response) {
-    JsonResponse<QueryResult<SysDict>> jsonResponse = wrapResponse(response);
-    Assert.assertTrue(jsonResponse.getSuccess());
+    ListResult listResult = jsonResponse.getResult();
+    return listResult;
   }
 }

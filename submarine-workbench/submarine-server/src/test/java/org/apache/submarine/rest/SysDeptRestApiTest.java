@@ -15,10 +15,10 @@ package org.apache.submarine.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDept;
 import org.apache.submarine.database.entity.SysDeptTree;
 import org.apache.submarine.server.JsonResponse;
+import org.apache.submarine.server.JsonResponse.ListResult;
 import org.junit.After;
 import org.junit.Test;
 
@@ -63,7 +63,7 @@ public class SysDeptRestApiTest {
       CommonDataTest.assertDeptResponseSuccess(response);
     }
 
-    JsonResponse<QueryResult<SysDeptTree>> response = CommonDataTest.queryDeptTreeList();
+    JsonResponse<ListResult<SysDeptTree>> response = CommonDataTest.queryDeptTreeList();
     assertEquals(response.getAttributes().size(), 0);
     assertEquals(response.getResult().getTotal(), 5);
   }
@@ -94,7 +94,7 @@ public class SysDeptRestApiTest {
     CommonDataTest.assertDeptResponseSuccess(response);
 
     // show alert message in Front-End
-    JsonResponse<QueryResult<SysDeptTree>> response2 = CommonDataTest.queryDeptTreeList();
+    JsonResponse<ListResult<SysDeptTree>> response2 = CommonDataTest.queryDeptTreeList();
     assertTrue(response2.getSuccess());
     assertEquals(response2.getAttributes().size(), 1);
     assertEquals(response2.getAttributes().get(SHOW_ALERT), Boolean.TRUE);
@@ -117,7 +117,7 @@ public class SysDeptRestApiTest {
     CommonDataTest.assertDeptResponseSuccess(response);
 
     // check
-    JsonResponse<QueryResult<SysDeptTree>> response4 = CommonDataTest.queryDeptTreeList();
+    JsonResponse<ListResult<SysDeptTree>> response4 = CommonDataTest.queryDeptTreeList();
     SysDeptTree sysDeptTree = response4.getResult().getRecords().get(0);
     assertEquals(sysDeptTree.getDeptCode(), deptA.getDeptCode());
     assertEquals(sysDeptTree.getDeptName(), deptA.getDeptName());
@@ -147,7 +147,7 @@ public class SysDeptRestApiTest {
     Response response = sysDeptRestApi.resetParentDept();
     CommonDataTest.assertDeptResponseSuccess(response);
 
-    JsonResponse<QueryResult<SysDeptTree>> response2 = CommonDataTest.queryDeptTreeList();
+    JsonResponse<ListResult<SysDeptTree>> response2 = CommonDataTest.queryDeptTreeList();
     assertTrue(response2.getSuccess());
     for (SysDeptTree deptTree : response2.getResult().getRecords()) {
       assertEquals(deptTree.getParentCode(), null);
@@ -170,7 +170,7 @@ public class SysDeptRestApiTest {
       CommonDataTest.assertDeptResponseSuccess(response);
     }
 
-    JsonResponse<QueryResult<SysDeptTree>> response2 = CommonDataTest.queryDeptTreeList();
+    JsonResponse<ListResult<SysDeptTree>> response2 = CommonDataTest.queryDeptTreeList();
     assertTrue(response2.getSuccess());
     for (SysDeptTree deptTree : response2.getResult().getRecords()) {
       assertTrue(deptTree.getDeleted() == 1);
@@ -195,7 +195,7 @@ public class SysDeptRestApiTest {
     Response response = sysDeptRestApi.deleteBatch(ids.toString());
     CommonDataTest.assertDeptResponseSuccess(response);
 
-    JsonResponse<QueryResult<SysDeptTree>> response2 = CommonDataTest.queryDeptTreeList();
+    JsonResponse<ListResult<SysDeptTree>> response2 = CommonDataTest.queryDeptTreeList();
     assertTrue(response2.getSuccess());
     for (SysDeptTree deptTree : response2.getResult().getRecords()) {
       assertTrue(deptTree.getDeleted() == 1);

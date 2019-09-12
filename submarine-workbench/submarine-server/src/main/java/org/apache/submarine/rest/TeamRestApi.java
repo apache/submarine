@@ -16,10 +16,10 @@ package org.apache.submarine.rest;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import org.apache.submarine.annotation.SubmarineApi;
-import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.Team;
 import org.apache.submarine.database.entity.TeamMemeber;
 import org.apache.submarine.server.JsonResponse;
+import org.apache.submarine.server.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -92,9 +91,9 @@ public class TeamRestApi {
     }
 
     PageInfo<Team> page = new PageInfo<>(teams);
-    QueryResult<Team> queryResult = new QueryResult(teams, page.getTotal());
-    return new JsonResponse.Builder<QueryResult>(Response.Status.OK)
-        .success(true).result(queryResult).build();
+    ListResult<Team> listResult = new ListResult(teams, page.getTotal());
+    return new JsonResponse.Builder<ListResult<Team>>(Response.Status.OK)
+        .success(true).result(listResult).build();
   }
 
   @POST
@@ -109,9 +108,9 @@ public class TeamRestApi {
 
     // 为每个成员，增加邀请信息保存到 sys_message 表中
 
-    QueryResult<Team> queryResult = new QueryResult(Arrays.asList(team), 1);
-    return new JsonResponse.Builder<>(Response.Status.OK)
-        .message("Save team successfully!").result(queryResult).success(true).build();
+
+    return new JsonResponse.Builder<Team>(Response.Status.OK)
+        .message("Save team successfully!").result(team).success(true).build();
   }
 
   @PUT

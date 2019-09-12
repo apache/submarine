@@ -16,7 +16,6 @@ package org.apache.submarine.rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDept;
 import org.apache.submarine.database.entity.SysDeptTree;
 import org.apache.submarine.database.entity.SysDict;
@@ -24,7 +23,9 @@ import org.apache.submarine.database.entity.SysDictItem;
 import org.apache.submarine.database.entity.SysUser;
 import org.apache.submarine.database.service.SysUserService;
 import org.apache.submarine.server.JsonResponse;
+import org.apache.submarine.server.JsonResponse.ListResult;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +105,7 @@ public class CommonDataTest {
       assertDeptResponseSuccess(response);
     }
 
-    JsonResponse<QueryResult<SysDeptTree>> response = queryDeptTreeList();
+    JsonResponse<ListResult<SysDeptTree>> response = queryDeptTreeList();
     assertEquals(response.getAttributes().size(), 0);
     assertEquals(response.getResult().getTotal(), 5);
   }
@@ -172,8 +173,8 @@ public class CommonDataTest {
     sysUser.setUpdateTime(new Date());
 
     Response response  = userRestApi.add(sysUser);
-    JsonResponse<QueryResult<SysUser>> jsonResponse = assertUserResponseSuccess(response);
-    userId = jsonResponse.getResult().getRecords().get(0).getId();
+    JsonResponse<SysUser> jsonResponse = assertUserResponseSuccess(response);
+    userId = jsonResponse.getResult().getId();
   }
 
   public static void clearUserTable() throws Exception {
@@ -186,7 +187,7 @@ public class CommonDataTest {
   public static void clearDictItemTable() {
     Response response  = dictItemRestApi.list(null, null, null, null, null, null, 1, 10);
     assertDictItemResponseSuccess(response);
-    JsonResponse<QueryResult<SysDictItem>> jsonResponse = assertDictItemResponseSuccess(response);
+    JsonResponse<ListResult<SysDictItem>> jsonResponse = assertDictItemResponseSuccess(response);
     for (SysDictItem dictItem : jsonResponse.getResult().getRecords()) {
       dictItemRestApi.remove(dictItem.getId());
     }
@@ -195,7 +196,7 @@ public class CommonDataTest {
   public static void clearDictTable() {
     Response response  = dictRestApi.list(null, null, null, null, null, 1, 10);
     assertDictResponseSuccess(response);
-    JsonResponse<QueryResult<SysDict>> jsonResponse = assertDictResponseSuccess(response);
+    JsonResponse<ListResult<SysDict>> jsonResponse = assertDictResponseSuccess(response);
     for (SysDict dict : jsonResponse.getResult().getRecords()) {
       dictRestApi.remove(dict.getId());
     }
@@ -208,7 +209,7 @@ public class CommonDataTest {
 
     // remove all test record
     response = deptRestApi.tree(null, null);
-    JsonResponse<QueryResult<SysDeptTree>> jsonResponse = wrapDeptResponse(response);
+    JsonResponse<ListResult<SysDeptTree>> jsonResponse = wrapDeptResponse(response);
     assertTrue(jsonResponse.getSuccess());
     for (SysDeptTree deptTree : jsonResponse.getResult().getRecords()) {
       response = deptRestApi.remove(deptTree.getId());
@@ -216,50 +217,57 @@ public class CommonDataTest {
     }
   }
 
-  public static JsonResponse<QueryResult<SysDeptTree>> queryDeptTreeList() {
+  public static JsonResponse<ListResult<SysDeptTree>> queryDeptTreeList() {
     Response response = deptRestApi.tree(null, null);
-    JsonResponse<QueryResult<SysDeptTree>> jsonResponse = wrapDeptResponse(response);
+    JsonResponse<ListResult<SysDeptTree>> jsonResponse = wrapDeptResponse(response);
 
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
   }
 
-  public static JsonResponse<QueryResult<SysDeptTree>> wrapDeptResponse(Response response) {
+  public static JsonResponse<ListResult<SysDeptTree>> wrapDeptResponse(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<QueryResult<SysDeptTree>>>() {}.getType();
-    JsonResponse<QueryResult<SysDeptTree>> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<ListResult<SysDeptTree>>>() {}.getType();
+    JsonResponse<ListResult<SysDeptTree>> jsonResponse = gson.fromJson(entity, type);
 
     return jsonResponse;
   }
 
-  public static JsonResponse<QueryResult<SysDept>> assertDeptResponseSuccess(Response response) {
+  public static JsonResponse<SysDept> assertDeptResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<QueryResult<SysDept>>>() {}.getType();
-    JsonResponse<QueryResult<SysDept>> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<SysDept>>() {}.getType();
+    JsonResponse<SysDept> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
   }
 
-  public static JsonResponse<QueryResult<SysUser>> assertUserResponseSuccess(Response response) {
+  public static JsonResponse<SysUser> assertUserResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<QueryResult<SysUser>>>() {}.getType();
-    JsonResponse<QueryResult<SysUser>> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<SysUser>>() {}.getType();
+    JsonResponse<SysUser> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
   }
 
-  public static JsonResponse<QueryResult<SysDict>> assertDictResponseSuccess(Response response) {
+  public static void assertResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<QueryResult<SysDict>>>() {}.getType();
-    JsonResponse<QueryResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse>() {}.getType();
+    JsonResponse jsonResponse = gson.fromJson(entity, type);
+    Assert.assertTrue(jsonResponse.getSuccess());
+  }
+
+  public static JsonResponse<ListResult<SysDict>> assertDictResponseSuccess(Response response) {
+    String entity = (String) response.getEntity();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {}.getType();
+    JsonResponse<ListResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
   }
 
-  public static JsonResponse<QueryResult<SysDictItem>> assertDictItemResponseSuccess(Response response) {
+  public static JsonResponse<ListResult<SysDictItem>> assertDictItemResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<QueryResult<SysDictItem>>>() {}.getType();
-    JsonResponse<QueryResult<SysDictItem>> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<ListResult<SysDictItem>>>() {}.getType();
+    JsonResponse<ListResult<SysDictItem>> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
   }

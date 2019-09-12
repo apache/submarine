@@ -19,11 +19,11 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.annotation.SubmarineApi;
 import org.apache.submarine.database.MyBatisUtil;
-import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDictItem;
 import org.apache.submarine.database.mappers.SysDictItemMapper;
 import org.apache.submarine.database.service.SysDictItemService;
 import org.apache.submarine.server.JsonResponse;
+import org.apache.submarine.server.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,10 +84,10 @@ public class SysDictItemRestApi {
       sqlSession.close();
     }
     PageInfo<SysDictItem> page = new PageInfo<>(list);
-    QueryResult<SysDictItem> queryResult = new QueryResult(list, page.getTotal());
+    ListResult<SysDictItem> listResult = new ListResult(list, page.getTotal());
 
-    return new JsonResponse.Builder<QueryResult>(Response.Status.OK)
-        .success(true).result(queryResult).build();
+    return new JsonResponse.Builder<ListResult>(Response.Status.OK)
+        .success(true).result(listResult).build();
   }
 
   @POST
@@ -107,14 +107,14 @@ public class SysDictItemRestApi {
       } finally {
         sqlSession.close();
       }
-
-      return new JsonResponse.Builder<>(Response.Status.OK)
-          .message("Save the dictionary successfully!").success(true).build();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Saving dictionary failed!").success(false).build();
     }
+
+    return new JsonResponse.Builder<>(Response.Status.OK)
+        .message("Save the dictionary successfully!").success(true).build();
   }
 
   @PUT
@@ -137,13 +137,14 @@ public class SysDictItemRestApi {
       } finally {
         sqlSession.close();
       }
-      return new JsonResponse.Builder<>(Response.Status.OK)
-          .message("Update the dictionary successfully!").success(true).build();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Update dictionary failed!").success(false).build();
     }
+
+    return new JsonResponse.Builder<>(Response.Status.OK)
+        .message("Update the dictionary successfully!").success(true).build();
   }
 
   @DELETE
@@ -169,13 +170,14 @@ public class SysDictItemRestApi {
       } finally {
         sqlSession.close();
       }
-      return new JsonResponse.Builder<>(Response.Status.OK)
-          .message(msgOperation + " the dict item successfully!").success(true).build();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message(msgOperation + " dict item failed!").success(false).build();
     }
+
+    return new JsonResponse.Builder<>(Response.Status.OK)
+        .message(msgOperation + " the dict item successfully!").success(true).build();
   }
 
   @DELETE
@@ -193,13 +195,14 @@ public class SysDictItemRestApi {
       } finally {
         sqlSession.close();
       }
-      return new JsonResponse.Builder<>(Response.Status.OK)
-          .message("Delete the dict item successfully!").success(true).build();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Delete dict item failed!").success(false).build();
     }
+
+    return new JsonResponse.Builder<>(Response.Status.OK)
+        .message("Delete the dict item successfully!").success(true).build();
   }
 
   @GET
@@ -210,9 +213,9 @@ public class SysDictItemRestApi {
 
     SysDictItemService sysDictItemService = new SysDictItemService();
     List<SysDictItem>  dictItems = sysDictItemService.queryDictByCode(dictCode);
-    QueryResult<SysDictItem> queryResult = new QueryResult(dictItems, dictItems.size());
+    ListResult<SysDictItem> listResult = new ListResult(dictItems, dictItems.size());
 
-    return new JsonResponse.Builder<QueryResult>(Response.Status.OK)
-        .success(true).result(queryResult).build();
+    return new JsonResponse.Builder<ListResult<SysDictItem>>(Response.Status.OK)
+        .success(true).result(listResult).build();
   }
 }

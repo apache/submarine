@@ -16,11 +16,10 @@ package org.apache.submarine.rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDict;
 import org.apache.submarine.server.JsonResponse;
+import org.apache.submarine.server.JsonResponse.ListResult;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -48,24 +47,24 @@ public class SysDictRestApiTest {
       sysDict.setDictName("dictName-SysDictRestApiTest-" + i);
       sysDict.setDescription("desc-SysDictRestApiTest-" + i);
       Response response = sysDictRestApi.add(sysDict);
-      assertResponseSuccess(response);
+      CommonDataTest.assertResponseSuccess(response);
     }
   }
 
   @AfterClass
   public static void exit() {
-    QueryResult<SysDict> queryResult = queryTestDictList();
-    assertTrue(queryResult.getRecords().size() > 0);
-    assertTrue(queryResult.getTotal() > 0);
-    for (SysDict sysDict : queryResult.getRecords()) {
+    ListResult<SysDict> listResult = queryTestDictList();
+    assertTrue(listResult.getRecords().size() > 0);
+    assertTrue(listResult.getTotal() > 0);
+    for (SysDict sysDict : listResult.getRecords()) {
       Response response = sysDictRestApi.remove(sysDict.getId());
-      assertResponseSuccess(response);
+      CommonDataTest.assertResponseSuccess(response);
     }
 
     //recheck
-    QueryResult queryResult2 = queryTestDictList();
-    assertEquals(queryResult2.getTotal(), 0);
-    assertEquals(queryResult2.getRecords().size(), 0);
+    ListResult listResult2 = queryTestDictList();
+    assertEquals(listResult2.getTotal(), 0);
+    assertEquals(listResult2.getRecords().size(), 0);
   }
 
   @Test
@@ -88,56 +87,43 @@ public class SysDictRestApiTest {
 
   @Test
   public void queryDictListTest() {
-    QueryResult<SysDict> queryResult = queryTestDictList();
-    assertEquals(queryResult.getTotal(), NEW_SYS_DICT_COUNT);
-    assertEquals(queryResult.getRecords().size(), NEW_SYS_DICT_COUNT);
-    assertTrue(queryResult.getRecords().get(0) instanceof SysDict);
+    ListResult<SysDict> listResult = queryTestDictList();
+    assertEquals(listResult.getTotal(), NEW_SYS_DICT_COUNT);
+    assertEquals(listResult.getRecords().size(), NEW_SYS_DICT_COUNT);
+    assertTrue(listResult.getRecords().get(0) instanceof SysDict);
   }
 
   @Test
   public void setDeletedTest() {
-    QueryResult<SysDict> queryResult = queryTestDictList();
-    for (SysDict dict : queryResult.getRecords()) {
+    ListResult<SysDict> listResult = queryTestDictList();
+    for (SysDict dict : listResult.getRecords()) {
       Response response = sysDictRestApi.delete(dict.getId(), 1);
-      assertResponseSuccess(response);
+      CommonDataTest.assertResponseSuccess(response);
     }
 
-    QueryResult<SysDict> queryResult2 = queryTestDictList();
-    for (SysDict dict : queryResult2.getRecords()) {
+    ListResult<SysDict> listResult2 = queryTestDictList();
+    for (SysDict dict : listResult2.getRecords()) {
       assertEquals((int) dict.getDeleted(), 1);
     }
 
-    for (SysDict dict : queryResult2.getRecords()) {
+    for (SysDict dict : listResult2.getRecords()) {
       Response response = sysDictRestApi.delete(dict.getId(), 0);
-      assertResponseSuccess(response);
+      CommonDataTest.assertResponseSuccess(response);
     }
 
-    QueryResult<SysDict> queryResult3 = queryTestDictList();
-    for (SysDict dict : queryResult3.getRecords()) {
+    ListResult<SysDict> listResult3 = queryTestDictList();
+    for (SysDict dict : listResult3.getRecords()) {
       assertEquals((int) dict.getDeleted(), 0);
     }
   }
 
-  public static QueryResult<SysDict> queryTestDictList() {
+  public static ListResult<SysDict> queryTestDictList() {
     Response response = sysDictRestApi.list("-SysDictRestApiTest-", "", "", "", "", 1, 10);
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<QueryResult<SysDict>>>(){}.getType();
-    JsonResponse<QueryResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>(){}.getType();
+    JsonResponse<ListResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
 
-    QueryResult<SysDict> queryResult = jsonResponse.getResult();
-    return queryResult;
-  }
-
-  private static JsonResponse<QueryResult<SysDict>> wrapResponse(Response response) {
-    String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<QueryResult<SysDict>>>() {}.getType();
-    JsonResponse<QueryResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
-
-    return jsonResponse;
-  }
-
-  private static void assertResponseSuccess(Response response) {
-    JsonResponse<QueryResult<SysDict>> jsonResponse = wrapResponse(response);
-    Assert.assertEquals(jsonResponse.getSuccess(), true);
+    ListResult<SysDict> listResult = jsonResponse.getResult();
+    return listResult;
   }
 }

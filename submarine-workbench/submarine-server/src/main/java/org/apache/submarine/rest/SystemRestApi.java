@@ -18,11 +18,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.annotation.SubmarineApi;
 import org.apache.submarine.database.MyBatisUtil;
-import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysUser;
 import org.apache.submarine.database.mappers.SystemMapper;
 import org.apache.submarine.database.service.SysUserService;
 import org.apache.submarine.server.JsonResponse;
+import org.apache.submarine.server.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,13 +106,13 @@ public class SystemRestApi {
         return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
       }
       PageInfo<SysUser> page = new PageInfo<>(list);
-      QueryResult<SysUser> queryResult = new QueryResult(list, page.getTotal());
+      ListResult<SysUser> listResult = new ListResult(list, page.getTotal());
 
-      return new JsonResponse.Builder<QueryResult<SysUser>>(Response.Status.OK)
-          .success(true).result(queryResult).build();
+      return new JsonResponse.Builder<ListResult<SysUser>>(Response.Status.OK)
+          .success(true).result(listResult).build();
     }
 
-    return new JsonResponse.Builder<QueryResult<SysUser>>(Response.Status.OK)
+    return new JsonResponse.Builder<ListResult<SysUser>>(Response.Status.OK)
         .success(false).build();
   }
 }

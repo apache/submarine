@@ -17,9 +17,9 @@ import net.sf.cglib.beans.BeanGenerator;
 import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.submarine.annotation.Dict;
-import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDictItem;
 import org.apache.submarine.database.service.SysDictItemService;
+import org.apache.submarine.server.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,16 +138,16 @@ public class DictAnnotation {
   public static boolean parseDictAnnotation(Object result) throws Exception {
     List<Object> dicts = new ArrayList<>();
 
-    if (result instanceof QueryResult) {
-      QueryResult queryResult = (QueryResult) result;
-      if (queryResult.getTotal() == 0) {
+    if (result instanceof ListResult) {
+      ListResult listResult = (ListResult) result;
+      if (listResult.getTotal() == 0) {
         return false;
       }
 
       // Query all the dictionaries that need to be parsed at once
       Map<String, List<SysDictItem>> mapDictItems = new HashMap<>();
       SysDictItemService sysDictItemService = new SysDictItemService();
-      Object object = queryResult.getRecords().get(0);
+      Object object = listResult.getRecords().get(0);
       Map<String, Map<String, String>> dictLib = new HashMap<>();
       for (Field field : getAllFields(object)) {
         if (field.getAnnotation(Dict.class) != null) {
@@ -164,15 +164,15 @@ public class DictAnnotation {
         return false;
       }
 
-      for (Object record : queryResult.getRecords()) {
+      for (Object record : listResult.getRecords()) {
         Object newObj = mergeDictText(record, mapDictItems);
         dicts.add(newObj);
       }
-      queryResult.setRecords(dicts);
+      listResult.setRecords(dicts);
 
       return true;
     } else {
-      LOG.error("Unsupported type!");
+      LOG.warn("Unsupported parse {} Dict Annotation!", result.getClass());
     }
 
     return false;

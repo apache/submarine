@@ -19,10 +19,10 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.annotation.SubmarineApi;
 import org.apache.submarine.database.MyBatisUtil;
-import org.apache.submarine.database.entity.QueryResult;
 import org.apache.submarine.database.entity.SysDict;
 import org.apache.submarine.database.mappers.SysDictMapper;
 import org.apache.submarine.server.JsonResponse;
+import org.apache.submarine.server.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,11 +79,11 @@ public class SysDictRestApi {
     } finally {
       sqlSession.close();
     }
-    PageInfo<SysDict> page = new PageInfo<SysDict>(list);
-    QueryResult<SysDict> queryResult = new QueryResult(list, page.getTotal());
+    PageInfo<SysDict> page = new PageInfo<>(list);
+    ListResult<SysDict> listResult = new ListResult(list, page.getTotal());
 
-    return new JsonResponse.Builder<QueryResult>(Response.Status.OK)
-        .success(true).result(queryResult).build();
+    return new JsonResponse.Builder<ListResult<SysDict>>(Response.Status.OK)
+        .success(true).result(listResult).build();
   }
 
   @POST
@@ -103,14 +103,14 @@ public class SysDictRestApi {
       } finally {
         sqlSession.close();
       }
-
-      return new JsonResponse.Builder<>(Response.Status.OK)
-          .message("Save dictionary successfully!").success(true).build();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Saving dictionary failed!").success(false).build();
     }
+
+    return new JsonResponse.Builder<>(Response.Status.OK)
+        .message("Save dictionary successfully!").success(true).build();
   }
 
   @PUT
@@ -135,6 +135,7 @@ public class SysDictRestApi {
     } finally {
       sqlSession.close();
     }
+
     return new JsonResponse.Builder<>(Response.Status.OK)
         .message("Update the dictionary successfully!").success(true).build();
   }
@@ -162,13 +163,14 @@ public class SysDictRestApi {
       } finally {
         sqlSession.close();
       }
-      return new JsonResponse.Builder<>(Response.Status.OK)
-          .message(msgOperation + " the dictionary successfully!").success(true).build();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message(msgOperation + " dictionary failed!").success(false).build();
     }
+
+    return new JsonResponse.Builder<>(Response.Status.OK)
+        .message(msgOperation + " the dictionary successfully!").success(true).build();
   }
 
   @DELETE
@@ -186,12 +188,13 @@ public class SysDictRestApi {
       } finally {
         sqlSession.close();
       }
-      return new JsonResponse.Builder<>(Response.Status.OK)
-          .message("Delete the dictionary successfully!").success(true).build();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Delete dictionary failed!").success(false).build();
     }
+
+    return new JsonResponse.Builder<>(Response.Status.OK)
+        .message("Delete the dictionary successfully!").success(true).build();
   }
 }
