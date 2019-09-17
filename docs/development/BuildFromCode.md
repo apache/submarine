@@ -71,10 +71,16 @@ mvn clean install package -DskipTests -Phadoop-2.9
 mvn clean install package -DskipTests -Phadoop-3.1
 ```
 
-- Create binary distribution with hadoop-3.2.x version
++ Create binary distribution with hadoop-3.2.x version
 
 ```
 mvn clean install package -DskipTests -Phadoop-3.2
+```
+
++ Create source code distribution
+
+```
+mvn clean install package -DskipTests -Psrc
 ```
 
 ## TonY code modification

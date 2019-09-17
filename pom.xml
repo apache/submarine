@@ -227,6 +227,7 @@
         <jackson-annotations.version>2.9.5</jackson-annotations.version>
         <guice.version>4.0</guice.version>
         <zookeeper.version>3.4.13</zookeeper.version>
+        <profile-id>hadoop-3.2</profile-id>
       </properties>
       <modules>
         <module>submarine-runtime/yarnservice-runtime</module>
@@ -245,6 +246,7 @@
         <jackson-annotations.version>2.7.8</jackson-annotations.version>
         <guice.version>4.0</guice.version>
         <zookeeper.version>3.4.13</zookeeper.version>
+        <profile-id>hadoop-3.1</profile-id>
       </properties>
       <modules>
         <module>submarine-runtime/yarnservice-runtime</module>
@@ -265,6 +267,7 @@
         <jackson-annotations.version>2.7.8</jackson-annotations.version>
         <guice.version>3.0</guice.version>
         <zookeeper.version>3.4.6</zookeeper.version>
+        <profile-id>hadoop-2.9</profile-id>
       </properties>
       <modules>
         <module>submarine-runtime/tony-runtime</module>
@@ -281,6 +284,7 @@
         <jackson-annotations.version>2.7.0</jackson-annotations.version>
         <guice.version>3.0</guice.version>
         <zookeeper.version>3.4.6</zookeeper.version>
+        <profile-id>hadoop-2.7</profile-id>
       </properties>
       <modules>
         <module>submarine-runtime/tony-runtime</module>

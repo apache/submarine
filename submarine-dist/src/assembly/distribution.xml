@@ -48,13 +48,23 @@
     </dependencySet>
   </dependencySets>
 
+  <files>
+    <file>
+      <source>../LICENSE-binary</source>
+      <outputDirectory>/</outputDirectory>
+      <destName>LICENSE</destName>
+    </file>
+    <file>
+      <source>../NOTICE-binary</source>
+      <outputDirectory>/</outputDirectory>
+      <destName>NOTICE</destName>
+    </file>
+  </files>
+
   <fileSets>
     <fileSet>
-      <directory>../../</directory>
-      <includes>
-        <include>LICENSE*</include>
-        <include>NOTICE*</include>
-      </includes>
+      <directory>../licenses-binary</directory>
+      <outputDirectory>/licenses</outputDirectory>
     </fileSet>
     <fileSet>
       <directory>../submarine-all/target/</directory>
@@ -64,4 +74,5 @@
       </includes>
     </fileSet>
   </fileSets>
+
 </assembly>
