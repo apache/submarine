@@ -37,7 +37,7 @@ export const asyncRouterMap = [
               {
                 path: '/workbench/workspace/project',
                 name: 'workspaceProject',
-                component: () => import('../views/workbench/workspace/Project'),
+                component: () => import('../views/workbench/workspace/project/Index'),
                 meta: { title: 'Project', permission: [ 'profile' ] }
               },
               {

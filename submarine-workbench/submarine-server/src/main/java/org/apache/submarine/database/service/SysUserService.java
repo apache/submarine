@@ -76,7 +76,7 @@ public class SysUserService {
                                 String field,
                                 int pageNo,
                                 int pageSize) throws Exception {
-    LOG.info("queryDictList userName:{}, email:{}, deptCode:{}, " +
+    LOG.info("SysUserService::queryPageList userName:{}, email:{}, deptCode:{}, " +
             "column:{}, field:{}, pageNo:{}, pageSize:{}",
         userName, email, deptCode, column, field, pageNo, pageSize);
 

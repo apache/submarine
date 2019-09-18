@@ -2,31 +2,6 @@
 <template>
   <page-view title="Create New Table">
 
-    <!--detail-list slot="headerContent" size="small" :col="2" class="detail-layout">
-      <detail-list-item term="创建人">曲丽丽</detail-list-item>
-      <detail-list-item term="订购产品">XX服务</detail-list-item>
-      <detail-list-item term="创建时间">2018-08-07</detail-list-item>
-      <detail-list-item term="关联单据"><a>12421</a></detail-list-item>
-    </detail-list>
-    <a-row slot="extra" class="status-list">
-      <a-col :xs="12" :sm="12">
-        <div class="text">状态</div>
-        <div class="heading">待审批</div>
-      </a-col>
-      <a-col :xs="12" :sm="12">
-        <div class="text">订单金额</div>
-        <div class="heading">¥ 568.08</div>
-      </a-col>
-    </a-row-->
-    <!-- actions -->
-    <!--template slot="action">
-      <a-button-group style="margin-right: 4px;">
-        <a-button>操作</a-button>
-        <a-button>操作</a-button>
-        <a-button><a-icon type="ellipsis"/></a-button>
-      </a-button-group>
-    </template-->
-
     <a-row slot="extra">
       <p style="margin-left: -88px;font-size: 14px;color: rgba(0,0,0,.65)">{{ description }}</p>
     </a-row>
@@ -79,7 +54,6 @@ export default {
     }
   },
   methods: {
-
     // handler
     nextStep () {
       if (this.currentTab < 2) {

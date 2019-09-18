@@ -1,29 +1,42 @@
+<!--
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
 <template>
-  <div class="page-header-index-wide page-header-wrapper-grid-content-main">
-    <a-row :gutter="24">
-      <a-col :md="24" :lg="24">
-        <a-card
-          style="width:100%"
-          :bordered="false"
-          :tabList="tabListNoTitle"
-          :activeTabKey="noTitleKey"
-          @tabChange="key => handleTabChange(key, 'noTitleKey')"
-        >
-          <project-page v-if="noTitleKey === 'project'"></project-page>
-          <release-page v-else-if="noTitleKey === 'release'"></release-page>
-          <shared-page v-else-if="noTitleKey === 'shared'"></shared-page>
-          <team-page v-else-if="noTitleKey === 'team'"></team-page>
-          <training-page v-else-if="noTitleKey === 'training'"></training-page>
-        </a-card>
-      </a-col>
-    </a-row>
-  </div>
+  <page-view>
+    <div class="page-header-index-wide page-header-wrapper-grid-content-main">
+      <a-row :gutter="24">
+        <a-col :md="24" :lg="24">
+          <a-card
+            style="width:100%"
+            :bordered="false"
+            :tabList="tabListNoTitle"
+            :activeTabKey="noTitleKey"
+            @tabChange="key => handleTabChange(key, 'noTitleKey')"
+          >
+            <project-page v-if="noTitleKey === 'project'"></project-page>
+            <release-page v-else-if="noTitleKey === 'release'"></release-page>
+            <shared-page v-else-if="noTitleKey === 'shared'"></shared-page>
+            <team-page v-else-if="noTitleKey === 'team'"></team-page>
+            <training-page v-else-if="noTitleKey === 'training'"></training-page>
+          </a-card>
+        </a-col>
+      </a-row>
+    </div>
+  </page-view>
 </template>
 
 <script>
 import { PageView, RouteView } from '@/layouts'
 
-import ProjectPage from './Project'
+import ProjectPage from './project/Index'
 import ReleasePage from './Release'
 import SharedPage from './Shared'
 import TeamPage from './Team'

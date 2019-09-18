@@ -45,7 +45,7 @@ public class SysUserServiceTest {
   @Test
   public void addUserTest() throws Exception {
     SysUser sysUser = new SysUser();
-    sysUser.setUserName("SysUserServiceTest-user_name");
+    sysUser.setUserName("user_name");
     sysUser.setRealName("real_name");
     sysUser.setPassword("password");
     sysUser.setAvatar("avatar");
@@ -94,7 +94,7 @@ public class SysUserServiceTest {
   @Test
   public void updateUserTest() throws Exception {
     SysUser sysUser = new SysUser();
-    sysUser.setUserName("SysUserServiceTest-update_user_name");
+    sysUser.setUserName("update_user_name");
     sysUser.setRealName("update_real_name");
     sysUser.setPassword("update_password");
     sysUser.setAvatar("update_avatar");

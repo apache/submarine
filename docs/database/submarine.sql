@@ -18,7 +18,7 @@ DROP TABLE IF EXISTS `sys_dict`;
 CREATE TABLE `sys_dict` (
   `id` varchar(32) NOT NULL,
   `dict_code` varchar(32) NOT NULL COMMENT 'dict code',
-  `dict_name` varchar(100) NOT NULL COMMENT 'dict name',
+  `dict_name` varchar(32) NOT NULL COMMENT 'dict name',
   `description` varchar(255) default NULL COMMENT 'dict description',
   `deleted` int(1) default 0 COMMENT 'delete status(0:normal, 1:already deleted)',
   `type` int(1) default 0 COMMENT 'dict type (0:string,1:number)',
@@ -37,7 +37,7 @@ DROP TABLE IF EXISTS `sys_dict_item`;
 CREATE TABLE `sys_dict_item` (
   `id` varchar(32) NOT NULL,
   `item_code` varchar(32) NOT NULL COMMENT 'dict item code',
-  `item_name` varchar(100) NOT NULL COMMENT 'dict item name',
+  `item_name` varchar(32) NOT NULL COMMENT 'dict item name',
   `dict_code` varchar(32) NOT NULL COMMENT 'dict code',
   `description` varchar(255) default NULL COMMENT 'description',
   `sort_order` int(3) default 0 COMMENT 'sort order',
@@ -58,10 +58,10 @@ DROP TABLE IF EXISTS `sys_department`;
 CREATE TABLE `sys_department` (
   `id` varchar(32) NOT NULL COMMENT 'ID',
   `dept_code` varchar(32) NOT NULL COMMENT 'department code',
-  `dept_name` varchar(100) NOT NULL COMMENT 'department name',
+  `dept_name` varchar(64) NOT NULL COMMENT 'department name',
   `parent_code` varchar(32) default NULL COMMENT 'parent dept code',
   `sort_order` int(3) default 0 COMMENT 'sort order',
-  `description` text COMMENT 'description',
+  `description` varchar(255) COMMENT 'description',
   `deleted` varchar(1) default 0 COMMENT 'delete status(0:normal,1:already deleted)',
   `create_by` varchar(32) default NULL COMMENT 'create user',
   `create_time` datetime default NULL COMMENT 'create time',
@@ -78,8 +78,8 @@ CREATE TABLE `sys_department` (
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user` (
   `id` varchar(32) NOT NULL COMMENT 'id',
-  `user_name` varchar(100) NOT NULL COMMENT 'login name',
-  `real_name` varchar(100) NOT NULL COMMENT 'real name',
+  `user_name` varchar(32) NOT NULL COMMENT 'login name',
+  `real_name` varchar(64) NOT NULL COMMENT 'real name',
   `password` varchar(255) NOT NULL COMMENT 'password',
   `avatar` varchar(255) default NULL COMMENT 'avatar',
   `birthday` datetime default NULL COMMENT 'birthday',
@@ -151,6 +151,42 @@ CREATE TABLE `team_member` (
   `create_time` datetime default NULL,
   `update_by` varchar(32) default NULL,
   `update_time` datetime default NULL,
-  PRIMARY KEY  (`id`),
-  CONSTRAINT `FK_TEAM_MEMBER_USER` FOREIGN KEY (`member`) REFERENCES `sys_user` (`user_name`)
+  PRIMARY KEY  (`id`)/*,
+  CONSTRAINT `FK_TEAM_MEMBER_USER` FOREIGN KEY (`member`) REFERENCES `sys_user` (`user_name`)*/
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for project
+-- ----------------------------
+CREATE TABLE `project` (
+  `id` varchar(32) NOT NULL,
+  `project_name` varchar(100) NOT NULL COMMENT 'project name',
+  `visibility` int(1) default 0 COMMENT '0:Private, 1:Team, 2:Public',
+  `type` int(1) default 0 COMMENT 'machine learning type (0:notebook, 1:python, 2:spark, 3:R, 4:tensorflow, 5:pytorch)',
+  `description` varchar(255) COMMENT 'description',
+  `user_name` varchar(32) NOT NULL COMMENT 'owner user id',
+  `create_by` varchar(32) default NULL COMMENT 'create user',
+  `create_time` datetime default NULL COMMENT 'create time',
+  `update_by` varchar(32) default NULL COMMENT 'last update user',
+  `update_time` datetime default NULL COMMENT 'last update time',
+  PRIMARY KEY  (`id`)/*,
+  CONSTRAINT `FK_PROJECT_USER_NAME` FOREIGN KEY (`user_name`) REFERENCES `sys_user` (`user_name`)*/
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS `project`;
+
+-- ----------------------------
+-- Table structure for project_files
+-- ----------------------------
+CREATE TABLE `project_files` (
+  `id` varchar(32) NOT NULL,
+  `project_id` varchar(32) NOT NULL COMMENT 'project id',
+  `file_name` varchar(128) NOT NULL COMMENT '/path/.../file.suffix',
+  `file_content` text default NULL COMMENT 'file content',
+  `create_by` varchar(32) default NULL COMMENT 'create user',
+  `create_time` datetime default NULL COMMENT 'create time',
+  `update_by` varchar(32) default NULL COMMENT 'last update user',
+  `update_time` datetime default NULL COMMENT 'last update time',
+  PRIMARY KEY  (`id`)/*,
+  CONSTRAINT `FK_PROJECT_FILES_PRJ_ID` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)*/
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DROP TABLE IF EXISTS `project_files`;
