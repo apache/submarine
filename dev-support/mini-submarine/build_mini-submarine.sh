@@ -15,7 +15,7 @@
 # limitations under the License.
 
 hadoop_v=2.9.2
-spark_v=2.4.3
+spark_v=2.4.4
 submarine_v=0.2.0
 image_name="local/mini-submarine:${submarine_v}"
 
