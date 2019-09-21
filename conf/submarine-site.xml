@@ -20,113 +20,85 @@
 <configuration>
 
   <property>
-    <name>submarine.server.addr</name>
+    <name>workbench.server.addr</name>
     <value>0.0.0.0</value>
     <description>Server address</description>
   </property>
 
   <property>
-    <name>submarine.server.port</name>
+    <name>workbench.server.port</name>
     <value>8080</value>
     <description>Server port.</description>
   </property>
 
   <property>
-    <name>submarine.ssl</name>
+    <name>workbench.ssl</name>
     <value>false</value>
-    <description>Should SSL be used by the servers?</description>
+    <description>Should SSL be used by the workbench servers?</description>
   </property>
 
   <property>
-    <name>submarine.server.ssl.port</name>
+    <name>workbench.server.ssl.port</name>
     <value>8443</value>
     <description>Server ssl port. (used when ssl property is set to true)</description>
   </property>
 
   <property>
-    <name>submarine.server.context.path</name>
-    <value>/</value>
-    <description>Context Path of the Web Application</description>
-  </property>
-
-  <property>
-    <name>submarine.war.tempdir</name>
-    <value>webapps</value>
-    <description>Location of jetty temporary directory</description>
-  </property>
-
-  <property>
-    <name>submarine.ssl.client.auth</name>
+    <name>workbench.ssl.client.auth</name>
     <value>false</value>
     <description>Should client authentication be used for SSL connections?</description>
   </property>
 
   <property>
-    <name>submarine.ssl.keystore.path</name>
+    <name>workbench.ssl.keystore.path</name>
     <value>keystore</value>
     <description>Path to keystore relative to submarine configuration directory</description>
   </property>
 
   <property>
-    <name>submarine.ssl.keystore.type</name>
+    <name>workbench.ssl.keystore.type</name>
     <value>JKS</value>
     <description>The format of the given keystore (e.g. JKS or PKCS12)</description>
   </property>
 
   <property>
-    <name>submarine.ssl.keystore.password</name>
+    <name>workbench.ssl.keystore.password</name>
     <value>change me</value>
     <description>Keystore password. Can be obfuscated by the Jetty Password tool</description>
   </property>
 
   <!--
   <property>
-    <name>submarine.ssl.key.manager.password</name>
+    <name>workbench.ssl.key.manager.password</name>
     <value>change me</value>
     <description>Key Manager password. Defaults to keystore password. Can be obfuscated.</description>
   </property>
   -->
 
   <property>
-    <name>submarine.ssl.truststore.path</name>
+    <name>workbench.ssl.truststore.path</name>
     <value>truststore</value>
-    <description>Path to truststore relative to submarine configuration directory. Defaults to the keystore path
-    </description>
+    <description>Path to truststore relative to submarine configuration directory. Defaults to the keystore path</description>
   </property>
 
   <property>
-    <name>submarine.ssl.truststore.type</name>
+    <name>workbench.ssl.truststore.type</name>
     <value>JKS</value>
-    <description>The format of the given truststore (e.g. JKS or PKCS12). Defaults to the same type as the keystore
-      type
-    </description>
+    <description>The format of the given truststore (e.g. JKS or PKCS12). Defaults to the same type as the keystore type</description>
   </property>
 
   <!--
   <property>
-    <name>submarine.ssl.truststore.password</name>
+    <name>workbench.ssl.truststore.password</name>
     <value>change me</value>
     <description>Truststore password. Can be obfuscated by the Jetty Password tool. Defaults to the keystore password</description>
   </property>
   -->
 
   <property>
-    <name>submarine.websocket.max.text.message.size</name>
-    <value>1024000</value>
-    <description>Size in characters of the maximum text message to be received by websocket. Defaults to 1024000
-    </description>
-  </property>
-
-  <property>
-    <name>submarine.server.default.dir.allowed</name>
-    <value>false</value>
-    <description>Enable directory listings on server.</description>
-  </property>
-
-  <property>
-    <name>submarine.run.mode</name>
-    <value>auto</value>
-    <description>'auto|local|k8s|docker'</description>
+    <name>workbench.web.war</name>
+    <value>workbench/workbench-web.war</value>
+    <description>Submarine workbench web war file path.</description>
   </property>
 
 </configuration>

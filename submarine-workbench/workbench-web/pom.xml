@@ -101,6 +101,7 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>${plugin.war.version}</version>
         <configuration>
+          <warName>${project.artifactId}</warName>
           <failOnMissingWebXml>true</failOnMissingWebXml>
           <warSourceDirectory>dist</warSourceDirectory>
           <webXml>src/WEB-INF/web.xml</webXml>

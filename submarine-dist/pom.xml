@@ -50,12 +50,6 @@
       <artifactId>submarine-core</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.submarine</groupId>
-      <artifactId>workbench-web</artifactId>
-      <version>${project.version}</version>
-      <type>war</type>
-    </dependency>
   </dependencies>
 
   <profiles>

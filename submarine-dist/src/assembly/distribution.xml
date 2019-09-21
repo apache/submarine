@@ -49,7 +49,7 @@
     <dependencySet>
       <outputDirectory>/workbench</outputDirectory>
       <includes>
-        <include>org.apache.submarine:workbench-web</include>
+        <include>${project.groupId}:workbench-web</include>
       </includes>
     </dependencySet>
   </dependencySets>
@@ -72,11 +72,31 @@
       <directory>../licenses-binary</directory>
       <outputDirectory>/licenses</outputDirectory>
     </fileSet>
+
+    <fileSet>
+      <directory>../conf</directory>
+      <outputDirectory>/conf</outputDirectory>
+      <fileMode>0755</fileMode>
+    </fileSet>
+
+    <fileSet>
+      <directory>../bin</directory>
+      <outputDirectory>/bin</outputDirectory>
+      <fileMode>0755</fileMode>
+    </fileSet>
+
     <fileSet>
       <directory>../submarine-all/target/</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
         <include>submarine-all-${project.version}-*.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../submarine-workbench/workbench-web/target</directory>
+      <outputDirectory>/workbench</outputDirectory>
+      <includes>
+        <include>workbench-web.war</include>
       </includes>
     </fileSet>
     <fileSet>

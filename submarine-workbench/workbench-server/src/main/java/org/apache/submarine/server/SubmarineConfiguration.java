@@ -27,17 +27,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class WorkbenchConfiguration extends XMLConfiguration {
-  private static final Logger LOG = LoggerFactory.getLogger(WorkbenchConfiguration.class);
+public class SubmarineConfiguration extends XMLConfiguration {
+  private static final Logger LOG = LoggerFactory.getLogger(SubmarineConfiguration.class);
   private static final long serialVersionUID = 4749303235693848035L;
 
-  private static final String WORKBENCH_SITE_XML = "workbench-site.xml";
+  private static final String SUBMARINE_SITE_XML = "submarine-site.xml";
 
-  private static WorkbenchConfiguration conf;
+  private static SubmarineConfiguration conf;
 
   private Map<String, String> properties = new HashMap<>();
 
-  public WorkbenchConfiguration(URL url) throws ConfigurationException {
+  public SubmarineConfiguration(URL url) throws ConfigurationException {
     setDelimiterParsingDisabled(true);
     load(url);
     initProperties();
@@ -57,7 +57,7 @@ public class WorkbenchConfiguration extends XMLConfiguration {
     }
   }
 
-  public WorkbenchConfiguration() {
+  public SubmarineConfiguration() {
     ConfVars[] vars = ConfVars.values();
     for (ConfVars v : vars) {
       if (v.getType() == ConfVars.VarType.BOOLEAN) {
@@ -76,7 +76,7 @@ public class WorkbenchConfiguration extends XMLConfiguration {
     }
   }
 
-  public static synchronized WorkbenchConfiguration create() {
+  public static synchronized SubmarineConfiguration create() {
     if (conf != null) {
       return conf;
     }
@@ -84,27 +84,27 @@ public class WorkbenchConfiguration extends XMLConfiguration {
     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     URL url;
 
-    url = WorkbenchConfiguration.class.getResource(WORKBENCH_SITE_XML);
+    url = SubmarineConfiguration.class.getResource(SUBMARINE_SITE_XML);
     if (url == null) {
-      ClassLoader cl = WorkbenchConfiguration.class.getClassLoader();
+      ClassLoader cl = SubmarineConfiguration.class.getClassLoader();
       if (cl != null) {
-        url = cl.getResource(WORKBENCH_SITE_XML);
+        url = cl.getResource(SUBMARINE_SITE_XML);
       }
     }
     if (url == null) {
-      url = classLoader.getResource(WORKBENCH_SITE_XML);
+      url = classLoader.getResource(SUBMARINE_SITE_XML);
     }
 
     if (url == null) {
       LOG.warn("Failed to load configuration, proceeding with a default");
-      conf = new WorkbenchConfiguration();
+      conf = new SubmarineConfiguration();
     } else {
       try {
         LOG.info("Load configuration from " + url);
-        conf = new WorkbenchConfiguration(url);
+        conf = new SubmarineConfiguration(url);
       } catch (ConfigurationException e) {
         LOG.warn("Failed to load configuration from " + url + " proceeding with a default", e);
-        conf = new WorkbenchConfiguration();
+        conf = new SubmarineConfiguration();
       }
     }
 
@@ -114,9 +114,6 @@ public class WorkbenchConfiguration extends XMLConfiguration {
     } else {
       LOG.info("Server SSL Port: " + conf.getServerSslPort());
     }
-
-    // LOG.info("Context Path: " + conf.getServerContextPath());
-    // LOG.info("Submarine Version: " + Util.getVersion());
 
     return conf;
   }
@@ -377,8 +374,7 @@ public class WorkbenchConfiguration extends XMLConfiguration {
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
     JDBC_USERNAME("jdbc.username", "submarine"),
     JDBC_PASSWORD("jdbc.password", "password"),
-    SUBMARINE_WAR("workbench.war", "submarine-workbench/workbench-web/dist"),
-    WAR_TEMPDIR("workbench.war.tempdir", "webapps");
+    WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist");
 
     private String varName;
     @SuppressWarnings("rawtypes")
