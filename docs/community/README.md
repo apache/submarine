@@ -64,4 +64,4 @@ Communication within the Submarine community abides by [Apache’s Code of Condu
 
 ## License
 
-Submarine Community is under the Apache 2.0 license. See the [LICENSE.md](https://github.com/apache/hadoop-submarine/blob/master/LICENSE) file for details.
+Submarine Community is under the Apache 2.0 license. See the [LICENSE](https://github.com/apache/hadoop-submarine/blob/master/LICENSE) file for details.

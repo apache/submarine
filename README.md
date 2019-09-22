@@ -104,13 +104,14 @@ This is a docker image built for submarine development and quick start test.
 
 ### Installation and deployment
 
-Read the [Quick Start Guide](./docs/helper/QuickStart.md), 
+Read the [Quick Start Guide](./docs/helper/QuickStart.md)
 
+## Apache Hadoop Submarine Community
 
+Read the [Apache Hadoop Submarine Community Guide](./docs/community/README.md)
 
+How to contributing [Contributing Guide](./docs/community/contributing.md)
 
+## License
 
-
-
-
-
+Apache Hadoop Submarine Community is under the Apache 2.0 license. See the [LICENSE](./LICENSE) file for details.
