@@ -15,7 +15,6 @@ package org.apache.submarine.database.service;
 
 import org.apache.submarine.database.entity.Team;
 import org.apache.submarine.database.entity.TeamMember;
-import org.apache.submarine.database.mappers.TeamMemberMapper;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -39,7 +38,6 @@ public class TeamServiceTest {
   public void removeAllRecord() throws Exception {
 
     List<Team> teamList = teamService.queryPageList(null, "create_time", "desc", 0, 100);
-//    assertTrue(teamList.size() > 0);
     LOG.info("teamList.size():{}", teamList.size());
     for (Team team : teamList) {
       teamService.delete(team.getId());

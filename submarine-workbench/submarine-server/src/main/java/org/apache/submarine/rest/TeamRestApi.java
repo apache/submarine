@@ -25,7 +25,13 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.*;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.GET;
+import javax.ws.rs.Produces;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.PUT;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +61,8 @@ public class TeamRestApi {
 
     List<Team> teams = new ArrayList<>();
     try {
-      // todo: Front need to correct 'owner' value, and Whether need the front to create_by value（At the time of pr commited）
+      // TODO(zhulinhao): Front need to correct 'owner' value, and Whether need the
+      //  front to create_by value（At the time of pr commited）
       teams = teamService.queryPageList("liuxun", column, order, pageNo, pageSize);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -83,16 +90,16 @@ public class TeamRestApi {
     }
 
 
-    // TODO: add message
+    // TODO(zhulinhao): add message
     // For each of the members, increase the invitation information saved to sys_message table
-//    SysMessage sysMessage = new SysMessage();
-//    try {
-//      sysMessageService.add(sysMessage);
-//    } catch (Exception e) {
-//      LOG.error(e.getMessage(), e);
-//      return new JsonResponse.Builder<>(Response.Status.OK).success(false)
-//          .message("Save team failed!").build();
-//    }
+    /**SysMessage sysMessage = new SysMessage();
+    try {
+      sysMessageService.add(sysMessage);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      return new JsonResponse.Builder<>(Response.Status.OK).success(false)
+          .message("Save team failed!").build();
+    }*/
 
     return new JsonResponse.Builder<Team>(Response.Status.OK)
         .message("Save team successfully!").result(team).success(true).build();
@@ -126,11 +133,11 @@ public class TeamRestApi {
   @Path("/delete")
   @SubmarineApi
   public Response delete(@QueryParam("id") String id) {
-    // TODO: At the front desk need to id
+    // TODO(zhulinhao): At the front desk need to id
     LOG.info("delete team:{}", id);
 
     // Delete data in a team and team_member table
-    // todo:删除 sys_message 中的邀请信息
+    // TODO(zhulinhao):delete sys_message's invite messages
     try {
       teamService.delete(id);
     } catch (Exception e) {
