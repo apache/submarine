@@ -25,7 +25,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="resultMap" type="org.apache.submarine.database.entity.TeamMember">
+  <resultMap id="resultMap" type="org.apache.submarine.database.entity.TeamMember" extends="BaseEntityResultMap">
     <result column="team_id" jdbcType="VARCHAR" property="teamId"/>
     <result column="team_name" jdbcType="VARCHAR" property="teamName"/>
     <result column="member" jdbcType="VARCHAR" property="member"/>

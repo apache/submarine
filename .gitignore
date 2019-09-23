@@ -16,3 +16,5 @@ submarine-workbench/submarine-web/.env.*.local
 submarine-workbench/submarine-web/npm-debug.log*
 submarine-workbench/submarine-web/yarn-debug.log*
 submarine-workbench/submarine-web/yarn-error.log*
+/yarn.lock
+/node_modules

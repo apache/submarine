@@ -50,11 +50,11 @@ public class TeamService {
       list = teamMapper.selectAll(where, new RowBounds(pageNo, pageSize));
 
       TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
-      // query team_member table, and set to team
+      // query from team_member table, and set to team
       for (Team team : list) {
         Map<String, Object> whereMember = new HashMap<>();
-        whereMember.put("teamName", team.getTeamName());
-        List<TeamMember> teamMembers = teamMemberMapper.selectAll(where);
+        whereMember.put("teamId", team.getId());
+        List<TeamMember> teamMembers = teamMemberMapper.selectAll(whereMember);
         for (TeamMember teamMember : teamMembers) {
           team.addCollaborator(teamMember);
         }
@@ -68,27 +68,7 @@ public class TeamService {
     return list;
   }
 
-  public Team selectByPrimaryKey(String id) throws Exception {
-    LOG.info("selectByPrimaryKey id:{}", id);
-
-    Team team = null;
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
-      TeamMapper teamMapper = sqlSession.getMapper(TeamMapper.class);
-      Map<String, Object> where = new HashMap<>();
-      where.put("id", id);
-      team = teamMapper.selectByPrimaryKey(id);
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new Exception(e);
-    } finally {
-      sqlSession.close();
-    }
-    return team;
-  }
-
-  public void add(Team team) throws Exception {
+  public boolean add(Team team) throws Exception {
     LOG.info("add({})", team.toString());
 
     SqlSession sqlSession = null;
@@ -101,7 +81,7 @@ public class TeamService {
       // add teamMember, when add team, should insert 'Collaborators' to team_member
       List<TeamMember> list = team.getCollaborators();
       for (TeamMember teamMember : list) {
-        // todo: teamMember's member is sys_user's id
+        // todo: teamMember's member is sys_user's id now.
         teamMember.setTeamId(team.getId());
         teamMemberMapper.insert(teamMember);
       }
@@ -113,9 +93,10 @@ public class TeamService {
     } finally {
       sqlSession.close();
     }
+    return true;
   }
 
-  public void updateByPrimaryKeySelective(Team team) throws Exception {
+  public boolean updateByPrimaryKeySelective(Team team) throws Exception {
     LOG.info("updateByPrimaryKeySelective({})", team.toString());
 
     SqlSession sqlSession = null;
@@ -128,7 +109,7 @@ public class TeamService {
       Map<String, Object> where = new HashMap<>();
       where.put("teamId", team.getId());
 
-      // The first scenario(do not modify team_name): Take two lists of difference
+      // Take two lists of difference
       List<TeamMember> old_teamMembers = teamMemberMapper.selectAll(where);
       List<TeamMember> curr_teamMembers = team.getCollaborators();
 
@@ -154,6 +135,7 @@ public class TeamService {
     } finally {
       sqlSession.close();
     }
+    return true;
   }
 
   public boolean delete(String id) throws Exception {

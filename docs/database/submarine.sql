@@ -144,6 +144,7 @@ CREATE TABLE `team` (
 DROP TABLE IF EXISTS `team_member`;
 CREATE TABLE `team_member` (
   `id` varchar(32) NOT NULL,
+  `team_id` varchar(32) NOT NULL COMMENT 'team id',
   `team_name` varchar(64) NOT NULL COMMENT 'team name',
   `member` varchar(100) NOT NULL COMMENT 'member name',
   `inviter` int(1) default 0 COMMENT '0:inviter, 1:accept',

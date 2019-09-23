@@ -55,5 +55,7 @@
     <mapper resource='org/apache/submarine/database/mappers/SysDictMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/SysDictItemMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/SysDeptMapper.xml'/>
+    <mapper resource='org/apache/submarine/database/mappers/TeamMapper.xml'/>
+    <mapper resource='org/apache/submarine/database/mappers/TeamMemberMapper.xml'/>
   </mappers>
 </configuration>
