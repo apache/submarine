@@ -32,7 +32,7 @@ You can reach out to the community members via any one of the following ways:
 
 ## Your First Contribution
 
-You can start by finding an existing issue with the [https://issues.apache.org/jira/browse/SUBMARINE](https://issues.apache.org/jira/browse/SUBMARINE) label. These issues are well suited for new contributors. 
+You can start by finding an existing issue with the [https://issues.apache.org/jira/projects/SUBMARINE/issues/SUBMARINE?filter=allopenissues](https://issues.apache.org/jira/projects/SUBMARINE/issues/SUBMARINE?filter=allopenissues) label. These issues are well suited for new contributors. 
 
 If a PR (Pull Request) submitted to the [Hadoop-Submarine](https://github.com/apache/hadoop-submarine) projects by you is approved and merged, then you become a Submarine Contributor. 
 
@@ -52,7 +52,7 @@ Contributions are welcomed and greatly appreciated. See [CONTRIBUTING.md](contri
 
 First of all you need to get involved and be a Contributor.
 
-Based on your track-record as a contributor, one of our Maintainers or PMC members may invite you to be a committer (after we've called a vote). When that happens, if you accept, the following process kicks into place...
+Based on your track-record as a contributor, Per Apache code, PMCs vote on committership, may invite you to be a committer (after we've called a vote). When that happens, if you accept, the following process kicks into place...
 
 Note that becoming a committer is not just about submitting some patches; it‘s also about helping out on the development and user [Slack User](https://the-asf.slack.com/submarine-user/), helping with documentation and the issues.
 

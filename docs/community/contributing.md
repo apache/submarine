@@ -14,9 +14,9 @@ limitations under the License.
 
 # Contribution Guidelines
 
-**Apache Hadoop Submarine** is an [Apache2 License](https://github.com/apache/hadoop-submarine/blob/master/LICENSE) Software.
+**Apache Hadoop Submarine** is an [Apache 2.0 License](https://github.com/apache/hadoop-submarine/blob/master/LICENSE) Software.
 
-Contributing to Hadoop Submarine (Source code, Documents, Image, Website) means you agree to the Apache2 License.
+Contributing to Hadoop Submarine (Source code, Documents, Image, Website) means you agree to the Apache 2.0 License.
 
 1. Make sure your issue is not already in the [Jira issue tracker](https://issues.apache.org/jira/browse/SUBMARINE)
 2. If not, create a ticket describing the change you're proposing in the [Jira issue tracker](https://issues.apache.org/jira/browse/SUBMARINE)
@@ -53,9 +53,9 @@ Filling it thoroughly can improve the speed of the review process.
     ### Screenshots (if appropriate)
 
     ### Questions:
-    * Does the licenses files need update?
+    * Do the licenses files need updates?
     * Is there breaking changes for older versions?
-    * Does this needs documentation?
+    * Does this need documentation?
 
 
 ## Source Control Workflow
@@ -69,7 +69,7 @@ When a Pull Request is submitted, it is being merged or rejected by the  followi
 * Reviewer can indicate that a patch looks suitable for merging with a comment such as: "Looks good", "LGTM", "+1".
 * At least one indication of suitability (e.g. "LGTM") from a committer is required to be merged.
 * Pull request is open for 1 or 2 days for potential additional review, unless it's got enough indication of suitability.
-* A committer can then initiate lazy consensus ("Merge if there is no more discussion") after what the code can be merged after a certain time (normally 24 hours) if there is no more reviews.
+* A committer can then initiate lazy consensus ("Merge if there is no more discussion") after which the code can be merged after a certain time (normally 24 hours) if there is no more reviews.
 * Contributors can ping reviewers (including committers) by commenting 'Ready to review' or suitable indication.
 
 
@@ -167,11 +167,7 @@ git fetch upstream
 git rebase upstream/master
 ```
 
-Please don't use `git pull` instead of the above `fetch`/`rebase`. `git pull`
-does a merge, which leaves merge commits. These make the commit history messy
-and violate the principle that commits ought to be individually understandable
-and useful (see below). You can also consider changing your `.git/config` file
-via `git config branch.autoSetupRebase` always to change the behavior of `git pull`.
+Please don't use `git pull` instead of the above `fetch`/`rebase`. `git pull` does a merge, which leaves merge commits. These make the commit history messy and violate the principle that commits ought to be individually understandable and useful (see below). You can also consider changing your `.git/config` file via `git config branch.autoSetupRebase` always to change the behavior of `git pull`.
 
 ### Step 6: Commit
 
@@ -181,13 +177,11 @@ Commit your changes.
 git commit
 ```
 
-Likely you'll go back and edit/build/test further, and then `commit --amend` in a
-few cycles.
+Likely you'll go back and edit/build/test further, and then `commit --amend` in a few cycles.
 
 ### Step 7: Push
 
-When the changes are ready to review (or you just to create an offsite backup
-or your work), push your branch to your fork on `github.com`:
+When the changes are ready to review (or you just want to create an offsite backup of your work), push your branch to your fork on `github.com`:
 
 ```sh
 git push --set-upstream ${your_remote_name} SUBMARINE-${jira_number}
@@ -201,13 +195,9 @@ git push --set-upstream ${your_remote_name} SUBMARINE-${jira_number}
 
 #### Get a code review
 
-If your pull request (PR) is opened, it will be assigned to one or more
-reviewers. Those reviewers will do a thorough code review, looking at
-correctness, bugs, opportunities for improvement, documentation and comments,
-and style.
+If your pull request (PR) is opened, it will be assigned to one or more reviewers. Those reviewers will do a thorough code review, looking at correctness, bugs, opportunities for improvement, documentation and comments, and style.
 
-To address review comments, you should commit the changes to the same branch of
-the PR on your fork
+To address review comments, you should commit the changes to the same branch of the PR on your fork.
 
 #### Revert a commit
 
@@ -231,8 +221,7 @@ git rebase upstream/master
 git revert SHA
 ```
 
-This creates a new commit reverting the change. Push this new commit to
-your remote:
+This creates a new commit reverting the change. Push this new commit to your remote:
 
 ```sh
 git push ${your_remote_name} myrevert
@@ -242,8 +231,7 @@ Create a PR based on this branch.
 
 #### Cherry pick a commit to a release branch
 
-In case you wish to cherry pick a commit to a release branch, follow the
-instructions below:
+In case you wish to cherry pick a commit to a release branch, follow the instructions below:
 
 Create a branch and synchronize it with the upstream:
 

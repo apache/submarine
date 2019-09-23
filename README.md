@@ -110,8 +110,8 @@ Read the [Quick Start Guide](./docs/helper/QuickStart.md)
 
 Read the [Apache Hadoop Submarine Community Guide](./docs/community/README.md)
 
-How to contributing [Contributing Guide](./docs/community/contributing.md)
+How to contribute [Contributing Guide](./docs/community/contributing.md)
 
 ## License
 
-Apache Hadoop Submarine Community is under the Apache 2.0 license. See the [LICENSE](./LICENSE) file for details.
+The Apache Hadoop Submarine project is licensed under the Apache 2.0 License. See the [LICENSE](./LICENSE) file for details.
