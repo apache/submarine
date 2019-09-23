@@ -17,7 +17,7 @@ This cicd directory contains several scripts to ease code and release management
 ## Merge PRs From Github
 The "merge_submarine_pr.py" script is usd for merge PRs without access the github web portal. It can also automatically merge activities from github to apache Jira.
 
-As a committer, you should create a dedicated directory to do below steps instead of using existing development repo:
+As a committer, you should create a dedicated directory to do below steps instead of using existing development repo. Doing below steps in a Docker container with python2 and jira (pip install jira) is preferred:
 
 1. git clone https://gitbox.apache.org/repos/asf/hadoop-submarine.git
 2. cd hadoop-submarine
