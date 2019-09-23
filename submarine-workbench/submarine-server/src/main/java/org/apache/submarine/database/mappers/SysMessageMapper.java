@@ -16,17 +16,17 @@ package org.apache.submarine.database.mappers;
 import org.apache.submarine.database.entity.SysMessage;
 
 public interface SysMessageMapper {
-    int deleteByPrimaryKey(String id);
+  int deleteByPrimaryKey(String id);
 
-    int insert(SysMessage record);
+  int insert(SysMessage record);
 
-    int insertSelective(SysMessage record);
+  int insertSelective(SysMessage record);
 
-    SysMessage selectByPrimaryKey(String id);
+  SysMessage selectByPrimaryKey(String id);
 
-    int updateByPrimaryKeySelective(SysMessage record);
+  int updateByPrimaryKeySelective(SysMessage record);
 
-    int updateByPrimaryKeyWithBLOBs(SysMessage record);
+  int updateByPrimaryKeyWithBLOBs(SysMessage record);
 
-    int updateByPrimaryKey(SysMessage record);
+  int updateByPrimaryKey(SysMessage record);
 }

@@ -13,7 +13,6 @@
  */
 package org.apache.submarine.database.mappers;
 
-import org.apache.ibatis.session.RowBounds;
 import org.apache.submarine.database.entity.TeamMember;
 
 import java.util.List;
