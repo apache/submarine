@@ -24,6 +24,10 @@ Click below contents if you want to understand more.
 
 [Build From Code Guide](./development/BuildFromCode.md)
 
+## Apache Hadoop Submarine Community
+
+[Apache Hadoop Submarine Community Guide](./community/README.md)
+
 ## Examples
 
 Here're some examples about Submarine usage.
