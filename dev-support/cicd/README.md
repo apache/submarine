@@ -13,18 +13,20 @@
 -->
 # Introduction
 This cicd directory contains several scripts to ease code and release management.
+To use them more easily, we provide a Docker image to help committer to handle tasks like committing code and release build.
 
-## Merge PRs From Github
-The "merge_submarine_pr.py" script is usd for merge PRs without access the github web portal. It can also automatically merge activities from github to apache Jira.
+```
+cd <path-to-submarine-home>/dev-support/cicd
+docker build -t submarine-cicd .
+docker run -it --rm submarine-cicd
+```
 
-As a committer, you should create a dedicated directory to do below steps instead of using existing development repo. Doing below steps in a Docker container with python2 and jira (pip install jira) is preferred:
-
-1. git clone https://gitbox.apache.org/repos/asf/hadoop-submarine.git
-2. cd hadoop-submarine
-3. git remote rename origin apache
-4. git remote add apache-github https://github.com/apache/hadoop-submarine.git
-5. git config --local --add user.name {name}
-6. git config --local --add user.email {username}@apache.org
-7. echo -e "JIRA_USERNAME={jira_username}\nJIRA_PASSWORD={jira_password}" >> ~/.bashrc
-8. source ~/.bashrc
-9. dev-support/cicd/merge_submarine_pr.py
+And you'll see output like below and then you can decide what to accomplish.
+```
+$ docker run -it --rm submarine-cicd
+Menu:
+	1. Merge PR
+Enter Menu ID:1
+==== Merge PR Begin ====
+Enter Your Apache JIRA User name:
+```
