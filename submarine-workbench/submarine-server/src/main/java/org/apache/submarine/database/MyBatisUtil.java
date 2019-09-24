@@ -69,7 +69,7 @@ public class MyBatisUtil {
   }
 
   /**
-   * get Session
+   * Get Session
    *
    * @return
    */
