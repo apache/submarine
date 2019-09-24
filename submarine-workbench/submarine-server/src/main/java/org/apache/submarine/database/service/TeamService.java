@@ -23,6 +23,7 @@ import org.apache.submarine.database.mappers.TeamMemberMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -111,16 +112,25 @@ public class TeamService {
 
       // Take two lists of difference
       List<TeamMember> old_teamMembers = teamMemberMapper.selectAll(where);
+      List<String> old_teamMembers_teamId = new ArrayList<>();
+      for (TeamMember old_teamMember : old_teamMembers) {
+        old_teamMembers_teamId.add(old_teamMember.getTeamId());
+      }
+
       List<TeamMember> curr_teamMembers = team.getCollaborators();
+      List<String> curr_teamMembers_teamId = new ArrayList<>();
+      for (TeamMember curr_teamMember : curr_teamMembers) {
+        curr_teamMembers_teamId.add(curr_teamMember.getTeamId());
+      }
 
       for (TeamMember old : old_teamMembers) {
-        if (!curr_teamMembers.contains(old)) {
+        if (!curr_teamMembers_teamId.contains(old.getTeamId())) {
           teamMemberMapper.deleteByPrimaryKey(old.getId());
         }
       }
 
       for (TeamMember curr : curr_teamMembers) {
-        if (!old_teamMembers.contains(curr)) {
+        if (!old_teamMembers_teamId.contains(curr.getTeamId())) {
           // todo：teamId Send it by the front desk, here there is no assignment
           curr.setTeamId(team.getId());
           curr.setTeamName(team.getTeamName());

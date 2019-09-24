@@ -154,8 +154,7 @@ public class SysDictItemRestApiTest {
   public static ListResult<SysDictItem> queryTestDictItemList() {
     Response response = sysDictItemRestApi.list(DICT_CODE, "", "", "", "", "", 0, 10);
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<ListResult<SysDictItem>>>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDictItem>>>() {}.getType();
     JsonResponse<ListResult<SysDictItem>> jsonResponse = gson.fromJson(entity, type);
 
     ListResult<SysDictItem> listResult = jsonResponse.getResult();
@@ -165,8 +164,7 @@ public class SysDictItemRestApiTest {
   public static ListResult<SysDict> queryTestDictList() {
     Response response = sysDictRestApi.list(DICT_CODE, "", "", "", "", 1, 10);
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {}.getType();
     JsonResponse<ListResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
 
     ListResult listResult = jsonResponse.getResult();

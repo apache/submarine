@@ -44,8 +44,7 @@ public class JsonResponseTest {
 
     String entity = (String) response.getEntity();
 
-    Type type = new TypeToken<JsonResponse<SysDict>>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse<SysDict>>() {}.getType();
 
     JsonResponse<SysDict> jsonResponse = gson.fromJson(entity, type);
 
@@ -72,8 +71,7 @@ public class JsonResponseTest {
 
     String entity = (String) response.getEntity();
 
-    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {}.getType();
 
     JsonResponse<ListResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
 

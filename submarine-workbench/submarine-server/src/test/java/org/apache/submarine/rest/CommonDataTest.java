@@ -227,8 +227,7 @@ public class CommonDataTest {
 
   public static JsonResponse<ListResult<SysDeptTree>> wrapDeptResponse(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<ListResult<SysDeptTree>>>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDeptTree>>>() {}.getType();
     JsonResponse<ListResult<SysDeptTree>> jsonResponse = gson.fromJson(entity, type);
 
     return jsonResponse;
@@ -236,8 +235,7 @@ public class CommonDataTest {
 
   public static JsonResponse<SysDept> assertDeptResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<SysDept>>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse<SysDept>>() {}.getType();
     JsonResponse<SysDept> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
@@ -245,8 +243,7 @@ public class CommonDataTest {
 
   public static JsonResponse<SysUser> assertUserResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<SysUser>>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse<SysUser>>() {}.getType();
     JsonResponse<SysUser> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
@@ -254,16 +251,14 @@ public class CommonDataTest {
 
   public static void assertResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse>() {}.getType();
     JsonResponse jsonResponse = gson.fromJson(entity, type);
     Assert.assertTrue(jsonResponse.getSuccess());
   }
 
   public static JsonResponse<ListResult<SysDict>> assertDictResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {}.getType();
     JsonResponse<ListResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
@@ -271,8 +266,7 @@ public class CommonDataTest {
 
   public static JsonResponse<ListResult<SysDictItem>> assertDictItemResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<ListResult<SysDictItem>>>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDictItem>>>() {}.getType();
     JsonResponse<ListResult<SysDictItem>> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;

@@ -48,8 +48,7 @@ public class LoginRestApi {
   @SubmarineApi
   public Response login(String loginParams) {
     HashMap<String, String> mapParams
-        = gson.fromJson(loginParams, new TypeToken<HashMap<String, String>>() {
-    }.getType());
+        = gson.fromJson(loginParams, new TypeToken<HashMap<String, String>>() {}.getType());
 
     SysUser sysUser = null;
     SqlSession sqlSession = null;

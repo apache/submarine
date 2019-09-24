@@ -13,8 +13,6 @@
  */
 package org.apache.submarine.database.entity;
 
-import java.util.Objects;
-
 public class TeamMember extends BaseEntity {
 
   private String teamId;
@@ -58,16 +56,4 @@ public class TeamMember extends BaseEntity {
     this.inviter = inviter;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    TeamMember that = (TeamMember) o;
-    return Objects.equals(teamId, that.teamId);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(teamId);
-  }
 }

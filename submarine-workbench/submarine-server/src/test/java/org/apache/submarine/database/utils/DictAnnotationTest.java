@@ -40,8 +40,7 @@ public class DictAnnotationTest extends CommonDataTest {
     Response response = userRestApi.queryPageList(null, null, null, null, null, 1, 10);
 
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse>() {}.getType();
     JsonResponse jsonResponse = gson.fromJson(entity, type);
 
     LinkedTreeMap<String, Object> linkedTreeMap = (LinkedTreeMap<String, Object>) jsonResponse.getResult();

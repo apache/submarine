@@ -120,8 +120,7 @@ public class SysDictRestApiTest {
   public static ListResult<SysDict> queryTestDictList() {
     Response response = sysDictRestApi.list("-SysDictRestApiTest-", "", "", "", "", 1, 10);
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {
-    }.getType();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {}.getType();
     JsonResponse<ListResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
 
     ListResult<SysDict> listResult = jsonResponse.getResult();
