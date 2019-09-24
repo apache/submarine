@@ -53,6 +53,7 @@ We have been added main class named _MybatisGeneratorMain_ in the _submarine-ser
 project _org.apache.submarine.database.utils_ package path.
 
 ### Generator file
-Run the main method to get the file, We can find the file under the 
-targetProject path that we just configured. including: entity, TableNameMapper.java,
-TableNameMapper.xml
+Run the main method to get the file, Take the idea development tool as an example: 
+The selected MybatisGeneratorMain class, Right click to run the main method.
+We can find the file under the targetProject path that we just configured. 
+including: entity, TableNameMapper.java, TableNameMapper.xml
