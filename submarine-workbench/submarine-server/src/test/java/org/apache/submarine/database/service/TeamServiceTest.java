@@ -107,7 +107,12 @@ public class TeamServiceTest {
 
     Team team_db = teamList.get(0);
     assertEquals(team.getTeamName(), team_db.getTeamName());
-    assertEquals(team_db.getCollaborators().size(), 2);
+    List<TeamMember> teamMemberList = team_db.getCollaborators();
+    assertEquals(teamMemberList.size(), 2);
+    for (TeamMember member : teamMemberList) {
+      assertEquals(member.getTeamName(), team.getTeamName());
+    }
+
   }
 
   @Test

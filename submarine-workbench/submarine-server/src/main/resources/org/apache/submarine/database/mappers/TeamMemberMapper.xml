@@ -138,12 +138,9 @@
     </trim>
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.database.entity.TeamMember">
+  <update id="updateSelective" parameterType="org.apache.submarine.database.entity.TeamMember">
     update team_member
     <set>
-      <if test="teamId != null">
-        team_id = #{teamId,jdbcType=VARCHAR},
-      </if>
       <if test="teamName != null">
         team_name = #{teamName,jdbcType=VARCHAR},
       </if>
@@ -166,7 +163,13 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
+    where 1 = 1
+    <if test="id != null">
+      AND id = #{id,jdbcType=VARCHAR}
+    </if>
+    <if test="teamId != null">
+      AND team_id = #{teamId,jdbcType=VARCHAR}
+    </if>
   </update>
 
   <update id="updateByPrimaryKey" parameterType="org.apache.submarine.database.entity.TeamMember">

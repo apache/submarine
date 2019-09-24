@@ -32,7 +32,7 @@ public interface TeamMemberMapper {
 
   TeamMember selectByPrimaryKey(String id);
 
-  int updateByPrimaryKeySelective(TeamMember record);
+  int updateSelective(TeamMember record);
 
   int updateByPrimaryKey(TeamMember record);
 }

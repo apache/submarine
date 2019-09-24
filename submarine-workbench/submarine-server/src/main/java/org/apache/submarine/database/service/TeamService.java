@@ -112,31 +112,37 @@ public class TeamService {
 
       // Take two lists of difference
       List<TeamMember> old_teamMembers = teamMemberMapper.selectAll(where);
-      List<String> old_teamMembers_teamId = new ArrayList<>();
+      List<String> old_teamMembers_member = new ArrayList<>();
       for (TeamMember old_teamMember : old_teamMembers) {
-        old_teamMembers_teamId.add(old_teamMember.getTeamId());
+        old_teamMembers_member.add(old_teamMember.getMember());
       }
 
       List<TeamMember> curr_teamMembers = team.getCollaborators();
-      List<String> curr_teamMembers_teamId = new ArrayList<>();
+      List<String> curr_teamMembers_member = new ArrayList<>();
       for (TeamMember curr_teamMember : curr_teamMembers) {
-        curr_teamMembers_teamId.add(curr_teamMember.getTeamId());
+        curr_teamMembers_member.add(curr_teamMember.getMember());
       }
 
       for (TeamMember old : old_teamMembers) {
-        if (!curr_teamMembers_teamId.contains(old.getTeamId())) {
+        if (!curr_teamMembers_member.contains(old.getMember())) {
           teamMemberMapper.deleteByPrimaryKey(old.getId());
         }
       }
 
       for (TeamMember curr : curr_teamMembers) {
-        if (!old_teamMembers_teamId.contains(curr.getTeamId())) {
+        if (!old_teamMembers_member.contains(curr.getMember())) {
           // todo：teamId Send it by the front desk, here there is no assignment
           curr.setTeamId(team.getId());
           curr.setTeamName(team.getTeamName());
           teamMemberMapper.insert(curr);
         }
       }
+
+      // Updates all team_name of corresponding members in the teamMember table
+      TeamMember teamMember = new TeamMember();
+      teamMember.setTeamName(team.getTeamName());
+      teamMember.setTeamId(team.getId());
+      teamMemberMapper.updateSelective(teamMember);
 
       sqlSession.commit();
     } catch (Exception e) {
