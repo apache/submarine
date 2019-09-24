@@ -15,14 +15,23 @@
 
 import time
 import sqlalchemy as sa
-from sqlalchemy import (
-    Column, String, BigInteger,
-    PrimaryKeyConstraint, Boolean)
+from sqlalchemy import (Column, String, BigInteger,
+                        PrimaryKeyConstraint, Boolean)
 from sqlalchemy.ext.declarative import declarative_base
 from submarine.entities import (Metric, Param)
 
 
 Base = declarative_base()
+
+# +-------+----------+--------------+---------------+------+--------+------------------+
+# | key   | value    | worker_index | timestamp     | step | is_nan | job_name         |
+# +-------+----------+--------------+---------------+------+--------+------------------+
+# | score | 0.666667 | worker-1     | 1569139525097 |    0 |      0 | application_1234 |
+# | score | 0.666667 | worker-1     | 1569149139731 |    0 |      0 | application_1234 |
+# | score | 0.666667 | worker-1     | 1569169376482 |    0 |      0 | application_1234 |
+# | score | 0.666667 | worker-1     | 1569236290721 |    0 |      0 | application_1234 |
+# | score | 0.666667 | worker-1     | 1569236466722 |    0 |      0 | application_1234 |
+# +-------+----------+--------------+---------------+------+--------+------------------+
 
 
 class SqlMetric(Base):
@@ -60,8 +69,8 @@ class SqlMetric(Base):
     """
 
     __table_args__ = (
-        PrimaryKeyConstraint('key', 'timestamp', 'step', 'job_name', 'value', "is_nan",
-                             name='metric_pk'),
+        PrimaryKeyConstraint('key', 'timestamp', 'worker_index', 'step', 'job_name',
+                             'value', "is_nan", name='metric_pk'),
     )
 
     def __repr__(self):
@@ -78,6 +87,15 @@ class SqlMetric(Base):
             worker_index=self.worker_index,
             timestamp=self.timestamp,
             step=self.step)
+
+
+# +----------+-------+--------------+-----------------------+
+# | key      | value | worker_index | job_name              |
+# +----------+-------+--------------+-----------------------+
+# | max_iter | 100   | worker-1     | application_123651651 |
+# | n_jobs   | 5     | worker-1     | application_123456898 |
+# | alpha    | 20    | worker-1     | application_123456789 |
+# +----------+-------+--------------+-----------------------+
 
 
 class SqlParam(Base):
@@ -102,7 +120,7 @@ class SqlParam(Base):
     """
 
     __table_args__ = (
-        PrimaryKeyConstraint('key', 'job_name', name='param_pk'),
+        PrimaryKeyConstraint('key', 'job_name', 'worker_index', name='param_pk'),
     )
 
     def __repr__(self):

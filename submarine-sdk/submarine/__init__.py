@@ -21,4 +21,4 @@ log_metric = submarine.tracking.fluent.log_metric
 set_tracking_uri = tracking.set_tracking_uri
 get_tracking_uri = tracking.get_tracking_uri
 
-__all__ = ["log_metric", "log_param"]
+__all__ = ["log_metric", "log_param", "set_tracking_uri", "get_tracking_uri"]

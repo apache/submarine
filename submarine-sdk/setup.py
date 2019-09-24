@@ -20,11 +20,11 @@ with open("README.md", "r") as fh:
 
 setup(
     name='pysubmarine',
-    version='0.1',
+    version='0.1.dev',
     description="A SDK for submarine",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    url="https://github.com/hadoopsubmarine/submarine",
+    url="https://github.com/apache/hadoop-submarine",
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[
         'six>=1.10.0',
@@ -32,6 +32,7 @@ setup(
         'pandas',
         'sqlalchemy',
         'sqlparse',
+        'pymysql',
     ],
     classifiers=[
         'Intended Audience :: Developers',

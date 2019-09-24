@@ -22,7 +22,6 @@ from submarine.exceptions import SubmarineException
 from submarine.utils import extract_db_type_from_uri
 from submarine.store.database.models import Base, SqlMetric, SqlParam
 from submarine.store.abstract_store import AbstractStore
-from submarine.store.database.initial_database import Base as InitialBase
 
 
 _logger = logging.getLogger(__name__)
@@ -73,7 +72,7 @@ class SqlAlchemyStore(AbstractStore):
     @staticmethod
     def _initialize_tables(engine):
         _logger.info("Creating initial Submarine database tables...")
-        InitialBase.metadata.create_all(engine)
+        Base.metadata.create_all(engine)
 
     @staticmethod
     def _get_managed_session_maker(SessionMaker):

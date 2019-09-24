@@ -52,6 +52,7 @@ def get_tracking_uri():
     the currently active run, since the tracking URI can be updated via ``set_tracking_uri``.
     :return: The tracking URI.
     """
+    # TODO get database url from submarine-site.xml
     global _tracking_uri
     if _tracking_uri is not None:
         return _tracking_uri
