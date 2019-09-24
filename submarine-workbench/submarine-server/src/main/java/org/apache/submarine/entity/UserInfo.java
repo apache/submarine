@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -71,72 +71,72 @@ public class UserInfo {
       this.name = name;
     }
 
-    public Builder username(String username){
+    public Builder username(String username) {
       this.username = username;
       return this;
     }
 
-    public Builder password(String password){
+    public Builder password(String password) {
       this.password = password;
       return this;
     }
 
-    public Builder avatar(String avatar){
+    public Builder avatar(String avatar) {
       this.avatar = avatar;
       return this;
     }
 
-    public Builder status(int status){
+    public Builder status(int status) {
       this.status = status;
       return this;
     }
 
-    public Builder lastLoginIp(String lastLoginIp){
+    public Builder lastLoginIp(String lastLoginIp) {
       this.lastLoginIp = lastLoginIp;
       return this;
     }
 
-    public Builder lastLoginTime(long lastLoginTime){
+    public Builder lastLoginTime(long lastLoginTime) {
       this.lastLoginTime = lastLoginTime;
       return this;
     }
 
-    public Builder creatorId(String creatorId){
+    public Builder creatorId(String creatorId) {
       this.creatorId = creatorId;
       return this;
     }
 
-    public Builder telephone(String telephone){
+    public Builder telephone(String telephone) {
       this.telephone = telephone;
       return this;
     }
 
-    public Builder createTime(long createTime){
+    public Builder createTime(long createTime) {
       this.createTime = createTime;
       return this;
     }
 
-    public Builder deleted(int deleted){
+    public Builder deleted(int deleted) {
       this.deleted = deleted;
       return this;
     }
 
-    public Builder roleId(String roleId){
+    public Builder roleId(String roleId) {
       this.roleId = roleId;
       return this;
     }
 
-    public Builder merchantCode(String merchantCode){
+    public Builder merchantCode(String merchantCode) {
       this.merchantCode = merchantCode;
       return this;
     }
 
-    public Builder role(Role role){
+    public Builder role(Role role) {
       this.role = role;
       return this;
     }
 
-    public UserInfo build(){
+    public UserInfo build() {
       return new UserInfo(this);
     }
   }

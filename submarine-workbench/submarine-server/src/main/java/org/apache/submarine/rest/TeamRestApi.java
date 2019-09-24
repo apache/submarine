@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -93,13 +93,13 @@ public class TeamRestApi {
     // TODO(zhulinhao): add message
     // For each of the members, increase the invitation information saved to sys_message table
     /**SysMessage sysMessage = new SysMessage();
-    try {
-      sysMessageService.add(sysMessage);
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      return new JsonResponse.Builder<>(Response.Status.OK).success(false)
-          .message("Save team failed!").build();
-    }*/
+     try {
+     sysMessageService.add(sysMessage);
+     } catch (Exception e) {
+     LOG.error(e.getMessage(), e);
+     return new JsonResponse.Builder<>(Response.Status.OK).success(false)
+     .message("Save team failed!").build();
+     }*/
 
     return new JsonResponse.Builder<Team>(Response.Status.OK)
         .message("Save team successfully!").result(team).success(true).build();

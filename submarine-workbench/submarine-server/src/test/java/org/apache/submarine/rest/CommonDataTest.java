@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -172,7 +172,7 @@ public class CommonDataTest {
     sysUser.setCreateTime(new Date());
     sysUser.setUpdateTime(new Date());
 
-    Response response  = userRestApi.add(sysUser);
+    Response response = userRestApi.add(sysUser);
     JsonResponse<SysUser> jsonResponse = assertUserResponseSuccess(response);
     userId = jsonResponse.getResult().getId();
   }
@@ -185,7 +185,7 @@ public class CommonDataTest {
   }
 
   public static void clearDictItemTable() {
-    Response response  = dictItemRestApi.list(null, null, null, null, null, null, 1, 10);
+    Response response = dictItemRestApi.list(null, null, null, null, null, null, 1, 10);
     assertDictItemResponseSuccess(response);
     JsonResponse<ListResult<SysDictItem>> jsonResponse = assertDictItemResponseSuccess(response);
     for (SysDictItem dictItem : jsonResponse.getResult().getRecords()) {
@@ -194,7 +194,7 @@ public class CommonDataTest {
   }
 
   public static void clearDictTable() {
-    Response response  = dictRestApi.list(null, null, null, null, null, 1, 10);
+    Response response = dictRestApi.list(null, null, null, null, null, 1, 10);
     assertDictResponseSuccess(response);
     JsonResponse<ListResult<SysDict>> jsonResponse = assertDictResponseSuccess(response);
     for (SysDict dict : jsonResponse.getResult().getRecords()) {
@@ -227,7 +227,8 @@ public class CommonDataTest {
 
   public static JsonResponse<ListResult<SysDeptTree>> wrapDeptResponse(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<ListResult<SysDeptTree>>>() {}.getType();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDeptTree>>>() {
+    }.getType();
     JsonResponse<ListResult<SysDeptTree>> jsonResponse = gson.fromJson(entity, type);
 
     return jsonResponse;
@@ -235,7 +236,8 @@ public class CommonDataTest {
 
   public static JsonResponse<SysDept> assertDeptResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<SysDept>>() {}.getType();
+    Type type = new TypeToken<JsonResponse<SysDept>>() {
+    }.getType();
     JsonResponse<SysDept> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
@@ -243,7 +245,8 @@ public class CommonDataTest {
 
   public static JsonResponse<SysUser> assertUserResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<SysUser>>() {}.getType();
+    Type type = new TypeToken<JsonResponse<SysUser>>() {
+    }.getType();
     JsonResponse<SysUser> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
@@ -251,14 +254,16 @@ public class CommonDataTest {
 
   public static void assertResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse>() {}.getType();
+    Type type = new TypeToken<JsonResponse>() {
+    }.getType();
     JsonResponse jsonResponse = gson.fromJson(entity, type);
     Assert.assertTrue(jsonResponse.getSuccess());
   }
 
   public static JsonResponse<ListResult<SysDict>> assertDictResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {}.getType();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {
+    }.getType();
     JsonResponse<ListResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
@@ -266,7 +271,8 @@ public class CommonDataTest {
 
   public static JsonResponse<ListResult<SysDictItem>> assertDictItemResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<ListResult<SysDictItem>>>() {}.getType();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDictItem>>>() {
+    }.getType();
     JsonResponse<ListResult<SysDictItem>> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;

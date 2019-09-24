@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -59,7 +59,7 @@ public class SysUserRestApiTest extends CommonDataTest {
     sysUser.setCreateTime(new Date());
     sysUser.setUpdateTime(new Date());
 
-    Response response  = userRestApi.edit(sysUser);
+    Response response = userRestApi.edit(sysUser);
     CommonDataTest.assertUserResponseSuccess(response);
 
     List<SysUser> userList = userService.queryPageList("", null, null, null, null, 0, 10);

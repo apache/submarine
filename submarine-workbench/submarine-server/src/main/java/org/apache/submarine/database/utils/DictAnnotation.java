@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,7 +57,7 @@ public class DictAnnotation {
     BeanGenerator generator = new BeanGenerator();
 
     Set keySet = mapProperty.keySet();
-    for (Iterator<String> it = keySet.iterator(); it.hasNext();) {
+    for (Iterator<String> it = keySet.iterator(); it.hasNext(); ) {
       String key = it.next();
       generator.addProperty(key, (Class) mapProperty.get(key));
     }
@@ -126,7 +126,7 @@ public class DictAnnotation {
     // Map to entity object
     DictAnnotation bean = new DictAnnotation(mapFieldAndType);
     Set<String> keys = mapFieldAndType.keySet();
-    for (Iterator<String> it = keys.iterator(); it.hasNext();) {
+    for (Iterator<String> it = keys.iterator(); it.hasNext(); ) {
       String key = it.next();
       bean.setValue(key, mapFieldValues.get(key));
     }
@@ -152,7 +152,7 @@ public class DictAnnotation {
       for (Field field : getAllFields(object)) {
         if (field.getAnnotation(Dict.class) != null) {
           String code = field.getAnnotation(Dict.class).Code();
-          List<SysDictItem>  dictItems = sysDictItemService.queryDictByCode(code);
+          List<SysDictItem> dictItems = sysDictItemService.queryDictByCode(code);
           if (dictItems.size() > 0) {
             mapDictItems.put(field.getName(), dictItems);
           }
