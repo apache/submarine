@@ -35,7 +35,6 @@
       <property name="forceBigDecimals" value="false"/>
     </javaTypeResolver>
 
-
     <!-- Generation model, the corresponding package path and file storage path (targetProject),
     You can specify a specific path, such as: ./src/main/java, -->
     <javaModelGenerator targetPackage="org.apache.submarine.database.entity" targetProject="/tmp">
@@ -53,7 +52,6 @@
     <javaClientGenerator type="XMLMAPPER" targetPackage="org.apache.submarine.database.mappers" targetProject="/tmp">
       <property name="enableSubPackages" value="true"/>
     </javaClientGenerator>
-
 
     <!-- List all the table to generate the code, configuration is not generate Example files here -->
     <table tableName="team_member" domainObjectName="TeamMember"

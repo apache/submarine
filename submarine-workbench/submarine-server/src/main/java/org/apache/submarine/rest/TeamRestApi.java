@@ -2,9 +2,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -111,14 +111,15 @@ public class TeamRestApi {
   public Response edit(Team team) {
     LOG.info("edit team:{}", team.toString());
 
-    // todo: need set update_by value
+    // TODO(zhulinhao): need set update_by value
     try {
       // update team
       teamService.updateByPrimaryKeySelective(team);
 
-      // TODO
-      // 将新增的成员中inviter=0，并且没有发送过加入 team 邀请信息
-      // 保存到消息表 sys_message 中，避免重复发送邀请信息
+      // TODO(zhulinhao)
+      // Save inviter=0 in the newly added member and the invitation
+      // message to join the team that has not been sent into the message
+      // table sys_message to avoid sending the invitation message repeatedly
 
     } catch (Exception e) {
       return new JsonResponse.Builder<>(Response.Status.OK).success(false)

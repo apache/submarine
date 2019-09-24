@@ -31,7 +31,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-        id, owner, team_name, create_by, create_time, update_by, update_time
+    id, owner, team_name, create_by, create_time, update_by, update_time
   </sql>
 
   <select id="selectAll" parameterType="java.util.Map" resultMap="resultMap">
@@ -134,13 +134,13 @@
   </update>
 
   <update id="updateByPrimaryKey" parameterType="org.apache.submarine.database.entity.Team">
-        update team
-        set owner = #{owner,jdbcType=VARCHAR},
-          team_name = #{teamName,jdbcType=VARCHAR},
-          create_by = #{createBy,jdbcType=VARCHAR},
-          create_time = #{createTime,jdbcType=TIMESTAMP},
-          update_by = #{updateBy,jdbcType=VARCHAR},
-          update_time = #{updateTime,jdbcType=TIMESTAMP}
-        where id = #{id,jdbcType=VARCHAR}
+    update team
+    set owner = #{owner,jdbcType=VARCHAR},
+      team_name = #{teamName,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>
