@@ -24,7 +24,7 @@ import unittest
 JOB_NAME = "application_123456789"
 
 
-class test_log_param(unittest.TestCase):
+class TestTracking(unittest.TestCase):
     def setUp(self):
         environ["SUBMARINE_JOB_NAME"] = JOB_NAME
         submarine.set_tracking_uri(
