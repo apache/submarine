@@ -36,7 +36,7 @@ public class Role {
     this.permissions = builder.permissions;
   }
 
-  public static class Builder{
+  public static class Builder {
     private final String id;
     private final String name;
 
@@ -52,37 +52,37 @@ public class Role {
       this.name = name;
     }
 
-    public Builder describe(String describe){
+    public Builder describe(String describe) {
       this.describe = describe;
       return this;
     }
 
-    public Builder status(int status){
+    public Builder status(int status) {
       this.status = status;
       return this;
     }
 
-    public Builder creatorId(String creatorId){
+    public Builder creatorId(String creatorId) {
       this.creatorId = creatorId;
       return this;
     }
 
-    public Builder createTime(long createTime){
+    public Builder createTime(long createTime) {
       this.createTime = createTime;
       return this;
     }
 
-    public Builder deleted(int deleted){
+    public Builder deleted(int deleted) {
       this.deleted = deleted;
       return this;
     }
 
-    public Builder permissions(List<Permission> permissions){
+    public Builder permissions(List<Permission> permissions) {
       this.permissions = permissions;
       return this;
     }
 
-    public Role build(){
+    public Role build() {
       return new Role(this);
     }
   }

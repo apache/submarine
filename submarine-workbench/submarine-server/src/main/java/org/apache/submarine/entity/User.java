@@ -48,7 +48,7 @@ public class User {
     this.token = builder.token;
   }
 
-  public static class Builder{
+  public static class Builder {
     private final String id;
     private final String name;
     private String username;
@@ -70,72 +70,72 @@ public class User {
       this.name = name;
     }
 
-    public Builder username(String username){
+    public Builder username(String username) {
       this.username = username;
       return this;
     }
 
-    public Builder password(String password){
+    public Builder password(String password) {
       this.password = password;
       return this;
     }
 
-    public Builder avatar(String avatar){
+    public Builder avatar(String avatar) {
       this.avatar = avatar;
       return this;
     }
 
-    public Builder status(int status){
+    public Builder status(int status) {
       this.status = status;
       return this;
     }
 
-    public Builder lastLoginIp(String lastLoginIp){
+    public Builder lastLoginIp(String lastLoginIp) {
       this.lastLoginIp = lastLoginIp;
       return this;
     }
 
-    public Builder lastLoginTime(long lastLoginTime){
+    public Builder lastLoginTime(long lastLoginTime) {
       this.lastLoginTime = lastLoginTime;
       return this;
     }
 
-    public Builder creatorId(String creatorId){
+    public Builder creatorId(String creatorId) {
       this.creatorId = creatorId;
       return this;
     }
 
-    public Builder telephone(String telephone){
+    public Builder telephone(String telephone) {
       this.telephone = telephone;
       return this;
     }
 
-    public Builder createTime(long createTime){
+    public Builder createTime(long createTime) {
       this.createTime = createTime;
       return this;
     }
 
-    public Builder deleted(int deleted){
+    public Builder deleted(int deleted) {
       this.deleted = deleted;
       return this;
     }
 
-    public Builder roleId(String roleId){
+    public Builder roleId(String roleId) {
       this.roleId = roleId;
       return this;
     }
 
-    public Builder lang(String lang){
+    public Builder lang(String lang) {
       this.lang = lang;
       return this;
     }
 
-    public Builder token(String token){
+    public Builder token(String token) {
       this.token = token;
       return this;
     }
 
-    public User build(){
+    public User build() {
       return new User(this);
     }
   }

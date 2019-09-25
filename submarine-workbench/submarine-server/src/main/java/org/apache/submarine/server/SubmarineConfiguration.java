@@ -205,7 +205,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     }
   }
 
-  public boolean isWindowsPath(String path){
+  public boolean isWindowsPath(String path) {
     return path.matches("^[A-Za-z]:\\\\.*");
   }
 
@@ -482,7 +482,8 @@ public class SubmarineConfiguration extends XMLConfiguration {
     enum VarType {
       STRING {
         @Override
-        void checkType(String value) throws Exception {}
+        void checkType(String value) throws Exception {
+        }
       },
       INT {
         @Override

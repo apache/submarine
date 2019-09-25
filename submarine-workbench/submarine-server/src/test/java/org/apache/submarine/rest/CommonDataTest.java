@@ -3,7 +3,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -172,7 +172,7 @@ public class CommonDataTest {
     sysUser.setCreateTime(new Date());
     sysUser.setUpdateTime(new Date());
 
-    Response response  = userRestApi.add(sysUser);
+    Response response = userRestApi.add(sysUser);
     JsonResponse<SysUser> jsonResponse = assertUserResponseSuccess(response);
     userId = jsonResponse.getResult().getId();
   }
@@ -185,7 +185,7 @@ public class CommonDataTest {
   }
 
   public static void clearDictItemTable() {
-    Response response  = dictItemRestApi.list(null, null, null, null, null, null, 1, 10);
+    Response response = dictItemRestApi.list(null, null, null, null, null, null, 1, 10);
     assertDictItemResponseSuccess(response);
     JsonResponse<ListResult<SysDictItem>> jsonResponse = assertDictItemResponseSuccess(response);
     for (SysDictItem dictItem : jsonResponse.getResult().getRecords()) {
@@ -194,7 +194,7 @@ public class CommonDataTest {
   }
 
   public static void clearDictTable() {
-    Response response  = dictRestApi.list(null, null, null, null, null, 1, 10);
+    Response response = dictRestApi.list(null, null, null, null, null, 1, 10);
     assertDictResponseSuccess(response);
     JsonResponse<ListResult<SysDict>> jsonResponse = assertDictResponseSuccess(response);
     for (SysDict dict : jsonResponse.getResult().getRecords()) {

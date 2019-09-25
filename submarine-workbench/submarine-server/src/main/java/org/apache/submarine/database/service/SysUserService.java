@@ -70,12 +70,12 @@ public class SysUserService {
   }
 
   public List<SysUser> queryPageList(String userName,
-                                String email,
-                                String deptCode,
-                                String column,
-                                String field,
-                                int pageNo,
-                                int pageSize) throws Exception {
+                                     String email,
+                                     String deptCode,
+                                     String column,
+                                     String field,
+                                     int pageNo,
+                                     int pageSize) throws Exception {
     LOG.info("SysUserService::queryPageList userName:{}, email:{}, deptCode:{}, " +
             "column:{}, field:{}, pageNo:{}, pageSize:{}",
         userName, email, deptCode, column, field, pageNo, pageSize);
