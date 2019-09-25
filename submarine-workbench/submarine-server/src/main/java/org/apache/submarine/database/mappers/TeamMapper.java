@@ -11,38 +11,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. See accompanying LICENSE file.
  */
-package org.apache.submarine.database.entity;
+package org.apache.submarine.database.mappers;
 
-public class TeamMemeber extends BaseEntity {
+import org.apache.ibatis.session.RowBounds;
+import org.apache.submarine.database.entity.Team;
 
-  private String teamName;
+import java.util.List;
+import java.util.Map;
 
-  // user name
-  private String member;
+public interface TeamMapper {
 
-  private Integer inviter;
+  List<Team> selectAll(Map<String, Object> where, RowBounds rowBounds);
 
-  public String getTeamName() {
-    return teamName;
-  }
+  int deleteByPrimaryKey(String id);
 
-  public void setTeamName(String teamName) {
-    this.teamName = teamName;
-  }
+  void insert(Team record);
 
-  public String getMember() {
-    return member;
-  }
+  int insertSelective(Team record);
 
-  public void setMember(String member) {
-    this.member = member;
-  }
+  Team selectByPrimaryKey(String id);
 
-  public Integer getInviter() {
-    return inviter;
-  }
+  int updateByPrimaryKeySelective(Team record);
 
-  public void setInviter(Integer inviter) {
-    this.inviter = inviter;
-  }
+  int updateByPrimaryKey(Team record);
 }

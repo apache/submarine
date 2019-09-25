@@ -34,7 +34,7 @@ public class Permission {
     this.actionEntitySet = builder.actionEntitySet;
   }
 
-  public static class Builder{
+  public static class Builder {
     private final String roleId;
     private final String permissionId;
     private final String permissionName;
@@ -50,27 +50,27 @@ public class Permission {
       this.permissionName = permissionName;
     }
 
-    public Builder dataAccess(String dataAccess){
+    public Builder dataAccess(String dataAccess) {
       this.dataAccess = dataAccess;
       return this;
     }
 
-    public Builder actionList(List<Action> actionList){
+    public Builder actionList(List<Action> actionList) {
       this.actionList = actionList;
       return this;
     }
 
-    public Builder actions(List<Action> actions){
+    public Builder actions(List<Action> actions) {
       this.actions = actions;
       return this;
     }
 
-    public Builder actionEntitySet(List<Action> actionEntitySet){
+    public Builder actionEntitySet(List<Action> actionEntitySet) {
       this.actionEntitySet = actionEntitySet;
       return this;
     }
 
-    public Permission build(){
+    public Permission build() {
       return new Permission(this);
     }
   }

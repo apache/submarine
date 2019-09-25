@@ -11,18 +11,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. See accompanying LICENSE file.
  */
-package org.apache.submarine.annotation;
+package org.apache.submarine.database.mappers;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.apache.submarine.database.entity.SysMessage;
 
-/**
- * APIs exposed to extends pluggable components or exposed to enduser
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER,
-    ElementType.CONSTRUCTOR, ElementType.LOCAL_VARIABLE, ElementType.PACKAGE})
-public @interface SubmarineApi {
+public interface SysMessageMapper {
+  int deleteByPrimaryKey(String id);
+
+  int insert(SysMessage record);
+
+  int insertSelective(SysMessage record);
+
+  SysMessage selectByPrimaryKey(String id);
+
+  int updateByPrimaryKeySelective(SysMessage record);
+
+  int updateByPrimaryKeyWithBLOBs(SysMessage record);
+
+  int updateByPrimaryKey(SysMessage record);
 }

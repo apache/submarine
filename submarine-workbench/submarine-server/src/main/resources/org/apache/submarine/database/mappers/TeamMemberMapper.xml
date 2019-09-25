@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one or more
+  ~ contributor license agreements.  See the NOTICE file distributed with
+  ~ this work for additional information regarding copyright ownership.
+  ~ The ASF licenses this file to You under the Apache License, Version 2.0
+  ~ (the "License"); you may not use this file except in compliance with
+  ~ the License.  You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.submarine.database.mappers.TeamMemberMapper">
+  <resultMap id="BaseEntityResultMap" type="org.apache.submarine.database.entity.BaseEntity">
+    <id property="id" column="id" />
+    <result column="create_by" property="createBy"/>
+    <result column="create_time" property="createTime"/>
+    <result column="update_by" property="updateBy"/>
+    <result column="update_time" property="updateTime"/>
+  </resultMap>
+
+  <resultMap id="resultMap" type="org.apache.submarine.database.entity.TeamMember" extends="BaseEntityResultMap">
+    <result column="team_id" jdbcType="VARCHAR" property="teamId"/>
+    <result column="team_name" jdbcType="VARCHAR" property="teamName"/>
+    <result column="member" jdbcType="VARCHAR" property="member"/>
+    <result column="inviter" jdbcType="INTEGER" property="inviter"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, team_id, team_name, member, inviter, create_by, create_time, update_by, update_time
+  </sql>
+
+  <select id="selectAll" parameterType="java.util.Map" resultMap="resultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM team_member
+    WHERE 1 = 1
+    <if test="teamId != null">
+      AND team_id = #{teamId,jdbcType=VARCHAR}
+    </if>
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from team_member
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from team_member
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteSelective" parameterType="org.apache.submarine.database.entity.TeamMember">
+    delete from team_member
+    where 1 = 1
+    <if test="teamId != null">
+      AND team_id = #{teamId,jdbcType=VARCHAR}
+    </if>
+  </delete>
+
+  <insert id="insert" parameterType="org.apache.submarine.database.entity.TeamMember">
+    <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+      SELECT REPLACE(UUID(),"-","")
+    </selectKey>
+    insert into team_member (id, team_id, team_name, member,
+      inviter, create_by, create_time, update_time)
+    values (#{id,jdbcType=VARCHAR}, #{teamId,jdbcType=VARCHAR}, #{teamName,jdbcType=VARCHAR}, #{member,jdbcType=VARCHAR},
+      #{inviter,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, now(), now())
+  </insert>
+
+  <insert id="insertSelective" parameterType="org.apache.submarine.database.entity.TeamMember">
+    insert into team_member
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="teamId != null">
+        team_id,
+      </if>
+      <if test="teamName != null">
+        team_name,
+      </if>
+      <if test="member != null">
+        member,
+      </if>
+      <if test="inviter != null">
+        inviter,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="teamId != null">
+        #{teamId,jdbcType=VARCHAR},
+      </if>
+      <if test="teamName != null">
+        #{teamName,jdbcType=VARCHAR},
+      </if>
+      <if test="member != null">
+        #{member,jdbcType=VARCHAR},
+      </if>
+      <if test="inviter != null">
+        #{inviter,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateSelective" parameterType="org.apache.submarine.database.entity.TeamMember">
+    update team_member
+    <set>
+      <if test="teamName != null">
+        team_name = #{teamName,jdbcType=VARCHAR},
+      </if>
+      <if test="member != null">
+        member = #{member,jdbcType=VARCHAR},
+      </if>
+      <if test="inviter != null">
+        inviter = #{inviter,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where 1 = 1
+    <if test="id != null">
+      AND id = #{id,jdbcType=VARCHAR}
+    </if>
+    <if test="teamId != null">
+      AND team_id = #{teamId,jdbcType=VARCHAR}
+    </if>
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.database.entity.TeamMember">
+    update team_member
+    set team_id = #{teamId,jdbcType=VARCHAR},
+      team_name = #{teamName,jdbcType=VARCHAR},
+      member = #{member,jdbcType=VARCHAR},
+      inviter = #{inviter,jdbcType=INTEGER},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

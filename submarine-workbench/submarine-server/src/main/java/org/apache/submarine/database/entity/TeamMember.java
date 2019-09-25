@@ -13,23 +13,23 @@
  */
 package org.apache.submarine.database.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+public class TeamMember extends BaseEntity {
 
-public class Team extends BaseEntity {
-
-  private String owner;
+  private String teamId;
 
   private String teamName;
 
-  private List<TeamMember> collaborators;
+  // user name
+  private String member;
 
-  public String getOwner() {
-    return owner;
+  private Integer inviter;
+
+  public String getTeamId() {
+    return teamId;
   }
 
-  public void setOwner(String owner) {
-    this.owner = owner;
+  public void setTeamId(String teamId) {
+    this.teamId = teamId;
   }
 
   public String getTeamName() {
@@ -40,18 +40,20 @@ public class Team extends BaseEntity {
     this.teamName = teamName;
   }
 
-  public List<TeamMember> getCollaborators() {
-    return collaborators;
+  public String getMember() {
+    return member;
   }
 
-  public void setCollaborators(List<TeamMember> collaborators) {
-    this.collaborators = collaborators;
+  public void setMember(String member) {
+    this.member = member;
   }
 
-  public void addCollaborator(TeamMember memeber) {
-    if (collaborators == null) {
-      collaborators = new ArrayList<>();
-    }
-    this.collaborators.add(memeber);
+  public Integer getInviter() {
+    return inviter;
   }
+
+  public void setInviter(Integer inviter) {
+    this.inviter = inviter;
+  }
+
 }

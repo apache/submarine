@@ -59,7 +59,7 @@ public class SysUserRestApiTest extends CommonDataTest {
     sysUser.setCreateTime(new Date());
     sysUser.setUpdateTime(new Date());
 
-    Response response  = userRestApi.edit(sysUser);
+    Response response = userRestApi.edit(sysUser);
     CommonDataTest.assertUserResponseSuccess(response);
 
     List<SysUser> userList = userService.queryPageList("", null, null, null, null, 0, 10);
