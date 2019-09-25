@@ -20,6 +20,10 @@ cd <path-to-submarine-home>/dev-support/cicd
 docker build -t submarine-cicd .
 docker run -it --rm submarine-cicd
 ```
+Or
+```
+./build_and_start_cicd_image.sh
+```
 
 And you'll see output like below and then you can decide what to accomplish.
 ```
