@@ -159,6 +159,7 @@ CREATE TABLE `team_member` (
 -- ----------------------------
 -- Table structure for project
 -- ----------------------------
+DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
   `id` varchar(32) NOT NULL,
   `project_name` varchar(100) NOT NULL COMMENT 'project name',
@@ -173,11 +174,11 @@ CREATE TABLE `project` (
   PRIMARY KEY  (`id`)/*,
   CONSTRAINT `FK_PROJECT_USER_NAME` FOREIGN KEY (`user_name`) REFERENCES `sys_user` (`user_name`)*/
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-DROP TABLE IF EXISTS `project`;
 
 -- ----------------------------
 -- Table structure for project_files
 -- ----------------------------
+DROP TABLE IF EXISTS `project_files`;
 CREATE TABLE `project_files` (
   `id` varchar(32) NOT NULL,
   `project_id` varchar(32) NOT NULL COMMENT 'project id',
@@ -190,4 +191,3 @@ CREATE TABLE `project_files` (
   PRIMARY KEY  (`id`)/*,
   CONSTRAINT `FK_PROJECT_FILES_PRJ_ID` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)*/
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-DROP TABLE IF EXISTS `project_files`;

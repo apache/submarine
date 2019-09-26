@@ -13,25 +13,27 @@
  */
 package org.apache.submarine.database.mappers;
 
-import org.apache.submarine.database.entity.TeamMember;
+import org.apache.submarine.database.entity.ProjectFiles;
 
 import java.util.List;
 import java.util.Map;
 
-public interface TeamMemberMapper {
-  List<TeamMember> selectAll(Map<String, Object> where);
+public interface ProjectFilesMapper {
+  List<ProjectFiles> selectAll(Map<String, Object> where);
 
   int deleteByPrimaryKey(String id);
 
-  int deleteSelective(TeamMember record);
+  int deleteSelective(ProjectFiles record);
 
-  int insert(TeamMember record);
+  int insert(ProjectFiles record);
 
-  int insertSelective(TeamMember record);
+  int insertSelective(ProjectFiles record);
 
-  TeamMember selectByPrimaryKey(String id);
+  ProjectFiles selectByPrimaryKey(String id);
 
-  int updateSelective(TeamMember record);
+  int updateByPrimaryKeySelective(ProjectFiles record);
 
-  int updateByPrimaryKey(TeamMember record);
+  int updateByPrimaryKeyWithBLOBs(ProjectFiles record);
+
+  int updateByPrimaryKey(ProjectFiles record);
 }

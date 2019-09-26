@@ -43,7 +43,6 @@ public class TeamRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(TeamRestApi.class);
 
   private TeamService teamService = new TeamService();
-  private SysMessageService sysMessageService = new SysMessageService();
 
   @Inject
   public TeamRestApi() {
@@ -63,7 +62,7 @@ public class TeamRestApi {
     try {
       // TODO(zhulinhao): Front need to correct 'owner' value, and Whether need the
       //  front to create_by value（At the time of pr commited）
-      teams = teamService.queryPageList("liuxun", column, order, pageNo, pageSize);
+      teams = teamService.queryPageList(owner, column, order, pageNo, pageSize);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();

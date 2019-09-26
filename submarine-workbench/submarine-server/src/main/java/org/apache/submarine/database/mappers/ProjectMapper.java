@@ -13,25 +13,24 @@
  */
 package org.apache.submarine.database.mappers;
 
-import org.apache.submarine.database.entity.TeamMember;
+import org.apache.ibatis.session.RowBounds;
+import org.apache.submarine.database.entity.Project;
 
 import java.util.List;
 import java.util.Map;
 
-public interface TeamMemberMapper {
-  List<TeamMember> selectAll(Map<String, Object> where);
+public interface ProjectMapper {
+  List<Project> selectAll(Map<String, Object> where, RowBounds rowBounds);
 
   int deleteByPrimaryKey(String id);
 
-  int deleteSelective(TeamMember record);
+  int insert(Project record);
 
-  int insert(TeamMember record);
+  int insertSelective(Project record);
 
-  int insertSelective(TeamMember record);
+  Project selectByPrimaryKey(String id);
 
-  TeamMember selectByPrimaryKey(String id);
+  int updateByPrimaryKeySelective(Project record);
 
-  int updateSelective(TeamMember record);
-
-  int updateByPrimaryKey(TeamMember record);
+  int updateByPrimaryKey(Project record);
 }

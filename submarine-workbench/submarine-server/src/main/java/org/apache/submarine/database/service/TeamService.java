@@ -36,7 +36,7 @@ public class TeamService {
                                   String order,
                                   int pageNo,
                                   int pageSize) throws Exception {
-    LOG.info("queryDictList owner:{}, column:{}, order:{}, pageNo:{}, pageSize:{}",
+    LOG.info("queryPageList owner:{}, column:{}, order:{}, pageNo:{}, pageSize:{}",
         owner, column, order, pageNo, pageSize);
 
     List<Team> list = null;

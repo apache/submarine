@@ -11,27 +11,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. See accompanying LICENSE file.
  */
-package org.apache.submarine.database.mappers;
+package org.apache.submarine.rest;
 
-import org.apache.submarine.database.entity.TeamMember;
+import org.junit.Test;
 
-import java.util.List;
-import java.util.Map;
+public class TeamRestApiTest {
 
-public interface TeamMemberMapper {
-  List<TeamMember> selectAll(Map<String, Object> where);
+  @Test
+  public void list() {
+  }
 
-  int deleteByPrimaryKey(String id);
+  @Test
+  public void add() {
+  }
 
-  int deleteSelective(TeamMember record);
+  @Test
+  public void edit() {
+  }
 
-  int insert(TeamMember record);
-
-  int insertSelective(TeamMember record);
-
-  TeamMember selectByPrimaryKey(String id);
-
-  int updateSelective(TeamMember record);
-
-  int updateByPrimaryKey(TeamMember record);
+  @Test
+  public void delete() {
+  }
 }
