@@ -31,9 +31,7 @@ public class TeamMemberService {
     LOG.info("queryList teamName:{}", teamName);
 
     List<TeamMember> list = null;
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
       Map<String, Object> where = new HashMap<>();
       where.put("teamName", teamName);
@@ -41,44 +39,8 @@ public class TeamMemberService {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return list;
-  }
-
-  public void add(TeamMember teamMember) throws Exception {
-    LOG.info("add({})", teamMember.toString());
-
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
-      TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
-      teamMemberMapper.insert(teamMember);
-      sqlSession.commit();
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new Exception(e);
-    } finally {
-      sqlSession.close();
-    }
-  }
-
-  public void deleteByPrimaryKey(String id) throws Exception {
-    LOG.info("deleteByPrimaryKey({})", id);
-
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
-      TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
-      teamMemberMapper.deleteByPrimaryKey(id);
-      sqlSession.commit();
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new Exception(e);
-    } finally {
-      sqlSession.close();
-    }
   }
 
 }

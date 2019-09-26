@@ -39,9 +39,7 @@ public class ProjectService {
         userName, column, order, pageNo, pageSize);
 
     List<Project> list = null;
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ProjectMapper projectMapper = sqlSession.getMapper(ProjectMapper.class);
       Map<String, Object> where = new HashMap<>();
       where.put("userName", userName);
@@ -62,17 +60,13 @@ public class ProjectService {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return list;
   }
 
   public boolean delete(String id) throws Exception {
     LOG.info("delete({})", id);
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ProjectMapper projectMapper = sqlSession.getMapper(ProjectMapper.class);
       projectMapper.deleteByPrimaryKey(id);
 
@@ -84,8 +78,6 @@ public class ProjectService {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return true;
   }
