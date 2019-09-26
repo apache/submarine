@@ -40,16 +40,14 @@ public class TeamService {
         owner, column, order, pageNo, pageSize);
 
     List<Team> list = null;
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    Map<String, Object> where = new HashMap<>();
+    where.put("owner", owner);
+    where.put("column", column);
+    where.put("order", order);
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       TeamMapper teamMapper = sqlSession.getMapper(TeamMapper.class);
-      Map<String, Object> where = new HashMap<>();
-      where.put("owner", owner);
-      where.put("column", column);
-      where.put("order", order);
-      list = teamMapper.selectAll(where, new RowBounds(pageNo, pageSize));
 
+      list = teamMapper.selectAll(where, new RowBounds(pageNo, pageSize));
       TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
       // query from team_member table, and set to team
       for (Team team : list) {
@@ -63,8 +61,6 @@ public class TeamService {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return list;
   }
@@ -72,9 +68,7 @@ public class TeamService {
   public boolean add(Team team) throws Exception {
     LOG.info("add({})", team.toString());
 
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       TeamMapper teamMapper = sqlSession.getMapper(TeamMapper.class);
       teamMapper.insert(team);
 
@@ -82,7 +76,7 @@ public class TeamService {
       // add teamMember, when add team, should insert 'Collaborators' to team_member
       List<TeamMember> list = team.getCollaborators();
       for (TeamMember teamMember : list) {
-        // TODO: teamMember's member is sys_user's id now.
+        // TODO(zhulinhao): teamMember's member is sys_user's id now.
         teamMember.setTeamId(team.getId());
         teamMemberMapper.insert(teamMember);
       }
@@ -91,8 +85,6 @@ public class TeamService {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return true;
   }
@@ -100,9 +92,7 @@ public class TeamService {
   public boolean updateByPrimaryKeySelective(Team team) throws Exception {
     LOG.info("updateByPrimaryKeySelective({})", team.toString());
 
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       TeamMapper teamMapper = sqlSession.getMapper(TeamMapper.class);
       teamMapper.updateByPrimaryKeySelective(team);
 
@@ -131,7 +121,7 @@ public class TeamService {
 
       for (TeamMember curr : curr_teamMembers) {
         if (!old_teamMembers_member.contains(curr.getMember())) {
-          // TODO：teamId Send it by the front desk, here there is no assignment
+          // TODO(zhulinhao)：teamId Send it by the front desk, here there is no assignment
           curr.setTeamId(team.getId());
           curr.setTeamName(team.getTeamName());
           teamMemberMapper.insert(curr);
@@ -148,17 +138,13 @@ public class TeamService {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return true;
   }
 
   public boolean delete(String id) throws Exception {
     LOG.info("delete({})", id);
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       TeamMapper teamMapper = sqlSession.getMapper(TeamMapper.class);
       teamMapper.deleteByPrimaryKey(id);
 
@@ -170,8 +156,6 @@ public class TeamService {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return true;
   }
