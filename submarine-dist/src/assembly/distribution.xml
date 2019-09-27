@@ -49,7 +49,7 @@
     <dependencySet>
       <outputDirectory>/workbench</outputDirectory>
       <includes>
-        <include>org.apache.submarine:submarine-web</include>
+        <include>org.apache.submarine:workbench-web</include>
       </includes>
     </dependencySet>
   </dependencySets>
@@ -80,14 +80,14 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>../submarine-workbench/submarine-server/target</directory>
+      <directory>../submarine-workbench/workbench-server/target</directory>
       <outputDirectory>/workbench</outputDirectory>
       <includes>
-        <include>submarine-server-${project.version}.jar</include>
+        <include>workbench-server-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
-      <directory>../submarine-workbench/submarine-server/target/dependency</directory>
+      <directory>../submarine-workbench/workbench-server/target/dependency</directory>
       <outputDirectory>/workbench/lib</outputDirectory>
     </fileSet>
   </fileSets>

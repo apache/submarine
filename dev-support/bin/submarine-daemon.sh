@@ -19,4 +19,4 @@
 # description: Start and stop daemon script for.
 #
 
-${JAVA_HOME}/bin/java -cp "../../submarine-server/target/submarine-server-0.3.0-SNAPSHOT-shade.jar" org.apache.submarine.server.SubmarineServer
+${JAVA_HOME}/bin/java -cp "../../workbench-server/target/workbench-server-0.3.0-SNAPSHOT-shade.jar" org.apache.submarine.server.WorkbenchServer

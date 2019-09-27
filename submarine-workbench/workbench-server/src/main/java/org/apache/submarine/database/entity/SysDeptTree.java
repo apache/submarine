@@ -16,7 +16,7 @@ package org.apache.submarine.database.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-// Corresponding to the submarine-web front-end tree table control
+// Corresponding to the workbench-web front-end tree table control
 public class SysDeptTree extends SysDept {
   // Use the SysDept.id field as the key in the front-end data tree
   private String key;

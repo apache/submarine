@@ -56,18 +56,18 @@ metrics such as metrics when the algorithm is executed in your python program by
 importing pysubmarine during the development of the machine learning algorithm.
 
 ### 2.7. submarine-workbench
-+ **submarine-server**: is a Jetty-based web server service. Submarine-server 
++ **workbench-server**: is a Jetty-based web server service. Workbench-server 
 provides RESTful interface and Websocket interface. The RESTful interface 
-provides submarine-web with management capabilities for databases such as 
+provides workbench-web with management capabilities for databases such as 
 project, department, user, and role.
-+ **submarine-web**: is a web front-end service based on `VUE.js` framework. 
-With `submarine-web` users can manage submarine project, department, user, role 
++ **workbench-web**: is a web front-end service based on `VUE.js` framework. 
+With `workbench-web` users can manage submarine project, department, user, role 
 through browser. You can also use the notebook to develop machine learning 
 algorithms, model release and other lifecycle management.
 
 ## 3. Submarine Workbench Development Guide
 
-Submarine workbench consists of three modules: submarine-server, submarine-web
+Submarine workbench consists of three modules: workbench-server, workbench-web
 and database. 
 
 First, you need to clone the entire submarine project: 
@@ -84,16 +84,16 @@ the project's [Submarine Database Guide](../database/) documentation and follow
 the instructions to install a mysql database via docker in your development and 
 test environment.
 
-## 3.2 Submarine-web
+## 3.2 Workbench-web
 
 + **Install dependencies**
 
-You only need to execute the following command when you run submarine-web for 
+You only need to execute the following command when you run workbench-web for 
 the first time, so you can follow the depend. environment of node.js in the 
-submarine-web directory.
+workbench-web directory.
 
 ```bash
-cd submarine/submarine-web
+cd submarine/workbench-web
 yarn install
 ```
 
@@ -105,23 +105,23 @@ The node.js dependency library will be installed in the node_modules directory. 
 yarn run build
 ```
 
-By executing the above command, `submarine-web` will publish the web page to the `submarine-web/dist` directory. Later we will also add the feature of `submarine-web` to a WAR package, which only requires a `submarine-web.war` file. Package can release submarine workbench.
+By executing the above command, `workbench-web` will publish the web page to the `workbench-web/dist` directory. Later we will also add the feature of `workbench-web` to a WAR package, which only requires a `workbench-web.war` file. Package can release submarine workbench.
 
 + **Lints and fixes files**
 
-When you write the `vue, js` file in `submarine-web` through IDEA, because IDEA can't format these files well, you need to execute the following command to format the vue and js files to avoid some warnings during the yarn build. 
+When you write the `vue, js` file in `workbench-web` through IDEA, because IDEA can't format these files well, you need to execute the following command to format the vue and js files to avoid some warnings during the yarn build. 
 
 ```
 yarn run lint
 ```
 
-In fact, you must execute this command when you develop and submit any submarine-web feture. Otherwise, chances are that you won't be able to check the code specification we set up in Travis.
+In fact, you must execute this command when you develop and submit any workbench-web feture. Otherwise, chances are that you won't be able to check the code specification we set up in Travis.
 
-## 3.3 Submarine-server
+## 3.3 Workbench-server
 
-Submarine-server has a built-in jetty server service, so you don't need to install any web container service. You can start submarine workbench by launching `submarine-server` directly in IDEA.
+Workbench-server has a built-in jetty server service, so you don't need to install any web container service. You can start submarine workbench by launching `workbench-server` directly in IDEA.
 
-+ **Run / Debug** : In the IDEA, add a Run/Debug Configuration, `Main Class:` select `org.apache.submarine.server.SubmarineServer`, `Use classpath of module:` select `submarine-server`. 
++ **Run / Debug** : In the IDEA, add a Run/Debug Configuration, `Main Class:` select `org.apache.submarine.server.WorkbenchServer`, `Use classpath of module:` select `workbench-server`. 
 
 ![img](../assets/Run-Debug-Configuration.png)
 
@@ -129,10 +129,10 @@ So you can pass http://127.0.0.1:8080 debugging or running to submarine-workbenc
 
 + **It should be noted**: 
 
-1. Because `submarine-web/dist` is the webapp default directory of the submarine-server Jetty Server, the submarine-server will automatically load the `submarine-web/dist` directory after startup.
+1. Because `workbench-web/dist` is the webapp default directory of the workbench-server Jetty Server, the workbench-server will automatically load the `workbench-web/dist` directory after startup.
 
-2. The `submarine-web/dist` used by `submarine-server` is used as the webapp directory, which is configured via `Submarine-site.xml`, but we do not recommend you to modify it.
+2. The `workbench-web/dist` used by `workbench-server` is used as the webapp directory, which is configured via `workbench-site.xml`, but we do not recommend you to modify it.
 
-3. The submarine-workbench, IP and 8080 ports that are accessible locally through the port 8080 of 127.0.0.1 are configured via  `Submarine-site.xml`, but we do not recommend you to modify it.
+3. The submarine-workbench, IP and 8080 ports that are accessible locally through the port 8080 of 127.0.0.1 are configured via  `workbench-site.xml`, but we do not recommend you to modify it.
 
-4. When you modify the `vue` or `js` of submarine-web, you need to execute the yarn run build command in the submarine-web directory, and let your modified code update to the dist directory, so that you can see the effect of your code modification in the workbench.
+4. When you modify the `vue` or `js` of workbench-web, you need to execute the yarn run build command in the workbench-web directory, and let your modified code update to the dist directory, so that you can see the effect of your code modification in the workbench.
