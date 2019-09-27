@@ -61,25 +61,25 @@ matrix:
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-2.7" PROFILE="-Phadoop-2.7" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/submarine-web,!submarine-workbench/submarine-server\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-2.7" PROFILE="-Phadoop-2.7" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/submarine-web,!submarine-workbench/submarine-server,!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-2.9(default)
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-2.9" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/submarine-web,!submarine-workbench/submarine-server\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-2.9" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/submarine-web,!submarine-workbench/submarine-server,!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-3.1
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-3.1" PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/submarine-web,!submarine-workbench/submarine-server\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-3.1" PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/submarine-web,!submarine-workbench/submarine-server,!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-3.2
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-3.2" PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/submarine-web,!submarine-workbench/submarine-server\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-3.2" PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/submarine-web,!submarine-workbench/submarine-server,!submarine-dist\"" TEST_PROJECTS=""
 
     # Build submarine-web
     - language: node_js
@@ -105,6 +105,13 @@ matrix:
       jdk: "openjdk8"
       dist: xenial
       env: NAME="Test submarine-web" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE_CORE}" TEST_MODULES="-pl submarine-workbench/submarine-web" TEST_PROJECTS=""
+
+    # Test submarine distribution
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
+      env: NAME="Test submarine distribution" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="" TEST_MODULES="" TEST_PROJECTS=""
+
 
 install:
   - mvn --version

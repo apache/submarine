@@ -46,6 +46,12 @@
         <include>com.linkedin.tony:tony-core</include>
       </includes>
     </dependencySet>
+    <dependencySet>
+      <outputDirectory>/workbench</outputDirectory>
+      <includes>
+        <include>org.apache.submarine:submarine-web</include>
+      </includes>
+    </dependencySet>
   </dependencySets>
 
   <files>
@@ -72,6 +78,17 @@
       <includes>
         <include>submarine-all-${project.version}-*.jar</include>
       </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../submarine-workbench/submarine-server/target</directory>
+      <outputDirectory>/workbench</outputDirectory>
+      <includes>
+        <include>submarine-server-${project.version}.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../submarine-workbench/submarine-server/target/dependency</directory>
+      <outputDirectory>/workbench/lib</outputDirectory>
     </fileSet>
   </fileSets>
 
