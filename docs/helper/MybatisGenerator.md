@@ -31,7 +31,7 @@ You will still need to hand code SQL and objects for join queries, or stored pro
 ## Quick Start
 
 ### Add plug-in dependencies in pom.xml
-The plug-in has been added in the pom.xml of the _submarine-server_.
+The plug-in has been added in the pom.xml of the _workbench-server_.
 
 ```
 <dependency>
@@ -49,7 +49,7 @@ connectionURL, userId, password.
 3. **tableName** and **domainObjectName**: List all the table to generate the code.
 
 ### Add main class
-We have been added main class named _MybatisGeneratorMain_ in the _submarine-server_ 
+We have been added main class named _MybatisGeneratorMain_ in the _workbench-server_ 
 project _org.apache.submarine.database.utils_ package path.
 
 ### Generator file

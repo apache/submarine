@@ -52,7 +52,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>submarine-web</artifactId>
+      <artifactId>workbench-web</artifactId>
       <version>${project.version}</version>
       <type>war</type>
     </dependency>

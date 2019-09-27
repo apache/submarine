@@ -32,8 +32,8 @@
   <description>Submarine Workbench</description>
 
   <modules>
-    <module>submarine-web</module>
-    <module>submarine-server</module>
+    <module>workbench-web</module>
+    <module>workbench-server</module>
   </modules>
 
 </project>

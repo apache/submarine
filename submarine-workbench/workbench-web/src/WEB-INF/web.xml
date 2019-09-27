@@ -20,7 +20,7 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
 
- <display-name>submarine-web</display-name>
+ <display-name>workbench-web</display-name>
   <servlet>
     <servlet-name>default</servlet-name>
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>

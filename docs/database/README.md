@@ -128,4 +128,4 @@ mysqldump -uroot -ppassword --databases submarineDB > submarineDB.sql;
 
 2. In the mysql database in Travis, the `submarine.sql` are executed to create the submarine database table structure and test data.
 
-3. The submarine database test case written in the `submarine-server` module will also be unit tested in the mysql database in travis.
+3. The submarine database test case written in the `workbench-server` module will also be unit tested in the mysql database in travis.

@@ -27,17 +27,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SubmarineConfiguration extends XMLConfiguration {
-  private static final Logger LOG = LoggerFactory.getLogger(SubmarineConfiguration.class);
+public class WorkbenchConfiguration extends XMLConfiguration {
+  private static final Logger LOG = LoggerFactory.getLogger(WorkbenchConfiguration.class);
   private static final long serialVersionUID = 4749303235693848035L;
 
-  private static final String SUBMARINE_SITE_XML = "submarine-site.xml";
+  private static final String WORKBENCH_SITE_XML = "workbench-site.xml";
 
-  private static SubmarineConfiguration conf;
+  private static WorkbenchConfiguration conf;
 
   private Map<String, String> properties = new HashMap<>();
 
-  public SubmarineConfiguration(URL url) throws ConfigurationException {
+  public WorkbenchConfiguration(URL url) throws ConfigurationException {
     setDelimiterParsingDisabled(true);
     load(url);
     initProperties();
@@ -57,7 +57,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     }
   }
 
-  public SubmarineConfiguration() {
+  public WorkbenchConfiguration() {
     ConfVars[] vars = ConfVars.values();
     for (ConfVars v : vars) {
       if (v.getType() == ConfVars.VarType.BOOLEAN) {
@@ -76,7 +76,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     }
   }
 
-  public static synchronized SubmarineConfiguration create() {
+  public static synchronized WorkbenchConfiguration create() {
     if (conf != null) {
       return conf;
     }
@@ -84,27 +84,27 @@ public class SubmarineConfiguration extends XMLConfiguration {
     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     URL url;
 
-    url = SubmarineConfiguration.class.getResource(SUBMARINE_SITE_XML);
+    url = WorkbenchConfiguration.class.getResource(WORKBENCH_SITE_XML);
     if (url == null) {
-      ClassLoader cl = SubmarineConfiguration.class.getClassLoader();
+      ClassLoader cl = WorkbenchConfiguration.class.getClassLoader();
       if (cl != null) {
-        url = cl.getResource(SUBMARINE_SITE_XML);
+        url = cl.getResource(WORKBENCH_SITE_XML);
       }
     }
     if (url == null) {
-      url = classLoader.getResource(SUBMARINE_SITE_XML);
+      url = classLoader.getResource(WORKBENCH_SITE_XML);
     }
 
     if (url == null) {
       LOG.warn("Failed to load configuration, proceeding with a default");
-      conf = new SubmarineConfiguration();
+      conf = new WorkbenchConfiguration();
     } else {
       try {
         LOG.info("Load configuration from " + url);
-        conf = new SubmarineConfiguration(url);
+        conf = new WorkbenchConfiguration(url);
       } catch (ConfigurationException e) {
         LOG.warn("Failed to load configuration from " + url + " proceeding with a default", e);
-        conf = new SubmarineConfiguration();
+        conf = new WorkbenchConfiguration();
       }
     }
 
@@ -355,30 +355,30 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public enum ConfVars {
-    SERVER_ADDR("submarine.server.addr", "0.0.0.0"),
-    SERVER_PORT("submarine.server.port", 8080),
-    SERVER_SSL("submarine.server.ssl", false),
-    SERVER_SSL_PORT("submarine.server.ssl.port", 8443),
-    SERVER_JETTY_THREAD_POOL_MAX("submarine.server.jetty.thread.pool.max", 400),
-    SERVER_JETTY_THREAD_POOL_MIN("submarine.server.jetty.thread.pool.min", 8),
-    SERVER_JETTY_THREAD_POOL_TIMEOUT("submarine.server.jetty.thread.pool.timeout", 30),
-    SERVER_JETTY_REQUEST_HEADER_SIZE("submarine.server.jetty.request.header.size", 8192),
-    SSL_CLIENT_AUTH("submarine.ssl.client.auth", false),
-    SSL_KEYSTORE_PATH("submarine.ssl.keystore.path", "keystore"),
-    SERVER_SSL_KEYSTORE_TYPE("submarine.ssl.keystore.type", "JKS"),
-    SERVER_SSL_KEYSTORE_PASSWORD("submarine.ssl.keystore.password", ""),
-    SERVER_SSL_KEY_MANAGER_PASSWORD("submarine.ssl.key.manager.password", null),
-    SERVER_SSL_TRUSTSTORE_PATH("submarine.ssl.truststore.path", null),
-    SERVER_SSL_TRUSTSTORE_TYPE("submarine.ssl.truststore.type", null),
-    SERVER_SSL_TRUSTSTORE_PASSWORD("submarine.ssl.truststore.password", null),
+    SERVER_ADDR("workbench.server.addr", "0.0.0.0"),
+    SERVER_PORT("workbench.server.port", 8080),
+    SERVER_SSL("workbench.server.ssl", false),
+    SERVER_SSL_PORT("workbench.server.ssl.port", 8443),
+    SERVER_JETTY_THREAD_POOL_MAX("workbench.server.jetty.thread.pool.max", 400),
+    SERVER_JETTY_THREAD_POOL_MIN("workbench.server.jetty.thread.pool.min", 8),
+    SERVER_JETTY_THREAD_POOL_TIMEOUT("workbench.server.jetty.thread.pool.timeout", 30),
+    SERVER_JETTY_REQUEST_HEADER_SIZE("workbench.server.jetty.request.header.size", 8192),
+    SSL_CLIENT_AUTH("workbench.ssl.client.auth", false),
+    SSL_KEYSTORE_PATH("workbench.ssl.keystore.path", "keystore"),
+    SERVER_SSL_KEYSTORE_TYPE("workbench.ssl.keystore.type", "JKS"),
+    SERVER_SSL_KEYSTORE_PASSWORD("workbench.ssl.keystore.password", ""),
+    SERVER_SSL_KEY_MANAGER_PASSWORD("workbench.ssl.key.manager.password", null),
+    SERVER_SSL_TRUSTSTORE_PATH("workbench.ssl.truststore.path", null),
+    SERVER_SSL_TRUSTSTORE_TYPE("workbench.ssl.truststore.type", null),
+    SERVER_SSL_TRUSTSTORE_PASSWORD("workbench.ssl.truststore.password", null),
     JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
     JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarineDB" +
         "?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
     JDBC_USERNAME("jdbc.username", "submarine"),
     JDBC_PASSWORD("jdbc.password", "password"),
-    SUBMARINE_WAR("submarine.war", "submarine-workbench/submarine-web/dist"),
-    SUBMARINE_WAR_TEMPDIR("submarine.war.tempdir", "webapps");
+    SUBMARINE_WAR("workbench.war", "submarine-workbench/workbench-web/dist"),
+    WAR_TEMPDIR("workbench.war.tempdir", "webapps");
 
     private String varName;
     @SuppressWarnings("rawtypes")

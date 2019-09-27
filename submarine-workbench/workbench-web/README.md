@@ -21,7 +21,7 @@ English | [简体中文](./README.zh-CN.md)
 - Clone repo
 ```bash
 git https://github.com/hadoopsubmarine/submarine.git
-cd submarine/submarine-workbench/submarine-web
+cd submarine/submarine-workbench/workbench-web
 ```
 
 - Install dependencies

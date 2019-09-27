@@ -33,22 +33,22 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.submarine.server.SubmarineConfiguration.ConfVars;
+import org.apache.submarine.server.WorkbenchConfiguration.ConfVars;
 
 import javax.inject.Inject;
 import java.io.File;
 
-public class SubmarineServer extends ResourceConfig {
-  private static final Logger LOG = LoggerFactory.getLogger(SubmarineServer.class);
+public class WorkbenchServer extends ResourceConfig {
+  private static final Logger LOG = LoggerFactory.getLogger(WorkbenchServer.class);
 
   public static Server jettyWebServer;
 
-  private static SubmarineConfiguration conf = SubmarineConfiguration.create();
+  private static WorkbenchConfiguration conf = WorkbenchConfiguration.create();
 
   public static void main(String[] args) throws InterruptedException {
     PropertyConfigurator.configure(ClassLoader.getSystemResource("log4j.properties"));
 
-    final SubmarineConfiguration conf = SubmarineConfiguration.create();
+    final WorkbenchConfiguration conf = WorkbenchConfiguration.create();
 
     jettyWebServer = setupJettyServer(conf);
 
@@ -64,14 +64,14 @@ public class SubmarineServer extends ResourceConfig {
   }
 
   @Inject
-  public SubmarineServer() {
+  public WorkbenchServer() {
     packages("org.apache.submarine.rest");
   }
 
   private static void startServer() throws InterruptedException {
     LOG.info("Starting submarine server");
     try {
-      jettyWebServer.start(); // Instantiates submarineServer
+      jettyWebServer.start(); // Instantiates WorkbenchServer
     } catch (Exception e) {
       LOG.error("Error while running jettyServer", e);
       System.exit(-1);
@@ -82,7 +82,7 @@ public class SubmarineServer extends ResourceConfig {
         .addShutdownHook(
             new Thread(
                 () -> {
-                  LOG.info("Shutting down submarine Server ... ");
+                  LOG.info("Shutting down Submarine Workbench Server ... ");
                   try {
                     jettyWebServer.stop();
                     Thread.sleep(3000);
@@ -95,11 +95,11 @@ public class SubmarineServer extends ResourceConfig {
     jettyWebServer.join();
   }
 
-  private static void setupRestApiContextHandler(WebAppContext webapp, SubmarineConfiguration conf) {
+  private static void setupRestApiContextHandler(WebAppContext webapp, WorkbenchConfiguration conf) {
     final ServletHolder servletHolder =
         new ServletHolder(new org.glassfish.jersey.servlet.ServletContainer());
 
-    servletHolder.setInitParameter("javax.ws.rs.Application", SubmarineServer.class.getName());
+    servletHolder.setInitParameter("javax.ws.rs.Application", WorkbenchServer.class.getName());
     servletHolder.setName("rest");
     servletHolder.setForcedPath("rest");
     webapp.setSessionHandler(new SessionHandler());
@@ -107,7 +107,7 @@ public class SubmarineServer extends ResourceConfig {
   }
 
   private static WebAppContext setupWebAppContext(ContextHandlerCollection contexts,
-                                                  SubmarineConfiguration conf) {
+                                                  WorkbenchConfiguration conf) {
     WebAppContext webApp = new WebAppContext();
     webApp.setContextPath("/");
     File warPath = new File(conf.getString(ConfVars.SUBMARINE_WAR));
@@ -119,7 +119,7 @@ public class SubmarineServer extends ResourceConfig {
     } else {
       // use packaged WAR
       webApp.setWar(warPath.getAbsolutePath());
-      File warTempDirectory = new File(conf.getRelativeDir(ConfVars.SUBMARINE_WAR_TEMPDIR));
+      File warTempDirectory = new File(conf.getRelativeDir(ConfVars.WAR_TEMPDIR));
       warTempDirectory.mkdir();
       LOG.info("submarineServer Webapp path: {}", warTempDirectory.getPath());
       webApp.setTempDirectory(warTempDirectory);
@@ -131,7 +131,7 @@ public class SubmarineServer extends ResourceConfig {
     return webApp;
   }
 
-  private static Server setupJettyServer(SubmarineConfiguration conf) {
+  private static Server setupJettyServer(WorkbenchConfiguration conf) {
     ThreadPool threadPool =
         new QueuedThreadPool(conf.getInt(ConfVars.SERVER_JETTY_THREAD_POOL_MAX),
             conf.getInt(ConfVars.SERVER_JETTY_THREAD_POOL_MIN),
@@ -178,7 +178,7 @@ public class SubmarineServer extends ResourceConfig {
     return server;
   }
 
-  private static SslContextFactory getSslContextFactory(SubmarineConfiguration conf) {
+  private static SslContextFactory getSslContextFactory(WorkbenchConfiguration conf) {
     SslContextFactory sslContextFactory = new SslContextFactory();
 
     // Set keystore
@@ -200,7 +200,7 @@ public class SubmarineServer extends ResourceConfig {
   }
 
   private static void configureRequestHeaderSize(
-      SubmarineConfiguration conf, ServerConnector connector) {
+      WorkbenchConfiguration conf, ServerConnector connector) {
     HttpConnectionFactory cf =
         (HttpConnectionFactory) connector.getConnectionFactory(HttpVersion.HTTP_1_1.toString());
     int requestHeaderSize = conf.getJettyRequestHeaderSize();
