@@ -15,6 +15,7 @@
 
 from __future__ import print_function
 from submarine.store import DEFAULT_SUBMARINE_SERVER_PATH
+from submarine.store.sqlalchemy_store import SqlAlchemyStore
 from submarine.utils import env
 
 _TRACKING_URI_ENV_VAR = "SUBMARINE_TRACKING_URI"
@@ -72,5 +73,4 @@ def get_job_name():
 
 
 def get_sqlalchemy_store(store_uri):
-    from submarine.store.sqlalchemy_store import SqlAlchemyStore
     return SqlAlchemyStore(store_uri)

@@ -74,7 +74,8 @@ class SqlMetric(Base):
     )
 
     def __repr__(self):
-        return '<SqlMetric({}, {}, {}, {})>'.format(self.key, self.value, self.timestamp, self.step)
+        return '<SqlMetric({}, {}, {}, {}, {})>'.format(self.key, self.value, self.worker_index,
+                                                        self.timestamp, self.step)
 
     def to_submarine_entity(self):
         """
@@ -124,7 +125,7 @@ class SqlParam(Base):
     )
 
     def __repr__(self):
-        return '<SqlParam({}, {})>'.format(self.key, self.value)
+        return '<SqlParam({}, {}, {})>'.format(self.key, self.value, self.worker_index)
 
     def to_submarine_entity(self):
         """
