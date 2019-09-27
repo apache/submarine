@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.submarine.database.mappers.ProjectMapper">
+  <resultMap id="BaseEntityResultMap" type="org.apache.submarine.database.entity.BaseEntity">
+    <id property="id" column="id"/>
+    <result column="create_by" property="createBy"/>
+    <result column="create_time" property="createTime"/>
+    <result column="update_by" property="updateBy"/>
+    <result column="update_time" property="updateTime"/>
+  </resultMap>
+
+  <resultMap id="resultMap" type="org.apache.submarine.database.entity.Project" extends="BaseEntityResultMap">
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="visibility" jdbcType="INTEGER" property="visibility" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, project_name, visibility, type, description, user_name, create_by, create_time, 
+    update_by, update_time
+  </sql>
+
+  <select id="selectAll" parameterType="java.util.Map" resultMap="resultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM project
+    WHERE 1 = 1
+    <if test="userName!=null and userName!=''">AND `user_name` = #{userName}</if>
+    ORDER BY #{column} #{order}
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="resultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from project
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from project
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="org.apache.submarine.database.entity.Project">
+    <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+      SELECT REPLACE(UUID(),"-","")
+    </selectKey>
+    insert into project (id, project_name, visibility, 
+      type, description, user_name, 
+      create_by, create_time, update_time)
+    values (#{id,jdbcType=VARCHAR}, #{projectName,jdbcType=VARCHAR}, #{visibility,jdbcType=INTEGER}, 
+      #{type,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+      #{createBy,jdbcType=VARCHAR}, now(), now())
+  </insert>
+
+  <insert id="insertSelective" parameterType="org.apache.submarine.database.entity.Project">
+    insert into project
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="projectName != null">
+        project_name,
+      </if>
+      <if test="visibility != null">
+        visibility,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null">
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="visibility != null">
+        #{visibility,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.database.entity.Project">
+    update project
+    <set>
+      <if test="projectName != null">
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="visibility != null">
+        visibility = #{visibility,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      update_time = now()
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.database.entity.Project">
+    update project
+    set project_name = #{projectName,jdbcType=VARCHAR},
+      visibility = #{visibility,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      description = #{description,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
