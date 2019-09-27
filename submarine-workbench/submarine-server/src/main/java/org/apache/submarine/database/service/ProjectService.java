@@ -23,6 +23,7 @@ import org.apache.submarine.database.mappers.ProjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,54 @@ public class ProjectService {
         // ProjectId needs to be obtained after the Project is inserted into the database
         projectFiles.setProjectId(project.getId());
         projectFilesMapper.insert(projectFiles);
+      }
+
+      sqlSession.commit();
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    }
+    return true;
+  }
+
+  public boolean updateByPrimaryKeySelective(Project project) throws Exception {
+    LOG.info("updateByPrimaryKeySelective({})", project.toString());
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      ProjectMapper projectMapper = sqlSession.getMapper(ProjectMapper.class);
+      projectMapper.updateByPrimaryKeySelective(project);
+
+      ProjectFilesMapper projectFilesMapper = sqlSession.getMapper(ProjectFilesMapper.class);
+      Map<String, Object> where = new HashMap<>();
+      where.put("projectId", project.getId());
+      // Take two lists of difference
+      List<ProjectFiles> old_projectFiles = projectFilesMapper.selectAll(where);
+      List<String> old_projectFiles_id = new ArrayList<>();
+      for (ProjectFiles old_projectFile : old_projectFiles) {
+        old_projectFiles_id.add(old_projectFile.getId());
+      }
+      List<ProjectFiles> curr_projectFiles = project.getProjectFilesList();
+      List<String> curr_projectFiles_id = new ArrayList<>();
+      for (ProjectFiles curr_projectFile : curr_projectFiles) {
+        curr_projectFiles_id.add(curr_projectFile.getId());
+      }
+
+      for (ProjectFiles old : old_projectFiles) {
+        if (!curr_projectFiles_id.contains(old.getId())) {
+          projectFilesMapper.deleteByPrimaryKey(old.getId());
+        } else {
+          for (ProjectFiles curr_projectFile : curr_projectFiles) {
+            if (curr_projectFile.getId() != null && curr_projectFile.getId().equals(old.getId())) {
+              projectFilesMapper.updateByPrimaryKeySelective(curr_projectFile);
+            }
+          }
+        }
+      }
+      for (ProjectFiles curr : curr_projectFiles) {
+        if (curr.getId() == null) {
+          // TODO(zhulinhao)：The front desk should pass the projectId
+          curr.setProjectId(project.getId());
+          projectFilesMapper.insert(curr);
+        }
       }
 
       sqlSession.commit();

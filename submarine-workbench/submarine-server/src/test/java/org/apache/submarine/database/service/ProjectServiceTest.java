@@ -77,8 +77,65 @@ public class ProjectServiceTest {
     ProjectFiles projectFiles_db = project_db.getProjectFilesList().get(0);
     assertEquals(project.getId(), projectFiles_db.getProjectId());
     assertEquals(projectFiles.getFileContent(), projectFiles_db.getFileContent());
-    assertEquals(projectFiles.getFileName(), projectFiles_db.getFileContent());
+    assertEquals(projectFiles.getFileName(), projectFiles_db.getFileName());
     assertEquals(projectFiles.getCreateBy(), projectFiles_db.getCreateBy());
+  }
+
+  @Test
+  public void updateByPrimaryKeySelective() throws Exception {
+    ProjectFiles projectFiles = new ProjectFiles();
+    projectFiles.setFileContent("ProjectServiceTest-FileContent");
+    projectFiles.setFileName("ProjectServiceTest-FileName");
+    projectFiles.setCreateBy("ProjectServiceTest-UserName");
+
+    Project project = new Project();
+    project.setDescription("ProjectServiceTest-Description");
+    project.setProjectName("ProjectServiceTest-ProjectName");
+    project.setType(1);
+    project.setUserName("ProjectServiceTest-UserName");
+    project.setVisibility(1);
+    project.setCreateBy("ProjectServiceTest-UserName");
+    List list = new ArrayList<ProjectFiles>();
+    list.add(projectFiles);
+    project.setProjectFilesList(list);
+
+    Boolean ret = projectService.add(project);
+    assertTrue(ret);
+
+    project.setProjectName("update_projectName");
+    project.setDescription("update_description");
+    project.setVisibility(2);
+    project.setUpdateBy("project_updateBy");
+    ProjectFiles projectFiles_update = new ProjectFiles();
+    projectFiles_update.setFileContent("ProjectServiceTest-FileContent2");
+    projectFiles_update.setFileName("ProjectServiceTest-FileName2");
+    projectFiles_update.setCreateBy("ProjectServiceTest-UserName2");
+    list.add(projectFiles_update);
+    projectFiles.setFileName("update_fileName");
+    projectFiles.setFileContent("update_fileContent");
+    projectFiles.setUpdateBy("projectFiles_updateby");
+    boolean editRet = projectService.updateByPrimaryKeySelective(project);
+    assertTrue(editRet);
+    List<Project> projectList = projectService.queryPageList("ProjectServiceTest-UserName",
+        "create_time", "desc", 0, 100);
+    assertEquals(projectList.size(), 1);
+
+    Project project_db = projectList.get(0);
+    assertEquals(project.getProjectName(), project_db.getProjectName());
+    assertEquals(project.getDescription(), project_db.getDescription());
+    assertEquals(project.getVisibility(), project_db.getVisibility());
+    assertEquals(project.getUpdateBy(), project_db.getUpdateBy());
+    LOG.info("update_time:{}", project_db.getUpdateTime());
+
+    List<ProjectFiles> projectFilesList = project_db.getProjectFilesList();
+    for (ProjectFiles files : projectFilesList) {
+      if (!files.getFileContent().equals("ProjectServiceTest-FileContent2")) {
+        assertEquals(files.getFileName(), projectFiles.getFileName());
+        assertEquals(files.getFileContent(), projectFiles.getFileContent());
+        assertEquals(files.getUpdateBy(), projectFiles.getUpdateBy());
+      }
+    }
+    assertEquals(projectFilesList.size(), 2);
   }
 
   @Test

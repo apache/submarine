@@ -13,13 +13,10 @@
  */
 package org.apache.submarine.database.service;
 
-import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.database.MyBatisUtil;
-import org.apache.submarine.database.entity.Project;
 import org.apache.submarine.database.entity.ProjectFiles;
 import org.apache.submarine.database.mappers.ProjectFilesMapper;
-import org.apache.submarine.database.mappers.ProjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

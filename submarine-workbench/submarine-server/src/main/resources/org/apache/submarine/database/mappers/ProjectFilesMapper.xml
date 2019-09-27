@@ -69,7 +69,7 @@
     insert into project_files (id, project_id, file_name, 
       create_by, create_time, update_time, file_content)
     values (#{id,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
-      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, now(), now())
+      #{createBy,jdbcType=VARCHAR}, now(), now(), #{fileContent,jdbcType=LONGVARCHAR})
   </insert>
 
   <insert id="insertSelective" parameterType="org.apache.submarine.database.entity.ProjectFiles">
