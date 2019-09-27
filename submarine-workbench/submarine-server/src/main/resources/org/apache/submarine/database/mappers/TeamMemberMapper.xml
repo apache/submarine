@@ -71,9 +71,9 @@
       SELECT REPLACE(UUID(),"-","")
     </selectKey>
     insert into team_member (id, team_id, team_name, member,
-    inviter, create_by, create_time, update_time)
+      inviter, create_by, create_time, update_time)
     values (#{id,jdbcType=VARCHAR}, #{teamId,jdbcType=VARCHAR}, #{teamName,jdbcType=VARCHAR}, #{member,jdbcType=VARCHAR},
-    #{inviter,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, now(), now())
+      #{inviter,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, now(), now())
   </insert>
 
   <insert id="insertSelective" parameterType="org.apache.submarine.database.entity.TeamMember">
