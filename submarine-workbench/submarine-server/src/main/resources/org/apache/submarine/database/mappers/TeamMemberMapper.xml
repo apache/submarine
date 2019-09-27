@@ -91,12 +91,7 @@
       <if test="inviter != null">
         inviter,
       </if>
-      <if test="createBy != null">
-        create_by,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
+      create_by, create_time,
       <if test="updateBy != null">
         update_by,
       </if>
@@ -120,12 +115,7 @@
       <if test="inviter != null">
         #{inviter,jdbcType=INTEGER},
       </if>
-      <if test="createBy != null">
-        #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
+      now(), now(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=VARCHAR},
       </if>

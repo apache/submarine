@@ -63,12 +63,13 @@
   </delete>
 
   <insert id="insert" parameterType="org.apache.submarine.database.entity.ProjectFiles">
+    <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+      SELECT REPLACE(UUID(),"-","")
+    </selectKey>
     insert into project_files (id, project_id, file_name, 
-      create_by, create_time, update_by, 
-      update_time, file_content)
+      create_by, create_time, update_time, file_content)
     values (#{id,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
-      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{fileContent,jdbcType=LONGVARCHAR})
+      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, now(), now())
   </insert>
 
   <insert id="insertSelective" parameterType="org.apache.submarine.database.entity.ProjectFiles">
@@ -86,15 +87,7 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateBy != null">
-        update_by,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
+      create_time, update_time,
       <if test="fileContent != null">
         file_content,
       </if>
@@ -112,15 +105,7 @@
       <if test="createBy != null">
         #{createBy,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=VARCHAR},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      now(), now(),
       <if test="fileContent != null">
         #{fileContent,jdbcType=LONGVARCHAR},
       </if>
@@ -135,12 +120,6 @@
       </if>
       <if test="fileName != null">
         file_name = #{fileName,jdbcType=VARCHAR},
-      </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},

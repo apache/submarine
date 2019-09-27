@@ -14,12 +14,17 @@
 package org.apache.submarine.database.service;
 
 import org.apache.submarine.database.entity.Project;
+import org.apache.submarine.database.entity.ProjectFiles;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ProjectServiceTest {
   private static final Logger LOG = LoggerFactory.getLogger(TeamServiceTest.class);
@@ -36,5 +41,76 @@ public class ProjectServiceTest {
 
   @Test
   public void queryPageList() throws Exception {
+    ProjectFiles projectFiles = new ProjectFiles();
+    projectFiles.setFileContent("ProjectServiceTest-FileContent");
+    projectFiles.setFileName("ProjectServiceTest-FileName");
+    projectFiles.setCreateBy("ProjectServiceTest-UserName");
+
+    Project project = new Project();
+    project.setDescription("ProjectServiceTest-Description");
+    project.setProjectName("ProjectServiceTest-ProjectName");
+    project.setType(1);
+    project.setUserName("ProjectServiceTest-UserName");
+    project.setVisibility(1);
+    project.setCreateBy("ProjectServiceTest-UserName");
+    List list = new ArrayList<ProjectFiles>();
+    list.add(projectFiles);
+    project.setProjectFilesList(list);
+
+    Boolean ret = projectService.add(project);
+    assertTrue(ret);
+
+    List<Project> projectList = projectService.queryPageList("ProjectServiceTest-UserName",
+        "create_time", "desc", 0, 100);
+    assertEquals(projectList.size(), 1);
+
+    Project project_db = projectList.get(0);
+    assertEquals(project.getDescription(), project_db.getDescription());
+    assertEquals(project.getProjectName(), project_db.getProjectName());
+    assertEquals(project.getType(), project_db.getType());
+    assertEquals(project.getUserName(), project_db.getUserName());
+    assertEquals(project.getVisibility(), project_db.getVisibility());
+    assertEquals(project.getCreateBy(), project_db.getCreateBy());
+
+    assertEquals(project_db.getProjectFilesList().size(), 1);
+
+    ProjectFiles projectFiles_db = project_db.getProjectFilesList().get(0);
+    assertEquals(project.getId(), projectFiles_db.getProjectId());
+    assertEquals(projectFiles.getFileContent(), projectFiles_db.getFileContent());
+    assertEquals(projectFiles.getFileName(), projectFiles_db.getFileContent());
+    assertEquals(projectFiles.getCreateBy(), projectFiles_db.getCreateBy());
+  }
+
+  @Test
+  public void delete() throws Exception {
+    ProjectFiles projectFiles = new ProjectFiles();
+    projectFiles.setFileContent("ProjectServiceTest-FileContent");
+    projectFiles.setFileName("ProjectServiceTest-FileName");
+    projectFiles.setCreateBy("ProjectServiceTest-UserName");
+
+    Project project = new Project();
+    project.setDescription("ProjectServiceTest-Description");
+    project.setProjectName("ProjectServiceTest-ProjectName");
+    project.setType(1);
+    project.setUserName("ProjectServiceTest-UserName");
+    project.setVisibility(1);
+    project.setCreateBy("ProjectServiceTest-UserName");
+    List list = new ArrayList<ProjectFiles>();
+    list.add(projectFiles);
+    project.setProjectFilesList(list);
+
+    Boolean ret = projectService.add(project);
+    assertTrue(ret);
+
+    Boolean deleteRet = projectService.delete(project.getId());
+    assertTrue(deleteRet);
+
+    List<Project> projectList = projectService.queryPageList("ProjectServiceTest-UserName",
+        "create_time", "desc", 0, 100);
+    assertEquals(projectList.size(), 0);
+
+    ProjectFilesService projectFilesService = new ProjectFilesService();
+    List<ProjectFiles> projectFilesList = projectFilesService.queryList(project.getId());
+    assertEquals(projectFilesList.size(), 0);
   }
 }

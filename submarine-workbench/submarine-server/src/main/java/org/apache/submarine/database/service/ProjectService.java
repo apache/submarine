@@ -64,6 +64,30 @@ public class ProjectService {
     return list;
   }
 
+  public boolean add(Project project) throws Exception {
+    LOG.info("add({})", project.toString());
+
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      ProjectMapper projectMapper = sqlSession.getMapper(ProjectMapper.class);
+      projectMapper.insert(project);
+
+      ProjectFilesMapper projectFilesMapper = sqlSession.getMapper(ProjectFilesMapper.class);
+      // add ProjectFiles, when add project, should insert 'ProjectFilesList' to ProjectFiles
+      List<ProjectFiles> list = project.getProjectFilesList();
+      for (ProjectFiles projectFiles : list) {
+        // ProjectId needs to be obtained after the Project is inserted into the database
+        projectFiles.setProjectId(project.getId());
+        projectFilesMapper.insert(projectFiles);
+      }
+
+      sqlSession.commit();
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    }
+    return true;
+  }
+
   public boolean delete(String id) throws Exception {
     LOG.info("delete({})", id);
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {

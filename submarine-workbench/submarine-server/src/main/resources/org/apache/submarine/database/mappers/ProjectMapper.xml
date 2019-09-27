@@ -57,14 +57,15 @@
   </delete>
 
   <insert id="insert" parameterType="org.apache.submarine.database.entity.Project">
+    <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+      SELECT REPLACE(UUID(),"-","")
+    </selectKey>
     insert into project (id, project_name, visibility, 
       type, description, user_name, 
-      create_by, create_time, update_by, 
-      update_time)
+      create_by, create_time, update_time)
     values (#{id,jdbcType=VARCHAR}, #{projectName,jdbcType=VARCHAR}, #{visibility,jdbcType=INTEGER}, 
       #{type,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
-      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{createBy,jdbcType=VARCHAR}, now(), now())
   </insert>
 
   <insert id="insertSelective" parameterType="org.apache.submarine.database.entity.Project">
@@ -94,9 +95,6 @@
       <if test="createTime != null">
         create_time,
       </if>
-      <if test="updateBy != null">
-        update_by,
-      </if>
       <if test="updateTime != null">
         update_time,
       </if>
@@ -125,9 +123,6 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
@@ -162,9 +157,7 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      update_time = now()
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -176,8 +169,6 @@
       type = #{type,jdbcType=INTEGER},
       description = #{description,jdbcType=VARCHAR},
       user_name = #{userName,jdbcType=VARCHAR},
-      create_by = #{createBy,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}

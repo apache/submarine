@@ -13,10 +13,13 @@
  */
 package org.apache.submarine.database.service;
 
+import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.database.MyBatisUtil;
-import org.apache.submarine.database.entity.TeamMember;
-import org.apache.submarine.database.mappers.TeamMemberMapper;
+import org.apache.submarine.database.entity.Project;
+import org.apache.submarine.database.entity.ProjectFiles;
+import org.apache.submarine.database.mappers.ProjectFilesMapper;
+import org.apache.submarine.database.mappers.ProjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,18 +27,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TeamMemberService {
-  private static final Logger LOG = LoggerFactory.getLogger(TeamMemberService.class);
+public class ProjectFilesService {
+  private static final Logger LOG = LoggerFactory.getLogger(ProjectFilesService.class);
 
-  public List<TeamMember> queryList(String teamId) throws Exception {
-    LOG.info("queryList teamId:{}", teamId);
+  public List<ProjectFiles> queryList(String projectId) throws Exception {
+    LOG.info("queryPageList projectId:{}", projectId);
 
-    List<TeamMember> list = null;
+    List<ProjectFiles> list = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
-      TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
+      ProjectFilesMapper projectFilesMapper = sqlSession.getMapper(ProjectFilesMapper.class);
       Map<String, Object> where = new HashMap<>();
-      where.put("teamId", teamId);
-      list = teamMemberMapper.selectAll(where);
+      where.put("projectId", projectId);
+      list = projectFilesMapper.selectAll(where);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);

@@ -19,8 +19,10 @@ import java.util.List;
 public class Project extends BaseEntity {
   private String projectName;
 
+  // 0:Private, 1:Team, 2:Public
   private Integer visibility;
 
+  // 0:notebook, 1:python, 2:spark, 3:R, 4:tensorflow, 5:pytorch
   private Integer type;
 
   private String description;
