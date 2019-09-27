@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface TeamMemberMapper {
+
   List<TeamMember> selectAll(Map<String, Object> where);
 
   int deleteByPrimaryKey(String id);

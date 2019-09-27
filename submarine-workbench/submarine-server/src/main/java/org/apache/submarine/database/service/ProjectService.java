@@ -99,29 +99,29 @@ public class ProjectService {
       Map<String, Object> where = new HashMap<>();
       where.put("projectId", project.getId());
       // Take two lists of difference
-      List<ProjectFiles> old_projectFiles = projectFilesMapper.selectAll(where);
-      List<String> old_projectFiles_id = new ArrayList<>();
-      for (ProjectFiles old_projectFile : old_projectFiles) {
-        old_projectFiles_id.add(old_projectFile.getId());
+      List<ProjectFiles> oldProjectFiles = projectFilesMapper.selectAll(where);
+      List<String> oldProjectFilesId = new ArrayList<>();
+      for (ProjectFiles oldProjectFile : oldProjectFiles) {
+        oldProjectFilesId.add(oldProjectFile.getId());
       }
-      List<ProjectFiles> curr_projectFiles = project.getProjectFilesList();
-      List<String> curr_projectFiles_id = new ArrayList<>();
-      for (ProjectFiles curr_projectFile : curr_projectFiles) {
-        curr_projectFiles_id.add(curr_projectFile.getId());
+      List<ProjectFiles> currProjectFiles = project.getProjectFilesList();
+      List<String> currProjectFilesId = new ArrayList<>();
+      for (ProjectFiles currProjectFile : currProjectFiles) {
+        currProjectFilesId.add(currProjectFile.getId());
       }
 
-      for (ProjectFiles old : old_projectFiles) {
-        if (!curr_projectFiles_id.contains(old.getId())) {
+      for (ProjectFiles old : oldProjectFiles) {
+        if (!currProjectFilesId.contains(old.getId())) {
           projectFilesMapper.deleteByPrimaryKey(old.getId());
         } else {
-          for (ProjectFiles curr_projectFile : curr_projectFiles) {
-            if (curr_projectFile.getId() != null && curr_projectFile.getId().equals(old.getId())) {
-              projectFilesMapper.updateByPrimaryKeySelective(curr_projectFile);
+          for (ProjectFiles currProjectFile : currProjectFiles) {
+            if (currProjectFile.getId() != null && currProjectFile.getId().equals(old.getId())) {
+              projectFilesMapper.updateByPrimaryKeySelective(currProjectFile);
             }
           }
         }
       }
-      for (ProjectFiles curr : curr_projectFiles) {
+      for (ProjectFiles curr : currProjectFiles) {
         if (curr.getId() == null) {
           // TODO(zhulinhao)：The front desk should pass the projectId
           curr.setProjectId(project.getId());

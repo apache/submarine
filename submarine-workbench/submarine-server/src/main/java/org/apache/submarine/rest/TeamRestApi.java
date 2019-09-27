@@ -16,6 +16,7 @@ package org.apache.submarine.rest;
 import com.github.pagehelper.PageInfo;
 import org.apache.submarine.annotation.SubmarineApi;
 import org.apache.submarine.database.entity.Team;
+import org.apache.submarine.database.service.SysMessageService;
 import org.apache.submarine.database.service.TeamService;
 import org.apache.submarine.server.JsonResponse;
 import org.apache.submarine.server.JsonResponse.ListResult;
@@ -24,12 +25,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.PUT;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class TeamRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(TeamRestApi.class);
 
   private TeamService teamService = new TeamService();
+  private SysMessageService sysMessageService = new SysMessageService();
 
   @Inject
   public TeamRestApi() {
@@ -61,7 +63,7 @@ public class TeamRestApi {
     try {
       // TODO(zhulinhao): Front need to correct 'owner' value, and Whether need the
       //  front to create_by value（At the time of pr commited）
-      teams = teamService.queryPageList(owner, column, order, pageNo, pageSize);
+      teams = teamService.queryPageList("liuxun", column, order, pageNo, pageSize);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();

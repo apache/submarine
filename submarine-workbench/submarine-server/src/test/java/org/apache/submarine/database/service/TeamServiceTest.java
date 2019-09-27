@@ -93,7 +93,6 @@ public class TeamServiceTest {
     assertTrue(ret);
 
     team.setTeamName("submarine_update");
-    team.setUpdateBy("submarine_user_update");
     TeamMember teamMember_update = new TeamMember();
     teamMember_update.setTeamName("submarine");
     teamMember_update.setInviter(0);
@@ -112,9 +111,8 @@ public class TeamServiceTest {
     assertEquals(teamMemberList.size(), 2);
     for (TeamMember member : teamMemberList) {
       assertEquals(member.getTeamName(), team.getTeamName());
-      assertEquals(team.getUpdateBy(), team_db.getUpdateBy());
     }
-    LOG.info("team.UpdateTime:{}", team_db.getUpdateTime());
+
   }
 
   @Test
@@ -138,12 +136,11 @@ public class TeamServiceTest {
     Boolean deleteRet = teamService.delete(team.getId());
     assertTrue(deleteRet);
 
-    List<Team> teamList = teamService.queryPageList("test_sub",
-        "create_time", "desc", 0, 100);
+    List<Team> teamList = teamService.queryPageList("test_sub", "create_time", "desc", 0, 100);
     assertEquals(teamList.size(), 0);
 
     TeamMemberService teamMemberService = new TeamMemberService();
-    List<TeamMember> teamMemberList = teamMemberService.queryList(team.getId());
+    List<TeamMember> teamMemberList = teamMemberService.queryList(team.getTeamName());
     assertEquals(teamMemberList.size(), 0);
   }
 }

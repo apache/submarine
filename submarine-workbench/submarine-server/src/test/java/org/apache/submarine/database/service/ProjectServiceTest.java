@@ -64,21 +64,21 @@ public class ProjectServiceTest {
         "create_time", "desc", 0, 100);
     assertEquals(projectList.size(), 1);
 
-    Project project_db = projectList.get(0);
-    assertEquals(project.getDescription(), project_db.getDescription());
-    assertEquals(project.getProjectName(), project_db.getProjectName());
-    assertEquals(project.getType(), project_db.getType());
-    assertEquals(project.getUserName(), project_db.getUserName());
-    assertEquals(project.getVisibility(), project_db.getVisibility());
-    assertEquals(project.getCreateBy(), project_db.getCreateBy());
+    Project projectDb = projectList.get(0);
+    assertEquals(project.getDescription(), projectDb.getDescription());
+    assertEquals(project.getProjectName(), projectDb.getProjectName());
+    assertEquals(project.getType(), projectDb.getType());
+    assertEquals(project.getUserName(), projectDb.getUserName());
+    assertEquals(project.getVisibility(), projectDb.getVisibility());
+    assertEquals(project.getCreateBy(), projectDb.getCreateBy());
 
-    assertEquals(project_db.getProjectFilesList().size(), 1);
+    assertEquals(projectDb.getProjectFilesList().size(), 1);
 
-    ProjectFiles projectFiles_db = project_db.getProjectFilesList().get(0);
-    assertEquals(project.getId(), projectFiles_db.getProjectId());
-    assertEquals(projectFiles.getFileContent(), projectFiles_db.getFileContent());
-    assertEquals(projectFiles.getFileName(), projectFiles_db.getFileName());
-    assertEquals(projectFiles.getCreateBy(), projectFiles_db.getCreateBy());
+    ProjectFiles projectFilesDb = projectDb.getProjectFilesList().get(0);
+    assertEquals(project.getId(), projectFilesDb.getProjectId());
+    assertEquals(projectFiles.getFileContent(), projectFilesDb.getFileContent());
+    assertEquals(projectFiles.getFileName(), projectFilesDb.getFileName());
+    assertEquals(projectFiles.getCreateBy(), projectFilesDb.getCreateBy());
   }
 
   @Test
@@ -106,11 +106,11 @@ public class ProjectServiceTest {
     project.setDescription("update_description");
     project.setVisibility(2);
     project.setUpdateBy("project_updateBy");
-    ProjectFiles projectFiles_update = new ProjectFiles();
-    projectFiles_update.setFileContent("ProjectServiceTest-FileContent2");
-    projectFiles_update.setFileName("ProjectServiceTest-FileName2");
-    projectFiles_update.setCreateBy("ProjectServiceTest-UserName2");
-    list.add(projectFiles_update);
+    ProjectFiles projectFilesUpdate = new ProjectFiles();
+    projectFilesUpdate.setFileContent("ProjectServiceTest-FileContent2");
+    projectFilesUpdate.setFileName("ProjectServiceTest-FileName2");
+    projectFilesUpdate.setCreateBy("ProjectServiceTest-UserName2");
+    list.add(projectFilesUpdate);
     projectFiles.setFileName("update_fileName");
     projectFiles.setFileContent("update_fileContent");
     projectFiles.setUpdateBy("projectFiles_updateby");
@@ -120,14 +120,14 @@ public class ProjectServiceTest {
         "create_time", "desc", 0, 100);
     assertEquals(projectList.size(), 1);
 
-    Project project_db = projectList.get(0);
-    assertEquals(project.getProjectName(), project_db.getProjectName());
-    assertEquals(project.getDescription(), project_db.getDescription());
-    assertEquals(project.getVisibility(), project_db.getVisibility());
-    assertEquals(project.getUpdateBy(), project_db.getUpdateBy());
-    LOG.info("update_time:{}", project_db.getUpdateTime());
+    Project projectDb = projectList.get(0);
+    assertEquals(project.getProjectName(), projectDb.getProjectName());
+    assertEquals(project.getDescription(), projectDb.getDescription());
+    assertEquals(project.getVisibility(), projectDb.getVisibility());
+    assertEquals(project.getUpdateBy(), projectDb.getUpdateBy());
+    LOG.info("update_time:{}", projectDb.getUpdateTime());
 
-    List<ProjectFiles> projectFilesList = project_db.getProjectFilesList();
+    List<ProjectFiles> projectFilesList = projectDb.getProjectFilesList();
     for (ProjectFiles files : projectFilesList) {
       if (!files.getFileContent().equals("ProjectServiceTest-FileContent2")) {
         assertEquals(files.getFileName(), projectFiles.getFileName());

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface TeamMapper {
+
   List<Team> selectAll(Map<String, Object> where, RowBounds rowBounds);
 
   int deleteByPrimaryKey(String id);

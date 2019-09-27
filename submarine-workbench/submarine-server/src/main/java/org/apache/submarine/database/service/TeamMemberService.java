@@ -27,20 +27,58 @@ import java.util.Map;
 public class TeamMemberService {
   private static final Logger LOG = LoggerFactory.getLogger(TeamMemberService.class);
 
-  public List<TeamMember> queryList(String teamId) throws Exception {
-    LOG.info("queryList teamId:{}", teamId);
+  public List<TeamMember> queryList(String teamName) throws Exception {
+    LOG.info("queryList teamName:{}", teamName);
 
     List<TeamMember> list = null;
-    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+    SqlSession sqlSession = null;
+    try {
+      sqlSession = MyBatisUtil.getSqlSession();
       TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
       Map<String, Object> where = new HashMap<>();
-      where.put("teamId", teamId);
+      where.put("teamName", teamName);
       list = teamMemberMapper.selectAll(where);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
+    } finally {
+      sqlSession.close();
     }
     return list;
+  }
+
+  public void add(TeamMember teamMember) throws Exception {
+    LOG.info("add({})", teamMember.toString());
+
+    SqlSession sqlSession = null;
+    try {
+      sqlSession = MyBatisUtil.getSqlSession();
+      TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
+      teamMemberMapper.insert(teamMember);
+      sqlSession.commit();
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    } finally {
+      sqlSession.close();
+    }
+  }
+
+  public void deleteByPrimaryKey(String id) throws Exception {
+    LOG.info("deleteByPrimaryKey({})", id);
+
+    SqlSession sqlSession = null;
+    try {
+      sqlSession = MyBatisUtil.getSqlSession();
+      TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
+      teamMemberMapper.deleteByPrimaryKey(id);
+      sqlSession.commit();
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    } finally {
+      sqlSession.close();
+    }
   }
 
 }
