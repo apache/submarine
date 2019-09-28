@@ -33,7 +33,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.submarine.server.WorkbenchConfiguration.ConfVars;
+import org.apache.submarine.server.SubmarineConfiguration.ConfVars;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -43,12 +43,12 @@ public class WorkbenchServer extends ResourceConfig {
 
   public static Server jettyWebServer;
 
-  private static WorkbenchConfiguration conf = WorkbenchConfiguration.create();
+  private static SubmarineConfiguration conf = SubmarineConfiguration.create();
 
   public static void main(String[] args) throws InterruptedException {
     PropertyConfigurator.configure(ClassLoader.getSystemResource("log4j.properties"));
 
-    final WorkbenchConfiguration conf = WorkbenchConfiguration.create();
+    final SubmarineConfiguration conf = SubmarineConfiguration.create();
 
     jettyWebServer = setupJettyServer(conf);
 
@@ -95,7 +95,7 @@ public class WorkbenchServer extends ResourceConfig {
     jettyWebServer.join();
   }
 
-  private static void setupRestApiContextHandler(WebAppContext webapp, WorkbenchConfiguration conf) {
+  private static void setupRestApiContextHandler(WebAppContext webapp, SubmarineConfiguration conf) {
     final ServletHolder servletHolder =
         new ServletHolder(new org.glassfish.jersey.servlet.ServletContainer());
 
@@ -107,10 +107,11 @@ public class WorkbenchServer extends ResourceConfig {
   }
 
   private static WebAppContext setupWebAppContext(ContextHandlerCollection contexts,
-                                                  WorkbenchConfiguration conf) {
+                                                  SubmarineConfiguration conf) {
     WebAppContext webApp = new WebAppContext();
     webApp.setContextPath("/");
-    File warPath = new File(conf.getString(ConfVars.SUBMARINE_WAR));
+    File warPath = new File(conf.getString(ConfVars.WORKBENCH_WEB_WAR));
+    LOG.info("workbench web war file path is {}.", conf.getString(ConfVars.WORKBENCH_WEB_WAR));
     if (warPath.isDirectory()) {
       // Development mode, read from FS
       // webApp.setDescriptor(warPath+"/WEB-INF/web.xml");
@@ -119,9 +120,8 @@ public class WorkbenchServer extends ResourceConfig {
     } else {
       // use packaged WAR
       webApp.setWar(warPath.getAbsolutePath());
-      File warTempDirectory = new File(conf.getRelativeDir(ConfVars.WAR_TEMPDIR));
+      File warTempDirectory = new File("webapps");
       warTempDirectory.mkdir();
-      LOG.info("submarineServer Webapp path: {}", warTempDirectory.getPath());
       webApp.setTempDirectory(warTempDirectory);
     }
     // Explicit bind to root
@@ -131,7 +131,7 @@ public class WorkbenchServer extends ResourceConfig {
     return webApp;
   }
 
-  private static Server setupJettyServer(WorkbenchConfiguration conf) {
+  private static Server setupJettyServer(SubmarineConfiguration conf) {
     ThreadPool threadPool =
         new QueuedThreadPool(conf.getInt(ConfVars.SERVER_JETTY_THREAD_POOL_MAX),
             conf.getInt(ConfVars.SERVER_JETTY_THREAD_POOL_MIN),
@@ -152,8 +152,7 @@ public class WorkbenchServer extends ResourceConfig {
       SecureRequestCustomizer src = new SecureRequestCustomizer();
       httpsConfig.addCustomizer(src);
 
-      connector =
-          new ServerConnector(
+      connector = new ServerConnector(
               server,
               new SslConnectionFactory(getSslContextFactory(conf), HttpVersion.HTTP_1_1.asString()),
               new HttpConnectionFactory(httpsConfig));
@@ -178,7 +177,7 @@ public class WorkbenchServer extends ResourceConfig {
     return server;
   }
 
-  private static SslContextFactory getSslContextFactory(WorkbenchConfiguration conf) {
+  private static SslContextFactory getSslContextFactory(SubmarineConfiguration conf) {
     SslContextFactory sslContextFactory = new SslContextFactory();
 
     // Set keystore
@@ -200,7 +199,7 @@ public class WorkbenchServer extends ResourceConfig {
   }
 
   private static void configureRequestHeaderSize(
-      WorkbenchConfiguration conf, ServerConnector connector) {
+      SubmarineConfiguration conf, ServerConnector connector) {
     HttpConnectionFactory cf =
         (HttpConnectionFactory) connector.getConnectionFactory(HttpVersion.HTTP_1_1.toString());
     int requestHeaderSize = conf.getJettyRequestHeaderSize();
