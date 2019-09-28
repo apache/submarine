@@ -19,7 +19,7 @@
 # description: Start and stop daemon script for.
 #
 
-USAGE="-e Usage: workbench-daemon.sh {start|stop|restart|reload|status}"
+USAGE="-e Usage: workbench-daemon.sh {start|stop|restart|status}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
   BIN=$(dirname $(readlink "${BASH_SOURCE-$0}"))
@@ -35,8 +35,8 @@ WORKBENCH_LOGFILE="${SUBMARINE_LOG_DIR}/workbench.log"
 WORKBENCH_MAIN=org.apache.submarine.server.WorkbenchServer
 JAVA_OPTS+=" -Dworkbench.log.file=${WORKBENCH_LOGFILE}"
 
-addJarInDir "${BIN}/../workbench"
-addJarInDir "${BIN}/../workbench/lib"
+add_jar_in_dir "${BIN}/../workbench"
+add_jar_in_dir "${BIN}/../workbench/lib"
 
 function initialize_default_directories() {
   if [[ ! -d "${SUBMARINE_LOG_DIR}" ]]; then
@@ -45,9 +45,9 @@ function initialize_default_directories() {
   fi
 }
 
-function foundWorkbenchServerPid() {
-  process=WorkbenchServer;
-  RUNNING_PIDS=$(ps x | grep $process | grep -v grep | awk '{print $1}');
+function found_workbench_server_pid() {
+  process='WorkbenchServer';
+  RUNNING_PIDS=$(ps x | grep ${process} | grep -v grep | awk '{print $1}');
 
   if [[ -z "${RUNNING_PIDS}" ]]; then
     return
@@ -64,7 +64,7 @@ function wait_for_workbench_to_die() {
   local pid
   local count
 
-  pid=`foundWorkbenchServerPid`
+  pid=`found_workbench_server_pid`
   timeout=10
   count=0
   timeoutTime=$(date "+%s")
@@ -91,7 +91,7 @@ function wait_for_workbench_to_die() {
 function start() {
   local pid
 
-  pid=`foundWorkbenchServerPid`
+  pid=`found_workbench_server_pid`
   if [[ ! -z "$pid" && "$pid" != 0 ]]; then
     echo "${WORKBENCH_NAME}:${pid} is already running"
     return 0;
@@ -111,7 +111,7 @@ function start() {
 
 function stop() {
   local pid
-  pid=`foundWorkbenchServerPid`
+  pid=`found_workbench_server_pid`
 
   if [[ -z "$pid" ]]; then
     echo "${WORKBENCH_NAME} is not running"
@@ -125,7 +125,7 @@ function stop() {
 
 function find_workbench_process() {
   local pid
-  pid=`foundWorkbenchServerPid`
+  pid=`found_workbench_server_pid`
 
   if [[ -z "$pid" ]]; then
     if ! kill -0 ${pid} > /dev/null 2>&1; then
@@ -146,10 +146,6 @@ case "${1}" in
     ;;
   stop)
     stop
-    ;;
-  reload)
-    stop
-    start
     ;;
   restart)
     echo "${WORKBENCH_NAME} is restarting" >> "${WORKBENCH_LOGFILE}"

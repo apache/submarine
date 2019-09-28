@@ -42,7 +42,7 @@ fi
 
 WORKBENCH_CLASSPATH+=":${SUBMARINE_CONF_DIR}"
 
-function addEachJarInDir(){
+function add_each_jar_in_dir(){
   if [[ -d "${1}" ]]; then
     for jar in $(find -L "${1}" -maxdepth 1 -name '*jar'); do
       WORKBENCH_CLASSPATH="$jar:$WORKBENCH_CLASSPATH"
@@ -50,7 +50,7 @@ function addEachJarInDir(){
   fi
 }
 
-function addEachJarInDirRecursive(){
+function add_each_jar_in_dir_recursive(){
   if [[ -d "${1}" ]]; then
     for jar in $(find -L "${1}" -type f -name '*jar'); do
       WORKBENCH_CLASSPATH="$jar:$WORKBENCH_CLASSPATH"
@@ -58,7 +58,7 @@ function addEachJarInDirRecursive(){
   fi
 }
 
-function addJarInDir(){
+function add_jar_in_dir(){
   if [[ -d "${1}" ]]; then
     WORKBENCH_CLASSPATH="${1}/*:${WORKBENCH_CLASSPATH}"
   fi
