@@ -59,9 +59,9 @@
     <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
       SELECT REPLACE(UUID(),"-","")
     </selectKey>
-    insert into team (id, owner, team_name, create_by, create_time, update_time)
+    insert into team (id, owner, team_name, create_by, create_time, update_by, update_time)
     values (#{id,jdbcType=VARCHAR}, #{owner,jdbcType=VARCHAR}, #{teamName,jdbcType=VARCHAR},
-    #{createBy,jdbcType=VARCHAR}, now(), now())
+    #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
   <insert id="insertSelective" parameterType="org.apache.submarine.database.entity.Team">
@@ -82,6 +82,9 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
       <if test="updateTime != null">
         update_time,
       </if>
@@ -101,6 +104,9 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
