@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 set -e
+# activate python 2.7.13 environment
+. ${PYTHON_VENV_PATH}/venv2.7/bin/activate
 
 function start_menu(){
   printf "Menu:\n"
@@ -75,3 +77,4 @@ function merge_pr(){
 }
 
 start_menu
+deactivate

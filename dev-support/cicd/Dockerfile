@@ -16,8 +16,16 @@
 FROM ubuntu:16.04
 RUN \
   apt-get update && \
-  apt-get install -y vim python git python-pip && \
-  pip install jira
+  apt-get install -y wget vim git python-pip zlib1g-dev libssl-dev && \
+  wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz && \
+  tar xzf Python-2.7.13.tgz && cd Python-2.7.13 && ./configure --with-zlib && make install && make altinstall && \
+  cd /root && wget https://files.pythonhosted.org/packages/33/bc/fa0b5347139cd9564f0d44ebd2b147ac97c36b2403943dbee8a25fd74012/virtualenv-16.0.0.tar.gz && \
+  tar xf virtualenv-16.0.0.tar.gz && \
+  python virtualenv-16.0.0/virtualenv.py venv2.7 && \
+  . venv2.7/bin/activate && \
+  pip install jira && \
+  deactivate
+
 RUN \
   git clone https://gitbox.apache.org/repos/asf/hadoop-submarine.git && \
   cd hadoop-submarine && \
@@ -26,5 +34,6 @@ RUN \
 ADD \
   entry.sh /entry.sh
 ENV \
-  SUBMARINE_HOME=/hadoop-submarine
+  SUBMARINE_HOME=/hadoop-submarine \
+  PYTHON_VENV_PATH=/root
 CMD /entry.sh
