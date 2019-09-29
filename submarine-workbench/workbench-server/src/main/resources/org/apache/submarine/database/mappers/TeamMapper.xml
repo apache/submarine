@@ -82,9 +82,6 @@
       <if test="createTime != null">
         create_time,
       </if>
-      <if test="updateBy != null">
-        update_by,
-      </if>
       <if test="updateTime != null">
         update_time,
       </if>
@@ -105,9 +102,6 @@
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=VARCHAR},
-      </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
@@ -126,9 +120,7 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = now()
-      </if>
+      update_time = now()
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
@@ -137,8 +129,6 @@
     update team
     set owner = #{owner,jdbcType=VARCHAR},
       team_name = #{teamName,jdbcType=VARCHAR},
-      create_by = #{createBy,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
