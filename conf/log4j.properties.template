@@ -16,7 +16,7 @@
 
 # Define some default values that can be overridden by system properties
 submarine.log.threshold=ALL
-submarine.root.logger=INFO, DRFA, console
+submarine.root.logger=INFO,DRFA,console
 submarine.log.dir=/tmp
 submarine.log.file=submarine.log
 

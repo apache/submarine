@@ -24,6 +24,13 @@ submit/manage jobs, manage models, create model training workflows, access datas
 cd submarine
 ./bin/workbench-daemon.sh [start|stop|restart]
 ```
+To start workbench server, you need to download mysql jdbc jar and put it in the
+path of workbench/lib for the first time. Or you can add parameter, getMysqlJar,
+to get mysql jar automatically.
+```$xslt
+cd submarine
+./bin/workbench-daemon.sh start getMysqlJar
+```
 
 ## submarine-env.sh
 
@@ -34,6 +41,8 @@ cd submarine
 | JAVA_HOME           | Set your java home path, default is `java`.                  |
 | WORKBENCH_JAVA_OPTS | Set the JAVA OPTS parameter when the Workbench process starts. If you need to debug the Workbench process, you can set it to `-agentlib:jdwp=transport=dt_socket, server=y,suspend=n,address=5005` |
 | WORKBENCH_MEM       | Set the java memory parameter when the Workbench process starts. |
+| MYSQL_JAR_URL       | The customized URL to download mysql jdbc jar.               |
+| MYSQL_VERSION       | The version of mysql jdbc jar would be downloaded. The default value is 5.1.39. It's used to generate the default value of MYSQL_JDBC_URL|
 
 ## submarine-site.xml
 

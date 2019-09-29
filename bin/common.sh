@@ -16,6 +16,8 @@
 # limitations under the License.
 #
 
+export DEFAULT_MYSQL_VERSION=5.1.39
+
 if [[ -L ${BASH_SOURCE-$0} ]]; then
   FWDIR=$(dirname $(readlink "${BASH_SOURCE-$0}"))
 else
@@ -62,6 +64,18 @@ function add_jar_in_dir(){
   if [[ -d "${1}" ]]; then
     WORKBENCH_CLASSPATH="${1}/*:${WORKBENCH_CLASSPATH}"
   fi
+}
+
+function download_mysql_jdbc_jar(){
+  if [[ -z "${MYSQL_JAR_URL}" ]]; then
+    if [[ -z "${MYSQL_VERSION}" ]]; then
+      MYSQL_VERSION="${DEFAULT_MYSQL_VERSION}"
+    fi
+    MYSQL_JAR_URL="https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_VERSION}/mysql-connector-java-${MYSQL_VERSION}.jar"
+  fi
+  echo "Downloading mysql jdbc jar from ${MYSQL_JAR_URL}."
+  wget ${MYSQL_JAR_URL} -P "${BIN}/../workbench/lib"
+  echo "Mysql jdbc jar is downloaded and put in the path of workbench/lib."
 }
 
 JAVA_OPTS+=" ${WORKBENCH_JAVA_OPTS} -Dfile.encoding=UTF-8 ${WORKBENCH_MEM}"
