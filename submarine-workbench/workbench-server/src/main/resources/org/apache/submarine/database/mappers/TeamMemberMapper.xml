@@ -77,11 +77,12 @@
   </insert>
 
   <insert id="insertSelective" parameterType="org.apache.submarine.database.entity.TeamMember">
+    <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+      SELECT REPLACE(UUID(),"-","")
+    </selectKey>
     insert into team_member
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
+      id,
       <if test="teamId != null">
         team_id,
       </if>
@@ -94,18 +95,17 @@
       <if test="inviter != null">
         inviter,
       </if>
-      create_by, create_time,
+      <if test="createBy != null">
+        create_by,
+      </if>
+      create_time,
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
+      update_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=VARCHAR},
-      </if>
+      #{id,jdbcType=VARCHAR},
       <if test="teamId != null">
         #{teamId,jdbcType=VARCHAR},
       </if>
@@ -118,13 +118,14 @@
       <if test="inviter != null">
         #{inviter,jdbcType=INTEGER},
       </if>
-      now(), now(),
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      now(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      now(),
     </trim>
   </insert>
 

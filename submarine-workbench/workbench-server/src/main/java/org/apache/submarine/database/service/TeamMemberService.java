@@ -46,4 +46,40 @@ public class TeamMemberService {
     }
     return list;
   }
+
+  public boolean insertSelective(TeamMember teamMember) throws Exception {
+    LOG.info("insertSelective({})", teamMember.toString());
+
+    SqlSession sqlSession = null;
+    try {
+      sqlSession = MyBatisUtil.getSqlSession();
+      TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
+      teamMemberMapper.insertSelective(teamMember);
+
+      sqlSession.commit();
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    } finally {
+      sqlSession.close();
+    }
+    return true;
+  }
+
+  public void deleteByPrimaryKey(String id) throws Exception {
+    LOG.info("deleteByPrimaryKey({})", id);
+
+    SqlSession sqlSession = null;
+    try {
+      sqlSession = MyBatisUtil.getSqlSession();
+      TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
+      teamMemberMapper.deleteByPrimaryKey(id);
+      sqlSession.commit();
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    } finally {
+      sqlSession.close();
+    }
+  }
 }

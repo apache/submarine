@@ -60,18 +60,18 @@ public class TeamServiceTest {
 
     List<Team> teamList = teamService.queryPageList("test_sub", "create_time", "desc", 0, 100);
     assertEquals(teamList.size(), 1);
-    Team team_db = teamList.get(0);
-    assertEquals(team.getTeamName(), team_db.getTeamName());
-    assertEquals(team.getOwner(), team_db.getOwner());
-    assertEquals(team.getCreateBy(), team_db.getCreateBy());
+    Team teamDb = teamList.get(0);
+    assertEquals(team.getTeamName(), teamDb.getTeamName());
+    assertEquals(team.getOwner(), teamDb.getOwner());
+    assertEquals(team.getCreateBy(), teamDb.getCreateBy());
 
-    assertEquals(team_db.getCollaborators().size(), 1);
-    TeamMember teamMember_db = team_db.getCollaborators().get(0);
-    assertEquals(team.getId(), teamMember_db.getTeamId());
-    assertEquals(teamMember.getTeamName(), teamMember_db.getTeamName());
-    assertEquals(teamMember.getInviter(), teamMember_db.getInviter());
-    assertEquals(teamMember.getMember(), teamMember_db.getMember());
-    assertEquals(teamMember.getCreateBy(), teamMember_db.getCreateBy());
+    assertEquals(teamDb.getCollaborators().size(), 1);
+    TeamMember teamMemberDb = teamDb.getCollaborators().get(0);
+    assertEquals(team.getId(), teamMemberDb.getTeamId());
+    assertEquals(teamMember.getTeamName(), teamMemberDb.getTeamName());
+    assertEquals(teamMember.getInviter(), teamMemberDb.getInviter());
+    assertEquals(teamMember.getMember(), teamMemberDb.getMember());
+    assertEquals(teamMember.getCreateBy(), teamMemberDb.getCreateBy());
   }
 
   @Test
@@ -94,27 +94,27 @@ public class TeamServiceTest {
 
     team.setTeamName("submarine_update");
     team.setUpdateBy("submarine_user_update");
-    TeamMember teamMember_update = new TeamMember();
-    teamMember_update.setTeamName("submarine");
-    teamMember_update.setInviter(0);
-    teamMember_update.setMember("test_member");
-    teamMember_update.setCreateBy("createByteamMember2");
-    list.add(teamMember_update);
+    TeamMember teamMemberUpdate = new TeamMember();
+    teamMemberUpdate.setTeamName("submarine");
+    teamMemberUpdate.setInviter(0);
+    teamMemberUpdate.setMember("test_member");
+    teamMemberUpdate.setCreateBy("createByteamMember2");
+    list.add(teamMemberUpdate);
 
     boolean editRet = teamService.updateByPrimaryKeySelective(team);
     assertTrue(editRet);
     List<Team> teamList = teamService.queryPageList("test_sub", "create_time", "desc", 0, 100);
     assertEquals(teamList.size(), 1);
 
-    Team team_db = teamList.get(0);
-    assertEquals(team.getTeamName(), team_db.getTeamName());
-    List<TeamMember> teamMemberList = team_db.getCollaborators();
+    Team teamDb = teamList.get(0);
+    assertEquals(team.getTeamName(), teamDb.getTeamName());
+    List<TeamMember> teamMemberList = teamDb.getCollaborators();
     assertEquals(teamMemberList.size(), 2);
     for (TeamMember member : teamMemberList) {
       assertEquals(member.getTeamName(), team.getTeamName());
-      assertEquals(team.getUpdateBy(), team_db.getUpdateBy());
+      assertEquals(team.getUpdateBy(), teamDb.getUpdateBy());
     }
-    LOG.info("team.UpdateTime:{}", team_db.getUpdateTime());
+    LOG.info("team.UpdateTime:{}", teamDb.getUpdateTime());
   }
 
   @Test
