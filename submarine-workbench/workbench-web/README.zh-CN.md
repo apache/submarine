@@ -26,7 +26,7 @@
 - 拉取项目代码
 ```bash
 git https://github.com/hadoopsubmarine/submarine.git
-cd submarine/submarine-web
+cd submarine/submarine-workbench/workbench-web
 ```
 
 - 安装依赖

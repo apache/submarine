@@ -28,6 +28,10 @@ Click below contents if you want to understand more.
 
 [Apache Hadoop Submarine Community Guide](./community/README.md)
 
+## Submarine Workbench
+
+[Submarine Workbench Guide](./workbench/README.md)
+
 ## Examples
 
 Here're some examples about Submarine usage.

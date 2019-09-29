@@ -38,8 +38,8 @@ import org.apache.submarine.server.SubmarineConfiguration.ConfVars;
 import javax.inject.Inject;
 import java.io.File;
 
-public class SubmarineServer extends ResourceConfig {
-  private static final Logger LOG = LoggerFactory.getLogger(SubmarineServer.class);
+public class WorkbenchServer extends ResourceConfig {
+  private static final Logger LOG = LoggerFactory.getLogger(WorkbenchServer.class);
 
   public static Server jettyWebServer;
 
@@ -64,14 +64,14 @@ public class SubmarineServer extends ResourceConfig {
   }
 
   @Inject
-  public SubmarineServer() {
+  public WorkbenchServer() {
     packages("org.apache.submarine.rest");
   }
 
   private static void startServer() throws InterruptedException {
     LOG.info("Starting submarine server");
     try {
-      jettyWebServer.start(); // Instantiates submarineServer
+      jettyWebServer.start(); // Instantiates WorkbenchServer
     } catch (Exception e) {
       LOG.error("Error while running jettyServer", e);
       System.exit(-1);
@@ -82,7 +82,7 @@ public class SubmarineServer extends ResourceConfig {
         .addShutdownHook(
             new Thread(
                 () -> {
-                  LOG.info("Shutting down submarine Server ... ");
+                  LOG.info("Shutting down Submarine Workbench Server ... ");
                   try {
                     jettyWebServer.stop();
                     Thread.sleep(3000);
@@ -99,7 +99,7 @@ public class SubmarineServer extends ResourceConfig {
     final ServletHolder servletHolder =
         new ServletHolder(new org.glassfish.jersey.servlet.ServletContainer());
 
-    servletHolder.setInitParameter("javax.ws.rs.Application", SubmarineServer.class.getName());
+    servletHolder.setInitParameter("javax.ws.rs.Application", WorkbenchServer.class.getName());
     servletHolder.setName("rest");
     servletHolder.setForcedPath("rest");
     webapp.setSessionHandler(new SessionHandler());
@@ -110,7 +110,8 @@ public class SubmarineServer extends ResourceConfig {
                                                   SubmarineConfiguration conf) {
     WebAppContext webApp = new WebAppContext();
     webApp.setContextPath("/");
-    File warPath = new File(conf.getString(ConfVars.SUBMARINE_WAR));
+    File warPath = new File(conf.getString(ConfVars.WORKBENCH_WEB_WAR));
+    LOG.info("workbench web war file path is {}.", conf.getString(ConfVars.WORKBENCH_WEB_WAR));
     if (warPath.isDirectory()) {
       // Development mode, read from FS
       // webApp.setDescriptor(warPath+"/WEB-INF/web.xml");
@@ -119,9 +120,8 @@ public class SubmarineServer extends ResourceConfig {
     } else {
       // use packaged WAR
       webApp.setWar(warPath.getAbsolutePath());
-      File warTempDirectory = new File(conf.getRelativeDir(ConfVars.SUBMARINE_WAR_TEMPDIR));
+      File warTempDirectory = new File("webapps");
       warTempDirectory.mkdir();
-      LOG.info("submarineServer Webapp path: {}", warTempDirectory.getPath());
       webApp.setTempDirectory(warTempDirectory);
     }
     // Explicit bind to root
@@ -152,8 +152,7 @@ public class SubmarineServer extends ResourceConfig {
       SecureRequestCustomizer src = new SecureRequestCustomizer();
       httpsConfig.addCustomizer(src);
 
-      connector =
-          new ServerConnector(
+      connector = new ServerConnector(
               server,
               new SslConnectionFactory(getSslContextFactory(conf), HttpVersion.HTTP_1_1.asString()),
               new HttpConnectionFactory(httpsConfig));

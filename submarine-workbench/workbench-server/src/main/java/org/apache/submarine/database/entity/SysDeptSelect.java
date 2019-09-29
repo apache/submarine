@@ -16,7 +16,7 @@ package org.apache.submarine.database.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-// Corresponding to the submarine-web front-end tree select control
+// Corresponding to the workbench-web front-end tree select control
 public class SysDeptSelect {
   // TreeSelect key
   private String key;

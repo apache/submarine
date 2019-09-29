@@ -28,7 +28,7 @@
   </parent>
 
   <groupId>org.apache.submarine</groupId>
-  <artifactId>submarine-web</artifactId>
+  <artifactId>workbench-web</artifactId>
   <packaging>war</packaging>
   <version>0.3.0-SNAPSHOT</version>
   <name>Submarine: Workbench Web</name>
@@ -101,6 +101,7 @@
         <artifactId>maven-war-plugin</artifactId>
         <version>${plugin.war.version}</version>
         <configuration>
+          <warName>${project.artifactId}</warName>
           <failOnMissingWebXml>true</failOnMissingWebXml>
           <warSourceDirectory>dist</warSourceDirectory>
           <webXml>src/WEB-INF/web.xml</webXml>

@@ -27,7 +27,7 @@
   </parent>
 
   <groupId>org.apache.submarine</groupId>
-  <artifactId>submarine-server</artifactId>
+  <artifactId>workbench-server</artifactId>
   <packaging>jar</packaging>
   <version>0.3.0-SNAPSHOT</version>
   <name>Submarine: Workbench Server</name>
@@ -119,6 +119,12 @@
       <groupId>commons-configuration</groupId>
       <artifactId>commons-configuration</artifactId>
       <version>${commons-configuration.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>${commons-collections.version}</version>
     </dependency>
 
     <dependency>
