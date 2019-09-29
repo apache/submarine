@@ -49,7 +49,6 @@ ENV/
 env.bak/
 venv.bak/
 .python-version
-
 .DS_Store
 .idea
 *.iml

@@ -14,7 +14,7 @@
 # limitations under the License.
 
 from __future__ import print_function
-from submarine.store import DEFAULT_SUBMARINE_SERVER_PATH
+from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.store.sqlalchemy_store import SqlAlchemyStore
 from submarine.utils import env
 
@@ -60,7 +60,7 @@ def get_tracking_uri():
     elif env.get_env(_TRACKING_URI_ENV_VAR) is not None:
         return env.get_env(_TRACKING_URI_ENV_VAR)
     else:
-        return DEFAULT_SUBMARINE_SERVER_PATH
+        return DEFAULT_SUBMARINE_JDBC_URL
 
 
 def get_job_name():

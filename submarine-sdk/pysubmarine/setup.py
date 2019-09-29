@@ -15,15 +15,11 @@
 
 from setuptools import setup, find_packages
 
-with open("README.md", "r") as fh:
-    LONG_DESCRIPTION = fh.read()
 
 setup(
     name='pysubmarine',
-    version='0.1.dev',
+    version='0.3.0-SNAPSHOT',
     description="A SDK for submarine",
-    long_description=LONG_DESCRIPTION,
-    long_description_content_type="text/markdown",
     url="https://github.com/apache/hadoop-submarine",
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[

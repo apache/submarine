@@ -13,21 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import numpy as np
-from os import environ
-from sklearn.linear_model import LogisticRegression
-import submarine
+DEFAULT_SUBMARINE_JDBC_URL = "mysql+pymysql://submarine:password@localhost:3306/submarineDB"
 
-
-if __name__ == "__main__":
-    # note: SUBMARINE_JOB_NAME should be set by submarine submitter
-    environ["SUBMARINE_JOB_NAME"] = "application_1234"
-    X = np.array([-2, -1, 0, 1, 2, 1]).reshape(-1, 1)
-    y = np.array([0, 0, 1, 1, 1, 0])
-    lr = LogisticRegression(solver='liblinear', max_iter=100)
-    submarine.log_param("max_iter", 100, "worker-1")
-    lr.fit(X, y)
-    score = lr.score(X, y)
-    print("Score: %s" % score)
-    submarine.log_metric("score", score, "worker-1")
-
+__all__ = ["DEFAULT_SUBMARINE_JDBC_URL"]

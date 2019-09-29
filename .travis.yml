@@ -117,10 +117,10 @@ matrix:
       python: 3.6
       dist: xenial
       install:
-        - source ./submarine-sdk/travis/conda.sh
-        - pip install -r ./submarine-sdk/travis/lint-requirements.txt
+        - source ./submarine-sdk/pysubmarine/travis/conda.sh
+        - pip install -r ./submarine-sdk/pysubmarine/travis/lint-requirements.txt
       script:
-        - ./submarine-sdk/travis/lint.sh
+        - ./submarine-sdk/pysubmarine/travis/lint.sh
         - pytest --cov=submarine -vs
 
 

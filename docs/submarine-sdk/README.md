@@ -14,7 +14,7 @@
 
 # Submarine-SDK
 
-Support Python, Scala, R language for algorithm development, 
+Support Python, Scala, R language for algorithm development.
 The SDK is provided to help developers use submarine's internal data caching, 
 data exchange, and task tracking to more efficiently improve the development 
 and execution of machine learning tasks.
@@ -23,14 +23,14 @@ and execution of machine learning tasks.
 - Support store ML parameters and metrics in Submarine-server
 - Support store ML job output (e.g. csv,images)
 - Support hdfs,S3 and mysql 
-- (WEB) Metric tracking ui in submarine-web
-- (WEB) Metric graphical display in submarine-web
+- (WEB) Metric tracking ui in workbench-web
+- (WEB) Metric graphical display in workbench-web
 
 ### Project setup
 - Clone repo
 ```bash
-git https://github.com/hadoopsubmarine/submarine.git
-cd submarine/submarine-sdk
+git https://github.com/apache/hadoop-submarine.git
+cd hadoop-submarine/submarine-sdk
 ```
 
 - Install pip package

@@ -15,6 +15,7 @@
 
 import mock
 import os
+from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.store.sqlalchemy_store import SqlAlchemyStore
 from submarine.tracking.utils import is_tracking_uri_set, _TRACKING_URI_ENV_VAR, \
     get_tracking_uri, _JOB_NAME_ENV_VAR, get_job_name, get_sqlalchemy_store
@@ -22,21 +23,18 @@ from submarine.tracking.utils import is_tracking_uri_set, _TRACKING_URI_ENV_VAR,
 
 def test_is_tracking_uri_set():
     env = {
-        _TRACKING_URI_ENV_VAR:
-            "mysql+pymysql://submarine:password@localhost:3306/submarineDB",
+        _TRACKING_URI_ENV_VAR: DEFAULT_SUBMARINE_JDBC_URL,
     }
     with mock.patch.dict(os.environ, env):
-        is_tracking_uri_set() is True
+        assert is_tracking_uri_set() is True
 
 
 def test_get_tracking_uri():
     env = {
-        _TRACKING_URI_ENV_VAR:
-            "mysql+pymysql://submarine:password@localhost:3306/submarineDB",
+        _TRACKING_URI_ENV_VAR: DEFAULT_SUBMARINE_JDBC_URL,
     }
     with mock.patch.dict(os.environ, env):
-        assert get_tracking_uri() == \
-               "mysql+pymysql://submarine:password@localhost:3306/submarineDB"
+        assert get_tracking_uri() == DEFAULT_SUBMARINE_JDBC_URL
 
 
 def test_get_job_name():
@@ -50,7 +48,7 @@ def test_get_job_name():
 
 def test_get_sqlalchemy_store():
     patch_create_engine = mock.patch("sqlalchemy.create_engine")
-    uri = "mysql+pymysql://submarine:password@localhost:3306/submarineDB"
+    uri = DEFAULT_SUBMARINE_JDBC_URL
     env = {
         _TRACKING_URI_ENV_VAR: uri
     }
