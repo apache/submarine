@@ -27,7 +27,7 @@ import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ProjectServiceTest {
-  private static final Logger LOG = LoggerFactory.getLogger(TeamServiceTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ProjectServiceTest.class);
   ProjectService projectService = new ProjectService();
 
   @After

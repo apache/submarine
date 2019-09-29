@@ -36,7 +36,7 @@ public class TeamService {
                                   String order,
                                   int pageNo,
                                   int pageSize) throws Exception {
-    LOG.info("queryDictList owner:{}, column:{}, order:{}, pageNo:{}, pageSize:{}",
+    LOG.info("queryPageList owner:{}, column:{}, order:{}, pageNo:{}, pageSize:{}",
         owner, column, order, pageNo, pageSize);
 
     List<Team> list = null;
@@ -82,7 +82,7 @@ public class TeamService {
       // add teamMember, when add team, should insert 'Collaborators' to team_member
       List<TeamMember> list = team.getCollaborators();
       for (TeamMember teamMember : list) {
-        // todo: teamMember's member is sys_user's id now.
+        // TODO(zhulinhao): teamMember's member is sys_user's id now.
         teamMember.setTeamId(team.getId());
         teamMemberMapper.insert(teamMember);
       }
@@ -131,7 +131,7 @@ public class TeamService {
 
       for (TeamMember curr : curr_teamMembers) {
         if (!old_teamMembers_member.contains(curr.getMember())) {
-          // todo：teamId Send it by the front desk, here there is no assignment
+          // TODO(zhulinhao)：teamId Send it by the front desk, here there is no assignment
           curr.setTeamId(team.getId());
           curr.setTeamName(team.getTeamName());
           teamMemberMapper.insert(curr);

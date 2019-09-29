@@ -27,8 +27,8 @@ import java.util.Map;
 public class TeamMemberService {
   private static final Logger LOG = LoggerFactory.getLogger(TeamMemberService.class);
 
-  public List<TeamMember> queryList(String teamName) throws Exception {
-    LOG.info("queryList teamName:{}", teamName);
+  public List<TeamMember> queryList(String teamId) throws Exception {
+    LOG.info("queryList teamId:{}", teamId);
 
     List<TeamMember> list = null;
     SqlSession sqlSession = null;
@@ -36,7 +36,7 @@ public class TeamMemberService {
       sqlSession = MyBatisUtil.getSqlSession();
       TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
       Map<String, Object> where = new HashMap<>();
-      where.put("teamName", teamName);
+      where.put("teamId", teamId);
       list = teamMemberMapper.selectAll(where);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -47,14 +47,15 @@ public class TeamMemberService {
     return list;
   }
 
-  public void add(TeamMember teamMember) throws Exception {
-    LOG.info("add({})", teamMember.toString());
+  public boolean insertSelective(TeamMember teamMember) throws Exception {
+    LOG.info("insertSelective({})", teamMember.toString());
 
     SqlSession sqlSession = null;
     try {
       sqlSession = MyBatisUtil.getSqlSession();
       TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
-      teamMemberMapper.insert(teamMember);
+      teamMemberMapper.insertSelective(teamMember);
+
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -62,6 +63,7 @@ public class TeamMemberService {
     } finally {
       sqlSession.close();
     }
+    return true;
   }
 
   public void deleteByPrimaryKey(String id) throws Exception {
@@ -80,5 +82,4 @@ public class TeamMemberService {
       sqlSession.close();
     }
   }
-
 }

@@ -71,17 +71,18 @@
       SELECT REPLACE(UUID(),"-","")
     </selectKey>
     insert into team_member (id, team_id, team_name, member,
-      inviter, create_by, create_time, update_time)
+      inviter, create_by, create_time, update_by, update_time)
     values (#{id,jdbcType=VARCHAR}, #{teamId,jdbcType=VARCHAR}, #{teamName,jdbcType=VARCHAR}, #{member,jdbcType=VARCHAR},
-      #{inviter,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, now(), now())
+      #{inviter,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
   <insert id="insertSelective" parameterType="org.apache.submarine.database.entity.TeamMember">
+    <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+      SELECT REPLACE(UUID(),"-","")
+    </selectKey>
     insert into team_member
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
+      id,
       <if test="teamId != null">
         team_id,
       </if>
@@ -97,20 +98,14 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
+      create_time,
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
+      update_time,
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=VARCHAR},
-      </if>
+      #{id,jdbcType=VARCHAR},
       <if test="teamId != null">
         #{teamId,jdbcType=VARCHAR},
       </if>
@@ -126,15 +121,11 @@
       <if test="createBy != null">
         #{createBy,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
+      now(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      now(),
     </trim>
   </insert>
 
