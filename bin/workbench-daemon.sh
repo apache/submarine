@@ -26,7 +26,8 @@ if [ -L ${BASH_SOURCE-$0} ]; then
 else
   BIN=$(dirname ${BASH_SOURCE-$0})
 fi
-BIN=$(cd "${BIN}">/dev/null; pwd)
+export BIN=$(cd "${BIN}">/dev/null; pwd)
+GET_MYSQL_JAR=false
 
 . "${BIN}/common.sh"
 
@@ -88,6 +89,23 @@ function wait_for_workbench_to_die() {
   fi
 }
 
+function check_jdbc_jar() {
+  if [[ -d "${1}" ]]; then
+    mysql_connector_exists=$(find -L "${1}" -name "mysql-connector*")
+    if [[ -z "${mysql_connector_exists}" ]]; then
+      if [[ ${GET_MYSQL_JAR} = true ]]; then
+        download_mysql_jdbc_jar
+      else
+        echo -e "\\033[31mError: There is no mysql jdbc jar in workbench/lib.\\033[0m"
+        echo -e "\\033[31mPlease download a mysql jdbc jar and put it under workbench/lib manually.\\033[0m"
+        echo -e "\\033[31mOr add a parameter getMysqlJar, like this:\n./bin/workbench-daemon.sh start getMysqlJar\\033[0m"
+        echo -e "\\033[31mIt would download mysql jdbc jar automatically.\\033[0m"
+        exit 1
+      fi
+    fi
+  fi
+}
+
 function start() {
   local pid
 
@@ -97,6 +115,8 @@ function start() {
     return 0;
   fi
 
+  check_jdbc_jar "${BIN}/../workbench/lib"
+  
   initialize_default_directories
 
   echo "WORKBENCH_CLASSPATH: ${WORKBENCH_CLASSPATH}" >> "${WORKBENCH_LOGFILE}"
@@ -139,6 +159,10 @@ function find_workbench_process() {
     return 1
   fi
 }
+
+if [[ "$2" = "getMysqlJar" ]]; then
+  export GET_MYSQL_JAR=true
+fi
 
 case "${1}" in
   start)
