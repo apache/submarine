@@ -39,7 +39,7 @@ docker pull hadoopsubmarine/mini-submarine:0.2.0
 #### Run mini-submarine image
 
 ```
-docker run -it -h submarine-dev --net=bridge --privileged local/mini-submarine:0.2.0 /bin/bash
+docker run -it -h submarine-dev --net=bridge --privileged -P local/mini-submarine:0.2.0 /bin/bash
 
 # In the container, use root user to bootstrap hdfs and yarn
 /tmp/hadoop-config/bootstrap.sh
@@ -70,6 +70,17 @@ hdfs dfs -ls /user
 
 > drwxr-xr-x   - yarn supergroup          0 2019-07-22 07:59 /user/yarn
 
+### Run workbench server
+
+1. Setup mysql mariadb server
+```
+/tmp/hadoop-config/setup-mysql.sh
+``` 
+
+2. Start workbench server
+```
+/opt/submarine-current/bin/workbench-daemon.sh start getMysqlJar
+``` 
 
 ### Run a sumbarine job
 
@@ -231,7 +242,6 @@ Spark jobs are supported as well.
 ```
 cd && cd spark-script && ./run_spark.sh
 ```
-
 
 ## Question and answer
 

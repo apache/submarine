@@ -74,6 +74,8 @@ EXPOSE 8030 8031 8032 8033 8040 8042 8088
 EXPOSE 2181 2888 3888
 #Other ports
 EXPOSE 49707 2122
+# Workbench port
+EXPOSE 8080
 
 #Add spark dynamic allocation jar
 #ADD spark-2.4.0-yarn-shuffle.jar /usr/local/hadoop/share/hadoop/yarn/spark-2.4.0-yarn-shuffle.jar
@@ -113,8 +115,10 @@ ENV IMAGE_N=${IMAGE_NAME}
 # Install Submarine
 ARG SUBMARINE_VERSION=
 ENV SUBMARINE_VER=${SUBMARINE_VERSION}
-ADD hadoop-submarine-${SUBMARINE_VER}.tar.gz /opt
+ADD submarine-dist-${SUBMARINE_VER}*.tar.gz /opt
+RUN ln -s /opt/submarine-dist-${SUBMARINE_VER}* /opt/submarine-current
 ADD submarine /home/yarn/submarine
+ADD database /home/yarn/database
 
 # Build virtual python env
 RUN cd /home/yarn/submarine && \
