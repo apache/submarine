@@ -16,8 +16,15 @@
 
 hadoop_v=2.9.2
 spark_v=2.4.4
-submarine_v=0.2.0
+submarine_v=0.3.0-SNAPSHOT
 image_name="local/mini-submarine:${submarine_v}"
+
+if [ -L ${BASH_SOURCE-$0} ]; then
+  PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
+else
+  PWD=$(dirname ${BASH_SOURCE-$0})
+fi
+export MINI_PATH=$(cd "${PWD}">/dev/null; pwd)
 
 download_package() {
   if [ -f "$1" ]; then
@@ -42,8 +49,17 @@ download_package "hadoop-${hadoop_v}.tar.gz" "http://mirrors.tuna.tsinghua.edu.c
 download_package "spark-${spark_v}-bin-hadoop2.7.tgz" "http://mirrors.tuna.tsinghua.edu.cn/apache/spark/spark-${spark_v}"
 # download zookeeper
 download_package "zookeeper-3.4.14.tar.gz" "http://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.4.14"
-# download submarine
-download_package "hadoop-submarine-${submarine_v}.tar.gz" "http://mirror.bit.edu.cn/apache/hadoop/submarine/submarine-${submarine_v}"
+
+cd ../..
+mysql_connector_exists=$(find -L "submarine-dist/target" -name "submarine-dist-${submarine_v}*.tar.gz")
+# Build source code if the package doesn't exist.
+if [[ -z "${mysql_connector_exists}" ]]; then
+  mvn clean package -DskipTests
+fi
+
+cp submarine-dist/target/submarine-dist-${submarine_v}*.tar.gz ${MINI_PATH}
+cp -r docs/database ${MINI_PATH}
+cd ${MINI_PATH}
 
 # build image
 echo "Start building the mini-submarine docker image..."

@@ -57,6 +57,7 @@ venv.bak/
 *.tar.gz
 *.jar
 target
+dev-support/mini-submarine/database
 submodules/tony/tony-core/build
 submarine-workbench/workbench-web/node
 submarine-workbench/workbench-web/node_modules
