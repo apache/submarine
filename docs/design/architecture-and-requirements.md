@@ -1,3 +1,18 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+
 # Terminology
 
 | Term | Description |
@@ -65,7 +80,7 @@ It is also a wide skill set required by this workflow. For example, data transfo
 
 Yes, there are great, standardized open-source tools built for many of such purposes. But how about changes need to be made for a particular part of the data pipeline? How about adding a few columns to the training data for experiments? How about training models, and push models to validation, A/B testing before rolling to production? All these steps need jumping between different tools, UIs, and very hard to make changes, and it is not error-proof during these procedures.
 
-#### Pain \#2 Dependencies of underlying resource management platform
+### Pain \#2 Dependencies of underlying resource management platform
 
 To make jobs/services required by machine learning platform to be able to run, we need an underlying resource management platform. There're some choices of resource management platform and they have distinct advantages and disadvantages. 
 
