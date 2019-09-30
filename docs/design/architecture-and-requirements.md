@@ -25,7 +25,7 @@
 
 # Background 
 
-Everybody talks about machine learning today, and lots of companies are trying to leverage machine learning to push the business to the next level. Nowadays, as more and more developers, infrastructure software companies coming to this field, machine learning becomes more and more archivable. 
+Everybody talks about machine learning today, and lots of companies are trying to leverage machine learning to push the business to the next level. Nowadays, as more and more developers, infrastructure software companies coming to this field, machine learning becomes more and more achievable. 
 
 In the last decade, software industry has built many open source tools for machine learning to solve the pain points: 
 
@@ -114,7 +114,7 @@ An abstraction layer/framework to help developer to boost ML pipeline developmen
 
 Initially, Submarine is built to solve problems of running deep learning jobs like Tensorflow/PyTorch on Apache Hadoop YARN, allows admin to monitor launched deep learning jobs, and manage generated models. 
 
-It was part of YARN initially, code resides under `hadoop-yarn-applications`. Later, the community decided to move to a subject of Hadoop because we want to support other resource management platforms like K8s. And finally, we're reconsidering Submarine's charter and Hadoop community voted that it is the time to moved Submarine to a separate Apache TLP.
+It was part of YARN initially, code resides under `hadoop-yarn-applications`. Later, the community decided to convert it to be a subproject within Hadoop (Sibling project of YARN, HDFS, etc.) because we want to support other resource management platforms like K8s. And finally, we're reconsidering Submarine's charter and Hadoop community voted that it is the time to moved Submarine to a separate Apache TLP.
 
 ### Why Submarine? 
 
