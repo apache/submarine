@@ -52,7 +52,6 @@ venv.bak/
 .DS_Store
 .idea
 *.iml
-*.properties
 *.gradle
 *.tgz
 *.tar.gz
