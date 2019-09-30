@@ -62,10 +62,10 @@
     </selectKey>
     insert into project (id, project_name, visibility, 
       type, description, user_name, 
-      create_by, create_time, update_time)
+      create_by, create_time, update_by, update_time)
     values (#{id,jdbcType=VARCHAR}, #{projectName,jdbcType=VARCHAR}, #{visibility,jdbcType=INTEGER}, 
       #{type,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
-      #{createBy,jdbcType=VARCHAR}, now(), now())
+      #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
   <insert id="insertSelective" parameterType="org.apache.submarine.database.entity.Project">
@@ -95,6 +95,9 @@
       <if test="createTime != null">
         create_time,
       </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
       <if test="updateTime != null">
         update_time,
       </if>
@@ -123,6 +126,9 @@
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},

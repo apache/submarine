@@ -67,9 +67,9 @@
       SELECT REPLACE(UUID(),"-","")
     </selectKey>
     insert into project_files (id, project_id, file_name, 
-      create_by, create_time, update_time, file_content)
+      create_by, create_time, update_by, update_time, file_content)
     values (#{id,jdbcType=VARCHAR}, #{projectId,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
-      #{createBy,jdbcType=VARCHAR}, now(), now(), #{fileContent,jdbcType=LONGVARCHAR})
+      #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now(), #{fileContent,jdbcType=LONGVARCHAR})
   </insert>
 
   <insert id="insertSelective" parameterType="org.apache.submarine.database.entity.ProjectFiles">
@@ -86,6 +86,9 @@
       </if>
       <if test="createBy != null">
         create_by,
+      </if>
+      <if test="updateBy != null">
+        update_by,
       </if>
       create_time, update_time,
       <if test="fileContent != null">
@@ -104,6 +107,9 @@
       </if>
       <if test="createBy != null">
         #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
       </if>
       now(), now(),
       <if test="fileContent != null">
