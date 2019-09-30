@@ -44,7 +44,7 @@ Enter Your Apache JIRA User name:
 
 ## Manual mode
 
-First, You need install `python 2.7.13` and `pip insalll jira`
+First, You need install `python 2.7.13` and `pip insall jira`
 
 ### The Procedure of Merging PR
 
