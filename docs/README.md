@@ -74,7 +74,7 @@ And when GPU plan to be used:
 
 For your convenience, we provided installation documents to help you to setup your environment. You can always choose to have them installed in your own way.
 
-Use Submarine installer to install dependencies: [EN](../submarine-installer/README.md) [CN](../submarine-installer/README-CN.md)
+Use Submarine installer to install dependencies: [EN](../dev-support/submarine-installer/README.md) [CN](../dev-support/submarine-installer/README-CN.md)
 
 Alternatively, you can follow manual install dependencies: [EN](./helper/InstallationGuide.md) [CN](./helper/InstallationGuideChineseVersion.md)
 
