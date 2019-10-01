@@ -101,30 +101,30 @@ public class TeamService {
       where.put("teamId", team.getId());
 
       // Take two lists of difference
-      List<TeamMember> old_teamMembers = teamMemberMapper.selectAll(where);
-      List<String> old_teamMembers_member = new ArrayList<>();
-      for (TeamMember old_teamMember : old_teamMembers) {
-        old_teamMembers_member.add(old_teamMember.getMember());
+      List<TeamMember> oldTeamMembers = teamMemberMapper.selectAll(where);
+      List<String> oldMembers = new ArrayList<>();
+      for (TeamMember oldTeamMember : oldTeamMembers) {
+        oldMembers.add(oldTeamMember.getMember());
       }
 
-      List<TeamMember> curr_teamMembers = team.getCollaborators();
-      List<String> curr_teamMembers_member = new ArrayList<>();
-      for (TeamMember curr_teamMember : curr_teamMembers) {
-        curr_teamMembers_member.add(curr_teamMember.getMember());
+      List<TeamMember> newTeamMembers = team.getCollaborators();
+      List<String> newMembers = new ArrayList<>();
+      for (TeamMember newTeamMember : newTeamMembers) {
+        newMembers.add(newTeamMember.getMember());
       }
 
-      for (TeamMember old : old_teamMembers) {
-        if (!curr_teamMembers_member.contains(old.getMember())) {
-          teamMemberMapper.deleteByPrimaryKey(old.getId());
+      for (TeamMember oldTeamMember : oldTeamMembers) {
+        if (!newMembers.contains(oldTeamMember.getMember())) {
+          teamMemberMapper.deleteByPrimaryKey(oldTeamMember.getId());
         }
       }
 
-      for (TeamMember curr : curr_teamMembers) {
-        if (!old_teamMembers_member.contains(curr.getMember())) {
+      for (TeamMember newTeamMember : newTeamMembers) {
+        if (!oldMembers.contains(newTeamMember.getMember())) {
           // TODO(zhulinhao)：teamId Send it by the front desk, here there is no assignment
-          curr.setTeamId(team.getId());
-          curr.setTeamName(team.getTeamName());
-          teamMemberMapper.insert(curr);
+          newTeamMember.setTeamId(team.getId());
+          newTeamMember.setTeamName(team.getTeamName());
+          teamMemberMapper.insert(newTeamMember);
         }
       }
 

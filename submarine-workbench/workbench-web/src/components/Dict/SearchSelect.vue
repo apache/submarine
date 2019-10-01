@@ -49,7 +49,7 @@ export default {
     initValue: {
       immediate: true,
       handler (val) {
-        console.log('val = ', val)
+        // console.log('val = ', val)
         if (val && this.initSelectValue.length === 0) {
           for (var i = 0; i < val.length; i++) {
             var option = {}
@@ -104,7 +104,7 @@ export default {
       })
     },
     handleChange (value) {
-      this.$emit('change', this.id, value)
+      this.$emit('change', this.id, value, this.$store.getters.userInfo)
     }
   }
 }

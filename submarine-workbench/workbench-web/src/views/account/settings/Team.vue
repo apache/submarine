@@ -80,7 +80,6 @@ import { filterObj } from '@/utils/util'
 import { ListMixin } from '@/mixins/ListMixin'
 import SearchSelect from '@/components/Dict/SearchSelect.vue'
 import { addTeam, editTeam, deleteTeam, duplicateCheck } from '@/api/system'
-import { getAction } from '@/api/manage'
 
 export default {
   name: 'Team',
@@ -89,9 +88,8 @@ export default {
   data () {
     return {
       visible: false,
-      // 查询条件
+      // query Param
       queryParam: {
-        owner: 'test'
       },
       searchSelectValue: '',
       cacheData: [],
@@ -140,53 +138,27 @@ export default {
   },
   created () {
     this.login_user = this.userInfo
+    this.queryParam.owner = this.login_user.name
   },
   methods: {
-    loadData222 (arg) {
-      if (!this.url.list) {
-        console.log('Please set the url.list property!')
-        return
-      }
-      // load first page data
-      if (arg === 1) {
-        this.ipagination.current = 1
-      }
-      var params = this.getQueryParams()
-      this.loading = true
-      getAction(this.url.list, params).then((res) => {
-        this.responseAttributes = Object.assign({}, res.attributes)
-        if (res.success) {
-          res.result.records.forEach((team) => {
-            // console.log('team = ', team)
-            team.collaborators.forEach((member) => {
-              // console.log('member = ', member)
-              member.label = member.member
-              member.key = member.id
-            })
-          })
-          // console.log('res.result.records = ', res.result.records)
-          this.dataSource = res.result.records
-          this.ipagination.total = res.result.total
-        } else {
-          this.$message.warning(res.message)
-        }
-        this.loading = false
-      })
-    },
     getQueryParams () {
       var param = Object.assign({}, this.queryParam, this.isorter)
       param.pageNo = this.ipagination.current
       param.pageSize = this.ipagination.pageSize
       return filterObj(param)
     },
-    changeSearchSelect (id, selected) {
-      console.log('selected', selected)
+    changeSearchSelect (id, selected, userInfo) {
+      // console.log('selected', selected)
       // const changeData = [...this.dataSource]
       const team = this.dataSource.filter(item => item.id === id)[0]
       if (team) {
-        console.log('team', team)
+        // console.log('team', team)
+        if (team.collaborators === null) {
+          team.collaborators = []
+        }
         var deleted = []
         var newAdd = []
+
         // found deleted team member
         team.collaborators.forEach(function (oldMember) {
           var notFoundNum = 0
@@ -214,17 +186,21 @@ export default {
           }
         })
 
-        console.log('deleted', deleted)
-        console.log('newAdd', newAdd)
+        // console.log('deleted', deleted)
+        // console.log('newAdd', newAdd)
         // delete from dataSource
         var newTeam = Object.assign({}, team)
         newTeam.collaborators = []
+
         // add not deleted member
-        team.collaborators.forEach(function (oldMember) {
-          if (deleted.indexOf(oldMember.id) < 0) {
-            newTeam.collaborators = [...newTeam.collaborators, oldMember]
-          }
-        })
+        if (team.collaborators) {
+          team.collaborators.forEach(function (oldMember) {
+            if (deleted.indexOf(oldMember.id) < 0) {
+              newTeam.collaborators = [...newTeam.collaborators, oldMember]
+            }
+          })
+        }
+
         // add new add member
         newAdd.forEach(function (newAddMember) {
           var newMember = {}
@@ -232,9 +208,11 @@ export default {
           newMember.id = newAddMember.key
           newMember.member = newAddMember.label
           newMember.inviter = 0
+          newMember.createBy = userInfo.name
+          newMember.updateBy = userInfo.name
           newTeam.collaborators = [...newTeam.collaborators, newMember]
         })
-        console.log('newTeam', newTeam)
+        // console.log('newTeam', newTeam)
 
         // replace newTeam into dataSource
         this.dataSource.forEach(function (team) {
@@ -286,54 +264,59 @@ export default {
     onSaveMember (id) {
       const newData = [...this.dataSource]
       const target = newData.filter(item => id === item.id)[0]
+      // console.log('target = ', target)
       if (target) {
-        const validate = this.validateTeamName(target.teamName)
-        if (validate === false) {
-          return
-        }
-        if (target.hasOwnProperty('editable')) {
-          // need delete editable Property
-          delete target['editable']
-        }
-        // clean collaborators text and value Property
-        target.collaborators.forEach((member) => {
-          delete member['text']
-          delete member['value']
-        })
-
-        const that = this
-        that.confirmLoading = true
-        // console.log('target = ', target)
-        let obj
-        if (target.id === '0') {
-          obj = addTeam(target)
-        } else {
-          obj = editTeam(target)
-        }
-        obj.then(res => {
-          if (res.success) {
-            // console.log('res = ', res)
-            that.$message.success(res.message)
-            delete target.editable
-            if (target.id === '0') {
-              target.id = res.result.records[0].id
-            }
-            this.dataSource = newData
-            this.cacheData = newData.map(item => ({ ...item }))
-            // console.log('dataSource = ', this.dataSource)
-            this.loadData(1)
-          } else {
-            that.$message.warning(res.message)
+        this.validateTeamName(target, () => {
+          if (target.hasOwnProperty('editable')) {
+            // need delete editable Property
+            delete target['editable']
           }
-        }).finally(() => {
-          that.confirmLoading = false
+          // clean collaborators text and value Property
+          if (target.collaborators) {
+            target.collaborators.forEach((member) => {
+              delete member['text']
+              delete member['value']
+            })
+          }
+
+          const that = this
+          that.confirmLoading = true
+          console.log('target = ', target)
+          let obj
+          if (target.id === '0') {
+            target.createBy = this.login_user.name
+            obj = addTeam(target)
+          } else {
+            target.updateBy = this.login_user.name
+            obj = editTeam(target)
+          }
+          obj.then(res => {
+            if (res.success) {
+              // console.log('res = ', res)
+              that.$message.success(res.message)
+              delete target.editable
+              if (target.id === '0') {
+                target.id = res.result.id
+              }
+              this.dataSource = newData
+              this.cacheData = newData.map(item => ({ ...item }))
+              // console.log('dataSource = ', this.dataSource)
+              this.loadData(1)
+            } else {
+              that.$message.warning(res.message)
+            }
+          }).finally(() => {
+            that.confirmLoading = false
+          })
         })
       }
     },
     onCancelMember (id) {
       const newData = [...this.dataSource]
       const target = newData.filter(item => id === item.id)[0]
-      if (target) {
+      if (target.id === '0') {
+        this.loadData(1)
+      } else {
         Object.assign(target, this.cacheData.filter(item => id === item.id)[0])
         delete target.editable
         this.dataSource = newData
@@ -344,7 +327,7 @@ export default {
       const target = newData.filter(item => id === item.id)[0]
       const that = this
       that.confirmLoading = true
-      deleteTeam(id).then(res => {
+      deleteTeam({ id: id }).then(res => {
         if (res.success) {
           that.$message.success(res.message)
           delete target.editable
@@ -357,24 +340,25 @@ export default {
         that.confirmLoading = false
       })
     },
-    validateTeamName (value) {
+    validateTeamName (team, callback) {
       const that = this
-      if (value === null || value === '') {
+      if (team.teamName === null || team.teamName === '') {
         that.$message.warning('Team name can not empty!')
         return false
       }
       var params = {
         tableName: 'team',
         fieldName: 'team_name',
-        fieldVal: value,
-        dataId: null
+        fieldVal: team.teamName
+      }
+      if (team.id !== '0') {
+        params.dataId = team.id
       }
       duplicateCheck(params).then((res) => {
         if (res.success === false) {
           that.$message.warning('Team name already exist!')
-          return false
         } else {
-          return true
+          callback()
         }
       })
     }

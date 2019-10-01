@@ -121,11 +121,11 @@ public class TeamRestApi {
 
     } catch (Exception e) {
       return new JsonResponse.Builder<>(Response.Status.OK).success(false)
-          .message("update team failed!").build();
+          .message("Update team failed!").build();
     }
 
     return new JsonResponse.Builder<>(Response.Status.OK)
-        .message("update team successfully!").success(true).build();
+        .message("Update team successfully!").success(true).build();
   }
 
   @DELETE
