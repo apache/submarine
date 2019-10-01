@@ -33,8 +33,7 @@ public class SysUserService {
 
   public SysUser getUserByName(String name, String password) throws Exception {
     SysUser sysUser = null;
-    SqlSession sqlSession = MyBatisUtil.getSqlSession();
-    try {
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       HashMap<String, Object> mapParams = new HashMap<>();
       mapParams.put("name", name);
       mapParams.put("password", password);
@@ -46,25 +45,18 @@ public class SysUserService {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
-
     return sysUser;
   }
 
   public SysUser login(HashMap<String, String> mapParams) throws Exception {
-    SqlSession sqlSession = null;
     SysUser sysUser = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
       sysUser = sysUserMapper.login(mapParams);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return sysUser;
   }
@@ -81,9 +73,7 @@ public class SysUserService {
         userName, email, deptCode, column, field, pageNo, pageSize);
 
     List<SysUser> list = null;
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
       Map<String, Object> where = new HashMap<>();
       where.put("userName", userName);
@@ -93,78 +83,59 @@ public class SysUserService {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
-
     return list;
   }
 
   public boolean add(SysUser sysUser) throws Exception {
     LOG.info("add({})", sysUser.toString());
 
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper userMapper = sqlSession.getMapper(SysUserMapper.class);
       userMapper.add(sysUser);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return true;
   }
 
   public boolean edit(SysUser sysUser) throws Exception {
     LOG.info("edit({})", sysUser.toString());
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper userMapper = sqlSession.getMapper(SysUserMapper.class);
       userMapper.updateBy(sysUser);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return true;
   }
 
   public boolean delete(String id) throws Exception {
     LOG.info("delete({})", id.toString());
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper userMapper = sqlSession.getMapper(SysUserMapper.class);
       userMapper.deleteById(id);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return true;
   }
 
   public boolean changePassword(SysUser user) throws Exception {
     LOG.info("changePassword({})", user.toString());
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper userMapper = sqlSession.getMapper(SysUserMapper.class);
       userMapper.changePassword(user);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
     return true;
   }

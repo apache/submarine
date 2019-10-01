@@ -26,18 +26,13 @@ public class SysMessageService {
   public void add(SysMessage sysMessage) throws Exception {
     LOG.info("add({})", sysMessage.toString());
 
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysMessageMapper sysMessageMapper = sqlSession.getMapper(SysMessageMapper.class);
       sysMessageMapper.insert(sysMessage);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
-    } finally {
-      sqlSession.close();
     }
   }
-
 }

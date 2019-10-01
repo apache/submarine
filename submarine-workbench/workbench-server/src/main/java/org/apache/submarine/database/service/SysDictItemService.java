@@ -27,18 +27,14 @@ public class SysDictItemService {
   private static final Logger LOG = LoggerFactory.getLogger(SysDictRestApi.class);
 
   public List<SysDictItem> queryDictByCode(String dictCode) {
-    SqlSession sqlSession = MyBatisUtil.getSqlSession();
-    SysDictItemMapper dictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
-
     List<SysDictItem> dictItems = null;
-    try {
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      SysDictItemMapper dictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
       dictItems = dictItemMapper.queryDictByCode(dictCode);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return null;
-    } finally {
-      sqlSession.close();
     }
     return dictItems;
   }
