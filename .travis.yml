@@ -112,6 +112,17 @@ matrix:
       dist: xenial
       env: NAME="Test submarine distribution" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="" TEST_MODULES="" TEST_PROJECTS=""
 
+    # Test submarine-sdk
+    - language: python
+      python: 3.6
+      dist: xenial
+      install:
+        - source ./submarine-sdk/pysubmarine/travis/conda.sh
+        - pip install -r ./submarine-sdk/pysubmarine/travis/lint-requirements.txt
+      script:
+        - ./submarine-sdk/pysubmarine/travis/lint.sh
+        - pytest --cov=submarine -vs
+
 
 install:
   - mvn --version
