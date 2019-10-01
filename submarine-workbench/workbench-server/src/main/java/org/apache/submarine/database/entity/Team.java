@@ -22,7 +22,7 @@ public class Team extends BaseEntity {
 
   private String teamName;
 
-  private List<TeamMember> collaborators;
+  private List<TeamMember> collaborators = new ArrayList<>();;
 
   public String getOwner() {
     return owner;
@@ -49,9 +49,6 @@ public class Team extends BaseEntity {
   }
 
   public void addCollaborator(TeamMember memeber) {
-    if (collaborators == null) {
-      collaborators = new ArrayList<>();
-    }
     this.collaborators.add(memeber);
   }
 }
