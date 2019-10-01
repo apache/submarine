@@ -30,7 +30,7 @@ and execution of machine learning tasks.
 - Clone repo
 ```bash
 git https://github.com/apache/hadoop-submarine.git
-cd hadoop-submarine/submarine-sdk
+cd hadoop-submarine/pysubmarine/submarine-sdk
 ```
 
 - Install pip package

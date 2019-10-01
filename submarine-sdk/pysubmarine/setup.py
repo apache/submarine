@@ -19,7 +19,7 @@ from setuptools import setup, find_packages
 setup(
     name='pysubmarine',
     version='0.3.0-SNAPSHOT',
-    description="A SDK for submarine",
+    description="A python SDK for submarine",
     url="https://github.com/apache/hadoop-submarine",
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[

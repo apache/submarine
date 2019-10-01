@@ -30,7 +30,7 @@ _logger = logging.getLogger(__name__)
 class SqlAlchemyStore(AbstractStore):
     """
     SQLAlchemy compliant backend store for tracking meta data for Submarine entities. Submarine
-    supports the database dialects ``mysql``, ``mssql``, ``sqlite``, and ``postgresql``.
+    supports the database dialects ``mysql``.
     As specified in the
     `SQLAlchemy docs <https://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls>`_ ,
     the database URI is expected in the format
@@ -48,8 +48,7 @@ class SqlAlchemyStore(AbstractStore):
         :param db_uri: The SQLAlchemy database URI string to connect to the database. See
                        the `SQLAlchemy docs
                        <https://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls>`_
-                       for format specifications. Submarine supports the dialects ``mysql``,
-                       ``mssql``, ``sqlite``, and ``postgresql``.
+                       for format specifications. Submarine supports the dialects ``mysql``.
         """
         super(SqlAlchemyStore, self).__init__()
         self.db_uri = db_uri
