@@ -20,16 +20,21 @@ limitations under the License.
       <a-list
         :grid="{gutter: 24, lg: 3, md: 2, sm: 1, xs: 1}"
         :dataSource="data"
+        :pagination="pagination"
       >
         <a-list-item slot="renderItem" slot-scope="item">
           <template>
             <a-card :hoverable="true">
               <a-card-meta style="min-height: 148px">
-                <div style="margin-bottom: 3px;" slot="title">{{ item.title }}
+                <div style="margin-bottom: 3px;" slot="title">{{ item.name }}
 
                 </div>
-                <a-avatar class="card-avatar" slot="avatar" size="large" v-if="item.mlType === 'tensorflow'" :src="'assets/tensorflow_logo.png'"/>
-                <a-avatar class="card-avatar" slot="avatar" size="large" v-if="item.mlType === 'pytorch'" :src="'assets/pytorch_logo.png'"/>
+                <a-avatar class="card-avatar" slot="avatar" size="large" v-if="item.type === 'PROJECT_TYPE_NOTEBOOK'" :src="'assets/notebook_logo.png'"/>
+                <a-avatar class="card-avatar" slot="avatar" size="large" v-if="item.type === 'PROJECT_TYPE_PYTHON'" :src="'assets/python_logo.png'"/>
+                <a-avatar class="card-avatar" slot="avatar" size="large" v-if="item.type === 'PROJECT_TYPE_R'" :src="'assets/r_logo.png'"/>
+                <a-avatar class="card-avatar" slot="avatar" size="large" v-if="item.type === 'PROJECT_TYPE_SCALA'" :src="'assets/scala_logo.png'"/>
+                <a-avatar class="card-avatar" slot="avatar" size="large" v-if="item.type === 'PROJECT_TYPE_TENSORFLOW'" :src="'assets/tensorflow_logo.png'"/>
+                <a-avatar class="card-avatar" slot="avatar" size="large" v-if="item.type === 'PROJECT_TYPE_PYTORCH'" :src="'assets/pytorch_logo.png'"/>
 
                 <div slot="title">
                   <template v-for="(tag, index) in tags">
@@ -64,35 +69,18 @@ limitations under the License.
                 </div>
 
                 <div class="meta-content" slot="description"><ellipsis :length="140">{{ item.description }}</ellipsis><br/>
-                  <a slot="description" class="list-content-item_icon"><a-icon type="star-o"/>{{ item.star }}</a>
+                  <a slot="description" class="list-content-item_icon"><a-icon type="star-o"/>{{ item.starNum }}</a>
                   <a-divider slot="title" type="vertical" class="list-content-item_divider"/>
-                  <a slot="description" class="list-content-item_icon"><a-icon type="like-o"/>{{ item.like }}</a>
+                  <a slot="description" class="list-content-item_icon"><a-icon type="like-o"/>{{ item.likeNum }}</a>
                   <a-divider slot="title" type="vertical" class="list-content-item_divider"/>
-                  <a slot="description" class="list-content-item_icon"><a-icon type="message"/>{{ item.message }}</a>
+                  <a slot="description" class="list-content-item_icon"><a-icon type="message"/>{{ item.messageNum }}</a>
                 </div>
               </a-card-meta>
               <template class="ant-card-actions" slot="actions">
                 <a><a-icon type="edit"/> Edit</a>
                 <a><a-icon type="download"/> Download</a>
                 <a><a-icon type="setting"/> Setting</a>
-                <a>
-                  <a-dropdown>
-                    <a class="ant-dropdown-link" href="javascript:;">
-                      <a-icon type="ellipsis"/>
-                    </a>
-                    <a-menu slot="overlay">
-                      <a-menu-item>
-                        <a href="javascript:;">1st menu item</a>
-                      </a-menu-item>
-                      <a-menu-item>
-                        <a href="javascript:;">2nd menu item</a>
-                      </a-menu-item>
-                      <a-menu-item>
-                        <a href="javascript:;">3rd menu item</a>
-                      </a-menu-item>
-                    </a-menu>
-                  </a-dropdown>
-                </a>
+                <a><a-icon type="delete"/> Delete</a>
               </template>
             </a-card>
           </template>
@@ -106,94 +94,9 @@ limitations under the License.
 import HeadInfo from '@/components/tools/HeadInfo'
 import Ellipsis from '@/components/Ellipsis'
 import NewProject from './NewProject'
-
-const dataSource = []
-dataSource.push(null)
-for (let i = 0; i < 11; i++) {
-  dataSource.push({
-    title: 'Alipay',
-    avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
-    description: ''
-  })
-}
+import { queryProject } from '@/api/system'
 
 const data = []
-data.push({
-  mlType: 'tensorflow',
-  title: 'Tensorflow-test1',
-  description: 'Basic Operations on multi-GPU (notebook) (code). A simple example to introduce multi-GPU in TensorFlow. Basic Operations on multi-GPU (notebook) (code). A simple example to introduce multi-GPU in TensorFlow. A simple example to introduce multi-GPU in TensorFlow. Train a Neural Network on multi-GPU (notebook) (code)',
-  owner: 'Frank',
-  star: 10,
-  like: 24,
-  message: 2,
-  visibility: 'Private',
-  runTimes: 2,
-  lastRunTime: '2018-07-26 22:44',
-  progress: {
-    value: 90
-  }
-})
-data.push({
-  mlType: 'pytorch',
-  title: 'Tensorflow-test1',
-  description: 'Basic Operations on multi-GPU (notebook) (code). ',
-  owner: 'Frank',
-  star: 10,
-  like: 24,
-  message: 2,
-  visibility: 'Private',
-  runTimes: 2,
-  lastRunTime: '2018-07-26 22:44',
-  progress: {
-    value: 54
-  }
-})
-data.push({
-  mlType: 'tensorflow',
-  title: 'Tensorflow-test1',
-  description: 'Basic Operations on multi-GPU (notebook) (code). A simple example to introduce multi-GPU in TensorFlow. Train a Neural Network on multi-GPU (notebook) (code)',
-  owner: 'Frank',
-  star: 10,
-  like: 24,
-  message: 2,
-  visibility: 'Public',
-  runTimes: 2,
-  lastRunTime: '2018-07-26 22:44',
-  progress: {
-    value: 66
-  }
-})
-data.push({
-  mlType: 'pytorch',
-  title: 'Tensorflow-test1',
-  description: 'Basic Operations on multi-GPU (notebook) (code). A simple example to introduce multi-GPU in TensorFlow. Train a Neural Network on multi-GPU (notebook) (code)',
-  owner: 'Frank',
-  star: 10,
-  like: 24,
-  message: 2,
-  visibility: 'Public',
-  runTimes: 2,
-  lastRunTime: '2018-07-26 22:44',
-  progress: {
-    value: 30
-  }
-})
-data.push({
-  mlType: 'tensorflow',
-  title: 'Tensorflow-test1',
-  description: 'Basic Operations on multi-GPU (notebook) (code). A simple example to introduce multi-GPU in TensorFlow. Train a Neural Network on multi-GPU (notebook) (code)',
-  owner: 'Frank',
-  star: 10,
-  like: 24,
-  message: 2,
-  visibility: 'Public',
-  runTimes: 2,
-  lastRunTime: '2018-07-26 22:44',
-  progress: {
-    status: 'exception',
-    value: 100
-  }
-})
 
 export default {
   name: 'StandardList',
@@ -207,14 +110,51 @@ export default {
       tags: ['python', 'test', 'mnist'],
       tagInputVisible: false,
       tagInputValue: '',
-
-      dataSource,
       data,
-      activeTabKey: '1'
+      activeTabKey: '1',
+      login_user: {},
+      pagination: {
+        pageSize: 9,
+        onChange: (page) => {
+          this.pagination.current = page
+          this.loadProjectData()
+        }
+      }
     }
   },
-
+  computed: {
+    userInfo () {
+      return this.$store.getters.userInfo
+    }
+  },
+  created () {
+    this.login_user = this.userInfo
+    this.loadProjectData(1)
+  },
   methods: {
+    loadProjectData () {
+      var params = {
+        userName: this.login_user.name,
+        column: 'update_time',
+        order: 'desc',
+        pageNo: this.pagination.current,
+        pageSize: this.pagination.pageSize
+      }
+
+      queryProject(params).then((res) => {
+        console.log('res=', res)
+        if (res.success) {
+          this.data = res.result.records
+          this.pagination.total = res.result.total
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    changePage (page, pageSize) {
+      console.log('page=', page)
+      console.log('pageSize=', pageSize)
+    },
     onShowNewProject () {
       this.$emit('showNewProject')
     },

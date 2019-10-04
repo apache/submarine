@@ -29,7 +29,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -61,7 +64,7 @@ public class ProjectRestApi {
 
     List<Project> projectList = new ArrayList<>();
     try {
-      projectList = projectService.queryPageList("liuxun", column, order, pageNo, pageSize);
+      projectList = projectService.queryPageList(userName, column, order, pageNo, pageSize);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
@@ -72,4 +75,59 @@ public class ProjectRestApi {
         .success(true).result(listResult).build();
   }
 
+  @POST
+  @Path("/add")
+  @SubmarineApi
+  public Response add(Project project) {
+    LOG.info("add project:{}", project.toString());
+
+    // insert into database, return id
+    try {
+      projectService.add(project);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      return new JsonResponse.Builder<>(Response.Status.OK).success(false)
+          .message("Save project failed!").build();
+    }
+
+    return new JsonResponse.Builder<Project>(Response.Status.OK)
+        .message("Save project successfully!").result(project).success(true).build();
+  }
+
+  @PUT
+  @Path("/edit")
+  @SubmarineApi
+  public Response edit(Project project) {
+    LOG.info("edit project:{}", project.toString());
+
+    try {
+      // update project
+      projectService.updateByPrimaryKeySelective(project);
+    } catch (Exception e) {
+      return new JsonResponse.Builder<>(Response.Status.OK).success(false)
+          .message("Update project failed!").build();
+    }
+
+    return new JsonResponse.Builder<>(Response.Status.OK)
+        .message("Update project successfully!").success(true).build();
+  }
+
+  @DELETE
+  @Path("/delete")
+  @SubmarineApi
+  public Response delete(@QueryParam("id") String id) {
+    // TODO(zhulinhao): At the front desk need to id
+    LOG.info("delete project:{}", id);
+
+    try {
+      projectService.delete(id);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      return new JsonResponse.Builder<>(Response.Status.OK).success(false)
+          .message("Delete project failed!").build();
+    }
+
+    return new JsonResponse.Builder<>(Response.Status.OK)
+        .message("Delete project successfully!").success(true).build();
+  }
 }

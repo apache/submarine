@@ -12,29 +12,30 @@ limitations under the License.
 <template>
   <div>
     <a-row style="margin-bottom: 8px; margin-left: 8px; margin-right: 8px;">
-      <a-col :span="6"><span style="font-size: 18px; font-weight: bold">Files</span></a-col>
+      <a-col :span="6"><span style="font-size: 18px; font-weight: bold">Project Files</span></a-col>
       <a-col :span="12"></a-col>
       <a-col :span="6" style="text-align: right">
       </a-col>
     </a-row>
 
     <a-table
+      style="height: 300px"
       :columns="projectColumns"
-      :dataSource="projectDataSource"
       :pagination="false"
       :scroll="{ y: 300 }"
+      :locale="{emptyText: 'No data record'}"
       bordered
     >
 
       <template slot="footer">
-        Total: 35 files
+        Total: 0 files
       </template>
     </a-table>
 
-    <div style="text-align: center; margin-top: 40px;">
+    <div style="text-align: center; margin-top: 100px;">
       <a-button @click="prevStep"><a-icon type="left" />Previous Step</a-button>
-      <a-button style="margin-left: 8px" type="primary" @click="finish" icon="check">Submit</a-button>
-      <a-button style="margin-left: 8px" type="primary" icon="form">Open Workbench</a-button>
+      <a-button style="margin-left: 8px" type="primary" @click="finish" icon="save">Save</a-button>
+      <a-button style="margin-left: 8px" type="primary" icon="form">Open In Notebook</a-button>
     </div>
   </div>
 </template>
@@ -43,9 +44,24 @@ limitations under the License.
 import { STable } from '@/components'
 
 export default {
-  name: 'DataPage',
+  name: 'NewProjectStep3',
   components: {
     STable
+  },
+  props: {
+    project: {
+      type: Object,
+      // Object or array defaults must be obtained from a factory function
+      default: function () {
+        return { }
+      },
+      required: true
+    }
+  },
+
+  model: {
+    // Object or array defaults must be obtained from a factory function
+    prop: 'project'
   },
   data () {
     return {
@@ -139,10 +155,12 @@ export default {
   },
   methods: {
     prevStep () {
-      this.$emit('prevStep')
+      console.log('project31=', this.project)
+      this.$emit('prevStep', this.project)
     },
     finish () {
-      this.$emit('finish')
+      console.log('project32=', this.project)
+      this.$emit('finish', this.project)
     }
   }
 }

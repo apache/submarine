@@ -28,16 +28,18 @@
   </resultMap>
 
   <resultMap id="resultMap" type="org.apache.submarine.database.entity.Project" extends="BaseEntityResultMap">
-    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
-    <result column="visibility" jdbcType="INTEGER" property="visibility" />
-    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="visibility" jdbcType="VARCHAR" property="visibility" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="team_name" jdbcType="VARCHAR" property="teamName" />
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, project_name, visibility, type, description, user_name, create_by, create_time, 
-    update_by, update_time
+    id, name, visibility, permission, type, description, user_name, team_name,
+    create_by, create_time, update_by, update_time
   </sql>
 
   <select id="selectAll" parameterType="java.util.Map" resultMap="resultMap">
@@ -50,7 +52,7 @@
   </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="resultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from project
     where id = #{id,jdbcType=VARCHAR}
@@ -65,11 +67,13 @@
     <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
       SELECT REPLACE(UUID(),"-","")
     </selectKey>
-    insert into project (id, project_name, visibility, 
-      type, description, user_name, 
+    insert into project (id, name, visibility,
+      permission, type, description,
+      user_name, team_name,
       create_by, create_time, update_by, update_time)
-    values (#{id,jdbcType=VARCHAR}, #{projectName,jdbcType=VARCHAR}, #{visibility,jdbcType=INTEGER}, 
-      #{type,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{visibility,jdbcType=VARCHAR},
+      #{permission,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},
+      #{userName,jdbcType=VARCHAR}, #{teamName,jdbcType=VARCHAR},
       #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
@@ -79,11 +83,14 @@
       <if test="id != null">
         id,
       </if>
-      <if test="projectName != null">
-        project_name,
+      <if test="name != null">
+        name,
       </if>
       <if test="visibility != null">
         visibility,
+      </if>
+      <if test="permission != null">
+        permission,
       </if>
       <if test="type != null">
         type,
@@ -93,6 +100,9 @@
       </if>
       <if test="userName != null">
         user_name,
+      </if>
+      <if test="teamName != null">
+        team_name,
       </if>
       <if test="createBy != null">
         create_by,
@@ -111,20 +121,26 @@
       <if test="id != null">
         #{id,jdbcType=VARCHAR},
       </if>
-      <if test="projectName != null">
-        #{projectName,jdbcType=VARCHAR},
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
       <if test="visibility != null">
-        #{visibility,jdbcType=INTEGER},
+        #{visibility,jdbcType=VARCHAR},
+      </if>
+      <if test="permission != null">
+        #{permission,jdbcType=VARCHAR},
       </if>
       <if test="type != null">
-        #{type,jdbcType=INTEGER},
+        #{type,jdbcType=VARCHAR},
       </if>
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
       </if>
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="teamName != null">
+        #{teamName,jdbcType=VARCHAR},
       </if>
       <if test="createBy != null">
         #{createBy,jdbcType=VARCHAR},
@@ -144,20 +160,26 @@
   <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.database.entity.Project">
     update project
     <set>
-      <if test="projectName != null">
-        project_name = #{projectName,jdbcType=VARCHAR},
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
       </if>
       <if test="visibility != null">
-        visibility = #{visibility,jdbcType=INTEGER},
+        visibility = #{visibility,jdbcType=VARCHAR},
+      </if>
+      <if test="permission != null">
+        permission = #{permission,jdbcType=VARCHAR},
       </if>
       <if test="type != null">
-        type = #{type,jdbcType=INTEGER},
+        type = #{type,jdbcType=VARCHAR},
       </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
       </if>
       <if test="userName != null">
         user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="teamName != null">
+        team_name = #{teamName,jdbcType=VARCHAR},
       </if>
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},
@@ -169,11 +191,13 @@
 
   <update id="updateByPrimaryKey" parameterType="org.apache.submarine.database.entity.Project">
     update project
-    set project_name = #{projectName,jdbcType=VARCHAR},
-      visibility = #{visibility,jdbcType=INTEGER},
-      type = #{type,jdbcType=INTEGER},
+    set name = #{name,jdbcType=VARCHAR},
+      visibility = #{visibility,jdbcType=VARCHAR},
+      permission = #{permission,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       user_name = #{userName,jdbcType=VARCHAR},
+      team_name = #{teamName,jdbcType=VARCHAR},
       update_by = #{updateBy,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
