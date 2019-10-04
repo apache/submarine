@@ -162,16 +162,24 @@ CREATE TABLE `team_member` (
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
   `id` varchar(32) NOT NULL,
-  `project_name` varchar(100) NOT NULL COMMENT 'project name',
-  `visibility` int(1) default 0 COMMENT '0:Private, 1:Team, 2:Public',
-  `type` int(1) default 0 COMMENT 'machine learning type (0:notebook, 1:python, 2:spark, 3:R, 4:tensorflow, 5:pytorch)',
+  `name` varchar(100) NOT NULL COMMENT 'project name',
+  `visibility` varchar(32) default NULL COMMENT 'dict_code:PROJECT_VISIBILITY',
+  `permission` varchar(32) default NULL COMMENT 'dict_code:PROJECT_PERMISSION',
+  `type` varchar(32) default NULL COMMENT 'dict_code:PROJECT_TYPE',
   `description` varchar(255) COMMENT 'description',
   `user_name` varchar(32) NOT NULL COMMENT 'owner user id',
+  `team_name` varchar(32) default NULL COMMENT 'team name',
+  `tags` varchar(128) default NULL COMMENT 'Comma separated tag',
+  `star_num` int(8) default 0 COMMENT 'star number',
+  `like_num` int(8) default 0 COMMENT 'like number',
+  `message_num` int(8) default 0 COMMENT 'message number',
   `create_by` varchar(32) default NULL COMMENT 'create user',
   `create_time` datetime default NULL COMMENT 'create time',
   `update_by` varchar(32) default NULL COMMENT 'last update user',
   `update_time` datetime default NULL COMMENT 'last update time',
   PRIMARY KEY  (`id`)/*,
+  CONSTRAINT `FK_PROJECT_TYPE` FOREIGN KEY (`type`) REFERENCES `sys_dict_item` (`item_code`),
+  CONSTRAINT `FK_PROJECT_TEAM_NAME` FOREIGN KEY (`team_name`) REFERENCES `team` (`team_name`),
   CONSTRAINT `FK_PROJECT_USER_NAME` FOREIGN KEY (`user_name`) REFERENCES `sys_user` (`user_name`)*/
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

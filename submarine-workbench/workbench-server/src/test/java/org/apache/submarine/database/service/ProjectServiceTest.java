@@ -53,10 +53,10 @@ public class ProjectServiceTest {
 
     Project project = new Project();
     project.setDescription("ProjectServiceTest-Description");
-    project.setProjectName("ProjectServiceTest-ProjectName");
-    project.setType(1);
+    project.setName("ProjectServiceTest-ProjectName");
+    project.setType("PROJECT_TYPE_NOTEBOOK");
     project.setUserName("ProjectServiceTest-UserName");
-    project.setVisibility(1);
+    project.setVisibility("PROJECT_VISIBILITY_PRIVATE");
     project.setCreateBy("ProjectServiceTest-UserName");
     List list = new ArrayList<ProjectFiles>();
     list.add(projectFiles);
@@ -71,7 +71,7 @@ public class ProjectServiceTest {
 
     Project projectDb = projectList.get(0);
     assertEquals(project.getDescription(), projectDb.getDescription());
-    assertEquals(project.getProjectName(), projectDb.getProjectName());
+    assertEquals(project.getName(), projectDb.getName());
     assertEquals(project.getType(), projectDb.getType());
     assertEquals(project.getUserName(), projectDb.getUserName());
     assertEquals(project.getVisibility(), projectDb.getVisibility());
@@ -95,10 +95,10 @@ public class ProjectServiceTest {
 
     Project project = new Project();
     project.setDescription("ProjectServiceTest-Description");
-    project.setProjectName("ProjectServiceTest-ProjectName");
-    project.setType(1);
+    project.setName("ProjectServiceTest-ProjectName");
+    project.setType("PROJECT_TYPE_NOTEBOOK");
     project.setUserName("ProjectServiceTest-UserName");
-    project.setVisibility(1);
+    project.setVisibility("PROJECT_VISIBILITY_PRIVATE");
     project.setCreateBy("ProjectServiceTest-UserName");
     List list = new ArrayList<ProjectFiles>();
     list.add(projectFiles);
@@ -107,9 +107,9 @@ public class ProjectServiceTest {
     Boolean ret = projectService.add(project);
     assertTrue(ret);
 
-    project.setProjectName("update_projectName");
+    project.setName("update_projectName");
     project.setDescription("update_description");
-    project.setVisibility(2);
+    project.setVisibility("PROJECT_VISIBILITY_PUBLIC");
     project.setUpdateBy("project_updateBy");
     ProjectFiles projectFilesUpdate = new ProjectFiles();
     projectFilesUpdate.setFileContent("ProjectServiceTest-FileContent2");
@@ -126,7 +126,7 @@ public class ProjectServiceTest {
     assertEquals(projectList.size(), 1);
 
     Project projectDb = projectList.get(0);
-    assertEquals(project.getProjectName(), projectDb.getProjectName());
+    assertEquals(project.getName(), projectDb.getName());
     assertEquals(project.getDescription(), projectDb.getDescription());
     assertEquals(project.getVisibility(), projectDb.getVisibility());
     assertEquals(project.getUpdateBy(), projectDb.getUpdateBy());
@@ -152,10 +152,10 @@ public class ProjectServiceTest {
 
     Project project = new Project();
     project.setDescription("ProjectServiceTest-Description");
-    project.setProjectName("ProjectServiceTest-ProjectName");
-    project.setType(1);
+    project.setName("ProjectServiceTest-ProjectName");
+    project.setType("PROJECT_TYPE_NOTEBOOK");
     project.setUserName("ProjectServiceTest-UserName");
-    project.setVisibility(1);
+    project.setVisibility("PROJECT_VISIBILITY_PRIVATE");
     project.setCreateBy("ProjectServiceTest-UserName");
     List list = new ArrayList<ProjectFiles>();
     list.add(projectFiles);

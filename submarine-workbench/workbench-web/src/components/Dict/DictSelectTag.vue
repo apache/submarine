@@ -3,7 +3,12 @@
     <a-radio v-for="(item, key) in dictOptions" :key="key" :value="item.itemName">{{ item.itemCode }}</a-radio>
   </a-radio-group>
 
-  <a-select v-else-if="tagType=='select'" :placeholder="placeholder" :disabled="disabled" :value="value" @change="handleInput">
+  <a-select
+    v-else-if="tagType=='select'"
+    :placeholder="placeholder"
+    :disabled="disabled"
+    :value="value"
+    @change="handleInput">
     <a-select-option value="">Please Select</a-select-option>
     <a-select-option v-for="(item, key) in dictOptions" :key="key" :value="item.itemCode">
       <span style="display: inline-block;width: 100%" :title=" item.itemName ">
@@ -14,11 +19,16 @@
 </template>
 
 <script>
-import { ajaxGetDictItems } from '@/api/system'
+import { ajaxGetDictItems, queryTeam } from '@/api/system'
 
 export default {
   name: 'DictSelectTag',
   props: {
+    tableName: {
+      type: String,
+      default: '',
+      required: true
+    },
     dictCode: {
       type: String,
       default: '',
@@ -57,14 +67,18 @@ export default {
     }
   },
   created () {
-    console.log(this.dictCode)
+    // console.log(this.dictCode)
     if (!this.type || this.type === 'list') {
       this.tagType = 'select'
     } else {
       this.tagType = this.type
     }
     // Get dictionary data
-    this.initDictData()
+    if (this.tableName === 'team') {
+      this.initTeamData()
+    } else {
+      this.initDictData()
+    }
   },
   methods: {
     initDictData () {
@@ -73,6 +87,31 @@ export default {
         if (res.success) {
           // console.log(res.result.records)
           this.dictOptions = res.result.records
+        }
+      })
+    },
+    initTeamData () {
+      // Initialize the dictionary array according to the dictionary Code
+      var params = {}
+      params.owner = this.$store.getters.userInfo.name
+      params.column = 'createTime'
+      params.order = 'desc'
+      params.pageNo = 0
+      params.pageSize = 100
+      queryTeam(params).then((res) => {
+        if (res.success) {
+          console.log(res.result.records)
+          if (res.result.records) {
+            var dictItems = []
+            res.result.records.forEach(function (team) {
+              console.log('team=', team)
+              var item = {}
+              item.itemCode = team.teamName
+              item.itemName = team.teamName
+              dictItems = [...dictItems, item]
+            })
+            this.dictOptions = dictItems
+          }
         }
       })
     },

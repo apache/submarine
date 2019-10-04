@@ -11,19 +11,19 @@ limitations under the License.
 -->
 <template>
   <a-card title="Create New Project">
-    <a-button shape="circle" icon="close" slot="extra" @click="showProjectList"/>
+    <a-button type="primary" shape="circle" icon="close" slot="extra" @click="showProjectList"/>
 
     <a-spin :spinning="confirmLoading">
       <a-steps :current="currentStep" class="steps">
         <a-step title="Basic Information" />
-        <a-step title="Initial Setup" />
+        <a-step title="Initial Project" />
         <a-step title="Preview Project" />
       </a-steps>
       <a-divider type="horizontal" style="width: 100%"/>
       <div class="content">
-        <step1 v-if="currentStep === 0" @nextStep="nextStep" />
-        <step2 v-if="currentStep === 1" @nextStep="nextStep" @prevStep="prevStep"/>
-        <step3 v-if="currentStep === 2" @prevStep="prevStep" @finish="finish"/>
+        <step1 v-if="currentStep === 0" v-model="project" @nextStep="nextStep" @updateProject="updateProject"/>
+        <step2 v-if="currentStep === 1" v-model="project" @nextStep="nextStep" @prevStep="prevStep" @updateProject="updateProject"/>
+        <step3 v-if="currentStep === 2" v-model="project" @prevStep="prevStep" @finish="finish" @updateProject="updateProject"/>
       </div>
     </a-spin>
   </a-card>
@@ -34,12 +34,7 @@ import pick from 'lodash.pick'
 import Step1 from './NewProjectStep1'
 import Step2 from './NewProjectStep2'
 import Step3 from './NewProjectStep3'
-
-const stepForms = [
-  ['name', 'desc'],
-  ['target', 'template', 'type'],
-  ['time', 'frequency']
-]
+import { addProject } from '@/api/system'
 
 export default {
   name: 'StepByStepModal',
@@ -61,32 +56,74 @@ export default {
       visible: false,
       confirmLoading: false,
       currentStep: 0,
-      mdl: {},
+      project: {
+        name: '',
+        userName: '',
+        description: '',
+        type: 'PROJECT_TYPE_NOTEBOOK',
+        teamName: '',
+        visibility: 'PROJECT_VISIBILITY_PRIVATE',
+        permission: 'PROJECT_PERMISSION_VIEW',
+        starNum: 0,
+        likeNum: 0,
+        messageNum: 0
+      },
       radioStyle: {
         display: 'block',
         height: '30px',
         lineHeight: '30px'
       },
+      login_user: {},
       form: this.$form.createForm(this)
     }
+  },
+  computed: {
+    userInfo () {
+      return this.$store.getters.userInfo
+    }
+  },
+  created () {
+    this.login_user = this.userInfo
   },
   methods: {
     showProjectList () {
       this.$emit('showProjectList')
     },
-    nextStep () {
+    updateProject: function (childProject) {
+      console.log('updateProject=', childProject)
+      this.project = Object.assign(this.project, childProject)
+    },
+    nextStep: function (childModel) {
+      console.log('childModel=', childModel)
+      this.project = Object.assign(this.project, childModel)
+      console.log('project = ', this.project)
       if (this.currentStep < 2) {
         this.currentStep += 1
       }
     },
-    prevStep () {
+    prevStep: function (childModel) {
+      console.log('childModel=', childModel)
+      this.project = Object.assign(this.project, childModel)
+      console.log('project = ', this.project)
       if (this.currentStep > 0) {
         this.currentStep -= 1
       }
     },
-    finish () {
-      this.$emit('showProjectList')
-      this.currentStep = 0
+    finish: function (childModel) {
+      this.project = Object.assign(this.project, childModel)
+      this.project.userName = this.login_user.name
+      this.project.createBy = this.login_user.name
+      this.project.updateBy = this.login_user.name
+
+      addProject(this.project).then((res) => {
+        if (res.success) {
+          this.$message.info(res.message)
+          this.$emit('showProjectList')
+          this.currentStep = 0
+        } else {
+          this.$message.warning(res.message)
+        }
+      })
     },
     edit (record) {
       this.visible = true
@@ -94,52 +131,6 @@ export default {
       this.$nextTick(() => {
         setFieldsValue(pick(record, []))
       })
-    },
-    handleNext (step) {
-      const { form: { validateFields } } = this
-      const currentStep = step + 1
-      if (currentStep <= 2) {
-        // stepForms
-        validateFields(stepForms[ this.currentStep ], (errors, values) => {
-          if (!errors) {
-            this.currentStep = currentStep
-          }
-        })
-        return
-      }
-      // last step
-      this.confirmLoading = true
-      validateFields((errors, values) => {
-        console.log('errors:', errors, 'val:', values)
-        if (!errors) {
-          console.log('values:', values)
-          setTimeout(() => {
-            this.confirmLoading = false
-            this.$emit('ok', values)
-          }, 1500)
-        } else {
-          this.confirmLoading = false
-        }
-      })
-    },
-    backward () {
-      this.currentStep--
-    },
-    handleCancel () {
-      // clear form & currentStep
-      this.visible = false
-      this.currentStep = 0
-    },
-    handleChange (info) {
-      const status = info.file.status
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList)
-      }
-      if (status === 'done') {
-        this.$message.success(`${info.file.name} file uploaded successfully.`)
-      } else if (status === 'error') {
-        this.$message.error(`${info.file.name} file upload failed.`)
-      }
     }
   }
 }

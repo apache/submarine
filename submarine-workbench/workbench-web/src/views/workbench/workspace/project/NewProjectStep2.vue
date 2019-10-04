@@ -11,8 +11,33 @@ limitations under the License.
 -->
 <template>
   <div style="margin: 20px auto 0;">
-    <a-tabs defaultActiveKey="1" tab-position="top" type="card">
-      <a-tab-pane key="1">
+    <a-tabs defaultActiveKey="2" tab-position="top" type="card">
+
+      <a-tab-pane key="1" disabled>
+        <span slot="tab">
+          <a-tooltip placement="top" >
+            <template slot="title">
+              <span>Future is under development</span>
+            </template>
+            <a-icon type="database" />
+            Template
+          </a-tooltip>
+        </span>
+        <a-table
+          bordered
+          rowKey="id"
+          :columns="templateColumns"
+          :dataSource="templateDataSource"
+          :pagination="false"
+          :locale="{emptyText: 'No data record'}"
+          :scroll="{ y: 300 }"
+          :customRow="templateCustomRow"
+          :rowSelection="{type:'radio', onChange:onTemplateSelectChange, selectedRowKeys:templateSelectedRowKeys}"
+        >
+        </a-table>
+      </a-tab-pane>
+
+      <a-tab-pane key="2">
         <span slot="tab">
           <a-icon type="file" />
           Blank
@@ -20,24 +45,15 @@ limitations under the License.
         <div class="tab-content"><p>You can either create a blank project.</p></div>
       </a-tab-pane>
 
-      <a-tab-pane key="2">
+      <a-tab-pane key="3" disabled>
         <span slot="tab">
-          <a-icon type="database" />
-          Template
-        </span>
-        <a-table
-          :columns="templateColumns"
-          :dataSource="templateDataSource"
-          :pagination="false"
-          :scroll="{ y: 300 }"
-          bordered
-        >
-        </a-table>
-      </a-tab-pane>
-      <a-tab-pane key="3">
-        <span slot="tab">
-          <a-icon type="upload" />
-          Upload
+          <a-tooltip placement="top" >
+            <template slot="title">
+              <span>Future is under development</span>
+            </template>
+            <a-icon type="upload" />
+            Upload
+          </a-tooltip>
         </span>
         <a-upload-dragger name="file" :multiple="true" action="https://www.mocky.io/v2/5cc8019d300000980a055e76">
           <p class="ant-upload-drag-icon">
@@ -47,17 +63,28 @@ limitations under the License.
           <p class="ant-upload-hint">Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files</p>
         </a-upload-dragger>
       </a-tab-pane>
-      <a-tab-pane key="4">
+
+      <a-tab-pane key="4" disabled>
         <span slot="tab">
-          <a-icon type="github" />
-          Git Repo
+          <a-tooltip placement="top" >
+            <template slot="title">
+              <span>Future is under development</span>
+            </template>
+            <a-icon type="github" />
+            Git Repo
+          </a-tooltip>
         </span>
         <a-table
+          style="height: 325px"
+          bordered
+          rowKey="id"
           :columns="gitColumns"
           :dataSource="gitDataSource"
           :pagination="false"
+          :locale="{emptyText: 'No data record'}"
           :scroll="{ y: 300 }"
-          bordered
+          :customRow="gitCustomRow"
+          :rowSelection="{type:'radio', onChange:onGitSelectChange, selectedRowKeys:gitSelectedRowKeys}"
         >
         </a-table>
       </a-tab-pane>
@@ -73,7 +100,22 @@ limitations under the License.
 <script>
 
 export default {
-  name: 'Step1',
+  name: 'NewProjectStep2',
+  props: {
+    project: {
+      type: Object,
+      // Object or array defaults must be obtained from a factory function
+      default: function () {
+        return { }
+      },
+      required: true
+    }
+  },
+
+  model: {
+    // Pass the variable value to the child component when the parent component sets the v-model
+    prop: 'project'
+  },
   data () {
     return {
       labelCol: { lg: { span: 5 }, sm: { span: 5 } },
@@ -184,21 +226,66 @@ export default {
           name: 'PyTorch test',
           description: 'Apache {Submarine} is the latest machine learning framework'
         }
-      ]
+      ],
+      templateSelectedRowKeys: [],
+      templateSelectedRows: [],
+      gitSelectedRowKeys: [],
+      gitSelectedRows: []
     }
   },
+
   methods: {
     nextStep () {
       const { form: { validateFields } } = this
       // 先校验，通过表单校验后，才进入下一步
       validateFields((err, values) => {
         if (!err) {
-          this.$emit('nextStep')
+          console.log('project21=', this.project)
+          this.$emit('nextStep', this.project)
         }
       })
     },
     prevStep () {
-      this.$emit('prevStep')
+      console.log('project22=', this.project)
+      this.$emit('prevStep', this.project)
+    },
+    cleanSelect () {
+      this.templateSelectedRowKeys = []
+      this.templateSelectedRows = []
+      this.gitSelectedRowKeys = []
+      this.gitSelectedRows = []
+    },
+    onTemplateSelectChange (selectedRowKeys, selectedRows) {
+      this.cleanSelect()
+      this.templateSelectedRowKeys = selectedRowKeys
+      this.templateSelectedRows = selectedRows
+    },
+    onGitSelectChange (selectedRowKeys, selectedRows) {
+      this.cleanSelect()
+      this.gitSelectedRowKeys = selectedRowKeys
+      this.gitSelectedRows = selectedRows
+    },
+    templateCustomRow (record, index) {
+      return {
+        on: {
+          click: () => {
+            this.cleanSelect()
+            this.templateSelectedRowKeys.push(index)
+            this.templateSelectedRows.push(record)
+          }
+        }
+      }
+    },
+    gitCustomRow (record, index) {
+      return {
+        on: {
+          click: () => {
+            this.cleanSelect()
+            this.gitSelectedRowKeys.push(index)
+            this.gitSelectedRows.push(record)
+          }
+        }
+      }
     }
   }
 }
@@ -210,13 +297,13 @@ export default {
     border: 1px dashed #e9e9e9;
     border-radius: 6px;
     background-color: #fafafa;
-    min-height: 200px;
+    min-height: 325px;
     text-align: center;
     // padding-top: 30px;
 
     p {
-      padding-top: 80px;
-      font-size: 20px;
+      padding-top: 145px;
+      font-size: 24px;
     }
   }
 

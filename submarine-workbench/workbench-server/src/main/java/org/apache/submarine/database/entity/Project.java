@@ -18,45 +18,65 @@
  */
 package org.apache.submarine.database.entity;
 
+import org.apache.submarine.annotation.Dict;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Project extends BaseEntity {
-  private String projectName;
+  private String name;
 
-  // 0:Private, 1:Team, 2:Public
-  private Integer visibility;
+  @Dict(Code = "PROJECT_VISIBILITY")
+  private String visibility;
 
-  // 0:notebook, 1:python, 2:spark, 3:R, 4:tensorflow, 5:pytorch
-  private Integer type;
+  @Dict(Code = "PROJECT_TYPE")
+  private String type;
+
+  @Dict(Code = "PROJECT_PERMISSION")
+  private String permission;
+
+  // Comma separated tag
+  private String tags;
+
+  // number of star
+  private Integer starNum = 0;
+
+  // number of like
+  private Integer likeNum = 0;
+
+  // number of message
+  private Integer messageNum = 0;
+
+  // Team.teamName
+  private String teamName;
 
   private String description;
 
   private String userName;
 
-  private List<ProjectFiles> projectFilesList;
+  private List<ProjectFiles> projectFilesList = new ArrayList<>();
 
-  public String getProjectName() {
-    return projectName;
+  public String getName() {
+    return name;
   }
 
-  public void setProjectName(String projectName) {
-    this.projectName = projectName == null ? null : projectName.trim();
+  public void setName(String name) {
+    this.name = name == null ? null : name.trim();
   }
 
-  public Integer getVisibility() {
+  public String getVisibility() {
     return visibility;
   }
 
-  public void setVisibility(Integer visibility) {
+  public void setVisibility(String visibility) {
     this.visibility = visibility;
   }
 
-  public Integer getType() {
+  public String getType() {
     return type;
   }
 
-  public void setType(Integer type) {
+  public void setType(String type) {
     this.type = type;
   }
 
@@ -85,9 +105,54 @@ public class Project extends BaseEntity {
   }
 
   public void addProjectFilesList(ProjectFiles projectFiles) {
-    if (projectFilesList == null) {
-      projectFilesList = new ArrayList<>();
-    }
     this.projectFilesList.add(projectFiles);
+  }
+
+  public String getTags() {
+    return tags;
+  }
+
+  public void setTags(String tags) {
+    this.tags = tags;
+  }
+
+  public Integer getStarNum() {
+    return starNum;
+  }
+
+  public void setStarNum(Integer starNum) {
+    this.starNum = starNum;
+  }
+
+  public Integer getLikeNum() {
+    return likeNum;
+  }
+
+  public void setLikeNum(Integer likeNum) {
+    this.likeNum = likeNum;
+  }
+
+  public Integer getMessageNum() {
+    return messageNum;
+  }
+
+  public void setMessageNum(Integer messageNum) {
+    this.messageNum = messageNum;
+  }
+
+  public String getTeamName() {
+    return teamName;
+  }
+
+  public void setTeamName(String teamName) {
+    this.teamName = teamName;
+  }
+
+  public String getPermission() {
+    return permission;
+  }
+
+  public void setPermission(String permission) {
+    this.permission = permission;
   }
 }

@@ -14,18 +14,33 @@ limitations under the License.
     <a-form :form="form" style="max-width: 650px; margin: 10px auto 0;">
 
       <a-form-item label="Project Name" :labelCol="labelCol" :wrapperCol="wrapperCol">
-        <a-input v-decorator="['name', {rules: [{required: true}]}]" />
+        <a-input v-model="project.name" v-decorator="[ 'name', validatorRules.name]" />
       </a-form-item>
 
       <a-form-item label="Description" :labelCol="labelCol" :wrapperCol="wrapperCol">
-        <a-textarea :rows="4" v-decorator="['desc', {rules: [{required: true}]}]"></a-textarea>
+        <a-textarea :rows="4" v-model="project.description" v-decorator="['desc', validatorRules.description]" />
       </a-form-item>
 
       <a-form-item label="Visibility" :labelCol="labelCol" :wrapperCol="wrapperCol">
-        <a-radio-group v-decorator="['type', {initialValue: 0, rules: [{required: true}]}]" style="width: 100%">
-          <a-radio class="radioStyle" :value="0"><a class="a-radio_a">Private</a> - Only project collaborators can view or edit the project. </a-radio>
-          <a-radio class="radioStyle" :value="1"><a class="a-radio_a">Team</a> - All members of the team can view the project.</a-radio>
-          <a-radio class="radioStyle" :value="2"><a class="a-radio_a">Public</a> - All authenticated users can view the project.</a-radio>
+        <a-radio-group v-model="project.visibility" @change="visibilityOnChange" style="width: 100%">
+          <a-radio class="radioStyle" :value="'PROJECT_VISIBILITY_PRIVATE'"><a class="a-radio_a">Private</a> - Only project collaborators can view or edit the project. </a-radio>
+          <a-radio class="radioStyle" :value="'PROJECT_VISIBILITY_TEAM'"><a class="a-radio_a">Team</a> - All members of the team can view the project.</a-radio>
+          <dict-select-tag
+            v-if="project.visibility==='PROJECT_VISIBILITY_TEAM'"
+            tableName="team"
+            triggerChange="true"
+            @change="teamNameOnChange"
+            v-model="project.teamName"
+            v-decorator="['teamName', validatorRules.teamName]"/>
+          <a-radio class="radioStyle" :value="'PROJECT_VISIBILITY_PUBLIC'"><a class="a-radio_a">Public</a> - All authenticated users can view the project.</a-radio>
+        </a-radio-group>
+      </a-form-item>
+
+      <a-form-item label="Permission" :labelCol="labelCol" :wrapperCol="wrapperCol" v-if="project.visibility!=='PROJECT_VISIBILITY_PRIVATE'">
+        <a-radio-group v-model="project.permission" @change="permissionOnChange" style="width: 100%">
+          <a-radio class="radioStyle" :value="'PROJECT_PERMISSION_VIEW'"><a class="a-radio_a">Can View</a>{{ permissionCanView }}</a-radio>
+          <a-radio class="radioStyle" :value="'PROJECT_PERMISSION_EDIT'"><a class="a-radio_a">Can Edit</a>{{ permissionCanEdit }}</a-radio>
+          <a-radio class="radioStyle" :value="'PROJECT_PERMISSION_EXECUTE'"><a class="a-radio_a">Can Execute</a>{{ permissionCanExecute }}</a-radio>
         </a-radio-group>
       </a-form-item>
 
@@ -38,28 +53,92 @@ limitations under the License.
 </template>
 
 <script>
+import pick from 'lodash.pick'
+import DictSelectTag from '@/components/Dict/DictSelectTag.vue'
 
 export default {
-  name: 'Step1',
+  name: 'NewProjectStep1',
+  components: { DictSelectTag },
+
+  props: {
+    project: {
+      type: Object,
+      // Object or array defaults must be obtained from a factory function
+      default: function () {
+        return { }
+      },
+      required: true
+    }
+  },
+
+  model: {
+    // Pass the variable value to the child component when the parent component sets the v-model
+    prop: 'project'
+  },
+  mounted () {
+    console.log('projectaaa', this.project)
+    const that = this
+    that.form.resetFields()
+    that.$nextTick(() => {
+      that.form.setFieldsValue(pick(this.project, 'name', 'description', 'visibility', 'teamName', 'permission'))
+    })
+    that.setPermissionDesc()
+  },
+
   data () {
     return {
       labelCol: { lg: { span: 5 }, sm: { span: 5 } },
       wrapperCol: { lg: { span: 19 }, sm: { span: 19 } },
-      form: this.$form.createForm(this),
-      fileList: [],
-      uploading: false,
-      dataSourceType: 'file'
+      validatorRules: {
+        name: { rules: [{ required: true, message: 'Please enter project name!' }] },
+        description: { rules: [{ required: true, message: 'Please enter project description!' }] },
+        teamName: { rules: [{ required: true, message: 'Please select team name!' }] }
+      },
+      permissionCanView: '',
+      permissionCanEdit: '',
+      permissionCanExecute: '',
+      form: this.$form.createForm(this)
     }
   },
+
   methods: {
     nextStep () {
       const { form: { validateFields } } = this
-      // 先校验，通过表单校验后，才进入下一步
+      // Check the form, then go to the next step.
       validateFields((err, values) => {
         if (!err) {
-          this.$emit('nextStep')
+          console.log('project=', this.project)
+          this.$emit('nextStep', this.project)
         }
       })
+    },
+    visibilityOnChange (e) {
+      this.project.visibility = e.target.value
+      console.log('project.visibility=', this.project.visibility)
+      if (this.project.visibility !== 'PROJECT_VISIBILITY_TEAM') {
+        this.project.teamName = ''
+      }
+      this.setPermissionDesc()
+      this.$emit('updateProject', this.project)
+    },
+    setPermissionDesc () {
+      if (this.project.visibility !== 1) {
+        this.permissionCanView = ' - All members can view the project.'
+        this.permissionCanEdit = ' - All members can edit the project.'
+        this.permissionCanExecute = ' - All members can execute the project.'
+      } else {
+        this.permissionCanView = ' - All members of the team can view the project.'
+        this.permissionCanEdit = ' - All members of the team can edit the project.'
+        this.permissionCanExecute = ' - All members of the team can execute the project.'
+      }
+    },
+    permissionOnChange (e) {
+      this.project.permission = e.target.value
+      this.$emit('updateProject', this.project)
+    },
+    teamNameOnChange (val) {
+      this.project.teamName = val
+      this.$emit('updateProject', this.project)
     }
   }
 }
