@@ -27,6 +27,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.submarine.common.conf.SubmarineConfiguration.SUBMARINE_RUNTIME_APP_TYPE;
+
 /**
  * Utilities for Tony Runtime.
  */
@@ -106,6 +108,7 @@ public final class TonyUtils {
     tonyConf.setStrings(TonyConfigurationKeys.CONTAINER_LAUNCH_ENV,
         envs.stream().map(env -> env.replaceAll("DOCKER_", ""))
             .toArray(String[]::new));
+    tonyConf.setStrings(TonyConfigurationKeys.APPLICATION_TYPE, SUBMARINE_RUNTIME_APP_TYPE);
 
     // Set up running command
     if (parameters.getWorkerLaunchCmd() != null) {

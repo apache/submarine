@@ -34,6 +34,8 @@ public class SubmarineConfiguration extends Configuration {
   // Default 2GB
   public static final long DEFAULT_MAX_ALLOWED_REMOTE_URI_SIZE_MB = 2048;
 
+  public static final String SUBMARINE_RUNTIME_APP_TYPE = "SUBMARINE";
+
   public SubmarineConfiguration() {
     this(new Configuration(false), true);
   }

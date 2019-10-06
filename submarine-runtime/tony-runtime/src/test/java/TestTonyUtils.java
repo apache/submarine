@@ -121,5 +121,6 @@ public class TestTonyUtils {
         Constants.VCORES)));
     Assert.assertEquals(tensorFlowParams.getPSLaunchCmd(),
         tonyConf.get(TonyConfigurationKeys.getExecuteCommandKey("ps")));
+    Assert.assertEquals("SUBMARINE", tonyConf.get(TonyConfigurationKeys.APPLICATION_TYPE));
   }
 }
