@@ -38,7 +38,7 @@ cd submarine
 | WORKBENCH_JAVA_OPTS | Set the JAVA OPTS parameter when the Workbench process starts. If you need to debug the Workbench process, you can set it to `-agentlib:jdwp=transport=dt_socket, server=y,suspend=n,address=5005` |
 | WORKBENCH_MEM       | Set the java memory parameter when the Workbench process starts. |
 | MYSQL_JAR_URL       | The customized URL to download mysql jdbc jar.               |
-| MYSQL_VERSION       | The version of mysql jdbc jar would be downloaded. The default value is 5.1.39. It's used to generate the default value of MYSQL_JDBC_URL|
+| MYSQL_VERSION       | The version of mysql jdbc jar to downloaded. The default value is 5.1.39. It's used to generate the default value of MYSQL_JDBC_URL |
 
 ## submarine-site.xml
 
@@ -64,7 +64,7 @@ cd submarine
 
 ## Compile
 
-[Build From Code Guide](./development/BuildFromCode.md)
+[Build From Code Guide](../development/BuildFromCode.md)
 
 ```$xslt
 cd submarine/submarine-dist/target/submarine-dist-<version>/submarine-dist-<version>/

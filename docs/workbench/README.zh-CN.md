@@ -171,4 +171,6 @@ Workspace 主要有五个 Tab 页组成，每个 Tab 页的标题中显示了各
 
 [TODO]
 
+## How to run workbench
 
+[How To Run Submarine Workbench Guide](./HowToRun.md)

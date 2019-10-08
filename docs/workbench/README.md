@@ -22,9 +22,9 @@ Data scientists can interactively access notebooks, submit/manage jobs, manage m
 
 ## Register
 
-Everyone who needs to use Submarine for machine learning algorithm development can log in to Submarine Workbench's WEB homepage. On the homepage, click the registration link, fill in the user name, email address and password to register the user. At this time, the user status is `waiting for the audit` status. 
+Everyone who needs to use Submarine for machine learning algorithm development can log in to Submarine Workbench's WEB homepage. On the homepage, click the registration link, fill in the user name, email address and password to register the user. At this time, the user status is `waiting for approval` status. 
 
-After receiving the registration request from the user in Submarine Workbench, the administrator sets the operation authority according to the user's needs, sets the user's organization and allocates resources, and sets the user status to `pass the audit`. The user can log in to the Submarine Workbench. Different users have different Operational authority.
+After receiving the registration request from the user in Submarine Workbench, the administrator sets the operation authority according to the user's needs, sets the user's organization and allocates resources, and sets the user status to `pass the audit`. The user can log in to the Submarine Workbench. Different users have different permission.
 
 ## Login
 
@@ -54,10 +54,10 @@ Each Project card consists of the following sections:
 
 1. **Project Type**：Submarine currently supports six types of machine learning algorithm frameworks and development languages: `Notebook`, `Python`, `R`, `Scala`, `Tensorflow`, and `PyTorch`, which are identified by corresponding icons in the project card.
 2. **Project Tags**：Users can tag each Project with different tags for easy searching and management.
-3. **Github/Gitlab integrated**：Submarine Workbench is system integrated with `Github`/`Gitlab`, and each Project can perform `Watch`, `Star`, `Frok`, and `Comment `operations in Workbench.
+3. **Github/Gitlab integrated**：Submarine Workbench is system integrated with `Github`/`Gitlab`, and each Project can perform `Watch`, `Star`, `Fork`, and `Comment `operations in Workbench.
    + **Watch**：[TODO]
    + **Star**：[TODO]
-   + **Frok**：[TODO]
+   + **Fork**：[TODO]
    + **Comment**：Users can comment on the project.
 4. **Edit**：Users can open projects in **Notebook** and perform algorithm development by double-clicking on the project or by clicking the **Edit** button.
 5. **Download**：The user downloads the project package locally by clicking the **Download** button.
@@ -172,4 +172,6 @@ Clicking the **Add New Project** button on the project page will display the gui
 
 [TODO]
 
+## How to run workbench
 
+[How To Run Submarine Workbench Guide](./HowToRun.md)
