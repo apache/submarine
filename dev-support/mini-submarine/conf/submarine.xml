@@ -19,7 +19,7 @@
 <configuration>
   <property>
     <name>submarine.runtime.class</name>
-    <value>org.apache.hadoop.yarn.submarine.runtimes.tony.TonyRuntimeFactory</value>
+    <value>org.apache.submarine.runtimes.tony.TonyRuntimeFactory</value>
     <!--
     <value>org.apache.hadoop.yarn.submarine.runtimes.yarnservice.YarnServiceRuntimeFactory</value>
     -->

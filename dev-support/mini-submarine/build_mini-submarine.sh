@@ -51,9 +51,9 @@ download_package "spark-${spark_v}-bin-hadoop2.7.tgz" "http://mirrors.tuna.tsing
 download_package "zookeeper-3.4.14.tar.gz" "http://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.4.14"
 
 cd ../..
-mysql_connector_exists=$(find -L "submarine-dist/target" -name "submarine-dist-${submarine_v}*.tar.gz")
+submarine_dist_exists=$(find -L "submarine-dist/target" -name "submarine-dist-${submarine_v}*.tar.gz")
 # Build source code if the package doesn't exist.
-if [[ -z "${mysql_connector_exists}" ]]; then
+if [[ -z "${submarine_dist_exists}" ]]; then
   mvn clean package -DskipTests
 fi
 

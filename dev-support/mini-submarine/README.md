@@ -25,7 +25,7 @@ This is a docker image built for submarine development and quick start test.
 > Tag 0.2.0 indicates the version number of hadoop submarine in images
 
 ```
-docker pull hadoopsubmarine/mini-submarine:0.2.0 
+docker pull hadoopsubmarine/mini-submarine:0.3.0-SNAPSHOT 
 ```
 
 #### Create image by yourself
