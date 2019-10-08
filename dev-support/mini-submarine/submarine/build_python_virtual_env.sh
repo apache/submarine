@@ -17,12 +17,10 @@
 wget https://files.pythonhosted.org/packages/33/bc/fa0b5347139cd9564f0d44ebd2b147ac97c36b2403943dbee8a25fd74012/virtualenv-16.0.0.tar.gz
 tar xf virtualenv-16.0.0.tar.gz
 
-wget https://github.com/linkedin/TonY/releases/download/v0.3.18/tony-cli-0.3.18-all.jar
-mv tony-cli-0.3.18-all.jar /opt/hadoop-submarine-dist-${SUBMARINE_VER}-hadoop-3.1/tony-cli-0.3.18-all.jar
 # Make sure to install using Python 3, as TensorFlow only provides Python 3 artifacts
 python3 virtualenv-16.0.0/virtualenv.py venv
 . venv/bin/activate
-pip install tensorflow==1.13.1
+pip3 install tensorflow==1.13.1
 zip -r myvenv.zip venv
 deactivate
 
