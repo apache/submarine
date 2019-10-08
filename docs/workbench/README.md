@@ -111,7 +111,7 @@ Clicking the **Add New Project** button on the project page will display the gui
 
   ![image-20191007184825531](assets/workspace-project-step2-upload.png)
 
-+ **Git Repo**: Frok a file in the repository to initialize the project in your **Github**/**Gitlab** account.
++ **Git Repo**: Fork a file in the repository to initialize the project in your **Github**/**Gitlab** account.
 
   ![image-20191007184840989](assets/workspace-project-step2-git.png)
 
