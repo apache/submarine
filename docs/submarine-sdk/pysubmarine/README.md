@@ -13,8 +13,9 @@
 -->  
 
 # PySubmarine
-PySubmarine provided to help developers use submarine's internal data caching,
-data exchange, and task tracking to more efficiently improve the development and execution of machine learning tasks.
+PySubmarine helps developers use submarine's internal data caching,
+data exchange, and task tracking capabilities to more efficiently improve the 
+development and execution of machine learning productivity.
 
 ## Package setup
 - Clone repo

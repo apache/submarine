@@ -15,10 +15,10 @@
 # pysubmarine-tracking
 - Allow data scientist to track distributed ML job
 - Support store ML parameters and metrics in Submarine-server
-- Support store ML job output (e.g. csv,images)
-- Support hdfs,S3 and mysql
-- (WEB) Metric tracking ui in workbench-web
-- (WEB) Metric graphical display in workbench-web
+- [TODO] Support store ML job output (e.g. csv,images)
+- Support hdfs,S3 and mysql (Currently we only support mysql)
+- [TODO] (WEB) Metric tracking ui in workbench-web
+- [TODO] (WEB) Metric graphical display in workbench-web
 
 ## Functions
 ### `submarine.get_tracking_uri()`
@@ -33,7 +33,7 @@ there. The URI should be database connection string.
 
 **Parameters**
 
-- URI - Submarine record data to a SQLAlchemy compatible database. The database URL
+- URI - Submarine record data to Mysql server. The database URL
 is expected in the format ``<dialect>+<driver>://<username>:<password>@<host>:<port>/<database>``.
 By default it's `mysql+pymysql://submarine:password@localhost:3306/submarineDB`.
 More detail : [SQLAlchemy docs](https://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls)
@@ -51,7 +51,7 @@ logs a single key-value metric. The value must always be a number.
 - value - Metric value (float).
 - worker_index - The index of worker (string). Examples are "rank-1", "worker-2"
 - step - A single integer step at which to log the specified Metrics,
-bt default it's 0.
+by default it's 0.
 
 ### `submarine.log_param(key, value, worker_index)`
 
