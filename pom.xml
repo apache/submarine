@@ -106,11 +106,12 @@
   </properties>
 
   <modules>
-    <module>submodules/tony</module>
-    <module>submarine-core</module>
     <module>submarine-all</module>
-    <module>submarine-workbench</module>
+    <module>submarine-core</module>
     <module>submarine-dist</module>
+    <module>submarine-server</module>
+    <module>submarine-workbench</module>
+    <module>submodules/tony</module>
   </modules>
 
   <dependencyManagement>
