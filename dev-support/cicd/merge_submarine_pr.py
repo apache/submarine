@@ -134,7 +134,10 @@ def merge_pr(pr_num, target_ref):
     if body is not None:
         # We remove @ symbols from the body to avoid triggering e-mails
         # to people every time someone creates a public fork of Submarine.
-        merge_message_flags += ["-m", body.replace("@", "")]
+        if isinstance(body, unicode):
+            merge_message_flags += ["-m", body.encode("utf-8").replace("@", "")]
+        else:
+            merge_message_flags += ["-m", body.replace("@", "")]
 
     authors = "\n".join(["Author: %s" % a for a in distinct_authors])
 
