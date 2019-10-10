@@ -21,25 +21,31 @@ To use them more easily, we provide a Docker image to help committer to handle t
 ## Docker mode
 
 ```
-cd <path-to-submarine-home>/dev-support/cicd
-docker build -t submarine-cicd .
-docker run -it --rm submarine-cicd
+./build_and_start_cicd_image.sh
 ```
 
 Or
 
 ```
-./build_and_start_cicd_image.sh
+cd <path-to-submarine-home>/dev-support/cicd
+docker build -t submarine-cicd .
+docker run -it --rm submarine-cicd
 ```
+
+Jira username, password, apache id and apache username are required in the docker container. You can
+add them to the docker startup command.
 
 And you'll see output like below and then you can decide what to accomplish.
 ```
-$ docker run -it --rm submarine-cicd
+$ docker run -it -e JIRA_USERNAME='jira username' -e JIRA_PASSWORD='jira password' \
+ -e APACHE_ID='apache id' -e APACHE_NAME="apache name" --rm submarine-cicd 
 Menu:
 	1. Merge PR
 Enter Menu ID:1
 ==== Merge PR Begin ====
-Enter Your Apache JIRA User name:
+Got JIRA name: username
+
+Enter Your Apache committer ID:
 ```
 
 ## Manual mode
