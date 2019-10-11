@@ -107,6 +107,7 @@
 
   <modules>
     <module>submodules/tony</module>
+    <module>submodules/zeppelin</module>
     <module>submarine-core</module>
     <module>submarine-all</module>
     <module>submarine-workbench</module>
@@ -413,6 +414,7 @@
             <exclude>**/*.xsd</exclude>
             <exclude>**/*.json</exclude>
             <exclude>**/*.conf</exclude>
+            <exclude>**/*.iml</exclude>
             <exclude>**/src/main/java/com/linkedin/tony/events/*</exclude>
             <exclude>**/src/main/resources/META-INF/services/org.apache.hadoop.security.SecurityInfo</exclude>
             <exclude>**/src/test/resources/typicalHistFolder/job1/application123-1-1-user1-SUCCEEDED.jhist</exclude>

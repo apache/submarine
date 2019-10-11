@@ -2,3 +2,7 @@
 	path = submodules/tony
 	url = https://github.com/hadoopsubmarine/linkedin-tony.git
 	branch = submarine
+[submodule "submodules/zeppelin"]
+	path = submodules/zeppelin
+	url = https://github.com/hadoopsubmarine/zeppelin.git
+	branch = submarine
