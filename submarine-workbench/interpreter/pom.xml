@@ -25,21 +25,20 @@
 
   <parent>
     <groupId>org.apache.submarine</groupId>
-    <artifactId>submarine</artifactId>
+    <artifactId>submarine-workbench</artifactId>
     <version>0.3.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>submarine-workbench</artifactId>
+  <artifactId>interpreter</artifactId>
   <version>0.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Submarine: Workbench</name>
-  <description>Submarine Workbench</description>
+  <name>Submarine: Interpreter Parent</name>
+  <description>Submarine Interpreter Parent</description>
 
   <modules>
-    <module>interpreter</module>
-    <module>workbench-web</module>
-    <module>workbench-server</module>
+    <module>interpreter-engine</module>
+    <module>python-interpreter</module>
   </modules>
 
 </project>
