@@ -128,6 +128,13 @@
       <directory>../submarine-workbench/workbench-server/target/dependency</directory>
       <outputDirectory>/workbench/lib</outputDirectory>
     </fileSet>
+    <fileSet>
+      <directory>../submarine-workbench/interpreter/python-interpreter/target</directory>
+      <outputDirectory>/workbench/interpreter/python</outputDirectory>
+      <includes>
+        <include>python-interpreter-${project.version}-shade.jar</include>
+      </includes>
+    </fileSet>
   </fileSets>
 
 </assembly>

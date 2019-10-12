@@ -39,8 +39,11 @@ services:
 env:
   global:
     # submarine core does not required by workbench-server integration tests
-    # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-runtime/yarnservice-runtime` in EXCLUDE_SUBMARINE_CORE
-    - EXCLUDE_SUBMARINE_CORE="\"!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn,!submodules/tony,!submodules/tony/tony-mini,!submodules/tony/tony-core,!submodules/tony/tony-proxy,!submodules/tony/tony-portal,!submodules/tony/tony-azkaban,!submodules/tony/tony-cli\""
+    # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-runtime/yarnservice-runtime` in EXCLUDE_SUBMARINE
+    - EXCLUDE_SUBMARINE="!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn"
+    - EXCLUDE_WORKBENCH="!submarine-workbench,!submarine-workbench/workbench-web,!submarine-workbench/workbench-server"
+    - EXCLUDE_INTERPRETER="!submarine-workbench/interpreter,!submarine-workbench/interpreter/interpreter-engine,!submarine-workbench/interpreter/python-interpreter"
+    - EXCLUDE_SUBMODULE_TONY="!submodules/tony,!submodules/tony/tony-mini,!submodules/tony/tony-core,!submodules/tony/tony-proxy,!submodules/tony/tony-portal,!submodules/tony/tony-azkaban,!submodules/tony/tony-cli"
 
 before_install:
   - sudo service mysql restart
@@ -48,6 +51,7 @@ before_install:
   - mysql -e "CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';"
   - mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';"
   - mysql -e "use submarineDB_test; source ./docs/database/submarine.sql; show tables;"
+  - ./dev-support/travis/install_external_dependencies.sh
 
 matrix:
   include:
@@ -61,25 +65,25 @@ matrix:
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-2.7" PROFILE="-Phadoop-2.7" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/workbench-web,!submarine-workbench/workbench-server,!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-2.7" PROFILE="-Phadoop-2.7" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-2.9(default)
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-2.9" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/workbench-web,!submarine-workbench/workbench-server,!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-2.9" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-3.1
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-3.1" PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/workbench-web,!submarine-workbench/workbench-server,!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-3.1" PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-3.2
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-3.2" PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"!submarine-workbench,!submarine-workbench/workbench-web,!submarine-workbench/workbench-server,!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-3.2" PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build workbench-web
     - language: node_js
@@ -98,19 +102,19 @@ matrix:
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Test workbench-server" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE_CORE}" TEST_MODULES="-pl submarine-workbench/workbench-server" TEST_PROJECTS=""
+      env: NAME="Test workbench-server" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl submarine-workbench/workbench-server" TEST_PROJECTS=""
 
     # Test workbench-web
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Test workbench-web" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE_CORE}" TEST_MODULES="-pl submarine-workbench/workbench-web" TEST_PROJECTS=""
+      env: NAME="Test workbench-web" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl submarine-workbench/workbench-web" TEST_PROJECTS=""
 
-    # Test submarine distribution
+    # Test interpreter
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Test submarine distribution" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="" TEST_MODULES="" TEST_PROJECTS=""
+      env: NAME="Test interpreter" PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE},${EXCLUDE_WORKBENCH},${EXCLUDE_SUBMODULE_TONY}" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
 
     # Test submarine-sdk
     - language: python
@@ -123,6 +127,11 @@ matrix:
         - ./submarine-sdk/pysubmarine/travis/lint.sh
         - pytest --cov=submarine -vs
 
+    # Test submarine distribution
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
+      env: NAME="Test submarine distribution" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="" TEST_MODULES="" TEST_PROJECTS=""
 
 install:
   - mvn --version
