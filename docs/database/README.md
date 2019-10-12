@@ -79,6 +79,12 @@ If you need to store Chinese character data in mysql, you need to execute the fo
 ## Create Submarine Database
 
 ### Create development database
+Copy the files, submarine.sql and submarine-data.sql to the mysql docker.
+
+```
+docker cp ${SUBMARINE_HOME}/docs/database/submarine.sql ${DOCKER_ID}:/
+docker cp ${SUBMARINE_HOME}/docs/database/submarine-data.sql ${DOCKER_ID}:/
+```
 
 Development database for development environment.
 
@@ -89,7 +95,8 @@ mysql> CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';
 mysql> CREATE DATABASE submarineDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use submarineDB;
-mysql> source ./docs/database/submarine.sql;
+mysql> source /submarine.sql;
+mysql> source /submarine-data.sql;
 mysql> quit
 ```
 
@@ -107,7 +114,7 @@ mysql> CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';
 mysql> CREATE DATABASE `submarineDB_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use `submarineDB_test`;
-mysql> source ./docs/database/submarine.sql;
+mysql> source /submarine.sql;
 mysql> quit
 ```
 
