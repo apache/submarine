@@ -33,14 +33,26 @@ docker run -it --rm submarine-cicd
 ```
 
 Jira username, password, apache id and apache username are required in the docker container. You can
-add them to the docker startup command.
+add them to the local environment variable.
+
+```
+vi ~/.bash_profile
+export JIRA_USERNAME='Your jira username'
+export JIRA_PASSWORD='Your jira password'
+export APACHE_ID='Your apache id' # Your apache email prefix
+export APACHE_NAME='Your apache name'
+```
 
 And you'll see output like below and then you can decide what to accomplish.
 ```
-$ docker run -it -e JIRA_USERNAME='jira username' -e JIRA_PASSWORD='jira password' \
- -e APACHE_ID='apache id' -e APACHE_NAME="apache name" --rm submarine-cicd 
+$ docker run -it -e JIRA_USERNAME="${JIRA_USERNAME}" -e JIRA_PASSWORD="${JIRA_PASSWORD}" -e APACHE_ID="${APACHE_ID}" -e APACHE_NAME="${APACHE_NAME}" --rm submarine-cicd
+```
+
+The screen outputs the following information: 
+
+```
 Menu:
-	1. Merge PR
+    1. Merge PR
 Enter Menu ID:1
 ==== Merge PR Begin ====
 Got JIRA name: username
