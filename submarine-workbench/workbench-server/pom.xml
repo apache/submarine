@@ -35,10 +35,11 @@
   <name>Submarine: Workbench Server</name>
 
   <dependencies>
+
     <dependency>
       <groupId>org.apache.submarine</groupId>
       <artifactId>commons-utils</artifactId>
-      <version>0.3.0-SNAPSHOT</version>
+      <version>${submarine.version}</version>
     </dependency>
 
     <dependency>
@@ -207,6 +208,23 @@
       <groupId>org.mybatis.generator</groupId>
       <artifactId>mybatis-generator-core</artifactId>
       <version>${mybatis-generator.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>${commons-httpclient.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>
