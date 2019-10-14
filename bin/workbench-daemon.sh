@@ -148,15 +148,15 @@ function find_workbench_process() {
   pid=`found_workbench_server_pid`
 
   if [[ -z "$pid" ]]; then
+    echo "${WORKBENCH_NAME} is not running"
+    return 1
+  else
     if ! kill -0 ${pid} > /dev/null 2>&1; then
       echo "${WORKBENCH_NAME} running but process is dead"
       return 1
     else
       echo "${WORKBENCH_NAME} is running"
     fi
-  else
-    echo "${WORKBENCH_NAME} is not running"
-    return 1
   fi
 }
 
