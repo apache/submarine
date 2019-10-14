@@ -25,19 +25,37 @@
     <dependencySet>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>org.apache.submarine:submarine-core</include>
+        <include>org.apache.submarine:submarine-commons</include>
       </includes>
     </dependencySet>
     <dependencySet>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>org.apache.submarine:tony-runtime</include>
+        <include>org.apache.submarine:commons-runtime</include>
       </includes>
     </dependencySet>
     <dependencySet>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>org.apache.submarine:yarnservice-runtime</include>
+        <include>org.apache.submarine:submarine-client</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>org.apache.submarine:submarine-server</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>org.apache.submarine:server-submitter</include>
+      </includes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>org.apache.submarine:submitter-yarn</include>
       </includes>
     </dependencySet>
     <dependencySet>

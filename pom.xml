@@ -104,11 +104,13 @@
   </properties>
 
   <modules>
-    <module>submodules/tony</module>
-    <module>submarine-core</module>
     <module>submarine-all</module>
-    <module>submarine-workbench</module>
+    <module>submarine-client</module>
+    <module>submarine-commons</module>
     <module>submarine-dist</module>
+    <module>submarine-server</module>
+    <module>submarine-workbench</module>
+    <module>submodules/tony</module>
   </modules>
 
   <dependencyManagement>
@@ -235,10 +237,6 @@
         <guava.version>27.0-jre</guava.version>
         <profile-id>hadoop-3.2</profile-id>
       </properties>
-      <modules>
-        <module>submarine-runtime/yarnservice-runtime</module>
-        <module>submarine-runtime/tony-runtime</module>
-      </modules>
     </profile>
 
     <!-- Default profile-->
@@ -254,10 +252,6 @@
         <zookeeper.version>3.4.13</zookeeper.version>
         <profile-id>hadoop-3.1</profile-id>
       </properties>
-      <modules>
-        <module>submarine-runtime/yarnservice-runtime</module>
-        <module>submarine-runtime/tony-runtime</module>
-      </modules>
     </profile>
 
     <profile>
@@ -275,9 +269,6 @@
         <zookeeper.version>3.4.6</zookeeper.version>
         <profile-id>hadoop-2.9</profile-id>
       </properties>
-      <modules>
-        <module>submarine-runtime/tony-runtime</module>
-      </modules>
     </profile>
 
     <profile>
@@ -292,9 +283,6 @@
         <zookeeper.version>3.4.6</zookeeper.version>
         <profile-id>hadoop-2.7</profile-id>
       </properties>
-      <modules>
-        <module>submarine-runtime/tony-runtime</module>
-      </modules>
     </profile>
 
     <profile>
@@ -427,6 +415,19 @@
             <exclude>NOTICE-binary</exclude>
           </excludes>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
