@@ -31,6 +31,8 @@ GET_MYSQL_JAR=false
 
 . "${BIN}/common.sh"
 
+cd ${BIN}/>/dev/null
+
 WORKBENCH_NAME="Submarine Workbench"
 WORKBENCH_LOGFILE="${SUBMARINE_LOG_DIR}/workbench.log"
 WORKBENCH_MAIN=org.apache.submarine.server.WorkbenchServer
