@@ -267,6 +267,10 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getInt(ConfVars.CLUSTER_HEARTBEAT_TIMEOUT);
   }
 
+  public String getWebsocketMaxTextMessageSize() {
+    return getString(ConfVars.WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE);
+  }
+
   private String getStringValue(String name, String d) {
     String value = this.properties.get(name);
     if (value != null) {
@@ -382,6 +386,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public enum ConfVars {
+    SUBMARINE_CONF_DIR("submarine.conf.dir", "conf"),
     SERVER_ADDR("workbench.server.addr", "0.0.0.0"),
     SERVER_PORT("workbench.server.port", 8080),
     SERVER_SSL("workbench.server.ssl", false),
@@ -407,6 +412,8 @@ public class SubmarineConfiguration extends XMLConfiguration {
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
     JDBC_USERNAME("jdbc.username", "submarine"),
     JDBC_PASSWORD("jdbc.password", "password"),
+    WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
+        "workbench.websocket.max.text.message.size", "1024000"),
     WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist");
 
     private String varName;
