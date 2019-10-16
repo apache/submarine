@@ -26,8 +26,8 @@ import org.apache.submarine.common.api.TensorFlowRole;
 import org.apache.submarine.common.fs.RemoteDirectoryManager;
 import org.apache.submarine.runtimes.yarnservice.command.AbstractLaunchCommand;
 import org.apache.submarine.runtimes.yarnservice.command.LaunchCommandFactory;
-import org.apache.submarine.utils.DockerUtilities;
-import org.apache.submarine.utils.SubmarineResourceUtils;
+import org.apache.submarine.commons.utils.DockerUtilities;
+import org.apache.submarine.commons.utils.SubmarineResourceUtils;
 
 import java.io.IOException;
 import java.util.Objects;

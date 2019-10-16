@@ -135,6 +135,13 @@
         <include>python-interpreter-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>../submarine-commons/commons-cluster/target</directory>
+      <outputDirectory>/lib/commons</outputDirectory>
+      <includes>
+        <include>commons-cluster-${project.version}-shade.jar</include>
+      </includes>
+    </fileSet>
   </fileSets>
 
 </assembly>

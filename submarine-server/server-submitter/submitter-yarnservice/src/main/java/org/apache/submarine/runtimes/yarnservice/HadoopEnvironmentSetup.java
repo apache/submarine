@@ -23,8 +23,8 @@ import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
 import org.apache.submarine.common.ClientContext;
 import org.apache.submarine.common.conf.SubmarineLogs;
 import org.apache.submarine.common.fs.RemoteDirectoryManager;
-import org.apache.submarine.utils.ClassPathUtilities;
-import org.apache.submarine.utils.EnvironmentUtilities;
+import org.apache.submarine.commons.utils.ClassPathUtilities;
+import org.apache.submarine.commons.utils.EnvironmentUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,4 +16,4 @@
 /**
  * This package contains classes utility classes.
  */
-package org.apache.submarine.utils;
+package org.apache.submarine.commons.utils;

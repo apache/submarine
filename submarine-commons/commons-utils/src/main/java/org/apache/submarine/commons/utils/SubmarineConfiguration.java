@@ -62,7 +62,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     }
   }
 
-  public SubmarineConfiguration() {
+  private SubmarineConfiguration() {
     ConfVars[] vars = ConfVars.values();
     for (ConfVars v : vars) {
       if (v.getType() == ConfVars.VarType.BOOLEAN) {
@@ -242,6 +242,31 @@ public class SubmarineConfiguration extends XMLConfiguration {
     properties.put(ConfVars.JDBC_PASSWORD.getVarName(), password);
   }
 
+  public String getClusterAddress() {
+    return getString(ConfVars.WORKBENCH_CLUSTER_ADDR);
+  }
+
+  public void setClusterAddress(String clusterAddr) {
+    properties.put(ConfVars.WORKBENCH_CLUSTER_ADDR.getVarName(), clusterAddr);
+  }
+
+  public boolean isClusterMode() {
+    String clusterAddr = getString(ConfVars.WORKBENCH_CLUSTER_ADDR);
+    if (StringUtils.isEmpty(clusterAddr)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public int getClusterHeartbeatInterval() {
+    return getInt(ConfVars.CLUSTER_HEARTBEAT_INTERVAL);
+  }
+
+  public int getClusterHeartbeatTimeout() {
+    return getInt(ConfVars.CLUSTER_HEARTBEAT_TIMEOUT);
+  }
+
   private String getStringValue(String name, String d) {
     String value = this.properties.get(name);
     if (value != null) {
@@ -367,6 +392,9 @@ public class SubmarineConfiguration extends XMLConfiguration {
     SERVER_JETTY_REQUEST_HEADER_SIZE("workbench.server.jetty.request.header.size", 8192),
     SSL_CLIENT_AUTH("workbench.ssl.client.auth", false),
     SSL_KEYSTORE_PATH("workbench.ssl.keystore.path", "keystore"),
+    WORKBENCH_CLUSTER_ADDR("workbench.cluster.addr", ""),
+    CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", 3000),
+    CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", 9000),
     SERVER_SSL_KEYSTORE_TYPE("workbench.ssl.keystore.type", "JKS"),
     SERVER_SSL_KEYSTORE_PASSWORD("workbench.ssl.keystore.password", ""),
     SERVER_SSL_KEY_MANAGER_PASSWORD("workbench.ssl.key.manager.password", null),
@@ -515,7 +543,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
         try {
           checkType(value);
         } catch (Exception e) {
-          LOG.error("Exception in ZeppelinConfiguration while isType", e);
+          LOG.error("Exception in SubmarineConfiguration while isType", e);
           return false;
         }
         return true;

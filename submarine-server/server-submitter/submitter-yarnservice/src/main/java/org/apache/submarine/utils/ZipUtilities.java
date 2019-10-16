@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.submarine.utils;
+package org.apache.submarine.commons.utils;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.slf4j.Logger;
