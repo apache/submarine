@@ -28,7 +28,7 @@ import org.apache.submarine.runtimes.yarnservice.HadoopEnvironmentSetup;
 import org.apache.submarine.runtimes.yarnservice.ServiceWrapper;
 import org.apache.submarine.runtimes.yarnservice.command.PyTorchLaunchCommandFactory;
 import org.apache.submarine.runtimes.yarnservice.tensorflow.component.ComponentTestCommons;
-import org.apache.submarine.utils.Localizer;
+import org.apache.submarine.commons.utils.Localizer;
 import org.junit.Before;
 import org.junit.Test;
 

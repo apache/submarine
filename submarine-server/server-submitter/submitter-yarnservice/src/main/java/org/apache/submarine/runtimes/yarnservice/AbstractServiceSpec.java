@@ -30,10 +30,10 @@ import org.apache.submarine.common.api.TensorFlowRole;
 import org.apache.submarine.common.conf.SubmarineLogs;
 import org.apache.submarine.common.fs.RemoteDirectoryManager;
 import org.apache.submarine.runtimes.yarnservice.command.LaunchCommandFactory;
-import org.apache.submarine.utils.KerberosPrincipalFactory;
-import org.apache.submarine.utils.Localizer;
-import org.apache.submarine.utils.DockerUtilities;
-import org.apache.submarine.utils.EnvironmentUtilities;
+import org.apache.submarine.commons.utils.KerberosPrincipalFactory;
+import org.apache.submarine.commons.utils.Localizer;
+import org.apache.submarine.commons.utils.DockerUtilities;
+import org.apache.submarine.commons.utils.EnvironmentUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

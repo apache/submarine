@@ -29,7 +29,7 @@ import org.apache.submarine.common.ClientContext;
 import org.apache.submarine.common.conf.SubmarineConfiguration;
 import org.apache.submarine.common.conf.SubmarineLogs;
 import org.apache.submarine.common.fs.RemoteDirectoryManager;
-import org.apache.submarine.utils.ZipUtilities;
+import org.apache.submarine.commons.utils.ZipUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

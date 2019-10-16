@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.submarine.utils;
+package org.apache.submarine.commons.utils;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.service.api.records.ConfigFile;
@@ -32,7 +32,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.apache.submarine.runtimes.yarnservice.FileSystemOperations.needHdfs;
-import static org.apache.submarine.utils.EnvironmentUtilities.appendToEnv;
+import static org.apache.submarine.commons.utils.EnvironmentUtilities.appendToEnv;
 
 /**
  * This class holds all dependencies in order to localize dependencies
