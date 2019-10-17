@@ -22,6 +22,7 @@
     "@commitlint/cli": "^7.5.2",
     "@commitlint/config-conventional": "^7.5.0",
     "@commitlint/prompt-cli": "^7.5.0",
+    "md5": "^2.2.1",
     "ng-zorro-antd": "8.1.2",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",

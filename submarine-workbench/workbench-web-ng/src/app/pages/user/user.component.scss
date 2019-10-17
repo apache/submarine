@@ -1,0 +1,36 @@
+.content {
+  height: 100vh;
+  padding-top: 110px;
+  background: url("/assets/background.svg") no-repeat 50%;
+  background-size: 100%;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  height: 44px;
+  display: flex;
+
+  img {
+    height: inherit;
+    margin-right: 16px;
+  }
+}
+
+.title {
+  font-size: 33px;
+  color: rgba(0,0,0,.85);
+  font-family: Avenir,Helvetica Neue,Arial,Helvetica,sans-serif;
+  font-weight: 600;
+}
+
+.desc {
+  font-size: 14px;
+  color: rgba(0,0,0,.45);
+  margin-top: 12px;
+  margin-bottom: 40px
+}
