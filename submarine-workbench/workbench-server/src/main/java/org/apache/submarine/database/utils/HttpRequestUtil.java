@@ -155,7 +155,7 @@ public class HttpRequestUtil {
       // String result = sendHttpRequest("http://localhost:8080/api/project/delete?id="
       // + deleteParameter, null, null, "DELETE");
       Map<String, String> map = new HashMap<>();
-      map.put("Authorization", "token 5e714c5f2798c329a5198aa2fd53c473d896991f");
+      map.put("Authorization", "token 5e714c5f2798c329a5198aa2fd53c473dxxxxxxf");
       // watching
       // String result =
       // sendHttpRequest("https://api.github.com/repos/zhulinhao306/test/subscribers", null);
