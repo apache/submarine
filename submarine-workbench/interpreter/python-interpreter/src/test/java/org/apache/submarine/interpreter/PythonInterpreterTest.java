@@ -24,35 +24,99 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class PythonInterpreterTest {
   private static final Logger LOG = LoggerFactory.getLogger(PythonInterpreterTest.class);
 
-  private static PythonInterpreter pythonInterpreter = null;
+  private static PythonInterpreter pythonInterpreterForCancel = null;
+
+  private static PythonInterpreter pythonInterpreterForClose = null;
 
   @BeforeClass
   public static void setUp() {
-    pythonInterpreter = new PythonInterpreter();
-    pythonInterpreter.open();
+    pythonInterpreterForCancel = new PythonInterpreter();
+    pythonInterpreterForClose = new PythonInterpreter();
+    pythonInterpreterForCancel.open();
+    pythonInterpreterForClose.open();
   }
 
   @AfterClass
-  public static void tearDown() throws Exception {
-    if (null != pythonInterpreter) {
-      pythonInterpreter.close();
+  public static void tearDown()  {
+    if (null != pythonInterpreterForCancel) {
+      pythonInterpreterForCancel.close();
+    }
+    if (null != pythonInterpreterForClose) {
+      pythonInterpreterForClose.close();
     }
   }
 
+
   @Test
-  public void calcOnePlusOne() throws IOException {
+  public void calcOnePlusOne() {
     String code = "1+1";
-    InterpreterResult result = pythonInterpreter.interpret(code);
+    InterpreterResult result = pythonInterpreterForCancel.interpret(code);
     LOG.info("result = {}", result);
 
     assertEquals(result.code(), InterpreterResult.Code.SUCCESS);
-    assertEquals(result.message().get(0).getData(), "2\n"); // 1 + 1 = 2 + '\n'
+    // 1 + 1 = 2 + '\n'
+    assertEquals(result.message().get(0).getData(), "2\n");
   }
+
+  private class infinityPythonJobforCancel implements Runnable {
+    @Override
+    public void run() {
+      String code = "import time\nwhile True:\n  time.sleep(1)";
+      InterpreterResult ret = null;
+      ret = pythonInterpreterForCancel.interpret(code);
+      assertNotNull(ret);
+      Pattern expectedMessage = Pattern.compile("KeyboardInterrupt");
+      Matcher m = expectedMessage.matcher(ret.message().toString());
+      assertTrue(m.find());
+    }
+  }
+
+  private class infinityPythonJobforClose implements Runnable {
+    @Override
+    public void run() {
+      String code = "import time\nwhile True:\n  time.sleep(1)";
+      pythonInterpreterForClose.interpret(code);
+    }
+  }
+
+
+  @Test
+  public void testCloseIntp() throws InterruptedException {
+    assertEquals(InterpreterResult.Code.SUCCESS,
+            pythonInterpreterForClose.interpret("1+1\n").code());
+    Thread t = new Thread(new infinityPythonJobforClose());
+    t.start();
+    Thread.sleep(5000);
+    pythonInterpreterForClose.close();
+    assertTrue(t.isAlive());
+    t.join(2000);
+    assertFalse(t.isAlive());
+  }
+
+
+  @Test
+  public void testCancelIntp() throws InterruptedException {
+    assertEquals(InterpreterResult.Code.SUCCESS,
+            pythonInterpreterForCancel.interpret("1+1\n").code());
+    Thread t = new Thread(new infinityPythonJobforCancel());
+    t.start();
+    Thread.sleep(5000);
+    pythonInterpreterForCancel.cancel();
+    assertTrue(t.isAlive());
+    t.join(3000);
+    assertFalse(t.isAlive());
+  }
+
+
 }
