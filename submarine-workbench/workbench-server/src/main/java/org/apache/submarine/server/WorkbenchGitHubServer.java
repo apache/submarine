@@ -176,19 +176,4 @@ public class WorkbenchGitHubServer {
       git.rebase().setUpstream(branchName).setUpstreamName(upstreamName).call();
     }
   }
-
-  public static void main(String[] args) {
-    WorkbenchGitHubServer workbenchGitHubServer = new WorkbenchGitHubServer();
-    String localPath = "F:\\zhulinhao\\test2\\";
-    try {
-      // workbenchGitHubServer.branchCreate(localPath, "branch-2");
-      // workbenchGitHubServer.checkout(localPath, "branch-2");
-      workbenchGitHubServer.rebase(localPath, "master", "upstream");
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (GitAPIException e) {
-      e.printStackTrace();
-    }
-  }
-
 }
