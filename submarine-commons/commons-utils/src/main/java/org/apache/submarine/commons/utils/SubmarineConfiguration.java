@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server;
+package org.apache.submarine.commons.utils;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.configuration.ConfigurationException;

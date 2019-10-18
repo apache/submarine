@@ -22,20 +22,39 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>submarine</artifactId>
+    <artifactId>submarine-commons</artifactId>
     <groupId>org.apache.submarine</groupId>
     <version>0.3.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>submarine-commons</artifactId>
+  <artifactId>commons-utils</artifactId>
   <version>0.3.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>Submarine: Commons</name>
+  <name>Submarine: Commons Utils</name>
 
-  <modules>
-    <module>commons-utils</module>
-    <module>commons-runtime</module>
-  </modules>
+  <dependencies>
+    <dependency>
+      <groupId>commons-configuration</groupId>
+      <artifactId>commons-configuration</artifactId>
+      <version>${commons-configuration.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
+  </dependencies>
 
 </project>
