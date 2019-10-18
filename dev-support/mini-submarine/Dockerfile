@@ -116,6 +116,7 @@ ENV IMAGE_N=${IMAGE_NAME}
 ARG SUBMARINE_VERSION=
 ENV SUBMARINE_VER=${SUBMARINE_VERSION}
 ADD submarine-dist-${SUBMARINE_VER}*.tar.gz /opt
+ADD pysubmarine /opt/pysubmarine
 RUN ln -s /opt/submarine-dist-${SUBMARINE_VER}* /opt/submarine-current
 ADD submarine /home/yarn/submarine
 ADD database /home/yarn/database
