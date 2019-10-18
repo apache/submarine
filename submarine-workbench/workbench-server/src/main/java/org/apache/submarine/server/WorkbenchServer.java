@@ -38,7 +38,8 @@ import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.submarine.server.SubmarineConfiguration.ConfVars;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfiguration.ConfVars;
 
 import javax.inject.Inject;
 import java.io.File;
