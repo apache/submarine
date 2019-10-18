@@ -58,6 +58,7 @@ if [[ -z "${submarine_dist_exists}" ]]; then
 fi
 
 cp submarine-dist/target/submarine-dist-${submarine_v}*.tar.gz ${MINI_PATH}
+cp -r submarine-sdk/pysubmarine ${MINI_PATH}
 cp -r docs/database ${MINI_PATH}
 cd ${MINI_PATH}
 

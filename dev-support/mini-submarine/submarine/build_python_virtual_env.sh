@@ -21,6 +21,7 @@ tar xf virtualenv-16.0.0.tar.gz
 python3 virtualenv-16.0.0/virtualenv.py venv
 . venv/bin/activate
 pip3 install tensorflow==1.13.1
+pip3 install /opt/pysubmarine/.
 zip -r myvenv.zip venv
 deactivate
 
