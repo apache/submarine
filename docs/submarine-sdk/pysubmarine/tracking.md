@@ -21,9 +21,9 @@
 - [TODO] (WEB) Metric graphical display in workbench-web
 
 ## Quickstart
-1. Start mini-submarine
+1. [Start mini-submarine](../../../dev-support/mini-submarine#run-mini-submarine-image)
 
-2. Start Mysql server in mini-submarine
+2. [Start Mysql server in mini-submarine](../../../dev-support/mini-submarine#run-workbench-server)
 
 3. Uncomment the log_param and log_metric in
 [mnist_distributed.py](../../../dev-support/mini-submarine/submarine/mnist_distributed.py)
