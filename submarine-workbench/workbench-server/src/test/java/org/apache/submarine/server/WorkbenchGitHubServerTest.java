@@ -22,12 +22,21 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.apache.submarine.database.utils.HttpRequestUtil.sendHttpRequest;
+
 public class WorkbenchGitHubServerTest {
 
   private static final Logger LOG = LoggerFactory.getLogger(WorkbenchGitHubServerTest.class);
 
   @Test
-  public void getEnv() {
+  public void deleteWatching() {
+    Map<String, String> map = new HashMap<>();
+    map.put("Authorization", "token " + System.getenv("gitToken"));
     LOG.info("gitToken: {}", System.getenv("gitToken"));
+    sendHttpRequest("https://api.github.com/repos/LinhaoZhu/submarine_git_test/subscription",
+        map, null, "DELETE");
   }
 }
