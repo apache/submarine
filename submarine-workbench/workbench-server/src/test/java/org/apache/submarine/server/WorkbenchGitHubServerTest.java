@@ -28,6 +28,6 @@ public class WorkbenchGitHubServerTest {
 
   @Test
   public void getEnv() {
-    LOG.info("gitToken: {}", System.getenv("GIT_TOKEN"));
+    LOG.info("gitToken: {}", System.getenv("gitToken"));
   }
 }

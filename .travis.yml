@@ -52,8 +52,6 @@ before_install:
   - mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';"
   - mysql -e "use submarineDB_test; source ./docs/database/submarine.sql; show tables;"
   - ./dev-support/travis/install_external_dependencies.sh
-  - echo "gitToken '${gitToken}'!"
-  - export GIT_TOKEN="${gitToken}"
 
 matrix:
   include:
