@@ -20,6 +20,7 @@ package org.apache.submarine.server;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.submarine.websocket.NotebookServer;
+import org.apache.submarine.commons.cluster.ClusterManagerServer;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -90,6 +91,9 @@ public class WorkbenchServer extends ResourceConfig {
     setupRestApiContextHandler(webApp, conf);
     // Notebook server
     setupNotebookServer(webApp, conf, sharedServiceLocator);
+
+    // Cluster Manager Server
+    setupClusterManagerServer();
 
     startServer();
   }
@@ -216,6 +220,13 @@ public class WorkbenchServer extends ResourceConfig {
 
     final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     webapp.addServlet(servletHolder, "/ws/*");
+  }
+
+  private static void setupClusterManagerServer() {
+    if (conf.workbenchIsClusterMode()) {
+      ClusterManagerServer clusterManagerServer = ClusterManagerServer.getInstance();
+      clusterManagerServer.start();
+    }
   }
 
   private static SslContextFactory getSslContextFactory(SubmarineConfiguration conf) {

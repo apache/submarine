@@ -42,7 +42,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
 
   private Map<String, String> properties = new HashMap<>();
 
-  public SubmarineConfiguration(URL url) throws ConfigurationException {
+  private SubmarineConfiguration(URL url) throws ConfigurationException {
     setDelimiterParsingDisabled(true);
     load(url);
     initProperties();
@@ -133,6 +133,11 @@ public class SubmarineConfiguration extends XMLConfiguration {
 
   public int getServerPort() {
     return getInt(ConfVars.SERVER_PORT);
+  }
+
+  @VisibleForTesting
+  public void setServerPort(int port) {
+    properties.put(ConfVars.SERVER_PORT.getVarName(), String.valueOf(port));
   }
 
   public int getServerSslPort() {
@@ -250,7 +255,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     properties.put(ConfVars.WORKBENCH_CLUSTER_ADDR.getVarName(), clusterAddr);
   }
 
-  public boolean isClusterMode() {
+  public boolean workbenchIsClusterMode() {
     String clusterAddr = getString(ConfVars.WORKBENCH_CLUSTER_ADDR);
     if (StringUtils.isEmpty(clusterAddr)) {
       return false;

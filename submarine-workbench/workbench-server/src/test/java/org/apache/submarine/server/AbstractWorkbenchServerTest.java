@@ -46,20 +46,6 @@ public abstract class AbstractWorkbenchServerTest {
 
   protected static File workbenchServerHome;
   protected static File confDir;
-  protected static File notebookDir;
-
-  private String getUrl(String path) {
-    String url;
-    if (System.getProperty("url") != null) {
-      url = System.getProperty("url");
-    } else {
-      url = "http://localhost:8080";
-    }
-    if (path != null) {
-      url += path;
-    }
-    return url;
-  }
 
   public static String getWebsocketApiUrlToTest() {
     String websocketUrl = "ws://localhost:8080" + WEBSOCKET_API_URL;
@@ -91,10 +77,8 @@ public abstract class AbstractWorkbenchServerTest {
     }
   };
 
-  private static void start(boolean withAuth, String testClassName,
-      boolean withKnox, boolean cleanData) throws Exception {
-    LOG.info("Starting WorkbenchServer withAuth: {}, testClassName: {}, withKnox: {}",
-        withAuth, testClassName, withKnox);
+  public static void startUp(String testClassName) throws Exception {
+    LOG.info("Starting WorkbenchServer testClassName: {}", testClassName);
 
     if (!WAS_RUNNING) {
       // copy the resources files to a temp folder
@@ -108,10 +92,6 @@ public abstract class AbstractWorkbenchServerTest {
           new File("../workbench-web/dist").getAbsolutePath());
       System.setProperty(SubmarineConfiguration.ConfVars.SUBMARINE_CONF_DIR.getVarName(),
           confDir.getAbsolutePath());
-      notebookDir = new File(workbenchServerHome.getAbsolutePath() + "/notebook_" + testClassName);
-      if (cleanData) {
-        FileUtils.deleteDirectory(notebookDir);
-      }
 
       // some test profile does not build workbench-web.
       // to prevent submarine workbench server starting up fail,
@@ -136,22 +116,6 @@ public abstract class AbstractWorkbenchServerTest {
       }
       LOG.info("Test workbench server stared.");
     }
-  }
-
-  public static void startUpWithKnoxEnable(String testClassName) throws Exception {
-    start(true, testClassName, true, true);
-  }
-
-  public static void startUpWithAuthenticationEnable(String testClassName) throws Exception {
-    start(true, testClassName, false, true);
-  }
-
-  public static void startUp(String testClassName) throws Exception {
-    start(false, testClassName, false, true);
-  }
-
-  public static void startUp(String testClassName, boolean cleanData) throws Exception {
-    start(false, testClassName, false, cleanData);
   }
 
   private static String getHostname() {
