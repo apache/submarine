@@ -151,6 +151,9 @@ script:
   - echo "mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS"
   - mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS
 
+after_script:
+  - export GIT_TOKEN=${gitToken}
+
 after_success:
   - echo "Travis exited with ${TRAVIS_TEST_RESULT}"
 
