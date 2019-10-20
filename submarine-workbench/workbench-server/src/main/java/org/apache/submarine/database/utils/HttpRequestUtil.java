@@ -30,7 +30,6 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequestUtil {
