@@ -52,8 +52,8 @@ before_install:
   - mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';"
   - mysql -e "use submarineDB_test; source ./docs/database/submarine.sql; show tables;"
   - ./dev-support/travis/install_external_dependencies.sh
-  - echo "gitToken ${gitToken}"
-  - export GIT_TOKEN=${gitToken}
+  - echo "gitToken '${gitToken}'!"
+  - export GIT_TOKEN="${gitToken}"
 
 matrix:
   include:
@@ -150,9 +150,6 @@ script:
   - if [[ -n $TEST_MODULES ]]; then export MODULES="${TEST_MODULES}"; fi
   - echo "mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS"
   - mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS
-
-after_script:
-  - export GIT_TOKEN=${gitToken}
 
 after_success:
   - echo "Travis exited with ${TRAVIS_TEST_RESULT}"
