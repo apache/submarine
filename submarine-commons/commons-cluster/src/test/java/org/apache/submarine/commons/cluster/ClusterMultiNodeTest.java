@@ -48,11 +48,11 @@ public class ClusterMultiNodeTest {
     LOG.info("ClusterMultiNodeTest::startCluster >>>");
 
     String clusterAddrList = "";
-    String zServerHost = NetUtils.findAvailableHostAddress();
+    String serverHost = NetUtils.findAvailableHostAddress();
     for (int i = 0; i < 3; i++) {
       // Set the cluster IP and port
-      int zServerPort = NetUtils.findRandomAvailablePortOnAllLocalInterfaces();
-      clusterAddrList += zServerHost + ":" + zServerPort;
+      int serverPort = NetUtils.findRandomAvailablePortOnAllLocalInterfaces();
+      clusterAddrList += serverHost + ":" + serverPort;
       if (i != 2) {
         clusterAddrList += ",";
       }

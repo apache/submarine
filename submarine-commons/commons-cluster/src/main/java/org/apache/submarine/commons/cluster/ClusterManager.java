@@ -200,7 +200,7 @@ public abstract class ClusterManager {
   }
 
   public void start() {
-    if (!sconf.isClusterMode()) {
+    if (!sconf.workbenchIsClusterMode()) {
       return;
     }
 
@@ -291,7 +291,7 @@ public abstract class ClusterManager {
 
   // cluster shutdown
   public void shutdown() {
-    if (!sconf.isClusterMode()) {
+    if (!sconf.workbenchIsClusterMode()) {
       return;
     }
 

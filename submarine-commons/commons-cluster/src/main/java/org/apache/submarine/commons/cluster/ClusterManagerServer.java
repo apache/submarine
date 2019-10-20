@@ -84,7 +84,7 @@ public class ClusterManagerServer extends ClusterManager {
   }
 
   public void start() {
-    if (!sconf.isClusterMode()) {
+    if (!sconf.workbenchIsClusterMode()) {
       return;
     }
 
@@ -212,7 +212,7 @@ public class ClusterManagerServer extends ClusterManager {
 
   @Override
   public void shutdown() {
-    if (!sconf.isClusterMode()) {
+    if (!sconf.workbenchIsClusterMode()) {
       return;
     }
 
