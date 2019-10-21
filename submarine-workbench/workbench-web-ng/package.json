@@ -33,6 +33,7 @@
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
+    "codelyzer": "^5.1.2",
     "dotenv": "^8.0.0",
     "https-proxy-agent": "^2.2.1",
     "jasmine-core": "~3.4.0",
