@@ -43,7 +43,7 @@ export class LocalStorageService {
 
       window.localStorage.setItem(this.generateKey(key), saveValue);
     } catch (e) {
-      // empty
+      console.error(`key: ${key}, value: ${value} save error`, e);
     }
   }
 
