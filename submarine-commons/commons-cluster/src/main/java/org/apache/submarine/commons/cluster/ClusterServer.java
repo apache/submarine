@@ -58,29 +58,29 @@ import static org.apache.submarine.commons.cluster.meta.ClusterMetaType.SERVER_M
  * 1. Create a raft server
  * 2. Remotely create interpreter's thrift service
  */
-public class ClusterManagerServer extends ClusterManager {
-  private static Logger LOG = LoggerFactory.getLogger(ClusterManagerServer.class);
+public class ClusterServer extends ClusterManager {
+  private static Logger LOG = LoggerFactory.getLogger(ClusterServer.class);
 
-  private static ClusterManagerServer instance = null;
+  private static ClusterServer instance = null;
 
   // raft server
   protected RaftServer raftServer = null;
 
   protected MessagingService messagingService = null;
 
-  private ClusterManagerServer() {
+  private ClusterServer() {
     super();
   }
 
   // Do not use the getInstance function in the test case,
   // which will result in an inability to update the instance according to the configuration.
-  public static ClusterManagerServer getInstance() {
-    synchronized (ClusterManagerServer.class) {
+  public static ClusterServer getInstance() {
+    synchronized (ClusterServer.class) {
       if (instance == null) {
-        instance = new ClusterManagerServer();
+        instance = new ClusterServer();
       }
-      return instance;
     }
+    return instance;
   }
 
   public void start() {
@@ -99,9 +99,9 @@ public class ClusterManagerServer extends ClusterManager {
   }
 
   @VisibleForTesting
-  public void initTestCluster(String clusterAddrList, String host, int port) {
+  void initTestCluster(String clusterAddrList, String host, int port) {
     isTest = true;
-    this.zeplServerHost = host;
+    this.serverHost = host;
     this.raftServerPort = port;
 
     // clear
@@ -153,8 +153,8 @@ public class ClusterManagerServer extends ClusterManager {
       public void run() {
         LOG.info("RaftServer run() >>>");
 
-        Address address = Address.from(zeplServerHost, raftServerPort);
-        Member member = Member.builder(MemberId.from(zeplServerHost + ":" + raftServerPort))
+        Address address = Address.from(serverHost, raftServerPort);
+        Member member = Member.builder(MemberId.from(serverHost + ":" + raftServerPort))
             .withAddress(address)
             .build();
         messagingService = NettyMessagingService.builder()
@@ -200,7 +200,7 @@ public class ClusterManagerServer extends ClusterManager {
         HashMap<String, Object> meta = new HashMap<String, Object>();
         String nodeName = getClusterNodeName();
         meta.put(ClusterMeta.NODE_NAME, nodeName);
-        meta.put(ClusterMeta.SERVER_HOST, zeplServerHost);
+        meta.put(ClusterMeta.SERVER_HOST, serverHost);
         meta.put(ClusterMeta.SERVER_PORT, raftServerPort);
         meta.put(ClusterMeta.SERVER_START_TIME, LocalDateTime.now());
         putClusterMeta(SERVER_META, nodeName, meta);
@@ -215,27 +215,34 @@ public class ClusterManagerServer extends ClusterManager {
     if (!sconf.workbenchIsClusterMode()) {
       return;
     }
+    LOG.info("ClusterServer::shutdown()");
 
     try {
       // delete local machine meta
       deleteClusterMeta(SERVER_META, getClusterNodeName());
-      Thread.sleep(300);
-      clusterMonitor.shutdown();
+      Thread.sleep(500);
+      if (null != clusterMonitor) {
+        clusterMonitor.shutdown();
+      }
       // wait raft commit metadata
-      Thread.sleep(300);
+      Thread.sleep(500);
     } catch (InterruptedException e) {
       LOG.error(e.getMessage(), e);
     }
 
+    // close raft client
+    super.shutdown();
+
     if (null != raftServer && raftServer.isRunning()) {
       try {
-        raftServer.shutdown().get(3, TimeUnit.SECONDS);
+        LOG.info("ClusterServer::raftServer.shutdown()");
+        raftServer.shutdown().get(5, TimeUnit.SECONDS);
       } catch (InterruptedException | ExecutionException | TimeoutException e) {
         LOG.error(e.getMessage(), e);
       }
     }
 
-    super.shutdown();
+    LOG.info("ClusterServer::super.shutdown()");
   }
 
   // Obtain the server node whose resources are idle in the cluster
@@ -284,7 +291,7 @@ public class ClusterManagerServer extends ClusterManager {
       LOG.debug("send broadcastClusterEvent message {}", msg);
     }
     for (Node node : clusterNodes) {
-      if (StringUtils.equals(node.address().host(), zeplServerHost)
+      if (StringUtils.equals(node.address().host(), serverHost)
           && node.address().port() == raftServerPort) {
         // skip myself
         continue;

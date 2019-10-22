@@ -19,8 +19,12 @@
 package org.apache.submarine.interpreter;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.submarine.commons.cluster.ClusterClient;
+import org.apache.submarine.commons.cluster.meta.ClusterMeta;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterOutput;
+import org.apache.zeppelin.interpreter.remote.RemoteInterpreterUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.Signal;
@@ -31,44 +35,47 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.SocketException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.UnknownHostException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static org.apache.submarine.commons.cluster.meta.ClusterMetaType.INTP_PROCESS_META;
 
 /**
  * Entry point for Submarine Interpreter process.
  * Accepting thrift connections from Submarine Workbench Server.
  */
-public abstract class InterpreterProcess {
-  public abstract void open();
-  public abstract InterpreterResult interpret(String code);
-  public abstract void close();
-  public abstract void cancel();
-  public abstract int getProgress();
-  public abstract boolean test();
-
+public class InterpreterProcess extends Thread implements Interpreter {
   private static final Logger LOG = LoggerFactory.getLogger(InterpreterProcess.class);
 
-  protected static String interpreterId;
+  // cluster manager client
+  private ClusterClient clusterClient = ClusterClient.getInstance();
+
+  private SubmarineConfiguration sconf = SubmarineConfiguration.create();
+
+  protected String interpreterId;
+
+  private InterpreterProcess interpreterProcess;
+
+  private AtomicBoolean isRunning = new AtomicBoolean(false);
 
   public static void main(String[] args) throws InterruptedException, IOException {
-    String interpreterName = args[0];
+    String interpreterType = args[0];
     String interpreterId = args[1];
-    String onlyTest = "";
-    if (args.length == 3) {
-      onlyTest = args[2];
+    Boolean onlyTest = false;
+    if (args.length == 3 && StringUtils.equals(args[2], "test")) {
+      onlyTest = true;
     }
 
-    InterpreterProcess interpreterProcess = loadInterpreterPlugin(interpreterName);
-
-    if (StringUtils.equals(onlyTest, "test")) {
-      boolean testResult = interpreterProcess.test();
-      LOG.info("Interpreter test result: {}", testResult);
-      System.exit(0);
-      return;
-    }
+    InterpreterProcess interpreterProcess = new InterpreterProcess(interpreterType, interpreterId, onlyTest);
+    interpreterProcess.start();
 
     // add signal handler
     Signal.handle(new Signal("TERM"), new SignalHandler() {
@@ -79,22 +86,83 @@ public abstract class InterpreterProcess {
       }
     });
 
+    interpreterProcess.join();
     System.exit(0);
   }
 
+  @Override
+  public void run() {
+    isRunning.set(true);
+    while (isRunning.get()) {
+      try {
+        // TODO(Xun Liu): Next PR will add Thrift Server in here
+        LOG.info("Mock TServer run ...");
+        sleep(1000);
+      } catch (InterruptedException e) {
+        LOG.error(e.getMessage(), e);
+      }
+    }
+  }
+
+  public boolean isRunning() {
+    return isRunning.get();
+  }
+
+  public InterpreterProcess() { }
+
+  public InterpreterProcess(String interpreterType, String interpreterId, Boolean onlyTest)
+      throws IOException {
+    this.interpreterId = interpreterId;
+    this.interpreterProcess = loadInterpreterPlugin(interpreterType);
+
+    if (true == onlyTest) {
+      boolean testResult = interpreterProcess.test();
+      LOG.info("Interpreter test result: {}", testResult);
+      System.exit(0);
+      return;
+    }
+
+    this.clusterClient.start(interpreterId);
+    putClusterMeta();
+  }
+
+  // Submit interpreter process metadata information to cluster metadata
+  private void putClusterMeta() {
+    if (!sconf.workbenchIsClusterMode()){
+      return;
+    }
+    String nodeName = clusterClient.getClusterNodeName();
+    String host = null;
+    try {
+      host = RemoteInterpreterUtils.findAvailableHostAddress();
+    } catch (UnknownHostException | SocketException e) {
+      LOG.error(e.getMessage(), e);
+    }
+    // commit interpreter meta
+    HashMap<String, Object> meta = new HashMap<>();
+    meta.put(ClusterMeta.NODE_NAME, nodeName);
+    meta.put(ClusterMeta.INTP_PROCESS_NAME, this.interpreterId);
+    meta.put(ClusterMeta.INTP_TSERVER_HOST, host);
+    meta.put(ClusterMeta.INTP_START_TIME, LocalDateTime.now());
+    meta.put(ClusterMeta.LATEST_HEARTBEAT, LocalDateTime.now());
+    meta.put(ClusterMeta.STATUS, ClusterMeta.ONLINE_STATUS);
+
+    clusterClient.putClusterMeta(INTP_PROCESS_META, this.interpreterId, meta);
+  }
+
   // get super interpreter class name
-  private static String getSuperInterpreterClassName(String intpName) {
+  private String getSuperInterpreterClassName(String intpName) {
     String superIntpClassName = "";
     if (StringUtils.equals(intpName, "python")) {
       superIntpClassName = "org.apache.submarine.interpreter.PythonInterpreter";
     } else {
-      LOG.error("Error interpreter name : {}!", intpName);
+      superIntpClassName = "org.apache.submarine.interpreter.InterpreterProcess";
     }
 
     return superIntpClassName;
   }
 
-  public static synchronized InterpreterProcess loadInterpreterPlugin(String pluginName)
+  public synchronized InterpreterProcess loadInterpreterPlugin(String pluginName)
       throws IOException {
 
     LOG.info("Loading Plug name: {}", pluginName);
@@ -110,7 +178,7 @@ public abstract class InterpreterProcess {
     return intpProcess;
   }
 
-  private static InterpreterProcess loadPluginFromClassPath(
+  private InterpreterProcess loadPluginFromClassPath(
       String pluginClassName, URLClassLoader pluginClassLoader) {
     InterpreterProcess intpProcess = null;
     try {
@@ -143,7 +211,7 @@ public abstract class InterpreterProcess {
   }
 
   // Get the class load from the specified path
-  private static URLClassLoader getPluginClassLoader(String pluginsDir, String pluginName)
+  private URLClassLoader getPluginClassLoader(String pluginsDir, String pluginName)
       throws IOException {
     File pluginFolder = new File(pluginsDir + "/" + pluginName);
     if (!pluginFolder.exists() || pluginFolder.isFile()) {
@@ -182,5 +250,43 @@ public abstract class InterpreterProcess {
     return InterpreterContext.builder()
         .setInterpreterOut(new InterpreterOutput(null))
         .build();
+  }
+
+  @Override
+  public void shutdown() {
+    isRunning.set(false);
+  }
+
+  @Override
+  public void open() {
+    LOG.error("Please implement the open() method of the child class!");
+  }
+
+  @Override
+  public InterpreterResult interpret(String code) {
+    LOG.error("Please implement the interpret() method of the child class!");
+    return null;
+  }
+
+  @Override
+  public void close() {
+    LOG.error("Please implement the close() method of the child class!");
+  }
+
+  @Override
+  public void cancel() {
+    LOG.error("Please implement the cancel() method of the child class!");
+  }
+
+  @Override
+  public int getProgress() {
+    LOG.error("Please implement the getProgress() method of the child class!");
+    return 0;
+  }
+
+  @Override
+  public boolean test() {
+    LOG.error("Please implement the test() method of the child class!");
+    return false;
   }
 }

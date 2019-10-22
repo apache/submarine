@@ -145,7 +145,7 @@ public abstract class ClusterManager {
       = new ConcurrentLinkedQueue<>();
 
   // submarine server host & port
-  protected String zeplServerHost = "";
+  protected String serverHost = "";
 
   protected ClusterMonitor clusterMonitor = null;
 
@@ -153,7 +153,7 @@ public abstract class ClusterManager {
 
   protected ClusterManager() {
     try {
-      zeplServerHost = NetUtils.findAvailableHostAddress();
+      this.serverHost = NetUtils.findAvailableHostAddress();
       String clusterAddr = sconf.getClusterAddress();
       LOG.info(this.getClass().toString() + "::clusterAddr = {}", clusterAddr);
       if (!StringUtils.isEmpty(clusterAddr)) {
@@ -163,7 +163,7 @@ public abstract class ClusterManager {
           String[] parts = cluster[i].split(":");
           String clusterHost = parts[0];
           int clusterPort = Integer.valueOf(parts[1]);
-          if (zeplServerHost.equalsIgnoreCase(clusterHost)) {
+          if (this.serverHost.equalsIgnoreCase(clusterHost)) {
             raftServerPort = clusterPort;
           }
 
@@ -219,8 +219,8 @@ public abstract class ClusterManager {
           LOG.error(e.getMessage());
         }
 
-        MemberId memberId = MemberId.from(zeplServerHost + ":" + raftClientPort);
-        Address address = Address.from(zeplServerHost, raftClientPort);
+        MemberId memberId = MemberId.from(serverHost + ":" + raftClientPort);
+        Address address = Address.from(serverHost, raftClientPort);
         raftAddressMap.put(memberId, address);
 
         MessagingService messagingManager
@@ -299,21 +299,24 @@ public abstract class ClusterManager {
 
     try {
       if (null != raftSessionClient) {
-        raftSessionClient.close().get(3, TimeUnit.SECONDS);
+        LOG.info("ClusterManager::shutdown(raftSessionClient)");
+        raftSessionClient.close().get(5, TimeUnit.SECONDS);
       }
       if (null != raftClient) {
-        raftClient.close().get(3, TimeUnit.SECONDS);
+        LOG.info("ClusterManager::shutdown(raftClient)");
+        raftClient.close().get(5, TimeUnit.SECONDS);
       }
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
       LOG.error(e.getMessage(), e);
     }
+    LOG.info("ClusterManager::shutdown()");
   }
 
   public String getClusterNodeName() {
     if (isTest) {
       // Start three cluster servers in the test case at the same time,
       // need to avoid duplicate names
-      return this.zeplServerHost + ":" + this.raftServerPort;
+      return this.serverHost + ":" + this.raftServerPort;
     }
 
     String hostName = "";
@@ -342,7 +345,7 @@ public abstract class ClusterManager {
     }
 
     // add cluster name
-    newMetaValue.put(ClusterMeta.SERVER_HOST, zeplServerHost);
+    newMetaValue.put(ClusterMeta.SERVER_HOST, serverHost);
     newMetaValue.put(ClusterMeta.SERVER_PORT, raftServerPort);
 
     raftSessionClient.execute(operation(ClusterStateMachine.PUT,

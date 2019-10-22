@@ -72,8 +72,8 @@ public class ClusterMonitor {
   // and the interperterGroupID when monitoring the interperter processes
   private String metaKey;
 
-  public ClusterMonitor(ClusterManager clusterManagerServer) {
-    this.clusterManager = clusterManagerServer;
+  public ClusterMonitor(ClusterManager clusterManager) {
+    this.clusterManager = clusterManager;
 
     SubmarineConfiguration sconf = SubmarineConfiguration.create();
     heartbeatInterval = sconf.getClusterHeartbeatInterval();

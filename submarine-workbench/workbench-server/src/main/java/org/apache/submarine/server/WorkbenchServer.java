@@ -20,7 +20,7 @@ package org.apache.submarine.server;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.submarine.websocket.NotebookServer;
-import org.apache.submarine.commons.cluster.ClusterManagerServer;
+import org.apache.submarine.commons.cluster.ClusterServer;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -92,8 +92,8 @@ public class WorkbenchServer extends ResourceConfig {
     // Notebook server
     setupNotebookServer(webApp, conf, sharedServiceLocator);
 
-    // Cluster Manager Server
-    setupClusterManagerServer();
+    // Cluster Server
+    setupClusterServer();
 
     startServer();
   }
@@ -222,10 +222,10 @@ public class WorkbenchServer extends ResourceConfig {
     webapp.addServlet(servletHolder, "/ws/*");
   }
 
-  private static void setupClusterManagerServer() {
+  private static void setupClusterServer() {
     if (conf.workbenchIsClusterMode()) {
-      ClusterManagerServer clusterManagerServer = ClusterManagerServer.getInstance();
-      clusterManagerServer.start();
+      ClusterServer clusterServer = ClusterServer.getInstance();
+      clusterServer.start();
     }
   }
 

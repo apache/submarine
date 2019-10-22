@@ -18,7 +18,7 @@
  */
 package org.apache.submarine.server;
 
-import org.apache.submarine.commons.cluster.ClusterManagerClient;
+import org.apache.submarine.commons.cluster.ClusterClient;
 import org.apache.submarine.commons.cluster.meta.ClusterMetaType;
 import org.apache.submarine.commons.utils.NetUtils;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 public class WorkbenchClusterServerTest {
   private static final Logger LOG = LoggerFactory.getLogger(WorkbenchClusterServerTest.class);
 
-  private static ClusterManagerClient clusterClient = null;
+  private static ClusterClient clusterClient = null;
 
   @BeforeClass
   public static void start() throws Exception {
@@ -55,11 +55,11 @@ public class WorkbenchClusterServerTest {
     AbstractWorkbenchServerTest.startUp(WorkbenchClusterServerTest.class.getSimpleName());
 
     // Mock Cluster client
-    Class clazz = ClusterManagerClient.class;
+    Class clazz = ClusterClient.class;
     Constructor constructor = null;
     constructor = clazz.getDeclaredConstructor();
     constructor.setAccessible(true);
-    clusterClient = (ClusterManagerClient) constructor.newInstance();
+    clusterClient = (ClusterClient) constructor.newInstance();
     clusterClient.start("TestWorkbenchClusterServer");
 
     // Waiting for cluster startup
