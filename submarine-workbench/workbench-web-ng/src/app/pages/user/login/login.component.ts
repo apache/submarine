@@ -74,12 +74,12 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/manager/user']);
 
     setTimeout(() => {
-      this.nzNotificationService.success('欢迎', '欢迎回来');
+      this.nzNotificationService.success('Welcome', 'Welcome back');
     }, 1000);
   }
 
   requestFailed(error: Error) {
-    this.nzNotificationService.error('请求错误', error.message || '请求出现错误，请稍后再试', {
+    this.nzNotificationService.error('Request error', error.message || 'Request error, please try again', {
       nzDuration: 4000
     });
   }
