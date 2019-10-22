@@ -25,23 +25,23 @@ import static org.apache.submarine.commons.cluster.meta.ClusterMetaType.INTP_PRO
 /**
  * Cluster management client class instantiated in submarine-interperter
  */
-public class ClusterManagerClient extends ClusterManager {
-  private static Logger LOG = LoggerFactory.getLogger(ClusterManagerClient.class);
+public class ClusterClient extends ClusterManager {
+  private static Logger LOG = LoggerFactory.getLogger(ClusterClient.class);
 
-  private static ClusterManagerClient instance = null;
+  private static ClusterClient instance = null;
 
   // Do not use the getInstance function in the test case,
   // which will result in an inability to update the instance according to the configuration.
-  public static ClusterManagerClient getInstance() {
-    synchronized (ClusterManagerClient.class) {
+  public static ClusterClient getInstance() {
+    synchronized (ClusterClient.class) {
       if (instance == null) {
-        instance = new ClusterManagerClient();
+        instance = new ClusterClient();
       }
-      return instance;
     }
+    return instance;
   }
 
-  private ClusterManagerClient() {
+  private ClusterClient() {
     super();
   }
 
@@ -60,9 +60,9 @@ public class ClusterManagerClient extends ClusterManager {
     return false;
   }
 
-  // In the ClusterManagerClient metaKey equal interperterGroupId
+  // In the ClusterClient metaKey equal interperterGroupId
   public void start(String metaKey) {
-    LOG.info("ClusterManagerClient::start({})", metaKey);
+    LOG.info("ClusterClient::start({})", metaKey);
     if (!sconf.workbenchIsClusterMode()) {
       return;
     }
@@ -77,7 +77,9 @@ public class ClusterManagerClient extends ClusterManager {
     if (!sconf.workbenchIsClusterMode()) {
       return;
     }
-    clusterMonitor.shutdown();
+    if (null != clusterMonitor) {
+      clusterMonitor.shutdown();
+    }
 
     super.shutdown();
   }
