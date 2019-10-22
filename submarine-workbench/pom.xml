@@ -39,6 +39,7 @@
   <modules>
     <module>interpreter</module>
     <module>workbench-web</module>
+    <module>workbench-web-ng</module>
     <module>workbench-server</module>
   </modules>
 
