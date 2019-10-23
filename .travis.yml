@@ -39,7 +39,7 @@ services:
 env:
   global:
     # submarine core does not required by workbench-server integration tests
-    # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-runtime/yarnservice-runtime` in EXCLUDE_SUBMARINE
+    # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-server/server-submitter/submitter-yarnservice` in EXCLUDE_SUBMARINE
     - EXCLUDE_SUBMARINE="!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn"
     - EXCLUDE_WORKBENCH="!submarine-workbench,!submarine-workbench/workbench-web,!submarine-workbench/workbench-server"
     - EXCLUDE_INTERPRETER="!submarine-workbench/interpreter,!submarine-workbench/interpreter/interpreter-engine,!submarine-workbench/interpreter/python-interpreter"

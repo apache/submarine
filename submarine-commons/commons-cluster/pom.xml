@@ -41,18 +41,36 @@
       <groupId>io.atomix</groupId>
       <artifactId>atomix</artifactId>
       <version>${atomix.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>io.atomix</groupId>
       <artifactId>atomix-raft</artifactId>
       <version>${atomix.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
       <groupId>io.atomix</groupId>
       <artifactId>atomix-primary-backup</artifactId>
       <version>${atomix.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
