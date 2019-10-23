@@ -107,6 +107,7 @@ public class HttpRequestUtil {
       LOG.error(e.getMessage(), e);
     }
 
+    LOG.info("result:{}", stringBuilder.toString());
     return stringBuilder.toString();
   }
 }
