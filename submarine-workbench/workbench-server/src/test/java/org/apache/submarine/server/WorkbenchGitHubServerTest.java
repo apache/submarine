@@ -41,7 +41,6 @@ import static org.apache.submarine.database.utils.HttpRequestUtil.sendHttpReques
 public class WorkbenchGitHubServerTest {
 
   private static final Logger LOG = LoggerFactory.getLogger(WorkbenchGitHubServerTest.class);
-  private static final String TOKEN = "30f6bf0d557f22e69106efa9aa6c2b37ea6ac7cc";
   private static final String OWNER = "submarine-thirdparty";
   private static final String REPO = "submarine_git_test";
   WorkbenchGitHubServer workbenchGitHubServer = new WorkbenchGitHubServer();
@@ -53,7 +52,6 @@ public class WorkbenchGitHubServerTest {
   @After
   public void restoreAllOperations() {
     String token = System.getenv("gitToken");
-    token = TOKEN;
     if (token == null) {
       LOG.warn("Token not set!");
       return;
@@ -99,7 +97,6 @@ public class WorkbenchGitHubServerTest {
   @Test
   public void addWatching() {
     String token = System.getenv("gitToken");
-    token = TOKEN;
     if (token == null) {
       LOG.warn("Token not set!");
       return;
@@ -126,7 +123,6 @@ public class WorkbenchGitHubServerTest {
   @Test
   public void deleteWatching() {
     String token = System.getenv("gitToken");
-    token = TOKEN;
     if (token == null) {
       LOG.warn("Token not set!");
       return;
@@ -153,7 +149,6 @@ public class WorkbenchGitHubServerTest {
   @Test
   public void addStarring() {
     String token = System.getenv("gitToken");
-    token = TOKEN;
     if (token == null) {
       LOG.warn("Token not set!");
       return;
@@ -180,7 +175,6 @@ public class WorkbenchGitHubServerTest {
   @Test
   public void deleteStarring() {
     String token = System.getenv("gitToken");
-    token = TOKEN;
     if (token == null) {
       LOG.warn("Token not set!");
       return;
@@ -207,7 +201,6 @@ public class WorkbenchGitHubServerTest {
   @Before
   public void cloneTest() {
     String token = System.getenv("gitToken");
-    token = TOKEN;
     if (token == null) {
       LOG.warn("Token not set!");
       return;
@@ -223,7 +216,6 @@ public class WorkbenchGitHubServerTest {
   @Test
   public void addAndRest() {
     String token = System.getenv("gitToken");
-    token = TOKEN;
     if (token == null) {
       LOG.warn("Token not set!");
       return;
@@ -238,7 +230,6 @@ public class WorkbenchGitHubServerTest {
   @Test
   public void pull() {
     String token = System.getenv("gitToken");
-    token = TOKEN;
     if (token == null) {
       LOG.warn("Token not set!");
       return;
@@ -261,7 +252,6 @@ public class WorkbenchGitHubServerTest {
   public void branchCreateAndCheckout() {
     workbenchGitHubServer.commit(LOCALPATH, "add new file.");
     String token = System.getenv("gitToken");
-    token = TOKEN;
     if (token == null) {
       LOG.warn("Token not set!");
       return;
