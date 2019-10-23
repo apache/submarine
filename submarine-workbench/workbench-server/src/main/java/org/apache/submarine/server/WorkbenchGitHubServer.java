@@ -91,7 +91,7 @@ public class WorkbenchGitHubServer {
       }
     }
     DirCache dirCache = null;
-//     try (Git git = new Git(new FileRepository(localPath + ".git"))) {
+    // try (Git git = new Git(new FileRepository(localPath + ".git"))) {
     try (Git git = Git.open(new File(localPath))) {
       // Add files
       dirCache = git.add().addFilepattern(fileName.substring(1)).call();
