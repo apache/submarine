@@ -25,7 +25,7 @@ import org.apache.submarine.runtimes.yarnservice.ServiceWrapper;
 import org.apache.submarine.runtimes.yarnservice.command.TensorFlowLaunchCommandFactory;
 import org.apache.submarine.runtimes.yarnservice.tensorflow.component.TensorBoardComponent;
 import org.apache.submarine.runtimes.yarnservice.tensorflow.component.TensorFlowPsComponent;
-import org.apache.submarine.utils.Localizer;
+import org.apache.submarine.commons.utils.Localizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

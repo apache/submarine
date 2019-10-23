@@ -37,7 +37,7 @@ import org.apache.submarine.runtimes.yarnservice.ServiceSpecFileGenerator;
 import org.apache.submarine.runtimes.yarnservice.ServiceWrapper;
 import org.apache.submarine.runtimes.yarnservice.YarnServiceJobSubmitter;
 import org.apache.submarine.runtimes.yarnservice.tensorflow.component.TensorBoardComponent;
-import org.apache.submarine.utils.ZipUtilities;
+import org.apache.submarine.commons.utils.ZipUtilities;
 import org.apache.hadoop.yarn.util.resource.Resources;
 import org.junit.After;
 import org.junit.Assert;

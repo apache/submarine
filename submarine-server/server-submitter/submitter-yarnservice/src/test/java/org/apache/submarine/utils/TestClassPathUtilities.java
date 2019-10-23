@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.submarine.utils;
+package org.apache.submarine.commons.utils;
 
 import org.apache.submarine.FileUtilitiesForTests;
 import org.junit.After;

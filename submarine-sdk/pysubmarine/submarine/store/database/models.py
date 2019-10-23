@@ -37,17 +37,17 @@ Base = declarative_base()
 class SqlMetric(Base):
     __tablename__ = 'metrics'
 
-    key = Column(String(250))
+    key = Column(String(190))
     """
-    Metric key: `String` (limit 250 characters). Part of *Primary Key* for ``metrics`` table.
+    Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.
     """
     value = Column(sa.types.Float(precision=53), nullable=False)
     """
     Metric value: `Float`. Defined as *Non-null* in schema.
     """
-    worker_index = Column(String(250))
+    worker_index = Column(String(32))
     """
-    Metric worker_index: `String` (limit 250 characters). Part of *Primary Key* for
+    Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for
     ``metrics`` table.
     """
     timestamp = Column(BigInteger, default=lambda: int(time.time()))
@@ -102,17 +102,17 @@ class SqlMetric(Base):
 class SqlParam(Base):
     __tablename__ = 'params'
 
-    key = Column(String(250))
+    key = Column(String(190))
     """
-    Param key: `String` (limit 250 characters). Part of *Primary Key* for ``params`` table.
+    Param key: `String` (limit 190 characters). Part of *Primary Key* for ``params`` table.
     """
-    value = Column(String(250), nullable=False)
+    value = Column(String(190), nullable=False)
     """
-    Param value: `String` (limit 250 characters). Defined as *Non-null* in schema.
+    Param value: `String` (limit 190 characters). Defined as *Non-null* in schema.
     """
-    worker_index = Column(String(250), nullable=False)
+    worker_index = Column(String(32), nullable=False)
     """
-    Param worker_index: `String` (limit 250 characters). Part of *Primary Key* for
+    Param worker_index: `String` (limit 32 characters). Part of *Primary Key* for
     ``metrics`` table.
     """
     job_name = Column(String(32))

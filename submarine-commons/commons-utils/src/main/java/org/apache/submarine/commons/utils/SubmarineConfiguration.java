@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server;
+package org.apache.submarine.commons.utils;
 
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.commons.configuration.ConfigurationException;
@@ -42,7 +42,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
 
   private Map<String, String> properties = new HashMap<>();
 
-  public SubmarineConfiguration(URL url) throws ConfigurationException {
+  private SubmarineConfiguration(URL url) throws ConfigurationException {
     setDelimiterParsingDisabled(true);
     load(url);
     initProperties();
@@ -62,7 +62,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     }
   }
 
-  public SubmarineConfiguration() {
+  private SubmarineConfiguration() {
     ConfVars[] vars = ConfVars.values();
     for (ConfVars v : vars) {
       if (v.getType() == ConfVars.VarType.BOOLEAN) {
@@ -133,6 +133,11 @@ public class SubmarineConfiguration extends XMLConfiguration {
 
   public int getServerPort() {
     return getInt(ConfVars.SERVER_PORT);
+  }
+
+  @VisibleForTesting
+  public void setServerPort(int port) {
+    properties.put(ConfVars.SERVER_PORT.getVarName(), String.valueOf(port));
   }
 
   public int getServerSslPort() {
@@ -240,6 +245,35 @@ public class SubmarineConfiguration extends XMLConfiguration {
   @VisibleForTesting
   public void setJdbcPassword(String password) {
     properties.put(ConfVars.JDBC_PASSWORD.getVarName(), password);
+  }
+
+  public String getClusterAddress() {
+    return getString(ConfVars.WORKBENCH_CLUSTER_ADDR);
+  }
+
+  public void setClusterAddress(String clusterAddr) {
+    properties.put(ConfVars.WORKBENCH_CLUSTER_ADDR.getVarName(), clusterAddr);
+  }
+
+  public boolean workbenchIsClusterMode() {
+    String clusterAddr = getString(ConfVars.WORKBENCH_CLUSTER_ADDR);
+    if (StringUtils.isEmpty(clusterAddr)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  public int getClusterHeartbeatInterval() {
+    return getInt(ConfVars.CLUSTER_HEARTBEAT_INTERVAL);
+  }
+
+  public int getClusterHeartbeatTimeout() {
+    return getInt(ConfVars.CLUSTER_HEARTBEAT_TIMEOUT);
+  }
+
+  public String getWebsocketMaxTextMessageSize() {
+    return getString(ConfVars.WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE);
   }
 
   private String getStringValue(String name, String d) {
@@ -357,6 +391,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public enum ConfVars {
+    SUBMARINE_CONF_DIR("submarine.conf.dir", "conf"),
     SERVER_ADDR("workbench.server.addr", "0.0.0.0"),
     SERVER_PORT("workbench.server.port", 8080),
     SERVER_SSL("workbench.server.ssl", false),
@@ -367,6 +402,9 @@ public class SubmarineConfiguration extends XMLConfiguration {
     SERVER_JETTY_REQUEST_HEADER_SIZE("workbench.server.jetty.request.header.size", 8192),
     SSL_CLIENT_AUTH("workbench.ssl.client.auth", false),
     SSL_KEYSTORE_PATH("workbench.ssl.keystore.path", "keystore"),
+    WORKBENCH_CLUSTER_ADDR("workbench.cluster.addr", ""),
+    CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", 3000),
+    CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", 9000),
     SERVER_SSL_KEYSTORE_TYPE("workbench.ssl.keystore.type", "JKS"),
     SERVER_SSL_KEYSTORE_PASSWORD("workbench.ssl.keystore.password", ""),
     SERVER_SSL_KEY_MANAGER_PASSWORD("workbench.ssl.key.manager.password", null),
@@ -379,6 +417,8 @@ public class SubmarineConfiguration extends XMLConfiguration {
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
     JDBC_USERNAME("jdbc.username", "submarine"),
     JDBC_PASSWORD("jdbc.password", "password"),
+    WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
+        "workbench.websocket.max.text.message.size", "1024000"),
     WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist");
 
     private String varName;
@@ -515,7 +555,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
         try {
           checkType(value);
         } catch (Exception e) {
-          LOG.error("Exception in ZeppelinConfiguration while isType", e);
+          LOG.error("Exception in SubmarineConfiguration while isType", e);
           return false;
         }
         return true;

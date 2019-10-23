@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.apache.submarine.utils;
+package org.apache.submarine.commons.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.fs.Path;

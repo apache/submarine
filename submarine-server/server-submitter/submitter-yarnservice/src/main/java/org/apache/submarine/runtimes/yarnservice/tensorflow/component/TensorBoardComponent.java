@@ -28,8 +28,8 @@ import org.apache.submarine.runtimes.yarnservice.FileSystemOperations;
 import org.apache.submarine.runtimes.yarnservice.YarnServiceUtils;
 import org.apache.submarine.runtimes.yarnservice.command.TensorFlowLaunchCommandFactory;
 import org.apache.submarine.runtimes.yarnservice.tensorflow.TensorFlowCommons;
-import org.apache.submarine.utils.DockerUtilities;
-import org.apache.submarine.utils.SubmarineResourceUtils;
+import org.apache.submarine.commons.utils.DockerUtilities;
+import org.apache.submarine.commons.utils.SubmarineResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

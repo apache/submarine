@@ -25,7 +25,7 @@ import org.apache.submarine.runtimes.yarnservice.AbstractServiceSpec;
 import org.apache.submarine.runtimes.yarnservice.FileSystemOperations;
 import org.apache.submarine.runtimes.yarnservice.ServiceWrapper;
 import org.apache.submarine.runtimes.yarnservice.command.PyTorchLaunchCommandFactory;
-import org.apache.submarine.utils.Localizer;
+import org.apache.submarine.commons.utils.Localizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -37,6 +37,7 @@ import sys
 
 import tensorboard.program as tb_program
 import tensorflow as tf
+import submarine
 
 # Environment variable containing port to launch TensorBoard on, set by TonY.
 TB_PORT_ENV_VAR = 'TB_PORT'
@@ -247,7 +248,10 @@ def main(_):
             # Train
             logging.info('Starting training')
             i = 0
+            worker_index = "worker-" + str(task_index)
             while not sess.should_stop():
+                # Before use submarine-sdk, start Mysql server first
+                # submarine.log_param("batch_size", FLAGS.batch_size, worker_index)
                 batch = mnist.train.next_batch(FLAGS.batch_size)
                 if i % 100 == 0:
                     step, _, train_accuracy = sess.run(
@@ -256,6 +260,8 @@ def main(_):
                                    keep_prob: 1.0})
                     logging.info('Step %d, training accuracy: %g' % (
                     step, train_accuracy))
+                    # Before use submarine-sdk, start Mysql server first
+                    # submarine.log_metric("accuracy", train_accuracy, worker_index, i)
                 else:
                     sess.run([global_step, train_step],
                              feed_dict={features: batch[0], labels: batch[1],

@@ -19,6 +19,8 @@
 package org.apache.submarine.server;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.submarine.websocket.NotebookServer;
+import org.apache.submarine.commons.cluster.ClusterServer;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -29,24 +31,33 @@ import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.hk2.api.ServiceLocatorFactory;
+import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import org.apache.submarine.server.SubmarineConfiguration.ConfVars;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfiguration.ConfVars;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 
 public class WorkbenchServer extends ResourceConfig {
   private static final Logger LOG = LoggerFactory.getLogger(WorkbenchServer.class);
 
   public static Server jettyWebServer;
+  public static ServiceLocator sharedServiceLocator;
 
   private static SubmarineConfiguration conf = SubmarineConfiguration.create();
 
@@ -63,7 +74,26 @@ public class WorkbenchServer extends ResourceConfig {
     // Web UI
     final WebAppContext webApp = setupWebAppContext(contexts, conf);
 
+    // Add
+    sharedServiceLocator = ServiceLocatorFactory.getInstance().create("shared-locator");
+    ServiceLocatorUtilities.enableImmediateScope(sharedServiceLocator);
+    ServiceLocatorUtilities.bind(
+        sharedServiceLocator,
+        new AbstractBinder() {
+          @Override
+          protected void configure() {
+            bindAsContract(NotebookServer.class)
+                .to(WebSocketServlet.class)
+                .in(Singleton.class);
+          }
+        });
+
     setupRestApiContextHandler(webApp, conf);
+    // Notebook server
+    setupNotebookServer(webApp, conf, sharedServiceLocator);
+
+    // Cluster Server
+    setupClusterServer();
 
     startServer();
   }
@@ -112,7 +142,7 @@ public class WorkbenchServer extends ResourceConfig {
   }
 
   private static WebAppContext setupWebAppContext(ContextHandlerCollection contexts,
-                                                  SubmarineConfiguration conf) {
+      SubmarineConfiguration conf) {
     WebAppContext webApp = new WebAppContext();
     webApp.setContextPath("/");
     File warPath = new File(conf.getString(ConfVars.WORKBENCH_WEB_WAR));
@@ -178,8 +208,25 @@ public class WorkbenchServer extends ResourceConfig {
     }
 
     server.addConnector(connector);
-
     return server;
+  }
+
+  private static void setupNotebookServer(WebAppContext webapp,
+      SubmarineConfiguration conf, ServiceLocator serviceLocator) {
+    String maxTextMessageSize = conf.getWebsocketMaxTextMessageSize();
+    final ServletHolder servletHolder =
+        new ServletHolder(serviceLocator.getService(NotebookServer.class));
+    servletHolder.setInitParameter("maxTextMessageSize", maxTextMessageSize);
+
+    final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    webapp.addServlet(servletHolder, "/ws/*");
+  }
+
+  private static void setupClusterServer() {
+    if (conf.workbenchIsClusterMode()) {
+      ClusterServer clusterServer = ClusterServer.getInstance();
+      clusterServer.start();
+    }
   }
 
   private static SslContextFactory getSslContextFactory(SubmarineConfiguration conf) {

@@ -31,7 +31,7 @@ import org.apache.submarine.runtimes.yarnservice.command.PyTorchLaunchCommandFac
 import org.apache.submarine.runtimes.yarnservice.command.TensorFlowLaunchCommandFactory;
 import org.apache.submarine.runtimes.yarnservice.pytorch.PyTorchServiceSpec;
 import org.apache.submarine.runtimes.yarnservice.tensorflow.TensorFlowServiceSpec;
-import org.apache.submarine.utils.Localizer;
+import org.apache.submarine.commons.utils.Localizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -42,6 +42,8 @@
   </licenses>
 
   <properties>
+    <submarine.version>0.3.0-SNAPSHOT</submarine.version>
+
     <!-- language versions -->
     <java.version>1.8</java.version>
 
@@ -68,8 +70,9 @@
     <jackson-databind.version>2.9.10</jackson-databind.version>
     <jackson-annotations.version>2.9.10</jackson-annotations.version>
     <commons-configuration.version>1.10</commons-configuration.version>
+    <commons-httpclient.version>3.1</commons-httpclient.version>
 
-    <cglib.version>2.2.2</cglib.version>
+    <cglib.version>3.2.2</cglib.version>
     <mybatis.version>3.2.8</mybatis.version>
     <mysql-connector-java.version>5.1.39</mysql-connector-java.version>
 
@@ -79,21 +82,21 @@
     <yarn.version>v1.10.1</yarn.version>
 
     <hadoop.common.build.dir>${basedir}/../hadoop-common-project/hadoop-common/target</hadoop.common.build.dir>
-    <slf4j.version>1.7.25</slf4j.version>
+    <slf4j.version>1.7.7</slf4j.version>
     <log4j.version>1.2.17</log4j.version>
     <commons.logging.version>1.1.3</commons.logging.version>
     <commons.cli.version>1.2</commons.cli.version>
     <snakeyaml.version>1.16</snakeyaml.version>
-    <commons-lang.version>2.6</commons-lang.version>
-    <commons.lang3.version>3.4</commons.lang3.version>
     <httpcore.version>4.4.4</httpcore.version>
     <httpclient.version>4.5.2</httpclient.version>
-    <commons.io.version>2.4</commons.io.version>
+    <commons-lang.version>2.5</commons-lang.version>
+    <commons-lang3.version>3.4</commons-lang3.version>
+    <commons.io.version>2.5</commons.io.version>
     <junit.version>4.12</junit.version>
-    <jsr305.version>3.0.0</jsr305.version>
+    <jsr305.version>1.3.9</jsr305.version>
     <mockito.version>2.23.4</mockito.version>
     <powermock.version>1.6.4</powermock.version>
-    <guava.version>11.0.2</guava.version>
+    <guava.version>22.0</guava.version>
     <testng.version>6.4</testng.version>
     <avro.version>1.8.2</avro.version>
     <httpclient.version>4.5.2</httpclient.version>
@@ -110,6 +113,8 @@
     <derby.version>10.15.1.3</derby.version>
     <zeppelin.version>0.9.0-SNAPSHOT</zeppelin.version>
     <jgit.version>5.5.1.201910021850-r</jgit.version>
+    <atomix.version>3.0.0-rc4</atomix.version>
+    <libthrift.version>0.12.0</libthrift.version>
   </properties>
 
   <modules>
@@ -167,7 +172,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
-        <version>3.7</version>
+        <version>${commons-lang3.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.guava</groupId>
