@@ -77,6 +77,21 @@
       <id>hadoop-3.2</id>
       <dependencies>
         <dependency>
+          <groupId>org.apache.submarine</groupId>
+          <artifactId>submitter-yarnservice</artifactId>
+          <version>${project.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.avro</groupId>
+              <artifactId>avro</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>commons-codec</groupId>
+              <artifactId>commons-codec</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-hdfs-client</artifactId>
           <version>${hadoop.version}</version>
@@ -95,10 +110,20 @@
       </dependencies>
     </profile>
 
-    <!-- Default profile-->
     <profile>
       <id>hadoop-3.1</id>
       <dependencies>
+        <dependency>
+          <groupId>org.apache.submarine</groupId>
+          <artifactId>submitter-yarnservice</artifactId>
+          <version>${project.version}</version>
+          <exclusions>
+            <exclusion>
+              <groupId>org.apache.avro</groupId>
+              <artifactId>avro</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
         <dependency>
           <groupId>org.apache.hadoop</groupId>
           <artifactId>hadoop-hdfs-client</artifactId>
