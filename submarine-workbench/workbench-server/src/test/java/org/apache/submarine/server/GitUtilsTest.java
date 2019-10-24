@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,27 +39,28 @@ import java.util.Map;
 import static junit.framework.TestCase.assertEquals;
 import static org.apache.submarine.database.utils.HttpRequestUtil.sendHttpRequest;
 
-public class WorkbenchGitHubServerTest {
+public class GitUtilsTest {
+  private static final Logger LOG = LoggerFactory.getLogger(GitUtilsTest.class);
 
-  private static final Logger LOG = LoggerFactory.getLogger(WorkbenchGitHubServerTest.class);
   private static final String OWNER = "submarine-thirdparty";
   private static final String REPO = "submarine_git_test";
-  WorkbenchGitHubServer workbenchGitHubServer = new WorkbenchGitHubServer();
+  GitUtils gitUtils = new GitUtils();
   private static final String REMOTE_PATH = "https://github.com/" + OWNER + "/" + REPO + ".git";
-  private static final String BRANCHNAME = "Branch-1";
+  private static final long TIME = new Date().getTime();
+  private static final String BRANCHNAME = "Branch-" + TIME;
   private static final String LOCALPATH =
-      WorkbenchGitHubServerTest.class.getResource("").toString().substring(6) + REPO;
+      GitUtilsTest.class.getResource("").toString().substring(6) + REPO + TIME;
+
+  private static final String token = System.getenv("gitToken");
 
   @After
   public void restoreAllOperations() {
-    String token = System.getenv("gitToken");
     if (token == null) {
       LOG.warn("Token not set!");
       return;
     } else {
       Map<String, String> map = new HashMap<>();
       map.put("Authorization", "token " + token);
-      LOG.info("gitToken: {}", token);
       sendHttpRequest("https://api.github.com/repos/" + OWNER + "/" + REPO + "/subscription",
           map, null, "DELETE");
       sendHttpRequest("https://api.github.com/user/starred/" + OWNER + "/" + REPO + "",
@@ -96,14 +98,12 @@ public class WorkbenchGitHubServerTest {
 
   @Test
   public void addWatching() {
-    String token = System.getenv("gitToken");
     if (token == null) {
       LOG.warn("Token not set!");
       return;
     } else {
       Map<String, String> map = new HashMap<>();
       map.put("Authorization", "token " + token);
-      LOG.info("gitToken: {}", token);
       sendHttpRequest("https://api.github.com/repos/" + OWNER + "/" + REPO + "/subscription",
           map, null, "PUT");
 
@@ -122,14 +122,12 @@ public class WorkbenchGitHubServerTest {
 
   @Test
   public void deleteWatching() {
-    String token = System.getenv("gitToken");
     if (token == null) {
       LOG.warn("Token not set!");
       return;
     } else {
       Map<String, String> map = new HashMap<>();
       map.put("Authorization", "token " + token);
-      LOG.info("gitToken: {}", token);
       sendHttpRequest("https://api.github.com/repos/" + OWNER + "/" + REPO + "/subscription",
           map, null, "PUT");
 
@@ -148,14 +146,12 @@ public class WorkbenchGitHubServerTest {
 
   @Test
   public void addStarring() {
-    String token = System.getenv("gitToken");
     if (token == null) {
       LOG.warn("Token not set!");
       return;
     } else {
       Map<String, String> map = new HashMap<>();
       map.put("Authorization", "token " + token);
-      LOG.info("gitToken: {}", token);
       sendHttpRequest("https://api.github.com/user/starred/" + OWNER + "/" + REPO + "",
           map, null, "PUT");
 
@@ -174,14 +170,12 @@ public class WorkbenchGitHubServerTest {
 
   @Test
   public void deleteStarring() {
-    String token = System.getenv("gitToken");
     if (token == null) {
       LOG.warn("Token not set!");
       return;
     } else {
       Map<String, String> map = new HashMap<>();
       map.put("Authorization", "token " + token);
-      LOG.info("gitToken: {}", token);
       sendHttpRequest("https://api.github.com/user/starred/" + OWNER + "/" + REPO + "",
           map, null, "PUT");
 
@@ -200,12 +194,11 @@ public class WorkbenchGitHubServerTest {
 
   @Before
   public void cloneTest() {
-    String token = System.getenv("gitToken");
     if (token == null) {
       LOG.warn("Token not set!");
       return;
     } else {
-      workbenchGitHubServer.clone(REMOTE_PATH, LOCALPATH, token, "master");
+      gitUtils.clone(REMOTE_PATH, LOCALPATH, token, "master");
       File dirFile = new File(LOCALPATH);
       File[] files = dirFile.listFiles();
       assertEquals(1, files.length);
@@ -215,51 +208,48 @@ public class WorkbenchGitHubServerTest {
 
   @Test
   public void addAndRest() {
-    String token = System.getenv("gitToken");
     if (token == null) {
       LOG.warn("Token not set!");
       return;
     } else {
-      DirCache dirCache = workbenchGitHubServer.add(LOCALPATH, "/aa/bb/log4j.properties");
+      DirCache dirCache = gitUtils.add(LOCALPATH, "/aa/bb/log4j.properties");
       assertEquals(1, dirCache.getEntryCount());
 
-      workbenchGitHubServer.reset(LOCALPATH, "/aa/bb/log4j.properties");
+      gitUtils.reset(LOCALPATH, "/aa/bb/log4j.properties");
     }
   }
 
   @Test
   public void pull() {
-    String token = System.getenv("gitToken");
     if (token == null) {
       LOG.warn("Token not set!");
       return;
     } else {
-      workbenchGitHubServer.add(LOCALPATH, "/log4j.properties");
-      workbenchGitHubServer.commit(LOCALPATH, "add new file.");
-      Iterable<PushResult> iterable = workbenchGitHubServer.push(LOCALPATH, token, REMOTE_PATH);
+      gitUtils.add(LOCALPATH, "/log4j.properties");
+      gitUtils.commit(LOCALPATH, "add new file.");
+      Iterable<PushResult> iterable = gitUtils.push(LOCALPATH, token, REMOTE_PATH);
       assertEquals(1, Lists.newArrayList(iterable).size());
 
-      PullResult pullResult = workbenchGitHubServer.pull(LOCALPATH, token, "master");
+      PullResult pullResult = gitUtils.pull(LOCALPATH, token, "master");
       assertEquals(1, pullResult.getFetchResult().getTrackingRefUpdates().size());
 
-      workbenchGitHubServer.rm(LOCALPATH, "/log4j.properties");
-      workbenchGitHubServer.commit(LOCALPATH, "add new file.");
-      workbenchGitHubServer.push(LOCALPATH, token, REMOTE_PATH);
+      gitUtils.rm(LOCALPATH, "/log4j.properties");
+      gitUtils.commit(LOCALPATH, "add new file.");
+      gitUtils.push(LOCALPATH, token, REMOTE_PATH);
     }
   }
 
   @Test
   public void branchCreateAndCheckout() {
-    workbenchGitHubServer.commit(LOCALPATH, "add new file.");
-    String token = System.getenv("gitToken");
     if (token == null) {
       LOG.warn("Token not set!");
       return;
     } else {
-      Ref ref = workbenchGitHubServer.branchCreate(LOCALPATH, BRANCHNAME);
+      gitUtils.commit(LOCALPATH, "add new file.");
+      Ref ref = gitUtils.branchCreate(LOCALPATH, BRANCHNAME);
       assertEquals(true, ref.getName().endsWith(BRANCHNAME));
 
-      ref = workbenchGitHubServer.checkout(LOCALPATH, BRANCHNAME);
+      ref = gitUtils.checkout(LOCALPATH, BRANCHNAME);
       assertEquals(true, ref.getName().endsWith(BRANCHNAME));
     }
   }

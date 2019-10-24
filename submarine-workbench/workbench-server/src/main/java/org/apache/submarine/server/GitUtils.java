@@ -37,8 +37,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 
-public class WorkbenchGitHubServer {
-  private static final Logger LOG = LoggerFactory.getLogger(WorkbenchGitHubServer.class);
+public class GitUtils {
+  private static final Logger LOG = LoggerFactory.getLogger(GitUtils.class);
 
   /**
    * To execute clone command
@@ -91,7 +91,6 @@ public class WorkbenchGitHubServer {
       }
     }
     DirCache dirCache = null;
-    // try (Git git = new Git(new FileRepository(localPath + ".git"))) {
     try (Git git = Git.open(new File(localPath))) {
       // Add files
       dirCache = git.add().addFilepattern(fileName.substring(1)).call();
