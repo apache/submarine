@@ -36,7 +36,7 @@
     <dependency>
       <groupId>org.apache.submarine</groupId>
       <artifactId>commons-runtime</artifactId>
-      <version>${submarine.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.yaml</groupId>
@@ -59,7 +59,7 @@
     <dependency>
       <groupId>org.apache.submarine</groupId>
       <artifactId>commons-runtime</artifactId>
-      <version>${submarine.version}</version>
+      <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
