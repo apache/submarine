@@ -112,6 +112,7 @@
     <mybatis-generator.version>1.3.7</mybatis-generator.version>
     <derby.version>10.15.1.3</derby.version>
     <zeppelin.version>0.9.0-SNAPSHOT</zeppelin.version>
+    <jgit.version>5.5.1.201910021850-r</jgit.version>
     <atomix.version>3.0.0-rc4</atomix.version>
     <libthrift.version>0.12.0</libthrift.version>
   </properties>
