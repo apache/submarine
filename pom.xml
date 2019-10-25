@@ -42,8 +42,6 @@
   </licenses>
 
   <properties>
-    <submarine.version>0.3.0-SNAPSHOT</submarine.version>
-
     <!-- language versions -->
     <java.version>1.8</java.version>
 

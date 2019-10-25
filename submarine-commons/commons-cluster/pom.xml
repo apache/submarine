@@ -34,7 +34,7 @@
     <dependency>
       <groupId>org.apache.submarine</groupId>
       <artifactId>commons-utils</artifactId>
-      <version>${submarine.version}</version>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
