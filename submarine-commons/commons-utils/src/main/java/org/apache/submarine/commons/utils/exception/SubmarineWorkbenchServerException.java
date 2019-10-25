@@ -17,10 +17,22 @@
  * under the License.
  */
 
-package org.apache.submarine.commons.runtime.exception;
+package org.apache.submarine.commons.utils.exception;
 
-public class SubmarineException extends Exception {
-  public SubmarineException(String msg) {
+public class SubmarineWorkbenchServerException extends SubmarineException {
+  public SubmarineWorkbenchServerException() {
+    super();
+  }
+
+  public SubmarineWorkbenchServerException(String msg) {
     super(msg);
+  }
+
+  public SubmarineWorkbenchServerException(Throwable cause) {
+    super(cause);
+  }
+
+  public SubmarineWorkbenchServerException(String message, Throwable cause) {
+    super(message, cause);
   }
 }

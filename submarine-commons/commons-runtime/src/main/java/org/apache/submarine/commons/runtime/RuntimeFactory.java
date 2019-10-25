@@ -22,7 +22,7 @@ package org.apache.submarine.commons.runtime;
 import com.google.common.annotations.VisibleForTesting;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.submarine.commons.runtime.conf.SubmarineConfiguration;
-import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.commons.runtime.fs.SubmarineStorage;
 
 import java.lang.reflect.InvocationTargetException;

@@ -29,7 +29,7 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.client.cli.param.ParametersHolder;
 import org.apache.submarine.client.cli.param.ShowJobParameters;
 import org.apache.submarine.commons.runtime.ClientContext;
-import org.apache.submarine.commons.runtime.exception.SubmarineException;
+import org.apache.submarine.commons.utils.exception.SubmarineException;
 import org.apache.submarine.commons.runtime.fs.StorageKeyConstants;
 import org.apache.submarine.commons.runtime.fs.SubmarineStorage;
 import org.slf4j.Logger;

@@ -19,7 +19,7 @@
 
 package org.apache.submarine.commons.runtime.resource;
 
-import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.slf4j.Logger;

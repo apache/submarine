@@ -25,7 +25,7 @@ import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.client.cli.param.yaml.YamlParseException;
 import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
-import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.commons.runtime.resource.ResourceUtils;
 import org.junit.After;
 import org.junit.Assert;

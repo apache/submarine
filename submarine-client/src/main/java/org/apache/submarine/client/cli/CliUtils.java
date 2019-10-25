@@ -22,7 +22,7 @@ package org.apache.submarine.client.cli;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
-import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
+import org.apache.submarine.commons.utils.exception.SubmarineCliRuntimeException;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,15 +89,15 @@ public class CliUtils {
 
     if (StringUtils.isEmpty(keytab) || StringUtils.isEmpty(principal)) {
       if (StringUtils.isNotEmpty(keytab)) {
-        SubmarineRuntimeException e = new SubmarineRuntimeException("The " +
-            "parameter of " + CliConstants.PRINCIPAL + " is missing.");
+        SubmarineCliRuntimeException e = new SubmarineCliRuntimeException(
+            "The parameter of " + CliConstants.PRINCIPAL + " is missing.");
         LOG.error(e.getMessage(), e);
         throw e;
       }
 
       if (StringUtils.isNotEmpty(principal)) {
-        SubmarineRuntimeException e = new SubmarineRuntimeException("The " +
-            "parameter of " + CliConstants.KEYTAB + " is missing.");
+        SubmarineCliRuntimeException e = new SubmarineCliRuntimeException(
+            "The parameter of " + CliConstants.KEYTAB + " is missing.");
         LOG.error(e.getMessage(), e);
         throw e;
       }
@@ -105,8 +105,8 @@ public class CliUtils {
       UserGroupInformation user = UserGroupInformation.getCurrentUser();
       if (user == null || user.getAuthenticationMethod() ==
           UserGroupInformation.AuthenticationMethod.SIMPLE) {
-        SubmarineRuntimeException e = new SubmarineRuntimeException("Failed " +
-            "to authenticate in secure environment. Please run kinit " +
+        SubmarineCliRuntimeException e = new SubmarineCliRuntimeException(
+            "Failed to authenticate in secure environment. Please run kinit " +
             "command in advance or use " + "--" + CliConstants.KEYTAB + "/--" + CliConstants.PRINCIPAL +
             " parameters");
         LOG.error(e.getMessage(), e);
@@ -118,7 +118,7 @@ public class CliUtils {
 
     File keytabFile = new File(keytab);
     if (!keytabFile.exists()) {
-      SubmarineRuntimeException e = new SubmarineRuntimeException("No " +
+      SubmarineCliRuntimeException e = new SubmarineCliRuntimeException("No " +
           "keytab localized at  " + keytab);
       LOG.error(e.getMessage(), e);
       throw e;

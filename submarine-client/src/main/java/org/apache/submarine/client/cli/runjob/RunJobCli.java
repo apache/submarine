@@ -38,7 +38,7 @@ import org.apache.submarine.client.cli.param.yaml.YamlConfigFile;
 import org.apache.submarine.client.cli.param.yaml.YamlParseException;
 import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.runtime.Framework;
-import org.apache.submarine.commons.runtime.exception.SubmarineException;
+import org.apache.submarine.commons.utils.exception.SubmarineException;
 import org.apache.submarine.commons.runtime.JobMonitor;
 import org.apache.submarine.commons.runtime.JobSubmitter;
 import org.apache.submarine.commons.runtime.fs.StorageKeyConstants;

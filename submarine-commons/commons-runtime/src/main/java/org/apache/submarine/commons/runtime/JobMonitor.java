@@ -22,7 +22,7 @@ package org.apache.submarine.commons.runtime;
 import org.apache.submarine.commons.runtime.api.JobState;
 import org.apache.submarine.commons.runtime.api.JobStatus;
 import org.apache.hadoop.yarn.exceptions.YarnException;
-import org.apache.submarine.commons.runtime.exception.SubmarineException;
+import org.apache.submarine.commons.utils.exception.SubmarineException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

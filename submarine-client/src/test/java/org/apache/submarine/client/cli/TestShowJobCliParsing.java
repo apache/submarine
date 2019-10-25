@@ -25,7 +25,7 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.client.cli.param.ShowJobParameters;
 import org.apache.submarine.commons.runtime.MockClientContext;
 import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
-import org.apache.submarine.commons.runtime.exception.SubmarineException;
+import org.apache.submarine.commons.utils.exception.SubmarineException;
 import org.apache.submarine.commons.runtime.RuntimeFactory;
 import org.apache.submarine.commons.runtime.fs.MemorySubmarineStorage;
 import org.apache.submarine.commons.runtime.fs.StorageKeyConstants;

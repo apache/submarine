@@ -24,7 +24,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.commons.runtime.ClientContext;
-import org.apache.submarine.commons.runtime.exception.SubmarineException;
+import org.apache.submarine.commons.utils.exception.SubmarineException;
 
 import java.io.IOException;
 
