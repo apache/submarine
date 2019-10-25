@@ -20,6 +20,7 @@ package org.apache.submarine.server;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
+import org.apache.submarine.database.utils.GitUtils;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.lib.Ref;
