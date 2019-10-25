@@ -21,6 +21,7 @@ package org.apache.submarine.server.submitter.yarnservice.utils;
 
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.service.api.records.ConfigFile;
+import org.apache.hadoop.yarn.service.api.records.ConfigFile.TypeEnum;
 import org.apache.hadoop.yarn.service.api.records.Service;
 import org.apache.submarine.client.cli.param.Localization;
 import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
@@ -63,7 +64,7 @@ public class Localizer {
    * If remoteUri is directory, we'll download it, zip it and upload
    * to HDFS.
    * If localFilePath is ".", we'll use remoteUri's file/dir name
-   * */
+   */
   public void handleLocalizations(Service service)
       throws IOException {
     // Handle localizations
@@ -71,22 +72,113 @@ public class Localizer {
         remoteDirectoryManager.getJobStagingArea(
             parameters.getName(), true);
     List<Localization> localizations = parameters.getLocalizations();
-    String remoteUri;
-    String containerLocalPath;
 
     // Check to fail fast
-    for (Localization loc : localizations) {
-      remoteUri = loc.getRemoteUri();
+    checkFilesExist(localizations);
+
+    // Start download remote if needed and upload to HDFS
+    for (Localization localization : localizations) {
+      LocalizationState localizationState = new LocalizationState(localization,
+          remoteDirectoryManager);
+      Path resourceToLocalize = new Path(localizationState.remoteUri);
+      String sourceFile = determineSourceFile(localizationState);
+
+      if (localizationState.needUploadToHDFS) {
+        resourceToLocalize =
+            fsOperations.uploadToRemoteFile(stagingDir, sourceFile);
+      }
+      if (localizationState.needToDeleteTempFile) {
+        fsOperations.deleteFiles(sourceFile);
+      }
+      // Remove .zip from zipped dir name
+      if (isZippedArchive(sourceFile, localizationState.destFileType)) {
+        // Delete local zip file
+        fsOperations.deleteFiles(sourceFile);
+        sourceFile = getNameUntilUnderscore(sourceFile);
+      }
+
+      String containerLocalPath = localizationState.containerLocalPath;
+      // If provided, use the name of local uri
+      if (!containerLocalPath.equals(".")
+          && !containerLocalPath.equals("./")) {
+        // Change the YARN localized file name to what will be used in container
+        sourceFile = getLastNameFromPath(containerLocalPath);
+      }
+      String localizedName = getLastNameFromPath(sourceFile);
+      LOG.info("The file or directory to be localized is {}. " +
+          "Its localized filename will be {}",
+          resourceToLocalize.toString(), localizedName);
+      ConfigFile configFile = new ConfigFile()
+          .srcFile(resourceToLocalize.toUri().toString())
+          .destFile(localizedName)
+          .type(localizationState.destFileType);
+      service.getConfiguration().getFiles().add(configFile);
+
+      if (containerLocalPath.startsWith("/")) {
+        addToMounts(service, localization, containerLocalPath, sourceFile);
+      }
+    }
+  }
+
+  private String determineSourceFile(LocalizationState localizationState) throws IOException {
+    if (localizationState.directory) {
+      // Special handling of remoteUri directory.
+      return fsOperations.downloadAndZip(localizationState.remoteUri,
+          getLastNameFromPath(localizationState.remoteUri), true);
+    } else if (localizationState.remote &&
+        !needHdfs(localizationState.remoteUri)) {
+      // Non HDFS remote URI.
+      // Non directory, we don't need to zip
+      return fsOperations.downloadAndZip(localizationState.remoteUri,
+          getLastNameFromPath(localizationState.remoteUri), false);
+    }
+    return localizationState.remoteUri;
+  }
+
+  private static String getNameUntilUnderscore(String sourceFile) {
+    int suffixIndex = sourceFile.lastIndexOf('_');
+    if (suffixIndex == -1) {
+      throw new IllegalStateException(String.format(
+          "Vale of archive filename"
+              + " supposed to contain an underscore. Filename was: '%s'",
+          sourceFile));
+    }
+    sourceFile = sourceFile.substring(0, suffixIndex);
+    return sourceFile;
+  }
+
+  private static boolean isZippedArchive(String sourceFile,
+      TypeEnum destFileType) {
+    return destFileType == TypeEnum.ARCHIVE
+        && sourceFile.endsWith(".zip");
+  }
+
+  // set mounts
+  // if mount path is absolute, just use it.
+  // if relative, no need to mount explicitly
+  private static void addToMounts(Service service, Localization loc,
+      String containerLocalPath, String sourceFile) {
+    String mountStr = getLastNameFromPath(sourceFile) + ":"
+        + containerLocalPath + ":" + loc.getMountPermission();
+    LOG.info("Add bind-mount string {}", mountStr);
+    appendToEnv(service,
+        EnvironmentUtilities.ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME,
+        mountStr, ",");
+  }
+
+  private void checkFilesExist(List<Localization> localizations)
+      throws IOException {
+    String remoteUri;
+    for (Localization localization : localizations) {
+      remoteUri = localization.getRemoteUri();
       Path resourceToLocalize = new Path(remoteUri);
-      // Check if remoteUri exists
+
       if (remoteDirectoryManager.isRemote(remoteUri)) {
-        // check if exists
         if (!remoteDirectoryManager.existsRemoteFile(resourceToLocalize)) {
           throw new FileNotFoundException(
               "File " + remoteUri + " doesn't exists.");
         }
       } else {
-        // Check if exists
         File localFile = new File(remoteUri);
         if (!localFile.exists()) {
           throw new FileNotFoundException(
@@ -96,78 +188,52 @@ public class Localizer {
       // check remote file size
       fsOperations.validFileSize(remoteUri);
     }
-    // Start download remote if needed and upload to HDFS
-    for (Localization loc : localizations) {
-      remoteUri = loc.getRemoteUri();
-      containerLocalPath = loc.getLocalPath();
-      String srcFileStr = remoteUri;
-      ConfigFile.TypeEnum destFileType = ConfigFile.TypeEnum.STATIC;
-      Path resourceToLocalize = new Path(remoteUri);
-      boolean needUploadToHDFS = true;
-
-
-      // Special handling of remoteUri directory
-      boolean needDeleteTempFile = false;
-      if (remoteDirectoryManager.isDir(remoteUri)) {
-        destFileType = ConfigFile.TypeEnum.ARCHIVE;
-        srcFileStr = fsOperations.downloadAndZip(
-            remoteUri, getLastNameFromPath(srcFileStr), true);
-      } else if (remoteDirectoryManager.isRemote(remoteUri)) {
-        if (!needHdfs(remoteUri)) {
-          // Non HDFS remote uri. Non directory, no need to zip
-          srcFileStr = fsOperations.downloadAndZip(
-              remoteUri, getLastNameFromPath(srcFileStr), false);
-          needDeleteTempFile = true;
-        } else {
-          // HDFS file, no need to upload
-          needUploadToHDFS = false;
-        }
-      }
-
-      // Upload file to HDFS
-      if (needUploadToHDFS) {
-        resourceToLocalize =
-            fsOperations.uploadToRemoteFile(stagingDir, srcFileStr);
-      }
-      if (needDeleteTempFile) {
-        fsOperations.deleteFiles(srcFileStr);
-      }
-      // Remove .zip from zipped dir name
-      if (destFileType == ConfigFile.TypeEnum.ARCHIVE
-          && srcFileStr.endsWith(".zip")) {
-        // Delete local zip file
-        fsOperations.deleteFiles(srcFileStr);
-        int suffixIndex = srcFileStr.lastIndexOf('_');
-        srcFileStr = srcFileStr.substring(0, suffixIndex);
-      }
-      // If provided, use the name of local uri
-      if (!containerLocalPath.equals(".")
-          && !containerLocalPath.equals("./")) {
-        // Change the YARN localized file name to what'll used in container
-        srcFileStr = getLastNameFromPath(containerLocalPath);
-      }
-      String localizedName = getLastNameFromPath(srcFileStr);
-      LOG.info("The file/dir to be localized is {}",
-          resourceToLocalize.toString());
-      LOG.info("Its localized file name will be {}", localizedName);
-      service.getConfiguration().getFiles().add(new ConfigFile().srcFile(
-          resourceToLocalize.toUri().toString()).destFile(localizedName)
-          .type(destFileType));
-      // set mounts
-      // if mount path is absolute, just use it.
-      // if relative, no need to mount explicitly
-      if (containerLocalPath.startsWith("/")) {
-        String mountStr = getLastNameFromPath(srcFileStr) + ":"
-            + containerLocalPath + ":" + loc.getMountPermission();
-        LOG.info("Add bind-mount string {}", mountStr);
-        appendToEnv(service,
-            EnvironmentUtilities.ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME,
-            mountStr, ",");
-      }
-    }
   }
 
-  private String getLastNameFromPath(String srcFileStr) {
-    return new Path(srcFileStr).getName();
+  private enum LocalizationType {
+    REMOTE_FILE, REMOTE_DIRECTORY, LOCAL_FILE, LOCAL_DIRECTORY
+  }
+
+  private static String getLastNameFromPath(String sourceFile) {
+    return new Path(sourceFile).getName();
+  }
+
+  private static class LocalizationState {
+    private final String remoteUri;
+    private final LocalizationType localizationType;
+    private final boolean needHdfs;
+    private final boolean needUploadToHDFS;
+    private final boolean needToDeleteTempFile;
+    private final String containerLocalPath;
+    private final TypeEnum destFileType;
+    private final boolean directory;
+    private final boolean remote;
+
+    LocalizationState(Localization localization,
+        RemoteDirectoryManager remoteDirectoryManager) throws IOException {
+      this.remoteUri = localization.getRemoteUri();
+      this.directory = remoteDirectoryManager.isDir(remoteUri);
+      this.remote = remoteDirectoryManager.isRemote(remoteUri);
+      this.localizationType = determineLocalizationType(directory, remote);
+      this.needHdfs = determineNeedHdfs(remote);
+      //HDFS file don't need to be uploaded
+      this.needUploadToHDFS =
+          directory || (remote && !this.needHdfs) || !remote;
+      this.needToDeleteTempFile = remote && !this.needHdfs;
+      this.containerLocalPath = localization.getLocalPath();
+      this.destFileType = directory ? TypeEnum.ARCHIVE : TypeEnum.STATIC;
+    }
+
+    private boolean determineNeedHdfs(boolean remote) {
+      return remote && needHdfs(remoteUri);
+    }
+
+    private LocalizationType determineLocalizationType(boolean directory, boolean remote) {
+      if (directory) {
+        return remote ? LocalizationType.REMOTE_DIRECTORY : LocalizationType.LOCAL_DIRECTORY;
+      } else {
+        return remote ? LocalizationType.REMOTE_FILE : LocalizationType.LOCAL_FILE;
+      }
+    }
   }
 }
