@@ -23,8 +23,8 @@
 ## Quick Start
 
 ### Init submodule
-LinkedIn TensorFlow on YARN (TonY) project is included in submarine as a 
-submodule. If you just clone submarine project, please initialize the tony
+LinkedIn TensorFlow on YARN (TonY) project is included in the Submarine as a 
+submodule. If you just clone Submarine project, please initialize the TonY
 project using the following command.
 
 ```
