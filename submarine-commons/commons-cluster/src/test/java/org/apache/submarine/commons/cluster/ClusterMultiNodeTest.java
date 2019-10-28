@@ -18,7 +18,7 @@ package org.apache.submarine.commons.cluster;
 
 import org.apache.submarine.commons.cluster.meta.ClusterMetaType;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
-import org.apache.submarine.commons.utils.NetUtils;
+import org.apache.submarine.commons.utils.NetworkUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -48,10 +48,10 @@ public class ClusterMultiNodeTest {
     LOG.info("ClusterMultiNodeTest::startCluster >>>");
 
     String clusterAddrList = "";
-    String serverHost = NetUtils.findAvailableHostAddress();
+    String serverHost = NetworkUtils.findAvailableHostAddress();
     for (int i = 0; i < 3; i++) {
       // Set the cluster IP and port
-      int serverPort = NetUtils.findRandomAvailablePortOnAllLocalInterfaces();
+      int serverPort = NetworkUtils.findRandomAvailablePortOnAllLocalInterfaces();
       clusterAddrList += serverHost + ":" + serverPort;
       if (i != 2) {
         clusterAddrList += ",";

@@ -20,7 +20,7 @@ package org.apache.submarine.server;
 
 import org.apache.submarine.commons.cluster.ClusterClient;
 import org.apache.submarine.commons.cluster.meta.ClusterMetaType;
-import org.apache.submarine.commons.utils.NetUtils;
+import org.apache.submarine.commons.utils.NetworkUtils;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -46,8 +46,8 @@ public class WorkbenchClusterServerTest {
     LOG.info("WorkbenchClusterServerTest:start()");
 
     SubmarineConfiguration conf = SubmarineConfiguration.create();
-    String serverHost = NetUtils.findAvailableHostAddress();
-    int serverPort = NetUtils.findRandomAvailablePortOnAllLocalInterfaces();
+    String serverHost = NetworkUtils.findAvailableHostAddress();
+    int serverPort = NetworkUtils.findRandomAvailablePortOnAllLocalInterfaces();
     String clusterAdd = serverHost + ":" + serverPort;
     conf.setClusterAddress(clusterAdd);
 

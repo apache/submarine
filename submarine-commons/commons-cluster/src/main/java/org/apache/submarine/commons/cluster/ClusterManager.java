@@ -85,7 +85,7 @@ import org.apache.submarine.commons.cluster.meta.ClusterMetaOperation;
 import org.apache.submarine.commons.cluster.meta.ClusterMetaType;
 import org.apache.submarine.commons.cluster.protocol.LocalRaftProtocolFactory;
 import org.apache.submarine.commons.cluster.protocol.RaftClientMessagingProtocol;
-import org.apache.submarine.commons.utils.NetUtils;
+import org.apache.submarine.commons.utils.NetworkUtils;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,7 +153,7 @@ public abstract class ClusterManager {
 
   protected ClusterManager() {
     try {
-      this.serverHost = NetUtils.findAvailableHostAddress();
+      this.serverHost = NetworkUtils.findAvailableHostAddress();
       String clusterAddr = sconf.getClusterAddress();
       LOG.info(this.getClass().toString() + "::clusterAddr = {}", clusterAddr);
       if (!StringUtils.isEmpty(clusterAddr)) {
@@ -214,7 +214,7 @@ public abstract class ClusterManager {
 
         int raftClientPort = 0;
         try {
-          raftClientPort = NetUtils.findRandomAvailablePortOnAllLocalInterfaces();
+          raftClientPort = NetworkUtils.findRandomAvailablePortOnAllLocalInterfaces();
         } catch (IOException e) {
           LOG.error(e.getMessage());
         }

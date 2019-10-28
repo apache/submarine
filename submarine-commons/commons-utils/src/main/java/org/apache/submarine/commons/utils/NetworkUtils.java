@@ -17,9 +17,6 @@
 
 package org.apache.submarine.commons.utils;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.thrift.transport.TServerSocket;
-import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +33,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collections;
 
-public class NetUtils {
-  static Logger LOG = LoggerFactory.getLogger(NetUtils.class);
+public class NetworkUtils {
+  static Logger LOG = LoggerFactory.getLogger(NetworkUtils.class);
 
   public static int findRandomAvailablePortOnAllLocalInterfaces() throws IOException {
     int port;
@@ -46,47 +43,6 @@ public class NetUtils {
       socket.close();
     }
     return port;
-  }
-
-  /**
-   * start:end
-   *
-   * @param portRange
-   * @return
-   * @throws IOException
-   */
-  public static TServerSocket createTServerSocket(String portRange)
-      throws IOException {
-
-    TServerSocket tSocket = null;
-    // ':' is the default value which means no constraints on the portRange
-    if (StringUtils.isBlank(portRange) || portRange.equals(":")) {
-      try {
-        tSocket = new TServerSocket(0);
-        return tSocket;
-      } catch (TTransportException e) {
-        throw new IOException("Fail to create TServerSocket", e);
-      }
-    }
-    // valid user registered port https://en.wikipedia.org/wiki/Registered_port
-    int start = 1024;
-    int end = 65535;
-    String[] ports = portRange.split(":", -1);
-    if (!ports[0].isEmpty()) {
-      start = Integer.parseInt(ports[0]);
-    }
-    if (!ports[1].isEmpty()) {
-      end = Integer.parseInt(ports[1]);
-    }
-    for (int i = start; i <= end; ++i) {
-      try {
-        tSocket = new TServerSocket(i);
-        return tSocket;
-      } catch (Exception e) {
-        // ignore this
-      }
-    }
-    throw new IOException("No available port in the portRange: " + portRange);
   }
 
   public static String findAvailableHostAddress() throws UnknownHostException, SocketException {
