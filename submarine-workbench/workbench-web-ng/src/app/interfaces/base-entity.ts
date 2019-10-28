@@ -17,15 +17,18 @@
  * under the License.
  */
 
-import { Role } from './role';
+export class BaseEntity {
+  id: string;
+  createBy: string;
+  createTime: number;
+  updateBy: string;
+  updateTime: number;
 
-export class User {
-  avatar = '';
-  id = '';
-  name = '';
-  telephone = '';
-  username = '';
-  role: Role;
-  roleId: number;
-  token: string;
+  constructor(data: BaseEntity) {
+    this.id = data.id;
+    this.createBy = data.createBy;
+    this.createTime = data.createTime;
+    this.updateBy = data.updateBy;
+    this.updateTime = data.updateTime;
+  }
 }

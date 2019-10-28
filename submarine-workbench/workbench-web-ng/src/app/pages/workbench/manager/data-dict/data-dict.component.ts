@@ -17,26 +17,17 @@
  * under the License.
  */
 
-import { Permission } from './permission';
+import { Component, OnInit } from '@angular/core';
 
-export class Role {
-  id: string;
-  name: string;
-  describe: string;
-  status: number;
-  creatorId: string;
-  createTime: number;
-  deleted: number;
-  permissions: Permission[];
+@Component({
+  selector: 'submarine-data-dict',
+  templateUrl: './data-dict.component.html',
+  styleUrls: ['./data-dict.component.scss']
+})
+export class DataDictComponent implements OnInit {
+  constructor() {
+  }
 
-  constructor(role: Role) {
-    this.id = role.id;
-    this.name = role.name;
-    this.describe = role.describe;
-    this.status = role.status;
-    this.creatorId = role.creatorId;
-    this.createTime = role.createTime;
-    this.deleted = role.deleted;
-    this.permissions = role.permissions.map(permission => new Permission(permission));
+  ngOnInit() {
   }
 }

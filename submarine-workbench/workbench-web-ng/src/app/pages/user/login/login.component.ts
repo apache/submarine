@@ -20,9 +20,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SysUser } from '@submarine/interfaces';
+import { AuthService } from '@submarine/services';
 import { NzNotificationService } from 'ng-zorro-antd';
-import { AuthService } from '../../../services';
 
 @Component({
   selector: 'submarine-login',
@@ -52,8 +51,8 @@ export class LoginComponent implements OnInit {
     if (this.validateForm.status === 'VALID') {
       const { value } = this.validateForm;
       this.authService.login(value).subscribe(
-        sysUser => {
-          this.loginSuccess(sysUser);
+        () => {
+          this.loginSuccess();
         },
         error => {
           this.requestFailed(error);
@@ -70,12 +69,8 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  loginSuccess(sysUser: SysUser) {
+  loginSuccess() {
     this.router.navigate(['/workbench']);
-
-    setTimeout(() => {
-      this.nzNotificationService.success('Welcome', `Welcome back, ${sysUser.realName}`);
-    }, 1000);
   }
 
   requestFailed(error: Error) {

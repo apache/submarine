@@ -41,3 +41,17 @@ export interface Rest<T> {
   status: string;
   success: boolean;
 }
+
+/**
+ * Array result
+ */
+export interface ListResult<T> {
+  /**
+   * result list
+   */
+  records: T[];
+  /**
+   * result list length
+   */
+  total: number;
+}

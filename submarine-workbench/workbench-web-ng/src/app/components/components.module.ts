@@ -17,26 +17,16 @@
  * under the License.
  */
 
-import { Permission } from './permission';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { PageLayoutComponent } from './page-layout/page-layout.component';
 
-export class Role {
-  id: string;
-  name: string;
-  describe: string;
-  status: number;
-  creatorId: string;
-  createTime: number;
-  deleted: number;
-  permissions: Permission[];
-
-  constructor(role: Role) {
-    this.id = role.id;
-    this.name = role.name;
-    this.describe = role.describe;
-    this.status = role.status;
-    this.creatorId = role.creatorId;
-    this.createTime = role.createTime;
-    this.deleted = role.deleted;
-    this.permissions = role.permissions.map(permission => new Permission(permission));
-  }
+@NgModule({
+  declarations: [PageLayoutComponent],
+  imports: [CommonModule, RouterModule, NgZorroAntdModule],
+  exports: [PageLayoutComponent]
+})
+export class ComponentsModule {
 }

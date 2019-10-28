@@ -1,0 +1,206 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<nz-drawer
+  [nzTitle]="title"
+  [nzMaskClosable]="false"
+  [nzWidth]="720"
+  [nzVisible]="visible"
+  (nzOnClose)="onClose()"
+  [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }"
+>
+  <form nz-form [formGroup]="form" nzLayout="horizontal">
+    <!-- Account Name-->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="labelSpan" nzRequired>
+        Account Name
+      </nz-form-label>
+      <nz-form-control [nzSpan]="controlSpan" nzHasFeedback [nzErrorTip]="usernameErrorTpl">
+        <input
+          type="text"
+          nz-input
+          formControlName="userName"
+          placeholder="User's account name"
+          [readOnly]="sysUser?.id"
+        />
+
+        <ng-template #usernameErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Please input account's name!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('duplicated')">
+            Account name already exist!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('error')">
+            Error
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Password -->
+    <nz-form-item *ngIf="!sysUser?.id">
+      <nz-form-label [nzSpan]="labelSpan" nzRequired>
+        Password
+      </nz-form-label>
+      <nz-form-control [nzSpan]="controlSpan" [nzErrorTip]="passwordErrorTpl">
+        <input
+          type="password"
+          nz-input
+          formControlName="password"
+          (ngModelChange)="validateConfirmPassword()"
+          placeholder="Users's account password"
+        />
+
+        <ng-template #passwordErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('pattern')">
+            The password consists of 8 digits, uppercase and lowercase letters and special symbols!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('required')">
+            Pleas input account's password!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Confirm -->
+    <nz-form-item *ngIf="!sysUser?.id">
+      <nz-form-label [nzSpan]="labelSpan" nzRequired>
+        Confirm
+      </nz-form-label>
+      <nz-form-control [nzSpan]="controlSpan" [nzErrorTip]="confirmErrorTpl">
+        <input type="password" nz-input formControlName="confirm" placeholder="Please confirm password"/>
+
+        <ng-template #confirmErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Please confirm your password!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('confirm')">
+            Password is inconsistent!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Real Name -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="labelSpan" nzRequired>
+        Real Name
+      </nz-form-label>
+      <nz-form-control [nzSpan]="controlSpan" nzErrorTip="Please input account's real name">
+        <input type="text" nz-input formControlName="realName" placeholder="User's real name" [readOnly]="readonly"/>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Department -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="labelSpan">
+        Department
+      </nz-form-label>
+      <nz-form-control [nzSpan]="controlSpan">
+        <nz-tree-select
+          nzAllowClear
+          nzDefaultExpandAll
+          nzShowSearch
+          nzPlaceHolder="Please select"
+          formControlName="deptCode"
+          [nzNodes]="sysDeptTreeList"
+        ></nz-tree-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Birthday -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="labelSpan">
+        Birthday
+      </nz-form-label>
+      <nz-form-control [nzSpan]="controlSpan">
+        <nz-date-picker formControlName="birthday"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Sex -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="labelSpan">
+        Sex
+      </nz-form-label>
+      <nz-form-control [nzSpan]="controlSpan">
+        <nz-select formControlName="sex" nzPlaceHolder="Please Select">
+          <nz-option [nzValue]="item.itemCode" [nzLabel]="item.itemName" *ngFor="let item of sexDictSelect"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- email -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="labelSpan">
+        email
+      </nz-form-label>
+      <nz-form-control [nzSpan]="controlSpan" [nzErrorTip]="emailErrorTip">
+        <input type="email" nz-input formControlName="email" [readOnly]="readonly"/>
+
+        <ng-template #emailErrorTip let-control>
+          <ng-container *ngIf="control.hasError('email')">
+            Email is incorrect!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('duplicated')">
+            Email name already exist!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Phone -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="labelSpan">
+        Phone
+      </nz-form-label>
+      <nz-form-control [nzSpan]="controlSpan" [nzErrorTip]="phoneErrorTip">
+        <input type="text" nz-input formControlName="phone" [readOnly]="readonly"/>
+
+        <ng-template #phoneErrorTip let-control>
+          <ng-container *ngIf="control.hasError('duplicated')">
+            Phone already exist!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+    <!-- Status -->
+    <nz-form-item>
+      <nz-form-label [nzSpan]="labelSpan">
+        Status
+      </nz-form-label>
+      <nz-form-control [nzSpan]="controlSpan">
+        <nz-select formControlName="status" nzPlaceHolder="Please Select">
+          <nz-option
+            [nzValue]="item.itemCode"
+            [nzLabel]="item.itemName"
+            *ngFor="let item of statusDictSelect"
+          ></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <div class="footer" *ngIf="!readonly">
+    <button type="button" (click)="onClose()" class="ant-btn" style="margin-right: 8px;"><span>Cancel</span></button>
+    <button type="button" (click)="onSubmit()" class="ant-btn ant-btn-primary"><span>Submit</span></button>
+  </div>
+</nz-drawer>

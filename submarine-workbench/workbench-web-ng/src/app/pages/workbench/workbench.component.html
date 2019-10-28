@@ -49,7 +49,7 @@
     </ng-container>
   </ul>
 </nz-sider>
-<nz-layout>
+<nz-layout [ngClass]="isCollapsed ? 'close' : ''">
   <nz-header>
     <div class="app-header">
       <div class="header-trigger" (click)="isCollapsed = !isCollapsed">
@@ -57,13 +57,15 @@
       </div>
 
       <div class="header-operation">
-        <div nz-dropdown [nzDropdownMenu]="userInfoMenu" class="operation-user-info">
+        <div nz-dropdown *ngIf="userInfo$ | async as userInfo" [nzDropdownMenu]="userInfoMenu"
+             class="operation-user-info">
           <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+          {{userInfo.name}}
         </div>
         <nz-dropdown-menu #userInfoMenu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item nzDisabled>
-              <i nz-icon nzType="setting"></i>User setting
+              <i nz-icon nzType="setting"></i>UserInfo setting
             </li>
             <li nz-menu-divider></li>
             <li nz-menu-item (click)="logout()">
@@ -75,8 +77,6 @@
     </div>
   </nz-header>
   <nz-content>
-    <div class="inner-content">
-      <router-outlet></router-outlet>
-    </div>
+    <router-outlet></router-outlet>
   </nz-content>
 </nz-layout>

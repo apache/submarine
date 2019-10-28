@@ -85,11 +85,7 @@ public class LoginRestApi {
   @POST
   @Path("/logout")
   @SubmarineApi
-  public Response logout(String logoutParams) {
-    // TODO: logout user
-    HashMap<String, String> mapParams =
-      gson.fromJson(logoutParams, new TypeToken<HashMap<String, String>>() {}.getType());
-
+  public Response logout() {
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(true).build();
   }
 }

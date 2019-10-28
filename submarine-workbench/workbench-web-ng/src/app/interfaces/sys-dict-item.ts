@@ -17,26 +17,24 @@
  * under the License.
  */
 
-import { Permission } from './permission';
+import { BaseEntity } from '@submarine/interfaces/base-entity';
 
-export class Role {
-  id: string;
-  name: string;
-  describe: string;
-  status: number;
-  creatorId: string;
-  createTime: number;
+export class SysDictItem extends BaseEntity {
+  dictCode: string;
+  itemCode: string;
+  itemName: string;
+  description: string;
+  sortOrder: number;
   deleted: number;
-  permissions: Permission[];
 
-  constructor(role: Role) {
-    this.id = role.id;
-    this.name = role.name;
-    this.describe = role.describe;
-    this.status = role.status;
-    this.creatorId = role.creatorId;
-    this.createTime = role.createTime;
-    this.deleted = role.deleted;
-    this.permissions = role.permissions.map(permission => new Permission(permission));
+  constructor(data: SysDictItem) {
+    super(data);
+
+    this.dictCode = data.dictCode;
+    this.itemCode = data.itemCode;
+    this.itemName = data.itemName;
+    this.description = data.description;
+    this.sortOrder = data.sortOrder;
+    this.deleted = data.deleted;
   }
 }

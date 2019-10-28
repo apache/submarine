@@ -17,26 +17,40 @@
  * under the License.
  */
 
-import { Permission } from './permission';
+import { Role } from './role';
 
-export class Role {
+export class UserInfo {
   id: string;
   name: string;
-  describe: string;
+  username: string;
+  password: string;
+  avatar: string;
   status: number;
+  telephone: string;
+  lastLoginIp: string;
+  lastLoginTime: number;
   creatorId: string;
   createTime: number;
+  merchantCode: string;
   deleted: number;
-  permissions: Permission[];
+  roleId: string;
+  role: Role;
 
-  constructor(role: Role) {
-    this.id = role.id;
-    this.name = role.name;
-    this.describe = role.describe;
-    this.status = role.status;
-    this.creatorId = role.creatorId;
-    this.createTime = role.createTime;
-    this.deleted = role.deleted;
-    this.permissions = role.permissions.map(permission => new Permission(permission));
+  constructor(res: UserInfo) {
+    this.id = res.id;
+    this.name = res.name;
+    this.username = res.username;
+    this.password = res.password;
+    this.avatar = res.avatar;
+    this.status = res.status;
+    this.telephone = res.telephone;
+    this.lastLoginIp = res.lastLoginIp;
+    this.lastLoginTime = res.lastLoginTime;
+    this.creatorId = res.creatorId;
+    this.createTime = res.createTime;
+    this.merchantCode = res.merchantCode;
+    this.deleted = res.deleted;
+    this.roleId = res.roleId;
+    this.role = new Role(res.role);
   }
 }

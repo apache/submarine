@@ -20,11 +20,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Rest, SysUser } from '@submarine/interfaces';
-import { BaseApiService } from '@submarine/services/base-api.service';
-import { LocalStorageService } from '@submarine/services/local-storage.service';
 import * as md5 from 'md5';
 import { of, Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { BaseApiService } from './base-api.service';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -52,33 +52,29 @@ export class AuthService {
       password: md5(userForm.password)
     };
 
-    return this.httpClient
-      .post<Rest<SysUser>>(apiUrl, params)
-      .pipe(
-        switchMap(res => {
-          if (res.success) {
-            this.isLoggedIn = true;
-            this.localStorageService.set(this.authTokenKey, res.result.token);
-            return of(res.result);
-          } else {
-            throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', params);
-          }
-        })
-      );
+    return this.httpClient.post<Rest<SysUser>>(apiUrl, params).pipe(
+      switchMap(res => {
+        if (res.success) {
+          this.isLoggedIn = true;
+          this.localStorageService.set(this.authTokenKey, res.result.token);
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', params);
+        }
+      })
+    );
   }
 
   logout() {
-    return this.httpClient
-      .post<Rest<boolean>>(this.baseApi.getRestApi('/auth/logout'), {})
-      .pipe(
-        map(res => {
-          if (res.result) {
-            this.isLoggedIn = false;
-            this.localStorageService.remove(this.authTokenKey);
-          }
+    return this.httpClient.post<Rest<boolean>>(this.baseApi.getRestApi('/auth/logout'), {}).pipe(
+      map(res => {
+        if (res.result) {
+          this.isLoggedIn = false;
+          this.localStorageService.remove(this.authTokenKey);
+        }
 
-          return res.result;
-        })
-      );
+        return res.result;
+      })
+    );
   }
 }

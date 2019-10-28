@@ -17,26 +17,18 @@
  * under the License.
  */
 
-import { Permission } from './permission';
+export class SysDeptSelect {
+  key: string;
+  value: string;
+  title: string;
+  disabled: boolean;
+  children: SysDeptSelect[];
 
-export class Role {
-  id: string;
-  name: string;
-  describe: string;
-  status: number;
-  creatorId: string;
-  createTime: number;
-  deleted: number;
-  permissions: Permission[];
-
-  constructor(role: Role) {
-    this.id = role.id;
-    this.name = role.name;
-    this.describe = role.describe;
-    this.status = role.status;
-    this.creatorId = role.creatorId;
-    this.createTime = role.createTime;
-    this.deleted = role.deleted;
-    this.permissions = role.permissions.map(permission => new Permission(permission));
+  constructor(data: SysDeptSelect) {
+    this.key = data.key;
+    this.value = data.value;
+    this.title = data.title;
+    this.disabled = data.disabled;
+    this.children = data.children.map(item => new SysDeptSelect(item));
   }
 }

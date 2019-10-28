@@ -98,8 +98,10 @@ nz-content {
   margin: 24px;
 }
 
-.inner-content {
-  padding: 24px;
-  background: #fff;
-  height: 100%;
+nz-layout {
+  max-width: calc(100% - 256px);
+
+  &.close {
+    max-width: calc(100% - 80px);
+  }
 }

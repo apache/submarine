@@ -19,6 +19,7 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { DataDictComponent } from '@submarine/pages/workbench/manager/data-dict/data-dict.component';
 import { ManagerComponent } from './manager.component';
 import { UserComponent } from './user/user.component';
 
@@ -35,6 +36,10 @@ const routes: Routes = [
       {
         path: 'user',
         component: UserComponent
+      },
+      {
+        path: 'data-dict',
+        component: DataDictComponent
       }
     ]
   }

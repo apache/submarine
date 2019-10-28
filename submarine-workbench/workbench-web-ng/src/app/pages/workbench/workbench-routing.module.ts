@@ -21,18 +21,23 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.component';
 
-const routes: Routes = [{
-  path: '',
-  component: WorkbenchComponent,
-  children: [{
+const routes: Routes = [
+  {
     path: '',
-    pathMatch: 'full',
-    redirectTo: 'manager'
-  }, {
-    path: 'manager',
-    loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
-  }]
-}];
+    component: WorkbenchComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'manager'
+      },
+      {
+        path: 'manager',
+        loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
+      }
+    ]
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)]

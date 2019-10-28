@@ -19,13 +19,19 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ComponentsModule } from '@submarine/components/components.module';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
+
+import { DataDictComponent } from './data-dict/data-dict.component';
 import { ManagerRoutingModule } from './manager-routing.module';
 import { ManagerComponent } from './manager.component';
+import { UserDrawerComponent } from './user-drawer/user-drawer.component';
+import { UserPasswordModalComponent } from './user-password-modal/user-password-modal.component';
 import { UserComponent } from './user/user.component';
 
 @NgModule({
-  declarations: [UserComponent, ManagerComponent],
-  imports: [CommonModule, ManagerRoutingModule, NgZorroAntdModule]
+  declarations: [UserComponent, ManagerComponent, DataDictComponent, UserPasswordModalComponent, UserDrawerComponent],
+  imports: [CommonModule, ManagerRoutingModule, NgZorroAntdModule, ComponentsModule, FormsModule, ReactiveFormsModule]
 })
 export class ManagerModule {}

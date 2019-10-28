@@ -26,12 +26,7 @@ import { WorkbenchComponent } from './workbench.component';
 
 @NgModule({
   declarations: [WorkbenchComponent],
-  imports: [
-    CommonModule,
-    WorkbenchRoutingModule,
-    NgZorroAntdModule,
-    RouterModule
-  ]
+  imports: [CommonModule, WorkbenchRoutingModule, NgZorroAntdModule, RouterModule]
 })
 export class WorkbenchModule {
 }

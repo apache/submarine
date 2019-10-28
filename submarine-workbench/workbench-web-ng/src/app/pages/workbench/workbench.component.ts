@@ -19,7 +19,11 @@
 
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '@submarine/services';
+import { UserInfo } from '@submarine/interfaces';
+import { AuthService, UserService } from '@submarine/services';
+import { NzNotificationService } from 'ng-zorro-antd';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 interface SidebarMenu {
   title: string;
@@ -28,7 +32,7 @@ interface SidebarMenu {
   children?: Array<{
     title: string;
     routerLink?: string;
-  }>
+  }>;
 }
 
 @Component({
@@ -38,19 +42,40 @@ interface SidebarMenu {
 })
 export class WorkbenchComponent implements OnInit {
   isCollapsed: boolean = false;
-  menus: SidebarMenu[] = [{
-    title: 'Manager',
-    iconType: 'setting',
-    children: [{
-      title: 'User',
-      routerLink: '/workbench/manager/user'
-    }]
-  }];
+  menus: SidebarMenu[] = [
+    {
+      title: 'Manager',
+      iconType: 'setting',
+      children: [
+        {
+          title: 'User',
+          routerLink: '/workbench/manager/user'
+        },
+        {
+          title: 'Data dict',
+          routerLink: '/workbench/manager/data-dict'
+        }
+      ]
+    }
+  ];
+  userInfo$: Observable<UserInfo>;
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private userService: UserService,
+    private nzNotificationService: NzNotificationService
+  ) {
   }
 
   ngOnInit() {
+    if (this.authService.isLoggedIn) {
+      this.userInfo$ = this.userService.fetchUserInfo().pipe(
+        tap(userInfo => {
+          this.nzNotificationService.success('Welcome', `Welcome back, ${userInfo.name}`);
+        })
+      );
+    }
   }
 
   logout() {
