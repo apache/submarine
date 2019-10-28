@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     if (this.authService.isLoggedIn) {
-      this.router.navigate(['/manager/user']);
+      this.router.navigate(['/workbench']);
     }
   }
 
@@ -71,7 +71,7 @@ export class LoginComponent implements OnInit {
   }
 
   loginSuccess() {
-    this.router.navigate(['/manager/user']);
+    this.router.navigate(['/workbench']);
 
     setTimeout(() => {
       this.nzNotificationService.success('Welcome', 'Welcome back');

@@ -17,29 +17,21 @@
  * under the License.
  */
 
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from '@submarine/core';
-
-const routes: Routes = [
-  {
-    path: '',
-    pathMatch: 'full',
-    redirectTo: 'workbench'
-  },
-  {
-    path: 'workbench',
-    canActivate: [AuthGuard],
-    loadChildren: () => import('./pages/workbench/workbench.module').then(m => m.WorkbenchModule)
-  },
-  {
-    path: 'user',
-    loadChildren: () => import('./pages/user/user.module').then(m => m.UserModule)
-  }
-];
+import { RouterModule } from '@angular/router';
+import { WorkbenchRoutingModule } from '@submarine/pages/workbench/workbench-routing.module';
+import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { WorkbenchComponent } from './workbench.component';
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  declarations: [WorkbenchComponent],
+  imports: [
+    CommonModule,
+    WorkbenchRoutingModule,
+    NgZorroAntdModule,
+    RouterModule
+  ]
 })
-export class AppRoutingModule {}
+export class WorkbenchModule {
+}

@@ -19,29 +19,23 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ManagerComponent } from './manager.component';
-import { UserComponent } from './user/user.component';
+import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.component';
 
-const routes: Routes = [
-  {
+const routes: Routes = [{
+  path: '',
+  component: WorkbenchComponent,
+  children: [{
     path: '',
-    component: ManagerComponent,
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: '/manager/user'
-      },
-      {
-        path: 'user',
-        component: UserComponent
-      }
-    ]
-  }
-];
+    pathMatch: 'full',
+    redirectTo: 'manager'
+  }, {
+    path: 'manager',
+    loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
+  }]
+}];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  imports: [RouterModule.forChild(routes)]
 })
-export class ManagerRoutingModule {}
+export class WorkbenchRoutingModule {
+}
