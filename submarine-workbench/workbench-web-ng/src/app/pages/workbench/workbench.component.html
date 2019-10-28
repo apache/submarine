@@ -24,32 +24,25 @@
           [(nzCollapsed)]="isCollapsed"
           [nzTrigger]="null">
   <div class="sidebar-logo">
-    <a href="https://ng.ant.design/" target="_blank">
-      <img src="https://ng.ant.design/assets/img/logo.svg" alt="logo">
-      <h1>Ant Design Of Angular</h1>
+    <a routerLink="/workbench/dashboard" target="_blank">
+      <img src="/assets/logo.png" alt="logo">
+      <h1>Submarine</h1>
     </a>
   </div>
   <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-    <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
-      <ul>
-        <li nz-menu-item nzMatchRouter>
-          <a routerLink="/welcome">Welcome</a>
-        </li>
-        <li nz-menu-item nzMatchRouter>
-          <a>Monitor</a>
-        </li>
-        <li nz-menu-item nzMatchRouter>
-          <a>Workplace</a>
-        </li>
-      </ul>
-    </li>
-    <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
-      <ul>
-        <li nz-menu-item nzMatchRouter>
-          <a>Basic Form</a>
-        </li>
-      </ul>
-    </li>
+    <ng-container *ngFor="let menu of menus">
+      <li *ngIf="menu.children" nz-submenu nzOpen [nzTitle]="menu.title" [nzIcon]="menu.iconType">
+        <ul>
+          <li nz-menu-item nzMatchRouter *ngFor="let subItem of menu.children">
+            <a [routerLink]="subItem.routerLink">{{subItem.title}}</a>
+          </li>
+        </ul>
+      </li>
+      <li *ngIf="!menu.children" nz-menu-item nz-tooltip nzPlacement="right" [nzTitle]="menu.title" nzMatchRouter>
+        <i nz-icon [nzType]="menu.iconType"></i>
+        <span><a [routerLink]="menu.routerLink">{{menu.title}}</a></span>
+      </li>
+    </ng-container>
   </ul>
 </nz-sider>
 <nz-layout>

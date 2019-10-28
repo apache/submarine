@@ -19,13 +19,31 @@
 
 import { Component, OnInit } from '@angular/core';
 
+interface SidebarMenu {
+  title: string;
+  iconType: string;
+  routerLink?: string;
+  children?: Array<{
+    title: string;
+    routerLink?: string;
+  }>
+}
+
 @Component({
   selector: 'submarine-workbench',
   templateUrl: './workbench.component.html',
   styleUrls: ['./workbench.component.scss']
 })
 export class WorkbenchComponent implements OnInit {
-  private isCollapsed: boolean = false;
+  isCollapsed: boolean = false;
+  menus: SidebarMenu[] = [{
+    title: 'Manager',
+    iconType: 'setting',
+    children: [{
+      title: 'User',
+      routerLink: '/workbench/manager/user'
+    }]
+  }];
 
   constructor() {
   }
