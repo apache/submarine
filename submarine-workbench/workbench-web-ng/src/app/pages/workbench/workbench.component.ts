@@ -18,6 +18,8 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '@submarine/services';
 
 interface SidebarMenu {
   title: string;
@@ -45,10 +47,17 @@ export class WorkbenchComponent implements OnInit {
     }]
   }];
 
-  constructor() {
+  constructor(private authService: AuthService, private router: Router) {
   }
 
   ngOnInit() {
   }
 
+  logout() {
+    this.authService.logout().subscribe(isLogout => {
+      if (isLogout) {
+        this.router.navigate(['/user/login']);
+      }
+    });
+  }
 }

@@ -17,15 +17,17 @@
   ~ under the License.
   -->
 
-<nz-sider class="menu-sidebar"
-          nzCollapsible
-          nzWidth="256px"
-          nzBreakpoint="md"
-          [(nzCollapsed)]="isCollapsed"
-          [nzTrigger]="null">
+<nz-sider
+  class="menu-sidebar"
+  nzCollapsible
+  nzWidth="256px"
+  nzBreakpoint="md"
+  [(nzCollapsed)]="isCollapsed"
+  [nzTrigger]="null"
+>
   <div class="sidebar-logo">
     <a routerLink="/workbench/dashboard" target="_blank">
-      <img src="/assets/logo.png" alt="logo">
+      <img src="/assets/logo.png" alt="logo"/>
       <h1>Submarine</h1>
     </a>
   </div>
@@ -34,13 +36,15 @@
       <li *ngIf="menu.children" nz-submenu nzOpen [nzTitle]="menu.title" [nzIcon]="menu.iconType">
         <ul>
           <li nz-menu-item nzMatchRouter *ngFor="let subItem of menu.children">
-            <a [routerLink]="subItem.routerLink">{{subItem.title}}</a>
+            <a [routerLink]="subItem.routerLink">{{ subItem.title }}</a>
           </li>
         </ul>
       </li>
       <li *ngIf="!menu.children" nz-menu-item nz-tooltip nzPlacement="right" [nzTitle]="menu.title" nzMatchRouter>
         <i nz-icon [nzType]="menu.iconType"></i>
-        <span><a [routerLink]="menu.routerLink">{{menu.title}}</a></span>
+        <span>
+          <a [routerLink]="menu.routerLink">{{ menu.title }}</a>
+        </span>
       </li>
     </ng-container>
   </ul>
@@ -48,12 +52,26 @@
 <nz-layout>
   <nz-header>
     <div class="app-header">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-            <i class="trigger"
-               nz-icon
-               [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-            ></i>
-        </span>
+      <div class="header-trigger" (click)="isCollapsed = !isCollapsed">
+        <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+      </div>
+
+      <div class="header-operation">
+        <div nz-dropdown [nzDropdownMenu]="userInfoMenu" class="operation-user-info">
+          <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+        </div>
+        <nz-dropdown-menu #userInfoMenu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item nzDisabled>
+              <i nz-icon nzType="setting"></i>User setting
+            </li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item (click)="logout()">
+              <i nz-icon nzType="logout"></i>Sign out
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
     </div>
   </nz-header>
   <nz-content>

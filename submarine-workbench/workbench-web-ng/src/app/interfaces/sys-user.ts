@@ -17,27 +17,21 @@
  * under the License.
  */
 
-/**
- * REST api abstract interface
- *
- * @example
- * ```typescript
- * const res = Rest<{userName: string, password: string}>;
- *
- * // res.result.userName is string
- * // res.result.password is string
- * ```
- */
-export interface Rest<T> {
-  /**
-   * request result
-   */
-  result: T;
-  /**
-   * request http status code
-   */
-  code: number;
-  message: string;
+import { BaseEntity } from './base-entity';
+
+export interface SysUser extends BaseEntity {
+  userName: string;
+  realName: string;
+  password: string;
+  avatar: string;
+  sex: string;
   status: string;
-  success: boolean;
+  phone: string;
+  email: string;
+  deptCode: string;
+  deptName: string;
+  roleCode: string;
+  birthday: number;
+  deleted: number;
+  token: string;
 }

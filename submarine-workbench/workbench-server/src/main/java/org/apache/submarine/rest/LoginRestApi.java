@@ -61,13 +61,14 @@ public class LoginRestApi {
       sqlSession = MyBatisUtil.getSqlSession();
       SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
       sysUser = sysUserMapper.login(mapParams);
+
+      sysUser.setToken("mock_token");
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
     } finally {
       sqlSession.close();
     }
-    sysUser.setToken("mock_token");
 
     return new JsonResponse.Builder<SysUser>(Response.Status.OK).success(true).result(sysUser).build();
   }
@@ -79,5 +80,16 @@ public class LoginRestApi {
     String data = "{stepCode:1}";
 
     return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result(data).build();
+  }
+
+  @POST
+  @Path("/logout")
+  @SubmarineApi
+  public Response logout(String logoutParams) {
+    // TODO: logout user
+    HashMap<String, String> mapParams =
+      gson.fromJson(logoutParams, new TypeToken<HashMap<String, String>>() {}.getType());
+
+    return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(true).build();
   }
 }

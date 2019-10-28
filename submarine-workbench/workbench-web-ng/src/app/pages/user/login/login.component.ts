@@ -20,6 +20,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { SysUser } from '@submarine/interfaces';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { AuthService } from '../../../services';
 
@@ -51,11 +52,10 @@ export class LoginComponent implements OnInit {
     if (this.validateForm.status === 'VALID') {
       const { value } = this.validateForm;
       this.authService.login(value).subscribe(
-        () => {
-          this.loginSuccess();
+        sysUser => {
+          this.loginSuccess(sysUser);
         },
         error => {
-          console.log(error);
           this.requestFailed(error);
         }
       );
@@ -70,11 +70,11 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  loginSuccess() {
+  loginSuccess(sysUser: SysUser) {
     this.router.navigate(['/workbench']);
 
     setTimeout(() => {
-      this.nzNotificationService.success('Welcome', 'Welcome back');
+      this.nzNotificationService.success('Welcome', `Welcome back, ${sysUser.realName}`);
     }, 1000);
   }
 
