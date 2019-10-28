@@ -54,11 +54,11 @@ Here're some examples about Submarine usage.
 
 ## Install Dependencies
 
-**Note: You need to install dependencies when using hadoop yarn 3.1.x + or above.**
+**Note: You need to install dependencies when using Hadoop YARN 3.1.x + or above.**
 
-Submarine project may uses YARN Service (When Submarine YARN service runtime is being used, see [QuickStart](./helper/QuickStart.md), Docker container, and GPU (when GPU hardware available and properly configured).
+Submarine project may use YARN Service (When Submarine YARN service runtime is being used, see [QuickStart](./helper/QuickStart.md), Docker container, and GPU (when GPU hardware available and properly configured).
 
-That means as an admin, you may have to properly setup YARN Service related dependencies, including:
+That means as an admin you may have to properly setup YARN Service related dependencies, including:
 
 - YARN Registry DNS
 
@@ -67,12 +67,12 @@ Docker related dependencies, including:
 - Docker binary with expected versions.
 - Docker network which allows Docker container can talk to each other across different nodes.
 
-And when GPU plan to be used:
+And when GPU plans to be used:
 
 - GPU Driver.
 - Nvidia-docker.
 
-For your convenience, we provided installation documents to help you to setup your environment. You can always choose to have them installed in your own way.
+For your convenience, we provide installation documents to help you to set up your environment. You can always choose to have them installed in your own way.
 
 Use Submarine installer to install dependencies: [EN](../dev-support/submarine-installer/README.md) [CN](../dev-support/submarine-installer/README-CN.md)
 

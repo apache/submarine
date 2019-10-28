@@ -20,12 +20,12 @@ Contributing to Hadoop Submarine (Source code, Documents, Image, Website) means 
 
 1. Make sure your issue is not already in the [Jira issue tracker](https://issues.apache.org/jira/browse/SUBMARINE)
 2. If not, create a ticket describing the change you're proposing in the [Jira issue tracker](https://issues.apache.org/jira/browse/SUBMARINE)
-3. Setup travis [Continuous Integration](#continuous-integration)
+3. Setup Travis [Continuous Integration](#continuous-integration)
 4. Contribute your patch via Pull Request on our [Github Mirror](https://github.com/apache/hadoop-submarine).
 
 Before you start, please read the [Code of Conduct](http://www.apache.org/foundation/policies/conduct.html) carefully, familiarize yourself with it and refer to it whenever you need it.
 
-For those of you who are not familiar with Apache project, understanding [How it works](http://www.apache.org/foundation/how-it-works.html) would be quite helpful.
+For those of you who are not familiar with the Apache project, understanding [How it works](http://www.apache.org/foundation/how-it-works.html) would be quite helpful.
 
 ## Creating a Pull Request
 When creating a Pull Request, you will automatically get the template below.
@@ -45,7 +45,7 @@ Filling it thoroughly can improve the speed of the review process.
 
     ### What is the Jira issue?
     * Open an issue on Jira https://issues.apache.org/jira/browse/SUBMARINE/
-    * Put link here, and add [SUBMARINE-${jira_number}] in PR title, eg. [SUBMARINE-323]
+    * Put link here, and add [SUBMARINE-${jira_number}] in PR title, e.g. [SUBMARINE-323]
 
     ### How should this be tested?
     Outline the steps to test the PR here.
@@ -53,8 +53,8 @@ Filling it thoroughly can improve the speed of the review process.
     ### Screenshots (if appropriate)
 
     ### Questions:
-    * Do the licenses files need updates?
-    * Is there breaking changes for older versions?
+    * Do the licenses files require updates?
+    * Are there breaking changes for older versions?
     * Does this need documentation?
 
 
@@ -63,26 +63,26 @@ Hadoop Submarine follows [Fork & Pull](https://github.com/sevntu-checkstyle/sevn
 
 ## The Review Process
 
-When a Pull Request is submitted, it is being merged or rejected by the  following review process.
+When a Pull Request is submitted, it is being merged or rejected by the following review process.
 
 * Anybody can be a reviewer and may comment on the change or suggest modifications.
 * Reviewer can indicate that a patch looks suitable for merging with a comment such as: "Looks good", "LGTM", "+1".
 * At least one indication of suitability (e.g. "LGTM") from a committer is required to be merged.
-* Pull request is open for 1 or 2 days for potential additional review, unless it's got enough indication of suitability.
-* A committer can then initiate lazy consensus ("Merge if there is no more discussion") after which the code can be merged after a certain time (normally 24 hours) if there is no more reviews.
+* Pull request is open for 1 or 2 days for potential additional review unless it's got enough indication of suitability.
+* A committer can then initiate lazy consensus ("Merge if there is no more discussion") after which the code can be merged after a particular time (usually 24 hours) if there are no more reviews.
 * Contributors can ping reviewers (including committers) by commenting 'Ready to review' or suitable indication.
 
 
 ## Setting up
-Here are some things you will need to build and test Hadoop Submarine.
+Here are some things you will need to build and test the Hadoop Submarine.
 
 ### Software Configuration Management (SCM)
 
-Hadoop Submarine uses Git for its SCM system. so you'll need git client installed in your development machine.
+Hadoop Submarine uses Git for its SCM system. So you'll need a git client installed on your development machine.
 
 ### Integrated Development Environment (IDE)
 
-You are free to use whatever IDE you prefer, or your favorite command line editor.
+You are free to use whatever IDE you prefer, or your favorite command-line editor.
 
 ### Code convention
 We are following Google Code style:
@@ -177,7 +177,7 @@ Commit your changes.
 git commit
 ```
 
-Likely you'll go back and edit/build/test further, and then `commit --amend` in a few cycles.
+Likely you'll go back and edit/build/test further and then `commit --amend` in a few cycles.
 
 ### Step 7: Push
 
@@ -195,7 +195,7 @@ git push --set-upstream ${your_remote_name} SUBMARINE-${jira_number}
 
 #### Get a code review
 
-If your pull request (PR) is opened, it will be assigned to one or more reviewers. Those reviewers will do a thorough code review, looking at correctness, bugs, opportunities for improvement, documentation and comments, and style.
+If your pull request (PR) is opened, it will be assigned to one or more reviewers. Those reviewers will do a thorough code review, looking at correctness, bugs, opportunities for improvement, documentation comments, and style.
 
 To address review comments, you should commit the changes to the same branch of the PR on your fork.
 
@@ -258,6 +258,6 @@ git push --set-upstream ${your_remote_name} my-cherry-pick
 
 ## Continuous Integration
 
-Hadoop Submarine project's CI system will collect information from pull request author's travis-ci and display status in the pull request.
+Hadoop Submarine project's CI system will collect information from pull request author's Travis-ci and display status in the pull request.
 
-Each individual contributor should setup travis-ci for the fork before making a pullrequest. Go to [https://travis-ci.org/profile](https://travis-ci.org/profile) and switch on 'hadoop-submarine' repository.
+Each individual contributor should setup Travis-ci for the fork before making a pull-request. Go to [https://travis-ci.org/profile](https://travis-ci.org/profile) and switch on 'hadoop-submarine' repository.

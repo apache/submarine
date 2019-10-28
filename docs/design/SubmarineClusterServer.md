@@ -5,10 +5,10 @@ The Submarine system contains a total of two daemon services, Submarine Server a
 
 Submarine Server mainly provides job submission, job scheduling, job status monitoring, and model online service for Submarine.
 
-Workbench Server is mainly for algorithm users to provide algorithm development, Python/Spark interpreter operation and other services through Notebook.
+Workbench Server is mainly for algorithm users to provide algorithm development, Python/Spark interpreter operation, and other services through Notebook.
 
-The goal of the Submarine project is to provide high availability and high reliability services for big data processing, 
-algorithm development, job scheduling, model online services, model batch and incremental updates. 
+The goal of the Submarine project is to provide high availability and high-reliability services for big data processing, 
+algorithm development, job scheduling, model online services, model batch, and incremental updates. 
 
 In addition to the high availability of big data and machine learning frameworks, 
 the high availability of Submarine Server and Workbench Server itself is a key consideration.
@@ -45,7 +45,7 @@ Cluster events support both broadcast and separate delivery capabilities.
 
 ### Independence
 
-We implement Submarine's clustering capabilities through the RAFT algorithm library, without relying on any external services (eg Zookeeper, Etcd, etc.)
+We implement Submarine's clustering capabilities through the RAFT algorithm library, without relying on any external services (e.g. Zookeeper, Etcd, etc.)
 
 ### Disadvantages
 
@@ -57,8 +57,8 @@ some programs may appear abnormal. Of course, we also detected this in the syste
 
 ### Universal design
 
-Modular design, because Submarine (Workbench) Server exists in Submarine system, these two services need to provide clustering capabilities, 
-so we abstract the cluster function into a separate module for development, so that Submarine (Workbench) Server can reuse the cluster function module.
+Modular design, Submarine (Workbench) Server exists in the Submarine system, these two services need to provide clustering capabilities, 
+so we abstract the cluster function into a separate module for development so that Submarine (Workbench) Server can reuse the cluster function module.
 
 ### ClusterConfigure
 
@@ -67,8 +67,7 @@ through the IP list, the RAFT algorithm module in the server process can Cluster
 
 ### ClusterServer
 
-+ The ClusterServer module encapsulates the RAFT algorithm module, which can create a service cluster and read and write metadata based 
-on the two configuration items submarine.server.addr or workbench.server.addr.
++ The ClusterServer module encapsulates the RAFT algorithm module, which can create a service cluster and read and write metadata based on the two configuration items submarine.server.addr or workbench.server.addr.
 
 + The cluster management service runs in each submarine server;
 
@@ -114,7 +113,7 @@ InterpreterMeta：key=InterpreterGroupId，value={INTP_TSERVER_HOST=...，...}
 ### Network fault tolerance
 
 In a distributed environment, there may be network anomalies, network delays, or service exceptions. After submitting metadata to the cluster, 
-check whether the submission is successful. After the submission fails, save the metadata in the local message queue. a separate commit thread to retry;
+check whether the submission is successful. After the submission fails, save the metadata in the local message queue. A separate commit thread to retry;
 
 ### Cluster monitoring
 
@@ -133,20 +132,20 @@ If the cluster does not receive heartbeat information for a long time, Indicates
 3. Resource usage statistics strategy, in order to avoid the instantaneous high peak and low peak of the server, 
 the cluster monitoring will collect the average resource usage in the most recent period for reporting, and improve the reasonable line and effectiveness of the server resources as much as possible;
 
-4. When the cluster monitoring module runs in Submarine Server, it checks the heartbeat data of each Submarine Server and Submarine Interpreter process. 
+4. When the cluster monitoring module runs in the Submarine Server, it checks the heartbeat data of each Submarine Server and Submarine Interpreter process. 
 If it times out, it considers that the service or process is abnormally unavailable and removes it from the cluster.
 
 ### Atomix Raft algorithm library
 
-In order to reduce the deployment complexity of distributed mode, submarine server does not use zookeeper to build a distributed cluster. 
+In order to reduce the deployment complexity of distributed mode, submarine server does not use Zookeeper to build a distributed cluster. 
 Multiple submarine server groups are built into distributed clusters by using the Raft algorithm in submarine server. 
 The Raft algorithm is involved by atomix lib of atomix that has passed Jepsen consistency verification.
 
 ### Synchronize workbench notes
 
 In cluster mode, the user creates, modifies, and deletes the note on any of the servers. 
-all need to be notified to all the servers in the cluster to synchronize the update of Notebook. 
-failure to do so will result in the user not being able to continue while switching to another server.
+All need to be notified to all the servers in the cluster to synchronize the update of Notebook. 
+Failure to do so will result in the user not being able to continue while switching to another server.
 
 ### Listen for note update events
 
@@ -154,4 +153,4 @@ Listen for the NEW_NOTE, DEL_NOTE, REMOVE_NOTE_TO_TRASH ... event of the noteboo
 
 ### Broadcast note update event
 
-The note is refreshed by notifying the event to all Submarine servers in the cluster via messagingService.
+The note is refreshed by notifying the event to all Submarine servers in the cluster via messaging Service.
