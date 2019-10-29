@@ -48,8 +48,8 @@ JIRA_USERNAME = os.environ.get("JIRA_USERNAME", "you-jira-user-name")
 # ASF JIRA password
 JIRA_PASSWORD = os.environ.get("JIRA_PASSWORD", "you-jira-password")
 
-GITHUB_BASE = "https://github.com/apache/hadoop-submarine/pull"
-GITHUB_API_BASE = "https://api.github.com/repos/apache/hadoop-submarine"
+GITHUB_BASE = "https://github.com/apache/submarine/pull"
+GITHUB_API_BASE = "https://api.github.com/repos/apache/submarine"
 JIRA_BASE = "https://issues.apache.org/jira/browse"
 JIRA_API_BASE = "https://issues.apache.org/jira"
 # Prefix added to temporary branches

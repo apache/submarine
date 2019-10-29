@@ -68,10 +68,10 @@ First, You need install `python 2.7.13` and `pip insall jira`
 
 1. mkdir ${work_dir}
 2. cd ${work_dir}
-3. git clone https://gitbox.apache.org/repos/asf/hadoop-submarine.git
-4. cd hadoop-submarine
+3. git clone https://gitbox.apache.org/repos/asf/submarine.git
+4. cd submarine
 5. git remote rename origin apache
-6. git remote add apache-github https://github.com/apache/hadoop-submarine.git
+6. git remote add apache-github https://github.com/apache/submarine.git
 7. optional: git config --local --add user.name {name} 
 8. optional: git config --local --add user.email {username}@apache.org
 9. optional: echo -e "JIRA_USERNAME={jira_username}\nJIRA_PASSWORD={jira_password}" >> ~/.bashrc

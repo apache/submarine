@@ -27,13 +27,13 @@ RUN \
   deactivate
 
 RUN \
-  git clone https://gitbox.apache.org/repos/asf/hadoop-submarine.git && \
-  cd hadoop-submarine && \
+  git clone https://gitbox.apache.org/repos/asf/submarine.git && \
+  cd submarine && \
   git remote rename origin apache && \
-  git remote add apache-github https://github.com/apache/hadoop-submarine.git
+  git remote add apache-github https://github.com/apache/submarine.git
 ADD \
   entry.sh /entry.sh
 ENV \
-  SUBMARINE_HOME=/hadoop-submarine \
+  SUBMARINE_HOME=/submarine \
   PYTHON_VENV_PATH=/root
 CMD /entry.sh
