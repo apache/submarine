@@ -24,13 +24,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-abstract public class AbstractSubmarineIT{
+abstract public class AbstractSubmarineIT {
     protected static WebDriver driver;
-
-    //Need to add logger
+    private static Logger LOG = LoggerFactory.getLogger(AbstractSubmarineIT.class);
     protected static final long MIN_IMPLICIT_WAIT = 5;
     protected static final long MAX_IMPLICIT_WAIT = 30;
     protected static final long MAX_BROWSER_TIMEOUT_SEC = 30;
@@ -56,17 +56,16 @@ abstract public class AbstractSubmarineIT{
 
     public static void sleep(long millis, boolean logOutput) {
         if (logOutput) {
-          System.out.println("Starting sleeping for " + (millis / 1000) + " seconds...");
-          System.out.println("Caller: " + Thread.currentThread().getStackTrace()[2]);
+          LOG.info("Starting sleeping for " + (millis / 1000) + " seconds...");
+          LOG.info("Caller: " + Thread.currentThread().getStackTrace()[2]);
         }
         try {
           Thread.sleep(millis);
         } catch (InterruptedException e) {
-            System.out.println("Exception in WebDriverManager while getWebDriver ");
+          LOG.info("Exception in WebDriverManager while getWebDriver ");
         }
         if (logOutput) {
-          System.out.println("Finished.");
+          LOG.info("Finished.");
         }
-      }
-
+    }
 }

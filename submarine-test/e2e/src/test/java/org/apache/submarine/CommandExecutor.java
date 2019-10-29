@@ -21,9 +21,12 @@ package org.apache.submarine;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CommandExecutor {
     private Process p;
+    private Logger LOG = LoggerFactory.getLogger(CommandExecutor.class); 
     public Object executeCommandLocalHost(String command) {
         String outputString = "";
         try {
@@ -32,7 +35,7 @@ public class CommandExecutor {
             outputString = in.readLine();
             in.close();
         } catch (Exception e) {
-            System.out.println("Exception in executeCommandLocalHost while execute : " + command);
+            LOG.info("Exception in executeCommandLocalHost while execute : " + command);
         }
         return outputString;
     }

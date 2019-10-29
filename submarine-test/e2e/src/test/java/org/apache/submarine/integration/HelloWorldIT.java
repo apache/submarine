@@ -25,8 +25,7 @@ import org.testng.annotations.Test;
 public class HelloWorldIT {
     @Test
     public void testThis() {
-        Logger logger = LoggerFactory.getLogger(this.getClass());
-        logger.info("IT Hello! World!");
-        //Assert.assertEquals(64, 32);
+        Logger LOG = LoggerFactory.getLogger(this.getClass());
+        LOG.info("IT Hello! World!");
     }
 }

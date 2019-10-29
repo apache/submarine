@@ -23,14 +23,13 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.rauschig.jarchivelib.Archiver;
 import org.rauschig.jarchivelib.ArchiverFactory;
-
 import java.io.File;
 import java.net.URL;
-
-
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebDriverManager {
+    private static Logger LOG = LoggerFactory.getLogger(WebDriverManager.class);
     private static String GECKODRIVER_VERSION = "0.25.0";
     private static String downLoadsDir = "";
     private static CommandExecutor cmdExec = new CommandExecutor();
@@ -47,29 +46,23 @@ public class WebDriverManager {
                 if(SystemUtils.IS_OS_MAC_OSX) {
                     String command = "chmod +x " + tempPath + "geckodriver"; 
                     cmdExec.executeCommandLocalHost(command);
-                    // https://sqa.stackexchange.com/questions/23670/how-to-get-selenium-3-0-1-to-work-on-a-mac-with-intellij
                 }
                 System.setProperty("webdriver.gecko.driver", tempPath + "geckodriver");
-                // =================================== //
-                // TODO: set firefox preference
-                // refer to WebDriverManager.java:74 ~ 94 in Zeppelin
-                // =================================== //
+                // TODO(Kai-Hsun Chen): set firefox preference (refer to WebDriverManager.java:74 ~ 94 in Zeppelin)
                 // Initialize firefox WebDriver
                 String firefoxVersion = getFirefoxVersion();
-                System.out.println("Firefox version " + firefoxVersion + " detected");
+                LOG.info("Firefox version " + firefoxVersion + " detected");
                 driver = new FirefoxDriver();
             } catch (Exception e) {
-                System.out.println("Exception in WebDriverManager while FireFox Driver");
+                LOG.info("Exception in WebDriverManager while FireFox Driver");
             }
         }
         return driver;
     }
-    // TODO: 
-    // (1) need to set the path of geckodriver 
-    // (2) test in different OS
+    // TODO(Kai-Hsun Chen): need to set the path of geckodriver 
     public static void downloadGeckoDriver(String tempPath) {
         String geckoDriverUrlString = "https://github.com/mozilla/geckodriver/releases/download/v" + GECKODRIVER_VERSION + "/geckodriver-v" + GECKODRIVER_VERSION + "-";
-        System.out.println("Gecko version: v" + GECKODRIVER_VERSION + ", will be downloaded to " + tempPath);
+        LOG.info("Gecko version: v" + GECKODRIVER_VERSION + ", will be downloaded to " + tempPath);
         try {
             if (SystemUtils.IS_OS_WINDOWS) {
                 if (System.getProperty("sun.arch.data.model").equals("64")) {
@@ -101,16 +94,16 @@ public class WebDriverManager {
                 archiver.extract(geckoDriverZip, geckoDriverDir);
               }
             } else {
-                System.out.println("Gecko version: v" + GECKODRIVER_VERSION + " has already existed in path " + tempPath);
+                LOG.info("Gecko version: v" + GECKODRIVER_VERSION + " has already existed in path " + tempPath);
                 return;
             }
         } catch (Exception e) {
-            System.out.println("[FAIL] Download of Gecko version: v" + GECKODRIVER_VERSION + ", falied in path " + tempPath);
+            LOG.info("[FAIL] Download of Gecko version: v" + GECKODRIVER_VERSION + ", falied in path " + tempPath);
             return;
         }
-        System.out.println("[SUCCESS] Download of Gecko version: " + GECKODRIVER_VERSION); 
+        LOG.info("[SUCCESS] Download of Gecko version: " + GECKODRIVER_VERSION); 
     }
-    // TODO: need to be tested on Windows, MacOS, and Linux
+    // TODO(Kai-Hsun Chen): need to be tested on Windows, MacOS, and Linux
     public static String getFirefoxVersion() {
         String firefoxVersionCmd = "firefox -v";
         String version = "";
@@ -120,7 +113,7 @@ public class WebDriverManager {
         try {
             version = cmdExec.executeCommandLocalHost(firefoxVersionCmd).toString(); 
         } catch (Exception e) {
-            System.out.println("Exception in WebDriverManager while getFirefoxVersion");
+            LOG.info("Exception in WebDriverManager while getFirefoxVersion");
         }
         return version;            
     }
