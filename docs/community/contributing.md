@@ -14,14 +14,14 @@ limitations under the License.
 
 # Contribution Guidelines
 
-**Apache Hadoop Submarine** is an [Apache 2.0 License](https://github.com/apache/hadoop-submarine/blob/master/LICENSE) Software.
+**Apache Hadoop Submarine** is an [Apache 2.0 License](https://github.com/apache/submarine/blob/master/LICENSE) Software.
 
 Contributing to Hadoop Submarine (Source code, Documents, Image, Website) means you agree to the Apache 2.0 License.
 
 1. Make sure your issue is not already in the [Jira issue tracker](https://issues.apache.org/jira/browse/SUBMARINE)
 2. If not, create a ticket describing the change you're proposing in the [Jira issue tracker](https://issues.apache.org/jira/browse/SUBMARINE)
 3. Setup travis [Continuous Integration](#continuous-integration)
-4. Contribute your patch via Pull Request on our [Github Mirror](https://github.com/apache/hadoop-submarine).
+4. Contribute your patch via Pull Request on our [Github Mirror](https://github.com/apache/submarine).
 
 Before you start, please read the [Code of Conduct](http://www.apache.org/foundation/policies/conduct.html) carefully, familiarize yourself with it and refer to it whenever you need it.
 
@@ -35,7 +35,7 @@ Filling it thoroughly can improve the speed of the review process.
     ### What is this PR for?
     A few sentences describing the overall goals of the pull request's commits.
     First time? Check out the contribution guidelines - 
-    https://github.com/apache/hadoop-submarine/tree/master/docs/community/contributing.md
+    https://github.com/apache/submarine/tree/master/docs/community/contributing.md
 
     ### What type of PR is it?
     [Bug Fix | Improvement | Feature | Documentation | Hot Fix | Refactoring]
@@ -90,7 +90,7 @@ We are following Google Code style:
 * [Java style](https://google.github.io/styleguide/javaguide.html)
 * [Shell style](https://google.github.io/styleguide/shell.xml)
 
-There are some plugins to format, lint your code in IDE (use [dev-support/maven-config/checkstyle.xml](hhttps://github.com/apache/hadoop-submarine/blob/master/dev-support/maven-config/checkstyle.xml) as rules)
+There are some plugins to format, lint your code in IDE (use [dev-support/maven-config/checkstyle.xml](hhttps://github.com/apache/submarine/blob/master/dev-support/maven-config/checkstyle.xml) as rules)
 
 * [Checkstyle plugin for Intellij](https://plugins.jetbrains.com/plugin/1065) ([Setting Guide](http://stackoverflow.com/questions/26955766/intellij-idea-checkstyle))
 * [Checkstyle plugin for Eclipse](http://eclipse-cs.sourceforge.net/#!/) ([Setting Guide](http://eclipse-cs.sourceforge.net/#!/project-setup))
@@ -100,7 +100,7 @@ There are some plugins to format, lint your code in IDE (use [dev-support/maven-
 
 ### Step 1: Fork in the cloud
 
-1. Visit https://github.com/apache/hadoop-submarine
+1. Visit https://github.com/apache/submarine
 2. On the top right of the page, click the `Fork` button (top right) to create a cloud-based fork of the repository.
 
 ### Step 2: Clone fork to local storage
@@ -113,21 +113,21 @@ Create your clone:
 mkdir -p ${working_dir}
 cd ${working_dir}
 
-git clone https://github.com/${user}/hadoop-submarine.git
-# or: git clone git@github.com:${user}/hadoop-submarine.git
+git clone https://github.com/${user}/submarine.git
+# or: git clone git@github.com:${user}/submarine.git
 
-cd ${working_dir}/hadoop-submarine
-git remote add upstream https://github.com/apache/hadoop-submarine.git
-# or: git remote add upstream git@github.com:apache/hadoop-submarine.git
+cd ${working_dir}/submarine
+git remote add upstream https://github.com/apache/submarine.git
+# or: git remote add upstream git@github.com:apache/submarine.git
 
 # Never push to the upstream master.
 git remote set-url --push upstream no_push
 
 # Confirm that your remotes make sense:
 # It should look like:
-# origin    git@github.com:${user}/hadoop-submarine.git (fetch)
-# origin    git@github.com:${user}/hadoop-submarine.git (push)
-# upstream  https://github.com/apache/hadoop-submarine (fetch)
+# origin    git@github.com:${user}/submarine.git (fetch)
+# origin    git@github.com:${user}/submarine.git (push)
+# upstream  https://github.com/apache/submarine (fetch)
 # upstream  no_push (push)
 git remote -v
 ```
@@ -137,7 +137,7 @@ git remote -v
 Get your local master up to date:
 
 ```sh
-cd ${working_dir}/hadoop-submarine
+cd ${working_dir}/submarine
 git fetch upstream
 git checkout master
 git rebase upstream/master
@@ -189,7 +189,7 @@ git push --set-upstream ${your_remote_name} SUBMARINE-${jira_number}
 
 ### Step 8: Create a pull request
 
-1. Visit your fork at `https://github.com/${user}/hadoop-submarine`.
+1. Visit your fork at `https://github.com/${user}/submarine`.
 2. Click the `Compare & Pull Request` button next to your `SUBMARINE-${jira_number}` branch.
 3. Fill in the required information in the PR template.
 
@@ -260,4 +260,4 @@ git push --set-upstream ${your_remote_name} my-cherry-pick
 
 Hadoop Submarine project's CI system will collect information from pull request author's travis-ci and display status in the pull request.
 
-Each individual contributor should setup travis-ci for the fork before making a pullrequest. Go to [https://travis-ci.org/profile](https://travis-ci.org/profile) and switch on 'hadoop-submarine' repository.
+Each individual contributor should setup travis-ci for the fork before making a pullrequest. Go to [https://travis-ci.org/profile](https://travis-ci.org/profile) and switch on 'submarine' repository.

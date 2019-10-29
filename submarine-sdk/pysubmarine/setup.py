@@ -20,7 +20,7 @@ setup(
     name='pysubmarine',
     version='0.3.0-SNAPSHOT',
     description="A python SDK for submarine",
-    url="https://github.com/apache/hadoop-submarine",
+    url="https://github.com/apache/submarine",
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[
         'six>=1.10.0',
