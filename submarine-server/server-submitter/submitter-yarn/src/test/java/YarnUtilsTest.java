@@ -44,7 +44,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class TestYarnUtils {
+public class YarnUtilsTest {
 
   private MockClientContext getMockClientContext()
       throws IOException, YarnException {

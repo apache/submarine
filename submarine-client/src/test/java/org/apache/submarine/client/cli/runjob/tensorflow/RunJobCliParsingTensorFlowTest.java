@@ -26,7 +26,7 @@ import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.client.cli.runjob.RunJobCli;
 import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
 import org.apache.hadoop.yarn.util.resource.Resources;
-import org.apache.submarine.client.cli.runjob.TestRunJobCliParsingCommon;
+import org.apache.submarine.client.cli.runjob.RunJobCliParsingCommonTest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,7 +40,7 @@ import static org.junit.Assert.assertTrue;
  * Test class that verifies the correctness of TensorFlow
  * CLI configuration parsing.
  */
-public class TestRunJobCliParsingTensorFlow {
+public class RunJobCliParsingTensorFlowTest {
 
   @Before
   public void before() {
@@ -52,7 +52,7 @@ public class TestRunJobCliParsingTensorFlow {
 
   @Test
   public void testNoInputPathOptionSpecified() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     String expectedErrorMessage = "\"--" + CliConstants.INPUT_PATH +
         "\" is absent";
     String actualMessage = "";
@@ -73,7 +73,7 @@ public class TestRunJobCliParsingTensorFlow {
 
   @Test
   public void testBasicRunJobForDistributedTraining() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
 
     assertFalse(SubmarineLogs.isVerbose());
 
@@ -119,7 +119,7 @@ public class TestRunJobCliParsingTensorFlow {
 
   @Test
   public void testBasicRunJobForSingleNodeTraining() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     assertFalse(SubmarineLogs.isVerbose());
 
     runJobCli.run(
@@ -155,7 +155,7 @@ public class TestRunJobCliParsingTensorFlow {
    * */
   @Test
   public void testNoInputPathOptionButOnlyRunTensorboard() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     boolean success = true;
     try {
       runJobCli.run(
