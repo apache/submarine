@@ -27,10 +27,10 @@ RUN \
   deactivate
 
 RUN \
-  git clone https://gitbox.apache.org/repos/asf/hadoop-submarine.git && \
+  git clone https://gitbox.apache.org/repos/asf/submarine.git && \
   cd hadoop-submarine && \
   git remote rename origin apache && \
-  git remote add apache-github https://github.com/apache/hadoop-submarine.git
+  git remote add apache-github https://github.com/apache/submarine.git
 ADD \
   entry.sh /entry.sh
 ENV \
