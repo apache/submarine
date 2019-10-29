@@ -50,13 +50,13 @@ Contributions are welcomed and greatly appreciated. See [CONTRIBUTING.md](contri
 
 ## How Do I Become a Committer?
 
-First of all you need to get involved and be a Contributor.
+First of all, you need to get involved and be a Contributor.
 
 Based on your track-record as a contributor, Per Apache code, PMCs vote on committership, may invite you to be a committer (after we've called a vote). When that happens, if you accept, the following process kicks into place...
 
 Note that becoming a committer is not just about submitting some patches; it‘s also about helping out on the development and user [Slack User](https://the-asf.slack.com/submarine-user/), helping with documentation and the issues.
 
-See [Become a Committer.md](become-a-committer.md) for becoming a committer steps and more details.
+See [Become a Committer.md](become-a-committer.md) for steps of becoming a committer and more details.
 
 ## Communication
 

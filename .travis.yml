@@ -110,6 +110,12 @@ matrix:
       dist: xenial
       env: NAME="Test workbench-web" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl submarine-workbench/workbench-web" TEST_PROJECTS=""
 
+    # Test test-e2e
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
+      env: NAME="Test test-e2e" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean test" TEST_FLAG="test -DskipRat -am" MODULES="-pl submarine-test/e2e" TEST_MODULES="-pl submarine-test/e2e" TEST_PROJECTS=""
+
     # Test interpreter
     - language: java
       jdk: "openjdk8"
