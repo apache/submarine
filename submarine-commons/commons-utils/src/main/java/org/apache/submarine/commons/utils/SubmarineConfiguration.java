@@ -113,11 +113,11 @@ public class SubmarineConfiguration extends XMLConfiguration {
       }
     }
 
-    LOG.info("Server Host: " + conf.getServerAddress());
+    LOG.info("Workbench server Host: " + conf.getServerAddress());
     if (conf.useSsl() == false) {
-      LOG.info("Server Port: " + conf.getServerPort());
+      LOG.info("Workbench server Port: " + conf.getServerPort());
     } else {
-      LOG.info("Server SSL Port: " + conf.getServerSslPort());
+      LOG.info("Workbench server SSL Port: " + conf.getServerSslPort());
     }
 
     return conf;
@@ -127,12 +127,24 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getString(ConfVars.SERVER_ADDR);
   }
 
+  public String getJobServerAddress() {
+    return getString(ConfVars.JOB_SERVER_ADDR);
+  }
+
   public boolean useSsl() {
     return getBoolean(ConfVars.SERVER_SSL);
   }
 
+  public boolean isJobServerSslEnabled() {
+    return getBoolean(ConfVars.JOB_SERVER_SSL);
+  }
+
   public int getServerPort() {
     return getInt(ConfVars.SERVER_PORT);
+  }
+
+  public int getJobServerPort() {
+    return getInt(ConfVars.JOB_SERVER_PORT);
   }
 
   @VisibleForTesting
@@ -142,6 +154,14 @@ public class SubmarineConfiguration extends XMLConfiguration {
 
   public int getServerSslPort() {
     return getInt(ConfVars.SERVER_SSL_PORT);
+  }
+
+  public int getJobServerSslPort() {
+    return getInt(ConfVars.JOB_SERVER_SSL_PORT);
+  }
+
+  public String getJobServerUrlPrefix() {
+    return getString(ConfVars.JOB_SERVER_REST_URL_PREFIX);
   }
 
   public String getKeyStorePath() {
@@ -419,7 +439,13 @@ public class SubmarineConfiguration extends XMLConfiguration {
     JDBC_PASSWORD("jdbc.password", "password"),
     WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
         "workbench.websocket.max.text.message.size", "1024000"),
-    WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist");
+    WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),
+    // submarine job server settings
+    JOB_SERVER_SSL("job.server.ssl", false),
+    JOB_SERVER_SSL_PORT("job.server.ssl.port", 8443),
+    JOB_SERVER_ADDR("job.server.port", "0.0.0.0"),
+    JOB_SERVER_PORT("job.server.port", 8765),
+    JOB_SERVER_REST_URL_PREFIX("job.server.rest.prefix", "/*");
 
     private String varName;
     @SuppressWarnings("rawtypes")
