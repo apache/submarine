@@ -44,7 +44,7 @@ import static org.junit.Assert.assertTrue;
  * Please note that this class just tests YAML parsing,
  * but only in an isolated fashion.
  */
-public class TestRunJobCliParsingTensorFlowYamlStandalone {
+public class RunJobCliParsingTensorFlowYamlStandaloneTest {
   private static final String OVERRIDDEN_PREFIX = "overridden_";
   private static final String DIR_NAME = "runjob-tensorflow-yaml";
 

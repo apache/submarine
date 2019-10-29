@@ -25,7 +25,7 @@ import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
 import org.apache.submarine.client.cli.runjob.RunJobCli;
 import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
 import org.apache.hadoop.yarn.util.resource.Resources;
-import org.apache.submarine.client.cli.runjob.TestRunJobCliParsingCommon;
+import org.apache.submarine.client.cli.runjob.RunJobCliParsingCommonTest;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
  * Test class that verifies the correctness of PyTorch
  * CLI configuration parsing.
  */
-public class TestRunJobCliParsingPyTorch {
+public class RunJobCliParsingPyTorchTest {
 
   @Before
   public void before() {
@@ -51,7 +51,7 @@ public class TestRunJobCliParsingPyTorch {
 
   @Test
   public void testBasicRunJobForSingleNodeTraining() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     assertFalse(SubmarineLogs.isVerbose());
 
     runJobCli.run(
@@ -84,7 +84,7 @@ public class TestRunJobCliParsingPyTorch {
 
   @Test
   public void testNumPSCannotBeDefined() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     assertFalse(SubmarineLogs.isVerbose());
 
     expectedException.expect(ParseException.class);
@@ -102,7 +102,7 @@ public class TestRunJobCliParsingPyTorch {
 
   @Test
   public void testPSResourcesCannotBeDefined() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     assertFalse(SubmarineLogs.isVerbose());
 
     expectedException.expect(ParseException.class);
@@ -120,7 +120,7 @@ public class TestRunJobCliParsingPyTorch {
 
   @Test
   public void testPSDockerImageCannotBeDefined() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     assertFalse(SubmarineLogs.isVerbose());
 
     expectedException.expect(ParseException.class);
@@ -138,7 +138,7 @@ public class TestRunJobCliParsingPyTorch {
 
   @Test
   public void testPSLaunchCommandCannotBeDefined() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     assertFalse(SubmarineLogs.isVerbose());
 
     expectedException.expect(ParseException.class);
@@ -156,7 +156,7 @@ public class TestRunJobCliParsingPyTorch {
 
   @Test
   public void testTensorboardCannotBeDefined() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     assertFalse(SubmarineLogs.isVerbose());
 
     expectedException.expect(ParseException.class);
@@ -174,7 +174,7 @@ public class TestRunJobCliParsingPyTorch {
 
   @Test
   public void testTensorboardResourcesCannotBeDefined() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     assertFalse(SubmarineLogs.isVerbose());
 
     expectedException.expect(ParseException.class);
@@ -192,7 +192,7 @@ public class TestRunJobCliParsingPyTorch {
 
   @Test
   public void testTensorboardDockerImageCannotBeDefined() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     assertFalse(SubmarineLogs.isVerbose());
 
     expectedException.expect(ParseException.class);

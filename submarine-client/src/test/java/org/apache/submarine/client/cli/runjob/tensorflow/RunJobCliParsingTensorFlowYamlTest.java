@@ -17,48 +17,45 @@
  * under the License.
  */
 
-package org.apache.submarine.client.cli.runjob.pytorch;
+package org.apache.submarine.client.cli.runjob.tensorflow;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-import java.util.List;
-
+import com.google.common.collect.ImmutableList;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.submarine.client.cli.YamlConfigTestUtils;
-import org.apache.submarine.client.cli.param.runjob.PyTorchRunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
-import org.apache.submarine.client.cli.param.yaml.YamlParseException;
+import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.client.cli.runjob.RunJobCli;
 import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
 import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
 import org.apache.submarine.commons.runtime.resource.ResourceUtils;
 import org.apache.hadoop.yarn.util.resource.Resources;
-import org.apache.submarine.client.cli.runjob.TestRunJobCliParsingCommon;
+import org.apache.submarine.client.cli.runjob.RunJobCliParsingCommonTest;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import com.google.common.collect.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 /**
- * Test class that verifies the correctness of PyTorch
- * YAML configuration parsing.
+ * Test class that verifies the correctness of TF YAML configuration parsing.
  */
-public class TestRunJobCliParsingPyTorchYaml {
+public class RunJobCliParsingTensorFlowYamlTest {
   private static final String OVERRIDDEN_PREFIX = "overridden_";
-  private static final String DIR_NAME = "runjob-pytorch-yaml";
+  private static final String DIR_NAME = "runjob-tensorflow-yaml";
   private File yamlConfig;
   private static Logger LOG = LoggerFactory.getLogger(
-      TestRunJobCliParsingPyTorchYaml.class);
+      RunJobCliParsingTensorFlowYamlTest.class);
 
   @Before
   public void before() {
@@ -82,7 +79,7 @@ public class TestRunJobCliParsingPyTorchYaml {
       List<String> expectedEnvs) {
     assertEquals("testInputPath", jobRunParameters.getInputPath());
     assertEquals("testCheckpointPath", jobRunParameters.getCheckpointPath());
-    Assert.assertEquals("testDockerImage", jobRunParameters.getDockerImageName());
+    assertEquals("testDockerImage", jobRunParameters.getDockerImageName());
 
     assertNotNull(jobRunParameters.getLocalizations());
     assertEquals(2, jobRunParameters.getLocalizations().size());
@@ -100,38 +97,53 @@ public class TestRunJobCliParsingPyTorchYaml {
     }
   }
 
-  private PyTorchRunJobParameters verifyWorkerCommonValues(RunJobParameters
-      jobRunParameters, String prefix) {
+  private void verifyPsValues(RunJobParameters jobRunParameters,
+      String prefix) {
     assertTrue(RunJobParameters.class + " must be an instance of " +
-            PyTorchRunJobParameters.class,
-        jobRunParameters instanceof PyTorchRunJobParameters);
-    PyTorchRunJobParameters pyTorchParams =
-        (PyTorchRunJobParameters) jobRunParameters;
+            TensorFlowRunJobParameters.class,
+        jobRunParameters instanceof TensorFlowRunJobParameters);
+    TensorFlowRunJobParameters tensorFlowParams =
+        (TensorFlowRunJobParameters) jobRunParameters;
 
-    assertEquals(3, pyTorchParams.getNumWorkers());
+    assertEquals(4, tensorFlowParams.getNumPS());
+    assertEquals(prefix + "testLaunchCmdPs", tensorFlowParams.getPSLaunchCmd());
+    assertEquals(prefix + "testDockerImagePs",
+        tensorFlowParams.getPsDockerImage());
+    assertEquals(Resources.createResource(20500, 34),
+        tensorFlowParams.getPsResource());
+  }
+
+  private TensorFlowRunJobParameters verifyWorkerCommonValues(
+      RunJobParameters jobRunParameters, String prefix) {
+    assertTrue(RunJobParameters.class + " must be an instance of " +
+            TensorFlowRunJobParameters.class,
+        jobRunParameters instanceof TensorFlowRunJobParameters);
+    TensorFlowRunJobParameters tensorFlowParams =
+        (TensorFlowRunJobParameters) jobRunParameters;
+
+    assertEquals(3, tensorFlowParams.getNumWorkers());
     assertEquals(prefix + "testLaunchCmdWorker",
-        pyTorchParams.getWorkerLaunchCmd());
+        tensorFlowParams.getWorkerLaunchCmd());
     assertEquals(prefix + "testDockerImageWorker",
-        pyTorchParams.getWorkerDockerImage());
-    return pyTorchParams;
+        tensorFlowParams.getWorkerDockerImage());
+    return tensorFlowParams;
   }
 
   private void verifyWorkerValues(RunJobParameters jobRunParameters,
       String prefix) {
-    PyTorchRunJobParameters pyTorchParams = verifyWorkerCommonValues
+    TensorFlowRunJobParameters tensorFlowParams = verifyWorkerCommonValues
         (jobRunParameters, prefix);
     assertEquals(Resources.createResource(20480, 32),
-        pyTorchParams.getWorkerResource());
+        tensorFlowParams.getWorkerResource());
   }
 
   private void verifyWorkerValuesWithGpu(RunJobParameters jobRunParameters,
-      String prefix) {
-
-    PyTorchRunJobParameters pyTorchParams = verifyWorkerCommonValues
+                                  String prefix) {
+    TensorFlowRunJobParameters tensorFlowParams = verifyWorkerCommonValues
         (jobRunParameters, prefix);
     Resource workResource = Resources.createResource(20480, 32);
     ResourceUtils.setResource(workResource, ResourceUtils.GPU_URI, 2);
-    assertEquals(workResource, pyTorchParams.getWorkerResource());
+    assertEquals(workResource, tensorFlowParams.getWorkerResource());
   }
 
   private void verifySecurityValues(RunJobParameters jobRunParameters) {
@@ -140,9 +152,23 @@ public class TestRunJobCliParsingPyTorchYaml {
     assertTrue(jobRunParameters.isDistributeKeytab());
   }
 
+  private void verifyTensorboardValues(RunJobParameters jobRunParameters) {
+    assertTrue(RunJobParameters.class + " must be an instance of " +
+            TensorFlowRunJobParameters.class,
+        jobRunParameters instanceof TensorFlowRunJobParameters);
+    TensorFlowRunJobParameters tensorFlowParams =
+        (TensorFlowRunJobParameters) jobRunParameters;
+
+    assertTrue(tensorFlowParams.isTensorboardEnabled());
+    assertEquals("tensorboardDockerImage",
+        tensorFlowParams.getTensorboardDockerImage());
+    assertEquals(Resources.createResource(21000, 37),
+        tensorFlowParams.getTensorboardResource());
+  }
+
   @Test
   public void testValidYamlParsing() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     Assert.assertFalse(SubmarineLogs.isVerbose());
 
     yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
@@ -152,8 +178,10 @@ public class TestRunJobCliParsingPyTorchYaml {
 
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
     verifyBasicConfigValues(jobRunParameters);
+    verifyPsValues(jobRunParameters, "");
     verifyWorkerValues(jobRunParameters, "");
     verifySecurityValues(jobRunParameters);
+    verifyTensorboardValues(jobRunParameters);
   }
 
   @Test
@@ -166,7 +194,7 @@ public class TestRunJobCliParsingPyTorchYaml {
       return;
     }
 
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     Assert.assertFalse(SubmarineLogs.isVerbose());
 
     yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
@@ -176,13 +204,15 @@ public class TestRunJobCliParsingPyTorchYaml {
 
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
     verifyBasicConfigValues(jobRunParameters);
+    verifyPsValues(jobRunParameters, "");
     verifyWorkerValuesWithGpu(jobRunParameters, "");
     verifySecurityValues(jobRunParameters);
+    verifyTensorboardValues(jobRunParameters);
   }
 
   @Test
   public void testRoleOverrides() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
     Assert.assertFalse(SubmarineLogs.isVerbose());
 
     yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
@@ -192,13 +222,15 @@ public class TestRunJobCliParsingPyTorchYaml {
 
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
     verifyBasicConfigValues(jobRunParameters);
+    verifyPsValues(jobRunParameters, OVERRIDDEN_PREFIX);
     verifyWorkerValues(jobRunParameters, OVERRIDDEN_PREFIX);
     verifySecurityValues(jobRunParameters);
+    verifyTensorboardValues(jobRunParameters);
   }
 
   @Test
   public void testMissingPrincipalUnderSecuritySection() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
 
     yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
         DIR_NAME + "/security-principal-is-missing.yaml");
@@ -207,7 +239,9 @@ public class TestRunJobCliParsingPyTorchYaml {
 
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
     verifyBasicConfigValues(jobRunParameters);
+    verifyPsValues(jobRunParameters, "");
     verifyWorkerValues(jobRunParameters, "");
+    verifyTensorboardValues(jobRunParameters);
 
     //Verify security values
     assertEquals("keytabPath", jobRunParameters.getKeytab());
@@ -216,8 +250,34 @@ public class TestRunJobCliParsingPyTorchYaml {
   }
 
   @Test
+  public void testMissingTensorBoardDockerImage() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
+
+    yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
+        DIR_NAME + "/tensorboard-dockerimage-is-missing.yaml");
+    runJobCli.run(
+        new String[]{"-f", yamlConfig.getAbsolutePath(), "--verbose"});
+
+    RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
+
+    verifyBasicConfigValues(jobRunParameters);
+    verifyPsValues(jobRunParameters, "");
+    verifyWorkerValues(jobRunParameters, "");
+    verifySecurityValues(jobRunParameters);
+
+    TensorFlowRunJobParameters tensorFlowParams =
+        (TensorFlowRunJobParameters) jobRunParameters;
+
+    assertTrue(tensorFlowParams.isTensorboardEnabled());
+    assertNull("tensorboardDockerImage should be null!",
+        tensorFlowParams.getTensorboardDockerImage());
+    assertEquals(Resources.createResource(21000, 37),
+        tensorFlowParams.getTensorboardResource());
+  }
+
+  @Test
   public void testMissingEnvs() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
 
     yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
         DIR_NAME + "/envs-are-missing.yaml");
@@ -226,34 +286,10 @@ public class TestRunJobCliParsingPyTorchYaml {
 
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
     verifyBasicConfigValues(jobRunParameters, ImmutableList.of());
+    verifyPsValues(jobRunParameters, "");
     verifyWorkerValues(jobRunParameters, "");
     verifySecurityValues(jobRunParameters);
-  }
-
-  @Test
-  public void testInvalidConfigPsSectionIsDefined() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
-
-    exception.expect(YamlParseException.class);
-    exception.expectMessage("PS section should not be defined " +
-        "when PyTorch is the selected framework");
-    yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
-        DIR_NAME + "/invalid-config-ps-section.yaml");
-    runJobCli.run(
-        new String[]{"-f", yamlConfig.getAbsolutePath(), "--verbose"});
-  }
-
-  @Test
-  public void testInvalidConfigTensorboardSectionIsDefined() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(TestRunJobCliParsingCommon.getMockClientContext());
-
-    exception.expect(YamlParseException.class);
-    exception.expectMessage("TensorBoard section should not be defined " +
-        "when PyTorch is the selected framework");
-    yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
-        DIR_NAME + "/invalid-config-tensorboard-section.yaml");
-    runJobCli.run(
-        new String[]{"-f", yamlConfig.getAbsolutePath(), "--verbose"});
+    verifyTensorboardValues(jobRunParameters);
   }
 
 }
