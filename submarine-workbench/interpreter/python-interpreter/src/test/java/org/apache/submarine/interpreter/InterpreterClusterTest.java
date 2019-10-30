@@ -20,7 +20,7 @@ package org.apache.submarine.interpreter;
 
 import org.apache.submarine.commons.cluster.ClusterClient;
 import org.apache.submarine.commons.cluster.ClusterServer;
-import org.apache.submarine.commons.utils.NetUtils;
+import org.apache.submarine.commons.utils.NetworkUtils;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -55,8 +55,8 @@ public class InterpreterClusterTest {
     sconf = SubmarineConfiguration.create();
 
     // Set the cluster IP and port
-    serverHost = NetUtils.findAvailableHostAddress();
-    serverPort = NetUtils.findRandomAvailablePortOnAllLocalInterfaces();
+    serverHost = NetworkUtils.findAvailableHostAddress();
+    serverPort = NetworkUtils.findRandomAvailablePortOnAllLocalInterfaces();
     sconf.setClusterAddress(serverHost + ":" + serverPort);
 
     // mock cluster manager server

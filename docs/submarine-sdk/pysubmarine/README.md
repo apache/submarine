@@ -20,8 +20,8 @@ development and execution of machine learning productivity.
 ## Package setup
 - Clone repo
 ```bash
-git clone https://github.com/apache/hadoop-submarine.git 
-cd hadoop-submarine/submarine-sdk/pysubmarine
+git clone https://github.com/apache/submarine.git 
+cd submarine/submarine-sdk/pysubmarine
 ```
 
 - Install pip package
