@@ -22,8 +22,10 @@ cache:
   apt: true
   directories:
     - ${HOME}/.m2
-    -  submarine-workbench/workbench-web/node
-    -  submarine-workbench/workbench-web/node_modules
+    - submarine-workbench/workbench-web/node
+    - submarine-workbench/workbench-web/node_modules
+    - submarine-workbench/workbench-web-ng/node
+    - submarine-workbench/workbench-web-ng/node_modules
 
 addons:
   apt:
@@ -132,6 +134,28 @@ matrix:
       jdk: "openjdk8"
       dist: xenial
       env: NAME="Test submarine distribution" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="" TEST_MODULES="" TEST_PROJECTS=""
+
+    # Test submarine web-ng
+    - language: node_js
+      node_js:
+        - "8"
+
+      addons:
+        apt:
+          sources:
+            - google-chrome
+          packages:
+            - google-chrome-stable
+
+      before_install:
+        - cd submarine-workbench/workbench-web-ng
+
+      install:
+        - npm install
+
+      script:
+        - npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+        - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
 
 install:
   - mvn --version
