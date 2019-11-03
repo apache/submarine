@@ -120,6 +120,8 @@
     <jgit.version>5.5.1.201910021850-r</jgit.version>
     <atomix.version>3.0.0-rc4</atomix.version>
     <hive.version>2.1.1</hive.version>
+    <!--  Submarine on Kubernetes  -->
+    <k8s.client-java.version>6.0.1</k8s.client-java.version>
   </properties>
 
   <modules>
@@ -136,15 +138,31 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${mockito.version}</version>
-      </dependency>
-      <dependency>
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>${log4j.version}</version>
       </dependency>
+
+      <!--  Unit Tests  -->
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
+
+      <!--  Submarine on Kubernetes  -->
+      <dependency>
+        <groupId>io.kubernetes</groupId>
+        <artifactId>client-java</artifactId>
+        <version>${k8s.client-java.version}</version>
+      </dependency>
+
+      <!--  Submarine on YARN  -->
       <dependency>
         <groupId>org.apache.hadoop</groupId>
         <artifactId>hadoop-yarn-services-api</artifactId>
@@ -413,6 +431,7 @@
             <exclude>.gitmodules</exclude>
             <exclude>LICENSE</exclude>
             <exclude>license_header</exclude>
+            <exclude>**/*.iml</exclude>
             <exclude>**/*.la</exclude>
             <exclude>**/*.svg</exclude>
             <exclude>**/*.png</exclude>
@@ -426,12 +445,13 @@
             <exclude>**/*.xsd</exclude>
             <exclude>**/*.json</exclude>
             <exclude>**/*.conf</exclude>
+            <exclude>**/*.yaml</exclude>
             <exclude>**/src/main/java/com/linkedin/tony/events/*</exclude>
             <exclude>**/src/main/resources/META-INF/services/org.apache.hadoop.security.SecurityInfo</exclude>
             <exclude>**/src/test/resources/typicalHistFolder/job1/application123-1-1-user1-SUCCEEDED.jhist</exclude>
             <exclude>**/conf/routes</exclude>
-            <exclude>submarine-runtime/yarnservice-runtime/target/**</exclude>
-            <exclude>submarine-runtime/target/**</exclude>
+            <exclude>**/submitter-yarnservice/target/**</exclude>
+            <exclude>**/src/test/resources/config</exclude>
             <exclude>licenses/**</exclude>
             <exclude>licenses-binary/**</exclude>
             <exclude>NOTICE-binary</exclude>
