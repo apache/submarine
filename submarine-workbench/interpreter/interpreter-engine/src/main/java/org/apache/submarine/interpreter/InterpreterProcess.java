@@ -246,6 +246,20 @@ public class InterpreterProcess extends Thread implements Interpreter {
     }
   }
 
+  protected Properties mergeZeplSparkIntpProp(Properties newProps) {
+    Properties properties = new Properties();
+
+    properties.setProperty("zeppelin.spark.maxResult", "1000");
+    properties.setProperty("zeppelin.spark.scala.color", "false");
+
+    if (null != newProps) {
+      newProps.putAll(properties);
+      return newProps;
+    } else {
+      return properties;
+    }
+  }
+
   protected static InterpreterContext getIntpContext() {
     return InterpreterContext.builder()
         .setInterpreterOut(new InterpreterOutput(null))
