@@ -32,8 +32,8 @@
 
   <artifactId>python-interpreter</artifactId>
   <version>0.3.0-SNAPSHOT</version>
-  <name>Submarine: Interpreter Pythone</name>
-  <description>Submarine Pythone Interpreter</description>
+  <name>Submarine: Interpreter Python</name>
+  <description>Submarine Python Interpreter</description>
 
   <dependencies>
     <dependency>

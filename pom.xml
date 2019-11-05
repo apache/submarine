@@ -114,6 +114,9 @@
     <zeppelin.version>0.9.0-SNAPSHOT</zeppelin.version>
     <jgit.version>5.5.1.201910021850-r</jgit.version>
     <atomix.version>3.0.0-rc4</atomix.version>
+    <libthrift.version>0.12.0</libthrift.version>
+    <spark.scala.version>2.11.8</spark.scala.version>
+    <spark.scala.binary.version>2.11</spark.scala.binary.version>
   </properties>
 
   <modules>
