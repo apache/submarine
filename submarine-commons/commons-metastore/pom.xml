@@ -104,6 +104,14 @@
       <version>${hive-metastore.version}</version>
       <exclusions>
         <exclusion>
+          <groupId>io.netty</groupId>
+          <artifactId>netty-all</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.sun.jersey</groupId>
+          <artifactId>jersey-client</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>commons-configuration</groupId>
           <artifactId>commons-configuration</artifactId>
         </exclusion>
