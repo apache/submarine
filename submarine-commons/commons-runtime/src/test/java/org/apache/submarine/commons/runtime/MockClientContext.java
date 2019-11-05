@@ -19,7 +19,6 @@
 
 package org.apache.submarine.commons.runtime;
 
-import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.runtime.fs.MockRemoteDirectoryManager;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
 
