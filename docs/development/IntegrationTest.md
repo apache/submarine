@@ -23,7 +23,7 @@ cd hadoop-submarine/submarine-test/e2e
 
 > Following command will compile all files and run all files ending with "IT". 
 
-**If your workbench server is not working on port 8000, please first modify the port in DriverManager.java line ?? to the port where your workbench run.** 
+**If your workbench server is not working on port 32777 ([mini-submarine](https://github.com/apache/submarine/tree/master/dev-support/mini-submarine) maps the workbench port 8000 to 32777), please first modify the port in WebDriverManager.java to the port where your workbench run.** 
 
 For linux
 ```
@@ -46,19 +46,15 @@ BUILD FAILURE
 ## Add your own integration test
 1. Create new file ending with "IT" under "hadoop-submarine/submarine-test/e2e/src/test/java/org/apache/submarine/integration/".
 2. Your public class is recommended to extend AbstractSubmarineIT. The class AbstractSubmarineIT contains some commonly used functions. 
-```
-  WebElement pollingWait(final By locator, final long timeWait);
-    Find element on the website.
-  void clickAndWait(final By locator);
-    Click element and wait for 1 second.
-  void sleep(long millis, boolean logOutput);
-    Let system sleep a period of time.
+```java
+  WebElement pollingWait(final By locator, final long timeWait); // Find element on the website.
+  void clickAndWait(final By locator); // Click element and wait for 1 second.
+  void sleep(long millis, boolean logOutput); // Let system sleep a period of time.
 ```
 3. There are also some commonly used functions except in AbstractSybmarineIT.java.
-```
-  In WebDriverManager.java:
-    public static WebDriver getWebDriver();
-      This return a firefox webdriver which has been set to your workbench website.
+```java
+  // In WebDriverManager.java:
+  public static WebDriver getWebDriver(); // This return a firefox webdriver which has been set to your workbench website.
 ```
 4. Add [JUnit](https://junit.org/junit5/docs/current/user-guide/) annotation before your testing function, e.g., @Beforeclass, @Testm, and @AfterClass.
 5. Use command mentioned above to compile and run to test whether it works as your anticipation.
