@@ -10,7 +10,7 @@
     <version>0.3.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>e2e</artifactId>
+  <artifactId>submarine-e2e</artifactId>
   <version>0.3.0-SNAPSHOT</version>
   <name>Submarine: E2E Test</name>
 

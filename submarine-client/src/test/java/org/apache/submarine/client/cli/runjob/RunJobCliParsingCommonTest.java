@@ -47,7 +47,7 @@ import static org.mockito.Mockito.when;
  * This class contains some test methods to test common functionality
  * (including TF / PyTorch) of the run job Submarine command.
  */
-public class TestRunJobCliParsingCommon {
+public class RunJobCliParsingCommonTest {
 
   @Before
   public void before() {

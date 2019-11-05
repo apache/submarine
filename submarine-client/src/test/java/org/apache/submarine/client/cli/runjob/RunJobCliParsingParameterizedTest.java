@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.apache.submarine.client.cli.runjob.TestRunJobCliParsingCommon.getMockClientContext;
+import static org.apache.submarine.client.cli.runjob.RunJobCliParsingCommonTest.getMockClientContext;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -51,7 +51,7 @@ import static org.mockito.Mockito.mock;
  * functionality (including TF / PyTorch) of the run job Submarine command.
  */
 @RunWith(Parameterized.class)
-public class TestRunJobCliParsingParameterized {
+public class RunJobCliParsingParameterizedTest {
 
   private final Framework framework;
 
@@ -71,7 +71,7 @@ public class TestRunJobCliParsingParameterized {
     return params;
   }
 
-  public TestRunJobCliParsingParameterized(Framework framework) {
+  public RunJobCliParsingParameterizedTest(Framework framework) {
     this.framework = framework;
   }
 

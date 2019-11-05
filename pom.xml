@@ -117,14 +117,14 @@
   </properties>
 
   <modules>
-    <module>submarine-all</module>
     <module>submarine-client</module>
     <module>submarine-commons</module>
-    <module>submarine-dist</module>
+    <module>submodules/tony</module>
     <module>submarine-server</module>
+    <module>submarine-all</module>
     <module>submarine-workbench</module>
     <module>submarine-test</module>
-    <module>submodules/tony</module>
+    <module>submarine-dist</module>
   </modules>
 
   <dependencyManagement>

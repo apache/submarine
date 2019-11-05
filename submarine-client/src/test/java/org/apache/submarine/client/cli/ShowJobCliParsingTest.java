@@ -41,7 +41,7 @@ import java.util.Map;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class TestShowJobCliParsing {
+public class ShowJobCliParsingTest {
   @Before
   public void before() {
     SubmarineLogs.verboseOff();

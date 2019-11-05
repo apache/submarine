@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
-import static org.apache.submarine.client.cli.runjob.TestRunJobCliParsingCommon.getMockClientContext;
+import static org.apache.submarine.client.cli.runjob.RunJobCliParsingCommonTest.getMockClientContext;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -47,12 +47,12 @@ import static org.junit.Assert.assertTrue;
  * This class contains some test methods to test common YAML parsing
  * functionality (including TF / PyTorch) of the run job Submarine command.
  */
-public class TestRunJobCliParsingCommonYaml {
+public class RunJobCliParsingCommonYamlTest {
   private static final String DIR_NAME = "runjob-common-yaml";
   private static final String TF_DIR = "runjob-pytorch-yaml";
   private File yamlConfig;
   private static Logger LOG = LoggerFactory.getLogger(
-      TestRunJobCliParsingCommonYaml.class);
+      RunJobCliParsingCommonYamlTest.class);
 
   @Before
   public void before() {
