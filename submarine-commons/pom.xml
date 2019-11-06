@@ -38,6 +38,7 @@
     <module>commons-utils</module>
     <module>commons-runtime</module>
     <module>commons-cluster</module>
+    <module>commons-metastore</module>
   </modules>
 
 </project>
