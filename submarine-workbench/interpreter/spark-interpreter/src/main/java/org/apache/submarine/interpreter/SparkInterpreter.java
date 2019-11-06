@@ -79,7 +79,6 @@ public class SparkInterpreter  extends  InterpreterProcess{
       }
       String scalaVersion = extractScalaVersion();
       File scalaJarFolder = new File(interpreterDir + "/spark/scala-" + scalaVersion);
-      LOG.info("scala version is" + scalaVersion);
       List<URL> urls = new ArrayList<>();
       for (File file : scalaJarFolder.listFiles()) {
         LOG.info("Add file " + file.getAbsolutePath() + " to classpath of spark scala interpreter: "
