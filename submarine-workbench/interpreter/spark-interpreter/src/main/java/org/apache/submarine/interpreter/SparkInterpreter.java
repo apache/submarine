@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class SparkInterpreter  extends  InterpreterProcess {
+public class SparkInterpreter extends InterpreterProcess {
   private static final Logger LOG = LoggerFactory.getLogger(SparkInterpreter.class);
 
   private  org.apache.zeppelin.spark.SparkInterpreter zpleSparkInterpreter;
