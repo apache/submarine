@@ -56,16 +56,12 @@ public class LoginRestApi {
         = gson.fromJson(loginParams, new TypeToken<HashMap<String, String>>() {}.getType());
 
     SysUser sysUser = null;
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
       sysUser = sysUserMapper.login(mapParams);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
-    } finally {
-      sqlSession.close();
     }
     sysUser.setToken("mock_token");
 
