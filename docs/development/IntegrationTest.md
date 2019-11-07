@@ -23,7 +23,7 @@ cd hadoop-submarine/submarine-test/e2e
 
 > Following command will compile all files and run all files ending with "IT". 
 
-**If your workbench server is not working on port 32777 ([mini-submarine](https://github.com/apache/submarine/tree/master/dev-support/mini-submarine) maps the workbench port 8000 to 32777), please first modify the port in WebDriverManager.java to the port where your workbench run.** 
+**If your workbench server is not working on port 32777 ([mini-submarine](https://github.com/apache/submarine/tree/master/dev-support/mini-submarine) maps the workbench port 8000 to 32777), please first modify the port in WebDriverManager.java line 61  to the port where your workbench run.** 
 
 For linux
 ```
