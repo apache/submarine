@@ -26,8 +26,6 @@ public class loginIT extends AbstractSubmarineIT{
   @BeforeClass
   public static void startUp(){
     driver =  WebDriverManager.getWebDriver();
-    String url = "http://127.0.0.1:32777";
-    driver.get(url);
   }
 
   @AfterClass
