@@ -180,7 +180,7 @@ public class SysDeptRestApi {
   @SubmarineApi
   public Response resetParentDept() {
     LOG.info("resetParentDept()");
-    try (    SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
       sysDeptMapper.resetDeptLevel();
       sqlSession.commit();
