@@ -23,7 +23,7 @@ import { SysUser } from '@submarine/interfaces';
 import { SysDeptSelect } from '@submarine/interfaces/sys-dept-select';
 import { SysDictItem } from '@submarine/interfaces/sys-dict-item';
 import { SystemUtilsService, SysDictCode } from '@submarine/services';
-import { format, parse } from 'date-fns';
+import { format } from 'date-fns';
 import { zip, Observable, Observer } from 'rxjs';
 import { filter, map, startWith, take } from 'rxjs/operators';
 

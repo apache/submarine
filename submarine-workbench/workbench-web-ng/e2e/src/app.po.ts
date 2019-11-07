@@ -25,6 +25,6 @@ export class AppPage {
   }
 
   getTitleText() {
-    return element(by.css('app-root .content span')).getText() as Promise<string>;
+    return element(by.css('submarine-root submarine-user .title')).getText() as Promise<string>;
   }
 }

@@ -47,7 +47,6 @@ export class ManagerComponent implements OnInit {
   constructor(private route: ActivatedRoute, private location: Location, private router: Router) {
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
-        // Hide loading indicator
         const lastMatch = _.last(event.urlAfterRedirects.split('/'));
         this.currentHeaderInfo = this.headerInfo[lastMatch];
       }

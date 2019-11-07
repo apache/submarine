@@ -138,24 +138,21 @@ matrix:
     # Test submarine web-ng
     - language: node_js
       node_js:
-        - "8"
-
+        - "10"
+      before_install:
+        - cd submarine-workbench/workbench-web-ng
+      before_script:
+        npm install
       addons:
         apt:
           sources:
             - google-chrome
           packages:
             - google-chrome-stable
-
-      before_install:
-        - cd submarine-workbench/workbench-web-ng
-
-      install:
-        - npm install
-
       script:
         - npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
         - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
+      env: NAME="Build workbench-web-ng"
 
 install:
   - mvn --version
