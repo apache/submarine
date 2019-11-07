@@ -28,3 +28,10 @@ github:
     - YARN
     - docker
     - cloud
+  enabled_merge_buttons:
+    # enable squash button:
+    squash:  false
+    # enable merge button:
+    merge:   false
+    # disable rebase button:
+    rebase:  false
