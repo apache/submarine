@@ -122,9 +122,7 @@ public class SysDictRestApi {
   @Path("/edit")
   @SubmarineApi
   public Response edit(SysDict sysDict) {
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDictMapper sysDictMapper = sqlSession.getMapper(SysDictMapper.class);
       SysDict dict = sysDictMapper.getById(sysDict.getId());
       if (dict == null) {
@@ -137,8 +135,6 @@ public class SysDictRestApi {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Update dictionary failed!").success(false).build();
-    } finally {
-      sqlSession.close();
     }
 
     return new JsonResponse.Builder<>(Response.Status.OK)
