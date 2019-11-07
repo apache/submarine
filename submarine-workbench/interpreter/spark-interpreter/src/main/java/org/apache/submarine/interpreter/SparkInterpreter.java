@@ -151,6 +151,23 @@ public class SparkInterpreter  extends  InterpreterProcess {
 
   @Override
   public boolean test() {
-    return true;
+    open();
+    String code = "val df = spark.createDataFrame(Seq((1,\"a\"),(2, null)))\n" +
+        "df.show()";
+    InterpreterResult result = interpret(code);
+    LOG.info("Execution Spark Interpreter, Calculation Spark Code  {}, Result = {}",
+        code, result.message().get(0).getData());
+
+    if (result.code() != InterpreterResult.Code.SUCCESS) {
+      return false;
+    }
+    boolean success = (result.message().get(0).getData().contains(
+        "+---+----+\n" +
+            "| _1|  _2|\n" +
+            "+---+----+\n" +
+            "|  1|   a|\n" +
+            "|  2|null|\n" +
+            "+---+----+"));
+    return success;
   }
 }
