@@ -56,7 +56,7 @@ BUILD FAILURE
   // In WebDriverManager.java:
   public static WebDriver getWebDriver(); // This return a firefox webdriver which has been set to your workbench website.
 ```
-4. Add [JUnit](https://junit.org/junit5/docs/current/user-guide/) annotation before your testing function, e.g., @Beforeclass, @Testm, and @AfterClass.
+4. Add [JUnit](https://junit.org/junit5/docs/current/user-guide/) annotation before your testing function, e.g., @Beforeclass, @Test, and @AfterClass. You can refer to [loginIT.java](https://github.com/apache/submarine/blob/master/submarine-test/e2e/src/test/java/org/apache/submarine/integration/loginIT.java).
 5. Use command mentioned above to compile and run to test whether it works as your anticipation.
 
 
