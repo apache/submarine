@@ -23,13 +23,14 @@ github:
     - deep-learning
     - ai
     - notebook
-    - platform
     - kubernetes
-    - hadoop-yarn
+    - yarn
     - docker
 
   enabled_merge_buttons:
+    # enable squash button:
     squash: false
-    merge:  false
+    # enable merge button:
+    merge: false
+    # disable rebase button:
     rebase: false
-  
