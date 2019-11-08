@@ -159,6 +159,7 @@ public class SparkInterpreter extends InterpreterProcess {
         code, result.message().get(0).getData());
 
     if (result.code() != InterpreterResult.Code.SUCCESS) {
+      close();
       return false;
     }
     boolean success = (result.message().get(0).getData().contains(
@@ -168,6 +169,7 @@ public class SparkInterpreter extends InterpreterProcess {
             "|  1|   a|\n" +
             "|  2|null|\n" +
             "+---+----+"));
+    close();
     return success;
   }
 }
