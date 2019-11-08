@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 
+# https://cwiki.apache.org/confluence/display/INFRA/.asf.yaml+features+for+git+repositories
+
 github:
   description: "Apache Submarine is a unified AI platform"
   homepage: https://submarine.apache.org/
@@ -26,10 +28,9 @@ github:
     - kubernetes
     - yarn
     - docker
-
   enabled_merge_buttons:
     # enable squash button:
-    squash: false
+    squash: true
     # enable merge button:
     merge: false
     # disable rebase button:
