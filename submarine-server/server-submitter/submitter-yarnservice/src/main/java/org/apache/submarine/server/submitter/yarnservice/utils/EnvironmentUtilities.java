@@ -46,6 +46,8 @@ public final class EnvironmentUtilities {
       "YARN_CONTAINER_RUNTIME_DOCKER_MOUNTS";
   private static final String MOUNTS_DELIM = ",";
   private static final String ENV_SEPARATOR = "=";
+  private static final String ETC_PASSWD = ":/etc/passwd";
+  private static final String ETC_GROUP = ":/etc/group";
   private static final String ETC_PASSWD_MOUNT_STRING =
       "/etc/passwd:/etc/passwd:ro";
   private static final String KERBEROS_CONF_MOUNT_STRING =
@@ -94,8 +96,11 @@ public final class EnvironmentUtilities {
    */
   private static void appendOtherConfigs(Service service,
       Configuration yarnConfig) {
-    appendToEnv(service, ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME,
+    etcAppendToEnv(service, ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME,
         ETC_PASSWD_MOUNT_STRING, MOUNTS_DELIM);
+
+    etcAppendToEnv(service, ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME,
+        ETC_GROUP_MOUNT_STRING, MOUNTS_DELIM);
 
     String authentication = yarnConfig.get(HADOOP_SECURITY_AUTHENTICATION);
     if (authentication != null && authentication.equals("kerberos")) {
@@ -112,6 +117,27 @@ public final class EnvironmentUtilities {
     } else {
       if (!value.isEmpty()) {
         String existingValue = env.get(key);
+        if (!existingValue.endsWith(delim)) {
+          env.put(key, existingValue + delim + value);
+        } else {
+          env.put(key, existingValue + value);
+        }
+      }
+    }
+  }
+
+  static void etcAppendToEnv(Service service, String key, String value,
+                             String delim) {
+    Map<String, String> env = service.getConfiguration().getEnv();
+    if (!env.containsKey(key)) {
+      env.put(key, value);
+    } else {
+      if (!value.isEmpty()) {
+        String existingValue = env.get(key);
+        if((existingValue.contains(ETC_PASSWD) && value.contains(ETC_PASSWD))
+                || (existingValue.contains(ETC_GROUP) && value.contains(ETC_GROUP))){
+          return;
+        }
         if (!existingValue.endsWith(delim)) {
           env.put(key, existingValue + delim + value);
         } else {
