@@ -21,15 +21,15 @@ github:
   labels:
     - machine-learning
     - deep-learning
-    - AI
+    - ai
     - notebook
     - platform
     - kubernetes
-    - YARN
+    - hadoop-yarn
     - docker
 
   enabled_merge_buttons:
     squash: false
     merge:  false
-    rebase: true
+    rebase: false
   
