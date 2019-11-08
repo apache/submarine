@@ -17,7 +17,7 @@
 ## Run the existing tests.
 ##### Move to the working directroy.
 ```
-cd hadoop-submarine/submarine-test/e2e
+cd submarine/submarine-test/e2e
 ```
 ##### Compile & Run.
 
@@ -44,7 +44,7 @@ BUILD FAILURE
 ```
 
 ## Add your own integration test
-1. Create new file ending with "IT" under "hadoop-submarine/submarine-test/e2e/src/test/java/org/apache/submarine/integration/".
+1. Create new file ending with "IT" under "submarine/submarine-test/e2e/src/test/java/org/apache/submarine/integration/".
 2. Your public class is recommended to extend AbstractSubmarineIT. The class AbstractSubmarineIT contains some commonly used functions. 
 ```java
   WebElement pollingWait(final By locator, final long timeWait); // Find element on the website.
