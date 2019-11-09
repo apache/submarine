@@ -201,12 +201,6 @@
                                 </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                             </transformers>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.apache.zeppelin</pattern>
-                                    <shadedPattern>${shaded.dependency.prefix}.org.apache.zeppelin</shadedPattern>
-                                </relocation>
-                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
