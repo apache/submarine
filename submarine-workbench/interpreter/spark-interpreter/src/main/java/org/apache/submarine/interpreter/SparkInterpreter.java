@@ -35,10 +35,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-public class SparkInterpreter  extends  InterpreterProcess{
+public class SparkInterpreter extends InterpreterProcess {
   private static final Logger LOG = LoggerFactory.getLogger(SparkInterpreter.class);
 
-  private  org.apache.zeppelin.spark.SparkInterpreter zpleSparkInterpreter;
+  private org.apache.zeppelin.spark.SparkInterpreter zpleSparkInterpreter;
   private InterpreterContext intpContext;
 
   private String extractScalaVersion() throws InterpreterException {
@@ -57,7 +57,7 @@ public class SparkInterpreter  extends  InterpreterProcess{
 
   public SparkInterpreter(Properties properties) {
     properties = mergeZeplSparkIntpProp(properties);
-    zpleSparkInterpreter = new  org.apache.zeppelin.spark.SparkInterpreter(properties);
+    zpleSparkInterpreter = new org.apache.zeppelin.spark.SparkInterpreter(properties);
     zpleSparkInterpreter.setInterpreterGroup(new InterpreterGroup());
     intpContext = this.getIntpContext();
   }
@@ -79,7 +79,6 @@ public class SparkInterpreter  extends  InterpreterProcess{
       }
       String scalaVersion = extractScalaVersion();
       File scalaJarFolder = new File(interpreterDir + "/spark/scala-" + scalaVersion);
-      LOG.info("scala version is" + scalaVersion);
       List<URL> urls = new ArrayList<>();
       for (File file : scalaJarFolder.listFiles()) {
         LOG.info("Add file " + file.getAbsolutePath() + " to classpath of spark scala interpreter: "
@@ -157,18 +156,20 @@ public class SparkInterpreter  extends  InterpreterProcess{
         "df.show()";
     InterpreterResult result = interpret(code);
     LOG.info("Execution Spark Interpreter, Calculation Spark Code  {}, Result = {}",
-        code, result.message().get(0).getData());
+             code, result.message().get(0).getData());
 
     if (result.code() != InterpreterResult.Code.SUCCESS) {
+      close();
       return false;
     }
     boolean success = (result.message().get(0).getData().contains(
-        "+---+----+\n" +
-            "| _1|  _2|\n" +
             "+---+----+\n" +
-            "|  1|   a|\n" +
-            "|  2|null|\n" +
-            "+---+----+"));
+                "| _1|  _2|\n" +
+                "+---+----+\n" +
+                "|  1|   a|\n" +
+                "|  2|null|\n" +
+                "+---+----+"));
+    close();
     return success;
   }
 }

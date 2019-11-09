@@ -155,6 +155,8 @@ public class InterpreterProcess extends Thread implements Interpreter {
     String superIntpClassName = "";
     if (StringUtils.equals(intpName, "python")) {
       superIntpClassName = "org.apache.submarine.interpreter.PythonInterpreter";
+    } else if (StringUtils.equals(intpName, "spark")) {
+      superIntpClassName = "org.apache.submarine.interpreter.SparkInterpreter";
     } else {
       superIntpClassName = "org.apache.submarine.interpreter.InterpreterProcess";
     }
