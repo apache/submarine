@@ -136,6 +136,20 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>../submarine-workbench/interpreter/spark/scala-2.11</directory>
+      <outputDirectory>/workbench/interpreter/spark/scala-2.11</outputDirectory>
+      <includes>
+        <include>spark-scala-2.11-${zeppelin.version}.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>../submarine-workbench/interpreter/spark-interpreter/target</directory>
+      <outputDirectory>/workbench/interpreter/spark</outputDirectory>
+      <includes>
+        <include>spark-interpreter-${project.version}-shade.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>../submarine-commons/commons-cluster/target</directory>
       <outputDirectory>/lib/commons</outputDirectory>
       <includes>

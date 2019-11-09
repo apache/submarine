@@ -39,6 +39,7 @@
   <modules>
     <module>interpreter-engine</module>
     <module>python-interpreter</module>
+    <module>spark-interpreter</module>
   </modules>
 
 </project>
