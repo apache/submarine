@@ -31,9 +31,9 @@
 
   <groupId>org.apache.submarine</groupId>
   <artifactId>workbench-web-ng</artifactId>
-    <packaging>war</packaging>
-  <version>0.3.0-SNAPSHOT</version>
-  <name>Submarine: Workbench Web Angular</name>
+  <!--  <packaging>war</packaging>-->
+  <!--  <version>0.3.0-SNAPSHOT</version>-->
+  <!--  <name>Submarine: Workbench Web Angular</name>-->
 
   <!-- See https://github.com/eirslett/frontend-maven-plugin/issues/229 -->
   <prerequisites>
