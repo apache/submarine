@@ -17,26 +17,8 @@
  * under the License.
  */
 
-import { Permission } from './permission';
-
-export class Role {
-  id: string;
-  name: string;
+export interface Action {
+  action: string;
+  defaultCheck: boolean;
   describe: string;
-  status: number;
-  creatorId: string;
-  createTime: number;
-  deleted: number;
-  permissions: Permission[];
-
-  constructor(role: Role) {
-    this.id = role.id;
-    this.name = role.name;
-    this.describe = role.describe;
-    this.status = role.status;
-    this.creatorId = role.creatorId;
-    this.createTime = role.createTime;
-    this.deleted = role.deleted;
-    this.permissions = role.permissions.map(permission => new Permission(permission));
-  }
 }

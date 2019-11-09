@@ -17,15 +17,21 @@
  * under the License.
  */
 
-import { Role } from './role';
+import { BaseEntity } from './base-entity';
 
-export class User {
-  avatar = '';
-  id = '';
-  name = '';
-  telephone = '';
-  username = '';
-  role: Role;
-  roleId: number;
+export interface SysUser extends BaseEntity {
+  userName: string;
+  realName: string;
+  password: string;
+  avatar: string;
+  sex: string;
+  status: string;
+  phone: string;
+  email: string;
+  deptCode: string;
+  deptName: string;
+  roleCode: string;
+  birthday: number;
+  deleted: number;
   token: string;
 }

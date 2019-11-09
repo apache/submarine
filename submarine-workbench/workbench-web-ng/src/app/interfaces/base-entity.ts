@@ -17,15 +17,18 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+export class BaseEntity {
+  id: string;
+  createBy: string;
+  createTime: number;
+  updateBy: string;
+  updateTime: number;
 
-@Component({
-  selector: 'submarine-manager-user',
-  templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
-})
-export class UserComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit() {}
+  constructor(data: BaseEntity) {
+    this.id = data.id;
+    this.createBy = data.createBy;
+    this.createTime = data.createTime;
+    this.updateBy = data.updateBy;
+    this.updateTime = data.updateTime;
+  }
 }

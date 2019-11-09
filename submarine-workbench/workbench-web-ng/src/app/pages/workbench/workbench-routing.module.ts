@@ -17,15 +17,30 @@
  * under the License.
  */
 
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { NgZorroAntdModule } from 'ng-zorro-antd';
-import { ManagerRoutingModule } from './manager-routing.module';
-import { ManagerComponent } from './manager.component';
-import { UserComponent } from './user/user.component';
+import { RouterModule, Routes } from '@angular/router';
+import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: WorkbenchComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'manager'
+      },
+      {
+        path: 'manager',
+        loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
+      }
+    ]
+  }
+];
 
 @NgModule({
-  declarations: [UserComponent, ManagerComponent],
-  imports: [CommonModule, ManagerRoutingModule, NgZorroAntdModule]
+  imports: [RouterModule.forChild(routes)]
 })
-export class ManagerModule {}
+export class WorkbenchRoutingModule {
+}

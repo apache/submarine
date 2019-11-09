@@ -17,26 +17,21 @@
  * under the License.
  */
 
-import { Permission } from './permission';
+import { Component, Input, OnInit } from '@angular/core';
 
-export class Role {
-  id: string;
-  name: string;
-  describe: string;
-  status: number;
-  creatorId: string;
-  createTime: number;
-  deleted: number;
-  permissions: Permission[];
+@Component({
+  selector: 'submarine-page-layout',
+  templateUrl: './page-layout.component.html',
+  styleUrls: ['./page-layout.component.scss']
+})
+export class PageLayoutComponent implements OnInit {
+  @Input() title: string;
+  @Input() description: string;
+  @Input() breadCrumb: string[];
 
-  constructor(role: Role) {
-    this.id = role.id;
-    this.name = role.name;
-    this.describe = role.describe;
-    this.status = role.status;
-    this.creatorId = role.creatorId;
-    this.createTime = role.createTime;
-    this.deleted = role.deleted;
-    this.permissions = role.permissions.map(permission => new Permission(permission));
+  constructor() {
+  }
+
+  ngOnInit() {
   }
 }

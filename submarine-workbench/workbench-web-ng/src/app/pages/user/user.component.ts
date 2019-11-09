@@ -18,6 +18,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { UserService } from '@submarine/services';
 
 @Component({
   selector: 'submarine-user',

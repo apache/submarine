@@ -17,5 +17,10 @@
   ~ under the License.
   -->
 
-<p>manager works!</p>
-<router-outlet></router-outlet>
+<submarine-page-layout
+  [title]="currentHeaderInfo?.title"
+  [breadCrumb]="currentHeaderInfo?.breadCrumb"
+  [description]="currentHeaderInfo?.description"
+>
+  <router-outlet></router-outlet>
+</submarine-page-layout>

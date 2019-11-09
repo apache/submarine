@@ -19,12 +19,12 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Rest, User } from '@submarine/interfaces';
-import { BaseApiService } from '@submarine/services/base-api.service';
-import { LocalStorageService } from '@submarine/services/local-storage.service';
+import { Rest, SysUser } from '@submarine/interfaces';
 import * as md5 from 'md5';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { of, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+import { BaseApiService } from './base-api.service';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -45,26 +45,36 @@ export class AuthService {
     this.isLoggedIn = !!authToken;
   }
 
-  login(userForm: { userName: string; password: string }): Observable<boolean> {
-    return this.httpClient
-      .post<Rest<User>>(this.baseApi.getRestApi('/auth/login'), {
-        username: userForm.userName,
-        password: md5(userForm.password)
-      })
-      .pipe(
-        map(res => {
-          if (res.success) {
-            this.isLoggedIn = true;
-            this.localStorageService.set(this.authTokenKey, res.result.token);
-          }
+  login(userForm: { userName: string; password: string }): Observable<SysUser> {
+    const apiUrl = this.baseApi.getRestApi('/auth/login');
+    const params = {
+      username: userForm.userName,
+      password: md5(userForm.password)
+    };
 
-          return res.success;
-        })
-      );
+    return this.httpClient.post<Rest<SysUser>>(apiUrl, params).pipe(
+      switchMap(res => {
+        if (res.success) {
+          this.isLoggedIn = true;
+          this.localStorageService.set(this.authTokenKey, res.result.token);
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', params);
+        }
+      })
+    );
   }
 
-  logout(): void {
-    this.isLoggedIn = false;
-    this.localStorageService.remove(this.authTokenKey);
+  logout() {
+    return this.httpClient.post<Rest<boolean>>(this.baseApi.getRestApi('/auth/logout'), {}).pipe(
+      map(res => {
+        if (res.result) {
+          this.isLoggedIn = false;
+          this.localStorageService.remove(this.authTokenKey);
+        }
+
+        return res.result;
+      })
+    );
   }
 }

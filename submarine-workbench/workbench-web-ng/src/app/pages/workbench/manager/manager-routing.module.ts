@@ -17,26 +17,36 @@
  * under the License.
  */
 
-import { Permission } from './permission';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { DataDictComponent } from '@submarine/pages/workbench/manager/data-dict/data-dict.component';
+import { ManagerComponent } from './manager.component';
+import { UserComponent } from './user/user.component';
 
-export class Role {
-  id: string;
-  name: string;
-  describe: string;
-  status: number;
-  creatorId: string;
-  createTime: number;
-  deleted: number;
-  permissions: Permission[];
-
-  constructor(role: Role) {
-    this.id = role.id;
-    this.name = role.name;
-    this.describe = role.describe;
-    this.status = role.status;
-    this.creatorId = role.creatorId;
-    this.createTime = role.createTime;
-    this.deleted = role.deleted;
-    this.permissions = role.permissions.map(permission => new Permission(permission));
+const routes: Routes = [
+  {
+    path: '',
+    component: ManagerComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'user'
+      },
+      {
+        path: 'user',
+        component: UserComponent
+      },
+      {
+        path: 'data-dict',
+        component: DataDictComponent
+      }
+    ]
   }
-}
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class ManagerRoutingModule {}

@@ -17,6 +17,20 @@
   ~ under the License.
   -->
 
-<nz-layout class="app-layout">
-  <router-outlet></router-outlet>
-</nz-layout>
+<div [ngStyle]="!title ? {margin: '-24px -24px 0'} : null">
+  <nz-page-header [nzTitle]="title|titlecase" *ngIf="breadCrumb">
+    <nz-breadcrumb nz-page-header-breadcrumb>
+      <nz-breadcrumb-item *ngFor="let item of breadCrumb">
+        {{item|titlecase}}
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <nz-page-header-content *ngIf="description">
+      <p>{{description}}</p>
+    </nz-page-header-content>
+  </nz-page-header>
+
+  <div class="content">
+    <ng-content></ng-content>
+  </div>
+</div>
+

@@ -27,9 +27,9 @@ describe('workspace-project App', () => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
+  it('should display submarine', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('workbench-web-ng app is running!');
+    expect(page.getTitleText()).toEqual('Submarine');
   });
 
   afterEach(async () => {

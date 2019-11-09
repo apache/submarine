@@ -17,31 +17,17 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { ManagerComponent } from './manager.component';
-import { UserComponent } from './user/user.component';
+// @ts-check
+// Protractor configuration file, see link for more information
+// https://github.com/angular/protractor/blob/master/lib/config.ts
 
-const routes: Routes = [
-  {
-    path: '',
-    component: ManagerComponent,
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: '/manager/user'
-      },
-      {
-        path: 'user',
-        component: UserComponent
-      }
-    ]
+const config = require('./protractor.conf').config;
+
+config.capabilities = {
+  browserName: 'chrome',
+  chromeOptions: {
+    args: ['--headless', '--no-sandbox']
   }
-];
+};
 
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class ManagerRoutingModule {}
+exports.config = config;

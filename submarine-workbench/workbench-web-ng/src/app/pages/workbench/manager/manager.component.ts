@@ -17,15 +17,41 @@
  * under the License.
  */
 
+import { Location, LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import _ from 'lodash';
+
+interface HeaderInfo {
+  title: string;
+  description: string;
+  breadCrumb: string[];
+}
 
 @Component({
   selector: 'submarine-manager',
   templateUrl: './manager.component.html',
-  styleUrls: ['./manager.component.scss']
+  styleUrls: ['./manager.component.scss'],
+  providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }]
 })
 export class ManagerComponent implements OnInit {
-  constructor() {}
+  private headerInfo: { [key: string]: HeaderInfo } = {
+    user: {
+      title: 'user',
+      description: 'You can check the user, delete the user, lock and unlock the user, etc.',
+      breadCrumb: ['manager', 'user']
+    }
+  };
+  currentHeaderInfo: HeaderInfo;
+
+  constructor(private route: ActivatedRoute, private location: Location, private router: Router) {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        const lastMatch = _.last(event.urlAfterRedirects.split('/'));
+        this.currentHeaderInfo = this.headerInfo[lastMatch];
+      }
+    });
+  }
 
   ngOnInit() {}
 }

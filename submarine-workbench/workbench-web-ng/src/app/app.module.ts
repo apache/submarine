@@ -25,7 +25,7 @@ import { HttpClientModule } from '@angular/common/http';
 import zh from '@angular/common/locales/zh';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LocalStorageService } from '@submarine/services/local-storage.service';
+import { LocalStorageService } from '@submarine/services';
 import { zh_CN, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
