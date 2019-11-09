@@ -37,6 +37,18 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.apache.submarine</groupId>
+      <artifactId>commons-utils</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.submarine</groupId>
+      <artifactId>commons-cluster</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.zeppelin</groupId>
       <artifactId>zeppelin-interpreter</artifactId>
       <version>${zeppelin.version}</version>
@@ -135,7 +147,7 @@
       <plugin>
         <artifactId>maven-enforcer-plugin</artifactId>
         <configuration>
-          <skip>false</skip>
+          <skip>true</skip>
         </configuration>
       </plugin>
     </plugins>

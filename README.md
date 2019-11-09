@@ -12,22 +12,11 @@
   limitations under the License. See accompanying LICENSE file.
 -->
 
-# Why does this fork exist?
-
-The hadoop submarine repository is a temporary development repository forked from the [hadoop/hadoop-submarine](https://github.com/apache/hadoop/tree/trunk/hadoop-submarine).
-
-The creation of this temporary is mainly because more and more people from different companies and organizations want to work together to participate in the development of the hadoop submarine project, but the hadoop submarine committers are difficult to quickly complete the review work of the newly submitted PR. In order to speed up the development speed of the project, this temporary repository, allows the hadoop submarine developers to review the code here.
-
-If all goes well, this should be a short-lived fork rather than a long-lived one.
-
 ![color_logo_with_text](docs/assets/color_logo_with_text.png)
 
-# What is Hadoop Submarine?
+# What is Apache Submarine?
 
-Submarine is a new subproject of Apache Hadoop.
-
-Submarine is a project which allows infra engineer / data scientist to run
-*unmodified* TensorFlow or PyTorch programs on YARN or Kubernetes.
+Apache Submarine is a unified AI platform which allows engineers and data scientists to run Machine Learning and Deep Learning workload in distributed cluster.
 
 Goals of Submarine:
 - It allows jobs easy access data/models in HDFS and other storages.
@@ -41,6 +30,8 @@ Goals of Submarine:
 # Architecture
 
 ![image-20190811191220934](docs/assets/architecture.png)
+
+## Components
 
 ### Submarine Workbench
 
@@ -106,12 +97,12 @@ This is a docker image built for submarine development and quick start test.
 
 Read the [Quick Start Guide](./docs/helper/QuickStart.md)
 
-## Apache Hadoop Submarine Community
+## Apache Submarine Community
 
-Read the [Apache Hadoop Submarine Community Guide](./docs/community/README.md)
+Read the [Apache Submarine Community Guide](./docs/community/README.md)
 
 How to contribute [Contributing Guide](./docs/community/contributing.md)
 
 ## License
 
-The Apache Hadoop Submarine project is licensed under the Apache 2.0 License. See the [LICENSE](./LICENSE) file for details.
+The Apache Submarine project is licensed under the Apache 2.0 License. See the [LICENSE](./LICENSE) file for details.

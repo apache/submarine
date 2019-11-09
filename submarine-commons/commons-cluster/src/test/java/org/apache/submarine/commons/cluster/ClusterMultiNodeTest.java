@@ -18,7 +18,7 @@ package org.apache.submarine.commons.cluster;
 
 import org.apache.submarine.commons.cluster.meta.ClusterMetaType;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
-import org.apache.submarine.commons.utils.NetUtils;
+import org.apache.submarine.commons.utils.NetworkUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,8 +38,8 @@ import static org.junit.Assert.assertNotNull;
 public class ClusterMultiNodeTest {
   private static Logger LOG = LoggerFactory.getLogger(ClusterMultiNodeTest.class);
 
-  private static List<ClusterManagerServer> clusterServers = new ArrayList<>();
-  private static ClusterManagerClient clusterClient = null;
+  private static List<ClusterServer> clusterServers = new ArrayList<>();
+  private static ClusterClient clusterClient = null;
 
   static final String metaKey = "ClusterMultiNodeTestKey";
 
@@ -48,11 +48,11 @@ public class ClusterMultiNodeTest {
     LOG.info("ClusterMultiNodeTest::startCluster >>>");
 
     String clusterAddrList = "";
-    String zServerHost = NetUtils.findAvailableHostAddress();
+    String serverHost = NetworkUtils.findAvailableHostAddress();
     for (int i = 0; i < 3; i++) {
       // Set the cluster IP and port
-      int zServerPort = NetUtils.findRandomAvailablePortOnAllLocalInterfaces();
-      clusterAddrList += zServerHost + ":" + zServerPort;
+      int serverPort = NetworkUtils.findRandomAvailablePortOnAllLocalInterfaces();
+      clusterAddrList += serverHost + ":" + serverPort;
       if (i != 2) {
         clusterAddrList += ",";
       }
@@ -69,10 +69,10 @@ public class ClusterMultiNodeTest {
         String clusterHost = parts[0];
         int clusterPort = Integer.valueOf(parts[1]);
 
-        Class clazz = ClusterManagerServer.class;
+        Class clazz = ClusterServer.class;
         Constructor constructor = clazz.getDeclaredConstructor();
         constructor.setAccessible(true);
-        ClusterManagerServer clusterServer = (ClusterManagerServer) constructor.newInstance();
+        ClusterServer clusterServer = (ClusterServer) constructor.newInstance();
         clusterServer.initTestCluster(clusterAddrList, clusterHost, clusterPort);
 
         clusterServers.add(clusterServer);
@@ -81,17 +81,17 @@ public class ClusterMultiNodeTest {
       LOG.error(e.getMessage(), e);
     }
 
-    for (ClusterManagerServer clusterServer : clusterServers) {
+    for (ClusterServer clusterServer : clusterServers) {
       clusterServer.start();
     }
 
     // mock cluster manager client
     try {
-      Class clazz = ClusterManagerClient.class;
+      Class clazz = ClusterClient.class;
       Constructor constructor = null;
       constructor = clazz.getDeclaredConstructor();
       constructor.setAccessible(true);
-      clusterClient = (ClusterManagerClient) constructor.newInstance();
+      clusterClient = (ClusterClient) constructor.newInstance();
       clusterClient.start(metaKey);
     } catch (NoSuchMethodException | InstantiationException
         | IllegalAccessException | InvocationTargetException e) {
@@ -127,7 +127,7 @@ public class ClusterMultiNodeTest {
     if (null != clusterClient) {
       clusterClient.shutdown();
     }
-    for (ClusterManagerServer clusterServer : clusterServers) {
+    for (ClusterServer clusterServer : clusterServers) {
       clusterServer.shutdown();
     }
     LOG.info("ClusterMultiNodeTest::stopCluster <<<");
@@ -135,7 +135,7 @@ public class ClusterMultiNodeTest {
 
   static boolean clusterIsStartup() {
     boolean foundLeader = false;
-    for (ClusterManagerServer clusterServer : clusterServers) {
+    for (ClusterServer clusterServer : clusterServers) {
       if (!clusterServer.raftInitialized()) {
         LOG.warn("clusterServer not Initialized!");
         return false;

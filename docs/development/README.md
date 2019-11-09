@@ -16,19 +16,18 @@
 
 ## 1. Introduction
 
-This document mainly describes the structure of each module of the submarine 
-project, the development and test description of each module.
+This document mainly describes the structure of each module of the Submarine project, the development and test description of each module.
 
 ## 2. Submarine Project Structure
 
 ### 2.1. dev-support
 
-+ **mini-submarine**: by using the docker image provided by submarine, you can 
-experience all the functions of submarine in a single docker environment, while 
++ **mini-submarine**: by using the docker image provided by Submarine, you can 
+experience all the functions of Submarine in a single docker environment, while 
 mini-submarine also provides developers with a development and testing 
 environment, Avoid the hassle of installing and deploying the runtime 
 environment.
-+ **submarine-installer**: Submarine-installer is our submarine runtime 
++ **submarine-installer**: submarine-installer is our submarine runtime 
 environment installation tool for yarn-3.1+ and above.By using 
 submarine-installer, it is easy to install and deploy system services such as
 `docker`, `nvidia-docker`, `nvidia driver`, `ETCD`, `Calico network` etc. 
@@ -51,7 +50,7 @@ Waiting for supplement
 Waiting for supplement
 
 ### 2.6. submarine-sdk
-+ **pysubmarine**: By using submarine's python sdk library, you can output 
++ **pysubmarine**: By using Submarine's python sdk library, you can output 
 metrics such as metrics when the algorithm is executed in your python program by
 importing pysubmarine during the development of the machine learning algorithm.
 
@@ -61,7 +60,7 @@ provides RESTful interface and Websocket interface. The RESTful interface
 provides workbench-web with management capabilities for databases such as 
 project, department, user, and role.
 + **workbench-web**: is a web front-end service based on `VUE.js` framework. 
-With `workbench-web` users can manage submarine project, department, user, role 
+With `workbench-web` users can manage Submarine project, department, user, role 
 through browser. You can also use the notebook to develop machine learning 
 algorithms, model release and other lifecycle management.
 
@@ -70,7 +69,7 @@ algorithms, model release and other lifecycle management.
 Submarine workbench consists of three modules: workbench-server, workbench-web
 and database. 
 
-First, you need to clone the entire submarine project: 
+First, you need to clone the entire Submarine project: 
 
 ```
 git clone https://github.com/hadoopsubmarine/submarine.git

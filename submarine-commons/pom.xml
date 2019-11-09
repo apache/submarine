@@ -24,6 +24,7 @@
     <groupId>org.apache.submarine</groupId>
     <artifactId>submarine</artifactId>
     <version>0.3.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -37,6 +38,7 @@
     <module>commons-utils</module>
     <module>commons-runtime</module>
     <module>commons-cluster</module>
+    <module>commons-metastore</module>
   </modules>
 
 </project>

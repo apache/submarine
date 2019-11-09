@@ -253,7 +253,7 @@ cd && cd spark-script && ./run_spark.sh
    <configuration>
       <property>
         <name>submarine.runtime.class</name>
-        <value>org.apache.submarine.runtimes.tony.TonyRuntimeFactory</value>
+        <value>org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory</value>
       </property>
    </configuration>
    ```

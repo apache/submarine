@@ -41,7 +41,7 @@ services:
 env:
   global:
     # submarine core does not required by workbench-server integration tests
-    # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-runtime/yarnservice-runtime` in EXCLUDE_SUBMARINE
+    # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-server/server-submitter/submitter-yarnservice` in EXCLUDE_SUBMARINE
     - EXCLUDE_SUBMARINE="!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn"
     - EXCLUDE_WORKBENCH="!submarine-workbench,!submarine-workbench/workbench-web,!submarine-workbench/workbench-server"
     - EXCLUDE_INTERPRETER="!submarine-workbench/interpreter,!submarine-workbench/interpreter/interpreter-engine,!submarine-workbench/interpreter/python-interpreter"
@@ -111,6 +111,12 @@ matrix:
       jdk: "openjdk8"
       dist: xenial
       env: NAME="Test workbench-web" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl submarine-workbench/workbench-web" TEST_PROJECTS=""
+
+    # Test test-e2e
+    - language: java
+      jdk: "openjdk8"
+      dist: xenial
+      env: NAME="Test test-e2e" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean test" TEST_FLAG="test -DskipRat -am" MODULES="-pl submarine-test/e2e" TEST_MODULES="-pl submarine-test/e2e" TEST_PROJECTS=""
 
     # Test interpreter
     - language: java

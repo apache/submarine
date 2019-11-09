@@ -70,9 +70,8 @@ public class SysDeptRestApi {
     LOG.info("SysDeptRestApi.tree()");
 
     List<SysDept> sysDeptList = null;
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
       Map<String, Object> where = new HashMap<>();
       where.put("deptCode", likeDeptCode);
@@ -81,8 +80,6 @@ public class SysDeptRestApi {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
-    } finally {
-      sqlSession.close();
     }
 
     List<SysDeptSelect> sysDeptSelects = new ArrayList<>();
@@ -115,9 +112,7 @@ public class SysDeptRestApi {
     LOG.info("queryIdTree({})", disableDeptCode);
 
     List<SysDeptSelect> sysDeptSelects = new ArrayList<>();
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
       List<SysDept> sysDeptList = sysDeptMapper.selectAll(new HashMap<>());
 
@@ -129,8 +124,6 @@ public class SysDeptRestApi {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
-    } finally {
-      sqlSession.close();
     }
 
     return new JsonResponse.Builder<ListResult<List<SysDeptSelect>>>(Response.Status.OK)
@@ -143,9 +136,7 @@ public class SysDeptRestApi {
   public Response add(SysDept sysDept) {
     LOG.info("add({})", sysDept.toString());
 
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
       sysDeptMapper.add(sysDept);
       sqlSession.commit();
@@ -153,8 +144,6 @@ public class SysDeptRestApi {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false)
           .message("Save department failed!").build();
-    } finally {
-      sqlSession.close();
     }
 
     return new JsonResponse.Builder<SysDept>(Response.Status.OK)
@@ -166,9 +155,7 @@ public class SysDeptRestApi {
   @SubmarineApi
   public Response edit(SysDept sysDept) {
     LOG.info("edit({})", sysDept.toString());
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
 
       SysDept dept = sysDeptMapper.getById(sysDept.getId());
@@ -182,8 +169,6 @@ public class SysDeptRestApi {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Update department failed!").success(false).build();
-    } finally {
-      sqlSession.close();
     }
 
     return new JsonResponse.Builder<>(Response.Status.OK).success(true)
@@ -195,9 +180,7 @@ public class SysDeptRestApi {
   @SubmarineApi
   public Response resetParentDept() {
     LOG.info("resetParentDept()");
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
       sysDeptMapper.resetDeptLevel();
       sqlSession.commit();
@@ -205,8 +188,6 @@ public class SysDeptRestApi {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Reset department level failed!").success(false).build();
-    } finally {
-      sqlSession.close();
     }
 
     return new JsonResponse.Builder<>(Response.Status.OK).success(true)
@@ -223,9 +204,8 @@ public class SysDeptRestApi {
       msgOperation = "Restore";
     }
 
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
 
       SysDept dept = new SysDept();
@@ -237,8 +217,6 @@ public class SysDeptRestApi {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message(msgOperation + " department failed!").success(false).build();
-    } finally {
-      sqlSession.close();
     }
 
     return new JsonResponse.Builder<>(Response.Status.OK)
@@ -250,9 +228,7 @@ public class SysDeptRestApi {
   @SubmarineApi
   public Response deleteBatch(@QueryParam("ids") String ids) {
     LOG.info("deleteBatch({})", ids.toString());
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
       sysDeptMapper.deleteBatch(Arrays.asList(ids.split(",")));
       sqlSession.commit();
@@ -260,8 +236,6 @@ public class SysDeptRestApi {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Batch delete department failed!").success(false).build();
-    } finally {
-      sqlSession.close();
     }
 
     return new JsonResponse.Builder<>(Response.Status.OK)
@@ -273,9 +247,8 @@ public class SysDeptRestApi {
   @SubmarineApi
   public Response remove(String id) {
     LOG.info("remove({})", id);
-    SqlSession sqlSession = null;
-    try {
-      sqlSession = MyBatisUtil.getSqlSession();
+
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
       sysDeptMapper.deleteById(id);
       sqlSession.commit();
@@ -283,8 +256,6 @@ public class SysDeptRestApi {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
           .message("Delete department failed!").success(false).build();
-    } finally {
-      sqlSession.close();
     }
 
     return new JsonResponse.Builder<>(Response.Status.OK)

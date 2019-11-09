@@ -108,10 +108,11 @@ public class PythonInterpreter extends InterpreterProcess {
     open();
     String code = "1 + 1";
     InterpreterResult result = interpret(code);
-    LOG.info("Execution Python Interpreter, Calculation formula {}, Result = {}", code, result);
+    LOG.info("Execution Python Interpreter, Calculation formula {}, Result = {}",
+        code, result.message().get(0).getData());
 
-    if (result.code() == InterpreterResult.Code.SUCCESS) {
-      return true;
+    if (result.code() != InterpreterResult.Code.SUCCESS) {
+      return false;
     }
     if (StringUtils.equals(result.message().get(0).getData(), "2\n")) {
       return true;
