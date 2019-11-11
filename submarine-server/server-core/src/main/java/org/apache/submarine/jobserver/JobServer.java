@@ -68,7 +68,7 @@ public class JobServer {
       LOG.info("Submarine job server started");
       jobServer.join();
     } catch (Exception e) {
-      LOG.info("Submarine job server failed to start");
+      LOG.error("Submarine job server failed to start");
       e.printStackTrace();
     } finally {
       jobServer.destroy();

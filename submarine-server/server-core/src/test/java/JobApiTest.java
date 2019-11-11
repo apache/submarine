@@ -69,7 +69,7 @@ public class JobApiTest extends JerseyTest {
 
   // Test job created with incorrect JSON input
   @Test
-  public void testCreateJobWhenJsonInputIsWrongThenResponseCodeAccepted() {
+  public void testCreateJobWhenJsonInputIsWrongThenResponseCodeBadRequest() {
     String jobSpec = "{\"ttype\": \"tensorflow\", \"version\":\"v1.13\"}";
     Response response = target(RestConstants.V1 + "/" + RestConstants.JOBS)
         .request()
