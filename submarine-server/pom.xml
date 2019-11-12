@@ -96,19 +96,9 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.apache.submarine</groupId>
-        <artifactId>workbench-server</artifactId>
-        <version>${project.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-databind</artifactId>
-        </exclusion>
-        </exclusions>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>${gson.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -18,9 +18,9 @@
  */
 
 import com.google.gson.Gson;
+import org.apache.submarine.jobserver.rest.dao.JsonResponse;
 import org.apache.submarine.jobserver.rest.dao.RestConstants;
 import org.apache.submarine.jobserver.rest.api.JobApi;
-import org.apache.submarine.server.JsonResponse;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTest;
 import org.junit.Test;

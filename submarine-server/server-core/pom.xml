@@ -95,8 +95,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.submarine</groupId>
-            <artifactId>workbench-server</artifactId>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
         </dependency>
     </dependencies>
 </project>
