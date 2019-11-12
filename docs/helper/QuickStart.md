@@ -51,7 +51,7 @@ Once the applicable runtime is chosen and environment is ready, a `submarine.xml
 
 |Configuration Name | Description |
 |:---- |:---- |
-| `submarine.runtime.class` | "org.apache.submarine.runtimes.tony.TonyRuntimeFactory" or "org.apache.submarine.runtimes.yarnservice.YarnServiceRuntimeFactory" |
+| `submarine.runtime.class` | "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory" or "org.apache.submarine.server.submitter.yarnservice.YarnServiceRuntimeFactory" |
 
 <br />
 
@@ -61,9 +61,9 @@ A sample `submarine.xml` is here:
 <configuration>
   <property>
     <name>submarine.runtime.class</name>
-    <value>org.apache.submarine.runtimes.tony.TonyRuntimeFactory</value>
+    <value>org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory</value>
     <!-- Alternatively, you can use:
-    <value>org.apache.submarine.runtimes.yarnservice.YarnServiceRuntimeFactory</value>
+    <value>org.apache.submarine.server.submitter.yarnservice.YarnServiceRuntimeFactory</value>
     -->
   </property>
 </configuration>

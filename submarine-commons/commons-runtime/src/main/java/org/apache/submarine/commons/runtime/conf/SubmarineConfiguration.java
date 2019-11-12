@@ -61,7 +61,7 @@ public class SubmarineConfiguration extends Configuration {
 
   public static final String RUNTIME_CLASS = PREFIX + "runtime.class";
   public static final String DEFAULT_RUNTIME_CLASS =
-      "org.apache.submarine.runtimes.tony.TonyRuntimeFactory";
+      "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory";
 
   public void setSubmarineRuntimeClass(String runtimeClass) {
     set(RUNTIME_CLASS, runtimeClass);
