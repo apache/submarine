@@ -27,6 +27,7 @@ import org.apache.submarine.server.submitter.yarnservice.HadoopEnvironmentSetup;
 import org.apache.submarine.server.submitter.yarnservice.command.AbstractLaunchCommand;
 import org.apache.submarine.server.submitter.yarnservice.command.LaunchScriptBuilder;
 import org.apache.submarine.server.submitter.yarnservice.tensorflow.TensorFlowCommons;
+import org.apache.submarine.server.submitter.yarnservice.tensorflow.TensorFlowConfigEnvGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +79,7 @@ public abstract class TensorFlowLaunchCommand extends AbstractLaunchCommand {
 
     // When distributed training is required
     if (distributed) {
-      String tfConfigEnvValue = TensorFlowCommons.getTFConfigEnv(
+      String tfConfigEnvValue = TensorFlowConfigEnvGenerator.getTFConfigEnv(
           role.getComponentName(), numberOfWorkers,
           numberOfPS, name,
           TensorFlowCommons.getUserName(),
