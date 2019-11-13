@@ -45,7 +45,7 @@ public class JobServer {
 
   private static final Logger LOG = LoggerFactory.getLogger(JobServer.class);
 
-  private SubmarineConfiguration conf = SubmarineConfiguration.create();
+  private SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
   private Server jobServer;
 

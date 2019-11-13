@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.submarine.commons.runtime.conf.SubmarineConfiguration.SUBMARINE_RUNTIME_APP_TYPE;
+import static org.apache.submarine.commons.utils.SubmarineConfiguration.SUBMARINE_RUNTIME_APP_TYPE;
 
 /**
  * Utilities for YARN Runtime.

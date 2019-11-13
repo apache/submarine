@@ -20,6 +20,12 @@
 <configuration>
 
   <property>
+    <name>submarine.runtime.class</name>
+    <value>org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory</value>
+    <description>RuntimeFactory for Submarine jobs</description>
+  </property>
+
+  <property>
     <name>workbench.server.addr</name>
     <value>0.0.0.0</value>
     <description>Server address</description>

@@ -29,7 +29,7 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.yarn.service.api.records.Component;
 import org.apache.hadoop.yarn.service.api.records.ConfigFile;
 import org.apache.submarine.commons.runtime.ClientContext;
-import org.apache.submarine.commons.runtime.conf.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
 import org.apache.submarine.server.submitter.yarnservice.utils.ZipUtilities;
@@ -54,7 +54,7 @@ import java.util.Set;
 public class FileSystemOperations {
   private static final Logger LOG =
       LoggerFactory.getLogger(FileSystemOperations.class);
-  private final Configuration submarineConfig;
+  private final SubmarineConfiguration submarineConfig;
   private final Configuration yarnConfig;
 
   private Set<Path> uploadedFiles = new HashSet<>();
@@ -179,9 +179,9 @@ public class FileSystemOperations {
     } else {
       actualSizeByte = FileUtil.getDU(new File(uri));
     }
-    long maxFileSizeMB = submarineConfig
-        .getLong(SubmarineConfiguration.LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB,
-            SubmarineConfiguration.DEFAULT_MAX_ALLOWED_REMOTE_URI_SIZE_MB);
+    long maxFileSizeMB = submarineConfig.getLong(
+        SubmarineConfiguration.ConfVars.
+            SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB);
     LOG.info("{} fie/dir: {}, size(Byte):{},"
             + " Allowed max file/dir size: {}",
         locationType, uri, actualSizeByte, maxFileSizeMB * 1024 * 1024);

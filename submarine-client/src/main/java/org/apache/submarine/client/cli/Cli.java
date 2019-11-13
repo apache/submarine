@@ -47,7 +47,7 @@ public class Cli {
   private static ClientContext getClientContext() {
     Configuration conf = new YarnConfiguration();
     ClientContext clientContext = new ClientContext();
-    clientContext.setConfiguration(conf);
+    clientContext.setYarnConfig(conf);
     RuntimeFactory runtimeFactory = RuntimeFactory.getRuntimeFactory(
         clientContext);
     clientContext.setRuntimeFactory(runtimeFactory);

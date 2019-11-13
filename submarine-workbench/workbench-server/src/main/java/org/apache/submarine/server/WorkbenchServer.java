@@ -59,12 +59,18 @@ public class WorkbenchServer extends ResourceConfig {
   public static Server jettyWebServer;
   public static ServiceLocator sharedServiceLocator;
 
-  private static SubmarineConfiguration conf = SubmarineConfiguration.create();
+  private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
   public static void main(String[] args) throws InterruptedException {
     PropertyConfigurator.configure(ClassLoader.getSystemResource("log4j.properties"));
 
-    final SubmarineConfiguration conf = SubmarineConfiguration.create();
+    final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+    LOG.info("Workbench server Host: " + conf.getServerAddress());
+    if (conf.useSsl() == false) {
+      LOG.info("Workbench server Port: " + conf.getServerPort());
+    } else {
+      LOG.info("Workbench server SSL Port: " + conf.getServerSslPort());
+    }
 
     jettyWebServer = setupJettyServer(conf);
 

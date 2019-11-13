@@ -52,7 +52,7 @@ public class InterpreterClusterTest {
   public static void startCluster() throws IOException, InterruptedException {
     LOG.info("startCluster >>>");
 
-    sconf = SubmarineConfiguration.create();
+    sconf = SubmarineConfiguration.getInstance();
 
     // Set the cluster IP and port
     serverHost = NetworkUtils.findAvailableHostAddress();

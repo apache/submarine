@@ -25,7 +25,7 @@ import org.apache.hadoop.yarn.service.api.records.ConfigFile;
 import org.apache.hadoop.yarn.service.api.records.Service;
 import org.apache.submarine.client.cli.runjob.RunJobCli;
 import org.apache.submarine.commons.runtime.MockClientContext;
-import org.apache.submarine.commons.runtime.conf.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
 
@@ -415,12 +415,13 @@ public class TestYarnServiceRunJobCliLocalization {
     String localUri1 = "/temp/script2";
     String containerLocal3 = "./";
 
-    SubmarineConfiguration submarineConf = new SubmarineConfiguration();
+    SubmarineConfiguration submarineConf =
+        SubmarineConfiguration.newInstance();
 
     // Max 10MB, mock remote will always return file size 100MB.
-    submarineConf.set(
-        SubmarineConfiguration.LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB,
-        "10");
+    submarineConf.setLong(
+        SubmarineConfiguration.ConfVars.
+            SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB, 10L);
     mockClientContext.setSubmarineConfig(submarineConf);
 
     assertFalse(SubmarineLogs.isVerbose());

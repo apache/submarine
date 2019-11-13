@@ -125,7 +125,7 @@ import static org.apache.submarine.commons.cluster.meta.ClusterMetaOperation.GET
 public abstract class ClusterManager {
   private static Logger LOG = LoggerFactory.getLogger(ClusterManager.class);
 
-  public final SubmarineConfiguration sconf = SubmarineConfiguration.create();
+  public final SubmarineConfiguration sconf = SubmarineConfiguration.getInstance();
 
   protected Collection<Node> clusterNodes = new ArrayList<>();
 
