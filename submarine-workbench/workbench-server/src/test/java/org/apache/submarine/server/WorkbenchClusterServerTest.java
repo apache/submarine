@@ -45,7 +45,7 @@ public class WorkbenchClusterServerTest {
   public static void start() throws Exception {
     LOG.info("WorkbenchClusterServerTest:start()");
 
-    SubmarineConfiguration conf = SubmarineConfiguration.create();
+    SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
     String serverHost = NetworkUtils.findAvailableHostAddress();
     int serverPort = NetworkUtils.findRandomAvailablePortOnAllLocalInterfaces();
     String clusterAdd = serverHost + ":" + serverPort;

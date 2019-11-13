@@ -42,11 +42,11 @@ public abstract class AbstractCli implements Tool {
 
   @Override
   public void setConf(Configuration conf) {
-    clientContext.setSubmarineConfig(conf);
+    clientContext.setYarnConfig(conf);
   }
 
   @Override
   public Configuration getConf() {
-    return clientContext.getSubmarineConfig();
+    return clientContext.getYarnConfig();
   }
 }

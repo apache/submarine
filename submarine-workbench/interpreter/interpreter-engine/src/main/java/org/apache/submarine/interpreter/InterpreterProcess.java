@@ -58,7 +58,7 @@ public class InterpreterProcess extends Thread implements Interpreter {
   // cluster manager client
   private ClusterClient clusterClient = ClusterClient.getInstance();
 
-  private SubmarineConfiguration sconf = SubmarineConfiguration.create();
+  private SubmarineConfiguration sconf = SubmarineConfiguration.getInstance();
 
   protected String interpreterId;
 

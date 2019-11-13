@@ -27,7 +27,7 @@ CONFIG_DIR="/tmp/hadoop-config"
 
 # Copy config files from volume mount
 
-for f in slaves core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml container-executor.cfg capacity-scheduler.xml node-resources.xml resource-types.xml submarine.xml; do
+for f in slaves core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml container-executor.cfg capacity-scheduler.xml node-resources.xml resource-types.xml submarine-site.xml; do
   if [[ -e ${CONFIG_DIR}/$f ]]; then
     cp ${CONFIG_DIR}/$f $HADOOP_PREFIX/etc/hadoop/$f
   else

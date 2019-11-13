@@ -47,7 +47,7 @@ public class MyBatisUtil {
 
       checkCalledByTestMethod();
 
-      SubmarineConfiguration conf = SubmarineConfiguration.create();
+      SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
       String jdbcClassName = conf.getJdbcDriverClassName();
       String jdbcUrl = conf.getJdbcUrl();
       String jdbcUserName = conf.getJdbcUserName();
@@ -95,7 +95,7 @@ public class MyBatisUtil {
   private static void usingTestDatabase() {
     LOG.info("Run the test unit using the test database");
     // Run the test unit using the test database
-    SubmarineConfiguration conf = SubmarineConfiguration.create();
+    SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
     conf.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/submarineDB_test?" +
         "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false");

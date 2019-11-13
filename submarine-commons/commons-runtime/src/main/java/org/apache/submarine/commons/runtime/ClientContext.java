@@ -19,7 +19,7 @@
 
 package org.apache.submarine.commons.runtime;
 
-import org.apache.submarine.commons.runtime.conf.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.runtime.fs.DefaultRemoteDirectoryManager;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
 import org.apache.hadoop.conf.Configuration;
@@ -31,11 +31,11 @@ public class ClientContext {
 
   private volatile RemoteDirectoryManager remoteDirectoryManager;
   private YarnClient yarnClient;
-  private Configuration submarineConfig;
+  private SubmarineConfiguration submarineConfig;
   private RuntimeFactory runtimeFactory;
 
   public ClientContext() {
-    submarineConfig = new SubmarineConfiguration();
+    submarineConfig = SubmarineConfiguration.getInstance();
   }
 
   public synchronized YarnClient getOrCreateYarnClient() {
@@ -51,7 +51,7 @@ public class ClientContext {
     return yarnConf;
   }
 
-  public void setConfiguration(Configuration conf) {
+  public void setYarnConfig(Configuration conf) {
     this.yarnConf = conf;
   }
 
@@ -66,11 +66,11 @@ public class ClientContext {
     return remoteDirectoryManager;
   }
 
-  public Configuration getSubmarineConfig() {
+  public SubmarineConfiguration getSubmarineConfig() {
     return submarineConfig;
   }
 
-  public void setSubmarineConfig(Configuration submarineConfig) {
+  public void setSubmarineConfig(SubmarineConfiguration submarineConfig) {
     this.submarineConfig = submarineConfig;
   }
 

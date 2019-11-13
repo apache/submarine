@@ -47,7 +47,7 @@ Note that if you want to quickly try Submarine on new or existing YARN cluster, 
 
 For the environment setup, please check [InstallationGuide](InstallationGuide.md) or [InstallationGuideCN](InstallationGuideChineseVersion.md)
 
-Once the applicable runtime is chosen and environment is ready, a `submarine.xml` need to be created under  `$HADOOP_CONF_DIR`. To use the TonY runtime, please set below value in the submarine configuration.
+Once the applicable runtime is chosen and environment is ready, a `submarine-site.xml` need to be created under  `$HADOOP_CONF_DIR`. To use the TonY runtime, please set below value in the submarine configuration.
 
 |Configuration Name | Description |
 |:---- |:---- |
@@ -55,7 +55,7 @@ Once the applicable runtime is chosen and environment is ready, a `submarine.xml
 
 <br />
 
-A sample `submarine.xml` is here:
+A sample `submarine-site.xml` is here:
 ```java
 <?xml version="1.0"?>
 <configuration>
