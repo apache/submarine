@@ -25,6 +25,7 @@
     <artifactId>submarine-server</artifactId>
     <groupId>org.apache.submarine</groupId>
     <version>0.3.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 

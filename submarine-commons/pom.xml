@@ -24,11 +24,10 @@
     <groupId>org.apache.submarine</groupId>
     <artifactId>submarine</artifactId>
     <version>0.3.0-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
+    <relativePath>..</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.apache.submarine</groupId>
   <artifactId>submarine-commons</artifactId>
   <version>0.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>

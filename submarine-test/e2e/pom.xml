@@ -8,12 +8,12 @@
     <artifactId>submarine-test</artifactId>
     <groupId>org.apache.submarine</groupId>
     <version>0.3.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
   </parent>
 
   <artifactId>submarine-e2e</artifactId>
   <version>0.3.0-SNAPSHOT</version>
   <name>Submarine: E2E Test</name>
-
 
   <properties>
     <maven.compiler.source>${java.version}</maven.compiler.source>
