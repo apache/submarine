@@ -108,24 +108,27 @@ public class Localization {
     return remoteUri;
   }
 
-  public void setRemoteUri(String rUti) {
+  public Localization setRemoteUri(String rUti) {
     this.remoteUri = rUti;
+    return this;
   }
 
   public String getLocalPath() {
     return localPath;
   }
 
-  public void setLocalPath(String lPath) {
+  public Localization setLocalPath(String lPath) {
     this.localPath = lPath;
+    return this;
   }
 
   public String getMountPermission() {
     return mountPermission;
   }
 
-  public void setMountPermission(String mPermission) {
+  public Localization setMountPermission(String mPermission) {
     this.mountPermission = mPermission;
+    return this;
   }
 
   private boolean isSupportedScheme(String scheme) {

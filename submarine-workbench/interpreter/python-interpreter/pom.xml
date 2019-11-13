@@ -237,6 +237,14 @@
                   <pattern>org.apache.zeppelin</pattern>
                   <shadedPattern>${shaded.dependency.prefix}.org.apache.zeppelin</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>io.grpc</pattern>
+                  <shadedPattern>${shaded.dependency.prefix}.io.grpc</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>io.opencensus</pattern>
+                  <shadedPattern>${shaded.dependency.prefix}.io.opencensus</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>

@@ -41,7 +41,7 @@ services:
 env:
   global:
     # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-server/server-submitter/submitter-yarnservice` in EXCLUDE_SUBMARINE
-    - EXCLUDE_SUBMARINE="!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn,!submarine-server/server-core"
+    - EXCLUDE_SUBMARINE="!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn,!submarine-server/server-core,!submarine-server/server-rpc"
     - EXCLUDE_WORKBENCH="!submarine-workbench,!submarine-workbench/workbench-web"
     - EXCLUDE_INTERPRETER="!submarine-workbench/interpreter,!submarine-workbench/interpreter/interpreter-engine,!submarine-workbench/interpreter/python-interpreter,!submarine-workbench/interpreter/spark-interpreter""
     - EXCLUDE_SUBMODULE_TONY="!submodules/tony,!submodules/tony/tony-mini,!submodules/tony/tony-core,!submodules/tony/tony-proxy,!submodules/tony/tony-portal,!submodules/tony/tony-azkaban,!submodules/tony/tony-cli"
@@ -61,6 +61,14 @@ before_install:
   - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'submarine_test'@'%';"
   - mysql -e "use submarine_test; source ./docs/database/submarine.sql; show tables;"
   - ./dev-support/travis/install_external_dependencies.sh
+  # protobuf 3.10.1
+  - PROTOBUF_VERSION=3.10.1
+  - PROTOC_FILENAME=protoc-${PROTOBUF_VERSION}-linux-x86_64.zip
+  - pushd /home/travis
+  - wget https://github.com/google/protobuf/releases/download/v${PROTOBUF_VERSION}/${PROTOC_FILENAME}
+  - unzip ${PROTOC_FILENAME}
+  - bin/protoc --version
+  - popd
 
 matrix:
   include:

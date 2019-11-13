@@ -52,7 +52,7 @@ public class TensorFlowRunJobParameters extends RunJobParameters {
 
     String input = parametersHolder.getOptionValue(CliConstants.INPUT_PATH);
     this.workerParameters =
-        getWorkerParameters(clientContext, parametersHolder, input);
+        generateWorkerParameters(clientContext, parametersHolder, input);
     this.psParameters = getPSParameters(clientContext, parametersHolder);
     this.distributed = determineIfDistributed(workerParameters.getReplicas(),
         psParameters.getReplicas());
@@ -159,6 +159,14 @@ public class TensorFlowRunJobParameters extends RunJobParameters {
         tensorboardDockerImage, tensorboardResource);
   }
 
+  public RoleParameters getPsParameters() {
+    return psParameters;
+  }
+
+  public void setPsParameters(RoleParameters parameters) {
+    this.psParameters = parameters;
+  }
+
   public int getNumPS() {
     return psParameters.getReplicas();
   }
@@ -191,8 +199,20 @@ public class TensorFlowRunJobParameters extends RunJobParameters {
     psParameters.setLaunchCommand(launchCmd);
   }
 
+  public RoleParameters getTensorBoardParameters() {
+    return tensorBoardParameters;
+  }
+
+  public void setTensorBoardParameters(RoleParameters tensorBoardParameters) {
+    this.tensorBoardParameters = tensorBoardParameters;
+  }
+
   public boolean isTensorboardEnabled() {
     return tensorboardEnabled;
+  }
+
+  public void setTensorboardEnabled(boolean tensorboardEnabled) {
+    this.tensorboardEnabled = tensorboardEnabled;
   }
 
   public Resource getTensorboardResource() {

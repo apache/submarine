@@ -20,10 +20,12 @@
 package org.apache.submarine.client.cli;
 
 import org.apache.hadoop.conf.Configuration;
+import org.apache.submarine.client.cli.remote.RpcRuntimeFactory;
 import org.apache.submarine.client.cli.runjob.RunJobCli;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.runtime.RuntimeFactory;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,11 +47,17 @@ public class Cli {
   }
 
   private static ClientContext getClientContext() {
-    Configuration conf = new YarnConfiguration();
     ClientContext clientContext = new ClientContext();
-    clientContext.setYarnConfig(conf);
-    RuntimeFactory runtimeFactory = RuntimeFactory.getRuntimeFactory(
-        clientContext);
+    RuntimeFactory runtimeFactory;
+    if (clientContext.getSubmarineConfig().getBoolean(
+        SubmarineConfiguration.ConfVars.
+            SUBMARINE_SERVER_REMOTE_EXECUTION_ENABLED)) {
+      runtimeFactory = new RpcRuntimeFactory(clientContext);
+    } else {
+      Configuration conf = new YarnConfiguration();
+      clientContext.setYarnConfig(conf);
+      runtimeFactory = RuntimeFactory.getRuntimeFactory(clientContext);
+    }
     clientContext.setRuntimeFactory(runtimeFactory);
     return clientContext;
   }

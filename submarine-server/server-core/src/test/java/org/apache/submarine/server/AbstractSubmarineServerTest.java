@@ -114,7 +114,7 @@ public abstract class AbstractSubmarineServerTest {
       executor.submit(SERVER);
       long s = System.currentTimeMillis();
       boolean started = false;
-      while (System.currentTimeMillis() - s < 1000 * 60 * 3) {  // 3 minutes
+      while (System.currentTimeMillis() - s < 1000 * 60 * 5) {  // 5 minutes
         Thread.sleep(2000);
         started = checkIfServerIsRunning();
         if (started == true) {
@@ -145,6 +145,7 @@ public abstract class AbstractSubmarineServerTest {
     if (!WAS_RUNNING) {
       LOG.info("Terminating test Submarine server...");
       SubmarineServer.jettyWebServer.stop();
+      SubmarineServer.rpcServer.stop();
       executor.shutdown();
 
       long s = System.currentTimeMillis();

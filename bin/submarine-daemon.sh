@@ -36,9 +36,9 @@ cd ${BIN}/>/dev/null
 SUBMARINE_SERVER_NAME="Submarine Server"
 SUBMARINE_SERVER_LOGFILE="${SUBMARINE_LOG_DIR}/submarine.log"
 SUBMARINE_SERVER_MAIN=org.apache.submarine.server.SubmarineServer
-JAVA_OPTS+=" -Dsubmarine.log.file=${SUBMARINE_SERVER_LOGFILE}"
+JAVA_OPTS+="${SUBMARINE_SERVER_JAVA_OPTS} ${SUBMARINE_SERVER_MEM} -Dsubmarine.log.file=${SUBMARINE_SERVER_LOGFILE}"
 
-add_jar_in_dir "${BIN}/../lib"
+add_each_jar_in_dir_recursive "${BIN}/../lib"
 
 function initialize_default_directories() {
   if [[ ! -d "${SUBMARINE_LOG_DIR}" ]]; then

@@ -97,6 +97,13 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>../submarine-commons/commons-rpc/target</directory>
+      <outputDirectory>/lib</outputDirectory>
+      <includes>
+        <include>submarine-commons-rpc-${project.version}.jar</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>../submarine-server/server-submitter/submitter-k8s/target</directory>
       <outputDirectory>/lib/submitter</outputDirectory>
       <includes>
@@ -107,7 +114,7 @@
       <directory>../submarine-server/server-submitter/submitter-yarn/target</directory>
       <outputDirectory>/lib/submitter</outputDirectory>
       <includes>
-        <include>submarine-submitter-yarn-${project.version}.jar</include>
+        <include>submarine-submitter-yarn-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
     <fileSet>
@@ -139,6 +146,9 @@
         <exclude>commons-utils-${project.version}.jar</exclude>
         <exclude>commons-runtime-${project.version}.jar</exclude>
         <exclude>commons-cluster-${project.version}.jar</exclude>
+        <exclude>commons-rpc-${project.version}.jar</exclude>
+        <exclude>grpc-*.jar</exclude>
+        <exclude>protobuf-java*.jar</exclude>
       </excludes>
     </fileSet>
     <fileSet>

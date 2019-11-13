@@ -49,7 +49,7 @@ public class PyTorchRunJobParameters extends RunJobParameters {
 
     String input = parametersHolder.getOptionValue(CliConstants.INPUT_PATH);
     this.workerParameters =
-        getWorkerParameters(clientContext, parametersHolder, input);
+        generateWorkerParameters(clientContext, parametersHolder, input);
     this.distributed = determineIfDistributed(workerParameters.getReplicas());
     executePostOperations(clientContext);
   }

@@ -79,6 +79,7 @@
     <cglib.version>3.2.2</cglib.version>
     <mybatis.version>3.2.8</mybatis.version>
     <mysql-connector-java.version>5.1.39</mysql-connector-java.version>
+    <grpc.verison>1.25.0</grpc.verison>
 
     <!-- frontend maven plugin related versions-->
     <plugin.frontend.version>1.6</plugin.frontend.version>
@@ -129,8 +130,8 @@
   </properties>
 
   <modules>
-    <module>submarine-client</module>
     <module>submarine-commons</module>
+    <module>submarine-client</module>
     <module>submodules/tony</module>
     <module>submarine-server</module>
     <module>submarine-all</module>
@@ -271,6 +272,21 @@
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-jaxrs</artifactId>
         <version>${codehaus-jackson.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>${grpc.verison}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-protobuf</artifactId>
+        <version>${grpc.verison}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-stub</artifactId>
+        <version>${grpc.verison}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

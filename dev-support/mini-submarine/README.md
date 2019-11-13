@@ -100,6 +100,26 @@ For example, if you are in mainland China, you can use the following command
 cd && cd submarine && ./run_submarine_mnist_tony.sh -d http://yann.lecun.com/exdb/mnist/
 ```
 
+#### Run a mnist TF job via submarine server
+
+Submarine server is supposed to manage jobs lifecycle. Clients can just submit
+job parameters or yaml file to submarine server instead of submitting jobs
+directly by themselves. Submarine server can handle the rest of the work.
+
+Set submarine.server.remote.execution.enabled to true in the file of
+/opt/submarine-current/conf/submarine-site
+```
+  <property>
+    <name>submarine.server.remote.execution.enabled</name>
+    <value>true</value>
+    <description>Run jobs using rpc server.</description>
+  </property>
+```
+Run the following command to submit a job via submarine server
+```
+./run_submarine_mnist_tony.sh
+```
+
 #### Try your own submarine program
 
 Run container with your source code. You can also use "docker cp" to an existing running container

@@ -409,6 +409,10 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getBooleanValue(propertyName, defaultValue);
   }
 
+  public void updateConfiguration(String name, String value) {
+    properties.put(name, value);
+  }
+
   public enum ConfVars {
     SUBMARINE_CONF_DIR("submarine.conf.dir", "conf"),
     SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB(
@@ -430,6 +434,10 @@ public class SubmarineConfiguration extends XMLConfiguration {
     SUBMARINE_SERVER_SSL_TRUSTSTORE_TYPE("submarine.server.ssl.truststore.type", null),
     SUBMARINE_SERVER_SSL_TRUSTSTORE_PASSWORD("submarine.server.ssl.truststore.password", null),
     SUBMARINE_CLUSTER_ADDR("submarine.cluster.addr", ""),
+    SUBMARINE_SERVER_REMOTE_EXECUTION_ENABLED(
+        "submarine.server.remote.execution.enabled", false),
+    SUBMARINE_SERVER_REMOTE_EXECUTION_PORT(
+        "submarine.server.remote.execution.port", 8980),
     CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", 3000),
     CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", 9000),
     JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
@@ -441,8 +449,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
         "workbench.websocket.max.text.message.size", "1024000"),
     WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),
-    SUBMARINE_RUNTIME_CLASS(
-        "submarine.runtime.class",
+    SUBMARINE_RUNTIME_CLASS("submarine.runtime.class",
         "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory");
 
     private String varName;

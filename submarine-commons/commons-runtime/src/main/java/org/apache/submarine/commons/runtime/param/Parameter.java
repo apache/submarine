@@ -31,7 +31,11 @@ public interface Parameter {
    */
   Framework getFramework();
 
+  Parameter setFramework(Framework framework);
+
   BaseParameters getParameters();
+
+  Parameter setParameters(BaseParameters parameters);
 
   String getOptionValue(String option) throws YarnException;
 

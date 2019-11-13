@@ -19,6 +19,7 @@
 package org.apache.submarine.server;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.submarine.server.rpc.SubmarineRpcServer;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.commons.cluster.ClusterServer;
 import org.eclipse.jetty.http.HttpVersion;
@@ -52,16 +53,19 @@ import org.apache.submarine.commons.utils.SubmarineConfiguration.ConfVars;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
+import java.io.IOException;
 
 public class SubmarineServer extends ResourceConfig {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineServer.class);
 
   public static Server jettyWebServer;
+  public static SubmarineRpcServer rpcServer;
   public static ServiceLocator sharedServiceLocator;
 
   private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) throws InterruptedException,
+      IOException {
     PropertyConfigurator.configure(ClassLoader.getSystemResource("log4j.properties"));
 
     final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
@@ -102,6 +106,7 @@ public class SubmarineServer extends ResourceConfig {
     // Cluster Server
     setupClusterServer();
 
+    rpcServer = SubmarineRpcServer.startRpcServer();
     startServer();
   }
 
