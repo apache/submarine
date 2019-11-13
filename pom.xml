@@ -92,7 +92,7 @@
     <snakeyaml.version>1.16</snakeyaml.version>
     <httpcore.version>4.4.4</httpcore.version>
     <httpclient.version>4.5.2</httpclient.version>
-    <commons-lang.version>2.5</commons-lang.version>
+    <commons-lang.version>2.6</commons-lang.version>
     <commons-lang3.version>3.4</commons-lang3.version>
     <commons-io.version>2.5</commons-io.version>
     <commons-codec.version>1.5</commons-codec.version>
@@ -124,6 +124,7 @@
     <hive.version>2.1.1</hive.version>
     <!--  Submarine on Kubernetes  -->
     <k8s.client-java.version>6.0.1</k8s.client-java.version>
+    <jersey.test-framework>2.27</jersey.test-framework>
   </properties>
 
   <modules>
