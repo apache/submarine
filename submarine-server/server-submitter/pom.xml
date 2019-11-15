@@ -31,7 +31,7 @@
   <artifactId>server-submitter</artifactId>
   <version>0.3.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Submarine: Server Submitter</name>
+  <name>Submarine: Submitter</name>
 
   <modules>
     <module>submitter-yarn</module>

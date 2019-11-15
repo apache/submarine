@@ -128,7 +128,7 @@ public class InterpreterProcess extends Thread implements Interpreter {
 
   // Submit interpreter process metadata information to cluster metadata
   private void putClusterMeta() {
-    if (!sconf.workbenchIsClusterMode()){
+    if (!sconf.isClusterMode()){
       return;
     }
     String nodeName = clusterClient.getClusterNodeName();

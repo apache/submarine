@@ -63,7 +63,7 @@ public class ClusterClient extends ClusterManager {
   // In the ClusterClient metaKey equal interperterGroupId
   public void start(String metaKey) {
     LOG.info("ClusterClient::start({})", metaKey);
-    if (!sconf.workbenchIsClusterMode()) {
+    if (!sconf.isClusterMode()) {
       return;
     }
     super.start();
@@ -74,7 +74,7 @@ public class ClusterClient extends ClusterManager {
   }
 
   public void shutdown() {
-    if (!sconf.workbenchIsClusterMode()) {
+    if (!sconf.isClusterMode()) {
       return;
     }
     if (null != clusterMonitor) {

@@ -43,12 +43,6 @@
     <dependencySet>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>org.apache.submarine:submarine-server</include>
-      </includes>
-    </dependencySet>
-    <dependencySet>
-      <outputDirectory>/</outputDirectory>
-      <includes>
         <include>org.apache.submarine:server-submitter</include>
       </includes>
     </dependencySet>
@@ -112,48 +106,41 @@
     </fileSet>
     <fileSet>
       <directory>../submarine-workbench/workbench-web/target</directory>
-      <outputDirectory>/workbench</outputDirectory>
+      <outputDirectory>/lib/workbench</outputDirectory>
       <includes>
         <include>workbench-web.war</include>
       </includes>
     </fileSet>
     <fileSet>
-      <directory>../submarine-workbench/workbench-server/target</directory>
-      <outputDirectory>/workbench</outputDirectory>
+      <directory>../submarine-server/server-core/target</directory>
+      <outputDirectory>/lib</outputDirectory>
       <includes>
-        <include>workbench-server-${project.version}.jar</include>
+        <include>submarine-server-core-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
-      <directory>../submarine-workbench/workbench-server/target/dependency</directory>
-      <outputDirectory>/workbench/lib</outputDirectory>
+      <directory>../submarine-server/server-core/target/dependency</directory>
+      <outputDirectory>/lib</outputDirectory>
     </fileSet>
     <fileSet>
       <directory>../submarine-workbench/interpreter/python-interpreter/target</directory>
-      <outputDirectory>/workbench/interpreter/python</outputDirectory>
+      <outputDirectory>/lib/interpreter/python</outputDirectory>
       <includes>
         <include>python-interpreter-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-workbench/interpreter/spark/scala-2.11</directory>
-      <outputDirectory>/workbench/interpreter/spark/scala-2.11</outputDirectory>
+      <outputDirectory>/lib/interpreter/spark/scala-2.11</outputDirectory>
       <includes>
         <include>spark-scala-2.11-${zeppelin.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-workbench/interpreter/spark-interpreter/target</directory>
-      <outputDirectory>/workbench/interpreter/spark</outputDirectory>
+      <outputDirectory>/lib/interpreter/spark</outputDirectory>
       <includes>
         <include>spark-interpreter-${project.version}-shade.jar</include>
-      </includes>
-    </fileSet>
-    <fileSet>
-      <directory>../submarine-commons/commons-cluster/target</directory>
-      <outputDirectory>/lib/commons</outputDirectory>
-      <includes>
-        <include>commons-cluster-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
   </fileSets>

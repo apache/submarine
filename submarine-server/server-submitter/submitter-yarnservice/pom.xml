@@ -30,7 +30,7 @@
 
   <artifactId>submitter-yarnservice</artifactId>
   <version>0.3.0-SNAPSHOT</version>
-  <name>Submarine: Server Submitter for YARN Service</name>
+  <name>Submarine: Submitter YARN Service</name>
 
   <properties>
     <!-- Needed for generating FindBugs warnings using parent pom -->

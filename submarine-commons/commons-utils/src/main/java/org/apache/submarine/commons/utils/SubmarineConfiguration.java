@@ -94,7 +94,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return conf;
   }
 
-  public static SubmarineConfiguration newInstance() {
+  private static SubmarineConfiguration newInstance() {
     SubmarineConfiguration submarineConfig;
     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     URL url;
@@ -127,61 +127,41 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public String getServerAddress() {
-    return getString(ConfVars.SERVER_ADDR);
-  }
-
-  public String getJobServerAddress() {
-    return getString(ConfVars.JOB_SERVER_ADDR);
+    return getString(ConfVars.SUBMARINE_SERVER_ADDR);
   }
 
   public boolean useSsl() {
-    return getBoolean(ConfVars.SERVER_SSL);
-  }
-
-  public boolean isJobServerSslEnabled() {
-    return getBoolean(ConfVars.JOB_SERVER_SSL);
+    return getBoolean(ConfVars.SUBMARINE_SERVER_SSL);
   }
 
   public int getServerPort() {
-    return getInt(ConfVars.SERVER_PORT);
-  }
-
-  public int getJobServerPort() {
-    return getInt(ConfVars.JOB_SERVER_PORT);
+    return getInt(ConfVars.SUBMARINE_SERVER_PORT);
   }
 
   @VisibleForTesting
   public void setServerPort(int port) {
-    properties.put(ConfVars.SERVER_PORT.getVarName(), String.valueOf(port));
+    properties.put(ConfVars.SUBMARINE_SERVER_PORT.getVarName(), String.valueOf(port));
   }
 
   public int getServerSslPort() {
-    return getInt(ConfVars.SERVER_SSL_PORT);
-  }
-
-  public int getJobServerSslPort() {
-    return getInt(ConfVars.JOB_SERVER_SSL_PORT);
-  }
-
-  public String getJobServerUrlPrefix() {
-    return getString(ConfVars.JOB_SERVER_REST_URL_PREFIX);
+    return getInt(ConfVars.SUBMARINE_SERVER_SSL_PORT);
   }
 
   public String getKeyStorePath() {
-    String path = getString(ConfVars.SSL_KEYSTORE_PATH);
+    String path = getString(ConfVars.SUBMARINE_SERVER_SSL_KEYSTORE_PATH);
     return path;
   }
 
   public String getKeyStoreType() {
-    return getString(ConfVars.SERVER_SSL_KEYSTORE_TYPE);
+    return getString(ConfVars.SUBMARINE_SERVER_SSL_KEYSTORE_TYPE);
   }
 
   public String getKeyStorePassword() {
-    return getString(ConfVars.SERVER_SSL_KEYSTORE_PASSWORD);
+    return getString(ConfVars.SUBMARINE_SERVER_SSL_KEYSTORE_PASSWORD);
   }
 
   public String getKeyManagerPassword() {
-    String password = getString(ConfVars.SERVER_SSL_KEY_MANAGER_PASSWORD);
+    String password = getString(ConfVars.SUBMARINE_SERVER_SSL_KEY_MANAGER_PASSWORD);
     if (password == null) {
       return getKeyStorePassword();
     } else {
@@ -190,11 +170,11 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public boolean useClientAuth() {
-    return getBoolean(ConfVars.SSL_CLIENT_AUTH);
+    return getBoolean(ConfVars.SUBMARINE_SERVER_SSL_CLIENT_AUTH);
   }
 
   public String getTrustStorePath() {
-    String path = getString(ConfVars.SERVER_SSL_TRUSTSTORE_PATH);
+    String path = getString(ConfVars.SUBMARINE_SERVER_SSL_TRUSTSTORE_PATH);
     if (path == null) {
       path = getKeyStorePath();
     }
@@ -202,7 +182,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public String getTrustStoreType() {
-    String type = getString(ConfVars.SERVER_SSL_TRUSTSTORE_TYPE);
+    String type = getString(ConfVars.SUBMARINE_SERVER_SSL_TRUSTSTORE_TYPE);
     if (type == null) {
       return getKeyStoreType();
     } else {
@@ -211,7 +191,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public String getTrustStorePassword() {
-    String password = getString(ConfVars.SERVER_SSL_TRUSTSTORE_PASSWORD);
+    String password = getString(ConfVars.SUBMARINE_SERVER_SSL_TRUSTSTORE_PASSWORD);
     if (password == null) {
       return getKeyStorePassword();
     } else {
@@ -220,7 +200,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public Integer getJettyRequestHeaderSize() {
-    return getInt(ConfVars.SERVER_JETTY_REQUEST_HEADER_SIZE);
+    return getInt(ConfVars.SUBMARINE_SERVER_JETTY_REQUEST_HEADER_SIZE);
   }
 
   public String getRelativeDir(ConfVars c) {
@@ -271,15 +251,15 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public String getClusterAddress() {
-    return getString(ConfVars.WORKBENCH_CLUSTER_ADDR);
+    return getString(ConfVars.SUBMARINE_CLUSTER_ADDR);
   }
 
   public void setClusterAddress(String clusterAddr) {
-    properties.put(ConfVars.WORKBENCH_CLUSTER_ADDR.getVarName(), clusterAddr);
+    properties.put(ConfVars.SUBMARINE_CLUSTER_ADDR.getVarName(), clusterAddr);
   }
 
-  public boolean workbenchIsClusterMode() {
-    String clusterAddr = getString(ConfVars.WORKBENCH_CLUSTER_ADDR);
+  public boolean isClusterMode() {
+    String clusterAddr = getString(ConfVars.SUBMARINE_CLUSTER_ADDR);
     if (StringUtils.isEmpty(clusterAddr)) {
       return false;
     }
@@ -429,28 +409,25 @@ public class SubmarineConfiguration extends XMLConfiguration {
     SUBMARINE_CONF_DIR("submarine.conf.dir", "conf"),
     SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB(
         "submarine.localization.max-allowed-file-size-mb", 2048L),
-    SUBMARINE_RUNTIME_CLASS(
-        "submarine.runtime.class",
-        "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"),
-    SERVER_ADDR("workbench.server.addr", "0.0.0.0"),
-    SERVER_PORT("workbench.server.port", 8080),
-    SERVER_SSL("workbench.server.ssl", false),
-    SERVER_SSL_PORT("workbench.server.ssl.port", 8443),
-    SERVER_JETTY_THREAD_POOL_MAX("workbench.server.jetty.thread.pool.max", 400),
-    SERVER_JETTY_THREAD_POOL_MIN("workbench.server.jetty.thread.pool.min", 8),
-    SERVER_JETTY_THREAD_POOL_TIMEOUT("workbench.server.jetty.thread.pool.timeout", 30),
-    SERVER_JETTY_REQUEST_HEADER_SIZE("workbench.server.jetty.request.header.size", 8192),
-    SSL_CLIENT_AUTH("workbench.ssl.client.auth", false),
-    SSL_KEYSTORE_PATH("workbench.ssl.keystore.path", "keystore"),
-    WORKBENCH_CLUSTER_ADDR("workbench.cluster.addr", ""),
+    SUBMARINE_SERVER_ADDR("submarine.server.addr", "0.0.0.0"),
+    SUBMARINE_SERVER_PORT("submarine.server.port", 8080),
+    SUBMARINE_SERVER_SSL("submarine.server.ssl", false),
+    SUBMARINE_SERVER_SSL_PORT("submarine.server.ssl.port", 8443),
+    SUBMARINE_SERVER_JETTY_THREAD_POOL_MAX("submarine.server.jetty.thread.pool.max", 400),
+    SUBMARINE_SERVER_JETTY_THREAD_POOL_MIN("submarine.server.jetty.thread.pool.min", 8),
+    SUBMARINE_SERVER_JETTY_THREAD_POOL_TIMEOUT("submarine.server.jetty.thread.pool.timeout", 30),
+    SUBMARINE_SERVER_JETTY_REQUEST_HEADER_SIZE("submarine.server.jetty.request.header.size", 8192),
+    SUBMARINE_SERVER_SSL_CLIENT_AUTH("submarine.server.ssl.client.auth", false),
+    SUBMARINE_SERVER_SSL_KEYSTORE_PATH("submarine.server.ssl.keystore.path", "keystore"),
+    SUBMARINE_SERVER_SSL_KEYSTORE_TYPE("submarine.server.ssl.keystore.type", "JKS"),
+    SUBMARINE_SERVER_SSL_KEYSTORE_PASSWORD("submarine.server.ssl.keystore.password", ""),
+    SUBMARINE_SERVER_SSL_KEY_MANAGER_PASSWORD("submarine.server.ssl.key.manager.password", null),
+    SUBMARINE_SERVER_SSL_TRUSTSTORE_PATH("submarine.server.ssl.truststore.path", null),
+    SUBMARINE_SERVER_SSL_TRUSTSTORE_TYPE("submarine.server.ssl.truststore.type", null),
+    SUBMARINE_SERVER_SSL_TRUSTSTORE_PASSWORD("submarine.server.ssl.truststore.password", null),
+    SUBMARINE_CLUSTER_ADDR("submarine.cluster.addr", ""),
     CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", 3000),
     CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", 9000),
-    SERVER_SSL_KEYSTORE_TYPE("workbench.ssl.keystore.type", "JKS"),
-    SERVER_SSL_KEYSTORE_PASSWORD("workbench.ssl.keystore.password", ""),
-    SERVER_SSL_KEY_MANAGER_PASSWORD("workbench.ssl.key.manager.password", null),
-    SERVER_SSL_TRUSTSTORE_PATH("workbench.ssl.truststore.path", null),
-    SERVER_SSL_TRUSTSTORE_TYPE("workbench.ssl.truststore.type", null),
-    SERVER_SSL_TRUSTSTORE_PASSWORD("workbench.ssl.truststore.password", null),
     JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
     JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarineDB" +
         "?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
@@ -460,12 +437,9 @@ public class SubmarineConfiguration extends XMLConfiguration {
     WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
         "workbench.websocket.max.text.message.size", "1024000"),
     WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),
-    // submarine job server settings
-    JOB_SERVER_SSL("job.server.ssl", false),
-    JOB_SERVER_SSL_PORT("job.server.ssl.port", 8443),
-    JOB_SERVER_ADDR("job.server.port", "0.0.0.0"),
-    JOB_SERVER_PORT("job.server.port", 8765),
-    JOB_SERVER_REST_URL_PREFIX("job.server.rest.prefix", "/*");
+    SUBMARINE_RUNTIME_CLASS(
+        "submarine.runtime.class",
+        "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory");
 
     private String varName;
     @SuppressWarnings("rawtypes")
