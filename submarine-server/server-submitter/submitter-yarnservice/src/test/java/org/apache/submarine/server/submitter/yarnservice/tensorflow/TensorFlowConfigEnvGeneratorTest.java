@@ -38,7 +38,7 @@ public class TensorFlowConfigEnvGeneratorTest {
   private ObjectMapper objectMapper;
 
   @Before
-  public void setUp() {
+  public void setup() {
     objectMapper = new ObjectMapper();
   }
 
