@@ -26,7 +26,7 @@
 
   <artifactId>submitter-yarn</artifactId>
   <version>0.3.0-SNAPSHOT</version>
-  <name>Submarine: Submitter YARN</name>
+  <name>Submarine: YARN Submitter</name>
 
   <dependencies>
     <dependency>

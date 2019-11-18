@@ -47,7 +47,7 @@ function initialize_default_directories() {
   fi
 }
 
-function found_submarine_server_server_pid() {
+function found_submarine_server_pid() {
   process='SubmarineServer';
   RUNNING_PIDS=$(ps x | grep ${process} | grep -v grep | awk '{print $1}');
 
@@ -66,7 +66,7 @@ function wait_for_submarine_server_to_die() {
   local pid
   local count
 
-  pid=`found_submarine_server_server_pid`
+  pid=`found_submarine_server_pid`
   timeout=10
   count=0
   timeoutTime=$(date "+%s")
@@ -110,7 +110,7 @@ function check_jdbc_jar() {
 function start() {
   local pid
 
-  pid=`found_submarine_server_server_pid`
+  pid=`found_submarine_server_pid`
   if [[ ! -z "$pid" && "$pid" != 0 ]]; then
     echo "${SUBMARINE_SERVER_NAME}:${pid} is already running"
     return 0;
@@ -132,7 +132,7 @@ function start() {
 
 function stop() {
   local pid
-  pid=`found_submarine_server_server_pid`
+  pid=`found_submarine_server_pid`
 
   if [[ -z "$pid" ]]; then
     echo "${SUBMARINE_SERVER_NAME} is not running"
@@ -146,7 +146,7 @@ function stop() {
 
 function find_submarine_server_process() {
   local pid
-  pid=`found_submarine_server_server_pid`
+  pid=`found_submarine_server_pid`
 
   if [[ -z "$pid" ]]; then
     echo "${SUBMARINE_SERVER_NAME} is not running"

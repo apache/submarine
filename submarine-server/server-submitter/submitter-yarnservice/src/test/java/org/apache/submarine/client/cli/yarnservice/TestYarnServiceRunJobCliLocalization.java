@@ -230,7 +230,6 @@ public class TestYarnServiceRunJobCliLocalization {
    */
   @Test
   public void testRunJobWithNonHDFSRemoteLocalization() throws Exception {
-    /*
     String remoteUri1 = "https://a/b/1.patch";
     String containerLocal1 = ".";
     String remoteUri2 = "s3a://a/s3dir";
@@ -292,7 +291,6 @@ public class TestYarnServiceRunJobCliLocalization {
     String expectedMounts = new Path(remoteUri2).getName()
         + ":" + containerLocal2 + ":rw";
     assertTrue(env.contains(expectedMounts));
-     */
   }
 
   /**
@@ -423,7 +421,7 @@ public class TestYarnServiceRunJobCliLocalization {
     String containerLocal3 = "./";
 
     SubmarineConfiguration submarineConf =
-        SubmarineConfiguration.getInstance();
+        SubmarineConfiguration.newInstance();
 
     // Max 10MB, mock remote will always return file size 100MB.
     submarineConf.setLong(

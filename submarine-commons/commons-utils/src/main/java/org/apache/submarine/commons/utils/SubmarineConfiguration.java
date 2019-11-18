@@ -83,6 +83,8 @@ public class SubmarineConfiguration extends XMLConfiguration {
     }
   }
 
+  // Get a single instance
+  // Note: Cannot be mixed with newInstance()
   public static SubmarineConfiguration getInstance() {
     if (conf == null) {
       synchronized (SubmarineConfiguration.class) {
@@ -94,7 +96,9 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return conf;
   }
 
-  private static SubmarineConfiguration newInstance() {
+  // Create a new instance
+  // Note: Cannot be mixed with getInstance()
+  public static SubmarineConfiguration newInstance() {
     SubmarineConfiguration submarineConfig;
     ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
     URL url;
