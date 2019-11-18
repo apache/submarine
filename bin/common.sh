@@ -42,12 +42,12 @@ if [[ -f "${SUBMARINE_CONF_DIR}/submarine-env.sh" ]]; then
   . "${SUBMARINE_CONF_DIR}/submarine-env.sh"
 fi
 
-WORKBENCH_CLASSPATH+=":${SUBMARINE_CONF_DIR}"
+SUBMARINE_SERVER_CLASSPATH+=":${SUBMARINE_CONF_DIR}"
 
 function add_each_jar_in_dir(){
   if [[ -d "${1}" ]]; then
     for jar in $(find -L "${1}" -maxdepth 1 -name '*jar'); do
-      WORKBENCH_CLASSPATH="$jar:$WORKBENCH_CLASSPATH"
+      SUBMARINE_SERVER_CLASSPATH="$jar:$SUBMARINE_SERVER_CLASSPATH"
     done
   fi
 }
@@ -55,14 +55,14 @@ function add_each_jar_in_dir(){
 function add_each_jar_in_dir_recursive(){
   if [[ -d "${1}" ]]; then
     for jar in $(find -L "${1}" -type f -name '*jar'); do
-      WORKBENCH_CLASSPATH="$jar:$WORKBENCH_CLASSPATH"
+      SUBMARINE_SERVER_CLASSPATH="$jar:$SUBMARINE_SERVER_CLASSPATH"
     done
   fi
 }
 
 function add_jar_in_dir(){
   if [[ -d "${1}" ]]; then
-    WORKBENCH_CLASSPATH="${1}/*:${WORKBENCH_CLASSPATH}"
+    SUBMARINE_SERVER_CLASSPATH="${1}/*:${SUBMARINE_SERVER_CLASSPATH}"
   fi
 }
 
@@ -74,11 +74,11 @@ function download_mysql_jdbc_jar(){
     MYSQL_JAR_URL="https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_VERSION}/mysql-connector-java-${MYSQL_VERSION}.jar"
   fi
   echo "Downloading mysql jdbc jar from ${MYSQL_JAR_URL}."
-  wget ${MYSQL_JAR_URL} -P "${BIN}/../workbench/lib"
-  echo "Mysql jdbc jar is downloaded and put in the path of workbench/lib."
+  wget ${MYSQL_JAR_URL} -P "${BIN}/../lib"
+  echo "Mysql jdbc jar is downloaded and put in the path of submarine/lib."
 }
 
-JAVA_OPTS+=" ${WORKBENCH_JAVA_OPTS} -Dfile.encoding=UTF-8 ${WORKBENCH_MEM}"
+JAVA_OPTS+=" ${SUBMARINE_SERVER_JAVA_OPTS} -Dfile.encoding=UTF-8 ${SUBMARINE_SERVER_MEM}"
 JAVA_OPTS+=" -Dlog4j.configuration=file://${SUBMARINE_CONF_DIR}/log4j.properties"
 export JAVA_OPTS
 

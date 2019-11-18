@@ -20,82 +20,82 @@
 <configuration>
 
   <property>
-    <name>submarine.runtime.class</name>
-    <value>org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory</value>
-    <description>RuntimeFactory for Submarine jobs</description>
+    <name>submarine.cluster.addr</name>
+    <value></value>
+    <description>submarine cluster address list, e.g. ip1:port1;ip2:port2;ip3:port3</description>
   </property>
 
   <property>
-    <name>workbench.server.addr</name>
+    <name>submarine.server.addr</name>
     <value>0.0.0.0</value>
     <description>Server address</description>
   </property>
 
   <property>
-    <name>workbench.server.port</name>
+    <name>submarine.server.port</name>
     <value>8080</value>
     <description>Server port.</description>
   </property>
 
   <property>
-    <name>workbench.ssl</name>
+    <name>submarine.server.ssl</name>
     <value>false</value>
-    <description>Should SSL be used by the workbench servers?</description>
+    <description>Should SSL be used by the submarine server?</description>
   </property>
 
   <property>
-    <name>workbench.server.ssl.port</name>
+    <name>submarine.server.ssl.port</name>
     <value>8443</value>
     <description>Server ssl port. (used when ssl property is set to true)</description>
   </property>
 
   <property>
-    <name>workbench.ssl.client.auth</name>
+    <name>submarine.server.ssl.client.auth</name>
     <value>false</value>
     <description>Should client authentication be used for SSL connections?</description>
   </property>
 
   <property>
-    <name>workbench.ssl.keystore.path</name>
+    <name>submarine.server.ssl.keystore.path</name>
     <value>keystore</value>
     <description>Path to keystore relative to submarine configuration directory</description>
   </property>
 
   <property>
-    <name>workbench.ssl.keystore.type</name>
+    <name>submarine.server.ssl.keystore.type</name>
     <value>JKS</value>
     <description>The format of the given keystore (e.g. JKS or PKCS12)</description>
   </property>
 
   <property>
-    <name>workbench.ssl.keystore.password</name>
+    <name>submarine.server.ssl.keystore.password</name>
     <value>change me</value>
     <description>Keystore password. Can be obfuscated by the Jetty Password tool</description>
   </property>
 
   <!--
   <property>
-    <name>workbench.ssl.key.manager.password</name>
+    <name>submarine.server.ssl.key.manager.password</name>
     <value>change me</value>
     <description>Key Manager password. Defaults to keystore password. Can be obfuscated.</description>
   </property>
   -->
 
   <property>
-    <name>workbench.ssl.truststore.path</name>
+    <name>submarine.server.ssl.truststore.path</name>
     <value>truststore</value>
     <description>Path to truststore relative to submarine configuration directory. Defaults to the keystore path</description>
   </property>
 
   <property>
-    <name>workbench.ssl.truststore.type</name>
+    <name>submarine.server.ssl.truststore.type</name>
     <value>JKS</value>
     <description>The format of the given truststore (e.g. JKS or PKCS12). Defaults to the same type as the keystore type</description>
   </property>
 
   <!--
   <property>
-    <name>workbench.ssl.truststore.password</name>
+    <name>submarine.server.ssl.truststore.password</name>
     <value>change me</value>
     <description>Truststore password. Can be obfuscated by the Jetty Password tool. Defaults to the keystore password</description>
   </property>
@@ -105,6 +105,12 @@
     <name>workbench.web.war</name>
     <value>../workbench/workbench-web.war</value>
     <description>Submarine workbench web war file path.</description>
+  </property>
+
+  <property>
+    <name>submarine.runtime.class</name>
+    <value>org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory</value>
+    <description>RuntimeFactory for Submarine jobs</description>
   </property>
 
 </configuration>
