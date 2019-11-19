@@ -40,7 +40,7 @@ import java.io.IOException;
 /**
  * JobSubmitter for Kubernetes Cluster.
  */
-// TODO: It should implement the JobSubmitter interface
+// TODO(jiwq): It should implement the JobSubmitter interface
 public class K8sJobSubmitter {
   private final Logger LOG = LoggerFactory.getLogger(K8sJobSubmitter.class);
 
