@@ -22,7 +22,7 @@ package org.apache.submarine.server.submitter.k8s;
 /**
  * Job request for Kubernetes Submitter.
  */
-// TODO: It should implement the JobRequest interface
+// TODO(jiwq): It should implement the JobRequest interface
 public class K8sJobRequest {
   private Path path;
   private Object body;
