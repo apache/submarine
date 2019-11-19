@@ -52,6 +52,10 @@ before_install:
   - mysql -e "CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';"
   - mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';"
   - mysql -e "use submarineDB_test; source ./docs/database/submarine.sql; show tables;"
+  - mysql -e "create database metastoreDB_test;"
+  - mysql -e "CREATE USER 'metastore_test'@'%' IDENTIFIED BY 'password_test';"
+  - mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'metastore_test'@'%';"
+  - mysql -e "use metastoreDB_test; source ./docs/database/metastore.sql; show tables;"
   - ./dev-support/travis/install_external_dependencies.sh
 
 matrix:
