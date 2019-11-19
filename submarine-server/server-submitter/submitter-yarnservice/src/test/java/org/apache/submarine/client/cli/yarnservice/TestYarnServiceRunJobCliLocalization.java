@@ -25,13 +25,15 @@ import org.apache.hadoop.yarn.service.api.records.ConfigFile;
 import org.apache.hadoop.yarn.service.api.records.Service;
 import org.apache.submarine.client.cli.runjob.RunJobCli;
 import org.apache.submarine.commons.runtime.MockClientContext;
-import org.apache.submarine.commons.runtime.conf.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +53,9 @@ import static org.mockito.Mockito.verify;
  * Class to test YarnService localization feature with the Run job CLI action.
  */
 public class TestYarnServiceRunJobCliLocalization {
+  private static final Logger LOG =
+      LoggerFactory.getLogger(TestYarnServiceRunJobCliLocalization.class);
+
   private static final String ZIP_EXTENSION = ".zip";
   private TestYarnServiceRunJobCliCommons testCommons =
       new TestYarnServiceRunJobCliCommons();
@@ -415,12 +420,13 @@ public class TestYarnServiceRunJobCliLocalization {
     String localUri1 = "/temp/script2";
     String containerLocal3 = "./";
 
-    SubmarineConfiguration submarineConf = new SubmarineConfiguration();
+    SubmarineConfiguration submarineConf =
+        SubmarineConfiguration.newInstance();
 
     // Max 10MB, mock remote will always return file size 100MB.
-    submarineConf.set(
-        SubmarineConfiguration.LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB,
-        "10");
+    submarineConf.setLong(
+        SubmarineConfiguration.ConfVars.
+            SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB, 10L);
     mockClientContext.setSubmarineConfig(submarineConf);
 
     assertFalse(SubmarineLogs.isVerbose());

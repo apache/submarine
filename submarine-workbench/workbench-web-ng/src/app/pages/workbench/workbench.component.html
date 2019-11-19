@@ -1,0 +1,82 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<nz-sider
+  class="menu-sidebar"
+  nzCollapsible
+  nzWidth="256px"
+  nzBreakpoint="md"
+  [(nzCollapsed)]="isCollapsed"
+  [nzTrigger]="null"
+>
+  <div class="sidebar-logo">
+    <a routerLink="/workbench/dashboard" target="_blank">
+      <img src="/assets/logo.png" alt="logo"/>
+      <h1>Submarine</h1>
+    </a>
+  </div>
+  <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+    <ng-container *ngFor="let menu of menus">
+      <li *ngIf="menu.children" nz-submenu nzOpen [nzTitle]="menu.title" [nzIcon]="menu.iconType">
+        <ul>
+          <li nz-menu-item nzMatchRouter *ngFor="let subItem of menu.children">
+            <a [routerLink]="subItem.routerLink">{{ subItem.title }}</a>
+          </li>
+        </ul>
+      </li>
+      <li *ngIf="!menu.children" nz-menu-item nz-tooltip nzPlacement="right" [nzTitle]="menu.title" nzMatchRouter>
+        <i nz-icon [nzType]="menu.iconType"></i>
+        <span>
+          <a [routerLink]="menu.routerLink">{{ menu.title }}</a>
+        </span>
+      </li>
+    </ng-container>
+  </ul>
+</nz-sider>
+<nz-layout [ngClass]="isCollapsed ? 'close' : ''">
+  <nz-header>
+    <div class="app-header">
+      <div class="header-trigger" (click)="isCollapsed = !isCollapsed">
+        <i class="trigger" nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+      </div>
+
+      <div class="header-operation">
+        <div nz-dropdown *ngIf="userInfo$ | async as userInfo" [nzDropdownMenu]="userInfoMenu"
+             class="operation-user-info">
+          <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
+          {{userInfo.name}}
+        </div>
+        <nz-dropdown-menu #userInfoMenu="nzDropdownMenu">
+          <ul nz-menu>
+            <li nz-menu-item nzDisabled>
+              <i nz-icon nzType="setting"></i>UserInfo setting
+            </li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item (click)="logout()">
+              <i nz-icon nzType="logout"></i>Sign out
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
+    </div>
+  </nz-header>
+  <nz-content>
+    <router-outlet></router-outlet>
+  </nz-content>
+</nz-layout>

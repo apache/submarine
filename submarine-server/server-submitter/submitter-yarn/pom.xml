@@ -26,7 +26,7 @@
 
   <artifactId>submitter-yarn</artifactId>
   <version>0.3.0-SNAPSHOT</version>
-  <name>Submarine: Server Submitter for YARN</name>
+  <name>Submarine: YARN Submitter</name>
 
   <dependencies>
     <dependency>
@@ -170,6 +170,10 @@
         <exclusion>
           <groupId>commons-codec</groupId>
           <artifactId>commons-codec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

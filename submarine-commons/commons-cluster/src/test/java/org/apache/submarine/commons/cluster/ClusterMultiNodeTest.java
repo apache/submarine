@@ -58,7 +58,7 @@ public class ClusterMultiNodeTest {
       }
     }
     LOG.info("clusterAddrList = {}", clusterAddrList);
-    SubmarineConfiguration sconf = SubmarineConfiguration.create();
+    SubmarineConfiguration sconf = SubmarineConfiguration.getInstance();
     sconf.setClusterAddress(clusterAddrList);
 
     // mock cluster manager server

@@ -20,8 +20,7 @@
 package org.apache.submarine.commons.runtime;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.submarine.commons.runtime.conf.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
 import org.apache.submarine.commons.runtime.fs.SubmarineStorage;
 
@@ -39,11 +38,10 @@ public abstract class RuntimeFactory {
 
   public static RuntimeFactory getRuntimeFactory(
       ClientContext clientContext) {
-    Configuration submarineConfiguration =
+    SubmarineConfiguration submarineConfiguration =
         clientContext.getSubmarineConfig();
-    String runtimeClass = submarineConfiguration.get(
-        SubmarineConfiguration.RUNTIME_CLASS,
-        SubmarineConfiguration.DEFAULT_RUNTIME_CLASS);
+    String runtimeClass = submarineConfiguration.getString(
+        SubmarineConfiguration.ConfVars.SUBMARINE_RUNTIME_CLASS);
 
     try {
       Class<?> runtimeClazz = Class.forName(runtimeClass);

@@ -25,12 +25,12 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: '/manager/user'
+    redirectTo: 'workbench'
   },
   {
-    path: 'manager',
+    path: 'workbench',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./pages/manager/manager.module').then(m => m.ManagerModule)
+    loadChildren: () => import('./pages/workbench/workbench.module').then(m => m.WorkbenchModule)
   },
   {
     path: 'user',

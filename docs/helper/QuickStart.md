@@ -47,23 +47,23 @@ Note that if you want to quickly try Submarine on new or existing YARN cluster, 
 
 For the environment setup, please check [InstallationGuide](InstallationGuide.md) or [InstallationGuideCN](InstallationGuideChineseVersion.md)
 
-Once the applicable runtime is chosen and environment is ready, a `submarine.xml` need to be created under  `$HADOOP_CONF_DIR`. To use the TonY runtime, please set below value in the submarine configuration.
+Once the applicable runtime is chosen and environment is ready, a `submarine-site.xml` need to be created under  `$HADOOP_CONF_DIR`. To use the TonY runtime, please set below value in the submarine configuration.
 
 |Configuration Name | Description |
 |:---- |:---- |
-| `submarine.runtime.class` | "org.apache.submarine.runtimes.tony.TonyRuntimeFactory" or "org.apache.submarine.runtimes.yarnservice.YarnServiceRuntimeFactory" |
+| `submarine.runtime.class` | "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory" or "org.apache.submarine.server.submitter.yarnservice.YarnServiceRuntimeFactory" |
 
 <br />
 
-A sample `submarine.xml` is here:
+A sample `submarine-site.xml` is here:
 ```java
 <?xml version="1.0"?>
 <configuration>
   <property>
     <name>submarine.runtime.class</name>
-    <value>org.apache.submarine.runtimes.tony.TonyRuntimeFactory</value>
+    <value>org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory</value>
     <!-- Alternatively, you can use:
-    <value>org.apache.submarine.runtimes.yarnservice.YarnServiceRuntimeFactory</value>
+    <value>org.apache.submarine.server.submitter.yarnservice.YarnServiceRuntimeFactory</value>
     -->
   </property>
 </configuration>

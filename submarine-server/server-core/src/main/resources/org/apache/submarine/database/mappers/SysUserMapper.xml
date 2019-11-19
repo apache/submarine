@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.submarine.server.workbench.database.mappers.SysUserMapper">
+  <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.workbench.database.entity.BaseEntity">
+    <id property="id" column="id" />
+    <result column="create_by" property="createBy"/>
+    <result column="create_time" property="createTime"/>
+    <result column="update_by" property="updateBy"/>
+    <result column="update_time" property="updateTime"/>
+  </resultMap>
+
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.SysUser" extends="BaseEntityResultMap">
+    <result column="user_name" property="userName"/>
+    <result column="real_name" property="realName"/>
+    <result column="dept_code" property="deptCode"/>
+    <result column="dept_name" property="deptName"/>
+    <result column="role_code" property="roleCode"/>
+  </resultMap>
+
+  <select id="selectAll" parameterType="java.util.Map" resultMap="resultMap">
+    SELECT a.*, b.dept_name FROM sys_user a LEFT JOIN sys_department b ON a.dept_code = b.dept_code
+    WHERE 1 = 1
+    <if test="deptCode!=null and deptCode!=''"> AND a.`dept_code` = #{deptCode}</if>
+    <if test="userName!=null and userName!=''"> AND a.`user_name` like '%${userName}%'</if>
+    <if test="email!=null and email!=''"> AND a.`email` like '%${email}%'</if>
+    ORDER BY a.create_time
+  </select>
+
+  <!-- get user info by user name -->
+  <select id="getUserByName" parameterType="java.util.Map" resultMap="resultMap">
+    SELECT id, name, username FROM sys_user WHERE name = #{mapParams.name} AND password = #{mapParams.password}
+  </select>
+
+  <select id="login" parameterType="java.util.Map" resultMap="resultMap">
+    SELECT * FROM sys_user WHERE user_name = #{username} AND password = #{password}
+  </select>
+
+  <insert id="add" parameterType="org.apache.submarine.server.workbench.database.entity.SysUser">
+    <selectKey keyProperty="id" resultType="String" order="BEFORE">
+      select REPLACE(UUID(),"-","")
+    </selectKey>
+    INSERT INTO sys_user (`id`, `user_name`, `real_name`, `password`, `avatar`,
+    `birthday`, `phone`, `role_code`, `deleted`, email,
+    `sex`, `status`, `dept_code`, `create_by`, `create_time`, `update_time`)
+    VALUES (
+    #{id}, #{userName}, #{realName}, #{password}, #{avatar},
+    #{birthday}, #{phone}, #{roleCode}, #{deleted}, #{email},
+    <choose>
+      <when test="sex!=null and sex!=''">
+        #{sex},
+      </when>
+      <otherwise>
+        NULL,
+      </otherwise>
+    </choose>
+    <choose>
+      <when test="status!=null and status!=''">
+        #{status},
+      </when>
+      <otherwise>
+        NULL,
+      </otherwise>
+    </choose>
+    <choose>
+      <when test="deptCode!=null and deptCode!=''">
+        #{deptCode},
+      </when>
+      <otherwise>
+        NULL,
+      </otherwise>
+    </choose>
+    #{createBy}, now(), now())
+  </insert>
+
+  <update id="updateBy" parameterType="org.apache.submarine.server.workbench.database.entity.SysUser">
+    UPDATE sys_user SET
+    <if test="userName!=null and userName!=''">`user_name` = #{userName},</if>
+    <if test="realName!=null and realName!=''">`real_name` = #{realName},</if>
+    <if test="deptCode!=null and deptCode!=''">`dept_code` = #{deptCode},</if>
+    <if test="roleCode!=null and roleCode!=''">`role_code` = #{roleCode},</if>
+    <choose>
+      <when test="deptCode!=null and deptCode!=''">
+        `dept_code` = #{deptCode},
+      </when>
+      <otherwise>
+        `dept_code` = NULL,
+      </otherwise>
+    </choose>
+    <choose>
+      <when test="roleCode!=null and roleCode!=''">
+        `role_code` = #{roleCode},
+      </when>
+      <otherwise>
+        `role_code` = NULL,
+      </otherwise>
+    </choose>
+    <choose>
+      <when test="sex!=null and sex!=''">
+        `sex` = #{sex},
+      </when>
+      <otherwise>
+        `sex` = NULL,
+      </otherwise>
+    </choose>
+    <if test="password!=null and password!=''">`password` = #{password},</if>
+    <if test="avatar!=null and avatar!=''">`avatar` = #{avatar},</if>
+    <if test="birthday!=null">`birthday` = #{birthday},</if>
+    <if test="email!=null and email!=''">`email` = #{email},</if>
+    <if test="phone!=null and phone!=''">`phone` = #{phone},</if>
+    <if test="status!=null">`status` = #{status},</if>
+    <if test="deleted!=null">`deleted` = #{deleted},</if>
+    <if test="createBy!=null and createBy!=''">`create_by` = #{createBy},</if>
+    <if test="createTime!=null">`create_time` = #{createTime},</if>
+    <if test="updateBy!=null and updateBy!=''">`update_by` = #{updateBy},</if>
+    `update_time`=now()
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    DELETE FROM sys_user WHERE id = #{id}
+  </delete>
+
+  <update id="changePassword" parameterType="org.apache.submarine.server.workbench.database.entity.SysUser">
+    UPDATE sys_user SET password = #{password}, `update_time`=now()
+    WHERE id = #{id}
+  </update>
+
+
+</mapper>

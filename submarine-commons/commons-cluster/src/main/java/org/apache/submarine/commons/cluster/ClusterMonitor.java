@@ -75,7 +75,7 @@ public class ClusterMonitor {
   public ClusterMonitor(ClusterManager clusterManager) {
     this.clusterManager = clusterManager;
 
-    SubmarineConfiguration sconf = SubmarineConfiguration.create();
+    SubmarineConfiguration sconf = SubmarineConfiguration.getInstance();
     heartbeatInterval = sconf.getClusterHeartbeatInterval();
     heartbeatTimeout = sconf.getClusterHeartbeatTimeout();
 

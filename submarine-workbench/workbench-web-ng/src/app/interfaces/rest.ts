@@ -17,10 +17,41 @@
  * under the License.
  */
 
+/**
+ * REST api abstract interface
+ *
+ * @example
+ * ```typescript
+ * const res = Rest<{userName: string, password: string}>;
+ *
+ * // res.result.userName is string
+ * // res.result.password is string
+ * ```
+ */
 export interface Rest<T> {
+  /**
+   * request result
+   */
   result: T;
+  /**
+   * request http status code
+   */
   code: number;
   message: string;
   status: string;
   success: boolean;
+}
+
+/**
+ * Array result
+ */
+export interface ListResult<T> {
+  /**
+   * result list
+   */
+  records: T[];
+  /**
+   * result list length
+   */
+  total: number;
 }

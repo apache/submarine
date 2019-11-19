@@ -20,8 +20,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '@submarine/services';
 import { NzNotificationService } from 'ng-zorro-antd';
-import { AuthService } from '../../../services';
 
 @Component({
   selector: 'submarine-login',
@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) {
     if (this.authService.isLoggedIn) {
-      this.router.navigate(['/manager/user']);
+      this.router.navigate(['/workbench']);
     }
   }
 
@@ -55,7 +55,6 @@ export class LoginComponent implements OnInit {
           this.loginSuccess();
         },
         error => {
-          console.log(error);
           this.requestFailed(error);
         }
       );
@@ -71,11 +70,7 @@ export class LoginComponent implements OnInit {
   }
 
   loginSuccess() {
-    this.router.navigate(['/manager/user']);
-
-    setTimeout(() => {
-      this.nzNotificationService.success('Welcome', 'Welcome back');
-    }, 1000);
+    this.router.navigate(['/workbench']);
   }
 
   requestFailed(error: Error) {

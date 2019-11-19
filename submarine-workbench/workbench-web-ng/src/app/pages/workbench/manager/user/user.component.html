@@ -1,0 +1,131 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<nz-card>
+  <div class="user-table-operate">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="form">
+      <nz-form-item>
+        <nz-form-label>Department</nz-form-label>
+        <nz-form-control>
+          <nz-tree-select
+            style="width: 171px"
+            nzAllowClear
+            nzDefaultExpandAll
+            nzShowSearch
+            nzPlaceHolder="Please select"
+            formControlName="deptCode"
+            [nzNodes]="sysDeptTreeList"
+          ></nz-tree-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Account Name</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="accountName"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Email</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="email"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" (click)="queryUserList()">
+            <i nz-icon nzType="search"></i>
+            Query
+          </button>
+          <button nz-button style="margin-left: 8px" (click)="onShowUserDrawer()">
+            <i nz-icon nzType="plus"></i>
+            Add User
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+
+  <nz-table #table [nzData]="userList" [nzScroll]="{ x: '1100px' }" nzNoResult="No result" nzBordered>
+    <thead>
+    <tr>
+      <th>Account Name</th>
+      <th>Real Name</th>
+      <th>Department</th>
+      <th>Role</th>
+      <th>Status</th>
+      <th>Sex</th>
+      <th>Email</th>
+      <th nzWidth="120px">Create Time</th>
+      <th nzWidth="120px" nzRight="0px">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let data of table.data">
+      <td>{{ data.userName }}</td>
+      <td>{{ data.realName }}</td>
+      <td>{{ data.deptName }}</td>
+      <td>{{ data.roleName }}</td>
+      <td>{{ data['status@dict'] }}</td>
+      <td>{{ data['sex@dict'] }}</td>
+      <td>{{ data.email }}</td>
+      <td>{{ data.createTime }}</td>
+      <td class="td-action" nzRight="0px">
+        <a (click)="onShowUserDrawer(data)">Edit</a>
+        <a nz-dropdown [nzDropdownMenu]="more">
+          More
+          <i nz-icon nzType="down"></i>
+        </a>
+        <nz-dropdown-menu #more="nzDropdownMenu">
+          <ul nz-menu nzSelectable>
+            <li nz-menu-item (click)="onShowUserDrawer(data, true)">Details</li>
+            <li nz-menu-item (click)="onShowResetPasswordModal(data)">Password</li>
+            <li
+              nz-menu-item
+              nz-popconfirm
+              nzPlacement="left"
+              nzTitle="Confirm to delete?"
+              nzCancelText="Cancel"
+              nzOkText="Ok"
+              (nzOnConfirm)="onDeleteUser(data)"
+            >
+              Delete
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </td>
+    </tr>
+    </tbody>
+  </nz-table>
+</nz-card>
+
+<submarine-user-password-modal
+  [visible]="resetPasswordModalVisible"
+  [accountName]="currentSysUser?.userName"
+  (close)="onHideResetPasswordModal()"
+  (ok)="onChangePassword($event)"
+></submarine-user-password-modal>
+
+<submarine-user-drawer
+  [visible]="userDrawerVisible"
+  [readonly]="userDrawerReadonly"
+  [sysDeptTreeList]="sysDeptTreeList"
+  [sysUser]="currentSysUser"
+  (close)="onCloseUserDrawer()"
+  (submit)="onSubmitUserDrawer($event)"
+></submarine-user-drawer>

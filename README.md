@@ -12,10 +12,11 @@
   limitations under the License. See accompanying LICENSE file.
 -->
 
+![color_logo_with_text](docs/assets/color_logo_with_text.png)
+
 # What is Apache Submarine?
 
-Apache Submarine is an Apache TLP (top level project). which allows infra engineer / data scientist to run
-*unmodified* TensorFlow or PyTorch programs on YARN or Kubernetes. Apache Submarine spin-off from Hadoop on Oct, 2019.
+Apache Submarine is a unified AI platform which allows engineers and data scientists to run Machine Learning and Deep Learning workload in distributed cluster.
 
 Goals of Submarine:
 - It allows jobs easy access data/models in HDFS and other storages.

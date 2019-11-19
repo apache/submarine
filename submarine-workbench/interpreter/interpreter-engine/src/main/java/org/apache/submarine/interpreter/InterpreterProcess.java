@@ -58,7 +58,7 @@ public class InterpreterProcess extends Thread implements Interpreter {
   // cluster manager client
   private ClusterClient clusterClient = ClusterClient.getInstance();
 
-  private SubmarineConfiguration sconf = SubmarineConfiguration.create();
+  private SubmarineConfiguration sconf = SubmarineConfiguration.getInstance();
 
   protected String interpreterId;
 
@@ -128,7 +128,7 @@ public class InterpreterProcess extends Thread implements Interpreter {
 
   // Submit interpreter process metadata information to cluster metadata
   private void putClusterMeta() {
-    if (!sconf.workbenchIsClusterMode()){
+    if (!sconf.isClusterMode()){
       return;
     }
     String nodeName = clusterClient.getClusterNodeName();
@@ -155,6 +155,8 @@ public class InterpreterProcess extends Thread implements Interpreter {
     String superIntpClassName = "";
     if (StringUtils.equals(intpName, "python")) {
       superIntpClassName = "org.apache.submarine.interpreter.PythonInterpreter";
+    } else if (StringUtils.equals(intpName, "spark")) {
+      superIntpClassName = "org.apache.submarine.interpreter.SparkInterpreter";
     } else {
       superIntpClassName = "org.apache.submarine.interpreter.InterpreterProcess";
     }
@@ -237,6 +239,20 @@ public class InterpreterProcess extends Thread implements Interpreter {
     // whether use IPython when it is available
     properties.setProperty("zeppelin.python.useIPython", "false");
     properties.setProperty("zeppelin.python.gatewayserver_address", "127.0.0.1");
+
+    if (null != newProps) {
+      newProps.putAll(properties);
+      return newProps;
+    } else {
+      return properties;
+    }
+  }
+
+  protected Properties mergeZeplSparkIntpProp(Properties newProps) {
+    Properties properties = new Properties();
+
+    properties.setProperty("zeppelin.spark.maxResult", "1000");
+    properties.setProperty("zeppelin.spark.scala.color", "false");
 
     if (null != newProps) {
       newProps.putAll(properties);

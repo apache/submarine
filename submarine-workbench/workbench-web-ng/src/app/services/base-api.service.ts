@@ -18,6 +18,37 @@
  */
 
 import { Injectable } from '@angular/core';
+import { environment } from '@submarine/environment';
+
+class HttpError extends Error {
+  code: number;
+  url: string;
+  method: string;
+  params: object;
+
+  constructor(message: string, code: number, url?: string, method?: string, params?: object) {
+    super(message);
+
+    this.code = code;
+    this.url = url;
+    this.method = method;
+    this.params = params;
+
+    if (!environment.production) {
+      this.logError();
+    }
+  }
+
+  logError() {
+    console.group('Http error');
+    console.log('error message: ', this.message);
+    console.log('error code: ', this.code);
+    console.log('-------------------------------');
+    console.log('url: ', this.url);
+    console.log('method: ', this.method);
+    console.log('params: ', this.params);
+  }
+}
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +81,10 @@ export class BaseApiService {
 
   getRestApi(str: string): string {
     return `${this.getRestApiBase()}${str}`;
+  }
+
+  createRequestError(message: string, code: number, url?: string, method?: string, params?: any) {
+    return new HttpError(message, code, url, method, params);
   }
 
   private skipTrailingSlash(path) {

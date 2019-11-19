@@ -247,7 +247,7 @@ cd && cd spark-script && ./run_spark.sh
 
 1. Submarine package name error
 
-   Because the package name of submarine 0.3.0 or higher has been changed from `apache.hadoop.yarn.submarine` to `apache.submarine`, So you need to set the Runtime settings in the `/usr/local/hadoop/etc/hadoop/submarine.xml` file.
+   Because the package name of submarine 0.3.0 or higher has been changed from `apache.hadoop.yarn.submarine` to `apache.submarine`, So you need to set the Runtime settings in the `/usr/local/hadoop/etc/hadoop/submarine-site.xml` file.
 
    ```
    <configuration>

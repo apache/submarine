@@ -19,13 +19,24 @@
 
 import { Permission } from './permission';
 
-export type RoleId = string;
-
 export class Role {
-  createTime: number = -1;
-  creatorId = '';
-  describe = '';
-  id = '';
-  name = '';
+  id: string;
+  name: string;
+  describe: string;
+  status: number;
+  creatorId: string;
+  createTime: number;
+  deleted: number;
   permissions: Permission[];
+
+  constructor(role: Role) {
+    this.id = role.id;
+    this.name = role.name;
+    this.describe = role.describe;
+    this.status = role.status;
+    this.creatorId = role.creatorId;
+    this.createTime = role.createTime;
+    this.deleted = role.deleted;
+    this.permissions = role.permissions.map(permission => new Permission(permission));
+  }
 }

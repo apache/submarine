@@ -17,19 +17,30 @@
  * under the License.
  */
 
-export interface PermissionActionEntitySet {
+import { Action } from './action';
+
+export interface ActionEntitySet {
   action: string;
-  defaultChecked: boolean;
+  defaultCheck: boolean;
   describe: string;
 }
 
-export type PermissionAction = PermissionActionEntitySet;
-
 export class Permission {
-  permissionId = '';
-  permissionName = '';
-  roleId = '';
-  actionList = null;
-  actionEntitySet: PermissionActionEntitySet[] = [];
-  actions: PermissionAction[] = [];
+  roleId: string;
+  permissionId: string;
+  permissionName: string;
+  dataAccess?: any;
+  actionList?: any;
+  actions: Action[];
+  actionEntitySet: ActionEntitySet[];
+
+  constructor(permission: Permission) {
+    this.roleId = permission.roleId;
+    this.permissionId = permission.permissionId;
+    this.permissionName = permission.permissionName;
+    this.dataAccess = permission.dataAccess;
+    this.actionList = permission.actionList;
+    this.actions = permission.actions;
+    this.actionEntitySet = permission.actionEntitySet;
+  }
 }

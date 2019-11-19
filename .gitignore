@@ -67,4 +67,9 @@ submarine-workbench/workbench-web/.env.*.local
 submarine-workbench/workbench-web/npm-debug.log*
 submarine-workbench/workbench-web/yarn-debug.log*
 submarine-workbench/workbench-web/yarn-error.log*
+submarine-workbench/workbench-web-ng/node
+submarine-workbench/workbench-web-ng/node_modules
+submarine-workbench/workbench-web-ng/dist
+submarine-workbench/workbench-web-ng/package-lock.json
+submarine-workbench/workbench-web-ng/npm-debug.log*
 submarine-test/e2e/Driver
