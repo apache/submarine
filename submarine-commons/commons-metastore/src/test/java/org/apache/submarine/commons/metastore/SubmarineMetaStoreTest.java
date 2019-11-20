@@ -62,15 +62,17 @@ public class SubmarineMetaStoreTest {
   @Before
   public void createDatabase() throws InvalidObjectException, MetaException {
 
-    String url = "jdbc:mysql://127.0.0.1:3306/metastoreDB_test?" +
+    String url = "jdbc:mysql://127.0.0.1:3306/submarineDB_test?" +
         "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false";
-    String username = "metastore_test";
-    String password = "password_test";
+    // String username = "metastore_test";
+    // String password = "password_test";
+     String username = "submarine_test";
+     String password = "password_test";
     try {
       Connection con = DriverManager.getConnection(url, username, password);
       Statement stmt = con.createStatement();
-      String sql = "SELECT * FROM DBS";
+      String sql = "SELECT * FROM sys_dict";
       System.out.println("sql:" + sql);
       ResultSet rs = stmt.executeQuery(sql);
       System.out.println("rs:" + rs);
