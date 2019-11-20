@@ -96,7 +96,7 @@ public class MyBatisUtil {
     LOG.info("Run the test unit using the test database");
     // Run the test unit using the test database
     SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-    conf.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/submarineDB_test?" +
+    conf.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/submarine_test?" +
         "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false");
     conf.setJdbcUserName("submarine_test");

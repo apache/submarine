@@ -45,7 +45,7 @@ there. The URI should be database connection string.
 
 - URI - Submarine record data to Mysql server. The database URL
 is expected in the format ``<dialect>+<driver>://<username>:<password>@<host>:<port>/<database>``.
-By default it's `mysql+pymysql://submarine:password@localhost:3306/submarineDB`.
+By default it's `mysql+pymysql://submarine:password@localhost:3306/submarine`.
 More detail : [SQLAlchemy docs](https://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls)
 
 <!--
