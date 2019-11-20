@@ -17,12 +17,12 @@
 # Install mariadb
 apt-get -y install mariadb-server
 service mysql start
-mysql -e "CREATE DATABASE submarineDB_test;"
+mysql -e "CREATE DATABASE submarine_test;"
 mysql -e "CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';"
-mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';"
-mysql -e "use submarineDB_test; source /home/yarn/database/submarine.sql; source /home/yarn/database/submarine-data.sql;"
+mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'submarine_test'@'%';"
+mysql -e "use submarine_test; source /home/yarn/database/submarine.sql; source /home/yarn/database/submarine-data.sql;"
 
-mysql -e "CREATE DATABASE submarineDB;"
+mysql -e "CREATE DATABASE submarine;"
 mysql -e "CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';"
-mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';"
-mysql -e "use submarineDB; source /home/yarn/database/submarine.sql; source /home/yarn/database/submarine-data.sql;"
+mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'submarine'@'%';"
+mysql -e "use submarine; source /home/yarn/database/submarine.sql; source /home/yarn/database/submarine-data.sql;"
