@@ -66,21 +66,38 @@ public class SubmarineMetaStoreTest {
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false";
     String username = "submarine_test";
     String password = "password_test";
+    boolean flag = false;
+    Connection con = null;
+    Statement stmt = null;
     try {
-      Connection con = DriverManager.getConnection(url, username, password);
-      Statement stmt = con.createStatement();
-      String sql = "SELECT * FROM sys_dict";
+      con = DriverManager.getConnection(url, username, password);
+      stmt = con.createStatement();
+      String sql = "show databases";
       System.out.println("sql:" + sql);
       ResultSet rs = stmt.executeQuery(sql);
       System.out.println("rs:" + rs);
+
       while (rs.next()) {
         String pass = rs.getString(1);
+        if (pass.equals("metastoredb_test")) {
+          flag = true;
+        }
         System.out.println("pass:" + pass);
       }
     } catch (SQLException se) {
       System.out.println("数据库连接失败！");
     }
 
+    if (flag) {
+      try {
+        ResultSet rsShowtables = stmt.executeQuery("show tables");
+        while (rsShowtables.next()) {
+          String passTable = rsShowtables.getString(1);
+        }
+      } catch (SQLException se) {
+        System.out.println("数据库连接失败！");
+      }
+    }
     Database database = new Database();
     database.setName("testdb");
     database.setDescription("testdb");
