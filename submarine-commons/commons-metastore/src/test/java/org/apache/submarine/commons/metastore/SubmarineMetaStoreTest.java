@@ -33,6 +33,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -110,6 +117,23 @@ public class SubmarineMetaStoreTest {
 
     Table tableTest = submarineMetaStore.getTable("testdb", "testtable");
     assertEquals("testtable", tableTest.getTableName());
+
+    String url = "jdbc:mysql://127.0.0.1:3306/metastoreDB_test?" +
+        "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
+        "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false";
+    String username = "metastore_test";
+    String password = "password_test";
+    try {
+      Connection con = DriverManager.getConnection(url, username, password);
+      Statement stmt = con.createStatement();
+      ResultSet rs = stmt.executeQuery("SELECT * FROM DBS");
+      while (rs.next()) {
+        String pass = rs.getString(1);
+        System.out.println("pass:" + pass);
+      }
+    } catch (SQLException se) {
+      System.out.println("数据库连接失败！");
+    }
   }
 
   @After
