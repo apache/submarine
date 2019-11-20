@@ -61,10 +61,10 @@ public class SubmarineMetaStoreTest {
 
   @Before
   public void createDatabase() throws InvalidObjectException, MetaException {
-    String url = "jdbc:mysql://127.0.0.1:3306/submarineDB_test?" +
+    String url = "jdbc:mysql://127.0.0.1:3306/metastoredb_test?" +
         "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false";
-    String username = "submarine_test";
+    String username = "metastore_test";
     String password = "password_test";
     boolean flag = false;
     Connection con = null;
@@ -72,32 +72,19 @@ public class SubmarineMetaStoreTest {
     try {
       con = DriverManager.getConnection(url, username, password);
       stmt = con.createStatement();
-      String sql = "show databases";
+      String sql = "show tables";
       System.out.println("sql:" + sql);
       ResultSet rs = stmt.executeQuery(sql);
       System.out.println("rs:" + rs);
 
       while (rs.next()) {
         String pass = rs.getString(1);
-        if (pass.equals("metastoredb_test")) {
-          flag = true;
-        }
-        System.out.println("pass:" + pass);
+        System.out.println("table:" + pass);
       }
     } catch (SQLException se) {
       System.out.println("数据库连接失败！");
     }
 
-    if (flag) {
-      try {
-        ResultSet rsShowtables = stmt.executeQuery("show tables");
-        while (rsShowtables.next()) {
-          String passTable = rsShowtables.getString(1);
-        }
-      } catch (SQLException se) {
-        System.out.println("数据库连接失败！");
-      }
-    }
     Database database = new Database();
     database.setName("testdb");
     database.setDescription("testdb");
