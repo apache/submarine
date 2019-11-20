@@ -30,24 +30,21 @@ import static org.apache.hadoop.yarn.client.api.AppAdminClient.DEFAULT_TYPE;
  * based on the provided parameters.
  */
 public final class YarnServiceUtils {
+  private static AppAdminClientFactory appAdminClientFactory =
+      new AppAdminClientFactory();
+
   private YarnServiceUtils() {
   }
 
-  // This will be true only in UT.
-  private static AppAdminClient stubServiceClient = null;
+  @VisibleForTesting
+  public static void setAppAdminClientFactory(
+      AppAdminClientFactory appAdminClientFactory) {
+    YarnServiceUtils.appAdminClientFactory = appAdminClientFactory;
+  }
 
   static AppAdminClient createServiceClient(
       Configuration yarnConfiguration) {
-    if (stubServiceClient != null) {
-      return stubServiceClient;
-    }
-
-    return AppAdminClient.createAppAdminClient(DEFAULT_TYPE, yarnConfiguration);
-  }
-
-  @VisibleForTesting
-  public static void setStubServiceClient(AppAdminClient stubServiceClient) {
-    YarnServiceUtils.stubServiceClient = stubServiceClient;
+    return appAdminClientFactory.createDefault(yarnConfiguration);
   }
 
   public static String getDNSName(String serviceName,
@@ -61,4 +58,9 @@ public final class YarnServiceUtils {
     return "." + serviceName + "." + userName + "." + domain + ":" + port;
   }
 
+  public static class AppAdminClientFactory {
+    public AppAdminClient createDefault(Configuration configuration) {
+      return AppAdminClient.createAppAdminClient(DEFAULT_TYPE, configuration);
+    }
+  }
 }

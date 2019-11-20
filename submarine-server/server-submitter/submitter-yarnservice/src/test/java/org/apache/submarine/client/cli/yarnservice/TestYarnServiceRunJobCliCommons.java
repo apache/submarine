@@ -19,6 +19,7 @@
 
 package org.apache.submarine.client.cli.yarnservice;
 
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.client.api.AppAdminClient;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.service.api.records.Service;
@@ -56,14 +57,27 @@ public class TestYarnServiceRunJobCliCommons {
 
   void setup() throws IOException, YarnException {
     SubmarineLogs.verboseOff();
+    AppAdminClient serviceClient = createMockAppAdminClient();
+    createAndSetAppAdminClientFactory(serviceClient);
+    fileUtils.setup();
+  }
+
+  private AppAdminClient createMockAppAdminClient()
+      throws IOException, YarnException {
     AppAdminClient serviceClient = mock(AppAdminClient.class);
     when(serviceClient.actionLaunch(any(String.class), any(String.class),
         any(Long.class), any(String.class))).thenReturn(EXIT_SUCCESS);
     when(serviceClient.getStatusString(any(String.class))).thenReturn(
         "{\"id\": \"application_1234_1\"}");
-    YarnServiceUtils.setStubServiceClient(serviceClient);
+    return serviceClient;
+  }
 
-    fileUtils.setup();
+  private void createAndSetAppAdminClientFactory(AppAdminClient serviceClient) {
+    YarnServiceUtils.AppAdminClientFactory appAdminClientFactory =
+        mock(YarnServiceUtils.AppAdminClientFactory.class);
+    when(appAdminClientFactory.createDefault(any(Configuration.class)))
+        .thenReturn(serviceClient);
+    YarnServiceUtils.setAppAdminClientFactory(appAdminClientFactory);
   }
 
   void teardown() throws IOException {
@@ -78,5 +92,4 @@ public class TestYarnServiceRunJobCliCommons {
     return ((YarnServiceJobSubmitter) jobSubmitter).getServiceWrapper()
         .getService();
   }
-
 }
