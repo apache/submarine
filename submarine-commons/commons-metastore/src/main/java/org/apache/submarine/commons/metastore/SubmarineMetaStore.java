@@ -40,24 +40,13 @@ public class SubmarineMetaStore {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineMetaStore.class);
 
   private RawStore rs = null;
-  private final SubmarineConfiguration submarineConf = SubmarineConfiguration.getInstance();
 
-  public SubmarineMetaStore() {
+  public SubmarineMetaStore(SubmarineConfiguration submarineConf) {
     HiveConf conf = new HiveConf();
     conf.setVar(HiveConf.ConfVars.METASTORE_CONNECTION_DRIVER, submarineConf.getJdbcDriverClassName());
-    conf.setVar(HiveConf.ConfVars.METASTORECONNECTURLKEY, submarineConf.getJdbcUrl());
-    conf.setVar(HiveConf.ConfVars.METASTORE_CONNECTION_USER_NAME, submarineConf.getJdbcUserName());
-    conf.setVar(HiveConf.ConfVars.METASTOREPWD, submarineConf.getJdbcPassword());
-    // Id can be set to any int value
-    try {
-      this.rs = RawStoreProxy.getProxy(conf, conf,
-          conf.getVar(HiveConf.ConfVars.METASTORE_RAW_STORE_IMPL), 1);
-    } catch (MetaException e) {
-      LOG.error(e.getMessage(), e);
-    }
-  }
-
-  public SubmarineMetaStore(HiveConf conf) {
+    conf.setVar(HiveConf.ConfVars.METASTORECONNECTURLKEY, submarineConf.getMetastoreJdbcUrl());
+    conf.setVar(HiveConf.ConfVars.METASTORE_CONNECTION_USER_NAME, submarineConf.getMetastoreJdbcUserName());
+    conf.setVar(HiveConf.ConfVars.METASTOREPWD, submarineConf.getMetastoreJdbcPassword());
     // Id can be set to any int value
     try {
       this.rs = RawStoreProxy.getProxy(conf, conf,

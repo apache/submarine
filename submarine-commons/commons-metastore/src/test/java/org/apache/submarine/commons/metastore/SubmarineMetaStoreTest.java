@@ -19,7 +19,6 @@
 
 package org.apache.submarine.commons.metastore;
 
-import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.FieldSchema;
 import org.apache.hadoop.hive.metastore.api.InvalidObjectException;
@@ -29,6 +28,7 @@ import org.apache.hadoop.hive.metastore.api.PrincipalType;
 import org.apache.hadoop.hive.metastore.api.SerDeInfo;
 import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,18 +42,17 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class SubmarineMetaStoreTest {
-  private static HiveConf conf = new HiveConf();
+  private static final SubmarineConfiguration submarineConf = SubmarineConfiguration.getInstance();
 
   static {
-    conf.setVar(HiveConf.ConfVars.METASTORE_CONNECTION_DRIVER, "com.mysql.jdbc.Driver");
-    conf.setVar(HiveConf.ConfVars.METASTORECONNECTURLKEY, "jdbc:mysql://127.0.0.1:3306/metastoreDB_test?" +
+    submarineConf.setMetastoreJdbcUrl("jdbc:mysql://127.0.0.1:3306/metastoreDB_test?" +
         "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false");
-    conf.setVar(HiveConf.ConfVars.METASTORE_CONNECTION_USER_NAME, "metastore_test");
-    conf.setVar(HiveConf.ConfVars.METASTOREPWD, "password_test");
+    submarineConf.setMetastoreJdbcUserName("metastore_test");
+    submarineConf.setMetastoreJdbcPassword("password_test");
   }
 
-  private SubmarineMetaStore submarineMetaStore = new SubmarineMetaStore(conf);
+  private SubmarineMetaStore submarineMetaStore = new SubmarineMetaStore(submarineConf);
 
   @Before
   public void createDatabase() throws InvalidObjectException, MetaException {
