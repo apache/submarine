@@ -85,6 +85,7 @@ public class K8sJobSubmitter {
     return null;
   }
 
+  @VisibleForTesting
   CustomResourceJob deleteCustomResourceJob(K8sJobRequest request) {
     try {
       CustomObjectsApi api = new CustomObjectsApi();
