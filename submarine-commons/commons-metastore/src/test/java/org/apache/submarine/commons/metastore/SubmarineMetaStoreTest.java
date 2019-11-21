@@ -32,6 +32,8 @@ import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import parquet.org.slf4j.Logger;
+import parquet.org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -42,20 +44,22 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class SubmarineMetaStoreTest {
-  private static final SubmarineConfiguration submarineConf = SubmarineConfiguration.getInstance();
+  private static final Logger LOG = LoggerFactory.getLogger(SubmarineMetaStoreTest.class);
+  private static final SubmarineConfiguration submarineConf = SubmarineConfiguration.newInstance();
+  private SubmarineMetaStore submarineMetaStore = null;
 
-  static {
+  @Test
+  public void createDatabase() throws InvalidObjectException, MetaException {
     submarineConf.setMetastoreJdbcUrl("jdbc:mysql://127.0.0.1:3306/metastore_test?" +
         "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false");
     submarineConf.setMetastoreJdbcUserName("metastore_test");
     submarineConf.setMetastoreJdbcPassword("password_test");
-  }
 
-  private SubmarineMetaStore submarineMetaStore = new SubmarineMetaStore(submarineConf);
+    LOG.info(submarineConf.toString());
 
-  @Before
-  public void createDatabase() throws InvalidObjectException, MetaException {
+    submarineMetaStore = new SubmarineMetaStore(submarineConf);
+
     Database database = new Database();
     database.setName("testdb");
     database.setDescription("testdb");
@@ -111,45 +115,6 @@ public class SubmarineMetaStoreTest {
     Table tableTest = submarineMetaStore.getTable("testdb", "testtable");
     assertEquals("testtable", tableTest.getTableName());
 
-  }
-
-  @After
-  public void removeAllRecord() throws Exception {
-    submarineMetaStore.dropTable("testdb", "testtable");
-    int tableCount = submarineMetaStore.getTableCount();
-    assertEquals(0, tableCount);
-
-    submarineMetaStore.dropDatabase("testdb");
-    assertEquals(1, submarineMetaStore.getDatabaseCount());
-  }
-
-  @Test
-  public void getDatabaseCount() throws InvalidObjectException, MetaException {
-    assertEquals(2, submarineMetaStore.getDatabaseCount());
-  }
-
-  @Test
-  public void getAllDatabases() throws MetaException {
-    List<String> databases = submarineMetaStore.getAllDatabases();
-    assertEquals(true, databases.contains("testdb"));
-  }
-
-  @Test
-  public void getDatabase() throws NoSuchObjectException {
-    Database database = submarineMetaStore.getDatabase("testdb");
-    assertEquals("testdb", database.getName());
-  }
-
-  @Test
-  public void getAllTables() throws MetaException {
-    List<String> tables = submarineMetaStore.getAllTables("testdb");
-    assertEquals(true, tables.contains("testtable"));
-  }
-
-  @Test
-  public void getTableCount() throws MetaException {
-    int tableCount = submarineMetaStore.getTableCount();
-    assertEquals(1, tableCount);
   }
 
 }
