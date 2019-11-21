@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.apache.submarine.server.utils.GitRequestUtil.sendHttpRequest;
+import static org.apache.submarine.server.utils.GitHttpRequest.sendHttpRequest;
 
 public class GitUtilsTest {
   private static final Logger LOG = LoggerFactory.getLogger(GitUtilsTest.class);

@@ -32,8 +32,8 @@ import java.net.URLConnection;
 import java.util.Date;
 import java.util.Map;
 
-public class GitRequestUtil {
-  private static final Logger LOG = LoggerFactory.getLogger(GitRequestUtil.class);
+public class GitHttpRequest {
+  private static final Logger LOG = LoggerFactory.getLogger(GitHttpRequest.class);
 
   /**
    * Sends an HTTP request to the specified URL
