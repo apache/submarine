@@ -29,9 +29,14 @@ import org.apache.hadoop.hive.metastore.api.StorageDescriptor;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.junit.Test;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,15 +50,45 @@ public class SubmarineMetaStoreTest {
   private static final SubmarineConfiguration submarineConf = SubmarineConfiguration.newInstance();
   private SubmarineMetaStore submarineMetaStore = null;
 
+
+  @Test
+  public void testJdbc() {
+    LOG.info("testJdbc >>> ");
+
+    String url = "jdbc:mysql://127.0.0.1:3306/metastore_test?" +
+        "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
+        "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false";
+    String username = "metastore_test";
+    String password = "password_test";
+    boolean flag = false;
+    Connection con = null;
+    Statement stmt = null;
+    try {
+      con = DriverManager.getConnection(url, username, password);
+      stmt = con.createStatement();
+      String sql = "show tables";
+      LOG.info(">>>>> sql:" + sql);
+      ResultSet rs = stmt.executeQuery(sql);
+      LOG.info("rs:" + rs);
+
+      while (rs.next()) {
+        String pass = rs.getString(1);
+        LOG.info("table:" + pass);
+      }
+    } catch (SQLException se) {
+      se.printStackTrace();
+    }
+
+    LOG.info("testJdbc <<< ");
+  }
+
   @Test
   public void createDatabase() throws InvalidObjectException, MetaException {
-    submarineConf.setMetastoreJdbcUrl("jdbc:mysql://127.0.0.1:3306/submarineDB_test?" +
+    submarineConf.setMetastoreJdbcUrl("jdbc:mysql://127.0.0.1:3306/metastore_test?" +
         "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false");
-    submarineConf.setMetastoreJdbcUserName("submarine_test");
+    submarineConf.setMetastoreJdbcUserName("metastore_test");
     submarineConf.setMetastoreJdbcPassword("password_test");
-
-    LOG.info(submarineConf.toString());
 
     submarineMetaStore = new SubmarineMetaStore(submarineConf);
 

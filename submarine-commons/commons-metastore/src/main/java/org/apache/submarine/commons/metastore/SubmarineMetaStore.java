@@ -31,8 +31,8 @@ import org.apache.hadoop.hive.metastore.api.SQLPrimaryKey;
 import org.apache.hadoop.hive.metastore.api.Table;
 import org.apache.hadoop.hive.metastore.api.TableMeta;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -42,6 +42,11 @@ public class SubmarineMetaStore {
   private RawStore rs = null;
 
   public SubmarineMetaStore(SubmarineConfiguration submarineConf) {
+    LOG.info("JdbcDriverClassName = {}", submarineConf.getJdbcDriverClassName());
+    LOG.info("MetastoreJdbcUrl = {}", submarineConf.getMetastoreJdbcUrl());
+    LOG.info("MetastoreJdbcUserName = {}", submarineConf.getMetastoreJdbcUserName());
+    LOG.info("MetastoreJdbcPassword = {}", submarineConf.getMetastoreJdbcPassword());
+
     HiveConf conf = new HiveConf();
     conf.setVar(HiveConf.ConfVars.METASTORE_CONNECTION_DRIVER, submarineConf.getJdbcDriverClassName());
     conf.setVar(HiveConf.ConfVars.METASTORECONNECTURLKEY, submarineConf.getMetastoreJdbcUrl());
