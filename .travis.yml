@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-sudo: false
+sudo: required
 
 before_cache:
   - sudo chown -R travis:travis $HOME/.m2
@@ -41,10 +41,11 @@ services:
 env:
   global:
     # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-server/server-submitter/submitter-yarnservice` in EXCLUDE_SUBMARINE
-    - EXCLUDE_SUBMARINE="!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn,!submarine-server/server-submitter/submitter-k8s,!submarine-server/server-core"
+    - EXCLUDE_SUBMARINE="!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn,!submarine-server/server-core"
     - EXCLUDE_WORKBENCH="!submarine-workbench,!submarine-workbench/workbench-web"
     - EXCLUDE_INTERPRETER="!submarine-workbench/interpreter,!submarine-workbench/interpreter/interpreter-engine,!submarine-workbench/interpreter/python-interpreter,!submarine-workbench/interpreter/spark-interpreter""
     - EXCLUDE_SUBMODULE_TONY="!submodules/tony,!submodules/tony/tony-mini,!submodules/tony/tony-core,!submodules/tony/tony-proxy,!submodules/tony/tony-portal,!submodules/tony/tony-azkaban,!submodules/tony/tony-cli"
+    - EXCLUDE_K8S="!submarine-server/server-submitter/submitter-k8s"
 
 before_install:
   # maven 3.6.1 (3.6.2 build tony failed!!!)
@@ -73,25 +74,25 @@ matrix:
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-2.7" PROFILE="-Phadoop-2.7" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-2.7" PROFILE="-Phadoop-2.7" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-2.9(default)
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-2.9" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-2.9" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-3.1
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-3.1" PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-3.1" PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-3.2
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-3.2" PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-3.2" PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build workbench-web
     - language: node_js
@@ -110,7 +111,7 @@ matrix:
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Test workbench-web" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl submarine-workbench/workbench-web" TEST_PROJECTS=""
+      env: NAME="Test workbench-web" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_SUBMARINE},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl submarine-workbench/workbench-web" TEST_PROJECTS=""
 
     # Test test-e2e
     - language: java
@@ -122,7 +123,7 @@ matrix:
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Test interpreter" PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMARINE},${EXCLUDE_WORKBENCH},${EXCLUDE_SUBMODULE_TONY}" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
+      env: NAME="Test interpreter" PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_SUBMARINE},${EXCLUDE_WORKBENCH},${EXCLUDE_SUBMODULE_TONY}" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
 
     # Test submarine-sdk
     - language: python
@@ -139,7 +140,7 @@ matrix:
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Test submarine distribution" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="" TEST_MODULES="" TEST_PROJECTS=""
+      env: NAME="Test submarine distribution" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_K8S}" TEST_MODULES="-pl ${EXCLUDE_K8S}" TEST_PROJECTS=""
 
     # Test submarine web-ng
     - language: node_js
@@ -160,12 +161,37 @@ matrix:
         - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
       env: NAME="Build workbench-web-ng"
 
-
     # Test submarine-server
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Test submarine-server" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl submarine-server/server-core" TEST_PROJECTS=""
+      env: NAME="Test submarine-server" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl submarine-server/server-core" TEST_PROJECTS=""
+
+    - name: Submarine on Kubernetes
+      dist: xenial
+      services: docker
+      language: java
+      jdk: openjdk8
+      env: BUILD_FLAG="clean package install -DskipTests -am" TEST_FLAG="test -am" MODULES="-pl org.apache.submarine:submitter-k8s" TEST_MODULES="-pl org.apache.submarine:submitter-k8s" TEST_PROJECTS=""
+      before_install:
+        # deploy Kubernetes cluster
+        - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+        - chmod +x kubectl
+        - sudo mv kubectl /usr/bin
+        - docker run -d --name kube --privileged -p 8443:8443 -p 10080:10080 bsycorp/kind:latest-1.15
+        - until curl -s --fail http://127.0.0.1:10080/kubernetes-ready; do
+            sleep 1;
+          done
+        - echo "Kubernetes ready - run tests!"
+        - mkdir $HOME/.kube
+        - curl http://127.0.0.1:10080/config > $HOME/.kube/config
+        - export KUBECONFIG=$HOME/.kube/config
+        - echo $KUBECONFIG
+        - kubectl config set clusters.kubernetes.server https://127.0.0.1:8443
+        - kubectl get nodes
+        - kubectl create namespace kubeflow
+        - kubectl apply -f ./dev-support/travis/tf-operator/crd_v1.yaml
+        - kubectl apply -f ./dev-support/travis/tf-operator/tfevent-volume/.
 
 install:
   - mvn --version
