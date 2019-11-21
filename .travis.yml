@@ -51,7 +51,7 @@ before_install:
   - mysql -e "create database submarineDB_test;"
   - mysql -e "CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';"
   - mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';"
-  - mysql -e "use submarineDB_test; source ./docs/database/submarine.sql; show tables;"
+  - mysql -e "use submarineDB_test; source ./docs/database/submarine.sql; source ./docs/database/metastore.sql; show tables;"
   - mysql -e "create database metastore_test;"
   - mysql -e "CREATE USER 'metastore_test'@'%' IDENTIFIED BY 'password_test';"
   - mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'metastore_test'@'%';"
