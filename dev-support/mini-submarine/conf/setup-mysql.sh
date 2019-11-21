@@ -27,10 +27,10 @@ mysql -e "CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';"
 mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';"
 mysql -e "use submarineDB; source /home/yarn/database/submarine.sql; source /home/yarn/database/submarine-data.sql;"
 
-mysql -e "CREATE DATABASE metastoreDB_test;"
+mysql -e "CREATE DATABASE metastore_test;"
 mysql -e "CREATE USER 'metastore_test'@'%' IDENTIFIED BY 'password_test';"
 mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'metastore_test'@'%';"
-mysql -e "use metastoreDB_test; source /home/yarn/database/metastore.sql;"
+mysql -e "use metastore_test; source /home/yarn/database/metastore.sql;"
 
 mysql -e "CREATE DATABASE metastoreDB;"
 mysql -e "CREATE USER 'metastore'@'%' IDENTIFIED BY 'password';"

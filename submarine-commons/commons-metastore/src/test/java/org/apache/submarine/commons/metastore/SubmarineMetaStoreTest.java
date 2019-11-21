@@ -45,7 +45,7 @@ public class SubmarineMetaStoreTest {
   private static final SubmarineConfiguration submarineConf = SubmarineConfiguration.getInstance();
 
   static {
-    submarineConf.setMetastoreJdbcUrl("jdbc:mysql://127.0.0.1:3306/metastoredb_test?" +
+    submarineConf.setMetastoreJdbcUrl("jdbc:mysql://127.0.0.1:3306/metastore_test?" +
         "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false");
     submarineConf.setMetastoreJdbcUserName("metastore_test");
