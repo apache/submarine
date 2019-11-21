@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.database.utils;
+package org.apache.submarine.server.response;
 
 import net.sf.cglib.beans.BeanGenerator;
 import net.sf.cglib.beans.BeanMap;
@@ -24,7 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.submarine.server.workbench.annotation.Dict;
 import org.apache.submarine.server.workbench.database.entity.SysDictItem;
 import org.apache.submarine.server.workbench.database.service.SysDictItemService;
-import org.apache.submarine.server.workbench.server.JsonResponse.ListResult;
+import org.apache.submarine.server.response.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,11 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.server;
+package org.apache.submarine.server.utils;
 
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-import org.apache.submarine.server.workbench.database.utils.GitUtils;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.lib.Ref;
@@ -38,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.apache.submarine.server.workbench.database.utils.HttpRequestUtil.sendHttpRequest;
+import static org.apache.submarine.server.utils.GitRequestUtil.sendHttpRequest;
 
 public class GitUtilsTest {
   private static final Logger LOG = LoggerFactory.getLogger(GitUtilsTest.class);

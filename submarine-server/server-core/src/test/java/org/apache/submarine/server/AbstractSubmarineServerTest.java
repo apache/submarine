@@ -14,38 +14,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.submarine.server.workbench.server;
+package org.apache.submarine.server;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.cookie.CookiePolicy;
+import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
+import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
-import org.apache.submarine.server.SubmarineServer;
-import org.apache.submarine.server.workbench.utils.TestUtils;
+import org.apache.submarine.server.utils.TestUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.MediaType;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 
-public abstract class AbstractWorkbenchServerTest {
+public abstract class AbstractSubmarineServerTest {
   protected static final Logger LOG =
-      LoggerFactory.getLogger(AbstractWorkbenchServerTest.class);
+      LoggerFactory.getLogger(AbstractSubmarineServerTest.class);
 
   static final String WEBSOCKET_API_URL = "/ws";
   static final String URL = getUrlToTest();
   protected static final boolean WAS_RUNNING = checkIfServerIsRunning();
 
-  protected static File workbenchServerHome;
+  protected static File submarineServerHome;
   protected static File confDir;
 
   public static String getWebsocketApiUrlToTest() {
@@ -79,14 +88,14 @@ public abstract class AbstractWorkbenchServerTest {
   };
 
   public static void startUp(String testClassName) throws Exception {
-    LOG.info("Starting WorkbenchServer testClassName: {}", testClassName);
+    LOG.info("Starting SubmarineServer testClassName: {}", testClassName);
 
     if (!WAS_RUNNING) {
       // copy the resources files to a temp folder
-      workbenchServerHome = new File("..");
-      LOG.info("SUBMARINE_WORKBENCH_SERVER_HOME: "
-          + workbenchServerHome.getAbsolutePath());
-      confDir = new File(workbenchServerHome, "conf_" + testClassName);
+      submarineServerHome = new File("..");
+      LOG.info("SUBMARINE_SERVER_HOME: "
+          + submarineServerHome.getAbsolutePath());
+      confDir = new File(submarineServerHome, "conf_" + testClassName);
       confDir.mkdirs();
 
       System.setProperty(SubmarineConfiguration.ConfVars.WORKBENCH_WEB_WAR.getVarName(),
@@ -95,11 +104,11 @@ public abstract class AbstractWorkbenchServerTest {
           confDir.getAbsolutePath());
 
       // some test profile does not build workbench-web.
-      // to prevent submarine workbench server starting up fail,
+      // to prevent submarine server starting up fail,
       // create workbench-web/dist directory
       new File("../workbench-web/dist").mkdirs();
 
-      LOG.info("Staring test workbench server up...");
+      LOG.info("Staring test Submarine server up...");
 
       executor = Executors.newSingleThreadExecutor();
       executor.submit(SERVER);
@@ -113,9 +122,9 @@ public abstract class AbstractWorkbenchServerTest {
         }
       }
       if (started == false) {
-        throw new RuntimeException("Can not start workbench server.");
+        throw new RuntimeException("Can not start Submarine server.");
       }
-      LOG.info("Test workbench server stared.");
+      LOG.info("Test Submarine server stared.");
     }
   }
 
@@ -134,7 +143,7 @@ public abstract class AbstractWorkbenchServerTest {
 
   protected static void shutDown(final boolean deleteConfDir) throws Exception {
     if (!WAS_RUNNING) {
-      LOG.info("Terminating test workbench server...");
+      LOG.info("Terminating test Submarine server...");
       SubmarineServer.jettyWebServer.stop();
       executor.shutdown();
 
@@ -149,15 +158,77 @@ public abstract class AbstractWorkbenchServerTest {
         }
       }
       if (started == true) {
-        throw new RuntimeException("Can not stop Submarine workbench server");
+        throw new RuntimeException("Can not stop Submarine server");
       }
 
-      LOG.info("Test Submarine workbench server terminated.");
+      LOG.info("Test Submarine server terminated.");
 
       if (deleteConfDir) {
         FileUtils.deleteDirectory(confDir);
       }
     }
+  }
+
+  protected static PostMethod httpPost(String path, String body) throws IOException {
+    return httpPost(path, body, StringUtils.EMPTY, StringUtils.EMPTY);
+  }
+
+  protected static PostMethod httpPost(String path, String request, String user, String pwd)
+      throws IOException {
+    LOG.info("Connecting to {}", URL + path);
+
+    HttpClient httpClient = new HttpClient();
+    PostMethod postMethod = new PostMethod(URL + path);
+    postMethod.setRequestBody(request);
+    postMethod.setRequestHeader("Content-type", MediaType.APPLICATION_JSON);
+    postMethod.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
+
+    if (userAndPasswordAreNotBlank(user, pwd)) {
+      postMethod.setRequestHeader("Cookie", "JSESSIONID=" + getCookie(user, pwd));
+    }
+
+    httpClient.executeMethod(postMethod);
+
+    LOG.info("{} - {}", postMethod.getStatusCode(), postMethod.getStatusText());
+
+    return postMethod;
+  }
+
+  protected static PutMethod httpPut(String path, String body) throws IOException {
+    return httpPut(path, body, StringUtils.EMPTY, StringUtils.EMPTY);
+  }
+
+  protected static PutMethod httpPut(String path, String body, String user, String pwd) throws IOException {
+    LOG.info("Connecting to {}", URL + path);
+    HttpClient httpClient = new HttpClient();
+    PutMethod putMethod = new PutMethod(URL + path);
+    putMethod.addRequestHeader("Origin", URL);
+    putMethod.setRequestHeader("Content-type", "application/yaml");
+    RequestEntity entity = new ByteArrayRequestEntity(body.getBytes("UTF-8"));
+    putMethod.setRequestEntity(entity);
+    if (userAndPasswordAreNotBlank(user, pwd)) {
+      putMethod.setRequestHeader("Cookie", "JSESSIONID=" + getCookie(user, pwd));
+    }
+    httpClient.executeMethod(putMethod);
+    LOG.info("{} - {}", putMethod.getStatusCode(), putMethod.getStatusText());
+    return putMethod;
+  }
+
+  protected static DeleteMethod httpDelete(String path) throws IOException {
+    return httpDelete(path, StringUtils.EMPTY, StringUtils.EMPTY);
+  }
+
+  protected static DeleteMethod httpDelete(String path, String user, String pwd) throws IOException {
+    LOG.info("Connecting to {}", URL + path);
+    HttpClient httpClient = new HttpClient();
+    DeleteMethod deleteMethod = new DeleteMethod(URL + path);
+    deleteMethod.addRequestHeader("Origin", URL);
+    if (userAndPasswordAreNotBlank(user, pwd)) {
+      deleteMethod.setRequestHeader("Cookie", "JSESSIONID=" + getCookie(user, pwd));
+    }
+    httpClient.executeMethod(deleteMethod);
+    LOG.info("{} - {}", deleteMethod.getStatusCode(), deleteMethod.getStatusText());
+    return deleteMethod;
   }
 
   protected static GetMethod httpGet(String path) throws IOException {
@@ -187,7 +258,7 @@ public abstract class AbstractWorkbenchServerTest {
       isRunning = request.getStatusCode() == 200;
     } catch (IOException e) {
       LOG.warn("AbstractTestRestApi.checkIfServerIsRunning() fails .. " +
-          "Submarine workbench server is not running");
+          "Submarine server is not running");
       isRunning = false;
     } finally {
       if (request != null) {
@@ -261,5 +332,37 @@ public abstract class AbstractWorkbenchServerTest {
         description.appendText("got ").appendText(root.toString());
       }
     };
+  }
+
+  protected static boolean userAndPasswordAreNotBlank(String user, String pwd) {
+    if (StringUtils.isBlank(user) && StringUtils.isBlank(pwd)) {
+      return false;
+    }
+    return true;
+  }
+
+  private static String getCookie(String user, String password) throws IOException {
+    HttpClient httpClient = new HttpClient();
+    PostMethod postMethod = new PostMethod(URL + "/login");
+    postMethod.addRequestHeader("Origin", URL);
+    postMethod.setParameter("password", password);
+    postMethod.setParameter("userName", user);
+    httpClient.executeMethod(postMethod);
+    LOG.info("{} - {}", postMethod.getStatusCode(), postMethod.getStatusText());
+    Pattern pattern = Pattern.compile("JSESSIONID=([a-zA-Z0-9-]*)");
+    Header[] setCookieHeaders = postMethod.getResponseHeaders("Set-Cookie");
+    String jsessionId = null;
+    for (Header setCookie : setCookieHeaders) {
+      java.util.regex.Matcher matcher = pattern.matcher(setCookie.toString());
+      if (matcher.find()) {
+        jsessionId = matcher.group(1);
+      }
+    }
+
+    if (jsessionId != null) {
+      return jsessionId;
+    } else {
+      return StringUtils.EMPTY;
+    }
   }
 }

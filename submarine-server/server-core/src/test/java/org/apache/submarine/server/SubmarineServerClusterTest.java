@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.server;
+package org.apache.submarine.server;
 
 import org.apache.submarine.commons.cluster.ClusterClient;
 import org.apache.submarine.commons.cluster.meta.ClusterMetaType;
@@ -36,14 +36,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class WorkbenchClusterServerTest {
-  private static final Logger LOG = LoggerFactory.getLogger(WorkbenchClusterServerTest.class);
+public class SubmarineServerClusterTest extends AbstractSubmarineServerTest {
+  private static final Logger LOG = LoggerFactory.getLogger(SubmarineServerClusterTest.class);
 
   private static ClusterClient clusterClient = null;
 
   @BeforeClass
   public static void start() throws Exception {
-    LOG.info("WorkbenchClusterServerTest:start()");
+    LOG.info("SubmarineServerClusterTest:start()");
 
     SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
     String serverHost = NetworkUtils.findAvailableHostAddress();
@@ -52,7 +52,7 @@ public class WorkbenchClusterServerTest {
     conf.setClusterAddress(clusterAdd);
 
     // Run the workbench service in a thread
-    AbstractWorkbenchServerTest.startUp(WorkbenchClusterServerTest.class.getSimpleName());
+    startUp(SubmarineServerClusterTest.class.getSimpleName());
 
     // Mock Cluster client
     Class clazz = ClusterClient.class;
@@ -60,20 +60,20 @@ public class WorkbenchClusterServerTest {
     constructor = clazz.getDeclaredConstructor();
     constructor.setAccessible(true);
     clusterClient = (ClusterClient) constructor.newInstance();
-    clusterClient.start("TestWorkbenchClusterServer");
+    clusterClient.start("SubmarineServerClusterTest");
 
     // Waiting for cluster startup
     int wait = 0;
     while (wait++ < 100) {
       if (clusterClient.raftInitialized()) {
-        LOG.info("TestWorkbenchClusterServer::start {}(ms) found cluster leader", wait * 3000);
+        LOG.info("SubmarineServerClusterTest::start {}(ms) found cluster leader", wait * 3000);
         break;
       }
 
       sleep(3000);
     }
 
-    assertTrue("Can not start Submarine workbench server!", clusterClient.raftInitialized());
+    assertTrue("Can not start Submarine server!", clusterClient.raftInitialized());
 
     // Waiting for the workbench server to register in the cluster
     sleep(5000);
@@ -81,18 +81,18 @@ public class WorkbenchClusterServerTest {
 
   @AfterClass
   public static void stop() throws Exception {
-    LOG.info("WorkbenchClusterServerTest::stop >>>");
-    AbstractWorkbenchServerTest.shutDown();
+    LOG.info("SubmarineServerClusterTest::stop >>>");
+    shutDown();
 
     if (null != clusterClient) {
       clusterClient.shutdown();
     }
-    LOG.info("WorkbenchClusterServerTest::stop <<<");
+    LOG.info("SubmarineServerClusterTest::stop <<<");
   }
 
   @Test
-  public void testGetWorkbenchClusterMeta() {
-    LOG.info("TestWorkbenchClusterServer::testGetWorkbenchClusterMeta >>>");
+  public void testGetServerClusterMeta() {
+    LOG.info("SubmarineServerClusterTest::testGetServerClusterMeta >>>");
     // Get metadata for workbench server
     Object srvMeta = clusterClient.getClusterMeta(ClusterMetaType.SERVER_META, "");
     LOG.info("testGetWorkbenchClusterMeta = {}", srvMeta.toString());
@@ -102,6 +102,6 @@ public class WorkbenchClusterServerTest {
     HashMap hashMap = (HashMap) srvMeta;
 
     assertEquals(hashMap.size(), 1);
-    LOG.info("TestWorkbenchClusterServer::testGetWorkbenchClusterMeta <<<");
+    LOG.info("SubmarineServerClusterTest::testGetServerClusterMeta <<<");
   }
 }

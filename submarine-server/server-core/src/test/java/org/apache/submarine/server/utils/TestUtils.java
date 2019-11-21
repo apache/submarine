@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.submarine.server.workbench.utils;
+package org.apache.submarine.server.utils;
 
 import org.apache.submarine.server.SubmarineServer;
 import org.glassfish.hk2.api.ServiceLocator;

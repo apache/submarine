@@ -18,9 +18,9 @@
 
 package org.apache.submarine.server.jobserver.rest.api;
 
-import org.apache.submarine.server.jobserver.rest.dao.JsonResponse;
 import org.apache.submarine.server.jobserver.rest.dao.MLJobSpec;
 import org.apache.submarine.server.jobserver.rest.dao.RestConstants;
+import org.apache.submarine.server.response.JsonResponse;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;

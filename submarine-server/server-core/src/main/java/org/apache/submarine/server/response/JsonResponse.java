@@ -16,13 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.server;
+package org.apache.submarine.server.response;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
-import org.apache.submarine.server.workbench.database.utils.DictAnnotation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +75,10 @@ public class JsonResponse<T> {
   @VisibleForTesting
   public Map<String, Object> getAttributes() {
     return attributes;
+  }
+
+  public int getCode() {
+    return code;
   }
 
   public static class Builder<T> {
