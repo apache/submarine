@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-package org.apache.submarine.server.jobserver.rest.dao;
+package org.apache.submarine.server.response;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;

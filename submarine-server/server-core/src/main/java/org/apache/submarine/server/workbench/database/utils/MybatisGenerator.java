@@ -34,7 +34,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MybatisGeneratorMain {
+public class MybatisGenerator {
   private static final Logger LOG = LoggerFactory.getLogger(TeamService.class);
 
   public static void main(String[] args) {
@@ -42,7 +42,7 @@ public class MybatisGeneratorMain {
     boolean overwrite = true;
     // If a null pointer here, write directly absolute path.
     String genCfg = "/mbgConfiguration.xml";
-    File configFile = new File(MybatisGeneratorMain.class.getResource(genCfg).getFile());
+    File configFile = new File(MybatisGenerator.class.getResource(genCfg).getFile());
     ConfigurationParser cp = new ConfigurationParser(warnings);
     Configuration config = null;
     try {

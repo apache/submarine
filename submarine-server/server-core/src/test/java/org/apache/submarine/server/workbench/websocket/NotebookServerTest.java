@@ -16,7 +16,7 @@
  */
 package org.apache.submarine.server.workbench.websocket;
 
-import org.apache.submarine.server.workbench.server.AbstractWorkbenchServerTest;
+import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.StatusCode;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
@@ -32,19 +32,19 @@ public class NotebookServerTest {
 
   @BeforeClass
   public static void init() throws Exception {
-    AbstractWorkbenchServerTest.startUp(
+    AbstractSubmarineServerTest.startUp(
         NotebookServerTest.class.getSimpleName());
   }
 
   @AfterClass
   public static void destroy() throws Exception {
-    AbstractWorkbenchServerTest.shutDown();
+    AbstractSubmarineServerTest.shutDown();
   }
 
   @Test
   public void testWebsocketConnection() throws Exception{
     URI uri = URI.create(
-        AbstractWorkbenchServerTest.getWebsocketApiUrlToTest());
+        AbstractSubmarineServerTest.getWebsocketApiUrlToTest());
     WebSocketClient client = new WebSocketClient();
     try {
       client.start();
