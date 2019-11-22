@@ -134,8 +134,8 @@ public final class EnvironmentUtilities {
     } else {
       if (!value.isEmpty()) {
         String existingValue = env.get(key);
-        if((existingValue.contains(ETC_PASSWD) && value.contains(ETC_PASSWD))
-           || (existingValue.contains(ETC_GROUP) && value.contains(ETC_GROUP))){
+        if ((existingValue.contains(ETC_PASSWD) && value.contains(ETC_PASSWD))
+            || (existingValue.contains(ETC_GROUP) && value.contains(ETC_GROUP))){
           return;
         }
         if (!existingValue.endsWith(delim)) {
