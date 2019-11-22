@@ -80,5 +80,3 @@ else
 fi
 
 #sudo su - -s /bin/bash -c "echo sge start to finish >> ${CFG_PATH}/setcfg.log"
-
-
