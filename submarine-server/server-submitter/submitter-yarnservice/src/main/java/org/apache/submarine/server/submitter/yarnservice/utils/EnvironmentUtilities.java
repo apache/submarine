@@ -127,7 +127,7 @@ public final class EnvironmentUtilities {
   }
 
   static void etcAppendToEnv(Service service, String key, String value,
-                             String delim) {
+      String delim) {
     Map<String, String> env = service.getConfiguration().getEnv();
     if (!env.containsKey(key)) {
       env.put(key, value);
@@ -135,7 +135,7 @@ public final class EnvironmentUtilities {
       if (!value.isEmpty()) {
         String existingValue = env.get(key);
         if((existingValue.contains(ETC_PASSWD) && value.contains(ETC_PASSWD))
-                || (existingValue.contains(ETC_GROUP) && value.contains(ETC_GROUP))){
+           || (existingValue.contains(ETC_GROUP) && value.contains(ETC_GROUP))){
           return;
         }
         if (!existingValue.endsWith(delim)) {
