@@ -50,6 +50,8 @@ public final class EnvironmentUtilities {
   private static final String ETC_GROUP = ":/etc/group";
   private static final String ETC_PASSWD_MOUNT_STRING =
       "/etc/passwd:/etc/passwd:ro";
+  private static final String ETC_GROUP_MOUNT_STRING =
+      "/etc/group:/etc/group:ro";
   private static final String KERBEROS_CONF_MOUNT_STRING =
       "/etc/krb5.conf:/etc/krb5.conf:ro";
   private static final String ENV_VAR_DELIM = ":";
