@@ -47,6 +47,13 @@ env:
     - EXCLUDE_SUBMODULE_TONY="!submodules/tony,!submodules/tony/tony-mini,!submodules/tony/tony-core,!submodules/tony/tony-proxy,!submodules/tony/tony-portal,!submodules/tony/tony-azkaban,!submodules/tony/tony-cli"
 
 before_install:
+  # maven 3.6.1 (3.6.2 build tony failed!!!)
+  - echo "Download Maven 3.6.1"
+  - wget https://archive.apache.org/dist/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz
+  - tar zxvf apache-maven-3.6.1-bin.tar.gz || travis_terminate 1
+  - export M2_HOME=$PWD/apache-maven-3.6.1
+  - export PATH=$M2_HOME/bin:$PATH
+  # mysql
   - sudo service mysql restart
   - mysql -e "create database submarine_test;"
   - mysql -e "CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';"
