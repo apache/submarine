@@ -51,7 +51,7 @@ public class TestEnvironmentUtilities {
   }
 
   private void validateDefaultEnvVars(Map<String, String> resultEnvs) {
-    assertEquals("/etc/passwd:/etc/passwd:ro",
+    assertEquals("/etc/passwd:/etc/passwd:ro,/etc/group:/etc/group:ro",
         resultEnvs.get(EnvironmentUtilities.ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME));
   }
 
@@ -132,7 +132,7 @@ public class TestEnvironmentUtilities {
 
     Map<String, String> resultEnvs = service.getConfiguration().getEnv();
     assertEquals(1, resultEnvs.size());
-    assertEquals("/etc/passwd:/etc/passwd:ro,/etc/krb5.conf:/etc/krb5.conf:ro",
+    assertEquals("/etc/passwd:/etc/passwd:ro,/etc/group:/etc/group:ro,/etc/krb5.conf:/etc/krb5.conf:ro",
         resultEnvs.get(EnvironmentUtilities.ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME));
   }
 
@@ -152,7 +152,7 @@ public class TestEnvironmentUtilities {
 
     Map<String, String> resultEnvs = service.getConfiguration().getEnv();
     assertEquals(5, resultEnvs.size());
-    assertEquals("/etc/passwd:/etc/passwd:ro,/etc/krb5.conf:/etc/krb5.conf:ro",
+    assertEquals("/etc/passwd:/etc/passwd:ro,/etc/group:/etc/group:ro,/etc/krb5.conf:/etc/krb5.conf:ro",
         resultEnvs.get(EnvironmentUtilities.ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME));
     assertEquals("1", resultEnvs.get("a"));
     assertEquals("2", resultEnvs.get("b"));
@@ -176,7 +176,7 @@ public class TestEnvironmentUtilities {
 
     Map<String, String> resultEnvs = service.getConfiguration().getEnv();
     assertEquals(5, resultEnvs.size());
-    assertEquals("/etc/passwd:/etc/passwd:ro,/etc/krb5.conf:/etc/krb5.conf:ro",
+    assertEquals("/etc/passwd:/etc/passwd:ro,/etc/group:/etc/group:ro,/etc/krb5.conf:/etc/krb5.conf:ro",
         resultEnvs.get(EnvironmentUtilities.ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME));
     assertEquals("1", resultEnvs.get("a"));
     assertEquals("2", resultEnvs.get("b"));
@@ -200,7 +200,7 @@ public class TestEnvironmentUtilities {
 
     Map<String, String> resultEnvs = service.getConfiguration().getEnv();
     assertEquals(4, resultEnvs.size());
-    assertEquals("/etc/passwd:/etc/passwd:ro,/etc/krb5.conf:/etc/krb5.conf:ro",
+    assertEquals("/etc/passwd:/etc/passwd:ro,/etc/group:/etc/group:ro,/etc/krb5.conf:/etc/krb5.conf:ro",
         resultEnvs.get(EnvironmentUtilities.ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME));
     assertEquals("1:33", resultEnvs.get("a"));
     assertEquals("2", resultEnvs.get("b"));
@@ -223,7 +223,7 @@ public class TestEnvironmentUtilities {
 
     Map<String, String> resultEnvs = service.getConfiguration().getEnv();
     assertEquals(3, resultEnvs.size());
-    assertEquals("/etc/passwd:/etc/passwd:ro,/etc/krb5.conf:/etc/krb5.conf:ro",
+    assertEquals("/etc/passwd:/etc/passwd:ro,/etc/group:/etc/group:ro,/etc/krb5.conf:/etc/krb5.conf:ro",
         resultEnvs.get(EnvironmentUtilities.ENV_DOCKER_MOUNTS_FOR_CONTAINER_RUNTIME));
     assertEquals("1:33:44", resultEnvs.get("a"));
     assertEquals("2", resultEnvs.get("b"));
