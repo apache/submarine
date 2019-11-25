@@ -95,8 +95,7 @@ For a quick try on Cifar10 example with YARN native service runtime, check [YARN
 ### Get Job Status from CLI
 
 ```shell
-CLASSPATH=path-to/hadoop-conf:path-to/hadoop-submarine-all-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}.jar \
-java org.apache.submarine.client.cli.Cli job show --name tf-job-001
+./bin/submarine job show --name tf-job-001
 ```
 
 Output looks like:

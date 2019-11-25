@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+export SUBMARINE_VERSION=0.3.0-SNAPSHOT
 export DEFAULT_MYSQL_VERSION=5.1.39
 
 if [[ -L ${BASH_SOURCE-$0} ]]; then
@@ -43,6 +44,19 @@ if [[ -f "${SUBMARINE_CONF_DIR}/submarine-env.sh" ]]; then
 fi
 
 SUBMARINE_SERVER_CLASSPATH+=":${SUBMARINE_CONF_DIR}"
+
+SUBMARINE_ALL_JAR=$(find -L "${SUBMARINE_HOME}" -name "submarine-all-${SUBMARINE_VERSION}*.jar")
+if [[ -n ${SUBMARINE_ALL_JAR} ]]; then
+  if [[ -n ${HADOOP_CONF_DIR} ]]; then
+    SUBMARINE_CLASSPATH="${HADOOP_CONF_DIR}:${SUBMARINE_ALL_JAR}"
+  elif [[ -n $(hadoop classpath --glob) ]]; then
+    SUBMARINE_CLASSPATH="$(hadoop classpath --glob):${SUBMARINE_ALL_JAR}"
+  else
+    echo "Hadoop classpath is not found."
+  fi
+  CLASSPATH="${SUBMARINE_CLASSPATH}:${CLASSPATH}"
+  export CLASSPATH
+fi
 
 function add_each_jar_in_dir(){
   if [[ -d "${1}" ]]; then
