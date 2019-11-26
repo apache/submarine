@@ -19,7 +19,6 @@
 package org.apache.submarine.interpreter;
 
 import org.apache.zeppelin.interpreter.InterpreterContext;
-import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterResultMessage;
 import org.apache.zeppelin.interpreter.InterpreterOutput;
 import org.apache.zeppelin.interpreter.InterpreterGroup;
@@ -28,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Entry point for Submarine Interpreter process.
@@ -40,21 +40,7 @@ public abstract class AbstractInterpreter implements Interpreter {
 
   private InterpreterContext interpreterContext;
 
-  private String extractScalaVersion() throws InterpreterException {
-    String scalaVersionString = scala.util.Properties.versionString();
-    LOG.info("Using Scala: " + scalaVersionString);
-    if (scalaVersionString.contains("version 2.10")) {
-      return "2.10";
-    } else if (scalaVersionString.contains("version 2.11")) {
-      return "2.11";
-    } else if (scalaVersionString.contains("version 2.12")) {
-      return "2.12";
-    } else {
-      throw new InterpreterException("Unsupported scala version: " + scalaVersionString);
-    }
-  }
-
-  public InterpreterContext getIntpContext() {
+  protected InterpreterContext getIntpContext() {
     if (this.interpreterContext == null) {
       this.interpreterContext = InterpreterContext.builder()
               .setInterpreterOut(new InterpreterOutput(null))
@@ -62,11 +48,6 @@ public abstract class AbstractInterpreter implements Interpreter {
       InterpreterContext.set(this.interpreterContext);
     }
     return this.interpreterContext;
-  }
-
-  public void setIntpContext(InterpreterContext context){
-    InterpreterContext.set(context);
-    this.interpreterContext = context;
   }
 
   public void setInterpreterGroup(InterpreterGroup interpreterGroup) {
@@ -77,8 +58,19 @@ public abstract class AbstractInterpreter implements Interpreter {
     return this.zeppelinInterpreter.getInterpreterGroup();
   }
 
+  protected Properties mergeZeppelinInterpreterProperties(Properties properties) {
+    Properties newProps = new Properties();
+
+    for (String key : properties.stringPropertyNames()) {
+      String newKey = key.replace("submarine", "zeppelin");
+      newProps.put(newKey, properties.getProperty(key));
+    }
+
+    return newProps;
+  }
+
   @Override
-  public InterpreterResult interpret(String code) {
+  public InterpreterResult interpret(String code) throws InterpreterException {
     InterpreterResult interpreterResult = null;
     try {
       org.apache.zeppelin.interpreter.InterpreterResult zeplInterpreterResult
@@ -91,8 +83,9 @@ public abstract class AbstractInterpreter implements Interpreter {
       for (org.apache.zeppelin.interpreter.InterpreterResultMessage message : interpreterResultMessages) {
         interpreterResult.add(message);
       }
-    } catch (InterpreterException | IOException e) {
+    } catch (org.apache.zeppelin.interpreter.InterpreterException | IOException e) {
       LOG.error(e.getMessage(), e);
+      throw new InterpreterException(e);
     }
 
     return interpreterResult;
@@ -101,30 +94,42 @@ public abstract class AbstractInterpreter implements Interpreter {
   @Override
   public void open() throws InterpreterException {
     getIntpContext();
-    this.zeppelinInterpreter.open();
-  }
-
-  @Override
-  public void close() throws InterpreterException {
-    this.zeppelinInterpreter.close();
-  }
-
-  @Override
-  public void cancel() {
     try {
-      this.zeppelinInterpreter.cancel(getIntpContext());
-    } catch (InterpreterException e) {
+      this.zeppelinInterpreter.open();
+    } catch (org.apache.zeppelin.interpreter.InterpreterException e) {
       LOG.error(e.getMessage(), e);
+      throw new org.apache.submarine.interpreter.InterpreterException(e);
     }
   }
 
   @Override
-  public int getProgress() {
+  public void close() throws InterpreterException {
+    try {
+      this.zeppelinInterpreter.close();
+    } catch (org.apache.zeppelin.interpreter.InterpreterException e) {
+      LOG.error(e.getMessage(), e);
+      throw new org.apache.submarine.interpreter.InterpreterException(e);
+    }
+  }
+
+  @Override
+  public void cancel() throws InterpreterException {
+    try {
+      this.zeppelinInterpreter.cancel(getIntpContext());
+    } catch (org.apache.zeppelin.interpreter.InterpreterException e) {
+      LOG.error(e.getMessage(), e);
+      throw new org.apache.submarine.interpreter.InterpreterException(e);
+    }
+  }
+
+  @Override
+  public int getProgress() throws InterpreterException {
     int process = 0;
     try {
       process = this.zeppelinInterpreter.getProgress(getIntpContext());
-    } catch (InterpreterException e) {
+    } catch (org.apache.zeppelin.interpreter.InterpreterException e) {
       LOG.error(e.getMessage(), e);
+      throw new org.apache.submarine.interpreter.InterpreterException(e);
     }
     return process;
   }

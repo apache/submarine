@@ -18,8 +18,6 @@
  */
 package org.apache.submarine.interpreter;
 
-import org.apache.zeppelin.interpreter.InterpreterException;
-import org.apache.zeppelin.interpreter.InterpreterGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +28,7 @@ public class SparkSqlInterpreter extends AbstractInterpreter {
   private static final Logger LOG = LoggerFactory.getLogger(SparkInterpreter.class);
 
   public SparkSqlInterpreter(Properties properties) {
-    properties = SparkInterpreter.mergeZeplSparkIntpProp(properties);
+    properties = mergeZeppelinInterpreterProperties(properties);
     this.zeppelinInterpreter = new org.apache.zeppelin.spark.SparkSqlInterpreter(properties);
   }
 
@@ -74,10 +72,18 @@ public class SparkSqlInterpreter extends AbstractInterpreter {
       if (result.code() != InterpreterResult.Code.SUCCESS) {
         return false;
       }
+      if (!result.message().get(0).getData().contains("[moon,33]") ||
+              !result.message().get(0).getData().contains("[sun,11]")) {
+        return false;
+      }
       return true;
     } catch (InterpreterException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage(), e);
       return false;
     }
+  }
+
+  public void setResultLimits(long number){
+    getIntpContext().getLocalProperties().put("limit", String.valueOf(number));
   }
 }

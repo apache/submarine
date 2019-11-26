@@ -19,9 +19,9 @@
 ### Execute test command
 ```bash
 # spark interpreter
-java -jar spark-interpreter-{{version}}-shade.jar spark spark-interpreter-id test
+java -jar submarine-spark-interpreter-{{version}}-shade.jar spark spark-interpreter-id test
 # sparkSQL interpreter
-java -jar spark-interpreter-{{version}}-shade.jar sparksql sparkSQL-interpreter-id test
+java -jar submarine-spark-interpreter-{{version}}-shade.jar sparksql sparkSQL-interpreter-id test
 ```
 
 ### Print test result 

@@ -19,8 +19,6 @@
 package org.apache.submarine.interpreter;
 
 import org.apache.spark.SparkContext;
-import org.apache.zeppelin.interpreter.InterpreterException;
-import org.apache.zeppelin.interpreter.InterpreterGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +28,7 @@ public class SparkInterpreter extends AbstractInterpreter {
   private static final Logger LOG = LoggerFactory.getLogger(SparkInterpreter.class);
 
   public SparkInterpreter(Properties properties) {
-    properties = mergeZeplSparkIntpProp(properties);
+    properties = mergeZeppelinInterpreterProperties(properties);
     this.zeppelinInterpreter = new org.apache.zeppelin.spark.SparkInterpreter(properties);
     this.setInterpreterGroup(new InterpreterGroup());
   }
@@ -65,7 +63,7 @@ public class SparkInterpreter extends AbstractInterpreter {
       close();
       return success;
     } catch (InterpreterException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage(), e);
       return false;
     }
   }
@@ -74,16 +72,22 @@ public class SparkInterpreter extends AbstractInterpreter {
     return ((org.apache.zeppelin.spark.SparkInterpreter) this.zeppelinInterpreter).getSparkContext();
   }
 
-  static Properties mergeZeplSparkIntpProp(Properties properties) {
-    Properties newProps = new Properties();
+  public void setSchedulerPool(String pool){
+    this.getIntpContext().getLocalProperties().put("pool", pool);
+  }
 
-    newProps.setProperty("zeppelin.spark.maxResult", "1000");
-    newProps.setProperty("zeppelin.spark.scala.color", "false");
+  @Override
+  protected Properties mergeZeppelinInterpreterProperties(Properties properties) {
+    properties = super.mergeZeppelinInterpreterProperties(properties);
+    Properties defaultProperties = new Properties();
+
+    defaultProperties.setProperty("zeppelin.spark.maxResult", "1000");
+    defaultProperties.setProperty("zeppelin.spark.scala.color", "false");
 
     if (null != properties) {
-      newProps.putAll(properties);
+      defaultProperties.putAll(properties);
     }
-    return newProps;
+    return defaultProperties;
   }
 
 }

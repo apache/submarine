@@ -149,13 +149,6 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>../submarine-workbench/interpreter/spark/scala-2.11</directory>
-      <outputDirectory>/lib/interpreter/spark/scala-2.11</outputDirectory>
-      <includes>
-        <include>spark-scala-2.11-${zeppelin.version}.jar</include>
-      </includes>
-    </fileSet>
-    <fileSet>
       <directory>../submarine-workbench/interpreter/spark-interpreter/target</directory>
       <outputDirectory>/lib/interpreter/spark</outputDirectory>
       <includes>

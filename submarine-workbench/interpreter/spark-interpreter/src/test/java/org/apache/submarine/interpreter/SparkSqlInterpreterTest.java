@@ -16,13 +16,6 @@
  */
 package org.apache.submarine.interpreter;
 
-import org.apache.zeppelin.display.AngularObjectRegistry;
-import org.apache.zeppelin.interpreter.InterpreterContext;
-import org.apache.zeppelin.interpreter.InterpreterException;
-import org.apache.zeppelin.interpreter.InterpreterGroup;
-import org.apache.zeppelin.interpreter.InterpreterOutput;
-import org.apache.zeppelin.interpreter.remote.RemoteInterpreterEventClient;
-import org.apache.zeppelin.resource.LocalResourcePool;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,30 +25,26 @@ import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 public class SparkSqlInterpreterTest {
 
   private static SparkSqlInterpreter sqlInterpreter;
   private static SparkInterpreter sparkInterpreter;
-  private static InterpreterContext context;
-  private static InterpreterGroup intpGroup;
-
 
   @BeforeClass
   public static void setUp() throws InterpreterException {
     Properties p = new Properties();
     p.setProperty("spark.master", "local[4]");
     p.setProperty("spark.app.name", "test");
-    p.setProperty("zeppelin.spark.maxResult", "10");
-    p.setProperty("zeppelin.spark.concurrentSQL", "true");
-    p.setProperty("zeppelin.spark.sql.stacktrace", "true");
-    p.setProperty("zeppelin.spark.useHiveContext", "true");
-    p.setProperty("zeppelin.spark.deprecatedMsg.show", "false");
+    p.setProperty("submarine.spark.maxResult", "10");
+    p.setProperty("submarine.spark.concurrentSQL", "true");
+    p.setProperty("submarine.spark.sql.stacktrace", "true");
+    p.setProperty("submarine.spark.useHiveContext", "true");
+    p.setProperty("submarine.spark.deprecatedMsg.show", "false");
 
     sqlInterpreter = new SparkSqlInterpreter(p);
 
-    intpGroup = new InterpreterGroup();
+    InterpreterGroup intpGroup = new InterpreterGroup();
     sparkInterpreter = new SparkInterpreter(p);
     sparkInterpreter.setInterpreterGroup(intpGroup);
 
@@ -66,19 +55,6 @@ public class SparkSqlInterpreterTest {
     intpGroup.put(session, new LinkedList<>());
     sparkInterpreter.addToSession(session);
     sqlInterpreter.addToSession(session);
-
-    context = InterpreterContext.builder()
-            .setNoteId("noteId")
-            .setParagraphId("paragraphId")
-            .setParagraphTitle("title")
-            .setAngularObjectRegistry(new AngularObjectRegistry(intpGroup.getId(), null))
-            .setResourcePool(new LocalResourcePool("id"))
-            .setInterpreterOut(new InterpreterOutput(null))
-            .setIntpEventClient(mock(RemoteInterpreterEventClient.class))
-            .build();
-
-    sparkInterpreter.setIntpContext(context);
-    sqlInterpreter.setIntpContext(context);
 
     //SparkInterpreter will change the current thread's classLoader
     Thread.currentThread().setContextClassLoader(SparkInterpreterTest.class.getClassLoader());
@@ -93,7 +69,7 @@ public class SparkSqlInterpreterTest {
   }
 
   @Test
-  public void test() {
+  public void test() throws InterpreterException {
     sparkInterpreter.interpret("case class Test(name:String, age:Int)");
     sparkInterpreter.interpret(
             "val test = sc.parallelize(Seq(" +
@@ -122,7 +98,7 @@ public class SparkSqlInterpreterTest {
   }
 
   @Test
-  public void testStruct() {
+  public void testStruct() throws InterpreterException {
     sparkInterpreter.interpret("case class Person(name:String, age:Int)");
     sparkInterpreter.interpret("case class People(group:String, person:Person)");
     sparkInterpreter.interpret(
@@ -136,12 +112,13 @@ public class SparkSqlInterpreterTest {
 
     InterpreterResult ret = sqlInterpreter.interpret("select * from gr");
     assertEquals(InterpreterResult.Code.SUCCESS, ret.code());
-
+    assertTrue(ret.message().get(0).getData().contains("[moon,33]"));
+    assertTrue(ret.message().get(0).getData().contains("[sun,11]"));
   }
 
 
   @Test
-  public void testMaxResults() {
+  public void testMaxResults() throws InterpreterException {
     sparkInterpreter.interpret("case class P(age:Int)");
     sparkInterpreter.interpret(
             "val gr = sc.parallelize(Seq(P(1),P(2),P(3),P(4),P(5),P(6),P(7),P(8),P(9),P(10),P(11)))");
@@ -154,7 +131,7 @@ public class SparkSqlInterpreterTest {
     assertTrue(ret.message().get(1).getData().contains("alert-warning"));
 
     // test limit local property
-    context.getLocalProperties().put("limit", "5");
+    sqlInterpreter.setResultLimits(5);
     ret = sqlInterpreter.interpret("select * from gr");
     assertEquals(InterpreterResult.Code.SUCCESS, ret.code());
     // the number of rows is 5+1, 1 is the head of table
@@ -162,26 +139,28 @@ public class SparkSqlInterpreterTest {
   }
 
   @Test
-  public void testConcurrentSQL() throws InterruptedException {
+  public void testConcurrentSQL() throws InterruptedException, InterpreterException {
 
     sparkInterpreter.interpret("spark.udf.register(\"sleep\", (e:Int) => {Thread.sleep(e*1000); e})");
 
 
-    Thread thread1 = new Thread() {
-      @Override
-      public void run() {
+    Thread thread1 = new Thread(() -> {
+      try {
         InterpreterResult result = sqlInterpreter.interpret("select sleep(10)");
         assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+      } catch (InterpreterException e) {
+        e.printStackTrace();
       }
-    };
+    });
 
-    Thread thread2 = new Thread() {
-      @Override
-      public void run() {
+    Thread thread2 = new Thread(() -> {
+      try {
         InterpreterResult result = sqlInterpreter.interpret("select sleep(10)");
         assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+      } catch (InterpreterException e) {
+        e.printStackTrace();
       }
-    };
+    });
 
     // start running 2 spark sql, each would sleep 10 seconds, the totally running time should
     // be less than 20 seconds, which means they run concurrently.
@@ -196,7 +175,7 @@ public class SparkSqlInterpreterTest {
   }
 
   @Test
-  public void testDDL() {
+  public void testDDL() throws InterpreterException {
     InterpreterResult ret = sqlInterpreter.interpret("create table t1(id int, name string)");
     assertEquals(InterpreterResult.Code.SUCCESS, ret.code());
     // spark 1.x will still return DataFrame with non-empty columns.
@@ -208,16 +187,16 @@ public class SparkSqlInterpreterTest {
     ret = sqlInterpreter.interpret("create table t1(id int, name string)");
     assertEquals(InterpreterResult.Code.ERROR, ret.code());
     assertEquals(1, ret.message().size());
-    assertEquals(org.apache.submarine.interpreter.InterpreterResult.Type.TEXT,
+    assertEquals(InterpreterResult.Type.TEXT,
                  ret.message().get(0).getType()
     );
     assertTrue(ret.message().get(0).getData().contains("already exists"));
 
     // invalid DDL
-    ret = sqlInterpreter.interpret("create temporary function udf1 as 'org.apache.zeppelin.UDF'");
+    ret = sqlInterpreter.interpret("create temporary function udf1 as 'org.apache.submarine.UDF'");
     assertEquals(InterpreterResult.Code.ERROR, ret.code());
     assertEquals(1, ret.message().size());
-    assertEquals(org.apache.submarine.interpreter.InterpreterResult.Type.TEXT,
+    assertEquals(InterpreterResult.Type.TEXT,
                  ret.message().get(0).getType()
     );
 

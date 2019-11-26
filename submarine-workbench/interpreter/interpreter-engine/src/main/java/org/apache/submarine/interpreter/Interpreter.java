@@ -17,18 +17,16 @@
 
 package org.apache.submarine.interpreter;
 
-import org.apache.zeppelin.interpreter.InterpreterException;
-
 public interface Interpreter {
   void open() throws InterpreterException;
 
-  InterpreterResult interpret(String code);
+  InterpreterResult interpret(String code) throws InterpreterException;
 
   void close() throws InterpreterException;
 
-  void cancel();
+  void cancel() throws InterpreterException;
 
-  int getProgress();
+  int getProgress() throws InterpreterException;
 
   boolean test();
 

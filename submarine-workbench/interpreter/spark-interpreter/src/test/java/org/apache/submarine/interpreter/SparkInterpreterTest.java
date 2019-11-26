@@ -17,66 +17,42 @@
 
 package org.apache.submarine.interpreter;
 
-import org.apache.zeppelin.display.AngularObjectRegistry;
-import org.apache.zeppelin.interpreter.InterpreterContext;
-import org.apache.zeppelin.interpreter.InterpreterException;
-import org.apache.zeppelin.interpreter.InterpreterOutput;
-import org.apache.zeppelin.interpreter.InterpreterResultMessageOutput;
-import org.apache.zeppelin.interpreter.InterpreterOutputListener;
-import org.apache.zeppelin.interpreter.remote.RemoteInterpreterEventClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import java.io.IOException;
+
 import java.util.Properties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.fail;
 
 public class SparkInterpreterTest {
   private SparkInterpreter interpreter;
 
   // catch the streaming output in onAppend
   private volatile String output = "";
-  // catch the interpreter output in onUpdate
-  private InterpreterResultMessageOutput messageOutput;
-
-  private RemoteInterpreterEventClient mockRemoteEventClient;
 
   @Before
   public void setUp() {
-    mockRemoteEventClient = mock(RemoteInterpreterEventClient.class);
-    //SparkInterpreter will change the current thread's classLoader
+    // SparkInterpreter will change the current thread's classLoader
     Thread.currentThread().setContextClassLoader(SparkInterpreterTest.class.getClassLoader());
   }
 
   @Test
-  public void testSparkInterpreter() throws InterruptedException {
+  public void testSparkInterpreter() throws InterruptedException, InterpreterException {
     Properties properties = new Properties();
     properties.setProperty("spark.master", "local");
     properties.setProperty("spark.app.name", "test");
-    properties.setProperty("zeppelin.spark.maxResult", "100");
-    properties.setProperty("zeppelin.spark.test", "true");
-    properties.setProperty("zeppelin.spark.uiWebUrl", "fake_spark_weburl");
+    properties.setProperty("submarine.spark.scala.color", "false");
+    properties.setProperty("submarine.spark.test", "true");
+    properties.setProperty("submarine.spark.uiWebUrl", "fake_spark_weburl");
     // disable color output for easy testing
-    properties.setProperty("zeppelin.spark.scala.color", "false");
-    properties.setProperty("zeppelin.spark.deprecatedMsg.show", "false");
-
-    InterpreterContext context = InterpreterContext.builder()
-            .setInterpreterOut(new InterpreterOutput(null))
-            .setIntpEventClient(mockRemoteEventClient)
-            .setAngularObjectRegistry(new AngularObjectRegistry("spark", null))
-            .build();
+    properties.setProperty("submarine.spark.deprecatedMsg.show", "false");
 
     interpreter = new SparkInterpreter(properties);
-    interpreter.setIntpContext(context);
-    try {
-      interpreter.open();
-    } catch (Throwable ex) {
-      ex.printStackTrace();
-    }
 
+    interpreter.open();
 
     InterpreterResult result = interpreter.interpret("val a=\"hello world\"");
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
@@ -144,8 +120,6 @@ public class SparkInterpreterTest {
     result = interpreter.interpret("import java.util.ArrayList");
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
-    context = getInterpreterContext();
-    context.setParagraphId("pid_1");
     result = interpreter.interpret("sc\n.range(1, 10)\n.sum");
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
     assertTrue(result.message().get(0).getData().contains("45"));
@@ -205,7 +179,7 @@ public class SparkInterpreterTest {
               "+---+----+"));
     }
 
-    // ZeppelinContext
+    // submarineContext
     result = interpreter.interpret("z.show(df)");
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
     assertEquals(InterpreterResult.Type.TABLE, result.message().get(0).getType());
@@ -215,15 +189,16 @@ public class SparkInterpreterTest {
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
 
     // getProgress;
-    Thread interpretThread = new Thread() {
-      @Override
-      public void run() {
-        InterpreterResult result = null;
-        result = interpreter.interpret(
+    Thread interpretThread = new Thread(() -> {
+      try {
+        InterpreterResult result1 = interpreter.interpret(
                 "val df = sc.parallelize(1 to 10, 5).foreach(e=>Thread.sleep(1000))");
-        assertEquals(InterpreterResult.Code.SUCCESS, result.code());
+        assertEquals(InterpreterResult.Code.SUCCESS, result1.code());
+      } catch (InterpreterException e) {
+        e.printStackTrace();
+        fail();
       }
-    };
+    });
     interpretThread.start();
     boolean nonZeroProgress = false;
     int progress = 0;
@@ -237,16 +212,17 @@ public class SparkInterpreterTest {
     }
     assertTrue(nonZeroProgress);
 
-    interpretThread = new Thread() {
-      @Override
-      public void run() {
-        InterpreterResult result = null;
-        result = interpreter.interpret(
+    interpretThread = new Thread(() -> {
+      try {
+        InterpreterResult result12 = interpreter.interpret(
                 "val df = sc.parallelize(1 to 10, 2).foreach(e=>Thread.sleep(1000))");
-        assertEquals(InterpreterResult.Code.ERROR, result.code());
-        assertTrue(result.message().get(0).getData().contains("cancelled"));
+        assertEquals(InterpreterResult.Code.ERROR, result12.code());
+        assertTrue(result12.message().get(0).getData().contains("cancelled"));
+      } catch (org.apache.submarine.interpreter.InterpreterException e) {
+        e.printStackTrace();
+        fail();
       }
-    };
+    });
 
     interpretThread.start();
     // sleep 1 second to wait for the spark job start
@@ -260,16 +236,14 @@ public class SparkInterpreterTest {
     Properties properties = new Properties();
     properties.setProperty("spark.master", "local");
     properties.setProperty("spark.app.name", "test");
-    properties.setProperty("zeppelin.spark.maxResult", "100");
-    properties.setProperty("zeppelin.spark.test", "true");
-    properties.setProperty("zeppelin.spark.printREPLOutput", "false");
+    properties.setProperty("submarine.spark.maxResult", "100");
+    properties.setProperty("submarine.spark.test", "true");
+    properties.setProperty("submarine.spark.printREPLOutput", "false");
     // disable color output for easy testing
-    properties.setProperty("zeppelin.spark.scala.color", "false");
-    properties.setProperty("zeppelin.spark.deprecatedMsg.show", "false");
+    properties.setProperty("submarine.spark.scala.color", "false");
+    properties.setProperty("submarine.spark.deprecatedMsg.show", "false");
 
-    InterpreterContext context = getInterpreterContext();
     interpreter = new SparkInterpreter(properties);
-    interpreter.setIntpContext(context);
     interpreter.open();
 
     InterpreterResult result = interpreter.interpret("val a=\"hello world\"");
@@ -288,19 +262,17 @@ public class SparkInterpreterTest {
     Properties properties = new Properties();
     properties.setProperty("spark.master", "local");
     properties.setProperty("spark.app.name", "test");
-    properties.setProperty("zeppelin.spark.maxResult", "100");
-    properties.setProperty("zeppelin.spark.test", "true");
+    properties.setProperty("submarine.spark.maxResult", "100");
+    properties.setProperty("submarine.spark.test", "true");
     properties.setProperty("spark.scheduler.mode", "FAIR");
     // disable color output for easy testing
-    properties.setProperty("zeppelin.spark.scala.color", "false");
-    properties.setProperty("zeppelin.spark.deprecatedMsg.show", "false");
+    properties.setProperty("submarine.spark.scala.color", "false");
+    properties.setProperty("submarine.spark.deprecatedMsg.show", "false");
+    properties.setProperty("spark.scheduler.pool", "pool1");
 
-    InterpreterContext context = getInterpreterContext();
     interpreter = new SparkInterpreter(properties);
-    interpreter.setIntpContext(context);
+    interpreter.setSchedulerPool("pool1");
     interpreter.open();
-
-    context.getLocalProperties().put("pool", "pool1");
 
     InterpreterResult result = interpreter.interpret("sc.range(1, 10).sum");
     assertEquals(InterpreterResult.Code.SUCCESS, result.code());
@@ -313,16 +285,14 @@ public class SparkInterpreterTest {
     Properties properties = new Properties();
     properties.setProperty("spark.master", "local");
     properties.setProperty("spark.app.name", "test");
-    properties.setProperty("zeppelin.spark.maxResult", "100");
-    properties.setProperty("zeppelin.spark.test", "true");
+    properties.setProperty("submarine.spark.maxResult", "100");
+    properties.setProperty("submarine.spark.test", "true");
     properties.setProperty("spark.ui.enabled", "false");
     // disable color output for easy testing
-    properties.setProperty("zeppelin.spark.scala.color", "false");
-    properties.setProperty("zeppelin.spark.deprecatedMsg.show", "false");
+    properties.setProperty("submarine.spark.scala.color", "false");
+    properties.setProperty("submarine.spark.deprecatedMsg.show", "false");
 
-    InterpreterContext context = getInterpreterContext();
     interpreter = new SparkInterpreter(properties);
-    interpreter.setIntpContext(context);
     interpreter.open();
 
     InterpreterResult result = interpreter.interpret("sc.range(1, 10).sum");
@@ -330,22 +300,20 @@ public class SparkInterpreterTest {
 
   }
 
-  // zeppelin.spark.ui.hidden: true
+  // submarine.spark.ui.hidden: true
   @Test
   public void testDisableSparkUI_2() throws InterpreterException {
     Properties properties = new Properties();
     properties.setProperty("spark.master", "local");
     properties.setProperty("spark.app.name", "test");
-    properties.setProperty("zeppelin.spark.maxResult", "100");
-    properties.setProperty("zeppelin.spark.test", "true");
-    properties.setProperty("zeppelin.spark.ui.hidden", "true");
+    properties.setProperty("submarine.spark.maxResult", "100");
+    properties.setProperty("submarine.spark.test", "true");
+    properties.setProperty("submarine.spark.ui.hidden", "true");
     // disable color output for easy testing
-    properties.setProperty("zeppelin.spark.scala.color", "false");
-    properties.setProperty("zeppelin.spark.deprecatedMsg.show", "false");
+    properties.setProperty("submarine.spark.scala.color", "false");
+    properties.setProperty("submarine.spark.deprecatedMsg.show", "false");
 
-    InterpreterContext context = getInterpreterContext();
     interpreter = new SparkInterpreter(properties);
-    interpreter.setIntpContext(context);
     interpreter.open();
 
     InterpreterResult result = interpreter.interpret("sc.range(1, 10).sum");
@@ -358,38 +326,5 @@ public class SparkInterpreterTest {
     if (this.interpreter != null) {
       this.interpreter.close();
     }
-  }
-
-  private InterpreterContext getInterpreterContext() {
-    output = "";
-    InterpreterContext context = InterpreterContext.builder()
-            .setInterpreterOut(new InterpreterOutput(null))
-            .setIntpEventClient(mockRemoteEventClient)
-            .setAngularObjectRegistry(new AngularObjectRegistry("spark", null))
-            .build();
-
-    context.out = new InterpreterOutput(
-        new InterpreterOutputListener() {
-          @Override
-          public void onUpdateAll(InterpreterOutput out) {
-
-          }
-
-          @Override
-          public void onAppend(int index, InterpreterResultMessageOutput out, byte[] line) {
-            try {
-              output = out.toInterpreterResultMessage().getData();
-            } catch (IOException e) {
-              e.printStackTrace();
-            }
-          }
-
-          @Override
-          public void onUpdate(int index, InterpreterResultMessageOutput out) {
-            messageOutput = out;
-          }
-        }
-    );
-    return context;
   }
 }

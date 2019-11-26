@@ -18,7 +18,6 @@
  */
 package org.apache.submarine.interpreter;
 
-import org.apache.zeppelin.interpreter.InterpreterException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,6 +31,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class PythonInterpreterTest {
   private static final Logger LOG = LoggerFactory.getLogger(PythonInterpreterTest.class);
@@ -60,7 +60,7 @@ public class PythonInterpreterTest {
 
 
   @Test
-  public void calcOnePlusOne() {
+  public void calcOnePlusOne() throws InterpreterException {
     String code = "1+1";
     InterpreterResult result = pythonInterpreterForCancel.interpret(code);
     LOG.info("result = {}", result);
@@ -70,24 +70,34 @@ public class PythonInterpreterTest {
     assertEquals(result.message().get(0).getData(), "2\n");
   }
 
-  private class infinityPythonJobforCancel implements Runnable {
+  private static class infinityPythonJobforCancel implements Runnable {
     @Override
     public void run() {
       String code = "import time\nwhile True:\n  time.sleep(1)";
       InterpreterResult ret = null;
-      ret = pythonInterpreterForCancel.interpret(code);
-      assertNotNull(ret);
-      Pattern expectedMessage = Pattern.compile("KeyboardInterrupt");
-      Matcher m = expectedMessage.matcher(ret.message().toString());
-      assertTrue(m.find());
+      try {
+        ret = pythonInterpreterForCancel.interpret(code);
+        assertNotNull(ret);
+        Pattern expectedMessage = Pattern.compile("KeyboardInterrupt");
+        Matcher m = expectedMessage.matcher(ret.message().toString());
+        assertTrue(m.find());
+      } catch (InterpreterException e) {
+        e.printStackTrace();
+        fail();
+      }
     }
   }
 
-  private class infinityPythonJobforClose implements Runnable {
+  private static class infinityPythonJobforClose implements Runnable {
     @Override
     public void run() {
       String code = "import time\nwhile True:\n  time.sleep(1)";
-      pythonInterpreterForClose.interpret(code);
+      try {
+        pythonInterpreterForClose.interpret(code);
+      } catch (org.apache.submarine.interpreter.InterpreterException e) {
+        e.printStackTrace();
+        fail();
+      }
     }
   }
 
@@ -107,7 +117,7 @@ public class PythonInterpreterTest {
 
 
   @Test
-  public void testCancelIntp() throws InterruptedException {
+  public void testCancelIntp() throws InterruptedException, InterpreterException {
     assertEquals(InterpreterResult.Code.SUCCESS,
             pythonInterpreterForCancel.interpret("1+1\n").code());
     Thread t = new Thread(new infinityPythonJobforCancel());

@@ -30,26 +30,29 @@ public class PythonInterpreter extends AbstractInterpreter {
   private static final Logger LOG = LoggerFactory.getLogger(PythonInterpreter.class);
 
   public PythonInterpreter() {
-    Properties properties = new Properties();
-    properties = mergeZeplPyIntpProp(properties);
+    this(new Properties());
+  }
+
+  public PythonInterpreter(Properties properties){
+    properties = mergeZeppelinInterpreterProperties(properties);
     this.zeppelinInterpreter = new org.apache.zeppelin.python.PythonInterpreter(properties);
     this.zeppelinInterpreter.setInterpreterGroup(new InterpreterGroup());
   }
 
-  protected Properties mergeZeplPyIntpProp(Properties newProps) {
-    Properties properties = new Properties();
+  @Override
+  protected Properties mergeZeppelinInterpreterProperties(Properties properties) {
+    properties = super.mergeZeppelinInterpreterProperties(properties);
+    Properties newProps = new Properties();
     // Max number of dataframe rows to display.
-    properties.setProperty("zeppelin.python.maxResult", "1000");
+    newProps.setProperty("zeppelin.python.maxResult", "1000");
     // whether use IPython when it is available
-    properties.setProperty("zeppelin.python.useIPython", "false");
-    properties.setProperty("zeppelin.python.gatewayserver_address", "127.0.0.1");
+    newProps.setProperty("zeppelin.python.useIPython", "false");
+    newProps.setProperty("zeppelin.python.gatewayserver_address", "127.0.0.1");
 
-    if (null != newProps) {
+    if (null != properties) {
       newProps.putAll(properties);
-      return newProps;
-    } else {
-      return properties;
     }
+    return newProps;
   }
 
   @Override
@@ -69,7 +72,7 @@ public class PythonInterpreter extends AbstractInterpreter {
       }
       return false;
     } catch (InterpreterException e) {
-      e.printStackTrace();
+      LOG.error(e.getMessage(), e);
       return false;
     }
   }
