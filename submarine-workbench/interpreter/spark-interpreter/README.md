@@ -17,13 +17,16 @@
 ## Test Submarine Spark Interpreter
 
 ### Execute test command
-```
-export SUBMARINE_HOME=/path/to/your/submarine_home
-java -jar spark-interpreter-0.3.0-SNAPSHOT-shade.jar spark spark-interpreter-id test
+```bash
+# spark interpreter
+java -jar spark-interpreter-{{version}}-shade.jar spark spark-interpreter-id test
+# sparkSQL interpreter
+java -jar spark-interpreter-{{version}}-shade.jar sparksql sparkSQL-interpreter-id test
 ```
 
 ### Print test result 
-```
+#### Spark
+```log
  INFO [2019-11-09 11:12:04,888] ({main} ContextHandler.java[doStart]:781) - Started o.s.j.s.ServletContextHandler@58b97c15{/stages/stage/kill,null,AVAILABLE,@Spark}
  INFO [2019-11-09 11:12:04,889] ({main} Logging.scala[logInfo]:54) - Bound SparkUI to 0.0.0.0, and started at http://10.0.0.3:4040
  INFO [2019-11-09 11:12:04,923] ({main} Logging.scala[logInfo]:54) - Starting executor ID driver on host localhost
@@ -63,13 +66,30 @@ java -jar spark-interpreter-0.3.0-SNAPSHOT-shade.jar spark spark-interpreter-id 
  INFO [2019-11-09 11:12:08,553] ({shutdown-hook-0} Logging.scala[logInfo]:54) - Deleting directory /private/var/folders/xl/_xb3fgzj5zd698khfz6z74cc0000gn/T/spark-2f4acad9-a72d-4bca-8d85-3ef310f0b08c
 ```
 
+#### SparkSQL
+```log
+ INFO [2019-11-25 19:13:05,993] ({task-result-getter-0} Logging.scala[logInfo]:54) - Finished task 0.0 in stage 0.0 (TID 0) in 79 ms on localhost (executor driver) (1/1)
+ INFO [2019-11-25 19:13:05,994] ({task-result-getter-0} Logging.scala[logInfo]:54) - Removed TaskSet 0.0, whose tasks have all completed, from pool 
+ INFO [2019-11-25 19:13:05,997] ({dag-scheduler-event-loop} Logging.scala[logInfo]:54) - ResultStage 0 (takeAsList at Spark2Shims.java:65) finished in 0.093 s
+DEBUG [2019-11-25 19:13:05,999] ({dag-scheduler-event-loop} Logging.scala[logDebug]:58) - After removal of stage 0, remaining stages = 0
+ INFO [2019-11-25 19:13:06,000] ({main} Logging.scala[logInfo]:54) - Job 0 finished: takeAsList at Spark2Shims.java:65, took 0.744646 s
+ INFO [2019-11-25 19:13:06,006] ({main} SparkSqlInterpreter.java[test]:71) - Execution SparkSQL Interpreter, Calculation Spark Code  SUCCESS, Result = 
+group    person
+g1      [moon,33]
+g2      [sun,11]
+
+ INFO [2019-11-25 19:13:06,006] ({main} InterpreterProcess.java[<init>]:51) - Interpreter test result: true
+ INFO [2019-11-25 19:13:06,009] ({shutdown-hook-0} Logging.scala[logInfo]:54) - Invoking stop() from shutdown hook
+
+```
+
 
 ## Debug Submarine Spark Interpreter
 
 ### Execute debug command
 
 ```
-java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 spark-interpreter-0.3.0-SNAPSHOT-shade.jar spark spark-interpreter-id
+java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 spark-interpreter-{{version}}-shade.jar spark spark-interpreter-id
 ```
 
 Connect via remote debugging in IDEA

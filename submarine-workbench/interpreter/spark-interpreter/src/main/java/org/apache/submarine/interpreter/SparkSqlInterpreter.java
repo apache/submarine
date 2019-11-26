@@ -18,157 +18,66 @@
  */
 package org.apache.submarine.interpreter;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.zeppelin.interpreter.InterpreterContext;
 import org.apache.zeppelin.interpreter.InterpreterException;
 import org.apache.zeppelin.interpreter.InterpreterGroup;
-import org.apache.zeppelin.interpreter.InterpreterResultMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Properties;
 
-public class SparkSqlInterpreter extends InterpreterProcess {
-	private static final Logger LOG = LoggerFactory.getLogger(SparkInterpreter.class);
+public class SparkSqlInterpreter extends AbstractInterpreter {
+  private static final Logger LOG = LoggerFactory.getLogger(SparkInterpreter.class);
 
-	private org.apache.zeppelin.spark.SparkSqlInterpreter zpleSparkSqlInterpreter;
-	private org.apache.zeppelin.spark.SparkInterpreter zpleSparkInterpreter;
-	private InterpreterContext intpContext;
+  public SparkSqlInterpreter(Properties properties) {
+    properties = SparkInterpreter.mergeZeplSparkIntpProp(properties);
+    this.zeppelinInterpreter = new org.apache.zeppelin.spark.SparkSqlInterpreter(properties);
+  }
 
-	private String extractScalaVersion() throws InterpreterException {
-		String scalaVersionString = scala.util.Properties.versionString();
-		LOG.info("Using Scala: " + scalaVersionString);
-		if (scalaVersionString.contains("version 2.10")) {
-			return "2.10";
-		} else if (scalaVersionString.contains("version 2.11")) {
-			return "2.11";
-		} else if (scalaVersionString.contains("version 2.12")) {
-			return "2.12";
-		} else {
-			throw new InterpreterException("Unsupported scala version: " + scalaVersionString);
-		}
-	}
+  public SparkSqlInterpreter() {
+    this(new Properties());
+  }
 
-	public SparkSqlInterpreter(Properties properties) {
-		properties = mergeZeplSparkIntpProp(properties);
-		zpleSparkInterpreter = new org.apache.zeppelin.spark.SparkInterpreter(properties);
-		zpleSparkSqlInterpreter = new org.apache.zeppelin.spark.SparkSqlInterpreter(properties);
-		zpleSparkSqlInterpreter.setInterpreterGroup(new InterpreterGroup());
-		intpContext = this.getIntpContext();
-	}
-	public SparkSqlInterpreter() {
-		this(new Properties());
-	}
 
-	@Override
-	public void open() {
-		try {
-			ClassLoader scalaInterpreterClassLoader = null;
-			String submarineHome = System.getenv("SUBMARINE_HOME");
-			String interpreterDir  = "";
-			if (StringUtils.isBlank(submarineHome)) {
-				LOG.warn("SUBMARINE_HOME is not set, default interpreter directory is ../ ");
-				interpreterDir = "..";
-			} else {
-				interpreterDir = submarineHome + "/workbench/interpreter";
-			}
-			String scalaVersion = extractScalaVersion();
-			File scalaJarFolder = new File(interpreterDir + "/spark/scala-" + scalaVersion);
-			List<URL> urls = new ArrayList<>();
-			for (File file : scalaJarFolder.listFiles()) {
-				LOG.info("Add file " + file.getAbsolutePath() + " to classpath of spark scala interpreter: "
-						+ scalaJarFolder);
-				urls.add(file.toURI().toURL());
-			}
-			scalaInterpreterClassLoader = new URLClassLoader(urls.toArray(new URL[0]),
-					Thread.currentThread().getContextClassLoader());
-			if (scalaInterpreterClassLoader != null) {
-				Thread.currentThread().setContextClassLoader(scalaInterpreterClassLoader);
-			}
-			zpleSparkInterpreter.open();
-			zpleSparkSqlInterpreter.open();
-		} catch (InterpreterException e) {
-			LOG.error(e.getMessage(), e);
-		} catch (MalformedURLException e) {
-			LOG.error(e.getMessage(), e);
-		}
-	}
+  @Override
+  public boolean test() {
+    try {
+      InterpreterGroup intpGroup = new InterpreterGroup();
+      SparkInterpreter sparkInterpreter = new SparkInterpreter();
+      sparkInterpreter.setInterpreterGroup(intpGroup);
 
-	@Override
-	public InterpreterResult interpret(String code) {
-		InterpreterResult interpreterResult = null;
-		try {
-			org.apache.zeppelin.interpreter.InterpreterResult zeplInterpreterResult
-					= zpleSparkSqlInterpreter.interpret(code, intpContext);
-			interpreterResult = new InterpreterResult(zeplInterpreterResult);
+      this.setInterpreterGroup(intpGroup);
 
-			List<InterpreterResultMessage> interpreterResultMessages =
-					intpContext.out.toInterpreterResultMessage();
+      String session = "session_1";
+      intpGroup.put(session, new LinkedList<>());
+      sparkInterpreter.addToSession(session);
+      this.addToSession(session);
 
-			for (org.apache.zeppelin.interpreter.InterpreterResultMessage message : interpreterResultMessages) {
-				interpreterResult.add(message);
-			}
-		} catch (InterpreterException | IOException e) {
-			LOG.error(e.getMessage(), e);
-		}
+      sparkInterpreter.open();
+      open();
 
-		return interpreterResult;
-	}
+      sparkInterpreter.interpret("case class Person(name:String, age:Int)");
+      sparkInterpreter.interpret("case class People(group:String, person:Person)");
+      sparkInterpreter.interpret(
+              "val gr = sc.parallelize(Seq(" +
+                      "People(\"g1\", " +
+                      "Person(\"moon\",33)), " +
+                      "People(\"g2\", " +
+                      "Person(\"sun\",11" +
+                      "))))");
+      sparkInterpreter.interpret("gr.toDF.registerTempTable(\"gr\")");
 
-	@Override
-	public void close() {
-		zpleSparkSqlInterpreter.close();
-	}
-
-	@Override
-	public void cancel() {
-		try {
-			zpleSparkSqlInterpreter.cancel(intpContext);
-		} catch (InterpreterException e) {
-			LOG.error(e.getMessage(), e);
-		}
-	}
-
-	@Override
-	public int getProgress() {
-		int process = 0;
-		try {
-			process = zpleSparkSqlInterpreter.getProgress(intpContext);
-		} catch (InterpreterException e) {
-			LOG.error(e.getMessage(), e);
-		}
-
-		return process;
-	}
-
-	@Override
-	public boolean test() {
-		open();
-		String code = "val df = spark.createDataFrame(Seq((1,\"a\"),(2, null)))\n" +
-				"df.show()";
-		InterpreterResult result = interpret(code);
-		LOG.info("Execution Spark Interpreter, Calculation Spark Code  {}, Result = {}",
-				code, result.message().get(0).getData());
-
-		if (result.code() != InterpreterResult.Code.SUCCESS) {
-			close();
-			return false;
-		}
-		boolean success = (result.message().get(0).getData().contains(
-				"+---+----+\n" +
-						"| _1|  _2|\n" +
-						"+---+----+\n" +
-						"|  1|   a|\n" +
-						"|  2|null|\n" +
-						"+---+----+"));
-		close();
-		return success;
-	}
+      InterpreterResult result = interpret("select * from gr");
+      LOG.info("Execution SparkSQL Interpreter, Calculation Spark Code {}, Result =\n {}",
+               result.code(), result.message().get(0).getData()
+      );
+      if (result.code() != InterpreterResult.Code.SUCCESS) {
+        return false;
+      }
+      return true;
+    } catch (InterpreterException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
 }

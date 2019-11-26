@@ -18,6 +18,7 @@
  */
 package org.apache.submarine.interpreter;
 
+import org.apache.zeppelin.interpreter.InterpreterException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class PythonInterpreterTest {
   private static PythonInterpreter pythonInterpreterForClose = null;
 
   @BeforeClass
-  public static void setUp() {
+  public static void setUp() throws InterpreterException {
     pythonInterpreterForCancel = new PythonInterpreter();
     pythonInterpreterForClose = new PythonInterpreter();
     pythonInterpreterForCancel.open();
@@ -48,7 +49,7 @@ public class PythonInterpreterTest {
   }
 
   @AfterClass
-  public static void tearDown()  {
+  public static void tearDown() throws InterpreterException {
     if (null != pythonInterpreterForCancel) {
       pythonInterpreterForCancel.close();
     }
@@ -92,7 +93,7 @@ public class PythonInterpreterTest {
 
 
   @Test
-  public void testCloseIntp() throws InterruptedException {
+  public void testCloseIntp() throws InterruptedException, InterpreterException {
     assertEquals(InterpreterResult.Code.SUCCESS,
             pythonInterpreterForClose.interpret("1+1\n").code());
     Thread t = new Thread(new infinityPythonJobforClose());

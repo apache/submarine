@@ -17,13 +17,20 @@
 
 package org.apache.submarine.interpreter;
 
+import org.apache.zeppelin.interpreter.InterpreterException;
+
 public interface Interpreter {
-  void shutdown();
-  boolean isRunning();
-  void open();
+  void open() throws InterpreterException;
+
   InterpreterResult interpret(String code);
-  void close();
+
+  void close() throws InterpreterException;
+
   void cancel();
+
   int getProgress();
+
   boolean test();
+
+  void addToSession(String session);
 }
