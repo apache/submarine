@@ -60,9 +60,14 @@ public class InterpreterProcess extends Thread {
   public InterpreterProcess() { }
 
   public InterpreterProcess(String interpreterType, String interpreterId, Boolean onlyTest)
-          throws IOException, InterpreterException {
+          throws IOException {
     this.interpreterId = interpreterId;
-    loadInterpreterPlugin(interpreterType);
+    try {
+      loadInterpreterPlugin(interpreterType);
+    } catch (InterpreterException e) {
+      LOG.error(e.getMessage(), e);
+      System.exit(e.hashCode());
+    }
 
     if (onlyTest) {
       boolean testResult = interpreter.test();
@@ -171,7 +176,7 @@ public class InterpreterProcess extends Thread {
   }
 
 
-  public static void main(String[] args) throws InterruptedException, IOException, InterpreterException {
+  public static void main(String[] args) throws InterruptedException, IOException {
     String interpreterType = args[0];
     String interpreterId = args[1];
     boolean onlyTest = false;
