@@ -18,12 +18,17 @@
 package org.apache.submarine.interpreter;
 
 public interface Interpreter {
-  void shutdown();
-  boolean isRunning();
-  void open();
-  InterpreterResult interpret(String code);
-  void close();
-  void cancel();
-  int getProgress();
+  void open() throws InterpreterException;
+
+  InterpreterResult interpret(String code) throws InterpreterException;
+
+  void close() throws InterpreterException;
+
+  void cancel() throws InterpreterException;
+
+  int getProgress() throws InterpreterException;
+
   boolean test();
+
+  void addToSession(String session);
 }

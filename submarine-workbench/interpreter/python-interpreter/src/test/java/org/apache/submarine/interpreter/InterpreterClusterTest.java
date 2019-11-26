@@ -36,6 +36,7 @@ import java.util.HashMap;
 import static org.apache.submarine.commons.cluster.meta.ClusterMetaType.INTP_PROCESS_META;
 import static org.apache.submarine.commons.cluster.meta.ClusterMetaType.SERVER_META;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class InterpreterClusterTest {
   private static Logger LOG = LoggerFactory.getLogger(InterpreterClusterTest.class);
@@ -154,6 +155,6 @@ public class InterpreterClusterTest {
       }
       Thread.sleep(200);
     }
-    assertEquals(false, interpreterProcess.isRunning());
+    assertFalse(interpreterProcess.isRunning());
   }
 }
