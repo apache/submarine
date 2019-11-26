@@ -60,7 +60,7 @@ public class InterpreterProcess extends Thread {
   public InterpreterProcess() { }
 
   public InterpreterProcess(String interpreterType, String interpreterId, Boolean onlyTest)
-          throws IOException {
+          throws IOException, InterpreterException {
     this.interpreterId = interpreterId;
     loadInterpreterPlugin(interpreterType);
 
@@ -100,7 +100,7 @@ public class InterpreterProcess extends Thread {
   }
 
   // get super interpreter class name
-  private String getSuperInterpreterClassName(String intpName) {
+  private String getSuperInterpreterClassName(String intpName) throws InterpreterException {
     String superIntpClassName = "";
     if (StringUtils.equals(intpName, "python")) {
       superIntpClassName = "org.apache.submarine.interpreter.PythonInterpreter";
@@ -109,14 +109,14 @@ public class InterpreterProcess extends Thread {
     } else if (StringUtils.equals(intpName, "sparksql")) {
       superIntpClassName = "org.apache.submarine.interpreter.SparkSqlInterpreter";
     } else {
-      throw new RuntimeException("cannot recognize the interpreter: " + intpName);
+      throw new InterpreterException("cannot recognize the interpreter: " + intpName);
     }
 
     return superIntpClassName;
   }
 
   public synchronized void loadInterpreterPlugin(String pluginName)
-          throws IOException {
+          throws IOException, InterpreterException {
 
     LOG.info("Loading Plug name: {}", pluginName);
     String pluginClassName = getSuperInterpreterClassName(pluginName);
@@ -171,7 +171,7 @@ public class InterpreterProcess extends Thread {
   }
 
 
-  public static void main(String[] args) throws InterruptedException, IOException {
+  public static void main(String[] args) throws InterruptedException, IOException, InterpreterException {
     String interpreterType = args[0];
     String interpreterId = args[1];
     boolean onlyTest = false;
