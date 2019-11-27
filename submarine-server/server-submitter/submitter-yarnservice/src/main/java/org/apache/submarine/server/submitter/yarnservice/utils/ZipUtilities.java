@@ -49,7 +49,6 @@ public final class ZipUtilities {
     File srcFile = new File(srcDir);
     LOG.info("Compressing directory {}", srcDir);
     addDirToZip(zos, srcFile, srcFile);
-    // close the ZipOutputStream
     zos.close();
     LOG.info("Compressed directory {} to file: {}", srcDir, dstFile);
     return dstFile;
@@ -67,19 +66,24 @@ public final class ZipUtilities {
         addDirToZip(zos, file, base);
         continue;
       }
-      byte[] buffer = new byte[1024];
-      try (FileInputStream fis = new FileInputStream(file)) {
-        String name = base.toURI().relativize(file.toURI()).getPath();
-        LOG.info("Adding file {} to zip", name);
-        zos.putNextEntry(new ZipEntry(name));
-        int length;
-        while ((length = fis.read(buffer)) > 0) {
-          zos.write(buffer, 0, length);
-        }
-        zos.flush();
-      } finally {
-        zos.closeEntry();
+      addFileToZip(zos, base, file);
+    }
+  }
+
+  private static void addFileToZip(ZipOutputStream zos, File base, File file)
+      throws IOException {
+    byte[] buffer = new byte[1024];
+    try (FileInputStream fis = new FileInputStream(file)) {
+      String name = base.toURI().relativize(file.toURI()).getPath();
+      LOG.info("Adding file {} to zip", name);
+      zos.putNextEntry(new ZipEntry(name));
+      int length;
+      while ((length = fis.read(buffer)) > 0) {
+        zos.write(buffer, 0, length);
       }
+      zos.flush();
+    } finally {
+      zos.closeEntry();
     }
   }
 }
