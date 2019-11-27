@@ -45,7 +45,7 @@ import static org.mockito.Mockito.verify;
 /**
  * This class is to test {@link TensorFlowWorkerComponent}.
  */
-public class TestTensorFlowWorkerComponent {
+public class TensorFlowWorkerComponentTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();

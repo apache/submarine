@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 /**
  * Common operations shared with test classes using Run job-related actions.
  */
-public class TestYarnServiceRunJobCliCommons {
+public class YarnServiceRunJobCliCommonsTest {
   static final String DEFAULT_JOB_NAME = "my-job";
   static final String DEFAULT_DOCKER_IMAGE = "tf-docker:1.1.0";
   static final String DEFAULT_INPUT_PATH = "s3://input";

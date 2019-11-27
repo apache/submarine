@@ -40,7 +40,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * This class is to test {@link SubmarineResourceUtils}.
  */
-public class TestSubmarineResourceUtils {
+public class SubmarineResourceUtilsTest {
   /**
    * With the dependencies of hadoop 3.2.0, Need to create a
    * CustomResourceTypesConfigurationProvider implementations. If the

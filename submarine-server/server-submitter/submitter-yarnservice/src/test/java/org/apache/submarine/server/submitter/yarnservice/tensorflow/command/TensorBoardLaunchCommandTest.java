@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * This class is to test the {@link TensorBoardLaunchCommand}.
  */
-public class TestTensorBoardLaunchCommand extends
+public class TensorBoardLaunchCommandTest extends
     AbstractTFLaunchCommandTestHelper {
 
   @Test

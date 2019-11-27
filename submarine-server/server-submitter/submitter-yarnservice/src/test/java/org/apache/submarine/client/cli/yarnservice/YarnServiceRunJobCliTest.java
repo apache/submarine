@@ -65,12 +65,12 @@ import static org.junit.Assert.assertTrue;
 /**
  * Class to test YarnService with the Run job CLI action.
  */
-public class TestYarnServiceRunJobCli {
+public class YarnServiceRunJobCliTest {
   private static final Logger LOG =
-      LoggerFactory.getLogger(TestYarnServiceRunJobCli.class);
+      LoggerFactory.getLogger(YarnServiceRunJobCliTest.class);
 
-  private TestYarnServiceRunJobCliCommons testCommons =
-      new TestYarnServiceRunJobCliCommons();
+  private YarnServiceRunJobCliCommonsTest testCommons =
+      new YarnServiceRunJobCliCommonsTest();
 
   @Rule
   public TestName testName = new TestName();
@@ -123,10 +123,10 @@ public class TestYarnServiceRunJobCli {
     assertEquals(4, psComp.getResource().getCpus().intValue());
 
     Assert.assertEquals(
-        TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_DOCKER_IMAGE,
+        YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_DOCKER_IMAGE,
         workerComp.getArtifact().getId());
     Assert.assertEquals(
-        TestYarnServiceRunJobCliCommons.DEFAULT_PS_DOCKER_IMAGE,
+        YarnServiceRunJobCliCommonsTest.DEFAULT_PS_DOCKER_IMAGE,
         psComp.getArtifact().getId());
 
     assertTrue(SubmarineLogs.isVerbose());
@@ -175,17 +175,17 @@ public class TestYarnServiceRunJobCli {
     String[] params = ParamBuilderForTest.create()
         .withFramework("tensorflow")
         .withJobName(testName.getMethodName())
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
-        .withInputPath(TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH)
-        .withCheckpointPath(TestYarnServiceRunJobCliCommons.DEFAULT_CHECKPOINT_PATH)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
+        .withInputPath(YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH)
+        .withCheckpointPath(YarnServiceRunJobCliCommonsTest.DEFAULT_CHECKPOINT_PATH)
         .withNumberOfWorkers(3)
-        .withWorkerDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_DOCKER_IMAGE)
-        .withWorkerLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_LAUNCH_CMD)
-        .withWorkerResources(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_RESOURCES)
+        .withWorkerDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_DOCKER_IMAGE)
+        .withWorkerLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_LAUNCH_CMD)
+        .withWorkerResources(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_RESOURCES)
         .withNumberOfPs(2)
-        .withPsDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_PS_DOCKER_IMAGE)
-        .withPsLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_PS_LAUNCH_CMD)
-        .withPsResources(TestYarnServiceRunJobCliCommons.DEFAULT_PS_RESOURCES)
+        .withPsDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_DOCKER_IMAGE)
+        .withPsLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_LAUNCH_CMD)
+        .withPsResources(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_RESOURCES)
         .withVerbose()
         .build();
     runJobCli.run(params);
@@ -211,17 +211,17 @@ public class TestYarnServiceRunJobCli {
     String[] params = ParamBuilderForTest.create()
         .withFramework("tensorflow")
         .withJobName(jobName)
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
-        .withInputPath(TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH)
-        .withCheckpointPath(TestYarnServiceRunJobCliCommons.DEFAULT_CHECKPOINT_PATH)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
+        .withInputPath(YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH)
+        .withCheckpointPath(YarnServiceRunJobCliCommonsTest.DEFAULT_CHECKPOINT_PATH)
         .withNumberOfWorkers(3)
-        .withWorkerDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_DOCKER_IMAGE)
-        .withWorkerLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_LAUNCH_CMD)
-        .withWorkerResources(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_RESOURCES)
+        .withWorkerDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_DOCKER_IMAGE)
+        .withWorkerLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_LAUNCH_CMD)
+        .withWorkerResources(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_RESOURCES)
         .withNumberOfPs(2)
-        .withPsDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_PS_DOCKER_IMAGE)
-        .withPsLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_PS_LAUNCH_CMD)
-        .withPsResources(TestYarnServiceRunJobCliCommons.DEFAULT_PS_RESOURCES)
+        .withPsDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_DOCKER_IMAGE)
+        .withPsLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_LAUNCH_CMD)
+        .withPsResources(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_RESOURCES)
         .withVerbose()
         .withTensorboard()
         .build();
@@ -253,12 +253,12 @@ public class TestYarnServiceRunJobCli {
     String[] params = ParamBuilderForTest.create()
         .withFramework("tensorflow")
         .withJobName(testName.getMethodName())
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
-        .withInputPath(TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH)
-        .withCheckpointPath(TestYarnServiceRunJobCliCommons.DEFAULT_CHECKPOINT_PATH)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
+        .withInputPath(YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH)
+        .withCheckpointPath(YarnServiceRunJobCliCommonsTest.DEFAULT_CHECKPOINT_PATH)
         .withNumberOfWorkers(1)
-        .withWorkerLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_LAUNCH_CMD)
-        .withWorkerResources(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_RESOURCES)
+        .withWorkerLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_LAUNCH_CMD)
+        .withWorkerResources(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_RESOURCES)
         .withVerbose()
         .build();
     runJobCli.run(params);
@@ -281,9 +281,9 @@ public class TestYarnServiceRunJobCli {
     String[] params = ParamBuilderForTest.create()
         .withFramework("tensorflow")
         .withJobName(testName.getMethodName())
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
-        .withInputPath(TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH)
-        .withCheckpointPath(TestYarnServiceRunJobCliCommons.DEFAULT_CHECKPOINT_PATH)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
+        .withInputPath(YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH)
+        .withCheckpointPath(YarnServiceRunJobCliCommonsTest.DEFAULT_CHECKPOINT_PATH)
         .withNumberOfWorkers(0)
         .withTensorboard()
         .withVerbose()
@@ -313,13 +313,13 @@ public class TestYarnServiceRunJobCli {
     String[] params = ParamBuilderForTest.create()
         .withFramework("tensorflow")
         .withJobName(testName.getMethodName())
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
-        .withInputPath(TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH)
-        .withCheckpointPath(TestYarnServiceRunJobCliCommons.DEFAULT_CHECKPOINT_PATH)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
+        .withInputPath(YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH)
+        .withCheckpointPath(YarnServiceRunJobCliCommonsTest.DEFAULT_CHECKPOINT_PATH)
         .withNumberOfWorkers(0)
         .withTensorboard()
-        .withTensorboardResources(TestYarnServiceRunJobCliCommons.DEFAULT_TENSORBOARD_RESOURCES)
-        .withTensorboardDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_TENSORBOARD_DOCKER_IMAGE)
+        .withTensorboardResources(YarnServiceRunJobCliCommonsTest.DEFAULT_TENSORBOARD_RESOURCES)
+        .withTensorboardDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_TENSORBOARD_DOCKER_IMAGE)
         .withVerbose()
         .build();
     runJobCli.run(params);
@@ -347,11 +347,11 @@ public class TestYarnServiceRunJobCli {
     String[] params = ParamBuilderForTest.create()
         .withFramework("tensorflow")
         .withJobName(jobName)
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
         .withNumberOfWorkers(0)
         .withTensorboard()
-        .withTensorboardResources(TestYarnServiceRunJobCliCommons.DEFAULT_TENSORBOARD_RESOURCES)
-        .withTensorboardDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_TENSORBOARD_DOCKER_IMAGE)
+        .withTensorboardResources(YarnServiceRunJobCliCommonsTest.DEFAULT_TENSORBOARD_RESOURCES)
+        .withTensorboardDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_TENSORBOARD_DOCKER_IMAGE)
         .withVerbose()
         .build();
     runJobCli.run(params);
@@ -456,12 +456,12 @@ public class TestYarnServiceRunJobCli {
     String[] params = ParamBuilderForTest.create()
         .withFramework("tensorflow")
         .withJobName(testName.getMethodName())
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
-        .withInputPath(TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH)
-        .withCheckpointPath(TestYarnServiceRunJobCliCommons.DEFAULT_CHECKPOINT_PATH)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
+        .withInputPath(YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH)
+        .withCheckpointPath(YarnServiceRunJobCliCommonsTest.DEFAULT_CHECKPOINT_PATH)
         .withNumberOfWorkers(1)
-        .withWorkerLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_LAUNCH_CMD)
-        .withWorkerResources(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_RESOURCES)
+        .withWorkerLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_LAUNCH_CMD)
+        .withWorkerResources(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_RESOURCES)
         .withTensorboard()
         .withVerbose()
         .build();
@@ -489,11 +489,11 @@ public class TestYarnServiceRunJobCli {
     String[] params = ParamBuilderForTest.create()
         .withFramework("tensorflow")
         .withJobName(testName.getMethodName())
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
-        .withInputPath(TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
+        .withInputPath(YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH)
         .withNumberOfWorkers(1)
-        .withWorkerLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_LAUNCH_CMD)
-        .withWorkerResources(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_RESOURCES)
+        .withWorkerLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_LAUNCH_CMD)
+        .withWorkerResources(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_RESOURCES)
         .withTensorboard()
         .withVerbose()
         .build();
@@ -521,12 +521,12 @@ public class TestYarnServiceRunJobCli {
     String[] params = ParamBuilderForTest.create()
         .withFramework("tensorflow")
         .withJobName(jobName)
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
-        .withInputPath(TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH)
-        .withCheckpointPath(TestYarnServiceRunJobCliCommons.DEFAULT_CHECKPOINT_PATH)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
+        .withInputPath(YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH)
+        .withCheckpointPath(YarnServiceRunJobCliCommonsTest.DEFAULT_CHECKPOINT_PATH)
         .withNumberOfWorkers(1)
-        .withWorkerLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_LAUNCH_CMD)
-        .withWorkerResources(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_RESOURCES)
+        .withWorkerLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_LAUNCH_CMD)
+        .withWorkerResources(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_RESOURCES)
         .withTensorboard()
         .withVerbose()
         .build();
@@ -540,7 +540,7 @@ public class TestYarnServiceRunJobCli {
     Map<String, String> jobInfo = storage.getJobInfoByName(jobName);
     assertTrue(jobInfo.size() > 0);
     Assert.assertEquals(jobInfo.get(StorageKeyConstants.INPUT_PATH),
-        TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH);
+        YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH);
   }
 
   @Test
@@ -554,17 +554,17 @@ public class TestYarnServiceRunJobCli {
     String[] params = ParamBuilderForTest.create()
         .withFramework("tensorflow")
         .withJobName(jobName)
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
-        .withInputPath(TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH)
-        .withCheckpointPath(TestYarnServiceRunJobCliCommons.DEFAULT_CHECKPOINT_PATH)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
+        .withInputPath(YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH)
+        .withCheckpointPath(YarnServiceRunJobCliCommonsTest.DEFAULT_CHECKPOINT_PATH)
         .withNumberOfWorkers(3)
-        .withWorkerDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_DOCKER_IMAGE)
-        .withWorkerLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_LAUNCH_CMD)
-        .withWorkerResources(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_RESOURCES)
+        .withWorkerDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_DOCKER_IMAGE)
+        .withWorkerLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_LAUNCH_CMD)
+        .withWorkerResources(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_RESOURCES)
         .withNumberOfPs(2)
-        .withPsDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_PS_DOCKER_IMAGE)
-        .withPsLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_PS_LAUNCH_CMD)
-        .withPsResources(TestYarnServiceRunJobCliCommons.DEFAULT_PS_RESOURCES)
+        .withPsDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_DOCKER_IMAGE)
+        .withPsLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_LAUNCH_CMD)
+        .withPsResources(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_RESOURCES)
         .withQuickLink("AAA=http://master-0:8321")
         .withQuickLink("BBB=http://worker-0:1234")
         .withVerbose()
@@ -594,17 +594,17 @@ public class TestYarnServiceRunJobCli {
     String[] params = ParamBuilderForTest.create()
         .withFramework("tensorflow")
         .withJobName(jobName)
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
-        .withInputPath(TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH)
-        .withCheckpointPath(TestYarnServiceRunJobCliCommons.DEFAULT_CHECKPOINT_PATH)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
+        .withInputPath(YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH)
+        .withCheckpointPath(YarnServiceRunJobCliCommonsTest.DEFAULT_CHECKPOINT_PATH)
         .withNumberOfWorkers(3)
-        .withWorkerDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_DOCKER_IMAGE)
-        .withWorkerLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_LAUNCH_CMD)
-        .withWorkerResources(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_RESOURCES)
+        .withWorkerDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_DOCKER_IMAGE)
+        .withWorkerLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_LAUNCH_CMD)
+        .withWorkerResources(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_RESOURCES)
         .withNumberOfPs(2)
-        .withPsDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_PS_DOCKER_IMAGE)
-        .withPsLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_PS_LAUNCH_CMD)
-        .withPsResources(TestYarnServiceRunJobCliCommons.DEFAULT_PS_RESOURCES)
+        .withPsDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_DOCKER_IMAGE)
+        .withPsLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_LAUNCH_CMD)
+        .withPsResources(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_RESOURCES)
         .withQuickLink("AAA=http://master-0:8321")
         .withQuickLink("BBB=http://worker-0:1234")
         .withTensorboard()

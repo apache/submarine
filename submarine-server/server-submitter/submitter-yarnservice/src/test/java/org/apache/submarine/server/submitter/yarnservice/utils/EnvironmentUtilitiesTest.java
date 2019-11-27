@@ -36,7 +36,7 @@ import static org.mockito.Mockito.when;
 /**
  * This class is to test {@link EnvironmentUtilities}.
  */
-public class TestEnvironmentUtilities {
+public class EnvironmentUtilitiesTest {
   private Service createServiceWithEmptyEnvVars() {
     return createServiceWithEnvVars(Maps.newHashMap());
   }
