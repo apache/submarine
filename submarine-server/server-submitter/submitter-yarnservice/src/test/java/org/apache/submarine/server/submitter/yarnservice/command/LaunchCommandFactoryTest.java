@@ -37,7 +37,7 @@ import static org.mockito.Mockito.mock;
 /**
  * This class is to test the {@link TensorFlowLaunchCommandFactory}.
  */
-public class TestLaunchCommandFactory {
+public class LaunchCommandFactoryTest {
 
   private TensorFlowLaunchCommandFactory createLaunchCommandFactory(
       TensorFlowRunJobParameters parameters) {

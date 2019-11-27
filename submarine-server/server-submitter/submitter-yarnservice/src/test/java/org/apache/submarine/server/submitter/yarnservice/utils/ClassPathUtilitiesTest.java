@@ -35,7 +35,7 @@ import static org.junit.Assert.assertNull;
 /**
  * This class is to test {@link ClassPathUtilities}.
  */
-public class TestClassPathUtilities {
+public class ClassPathUtilitiesTest {
 
   private static final String CLASSPATH_KEY = "java.class.path";
   private FileUtilitiesForTests fileUtils = new FileUtilitiesForTests();

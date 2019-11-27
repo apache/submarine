@@ -42,7 +42,7 @@ import static org.mockito.Mockito.verify;
 /**
  * This class is to test {@link TensorBoardComponent}.
  */
-public class TestTensorBoardComponent {
+public class TensorBoardComponentTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();

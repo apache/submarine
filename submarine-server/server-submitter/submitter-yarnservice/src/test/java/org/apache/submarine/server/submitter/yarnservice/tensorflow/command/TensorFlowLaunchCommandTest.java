@@ -41,7 +41,7 @@ import java.util.List;
  * This class is to test the implementors of {@link TensorFlowLaunchCommand}.
  */
 @RunWith(Parameterized.class)
-public class TestTensorFlowLaunchCommand
+public class TensorFlowLaunchCommandTest
     extends AbstractTFLaunchCommandTestHelper {
   private TensorFlowRole taskType;
 
@@ -53,7 +53,7 @@ public class TestTensorFlowLaunchCommand
     return params;
   }
 
-  public TestTensorFlowLaunchCommand(TensorFlowRole taskType) {
+  public TensorFlowLaunchCommandTest(TensorFlowRole taskType) {
     this.taskType = taskType;
   }
 

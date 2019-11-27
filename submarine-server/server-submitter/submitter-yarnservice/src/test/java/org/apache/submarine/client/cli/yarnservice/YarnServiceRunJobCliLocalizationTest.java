@@ -52,13 +52,13 @@ import static org.mockito.Mockito.verify;
 /**
  * Class to test YarnService localization feature with the Run job CLI action.
  */
-public class TestYarnServiceRunJobCliLocalization {
+public class YarnServiceRunJobCliLocalizationTest {
   private static final Logger LOG =
-      LoggerFactory.getLogger(TestYarnServiceRunJobCliLocalization.class);
+      LoggerFactory.getLogger(YarnServiceRunJobCliLocalizationTest.class);
 
   private static final String ZIP_EXTENSION = ".zip";
-  private TestYarnServiceRunJobCliCommons testCommons =
-      new TestYarnServiceRunJobCliCommons();
+  private YarnServiceRunJobCliCommonsTest testCommons =
+      new YarnServiceRunJobCliCommonsTest();
   private MockClientContext mockClientContext;
   private RemoteDirectoryManager spyRdm;
 
@@ -77,18 +77,18 @@ public class TestYarnServiceRunJobCliLocalization {
   private ParamBuilderForTest createCommonParamsBuilder() {
     return ParamBuilderForTest.create()
         .withFramework("tensorflow")
-        .withJobName(TestYarnServiceRunJobCliCommons.DEFAULT_JOB_NAME)
-        .withDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_DOCKER_IMAGE)
-        .withInputPath(TestYarnServiceRunJobCliCommons.DEFAULT_INPUT_PATH)
-        .withCheckpointPath(TestYarnServiceRunJobCliCommons.DEFAULT_CHECKPOINT_PATH)
+        .withJobName(YarnServiceRunJobCliCommonsTest.DEFAULT_JOB_NAME)
+        .withDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_DOCKER_IMAGE)
+        .withInputPath(YarnServiceRunJobCliCommonsTest.DEFAULT_INPUT_PATH)
+        .withCheckpointPath(YarnServiceRunJobCliCommonsTest.DEFAULT_CHECKPOINT_PATH)
         .withNumberOfWorkers(3)
-        .withWorkerDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_DOCKER_IMAGE)
-        .withWorkerLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_LAUNCH_CMD)
-        .withWorkerResources(TestYarnServiceRunJobCliCommons.DEFAULT_WORKER_RESOURCES)
+        .withWorkerDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_DOCKER_IMAGE)
+        .withWorkerLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_LAUNCH_CMD)
+        .withWorkerResources(YarnServiceRunJobCliCommonsTest.DEFAULT_WORKER_RESOURCES)
         .withNumberOfPs(2)
-        .withPsDockerImage(TestYarnServiceRunJobCliCommons.DEFAULT_PS_DOCKER_IMAGE)
-        .withPsLaunchCommand(TestYarnServiceRunJobCliCommons.DEFAULT_PS_LAUNCH_CMD)
-        .withPsResources(TestYarnServiceRunJobCliCommons.DEFAULT_PS_RESOURCES)
+        .withPsDockerImage(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_DOCKER_IMAGE)
+        .withPsLaunchCommand(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_LAUNCH_CMD)
+        .withPsResources(YarnServiceRunJobCliCommonsTest.DEFAULT_PS_RESOURCES)
         .withVerbose();
   }
 
@@ -108,7 +108,7 @@ public class TestYarnServiceRunJobCliLocalization {
 
   private Path getStagingDir() throws IOException {
     return mockClientContext.getRemoteDirectoryManager()
-        .getJobStagingArea(TestYarnServiceRunJobCliCommons.DEFAULT_JOB_NAME, true);
+        .getJobStagingArea(YarnServiceRunJobCliCommonsTest.DEFAULT_JOB_NAME, true);
   }
 
   private RunJobCli createRunJobCliWithoutVerboseAssertion() {

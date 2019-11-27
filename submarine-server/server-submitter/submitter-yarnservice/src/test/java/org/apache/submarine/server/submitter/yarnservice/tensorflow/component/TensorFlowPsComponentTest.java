@@ -42,7 +42,7 @@ import org.junit.rules.ExpectedException;
 /**
  * This class is to test {@link TensorFlowPsComponent}.
  */
-public class TestTensorFlowPsComponent {
+public class TensorFlowPsComponentTest {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();

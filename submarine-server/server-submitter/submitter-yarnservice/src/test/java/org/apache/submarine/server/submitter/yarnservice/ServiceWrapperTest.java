@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 /**
  * Class to test the {@link ServiceWrapper}.
  */
-public class TestServiceWrapper {
+public class ServiceWrapperTest {
   private AbstractComponent createMockAbstractComponent(Component mockComponent,
       String componentName, String localScriptFile) throws IOException {
     when(mockComponent.getName()).thenReturn(componentName);

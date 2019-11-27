@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 /**
  * This class is to test {@link KerberosPrincipalFactory}.
  */
-public class TestKerberosPrincipalFactory {
+public class KerberosPrincipalFactoryTest {
   private FileUtilitiesForTests fileUtils = new FileUtilitiesForTests();
 
   @Before
