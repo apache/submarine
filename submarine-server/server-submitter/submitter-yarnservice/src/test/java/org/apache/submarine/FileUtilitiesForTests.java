@@ -39,6 +39,9 @@ import static org.junit.Assert.assertTrue;
 public class FileUtilitiesForTests {
   private static final Logger LOG =
       LoggerFactory.getLogger(FileUtilitiesForTests.class);
+
+  public static final String FILE_SCHEME = "file://";
+
   private String tempDir;
   private List<File> cleanupFiles;
 
@@ -92,6 +95,16 @@ public class FileUtilitiesForTests {
     }
     File file = new File(dir, filename);
     createFile(file);
+    return file;
+  }
+
+  public File createDirInDir(Path dir, String newDir) {
+    File dirTmp = new File(dir.toUri().getPath());
+    if (!dirTmp.exists()) {
+      createDirectory(dirTmp);
+    }
+    File file = new File(dir.toUri().getPath(), newDir);
+    createDirectory(file);
     return file;
   }
 

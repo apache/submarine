@@ -48,7 +48,7 @@ public class YarnUtilsTest {
 
   private MockClientContext getMockClientContext()
       throws IOException, YarnException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext("testJob");
     JobSubmitter mockJobSubmitter = mock(JobSubmitter.class);
     when(mockJobSubmitter.submitJob(
         any(ParametersHolder.class))).thenReturn(

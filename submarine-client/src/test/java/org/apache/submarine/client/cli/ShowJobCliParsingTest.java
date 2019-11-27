@@ -48,8 +48,8 @@ public class ShowJobCliParsingTest {
   }
 
   @Test
-  public void testPrintHelp() {
-    MockClientContext mockClientContext = new MockClientContext();
+  public void testPrintHelp() throws IOException {
+    MockClientContext mockClientContext = new MockClientContext("testJob");
     ShowJobCli showJobCli = new ShowJobCli(mockClientContext);
     showJobCli.printUsages();
   }
@@ -58,7 +58,7 @@ public class ShowJobCliParsingTest {
   public void testShowJob()
       throws InterruptedException, SubmarineException, YarnException,
       ParseException, IOException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext("testJob");
     ShowJobCli showJobCli = new ShowJobCli(mockClientContext) {
       @Override
       protected void getAndPrintJobInfo() {
@@ -84,7 +84,7 @@ public class ShowJobCliParsingTest {
       throws InterruptedException, SubmarineException, YarnException,
       ParseException, IOException {
     SubmarineStorage storage = new MemorySubmarineStorage();
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext("testJob");
     RuntimeFactory runtimeFactory = mock(RuntimeFactory.class);
     when(runtimeFactory.getSubmarineStorage()).thenReturn(storage);
     mockClientContext.setRuntimeFactory(runtimeFactory);

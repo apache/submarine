@@ -24,9 +24,13 @@ import org.apache.submarine.commons.runtime.RuntimeFactory;
 import org.apache.submarine.commons.runtime.fs.MemorySubmarineStorage;
 import org.apache.submarine.server.submitter.yarnservice.YarnServiceRuntimeFactory;
 
+import java.io.IOException;
+
+import static org.apache.submarine.client.cli.yarnservice.YarnServiceRunJobCliCommonsTest.DEFAULT_JOB_NAME;
+
 public class YarnServiceCliTestUtils {
-  public static MockClientContext getMockClientContext() {
-    MockClientContext mockClientContext = new MockClientContext();
+  public static MockClientContext getMockClientContext() throws IOException {
+    MockClientContext mockClientContext = new MockClientContext(DEFAULT_JOB_NAME);
     RuntimeFactory runtimeFactory = new YarnServiceRuntimeFactory(
         mockClientContext);
     mockClientContext.setRuntimeFactory(runtimeFactory);

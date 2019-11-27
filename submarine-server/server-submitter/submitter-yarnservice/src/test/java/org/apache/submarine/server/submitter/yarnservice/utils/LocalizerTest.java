@@ -249,7 +249,7 @@ public class LocalizerTest {
     String remoteUri = "hdfs://remotedir1/remotedir2";
     when(fsOperations.uploadToRemoteFile(any(Path.class), anyString()))
         .thenReturn(new Path(remoteUri));
-    when(fsOperations.downloadAndZip(anyString(), anyString(), eq(true)))
+    when(fsOperations.downloadAndZip(anyString(), anyString()))
         .thenReturn("remotedir2.zip");
 
     Localization localization = new Localization();
@@ -271,7 +271,7 @@ public class LocalizerTest {
     when(fsOperations.uploadToRemoteFile(any(Path.class), anyString()))
         .thenReturn(new Path(remoteUri));
     String zipFileName = "remotedir2_221424.zip";
-    when(fsOperations.downloadAndZip(anyString(), anyString(), eq(true)))
+    when(fsOperations.downloadAndZip(anyString(), anyString()))
         .thenReturn(zipFileName);
 
     Localization localization = new Localization();
@@ -309,7 +309,7 @@ public class LocalizerTest {
     when(fsOperations.uploadToRemoteFile(any(Path.class), anyString()))
         .thenReturn(new Path(remoteUri));
     String downloadedFileName = "remotedir2_221424";
-    when(fsOperations.downloadAndZip(anyString(), anyString(), eq(false)))
+    when(fsOperations.download(anyString(), anyString()))
         .thenReturn(downloadedFileName);
 
     Localization localization = new Localization();

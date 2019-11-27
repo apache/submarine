@@ -19,39 +19,86 @@
 
 package org.apache.submarine.commons.runtime.fs;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.util.Time;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
 public class MockRemoteDirectoryManager implements RemoteDirectoryManager {
-  private File jobsParentDir = null;
-  private File modelParentDir = null;
 
-  private File jobDir = null;
+  private static final String FAILED_TO_CREATE_DIRS_FORMAT_STRING =
+      "Failed to create directories under path: %s";
+  private static final String JOB_NAME_MUST_NOT_BE_NULL =
+      "Job name must not be null!";
+  private static final File STAGING_AREA = new File("target/_staging_area_");
+
+  private File jobsParentDir;
+  private File jobDir;
+  private File modelParentDir;
+
+  public MockRemoteDirectoryManager(String jobName) throws IOException {
+    Objects.requireNonNull(jobName, JOB_NAME_MUST_NOT_BE_NULL);
+    this.cleanup();
+    this.jobsParentDir = initializeJobParentDir();
+    this.jobDir = initializeJobDir(jobName);
+    this.modelParentDir = initializeModelParentDir();
+  }
+
+  private void cleanup() throws IOException {
+    FileUtils.deleteDirectory(STAGING_AREA);
+  }
+
+  private File initializeJobParentDir() throws IOException {
+    File dir = new File(STAGING_AREA, String.valueOf(Time.monotonicNow()));
+    if (!dir.mkdirs()) {
+      throw new IOException(
+          String.format(FAILED_TO_CREATE_DIRS_FORMAT_STRING,
+              dir.getAbsolutePath()));
+    }
+    return dir;
+  }
+
+  private File initializeJobDir(String jobName) throws IOException {
+    Objects.requireNonNull(jobsParentDir, "Job parent dir must not be null!");
+    File dir = new File(jobsParentDir.getAbsolutePath(), jobName);
+
+    if (!dir.exists() && !dir.mkdirs()) {
+      throw new IOException(
+          String.format(FAILED_TO_CREATE_DIRS_FORMAT_STRING,
+              dir.getAbsolutePath()));
+    }
+    return dir;
+  }
+
+  private File initializeModelParentDir() throws IOException {
+    File dir = new File(
+        "target/_models_" + System.currentTimeMillis());
+    if (!dir.mkdirs()) {
+      throw new IOException(
+          String.format(FAILED_TO_CREATE_DIRS_FORMAT_STRING,
+              dir.getAbsolutePath()));
+    }
+    return dir;
+  }
+
   @Override
   public Path getJobStagingArea(String jobName, boolean create)
       throws IOException {
-    Objects.requireNonNull(jobName, "Job name must not be null!");
-    if (jobsParentDir == null && create) {
-      jobsParentDir = new File(
-          "target/_staging_area_" + System.currentTimeMillis());
-      if (!jobsParentDir.mkdirs()) {
-        throw new IOException(
-            "Failed to mkdirs for" + jobsParentDir.getAbsolutePath());
-      }
-    }
-
-    this.jobDir = new File(jobsParentDir.getAbsolutePath(), jobName);
+    Objects.requireNonNull(jobName, JOB_NAME_MUST_NOT_BE_NULL);
+    Objects.requireNonNull(jobDir, JOB_NAME_MUST_NOT_BE_NULL);
+    this.jobDir = initializeJobDir(jobName);
     if (create && !jobDir.exists()) {
       if (!jobDir.mkdirs()) {
-        throw new IOException("Failed to mkdirs for "
-            + jobDir.getAbsolutePath());
+        throw new IOException(
+            String.format(FAILED_TO_CREATE_DIRS_FORMAT_STRING,
+                jobDir.getAbsolutePath()));
       }
     }
     return new Path(jobDir.getAbsolutePath());
@@ -66,15 +113,6 @@ public class MockRemoteDirectoryManager implements RemoteDirectoryManager {
   @Override
   public Path getModelDir(String modelName, boolean create)
       throws IOException {
-    if (modelParentDir == null && create) {
-      modelParentDir = new File(
-          "target/_models_" + System.currentTimeMillis());
-      if (!modelParentDir.mkdirs()) {
-        throw new IOException(
-            "Failed to mkdirs for " + modelParentDir.getAbsolutePath());
-      }
-    }
-
     File modelDir = new File(modelParentDir.getAbsolutePath(), modelName);
     if (create) {
       if (!modelDir.exists() && !modelDir.mkdirs()) {
@@ -104,7 +142,6 @@ public class MockRemoteDirectoryManager implements RemoteDirectoryManager {
   public boolean isDir(String uri) throws IOException {
     return getDefaultFileSystem().getFileStatus(
         new Path(convertToStagingPath(uri))).isDirectory();
-
   }
 
   @Override
@@ -117,13 +154,12 @@ public class MockRemoteDirectoryManager implements RemoteDirectoryManager {
   }
 
   private String convertToStagingPath(String uri) throws IOException {
-    String ret = uri;
     if (isRemote(uri)) {
       String dirName = new Path(uri).getName();
-      ret = this.jobDir.getAbsolutePath()
+      return this.jobDir.getAbsolutePath()
           + "/" + dirName;
     }
-    return ret;
+    return uri;
   }
 
   /**
@@ -168,4 +204,7 @@ public class MockRemoteDirectoryManager implements RemoteDirectoryManager {
     return 100 * 1024 * 1024;
   }
 
+  public void setJobDir(File jobDir) {
+    this.jobDir = jobDir;
+  }
 }

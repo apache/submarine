@@ -32,6 +32,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
+import static org.apache.submarine.client.cli.yarnservice.YarnServiceRunJobCliCommonsTest.DEFAULT_JOB_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -60,7 +61,7 @@ public class KerberosPrincipalFactoryTest {
 
   @Test
   public void testCreatePrincipalEmptyPrincipalAndKeytab() throws IOException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext(DEFAULT_JOB_NAME);
 
     RunJobParameters parameters = mock(RunJobParameters.class);
     when(parameters.getPrincipal()).thenReturn("");
@@ -76,7 +77,7 @@ public class KerberosPrincipalFactoryTest {
   }
   @Test
   public void testCreatePrincipalEmptyPrincipalString() throws IOException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext(DEFAULT_JOB_NAME);
 
     RunJobParameters parameters = mock(RunJobParameters.class);
     when(parameters.getPrincipal()).thenReturn("");
@@ -93,7 +94,7 @@ public class KerberosPrincipalFactoryTest {
 
   @Test
   public void testCreatePrincipalEmptyKeyTabString() throws IOException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext(DEFAULT_JOB_NAME);
 
     RunJobParameters parameters = mock(RunJobParameters.class);
     when(parameters.getPrincipal()).thenReturn("principal");
@@ -111,7 +112,7 @@ public class KerberosPrincipalFactoryTest {
   @Test
   public void testCreatePrincipalNonEmptyPrincipalAndKeytab()
       throws IOException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext(DEFAULT_JOB_NAME);
 
     RunJobParameters parameters = mock(RunJobParameters.class);
     when(parameters.getPrincipal()).thenReturn("principal");
@@ -130,7 +131,7 @@ public class KerberosPrincipalFactoryTest {
 
   @Test
   public void testCreatePrincipalDistributedKeytab() throws IOException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext(DEFAULT_JOB_NAME);
     String jobname = "testJobname";
     String keytab = "testKeytab";
     File keytabFile = createKeytabFile(keytab);

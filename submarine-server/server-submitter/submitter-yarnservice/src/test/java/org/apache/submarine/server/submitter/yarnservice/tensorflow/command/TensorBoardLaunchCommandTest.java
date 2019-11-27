@@ -32,6 +32,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
+import static org.apache.submarine.client.cli.yarnservice.YarnServiceRunJobCliCommonsTest.DEFAULT_JOB_NAME;
+
 /**
  * This class is to test the {@link TensorBoardLaunchCommand}.
  */
@@ -68,7 +70,7 @@ public class TensorBoardLaunchCommandTest extends
 
   @Test
   public void testCheckpointPathUndefined() throws IOException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext(DEFAULT_JOB_NAME);
     FileSystemOperations fsOperations =
         new FileSystemOperations(mockClientContext);
     HadoopEnvironmentSetup hadoopEnvSetup =
@@ -86,7 +88,7 @@ public class TensorBoardLaunchCommandTest extends
 
   @Test
   public void testCheckpointPathEmptyString() throws IOException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext(DEFAULT_JOB_NAME);
     FileSystemOperations fsOperations =
         new FileSystemOperations(mockClientContext);
     HadoopEnvironmentSetup hadoopEnvSetup =

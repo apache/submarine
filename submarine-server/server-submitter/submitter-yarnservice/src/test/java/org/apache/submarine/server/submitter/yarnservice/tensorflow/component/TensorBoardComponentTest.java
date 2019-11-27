@@ -83,9 +83,9 @@ public class TensorBoardComponentTest {
     parameters.setTensorboardResource(testCommons.resource);
     parameters.setName(null);
 
+    testCommons.makeRemoteDirectoryManagerHaveNullJobName();
     TensorBoardComponent tensorBoardComponent =
         createTensorBoardComponent(parameters);
-
     expectedException.expect(NullPointerException.class);
     expectedException.expectMessage("Job name must not be null");
     tensorBoardComponent.createComponent();
