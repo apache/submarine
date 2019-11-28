@@ -27,9 +27,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.client.cli.CliConstants;
 import org.apache.submarine.client.cli.CliUtils;
+import org.apache.submarine.client.cli.RoleResourceParser;
 import org.apache.submarine.commons.runtime.ClientContext;
 
 import com.google.common.collect.Lists;
+import org.apache.submarine.commons.runtime.api.PyTorchRole;
 import org.apache.submarine.commons.runtime.param.Parameter;
 
 /**
@@ -40,6 +42,12 @@ public class PyTorchRunJobParameters extends RunJobParameters {
   private static final String CANNOT_BE_DEFINED_FOR_PYTORCH =
       "cannot be defined for PyTorch jobs!";
 
+  public PyTorchRunJobParameters(RoleResourceParser roleResourceParser) {
+    super(roleResourceParser);
+    this.workerParameters = new RoleParameters(
+        PyTorchRole.WORKER, roleResourceParser);
+  }
+
   @Override
   public void updateParameters(Parameter parametersHolder, ClientContext clientContext)
       throws ParseException, IOException, YarnException {
@@ -49,7 +57,10 @@ public class PyTorchRunJobParameters extends RunJobParameters {
 
     String input = parametersHolder.getOptionValue(CliConstants.INPUT_PATH);
     this.workerParameters =
-        getWorkerParameters(clientContext, parametersHolder, input);
+        new RoleParameters(PyTorchRole.WORKER, roleResourceParser,
+            parametersHolder);
+    this.inputPath = parseInputPath(parametersHolder,
+        workerParameters.getReplicas());
     this.distributed = determineIfDistributed(workerParameters.getReplicas());
     executePostOperations(clientContext);
   }
@@ -93,21 +104,24 @@ public class PyTorchRunJobParameters extends RunJobParameters {
   void executePostOperations(ClientContext clientContext) throws IOException {
     // Set default job dir / saved model dir, etc.
     setDefaultDirs(clientContext);
-    replacePatternsInParameters(clientContext);
+    replacePatternsInParameters();
   }
 
-  private void replacePatternsInParameters(ClientContext clientContext)
+  private void replacePatternsInParameters()
       throws IOException {
     if (StringUtils.isNotEmpty(getWorkerLaunchCmd())) {
       String afterReplace =
-          CliUtils.replacePatternsInLaunchCommand(getWorkerLaunchCmd(), this,
-              clientContext.getRemoteDirectoryManager());
+          CliUtils.replacePatternsInLaunchCommand(getWorkerLaunchCmd(), this);
       setWorkerLaunchCmd(afterReplace);
     }
   }
 
   @Override
   public List<String> getLaunchCommands() {
+    if (workerParameters == null) {
+      throw new IllegalStateException(
+          "Worker parameters are not yet initialized!");
+    }
     return Lists.newArrayList(getWorkerLaunchCmd());
   }
 

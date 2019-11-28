@@ -24,7 +24,9 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.service.api.records.Artifact;
 import org.apache.hadoop.yarn.service.api.records.Component;
 import org.apache.hadoop.yarn.service.api.records.Component.RestartPolicyEnum;
+import org.apache.submarine.client.cli.RoleResourceParser;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
+import org.apache.submarine.commons.runtime.MockClientContext;
 import org.apache.submarine.commons.runtime.api.TensorFlowRole;
 import org.apache.submarine.server.submitter.yarnservice.command.TensorFlowLaunchCommandFactory;
 import org.junit.Before;
@@ -46,6 +48,10 @@ import static org.mockito.Mockito.verify;
  * This class is to test {@link TensorFlowWorkerComponent}.
  */
 public class TensorFlowWorkerComponentTest {
+
+  private RoleResourceParser createResourceParser() {
+    return new RoleResourceParser(new MockClientContext());
+  }
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -110,7 +116,8 @@ public class TensorFlowWorkerComponentTest {
 
   @Test
   public void testWorkerComponentWithNullResource() throws IOException {
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setWorkerResource(null);
 
     TensorFlowWorkerComponent workerComponent =
@@ -123,7 +130,8 @@ public class TensorFlowWorkerComponentTest {
 
   @Test
   public void testWorkerComponentWithNullJobName() throws IOException {
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setWorkerResource(testCommons.resource);
     parameters.setNumWorkers(1);
     parameters.setName(null);
@@ -141,7 +149,8 @@ public class TensorFlowWorkerComponentTest {
       throws IOException {
     testCommons.yarnConfig.set("hadoop.registry.dns.domain-name", "testDomain");
 
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setWorkerResource(testCommons.resource);
     parameters.setName("testJobName");
     parameters.setWorkerDockerImage("testWorkerDockerImage");
@@ -159,7 +168,8 @@ public class TensorFlowWorkerComponentTest {
   public void testNormalWorkerComponentNumWorkersIsOne() throws IOException {
     testCommons.yarnConfig.set("hadoop.registry.dns.domain-name", "testDomain");
 
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setWorkerResource(testCommons.resource);
     parameters.setName("testJobName");
     parameters.setNumWorkers(1);
@@ -178,7 +188,8 @@ public class TensorFlowWorkerComponentTest {
   public void testNormalWorkerComponentNumWorkersIsTwo() throws IOException {
     testCommons.yarnConfig.set("hadoop.registry.dns.domain-name", "testDomain");
 
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setWorkerResource(testCommons.resource);
     parameters.setName("testJobName");
     parameters.setNumWorkers(2);
@@ -199,7 +210,8 @@ public class TensorFlowWorkerComponentTest {
     testCommons = new ComponentTestCommons(TensorFlowRole.PRIMARY_WORKER);
     testCommons.setupTensorFlow();
 
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setWorkerResource(testCommons.resource);
     parameters.setName("testJobName");
     parameters.setNumWorkers(2);

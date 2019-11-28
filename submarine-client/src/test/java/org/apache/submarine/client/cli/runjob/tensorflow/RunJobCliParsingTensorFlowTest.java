@@ -53,8 +53,8 @@ public class RunJobCliParsingTensorFlowTest {
   @Test
   public void testNoInputPathOptionSpecified() throws Exception {
     RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
-    String expectedErrorMessage = "\"--" + CliConstants.INPUT_PATH +
-        "\" is absent";
+    String expectedErrorMessage = "--" + CliConstants.INPUT_PATH +
+        " is absent";
     String actualMessage = "";
     try {
       runJobCli.run(

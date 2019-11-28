@@ -32,6 +32,7 @@ import org.apache.submarine.client.cli.AbstractCli;
 import org.apache.submarine.client.cli.CliConstants;
 import org.apache.submarine.client.cli.CliUtils;
 import org.apache.submarine.client.cli.Command;
+import org.apache.submarine.client.cli.RoleResourceParser;
 import org.apache.submarine.client.cli.param.ParametersHolder;
 import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
 import org.apache.submarine.client.cli.param.yaml.YamlConfigFile;
@@ -226,6 +227,12 @@ public class RunJobCli extends AbstractCli {
       CommandLine cli = parser.parse(options, args);
       parametersHolder = createParametersHolder(cli);
       parametersHolder.updateParameters(clientContext);
+      RunJobParameters runJobParameters =
+          ((RunJobParameters) parametersHolder.getParameters());
+
+      if (runJobParameters.getSecurityParameters() != null) {
+        CliUtils.doLoginIfSecure(runJobParameters.getSecurityParameters());
+      }
     } catch (ParseException e) {
       LOG.error("Exception in parse: {}", e.getMessage());
       printUsages();
@@ -237,15 +244,18 @@ public class RunJobCli extends AbstractCli {
       throws ParseException, YarnException {
     String yamlConfigFile =
         cli.getOptionValue(CliConstants.YAML_CONFIG);
+    RoleResourceParser roleResourceParser =
+        new RoleResourceParser(clientContext);
     if (yamlConfigFile != null) {
       YamlConfigFile yamlConfig = readYamlConfigFile(yamlConfigFile);
       checkYamlConfig(yamlConfigFile, yamlConfig);
       LOG.info("Using YAML configuration!");
       return ParametersHolder.createWithCmdLineAndYaml(cli, yamlConfig,
-          Command.RUN_JOB);
+          Command.RUN_JOB, roleResourceParser);
     } else {
       LOG.info("Using CLI configuration!");
-      return ParametersHolder.createWithCmdLine(cli, Command.RUN_JOB);
+      return ParametersHolder.createWithCmdLine(cli, Command.RUN_JOB,
+          roleResourceParser);
     }
   }
 

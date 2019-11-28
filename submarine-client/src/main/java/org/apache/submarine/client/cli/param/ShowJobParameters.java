@@ -19,7 +19,19 @@
 
 package org.apache.submarine.client.cli.param;
 
+import org.apache.commons.cli.ParseException;
+import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.runtime.param.BaseParameters;
 
+import java.io.IOException;
+
 public class ShowJobParameters extends BaseParameters {
+  public static ShowJobParameters parse(ParametersHolder parametersHolder,
+      ClientContext clientContext)
+      throws ParseException, YarnException, IOException {
+    ShowJobParameters showJobParameters = new ShowJobParameters();
+    showJobParameters.updateParameters(parametersHolder, clientContext);
+    return showJobParameters;
+  }
 }

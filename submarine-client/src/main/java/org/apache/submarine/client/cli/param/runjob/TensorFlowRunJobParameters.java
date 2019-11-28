@@ -19,6 +19,7 @@
 
 package org.apache.submarine.client.cli.param.runjob;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +27,7 @@ import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.client.cli.CliConstants;
 import org.apache.submarine.client.cli.CliUtils;
+import org.apache.submarine.client.cli.RoleResourceParser;
 import org.apache.submarine.client.cli.runjob.RoleParameters;
 import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.runtime.param.Parameter;
@@ -40,27 +42,34 @@ import java.util.List;
  */
 public class TensorFlowRunJobParameters extends RunJobParameters {
   private boolean tensorboardEnabled;
-  private RoleParameters psParameters =
-      RoleParameters.createEmpty(TensorFlowRole.PS);
-  private RoleParameters tensorBoardParameters =
-      RoleParameters.createEmpty(TensorFlowRole.TENSORBOARD);
+  private RoleParameters psParameters;
+  private TensorBoardParameters tensorBoardParameters;
+
+  public TensorFlowRunJobParameters(RoleResourceParser resourceParser) {
+    super(resourceParser);
+    this.workerParameters = new RoleParameters(
+        TensorFlowRole.WORKER, resourceParser);
+    this.psParameters = new RoleParameters(
+        TensorFlowRole.PS, resourceParser);
+    this.tensorBoardParameters = new TensorBoardParameters();
+  }
 
   @Override
   public void updateParameters(Parameter parametersHolder, ClientContext clientContext)
       throws ParseException, IOException, YarnException {
     super.updateParameters(parametersHolder, clientContext);
 
-    String input = parametersHolder.getOptionValue(CliConstants.INPUT_PATH);
-    this.workerParameters =
-        getWorkerParameters(clientContext, parametersHolder, input);
-    this.psParameters = getPSParameters(clientContext, parametersHolder);
-    this.distributed = determineIfDistributed(workerParameters.getReplicas(),
-        psParameters.getReplicas());
+    this.workerParameters = new RoleParameters(TensorFlowRole.WORKER,
+    	        roleResourceParser, parametersHolder);
+    this.psParameters = new RoleParameters(TensorFlowRole.PS,
+    	        roleResourceParser, parametersHolder);
+    this.inputPath = parseInputPath(parametersHolder,
+        workerParameters.getReplicas());
 
     if (parametersHolder.hasOption(CliConstants.TENSORBOARD)) {
       this.tensorboardEnabled = true;
-      this.tensorBoardParameters =
-          getTensorBoardParameters(parametersHolder, clientContext);
+      this.tensorBoardParameters = new TensorBoardParameters(
+          roleResourceParser, parametersHolder);
     }
     executePostOperations(clientContext);
   }
@@ -69,27 +78,30 @@ public class TensorFlowRunJobParameters extends RunJobParameters {
   void executePostOperations(ClientContext clientContext) throws IOException {
     // Set default job dir / saved model dir, etc.
     setDefaultDirs(clientContext);
-    replacePatternsInParameters(clientContext);
+    replacePatternsInParameters();
   }
 
-  private void replacePatternsInParameters(ClientContext clientContext)
-      throws IOException {
+  private void replacePatternsInParameters() {
     if (StringUtils.isNotEmpty(getPSLaunchCmd())) {
       String afterReplace = CliUtils.replacePatternsInLaunchCommand(
-          getPSLaunchCmd(), this, clientContext.getRemoteDirectoryManager());
+          getPSLaunchCmd(), this);
       setPSLaunchCmd(afterReplace);
     }
 
     if (StringUtils.isNotEmpty(getWorkerLaunchCmd())) {
       String afterReplace =
-          CliUtils.replacePatternsInLaunchCommand(getWorkerLaunchCmd(), this,
-              clientContext.getRemoteDirectoryManager());
+          CliUtils.replacePatternsInLaunchCommand(getWorkerLaunchCmd(), this);
       setWorkerLaunchCmd(afterReplace);
     }
   }
 
   @Override
   public List<String> getLaunchCommands() {
+    Preconditions.checkState(workerParameters != null,
+        "Worker parameters are not yet initialized!");
+
+    Preconditions.checkState(psParameters != null,
+        "PS parameters are not yet initialized!");
     return Lists.newArrayList(getWorkerLaunchCmd(), getPSLaunchCmd());
   }
 

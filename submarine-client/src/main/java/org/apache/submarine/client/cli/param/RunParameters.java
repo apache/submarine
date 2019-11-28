@@ -19,6 +19,7 @@
 
 package org.apache.submarine.client.cli.param;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.client.cli.CliConstants;
@@ -36,34 +37,26 @@ import java.util.List;
 public abstract class RunParameters extends BaseParameters {
   private String savedModelPath;
   private String dockerImageName;
-  private List<String> envars = new ArrayList<>();
+  private List<String> envVars = Lists.newArrayList();
   private String queue;
 
   @Override
-  public void updateParameters(Parameter parametersHolder, ClientContext clientContext)
-		  throws ParseException,
-      IOException, YarnException {
-    String savedModelPath = parametersHolder.getOptionValue(
+  protected void updateParameters(Parameter parametersHolder,
+      ClientContext clientContext)
+      throws ParseException, IOException, YarnException {
+    this.savedModelPath = parametersHolder.getOptionValue(
         CliConstants.SAVED_MODEL_PATH);
-    this.setSavedModelPath(savedModelPath);
-
-    List<String> envVars = getEnvVars((ParametersHolder)parametersHolder);
-    this.setEnvars(envVars);
-
-    String queue = parametersHolder.getOptionValue(
-        CliConstants.QUEUE);
-    this.setQueue(queue);
-
-    String dockerImage = parametersHolder.getOptionValue(
+    this.envVars = getEnvVars(parametersHolder);
+    this.queue = parametersHolder.getOptionValue(CliConstants.QUEUE);
+    this.dockerImageName = parametersHolder.getOptionValue(
         CliConstants.DOCKER_IMAGE);
-    this.setDockerImageName(dockerImage);
 
     super.updateParameters(parametersHolder, clientContext);
   }
 
   private List<String> getEnvVars(ParametersHolder parametersHolder)
       throws YarnException {
-    List<String> result = new ArrayList<>();
+    List<String> result = Lists.newArrayList();
     List<String> envVarsArray = parametersHolder.getOptionValues(
         CliConstants.ENV);
     if (envVarsArray != null) {
@@ -76,36 +69,24 @@ public abstract class RunParameters extends BaseParameters {
     return queue;
   }
 
-  public RunParameters setQueue(String queue) {
-    this.queue = queue;
-    return this;
-  }
-
   public String getDockerImageName() {
     return dockerImageName;
   }
 
-  public RunParameters setDockerImageName(String dockerImageName) {
-    this.dockerImageName = dockerImageName;
-    return this;
-  }
-
-
-  public List<String> getEnvars() {
-    return envars;
-  }
-
-  public RunParameters setEnvars(List<String> envars) {
-    this.envars = envars;
-    return this;
+  public List<String> getEnvVars() {
+    return envVars;
   }
 
   public String getSavedModelPath() {
     return savedModelPath;
   }
 
-  public RunParameters setSavedModelPath(String savedModelPath) {
+  public void setSavedModelPath(String savedModelPath) {
     this.savedModelPath = savedModelPath;
+  }
+
+  public RunParameters setEnvVars(List<String> envVars) {
+    this.envVars = envVars;
     return this;
   }
 }

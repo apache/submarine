@@ -44,14 +44,15 @@ public class Quicklink {
     } else if (quicklinkStr.startsWith("https://")) {
       protocol = "https://";
     } else {
-      throw new ParseException("Quicklink should start with http or https");
+      throw new ParseException("Quicklink should start with http or https!");
     }
 
     quicklinkStr = quicklinkStr.substring(protocol.length());
     index = quicklinkStr.indexOf(":");
 
     if (index == -1) {
-      throw new ParseException("Quicklink should be componet-id:port form");
+      throw new ParseException(
+          "Quicklinks should be in <component-id>:<port> format!");
     }
 
     componentInstanceName = quicklinkStr.substring(0, index);

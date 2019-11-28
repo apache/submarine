@@ -68,7 +68,7 @@ public class ShowJobCli extends AbstractCli {
     try {
       cli = parser.parse(options, args);
       parametersHolder = ParametersHolder
-          .createWithCmdLine(cli, Command.SHOW_JOB);
+          .createWithCmdLine(cli, Command.SHOW_JOB, null);
       parametersHolder.updateParameters(clientContext);
     } catch (ParseException e) {
       printUsages();

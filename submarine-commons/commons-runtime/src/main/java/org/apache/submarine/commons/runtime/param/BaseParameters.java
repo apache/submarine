@@ -46,7 +46,8 @@ import java.io.IOException;
 public abstract class BaseParameters {
   private String name;
 
-  public void updateParameters(Parameter parameter, ClientContext clientContext)
+  protected void updateParameters(Parameter parameter,
+      ClientContext clientContext)
       throws ParseException, IOException, YarnException {
     String name = parameter.getOptionValue("name");
     if (name == null) {

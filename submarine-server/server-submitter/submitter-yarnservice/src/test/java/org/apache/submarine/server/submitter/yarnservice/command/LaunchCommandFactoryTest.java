@@ -21,7 +21,9 @@ package org.apache.submarine.server.submitter.yarnservice.command;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.service.api.records.Component;
+import org.apache.submarine.client.cli.RoleResourceParser;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
+import org.apache.submarine.commons.runtime.MockClientContext;
 import org.apache.submarine.commons.runtime.api.TensorFlowRole;
 import org.apache.submarine.server.submitter.yarnservice.tensorflow.command.TensorBoardLaunchCommand;
 import org.apache.submarine.server.submitter.yarnservice.tensorflow.command.TensorFlowPsLaunchCommand;
@@ -39,6 +41,10 @@ import static org.mockito.Mockito.mock;
  */
 public class LaunchCommandFactoryTest {
 
+  private RoleResourceParser createResourceParser() {
+    return new RoleResourceParser(new MockClientContext());
+  }
+
   private TensorFlowLaunchCommandFactory createLaunchCommandFactory(
       TensorFlowRunJobParameters parameters) {
     HadoopEnvironmentSetup hadoopEnvSetup = mock(HadoopEnvironmentSetup.class);
@@ -49,7 +55,8 @@ public class LaunchCommandFactoryTest {
 
   @Test
   public void createLaunchCommandWorkerAndPrimaryWorker() throws IOException {
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setWorkerLaunchCmd("testWorkerLaunchCommand");
     TensorFlowLaunchCommandFactory launchCommandFactory =
         createLaunchCommandFactory(parameters);
@@ -70,7 +77,8 @@ public class LaunchCommandFactoryTest {
 
   @Test
   public void createLaunchCommandPs() throws IOException {
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setPSLaunchCmd("testPSLaunchCommand");
     TensorFlowLaunchCommandFactory launchCommandFactory =
         createLaunchCommandFactory(parameters);
@@ -85,7 +93,8 @@ public class LaunchCommandFactoryTest {
 
   @Test
   public void createLaunchCommandTensorboard() throws IOException {
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setCheckpointPath("testCheckpointPath");
     TensorFlowLaunchCommandFactory launchCommandFactory =
         createLaunchCommandFactory(parameters);

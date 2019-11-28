@@ -19,10 +19,17 @@
 
 package org.apache.submarine.server.submitter.yarnservice.pytorch;
 
+import com.google.common.collect.Lists;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.hadoop.yarn.service.api.records.Component;
 import org.apache.hadoop.yarn.service.api.records.Service;
+import org.apache.submarine.client.cli.RoleResourceParser;
+import org.apache.submarine.client.cli.param.ParametersHolder;
+import org.apache.submarine.client.cli.param.runjob.Localizations;
 import org.apache.submarine.client.cli.param.runjob.PyTorchRunJobParameters;
+import org.apache.submarine.client.cli.param.runjob.QuickLinks;
+import org.apache.submarine.client.cli.param.runjob.SecurityParameters;
 import org.apache.submarine.commons.runtime.MockClientContext;
 import org.apache.submarine.commons.runtime.api.PyTorchRole;
 import org.apache.submarine.commons.runtime.api.TensorFlowRole;
@@ -40,7 +47,11 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 
+/**
+ * Test class for {@link PyTorchServiceSpec}.
+ */
 public class PyTorchServiceSpecTest {
 
   private ComponentTestCommons testCommons =
@@ -52,17 +63,22 @@ public class PyTorchServiceSpecTest {
   }
 
   @Test
-  public void testPytorchServiceSpec() throws IOException {
+  public void testPytorchServiceSpec() throws IOException, YarnException {
     testCommons = new ComponentTestCommons(TensorFlowRole.PRIMARY_WORKER);
     testCommons.setupTensorFlow();
 
-    PyTorchRunJobParameters parameters = new PyTorchRunJobParameters();
+    MockClientContext mockClientContext = new MockClientContext();
+    PyTorchRunJobParameters parameters =
+        new PyTorchRunJobParameters(new RoleResourceParser(mockClientContext));
     parameters.setWorkerResource(testCommons.resource);
     parameters.setName("testJobName");
     parameters.setNumWorkers(1);
     parameters.setWorkerLaunchCmd("testWorkerLaunchCommand");
+    parameters.setSecurityParameters(new SecurityParameters(
+        mock(ParametersHolder.class)));
+    parameters.setLocalizations(new Localizations(Lists.newArrayList()));
+    parameters.setQuicklinks(new QuickLinks(Lists.newArrayList()));
 
-    MockClientContext mockClientContext = new MockClientContext();
     FileSystemOperations fsOperations =
         new FileSystemOperations(mockClientContext);
 

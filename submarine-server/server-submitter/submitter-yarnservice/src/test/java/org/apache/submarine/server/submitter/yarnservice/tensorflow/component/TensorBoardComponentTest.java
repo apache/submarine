@@ -23,8 +23,10 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.yarn.service.api.records.Artifact;
 import org.apache.hadoop.yarn.service.api.records.Component;
 import org.apache.hadoop.yarn.service.api.records.Component.RestartPolicyEnum;
+import org.apache.submarine.client.cli.RoleResourceParser;
 import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
+import org.apache.submarine.commons.runtime.MockClientContext;
 import org.apache.submarine.commons.runtime.api.TensorFlowRole;
 import org.apache.submarine.server.submitter.yarnservice.command.TensorFlowLaunchCommandFactory;
 import org.junit.Before;
@@ -43,6 +45,10 @@ import static org.mockito.Mockito.verify;
  * This class is to test {@link TensorBoardComponent}.
  */
 public class TensorBoardComponentTest {
+
+  private RoleResourceParser createResourceParser() {
+    return new RoleResourceParser(new MockClientContext());
+  }
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -66,7 +72,8 @@ public class TensorBoardComponentTest {
 
   @Test
   public void testTensorBoardComponentWithNullResource() throws IOException {
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setTensorboardResource(null);
 
     TensorBoardComponent tensorBoardComponent =
@@ -79,7 +86,8 @@ public class TensorBoardComponentTest {
 
   @Test
   public void testTensorBoardComponentWithNullJobName() throws IOException {
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setTensorboardResource(testCommons.resource);
     parameters.setName(null);
 
@@ -95,7 +103,8 @@ public class TensorBoardComponentTest {
   public void testTensorBoardComponent() throws IOException {
     testCommons.yarnConfig.set("hadoop.registry.dns.domain-name", "testDomain");
 
-    TensorFlowRunJobParameters parameters = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters parameters =
+        new TensorFlowRunJobParameters(createResourceParser());
     parameters.setTensorboardResource(testCommons.resource);
     parameters.setName("testJobName");
     parameters.setTensorboardDockerImage("testTBDockerImage");

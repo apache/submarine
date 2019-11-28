@@ -103,7 +103,7 @@ public final class YarnUtils {
     }
 
     // Set up container environment
-    List<String> envs = parameters.getEnvars();
+    List<String> envs = parameters.getEnvVars();
     tonyConf.setStrings(
         TonyConfigurationKeys.CONTAINER_LAUNCH_ENV,
         envs.toArray(new String[0]));

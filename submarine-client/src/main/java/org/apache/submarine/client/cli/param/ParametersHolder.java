@@ -27,6 +27,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.client.cli.CliConstants;
 import org.apache.submarine.client.cli.Command;
+import org.apache.submarine.client.cli.RoleResourceParser;
 import org.apache.submarine.client.cli.param.runjob.PyTorchRunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.client.cli.param.yaml.Configs;
@@ -64,7 +65,7 @@ import static org.apache.submarine.client.cli.runjob.RunJobCli.YAML_PARSE_FAILED
  * in the future.
  * If both YAML and CLI value is found for a config, this is an error case.
  */
-public final class ParametersHolder implements Parameter {
+public class ParametersHolder implements Parameter {
   private static final Logger LOG =
       LoggerFactory.getLogger(ParametersHolder.class);
 
@@ -73,37 +74,47 @@ public final class ParametersHolder implements Parameter {
   public static final String SUPPORTED_COMMANDS_MESSAGE =
       "'Show job' and 'run job' are the only supported commands for now!";
 
-
-
   private final CommandLine parsedCommandLine;
   private final Map<String, String> yamlStringConfigs;
   private final Map<String, List<String>> yamlListConfigs;
   private final ConfigType configType;
   private Command command;
+  private RoleResourceParser roleResourceParser;
   private final Set onlyDefinedWithCliArgs = ImmutableSet.of(
       CliConstants.VERBOSE);
   private final Framework framework;
   private final BaseParameters parameters;
 
   private ParametersHolder(CommandLine parsedCommandLine,
-      YamlConfigFile yamlConfig, ConfigType configType, Command command)
+      YamlConfigFile yamlConfig, ConfigType configType, Command command,
+      RoleResourceParser roleResourceParser)
       throws ParseException, YarnException {
+    checkResourceParser(roleResourceParser, command);
     this.parsedCommandLine = parsedCommandLine;
     this.yamlStringConfigs = initStringConfigValues(yamlConfig);
     this.yamlListConfigs = initListConfigValues(yamlConfig);
     this.configType = configType;
     this.command = command;
+    this.roleResourceParser = roleResourceParser;
     this.framework = determineFrameworkType();
     this.ensureOnlyValidSectionsAreDefined(yamlConfig);
     this.parameters = createParameters();
   }
 
+  private static void checkResourceParser(RoleResourceParser roleResourceParser,
+      Command command) {
+    if (command == Command.RUN_JOB && roleResourceParser == null) {
+      throw new IllegalArgumentException("Role resource parser " +
+          "must not be null if command is Run job!");
+    }
+  }
+
   private BaseParameters createParameters() {
     if (command == Command.RUN_JOB) {
       if (framework == Framework.TENSORFLOW) {
-        return new TensorFlowRunJobParameters();
+        return new TensorFlowRunJobParameters(roleResourceParser);
       } else if (framework == Framework.PYTORCH) {
-        return new PyTorchRunJobParameters();
+        return new PyTorchRunJobParameters(roleResourceParser);
       } else {
         throw new UnsupportedOperationException(SUPPORTED_FRAMEWORKS_MESSAGE);
       }
@@ -290,14 +301,18 @@ public final class ParametersHolder implements Parameter {
   }
 
   public static ParametersHolder createWithCmdLine(CommandLine cli,
-      Command command) throws ParseException, YarnException {
-    return new ParametersHolder(cli, null, ConfigType.CLI, command);
+      Command command, RoleResourceParser roleResourceParser)
+      throws ParseException, YarnException {
+    return new ParametersHolder(cli, null, ConfigType.CLI, command,
+        roleResourceParser);
   }
 
   public static ParametersHolder createWithCmdLineAndYaml(CommandLine cli,
-      YamlConfigFile yamlConfig, Command command) throws ParseException,
-      YarnException {
-    return new ParametersHolder(cli, yamlConfig, ConfigType.YAML, command);
+      YamlConfigFile yamlConfig, Command command,
+      RoleResourceParser roleResourceParser)
+      throws ParseException, YarnException {
+    return new ParametersHolder(cli, yamlConfig, ConfigType.YAML, command,
+        roleResourceParser);
   }
 
   /**
@@ -341,7 +356,7 @@ public final class ParametersHolder implements Parameter {
 
     if (parsedCommandLine.hasOption(option) && definedWithYaml) {
       throw new YarnException("Config '%s' is defined both with YAML config" +
-          " and with CLI argument, please only use either way!");
+          " and with CLI argument, please only use either of these!");
     }
   }
 

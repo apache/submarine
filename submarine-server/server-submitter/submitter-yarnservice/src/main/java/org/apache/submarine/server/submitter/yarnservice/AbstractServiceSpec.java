@@ -88,7 +88,7 @@ public abstract class AbstractServiceSpec implements ServiceSpec {
       serviceSpec.setKerberosPrincipal(kerberosPrincipal);
     }
 
-    EnvironmentUtilities.handleServiceEnvs(serviceSpec, yarnConfig, parameters.getEnvars());
+    EnvironmentUtilities.handleServiceEnvs(serviceSpec, yarnConfig, parameters.getEnvVars());
     localizer.handleLocalizations(serviceSpec);
     return new ServiceWrapper(serviceSpec);
   }

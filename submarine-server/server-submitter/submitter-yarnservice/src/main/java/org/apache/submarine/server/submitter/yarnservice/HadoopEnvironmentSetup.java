@@ -69,7 +69,7 @@ public class HadoopEnvironmentSetup {
 
     boolean hadoopEnv = false;
 
-    for (String envVar : parameters.getEnvars()) {
+    for (String envVar : parameters.getEnvVars()) {
       if (envVar.startsWith(DOCKER_HADOOP_HDFS_HOME + "=")) {
         hdfsHome = EnvironmentUtilities.getValueOfEnvironment(envVar);
         hadoopEnv = true;

@@ -21,12 +21,14 @@ package org.apache.submarine.server.submitter.yarnservice.tensorflow.command;
 
 import com.google.common.collect.ImmutableList;
 import org.apache.hadoop.yarn.service.api.records.Component;
+import org.apache.submarine.client.cli.RoleResourceParser;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.commons.runtime.MockClientContext;
 import org.apache.submarine.commons.runtime.api.TensorFlowRole;
 import org.apache.submarine.server.submitter.yarnservice.FileSystemOperations;
 import org.apache.submarine.server.submitter.yarnservice.HadoopEnvironmentSetup;
 import org.apache.submarine.server.submitter.yarnservice.command.AbstractTFLaunchCommandTestHelper;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -38,9 +40,22 @@ import java.util.List;
 public class TensorBoardLaunchCommandTest extends
     AbstractTFLaunchCommandTestHelper {
 
+  private RoleResourceParser roleResourceParser;
+
+  @Before
+  public void setUp() {
+    MockClientContext mockClientContext = new MockClientContext();
+    roleResourceParser = new RoleResourceParser(mockClientContext);
+  }
+
+  private RoleResourceParser createResourceParser() {
+    return new RoleResourceParser(new MockClientContext());
+  }
+
   @Test
   public void testHdfsRelatedEnvironmentIsUndefined() throws IOException {
-    TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters params =
+        new TensorFlowRunJobParameters(createResourceParser());
     params.setInputPath("hdfs://bla");
     params.setName("testJobname");
     params.setCheckpointPath("something");
@@ -51,11 +66,12 @@ public class TensorBoardLaunchCommandTest extends
 
   @Test
   public void testHdfsRelatedEnvironmentIsDefined() throws IOException {
-    TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters params =
+        new TensorFlowRunJobParameters(createResourceParser());
     params.setName("testName");
     params.setCheckpointPath("testCheckpointPath");
     params.setInputPath("hdfs://bla");
-    params.setEnvars(ImmutableList.of(
+    params.setEnvVars(ImmutableList.of(
         HadoopEnvironmentSetup.DOCKER_HADOOP_HDFS_HOME + "=" + "testHdfsHome",
         HadoopEnvironmentSetup.DOCKER_JAVA_HOME + "=" + "testJavaHome"));
 
@@ -75,7 +91,8 @@ public class TensorBoardLaunchCommandTest extends
         new HadoopEnvironmentSetup(mockClientContext, fsOperations);
 
     Component component = new Component();
-    TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters params =
+        new TensorFlowRunJobParameters(createResourceParser());
     params.setCheckpointPath(null);
 
     expectedException.expect(NullPointerException.class);
@@ -93,7 +110,8 @@ public class TensorBoardLaunchCommandTest extends
         new HadoopEnvironmentSetup(mockClientContext, fsOperations);
 
     Component component = new Component();
-    TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters params =
+        new TensorFlowRunJobParameters(createResourceParser());
     params.setCheckpointPath("");
 
     expectedException.expect(IllegalArgumentException.class);

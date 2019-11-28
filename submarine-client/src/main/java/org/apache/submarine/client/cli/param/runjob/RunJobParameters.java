@@ -21,15 +21,16 @@ package org.apache.submarine.client.cli.param.runjob;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CaseFormat;
+import com.google.common.collect.Lists;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.client.cli.CliConstants;
-import org.apache.submarine.client.cli.CliUtils;
+import org.apache.submarine.client.cli.RoleResourceParser;
 import org.apache.submarine.client.cli.param.Localization;
+import org.apache.submarine.client.cli.param.ParametersHolder;
 import org.apache.submarine.client.cli.param.Quicklink;
 import org.apache.submarine.client.cli.param.RunParameters;
-import org.apache.submarine.client.cli.runjob.RoleParameters;
 import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.runtime.param.Parameter;
 import org.apache.submarine.commons.runtime.api.TensorFlowRole;
@@ -40,92 +41,89 @@ import org.yaml.snakeyaml.introspector.PropertyUtils;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Parameters used to run a job
+ * Parameters used to run a job.
  */
 public abstract class RunJobParameters extends RunParameters {
-  private String input;
-  private String checkpointPath;
 
-  private List<Quicklink> quicklinks = new ArrayList<>();
-  private List<Localization> localizations = new ArrayList<>();
+  protected String inputPath;
+  private String checkpointPath;
+  private QuickLinks quicklinks;
+  private Localizations localizations;
+  private SecurityParameters securityParameters;
 
   private boolean waitJobFinish = false;
+  private boolean securityDisabled = false;
+  private List<String> confPairs = Lists.newArrayList();
+
+  protected final RoleResourceParser roleResourceParser;
+  protected RoleParameters workerParameters;
   protected boolean distributed = false;
 
-  private boolean securityDisabled = false;
-  private String keytab;
-  private String principal;
-  private boolean distributeKeytab = false;
-  private List<String> confPairs = new ArrayList<>();
-
-  RoleParameters workerParameters =
-      RoleParameters.createEmpty(TensorFlowRole.WORKER);
+  public RunJobParameters(RoleResourceParser roleResourceParser) {
+    this.roleResourceParser = roleResourceParser;
+  }
 
   @Override
   public void updateParameters(Parameter parametersHolder, ClientContext clientContext)
       throws ParseException, IOException, YarnException {
 
     String input = parametersHolder.getOptionValue(CliConstants.INPUT_PATH);
-    String jobDir = parametersHolder.getOptionValue(
+    this.checkpointPath = parametersHolder.getOptionValue(
         CliConstants.CHECKPOINT_PATH);
 
     if (parametersHolder.hasOption(CliConstants.INSECURE_CLUSTER)) {
       setSecurityDisabled(true);
     }
 
-    String kerberosKeytab = parametersHolder.getOptionValue(
-        CliConstants.KEYTAB);
-    String kerberosPrincipal = parametersHolder.getOptionValue(
-        CliConstants.PRINCIPAL);
-    CliUtils.doLoginIfSecure(kerberosKeytab, kerberosPrincipal);
-
-    if (parametersHolder.hasOption(CliConstants.WAIT_JOB_FINISH)) {
-      this.waitJobFinish = true;
-    }
-
-    // Quicklinks
-    List<String> quicklinkStrs = parametersHolder.getOptionValues(
-        CliConstants.QUICKLINK);
-    if (quicklinkStrs != null) {
-      for (String ql : quicklinkStrs) {
-        Quicklink quicklink = new Quicklink();
-        quicklink.parse(ql);
-        quicklinks.add(quicklink);
-      }
-    }
-
-    // Localizations
-    List<String> localizationsStr = parametersHolder.getOptionValues(
-        CliConstants.LOCALIZATION);
-    if (null != localizationsStr) {
-      for (String loc : localizationsStr) {
-        Localization localization = new Localization();
-        localization.parse(loc);
-        localizations.add(localization);
-      }
-    }
-    boolean distributeKerberosKeytab = parametersHolder.hasOption(CliConstants
-        .DISTRIBUTE_KEYTAB);
-
-    List<String> configPairs = parametersHolder
+    this.securityParameters = new SecurityParameters(parametersHolder);
+    this.waitJobFinish = parametersHolder.hasOption(
+        CliConstants.WAIT_JOB_FINISH);
+    this.quicklinks = QuickLinks.parse(parametersHolder);
+    this.localizations = Localizations.parse(parametersHolder);
+    this.confPairs = parametersHolder
         .getOptionValues(CliConstants.ARG_CONF);
 
-    this.setInputPath(input).setCheckpointPath(jobDir)
-        .setKeytab(kerberosKeytab)
-        .setPrincipal(kerberosPrincipal)
-        .setDistributeKeytab(distributeKerberosKeytab)
-        .setConfPairs(configPairs);
-
     super.updateParameters(parametersHolder, clientContext);
+  }
+
+  /**
+   * Only check null value. Training job should not ignore INPUT_PATH option,
+   * but if nWorkers is 0, INPUT_PATH can be ignored because user can only run
+   * Tensorboard.
+   *
+   * @param parametersHolder {@link ParametersHolder} object.
+   * @param nWorkers Number of workers.
+   * @return Parsed input path.
+   * @throws YarnException If any error occurs while querying the option value
+   *           from the {@link ParametersHolder} object.
+   * @throws ParseException If input path is not specified and number of worker
+   *           instances is not zero.
+   */
+  protected String parseInputPath(ParametersHolder parametersHolder, int nWorkers)
+      throws YarnException, ParseException {
+    String input = parametersHolder.getOptionValue(CliConstants.INPUT_PATH);
+    if (input == null && nWorkers != 0) {
+      throw new ParseException("--" + CliConstants.INPUT_PATH + " is absent");
+    }
+    return input;
   }
 
   abstract void executePostOperations(ClientContext clientContext)
       throws IOException;
 
+  /**
+   * Sets the checkpoint path.
+   * If checkpoint path is not specified along with the CLI arguments,
+   * we default to the staging directory of {@link RemoteDirectoryManager}.
+   * If saved model path is not specified with the CLI arguments,
+   * we are using the same directory as the resolved checkpoint path.
+   * @param clientContext {@link ClientContext} object
+   * @throws IOException If any problem occurs while querying
+   * the checkpoint directory from the {@link RemoteDirectoryManager}.
+   */
   void setDefaultDirs(ClientContext clientContext) throws IOException {
     // Create directories if needed
     String jobDir = getCheckpointPath();
@@ -157,11 +155,11 @@ public abstract class RunJobParameters extends RunParameters {
   public abstract List<String> getLaunchCommands();
 
   public String getInputPath() {
-    return input;
+    return inputPath;
   }
 
   public RunJobParameters setInputPath(String input) {
-    this.input = input;
+    this.inputPath = input;
     return this;
   }
 
@@ -179,29 +177,19 @@ public abstract class RunJobParameters extends RunParameters {
   }
 
   public List<Quicklink> getQuicklinks() {
-    return quicklinks;
+    return quicklinks.getLinks();
   }
 
   public List<Localization> getLocalizations() {
-    return localizations;
+    return localizations.getLocalizations();
   }
 
   public String getKeytab() {
-    return keytab;
-  }
-
-  public RunJobParameters setKeytab(String kerberosKeytab) {
-    this.keytab = kerberosKeytab;
-    return this;
+    return securityParameters.getKeytab();
   }
 
   public String getPrincipal() {
-    return principal;
-  }
-
-  public RunJobParameters setPrincipal(String kerberosPrincipal) {
-    this.principal = kerberosPrincipal;
-    return this;
+    return securityParameters.getPrincipal();
   }
 
   public boolean isSecurityDisabled() {
@@ -213,13 +201,7 @@ public abstract class RunJobParameters extends RunParameters {
   }
 
   public boolean isDistributeKeytab() {
-    return distributeKeytab;
-  }
-
-  public RunJobParameters setDistributeKeytab(
-      boolean distributeKerberosKeytab) {
-    this.distributeKeytab = distributeKerberosKeytab;
-    return this;
+    return securityParameters.isDistributeKeytab();
   }
 
   public List<String> getConfPairs() {
@@ -276,7 +258,7 @@ public abstract class RunJobParameters extends RunParameters {
       // user can only run Tensorboard
       if (null == input && 0 != nWorkers) {
         throw new ParseException(
-            "\"--" + CliConstants.INPUT_PATH + "\" is absent");
+            "--" + CliConstants.INPUT_PATH + " is absent");
       }
     }
     return nWorkers;
@@ -316,6 +298,21 @@ public abstract class RunJobParameters extends RunParameters {
 
   public boolean isDistributed() {
     return distributed;
+  }
+
+  @VisibleForTesting
+  public void setSecurityParameters(SecurityParameters securityParameters) {
+    this.securityParameters = securityParameters;
+  }
+
+  @VisibleForTesting
+  public void setLocalizations(Localizations localizations) {
+    this.localizations = localizations;
+  }
+
+  @VisibleForTesting
+  public void setQuicklinks(QuickLinks quicklinks) {
+    this.quicklinks = quicklinks;
   }
 
   @VisibleForTesting

@@ -92,7 +92,7 @@ public class RunJobCliParsingParameterizedTest {
   @Test
   public void testNoInputPathOptionSpecified() throws Exception {
     RunJobCli runJobCli = new RunJobCli(getMockClientContext());
-    String expectedErrorMessage = "\"--" + CliConstants.INPUT_PATH + "\"" +
+    String expectedErrorMessage = "--" + CliConstants.INPUT_PATH +
         " is absent";
     String actualMessage = "";
     try {

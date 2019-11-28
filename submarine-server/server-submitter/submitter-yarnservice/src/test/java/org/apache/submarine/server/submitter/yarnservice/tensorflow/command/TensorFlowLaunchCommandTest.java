@@ -22,6 +22,7 @@ package org.apache.submarine.server.submitter.yarnservice.tensorflow.command;
 import com.google.common.collect.ImmutableList;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.service.api.records.Component;
+import org.apache.submarine.client.cli.RoleResourceParser;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.commons.runtime.MockClientContext;
 import org.apache.submarine.commons.runtime.api.TensorFlowRole;
@@ -57,6 +58,9 @@ public class TensorFlowLaunchCommandTest
     this.taskType = taskType;
   }
 
+  private RoleResourceParser createResourceParser() {
+    return new RoleResourceParser(new MockClientContext());
+  }
 
   private void assertScriptContainsLaunchCommand(List<String> fileContents,
       TensorFlowRunJobParameters params) {
@@ -114,7 +118,8 @@ public class TensorFlowLaunchCommandTest
 
   @Test
   public void testHdfsRelatedEnvironmentIsUndefined() throws IOException {
-    TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters params =
+        new TensorFlowRunJobParameters(createResourceParser());
     params.setInputPath("hdfs://bla");
     params.setName("testJobname");
     setLaunchCommandToParams(params);
@@ -124,10 +129,11 @@ public class TensorFlowLaunchCommandTest
 
   @Test
   public void testHdfsRelatedEnvironmentIsDefined() throws IOException {
-    TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters params =
+        new TensorFlowRunJobParameters(createResourceParser());
     params.setName("testName");
     params.setInputPath("hdfs://bla");
-    params.setEnvars(ImmutableList.of(
+    params.setEnvVars(ImmutableList.of(
         HadoopEnvironmentSetup.DOCKER_HADOOP_HDFS_HOME + "=" + "testHdfsHome",
         HadoopEnvironmentSetup.DOCKER_JAVA_HOME + "=" + "testJavaHome"));
     setLaunchCommandToParams(params);
@@ -149,7 +155,8 @@ public class TensorFlowLaunchCommandTest
     Configuration yarnConfig = new Configuration();
 
     Component component = new Component();
-    TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters params =
+        new TensorFlowRunJobParameters(createResourceParser());
     params.setName("testName");
     setLaunchCommandToParams(params, null);
 
@@ -172,7 +179,8 @@ public class TensorFlowLaunchCommandTest
     Configuration yarnConfig = new Configuration();
 
     Component component = new Component();
-    TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters params =
+        new TensorFlowRunJobParameters(createResourceParser());
     params.setName("testName");
     setLaunchCommandToParams(params, "");
 
@@ -188,11 +196,12 @@ public class TensorFlowLaunchCommandTest
   public void testDistributedTrainingMissingTaskType() throws IOException {
     overrideTaskType(null);
 
-    TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters params =
+        new TensorFlowRunJobParameters(createResourceParser());
     params.setDistributed(true);
     params.setName("testName");
     params.setInputPath("hdfs://bla");
-    params.setEnvars(ImmutableList.of(
+    params.setEnvVars(ImmutableList.of(
         HadoopEnvironmentSetup.DOCKER_HADOOP_HDFS_HOME + "=" + "testHdfsHome",
         HadoopEnvironmentSetup.DOCKER_JAVA_HOME + "=" + "testJavaHome"));
     setLaunchCommandToParams(params);
@@ -205,13 +214,14 @@ public class TensorFlowLaunchCommandTest
   @Test
   public void testDistributedTrainingNumberOfWorkersAndPsIsZero()
       throws IOException {
-    TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters params =
+        new TensorFlowRunJobParameters(createResourceParser());
     params.setDistributed(true);
     params.setNumWorkers(0);
     params.setNumPS(0);
     params.setName("testName");
     params.setInputPath("hdfs://bla");
-    params.setEnvars(ImmutableList.of(
+    params.setEnvVars(ImmutableList.of(
         HadoopEnvironmentSetup.DOCKER_HADOOP_HDFS_HOME + "=" + "testHdfsHome",
         HadoopEnvironmentSetup.DOCKER_JAVA_HOME + "=" + "testJavaHome"));
     setLaunchCommandToParams(params);
@@ -228,13 +238,14 @@ public class TensorFlowLaunchCommandTest
   @Test
   public void testDistributedTrainingNumberOfWorkersAndPsIsNonZero()
       throws IOException {
-    TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
+    TensorFlowRunJobParameters params =
+        new TensorFlowRunJobParameters(createResourceParser());
     params.setDistributed(true);
     params.setNumWorkers(3);
     params.setNumPS(2);
     params.setName("testName");
     params.setInputPath("hdfs://bla");
-    params.setEnvars(ImmutableList.of(
+    params.setEnvVars(ImmutableList.of(
         HadoopEnvironmentSetup.DOCKER_HADOOP_HDFS_HOME + "=" + "testHdfsHome",
         HadoopEnvironmentSetup.DOCKER_JAVA_HOME + "=" + "testJavaHome"));
     setLaunchCommandToParams(params);

@@ -96,7 +96,7 @@ public class RunJobCliParsingPyTorchYamlTest {
     for (String env : expectedEnvs) {
       assertTrue(String.format(
           "%s should be in env list of jobRunParameters!", env),
-          jobRunParameters.getEnvars().contains(env));
+          jobRunParameters.getEnvVars().contains(env));
     }
   }
 

@@ -22,6 +22,7 @@ package org.apache.submarine.client.cli;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
+import org.apache.submarine.client.cli.param.runjob.SecurityParameters;
 import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
 import org.slf4j.Logger;
@@ -42,9 +43,7 @@ public class CliUtils {
    * @return launch command after pattern replace
    */
   public static String replacePatternsInLaunchCommand(String specifiedCli,
-                                                      RunJobParameters jobRunParameters,
-                                                      RemoteDirectoryManager directoryManager)
-      throws IOException {
+      RunJobParameters jobRunParameters) {
     String input = jobRunParameters.getInputPath();
     String jobDir = jobRunParameters.getCheckpointPath();
     String savedModelDir = jobRunParameters.getSavedModelPath();
@@ -81,11 +80,14 @@ public class CliUtils {
     return false;
   }
 
-  public static void doLoginIfSecure(String keytab, String principal) throws
+  public static void doLoginIfSecure(SecurityParameters parameters) throws
       IOException {
     if (!UserGroupInformation.isSecurityEnabled()) {
       return;
     }
+
+    String keytab = parameters.getKeytab();
+    String principal = parameters.getPrincipal();
 
     if (StringUtils.isEmpty(keytab) || StringUtils.isEmpty(principal)) {
       if (StringUtils.isNotEmpty(keytab)) {
