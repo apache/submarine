@@ -43,7 +43,10 @@ mvn clean install package -DskipTests
 ```
 
 3.Build image of mini-submarine
-> You can pre-download these three kind of compressed file in the same file for building : zookeeper-3.4.14.tar.gz , hadoop-2.9.2.tar.gz , spark-2.4.4-bin-hadoop2.7.tgz
+>  You can download in advance of these three kind of compressed file for building :
+>  zookeeper-3.4.14.tar.gz , hadoop-2.9.2.tar.gz , spark-2.4.4-bin-hadoop2.7.tgz
+>  and put  them into "submarine/dev-support/mini-submarine/"
+
 ```
 cd submarine/dev-support/mini-submarine/
 ./build_mini-submarine.sh
