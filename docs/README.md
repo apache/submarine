@@ -40,6 +40,8 @@ Here're some examples about Submarine usage.
 
 [Running Standalone CIFAR 10 PyTorch Job](./helper/RunningSingleNodeCifar10PTJobs.md)
 
+[Running Distributed thchs30 Kaldi Job](./ecosystem/kaldi/RunningDistributedThchs30KaldiJobs.md)
+
 ## Development
 
 [Submarine Project Development Guide](./development/README.md)
@@ -51,6 +53,8 @@ Here're some examples about Submarine usage.
 [How to write Dockerfile for Submarine TensorFlow jobs](./helper/WriteDockerfileTF.md)
 
 [How to write Dockerfile for Submarine PyTorch jobs](./helper/WriteDockerfilePT.md)
+
+[How to write Dockerfile for Submarine Kaldi jobs](./ecosystem/kaldi/WriteDockerfileKaldi.md)
 
 ## Install Dependencies
 
