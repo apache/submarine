@@ -31,8 +31,24 @@ docker pull hadoopsubmarine/mini-submarine:0.3.0-SNAPSHOT
 #### Create image by yourself
 
 > You may need a VPN if your network is limited
+1.Clone the source code of Submarine
+```
+git clone https://github.com/apache/submarine.git
+```
+
+2.Build Submarine
+```
+cd ./submarine
+mvn clean install package -DskipTests
+```
+
+3.Build image of mini-submarine
+>  You can download in advance of these three kind of compressed file for building :
+>  zookeeper-3.4.14.tar.gz , hadoop-2.9.2.tar.gz , spark-2.4.4-bin-hadoop2.7.tgz
+>  and put  them into "submarine/dev-support/mini-submarine/"
 
 ```
+cd submarine/dev-support/mini-submarine/
 ./build_mini-submarine.sh
 ```
 
