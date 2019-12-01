@@ -105,8 +105,8 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
   <build>
+    <finalName>submarine-${artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

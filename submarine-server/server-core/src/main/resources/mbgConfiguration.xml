@@ -28,7 +28,7 @@
     </commentGenerator>
 
     <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                    connectionURL="jdbc:mysql://127.0.0.1:3306/submarineDB"
+                    connectionURL="jdbc:mysql://127.0.0.1:3306/submarine"
                     userId="submarine"
                     password="password">
     </jdbcConnection>

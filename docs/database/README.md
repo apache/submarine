@@ -93,14 +93,14 @@ Development database for development environment.
 bash > mysql -uroot -ppassword
 mysql> CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';
-mysql> CREATE DATABASE submarineDB CHARACTER SET utf8 COLLATE utf8_general_ci;
-mysql> use submarineDB;
+mysql> CREATE DATABASE submarine CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> use submarine;
 mysql> source /submarine.sql;
 mysql> source /submarine-data.sql;
 mysql> quit
 ```
 
->  NOTE: submarine development database name is  `submarineDB` and user name is `submarine`, password is `password`, This is the default value in the system's `submarine-site.xml` configuration file and is not recommended for modification.
+>  NOTE: submarine development database name is  `submarine` and user name is `submarine`, password is `password`, This is the default value in the system's `submarine-site.xml` configuration file and is not recommended for modification.
 
 
 ### Create test database
@@ -112,18 +112,18 @@ Test database for program unit testing and Travis test environment.
 bash > mysql -uroot -ppassword
 mysql> CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';
-mysql> CREATE DATABASE `submarineDB_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
-mysql> use `submarineDB_test`;
+mysql> CREATE DATABASE `submarine_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> use `submarine_test`;
 mysql> source /submarine.sql;
 mysql> quit
 ```
 
->  NOTE: submarine test database name is  `submarineDB_test` and user name is `submarine_test`, password is `password_test`, Cannot be configured, values that cannot be modified.
+>  NOTE: submarine test database name is  `submarine_test` and user name is `submarine_test`, password is `password_test`, Cannot be configured, values that cannot be modified.
 
 ### mysqldump
 
 ```$xslt
-mysqldump -uroot -ppassword --databases submarineDB > submarineDB.sql;
+mysqldump -uroot -ppassword --databases submarine > submarine.sql;
 ```
 
 

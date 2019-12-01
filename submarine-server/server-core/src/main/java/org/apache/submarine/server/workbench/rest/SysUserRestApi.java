@@ -28,8 +28,8 @@ import org.apache.submarine.server.workbench.entity.Action;
 import org.apache.submarine.server.workbench.entity.Permission;
 import org.apache.submarine.server.workbench.entity.Role;
 import org.apache.submarine.server.workbench.entity.UserInfo;
-import org.apache.submarine.server.workbench.server.JsonResponse;
-import org.apache.submarine.server.workbench.server.JsonResponse.ListResult;
+import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.response.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

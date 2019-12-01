@@ -22,8 +22,8 @@ import com.github.pagehelper.PageInfo;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.Team;
 import org.apache.submarine.server.workbench.database.service.TeamService;
-import org.apache.submarine.server.workbench.server.JsonResponse;
-import org.apache.submarine.server.workbench.server.JsonResponse.ListResult;
+import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.response.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

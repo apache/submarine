@@ -433,7 +433,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", 3000),
     CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", 9000),
     JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
-    JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarineDB" +
+    JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarine" +
         "?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
     JDBC_USERNAME("jdbc.username", "submarine"),

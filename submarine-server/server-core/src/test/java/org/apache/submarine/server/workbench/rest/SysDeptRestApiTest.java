@@ -22,8 +22,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.submarine.server.workbench.database.entity.SysDept;
 import org.apache.submarine.server.workbench.database.entity.SysDeptTree;
-import org.apache.submarine.server.workbench.server.JsonResponse;
-import org.apache.submarine.server.workbench.server.JsonResponse.ListResult;
+import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.response.JsonResponse.ListResult;
 import org.junit.After;
 import org.junit.Test;
 

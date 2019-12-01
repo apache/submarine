@@ -40,7 +40,7 @@ import java.io.IOException;
 /**
  * JobSubmitter for Kubernetes Cluster.
  */
-// TODO: It should implement the JobSubmitter interface
+// TODO(jiwq): It should implement the JobSubmitter interface
 public class K8sJobSubmitter {
   private final Logger LOG = LoggerFactory.getLogger(K8sJobSubmitter.class);
 
@@ -85,6 +85,7 @@ public class K8sJobSubmitter {
     return null;
   }
 
+  @VisibleForTesting
   CustomResourceJob deleteCustomResourceJob(K8sJobRequest request) {
     try {
       CustomObjectsApi api = new CustomObjectsApi();

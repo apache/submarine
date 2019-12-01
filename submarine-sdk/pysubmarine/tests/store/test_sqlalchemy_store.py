@@ -29,7 +29,7 @@ JOB_NAME = "application_123456789"
 class TestSqlAlchemyStore(unittest.TestCase):
     def setUp(self):
         submarine.set_tracking_uri(
-            "mysql+pymysql://submarine_test:password_test@localhost:3306/submarineDB_test")
+            "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test")
         self.tracking_uri = utils.get_tracking_uri()
         self.store = utils.get_sqlalchemy_store(self.tracking_uri)
 

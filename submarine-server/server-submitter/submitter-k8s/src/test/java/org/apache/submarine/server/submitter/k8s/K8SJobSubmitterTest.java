@@ -21,6 +21,7 @@ package org.apache.submarine.server.submitter.k8s;
 
 import org.apache.submarine.server.submitter.k8s.model.CustomResourceJob;
 import org.apache.submarine.server.submitter.k8s.model.CustomResourceJobList;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,11 +35,22 @@ public class K8SJobSubmitterTest {
   private K8sJobSubmitter submitter;
   private K8sJobRequest.Path path;
 
+  /**
+   * We have two ways to test submitter for K8s cluster, local and travis CI.
+   * For the travis CI, we use the kind to setup K8s, more info see '.travis.yml' file.
+   *  Local: docker run -it --privileged -p 8443:8443 -p 10080:10080 bsycorp/kind:latest-1.15
+   *  Travis: See '.travis.yml'
+   * @throws IOException IO
+   */
   @Before
   public void before() throws IOException {
-    String confPath = this.getClass().getResource("/config").getFile();
+    String confPath = System.getProperty("user.home") + "/.kube/config";
+    if (!new File(confPath).exists()) {
+      throw new IOException("Get kube config file failed.");
+    }
+
     submitter = new K8sJobSubmitter(confPath);
-    path = new K8sJobRequest.Path("kubeflow.org","v1","kubeflow", "tfjobs");
+    path = new K8sJobRequest.Path("kubeflow.org", "v1", "kubeflow", "tfjobs");
   }
 
   @Test
@@ -46,12 +58,11 @@ public class K8SJobSubmitterTest {
     if (getCustomJob() != null) {
       K8sJobRequest request = new K8sJobRequest(path, null, jobName);
       CustomResourceJob delJob = submitter.deleteCustomResourceJob(request);
-//      Assert.assertNotNull(delJob);
+      Assert.assertNotNull(delJob);
     }
 
-    CustomResourceJob job = submitter.createCustomJob(new K8sJobRequest(path, getCutomJobSpecFile()));
-//    Assert.assertNotNull(job);
-    System.out.println("Create job: " + job);
+    CustomResourceJob job = submitter.createCustomJob(new K8sJobRequest(path, getCustomJobSpecFile()));
+    Assert.assertNotNull(job);
   }
 
   @Test
@@ -59,28 +70,27 @@ public class K8SJobSubmitterTest {
     testCreateCustomJob();
 
     CustomResourceJob job = getCustomJob();
-//    Assert.assertNotNull(job);
-//    Assert.assertEquals(job.getMetadata().getName(), jobName);
-    System.out.println("Get Job: " + job);
+    Assert.assertNotNull(job);
+    Assert.assertEquals(job.getMetadata().getName(), jobName);
   }
 
   @Test
   public void testListCustomJobs() throws URISyntaxException {
-    CustomResourceJobList list = submitter.listCustomResourceJobs(new K8sJobRequest(path, getCutomJobSpecFile()));
-    System.out.println("Job List: " + list);
+    CustomResourceJobList list
+        = submitter.listCustomResourceJobs(new K8sJobRequest(path, getCustomJobSpecFile()));
+    Assert.assertNotNull(list);
   }
 
   @Test
   public void testDeleteCustomJob() throws URISyntaxException {
     if (getCustomJob() == null) {
-      CustomResourceJob job = submitter.createCustomJob(new K8sJobRequest(path, getCutomJobSpecFile()));
-//      Assert.assertNotNull(job);
+      CustomResourceJob job = submitter.createCustomJob(new K8sJobRequest(path, getCustomJobSpecFile()));
+      Assert.assertNotNull(job);
     }
 
     K8sJobRequest request = new K8sJobRequest(path, null, jobName);
     CustomResourceJob delJob = submitter.deleteCustomResourceJob(request);
-//    Assert.assertNotNull(delJob);
-    System.out.println("Delete job: " + delJob);
+    Assert.assertNotNull(delJob);
   }
 
   private CustomResourceJob getCustomJob() {
@@ -88,7 +98,7 @@ public class K8SJobSubmitterTest {
     return submitter.getCustomResourceJob(request);
   }
 
-  private File getCutomJobSpecFile() throws URISyntaxException {
+  private File getCustomJobSpecFile() throws URISyntaxException {
     URL fileUrl = this.getClass().getResource("/tf_job_mnist.json");
     return new File(fileUrl.toURI());
   }
