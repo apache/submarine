@@ -231,6 +231,16 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getString(ConfVars.JDBC_URL);
   }
 
+  public String getMetastoreJdbcUrl() {
+    return getString(ConfVars.METASTORE_JDBC_URL);
+  }
+
+  @VisibleForTesting
+  public void setMetastoreJdbcUrl(String testMetastoreJdbcUrl) {
+    properties.put(ConfVars.METASTORE_JDBC_URL.getVarName(), testMetastoreJdbcUrl);
+  }
+
+
   @VisibleForTesting
   public void setJdbcUrl(String testJdbcUrl) {
     properties.put(ConfVars.JDBC_URL.getVarName(), testJdbcUrl);
@@ -240,18 +250,36 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getString(ConfVars.JDBC_USERNAME);
   }
 
+  public String getMetastoreJdbcUserName() {
+    return getString(ConfVars.METASTORE_JDBC_USERNAME);
+  }
+
   @VisibleForTesting
   public void setJdbcUserName(String userName) {
     properties.put(ConfVars.JDBC_USERNAME.getVarName(), userName);
+  }
+
+  @VisibleForTesting
+  public void setMetastoreJdbcUserName(String metastoreUserName) {
+    properties.put(ConfVars.METASTORE_JDBC_USERNAME.getVarName(), metastoreUserName);
   }
 
   public String getJdbcPassword() {
     return getString(ConfVars.JDBC_PASSWORD);
   }
 
+  public String getMetastoreJdbcPassword() {
+    return getString(ConfVars.METASTORE_JDBC_PASSWORD);
+  }
+
   @VisibleForTesting
   public void setJdbcPassword(String password) {
     properties.put(ConfVars.JDBC_PASSWORD.getVarName(), password);
+  }
+
+  @VisibleForTesting
+  public void setMetastoreJdbcPassword(String metastorePassword) {
+    properties.put(ConfVars.METASTORE_JDBC_PASSWORD.getVarName(), metastorePassword);
   }
 
   public String getClusterAddress() {
@@ -436,8 +464,14 @@ public class SubmarineConfiguration extends XMLConfiguration {
     JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarine" +
         "?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
+
     JDBC_USERNAME("jdbc.username", "submarine"),
     JDBC_PASSWORD("jdbc.password", "password"),
+    METASTORE_JDBC_URL("metastore.jdbc.url", "jdbc:mysql://127.0.0.1:3306/metastore" +
+        "?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
+        "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
+    METASTORE_JDBC_USERNAME("metastore.jdbc.username", "metastore"),
+    METASTORE_JDBC_PASSWORD("metastore.jdbc.password", "password"),
     WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
         "workbench.websocket.max.text.message.size", "1024000"),
     WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),
