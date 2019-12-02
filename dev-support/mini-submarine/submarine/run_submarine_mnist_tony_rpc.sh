@@ -50,7 +50,7 @@ fi
 SUBMARINE_VERSION=0.3.0-SNAPSHOT
 HADOOP_VERSION=2.9
 
-${JAVA_CMD} -cp /opt/submarine/submarine-dist-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}/submarine-all-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}.jar:/usr/local/hadoop/etc/hadoop \
+${JAVA_CMD} -cp /opt/submarine/submarine-dist-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}/submarine-all-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}.jar:/usr/local/hadoop/etc/hadoop:/opt/submarine/submarine-dist-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}/conf \
  org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
  --framework tensorflow \
  --verbose \

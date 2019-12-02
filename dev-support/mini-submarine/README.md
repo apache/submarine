@@ -79,6 +79,7 @@ hdfs dfs -ls /user
 
 2. Start workbench server
 ```
+su yarn
 /opt/submarine-current/bin/workbench-daemon.sh start getMysqlJar
 ``` 
 

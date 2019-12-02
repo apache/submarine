@@ -52,13 +52,11 @@
     <fileSet>
       <directory>../conf</directory>
       <outputDirectory>/conf</outputDirectory>
-      <fileMode>0755</fileMode>
     </fileSet>
 
     <fileSet>
       <directory>../bin</directory>
       <outputDirectory>/bin</outputDirectory>
-      <fileMode>0755</fileMode>
     </fileSet>
 
     <fileSet>

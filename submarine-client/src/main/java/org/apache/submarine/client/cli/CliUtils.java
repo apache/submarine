@@ -21,6 +21,7 @@ package org.apache.submarine.client.cli;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
 import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
@@ -124,5 +125,34 @@ public class CliUtils {
       throw e;
     }
     UserGroupInformation.loginUserFromKeytab(principal, keytab);
+  }
+
+  /**
+   * As hadoop-2.7 doesn't have this method, we add this method in submarine.
+   * @param appIdStr
+   * @return
+   */
+  public static ApplicationId fromString(String appIdStr) {
+    String APPLICATION_ID_PREFIX = "application_";
+    if (!appIdStr.startsWith(APPLICATION_ID_PREFIX)) {
+      throw new IllegalArgumentException("Invalid ApplicationId prefix: "
+          + appIdStr + ". The valid ApplicationId should start with prefix "
+          + "application");
+    }
+    try {
+      int pos1 = APPLICATION_ID_PREFIX.length() - 1;
+      int pos2 = appIdStr.indexOf('_', pos1 + 1);
+      if (pos2 < 0) {
+        throw new IllegalArgumentException("Invalid ApplicationId: "
+            + appIdStr);
+      }
+      long rmId = Long.parseLong(appIdStr.substring(pos1 + 1, pos2));
+      int appId = Integer.parseInt(appIdStr.substring(pos2 + 1));
+      ApplicationId applicationId = ApplicationId.newInstance(rmId, appId);
+      return applicationId;
+    } catch (NumberFormatException n) {
+      throw new IllegalArgumentException("Invalid ApplicationId: "
+          + appIdStr, n);
+    }
   }
 }

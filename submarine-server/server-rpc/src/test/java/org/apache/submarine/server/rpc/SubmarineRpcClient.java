@@ -22,9 +22,10 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
 import org.apache.submarine.commons.rpc.ApplicationIdProto;
 import org.apache.submarine.commons.rpc.ParametersHolderProto;
+import org.apache.submarine.commons.rpc.SubmarineServerProtocolGrpc;
 import org.apache.submarine.commons.rpc.SubmarineServerProtocolGrpc.SubmarineServerProtocolBlockingStub;
 import org.apache.submarine.commons.rpc.SubmarineServerProtocolGrpc.SubmarineServerProtocolStub;
-import org.apache.submarine.commons.rpc.SubmarineServerProtocolGrpc;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,21 +35,31 @@ import java.util.concurrent.TimeUnit;
 /**
  * Sample client code that makes gRPC calls to the server.
  */
-public class SubmarineServerClient {
+public class SubmarineRpcClient extends RpcServerTestUtils {
   private static final Logger LOG =
-      LoggerFactory.getLogger(SubmarineServerClient.class.getName());
+      LoggerFactory.getLogger(SubmarineRpcClient.class.getName());
 
-  private final ManagedChannel channel;
-  private final SubmarineServerProtocolBlockingStub blockingStub;
-  private final SubmarineServerProtocolStub asyncStub;
+  protected final ManagedChannel channel;
+  protected final SubmarineServerProtocolBlockingStub blockingStub;
+  protected final SubmarineServerProtocolStub asyncStub;
+
+  public SubmarineRpcClient(SubmarineConfiguration config) {
+    this(ManagedChannelBuilder.forAddress(
+          config.getString(
+            SubmarineConfiguration.ConfVars.SUBMARINE_SERVER_ADDR),
+          config.getInt(
+            SubmarineConfiguration.ConfVars.
+                SUBMARINE_SERVER_REMOTE_EXECUTION_PORT))
+        .usePlaintext());
+  }
 
   /** Construct client for accessing RouteGuide server at {@code host:port}. */
-  public SubmarineServerClient(String host, int port) {
+  public SubmarineRpcClient(String host, int port) {
     this(ManagedChannelBuilder.forAddress(host, port).usePlaintext());
   }
 
   /** Construct client for accessing RouteGuide server using the existing channel. */
-  public SubmarineServerClient(ManagedChannelBuilder<?> channelBuilder) {
+  public SubmarineRpcClient(ManagedChannelBuilder<?> channelBuilder) {
     channel = channelBuilder.build();
     blockingStub = SubmarineServerProtocolGrpc.newBlockingStub(channel);
     asyncStub = SubmarineServerProtocolGrpc.newStub(channel);
@@ -58,29 +69,29 @@ public class SubmarineServerClient {
     channel.shutdown().awaitTermination(5, TimeUnit.SECONDS);
   }
 
-  /**
-   * Blocking unary call example.  Calls getFeature and prints the response.
-   */
-  public void testRpc() {
-    LOG.info("Try to submit submarine job");
+  public boolean testRpcConnection() throws InterruptedException {
+    LOG.info("Try to connect to submarine rpc server.");
+    boolean isRunning = false;
 
-    ParametersHolderProto request = ParametersHolderProto.newBuilder().setHelloworld(1).build();
-
-    ApplicationIdProto applicationId;
+    ParametersHolderProto request =
+        ParametersHolderProto.newBuilder().setHelloworld(1).build();
     try {
-      applicationId = blockingStub.testRpc(request);
+      blockingStub.testRpc(request);
+      isRunning = true;
     } catch (StatusRuntimeException e) {
       LOG.error(e.getMessage(),e);
-      return;
+    } finally {
+      shutdown();
     }
+    return isRunning;
   }
 
 
   public static void main(String[] args) throws InterruptedException {
-    SubmarineServerClient client = new SubmarineServerClient("localhost", 8980);
+    SubmarineRpcClient client = new SubmarineRpcClient("localhost", 8980);
     try {
       // Looking for a valid feature
-      client.testRpc();
+      client.testRpcConnection();
     } finally {
       client.shutdown();
     }
