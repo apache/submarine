@@ -39,6 +39,7 @@
     <module>commons-runtime</module>
     <module>commons-cluster</module>
     <module>commons-metastore</module>
+    <module>commons-rpc</module>
   </modules>
 
 </project>

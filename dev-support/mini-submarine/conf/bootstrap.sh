@@ -27,9 +27,19 @@ CONFIG_DIR="/tmp/hadoop-config"
 
 # Copy config files from volume mount
 
-for f in slaves core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml container-executor.cfg capacity-scheduler.xml node-resources.xml resource-types.xml submarine-site.xml; do
+for f in slaves core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml container-executor.cfg capacity-scheduler.xml node-resources.xml resource-types.xml; do
   if [[ -e ${CONFIG_DIR}/$f ]]; then
     cp ${CONFIG_DIR}/$f $HADOOP_PREFIX/etc/hadoop/$f
+  else
+    echo "ERROR: Could not find $f in $CONFIG_DIR"
+    exit 1
+  fi
+done
+
+# Copy submarine config
+for f in slaves submarine-site.xml submarine-env.sh; do
+  if [[ -e ${CONFIG_DIR}/$f ]]; then
+    cp ${CONFIG_DIR}/$f /opt/submarine-current/conf/$f
   else
     echo "ERROR: Could not find $f in $CONFIG_DIR"
     exit 1

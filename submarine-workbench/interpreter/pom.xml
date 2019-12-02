@@ -42,4 +42,28 @@
     <module>spark-interpreter</module>
   </modules>
 
+  <properties>
+    <grpc.verison>1.15.0</grpc.verison>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-netty-shaded</artifactId>
+        <version>${grpc.verison}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-protobuf</artifactId>
+        <version>${grpc.verison}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-stub</artifactId>
+        <version>${grpc.verison}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
 </project>

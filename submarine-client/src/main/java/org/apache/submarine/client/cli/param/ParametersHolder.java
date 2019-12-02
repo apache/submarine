@@ -75,15 +75,15 @@ public final class ParametersHolder implements Parameter {
 
 
 
-  private final CommandLine parsedCommandLine;
-  private final Map<String, String> yamlStringConfigs;
-  private final Map<String, List<String>> yamlListConfigs;
-  private final ConfigType configType;
+  private CommandLine parsedCommandLine;
+  private Map<String, String> yamlStringConfigs;
+  private Map<String, List<String>> yamlListConfigs;
+  private ConfigType configType;
   private Command command;
   private final Set onlyDefinedWithCliArgs = ImmutableSet.of(
       CliConstants.VERBOSE);
-  private final Framework framework;
-  private final BaseParameters parameters;
+  private Framework framework;
+  private BaseParameters parameters;
 
   private ParametersHolder(CommandLine parsedCommandLine,
       YamlConfigFile yamlConfig, ConfigType configType, Command command)
@@ -96,6 +96,10 @@ public final class ParametersHolder implements Parameter {
     this.framework = determineFrameworkType();
     this.ensureOnlyValidSectionsAreDefined(yamlConfig);
     this.parameters = createParameters();
+  }
+
+  private ParametersHolder(){
+    super();
   }
 
   private BaseParameters createParameters() {
@@ -289,6 +293,10 @@ public final class ParametersHolder implements Parameter {
         .collect(Collectors.toList());
   }
 
+  public static ParametersHolder create() {
+    return new ParametersHolder();
+  }
+
   public static ParametersHolder createWithCmdLine(CommandLine cli,
       Command command) throws ParseException, YarnException {
     return new ParametersHolder(cli, null, ConfigType.CLI, command);
@@ -434,6 +442,12 @@ public final class ParametersHolder implements Parameter {
     return framework;
   }
 
+  @Override
+  public Parameter setFramework(Framework framework) {
+    this.framework = framework;
+    return this;
+  }
+
   public void updateParameters(ClientContext clientContext)
       throws ParseException, YarnException, IOException {
     parameters.updateParameters(this, clientContext);
@@ -441,5 +455,10 @@ public final class ParametersHolder implements Parameter {
 
   public BaseParameters getParameters() {
     return parameters;
+  }
+
+  public Parameter setParameters(BaseParameters parameters) {
+    this.parameters = parameters;
+    return this;
   }
 }

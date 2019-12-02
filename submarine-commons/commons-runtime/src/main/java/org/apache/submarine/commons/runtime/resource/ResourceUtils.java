@@ -51,6 +51,7 @@ public final class ResourceUtils {
   private static final String GET_RESOURCE_VALUE_METHOD = "getResourceValue";
   private static final String GET_RESOURCE_TYPE_METHOD =
       "getResourcesTypeInfo";
+  private static final String GET_RESOURCES = "getResources";
   private static final String REINITIALIZE_RESOURCES_METHOD =
       "reinitializeResources";
   public static final String MEMORY_URI = "memory-mb";
@@ -66,18 +67,38 @@ public final class ResourceUtils {
 
   public static Resource createResourceFromString(String resourceStr) {
     Map<String, Long> typeToValue = parseResourcesString(resourceStr);
+    return createResource(typeToValue);
+  }
+
+  public static Resource createResource(Map<String, Long> typeToValue) {
     Resource resource = Resource.newInstance(0, 0);
     for (Map.Entry<String, Long> entry : typeToValue.entrySet()) {
-      if (entry.getKey().equals(VCORES_URI)) {
+      if (entry.getKey().equalsIgnoreCase(VCORES_URI)) {
         resource.setVirtualCores(entry.getValue().intValue());
         continue;
-      } else if (entry.getKey().equals(MEMORY_URI)) {
+      } else if (entry.getKey().equalsIgnoreCase(MEMORY_URI)) {
         setMemorySize(resource, entry.getValue());
         continue;
       }
       setResource(resource, entry.getKey(), entry.getValue().intValue());
     }
     return resource;
+  }
+
+  public static Map<String, Long> getResourceMap(Resource resource) {
+    Map<String, Long> resourceMap;
+    if (resource == null) {
+      resourceMap = new HashMap<>();
+    } else {
+      String resourceValue = resource.toString();
+      // Delete <> in the resourceValue and replace ":" with "="
+      resourceMap =
+      parseResourcesString(
+          resourceValue.substring(1, resourceValue.length() - 1)
+              .replaceAll(":", "=")
+              .replaceAll("memory", "memory-mb"));
+    }
+    return resourceMap;
   }
 
   private static Map<String, Long> parseResourcesString(String resourcesStr) {

@@ -36,6 +36,7 @@
   <modules>
     <module>server-submitter</module>
     <module>server-core</module>
+    <module>server-rpc</module>
   </modules>
 
   <dependencyManagement>

@@ -41,11 +41,12 @@ services:
 env:
   global:
     # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-server/server-submitter/submitter-yarnservice` in EXCLUDE_SUBMARINE
-    - EXCLUDE_SUBMARINE="!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn,!submarine-server/server-core"
+    - EXCLUDE_SUBMARINE="!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn,!submarine-server/server-core,!submarine-server/server-rpc"
     - EXCLUDE_WORKBENCH="!submarine-workbench,!submarine-workbench/workbench-web"
     - EXCLUDE_INTERPRETER="!submarine-workbench/interpreter,!submarine-workbench/interpreter/interpreter-engine,!submarine-workbench/interpreter/python-interpreter,!submarine-workbench/interpreter/spark-interpreter""
     - EXCLUDE_SUBMODULE_TONY="!submodules/tony,!submodules/tony/tony-mini,!submodules/tony/tony-core,!submodules/tony/tony-proxy,!submodules/tony/tony-portal,!submodules/tony/tony-azkaban,!submodules/tony/tony-cli"
     - EXCLUDE_K8S="!submarine-server/server-submitter/submitter-k8s"
+    - EXCLUDE_COMMON_RPC="!submarine-commons/commons-rpc"
 
 before_install:
   # maven 3.6.1 (3.6.2 build tony failed!!!)
@@ -65,6 +66,14 @@ before_install:
   - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'metastore_test'@'%';"
   - mysql -e "use metastore_test; source ./docs/database/metastore.sql; show tables;"
   - ./dev-support/travis/install_external_dependencies.sh
+  # protobuf 3.10.1
+  - PROTOBUF_VERSION=3.10.1
+  - PROTOC_FILENAME=protoc-${PROTOBUF_VERSION}-linux-x86_64.zip
+  - pushd /home/travis
+  - wget https://github.com/google/protobuf/releases/download/v${PROTOBUF_VERSION}/${PROTOC_FILENAME}
+  - unzip ${PROTOC_FILENAME}
+  - bin/protoc --version
+  - popd
 
 matrix:
   include:
@@ -78,25 +87,25 @@ matrix:
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-2.7" PROFILE="-Phadoop-2.7" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-2.7" PROFILE="-Phadoop-2.7" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_COMMON_RPC},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-2.9(default)
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-2.9" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-2.9" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_COMMON_RPC},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-3.1
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-3.1" PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-3.1" PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_COMMON_RPC},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build hadoop-3.2
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Build hadoop-3.2" PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_PROJECTS=""
+      env: NAME="Build hadoop-3.2" PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},!submarine-dist\"" TEST_MODULES="-pl \"${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_COMMON_RPC},!submarine-dist\"" TEST_PROJECTS=""
 
     # Build workbench-web
     - language: node_js
@@ -144,7 +153,7 @@ matrix:
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Test submarine distribution" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_K8S}" TEST_MODULES="-pl ${EXCLUDE_K8S}" TEST_PROJECTS=""
+      env: NAME="Test submarine distribution" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S}" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_COMMON_RPC}" TEST_PROJECTS=""
 
     # Test submarine web-ng
     - language: node_js
@@ -169,7 +178,7 @@ matrix:
     - language: java
       jdk: "openjdk8"
       dist: xenial
-      env: NAME="Test submarine-server" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl submarine-server/server-core" TEST_PROJECTS=""
+      env: NAME="Test submarine-server" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl submarine-server/server-core" TEST_PROJECTS=""
 
     - name: Submarine on Kubernetes
       dist: xenial

@@ -47,6 +47,12 @@
       <groupId>org.apache.submarine</groupId>
       <artifactId>submarine-client</artifactId>
       <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -200,11 +206,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>submarine-client</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.submarine</groupId>
       <artifactId>commons-runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -330,8 +331,6 @@
             <goals>
               <goal>jar</goal>
             </goals>
-            <!-- strictly speaking, the unit test is really a regression test. It
-                 needs the main jar to be available to be able to run. -->
             <phase>test-compile</phase>
           </execution>
         </executions>
@@ -343,6 +342,7 @@
            </archive>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>

@@ -58,27 +58,31 @@ public class RoleParameters {
     return launchCommand;
   }
 
-  public void setLaunchCommand(String launchCommand) {
+  public RoleParameters setLaunchCommand(String launchCommand) {
     this.launchCommand = launchCommand;
+    return this;
   }
 
   public String getDockerImage() {
     return dockerImage;
   }
 
-  public void setDockerImage(String dockerImage) {
+  public RoleParameters setDockerImage(String dockerImage) {
     this.dockerImage = dockerImage;
+    return this;
   }
 
   public Resource getResource() {
     return resource;
   }
 
-  public void setResource(Resource resource) {
+  public RoleParameters setResource(Resource resource) {
     this.resource = resource;
+    return this;
   }
 
-  public void setReplicas(int replicas) {
+  public RoleParameters setReplicas(int replicas) {
     this.replicas = replicas;
+    return this;
   }
 }

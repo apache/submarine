@@ -62,15 +62,35 @@ public class Quicklink {
     return label;
   }
 
+  public Quicklink setLabel(String label) {
+    this.label = label;
+    return this;
+  }
+
   public String getComponentInstanceName() {
     return componentInstanceName;
+  }
+
+  public Quicklink setComponentInstanceName(String componentInstanceName) {
+    this.componentInstanceName = componentInstanceName;
+    return this;
   }
 
   public String getProtocol() {
     return protocol;
   }
 
+  public Quicklink setProtocol(String protocol) {
+    this.protocol = protocol;
+    return this;
+  }
+
   public int getPort() {
     return port;
+  }
+
+  public Quicklink setPort(int port) {
+    this.port = port;
+    return this;
   }
 }

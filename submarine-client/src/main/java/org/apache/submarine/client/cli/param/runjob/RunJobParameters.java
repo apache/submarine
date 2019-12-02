@@ -178,12 +178,27 @@ public abstract class RunJobParameters extends RunParameters {
     return waitJobFinish;
   }
 
+  public RunJobParameters setWaitJobFinish(boolean waitJobFinish) {
+    this.waitJobFinish = waitJobFinish;
+    return this;
+  }
+
   public List<Quicklink> getQuicklinks() {
     return quicklinks;
   }
 
+  public RunJobParameters setQuicklinks(List<Quicklink> quicklinks) {
+    this.quicklinks = quicklinks;
+    return this;
+  }
+
   public List<Localization> getLocalizations() {
     return localizations;
+  }
+
+  public RunJobParameters setLocalizations(List<Localization> localizations) {
+    this.localizations = localizations;
+    return this;
   }
 
   public String getKeytab() {
@@ -208,8 +223,9 @@ public abstract class RunJobParameters extends RunParameters {
     return securityDisabled;
   }
 
-  public void setSecurityDisabled(boolean securityDisabled) {
+  public RunJobParameters setSecurityDisabled(boolean securityDisabled) {
     this.securityDisabled = securityDisabled;
+    return this;
   }
 
   public boolean isDistributeKeytab() {
@@ -231,11 +247,12 @@ public abstract class RunJobParameters extends RunParameters {
     return this;
   }
 
-  public void setDistributed(boolean distributed) {
+  public RunJobParameters setDistributed(boolean distributed) {
     this.distributed = distributed;
+    return this;
   }
 
-  RoleParameters getWorkerParameters(ClientContext clientContext,
+  RoleParameters generateWorkerParameters(ClientContext clientContext,
       Parameter parametersHolder, String input)
       throws ParseException, YarnException, IOException {
     int nWorkers = getNumberOfWorkers(parametersHolder, input);
@@ -280,6 +297,15 @@ public abstract class RunJobParameters extends RunParameters {
       }
     }
     return nWorkers;
+  }
+
+  public RoleParameters getWorkerParameter() {
+    return workerParameters;
+  }
+
+  public RunJobParameters setWorkerParameter(RoleParameters workerParameters) {
+    this.workerParameters = workerParameters;
+    return this;
   }
 
   public String getWorkerLaunchCmd() {
