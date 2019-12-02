@@ -15,7 +15,7 @@
 
 # Submarine Database
 
-Submarine needs to use the database to store information about the `organization`, `user`, `projects`, `tasks` and configuration of the system information, So consider using mysql to store this data.
+Submarine needs to use the database to store information about the `organization`, `user`, `projects`, `tasks`, `metastore` and `configuration` of the system information, So consider using mysql to store this data.
 
 + MySQL will be included in the `mini-submarine` docker image to allow users to quickly experience the `submarine workbench`.
 + In a production environment, the `submarine workbench` can be connected to the official mysql database.
@@ -79,11 +79,12 @@ If you need to store Chinese character data in mysql, you need to execute the fo
 ## Create Submarine Database
 
 ### Create development database
-Copy the files, submarine.sql and submarine-data.sql to the mysql docker.
+Copy the files, submarine.sql, submarine-data.sql and metastore.sql to the mysql docker.
 
 ```
 docker cp ${SUBMARINE_HOME}/docs/database/submarine.sql ${DOCKER_ID}:/
 docker cp ${SUBMARINE_HOME}/docs/database/submarine-data.sql ${DOCKER_ID}:/
+docker cp ${SUBMARINE_HOME}/docs/database/metastore.sql ${DOCKER_ID}:/
 ```
 
 Development database for development environment.
@@ -97,10 +98,15 @@ mysql> CREATE DATABASE submarine CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use submarine;
 mysql> source /submarine.sql;
 mysql> source /submarine-data.sql;
+mysql> CREATE USER 'metastore'@'%' IDENTIFIED BY 'password';
+mysql> GRANT ALL PRIVILEGES ON * . * TO 'metastore'@'%';
+mysql> CREATE DATABASE metastore CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> use metastore;
+mysql> source /metastore.sql;
 mysql> quit
 ```
 
->  NOTE: submarine development database name is  `submarine` and user name is `submarine`, password is `password`, This is the default value in the system's `submarine-site.xml` configuration file and is not recommended for modification.
+>  NOTE: submarine development database name is  `submarine` and user name is `submarine`, password is `password`, metastore development database name is  `metastore` and user name is `metastore`, password is `password`, This is the default value in the system's `submarine-site.xml` configuration file and is not recommended for modification.
 
 
 ### Create test database
@@ -115,15 +121,21 @@ mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';
 mysql> CREATE DATABASE `submarine_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use `submarine_test`;
 mysql> source /submarine.sql;
+mysql> CREATE USER 'metastore_test'@'%' IDENTIFIED BY 'password_test';
+mysql> GRANT ALL PRIVILEGES ON * . * TO 'metastore_test'@'%';
+mysql> CREATE DATABASE `metastore_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> use `metastore_test`;
+mysql> source /metastore.sql;
 mysql> quit
 ```
 
->  NOTE: submarine test database name is  `submarine_test` and user name is `submarine_test`, password is `password_test`, Cannot be configured, values that cannot be modified.
+>  NOTE: submarine test database name is  `submarine_test` and user name is `submarine_test`, password is `password_test`, metastore test database name is  `metastore_test` and user name is `metastore_test`, password is `password_test`, Cannot be configured, values that cannot be modified.
 
 ### mysqldump
 
 ```$xslt
 mysqldump -uroot -ppassword --databases submarine > submarine.sql;
+mysqldump -umetastore -ppassword metastore > metastore.sql;
 ```
 
 
