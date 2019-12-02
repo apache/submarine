@@ -122,7 +122,7 @@
     <atomix.version>3.0.0-rc4</atomix.version>
     <spark.scala.version>2.11.8</spark.scala.version>
     <spark.scala.binary.version>2.11</spark.scala.binary.version>
-    <hive.version>2.1.1</hive.version>
+    <hive.version>2.3.6</hive.version>
     <!--  Submarine on Kubernetes  -->
     <k8s.client-java.version>6.0.1</k8s.client-java.version>
     <jersey.test-framework>2.27</jersey.test-framework>
