@@ -37,9 +37,9 @@
         <exclude>**/.settings</exclude>
         <exclude>**/target/**</exclude>
         <exclude>submodules/**/target/**</exclude>
-        <exclude>submarine-workbench/workbench-web/dist/**</exclude>
-        <exclude>submarine-workbench/workbench-web/node_modules/**</exclude>
-        <exclude>submarine-workbench/workbench-web/node/**</exclude>
+        <exclude>java/submarine-workbench/workbench-web/dist/**</exclude>
+        <exclude>java/submarine-workbench/workbench-web/node_modules/**</exclude>
+        <exclude>java/submarine-workbench/workbench-web/node/**</exclude>
         <!-- until the code that does this is fixed -->
         <exclude>**/*.log</exclude>
         <exclude>**/build/**</exclude>

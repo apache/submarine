@@ -300,7 +300,7 @@
         <profile-id>hadoop-3.2</profile-id>
       </properties>
       <modules>
-        <module>submarine-server/server-submitter/submitter-yarnservice</module>
+        <module>java/submarine-server/server-submitter/submitter-yarnservice</module>
       </modules>
     </profile>
 
@@ -316,7 +316,7 @@
         <profile-id>hadoop-3.1</profile-id>
       </properties>
       <modules>
-        <module>submarine-server/server-submitter/submitter-yarnservice</module>
+        <module>java/submarine-server/server-submitter/submitter-yarnservice</module>
       </modules>
     </profile>
 
