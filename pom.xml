@@ -131,13 +131,7 @@
 
   <modules>
     <module>submodules/tony</module>
-    <module>java/submarine-client</module>
-    <module>java/submarine-commons</module>
-    <module>java/submarine-server</module>
-    <module>java/submarine-all</module>
-    <module>java/submarine-workbench</module>
-    <module>java/submarine-test</module>
-    <module>java/submarine-dist</module>
+    <module>java</module>
   </modules>
 
   <dependencyManagement>
