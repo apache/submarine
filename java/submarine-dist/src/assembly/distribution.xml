@@ -23,7 +23,7 @@
 
   <dependencySets>
     <dependencySet>
-      <outputDirectory>/lib/submitter</outputDirectory>
+      <outputDirectory>/java/lib/submitter</outputDirectory>
       <includes>
         <include>com.linkedin.tony:tony-core</include>
       </includes>
@@ -32,12 +32,12 @@
 
   <files>
     <file>
-      <source>../LICENSE-binary</source>
+      <source>../../LICENSE-binary</source>
       <outputDirectory>/</outputDirectory>
       <destName>LICENSE</destName>
     </file>
     <file>
-      <source>../NOTICE-binary</source>
+      <source>../../NOTICE-binary</source>
       <outputDirectory>/</outputDirectory>
       <destName>NOTICE</destName>
     </file>
@@ -45,51 +45,53 @@
 
   <fileSets>
     <fileSet>
-      <directory>../licenses-binary</directory>
+      <directory>../../licenses-binary</directory>
       <outputDirectory>/licenses</outputDirectory>
     </fileSet>
 
     <fileSet>
       <directory>../conf</directory>
       <outputDirectory>/conf</outputDirectory>
+      <fileMode>0755</fileMode>
     </fileSet>
 
     <fileSet>
       <directory>../bin</directory>
       <outputDirectory>/bin</outputDirectory>
+      <fileMode>0755</fileMode>
     </fileSet>
 
     <fileSet>
       <directory>../submarine-all/target/</directory>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory>/java/</outputDirectory>
       <includes>
         <include>submarine-all-${project.version}-*.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-workbench/workbench-web/target</directory>
-      <outputDirectory>/</outputDirectory>
+      <outputDirectory>/java/</outputDirectory>
       <includes>
         <include>workbench-web.war</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-commons/commons-utils/target</directory>
-      <outputDirectory>/lib</outputDirectory>
+      <outputDirectory>/java/lib</outputDirectory>
       <includes>
         <include>submarine-commons-utils-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-commons/commons-runtime/target</directory>
-      <outputDirectory>/lib</outputDirectory>
+      <outputDirectory>/java/lib</outputDirectory>
       <includes>
         <include>submarine-commons-runtime-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-commons/commons-cluster/target</directory>
-      <outputDirectory>/lib</outputDirectory>
+      <outputDirectory>/java/lib</outputDirectory>
       <includes>
         <include>submarine-commons-cluster-${project.version}.jar</include>
       </includes>
@@ -103,42 +105,42 @@
     </fileSet>
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-k8s/target</directory>
-      <outputDirectory>/lib/submitter</outputDirectory>
+      <outputDirectory>/java/lib/submitter</outputDirectory>
       <includes>
         <include>submarine-submitter-k8s-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-yarn/target</directory>
-      <outputDirectory>/lib/submitter</outputDirectory>
+      <outputDirectory>/java/lib/submitter</outputDirectory>
       <includes>
         <include>submarine-submitter-yarn-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-yarnservice/target</directory>
-      <outputDirectory>/lib/submitter</outputDirectory>
+      <outputDirectory>/java/lib/submitter</outputDirectory>
       <includes>
         <include>submarine-submitter-yarnservice-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-client/target</directory>
-      <outputDirectory>/lib</outputDirectory>
+      <outputDirectory>/java/lib</outputDirectory>
       <includes>
         <include>submarine-client-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-server/server-core/target</directory>
-      <outputDirectory>/lib</outputDirectory>
+      <outputDirectory>/java/lib</outputDirectory>
       <includes>
         <include>submarine-server-core-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-server/server-core/target/dependency</directory>
-      <outputDirectory>/lib</outputDirectory>
+      <outputDirectory>/java/lib</outputDirectory>
       <excludes>
         <!-- exclude rename to submarine-commons-*.jar -->
         <exclude>commons-utils-${project.version}.jar</exclude>
@@ -151,14 +153,14 @@
     </fileSet>
     <fileSet>
       <directory>../submarine-workbench/interpreter/python-interpreter/target</directory>
-      <outputDirectory>/lib/interpreter/python</outputDirectory>
+      <outputDirectory>/java/lib/interpreter/python</outputDirectory>
       <includes>
         <include>submarine-python-interpreter-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-workbench/interpreter/spark-interpreter/target</directory>
-      <outputDirectory>/lib/interpreter/spark</outputDirectory>
+      <outputDirectory>/java/lib/interpreter/spark</outputDirectory>
       <includes>
         <include>submarine-spark-interpreter-${project.version}-shade.jar</include>
       </includes>

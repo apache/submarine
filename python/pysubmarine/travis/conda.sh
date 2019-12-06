@@ -41,9 +41,9 @@ fi
 source activate test-environment
 python --version
 pip install --upgrade pip
-pip install -r ./submarine-sdk/pysubmarine/travis/test-requirements.txt
+pip install -r ./python/pysubmarine/travis/test-requirements.txt
 
-pip install ./submarine-sdk/pysubmarine/.
+pip install ./python/pysubmarine/.
 export SUBMARINE_HOME=$(pwd)
 
 # Print current environment info
