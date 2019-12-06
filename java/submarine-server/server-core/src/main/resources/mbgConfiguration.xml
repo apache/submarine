@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<!DOCTYPE generatorConfiguration
+    PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+    "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+  <context id="sqlserverTables" targetRuntime="MyBatis3">
+    <commentGenerator>
+      <!-- Whether to remove automatically generated annotation -->
+      <property name="suppressAllComments" value="true"/>
+    </commentGenerator>
+
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                    connectionURL="jdbc:mysql://127.0.0.1:3306/submarine"
+                    userId="submarine"
+                    password="password">
+    </jdbcConnection>
+
+    <javaTypeResolver>
+      <property name="forceBigDecimals" value="false"/>
+    </javaTypeResolver>
+
+    <!-- Generation model, the corresponding package path and file storage path (targetProject),
+    You can specify a specific path, such as: ./src/main/java, -->
+    <javaModelGenerator targetPackage="org.apache.submarine.database.entity" targetProject="/tmp">
+      <property name="enableSubPackages" value="true"/>
+      <!-- From the database of Spaces before and after the value returned is cleared -->
+      <property name="trimStrings" value="true"/>
+    </javaModelGenerator>
+
+    <!-- The corresponding mapper.xml file -->
+    <sqlMapGenerator targetPackage="org.apache.submarine.database.mappers" targetProject="/tmp">
+      <property name="enableSubPackages" value="true"/>
+    </sqlMapGenerator>
+
+    <!-- The corresponding Mapper interfaces class files -->
+    <javaClientGenerator type="XMLMAPPER" targetPackage="org.apache.submarine.database.mappers" targetProject="/tmp">
+      <property name="enableSubPackages" value="true"/>
+    </javaClientGenerator>
+
+    <!-- List all the table to generate the code, configuration is not generate Example files here -->
+    <table tableName="project" domainObjectName="Project"
+           enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+           enableSelectByExample="false" selectByExampleQueryId="false">
+      <property name="useActualColumnNames" value="false"/>
+    </table>
+
+    <table tableName="project_files" domainObjectName="ProjectFiles"
+           enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+           enableSelectByExample="false" selectByExampleQueryId="false">
+      <property name="useActualColumnNames" value="false"/>
+    </table>
+  </context>
+</generatorConfiguration>

@@ -130,14 +130,14 @@
   </properties>
 
   <modules>
-    <module>submarine-commons</module>
-    <module>submarine-client</module>
     <module>submodules/tony</module>
-    <module>submarine-server</module>
-    <module>submarine-all</module>
-    <module>submarine-workbench</module>
-    <module>submarine-test</module>
-    <module>submarine-dist</module>
+    <module>java/submarine-client</module>
+    <module>java/submarine-commons</module>
+    <module>java/submarine-server</module>
+    <module>java/submarine-all</module>
+    <module>java/submarine-workbench</module>
+    <module>java/submarine-test</module>
+    <module>java/submarine-dist</module>
   </modules>
 
   <dependencyManagement>
