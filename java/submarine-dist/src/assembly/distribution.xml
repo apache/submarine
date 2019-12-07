@@ -23,7 +23,7 @@
 
   <dependencySets>
     <dependencySet>
-      <outputDirectory>/java/lib/submitter</outputDirectory>
+      <outputDirectory>/jar/lib/submitter</outputDirectory>
       <includes>
         <include>com.linkedin.tony:tony-core</include>
       </includes>
@@ -63,35 +63,35 @@
 
     <fileSet>
       <directory>../submarine-all/target/</directory>
-      <outputDirectory>/java/</outputDirectory>
+      <outputDirectory>/jar/</outputDirectory>
       <includes>
         <include>submarine-all-${project.version}-*.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-workbench/workbench-web/target</directory>
-      <outputDirectory>/java/</outputDirectory>
+      <outputDirectory>/jar/</outputDirectory>
       <includes>
         <include>workbench-web.war</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-commons/commons-utils/target</directory>
-      <outputDirectory>/java/lib</outputDirectory>
+      <outputDirectory>/jar/lib</outputDirectory>
       <includes>
         <include>submarine-commons-utils-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-commons/commons-runtime/target</directory>
-      <outputDirectory>/java/lib</outputDirectory>
+      <outputDirectory>/jar/lib</outputDirectory>
       <includes>
         <include>submarine-commons-runtime-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-commons/commons-cluster/target</directory>
-      <outputDirectory>/java/lib</outputDirectory>
+      <outputDirectory>/jar/lib</outputDirectory>
       <includes>
         <include>submarine-commons-cluster-${project.version}.jar</include>
       </includes>
@@ -105,42 +105,42 @@
     </fileSet>
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-k8s/target</directory>
-      <outputDirectory>/java/lib/submitter</outputDirectory>
+      <outputDirectory>/jar/lib/submitter</outputDirectory>
       <includes>
         <include>submarine-submitter-k8s-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-yarn/target</directory>
-      <outputDirectory>/java/lib/submitter</outputDirectory>
+      <outputDirectory>/jar/lib/submitter</outputDirectory>
       <includes>
         <include>submarine-submitter-yarn-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-yarnservice/target</directory>
-      <outputDirectory>/java/lib/submitter</outputDirectory>
+      <outputDirectory>/jar/lib/submitter</outputDirectory>
       <includes>
         <include>submarine-submitter-yarnservice-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-client/target</directory>
-      <outputDirectory>/java/lib</outputDirectory>
+      <outputDirectory>/jar/lib</outputDirectory>
       <includes>
         <include>submarine-client-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-server/server-core/target</directory>
-      <outputDirectory>/java/lib</outputDirectory>
+      <outputDirectory>/jar/lib</outputDirectory>
       <includes>
         <include>submarine-server-core-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-server/server-core/target/dependency</directory>
-      <outputDirectory>/java/lib</outputDirectory>
+      <outputDirectory>/jar/lib</outputDirectory>
       <excludes>
         <!-- exclude rename to submarine-commons-*.jar -->
         <exclude>commons-utils-${project.version}.jar</exclude>
@@ -153,14 +153,14 @@
     </fileSet>
     <fileSet>
       <directory>../submarine-workbench/interpreter/python-interpreter/target</directory>
-      <outputDirectory>/java/lib/interpreter/python</outputDirectory>
+      <outputDirectory>/jar/lib/interpreter/python</outputDirectory>
       <includes>
         <include>submarine-python-interpreter-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-workbench/interpreter/spark-interpreter/target</directory>
-      <outputDirectory>/java/lib/interpreter/spark</outputDirectory>
+      <outputDirectory>/jar/lib/interpreter/spark</outputDirectory>
       <includes>
         <include>submarine-spark-interpreter-${project.version}-shade.jar</include>
       </includes>
