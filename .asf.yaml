@@ -18,7 +18,7 @@
 # https://cwiki.apache.org/confluence/display/INFRA/.asf.yaml+features+for+git+repositories
 
 github:
-  description: "Apache Submarine is a unified AI platform"
+  description: "Open Source Cloud Native Machine Learning and Data Processing Platform."
   homepage: https://submarine.apache.org/
   labels:
     - machine-learning
