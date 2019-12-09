@@ -49,6 +49,7 @@
   <properties>
     <!-- language versions -->
     <java.version>1.8</java.version>
+    <go.version>1.11.8</go.version>
 
     <!-- plugin versions -->
     <plugin.jar.version>2.4</plugin.jar.version>
@@ -57,6 +58,7 @@
     <plugin.enforcer.version>1.3.1</plugin.enforcer.version>
     <plugin.checkstyle.version>2.17</plugin.checkstyle.version>
     <plugin.war.version>2.3</plugin.war.version>
+    <plugin.maven.antrun>1.8</plugin.maven.antrun>
 
     <!-- submarine shaded dependency prefix-->
     <shaded.dependency.prefix>org.apache.submarine.shaded</shaded.dependency.prefix>
@@ -485,6 +487,8 @@
             <exclude>licenses/**</exclude>
             <exclude>licenses-binary/**</exclude>
             <exclude>NOTICE-binary</exclude>
+            <exclude>submarine-cloud/go.mod</exclude>
+            <exclude>submarine-cloud/go.sum</exclude>
           </excludes>
         </configuration>
       </plugin>

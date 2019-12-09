@@ -81,4 +81,5 @@ spark-1.*-bin-hadoop*
 .spark-dist
 
 # submarine-cloud
+submarine-cloud/vendor/*
 submarine-cloud/output/*
