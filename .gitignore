@@ -79,3 +79,6 @@ derby.log
 submarine-workbench/interpreter/spark-interpreter/metastore_db/
 spark-1.*-bin-hadoop*
 .spark-dist
+
+# submarine-cloud
+submarine-cloud/output/*
