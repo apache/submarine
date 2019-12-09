@@ -31,6 +31,7 @@ docker pull hadoopsubmarine/mini-submarine:0.3.0-SNAPSHOT
 #### Create image by yourself
 
 > You may need a VPN if your network is limited
+
 1.Clone the source code of Submarine
 ```
 git clone https://github.com/apache/submarine.git
@@ -134,7 +135,7 @@ Set submarine.server.remote.execution.enabled to true in the file of
 ```
 Run the following command to submit a job via submarine server
 ```
-./run_submarine_mnist_tony.sh
+./run_submarine_mnist_tony_rpc.sh
 ```
 
 #### Try your own submarine program
