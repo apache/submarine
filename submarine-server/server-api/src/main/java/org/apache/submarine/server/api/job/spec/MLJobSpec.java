@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.jobserver.rest.dao;
+package org.apache.submarine.server.api.job.spec;
 
 /**
  * The machine learning job spec the submarine job server can accept.

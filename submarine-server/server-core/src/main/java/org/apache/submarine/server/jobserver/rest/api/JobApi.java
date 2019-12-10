@@ -18,7 +18,7 @@
 
 package org.apache.submarine.server.jobserver.rest.api;
 
-import org.apache.submarine.server.jobserver.rest.dao.MLJobSpec;
+import org.apache.submarine.server.api.job.spec.MLJobSpec;
 import org.apache.submarine.server.jobserver.rest.dao.RestConstants;
 import org.apache.submarine.server.response.JsonResponse;
 

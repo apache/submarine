@@ -17,37 +17,34 @@
  * under the License.
  */
 
-package org.apache.submarine.server.jobserver.rest.dao;
+package org.apache.submarine.server.api;
 
-// A process level environment variable.
-public class EnvVaraible {
+import org.apache.submarine.server.api.exception.UnsupportedJobTypeException;
+import org.apache.submarine.server.api.job.Job;
+import org.apache.submarine.server.api.job.spec.MLJobSpec;
 
-  public String getKey() {
-    return key;
-  }
+/**
+ * The submitter should implement this interface.
+ */
+public interface JobSubmitter {
 
-  public void setKey(String key) {
-    this.key = key;
-  }
+  /**
+   * Initialize the submitter related code
+   */
+  void initialize();
 
-  public String getValue() {
-    return value;
-  }
+  /**
+   * Get the submitter type which is the unique identifier.
+   * @return unique identifier
+   */
+  String getSubmitterType();
 
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  String key;
-  String value;
-
-  public EnvVaraible() {}
-
-  public EnvVaraible(String k, String v) {
-    this.key = k;
-    this.value = v;
-  }
-
-
+  /**
+   * Submit the job by submitter
+   * @param jobSpec the generic job spec
+   * @throws UnsupportedJobTypeException caused by the unsupported job type
+   * @return the generic job
+   */
+  Job submitJob(MLJobSpec jobSpec) throws UnsupportedJobTypeException;
 
 }
