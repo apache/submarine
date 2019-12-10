@@ -29,8 +29,8 @@ type FakeSubmarineV1alpha1 struct {
 	*testing.Fake
 }
 
-func (c *FakeSubmarineV1alpha1) SubmarineServers(namespace string) v1alpha1.SubmarineServerInterface {
-	return &FakeSubmarineServers{c, namespace}
+func (c *FakeSubmarineV1alpha1) SubmarineClusters(namespace string) v1alpha1.SubmarineClusterInterface {
+	return &FakeSubmarineClusters{c, namespace}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

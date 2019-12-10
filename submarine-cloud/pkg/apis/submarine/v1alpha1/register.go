@@ -46,11 +46,22 @@ func Kind(kind string) schema.GroupKind {
 func addKnownTypes(scheme *runtime.Scheme) error {
 	scheme.AddKnownTypes(
 		SchemeGroupVersion,
-		&SubmarineServer{},
-		&SubmarineServerList{},
+		&SubmarineCluster{},
+		&SubmarineClusterList{},
 	)
 
 	// register the type in the scheme
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
 	return nil
 }
+
+const (
+	// ResourcePlural is the id to indentify pluarals
+	ResourcePlural = "submarineclusters"
+	// ResourceSingular represents the id for identify singular resource
+	ResourceSingular = "submarinecluster"
+	// ResourceKind represent the resource kind
+	ResourceKind = "SubmarineCluster"
+	// ResourceVersion represent the resource version
+	ResourceVersion = "v1alpha1"
+)

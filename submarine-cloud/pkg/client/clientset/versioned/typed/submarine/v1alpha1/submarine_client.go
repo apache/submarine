@@ -27,7 +27,7 @@ import (
 
 type SubmarineV1alpha1Interface interface {
 	RESTClient() rest.Interface
-	SubmarineServersGetter
+	SubmarineClustersGetter
 }
 
 // SubmarineV1alpha1Client is used to interact with features provided by the submarine.apache.org group.
@@ -35,8 +35,8 @@ type SubmarineV1alpha1Client struct {
 	restClient rest.Interface
 }
 
-func (c *SubmarineV1alpha1Client) SubmarineServers(namespace string) SubmarineServerInterface {
-	return newSubmarineServers(c, namespace)
+func (c *SubmarineV1alpha1Client) SubmarineClusters(namespace string) SubmarineClusterInterface {
+	return newSubmarineClusters(c, namespace)
 }
 
 // NewForConfig creates a new SubmarineV1alpha1Client for the given config.

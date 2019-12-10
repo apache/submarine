@@ -19,4 +19,4 @@
 
 package v1alpha1
 
-type SubmarineServerExpansion interface{}
+type SubmarineClusterExpansion interface{}

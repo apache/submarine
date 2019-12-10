@@ -31,7 +31,7 @@ LDFLAGS		:= -s -w \
 
 .PHONY: build
 build:
-	$(GOBUILD) -o ./$(BINARY_NAME) -v cmd/operator/main.go cmd/operator/controller.go
+	$(GOBUILD) -o ./$(BINARY_NAME) -v cmd/operator/main.go
 
 test:
 	$(GOTEST) -v ./...
@@ -47,4 +47,4 @@ fmt:
 	@go fmt $(CURDIR)/...
 
 release:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -a -installsuffix cgo -ldflags "$(LDFLAGS)" -o ./$(BINARY_UNIX)-linux-amd64-$(VERSION) -v cmd/operator/main.go cmd/operator/controller.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 $(GOBUILD) -a -installsuffix cgo -ldflags "$(LDFLAGS)" -o ./$(BINARY_UNIX)-linux-amd64-$(VERSION) -v cmd/operator/main.go

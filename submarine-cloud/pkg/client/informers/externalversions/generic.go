@@ -54,8 +54,8 @@ func (f *genericInformer) Lister() cache.GenericLister {
 func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource) (GenericInformer, error) {
 	switch resource {
 	// Group=submarine.apache.org, Version=v1alpha1
-	case v1alpha1.SchemeGroupVersion.WithResource("submarineservers"):
-		return &genericInformer{resource: resource.GroupResource(), informer: f.Submarine().V1alpha1().SubmarineServers().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("submarineclusters"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Submarine().V1alpha1().SubmarineClusters().Informer()}, nil
 
 	}
 

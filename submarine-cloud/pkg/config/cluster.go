@@ -15,13 +15,19 @@
  * limitations under the License.
  */
 
-// +build !windows
+package config
 
-package signals
+import "github.com/spf13/pflag"
 
-import (
-	"os"
-	"syscall"
-)
+// Cluster used to store all Submarine Cluster configuration information
+type Cluster struct {
+	Namespace   string
+	NodeService string
+}
 
-var shutdownSignals = []os.Signal{os.Interrupt, syscall.SIGTERM}
+// AddFlags use to add the Submarine-Cluster Config flags to the command line
+func (c *Cluster) AddFlags(fs *pflag.FlagSet) {
+	fs.StringVar(&c.Namespace, "ns", "", "Submarine-node k8s namespace")
+	fs.StringVar(&c.NodeService, "rs", "", "Submarine-node k8s service name")
+
+}

@@ -15,10 +15,20 @@
  * limitations under the License.
  */
 
-package signals
+package controller
 
-import (
-	"os"
-)
+import "github.com/apache/submarine/submarine-cloud/pkg/config"
 
-var shutdownSignals = []os.Signal{os.Interrupt}
+// Config contains the Controller settings
+type Config struct {
+	NbWorker  int
+	submarine config.Submarine
+}
+
+// NewConfig builds and returns new Config instance
+func NewConfig(nbWorker int, submarine config.Submarine) *Config {
+	return &Config{
+		NbWorker:  nbWorker,
+		submarine: submarine,
+	}
+}

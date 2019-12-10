@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 apiVersion: submarine.apache.org/v1alpha1
-kind: SubmarineServer
+kind: SubmarineCluster
 metadata:
   name: test2
 spec:
