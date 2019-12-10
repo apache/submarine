@@ -86,7 +86,7 @@ public class YarnServiceRunJobCliTest {
   }
 
   @Test
-  public void testPrintHelp() {
+  public void testPrintHelp() throws IOException {
     MockClientContext mockClientContext =
         YarnServiceCliTestUtils.getMockClientContext();
     RunJobCli runJobCli = new RunJobCli(mockClientContext);

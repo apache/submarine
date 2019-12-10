@@ -465,7 +465,8 @@ public class YarnServiceRunJobCliLocalizationTest {
       runJobCli.run(params);
     } catch (IOException e) {
       assertTrue(e.getMessage()
-          .contains("104857600 exceeds configured max size:10485760"));
+          .contains("104857600 bytes. This exceeded the configured " +
+              "maximum file / directory size, which is 10485760 bytes"));
       // we shouldn't do any download because fail fast
       verifyRdmCopyToRemoteLocalCalls(0);
     }

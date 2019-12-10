@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
+import static org.apache.submarine.client.cli.yarnservice.YarnServiceRunJobCliCommonsTest.DEFAULT_JOB_NAME;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -104,7 +105,7 @@ public abstract class AbstractTFLaunchCommandTestHelper {
   private AbstractLaunchCommand createLaunchCommandByTaskType(
       TensorFlowRole taskType, TensorFlowRunJobParameters params)
       throws IOException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext(DEFAULT_JOB_NAME);
     FileSystemOperations fsOperations =
         new FileSystemOperations(mockClientContext);
     HadoopEnvironmentSetup hadoopEnvSetup =

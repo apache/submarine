@@ -38,6 +38,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.List;
 
+import static org.apache.submarine.client.cli.yarnservice.YarnServiceRunJobCliCommonsTest.DEFAULT_JOB_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -62,7 +63,7 @@ public class PyTorchServiceSpecTest {
     parameters.setNumWorkers(1);
     parameters.setWorkerLaunchCmd("testWorkerLaunchCommand");
 
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = new MockClientContext(DEFAULT_JOB_NAME);
     FileSystemOperations fsOperations =
         new FileSystemOperations(mockClientContext);
 

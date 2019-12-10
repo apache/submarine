@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static org.apache.submarine.client.cli.yarnservice.YarnServiceRunJobCliCommonsTest.DEFAULT_JOB_NAME;
+
 /**
  * This class is to test the implementors of {@link TensorFlowLaunchCommand}.
  */
@@ -112,6 +114,10 @@ public class TensorFlowLaunchCommandTest
     throw new IllegalStateException("Unknown tasktype!");
   }
 
+  private MockClientContext createMockClientContext() throws IOException {
+    return new MockClientContext(DEFAULT_JOB_NAME);
+  }
+
   @Test
   public void testHdfsRelatedEnvironmentIsUndefined() throws IOException {
     TensorFlowRunJobParameters params = new TensorFlowRunJobParameters();
@@ -133,15 +139,14 @@ public class TensorFlowLaunchCommandTest
     setLaunchCommandToParams(params);
 
     List<String> fileContents =
-        testHdfsRelatedEnvironmentIsDefined(taskType,
-            params);
+        testHdfsRelatedEnvironmentIsDefined(taskType, params);
     assertScriptContainsLaunchCommand(fileContents, params);
     assertScriptDoesNotContainLine(fileContents, "export TF_CONFIG=");
   }
 
   @Test
   public void testLaunchCommandIsNull() throws IOException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = createMockClientContext();
     FileSystemOperations fsOperations =
         new FileSystemOperations(mockClientContext);
     HadoopEnvironmentSetup hadoopEnvSetup =
@@ -164,7 +169,7 @@ public class TensorFlowLaunchCommandTest
 
   @Test
   public void testLaunchCommandIsEmpty() throws IOException {
-    MockClientContext mockClientContext = new MockClientContext();
+    MockClientContext mockClientContext = createMockClientContext();
     FileSystemOperations fsOperations =
         new FileSystemOperations(mockClientContext);
     HadoopEnvironmentSetup hadoopEnvSetup =

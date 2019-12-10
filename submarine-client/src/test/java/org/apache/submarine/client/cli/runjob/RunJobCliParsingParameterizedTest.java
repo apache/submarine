@@ -36,6 +36,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -80,8 +81,8 @@ public class RunJobCliParsingParameterizedTest {
   }
 
   @Test
-  public void testPrintHelp() {
-    MockClientContext mockClientContext = new MockClientContext();
+  public void testPrintHelp() throws IOException {
+    MockClientContext mockClientContext = new MockClientContext("testJob");
     JobSubmitter mockJobSubmitter = mock(JobSubmitter.class);
     JobMonitor mockJobMonitor = mock(JobMonitor.class);
     RunJobCli runJobCli = new RunJobCli(mockClientContext, mockJobSubmitter,

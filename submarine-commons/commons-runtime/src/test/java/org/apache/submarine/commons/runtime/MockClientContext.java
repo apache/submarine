@@ -22,10 +22,15 @@ package org.apache.submarine.commons.runtime;
 import org.apache.submarine.commons.runtime.fs.MockRemoteDirectoryManager;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
 
+import java.io.IOException;
+
 public class MockClientContext extends ClientContext {
 
-  private RemoteDirectoryManager remoteDirectoryMgr =
-      new MockRemoteDirectoryManager();
+  private RemoteDirectoryManager remoteDirectoryMgr;
+
+  public MockClientContext(String jobName) throws IOException {
+    this.remoteDirectoryMgr = new MockRemoteDirectoryManager(jobName);
+  }
 
   @Override
   public RemoteDirectoryManager getRemoteDirectoryManager() {

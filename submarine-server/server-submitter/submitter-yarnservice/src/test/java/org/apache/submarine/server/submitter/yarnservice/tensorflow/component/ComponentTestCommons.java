@@ -27,6 +27,7 @@ import org.apache.submarine.commons.runtime.Framework;
 import org.apache.submarine.commons.runtime.conf.Envs;
 import org.apache.submarine.commons.runtime.MockClientContext;
 import org.apache.submarine.commons.runtime.api.Role;
+import org.apache.submarine.commons.runtime.fs.MockRemoteDirectoryManager;
 import org.apache.submarine.server.submitter.yarnservice.FileSystemOperations;
 import org.apache.submarine.server.submitter.yarnservice.command.AbstractLaunchCommand;
 import org.apache.submarine.server.submitter.yarnservice.command.LaunchCommandFactory;
@@ -35,6 +36,7 @@ import org.apache.submarine.server.submitter.yarnservice.command.TensorFlowLaunc
 
 import java.io.IOException;
 
+import static org.apache.submarine.client.cli.yarnservice.YarnServiceRunJobCliCommonsTest.DEFAULT_JOB_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -75,7 +77,7 @@ public class ComponentTestCommons {
 
   private void setupDependencies(Framework framework) throws IOException {
     fsOperations = mock(FileSystemOperations.class);
-    mockClientContext = new MockClientContext();
+    mockClientContext = new MockClientContext(DEFAULT_JOB_NAME);
 
     if (framework == Framework.TENSORFLOW) {
       mockLaunchCommandFactory = mock(TensorFlowLaunchCommandFactory.class);
@@ -108,5 +110,12 @@ public class ComponentTestCommons {
     assertEquals(10, (int) component.getResource().getCpus());
     assertEquals(4000,
         (int) Integer.valueOf(component.getResource().getMemory()));
+  }
+
+  void makeRemoteDirectoryManagerHaveNullJobName() {
+    MockRemoteDirectoryManager mockRdm =
+        (MockRemoteDirectoryManager)
+            mockClientContext.getRemoteDirectoryManager();
+    mockRdm.setJobDir(null);
   }
 }

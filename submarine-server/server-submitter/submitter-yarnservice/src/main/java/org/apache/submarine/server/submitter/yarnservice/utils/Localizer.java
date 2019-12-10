@@ -124,13 +124,12 @@ public class Localizer {
     if (localizationState.directory) {
       // Special handling of remoteUri directory.
       return fsOperations.downloadAndZip(localizationState.remoteUri,
-          getLastNameFromPath(localizationState.remoteUri), true);
+          getLastNameFromPath(localizationState.remoteUri));
     } else if (localizationState.remote &&
         !needHdfs(localizationState.remoteUri)) {
       // Non HDFS remote URI.
-      // Non directory, we don't need to zip
-      return fsOperations.downloadAndZip(localizationState.remoteUri,
-          getLastNameFromPath(localizationState.remoteUri), false);
+      return fsOperations.download(localizationState.remoteUri,
+          getLastNameFromPath(localizationState.remoteUri));
     }
     return localizationState.remoteUri;
   }

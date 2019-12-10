@@ -52,6 +52,24 @@ import java.util.Set;
  * well.
  */
 public class FileSystemOperations {
+  private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
+  private static final long BYTES_IN_MB = 1024 * 1024;
+
+  private static class DownloadResult {
+    private final String srcPath;
+    private final String dstPath;
+    private final String suffix;
+    private boolean remote;
+
+    DownloadResult(String srcPath, String dstPath, String suffix,
+        boolean remote) {
+      this.srcPath = srcPath;
+      this.dstPath = dstPath;
+      this.suffix = suffix;
+      this.remote = remote;
+    }
+  }
+
   private static final Logger LOG =
       LoggerFactory.getLogger(FileSystemOperations.class);
   private final SubmarineConfiguration submarineConfig;
@@ -67,53 +85,89 @@ public class FileSystemOperations {
   }
 
   /**
-   * May download a remote uri(file/dir) and zip.
-   * Skip download if local dir
-   * Remote uri can be a local dir(won't download)
-   * or remote HDFS dir, s3 dir/file .etc
-   * */
-  public String downloadAndZip(String remoteDir, String zipFileName,
-      boolean doZip)
+   * May download a remote URI (file or directory) and zip it if asked.
+   * Skips downloading local directories.
+   * Remote URI can be a local dir or remote HDFS dir,
+   * S3 file or directory, etc.
+   */
+  public String downloadAndZip(String remoteDir, String destFileName)
       throws IOException {
-    //Append original modification time and size to zip file name
-    String suffix;
-    String srcDir = remoteDir;
-    String zipDirPath =
-        System.getProperty("java.io.tmpdir") + "/" + zipFileName;
-    boolean needDeleteTempDir = false;
-    if (remoteDirectoryManager.isRemote(remoteDir)) {
-      //Append original modification time and size to zip file name
-      FileStatus status =
-          remoteDirectoryManager.getRemoteFileStatus(new Path(remoteDir));
-      suffix = "_" + status.getModificationTime()
-          + "-" + remoteDirectoryManager.getRemoteFileSize(remoteDir);
-      // Download them to temp dir
-      boolean downloaded =
-          remoteDirectoryManager.copyRemoteToLocal(remoteDir, zipDirPath);
-      if (!downloaded) {
-        throw new IOException("Failed to download files from "
-            + remoteDir);
-      }
-      LOG.info("Downloaded remote: {} to local: {}", remoteDir, zipDirPath);
-      srcDir = zipDirPath;
-      needDeleteTempDir = true;
-    } else {
-      File localDir = new File(remoteDir);
-      suffix = "_" + localDir.lastModified()
-          + "-" + localDir.length();
-    }
-    if (!doZip) {
-      return srcDir;
-    }
-    // zip a local dir
-    String zipFileUri =
-        ZipUtilities.zipDir(srcDir, zipDirPath + suffix + ".zip");
-    // delete downloaded temp dir
-    if (needDeleteTempDir) {
-      deleteFiles(srcDir);
+    DownloadResult downloadResult = downloadInternal(remoteDir, destFileName);
+    String zipFileUri = zipLocalDirectory(downloadResult);
+
+    if (downloadResult.remote) {
+      deleteFiles(downloadResult.srcPath);
     }
     return zipFileUri;
   }
+
+  public String download(String remoteDir, String zipFileName)
+      throws IOException {
+    DownloadResult downloadResult = downloadInternal(remoteDir, zipFileName);
+    return downloadResult.srcPath;
+  }
+
+  private DownloadResult downloadInternal(String remoteDir, String destFileName)
+      throws IOException {
+    String suffix;
+    String srcDir = remoteDir;
+
+    String destFilePath = getFilePathInTempDir(destFileName);
+
+    boolean remote = remoteDirectoryManager.isRemote(remoteDir);
+    if (remote) {
+      // Append original modification time and size to zip file name
+      FileStatus status =
+          remoteDirectoryManager.getRemoteFileStatus(new Path(remoteDir));
+      suffix = getSuffixOfRemoteDirectory(remoteDir, status);
+      // Download them to temp dir
+      downloadRemoteFile(remoteDir, destFilePath);
+      srcDir = destFilePath;
+    } else {
+      File localDir = new File(remoteDir);
+      suffix = getSuffixOfLocalDirectory(localDir);
+    }
+    return new DownloadResult(srcDir, destFilePath, suffix, remote);
+  }
+
+  private String getFilePathInTempDir(String zipFileName) {
+    return new File(TEMP_DIR, zipFileName).getAbsolutePath();
+  }
+
+  private String zipLocalDirectory(DownloadResult downloadResult)
+      throws IOException {
+    String dstFileName = downloadResult.dstPath +
+        downloadResult.suffix + ".zip";
+    return ZipUtilities.zipDir(downloadResult.srcPath,
+        dstFileName);
+  }
+
+  private String getSuffixOfRemoteDirectory(String remoteDir,
+      FileStatus status) throws IOException {
+    return getSuffixOfDirectory(status.getModificationTime(),
+        remoteDirectoryManager.getRemoteFileSize(remoteDir));
+  }
+
+  private String getSuffixOfLocalDirectory(File localDir) {
+    return getSuffixOfDirectory(localDir.lastModified(), localDir.length());
+  }
+
+  private String getSuffixOfDirectory(long modificationTime, long size) {
+    return "_" + modificationTime + "-" + size;
+  }
+
+  private void downloadRemoteFile(String remoteDir, String zipDirPath)
+      throws IOException {
+    boolean downloaded =
+        remoteDirectoryManager.copyRemoteToLocal(remoteDir, zipDirPath);
+    if (!downloaded) {
+      throw new IOException("Failed to download Internal files from "
+          + remoteDir);
+    }
+    LOG.info("Downloaded remote file: {} to this local path: {}",
+        remoteDir, zipDirPath);
+  }
+
 
   public void deleteFiles(String localUri) {
     boolean success = FileUtil.fullyDelete(new File(localUri));
@@ -137,12 +191,18 @@ public class FileSystemOperations {
     FileSystem fs = FileSystem.get(yarnConfig);
 
     FileStatus fileStatus = fs.getFileStatus(uploadedFilePath);
-    LOG.info("Uploaded file path = " + fileStatus.getPath());
+    LOG.info("Uploaded file path: " + fileStatus.getPath());
+    ConfigFile configFile = new ConfigFile()
+        .srcFile(fileStatus.getPath().toUri().toString())
+        .destFile(destFilename)
+        .type(ConfigFile.TypeEnum.STATIC);
+    addFilesToComponent(comp, configFile);
+  }
 
-    // Set it to component's files list
-    comp.getConfiguration().getFiles().add(new ConfigFile().srcFile(
-        fileStatus.getPath().toUri().toString()).destFile(destFilename)
-        .type(ConfigFile.TypeEnum.STATIC));
+  private void addFilesToComponent(Component comp, ConfigFile... configFiles) {
+    for (ConfigFile configFile : configFiles) {
+      comp.getConfiguration().getFiles().add(configFile);
+    }
   }
 
   public Path uploadToRemoteFile(Path stagingDir, String fileToUpload) throws
@@ -153,15 +213,15 @@ public class FileSystemOperations {
     File localFile = new File(fileToUpload);
     if (!localFile.exists()) {
       throw new FileNotFoundException(
-          "Trying to upload file=" + localFile.getAbsolutePath()
-              + " to remote, but couldn't find local file.");
+          "Trying to upload file " + localFile.getAbsolutePath()
+              + " to remote, but could not find local file!");
     }
-    String filename = new File(fileToUpload).getName();
+    String filename = localFile.getName();
 
     Path uploadedFilePath = new Path(stagingDir, filename);
     if (!uploadedFiles.contains(uploadedFilePath)) {
       if (SubmarineLogs.isVerbose()) {
-        LOG.info("Copying local file=" + fileToUpload + " to remote="
+        LOG.info("Copying local file " + fileToUpload + " to remote "
             + uploadedFilePath);
       }
       fs.copyFromLocalFile(new Path(fileToUpload), uploadedFilePath);
@@ -171,26 +231,43 @@ public class FileSystemOperations {
   }
 
   public void validFileSize(String uri) throws IOException {
-    long actualSizeByte;
-    String locationType = "Local";
-    if (remoteDirectoryManager.isRemote(uri)) {
-      actualSizeByte = remoteDirectoryManager.getRemoteFileSize(uri);
-      locationType = "Remote";
-    } else {
-      actualSizeByte = FileUtil.getDU(new File(uri));
+    boolean remote = remoteDirectoryManager.isRemote(uri);
+    long actualSizeInBytes = getFileSizeInBytes(uri, remote);
+    long maxFileSizeInBytes = convertToBytes(getMaxRemoteFileSizeMB());
+
+    String locationType = remote ? "Remote" : "Local";
+    LOG.info("{} file / directory path is {} with size: {} bytes."
+        + " Allowed maximum file / directory size is {} bytes.",
+        locationType, uri, actualSizeInBytes, maxFileSizeInBytes);
+
+    if (actualSizeInBytes > maxFileSizeInBytes) {
+      throw new IOException(
+          String.format("Size of file / directory %s: %d bytes. " +
+              "This exceeded the configured maximum " +
+              "file / directory size, which is %d bytes.",
+              uri, actualSizeInBytes, maxFileSizeInBytes));
     }
-    long maxFileSizeMB = submarineConfig.getLong(
+  }
+
+  private long getFileSizeInBytes(String uri, boolean remote)
+      throws IOException {
+    long actualSizeInBytes;
+    if (remote) {
+      actualSizeInBytes = remoteDirectoryManager.getRemoteFileSize(uri);
+    } else {
+      actualSizeInBytes = FileUtil.getDU(new File(uri));
+    }
+    return actualSizeInBytes;
+  }
+
+  private long getMaxRemoteFileSizeMB() {
+    return submarineConfig.getLong(
         SubmarineConfiguration.ConfVars.
             SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB);
-    LOG.info("{} fie/dir: {}, size(Byte):{},"
-            + " Allowed max file/dir size: {}",
-        locationType, uri, actualSizeByte, maxFileSizeMB * 1024 * 1024);
+  }
 
-    if (actualSizeByte > maxFileSizeMB * 1024 * 1024) {
-      throw new IOException(uri + " size(Byte): "
-          + actualSizeByte + " exceeds configured max size:"
-          + maxFileSizeMB * 1024 * 1024);
-    }
+  private long convertToBytes(long fileSizeMB) {
+    return fileSizeMB * BYTES_IN_MB;
   }
 
   public void setPermission(Path destPath, FsPermission permission) throws
@@ -210,5 +287,9 @@ public class FileSystemOperations {
 
   public static boolean needHdfs(String content) {
     return content != null && content.contains("hdfs://");
+  }
+
+  public Set<Path> getUploadedFiles() {
+    return uploadedFiles;
   }
 }
