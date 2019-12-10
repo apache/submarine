@@ -18,7 +18,7 @@
 # https://cwiki.apache.org/confluence/display/INFRA/.asf.yaml+features+for+git+repositories
 
 github:
-  description: "Open Source Cloud Native Machine Learning and Data Processing Platform."
+  description: "Submarine is Cloud Native Machine Learning Platform."
   homepage: https://submarine.apache.org/
   labels:
     - machine-learning
