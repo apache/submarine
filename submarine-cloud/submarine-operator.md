@@ -1,30 +1,41 @@
-# Submarine Operator Development Instructions
+# Submarine Operator Instructions
 
-See also official sample：https://github.com/kubernetes/sample-controller
+## Build submarine operator
 
-# Implementation steps
+### Prerequisite
 
-## 1. Submit the CRD template and its instantiation object to the k8s cluster, so that k8s can recognize
+1 Golang environment is required.
+
+2 Submarine project should be in the path of ${GOPATH}/src/github.com/apache/.
+Alternatively, we can create a soft link named submarine, pointing to submarine
+repo, under the path of ${GOPATH}/src/github.com/apache/.
+
+### Build submarine operator binary
 ```
-1 Official document CRD 
-https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/#create-a-customresourcedefinition
-
-2 Log in to a machine that can execute kubectl commands and create a student.yaml file
-[root@localhost student]# kubectl apply -f student.yaml
-customresourcedefinition.apiextensions.k8s.io/students.stable.k8s.io created
-[root@localhost student]# kubectl get crd
-NAME                          CREATED AT
-crontabs.stable.example.com   2019-03-26T01:48:32Z
-students.stable.k8s.io        2019-04-12T02:42:08Z
-
-3 Use the template student.yaml to instantiate a Student object, create test1.yaml, and similarly test2.yaml
-[root@localhost student]# kubectl apply -f test1.yaml
-student.stable.k8s.io/test1 created
-
-4 kubectl describe std test1
+cd ${GOPATH}/src/github.com/apache/submarine/submarine-cloud
+make build
 ```
 
-## 2. Preparation before automatic code generation
+## Run submarine operator locally
+
+Start a kind cluster
+
+```
+cd ${GOPATH}/src/github.com/apache/submarine/submarine-cloud/hack
+./kind-cluster-build.sh --name "submarine"
+```
+
+Run submarine operator
+```
+# create submarine crd
+kubectl apply -f ../manifests/crd.yaml
+KUBECONFIG=$(kind get kubeconfig-path --name submarine)
+./submarine-operator run config=${KUBECONFIG}
+```
+
+## Submarine operator implementation steps
+
+### Preparation before automatic code generation
 
 1 Create a new directory under the samplecontroller directory and add the following files
 
@@ -48,7 +59,7 @@ go get -u k8s.io/code-generator/...
 go get -u k8s.io/apiextensions-apiserver/...
 ```
 
-## 3. Automatically generate Client, Informer, WorkQueue related code
+### Automatically generate Client, Informer, WorkQueue related code
 ```
 [root@localhost launcher-k8s]# export GOPATH=/root/mygolang
 [root@localhost launcher-k8s]# ./hack/update-codegen.sh
@@ -107,11 +118,11 @@ pkg
 │               └── student.go
 ```
 
-## 4. Write controller business logic
+### Write controller business logic
 
 Refer to the sample-controller project, it is relatively simple to write
 
-## 5. Startup controller
+### Startup controller
 ```
 [root@localhost samplecontroller]# ./samplecontroller
 // This is a simple custom k8s controller, 
@@ -141,16 +152,10 @@ ERROR: logging before flag.Parse: I0415 15:02:28.719547  109337 samplecontroller
 
 ```
 
-## 6. Modify the crd instance file to observe the controller
+### Modify the crd instance file to observe the controller
 ```
 ........
 kubectl apply -f test1.yaml
 kubectl describe std test1
 ```
 
-## Development
-1. go mod download
-Dependency packages will be automatically downloaded to `$GOPATH/pkg/mod`. Multiple projects can share cached mods.
-
-2. go mod vendor
-Copy from the mod to the vendor directory of your project so the IDE can recognize it!
