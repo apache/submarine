@@ -22,9 +22,6 @@ cd $ROOT
 
 source $ROOT/hack/lib.sh
 
-hack::ensure_kubectl
-hack::ensure_kind
-
 usage() {
     cat <<EOF
 This script use kind to create Kubernetes cluster, about kind please refer: https://kind.sigs.k8s.io/
@@ -89,13 +86,21 @@ echo "k8sVersion: ${k8sVersion}"
 echo "volumeNum: ${volumeNum}"
 
 # check requirements
-for requirement in kind docker
+for requirement in kind docker kubectl
 do
     echo "############ check ${requirement} ##############"
     if hash ${requirement} 2>/dev/null;then
         echo "${requirement} have installed"
     else
         echo "this script needs ${requirement}, please install ${requirement} first."
+        if test ${requirement} = "kind"; then
+            hack::ensure_kind
+            echo "Please add $KIND_BIN to PATH variable or copy it to one of the locations $PATH"
+        fi
+        if test ${requirement} = "kubectl"; then
+            hack::ensure_kubectl
+            echo "Please add $KUBECTL_BIN to PATH variable or copy it to one of the locations $PATH"
+        fi
         exit 1
     fi
 done
@@ -148,7 +153,7 @@ export KUBECONFIG="$(kind get kubeconfig-path --name=${clusterName})"
 
 echo "deploy docker registry in kind"
 registryNode=${clusterName}-control-plane
-registryNodeIP=$($KUBECTL_BIN get nodes ${registryNode} -o template --template='{{range.status.addresses}}{{if eq .type "InternalIP"}}{{.address}}{{end}}{{end}}')
+registryNodeIP=$(kubectl get nodes ${registryNode} -o template --template='{{range.status.addresses}}{{if eq .type "InternalIP"}}{{.address}}{{end}}{{end}}')
 registryFile=${workDir}/registry.yaml
 
 cat <<EOF >${registryFile}
@@ -219,10 +224,10 @@ spec:
           - tcp-listen:5000,fork,reuseaddr
           - tcp-connect:${registryNodeIP}:5000
 EOF
-$KUBECTL_BIN apply -f ${registryFile}
+kubectl apply -f ${registryFile}
 
 echo "init submarine env"
-$KUBECTL_BIN create ns submarine-e2e
+kubectl create ns submarine-e2e
 
 echo "############# success create cluster:[${clusterName}] #############"
 
