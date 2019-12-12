@@ -47,16 +47,8 @@
       <version>${hive.version}</version>
       <exclusions>
         <exclusion>
-          <groupId>com.sun.jersey</groupId>
-          <artifactId>jersey-core</artifactId>
-        </exclusion>
-        <exclusion>
           <groupId>io.netty</groupId>
           <artifactId>netty-all</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>com.sun.jersey</groupId>
-          <artifactId>jersey-client</artifactId>
         </exclusion>
         <exclusion>
           <groupId>com.google.protobuf</groupId>
@@ -129,6 +121,18 @@
         <exclusion>
           <groupId>org.apache.logging.log4j</groupId>
           <artifactId>log4j-slf4j-impl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.jackson</groupId>
+          <artifactId>jackson-core-asl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.codehaus.jackson</groupId>
+          <artifactId>jackson-mapper-asl</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -238,6 +242,10 @@
           <groupId>io.netty</groupId>
           <artifactId>netty</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>jdk.tools</artifactId>
+          <groupId>jdk.tools</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -318,19 +326,6 @@
                 </filter>
               </filters>
               <relocations>
-                <relocation>
-                  <pattern>org</pattern>
-                  <shadedPattern>${shaded.dependency.prefix}.org</shadedPattern>
-                  <excludes>
-                    <exclude>org/apache/submarine/*</exclude>
-                    <exclude>org/apache/submarine/**/*</exclude>
-                    <exclude>org/slf4j/*</exclude>
-                    <exclude>org/slf4j/**/*</exclude>
-                    <exclude>org/apache/log4j/*</exclude>
-                    <exclude>org/apache/log4j/**/*</exclude>
-                    <exclude>**/pom.xml</exclude>
-                  </excludes>
-                </relocation>
                 <relocation>
                   <pattern>com.google</pattern>
                   <shadedPattern>${shaded.dependency.prefix}.com.google</shadedPattern>
