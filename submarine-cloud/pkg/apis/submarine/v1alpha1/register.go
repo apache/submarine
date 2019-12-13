@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 // The purpose of this file is to make the client know the
-// Student type API object through the addKnownTypes method:
+// Submarine type API object through the addKnownTypes method:
 package v1alpha1
 
 import (
