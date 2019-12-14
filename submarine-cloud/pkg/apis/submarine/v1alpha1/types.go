@@ -125,8 +125,8 @@ const (
 	// ClusterStatusOK ClusterStatus OK
 	ClusterStatusOK ClusterStatus = "OK"
 
-	// ClusterStatusKO ClusterStatus KO
-	ClusterStatusKO ClusterStatus = "KO"
+	// ClusterStatusError ClusterStatus Error
+	ClusterStatusError ClusterStatus = "Error"
 
 	// ClusterStatusScaling ClusterStatus Scaling
 	ClusterStatusScaling ClusterStatus = "Scaling"

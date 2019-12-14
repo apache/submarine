@@ -185,7 +185,7 @@ func (c *Controller) sync(key string) (bool, error) {
 		return false, nil
 	}
 
-	if !rapi.IsSubmarineClusterDefaulted(sharedSubmarineCluster) {
+	if !rapi.IsDefaultedSubmarineCluster(sharedSubmarineCluster) {
 		defaultedSubmarineCluster := rapi.DefaultSubmarineCluster(sharedSubmarineCluster)
 		if _, err = c.updateHandler(defaultedSubmarineCluster); err != nil {
 			glog.Errorf("SubmarineCluster %s/%s updated error:, err", namespace, name)

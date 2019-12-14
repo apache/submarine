@@ -21,8 +21,8 @@ import (
 	kapiv1 "k8s.io/api/core/v1"
 )
 
-// IsSubmarineClusterDefaulted check if the SubmarineCluster is already defaulted
-func IsSubmarineClusterDefaulted(rc *SubmarineCluster) bool {
+// IsDefaultedSubmarineCluster check if the SubmarineCluster is already defaulted
+func IsDefaultedSubmarineCluster(rc *SubmarineCluster) bool {
 	if rc.Spec.NumberOfMaster == nil {
 		return false
 	}
