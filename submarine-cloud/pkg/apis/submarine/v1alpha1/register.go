@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 // The purpose of this file is to make the client know the
-// Student type API object through the addKnownTypes method:
+// Submarine type API object through the addKnownTypes method:
 package v1alpha1
 
 import (
@@ -46,11 +46,22 @@ func Kind(kind string) schema.GroupKind {
 func addKnownTypes(scheme *runtime.Scheme) error {
 	scheme.AddKnownTypes(
 		SchemeGroupVersion,
-		&SubmarineServer{},
-		&SubmarineServerList{},
+		&SubmarineCluster{},
+		&SubmarineClusterList{},
 	)
 
 	// register the type in the scheme
 	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
 	return nil
 }
+
+const (
+	// ResourcePlural is the id to indentify pluarals
+	ResourcePlural = "submarineclusters"
+	// ResourceSingular represents the id for identify singular resource
+	ResourceSingular = "submarinecluster"
+	// ResourceKind represent the resource kind
+	ResourceKind = "SubmarineCluster"
+	// ResourceVersion represent the resource version
+	ResourceVersion = "v1alpha1"
+)

@@ -14,28 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package signals
+package signal
 
 import (
+	"context"
 	"os"
 	"os/signal"
+	"syscall"
+
+	"github.com/golang/glog"
 )
 
-var onlyOneSignalHandler = make(chan struct{})
-
-func SetupSignalHandler() (stopCh <-chan struct{}) {
-	close(onlyOneSignalHandler) // panics when called twice
-
-	stop := make(chan struct{})
-	c := make(chan os.Signal, 2)
-	signal.Notify(c, shutdownSignals...)
-	go func() {
-		<-c
-		close(stop)
-		<-c
-		os.Exit(1) // second signal. Exit directly.
-	}()
-
-	return stop
+// HandleSignal used to listen several os signal and then execute the cancel function
+func HandleSignal(cancelFunc context.CancelFunc) {
+	sigc := make(chan os.Signal, 1)
+	signal.Notify(sigc,
+		syscall.SIGHUP,
+		syscall.SIGINT,
+		syscall.SIGTERM,
+		syscall.SIGQUIT)
+	sig := <-sigc
+	glog.Infof("Signal received: %s, stop the process", sig.String())
+	cancelFunc()
 }

@@ -19,10 +19,10 @@
 
 package v1alpha1
 
-// SubmarineServerListerExpansion allows custom methods to be added to
-// SubmarineServerLister.
-type SubmarineServerListerExpansion interface{}
+// SubmarineClusterListerExpansion allows custom methods to be added to
+// SubmarineClusterLister.
+type SubmarineClusterListerExpansion interface{}
 
-// SubmarineServerNamespaceListerExpansion allows custom methods to be added to
-// SubmarineServerNamespaceLister.
-type SubmarineServerNamespaceListerExpansion interface{}
+// SubmarineClusterNamespaceListerExpansion allows custom methods to be added to
+// SubmarineClusterNamespaceLister.
+type SubmarineClusterNamespaceListerExpansion interface{}

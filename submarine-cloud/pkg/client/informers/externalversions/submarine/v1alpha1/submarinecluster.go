@@ -32,59 +32,59 @@ import (
 	cache "k8s.io/client-go/tools/cache"
 )
 
-// SubmarineServerInformer provides access to a shared informer and lister for
-// SubmarineServers.
-type SubmarineServerInformer interface {
+// SubmarineClusterInformer provides access to a shared informer and lister for
+// SubmarineClusters.
+type SubmarineClusterInformer interface {
 	Informer() cache.SharedIndexInformer
-	Lister() v1alpha1.SubmarineServerLister
+	Lister() v1alpha1.SubmarineClusterLister
 }
 
-type submarineServerInformer struct {
+type submarineClusterInformer struct {
 	factory          internalinterfaces.SharedInformerFactory
 	tweakListOptions internalinterfaces.TweakListOptionsFunc
 	namespace        string
 }
 
-// NewSubmarineServerInformer constructs a new informer for SubmarineServer type.
+// NewSubmarineClusterInformer constructs a new informer for SubmarineCluster type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewSubmarineServerInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
-	return NewFilteredSubmarineServerInformer(client, namespace, resyncPeriod, indexers, nil)
+func NewSubmarineClusterInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers) cache.SharedIndexInformer {
+	return NewFilteredSubmarineClusterInformer(client, namespace, resyncPeriod, indexers, nil)
 }
 
-// NewFilteredSubmarineServerInformer constructs a new informer for SubmarineServer type.
+// NewFilteredSubmarineClusterInformer constructs a new informer for SubmarineCluster type.
 // Always prefer using an informer factory to get a shared informer instead of getting an independent
 // one. This reduces memory footprint and number of connections to the server.
-func NewFilteredSubmarineServerInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
+func NewFilteredSubmarineClusterInformer(client versioned.Interface, namespace string, resyncPeriod time.Duration, indexers cache.Indexers, tweakListOptions internalinterfaces.TweakListOptionsFunc) cache.SharedIndexInformer {
 	return cache.NewSharedIndexInformer(
 		&cache.ListWatch{
 			ListFunc: func(options v1.ListOptions) (runtime.Object, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.SubmarineV1alpha1().SubmarineServers(namespace).List(options)
+				return client.SubmarineV1alpha1().SubmarineClusters(namespace).List(options)
 			},
 			WatchFunc: func(options v1.ListOptions) (watch.Interface, error) {
 				if tweakListOptions != nil {
 					tweakListOptions(&options)
 				}
-				return client.SubmarineV1alpha1().SubmarineServers(namespace).Watch(options)
+				return client.SubmarineV1alpha1().SubmarineClusters(namespace).Watch(options)
 			},
 		},
-		&submarinev1alpha1.SubmarineServer{},
+		&submarinev1alpha1.SubmarineCluster{},
 		resyncPeriod,
 		indexers,
 	)
 }
 
-func (f *submarineServerInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
-	return NewFilteredSubmarineServerInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
+func (f *submarineClusterInformer) defaultInformer(client versioned.Interface, resyncPeriod time.Duration) cache.SharedIndexInformer {
+	return NewFilteredSubmarineClusterInformer(client, f.namespace, resyncPeriod, cache.Indexers{cache.NamespaceIndex: cache.MetaNamespaceIndexFunc}, f.tweakListOptions)
 }
 
-func (f *submarineServerInformer) Informer() cache.SharedIndexInformer {
-	return f.factory.InformerFor(&submarinev1alpha1.SubmarineServer{}, f.defaultInformer)
+func (f *submarineClusterInformer) Informer() cache.SharedIndexInformer {
+	return f.factory.InformerFor(&submarinev1alpha1.SubmarineCluster{}, f.defaultInformer)
 }
 
-func (f *submarineServerInformer) Lister() v1alpha1.SubmarineServerLister {
-	return v1alpha1.NewSubmarineServerLister(f.Informer().GetIndexer())
+func (f *submarineClusterInformer) Lister() v1alpha1.SubmarineClusterLister {
+	return v1alpha1.NewSubmarineClusterLister(f.Informer().GetIndexer())
 }

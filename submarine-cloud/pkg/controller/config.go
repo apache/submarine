@@ -14,14 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package controller
 
-// +build !windows
+import "github.com/apache/submarine/submarine-cloud/pkg/config"
 
-package signals
+// Config contains the Controller settings
+type Config struct {
+	NbWorker  int
+	submarine config.Submarine
+}
 
-import (
-	"os"
-	"syscall"
-)
-
-var shutdownSignals = []os.Signal{os.Interrupt, syscall.SIGTERM}
+// NewConfig builds and returns new Config instance
+func NewConfig(nbWorker int, submarine config.Submarine) *Config {
+	return &Config{
+		NbWorker:  nbWorker,
+		submarine: submarine,
+	}
+}

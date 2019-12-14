@@ -25,8 +25,8 @@ import (
 
 // Interface provides access to all the informers in this group version.
 type Interface interface {
-	// SubmarineServers returns a SubmarineServerInformer.
-	SubmarineServers() SubmarineServerInformer
+	// SubmarineClusters returns a SubmarineClusterInformer.
+	SubmarineClusters() SubmarineClusterInformer
 }
 
 type version struct {
@@ -40,7 +40,7 @@ func New(f internalinterfaces.SharedInformerFactory, namespace string, tweakList
 	return &version{factory: f, namespace: namespace, tweakListOptions: tweakListOptions}
 }
 
-// SubmarineServers returns a SubmarineServerInformer.
-func (v *version) SubmarineServers() SubmarineServerInformer {
-	return &submarineServerInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+// SubmarineClusters returns a SubmarineClusterInformer.
+func (v *version) SubmarineClusters() SubmarineClusterInformer {
+	return &submarineClusterInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
 }
