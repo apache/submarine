@@ -19,31 +19,10 @@
 
 package org.apache.submarine.server.submitter.yarnservice.tensorflow;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import org.apache.submarine.commons.runtime.conf.Envs;
 import org.apache.submarine.server.submitter.yarnservice.YarnServiceUtils;
 
 public class TensorFlowConfigEnvGenerator {
-
-  private static final ObjectMapper OBJECT_MAPPER = createObjectMapper();
-
-  private static ObjectMapper createObjectMapper() {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.setAnnotationIntrospector(
-        new JaxbAnnotationIntrospector(TypeFactory.defaultInstance()));
-    mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-    mapper.configure(SerializationFeature.FLUSH_AFTER_WRITE_VALUE, false);
-    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    return mapper;
-  }
 
   public static String getTFConfigEnv(String componentName, int nWorkers,
       int nPs, String serviceName, String userName, String domain) {
@@ -69,34 +48,57 @@ public class TensorFlowConfigEnvGenerator {
       this.endpointSuffix = endpointSuffix;
     }
 
+    // Can't just return standard json string. Because the command,
+    // export TF_CONFIG="json", would omit " in json string. " needs to be
+    // changed to \"
     String toJson() {
-      ObjectNode rootNode = OBJECT_MAPPER.createObjectNode();
+      String json = "{\\\"cluster\\\":{";
 
-      ObjectNode cluster = rootNode.putObject("cluster");
-      createComponentArray(cluster, "master", 1);
-      createComponentArray(cluster, "worker", nWorkers - 1);
-      createComponentArray(cluster, "ps", nPS);
+      String master = getComponentArrayJson("master", 1, endpointSuffix)
+          + ",";
+      String worker = getComponentArrayJson("worker", nWorkers - 1,
+          endpointSuffix) + ",";
+      String ps = getComponentArrayJson("ps", nPS, endpointSuffix) + "},";
 
-      ObjectNode task = rootNode.putObject("task");
-      task.put("type", componentName);
-      task.put("index", "$" + Envs.TASK_INDEX_ENV);
-      task.put("environment", "cloud");
-      try {
-        return OBJECT_MAPPER.writeValueAsString(rootNode);
-      } catch (JsonProcessingException e) {
-        throw new RuntimeException("Failed to serialize TF config env JSON!",
-            e);
-      }
+      StringBuilder sb = new StringBuilder();
+      sb.append("\\\"task\\\":{");
+      sb.append(" \\\"type\\\":\\\"");
+      sb.append(componentName);
+      sb.append("\\\",");
+      sb.append(" \\\"index\\\":");
+      sb.append('$');
+      sb.append(Envs.TASK_INDEX_ENV + "},");
+      String task = sb.toString();
+      String environment = "\\\"environment\\\":\\\"cloud\\\"}";
+
+      sb = new StringBuilder();
+      sb.append(json);
+      sb.append(master);
+      sb.append(worker);
+      sb.append(ps);
+      sb.append(task);
+      sb.append(environment);
+      return sb.toString();
     }
 
-    private void createComponentArray(ObjectNode cluster, String name,
-          int count) {
-      ArrayNode array = cluster.putArray(name);
+    private String getComponentArrayJson(String componentName, int count,
+        String endpointSuffix) {
+      String component = "\\\"" + componentName + "\\\":";
+      StringBuilder array = new StringBuilder();
+      array.append("[");
       for (int i = 0; i < count; i++) {
-        String componentValue = String.format("%s-%d%s", name, i,
-            endpointSuffix);
-        array.add(componentValue);
+        array.append("\\\"");
+        array.append(componentName);
+        array.append("-");
+        array.append(i);
+        array.append(endpointSuffix);
+        array.append("\\\"");
+        if (i != count - 1) {
+          array.append(",");
+        }
       }
+      array.append("]");
+      return component + array.toString();
     }
   }
 }
