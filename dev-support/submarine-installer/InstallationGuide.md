@@ -381,82 +381,12 @@ If there are some errors, we could check the following configuration.
    ls -l /usr/local/nvidia/lib64 | grep libcuda.so
    ```
 
-### Etcd Installation
-
-etcd is a distributed reliable key-value store for the most critical data of a distributed system, Registration and discovery of services used in containers.
-You can also choose alternatives like zookeeper, Consul.
-
-To install Etcd on specified servers, we can run Submarine-installer/install.sh
-
-```shell
-$ ./Submarine-installer/install.sh
-# Etcd status
-systemctl status Etcd.service
-```
-
-Check Etcd cluster health
-
-```shell
-$ etcdctl cluster-health
-member 3adf2673436aa824 is healthy: got healthy result from http://${etcd_host_ip1}:2379
-member 85ffe9aafb7745cc is healthy: got healthy result from http://${etcd_host_ip2}:2379
-member b3d05464c356441a is healthy: got healthy result from http://${etcd_host_ip3}:2379
-cluster is healthy
-
-$ etcdctl member list
-3adf2673436aa824: name=etcdnode3 peerURLs=http://${etcd_host_ip1}:2380 clientURLs=http://${etcd_host_ip1}:2379 isLeader=false
-85ffe9aafb7745cc: name=etcdnode2 peerURLs=http://${etcd_host_ip2}:2380 clientURLs=http://${etcd_host_ip2}:2379 isLeader=false
-b3d05464c356441a: name=etcdnode1 peerURLs=http://${etcd_host_ip3}:2380 clientURLs=http://${etcd_host_ip3}:2379 isLeader=true
-```
-
-
-
-### Calico Installation
-
-Calico creates and manages a flat three-tier network, and each container is assigned a routable ip. We just add the steps here for your convenience.
-You can also choose alternatives like Flannel, OVS.
-
-To install Calico on specified servers, we can run Submarine-installer/install.sh
-
-```
-systemctl start calico-node.service
-systemctl status calico-node.service
-```
-
-#### Check Calico Network
-
-```shell
-# Run the following command to show the all host status in the cluster except localhost.
-$ calicoctl node status
-Calico process is running.
-
-IPv4 BGP status
-+---------------+-------------------+-------+------------+-------------+
-| PEER ADDRESS  |     PEER TYPE     | STATE |   SINCE    |    INFO     |
-+---------------+-------------------+-------+------------+-------------+
-| ${host_ip1} | node-to-node mesh | up    | 2018-09-21 | Established |
-| ${host_ip2} | node-to-node mesh | up    | 2018-09-21 | Established |
-| ${host_ip3} | node-to-node mesh | up    | 2018-09-21 | Established |
-+---------------+-------------------+-------+------------+-------------+
-
-IPv6 BGP status
-No IPv6 peers found.
-```
-
-Create containers to validate calico network
-
-```
-docker network create --driver calico --ipam-driver calico-ipam calico-network
-docker run --net calico-network --name workload-A -tid busybox
-docker run --net calico-network --name workload-B -tid busybox
-docker exec workload-A ping workload-B
-```
-
 
 ## Hadoop Installation
 
 ### Get Hadoop Release
-You can either get Hadoop release binary or compile from source code. Please follow the https://hadoop.apache.org/ guides.
+You can either get Hadoop release binary or compile from source code. Please follow the guides from [Hadoop Homepage](https://hadoop.apache.org/).
+For hadoop cluster setup, please refer to [Hadoop Cluster Setup](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/ClusterSetup.html)
 
 
 ### Start yarn service
@@ -468,19 +398,11 @@ YARN_LOGFILE=timeline.log ./sbin/yarn-daemon.sh start timelineserver
 YARN_LOGFILE=mr-historyserver.log ./sbin/mr-jobhistory-daemon.sh start historyserver
 ```
 
-### Start yarn registery dns service
-
-```
-sudo YARN_LOGFILE=registrydns.log ./yarn-daemon.sh start registrydns
-```
-
 ### Test with a MR wordcount job
 
 ```
 ./bin/hadoop jar /home/hadoop/hadoop-current/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.0-SNAPSHOT.jar wordcount /tmp/wordcount.txt /tmp/wordcount-output4
 ```
-
-
 
 ## Tensorflow Job with CPU
 
@@ -599,3 +521,187 @@ Add configurations in container-executor.cfg
    root=/sys/fs/cgroup
    yarn-hierarchy=/hadoop-yarn
    ```
+
+## Yarn Service Runtime Requirement (Deprecated)
+
+The function of "yarn native service" is available since hadoop 3.1.0.
+Submarine supports to utilize yarn native service to submit a ML job. However, as
+there are several other components required. It is hard to enable
+and maintain the components. So yarn service runtime is deprecated since submarine 0.3.0.
+We recommend to use YarnRuntime instead. If you still want to enable it, please
+follow these steps.
+
+### Etcd Installation
+
+etcd is a distributed reliable key-value store for the most critical data of a distributed system, Registration and discovery of services used in containers.
+You can also choose alternatives like zookeeper, Consul.
+
+To install Etcd on specified servers, we can run Submarine-installer/install.sh
+
+```shell
+$ ./Submarine-installer/install.sh
+# Etcd status
+systemctl status Etcd.service
+```
+
+Check Etcd cluster health
+
+```shell
+$ etcdctl cluster-health
+member 3adf2673436aa824 is healthy: got healthy result from http://${etcd_host_ip1}:2379
+member 85ffe9aafb7745cc is healthy: got healthy result from http://${etcd_host_ip2}:2379
+member b3d05464c356441a is healthy: got healthy result from http://${etcd_host_ip3}:2379
+cluster is healthy
+
+$ etcdctl member list
+3adf2673436aa824: name=etcdnode3 peerURLs=http://${etcd_host_ip1}:2380 clientURLs=http://${etcd_host_ip1}:2379 isLeader=false
+85ffe9aafb7745cc: name=etcdnode2 peerURLs=http://${etcd_host_ip2}:2380 clientURLs=http://${etcd_host_ip2}:2379 isLeader=false
+b3d05464c356441a: name=etcdnode1 peerURLs=http://${etcd_host_ip3}:2380 clientURLs=http://${etcd_host_ip3}:2379 isLeader=true
+```
+
+### Calico Installation
+
+Calico creates and manages a flat three-tier network, and each container is assigned a routable ip. We just add the steps here for your convenience.
+You can also choose alternatives like Flannel, OVS.
+
+To install Calico on specified servers, we can run Submarine-installer/install.sh
+
+```
+systemctl start calico-node.service
+systemctl status calico-node.service
+```
+
+#### Check Calico Network
+
+```shell
+# Run the following command to show the all host status in the cluster except localhost.
+$ calicoctl node status
+Calico process is running.
+
+IPv4 BGP status
++---------------+-------------------+-------+------------+-------------+
+| PEER ADDRESS  |     PEER TYPE     | STATE |   SINCE    |    INFO     |
++---------------+-------------------+-------+------------+-------------+
+| ${host_ip1} | node-to-node mesh | up    | 2018-09-21 | Established |
+| ${host_ip2} | node-to-node mesh | up    | 2018-09-21 | Established |
+| ${host_ip3} | node-to-node mesh | up    | 2018-09-21 | Established |
++---------------+-------------------+-------+------------+-------------+
+
+IPv6 BGP status
+No IPv6 peers found.
+```
+
+Create containers to validate calico network
+
+```
+docker network create --driver calico --ipam-driver calico-ipam calico-network
+docker run --net calico-network --name workload-A -tid busybox
+docker run --net calico-network --name workload-B -tid busybox
+docker exec workload-A ping workload-B
+```
+
+### Enable calico network for docker container
+Set yarn-site.xml to use bridge for docker container
+
+```
+<property>
+    <name>yarn.nodemanager.runtime.linux.docker.default-container-network</name>
+    <value>calico-network</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.runtime.linux.allowed-runtimes</name>
+    <value>default,docker</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.runtime.linux.docker.allowed-container-networks</name>
+    <value>host,none,bridge,calico-network</value>
+  </property>
+```
+
+Add calico-network to container-executor.cfg
+
+```
+docker.allowed.networks=bridge,host,none,calico-network
+```
+
+Then restart all nodemanagers.
+
+### Start yarn registery dns service
+
+Yarn registry nds server exposes existing service-discovery information via DNS
+and enables docker containers to IP mappings. By using it, the containers of a 
+ML job knows how to communicate with each other.
+
+Please specify a server to start yarn registery dns service. For details please
+refer to [Registry DNS Server](http://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/yarn-service/RegistryDNS.html)
+
+```
+sudo YARN_LOGFILE=registrydns.log ./yarn-daemon.sh start registrydns
+```
+
+### Run submarine job
+
+Set submarine.runtime.class to YarnServiceRuntimeFactory in submarine-site.xml.
+```
+<property>
+    <name>submarine.runtime.class</name>
+    <value>org.apache.submarine.server.submitter.yarnservice.YarnServiceRuntimeFactory</value>
+    <description>RuntimeFactory for Submarine jobs</description>
+  </property>
+```
+
+#### Standalone Mode
+
+Suppose we want to submit a tensorflow job named standalone-tf, destroy any application with the same name and clean up historical job directories.
+
+```bash
+./bin/yarn app -destroy standalone-tf
+./bin/hdfs dfs -rmr hdfs://${dfs_name_service}/tmp/cifar-10-jobdir
+```
+where ${dfs_name_service} is the hdfs name service you use.
+
+Run a standalone tensorflow job
+
+```
+CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`:${SUBMARINE_HOME}/submarine-all-${SUBMARINE_VERSION}.jar:
+${SUBMARINE_HOME}/conf: \
+java org.apache.submarine.client.cli.Cli job run \
+ --env DOCKER_JAVA_HOME=/opt/java \
+ --env YARN_CONTAINER_RUNTIME_DOCKER_CONTAINER_NETWORK=calico-network \
+ --env DOCKER_HADOOP_HDFS_HOME=/hadoop-3.1.0 --name standalone-tf \
+ --docker_image dockerfile-cpu-tf1.8.0-with-models \
+ --input_path hdfs://${dfs_name_service}/tmp/cifar-10-data \
+ --checkpoint_path hdfs://${dfs_name_service}/user/hadoop/tf-checkpoint \
+ --worker_resources memory=4G,vcores=2 --verbose \
+ --worker_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=hdfs://${dfs_name_service}/tmp/cifar-10-data --job-dir=hdfs://${dfs_name_service}/tmp/cifar-10-jobdir --train-steps=500 --eval-batch-size=16 --train-batch-size=16 --num-gpus=0"
+```
+
+#### Distributed Mode
+
+Clean up apps with the same name
+
+```bash
+./bin/yarn app -destroy distributed-tf
+./bin/hdfs dfs -rmr hdfs://${dfs_name_service}/tmp/cifar-10-jobdir
+```
+
+Run a distributed tensorflow job
+
+```
+CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`:${SUBMARINE_HOME}/submarine-all-${SUBMARINE_VERSION}.jar:
+${SUBMARINE_HOME}/conf: \
+java org.apache.submarine.client.cli.Cli job run \
+ --env DOCKER_JAVA_HOME=/opt/java \
+ --env YARN_CONTAINER_RUNTIME_DOCKER_CONTAINER_NETWORK=calico-network \
+ --env DOCKER_HADOOP_HDFS_HOME=/hadoop-3.1.0 --name distributed-tf \
+ --env YARN_CONTAINER_RUNTIME_DOCKER_CONTAINER_NETWORK=calico-network \
+ --docker_image dockerfile-cpu-tf1.8.0-with-models \
+ --input_path hdfs://${dfs_name_service}/tmp/cifar-10-data \
+ --checkpoint_path hdfs://${dfs_name_service}/user/hadoop/tf-distributed-checkpoint \
+ --worker_resources memory=4G,vcores=2 --verbose \
+ --num_ps 1 \
+ --ps_resources memory=4G,vcores=2 \
+ --ps_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=hdfs://${dfs_name_service}/tmp/cifar-10-data --job-dir=hdfs://${dfs_name_service}/tmp/cifar-10-jobdir --num-gpus=0" \
+ --num_workers 4 \
+ --worker_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=hdfs://${dfs_name_service}/tmp/cifar-10-data --job-dir=hdfs://${dfs_name_service}/tmp/cifar-10-jobdir --train-steps=500 --eval-batch-size=16 --train-batch-size=16 --sync --num-gpus=0"
+```

@@ -72,7 +72,7 @@ sudo /usr/local/cuda-10.0/bin/uninstall_cuda_10.0.pl
 sudo /usr/bin/nvidia-uninstall
 ```
 
-安装nvidia-detect，用于检查显卡版本
+安装 nvidia-detect，用于检查显卡版本
 
 ```
 yum install nvidia-detect
@@ -85,7 +85,7 @@ This device requires the current 390.87 NVIDIA driver kmod-nvidia
 An Intel display controller was also detected
 ```
 
-注意这里的信息 [Quadro K620] 和390.87。
+注意这里的信息 [Quadro K620] 和 390.87。
 下载 [NVIDIA-Linux-x86_64-390.87.run](https://www.nvidia.com/object/linux-amd64-display-archive.html)
 
 
@@ -266,10 +266,10 @@ https://github.com/NVIDIA/nvidia-docker/tree/1.0
 
 ### Tensorflow Image
 
-CUDNN 和 CUDA 其实不需要在物理机上安装，因为 Sumbmarine 中提供了已经包含了CUDNN 和 CUDA 的镜像文件，基础的Dockfile可参见WriteDockerfile.md
+CUDNN 和 CUDA 其实不需要在物理机上安装，因为 Sumbmarine 中提供了已经包含了 CUDNN 和 CUDA 的镜像文件，基础的 Dockfile 可参见 WriteDockerfile.md
 
 
-上述images无法支持kerberos环境，如果需要kerberos可以使用如下Dockfile
+上述 images 无法支持 kerberos 环境，如果需要 kerberos 可以使用如下 Dockfile
 
 ```shell
 FROM nvidia/cuda:9.0-cudnn7-devel-ubuntu16.04
@@ -368,83 +368,16 @@ $ python >> tf.__version__
    ls -l /usr/local/nvidia/lib64 | grep libcuda.so
    ```
 
-### 安装 Etcd
-
-运行 Submarine/install.sh 脚本，就可以在指定服务器中安装 Etcd 组件和服务自启动脚本。
-
-```shell
-$ ./Submarine/install.sh
-# 通过如下命令查看 Etcd 服务状态
-systemctl status Etcd.service
-```
-
-检查 Etcd 服务状态
-
-```shell
-$ etcdctl cluster-health
-member 3adf2673436aa824 is healthy: got healthy result from http://${etcd_host_ip1}:2379
-member 85ffe9aafb7745cc is healthy: got healthy result from http://${etcd_host_ip2}:2379
-member b3d05464c356441a is healthy: got healthy result from http://${etcd_host_ip3}:2379
-cluster is healthy
-
-$ etcdctl member list
-3adf2673436aa824: name=etcdnode3 peerURLs=http://${etcd_host_ip1}:2380 clientURLs=http://${etcd_host_ip1}:2379 isLeader=false
-85ffe9aafb7745cc: name=etcdnode2 peerURLs=http://${etcd_host_ip2}:2380 clientURLs=http://${etcd_host_ip2}:2379 isLeader=false
-b3d05464c356441a: name=etcdnode1 peerURLs=http://${etcd_host_ip3}:2380 clientURLs=http://${etcd_host_ip3}:2379 isLeader=true
-```
-其中，${etcd_host_ip*} 是etcd服务器的ip
-
-
-### 安装 Calico
-
-运行 Submarine/install.sh 脚本，就可以在指定服务器中安装 Calico 组件和服务自启动脚本。
-
-```
-systemctl start calico-node.service
-systemctl status calico-node.service
-```
-
-#### 检查 Calico 网络
-
-```shell
-# 执行如下命令，注意：不会显示本服务器的状态，只显示其他的服务器状态
-$ calicoctl node status
-Calico process is running.
-
-IPv4 BGP status
-+---------------+-------------------+-------+------------+-------------+
-| PEER ADDRESS  |     PEER TYPE     | STATE |   SINCE    |    INFO     |
-+---------------+-------------------+-------+------------+-------------+
-| ${host_ip1} | node-to-node mesh | up    | 2018-09-21 | Established |
-| ${host_ip2} | node-to-node mesh | up    | 2018-09-21 | Established |
-| ${host_ip3} | node-to-node mesh | up    | 2018-09-21 | Established |
-+---------------+-------------------+-------+------------+-------------+
-
-IPv6 BGP status
-No IPv6 peers found.
-```
-
-创建docker container，验证calico网络
-
-```
-docker network create --driver calico --ipam-driver calico-ipam calico-network
-docker run --net calico-network --name workload-A -tid busybox
-docker run --net calico-network --name workload-B -tid busybox
-docker exec workload-A ping workload-B
-```
-
-
 ## 安装 Hadoop
 
-### 编译 Hadoop
-
-```
-mvn package -Pdist -DskipTests -Dtar
-```
-
+### 安装 Hadoop
+首先，我们通过源码编译或者直接从官网 [Hadoop Homepage](https://hadoop.apache.org/)下载获取 hadoop 包。
+然后，请参考 [Hadoop Cluster Setup](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/ClusterSetup.html)
+进行 Hadoop 集群安装。
 
 
-### 启动 YARN服务
+
+### 启动 YARN 服务
 
 ```
 YARN_LOGFILE=resourcemanager.log ./sbin/yarn-daemon.sh start resourcemanager
@@ -452,13 +385,6 @@ YARN_LOGFILE=nodemanager.log ./sbin/yarn-daemon.sh start nodemanager
 YARN_LOGFILE=timeline.log ./sbin/yarn-daemon.sh start timelineserver
 YARN_LOGFILE=mr-historyserver.log ./sbin/mr-jobhistory-daemon.sh start historyserver
 ```
-
-### 启动 registery dns 服务
-
-```
-sudo YARN_LOGFILE=registrydns.log ./yarn-daemon.sh start registrydns
-```
-
 
 
 ### 测试 wordcount
@@ -614,6 +540,182 @@ Distributed-shell + GPU + cgroup
  --worker_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=hdfs://${dfs_name_service}/tmp/cifar-10-data --job-dir=hdfs://${dfs_name_service}/tmp/cifar-10-jobdir --train-steps=500 --eval-batch-size=16 --train-batch-size=16 --sync --num-gpus=1"
 ```
 
+## Yarn Service Runtime (不推荐)
+
+hadoop 3.1.0 提供了 yarn native service 功能，Submarine 可以利用 yarn native service 提交分布式机器学习任务。
+但是，由于使用 yarn native service 会引入一些额外的组件，导致部署和运维服务比较困难，因而在 Submarine 0.3.0之后 Yarn Server Runtime 不再推荐使用。我们建议直接使用
+YarnRuntime，这样可以在 yarn 2.9 上提交机器学习任务。
+开启 Yarn Service Runtime，可以参照下面的方法
+
+### 安装 Etcd
+
+运行 Submarine/install.sh 脚本，就可以在指定服务器中安装 Etcd 组件和服务自启动脚本。
+
+```shell
+$ ./Submarine/install.sh
+# 通过如下命令查看 Etcd 服务状态
+systemctl status Etcd.service
+```
+
+检查 Etcd 服务状态
+
+```shell
+$ etcdctl cluster-health
+member 3adf2673436aa824 is healthy: got healthy result from http://${etcd_host_ip1}:2379
+member 85ffe9aafb7745cc is healthy: got healthy result from http://${etcd_host_ip2}:2379
+member b3d05464c356441a is healthy: got healthy result from http://${etcd_host_ip3}:2379
+cluster is healthy
+
+$ etcdctl member list
+3adf2673436aa824: name=etcdnode3 peerURLs=http://${etcd_host_ip1}:2380 clientURLs=http://${etcd_host_ip1}:2379 isLeader=false
+85ffe9aafb7745cc: name=etcdnode2 peerURLs=http://${etcd_host_ip2}:2380 clientURLs=http://${etcd_host_ip2}:2379 isLeader=false
+b3d05464c356441a: name=etcdnode1 peerURLs=http://${etcd_host_ip3}:2380 clientURLs=http://${etcd_host_ip3}:2379 isLeader=true
+```
+其中，${etcd_host_ip*} 是 etcd 服务器的 ip
+
+
+### 安装 Calico
+
+运行 Submarine/install.sh 脚本，就可以在指定服务器中安装 Calico 组件和服务自启动脚本。
+
+```
+systemctl start calico-node.service
+systemctl status calico-node.service
+```
+
+#### 检查 Calico 网络
+
+```shell
+# 执行如下命令，注意：不会显示本服务器的状态，只显示其他的服务器状态
+$ calicoctl node status
+Calico process is running.
+
+IPv4 BGP status
++---------------+-------------------+-------+------------+-------------+
+| PEER ADDRESS  |     PEER TYPE     | STATE |   SINCE    |    INFO     |
++---------------+-------------------+-------+------------+-------------+
+| ${host_ip1} | node-to-node mesh | up    | 2018-09-21 | Established |
+| ${host_ip2} | node-to-node mesh | up    | 2018-09-21 | Established |
+| ${host_ip3} | node-to-node mesh | up    | 2018-09-21 | Established |
++---------------+-------------------+-------+------------+-------------+
+
+IPv6 BGP status
+No IPv6 peers found.
+```
+
+创建 docker container，验证 calico 网络
+
+```
+docker network create --driver calico --ipam-driver calico-ipam calico-network
+docker run --net calico-network --name workload-A -tid busybox
+docker run --net calico-network --name workload-B -tid busybox
+docker exec workload-A ping workload-B
+```
+
+### Yarn Docker container开启Calico网络
+在配置文件 yarn-site.xml，为 docker container 设置 Calico 网络。
+
+```
+<property>
+    <name>yarn.nodemanager.runtime.linux.docker.default-container-network</name>
+    <value>calico-network</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.runtime.linux.allowed-runtimes</name>
+    <value>default,docker</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.runtime.linux.docker.allowed-container-networks</name>
+    <value>host,none,bridge,calico-network</value>
+  </property>
+```
+
+在配置文件 container-executor.cfg 中，添加 bridge 网络
+
+```
+docker.allowed.networks=bridge,host,none,calico-network
+```
+
+重启所有的 nodemanager 节点.
+
+
+### 启动 registery dns 服务
+
+Yarn registry nds server 是为服务发现功能而实现的DNS服务。yarn docker container 通过向 registry nds server 注册，对外暴露 container 域名与 container IP/port 的映射关系。
+
+Yarn registery dns 的详细配置信息和部署方式，可以参考 [Registry DNS Server](http://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/yarn-service/RegistryDNS.html)
+
+启动 registry nds 命令
+```
+sudo YARN_LOGFILE=registrydns.log ./yarn-daemon.sh start registrydns
+```
+
+### 运行 submarine 任务
+
+在配置文件 submarine-site.xml 中设置 submarine.runtime.class
+```
+<property>
+    <name>submarine.runtime.class</name>
+    <value>org.apache.submarine.server.submitter.yarnservice.YarnServiceRuntimeFactory</value>
+    <description>RuntimeFactory for Submarine jobs</description>
+  </property>
+```
+
+#### 单机模式
+
+清理重名任务
+
+```bash
+./bin/yarn app -destroy standalone-tf
+./bin/hdfs dfs -rmr hdfs://${dfs_name_service}/tmp/cifar-10-jobdir
+```
+其中，变量 ${dfs_name_service} 请根据环境，用你的 hdfs name service 名称替换
+
+执行单机模式的 tensorflow 任务
+
+```
+CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`:${SUBMARINE_HOME}/submarine-all-${SUBMARINE_VERSION}.jar:
+${SUBMARINE_HOME}/conf: \
+java org.apache.submarine.client.cli.Cli job run \
+ --env DOCKER_JAVA_HOME=/opt/java \
+ --env YARN_CONTAINER_RUNTIME_DOCKER_CONTAINER_NETWORK=calico-network \
+ --env DOCKER_HADOOP_HDFS_HOME=/hadoop-3.1.0 --name standalone-tf \
+ --docker_image dockerfile-cpu-tf1.8.0-with-models \
+ --input_path hdfs://${dfs_name_service}/tmp/cifar-10-data \
+ --checkpoint_path hdfs://${dfs_name_service}/user/hadoop/tf-checkpoint \
+ --worker_resources memory=4G,vcores=2 --verbose \
+ --worker_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=hdfs://${dfs_name_service}/tmp/cifar-10-data --job-dir=hdfs://${dfs_name_service}/tmp/cifar-10-jobdir --train-steps=500 --eval-batch-size=16 --train-batch-size=16 --num-gpus=0"
+```
+
+#### 分布式模式
+
+清理重名任务
+
+```bash
+./bin/yarn app -destroy distributed-tf
+./bin/hdfs dfs -rmr hdfs://${dfs_name_service}/tmp/cifar-10-jobdir
+```
+
+提交分布式模式 tensorflow 任务
+
+```
+CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`:${SUBMARINE_HOME}/submarine-all-${SUBMARINE_VERSION}.jar:
+${SUBMARINE_HOME}/conf: \
+java org.apache.submarine.client.cli.Cli job run \
+ --env DOCKER_JAVA_HOME=/opt/java \
+ --env YARN_CONTAINER_RUNTIME_DOCKER_CONTAINER_NETWORK=calico-network \
+ --env DOCKER_HADOOP_HDFS_HOME=/hadoop-3.1.0 --name distributed-tf \
+ --env YARN_CONTAINER_RUNTIME_DOCKER_CONTAINER_NETWORK=calico-network \
+ --docker_image dockerfile-cpu-tf1.8.0-with-models \
+ --input_path hdfs://${dfs_name_service}/tmp/cifar-10-data \
+ --checkpoint_path hdfs://${dfs_name_service}/user/hadoop/tf-distributed-checkpoint \
+ --worker_resources memory=4G,vcores=2 --verbose \
+ --num_ps 1 \
+ --ps_resources memory=4G,vcores=2 \
+ --ps_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=hdfs://${dfs_name_service}/tmp/cifar-10-data --job-dir=hdfs://${dfs_name_service}/tmp/cifar-10-jobdir --num-gpus=0" \
+ --num_workers 4 \
+ --worker_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=hdfs://${dfs_name_service}/tmp/cifar-10-data --job-dir=hdfs://${dfs_name_service}/tmp/cifar-10-jobdir --train-steps=500 --eval-batch-size=16 --train-batch-size=16 --sync --num-gpus=0"
+```
 
 
 ## 问题
@@ -643,7 +745,7 @@ chown :yarn -R /sys/fs/cgroup/cpu,cpuacct
 chmod g+rwx -R /sys/fs/cgroup/cpu,cpuacct
 ```
 
-在支持gpu时，还需cgroup devices路径权限
+在支持 gpu 时，还需 cgroup devices 路径权限
 
 ```
 chown :yarn -R /sys/fs/cgroup/devices
@@ -720,7 +822,7 @@ $ kill -9 5007
 ```
 
 
-### 问题五：命令sudo nvidia-docker run 报错
+### 问题五：命令 sudo nvidia-docker run 报错
 
 ```
 docker: Error response from daemon: create nvidia_driver_361.42: VolumeDriver.Create: internal error, check logs for details.

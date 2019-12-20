@@ -80,7 +80,7 @@ public class MockRemoteDirectoryManager implements RemoteDirectoryManager {
   private File initializeModelParentDir() throws IOException {
     File dir = new File(
         "target/_models_" + System.currentTimeMillis());
-    if (!dir.mkdirs()) {
+    if (!dir.exists() && !dir.mkdirs()) {
       throw new IOException(
           String.format(FAILED_TO_CREATE_DIRS_FORMAT_STRING,
               dir.getAbsolutePath()));
