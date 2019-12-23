@@ -13,19 +13,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 
+LIBSVM = "libsvm"
 
-def get_env(variable_name):
-    return os.environ.get(variable_name)
-
-
-def unset_variable(variable_name):
-    if variable_name in os.environ:
-        del os.environ[variable_name]
-
-
-def check_env_exists(variable_name):
-    if variable_name not in os.environ:
-        return False
-    return True
+defaultParameters = {
+  "output": {
+    "save_model_dir": "./experiment",
+    "metric": "auc"
+  },
+  "training": {
+    "batch_size": 512,
+    "field_size": 39,
+    "num_epochs": 3,
+    "feature_size": 117581,
+    "embedding_size": 256,
+    "learning_rate": 0.0005,
+    "batch_norm_decay": 0.9,
+    "l2_reg": 0.0001,
+    "deep_layers": "400,400,400",
+    "dropout": "0.3,0.3,0.3",
+    "batch_norm": "false",
+    "optimizer": "adam",
+    "log_steps": 10,
+    "num_threads": 4,
+    "num_gpu": 0,
+    "seed": 77,
+    "mode": "local"
+  }
+}

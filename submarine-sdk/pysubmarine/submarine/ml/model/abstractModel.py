@@ -13,19 +13,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+from abc import ABCMeta, abstractmethod
 
 
-def get_env(variable_name):
-    return os.environ.get(variable_name)
+class abstractModel:
+    """
+    Abstract class for tensorflow model.
+    This class defines the API interface for user to create a tensorflow estimator model.
+    """
 
+    __metaclass__ = ABCMeta
 
-def unset_variable(variable_name):
-    if variable_name in os.environ:
-        del os.environ[variable_name]
+    @abstractmethod
+    def __init__(self):
+        pass
 
+    @abstractmethod
+    def train(self, train_input_fn=None, eval_input_fn=None, **kwargs):
+        pass
 
-def check_env_exists(variable_name):
-    if variable_name not in os.environ:
-        return False
-    return True
+    @abstractmethod
+    def evaluate(self, eval_input_fn=None, **kwargs):
+        pass
+
+    @abstractmethod
+    def predict(self, test_input_fn=None, **kwargs):
+        pass

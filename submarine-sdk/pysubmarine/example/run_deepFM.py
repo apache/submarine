@@ -13,19 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+import logging
+from submarine.ml.model import deepFM
 
+logger = logging.getLogger(__name__)
 
-def get_env(variable_name):
-    return os.environ.get(variable_name)
+if __name__ == '__main__':
+    logging.getLogger().setLevel(logging.INFO)
+    json_path = './deepFM.json'
 
-
-def unset_variable(variable_name):
-    if variable_name in os.environ:
-        del os.environ[variable_name]
-
-
-def check_env_exists(variable_name):
-    if variable_name not in os.environ:
-        return False
-    return True
+    model = deepFM(json_path=json_path)
+    # Training
+    model.train()
+    # Evaluate
+    result = model.evaluate()
+    logging.info("Model metrics : %s", result)
