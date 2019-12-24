@@ -340,7 +340,6 @@ ENV JAVA_HOME /opt/java
 ENV PATH $PATH:$JAVA_HOME/bin
 ```
 
-
 ### 测试 TF 环境
 
 创建好 docker 镜像后，需要先手动检查 TensorFlow 是否可以正常使用，避免通过 YARN 调度后出现问题，可以执行以下命令
@@ -395,6 +394,21 @@ YARN_LOGFILE=mr-historyserver.log ./sbin/mr-jobhistory-daemon.sh start historyse
 ./bin/hadoop jar /home/hadoop/hadoop-current/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.0-SNAPSHOT.jar wordcount /tmp/wordcount.txt /tmp/wordcount-output4
 ```
 
+### 使用 zipped python virtual environment 测试 tensorflow job 
+
+使用 ${SUBMARINE_REPO_PATH}/dev-support/mini-submarine/submarine/ 目录下的 build_python_virtual_env.sh 文件，
+创建 zipped python virtual environment。生成的压缩文件可以被命名为 myvenv.zip，其中
+${SUBMARINE_REPO_PATH} 表示 submarine 代码的根路径。
+
+复制文件 ${SUBMARINE_REPO_PATH}/dev-support/mini-submarine/submarine/run_submarine_mnist_tony.sh
+到提交任务的服务器节点上。根据环境修改其中的变量 SUBMARINE_VERSION，HADOOP_VERSION，SUBMARINE_PATH，
+HADOOP_CONF_PATH，MNIST_PATH。如果开启了 Kerberos 安全认证，请删除命令里的参数 --insecure。
+
+执行一个分布式的 tensorflow 任务.
+```
+./run_submarine_mnist_tony.sh -d http://yann.lecun.com/exdb/mnist/
+```
+参数 -d 用来指定下载 mnist 数据的url地址。 
 
 
 ## 使用CUP的Tensorflow任务

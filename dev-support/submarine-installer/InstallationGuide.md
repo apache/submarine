@@ -404,6 +404,24 @@ YARN_LOGFILE=mr-historyserver.log ./sbin/mr-jobhistory-daemon.sh start historyse
 ./bin/hadoop jar /home/hadoop/hadoop-current/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.0-SNAPSHOT.jar wordcount /tmp/wordcount.txt /tmp/wordcount-output4
 ```
 
+### Test tensorflow in a zipped python virtual environment
+
+Refer to build_python_virtual_env.sh in the directory of
+${SUBMARINE_REPO_PATH}/dev-support/mini-submarine/submarine/ to build a zipped python virtual
+environment. The generated zipped file might be named myvenv.zip.
+${SUBMARINE_REPO_PATH} indicates submarine repo location.
+
+Copy ${SUBMARINE_REPO_PATH}/dev-support/mini-submarine/submarine/run_submarine_mnist_tony.sh
+to the server on which you submit jobs. And modify the variables, SUBMARINE_VERSION, HADOOP_VERSION, SUBMARINE_PATH,
+HADOOP_CONF_PATH and MNIST_PATH in it, according to your environment. If Kerberos
+is enabled, please delete the parameter, --insecure, in the command.
+
+Run a distributed tensorflow job.
+```
+./run_submarine_mnist_tony.sh -d http://yann.lecun.com/exdb/mnist/
+```
+The parameter -d is used to specify the url from which we can get the mnist data.
+
 ## Tensorflow Job with CPU
 
 ### Standalone Mode
