@@ -71,7 +71,7 @@ public class JobServerRestApi {
   @Path("{" + RestConstants.JOB_ID + "}")
   public Response listJob(@PathParam(RestConstants.JOB_ID) String id) {
     // Query the job status though submitter
-    return new JsonResponse.Builder<JobSpec>(Response.Status.OK)
+    return new JsonResponse.Builder<String>(Response.Status.OK)
         .success(true).result(id).build();
   }
 
@@ -86,7 +86,7 @@ public class JobServerRestApi {
   @Path("{" + RestConstants.JOB_ID + "}")
   public Response deleteJob(@PathParam(RestConstants.JOB_ID) String id) {
     // Delete the job though submitter
-    return new JsonResponse.Builder<JobSpec>(Response.Status.OK)
+    return new JsonResponse.Builder<String>(Response.Status.OK)
         .success(true).result(id).build();
   }
 

@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.submarine.server.rest;
 
 import com.google.gson.Gson;
@@ -106,11 +107,11 @@ public class MetaStoreRestApi {
       databaseCount = submarineMetaStore.getDatabaseCount();
     } catch (MetaException e) {
       LOG.error(e.getMessage(), e);
-      return new JsonResponse.Builder<String>(
+      return new JsonResponse.Builder<Integer>(
               Response.Status.INTERNAL_SERVER_ERROR).success(false)
               .result(databaseCount).build();
     }
-    return new JsonResponse.Builder<String>(Response.Status.OK)
+    return new JsonResponse.Builder<Integer>(Response.Status.OK)
             .success(true).result(databaseCount).build();
   }
 
@@ -126,7 +127,7 @@ public class MetaStoreRestApi {
       return new JsonResponse.Builder<String>(Response.Status.INTERNAL_SERVER_ERROR)
               .success(false).build();
     }
-    return new JsonResponse.Builder<String>(Response.Status.OK)
+    return new JsonResponse.Builder<List<String>>(Response.Status.OK)
             .success(true).result(allDatabases).build();
   }
 
@@ -142,7 +143,7 @@ public class MetaStoreRestApi {
       return new JsonResponse.Builder<String>(Response.Status.NOT_FOUND)
               .success(false).build();
     }
-    return new JsonResponse.Builder<String>(Response.Status.OK)
+    return new JsonResponse.Builder<Database>(Response.Status.OK)
             .success(true).result(database).build();
   }
 
@@ -177,7 +178,7 @@ public class MetaStoreRestApi {
       return new JsonResponse.Builder<String>(Response.Status.INTERNAL_SERVER_ERROR)
               .success(false).build();
     }
-    return new JsonResponse.Builder<String>(Response.Status.OK)
+    return new JsonResponse.Builder<List<String>>(Response.Status.OK)
             .success(true).result(tables).build();
   }
 
@@ -193,7 +194,7 @@ public class MetaStoreRestApi {
       return new JsonResponse.Builder<String>(Response.Status.INTERNAL_SERVER_ERROR)
               .success(false).build();
     }
-    return new JsonResponse.Builder<String>(Response.Status.OK)
+    return new JsonResponse.Builder<Integer>(Response.Status.OK)
             .success(true).result(tableCount).build();
   }
 
@@ -210,7 +211,7 @@ public class MetaStoreRestApi {
       return new JsonResponse.Builder<String>(Response.Status.INTERNAL_SERVER_ERROR)
               .success(false).build();
     }
-    return new JsonResponse.Builder<String>(Response.Status.OK)
+    return new JsonResponse.Builder<Table>(Response.Status.OK)
             .success(true).result(table).build();
   }
 

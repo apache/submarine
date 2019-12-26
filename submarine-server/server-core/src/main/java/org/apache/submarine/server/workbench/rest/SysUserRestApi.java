@@ -21,7 +21,6 @@ package org.apache.submarine.server.workbench.rest;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.SysDept;
 import org.apache.submarine.server.workbench.database.entity.SysUser;
 import org.apache.submarine.server.workbench.database.service.SysUserService;
 import org.apache.submarine.server.workbench.entity.Action;
@@ -118,7 +117,7 @@ public class SysUserRestApi {
           .message("Save user failed!").build();
     }
 
-    return new JsonResponse.Builder<SysDept>(Response.Status.OK)
+    return new JsonResponse.Builder<SysUser>(Response.Status.OK)
         .success(true).message("Save user successfully!").result(sysUser).build();
   }
 

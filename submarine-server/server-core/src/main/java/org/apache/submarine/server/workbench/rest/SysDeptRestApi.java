@@ -126,7 +126,7 @@ public class SysDeptRestApi {
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
     }
 
-    return new JsonResponse.Builder<ListResult<List<SysDeptSelect>>>(Response.Status.OK)
+    return new JsonResponse.Builder<List<SysDeptSelect>>(Response.Status.OK)
         .success(true).result(sysDeptSelects).build();
   }
 
