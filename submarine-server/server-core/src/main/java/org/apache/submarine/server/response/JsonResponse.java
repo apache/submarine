@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.submarine.server.response;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -54,7 +55,7 @@ public class JsonResponse<T> {
 
   private static final String CGLIB_PROPERTY_PREFIX = "\\$cglib_prop_";
 
-  private JsonResponse(Builder builder) {
+  private JsonResponse(Builder<T> builder) {
     this.status = builder.status;
     this.code = builder.code;
     this.success = builder.success;
@@ -100,32 +101,32 @@ public class JsonResponse<T> {
       this.code = code;
     }
 
-    public Builder attribute(String key, Object value) {
+    public Builder<T> attribute(String key, Object value) {
       this.attributes.put(key, value);
       return this;
     }
 
-    public Builder success(Boolean success) {
+    public Builder<T> success(Boolean success) {
       this.success = success;
       return this;
     }
 
-    public Builder message(String message) {
+    public Builder<T> message(String message) {
       this.message = message;
       return this;
     }
 
-    public Builder result(T result) {
+    public Builder<T> result(T result) {
       this.result = result;
       return this;
     }
 
-    public Builder code(int code) {
+    public Builder<T> code(int code) {
       this.code = code;
       return this;
     }
 
-    public Builder cookies(ArrayList<NewCookie> newCookies) {
+    public Builder<T> cookies(ArrayList<NewCookie> newCookies) {
       if (cookies == null) {
         cookies = new ArrayList<>();
       }
@@ -134,7 +135,7 @@ public class JsonResponse<T> {
     }
 
     public javax.ws.rs.core.Response build() {
-      JsonResponse jsonResponse = new JsonResponse(this);
+      JsonResponse<T> jsonResponse = new JsonResponse<>(this);
       return jsonResponse.build();
     }
   }
