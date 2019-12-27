@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.metastore.rest;
+package org.apache.submarine.server.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -44,17 +44,17 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-@Path("/metaStore")
+@Path(RestConstants.V1 + "/" + RestConstants.METASTORE)
 @Produces("application/json")
 @Singleton
-public class MetaStoreApi {
-  private static final Logger LOG = LoggerFactory.getLogger(MetaStoreApi.class);
+public class MetaStoreRestApi {
+  private static final Logger LOG = LoggerFactory.getLogger(MetaStoreRestApi.class);
   private static final Gson gson = new Gson();
   private static final SubmarineConfiguration submarineConf = SubmarineConfiguration.getInstance();
   private SubmarineMetaStore submarineMetaStore = new SubmarineMetaStore(submarineConf);
 
   @Inject
-  public MetaStoreApi() {
+  public MetaStoreRestApi() {
   }
 
   @POST

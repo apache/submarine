@@ -184,6 +184,8 @@ public class ClusterMonitor {
   // indicating that the process is still active.
   private void sendHeartbeat() {
     HashMap<String, Object> mapMonitorUtil = new HashMap<>();
+    mapMonitorUtil.put(ClusterMeta.NODE_NAME, clusterManager.getClusterNodeName());
+    mapMonitorUtil.put(ClusterMeta.INTP_PROCESS_NAME, metaKey);
     mapMonitorUtil.put(ClusterMeta.LATEST_HEARTBEAT, LocalDateTime.now());
     mapMonitorUtil.put(ClusterMeta.STATUS, ClusterMeta.ONLINE_STATUS);
 

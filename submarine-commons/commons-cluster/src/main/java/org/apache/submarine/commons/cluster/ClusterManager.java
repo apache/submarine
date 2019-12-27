@@ -216,7 +216,7 @@ public abstract class ClusterManager {
         try {
           raftClientPort = NetworkUtils.findRandomAvailablePortOnAllLocalInterfaces();
         } catch (IOException e) {
-          LOG.error(e.getMessage());
+          LOG.error(e.getMessage(), e);
         }
 
         MemberId memberId = MemberId.from(serverHost + ":" + raftClientPort);
@@ -283,7 +283,7 @@ public abstract class ClusterManager {
             }
           }
         } catch (InterruptedException e) {
-          LOG.error(e.getMessage());
+          LOG.error(e.getMessage(), e);
         }
       }
     }).start();
@@ -416,7 +416,7 @@ public abstract class ClusterManager {
       mateData = raftSessionClient.execute(operation(ClusterStateMachine.GET,
           clientSerializer.encode(entity))).get(3, TimeUnit.SECONDS);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
-      LOG.error(e.getMessage());
+      LOG.error(e.getMessage(), e);
     }
 
     if (null != mateData) {

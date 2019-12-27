@@ -17,13 +17,37 @@
  * under the License.
  */
 
-package org.apache.submarine.server.jobserver.rest.dao;
+package org.apache.submarine.server.jobserver.dao;
 
-public class RestConstants {
-  public static final String V1 = "v1";
-  public static final String JOBS = "jobs";
-  public static final String JOB_ID = "id";
-  public static final String PING = "ping";
-  public static final String MEDIA_TYPE_YAML = "application/yaml";
-  public static final String CHARSET_UTF8 = "charset=utf-8";
+// A process level environment variable.
+public class EnvVaraible {
+
+  public String getKey() {
+    return key;
+  }
+
+  public void setKey(String key) {
+    this.key = key;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
+  public void setValue(String value) {
+    this.value = value;
+  }
+
+  String key;
+  String value;
+
+  public EnvVaraible() {}
+
+  public EnvVaraible(String k, String v) {
+    this.key = k;
+    this.value = v;
+  }
+
+
+
 }

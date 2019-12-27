@@ -113,8 +113,8 @@ public class SubmarineServer extends ResourceConfig {
   @Inject
   public SubmarineServer() {
     packages("org.apache.submarine.server.workbench.rest",
-             "org.apache.submarine.server.jobserver.rest.api",
-             "org.apache.submarine.server.metastore.rest"
+             "org.apache.submarine.server.jobserver.rest",
+             "org.apache.submarine.server.rest"
     );
   }
 
