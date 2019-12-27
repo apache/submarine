@@ -3,13 +3,13 @@
 
 ## Introduction
 
-Hadoop {Submarine} is the latest machine learning framework subproject in the Hadoop 3.2 release. It allows Hadoop to support `Tensorflow`, `MXNet`,` Caffe`, `Spark`, etc. A variety of deep learning frameworks provide a full-featured system framework for machine learning algorithm development, distributed model training, model management, and model publishing, combined with hadoop's intrinsic data storage and data processing capabilities to enable data scientists to Good mining and the value of the data.
+Submarine is the latest machine learning framework. It aims to support `Tensorflow`, `MXNet`,` Caffe`, `Spark`, etc. A variety of deep learning frameworks provide a full-featured system framework for machine learning algorithm development, distributed model training, model management, and model publishing, combined with hadoop's intrinsic data storage and data processing capabilities to enable data scientists to Good mining and the value of the data.
 
-Hadoop has enabled YARN to support Docker container since 2.x. **Hadoop {Submarine}** then uses YARN to schedule and run the distributed deep learning framework in the form of a Docker container.
+Hadoop has enabled YARN to support Docker container since 2.x. **Submarine** then uses YARN to schedule and run the distributed deep learning framework in the form of a Docker container.
 
-Since the distributed deep learning framework needs to run in multiple Docker containers and needs to be able to coordinate the various services running in the container, complete the services of model training and model publishing for distributed machine learning. Involving multiple system engineering problems such as `DNS`, `Docker`, `GPU`, `Network`, `graphics card`, `operating system kernel` modification, etc. It is very difficult and time-consuming to properly deploy the **Hadoop {Submarine}** runtime environment.
+Since the distributed deep learning framework needs to run in multiple Docker containers and needs to be able to coordinate the various services running in the container, complete the services of model training and model publishing for distributed machine learning. Involving multiple system engineering problems such as `DNS`, `Docker`, `GPU`, `Network`, `graphics card`, `operating system kernel` modification, etc. It is very difficult and time-consuming to properly deploy the **Submarine** runtime environment.
 
-In order to reduce the difficulty of deploying components, we have developed this **submarine-installer** project to deploy the **Hadoop {Submarine}** runtime environment, providing a one-click installation script or step-by-step installation. Unload, start, and stop individual components, and explain the main parameter configuration and considerations for each step. We also submitted a [Chinese manual](InstallationGuideChineseVersion.md) and an [English manual](InstallationGuide.md) for the **Hadoop {Submarine}** runtime environment to the hadoop community to help users deploy more easily and find problems in a timely manner.
+In order to reduce the difficulty of deploying components, we have developed this **submarine-installer** project to deploy the **Submarine** runtime environment, providing a one-click installation script or step-by-step installation. Unload, start, and stop individual components, and explain the main parameter configuration and considerations for each step. We also provides a [Chinese manual](../../docs/helper/InstallationGuideChineseVersion.md) and an [English manual](../../docs/helper/InstallationGuide.md) for the **Submarine** runtime environment to help users deploy more easily and find problems in a timely manner.
 
 This installer is just created for your convenience and for test purpose only. You can choose to install required libraries by yourself, please don't run this script in your production envionrment before fully validate it in a sandbox environment.
 
@@ -33,7 +33,7 @@ Before deploying with submarine-installer, you can refer to the existing configu
 
   Please note that you can choose to use different Docker networks. ETCD is not the only network solution supported by Submarine.
 
-  You need to select at least three servers as the running server for ETCD, which will make **Hadoop {Submarine}** better fault tolerant and stable.
+  You need to select at least three servers as the running server for ETCD, which will make **Submarine** better fault tolerant and stable.
 
   Enter the IP array as the ETCD server in the ETCD_HOSTS configuration item. The parameter configuration is generally like this:
 

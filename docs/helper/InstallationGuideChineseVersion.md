@@ -1,30 +1,15 @@
-<!--
-   Licensed to the Apache Software Foundation (ASF) under one or more
-   contributor license agreements.  See the NOTICE file distributed with
-   this work for additional information regarding copyright ownership.
-   The ASF licenses this file to You under the Apache License, Version 2.0
-   (the "License"); you may not use this file except in compliance with
-   the License.  You may obtain a copy of the License at
-   http://www.apache.org/licenses/LICENSE-2.0
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
--->
-
 # Submarine 安装说明
 
 ## Prerequisites
 
 ### 操作系统
 
-我们使用的操作系统版本是 centos-release-7-5.1804.el7.centos.x86_64, 内核版本是 3.10.0-862.el7.x86_64。
+我们使用的操作系统版本是 centos-release-7-3.1611.el7.centos.x86_64, 内核版本是 3.10.0-514.el7.x86_64 ，应该是最低版本了。
 
 | Enviroment | Verion |
 | ------ | ------ |
-| Operating System | centos-release-7-5.1804.el7.centos.x86_64 |
-| Kernal | 3.10.0-862.el7.x86_64 |
+| Operating System | centos-release-7-3.1611.el7.centos.x86_64 |
+| Kernal | 3.10.0-514.el7.x86_64 |
 
 ### User & Group
 
@@ -59,8 +44,8 @@ yum install gcc make g++
 # 方法一：
 yum install kernel-devel-$(uname -r) kernel-headers-$(uname -r)
 # 方法二：
-wget http://vault.centos.org/7.3.1611/os/x86_64/Packages/kernel-headers-3.10.0-862.el7.x86_64.rpm
-rpm -ivh kernel-headers-3.10.0-862.el7.x86_64.rpm
+wget http://vault.centos.org/7.3.1611/os/x86_64/Packages/kernel-headers-3.10.0-514.el7.x86_64.rpm
+rpm -ivh kernel-headers-3.10.0-514.el7.x86_64.rpm
 ```
 
 ### 检查 GPU 版本
@@ -87,7 +72,7 @@ sudo /usr/local/cuda-10.0/bin/uninstall_cuda_10.0.pl
 sudo /usr/bin/nvidia-uninstall
 ```
 
-安装nvidia-detect，用于检查显卡版本
+安装 nvidia-detect，用于检查显卡版本
 
 ```
 yum install nvidia-detect
@@ -100,7 +85,7 @@ This device requires the current 390.87 NVIDIA driver kmod-nvidia
 An Intel display controller was also detected
 ```
 
-注意这里的信息 [Quadro K620] 和390.87。
+注意这里的信息 [Quadro K620] 和 390.87。
 下载 [NVIDIA-Linux-x86_64-390.87.run](https://www.nvidia.com/object/linux-amd64-display-archive.html)
 
 
@@ -156,40 +141,23 @@ https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
 ### 安装 Docker
 
 ```
-# Remove old version docker
-sudo yum remove docker \
-                docker-client \
-                docker-client-latest \
-                docker-common \
-                docker-latest \
-                docker-latest-logrotate \
-                docker-logrotate \
-                docker-engine
+yum -y update
+yum -y install yum-utils
+yum-config-manager --add-repo https://yum.dockerproject.org/repo/main/centos/7
+yum -y update
 
-# Docker version
-export DOCKER_VERSION="18.06.1.ce"
-# Setup the repository
-sudo yum install -y yum-utils \
-  device-mapper-persistent-data \
-  lvm2
-sudo yum-config-manager \
-    --add-repo \
-    https://download.docker.com/linux/centos/docker-ce.repo
+# 显示 available 的安装包
+yum search --showduplicates docker-engine
 
-# Check docker version
-yum list docker-ce --showduplicates | sort -r
-
-# Install docker with specified DOCKER_VERSION
-sudo yum install -y docker-ce-${DOCKER_VERSION} docker-ce-cli-${DOCKER_VERSION} containerd.io
-
-# Start docker
+# 安装 1.12.5 版本 docker
+yum -y --nogpgcheck install docker-engine-1.12.5*
 systemctl start docker
 
 chown hadoop:netease /var/run/docker.sock
 chown hadoop:netease /usr/bin/docker
 ```
 
-Reference：https://docs.docker.com/install/linux/docker-ce/centos/
+Reference：https://docs.docker.com/cs-engine/1.12/
 
 ### 配置 Docker
 
@@ -213,40 +181,46 @@ sudo systemctl restart docker
 
 
 
-### 检查 Docker version
+### Docker EE version
 
 ```bash
 $ docker version
 
 Client:
- Version:      18.06.1-ce
- API version:  1.38
- Go version:   go1.10.3
- Git commit:   e68fc7a
- Built:        Tue Aug 21 17:23:03 2018
+ Version:      1.12.5
+ API version:  1.24
+ Go version:   go1.6.4
+ Git commit:   7392c3b
+ Built:        Fri Dec 16 02:23:59 2016
  OS/Arch:      linux/amd64
- Experimental: false
 
 Server:
- Version:      18.06.1-ce
- API version:  1.38 (minimum version 1.12)
- Go version:   go1.10.3
- Git commit:   e68fc7a
- Built:        Tue Aug 21 17:23:03 2018
+ Version:      1.12.5
+ API version:  1.24
+ Go version:   go1.6.4
+ Git commit:   7392c3b
+ Built:        Fri Dec 16 02:23:59 2016
  OS/Arch:      linux/amd64
- Experimental: false
 ```
 
 ### 安装 nvidia-docker
 
-Hadoop-3.2 的 submarine 已支持 V2 版本的 nvidia-docker
+Hadoop-3.2 的 submarine 使用的是 1.0 版本的 nvidia-docker
 
 ```
-# Add the package repositories
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-curl -s -L https://nvidia.github.io/nvidia-container-runtime/$distribution/nvidia-container-runtime.repo | \
-  sudo tee /etc/yum.repos.d/nvidia-container-runtime.repo
-sudo yum install -y nvidia-docker2-2.0.3-1.docker18.06.1.ce
+wget -P /tmp https://github.com/NVIDIA/nvidia-docker/releases/download/v1.0.1/nvidia-docker-1.0.1-1.x86_64.rpm
+sudo rpm -i /tmp/nvidia-docker*.rpm
+# 启动 nvidia-docker
+sudo systemctl start nvidia-docker
+
+# 查看 nvidia-docker 状态：
+systemctl status nvidia-docker
+
+# 查看 nvidia-docker 日志：
+journalctl -u nvidia-docker
+
+# 查看 nvidia-docker-plugin 是否正常
+curl http://localhost:3476/v1.0/docker/cli
 ```
 
 在 `/var/lib/nvidia-docker/volumes/nvidia_driver/` 路径下，根据 `nvidia-driver` 的版本创建文件夹：
@@ -263,7 +237,7 @@ cp /usr/lib64/libcuda* /var/lib/nvidia-docker/volumes/nvidia_driver/390.87/lib64
 cp /usr/lib64/libnvidia* /var/lib/nvidia-docker/volumes/nvidia_driver/390.87/lib64
 
 # Test nvidia-smi
-nvidia-docker run --rm nvidia/cuda:10.0-devel nvidia-smi
+nvidia-docker run --rm nvidia/cuda:9.0-devel nvidia-smi
 ```
 
 测试 docker, nvidia-docker, nvidia-driver 安装
@@ -282,19 +256,17 @@ import tensorflow as tf
 tf.test.is_gpu_available()
 ```
 
-卸载 nvidia-docker V2 的方法：
-```
-sudo yum remove -y nvidia-docker2-2.0.3-1.docker18.06.1.ce
-```
+卸载 nvidia-docker 1.0 的方法：
+https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)
 
 reference:
-https://github.com/NVIDIA/nvidia-docker
+https://github.com/NVIDIA/nvidia-docker/tree/1.0
 
 
 
 ### Tensorflow Image
 
-CUDNN 和 CUDA 其实不需要在物理机上安装，因为 Submarine 中提供了已经包含了CUDNN 和 CUDA 的镜像文件，基础的Dockfile可参见[WriteDockerfile](docs/0.2.0/WriteDockerfileTF)
+创建 tensorflow docker image 的方法，可以参考文档[WriteDockerfileTF.md](WriteDockerfileTF.md)
 
 ### 测试 TF 环境
 
@@ -323,83 +295,16 @@ $ python >> tf.__version__
    ls -l /usr/local/nvidia/lib64 | grep libcuda.so
    ```
 
-### 安装 Etcd
-
-运行 Submarine/install.sh 脚本，就可以在指定服务器中安装 Etcd 组件和服务自启动脚本。
-
-```shell
-$ ./Submarine/install.sh
-# 通过如下命令查看 Etcd 服务状态
-systemctl status Etcd.service
-```
-
-检查 Etcd 服务状态
-
-```shell
-$ etcdctl cluster-health
-member 3adf2673436aa824 is healthy: got healthy result from http://${etcd_host_ip1}:2379
-member 85ffe9aafb7745cc is healthy: got healthy result from http://${etcd_host_ip2}:2379
-member b3d05464c356441a is healthy: got healthy result from http://${etcd_host_ip3}:2379
-cluster is healthy
-
-$ etcdctl member list
-3adf2673436aa824: name=etcdnode3 peerURLs=http://${etcd_host_ip1}:2380 clientURLs=http://${etcd_host_ip1}:2379 isLeader=false
-85ffe9aafb7745cc: name=etcdnode2 peerURLs=http://${etcd_host_ip2}:2380 clientURLs=http://${etcd_host_ip2}:2379 isLeader=false
-b3d05464c356441a: name=etcdnode1 peerURLs=http://${etcd_host_ip3}:2380 clientURLs=http://${etcd_host_ip3}:2379 isLeader=true
-```
-其中，${etcd_host_ip*} 是etcd服务器的ip
-
-
-### 安装 Calico
-
-运行 Submarine/install.sh 脚本，就可以在指定服务器中安装 Calico 组件和服务自启动脚本。
-
-```
-systemctl start calico-node.service
-systemctl status calico-node.service
-```
-
-#### 检查 Calico 网络
-
-```shell
-# 执行如下命令，注意：不会显示本服务器的状态，只显示其他的服务器状态
-$ calicoctl node status
-Calico process is running.
-
-IPv4 BGP status
-+---------------+-------------------+-------+------------+-------------+
-| PEER ADDRESS  |     PEER TYPE     | STATE |   SINCE    |    INFO     |
-+---------------+-------------------+-------+------------+-------------+
-| ${host_ip1} | node-to-node mesh | up    | 2018-09-21 | Established |
-| ${host_ip2} | node-to-node mesh | up    | 2018-09-21 | Established |
-| ${host_ip3} | node-to-node mesh | up    | 2018-09-21 | Established |
-+---------------+-------------------+-------+------------+-------------+
-
-IPv6 BGP status
-No IPv6 peers found.
-```
-
-创建docker container，验证calico网络
-
-```
-docker network create --driver calico --ipam-driver calico-ipam calico-network
-docker run --net calico-network --name workload-A -tid busybox
-docker run --net calico-network --name workload-B -tid busybox
-docker exec workload-A ping workload-B
-```
-
-
 ## 安装 Hadoop
 
-### 编译 Hadoop
-
-```
-mvn package -Pdist -DskipTests -Dtar
-```
-
+### 安装 Hadoop
+首先，我们通过源码编译或者直接从官网 [Hadoop Homepage](https://hadoop.apache.org/)下载获取 hadoop 包。
+然后，请参考 [Hadoop Cluster Setup](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-common/ClusterSetup.html)
+进行 Hadoop 集群安装。
 
 
-### 启动 YARN服务
+
+### 启动 YARN 服务
 
 ```
 YARN_LOGFILE=resourcemanager.log ./sbin/yarn-daemon.sh start resourcemanager
@@ -407,13 +312,6 @@ YARN_LOGFILE=nodemanager.log ./sbin/yarn-daemon.sh start nodemanager
 YARN_LOGFILE=timeline.log ./sbin/yarn-daemon.sh start timelineserver
 YARN_LOGFILE=mr-historyserver.log ./sbin/mr-jobhistory-daemon.sh start historyserver
 ```
-
-### 启动 registery dns 服务 (只有YARN native service 需要)
-
-```
-sudo YARN_LOGFILE=registrydns.log ./yarn-daemon.sh start registrydns
-```
-
 
 
 ### 测试 wordcount
@@ -424,7 +322,7 @@ sudo YARN_LOGFILE=registrydns.log ./yarn-daemon.sh start registrydns
 ./bin/hadoop jar /home/hadoop/hadoop-current/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.2.0-SNAPSHOT.jar wordcount /tmp/wordcount.txt /tmp/wordcount-output4
 ```
 
-## 在YARN上使用GPU
+## yarn 使用 GPU 的配置
 
 ### Resourcemanager, Nodemanager 中添加GPU支持
 
@@ -462,11 +360,6 @@ resourcemanager 使用的 scheduler 必须是 capacity scheduler，在 capacity-
        <name>yarn.nodemanager.resource-plugins</name>
        <value>yarn.io/gpu</value>
      </property>
-     <!--Use nvidia docker v2-->
-     <property>
-       <name>yarn.nodemanager.resource-plugins.gpu.docker-plugin</name>
-       <value>nvidia-docker-v2</value>
-     </property>
    </configuration>
    ```
 
@@ -481,8 +374,6 @@ resourcemanager 使用的 scheduler 必须是 capacity scheduler，在 capacity-
    docker.allowed.volume-drivers=/usr/bin/nvidia-docker
    docker.allowed.devices=/dev/nvidiactl,/dev/nvidia-uvm,/dev/nvidia-uvm-tools,/dev/nvidia1,/dev/nvidia0
    docker.allowed.ro-mounts=nvidia_driver_375.26
-   # Use nvidia docker v2
-   docker.allowed.runtimes=nvidia
 
    [gpu]
    module.enabled=true
@@ -494,26 +385,140 @@ resourcemanager 使用的 scheduler 必须是 capacity scheduler，在 capacity-
    yarn-hierarchy=/hadoop-yarn
    ```
 
-### 提交验证
+## 使用 yarn runtime 提交 tensorflow 任务.
 
-Distributed-shell + GPU + cgroup
+### 使用 zipped python virtual environment 测试 tensorflow job 
 
-```bash
- ... job run \
- --env DOCKER_JAVA_HOME=/opt/java \
- --env DOCKER_HADOOP_HDFS_HOME=/hadoop-current --name distributed-tf-gpu \
- --env YARN_CONTAINER_RUNTIME_DOCKER_CONTAINER_NETWORK=calico-network \
- --docker_image tf-1.13.1-gpu:0.0.1 \
- --input_path hdfs://default/tmp/cifar-10-data \
- --checkpoint_path hdfs://default/user/hadoop/tf-distributed-checkpoint \
- --num_ps 0 \
- --ps_resources memory=4G,vcores=2,gpu=0 \
- --ps_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=%input_path% --job-dir=%checkpoint_path% --num-gpus=0" \
- --worker_resources memory=4G,vcores=2,gpu=1 --verbose \
- --num_workers 1 \
- --worker_launch_cmd "python /test/cifar10_estimator/cifar10_main.py --data-dir=%%input_path%% --job-dir=%checkpoint_path% --train-steps=500 --eval-batch-size=16 --train-batch-size=16 --sync --num-gpus=1"
+使用 ${SUBMARINE_REPO_PATH}/dev-support/mini-submarine/submarine/ 目录下的 build_python_virtual_env.sh 文件，
+创建 zipped python virtual environment。生成的压缩文件可以被命名为 myvenv.zip，其中
+${SUBMARINE_REPO_PATH} 表示 submarine 代码的根路径。
+
+复制文件 ${SUBMARINE_REPO_PATH}/dev-support/mini-submarine/submarine/run_submarine_mnist_tony.sh
+到提交任务的服务器节点上。根据环境修改其中的变量 SUBMARINE_VERSION，HADOOP_VERSION，SUBMARINE_PATH，
+HADOOP_CONF_PATH，MNIST_PATH。如果开启了 Kerberos 安全认证，请删除命令里的参数 --insecure。
+
+执行一个分布式的 tensorflow 任务.
+```
+./run_submarine_mnist_tony.sh -d http://yann.lecun.com/exdb/mnist/
+```
+参数 -d 用来指定下载 mnist 数据的url地址。 
+
+### 使用 docker container 提交 tensorflow 任务 (TODO)
+
+
+## Yarn Service Runtime (不推荐)
+
+hadoop 3.1.0 提供了 yarn native service 功能，Submarine 可以利用 yarn native service 提交分布式机器学习任务。
+但是，由于使用 yarn native service 会引入一些额外的组件，导致部署和运维服务比较困难，因而在 Submarine 0.3.0之后 Yarn Server Runtime 不再推荐使用。我们建议直接使用
+YarnRuntime，这样可以在 yarn 2.9 上提交机器学习任务。
+开启 Yarn Service Runtime，可以参照下面的方法
+
+### 安装 Etcd
+
+运行 Submarine/install.sh 脚本，就可以在指定服务器中安装 Etcd 组件和服务自启动脚本。
+
+```shell
+$ ./Submarine/install.sh
+# 通过如下命令查看 Etcd 服务状态
+systemctl status Etcd.service
 ```
 
+检查 Etcd 服务状态
+
+```shell
+$ etcdctl cluster-health
+member 3adf2673436aa824 is healthy: got healthy result from http://${etcd_host_ip1}:2379
+member 85ffe9aafb7745cc is healthy: got healthy result from http://${etcd_host_ip2}:2379
+member b3d05464c356441a is healthy: got healthy result from http://${etcd_host_ip3}:2379
+cluster is healthy
+
+$ etcdctl member list
+3adf2673436aa824: name=etcdnode3 peerURLs=http://${etcd_host_ip1}:2380 clientURLs=http://${etcd_host_ip1}:2379 isLeader=false
+85ffe9aafb7745cc: name=etcdnode2 peerURLs=http://${etcd_host_ip2}:2380 clientURLs=http://${etcd_host_ip2}:2379 isLeader=false
+b3d05464c356441a: name=etcdnode1 peerURLs=http://${etcd_host_ip3}:2380 clientURLs=http://${etcd_host_ip3}:2379 isLeader=true
+```
+其中，${etcd_host_ip*} 是 etcd 服务器的 ip
+
+
+### 安装 Calico
+
+运行 Submarine/install.sh 脚本，就可以在指定服务器中安装 Calico 组件和服务自启动脚本。
+
+```
+systemctl start calico-node.service
+systemctl status calico-node.service
+```
+
+#### 检查 Calico 网络
+
+```shell
+# 执行如下命令，注意：不会显示本服务器的状态，只显示其他的服务器状态
+$ calicoctl node status
+Calico process is running.
+
+IPv4 BGP status
++---------------+-------------------+-------+------------+-------------+
+| PEER ADDRESS  |     PEER TYPE     | STATE |   SINCE    |    INFO     |
++---------------+-------------------+-------+------------+-------------+
+| ${host_ip1} | node-to-node mesh | up    | 2018-09-21 | Established |
+| ${host_ip2} | node-to-node mesh | up    | 2018-09-21 | Established |
+| ${host_ip3} | node-to-node mesh | up    | 2018-09-21 | Established |
++---------------+-------------------+-------+------------+-------------+
+
+IPv6 BGP status
+No IPv6 peers found.
+```
+
+创建 docker container，验证 calico 网络
+
+```
+docker network create --driver calico --ipam-driver calico-ipam calico-network
+docker run --net calico-network --name workload-A -tid busybox
+docker run --net calico-network --name workload-B -tid busybox
+docker exec workload-A ping workload-B
+```
+
+### Yarn Docker container开启Calico网络
+在配置文件 yarn-site.xml，为 docker container 设置 Calico 网络。
+
+```
+<property>
+    <name>yarn.nodemanager.runtime.linux.docker.default-container-network</name>
+    <value>calico-network</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.runtime.linux.allowed-runtimes</name>
+    <value>default,docker</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.runtime.linux.docker.allowed-container-networks</name>
+    <value>host,none,bridge,calico-network</value>
+  </property>
+```
+
+在配置文件 container-executor.cfg 中，添加 bridge 网络
+
+```
+docker.allowed.networks=bridge,host,none,calico-network
+```
+
+重启所有的 nodemanager 节点.
+
+
+### 启动 registery dns 服务
+
+Yarn registry nds server 是为服务发现功能而实现的DNS服务。yarn docker container 通过向 registry nds server 注册，对外暴露 container 域名与 container IP/port 的映射关系。
+
+Yarn registery dns 的详细配置信息和部署方式，可以参考 [Registry DNS Server](http://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/yarn-service/RegistryDNS.html)
+
+启动 registry nds 命令
+```
+sudo YARN_LOGFILE=registrydns.log ./yarn-daemon.sh start registrydns
+```
+
+### 运行 submarine 任务
+
+使用 yarn service runtime 提交 submarine 任务的方法，请参考文档 [Running Distributed CIFAR 10 Tensorflow Job_With_Yarn_Service_Runtime](RunningDistributedCifar10TFJobsWithYarnService.md) 
 
 
 ## 问题
@@ -543,7 +548,7 @@ chown :yarn -R /sys/fs/cgroup/cpu,cpuacct
 chmod g+rwx -R /sys/fs/cgroup/cpu,cpuacct
 ```
 
-在支持gpu时，还需cgroup devices路径权限
+在支持 gpu 时，还需 cgroup devices 路径权限
 
 ```
 chown :yarn -R /sys/fs/cgroup/devices
@@ -620,7 +625,7 @@ $ kill -9 5007
 ```
 
 
-### 问题五：命令sudo nvidia-docker run 报错
+### 问题五：命令 sudo nvidia-docker run 报错
 
 ```
 docker: Error response from daemon: create nvidia_driver_361.42: VolumeDriver.Create: internal error, check logs for details.

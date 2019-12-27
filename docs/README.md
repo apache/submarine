@@ -36,9 +36,9 @@ Click below contents if you want to understand more.
 
 Here're some examples about Submarine usage.
 
-[Running Distributed CIFAR 10 Tensorflow Job](./helper/RunningDistributedCifar10TFJobs.md)
+[Running Distributed CIFAR 10 Tensorflow Job_With_Yarn_Service_Runtime](helper/RunningDistributedCifar10TFJobsWithYarnService.md)
 
-[Running Standalone CIFAR 10 PyTorch Job](./helper/RunningSingleNodeCifar10PTJobs.md)
+[Running Standalone CIFAR 10 PyTorch Job_With_Yarn_Service_Runtime](helper/RunningSingleNodeCifar10PTJobsWithYarnService.md)
 
 [Running Distributed thchs30 Kaldi Job](./ecosystem/kaldi/RunningDistributedThchs30KaldiJobs.md)
 

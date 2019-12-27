@@ -35,11 +35,23 @@ Refer to [Write Dockerfile](WriteDockerfilePT.md) to build a Docker image or use
 
 ## Running PyTorch jobs
 
+Set submarine.runtime.class to YarnServiceRuntimeFactory in submarine-site.xml.
+```
+<property>
+    <name>submarine.runtime.class</name>
+    <value>org.apache.submarine.server.submitter.yarnservice.YarnServiceRuntimeFactory</value>
+    <description>RuntimeFactory for Submarine jobs</description>
+  </property>
+```
+The file, named submarine-site.xml, is in the path of ${SUBMARINE_HOME}/conf.
+
 ### Run standalone training
 
 ```shell
-export HADOOP_CLASSPATH="/home/systest/hadoop-submarine-score-yarnservice-runtime-0.2.0-SNAPSHOT.jar:/home/systest/hadoop-submarine-core-0.2.0-SNAPSHOT.jar"
-/opt/hadoop/bin/yarn jar /home/systest/hadoop-submarine-core-0.2.0-SNAPSHOT.jar job run \
+SUBMARINE_VERSION=0.3.0-SNAPSHOT
+CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`:${SUBMARINE_HOME}/submarine-all-${SUBMARINE_VERSION}.jar:
+${SUBMARINE_HOME}/conf: \
+java org.apache.submarine.client.cli.Cli job run \
 --name pytorch-job-001 \
 --verbose \
 --framework pytorch \
