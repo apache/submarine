@@ -51,9 +51,6 @@ public class ClusterRestApi {
 
   private ClusterServer clusterServer = ClusterServer.getInstance();
 
-  // Do not modify, Use by `zeppelin-web/src/app/cluster/cluster.html`
-  public static String PROPERTIES = "properties";
-
   @GET
   @Path("/" + RestConstants.ADDRESS)
   @SubmarineApi
@@ -81,7 +78,7 @@ public class ClusterRestApi {
     clusterMeta = clusterServer.getClusterMeta(ClusterMetaType.SERVER_META, "");
     intpMeta = clusterServer.getClusterMeta(ClusterMetaType.INTP_PROCESS_META, "");
 
-    // Number of calculation processes
+    // Number of interpreter processes
     for (Map.Entry<String, HashMap<String, Object>> serverMetaEntity : clusterMeta.entrySet()) {
       if (!serverMetaEntity.getValue().containsKey(ClusterMeta.NODE_NAME)) {
         continue;
@@ -166,7 +163,7 @@ public class ClusterRestApi {
 
       HashMap<String, Object> node = new HashMap<>();
       node.put(ClusterMeta.NODE_NAME, nodeName);
-      node.put(PROPERTIES, sortProperties);
+      node.put(ClusterMeta.PROPERTIES, sortProperties);
 
       nodes.add(node);
     }
@@ -195,7 +192,7 @@ public class ClusterRestApi {
       if (null != intpNodeName && intpNodeName.equals(nodeName)) {
         HashMap<String, Object> node = new HashMap<String, Object>();
         node.put(ClusterMeta.NODE_NAME, intpNodeName);
-        node.put(PROPERTIES, intpMetaEntity.getValue());
+        node.put(ClusterMeta.PROPERTIES, intpMetaEntity.getValue());
 
         // format LocalDateTime
         HashMap<String, Object> properties = intpMetaEntity.getValue();

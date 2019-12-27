@@ -60,6 +60,8 @@ public class ClusterMeta implements Serializable {
   public static String INTP_PROCESS_COUNT   = "INTP_PROCESS_COUNT";
   public static String INTP_PROCESS_LIST    = "INTP_PROCESS_LIST";
 
+  public static String PROPERTIES = "properties";
+
   // cluster_name = host:port
   // Map:cluster_name -> {server_tserver_host,server_tserver_port,cpu_capacity,...}
   private Map<String, Map<String, Object>> mapServerMeta = new HashMap<>();
