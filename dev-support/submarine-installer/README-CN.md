@@ -2,13 +2,13 @@
 
 ## 项目介绍
 
-介绍 **submarine-installer** 项目之前，首先要说明一下 **Hadoop {Submarine}**  这个项目，**Hadoop {Submarine}**  是 hadoop 3.2 版本中最新发布的机器学习框架子项目，他让 hadoop 支持 `Tensorflow`、`MXNet`、`Caffe`、`Spark` 等多种深度学习框架，提供了机器学习算法开发、分布式模型训练、模型管理和模型发布等全功能的系统框架，结合 hadoop 与身俱来的数据存储和数据处理能力，让数据科学家们能够更好的挖掘和发挥出数据的价值。
+介绍 **submarine-installer** 项目之前，首先要说明一下 **Submarine**  这个项目，**Submarine** 是 apache 顶级的机器学习平台项目。他将致力于支持 `Tensorflow`、`MXNet`、`Caffe`、`Spark` 等多种深度学习框架，提供了机器学习算法开发、分布式模型训练、模型管理和模型发布等全功能的系统框架，结合 hadoop 与身俱来的数据存储和数据处理能力，让数据科学家们能够更好的挖掘和发挥出数据的价值。
 
-hadoop 在 2.9 版本中就已经让 YARN 支持了 Docker 容器的资源调度模式，**Hadoop {Submarine}** 在此基础之上通过 YARN 把分布式深度学习框架以 Docker 容器的方式进行调度和运行起来。
+hadoop 在 2.9 版本中就已经让 YARN 支持了 Docker 容器的资源调度模式，**Submarine** 在此基础之上通过 YARN 把分布式深度学习框架以 Docker 容器的方式进行调度和运行起来。
 
 由于分布式深度学习框架需要运行在多个 Docker 的容器之中，并且需要能够让运行在容器之中的各个服务相互协调，完成分布式机器学习的模型训练和模型发布等服务，这其中就会牵涉到 `DNS`、`Docker` 、 `GPU`、`Network`、`显卡`、`操作系统内核` 修改等多个系统工程问题，正确的部署好 **Hadoop {Submarine}**  的运行环境是一件很困难和耗时的事情。
 
-为了降低 hadoop 2.9 以上版本的 docker 等组件的部署难度，所以我们专门开发了这个用来部署 `Hadoop {Submarine} ` 运行时环境的 `submarine-installer` 项目，提供一键安装脚本，也可以分步执行安装、卸载、启动和停止各个组件，同时讲解每一步主要参数配置和注意事项。我们同时还向 hadoop 社区提交了部署 `Hadoop {Submarine} ` 运行时环境的 [中文手册](InstallationGuideChineseVersion.md) 和 [英文手册](InstallationGuide.md) ，帮助用户更容易的部署，发现问题也可以及时解决。
+为了降低 hadoop 2.9 以上版本的 docker 等组件的部署难度，所以我们专门开发了这个用来部署 `Submarine` 运行时环境的 `submarine-installer` 项目，提供一键安装脚本，也可以分步执行安装、卸载、启动和停止各个组件，同时讲解每一步主要参数配置和注意事项。我们同时提供了 [中文手册](../../docs/helper/InstallationGuideChineseVersion.md) 和 [英文手册](../../docs/helper/InstallationGuide.md) ，帮助用户更容易的部署，发现问题也可以及时解决。
 
 ## 先决条件
 
@@ -28,7 +28,7 @@ hadoop 在 2.9 版本中就已经让 YARN 支持了 Docker 容器的资源调度
 
   机器学习是一个计算密度型系统，对数据传输性能要求非常高，所以我们使用了网络效率损耗最小的 ETCD 网络组件，它可以通过 BGP 路由方式支持 overlay 网络，同时在跨机房部署时支持隧道模式。
 
-  你需要选择至少三台以上的服务器作为 ETCD 的运行服务器，这样可以让 `Hadoop {Submarine} ` 有较好的容错性和稳定性。
+  你需要选择至少三台以上的服务器作为 ETCD 的运行服务器，这样可以让 `Submarine` 有较好的容错性和稳定性。
 
   在 **ETCD_HOSTS** 配置项中输入作为 ETCD 服务器的IP数组，参数配置一般是这样：
 

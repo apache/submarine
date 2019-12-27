@@ -86,7 +86,7 @@ Although the run job command looks simple, different job may have very different
 For a quick try on Mnist example with TonY runtime, check [TonY Mnist Example](TonYRuntimeGuide.md)
 
 
-For a quick try on Cifar10 example with YARN native service runtime, check [YARN Service Cifar10 Example](RunningDistributedCifar10TFJobs.md)
+For a quick try on Cifar10 example with YARN native service runtime, check [YARN Service Cifar10 Example](RunningDistributedCifar10TFJobsWithYarnService.md)
 
 
 <br />

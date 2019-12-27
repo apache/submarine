@@ -13,7 +13,7 @@
    limitations under the License.
 -->
 
-# Cifar10 Tensorflow Estimator Example With YARN Service
+# Cifar10 Tensorflow Estimator Example With YARN Native Runtime
 
 ## Prepare data for training
 
@@ -55,13 +55,22 @@ Refer to [Write Dockerfile](WriteDockerfileTF.md) to build a Docker image or use
 
 ## Run Tensorflow jobs
 
+Set submarine.runtime.class to YarnServiceRuntimeFactory in submarine-site.xml.
+```
+<property>
+    <name>submarine.runtime.class</name>
+    <value>org.apache.submarine.server.submitter.yarnservice.YarnServiceRuntimeFactory</value>
+    <description>RuntimeFactory for Submarine jobs</description>
+  </property>
+```
+The file, named submarine-site.xml, is in the path of ${SUBMARINE_HOME}/conf.
+
 ### Run standalone training
 
 ```
-SUBMARINE_VERSION=0.2.0
-CLASSPATH=`path-to/hadoop classpath --glob`:path-to/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:
-path-to/hadoop-submarine-yarnservice-runtime-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-tony-
-runtime-${SUBMARINE_VERSION}.jar \
+SUBMARINE_VERSION=0.3.0-SNAPSHOT
+CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`:${SUBMARINE_HOME}/submarine-all-${SUBMARINE_VERSION}.jar:
+${SUBMARINE_HOME}/conf: \
 java org.apache.submarine.client.cli.Cli job run \
    --name tf-job-001 --verbose --docker_image <image> \
    --input_path hdfs://default/dataset/cifar-10-data \
@@ -80,10 +89,9 @@ Explanations:
 ### Run distributed training
 
 ```
-SUBMARINE_VERSION=0.2.0
-CLASSPATH=`path-to/hadoop classpath --glob`:path-to/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:
-path-to/hadoop-submarine-yarnservice-runtime-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-tony-
-runtime-${SUBMARINE_VERSION}.jar \
+SUBMARINE_VERSION=0.3.0-SNAPSHOT
+CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`:${SUBMARINE_HOME}/submarine-all-${SUBMARINE_VERSION}.jar:
+${SUBMARINE_HOME}/conf: \
 java org.apache.submarine.client.cli.Cli job run \
    --name tf-job-001 --verbose --docker_image tf-1.13.1-gpu:0.0.1 \
    --input_path hdfs://default/dataset/cifar-10-data \
@@ -182,8 +190,9 @@ When using YARN native service runtime, you can view multiple job training histo
 ```shell
 # Cleanup previous tensorboard service if needed
 
-SUBMARINE_VERSION=0.2.0
-CLASSPATH=`path-to/hadoop classpath --glob`:path-to/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-yarnservice-runtime-${SUBMARINE_VERSION}.jar:path-to/hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar \
+SUBMARINE_VERSION=0.3.0-SNAPSHOT
+CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`:${SUBMARINE_HOME}/submarine-all-${SUBMARINE_VERSION}.jar:
+${SUBMARINE_HOME}/conf: \
 java org.apache.submarine.client.cli.Cli job run \
   --name tensorboard-service \
   --verbose \
