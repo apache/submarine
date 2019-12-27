@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.metastore.rest;
+package org.apache.submarine.server.rest;
 
 import com.google.gson.Gson;
 import org.apache.hadoop.hive.metastore.api.Database;
@@ -41,8 +41,8 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class MetaStoreApiTest {
-  private static MetaStoreApi metaStoreApi;
+public class MetaStoreRestApiTest {
+  private static MetaStoreRestApi metaStoreApi;
 
   @BeforeClass
   public static void init() {
@@ -56,7 +56,7 @@ public class MetaStoreApiTest {
                                               "useSSL=false");
     submarineConf.setMetastoreJdbcUserName("metastore_test");
     submarineConf.setMetastoreJdbcPassword("password_test");
-    metaStoreApi = new MetaStoreApi();
+    metaStoreApi = new MetaStoreRestApi();
   }
 
   @Before

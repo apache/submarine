@@ -18,18 +18,31 @@
  */
 package org.apache.submarine.server;
 
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.submarine.commons.cluster.ClusterClient;
+import org.apache.submarine.commons.cluster.meta.ClusterMeta;
 import org.apache.submarine.commons.cluster.meta.ClusterMetaType;
 import org.apache.submarine.commons.utils.NetworkUtils;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.rest.RestConstants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
@@ -60,7 +73,7 @@ public class SubmarineServerClusterTest extends AbstractSubmarineServerTest {
     constructor = clazz.getDeclaredConstructor();
     constructor.setAccessible(true);
     clusterClient = (ClusterClient) constructor.newInstance();
-    clusterClient.start("SubmarineServerClusterTest");
+    clusterClient.start(SubmarineServerClusterTest.class.getSimpleName());
 
     // Waiting for cluster startup
     int wait = 0;
@@ -75,8 +88,8 @@ public class SubmarineServerClusterTest extends AbstractSubmarineServerTest {
 
     assertTrue("Can not start Submarine server!", clusterClient.raftInitialized());
 
-    // Waiting for the workbench server to register in the cluster
-    sleep(5000);
+    // Waiting for the submarine server to register in the cluster and client send heartbeat to cluster
+    sleep(10000);
   }
 
   @AfterClass
@@ -103,5 +116,83 @@ public class SubmarineServerClusterTest extends AbstractSubmarineServerTest {
 
     assertEquals(hashMap.size(), 1);
     LOG.info("SubmarineServerClusterTest::testGetServerClusterMeta <<<");
+  }
+
+  @Test
+  public void testGetClusterAddress() throws IOException {
+    GetMethod response = httpGet("/api/" + RestConstants.V1 + "/"
+        + RestConstants.CLUSTER + "/" + RestConstants.ADDRESS);
+    LOG.info(response.toString());
+
+    String requestBody = response.getResponseBodyAsString();
+    LOG.info(requestBody);
+
+    Type type = new TypeToken<JsonResponse<List<String>>>() {}.getType();
+    Gson gson = new Gson();
+    JsonResponse<List<String>> jsonResponse = gson.fromJson(requestBody, type);
+    LOG.info(jsonResponse.getResult().toString());
+    assertEquals(jsonResponse.getCode(), Response.Status.OK.getStatusCode());
+
+    List<String> listAddr = jsonResponse.getResult();
+    LOG.info("listAddr.size = {}", listAddr.size());
+    assertEquals(listAddr.size(), 1);
+  }
+
+  private ArrayList<HashMap<String, Object>> getClusterNodes() throws IOException {
+    GetMethod response = httpGet("/api/" + RestConstants.V1 + "/"
+        + RestConstants.CLUSTER + "/" + RestConstants.NODES);
+    LOG.info(response.toString());
+
+    String requestBody = response.getResponseBodyAsString();
+    LOG.info(requestBody);
+
+    Type type = new TypeToken<JsonResponse<ArrayList<HashMap<String, Object>>>>() {}.getType();
+    Gson gson = new Gson();
+    JsonResponse<ArrayList<HashMap<String, Object>>> jsonResponse = gson.fromJson(requestBody, type);
+    LOG.info(jsonResponse.getResult().toString());
+    assertEquals(jsonResponse.getCode(), Response.Status.OK.getStatusCode());
+
+    ArrayList<HashMap<String, Object>> listNodes = jsonResponse.getResult();
+    LOG.info("listNodes.size = {}", listNodes.size());
+    assertEquals(listNodes.size(), 1);
+
+    return listNodes;
+  }
+
+  @Test
+  public void testGetClusterNodes() throws IOException {
+    getClusterNodes();
+  }
+
+  @Test
+  public void testGetClusterNode() throws IOException {
+    ArrayList<HashMap<String, Object>> listNodes = getClusterNodes();
+
+    Map<String, Object> properties
+        = (LinkedTreeMap<String, Object>) listNodes.get(0).get(ClusterMeta.PROPERTIES);
+    ArrayList<String> intpList = (ArrayList<String>) properties.get(ClusterMeta.INTP_PROCESS_LIST);
+    String nodeName = listNodes.get(0).get(ClusterMeta.NODE_NAME).toString();
+    String intpName = intpList.get(0);
+    LOG.info("properties = {}", properties);
+    LOG.info("intpList = {}", intpList);
+    LOG.info("nodeName = {}", nodeName);
+    LOG.info("intpName = {}", intpName);
+
+    GetMethod response = httpGet("/api/" + RestConstants.V1 + "/"
+        + RestConstants.CLUSTER + "/" + RestConstants.NODE + "/" + nodeName + "/" + intpName);
+    LOG.info(response.toString());
+
+    String requestBody = response.getResponseBodyAsString();
+    LOG.info(requestBody);
+
+    Type type = new TypeToken<JsonResponse<ArrayList<HashMap<String, Object>>>>() {}.getType();
+    Gson gson = new Gson();
+    JsonResponse<ArrayList<HashMap<String, Object>>> jsonResponse = gson.fromJson(requestBody, type);
+    LOG.info(jsonResponse.getResult().toString());
+    assertEquals(jsonResponse.getCode(), Response.Status.OK.getStatusCode());
+
+    ArrayList<HashMap<String, Object>> intpProcesses = jsonResponse.getResult();
+    LOG.info("intpProcesses = {}", intpProcesses);
+    assertEquals(intpProcesses.size(), 1);
   }
 }

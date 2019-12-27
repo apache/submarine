@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-package org.apache.submarine.server.jobserver.rest.api;
+package org.apache.submarine.server.jobserver.rest;
 
-import org.apache.submarine.server.jobserver.rest.dao.MLJobSpec;
-import org.apache.submarine.server.jobserver.rest.dao.RestConstants;
+import org.apache.submarine.server.rest.RestConstants;
+import org.apache.submarine.server.jobserver.dao.MLJobSpec;
 import org.apache.submarine.server.response.JsonResponse;
 
 import javax.ws.rs.Consumes;
@@ -48,7 +48,7 @@ import javax.ws.rs.core.Response;
  * */
 @Path(RestConstants.V1 + "/" + RestConstants.JOBS)
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
-public class JobApi {
+public class JobServerRestApi {
 
   // A ping test to verify the job server is up.
   @Path(RestConstants.PING)

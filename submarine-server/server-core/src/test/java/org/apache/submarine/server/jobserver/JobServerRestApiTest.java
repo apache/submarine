@@ -17,14 +17,14 @@
  * under the License.
  */
 
-package org.apache.submarine.server.jobserver.rest.api;
+package org.apache.submarine.server.jobserver;
 
 import com.google.gson.Gson;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
-import org.apache.submarine.server.jobserver.rest.dao.RestConstants;
+import org.apache.submarine.server.rest.RestConstants;
 import org.apache.submarine.server.response.JsonResponse;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -37,12 +37,12 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class JobApiTest extends AbstractSubmarineServerTest {
-  private static final Logger LOG = LoggerFactory.getLogger(JobApiTest.class);
+public class JobServerRestApiTest extends AbstractSubmarineServerTest {
+  private static final Logger LOG = LoggerFactory.getLogger(JobServerRestApiTest.class);
 
   @BeforeClass
   public static void init() throws Exception {
-    AbstractSubmarineServerTest.startUp(JobApiTest.class.getSimpleName());
+    AbstractSubmarineServerTest.startUp(JobServerRestApiTest.class.getSimpleName());
   }
 
   @AfterClass
