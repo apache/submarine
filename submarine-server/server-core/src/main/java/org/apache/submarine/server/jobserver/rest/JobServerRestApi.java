@@ -19,7 +19,7 @@
 package org.apache.submarine.server.jobserver.rest;
 
 import org.apache.submarine.server.rest.RestConstants;
-import org.apache.submarine.server.jobserver.dao.MLJobSpec;
+import org.apache.submarine.server.api.spec.JobSpec;
 import org.apache.submarine.server.response.JsonResponse;
 
 import javax.ws.rs.Consumes;
@@ -61,9 +61,9 @@ public class JobServerRestApi {
 
   @POST
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
-  public Response submitJob(MLJobSpec jobSpec) {
+  public Response submitJob(JobSpec jobSpec) {
     // Submit the job spec through submitter
-    return new JsonResponse.Builder<MLJobSpec>(Response.Status.ACCEPTED)
+    return new JsonResponse.Builder<JobSpec>(Response.Status.ACCEPTED)
         .success(true).result(jobSpec).build();
   }
 
@@ -71,14 +71,14 @@ public class JobServerRestApi {
   @Path("{" + RestConstants.JOB_ID + "}")
   public Response listJob(@PathParam(RestConstants.JOB_ID) String id) {
     // Query the job status though submitter
-    return new JsonResponse.Builder<MLJobSpec>(Response.Status.OK)
+    return new JsonResponse.Builder<JobSpec>(Response.Status.OK)
         .success(true).result(id).build();
   }
 
   @GET
   public Response listAllJob() {
     // Query all the job status though submitter
-    return new JsonResponse.Builder<MLJobSpec>(Response.Status.OK)
+    return new JsonResponse.Builder<JobSpec>(Response.Status.OK)
         .success(true).build();
   }
 
@@ -86,7 +86,7 @@ public class JobServerRestApi {
   @Path("{" + RestConstants.JOB_ID + "}")
   public Response deleteJob(@PathParam(RestConstants.JOB_ID) String id) {
     // Delete the job though submitter
-    return new JsonResponse.Builder<MLJobSpec>(Response.Status.OK)
+    return new JsonResponse.Builder<JobSpec>(Response.Status.OK)
         .success(true).result(id).build();
   }
 

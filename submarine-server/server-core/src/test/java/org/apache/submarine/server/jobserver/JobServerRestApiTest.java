@@ -70,7 +70,7 @@ public class JobServerRestApiTest extends AbstractSubmarineServerTest {
   // Test job created with correct JSON input
   @Test
   public void testCreateJobWhenJsonInputIsCorrectThenResponseCodeAccepted() throws IOException {
-    String jobSpec = "{\"type\": \"tensorflow\", \"version\":\"v1.13\"}";
+    String jobSpec = "{\"name\": \"mnist\"}";
 
     PostMethod response = httpPost("/api/" + RestConstants.V1 + "/" + RestConstants.JOBS, jobSpec);
     LOG.info(response.toString());

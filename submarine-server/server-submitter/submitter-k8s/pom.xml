@@ -51,6 +51,12 @@
       <version>${k8s.client-java.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.submarine</groupId>
+      <artifactId>server-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
     <!--  Unit Tests  -->
     <dependency>
       <groupId>junit</groupId>
