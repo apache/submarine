@@ -28,9 +28,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 public class SubmarineConfiguration extends XMLConfiguration {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineConfiguration.class);
@@ -311,6 +313,43 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getString(ConfVars.WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE);
   }
 
+  /**
+   * Get all submitters from configuration file
+   * @return list
+   */
+  public List<String> listSubmitter() {
+    List<String> values = new ArrayList<>();
+
+    String submitters = getString(ConfVars.SUBMARINE_SUBMITTERS.getVarName());
+    if (submitters != null) {
+      final String delim = ",";
+      StringTokenizer tokenizer = new StringTokenizer(submitters, delim);
+      while (tokenizer.hasMoreTokens()) {
+        values.add(tokenizer.nextToken());
+      }
+    }
+
+    return values;
+  }
+
+  /**
+   * Get the entry class name by the specified name
+   * @param name the submitter's name
+   * @return class name
+   */
+  public String getSubmitterEntry(String name) {
+    return getString(String.format(ConfVars.SUBMARINE_SUBMITTERS_ENTRY.getVarName(), name));
+  }
+
+  /**
+   * Get the submitter's classpath by the specified name
+   * @param name the submitter's name
+   * @return classpath
+   */
+  public String getSubmitterClassPath(String name) {
+    return getString(String.format(ConfVars.SUBMARINE_SUBMITTERS_CLASSPATH.getVarName(), name));
+  }
+
   private String getStringValue(String name, String d) {
     String value = this.properties.get(name);
     if (value != null) {
@@ -484,7 +523,10 @@ public class SubmarineConfiguration extends XMLConfiguration {
         "workbench.websocket.max.text.message.size", "1024000"),
     WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),
     SUBMARINE_RUNTIME_CLASS("submarine.runtime.class",
-        "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory");
+        "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"),
+    SUBMARINE_SUBMITTERS("submarine.submitters", ""),
+    SUBMARINE_SUBMITTERS_ENTRY("submarine.submitters.%s.class", ""),
+    SUBMARINE_SUBMITTERS_CLASSPATH("submarine.submitters.%s.classpath", "");
 
     private String varName;
     @SuppressWarnings("rawtypes")

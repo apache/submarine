@@ -19,6 +19,11 @@
 
 package org.apache.submarine.server.submitter.k8s;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import io.kubernetes.client.ApiClient;
@@ -29,20 +34,28 @@ import io.kubernetes.client.models.V1DeleteOptions;
 import io.kubernetes.client.models.V1DeleteOptionsBuilder;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
+import org.apache.submarine.server.api.JobSubmitter;
+import org.apache.submarine.server.api.exception.UnsupportedJobTypeException;
+import org.apache.submarine.server.api.job.Job;
+import org.apache.submarine.server.api.spec.JobSpec;
 import org.apache.submarine.server.submitter.k8s.model.CustomResourceJob;
 import org.apache.submarine.server.submitter.k8s.model.CustomResourceJobList;
+import org.apache.submarine.server.submitter.k8s.model.MLJob;
+import org.apache.submarine.server.submitter.k8s.parser.JobSpecParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileReader;
-import java.io.IOException;
 
 /**
  * JobSubmitter for Kubernetes Cluster.
  */
-// TODO(jiwq): It should implement the JobSubmitter interface
-public class K8sJobSubmitter {
+public class K8sJobSubmitter implements JobSubmitter {
   private final Logger LOG = LoggerFactory.getLogger(K8sJobSubmitter.class);
+
+  /**
+   * Key: kind of CRD, such as TFJob/PyTorchJob
+   * Value: the CRD api with version
+   */
+  private Map<String, String> supportedCRDMap;
 
   public K8sJobSubmitter(String confPath) throws IOException {
     ApiClient client =
@@ -50,8 +63,38 @@ public class K8sJobSubmitter {
     Configuration.setDefaultApiClient(client);
   }
 
-  public String submitJob(K8sJobRequest request) {
-    return "job_id";
+  @Override
+  public void initialize() {
+    supportedCRDMap = new HashMap<>();
+    supportedCRDMap.put("TFJob", "kubeflow.org/v1");
+  }
+
+  @Override
+  public String getSubmitterType() {
+    return "k8s";
+  }
+
+  @Override
+  public Job submitJob(JobSpec jobSpec) throws UnsupportedJobTypeException {
+    if (!supportedCRDMap.containsKey(jobSpec.getSubmitterSpec().getType())) {
+      throw new UnsupportedJobTypeException();
+    }
+
+    Job job = new Job();
+    job.setName(jobSpec.getName());
+    createJob(JobSpecParser.parseTFJob(jobSpec));
+    return job;
+  }
+
+  @VisibleForTesting
+  void createJob(MLJob job) {
+    try {
+      CustomObjectsApi api = new CustomObjectsApi();
+      api.createNamespacedCustomObject(job.getGroup(), job.getVersion(),
+          job.getMetadata().getNamespace(), job.getMetadata().getName(), job, "true");
+    } catch (ApiException e) {
+      LOG.error("Create {} job: " + e.getMessage(), e);
+    }
   }
 
   @VisibleForTesting

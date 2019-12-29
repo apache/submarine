@@ -17,37 +17,10 @@
  * under the License.
  */
 
-package org.apache.submarine.server.jobserver.dao;
+package org.apache.submarine.server.api.exception;
 
-// A process level environment variable.
-public class EnvVaraible {
-
-  public String getKey() {
-    return key;
+public class UnsupportedJobTypeException extends Exception {
+  public UnsupportedJobTypeException() {
+    super("Unsupported Job Type Exception");
   }
-
-  public void setKey(String key) {
-    this.key = key;
-  }
-
-  public String getValue() {
-    return value;
-  }
-
-  public void setValue(String value) {
-    this.value = value;
-  }
-
-  String key;
-  String value;
-
-  public EnvVaraible() {}
-
-  public EnvVaraible(String k, String v) {
-    this.key = k;
-    this.value = v;
-  }
-
-
-
 }

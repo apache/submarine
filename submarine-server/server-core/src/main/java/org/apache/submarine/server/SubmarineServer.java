@@ -58,11 +58,17 @@ import java.io.IOException;
 public class SubmarineServer extends ResourceConfig {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineServer.class);
 
+  private static long serverTimeStamp = System.currentTimeMillis();
+
   public static Server jettyWebServer;
   public static SubmarineRpcServer rpcServer;
   public static ServiceLocator sharedServiceLocator;
 
   private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+
+  public static long getServerTimeStamp() {
+    return serverTimeStamp;
+  }
 
   public static void main(String[] args) throws InterruptedException,
       IOException {
