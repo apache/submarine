@@ -101,6 +101,12 @@ public class JobSpec {
     this.taskSpecs = taskSpecs;
   }
 
+  public boolean validate() {
+    return librarySpec != null && librarySpec.validate()
+        && submitterSpec != null && submitterSpec.validate()
+        && taskSpecs != null;
+  }
+
   /**
    * This could be file/directory which contains multiple python scripts.
    * We should solve dependencies distribution in k8s or yarn.

@@ -29,7 +29,24 @@ public class JobId implements Comparable<JobId> {
   private static final int JOB_ID_MIN_DIGITS = 4;
 
   private int id;
+
   private long serverTimestamp;
+
+  /**
+   * Get the object of JobId.
+   * @param jobId job id string
+   * @return object
+   */
+  public static JobId fromString(String jobId) {
+    if (jobId == null) {
+      return null;
+    }
+    String[] components = jobId.split("\\_");
+    if (components.length != 3) {
+      return null;
+    }
+    return JobId.newInstance(Long.parseLong(components[1]), Integer.parseInt(components[2]));
+  }
 
   /**
    * Ge the object of JobId.
@@ -39,6 +56,7 @@ public class JobId implements Comparable<JobId> {
    */
   public static JobId newInstance(long serverTimestamp, int id) {
     JobId jobId = new JobId();
+    jobId.setServerTimestamp(serverTimestamp);
     jobId.setId(id);
     return jobId;
   }

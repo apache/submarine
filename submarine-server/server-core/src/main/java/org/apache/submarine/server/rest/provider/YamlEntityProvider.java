@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.jobserver.provider;
+package org.apache.submarine.server.rest.provider;
 
 import org.yaml.snakeyaml.Yaml;
 

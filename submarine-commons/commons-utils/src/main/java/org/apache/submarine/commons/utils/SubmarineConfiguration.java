@@ -320,7 +320,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
   public List<String> listSubmitter() {
     List<String> values = new ArrayList<>();
 
-    String submitters = getString(ConfVars.SUBMARINE_SUBMITTERS.getVarName());
+    String submitters = getString(ConfVars.SUBMARINE_SUBMITTERS);
     if (submitters != null) {
       final String delim = ",";
       StringTokenizer tokenizer = new StringTokenizer(submitters, delim);
@@ -338,7 +338,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
    * @return class name
    */
   public String getSubmitterEntry(String name) {
-    return getString(String.format(ConfVars.SUBMARINE_SUBMITTERS_ENTRY.getVarName(), name));
+    return getStringValue(String.format(ConfVars.SUBMARINE_SUBMITTERS_ENTRY.getVarName(), name), "");
   }
 
   /**
@@ -347,7 +347,8 @@ public class SubmarineConfiguration extends XMLConfiguration {
    * @return classpath
    */
   public String getSubmitterClassPath(String name) {
-    return getString(String.format(ConfVars.SUBMARINE_SUBMITTERS_CLASSPATH.getVarName(), name));
+    return getStringValue(String.format(ConfVars.SUBMARINE_SUBMITTERS_CLASSPATH.getVarName(),
+        name), "");
   }
 
   private String getStringValue(String name, String d) {

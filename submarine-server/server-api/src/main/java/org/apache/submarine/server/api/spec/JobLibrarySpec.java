@@ -116,4 +116,8 @@ public class JobLibrarySpec {
   public void setEnvVars(Map<String, String> envVars) {
     this.envVars = envVars;
   }
+
+  public boolean validate() {
+    return name != null && image != null && cmd != null;
+  }
 }
