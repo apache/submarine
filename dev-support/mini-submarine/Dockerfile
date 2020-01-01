@@ -22,7 +22,7 @@ RUN apt-get -q update \
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/jre
 
-#INSTALL Docker
+# INSTALL Docker
 RUN \
   apt-get update && \
   apt-get -y install apt-transport-https ca-certificates curl software-properties-common && \
@@ -91,18 +91,19 @@ RUN \
 COPY conf /tmp/hadoop-config
 
 ENV HADOOP_VER=${HADOOP_VERSION}
+
 #Install Spark
 ARG SPARK_VERSION=
 ENV SPARK_VER=${SPARK_VERSION}
 ADD spark-${SPARK_VERSION}-bin-hadoop2.7.tgz /opt
 ADD spark-defaults-dynamic-allocation.conf /opt/spark-${SPARK_VERSION}/conf/spark-defaults.conf
-RUN \
-  apt-get update && \
-  apt-get install -y vim python python-numpy wget zip python3
+RUN apt-get update && apt-get install -y vim python python-numpy wget zip python3
+
 # Add pyspark sample
 ADD spark-script /home/yarn/spark-script
 RUN chown -R yarn /home/yarn/spark-script && \
     chmod +x -R /home/yarn/spark-script
+
 # Add distributedShell example
 ADD conf/yarn-ds-docker.sh /home/yarn
 RUN chown -R yarn /home/yarn/yarn-ds-docker.sh && \
@@ -127,4 +128,5 @@ RUN cd /home/yarn/submarine && \
     /home/yarn/submarine/build_python_virtual_env.sh
 
 # Grant read permission for submarine job
-RUN chown yarn /home/yarn/submarine
+RUN chown -R yarn /home/yarn/submarine
+RUN chown -R yarn /opt/*

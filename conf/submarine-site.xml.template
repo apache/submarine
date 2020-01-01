@@ -103,7 +103,7 @@
 
   <property>
     <name>workbench.web.war</name>
-    <value>../workbench-web.war</value>
+    <value>../workbench-web-ng.war</value>
     <description>Submarine workbench web war file path.</description>
   </property>
 
