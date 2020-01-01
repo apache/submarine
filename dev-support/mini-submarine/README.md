@@ -18,9 +18,9 @@ This is a docker image built for submarine development and quick start test.
 
 **Please Note: don't use the image in production environment. It's only for test purpose.**
 
-### Start mini-submarine
+## Start mini-submarine
 
-#### Use the image we provide
+### Use the image we provide
 
 > Tag 0.3.0-SNAPSHOT indicates the version number of hadoop submarine in images
 
@@ -28,7 +28,7 @@ This is a docker image built for submarine development and quick start test.
 docker pull hadoopsubmarine/mini-submarine:0.3.0-SNAPSHOT 
 ```
 
-#### Create image by yourself
+### Create image by yourself
 
 > You may need a VPN if your network is limited
 
@@ -53,10 +53,10 @@ cd submarine/dev-support/mini-submarine/
 ./build_mini-submarine.sh
 ```
 
-#### Run mini-submarine image
+### Run mini-submarine image
 
 ```
-docker run -it -h submarine-dev --net=bridge --privileged -P local/mini-submarine:0.3.0-SNAPSHOT /bin/bash
+docker run -it -h submarine-dev --name mini-submarine --net=bridge --privileged -P local/mini-submarine:0.3.0-SNAPSHOT /bin/bash
 
 # In the container, use root user to bootstrap hdfs and yarn
 /tmp/hadoop-config/bootstrap.sh
@@ -67,7 +67,7 @@ yarn node -list -showDetails
 
 If you pull the image directly, please replace "local/mini-submarine:0.3.0-SNAPSHOT" with "hadoopsubmarine/mini-submarine:0.3.0-SNAPSHOT".
 
-#### You should see info like this:
+### You should see info like this:
 
 ```
 Total Nodes:1
@@ -87,38 +87,49 @@ hdfs dfs -ls /user
 
 > drwxr-xr-x   - yarn supergroup          0 2019-07-22 07:59 /user/yarn
 
-### Run workbench server
+## Run workbench server
 
 1. Setup mysql mariadb server
+> Because mysql and mariadb use the GPL license, you need to manually execute the script to install it.
+
 ```
 /tmp/hadoop-config/setup-mysql.sh
 ``` 
 
-2. Start workbench server
+You can execute command `mysql -uroot` login mysql mariadb.
+
+2. Start submarine server
 ```
 su yarn
-/opt/submarine-current/bin/workbench-daemon.sh start getMysqlJar
+/opt/submarine-current/bin/submarine-daemon.sh start getMysqlJar
 ``` 
 
-### Run a sumbarine job
+3. login submarine workbench
+You can use the following command to get the login URL of the submarine workbench
+```shell
+echo "http://localhost:$(docker inspect --format='{{(index (index .NetworkSettings.Ports "8080/tcp") 0).HostPort}}' mini-submarine)"
+```
+The URL returned by the command (like to: http://localhost:32819) is opened through a browser. The username and initial password of the workbench are both `admin`.
 
-#### Switch to user yarn
+## Run a sumbarine job
+
+### Switch to user yarn
 
 ```
 su yarn
 ```
 
-#### Run a mnist TF job with submarine + TonY runtime
+### Run a mnist TF job with submarine + TonY runtime
 ```
-cd && cd submarine && ./run_submarine_mnist_tony.sh
+/home/yarn/submarine/run_submarine_mnist_tony.sh
 ```
 When run_submarine_mnist_tony.sh is executed, mnist data is download from the url, [google mnist](https://storage.googleapis.com/cvdf-datasets/mnist/), by default. If the url is unaccessible, you can use parameter "-d" to specify a customized url.
 For example, if you are in mainland China, you can use the following command
 ```
-cd && cd submarine && ./run_submarine_mnist_tony.sh -d http://yann.lecun.com/exdb/mnist/
+/home/yarn/submarine/run_submarine_mnist_tony.sh -d http://yann.lecun.com/exdb/mnist/
 ```
 
-#### Run a mnist TF job via submarine server
+### Run a mnist TF job via submarine server
 
 Submarine server is supposed to manage jobs lifecycle. Clients can just submit
 job parameters or yaml file to submarine server instead of submitting jobs
@@ -138,7 +149,7 @@ Run the following command to submit a job via submarine server
 ./run_submarine_mnist_tony_rpc.sh
 ```
 
-#### Try your own submarine program
+### Try your own submarine program
 
 Run container with your source code. You can also use "docker cp" to an existing running container
 
@@ -149,24 +160,24 @@ Run container with your source code. You can also use "docker cp" to an existing
 3. Try to run it. Since this is a single node environment, keep in mind that the workers could have conflicts with each other. For instance, the mnist_distributed.py example has a workaround to fix the conflicts when two workers are using same "data_dir" to download data set.
 
 
-### Update Submarine Version
+## Update Submarine Version
 
 You can follow the documentation instructions to update your own modified and compiled submarine package to the submarine container.
 
-#### Build Submarine
+### Build Submarine
 
 ```
 cd submarine-project-dir/
 mvn clean install package -DskipTests
 ```
 
-#### Copy submarine jar to mini-submarine container
+### Copy submarine jar to mini-submarine container
 
 ```
 docker cp submarine-all/target/submarine-all-<SUBMARINE_VERSION>-hadoop-<HADOOP_VERSION>.jar <container-id>:/tmp/
 ```
 
-#### Modify environment variables
+### Modify environment variables
 
 ```
 cd /home/yarn/submarine
@@ -177,18 +188,18 @@ SUBMARINE_VERSION=<submarine-version-number>
 HADOOP_VERSION=<hadoop-version-number> # default 2.9
 ```
 
-#### Test submarine jar package in container
+### Test submarine jar package in container
 
 ```
 cd /home/yarn/submarine
 ./run_customized_submarine-all_mnist.sh
 ```
 
-### Debug Submarine
+## Debug Submarine
 
 When using mini-submarine, you can debug submarine client, applicationMaster and executor for trouble shooting.
 
-#### <span id="debug">Debug submarine client</span>
+### <span id="debug">Debug submarine client</span>
 
 Run the following command to start mini-submarine.
 
@@ -217,7 +228,7 @@ For example, we can get some info like this
 
 Then port 32804 can be used for remote debug.
 
-#### Debug submarine job applicationMaster
+### Debug submarine job applicationMaster
 
 Run the following command to start mini-submarine.
 
@@ -237,7 +248,7 @@ Add the following configuration in the file /usr/local/hadoop/etc/hadoop/tony.xm
 You can use run_submarine_mnist_tony.sh to submit a job. Port 8001 is used for AM debugging in mini-submarine.
 And the debug port mapping can be obtained using the way as [Debug submarine client](#debug) shows.
 
-#### Debug submarine job executor
+### Debug submarine job executor
 
 Run the following command to start mini-submarine.
 
@@ -265,7 +276,7 @@ submarine job should be like this
 
 You can get the debug port mapping using the way as [Debug submarine client](#debug) shows.
 
-### Run a distributedShell job with docker container
+## Run a distributedShell job with docker container
 
 You can also run a distributedShell job in mini-submarine.
 
@@ -273,7 +284,7 @@ You can also run a distributedShell job in mini-submarine.
 cd && ./yarn-ds-docker.sh
 ```
 
-### Run a spark job
+## Run a spark job
 
 Spark jobs are supported as well.
 

@@ -25,6 +25,7 @@ else
   PWD=$(dirname ${BASH_SOURCE-$0})
 fi
 export MINI_PATH=$(cd "${PWD}">/dev/null; pwd)
+SUBMARINE_PROJECT_PATH=${MINI_PATH}/../..
 
 download_package() {
   if [ -f "$1" ]; then
@@ -43,6 +44,10 @@ download_package() {
   fi
 }
 
+is_empty_dir(){
+    return `ls -A $1|wc -w`
+}
+
 # download hadoop
 download_package "hadoop-${hadoop_v}.tar.gz" "http://mirrors.tuna.tsinghua.edu.cn/apache/hadoop/common/hadoop-${hadoop_v}"
 # download spark
@@ -50,18 +55,33 @@ download_package "spark-${spark_v}-bin-hadoop2.7.tgz" "http://mirrors.tuna.tsing
 # download zookeeper
 download_package "zookeeper-3.4.14.tar.gz" "http://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.4.14"
 
-cd ../..
-submarine_dist_exists=$(find -L "submarine-dist/target" -name "submarine-dist-${submarine_v}*.tar.gz")
+if [ ! -d "${SUBMARINE_PROJECT_PATH}/submarine-dist/target" ]; then
+  mkdir "${SUBMARINE_PROJECT_PATH}/submarine-dist/target"
+fi
+submarine_dist_exists=$(find -L "${SUBMARINE_PROJECT_PATH}/submarine-dist/target" -name "submarine-dist-${submarine_v}*.tar.gz")
 # Build source code if the package doesn't exist.
 if [[ -z "${submarine_dist_exists}" ]]; then
+  # update tony code
+  if is_empty_dir "${SUBMARINE_PROJECT_PATH}/submodules/tony" ]; then
+    git submodule update --init --recursive
+  else
+    git submodule update --recursive
+  fi
+
+  cd "${SUBMARINE_PROJECT_PATH}"
   mvn clean package -DskipTests
 fi
 
-cp submarine-dist/target/submarine-dist-${submarine_v}*.tar.gz ${MINI_PATH}
-cp -r submarine-sdk/pysubmarine ${MINI_PATH}
-cp -r docs/database ${MINI_PATH}
-cd ${MINI_PATH}
+cp ${SUBMARINE_PROJECT_PATH}/submarine-dist/target/submarine-dist-${submarine_v}*.tar.gz ${MINI_PATH}
+cp -r ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine ${MINI_PATH}
+cp -r ${SUBMARINE_PROJECT_PATH}/docs/database ${MINI_PATH}
 
 # build image
 echo "Start building the mini-submarine docker image..."
+cd ${MINI_PATH}
 docker build --build-arg HADOOP_VERSION=${hadoop_v} --build-arg SPARK_VERSION=${spark_v} --build-arg SUBMARINE_VERSION=${submarine_v} --build-arg IMAGE_NAME=${image_name} -t ${image_name} .
+
+# clean template file
+rm -rf ${MINI_PATH}/database
+rm -rf ${MINI_PATH}/pysubmarine
+rm -rf ${MINI_PATH}/submarine-dist-${submarine_v}*.tar.gz
