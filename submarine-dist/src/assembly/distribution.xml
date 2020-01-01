@@ -67,10 +67,10 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>../submarine-workbench/workbench-web/target</directory>
+      <directory>../submarine-workbench/workbench-web-ng/target</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>workbench-web.war</include>
+        <include>workbench-web-ng.war</include>
       </includes>
     </fileSet>
     <fileSet>

@@ -31,8 +31,8 @@
 
   <groupId>org.apache.submarine</groupId>
   <artifactId>workbench-web-ng</artifactId>
-  <!--  <packaging>war</packaging>-->
-  <!--  <version>0.3.0-SNAPSHOT</version>-->
+  <packaging>war</packaging>
+  <version>0.3.0-SNAPSHOT</version>
   <name>Submarine: Workbench Web Angular</name>
 
   <!-- See https://github.com/eirslett/frontend-maven-plugin/issues/229 -->
@@ -42,14 +42,92 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
     <!--plugin versions-->
     <plugin.frontend.nodeDownloadRoot>https://nodejs.org/dist/</plugin.frontend.nodeDownloadRoot>
   </properties>
 
   <build>
-    <defaultGoal>compile</defaultGoal>
     <plugins>
+      <!-- Gulp Frontend -->
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${plugin.frontend.version}</version>
+
+        <configuration>
+          <installDirectory>target</installDirectory>
+          <environmentVariables>
+            <!-- Avoid certificates issues, needed behind a corporate proxy -->
+            <NODE_TLS_REJECT_UNAUTHORIZED>0</NODE_TLS_REJECT_UNAUTHORIZED>
+          </environmentVariables>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <configuration>
+              <nodeVersion>${node.version}</nodeVersion>
+              <npmVersion>${npm.version}</npmVersion>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm build</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run build --prod</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- End Gulp Frontend -->
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>${plugin.war.version}</version>
+        <configuration>
+          <warName>${project.artifactId}</warName>
+          <failOnMissingWebXml>true</failOnMissingWebXml>
+          <warSourceDirectory>dist/workbench-web-ng</warSourceDirectory>
+          <webXml>src/WEB-INF/web.xml</webXml>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <!-- clean task will be executed by front-end-maven plugin -->
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>dist</directory>
+            </fileset>
+            <fileset>
+              <directory>node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>target</directory>
+            </fileset>
+            <fileset>
+              <directory>node</directory>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
