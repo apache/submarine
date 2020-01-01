@@ -73,12 +73,20 @@ public class JobManager implements JobHandler {
 
   @Override
   public Job submitJob(JobSpec spec) throws UnsupportedJobTypeException {
+    if (!spec.validate()) {
+      return null;
+    }
+
+    JobSubmitter submitter = submitterManager.getSubmitterByType(
+        spec.getSubmitterSpec().getType());
+    if (submitter == null) {
+      throw new UnsupportedJobTypeException();
+    }
+
     Job job = new Job();
     job.setJobId(generateJobId());
     executorService.submit(() -> {
       try {
-        JobSubmitter submitter = submitterManager.getSubmitterByType(
-            spec.getSubmitterSpec().getType());
         jobs.putIfAbsent(job.getJobId(), submitter.submitJob(spec));
       } catch (UnsupportedJobTypeException e) {
         LOG.warn(e.getMessage(), e);

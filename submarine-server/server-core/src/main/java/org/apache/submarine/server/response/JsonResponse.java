@@ -23,6 +23,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
+import org.apache.submarine.server.api.job.JobId;
+import org.apache.submarine.server.json.JobIdDeserializer;
+import org.apache.submarine.server.json.JobIdSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,7 +164,10 @@ public class JsonResponse<T> {
 
       safeGson = new GsonBuilder()
           .registerTypeAdapter(Date.class, safeDateTypeAdapter)
-          .serializeNulls().create();
+          .registerTypeAdapter(JobId.class, new JobIdSerializer())
+          .registerTypeAdapter(JobId.class, new JobIdDeserializer())
+          .serializeNulls()
+          .create();
     }
 
     boolean haveDictAnnotation = false;

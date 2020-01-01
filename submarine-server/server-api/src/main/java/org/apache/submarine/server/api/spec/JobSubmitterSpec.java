@@ -111,4 +111,8 @@ public class JobSubmitterSpec {
   public void setApiVersion(String apiVersion) {
     this.apiVersion = apiVersion;
   }
+
+  public boolean validate() {
+    return type != null && namespace != null;
+  }
 }

@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class JobTaskSpec {
   /**
-   * The job task name, the range is [Chief, Ps, Worker, Evaluator, Master]
+   * The job task name, if not specify using the library name
    */
   private String name;
 
@@ -72,7 +72,7 @@ public class JobTaskSpec {
   }
 
   /**
-   * Get the task name which range is [Chief, Ps, Worker, Evaluator, Master]
+   * Get the task name, if not specify using the library name
    * @return task name
    */
   public String getName() {
@@ -81,7 +81,7 @@ public class JobTaskSpec {
 
   /**
    * Set the task name
-   * @param name task name which range is [Chief, Ps, Worker, Evaluator, Master]
+   * @param name task name
    */
   public void setName(String name) {
     this.name = name;
@@ -216,4 +216,5 @@ public class JobTaskSpec {
   public String getGpu() {
     return resourceMap.get("nvidia.com/gpu");
   }
+
 }

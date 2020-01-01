@@ -17,14 +17,20 @@
  * under the License.
  */
 
-package org.apache.submarine.server.jobserver;
+package org.apache.submarine.server.rest;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.io.FileUtils;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
-import org.apache.submarine.server.rest.RestConstants;
+import org.apache.submarine.server.api.job.Job;
+import org.apache.submarine.server.api.job.JobId;
+import org.apache.submarine.server.json.JobIdDeserializer;
+import org.apache.submarine.server.json.JobIdSerializer;
 import org.apache.submarine.server.response.JsonResponse;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -33,16 +39,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.Response;
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
 
-public class JobServerRestApiTest extends AbstractSubmarineServerTest {
-  private static final Logger LOG = LoggerFactory.getLogger(JobServerRestApiTest.class);
+public class JobManagerRestApiTest extends AbstractSubmarineServerTest {
+  private static final Logger LOG = LoggerFactory.getLogger(JobManagerRestApiTest.class);
 
   @BeforeClass
   public static void init() throws Exception {
-    AbstractSubmarineServerTest.startUp(JobServerRestApiTest.class.getSimpleName());
+    AbstractSubmarineServerTest.startUp(JobManagerRestApiTest.class.getSimpleName());
   }
 
   @AfterClass
@@ -69,17 +78,18 @@ public class JobServerRestApiTest extends AbstractSubmarineServerTest {
 
   // Test job created with correct JSON input
   @Test
-  public void testCreateJobWhenJsonInputIsCorrectThenResponseCodeAccepted() throws IOException {
-    String jobSpec = "{\"name\": \"mnist\"}";
+  public void testCreateJobWhenJsonInputIsCorrectThenResponseCodeAccepted() throws Exception {
+    URL fileUrl = this.getClass().getResource("/tf-mnist-req.json");
+    String jobSpec = FileUtils.readFileToString(new File(fileUrl.toURI()), StandardCharsets.UTF_8);
 
     PostMethod response = httpPost("/api/" + RestConstants.V1 + "/" + RestConstants.JOBS, jobSpec);
     LOG.info(response.toString());
 
-    String requestBody = response.getResponseBodyAsString();
-    LOG.info(requestBody);
+    String responseBodyAsString = response.getResponseBodyAsString();
+    LOG.info(responseBodyAsString);
 
     Gson gson = new Gson();
-    JsonResponse jsonResponse = gson.fromJson(requestBody, JsonResponse.class);
+    JsonResponse jsonResponse = gson.fromJson(responseBodyAsString, JsonResponse.class);
     assertEquals("Response code should be 202 ",
         Response.Status.ACCEPTED.getStatusCode(), jsonResponse.getCode());
   }
@@ -113,20 +123,24 @@ public class JobServerRestApiTest extends AbstractSubmarineServerTest {
   // Test get job by id
   @Test
   public void testGetJobById() throws IOException {
-    String jobId = "job1";
+    String jobId = "job_1577810970_0001";
     GetMethod response = httpGet("/api/" + RestConstants.V1 + "/"
         + RestConstants.JOBS + "/" + jobId);
     LOG.info(response.toString());
 
-    String requestBody = response.getResponseBodyAsString();
-    LOG.info(requestBody);
+    String responseBodyAsString = response.getResponseBodyAsString();
+    LOG.info(responseBodyAsString);
 
-    Gson gson = new Gson();
-    JsonResponse jsonResponse = gson.fromJson(requestBody, JsonResponse.class);
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(JobId.class, new JobIdSerializer())
+        .registerTypeAdapter(JobId.class, new JobIdDeserializer())
+        .create();
+    JsonResponse<Job> jsonResponse = gson.fromJson(responseBodyAsString,
+        new TypeToken<JsonResponse<Job>>(){}.getType());
     assertEquals("Response code should be 200 ",
         Response.Status.OK.getStatusCode(), jsonResponse.getCode());
     assertEquals("Job id should be " + jobId, jobId,
-        jsonResponse.getResult().toString());
+        jsonResponse.getResult().getJobId().toString());
   }
 
   // Test delete job by id
