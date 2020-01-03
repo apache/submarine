@@ -19,6 +19,8 @@
 
 package org.apache.submarine.server.api;
 
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
+
 /**
  * The submitter should implement this interface.
  */
@@ -27,7 +29,7 @@ public interface JobSubmitter extends JobHandler {
   /**
    * Initialize the submitter related code
    */
-  void initialize();
+  void initialize(SubmarineConfiguration conf);
 
   /**
    * Get the submitter type which is the unique identifier.
