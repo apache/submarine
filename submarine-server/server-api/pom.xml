@@ -31,4 +31,11 @@
   <artifactId>server-api</artifactId>
   <name>Submarine: Server API</name>
 
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.submarine</groupId>
+      <artifactId>commons-utils</artifactId>
+    </dependency>
+  </dependencies>
+
 </project>

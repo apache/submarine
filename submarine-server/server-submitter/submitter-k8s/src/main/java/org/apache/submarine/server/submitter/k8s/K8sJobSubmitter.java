@@ -20,7 +20,6 @@
 package org.apache.submarine.server.submitter.k8s;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +33,7 @@ import io.kubernetes.client.models.V1DeleteOptions;
 import io.kubernetes.client.models.V1DeleteOptionsBuilder;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.JobSubmitter;
 import org.apache.submarine.server.api.exception.UnsupportedJobTypeException;
 import org.apache.submarine.server.api.job.Job;
@@ -51,22 +51,41 @@ import org.slf4j.LoggerFactory;
 public class K8sJobSubmitter implements JobSubmitter {
   private final Logger LOG = LoggerFactory.getLogger(K8sJobSubmitter.class);
 
+  private String confPath;
+
   /**
    * Key: kind of CRD, such as TFJob/PyTorchJob
    * Value: the CRD api with version
    */
   private Map<String, String> supportedCRDMap;
 
-  public K8sJobSubmitter(String confPath) throws IOException {
-    ApiClient client =
-        ClientBuilder.kubeconfig(KubeConfig.loadKubeConfig(new FileReader(confPath))).build();
-    Configuration.setDefaultApiClient(client);
+  public K8sJobSubmitter() {
+
+  }
+
+  public K8sJobSubmitter(String confPath) {
+    this.confPath = confPath;
   }
 
   @Override
-  public void initialize() {
+  public void initialize(SubmarineConfiguration conf) {
     supportedCRDMap = new HashMap<>();
-    supportedCRDMap.put("TFJob", "kubeflow.org/v1");
+    supportedCRDMap.put("TFJob", "tfjobs");
+
+    if (confPath == null || confPath.trim().isEmpty()) {
+      confPath = conf.getString(SubmarineConfiguration.ConfVars.SUBMARINE_K8S_KUBE_CONFIG);
+    }
+    loadClientConfiguration(confPath);
+  }
+
+  private void loadClientConfiguration(String path) {
+    try {
+      KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(path));
+      ApiClient client = ClientBuilder.kubeconfig(config).build();
+      Configuration.setDefaultApiClient(client);
+    } catch (Exception e){
+      LOG.error("Load the K8s client conf failed: " + e.getMessage(), e);
+    }
   }
 
   @Override
@@ -76,7 +95,7 @@ public class K8sJobSubmitter implements JobSubmitter {
 
   @Override
   public Job submitJob(JobSpec jobSpec) throws UnsupportedJobTypeException {
-    if (!supportedCRDMap.containsKey(jobSpec.getSubmitterSpec().getType())) {
+    if (!supportedCRDMap.containsKey(jobSpec.getSubmitterSpec().getKind())) {
       throw new UnsupportedJobTypeException();
     }
 
@@ -91,7 +110,7 @@ public class K8sJobSubmitter implements JobSubmitter {
     try {
       CustomObjectsApi api = new CustomObjectsApi();
       api.createNamespacedCustomObject(job.getGroup(), job.getVersion(),
-          job.getMetadata().getNamespace(), job.getMetadata().getName(), job, "true");
+          job.getMetadata().getNamespace(), supportedCRDMap.get(job.getKind()), job, "true");
     } catch (ApiException e) {
       LOG.error("Create {} job: " + e.getMessage(), e);
     }

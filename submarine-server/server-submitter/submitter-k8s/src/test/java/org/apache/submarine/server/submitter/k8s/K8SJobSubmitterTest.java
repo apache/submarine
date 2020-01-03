@@ -50,6 +50,7 @@ public class K8SJobSubmitterTest {
     }
 
     submitter = new K8sJobSubmitter(confPath);
+    submitter.initialize(null);
     path = new K8sJobRequest.Path("kubeflow.org", "v1", "kubeflow", "tfjobs");
   }
 

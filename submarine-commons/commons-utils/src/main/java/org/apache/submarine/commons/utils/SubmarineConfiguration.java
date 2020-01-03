@@ -333,12 +333,12 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   /**
-   * Get the entry class name by the specified name
+   * Get the submitter class name by the specified name
    * @param name the submitter's name
    * @return class name
    */
-  public String getSubmitterEntry(String name) {
-    return getStringValue(String.format(ConfVars.SUBMARINE_SUBMITTERS_ENTRY.getVarName(), name), "");
+  public String getSubmitterClass(String name) {
+    return getStringValue(String.format(ConfVars.SUBMARINE_SUBMITTERS_CLASS.getVarName(), name), "");
   }
 
   /**
@@ -526,8 +526,9 @@ public class SubmarineConfiguration extends XMLConfiguration {
     SUBMARINE_RUNTIME_CLASS("submarine.runtime.class",
         "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"),
     SUBMARINE_SUBMITTERS("submarine.submitters", ""),
-    SUBMARINE_SUBMITTERS_ENTRY("submarine.submitters.%s.class", ""),
-    SUBMARINE_SUBMITTERS_CLASSPATH("submarine.submitters.%s.classpath", "");
+    SUBMARINE_SUBMITTERS_CLASS("submarine.submitters.%s.class", ""),
+    SUBMARINE_SUBMITTERS_CLASSPATH("submarine.submitters.%s.classpath", ""),
+    SUBMARINE_K8S_KUBE_CONFIG("submarine.k8s.kube.config", "");
 
     private String varName;
     @SuppressWarnings("rawtypes")

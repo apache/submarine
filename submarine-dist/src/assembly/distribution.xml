@@ -101,13 +101,20 @@
         <include>submarine-commons-rpc-${project.version}.jar</include>
       </includes>
     </fileSet>
+
+    <!--  Kubernetes Submitter  -->
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-k8s/target</directory>
-      <outputDirectory>/lib/submitter</outputDirectory>
+      <outputDirectory>/lib/submitter/k8s</outputDirectory>
       <includes>
         <include>submarine-submitter-k8s-${project.version}.jar</include>
       </includes>
     </fileSet>
+    <fileSet>
+      <directory>../submarine-server/server-submitter/submitter-k8s/target/dependency</directory>
+      <outputDirectory>/lib/submitter/k8s</outputDirectory>
+    </fileSet>
+
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-yarn/target</directory>
       <outputDirectory>/lib/submitter</outputDirectory>

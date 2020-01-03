@@ -53,7 +53,7 @@ public class SubmitterManager {
     LOG.info("Start load submitter plugins...");
     List<String> list = conf.listSubmitter();
     for (String name : list) {
-      String clazzName = conf.getSubmitterEntry(name);
+      String clazzName = conf.getSubmitterClass(name);
       String classpath = conf.getSubmitterClassPath(name);
       try {
         ClassLoader classLoader = new URLClassLoader(constructUrlsFromClasspath(classpath));
@@ -61,7 +61,7 @@ public class SubmitterManager {
         Class<? extends JobSubmitter> sClass = clazz.asSubclass(JobSubmitter.class);
         Constructor<? extends JobSubmitter> method = sClass.getDeclaredConstructor();
         JobSubmitter submitter = method.newInstance();
-        submitter.initialize();
+        submitter.initialize(conf);
         submitterMap.put(submitter.getSubmitterType(), submitter);
       } catch (Exception e) {
         LOG.error(e.toString(), e);
@@ -79,10 +79,10 @@ public class SubmitterManager {
 
       File file = new File(path);
       if (file.isDirectory()) {
-        String[] items = file.list();
+        File[] items = file.listFiles();
         if (items != null) {
-          for (String item : items) {
-            urls.add(new File(item).toURI().toURL());
+          for (File item : items) {
+            urls.add(item.toURI().toURL());
           }
         }
       } else {
