@@ -108,6 +108,36 @@
   </property>
 
   <property>
+    <name>jdbc.driverClassName</name>
+    <value>com.mysql.jdbc.Driver</value>
+  </property>
+  <property>
+    <name>jdbc.url</name>
+    <value>jdbc:mysql://127.0.0.1:3306/submarine?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false</value>
+  </property>
+  <property>
+    <name>jdbc.username</name>
+    <value>submarine</value>
+  </property>
+  <property>
+    <name>jdbc.password</name>
+    <value>password</value>
+  </property>
+
+  <property>
+    <name>metastore.jdbc.url</name>
+    <value>jdbc:mysql://127.0.0.1:3306/metastore?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false</value>
+  </property>
+  <property>
+    <name>metastore.jdbc.username</name>
+    <value>metastore</value>
+  </property>
+  <property>
+    <name>metastore.jdbc.password</name>
+    <value>password</value>
+  </property>
+
+  <property>
     <name>submarine.runtime.class</name>
     <value>org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory</value>
     <description>RuntimeFactory for Submarine jobs</description>

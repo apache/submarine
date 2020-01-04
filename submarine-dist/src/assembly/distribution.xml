@@ -154,6 +154,8 @@
         <exclude>commons-rpc-${project.version}.jar</exclude>
         <exclude>grpc-*.jar</exclude>
         <exclude>protobuf-java*.jar</exclude>
+        <!-- mysql-connector-java uses the GPL license. So we need exclude mysql-connector-java jar -->
+        <exclude>mysql-connector-java-*.jar</exclude>
       </excludes>
     </fileSet>
     <fileSet>
