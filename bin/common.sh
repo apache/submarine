@@ -76,9 +76,9 @@ function download_mysql_jdbc_jar(){
 
   echo "Downloading mysql jdbc jar from ${MYSQL_JAR_URL}."
   if type wget >/dev/null 2>&1; then
-    wget ${MYSQL_JAR_URL} -P "${BIN}/../lib" --no-check-certificate
+    wget ${MYSQL_JAR_URL} -P "${SUBMARINE_HOME}/lib" --no-check-certificate
   elif type curl >/dev/null 2>&1; then
-    curl -o "${BIN}/../lib/mysql-connector-java-${MYSQL_VERSION}.jar" ${MYSQL_JAR_URL}
+    curl -o "${SUBMARINE_HOME}/lib/mysql-connector-java-${MYSQL_VERSION}.jar" ${MYSQL_JAR_URL}
   else
     echo 'We need a tool to transfer data from or to a server. Such as wget/curl.'
     echo 'Bye, bye!'
