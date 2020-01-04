@@ -310,7 +310,7 @@
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>${mysql-connector-java.version}</version>
-      <scope>provided</scope>
+      <!-- mysql-connector-java uses the GPL license. When we release the version in Submarine-dist, we exclude mysql-connector-java jar -->
     </dependency>
 
     <dependency>
@@ -433,6 +433,19 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${plugin.maven.jar.version}</version>
+        <configuration>
+          <excludes>
+            <!-- Because SubmarineConfiguration class will load the submarine-site.xml file from the jar package,
+            which will cause the conf/submarine-site.xml to fail to load properly, so needs to be excluded from the package.  -->
+            <exclude>submarine-site.xml</exclude>
+          </excludes>
+        </configuration>
       </plugin>
 
       <plugin>

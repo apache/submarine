@@ -103,7 +103,7 @@
 
   <property>
     <name>workbench.web.war</name>
-    <value>../workbench-web-ng.war</value>
+    <value>submarine-workbench/workbench-web-ng/target/workbench-web-ng.war</value>
     <description>Submarine workbench web war file path.</description>
   </property>
 
@@ -141,12 +141,6 @@
     <name>submarine.runtime.class</name>
     <value>org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory</value>
     <description>RuntimeFactory for Submarine jobs</description>
-  </property>
-
-  <property>
-    <name>submarine.server.remote.execution.enabled</name>
-    <value>true</value>
-    <description>Run jobs using rpc server.</description>
   </property>
 
 </configuration>

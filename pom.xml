@@ -58,7 +58,8 @@
     <plugin.enforcer.version>1.3.1</plugin.enforcer.version>
     <plugin.checkstyle.version>2.17</plugin.checkstyle.version>
     <plugin.war.version>2.3</plugin.war.version>
-    <plugin.maven.antrun>1.8</plugin.maven.antrun>
+    <plugin.maven.antrun.version>1.8</plugin.maven.antrun.version>
+    <plugin.maven.jar.version>3.0.2</plugin.maven.jar.version>
 
     <!-- submarine shaded dependency prefix-->
     <shaded.dependency.prefix>org.apache.submarine.shaded</shaded.dependency.prefix>

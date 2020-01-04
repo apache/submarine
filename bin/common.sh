@@ -73,8 +73,18 @@ function download_mysql_jdbc_jar(){
     fi
     MYSQL_JAR_URL="https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_VERSION}/mysql-connector-java-${MYSQL_VERSION}.jar"
   fi
+
   echo "Downloading mysql jdbc jar from ${MYSQL_JAR_URL}."
-  wget ${MYSQL_JAR_URL} -P "${BIN}/../lib"
+  if type wget >/dev/null 2>&1; then
+    wget ${MYSQL_JAR_URL} -P "${SUBMARINE_HOME}/lib" --no-check-certificate
+  elif type curl >/dev/null 2>&1; then
+    curl -o "${SUBMARINE_HOME}/lib/mysql-connector-java-${MYSQL_VERSION}.jar" ${MYSQL_JAR_URL}
+  else
+    echo 'We need a tool to transfer data from or to a server. Such as wget/curl.'
+    echo 'Bye, bye!'
+    exit -1
+  fi
+
   echo "Mysql jdbc jar is downloaded and put in the path of submarine/lib."
 }
 

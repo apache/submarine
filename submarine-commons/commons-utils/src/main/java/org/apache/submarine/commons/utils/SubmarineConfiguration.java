@@ -508,11 +508,11 @@ public class SubmarineConfiguration extends XMLConfiguration {
         "submarine.server.remote.execution.port", 8980),
     CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", 3000),
     CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", 9000),
+
     JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
     JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarine" +
         "?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
-
     JDBC_USERNAME("jdbc.username", "submarine"),
     JDBC_PASSWORD("jdbc.password", "password"),
     METASTORE_JDBC_URL("metastore.jdbc.url", "jdbc:mysql://127.0.0.1:3306/metastore" +
@@ -520,6 +520,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
         "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
     METASTORE_JDBC_USERNAME("metastore.jdbc.username", "metastore"),
     METASTORE_JDBC_PASSWORD("metastore.jdbc.password", "password"),
+
     WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
         "workbench.websocket.max.text.message.size", "1024000"),
     WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),

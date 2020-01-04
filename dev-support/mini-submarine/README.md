@@ -90,7 +90,7 @@ hdfs dfs -ls /user
 ## Run workbench server
 
 1. Setup mysql mariadb server
-> Because mysql and mariadb use the GPL license, you need to manually execute the script to install it.
+> Because mysql and mariadb use the GPL license, So there is no binary file containing mysql in the image, you need to manually execute the script to install it.
 
 ```
 /tmp/hadoop-config/setup-mysql.sh
@@ -104,8 +104,10 @@ su yarn
 /opt/submarine-current/bin/submarine-daemon.sh start getMysqlJar
 ``` 
 
-3. login submarine workbench
-You can use the following command to get the login URL of the submarine workbench
+3. Login submarine workbench
+
+Execute the following command in your host machine, Get the access URL of the submarine workbench running in docker
+
 ```shell
 echo "http://localhost:$(docker inspect --format='{{(index (index .NetworkSettings.Ports "8080/tcp") 0).HostPort}}' mini-submarine)"
 ```
