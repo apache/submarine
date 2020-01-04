@@ -32,6 +32,9 @@ Click below contents if you want to understand more.
 
 [Submarine Workbench Guide](./workbench/README.md)
 
+## Submarine Server
+[Submarine Server Guide](./submarine-server/README.md)
+
 ## Examples
 
 Here're some examples about Submarine usage.
