@@ -82,6 +82,7 @@ public class YarnUtilsTest {
             "--ps_resources", "memory=4G,vcores=4", "--ps_launch_cmd",
             "python run-ps.py"});
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
+    ParametersHolder parametersHolder = runJobCli.getParametersHolder();
 
     assertTrue(RunJobParameters.class + " must be an instance of " +
             TensorFlowRunJobParameters.class,
@@ -90,7 +91,11 @@ public class YarnUtilsTest {
         (TensorFlowRunJobParameters) jobRunParameters;
 
     Configuration tonyConf = YarnUtils
-        .tonyConfFromClientContext(tensorFlowParams);
+        .tonyConfFromClientContext(parametersHolder);
+    Assert.assertEquals(parametersHolder.getFramework().getValue(),
+            tonyConf.get(TonyConfigurationKeys.FRAMEWORK_NAME));
+    Assert.assertEquals(jobRunParameters.getName(),
+            tonyConf.get(TonyConfigurationKeys.APPLICATION_NAME));
     Assert.assertEquals(jobRunParameters.getDockerImageName(),
         tonyConf.get(TonyConfigurationKeys.getContainerDockerKey()));
     Assert.assertEquals("3", tonyConf.get(TonyConfigurationKeys

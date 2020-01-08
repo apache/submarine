@@ -340,4 +340,9 @@ public class RunJobCli extends AbstractCli {
   public RunJobParameters getRunJobParameters() {
     return (RunJobParameters) parametersHolder.getParameters();
   }
+
+  @VisibleForTesting
+  public ParametersHolder getParametersHolder() {
+    return parametersHolder;
+  }
 }
