@@ -25,14 +25,21 @@ cd submarine/submarine-test/e2e
 
 **If your workbench server is not working on port 32777 ([mini-submarine](https://github.com/apache/submarine/tree/master/dev-support/mini-submarine) maps the workbench port 8000 to 32777), please first modify the port in WebDriverManager.java line 61  to the port where your workbench run.** 
 
-For linux
+*   Execute the following command in your host machine to get the port   
 ```
-mvn verify
+docker inspect --format='{{(index (index .NetworkSettings.Ports "8080/tcp") 0).HostPort}}' mini-submarine
 ```
-For MacOS
+
+*   For linux
+ ```
+ mvn verify
+ ```
+
+*   For MacOS
 ```
 mvn clean install -U
 ```
+
 ##### Result
 If all of the function under test are succeeded, it will show.
 ```

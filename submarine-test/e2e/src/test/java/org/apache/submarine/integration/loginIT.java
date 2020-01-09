@@ -35,9 +35,9 @@ public class loginIT extends AbstractSubmarineIT{
 
   @Test
   public void loginUser() throws Exception {
-    pollingWait(By.cssSelector("input[id='username']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[id='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("button[class='login-button ant-btn ant-btn-primary ant-btn-lg']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    pollingWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
     sleep(1000,false);
   }
-} 
+}
