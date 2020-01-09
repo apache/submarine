@@ -140,8 +140,8 @@
     <module>submarine-server</module>
     <module>submarine-all</module>
     <module>submarine-workbench</module>
-    <module>submarine-test</module>
     <module>submarine-dist</module>
+    <module>submarine-test</module>
   </modules>
 
   <dependencyManagement>
