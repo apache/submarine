@@ -37,14 +37,14 @@ public class WebDriverManager {
     public static WebDriver getWebDriver() {
         WebDriver driver = null;
         // firefox webdriver
-        if(driver == null) { 
+        if(driver == null) {
             try {
                 // download GeckoDriver
                 downLoadsDir = System.getProperty("user.dir");
                 String tempPath = downLoadsDir + "/Driver/";
                 downloadGeckoDriver(tempPath);
                 if(SystemUtils.IS_OS_MAC_OSX) {
-                    String command = "chmod +x " + tempPath + "geckodriver"; 
+                    String command = "chmod +x " + tempPath + "geckodriver";
                     cmdExec.executeCommandLocalHost(command);
                 }
                 System.setProperty("webdriver.gecko.driver", tempPath + "geckodriver");
@@ -62,7 +62,8 @@ public class WebDriverManager {
         driver.get(url);
         return driver;
     }
-    // TODO(Kai-Hsun Chen): need to set the path of geckodriver 
+    
+    // TODO(Kai-Hsun Chen): need to set the path of geckodriver
     public static void downloadGeckoDriver(String tempPath) {
         String geckoDriverUrlString = "https://github.com/mozilla/geckodriver/releases/download/v" + GECKODRIVER_VERSION + "/geckodriver-v" + GECKODRIVER_VERSION + "-";
         LOG.info("Gecko version: v" + GECKODRIVER_VERSION + ", will be downloaded to " + tempPath);
@@ -82,7 +83,7 @@ public class WebDriverManager {
             } else if (SystemUtils.IS_OS_MAC_OSX) {
                 geckoDriverUrlString += "macos.tar.gz";
             }
-            
+
             File geckoDriver = new File(tempPath + "geckodriver");
             File geckoDriverZip = new File(tempPath + "geckodriver.tar");
             File geckoDriverDir = new File(tempPath);
@@ -104,9 +105,10 @@ public class WebDriverManager {
             LOG.info("[FAIL] Download of Gecko version: v" + GECKODRIVER_VERSION + ", falied in path " + tempPath);
             return;
         }
-        LOG.info("[SUCCESS] Download of Gecko version: " + GECKODRIVER_VERSION); 
+        LOG.info("[SUCCESS] Download of Gecko version: " + GECKODRIVER_VERSION);
     }
-    // TODO(Kai-Hsun Chen): need to be tested on Windows, MacOS, and Linux
+
+    // TODO(Kai-Hsun Chen): need to be tested on MacOS, and Linux
     public static String getFirefoxVersion() {
         String firefoxVersionCmd = "firefox -v";
         String version = "";
@@ -114,10 +116,10 @@ public class WebDriverManager {
             firefoxVersionCmd = "/Applications/Firefox.app/Contents/MacOS/" + firefoxVersionCmd;
         }
         try {
-            version = cmdExec.executeCommandLocalHost(firefoxVersionCmd).toString(); 
+            version = cmdExec.executeCommandLocalHost(firefoxVersionCmd).toString();
         } catch (Exception e) {
             LOG.info("Exception in WebDriverManager while getFirefoxVersion");
         }
-        return version;            
+        return version;
     }
 }
