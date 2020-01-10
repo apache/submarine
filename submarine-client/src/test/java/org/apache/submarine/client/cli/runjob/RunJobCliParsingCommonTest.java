@@ -31,6 +31,7 @@ import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
 import org.apache.submarine.commons.runtime.RuntimeFactory;
 import org.apache.submarine.commons.runtime.JobMonitor;
 import org.apache.submarine.commons.runtime.JobSubmitter;
+import org.apache.submarine.commons.runtime.exception.SubmarineException;
 import org.apache.submarine.commons.runtime.fs.SubmarineStorage;
 import org.junit.Before;
 import org.junit.Rule;
@@ -58,7 +59,7 @@ public class RunJobCliParsingCommonTest {
   public ExpectedException expectedException = ExpectedException.none();
 
   public static MockClientContext getMockClientContext()
-      throws IOException, YarnException {
+          throws IOException, YarnException, SubmarineException {
     MockClientContext mockClientContext = new MockClientContext("testJob");
     JobSubmitter mockJobSubmitter = mock(JobSubmitter.class);
     when(mockJobSubmitter.submitJob(any(ParametersHolder.class)))
