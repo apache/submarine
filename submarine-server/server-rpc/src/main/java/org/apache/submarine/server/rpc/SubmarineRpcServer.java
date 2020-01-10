@@ -32,6 +32,7 @@ import org.apache.submarine.commons.rpc.ParametersHolderProto;
 import org.apache.submarine.commons.rpc.SubmarineServerProtocolGrpc;
 import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.runtime.JobSubmitter;
+import org.apache.submarine.commons.runtime.exception.SubmarineException;
 import org.apache.submarine.commons.runtime.RuntimeFactory;
 import org.apache.submarine.commons.runtime.param.Parameter;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -159,7 +160,7 @@ public class SubmarineRpcServer {
       ApplicationId applicationId = null;
       try {
         applicationId = run(clientContext, parameter);
-      } catch (IOException | YarnException e) {
+      } catch (IOException | YarnException | SubmarineException e) {
         LOG.error(e.getMessage(), e);
       }
       responseObserver.onNext(SubmarineRpcServerProto.
@@ -180,7 +181,7 @@ public class SubmarineRpcServer {
     }
 
     protected ApplicationId run(ClientContext clientContext, Parameter parameter)
-        throws IOException, YarnException {
+        throws IOException, YarnException, SubmarineException {
       // TODO replaced with JobManager
       JobSubmitter jobSubmitter =
           clientContext.getRuntimeFactory().getJobSubmitterInstance();

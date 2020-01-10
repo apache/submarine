@@ -21,6 +21,7 @@ package org.apache.submarine.commons.runtime;
 
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.apache.submarine.commons.runtime.exception.SubmarineException;
 import org.apache.submarine.commons.runtime.param.Parameter;
 
 import java.io.IOException;
@@ -37,5 +38,5 @@ public interface JobSubmitter {
    * @throws IOException for other issues.
    */
   ApplicationId submitJob(Parameter parameters)
-      throws IOException, YarnException;
+          throws IOException, YarnException, SubmarineException;
 }

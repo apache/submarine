@@ -22,10 +22,16 @@ package org.apache.submarine.server.submitter.yarn;
 import com.linkedin.tony.Constants;
 import com.linkedin.tony.TonyConfigurationKeys;
 import com.linkedin.tony.util.Utils;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
+import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.apache.submarine.client.cli.CliConstants;
+import org.apache.submarine.client.cli.param.Localization;
+import org.apache.submarine.client.cli.param.ParametersHolder;
+import org.apache.submarine.commons.runtime.param.Parameter;
 import org.apache.submarine.commons.runtime.resource.ResourceUtils;
 
 import java.util.ArrayList;
@@ -42,107 +48,128 @@ public final class YarnUtils {
   private static final Log LOG = LogFactory.getLog(YarnUtils.class);
 
   public static Configuration tonyConfFromClientContext(
-      TensorFlowRunJobParameters parameters) {
+          ParametersHolder parameters) throws YarnException, ParseException {
     Configuration tonyConf = new Configuration();
     // Add tony.xml for configuration.
     tonyConf.addResource(Constants.TONY_XML);
-    tonyConf.setInt(
+    tonyConf.setStrings(TonyConfigurationKeys.FRAMEWORK_NAME,
+            parameters.getFramework().getValue());
+    tonyConf.setStrings(TonyConfigurationKeys.APPLICATION_NAME,
+            parameters.getParameters().getName());
+    tonyConf.setStrings(
         TonyConfigurationKeys.getInstancesKey(Constants.WORKER_JOB_NAME),
-        parameters.getNumWorkers());
-    tonyConf.setInt(
-        TonyConfigurationKeys.getInstancesKey(Constants.PS_JOB_NAME),
-        parameters.getNumPS());
-    // Resources for PS & Worker
-    if (parameters.getPsResource() != null) {
-      tonyConf.setInt(
-          TonyConfigurationKeys.getResourceKey(Constants.PS_JOB_NAME,
-              Constants.VCORES),
-          parameters.getPsResource().getVirtualCores());
-      tonyConf.setLong(
-          TonyConfigurationKeys.getResourceKey(Constants.PS_JOB_NAME,
-              Constants.MEMORY),
-          ResourceUtils.getMemorySize(parameters.getPsResource()));
+            parameters.getOptionValue(CliConstants.N_WORKERS));
+    if (parameters.getOptionValue(CliConstants.N_PS) != null) {
+      tonyConf.setStrings(
+              TonyConfigurationKeys.getInstancesKey(Constants.PS_JOB_NAME),
+              parameters.getOptionValue(CliConstants.N_PS));
     }
-    if (parameters.getWorkerResource() != null) {
+    // Resources for PS & Worker
+    if (parameters.getOptionValue(CliConstants.PS_RES) != null) {
+      Resource psResource = getResource(parameters, CliConstants.PS_RES);
+
+      tonyConf.setInt(
+          TonyConfigurationKeys.getResourceKey(Constants.PS_JOB_NAME,
+              Constants.VCORES),
+              psResource.getVirtualCores());
+      tonyConf.setLong(
+          TonyConfigurationKeys.getResourceKey(Constants.PS_JOB_NAME,
+              Constants.MEMORY),
+          ResourceUtils.getMemorySize(psResource));
+    }
+    if (parameters.getOptionValue(CliConstants.WORKER_RES) != null) {
+      Resource workerResource = getResource(parameters, CliConstants.WORKER_RES);
+
       tonyConf.setInt(
           TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
               Constants.VCORES),
-          parameters.getWorkerResource().getVirtualCores());
+              workerResource.getVirtualCores());
       tonyConf.setLong(
           TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
               Constants.MEMORY),
-          ResourceUtils.getMemorySize(parameters.getWorkerResource()));
+          ResourceUtils.getMemorySize(workerResource));
       tonyConf.setLong(
           TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
               Constants.GPUS),
-          ResourceUtils.getResourceValue(parameters.getWorkerResource(),
+          ResourceUtils.getResourceValue(workerResource,
               ResourceUtils.GPU_URI));
     }
-    if (parameters.getQueue() != null) {
+    if (parameters.getOptionValue(CliConstants.QUEUE) != null) {
       tonyConf.set(
           TonyConfigurationKeys.YARN_QUEUE_NAME,
-          parameters.getQueue());
+              parameters.getOptionValue(CliConstants.QUEUE));
     }
     // Set up Docker for PS & Worker
-    if (parameters.getDockerImageName() != null) {
+    if (parameters.getOptionValue(CliConstants.DOCKER_IMAGE) != null) {
       tonyConf.set(TonyConfigurationKeys.getContainerDockerKey(),
-          parameters.getDockerImageName());
+              parameters.getOptionValue(CliConstants.DOCKER_IMAGE));
       tonyConf.setBoolean(TonyConfigurationKeys.DOCKER_ENABLED, true);
     }
-    if (parameters.getWorkerDockerImage() != null) {
+    if (parameters.getOptionValue(CliConstants.WORKER_DOCKER_IMAGE) != null) {
       tonyConf.set(
           TonyConfigurationKeys.getDockerImageKey(Constants.WORKER_JOB_NAME),
-          parameters.getWorkerDockerImage());
+              parameters.getOptionValue(CliConstants.WORKER_DOCKER_IMAGE));
       tonyConf.setBoolean(TonyConfigurationKeys.DOCKER_ENABLED, true);
     }
-    if (parameters.getPsDockerImage() != null) {
+    if (parameters.getOptionValue(CliConstants.PS_DOCKER_IMAGE) != null) {
       tonyConf.set(
           TonyConfigurationKeys.getDockerImageKey(Constants.PS_JOB_NAME),
-          parameters.getPsDockerImage());
+              parameters.getOptionValue(CliConstants.PS_DOCKER_IMAGE));
       tonyConf.setBoolean(TonyConfigurationKeys.DOCKER_ENABLED, true);
     }
 
     // Set up container environment
-    List<String> envs = parameters.getEnvars();
-    tonyConf.setStrings(
-        TonyConfigurationKeys.CONTAINER_LAUNCH_ENV,
-        envs.toArray(new String[0]));
-    tonyConf.setStrings(TonyConfigurationKeys.EXECUTION_ENV,
-        envs.stream()
-            .map(env -> env.replaceAll("DOCKER_", ""))
-            .toArray(String[]::new));
-    tonyConf.setStrings(TonyConfigurationKeys.CONTAINER_LAUNCH_ENV,
-        envs.stream().map(env -> env.replaceAll("DOCKER_", ""))
-            .toArray(String[]::new));
+    if (parameters.getOptionValues(CliConstants.ENV) != null) {
+      List<String> envs = parameters.getOptionValues(CliConstants.ENV);
+      tonyConf.setStrings(
+              TonyConfigurationKeys.CONTAINER_LAUNCH_ENV,
+              envs.toArray(new String[0]));
+      tonyConf.setStrings(TonyConfigurationKeys.EXECUTION_ENV,
+              envs.stream()
+                      .map(env -> env.replaceAll("DOCKER_", ""))
+                      .toArray(String[]::new));
+      tonyConf.setStrings(TonyConfigurationKeys.CONTAINER_LAUNCH_ENV,
+              envs.stream().map(env -> env.replaceAll("DOCKER_", ""))
+                      .toArray(String[]::new));
+    }
     tonyConf.setStrings(TonyConfigurationKeys.APPLICATION_TYPE, SUBMARINE_RUNTIME_APP_TYPE);
-
     // Set up running command
-    if (parameters.getWorkerLaunchCmd() != null) {
+    if (parameters.getOptionValue(CliConstants.WORKER_LAUNCH_CMD) != null) {
       tonyConf.set(
           TonyConfigurationKeys.getExecuteCommandKey(Constants.WORKER_JOB_NAME),
-          parameters.getWorkerLaunchCmd());
+              parameters.getOptionValue(CliConstants.WORKER_LAUNCH_CMD));
     }
 
-    if (parameters.getPSLaunchCmd() != null) {
+    if (parameters.getOptionValue(CliConstants.PS_LAUNCH_CMD) != null) {
       tonyConf.set(
           TonyConfigurationKeys.getExecuteCommandKey(Constants.PS_JOB_NAME),
-          parameters.getPSLaunchCmd());
+              parameters.getOptionValue(CliConstants.PS_LAUNCH_CMD));
     }
 
     tonyConf.setBoolean(TonyConfigurationKeys.SECURITY_ENABLED,
-        !parameters.isSecurityDisabled());
+        !parameters.hasOption(CliConstants.INSECURE_CLUSTER));
 
     // Set up container resources
-    if (parameters.getLocalizations() != null) {
+    if (parameters.getOptionValues(CliConstants.LOCALIZATION) != null) {
+      List<String> localizationsStr = parameters
+              .getOptionValues(CliConstants.LOCALIZATION);
+      List<Localization> localizations = new ArrayList<>();
+      for (String loc : localizationsStr) {
+        Localization localization = new Localization();
+        localization.parse(loc);
+        localizations.add(localization);
+      }
+
       tonyConf.setStrings(TonyConfigurationKeys.getContainerResourcesKey(),
-          parameters.getLocalizations().stream()
+              localizations.stream()
               .map(lo -> lo.getRemoteUri() + Constants.RESOURCE_DIVIDER
                   + lo.getLocalPath())
               .toArray(String[]::new));
     }
 
-    if (parameters.getConfPairs() != null) {
-      String[] confArray = parameters.getConfPairs().toArray(new String[0]);
+    if (parameters.getOptionValues(CliConstants.ARG_CONF) != null) {
+      String[] confArray = parameters
+              .getOptionValues(CliConstants.ARG_CONF).toArray(new String[0]);
       for (Map.Entry<String, String> cliConf : Utils
           .parseKeyValue(confArray).entrySet()) {
         String[] existingValue = tonyConf.getStrings(cliConf.getKey());
@@ -166,5 +193,15 @@ public final class YarnUtils {
   }
 
   private YarnUtils() {
+  }
+
+  private static Resource getResource(Parameter parametersHolder, String option)
+          throws ParseException, YarnException {
+    String resourceStr =
+            parametersHolder.getOptionValue(option);
+    if (resourceStr == null) {
+      throw new ParseException("--" + option + " is absent.");
+    }
+    return ResourceUtils.createResourceFromString(resourceStr);
   }
 }

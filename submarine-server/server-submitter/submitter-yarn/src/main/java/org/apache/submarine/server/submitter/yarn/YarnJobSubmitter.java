@@ -27,11 +27,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.apache.submarine.commons.runtime.exception.SubmarineException;
 import org.apache.submarine.commons.runtime.param.Parameter;
-import org.apache.submarine.commons.runtime.Framework;
-import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
+import org.apache.submarine.client.cli.param.ParametersHolder;
 import org.apache.submarine.commons.runtime.JobSubmitter;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -53,23 +52,20 @@ public class YarnJobSubmitter implements JobSubmitter, CallbackHandler {
 
   @Override
   public ApplicationId submitJob(Parameter parameters)
-      throws IOException {
-    if (parameters.getFramework() == Framework.PYTORCH) {
-      // we need to throw an exception, as ParametersHolder's parameters field
-      // could not be casted to TensorFlowRunJobParameters.
-      throw new UnsupportedOperationException(
-          "Support \"–-framework\" option for PyTorch in Tony is coming. " +
-              "Please check the documentation about how to submit a " +
-              "PyTorch job with TonY runtime.");
-    }
-
+          throws IOException, SubmarineException {
     LOG.info("Starting Tony runtime..");
+    LOG.info("Use ML framework : " + parameters.getFramework().getValue());
 
     File tonyFinalConfPath = File.createTempFile("temp",
         Constants.TONY_FINAL_XML);
     // Write user's overridden conf to an xml to be localized.
-    Configuration tonyConf = YarnUtils.tonyConfFromClientContext(
-        (TensorFlowRunJobParameters) parameters.getParameters());
+    Configuration tonyConf = null;
+    try {
+      tonyConf = YarnUtils.tonyConfFromClientContext(
+          (ParametersHolder) parameters);
+    } catch (Exception e) {
+      throw new SubmarineException("Failed to create tony conf from client context");
+    }
     try (OutputStream os = new FileOutputStream(tonyFinalConfPath)) {
       tonyConf.writeXml(os);
     } catch (IOException e) {
