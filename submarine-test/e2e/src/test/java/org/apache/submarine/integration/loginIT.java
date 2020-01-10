@@ -20,11 +20,16 @@ package org.apache.submarine.integration;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.By;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class loginIT extends AbstractSubmarineIT {
+
+  public final static Logger LOG = LoggerFactory.getLogger(loginIT.class);
+
   @BeforeClass
   public static void startUp(){
     driver =  WebDriverManager.getWebDriver();
@@ -37,10 +42,12 @@ public class loginIT extends AbstractSubmarineIT {
 
   @Test
   public void loginUser() throws Exception {
+    LOG.info("Start to login user to submarine workbench.");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
     pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
     clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
     // Validate login result.
     pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
+    LOG.info("User login is done.");
   }
 }

@@ -16,7 +16,6 @@
 
 
   <properties>
-    <plugin.failsafe.version>2.17</plugin.failsafe.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
