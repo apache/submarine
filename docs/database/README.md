@@ -29,14 +29,15 @@ Must:
 
 ## Run mysql on docker
 
-Run the mysql container, modify the character set (if you need to support Chinese), Create a submarine database.
+By using the official docker image of submarine databsase, only one docker command is required to run submarine databsase
 
 ```bash
-~bash> docker run -p 3306:3306 -d --name mysql -e MYSQL_ROOT_PASSWORD=password mysql:5.7.27
-~bash> docker exec -it mysql bash
+docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.3.0
 ```
 
-## Modify character set (Optional)
+## Manual operation of the submarine database
+
+### Modify character set (Optional)
 
 If you need to store Chinese character data in mysql, you need to execute the following command to modify the mysql character set.
 
@@ -76,9 +77,9 @@ If you need to store Chinese character data in mysql, you need to execute the fo
   default-character-set = utf8
   ```
 
-## Create Submarine Database
+### Create Submarine Database
 
-### Create development database
+#### Create development database
 Copy the files, submarine.sql, submarine-data.sql and metastore.sql to the mysql docker.
 
 ```
@@ -109,7 +110,7 @@ mysql> quit
 >  NOTE: submarine development database name is  `submarine` and user name is `submarine`, password is `password`, metastore development database name is  `metastore` and user name is `metastore`, password is `password`, This is the default value in the system's `submarine-site.xml` configuration file and is not recommended for modification.
 
 
-### Create test database
+#### Create test database
 
 Test database for program unit testing and Travis test environment.
 
@@ -131,7 +132,7 @@ mysql> quit
 
 >  NOTE: submarine test database name is  `submarine_test` and user name is `submarine_test`, password is `password_test`, metastore test database name is  `metastore_test` and user name is `metastore_test`, password is `password_test`, Cannot be configured, values that cannot be modified.
 
-### mysqldump
+#### mysqldump
 
 ```$xslt
 mysqldump -uroot -ppassword --databases submarine > submarine.sql;
