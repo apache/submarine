@@ -14,29 +14,40 @@
 -->
 # How To Run Submarine Workbench
 
-## Run Workbench
+## Run Submarine on docker
 
-```$xslt
+By using the official image of submarine, only one docker command is required to run submarine workbench.
+
+It should be noted that since the submarine workbench depends on the submarine database, so you need to run the docker container of the submarine database first.
+
+```
+docker run -it -p 3306:3306 -d --name submarine-data -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.3.0
+docker run -it -d --link=submarine-data:submarine-data --name submarine-server apache/submarine:submarine-0.3.0
+```
+
+## Run submarine workbench
+
+```
 cd submarine
-./bin/workbench-daemon.sh [start|stop|restart]
+./bin/submarine-daemon.sh [start|stop|restart]
 ```
 To start workbench server, you need to download mysql jdbc jar and put it in the
 path of workbench/lib for the first time. Or you can add parameter, getMysqlJar,
 to get mysql jar automatically.
-```$xslt
+```
 cd submarine
-./bin/workbench-daemon.sh start getMysqlJar
+./bin/submarine-daemon.sh start getMysqlJar
 ```
 
 ## submarine-env.sh
 
-`submarine-env.sh` is automatically executed each time the `workbench.sh` script is executed, so we can set the `workbench.sh` script and the environment variables in the `WorkbenchServer` process via `submarine-env.sh`.
+`submarine-env.sh` is automatically executed each time the `submarine-daemon.sh` script is executed, so we can set the `submarine-daemon.sh` script and the environment variables in the `SubmarineServer` process via `submarine-env.sh`.
 
 | Name                | Variable                                                     |
 | ------------------- | ------------------------------------------------------------ |
 | JAVA_HOME           | Set your java home path, default is `java`.                  |
-| WORKBENCH_JAVA_OPTS | Set the JAVA OPTS parameter when the Workbench process starts. If you need to debug the Workbench process, you can set it to `-agentlib:jdwp=transport=dt_socket, server=y,suspend=n,address=5005` |
-| WORKBENCH_MEM       | Set the java memory parameter when the Workbench process starts. |
+| SUBMARINE_JAVA_OPTS | Set the JAVA OPTS parameter when the submarine workbench process starts. If you need to debug the submarine workbench process, you can set it to `-agentlib:jdwp=transport=dt_socket, server=y,suspend=n,address=5005` |
+| SUBMARINE_MEM       | Set the java memory parameter when the submarine workbench process starts. |
 | MYSQL_JAR_URL       | The customized URL to download mysql jdbc jar.               |
 | MYSQL_VERSION       | The version of mysql jdbc jar to downloaded. The default value is 5.1.39. It's used to generate the default value of MYSQL_JDBC_URL |
 
@@ -46,18 +57,18 @@ cd submarine
 
 | Name                               | Variable                                                     |
 | ---------------------------------- | ------------------------------------------------------------ |
-| workbench.server.addr              | workbench server address, default is `0.0.0.0`               |
-| workbench.server.port              | workbench server port, default `8080`                        |
-| workbench.ssl                      | Should SSL be used by the workbench servers?, default `false` |
-| workbench.server.ssl.port          | Server ssl port. (used when ssl property is set to true), default `8483` |
-| workbench.ssl.client.auth          | Should client authentication be used for SSL connections?    |
-| workbench.ssl.keystore.path        | Path to keystore relative to submarine configuration directory |
-| workbench.ssl.keystore.type        | The format of the given keystore (e.g. JKS or PKCS12)        |
-| workbench.ssl.keystore.password    | Keystore password. Can be obfuscated by the Jetty Password tool |
-| workbench.ssl.key.manager.password | Key Manager password. Defaults to keystore password. Can be obfuscated. |
-| workbench.ssl.truststore.path      | Path to truststore relative to submarine configuration directory. Defaults to the keystore path |
-| workbench.ssl.truststore.type      | The format of the given truststore (e.g. JKS or PKCS12). Defaults to the same type as the keystore type |
-| workbench.ssl.truststore.password  | Truststore password. Can be obfuscated by the Jetty Password tool. Defaults to the keystore password |
+| submarine.server.addr              | submarine server address, default is `0.0.0.0`               |
+| submarine.server.port              | submarine server port, default `8080`                        |
+| submarine.ssl                      | Should SSL be used by the submarine servers?, default `false` |
+| submarine.server.ssl.port          | Server ssl port. (used when ssl property is set to true), default `8483` |
+| submarine.ssl.client.auth          | Should client authentication be used for SSL connections?    |
+| submarine.ssl.keystore.path        | Path to keystore relative to submarine configuration directory |
+| submarine.ssl.keystore.type        | The format of the given keystore (e.g. JKS or PKCS12)        |
+| submarine.ssl.keystore.password    | Keystore password. Can be obfuscated by the Jetty Password tool |
+| submarine.ssl.key.manager.password | Key Manager password. Defaults to keystore password. Can be obfuscated. |
+| submarine.ssl.truststore.path      | Path to truststore relative to submarine configuration directory. Defaults to the keystore path |
+| submarine.ssl.truststore.type      | The format of the given truststore (e.g. JKS or PKCS12). Defaults to the same type as the keystore type |
+| submarine.ssl.truststore.password  | Truststore password. Can be obfuscated by the Jetty Password tool. Defaults to the keystore password |
 | workbench.web.war                  | Submarine workbench web war file path.                       |
 
 
@@ -68,5 +79,5 @@ cd submarine
 
 ```$xslt
 cd submarine/submarine-dist/target/submarine-dist-<version>/submarine-dist-<version>/
-./bin/workbench-daemon.sh [start|stop|restart]
+./bin/submarine-daemon.sh [start|stop|restart]
 ```
