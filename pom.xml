@@ -131,6 +131,8 @@
     <!--  Submarine on Kubernetes  -->
     <k8s.client-java.version>6.0.1</k8s.client-java.version>
     <jersey.test-framework>2.27</jersey.test-framework>
+    <!-- integration test-->
+    <plugin.failsafe.version>2.17</plugin.failsafe.version>
   </properties>
 
   <modules>
@@ -140,8 +142,8 @@
     <module>submarine-server</module>
     <module>submarine-all</module>
     <module>submarine-workbench</module>
-    <module>submarine-test</module>
     <module>submarine-dist</module>
+    <module>submarine-test</module>
   </modules>
 
   <dependencyManagement>

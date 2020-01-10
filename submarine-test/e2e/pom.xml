@@ -16,8 +16,6 @@
 
 
   <properties>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
@@ -25,7 +23,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -78,22 +75,12 @@
 
 
   <build>
-    <finalName>submarine-${artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <version>2.17</version>
+        <version>${plugin.failsafe.version}</version>
         <executions>
           <execution>
-            <id>integration-tests</id>
             <goals>
               <goal>integration-test</goal>
               <goal>verify</goal>
@@ -108,23 +95,79 @@
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <argLine>-Xmx2048m</argLine>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration combine.children="append">
+          <argLine>-Xmx2g -Xms1g -Dfile.encoding=UTF-8</argLine>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>HelloWorldIT</mainClass>
-            </manifest>
-          </archive>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
-        </configuration>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>start-submarine-server</id>
+            <phase>pre-integration-test</phase>
+            <configuration>
+              <target unless="skipTests">
+                <exec executable="./submarine-daemon.sh" dir="${submarine.daemon.package.base}"
+                      spawn="false">
+                  <arg value="start"/>
+                  <arg value="getMysqlJar" />
+                </exec>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>stop-submarine-server</id>
+            <phase>post-integration-test</phase>
+            <configuration>
+              <target unless="skipTests">
+                <exec executable="./submarine-daemon.sh" dir="${submarine.daemon.package.base}"
+                      spawn="false">
+                  <arg value="stop"/>
+                </exec>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>using-source-tree</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <submarine.daemon.package.base>
+          ../bin
+        </submarine.daemon.package.base>
+      </properties>
+    </profile>
+    <profile>
+      <id>using-packaged-distr</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <submarine.daemon.package.base>
+          ../../submarine-dist/target/submarine-dist-${project.version}-hadoop-2.9/submarine-dist-${project.version}-hadoop-2.9/bin
+        </submarine.daemon.package.base>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>

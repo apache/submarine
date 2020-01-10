@@ -37,6 +37,8 @@ addons:
 
 services:
   - mysql
+  # https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
+  - xvfb
 
 env:
   global:
@@ -47,6 +49,7 @@ env:
     - EXCLUDE_SUBMODULE_TONY="!submodules/tony,!submodules/tony/tony-mini,!submodules/tony/tony-core,!submodules/tony/tony-proxy,!submodules/tony/tony-portal,!submodules/tony/tony-azkaban,!submodules/tony/tony-cli"
     - EXCLUDE_K8S="!submarine-server/server-submitter/submitter-k8s"
     - EXCLUDE_COMMON_RPC="!submarine-commons/commons-rpc"
+    - MOZ_HEADLESS=1
 
 before_install:
   # maven 3.6.1 (3.6.2 build tony failed!!!)
@@ -65,6 +68,15 @@ before_install:
   - mysql -e "CREATE USER 'metastore_test'@'%' IDENTIFIED BY 'password_test';"
   - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'metastore_test'@'%';"
   - mysql -e "use metastore_test; source ./docs/database/metastore.sql; show tables;"
+  # For e2e tests
+  - mysql -e "create database submarine;"
+  - mysql -e "CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';"
+  - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'submarine'@'%';"
+  - mysql -e "use submarine; source ./docs/database/submarine.sql; source ./docs/database/submarine-data.sql; show tables;"
+  - mysql -e "create database metastore;"
+  - mysql -e "CREATE USER 'metastore'@'%' IDENTIFIED BY 'password';"
+  - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'metastore'@'%';"
+  - mysql -e "use metastore; source ./docs/database/metastore.sql; show tables;"
   - ./dev-support/travis/install_external_dependencies.sh
   # protobuf 3.10.1
   - PROTOBUF_VERSION=3.10.1
@@ -156,7 +168,9 @@ matrix:
       language: java
       jdk: "openjdk8"
       dist: xenial
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean test" TEST_FLAG="test -DskipRat -am" MODULES="-pl submarine-test/e2e" TEST_MODULES="-pl submarine-test/e2e" TEST_PROJECTS=""
+      addons:
+        chrome: stable
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package -DskipTests" TEST_FLAG="verify -DskipRat -am" TEST_MODULES="-pl submarine-test/e2e" TEST_PROJECTS=""
 
     - name: Test submarine interpreter
       language: java
@@ -190,11 +204,7 @@ matrix:
       before_script:
         npm install
       addons:
-        apt:
-          sources:
-            - google-chrome
-          packages:
-            - google-chrome-stable
+        chrome: stable
       script:
         - npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
         - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
@@ -212,8 +222,6 @@ install:
   - mvn $BUILD_FLAG $MODULES $PROFILE -B
 
 before_script:
-  # https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
-  - if [[ -n $TEST_MODULES ]]; then export DISPLAY=:99.0; sh -e /etc/init.d/xvfb start; sleep 3; fi
   # display info log for debugging
   - if [[ -n $TEST_MODULES ]]; then echo "MAVEN_OPTS='-Xms1024M -Xmx2048M -XX:MaxPermSize=1024m -XX:-UseGCOverheadLimit -Dorg.slf4j.simpleLogger.defaultLogLevel=info'" > ~/.mavenrc; fi
 

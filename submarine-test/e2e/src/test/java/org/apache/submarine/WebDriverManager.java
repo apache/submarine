@@ -17,109 +17,99 @@
 
 package org.apache.submarine;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.SystemUtils;
+import static org.junit.Assert.fail;
+
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.rauschig.jarchivelib.Archiver;
-import org.rauschig.jarchivelib.ArchiverFactory;
-import java.io.File;
-import java.net.URL;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 public class WebDriverManager {
-    private static Logger LOG = LoggerFactory.getLogger(WebDriverManager.class);
-    private static String GECKODRIVER_VERSION = "0.25.0";
-    private static String downLoadsDir = "";
-    private static CommandExecutor cmdExec = new CommandExecutor();
 
-    public static WebDriver getWebDriver() {
-        WebDriver driver = null;
-        // firefox webdriver
-        if(driver == null) {
-            try {
-                // download GeckoDriver
-                downLoadsDir = System.getProperty("user.dir");
-                String tempPath = downLoadsDir + "/Driver/";
-                downloadGeckoDriver(tempPath);
-                if(SystemUtils.IS_OS_MAC_OSX) {
-                    String command = "chmod +x " + tempPath + "geckodriver";
-                    cmdExec.executeCommandLocalHost(command);
-                }
-                System.setProperty("webdriver.gecko.driver", tempPath + "geckodriver");
-                // TODO(Kai-Hsun Chen): set firefox preference (refer to WebDriverManager.java:74 ~ 94 in Zeppelin)
-                // Initialize firefox WebDriver
-                String firefoxVersion = getFirefoxVersion();
-                LOG.info("Firefox version " + firefoxVersion + " detected");
-                driver = new FirefoxDriver();
-            } catch (Exception e) {
-                LOG.info("Exception in WebDriverManager while FireFox Driver");
-            }
-        }
+  public final static Logger LOG = LoggerFactory.getLogger(WebDriverManager.class);
 
-        String url = "http://127.0.0.1:32777";
-        driver.get(url);
-        return driver;
-    }
-    
-    // TODO(Kai-Hsun Chen): need to set the path of geckodriver
-    public static void downloadGeckoDriver(String tempPath) {
-        String geckoDriverUrlString = "https://github.com/mozilla/geckodriver/releases/download/v" + GECKODRIVER_VERSION + "/geckodriver-v" + GECKODRIVER_VERSION + "-";
-        LOG.info("Gecko version: v" + GECKODRIVER_VERSION + ", will be downloaded to " + tempPath);
-        try {
-            if (SystemUtils.IS_OS_WINDOWS) {
-                if (System.getProperty("sun.arch.data.model").equals("64")) {
-                  geckoDriverUrlString += "win64.zip";
-                } else {
-                  geckoDriverUrlString += "win32.zip";
-                }
-            } else if (SystemUtils.IS_OS_LINUX) {
-                if (System.getProperty("sun.arch.data.model").equals("64")) {
-                  geckoDriverUrlString += "linux64.tar.gz";
-                } else {
-                  geckoDriverUrlString += "linux32.tar.gz";
-                }
-            } else if (SystemUtils.IS_OS_MAC_OSX) {
-                geckoDriverUrlString += "macos.tar.gz";
-            }
+  private static String downLoadsDir = "";
 
-            File geckoDriver = new File(tempPath + "geckodriver");
-            File geckoDriverZip = new File(tempPath + "geckodriver.tar");
-            File geckoDriverDir = new File(tempPath);
-            URL geckoDriverUrl = new URL(geckoDriverUrlString);
-            if (!geckoDriver.exists()) {
-              FileUtils.copyURLToFile(geckoDriverUrl, geckoDriverZip);
-              if (SystemUtils.IS_OS_WINDOWS) {
-                Archiver archiver = ArchiverFactory.createArchiver("zip");
-                archiver.extract(geckoDriverZip, geckoDriverDir);
-              } else {
-                Archiver archiver = ArchiverFactory.createArchiver("tar", "gz");
-                archiver.extract(geckoDriverZip, geckoDriverDir);
-              }
-            } else {
-                LOG.info("Gecko version: v" + GECKODRIVER_VERSION + " has already existed in path " + tempPath);
-                return;
-            }
-        } catch (Exception e) {
-            LOG.info("[FAIL] Download of Gecko version: v" + GECKODRIVER_VERSION + ", falied in path " + tempPath);
-            return;
-        }
-        LOG.info("[SUCCESS] Download of Gecko version: " + GECKODRIVER_VERSION);
+  private static boolean webDriverIsDownloaded = false;
+
+  private static String webDriverPath = "";
+
+  public static WebDriver getWebDriver() {
+    WebDriver driver = null;
+
+    if (driver == null) {
+      try {
+        WebDriverProvider provide = new ChromeWebDriverProvider();
+        driver = generateWebDriver(provide);
+      } catch (Exception e) {
+        LOG.error("Exception in WebDriverManager while ChromeDriver ", e);
+      }
     }
 
-    // TODO(Kai-Hsun Chen): need to be tested on MacOS, and Linux
-    public static String getFirefoxVersion() {
-        String firefoxVersionCmd = "firefox -v";
-        String version = "";
-        if (System.getProperty("os.name").startsWith("Mac OS")) {
-            firefoxVersionCmd = "/Applications/Firefox.app/Contents/MacOS/" + firefoxVersionCmd;
-        }
-        try {
-            version = cmdExec.executeCommandLocalHost(firefoxVersionCmd).toString();
-        } catch (Exception e) {
-            LOG.info("Exception in WebDriverManager while getFirefoxVersion");
-        }
-        return version;
+    if (driver == null) {
+      try {
+        WebDriverProvider provide = new FirefoxWebDriverProvider();
+        driver = generateWebDriver(provide);
+      } catch (Exception e) {
+        LOG.error("Exception in WebDriverManager while FireFox Driver ", e);
+      }
     }
+
+    String url;
+    if (System.getenv("url") != null) {
+      url = System.getenv("url");
+    } else {
+      url = "http://localhost:8080";
+    }
+
+    long start = System.currentTimeMillis();
+    boolean loaded = false;
+    driver.manage().timeouts().implicitlyWait(AbstractSubmarineIT.MAX_IMPLICIT_WAIT,
+        TimeUnit.SECONDS);
+    driver.get(url);
+
+    while (System.currentTimeMillis() - start < 60 * 1000) {
+      // wait for page load
+      try {
+        (new WebDriverWait(driver, 60)).until(new ExpectedCondition<Boolean>() {
+          @Override
+          public Boolean apply(WebDriver d) {
+            // return d.findElement(By.tagName("div"))
+            return d.findElement(By.tagName("submarine-root"))
+                .isDisplayed();
+          }
+        });
+        loaded = true;
+        break;
+      } catch (TimeoutException e) {
+        LOG.info("Exception in WebDriverManager while WebDriverWait ", e);
+        driver.navigate().to(url);
+      }
+    }
+
+    if (loaded == false) {
+      fail();
+    }
+
+    driver.manage().window().maximize();
+    return driver;
+  }
+
+  private static WebDriver generateWebDriver(WebDriverProvider provide) {
+    if (!webDriverIsDownloaded) {
+      String webDriverVersion = provide.getWebDriverVersion();
+      webDriverPath = provide.downloadWebDriver(webDriverVersion);
+      if (StringUtils.isNotBlank(webDriverPath)) {
+        webDriverIsDownloaded = true;
+      }
+    }
+    WebDriver driver = provide.createWebDriver(webDriverPath);
+    return driver;
+  }
 }
