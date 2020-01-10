@@ -66,32 +66,32 @@ public final class YarnUtils {
     }
     // Resources for PS & Worker
     if (parameters.getOptionValue(CliConstants.PS_RES) != null) {
-      Resource resource = getResource(parameters, CliConstants.PS_RES);
+      Resource psResource = getResource(parameters, CliConstants.PS_RES);
 
       tonyConf.setInt(
           TonyConfigurationKeys.getResourceKey(Constants.PS_JOB_NAME,
               Constants.VCORES),
-              resource.getVirtualCores());
+              psResource.getVirtualCores());
       tonyConf.setLong(
           TonyConfigurationKeys.getResourceKey(Constants.PS_JOB_NAME,
               Constants.MEMORY),
-          ResourceUtils.getMemorySize(resource));
+          ResourceUtils.getMemorySize(psResource));
     }
     if (parameters.getOptionValue(CliConstants.WORKER_RES) != null) {
-      Resource resource = getResource(parameters, CliConstants.WORKER_RES);
+      Resource workerResource = getResource(parameters, CliConstants.WORKER_RES);
 
       tonyConf.setInt(
           TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
               Constants.VCORES),
-              resource.getVirtualCores());
+              workerResource.getVirtualCores());
       tonyConf.setLong(
           TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
               Constants.MEMORY),
-          ResourceUtils.getMemorySize(resource));
+          ResourceUtils.getMemorySize(workerResource));
       tonyConf.setLong(
           TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
               Constants.GPUS),
-          ResourceUtils.getResourceValue(resource,
+          ResourceUtils.getResourceValue(workerResource,
               ResourceUtils.GPU_URI));
     }
     if (parameters.getOptionValue(CliConstants.QUEUE) != null) {
@@ -197,11 +197,11 @@ public final class YarnUtils {
 
   private static Resource getResource(Parameter parametersHolder, String option)
           throws ParseException, YarnException {
-    String ResourceStr =
+    String resourceStr =
             parametersHolder.getOptionValue(option);
-    if (ResourceStr == null) {
+    if (resourceStr == null) {
       throw new ParseException("--" + option + " is absent.");
     }
-    return ResourceUtils.createResourceFromString(ResourceStr);
+    return ResourceUtils.createResourceFromString(resourceStr);
   }
 }

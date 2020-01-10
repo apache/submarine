@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.apache.submarine.commons.runtime.exception.SubmarineException;
 import org.apache.submarine.commons.runtime.param.Parameter;
 import org.apache.submarine.client.cli.param.ParametersHolder;
 import org.apache.submarine.commons.runtime.JobSubmitter;
@@ -51,8 +52,9 @@ public class YarnJobSubmitter implements JobSubmitter, CallbackHandler {
 
   @Override
   public ApplicationId submitJob(Parameter parameters)
-      throws IOException {
+          throws IOException, SubmarineException {
     LOG.info("Starting Tony runtime..");
+    LOG.info("Use ML framework : " + parameters.getFramework().getValue());
 
     File tonyFinalConfPath = File.createTempFile("temp",
         Constants.TONY_FINAL_XML);
@@ -62,7 +64,7 @@ public class YarnJobSubmitter implements JobSubmitter, CallbackHandler {
       tonyConf = YarnUtils.tonyConfFromClientContext(
           (ParametersHolder) parameters);
     } catch (Exception e) {
-      throw new RuntimeException("Failed to create tony conf from client context", e);
+      throw new SubmarineException("Failed to create tony conf from client context");
     }
     try (OutputStream os = new FileOutputStream(tonyFinalConfPath)) {
       tonyConf.writeXml(os);

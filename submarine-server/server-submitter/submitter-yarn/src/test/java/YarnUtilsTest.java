@@ -23,6 +23,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.client.cli.param.ParametersHolder;
+import org.apache.submarine.client.cli.param.runjob.PyTorchRunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.client.cli.runjob.RunJobCli;
 import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
@@ -31,6 +32,7 @@ import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
 import org.apache.submarine.commons.runtime.RuntimeFactory;
 import org.apache.submarine.commons.runtime.JobMonitor;
 import org.apache.submarine.commons.runtime.JobSubmitter;
+import org.apache.submarine.commons.runtime.exception.SubmarineException;
 import org.apache.submarine.commons.runtime.fs.SubmarineStorage;
 import org.apache.submarine.server.submitter.yarn.YarnUtils;
 import org.junit.Assert;
@@ -47,7 +49,7 @@ import static org.mockito.Mockito.when;
 public class YarnUtilsTest {
 
   private MockClientContext getMockClientContext()
-      throws IOException, YarnException {
+          throws IOException, YarnException, SubmarineException {
     MockClientContext mockClientContext = new MockClientContext("testJob");
     JobSubmitter mockJobSubmitter = mock(JobSubmitter.class);
     when(mockJobSubmitter.submitJob(
@@ -71,7 +73,7 @@ public class YarnUtilsTest {
   }
 
   @Test
-  public void testTonyConfFromClientContext() throws Exception {
+  public void testTFTonyConfFromClientContext() throws Exception {
     RunJobCli runJobCli = new RunJobCli(getMockClientContext());
     runJobCli.run(
         new String[] {"--framework", "tensorflow", "--name", "my-job",
@@ -114,6 +116,45 @@ public class YarnUtilsTest {
         Constants.VCORES)));
     Assert.assertEquals(tensorFlowParams.getPSLaunchCmd(),
         tonyConf.get(TonyConfigurationKeys.getExecuteCommandKey("ps")));
+    Assert.assertEquals("SUBMARINE", tonyConf.get(TonyConfigurationKeys.APPLICATION_TYPE));
+  }
+
+  @Test
+  public void testPyTorchTonyConfFromClientContext() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(getMockClientContext());
+    runJobCli.run(
+        new String[] {"--framework", "pytorch", "--name", "my-job",
+            "--docker_image", "pytorch-docker:1.1.0",
+            "--input_path", "hdfs://input",
+            "--num_workers", "3", "--worker_launch_cmd",
+            "python run-job.py", "--worker_resources",
+            "memory=4G,vcores=4"});
+    RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
+    ParametersHolder parametersHolder = runJobCli.getParametersHolder();
+
+    assertTrue(RunJobParameters.class + " must be an instance of " +
+                    PyTorchRunJobParameters.class,
+            jobRunParameters instanceof PyTorchRunJobParameters);
+    PyTorchRunJobParameters tensorFlowParams =
+            (PyTorchRunJobParameters) jobRunParameters;
+
+    Configuration tonyConf = YarnUtils
+            .tonyConfFromClientContext(parametersHolder);
+    Assert.assertEquals(parametersHolder.getFramework().getValue(),
+            tonyConf.get(TonyConfigurationKeys.FRAMEWORK_NAME));
+    Assert.assertEquals(jobRunParameters.getName(),
+            tonyConf.get(TonyConfigurationKeys.APPLICATION_NAME));
+    Assert.assertEquals(jobRunParameters.getDockerImageName(),
+            tonyConf.get(TonyConfigurationKeys.getContainerDockerKey()));
+    Assert.assertEquals("3", tonyConf.get(TonyConfigurationKeys
+            .getInstancesKey("worker")));
+    Assert.assertEquals(tensorFlowParams.getWorkerLaunchCmd(),
+            tonyConf.get(TonyConfigurationKeys
+                    .getExecuteCommandKey("worker")));
+    Assert.assertEquals("4096", tonyConf.get(TonyConfigurationKeys
+            .getResourceKey(Constants.WORKER_JOB_NAME, Constants.MEMORY)));
+    Assert.assertEquals("4", tonyConf.get(TonyConfigurationKeys
+            .getResourceKey(Constants.WORKER_JOB_NAME, Constants.VCORES)));
     Assert.assertEquals("SUBMARINE", tonyConf.get(TonyConfigurationKeys.APPLICATION_TYPE));
   }
 }
