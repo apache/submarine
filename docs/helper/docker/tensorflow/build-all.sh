@@ -30,3 +30,6 @@ cd ../../with-cifar10-models/ubuntu-16.04
 
 docker build . -f Dockerfile.cpu.tf_1.13.1 -t tf-1.13.1-cpu:0.0.1
 docker build . -f Dockerfile.gpu.tf_1.13.1 -t tf-1.13.1-gpu:0.0.1
+
+cd ../../mnist
+docker build . -f Dockerfile.tony.tf.mnist.tf_1.13.1 -t tony-mnist-tf-1.13.1:0.0.1

@@ -37,7 +37,7 @@ import sys
 
 import tensorboard.program as tb_program
 import tensorflow as tf
-import submarine
+# import submarine
 
 # Environment variable containing port to launch TensorBoard on, set by TonY.
 TB_PORT_ENV_VAR = 'TB_PORT'

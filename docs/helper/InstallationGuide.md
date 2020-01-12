@@ -394,9 +394,9 @@ Add configurations in container-executor.cfg
    yarn-hierarchy=/hadoop-yarn
    ```
 
-## Tensorflow Job with yarn runtime.
+## TensorFlow Job with yarn runtime.
 
-### Run a tensorflow job in a zipped python virtual environment
+### Run a TensorFlow job in a zipped python virtual environment
 
 Refer to build_python_virtual_env.sh in the directory of
 ${SUBMARINE_REPO_PATH}/dev-support/mini-submarine/submarine/ to build a zipped python virtual
@@ -414,7 +414,17 @@ Run a distributed tensorflow job.
 ```
 The parameter -d is used to specify the url from which we can get the mnist data.
 
-### Run a tensorflow job in a docker container(TODO)
+### Run a TensorFlow job in a Docker container
+Prepare your docker image, you could refer to this sample Docker image for building your own Docker image. An example is provided under `docker/tensorflow/mnist/Dockerfile.tony.tf.mnist.tf_1.13.1`
+
+Please make sure you have _HADOOP_HOME_, _HADOOP_YARN_HOME_, _HADOOP_HDFS_HOME_, _HADOOP_CONF_DIR_, _JAVA_HOME_ configured correctly. You could use this command to run a distributed TensorFLow job in Docker
+
+```
+./run_submarine_mnist_tony.sh -c -d http://yann.lecun.com/exdb/mnist/
+```
+The parameter -c is used to specify the job will be run in a Docker environment.
+
+The parameter -d is used to specify the url from which we can get the mnist data.
 
 
 ## Yarn Service Runtime Requirement (Deprecated)
