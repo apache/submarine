@@ -51,7 +51,8 @@ fi
 
 if [[ -n "$USE_DOCKER" ]]; then
   WORKER_CMD="/opt/$WORKER_CMD"
-  DOCKER_CONF="--conf tony.docker.containers.image=subimage:0.0.1 --conf tony.docker.enabled=true"
+  # tony-mnist-tf-1.13.1:0.0.1 is built from the Dockerfile.tony.tf.mnist.tf_1.13.1 under docs/helper/docker/tensorflow/mnist
+  DOCKER_CONF="--conf tony.docker.containers.image=tony-mnist-tf-1.13.1:0.0.1 --conf tony.docker.enabled=true"
 else
   WORKER_CMD="myvenv.zip/$WORKER_CMD"
 fi
