@@ -16,7 +16,7 @@
 
 set -eo pipefail
 
-SUBMARINE_VERSION=0.3.0
+SUBMARINE_VERSION=0.3.0-SNAPSHOT
 SUBMARINE_IMAGE_NAME="apache/submarine:submarine-${SUBMARINE_VERSION}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
@@ -30,7 +30,7 @@ export SUBMARINE_HOME=${CURRENT_PATH}/../../..
 if [ ! -d "${SUBMARINE_HOME}/submarine-dist/target" ]; then
   mkdir "${SUBMARINE_HOME}/submarine-dist/target"
 fi
-submarine_dist_exists=$(find -L "${SUBMARINE_HOME}/submarine-dist/target" -name "submarine-dist-${submarine_v}*.tar.gz")
+submarine_dist_exists=$(find -L "${SUBMARINE_HOME}/submarine-dist/target" -name "submarine-dist-${SUBMARINE_VERSION}*.tar.gz")
 # Build source code if the package doesn't exist.
 if [[ -z "${submarine_dist_exists}" ]]; then
   # update tony code
@@ -49,7 +49,7 @@ cp ${SUBMARINE_HOME}/submarine-dist/target/submarine-dist-${SUBMARINE_VERSION}*.
 # Replace the mysql jdbc.url in the submarine-site.xml file with the link name of the submarine container
 # `submarine-database` is submarine database container name
 cp ${SUBMARINE_HOME}/conf/submarine-site.xml "${CURRENT_PATH}/tmp/"
-sed -i ".bak" 's/127.0.0.1:3306/submarine-database:3306/g' "${CURRENT_PATH}/tmp/submarine-site.xml"
+sed -i.bak 's/127.0.0.1:3306/submarine-database:3306/g' "${CURRENT_PATH}/tmp/submarine-site.xml"
 
 cp ${SUBMARINE_HOME}/bin/submarine.sh "${CURRENT_PATH}/tmp/"
 
