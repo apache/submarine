@@ -25,7 +25,7 @@ import org.apache.submarine.client.cli.runjob.RunJobCli;
 import org.apache.hadoop.yarn.conf.YarnConfiguration;
 import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.runtime.RuntimeFactory;
-import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +50,7 @@ public class Cli {
     ClientContext clientContext = new ClientContext();
     RuntimeFactory runtimeFactory;
     if (clientContext.getSubmarineConfig().getBoolean(
-        SubmarineConfiguration.ConfVars.
+        SubmarineConfVars.ConfVars.
             SUBMARINE_SERVER_REMOTE_EXECUTION_ENABLED)) {
       runtimeFactory = new RpcRuntimeFactory(clientContext);
     } else {

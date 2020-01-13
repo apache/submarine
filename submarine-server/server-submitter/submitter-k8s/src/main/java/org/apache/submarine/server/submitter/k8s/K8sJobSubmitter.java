@@ -34,6 +34,7 @@ import io.kubernetes.client.models.V1DeleteOptionsBuilder;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.server.api.JobSubmitter;
 import org.apache.submarine.server.api.exception.UnsupportedJobTypeException;
 import org.apache.submarine.server.api.job.Job;
@@ -73,7 +74,7 @@ public class K8sJobSubmitter implements JobSubmitter {
     supportedCRDMap.put("TFJob", "tfjobs");
 
     if (confPath == null || confPath.trim().isEmpty()) {
-      confPath = conf.getString(SubmarineConfiguration.ConfVars.SUBMARINE_K8S_KUBE_CONFIG);
+      confPath = conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_K8S_KUBE_CONFIG);
     }
     loadClientConfiguration(confPath);
   }

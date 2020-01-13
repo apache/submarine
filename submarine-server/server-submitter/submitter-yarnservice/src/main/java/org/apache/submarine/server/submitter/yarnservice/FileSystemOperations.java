@@ -30,6 +30,7 @@ import org.apache.hadoop.yarn.service.api.records.Component;
 import org.apache.hadoop.yarn.service.api.records.ConfigFile;
 import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
 import org.apache.submarine.server.submitter.yarnservice.utils.ZipUtilities;
@@ -262,7 +263,7 @@ public class FileSystemOperations {
 
   private long getMaxRemoteFileSizeMB() {
     return submarineConfig.getLong(
-        SubmarineConfiguration.ConfVars.
+        SubmarineConfVars.ConfVars.
             SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB);
   }
 

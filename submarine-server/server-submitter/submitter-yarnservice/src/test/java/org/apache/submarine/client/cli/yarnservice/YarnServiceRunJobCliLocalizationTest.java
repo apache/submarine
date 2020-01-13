@@ -26,6 +26,7 @@ import org.apache.hadoop.yarn.service.api.records.Service;
 import org.apache.submarine.client.cli.runjob.RunJobCli;
 import org.apache.submarine.commons.runtime.MockClientContext;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
 
@@ -425,7 +426,7 @@ public class YarnServiceRunJobCliLocalizationTest {
 
     // Max 10MB, mock remote will always return file size 100MB.
     submarineConf.setLong(
-        SubmarineConfiguration.ConfVars.
+        SubmarineConfVars.ConfVars.
             SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB, 10L);
     mockClientContext.setSubmarineConfig(submarineConf);
 

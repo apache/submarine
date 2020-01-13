@@ -30,7 +30,7 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.server.utils.TestUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -98,9 +98,9 @@ public abstract class AbstractSubmarineServerTest {
       confDir = new File(submarineServerHome, "conf_" + testClassName);
       confDir.mkdirs();
 
-      System.setProperty(SubmarineConfiguration.ConfVars.WORKBENCH_WEB_WAR.getVarName(),
+      System.setProperty(SubmarineConfVars.ConfVars.WORKBENCH_WEB_WAR.getVarName(),
           new File("../workbench-web/dist").getAbsolutePath());
-      System.setProperty(SubmarineConfiguration.ConfVars.SUBMARINE_CONF_DIR.getVarName(),
+      System.setProperty(SubmarineConfVars.ConfVars.SUBMARINE_CONF_DIR.getVarName(),
           confDir.getAbsolutePath());
 
       // some test profile does not build workbench-web.
