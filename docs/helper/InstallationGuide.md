@@ -404,7 +404,7 @@ environment. ${SUBMARINE_REPO_PATH} indicates submarine repo location.
 The generated zipped file can be named myvenv.zip.
 
 Copy ${SUBMARINE_REPO_PATH}/dev-support/mini-submarine/submarine/run_submarine_mnist_tony.sh
-to the server on which you submit jobs. And modify the variables, SUBMARINE_VERSION, HADOOP_VERSION, SUBMARINE_PATH,
+to the server on which you submit jobs. And modify the variables, SUBMARINE_VERSION, SUBMARINE_HADOOP_VERSION, SUBMARINE_PATH,
 HADOOP_CONF_PATH and MNIST_PATH in it, according to your environment. If Kerberos
 is enabled, please delete the parameter, --insecure, in the command.
 

@@ -14,6 +14,23 @@
 # limitations under the License.
 
 #!/bin/bash
+
+# Below are configurable variables, please adapt base on your local environment.
+# Version of submarine jar
+SUBMARINE_VERSION=0.3.0-SNAPSHOT
+
+# Version of affiliated Hadoop version for this Submarine jar.
+SUBMARINE_HADOOP_VERSION=2.9
+
+# Path to the submarine jars.
+SUBMARINE_PATH=/opt/submarine-current
+
+# Similar to HADOOP_CONF_DIR, location of the Hadoop configuration directory
+HADOOP_CONF_PATH=/usr/local/hadoop/etc/hadoop
+
+# Path to the MNIST example.
+MNIST_PATH=/home/yarn/submarine
+
 while [ $# -gt 0 ]; do
   case "$1" in
     --debug*)
@@ -56,12 +73,6 @@ if [[ -n "$USE_DOCKER" ]]; then
 else
   WORKER_CMD="myvenv.zip/$WORKER_CMD"
 fi
-
-SUBMARINE_VERSION=0.3.0-SNAPSHOT
-SUBMARINE_HADOOP_VERSION=2.9
-SUBMARINE_PATH=/home/pi/apache/submarine/submarine-all/target
-HADOOP_CONF_PATH=/etc/hadoop/etc/hadoop
-MNIST_PATH=/home/pi/apache/submarine/dev-support/mini-submarine/submarine
 
 ${JAVA_CMD} -cp $(${HADOOP_HOME}/bin/hadoop classpath --glob):${SUBMARINE_PATH}/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar:${HADOOP_CONF_PATH} \
  org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
