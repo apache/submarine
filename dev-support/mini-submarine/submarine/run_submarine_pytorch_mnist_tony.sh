@@ -1,3 +1,4 @@
+#!/bin/bash
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -13,12 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
-
 while [ $# -gt 0 ]; do
   case "$1" in
     --debug*)
       DEBUG=$1
+      if [ -n "$2" ]; then
+        DEBUG_PORT=$2
+        shift
+      fi
       shift
       ;;
     *)
@@ -27,8 +30,10 @@ while [ $# -gt 0 ]; do
   esac
 done
 
-DEBUG_PORT=8000
 if [ "$DEBUG" ]; then
+  if [ -z "$DEBUG_PORT" ]; then
+    DEBUG_PORT=8000
+  fi
   JAVA_CMD="java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${DEBUG_PORT}"
 else
   JAVA_CMD="java"
