@@ -26,6 +26,7 @@ import org.apache.submarine.commons.rpc.SubmarineServerProtocolGrpc;
 import org.apache.submarine.commons.rpc.SubmarineServerProtocolGrpc.SubmarineServerProtocolBlockingStub;
 import org.apache.submarine.commons.rpc.SubmarineServerProtocolGrpc.SubmarineServerProtocolStub;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +47,9 @@ public class SubmarineRpcClient extends RpcServerTestUtils {
   public SubmarineRpcClient(SubmarineConfiguration config) {
     this(ManagedChannelBuilder.forAddress(
           config.getString(
-            SubmarineConfiguration.ConfVars.SUBMARINE_SERVER_ADDR),
+            SubmarineConfVars.ConfVars.SUBMARINE_SERVER_ADDR),
           config.getInt(
-            SubmarineConfiguration.ConfVars.
+            SubmarineConfVars.ConfVars.
                 SUBMARINE_SERVER_REMOTE_EXECUTION_PORT))
         .usePlaintext());
   }

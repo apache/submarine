@@ -36,6 +36,7 @@ import org.apache.submarine.commons.runtime.exception.SubmarineException;
 import org.apache.submarine.commons.runtime.RuntimeFactory;
 import org.apache.submarine.commons.runtime.param.Parameter;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,7 +137,7 @@ public class SubmarineRpcServer {
     SubmarineConfiguration submarineConfiguration =
         SubmarineConfiguration.getInstance();
     int rpcServerPort = submarineConfiguration.getInt(
-        SubmarineConfiguration.ConfVars.SUBMARINE_SERVER_REMOTE_EXECUTION_PORT);
+        SubmarineConfVars.ConfVars.SUBMARINE_SERVER_REMOTE_EXECUTION_PORT);
     SubmarineRpcServer server = new SubmarineRpcServer(rpcServerPort);
     server.start();
     return server;

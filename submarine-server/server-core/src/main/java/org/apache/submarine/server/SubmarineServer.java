@@ -48,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
-import org.apache.submarine.commons.utils.SubmarineConfiguration.ConfVars;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -166,8 +166,9 @@ public class SubmarineServer extends ResourceConfig {
       SubmarineConfiguration conf) {
     WebAppContext webApp = new WebAppContext();
     webApp.setContextPath("/");
-    File warPath = new File(conf.getString(ConfVars.WORKBENCH_WEB_WAR));
-    LOG.info("workbench web war file path is {}.", conf.getString(ConfVars.WORKBENCH_WEB_WAR));
+    File warPath = new File(conf.getString(SubmarineConfVars.ConfVars.WORKBENCH_WEB_WAR));
+    LOG.info("workbench web war file path is {}.", 
+        conf.getString(SubmarineConfVars.ConfVars.WORKBENCH_WEB_WAR));
     if (warPath.isDirectory()) {
       // Development mode, read from FS
       // webApp.setDescriptor(warPath+"/WEB-INF/web.xml");
@@ -189,9 +190,9 @@ public class SubmarineServer extends ResourceConfig {
 
   private static Server setupJettyServer(SubmarineConfiguration conf) {
     ThreadPool threadPool =
-        new QueuedThreadPool(conf.getInt(ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_MAX),
-            conf.getInt(ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_MIN),
-            conf.getInt(ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_TIMEOUT));
+        new QueuedThreadPool(conf.getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_MAX),
+            conf.getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_MIN),
+            conf.getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_TIMEOUT));
     final Server server = new Server(threadPool);
     ServerConnector connector;
 

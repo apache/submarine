@@ -67,17 +67,17 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   private SubmarineConfiguration() {
-    ConfVars[] vars = ConfVars.values();
-    for (ConfVars v : vars) {
-      if (v.getType() == ConfVars.VarType.BOOLEAN) {
+    SubmarineConfVars.ConfVars[] vars = SubmarineConfVars.ConfVars.values();
+    for (SubmarineConfVars.ConfVars v : vars) {
+      if (v.getType() == SubmarineConfVars.ConfVars.VarType.BOOLEAN) {
         this.setProperty(v.getVarName(), v.getBooleanValue());
-      } else if (v.getType() == ConfVars.VarType.LONG) {
+      } else if (v.getType() == SubmarineConfVars.ConfVars.VarType.LONG) {
         this.setProperty(v.getVarName(), v.getLongValue());
-      } else if (v.getType() == ConfVars.VarType.INT) {
+      } else if (v.getType() == SubmarineConfVars.ConfVars.VarType.INT) {
         this.setProperty(v.getVarName(), v.getIntValue());
-      } else if (v.getType() == ConfVars.VarType.FLOAT) {
+      } else if (v.getType() == SubmarineConfVars.ConfVars.VarType.FLOAT) {
         this.setProperty(v.getVarName(), v.getFloatValue());
-      } else if (v.getType() == ConfVars.VarType.STRING) {
+      } else if (v.getType() == SubmarineConfVars.ConfVars.VarType.STRING) {
         this.setProperty(v.getVarName(), v.getStringValue());
       } else {
         throw new RuntimeException("Unsupported VarType");
@@ -133,41 +133,41 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public String getServerAddress() {
-    return getString(ConfVars.SUBMARINE_SERVER_ADDR);
+    return getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_ADDR);
   }
 
   public boolean useSsl() {
-    return getBoolean(ConfVars.SUBMARINE_SERVER_SSL);
+    return getBoolean(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SSL);
   }
 
   public int getServerPort() {
-    return getInt(ConfVars.SUBMARINE_SERVER_PORT);
+    return getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_PORT);
   }
 
   @VisibleForTesting
   public void setServerPort(int port) {
-    properties.put(ConfVars.SUBMARINE_SERVER_PORT.getVarName(), String.valueOf(port));
+    properties.put(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_PORT.getVarName(), String.valueOf(port));
   }
 
   public int getServerSslPort() {
-    return getInt(ConfVars.SUBMARINE_SERVER_SSL_PORT);
+    return getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SSL_PORT);
   }
 
   public String getKeyStorePath() {
-    String path = getString(ConfVars.SUBMARINE_SERVER_SSL_KEYSTORE_PATH);
+    String path = getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SSL_KEYSTORE_PATH);
     return path;
   }
 
   public String getKeyStoreType() {
-    return getString(ConfVars.SUBMARINE_SERVER_SSL_KEYSTORE_TYPE);
+    return getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SSL_KEYSTORE_TYPE);
   }
 
   public String getKeyStorePassword() {
-    return getString(ConfVars.SUBMARINE_SERVER_SSL_KEYSTORE_PASSWORD);
+    return getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SSL_KEYSTORE_PASSWORD);
   }
 
   public String getKeyManagerPassword() {
-    String password = getString(ConfVars.SUBMARINE_SERVER_SSL_KEY_MANAGER_PASSWORD);
+    String password = getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SSL_KEY_MANAGER_PASSWORD);
     if (password == null) {
       return getKeyStorePassword();
     } else {
@@ -176,11 +176,11 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public boolean useClientAuth() {
-    return getBoolean(ConfVars.SUBMARINE_SERVER_SSL_CLIENT_AUTH);
+    return getBoolean(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SSL_CLIENT_AUTH);
   }
 
   public String getTrustStorePath() {
-    String path = getString(ConfVars.SUBMARINE_SERVER_SSL_TRUSTSTORE_PATH);
+    String path = getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SSL_TRUSTSTORE_PATH);
     if (path == null) {
       path = getKeyStorePath();
     }
@@ -188,7 +188,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public String getTrustStoreType() {
-    String type = getString(ConfVars.SUBMARINE_SERVER_SSL_TRUSTSTORE_TYPE);
+    String type = getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SSL_TRUSTSTORE_TYPE);
     if (type == null) {
       return getKeyStoreType();
     } else {
@@ -197,7 +197,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public String getTrustStorePassword() {
-    String password = getString(ConfVars.SUBMARINE_SERVER_SSL_TRUSTSTORE_PASSWORD);
+    String password = getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SSL_TRUSTSTORE_PASSWORD);
     if (password == null) {
       return getKeyStorePassword();
     } else {
@@ -206,10 +206,10 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public Integer getJettyRequestHeaderSize() {
-    return getInt(ConfVars.SUBMARINE_SERVER_JETTY_REQUEST_HEADER_SIZE);
+    return getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_JETTY_REQUEST_HEADER_SIZE);
   }
 
-  public String getRelativeDir(ConfVars c) {
+  public String getRelativeDir(SubmarineConfVars.ConfVars c) {
     return getRelativeDir(getString(c));
   }
 
@@ -226,74 +226,74 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public String getJdbcDriverClassName() {
-    return getString(ConfVars.JDBC_DRIVERCLASSNAME);
+    return getString(SubmarineConfVars.ConfVars.JDBC_DRIVERCLASSNAME);
   }
 
   public String getJdbcUrl() {
-    return getString(ConfVars.JDBC_URL);
+    return getString(SubmarineConfVars.ConfVars.JDBC_URL);
   }
 
   public String getMetastoreJdbcUrl() {
-    return getString(ConfVars.METASTORE_JDBC_URL);
+    return getString(SubmarineConfVars.ConfVars.METASTORE_JDBC_URL);
   }
 
   @VisibleForTesting
   public void setMetastoreJdbcUrl(String testMetastoreJdbcUrl) {
-    properties.put(ConfVars.METASTORE_JDBC_URL.getVarName(), testMetastoreJdbcUrl);
+    properties.put(SubmarineConfVars.ConfVars.METASTORE_JDBC_URL.getVarName(), testMetastoreJdbcUrl);
   }
 
 
   @VisibleForTesting
   public void setJdbcUrl(String testJdbcUrl) {
-    properties.put(ConfVars.JDBC_URL.getVarName(), testJdbcUrl);
+    properties.put(SubmarineConfVars.ConfVars.JDBC_URL.getVarName(), testJdbcUrl);
   }
 
   public String getJdbcUserName() {
-    return getString(ConfVars.JDBC_USERNAME);
+    return getString(SubmarineConfVars.ConfVars.JDBC_USERNAME);
   }
 
   public String getMetastoreJdbcUserName() {
-    return getString(ConfVars.METASTORE_JDBC_USERNAME);
+    return getString(SubmarineConfVars.ConfVars.METASTORE_JDBC_USERNAME);
   }
 
   @VisibleForTesting
   public void setJdbcUserName(String userName) {
-    properties.put(ConfVars.JDBC_USERNAME.getVarName(), userName);
+    properties.put(SubmarineConfVars.ConfVars.JDBC_USERNAME.getVarName(), userName);
   }
 
   @VisibleForTesting
   public void setMetastoreJdbcUserName(String metastoreUserName) {
-    properties.put(ConfVars.METASTORE_JDBC_USERNAME.getVarName(), metastoreUserName);
+    properties.put(SubmarineConfVars.ConfVars.METASTORE_JDBC_USERNAME.getVarName(), metastoreUserName);
   }
 
   public String getJdbcPassword() {
-    return getString(ConfVars.JDBC_PASSWORD);
+    return getString(SubmarineConfVars.ConfVars.JDBC_PASSWORD);
   }
 
   public String getMetastoreJdbcPassword() {
-    return getString(ConfVars.METASTORE_JDBC_PASSWORD);
+    return getString(SubmarineConfVars.ConfVars.METASTORE_JDBC_PASSWORD);
   }
 
   @VisibleForTesting
   public void setJdbcPassword(String password) {
-    properties.put(ConfVars.JDBC_PASSWORD.getVarName(), password);
+    properties.put(SubmarineConfVars.ConfVars.JDBC_PASSWORD.getVarName(), password);
   }
 
   @VisibleForTesting
   public void setMetastoreJdbcPassword(String metastorePassword) {
-    properties.put(ConfVars.METASTORE_JDBC_PASSWORD.getVarName(), metastorePassword);
+    properties.put(SubmarineConfVars.ConfVars.METASTORE_JDBC_PASSWORD.getVarName(), metastorePassword);
   }
 
   public String getClusterAddress() {
-    return getString(ConfVars.SUBMARINE_CLUSTER_ADDR);
+    return getString(SubmarineConfVars.ConfVars.SUBMARINE_CLUSTER_ADDR);
   }
 
   public void setClusterAddress(String clusterAddr) {
-    properties.put(ConfVars.SUBMARINE_CLUSTER_ADDR.getVarName(), clusterAddr);
+    properties.put(SubmarineConfVars.ConfVars.SUBMARINE_CLUSTER_ADDR.getVarName(), clusterAddr);
   }
 
   public boolean isClusterMode() {
-    String clusterAddr = getString(ConfVars.SUBMARINE_CLUSTER_ADDR);
+    String clusterAddr = getString(SubmarineConfVars.ConfVars.SUBMARINE_CLUSTER_ADDR);
     if (StringUtils.isEmpty(clusterAddr)) {
       return false;
     }
@@ -302,15 +302,15 @@ public class SubmarineConfiguration extends XMLConfiguration {
   }
 
   public int getClusterHeartbeatInterval() {
-    return getInt(ConfVars.CLUSTER_HEARTBEAT_INTERVAL);
+    return getInt(SubmarineConfVars.ConfVars.CLUSTER_HEARTBEAT_INTERVAL);
   }
 
   public int getClusterHeartbeatTimeout() {
-    return getInt(ConfVars.CLUSTER_HEARTBEAT_TIMEOUT);
+    return getInt(SubmarineConfVars.ConfVars.CLUSTER_HEARTBEAT_TIMEOUT);
   }
 
   public String getWebsocketMaxTextMessageSize() {
-    return getString(ConfVars.WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE);
+    return getString(SubmarineConfVars.ConfVars.WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE);
   }
 
   /**
@@ -320,7 +320,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
   public List<String> listSubmitter() {
     List<String> values = new ArrayList<>();
 
-    String submitters = getString(ConfVars.SUBMARINE_SUBMITTERS);
+    String submitters = getString(SubmarineConfVars.ConfVars.SUBMARINE_SUBMITTERS);
     if (submitters != null) {
       final String delim = ",";
       StringTokenizer tokenizer = new StringTokenizer(submitters, delim);
@@ -338,7 +338,8 @@ public class SubmarineConfiguration extends XMLConfiguration {
    * @return class name
    */
   public String getSubmitterClass(String name) {
-    return getStringValue(String.format(ConfVars.SUBMARINE_SUBMITTERS_CLASS.getVarName(), name), "");
+    return getStringValue(String.format(SubmarineConfVars.ConfVars.SUBMARINE_SUBMITTERS_CLASS.getVarName(), 
+        name), "");
   }
 
   /**
@@ -347,8 +348,8 @@ public class SubmarineConfiguration extends XMLConfiguration {
    * @return classpath
    */
   public String getSubmitterClassPath(String name) {
-    return getStringValue(String.format(ConfVars.SUBMARINE_SUBMITTERS_CLASSPATH.getVarName(),
-        name), "");
+    return getStringValue(String.format(SubmarineConfVars.ConfVars.SUBMARINE_SUBMITTERS_CLASSPATH.
+        getVarName(), name), "");
   }
 
   private String getStringValue(String name, String d) {
@@ -391,7 +392,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return d;
   }
 
-  public String getString(ConfVars c) {
+  public String getString(SubmarineConfVars.ConfVars c) {
     return getString(c.name(), c.getVarName(), c.getStringValue());
   }
 
@@ -406,15 +407,15 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getStringValue(propertyName, defaultValue);
   }
 
-  public void setString(ConfVars c, String value) {
+  public void setString(SubmarineConfVars.ConfVars c, String value) {
     properties.put(c.getVarName(), value);
   }
 
-  public int getInt(ConfVars c) {
+  public int getInt(SubmarineConfVars.ConfVars c) {
     return getInt(c.name(), c.getVarName(), c.getIntValue());
   }
 
-  public void setInt(ConfVars c, int value) {
+  public void setInt(SubmarineConfVars.ConfVars c, int value) {
     properties.put(c.getVarName(), String.valueOf(value));
   }
 
@@ -429,11 +430,11 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getIntValue(propertyName, defaultValue);
   }
 
-  public long getLong(ConfVars c) {
+  public long getLong(SubmarineConfVars.ConfVars c) {
     return getLong(c.name(), c.getVarName(), c.getLongValue());
   }
 
-  public void setLong(ConfVars c, long value) {
+  public void setLong(SubmarineConfVars.ConfVars c, long value) {
     properties.put(c.getVarName(), String.valueOf(value));
   }
 
@@ -448,7 +449,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getLongValue(propertyName, defaultValue);
   }
 
-  public float getFloat(ConfVars c) {
+  public float getFloat(SubmarineConfVars.ConfVars c) {
     return getFloat(c.name(), c.getVarName(), c.getFloatValue());
   }
 
@@ -462,7 +463,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getFloatValue(propertyName, defaultValue);
   }
 
-  public boolean getBoolean(ConfVars c) {
+  public boolean getBoolean(SubmarineConfVars.ConfVars c) {
     return getBoolean(c.name(), c.getVarName(), c.getBooleanValue());
   }
 
@@ -479,203 +480,5 @@ public class SubmarineConfiguration extends XMLConfiguration {
 
   public void updateConfiguration(String name, String value) {
     properties.put(name, value);
-  }
-
-  public enum ConfVars {
-    SUBMARINE_CONF_DIR("submarine.conf.dir", "conf"),
-    SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB(
-        "submarine.localization.max-allowed-file-size-mb", 2048L),
-    SUBMARINE_SERVER_ADDR("submarine.server.addr", "0.0.0.0"),
-    SUBMARINE_SERVER_PORT("submarine.server.port", 8080),
-    SUBMARINE_SERVER_SSL("submarine.server.ssl", false),
-    SUBMARINE_SERVER_SSL_PORT("submarine.server.ssl.port", 8443),
-    SUBMARINE_SERVER_JETTY_THREAD_POOL_MAX("submarine.server.jetty.thread.pool.max", 400),
-    SUBMARINE_SERVER_JETTY_THREAD_POOL_MIN("submarine.server.jetty.thread.pool.min", 8),
-    SUBMARINE_SERVER_JETTY_THREAD_POOL_TIMEOUT("submarine.server.jetty.thread.pool.timeout", 30),
-    SUBMARINE_SERVER_JETTY_REQUEST_HEADER_SIZE("submarine.server.jetty.request.header.size", 8192),
-    SUBMARINE_SERVER_SSL_CLIENT_AUTH("submarine.server.ssl.client.auth", false),
-    SUBMARINE_SERVER_SSL_KEYSTORE_PATH("submarine.server.ssl.keystore.path", "keystore"),
-    SUBMARINE_SERVER_SSL_KEYSTORE_TYPE("submarine.server.ssl.keystore.type", "JKS"),
-    SUBMARINE_SERVER_SSL_KEYSTORE_PASSWORD("submarine.server.ssl.keystore.password", ""),
-    SUBMARINE_SERVER_SSL_KEY_MANAGER_PASSWORD("submarine.server.ssl.key.manager.password", null),
-    SUBMARINE_SERVER_SSL_TRUSTSTORE_PATH("submarine.server.ssl.truststore.path", null),
-    SUBMARINE_SERVER_SSL_TRUSTSTORE_TYPE("submarine.server.ssl.truststore.type", null),
-    SUBMARINE_SERVER_SSL_TRUSTSTORE_PASSWORD("submarine.server.ssl.truststore.password", null),
-    SUBMARINE_CLUSTER_ADDR("submarine.cluster.addr", ""),
-    SUBMARINE_SERVER_REMOTE_EXECUTION_ENABLED(
-        "submarine.server.remote.execution.enabled", false),
-    SUBMARINE_SERVER_REMOTE_EXECUTION_PORT(
-        "submarine.server.remote.execution.port", 8980),
-    CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", 3000),
-    CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", 9000),
-
-    JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
-    JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarine" +
-        "?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
-        "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
-    JDBC_USERNAME("jdbc.username", "submarine"),
-    JDBC_PASSWORD("jdbc.password", "password"),
-    METASTORE_JDBC_URL("metastore.jdbc.url", "jdbc:mysql://127.0.0.1:3306/metastore" +
-        "?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
-        "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"),
-    METASTORE_JDBC_USERNAME("metastore.jdbc.username", "metastore"),
-    METASTORE_JDBC_PASSWORD("metastore.jdbc.password", "password"),
-
-    WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
-        "workbench.websocket.max.text.message.size", "1024000"),
-    WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),
-    SUBMARINE_RUNTIME_CLASS("submarine.runtime.class",
-        "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"),
-    SUBMARINE_SUBMITTERS("submarine.submitters", ""),
-    SUBMARINE_SUBMITTERS_CLASS("submarine.submitters.%s.class", ""),
-    SUBMARINE_SUBMITTERS_CLASSPATH("submarine.submitters.%s.classpath", ""),
-    SUBMARINE_K8S_KUBE_CONFIG("submarine.k8s.kube.config", "");
-
-    private String varName;
-    @SuppressWarnings("rawtypes")
-    private Class varClass;
-    private String stringValue;
-    private VarType type;
-    private int intValue;
-    private float floatValue;
-    private boolean booleanValue;
-    private long longValue;
-
-
-    ConfVars(String varName, String varValue) {
-      this.varName = varName;
-      this.varClass = String.class;
-      this.stringValue = varValue;
-      this.intValue = -1;
-      this.floatValue = -1;
-      this.longValue = -1;
-      this.booleanValue = false;
-      this.type = VarType.STRING;
-    }
-
-    ConfVars(String varName, int intValue) {
-      this.varName = varName;
-      this.varClass = Integer.class;
-      this.stringValue = null;
-      this.intValue = intValue;
-      this.floatValue = -1;
-      this.longValue = -1;
-      this.booleanValue = false;
-      this.type = VarType.INT;
-    }
-
-    ConfVars(String varName, long longValue) {
-      this.varName = varName;
-      this.varClass = Integer.class;
-      this.stringValue = null;
-      this.intValue = -1;
-      this.floatValue = -1;
-      this.longValue = longValue;
-      this.booleanValue = false;
-      this.type = VarType.LONG;
-    }
-
-    ConfVars(String varName, float floatValue) {
-      this.varName = varName;
-      this.varClass = Float.class;
-      this.stringValue = null;
-      this.intValue = -1;
-      this.longValue = -1;
-      this.floatValue = floatValue;
-      this.booleanValue = false;
-      this.type = VarType.FLOAT;
-    }
-
-    ConfVars(String varName, boolean booleanValue) {
-      this.varName = varName;
-      this.varClass = Boolean.class;
-      this.stringValue = null;
-      this.intValue = -1;
-      this.longValue = -1;
-      this.floatValue = -1;
-      this.booleanValue = booleanValue;
-      this.type = VarType.BOOLEAN;
-    }
-
-    public String getVarName() {
-      return varName;
-    }
-
-    @SuppressWarnings("rawtypes")
-    public Class getVarClass() {
-      return varClass;
-    }
-
-    public int getIntValue() {
-      return intValue;
-    }
-
-    public long getLongValue() {
-      return longValue;
-    }
-
-    public float getFloatValue() {
-      return floatValue;
-    }
-
-    public String getStringValue() {
-      return stringValue;
-    }
-
-    public boolean getBooleanValue() {
-      return booleanValue;
-    }
-
-    public VarType getType() {
-      return type;
-    }
-
-    enum VarType {
-      STRING {
-        @Override
-        void checkType(String value) throws Exception {
-        }
-      },
-      INT {
-        @Override
-        void checkType(String value) throws Exception {
-          Integer.valueOf(value);
-        }
-      },
-      LONG {
-        @Override
-        void checkType(String value) throws Exception {
-          Long.valueOf(value);
-        }
-      },
-      FLOAT {
-        @Override
-        void checkType(String value) throws Exception {
-          Float.valueOf(value);
-        }
-      },
-      BOOLEAN {
-        @Override
-        void checkType(String value) throws Exception {
-          Boolean.valueOf(value);
-        }
-      };
-
-      boolean isType(String value) {
-        try {
-          checkType(value);
-        } catch (Exception e) {
-          LOG.error("Exception in SubmarineConfiguration while isType", e);
-          return false;
-        }
-        return true;
-      }
-
-      String typeString() {
-        return name().toUpperCase();
-      }
-
-      abstract void checkType(String value) throws Exception;
-    }
   }
 }

@@ -20,6 +20,7 @@
 package org.apache.submarine.client.cli.remote;
 
 import org.apache.submarine.commons.runtime.ClientContext;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 
 import java.util.HashMap;
@@ -41,9 +42,9 @@ public class RpcContext {
   private void addSubmarineJobConfiguration(RpcContext rpcContext,
       SubmarineConfiguration submarineConfig) {
     rpcContext.getSubmarineJobConfigMap().put(
-        SubmarineConfiguration.ConfVars.SUBMARINE_RUNTIME_CLASS.getVarName(),
+        SubmarineConfVars.ConfVars.SUBMARINE_RUNTIME_CLASS.getVarName(),
         submarineConfig.getString(
-            SubmarineConfiguration.ConfVars.SUBMARINE_RUNTIME_CLASS)
+            SubmarineConfVars.ConfVars.SUBMARINE_RUNTIME_CLASS)
     );
   }
 

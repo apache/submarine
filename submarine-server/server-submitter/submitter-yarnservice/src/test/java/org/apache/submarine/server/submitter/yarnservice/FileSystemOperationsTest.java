@@ -26,6 +26,7 @@ import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.runtime.MockClientContext;
 import org.apache.submarine.commons.runtime.fs.RemoteDirectoryManager;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -216,8 +217,8 @@ public class FileSystemOperationsTest {
 
     SubmarineConfiguration config =
         SubmarineConfiguration.newInstance();
-    config.setLong(SubmarineConfiguration.ConfVars
-        .SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB, 21L);
+    config.setLong(SubmarineConfVars
+        .ConfVars.SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB, 21L);
     when(clientContext.getSubmarineConfig()).thenReturn(config);
 
     fileSystemOperations = new FileSystemOperations(clientContext);
@@ -237,8 +238,8 @@ public class FileSystemOperationsTest {
 
     SubmarineConfiguration config =
         SubmarineConfiguration.newInstance();
-    config.setLong(SubmarineConfiguration.ConfVars
-        .SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB, 19L);
+    config.setLong(SubmarineConfVars
+        .ConfVars.SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB, 19L);
     when(clientContext.getSubmarineConfig()).thenReturn(config);
 
     fileSystemOperations = new FileSystemOperations(clientContext);

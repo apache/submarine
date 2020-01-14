@@ -25,7 +25,7 @@ import org.apache.submarine.commons.runtime.JobSubmitter;
 import org.apache.submarine.commons.runtime.RuntimeFactory;
 import org.apache.submarine.commons.runtime.fs.MemorySubmarineStorage;
 import org.apache.submarine.commons.runtime.fs.SubmarineStorage;
-import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 
 /**
  * Implementation of RuntimeFactory with rpc server
@@ -37,7 +37,7 @@ public class RpcRuntimeFactory extends RuntimeFactory {
     super(clientContext);
     String remoteHost = clientContext.getSubmarineConfig().getServerAddress();
     int port = clientContext.getSubmarineConfig().getInt(
-        SubmarineConfiguration.ConfVars.SUBMARINE_SERVER_REMOTE_EXECUTION_PORT);
+        SubmarineConfVars.ConfVars.SUBMARINE_SERVER_REMOTE_EXECUTION_PORT);
     submitter = new JobSubmitterRpcImpl(remoteHost, port, clientContext);
   }
 

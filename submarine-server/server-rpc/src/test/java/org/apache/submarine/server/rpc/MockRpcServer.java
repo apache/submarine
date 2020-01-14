@@ -23,6 +23,7 @@ import org.apache.submarine.client.cli.CliUtils;
 import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.runtime.param.Parameter;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 
 import java.io.IOException;
 
@@ -54,7 +55,7 @@ public class MockRpcServer extends SubmarineRpcServer {
     SubmarineConfiguration submarineConfiguration =
         SubmarineConfiguration.getInstance();
     int rpcServerPort = submarineConfiguration.getInt(
-        SubmarineConfiguration.ConfVars.SUBMARINE_SERVER_REMOTE_EXECUTION_PORT);
+        SubmarineConfVars.ConfVars.SUBMARINE_SERVER_REMOTE_EXECUTION_PORT);
     SubmarineRpcServer server = new MockRpcServer(rpcServerPort);
     server.start();
     return server;
