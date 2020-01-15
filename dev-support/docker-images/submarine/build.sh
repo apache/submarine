@@ -17,7 +17,7 @@
 set -eo pipefail
 
 SUBMARINE_VERSION=0.3.0-SNAPSHOT
-SUBMARINE_IMAGE_NAME="apache/submarine:submarine-${SUBMARINE_VERSION}"
+SUBMARINE_IMAGE_NAME="apache/submarine:server-${SUBMARINE_VERSION}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
   PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
