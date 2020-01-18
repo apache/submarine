@@ -121,14 +121,19 @@ The URL returned by the command (like to: http://localhost:32819) is opened thro
 su yarn
 ```
 
+### Navigate to submarine example directory
+```
+cd /home/yarn/submarine/
+```
+
 ### Run a mnist TF job with submarine + TonY runtime
 ```
-/home/yarn/submarine/run_submarine_mnist_tony.sh
+./run_submarine_mnist_tony.sh
 ```
 When run_submarine_mnist_tony.sh is executed, mnist data is download from the url, [google mnist](https://storage.googleapis.com/cvdf-datasets/mnist/), by default. If the url is unaccessible, you can use parameter "-d" to specify a customized url.
 For example, if you are in mainland China, you can use the following command
 ```
-/home/yarn/submarine/run_submarine_mnist_tony.sh -d http://yann.lecun.com/exdb/mnist/
+./run_submarine_mnist_tony.sh -d http://yann.lecun.com/exdb/mnist/
 ```
 
 ### Run a mnist TF job via submarine server
