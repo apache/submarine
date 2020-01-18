@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.apache.submarine</groupId>
+    <artifactId>submarine</artifactId>
+    <version>0.3.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>submarine-cloud</artifactId>
+  <version>0.3.0-SNAPSHOT</version>
+  <name>Submarine: Cloud</name>
+  <packaging>pom</packaging>
+
+  <build>
+    <sourceDirectory>${basedir}/cmd/operator</sourceDirectory>
+    <directory>${basedir}/target</directory>
+    <plugins>
+      <plugin>
+        <groupId>com.igormaznitsa</groupId>
+        <artifactId>mvn-golang-wrapper</artifactId>
+        <version>2.3.4</version>
+        <extensions>true</extensions>
+        <executions>
+          <execution>
+            <id>execution-fmt</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>fmt</goal>
+            </goals>
+            <configuration>
+              <sources>${basedir}</sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>execution-build</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+            <configuration>
+              <targetOs>${GOOS}</targetOs> <!-- linux|darwin|windows -->
+              <resultName>submarine-operator</resultName>
+              <ldFlags>
+                <flag>-X</flag>
+                <flag>'github.com/apache/submarine/submarine-cloud/pkg/utils.BUILDTIME=${maven.build.timestamp}'</flag>
+                <flag>-X</flag>
+                <flag>'github.com/apache/submarine/submarine-cloud/pkg/utils.TAG=$(git tag|tail -1)'</flag>
+                <!--flag>-X</flag>
+                <flag>"github.com/apache/submarine/submarine-cloud/pkg/utils.COMMIT=$(git rev-parse HEAD)"</flag>
+                <flag>-X</flag>
+                <flag>"github.com/apache/submarine/submarine-cloud/pkg/utils.VERSION=$(git rev-parse -abbrev-ref HEAD)"</flag-->
+              </ldFlags>
+            </configuration>
+          </execution>
+          <!--execution>
+            <id>get-k8s-api</id>
+            <phase>install</phase>
+            <goals>
+              <goal>get</goal>
+            </goals>
+            <configuration>
+              <packages>
+                <package>k8s.io/api</package>
+              </packages>
+            </configuration>
+          </execution-->
+          <execution>
+            <id>execution-clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
