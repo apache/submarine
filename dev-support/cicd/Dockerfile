@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 RUN \
   apt-get update && \
   apt-get install -y wget vim git python-pip zlib1g-dev libssl-dev && \

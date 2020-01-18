@@ -19,12 +19,12 @@ echo "Building base images"
 
 set -e
 
-cd base/ubuntu-16.04
+cd base/ubuntu-18.04
 
 docker build . -f Dockerfile.gpu.pytorch_latest -t pytorch-latest-gpu-base:0.0.1
 
 echo "Finished building base images"
 
-cd ../../with-cifar10-models/ubuntu-16.04
+cd ../../with-cifar10-models/ubuntu-18.04
 
 docker build . -f Dockerfile.gpu.pytorch_latest -t pytorch-latest-gpu:0.0.1
