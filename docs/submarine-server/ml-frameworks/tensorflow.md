@@ -23,6 +23,8 @@ under the License.
 We support Tensorflow job on kubernetes by using the tf-operator as a runtime. For more info about tf-operator see [here](https://github.com/kubeflow/tf-operator).
 
 ### Deploy tf-operator
+> If you don't have the `submarine` namespace on your K8s cluster, you should create it first. Run command: `kubectl create namespace submarine`
+
 Running the follow commands:
 ```
 kubectl apply -f ./dev-support/k8s/tfjob/crd.yaml
