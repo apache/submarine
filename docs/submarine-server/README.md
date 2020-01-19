@@ -91,9 +91,36 @@ or
 For more info see [here](../design/submarine-server/jobspec.md).
 
 ### Submit Job
+> Before submit training job, you should make sure you had deployed the [submarine server and tf-operator](./setup-kubernetes.md#setup-submarine).
+
 You can use the Postman post the job to server or use `curl` run following command:
 ```
 curl -H "Content-Type: application/json" --request POST \
---data `{"name":"mnist","librarySpec":{"name":"TensorFlow","version":"2.1.0","image":"gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0","cmd":"python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150","envVars":{"ENV_1":"ENV1"}},"submitterSpec":{"type":"k8s","configPath":null,"namespace":"submarine","kind":"TFJob","apiVersion":"kubeflow.org/v1"},"taskSpecs":{"Ps":{"name":"tensorflow","replicas":2,"resources":"cpu=4,memory=2048M,nvidia.com/gpu=1"},"Worker":{"name":"tensorflow","replicas":2,"resources":"cpu=4,memory=2048M"}}}` \
+--data '{"name":"mnist","librarySpec":{"name":"TensorFlow","version":"2.1.0","image":"gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0","cmd":"python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150","envVars":{"ENV_1":"ENV1"}},"submitterSpec":{"type":"k8s","configPath":null,"namespace":"submarine","kind":"TFJob","apiVersion":"kubeflow.org/v1"},"taskSpecs":{"Ps":{"name":"tensorflow","replicas":1,"resources":"cpu=1,memory=1024M"},"Worker":{"name":"tensorflow","replicas":1,"resources":"cpu=1,memory=1024M"}}}' \
 http://127.0.0.1:8080/api/v1/jobs
+```
+
+### Verify Jobs
+You can run following command to get the submitted job:
+```
+kubectl get -n submarine tfjob
+```
+
+**Output:**
+```
+NAME    STATE     AGE
+mnist   Created   7m6s
+```
+
+Also you can find pods which running the jobs, run following command:
+```
+kubectl get -n submarine pods
+```
+
+**Output:**
+```
+NAME                               READY   STATUS              RESTARTS   AGE
+mnist-ps-0                         0/1     ContainerCreating   0          3m47s
+mnist-worker-0                     0/1     Pending             0          3m47s
+tf-job-operator-74cc6bd6cb-fqd5s   1/1     Running             0          98m
 ```

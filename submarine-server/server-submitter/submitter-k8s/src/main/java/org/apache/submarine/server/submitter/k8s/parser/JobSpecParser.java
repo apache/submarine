@@ -67,7 +67,7 @@ public class JobSpecParser {
       TFReplicaSpec spec = new TFReplicaSpec();
       spec.setReplicas(entry.getValue().getReplicas());
       spec.setTemplate(parseTemplateSpec(entry.getValue(), jobSpec.getLibrarySpec()));
-      replicaSpecMap.put(entry.getValue().getName(), spec);
+      replicaSpecMap.put(entry.getKey(), spec);
     }
     tfJobSpec.setTfReplicaSpecs(replicaSpecMap);
     return tfJobSpec;
@@ -96,6 +96,7 @@ public class JobSpecParser {
     resources.setLimits(parseResources(taskSpec));
     container.setResources(resources);
     container.setEnv(parseEnvVars(taskSpec, libSpec.getEnvVars()));
+    containers.add(container);
     podSpec.setContainers(containers);
     templateSpec.setSpec(podSpec);
     return templateSpec;
