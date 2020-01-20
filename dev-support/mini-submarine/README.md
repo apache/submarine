@@ -52,6 +52,24 @@ mvn clean install package -DskipTests
 cd submarine/dev-support/mini-submarine/
 ./build_mini-submarine.sh
 ```
+#### Package An Existing Release Candidates
+When doing release, there will be a need that release manager needs to package a artifact candidatesin this docker image and public the image candidate for a vote.
+In this scenario, you can do this:
+
+Put submarine candidate aritifacts to a folder like "~/releases/submarine-release"
+```
+$ ls $release_candidates_path
+submarine-dist-0.3.0-hadoop-2.9.tar.gz        submarine-dist-0.3.0-src.tar.gz.asc
+submarine-dist-0.3.0-hadoop-2.9.tar.gz.asc    submarine-dist-0.3.0-src.tar.gz.sha512
+submarine-dist-0.3.0-hadoop-2.9.tar.gz.sha512 submarine-dist-0.3.0-src.tar.gz
+```
+```
+export submarine_version=0.3.0
+export release_candidates_path=~/releases/submarine-release 
+./build_mini-submarine.sh
+docker run -it -h submarine-dev --net=bridge --privileged -P local/mini-submarine:0.3.0 /bin/bash
+```
+In the container, we can verify that the submarine jar version is the expected 0.3.0. Then we can upload this image with a "RC" tag for a vote.
 
 ### Run mini-submarine image
 
