@@ -17,8 +17,10 @@
 
 # Below are configurable variables, please adapt base on your local environment.
 # Version of submarine jar
-SUBMARINE_VERSION=0.3.0-SNAPSHOT
-
+SUBMARINE_VERSION=$SUBMARINE_VER
+if [[ -z $SUBMARINE_VER ]]; then
+  SUBMARINE_VERSION=0.3.0-SNAPSHOT
+fi
 # Version of affiliated Hadoop version for this Submarine jar.
 SUBMARINE_HADOOP_VERSION=2.9
 
@@ -74,7 +76,7 @@ else
   WORKER_CMD="myvenv.zip/$WORKER_CMD"
 fi
 
-${JAVA_CMD} -cp $(${HADOOP_HOME}/bin/hadoop classpath --glob):${SUBMARINE_PATH}/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar:${HADOOP_CONF_PATH} \
+${JAVA_CMD} -cp $(${HADOOP_COMMON_HOME}/bin/hadoop classpath --glob):${SUBMARINE_PATH}/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar:${HADOOP_CONF_PATH} \
  org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
  --framework tensorflow \
  --verbose \

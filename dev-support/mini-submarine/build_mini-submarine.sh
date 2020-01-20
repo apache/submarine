@@ -13,10 +13,16 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+set -e
 hadoop_v=2.9.2
 spark_v=2.4.4
-submarine_v=0.3.0-SNAPSHOT
+
+submarine_v=$submarine_version
+if [[ -z $submarine_v ]]; then
+  submarine_v=0.3.0-SNAPSHOT
+fi
+echo "Using submarine version: $submarine_v"
+
 image_name="local/mini-submarine:${submarine_v}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
@@ -55,10 +61,20 @@ download_package "spark-${spark_v}-bin-hadoop2.7.tgz" "http://mirrors.tuna.tsing
 # download zookeeper
 download_package "zookeeper-3.4.14.tar.gz" "http://mirror.bit.edu.cn/apache/zookeeper/zookeeper-3.4.14"
 
+
 if [ ! -d "${SUBMARINE_PROJECT_PATH}/submarine-dist/target" ]; then
   mkdir "${SUBMARINE_PROJECT_PATH}/submarine-dist/target"
 fi
+
 submarine_dist_exists=$(find -L "${SUBMARINE_PROJECT_PATH}/submarine-dist/target" -name "submarine-dist-${submarine_v}*.tar.gz")
+
+# If exists, use the release candidate artifacts to build image
+if [[ ! -z "${release_candidates_path}" ]]; then
+  submarine_dist_exists=${release_candidates_path}
+  echo "Using release candidates artifacts: ${release_candidates_path}"
+  cp ${release_candidates_path}/submarine-dist-${submarine_v}-hadoop*.tar.gz ${MINI_PATH}
+fi
+
 # Build source code if the package doesn't exist.
 if [[ -z "${submarine_dist_exists}" ]]; then
   # update tony code
@@ -70,9 +86,9 @@ if [[ -z "${submarine_dist_exists}" ]]; then
 
   cd "${SUBMARINE_PROJECT_PATH}"
   mvn clean package -DskipTests
+  cp ${SUBMARINE_PROJECT_PATH}/submarine-dist/target/submarine-dist-${submarine_v}*.tar.gz ${MINI_PATH}
 fi
 
-cp ${SUBMARINE_PROJECT_PATH}/submarine-dist/target/submarine-dist-${submarine_v}*.tar.gz ${MINI_PATH}
 cp -r ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine ${MINI_PATH}
 cp -r ${SUBMARINE_PROJECT_PATH}/docs/database ${MINI_PATH}
 

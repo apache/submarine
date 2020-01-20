@@ -49,7 +49,11 @@ else
   WORKER_CMD="myvenv.zip/venv/bin/python mnist_distributed.py --steps 2 --data_dir /tmp/data --working_dir /tmp/mode"
 fi
 
-SUBMARINE_VERSION=0.3.0-SNAPSHOT
+SUBMARINE_VERSION=$SUBMARINE_VER
+if [[ -z $SUBMARINE_VER ]]; then
+  SUBMARINE_VERSION=0.3.0-SNAPSHOT
+fi
+
 HADOOP_VERSION=2.9
 
 ${JAVA_CMD} -cp /tmp/submarine-all-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}.jar:/usr/local/hadoop/etc/hadoop \
