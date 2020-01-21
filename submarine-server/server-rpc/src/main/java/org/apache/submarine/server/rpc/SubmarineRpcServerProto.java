@@ -19,6 +19,8 @@
 
 package org.apache.submarine.server.rpc;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.Resource;
@@ -32,7 +34,10 @@ import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.client.cli.remote.RpcContext;
 import org.apache.submarine.client.cli.runjob.RoleParameters;
 import org.apache.submarine.commons.rpc.ApplicationIdProto;
+import org.apache.submarine.commons.rpc.CommandLineProto;
+import org.apache.submarine.commons.rpc.ListOfString;
 import org.apache.submarine.commons.rpc.LocalizationProto;
+import org.apache.submarine.commons.rpc.OptionProto;
 import org.apache.submarine.commons.rpc.ParameterProto;
 import org.apache.submarine.commons.rpc.PyTorchRunJobParameterProto;
 import org.apache.submarine.commons.rpc.QuicklinkProto;
@@ -48,8 +53,12 @@ import org.apache.submarine.commons.runtime.api.TensorFlowRole;
 import org.apache.submarine.commons.runtime.param.Parameter;
 import org.apache.submarine.commons.runtime.resource.ResourceUtils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SubmarineRpcServerProto {
 
@@ -63,7 +72,68 @@ public class SubmarineRpcServerProto {
     } else if (parameterProto.hasShowJobParameter()) {
       parameter = convertParameterProtoToShowJob(parameterProto);
     }
+    setCommandLineYamlConfigIfNeeded(parameter, parameterProto);
     return parameter;
+  }
+
+  public static void setCommandLineYamlConfigIfNeeded(
+      Parameter parameter, ParameterProto parameterProto) {
+    if(parameter instanceof ParametersHolder) {
+      ParametersHolder parametersHolder = ((ParametersHolder) parameter);
+      CommandLine commandLine = convertCommandLineProtoToCommandLine(
+          parameterProto.getCommandLine());
+      parametersHolder.setParsedCommandLine(commandLine);
+      parametersHolder.setYamlStringConfigs(
+          parameterProto.getYamlStringConfigsMap());
+      parametersHolder.setYamlListConfigs(
+          covertYamlListConfigs(parameterProto.getYamlListConfigsMap()));
+    }
+  }
+
+  public static Map<String, List<String>> covertYamlListConfigs(
+      Map<String, ListOfString> yamlListConfigs) {
+    Map<String, List<String>> map = new HashMap<>();
+    for(Map.Entry<String, ListOfString> entry : yamlListConfigs.entrySet()) {
+      List<String> value =
+          entry.getValue().getValuesList();
+      map.put(entry.getKey(), value);
+    }
+    return map;
+  }
+
+  public static CommandLine convertCommandLineProtoToCommandLine(
+      CommandLineProto commandLineProto) {
+    CommandLine commandLine;
+    Class<CommandLine> clz = CommandLine.class;
+    try {
+      Constructor<CommandLine> c = clz.getDeclaredConstructor();
+      c.setAccessible(true);
+      commandLine = c.newInstance();
+    } catch (Exception e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
+
+    for (OptionProto optionProto : commandLineProto.getOptionsList()) {
+      Option option = new Option(optionProto.getOpt(), "");
+      try {
+        Class optionClass = Option.class;
+        Method add = optionClass.getDeclaredMethod("add", String.class);
+        add.setAccessible(true);
+        for(String value : optionProto.getValuesList()) {
+          add.invoke(option, value);
+        }
+      } catch (Exception e) {
+        throw new RuntimeException(e.getMessage(), e.getCause());
+      }
+      try {
+        Method getOption = clz.getDeclaredMethod("addOption", Option.class);
+        getOption.setAccessible(true);
+        getOption.invoke(commandLine, option);
+      } catch (Exception e) {
+        throw new RuntimeException(e.getMessage(), e);
+      }
+    }
+    return commandLine;
   }
 
   public static Parameter convertParameterProtoToPyTorchRunJob(

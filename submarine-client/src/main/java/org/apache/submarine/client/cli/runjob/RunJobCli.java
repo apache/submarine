@@ -321,6 +321,7 @@ public class RunJobCli extends AbstractCli {
 
     parseCommandLineAndGetRunJobParameters(args);
     ApplicationId applicationId = jobSubmitter.submitJob(parametersHolder);
+    LOG.info("Submarine job is submitted, the job id is " + applicationId);
     RunJobParameters parameters =
         (RunJobParameters) parametersHolder.getParameters();
     storeJobInformation(parameters, applicationId, args);

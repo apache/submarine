@@ -60,7 +60,15 @@ message ParameterProto {
   TensorFlowRunJobParameterProto tensorflow_run_job_parameter = 3;
   ShowJobParameterProto show_job_parameter = 4;
   map<string, string> submarine_job_config_map = 5;
+  CommandLineProto command_line = 6;
+  map<string, string> yaml_string_configs = 7;
+  map<string, ListOfString> yaml_list_configs = 8;
 }
+
+message ListOfString {
+   repeated string values = 1;
+}
+
 
 message ResourceProto {
   map<string, int64> resource_map = 1;
@@ -126,4 +134,14 @@ message ShowJobParameterProto {
 message ApplicationIdProto {
   // One corner of the rectangle.
   string application_id = 1;
+}
+
+message CommandLineProto {
+  repeated OptionProto options = 1;
+}
+
+message OptionProto {
+  string opt = 1;
+  string long_opt = 2;
+  repeated string values = 3;
 }

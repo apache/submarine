@@ -461,4 +461,32 @@ public final class ParametersHolder implements Parameter {
     this.parameters = parameters;
     return this;
   }
+
+  public CommandLine getParsedCommandLine() {
+    return parsedCommandLine;
+  }
+
+  public Parameter setParsedCommandLine(CommandLine parsedCommandLine) {
+    this.parsedCommandLine = parsedCommandLine;
+    return this;
+  }
+
+  public Map<String, String> getYamlStringConfigs() {
+    return yamlStringConfigs;
+  }
+
+  public Parameter setYamlStringConfigs(Map<String, String> yamlStringConfigs) {
+    this.yamlStringConfigs = yamlStringConfigs;
+    return this;
+  }
+
+  public Map<String, List<String>> getYamlListConfigs() {
+    return yamlListConfigs;
+  }
+
+  public Parameter setYamlListConfigs(
+      Map<String, List<String>> yamlListConfigs) {
+    this.yamlListConfigs = yamlListConfigs;
+    return this;
+  }
 }
