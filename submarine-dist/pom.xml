@@ -28,16 +28,10 @@
     <version>0.3.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
-  <artifactId>${project.artifactId}</artifactId>
-  <version>${project.version}</version>
+  <artifactId>submarine-dist</artifactId>
+  <version>0.3.0-SNAPSHOT</version>
   <name>Submarine: Dist</name>
   <packaging>pom</packaging>
-
-  <properties>
-    <!-- Needed for generating FindBugs warnings using parent pom -->
-    <project.artifactId>submarine-dist</project.artifactId>
-    <project.version>0.3.0-SNAPSHOT</project.version>
-  </properties>
 
   <dependencyManagement>
     <dependencies>
