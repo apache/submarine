@@ -19,11 +19,16 @@ package org.apache.submarine.server.rpc;
 
 import io.grpc.ServerBuilder;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
+import org.apache.hadoop.yarn.exceptions.YarnException;
+import org.apache.submarine.client.cli.CliConstants;
 import org.apache.submarine.client.cli.CliUtils;
+import org.apache.submarine.client.cli.param.ParametersHolder;
+import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.commons.runtime.ClientContext;
 import org.apache.submarine.commons.runtime.param.Parameter;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
+import org.junit.Assert;
 
 import java.io.IOException;
 
@@ -41,8 +46,24 @@ public class MockRpcServer extends SubmarineRpcServer {
       extends SubmarineServerRpcService {
     @Override
     protected ApplicationId run(ClientContext clientContext,
-        Parameter parameter) {
+        Parameter parameter) throws YarnException {
+      ParametersHolder parametersHolder = (ParametersHolder) parameter;
+      // Add protobuf conversion check
+      checkProtoConversion(parametersHolder);
       return CliUtils.fromString("application_1_123");
+    }
+  }
+
+  private static void checkProtoConversion(ParametersHolder parametersHolder) throws YarnException {
+    if(parametersHolder.getParameters()
+        instanceof TensorFlowRunJobParameters) {
+      TensorFlowRunJobParameters tensorParameter =
+          (TensorFlowRunJobParameters) parametersHolder.getParameters();
+      if (tensorParameter.getNumWorkers() != 0) {
+        Assert.assertEquals(Long.valueOf(tensorParameter.getNumWorkers()),
+            Long.valueOf(
+                parametersHolder.getOptionValue(CliConstants.N_WORKERS)));
+      }
     }
   }
 

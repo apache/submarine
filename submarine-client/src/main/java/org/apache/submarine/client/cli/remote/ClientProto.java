@@ -19,10 +19,13 @@
 
 package org.apache.submarine.client.cli.remote;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.submarine.client.cli.CliUtils;
 import org.apache.submarine.client.cli.param.Localization;
+import org.apache.submarine.client.cli.param.ParametersHolder;
 import org.apache.submarine.client.cli.param.Quicklink;
 import org.apache.submarine.client.cli.param.RunParameters;
 import org.apache.submarine.client.cli.param.ShowJobParameters;
@@ -31,7 +34,10 @@ import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.client.cli.runjob.RoleParameters;
 import org.apache.submarine.commons.rpc.ApplicationIdProto;
+import org.apache.submarine.commons.rpc.CommandLineProto;
+import org.apache.submarine.commons.rpc.ListOfString;
 import org.apache.submarine.commons.rpc.LocalizationProto;
+import org.apache.submarine.commons.rpc.OptionProto;
 import org.apache.submarine.commons.rpc.ParameterProto;
 import org.apache.submarine.commons.rpc.PyTorchRunJobParameterProto;
 import org.apache.submarine.commons.rpc.QuicklinkProto;
@@ -45,6 +51,7 @@ import org.apache.submarine.commons.runtime.param.Parameter;
 import org.apache.submarine.commons.runtime.resource.ResourceUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -63,11 +70,36 @@ public class ClientProto {
         // Handle tensorflow job parameters
         proto = convertTensorFlowRunJobToParameterProto(parameters, rpcContext);
       }
+      setCommandLineYamlConfig((ParametersHolder) parameters, proto);
     } else if (baseParameters instanceof ShowJobParameters) {
       // Handle show job parameters
       proto = convertShowJobToParameterProto(parameters, rpcContext);
     }
     return proto;
+  }
+
+  private static ParameterProto setCommandLineYamlConfig(
+      ParametersHolder parameters, ParameterProto proto) {
+    CommandLineProto commandLineProto =
+        convertCommandLineToCommandLineProto(parameters
+            .getParsedCommandLine());
+    proto = proto.toBuilder()
+        .setCommandLine(commandLineProto)
+        .putAllYamlStringConfigs(parameters.getYamlStringConfigs())
+        .putAllYamlListConfigs(
+            covertYamlListConfigs(parameters.getYamlListConfigs())).build();
+    return proto;
+  }
+
+  public static Map<String, ListOfString> covertYamlListConfigs(
+      Map<String, List<String>> yamlListConfigs) {
+    Map<String, ListOfString> map = new HashMap<>();
+    for(Map.Entry<String, List<String>> entry : yamlListConfigs.entrySet()) {
+      ListOfString value =
+          ListOfString.newBuilder().addAllValues(entry.getValue()).build();
+      map.put(entry.getKey(), value);
+    }
+    return map;
   }
 
   public static ParameterProto convertPyTorchRunJobToParameterProto(
@@ -99,12 +131,32 @@ public class ClientProto {
             .setTensorBoardParameter(convertRoleParametersToRoleParameterProto(
                 tensorFlowRunJobParameters.getTensorBoardParameters()))
             .build();
+    CommandLineProto commandLineProto =
+        convertCommandLineToCommandLineProto(((ParametersHolder)parameters)
+            .getParsedCommandLine());
     ParameterProto parameterProto = ParameterProto.newBuilder()
         .setTensorflowRunJobParameter(tfProto)
         .setFramework(parameters.getFramework().getValue())
+        .setCommandLine(commandLineProto)
         .putAllSubmarineJobConfigMap(rpcContext.getSubmarineJobConfigMap())
         .build();
     return parameterProto;
+  }
+
+  public static CommandLineProto convertCommandLineToCommandLineProto(
+      CommandLine parsedCommandLine) {
+    List<OptionProto> optionProtos = new ArrayList<>();
+
+    for (Option option : parsedCommandLine.getOptions()) {
+      OptionProto optionProto = OptionProto.newBuilder()
+          .setOpt(option.getOpt())
+          .addAllValues(option.getValuesList()).build();
+      optionProtos.add(optionProto);
+    }
+
+    CommandLineProto commandLineProto =
+        CommandLineProto.newBuilder().addAllOptions(optionProtos).build();
+    return commandLineProto;
   }
 
   public static RunParameterProto convertParameterToRunParametersProto(
