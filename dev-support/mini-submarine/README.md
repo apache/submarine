@@ -53,7 +53,7 @@ cd submarine/dev-support/mini-submarine/
 ./build_mini-submarine.sh
 ```
 #### Package An Existing Release Candidates
-When doing release, the release manager might needs to package a artifact candidatesin this docker image and public the image candidate for a vote.
+When doing release, the release manager might needs to package a artifact candidates in this docker image and public the image candidate for a vote.
 In this scenario, we can do this:
 
 Put submarine candidate aritifacts to a folder like "~/releases/submarine-release"
