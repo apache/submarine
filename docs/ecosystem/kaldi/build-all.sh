@@ -19,7 +19,7 @@ echo "Building base images"
 
 set -e
 
-cd base/ubuntu-16.04
+cd base/ubuntu-18.04
 
 docker build --build-arg CLUSTER_NAME=test . -f Dockerfile.gpu.kaldi_latest -t kaldi-latest-gpu-base:0.0.1
 

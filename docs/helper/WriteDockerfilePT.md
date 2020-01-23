@@ -21,7 +21,7 @@ Dockerfile to run PyTorch on YARN needs two parts:
 
 **Base libraries which PyTorch depends on**
 
-1) OS base image, for example ```ubuntu:16.04```
+1) OS base image, for example ```ubuntu:18.04```
 
 2) PyTorch dependent libraries and packages. For example ```python```, ```scipy```. For GPU support, you also need ```cuda```, ```cudnn```, etc.
 
@@ -35,7 +35,7 @@ Dockerfile to run PyTorch on YARN needs two parts:
 
 Here's an example of a base image (with GPU support) to install PyTorch:
 ```shell
-FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 ARG PYTHON_VERSION=3.6
 RUN apt-get update && apt-get install -y --no-install-recommends \
          build-essential \
@@ -92,8 +92,8 @@ We provided some example Dockerfiles for you to build your own PyTorch docker im
 
 For latest PyTorch
 
-- *docker/pytorch/base/ubuntu-16.04/Dockerfile.gpu.pytorch_latest*: Latest Pytorch that supports GPU, which is prebuilt to CUDA10.
-- *docker/pytorch/with-cifar10-models/ubuntu-16.04/Dockerfile.gpu.pytorch_latest*: Latest Pytorch that GPU, which is prebuilt to CUDA10, with models.
+- *docker/pytorch/base/ubuntu-18.04/Dockerfile.gpu.pytorch_latest*: Latest Pytorch that supports GPU, which is prebuilt to CUDA10.
+- *docker/pytorch/with-cifar10-models/ubuntu-18.04/Dockerfile.gpu.pytorch_latest*: Latest Pytorch that GPU, which is prebuilt to CUDA10, with models.
 
 ## Build Docker images
 

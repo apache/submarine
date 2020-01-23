@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 #INSTALL JAVA
 RUN apt-get -q update \
     && apt-get -q install -y --no-install-recommends openjdk-8-jdk libbcprov-java \
@@ -97,7 +97,7 @@ ARG SPARK_VERSION=
 ENV SPARK_VER=${SPARK_VERSION}
 ADD spark-${SPARK_VERSION}-bin-hadoop2.7.tgz /opt
 ADD spark-defaults-dynamic-allocation.conf /opt/spark-${SPARK_VERSION}/conf/spark-defaults.conf
-RUN apt-get update && apt-get install -y vim python python-numpy wget zip python3
+RUN apt-get update && apt-get install -y vim python python-numpy wget zip python3 python3-distutils
 
 # Add pyspark sample
 ADD spark-script /home/yarn/spark-script

@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 
 # Pick up some TF dependencies
 RUN apt-get update && apt-get install -y --allow-downgrades --no-install-recommends \
@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y --allow-downgrades --no-install-recomme
 # Install TensorRT
 RUN apt-get update && \
         apt-get install -y --allow-unauthenticated --no-install-recommends \
-        nvinfer-runtime-trt-repo-ubuntu1604-5.0.2-ga-cuda10.0 && \
+        nvinfer-runtime-trt-repo-ubuntu1804-5.0.2-ga-cuda10.0 && \
         apt-get update && \
         apt-get install -y --no-install-recommends \
         libnvinfer5=5.0.2-1+cuda10.0 && \

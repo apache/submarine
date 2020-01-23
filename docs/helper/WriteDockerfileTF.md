@@ -21,7 +21,7 @@ Dockerfile to run Tensorflow on YARN need two part:
 
 **Base libraries which Tensorflow depends on**
 
-1) OS base image, for example ```ubuntu:16.04```
+1) OS base image, for example ```ubuntu:18.04```
 
 2) Tensorflow depended libraries and packages. For example ```python```, ```scipy```. For GPU support, need ```cuda```, ```cudnn```, etc.
 
@@ -35,7 +35,7 @@ Dockerfile to run Tensorflow on YARN need two part:
 
 Here's an example of a base image (w/o GPU support) to install Tensorflow:
 ```shell
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 # Pick up some TF dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -96,10 +96,10 @@ We provided following examples for you to build tensorflow docker images.
 
 For Tensorflow 1.13.1 (Precompiled to CUDA 10.x)
 
-- *docker/tensorflow/base/ubuntu-16.04/Dockerfile.cpu.tf_1.13.1*: Tensorflow 1.13.1 supports CPU only.
-- *docker/tensorflow/with-cifar10-models/ubuntu-16.04/Dockerfile.cpu.tf_1.13.1*: Tensorflow 1.13.1 supports CPU only, and included models
-- *docker/tensorflow/base/ubuntu-16.04/Dockerfile.gpu.tf_1.13.1*: Tensorflow 1.13.1 supports GPU, which is prebuilt to CUDA10.
-- *docker/tensorflow/with-cifar10-models/ubuntu-16.04/Dockerfile.gpu.tf_1.13.1*: Tensorflow 1.13.1 supports GPU, which is prebuilt to CUDA10, with models.
+- *docker/tensorflow/base/ubuntu-18.04/Dockerfile.cpu.tf_1.13.1*: Tensorflow 1.13.1 supports CPU only.
+- *docker/tensorflow/with-cifar10-models/ubuntu-18.04/Dockerfile.cpu.tf_1.13.1*: Tensorflow 1.13.1 supports CPU only, and included models
+- *docker/tensorflow/base/ubuntu-18.04/Dockerfile.gpu.tf_1.13.1*: Tensorflow 1.13.1 supports GPU, which is prebuilt to CUDA10.
+- *docker/tensorflow/with-cifar10-models/ubuntu-18.04/Dockerfile.gpu.tf_1.13.1*: Tensorflow 1.13.1 supports GPU, which is prebuilt to CUDA10, with models.
 
 ### Build Docker images
 

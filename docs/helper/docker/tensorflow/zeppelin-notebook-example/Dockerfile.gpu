@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM nvidia/cuda:9.0-base-ubuntu16.04
+FROM nvidia/cuda:9.2-base-ubuntu18.04
 
 RUN  echo "$LOG_TAG update and install basic packages" && \
      apt-get -y update && apt-get install -y --no-install-recommends \

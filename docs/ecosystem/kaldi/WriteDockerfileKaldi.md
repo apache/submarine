@@ -21,7 +21,7 @@ Dockerfile to run Kaldi on YARN need two part:
 
 **Base libraries which Kaldi depends on**
 
-1) OS base image, for example ```nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04```
+1) OS base image, for example ```nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04```
 
 2) Kaldi depended libraries and packages. For example ```python```, ```g++```, ```make```. For GPU support, need ```cuda```, ```cudnn```, etc.
 
@@ -35,7 +35,7 @@ Dockerfile to run Kaldi on YARN need two part:
 
 Here's an example of a base image (w/o GPU support) to install Kaldi:
 ```shell
-FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 
 RUN apt-get clean && \
     apt-get update && \
@@ -95,7 +95,7 @@ We provided following examples for you to build kaldi docker images.
 
 For latest Kaldi
 
-- *base/ubuntu-16.04/Dockerfile.gpu.kaldi_latest: Latest Kaldi that supports GPU, which is prebuilt to CUDA10, with models.
+- *base/ubuntu-18.04/Dockerfile.gpu.kaldi_latest: Latest Kaldi that supports GPU, which is prebuilt to CUDA10, with models.
 
 ### Build Docker images
 
