@@ -17,11 +17,15 @@
 package operator
 
 import (
+	"context"
+	"fmt"
 	"github.com/apache/submarine/submarine-cloud/pkg/client"
 	"github.com/apache/submarine/submarine-cloud/pkg/controller"
+	"github.com/heptiolabs/healthcheck"
 	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	"net/http"
 	"time"
 
 	submarineInformers "github.com/apache/submarine/submarine-cloud/pkg/client/informers/externalversions"
@@ -37,6 +41,9 @@ type SubmarineOperator struct {
 	kubeInformerFactory      kubeinformers.SharedInformerFactory
 	submarineInformerFactory submarineInformers.SharedInformerFactory
 	controller               *controller.Controller
+	// Kubernetes Probes handler
+	health     healthcheck.Handler
+	httpServer *http.Server
 }
 
 func NewSubmarineOperator(cfg *Config) *SubmarineOperator {
@@ -72,6 +79,9 @@ func NewSubmarineOperator(cfg *Config) *SubmarineOperator {
 		controller:               controller.NewController(controller.NewConfig(1, cfg.Submarine), kubeClient, submarineClient, kubeInformerFactory, submarineInformerFactory),
 	}
 
+	op.configureHealth()
+	op.httpServer = &http.Server{Addr: cfg.ListenAddr, Handler: op.health}
+
 	return op
 }
 
@@ -88,8 +98,51 @@ func (op *SubmarineOperator) Run(stop <-chan struct{}) error {
 	if op.controller != nil {
 		op.kubeInformerFactory.Start(stop)
 		op.submarineInformerFactory.Start(stop)
+		go op.runHTTPServer(stop)
 		err = op.controller.Run(stop)
 	}
 
 	return err
+}
+
+func (op *SubmarineOperator) configureHealth() {
+	op.health = healthcheck.NewHandler()
+	op.health.AddReadinessCheck("SubmarineCluster_cache_sync", func() error {
+		if op.controller.SubmarineClusterSynced() {
+			return nil
+		}
+		return fmt.Errorf("SubmarineCluster cache not sync")
+	})
+	op.health.AddReadinessCheck("Pod_cache_sync", func() error {
+		if op.controller.PodSynced() {
+			return nil
+		}
+		return fmt.Errorf("Pod cache not sync")
+	})
+	op.health.AddReadinessCheck("Service_cache_sync", func() error {
+		if op.controller.ServiceSynced() {
+			return nil
+		}
+		return fmt.Errorf("Service cache not sync")
+	})
+	op.health.AddReadinessCheck("PodDiscruptionBudget_cache_sync", func() error {
+		if op.controller.PodDiscruptionBudgetSynced() {
+			return nil
+		}
+		return fmt.Errorf("PodDiscruptionBudget cache not sync")
+	})
+}
+
+func (op *SubmarineOperator) runHTTPServer(stop <-chan struct{}) error {
+	go func() {
+		glog.Infof("Listening on http://%s\n", op.httpServer.Addr)
+
+		if err := op.httpServer.ListenAndServe(); err != nil {
+			glog.Error("Http server error: ", err)
+		}
+	}()
+
+	<-stop
+	glog.Info("Shutting down the http server...")
+	return op.httpServer.Shutdown(context.Background())
 }

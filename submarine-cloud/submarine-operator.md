@@ -30,7 +30,9 @@ Run submarine operator
 # create submarine crd
 kubectl apply -f ../manifests/crd.yaml
 KUBECONFIG=$(kind get kubeconfig-path --name submarine)
-./submarine-operator run config=${KUBECONFIG}
+./submarine-operator --kubeconfig=${KUBECONFIG} --alsologtostderr --v=7
+OR
+./submarine-operator --kubeconfig=$(kind get kubeconfig-path --name submarine) --alsologtostderr --v=7
 ```
 
 ## Submarine operator implementation steps
@@ -159,3 +161,10 @@ kubectl apply -f test1.yaml
 kubectl describe std test1
 ```
 
+### Kind
+
+```
+kind load docker-image --name=submarine busybox:1.28.4
+kind load docker-image --name=submarine apache/submarine:server-0.3.0-SNAPSHOT
+kind load docker-image --name=submarine apache/submarine:database-0.3.0-SNAPSHOT
+```

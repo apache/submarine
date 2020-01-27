@@ -60,7 +60,7 @@
             </goals>
             <configuration>
               <targetOs>${GOOS}</targetOs> <!-- linux|darwin|windows -->
-              <resultName>submarine-operator</resultName>
+              <resultName>submarine-operator_${GOOS}</resultName>
               <ldFlags>
                 <flag>-X</flag>
                 <flag>'github.com/apache/submarine/submarine-cloud/pkg/utils.BUILDTIME=${maven.build.timestamp}'</flag>
