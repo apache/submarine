@@ -16,6 +16,9 @@
 # limitations under the License.
 #
 
+set -euo pipefail
+set -x
+
 export DEFAULT_MYSQL_VERSION=5.1.39
 
 if [[ -L ${BASH_SOURCE-$0} ]]; then
@@ -24,21 +27,21 @@ else
   FWDIR=$(dirname "${BASH_SOURCE-$0}")
 fi
 
-if [[ -z "${SUBMARINE_HOME}" ]]; then
+if [[ -z "${SUBMARINE_HOME:-""}" ]]; then
   # Make SUBMARINE_HOME look cleaner in logs by getting rid of the
   # extra ../
   export SUBMARINE_HOME="$(cd "${FWDIR}/.."; pwd)"
 fi
 
-if [[ -z "${SUBMARINE_CONF_DIR}" ]]; then
+if [[ -z "${SUBMARINE_CONF_DIR:-""}" ]]; then
   export SUBMARINE_CONF_DIR="${SUBMARINE_HOME}/conf"
 fi
 
-if [[ -z "${SUBMARINE_LOG_DIR}" ]]; then
+if [[ -z "${SUBMARINE_LOG_DIR:-""}" ]]; then
   export SUBMARINE_LOG_DIR="${SUBMARINE_HOME}/logs"
 fi
 
-if [[ -f "${SUBMARINE_CONF_DIR}/submarine-env.sh" ]]; then
+if [[ -f "${SUBMARINE_CONF_DIR:-""}/submarine-env.sh" ]]; then
   . "${SUBMARINE_CONF_DIR}/submarine-env.sh"
 fi
 
@@ -88,7 +91,7 @@ function download_mysql_jdbc_jar(){
   echo "Mysql jdbc jar is downloaded and put in the path of submarine/lib."
 }
 
-JAVA_OPTS+=" ${SUBMARINE_SERVER_JAVA_OPTS} -Dfile.encoding=UTF-8 ${SUBMARINE_SERVER_MEM}"
+JAVA_OPTS+=" ${SUBMARINE_SERVER_JAVA_OPTS:-""} -Dfile.encoding=UTF-8 ${SUBMARINE_SERVER_MEM:-""}"
 JAVA_OPTS+=" -Dlog4j.configuration=file://${SUBMARINE_CONF_DIR}/log4j.properties"
 export JAVA_OPTS
 

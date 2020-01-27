@@ -23,25 +23,30 @@ import (
 
 // BUILDTIME should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.BUILDTIME=${DATE}
 // with for example DATE=$(shell date +%Y-%m-%d/%H:%M:%S )   (pay attention not to use space!)
-var BUILDTIME string
+var BuildTime string
 
-// TAG should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.TAG=${TAG}
-// with for example TAG=$(shell git tag|tail -1)
-var TAG string
+// TAG should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.TAG=${BuildGitBranch}
+// with for example BuildGitBranch=$(git describe --all)
+var BuildGitBranch string
+
+// TAG should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.TAG=${BuildGitRev}
+// with for example BuildGitRev=$(git rev-list --count HEAD)
+var BuildGitRev string
 
 // COMMIT should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.COMMIT=${COMMIT}
-// with for example COMMIT=$(shell git rev-parse HEAD)
-var COMMIT string
+// with for example COMMIT=$(git rev-parse HEAD)
+var BuildGitCommit string
 
 // VERSION should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.VERSION=${VERSION}
-// with for example VERSION=$(shell git rev-parse --abbrev-ref HEAD)
+// with for example VERSION=$(git rev-parse --abbrev-ref HEAD)
 var VERSION string
 
 // BuildInfos returns builds information
 func BuildInfos() {
 	fmt.Println("Program started at: " + time.Now().String())
-	fmt.Println("BUILDTIME=" + BUILDTIME)
-	fmt.Println("TAG=" + TAG)
-	fmt.Println("COMMIT=" + COMMIT)
-	fmt.Println("VERSION=" + VERSION)
+	fmt.Println("Build Time : " + BuildTime)
+	fmt.Println("Build Git Branch : " + BuildGitBranch)
+	fmt.Println("Build Git Rev : " + BuildGitRev)
+	fmt.Println("Build Git Commit : " + BuildGitCommit)
+	fmt.Println("Submarine Version : " + VERSION)
 }

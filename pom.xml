@@ -138,6 +138,7 @@
   <modules>
     <module>submarine-commons</module>
     <module>submarine-client</module>
+    <module>submarine-cloud</module>
     <module>submodules/tony</module>
     <module>submarine-server</module>
     <module>submarine-all</module>

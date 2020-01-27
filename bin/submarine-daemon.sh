@@ -19,6 +19,9 @@
 # description: Start and stop daemon script for.
 #
 
+set -euo pipefail
+set -x
+
 USAGE="-e Usage: submarine-daemon.sh {start|stop|restart|status}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
@@ -36,7 +39,7 @@ cd ${BIN}/>/dev/null
 SUBMARINE_SERVER_NAME="Submarine Server"
 SUBMARINE_SERVER_LOGFILE="${SUBMARINE_LOG_DIR}/submarine.log"
 SUBMARINE_SERVER_MAIN=org.apache.submarine.server.SubmarineServer
-JAVA_OPTS+="${SUBMARINE_SERVER_JAVA_OPTS} ${SUBMARINE_SERVER_MEM} -Dsubmarine.log.file=${SUBMARINE_SERVER_LOGFILE}"
+JAVA_OPTS+="${SUBMARINE_SERVER_JAVA_OPTS:-""} ${SUBMARINE_SERVER_MEM:-""} -Dsubmarine.log.file=${SUBMARINE_SERVER_LOGFILE}"
 
 add_jar_in_dir "${BIN}/../lib"
 add_jar_in_dir "${BIN}/../lib/submitter"
@@ -162,7 +165,7 @@ function find_submarine_server_process() {
   fi
 }
 
-if [[ "$2" = "getMysqlJar" ]]; then
+if [[ "${2:-""}" = "getMysqlJar" ]]; then
   export GET_MYSQL_JAR=true
 fi
 

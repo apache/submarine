@@ -38,6 +38,6 @@ func NewSubmarineOperatorConfig() *Config {
 func (c *Config) AddFlags(fs *pflag.FlagSet) {
 	fs.StringVar(&c.KubeConfigFile, "kubeconfig", c.KubeConfigFile, "Location of kubecfg file for access to kubernetes master service")
 	fs.StringVar(&c.Master, "master", c.Master, "The address of the Kubernetes API server. Overrides any value in kubeconfig. Only required if out-of-cluster.")
-	fs.StringVar(&c.ListenAddr, "addr", "0.0.0.0:8086", "listen address of the http server which serves kubernetes probes and prometheus endpoints")
+	fs.StringVar(&c.ListenAddr, "addr", "0.0.0.0:8080", "listen address of the http server which serves kubernetes probes and prometheus endpoints")
 	c.Submarine.AddFlags(fs)
 }
