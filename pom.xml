@@ -492,8 +492,8 @@
             <exclude>licenses/**</exclude>
             <exclude>licenses-binary/**</exclude>
             <exclude>NOTICE-binary</exclude>
-            <exclude>submarine-cloud/go.mod</exclude>
-            <exclude>submarine-cloud/go.sum</exclude>
+            <exclude>**/go.mod</exclude>
+            <exclude>**/go.sum</exclude>
           </excludes>
         </configuration>
       </plugin>
