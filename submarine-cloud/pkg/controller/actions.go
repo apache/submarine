@@ -136,7 +136,7 @@ func (c *Controller) applyConfiguration(admin submarine.AdminInterface, cluster 
 		return false, err
 	}
 
-	//First, we define the new masters
+	// First, we define the new masters
 	// Select the desired number of Masters and assign Hashslots to each Master. The Master will be distributed to different K8S nodes as much as possible
 	// Set the cluster status to Calculating Rebalancing
 	newMasters, curMasters, allMaster, err := clustering.DispatchMasters(rCluster, nodes, cNbMaster, admin)

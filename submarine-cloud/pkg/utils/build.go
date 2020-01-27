@@ -25,15 +25,15 @@ import (
 // with for example DATE=$(shell date +%Y-%m-%d/%H:%M:%S )   (pay attention not to use space!)
 var BuildTime string
 
-// TAG should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.TAG=${BuildGitBranch}
+// BuildGitBranch should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.TAG=${BuildGitBranch}
 // with for example BuildGitBranch=$(git describe --all)
 var BuildGitBranch string
 
-// TAG should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.TAG=${BuildGitRev}
+// BuildGitRev should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.TAG=${BuildGitRev}
 // with for example BuildGitRev=$(git rev-list --count HEAD)
 var BuildGitRev string
 
-// COMMIT should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.COMMIT=${COMMIT}
+// BuildGitCommit should be populated by at build time: -ldflags "-w -X github.com/apache/submarine/submarine-cloud/pkg/utils.COMMIT=${COMMIT}
 // with for example COMMIT=$(git rev-parse HEAD)
 var BuildGitCommit string
 
