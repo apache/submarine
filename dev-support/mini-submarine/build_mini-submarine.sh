@@ -48,7 +48,7 @@ download_package() {
 }
 
 is_empty_dir(){
-    return `ls -A $1|wc -w`
+  return `ls -A $1|wc -w`
 }
 
 # download hadoop
@@ -83,9 +83,9 @@ if [[ -z "${submarine_dist_exists}" ]]; then
 
   cd "${SUBMARINE_PROJECT_PATH}"
   mvn clean package -DskipTests
-  cp ${SUBMARINE_PROJECT_PATH}/submarine-dist/target/submarine-dist-${submarine_v}*.tar.gz ${MINI_PATH}
 fi
 
+cp ${SUBMARINE_PROJECT_PATH}/submarine-dist/target/submarine-dist-${submarine_v}*.tar.gz ${MINI_PATH}
 cp -r ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine ${MINI_PATH}
 cp -r ${SUBMARINE_PROJECT_PATH}/docs/database ${MINI_PATH}
 
