@@ -76,7 +76,7 @@ esac
 done
 
 clusterName=${clusterName:-kind}
-nodeNum=${nodeNum:-1}
+nodeNum=${nodeNum:-3}
 k8sVersion=${k8sVersion:-v1.12.8}
 volumeNum=${volumeNum:-1}
 
@@ -120,13 +120,26 @@ configFile=${workDir}/kind-config.yaml
 
 cat <<EOF > ${configFile}
 kind: Cluster
-apiVersion: kind.sigs.k8s.io/v1alpha3
+apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
 - role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+        authorization-mode: "AlwaysAllow"
   extraPortMappings:
   - containerPort: 5000
     hostPort: 5000
     listenAddress: 127.0.0.1
+    protocol: TCP
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  - containerPort: 443
+    hostPort: 443
     protocol: TCP
 EOF
 
@@ -149,7 +162,7 @@ done
 
 echo "start to create k8s cluster"
 kind create cluster --config ${configFile} --image kindest/node:${k8sVersion} --name=${clusterName}
-export KUBECONFIG="$(kind get kubeconfig-path --name=${clusterName})"
+export KUBECONFIG="${HOME}/.kube/kind-config-${clusterName}"
 
 echo "deploy docker registry in kind"
 registryNode=${clusterName}-control-plane
@@ -226,15 +239,26 @@ spec:
 EOF
 kubectl apply -f ${registryFile}
 
-echo "init submarine env"
-kubectl create ns submarine-e2e
+# https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx
+echo "setting up ingress on a kind cluster."
+
+# load ingress denpendence docker-image into kind
+docker pull registry:2
+kind load docker-image registry:2
+
+docker pull quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master
+kind load docker-image quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master
+
+kubectl apply -f $ROOT/hack/ingress/mandatory.yaml
+kubectl apply -f $ROOT/hack/ingress/service-nodeport.yaml
+kubectl patch deployments -n ingress-nginx nginx-ingress-controller -p '{"spec":{"template":{"spec":{"containers":[{"name":"nginx-ingress-controller","ports":[{"containerPort":80,"hostPort":80},{"containerPort":443,"hostPort":443}]}],"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
 
 echo "############# success create cluster:[${clusterName}] #############"
 
 echo "To start using your cluster, run:"
-echo "    export KUBECONFIG=$(kind get kubeconfig-path --name=${clusterName})"
+echo "    export KUBECONFIG=\"${HOME}/.kube/kind-config-${clusterName}\""
 echo ""
-echo <<EOF
+cat <<EOF
 NOTE: In kind, nodes run docker network and cannot access host network.
 If you configured local HTTP proxy in your docker, images may cannot be pulled
 because http proxy is inaccessible.
@@ -243,3 +267,20 @@ If you cannot remove http proxy settings, you can either whitelist image
 domains in NO_PROXY environment or use 'docker pull <image> && kind load
 docker-image <image>' command to load images into nodes.
 EOF
+
+# Run submarine in kind cluster
+echo -n "Do you want to run submarine in kind cluster now? [y/n]"
+read myselect
+if [[ "$myselect" == "y" || "$myselect" == "Y" ]]; then
+    docker pull apache/submarine:operator-0.3.0-SNAPSHOT
+    kind load docker-image apache/submarine:operator-0.3.0-SNAPSHOT
+    kubectl apply -f $ROOT/manifests/submarine-operator/
+
+    docker pull apache/submarine:server-0.3.0-SNAPSHOT
+    kind load docker-image apache/submarine:server-0.3.0-SNAPSHOT
+    kubectl apply -f $ROOT/manifests/submarine-cluster/
+
+    cat <<EOF
+NOTE: You can open your browser and access the submarine workbench at http://127.0.0.1/
+EOF
+fi
