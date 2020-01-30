@@ -76,7 +76,7 @@ esac
 done
 
 clusterName=${clusterName:-kind}
-nodeNum=${nodeNum:-3}
+nodeNum=${nodeNum:-1}
 k8sVersion=${k8sVersion:-v1.12.8}
 volumeNum=${volumeNum:-1}
 
@@ -269,6 +269,7 @@ docker-image <image>' command to load images into nodes.
 EOF
 
 # Run submarine in kind cluster
+echo ""
 echo -n "Do you want to run submarine in kind cluster now? [y/n]"
 read myselect
 if [[ "$myselect" == "y" || "$myselect" == "Y" ]]; then
@@ -276,6 +277,8 @@ if [[ "$myselect" == "y" || "$myselect" == "Y" ]]; then
     kind load docker-image apache/submarine:operator-0.3.0-SNAPSHOT
     kubectl apply -f $ROOT/manifests/submarine-operator/
 
+    docker pull apache/submarine:database-0.3.0-SNAPSHOT
+    kind load docker-image apache/submarine:database-0.3.0-SNAPSHOT
     docker pull apache/submarine:server-0.3.0-SNAPSHOT
     kind load docker-image apache/submarine:server-0.3.0-SNAPSHOT
     kubectl apply -f $ROOT/manifests/submarine-cluster/

@@ -68,3 +68,40 @@ spec:
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: submarine-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: submarine-database
+  template:
+    metadata:
+      labels:
+        app: submarine-database
+    spec:
+      containers:
+        - name: submarine-database
+          image: apache/submarine:database-0.3.0-SNAPSHOT
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "password" # Same submarine-site.xml mysql password
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: submarine-database
+spec:
+  ports:
+    - name: submarine-database
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: submarine-database
