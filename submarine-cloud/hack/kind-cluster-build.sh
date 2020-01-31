@@ -85,25 +85,8 @@ echo "nodeNum: ${nodeNum}"
 echo "k8sVersion: ${k8sVersion}"
 echo "volumeNum: ${volumeNum}"
 
-# check requirements
-for requirement in kind docker kubectl
-do
-    echo "############ check ${requirement} ##############"
-    if hash ${requirement} 2>/dev/null;then
-        echo "${requirement} have installed"
-    else
-        echo "this script needs ${requirement}, please install ${requirement} first."
-        if test ${requirement} = "kind"; then
-            hack::ensure_kind
-            echo "Please add $KIND_BIN to PATH variable or copy it to one of the locations $PATH"
-        fi
-        if test ${requirement} = "kubectl"; then
-            hack::ensure_kubectl
-            echo "Please add $KUBECTL_BIN to PATH variable or copy it to one of the locations $PATH"
-        fi
-        exit 1
-    fi
-done
+# Check requirements
+hack::check_requirements
 
 echo "############# start create cluster:[${clusterName}] #############"
 workDir=${HOME}/kind/${clusterName}
@@ -267,23 +250,3 @@ If you cannot remove http proxy settings, you can either whitelist image
 domains in NO_PROXY environment or use 'docker pull <image> && kind load
 docker-image <image>' command to load images into nodes.
 EOF
-
-# Run submarine in kind cluster
-echo ""
-echo -n "Do you want to run submarine in kind cluster now? [y/n]"
-read myselect
-if [[ "$myselect" == "y" || "$myselect" == "Y" ]]; then
-    docker pull apache/submarine:operator-0.3.0-SNAPSHOT
-    kind load docker-image apache/submarine:operator-0.3.0-SNAPSHOT
-    kubectl apply -f $ROOT/manifests/submarine-operator/
-
-    docker pull apache/submarine:database-0.3.0-SNAPSHOT
-    kind load docker-image apache/submarine:database-0.3.0-SNAPSHOT
-    docker pull apache/submarine:server-0.3.0-SNAPSHOT
-    kind load docker-image apache/submarine:server-0.3.0-SNAPSHOT
-    kubectl apply -f $ROOT/manifests/submarine-cluster/
-
-    cat <<EOF
-NOTE: You can open your browser and access the submarine workbench at http://127.0.0.1/
-EOF
-fi

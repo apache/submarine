@@ -83,3 +83,4 @@ spark-1.*-bin-hadoop*
 # submarine-cloud
 submarine-cloud/vendor/*
 submarine-cloud/output/*
+submarine-cloud/hack/conf/*

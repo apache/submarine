@@ -1,0 +1,114 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: submarine.apache.org/v1alpha1
+kind: SubmarineCluster
+metadata:
+  name: submarine-test
+spec:
+  additionalLabels:
+    foo: bar
+  numberOfMaster: 1
+  replicationFactor: 0
+  podTemplate:
+    metadata:
+      labels:
+        app: cluster-test
+    spec:
+      ServiceAccountName: "submarine-node"
+      containers:
+        - name: submarine-node
+          image: "apache/submarine:server-0.3.0-SNAPSHOT"
+          args: []
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name:  submarine
+            - containerPort: 8081
+              name: cluster
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          livenessProbe:
+            httpGet:
+              path: /api/v1/cluster/address
+              port: 8080
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /api/v1/cluster/address
+              port: 8080
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          volumeMounts:
+            - name: submarine-configmap
+              mountPath: /opt/submarine-current/conf/submarine-site.xml
+              subPath: submarine-site.xml
+            - name: submarine-configmap
+              mountPath: /opt/submarine-current/conf/log4j.properties
+              subPath: log4j.properties
+      volumes:
+        - name: submarine-configmap
+          configMap:
+            name: submarine-config
+            items:
+              - key: submarine-site.xml
+                path: submarine-site.xml
+              - key: log4j.properties
+                path: log4j.properties
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: submarine-svc
+spec:
+  selector:
+    app: cluster-test
+  ports:
+    - port: 8080
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: submarine-ingress
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: submarine-svc
+              servicePort: 8080
+
+---
+# You can also access the submarine workbench via port-forward
+# kubectl port-forward svc/submarine-svc 18080:8080 --address 0.0.0.0
