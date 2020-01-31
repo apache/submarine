@@ -23,9 +23,10 @@ SUBMARINE_HOME=${ROOT}/..
 
 source $ROOT/hack/lib.sh
 
+# Check requirements
 hack::check_requirements
 
-# install submarine in k8s cluster
+# Install submarine in k8s cluster
 function install_submarine() {
   if [ ! -d "${ROOT}/hack/conf" ]; then
     mkdir "${ROOT}/hack/conf"
@@ -69,6 +70,7 @@ EOF
   fi
 }
 
+# Uninstall submarine in k8s cluster
 function uninstall_submarine() {
   if kubectl get configmap --namespace default | grep submarine-config >/dev/null ; then
     kubectl delete configmap --namespace default submarine-config

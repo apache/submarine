@@ -85,7 +85,7 @@ echo "nodeNum: ${nodeNum}"
 echo "k8sVersion: ${k8sVersion}"
 echo "volumeNum: ${volumeNum}"
 
-# check requirements
+# Check requirements
 hack::check_requirements
 
 echo "############# start create cluster:[${clusterName}] #############"

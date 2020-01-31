@@ -78,7 +78,7 @@ function hack::version_ge() {
 }
 
 function hack::check_requirements() {
-    # check requirements
+    # Check requirements
     for requirement in kind docker kubectl
     do
         echo "############ check ${requirement} ##############"
