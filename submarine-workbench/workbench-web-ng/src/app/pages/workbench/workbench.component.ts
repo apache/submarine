@@ -42,7 +42,38 @@ interface SidebarMenu {
 })
 export class WorkbenchComponent implements OnInit {
   isCollapsed: boolean = false;
+  highlighted: boolean = true;
   menus: SidebarMenu[] = [
+    {
+      title: 'Home',
+      iconType: 'home',
+      routerLink: '/workbench/home'
+    },
+    {
+      title: 'Workspace',
+      iconType: 'desktop',
+      routerLink: '/workbench/workspace'
+    },
+    {
+      title: 'Interpreter',
+      iconType: 'api',
+      routerLink: '/workbench/interpreter'
+    },
+    {
+      title: 'Job',
+      iconType: 'cluster',
+      routerLink: '/workbench/job'
+    },
+    {
+      title: 'Data',
+      iconType: 'bar-chart',
+      routerLink: '/workbench/data'
+    },
+    {
+      title: 'Model',
+      iconType: 'experiment',
+      routerLink: '/workbench/model'
+    },
     {
       title: 'Manager',
       iconType: 'setting',
@@ -59,6 +90,9 @@ export class WorkbenchComponent implements OnInit {
     }
   ];
   userInfo$: Observable<UserInfo>;
+  openMap: { [title: string]: boolean } = {
+    Manager: false
+  };
 
   constructor(
     private router: Router,
@@ -85,4 +119,17 @@ export class WorkbenchComponent implements OnInit {
       }
     });
   }
+
+  navToRouterLink(menu: {routerLink: string}) {
+    this.router.navigate([menu.routerLink]);
+  }
+
+  openHandler(title: string): void {
+    for (const key in this.openMap) {
+      if (key !== title) {
+        this.openMap[key] = false;
+      }
+    }
+  }
+
 }

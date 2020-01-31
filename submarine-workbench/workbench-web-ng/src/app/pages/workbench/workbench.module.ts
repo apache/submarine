@@ -22,11 +22,30 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { WorkbenchRoutingModule } from '@submarine/pages/workbench/workbench-routing.module';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { DataComponent } from './data/data.component';
+import { HomeComponent } from './home/home.component';
+import { InterpreterComponent } from './interpreter/interpreter.component';
+import { JobComponent } from './job/job.component';
+import { ModelComponent } from './model/model.component';
 import { WorkbenchComponent } from './workbench.component';
+import { WorkspaceComponent } from './workspace/workspace.component';
 
 @NgModule({
-  declarations: [WorkbenchComponent],
-  imports: [CommonModule, WorkbenchRoutingModule, NgZorroAntdModule, RouterModule]
+  declarations: [
+    WorkbenchComponent,
+    HomeComponent,
+    WorkspaceComponent,
+    InterpreterComponent,
+    JobComponent,
+    DataComponent,
+    ModelComponent
+  ],
+  imports: [
+    CommonModule,
+    WorkbenchRoutingModule,
+    NgZorroAntdModule,
+    RouterModule
+  ]
 })
 export class WorkbenchModule {
 }
