@@ -76,3 +76,25 @@ function hack::ensure_kind() {
 function hack::version_ge() {
     [ "$(printf '%s\n' "$1" "$2" | sort -V | head -n1)" = "$2" ]
 }
+
+function hack::check_requirements() {
+    # check requirements
+    for requirement in kind docker kubectl
+    do
+        echo "############ check ${requirement} ##############"
+        if hash ${requirement} 2>/dev/null;then
+            echo "${requirement} have installed"
+        else
+            echo "this script needs ${requirement}, please install ${requirement} first."
+            if test ${requirement} = "kind"; then
+                hack::ensure_kind
+                echo "Please add $KIND_BIN to PATH variable or copy it to one of the locations $PATH"
+            fi
+            if test ${requirement} = "kubectl"; then
+                hack::ensure_kubectl
+                echo "Please add $KUBECTL_BIN to PATH variable or copy it to one of the locations $PATH"
+            fi
+            exit 1
+        fi
+    done
+}
