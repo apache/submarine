@@ -65,7 +65,7 @@
     <shaded.dependency.prefix>org.apache.submarine.shaded</shaded.dependency.prefix>
 
     <!--library versions-->
-    <tony.version>0.3.21</tony.version>
+    <tony.version>0.3.23</tony.version>
     <jersey.version>2.27</jersey.version>
     <jersey.servlet.version>1.13</jersey.servlet.version>
     <jetty.version>9.4.18.v20190429</jetty.version>
@@ -140,7 +140,6 @@
     <module>submarine-client</module>
     <!-- There is a problem with the submarine-cloud pom, the compilation is very slow, and it is temporarily closed
     <module>submarine-cloud</module-->
-    <module>submodules/tony</module>
     <module>submarine-server</module>
     <module>submarine-all</module>
     <module>submarine-workbench</module>

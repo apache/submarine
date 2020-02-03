@@ -33,12 +33,6 @@ fi
 submarine_dist_exists=$(find -L "${SUBMARINE_HOME}/submarine-dist/target" -name "submarine-dist-${SUBMARINE_VERSION}*.tar.gz")
 # Build source code if the package doesn't exist.
 if [[ -z "${submarine_dist_exists}" ]]; then
-  # update tony code
-  if is_empty_dir "${SUBMARINE_HOME}/submodules/tony" ]; then
-    git submodule update --init --recursive
-  else
-    git submodule update --recursive
-  fi
   cd "${SUBMARINE_HOME}"
   mvn clean package -DskipTests
 fi

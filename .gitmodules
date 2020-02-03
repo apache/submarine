@@ -1,4 +1,0 @@
-[submodule "submodules/tony"]
-	path = submodules/tony
-	url = https://github.com/hadoopsubmarine/linkedin-tony.git
-	branch = submarine
