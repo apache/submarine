@@ -125,7 +125,7 @@ public class FirefoxWebDriverProvider implements WebDriverProvider {
     System.setProperty(
         GeckoDriverService.GECKO_DRIVER_EXE_PROPERTY, webDriverPath);
     System.setProperty(
-        FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "false");
+        FirefoxDriver.SystemProperty.DRIVER_USE_MARIONETTE, "true");
 
     FirefoxOptions firefoxOptions = new FirefoxOptions();
     firefoxOptions.setBinary(ffox);
