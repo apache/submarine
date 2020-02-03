@@ -39,8 +39,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.submarine.commons.utils.SubmarineConfiguration.SUBMARINE_RUNTIME_APP_TYPE;
-
 /**
  * Utilities for YARN Runtime.
  */
@@ -132,7 +130,8 @@ public final class YarnUtils {
               envs.stream().map(env -> env.replaceAll("DOCKER_", ""))
                       .toArray(String[]::new));
     }
-    tonyConf.setStrings(TonyConfigurationKeys.APPLICATION_TYPE, SUBMARINE_RUNTIME_APP_TYPE);
+    // Update after SUBMARINE-104 is merged into tony.
+    // tonyConf.setStrings(TonyConfigurationKeys.APPLICATION_TYPE, SUBMARINE_RUNTIME_APP_TYPE);
     // Set up running command
     if (parameters.getOptionValue(CliConstants.WORKER_LAUNCH_CMD) != null) {
       tonyConf.set(

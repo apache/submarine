@@ -74,13 +74,6 @@ fi
 
 # Build source code if the package doesn't exist.
 if [[ -z "${submarine_dist_exists}" ]]; then
-  # update tony code
-  if is_empty_dir "${SUBMARINE_PROJECT_PATH}/submodules/tony" ]; then
-    git submodule update --init --recursive
-  else
-    git submodule update --recursive
-  fi
-
   cd "${SUBMARINE_PROJECT_PATH}"
   mvn clean package -DskipTests
 fi
