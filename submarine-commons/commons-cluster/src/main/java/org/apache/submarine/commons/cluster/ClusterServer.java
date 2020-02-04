@@ -21,19 +21,23 @@ import io.atomix.cluster.BootstrapService;
 import io.atomix.cluster.ManagedClusterMembershipService;
 import io.atomix.cluster.Member;
 import io.atomix.cluster.MemberId;
-import io.atomix.cluster.MembershipConfig;
 import io.atomix.cluster.Node;
 import io.atomix.cluster.discovery.BootstrapDiscoveryProvider;
 import io.atomix.cluster.impl.DefaultClusterMembershipService;
 import io.atomix.cluster.impl.DefaultNodeDiscoveryService;
 import io.atomix.cluster.messaging.BroadcastService;
+import io.atomix.cluster.messaging.MessagingConfig;
 import io.atomix.cluster.messaging.MessagingService;
+import io.atomix.cluster.messaging.UnicastService;
 import io.atomix.cluster.messaging.impl.NettyMessagingService;
+import io.atomix.cluster.protocol.HeartbeatMembershipProtocol;
+import io.atomix.cluster.protocol.HeartbeatMembershipProtocolConfig;
 import io.atomix.primitive.PrimitiveState;
 import io.atomix.protocols.raft.RaftServer;
 import io.atomix.protocols.raft.protocol.RaftServerProtocol;
 import io.atomix.protocols.raft.storage.RaftStorage;
 import io.atomix.storage.StorageLevel;
+import io.atomix.utils.Version;
 import io.atomix.utils.net.Address;
 import org.apache.commons.lang.StringUtils;
 import org.apache.submarine.commons.cluster.meta.ClusterMeta;
@@ -151,14 +155,15 @@ public class ClusterServer extends ClusterManager {
     new Thread(new Runnable() {
       @Override
       public void run() {
-        LOG.info("RaftServer run() >>>");
+        LOG.info("RaftServer run({}:{}) >>>", serverHost, raftServerPort);
 
         Address address = Address.from(serverHost, raftServerPort);
         Member member = Member.builder(MemberId.from(serverHost + ":" + raftServerPort))
             .withAddress(address)
             .build();
-        messagingService = NettyMessagingService.builder()
-            .withAddress(address).build().start().join();
+        messagingService = new NettyMessagingService(
+            MESSAGING_SERVICE_NAME, member.address(), new MessagingConfig()).start().join();
+
         RaftServerProtocol protocol = new RaftServerMessagingProtocol(
             messagingService, ClusterManager.protocolSerializer, raftAddressMap::get);
 
@@ -169,6 +174,11 @@ public class ClusterServer extends ClusterManager {
           }
 
           @Override
+          public UnicastService getUnicastService() {
+            return new UnicastServiceAdapter();
+          }
+
+          @Override
           public BroadcastService getBroadcastService() {
             return new BroadcastServiceAdapter();
           }
@@ -176,10 +186,11 @@ public class ClusterServer extends ClusterManager {
 
         ManagedClusterMembershipService clusterService = new DefaultClusterMembershipService(
             member,
-            new DefaultNodeDiscoveryService(bootstrapService, member,
-                new BootstrapDiscoveryProvider(clusterNodes)),
+            Version.from("1.0.0"),
+            new DefaultNodeDiscoveryService(
+                bootstrapService, member, new BootstrapDiscoveryProvider(clusterNodes)),
             bootstrapService,
-            new MembershipConfig());
+            new HeartbeatMembershipProtocol(new HeartbeatMembershipProtocolConfig()));
 
         File atomixDateDir = com.google.common.io.Files.createTempDir();
         atomixDateDir.deleteOnExit();
@@ -190,7 +201,7 @@ public class ClusterServer extends ClusterManager {
             .withStorage(RaftStorage.builder()
                 .withStorageLevel(StorageLevel.MEMORY)
                 .withDirectory(atomixDateDir)
-                .withSerializer(storageSerializer)
+                .withNamespace(storageNamespace)
                 .withMaxSegmentSize(1024 * 1024)
                 .build());
 
