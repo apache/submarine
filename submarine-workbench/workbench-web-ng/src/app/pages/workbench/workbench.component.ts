@@ -90,9 +90,6 @@ export class WorkbenchComponent implements OnInit {
     }
   ];
   userInfo$: Observable<UserInfo>;
-  openMap: { [title: string]: boolean } = {
-    Manager: false
-  };
 
   constructor(
     private router: Router,
@@ -119,17 +116,4 @@ export class WorkbenchComponent implements OnInit {
       }
     });
   }
-
-  navToRouterLink(menu: {routerLink: string}) {
-    this.router.navigate([menu.routerLink]);
-  }
-
-  openHandler(title: string): void {
-    for (const key in this.openMap) {
-      if (key !== title) {
-        this.openMap[key] = false;
-      }
-    }
-  }
-
 }
