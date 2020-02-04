@@ -33,18 +33,16 @@
   </div>
   <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
     <ng-container *ngFor="let menu of menus">
-      <li *ngIf="menu.children" nz-submenu nzOpen [nzTitle]="menu.title" [nzIcon]="menu.iconType">
+      <li *ngIf="menu.children" nz-submenu [nzTitle]="menu.title" [nzIcon]="menu.iconType">
         <ul>
           <li nz-menu-item nzMatchRouter *ngFor="let subItem of menu.children">
             <a [routerLink]="subItem.routerLink">{{ subItem.title }}</a>
           </li>
         </ul>
       </li>
-      <li *ngIf="!menu.children" nz-menu-item nz-tooltip nzPlacement="right" [nzTitle]="menu.title" nzMatchRouter>
-        <i nz-icon [nzType]="menu.iconType"></i>
-        <span>
-          <a [routerLink]="menu.routerLink">{{ menu.title }}</a>
-        </span>
+      <li *ngIf="!menu.children" nz-menu-item nz-tooltip [nzTitle]="menu.title" nzPlacement="right" nzMatchRouter [routerLink]="menu.routerLink">
+          <i nz-icon [nzType]="menu.iconType"></i>
+          <span>{{ menu.title }}</span>
       </li>
     </ng-container>
   </ul>

@@ -42,7 +42,38 @@ interface SidebarMenu {
 })
 export class WorkbenchComponent implements OnInit {
   isCollapsed: boolean = false;
+  highlighted: boolean = true;
   menus: SidebarMenu[] = [
+    {
+      title: 'Home',
+      iconType: 'home',
+      routerLink: '/workbench/home'
+    },
+    {
+      title: 'Workspace',
+      iconType: 'desktop',
+      routerLink: '/workbench/workspace'
+    },
+    {
+      title: 'Interpreter',
+      iconType: 'api',
+      routerLink: '/workbench/interpreter'
+    },
+    {
+      title: 'Job',
+      iconType: 'cluster',
+      routerLink: '/workbench/job'
+    },
+    {
+      title: 'Data',
+      iconType: 'bar-chart',
+      routerLink: '/workbench/data'
+    },
+    {
+      title: 'Model',
+      iconType: 'experiment',
+      routerLink: '/workbench/model'
+    },
     {
       title: 'Manager',
       iconType: 'setting',
