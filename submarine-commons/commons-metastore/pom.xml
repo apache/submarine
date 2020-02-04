@@ -330,6 +330,14 @@
                   <pattern>com.google</pattern>
                   <shadedPattern>${shaded.dependency.prefix}.com.google</shadedPattern>
                 </relocation>
+                <relocation>
+                  <pattern>org.eclipse.jetty</pattern>
+                  <shadedPattern>${shaded.dependency.prefix}.org.eclipse.jetty</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>javax.ws.rs.core</pattern>
+                  <shadedPattern>${shaded.dependency.prefix}.javax.ws.rs.core</shadedPattern>
+                </relocation>
               </relocations>
             </configuration>
           </execution>
