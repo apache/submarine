@@ -166,7 +166,7 @@
         <exclude>mysql-connector-java-*.jar</exclude>
         <!-- atomix & netty-4.1.27.Final already shade in submarine-commons-cluster-${project.version}-shade.jar -->
         <exclude>atomix-*.jar</exclude>
-        <exclude>netty-*-4.1.27.Final.jar</exclude>
+        <exclude>netty-*-4.1.27.Final*.jar</exclude>
       </excludes>
     </fileSet>
     <fileSet>
