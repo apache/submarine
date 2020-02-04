@@ -19,6 +19,7 @@ package org.apache.submarine.commons.cluster;
 import com.google.common.collect.Maps;
 import io.atomix.cluster.MemberId;
 import io.atomix.cluster.Node;
+import io.atomix.cluster.messaging.MessagingConfig;
 import io.atomix.cluster.messaging.MessagingService;
 import io.atomix.cluster.messaging.impl.NettyMessagingService;
 import io.atomix.primitive.operation.OperationType;
@@ -149,13 +150,15 @@ public abstract class ClusterManager {
 
   protected ClusterMonitor clusterMonitor = null;
 
+  protected String MESSAGING_SERVICE_NAME = "SubmarineCluster";
+
   protected boolean isTest = false;
 
   protected ClusterManager() {
     try {
       this.serverHost = NetworkUtils.findAvailableHostAddress();
       String clusterAddr = sconf.getClusterAddress();
-      LOG.info(this.getClass().toString() + "::clusterAddr = {}", clusterAddr);
+      LOG.info("clusterAddr = {}", clusterAddr);
       if (!StringUtils.isEmpty(clusterAddr)) {
         String cluster[] = clusterAddr.split(",");
 
@@ -204,13 +207,13 @@ public abstract class ClusterManager {
       return;
     }
 
-    LOG.info(this.getClass().toString() + "::ClusterManager::start()");
+    LOG.info("ClusterManager::start()");
 
     // RaftClient Thread
     new Thread(new Runnable() {
       @Override
       public void run() {
-        LOG.info(this.getClass().toString() + "::RaftClientThread run() >>>");
+        LOG.info("RaftClientThread run() >>>");
 
         int raftClientPort = 0;
         try {
@@ -219,12 +222,13 @@ public abstract class ClusterManager {
           LOG.error(e.getMessage(), e);
         }
 
+        LOG.info("RaftClientThread {}:{}", serverHost, raftClientPort);
         MemberId memberId = MemberId.from(serverHost + ":" + raftClientPort);
         Address address = Address.from(serverHost, raftClientPort);
         raftAddressMap.put(memberId, address);
 
-        MessagingService messagingManager
-            = NettyMessagingService.builder().withAddress(address).build().start().join();
+        MessagingService messagingManager = new NettyMessagingService(
+            MESSAGING_SERVICE_NAME, address, new MessagingConfig()).start().join();
         RaftClientProtocol protocol = new RaftClientMessagingProtocol(
             messagingManager, protocolSerializer, raftAddressMap::get);
 
@@ -238,7 +242,7 @@ public abstract class ClusterManager {
 
         raftSessionClient = createProxy(raftClient);
 
-        LOG.info(this.getClass().toString() + "::RaftClientThread run() <<<");
+        LOG.info("RaftClientThread run() <<<");
       }
     }).start();
 
@@ -255,8 +259,7 @@ public abstract class ClusterManager {
               while (!raftInitialized()) {
                 retry++;
                 if (0 == retry % 30) {
-                  LOG.warn(this.getClass().toString()
-                      + "::Raft incomplete initialization! retry[{}]", retry);
+                  LOG.warn("Raft incomplete initialization! retry[{}]", retry);
                 }
                 Thread.sleep(100);
               }
@@ -272,11 +275,9 @@ public abstract class ClusterManager {
               if (true == success) {
                 // The operation was successfully deleted
                 clusterMetaQueue.remove(metaEntity);
-                LOG.info(this.getClass().toString()
-                    + "::Cluster Meta Consume success! {}", metaEntity);
+                LOG.info("Cluster Meta Consume success! {}", metaEntity);
               } else {
-                LOG.error(this.getClass().toString()
-                    + "::Cluster Meta Consume faild!");
+                LOG.error("Cluster Meta Consume faild!");
               }
             } else {
               Thread.sleep(100);
@@ -424,11 +425,35 @@ public abstract class ClusterManager {
     }
 
     if (LOG.isDebugEnabled()) {
-      LOG.debug(this.getClass().toString() + "::getClusterMeta >>> {}", clusterMeta.toString());
+      LOG.debug("getClusterMeta >>> {}", clusterMeta.toString());
     }
 
     return clusterMeta;
   }
+
+  protected static final Namespace storageNamespace = Namespace.builder()
+      .register(CloseSessionEntry.class)
+      .register(CommandEntry.class)
+      .register(ConfigurationEntry.class)
+      .register(InitializeEntry.class)
+      .register(KeepAliveEntry.class)
+      .register(MetadataEntry.class)
+      .register(OpenSessionEntry.class)
+      .register(QueryEntry.class)
+      .register(PrimitiveOperation.class)
+      .register(DefaultOperationId.class)
+      .register(OperationType.class)
+      .register(ReadConsistency.class)
+      .register(ArrayList.class)
+      .register(HashSet.class)
+      .register(DefaultRaftMember.class)
+      .register(MemberId.class)
+      .register(RaftMember.Type.class)
+      .register(Instant.class)
+      .register(Configuration.class)
+      .register(byte[].class)
+      .register(long[].class)
+      .build();
 
   protected static final Serializer protocolSerializer = Serializer.using(Namespace.builder()
       .register(OpenSessionRequest.class)
