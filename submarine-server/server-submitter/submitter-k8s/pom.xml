@@ -24,12 +24,12 @@
   <parent>
     <artifactId>server-submitter</artifactId>
     <groupId>org.apache.submarine</groupId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>submitter-k8s</artifactId>
-  <version>0.3.0-SNAPSHOT</version>
+  <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: Kubernetes Submitter</name>
 
   <dependencies>

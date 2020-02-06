@@ -26,12 +26,12 @@
   <parent>
     <groupId>org.apache.submarine</groupId>
     <artifactId>submarine-workbench</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>interpreter</artifactId>
-  <version>0.3.0-SNAPSHOT</version>
+  <version>0.4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Submarine: Interpreter Parent</name>
   <description>Submarine Interpreter Parent</description>
