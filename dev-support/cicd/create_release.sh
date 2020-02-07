@@ -47,10 +47,6 @@ GIT_TAG="$2"
 
 function compile_src_and_bin() {
   cd ${WORKING_DIR}/submarine
-  echo "git submodule update --init --recursive"
-  git submodule update --init --recursive
-  echo "git submodule update --recursive"
-  git submodule update --recursive
   echo "mvn versions:set -DnewVersion=${RELEASE_VERSION}"
   mvn versions:set -DnewVersion="${RELEASE_VERSION}"
   echo "mvn clean install package -DskipTests -Psrc"
