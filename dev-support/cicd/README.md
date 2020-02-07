@@ -15,7 +15,8 @@
 
 > Please note that cicd is a tool provided to submarine committers for PR merging and release. Only submarine committers have permission to execute.
 
-This cicd directory contains several scripts to ease code and release management.
+This cicd directory contains several scripts to ease code and release management. For how-to-release, check [here](./HowToRelease.md)
+
 To use them more easily, we provide a Docker image to help committer to handle tasks like committing code and release build.
 
 ## Docker mode
