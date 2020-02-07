@@ -82,10 +82,6 @@ function publish_snapshot_to_maven() {
   fi
 
   tmp_repo="$(mktemp -d /tmp/submarine-repo-XXXXX)"
-  echo "git submodule update --init --recursive"
-  git submodule update --init --recursive
-  echo "git submodule update --recursive"
-  git submodule update --recursive
   mvn versions:set -DnewVersion=$RELEASE_VERSION
   tmp_settings="tmp-settings.xml"
   echo "<settings><servers><server>" > $tmp_settings
@@ -93,8 +89,6 @@ function publish_snapshot_to_maven() {
   echo "<password>$ASF_PASSWORD</password>" >> $tmp_settings
   echo "</server></servers></settings>" >> $tmp_settings
 
-  #Disable TonY mvn deploy
-  #tony_pom="./submodules/tony/pom.xml"
   mvn --settings $tmp_settings -Dmaven.repo.local="${tmp_repo}" -DskipTests deploy
 
   rm $tmp_settings
@@ -103,10 +97,6 @@ function publish_snapshot_to_maven() {
 
 function publish_to_maven() {
   cd "${WORKING_DIR}/submarine"
-  echo "git submodule update --init --recursive"
-  git submodule update --init --recursive
-  echo "git submodule update --recursive"
-  git submodule update --recursive
   # Force release version
   mvn versions:set -DnewVersion="${RELEASE_VERSION}"
 
