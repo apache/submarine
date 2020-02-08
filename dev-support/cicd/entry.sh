@@ -20,10 +20,14 @@ set -e
 function start_menu(){
   printf "Menu:\n"
   printf "\t1. Merge PR\n"
+  printf "\t2. Update Submarine Website\n"
   read -p "Enter Menu ID:" menu_id
   case $menu_id in
     "1")
       merge_pr
+    ;;
+    "2")
+      update_submarine_site
     ;;
     "*")
       printf "unknown. Exiting."
@@ -74,6 +78,80 @@ function merge_pr(){
   export JIRA_PASSWORD=${jira_pwd}
   python dev-support/cicd/merge_submarine_pr.py
   printf "==== Merge PR END ====\n"
+}
+
+function update_submarine_site(){
+  printf "==== Update Submarine Site Begin ====\n"
+  apache_id="id"
+  apache_name="name"
+
+  if [ -z "$APACHE_ID" ]; then
+    printf "\n"
+    read -p "Enter Your Apache committer ID: "  apache_id
+  else
+    apache_id=$APACHE_ID
+  fi
+  echo "Got Apache ID: ${apache_id}"
+
+  if [ -z "$APACHE_NAME" ]; then
+    read -p "Enter Your Apache committer name: "  apache_name
+  else
+    apache_name=$APACHE_NAME
+  fi
+  echo "Got Apache name: ${apache_name}"
+
+  cd $SUBMARINE_SITE
+  git pull
+  git config user.name "${apache_name}"
+  git config user.email "${apache_id}@apache.org"
+  git config credential.helper store
+  bundle update
+  bundle exec jekyll serve --watch --host=0.0.0.0 > /tmp/jekyll.log 2>&1 &
+  echo "==== Please use vim to edit md files and check http://localhost:4000/ for the update ===="
+  while true; do
+    echo "==== Edit Mode: Type 'exit' when you finish the changes (you don't need to perform git commit/push). ===="
+    bash
+    read -p "Have you finished updating the MD files? y/n/quit " commit
+    case $commit in
+      "y")
+        echo "Start committing changes.."
+        cd $SUBMARINE_SITE
+        git add .
+        git status
+        read -p "Please input the commit message: " message
+        git commit -m "${message} (master branch)"
+        git push origin master
+        cp -r _site /_site
+        git checkout asf-site
+        cp -r /_site/* ./
+        git add .
+        git status
+        git commit -m "${message} (asf-site branch)"
+        git push origin asf-site
+        echo "Exiting edit mode.."
+        break
+      ;;
+      "n")
+        continue
+      ;;
+      "quit")
+        printf "Exiting edit mode.."
+        break
+      ;;
+      "q")
+        printf "Exiting edit mode.."
+        break
+      ;;
+      "*")
+        printf "Unknown. Exiting edit mode.."
+        break
+      ;;
+    esac
+  done
+  printf "\n"
+  echo "==== Enter shell again incase any unexpected error happens ===="
+  bash
+  echo "Exiting CICD.."
 }
 
 start_menu

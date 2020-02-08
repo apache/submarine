@@ -36,4 +36,15 @@ ADD \
 ENV \
   SUBMARINE_HOME=/submarine \
   PYTHON_VENV_PATH=/root
+
+RUN apt-get update && apt-get -y install bundler
+
+RUN \
+  cd / && \
+  git clone https://gitbox.apache.org/repos/asf/submarine-site.git && \
+  cd /submarine-site && bundle update
+
+ENV \
+  SUBMARINE_SITE=/submarine-site
+
 CMD /entry.sh
