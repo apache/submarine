@@ -494,6 +494,7 @@
             <exclude>NOTICE-binary</exclude>
             <exclude>**/go.mod</exclude>
             <exclude>**/go.sum</exclude>
+            <exclude>**/workbench-web/**</exclude>
           </excludes>
         </configuration>
       </plugin>

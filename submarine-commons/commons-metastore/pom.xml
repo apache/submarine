@@ -325,18 +325,36 @@
                   </excludes>
                 </filter>
               </filters>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.slf4j:*</exclude>
+                  <exclude>log4j:log4j</exclude>
+                </excludes>
+              </artifactSet>
               <relocations>
                 <relocation>
                   <pattern>com.google</pattern>
-                  <shadedPattern>${shaded.dependency.prefix}.com.google</shadedPattern>
+                  <shadedPattern>${shaded.dependency.prefix}.metastore.com.google</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>org.eclipse.jetty</pattern>
-                  <shadedPattern>${shaded.dependency.prefix}.org.eclipse.jetty</shadedPattern>
+                  <shadedPattern>${shaded.dependency.prefix}.metastore.org.eclipse.jetty</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>javax.ws.rs.core</pattern>
-                  <shadedPattern>${shaded.dependency.prefix}.javax.ws.rs.core</shadedPattern>
+                  <pattern>javax</pattern>
+                  <shadedPattern>${shaded.dependency.prefix}.metastore.javax</shadedPattern>
+                  <excludes>
+                    <exclude>javax.xml/*</exclude>
+                    <exclude>javax.xml/**/*</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>io.netty</pattern>
+                  <shadedPattern>${shaded.dependency.prefix}.metastore.io.netty</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.apache.hadoop</pattern>
+                  <shadedPattern>${shaded.dependency.prefix}.metastore.org.apache.hadoop</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>
