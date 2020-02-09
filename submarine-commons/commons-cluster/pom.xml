@@ -156,6 +156,12 @@
                   </excludes>
                 </filter>
               </filters>
+              <artifactSet>
+                <excludes>
+                  <exclude>org.slf4j:*</exclude>
+                  <exclude>log4j:log4j</exclude>
+                </excludes>
+              </artifactSet>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>org.apache.submarine.interpreter.AbstractInterpreter</mainClass>
@@ -165,7 +171,7 @@
               <relocations>
                 <relocation>
                   <pattern>org</pattern>
-                  <shadedPattern>${shaded.dependency.prefix}.org</shadedPattern>
+                  <shadedPattern>${shaded.dependency.prefix}.cluster.org</shadedPattern>
                   <excludes>
                     <exclude>org/apache/submarine/*</exclude>
                     <exclude>org/apache/submarine/**/*</exclude>
@@ -177,6 +183,8 @@
                     <exclude>org/apache/commons/logging/**/*</exclude>
                     <exclude>org/apache/commons/exec/*</exclude>
                     <exclude>org/apache/commons/exec/**/*</exclude>
+                    <exclude>org/apache/commons/collections/*</exclude>
+                    <exclude>org/apache/commons/collections/**/*</exclude>
                     <exclude>org/apache/log4j/*</exclude>
                     <exclude>org/apache/log4j/**/*</exclude>
                     <exclude>org/sonatype/*</exclude>
@@ -194,15 +202,15 @@
                 </relocation>
                 <relocation>
                   <pattern>com.google</pattern>
-                  <shadedPattern>${shaded.dependency.prefix}.com.google</shadedPattern>
+                  <shadedPattern>${shaded.dependency.prefix}.cluster.com.google</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>io</pattern>
-                  <shadedPattern>${shaded.dependency.prefix}.io</shadedPattern>
+                  <shadedPattern>${shaded.dependency.prefix}.cluster.io</shadedPattern>
                 </relocation>
                 <relocation>
                   <pattern>com.esotericsoftware</pattern>
-                  <shadedPattern>${shaded.dependency.prefix}.com.esotericsoftware</shadedPattern>
+                  <shadedPattern>${shaded.dependency.prefix}.cluster.com.esotericsoftware</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>

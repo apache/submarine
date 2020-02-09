@@ -45,7 +45,7 @@ env:
     # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-server/server-submitter/submitter-yarnservice` in EXCLUDE_SUBMARINE
     - EXCLUDE_SUBMARINE="!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn,!submarine-server/server-core,!submarine-server/server-rpc"
     - EXCLUDE_WORKBENCH="!submarine-workbench,!submarine-workbench/workbench-web,!submarine-workbench/workbench-web-ng"
-    - EXCLUDE_INTERPRETER="!submarine-workbench/interpreter,!submarine-workbench/interpreter/interpreter-engine,!submarine-workbench/interpreter/python-interpreter,!submarine-workbench/interpreter/spark-interpreter"
+    - EXCLUDE_INTERPRETER="" # Template disable by SUBMARINE-381 "!submarine-workbench/interpreter,!submarine-workbench/interpreter/interpreter-engine,!submarine-workbench/interpreter/python-interpreter,!submarine-workbench/interpreter/spark-interpreter
     - EXCLUDE_K8S="!submarine-server/server-submitter/submitter-k8s"
     - EXCLUDE_COMMON_RPC="!submarine-commons/commons-rpc"
     - MOZ_HEADLESS=1
@@ -157,12 +157,6 @@ matrix:
         - yarn run lint --no-fix && yarn run build
       env: NAME="Build workbench-web"
 
-    - name: Test submarine workbench-web VUE
-      language: java
-      jdk: "openjdk8"
-      dist: xenial
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl org.apache.submarine:workbench-web" TEST_MODULES="-pl org.apache.submarine:workbench-web" TEST_PROJECTS=""
-
     - name: Test submarine test-e2e
       language: java
       jdk: "openjdk8"
@@ -171,11 +165,12 @@ matrix:
         chrome: stable
       env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package -DskipTests" TEST_FLAG="verify -DskipRat -am" TEST_MODULES="-pl submarine-test/e2e" TEST_PROJECTS=""
 
-    - name: Test submarine interpreter
-      language: java
-      jdk: "openjdk8"
-      dist: xenial
-      env: PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_SUBMARINE},${EXCLUDE_WORKBENCH}" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
+    # Template disable by SUBMARINE-381
+    #- name: Test submarine interpreter
+    #  language: java
+    #  jdk: "openjdk8"
+    #  dist: xenial
+    #  env: PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_SUBMARINE},${EXCLUDE_WORKBENCH}" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
 
     - name: Test submarine-sdk
       language: python
