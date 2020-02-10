@@ -465,6 +465,7 @@
             <exclude>.github/*</exclude>
             <exclude>.gitignore</exclude>
             <exclude>.gitmodules</exclude>
+            <exclude>.editorconfig</exclude>
             <exclude>LICENSE</exclude>
             <exclude>license_header</exclude>
             <exclude>**/*.iml</exclude>
