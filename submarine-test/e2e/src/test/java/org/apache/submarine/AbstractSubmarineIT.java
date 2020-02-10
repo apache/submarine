@@ -21,6 +21,7 @@ package org.apache.submarine;
 import com.google.common.base.Function;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
@@ -37,7 +38,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 
 abstract public class AbstractSubmarineIT {
@@ -151,4 +157,69 @@ abstract public class AbstractSubmarineIT {
     throw e;
   }
 
+  // printSubmarineLog function will help you see submarine-dist/target/../../log/submarine.logs context
+  public static void printSubmarineLog() {
+    try {
+      File directory = new File(".");
+      String submarineDistModulePath = directory.getCanonicalPath() + "/../../submarine-dist/";
+      LOG.info("submarine-dist module path = {}", submarineDistModulePath);
+
+      File filePath = new File(submarineDistModulePath);
+      String logPath = "";
+      logPath = findTargetFile(filePath, "submarine.log");
+      File fLog = new File(logPath);
+      if (fLog.exists()) {
+        LOG.info("Print Submarine log file:{}\n================= logs/submarine.log BEGIN =================", logPath);
+        String line;
+        StringBuffer sbContext = new StringBuffer();
+        InputStream is = new FileInputStream(logPath);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        line = reader.readLine();
+        while (line != null) {
+          sbContext.append(line + "\n");
+          line = reader.readLine();
+        }
+        sbContext.append("================= logs/submarine.log END =================\n");
+        LOG.info(sbContext.toString());
+        reader.close();
+        is.close();
+      } else {
+        LOG.error("Submarine log file not exist!");
+      }
+    } catch (IOException e) {
+      LOG.error(e.getLocalizedMessage(), e);
+    }
+  }
+
+  private static String findTargetFile(File dir, String targetFile) {
+    File[] files = dir.listFiles();
+    for (File file : files) {
+      if (file.isDirectory()) {
+        String targetPath = findTargetFile(file, targetFile);
+        if (!targetPath.isEmpty()) {
+          return targetPath;
+        }
+      } else {
+        if (StringUtils.equals(file.getName(), targetFile)) {
+          LOG.info("file : " + file.getPath());
+          return file.getPath();
+        }
+      }
+    }
+    return "";
+  }
+
+  // findTargetFile function will help you see some files in submarine-dist module directory
+  public static void listTargetDirFiles(File dir, String targetDir) {
+    LOG.info("dir:{}, targetDir:{}", dir.getName(), targetDir);
+    File[] files = dir.listFiles();
+    for (File file : files) {
+      if (file.isDirectory()) {
+        listTargetDirFiles(file, targetDir);
+      } else {
+        if (StringUtils.equals(dir.getName(), targetDir))
+          LOG.info("file : "+file.getName());
+      }
+    }
+  }
 }
