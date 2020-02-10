@@ -72,6 +72,7 @@ function merge_pr(){
 
   cd $SUBMARINE_HOME
   git pull
+  git checkout master
   git config user.name "${apache_name}"
   git config user.email "${apache_id}@apache.org"
   export JIRA_USERNAME=${jira_name}
@@ -102,6 +103,7 @@ function update_submarine_site(){
 
   cd $SUBMARINE_SITE
   git pull
+  git checkout master
   git config user.name "${apache_name}"
   git config user.email "${apache_id}@apache.org"
   git config credential.helper store
@@ -149,6 +151,7 @@ function update_submarine_site(){
     esac
   done
   printf "\n"
+  printf "==== Update Submarine Site END ====\n"
   echo "==== Enter shell again incase any unexpected error happens ===="
   bash
   echo "Exiting CICD.."
