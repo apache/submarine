@@ -45,22 +45,21 @@ export APACHE_NAME='Your apache name'
 
 And you'll see output like below and then you can decide what to accomplish.
 ```
-$ docker run -it -e JIRA_USERNAME="${JIRA_USERNAME}" -e JIRA_PASSWORD="${JIRA_PASSWORD}" -e APACHE_ID="${APACHE_ID}" -e APACHE_NAME="${APACHE_NAME}" --rm submarine-cicd
+$ docker run -it -e JIRA_USERNAME="${JIRA_USERNAME}" -e JIRA_PASSWORD="${JIRA_PASSWORD}" -e APACHE_ID="${APACHE_ID}" -e APACHE_NAME="${APACHE_NAME}" -p 4000:4000 --rm submarine-cicd
 ```
 
 The screen outputs the following information: 
 
 ```
 Menu:
-    1. Merge PR
-Enter Menu ID:1
-==== Merge PR Begin ====
-Got JIRA name: username
-
-Enter Your Apache committer ID:
+	1. Merge PR
+	2. Update Submarine Website
+Enter Menu ID:
 ```
 
-## Manual mode
+As you can see, the Docker mode support several features like merging PR and updating the web site. Choose the task you need to do and follow the popup tip to go on.
+
+## Manual mode (Not Recommended)
 
 First, You need install `python 2.7.13` and `pip insall jira`
 
