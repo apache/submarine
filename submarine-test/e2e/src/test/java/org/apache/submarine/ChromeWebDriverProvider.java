@@ -104,7 +104,7 @@ public class ChromeWebDriverProvider implements WebDriverProvider {
     try {
       String versionCmd = "google-chrome --version";
       if (System.getProperty("os.name").startsWith("Mac OS")) {
-        versionCmd = "/Applications/Google Chrome.app/Contents/MacOS/google chrome --version";
+        versionCmd = "/Applications/Google\\ Chrome.app/Contents/MacOS/google\\ chrome --version";
       }
       String versionString = (String) CommandExecutor
           .executeCommandLocalHost(versionCmd, false, ProcessData.Types_Of_Data.OUTPUT);

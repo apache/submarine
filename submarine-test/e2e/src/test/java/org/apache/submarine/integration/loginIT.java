@@ -27,16 +27,17 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class loginIT extends AbstractSubmarineIT {
-
   public final static Logger LOG = LoggerFactory.getLogger(loginIT.class);
 
   @BeforeClass
   public static void startUp(){
+    printSubmarineLog();
     driver =  WebDriverManager.getWebDriver();
   }
 
   @AfterClass
   public static void tearDown(){
+    printSubmarineLog();
     driver.quit();
   }
 
