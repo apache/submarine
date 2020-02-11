@@ -71,8 +71,8 @@ function merge_pr(){
   echo "Got Apache name: ${apache_name}"
 
   cd $SUBMARINE_HOME
-  git pull
   git checkout master
+  git pull
   git config user.name "${apache_name}"
   git config user.email "${apache_id}@apache.org"
   export JIRA_USERNAME=${jira_name}
@@ -102,8 +102,8 @@ function update_submarine_site(){
   echo "Got Apache name: ${apache_name}"
 
   cd $SUBMARINE_SITE
-  git pull
   git checkout master
+  git pull
   git config user.name "${apache_name}"
   git config user.email "${apache_id}@apache.org"
   git config credential.helper store
