@@ -17,4 +17,91 @@
   ~ under the License.
   -->
 
-<p>register works!</p>
+  <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()" style="width: 550px;">
+    <nz-form-item>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="usernameTpl" [nzOffset]="5">
+        <nz-input-group nzPrefixIcon="user">
+          <input type="text" id ="username" nz-input formControlName="username" placeholder="Username" />
+        </nz-input-group>
+        <ng-template #usernameTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Enter your username!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('usernameIsExisted')">
+            The username already exists!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="emailTpl" [nzOffset]="5">
+        <nz-input-group nzPrefixIcon="mail">
+          <input nz-input formControlName="email" id="email" placeholder="Email" />
+        </nz-input-group>
+        <ng-template #emailTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Type your email!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('emailIsExisted')">
+            The email is already used!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('email')">
+            The email is invalid!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="passwordTpl" [nzOffset]="5">
+        <nz-input-group nzPrefixIcon="lock">
+            <input 
+              type="password" 
+              nz-input 
+              formControlName="password" 
+              placeholder="Password"
+              (ngModelChange)="updateConfirmValidator()" 
+            />
+        </nz-input-group>
+        <ng-template #passwordTpl let-control>
+          <ng-container *ngIf="!control.hasError('validPasswordLength') && !control.hasError('required')">
+            Password's length must be in 6 ~ 20 characters.
+          </ng-container>
+          <ng-container *ngIf="control.hasError('required')">
+            Type your password!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="errorTpl" [nzOffset]="5">
+        <nz-input-group nzPrefixIcon="lock">
+          <input nz-input type="password" formControlName="checkPassword" id="checkPassword" placeholder="Re-enter password"/>
+        </nz-input-group>
+        <ng-template #errorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">
+            Type your password again!
+          </ng-container>
+          <ng-container *ngIf="control.hasError('confirm')">
+            Passwords must match!
+          </ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row class="register-area">
+      <nz-form-control [nzSpan]="14" [nzOffset]="5">
+        <label nz-checkbox formControlName="agree">
+          <span>I have read the <a>agreement</a></span>
+        </label>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nz-row class="register-area">
+      <nz-form-control [nzSpan]="14" [nzOffset]="5">
+        <button nz-button nzType="primary" nzBlock [disabled]="!validateForm.valid">Sign Up</button>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control [nzSpan]="14" [nzOffset]="5">
+        <span>Already have an account? <a [routerLink]="['/user/login']">Sign-In</a></span>
+      </nz-form-control>
+    </nz-form-item>
+  </form>

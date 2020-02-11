@@ -20,6 +20,8 @@ package org.apache.submarine.integration;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
 import org.apache.submarine.SubmarineITUtils;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +68,13 @@ public class sidebarIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC).click();
     SubmarineITUtils.sleep( 5000, true);
+
+    // Lazy-loading
+    WebDriverWait wait = new WebDriverWait( driver, 15, 5000);
+    pollingWait(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ant-breadcrumb-link ng-star-inserted']")));
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/manager/user");
+
     pollingWait(By.xpath("//a[@href='/workbench/manager/data-dict']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/manager/data-dict");
     pollingWait(By.xpath("//span[contains(text(), \"Home\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
