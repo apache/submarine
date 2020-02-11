@@ -18,4 +18,4 @@ set -e
 printf "Building Submarine CI/CD Image.\n"
 docker build -t submarine-cicd .
 printf "Start Submarine CI/CD.\n"
-docker run -it --rm submarine-cicd
+docker run -it --rm -p 4000:4000 submarine-cicd
