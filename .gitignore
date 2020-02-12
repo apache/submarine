@@ -58,7 +58,6 @@ venv.bak/
 *.jar
 target
 dev-support/mini-submarine/database
-submodules/tony/tony-core/build
 submarine-workbench/workbench-web/node
 submarine-workbench/workbench-web/node_modules
 submarine-workbench/workbench-web/dist

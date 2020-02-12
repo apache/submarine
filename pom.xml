@@ -443,7 +443,6 @@
             </goals>
             <configuration>
               <failOnViolation>true</failOnViolation>
-              <excludes>com/linkedin/tony/rpc/proto/*,com/linkedin/tony/events/*</excludes>
             </configuration>
           </execution>
           <execution>
@@ -483,7 +482,6 @@
             <exclude>**/*.json</exclude>
             <exclude>**/*.conf</exclude>
             <exclude>**/*.yaml</exclude>
-            <exclude>**/src/main/java/com/linkedin/tony/events/*</exclude>
             <exclude>**/src/main/resources/META-INF/services/org.apache.hadoop.security.SecurityInfo</exclude>
             <exclude>**/src/test/resources/typicalHistFolder/job1/application123-1-1-user1-SUCCEEDED.jhist</exclude>
             <exclude>**/conf/routes</exclude>
