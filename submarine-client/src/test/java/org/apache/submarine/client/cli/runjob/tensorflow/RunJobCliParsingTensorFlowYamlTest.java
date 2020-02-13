@@ -24,6 +24,7 @@ import org.apache.hadoop.yarn.api.records.Resource;
 import org.apache.submarine.client.cli.YamlConfigTestUtils;
 import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
+import org.apache.submarine.client.cli.param.yaml.YamlParseException;
 import org.apache.submarine.client.cli.runjob.RunJobCli;
 import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
 import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
@@ -292,4 +293,16 @@ public class RunJobCliParsingTensorFlowYamlTest {
     verifyTensorboardValues(jobRunParameters);
   }
 
+  @Test
+  public void testInvalidConfigSchedulerSectionIsDefined() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
+
+    exception.expect(YamlParseException.class);
+    exception.expectMessage("Scheduler section should not be defined " +
+        "when MXNet is not the selected framework!");
+    yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
+        DIR_NAME + "/invalid-config-scheduler-section.yaml");
+    runJobCli.run(
+        new String[]{"-f", yamlConfig.getAbsolutePath(), "--verbose"});
+  }
 }

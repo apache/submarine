@@ -31,6 +31,7 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.client.cli.CliConstants;
 import org.apache.submarine.client.cli.param.Localization;
 import org.apache.submarine.client.cli.param.ParametersHolder;
+import org.apache.submarine.commons.runtime.Framework;
 import org.apache.submarine.commons.runtime.param.Parameter;
 import org.apache.submarine.commons.runtime.resource.ResourceUtils;
 
@@ -54,65 +55,22 @@ public final class YarnUtils {
             parameters.getFramework().getValue());
     tonyConf.setStrings(TonyConfigurationKeys.APPLICATION_NAME,
             parameters.getParameters().getName());
-    tonyConf.setStrings(
-        TonyConfigurationKeys.getInstancesKey(Constants.WORKER_JOB_NAME),
-            parameters.getOptionValue(CliConstants.N_WORKERS));
-    if (parameters.getOptionValue(CliConstants.N_PS) != null) {
-      tonyConf.setStrings(
-              TonyConfigurationKeys.getInstancesKey(Constants.PS_JOB_NAME),
-              parameters.getOptionValue(CliConstants.N_PS));
-    }
-    // Resources for PS & Worker
-    if (parameters.getOptionValue(CliConstants.PS_RES) != null) {
-      Resource psResource = getResource(parameters, CliConstants.PS_RES);
 
-      tonyConf.setInt(
-          TonyConfigurationKeys.getResourceKey(Constants.PS_JOB_NAME,
-              Constants.VCORES),
-              psResource.getVirtualCores());
-      tonyConf.setLong(
-          TonyConfigurationKeys.getResourceKey(Constants.PS_JOB_NAME,
-              Constants.MEMORY),
-          ResourceUtils.getMemorySize(psResource));
+    setParametersForWorker(tonyConf, parameters);
+    setParametersForPS(tonyConf, parameters);
+    if (parameters.getFramework() == Framework.MXNET) {
+      setParametersForScheduler(tonyConf, parameters);
     }
-    if (parameters.getOptionValue(CliConstants.WORKER_RES) != null) {
-      Resource workerResource = getResource(parameters, CliConstants.WORKER_RES);
 
-      tonyConf.setInt(
-          TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
-              Constants.VCORES),
-              workerResource.getVirtualCores());
-      tonyConf.setLong(
-          TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
-              Constants.MEMORY),
-          ResourceUtils.getMemorySize(workerResource));
-      tonyConf.setLong(
-          TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
-              Constants.GPUS),
-          ResourceUtils.getResourceValue(workerResource,
-              ResourceUtils.GPU_URI));
-    }
     if (parameters.getOptionValue(CliConstants.QUEUE) != null) {
       tonyConf.set(
           TonyConfigurationKeys.YARN_QUEUE_NAME,
               parameters.getOptionValue(CliConstants.QUEUE));
     }
-    // Set up Docker for PS & Worker
+
     if (parameters.getOptionValue(CliConstants.DOCKER_IMAGE) != null) {
       tonyConf.set(TonyConfigurationKeys.getContainerDockerKey(),
               parameters.getOptionValue(CliConstants.DOCKER_IMAGE));
-      tonyConf.setBoolean(TonyConfigurationKeys.DOCKER_ENABLED, true);
-    }
-    if (parameters.getOptionValue(CliConstants.WORKER_DOCKER_IMAGE) != null) {
-      tonyConf.set(
-          TonyConfigurationKeys.getDockerImageKey(Constants.WORKER_JOB_NAME),
-              parameters.getOptionValue(CliConstants.WORKER_DOCKER_IMAGE));
-      tonyConf.setBoolean(TonyConfigurationKeys.DOCKER_ENABLED, true);
-    }
-    if (parameters.getOptionValue(CliConstants.PS_DOCKER_IMAGE) != null) {
-      tonyConf.set(
-          TonyConfigurationKeys.getDockerImageKey(Constants.PS_JOB_NAME),
-              parameters.getOptionValue(CliConstants.PS_DOCKER_IMAGE));
       tonyConf.setBoolean(TonyConfigurationKeys.DOCKER_ENABLED, true);
     }
 
@@ -132,18 +90,6 @@ public final class YarnUtils {
     }
     // Update after SUBMARINE-104 is merged into tony.
     // tonyConf.setStrings(TonyConfigurationKeys.APPLICATION_TYPE, SUBMARINE_RUNTIME_APP_TYPE);
-    // Set up running command
-    if (parameters.getOptionValue(CliConstants.WORKER_LAUNCH_CMD) != null) {
-      tonyConf.set(
-          TonyConfigurationKeys.getExecuteCommandKey(Constants.WORKER_JOB_NAME),
-              parameters.getOptionValue(CliConstants.WORKER_LAUNCH_CMD));
-    }
-
-    if (parameters.getOptionValue(CliConstants.PS_LAUNCH_CMD) != null) {
-      tonyConf.set(
-          TonyConfigurationKeys.getExecuteCommandKey(Constants.PS_JOB_NAME),
-              parameters.getOptionValue(CliConstants.PS_LAUNCH_CMD));
-    }
 
     tonyConf.setBoolean(TonyConfigurationKeys.SECURITY_ENABLED,
         !parameters.hasOption(CliConstants.INSECURE_CLUSTER));
@@ -202,5 +148,114 @@ public final class YarnUtils {
       throw new ParseException("--" + option + " is absent.");
     }
     return ResourceUtils.createResourceFromString(resourceStr);
+  }
+
+  private static void setParametersForWorker (Configuration tonyConf,
+          ParametersHolder parameters) throws YarnException, ParseException {
+    tonyConf.setStrings(
+            TonyConfigurationKeys.getInstancesKey(Constants.WORKER_JOB_NAME),
+            parameters.getOptionValue(CliConstants.N_WORKERS));
+
+    if (parameters.getOptionValue(CliConstants.WORKER_RES) != null) {
+      Resource workerResource = getResource(parameters, CliConstants.WORKER_RES);
+
+      tonyConf.setInt(
+              TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
+                      Constants.VCORES),
+              workerResource.getVirtualCores());
+      tonyConf.setLong(
+              TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
+                      Constants.MEMORY),
+              ResourceUtils.getMemorySize(workerResource));
+      tonyConf.setLong(
+              TonyConfigurationKeys.getResourceKey(Constants.WORKER_JOB_NAME,
+                      Constants.GPUS),
+              ResourceUtils.getResourceValue(workerResource,
+                      ResourceUtils.GPU_URI));
+    }
+
+    if (parameters.getOptionValue(CliConstants.WORKER_DOCKER_IMAGE) != null) {
+      tonyConf.set(
+              TonyConfigurationKeys.getDockerImageKey(Constants.WORKER_JOB_NAME),
+              parameters.getOptionValue(CliConstants.WORKER_DOCKER_IMAGE));
+      tonyConf.setBoolean(TonyConfigurationKeys.DOCKER_ENABLED, true);
+    }
+
+    if (parameters.getOptionValue(CliConstants.WORKER_LAUNCH_CMD) != null) {
+      tonyConf.set(
+              TonyConfigurationKeys.getExecuteCommandKey(Constants.WORKER_JOB_NAME),
+              parameters.getOptionValue(CliConstants.WORKER_LAUNCH_CMD));
+    }
+  }
+
+  private static void setParametersForPS (Configuration tonyConf,
+          ParametersHolder parameters) throws YarnException, ParseException {
+    String jobName = Constants.PS_JOB_NAME;
+    if (parameters.getFramework() == Framework.MXNET) {
+      jobName = Constants.SERVER_JOB_NAME;
+    }
+
+    if (parameters.getOptionValue(CliConstants.N_PS) != null) {
+      tonyConf.setStrings(
+              TonyConfigurationKeys.getInstancesKey(jobName),
+              parameters.getOptionValue(CliConstants.N_PS));
+    }
+    if (parameters.getOptionValue(CliConstants.PS_RES) != null) {
+      Resource psResource = getResource(parameters, CliConstants.PS_RES);
+
+      tonyConf.setInt(
+              TonyConfigurationKeys.getResourceKey(jobName,
+                      Constants.VCORES),
+              psResource.getVirtualCores());
+      tonyConf.setLong(
+              TonyConfigurationKeys.getResourceKey(jobName,
+                      Constants.MEMORY),
+              ResourceUtils.getMemorySize(psResource));
+    }
+
+    if (parameters.getOptionValue(CliConstants.PS_LAUNCH_CMD) != null) {
+      tonyConf.set(
+              TonyConfigurationKeys.getExecuteCommandKey(jobName),
+              parameters.getOptionValue(CliConstants.PS_LAUNCH_CMD));
+    }
+
+    if (parameters.getOptionValue(CliConstants.PS_DOCKER_IMAGE) != null) {
+      tonyConf.set(
+              TonyConfigurationKeys.getDockerImageKey(jobName),
+              parameters.getOptionValue(CliConstants.PS_DOCKER_IMAGE));
+      tonyConf.setBoolean(TonyConfigurationKeys.DOCKER_ENABLED, true);
+    }
+  }
+
+  private static void setParametersForScheduler (Configuration tonyConf,
+          ParametersHolder parameters) throws YarnException, ParseException {
+    if (parameters.getOptionValue(CliConstants.N_SCHEDULERS) != null) {
+      tonyConf.setStrings(
+              TonyConfigurationKeys.getInstancesKey(Constants.SCHEDULER_JOB_NAME),
+              parameters.getOptionValue(CliConstants.N_SCHEDULERS));
+    }
+
+    if (parameters.getOptionValue(CliConstants.SCHEDULER_RES) != null) {
+      Resource schedulerResource = getResource(parameters, CliConstants.SCHEDULER_RES);
+
+      tonyConf.setInt(
+              TonyConfigurationKeys.getResourceKey(Constants.SCHEDULER_JOB_NAME,
+                      Constants.VCORES),
+              schedulerResource.getVirtualCores());
+      tonyConf.setLong(
+              TonyConfigurationKeys.getResourceKey(Constants.SCHEDULER_JOB_NAME,
+                      Constants.MEMORY),
+              ResourceUtils.getMemorySize(schedulerResource));
+    }
+    if (parameters.getOptionValue(CliConstants.SCHEDULER_LAUNCH_CMD) != null) {
+      tonyConf.set(
+              TonyConfigurationKeys.getExecuteCommandKey(Constants.SCHEDULER_JOB_NAME),
+              parameters.getOptionValue(CliConstants.SCHEDULER_LAUNCH_CMD));
+    }
+    if (parameters.getOptionValue(CliConstants.SCHEDULER_DOCKER_IMAGE) != null) {
+      tonyConf.set(
+              TonyConfigurationKeys.getDockerImageKey(Constants.SCHEDULER_JOB_NAME),
+              parameters.getOptionValue(CliConstants.SCHEDULER_DOCKER_IMAGE));
+    }
   }
 }

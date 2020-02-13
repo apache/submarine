@@ -27,6 +27,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.client.cli.CliConstants;
 import org.apache.submarine.client.cli.Command;
+import org.apache.submarine.client.cli.param.runjob.MXNetRunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.PyTorchRunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.client.cli.param.yaml.Configs;
@@ -69,7 +70,7 @@ public final class ParametersHolder implements Parameter {
       LoggerFactory.getLogger(ParametersHolder.class);
 
   public static final String SUPPORTED_FRAMEWORKS_MESSAGE =
-      "TensorFlow and PyTorch are the only supported frameworks for now!";
+      "TensorFlow, PyTorch, MXNet are the only supported frameworks for now!";
   public static final String SUPPORTED_COMMANDS_MESSAGE =
       "'Show job' and 'run job' are the only supported commands for now!";
 
@@ -108,6 +109,8 @@ public final class ParametersHolder implements Parameter {
         return new TensorFlowRunJobParameters();
       } else if (framework == Framework.PYTORCH) {
         return new PyTorchRunJobParameters();
+      } else if (framework == Framework.MXNET) {
+        return new MXNetRunJobParameters();
       } else {
         throw new UnsupportedOperationException(SUPPORTED_FRAMEWORKS_MESSAGE);
       }
@@ -126,11 +129,18 @@ public final class ParametersHolder implements Parameter {
               "is the selected framework!");
     }
 
-    if (isCommandRunJob() && isFrameworkPyTorch() &&
-        isTensorboardSectionDefined(yamlConfig)) {
+    if (isCommandRunJob() && (isFrameworkPyTorch() || isFrameworkMXNet())
+        && isTensorboardSectionDefined(yamlConfig)) {
       throw new YamlParseException(
-          "TensorBoard section should not be defined when PyTorch " +
-              "is the selected framework!");
+          "TensorBoard section should not be defined when TensorFlow " +
+              "is not the selected framework!");
+    }
+
+    if (isCommandRunJob() && !isFrameworkMXNet() &&
+        isSchedulerSectionDefined(yamlConfig)) {
+      throw new YamlParseException(
+          "Scheduler section should not be defined when MXNet " +
+              "is not the selected framework!");
     }
   }
 
@@ -142,6 +152,10 @@ public final class ParametersHolder implements Parameter {
     return framework == Framework.PYTORCH;
   }
 
+  private boolean isFrameworkMXNet() {
+    return framework == Framework.MXNET;
+  }
+
   private boolean isPsSectionDefined(YamlConfigFile yamlConfig) {
     return yamlConfig != null &&
         yamlConfig.getRoles() != null &&
@@ -151,6 +165,12 @@ public final class ParametersHolder implements Parameter {
   private boolean isTensorboardSectionDefined(YamlConfigFile yamlConfig) {
     return yamlConfig != null &&
         yamlConfig.getTensorBoard() != null;
+  }
+
+  private boolean isSchedulerSectionDefined(YamlConfigFile yamlConfig) {
+    return yamlConfig != null &&
+        yamlConfig.getRoles() != null &&
+        yamlConfig.getRoles().getScheduler() != null;
   }
 
   private Framework determineFrameworkType()
@@ -195,6 +215,7 @@ public final class ParametersHolder implements Parameter {
     initGenericConfigs(yamlConfig, yamlConfigValues);
     initPs(yamlConfigValues, roles.getPs());
     initWorker(yamlConfigValues, roles.getWorker());
+    initScheduler(yamlConfigValues, roles.getScheduler());
     initScheduling(yamlConfigValues, yamlConfig.getScheduling());
     initSecurity(yamlConfigValues, yamlConfig.getSecurity());
     initTensorBoard(yamlConfigValues, yamlConfig.getTensorBoard());
@@ -251,6 +272,17 @@ public final class ParametersHolder implements Parameter {
     yamlConfigs.put(CliConstants.WORKER_RES, worker.getResources());
     yamlConfigs.put(CliConstants.WORKER_DOCKER_IMAGE, worker.getDockerImage());
     yamlConfigs.put(CliConstants.WORKER_LAUNCH_CMD, worker.getLaunchCmd());
+  }
+
+  private void initScheduler(Map<String, String> yamlConfigs, Role scheduler) {
+    if (scheduler == null) {
+      return;
+    }
+    yamlConfigs.put(CliConstants.N_SCHEDULERS,
+            String.valueOf(scheduler.getReplicas()));
+    yamlConfigs.put(CliConstants.SCHEDULER_RES, scheduler.getResources());
+    yamlConfigs.put(CliConstants.SCHEDULER_DOCKER_IMAGE, scheduler.getDockerImage());
+    yamlConfigs.put(CliConstants.SCHEDULER_LAUNCH_CMD, scheduler.getLaunchCmd());
   }
 
   private void initScheduling(Map<String, String> yamlConfigValues,

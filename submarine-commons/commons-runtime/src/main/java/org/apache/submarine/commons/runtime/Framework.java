@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
  * Represents the type of Machine learning framework to work with.
  */
 public enum Framework {
-  TENSORFLOW(Constants.TENSORFLOW_NAME), PYTORCH(Constants.PYTORCH_NAME);
+  TENSORFLOW(Constants.TENSORFLOW_NAME), PYTORCH(Constants.PYTORCH_NAME), MXNET(Constants.MXNET_NAME);
 
   private String value;
 
@@ -58,5 +58,6 @@ public enum Framework {
   private static class Constants {
     static final String TENSORFLOW_NAME = "tensorflow";
     static final String PYTORCH_NAME = "pytorch";
+    static final String MXNET_NAME = "mxnet";
   }
 }

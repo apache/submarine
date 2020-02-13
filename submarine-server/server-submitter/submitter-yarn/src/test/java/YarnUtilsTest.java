@@ -23,6 +23,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.apache.hadoop.yarn.exceptions.YarnException;
 import org.apache.submarine.client.cli.param.ParametersHolder;
+import org.apache.submarine.client.cli.param.runjob.MXNetRunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.PyTorchRunJobParameters;
 import org.apache.submarine.client.cli.param.runjob.TensorFlowRunJobParameters;
 import org.apache.submarine.client.cli.runjob.RunJobCli;
@@ -158,5 +159,63 @@ public class YarnUtilsTest {
             .getResourceKey(Constants.WORKER_JOB_NAME, Constants.VCORES)));
     // Update after SUBMARINE-104 is merged into tony.
     // Assert.assertEquals("SUBMARINE", tonyConf.get(TonyConfigurationKeys.APPLICATION_TYPE));
+  }
+
+  @Test
+  public void testMXNetTonyConfFromClientContext() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(getMockClientContext());
+    runJobCli.run(
+        new String[] {"--framework", "mxnet", "--name", "my-job",
+            "--docker_image", "mxnet-docker:1.1.0",
+            "--input_path", "hdfs://input",
+            "--num_workers", "2", "--num_ps", "2", "--worker_launch_cmd",
+            "python run-job.py", "--worker_resources", "memory=2048M,vcores=2",
+            "--ps_resources", "memory=4G,vcores=4", "--ps_launch_cmd",
+            "python run-ps.py", "--num_schedulers", "1", "--scheduler_launch_cmd",
+            "python run-scheduler.py", "--scheduler_resources", "memory=2048M,vcores=2"});
+    RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
+    ParametersHolder parametersHolder = runJobCli.getParametersHolder();
+
+    assertTrue(RunJobParameters.class + " must be an instance of " +
+                    MXNetRunJobParameters.class,
+            jobRunParameters instanceof MXNetRunJobParameters);
+    MXNetRunJobParameters mxNetParams = (MXNetRunJobParameters) jobRunParameters;
+
+    Configuration tonyConf = YarnUtils
+            .tonyConfFromClientContext(parametersHolder);
+    Assert.assertEquals(parametersHolder.getFramework().getValue(),
+            tonyConf.get(TonyConfigurationKeys.FRAMEWORK_NAME));
+    Assert.assertEquals(jobRunParameters.getName(),
+            tonyConf.get(TonyConfigurationKeys.APPLICATION_NAME));
+    Assert.assertEquals(jobRunParameters.getDockerImageName(),
+            tonyConf.get(TonyConfigurationKeys.getContainerDockerKey()));
+
+    Assert.assertEquals("2", tonyConf.get(TonyConfigurationKeys
+            .getInstancesKey("worker")));
+    Assert.assertEquals(mxNetParams.getWorkerLaunchCmd(),
+            tonyConf.get(TonyConfigurationKeys
+                    .getExecuteCommandKey("worker")));
+    Assert.assertEquals("2048", tonyConf.get(TonyConfigurationKeys
+            .getResourceKey(Constants.WORKER_JOB_NAME, Constants.MEMORY)));
+    Assert.assertEquals("2", tonyConf.get(TonyConfigurationKeys
+            .getResourceKey(Constants.WORKER_JOB_NAME, Constants.VCORES)));
+    Assert.assertEquals("2",
+            tonyConf.get(TonyConfigurationKeys.getInstancesKey(Constants.SERVER_JOB_NAME)));
+    Assert.assertEquals("4096", tonyConf.get(TonyConfigurationKeys
+            .getResourceKey(Constants.SERVER_JOB_NAME, Constants.MEMORY)));
+    Assert.assertEquals("4", tonyConf.get(TonyConfigurationKeys
+            .getResourceKey(Constants.SERVER_JOB_NAME, Constants.VCORES)));
+    Assert.assertEquals(mxNetParams.getPSLaunchCmd(),
+            tonyConf.get(TonyConfigurationKeys.getExecuteCommandKey(Constants.SERVER_JOB_NAME)));
+    Assert.assertEquals("1",
+            tonyConf.get(TonyConfigurationKeys.getInstancesKey(Constants.SCHEDULER_JOB_NAME)));
+    Assert.assertEquals("2048", tonyConf.get(TonyConfigurationKeys
+            .getResourceKey(Constants.SCHEDULER_JOB_NAME, Constants.MEMORY)));
+    Assert.assertEquals("2", tonyConf.get(TonyConfigurationKeys
+            .getResourceKey(Constants.SCHEDULER_JOB_NAME, Constants.VCORES)));
+    Assert.assertEquals(mxNetParams.getSchedulerLaunchCmd(),
+            tonyConf.get(TonyConfigurationKeys.getExecuteCommandKey(Constants.SCHEDULER_JOB_NAME)));
+    // Update after SUBMARINE-104 is merged into tony.
+    //Assert.assertEquals("SUBMARINE", tonyConf.get(TonyConfigurationKeys.APPLICATION_TYPE));
   }
 }

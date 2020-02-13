@@ -169,4 +169,71 @@ public class RunJobCliParsingTensorFlowTest {
     }
     assertTrue(success);
   }
+
+  @Test
+  public void testNumSchedulerCannotBeDefined() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
+    assertFalse(SubmarineLogs.isVerbose());
+
+    expectedException.expect(ParseException.class);
+    expectedException.expectMessage("cannot be defined for TensorFlow jobs");
+    runJobCli.run(
+        new String[] {"--framework", "tensorflow",
+            "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
+            "--input_path", "hdfs://input", "--checkpoint_path", "hdfs://output",
+            "--num_workers", "1", "--worker_launch_cmd", "python run-job.py",
+            "--worker_resources", "memory=4g,vcores=2", "--tensorboard", "true",
+            "--verbose", "--wait_job_finish", "--num_schedulers", "1"});
+  }
+
+  @Test
+  public void testSchedulerResourcesCannotBeDefined() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
+    assertFalse(SubmarineLogs.isVerbose());
+
+    expectedException.expect(ParseException.class);
+    expectedException.expectMessage("cannot be defined for TensorFlow jobs");
+    runJobCli.run(
+        new String[] {"--framework", "tensorflow",
+            "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
+            "--input_path", "hdfs://input", "--checkpoint_path", "hdfs://output",
+            "--num_workers", "1", "--worker_launch_cmd", "python run-job.py",
+            "--worker_resources", "memory=4g,vcores=2", "--tensorboard", "true",
+            "--verbose", "--wait_job_finish",
+            "--scheduler_resources", "memory=2048M,vcores=2"});
+  }
+
+  @Test
+  public void testSchedulerDockerImageCannotBeDefined() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
+    assertFalse(SubmarineLogs.isVerbose());
+
+    expectedException.expect(ParseException.class);
+    expectedException.expectMessage("cannot be defined for TensorFlow jobs");
+    runJobCli.run(
+        new String[] {"--framework", "tensorflow",
+            "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
+            "--input_path", "hdfs://input", "--checkpoint_path", "hdfs://output",
+            "--num_workers", "1", "--worker_launch_cmd", "python run-job.py",
+            "--worker_resources", "memory=4g,vcores=2", "--tensorboard", "true",
+            "--verbose", "--wait_job_finish",
+            "--scheduler_docker_image", "schedulerDockerImage"});
+  }
+
+  @Test
+  public void testSchedulerLaunchCommandCannotBeDefined() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
+    assertFalse(SubmarineLogs.isVerbose());
+
+    expectedException.expect(ParseException.class);
+    expectedException.expectMessage("cannot be defined for TensorFlow jobs");
+    runJobCli.run(
+        new String[] {"--framework", "tensorflow",
+            "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
+            "--input_path", "hdfs://input", "--checkpoint_path", "hdfs://output",
+            "--num_workers", "1", "--worker_launch_cmd", "python run-job.py",
+            "--worker_resources", "memory=4g,vcores=2", "--tensorboard", "true",
+            "--verbose", "--wait_job_finish",
+            "--scheduler_launch_cmd", "schedulerLaunchCommand"});
+  }
 }

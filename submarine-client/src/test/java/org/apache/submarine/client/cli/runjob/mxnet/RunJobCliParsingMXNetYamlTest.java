@@ -17,48 +17,41 @@
  * under the License.
  */
 
-package org.apache.submarine.client.cli.runjob.pytorch;
+package org.apache.submarine.client.cli.runjob.mxnet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import com.google.common.collect.ImmutableList;
+import org.apache.hadoop.yarn.api.records.Resource;
+import org.apache.hadoop.yarn.util.resource.Resources;
+import org.apache.submarine.client.cli.YamlConfigTestUtils;
+import org.apache.submarine.client.cli.param.runjob.MXNetRunJobParameters;
+import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
+import org.apache.submarine.client.cli.param.yaml.YamlParseException;
+import org.apache.submarine.client.cli.runjob.RunJobCli;
+import org.apache.submarine.client.cli.runjob.RunJobCliParsingCommonTest;
+import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
+import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
+import org.apache.submarine.commons.runtime.resource.ResourceUtils;
+import org.junit.*;
+import org.junit.rules.ExpectedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
 
-import org.apache.hadoop.yarn.api.records.Resource;
-import org.apache.submarine.client.cli.YamlConfigTestUtils;
-import org.apache.submarine.client.cli.param.runjob.PyTorchRunJobParameters;
-import org.apache.submarine.client.cli.param.runjob.RunJobParameters;
-import org.apache.submarine.client.cli.param.yaml.YamlParseException;
-import org.apache.submarine.client.cli.runjob.RunJobCli;
-import org.apache.submarine.commons.runtime.conf.SubmarineLogs;
-import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
-import org.apache.submarine.commons.runtime.resource.ResourceUtils;
-import org.apache.hadoop.yarn.util.resource.Resources;
-import org.apache.submarine.client.cli.runjob.RunJobCliParsingCommonTest;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import com.google.common.collect.ImmutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 /**
- * Test class that verifies the correctness of PyTorch
+ * Test class that verifies the correctness of MXNet
  * YAML configuration parsing.
  */
-public class RunJobCliParsingPyTorchYamlTest {
+public class RunJobCliParsingMXNetYamlTest {
   private static final String OVERRIDDEN_PREFIX = "overridden_";
-  private static final String DIR_NAME = "runjob-pytorch-yaml";
+  private static final String DIR_NAME = "runjob-mxnet-yaml";
   private File yamlConfig;
   private static Logger LOG = LoggerFactory.getLogger(
-      RunJobCliParsingPyTorchYamlTest.class);
+    RunJobCliParsingMXNetYamlTest.class);
 
   @Before
   public void before() {
@@ -82,7 +75,7 @@ public class RunJobCliParsingPyTorchYamlTest {
       List<String> expectedEnvs) {
     assertEquals("testInputPath", jobRunParameters.getInputPath());
     assertEquals("testCheckpointPath", jobRunParameters.getCheckpointPath());
-    Assert.assertEquals("testDockerImage", jobRunParameters.getDockerImageName());
+    assertEquals("testDockerImage", jobRunParameters.getDockerImageName());
 
     assertNotNull(jobRunParameters.getLocalizations());
     assertEquals(2, jobRunParameters.getLocalizations().size());
@@ -100,38 +93,64 @@ public class RunJobCliParsingPyTorchYamlTest {
     }
   }
 
-  private PyTorchRunJobParameters verifyWorkerCommonValues(RunJobParameters
-      jobRunParameters, String prefix) {
+  private void verifyPsValues(RunJobParameters jobRunParameters,
+      String prefix) {
     assertTrue(RunJobParameters.class + " must be an instance of " +
-            PyTorchRunJobParameters.class,
-        jobRunParameters instanceof PyTorchRunJobParameters);
-    PyTorchRunJobParameters pyTorchParams =
-        (PyTorchRunJobParameters) jobRunParameters;
+            MXNetRunJobParameters.class,
+        jobRunParameters instanceof MXNetRunJobParameters);
+    MXNetRunJobParameters mxNetParams =
+        (MXNetRunJobParameters) jobRunParameters;
 
-    assertEquals(3, pyTorchParams.getNumWorkers());
-    assertEquals(prefix + "testLaunchCmdWorker",
-        pyTorchParams.getWorkerLaunchCmd());
-    assertEquals(prefix + "testDockerImageWorker",
-        pyTorchParams.getWorkerDockerImage());
-    return pyTorchParams;
+    assertEquals(4, mxNetParams.getNumPS());
+    assertEquals(prefix + "testLaunchCmdPs", mxNetParams.getPSLaunchCmd());
+    assertEquals(prefix + "testDockerImagePs",
+        mxNetParams.getPsDockerImage());
+    assertEquals(Resources.createResource(20500, 34),
+        mxNetParams.getPsResource());
   }
 
-  private void verifyWorkerValues(RunJobParameters jobRunParameters,
+  private void verifySchedulerValues(RunJobParameters jobRunParameters,
       String prefix) {
-    PyTorchRunJobParameters pyTorchParams = verifyWorkerCommonValues
-        (jobRunParameters, prefix);
+    assertTrue(RunJobParameters.class + " must be an instance of " +
+        MXNetRunJobParameters.class, jobRunParameters instanceof MXNetRunJobParameters);
+    MXNetRunJobParameters mxNetParams = (MXNetRunJobParameters) jobRunParameters;
+    assertEquals(1, mxNetParams.getNumSchedulers());
+    assertEquals(prefix + "testLaunchCmdScheduler",
+        mxNetParams.getSchedulerLaunchCmd());
+    assertEquals(prefix + "testDockerImageScheduler", mxNetParams.getSchedulerDockerImage());
+    assertEquals(Resources.createResource(10240, 16),
+        mxNetParams.getSchedulerResource());
+  }
+
+  private void verifyWorkerValues(RunJobParameters jobRunParameters, String prefix) {
+    MXNetRunJobParameters mxNetParams =
+        verifyWorkerCommonValues(jobRunParameters, prefix);
     assertEquals(Resources.createResource(20480, 32),
-        pyTorchParams.getWorkerResource());
+        mxNetParams.getWorkerResource());
   }
 
-  private void verifyWorkerValuesWithGpu(RunJobParameters jobRunParameters,
-      String prefix) {
+  private MXNetRunJobParameters verifyWorkerCommonValues(
+          RunJobParameters jobRunParameters, String prefix) {
+    assertTrue(RunJobParameters.class + " must be an instance of " +
+                    MXNetRunJobParameters.class,
+            jobRunParameters instanceof MXNetRunJobParameters);
+    MXNetRunJobParameters mxNetParams =
+            (MXNetRunJobParameters) jobRunParameters;
 
-    PyTorchRunJobParameters pyTorchParams = verifyWorkerCommonValues
-        (jobRunParameters, prefix);
+    assertEquals(3, mxNetParams.getNumWorkers());
+    assertEquals(prefix + "testLaunchCmdWorker",
+            mxNetParams.getWorkerLaunchCmd());
+    assertEquals(prefix + "testDockerImageWorker",
+            mxNetParams.getWorkerDockerImage());
+    return mxNetParams;
+  }
+
+  private void verifyWorkerValuesWithGpu(RunJobParameters jobRunParameters, String prefix) {
+    MXNetRunJobParameters mxNetParams =
+        verifyWorkerCommonValues(jobRunParameters, prefix);
     Resource workResource = Resources.createResource(20480, 32);
     ResourceUtils.setResource(workResource, ResourceUtils.GPU_URI, 2);
-    assertEquals(workResource, pyTorchParams.getWorkerResource());
+    assertEquals(workResource, mxNetParams.getWorkerResource());
   }
 
   private void verifySecurityValues(RunJobParameters jobRunParameters) {
@@ -149,9 +168,10 @@ public class RunJobCliParsingPyTorchYamlTest {
         DIR_NAME + "/valid-config.yaml");
     runJobCli.run(
         new String[] {"-f", yamlConfig.getAbsolutePath(), "--verbose"});
-
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
     verifyBasicConfigValues(jobRunParameters);
+    verifyPsValues(jobRunParameters, "");
+    verifySchedulerValues(jobRunParameters, "");
     verifyWorkerValues(jobRunParameters, "");
     verifySecurityValues(jobRunParameters);
   }
@@ -176,6 +196,8 @@ public class RunJobCliParsingPyTorchYamlTest {
 
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
     verifyBasicConfigValues(jobRunParameters);
+    verifyPsValues(jobRunParameters, "");
+    verifySchedulerValues(jobRunParameters, "");
     verifyWorkerValuesWithGpu(jobRunParameters, "");
     verifySecurityValues(jobRunParameters);
   }
@@ -187,11 +209,14 @@ public class RunJobCliParsingPyTorchYamlTest {
 
     yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
         DIR_NAME + "/valid-config-with-overrides.yaml");
+
     runJobCli.run(
         new String[]{"-f", yamlConfig.getAbsolutePath(), "--verbose"});
 
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
     verifyBasicConfigValues(jobRunParameters);
+    verifyPsValues(jobRunParameters, OVERRIDDEN_PREFIX);
+    verifySchedulerValues(jobRunParameters, OVERRIDDEN_PREFIX);
     verifyWorkerValues(jobRunParameters, OVERRIDDEN_PREFIX);
     verifySecurityValues(jobRunParameters);
   }
@@ -199,7 +224,6 @@ public class RunJobCliParsingPyTorchYamlTest {
   @Test
   public void testMissingPrincipalUnderSecuritySection() throws Exception {
     RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
-
     yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
         DIR_NAME + "/security-principal-is-missing.yaml");
     runJobCli.run(
@@ -207,6 +231,8 @@ public class RunJobCliParsingPyTorchYamlTest {
 
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
     verifyBasicConfigValues(jobRunParameters);
+    verifyPsValues(jobRunParameters, "");
+    verifySchedulerValues(jobRunParameters, "");
     verifyWorkerValues(jobRunParameters, "");
 
     //Verify security values
@@ -218,7 +244,6 @@ public class RunJobCliParsingPyTorchYamlTest {
   @Test
   public void testMissingEnvs() throws Exception {
     RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
-
     yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
         DIR_NAME + "/envs-are-missing.yaml");
     runJobCli.run(
@@ -226,45 +251,20 @@ public class RunJobCliParsingPyTorchYamlTest {
 
     RunJobParameters jobRunParameters = runJobCli.getRunJobParameters();
     verifyBasicConfigValues(jobRunParameters, ImmutableList.of());
+    verifyPsValues(jobRunParameters, "");
+    verifySchedulerValues(jobRunParameters, "");
     verifyWorkerValues(jobRunParameters, "");
     verifySecurityValues(jobRunParameters);
   }
 
   @Test
-  public void testInvalidConfigPsSectionIsDefined() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
-
-    exception.expect(YamlParseException.class);
-    exception.expectMessage("PS section should not be defined " +
-        "when PyTorch is the selected framework");
-    yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
-        DIR_NAME + "/invalid-config-ps-section.yaml");
-    runJobCli.run(
-        new String[]{"-f", yamlConfig.getAbsolutePath(), "--verbose"});
-  }
-
-  @Test
   public void testInvalidConfigTensorboardSectionIsDefined() throws Exception {
     RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
-
     exception.expect(YamlParseException.class);
     exception.expectMessage("TensorBoard section should not be defined " +
         "when TensorFlow is not the selected framework!");
     yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
         DIR_NAME + "/invalid-config-tensorboard-section.yaml");
-    runJobCli.run(
-        new String[]{"-f", yamlConfig.getAbsolutePath(), "--verbose"});
-  }
-
-  @Test
-  public void testInvalidConfigSchedulerSectionIsDefined() throws Exception {
-    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
-
-    exception.expect(YamlParseException.class);
-    exception.expectMessage("Scheduler section should not be defined " +
-        "when MXNet is not the selected framework!");
-    yamlConfig = YamlConfigTestUtils.createTempFileWithContents(
-         DIR_NAME + "/invalid-config-scheduler-section.yaml");
     runJobCli.run(
         new String[]{"-f", yamlConfig.getAbsolutePath(), "--verbose"});
   }
