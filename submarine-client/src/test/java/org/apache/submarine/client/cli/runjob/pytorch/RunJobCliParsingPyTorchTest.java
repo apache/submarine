@@ -208,4 +208,75 @@ public class RunJobCliParsingPyTorchTest {
             "--tensorboard_docker_image", "TBDockerImage"});
   }
 
+  @Test
+  public void testNumSchedulerCannotBeDefined() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
+    assertFalse(SubmarineLogs.isVerbose());
+
+    expectedException.expect(ParseException.class);
+    expectedException.expectMessage("cannot be defined for PyTorch jobs");
+    runJobCli.run(
+        new String[]{"--framework", "pytorch",
+            "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
+            "--input_path", "hdfs://input",
+            "--checkpoint_path", "hdfs://output",
+            "--num_workers", "3",
+            "--worker_launch_cmd",
+            "python run-job.py", "--worker_resources", "memory=2048M,vcores=2",
+            "--num_schedulers", "1"});
+  }
+
+  @Test
+  public void testSchedulerResourcesCannotBeDefined() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
+    assertFalse(SubmarineLogs.isVerbose());
+
+    expectedException.expect(ParseException.class);
+    expectedException.expectMessage("cannot be defined for PyTorch jobs");
+    runJobCli.run(
+        new String[]{"--framework", "pytorch",
+            "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
+            "--input_path", "hdfs://input",
+            "--checkpoint_path", "hdfs://output",
+            "--num_workers", "3",
+            "--worker_launch_cmd", "python run-job.py",
+            "--worker_resources", "memory=2048M,vcores=2",
+            "--scheduler_resources", "memory=2048M,vcores=2"});
+  }
+
+  @Test
+  public void testSchedulerDockerImageCannotBeDefined() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
+    assertFalse(SubmarineLogs.isVerbose());
+
+    expectedException.expect(ParseException.class);
+    expectedException.expectMessage("cannot be defined for PyTorch jobs");
+    runJobCli.run(
+        new String[]{"--framework", "pytorch",
+            "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
+            "--input_path", "hdfs://input",
+            "--checkpoint_path", "hdfs://output",
+            "--num_workers", "3",
+            "--worker_launch_cmd", "python run-job.py",
+            "--worker_resources", "memory=2048M,vcores=2",
+            "--scheduler_docker_image", "schedulerDockerImage"});
+  }
+
+  @Test
+  public void testSchedulerLaunchCommandCannotBeDefined() throws Exception {
+    RunJobCli runJobCli = new RunJobCli(RunJobCliParsingCommonTest.getMockClientContext());
+    assertFalse(SubmarineLogs.isVerbose());
+
+    expectedException.expect(ParseException.class);
+    expectedException.expectMessage("cannot be defined for PyTorch jobs");
+    runJobCli.run(
+        new String[]{"--framework", "pytorch",
+            "--name", "my-job", "--docker_image", "tf-docker:1.1.0",
+            "--input_path", "hdfs://input",
+            "--checkpoint_path", "hdfs://output",
+            "--num_workers", "3",
+            "--worker_launch_cmd", "python run-job.py",
+            "--worker_resources", "memory=2048M,vcores=2",
+            "--scheduler_launch_cmd", "schedulerLaunchCommand"});
+  }
 }

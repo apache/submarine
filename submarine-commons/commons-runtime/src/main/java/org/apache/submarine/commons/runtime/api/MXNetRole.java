@@ -17,37 +17,30 @@
  * under the License.
  */
 
-package org.apache.submarine.client.cli.param.yaml;
+package org.apache.submarine.commons.runtime.api;
 
 /**
- * This class represents a section of the YAML configuration file.
+ * Enum to represent a MXNet Role.
  */
-public class Roles {
-  private Role worker;
-  private Role ps;
-  private Role scheduler;
+public enum MXNetRole implements Role {
+  PRIMARY_WORKER("master"),
+  WORKER("worker"),
+  PS("ps"),
+  SCHEDULER("scheduler");
 
-  public Role getWorker() {
-    return worker;
+  private String compName;
+
+  MXNetRole(String compName) {
+    this.compName = compName;
   }
 
-  public void setWorker(Role worker) {
-    this.worker = worker;
+  @Override
+  public String getComponentName() {
+    return compName;
   }
 
-  public Role getPs() {
-    return ps;
-  }
-
-  public void setPs(Role ps) {
-    this.ps = ps;
-  }
-
-  public Role getScheduler() {
-    return scheduler;
-  }
-
-  public void setScheduler(Role scheduler) {
-    this.scheduler = scheduler;
+  @Override
+  public String getName() {
+    return name();
   }
 }

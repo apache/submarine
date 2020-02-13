@@ -60,10 +60,14 @@ import java.util.Map;
 public class RunJobCli extends AbstractCli {
   private static final Logger LOG =
       LoggerFactory.getLogger(RunJobCli.class);
-  private static final String CAN_BE_USED_WITH_TF_PYTORCH =
-      "Can be used with TensorFlow or PyTorch frameworks.";
+  private static final String CAN_BE_USED_WITH_TF_PYTORCH_MXNET =
+          "Can be used with TensorFlow or PyTorch or MXNet frameworks.";
+  private static final String CAN_BE_USED_WITH_TF_MXNET =
+      "Can be used with TensorFlow or MXNet frameworks.";
   private static final String CAN_BE_USED_WITH_TF_ONLY =
       "Can only be used with TensorFlow framework.";
+  private static final String CAN_BE_USED_WITH_MXNET_ONLY =
+          "Can only be used with MXNet framework.";
   public static final String YAML_PARSE_FAILED = "Failed to parse " +
       "YAML config";
 
@@ -117,6 +121,7 @@ public class RunJobCli extends AbstractCli {
 
     addWorkerOptions(options);
     addPSOptions(options);
+    addSchedulerOptions(options);
     addTensorboardOptions(options);
 
     options.addOption(CliConstants.ENV, true,
@@ -170,37 +175,37 @@ public class RunJobCli extends AbstractCli {
   private void addWorkerOptions(Options options) {
     options.addOption(CliConstants.N_WORKERS, true,
         "Number of worker tasks of the job, by default it's 1." +
-            CAN_BE_USED_WITH_TF_PYTORCH);
+            CAN_BE_USED_WITH_TF_PYTORCH_MXNET);
     options.addOption(CliConstants.WORKER_DOCKER_IMAGE, true,
         "Specify docker image for WORKER, when this is not specified, WORKER "
             + "uses --" + CliConstants.DOCKER_IMAGE + " as default." +
-            CAN_BE_USED_WITH_TF_PYTORCH);
+            CAN_BE_USED_WITH_TF_PYTORCH_MXNET);
     options.addOption(CliConstants.WORKER_LAUNCH_CMD, true,
         "Commandline of worker, arguments will be "
             + "directly used to launch the worker" +
-            CAN_BE_USED_WITH_TF_PYTORCH);
+            CAN_BE_USED_WITH_TF_PYTORCH_MXNET);
     options.addOption(CliConstants.WORKER_RES, true,
         "Resource of each worker, for example "
             + "memory-mb=2048,vcores=2,yarn.io/gpu=2" +
-            CAN_BE_USED_WITH_TF_PYTORCH);
+            CAN_BE_USED_WITH_TF_PYTORCH_MXNET);
   }
 
   private void addPSOptions(Options options) {
     options.addOption(CliConstants.N_PS, true,
         "Number of PS tasks of the job, by default it's 0. " +
-            CAN_BE_USED_WITH_TF_ONLY);
+            CAN_BE_USED_WITH_TF_MXNET);
     options.addOption(CliConstants.PS_DOCKER_IMAGE, true,
         "Specify docker image for PS, when this is not specified, PS uses --"
             + CliConstants.DOCKER_IMAGE + " as default." +
-            CAN_BE_USED_WITH_TF_ONLY);
+            CAN_BE_USED_WITH_TF_MXNET);
     options.addOption(CliConstants.PS_LAUNCH_CMD, true,
-        "Commandline of worker, arguments will be "
+        "Commandline of PS, arguments will be "
             + "directly used to launch the PS" +
-            CAN_BE_USED_WITH_TF_ONLY);
+            CAN_BE_USED_WITH_TF_MXNET);
     options.addOption(CliConstants.PS_RES, true,
         "Resource of each PS, for example "
             + "memory-mb=2048,vcores=2,yarn.io/gpu=2" +
-            CAN_BE_USED_WITH_TF_ONLY);
+            CAN_BE_USED_WITH_TF_MXNET);
   }
 
   private void addTensorboardOptions(Options options) {
@@ -217,6 +222,23 @@ public class RunJobCli extends AbstractCli {
             + "specified, Tensorboard " + "uses --" + CliConstants.DOCKER_IMAGE
             + " as default." +
             CAN_BE_USED_WITH_TF_ONLY);
+  }
+
+  private void addSchedulerOptions(Options options) {
+    options.addOption(CliConstants.N_SCHEDULERS, true,
+        "Number of scheduler tasks of the job. " +
+        "It should be 1 or 0, by default it's 0."+
+        CAN_BE_USED_WITH_MXNET_ONLY);
+    options.addOption(CliConstants.SCHEDULER_DOCKER_IMAGE, true,
+        "Specify docker image for scheduler, when this is not specified, " +
+        "scheduler uses --" + CliConstants.DOCKER_IMAGE +
+        " as default. " + CAN_BE_USED_WITH_MXNET_ONLY);
+    options.addOption(CliConstants.SCHEDULER_LAUNCH_CMD, true,
+        "Commandline of scheduler, arguments will be " +
+        "directly used to launch the scheduler. " + CAN_BE_USED_WITH_MXNET_ONLY);
+    options.addOption(CliConstants.SCHEDULER_RES, true,
+        "Resource of each scheduler, for example " +
+        "memory-mb=2048,vcores=2. " + CAN_BE_USED_WITH_MXNET_ONLY);
   }
 
   private void parseCommandLineAndGetRunJobParameters(String[] args)

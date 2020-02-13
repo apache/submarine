@@ -81,6 +81,20 @@ public class PyTorchRunJobParameters extends RunJobParameters {
         .getOptionValue(CliConstants.TENSORBOARD_DOCKER_IMAGE) != null) {
       throw new ParseException(getParamCannotBeDefinedErrorMessage(
           CliConstants.TENSORBOARD_DOCKER_IMAGE));
+    } else if (parametersHolder.getOptionValue(CliConstants.N_SCHEDULERS) != null) {
+      throw new ParseException(getParamCannotBeDefinedErrorMessage(
+          CliConstants.N_SCHEDULERS));
+    } else if (parametersHolder.getOptionValue(CliConstants.SCHEDULER_RES) != null) {
+      throw new ParseException(getParamCannotBeDefinedErrorMessage(
+          CliConstants.SCHEDULER_RES));
+    } else if (parametersHolder
+        .getOptionValue(CliConstants.SCHEDULER_DOCKER_IMAGE) != null) {
+      throw new ParseException(getParamCannotBeDefinedErrorMessage(
+          CliConstants.SCHEDULER_DOCKER_IMAGE));
+    } else if (parametersHolder
+        .getOptionValue(CliConstants.SCHEDULER_LAUNCH_CMD) != null) {
+      throw new ParseException(getParamCannotBeDefinedErrorMessage(
+          CliConstants.SCHEDULER_LAUNCH_CMD));
     }
   }
 

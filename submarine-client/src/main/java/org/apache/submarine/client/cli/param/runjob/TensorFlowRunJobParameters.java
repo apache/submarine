@@ -40,6 +40,8 @@ import java.util.List;
  */
 public class TensorFlowRunJobParameters extends RunJobParameters {
   private boolean tensorboardEnabled;
+  private static final String CANNOT_BE_DEFINED_FOR_TF =
+      "cannot be defined for TensorFlow jobs!";
   private RoleParameters psParameters =
       RoleParameters.createEmpty(TensorFlowRole.PS);
   private RoleParameters tensorBoardParameters =
@@ -48,6 +50,7 @@ public class TensorFlowRunJobParameters extends RunJobParameters {
   @Override
   public void updateParameters(Parameter parametersHolder, ClientContext clientContext)
       throws ParseException, IOException, YarnException {
+    checkArguments(parametersHolder);
     super.updateParameters(parametersHolder, clientContext);
 
     String input = parametersHolder.getOptionValue(CliConstants.INPUT_PATH);
@@ -70,6 +73,30 @@ public class TensorFlowRunJobParameters extends RunJobParameters {
     // Set default job dir / saved model dir, etc.
     setDefaultDirs(clientContext);
     replacePatternsInParameters(clientContext);
+  }
+
+  private void checkArguments(Parameter parametersHolder)
+      throws YarnException, ParseException {
+    if (parametersHolder.getOptionValue(CliConstants.N_SCHEDULERS) != null) {
+      throw new ParseException(getParamCannotBeDefinedErrorMessage(
+          CliConstants.N_SCHEDULERS));
+    } else if (parametersHolder.getOptionValue(CliConstants.SCHEDULER_RES) != null) {
+      throw new ParseException(getParamCannotBeDefinedErrorMessage(
+          CliConstants.SCHEDULER_RES));
+    } else if (parametersHolder
+        .getOptionValue(CliConstants.SCHEDULER_DOCKER_IMAGE) != null) {
+      throw new ParseException(getParamCannotBeDefinedErrorMessage(
+          CliConstants.SCHEDULER_DOCKER_IMAGE));
+    } else if (parametersHolder
+        .getOptionValue(CliConstants.SCHEDULER_LAUNCH_CMD) != null) {
+      throw new ParseException(getParamCannotBeDefinedErrorMessage(
+          CliConstants.SCHEDULER_LAUNCH_CMD));
+    }
+  }
+
+  private String getParamCannotBeDefinedErrorMessage(String cliName) {
+    return String.format(
+        "Parameter '%s' " + CANNOT_BE_DEFINED_FOR_TF, cliName);
   }
 
   private void replacePatternsInParameters(ClientContext clientContext)
