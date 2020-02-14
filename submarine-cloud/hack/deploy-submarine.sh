@@ -23,8 +23,7 @@ SUBMARINE_HOME=${ROOT}/..
 
 source $ROOT/hack/lib.sh
 
-# Check requirements
-hack::check_requirements
+hack::ensure_kubectl
 
 # Install submarine in k8s cluster
 function install_submarine() {
@@ -49,20 +48,27 @@ function install_submarine() {
   echo -n "Do you want to deploy submarine in k8s cluster now? [y/n]"
   read myselect
   if [[ "$myselect" == "y" || "$myselect" == "Y" ]]; then
-    if kubectl get configmap --namespace default | grep submarine-config >/dev/null ; then
-      kubectl delete configmap --namespace default submarine-config
+    if $KUBECTL_BIN get configmap --namespace default | grep submarine-config >/dev/null ; then
+      $KUBECTL_BIN delete configmap --namespace default submarine-config
     fi
-    kubectl create configmap --namespace default submarine-config --from-file=${ROOT}/hack/conf/submarine-site.xml --from-file=${ROOT}/hack/conf/log4j.properties
+    $KUBECTL_BIN create configmap --namespace default submarine-config --from-file=${ROOT}/hack/conf/submarine-site.xml --from-file=${ROOT}/hack/conf/log4j.properties
 
-    docker pull apache/submarine:operator-0.3.0-SNAPSHOT
-    kind load docker-image apache/submarine:operator-0.3.0-SNAPSHOT
-    kubectl apply -f $ROOT/manifests/submarine-operator/
+    if ! docker inspect apache/submarine:operator-0.3.0-SNAPSHOT >/dev/null ; then
+      docker pull apache/submarine:operator-0.3.0-SNAPSHOT
+    fi
+    $KIND_BIN load docker-image apache/submarine:operator-0.3.0-SNAPSHOT
+    $KUBECTL_BIN apply -f $ROOT/manifests/submarine-operator/
 
-    docker pull apache/submarine:database-0.3.0-SNAPSHOT
-    kind load docker-image apache/submarine:database-0.3.0-SNAPSHOT
-    docker pull apache/submarine:server-0.3.0-SNAPSHOT
-    kind load docker-image apache/submarine:server-0.3.0-SNAPSHOT
-    kubectl apply -f $ROOT/manifests/submarine-cluster/
+    if ! docker inspect apache/submarine:database-0.3.0-SNAPSHOT >/dev/null ; then
+      docker pull apache/submarine:database-0.3.0-SNAPSHOT
+    fi
+    $KIND_BIN load docker-image apache/submarine:database-0.3.0-SNAPSHOT
+
+    if ! docker inspect apache/submarine:server-0.3.0-SNAPSHOT >/dev/null ; then
+      docker pull apache/submarine:server-0.3.0-SNAPSHOT
+    fi
+    $KIND_BIN load docker-image apache/submarine:server-0.3.0-SNAPSHOT
+    $KUBECTL_BIN apply -f $ROOT/manifests/submarine-cluster/
 
     cat <<EOF
 NOTE: You can open your browser and access the submarine workbench at http://127.0.0.1/
@@ -72,11 +78,11 @@ EOF
 
 # Uninstall submarine in k8s cluster
 function uninstall_submarine() {
-  if kubectl get configmap --namespace default | grep submarine-config >/dev/null ; then
-    kubectl delete configmap --namespace default submarine-config
+  if $KUBECTL_BIN get configmap --namespace default | grep submarine-config >/dev/null ; then
+    $KUBECTL_BIN delete configmap --namespace default submarine-config
   fi
-  kubectl delete -f $ROOT/manifests/submarine-operator/
-  kubectl delete -f $ROOT/manifests/submarine-cluster/
+  $KUBECTL_BIN delete -f $ROOT/manifests/submarine-operator/
+  $KUBECTL_BIN delete -f $ROOT/manifests/submarine-cluster/
 
   cat <<EOF
 NOTE: Submarine cluster has been deleted
