@@ -23,11 +23,13 @@ fi
 
 OS=$(go env GOOS)
 ARCH=$(go env GOARCH)
-OUTPUT=${ROOT}/output
+OUTPUT=${ROOT}/hack/output
 OUTPUT_BIN=${OUTPUT}/bin
-KUBECTL_VERSION=1.12.10
+
+KUBECTL_VERSION=1.14.2
 KUBECTL_BIN=$OUTPUT_BIN/kubectl
-KIND_VERSION=0.6.0
+
+KIND_VERSION=0.7.0
 KIND_BIN=$OUTPUT_BIN/kind
 
 test -d "$OUTPUT_BIN" || mkdir -p "$OUTPUT_BIN"
@@ -44,6 +46,18 @@ function hack::ensure_kubectl() {
     if hack::verify_kubectl; then
         return 0
     fi
+
+    orig_kubectl_bin="$KUBECTL_BIN"
+    if command -v kubectl > /dev/null; then
+        KUBECTL_BIN="$(command -v kubectl)"
+        if hack::verify_kubectl; then
+            ln -sf "$KUBECTL_BIN" "$orig_kubectl_bin"
+            KUBECTL_BIN="$orig_kubectl_bin"
+            echo $KUBECTL_BIN
+            return 0
+        fi
+    fi
+
     echo "Installing kubectl v$KUBECTL_VERSION..."
     tmpfile=$(mktemp)
     trap "test -f $tmpfile && rm $tmpfile" RETURN
@@ -64,6 +78,18 @@ function hack::ensure_kind() {
     if hack::verify_kind; then
         return 0
     fi
+
+    orig_kind_bin="$KIND_BIN"
+    if command -v kind > /dev/null; then
+        KIND_BIN="$(command -v kind)"
+        if hack::verify_kind; then
+            ln -sf "$KIND_BIN" "$orig_kind_bin"
+            KIND_BIN="$orig_kind_bin"
+            echo $KIND_BIN
+            return 0
+        fi
+    fi
+
     echo "Installing kind v$KIND_VERSION..."
     tmpfile=$(mktemp)
     trap "test -f $tmpfile && rm $tmpfile" RETURN
@@ -75,26 +101,4 @@ function hack::ensure_kind() {
 # hack::version_ge "$v1" "$v2" checks whether "v1" is greater or equal to "v2"
 function hack::version_ge() {
     [ "$(printf '%s\n' "$1" "$2" | sort -V | head -n1)" = "$2" ]
-}
-
-function hack::check_requirements() {
-    # Check requirements
-    for requirement in kind docker kubectl
-    do
-        echo "############ check ${requirement} ##############"
-        if hash ${requirement} 2>/dev/null;then
-            echo "${requirement} have installed"
-        else
-            echo "this script needs ${requirement}, please install ${requirement} first."
-            if test ${requirement} = "kind"; then
-                hack::ensure_kind
-                echo "Please add $KIND_BIN to PATH variable or copy it to one of the locations $PATH"
-            fi
-            if test ${requirement} = "kubectl"; then
-                hack::ensure_kubectl
-                echo "Please add $KUBECTL_BIN to PATH variable or copy it to one of the locations $PATH"
-            fi
-            exit 1
-        fi
-    done
 }

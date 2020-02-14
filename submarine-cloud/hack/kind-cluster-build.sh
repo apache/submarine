@@ -22,6 +22,9 @@ cd $ROOT
 
 source $ROOT/hack/lib.sh
 
+hack::ensure_kubectl
+hack::ensure_kind
+
 usage() {
     cat <<EOF
 This script use kind to create Kubernetes cluster, about kind please refer: https://kind.sigs.k8s.io/
@@ -31,7 +34,7 @@ Options:
        -h,--help               prints the usage message
        -n,--name               name of the Kubernetes cluster,default value: kind
        -c,--nodeNum            the count of the cluster nodes,default value: 1
-       -k,--k8sVersion         version of the Kubernetes cluster,default value: v1.12.8
+       -k,--k8sVersion         version of the Kubernetes cluster,default value: v1.14.2
        -v,--volumeNum          the volumes number of each kubernetes node,default value: 1
 Usage:
     $0 --name testCluster --nodeNum 4 --k8sVersion v1.12.9
@@ -77,16 +80,13 @@ done
 
 clusterName=${clusterName:-kind}
 nodeNum=${nodeNum:-1}
-k8sVersion=${k8sVersion:-v1.12.8}
+k8sVersion=${k8sVersion:-v1.14.2}
 volumeNum=${volumeNum:-1}
 
 echo "clusterName: ${clusterName}"
 echo "nodeNum: ${nodeNum}"
 echo "k8sVersion: ${k8sVersion}"
 echo "volumeNum: ${volumeNum}"
-
-# Check requirements
-hack::check_requirements
 
 echo "############# start create cluster:[${clusterName}] #############"
 workDir=${HOME}/kind/${clusterName}
@@ -144,12 +144,12 @@ EOF
 done
 
 echo "start to create k8s cluster"
-kind create cluster --config ${configFile} --image kindest/node:${k8sVersion} --name=${clusterName}
-export KUBECONFIG="${HOME}/.kube/kind-config-${clusterName}"
+export KUBECONFIG=~/.kube/kind-config-${clusterName}
+$KIND_BIN create cluster --config ${configFile} --image kindest/node:${k8sVersion} --name=${clusterName}
 
 echo "deploy docker registry in kind"
 registryNode=${clusterName}-control-plane
-registryNodeIP=$(kubectl get nodes ${registryNode} -o template --template='{{range.status.addresses}}{{if eq .type "InternalIP"}}{{.address}}{{end}}{{end}}')
+registryNodeIP=$($KUBECTL_BIN get nodes ${registryNode} -o template --template='{{range.status.addresses}}{{if eq .type "InternalIP"}}{{.address}}{{end}}{{end}}')
 registryFile=${workDir}/registry.yaml
 
 cat <<EOF >${registryFile}
@@ -220,33 +220,38 @@ spec:
           - tcp-listen:5000,fork,reuseaddr
           - tcp-connect:${registryNodeIP}:5000
 EOF
-kubectl apply -f ${registryFile}
+$KUBECTL_BIN apply -f ${registryFile}
+
+echo "load docker image registry:2 to kind"
+if ! docker inspect registry:2 >/dev/null ; then
+  docker pull registry:2
+fi
+$KIND_BIN load docker-image registry:2
 
 # https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx
 echo "setting up ingress on a kind cluster."
 
 # load ingress denpendence docker-image into kind
-docker pull registry:2
-kind load docker-image registry:2
+if ! docker inspect quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master >/dev/null ; then
+  docker pull quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master
+fi
+$KIND_BIN load docker-image quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master
 
-docker pull quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master
-kind load docker-image quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master
-
-kubectl apply -f $ROOT/hack/ingress/mandatory.yaml
-kubectl apply -f $ROOT/hack/ingress/service-nodeport.yaml
-kubectl patch deployments -n ingress-nginx nginx-ingress-controller -p '{"spec":{"template":{"spec":{"containers":[{"name":"nginx-ingress-controller","ports":[{"containerPort":80,"hostPort":80},{"containerPort":443,"hostPort":443}]}],"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
+$KUBECTL_BIN apply -f $ROOT/hack/ingress/mandatory.yaml
+$KUBECTL_BIN apply -f $ROOT/hack/ingress/service-nodeport.yaml
+$KUBECTL_BIN patch deployments -n ingress-nginx nginx-ingress-controller -p '{"spec":{"template":{"spec":{"containers":[{"name":"nginx-ingress-controller","ports":[{"containerPort":80,"hostPort":80},{"containerPort":443,"hostPort":443}]}],"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
 
 echo "############# success create cluster:[${clusterName}] #############"
 
 echo "To start using your cluster, run:"
-echo "    export KUBECONFIG=\"${HOME}/.kube/kind-config-${clusterName}\""
-echo ""
-cat <<EOF
+echo "    ./kubectl config use-context kind-${clusterName}"
+echo "    ./kubectl get pods -A"
+echo <<EOF
 NOTE: In kind, nodes run docker network and cannot access host network.
 If you configured local HTTP proxy in your docker, images may cannot be pulled
 because http proxy is inaccessible.
 
 If you cannot remove http proxy settings, you can either whitelist image
-domains in NO_PROXY environment or use 'docker pull <image> && kind load
+domains in NO_PROXY environment or use 'docker pull <image> && $KIND_BIN load
 docker-image <image>' command to load images into nodes.
 EOF
