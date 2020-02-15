@@ -165,6 +165,14 @@ matrix:
         chrome: stable
       env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package -DskipTests" TEST_FLAG="verify -DskipRat -am" TEST_MODULES="-pl submarine-test/e2e" TEST_PROJECTS=""
 
+    - name: Test submarine-test-k8s
+      language: java
+      jdk: "openjdk8"
+      dist: xenial
+      addons:
+        chrome: stable
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package -DskipTests" TEST_FLAG="verify -DskipRat -am" TEST_MODULES="-pl submarine-test/test-k8s" TEST_PROJECTS=""
+
     # Template disable by SUBMARINE-381
     #- name: Test submarine interpreter
     #  language: java

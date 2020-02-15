@@ -42,11 +42,16 @@ function install_submarine() {
     cp ${SUBMARINE_HOME}/conf/log4j.properties.template ${ROOT}/hack/conf/log4j.properties
   fi
 
-  echo ""
-  echo -e "Have you configured the \033[31m${ROOT}/hack/conf/submarine-site.xml\033[0m file?"
-  echo -e "Have you configured the \033[31m${ROOT}/hack/conf/log4j.properties\033[0m file?"
-  echo -n "Do you want to deploy submarine in k8s cluster now? [y/n]"
-  read myselect
+  if [[ "$TEST" == "" ]]; then
+    echo ""
+    echo -e "Have you configured the \033[31m${ROOT}/hack/conf/submarine-site.xml\033[0m file?"
+    echo -e "Have you configured the \033[31m${ROOT}/hack/conf/log4j.properties\033[0m file?"
+    echo -n "Do you want to deploy submarine in k8s cluster now? [y/n]"
+    read myselect
+  else
+    myselect="y"
+  fi
+
   if [[ "$myselect" == "y" || "$myselect" == "Y" ]]; then
     if $KUBECTL_BIN get configmap --namespace default | grep submarine-config >/dev/null ; then
       $KUBECTL_BIN delete configmap --namespace default submarine-config
@@ -97,6 +102,7 @@ This script use kind to create Submarine cluster, about kind please refer: https
 Options:
        -d,--database           ip/service of submarine database, default value: submarine-database
        -u,--uninstall          uninstall submarine cluster
+       -t,--test               auto install
        -h,--help               prints the usage message
 Usage:
     install: $0 --database database_ip
@@ -115,6 +121,10 @@ case $key in
     shift
     shift
     ;;
+    -t|--test)
+    TEST="TRUE"
+    shift
+    ;;
     -u|--uninstall)
     UNINSTALL="TRUE"
     shift
@@ -129,6 +139,8 @@ done
 
 DATABASE_IP=${DATABASE_IP:-submarine-database}
 echo "Submarine database ip: ${DATABASE_IP}"
+
+export KUBECONFIG=~/.kube/kind-config-${clusterName:-kind}
 
 if [[ "$UNINSTALL" == "TRUE" ]]; then
   uninstall_submarine

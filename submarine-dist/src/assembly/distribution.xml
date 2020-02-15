@@ -74,6 +74,19 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>../submarine-cloud/manifests</directory>
+      <outputDirectory>/submarine-cloud/manifests</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../submarine-cloud/hack</directory>
+      <outputDirectory>/submarine-cloud/hack</outputDirectory>
+      <excludes>
+        <exclude>*.go.txt</exclude>
+        <exclude>update-codegen.sh</exclude>
+        <exclude>verify-codegen.sh</exclude>
+      </excludes>
+    </fileSet>
+    <fileSet>
       <directory>../submarine-commons/commons-utils/target</directory>
       <outputDirectory>/lib</outputDirectory>
       <includes>
