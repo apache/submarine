@@ -15,8 +15,9 @@
 # limitations under the License.
 
 set -eo pipefail
+set -x
 
-SUBMARINE_VERSION=0.3.0-SNAPSHOT
+SUBMARINE_VERSION=0.4.0-SNAPSHOT
 SUBMARINE_IMAGE_NAME="apache/submarine:operator-${SUBMARINE_VERSION}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
@@ -27,19 +28,18 @@ fi
 export CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
 export SUBMARINE_HOME=${CURRENT_PATH}/../../..
 
-if [ ! -d "${SUBMARINE_HOME}/submarine-cloud/target" ]; then
-  mkdir "${SUBMARINE_HOME}/submarine-cloud/target"
+if [ ! -d "${SUBMARINE_HOME}/submarine-cloud/bin" ]; then
+  mkdir "${SUBMARINE_HOME}/submarine-cloud/bin"
 fi
-submarine_operator_exists=$(find -L "${SUBMARINE_HOME}/submarine-cloud/target" -name "submarine-operator_linux")
+submarine_operator_exists=$(find -L "${SUBMARINE_HOME}/submarine-cloud/bin" -name "submarine-operator")
 # Build source code if the package doesn't exist.
 if [[ -z "${submarine_operator_exists}" ]]; then
   cd "${SUBMARINE_HOME}/submarine-cloud"
-  export GOOS=linux
-  mvn clean package -DskipTests
+  mvn package
 fi
 
 mkdir -p "${CURRENT_PATH}/tmp"
-cp ${SUBMARINE_HOME}/submarine-cloud/target/submarine-operator_linux "${CURRENT_PATH}/tmp"
+cp ${SUBMARINE_HOME}/submarine-cloud/bin/submarine-operator "${CURRENT_PATH}/tmp"
 
 # build image
 cd ${CURRENT_PATH}

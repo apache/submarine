@@ -87,6 +87,14 @@
       </excludes>
     </fileSet>
     <fileSet>
+      <directory>../docs/database</directory>
+      <outputDirectory>/docs/database</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../dev-support/docker-images</directory>
+      <outputDirectory>/dev-support/docker-images</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>../submarine-commons/commons-utils/target</directory>
       <outputDirectory>/lib</outputDirectory>
       <includes>

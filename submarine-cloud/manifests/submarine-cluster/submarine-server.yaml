@@ -31,7 +31,7 @@ spec:
       ServiceAccountName: "submarine-node"
       containers:
         - name: submarine-node
-          image: "apache/submarine:server-0.3.0-SNAPSHOT"
+          image: "apache/submarine:server-0.4.0-SNAPSHOT"
           args: []
           imagePullPolicy: IfNotPresent
           ports:
@@ -56,7 +56,7 @@ spec:
             timeoutSeconds: 5
             periodSeconds: 10
             successThreshold: 1
-            failureThreshold: 30
+            failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /api/v1/cluster/address

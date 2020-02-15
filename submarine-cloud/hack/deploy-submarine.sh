@@ -20,6 +20,7 @@ set -e
 ROOT=$(unset CDPATH && cd $(dirname "${BASH_SOURCE[0]}")/.. && pwd)
 cd $ROOT
 SUBMARINE_HOME=${ROOT}/..
+SUBMARINE_VERSION="0.4.0-SNAPSHOT"
 
 source $ROOT/hack/lib.sh
 
@@ -58,26 +59,24 @@ function install_submarine() {
     fi
     $KUBECTL_BIN create configmap --namespace default submarine-config --from-file=${ROOT}/hack/conf/submarine-site.xml --from-file=${ROOT}/hack/conf/log4j.properties
 
-    if ! docker inspect apache/submarine:operator-0.3.0-SNAPSHOT >/dev/null ; then
-      docker pull apache/submarine:operator-0.3.0-SNAPSHOT
+    if ! docker inspect apache/submarine:operator-${SUBMARINE_VERSION} >/dev/null ; then
+      docker pull apache/submarine:operator-${SUBMARINE_VERSION}
     fi
-    $KIND_BIN load docker-image apache/submarine:operator-0.3.0-SNAPSHOT
+    $KIND_BIN load docker-image apache/submarine:operator-${SUBMARINE_VERSION}
     $KUBECTL_BIN apply -f $ROOT/manifests/submarine-operator/
 
-    if ! docker inspect apache/submarine:database-0.3.0-SNAPSHOT >/dev/null ; then
-      docker pull apache/submarine:database-0.3.0-SNAPSHOT
+    if ! docker inspect apache/submarine:database-${SUBMARINE_VERSION} >/dev/null ; then
+      docker pull apache/submarine:database-${SUBMARINE_VERSION}
     fi
-    $KIND_BIN load docker-image apache/submarine:database-0.3.0-SNAPSHOT
+    $KIND_BIN load docker-image apache/submarine:database-${SUBMARINE_VERSION}
 
-    if ! docker inspect apache/submarine:server-0.3.0-SNAPSHOT >/dev/null ; then
-      docker pull apache/submarine:server-0.3.0-SNAPSHOT
+    if ! docker inspect apache/submarine:server-${SUBMARINE_VERSION} >/dev/null ; then
+      docker pull apache/submarine:server-${SUBMARINE_VERSION}
     fi
-    $KIND_BIN load docker-image apache/submarine:server-0.3.0-SNAPSHOT
+    $KIND_BIN load docker-image apache/submarine:server-${SUBMARINE_VERSION}
     $KUBECTL_BIN apply -f $ROOT/manifests/submarine-cluster/
 
-    cat <<EOF
-NOTE: You can open your browser and access the submarine workbench at http://127.0.0.1/
-EOF
+    echo "NOTE: You can open your browser and access the submarine workbench at http://127.0.0.1/"
   fi
 }
 

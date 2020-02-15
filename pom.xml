@@ -138,8 +138,7 @@
   <modules>
     <module>submarine-commons</module>
     <module>submarine-client</module>
-    <!-- There is a problem with the submarine-cloud pom, the compilation is very slow, and it is temporarily closed
-    <module>submarine-cloud</module-->
+    <module>submarine-cloud</module>
     <module>submarine-server</module>
     <module>submarine-all</module>
     <module>submarine-workbench</module>
