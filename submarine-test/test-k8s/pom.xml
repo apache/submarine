@@ -28,10 +28,9 @@
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>submarine-e2e</artifactId>
+  <artifactId>submarine-test-k8s</artifactId>
   <version>0.4.0-SNAPSHOT</version>
-  <name>Submarine: E2E Test</name>
-
+  <name>Submarine: Kubernetes Test</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -44,43 +43,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>selenium-java</artifactId>
-      <version>${selenium.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>commons-codec</groupId>
-          <artifactId>commons-codec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>${commons-codec.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.rauschig</groupId>
-      <artifactId>jarchivelib</artifactId>
-      <version>${jarchivelib.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>${testng.version}</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -89,8 +58,22 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
-
 
   <build>
     <plugins>
@@ -128,14 +111,12 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <id>start-submarine-server</id>
+            <id>start-kind</id>
             <phase>pre-integration-test</phase>
             <configuration>
               <target unless="skipTests">
-                <exec executable="./submarine-daemon.sh" dir="${submarine.daemon.package.base}"
-                      spawn="false">
+                <exec executable="./integration-test.sh" dir="${submarine.cloud.path}" spawn="false">
                   <arg value="start"/>
-                  <arg value="getMysqlJar" />
                 </exec>
               </target>
             </configuration>
@@ -144,12 +125,11 @@
             </goals>
           </execution>
           <execution>
-            <id>stop-submarine-server</id>
+            <id>stop-kind</id>
             <phase>post-integration-test</phase>
             <configuration>
               <target unless="skipTests">
-                <exec executable="./submarine-daemon.sh" dir="${submarine.daemon.package.base}"
-                      spawn="false">
+                <exec executable="./integration-test.sh" dir="${submarine.cloud.path}" spawn="false">
                   <arg value="stop"/>
                 </exec>
               </target>
@@ -165,25 +145,14 @@
 
   <profiles>
     <profile>
-      <id>using-source-tree</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <properties>
-        <submarine.daemon.package.base>
-          ../bin
-        </submarine.daemon.package.base>
-      </properties>
-    </profile>
-    <profile>
       <id>using-packaged-distr</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
       <properties>
-        <submarine.daemon.package.base>
-          ../../submarine-dist/target/submarine-dist-${project.version}-hadoop-2.9/submarine-dist-${project.version}-hadoop-2.9/bin
-        </submarine.daemon.package.base>
+        <submarine.cloud.path>
+          ../../submarine-dist/target/submarine-dist-${project.version}-hadoop-2.9/submarine-dist-${project.version}-hadoop-2.9/submarine-cloud/hack
+        </submarine.cloud.path>
       </properties>
     </profile>
   </profiles>

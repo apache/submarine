@@ -144,8 +144,10 @@ EOF
 done
 
 echo "start to create k8s cluster"
+test -d "~/.kube" || mkdir -p "~/.kube"
 export KUBECONFIG=~/.kube/kind-config-${clusterName}
 $KIND_BIN create cluster --config ${configFile} --image kindest/node:${k8sVersion} --name=${clusterName}
+$KIND_BIN export kubeconfig --kubeconfig ${KUBECONFIG}
 
 echo "deploy docker registry in kind"
 registryNode=${clusterName}-control-plane
@@ -240,6 +242,8 @@ $KIND_BIN load docker-image quay.io/kubernetes-ingress-controller/nginx-ingress-
 $KUBECTL_BIN apply -f $ROOT/hack/ingress/mandatory.yaml
 $KUBECTL_BIN apply -f $ROOT/hack/ingress/service-nodeport.yaml
 $KUBECTL_BIN patch deployments -n ingress-nginx nginx-ingress-controller -p '{"spec":{"template":{"spec":{"containers":[{"name":"nginx-ingress-controller","ports":[{"containerPort":80,"hostPort":80},{"containerPort":443,"hostPort":443}]}],"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
+
+$KUBECTL_BIN get pod -A
 
 echo "############# success create cluster:[${clusterName}] #############"
 
