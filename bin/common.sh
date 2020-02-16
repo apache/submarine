@@ -88,7 +88,7 @@ function download_mysql_jdbc_jar(){
   echo "Mysql jdbc jar is downloaded and put in the path of submarine/lib."
 }
 
-JAVA_OPTS+=" ${SUBMARINE_SERVER_JAVA_OPTS} -Dfile.encoding=UTF-8 ${SUBMARINE_SERVER_MEM}"
+JAVA_OPTS+=" -Dfile.encoding=UTF-8"
 JAVA_OPTS+=" -Dlog4j.configuration=file://${SUBMARINE_CONF_DIR}/log4j.properties"
 export JAVA_OPTS
 

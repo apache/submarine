@@ -38,14 +38,14 @@ public abstract class RuntimeFactory {
   }
 
   public static RuntimeFactory getRuntimeFactory(
-      ClientContext clientContext) {
+      ClientContext clientContext, ClassLoader classLoader) {
     SubmarineConfiguration submarineConfiguration =
         clientContext.getSubmarineConfig();
     String runtimeClass = submarineConfiguration.getString(
         SubmarineConfVars.ConfVars.SUBMARINE_RUNTIME_CLASS);
 
     try {
-      Class<?> runtimeClazz = Class.forName(runtimeClass);
+      Class<?> runtimeClazz = Class.forName(runtimeClass, true, classLoader);
       if (RuntimeFactory.class.isAssignableFrom(runtimeClazz)) {
         return (RuntimeFactory) runtimeClazz.getConstructor(ClientContext.class).newInstance(clientContext);
       } else {
