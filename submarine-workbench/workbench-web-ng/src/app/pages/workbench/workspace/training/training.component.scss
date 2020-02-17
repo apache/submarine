@@ -17,6 +17,11 @@
  * under the License.
  */
 .horizontal_dotted_line{
-    border-bottom: 1px dotted [color];
-    width: [put your width here]px;
-  } 
+  border-top: 2px dotted whitesmoke;
+  color:transparent;
+} 
+#trainingDiv{
+  margin: 30px;
+  padding: 10px;
+  background-color:white;
+}

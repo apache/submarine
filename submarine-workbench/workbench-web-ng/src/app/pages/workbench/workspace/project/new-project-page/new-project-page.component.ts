@@ -34,7 +34,7 @@ export class NewProjectPageComponent implements OnInit {
   
   current = 0;
   
-  newProjectContent = { projectName: 'projectName', description: 'description', visibility: 'Private', team: '' ,permission: 'view', dataSet: []};
+  newProjectContent = { projectName: '', description: '', visibility: 'Private', team: '' ,permission: 'View', dataSet: []};
   
 
   constructor() { }

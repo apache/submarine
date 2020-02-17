@@ -17,14 +17,14 @@
   ~ under the License.
   -->
 
-<div style="margin: 30px;padding: 10px;background-color:white;">
+<div id="trainingDiv">
     <h3 style="margin: 10px;">
         Category:
         <button *ngFor="let category of categories" nz-button [nzType]="category.enable ? 'primary' : 'default'" [nzSize]="'small'" (click)="category.enable = ! category.enable" style="margin-left: 10px;">
             {{ category.name }}
         </button>
     </h3>
-    <hr style="border-top: 2px dotted whitesmoke;color:transparent;"/>
+    <hr class="horizontal_dotted_line"/>
     <h3 style="margin: 10px;"> 
         Owner:
         <nz-select [(ngModel)]="tagValue" [nzSize]="size" nzMode="tags" nzPlaceHolder="Please select" style="width: 20%;margin-left: 10px;">
@@ -35,7 +35,7 @@
         </button>
     </h3>
     
-    <hr style="border-top: 2px dotted whitesmoke;color:transparent;"/>
+    <hr class="horizontal_dotted_line"/>
     <h3 style="margin: 10px;">
         Others: 
         <label style="color: rgb(122, 114, 114);margin-left: 20px;">Active user:</label>

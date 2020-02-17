@@ -16,8 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- 
+
 .editable-tag {
     background: rgb(255, 255, 255);
     border-style: dashed;
 }
+
+#projectNewDivOuter{
+    background-color:whitesmoke;
+    padding-left: 15px;
+    padding-right: 15px
+ }
+ 
+ #projectNewDivInner{
+    background-color:white;
+    padding-left: 10px;
+    padding-right: 10px;
+ }
+
+ #addProjectbtn{
+    padding-left: 30px;
+    padding-right: 30px;
+ }

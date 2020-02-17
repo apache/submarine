@@ -19,7 +19,7 @@
 
 <br>
 <div *ngIf="!newProject">
-    <div style="padding-left: 30px;padding-right: 30px;">
+    <div id="addProjectbtn">
         <button nz-button nzBlock (click)="newProject=true">+ Add New Project</button>
     </div>
     <div style="padding:30px;">
@@ -62,8 +62,8 @@
         </div>
     </div>
 </div>
-<div *ngIf="newProject" style="color:whitesmoke;padding-left: 15px;padding-right: 15px;">
-    <div  style="background-color:white;padding-left: 10px;padding-right: 10px;">
+<div *ngIf="newProject" id="projectNewDivOuter">
+    <div  id="projectNewDivInner">
         <app-new-project-page (closeProjectPage)="newProject=false;"></app-new-project-page>
     </div>
 </div>
