@@ -1,0 +1,37 @@
+<div style="margin: 30px;padding: 10px;background-color:white;">
+    <h3 style="margin: 10px;">
+        Category:
+        <button *ngFor="let category of categories" nz-button [nzType]="category.enable ? 'primary' : 'default'" [nzSize]="'small'" (click)="category.enable = ! category.enable" style="margin-left: 10px;">
+            {{ category.name }}
+        </button>
+    </h3>
+    <hr style="border-top: 2px dotted whitesmoke;color:transparent;"/>
+    <h3 style="margin: 10px;"> 
+        Owner:
+        <nz-select [(ngModel)]="tagValue" [nzSize]="size" nzMode="tags" nzPlaceHolder="Please select" style="width: 20%;margin-left: 10px;">
+            <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+        </nz-select>
+        <button nz-button [nzType]="ownProcess ? 'primary' : 'default'" [nzSize]="'default'" style="margin-left: 20px;" (click)="ownProcess=!ownProcess">
+            Myself
+        </button>
+    </h3>
+    
+    <hr style="border-top: 2px dotted whitesmoke;color:transparent;"/>
+    <h3 style="margin: 10px;">
+        Others: 
+        <label style="color: rgb(122, 114, 114);margin-left: 20px;">Active user:</label>
+        <nz-select [(ngModel)]="userSelectedValue" nzPlaceHolder="Choose" style="margin-left: 10px;">
+            <nz-option nzValue="noLimit" nzLabel="No restriction"></nz-option>
+            <nz-option *ngFor="let activeUser of activeUsers" [nzValue]="activeUser" [nzLabel]="activeUser"></nz-option>
+        </nz-select>
+        <label style="color: rgb(122, 114, 114);margin-left: 80px;">Rating:</label>
+        <nz-select [(ngModel)]="ratingSelectedValue" nzPlaceHolder="Choose" style="margin-left: 10px;">
+            <nz-option nzValue="noLimit" nzLabel="No restriction"></nz-option>
+            <nz-option *ngFor="let rating of ratings" [nzValue]="rating" [nzLabel]="rating"></nz-option>
+        </nz-select>
+    </h3>
+</div>
+<div style="margin: 30px;padding: 30px;background-color:white;">
+    <nz-spin [nzSpinning]="isSpinning">
+    </nz-spin>
+</div>

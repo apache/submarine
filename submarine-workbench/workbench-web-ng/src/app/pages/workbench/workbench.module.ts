@@ -29,6 +29,14 @@ import { JobComponent } from './job/job.component';
 import { ModelComponent } from './model/model.component';
 import { WorkbenchComponent } from './workbench.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
+import { ProjectComponent } from './workspace/project/project.component';
+import { ReleaseComponent } from './workspace/release/release.component';
+import { TrainingComponent } from './workspace/training/training.component';
+import { TeamComponent } from './workspace/team/team.component';
+import { SharedComponent } from './workspace/shared/shared.component';
+import { FormsModule } from '@angular/forms';
+import { NewProjectPageComponent } from './workspace/project/new-project-page/new-project-page.component';
+
 
 @NgModule({
   declarations: [
@@ -38,13 +46,20 @@ import { WorkspaceComponent } from './workspace/workspace.component';
     InterpreterComponent,
     JobComponent,
     DataComponent,
-    ModelComponent
+    ModelComponent,
+    ProjectComponent,
+    ReleaseComponent,
+    TrainingComponent,
+    TeamComponent,
+    SharedComponent,
+    NewProjectPageComponent
   ],
   imports: [
     CommonModule,
     WorkbenchRoutingModule,
     NgZorroAntdModule,
-    RouterModule
+    RouterModule,
+    FormsModule
   ]
 })
 export class WorkbenchModule {

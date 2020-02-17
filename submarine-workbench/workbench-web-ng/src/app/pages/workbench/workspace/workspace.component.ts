@@ -17,18 +17,32 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-
+import { Component, OnInit, ViewChild } from '@angular/core';
 @Component({
   selector: 'submarine-workspace',
   templateUrl: './workspace.component.html',
   styleUrls: ['./workspace.component.scss']
 })
 export class WorkspaceComponent implements OnInit {
+  @ViewChild('project', {static: true}) signupForm: any;
+
+  basicInfo = {
+    project: 3,
+    release: 0,
+    training: 0,
+    team: 0,
+    shared: 0
+  };
+
+  currentState = 'project';
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  switchState(state: string){
+    this.currentState = state;
   }
 
 }

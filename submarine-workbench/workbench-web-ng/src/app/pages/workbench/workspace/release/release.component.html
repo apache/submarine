@@ -1,0 +1,30 @@
+<nz-input-group  style="width: 200px;margin-top: 20px;margin-left: 20px;" [nzSuffix]="suffixIconSearch">
+    <input type="text" nz-input placeholder="input search text" />
+</nz-input-group>
+<ng-template #suffixIconSearch>
+    <i nz-icon nzType="search"></i>
+</ng-template>
+<nz-spin [nzSpinning]="isSpinning">
+    <nz-table style="margin-left:20px;margin-right:20px;" nzBordered #basicTable [nzData]="dataSet" [nzNoResult]="'No data'">
+        <thead>
+          <tr>
+            <th nzWidth="60px">Name</th>
+            <th nzWidth="60px">Owner</th>
+            <th nzWidth="60px">Status</th>
+            <th nzWidth="60px">Commit Info</th>
+            <th nzWidth="60px">LastUpdated</th>
+            <th nzWidth="60px">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td>{{ data.name }}</td>
+            <td>{{ data.owner }}</td>
+            <td>{{ data.status }}</td>
+            <td>{{ data.commitInfo }}</td>
+            <td>{{ data.time }}</td>
+            <td>{{ data.action }}</td>
+          </tr>
+        </tbody>
+    </nz-table>
+</nz-spin>

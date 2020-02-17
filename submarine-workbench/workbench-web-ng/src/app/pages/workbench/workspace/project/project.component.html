@@ -1,0 +1,50 @@
+<br>
+<div *ngIf="!newProject">
+    <div style="padding-left: 30px;padding-right: 30px;">
+        <button nz-button nzBlock (click)="newProject=true">+ Add New Project</button>
+    </div>
+    <div style="padding:30px;">
+        <div nz-row [nzGutter]="12">
+          <div *ngFor="let project of existProjects" nz-col [nzSpan]="8" style="padding: 5px;">
+            <nz-card [nzTitle]="project.projectName" [nzActions]="[actionEdit, actionDownload, actionSetting, actionDelete]">
+                <nz-tag *ngFor="let tag of project.tags" [nzMode]="'closeable'" (nzAfterClose)="handleCloseTag(project, tag)">{{ tag }}</nz-tag>
+                <nz-tag *ngIf="!project.inputTagVisibility" class="editable-tag" nzNoAnimation (click)="showInput(project)">
+                    <i nz-icon nzType="plus"></i> New Tag
+                </nz-tag>
+                <input
+                    #inputElement
+                    nz-input
+                    nzSize="small"
+                    *ngIf="project.inputTagVisibility"
+                    type="text"
+                    [(ngModel)]="project.projectInputTag"
+                    style="width: 78px;"
+                    (blur)="handleInputConfirm(project)"
+                    (keydown.enter)="handleInputConfirm(project)"
+                    />
+                <div>
+                    <br>
+                    {{ project.description}}
+                </div>
+                <ng-template #actionEdit>
+                    <i nz-icon nzType="edit"></i>Edit
+                </ng-template>
+                <ng-template #actionDownload>
+                    <i nz-icon nzType="download"></i>Download
+                </ng-template>
+                <ng-template #actionSetting>
+                    <i nz-icon nzType="setting"></i>Setting
+                </ng-template>
+                <ng-template #actionDelete>
+                    <i nz-icon nzType="delete"></i>Delete
+                </ng-template>
+            </nz-card>
+          </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="newProject" style="color:whitesmoke;padding-left: 15px;padding-right: 15px;">
+    <div  style="background-color:white;padding-left: 10px;padding-right: 10px;">
+        <app-new-project-page (closeProjectPage)="newProject=false;"></app-new-project-page>
+    </div>
+</div>

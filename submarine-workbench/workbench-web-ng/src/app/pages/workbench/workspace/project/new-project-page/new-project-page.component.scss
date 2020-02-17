@@ -1,0 +1,55 @@
+.form-label {
+    float:left;
+    width:150px;
+    text-align: right;
+    padding-right: 12px;
+    margin-top: 20px;
+    margin-left: 20%;
+    clear: left;
+    color: black;
+ }
+
+ label {
+    float: left;
+    margin-top: 20px;
+    clear: left;
+ }
+
+ .visibility {
+    float: left;
+    white-space: nowrap;
+    margin-top: 20px;
+ }
+
+ .darkLabel {
+    float: left;
+    margin-top: 20px;
+    color: black;
+ }
+
+ input, textarea{
+    margin-top: 20px;
+    width: 40%;
+ }
+ .red-star {
+    margin-top: 20px;
+    color: red;
+}
+
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
+}
+
+textarea.ng-invalid.ng-touched {
+   border: 1px solid red;
+}
+
+.newBlank{
+   height: 280px;
+   width: 100%;
+   background-color:whitesmoke;
+   text-align: center;
+   vertical-align: middle;
+   align-items: center;
+}
+
