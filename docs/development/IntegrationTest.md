@@ -14,26 +14,49 @@
 
 # IntegrationTest
 
-Submarine now supports two integration tests.
+Submarine now supports two kind of integration tests.
 
 They are in the project's `submarine/submarine-test` directory, There are two modules, `e2e` and `test-k8s`.
 
-There are currently some differences between `e2e` and `test-k8s` in operation mode. Among them, `e2e` needs to deploy submarine locally, while `test-k8s` uses k8s to deploy submarine.
+There are currently some differences between `e2e` and `test-k8s` in operation mode.
+
+Among them, `e2e` needs to deploy submarine locally, while `test-k8s` uses k8s to deploy submarine.
 
 These two different test methods can be applied to different test scenarios. (In the future, these two test methods may be combined or adjusted)
 
 ## k8s test
 
-k8s test: When the user submits the code to himself or the `apache/submarine` git repository, the travis test task will automatically start.
+k8s test: When the user submits the code to his/her repository or the `apache/submarine` git repository, the travis test task will automatically start.
 
-test-k8s runs test cases in travis. It will first create a k8s cluster by using the kind tool in travis, and then compile and package the submarine project in `submarine-dist` directory to build a docker image.
+test-k8s runs test cases in travis. It will first create a k8s cluster by using the kind tool in travis,
 
-Then use this latest code build docker image in k8s Deploy a submarine system. Then run test case in the `test-k8s/test` directory.
+and then compile and package the submarine project in `submarine-dist` directory to build a docker image.
 
+Then use this latest code build docker image in k8s Deploy a submarine system. Then run test case in the `test-k8s/..` directory.
+
+### Run k8s test in locally
+
+Executing the following command will perform the following actions:
+
+```
+mvn -Phadoop-2.9 clean package install -DskipTests verify -DskipRat -am -pl submarine-test/test-k8s
+```
+
+1. The submarine project will be compiled and packaged to generate `submarine-dist/target/submarine-<version>.tar.gz`
+2. Call the `submarine-cloud/hack/integration-test.sh` script
+
+    + Call the `build.sh` script under `submarine/dev-support/docker-images/` to generate the latest `submarine`, `database` and `operator` docker images.
+    + Call `submarine-cloud/hack/kind-cluster-build.sh` to create a k8s cluster
+    + Call `submarine-cloud/hack/deploy-submarine.sh` to deploy the submarine system in the k8s cluster using the latest `submarine`, `database` and `operator` docker images.
+    + Call the test cases in `submarine-test/test-k8s/` for testing.
+
+### Run k8s test in travis
+
+Each time a code is submitted, travis is automatically triggered for testing.
 
 ## e2e test
 
-e2e tests can be unit tested locally and in travis,
+e2e tests can be ran both locally and in Travis
 
 Local testing: When developers perform e2e testing locally, they need to manually start the submarine server by executing bin / submarine-daemon.sh.
 
