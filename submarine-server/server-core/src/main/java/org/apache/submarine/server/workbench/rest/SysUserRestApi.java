@@ -160,51 +160,51 @@ public class SysUserRestApi {
   @SubmarineApi
   public Response info() {
     List<Action> actions = new ArrayList<Action>();
-    Action action1 = new Action("add", false, "新增");
-    Action action2 = new Action("query", false, "查询");
-    Action action3 = new Action("get", false, "详情");
-    Action action4 = new Action("update", false, "修改");
-    Action action5 = new Action("delete", false, "删除");
+    Action action1 = new Action("add", false, "add");
+    Action action2 = new Action("query", false, "query");
+    Action action3 = new Action("get", false, "get");
+    Action action4 = new Action("update", false, "update");
+    Action action5 = new Action("delete", false, "delete");
     actions.add(action1);
     actions.add(action2);
     actions.add(action3);
     actions.add(action4);
     actions.add(action5);
 
-    Permission.Builder permissionBuilder1 = new Permission.Builder("admin", "dashboard", "仪表盘");
+    Permission.Builder permissionBuilder1 = new Permission.Builder("admin", "dashboard", "dashboard");
     Permission permission1 = permissionBuilder1.actions(actions).actionEntitySet(actions).build();
 
-    Permission.Builder permissionBuilder2 = new Permission.Builder("admin", "exception", "异常页面权限");
+    Permission.Builder permissionBuilder2 = new Permission.Builder("admin", "exception", "exception");
     Permission permission2 = permissionBuilder2.actions(actions).actionEntitySet(actions).build();
 
-    Permission.Builder permissionBuilder3 = new Permission.Builder("admin", "result", "结果权限");
+    Permission.Builder permissionBuilder3 = new Permission.Builder("admin", "result", "result");
     Permission permission3 = permissionBuilder3.actions(actions).actionEntitySet(actions).build();
 
-    Permission.Builder permissionBuilder4 = new Permission.Builder("admin", "profile", "详细页权限");
+    Permission.Builder permissionBuilder4 = new Permission.Builder("admin", "profile", "profile");
     Permission permission4 = permissionBuilder4.actions(actions).actionEntitySet(actions).build();
 
-    Permission.Builder permissionBuilder5 = new Permission.Builder("admin", "table", "表格权限");
+    Permission.Builder permissionBuilder5 = new Permission.Builder("admin", "table", "table");
     Permission permission5 = permissionBuilder5.actions(actions).actionEntitySet(actions).build();
 
-    Permission.Builder permissionBuilder6 = new Permission.Builder("admin", "form", "表单权限");
+    Permission.Builder permissionBuilder6 = new Permission.Builder("admin", "form", "form");
     Permission permission6 = permissionBuilder6.actions(actions).actionEntitySet(actions).build();
 
-    Permission.Builder permissionBuilder7 = new Permission.Builder("admin", "order", "订单管理");
+    Permission.Builder permissionBuilder7 = new Permission.Builder("admin", "order", "order");
     Permission permission7 = permissionBuilder7.actions(actions).actionEntitySet(actions).build();
 
-    Permission.Builder permissionBuilder8 = new Permission.Builder("admin", "permission", "权限管理");
+    Permission.Builder permissionBuilder8 = new Permission.Builder("admin", "permission", "permission");
     Permission permission8 = permissionBuilder8.actions(actions).actionEntitySet(actions).build();
 
-    Permission.Builder permissionBuilder9 = new Permission.Builder("admin", "role", "角色管理");
+    Permission.Builder permissionBuilder9 = new Permission.Builder("admin", "role", "role");
     Permission permission9 = permissionBuilder9.actions(actions).actionEntitySet(actions).build();
 
-    Permission.Builder permissionBuilder10 = new Permission.Builder("admin", "table", "桌子管理");
+    Permission.Builder permissionBuilder10 = new Permission.Builder("admin", "table", "table");
     Permission permission10 = permissionBuilder10.actions(actions).actionEntitySet(actions).build();
 
-    Permission.Builder permissionBuilder11 = new Permission.Builder("admin", "user", "用户管理");
+    Permission.Builder permissionBuilder11 = new Permission.Builder("admin", "user", "user");
     Permission permission11 = permissionBuilder11.actions(actions).actionEntitySet(actions).build();
 
-    Permission.Builder permissionBuilder12 = new Permission.Builder("admin", "support", "超级模块");
+    Permission.Builder permissionBuilder12 = new Permission.Builder("admin", "support", "support");
     Permission permission12 = permissionBuilder12.actions(actions).actionEntitySet(actions).build();
 
     List<Permission> permissions = new ArrayList<Permission>();
@@ -221,8 +221,8 @@ public class SysUserRestApi {
     permissions.add(permission11);
     permissions.add(permission12);
 
-    Role.Builder roleBuilder = new Role.Builder("admin", "管理员");
-    Role role = roleBuilder.describe("拥有所有权限").status(1).creatorId("system")
+    Role.Builder roleBuilder = new Role.Builder("admin", "admin");
+    Role role = roleBuilder.describe("Permission").status(1).creatorId("system")
         .createTime(1497160610259L).deleted(0).permissions(permissions).build();
 
     UserInfo.Builder userInfoBuilder = new UserInfo.Builder("4291d7da9005377ec9aec4a71ea837f", "liuxun");
