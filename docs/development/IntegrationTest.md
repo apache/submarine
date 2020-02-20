@@ -14,7 +14,7 @@
 
 # IntegrationTest
 
-Submarine now supports two kind of integration tests.
+Submarine now supports two kinds of integration tests.
 
 They are in the project's `submarine/submarine-test` directory, There are two modules, `e2e` and `test-k8s`.
 
@@ -32,7 +32,7 @@ test-k8s runs test cases in travis. It will first create a k8s cluster by using 
 
 and then compile and package the submarine project in `submarine-dist` directory to build a docker image.
 
-Then use this latest code build docker image in k8s Deploy a submarine system. Then run test case in the `test-k8s/..` directory.
+Then use this latest code to build a docker image and deploy a submarine system in k8s. Then run test case in the `test-k8s/..` directory.
 
 ### Run k8s test in locally
 
