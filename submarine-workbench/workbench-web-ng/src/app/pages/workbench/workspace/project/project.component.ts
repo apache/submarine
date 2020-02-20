@@ -32,7 +32,7 @@ export class ProjectComponent implements OnInit {
 
   constructor() { }
 
-  //Todo : get projects data from server
+  //TODO(jasoonn): get projects data from server
   ngOnInit() {
     this.existProjects.push({
       projectName: 'projectName0', description: 'description', tags: ['12', 'Tag 2'], inputTagVisibility: false, projectInputTag: ''
@@ -47,13 +47,13 @@ export class ProjectComponent implements OnInit {
       projectName: 'projectName1', description: 'description', tags: ['Unremovable', 'Tag 2', 'Tag 3'], inputTagVisibility: false, projectInputTag: ''
     })
   }
-  //Todo: Update tag in server
+  //TODO(jasoonn): Update tag in server
   handleCloseTag(project, tag){
     project.tags = project.tags.filter(itag => itag!==tag);
     console.log(project);
     console.log(tag);
   }
-  //Todo update tag in server
+  //TODO(jasoonn): update tag in server
   handleInputConfirm(project): void {
     if (project.projectInputTag && project.tags.indexOf(project.projectInputTag) === -1) {
       project.tags = [...project.tags, project.projectInputTag];
@@ -68,6 +68,4 @@ export class ProjectComponent implements OnInit {
       this.inputElement.nativeElement.focus();
     }, 10);
   }
-
-
 }

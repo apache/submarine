@@ -22,8 +22,8 @@
     <div id="addProjectbtn">
         <button nz-button nzBlock (click)="newProject=true">+ Add New Project</button>
     </div>
-    <div style="padding:30px;">
-        <div nz-row [nzGutter]="12">
+    <div id="projectTagDiv">
+        <div nz-row [nzGutter]="12" nzType="flex" nzJustify="start">
           <div *ngFor="let project of existProjects" nz-col [nzSpan]="8" style="padding: 5px;">
             <nz-card [nzTitle]="project.projectName" [nzActions]="[actionEdit, actionDownload, actionSetting, actionDelete]">
                 <nz-tag *ngFor="let tag of project.tags" [nzMode]="'closeable'" (nzAfterClose)="handleCloseTag(project, tag)">{{ tag }}</nz-tag>

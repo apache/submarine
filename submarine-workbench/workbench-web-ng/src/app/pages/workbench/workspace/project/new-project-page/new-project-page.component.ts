@@ -29,7 +29,7 @@ import { NgForm } from '@angular/forms';
 export class NewProjectPageComponent implements OnInit {
   @Output() closeProjectPage = new EventEmitter<boolean>();
   @ViewChild('f', { static: true }) signupForm: NgForm;
-  //Todo: get team from API
+  //TODO(jasoonn): get team from API
   teams = ['ciil'];
   
   current = 0;
@@ -55,13 +55,13 @@ export class NewProjectPageComponent implements OnInit {
     this.current += 1;
   }
 
-  //Todo : Add the new project
+  //TODO(jasoonn): Add the new project
   done(): void{
     console.log(this.newProjectContent);
     this.clearProject();
   }
 
-  //Todo : open in notebook
+  //TODO(jasoonn): open in notebook
   openNotebook() {
     ;
   }
