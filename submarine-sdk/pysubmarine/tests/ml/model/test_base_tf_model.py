@@ -13,29 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import ABCMeta, abstractmethod
+from submarine.ml.model.base_tf_model import BaseTFModel
+import pytest
 
 
-class abstractModel:
-    """
-    Abstract class for tensorflow model.
-    This class defines the API interface for user to create a tensorflow estimator model.
-    """
+def test_create_base_tf_model():
+    params = {"learning rate": 0.05}
+    with pytest.raises(AssertionError, match="Does not define any input parameters"):
+        BaseTFModel(params)
 
-    __metaclass__ = ABCMeta
+    params.update({'input': {'train_data': '/tmp/train.csv'}})
+    with pytest.raises(AssertionError, match="Does not define any input type"):
+        BaseTFModel(params)
 
-    @abstractmethod
-    def __init__(self):
-        pass
-
-    @abstractmethod
-    def train(self, train_input_fn=None, eval_input_fn=None, **kwargs):
-        pass
-
-    @abstractmethod
-    def evaluate(self, eval_input_fn=None, **kwargs):
-        pass
-
-    @abstractmethod
-    def predict(self, test_input_fn=None, **kwargs):
-        pass
+    params.update({'input': {'type': 'libsvm'}})
+    BaseTFModel(params)

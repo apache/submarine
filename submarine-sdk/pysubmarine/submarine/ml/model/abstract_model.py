@@ -14,17 +14,31 @@
 # limitations under the License.
 
 import logging
-from submarine.ml.model import deepFM
+from abc import ABCMeta, abstractmethod
 
 logger = logging.getLogger(__name__)
 
-if __name__ == '__main__':
-    logging.getLogger().setLevel(logging.INFO)
-    json_path = './deepFM.json'
 
-    model = deepFM(json_path=json_path)
-    # Training
-    model.train()
-    # Evaluate
-    result = model.evaluate()
-    logging.info("Model metrics : %s", result)
+class AbstractModel:
+    """
+    Abstract class for tensorflow model.
+    This class defines the API interface for user to create a machine learning model.
+    """
+
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __init__(self,):
+        pass
+
+    @abstractmethod
+    def train(self):
+        pass
+
+    @abstractmethod
+    def evaluate(self):
+        pass
+
+    @abstractmethod
+    def predict(self):
+        pass

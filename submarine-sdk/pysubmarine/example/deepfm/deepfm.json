@@ -1,8 +1,8 @@
 {
   "input": {
-    "train_data": "./data/tr.libsvm",
-    "valid_data": "./data/va.libsvm",
-    "test_data": "./data/te.libsvm",
+    "train_data": ["./data/tr.libsvm"],
+    "valid_data": ["./data/va.libsvm"],
+    "test_data": ["./data/te.libsvm"],
     "type": "libsvm"
   },
   "output": {
@@ -18,14 +18,17 @@
     "learning_rate": 0.0005,
     "batch_norm_decay": 0.9,
     "l2_reg": 0.0001,
-    "deep_layers": "400,400,400",
-    "dropout": "0.3,0.3,0.3",
+    "deep_layers": [400, 400, 400],
+    "dropout": [0.3, 0.3, 0.3],
     "batch_norm": false,
     "optimizer": "adam",
     "log_steps": 10,
-    "num_threads": 4,
-    "num_gpu": 0,
     "seed": 77,
     "mode": "local"
+  },
+  "resource": {
+    "num_cpu": 4,
+    "num_gpu": 0,
+    "num_thread": 0
   }
 }

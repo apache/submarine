@@ -13,6 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .deepFM import deepFM
+from .deepfm import DeepFM
 
-__all__ = ["deepFM"]
+__all__ = ["DeepFM"]

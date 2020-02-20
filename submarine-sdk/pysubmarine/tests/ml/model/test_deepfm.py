@@ -14,7 +14,7 @@
 # limitations under the License.
 
 
-from submarine.ml.model import deepFM
+from submarine.ml.model import DeepFM
 import os
 
 LIBSVM_DATA = """1 1:0 2:0.051495 3:0.5 4:0.1 5:0.113437 6:0.874 7:0.01 8:0.08 9:0.028 10:0
@@ -52,7 +52,7 @@ def test_run_deepfm(tmpdir):
             "feature_size": 1000
         }
     }
-    model = deepFM(model_params=params)
+    model = DeepFM(model_params=params)
     model.train()
     model.evaluate()
     model.predict()

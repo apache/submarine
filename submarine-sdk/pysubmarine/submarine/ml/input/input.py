@@ -18,6 +18,8 @@ import tensorflow as tf
 
 logger = logging.getLogger(__name__)
 
+AUTOTUNE = tf.data.experimental.AUTOTUNE
+
 
 def libsvm_input_fn(filepath, batch_size=256, num_epochs=3,  # pylint: disable=W0613
                     perform_shuffle=False, delimiter=" ", **kwargs):
@@ -33,7 +35,7 @@ def libsvm_input_fn(filepath, batch_size=256, num_epochs=3,  # pylint: disable=W
             return {"feat_ids": feat_ids, "feat_vals": feat_vals}, labels
 
         dataset = tf.data.TextLineDataset(filepath)\
-            .map(decode_libsvm, num_parallel_calls=10).prefetch(500000)
+            .map(decode_libsvm, num_parallel_calls=AUTOTUNE).prefetch(AUTOTUNE)
 
         if perform_shuffle:
             dataset = dataset.shuffle(buffer_size=batch_size)
@@ -41,7 +43,5 @@ def libsvm_input_fn(filepath, batch_size=256, num_epochs=3,  # pylint: disable=W
         dataset = dataset.repeat(num_epochs)
         dataset = dataset.batch(batch_size)
 
-        iterator = dataset.make_one_shot_iterator()
-        batch_features, batch_labels = iterator.get_next()
-        return batch_features, batch_labels
+        return dataset
     return _input_fn

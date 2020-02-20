@@ -14,30 +14,33 @@
 # limitations under the License.
 
 
-LIBSVM = "libsvm"
-
-defaultParameters = {
-  "output": {
-    "save_model_dir": "./experiment",
-    "metric": "auc"
-  },
-  "training": {
-    "batch_size": 512,
-    "field_size": 39,
-    "num_epochs": 3,
-    "feature_size": 117581,
-    "embedding_size": 256,
-    "learning_rate": 0.0005,
-    "batch_norm_decay": 0.9,
-    "l2_reg": 0.0001,
-    "deep_layers": "400,400,400",
-    "dropout": "0.3,0.3,0.3",
-    "batch_norm": "false",
-    "optimizer": "adam",
-    "log_steps": 10,
-    "num_threads": 4,
-    "num_gpu": 0,
-    "seed": 77,
-    "mode": "local"
-  }
+default_parameters = {
+    "output": {
+        "save_model_dir": "./experiment",
+        "metric": "auc"
+    },
+    "training": {
+        "batch_size": 512,
+        "field_size": 39,
+        "num_epochs": 3,
+        "feature_size": 117581,
+        "embedding_size": 256,
+        "learning_rate": 0.0005,
+        "batch_norm_decay": 0.9,
+        "l2_reg": 0.0001,
+        "deep_layers": [400, 400, 400],
+        "dropout": [0.3, 0.3, 0.3],
+        "batch_norm": "false",
+        "optimizer": "adam",
+        "log_steps": 10,
+        "num_threads": 4,
+        "num_gpu": 0,
+        "seed": 77,
+        "mode": "local"
+    },
+    "resource": {
+        "num_cpu": 4,
+        "num_gpu": 0,
+        "num_thread": 0  # tf determines automatically
+    }
 }

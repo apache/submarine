@@ -13,10 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .input import libsvm_input_fn
+from submarine.ml.model import DeepFM
+import argparse
 
-LIBSVM = "libsvm"
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-conf", help="a JSON configuration file for DeepFM", type=str)
+    args = parser.parse_args()
 
-input_fn_registry = {
-    LIBSVM: libsvm_input_fn
-}
+    json_path = args.conf
+    model = DeepFM(json_path=json_path)
+    # Training
+    model.train()
+    # Evaluate
+    result = model.evaluate()
+    print("Model metrics : ", result)

@@ -501,6 +501,7 @@
             <exclude>**/*.xsd</exclude>
             <exclude>**/*.json</exclude>
             <exclude>**/*.conf</exclude>
+            <exclude>**/*.libsvm</exclude>
             <exclude>**/*.yaml</exclude>
             <exclude>**/*.libsvm</exclude>
             <exclude>**/src/main/resources/META-INF/services/org.apache.hadoop.security.SecurityInfo</exclude>
