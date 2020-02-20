@@ -186,6 +186,7 @@ matrix:
       language: python
       python: 3.6
       dist: xenial
+      env: NAME="Test Python SDK" TRAVIS_PYTHON_VERSION="3.6"
       install:
         - source ./submarine-sdk/pysubmarine/travis/conda.sh
         - pip install -r ./submarine-sdk/pysubmarine/travis/lint-requirements.txt

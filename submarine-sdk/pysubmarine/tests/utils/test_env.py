@@ -14,15 +14,51 @@
 # limitations under the License.
 
 from submarine.utils.env import get_env, unset_variable
+from submarine.utils.env import get_from_dicts, get_from_json, get_from_registry
 from os import environ
+import json
+import pytest
 
 
-class TestEnv:
-    def test_get_env(self):
-        environ["test"] = "hello"
-        assert get_env("test") == "hello"
+@pytest.fixture(scope="function")
+def output_json_filepath():
+    params = {"learning_rate": 0.05}
+    path = '/tmp/data.json'
+    with open(path, 'w') as f:
+        json.dump(params, f)
+    return path
 
-    def test_unset_variable(self):
-        environ["test"] = "hello"
-        unset_variable("test")
-        assert "test" not in environ
+
+def test_get_env():
+    environ["test"] = "hello"
+    assert get_env("test") == "hello"
+
+
+def test_unset_variable():
+    environ["test"] = "hello"
+    unset_variable("test")
+    assert "test" not in environ
+
+
+def test_merge_json(output_json_filepath):
+    default_params = {"learning_rate": 0.08, "embedding_size": 256}
+    params = get_from_json(output_json_filepath, default_params)
+    assert params['learning_rate'] == 0.05
+    assert params['embedding_size'] == 256
+
+
+def test_merge_dicts():
+    params = {"learning_rate": 0.05}
+    default_params = {"learning_rate": 0.08, "embedding_size": 256}
+    final = get_from_dicts(params, default_params)
+    assert final['learning_rate'] == 0.05
+    assert final['embedding_size'] == 256
+
+
+def test_get_from_registry():
+    registry = {'model': 'xgboost'}
+    val = get_from_registry('MODEL', registry)
+    assert val == 'xgboost'
+
+    with pytest.raises(ValueError):
+        get_from_registry('test', registry)
