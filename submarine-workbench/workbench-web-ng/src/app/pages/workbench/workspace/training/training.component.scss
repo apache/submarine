@@ -16,12 +16,38 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 .horizontal_dotted_line{
   border-top: 2px dotted whitesmoke;
   color:transparent;
 } 
+
 #trainingDiv{
   margin: 30px;
   padding: 10px;
+  background-color:white;
+}
+
+.leaveMargin{
+  margin-left: 10px;
+}
+
+.leaveBothMargin{
+  margin: 10px;
+}
+
+.othersLabel{
+  color: rgb(122, 114, 114);
+  margin-left: 40px;
+}
+
+#trainingSearchTag{
+  width: 400px;
+  margin-left: 10px;
+}
+
+#spanningDiv{
+  margin: 30px;
+  padding: 30px;
   background-color:white;
 }

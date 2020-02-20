@@ -24,7 +24,7 @@
     </div>
     <div id="projectTagDiv">
         <div nz-row [nzGutter]="12" nzType="flex" nzJustify="start">
-          <div *ngFor="let project of existProjects" nz-col [nzSpan]="8" style="padding: 5px;">
+          <div *ngFor="let project of existProjects" nz-col [nzSpan]="8" id="projectDiv">
             <nz-card [nzTitle]="project.projectName" [nzActions]="[actionEdit, actionDownload, actionSetting, actionDelete]">
                 <nz-tag *ngFor="let tag of project.tags" [nzMode]="'closeable'" (nzAfterClose)="handleCloseTag(project, tag)">{{ tag }}</nz-tag>
                 <nz-tag *ngIf="!project.inputTagVisibility" class="editable-tag" nzNoAnimation (click)="showInput(project)">
@@ -37,7 +37,7 @@
                     *ngIf="project.inputTagVisibility"
                     type="text"
                     [(ngModel)]="project.projectInputTag"
-                    style="width: 78px;"
+                    id="projectInputTag"
                     (blur)="handleInputConfirm(project)"
                     (keydown.enter)="handleInputConfirm(project)"
                     />
