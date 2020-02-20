@@ -21,6 +21,6 @@ RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/main" > /etc/apk/repositories
 RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/community" >> /etc/apk/repositories
 
 RUN apk add tzdata --no-cache
-ADD ./tmp/submarine-operator_linux /usr/local/bin/submarine-operator_linux
+ADD ./tmp/submarine-operator /usr/local/bin/submarine-operator
 
-ENTRYPOINT [ "/usr/local/bin/submarine-operator_linux" ]
+ENTRYPOINT [ "/usr/local/bin/submarine-operator" ]

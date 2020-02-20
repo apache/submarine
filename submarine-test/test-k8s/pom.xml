@@ -111,12 +111,13 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <id>start-kind</id>
+            <id>start-integration-ks8-test</id>
             <phase>pre-integration-test</phase>
             <configuration>
               <target unless="skipTests">
                 <exec executable="./integration-test.sh" dir="${submarine.cloud.path}" spawn="false">
-                  <arg value="start"/>
+                  <arg value="--start"/>
+                  <arg value="--update"/>
                 </exec>
               </target>
             </configuration>
@@ -125,12 +126,12 @@
             </goals>
           </execution>
           <execution>
-            <id>stop-kind</id>
+            <id>stop-integration-ks8-test</id>
             <phase>post-integration-test</phase>
             <configuration>
               <target unless="skipTests">
                 <exec executable="./integration-test.sh" dir="${submarine.cloud.path}" spawn="false">
-                  <arg value="stop"/>
+                  <arg value="--stop"/>
                 </exec>
               </target>
             </configuration>
@@ -151,7 +152,7 @@
       </activation>
       <properties>
         <submarine.cloud.path>
-          ../../submarine-dist/target/submarine-dist-${project.version}-hadoop-2.9/submarine-dist-${project.version}-hadoop-2.9/submarine-cloud/hack
+          ../../submarine-cloud/hack
         </submarine.cloud.path>
       </properties>
     </profile>

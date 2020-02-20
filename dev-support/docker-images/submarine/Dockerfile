@@ -13,30 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM submarinehub/alpine:3.10
+FROM alpine:3.10
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
-
-# Update apk repositories
-RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/main" > /etc/apk/repositories
-RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/community" >> /etc/apk/repositories
 
 # INSTALL openjdk
 RUN apk update && \
-    apk add --no-cache openjdk8 tzdata tini && \
+    apk add --no-cache openjdk8 tzdata bash tini && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo Asia/Shanghai > /etc/timezone && \
     apk del tzdata && \
     rm -rf /tmp/* /var/cache/apk/*
-
 
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
 
 # Install Submarine
 ADD ./tmp/submarine-dist-*.tar.gz /opt/
 RUN ln -s /opt/submarine-dist-* "/opt/submarine-current"
-RUN mv /opt/mysql-connector-java-*.jar /opt/submarine-current/lib/
 ADD ./tmp/submarine-site.xml "/opt/submarine-current/conf/"
 ADD ./tmp/submarine.sh "/opt/submarine-current/bin/"
+ADD ./tmp/mysql-connector-java-5.1.39.jar "/opt/submarine-current/lib/"
 
 WORKDIR /opt/submarine-current
 

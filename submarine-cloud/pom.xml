@@ -25,79 +25,71 @@
   <parent>
     <groupId>org.apache.submarine</groupId>
     <artifactId>submarine</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.4.0-SNAPSHOT</version>
   </parent>
   <artifactId>submarine-cloud</artifactId>
-  <version>0.3.0-SNAPSHOT</version>
+  <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: Cloud</name>
   <packaging>pom</packaging>
 
   <build>
-    <sourceDirectory>${basedir}/cmd/operator</sourceDirectory>
-    <directory>${basedir}/target</directory>
     <plugins>
       <plugin>
-        <groupId>com.igormaznitsa</groupId>
-        <artifactId>mvn-golang-wrapper</artifactId>
-        <version>2.3.4</version>
-        <extensions>true</extensions>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
         <executions>
-          <execution>
-            <id>execution-fmt</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>fmt</goal>
-            </goals>
-            <configuration>
-              <sources>${basedir}</sources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>execution-build</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>build</goal>
-            </goals>
-            <configuration>
-              <targetOs>${GOOS}</targetOs> <!-- linux|darwin|windows -->
-              <resultName>submarine-operator_${GOOS}</resultName>
-              <ldFlags>
-                <flag>-X</flag>
-                <flag>'github.com/apache/submarine/submarine-cloud/pkg/utils.BUILDTIME=${maven.build.timestamp}'</flag>
-                <flag>-X</flag>
-                <flag>'github.com/apache/submarine/submarine-cloud/pkg/utils.TAG=$(git tag|tail -1)'</flag>
-                <!--flag>-X</flag>
-                <flag>"github.com/apache/submarine/submarine-cloud/pkg/utils.COMMIT=$(git rev-parse HEAD)"</flag>
-                <flag>-X</flag>
-                <flag>"github.com/apache/submarine/submarine-cloud/pkg/utils.VERSION=$(git rev-parse -abbrev-ref HEAD)"</flag-->
-              </ldFlags>
-            </configuration>
-          </execution>
           <!--execution>
-            <id>get-k8s-api</id>
-            <phase>install</phase>
+            <id>compile-submarine-cloud</id>
+            <phase>compile</phase>
             <goals>
-              <goal>get</goal>
+              <goal>exec</goal>
             </goals>
             <configuration>
-              <packages>
-                <package>k8s.io/api</package>
-              </packages>
+              <executable>${basedir}/build.sh</executable>
+              <commandlineArgs>build</commandlineArgs>
+              <environmentVariables>
+                <GOOS>darwin</GOOS>
+                <GOARCH>amd64</GOARCH>
+              </environmentVariables>
             </configuration>
           </execution-->
           <execution>
-            <id>execution-clean</id>
-            <phase>clean</phase>
+            <id>package-submarine-cloud</id>
+            <phase>package</phase>
             <goals>
-              <goal>clean</goal>
+              <goal>exec</goal>
             </goals>
+            <configuration>
+              <executable>${basedir}/build.sh</executable>
+              <commandlineArgs>release</commandlineArgs>
+              <environmentVariables>
+                <GOOS>linux</GOOS>
+                <GOARCH>amd64</GOARCH>
+              </environmentVariables>
+            </configuration>
           </execution>
           <execution>
-            <id>test</id>
+            <id>clean-submarine-cloud</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${basedir}/build.sh</executable>
+              <commandlineArgs>clean</commandlineArgs>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-submarine-cloud</id>
             <phase>test</phase>
             <goals>
-              <goal>test</goal>
+              <goal>exec</goal>
             </goals>
+            <configuration>
+              <executable>${basedir}/build.sh</executable>
+              <commandlineArgs>test</commandlineArgs>
+            </configuration>
           </execution>
         </executions>
       </plugin>

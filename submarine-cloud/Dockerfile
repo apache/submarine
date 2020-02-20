@@ -1,4 +1,3 @@
-#!/bin/bash
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -14,26 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -eo pipefail
-set -x
+FROM golang:1.13-alpine
+MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
-if [ -L ${BASH_SOURCE-$0} ]; then
-  PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
-else
-  PWD=$(dirname ${BASH_SOURCE-$0})
-fi
-export CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
-SUBMARINE_HOME=${CURRENT_PATH}/../../..
+# Update apk repositories
+RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/main" > /etc/apk/repositories
+RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/community" >> /etc/apk/repositories
+RUN apk add make --no-cache
 
-SUBMARINE_VERSION="0.4.0-SNAPSHOT"
-SUBMARINE_IMAGE_NAME="apache/submarine:database-${SUBMARINE_VERSION}"
+ENV GOPROXY https://goproxy.io
+ENV GO111MODULE on
 
-cp -rf "${SUBMARINE_HOME}/docs/database" "${CURRENT_PATH}"
+WORKDIR /go/cache
 
-# build image
-echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
-cd ${CURRENT_PATH}
-docker build -t ${SUBMARINE_IMAGE_NAME} .
+ADD go.mod .
+ADD go.sum .
+RUN go mod download
 
-# clean template file
-rm -rf ${CURRENT_PATH}/database
+# docker build -t apache/submarine:build .

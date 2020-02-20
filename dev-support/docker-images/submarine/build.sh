@@ -15,8 +15,9 @@
 # limitations under the License.
 
 set -eo pipefail
+set -x
 
-SUBMARINE_VERSION=0.3.0-SNAPSHOT
+SUBMARINE_VERSION=0.4.0-SNAPSHOT
 SUBMARINE_IMAGE_NAME="apache/submarine:server-${SUBMARINE_VERSION}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
@@ -39,6 +40,14 @@ fi
 
 mkdir -p "${CURRENT_PATH}/tmp"
 cp ${SUBMARINE_HOME}/submarine-dist/target/submarine-dist-${SUBMARINE_VERSION}*.tar.gz "${CURRENT_PATH}/tmp"
+
+# download mysql connect java
+MYSQL_VERSION=5.1.39
+MYSQL_JAR_URL="https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_VERSION}/mysql-connector-java-${MYSQL_VERSION}.jar"
+tmpfile=$(mktemp)
+trap "test -f $tmpfile && rm $tmpfile" RETURN
+curl -L -o $tmpfile ${MYSQL_JAR_URL}
+mv $tmpfile ${CURRENT_PATH}/tmp/mysql-connector-java-${MYSQL_VERSION}.jar
 
 # Replace the mysql jdbc.url in the submarine-site.xml file with the link name of the submarine container
 # `submarine-database` is submarine database container name

@@ -15,32 +15,120 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-set -e
+set -eo pipefail
+set -x
 
 ROOT=$(unset CDPATH && cd $(dirname "${BASH_SOURCE[0]}")/.. && pwd)
 cd $ROOT
 SUBMARINE_HOME=${ROOT}/..
 
+source $ROOT/hack/lib.sh
+
+hack::ensure_kubectl
+
+export KUBECONFIG=~/.kube/kind-config-${clusterName:-kind}
+
 function start() {
   $ROOT/hack/kind-cluster-build.sh
   $ROOT/hack/deploy-submarine.sh --test
 
-  for((i=1;i<=100;i++)); do
-    if curl http://127.0.0.1/api/v1/cluster/address | grep \"status\":\"OK\" ; then
-      echo "Cluster start success!"
-      exit;
+  for((i=1;i<=30;i++)); do
+    info=`curl -s -m 10 --connect-timeout 10 -I http://127.0.0.1/api/v1/cluster/address`
+    code=`echo $info | grep "HTTP" | awk '{print $2}'`
+
+    #############  DON'T DELETE NEXT DEBUG COMAND  #############
+    # $KUBECTL_BIN get node
+    # $KUBECTL_BIN get pods
+    # $KUBECTL_BIN get svc
+    # podname=`$KUBECTL_BIN get pods | grep submarinecluster-submarine | awk '{print $1}'`
+    # $KUBECTL_BIN describe pod $podname
+    # $KUBECTL_BIN logs $podname
+    ############################################################
+
+    if [ "$code" == "200" ];then
+        echo "Start submarine on k8s success!"
+        exit;
+    else
+        echo "Request failed with response code = $code"
     fi
     sleep 3
   done
 
-  echo "Cluster start failure!"
+  #############  DON'T DELETE NEXT DEBUG COMAND  #############
+  # $KUBECTL_BIN get node
+  # podname=`$KUBECTL_BIN get pods | grep submarinecluster-submarine | awk '{print $1}'`
+  # $KUBECTL_BIN describe pod $podname
+  # $KUBECTL_BIN exec -it $podname cat /opt/submarine-current/logs/submarine.log
+  # $KUBECTL_BIN exec $podname -- bash -c "tail -500 /opt/submarine-current/logs/submarine.log"
+  # $KUBECTL_BIN get pods | grep submarinecluster-submarine | awk '{print $1}' | xargs -I {} $KUBECTL_BIN exec {} -- bash -c "tail -500 /opt/submarine-current/logs/submarine.log"
+  # kubectl get pods -n operations | grep operations | awk '{print $1}' | xargs -I {} kubectl exec -it -n operations {} cat /tmp/operations-server.INFO
+  ############################################################
+  echo "Stop submarine on k8s failure!"
 }
 
 function stop() {
   $ROOT/hack/kind delete cluster
 }
 
-if [[ "$1" == "stop" ]]; then
+function update_docker_images() {
+  $SUBMARINE_HOME/dev-support/docker-images/database/build.sh
+  $SUBMARINE_HOME/dev-support/docker-images/operator/build.sh
+  $SUBMARINE_HOME/dev-support/docker-images/submarine/build.sh
+
+  docker images
+}
+
+usage() {
+    cat <<EOF
+This script use kind to create Kubernetes cluster and deploy submarine to k8s
+
+Options:
+       -h,--help          prints the usage message
+       -s,--start         Create k8s and start submarine
+       -t,--stop          Delete k8s cluster and submarine
+       -u,--update        update submarine docker image
+Usage:
+    $0 --start --update
+EOF
+}
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -s|--start)
+    OPERATION="START"
+    shift
+    ;;
+    -t|--stop)
+    OPERATION="STOP"
+    shift
+    ;;
+    -u|--update)
+    UPDATE_IAMGE="TRUE"
+    shift
+    ;;
+    -h|--help)
+    usage
+    exit 0
+    ;;
+    *)
+    echo "unknown option: $key"
+    usage
+    exit 1
+    ;;
+esac
+done
+
+OPERATION=${OPERATION:-""}
+UPDATE_IAMGE=${UPDATE_IAMGE:-""}
+
+if [[ $UPDATE_IAMGE == "TRUE" ]]; then
+  update_docker_images
+fi
+
+if [[ $OPERATION == "STOP" ]]; then
   stop
 else
   start
