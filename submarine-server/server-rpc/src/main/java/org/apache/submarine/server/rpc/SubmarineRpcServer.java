@@ -50,6 +50,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.submarine.commons.utils.SubmarineConfVars.ConfVars.SUBMARINE_RUNTIME_CLASS;
+
 /**
  * A gRPC server that provides submarine service.
  */
@@ -116,7 +118,14 @@ public class SubmarineRpcServer {
     ClientContext clientContext = new ClientContext();
     clientContext.setYarnConfig(conf);
     mergeSubmarineConfiguration(clientContext.getSubmarineConfig(), rpcContext);
-    ClassLoader classLoader = new URLClassLoader(constructUrlsFromClasspath("../lib/submitter"));
+    String runtimeclass =
+      clientContext.getSubmarineConfig().getString(SUBMARINE_RUNTIME_CLASS);
+    ClassLoader classLoader = null;
+    if (runtimeclass.contains("YarnServiceRuntimeFactory")) {
+      classLoader = new URLClassLoader(constructUrlsFromClasspath("../lib/submitter/yarnservice"));
+    } else {
+      classLoader = new URLClassLoader(constructUrlsFromClasspath("../lib/submitter/yarn"));
+    }
 
     RuntimeFactory runtimeFactory = RuntimeFactory.getRuntimeFactory(
         clientContext, classLoader);

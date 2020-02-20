@@ -23,7 +23,7 @@
 
   <dependencySets>
     <dependencySet>
-      <outputDirectory>/lib/submitter</outputDirectory>
+      <outputDirectory>/lib/submitter/yarn</outputDirectory>
       <includes>
         <include>com.linkedin.tony:tony-core</include>
       </includes>
@@ -137,14 +137,14 @@
 
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-yarn/target</directory>
-      <outputDirectory>/lib/submitter</outputDirectory>
+      <outputDirectory>/lib/submitter/yarn</outputDirectory>
       <includes>
         <include>submarine-submitter-yarn-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-yarnservice/target</directory>
-      <outputDirectory>/lib/submitter</outputDirectory>
+      <outputDirectory>/lib/submitter/yarnservice</outputDirectory>
       <includes>
         <include>submarine-submitter-yarnservice-${project.version}.jar</include>
       </includes>

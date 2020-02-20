@@ -143,6 +143,12 @@
     <description>RuntimeFactory for Submarine jobs</description>
   </property>
 
+  <property>
+    <name>submarine.server.remote.execution.enabled</name>
+    <value>false</value>
+    <description>Run jobs using rpc server.</description>
+  </property>
+
   <!-- Submarine Submitters Configuration  -->
   <property>
     <name>submarine.submitters</name>
