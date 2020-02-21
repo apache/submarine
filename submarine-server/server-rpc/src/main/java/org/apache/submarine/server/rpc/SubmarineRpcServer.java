@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -118,10 +117,10 @@ public class SubmarineRpcServer {
     ClientContext clientContext = new ClientContext();
     clientContext.setYarnConfig(conf);
     mergeSubmarineConfiguration(clientContext.getSubmarineConfig(), rpcContext);
-    String runtimeclass =
+    String runtimeClass =
       clientContext.getSubmarineConfig().getString(SUBMARINE_RUNTIME_CLASS);
     ClassLoader classLoader = null;
-    if (runtimeclass.contains("YarnServiceRuntimeFactory")) {
+    if (runtimeClass.contains("YarnServiceRuntimeFactory")) {
       classLoader = new URLClassLoader(constructUrlsFromClasspath("../lib/submitter/yarnservice"));
     } else {
       classLoader = new URLClassLoader(constructUrlsFromClasspath("../lib/submitter/yarn"));
@@ -180,7 +179,7 @@ public class SubmarineRpcServer {
     SubmarineConfiguration submarineConfiguration =
         SubmarineConfiguration.getInstance();
     int rpcServerPort = submarineConfiguration.getInt(
-        SubmarineConfVars.ConfVars.SUBMARINE_SERVER_REMOTE_EXECUTION_PORT);
+        SubmarineConfVars.ConfVars.SUBMARINE_SERVER_RPC_PORT);
     SubmarineRpcServer server = new SubmarineRpcServer(rpcServerPort);
     server.start();
     return server;

@@ -162,11 +162,11 @@ Submarine server is supposed to manage jobs lifecycle. Clients can just submit
 job parameters or yaml file to submarine server instead of submitting jobs
 directly by themselves. Submarine server can handle the rest of the work.
 
-Set submarine.server.remote.execution.enabled to true in the file of
+Set submarine.server.rpc.enabled to true in the file of
 /opt/submarine-current/conf/submarine-site
 ```
   <property>
-    <name>submarine.server.remote.execution.enabled</name>
+    <name>submarine.server.rpc.enabled</name>
     <value>true</value>
     <description>Run jobs using rpc server.</description>
   </property>

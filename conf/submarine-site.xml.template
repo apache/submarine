@@ -144,7 +144,7 @@
   </property>
 
   <property>
-    <name>submarine.server.remote.execution.enabled</name>
+    <name>submarine.server.rpc.enabled</name>
     <value>false</value>
     <description>Run jobs using rpc server.</description>
   </property>

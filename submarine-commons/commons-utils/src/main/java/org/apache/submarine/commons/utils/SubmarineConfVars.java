@@ -44,10 +44,10 @@ public class SubmarineConfVars {
     SUBMARINE_SERVER_SSL_TRUSTSTORE_TYPE("submarine.server.ssl.truststore.type", null),
     SUBMARINE_SERVER_SSL_TRUSTSTORE_PASSWORD("submarine.server.ssl.truststore.password", null),
     SUBMARINE_CLUSTER_ADDR("submarine.cluster.addr", ""),
-    SUBMARINE_SERVER_REMOTE_EXECUTION_ENABLED(
-        "submarine.server.remote.execution.enabled", false),
-    SUBMARINE_SERVER_REMOTE_EXECUTION_PORT(
-        "submarine.server.remote.execution.port", 8980),
+    SUBMARINE_SERVER_RPC_ENABLED(
+        "submarine.server.rpc.enabled", false),
+    SUBMARINE_SERVER_RPC_PORT(
+        "submarine.server.rpc.port", 8980),
     CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", 3000),
     CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", 9000),
 
