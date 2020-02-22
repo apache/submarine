@@ -55,4 +55,3 @@ import { NewProjectPageComponent } from './project/new-project-page/new-project-
   })
   export class WorkspaceModule {
   }
-  

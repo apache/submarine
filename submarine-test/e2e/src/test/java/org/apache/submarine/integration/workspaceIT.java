@@ -91,8 +91,6 @@ public class workspaceIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//li[contains(text(), \"Shared\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(pollingWait(By.xpath("//nz-table[@id='sharedTable']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     
-
-    SubmarineITUtils.sleep(1000, true); 
   }
-
 }
+
