@@ -44,7 +44,15 @@
                 <div>
                     <br>
                     {{ project.description}}
+                    <br>
+                    <br>
+                    <label>
+                        <i nz-icon nzType="star" nzTheme="outline"></i> &nbsp;{{ project.starNum }} &nbsp; | &nbsp;
+                        <i nz-icon nzType="like" nzTheme="outline"></i> &nbsp; {{ project.likeNum }} &nbsp; | &nbsp;
+                        <i nz-icon nzType="message" nzTheme="outline"></i> &nbsp; {{ project.msgNum }}
+                    </label>             
                 </div>
+                
                 <ng-template #actionEdit>
                     <i nz-icon nzType="edit"></i>Edit
                 </ng-template>

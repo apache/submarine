@@ -69,58 +69,108 @@
     </form>
     <div class="centerDiv">
       <br>
-      <button nz-button nzType="primary" [disabled]="!f.valid" (click)="next()">
+      <button nz-button nzType="primary" [disabled]="!f.valid" (click)="current = current + 1">
         Next Step
       </button>
     </div>
   </div>
   <div style="margin:20px;" *ngSwitchCase="1">
-    <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'">
+    <nz-tabset [nzTabPosition]="'top'" [nzType]="'card'" [(nzSelectedIndex)]="initialState">
+
       <nz-tab [nzTitle]="blank">
         <div class="newBlank">
           <h3 style="padding-top: 130px;">Create a blank project</h3>
         </div>
       </nz-tab>
       <ng-template #blank> <i nz-icon nzType="file" nzTheme="outline"></i> Blank </ng-template>
-      <nz-tab [nzTitle]="template" [nzDisabled]="true"> Template</nz-tab>
+
+      <nz-tab [nzTitle]="template"> 
+        <nz-table
+          #rowSelectionTable
+          [nzPageSize]="5"
+          [nzData]="Templates"
+        >
+          <thead>
+            <tr>
+              <th
+                [(nzChecked)]="isAllDisplayDataChecked"
+                [nzIndeterminate]="isIndeterminate"
+              ></th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of rowSelectionTable.data">
+              <td
+                nzShowCheckbox
+                [(nzChecked)]="data.checked"
+                (nzCheckedChange)="refreshCheck(data)"
+              ></td>
+              <td>{{ data.type }}</td>
+              <td>{{ data.desciption }}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
       <ng-template #template> <i nz-icon nzType="database" nzTheme="outline"></i> Template </ng-template>
-      <nz-tab [nzTitle]="upload" [nzDisabled]="true"> upload</nz-tab>
+
+      <nz-tab [nzTitle]="upload">
+        <div id="newUpload"> 
+          <nz-upload
+            nzType="drag"
+            [nzMultiple]="true"
+            [nzLimit]="0"
+            nzAction="https://jsonplaceholder.typicode.com/posts/"
+            (nzChange)="handleChange($event)"
+            >
+            <p class="ant-upload-drag-icon">
+              <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">Click or drag file to this area to upload</p>
+            <p class="ant-upload-hint">
+              Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
+            </p>
+          </nz-upload>
+        </div>
+        
+      </nz-tab>
       <ng-template #upload> <i nz-icon nzType="to-top" nzTheme="outline"></i> Upload </ng-template>
       <nz-tab [nzTitle]="github" [nzDisabled]="true"> upload</nz-tab>
       <ng-template #github> <i nz-icon nzType="github" nzTheme="outline"></i>Git Repo </ng-template>
     </nz-tabset>
 
     <div class="centerDiv">
-      <br>
-      <button nz-button nzType="default" (click)="pre()">
+      <br *ngIf="initialState!==1">
+      <button nz-button nzType="default" (click)="current = current - 1">
         Previous Step
       </button>
-      <button nz-button nzType="primary" (click)="next()">
+      <button nz-button nzType="primary" [disabled]="initialState===1 && !templateType" (click)="current = current + 1">
         Next Step
       </button>
     </div>
   </div>
   <div *ngSwitchCase="2">
     <h3 style="margin:30px;color: rgb(82, 82, 82);"><strong>Project Files</strong></h3>
-      <nz-table style="margin:30px;" nzBordered #basicTable [nzData]="newProjectContent.dataSet" [nzNoResult]="'No data record'">
+      <nz-table style="margin:30px;" nzBordered #basicTable [nzData]="newProjectContent.files" [nzNoResult]="'No data record'">
         <thead>
           <tr>
             <th nzWidth="300px">Name</th>
-            <th nzWidth="40px">Size</th>
+            <th nzWidth="40px">Size(KB)</th>
             <th nzWidth="80px">Last Modified</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let data of basicTable.data">
             <td>{{ data.name }}</td>
-            <td>{{ data.size }}</td>
-            <td>{{ data.time }}</td>
+            <td>{{ data.size/1024 }}</td>
+            <td>{{ data.lastModifiedDate }}</td>
           </tr>
         </tbody>
       </nz-table>
       <div class="centerDiv">
         <br>
-        <button nz-button nzType="default" (click)="pre()" style="margin: 3px;">
+        <button nz-button nzType="default" (click)="current = current - 1" style="margin: 3px;">
           Previous Step
         </button>
         <button nz-button nzType="primary" (click)="done()" style="margin: 3px;">

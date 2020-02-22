@@ -35,16 +35,16 @@ export class ProjectComponent implements OnInit {
   //TODO(jasoonn): get projects data from server
   ngOnInit() {
     this.existProjects.push({
-      projectName: 'projectName0', description: 'description', tags: ['12', 'Tag 2'], inputTagVisibility: false, projectInputTag: ''
+      projectName: 'projectName0', description: 'description', tags: ['12', 'Tag 2'], inputTagVisibility: false, projectInputTag: '', starNum:0, likeNum:0, msgNum:0
     });
     this.existProjects.push({
-      projectName: 'projectName1', description: 'description', tags: ['Unremovable', 'Tag 2'], inputTagVisibility: false, projectInputTag: ''
+      projectName: 'projectName1', description: 'description', tags: ['Unremovable', 'Tag 2'], inputTagVisibility: false, projectInputTag: '', starNum:0, likeNum:0, msgNum:0
     });
     this.existProjects.push({
-      projectName: 'projectName1', description: 'description', tags: ['Unremovable', 'Tag 2', 'Tag 3'], inputTagVisibility: false, projectInputTag: ''
+      projectName: 'projectName1', description: 'description', tags: ['Unremovable', 'Tag 2', 'Tag 3'], inputTagVisibility: false, projectInputTag: '', starNum:0, likeNum:0, msgNum:0
     });
     this.existProjects.push({
-      projectName: 'projectName1', description: 'description', tags: ['Unremovable', 'Tag 2', 'Tag 3'], inputTagVisibility: false, projectInputTag: ''
+      projectName: 'projectName1', description: 'description', tags: ['Unremovable', 'Tag 2', 'Tag 3'], inputTagVisibility: false, projectInputTag: '', starNum:0, likeNum:0, msgNum:0
     })
   }
   //TODO(jasoonn): Update tag in server

@@ -19,6 +19,7 @@
 
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { NzMessageService } from 'ng-zorro-antd';
 
 
 @Component({
@@ -33,13 +34,38 @@ export class NewProjectPageComponent implements OnInit {
   teams = ['ciil'];
   
   current = 0;
+  initialState=0;
   
-  newProjectContent = { projectName: '', description: '', visibility: 'Private', team: '' ,permission: 'View', dataSet: []};
+  templateType="Python";
+
+  
+  newProjectContent = { projectName: '', description: '', visibility: 'Private', team: '' ,permission: 'View', files: []};
+  Templates = [
+    {type:'Python', description: 'Python Template', checked: true},
+    {type:'R', description: 'R Template', checked: false},
+    {type:'Spark', description: 'Spark Template', checked: false},
+    {type:'Tensorflow', description: 'Tensorflow Template', checked: false},
+    {type:'Pytorch', description: 'Pytorch Template', checked: false},
+  ];
   
 
-  constructor() { }
+  constructor(private msg: NzMessageService) { }
 
   ngOnInit() {
+  }
+
+  handleChange({ file, fileList }): void {
+    const status = file.status;
+    if (status !== 'uploading') {
+      console.log(file, fileList);
+      console.log(this.newProjectContent.files)
+    }
+    if (status === 'done') {
+      this.msg.success(`${file.name} file uploaded successfully.`);
+      this.newProjectContent.files.push(file);
+    } else if (status === 'error') {
+      this.msg.error(`${file.name} file upload failed.`);
+    }
   }
 
 
@@ -47,12 +73,15 @@ export class NewProjectPageComponent implements OnInit {
     this.closeProjectPage.emit(true);
   }
 
-  pre(): void {
-    this.current -= 1;
-  }
+  refreshCheck(template){
+    if (template.checked === true){
+      this.Templates.forEach(function(item, index, array){
+        if (item.type !== template.type) array[index].checked = false;
+      });
+      this.templateType = template.type;
+    }
+    else this.templateType = "";
 
-  next(): void {
-    this.current += 1;
   }
 
   //TODO(jasoonn): Add the new project
