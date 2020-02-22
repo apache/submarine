@@ -1,4 +1,4 @@
-/*!
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,32 +17,37 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-@Component({
-  selector: 'submarine-workspace',
-  templateUrl: './workspace.component.html',
-  styleUrls: ['./workspace.component.scss']
-})
-export class WorkspaceComponent implements OnInit {
-  @ViewChild('project', {static: true}) signupForm: any;
+.horizontal_dotted_line{
+  border-top: 2px dotted whitesmoke;
+  color:transparent;
+} 
 
-  basicInfo = {
-    project: 3,
-    release: 0,
-    training: 0,
-    team: 0,
-    shared: 0
-  };
+#trainingDiv{
+  margin: 30px;
+  padding: 10px;
+  background-color:white;
+}
 
-  currentState = 'project';
+.leaveMargin{
+  margin-left: 10px;
+}
 
-  constructor() { }
+.leaveBothMargin{
+  margin: 10px;
+}
 
-  ngOnInit() {
-  }
+.othersLabel{
+  color: rgb(122, 114, 114);
+  margin-left: 40px;
+}
 
-  switchState(state: string){
-    this.currentState = state;
-  }
+#trainingSearchTag{
+  width: 400px;
+  margin-left: 10px;
+}
 
+#spanningDiv{
+  margin: 30px;
+  padding: 30px;
+  background-color:white;
 }

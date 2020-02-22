@@ -1,4 +1,4 @@
-/*!
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,32 +17,39 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+
 @Component({
-  selector: 'submarine-workspace',
-  templateUrl: './workspace.component.html',
-  styleUrls: ['./workspace.component.scss']
+  selector: 'app-training',
+  templateUrl: './training.component.html',
+  styleUrls: ['./training.component.scss']
 })
-export class WorkspaceComponent implements OnInit {
-  @ViewChild('project', {static: true}) signupForm: any;
-
-  basicInfo = {
-    project: 3,
-    release: 0,
-    training: 0,
-    team: 0,
-    shared: 0
-  };
-
-  currentState = 'project';
-
+export class TrainingComponent implements OnInit {
+  isSpinning = true;
   constructor() { }
 
+  categories = [
+    {name: "Category1", enable:false},
+    {name: "Category2", enable:false},
+    {name: "Category3", enable:false},
+    {name: "Category4", enable:false},
+    {name: "Category5", enable:false},
+    {name: "Category6", enable:false},
+    {name: "Category7", enable:false}
+  ];
+  ownProcess = false;
+  tagValue = ['a10', 'c12', 'tag'];
+  userSelectedValue = 'noLimit';
+  ratingSelectedValue = 'noLimit'
+  activeUsers = ["John", "Jason"];
+  ratings = ["Execellent", "Good", "Moderate"];
+  
   ngOnInit() {
+    
   }
 
-  switchState(state: string){
-    this.currentState = state;
+  performChange(){
+    console.log('cool')
   }
 
 }

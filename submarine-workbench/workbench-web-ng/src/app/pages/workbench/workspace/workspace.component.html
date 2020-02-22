@@ -17,4 +17,44 @@
   ~ under the License.
   -->
 
-<p>workspace works!</p>
+<nz-layout>
+  <nz-layout class="inner-layout">
+    <div id="workspaceOuter">
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/', 'workbench', 'home']">Home</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>Workspace</nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <br/>
+      <h2>Project</h2>
+      <nz-content>You can click on the project tree directory on the left and the project file list will be displayed on the right.</nz-content>
+      <br/>
+      <ul nz-menu nzMode="horizontal">
+        <li nz-menu-item nzSelected (click)="switchState('project')">
+          Project({{basicInfo.project}}) 
+        </li>
+        <li nz-menu-item (click)="switchState('release')">
+          Release({{basicInfo.release}})
+        </li>
+        <li nz-menu-item (click)="switchState('training')">
+          Training({{basicInfo.training}})
+        </li>
+        <li nz-menu-item (click)="switchState('team')">
+          Team({{basicInfo.team}})
+        </li>
+        <li nz-menu-item (click)="switchState('shared')">
+          Shared({{basicInfo.shared}})
+        </li>
+      </ul>
+    </div>
+    
+    <div [ngSwitch]="currentState">
+      <app-project *ngSwitchCase="'project'"></app-project>
+      <app-release *ngSwitchCase="'release'"></app-release>
+      <app-training *ngSwitchCase="'training'"></app-training>
+      <app-team *ngSwitchCase="'team'"></app-team>
+      <app-shared *ngSwitchCase="'shared'"></app-shared>
+    </div>
+  </nz-layout>
+</nz-layout>

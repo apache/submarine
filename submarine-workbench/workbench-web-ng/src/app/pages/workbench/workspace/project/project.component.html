@@ -1,0 +1,77 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<br>
+<div *ngIf="!newProject">
+    <div id="addProjectbtn">
+        <button nz-button nzBlock (click)="newProject=true">+ Add New Project</button>
+    </div>
+    <div id="projectTagDiv">
+        <div nz-row [nzGutter]="12" nzType="flex" nzJustify="start">
+          <div *ngFor="let project of existProjects" nz-col [nzSpan]="8" id="projectDiv">
+            <nz-card [nzTitle]="project.projectName" [nzActions]="[actionEdit, actionDownload, actionSetting, actionDelete]">
+                <nz-tag *ngFor="let tag of project.tags" [nzMode]="'closeable'" (nzAfterClose)="handleCloseTag(project, tag)">{{ tag }}</nz-tag>
+                <nz-tag *ngIf="!project.inputTagVisibility" class="editable-tag" nzNoAnimation (click)="showInput(project)">
+                    <i nz-icon nzType="plus"></i> New Tag
+                </nz-tag>
+                <input
+                    #inputElement
+                    nz-input
+                    nzSize="small"
+                    *ngIf="project.inputTagVisibility"
+                    type="text"
+                    [(ngModel)]="project.projectInputTag"
+                    id="projectInputTag"
+                    (blur)="handleInputConfirm(project)"
+                    (keydown.enter)="handleInputConfirm(project)"
+                    />
+                <div>
+                    <br>
+                    {{ project.description}}
+                    <br>
+                    <br>
+                    <label>
+                        <i nz-icon nzType="star" nzTheme="outline"></i> &nbsp;{{ project.starNum }} &nbsp; | &nbsp;
+                        <i nz-icon nzType="like" nzTheme="outline"></i> &nbsp; {{ project.likeNum }} &nbsp; | &nbsp;
+                        <i nz-icon nzType="message" nzTheme="outline"></i> &nbsp; {{ project.msgNum }}
+                    </label>             
+                </div>
+                
+                <ng-template #actionEdit>
+                    <i nz-icon nzType="edit"></i>Edit
+                </ng-template>
+                <ng-template #actionDownload>
+                    <i nz-icon nzType="download"></i>Download
+                </ng-template>
+                <ng-template #actionSetting>
+                    <i nz-icon nzType="setting"></i>Setting
+                </ng-template>
+                <ng-template #actionDelete>
+                    <i nz-icon nzType="delete"></i>Delete
+                </ng-template>
+            </nz-card>
+          </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="newProject" id="projectNewDivOuter">
+    <div  id="projectNewDivInner">
+        <app-new-project-page (closeProjectPage)="newProject=false;"></app-new-project-page>
+    </div>
+</div>

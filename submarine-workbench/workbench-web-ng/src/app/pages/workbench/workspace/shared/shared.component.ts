@@ -1,4 +1,4 @@
-/*!
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,33 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { Component, OnInit } from '@angular/core';
 
-import { Component, OnInit, ViewChild } from '@angular/core';
 @Component({
-  selector: 'submarine-workspace',
-  templateUrl: './workspace.component.html',
-  styleUrls: ['./workspace.component.scss']
+  selector: 'app-shared',
+  templateUrl: './shared.component.html',
+  styleUrls: ['./shared.component.scss']
 })
-export class WorkspaceComponent implements OnInit {
-  @ViewChild('project', {static: true}) signupForm: any;
-
-  basicInfo = {
-    project: 3,
-    release: 0,
-    training: 0,
-    team: 0,
-    shared: 0
-  };
-
-  currentState = 'project';
-
+export class SharedComponent implements OnInit {
+  isSpinning = true;
+  dataSet = [];
+  
   constructor() { }
 
   ngOnInit() {
-  }
-
-  switchState(state: string){
-    this.currentState = state;
   }
 
 }
