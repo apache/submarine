@@ -40,8 +40,16 @@ import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+
+import static org.apache.submarine.commons.utils.SubmarineConfVars.ConfVars.SUBMARINE_RUNTIME_CLASS;
 
 /**
  * A gRPC server that provides submarine service.
@@ -109,10 +117,44 @@ public class SubmarineRpcServer {
     ClientContext clientContext = new ClientContext();
     clientContext.setYarnConfig(conf);
     mergeSubmarineConfiguration(clientContext.getSubmarineConfig(), rpcContext);
+    String runtimeClass =
+      clientContext.getSubmarineConfig().getString(SUBMARINE_RUNTIME_CLASS);
+    ClassLoader classLoader = null;
+    if (runtimeClass.contains("YarnServiceRuntimeFactory")) {
+      classLoader = new URLClassLoader(constructUrlsFromClasspath("../lib/submitter/yarnservice"));
+    } else {
+      classLoader = new URLClassLoader(constructUrlsFromClasspath("../lib/submitter/yarn"));
+    }
+
     RuntimeFactory runtimeFactory = RuntimeFactory.getRuntimeFactory(
-        clientContext);
+        clientContext, classLoader);
     clientContext.setRuntimeFactory(runtimeFactory);
     return clientContext;
+  }
+  private static URL[] constructUrlsFromClasspath(String classpath) {
+    List<URL> urls = new ArrayList<>();
+    for (String path : classpath.split(File.pathSeparator)) {
+      if (path.endsWith("/*")) {
+        path = path.substring(0, path.length() - 2);
+      }
+
+      File file = new File(path);
+      try {
+        if (file.isDirectory()) {
+          File[] items = file.listFiles();
+          if (items != null) {
+            for (File item : items) {
+              urls.add(item.toURI().toURL());
+            }
+          }
+        } else {
+          urls.add(file.toURI().toURL());
+        }
+      } catch (MalformedURLException e) {
+        LOG.error(e.getMessage(), e);
+      }
+    }
+    return urls.toArray(new URL[0]);
   }
 
   private static void mergeSubmarineConfiguration(
@@ -137,7 +179,7 @@ public class SubmarineRpcServer {
     SubmarineConfiguration submarineConfiguration =
         SubmarineConfiguration.getInstance();
     int rpcServerPort = submarineConfiguration.getInt(
-        SubmarineConfVars.ConfVars.SUBMARINE_SERVER_REMOTE_EXECUTION_PORT);
+        SubmarineConfVars.ConfVars.SUBMARINE_SERVER_RPC_PORT);
     SubmarineRpcServer server = new SubmarineRpcServer(rpcServerPort);
     server.start();
     return server;

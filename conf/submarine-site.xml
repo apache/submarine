@@ -143,6 +143,18 @@
     <description>RuntimeFactory for Submarine jobs</description>
   </property>
 
+  <property>
+    <name>submarine.server.rpc.enabled</name>
+    <value>false</value>
+    <description>Run jobs using rpc server.</description>
+  </property>
+
+  <property>
+    <name>submarine.server.rpc.port</name>
+    <value>8980</value>
+    <description>Rpc server port</description>
+  </property>
+
   <!-- Submarine Submitters Configuration  -->
   <property>
     <name>submarine.submitters</name>

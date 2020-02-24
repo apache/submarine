@@ -76,7 +76,7 @@ public class MockRpcServer extends SubmarineRpcServer {
     SubmarineConfiguration submarineConfiguration =
         SubmarineConfiguration.getInstance();
     int rpcServerPort = submarineConfiguration.getInt(
-        SubmarineConfVars.ConfVars.SUBMARINE_SERVER_REMOTE_EXECUTION_PORT);
+        SubmarineConfVars.ConfVars.SUBMARINE_SERVER_RPC_PORT);
     SubmarineRpcServer server = new MockRpcServer(rpcServerPort);
     server.start();
     return server;

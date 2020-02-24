@@ -20,7 +20,6 @@ package org.apache.submarine.server.rpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
-import org.apache.submarine.commons.rpc.ApplicationIdProto;
 import org.apache.submarine.commons.rpc.ParametersHolderProto;
 import org.apache.submarine.commons.rpc.SubmarineServerProtocolGrpc;
 import org.apache.submarine.commons.rpc.SubmarineServerProtocolGrpc.SubmarineServerProtocolBlockingStub;
@@ -50,7 +49,7 @@ public class SubmarineRpcClient extends RpcServerTestUtils {
             SubmarineConfVars.ConfVars.SUBMARINE_SERVER_ADDR),
           config.getInt(
             SubmarineConfVars.ConfVars.
-                SUBMARINE_SERVER_REMOTE_EXECUTION_PORT))
+                SUBMARINE_SERVER_RPC_PORT))
         .usePlaintext());
   }
 

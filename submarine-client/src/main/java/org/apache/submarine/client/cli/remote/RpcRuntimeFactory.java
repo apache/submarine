@@ -37,7 +37,7 @@ public class RpcRuntimeFactory extends RuntimeFactory {
     super(clientContext);
     String remoteHost = clientContext.getSubmarineConfig().getServerAddress();
     int port = clientContext.getSubmarineConfig().getInt(
-        SubmarineConfVars.ConfVars.SUBMARINE_SERVER_REMOTE_EXECUTION_PORT);
+        SubmarineConfVars.ConfVars.SUBMARINE_SERVER_RPC_PORT);
     submitter = new JobSubmitterRpcImpl(remoteHost, port, clientContext);
   }
 

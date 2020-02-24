@@ -144,9 +144,15 @@
   </property>
 
   <property>
-    <name>submarine.server.remote.execution.enabled</name>
-    <value>true</value>
+    <name>submarine.server.rpc.enabled</name>
+    <value>false</value>
     <description>Run jobs using rpc server.</description>
+  </property>
+
+  <property>
+    <name>submarine.server.rpc.port</name>
+    <value>8980</value>
+    <description>Rpc server port</description>
   </property>
 
 </configuration>

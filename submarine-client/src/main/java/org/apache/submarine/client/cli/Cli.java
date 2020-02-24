@@ -51,12 +51,13 @@ public class Cli {
     RuntimeFactory runtimeFactory;
     if (clientContext.getSubmarineConfig().getBoolean(
         SubmarineConfVars.ConfVars.
-            SUBMARINE_SERVER_REMOTE_EXECUTION_ENABLED)) {
+          SUBMARINE_SERVER_RPC_ENABLED)) {
       runtimeFactory = new RpcRuntimeFactory(clientContext);
     } else {
       Configuration conf = new YarnConfiguration();
       clientContext.setYarnConfig(conf);
-      runtimeFactory = RuntimeFactory.getRuntimeFactory(clientContext);
+      runtimeFactory = RuntimeFactory.getRuntimeFactory(clientContext,
+          Thread.currentThread().getContextClassLoader());
     }
     clientContext.setRuntimeFactory(runtimeFactory);
     return clientContext;
