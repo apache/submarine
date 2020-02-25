@@ -290,6 +290,12 @@
           <artifactId>hadoop-hdfs-client</artifactId>
           <version>${hadoop.version}</version>
           <scope>compile</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>com.fasterxml.jackson.core</groupId>
+              <artifactId>jackson-databind</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
       </dependencies>
     </profile>
@@ -302,6 +308,12 @@
           <artifactId>hadoop-hdfs-client</artifactId>
           <version>${hadoop.version}</version>
           <scope>compile</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>com.fasterxml.jackson.core</groupId>
+              <artifactId>jackson-databind</artifactId>
+            </exclusion>
+          </exclusions>
         </dependency>
       </dependencies>
     </profile>
