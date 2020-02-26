@@ -67,16 +67,16 @@ public class JobManagerRestApi {
   public Response submitJob(JobSpec jobSpec) {
     if (!jobSpec.validate()) {
       return new JsonResponse.Builder<String>(Response.Status.ACCEPTED)
-          .success(true).result("Invalid params.").build();
+          .success(false).result("Invalid params.").build();
     }
 
     try {
       Job job = JobManager.getInstance().submitJob(jobSpec);
-      return new JsonResponse.Builder<Job>(Response.Status.ACCEPTED)
+      return new JsonResponse.Builder<Job>(Response.Status.OK)
           .success(true).result(job).build();
     } catch (UnsupportedJobTypeException e) {
       return new JsonResponse.Builder<String>(Response.Status.ACCEPTED)
-          .success(true).result(e.getMessage()).build();
+          .success(false).result(e.getMessage()).build();
     }
   }
 
