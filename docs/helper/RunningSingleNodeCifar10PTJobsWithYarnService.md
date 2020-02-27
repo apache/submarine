@@ -48,7 +48,7 @@ The file, named submarine-site.xml, is in the path of ${SUBMARINE_HOME}/conf.
 ### Run standalone training
 
 ```shell
-SUBMARINE_VERSION=0.3.0-SNAPSHOT
+SUBMARINE_VERSION=0.4.0-SNAPSHOT
 CLASSPATH=`${HADOOP_HOME}/bin/hadoop classpath --glob`:${SUBMARINE_HOME}/submarine-all-${SUBMARINE_VERSION}.jar:
 ${SUBMARINE_HOME}/conf: \
 java org.apache.submarine.client.cli.Cli job run \

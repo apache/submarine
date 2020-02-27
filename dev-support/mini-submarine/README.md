@@ -22,10 +22,8 @@ This is a docker image built for submarine development and quick start test.
 
 ### Use the image we provide
 
-> Tag 0.3.0-SNAPSHOT indicates the version number of hadoop submarine in images
-
 ```
-docker pull hadoopsubmarine/mini-submarine:0.3.0-SNAPSHOT 
+docker pull apache/submarine:mini-0.3.0
 ```
 
 ### Create image by yourself
@@ -76,7 +74,7 @@ In the container, we can verify that the submarine jar version is the expected 0
 ### Run mini-submarine image
 
 ```
-docker run -it -h submarine-dev --name mini-submarine --net=bridge --privileged -P local/mini-submarine:0.3.0-SNAPSHOT /bin/bash
+docker run -it -h submarine-dev --name mini-submarine --net=bridge --privileged -P local/mini-submarine:0.4.0-SNAPSHOT /bin/bash
 
 # In the container, use root user to bootstrap hdfs and yarn
 /tmp/hadoop-config/bootstrap.sh
@@ -85,7 +83,7 @@ docker run -it -h submarine-dev --name mini-submarine --net=bridge --privileged 
 yarn node -list -showDetails
 ```
 
-If you pull the image directly, please replace "local/mini-submarine:0.3.0-SNAPSHOT" with "hadoopsubmarine/mini-submarine:0.3.0-SNAPSHOT".
+If you pull the image directly, please replace "local/mini-submarine:0.4.0-SNAPSHOT" with "apache/submarine:mini-0.3.0".
 
 ### You should see info like this:
 
@@ -231,7 +229,7 @@ When using mini-submarine, you can debug submarine client, applicationMaster and
 Run the following command to start mini-submarine.
 
 ```
-docker run -it -P -h submarine-dev --net=bridge --expose=8000 --privileged local/mini-submarine:0.3.0-SNAPSHOT /bin/bash
+docker run -it -P -h submarine-dev --net=bridge --expose=8000 --privileged local/mini-submarine:0.4.0-SNAPSHOT /bin/bash
 ```
 
 Debug submarine client with the parameter "--debug"
@@ -260,7 +258,7 @@ Then port 32804 can be used for remote debug.
 Run the following command to start mini-submarine.
 
 ```
-docker run -it -P -h submarine-dev --net=bridge --expose=8001 --privileged local/mini-submarine:0.3.0-SNAPSHOT /bin/bash
+docker run -it -P -h submarine-dev --net=bridge --expose=8001 --privileged local/mini-submarine:0.4.0-SNAPSHOT /bin/bash
 ```
 
 Add the following configuration in the file /usr/local/hadoop/etc/hadoop/tony.xml.
@@ -280,7 +278,7 @@ And the debug port mapping can be obtained using the way as [Debug submarine cli
 Run the following command to start mini-submarine.
 
 ```
-docker run -it -P -h submarine-dev --net=bridge --expose=8002 --privileged local/mini-submarine:0.3.0-SNAPSHOT /bin/bash
+docker run -it -P -h submarine-dev --net=bridge --expose=8002 --privileged local/mini-submarine:0.4.0-SNAPSHOT /bin/bash
 ```
 
 Add the following configuration in the file /usr/local/hadoop/etc/hadoop/tony.xml.
