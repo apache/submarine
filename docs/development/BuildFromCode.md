@@ -19,6 +19,7 @@
 
 + JDK 1.8
 + Maven 3.3 or later ( 3.6.2 is known to fail, see SUBMARINE-273 )
++ Docker
 
 ## Quick Start
 
