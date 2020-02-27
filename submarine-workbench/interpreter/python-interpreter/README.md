@@ -18,7 +18,7 @@
 
 ### Execute test command
 ```
-java -jar python-interpreter-0.3.0-SNAPSHOT-shade.jar python python-interpreter-id test
+java -jar python-interpreter-0.4.0-SNAPSHOT-shade.jar python python-interpreter-id test
 ```
 
 ### Print test result 
@@ -33,7 +33,7 @@ java -jar python-interpreter-0.3.0-SNAPSHOT-shade.jar python python-interpreter-
 ### Execute debug command
 
 ```
-java -jar python-interpreter-0.3.0-SNAPSHOT-shade.jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 python python-interpreter-id
+java -jar python-interpreter-0.4.0-SNAPSHOT-shade.jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 python python-interpreter-id
 ```
 
 Connect via remote debugging in IDEA
