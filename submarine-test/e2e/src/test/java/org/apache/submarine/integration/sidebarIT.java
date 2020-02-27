@@ -36,6 +36,7 @@ public class sidebarIT extends AbstractSubmarineIT {
 
   @BeforeClass
   public static void startUp(){
+    LOG.info("[Testcase]: sidebarIT");
     driver =  WebDriverManager.getWebDriver();
   }
 
@@ -67,7 +68,6 @@ public class sidebarIT extends AbstractSubmarineIT {
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/model");
     pollingWait(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    SubmarineITUtils.sleep( 5000, true);
 
     // Lazy-loading
     WebDriverWait wait = new WebDriverWait( driver, 15, 5000);

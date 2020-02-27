@@ -77,7 +77,7 @@ public class WebDriverManager {
     while (System.currentTimeMillis() - start < 60 * 1000) {
       // wait for page load
       try {
-        (new WebDriverWait(driver, 60)).until(new ExpectedCondition<Boolean>() {
+        (new WebDriverWait(driver, 120)).until(new ExpectedCondition<Boolean>() {
           @Override
           public Boolean apply(WebDriver d) {
             // return d.findElement(By.tagName("div"))
