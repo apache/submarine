@@ -150,13 +150,13 @@ The deployment process is as follows:
 
 6. **install component**
 
-   - **instll etcd**
+   - **install etcd**
 
      Download the bin file for etcd and install it in the `/usr/bin` directory;
 
      Generate the `etcd.service` file according to the **ETCD_HOSTS** configuration item and install it into the `/etc/systemd/system/` directory.
 
-   - **instll docker**
+   - **install docker**
 
      Download docker's RPM package for local installation;
 
@@ -164,7 +164,7 @@ The deployment process is as follows:
 
      Generate the `docker.service` configuration file and install it into the `/etc/systemd/system/` directory.
 
-   - **instll calico network**
+   - **install calico network**
 
      Download the `calico`, `calicoctl`, and `calico-ipam` files and install them in the `/usr/bin` directory.
 
@@ -174,7 +174,7 @@ The deployment process is as follows:
 
      After the installation is complete, the calico network will be automatically created in the container according to the **CALICO_NETWORK_NAME** configuration item, and two Docker containers will be created automatically to check whether the two containers can even ping each other.
 
-   - **instll nvidia driver**
+   - **install nvidia driver**
 
      Download the `nvidia-detect` file to detect the graphics card version in the server;Download the `nvidia-detect` file to detect the graphics card version in the server;
 
@@ -184,19 +184,19 @@ The deployment process is as follows:
 
      If Nouveau has been disabled in this server, it will be installed locally;
 
-   - **instll nvidia docker**
+   - **install nvidia docker**
 
      Download the nvidia-docker RPM installation package and install it;
 
      Display the command prompt information to detect whether nvidia-docker is available. You need to open another terminal to execute according to the command sequence.
 
-   - **instll yarn container-executor**
+   - **install yarn container-executor**
 
      Copy the `container-executor` file to the `/etc/yarn/sbin/Linux-amd64-64/` directory according to the **YARN_CONTAINER_EXECUTOR_PATH** configuration item;
 
      Generate the `container-executor.cfg` file according to the configuration and copy it to the `/etc/yarn/sbin/etc/hadoop/` directory.
 
-   - **instll submarine autorun script**
+   - **install submarine autorun script**
 
      Copy the submarine.sh file to the `/etc/rc.d/init.d/` directory;
 
@@ -206,13 +206,13 @@ The deployment process is as follows:
 
    Delete the BIN file and configuration file of the specified component, not in the retelling
 
-   - uninstll etcd
-   - uninstll docker
-   - uninstll calico network
-   - uninstll nvidia driver
-   - uninstll nvidia docker
-   - uninstll yarn container-executor
-   - uninstll submarine autorun script
+   - uninstall etcd
+   - uninstall docker
+   - uninstall calico network
+   - uninstall nvidia driver
+   - uninstall nvidia docker
+   - uninstall yarn container-executor
+   - uninstall submarine autorun script
 
 8. start component
 
