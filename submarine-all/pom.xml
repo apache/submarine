@@ -171,11 +171,6 @@
       </dependencies>
     </profile>
 
-    <profile>
-      <id>hadoop-2.7</id>
-      <dependencies>
-      </dependencies>
-    </profile>
   </profiles>
 
   <build>

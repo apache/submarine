@@ -36,12 +36,6 @@ mvn clean org.apache.rat:apache-rat-plugin:check
 mvn clean install package -DskipTests
 ```
 
-+ Create binary distribution with hadoop-2.7.x version
-
-```
-mvn clean install package -DskipTests -Phadoop-2.7
-```
-
 + Create binary distribution with hadoop-2.9.x version
 
 ```

@@ -369,19 +369,6 @@
     </profile>
 
     <profile>
-      <id>hadoop-2.7</id>
-      <properties>
-        <hadoop.version>2.7.3</hadoop.version>
-        <jaxb-api.version>2.2.2</jaxb-api.version>
-        <commons-compress.version>1.4.1</commons-compress.version>
-        <guice-servlet.version>3.0</guice-servlet.version>
-        <guice.version>3.0</guice.version>
-        <zookeeper.version>3.4.6</zookeeper.version>
-        <profile-id>hadoop-2.7</profile-id>
-      </properties>
-    </profile>
-
-    <profile>
      <id>clover</id>
      <activation>
        <activeByDefault>false</activeByDefault>
