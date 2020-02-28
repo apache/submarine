@@ -34,6 +34,7 @@ public class workspaceIT extends AbstractSubmarineIT {
 
   @BeforeClass
   public static void startUp(){
+    LOG.info("[Testcase]: workspaceIT");
     driver =  WebDriverManager.getWebDriver();
   }
 

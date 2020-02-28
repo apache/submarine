@@ -35,6 +35,7 @@ public class registerIT extends AbstractSubmarineIT {
 
   @BeforeClass
   public static void startUp(){
+    LOG.info("[Testcase]: registerIT");
     driver =  WebDriverManager.getWebDriver();
   }
 

@@ -37,6 +37,7 @@ public class SubmarineLogIT extends AbstractSubmarineIT {
 
   @Test
   public void submarineLog() throws Exception {
+    LOG.info("[Testcase]: SubmarineLogIT");
     printSubmarineLog();
   }
 
