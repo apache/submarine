@@ -106,12 +106,6 @@
     </profile>
 
     <profile>
-      <id>hadoop-2.7</id>
-      <dependencies>
-      </dependencies>
-    </profile>
-
-    <profile>
       <id>src</id>
       <activation>
         <activeByDefault>false</activeByDefault>
