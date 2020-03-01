@@ -95,11 +95,11 @@ matrix:
       dist: xenial
       env: PROFILE="" BUILD_FLAG="clean" TEST_FLAG="org.apache.rat:apache-rat-plugin:check" TEST_PROJECTS=""
 
-    - name: Build submarine submitter on hadoop-2.9 (default)
+    - name: Build submarine submitter on hadoop-2.10 (default)
       language: java
       jdk: openjdk8
       dist: xenial
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},!submarine-dist" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMON_RPC},!submarine-dist" TEST_PROJECTS=""
+      env: PROFILE="-Phadoop-2.10" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},!submarine-dist" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMON_RPC},!submarine-dist" TEST_PROJECTS=""
 
     - name: Build submarine submitter on hadoop-3.1
       language: java
@@ -158,7 +158,7 @@ matrix:
       dist: xenial
       addons:
         chrome: stable
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am" TEST_MODULES="-pl submarine-test/e2e" TEST_PROJECTS=""
+      env: PROFILE="-Phadoop-2.10" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am" TEST_MODULES="-pl submarine-test/e2e" TEST_PROJECTS=""
 
     - name: Test submarine-test-k8s
       dist: xenial
@@ -167,7 +167,7 @@ matrix:
       jdk: openjdk8
       addons:
         chrome: stable
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am" MODULES="" TEST_MODULES="-pl submarine-test/test-k8s" TEST_PROJECTS=""
+      env: PROFILE="-Phadoop-2.10" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am" MODULES="" TEST_MODULES="-pl submarine-test/test-k8s" TEST_PROJECTS=""
 
     # Template disable by SUBMARINE-381
     #- name: Test submarine interpreter
@@ -192,7 +192,7 @@ matrix:
       language: java
       jdk: openjdk8
       dist: xenial
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S}" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_COMMON_RPC}" TEST_PROJECTS=""
+      env: PROFILE="-Phadoop-2.10" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S}" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_COMMON_RPC}" TEST_PROJECTS=""
 
     - name: Test submarine workbench-web Angular
       language: node_js
@@ -213,7 +213,7 @@ matrix:
       language: java
       jdk: openjdk8
       dist: xenial
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl org.apache.submarine:server-core" TEST_PROJECTS=""
+      env: PROFILE="-Phadoop-2.10" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl org.apache.submarine:server-core" TEST_PROJECTS=""
 
 install:
   - mvn --version

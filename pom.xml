@@ -353,6 +353,22 @@
     </profile>
 
     <profile>
+      <id>hadoop-2.10</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <hadoop.version>2.10.0</hadoop.version>
+        <jaxb-api.version>2.2.2</jaxb-api.version>
+        <commons-compress.version>1.19</commons-compress.version>
+        <guice-servlet.version>3.0</guice-servlet.version>
+        <guice.version>3.0</guice.version>
+        <zookeeper.version>3.4.9</zookeeper.version>
+        <profile-id>hadoop-2.10</profile-id>
+      </properties>
+    </profile>
+
+    <profile>
       <id>hadoop-2.9</id>
       <activation>
         <activeByDefault>true</activeByDefault>
