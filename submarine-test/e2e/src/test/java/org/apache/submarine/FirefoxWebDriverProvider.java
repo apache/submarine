@@ -131,9 +131,6 @@ public class FirefoxWebDriverProvider implements WebDriverProvider {
     firefoxOptions.setBinary(ffox);
     firefoxOptions.setProfile(profile);
     firefoxOptions.setLogLevel(FirefoxDriverLogLevel.TRACE);
-    firefoxOptions.headless();
-    // provide access to console logs in Firefox
-    firefoxOptions.setPreference("devtools.console.stdout.content", true);
 
     return new FirefoxDriver(firefoxOptions);
   }
