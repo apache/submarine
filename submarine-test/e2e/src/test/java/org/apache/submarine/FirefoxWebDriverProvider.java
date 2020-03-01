@@ -131,6 +131,7 @@ public class FirefoxWebDriverProvider implements WebDriverProvider {
     firefoxOptions.setBinary(ffox);
     firefoxOptions.setProfile(profile);
     firefoxOptions.setLogLevel(FirefoxDriverLogLevel.TRACE);
+
     return new FirefoxDriver(firefoxOptions);
   }
 
