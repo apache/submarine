@@ -13,9 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import tensorflow as tf
-import json
 import os
+import json
+import tensorflow as tf
+from submarine.ml.optimizer import get_optimizer
 
 
 def _get_session_config_from_env_var(params):
@@ -69,3 +70,65 @@ def get_tf_config(params):
     else:
         raise ValueError("mode should be local or distributed")
     return tf_config
+
+
+def get_estimator_spec(logit, labels, mode, params, weights):
+    """
+    Returns `EstimatorSpec` that a model_fn can return.
+    :param logit: logits `Tensor` to be used.
+    :param labels: Labels `Tensor`, or `dict` of same.
+    :param mode: Estimator's `ModeKeys`.
+    :param params: Optional dict of hyperparameters. Will receive what is passed to Estimator
+     in params parameter.
+    :param weights: a list of weights that need L2 regularization
+    :return:
+    """
+    l2_reg = params["training"]["l2_reg"]
+    learning_rate = params["training"]["learning_rate"]
+    optimizer = params["training"]["optimizer"]
+    metric = params['output']['metric']
+
+    output = tf.sigmoid(logit)
+    predictions = {"probabilities": output}
+    export_outputs = {
+        tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:
+            tf.estimator.export.PredictOutput(predictions)}
+    # Provide an estimator spec for `ModeKeys.PREDICT`
+    if mode == tf.estimator.ModeKeys.PREDICT:
+        return tf.estimator.EstimatorSpec(
+            mode=mode,
+            predictions=predictions,
+            export_outputs=export_outputs)
+
+    with tf.name_scope("Loss"):
+        l2 = 0
+        for weight in weights:
+            l2 = l2_reg * tf.nn.l2_loss(weight)
+        loss = tf.reduce_mean(
+            tf.nn.sigmoid_cross_entropy_with_logits(logits=logit, labels=labels)) + l2
+
+    # Provide an estimator spec for `ModeKeys.EVAL`
+    eval_metric_ops = {}
+    if metric == 'auc':
+        eval_metric_ops['auc'] = tf.metrics.auc(labels, output)
+    else:
+        raise TypeError("Invalid metric :", metric)
+
+    if mode == tf.estimator.ModeKeys.EVAL:
+        return tf.estimator.EstimatorSpec(
+            mode=mode,
+            predictions=predictions,
+            loss=loss,
+            eval_metric_ops=eval_metric_ops)
+
+    with tf.name_scope("Train"):
+        op = get_optimizer(optimizer, learning_rate)
+        train_op = op.minimize(loss, global_step=tf.train.get_global_step())
+
+    # Provide an estimator spec for `ModeKeys.TRAIN` modes
+    if mode == tf.estimator.ModeKeys.TRAIN:
+        return tf.estimator.EstimatorSpec(
+            mode=mode,
+            predictions=predictions,
+            loss=loss,
+            train_op=train_op)

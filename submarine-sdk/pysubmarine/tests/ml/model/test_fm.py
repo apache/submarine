@@ -13,22 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.ml.model import DeepFM
-import argparse
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-conf", help="a JSON configuration file for FM", type=str)
-    parser.add_argument("-task_type", default='train',
-                        help="train or evaluate, by default is train")
-    args = parser.parse_args()
-    json_path = args.conf
-    task_type = args.task_type
+from submarine.ml.model import FM
 
-    model = DeepFM(json_path=json_path)
 
-    if task_type == 'train':
-        model.train()
-    if task_type == 'evaluate':
-        result = model.evaluate()
-        print("Model metrics : ", result)
+def test_run_fm(get_model_param):
+    params = get_model_param
+
+    model = FM(model_params=params)
+    model.train()
+    model.evaluate()
+    model.predict()

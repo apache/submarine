@@ -15,43 +15,11 @@
 
 
 from submarine.ml.model import DeepFM
-import os
-
-LIBSVM_DATA = """1 1:0 2:0.051495 3:0.5 4:0.1 5:0.113437 6:0.874 7:0.01 8:0.08 9:0.028 10:0
-1 1:1.35 2:0.031561 3:0.45 4:0.56 5:0.000031 6:0.056 7:0.27 8:0.58 9:0.056 10:0.166667
-1 1:0.05 2:0.004983 3:0.19 4:0.14 5:0.000016 6:0.006 7:0.01 8:0.14 9:0.014 10:0.166667
-1 1:0.2 2:0.004983 3:0 4:0.12 5:0.016422 6:0.268 7:0.04 8:0.7 9:0.144 10:0.166667
-1 1:0 2:0.051495 3:0.5 4:0.1 5:0.113437 6:0.874 7:0.01 8:0.08 9:0.028 10:0
-1 1:1.35 2:0.031561 3:0.45 4:0.56 5:0.000031 6:0.056 7:0.27 8:0.58 9:0.056 10:0.166667
-1 1:0.05 2:0.004983 3:0.19 4:0.14 5:0.000016 6:0.006 7:0.01 8:0.14 9:0.014 10:0.166667
-1 1:0.2 2:0.004983 3:0 4:0.12 5:0.016422 6:0.268 7:0.04 8:0.7 9:0.144 10:0.166667
-"""
 
 
-def test_run_deepfm(tmpdir):
-    data_file = os.path.join(tmpdir, "libsvm.txt")
-    save_model_dir = os.path.join(tmpdir, "experiment")
-    with open(data_file, "wt") as writer:
-        writer.write(LIBSVM_DATA)
+def test_run_deepfm(get_model_param):
+    params = get_model_param
 
-    params = {
-        "input": {
-            "train_data": data_file,
-            "valid_data": data_file,
-            "test_data": data_file,
-            "type": "libsvm"
-        },
-        "output": {
-            "save_model_dir": save_model_dir,
-            "metric": "auc"
-        },
-        "training": {
-            "batch_size": 256,
-            "num_epochs": 1,
-            "field_size": 10,
-            "feature_size": 1000
-        }
-    }
     model = DeepFM(model_params=params)
     model.train()
     model.evaluate()

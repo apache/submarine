@@ -1,12 +1,12 @@
 {
   "input": {
-    "train_data": ["../data/tr.libsvm"],
-    "valid_data": ["../data/va.libsvm"],
-    "test_data": ["../data/te.libsvm"],
+    "train_data": ["hdfs:///user/submarine/data/tr.libsvm"],
+    "valid_data": ["hdfs:///user/submarine/data/va.libsvm"],
+    "test_data": ["hdfs:///user/submarine/data/te.libsvm"],
     "type": "libsvm"
   },
   "output": {
-    "save_model_dir": "./experiment",
+    "save_model_dir": "hdfs:///user/submarine/deepfm",
     "metric": "auc"
   },
   "training": {
@@ -16,15 +16,11 @@
     "feature_size": 117581,
     "embedding_size": 256,
     "learning_rate": 0.0005,
-    "batch_norm_decay": 0.9,
     "l2_reg": 0.0001,
-    "deep_layers": [400, 400, 400],
-    "dropout": [0.3, 0.3, 0.3],
-    "batch_norm": false,
     "optimizer": "adam",
     "log_steps": 10,
     "seed": 77,
-    "mode": "local"
+    "mode": "distributed"
   },
   "resource": {
     "num_cpu": 4,
