@@ -43,6 +43,12 @@ mvn clean install package -DskipTests
 mvn clean install package -DskipTests -Phadoop-2.9
 ```
 
++ Create binary distribution with hadoop-2.10.x version
+
+```
+mvn clean install package -DskipTests -Phadoop-2.10
+```
+
 + Create binary distribution with hadoop-3.1.x version
 
 ```
