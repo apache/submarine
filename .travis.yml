@@ -101,6 +101,12 @@ matrix:
       dist: xenial
       env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},!submarine-dist" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMON_RPC},!submarine-dist" TEST_PROJECTS=""
 
+    - name: Build submarine submitter on hadoop-2.10
+      language: java
+      jdk: openjdk8
+      dist: xenial
+      env: PROFILE="-Phadoop-2.10" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},!submarine-dist" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMON_RPC},!submarine-dist" TEST_PROJECTS=""
+
     - name: Build submarine submitter on hadoop-3.1
       language: java
       jdk: openjdk8

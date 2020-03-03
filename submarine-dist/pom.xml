@@ -97,6 +97,15 @@
     </profile>
 
     <profile>
+      <id>hadoop-2.10</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <dependencies>
+      </dependencies>
+    </profile>
+
+    <profile>
       <id>hadoop-2.9</id>
       <activation>
         <activeByDefault>true</activeByDefault>

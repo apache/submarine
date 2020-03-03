@@ -318,7 +318,8 @@ public final class ResourceUtils {
       LOG.info(e.getMessage());
       throw new SubmarineRuntimeException(e.getMessage(), e.getCause());
     } catch (NoSuchMethodException nsme) {
-      LOG.info("There is no '" + GET_RESOURCE_VALUE_METHOD + "' API in this" +
+      LOG.info("There is no '" + GET_RESOURCE_VALUE_METHOD + "' or '" +
+          REINITIALIZE_RESOURCES_METHOD + "' API in this" +
           " version of YARN");
     } catch (IllegalAccessException | InvocationTargetException e) {
       LOG.info("Failed to invoke 'configureResourceType' method ", e);
