@@ -11,7 +11,7 @@
 -->
 
 # Submarine Client API Example
-Tis example shows how you could use Submarine Client API to 
+This example shows how you could use Submarine Client API to 
 manage submarine tasks
 
 ## Prerequisites
