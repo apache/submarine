@@ -13,22 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.ml.model import DeepFM
-import argparse
+import pytest
+from submarine.ml.optimizer import get_optimizer
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-conf", help="a JSON configuration file for FM", type=str)
-    parser.add_argument("-task_type", default='train',
-                        help="train or evaluate, by default is train")
-    args = parser.parse_args()
-    json_path = args.conf
-    task_type = args.task_type
 
-    model = DeepFM(json_path=json_path)
+def test_get_optimizer():
+    optimizer_keys = ['adam', 'adagrad', 'momentum', 'ftrl']
+    invalid_optimizer_keys = ['adddam']
 
-    if task_type == 'train':
-        model.train()
-    if task_type == 'evaluate':
-        result = model.evaluate()
-        print("Model metrics : ", result)
+    for optimizer_key in optimizer_keys:
+        get_optimizer(optimizer_key=optimizer_key, learning_rate=0.3)
+
+    for invalid_optimizer_key in invalid_optimizer_keys:
+        with pytest.raises(ValueError, match="Invalid optimizer_key :"):
+            get_optimizer(optimizer_key=invalid_optimizer_key, learning_rate=0.3)

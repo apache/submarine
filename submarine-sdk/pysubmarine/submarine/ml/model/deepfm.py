@@ -29,6 +29,7 @@ import logging
 import tensorflow as tf
 import numpy as np
 from submarine.ml.model.base_tf_model import BaseTFModel
+from submarine.utils.tf_utils import get_estimator_spec
 
 logger = logging.getLogger(__name__)
 
@@ -50,12 +51,9 @@ class DeepFM(BaseTFModel):
         feature_size = params["training"]["feature_size"]
         embedding_size = params["training"]["embedding_size"]
         l2_reg = params["training"]["l2_reg"]
-        learning_rate = params["training"]["learning_rate"]
         batch_norm = params["training"]["batch_norm"]
         batch_norm_decay = params["training"]["batch_norm_decay"]
-        optimizer = params["training"]["optimizer"]
         seed = params["training"]["seed"]
-        metric = params['output']['metric']
         layers = params["training"]["deep_layers"]
         dropout = params["training"]["dropout"]
 
@@ -115,59 +113,6 @@ class DeepFM(BaseTFModel):
 
         with tf.variable_scope("DeepFM-out"):
             y_bias = fm_bias * tf.ones_like(y_d, dtype=tf.float32)
-            y = y_bias + y_w + y_v + y_d
-            pred = tf.sigmoid(y)
+            logit = y_bias + y_w + y_v + y_d
 
-        predictions = {"probabilities": pred}
-        export_outputs = {
-            tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:
-                tf.estimator.export.PredictOutput(predictions)}
-        # Provide an estimator spec for `ModeKeys.PREDICT`
-        if mode == tf.estimator.ModeKeys.PREDICT:
-            return tf.estimator.EstimatorSpec(
-                mode=mode,
-                predictions=predictions,
-                export_outputs=export_outputs)
-
-        with tf.name_scope("Loss"):
-            loss = tf.reduce_mean(
-                tf.nn.sigmoid_cross_entropy_with_logits(logits=y, labels=labels)) + \
-                   l2_reg * tf.nn.l2_loss(fm_weight) + l2_reg * tf.nn.l2_loss(fm_vector)
-
-        # Provide an estimator spec for `ModeKeys.EVAL`
-        eval_metric_ops = {}
-        if metric == 'auc':
-            eval_metric_ops['auc'] = tf.metrics.auc(labels, pred)
-        else:
-            raise TypeError("Can not find loss_type :", params['training']['loss_type'])
-
-        if mode == tf.estimator.ModeKeys.EVAL:
-            return tf.estimator.EstimatorSpec(
-                mode=mode,
-                predictions=predictions,
-                loss=loss,
-                eval_metric_ops=eval_metric_ops)
-
-        with tf.name_scope("Optimizer"):
-            if optimizer == 'adam':
-                op = tf.train.AdamOptimizer(learning_rate=learning_rate,
-                                            beta1=0.9, beta2=0.999, epsilon=1e-8)
-            elif optimizer == 'adagrad':
-                op = tf.train.AdagradOptimizer(
-                    learning_rate=learning_rate, initial_accumulator_value=1e-8)
-            elif optimizer == 'momentum':
-                op = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.95)
-            elif optimizer == 'ftrl':
-                op = tf.train.FtrlOptimizer(learning_rate)
-            else:
-                raise TypeError("Can not find optimizer :", optimizer)
-
-        train_op = op.minimize(loss, global_step=tf.train.get_global_step())
-
-        # Provide an estimator spec for `ModeKeys.TRAIN` modes
-        if mode == tf.estimator.ModeKeys.TRAIN:
-            return tf.estimator.EstimatorSpec(
-                mode=mode,
-                predictions=predictions,
-                loss=loss,
-                train_op=train_op)
+        return get_estimator_spec(logit, labels, mode, params, [fm_vector, fm_weight])

@@ -14,5 +14,6 @@
 # limitations under the License.
 
 from .deepfm import DeepFM
+from .fm import FM
 
-__all__ = ["DeepFM"]
+__all__ = ["DeepFM", "FM"]

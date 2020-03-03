@@ -23,9 +23,13 @@ metrics, save model path, resources. e.g. [deepfm.json](./deepfm.json)
 ```
 python ./submarine/submarine-sdk/setup.py install
 ```
-3. Run DeepFM
+2. Train
 ```
-python run_deepfm.py -conf=deepfm.json
+python run_deepfm.py -conf=deepfm.json -task_type train
+```
+3. Evaluate
+```
+python run_deepfm.py -conf=deepfm.json -task_type evaluate
 ```
 ### Running DeepFM on Submarine
 1. Upload data to a shared file system like hdfs, s3.

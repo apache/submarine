@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.ml.model import DeepFM
+from submarine.ml.model import FM
 import argparse
 
 if __name__ == '__main__':
@@ -25,7 +25,7 @@ if __name__ == '__main__':
     json_path = args.conf
     task_type = args.task_type
 
-    model = DeepFM(json_path=json_path)
+    model = FM(json_path=json_path)
 
     if task_type == 'train':
         model.train()
