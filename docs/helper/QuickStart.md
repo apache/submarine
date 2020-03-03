@@ -24,7 +24,7 @@ Must:
 Optional:
 
 - [Enable YARN Service](https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/yarn-service/Overview.html) (Only yarn 3.1.x + needs)
-- [Enable GPU on YARN 3.1.0+](https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html)
+- [Enable GPU on YARN 2.10.0+](https://hadoop.apache.org/docs/r2.10.0/hadoop-yarn/hadoop-yarn-site/UsingGpus.html)
 - [Enable Docker on YARN 2.8.2+](https://hadoop.apache.org/docs/r2.8.2/hadoop-yarn/hadoop-yarn-site/DockerContainers.html)
 - [Build Docker images](WriteDockerfileTF.md)
 
