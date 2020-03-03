@@ -23,6 +23,7 @@ python3 virtualenv-16.0.0/virtualenv.py venv
 pip3 install tensorflow==1.13.1
 pip3 install torch==0.4.1
 pip3 install torchvision==0.1.8
+pip3 install mxnet==1.5.1
 pip3 install /opt/pysubmarine/.
 zip -r myvenv.zip venv
 deactivate
