@@ -13,24 +13,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from submarine.utils.rest_utils import http_request
+import logging
+import json
 
-class SubmarineException(Exception):
-    """
-    Generic exception thrown to surface failure information about external-facing operations.
-    """
-    def __init__(self, message):
+_logger = logging.getLogger(__name__)
+
+_PATH_PREFIX = "/api/v1/"
+JOBS = 'jobs'
+
+
+class SubmarineJOBClient:
+    def __init__(self, hostname, port):
+        self.base_url = 'http://' + hostname + ':' + str(port)
+
+    def submit_job(self, conf_path):
         """
-        :param message: The message describing the error that occured.
+        Submit a job to submarine server
+        :param conf_path: The location of the configuration file
+        :return: requests.Response
         """
-        self.message = message
-        super(SubmarineException, self).__init__(message)
-
-
-class RestException(SubmarineException):
-    """Exception thrown on non 200-level responses from the REST API"""
-    def __init__(self, json):
-        error_code = json.get('error_code')
-        message = "%s: %s" % (error_code,
-                              json['message'] if 'message' in json else "Response: " + str(json))
-        super(RestException, self).__init__(message)
-        self.json = json
+        endpoint = _PATH_PREFIX + JOBS
+        with open(conf_path) as json_file:
+            json_body = json.load(json_file)
+        response = http_request(self.base_url, endpoint=endpoint,
+                                method='POST', json_body=json_body)
+        return response
