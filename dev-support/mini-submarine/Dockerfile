@@ -38,7 +38,7 @@ RUN \
   apt-get update && \
   apt-get -y install vim
 
-# Install libgomp1
+# Install libgomp1 for MXNet
 RUN \
   apt-get update && \
   apt-get -y install libgomp1
