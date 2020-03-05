@@ -62,6 +62,7 @@ public abstract class AbstractSubmarineServerTest {
     if (System.getProperty("websocketUrl") != null) {
       websocketUrl = System.getProperty("websocketurl");
     }
+    LOG.debug("getWebsocketApiUrlToTest = {}", websocketUrl);
     return websocketUrl;
   }
 
@@ -70,6 +71,7 @@ public abstract class AbstractSubmarineServerTest {
     if (System.getProperty("url") != null) {
       url = System.getProperty("url");
     }
+    LOG.debug("getUrlToTest = {}", url);
     return url;
   }
 

@@ -68,7 +68,7 @@
   </dependencies>
 
   <build>
-    <finalName>submarine-${artifactId}-${project.version}</finalName>
+    <finalName>submarine-${project.artifactId}-${project.version}</finalName>
     <extensions>
       <extension>
         <groupId>kr.motd.maven</groupId>

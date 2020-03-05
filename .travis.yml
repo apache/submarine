@@ -48,6 +48,7 @@ env:
     - EXCLUDE_INTERPRETER="" # Template disable by SUBMARINE-381 "!submarine-workbench/interpreter,!submarine-workbench/interpreter/interpreter-engine,!submarine-workbench/interpreter/python-interpreter,!submarine-workbench/interpreter/spark-interpreter
     - EXCLUDE_K8S="!submarine-server/server-submitter/submitter-k8s"
     - EXCLUDE_COMMON_RPC="!submarine-commons/commons-rpc"
+    - EXCLUDE_COMMONS="${EXCLUDE_COMMON_RPC},!submarine-commons/commons-utils,!submarine-commons/commons-cluster,!submarine-commons/commons-runtime,!submarine-commons/commons-metastore"
     - EXCLUDE_CLOUD="!org.apache.submarine:submarine-cloud"
     - MOZ_HEADLESS=1
 
@@ -174,7 +175,8 @@ matrix:
       jdk: openjdk8
       addons:
         chrome: stable
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am" MODULES="" TEST_MODULES="-pl submarine-test/test-k8s" TEST_PROJECTS=""
+      # Because submarine on k8s uses port 80, it needs to be set `-Durl=http://127.0.0.1`
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am -Durl=http://127.0.0.1" MODULES="" TEST_MODULES="-pl ${EXCLUDE_COMMONS},!org.apache.submarine:submarine-client,!org.apache.submarine:submitter-yarn,!org.apache.submarine:server-api,!org.apache.submarine:server-rpc,!org.apache.submarine:server-core,submarine-test/test-k8s" TEST_PROJECTS=""
 
     # Template disable by SUBMARINE-381
     #- name: Test submarine interpreter
@@ -227,7 +229,7 @@ matrix:
 
 install:
   - mvn --version
-  - echo "mvn $BUILD_FLAG $MODULES $PROFILE -B"
+  - echo "install-> mvn $BUILD_FLAG $MODULES $PROFILE -B"
   - mvn $BUILD_FLAG $MODULES $PROFILE -B
 
 before_script:
@@ -236,7 +238,7 @@ before_script:
 
 script:
   - if [[ -n $TEST_MODULES ]]; then export MODULES="${TEST_MODULES}"; fi
-  - echo "mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS"
+  - echo "script-> mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS"
   - mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS
 
 after_success:

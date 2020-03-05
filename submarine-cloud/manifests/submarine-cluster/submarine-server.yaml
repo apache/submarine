@@ -36,7 +36,7 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
-              name:  submarine
+              name: submarine
             - containerPort: 8081
               name: cluster
           env:

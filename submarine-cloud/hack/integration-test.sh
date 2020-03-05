@@ -63,7 +63,7 @@ function start() {
   # $KUBECTL_BIN get pods | grep submarinecluster-submarine | awk '{print $1}' | xargs -I {} $KUBECTL_BIN exec {} -- bash -c "tail -500 /opt/submarine-current/logs/submarine.log"
   # kubectl get pods -n operations | grep operations | awk '{print $1}' | xargs -I {} kubectl exec -it -n operations {} cat /tmp/operations-server.INFO
   ############################################################
-  echo "Stop submarine on k8s failure!"
+  echo "Start submarine on k8s failure!"
 }
 
 function stop() {

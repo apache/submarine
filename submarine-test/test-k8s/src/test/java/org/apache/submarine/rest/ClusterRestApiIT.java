@@ -18,14 +18,16 @@
 package org.apache.submarine.rest;
 
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.submarine.server.AbstractSubmarineServerTest;
+
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class ClusterIT extends AbstractSubmarineServerTest {
-  public final static Logger LOG = LoggerFactory.getLogger(ClusterIT.class);
+public class ClusterRestApiIT extends AbstractSubmarineServerTest {
+  public final static Logger LOG = LoggerFactory.getLogger(ClusterRestApiIT.class);
 
   @BeforeClass
   public static void startUp(){
