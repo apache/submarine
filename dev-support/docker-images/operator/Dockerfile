@@ -16,9 +16,10 @@
 FROM alpine:3.10
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
-# Update apk repositories
-RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/main" > /etc/apk/repositories
-RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/community" >> /etc/apk/repositories
+# If you are in China, enabling the following two lines of code can speed up the build of the image, but it may cause failure in travis.
+# So when submitting the code, please make sure the following 2 lines of code are in a commented state
+# RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/main" > /etc/apk/repositories
+# RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/community" >> /etc/apk/repositories
 
 RUN apk add tzdata --no-cache
 ADD ./tmp/submarine-operator /usr/local/bin/submarine-operator

@@ -134,6 +134,10 @@
           <groupId>org.codehaus.jackson</groupId>
           <artifactId>jackson-mapper-asl</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.google.code.gson</groupId>
+          <artifactId>gson</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -276,6 +280,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${gson.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.hadoop</groupId>
       <artifactId>hadoop-auth</artifactId>
       <version>${hadoop.version}</version>
@@ -301,7 +311,7 @@
   </dependencies>
 
   <build>
-    <finalName>submarine-${artifactId}-${project.version}</finalName>
+    <finalName>submarine-${project.artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -315,6 +325,7 @@
             </goals>
             <configuration>
               <outputFile>target/submarine-${project.artifactId}-${project.version}-shade.jar</outputFile>
+              <minimizeJar>true</minimizeJar>
               <filters>
                 <filter>
                   <artifact>*:*</artifact>
@@ -329,6 +340,10 @@
                 <excludes>
                   <exclude>org.slf4j:*</exclude>
                   <exclude>log4j:log4j</exclude>
+                  <exclude>org.apache.submarine:commons-utils:*</exclude>
+                  <!-- The avatica package contains the com.fasterxml.jackson class, which conflicts with the package in submarine-server-core,
+                  so it needs to be shielded. If you need to use this package later, you can rename it through relocation. -->
+                  <exclude>org.apache.calcite.avatica:avatica:*</exclude>
                 </excludes>
               </artifactSet>
               <relocations>
