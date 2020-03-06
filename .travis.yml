@@ -43,13 +43,20 @@ services:
 env:
   global:
     # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-server/server-submitter/submitter-yarnservice` in EXCLUDE_SUBMARINE
-    - EXCLUDE_SUBMARINE="!submarine-all,!submarine-client,!submarine-commons,!submarine-commons/commons-runtime,!submarine-dist,!submarine-server/server-submitter/submitter-yarn,!submarine-server/server-core,!submarine-server/server-rpc"
-    - EXCLUDE_WORKBENCH="!submarine-workbench,!submarine-workbench/workbench-web,!submarine-workbench/workbench-web-ng"
+    - SUBMARINE="org.apache.submarine"
+    - EXCLUDE_SUBMARINE="!${SUBMARINE}:submarine-all,!${SUBMARINE}:submarine-client,!${SUBMARINE}:submarine-dist"
+    - EXCLUDE_SERVER="!${SUBMARINE}:server-api,!${SUBMARINE}:server-core,!${SUBMARINE}:server-rpc"
+    - EXCLUDE_CLIENT="!${SUBMARINE}:submarine-client"
+    - EXCLUDE_ALL="!${SUBMARINE}:submarine-all"
+    - EXCLUDE_WORKBENCH="!${SUBMARINE}:submarine-workbench,!${SUBMARINE}:workbench-web,!${SUBMARINE}:workbench-web-ng"
     - EXCLUDE_INTERPRETER="" # Template disable by SUBMARINE-381 "!submarine-workbench/interpreter,!submarine-workbench/interpreter/interpreter-engine,!submarine-workbench/interpreter/python-interpreter,!submarine-workbench/interpreter/spark-interpreter
-    - EXCLUDE_K8S="!submarine-server/server-submitter/submitter-k8s"
-    - EXCLUDE_COMMON_RPC="!submarine-commons/commons-rpc"
-    - EXCLUDE_COMMONS="${EXCLUDE_COMMON_RPC},!submarine-commons/commons-utils,!submarine-commons/commons-cluster,!submarine-commons/commons-runtime,!submarine-commons/commons-metastore"
-    - EXCLUDE_CLOUD="!org.apache.submarine:submarine-cloud"
+    - EXCLUDE_SUBMITTER_K8S="!${SUBMARINE}:submitter-k8s"
+    - EXCLUDE_SUBMITTER_YARN="!${SUBMARINE}:submitter-yarn"
+    - EXCLUDE_SUBMITTER="!${SUBMARINE}:server-submitter,${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_SUBMITTER_YARN}"
+    - EXCLUDE_COMMONS="!${SUBMARINE}:commons-cluster,!${SUBMARINE}:commons-metastore,!${SUBMARINE}:commons-rpc,!${SUBMARINE}:commons-runtime,!${SUBMARINE}:commons-utils"
+    - EXCLUDE_CLOUD="!${SUBMARINE}:submarine-cloud"
+    - EXCLUDE_DIST="!${SUBMARINE}:submarine-dist"
+    - EXCLUDE_TEST="!${SUBMARINE}:submarine-test,!${SUBMARINE}:test-e2e,!${SUBMARINE}:test-k8s"
     - MOZ_HEADLESS=1
 
 before_install:
@@ -96,31 +103,81 @@ matrix:
       dist: xenial
       env: PROFILE="" BUILD_FLAG="clean" TEST_FLAG="org.apache.rat:apache-rat-plugin:check" TEST_PROJECTS=""
 
-    - name: Build submarine submitter on hadoop-2.9 (default)
+    - name: Test submarine test-k8s
+      dist: xenial
+      services: docker
+      language: java
+      jdk: openjdk8
+      addons:
+        chrome: stable
+        firefox: latest
+      # Because submarine on k8s uses port 80, it needs to be set `-Durl=http://127.0.0.1`
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am -Durl=http://127.0.0.1" MODULES="" TEST_MODULES="-pl ${EXCLUDE_SERVER},${EXCLUDE_COMMONS},${EXCLUDE_CLIENT},org.apache.submarine:test-k8s" TEST_PROJECTS=""
+
+    - name: Test submarine test-e2e
       language: java
       jdk: openjdk8
       dist: xenial
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},!submarine-dist" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMON_RPC},!submarine-dist" TEST_PROJECTS=""
+      addons:
+        chrome: stable
+        firefox: latest
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am" TEST_MODULES="-pl org.apache.submarine:test-e2e" TEST_PROJECTS=""
 
-    - name: Build submarine submitter on hadoop-2.10
+    - name: Test submarine commons-cluster
       language: java
       jdk: openjdk8
       dist: xenial
-      env: PROFILE="-Phadoop-2.10" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},!submarine-dist" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMON_RPC},!submarine-dist" TEST_PROJECTS=""
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}" TEST_MODULES="-pl org.apache.submarine:commons-cluster" TEST_PROJECTS=""
 
-    - name: Build submarine submitter on hadoop-3.1
+    - name: Test submarine commons-metastore
       language: java
       jdk: openjdk8
       dist: xenial
-      env: PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},!submarine-dist" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMON_RPC},!submarine-dist" TEST_PROJECTS=""
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}" TEST_MODULES="-pl org.apache.submarine:commons-metastore" TEST_PROJECTS=""
 
-    - name: Build submarine submitter on hadoop-3.2
+    - name: Test submarine commons-rpc
       language: java
       jdk: openjdk8
       dist: xenial
-      env: PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},!submarine-dist" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMON_RPC},!submarine-dist" TEST_PROJECTS=""
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}" TEST_MODULES="-pl org.apache.submarine:commons-rpc" TEST_PROJECTS=""
 
-    - name: Build submarine submitter on Kubernetes
+    - name: Test submarine commons-runtime
+      language: java
+      jdk: openjdk8
+      dist: xenial
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}" TEST_MODULES="-pl org.apache.submarine:commons-runtime" TEST_PROJECTS=""
+
+    - name: Test submarine server
+      language: java
+      jdk: openjdk8
+      dist: xenial
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}" TEST_MODULES="-pl ${EXCLUDE_COMMONS},org.apache.submarine:server-core" TEST_PROJECTS=""
+
+    - name: Test submarine submitter on hadoop-2.9 (default)
+      language: java
+      jdk: openjdk8
+      dist: xenial
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}" TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER}" TEST_PROJECTS=""
+
+    - name: Test submarine submitter on hadoop-2.10
+      language: java
+      jdk: openjdk8
+      dist: xenial
+      env: PROFILE="-Phadoop-2.10" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}" TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER}" TEST_PROJECTS=""
+
+    - name: Test submarine submitter on hadoop-3.1
+      language: java
+      jdk: openjdk8
+      dist: xenial
+      env: PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}" TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER}" TEST_PROJECTS=""
+
+    - name: Test submarine submitter on hadoop-3.2
+      language: java
+      jdk: openjdk8
+      dist: xenial
+      env: PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}" TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER}" TEST_PROJECTS=""
+
+    - name: Test submarine submitter on Kubernetes
       dist: xenial
       services: docker
       language: java
@@ -146,46 +203,14 @@ matrix:
         - kubectl apply -f ./dev-support/travis/tf-operator/crd_v1.yaml
         - kubectl apply -f ./dev-support/travis/tf-operator/tfevent-volume/.
 
-    - name: Build submarine workbench-web VUE
-      language: node_js
-      node_js:
-        - 10.15.0
-      before_install:
-        - cd submarine-workbench/workbench-web
-      install:
-        - yarn install
-      script:
-        - yarn
-        - yarn run lint --no-fix && yarn run build
-      env: NAME="Build workbench-web"
-
-    - name: Test submarine test-e2e
-      language: java
-      jdk: openjdk8
-      dist: xenial
-      addons:
-        chrome: stable
-        firefox: latest
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am" TEST_MODULES="-pl submarine-test/test-e2e" TEST_PROJECTS=""
-
-    - name: Test submarine-test-k8s
-      dist: xenial
-      services: docker
-      language: java
-      jdk: openjdk8
-      addons:
-        chrome: stable
-      # Because submarine on k8s uses port 80, it needs to be set `-Durl=http://127.0.0.1`
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am -Durl=http://127.0.0.1" MODULES="" TEST_MODULES="-pl ${EXCLUDE_COMMONS},!org.apache.submarine:submarine-client,!org.apache.submarine:submitter-yarn,!org.apache.submarine:server-api,!org.apache.submarine:server-rpc,!org.apache.submarine:server-core,submarine-test/test-k8s" TEST_PROJECTS=""
-
     # Template disable by SUBMARINE-381
     #- name: Test submarine interpreter
     #  language: java
     #  jdk: "openjdk8"
     #  dist: xenial
-    #  env: PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_SUBMARINE},${EXCLUDE_WORKBENCH}" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
+    #  env: PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_SUBMARINE},${EXCLUDE_WORKBENCH}" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
 
-    - name: Test submarine-sdk
+    - name: Test submarine sdk
       language: python
       python: 3.6
       dist: xenial
@@ -197,11 +222,18 @@ matrix:
         - ./submarine-sdk/pysubmarine/travis/lint.sh
         - pytest --cov=submarine -vs
 
-    - name: Test submarine distribution
-      language: java
-      jdk: openjdk8
-      dist: xenial
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S}" TEST_MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_COMMON_RPC}" TEST_PROJECTS=""
+    - name: Test submarine workbench-web VUE
+      language: node_js
+      node_js:
+        - 10.15.0
+      before_install:
+        - cd submarine-workbench/workbench-web
+      install:
+        - yarn install
+      script:
+        - yarn
+        - yarn run lint --no-fix && yarn run build
+      env: NAME="Build workbench-web"
 
     - name: Test submarine workbench-web Angular
       language: node_js
@@ -221,15 +253,9 @@ matrix:
         - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
       env: BUILD_FLAG="clean package -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl org.apache.submarine:workbench-web-ng" TEST_MODULES="-pl org.apache.submarine:workbench-web-ng" TEST_PROJECTS=""
 
-    - name: Test submarine-server
-      language: java
-      jdk: openjdk8
-      dist: xenial
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat" MODULES="-pl ${EXCLUDE_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER}" TEST_MODULES="-pl org.apache.submarine:server-core" TEST_PROJECTS=""
-
 install:
   - mvn --version
-  - echo "install-> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+  - echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
   - mvn $BUILD_FLAG $MODULES $PROFILE -B
 
 before_script:
@@ -238,7 +264,7 @@ before_script:
 
 script:
   - if [[ -n $TEST_MODULES ]]; then export MODULES="${TEST_MODULES}"; fi
-  - echo "script-> mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS"
+  - echo ">>> mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS"
   - mvn $TEST_FLAG $MODULES $PROFILE -B $TEST_PROJECTS
 
 after_success:

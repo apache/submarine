@@ -329,7 +329,7 @@
   </profiles>
 
   <build>
-    <finalName>submarine-${artifactId}-${project.version}</finalName>
+    <finalName>submarine-${project.artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -342,7 +342,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <outputFile>target/submarine-${artifactId}-${project.version}-shade.jar</outputFile>
+              <outputFile>target/submarine-${project.artifactId}-${project.version}-shade.jar</outputFile>
               <filters>
                 <filter>
                   <artifact>*:*</artifact>
