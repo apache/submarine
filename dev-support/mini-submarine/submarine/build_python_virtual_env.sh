@@ -28,3 +28,10 @@ pip3 install /opt/pysubmarine/.
 zip -r myvenv.zip venv
 deactivate
 
+# Building a Python virtual environment with TensorFlow 2
+python3 virtualenv-16.0.0/virtualenv.py tf2-venv
+. tf2-venv/bin/activate
+pip3 install tensorflow==2.1.0
+pip3 install tensorflow-datasets==2.1.0
+zip -r tf2-venv.zip tf2-venv
+deactivate

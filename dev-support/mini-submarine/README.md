@@ -146,7 +146,11 @@ cd /home/yarn/submarine/
 
 ### Run a mnist TF job with submarine + TonY runtime
 ```
+# run TF 1 distributed training job 
 ./run_submarine_mnist_tony.sh
+
+# run TF 2 distributed training job
+./run_submarine_mnist_tf2_tony.sh
 ```
 When run_submarine_mnist_tony.sh is executed, mnist data is download from the url, [google mnist](https://storage.googleapis.com/cvdf-datasets/mnist/), by default. If the url is unaccessible, you can use parameter "-d" to specify a customized url.
 For example, if you are in mainland China, you can use the following command
