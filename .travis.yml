@@ -166,7 +166,7 @@ matrix:
       addons:
         chrome: stable
         firefox: latest
-      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am" TEST_MODULES="-pl submarine-test/e2e" TEST_PROJECTS=""
+      env: PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am" TEST_MODULES="-pl submarine-test/test-e2e" TEST_PROJECTS=""
 
     - name: Test submarine-test-k8s
       dist: xenial

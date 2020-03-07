@@ -28,7 +28,7 @@
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>submarine-test-k8s</artifactId>
+  <artifactId>test-k8s</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: Kubernetes Test</name>
 

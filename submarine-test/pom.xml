@@ -33,7 +33,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>e2e</module>
+    <module>test-e2e</module>
     <module>test-k8s</module>
   </modules>
 
