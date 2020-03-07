@@ -18,9 +18,9 @@ Submarine now supports two kinds of integration tests.
 
 They are in the project's `submarine/submarine-test` directory, There are two modules, `e2e` and `test-k8s`.
 
-There are currently some differences between `e2e` and `test-k8s` in operation mode.
+There are currently some differences between `test-e2e` and `test-k8s` in operation mode.
 
-Among them, `e2e` needs to deploy submarine locally, while `test-k8s` uses k8s to deploy submarine.
+Among them, `test-e2e` needs to deploy submarine locally, while `test-k8s` uses k8s to deploy submarine.
 
 These two different test methods can be applied to different test scenarios. (In the future, these two test methods may be combined or adjusted)
 
@@ -60,12 +60,12 @@ e2e tests can be ran both locally and in Travis
 
 Local testing: When developers perform e2e testing locally, they need to manually start the submarine server by executing bin / submarine-daemon.sh.
 
-Then you can manually runs test cases in the `e2e/test` directory in IDEA.
+Then you can manually runs test cases in the `test-e2e/test` directory in IDEA.
 
 ### Run the existing tests.
 ##### Move to the working directroy.
 ```
-cd submarine/submarine-test/e2e
+cd submarine/submarine-test/test-e2e
 ```
 ##### Compile & Run.
 
@@ -99,7 +99,7 @@ BUILD FAILURE
 ```
 
 ### Add your own integration test
-1. Create new file ending with "IT" under "submarine/submarine-test/e2e/src/test/java/org/apache/submarine/integration/".
+1. Create new file ending with "IT" under "submarine/submarine-test/test-e2e/src/test/java/org/apache/submarine/integration/".
 2. Your public class is recommended to extend AbstractSubmarineIT. The class AbstractSubmarineIT contains some commonly used functions.
 ```java
   WebElement pollingWait(final By locator, final long timeWait); // Find element on the website.
@@ -111,7 +111,7 @@ BUILD FAILURE
   // In WebDriverManager.java:
   public static WebDriver getWebDriver(); // This return a firefox webdriver which has been set to your workbench website.
 ```
-4. Add [JUnit](https://junit.org/junit5/docs/current/user-guide/) annotation before your testing function, e.g., @Beforeclass, @Test, and @AfterClass. You can refer to [loginIT.java](https://github.com/apache/submarine/blob/master/submarine-test/e2e/src/test/java/org/apache/submarine/integration/loginIT.java).
+4. Add [JUnit](https://junit.org/junit5/docs/current/user-guide/) annotation before your testing function, e.g., @Beforeclass, @Test, and @AfterClass. You can refer to [loginIT.java](https://github.com/apache/submarine/blob/master/submarine-test/test-e2e/src/test/java/org/apache/submarine/integration/loginIT.java).
 5. Use command mentioned above to compile and run to test whether it works as your anticipation.
 
 
