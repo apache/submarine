@@ -30,7 +30,7 @@
   </parent>
 
   <groupId>org.apache.submarine</groupId>
-  <artifactId>workbench-web-ng</artifactId>
+  <artifactId>submarine-workbench-web-ng</artifactId>
   <packaging>war</packaging>
   <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: Workbench Web Angular</name>

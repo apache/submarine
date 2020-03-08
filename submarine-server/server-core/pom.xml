@@ -28,25 +28,25 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>server-core</artifactId>
+  <artifactId>submarine-server-core</artifactId>
   <name>Submarine: Server Core</name>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-cluster</artifactId>
+      <artifactId>submarine-commons-cluster</artifactId>
       <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>server-api</artifactId>
+      <artifactId>submarine-server-api</artifactId>
       <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-metastore</artifactId>
+      <artifactId>submarine-commons-metastore</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
@@ -134,7 +134,7 @@
 
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>server-rpc</artifactId>
+      <artifactId>submarine-server-rpc</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
@@ -405,7 +405,6 @@
   </dependencies>
 
   <build>
-    <finalName>submarine-${project.artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

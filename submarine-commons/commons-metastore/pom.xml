@@ -30,14 +30,14 @@
   </parent>
 
   <groupId>org.apache.submarine</groupId>
-  <artifactId>commons-metastore</artifactId>
+  <artifactId>submarine-commons-metastore</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: Commons MetaStore</name>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-utils</artifactId>
+      <artifactId>submarine-commons-utils</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -311,7 +311,6 @@
   </dependencies>
 
   <build>
-    <finalName>submarine-${project.artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -324,7 +323,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <outputFile>target/submarine-${project.artifactId}-${project.version}-shade.jar</outputFile>
+              <outputFile>target/${project.artifactId}-${project.version}-shade.jar</outputFile>
               <minimizeJar>true</minimizeJar>
               <filters>
                 <filter>

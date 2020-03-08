@@ -19,12 +19,12 @@ We provide two methods to launch Submarine Workbench
 
 # Run Submarine Workbench on docker
 
-By using the official images of Submarine, only a few docker commands are required to launch **Submarine Workbench**. The document includes information about how to launch the Submarine Workbench via the new docker images and the information about how to switch between different Submarine Workbench versions(version Vue & version Angular). 
+By using the official images of Submarine, only a few docker commands are required to launch **Submarine Workbench**. The document includes information about how to launch the Submarine Workbench via the new docker images and the information about how to switch between different Submarine Workbench versions(version Vue & version Angular).
 
 ### Two versions of Submarine Workbench
 1. Angular (default)
 2. Vue (This is the old version, and it will be replaced by version Angular in the future.)
-#### (WARNING: Please restart a new **incognito window** when you switch to different versions of Submarine Workbench) 
+#### (WARNING: Please restart a new **incognito window** when you switch to different versions of Submarine Workbench)
 ### Launch the Submarine Workbench(Angular)
 * It should be noted that since Submarine Workbench depends on the Submarine database, so you need to run the docker container of the Submarine database first.
 ```
@@ -34,7 +34,7 @@ docker run -it -p 8080:8080 -d --link=submarine-database:submarine-database --na
 * The login page of Submarine Workbench will be shown in ```http://127.0.0.1:8080```.
 
 ### Switch from version Angular to version Vue
-*  Step1: Launch submarine-database and submarine-server containers 
+*  Step1: Launch submarine-database and submarine-server containers
 ```
 docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.3.0-SNAPSHOT
 docker run -it -p 8080:8080 -d --link=submarine-database:submarine-database --name submarine-server apache/submarine:server-0.3.0-SNAPSHOT
@@ -42,7 +42,7 @@ docker run -it -p 8080:8080 -d --link=submarine-database:submarine-database --na
 *  Step2: Compile Submarine in your host (not in the container)
 ```
 cd ./submarine
-mvn clean install package -DskipTests 
+mvn clean install package -DskipTests
 ```
 *  Step3: Copy workbench-web.war into the submarine-server container
 ```
@@ -50,10 +50,10 @@ cd submarine-workbench/workbench-web/target
 docker cp workbench-web.war submarine-server:/opt/submarine-dist-0.3.0-SNAPSHOT-hadoop-2.9
 ```
 *  Step4: Enter the submarine-server container
-``` 
+```
 docker exec -it submarine-server bash
 ```
-*  Step5: Modify the value of the configutation **workbench.web.war** in conf/submarine-site.xml from "../workbench-web-ng.war" to "../workbench-web.war". 
+*  Step5: Modify the value of the configutation **workbench.web.war** in conf/submarine-site.xml from "../submarine-workbench-web-ng.war" to "../submarine-workbench-web.war".
 
 *  Step6: Restart the Submarine Server
 ```
@@ -63,13 +63,13 @@ docker exec -it submarine-server bash
 ```
 docker start submarine-server
 ```
-*  Step8: Open a new **incognito window(not a tab)** and check ```http://127.0.0.1:8080``` 
+*  Step8: Open a new **incognito window(not a tab)** and check ```http://127.0.0.1:8080```
 ### Switch from version Vue to version Angular
 *  Step1: Enter the submarine-server container
 ```
 docker exec -it submarine-server bash
 ```
-*  Step2: Modify the value of the configutation **workbench.web.war** in conf/submarine-site.xml from "../workbench-web.war" to "../workbench-web-ng.war".
+*  Step2: Modify the value of the configutation **workbench.web.war** in conf/submarine-site.xml from "../workbench-web.war" to "../submarine-workbench-web-ng.war".
 *  Step3: Restart the Submarine Server
 ```
 ./bin/submarine-daemon.sh restart
@@ -78,17 +78,17 @@ docker exec -it submarine-server bash
 ```
 docker start submarine-server
 ```
-*  Step5: Open a **new incognito window(not a tab)** and check ```http://127.0.0.1:8080``` 
+*  Step5: Open a **new incognito window(not a tab)** and check ```http://127.0.0.1:8080```
 ### Check the data in the submarine-database
 *  Step1: Enter the submarine-database container
 ```
 docker exec -it submarine-database bash
 ```
-*  Step2: Enter MySQL database 
+*  Step2: Enter MySQL database
 ```
 mysql -uroot -ppassword
 ```
-*  Step3: List the data in the table 
+*  Step3: List the data in the table
 ```
 // list all databases
 show databases;
