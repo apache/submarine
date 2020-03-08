@@ -45,7 +45,7 @@ SUBMARINE_PATH=/opt/submarine-current
 HADOOP_CONF_PATH=/usr/local/hadoop/etc/hadoop
 
 ${JAVA_CMD} -cp "$("${HADOOP_COMMON_HOME}"/bin/hadoop classpath --glob)":${SUBMARINE_PATH}/submarine-all-${SUBMARINE_VERSION}-hadoop-"${HADOOP_VERSION}".jar:${HADOOP_CONF_PATH} \
- org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
+ org.apache.submarine.client.cli.Cli job run --name tf2-job-001 \
  --framework tensorflow \
  --input_path "" \
  --num_workers 2 \
