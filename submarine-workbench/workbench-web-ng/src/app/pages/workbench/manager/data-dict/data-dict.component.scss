@@ -17,3 +17,14 @@
  * under the License.
  */
 
+.td-action a + a {
+    margin-left: 8px;
+}
+
+.data-dict-table-operate {
+    margin-bottom: 16px;
+}
+
+nz-table td {
+    word-break: break-all;
+}

@@ -38,7 +38,7 @@ const routes: Routes = [
         component: UserComponent
       },
       {
-        path: 'data-dict',
+        path: 'dataDict',
         component: DataDictComponent
       }
     ]

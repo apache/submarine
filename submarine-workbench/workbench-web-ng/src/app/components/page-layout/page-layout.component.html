@@ -21,7 +21,8 @@
   <nz-page-header [nzTitle]="title|titlecase" *ngIf="breadCrumb">
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item *ngFor="let item of breadCrumb">
-        {{item|titlecase}}
+        <a *ngIf="item.routerLink" [routerLink]="item.routerLink">{{item.title|titlecase}}</a>
+        <span *ngIf="!item.routerLink">{{item.title|titlecase}}</span> 
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-content *ngIf="description">

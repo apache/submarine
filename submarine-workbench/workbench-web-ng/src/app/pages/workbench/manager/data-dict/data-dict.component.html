@@ -17,4 +17,106 @@
   ~ under the License.
   -->
 
-<p>data-dict works!</p>
+<nz-card>
+  <div class="data-dict-table-operate">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="dataDictForm">
+      <nz-form-item>
+        <nz-form-label>Dictionary Name</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="dictName" placeholder="Enter Dictionary Name"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Dictionary Code</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="dictCode" placeholder="Enter Dictionary Code"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" (click)="queryDataDict()">
+            <i nz-icon nzType="search"></i>
+            Query
+          </button>
+          <button nz-button style="margin-left: 8px" (click)="onShowAddDataDictModal()">
+            <i nz-icon nzType="plus"></i>
+            Add
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+
+  <nz-table #table [nzData]="sysDictList" [nzScroll]="{ x: '1100px' }" nzNoResult="No result" nzBordered>
+    <thead>
+      <tr>
+        <th nzLeft="0px">#</th>
+        <th>Dictionary Code</th>
+        <th>Dictionary Name</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th nzRight="0px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of table.data; index as dictItemIndex">
+        <td nzLeft="0px">{{ dictItemIndex+1 }}</td>
+        <td>{{ data.dictCode }}</td>
+        <td>{{ data.dictName }}</td>
+        <td>{{ data.description }}</td>
+        <td>
+          <nz-tag [nzColor]="'blue'">{{ data.status }}</nz-tag>
+        </td>
+        <td class="td-action" nzRight="0px">
+          <a (click)="onShowEditDataDictModal(data, dictItemIndex)">
+            <i nz-icon nzType="edit" nzTheme="outline"></i>
+            Edit
+          </a>
+          <a nz-dropdown [nzDropdownMenu]="more">
+            More
+            <i nz-icon nzType="down"></i>
+          </a>
+          <nz-dropdown-menu #more="nzDropdownMenu">
+            <ul nz-menu nzSelectable>
+              <li nz-menu-item (click)="onShowConfigModal(data, dictItemIndex)">Configuration</li>
+              <li
+                nz-menu-item
+                nz-popconfirm
+                nzTitle="Are you certain you want to delete?"
+                nzOkText="Ok"
+                nzCancelText="Cancel"
+                (nzOnConfirm)="onDeleteDataDictItem(data)"
+              >
+                Delete
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</nz-card>
+
+<submarine-data-dict-modal
+  [modalTitle]="modalTitle"
+  [visible]="dataDictModalVisible"
+  [dictCode]="selectedDictCode"
+  [dictName]="selectedDictName"
+  [description]="selectedDescription" 
+  (close)="onHideDataDictModal()"
+  (ok)="updateDataDict($event)"
+></submarine-data-dict-modal>
+
+<submarine-data-dict-config-modal
+  [modalTitle]="configModalTitle"
+  [visible]="configModalVisible"
+  [dictCode]="selectedDictCode"
+  [lastDictCode]="lastDictCode"
+  [newDictCode]="newDictItemCode"
+  [dictCodeChanged]="editDictCodeChanged"
+  [dictName]="selectedDictName"
+  [description]="selectedDescription"
+  [modalWidth]="configModalWidth"
+  (close)="onHideConfigModal()"
+  (ok)="updateDataDict($event)"
+></submarine-data-dict-config-modal>

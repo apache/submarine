@@ -1,0 +1,146 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<nz-modal [nzVisible]="visible" [nzTitle]="modalTitle" nzCancelText="Close" nzOkText="Ok" (nzOnCancel)="hideModal()" 
+          (nzOnOk)="hideModal()" [nzWidth]="modalWidth">
+  <div class="dictItem-table-operate">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="dictItemListForm">
+      <nz-form-item>
+        <nz-form-label>Name</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="dictItemName" placeholder="Enter Item Name"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-label>Code</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="dictItemCode" placeholder="Enter Item Code"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" (click)="queryDictItem()">
+            <i nz-icon nzType="search"></i>
+            Query
+          </button>
+          <button nz-button style="margin-left: 8px" (click)="addDictItem()">
+            <i nz-icon nzType="plus"></i>
+            Add
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div>
+    <form nz-form [nzLayout]="'inline'" [formGroup]="newItemForm" (ngSubmit)="newItemSubmit()">
+      <nz-table #table [nzData]="selectedDictItemList" [nzScroll]="{ x: '900px' }" nzNoResult="No result" nzBordered>
+        <thead>
+          <tr nz-col>
+            <th nzWidth="400px">Code</th>
+            <th nzWidth="200px">Name</th>
+            <th nzWidth="200px">Status</th>
+            <th nzWidth="200px">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="showNewRow">
+            <td>
+              <input type="text" nz-input nzSize="small" formControlName="newItemCode"/>
+            </td>
+            <td>
+              <input type="text" nz-input nzSize="small" formControlName="newItemName"/>
+            </td>
+            <td>
+              <nz-cascader nzSize="small" [nzOptions]="statusOptions" formControlName="newItemStatus"></nz-cascader>
+            </td>
+            <td>
+              <button *ngIf="newItemForm.get('newItemCode').valid && 
+                             newItemForm.get('newItemName').valid &&
+                             newItemForm.get('newItemStatus').valid; else disabledAddButtonTpl" 
+                             nzSize="small" nz-button nzType="default" (click)="addNewItemToList()">
+                <i nz-icon nzType="file-add"></i>
+                Add
+              </button>
+              <ng-template #disabledAddButtonTpl>
+                <button nzSize="small" nz-button nzType="default" (click)="addNewItemToList()" disabled>
+                  <i nz-icon nzType="file-add"></i>
+                  Add
+                </button>
+              </ng-template>
+              <button nzSize="small" nz-button nzType="default" style="margin-left: 8px" (click)="cancelAddDictItem()">
+                <i nz-icon nzType="undo"></i>
+                Cancel
+              </button>
+            </td>
+          </tr>
+          <tr *ngFor="let dictItem of table.data; index as dictItemIndex">
+            <td>
+              <ng-container *ngIf="!dictItem.edit; else codeInputTpl">
+                {{  dictItem.code }}
+              </ng-container>
+              <ng-template #codeInputTpl>
+                <input type="text" nz-input nzSize="small" formControlName="selectedDictItemCode"/>
+              </ng-template>
+            </td>
+            <td>
+              <ng-container *ngIf="!dictItem.edit; else nameInputTpl">
+                {{  dictItem.name }}
+              </ng-container>
+              <ng-template #nameInputTpl>
+                <input type="text" nz-input nzSize="small" formControlName="selectedDictItemName"/>
+              </ng-template>
+            </td>
+            <td>
+              <nz-tag *ngIf="!dictItem.edit && (dictItem.status == 'available')" [nzColor]="'blue'">{{ dictItem.status }}</nz-tag>
+              <nz-tag *ngIf="!dictItem.edit && (dictItem.status == 'unavailable')" [nzColor]="'red'">{{ dictItem.status }}</nz-tag>
+              <nz-cascader *ngIf="dictItem.edit" nzSize="small" [nzOptions]="statusOptions" formControlName="selectedDictItemStatus"></nz-cascader>
+            </td>
+            <td>
+              <ng-container *ngIf="!dictItem.edit; else saveTpl">
+                <a (click)="startEdit(dictItemIndex, dictItem.code, dictItem.name, dictItem.status)">
+                  <i nz-icon nzType="edit" nzTheme="outline"></i>
+                  Edit
+                </a>
+              </ng-container>
+              <ng-template #saveTpl>
+                <button *ngIf="newItemForm.get('selectedDictItemCode').valid && 
+                               newItemForm.get('selectedDictItemName').valid &&
+                               newItemForm.get('selectedDictItemStatus').valid; else disabledSaveButtonTpl" 
+                        nzSize="small" nz-button nzType="default" (click)="saveEdit(dictItemIndex)">
+                  <i nz-icon nzType="save" nzTheme="outline"></i>
+                  Save
+                </button>
+                <ng-template #disabledSaveButtonTpl>
+                  <button nzSize="small" nz-button nzType="default" (click)="saveEdit(dictItemIndex)" disabled>
+                    <i nz-icon nzType="save" nzTheme="outline"></i>
+                    Save
+                  </button>
+                </ng-template>
+                <button nzSize="small" nz-button nzType="default" style="margin-left: 8px" (click)="cancelEdit(dictItemIndex)">
+                  <i nz-icon nzType="undo" nzTheme="outline"></i>
+                  Cancel
+                </button>
+              </ng-template>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </form>
+  </div>
+</nz-modal>

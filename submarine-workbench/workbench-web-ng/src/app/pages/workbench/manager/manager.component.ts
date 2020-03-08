@@ -25,7 +25,7 @@ import _ from 'lodash';
 interface HeaderInfo {
   title: string;
   description: string;
-  breadCrumb: string[];
+  breadCrumb: Array<{ title: string, routerLink?: string }>;
 }
 
 @Component({
@@ -39,7 +39,34 @@ export class ManagerComponent implements OnInit {
     user: {
       title: 'user',
       description: 'You can check the user, delete the user, lock and unlock the user, etc.',
-      breadCrumb: ['manager', 'user']
+      breadCrumb: [
+        {
+          title: 'Home',
+          routerLink: '/workbench/home'
+        },
+        {
+          title: 'manager'
+        },
+        {
+          title: 'user'
+        }
+      ]
+    },
+    dataDict: {
+      title: 'Data Dict',
+      description: 'System Dict Manager',
+      breadCrumb: [
+        {
+          title: 'Home',
+          routerLink: '/workbench/home'
+        },
+        {
+          title: 'manager'
+        },
+        {
+          title: 'Data Dict'
+        }
+      ]
     }
   };
   currentHeaderInfo: HeaderInfo;
