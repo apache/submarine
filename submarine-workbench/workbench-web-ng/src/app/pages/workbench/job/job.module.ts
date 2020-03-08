@@ -1,4 +1,7 @@
-/*!
+import { NgModule } from "@angular/core";
+import { ReactiveFormsModule } from '@angular/forms';
+
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,52 +20,7 @@
  * under the License.
  */
 
- #jobOuter{
-    background-color: white;
-    padding-left: 30px;
-    padding-top: 20px;
- }
-
- #jobData{
-    margin-top: 25px;
-    margin-left: 20px;
-    margin-right: 20px;
-    background-color:white;
-    padding-left: 10px;
-    padding-right: 10px;
- }
-
- input.ng-invalid.ng-touched {
-   border: 1px solid red;
- }
-
- textarea.ng-invalid.ng-touched {
-   border: 1px solid red;
-}
-
-.red-star {
-   margin-top: 20px;
-   color: red;
-}
-
-.form-label {
-   float:left;
-   width:200px;
-   text-align: right;
-   padding-right: 12px;
-   margin-top: 32px;
-   margin-left: 10px;
-   clear: left;
-   color: black;
-}
-
-.pg3-form-label {
-   float:left;
-   width:200px;
-   text-align: right;
-   padding-right: 12px;
-   margin-top: 32px;
-   margin-left: 100px;
-   clear: left;
-   color: black;
-}
+ @NgModule({
+    exports: [ReactiveFormsModule]
+ })
+ export class jobModule {}

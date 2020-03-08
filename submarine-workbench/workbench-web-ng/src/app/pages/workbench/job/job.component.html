@@ -17,4 +17,130 @@
   ~ under the License.
   -->
 
-<p>job works!</p>
+<nz-layout style="margin: -24px -24px 16px;">
+  <nz-layout class="inner-layout">
+    <div id="jobOuter">
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/', 'workbench', 'home']">Home</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>Job</nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <br/>
+      <h2>Job</h2>
+      <nz-content>A job is a way of running a notebook or on a scheduled basis.</nz-content>
+      <br/>
+    </div>
+  </nz-layout>
+  <div id="jobData">
+    <div align="right">
+      <nz-radio-group [(ngModel)]="showJob" (ngModelChange)="showChange()">
+        <label nz-radio-button nzValue="All">All</label>
+        <label nz-radio-button nzValue="Own">Owned By Me</label>
+        <label nz-radio-button nzValue="Access">Accessable By Me</label>
+      </nz-radio-group>
+      <nz-input-group  style="width:300px;margin-top: 15px;margin-left:10px;margin-right:5px;" [nzSuffix]="suffixIconSearch">
+        <input type="text" nz-input [(ngModel)]="searchText" (keydown)="filter($event)" placeholder="input search text" />
+      </nz-input-group>
+      <ng-template #suffixIconSearch>
+          <i nz-icon nzType="search"></i>
+      </ng-template>
+      <button nz-button id="openJob" nzType="primary" style="margin-right: 30px;margin-bottom: 15px;" (click)="isVisible=true;"><i nz-icon nzType="plus"></i>New Job</button>
+    </div>  
+    <nz-table id="releaseTable" nzBordered #basicTable [nzData]="joblist" [nzNoResult]="'No data'">
+      <thead>
+        <tr>
+          <th nzWidth="60px">Job Name</th>
+          <th nzWidth="20px">Job ID</th>
+          <th nzWidth="40px">Owner</th>
+          <th nzWidth="60px">Actuator</th>
+          <th nzWidth="60px">Status</th>
+          <th nzWidth="60px">Progress</th>
+          <th nzWidth="60px">Last Run</th>
+          <th nzWidth="60px">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of basicTable.data">
+          <td>{{ data.name }}</td>
+          <td>{{ data.id }}</td>
+          <td>{{ data.owner }}</td>
+          <td>{{ data.actuator }}</td>
+          <td>{{ data.status }}</td>
+          <td><nz-progress nzStrokeLinecap="round" [nzPercent]="data.progress"></nz-progress></td>
+          <td>{{ data.lastRun }}</td>
+          <td><button nz-button nzType="link" (click)="startJob(data)" style="padding-left: 2px;padding-right: 5px;">Start</button>|<button nz-button nzType="link" (click)="editJob(data)" style="padding-left: 2px;padding-right: 5px;">Edit</button></td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <nz-modal
+      [(nzVisible)]="isVisible"
+      nzTitle="Create Job"
+      [(nzOkText)]="okText"
+      [nzOkLoading]="isOkLoading"
+      (nzOnCancel)="isVisible=false;"
+      [nzWidth]="740"
+  >
+    <div >
+      <nz-steps [nzCurrent]="current">
+        <nz-step nzTitle="Basic Information"></nz-step>
+        <nz-step nzTitle="Configuration"></nz-step>
+        <nz-step nzTitle="Scheduling Cycle"></nz-step>
+      </nz-steps>
+    </div>
+    <div>
+      <form [formGroup]="createJob">
+        <div *nzModalFooter>
+          <button nz-button nzType="default" (click)="isVisible=false;"> Cancel </button>
+          <button id="go" nz-button nzType="primary" [disabled]="!(createJob.get('jobName').valid && createJob.get('description').valid)" (click)="handleOk()">{{okText}}</button>
+          <button *ngIf="current>0" nz-button nzType="default" style="float: left;" (click)="current=current-1;okText = 'Next Step';">Prev Step</button>
+        </div>
+        <div [ngSwitch]="current" style="margin-top: 30px;">
+          <div *ngSwitchCase="0">
+            <div>
+              <label class="form-label"><span class="red-star">* </span> Job Name:</label>
+              <input type="text" id="jobname" style="margin-top: 32px;width: 350px;" class="form-control" formControlName="jobName">
+            </div>
+            <div>
+              <label class="form-label"><span class="red-star">* </span>Description:</label>
+              <textarea rows="6" class="form-control" style="margin-top: 32px;width: 350px;" formControlName="description"></textarea>
+            </div>
+          </div>
+          <div *ngSwitchCase="1" id="page2">
+            <div>
+              <label class="form-label"><span class="red-star">* </span> Monitor Object:</label>
+              <nz-select formControlName="monitorObject" nzPlaceHolder="Choose" style="width: 350px;margin-top: 30px;">
+                <nz-option *ngFor="let monitorObject of monitorObjects" [nzValue]="monitorObject" [nzLabel]="monitorObject"></nz-option>
+              </nz-select>
+            </div>
+            <div>
+              <label class="form-label"><span class="red-star">* </span> Rule Template:</label>
+              <nz-select formControlName="ruleTemplate" nzPlaceHolder="Choose" style="width: 350px;margin-top: 30px;">
+                <nz-option *ngFor="let ruleTemplate of ruleTemplates" [nzValue]="ruleTemplate" [nzLabel]="ruleTemplate"></nz-option>
+              </nz-select>
+            </div>
+            <div>
+              <label class="form-label"><span class="red-star">* </span> Rule Type:</label>
+              <nz-radio-group formControlName="ruleType" style="width: 350px;margin-top: 30px;margin-bottom: 30px;">
+                <label *ngFor="let ruletype of ruleTypes" nz-radio [nzValue]="ruletype">{{ ruletype }}</label>
+              </nz-radio-group>
+            </div>
+          </div>
+          <div *ngSwitchCase="2">
+            <div>
+              <label class="pg3-form-label"><span class="red-star">* </span> Start Date:</label>
+              <nz-date-picker [nzFormat]="'yyyy/MM/dd'" formControlName="startDate" style="width: 350px;margin-top: 30px;"></nz-date-picker>
+            </div>
+            <div>
+              <label class="pg3-form-label"><span class="red-star">* </span> Schedule Cycle:</label>
+              <nz-select formControlName="scheduleCycle" nzPlaceHolder="Choose" style="width: 195px;margin-top: 30px;margin-bottom: 30px;">
+                <nz-option *ngFor="let scheduleCycle of scheduleCycles" [nzValue]="scheduleCycle" [nzLabel]="scheduleCycle"></nz-option>
+              </nz-select>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </nz-modal>
+</nz-layout>

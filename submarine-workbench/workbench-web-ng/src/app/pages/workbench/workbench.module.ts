@@ -31,6 +31,8 @@ import { WorkbenchComponent } from './workbench.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 import { FormsModule } from '@angular/forms';
 import { WorkspaceModule } from './workspace/workspace.module';
+import { jobModule } from './job/job.module';
+
 
 
 @NgModule({
@@ -49,7 +51,8 @@ import { WorkspaceModule } from './workspace/workspace.module';
     NgZorroAntdModule,
     RouterModule,
     FormsModule,
-    WorkspaceModule
+    WorkspaceModule,
+    jobModule
   ]
 })
 export class WorkbenchModule {
