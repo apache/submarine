@@ -30,7 +30,7 @@
   </parent>
 
   <groupId>org.apache.submarine</groupId>
-  <artifactId>commons-utils</artifactId>
+  <artifactId>submarine-commons-utils</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: Commons Utils</name>
 
@@ -73,7 +73,6 @@
   </dependencies>
 
   <build>
-    <finalName>submarine-${project.artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

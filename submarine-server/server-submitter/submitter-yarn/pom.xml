@@ -19,12 +19,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.submarine</groupId>
-    <artifactId>server-submitter</artifactId>
+    <artifactId>submarine-server-submitter</artifactId>
     <version>0.4.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>submitter-yarn</artifactId>
+  <artifactId>submarine-submitter-yarn</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: YARN Submitter</name>
 
@@ -277,7 +277,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-runtime</artifactId>
+      <artifactId>submarine-commons-runtime</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
       <version>${project.version}</version>
@@ -329,7 +329,6 @@
   </profiles>
 
   <build>
-    <finalName>submarine-${project.artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -342,7 +341,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <outputFile>target/submarine-${project.artifactId}-${project.version}-shade.jar</outputFile>
+              <outputFile>target/${project.artifactId}-${project.version}-shade.jar</outputFile>
               <filters>
                 <filter>
                   <artifact>*:*</artifact>

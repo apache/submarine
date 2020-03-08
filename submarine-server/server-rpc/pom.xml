@@ -28,14 +28,14 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>server-rpc</artifactId>
+  <artifactId>submarine-server-rpc</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: Server RPC</name>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-rpc</artifactId>
+      <artifactId>submarine-commons-rpc</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
@@ -80,7 +80,7 @@
 
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>submitter-yarn</artifactId>
+      <artifactId>submarine-submitter-yarn</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
@@ -92,7 +92,7 @@
 
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-runtime</artifactId>
+      <artifactId>submarine-commons-runtime</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
@@ -108,4 +108,19 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <skip>false</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

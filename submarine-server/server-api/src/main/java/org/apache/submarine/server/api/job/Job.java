@@ -19,8 +19,6 @@
 
 package org.apache.submarine.server.api.job;
 
-import org.apache.submarine.server.api.spec.JobSpec;
-
 /**
  * The Generic Machine Learning Job in Submarine.
  */
@@ -61,7 +59,7 @@ public class Job {
   }
 
   /**
-   * Get the job name which specified by user through the {@link JobSpec}
+   * Get the job name which specified by user through the JobSpec
    * @return the job name
    */
   public String getName() {

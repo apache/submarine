@@ -117,8 +117,7 @@ public class SubmarineRpcServer {
     ClientContext clientContext = new ClientContext();
     clientContext.setYarnConfig(conf);
     mergeSubmarineConfiguration(clientContext.getSubmarineConfig(), rpcContext);
-    String runtimeClass =
-      clientContext.getSubmarineConfig().getString(SUBMARINE_RUNTIME_CLASS);
+    String runtimeClass = clientContext.getSubmarineConfig().getString(SUBMARINE_RUNTIME_CLASS);
     ClassLoader classLoader = null;
     if (runtimeClass.contains("YarnServiceRuntimeFactory")) {
       classLoader = new URLClassLoader(constructUrlsFromClasspath("../lib/submitter/yarnservice"));
@@ -159,9 +158,9 @@ public class SubmarineRpcServer {
 
   private static void mergeSubmarineConfiguration(
       SubmarineConfiguration submarineConfiguration, RpcContext rpcContext) {
-    Map<String, String> submarineJobConfigMap =
-        rpcContext.getSubmarineJobConfigMap();
-    for(Map.Entry<String, String> entry: submarineJobConfigMap.entrySet()){
+    Map<String, String> submarineJobConfigMap
+        = rpcContext.getSubmarineJobConfigMap();
+    for (Map.Entry<String, String> entry: submarineJobConfigMap.entrySet()){
       submarineConfiguration.updateConfiguration(
           entry.getKey(), entry.getValue());
     }
@@ -225,7 +224,7 @@ public class SubmarineRpcServer {
 
     protected ApplicationId run(ClientContext clientContext, Parameter parameter)
         throws IOException, YarnException, SubmarineException {
-      // TODO replaced with JobManager
+      // TODO(who) replaced with JobManager
       JobSubmitter jobSubmitter =
           clientContext.getRuntimeFactory().getJobSubmitterInstance();
       ApplicationId applicationId = jobSubmitter.submitJob(parameter);

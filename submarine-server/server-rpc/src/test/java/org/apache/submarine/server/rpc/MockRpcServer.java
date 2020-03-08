@@ -55,7 +55,7 @@ public class MockRpcServer extends SubmarineRpcServer {
   }
 
   private static void checkProtoConversion(ParametersHolder parametersHolder) throws YarnException {
-    if(parametersHolder.getParameters()
+    if (parametersHolder.getParameters()
         instanceof TensorFlowRunJobParameters) {
       TensorFlowRunJobParameters tensorParameter =
           (TensorFlowRunJobParameters) parametersHolder.getParameters();

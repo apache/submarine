@@ -70,7 +70,7 @@
       <directory>../submarine-workbench/workbench-web-ng/target</directory>
       <outputDirectory>/</outputDirectory>
       <includes>
-        <include>workbench-web-ng.war</include>
+        <include>submarine-workbench-web-ng.war</include>
       </includes>
     </fileSet>
     <fileSet>
@@ -95,14 +95,14 @@
       <outputDirectory>/dev-support/docker-images</outputDirectory>
     </fileSet>
     <fileSet>
-      <directory>../submarine-commons/commons-utils/target</directory>
+      <directory>../submarine-commons/submarine-commons-utils/target</directory>
       <outputDirectory>/lib</outputDirectory>
       <includes>
         <include>submarine-commons-utils-${project.version}.jar</include>
       </includes>
     </fileSet>
     <fileSet>
-      <directory>../submarine-commons/commons-runtime/target</directory>
+      <directory>../submarine-commons/submarine-commons-runtime/target</directory>
       <outputDirectory>/lib</outputDirectory>
       <includes>
         <include>submarine-commons-runtime-${project.version}.jar</include>
@@ -176,11 +176,8 @@
       <outputDirectory>/lib</outputDirectory>
       <excludes>
         <!-- exclude rename to submarine-commons-*.jar -->
-        <exclude>commons-utils-${project.version}.jar</exclude>
-        <exclude>commons-runtime-${project.version}.jar</exclude>
-        <exclude>commons-cluster-${project.version}.jar</exclude>
-        <exclude>commons-rpc-${project.version}.jar</exclude>
-        <exclude>commons-metastore-${project.version}.jar</exclude>
+        <exclude>submarine-commons-cluster-${project.version}.jar</exclude>
+        <exclude>submarine-commons-metastore-${project.version}.jar</exclude>
         <exclude>grpc-*.jar</exclude>
         <exclude>protobuf-java*.jar</exclude>
         <!-- mysql-connector-java uses the GPL license. So we need exclude mysql-connector-java jar -->

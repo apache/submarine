@@ -46,7 +46,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-runtime</artifactId>
+      <artifactId>submarine-commons-runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -56,7 +56,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>submitter-yarn</artifactId>
+      <artifactId>submarine-submitter-yarn</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
@@ -67,7 +67,7 @@
       <dependencies>
         <dependency>
           <groupId>org.apache.submarine</groupId>
-          <artifactId>submitter-yarnservice</artifactId>
+          <artifactId>submarine-submitter-yarnservice</artifactId>
           <version>${project.version}</version>
           <exclusions>
             <exclusion>
@@ -84,7 +84,7 @@
       <dependencies>
         <dependency>
           <groupId>org.apache.submarine</groupId>
-          <artifactId>submitter-yarnservice</artifactId>
+          <artifactId>submarine-submitter-yarnservice</artifactId>
           <version>${project.version}</version>
           <exclusions>
             <exclusion>
