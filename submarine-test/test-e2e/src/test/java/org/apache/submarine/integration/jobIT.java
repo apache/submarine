@@ -30,7 +30,7 @@ import org.testng.Assert;
 
 public class jobIT extends AbstractSubmarineIT {
 
-  public final static Logger LOG = LoggerFactory.getLogger(sidebarIT.class);
+  public final static Logger LOG = LoggerFactory.getLogger(jobIT.class);
 
   @BeforeClass
   public static void startUp(){
