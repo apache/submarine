@@ -17,7 +17,7 @@
   ~ under the License.
   -->
 
-<nz-modal [nzVisible]="visible" [nzTitle]="modalTitle" nzCancelText="Close" nzOkText="Ok" (nzOnCancel)="hideModal()" 
+<nz-modal [nzVisible]="visible" [nzTitle]="modalTitle" nzCancelText="Close" nzOkText="Ok" (nzOnCancel)="hideModal()"
           (nzOnOk)="hideModal()" [nzWidth]="modalWidth">
   <div class="dictItem-table-operate">
     <form nz-form [nzLayout]="'inline'" [formGroup]="dictItemListForm">
@@ -70,9 +70,9 @@
               <nz-cascader nzSize="small" [nzOptions]="statusOptions" formControlName="newItemStatus"></nz-cascader>
             </td>
             <td>
-              <button *ngIf="newItemForm.get('newItemCode').valid && 
+              <button *ngIf="newItemForm.get('newItemCode').valid &&
                              newItemForm.get('newItemName').valid &&
-                             newItemForm.get('newItemStatus').valid; else disabledAddButtonTpl" 
+                             newItemForm.get('newItemStatus').valid; else disabledAddButtonTpl"
                              nzSize="small" nz-button nzType="default" (click)="addNewItemToList()">
                 <i nz-icon nzType="file-add"></i>
                 Add

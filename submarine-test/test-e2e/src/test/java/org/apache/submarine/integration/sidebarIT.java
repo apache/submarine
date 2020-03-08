@@ -54,7 +54,7 @@ public class sidebarIT extends AbstractSubmarineIT {
     clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
     pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
 
-    // Start Routing & Navigation in sidebar 
+    // Start Routing & Navigation in sidebar
     LOG.info("Start Routing & Navigation in sidebar");
     pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
