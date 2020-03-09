@@ -31,7 +31,7 @@
   <packaging>jar</packaging>
 
   <name>Submarine: Spark Security</name>
-  <artifactId>spark-security</artifactId>
+  <artifactId>submarine-spark-security</artifactId>
 
   <properties>
     <eclipse.jpa.version>2.5.2</eclipse.jpa.version>

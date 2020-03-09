@@ -57,7 +57,7 @@ env:
     - EXCLUDE_CLOUD="!${SUBMARINE}:submarine-cloud"
     - EXCLUDE_DIST="!${SUBMARINE}:submarine-dist"
     - EXCLUDE_TEST="!${SUBMARINE}:submarine-test,!${SUBMARINE}:submarine-test-e2e,!${SUBMARINE}:submarine-test-k8s"
-    - EXCLUDE_SPARK_SECURTITY="!${SUBMARINE}:spark-security"
+    - EXCLUDE_SPARK_SECURTITY="!${SUBMARINE}:submarine-spark-security"
     - MOZ_HEADLESS=1
 
 before_install:
@@ -262,7 +262,7 @@ matrix:
         - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.3 -Pranger-1.0"
-        - MODULES="-pl :spark-security"
+        - MODULES="-pl :submarine-spark-security"
 
     - name: Test submarine spark security with spark 2.3 and ranger 1.1
       language: scala
@@ -272,7 +272,7 @@ matrix:
         - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.3 -Pranger-1.1"
-        - MODULES="-pl :spark-security"
+        - MODULES="-pl :submarine-spark-security"
 
     - name: Test submarine spark security with spark 2.3 and ranger 1.2
       language: scala
@@ -282,7 +282,7 @@ matrix:
         - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.3 -Pranger-1.2"
-        - MODULES="-pl :spark-security"
+        - MODULES="-pl :submarine-spark-security"
 
     - name: Test submarine spark security with spark 2.3 and ranger 2.0
       language: scala
@@ -292,7 +292,7 @@ matrix:
         - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.3 -Pranger-2.0"
-        - MODULES="-pl :spark-security"
+        - MODULES="-pl :submarine-spark-security"
 
     - name: Test submarine spark security with spark 2.4 and ranger 1.0
       language: scala
@@ -302,7 +302,7 @@ matrix:
         - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.4 -Pranger-1.0"
-        - MODULES="-pl :spark-security"
+        - MODULES="-pl :submarine-spark-security"
 
     - name: Test submarine spark security with spark 2.4 and ranger 1.1
       language: scala
@@ -312,7 +312,7 @@ matrix:
         - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.4 -Pranger-1.1"
-        - MODULES="-pl :spark-security"
+        - MODULES="-pl :submarine-spark-security"
 
     - name: Test submarine spark security with spark 2.4 and ranger 1.2
       language: scala
@@ -322,7 +322,7 @@ matrix:
         - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.4 -Pranger-1.2"
-        - MODULES="-pl :spark-security"
+        - MODULES="-pl :submarine-spark-security"
 
     - name: Test submarine spark security with spark 2.4 and ranger 2.0
       language: scala
@@ -332,7 +332,7 @@ matrix:
         - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.4 -Pranger-2.0"
-        - MODULES="-pl :spark-security"
+        - MODULES="-pl :submarine-spark-security"
 install:
   - mvn --version
   - echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
