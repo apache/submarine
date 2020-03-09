@@ -57,6 +57,7 @@ env:
     - EXCLUDE_CLOUD="!${SUBMARINE}:submarine-cloud"
     - EXCLUDE_DIST="!${SUBMARINE}:submarine-dist"
     - EXCLUDE_TEST="!${SUBMARINE}:submarine-test,!${SUBMARINE}:submarine-test-e2e,!${SUBMARINE}:submarine-test-k8s"
+    - EXCLUDE_SPARK_SECURTITY="!${SUBMARINE}:spark-security"
     - MOZ_HEADLESS=1
 
 before_install:
@@ -169,13 +170,13 @@ matrix:
       language: java
       jdk: openjdk8
       dist: xenial
-      env: PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}" TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER}" TEST_PROJECTS=""
+      env: PROFILE="-Phadoop-3.1" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}" TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER},${EXCLUDE_SPARK_SECURTITY}" TEST_PROJECTS=""
 
     - name: Test submarine submitter on hadoop-3.2
       language: java
       jdk: openjdk8
       dist: xenial
-      env: PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}" TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER}" TEST_PROJECTS=""
+      env: PROFILE="-Phadoop-3.2" BUILD_FLAG="clean package install -DskipTests -DskipRat" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}" TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER},${EXCLUDE_SPARK_SECURTITY}" TEST_PROJECTS=""
 
     - name: Test submarine submitter on Kubernetes
       dist: xenial
@@ -253,6 +254,85 @@ matrix:
         - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
       env: BUILD_FLAG="clean package -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl org.apache.submarine:submarine-workbench-web-ng" TEST_MODULES="-pl org.apache.submarine:submarine-workbench-web-ng" TEST_PROJECTS=""
 
+    - name: Test submarine spark security with spark 2.3 and ranger 1.0
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-2.3 -Pranger-1.0"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.3 and ranger 1.1
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-2.3 -Pranger-1.1"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.3 and ranger 1.2
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-2.3 -Pranger-1.2"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.3 and ranger 2.0
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-2.3 -Pranger-2.0"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.4 and ranger 1.0
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-2.4 -Pranger-1.0"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.4 and ranger 1.1
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-2.4 -Pranger-1.1"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.4 and ranger 1.2
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-2.4 -Pranger-1.2"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.4 and ranger 2.0
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-2.4 -Pranger-2.0"
+        - MODULES="-pl :spark-security"
 install:
   - mvn --version
   - echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
