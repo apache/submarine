@@ -39,7 +39,7 @@
             <i nz-icon nzType="search"></i>
             Query
           </button>
-          <button nz-button style="margin-left: 8px" (click)="addDictItem()">
+          <button id="{{ 'dataDictItemAdd' + dictCode }}" nz-button style="margin-left: 8px" (click)="addDictItem()">
             <i nz-icon nzType="plus"></i>
             Add
           </button>
@@ -61,13 +61,13 @@
         <tbody>
           <tr *ngIf="showNewRow">
             <td>
-              <input type="text" nz-input nzSize="small" formControlName="newItemCode"/>
+              <input id="{{ 'newItemCode' + dictCode }}" type="text" nz-input nzSize="small" formControlName="newItemCode"/>
             </td>
             <td>
-              <input type="text" nz-input nzSize="small" formControlName="newItemName"/>
+              <input id="{{ 'newItemName' + dictCode }}" type="text" nz-input nzSize="small" formControlName="newItemName"/>
             </td>
             <td>
-              <nz-cascader nzSize="small" [nzOptions]="statusOptions" formControlName="newItemStatus"></nz-cascader>
+              <nz-cascader id="{{ 'newItemStatus' + dictCode }}" nzSize="small" [nzOptions]="statusOptions" formControlName="newItemStatus"></nz-cascader>
             </td>
             <td>
               <button *ngIf="newItemForm.get('newItemCode').valid &&

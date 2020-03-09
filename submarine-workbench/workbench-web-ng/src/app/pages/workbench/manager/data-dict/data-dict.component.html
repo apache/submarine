@@ -61,25 +61,26 @@
     <tbody>
       <tr *ngFor="let data of table.data; index as dictItemIndex">
         <td nzLeft="0px">{{ dictItemIndex+1 }}</td>
-        <td>{{ data.dictCode }}</td>
+        <td id="{{ 'dataDictCode' + data.dictCode }}">{{ data.dictCode }}</td>
         <td>{{ data.dictName }}</td>
         <td>{{ data.description }}</td>
         <td>
           <nz-tag [nzColor]="'blue'">{{ data.status }}</nz-tag>
         </td>
         <td class="td-action" nzRight="0px">
-          <a (click)="onShowEditDataDictModal(data, dictItemIndex)">
+          <a id="{{ 'dataDictEdit' + data.dictCode }}" (click)="onShowEditDataDictModal(data, dictItemIndex)">
             <i nz-icon nzType="edit" nzTheme="outline"></i>
             Edit
           </a>
-          <a nz-dropdown [nzDropdownMenu]="more">
+          <a id="{{ 'dataDictMore' + data.dictCode }}" nz-dropdown [nzDropdownMenu]="more">
             More
             <i nz-icon nzType="down"></i>
           </a>
           <nz-dropdown-menu #more="nzDropdownMenu">
             <ul nz-menu nzSelectable>
-              <li nz-menu-item (click)="onShowConfigModal(data, dictItemIndex)">Configuration</li>
+              <li nz-menu-item (click)="onShowConfigModal(data, dictItemIndex)" id="{{ 'dataDictConfiguration' + data.dictCode }}">Configuration</li>
               <li
+                id="{{ 'dataDictDelete' + data.dictCode }}"
                 nz-menu-item
                 nz-popconfirm
                 nzTitle="Are you certain you want to delete?"
