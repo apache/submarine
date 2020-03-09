@@ -75,7 +75,20 @@ class SparkRangerAuthorizerTest extends FunSuite with BeforeAndAfterAll {
     withUser("kent") {
       assert(sql("show databases").count() === 2)
     }
+
+    withUser("alice") {
+      assert(sql("show tables").count() === 7)
+    }
+    withUser("bob") {
+      assert(sql("show tables").count() === 7)
+    }
+
     enableAuthorizer(spark)
+  }
+
+  override def afterAll(): Unit = {
+    super.afterAll()
+    spark.reset()
   }
 
   test("show databases") {
@@ -88,6 +101,15 @@ class SparkRangerAuthorizerTest extends FunSuite with BeforeAndAfterAll {
     }
     withUser("kent") {
       assert(sql("show databases").count() === 1)
+    }
+  }
+
+  test("show tables") {
+    withUser("alice") {
+      assert(sql("show tables").count() === 0)
+    }
+    withUser("bob") {
+      assert(sql("show tables").count() === 7)
     }
   }
 

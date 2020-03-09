@@ -20,7 +20,7 @@ package org.apache.spark.sql
 import java.security.PrivilegedExceptionAction
 
 import org.apache.hadoop.security.UserGroupInformation
-import org.apache.spark.sql.catalyst.optimizer.RangerSparkAuthorizerExtension
+import org.apache.spark.sql.catalyst.optimizer.SubmarineSparkRangerAuthorizationExtension
 
 object RangerSparkTestUtils {
 
@@ -32,6 +32,6 @@ object RangerSparkTestUtils {
   }
 
   def enableAuthorizer(spark: SparkSession): Unit = {
-    spark.extensions.injectOptimizerRule(RangerSparkAuthorizerExtension)
+    spark.extensions.injectOptimizerRule(SubmarineSparkRangerAuthorizationExtension)
   }
 }
