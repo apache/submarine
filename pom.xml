@@ -144,6 +144,7 @@
     <module>submarine-workbench</module>
     <module>submarine-dist</module>
     <module>submarine-test</module>
+    <module>submarine-security/spark-security</module>
   </modules>
 
   <dependencyManagement>

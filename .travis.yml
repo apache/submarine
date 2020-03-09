@@ -253,6 +253,76 @@ matrix:
         - npm run e2e -- --protractor-config=e2e/protractor-ci.conf.js
       env: BUILD_FLAG="clean package -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl org.apache.submarine:workbench-web-ng" TEST_MODULES="-pl org.apache.submarine:workbench-web-ng" TEST_PROJECTS=""
 
+    - name: Test submarine spark security with spark 2.3 and ranger 1.0
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - PROFILE="-Pspark-2.3 -Pranger-1.0"
+
+    - name: Test submarine spark security with spark 2.3 and ranger 1.1
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - PROFILE="-Pspark-2.3 -Pranger-1.1"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.3 and ranger 1.2
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - PROFILE="-Pspark-2.3 -Pranger-1.2"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.3 and ranger 2.0
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - PROFILE="-Pspark-2.3 -Pranger-2.0"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.4 and ranger 1.0
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - PROFILE="-Pspark-2.4 -Pranger-1.0"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.4 and ranger 1.1
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - PROFILE="-Pspark-2.4 -Pranger-1.1"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.4 and ranger 1.2
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - PROFILE="-Pspark-2.4 -Pranger-1.2"
+        - MODULES="-pl :spark-security"
+
+    - name: Test submarine spark security with spark 2.4 and ranger 2.0
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - PROFILE="-Pspark-2.4 -Pranger-2.0"
+        - MODULES="-pl :spark-security"
 install:
   - mvn --version
   - echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
