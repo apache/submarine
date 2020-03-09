@@ -65,7 +65,30 @@ class SparkRangerAuthorizerTest extends FunSuite with BeforeAndAfterAll {
       """
         |CREATE DATABASE testdb
         |""".stripMargin)
+    // before authorization enabled
+    withUser("alice") {
+      assert(sql("show databases").count() === 2)
+    }
+    withUser("bob") {
+      assert(sql("show databases").count() === 2)
+    }
+    withUser("kent") {
+      assert(sql("show databases").count() === 2)
+    }
     enableAuthorizer(spark)
+  }
+
+  test("show databases") {
+    withUser("alice") {
+      assert(sql("show databases").count() === 0)
+    }
+    withUser("bob") {
+      assert(sql("show databases").count() === 1)
+      assert(sql("show databases").head().getString(0) === "default")
+    }
+    withUser("kent") {
+      assert(sql("show databases").count() === 1)
+    }
   }
 
   test("use database") {

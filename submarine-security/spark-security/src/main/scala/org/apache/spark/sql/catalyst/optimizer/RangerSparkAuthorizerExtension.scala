@@ -26,6 +26,7 @@ import org.apache.spark.sql.catalyst.plans.logical.{Command, LogicalPlan}
 import org.apache.spark.sql.catalyst.rules.Rule
 import org.apache.spark.sql.execution.command.{AlterDatabasePropertiesCommand, AlterTableAddPartitionCommand, AlterTableDropPartitionCommand, AlterTableRecoverPartitionsCommand, AlterTableRenameCommand, AlterTableRenamePartitionCommand, AlterTableSerDePropertiesCommand, AlterTableSetLocationCommand, AlterTableSetPropertiesCommand, AlterTableUnsetPropertiesCommand, AlterViewAsCommand, AnalyzeColumnCommand, AnalyzeTableCommand, CacheTableCommand, CreateDatabaseCommand, CreateDataSourceTableAsSelectCommand, CreateDataSourceTableCommand, CreateFunctionCommand, CreateTableCommand, CreateTableLikeCommand, CreateViewCommand, DescribeDatabaseCommand, DescribeFunctionCommand, DescribeTableCommand, DropDatabaseCommand, DropFunctionCommand, DropTableCommand, ExplainCommand, LoadDataCommand, SetCommand, SetDatabaseCommand, ShowColumnsCommand, ShowCreateTableCommand, ShowDatabasesCommand, ShowFunctionsCommand, ShowPartitionsCommand, ShowTablePropertiesCommand, ShowTablesCommand, StreamingExplainCommand, TruncateTableCommand, UncacheTableCommand}
 import org.apache.spark.sql.execution.datasources.{CreateTempViewUsing, InsertIntoDataSourceCommand, InsertIntoHadoopFsRelationCommand}
+import org.apache.spark.sql.execution.SubmarineShowDatabasesCommand
 import org.apache.submarine.spark.security.{RangerSparkAuthorizer, SparkAccessControlException}
 
 /**
@@ -48,6 +49,8 @@ case class RangerSparkAuthorizerExtension(spark: SparkSession) extends Rule[Logi
    */
   override def apply(plan: LogicalPlan): LogicalPlan = {
     plan match {
+      case s: ShowDatabasesCommand => SubmarineShowDatabasesCommand(s)
+      case s: SubmarineShowDatabasesCommand => s
       case _ =>
         val operationType: SparkOperationType = toOperationType(plan)
         val (in, out) = PrivilegesBuilder.build(plan)
