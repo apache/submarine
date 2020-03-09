@@ -41,27 +41,20 @@ jobs:
           key: ${{ runner.os }}-maven-io-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-io-
-      - name: Build with Maven
+      - name: Build
         run: |
           mkdir -p ~/.m2
           export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m  -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
           mvn --no-transfer-progress -DskipTests install
-  rat:
-    name: Check License
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '1.8'
-      - run: mvn org.apache.rat:apache-rat-plugin:check
 
   linter:
-    name: Check Style
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
           java-version: '1.8'
-      - run: mvn checkstyle:checkstyle
+      - name: License
+        run: mvn org.apache.rat:apache-rat-plugin:check
+      - name: Java Style
+        run: mvn checkstyle:checkstyle
