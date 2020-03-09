@@ -210,19 +210,7 @@ matrix:
     #  jdk: "openjdk8"
     #  dist: xenial
     #  env: PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_SUBMARINE},${EXCLUDE_WORKBENCH}" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
-
-    - name: Test submarine sdk
-      language: python
-      python: 3.6
-      dist: xenial
-      env: NAME="Test Python SDK" TRAVIS_PYTHON_VERSION="3.6"
-      install:
-        - source ./submarine-sdk/pysubmarine/travis/conda.sh
-        - pip install -r ./submarine-sdk/pysubmarine/travis/lint-requirements.txt
-      script:
-        - ./submarine-sdk/pysubmarine/travis/lint.sh
-        - pytest --cov=submarine -vs
-
+    
     - name: Test submarine workbench-web VUE
       language: node_js
       node_js:

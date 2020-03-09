@@ -1,3 +1,5 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements. See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
 # The ASF licenses this file to You under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with
@@ -11,6 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-prospector[with_pyroma]==0.12.7
-pep8==1.7.1
-pylint==1.8.2
+#!/usr/bin/env bash
+set -ex
+
+FWDIR="$(cd "$(dirname "$0")"; pwd)"
+cd "$FWDIR"
+cd ..
+
+pycodestyle --max-line-length=100  -- submarine tests
+pylint --msg-template="{path} ({line},{column}): [{msg_id} {symbol}] {msg}" --rcfile=pylintrc -- submarine tests
+
+set +ex
