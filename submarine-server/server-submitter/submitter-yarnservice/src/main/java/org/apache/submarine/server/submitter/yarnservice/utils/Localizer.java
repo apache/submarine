@@ -170,10 +170,9 @@ public class Localizer {
     String remoteUri;
     for (Localization localization : localizations) {
       remoteUri = localization.getRemoteUri();
-      Path resourceToLocalize = new Path(remoteUri);
 
       if (remoteDirectoryManager.isRemote(remoteUri)) {
-        if (!remoteDirectoryManager.existsRemoteFile(resourceToLocalize)) {
+        if (!remoteDirectoryManager.existsRemoteFile(remoteUri)) {
           throw new FileNotFoundException(
               "File " + remoteUri + " doesn't exists.");
         }

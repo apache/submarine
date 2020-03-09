@@ -134,13 +134,13 @@ public class DefaultRemoteDirectoryManager implements RemoteDirectoryManager {
   }
 
   @Override
-  public boolean existsRemoteFile(Path url) throws IOException {
-    return getFileSystemByUri(url.toUri().toString()).exists(url);
+  public boolean existsRemoteFile(String remoteUri) throws IOException {
+    return getFileSystemByUri(remoteUri).exists(new Path(remoteUri));
   }
 
   @Override
-  public FileStatus getRemoteFileStatus(Path url) throws IOException {
-    return getFileSystemByUri(url.toUri().toString()).getFileStatus(url);
+  public FileStatus getRemoteFileStatus(String remoteUri) throws IOException {
+    return getFileSystemByUri(remoteUri).getFileStatus(new Path(remoteUri));
   }
 
   @Override

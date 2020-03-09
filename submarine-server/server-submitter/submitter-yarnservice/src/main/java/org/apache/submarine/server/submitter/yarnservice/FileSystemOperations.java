@@ -119,7 +119,7 @@ public class FileSystemOperations {
     if (remote) {
       // Append original modification time and size to zip file name
       FileStatus status =
-          remoteDirectoryManager.getRemoteFileStatus(new Path(remoteDir));
+          remoteDirectoryManager.getRemoteFileStatus(remoteDir);
       suffix = getSuffixOfRemoteDirectory(remoteDir, status);
       // Download them to temp dir
       downloadRemoteFile(remoteDir, destFilePath);
