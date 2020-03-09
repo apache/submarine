@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
-
 /**
  * Sample client code that makes gRPC calls to the server.
  */
@@ -79,13 +78,12 @@ public class SubmarineRpcClient extends RpcServerTestUtils {
       blockingStub.testRpc(request);
       isRunning = true;
     } catch (StatusRuntimeException e) {
-      LOG.error(e.getMessage(),e);
+      LOG.error(e.getMessage(), e);
     } finally {
       shutdown();
     }
     return isRunning;
   }
-
 
   public static void main(String[] args) throws InterruptedException {
     SubmarineRpcClient client = new SubmarineRpcClient("localhost", 8980);

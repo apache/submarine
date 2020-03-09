@@ -78,7 +78,7 @@ public class SubmarineRpcServerProto {
 
   public static void setCommandLineYamlConfigIfNeeded(
       Parameter parameter, ParameterProto parameterProto) {
-    if(parameter instanceof ParametersHolder) {
+    if (parameter instanceof ParametersHolder) {
       ParametersHolder parametersHolder = ((ParametersHolder) parameter);
       CommandLine commandLine = convertCommandLineProtoToCommandLine(
           parameterProto.getCommandLine());
@@ -93,7 +93,7 @@ public class SubmarineRpcServerProto {
   public static Map<String, List<String>> covertYamlListConfigs(
       Map<String, ListOfString> yamlListConfigs) {
     Map<String, List<String>> map = new HashMap<>();
-    for(Map.Entry<String, ListOfString> entry : yamlListConfigs.entrySet()) {
+    for (Map.Entry<String, ListOfString> entry : yamlListConfigs.entrySet()) {
       List<String> value =
           entry.getValue().getValuesList();
       map.put(entry.getKey(), value);
@@ -119,7 +119,7 @@ public class SubmarineRpcServerProto {
         Class optionClass = Option.class;
         Method add = optionClass.getDeclaredMethod("add", String.class);
         add.setAccessible(true);
-        for(String value : optionProto.getValuesList()) {
+        for (String value : optionProto.getValuesList()) {
           add.invoke(option, value);
         }
       } catch (Exception e) {

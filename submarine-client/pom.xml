@@ -35,7 +35,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-runtime</artifactId>
+      <artifactId>submarine-commons-runtime</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
@@ -64,7 +64,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-runtime</artifactId>
+      <artifactId>submarine-commons-runtime</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
@@ -133,7 +133,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-rpc</artifactId>
+      <artifactId>submarine-commons-rpc</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>

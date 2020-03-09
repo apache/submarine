@@ -24,11 +24,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.apache.submarine</groupId>
-    <artifactId>server-submitter</artifactId>
+    <artifactId>submarine-server-submitter</artifactId>
     <version>0.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>submitter-yarnservice</artifactId>
+  <artifactId>submarine-submitter-yarnservice</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: YARN Service Submitter</name>
 
@@ -40,7 +40,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-runtime</artifactId>
+      <artifactId>submarine-commons-runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -57,7 +57,7 @@
 
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-runtime</artifactId>
+      <artifactId>submarine-commons-runtime</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
@@ -199,14 +199,14 @@
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-runtime</artifactId>
+      <artifactId>submarine-commons-runtime</artifactId>
       <version>${project.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-runtime</artifactId>
+      <artifactId>submarine-commons-runtime</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -322,7 +322,6 @@
   </dependencies>
 
   <build>
-    <finalName>submarine-${artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>

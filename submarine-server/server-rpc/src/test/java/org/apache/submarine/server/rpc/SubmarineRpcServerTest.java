@@ -58,7 +58,9 @@ public class SubmarineRpcServerTest {
         "--num_ps", "1",
         "--ps_resources", "memory=1G,vcores=1",
         "--worker_launch_cmd", "${WORKER_CMD}",
-        "--ps_launch_cmd", "myvenv.zip/venv/bin/python mnist_distributed.py --steps 2 --data_dir /tmp/data --working_dir /tmp/mode",
+        "--ps_launch_cmd",
+        "myvenv.zip/venv/bin/python mnist_distributed.py " +
+          "--steps 2 --data_dir /tmp/data --working_dir /tmp/mode",
         "--insecure"
     };
     new RunJobCli(clientContext).run(moduleArgs);

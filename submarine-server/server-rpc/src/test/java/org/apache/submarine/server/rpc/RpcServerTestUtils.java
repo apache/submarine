@@ -64,7 +64,7 @@ public class RpcServerTestUtils {
     boolean isRunning = false;
     try {
       isRunning = client.testRpcConnection();
-    } catch(InterruptedException e) {
+    } catch (InterruptedException e) {
       LOG.error(e.getMessage(), e);
     }
     return isRunning;

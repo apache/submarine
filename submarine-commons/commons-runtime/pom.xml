@@ -29,14 +29,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.submarine</groupId>
-  <artifactId>commons-runtime</artifactId>
+  <artifactId>submarine-commons-runtime</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: Commons Runtime</name>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-utils</artifactId>
+      <artifactId>submarine-commons-utils</artifactId>
       <version>${project.version}</version>
       <exclusions>
         <exclusion>
@@ -194,7 +194,6 @@
   </dependencies>
 
   <build>
-    <finalName>submarine-${project.artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

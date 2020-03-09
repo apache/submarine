@@ -28,14 +28,29 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>server-api</artifactId>
+  <artifactId>submarine-server-api</artifactId>
   <name>Submarine: Server API</name>
 
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-utils</artifactId>
+      <artifactId>submarine-commons-utils</artifactId>
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <skip>false</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

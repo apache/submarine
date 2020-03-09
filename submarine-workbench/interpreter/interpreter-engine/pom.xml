@@ -25,12 +25,12 @@
 
   <parent>
     <groupId>org.apache.submarine</groupId>
-    <artifactId>interpreter</artifactId>
+    <artifactId>submarine-interpreter</artifactId>
     <version>0.4.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>interpreter-engine</artifactId>
+  <artifactId>submarine-interpreter-engine</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: Interpreter Engine</name>
   <description>Submarine Interpreter Engine</description>
@@ -38,13 +38,13 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-utils</artifactId>
+      <artifactId>submarine-commons-utils</artifactId>
       <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>commons-cluster</artifactId>
+      <artifactId>submarine-commons-cluster</artifactId>
       <version>${project.version}</version>
     </dependency>
 
@@ -106,7 +106,6 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>submarine-${artifactId}-${project.version}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
