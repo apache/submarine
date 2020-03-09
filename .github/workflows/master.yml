@@ -10,6 +10,7 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,10 +18,35 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '1.8'
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/com
+          key: ${{ runner.os }}-maven-com-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-com-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/org
+          key: ${{ runner.os }}-maven-org-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-org-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/net
+          key: ${{ runner.os }}-maven-net-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-net-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/io
+          key: ${{ runner.os }}-maven-io-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-io-
       - name: Build with Maven
         run: |
           export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m  -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
           mvn --no-transfer-progress -DskipTests install
+
   rat:
     name: Check License
     runs-on: ubuntu-latest
@@ -29,7 +55,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '1.8'
-      - run: mvn clean org.apache.rat:apache-rat-plugin:check
+      - run: mvn org.apache.rat:apache-rat-plugin:check
 
   linter:
     name: Check Style
@@ -39,4 +65,31 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '1.8'
-      - run: mvn checkstyle:check
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/com
+          key: ${{ runner.os }}-maven-com-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-com-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/org
+          key: ${{ runner.os }}-maven-org-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-org-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/net
+          key: ${{ runner.os }}-maven-net-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-net-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/io
+          key: ${{ runner.os }}-maven-io-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-io-
+      - name: Java Style
+        run: |
+          export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m  -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+          mvn --no-transfer-progress -DskipTests install checkstyle:check

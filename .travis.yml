@@ -98,12 +98,6 @@ before_install:
 
 matrix:
   include:
-    - name: Test License compliance using RAT tool
-      language: java
-      jdk: openjdk8
-      dist: xenial
-      env: PROFILE="" BUILD_FLAG="clean" TEST_FLAG="org.apache.rat:apache-rat-plugin:check" TEST_PROJECTS=""
-
     - name: Test submarine test-k8s
       dist: xenial
       services: docker
