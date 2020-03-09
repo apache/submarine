@@ -24,23 +24,23 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-com-
       - uses: actions/cache@v1
-          with:
-            path: ~/.m2/repository/org
-            key: ${{ runner.os }}-maven-org-${{ hashFiles('**/pom.xml') }}
-            restore-keys: |
-              ${{ runner.os }}-maven-org-
+        with:
+          path: ~/.m2/repository/org
+          key: ${{ runner.os }}-maven-org-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-org-
       - uses: actions/cache@v1
-          with:
-            path: ~/.m2/repository/net
-            key: ${{ runner.os }}-maven-net-${{ hashFiles('**/pom.xml') }}
-            restore-keys: |
-              ${{ runner.os }}-maven-net-
+        with:
+          path: ~/.m2/repository/net
+          key: ${{ runner.os }}-maven-net-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-net-
       - uses: actions/cache@v1
-          with:
-            path: ~/.m2/repository/io
-            key: ${{ runner.os }}-maven-io-${{ hashFiles('**/pom.xml') }}
-            restore-keys: |
-              ${{ runner.os }}-maven-io-
+        with:
+          path: ~/.m2/repository/io
+          key: ${{ runner.os }}-maven-io-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-io-
       - name: Build with Maven
         run: |
           mkdir -p ~/.m2
