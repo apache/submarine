@@ -77,6 +77,7 @@ confidence=
 # --disable=W".
 disable=missing-docstring,
         print-statement,
+        unnecessary-pass,
         parameter-unpacking,
         unpacking-in-except,
         old-raise-syntax,

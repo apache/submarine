@@ -29,8 +29,8 @@ LIBSVM_DATA = """1 1:0 2:0.051495 3:0.5 4:0.1 5:0.113437 6:0.874 7:0.01 8:0.08 9
 
 @pytest.fixture
 def get_model_param(tmpdir):
-    data_file = os.path.join(tmpdir, "libsvm.txt")
-    save_model_dir = os.path.join(tmpdir, "experiment")
+    data_file = os.path.join(str(tmpdir), "libsvm.txt")
+    save_model_dir = os.path.join(str(tmpdir), "experiment")
     with open(data_file, "wt") as writer:
         writer.write(LIBSVM_DATA)
 
