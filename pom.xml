@@ -503,7 +503,7 @@
         <configuration>
           <excludes>
             <exclude>.git/</exclude>
-            <exclude>.github/*</exclude>
+            <exclude>.github/**</exclude>
             <exclude>.gitignore</exclude>
             <exclude>.gitmodules</exclude>
             <exclude>.editorconfig</exclude>
