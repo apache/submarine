@@ -54,7 +54,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '1.8'
-      - run: mvn clean org.apache.rat:apache-rat-plugin:check
+      - run: mvn org.apache.rat:apache-rat-plugin:check
 
   linter:
     name: Check Style
@@ -64,4 +64,4 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '1.8'
-      - run: mvn clean checkstyle:checkstyle
+      - run: mvn checkstyle:checkstyle
