@@ -18,10 +18,10 @@
 package org.apache.submarine.spark.security
 
 import org.apache.spark.sql.SparkSessionExtensions
-import org.apache.spark.sql.catalyst.optimizer.RangerSparkAuthorizerExtension
+import org.apache.spark.sql.catalyst.optimizer.SubmarineSparkRangerAuthorizationExtension
 
 class RangerSparkSQLExtension extends Extensions {
   override def apply(ext: SparkSessionExtensions): Unit = {
-    ext.injectOptimizerRule(RangerSparkAuthorizerExtension)
+    ext.injectOptimizerRule(SubmarineSparkRangerAuthorizationExtension)
   }
 }

@@ -26,18 +26,18 @@ import org.apache.spark.sql.catalyst.plans.logical.{Command, LogicalPlan}
 import org.apache.spark.sql.catalyst.rules.Rule
 import org.apache.spark.sql.execution.command.{AlterDatabasePropertiesCommand, AlterTableAddPartitionCommand, AlterTableDropPartitionCommand, AlterTableRecoverPartitionsCommand, AlterTableRenameCommand, AlterTableRenamePartitionCommand, AlterTableSerDePropertiesCommand, AlterTableSetLocationCommand, AlterTableSetPropertiesCommand, AlterTableUnsetPropertiesCommand, AlterViewAsCommand, AnalyzeColumnCommand, AnalyzeTableCommand, CacheTableCommand, CreateDatabaseCommand, CreateDataSourceTableAsSelectCommand, CreateDataSourceTableCommand, CreateFunctionCommand, CreateTableCommand, CreateTableLikeCommand, CreateViewCommand, DescribeDatabaseCommand, DescribeFunctionCommand, DescribeTableCommand, DropDatabaseCommand, DropFunctionCommand, DropTableCommand, ExplainCommand, LoadDataCommand, SetCommand, SetDatabaseCommand, ShowColumnsCommand, ShowCreateTableCommand, ShowDatabasesCommand, ShowFunctionsCommand, ShowPartitionsCommand, ShowTablePropertiesCommand, ShowTablesCommand, StreamingExplainCommand, TruncateTableCommand, UncacheTableCommand}
 import org.apache.spark.sql.execution.datasources.{CreateTempViewUsing, InsertIntoDataSourceCommand, InsertIntoHadoopFsRelationCommand}
-import org.apache.spark.sql.execution.SubmarineShowDatabasesCommand
+import org.apache.spark.sql.execution.{SubmarineShowDatabasesCommand, SubmarineShowTablesCommand}
 import org.apache.submarine.spark.security.{RangerSparkAuthorizer, SparkAccessControlException}
 
 /**
- * An Optimizer Rule to do Hive Authorization V2 for Spark SQL.
+ * An Optimizer Rule to do SQL standard ACL for Spark SQL.
  *
- * For Apache Spark 2.2.x and later
+ * For Apache Spark 2.3.x and later
  */
-case class RangerSparkAuthorizerExtension(spark: SparkSession) extends Rule[LogicalPlan] {
+case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession) extends Rule[LogicalPlan] {
   import org.apache.submarine.spark.security.SparkOperationType._
 
-  private val LOG = LogFactory.getLog(classOf[RangerSparkAuthorizerExtension])
+  private val LOG = LogFactory.getLog(classOf[SubmarineSparkRangerAuthorizationExtension])
 
   /**
    * Visit the [[LogicalPlan]] recursively to get all spark privilege objects, check the privileges
@@ -51,6 +51,8 @@ case class RangerSparkAuthorizerExtension(spark: SparkSession) extends Rule[Logi
     plan match {
       case s: ShowDatabasesCommand => SubmarineShowDatabasesCommand(s)
       case s: SubmarineShowDatabasesCommand => s
+      case s: ShowTablesCommand => SubmarineShowTablesCommand(s)
+      case s: SubmarineShowTablesCommand => s
       case _ =>
         val operationType: SparkOperationType = toOperationType(plan)
         val (in, out) = PrivilegesBuilder.build(plan)
