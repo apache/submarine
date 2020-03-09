@@ -54,7 +54,7 @@ public class sidebarIT extends AbstractSubmarineIT {
     clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
     pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
 
-    // Start Routing & Navigation in sidebar 
+    // Start Routing & Navigation in sidebar
     LOG.info("Start Routing & Navigation in sidebar");
     pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
@@ -75,8 +75,8 @@ public class sidebarIT extends AbstractSubmarineIT {
     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ant-breadcrumb-link ng-star-inserted']")));
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/manager/user");
 
-    pollingWait(By.xpath("//a[@href='/workbench/manager/data-dict']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/manager/data-dict");
+    pollingWait(By.xpath("//a[@href='/workbench/manager/dataDict']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/manager/dataDict");
     pollingWait(By.xpath("//span[contains(text(), \"Home\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/home"); 
   }

@@ -1,4 +1,4 @@
-/*
+/*!
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,26 +17,6 @@
  * under the License.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
-
-interface BreadCrumbItem {
-  title: string;
-  routerLink?: string;
-}
-
-@Component({
-  selector: 'submarine-page-layout',
-  templateUrl: './page-layout.component.html',
-  styleUrls: ['./page-layout.component.scss']
-})
-export class PageLayoutComponent implements OnInit {
-  @Input() title: string;
-  @Input() description: string;
-  @Input() breadCrumb: BreadCrumbItem[];
-
-  constructor() {
-  }
-
-  ngOnInit() {
-  }
+.dictItem-table-operate {
+    margin-bottom: 16px;
 }

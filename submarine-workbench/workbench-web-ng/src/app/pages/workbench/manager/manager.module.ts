@@ -23,6 +23,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ComponentsModule } from '@submarine/components/components.module';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 
+import { DataDictConfigModalComponent } from './data-dict-config-modal/data-dict-config-modal.component';
+import { DataDictModalComponent } from './data-dict-modal/data-dict-modal.component';
 import { DataDictComponent } from './data-dict/data-dict.component';
 import { ManagerRoutingModule } from './manager-routing.module';
 import { ManagerComponent } from './manager.component';
@@ -31,7 +33,7 @@ import { UserPasswordModalComponent } from './user-password-modal/user-password-
 import { UserComponent } from './user/user.component';
 
 @NgModule({
-  declarations: [UserComponent, ManagerComponent, DataDictComponent, UserPasswordModalComponent, UserDrawerComponent],
+  declarations: [UserComponent, ManagerComponent, DataDictComponent, UserPasswordModalComponent, UserDrawerComponent, DataDictModalComponent, DataDictConfigModalComponent],
   imports: [CommonModule, ManagerRoutingModule, NgZorroAntdModule, ComponentsModule, FormsModule, ReactiveFormsModule]
 })
 export class ManagerModule {}
