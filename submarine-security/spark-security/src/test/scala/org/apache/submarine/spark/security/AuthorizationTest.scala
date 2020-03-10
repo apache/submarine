@@ -18,47 +18,25 @@
 package org.apache.submarine.spark.security
 
 import org.apache.spark.sql.hive.test.TestHive
-import org.apache.spark.sql.internal.SQLConf
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
-class SparkRangerAuthorizerTest extends FunSuite with BeforeAndAfterAll {
+class AuthorizationTest extends FunSuite with BeforeAndAfterAll {
 
-  import org.apache.spark.sql.RangerSparkTestUtils._
-  private val spark = TestHive.sparkSession
+  import org.apache.spark.sql.SubmarineSparkUtils._
+  private val spark = TestHive.sparkSession.newSession()
   private lazy val sql = spark.sql _
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    spark.conf.set(SQLConf.CROSS_JOINS_ENABLED.key, "true")
 
     sql(
       """
-        |CREATE TABLE default.rangertbl1 AS SELECT * FROM default.src
+        |CREATE TABLE IF NOT EXISTS default.rangertbl1 AS SELECT * FROM default.src
       """.stripMargin)
 
     sql(
       """
-        |CREATE TABLE default.rangertbl2 AS SELECT * FROM default.src
-      """.stripMargin)
-
-    sql(
-      """
-        |CREATE TABLE default.rangertbl3 AS SELECT * FROM default.src
-      """.stripMargin)
-
-    sql(
-      """
-        |CREATE TABLE default.rangertbl4 AS SELECT * FROM default.src
-      """.stripMargin)
-
-    sql(
-      """
-        |CREATE TABLE default.rangertbl5 AS SELECT * FROM default.src
-      """.stripMargin)
-
-    sql(
-      """
-        |CREATE TABLE default.rangertbl6 AS SELECT * FROM default.src
+        |CREATE TABLE IF NOT EXISTS default.rangertbl2 AS SELECT * FROM default.src
       """.stripMargin)
 
     sql(
@@ -77,10 +55,10 @@ class SparkRangerAuthorizerTest extends FunSuite with BeforeAndAfterAll {
     }
 
     withUser("alice") {
-      assert(sql("show tables").count() === 7)
+      assert(sql("show tables").count() === 3)
     }
     withUser("bob") {
-      assert(sql("show tables").count() === 7)
+      assert(sql("show tables").count() === 3)
     }
 
     enableAuthorizer(spark)
@@ -109,7 +87,7 @@ class SparkRangerAuthorizerTest extends FunSuite with BeforeAndAfterAll {
       assert(sql("show tables").count() === 0)
     }
     withUser("bob") {
-      assert(sql("show tables").count() === 7)
+      assert(sql("show tables").count() === 3)
     }
   }
 

@@ -20,9 +20,10 @@ package org.apache.spark.sql
 import java.security.PrivilegedExceptionAction
 
 import org.apache.hadoop.security.UserGroupInformation
-import org.apache.spark.sql.catalyst.optimizer.SubmarineSparkRangerAuthorizationExtension
+import org.apache.spark.sql.catalyst.optimizer.{SubmarineRowFilterExtension, SubmarineSparkRangerAuthorizationExtension}
+import org.apache.spark.sql.execution.SubmarineSparkPlanOmitStrategy
 
-object RangerSparkTestUtils {
+object SubmarineSparkUtils {
 
   def withUser[T](user: String)(f: => T): T = {
     val ugi = UserGroupInformation.createRemoteUser(user)
@@ -33,5 +34,10 @@ object RangerSparkTestUtils {
 
   def enableAuthorizer(spark: SparkSession): Unit = {
     spark.extensions.injectOptimizerRule(SubmarineSparkRangerAuthorizationExtension)
+  }
+
+  def enableRowFilter(spark: SparkSession): Unit = {
+    spark.extensions.injectOptimizerRule(SubmarineRowFilterExtension)
+    spark.extensions.injectPlannerStrategy(SubmarineSparkPlanOmitStrategy)
   }
 }

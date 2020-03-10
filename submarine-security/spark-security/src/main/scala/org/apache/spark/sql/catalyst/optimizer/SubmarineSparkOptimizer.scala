@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,16 +15,23 @@
  * limitations under the License.
  */
 
-package org.apache.submarine.spark.security
+package org.apache.spark.sql.catalyst.optimizer
 
-import org.apache.spark.sql.SparkSessionExtensions
-import org.apache.spark.sql.catalyst.optimizer.{SubmarineRowFilterExtension, SubmarineSparkRangerAuthorizationExtension}
-import org.apache.spark.sql.execution.SubmarineSparkPlanOmitStrategy
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
+import org.apache.spark.sql.catalyst.rules.RuleExecutor
+import org.apache.spark.sql.SparkSession
 
-class RangerSparkSQLExtension extends Extensions {
-  override def apply(ext: SparkSessionExtensions): Unit = {
-    ext.injectOptimizerRule(SubmarineSparkRangerAuthorizationExtension)
-    ext.injectOptimizerRule(SubmarineRowFilterExtension)
-    ext.injectPlannerStrategy(SubmarineSparkPlanOmitStrategy)
+/**
+ * An Optimizer without all `spark.sql.extensions`
+ */
+class SubmarineSparkOptimizer(spark: SparkSession) extends RuleExecutor[LogicalPlan] {
+
+  override def batches: Seq[Batch] = {
+    val optimizer = spark.sessionState.optimizer
+    val extRules = optimizer.extendedOperatorOptimizationRules
+    optimizer.batches.map { batch =>
+      val ruleSet = batch.rules.toSet -- extRules
+      Batch(batch.name, FixedPoint(batch.strategy.maxIterations), ruleSet.toSeq: _*)
+    }
   }
 }
