@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,16 +15,18 @@
  * limitations under the License.
  */
 
-package org.apache.submarine.spark.security
+package org.apache.spark.sql.execution
 
-import org.apache.spark.sql.SparkSessionExtensions
-import org.apache.spark.sql.catalyst.optimizer.{SubmarineRowFilterExtension, SubmarineSparkRangerAuthorizationExtension}
-import org.apache.spark.sql.execution.SubmarineSparkPlanOmitStrategy
+import org.apache.spark.sql.{SparkSession, Strategy}
+import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, SubmarineRowFilter}
 
-class RangerSparkSQLExtension extends Extensions {
-  override def apply(ext: SparkSessionExtensions): Unit = {
-    ext.injectOptimizerRule(SubmarineSparkRangerAuthorizationExtension)
-    ext.injectOptimizerRule(SubmarineRowFilterExtension)
-    ext.injectPlannerStrategy(SubmarineSparkPlanOmitStrategy)
+/**
+ * An Apache Spark's [[Strategy]] extension for omitting marker for row level filtering and data
+ * masking.
+ */
+case class SubmarineSparkPlanOmitStrategy(spark: SparkSession) extends Strategy {
+  override def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
+    case SubmarineRowFilter(child) => planLater(child) :: Nil
+    case _ => Nil
   }
 }
