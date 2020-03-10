@@ -113,6 +113,7 @@ public class MockRemoteDirectoryManager implements RemoteDirectoryManager {
   @Override
   public Path getModelDir(String modelName, boolean create)
       throws IOException {
+    Objects.requireNonNull(modelParentDir, "Model parent dir must not be null!");
     File modelDir = new File(modelParentDir.getAbsolutePath(), modelName);
     if (create) {
       if (!modelDir.exists() && !modelDir.mkdirs()) {
