@@ -45,9 +45,9 @@ public interface RemoteDirectoryManager {
   boolean copyRemoteToLocal(String remoteUri, String localUri)
       throws IOException;
 
-  boolean existsRemoteFile(Path uri) throws IOException;
+  boolean existsRemoteFile(String uri) throws IOException;
 
-  FileStatus getRemoteFileStatus(Path uri) throws IOException;
+  FileStatus getRemoteFileStatus(String uri) throws IOException;
 
   long getRemoteFileSize(String uri) throws IOException;
 }

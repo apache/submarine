@@ -183,16 +183,17 @@ public class MockRemoteDirectoryManager implements RemoteDirectoryManager {
   }
 
   @Override
-  public boolean existsRemoteFile(Path uri) throws IOException {
+  public boolean existsRemoteFile(String uri) throws IOException {
+    String dirName = new Path(uri).getName();
     String fakeLocalFilePath = this.jobDir.getAbsolutePath()
-        + "/" + uri.getName();
+        + "/" + dirName;
     return new File(fakeLocalFilePath).exists();
   }
 
   @Override
-  public FileStatus getRemoteFileStatus(Path p) throws IOException {
+  public FileStatus getRemoteFileStatus(String uri) throws IOException {
     return getDefaultFileSystem().getFileStatus(new Path(
-        convertToStagingPath(p.toUri().toString())));
+        convertToStagingPath(uri)));
   }
 
   @Override

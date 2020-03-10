@@ -98,7 +98,7 @@ public class LocalizerTest {
 
   private void testLocalizeExistingRemoteFileInternal() throws IOException {
     when(remoteDirectoryManager.isRemote(anyString())).thenReturn(true);
-    when(remoteDirectoryManager.existsRemoteFile(any(Path.class)))
+    when(remoteDirectoryManager.existsRemoteFile(anyString()))
         .thenReturn(true);
 
     Localization localization = new Localization();
@@ -138,7 +138,7 @@ public class LocalizerTest {
   @Test(expected = FileNotFoundException.class)
   public void testLocalizeNotExistingRemoteFile() throws IOException {
     when(remoteDirectoryManager.isRemote(anyString())).thenReturn(true);
-    when(remoteDirectoryManager.existsRemoteFile(any(Path.class)))
+    when(remoteDirectoryManager.existsRemoteFile(anyString()))
         .thenReturn(false);
 
     Localization localization = new Localization();
@@ -244,7 +244,7 @@ public class LocalizerTest {
       throws IOException {
     when(remoteDirectoryManager.isDir(anyString())).thenReturn(true);
     when(remoteDirectoryManager.isRemote(anyString())).thenReturn(true);
-    when(remoteDirectoryManager.existsRemoteFile(any(Path.class)))
+    when(remoteDirectoryManager.existsRemoteFile(anyString()))
         .thenReturn(true);
     String remoteUri = "hdfs://remotedir1/remotedir2";
     when(fsOperations.uploadToRemoteFile(any(Path.class), anyString()))
@@ -265,7 +265,7 @@ public class LocalizerTest {
   public void testLocalizeExistingRemoteDirectory() throws IOException {
     when(remoteDirectoryManager.isDir(anyString())).thenReturn(true);
     when(remoteDirectoryManager.isRemote(anyString())).thenReturn(true);
-    when(remoteDirectoryManager.existsRemoteFile(any(Path.class)))
+    when(remoteDirectoryManager.existsRemoteFile(anyString()))
         .thenReturn(true);
     String remoteUri = "hdfs://remotedir1/remotedir2";
     when(fsOperations.uploadToRemoteFile(any(Path.class), anyString()))
@@ -303,7 +303,7 @@ public class LocalizerTest {
   @Test
   public void testLocalizeNonHdfsRemoteUri() throws IOException {
     when(remoteDirectoryManager.isRemote(anyString())).thenReturn(true);
-    when(remoteDirectoryManager.existsRemoteFile(any(Path.class)))
+    when(remoteDirectoryManager.existsRemoteFile(anyString()))
         .thenReturn(true);
     String remoteUri = "remote://remotedir1/remotedir2";
     when(fsOperations.uploadToRemoteFile(any(Path.class), anyString()))
