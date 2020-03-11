@@ -15,19 +15,14 @@
  * limitations under the License.
  */
 
-package org.apache.spark.sql.execution
+package org.apache.spark.sql.catalyst.plans.logical
 
-import org.apache.spark.sql.{SparkSession, Strategy}
-import org.apache.spark.sql.catalyst.plans.logical.{LogicalPlan, SubmarineDataMasking, SubmarineRowFilter}
+import org.apache.spark.sql.catalyst.expressions.Attribute
 
 /**
- * An Apache Spark's [[Strategy]] extension for omitting marker for row level filtering and data
- * masking.
+ * A marker [[LogicalPlan]] for column data masking, which will be removed during
+ * LogicalPlan -> PhysicalPlan
  */
-case class SubmarineSparkPlanOmitStrategy(spark: SparkSession) extends Strategy {
-  override def apply(plan: LogicalPlan): Seq[SparkPlan] = plan match {
-    case SubmarineRowFilter(child) => planLater(child) :: Nil
-    case SubmarineDataMasking(child) => planLater(child) :: Nil
-    case _ => Nil
-  }
+case class SubmarineDataMasking(child: LogicalPlan) extends UnaryNode {
+  override def output: Seq[Attribute] = child.output
 }

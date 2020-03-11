@@ -18,13 +18,14 @@
 package org.apache.submarine.spark.security
 
 import org.apache.spark.sql.SparkSessionExtensions
-import org.apache.spark.sql.catalyst.optimizer.{SubmarineRowFilterExtension, SubmarineSparkRangerAuthorizationExtension}
+import org.apache.spark.sql.catalyst.optimizer.{SubmarineDataMaskingExtension, SubmarineRowFilterExtension, SubmarineSparkRangerAuthorizationExtension}
 import org.apache.spark.sql.execution.SubmarineSparkPlanOmitStrategy
 
 class RangerSparkSQLExtension extends Extensions {
   override def apply(ext: SparkSessionExtensions): Unit = {
     ext.injectOptimizerRule(SubmarineSparkRangerAuthorizationExtension)
     ext.injectOptimizerRule(SubmarineRowFilterExtension)
+    ext.injectOptimizerRule(SubmarineDataMaskingExtension)
     ext.injectPlannerStrategy(SubmarineSparkPlanOmitStrategy)
   }
 }
