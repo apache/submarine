@@ -19,13 +19,12 @@
 
 package org.apache.submarine.spark.security
 
-import java.util.Date
+import java.util.{Date, Locale}
 
 import scala.collection.JavaConverters._
 
 import org.apache.ranger.plugin.policyengine.{RangerAccessRequestImpl, RangerPolicyEngine}
 import org.apache.ranger.plugin.util.RangerAccessRequestUtil
-
 import org.apache.submarine.spark.security.SparkAccessType.SparkAccessType
 
 class RangerSparkAccessRequest private extends RangerAccessRequestImpl {
@@ -65,7 +64,7 @@ class RangerSparkAccessRequest private extends RangerAccessRequestImpl {
     accessType match {
       case SparkAccessType.USE => this.setAccessType(RangerPolicyEngine.ANY_ACCESS)
       case SparkAccessType.ADMIN => this.setAccessType(RangerPolicyEngine.ADMIN_ACCESS)
-      case _ => this.setAccessType(accessType.toString.toLowerCase)
+      case _ => this.setAccessType(accessType.toString.toLowerCase(Locale.ROOT))
     }
   }
 

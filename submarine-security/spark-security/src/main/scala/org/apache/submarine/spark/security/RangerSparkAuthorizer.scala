@@ -19,12 +19,12 @@
 
 package org.apache.submarine.spark.security
 
-import java.util.{List => JList}
+import java.util.{Locale, List => JList}
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
 
-import org.apache.commons.lang.StringUtils
+import org.apache.commons.lang3.StringUtils
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.permission.FsAction
@@ -36,7 +36,6 @@ import org.apache.ranger.authorization.utils.StringUtil
 import org.apache.ranger.plugin.policyengine.RangerAccessRequest
 import org.apache.ranger.plugin.util.RangerPerfTracer
 import org.apache.spark.sql.SparkSession
-
 import org.apache.submarine.spark.security.SparkAccessType.SparkAccessType
 import org.apache.submarine.spark.security.SparkObjectType.SparkObjectType
 import org.apache.submarine.spark.security.SparkOperationType.SparkOperationType
@@ -231,7 +230,8 @@ object RangerSparkAuthorizer {
       case SparkPrivilegeObjectType.DATABASE | null => SparkObjectType.DATABASE
       case SparkPrivilegeObjectType.TABLE_OR_VIEW if !StringUtil.isEmpty(obj.getColumns.asJava) =>
         SparkObjectType.COLUMN
-      case SparkPrivilegeObjectType.TABLE_OR_VIEW if opType.toString.toLowerCase.contains("view") =>
+      case SparkPrivilegeObjectType.TABLE_OR_VIEW
+          if opType.toString.toLowerCase(Locale.ROOT).contains("view") =>
         SparkObjectType.VIEW
       case SparkPrivilegeObjectType.TABLE_OR_VIEW => SparkObjectType.TABLE
       case SparkPrivilegeObjectType.FUNCTION => SparkObjectType.FUNCTION
