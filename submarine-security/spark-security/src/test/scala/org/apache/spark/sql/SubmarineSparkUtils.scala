@@ -45,4 +45,11 @@ object SubmarineSparkUtils {
     spark.extensions.injectOptimizerRule(SubmarineDataMaskingExtension)
     spark.extensions.injectPlannerStrategy(SubmarineSparkPlanOmitStrategy)
   }
+
+  def enableAll(spark: SparkSession): Unit = {
+    spark.extensions.injectOptimizerRule(SubmarineSparkRangerAuthorizationExtension)
+    spark.extensions.injectOptimizerRule(SubmarineRowFilterExtension)
+    spark.extensions.injectOptimizerRule(SubmarineDataMaskingExtension)
+    spark.extensions.injectPlannerStrategy(SubmarineSparkPlanOmitStrategy)
+  }
 }
