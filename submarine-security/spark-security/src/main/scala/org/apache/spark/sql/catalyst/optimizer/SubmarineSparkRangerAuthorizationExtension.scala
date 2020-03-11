@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.spark.sql.catalyst.optimizer
 
 import org.apache.commons.logging.LogFactory
@@ -34,7 +35,8 @@ import org.apache.submarine.spark.security.{RangerSparkAuthorizer, SparkAccessCo
  *
  * For Apache Spark 2.3.x and later
  */
-case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession) extends Rule[LogicalPlan] {
+case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession)
+  extends Rule[LogicalPlan] {
   import org.apache.submarine.spark.security.SparkOperationType._
 
   private val LOG = LogFactory.getLog(classOf[SubmarineSparkRangerAuthorizationExtension])
