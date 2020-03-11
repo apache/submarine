@@ -86,3 +86,4 @@ submarine-cloud/hack/conf/*
 submarine-cloud/bin/*
 
 submarine-security/spark-security/dependency-reduced-pom.xml
+submarine-security/spark-security/derby.log
