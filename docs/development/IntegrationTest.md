@@ -12,17 +12,13 @@
   limitations under the License. See accompanying LICENSE file.
 -->
 
-# IntegrationTest
+# Integration Test
+## Introduction
+1.  Now, Apache Submarine supports two kinds of integration test: `test-e2e` and `test-k8s`. These two modules can be found in the [submarine/submarine-test](https://github.com/apache/submarine/tree/master/submarine-test) directory.
 
-Submarine now supports two kinds of integration tests.
+2.  Currently, there are some differences between `test-e2e` and `test-k8s` in operation mode. To elaborate, `test-e2e` needs to deploy Apache Submarine locally, while `test-k8s` deploys Apache Submarine via k8s.
 
-They are in the project's `submarine/submarine-test` directory, There are two modules, `e2e` and `test-k8s`.
-
-There are currently some differences between `test-e2e` and `test-k8s` in operation mode.
-
-Among them, `test-e2e` needs to deploy submarine locally, while `test-k8s` uses k8s to deploy submarine.
-
-These two different test methods can be applied to different test scenarios. (In the future, these two test methods may be combined or adjusted)
+3.  These two test modules can be applied to different test scenarios. (In the future, these two test modules may be combined or adjusted)
 
 ## k8s test
 
@@ -54,14 +50,28 @@ mvn -Phadoop-2.9 clean package install -DskipTests verify -DskipRat -am -pl subm
 
 Each time a code is submitted, travis is automatically triggered for testing.
 
-## e2e test
+## E2E test
 
-e2e tests can be ran both locally and in Travis
-
-Local testing: When developers perform e2e testing locally, they need to manually start the submarine server by executing bin / submarine-daemon.sh.
-
-Then you can manually runs test cases in the `test-e2e/test` directory in IDEA.
-
+### E2E tests can be executed both locally and in Travis (For workbench developer)
+* Run E2E tests locally:
+  * Step1: Follow [HowToRun.md](https://github.com/apache/submarine/blob/master/docs/workbench/HowToRun.md) to launch the submarine-server and database.
+  * Step2: Run workbench (Angular version) locally
+  ```
+  cd submarine/submarine-workbench/workbench-web-ng
+  npm start
+  // Check 127.0.0.1:4200
+  ```
+  * Step3: Modify the port from 8080 to 4200
+    * [WebDriverManager.java](https://github.com/apache/submarine/blob/master/submarine-test/test-e2e/src/test/java/org/apache/submarine/WebDriverManager.java): `url = "http://localhost:8080";` --> `url = "http://localhost:4200";`
+    * [Your Unit test case](https://github.com/apache/submarine/tree/master/submarine-test/test-e2e/src/test/java/org/apache/submarine/integration): `8080` --> `4200`
+  * Step4: Comment the `headless` option
+    * [ChromeWebDriverProvider.java](https://github.com/apache/submarine/blob/master/submarine-test/test-e2e/src/test/java/org/apache/submarine/ChromeWebDriverProvider.java): `chromeOptions.addArguments("--headless");` --> `//chromeOptions.addArguments("--headless");`
+    * With the `headless` option, the selenium will be executed in background.
+  * Step5: Run E2E test cases (Please check the following section **Run the existing tests**)
+* Run E2E tests in Travis:
+  *  Step1: Make sure that the port must be 8080 rather than in [WebDriverManager.java](https://github.com/apache/submarine/blob/master/submarine-test/test-e2e/src/test/java/org/apache/submarine/WebDriverManager.java) and [all test cases](https://github.com/apache/submarine/tree/master/submarine-test/test-e2e/src/test/java/org/apache/submarine/integration).
+  *  Step2: Make sure that the `headless` option is not commented in [ChromeWebDriverProvider.java](https://github.com/apache/submarine/blob/master/submarine-test/test-e2e/src/test/java/org/apache/submarine/ChromeWebDriverProvider.java).
+  *  Step3: If you push the commit to Github, the Travis CI will execute automatically and you can check it in `https://travis-ci.org/${your_github_account}/${your_repo_name}`.
 ### Run the existing tests.
 ##### Move to the working directroy.
 ```
@@ -69,23 +79,18 @@ cd submarine/submarine-test/test-e2e
 ```
 ##### Compile & Run.
 
-> Following command will compile all files and run all files ending with "IT".
-
-**If your workbench server is not working on port 32777 ([mini-submarine](https://github.com/apache/submarine/tree/master/dev-support/mini-submarine) maps the workbench port 8000 to 32777), please first modify the port in WebDriverManager.java line 61  to the port where your workbench run.**
-
-*   Execute the following command in your host machine to get the port
-```
-docker inspect --format='{{(index (index .NetworkSettings.Ports "8080/tcp") 0).HostPort}}' mini-submarine
-```
-
+> Following command will compile all files and run **all** files ending with "IT" in the [directory](https://github.com/apache/submarine/tree/master/submarine-test/test-e2e/src/test/java/org/apache/submarine/integration).
 *   For linux
  ```
  mvn verify
  ```
-
 *   For MacOS
 ```
 mvn clean install -U
+```
+> Run a specific testcase
+```
+mvn -Dtest=${your_test_case_file_name} test //ex: mvn -Dtest=loginIT test 
 ```
 
 ##### Result
@@ -99,7 +104,7 @@ BUILD FAILURE
 ```
 
 ### Add your own integration test
-1. Create new file ending with "IT" under "submarine/submarine-test/test-e2e/src/test/java/org/apache/submarine/integration/".
+1. Create a new file ending with "IT" under "submarine/submarine-test/test-e2e/src/test/java/org/apache/submarine/integration/".
 2. Your public class is recommended to extend AbstractSubmarineIT. The class AbstractSubmarineIT contains some commonly used functions.
 ```java
   WebElement pollingWait(final By locator, final long timeWait); // Find element on the website.
