@@ -48,5 +48,7 @@ class SubmarineConfigurationCheckExtensionTest extends FunSuite with BeforeAndAf
     val p6 = spark.sql("set spark.sql.submarine.conf.restricted.list=123")
       .queryExecution.optimizedPlan
     intercept[SparkAccessControlException](extension.apply(p6))
+    val p7 = spark.sql("set spark.sql.efg=hijk;").queryExecution.optimizedPlan
+    extension.apply(p7)
   }
 }
