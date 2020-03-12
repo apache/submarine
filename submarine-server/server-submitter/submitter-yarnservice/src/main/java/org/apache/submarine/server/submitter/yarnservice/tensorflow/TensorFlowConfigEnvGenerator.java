@@ -19,15 +19,18 @@
 
 package org.apache.submarine.server.submitter.yarnservice.tensorflow;
 
+import java.io.IOException;
+import org.apache.hadoop.net.ServerSocketUtil;
 import org.apache.submarine.commons.runtime.conf.Envs;
 import org.apache.submarine.server.submitter.yarnservice.YarnServiceUtils;
 
 public class TensorFlowConfigEnvGenerator {
 
   public static String getTFConfigEnv(String componentName, int nWorkers,
-      int nPs, String serviceName, String userName, String domain) {
+      int nPs, String serviceName, String userName, String domain) throws IOException {
     String commonEndpointSuffix = YarnServiceUtils
-        .getDNSNameCommonSuffix(serviceName, userName, domain, 8000);
+        .getDNSNameCommonSuffix(serviceName, userName, domain,
+          ServerSocketUtil.getPort(8000, 100));
 
     TFConfigEnv tfConfigEnv =
         new TFConfigEnv(nWorkers, nPs, componentName, commonEndpointSuffix);

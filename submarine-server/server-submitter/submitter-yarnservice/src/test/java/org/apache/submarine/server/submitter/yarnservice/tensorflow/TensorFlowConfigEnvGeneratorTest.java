@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.submitter.yarnservice.tensorflow;
 
+import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
@@ -28,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 public class TensorFlowConfigEnvGeneratorTest {
 
   @Test
-  public void testSimpleDistributedTFConfigGeneratorWorker() {
+  public void testSimpleDistributedTFConfigGeneratorWorker() throws IOException {
     String json = TensorFlowConfigEnvGenerator.getTFConfigEnv("worker", 5, 3,
             "wtan", "tf-job-001", "example.com");
     assertEquals(json, "{\\\"cluster\\\":{\\\"master\\\":[\\\"master-0.wtan" +
@@ -43,7 +44,7 @@ public class TensorFlowConfigEnvGeneratorTest {
   }
 
   @Test
-  public void testSimpleDistributedTFConfigGeneratorMaster() {
+  public void testSimpleDistributedTFConfigGeneratorMaster() throws IOException {
     String json = TensorFlowConfigEnvGenerator.getTFConfigEnv("master", 2, 1,
         "wtan", "tf-job-001", "example.com");
     assertEquals(json, "{\\\"cluster\\\":{\\\"master\\\":[\\\"master-0.wtan" +
@@ -55,7 +56,7 @@ public class TensorFlowConfigEnvGeneratorTest {
   }
 
   @Test
-  public void testSimpleDistributedTFConfigGeneratorPS() {
+  public void testSimpleDistributedTFConfigGeneratorPS() throws IOException {
     String json = TensorFlowConfigEnvGenerator.getTFConfigEnv("ps", 5, 3,
         "wtan", "tf-job-001", "example.com");
     assertEquals(json, "{\\\"cluster\\\":{\\\"master\\\":[\\\"master-0.wtan" +
