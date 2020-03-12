@@ -61,5 +61,6 @@
     <mapper resource='org/apache/submarine/database/mappers/TeamMemberMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/ProjectMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/ProjectFilesMapper.xml'/>
+    <mapper resource='org/apache/submarine/database/mappers/JobMapper.xml'/>
   </mappers>
 </configuration>
