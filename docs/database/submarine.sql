@@ -199,3 +199,23 @@ CREATE TABLE `project_files` (
   PRIMARY KEY  (`id`)/*,
   CONSTRAINT `FK_PROJECT_FILES_PRJ_ID` FOREIGN KEY (`project_id`) REFERENCES `project` (`id`)*/
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for jobs
+-- ----------------------------
+DROP TABLE IF EXISTS `job`;
+CREATE TABLE `job` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `job_id` varchar(64) default NULL COMMENT 'job id',
+  `job_name` varchar(64) NOT NULL COMMENT 'job name',
+  `job_type` varchar(64) NOT NULL COMMENT 'job type',
+  `job_namespace` varchar(32) default NULL COMMENT 'job namespace',
+  `job_status` varchar(32) default NULL COMMENT 'job status',
+  `job_final_status` varchar(32) default NULL COMMENT 'job final status',
+  `user_name` varchar(32) default NULL COMMENT 'user name',
+  `create_by` varchar(32) default NULL COMMENT 'create user',
+  `create_time` datetime default NULL COMMENT 'create time',
+  `update_by` varchar(32) default NULL COMMENT 'last update user',
+  `update_time` datetime default NULL COMMENT 'last update time',
+  PRIMARY KEY  (`id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
