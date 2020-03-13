@@ -19,10 +19,10 @@
 
 package org.apache.submarine.server.api.exception;
 
-public class UnsupportedJobTypeException extends Exception {
-  private static final long serialVersionUID = 4752254162145918312L;
+public class SubmarineRuntimeException extends RuntimeException {
+  private static final long serialVersionUID = 7159777541471705348L;
 
-  public UnsupportedJobTypeException() {
-    super("Unsupported Job Type Exception");
+  public SubmarineRuntimeException(String message) {
+    super(message);
   }
 }

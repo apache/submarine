@@ -20,40 +20,51 @@
 package org.apache.submarine.server.submitter.k8s.model.tfjob;
 
 import com.google.gson.annotations.SerializedName;
-import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
-import org.apache.submarine.server.submitter.k8s.model.MLJobSpec;
 
-import java.util.Map;
+public enum TFJobReplicaType implements MLJobReplicaType {
 
-/**
- * The replica spec of TFJob.
- */
-public class TFJobSpec implements MLJobSpec {
-  /**
-   * Key: Chief, Ps, Worker, Evaluator
-   */
-  @SerializedName("tfReplicaSpecs")
-  private Map<MLJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs;
+  @SerializedName("Ps")
+  Ps("Ps"),
 
-  /**
-   * Get the replica specs.
-   *
-   * @return map
-   */
-  @Override
-  public Map<MLJobReplicaType, MLJobReplicaSpec> getReplicaSpecs() {
-    return tfReplicaSpecs;
+  @SerializedName("Worker")
+  Worker("Worker"),
+
+  @SerializedName("Chief")
+  Chief("Chief"),
+
+  @SerializedName("Master")
+  Master("Master"),
+
+  @SerializedName("Evaluator")
+  Evaluator("Evaluator");
+
+
+  private String typeName;
+
+  TFJobReplicaType(String n) {
+    this.typeName = n;
   }
 
-  /**
-   * Set replica specs, the key's range is [Chief, Ps, Worker, Evaluator]
-   *
-   * @param tfReplicaSpecs map
-   */
+  public static boolean isSupportedReplicaType(String type) {
+    return type.equalsIgnoreCase("Ps") ||
+        type.equalsIgnoreCase("Worker") ||
+        type.equalsIgnoreCase("Chief") ||
+        type.equalsIgnoreCase("Master") ||
+        type.equalsIgnoreCase("Evaluator");
+  }
+
+  public static String[] names() {
+    TFJobReplicaType[] types = values();
+    String[] names = new String[types.length];
+    for (int i = 0; i < types.length; i++) {
+      names[i] = types[i].name();
+    }
+    return names;
+  }
+
   @Override
-  public void setReplicaSpecs(
-      Map<MLJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs) {
-    this.tfReplicaSpecs = tfReplicaSpecs;
+  public String getTypeName() {
+    return this.typeName;
   }
 }

@@ -258,9 +258,11 @@ matrix:
         - echo $KUBECONFIG
         - kubectl config set clusters.kubernetes.server https://127.0.0.1:8443
         - kubectl get nodes
-        - kubectl create namespace kubeflow
+        - kubectl create namespace submarine
         - kubectl apply -f ./dev-support/travis/tf-operator/crd_v1.yaml
         - kubectl apply -f ./dev-support/travis/tf-operator/tfevent-volume/.
+        # prepare pytroch job CRD
+        - kubectl apply -f ./dev-support/k8s/pytorchjob/crd.yaml
 
     # Template disable by SUBMARINE-381
     #- name: Test submarine interpreter

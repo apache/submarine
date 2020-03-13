@@ -60,7 +60,7 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
 
     Gson gson = new Gson();
     JsonResponse jsonResponse = gson.fromJson(responseBodyAsString, JsonResponse.class);
-    assertEquals("Response code should be 200 ",
+    assertEquals("Response code should be 202 ",
         Response.Status.ACCEPTED.getStatusCode(), jsonResponse.getCode());
   }
 }

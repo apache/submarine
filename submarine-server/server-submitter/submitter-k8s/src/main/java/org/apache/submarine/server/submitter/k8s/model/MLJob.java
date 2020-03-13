@@ -23,9 +23,10 @@ import com.google.gson.annotations.SerializedName;
 import io.kubernetes.client.models.V1ObjectMeta;
 
 /**
- * The abstract machine learning job for the CRD job
+ * The abstract machine learning job for the CRD job.
+ * It be serialized as body input to k8s api client
  */
-public abstract class MLJob {
+public class MLJob {
   @SerializedName("apiVersion")
   private String apiVersion;
 
@@ -35,16 +36,16 @@ public abstract class MLJob {
   @SerializedName("metadata")
   private V1ObjectMeta metadata;
 
-  /**
-   * Get the api with version
-   * @return api with version
-   */
-  public String getApiVersion() {
-    return apiVersion;
-  }
+  // transient to avoid being serialized
+  private transient String group;
+
+  private transient String version;
+
+  private transient String plural;
 
   /**
    * Set the api with version
+   *
    * @param apiVersion api with version
    */
   public void setApiVersion(String apiVersion) {
@@ -53,14 +54,16 @@ public abstract class MLJob {
 
   /**
    * Get the kind
-   * @return kind, Default is TFJob
+   *
+   * @return kind
    */
   public String getKind() {
     return kind;
   }
 
   /**
-   * Set the CRD's name, Default is TFJob
+   * Set the CRD's name
+   *
    * @param kind the CRD's name
    */
   public void setKind(String kind) {
@@ -69,6 +72,7 @@ public abstract class MLJob {
 
   /**
    * Get the metadata
+   *
    * @return meta
    */
   public V1ObjectMeta getMetadata() {
@@ -77,6 +81,7 @@ public abstract class MLJob {
 
   /**
    * Set metadata
+   *
    * @param metadata meta
    */
   public void setMetadata(V1ObjectMeta metadata) {
@@ -84,18 +89,50 @@ public abstract class MLJob {
   }
 
   /**
+   * Get the api with version
+   *
+   * @return api with version
+   */
+  public String getApiVersion() {
+    return apiVersion;
+  }
+
+  /**
    * Get the resource's group name
+   *
    * @return group name
    */
   public String getGroup() {
-    return apiVersion.split("/")[0];
+    return this.group;
   }
 
   /**
    * Get the resource's version
+   *
    * @return version
    */
   public String getVersion() {
-    return apiVersion.split("/")[1];
+    return this.version;
+  }
+
+  /**
+   * Get the resource's plural
+   *
+   * @return plural
+   */
+  public String getPlural() {
+    return this.plural;
+  }
+
+  public void setGroup(String group) {
+    this.group = group;
+  }
+
+  public void setVersion(String version) {
+    this.version = version;
+  }
+
+  public void setPlural(String plural) {
+    this.plural = plural;
   }
 }

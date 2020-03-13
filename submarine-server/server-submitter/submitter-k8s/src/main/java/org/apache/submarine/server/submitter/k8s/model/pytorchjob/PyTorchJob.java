@@ -17,47 +17,47 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model.tfjob;
+package org.apache.submarine.server.submitter.k8s.model.pytorchjob;
 
 import com.google.gson.annotations.SerializedName;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 
-/**
- * It's the tf-operator's entry model.
- */
-public class TFJob extends MLJob {
+public class PyTorchJob extends MLJob {
 
-  public static final  String CRD_TF_KIND_V1 = "TFJob";
-  public static final  String CRD_TF_PLURAL_V1 = "tfjobs";
-  public static final  String CRD_TF_GROUP_V1 = "kubeflow.org";
-  public static final  String CRD_TF_VERSION_V1 = "v1";
-  public static final  String CRD_TF_API_VERSION_V1 = CRD_TF_GROUP_V1 +
-      "/" + CRD_TF_VERSION_V1;
+
+  public static final  String CRD_PYTORCH_KIND_V1 = "PyTorchJob";
+  public static final  String CRD_PYTORCH_PLURAL_V1 = "pytorchjobs";
+  public static final  String CRD_PYTORCH_GROUP_V1 = "kubeflow.org";
+  public static final  String CRD_PYTORCH_VERSION_V1 = "v1";
+  public static final  String CRD_PYTORCH_API_VERSION_V1 = CRD_PYTORCH_GROUP_V1 +
+      "/" + CRD_PYTORCH_VERSION_V1;
 
   @SerializedName("spec")
-  private TFJobSpec spec;
+  private PyTorchJobSpec spec;
 
-  public TFJob() {
-    setApiVersion(CRD_TF_API_VERSION_V1);
-    setKind(CRD_TF_KIND_V1);
-    setPlural(CRD_TF_PLURAL_V1);
-    setVersion(CRD_TF_VERSION_V1);
-    setGroup(CRD_TF_GROUP_V1);
+  public PyTorchJob() {
+    setApiVersion(CRD_PYTORCH_API_VERSION_V1);
+    setKind(CRD_PYTORCH_KIND_V1);
+    setPlural(CRD_PYTORCH_PLURAL_V1);
+    setVersion(CRD_PYTORCH_VERSION_V1);
+    setGroup(CRD_PYTORCH_GROUP_V1);
   }
 
   /**
-   * Get the job spec which contains all the info for TFJob.
+   * Get the job spec which contains PyTorchJob JSON CRD.
+   *
    * @return job spec
    */
-  public TFJobSpec getSpec() {
+  public PyTorchJobSpec getSpec() {
     return spec;
   }
 
   /**
-   * Set the spec, the entry of the TFJob
+   * Set the spec
+   *
    * @param spec job spec
    */
-  public void setSpec(TFJobSpec spec) {
+  public void setSpec(PyTorchJobSpec spec) {
     this.spec = spec;
   }
 }

@@ -17,22 +17,12 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model.tfjob;
+package org.apache.submarine.server.api.exception;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.junit.Test;
+public class InvalidSpecException extends Exception {
+  private static final long serialVersionUID = -1148223492821245434L;
 
-import java.io.File;
-import java.io.FileReader;
-import java.net.URL;
-
-public class TFJobTest {
-  @Test
-  public void testFromJson() throws Exception {
-    URL fileUrl = this.getClass().getResource("/tf_job_mnist.json");
-    Gson gson = new Gson();
-    TFJob tfJob = gson.fromJson(new FileReader(new File(fileUrl.toURI())), TFJob.class);
-    System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(tfJob));
+  public InvalidSpecException(String message) {
+    super(message);
   }
 }
