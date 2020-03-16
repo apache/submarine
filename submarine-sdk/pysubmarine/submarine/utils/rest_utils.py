@@ -45,8 +45,6 @@ def http_request(base_url, endpoint, method, json_body,
                                 timeout=timeout, **kwargs)
     verify_rest_response(response, endpoint)
 
-    print('test')
-    print(response.text)
     response = json.loads(response.text)
     result = response['result']
     return result

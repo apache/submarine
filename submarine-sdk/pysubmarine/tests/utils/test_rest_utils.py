@@ -48,7 +48,7 @@ def test_verify_rest_response():
     dummy_json = json.dumps(mock_json_body)
     mock_response.text = dummy_json
 
-    with pytest.raises(RestException, match=str(mock_json_body)):
+    with pytest.raises(RestException, match=str(json.loads(dummy_json))):
         verify_rest_response(mock_response, '/api/v1/jobs')
 
     # Test response status code not equal 200(OK) and response can not parse as JSON
