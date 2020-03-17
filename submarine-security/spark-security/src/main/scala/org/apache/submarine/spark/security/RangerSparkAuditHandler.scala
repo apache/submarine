@@ -21,7 +21,7 @@ package org.apache.submarine.spark.security
 
 import org.apache.ranger.plugin.audit.RangerDefaultAuditHandler
 
-class RangerSparkAuditHandler extends RangerDefaultAuditHandler {
+case class RangerSparkAuditHandler() extends RangerDefaultAuditHandler {
 
   // TODO(Kent Yao): Implementing meaningfully audit functions
 
