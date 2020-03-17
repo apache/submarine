@@ -1,7 +1,4 @@
-import { NgModule } from "@angular/core";
-import { ReactiveFormsModule } from '@angular/forms';
-
-/*
+/*!
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -19,8 +16,3 @@ import { ReactiveFormsModule } from '@angular/forms';
  * specific language governing permissions and limitations
  * under the License.
  */
-
-@NgModule({
-   exports: [ReactiveFormsModule]
-})
-export class JobModule {}

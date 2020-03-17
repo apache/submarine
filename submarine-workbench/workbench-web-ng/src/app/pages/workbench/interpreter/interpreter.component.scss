@@ -16,3 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+#interpreterOuter{
+    background-color: white;
+    padding-left: 30px;
+    padding-top: 20px;
+}
+
+.interpreter-table-operate {
+    margin-bottom: 16px;
+}
+
+.td-action a + a {
+    margin-left: 8px;
+}
