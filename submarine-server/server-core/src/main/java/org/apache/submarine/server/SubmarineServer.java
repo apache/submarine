@@ -325,27 +325,29 @@ public class SubmarineServer extends ResourceConfig {
         indexFile = new File(warFile.getAbsolutePath() + "/webapp/index.html");
       }
 
+      InputStreamReader reader = null;
       StringBuffer sbIndexBuf = new StringBuffer();
       try {
         if (indexFile.isFile() && indexFile.exists()) {
-          InputStreamReader read = new InputStreamReader(new FileInputStream(indexFile), "GBK");
-          BufferedReader bufferedReader = new BufferedReader(read);
+          reader = new InputStreamReader(new FileInputStream(indexFile), "GBK");
+          BufferedReader bufferedReader = new BufferedReader(reader);
           String lineTxt = null;
 
           while ((lineTxt = bufferedReader.readLine()) != null) {
             sbIndexBuf.append(lineTxt);
           }
           bufferedReader.close();
-          read.close();
         } else {
           throw new Exception("Can't found index html!");
         }
       } catch (Exception e) {
         LOG.error(e.getMessage(), e);
         throw new ServletException("Can't found index html!");
+      } finally {
+        reader.close();
       }
 
-      response.getWriter().println(sbIndexBuf.toString());
+      response.getWriter().print(sbIndexBuf.toString());
     }
   }
 }
