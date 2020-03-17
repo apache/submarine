@@ -17,12 +17,25 @@
  * under the License.
  */
 
-package org.apache.submarine.spark.security
+package org.apache.submarine.spark.security.api
 
 import org.apache.spark.sql.SparkSessionExtensions
 import org.apache.spark.sql.catalyst.optimizer.{SubmarineConfigurationCheckExtension, SubmarineDataMaskingExtension, SubmarineRowFilterExtension, SubmarineSparkRangerAuthorizationExtension}
 import org.apache.spark.sql.execution.SubmarineSparkPlanOmitStrategy
+import org.apache.submarine.spark.security.Extensions
 
+/**
+ * ACL Management for Apache Spark SQL with Apache Ranger, enabling:
+ * <ul>
+ *   <li>Table/Column level authorization</li>
+ *   <li>Row level filtering</li>
+ *   <li>Data masking</li>
+ * <ul>
+ *
+ * To work with Spark SQL, we need to enable it via spark extensions
+ *
+ * spark.sql.extensions=org.apache.submarine.spark.security.api.RangerSparkSQLExtension
+ */
 class RangerSparkSQLExtension extends Extensions {
   override def apply(ext: SparkSessionExtensions): Unit = {
     ext.injectCheckRule(SubmarineConfigurationCheckExtension)
