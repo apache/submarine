@@ -78,6 +78,7 @@ confidence=
 disable=missing-docstring,
         print-statement,
         unnecessary-pass,
+        unused-argument,
         parameter-unpacking,
         unpacking-in-except,
         old-raise-syntax,

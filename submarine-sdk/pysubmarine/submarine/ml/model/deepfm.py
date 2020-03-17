@@ -29,20 +29,10 @@ import logging
 import tensorflow as tf
 import numpy as np
 from submarine.ml.model.base_tf_model import BaseTFModel
+from submarine.ml.layers.core import batch_norm_layer
 from submarine.utils.tf_utils import get_estimator_spec
 
 logger = logging.getLogger(__name__)
-
-
-def batch_norm_layer(x, train_phase, scope_bn, batch_norm_decay):
-    bn_train = tf.contrib.layers.batch_norm(x, decay=batch_norm_decay, center=True, scale=True,
-                                            updates_collections=None, is_training=True,
-                                            reuse=None, scope=scope_bn)
-    bn_infer = tf.contrib.layers.batch_norm(x, decay=batch_norm_decay, center=True, scale=True,
-                                            updates_collections=None, is_training=False,
-                                            reuse=True, scope=scope_bn)
-    z = tf.cond(tf.cast(train_phase, tf.bool), lambda: bn_train, lambda: bn_infer)
-    return z
 
 
 class DeepFM(BaseTFModel):
@@ -115,4 +105,4 @@ class DeepFM(BaseTFModel):
             y_bias = fm_bias * tf.ones_like(y_d, dtype=tf.float32)
             logit = y_bias + y_w + y_v + y_d
 
-        return get_estimator_spec(logit, labels, mode, params, [fm_vector, fm_weight])
+        return get_estimator_spec(logit, labels, mode, params)

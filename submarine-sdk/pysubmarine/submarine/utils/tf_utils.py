@@ -72,7 +72,7 @@ def get_tf_config(params):
     return tf_config
 
 
-def get_estimator_spec(logit, labels, mode, params, weights):
+def get_estimator_spec(logit, labels, mode, params):
     """
     Returns `EstimatorSpec` that a model_fn can return.
     :param logit: logits `Tensor` to be used.
@@ -80,10 +80,8 @@ def get_estimator_spec(logit, labels, mode, params, weights):
     :param mode: Estimator's `ModeKeys`.
     :param params: Optional dict of hyperparameters. Will receive what is passed to Estimator
      in params parameter.
-    :param weights: a list of weights that need L2 regularization
     :return:
     """
-    l2_reg = params["training"]["l2_reg"]
     learning_rate = params["training"]["learning_rate"]
     optimizer = params["training"]["optimizer"]
     metric = params['output']['metric']
@@ -101,11 +99,8 @@ def get_estimator_spec(logit, labels, mode, params, weights):
             export_outputs=export_outputs)
 
     with tf.name_scope("Loss"):
-        l2 = 0
-        for weight in weights:
-            l2 = l2_reg * tf.nn.l2_loss(weight)
         loss = tf.reduce_mean(
-            tf.nn.sigmoid_cross_entropy_with_logits(logits=logit, labels=labels)) + l2
+            tf.nn.sigmoid_cross_entropy_with_logits(logits=logit, labels=labels))
 
     # Provide an estimator spec for `ModeKeys.EVAL`
     eval_metric_ops = {}
