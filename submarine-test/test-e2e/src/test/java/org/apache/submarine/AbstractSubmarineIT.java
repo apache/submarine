@@ -209,7 +209,7 @@ abstract public class AbstractSubmarineIT {
     return "";
   }
 
-  // findTargetFile function will help you see some files in submarine-dist module directory
+  // listTargetDirFiles function will help you see some files in submarine-dist module directory
   public static void listTargetDirFiles(File dir, String targetDir) {
     LOG.info("dir:{}, targetDir:{}", dir.getName(), targetDir);
     File[] files = dir.listFiles();
@@ -218,7 +218,7 @@ abstract public class AbstractSubmarineIT {
         listTargetDirFiles(file, targetDir);
       } else {
         if (StringUtils.equals(dir.getName(), targetDir))
-          LOG.info("file : "+file.getName());
+          LOG.info("file : " + file.getName());
       }
     }
   }

@@ -23,13 +23,14 @@ import org.apache.submarine.server.rpc.SubmarineRpcServer;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.commons.cluster.ClusterServer;
 import org.eclipse.jetty.http.HttpVersion;
+import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
 import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.SslConnectionFactory;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -52,8 +53,15 @@ import org.apache.submarine.commons.utils.SubmarineConfVars;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class SubmarineServer extends ResourceConfig {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineServer.class);
@@ -63,7 +71,7 @@ public class SubmarineServer extends ResourceConfig {
   public static Server jettyWebServer;
   public static SubmarineRpcServer rpcServer;
   public static ServiceLocator sharedServiceLocator;
-
+  private static WebAppContext webApp;
   private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
   public static long getServerTimeStamp() {
@@ -84,11 +92,10 @@ public class SubmarineServer extends ResourceConfig {
 
     jettyWebServer = setupJettyServer(conf);
 
-    ContextHandlerCollection contexts = new ContextHandlerCollection();
-    jettyWebServer.setHandler(contexts);
-
     // Web UI
-    final WebAppContext webApp = setupWebAppContext(contexts, conf);
+    HandlerList handlers = new HandlerList();
+    webApp = setupWebAppContext(handlers, conf);
+    jettyWebServer.setHandler(handlers);
 
     // Add
     sharedServiceLocator = ServiceLocatorFactory.getInstance().create("shared-locator");
@@ -127,7 +134,7 @@ public class SubmarineServer extends ResourceConfig {
   private static void startServer() throws InterruptedException {
     LOG.info("Starting submarine server");
     try {
-      jettyWebServer.start(); // Instantiates WorkbenchServer
+      jettyWebServer.start(); // Instantiates SubmarineServer
     } catch (Exception e) {
       LOG.error("Error while running jettyServer", e);
       System.exit(-1);
@@ -162,16 +169,15 @@ public class SubmarineServer extends ResourceConfig {
     webapp.addServlet(servletHolder, "/api/*");
   }
 
-  private static WebAppContext setupWebAppContext(ContextHandlerCollection contexts,
+  private static WebAppContext setupWebAppContext(HandlerList handlers,
       SubmarineConfiguration conf) {
     WebAppContext webApp = new WebAppContext();
     webApp.setContextPath("/");
     File warPath = new File(conf.getString(SubmarineConfVars.ConfVars.WORKBENCH_WEB_WAR));
-    LOG.info("workbench web war file path is {}.", 
+    LOG.info("workbench web war file path is {}.",
         conf.getString(SubmarineConfVars.ConfVars.WORKBENCH_WEB_WAR));
     if (warPath.isDirectory()) {
       // Development mode, read from FS
-      // webApp.setDescriptor(warPath+"/WEB-INF/web.xml");
       webApp.setResourceBase(warPath.getPath());
       webApp.setParentLoaderPriority(true);
     } else {
@@ -181,9 +187,16 @@ public class SubmarineServer extends ResourceConfig {
       warTempDirectory.mkdir();
       webApp.setTempDirectory(warTempDirectory);
     }
-    // Explicit bind to root
-    webApp.addServlet(new ServletHolder(new DefaultServlet()), "/*");
-    contexts.addHandler(webApp);
+
+    webApp.addServlet(new ServletHolder(new DefaultServlet()), "/");
+    // When requesting the workbench page, the content of index.html needs to be returned,
+    // otherwise a 404 error will be displayed
+    // NOTE: If you modify the workbench directory in the front-end URL,
+    // you need to modify the `/workbench/*` here.
+    webApp.addServlet(new ServletHolder(RefreshServlet.class), "/user/*");
+    webApp.addServlet(new ServletHolder(RefreshServlet.class), "/workbench/*");
+
+    handlers.setHandlers(new Handler[] { webApp });
 
     return webApp;
   }
@@ -280,4 +293,61 @@ public class SubmarineServer extends ResourceConfig {
     cf.getHttpConfiguration().setRequestHeaderSize(requestHeaderSize);
   }
 
+  // SUBMARINE-422. Fix refreshing page returns 404 error
+  // Because the workbench is developed using angular,
+  // the adjustment of angular WEB pages is completely controlled by the front end,
+  // so when you manually refresh a specific page in the browser,
+  // the browser will send the request for this page to the back-end service,
+  // but the back-end service only In response to API requests, it will cause the front end to display 404.
+  // The solution is to find that not all API requests directly return the content of the index page,
+  // so that the front end will automatically perform correct page routing processing.
+  public static class RefreshServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+      response.setContentType("text/html");
+      response.encodeRedirectURL("/");
+      response.setStatus(HttpServletResponse.SC_OK);
+
+      File warPath = new File(conf.getString(SubmarineConfVars.ConfVars.WORKBENCH_WEB_WAR));
+      File indexFile = null;
+      if (warPath.isDirectory()) {
+        // Development mode, read from FS
+        indexFile = new File(warPath.getAbsolutePath() + "/index.html");
+      } else {
+        // Product mode, read from war file
+        File warFile = webApp.getTempDirectory();
+        if (false == warFile.exists()) {
+          throw new ServletException("Can't found war directory!");
+        }
+        indexFile = new File(warFile.getAbsolutePath() + "/webapp/index.html");
+      }
+
+      InputStreamReader reader = null;
+      StringBuffer sbIndexBuf = new StringBuffer();
+      try {
+        if (indexFile.isFile() && indexFile.exists()) {
+          reader = new InputStreamReader(new FileInputStream(indexFile), "GBK");
+          BufferedReader bufferedReader = new BufferedReader(reader);
+          String lineTxt = null;
+
+          while ((lineTxt = bufferedReader.readLine()) != null) {
+            sbIndexBuf.append(lineTxt);
+          }
+          bufferedReader.close();
+        } else {
+          throw new Exception("Can't found index html!");
+        }
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+        throw new ServletException("Can't found index html!");
+      } finally {
+        reader.close();
+      }
+
+      response.getWriter().print(sbIndexBuf.toString());
+    }
+  }
 }
