@@ -19,8 +19,8 @@
 
 package org.apache.spark.sql.catalyst.optimizer
 
-import org.apache.spark.sql.catalyst.plans.logical.{Project, SubmarineDataMasking}
 import org.apache.spark.sql.SubmarineSparkUtils
+import org.apache.spark.sql.catalyst.plans.logical.{Project, SubmarineDataMasking}
 import org.apache.spark.sql.hive.test.TestHive
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 

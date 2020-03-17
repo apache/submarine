@@ -19,10 +19,11 @@
 
 package org.apache.spark.sql.catalyst.optimizer
 
-import org.scalatest.{BeforeAndAfterAll, FunSuite}
-import org.apache.spark.sql.execution.command.{CreateDatabaseCommand, ShowDatabasesCommand, ShowTablesCommand}
 import org.apache.spark.sql.execution.{SubmarineShowDatabasesCommand, SubmarineShowTablesCommand}
+import org.apache.spark.sql.execution.command.{CreateDatabaseCommand, ShowDatabasesCommand, ShowTablesCommand}
 import org.apache.spark.sql.hive.test.TestHive
+import org.scalatest.{BeforeAndAfterAll, FunSuite}
+
 import org.apache.submarine.spark.security.SparkAccessControlException
 
 class SubmarineSparkRangerAuthorizationExtensionTest extends FunSuite with BeforeAndAfterAll {

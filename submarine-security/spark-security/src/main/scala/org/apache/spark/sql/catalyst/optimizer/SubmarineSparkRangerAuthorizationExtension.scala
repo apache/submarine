@@ -20,14 +20,15 @@
 package org.apache.spark.sql.catalyst.optimizer
 
 import org.apache.commons.logging.LogFactory
-import org.apache.spark.sql.hive.execution.CreateHiveTableAsSelectCommand
-import org.apache.spark.sql.hive.PrivilegesBuilder
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.plans.logical.{Command, LogicalPlan}
 import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.execution.command.{AlterDatabasePropertiesCommand, AlterTableAddPartitionCommand, AlterTableDropPartitionCommand, AlterTableRecoverPartitionsCommand, AlterTableRenameCommand, AlterTableRenamePartitionCommand, AlterTableSerDePropertiesCommand, AlterTableSetLocationCommand, AlterTableSetPropertiesCommand, AlterTableUnsetPropertiesCommand, AlterViewAsCommand, AnalyzeColumnCommand, AnalyzeTableCommand, CacheTableCommand, CreateDatabaseCommand, CreateDataSourceTableAsSelectCommand, CreateDataSourceTableCommand, CreateFunctionCommand, CreateTableCommand, CreateTableLikeCommand, CreateViewCommand, DescribeDatabaseCommand, DescribeFunctionCommand, DescribeTableCommand, DropDatabaseCommand, DropFunctionCommand, DropTableCommand, ExplainCommand, LoadDataCommand, SetCommand, SetDatabaseCommand, ShowColumnsCommand, ShowCreateTableCommand, ShowDatabasesCommand, ShowFunctionsCommand, ShowPartitionsCommand, ShowTablePropertiesCommand, ShowTablesCommand, StreamingExplainCommand, TruncateTableCommand, UncacheTableCommand}
-import org.apache.spark.sql.execution.datasources.{CreateTempViewUsing, InsertIntoDataSourceCommand, InsertIntoHadoopFsRelationCommand}
 import org.apache.spark.sql.execution.{SubmarineShowDatabasesCommand, SubmarineShowTablesCommand}
+import org.apache.spark.sql.execution.command._
+import org.apache.spark.sql.execution.datasources.{CreateTempViewUsing, InsertIntoDataSourceCommand, InsertIntoHadoopFsRelationCommand}
+import org.apache.spark.sql.hive.PrivilegesBuilder
+import org.apache.spark.sql.hive.execution.CreateHiveTableAsSelectCommand
+
 import org.apache.submarine.spark.security.{RangerSparkAuthorizer, SparkAccessControlException}
 
 /**

@@ -22,6 +22,7 @@ package org.apache.spark.sql.catalyst.optimizer
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.execution.command.SetCommand
+
 import org.apache.submarine.spark.security.SparkAccessControlException
 
 /**

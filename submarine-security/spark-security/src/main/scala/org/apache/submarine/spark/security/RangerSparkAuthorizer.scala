@@ -19,7 +19,7 @@
 
 package org.apache.submarine.spark.security
 
-import java.util.{Locale, List => JList}
+import java.util.{List => JList, Locale}
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
@@ -27,8 +27,8 @@ import scala.collection.mutable.ArrayBuffer
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.logging.LogFactory
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.fs.permission.FsAction
 import org.apache.hadoop.fs.{FileSystem, Path}
+import org.apache.hadoop.fs.permission.FsAction
 import org.apache.hadoop.hive.common.FileUtils
 import org.apache.hadoop.hive.ql.security.authorization.plugin.HiveAccessControlException
 import org.apache.hadoop.security.UserGroupInformation
@@ -36,6 +36,7 @@ import org.apache.ranger.authorization.utils.StringUtil
 import org.apache.ranger.plugin.policyengine.RangerAccessRequest
 import org.apache.ranger.plugin.util.RangerPerfTracer
 import org.apache.spark.sql.SparkSession
+
 import org.apache.submarine.spark.security.SparkAccessType.SparkAccessType
 import org.apache.submarine.spark.security.SparkObjectType.SparkObjectType
 import org.apache.submarine.spark.security.SparkOperationType.SparkOperationType
@@ -192,7 +193,7 @@ object RangerSparkAuthorizer {
         case SparkPrivObjectActionType.INSERT | SparkPrivObjectActionType.INSERT_OVERWRITE =>
           SparkAccessType.UPDATE
         case SparkPrivObjectActionType.OTHER =>
-          import SparkOperationType._
+          import org.apache.submarine.spark.security.SparkOperationType._
           opType match {
             case CREATEDATABASE if obj.getType == SparkPrivilegeObjectType.DATABASE =>
               SparkAccessType.CREATE
@@ -243,7 +244,7 @@ object RangerSparkAuthorizer {
   private def getSparkResource(
       obj: SparkPrivilegeObject,
       opType: SparkOperationType): RangerSparkResource = {
-    import SparkObjectType._
+    import org.apache.submarine.spark.security.SparkObjectType._
     val objectType = getObjectType(obj, opType)
     val resource = objectType match {
       case DATABASE => RangerSparkResource(objectType, Option(obj.getDbname))
@@ -285,7 +286,7 @@ object RangerSparkAuthorizer {
   }
 
   private def getURIAccessType(operationType: SparkOperationType): FsAction = {
-    import SparkOperationType._
+    import org.apache.submarine.spark.security.SparkOperationType._
 
     operationType match {
       case LOAD => FsAction.READ

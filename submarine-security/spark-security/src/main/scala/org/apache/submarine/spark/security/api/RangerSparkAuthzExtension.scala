@@ -21,6 +21,7 @@ package org.apache.submarine.spark.security.api
 
 import org.apache.spark.sql.SparkSessionExtensions
 import org.apache.spark.sql.catalyst.optimizer.{SubmarineConfigurationCheckExtension, SubmarineSparkRangerAuthorizationExtension}
+
 import org.apache.submarine.spark.security.Extensions
 
 /**

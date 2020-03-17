@@ -188,7 +188,8 @@
             <parameter name="group.java">javax?\..*</parameter>
             <parameter name="group.scala">scala\..*</parameter>
             <parameter name="group.3rdParty">(?!org\.apache\.submarine\.).*</parameter>
-            <parameter name="group.spark">org\.apache\.submarine\..*</parameter>
+            <parameter name="group.submarine">org\.apache\.submarine\..*</parameter>
+            <parameter name="lexicographic">false</parameter>
         </parameters>
     </check>
 

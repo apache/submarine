@@ -25,6 +25,7 @@ import scala.collection.JavaConverters._
 
 import org.apache.ranger.plugin.policyengine.{RangerAccessRequestImpl, RangerPolicyEngine}
 import org.apache.ranger.plugin.util.RangerAccessRequestUtil
+
 import org.apache.submarine.spark.security.SparkAccessType.SparkAccessType
 
 class RangerSparkAccessRequest private extends RangerAccessRequestImpl {

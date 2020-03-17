@@ -20,8 +20,9 @@
 package org.apache.spark.sql.catalyst.optimizer
 
 import org.apache.spark.sql.hive.test.TestHive
-import org.apache.submarine.spark.security.SparkAccessControlException
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
+
+import org.apache.submarine.spark.security.SparkAccessControlException
 
 class SubmarineConfigurationCheckExtensionTest extends FunSuite with BeforeAndAfterAll{
 

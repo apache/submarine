@@ -19,9 +19,9 @@
 
 package org.apache.spark.sql.catalyst.optimizer
 
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.catalyst.rules.RuleExecutor
-import org.apache.spark.sql.SparkSession
 
 /**
  * An Optimizer without all `spark.sql.extensions`

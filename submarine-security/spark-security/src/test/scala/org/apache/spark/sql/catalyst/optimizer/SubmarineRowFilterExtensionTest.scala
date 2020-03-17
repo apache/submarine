@@ -19,9 +19,9 @@
 
 package org.apache.spark.sql.catalyst.optimizer
 
+import org.apache.spark.sql.SubmarineSparkUtils
 import org.apache.spark.sql.catalyst.plans.logical.{Filter, SubmarineRowFilter}
 import org.apache.spark.sql.hive.test.TestHive
-import org.apache.spark.sql.SubmarineSparkUtils
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class SubmarineRowFilterExtensionTest extends FunSuite with BeforeAndAfterAll {
