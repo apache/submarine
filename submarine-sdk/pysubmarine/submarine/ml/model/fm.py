@@ -67,4 +67,4 @@ class FM(BaseTFModel):
 
         y = fm_bias + y_w + y_v
 
-        return get_estimator_spec(y, labels, mode, params, [fm_vector, fm_weight])
+        return get_estimator_spec(y, labels, mode, params)

@@ -13,8 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .deepfm import DeepFM
-from .fm import FM
-from .nfm import NFM
 
-__all__ = ["DeepFM", "FM", "NFM"]
+from submarine.ml.model import NFM
+
+
+def test_run_nfm(get_model_param):
+    params = get_model_param
+
+    model = NFM(model_params=params)
+    model.train()
+    model.evaluate()
+    model.predict()

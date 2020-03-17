@@ -16,6 +16,7 @@
 from abc import ABC
 import logging
 import tensorflow as tf
+import numpy as np
 from submarine.ml.model.abstract_model import AbstractModel
 from submarine.ml.registries import input_fn_registry
 from submarine.ml.parameters import default_parameters
@@ -107,4 +108,6 @@ class BaseTFModel(AbstractModel, ABC):
         )
 
     def model_fn(self, features, labels, mode, params):
-        pass
+        seed = params["training"]["seed"]
+        np.random.seed(seed)
+        tf.set_random_seed(seed)
