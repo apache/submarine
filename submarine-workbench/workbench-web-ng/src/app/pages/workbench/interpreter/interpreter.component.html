@@ -17,4 +17,112 @@
   ~ under the License.
   -->
 
-<p>interpreter works!</p>
+<nz-layout style="margin: -24px -24px 16px;">
+  <nz-layout class="inner-layout">
+    <div id="interpreterOuter">
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/', 'workbench', 'home']">Home</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>Interpreter</nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <br/>
+      <h2>Interpreter</h2>
+      <nz-content>Users can manage their Interpreters.</nz-content>
+      <br/>
+    </div>
+  </nz-layout>
+</nz-layout>
+
+<nz-card>
+  <div class="interpreter-table-operate">
+    <form nz-row nz-form [nzLayout]="'inline'" [formGroup]="interpreterQueryForm">
+      <nz-form-item  nz-col nzSpan="8">
+        <nz-form-label nz-col nzSpan="4">Name</nz-form-label>
+        <nz-form-control nz-col nzSpan="20">
+          <input nz-input formControlName="interpreterName" placeholder="Enter Interpreter Name"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nz-col nzSpan="8">
+        <nz-form-label nz-col nzSpan="4">Status</nz-form-label>
+        <nz-form-control nz-col nzSpan="20">
+          <nz-cascader [nzOptions]="statusOptions" formControlName="interpreterStatus" nzPlaceHolder="Enter Interpreter Status"></nz-cascader>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item nz-col nzSpan="8">
+        <nz-form-control>
+          <button nz-button style="margin-left: 8px" nzType="primary" (click)="queryInterpreter()">
+            <i nz-icon nzType="search"></i>
+            Query
+          </button> 
+          <button nz-button style="margin-left: 8px" (click)="onShowAddInterpreterModal()" id="interpreterAddButton">
+            <i nz-icon nzType="plus"></i>
+            Add
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div>
+    <nz-table #table [nzData]="interpreterInfoList" [nzScroll]="{ x: '1100px' }" nzNoResult="No result" nzBordered>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Progress</th>
+          <th>Last Updated</th>           
+          <th nzRight="0px">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of table.data">
+          <td id="{{ 'interpreterName' + data.name }}">{{ data.name }}</td>
+          <td>{{ data.type }}</td>
+          <td>
+            <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag>
+          </td>
+          <td>
+            <nz-progress nzStrokeLinecap="round" [nzPercent]="data.progress"></nz-progress>
+          </td>
+          <td>{{ data.lastUpdated | date: 'medium'}}</td>
+          <td class="td-action" nzRight="0px">
+            <a>
+              <i nz-icon nzType="edit" nzTheme="outline"></i>
+              Start
+            </a>
+            <a nz-dropdown [nzDropdownMenu]="more">
+              More
+              <i nz-icon nzType="down"></i>
+            </a>
+            <nz-dropdown-menu #more="nzDropdownMenu">
+              <ul nz-menu nzSelectable>
+                <li
+                  nz-menu-item
+                  nz-popconfirm
+                  nzTitle="Are you certain you want to kill the interpreter?"
+                  nzOkText="Ok"
+                  nzCancelText="Cancel"
+                  (nzOnConfirm)="killInterpreter()"
+                >
+                  Kill
+                </li>
+                <li nz-menu-item>Terminal</li>
+                <li nz-menu-item>Log</li>
+              </ul>
+            </nz-dropdown-menu>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</nz-card>
+
+<submarine-interpreter-add-modal
+  [modalTitle]="addModalTitle"
+  [visible]="addModalVisible"
+  [interpreterName]="newInterpreterName"
+  [interpreterType]="newInterpreterType"
+  (close)="onHideAddInterpreterModal()"
+  (ok)="updateNewInterpreter($event)"
+></submarine-interpreter-add-modal>

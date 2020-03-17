@@ -17,17 +17,17 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ComponentsModule } from '@submarine/components/components.module';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { NewProjectPageComponent } from './project/new-project-page/new-project-page.component';
 import { ProjectComponent } from './project/project.component';
 import { ReleaseComponent } from './release/release.component';
-import { TrainingComponent } from './training/training.component';
-import { TeamComponent } from './team/team.component';
 import { SharedComponent } from './shared/shared.component';
-import { FormsModule } from '@angular/forms';
-import { NewProjectPageComponent } from './project/new-project-page/new-project-page.component';
+import { TeamComponent } from './team/team.component';
+import { TrainingComponent } from './training/training.component';
 
 @NgModule({
     declarations: [

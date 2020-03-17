@@ -18,6 +18,16 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { CascaderOption } from 'ng-zorro-antd/cascader';
+
+interface InterpreterInfo {
+  name: string;
+  type: string;
+  status: string;
+  progress: number;
+  lastUpdated: number;
+}
 
 @Component({
   selector: 'submarine-interpreter',
@@ -25,10 +35,90 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./interpreter.component.scss']
 })
 export class InterpreterComponent implements OnInit {
+  // Add Modal
+  addModalTitle: string;
+  addModalVisible: boolean;
+  newInterpreterName: string = '';
+  newInterpreterType: string = '';
 
-  constructor() { }
+  constructor(private fb: FormBuilder) {
+    this.interpreterQueryForm = this.fb.group({
+      interpreterName: [''],
+      interpreterStatus: ['']
+    });
+  }
+
+  statusOptions: CascaderOption[] = [
+    {
+      value: 'Running',
+      label: 'Running',
+      isLeaf: true
+    },
+    {
+      value: 'Idle',
+      label: 'Idle',
+      isLeaf: true
+    }
+  ];
+
+  statusColor: {[key: string]: string} = {
+    Running: 'blue',
+    Idle: 'green'
+  }
+  interpreterQueryForm: FormGroup
+  // TODO(kevin85421)
+  lastUpdatedTime: number = Date.now();
+  interpreterInfoList: InterpreterInfo[] = [
+    {
+      name: 'Spark Interpreter 1',
+      type: 'Spark',
+      status: 'Running',
+      progress: 50,
+      lastUpdated: this.lastUpdatedTime
+    },
+    {
+      name: 'Python Interpreter 1',
+      type: 'Python',
+      status: 'Idle',
+      progress: 65,
+      lastUpdated: this.lastUpdatedTime
+    }
+  ]
+
+  // TODO(kevin85421)
+  queryInterpreter() {
+    for (const key in this.interpreterQueryForm.controls) {
+      console.log(key);
+      console.log(this.interpreterQueryForm.controls[key].value);
+    }
+  }
+
+  // TODO(kevin85421)
+  killInterpreter() {}
 
   ngOnInit() {
   }
 
+  onShowAddInterpreterModal() {
+    this.addModalTitle = "Add";
+    this.addModalVisible = true;
+  }
+
+  onHideAddInterpreterModal() {
+    this.addModalVisible = false;
+  }
+
+  updateNewInterpreter(newInterpreter: {interpreterName: string, interpreterType: string}) {
+    this.interpreterInfoList = [
+      ...this.interpreterInfoList,
+      {
+        name: newInterpreter.interpreterName,
+        type: newInterpreter.interpreterType,
+        status: 'Idle',
+        progress: 0,
+        lastUpdated: this.lastUpdatedTime
+      }
+    ]
+    this.onHideAddInterpreterModal();
+  }
 }

@@ -1,6 +1,3 @@
-import { NgModule } from "@angular/core";
-import { ReactiveFormsModule } from '@angular/forms';
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -19,8 +16,18 @@ import { ReactiveFormsModule } from '@angular/forms';
  * specific language governing permissions and limitations
  * under the License.
  */
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { ComponentsModule } from '@submarine/components/components.module';
+import { NgZorroAntdModule } from 'ng-zorro-antd';
+
+import { InterpreterAddModalComponent } from './interpreter-add-modal/interpreter-add-modal.component';
+import { InterpreterComponent } from './interpreter.component';
 
 @NgModule({
-   exports: [ReactiveFormsModule]
+  declarations: [InterpreterComponent, InterpreterAddModalComponent],
+  imports: [CommonModule, NgZorroAntdModule, ComponentsModule, FormsModule, ReactiveFormsModule, RouterModule]
 })
-export class JobModule {}
+export class InterpreterModule {}
