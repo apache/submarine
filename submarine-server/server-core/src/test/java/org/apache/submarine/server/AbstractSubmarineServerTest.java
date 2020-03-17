@@ -101,14 +101,14 @@ public abstract class AbstractSubmarineServerTest {
       confDir.mkdirs();
 
       System.setProperty(SubmarineConfVars.ConfVars.WORKBENCH_WEB_WAR.getVarName(),
-          new File("../workbench-web/dist").getAbsolutePath());
+          new File("../../submarine-workbench/workbench-web-ng/dist/workbench-web-ng").getAbsolutePath());
       System.setProperty(SubmarineConfVars.ConfVars.SUBMARINE_CONF_DIR.getVarName(),
           confDir.getAbsolutePath());
 
       // some test profile does not build workbench-web.
       // to prevent submarine server starting up fail,
       // create workbench-web/dist directory
-      new File("../workbench-web/dist").mkdirs();
+      new File("../../submarine-workbench/workbench-web-ng/dist/workbench-web-ng").mkdirs();
 
       LOG.info("Staring test Submarine server up...");
 
