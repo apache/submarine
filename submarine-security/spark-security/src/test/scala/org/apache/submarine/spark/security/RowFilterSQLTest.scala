@@ -19,9 +19,9 @@
 
 package org.apache.submarine.spark.security
 
-import org.apache.spark.sql.hive.test.TestHive
 import org.apache.spark.sql.SubmarineSparkUtils._
-import org.apache.spark.sql.catalyst.plans.logical.{Project, SubmarineRowFilter}
+import org.apache.spark.sql.catalyst.plans.logical.SubmarineRowFilter
+import org.apache.spark.sql.hive.test.TestHive
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class RowFilterSQLTest extends FunSuite with BeforeAndAfterAll {

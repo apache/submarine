@@ -19,10 +19,10 @@
 
 package org.apache.spark.sql.catalyst.optimizer
 
-import org.apache.spark.sql.hive.test.TestHive
 import org.apache.spark.sql.SubmarineSparkUtils
 import org.apache.spark.sql.execution.SubmarineShowTablesCommand
 import org.apache.spark.sql.execution.command.ShowTablesCommand
+import org.apache.spark.sql.hive.test.TestHive
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class SubmarineSparkOptimizerTest extends FunSuite with BeforeAndAfterAll {

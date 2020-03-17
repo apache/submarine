@@ -19,13 +19,13 @@
 
 package org.apache.submarine.spark.security
 
+import org.apache.spark.sql.SubmarineSparkUtils
 import org.apache.spark.sql.catalyst.expressions.codegen.{CodeFormatter, CodeGenerator}
 import org.apache.spark.sql.catalyst.plans.logical.{SubmarineDataMasking, SubmarineRowFilter}
 import org.apache.spark.sql.catalyst.util.resourceToString
 import org.apache.spark.sql.execution.{SparkPlan, WholeStageCodegenExec}
 import org.apache.spark.sql.hive.test.TestHive
 import org.apache.spark.sql.internal.SQLConf
-import org.apache.spark.sql.SubmarineSparkUtils
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class TPCDSTest extends FunSuite with BeforeAndAfterAll {
