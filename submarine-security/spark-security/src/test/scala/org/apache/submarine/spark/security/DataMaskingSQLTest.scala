@@ -113,6 +113,16 @@ case class DataMaskingSQLTest() extends FunSuite with BeforeAndAfterAll {
     }
   }
 
+  test("alias, non-alias coexists") {
+    val statement = "select key as k1, value, value v1 from default.src"
+    withUser("bob") {
+      val df = sql(statement)
+      val row = df.take(1)(0)
+      assert(row.getString(1).startsWith("x"), "values should be masked")
+      assert(row.getString(2).startsWith("x"), "values should be masked")
+    }
+  }
+
   test("agg") {
     val statement = "select sum(key) as k1, value v1 from default.src group by v1"
     withUser("bob") {
@@ -155,6 +165,16 @@ case class DataMaskingSQLTest() extends FunSuite with BeforeAndAfterAll {
       println(df.queryExecution.optimizedPlan)
       val row = df.take(1)(0)
       assert(row.getString(1) === DigestUtils.md5Hex("val_277"), "value is hashed")
+    }
+  }
+
+  test("MASK_NULL") {
+    val statement = "select * from default.rangertbl4 where value = 'val_277'"
+    withUser("bob") {
+      val df = sql(statement)
+      println(df.queryExecution.optimizedPlan)
+      val row = df.take(1)(0)
+      assert(row.getString(1) === null, "value is hashed")
     }
   }
 

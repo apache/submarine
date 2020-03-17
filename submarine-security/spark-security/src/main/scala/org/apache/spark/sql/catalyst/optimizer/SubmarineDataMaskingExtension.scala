@@ -23,25 +23,26 @@ import scala.collection.mutable
 
 import org.apache.commons.lang3.StringUtils
 import org.apache.hadoop.security.UserGroupInformation
-import org.apache.ranger.plugin.model.RangerPolicy
 import org.apache.ranger.plugin.policyengine.RangerAccessResult
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.catalyst.FunctionIdentifier
+import org.apache.spark.sql.catalyst.{FunctionIdentifier, TableIdentifier}
+import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
 import org.apache.spark.sql.catalyst.catalog.{CatalogFunction, CatalogTable, HiveTableRelation}
-import org.apache.spark.sql.catalyst.expressions.{Alias, AttributeReference, ExprId, NamedExpression, SubqueryExpression}
-import org.apache.spark.sql.catalyst.plans.logical.{Command, LogicalPlan, Project, SubmarineDataMasking, Subquery}
+import org.apache.spark.sql.catalyst.expressions.{Alias, Attribute, AttributeReference, ExprId, NamedExpression, SubqueryExpression}
+import org.apache.spark.sql.catalyst.plans.logical._
+import org.apache.spark.sql.catalyst.rules.Rule
 import org.apache.spark.sql.execution.command.{CreateDataSourceTableAsSelectCommand, CreateViewCommand, InsertIntoDataSourceDirCommand}
 import org.apache.spark.sql.execution.datasources.{InsertIntoDataSourceCommand, InsertIntoHadoopFsRelationCommand, LogicalRelation, SaveIntoDataSourceCommand}
 import org.apache.spark.sql.hive.execution.{CreateHiveTableAsSelectCommand, InsertIntoHiveDirCommand, InsertIntoHiveTable}
-
-import org.apache.submarine.spark.security.{RangerSparkAccessRequest, RangerSparkAuditHandler, RangerSparkPlugin, RangerSparkResource, SparkAccessType}
+import org.apache.submarine.spark.security._
+import org.apache.submarine.spark.security.SparkObjectType.COLUMN
 
 /**
  * An Apache Spark's [[Optimizer]] extension for column data masking.
+ * TODO(kent yao) implement this as analyzer rule
  */
 case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[LogicalPlan] {
-  import RangerPolicy._
+  import org.apache.ranger.plugin.model.RangerPolicy._
 
   // register all built-in masking udfs
   Map("mask" -> "org.apache.hadoop.hive.ql.udf.generic.GenericUDFMask",
@@ -51,12 +52,71 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
     "mask_show_first_n" -> "org.apache.hadoop.hive.ql.udf.generic.GenericUDFMaskShowFirstN",
     "mask_show_last_n" -> "org.apache.hadoop.hive.ql.udf.generic.GenericUDFMaskShowLastN")
     .map(x => CatalogFunction(FunctionIdentifier(x._1), x._2, Seq.empty))
-    .foreach(spark.sessionState.catalog.registerFunction(_, true))
+    .foreach(spark.sessionState.catalog.registerFunction(_, overrideIfExists = true))
 
   private lazy val sparkPlugin = RangerSparkPlugin.build().getOrCreate()
   private lazy val sqlParser = spark.sessionState.sqlParser
   private lazy val analyzer = spark.sessionState.analyzer
-  private lazy val rangerSparkOptimizer = new SubmarineSparkOptimizer(spark)
+  private lazy val auditHandler = RangerSparkAuditHandler()
+  private def currentUser: UserGroupInformation = UserGroupInformation.getCurrentUser
+
+  /**
+   * Get RangerAccessResult from ranger admin or local policies, which contains data masking rules
+   */
+  private def getAccessResult(identifier: TableIdentifier, attr: Attribute): RangerAccessResult = {
+    val resource = RangerSparkResource(COLUMN, identifier.database, identifier.table, attr.name)
+    val req = new RangerSparkAccessRequest(
+      resource,
+      currentUser.getShortUserName,
+      currentUser.getGroupNames.toSet,
+      COLUMN.toString,
+      SparkAccessType.SELECT,
+      sparkPlugin.getClusterName)
+    sparkPlugin.evalDataMaskPolicies(req, auditHandler)
+  }
+
+  /**
+   * Generate an [[Alias]] expression with the access result and original expression, which can be
+   * used to replace the original output of the query.
+   *
+   * This alias contains a child, which might be null literal or [[UnresolvedFunction]]. When the
+   * child is function, it replace the argument which is [[UnresolvedAttribute]] with the input
+   * attribute to resolve directly.
+   */
+  private def getMasker(attr: Attribute, result: RangerAccessResult): Alias = {
+    val expr = if (StringUtils.equalsIgnoreCase(result.getMaskType, MASK_TYPE_NULL)) {
+      "NULL"
+    } else if (StringUtils.equalsIgnoreCase(result.getMaskType, MASK_TYPE_CUSTOM)) {
+      val maskVal = result.getMaskedValue
+      if (maskVal == null) {
+        "NULL"
+      } else {
+        s"${maskVal.replace("{col}", attr.name)}"
+      }
+    } else if (result.getMaskTypeDef != null) {
+      val transformer = result.getMaskTypeDef.getTransformer
+      if (StringUtils.isNotEmpty(transformer)) {
+        s"${transformer.replace("{col}", attr.name)}"
+      } else {
+        return null
+      }
+    } else {
+      return null
+    }
+
+    // sql expression text -> UnresolvedFunction
+    val parsed = sqlParser.parseExpression(expr)
+
+    // Here we replace the attribute with the resolved one, e.g.
+    // 'mask_show_last_n('value, 4, x, x, x, -1, 1)
+    // ->
+    // 'mask_show_last_n(value#37, 4, x, x, x, -1, 1)
+    val resolved = parsed mapChildren {
+      case _: UnresolvedAttribute => attr
+      case o => o
+    }
+    Alias(resolved, attr.name)()
+  }
 
   /**
    * Collecting transformers from Ranger data masking policies, and mapping the to the
@@ -70,65 +130,14 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
       plan: LogicalPlan,
       table: CatalogTable,
       aliases: mutable.Map[Alias, ExprId]): Map[ExprId, NamedExpression] = {
-    val auditHandler = new RangerSparkAuditHandler()
-    val ugi = UserGroupInformation.getCurrentUser
-    val userName = ugi.getShortUserName
-    val groups = ugi.getGroupNames.toSet
     try {
-      val identifier = table.identifier
-      import org.apache.submarine.spark.security.SparkObjectType._
-
       val maskEnableResults = plan.output.map { expr =>
-        val resource = RangerSparkResource(COLUMN, identifier.database, identifier.table, expr.name)
-        val req = new RangerSparkAccessRequest(resource, userName, groups, COLUMN.toString,
-          SparkAccessType.SELECT, sparkPlugin.getClusterName)
-        (expr, sparkPlugin.evalDataMaskPolicies(req, auditHandler))
+        expr -> getAccessResult(table.identifier, expr)
       }.filter(x => isMaskEnabled(x._2))
 
-      val originMaskers = maskEnableResults.map { case (expr, result) =>
-        if (StringUtils.equalsIgnoreCase(result.getMaskType, MASK_TYPE_NULL)) {
-          val sql = s"SELECT NULL AS ${expr.name} FROM ${table.qualifiedName}"
-          val plan = analyzer.execute(sqlParser.parsePlan(sql))
-          (expr, plan)
-        } else if (StringUtils.equalsIgnoreCase(result.getMaskType, MASK_TYPE_CUSTOM)) {
-          val maskVal = result.getMaskedValue
-          if (maskVal == null) {
-            val sql = s"SELECT NULL AS ${expr.name} FROM ${table.qualifiedName}"
-            val plan = analyzer.execute(sqlParser.parsePlan(sql))
-            (expr, plan)
-          } else {
-            val sql = s"SELECT ${maskVal.replace("{col}", expr.name)} AS ${expr.name} FROM" +
-              s" ${table.qualifiedName}"
-            val plan = analyzer.execute(sqlParser.parsePlan(sql))
-            (expr, plan)
-          }
-        } else if (result.getMaskTypeDef != null) {
-          val transformer = result.getMaskTypeDef.getTransformer
-          if (StringUtils.isNotEmpty(transformer)) {
-            val trans = transformer.replace("{col}", expr.name)
-            val sql = s"SELECT $trans AS ${expr.name} FROM ${table.qualifiedName}"
-            val plan = analyzer.execute(sqlParser.parsePlan(sql))
-            (expr, plan)
-          } else {
-            (expr, null)
-          }
-        } else {
-          (expr, null)
-        }
-      }.filter(_._2 != null)
-
-      val formedMaskers: Map[ExprId, Alias] =
-        originMaskers.map { case (expr, p) => (expr, p.asInstanceOf[Project].projectList.head) }
-          .map { case (expr, attr) =>
-            val originalAlias = attr.asInstanceOf[Alias]
-            val newChild = originalAlias.child mapChildren {
-              case _: AttributeReference => expr
-              case o => o
-            }
-            val newAlias = originalAlias.copy(child = newChild)(
-              originalAlias.exprId, originalAlias.qualifier, originalAlias.explicitMetadata)
-            (expr.exprId, newAlias)
-          }.toMap
+      val formedMaskers = maskEnableResults.map { case (expr, result) =>
+        expr.exprId -> getMasker(expr, result)
+      }.filter(_._2 != null).toMap
 
       val aliasedMaskers = new mutable.HashMap[ExprId, Alias]()
       for ((alias, id) <- aliases if formedMaskers.contains(id)) {
@@ -138,10 +147,10 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
             ar.copy(name = alias.name)(alias.exprId, alias.qualifier)
           case o => o
         }
-        val newAlias = originalAlias.copy(child = newChild, alias.name)(
-          originalAlias.exprId, originalAlias.qualifier, originalAlias.explicitMetadata)
+        val newAlias = Alias(newChild, alias.name)()
         aliasedMaskers.put(alias.exprId, newAlias)
       }
+
       formedMaskers ++ aliasedMaskers
     } catch {
       case e: Exception => throw e
@@ -199,14 +208,14 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
           plan
         }
 
-      val marked = newPlan transformUp {
+      // Call spark analysis here explicitly to resolve UnresolvedFunctions
+      val marked = analyzer.execute(newPlan) transformUp {
         case p if hasCatalogTable(p) => SubmarineDataMasking(p)
       }
 
       marked transformAllExpressions {
         case s: SubqueryExpression =>
-          val Subquery(newPlan) =
-            rangerSparkOptimizer.execute(Subquery(SubmarineDataMasking(s.plan)))
+          val Subquery(newPlan) = Subquery(SubmarineDataMasking(s.plan))
           s.withNewPlan(newPlan)
       }
   }
