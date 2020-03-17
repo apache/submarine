@@ -24,7 +24,7 @@ Apache Submarine is a unified AI platform which allows engineers and data scient
 
 Goals of Submarine:
 - It allows jobs easy access data/models in HDFS and other storages.
-- Can launch services to serve TensorFlow/PyTorch models.
+- Can launch services to serve TensorFlow/PyTorch/MXNet models.
 - Support run distributed TensorFlow jobs with simple configs.
 - Support run user-specified Docker images.
 - Support specify GPU and other resources.
@@ -71,7 +71,7 @@ The submarine core is the execution engine of the system and has the following f
 
 - **ML Engine**
 
-  Support for multiple machine learning framework access, such as tensorflow, pytorch.
+  Support for multiple machine learning framework access, such as tensorflow, pytorch, mxnet.
 
 - **Data Engine**
 

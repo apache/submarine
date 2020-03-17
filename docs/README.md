@@ -57,6 +57,8 @@ Here're some examples about Submarine usage.
 
 [How to write Dockerfile for Submarine PyTorch jobs](./helper/WriteDockerfilePT.md)
 
+[How to write Dockerfile for Submarine MXNet jobs](./helper/WriteDockerfileMX.md)
+
 [How to write Dockerfile for Submarine Kaldi jobs](./ecosystem/kaldi/WriteDockerfileKaldi.md)
 
 ## Install Dependencies

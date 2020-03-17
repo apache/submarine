@@ -27,8 +27,6 @@ You need:
 
 * Build a Python virtual environment with TensorFlow 1.13.1 installed
 * A cluster with Hadoop 2.7 or above.
-* TonY library 0.3.2 or above. Download from [here](https://github.com/linkedin/TonY/releases)
-
 
 ### Building a Python virtual environment with TensorFlow
 
@@ -58,9 +56,9 @@ Get mnist_distributed.py from https://github.com/linkedin/TonY/tree/master/tony-
 
 
 ```
-SUBMARINE_VERSION=0.2.0
-SUBMARINE_HOME=path-to/hadoop-submarine-dist-0.2.0-hadoop-3.1
-CLASSPATH=$(hadoop classpath --glob):${SUBMARINE_HOME}/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:${SUBMARINE_HOME}/hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar:path-to/tony-cli-0.3.13-all.jar \
+SUBMARINE_VERSION=0.4.0-SNAPSHOT
+SUBMARINE_HADOOP_VERSION=3.1
+CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
 java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
  --framework tensorflow \
  --verbose \
@@ -72,8 +70,7 @@ java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
  --worker_launch_cmd "myvenv.zip/venv/bin/python mnist_distributed.py --steps 2 --data_dir /tmp/data --working_dir /tmp/mode" \
  --ps_launch_cmd "myvenv.zip/venv/bin/python mnist_distributed.py --steps 2 --data_dir /tmp/data --working_dir /tmp/mode" \
  --insecure \
- --conf tony.containers.resources=path-to/myvenv.zip#archive,path-to/mnist_distributed.py,path-to/tony-cli-0.3.13-all.jar
-
+ --conf tony.containers.resources=path-to/myvenv.zip#archive,path-to/mnist_distributed.py,path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar
 ```
 You should then be able to see links and status of the jobs from command line:
 
@@ -93,12 +90,12 @@ You should then be able to see links and status of the jobs from command line:
 ### With Docker
 
 ```
-SUBMARINE_VERSION=0.2.0
-SUBMARINE_HOME=path-to/hadoop-submarine-dist-0.2.0-hadoop-3.1
-CLASSPATH=$(hadoop classpath --glob):${SUBMARINE_HOME}/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:${SUBMARINE_HOME}/hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar:path-to/tony-cli-0.3.13-all.jar \
+SUBMARINE_VERSION=0.4.0-SNAPSHOT
+SUBMARINE_HADOOP_VERSION=3.1
+CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
 java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
  --framework tensorflow \
- --docker_image hadoopsubmarine/tf-1.8.0-cpu:0.0.3 \
+ --docker_image hadoopsubmarine/tf-1.8.0-cpu:0.0.1 \
  --input_path hdfs://pi-aw:9000/dataset/cifar-10-data \
  --worker_resources memory=3G,vcores=2 \
  --worker_launch_cmd "export CLASSPATH=\$(/hadoop-3.1.0/bin/hadoop classpath --glob) && cd /test/models/tutorials/image/cifar10_estimator && python cifar10_main.py --data-dir=%input_path% --job-dir=%checkpoint_path% --train-steps=10000 --eval-batch-size=16 --train-batch-size=16 --variable-strategy=CPU --num-gpus=0 --sync" \
@@ -110,26 +107,27 @@ java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
  --env HADOOP_COMMON_HOME=/hadoop-3.1.0 \
  --env HADOOP_HDFS_HOME=/hadoop-3.1.0 \
  --env HADOOP_CONF_DIR=/hadoop-3.1.0/etc/hadoop \
- --conf tony.containers.resources=/home/pi/hadoop/TonY/tony-cli/build/libs/tony-cli-0.3.2-all.jar
+ --conf tony.containers.resources=path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar
 ```
 #### Notes:
 1) `DOCKER_JAVA_HOME` points to JAVA_HOME inside Docker image.
 
 2) `DOCKER_HADOOP_HDFS_HOME` points to HADOOP_HDFS_HOME inside Docker image.
 
-After Submarine v0.2.0, there is a uber jar `hadoop-submarine-all-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}.jar` released together with
-the `hadoop-submarine-core-${SUBMARINE_VERSION}.jar`, `hadoop-submarine-yarnservice-runtime-${SUBMARINE_VERSION}.jar` and `hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar`.
-<br />
-To use the uber jar, we need to replace the three jars in previous command with one uber jar and put hadoop config directory in CLASSPATH.
+We removed TonY submodule after applying [SUBMARINE-371](https://issues.apache.org/jira/browse/SUBMARINE-371) and changed to use TonY dependency directly.
 
-## Launch PyToch Application:
+After Submarine v0.2.0, there is a uber jar `submarine-all-${SUBMARINE_VERSION}-hadoop-${HADOOP_VERSION}.jar` released together with
+the `submarine-core-${SUBMARINE_VERSION}.jar`, `submarine-yarnservice-runtime-${SUBMARINE_VERSION}.jar` and `submarine-tony-runtime-${SUBMARINE_VERSION}.jar`.
+<br />
+
+## Launch PyTorch Application:
 
 ### Without Docker
 
 You need:
 
 * Build a Python virtual environment with PyTorch 0.4.0+ installed
-
+* A cluster with Hadoop 2.7 or above.
 
 ### Building a Python virtual environment with PyTorch
 
@@ -153,10 +151,11 @@ Get mnist_distributed.py from https://github.com/linkedin/TonY/tree/master/tony-
 
 
 ```
-SUBMARINE_VERSION=0.2.0
-SUBMARINE_HOME=path-to/hadoop-submarine-dist-0.2.0-hadoop-3.1
-CLASSPATH=$(hadoop classpath --glob):${SUBMARINE_HOME}/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:${SUBMARINE_HOME}/hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar:path-to/tony-cli-0.3.13-all.jar \
-java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
+SUBMARINE_VERSION=0.4.0-SNAPSHOT
+SUBMARINE_HADOOP_VERSION=3.1
+CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
+java org.apache.submarine.client.cli.Cli job run --name py-job-001 \
+ --framework pytorch
  --num_workers 2 \
  --worker_resources memory=3G,vcores=2 \
  --num_ps 2 \
@@ -164,10 +163,8 @@ java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
  --worker_launch_cmd "myvenv.zip/venv/bin/python mnist_distributed.py" \
  --ps_launch_cmd "myvenv.zip/venv/bin/python mnist_distributed.py" \
  --insecure \
- --conf tony.containers.resources=PATH_TO_VENV_YOU_CREATED/myvenv.zip#archive,PATH_TO_MNIST_EXAMPLE/mnist_distributed.py, \
-PATH_TO_TONY_CLI_JAR/tony-cli-0.3.2-all.jar \
---conf tony.application.framework=pytorch
-
+ --conf tony.containers.resources=path-to/myvenv.zip#archive,path-to/mnist_distributed.py, \
+path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar
 ```
 You should then be able to see links and status of the jobs from command line:
 
@@ -187,23 +184,117 @@ You should then be able to see links and status of the jobs from command line:
 ### With Docker
 
 ```
-SUBMARINE_VERSION=0.2.0
-SUBMARINE_HOME=path-to/hadoop-submarine-dist-0.2.0-hadoop-3.1
-CLASSPATH=$(hadoop classpath --glob):${SUBMARINE_HOME}/hadoop-submarine-core-${SUBMARINE_VERSION}.jar:${SUBMARINE_HOME}/hadoop-submarine-tony-runtime-${SUBMARINE_VERSION}.jar:path-to/tony-cli-0.3.13-all.jar \
-java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
- --docker_image hadoopsubmarine/tf-1.8.0-cpu:0.0.3 \
- --input_path hdfs://pi-aw:9000/dataset/cifar-10-data \
+SUBMARINE_VERSION=0.4.0-SNAPSHOT
+SUBMARINE_HADOOP_VERSION=3.1
+CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
+java org.apache.submarine.client.cli.Cli job run --name py-job-001 \
+ --framework pytorch
+ --docker_image pytorch-latest-gpu:0.0.1 \
+ --input_path "" \
+ --num_workers 1 \
  --worker_resources memory=3G,vcores=2 \
- --worker_launch_cmd "export CLASSPATH=\$(/hadoop-3.1.0/bin/hadoop classpath --glob) && cd /test/models/tutorials/image/cifar10_estimator && python cifar10_main.py --data-dir=%input_path% --job-dir=%checkpoint_path% --train-steps=10000 --eval-batch-size=16 --train-batch-size=16 --variable-strategy=CPU --num-gpus=0 --sync" \
+ --worker_launch_cmd "cd /test/ && python cifar10_tutorial.py" \
  --env JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
- --env DOCKER_HADOOP_HDFS_HOME=/hadoop-3.1.0 \
+ --env DOCKER_HADOOP_HDFS_HOME=/hadoop-3.1.2 \
  --env DOCKER_JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
- --env HADOOP_HOME=/hadoop-3.1.0 \
- --env HADOOP_YARN_HOME=/hadoop-3.1.0 \
- --env HADOOP_COMMON_HOME=/hadoop-3.1.0 \
- --env HADOOP_HDFS_HOME=/hadoop-3.1.0 \
- --env HADOOP_CONF_DIR=/hadoop-3.1.0/etc/hadoop \
- --conf tony.containers.resources=PATH_TO_TONY_CLI_JAR/tony-cli-0.3.2-all.jar \
- --conf tony.application.framework=pytorch
+ --env HADOOP_HOME=/hadoop-3.1.2 \
+ --env HADOOP_YARN_HOME=/hadoop-3.1.2 \
+ --env HADOOP_COMMON_HOME=/hadoop-3.1.2 \
+ --env HADOOP_HDFS_HOME=/hadoop-3.1.2 \
+ --env HADOOP_CONF_DIR=/hadoop-3.1.2/etc/hadoop \
+ --conf tony.containers.resources=path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar
 ```
 
+## Launch MXNet Application:
+
+### Without Docker
+
+You need:
+
+* Build a Python virtual environment with MXNet installed
+* A cluster with Hadoop 2.7 or above.
+
+### Building a Python virtual environment with MXNet
+
+TonY requires a Python virtual environment zip with MXNet and any needed Python libraries already installed.
+
+```
+wget https://files.pythonhosted.org/packages/33/bc/fa0b5347139cd9564f0d44ebd2b147ac97c36b2403943dbee8a25fd74012/virtualenv-16.0.0.tar.gz
+tar xf virtualenv-16.0.0.tar.gz
+
+python virtualenv-16.0.0/virtualenv.py venv
+. venv/bin/activate
+pip install mxnet==1.5.1
+zip -r myvenv.zip venv
+deactivate
+```
+
+
+### Get the training examples
+
+Get image_classification.py from this [link](https://github.com/apache/submarine/blob/master/dev-support/mini-submarine/submarine/image_classification.py)
+
+
+```
+SUBMARINE_VERSION=0.4.0-SNAPSHOT
+SUBMARINE_HADOOP_VERSION=3.1
+CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
+java org.apache.submarine.client.cli.Cli job run --name mx-job-001 \
+ --framework mxnet
+ --input_path "" \
+ --num_workers 2 \
+ --worker_resources memory=3G,vcores=2 \
+ --worker_launch_cmd "myvenv.zip/venv/bin/python image_classification.py --dataset cifar10 --model vgg11 --epochs 1 --kvstore dist_sync" \
+ --num_ps 2 \
+ --ps_resources memory=3G,vcores=2 \
+ --ps_launch_cmd "myvenv.zip/venv/bin/python image_classification.py --dataset cifar10 --model vgg11 --epochs 1 --kvstore dist_sync" \
+ --num_schedulers=1 \
+ --scheduler_resources memory=1G,vcores=1 \
+ --scheduler_launch_cmd="myvenv.zip/venv/bin/python image_classification.py --dataset cifar10 --model vgg11 --epochs 1 --kvstore dist_sync" \
+ --insecure \
+ --conf tony.containers.resources=path-to/myvenv.zip#archive,path-to/image_classification.py, \
+path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar
+```
+You should then be able to see links and status of the jobs from command line:
+
+```
+2020-04-16 20:23:43,834 INFO tony.TonyClient: Task status updated: [TaskInfo] name: server, index: 1, url: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000004/pi status: RUNNING
+2020-04-16 20:23:43,834 INFO tony.TonyClient: Task status updated: [TaskInfo] name: server, index: 0, url: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000003/pi status: RUNNING
+2020-04-16 20:23:43,834 INFO tony.TonyClient: Task status updated: [TaskInfo] name: worker, index: 1, url: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000006/pi status: RUNNING
+2020-04-16 20:23:43,834 INFO tony.TonyClient: Task status updated: [TaskInfo] name: worker, index: 0, url: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000005/pi status: RUNNING
+2020-04-16 20:23:43,834 INFO tony.TonyClient: Task status updated: [TaskInfo] name: scheduler, index: 0, url: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000002/pi status: RUNNING
+2020-04-16 20:23:43,839 INFO tony.TonyClient: Logs for scheduler 0 at: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000002/pi
+2020-04-16 20:23:43,839 INFO tony.TonyClient: Logs for server 0 at: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000003/pi
+2020-04-16 20:23:43,840 INFO tony.TonyClient: Logs for server 1 at: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000004/pi
+2020-04-16 20:23:43,840 INFO tony.TonyClient: Logs for worker 0 at: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000005/pi
+2020-04-16 20:23:43,840 INFO tony.TonyClient: Logs for worker 1 at: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000006/pi
+2020-04-16 21:02:09,723 INFO tony.TonyClient: Task status updated: [TaskInfo] name: scheduler, index: 0, url: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000002/pi status: SUCCEEDED
+2020-04-16 21:02:09,736 INFO tony.TonyClient: Task status updated: [TaskInfo] name: worker, index: 0, url: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000005/pi status: SUCCEEDED
+2020-04-16 21:02:09,737 INFO tony.TonyClient: Task status updated: [TaskInfo] name: server, index: 1, url: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000004/pi status: SUCCEEDED
+2020-04-16 21:02:09,737 INFO tony.TonyClient: Task status updated: [TaskInfo] name: worker, index: 1, url: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000006/pi status: SUCCEEDED
+2020-04-16 21:02:09,737 INFO tony.TonyClient: Task status updated: [TaskInfo] name: server, index: 0, url: http://pi-aw:8042/node/containerlogs/container_1587037749540_0005_01_000003/pi status: SUCCEEDED
+```
+
+### With Docker
+You could refer to this [sample Dockerfile](docker/mxnet/cifar10/Dockerfile.cifar10.mx_1.5.1) for building your own Docker image.
+```
+SUBMARINE_VERSION=0.4.0-SNAPSHOT
+SUBMARINE_HADOOP_VERSION=3.1
+CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
+java org.apache.submarine.client.cli.Cli job run --name mx-job-001 \
+ --framework mxnet
+ --docker_image <your_docker_image> \
+ --input_path "" \
+ --num_schedulers 1 \
+ --scheduler_resources memory=1G,vcores=1 \
+ --scheduler_launch_cmd "/usr/bin/python image_classification.py --dataset cifar10 --model vgg11 --epochs 1 --kvstore dist_sync" \
+ --num_workers 2 \
+ --worker_resources memory=2G,vcores=1 \
+ --worker_launch_cmd "/usr/bin/python image_classification.py --dataset cifar10 --model vgg11 --epochs 1 --kvstore dist_sync" \
+ --num_ps 2 \
+ --ps_resources memory=2G,vcores=1 \
+ --ps_launch_cmd "/usr/bin/python image_classification.py --dataset cifar10 --model vgg11 --epochs 1 --kvstore dist_sync" \
+ --verbose \
+ --insecure \
+ --conf tony.containers.resources=path-to/image_classification.py,path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar
+```
