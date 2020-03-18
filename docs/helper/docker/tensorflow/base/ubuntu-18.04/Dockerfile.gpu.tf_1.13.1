@@ -16,9 +16,10 @@
 FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 
 # Pick up some TF dependencies
-RUN apt-get update && apt-get install -y --allow-downgrades --no-install-recommends \
+RUN export DEBIAN_FRONTEND=noninteractive && apt-get update && \
+        apt-get install -y --allow-downgrades --no-install-recommends \
         --allow-change-held-packages --allow-unauthenticated \
-        build-essential libfreetype6-dev libpng12-dev \
+        build-essential libfreetype6-dev \
         libzmq3-dev pkg-config python python-dev \
         rsync software-properties-common curl unzip wget grep sed vim \
         iputils-ping net-tools gdb python2.7-dbg tzdata \
@@ -49,7 +50,7 @@ RUN echo "Install python related packages" && \
     apt-get -y update && \
     apt-get install -y --no-install-recommends gfortran \
     # numerical/algebra packages
-    libblas-dev libatlas-dev liblapack-dev \
+    libblas-dev libatlas-base-dev liblapack-dev \
     # font, image for matplotlib
     libpng-dev libxft-dev \
     # for tkinter
@@ -68,7 +69,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends git && \
 
 # Install hadoop
 ENV HADOOP_VERSION="3.1.2"
-RUN wget http://mirrors.shu.edu.cn/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
+RUN wget https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
+# If you are in mainland China, you can use the following command.
+# RUN wget http://mirrors.shu.edu.cn/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
+
 RUN tar zxf hadoop-${HADOOP_VERSION}.tar.gz
 RUN ln -s hadoop-${HADOOP_VERSION} hadoop-current
 RUN rm hadoop-${HADOOP_VERSION}.tar.gz

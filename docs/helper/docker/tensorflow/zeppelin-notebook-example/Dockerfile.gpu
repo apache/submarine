@@ -21,7 +21,7 @@ RUN  echo "$LOG_TAG update and install basic packages" && \
         build-essential \
         curl \
         libfreetype6-dev \
-        libpng12-dev \
+        libpng-dev \
         libzmq3-dev \
         pkg-config \
         rsync \
