@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.Assert;
 
 public class loginIT extends AbstractSubmarineIT {
   public final static Logger LOG = LoggerFactory.getLogger(loginIT.class);
@@ -44,6 +45,22 @@ public class loginIT extends AbstractSubmarineIT {
 
   @Test
   public void loginUser() throws Exception {
+    // Testcase1
+    LOG.info("[Sub-Testcase-1] Invalid User");
+    LOG.info("Enter blank username and password");
+    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
+    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Please input your username!\")]")).size(), 1);
+    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Please input your Password!\")]")).size(), 1);
+    LOG.info("Enter invalid username and password");
+    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("123");
+    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("123");
+    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
+    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"_this.logError is not a function\")]")).size(), 1);
+    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("\b\b\b");
+    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("\b\b\b"); 
+
+    // Testcase2
+    LOG.info("[Sub-Testcase-2] Valid User");
     LOG.info("Start to login user to submarine workbench.");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
     pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
