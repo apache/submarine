@@ -190,7 +190,6 @@ curl -X POST -H "Content-Type: application/json" -d '
     },
     "Worker": {
       "name": "worker",
-      "name": "worker",
       "replicas": 1,
       "resources": "cpu=1,memory=1024M"
     }
