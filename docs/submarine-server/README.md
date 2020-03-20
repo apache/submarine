@@ -23,8 +23,8 @@ It now supports Tensorflow and PyTorch jobs.
 
 ## Prepare environment
 - Java 1.8.x or higher.
-- A k8s cluster
-- The Docker image encapsulated with your DL code
+- A K8s cluster
+- The Docker image encapsulated with your deep learning application code
 
 Note that We provide a learning and production environment tutorial. For more deployment info see [Deploy Submarine Server on Kubernetes](./setup-kubernetes.md).
 

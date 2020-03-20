@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.api.exception;
+package org.apache.submarine.commons.utils.exception;
 
 public class SubmarineRuntimeException extends RuntimeException {
   private static final long serialVersionUID = 7159777541471705348L;
