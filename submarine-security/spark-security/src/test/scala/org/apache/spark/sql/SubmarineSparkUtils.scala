@@ -22,7 +22,7 @@ package org.apache.spark.sql
 import java.security.PrivilegedExceptionAction
 
 import org.apache.hadoop.security.UserGroupInformation
-import org.apache.spark.sql.catalyst.optimizer.{SubmarineDataMaskingExtension, SubmarineRowFilterExtension, SubmarineSparkRangerAuthorizationExtension}
+import org.apache.spark.sql.catalyst.optimizer.{SubmarineDataMaskingExtension, SubmarinePushPredicatesThroughExtensions, SubmarineRowFilterExtension, SubmarineSparkRangerAuthorizationExtension}
 import org.apache.spark.sql.execution.SubmarineSparkPlanOmitStrategy
 
 object SubmarineSparkUtils {
@@ -40,11 +40,13 @@ object SubmarineSparkUtils {
 
   def enableRowFilter(spark: SparkSession): Unit = {
     spark.extensions.injectOptimizerRule(SubmarineRowFilterExtension)
+    spark.extensions.injectOptimizerRule(SubmarinePushPredicatesThroughExtensions)
     spark.extensions.injectPlannerStrategy(SubmarineSparkPlanOmitStrategy)
   }
 
   def enableDataMasking(spark: SparkSession): Unit = {
     spark.extensions.injectOptimizerRule(SubmarineDataMaskingExtension)
+    spark.extensions.injectOptimizerRule(SubmarinePushPredicatesThroughExtensions)
     spark.extensions.injectPlannerStrategy(SubmarineSparkPlanOmitStrategy)
   }
 
@@ -52,6 +54,7 @@ object SubmarineSparkUtils {
     spark.extensions.injectOptimizerRule(SubmarineSparkRangerAuthorizationExtension)
     spark.extensions.injectOptimizerRule(SubmarineRowFilterExtension)
     spark.extensions.injectOptimizerRule(SubmarineDataMaskingExtension)
+    spark.extensions.injectOptimizerRule(SubmarinePushPredicatesThroughExtensions)
     spark.extensions.injectPlannerStrategy(SubmarineSparkPlanOmitStrategy)
   }
 }

@@ -20,7 +20,7 @@
 package org.apache.submarine.spark.security.api
 
 import org.apache.spark.sql.SparkSessionExtensions
-import org.apache.spark.sql.catalyst.optimizer.{SubmarineConfigurationCheckExtension, SubmarineDataMaskingExtension, SubmarineRowFilterExtension, SubmarineSparkRangerAuthorizationExtension}
+import org.apache.spark.sql.catalyst.optimizer.{SubmarineConfigurationCheckExtension, SubmarineDataMaskingExtension, SubmarinePushPredicatesThroughExtensions, SubmarineRowFilterExtension, SubmarineSparkRangerAuthorizationExtension}
 import org.apache.spark.sql.execution.SubmarineSparkPlanOmitStrategy
 
 import org.apache.submarine.spark.security.Extensions
@@ -43,6 +43,7 @@ class RangerSparkSQLExtension extends Extensions {
     ext.injectOptimizerRule(SubmarineSparkRangerAuthorizationExtension)
     ext.injectOptimizerRule(SubmarineRowFilterExtension)
     ext.injectOptimizerRule(SubmarineDataMaskingExtension)
+    ext.injectOptimizerRule(SubmarinePushPredicatesThroughExtensions)
     ext.injectPlannerStrategy(SubmarineSparkPlanOmitStrategy)
   }
 }
