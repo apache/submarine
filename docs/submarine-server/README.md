@@ -19,15 +19,22 @@ under the License.
 
 # Submarine Server Guide
 This guide covers the deploy and running the training job by submarine server.
+It now supports Tensorflow and PyTorch jobs.
 
 ## Prepare environment
-Submarine runs on **Linux** and **macOS**, requires the Java 1.8.x or higher. We provide the learning and production environment tutorial. For more deployment info see [Deploy Submarine Server on Kubernetes](./setup-kubernetes.md).
+- Java 1.8.x or higher.
+- A K8s cluster
+- The Docker image encapsulated with your deep learning application code
+
+Note that We provide a learning and production environment tutorial. For more deployment info see [Deploy Submarine Server on Kubernetes](./setup-kubernetes.md).
 
 ## Training
-We designed the generic job spec for training job, suggest to read the the job spec before submit job.
+A generic job spec was designed for training job request, you should get familiar with the the job spec before submit job.
 
 ### Job Spec
-Job Spec as the DSL for submarine server, it consists of library, submitter and tasks. For example:
+Job spec consists of `librarySpec`, `submitterSpec` and `taskSpecs`. Below are examples of the spec:
+
+### Sample Tensorflow Spec
 ```yaml
 name: "mnist"
 librarySpec:
@@ -41,8 +48,6 @@ submitterSpec:
   type: "k8s"
   configPath:
   namespace: "submarine"
-  kind: "TFJob"
-  apiVersion: "kubeflow.org/v1"
 taskSpecs:
   Ps:
     name: tensorflow
@@ -68,10 +73,7 @@ or
   },
   "submitterSpec": {
     "type": "k8s",
-    "configPath": null,
-    "namespace": "submarine",
-    "kind": "TFJob",
-    "apiVersion": "kubeflow.org/v1"
+    "namespace": "submarine"
   },
   "taskSpecs": {
     "Ps": {
@@ -88,22 +90,119 @@ or
 }
 ```
 
-For more info see [here](../design/submarine-server/jobspec.md).
+### Sample PyTorch Spec
+
+```json
+{
+  "name": "pytorch-dist-mnist-gloo",
+  "librarySpec": {
+    "name": "pytorch",
+    "version": "2.1.0",
+    "image": "apache/submarine:pytorch-dist-mnist-1.0",
+    "cmd": "python /var/mnist.py --backend gloo",
+    "envVars": {
+      "ENV_1": "ENV1"
+    }
+  },
+  "submitterSpec": {
+    "type": "k8s",
+    "namespace": "submarine"
+  },
+  "taskSpecs": {
+    "Master": {
+      "name": "master",
+      "replicas": 1,
+      "resources": "cpu=1,memory=1024M"
+    },
+    "Worker": {
+      "name": "worker",
+      "replicas": 1,
+      "resources": "cpu=1,memory=1024M"
+    }
+  }
+}
+```
+
+For more info about the spec definition see [here](../design/submarine-server/jobspec.md).
 
 ### Submit Job
 > Before submit training job, you should make sure you had deployed the [submarine server and tf-operator](./setup-kubernetes.md#setup-submarine).
 
-You can use the Postman post the job to server or use `curl` run following command:
+You can use the Postman to post the job to server or use `curl` with the following command:
+
+For Tensorflow Job:
+```bash
+curl -X POST -H "Content-Type: application/json" -d '
+{
+  "name": "mnist",
+  "librarySpec": {
+    "name": "TensorFlow",
+    "version": "2.1.0",
+    "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0",
+    "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
+    "envVars": {
+      "ENV_1": "ENV1"
+    }
+  },
+  "submitterSpec": {
+    "type": "k8s",
+    "namespace": "submarine"
+  },
+  "taskSpecs": {
+    "Ps": {
+      "name": "tensorflow",
+      "replicas": 1,
+      "resources": "cpu=1,memory=1024M"
+    },
+    "Worker": {
+      "name": "tensorflow",
+      "replicas": 1,
+      "resources": "cpu=1,memory=1024M"
+    }
+  }
+}
+' http://127.0.0.1:8080/api/v1/jobs
 ```
-curl -H "Content-Type: application/json" --request POST \
---data '{"name":"mnist","librarySpec":{"name":"TensorFlow","version":"2.1.0","image":"gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0","cmd":"python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150","envVars":{"ENV_1":"ENV1"}},"submitterSpec":{"type":"k8s","configPath":null,"namespace":"submarine","kind":"TFJob","apiVersion":"kubeflow.org/v1"},"taskSpecs":{"Ps":{"name":"tensorflow","replicas":1,"resources":"cpu=1,memory=1024M"},"Worker":{"name":"tensorflow","replicas":1,"resources":"cpu=1,memory=1024M"}}}' \
-http://127.0.0.1:8080/api/v1/jobs
+
+For PyTorch Job:
+```bash
+curl -X POST -H "Content-Type: application/json" -d '
+{
+  "name": "pytorch-dist-mnist-gloo",
+  "librarySpec": {
+    "name": "pytorch",
+    "version": "2.1.0",
+    "image": "apache/submarine:pytorch-dist-mnist-1.0",
+    "cmd": "python /var/mnist.py --backend gloo",
+    "envVars": {
+      "ENV_1": "ENV1"
+    }
+  },
+  "submitterSpec": {
+    "type": "k8s",
+    "namespace": "submarine"
+  },
+  "taskSpecs": {
+    "Master": {
+      "name": "master",
+      "replicas": 1,
+      "resources": "cpu=1,memory=1024M"
+    },
+    "Worker": {
+      "name": "worker",
+      "replicas": 1,
+      "resources": "cpu=1,memory=1024M"
+    }
+  }
+}
+' http://127.0.0.1:8080/api/v1/jobs      
 ```
 
 ### Verify Jobs
 You can run following command to get the submitted job:
 ```
 kubectl get -n submarine tfjob
+kubectl get -n submarine pytorchjob
 ```
 
 **Output:**
@@ -123,4 +222,11 @@ NAME                               READY   STATUS              RESTARTS   AGE
 mnist-ps-0                         0/1     ContainerCreating   0          3m47s
 mnist-worker-0                     0/1     Pending             0          3m47s
 tf-job-operator-74cc6bd6cb-fqd5s   1/1     Running             0          98m
+```
+
+
+### Delete Jobs
+```bash
+kubectl -n submarine delete tfjob/mnist
+kubectl -n submarine delete pytorchjob/pytorch-dist-mnist-gloo
 ```

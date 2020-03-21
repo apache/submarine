@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    name: pytorch-operator
+  name: pytorch-operator
+  namespace: submarine
+spec:
+  progressDeadlineSeconds: 2147483647
+  replicas: 1
+  revisionHistoryLimit: 2147483647
+  selector:
+    matchLabels:
+      name: pytorch-operator
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        name: pytorch-operator
+    spec:
+      containers:
+      - command:
+        - /pytorch-operator.v1
+        - --alsologtostderr
+        - -v=1
+        - --monitoring-port=8443
+        env:
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        image: gcr.io/kubeflow-images-public/pytorch-operator:v1.0.0-g047cf0f
+        imagePullPolicy: IfNotPresent
+        name: pytorch-operator
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: pytorch-operator
+      serviceAccountName: pytorch-operator
+      terminationGracePeriodSeconds: 30
+status: {}

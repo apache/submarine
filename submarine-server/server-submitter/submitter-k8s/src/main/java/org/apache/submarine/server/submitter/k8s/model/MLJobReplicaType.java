@@ -17,12 +17,11 @@
  * under the License.
  */
 
-package org.apache.submarine.server.api.exception;
+package org.apache.submarine.server.submitter.k8s.model;
 
-public class UnsupportedJobTypeException extends Exception {
-  private static final long serialVersionUID = 4752254162145918312L;
-
-  public UnsupportedJobTypeException() {
-    super("Unsupported Job Type Exception");
-  }
+/**
+ * Interface for enum like <code>PyTorchJobReplicaType</code> to implement
+ * */
+public interface MLJobReplicaType {
+  String getTypeName();
 }

@@ -33,6 +33,7 @@ public interface JobSubmitter extends JobHandler {
 
   /**
    * Get the submitter type which is the unique identifier.
+   *
    * @return unique identifier
    */
   String getSubmitterType();

@@ -17,22 +17,12 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model.tfjob;
+package org.apache.submarine.commons.utils.exception;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.junit.Test;
+public class SubmarineRuntimeException extends RuntimeException {
+  private static final long serialVersionUID = 7159777541471705348L;
 
-import java.io.File;
-import java.io.FileReader;
-import java.net.URL;
-
-public class TFJobTest {
-  @Test
-  public void testFromJson() throws Exception {
-    URL fileUrl = this.getClass().getResource("/tf_job_mnist.json");
-    Gson gson = new Gson();
-    TFJob tfJob = gson.fromJson(new FileReader(new File(fileUrl.toURI())), TFJob.class);
-    System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(tfJob));
+  public SubmarineRuntimeException(String message) {
+    super(message);
   }
 }

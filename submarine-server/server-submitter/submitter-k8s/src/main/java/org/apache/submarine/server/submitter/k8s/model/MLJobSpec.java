@@ -17,12 +17,11 @@
  * under the License.
  */
 
-package org.apache.submarine.server.api.exception;
+package org.apache.submarine.server.submitter.k8s.model;
 
-public class UnsupportedJobTypeException extends Exception {
-  private static final long serialVersionUID = 4752254162145918312L;
+import java.util.Map;
 
-  public UnsupportedJobTypeException() {
-    super("Unsupported Job Type Exception");
-  }
+public interface MLJobSpec {
+  Map<MLJobReplicaType, MLJobReplicaSpec> getReplicaSpecs();
+  void setReplicaSpecs(Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecs);
 }

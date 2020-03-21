@@ -35,10 +35,7 @@ librarySpec:
     ENV_1: "ENV1"
 submitterSpec:
   type: "k8s"
-  configPath:
   namespace: "submarine"
-  kind: "TFJob"
-  apiVersion: "kubeflow.org/v1"
 taskSpecs:
   Ps:
     name: tensorflow
@@ -55,7 +52,7 @@ The library spec describes the info about machine learning framework. All the fi
 
 | field | type | optional | description |
 |---|---|---|---|
-| name | string | NO | Machine Learning Framework name. Such as: TensorFlow/PyTorch etc. |
+| name | string | NO | Machine Learning Framework name. Only `"tensorflow"` and `"pytorch"` is supported. It doesn't matter if the value is uppercase or lowercase.|
 | version | string | NO | The version of ML framework. Such as: 2.1.0 |
 | image | string | NO | The public image used for each task if not specified. Such as: apache/submarine |
 | cmd | string | YES | The public entry cmd for the task if not specified. |
@@ -66,14 +63,14 @@ It describes the info of submitter which the user spcified, such as yarn, yarnse
 
 | field | type | optional | description |
 |---|---|---|---|
-| type | string | NO | The submitter type, supports k8s, yarn, yarnservice |
-| configPath | string | NO | The config path of the specified resource manager |
+| type | string | NO | The submitter type, supports `k8s` now |
+| configPath | string | YES | The config path of the specified resource manager. You can set it in submarine-site.xml if run submarine-server locally |
 | namespace | string | NO | It's known as queue in Apache Hadoop YARN and namespace in Kubernetes. |
-| kind | string | YES | It's used for k8s submitter, supports TFJob |
+| kind | string | YES | It's used for k8s submitter, supports TFJob and PyTorchJob |
 | apiVersion | string | YES | It should pair with the kind, such as the TFJob's api version is `kubeflow.org/v1` |
 
 ### Task Spec
-It describes the task info, the tasks make up the job. So it must be spcified when submit the job. All the tasks should putted into the key value collection. Such as:
+It describes the task info, the tasks make up the job. So it must be specified when submit the job. All the tasks should putted into the key value collection. Such as:
 ```yaml
 taskSpecs:
   Ps:

@@ -3,7 +3,7 @@
   "kind": "TFJob",
   "metadata": {
     "name": "mnist",
-    "namespace": "kubeflow"
+    "namespace": "submarine"
   },
   "spec": {
     "cleanPodPolicy": "None",

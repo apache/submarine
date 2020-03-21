@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model.tfjob;
+package org.apache.submarine.server.submitter.k8s.model.pytorchjob;
 
 import com.google.gson.annotations.SerializedName;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
@@ -26,15 +26,13 @@ import org.apache.submarine.server.submitter.k8s.model.MLJobSpec;
 
 import java.util.Map;
 
-/**
- * The replica spec of TFJob.
- */
-public class TFJobSpec implements MLJobSpec {
+public class PyTorchJobSpec implements MLJobSpec {
+
   /**
-   * Key: Chief, Ps, Worker, Evaluator
+   * Key: Master, Worker
    */
-  @SerializedName("tfReplicaSpecs")
-  private Map<MLJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs;
+  @SerializedName("pytorchReplicaSpecs")
+  private Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecs;
 
   /**
    * Get the replica specs.
@@ -43,17 +41,17 @@ public class TFJobSpec implements MLJobSpec {
    */
   @Override
   public Map<MLJobReplicaType, MLJobReplicaSpec> getReplicaSpecs() {
-    return tfReplicaSpecs;
+    return replicaSpecs;
   }
 
   /**
-   * Set replica specs, the key's range is [Chief, Ps, Worker, Evaluator]
+   * Set replica specs
    *
-   * @param tfReplicaSpecs map
+   * @param replicaSpecs map
    */
   @Override
   public void setReplicaSpecs(
-      Map<MLJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs) {
-    this.tfReplicaSpecs = tfReplicaSpecs;
+      Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecs) {
+    this.replicaSpecs = replicaSpecs;
   }
 }

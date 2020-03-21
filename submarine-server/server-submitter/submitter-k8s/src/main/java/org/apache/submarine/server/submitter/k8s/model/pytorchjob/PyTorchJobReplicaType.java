@@ -17,43 +17,41 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model.tfjob;
+package org.apache.submarine.server.submitter.k8s.model.pytorchjob;
 
 import com.google.gson.annotations.SerializedName;
-import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
-import org.apache.submarine.server.submitter.k8s.model.MLJobSpec;
 
-import java.util.Map;
+public enum PyTorchJobReplicaType implements MLJobReplicaType {
 
-/**
- * The replica spec of TFJob.
- */
-public class TFJobSpec implements MLJobSpec {
-  /**
-   * Key: Chief, Ps, Worker, Evaluator
-   */
-  @SerializedName("tfReplicaSpecs")
-  private Map<MLJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs;
+  @SerializedName("Master")
+  Master("Master"),
 
-  /**
-   * Get the replica specs.
-   *
-   * @return map
-   */
-  @Override
-  public Map<MLJobReplicaType, MLJobReplicaSpec> getReplicaSpecs() {
-    return tfReplicaSpecs;
+  @SerializedName("Worker")
+  Worker("Worker");
+
+  private String typeName;
+
+  PyTorchJobReplicaType(String n) {
+    this.typeName = n;
   }
 
-  /**
-   * Set replica specs, the key's range is [Chief, Ps, Worker, Evaluator]
-   *
-   * @param tfReplicaSpecs map
-   */
+  public static boolean isSupportedReplicaType(String type) {
+    return type.equalsIgnoreCase("Master") ||
+        type.equalsIgnoreCase("Worker");
+  }
+
+  public static String[] names() {
+    PyTorchJobReplicaType[] types = values();
+    String[] names = new String[types.length];
+    for (int i = 0; i < types.length; i++) {
+      names[i] = types[i].name();
+    }
+    return names;
+  }
+
   @Override
-  public void setReplicaSpecs(
-      Map<MLJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs) {
-    this.tfReplicaSpecs = tfReplicaSpecs;
+  public String getTypeName() {
+    return this.typeName;
   }
 }

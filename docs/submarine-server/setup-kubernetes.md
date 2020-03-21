@@ -82,6 +82,7 @@ Copy the kube config into `conf/k8s/config` or modify the `conf/submarine-site.x
 ##### Start Submarine Server
 Running the submarine server, executing the following command:
 ```
+# if build from source. You need to run this under the target dir like submarine-dist/target/submarine-dist-0.4.0-SNAPSHOT-hadoop-2.9/submarine-dist-0.4.0-SNAPSHOT-hadoop-2.9/
 ./bin/submarine-daemon.sh start getMysqlJar
 ```
 
@@ -89,6 +90,13 @@ The REST API URL is: `http://127.0.0.1:8080/api/v1/jobs`
 
 #### Deploy Tensorflow Operator
 For more info see [deploy tensorflow operator](./ml-frameworks/tensorflow.md).
+
+#### Deploy PyTorch Operator
+```bash
+cd <submarine_code_path_root>/dev-support/k8s/pytorchjob
+./deploy-pytorch-operator.sh
+
+```
 
 ## Production environment
 
