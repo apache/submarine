@@ -32,17 +32,22 @@ class RangerAdminClientImpl extends RangerAdminRESTClient {
   private val cacheFilename = "sparkSql_hive_jenkins.json"
   private val gson =
     new GsonBuilder().setDateFormat("yyyyMMdd-HH:mm:ss.SSS-Z").setPrettyPrinting().create
+  private var policies: ServicePolicies = _
 
-  override def init(serviceName: String, appId: String, configPropertyPrefix: String): Unit = {}
+  override def init(serviceName: String, appId: String, configPropertyPrefix: String): Unit = {
+    if (policies == null) {
+      val basedir = this.getClass.getProtectionDomain.getCodeSource.getLocation.getPath
+      val cachePath = FileSystems.getDefault.getPath(basedir, cacheFilename)
+      LOG.info("Reading policies from " + cachePath)
+      val bytes = Files.readAllBytes(cachePath)
+      policies = gson.fromJson(new String(bytes), classOf[ServicePolicies])
+    }
+  }
 
   override def getServicePoliciesIfUpdated(
       lastKnownVersion: Long,
       lastActivationTimeInMillis: Long): ServicePolicies = {
-    val basedir = this.getClass.getProtectionDomain.getCodeSource.getLocation.getPath
-    val cachePath = FileSystems.getDefault.getPath(basedir, cacheFilename)
-    LOG.info("Reading policies from " + cachePath)
-    val bytes = Files.readAllBytes(cachePath)
-    gson.fromJson(new String(bytes), classOf[ServicePolicies])
+    policies
   }
 
   override def grantAccess(request: GrantRevokeRequest): Unit = {}

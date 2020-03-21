@@ -55,7 +55,6 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
     .map(x => CatalogFunction(FunctionIdentifier(x._1), x._2, Seq.empty))
     .foreach(spark.sessionState.catalog.registerFunction(_, overrideIfExists = true))
 
-  private lazy val sparkPlugin = RangerSparkPlugin.build().getOrCreate()
   private lazy val sqlParser = spark.sessionState.sqlParser
   private lazy val analyzer = spark.sessionState.analyzer
   private lazy val auditHandler = RangerSparkAuditHandler()
@@ -72,8 +71,8 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
       currentUser.getGroupNames.toSet,
       COLUMN.toString,
       SparkAccessType.SELECT,
-      sparkPlugin.getClusterName)
-    sparkPlugin.evalDataMaskPolicies(req, auditHandler)
+      RangerSparkPlugin.getClusterName)
+    RangerSparkPlugin.evalDataMaskPolicies(req, auditHandler)
   }
 
   /**
