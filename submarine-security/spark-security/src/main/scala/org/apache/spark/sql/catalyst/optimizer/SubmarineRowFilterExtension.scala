@@ -38,7 +38,6 @@ import org.apache.submarine.spark.security._
  * An Apache Spark's [[Optimizer]] extension for row level filtering.
  */
 case class SubmarineRowFilterExtension(spark: SparkSession) extends Rule[LogicalPlan] {
-  private lazy val sparkPlugin = RangerSparkPlugin.build().getOrCreate()
   private lazy val rangerSparkOptimizer = new SubmarineSparkOptimizer(spark)
 
   /**
@@ -56,8 +55,8 @@ case class SubmarineRowFilterExtension(spark: SparkSession) extends Rule[Logical
       val ugi = UserGroupInformation.getCurrentUser
       val request = new RangerSparkAccessRequest(resource, ugi.getShortUserName,
         ugi.getGroupNames.toSet, SparkObjectType.TABLE.toString, SparkAccessType.SELECT,
-        sparkPlugin.getClusterName)
-      val result = sparkPlugin.evalRowFilterPolicies(request, auditHandler)
+        RangerSparkPlugin.getClusterName)
+      val result = RangerSparkPlugin.evalRowFilterPolicies(request, auditHandler)
       if (isRowFilterEnabled(result)) {
         val condition = spark.sessionState.sqlParser.parseExpression(result.getFilterExpr)
         val analyzed = spark.sessionState.analyzer.execute(Filter(condition, plan))

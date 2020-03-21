@@ -43,7 +43,6 @@ import org.apache.submarine.spark.security.SparkOperationType.SparkOperationType
 
 object RangerSparkAuthorizer {
   private val LOG = LogFactory.getLog(this.getClass.getSimpleName.stripSuffix("$"))
-  private val sparkPlugin = RangerSparkPlugin.build().getOrCreate()
 
   private def currentUser: UserGroupInformation = UserGroupInformation.getCurrentUser
 
@@ -68,7 +67,7 @@ object RangerSparkAuthorizer {
       if (inputs.isEmpty && opType == SparkOperationType.SHOWDATABASES) {
         val resource = new RangerSparkResource(SparkObjectType.DATABASE, None)
         requests += new RangerSparkAccessRequest(resource, user, groups, opType.toString,
-          SparkAccessType.USE, sparkPlugin.getClusterName)
+          SparkAccessType.USE, RangerSparkPlugin.getClusterName)
       }
 
       def addAccessRequest(objs: Seq[SparkPrivilegeObject], isInput: Boolean): Unit = {
@@ -89,7 +88,7 @@ object RangerSparkAuthorizer {
               if (accessType != SparkAccessType.NONE && !requests.exists(
                 o => o.getSparkAccessType == accessType && o.getResource == resource)) {
                 requests += new RangerSparkAccessRequest(resource, user, groups, opType.toString,
-                  accessType, sparkPlugin.getClusterName)
+                  accessType, RangerSparkPlugin.getClusterName)
               }
             }
           }
@@ -102,7 +101,7 @@ object RangerSparkAuthorizer {
         val resource = request.getResource.asInstanceOf[RangerSparkResource]
         if (resource.getObjectType == SparkObjectType.COLUMN &&
           StringUtils.contains(resource.getColumn, ",")) {
-          resource.setServiceDef(sparkPlugin.getServiceDef)
+          resource.setServiceDef(RangerSparkPlugin.getServiceDef)
           val colReqs: JList[RangerAccessRequest] = resource.getColumn.split(",")
             .filter(StringUtils.isNotBlank).map { c =>
             val colRes = new RangerSparkResource(SparkObjectType.COLUMN,
@@ -111,7 +110,7 @@ object RangerSparkAuthorizer {
             colReq.setResource(colRes)
             colReq.asInstanceOf[RangerAccessRequest]
           }.toList.asJava
-          val colResults = sparkPlugin.isAccessAllowed(colReqs, auditHandler)
+          val colResults = RangerSparkPlugin.isAccessAllowed(colReqs, auditHandler)
           if (colResults != null) {
             for (c <- colResults.asScala) {
               if (c != null && !c.getIsAllowed) {
@@ -121,7 +120,7 @@ object RangerSparkAuthorizer {
             }
           }
         } else {
-          val result = sparkPlugin.isAccessAllowed(request, auditHandler)
+          val result = RangerSparkPlugin.isAccessAllowed(request, auditHandler)
           if (result != null && !result.getIsAllowed) {
             throw new SparkAccessControlException(s"Permission denied: user [$user] does not" +
               s" have [${request.getSparkAccessType}] privilege on [${resource.getAsString}]")
@@ -141,8 +140,8 @@ object RangerSparkAuthorizer {
     createSparkResource(obj) match {
       case Some(resource) =>
         val request =
-          new RangerSparkAccessRequest(resource, user, groups, sparkPlugin.getClusterName)
-        val result = sparkPlugin.isAccessAllowed(request)
+          new RangerSparkAccessRequest(resource, user, groups, RangerSparkPlugin.getClusterName)
+        val result = RangerSparkPlugin.isAccessAllowed(request)
         if (request == null) {
           LOG.error("Internal error: null RangerAccessResult received back from isAccessAllowed")
           false
@@ -255,7 +254,7 @@ object RangerSparkAuthorizer {
           obj.getColumns.mkString(","))
       case _ => null
     }
-    if (resource != null) resource.setServiceDef(sparkPlugin.getServiceDef)
+    if (resource != null) resource.setServiceDef(RangerSparkPlugin.getServiceDef)
     resource
   }
 
@@ -299,6 +298,6 @@ object RangerSparkAuthorizer {
   }
 
   private def isPathInFSScheme(objectName: String): Boolean = {
-    objectName.nonEmpty && sparkPlugin.fsScheme.exists(objectName.startsWith)
+    objectName.nonEmpty && RangerSparkPlugin.fsScheme.exists(objectName.startsWith)
   }
 }

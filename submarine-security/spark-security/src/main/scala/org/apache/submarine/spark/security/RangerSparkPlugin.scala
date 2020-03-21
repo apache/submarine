@@ -25,10 +25,13 @@ import org.apache.commons.logging.LogFactory
 import org.apache.ranger.authorization.hadoop.config.RangerConfiguration
 import org.apache.ranger.plugin.service.RangerBasePlugin
 
-class RangerSparkPlugin private extends RangerBasePlugin("spark", "sparkSql") {
-  import RangerSparkPlugin._
+object RangerSparkPlugin extends RangerBasePlugin("spark", "sparkSql") {
 
-  private val LOG = LogFactory.getLog(classOf[RangerSparkPlugin])
+  private val LOG = LogFactory.getLog(RangerSparkPlugin.getClass)
+
+  private val rangerConf: RangerConfiguration = RangerConfiguration.getInstance
+  val showColumnsOption: String = rangerConf.get(
+    "xasecure.spark.describetable.showcolumns.authorization.option", "NONE")
 
   lazy val fsScheme: Array[String] = RangerConfiguration.getInstance()
     .get("ranger.plugin.spark.urlauth.filesystem.schemes", "hdfs:,file:")
@@ -50,29 +53,7 @@ class RangerSparkPlugin private extends RangerBasePlugin("spark", "sparkSql") {
     }
     LOG.info("Policy cache directory successfully set to " + cacheDir.getAbsolutePath)
   }
+
+  init()
 }
 
-object RangerSparkPlugin {
-
-  private val rangerConf: RangerConfiguration = RangerConfiguration.getInstance
-
-  val showColumnsOption: String = rangerConf.get(
-    "xasecure.spark.describetable.showcolumns.authorization.option", "NONE")
-
-  def build(): Builder = new Builder
-
-  class Builder {
-
-    @volatile private var sparkPlugin: RangerSparkPlugin = _
-
-    def getOrCreate(): RangerSparkPlugin = RangerSparkPlugin.synchronized {
-      if (sparkPlugin == null) {
-        sparkPlugin = new RangerSparkPlugin
-        sparkPlugin.init()
-        sparkPlugin
-      } else {
-        sparkPlugin
-      }
-    }
-  }
-}
