@@ -24,7 +24,6 @@ import org.apache.submarine.server.submitter.k8s.model.MLJob;
 
 public class PyTorchJob extends MLJob {
 
-
   public static final  String CRD_PYTORCH_KIND_V1 = "PyTorchJob";
   public static final  String CRD_PYTORCH_PLURAL_V1 = "pytorchjobs";
   public static final  String CRD_PYTORCH_GROUP_V1 = "kubeflow.org";

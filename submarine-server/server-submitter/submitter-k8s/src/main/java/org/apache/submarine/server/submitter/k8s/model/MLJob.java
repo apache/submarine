@@ -23,7 +23,7 @@ import com.google.gson.annotations.SerializedName;
 import io.kubernetes.client.models.V1ObjectMeta;
 
 /**
- * The abstract machine learning job for the CRD job.
+ * The machine learning job for the CRD job.
  * It be serialized as body input to k8s api client
  */
 public class MLJob {
