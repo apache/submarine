@@ -26,11 +26,11 @@ def batch_norm_layer(x, train_phase, scope_bn, batch_norm_decay):
     return tf.cond(tf.cast(train_phase, tf.bool), lambda: bn_train, lambda: bn_infer)
 
 
-def dnn_layer(deep_inputs, estimator_mode, batch_norm, deep_layers, dropout, batch_norm_decay=0.9,
+def dnn_layer(inputs, estimator_mode, batch_norm, deep_layers, dropout, batch_norm_decay=0.9,
               l2_reg=0, **kwargs):
     """
     The Multi Layer Percetron
-    :param deep_inputs: A tensor of at least rank 2 and static value for the last dimension; i.e.
+    :param inputs: A tensor of at least rank 2 and static value for the last dimension; i.e.
            [batch_size, depth], [None, None, None, channels].
     :param estimator_mode: Standard names for Estimator model modes. `TRAIN`, `EVAL`, `PREDICT`
     :param batch_norm: Whether use BatchNormalization before activation or not.
@@ -51,7 +51,7 @@ def dnn_layer(deep_inputs, estimator_mode, batch_norm, deep_layers, dropout, bat
 
         for i in range(len(deep_layers)):
             deep_inputs = tf.contrib.layers.fully_connected(
-                inputs=deep_inputs, num_outputs=deep_layers[i],
+                inputs=inputs, num_outputs=deep_layers[i],
                 weights_regularizer=tf.contrib.layers.l2_regularizer(l2_reg),
                 scope='mlp%d' % i)
             if batch_norm:
@@ -66,7 +66,7 @@ def dnn_layer(deep_inputs, estimator_mode, batch_norm, deep_layers, dropout, bat
             weights_regularizer=tf.contrib.layers.l2_regularizer(l2_reg),
             scope='deep_out')
         deep_out = tf.reshape(deep_out, shape=[-1])
-        return deep_out
+    return deep_out
 
 
 def linear_layer(features, feature_size, field_size, l2_reg=0, **kwargs):
@@ -91,15 +91,15 @@ def linear_layer(features, feature_size, field_size, l2_reg=0, **kwargs):
                                         initializer=tf.glorot_normal_initializer(),
                                         regularizer=regularizer)
 
-    feat_weights = tf.nn.embedding_lookup(linear_weight, feat_ids)
-    linear_out = tf.reduce_sum(tf.multiply(feat_weights, feat_vals), 1) + linear_bias
+        feat_weights = tf.nn.embedding_lookup(linear_weight, feat_ids)
+        linear_out = tf.reduce_sum(tf.multiply(feat_weights, feat_vals), 1) + linear_bias
     return linear_out
 
 
-def bilinear_layer(features, feature_size, field_size, embedding_size, l2_reg=0, **kwargs):
+def embedding_layer(features, feature_size, field_size, embedding_size, l2_reg=0, **kwargs):
     """
-    Bi-Interaction Layer used in Neural FM,compress the pairwise element-wise product of features
-    into one single vector.
+    Turns positive integers (indexes) into dense vectors of fixed size.
+    eg. [[4], [20]] -> [[0.25, 0.1], [0.6, -0.2]]
     :param features: input features
     :param feature_size: size of features
     :param field_size: number of fields in the features
@@ -112,17 +112,40 @@ def bilinear_layer(features, feature_size, field_size, embedding_size, l2_reg=0,
     feat_vals = features['feat_vals']
     feat_vals = tf.reshape(feat_vals, shape=[-1, field_size])
 
-    with tf.variable_scope("BilinearLayer_Layer"):
+    with tf.variable_scope("Embedding_Layer"):
         regularizer = tf.contrib.layers.l2_regularizer(l2_reg)
         embedding_dict = tf.get_variable(name='embedding_dict',
                                          shape=[feature_size, embedding_size],
                                          initializer=tf.glorot_normal_initializer(),
                                          regularizer=regularizer)
+        embeddings = tf.nn.embedding_lookup(embedding_dict, feat_ids)
+        feat_vals = tf.reshape(feat_vals, shape=[-1, field_size, 1])
+        embedding_out = tf.multiply(embeddings, feat_vals)
+    return embedding_out
 
-    embeddings = tf.nn.embedding_lookup(embedding_dict, feat_ids)
-    feat_vals = tf.reshape(feat_vals, shape=[-1, field_size, 1])
-    embeddings = tf.multiply(embeddings, feat_vals)
-    sum_square = tf.square(tf.reduce_sum(embeddings, 1))
-    square_sum = tf.reduce_sum(tf.square(embeddings), 1)
-    bilinear_out = 0.5 * tf.subtract(sum_square, square_sum)
+
+def bilinear_layer(inputs, **kwargs):
+    """
+    Bi-Interaction Layer used in Neural FM,compress the pairwise element-wise product of features
+    into one single vector.
+    :param inputs: input features
+    """
+
+    with tf.variable_scope("BilinearLayer_Layer"):
+        sum_square = tf.square(tf.reduce_sum(inputs, 1))
+        square_sum = tf.reduce_sum(tf.square(inputs), 1)
+        bilinear_out = 0.5 * tf.subtract(sum_square, square_sum)
     return bilinear_out
+
+
+def fm_layer(inputs, **kwargs):
+    """
+    Factorization Machine models pairwise (order-2) feature interactions
+    without linear term and bias.
+    :param inputs: input features
+    """
+    with tf.variable_scope("FM_Layer"):
+        sum_square = tf.square(tf.reduce_sum(inputs, 1))
+        square_sum = tf.reduce_sum(tf.square(inputs), 1)
+        fm_out = 0.5 * tf.reduce_sum(tf.subtract(sum_square, square_sum), 1)
+    return fm_out
