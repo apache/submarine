@@ -246,7 +246,9 @@ class RowFilterSQLTest extends FunSuite with BeforeAndAfterAll {
          |""".stripMargin
     withUser("bob") {
       val df = sql(statement)
-      println(df.queryExecution.optimizedPlan)
+      val plan = df.queryExecution.optimizedPlan
+      println(plan)
+      assert(plan.collectLeaves().size <= plan.collect { case _: SubmarineRowFilter => true}.size)
       val row = df.take(1)(0)
       assert(row.getString(1) === "val_0", "tbl 1 and 2 have 2 filters")
     }

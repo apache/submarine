@@ -21,7 +21,7 @@ package org.apache.submarine.spark.security
 
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.spark.sql.SubmarineSparkUtils.{enableDataMasking, withUser}
-import org.apache.spark.sql.catalyst.plans.logical.{Project, SubmarineDataMasking, SubmarineRowFilter}
+import org.apache.spark.sql.catalyst.plans.logical.{Project, SubmarineDataMasking}
 import org.apache.spark.sql.hive.test.TestHive
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
@@ -236,9 +236,7 @@ case class DataMaskingSQLTest() extends FunSuite with BeforeAndAfterAll {
          |""".stripMargin
     withUser("bob") {
       val df = sql(statement)
-      val plan = df.queryExecution.optimizedPlan
-      println(plan)
-      assert(plan.collectLeaves().size <= plan.collect { case _: SubmarineRowFilter => true}.size)
+      println(df.queryExecution.optimizedPlan)
       val row = df.take(1)(0)
       assert(row.getString(1) === "xxx_277", "value shows last 4 characters")
     }
