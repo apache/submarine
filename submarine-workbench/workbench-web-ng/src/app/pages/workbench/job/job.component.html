@@ -39,13 +39,14 @@
         <label nz-radio-button nzValue="Own">Owned By Me</label>
         <label nz-radio-button nzValue="Access">Accessable By Me</label>
       </nz-radio-group>
-      <nz-input-group  style="width:300px;margin-top: 15px;margin-left:10px;margin-right:5px;" [nzSuffix]="suffixIconSearch">
-        <input type="text" nz-input [(ngModel)]="searchText" (keydown)="filter($event)" placeholder="input search text" />
+      <nz-input-group nzSearch style="width:300px;margin-top: 15px;margin-left:10px;margin-right:5px;" [nzAddOnAfter]="suffixIconButton">
+        <input type="text" nz-input placeholder="input search text" />
       </nz-input-group>
-      <ng-template #suffixIconSearch>
-          <i nz-icon nzType="search"></i>
+      <ng-template #suffixIconButton>
+        <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
       </ng-template>
-      <button nz-button id="openJob" nzType="primary" style="margin-right: 30px;margin-bottom: 15px;" (click)="isVisible=true;"><i nz-icon nzType="plus"></i>New Job</button>
+        
+      <button nz-button id="openJob" nzType="primary" style="margin-right: 30px;margin-bottom: 15px;margin-top: 15px;" (click)="isVisible=true;"><i nz-icon nzType="plus"></i>New Job</button>
     </div>  
     <nz-table id="releaseTable" nzBordered #basicTable [nzData]="joblist" [nzNoResult]="'No data'">
       <thead>
