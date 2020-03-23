@@ -47,7 +47,7 @@ case class SubmarineRowFilterExtension(spark: SparkSession) extends Rule[Logical
    * @return A new Spark [[LogicalPlan]] with specified row filter expressions
    */
   private def applyingRowFilterExpr(plan: LogicalPlan, table: CatalogTable): LogicalPlan = {
-    val auditHandler = new RangerSparkAuditHandler()
+    val auditHandler = RangerSparkAuditHandler()
     try {
       val identifier = table.identifier
       val resource =
@@ -79,19 +79,30 @@ case class SubmarineRowFilterExtension(spark: SparkSession) extends Rule[Logical
     result != null && result.isRowFilterEnabled && StringUtils.isNotEmpty(result.getFilterExpr)
   }
 
+  private def getPlanWithTables(plan: LogicalPlan): Map[LogicalPlan, CatalogTable] = {
+    plan.collectLeaves().map {
+      case h if h.nodeName == "HiveTableRelation" =>
+        h -> getFieldVal(h, "tableMeta").asInstanceOf[CatalogTable]
+      case m if m.nodeName == "MetastoreRelation" =>
+        m -> getFieldVal(m, "catalogTable").asInstanceOf[CatalogTable]
+      case l: LogicalRelation if l.catalogTable.isDefined =>
+        l -> l.catalogTable.get
+      case _ => null
+    }.filter(_ != null).toMap
+  }
+
+  private def isFixed(plan: LogicalPlan): Boolean = {
+    val markNum = plan.collect { case _: SubmarineRowFilter => true }.size
+    markNum >= getPlanWithTables(plan).size
+  }
   private def doFiltering(plan: LogicalPlan): LogicalPlan = plan match {
     case rf: SubmarineRowFilter => rf
-    case fixed if fixed.find(_.isInstanceOf[SubmarineRowFilter]).nonEmpty => fixed
+    case plan if isFixed(plan) => plan
     case _ =>
-      val plansWithTables = plan.collectLeaves().map {
-        case h if h.nodeName == "HiveTableRelation" =>
-          (h, getFieldVal(h, "tableMeta").asInstanceOf[CatalogTable])
-        case m if m.nodeName == "MetastoreRelation" =>
-          (m, getFieldVal(m, "catalogTable").asInstanceOf[CatalogTable])
-        case l: LogicalRelation if l.catalogTable.isDefined =>
-          (l, l.catalogTable.get)
-        case _ => null
-      }.filter(_ != null).map(lt => (lt._1, applyingRowFilterExpr(lt._1, lt._2))).toMap
+      val plansWithTables = getPlanWithTables(plan)
+        .map { case (plan, table) =>
+          (plan, applyingRowFilterExpr(plan, table))
+        }
 
       plan transformUp {
         case p => plansWithTables.getOrElse(p, p)

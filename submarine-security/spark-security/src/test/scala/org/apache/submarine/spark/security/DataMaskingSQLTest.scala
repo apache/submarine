@@ -208,4 +208,56 @@ case class DataMaskingSQLTest() extends FunSuite with BeforeAndAfterAll {
       assert(row.getString(1) === "xxx_277", "value shows last 4 characters")
     }
   }
+
+  test("MASK_SHOW_LAST_4 with uncorrelated subquery") {
+    val statement =
+      s"""
+         |select
+         | *
+         |from default.rangertbl5 outer
+         |where value in (select value from default.rangertbl4 where value = 'val_277')
+         |""".stripMargin
+    withUser("bob") {
+      val df = sql(statement)
+      println(df.queryExecution.optimizedPlan)
+      val row = df.take(1)(0)
+      assert(row.getString(1) === "xxx_277", "value shows last 4 characters")
+    }
+  }
+
+  test("MASK_SHOW_LAST_4 with correlated subquery") {
+    val statement =
+      s"""
+         |select
+         | *
+         |from default.rangertbl5 outer
+         |where key =
+         | (select max(key) from default.rangertbl4 where value = 'val_277' and value = outer.value)
+         |""".stripMargin
+    withUser("bob") {
+      val df = sql(statement)
+      println(df.queryExecution.optimizedPlan)
+      val row = df.take(1)(0)
+      assert(row.getString(1) === "xxx_277", "value shows last 4 characters")
+    }
+  }
+
+  test("CTE") {
+    val statement =
+      s"""
+         |with myCTE as
+         |(select
+         | *
+         |from default.rangertbl5 where value = 'val_277')
+         |select t1.value, t2.value from myCTE t1 join myCTE t2 on t1.key = t2.key
+         |
+         |""".stripMargin
+    withUser("bob") {
+      val df = sql(statement)
+      println(df.queryExecution.optimizedPlan)
+      val row = df.take(1)(0)
+      assert(row.getString(0) === "xxx_277", "value shows last 4 characters")
+      assert(row.getString(1) === "xxx_277", "value shows last 4 characters")
+    }
+  }
 }

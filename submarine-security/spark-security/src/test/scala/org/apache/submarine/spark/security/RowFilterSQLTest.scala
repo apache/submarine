@@ -20,7 +20,7 @@
 package org.apache.submarine.spark.security
 
 import org.apache.spark.sql.SubmarineSparkUtils._
-import org.apache.spark.sql.catalyst.plans.logical.SubmarineRowFilter
+import org.apache.spark.sql.catalyst.plans.logical.{Filter, SubmarineRowFilter}
 import org.apache.spark.sql.hive.test.TestHive
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
@@ -214,6 +214,61 @@ class RowFilterSQLTest extends FunSuite with BeforeAndAfterAll {
       println(df.queryExecution.optimizedPlan)
       val rows = df.collect()
       assert(rows.forall { r => val x = r.getInt(0); x > 1 && x < 10 || x == 500 })
+    }
+  }
+
+  test("applying filters with uncorrelated subquery") {
+    val statement =
+      s"""
+         |select
+         | *
+         |from default.rangertbl1 outer
+         |where value in (select value from default.rangertbl2)
+         |""".stripMargin
+    withUser("bob") {
+      val df = sql(statement)
+      val plan = df.queryExecution.optimizedPlan
+      println(plan)
+      assert(plan.collect { case _: Filter => true }.size === 2, "tbl 1 and 2 have 2 filters")
+      val row = df.take(1)(0)
+      assert(row.getInt(0) === 0, "tbl 1 and 2 have 2 filters")
+    }
+  }
+
+  test("applying filters with correlated subquery") {
+    val statement =
+      s"""
+         |select
+         | *
+         |from default.rangertbl1 outer
+         |where key =
+         | (select max(key) from default.rangertbl2 where value = outer.value)
+         |""".stripMargin
+    withUser("bob") {
+      val df = sql(statement)
+      val plan = df.queryExecution.optimizedPlan
+      println(plan)
+      assert(plan.collectLeaves().size <= plan.collect { case _: SubmarineRowFilter => true}.size)
+      val row = df.take(1)(0)
+      assert(row.getString(1) === "val_0", "tbl 1 and 2 have 2 filters")
+    }
+  }
+
+  test("CTE") {
+    val statement =
+      s"""
+         |with myCTE as
+         |(select
+         | *
+         |from default.rangertbl1)
+         |select t1.value, t2.value from myCTE t1 join myCTE t2 on t1.key = t2.key
+         |
+         |""".stripMargin
+    withUser("bob") {
+      val df = sql(statement)
+      println(df.queryExecution.optimizedPlan)
+      val row = df.take(1)(0)
+      assert(row.getString(0) === "val_0", "rangertbl1 has an internal expression key=0")
     }
   }
 }
