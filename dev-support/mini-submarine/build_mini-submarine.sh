@@ -15,7 +15,7 @@
 # limitations under the License.
 set -e
 hadoop_v=2.9.2
-spark_v=2.4.4
+spark_v=2.3.4
 
 submarine_v=${submarine_version:-"0.4.0-SNAPSHOT"}
 echo "Using submarine version: $submarine_v"
