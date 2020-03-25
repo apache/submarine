@@ -16,8 +16,7 @@
 FROM ubuntu:18.04
 #INSTALL JAVA
 RUN apt-get -q update \
-    && apt-get install -y wget \
-    && apt-get install -y software-properties-common \
+    && apt-get install -y wget software-properties-common \
     && add-apt-repository -y ppa:webupd8team/java \
     && apt-get update \
     && wget http://archive.ubuntu.com/ubuntu/pool/main/m/mesa/libgl1-mesa-dri_19.2.8-0ubuntu0~18.04.2_amd64.deb \
