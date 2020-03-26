@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "webdriver": "webdriver-manager update"
+    "webdriver": "webdriver-manager update --ignore_ssl = true"
   },
   "private": true,
   "dependencies": {
