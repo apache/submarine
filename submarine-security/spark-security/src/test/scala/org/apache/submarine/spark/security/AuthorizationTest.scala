@@ -19,6 +19,9 @@
 
 package org.apache.submarine.spark.security
 
+import java.util.NoSuchElementException
+
+import org.apache.spark.sql.execution.command.SubmarineResetCommand
 import org.apache.spark.sql.hive.test.TestHive
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
@@ -69,6 +72,25 @@ class AuthorizationTest extends FunSuite with BeforeAndAfterAll {
   override def afterAll(): Unit = {
     super.afterAll()
     spark.reset()
+  }
+
+  test("reset command") {
+    val sparkConf = spark.sparkContext.getConf
+    sql("set submarine.spark.some=any")
+    assert(spark.sessionState.conf.getConfString("submarine.spark.some") === "any")
+    val reset = sql("reset")
+
+    assert(reset.queryExecution.optimizedPlan.getClass === SubmarineResetCommand.getClass)
+
+    intercept[NoSuchElementException] {
+      spark.sessionState.conf.getConfString("submarine.spark.some")
+    }
+
+    assert(spark.sessionState.conf.getConfString("spark.ui.enabled") ===
+      sparkConf.get("spark.ui.enabled"))
+
+    assert(spark.sessionState.conf.getConfString("spark.app.id") ===
+      sparkConf.getAppId)
   }
 
   test("show databases") {
