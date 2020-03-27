@@ -338,7 +338,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
    * @return class name
    */
   public String getSubmitterClass(String name) {
-    return getStringValue(String.format(SubmarineConfVars.ConfVars.SUBMARINE_SUBMITTERS_CLASS.getVarName(), 
+    return getStringValue(String.format(SubmarineConfVars.ConfVars.SUBMARINE_SUBMITTERS_CLASS.getVarName(),
         name), "");
   }
 
@@ -409,6 +409,10 @@ public class SubmarineConfiguration extends XMLConfiguration {
 
   public void setString(SubmarineConfVars.ConfVars c, String value) {
     properties.put(c.getVarName(), value);
+  }
+
+  public void setString(SubmarineConfVars.ConfVars c, String formatValue, String value) {
+    properties.put(String.format(c.getVarName(), formatValue), value);
   }
 
   public int getInt(SubmarineConfVars.ConfVars c) {
