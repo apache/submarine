@@ -56,6 +56,7 @@ case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession)
       case s: SubmarineShowDatabasesCommand => s
       case s: ShowTablesCommand => SubmarineShowTablesCommand(s)
       case s: SubmarineShowTablesCommand => s
+      case ResetCommand => SubmarineResetCommand
       case _ =>
         val operationType: SparkOperationType = toOperationType(plan)
         val (in, out) = PrivilegesBuilder.build(plan)
