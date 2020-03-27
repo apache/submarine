@@ -261,8 +261,8 @@
   </dependencies>
 
   <build>
-    <outputDirectory>target/classes</outputDirectory>
-    <testOutputDirectory>target/test-classes</testOutputDirectory>
+    <outputDirectory>target/scala-${scala.binary.version}/classes</outputDirectory>
+    <testOutputDirectory>target/scala-${scala.binary.version}/test-classes</testOutputDirectory>
     <testResources>
       <testResource>
         <directory>${project.basedir}/src/test/resources</directory>
