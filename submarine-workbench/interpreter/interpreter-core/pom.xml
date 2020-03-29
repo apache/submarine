@@ -30,10 +30,10 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>submarine-interpreter-engine</artifactId>
+  <artifactId>submarine-interpreter-core</artifactId>
   <version>0.4.0-SNAPSHOT</version>
-  <name>Submarine: Interpreter Engine</name>
-  <description>Submarine Interpreter Engine</description>
+  <name>Submarine: Interpreter Core</name>
+  <description>Submarine Interpreter Core</description>
 
   <dependencies>
     <dependency>
