@@ -59,7 +59,7 @@ public class LoginRestApi {
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
       sysUser = sysUserMapper.login(mapParams);
-      if (null != sysUser) {
+      if (sysUser != null) {
         sysUser.setToken("mock_token");
       } else {
         LOG.info("User Not Found. Please try again");
