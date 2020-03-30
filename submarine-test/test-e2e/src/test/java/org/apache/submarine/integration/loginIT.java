@@ -55,9 +55,10 @@ public class loginIT extends AbstractSubmarineIT {
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("123");
     pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("123");
     clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"_this.logError is not a function\")]")).size(), 1);
+    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Username and password are incorrect, " +
+            "please try again or create an account\")]")).size(), 1);
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("\b\b\b");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("\b\b\b"); 
+    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("\b\b\b");
 
     // Testcase2
     LOG.info("[Sub-Testcase-2] Valid User");
