@@ -17,12 +17,20 @@
   ~ under the License.
   -->
 
-<div class="wrap">
-  <div class="editor-area">
-    <submarine-editor></submarine-editor>
+<div class="editor-wrap">
+  <div class="operation-bar">
+    <span nz-tooltip
+          nzTooltipTitle="Run code">
+       <i nz-icon
+          class="start-icon"
+          nzType="caret-right"
+          nzTheme="outline"></i>
+    </span>
   </div>
 
-  <div class="result-area">
-    <submarine-result></submarine-result>
+  <div class="editor-content">
+    <ngx-monaco-editor style="height: 100%"
+                       [options]="editorOptions"
+                       [(ngModel)]="code"></ngx-monaco-editor>
   </div>
 </div>

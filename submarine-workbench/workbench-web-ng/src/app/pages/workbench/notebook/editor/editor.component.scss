@@ -1,4 +1,4 @@
-/*
+/*!
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,21 +17,29 @@
  * under the License.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+.editor-wrap {
+  height: 800px;
+  display: flex;
+  flex-direction: column;
 
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { MonacoEditorModule } from 'ngx-monaco-editor';
-import { EditorComponent } from './editor/editor.component';
-import { NotebookRoutingModule } from './notebook-routing.module';
-import { NotebookComponent } from './notebook.component';
-import { ResultComponent } from './result/result.component';
+  background: #ffffff;
+}
 
-@NgModule({
-  declarations: [NotebookComponent, EditorComponent, ResultComponent],
-  imports: [CommonModule, NotebookRoutingModule, MonacoEditorModule, FormsModule, NzIconModule, NzToolTipModule]
-})
-export class NotebookModule {
+.operation-bar {
+  padding: 0 8px;
+  margin-bottom: 16px;
+
+  height: 32px;
+  line-height: 32px;
+
+  border-bottom: 1px #dedede solid;
+}
+
+.start-icon {
+  font-size: 18px;
+  color: rgba(0, 205, 0, 0.83);
+}
+
+.editor-content {
+  flex: 1;
 }

@@ -17,21 +17,19 @@
  * under the License.
  */
 
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { MonacoEditorModule } from 'ngx-monaco-editor';
-import { EditorComponent } from './editor/editor.component';
-import { NotebookRoutingModule } from './notebook-routing.module';
-import { NotebookComponent } from './notebook.component';
-import { ResultComponent } from './result/result.component';
-
-@NgModule({
-  declarations: [NotebookComponent, EditorComponent, ResultComponent],
-  imports: [CommonModule, NotebookRoutingModule, MonacoEditorModule, FormsModule, NzIconModule, NzToolTipModule]
+@Component({
+  selector: 'submarine-result',
+  templateUrl: './result.component.html',
+  styleUrls: ['./result.component.scss']
 })
-export class NotebookModule {
+export class ResultComponent implements OnInit {
+
+  constructor() {
+  }
+
+  ngOnInit(): void {
+  }
+
 }
