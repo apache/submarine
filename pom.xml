@@ -86,9 +86,9 @@
 
     <!-- frontend maven plugin related versions-->
     <plugin.frontend.version>1.6</plugin.frontend.version>
-    <node.version>v10.12.0</node.version>
+    <node.version>v12.16.1</node.version>
     <yarn.version>v1.10.1</yarn.version>
-    <npm.version>6.4.1</npm.version>
+    <npm.version>6.13.4</npm.version>
 
     <hadoop.common.build.dir>${basedir}/../hadoop-common-project/hadoop-common/target</hadoop.common.build.dir>
     <slf4j.version>1.7.25</slf4j.version>
