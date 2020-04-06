@@ -27,7 +27,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   styleUrls: ['./team.component.scss']
 })
 export class TeamComponent implements OnInit {  
-
+  
   // Get into a Team or not
   isEntering = false;
 
@@ -42,9 +42,12 @@ export class TeamComponent implements OnInit {
   // Is Editging Members or not
   isEditingMember = false;
 
+  // For CreateTeamModal
+  createTeamModalIsVisible = false;
+
   // For AddUserModal
-  isVisible = false;
-  isOkLoading = false;
+  addUserModalIsVisible = false;
+  addUserIsOkLoading = false;
 
   // Simulated Data for Members
   member = [
@@ -109,6 +112,10 @@ export class TeamComponent implements OnInit {
     this.currentTeamSettingPermission = team.settingPermission;
   }
 
+  startCreateTeam() {
+    this.createTeamModalIsVisible = true;
+  }
+
   startEditMember() {
     this.isEditingMember=true;
   }
@@ -124,9 +131,16 @@ export class TeamComponent implements OnInit {
     this.nzMessageService.info('Delete Successful!');
   }
 
+  // For CreateTeamModal
+  createTeamOk() {
+    this.createTeamModalIsVisible = false;
+    console.log("Create Seuccessful!");
+  }
+ 
+
   // For AddUserModal
   startAddUser(): void {
-    this.isVisible = true;
+    this.addUserModalIsVisible = true;
   }
 
   // Add Success
@@ -134,35 +148,35 @@ export class TeamComponent implements OnInit {
     this.notification.create(
       type,
       'Add Successful!',
-      'Make sure thar user check invitation!'
+      'Make sure that user check invitation!'
     );
   }
   
   // For AddUserModal
-  handleOk(): void {
-    this.isOkLoading = true;
+  addUserOk(): void {
+    this.addUserIsOkLoading = true;
     setTimeout(() => {
-      this.isVisible = false;
-      this.isOkLoading = false;
+      this.addUserModalIsVisible = false;
+      this.addUserIsOkLoading = false;
       this.createNotification("success");
     }, 1000);
   }
 
   // For AddUserModal
-  handleCancel(): void {
-    this.isVisible = false;
+  addUserCancel(): void {
+    this.addUserModalIsVisible = false;
   }
 
-  //TODO:kobe860219 ; Get Team From DataBase
+  //TODO(kobe860219) : Get Team From DataBase
   getTeamDataFromDB() {
 
   }
 
-  //TODO:kobe860219 ; Get User From DataBase
+  //TODO(kobe860219) : Get User From DataBase
   getUserDataFromDB() {
   }
 
-  //TODO:kobe860219 ; Update Data to DataBase
+  //TODO(kobe860219) : Update Data to DataBase
   updateTeamData() {
 
   }

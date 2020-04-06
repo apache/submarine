@@ -28,14 +28,14 @@
         <i nz-icon nzType="search"></i>
       </button>
     </ng-template>
-    <button nz-button nzType="primary" style="margin: 10px;">
+    <button id="createTeamBtn" nz-button nzType="primary" (click)="startCreateTeam()" style="margin: 10px;">
       <i nz-icon nzType="usergroup-add" nzTheme="outline"></i>Create Team
     </button>
   </div>
   <div id="teamList" style="margin: 20px;">
     <div nz-row [nzGutter]="12" nzType="flex" nzJustify="start">
-      <div *ngFor="let team of existTeams" nz-col [nzSpan]="8">
-        <nz-card [nzTitle]="team.name" [nzExtra]="team.department" [nzActions]="[actionEnter]">
+      <div *ngFor="let team of existTeams; let i = index" nz-col [nzSpan]="8">
+        <nz-card id="{{ 'team'+i }}" [nzTitle]="team.name" [nzExtra]="team.department" [nzActions]="[actionEnter]">
           {{ team.description }}
           <br>
           <br>
@@ -54,6 +54,32 @@
     </div>
   </div>
 </div>
+
+<!--Creating Team-->
+<nz-modal 
+  [(nzVisible)]="createTeamModalIsVisible"
+  nzTitle="Create New Team"
+  (nzOnCancel)="createTeamModalIsVisible=false;"
+  >
+  <form nz-form>
+    <div *nzModalFooter>
+      <button id="cancelCreateTeam" nz-button nzType="default" (click)="createTeamModalIsVisible=false;"> Cancel </button>
+      <button id="summitCreateTeam" nz-button nzType="primary" (click)="createTeamOk()">Create</button>
+    </div>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSpan]="6">Team Name</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <input id="inputNewTeamName" nz-input id="inputNewTeamName" placeholder="Team Name" style="width: 150px;">
+      </nz-form-control>
+    </nz-form-item >
+    <nz-form-item>
+      <nz-form-label nzRequired [nzSpan]="6">Description</nz-form-label>
+      <nz-form-control [nzSpan]="14">
+        <textarea id="textareaNewTeamDescription" rows="4" nz-input placeholder="Describe this team ..."></textarea>
+      </nz-form-control>
+    </nz-form-item >
+  </form>
+</nz-modal>
 
 <!--Enter a team-->
 <div *ngIf="isEntering" style="margin: 20px;background-color: white;">
@@ -154,11 +180,12 @@
 
 <!--Add User Modal-->
 <nz-modal
-  [(nzVisible)]="isVisible"
-    nzTitle="Invite new member"
-    (nzOnCancel)="handleCancel()"
-    (nzOnOk)="handleOk()"
-    [nzOkLoading]="isOkLoading"
+  id="addUserModal"
+  [(nzVisible)]="addUserModalIsVisible"
+  nzTitle="Invite new member"
+  (nzOnCancel)="addUserCancel()"
+  (nzOnOk)="addUserOk()"
+  [nzOkLoading]="addUserIsOkLoading"
 >
   <p>Use E-mail to add member!</p>
   
