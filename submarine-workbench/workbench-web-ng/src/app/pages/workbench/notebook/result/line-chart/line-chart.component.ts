@@ -17,19 +17,48 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import * as echarts from 'echarts';
 
 @Component({
   selector: 'submarine-line-chart',
   templateUrl: './line-chart.component.html',
   styleUrls: ['./line-chart.component.scss']
 })
-export class LineChartComponent implements OnInit {
+export class LineChartComponent implements AfterViewInit {
+  @ViewChild('chartElement') chartElement: ElementRef;
+  chartInstance: any = null;
+
+  chartData: Array<{ week: string, value: number }> = [{ week: 'Mon', value: 820 },
+    { week: 'Tue', value: 932 },
+    { week: 'Wed', value: 901 },
+    { week: 'Thu', value: 934 },
+    { week: 'Fri', value: 1290 },
+    { week: 'Sat', value: 1330 },
+    { week: 'Sun', value: 1320 }];
 
   constructor() {
   }
 
-  ngOnInit(): void {
-  }
+  ngAfterViewInit(): void {
+    this.chartInstance = echarts.init(this.chartElement.nativeElement);
 
+    this.chartInstance.setOption({
+      xAxis: {
+        type: 'category',
+        data: this.chartData.map(item => item.week)
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [{
+        type: 'line',
+        data: this.chartData.map(item => item.value)
+      }]
+    });
+
+    setTimeout(() => {
+      this.chartInstance.resize();
+    });
+  }
 }
