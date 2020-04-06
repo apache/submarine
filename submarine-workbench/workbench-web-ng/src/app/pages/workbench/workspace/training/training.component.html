@@ -25,19 +25,28 @@
         </button>
     </h3>
     <hr class="horizontal_dotted_line"/>
-    <h3 class="leaveBothMargin"> 
-        Owner:
-        <nz-select [(ngModel)]="tagValue" [nzSize]="size" nzMode="tags" nzPlaceHolder="Please select" id="trainingSearchTag">
-            <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
-        </nz-select>
-        <button nz-button [nzType]="ownProcess ? 'primary' : 'default'" [nzSize]="'default'" class="leaveMargin" (click)="ownProcess=!ownProcess">
-            Myself
-        </button>
+    <h3 class="leaveBothMargin">
+      Owner:
+      <nz-select [(ngModel)]="tagValue"
+                 nzMode="tags"
+                 nzPlaceHolder="Please select"
+                 id="trainingSearchTag">
+        <nz-option *ngFor="let option of listOfOption"
+                   [nzLabel]="option.label"
+                   [nzValue]="option.value"></nz-option>
+      </nz-select>
+      <button nz-button
+              [nzType]="ownProcess ? 'primary' : 'default'"
+              [nzSize]="'default'"
+              class="leaveMargin"
+              (click)="ownProcess=!ownProcess">
+        Myself
+      </button>
     </h3>
-    
+
     <hr class="horizontal_dotted_line"/>
     <h3 class="leaveBothMargin">
-        Others: 
+      Others:
         <label class="othersLabel">Active user:</label>
         <nz-select [(ngModel)]="userSelectedValue" nzPlaceHolder="Choose" class="leaveMargin">
             <nz-option nzValue="noLimit" nzLabel="No restriction"></nz-option>

@@ -30,8 +30,10 @@
       <nz-content>You can click on the project tree directory on the left and the project file list will be displayed on the right.</nz-content>
       <br/>
       <ul nz-menu nzMode="horizontal">
-        <li nz-menu-item nzSelected (click)="switchState('project')">
-          Project({{basicInfo.project}}) 
+        <li nz-menu-item
+            nzSelected
+            (click)="switchState('project')">
+          Project({{basicInfo.project}})
         </li>
         <li nz-menu-item (click)="switchState('release')">
           Release({{basicInfo.release}})
@@ -47,11 +49,11 @@
         </li>
       </ul>
     </div>
-    
+
     <div [ngSwitch]="currentState">
       <app-project *ngSwitchCase="'project'"></app-project>
       <app-release *ngSwitchCase="'release'"></app-release>
-      <app-training *ngSwitchCase="'training'"></app-training>
+      <submarine-training *ngSwitchCase="'training'"></submarine-training>
       <app-team *ngSwitchCase="'team'"></app-team>
       <app-shared *ngSwitchCase="'shared'"></app-shared>
     </div>

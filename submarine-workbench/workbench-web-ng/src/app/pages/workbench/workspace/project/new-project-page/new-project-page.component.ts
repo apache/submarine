@@ -17,39 +17,47 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd';
 
-
 @Component({
-  selector: 'app-new-project-page',
+  selector: 'submarine-new-project-page',
   templateUrl: './new-project-page.component.html',
   styleUrls: ['./new-project-page.component.scss']
 })
 export class NewProjectPageComponent implements OnInit {
-  @Output() closeProjectPage = new EventEmitter<boolean>();
+  @Output() readonly closeProjectPage = new EventEmitter<boolean>();
   @ViewChild('f', { static: true }) signupForm: NgForm;
-  //TODO(jasoonn): get team from API
+
+  // TODO(jasoonn): get team from API
   teams = ['ciil'];
-  
+
   current = 0;
-  initialState=0;
-  
-  templateType="Python";
+  initialState = 0;
 
-  
-  newProjectContent = { projectName: '', description: '', visibility: 'Private', team: '' ,permission: 'View', files: []};
+  templateType = 'Python';
+  isAllDisplayDataChecked = false;
+  isIndeterminate = false;
+
+  newProjectContent = {
+    projectName: '',
+    description: '',
+    visibility: 'Private',
+    team: '',
+    permission: 'View',
+    files: []
+  };
   Templates = [
-    {type:'Python', description: 'Python Template', checked: true},
-    {type:'R', description: 'R Template', checked: false},
-    {type:'Spark', description: 'Spark Template', checked: false},
-    {type:'Tensorflow', description: 'Tensorflow Template', checked: false},
-    {type:'Pytorch', description: 'Pytorch Template', checked: false},
+    { type: 'Python', description: 'Python Template', checked: true },
+    { type: 'R', description: 'R Template', checked: false },
+    { type: 'Spark', description: 'Spark Template', checked: false },
+    { type: 'Tensorflow', description: 'Tensorflow Template', checked: false },
+    { type: 'Pytorch', description: 'Pytorch Template', checked: false }
   ];
-  
 
-  constructor(private msg: NzMessageService) { }
+  constructor(private msg: NzMessageService) {
+  }
 
   ngOnInit() {
   }
@@ -58,7 +66,7 @@ export class NewProjectPageComponent implements OnInit {
     const status = file.status;
     if (status !== 'uploading') {
       console.log(file, fileList);
-      console.log(this.newProjectContent.files)
+      console.log(this.newProjectContent.files);
     }
     if (status === 'done') {
       this.msg.success(`${file.name} file uploaded successfully.`);
@@ -68,30 +76,30 @@ export class NewProjectPageComponent implements OnInit {
     }
   }
 
-
-  clearProject(){
+  clearProject() {
     this.closeProjectPage.emit(true);
   }
 
-  refreshCheck(template){
-    if (template.checked === true){
-      this.Templates.forEach(function(item, index, array){
-        if (item.type !== template.type) array[index].checked = false;
+  refreshCheck(template) {
+    if (template.checked === true) {
+      this.Templates.forEach(function(item, index, array) {
+        if (item.type !== template.type) {
+          array[index].checked = false;
+        }
       });
       this.templateType = template.type;
+    } else {
+      this.templateType = '';
     }
-    else this.templateType = "";
-
   }
 
-  //TODO(jasoonn): Add the new project
-  done(): void{
+  // TODO(jasoonn): Add the new project
+  done(): void {
     console.log(this.newProjectContent);
     this.clearProject();
   }
 
-  //TODO(jasoonn): open in notebook
+  // TODO(jasoonn): open in notebook
   openNotebook() {
-    ;
   }
 }

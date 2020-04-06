@@ -31,12 +31,19 @@
         <nz-content>A Submarine database is a collection of tables. A Submarine table is a collection of structured data. </nz-content>
         <br>
       </div>
-      
+
       <div *ngIf="newTable==false">
         <div class="trainingDiv">
           <h1 style="margin-top: 15px;margin-left: 25px;">
             Database
-            <button nz-button id="createBtn" [nzSize]='large' nzType="primary" style="margin-top: 8px;margin-right: 50px;float: right;" (click)="newTable=true;"><i nz-icon nzType="plus"></i>Create Table</button>
+            <button nz-button
+                    id="createBtn"
+                    nzSize="large"
+                    nzType="primary"
+                    style="margin-top: 8px;margin-right: 50px;float: right;"
+                    (click)="newTable=true;"><i nz-icon
+                                                nzType="plus"></i>Create Table
+            </button>
           </h1>
         </div>
         <div class="trainingDiv" style="margin-top: 2px;">
@@ -45,7 +52,7 @@
               <h3 style="margin-left: 20px;margin-top: 20px;">Database & Table List</h3>
               <nz-select
                 [nzMaxTagCount]="3"
-                [nzMaxTagPlaceholder]="tagPlaceHolder"
+                nzMaxTagPlaceholder="Please input database & table name"
                 nzMode="multiple"
                 nzPlaceHolder="Please select"
                 [(ngModel)]="listOfDatabaseValue"

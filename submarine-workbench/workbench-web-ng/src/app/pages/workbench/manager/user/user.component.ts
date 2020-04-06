@@ -56,7 +56,7 @@ export class UserComponent implements OnInit {
   resetPasswordModalVisible: boolean = false;
   currentSysUser: SysUser;
   userDrawerVisible: boolean = false;
-  private userDrawerReadonly: boolean = false;
+  userDrawerReadonly: boolean = false;
 
   constructor(
     private userService: UserService,
