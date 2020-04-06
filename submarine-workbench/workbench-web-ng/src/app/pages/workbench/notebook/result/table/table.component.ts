@@ -25,6 +25,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit {
+  sortName: string | null = null;
+  sortValue: string | null = null;
+  listOfData: Array<{ week: string; value: number }> = [
+    { week: 'Mon', value: 820 },
+    { week: 'Tue', value: 932 },
+    { week: 'Wed', value: 901 },
+    { week: 'Thu', value: 934 },
+    { week: 'Fri', value: 1290 },
+    { week: 'Sat', value: 1330 },
+    { week: 'Sun', value: 1320 }
+  ];
+  listOfDisplayData: Array<{ week: string; value: number }> = [...this.listOfData];
 
   constructor() {
   }
@@ -32,4 +44,25 @@ export class TableComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  sort(sort: { key: string; value: string }): void {
+    this.sortName = sort.key;
+    this.sortValue = sort.value;
+
+    const data = this.listOfData;
+
+    /** sort data **/
+    if (this.sortName && this.sortValue) {
+      this.listOfDisplayData = data.sort((a, b) =>
+        this.sortValue === 'ascend'
+          ? a[this.sortName!] > b[this.sortName!]
+          ? 1
+          : -1
+          : b[this.sortName!] > a[this.sortName!]
+          ? 1
+          : -1
+      );
+    } else {
+      this.listOfDisplayData = data;
+    }
+  }
 }

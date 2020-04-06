@@ -17,4 +17,26 @@
   ~ under the License.
   -->
 
-<p>table works!</p>
+<nz-table #filterTable
+          [nzData]="listOfDisplayData">
+  <thead (nzSortChange)="sort($event)"
+         nzSingleSort>
+  <tr>
+    <th
+      nzShowSort
+      nzSortKey="month"
+    >
+      Month
+    </th>
+    <th nzShowSort
+        nzSortKey="vale">value
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let data of filterTable.data">
+    <td>{{ data.week }}</td>
+    <td>{{ data.value }}</td>
+  </tr>
+  </tbody>
+</nz-table>

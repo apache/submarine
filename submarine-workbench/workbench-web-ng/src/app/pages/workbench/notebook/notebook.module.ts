@@ -23,6 +23,7 @@ import { FormsModule } from '@angular/forms';
 
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
@@ -44,7 +45,8 @@ import { TableComponent } from './result/table/table.component';
     NzIconModule,
     NzToolTipModule,
     NzTabsModule,
-    NzButtonModule
+    NzButtonModule,
+    NzTableModule
   ]
 })
 export class NotebookModule {
