@@ -19,8 +19,8 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { NotebookComponent } from '@submarine/pages/workbench/notebook/notebook.component';
 import { NotebookRoutingModule } from './notebook-routing.module';
+import { NotebookComponent } from './notebook.component';
 
 @NgModule({
   declarations: [NotebookComponent],

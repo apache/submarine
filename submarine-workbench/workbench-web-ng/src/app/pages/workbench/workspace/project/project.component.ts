@@ -28,7 +28,7 @@ export class ProjectComponent implements OnInit {
   newProject = false;
   existProjects = [];
 
-  @ViewChild('inputElement', { static: false }) inputElement: ElementRef;
+  @ViewChild('inputElement') inputElement: ElementRef;
 
   constructor() { }
 
