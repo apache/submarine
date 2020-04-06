@@ -17,6 +17,16 @@
  * under the License.
  */
 
+.wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.editor-area {
+  height: 600px;
+}
+
 .result-area {
   margin-top: 16px;
+  min-height: 400px;
 }

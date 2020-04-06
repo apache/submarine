@@ -18,14 +18,13 @@
   -->
 
 <nz-table #filterTable
-          [nzData]="listOfDisplayData">
+          [nzData]="listOfDisplayData"
+          nzSize="small">
   <thead (nzSortChange)="sort($event)"
          nzSingleSort>
   <tr>
-    <th
-      nzShowSort
-      nzSortKey="month"
-    >
+    <th nzShowSort
+        nzSortKey="month">
       Month
     </th>
     <th nzShowSort

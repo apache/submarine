@@ -25,7 +25,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnInit {
-  editorOptions = { language: 'sql' };
+  editorOptions = { language: 'sql', automaticLayout: true };
   code: string = 'use database;\nselect * from table;';
 
   constructor() {
@@ -33,5 +33,4 @@ export class EditorComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }
