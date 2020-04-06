@@ -33,7 +33,16 @@ import { UserPasswordModalComponent } from './user-password-modal/user-password-
 import { UserComponent } from './user/user.component';
 
 @NgModule({
-  declarations: [UserComponent, ManagerComponent, DataDictComponent, UserPasswordModalComponent, UserDrawerComponent, DataDictModalComponent, DataDictConfigModalComponent],
+  declarations: [
+    UserComponent,
+    ManagerComponent,
+    DataDictComponent,
+    UserPasswordModalComponent,
+    UserDrawerComponent,
+    DataDictModalComponent,
+    DataDictConfigModalComponent
+  ],
   imports: [CommonModule, ManagerRoutingModule, NgZorroAntdModule, ComponentsModule, FormsModule, ReactiveFormsModule]
 })
-export class ManagerModule {}
+export class ManagerModule {
+}

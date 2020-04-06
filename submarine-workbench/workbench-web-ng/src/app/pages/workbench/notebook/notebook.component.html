@@ -17,4 +17,8 @@
   ~ under the License.
   -->
 
-<p>notebook works!</p>
+<div class="editor"
+     style="height: 500px">
+  <ngx-monaco-editor [options]="editorOptions"
+                     [(ngModel)]="code"></ngx-monaco-editor>
+</div>

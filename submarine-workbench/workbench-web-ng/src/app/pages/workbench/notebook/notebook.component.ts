@@ -25,6 +25,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./notebook.component.scss']
 })
 export class NotebookComponent implements OnInit {
+  editorOptions = { theme: 'vs-dark', language: 'javascript' };
+  code: string = 'function x() {\nconsole.log("Hello world!");\n}';
+
   constructor() {
   }
 

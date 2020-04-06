@@ -19,12 +19,14 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { NotebookRoutingModule } from './notebook-routing.module';
 import { NotebookComponent } from './notebook.component';
 
 @NgModule({
   declarations: [NotebookComponent],
-  imports: [CommonModule, NotebookRoutingModule]
+  imports: [CommonModule, NotebookRoutingModule, MonacoEditorModule, FormsModule]
 })
 export class NotebookModule {
 }
