@@ -19,12 +19,19 @@
 
 import { Component, OnInit } from '@angular/core';
 
+enum ResultType {
+  table = 'table',
+  lineChart = 'lineChart'
+}
+
 @Component({
   selector: 'submarine-result',
   templateUrl: './result.component.html',
   styleUrls: ['./result.component.scss']
 })
 export class ResultComponent implements OnInit {
+  ResultType = ResultType;
+  selectResultType: ResultType = ResultType.table;
 
   constructor() {
   }

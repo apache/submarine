@@ -1,4 +1,4 @@
-/*!
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,6 +17,19 @@
  * under the License.
  */
 
-.result-area {
-  margin-top: 16px;
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'submarine-line-chart',
+  templateUrl: './line-chart.component.html',
+  styleUrls: ['./line-chart.component.scss']
+})
+export class LineChartComponent implements OnInit {
+
+  constructor() {
+  }
+
+  ngOnInit(): void {
+  }
+
 }

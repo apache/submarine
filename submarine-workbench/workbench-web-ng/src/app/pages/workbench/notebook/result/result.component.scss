@@ -17,3 +17,18 @@
  * under the License.
  */
 
+.result-wrap {
+  background: #ffffff;
+  padding: 0 16px 16px;
+}
+
+.result-content {
+  position: relative;
+  min-height: 240px;
+}
+
+.result-type-switcher {
+  position: absolute;
+  right: 0;
+  top: 60px;
+}

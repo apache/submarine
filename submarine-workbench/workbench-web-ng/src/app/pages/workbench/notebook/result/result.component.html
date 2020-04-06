@@ -17,4 +17,34 @@
   ~ under the License.
   -->
 
-<p>result works!</p>
+<div class="result-wrap">
+  <nz-tabset class="result-content">
+    <nz-tab nzTitle="Result">
+      <nz-button-group class="result-type-switcher"
+                       nzSize="small">
+        <button nz-button
+                (click)="selectResultType = ResultType.table"
+                [nzType]="selectResultType === ResultType.table ? 'primary' : 'default'">
+          <i nz-icon
+             nzType="table"
+             nzTheme="outline"
+          ></i>
+        </button>
+        <button nz-button
+                (click)="selectResultType = ResultType.lineChart"
+                [nzType]="selectResultType === ResultType.lineChart ? 'primary' : 'default'">
+          <i nz-icon
+             nzType="line-chart"
+             nzTheme="outline"></i>
+        </button>
+      </nz-button-group>
+
+      <submarine-table *ngIf="selectResultType === ResultType.table"></submarine-table>
+      <submarine-line-chart *ngIf="selectResultType === ResultType.lineChart"></submarine-line-chart>
+    </nz-tab>
+    zxll
+    <nz-tab nzTitle="Log">
+      TODO: lleohao
+    </nz-tab>
+  </nz-tabset>
+</div>
