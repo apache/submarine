@@ -120,7 +120,7 @@ In fact, you must execute this command when you develop and submit any workbench
 
 Workbench-server has a built-in jetty server service, so you don't need to install any web container service. You can start submarine workbench by launching `workbench-server` directly in IDEA.
 
-+ **Run / Debug** : In the IDEA, add a Run/Debug Configuration, `Main Class:` select `org.apache.submarine.server.SubmarineServer`, `Use classpath of module:` select `workbench-server`.
++ **Run / Debug** : In the IDEA, add a Run/Debug Configuration, `Main Class:` select `org.apache.submarine.server.SubmarineServer`, `Use classpath of module:` select `submarine-server-core`.
 
 ![img](../assets/Run-Debug-Configuration.png)
 
