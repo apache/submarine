@@ -72,7 +72,7 @@ and database.
 First, you need to clone the entire Submarine project:
 
 ```
-git clone https://github.com/submarine/submarine.git
+git clone https://github.com/apache/submarine.git
 ```
 
 ## 3.1 Database
