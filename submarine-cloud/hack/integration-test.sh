@@ -30,6 +30,7 @@ export KUBECONFIG=~/.kube/kind-config-${clusterName:-kind}
 
 function start() {
   $ROOT/hack/kind-cluster-build.sh
+  $SUBMARINE_HOME/dev-support/k8s/deploy-kubeflow-operators.sh -a
   $ROOT/hack/deploy-submarine.sh --test
 
   for((i=1;i<=30;i++)); do

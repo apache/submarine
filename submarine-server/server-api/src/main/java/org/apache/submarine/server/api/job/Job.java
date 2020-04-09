@@ -19,28 +19,21 @@
 
 package org.apache.submarine.server.api.job;
 
+import org.apache.submarine.server.api.spec.JobSpec;
+
 /**
  * The Generic Machine Learning Job in Submarine.
  */
 public class Job {
   private JobId jobId;
   private String name;
-  private String identifier;
-
-  /**
-   * Get the job instance
-   * @param jobId job id
-   * @param name job name
-   * @param identifier identifier
-   * @return object
-   */
-  public static Job newInstance(JobId jobId, String name, String identifier) {
-    Job job = new Job();
-    job.setJobId(jobId);
-    job.setName(name);
-    job.setIdentifier(identifier);
-    return job;
-  }
+  private String uid;
+  private String status;
+  private String acceptedTime;
+  private String createdTime;
+  private String runningTime;
+  private String finishedTime;
+  private JobSpec spec;
 
   /**
    * Get the job id which is unique in submarine
@@ -81,16 +74,115 @@ public class Job {
    * In YARN cluster it best to set the ApplicationId, and in K8s cluster it maybe the job name.
    * @return the unique identifier
    */
-  public String getIdentifier() {
-    return identifier;
+  public String getUid() {
+    return uid;
   }
 
   /**
    * Set the job identifier, in YARN cluster it best to set the application id, and in K8s cluster
-   * it maybe the job name.
-   * @param identifier application id (YARN) or Job Name (K8s)
+   * it maybe the uid.
+   * @param uid application id (YARN) or uid (K8s)
    */
-  public void setIdentifier(String identifier) {
-    this.identifier = identifier;
+  public void setUid(String uid) {
+    this.uid = uid;
+  }
+
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public String getAcceptedTime() {
+    return acceptedTime;
+  }
+
+  public void setAcceptedTime(String acceptedTime) {
+    this.acceptedTime = acceptedTime;
+  }
+
+  public String getCreatedTime() {
+    return createdTime;
+  }
+
+  public void setCreatedTime(String creatTime) {
+    this.createdTime = creatTime;
+  }
+
+  public String getRunningTime() {
+    return runningTime;
+  }
+
+  public void setRunningTime(String runningTime) {
+    this.runningTime = runningTime;
+  }
+
+  public String getFinishedTime() {
+    return finishedTime;
+  }
+
+  public void setFinishedTime(String finishedTime) {
+    this.finishedTime = finishedTime;
+  }
+
+  public JobSpec getSpec() {
+    return spec;
+  }
+
+  public void setSpec(JobSpec spec) {
+    this.spec = spec;
+  }
+
+  public enum Status {
+    STATUS_ACCEPTED("Accepted"),
+    STATUS_CREATED("Created"),
+    STATUS_RUNNING("Running"),
+    STATUS_SUCCEEDED("Succeeded"),
+    STATUS_DELETED("Deleted");
+
+    private String value;
+    Status(String value) {
+      this.value = value;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return value;
+    }
+  }
+
+  public void rebuild(Job job) {
+    if (job != null) {
+      if (job.getName() != null) {
+        this.setName(job.getName());
+      }
+      if (job.getUid() != null) {
+        this.setUid(job.getUid());
+      }
+      if (job.getSpec() != null) {
+        this.setSpec(job.getSpec());
+      }
+      if (job.getStatus() != null) {
+        this.setStatus(job.getStatus());
+      }
+      if (job.getAcceptedTime() != null) {
+        this.setAcceptedTime(job.getAcceptedTime());
+      }
+      if (job.getCreatedTime() != null) {
+        this.setCreatedTime(job.getCreatedTime());
+      }
+      if (job.getRunningTime() != null) {
+        this.setRunningTime(job.getRunningTime());
+      }
+      if (job.getFinishedTime() != null) {
+        this.setFinishedTime(job.getFinishedTime());
+      }
+    }
   }
 }

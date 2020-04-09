@@ -5,7 +5,7 @@ metadata:
   labels:
     name: pytorch-operator
   name: pytorch-operator
-  namespace: submarine
+  namespace: default
 spec:
   progressDeadlineSeconds: 2147483647
   replicas: 1

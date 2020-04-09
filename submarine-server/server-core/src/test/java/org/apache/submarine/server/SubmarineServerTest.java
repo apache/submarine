@@ -19,12 +19,9 @@
 package org.apache.submarine.server;
 
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.submarine.server.rest.JobManagerRestApiTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +29,6 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertFalse;
 
 public class SubmarineServerTest extends AbstractSubmarineServerTest {
-  private static final Logger LOG = LoggerFactory.getLogger(JobManagerRestApiTest.class);
 
   @BeforeClass
   public static void init() throws Exception {

@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -59,13 +60,17 @@ public class JsonResponse<T> {
   private static final String CGLIB_PROPERTY_PREFIX = "\\$cglib_prop_";
 
   private JsonResponse(Builder<T> builder) {
-    this.status = builder.status;
     this.code = builder.code;
     this.success = builder.success;
     this.message = builder.message;
     this.attributes = builder.attributes;
     this.result = (T) builder.result;
     this.cookies = builder.cookies;
+    if (builder.status != null) {
+      this.status = builder.status;
+    } else {
+      status = Response.Status.fromStatusCode(this.code);
+    }
   }
 
   public T getResult() {

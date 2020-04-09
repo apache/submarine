@@ -20,6 +20,7 @@
 package org.apache.submarine.server.submitter.k8s.model;
 
 import com.google.gson.annotations.SerializedName;
+import io.kubernetes.client.models.V1JobStatus;
 import io.kubernetes.client.models.V1ObjectMeta;
 
 /**
@@ -42,6 +43,9 @@ public class MLJob {
   private transient String version;
 
   private transient String plural;
+
+  @SerializedName("status")
+  private V1JobStatus status;
 
   /**
    * Set the api with version
@@ -134,5 +138,13 @@ public class MLJob {
 
   public void setPlural(String plural) {
     this.plural = plural;
+  }
+
+  public V1JobStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(V1JobStatus status) {
+    this.status = status;
   }
 }

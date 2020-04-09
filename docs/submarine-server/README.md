@@ -125,13 +125,12 @@ or
 
 For more info about the spec definition see [here](../design/submarine-server/jobspec.md).
 
-### Submit Job
-> Before submit training job, you should make sure you had deployed the [submarine server and tf-operator](./setup-kubernetes.md#setup-submarine).
+## Job Operation by REST API
+### Create Job
+`POST /api/v1/jobs`
 
-You can use the Postman to post the job to server or use `curl` with the following command:
-
-For Tensorflow Job:
-```bash
+**Example Request**
+```sh
 curl -X POST -H "Content-Type: application/json" -d '
 {
   "name": "mnist",
@@ -149,11 +148,6 @@ curl -X POST -H "Content-Type: application/json" -d '
     "namespace": "submarine"
   },
   "taskSpecs": {
-    "Ps": {
-      "name": "tensorflow",
-      "replicas": 1,
-      "resources": "cpu=1,memory=1024M"
-    },
     "Worker": {
       "name": "tensorflow",
       "replicas": 1,
@@ -161,19 +155,168 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   }
 }
-' http://127.0.0.1:8080/api/v1/jobs
+' http://127.0.0.1/api/v1/jobs
 ```
 
-For PyTorch Job:
-```bash
-curl -X POST -H "Content-Type: application/json" -d '
+**Example Response:**
+```sh
 {
-  "name": "pytorch-dist-mnist-gloo",
+    "status": "OK",
+    "code": 200,
+    "result": {
+        "jobId": "job_1586156073228_0005",
+        "name": "mnist",
+        "uid": "28e39dcd-77d4-11ea-8dbb-0242ac110003",
+        "status": "Accepted",
+        "acceptedTime": "2020-04-06T14:59:29.000+08:00",
+        "spec": {
+            "name": "mnist",
+            "librarySpec": {
+                "name": "TensorFlow",
+                "version": "2.1.0",
+                "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0",
+                "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
+                "envVars": {
+                    "ENV_1": "ENV1"
+                }
+            },
+            "submitterSpec": {
+                "type": "k8s",
+                "namespace": "submarine"
+            },
+            "taskSpecs": {
+                "Worker": {
+                    "name": "tensorflow",
+                    "resources": "cpu=1,memory=1024M",
+                    "replicas": 1,
+                    "resourceMap": {
+                        "memory": "1024M",
+                        "cpu": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+### List Jobs
+`GET /api/v1/jobs`
+
+**Example Request:**
+```sh
+curl -X GET http://127.0.0.1/api/v1/jobs
+```
+
+**Example Response:**
+```sh
+{
+    "status": "OK",
+    "code": 200,
+    "result": [
+        {
+            "jobId": "job_1586156073228_0005",
+            "name": "mnist",
+            "uid": "28e39dcd-77d4-11ea-8dbb-0242ac110003",
+            "status": "Created",
+            "acceptedTime": "2020-04-06T14:59:29.000+08:00",
+            "createdTime": "2020-04-06T14:59:29.000+08:00",
+            "spec": {
+                "name": "mnist",
+                "librarySpec": {
+                    "name": "TensorFlow",
+                    "version": "2.1.0",
+                    "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0",
+                    "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
+                    "envVars": {
+                        "ENV_1": "ENV1"
+                    }
+                },
+                "submitterSpec": {
+                    "type": "k8s",
+                    "namespace": "submarine"
+                },
+                "taskSpecs": {
+                    "Worker": {
+                        "name": "tensorflow",
+                        "resources": "cpu=1,memory=1024M",
+                        "replicas": 1,
+                        "resourceMap": {
+                            "memory": "1024M",
+                            "cpu": "1"
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
+```
+
+### Get Job
+`GET /api/v1/jobs/{id}`
+
+**Example Request:**
+```sh
+curl -X GET http://127.0.0.1/api/v1/jobs/job_1586156073228_0005
+```
+
+**Example Response:**
+```sh
+{
+    "status": "OK",
+    "code": 200,
+    "result": {
+        "jobId": "job_1586156073228_0005",
+        "name": "mnist",
+        "uid": "28e39dcd-77d4-11ea-8dbb-0242ac110003",
+        "status": "Created",
+        "acceptedTime": "2020-04-06T14:59:29.000+08:00",
+        "createdTime": "2020-04-06T14:59:29.000+08:00",
+        "spec": {
+            "name": "mnist",
+            "librarySpec": {
+                "name": "TensorFlow",
+                "version": "2.1.0",
+                "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0",
+                "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
+                "envVars": {
+                    "ENV_1": "ENV1"
+                }
+            },
+            "submitterSpec": {
+                "type": "k8s",
+                "namespace": "submarine"
+            },
+            "taskSpecs": {
+                "Worker": {
+                    "name": "tensorflow",
+                    "resources": "cpu=1,memory=1024M",
+                    "replicas": 1,
+                    "resourceMap": {
+                        "memory": "1024M",
+                        "cpu": "1"
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+### Patch Job
+`PATCH /api/v1/jobs/{id}`
+
+**Example Request:**
+```sh
+curl -X PATCH -H "Content-Type: application/json" -d '
+{
+  "name": "mnist",
   "librarySpec": {
-    "name": "pytorch",
+    "name": "TensorFlow",
     "version": "2.1.0",
-    "image": "apache/submarine:pytorch-dist-mnist-1.0",
-    "cmd": "python /var/mnist.py --backend gloo",
+    "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0",
+    "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
     "envVars": {
       "ENV_1": "ENV1"
     }
@@ -183,50 +326,107 @@ curl -X POST -H "Content-Type: application/json" -d '
     "namespace": "submarine"
   },
   "taskSpecs": {
-    "Master": {
-      "name": "master",
-      "replicas": 1,
-      "resources": "cpu=1,memory=1024M"
-    },
     "Worker": {
-      "name": "worker",
-      "replicas": 1,
+      "name": "tensorflow",
+      "replicas": 2,
       "resources": "cpu=1,memory=1024M"
     }
   }
 }
-' http://127.0.0.1:8080/api/v1/jobs      
+' http://127.0.0.1/api/v1/jobs/job_1586156073228_0005
 ```
 
-### Verify Jobs
-You can run following command to get the submitted job:
-```
-kubectl get -n submarine tfjob
-kubectl get -n submarine pytorchjob
+**Example Response:**
+```sh
+{
+    "status": "OK",
+    "code": 200,
+    "success": true,
+    "result": {
+        "jobId": "job_1586156073228_0005",
+        "name": "mnist",
+        "uid": "28e39dcd-77d4-11ea-8dbb-0242ac110003",
+        "status": "Created",
+        "acceptedTime": "2020-04-06T14:59:29.000+08:00",
+        "createdTime": "2020-04-06T14:59:29.000+08:00",
+        "spec": {
+            "name": "mnist",
+            "librarySpec": {
+                "name": "TensorFlow",
+                "version": "2.1.0",
+                "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0",
+                "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
+                "envVars": {
+                    "ENV_1": "ENV1"
+                }
+            },
+            "submitterSpec": {
+                "type": "k8s",
+                "namespace": "submarine"
+            },
+            "taskSpecs": {
+                "Worker": {
+                    "name": "tensorflow",
+                    "resources": "cpu=1,memory=1024M",
+                    "replicas": 2,
+                    "resourceMap": {
+                        "memory": "1024M",
+                        "cpu": "1"
+                    }
+                }
+            }
+        }
+    }
+}
 ```
 
-**Output:**
-```
-NAME    STATE     AGE
-mnist   Created   7m6s
+### Delete Job
+`GET /api/v1/jobs/{id}`
+
+**Example Request:**
+```sh
+curl -X DELETE http://127.0.0.1/api/v1/jobs/job_123_01
 ```
 
-Also you can find pods which running the jobs, run following command:
-```
-kubectl get -n submarine pods
-```
-
-**Output:**
-```
-NAME                               READY   STATUS              RESTARTS   AGE
-mnist-ps-0                         0/1     ContainerCreating   0          3m47s
-mnist-worker-0                     0/1     Pending             0          3m47s
-tf-job-operator-74cc6bd6cb-fqd5s   1/1     Running             0          98m
-```
-
-
-### Delete Jobs
-```bash
-kubectl -n submarine delete tfjob/mnist
-kubectl -n submarine delete pytorchjob/pytorch-dist-mnist-gloo
+**Example Response:**
+```sh
+{
+    "status": "OK",
+    "code": 200,
+    "result": {
+        "jobId": "job_1586156073228_0005",
+        "name": "mnist",
+        "uid": "28e39dcd-77d4-11ea-8dbb-0242ac110003",
+        "status": "Deleted",
+        "acceptedTime": "2020-04-06T14:59:29.000+08:00",
+        "createdTime": "2020-04-06T14:59:29.000+08:00",
+        "spec": {
+            "name": "mnist",
+            "librarySpec": {
+                "name": "TensorFlow",
+                "version": "2.1.0",
+                "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0",
+                "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
+                "envVars": {
+                    "ENV_1": "ENV1"
+                }
+            },
+            "submitterSpec": {
+                "type": "k8s",
+                "namespace": "submarine"
+            },
+            "taskSpecs": {
+                "Worker": {
+                    "name": "tensorflow",
+                    "resources": "cpu=1,memory=1024M",
+                    "replicas": 1,
+                    "resourceMap": {
+                        "memory": "1024M",
+                        "cpu": "1"
+                    }
+                }
+            }
+        }
+    }
+}
 ```

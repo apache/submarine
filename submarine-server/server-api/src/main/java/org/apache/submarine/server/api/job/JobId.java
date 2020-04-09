@@ -116,7 +116,10 @@ public class JobId implements Comparable<JobId> {
       return true;
     }
     JobId other = (JobId) obj;
-    return this.getId() != other.getId();
+    if (this.getServerTimestamp() != other.getServerTimestamp()) {
+      return false;
+    }
+    return this.getId() == other.getId();
   }
 
   @Override

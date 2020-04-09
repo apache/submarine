@@ -8,16 +8,15 @@ librarySpec:
     ENV_1: "ENV1"
 submitterSpec:
   type: "k8s"
-  configPath:
-  namespace: "submarine"
+  namespace: "default"
   kind: "TFJob"
   apiVersion: "kubeflow.org/v1"
 taskSpecs:
   Ps:
     name: tensorflow
-    replicas: 2
-    resources: "cpu=4,memory=2048M,nvidia.com/gpu=1"
+    replicas: 1
+    resources: "cpu=1,memory=512M"
   Worker:
     name: tensorflow
-    replicas: 2
-    resources: "cpu=4,memory=2048M,nvidia.com/gpu=1"
+    replicas: 1
+    resources: "cpu=1,memory=512M"

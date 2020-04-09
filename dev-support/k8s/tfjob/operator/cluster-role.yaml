@@ -6,35 +6,36 @@ metadata:
     app: tf-job-operator
   name: tf-job-operator
 rules:
-- apiGroups:
-  - kubeflow.org
-  resources:
-  - tfjobs
-  - tfjobs/status
-  verbs:
-  - '*'
-- apiGroups:
-  - apiextensions.k8s.io
-  resources:
-  - customresourcedefinitions
-  verbs:
-  - '*'
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  - services
-  - endpoints
-  - events
-  verbs:
-  - '*'
-- apiGroups:
-  - apps
-  - extensions
-  resources:
-  - deployments
-  verbs:
-  - '*'
+  - apiGroups:
+      - kubeflow.org
+    resources:
+      - tfjobs
+      - tfjobs/status
+      - tfjobs/finalizers
+    verbs:
+      - '*'
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - '*'
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - services
+      - endpoints
+      - events
+    verbs:
+      - '*'
+  - apiGroups:
+      - apps
+      - extensions
+    resources:
+      - deployments
+    verbs:
+      - '*'
 
 ---
 
@@ -46,8 +47,8 @@ metadata:
     rbac.authorization.kubeflow.org/aggregate-to-kubeflow-admin: "true"
 aggregationRule:
   clusterRoleSelectors:
-  - matchLabels:
-      rbac.authorization.kubeflow.org/aggregate-to-kubeflow-tfjobs-admin: "true"
+    - matchLabels:
+        rbac.authorization.kubeflow.org/aggregate-to-kubeflow-tfjobs-admin: "true"
 rules: []
 
 ---
@@ -60,20 +61,20 @@ metadata:
     rbac.authorization.kubeflow.org/aggregate-to-kubeflow-edit: "true"
     rbac.authorization.kubeflow.org/aggregate-to-kubeflow-tfjobs-admin: "true"
 rules:
-- apiGroups:
-  - kubeflow.org
-  resources:
-  - tfjobs
-  - tfjobs/status
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - delete
-  - deletecollection
-  - patch
-  - update
+  - apiGroups:
+      - kubeflow.org
+    resources:
+      - tfjobs
+      - tfjobs/status
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - deletecollection
+      - patch
+      - update
 
 ---
 
@@ -84,12 +85,12 @@ metadata:
   labels:
     rbac.authorization.kubeflow.org/aggregate-to-kubeflow-view: "true"
 rules:
-- apiGroups:
-  - kubeflow.org
-  resources:
-  - tfjobs
-  - tfjobs/status
-  verbs:
-  - get
-  - list
-  - watch
+  - apiGroups:
+      - kubeflow.org
+    resources:
+      - tfjobs
+      - tfjobs/status
+    verbs:
+      - get
+      - list
+      - watch

@@ -19,32 +19,32 @@
 
 package org.apache.submarine.server.rest;
 
-import org.apache.submarine.server.JobManager;
-import org.apache.submarine.server.api.exception.UnsupportedJobTypeException;
-import org.apache.submarine.server.api.job.Job;
-import org.apache.submarine.server.api.job.JobId;
-import org.apache.submarine.server.api.spec.JobSpec;
-import org.apache.submarine.server.response.JsonResponse;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
+import org.apache.submarine.server.job.JobManager;
+import org.apache.submarine.server.api.job.Job;
+import org.apache.submarine.server.api.spec.JobSpec;
+import org.apache.submarine.server.response.JsonResponse;
+
 /**
- * {@link JobManager}'s REST API v1. It can accept {@link JobSpec} to create a job.
+ * Job Service REST API v1. It can accept {@link JobSpec} to create a job.
  */
 @Path(RestConstants.V1 + "/" + RestConstants.JOBS)
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
 public class JobManagerRestApi {
-
+  private final JobManager jobManager = JobManager.getInstance();
   /**
    * Return the Pong message for test the connectivity
    * @return Pong message
@@ -59,24 +59,17 @@ public class JobManagerRestApi {
 
   /**
    * Returns the contents of {@link Job} that submitted by user.
-   * @param jobSpec job spec
+   * @param spec job spec
    * @return the contents of job
    */
   @POST
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
-  public Response submitJob(JobSpec jobSpec) {
-    if (!jobSpec.validate()) {
-      return new JsonResponse.Builder<String>(Response.Status.ACCEPTED)
-          .success(false).result("Invalid params.").build();
-    }
-
+  public Response createJob(JobSpec spec) {
     try {
-      Job job = JobManager.getInstance().submitJob(jobSpec);
-      return new JsonResponse.Builder<Job>(Response.Status.OK)
-          .success(true).result(job).build();
-    } catch (UnsupportedJobTypeException e) {
-      return new JsonResponse.Builder<String>(Response.Status.ACCEPTED)
-          .success(false).result(e.getMessage()).build();
+      Job job = jobManager.createJob(spec);
+      return new JsonResponse.Builder<Job>(Response.Status.OK).result(job).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseJobServiceException(e);
     }
   }
 
@@ -85,10 +78,13 @@ public class JobManagerRestApi {
    * @return job list
    */
   @GET
-  public Response listJob() {
-    // TODO(jiwq): Hook JobManager when 0.4.0 released
-    return new JsonResponse.Builder<List<Job>>(Response.Status.OK)
-        .success(true).result(new ArrayList<>()).build();
+  public Response listJob(@QueryParam("status") String status) {
+    try {
+      List<Job> jobList = jobManager.listJobsByStatus(status);
+      return new JsonResponse.Builder<List<Job>>(Response.Status.OK).result(jobList).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseJobServiceException(e);
+    }
   }
 
   /**
@@ -97,13 +93,27 @@ public class JobManagerRestApi {
    * @return the detailed info of job
    */
   @GET
-  @Path("{" + RestConstants.JOB_ID + "}")
+  @Path("/{id}")
   public Response getJob(@PathParam(RestConstants.JOB_ID) String id) {
-    // TODO(jiwq): Hook JobManager when 0.4.0 released
-    Job job = new Job();
-    job.setJobId(JobId.fromString(id));
-    return new JsonResponse.Builder<Job>(Response.Status.OK)
-        .success(true).result(job).build();
+    try {
+      Job job = jobManager.getJob(id);
+      return new JsonResponse.Builder<Job>(Response.Status.OK).result(job).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseJobServiceException(e);
+    }
+  }
+
+  @PATCH
+  @Path("/{id}")
+  @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
+  public Response patchJob(@PathParam(RestConstants.JOB_ID) String id, JobSpec spec) {
+    try {
+      Job job = jobManager.patchJob(id, spec);
+      return new JsonResponse.Builder<Job>(Response.Status.OK).success(true)
+          .result(job).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseJobServiceException(e);
+    }
   }
 
   /**
@@ -112,10 +122,18 @@ public class JobManagerRestApi {
    * @return the detailed info about deleted job
    */
   @DELETE
-  @Path("{" + RestConstants.JOB_ID + "}")
+  @Path("/{id}")
   public Response deleteJob(@PathParam(RestConstants.JOB_ID) String id) {
-    // TODO(jiwq): Hook JobManager when 0.4.0 released
-    return new JsonResponse.Builder<Job>(Response.Status.OK)
-        .success(true).result(new Job()).build();
+    try {
+      Job job = jobManager.deleteJob(id);
+      return new JsonResponse.Builder<Job>(Response.Status.OK)
+          .result(job).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseJobServiceException(e);
+    }
+  }
+
+  private Response parseJobServiceException(SubmarineRuntimeException e) {
+    return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage()).build();
   }
 }

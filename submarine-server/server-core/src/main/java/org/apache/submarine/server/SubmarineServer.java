@@ -19,6 +19,7 @@
 package org.apache.submarine.server;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.submarine.server.rest.provider.YamlEntityProvider;
 import org.apache.submarine.server.rpc.SubmarineRpcServer;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.commons.cluster.ClusterServer;
@@ -126,9 +127,9 @@ public class SubmarineServer extends ResourceConfig {
   @Inject
   public SubmarineServer() {
     packages("org.apache.submarine.server.workbench.rest",
-             "org.apache.submarine.server.jobserver.rest",
              "org.apache.submarine.server.rest"
     );
+    register(YamlEntityProvider.class);
   }
 
   private static void startServer() throws InterruptedException {

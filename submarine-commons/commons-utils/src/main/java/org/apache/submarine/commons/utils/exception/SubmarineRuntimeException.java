@@ -22,7 +22,18 @@ package org.apache.submarine.commons.utils.exception;
 public class SubmarineRuntimeException extends RuntimeException {
   private static final long serialVersionUID = 7159777541471705348L;
 
+  private int code;
+
   public SubmarineRuntimeException(String message) {
     super(message);
+  }
+
+  public SubmarineRuntimeException(int code, String message) {
+    super(message);
+    this.code = code;
+  }
+
+  public int getCode() {
+    return code;
   }
 }
