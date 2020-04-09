@@ -28,7 +28,7 @@ spec:
       labels:
         app: cluster-test
     spec:
-      ServiceAccountName: "submarine-node"
+      serviceAccountName: "submarine-node"
       containers:
         - name: submarine-node
           image: "apache/submarine:server-0.4.0-SNAPSHOT"

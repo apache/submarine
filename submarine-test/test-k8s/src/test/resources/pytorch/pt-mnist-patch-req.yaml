@@ -1,0 +1,21 @@
+---
+name: mnist
+librarySpec:
+  name: pytorch
+  version: 2.1.0
+  image: apache/submarine:pytorch-dist-mnist-1.0
+  cmd: python /var/mnist.py --backend gloo
+  envVars:
+    ENV_1: ENV1
+submitterSpec:
+  type: k8s
+  namespace: default
+taskSpecs:
+  Master:
+    name: master
+    replicas: 1
+    resources: cpu=1,memory=1024M
+  Worker:
+    name: worker
+    replicas: s
+    resources: cpu=1,memory=1024M

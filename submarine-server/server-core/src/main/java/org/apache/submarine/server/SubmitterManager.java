@@ -20,7 +20,7 @@
 package org.apache.submarine.server;
 
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
-import org.apache.submarine.server.api.JobSubmitter;
+import org.apache.submarine.server.api.job.JobSubmitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -83,6 +83,7 @@ spark-1.*-bin-hadoop*
 submarine-cloud/vendor/*
 submarine-cloud/output/*
 submarine-cloud/hack/conf/*
+submarine-cloud/hack/output/*
 submarine-cloud/bin/*
 
 submarine-security/spark-security/dependency-reduced-pom.xml

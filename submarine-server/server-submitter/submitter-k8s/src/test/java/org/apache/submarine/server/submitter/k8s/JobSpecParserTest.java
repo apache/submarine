@@ -19,8 +19,9 @@
 
 package org.apache.submarine.server.submitter.k8s;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.spec.JobLibrarySpec;
 import org.apache.submarine.server.api.spec.JobSpec;
@@ -36,19 +37,7 @@ import org.apache.submarine.server.submitter.k8s.parser.JobSpecParser;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-
-public class JobSpecParserTest {
-
-  private final String pytorchJobReqFile = "/pytorch_job_req.json";
-  private final String tfJobReqFile = "/tf_mnist_req.json";
-
+public class JobSpecParserTest extends SpecBuilder {
   @Test
   public void testValidTensorflowJobSpec() throws IOException,
       URISyntaxException, InvalidSpecException {
@@ -181,20 +170,5 @@ public class JobSpecParserTest {
     String actualMasterContainerCpu = mlJobReplicaSpec.getContainerCpu();
     Assert.assertEquals(expectedMasterContainerCpu,
         actualMasterContainerCpu);
-  }
-
-  private JobSpec buildFromJsonFile(String filePath) throws IOException,
-      URISyntaxException {
-    Gson gson = new GsonBuilder().create();
-    try (Reader reader = Files.newBufferedReader(
-        getCustomJobSpecFile(filePath).toPath(),
-        StandardCharsets.UTF_8)) {
-      return gson.fromJson(reader, JobSpec.class);
-    }
-  }
-
-  private File getCustomJobSpecFile(String path) throws URISyntaxException {
-    URL fileUrl = this.getClass().getResource(path);
-    return new File(fileUrl.toURI());
   }
 }

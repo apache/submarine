@@ -19,31 +19,20 @@
 
 package org.apache.submarine.server.submitter.k8s;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.apis.CoreV1Api;
 import io.kubernetes.client.models.V1Namespace;
 import io.kubernetes.client.models.V1NamespaceList;
-import org.apache.submarine.server.api.exception.InvalidSpecException;
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.job.Job;
 import org.apache.submarine.server.api.spec.JobSpec;
-import org.apache.submarine.server.submitter.k8s.model.CustomResourceJob;
-import org.apache.submarine.server.submitter.k8s.model.CustomResourceJobList;
-import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
-import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 /**
  * We have two ways to test submitter for K8s cluster, local and travis CI.
@@ -62,20 +51,9 @@ import java.nio.file.Files;
  * Local: docker run -it --privileged -p 8443:8443 -p 10080:10080 bsycorp/kind:latest-1.15
  * Travis: See '.travis.yml'
  */
-public class K8SJobSubmitterTest {
-  private final String tfJobName = "mnist";
-  private final String pytorchJobName = "pytorch-dist-mnist-gloo";
-
-  // The spec files in test/resources
-  private final String tfJobSpecFile = "/tf_job_mnist.json";
-  private final String tfJobReqFile = "/tf_mnist_req.json";
-  private final String pytorchJobSpecFile = "/pytorch_job_mnist_gloo.json";
-  private final String pytorchJobReqFile = "/pytorch_job_req.json";
+public class K8SJobSubmitterTest extends SpecBuilder {
 
   private K8sJobSubmitter submitter;
-
-  private K8sJobRequest.Path tfPath;
-  private K8sJobRequest.Path pyTorchPath;
 
   @Before
   public void before() throws IOException, ApiException {
@@ -87,12 +65,8 @@ public class K8SJobSubmitterTest {
     submitter.initialize(null);
     String ns = "submarine";
     if (!isEnvReady()) {
-      throw new ApiException(" Please create a namespace 'submarine'.");
+      throw new ApiException("Please create a namespace 'submarine'.");
     }
-    tfPath = new K8sJobRequest.Path(TFJob.CRD_TF_GROUP_V1,
-        TFJob.CRD_TF_VERSION_V1, ns, TFJob.CRD_TF_PLURAL_V1);
-    pyTorchPath = new K8sJobRequest.Path(PyTorchJob.CRD_PYTORCH_GROUP_V1,
-        PyTorchJob.CRD_PYTORCH_VERSION_V1, ns, PyTorchJob.CRD_PYTORCH_PLURAL_V1);
   }
 
   private boolean isEnvReady() throws ApiException {
@@ -106,101 +80,37 @@ public class K8SJobSubmitterTest {
     return false;
   }
 
-  // Delete the job might take time
-  @After
-  public void after() {
-    try {
-      tryDeleteCustomJob(tfPath, tfJobName);
-      tryDeleteCustomJob(pyTorchPath, pytorchJobName);
-      Thread.sleep(2000);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Test
-  public void testRawTFJobSpec() throws URISyntaxException {
-    tryCreateCustomJob(tfPath, tfJobName, tfJobSpecFile);
-    CustomResourceJob job = getCustomJob(tfPath, tfJobName);
-    Assert.assertNotNull(job);
-    Assert.assertEquals(tfJobName, job.getMetadata().getName());
-    CustomResourceJobList jobList = listCustomJobs(tfPath, tfJobSpecFile);
-    Assert.assertEquals(1, jobList.getItems().size());
-  }
-
-  @Test
-  public void testRunRawPyTorchJobSpec() throws URISyntaxException {
-    tryCreateCustomJob(pyTorchPath, pytorchJobName, pytorchJobSpecFile);
-    CustomResourceJob job = getCustomJob(pyTorchPath, pytorchJobName);
-    Assert.assertNotNull(job);
-    Assert.assertEquals(pytorchJobName, job.getMetadata().getName());
-  }
-
   @Test
   public void testRunPyTorchJobPerRequest() throws URISyntaxException,
-      IOException, InvalidSpecException {
-    JobSpec jobSpec = buildFromJsonFile(pytorchJobReqFile);
-    Job job = submitter.submitJob(jobSpec);
-    Assert.assertNotNull(job);
-    CustomResourceJob cjob = getCustomJob(pyTorchPath, pytorchJobName);
-    Assert.assertEquals(pytorchJobName, cjob.getMetadata().getName());
-    Assert.assertNotNull(cjob);
+      IOException, SubmarineRuntimeException {
+    JobSpec spec = buildFromJsonFile(pytorchJobReqFile);
+    run(spec);
   }
 
   @Test
   public void testRunTFJobPerRequest() throws URISyntaxException,
-      IOException, InvalidSpecException {
-    JobSpec jobSpec = buildFromJsonFile(tfJobReqFile);
-    Job job = submitter.submitJob(jobSpec);
-    Assert.assertNotNull(job);
-    CustomResourceJob cjob = getCustomJob(tfPath, tfJobName);
-    Assert.assertEquals(tfJobName, cjob.getMetadata().getName());
-    Assert.assertNotNull(cjob);
+      IOException, SubmarineRuntimeException {
+    JobSpec spec = buildFromJsonFile(tfJobReqFile);
+    run(spec);
   }
 
-  private JobSpec buildFromJsonFile(String filePath) throws IOException,
-      URISyntaxException {
-    Gson gson = new GsonBuilder().create();
-    try (Reader reader = Files.newBufferedReader(
-        getCustomJobSpecFile(filePath).toPath(),
-        StandardCharsets.UTF_8)) {
-      return gson.fromJson(reader, JobSpec.class);
-    }
-  }
+  private void run(JobSpec spec) throws SubmarineRuntimeException {
+    // create
+    Job jobCreated = submitter.createJob(spec);
+    Assert.assertNotNull(jobCreated);
 
-  public CustomResourceJob tryCreateCustomJob(K8sJobRequest.Path requestPath,
-      String jobName, String jobSpecFile) throws URISyntaxException {
-    CustomResourceJob job = getCustomJob(requestPath, jobName);
-    if (job != null) {
-      return job;
-    }
-    return submitter.createCustomJob(
-        new K8sJobRequest(requestPath, getCustomJobSpecFile(jobSpecFile)));
-  }
+    // find
+    Job jobFound = submitter.findJob(spec);
+    Assert.assertNotNull(jobFound);
+    Assert.assertEquals(jobCreated.getUid(), jobFound.getUid());
+    Assert.assertEquals(jobCreated.getName(), jobFound.getName());
+    Assert.assertEquals(jobCreated.getAcceptedTime(), jobFound.getAcceptedTime());
 
-  public CustomResourceJobList listCustomJobs(K8sJobRequest.Path requestPath,
-      String jobSpecFile) throws URISyntaxException {
-    return submitter.listCustomResourceJobs(
-        new K8sJobRequest(requestPath, getCustomJobSpecFile(jobSpecFile)));
-  }
-
-  public CustomResourceJob tryDeleteCustomJob(K8sJobRequest.Path requestPath,
-      String jobName) {
-    if (getCustomJob(requestPath, jobName) != null) {
-      K8sJobRequest request = new K8sJobRequest(requestPath, null, jobName);
-      return submitter.deleteCustomResourceJob(request);
-    }
-    return null;
-  }
-
-  private CustomResourceJob getCustomJob(K8sJobRequest.Path requestPath,
-      String jobName) {
-    K8sJobRequest request = new K8sJobRequest(requestPath, null, jobName);
-    return submitter.getCustomResourceJob(request);
-  }
-
-  private File getCustomJobSpecFile(String path) throws URISyntaxException {
-    URL fileUrl = this.getClass().getResource(path);
-    return new File(fileUrl.toURI());
+    // delete
+    Job jobDeleted = submitter.deleteJob(spec);
+    Assert.assertNotNull(jobDeleted);
+    Assert.assertEquals(Job.Status.STATUS_DELETED.getValue(), jobDeleted.getStatus());
+    Assert.assertEquals(jobFound.getUid(), jobDeleted.getUid());
+    Assert.assertEquals(jobFound.getName(), jobDeleted.getName());
   }
 }

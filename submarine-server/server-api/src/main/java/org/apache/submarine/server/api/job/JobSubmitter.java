@@ -17,15 +17,16 @@
  * under the License.
  */
 
-package org.apache.submarine.server.api;
+package org.apache.submarine.server.api.job;
 
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
+import org.apache.submarine.server.api.spec.JobSpec;
 
 /**
  * The submitter should implement this interface.
  */
-public interface JobSubmitter extends JobHandler {
-
+public interface JobSubmitter {
   /**
    * Initialize the submitter related code
    */
@@ -38,4 +39,35 @@ public interface JobSubmitter extends JobHandler {
    */
   String getSubmitterType();
 
+  /**
+   * Create job with job spec
+   * @param jobSpec job spec
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  Job createJob(JobSpec jobSpec) throws SubmarineRuntimeException;
+
+  /**
+   * Find job by job spec
+   * @param jobSpec job spec
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  Job findJob(JobSpec jobSpec) throws SubmarineRuntimeException;
+
+  /**
+   * Patch job with job spec
+   * @param jobSpec job spec
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  Job patchJob(JobSpec jobSpec) throws SubmarineRuntimeException;
+
+  /**
+   * Delete job by job spec
+   * @param jobSpec job spec
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  Job deleteJob(JobSpec jobSpec) throws SubmarineRuntimeException;
 }

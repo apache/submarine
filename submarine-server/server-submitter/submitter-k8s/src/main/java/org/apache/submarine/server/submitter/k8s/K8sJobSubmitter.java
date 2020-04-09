@@ -19,32 +19,32 @@
 
 package org.apache.submarine.server.submitter.k8s;
 
+import java.io.FileReader;
+import java.io.IOException;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.Configuration;
+import io.kubernetes.client.JSON;
 import io.kubernetes.client.apis.CustomObjectsApi;
-import io.kubernetes.client.models.V1DeleteOptions;
-import io.kubernetes.client.models.V1DeleteOptionsBuilder;
+import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-import org.apache.submarine.server.api.JobSubmitter;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
+import org.apache.submarine.server.api.job.JobSubmitter;
 import org.apache.submarine.server.api.job.Job;
 import org.apache.submarine.server.api.spec.JobSpec;
-import org.apache.submarine.server.submitter.k8s.model.CustomResourceJob;
-import org.apache.submarine.server.submitter.k8s.model.CustomResourceJobList;
+import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.parser.JobSpecParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileReader;
-import java.io.IOException;
 
 /**
  * JobSubmitter for Kubernetes Cluster.
@@ -59,6 +59,7 @@ public class K8sJobSubmitter implements JobSubmitter {
 
   public K8sJobSubmitter() {}
 
+  @VisibleForTesting
   public K8sJobSubmitter(String confPath) {
     this.confPath = confPath;
   }
@@ -90,7 +91,8 @@ public class K8sJobSubmitter implements JobSubmitter {
         ApiClient client = ClientBuilder.cluster().build();
         Configuration.setDefaultApiClient(client);
       } catch (IOException e1) {
-        throw new SubmarineRuntimeException("Failed to initialize k8s client");
+        LOG.error("Initialize K8s submitter failed. " + e.getMessage(), e1);
+        throw new SubmarineRuntimeException(500, "Initialize K8s submitter failed.");
       }
     }
   }
@@ -101,98 +103,91 @@ public class K8sJobSubmitter implements JobSubmitter {
   }
 
   @Override
-  public Job submitJob(JobSpec jobSpec)
-      throws InvalidSpecException {
-    Job job = null;
-
-    boolean success = createJob(JobSpecParser.parseJob(jobSpec));
-    if (success) {
-      job = new Job();
-      job.setName(jobSpec.getName());
-    } else {
-      LOG.error("Failed to create job." + jobSpec.toString());
+  public Job createJob(JobSpec jobSpec) throws SubmarineRuntimeException {
+    Job job;
+    try {
+      MLJob mlJob = JobSpecParser.parseJob(jobSpec);
+      Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
+          mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true");
+      job = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
+    } catch (InvalidSpecException e) {
+      throw new SubmarineRuntimeException(200, e.getMessage());
+    } catch (ApiException e) {
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
     return job;
   }
 
-  @VisibleForTesting
-  boolean createJob(MLJob job) {
+  @Override
+  public Job findJob(JobSpec jobSpec) throws SubmarineRuntimeException {
+    Job job;
     try {
-      api.createNamespacedCustomObject(job.getGroup(), job.getVersion(),
-          job.getMetadata().getNamespace(), job.getPlural(),
-          job, "true");
+      MLJob mlJob = JobSpecParser.parseJob(jobSpec);
+      Object object = api.getNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
+          mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName());
+      job = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
+    } catch (InvalidSpecException e) {
+      throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
-      LOG.error("Failed to create job. " + e.getMessage(), e);
-      return false;
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
-    return true;
+    return job;
   }
 
-  @VisibleForTesting
-  CustomResourceJob createCustomJob(K8sJobRequest request) {
+  @Override
+  public Job patchJob(JobSpec jobSpec) throws SubmarineRuntimeException {
+    Job job;
     try {
-      K8sJobRequest.Path path = request.getPath();
-      Object o = api.createNamespacedCustomObject(path.getGroup(),
-          path.getApiVersion(), path.getNamespace(), path.getPlural(),
-          request.getBody(), "true");
-      Gson gson = new Gson();
-      return gson.fromJson(gson.toJson(o), CustomResourceJob.class);
-    } catch (ApiException ae) {
-      LOG.error("Exceptions when creating CRD job: " + ae.getMessage(), ae);
+      MLJob mlJob = JobSpecParser.parseJob(jobSpec);
+      Object object = api.patchNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
+          mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
+          mlJob);
+      job = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
+    } catch (InvalidSpecException e) {
+      throw new SubmarineRuntimeException(200, e.getMessage());
+    } catch (ApiException e) {
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
-    return null;
+    return job;
   }
 
-  @VisibleForTesting
-  CustomResourceJob getCustomResourceJob(K8sJobRequest request) {
+  @Override
+  public Job deleteJob(JobSpec jobSpec) throws SubmarineRuntimeException {
+    Job job;
     try {
-      K8sJobRequest.Path path = request.getPath();
-      Object o = api.getNamespacedCustomObject(path.getGroup(),
-          path.getApiVersion(),
-          path.getNamespace(), path.getPlural(), request.getJobName());
-      Gson gson = new Gson();
-      return gson.fromJson(gson.toJson(o), CustomResourceJob.class);
-    } catch (ApiException ae) {
-      // The API getNamespacedCustomObject throws exception when cannot found resource
-      // So the ApiException  seems not a big issue
-      LOG.warn("Exceptions when getting CRD job: " + ae.getMessage());
+      MLJob mlJob = JobSpecParser.parseJob(jobSpec);
+      Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
+          mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
+          MLJobConverter.toDeleteOptionsFromMLJob(mlJob), null, null, null);
+      job = parseResponseObject(object, ParseOp.PARSE_OP_DELETE);
+    } catch (InvalidSpecException e) {
+      throw new SubmarineRuntimeException(200, e.getMessage());
+    } catch (ApiException e) {
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
-    return null;
+    return job;
   }
 
-  @VisibleForTesting
-  CustomResourceJob deleteCustomResourceJob(K8sJobRequest request) {
+  private Job parseResponseObject(Object object, ParseOp op) throws SubmarineRuntimeException {
+    Gson gson = new JSON().getGson();
+    String jsonString = gson.toJson(object);
+    LOG.info("Upstream response JSON: {}", jsonString);
     try {
-      K8sJobRequest.Path path = request.getPath();
-      V1DeleteOptions body =
-          new V1DeleteOptionsBuilder().withApiVersion(
-              path.getApiVersion()).build();
-      Object o = api.deleteNamespacedCustomObject(path.getGroup(),
-          path.getApiVersion(), path.getNamespace(), path.getPlural(),
-          request.getJobName(), body, null,
-          null, null);
-      Gson gson = new Gson();
-      return gson.fromJson(gson.toJson(o), CustomResourceJob.class);
-    } catch (ApiException ae) {
-      LOG.error("Exceptions when deleting CRD job: " + ae.getMessage(), ae);
+      if (op == ParseOp.PARSE_OP_RESULT) {
+        MLJob mlJob = gson.fromJson(jsonString, MLJob.class);
+        return MLJobConverter.toJobFromMLJob(mlJob);
+      } else if (op == ParseOp.PARSE_OP_DELETE) {
+        V1Status status = gson.fromJson(jsonString, V1Status.class);
+        return MLJobConverter.toJobFromStatus(status);
+      }
+    } catch (JsonSyntaxException e) {
+      LOG.warn("K8s submitter: parse response object failed by " + e.getMessage(), e);
     }
-    return null;
+    throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
   }
 
-  @VisibleForTesting
-  CustomResourceJobList listCustomResourceJobs(K8sJobRequest request) {
-    try {
-      K8sJobRequest.Path path = request.getPath();
-      Object o = api.listNamespacedCustomObject(path.getGroup(),
-          path.getApiVersion(),
-          path.getNamespace(), path.getPlural(), "true",
-          null, null, null,
-          null, null);
-      Gson gson = new Gson();
-      return gson.fromJson(gson.toJson(o), CustomResourceJobList.class);
-    } catch (ApiException ae) {
-      LOG.error("Exceptions when listing CRD jobs: " + ae.getMessage(), ae);
-    }
-    return null;
+  private enum ParseOp {
+    PARSE_OP_RESULT,
+    PARSE_OP_DELETE
   }
 }

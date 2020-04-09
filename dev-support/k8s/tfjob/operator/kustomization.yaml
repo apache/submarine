@@ -1,6 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: submarine
+namespace: default
 resources:
 - cluster-role-binding.yaml
 - cluster-role.yaml
@@ -12,4 +12,4 @@ commonLabels:
 images:
 - name: gcr.io/kubeflow-images-public/tf_operator
   newName: gcr.io/kubeflow-images-public/tf_operator
-  newTag: v0.7.0
+  newTag: v1.0.0-g92389064

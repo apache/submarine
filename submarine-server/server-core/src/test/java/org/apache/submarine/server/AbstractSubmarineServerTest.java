@@ -176,14 +176,23 @@ public abstract class AbstractSubmarineServerTest {
     return httpPost(path, body, StringUtils.EMPTY, StringUtils.EMPTY);
   }
 
+  protected static PostMethod httpPost(String path, String body, String mediaType)
+      throws IOException {
+    return httpPost(path, body, mediaType, StringUtils.EMPTY, StringUtils.EMPTY);
+  }
+
   protected static PostMethod httpPost(String path, String request, String user, String pwd)
       throws IOException {
+    return httpPost(path, request, MediaType.APPLICATION_JSON, user, pwd);
+  }
+  protected static PostMethod httpPost(String path, String request, String mediaType, String user,
+      String pwd) throws IOException {
     LOG.info("Connecting to {}", URL + path);
 
     HttpClient httpClient = new HttpClient();
     PostMethod postMethod = new PostMethod(URL + path);
     postMethod.setRequestBody(request);
-    postMethod.setRequestHeader("Content-type", MediaType.APPLICATION_JSON);
+    postMethod.setRequestHeader("Content-type", mediaType);
     postMethod.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
 
     if (userAndPasswordAreNotBlank(user, pwd)) {
