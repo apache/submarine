@@ -50,6 +50,11 @@
     <solr.version>5.5.4</solr.version>
     <spark.version>2.3.4</spark.version>
     <spark.scope>provided</spark.scope>
+    <gethostname4j.version>0.0.2</gethostname4j.version>
+    <gethostname4j.scope>test</gethostname4j.scope>
+    <jna.version>5.2.0</jna.version>
+    <jna-platform.version>5.2.0</jna-platform.version>
+    <jna.scope>test</jna.scope>
   </properties>
   <dependencies>
     <dependency>
@@ -254,8 +259,22 @@
     <dependency>
       <groupId>com.kstruct</groupId>
       <artifactId>gethostname4j</artifactId>
-      <version>0.0.2</version>
-      <scope>test</scope>
+      <version>${gethostname4j.version}</version>
+      <scope>${gethostname4j.scope}</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>${jna.version}</version>
+      <scope>${jna.scope}</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna-platform</artifactId>
+      <version>${jna-platform.version}</version>
+      <scope>${jna.scope}</scope>
     </dependency>
 
   </dependencies>
@@ -329,6 +348,9 @@
             <includes>
               <include>com.google.code.gson:gson</include>
               <include>com.sun.jersey:jersey-bundle</include>
+              <include>com.kstruct:gethostname4j</include>
+              <include>net.java.dev.jna:jna</include>
+              <include>net.java.dev.jna:jna-platform</include>
               <include>org.apache.httpcomponents:httpclient</include>
               <include>org.apache.httpcomponents:httpcore</include>
               <include>org.apache.httpcomponents:httpmime</include>
@@ -364,6 +386,14 @@
             <relocation>
               <pattern>com.sun.research</pattern>
               <shadedPattern>${ranger.spark.package}.com.sun.research</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>com.kstruct</pattern>
+              <shadedPattern>${ranger.spark.package}.com.kstruct</shadedPattern>
+            </relocation>
+            <relocation>
+              <pattern>com.sun.jna</pattern>
+              <shadedPattern>${ranger.spark.package}.com.sun.jna</shadedPattern>
             </relocation>
             <relocation>
               <pattern>com.sun.ws</pattern>
@@ -532,6 +562,8 @@
         <httpcomponents.httpmime.version>4.5.3</httpcomponents.httpmime.version>
         <ranger.version>2.0.0</ranger.version>
         <solr.version>7.7.1</solr.version>
+        <gethostname4j.scope>compile</gethostname4j.scope>
+        <jna.scope>compile</jna.scope>
       </properties>
     </profile>
 
