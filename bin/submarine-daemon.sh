@@ -91,7 +91,14 @@ function wait_for_submarine_server_to_die() {
 }
 
 function check_jdbc_jar() {
-  if [[ -d "${1}" ]]; then
+  if [[ ! -e "${1}" ]]; then
+    echo -e "\\033[31mError: Path '${1}' doesn't exist.\\033[0m"
+    echo -e "\\033[31mCreate path '${1}' automatically.\\033[0m"
+    mkdir -p "${1}"
+    if [[ ${GET_MYSQL_JAR} = true ]]; then
+        download_mysql_jdbc_jar
+    fi
+  elif [[ -d "${1}" ]]; then
     mysql_connector_exists=$(find -L "${1}" -name "mysql-connector*")
     if [[ -z "${mysql_connector_exists}" ]]; then
       if [[ ${GET_MYSQL_JAR} = true ]]; then
