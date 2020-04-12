@@ -1,0 +1,181 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+
+<nz-card>
+    <div class="department-header">
+        <form nz-form [nzLayout]="'inline'" [formGroup]="dapartmentDictForm">
+          <nz-form-item>
+            <nz-form-label>Code</nz-form-label>
+            <nz-form-control>
+              <input nz-input formControlName="departmentCode" style="width: 400px;" placeholder="Please enter department code"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label>Name</nz-form-label>
+            <nz-form-control>
+              <input nz-input formControlName="departmentName" style="width: 400px;" placeholder="Please enter department name"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-control>
+              <button nz-button nzType="primary" (click)="queryDepartment()">
+                <i nz-icon nzType="search"></i>
+                Query
+              </button>
+              <button nz-button id='btnAddDepartment' style="margin-left: 8px" (click)="isVisible=true;editMode = false;">
+                <i nz-icon nzType="plus"></i>
+                Add
+              </button>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+    </div>
+
+    <nz-table *ngIf="isLoading==false" #expandTable nzBordered [nzData]="isExpandTable ? listOfMapData : filterArr">
+      <thead>
+        <tr>
+          <th nzWidth="15%">Code</th>
+          <th nzWidth="10%">Name</th>
+          <th nzWidth="25%">Parent Deptartment</th>
+          <th nzWidth="25%">Description</th>
+          <th nzWidth="10%">Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="isExpandTable">
+        <ng-container *ngFor="let data of expandTable.data">
+          <ng-container *ngFor="let item of mapOfExpandedData[data.key]">
+            <tr *ngIf="(item.parent && item.parent.expand) || !item.parent">
+              <td
+                [nzIndentSize]="item.level * 20"
+                [nzShowExpand]="item.children!==none"
+                [(nzExpand)]="item.expand"
+                (nzExpandChange)="collapse(mapOfExpandedData[data.key], item, $event)"
+              >
+                {{ item.title }}
+              </td>
+              <td>{{ item.code }}</td>
+              <td>{{ showParent(item) }}</td>
+              <td>{{ item.description }}</td>
+              <td><nz-tag [nzColor]="item.status==='Deleted'? 'red' : 'blue'">{{ item.status }}</nz-tag></td>
+              <td>
+                <button nz-button nzType="link" (click)="editDepartment(item)" style="padding-left: 2px;padding-right: 5px;">Edit</button>
+                |
+                <button *ngIf="item.status==='Available'" nz-button nzType="link" (click)="deleteDepartment(item)" style="padding-left: 2px;padding-right: 5px;">Delete</button>
+                <button *ngIf="item.status==='Deleted'" nz-button nzType="link" (click)="restoreDepartment(item)" style="padding-left: 2px;padding-right: 5px;">Restore</button>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
+      </tbody>
+
+      <tbody *ngIf="!isExpandTable">
+        <ng-container *ngFor="let item of expandTable.data">
+          <tr>
+            <td>{{ item.title }}</td>
+            <td>{{ item.code }}</td>
+            <td>{{ showParent(item) }}</td>
+            <td>{{ item.description }}</td>
+            <td><nz-tag [nzColor]="item.status==='Deleted'? 'red' : 'blue'">{{ item.status }}</nz-tag></td>
+            <td>
+              <button nz-button nzType="link" (click)="editDepartment(item)" style="padding-left: 2px;padding-right: 5px;">Edit</button>
+              |
+              <button *ngIf="item.status==='Available'" nz-button nzType="link" (click)="deleteDepartment(item)" style="padding-left: 2px;padding-right: 5px;">Delete</button>
+              <button *ngIf="item.status==='Deleted'" nz-button nzType="link" (click)="restoreDepartment(item)" style="padding-left: 2px;padding-right: 5px;">Restore</button>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+    <nz-spin *ngIf="isLoading" [nzSpinning]="true" style="height: 50px;">
+    </nz-spin>
+</nz-card>
+
+
+<nz-drawer
+    [(nzVisible)]="isVisible"
+    nzClosable = "true"
+    nzTitle="Add Department"
+    (nzOnClose)="isVisible=false;"
+    [nzWidth]="700"
+>
+<form [formGroup]="newDepartmentForm">
+  <div>
+    <label class="form-label"><span class="red-star">* </span> Code:</label>
+    <input 
+      nz-input 
+      id='codeInput'
+      type="text" 
+      placeholder="Please enter department code" 
+      style="margin-top: 25px;width: 70%;" 
+      class="form-control" 
+      formControlName="code">
+  </div>
+  <div>
+    <label class="form-label"><span class="red-star">* </span> Name:</label>
+    <input 
+      nz-input 
+      id='nameInput'
+      type="text" 
+      placeholder="Please enter department name" 
+      style="margin-top: 25px;width: 70%;" 
+      class="form-control" 
+      formControlName="name"
+    >
+  </div>
+  <div>
+    <label class="form-label"> Parent:</label>
+    <nz-tree-select
+      style="width: 70%;margin-top: 25px;"
+      [nzExpandedKeys]="expandKeys"
+      [nzNodes]="listOfMapData"
+      nzShowSearch
+      nzPlaceHolder="Please select"
+      class="form-control" 
+      formControlName="parent"
+    >
+    </nz-tree-select>
+  </div>
+  <div>
+    <label class="form-label" > Sort:</label>
+    <nz-input-number class="form-control" formControlName="sort" style="margin-top: 25px;"></nz-input-number>
+  </div>
+  <div>
+    <label class="form-label" > Status:</label>
+    <nz-switch nzCheckedChildren="Available" nzUnCheckedChildren="Deleted" class="form-control" formControlName="status" style="margin-top: 30px;"></nz-switch>
+  </div>
+  <div>
+    <label class="form-label">Description:</label>
+    <textarea rows="6" nz-input class="form-control" formControlName="description" style="width: 70%;margin-top: 25px;"></textarea>
+  </div>
+
+
+</form>
+<div class="footer">
+  <button type="button" (click)="isVisible = false;" class="ant-btn" style="margin-right: 8px;"><span>Cancel</span></button>
+  <button 
+    type="button" 
+    (click)="submitDepartment()" 
+    class="ant-btn ant-btn-primary" 
+    id='btnSubmit'
+    [disabled]="!(newDepartmentForm.get('name')).valid || !(newDepartmentForm.get('code').valid)"
+  ><span>Submit</span></button>
+</div>
+</nz-drawer>
