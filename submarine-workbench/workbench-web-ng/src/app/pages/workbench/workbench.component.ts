@@ -85,6 +85,10 @@ export class WorkbenchComponent implements OnInit {
         {
           title: 'Data dict',
           routerLink: '/workbench/manager/dataDict'
+        },
+        {
+          title: 'Department',
+          routerLink: '/workbench/manager/department'
         }
       ]
     }

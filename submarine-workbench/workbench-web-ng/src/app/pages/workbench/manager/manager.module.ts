@@ -31,9 +31,10 @@ import { ManagerComponent } from './manager.component';
 import { UserDrawerComponent } from './user-drawer/user-drawer.component';
 import { UserPasswordModalComponent } from './user-password-modal/user-password-modal.component';
 import { UserComponent } from './user/user.component';
+import { DepartmentComponent } from './department/department.component';
 
 @NgModule({
-  declarations: [UserComponent, ManagerComponent, DataDictComponent, UserPasswordModalComponent, UserDrawerComponent, DataDictModalComponent, DataDictConfigModalComponent],
+  declarations: [UserComponent, ManagerComponent, DataDictComponent, UserPasswordModalComponent, UserDrawerComponent, DataDictModalComponent, DataDictConfigModalComponent, DepartmentComponent],
   imports: [CommonModule, ManagerRoutingModule, NgZorroAntdModule, ComponentsModule, FormsModule, ReactiveFormsModule]
 })
 export class ManagerModule {}

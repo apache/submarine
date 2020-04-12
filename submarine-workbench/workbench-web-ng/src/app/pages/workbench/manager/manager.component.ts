@@ -67,6 +67,22 @@ export class ManagerComponent implements OnInit {
           title: 'Data Dict'
         }
       ]
+    },
+    department: {
+      title: 'department',
+      description: 'System Department Manager',
+      breadCrumb: [
+        {
+          title: 'Home',
+          routerLink: '/workbench/home'
+        },
+        {
+          title: 'manager'
+        },
+        {
+          title: 'department'
+        }
+      ]
     }
   };
   currentHeaderInfo: HeaderInfo;
