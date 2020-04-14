@@ -415,7 +415,8 @@ Run a distributed tensorflow job.
 The parameter -d is used to specify the url from which we can get the mnist data.
 
 ### Run a TensorFlow job in a Docker container
-Prepare your docker image, you could refer to this sample Docker image for building your own Docker image. An example is provided under `docker/tensorflow/mnist/Dockerfile.tony.tf.mnist.tf_1.13.1`
+Prepare your docker image, you could refer to this sample Docker image for building your own Docker image. An example is provided under `docker/tensorflow/mnist/Dockerfile.tony.tf.mnist.tf_1.13.1`.
+For details please refer to [Docker Image Requirements](https://hadoop.apache.org/docs/current/hadoop-yarn/hadoop-yarn-site/DockerContainers.html#user-management).
 
 Please make sure you have _HADOOP_HOME_, _HADOOP_YARN_HOME_, _HADOOP_HDFS_HOME_, _HADOOP_CONF_DIR_, _JAVA_HOME_ configured correctly. You could use this command to run a distributed TensorFLow job in Docker
 
@@ -534,7 +535,7 @@ Then restart all nodemanagers.
 ### Start yarn registery dns service
 
 Yarn registry nds server exposes existing service-discovery information via DNS
-and enables docker containers to IP mappings. By using it, the containers of a 
+and enables docker containers to IP mappings. By using it, the containers of a
 ML job knows how to communicate with each other.
 
 Please specify a server to start yarn registery dns service. For details please

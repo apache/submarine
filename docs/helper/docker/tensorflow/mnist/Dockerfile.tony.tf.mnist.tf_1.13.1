@@ -22,6 +22,7 @@ RUN apt-get -y install apt-transport-https \
      curl \
      gnupg2 \
      git \
+     zip \
      software-properties-common \
      openjdk-8-jdk vim \
      wget python3-distutils
@@ -63,7 +64,8 @@ ENV HADOOP_HDFS_HOME=/opt/hadoop-$HADOOP_VERSION/
 ENV HADOOP_CONF_DIR=/opt/hadoop-$HADOOP_VERSION/etc/hadoop
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
-# Crate user, make sure the user groups are the same as your host
+# Create a user, make sure the user groups are the same as your host
+# and the user's UID same as your NodeManager host
 RUN groupadd -g 5000 hadoop
 RUN useradd -u 1000 -g hadoop pi
 RUN mkdir /home/pi
