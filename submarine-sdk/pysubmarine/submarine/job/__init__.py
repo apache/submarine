@@ -13,6 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.job.submarine_job_client import SubmarineJOBClient
+from submarine.job.submarine_job_client import SubmarineJobClient
 
-__all__ = ['SubmarineJOBClient']
+__all__ = ['SubmarineJobClient']
