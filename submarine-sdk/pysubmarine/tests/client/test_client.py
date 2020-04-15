@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.job import SubmarineJOBClient
+from submarine.job import SubmarineJobClient
 import mock
 import pytest
 import json
@@ -31,7 +31,7 @@ def output_json_filepath():
 @mock.patch('submarine.job.submarine_job_client.http_request')
 class TestSubmarineJobClient:
     def test_submit_job(self, mock_http_request, output_json_filepath):
-        client = SubmarineJOBClient('submarine', 8080)
+        client = SubmarineJobClient('submarine', 8080)
         mock_http_request.return_value = {'jobId': 'job_1582524742595_0040',
                                           'name': 'submarine', 'identifier': 'test'}
         response = client.submit_job(output_json_filepath)
@@ -46,3 +46,11 @@ class TestSubmarineJobClient:
         assert response['jobId'] == 'job_1582524742595_0040'
         assert response['name'] == 'submarine'
         assert response['identifier'] == 'test'
+
+    def test_delete_job(self, mock_http_request):
+        client = SubmarineJobClient('submarine', 8080)
+        client.delete_job('job_1582524742595_004')
+        mock_http_request.assert_called_with('http://submarine:8080',
+                                             json_body=None,
+                                             endpoint='/api/v1/jobs/job_1582524742595_004',
+                                             method='DELETE')
