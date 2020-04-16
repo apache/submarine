@@ -46,6 +46,7 @@ In the last decade, the software industry has built many open source tools for m
 6. It was hard to build a data pipeline that flows/transform data from a raw data source to whatever required by ML applications. 
    **Answer to that:** Open source big data industry plays an important role in providing, simplify, unify processes and building blocks for data flows, transformations, etc.
    
+
 The machine learning industry is moving on the right track to solve major roadblocks. So what are the pain points now for companies which have machine learning needs? What can we help here? To answer this question, let's look at machine learning workflow first. 
 
 ## Machine Learning Workflows & Pain points
@@ -368,6 +369,141 @@ Model:
 - A model consists of artifacts from one or multiple files. 
 - Users can choose to save, tag, version a produced model.
 - Once The Model is saved, Users can do the online serving (endpoint) or offline scoring of the model.
+
+### How users submit experiment
+
+There're 4 ways for an user to submit experiment: 
+
+- Using CLI.
+- Using Submarine Python SDK.
+- Using UI.
+- Using REST API (And REST API is used by the other 3 approaches). 
+
+#### Steps to submit experiment from notebook session (Or any other code) 
+
+*/ Please note that below code is just pesudo code, not offical APIs.
+
+**1) Specify what environment to use**** 
+
+```
+conda_environment = 
+"""
+  name: conda-env
+  channels:
+    - defaults
+  dependencies:
+    - asn1crypto=1.3.0=py37_0
+    - blas=1.0=mkl
+    - ca-certificates=2020.1.1=0
+    - certifi=2020.4.5.1=py37_0
+    - cffi=1.14.0=py37hb5b8e2f_0
+    - chardet=3.0.4=py37_1003
+  prefix: /opt/anaconda3/envs/conda-env
+"""
+
+# This environment can be different from notebook's own environment
+environment = create_environment {
+    DockerImage = "ubuntu:16",
+    CondaEnvironment = conda_environment
+}
+```
+
+**2) Create experiment, specify where's training code located, and parameters.** 
+
+For  ad-hoc experiment (code located at S3), assume training code is part of the `training-job.tar.gz` and main class is `train.py`. When the job is launched, whatever specified in the localize_artifacts will be downloaded.
+
+```
+experiment = create_experiment {
+    Environment = environment, 
+    ExperimentConfig = {
+       type = "adhoc",
+       localize_artifacts = [
+            "s3://bucket/training-job.tar.gz"
+       ],
+       name = "abc",
+       parameter = "python training.py --iteration 10 --input="s3://bucket/input output="s3://bucket/output",
+    }
+}
+experiment.run()
+experiment.wait_for_finish(print_output=True)
+```
+
+It is possible we want to run a notebook file in offline mode, to do that, here's code to use to run a notebook code
+
+```
+experiment = create_experiment {
+    Environment = environment, 
+    ExperimentConfig = {
+       type = "adhoc",
+       localize_artifacts = [
+            "s3://bucket/folder/notebook-123.ipynb"
+       ],
+       name = "abc",
+       parameter = "runipy training.ipynb --iteration 10 --input="s3://bucket/input output="s3://bucket/output",
+    }
+}
+experiment.run()
+experiment.wait_for_finish(print_output=True)
+```
+
+For the pre-defined experiment library,
+
+```
+experiment = create_experiment {
+    # Here you can use default environment of library
+    Environment = environment, 
+    ExperimentConfig = {
+       type = "template",
+       name = "abc",
+       # A unique name of template 
+       template = "deepfm_ctr", 
+       # yaml file defined what is the parameters need to be specified.
+       parameter = {
+           Input: "S3://.../input",
+           Output: "S3://.../output"
+           Training: {
+              "batch_size": 512,
+              "l2_reg": 0.01,
+              ...
+           }
+       }
+    }
+}
+experiment.run()
+experiment.wait_for_finish(print_output=True)
+```
+
+#### Where's Training code located for experiments
+
+Training code can be located at: 
+
+- Shared storage (Git/S3/NFS)
+- Or, Docker image
+
+[TODO]: to finish.
+
+#### Summarize: Experiment v.s. Notebook session
+
+There's a common misunderstanding about what is the differences between running experiment v.s. running task from a notebook session. We will talk about differences and commonalities:
+
+**Differences**
+
+|                                   | Experiment                                                   | Notebook Session                                             |
+| --------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Run mode                          | Offline                                                      | Interactive                                                  |
+| Output Artifacts (a.k.a model)    | Persisted in a shared storage (like S3/NFS)                  | Local in the notebook session container, could be emphameral |
+| Run history (meta, logs, metrics) | Meta/logs/metrics can be traced from experiment UI (or corresponding API) | No run history can be traced from Submarine UI/API           |
+| What to run?                      | Code from Docker image or shared storage (like Tarball on S3, Github, etc.) | Local in the notebook's paragraph                            |
+
+**Commonalities** 
+
+|             | Experiment & Notebook Session                     |
+| ----------- | ------------------------------------------------- |
+| Environment | They can share the same Environment configuration |
+
+**Other Common Myths:** 
+
+1) Can we specify different environment of experiment when submit from 
 
 ### User flows for Admins/SRE
 
