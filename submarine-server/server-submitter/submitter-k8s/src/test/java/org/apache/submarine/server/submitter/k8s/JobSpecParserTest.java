@@ -44,7 +44,7 @@ public class JobSpecParserTest extends SpecBuilder {
     JobSpec jobSpec = buildFromJsonFile(tfJobReqFile);
     TFJob tfJob = (TFJob) JobSpecParser.parseJob(jobSpec);
     // namespace
-    String expectedNS = jobSpec.getSubmitterSpec().getNamespace();
+    String expectedNS = jobSpec.getNamespace();
     String actualNS = tfJob.getMetadata().getNamespace();
     Assert.assertEquals(expectedNS, actualNS);
     // job name
@@ -91,7 +91,7 @@ public class JobSpecParserTest extends SpecBuilder {
     JobSpec jobSpec = buildFromJsonFile(pytorchJobReqFile);
     PyTorchJob pyTorchJob = (PyTorchJob) JobSpecParser.parseJob(jobSpec);
     // namespace
-    String expectedNS = jobSpec.getSubmitterSpec().getNamespace();
+    String expectedNS = jobSpec.getNamespace();
     String actualNS = pyTorchJob.getMetadata().getNamespace();
     Assert.assertEquals(expectedNS, actualNS);
     // job name

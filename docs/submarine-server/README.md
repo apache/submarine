@@ -37,6 +37,7 @@ Job spec consists of `librarySpec`, `submitterSpec` and `taskSpecs`. Below are e
 ### Sample Tensorflow Spec
 ```yaml
 name: "mnist"
+namespace: "submarine"
 librarySpec:
   name: "TensorFlow"
   version: "2.1.0"
@@ -44,10 +45,6 @@ librarySpec:
   cmd: "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150"
   envVars:
     ENV_1: "ENV1"
-submitterSpec:
-  type: "k8s"
-  configPath:
-  namespace: "submarine"
 taskSpecs:
   Ps:
     name: tensorflow
@@ -62,6 +59,7 @@ or
 ```json
 {
   "name": "mnist",
+  "namespace": "submarine",
   "librarySpec": {
     "name": "TensorFlow",
     "version": "2.1.0",
@@ -70,10 +68,6 @@ or
     "envVars": {
       "ENV_1": "ENV1"
     }
-  },
-  "submitterSpec": {
-    "type": "k8s",
-    "namespace": "submarine"
   },
   "taskSpecs": {
     "Ps": {
@@ -95,6 +89,7 @@ or
 ```json
 {
   "name": "pytorch-dist-mnist-gloo",
+  "namespace": "submarine",
   "librarySpec": {
     "name": "pytorch",
     "version": "2.1.0",
@@ -103,10 +98,6 @@ or
     "envVars": {
       "ENV_1": "ENV1"
     }
-  },
-  "submitterSpec": {
-    "type": "k8s",
-    "namespace": "submarine"
   },
   "taskSpecs": {
     "Master": {
@@ -134,6 +125,7 @@ For more info about the spec definition see [here](../design/submarine-server/jo
 curl -X POST -H "Content-Type: application/json" -d '
 {
   "name": "mnist",
+  "namespace": "submarine",
   "librarySpec": {
     "name": "TensorFlow",
     "version": "2.1.0",
@@ -142,10 +134,6 @@ curl -X POST -H "Content-Type: application/json" -d '
     "envVars": {
       "ENV_1": "ENV1"
     }
-  },
-  "submitterSpec": {
-    "type": "k8s",
-    "namespace": "submarine"
   },
   "taskSpecs": {
     "Worker": {
@@ -171,6 +159,7 @@ curl -X POST -H "Content-Type: application/json" -d '
         "acceptedTime": "2020-04-06T14:59:29.000+08:00",
         "spec": {
             "name": "mnist",
+            "namespace": "submarine",
             "librarySpec": {
                 "name": "TensorFlow",
                 "version": "2.1.0",
@@ -179,10 +168,6 @@ curl -X POST -H "Content-Type: application/json" -d '
                 "envVars": {
                     "ENV_1": "ENV1"
                 }
-            },
-            "submitterSpec": {
-                "type": "k8s",
-                "namespace": "submarine"
             },
             "taskSpecs": {
                 "Worker": {
@@ -223,6 +208,7 @@ curl -X GET http://127.0.0.1/api/v1/jobs
             "createdTime": "2020-04-06T14:59:29.000+08:00",
             "spec": {
                 "name": "mnist",
+                "namespace": "submarine",
                 "librarySpec": {
                     "name": "TensorFlow",
                     "version": "2.1.0",
@@ -231,10 +217,6 @@ curl -X GET http://127.0.0.1/api/v1/jobs
                     "envVars": {
                         "ENV_1": "ENV1"
                     }
-                },
-                "submitterSpec": {
-                    "type": "k8s",
-                    "namespace": "submarine"
                 },
                 "taskSpecs": {
                     "Worker": {
@@ -275,6 +257,7 @@ curl -X GET http://127.0.0.1/api/v1/jobs/job_1586156073228_0005
         "createdTime": "2020-04-06T14:59:29.000+08:00",
         "spec": {
             "name": "mnist",
+            "namespace": "submarine",
             "librarySpec": {
                 "name": "TensorFlow",
                 "version": "2.1.0",
@@ -283,10 +266,6 @@ curl -X GET http://127.0.0.1/api/v1/jobs/job_1586156073228_0005
                 "envVars": {
                     "ENV_1": "ENV1"
                 }
-            },
-            "submitterSpec": {
-                "type": "k8s",
-                "namespace": "submarine"
             },
             "taskSpecs": {
                 "Worker": {
@@ -312,6 +291,7 @@ curl -X GET http://127.0.0.1/api/v1/jobs/job_1586156073228_0005
 curl -X PATCH -H "Content-Type: application/json" -d '
 {
   "name": "mnist",
+  "namespace": "submarine",
   "librarySpec": {
     "name": "TensorFlow",
     "version": "2.1.0",
@@ -320,10 +300,6 @@ curl -X PATCH -H "Content-Type: application/json" -d '
     "envVars": {
       "ENV_1": "ENV1"
     }
-  },
-  "submitterSpec": {
-    "type": "k8s",
-    "namespace": "submarine"
   },
   "taskSpecs": {
     "Worker": {
@@ -351,6 +327,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '
         "createdTime": "2020-04-06T14:59:29.000+08:00",
         "spec": {
             "name": "mnist",
+            "namespace": "submarine",
             "librarySpec": {
                 "name": "TensorFlow",
                 "version": "2.1.0",
@@ -359,10 +336,6 @@ curl -X PATCH -H "Content-Type: application/json" -d '
                 "envVars": {
                     "ENV_1": "ENV1"
                 }
-            },
-            "submitterSpec": {
-                "type": "k8s",
-                "namespace": "submarine"
             },
             "taskSpecs": {
                 "Worker": {
@@ -402,6 +375,7 @@ curl -X DELETE http://127.0.0.1/api/v1/jobs/job_123_01
         "createdTime": "2020-04-06T14:59:29.000+08:00",
         "spec": {
             "name": "mnist",
+            "namespace": "submarine",
             "librarySpec": {
                 "name": "TensorFlow",
                 "version": "2.1.0",
@@ -410,10 +384,6 @@ curl -X DELETE http://127.0.0.1/api/v1/jobs/job_123_01
                 "envVars": {
                     "ENV_1": "ENV1"
                 }
-            },
-            "submitterSpec": {
-                "type": "k8s",
-                "namespace": "submarine"
             },
             "taskSpecs": {
                 "Worker": {

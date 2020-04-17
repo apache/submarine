@@ -112,7 +112,7 @@ public class JobSpecParser {
 
   private static V1ObjectMeta parseMetadata(JobSpec jobSpec) {
     V1ObjectMeta meta = new V1ObjectMeta();
-    meta.setNamespace(jobSpec.getSubmitterSpec().getNamespace());
+    meta.setNamespace(jobSpec.getNamespace());
     meta.setName(jobSpec.getName());
     return meta;
   }

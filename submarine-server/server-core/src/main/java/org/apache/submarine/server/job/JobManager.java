@@ -28,7 +28,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.SubmarineServer;
 import org.apache.submarine.server.SubmitterManager;
@@ -56,7 +55,7 @@ public class JobManager {
    */
   private final ConcurrentMap<String, Job> cachedJobMap = new ConcurrentHashMap<>();
 
-  private SubmitterManager submitterManager;
+  private final JobSubmitter submitter;
 
   /**
    * Get the singleton instance
@@ -66,17 +65,15 @@ public class JobManager {
     if (manager == null) {
       synchronized (JobManager.class) {
         if (manager == null) {
-          SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-          SubmitterManager submitterManager = new SubmitterManager(conf);
-          manager = new JobManager(submitterManager);
+          manager = new JobManager(SubmitterManager.loadSubmitter());
         }
       }
     }
     return manager;
   }
 
-  private JobManager(SubmitterManager submitterManager) {
-    this.submitterManager = submitterManager;
+  private JobManager(JobSubmitter submitter) {
+    this.submitter = submitter;
   }
 
   /**
@@ -87,7 +84,6 @@ public class JobManager {
    */
   public Job createJob(JobSpec spec) throws SubmarineRuntimeException {
     checkSpec(spec);
-    JobSubmitter submitter = getSubmitter(spec.getSubmitterSpec().getType());
     Job job = submitter.createJob(spec);
     job.setJobId(generateJobId());
     job.setSpec(spec);
@@ -109,7 +105,7 @@ public class JobManager {
     checkJobId(id);
     Job job = cachedJobMap.get(id);
     JobSpec spec = job.getSpec();
-    Job patchJob = getSubmitter(spec.getSubmitterSpec().getType()).findJob(spec);
+    Job patchJob = submitter.findJob(spec);
     job.rebuild(patchJob);
     return job;
   }
@@ -125,7 +121,6 @@ public class JobManager {
     for (Map.Entry<String, Job> entry : cachedJobMap.entrySet()) {
       Job job = entry.getValue();
       JobSpec spec = job.getSpec();
-      JobSubmitter submitter = getSubmitter(spec.getSubmitterSpec().getType());
       Job patchJob = submitter.findJob(spec);
       LOG.info("Found job: {}", patchJob.getStatus());
       if (status == null || status.toLowerCase().equals(patchJob.getStatus().toLowerCase())) {
@@ -148,7 +143,6 @@ public class JobManager {
     checkJobId(id);
     checkSpec(spec);
     Job job = cachedJobMap.get(id);
-    JobSubmitter submitter = getSubmitter(spec.getSubmitterSpec().getType());
     Job patchJob = submitter.patchJob(spec);
     job.setSpec(spec);
     job.rebuild(patchJob);
@@ -165,18 +159,9 @@ public class JobManager {
     checkJobId(id);
     Job job = cachedJobMap.remove(id);
     JobSpec spec = job.getSpec();
-    Job patchJob = getSubmitter(spec.getSubmitterSpec().getType()).deleteJob(spec);
+    Job patchJob = submitter.deleteJob(spec);
     job.rebuild(patchJob);
     return job;
-  }
-
-  private JobSubmitter getSubmitter(String type) throws SubmarineRuntimeException {
-    JobSubmitter submitter = submitterManager.getSubmitterByType(type);
-    if (submitter == null) {
-      throw new SubmarineRuntimeException(Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-          "Invalid submitter.");
-    }
-    return submitter;
   }
 
   private void checkSpec(JobSpec spec) throws SubmarineRuntimeException {

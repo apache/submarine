@@ -68,10 +68,7 @@ public class SubmarineConfVars {
     WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),
     SUBMARINE_RUNTIME_CLASS("submarine.runtime.class",
         "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"),
-    SUBMARINE_SUBMITTERS("submarine.submitters", ""),
-    SUBMARINE_SUBMITTERS_CLASS("submarine.submitters.%s.class", ""),
-    SUBMARINE_SUBMITTERS_CLASSPATH("submarine.submitters.%s.classpath", ""),
-    SUBMARINE_K8S_KUBE_CONFIG("submarine.k8s.kube.config", "");
+    SUBMARINE_SUBMITTER("submarine.submitter", "k8s");
 
     private String varName;
     @SuppressWarnings("rawtypes")

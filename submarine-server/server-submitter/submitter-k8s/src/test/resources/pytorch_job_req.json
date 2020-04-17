@@ -1,5 +1,6 @@
 {
   "name": "pytorch-dist-mnist-gloo",
+  "namespace": "default",
   "librarySpec": {
     "name": "pytorch",
     "version": "2.1.0",
@@ -8,10 +9,6 @@
     "envVars": {
       "ENV_1": "ENV1"
     }
-  },
-  "submitterSpec": {
-    "type": "k8s",
-    "namespace": "submarine"
   },
   "taskSpecs": {
     "Master": {

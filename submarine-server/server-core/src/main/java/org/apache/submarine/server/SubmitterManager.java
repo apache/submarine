@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server;
 
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.job.JobSubmitter;
 import org.slf4j.Logger;
@@ -30,44 +31,49 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Map;
 
 /**
- * Submitter Manager, load all the submitter plugin, configured by
- * {@link SubmarineConfiguration.ConfVars#SUBMARINE_SUBMITTERS} and related key.
+ * Submitter Manager is responsible for load {@link JobSubmitter} implements class.
  */
 public class SubmitterManager {
   private static final Logger LOG = LoggerFactory.getLogger(SubmitterManager.class);
 
-  private SubmarineConfiguration conf;
-  private ConcurrentMap<String, JobSubmitter> submitterMap = new ConcurrentHashMap<>();
+  private static final SubmitterManager INSTANCE = new SubmitterManager();
 
-  public SubmitterManager(SubmarineConfiguration conf) {
-    this.conf = conf;
-    loadSubmitters();
+  private final Map<String, JobSubmitterConfig> SUBMITTER_CONFIG_MAP = new HashMap<>();
+
+  private JobSubmitter submitter;
+
+  {
+    String home = System.getenv("SUBMARINE_HOME");
+    LOG.info("Submarine Home: {}", home);
+    SUBMITTER_CONFIG_MAP.put("k8s", new JobSubmitterConfig(
+        "org.apache.submarine.server.submitter.k8s.K8sJobSubmitter",
+        home + "/lib/submitter/k8s/"));
   }
 
-  private void loadSubmitters() {
-    LOG.info("Start load submitter plugins...");
-    List<String> list = conf.listSubmitter();
-    for (String name : list) {
-      String clazzName = conf.getSubmitterClass(name);
-      String classpath = conf.getSubmitterClassPath(name);
-      try {
-        ClassLoader classLoader = new URLClassLoader(constructUrlsFromClasspath(classpath));
-        Class<?> clazz = Class.forName(clazzName, true, classLoader);
-        Class<? extends JobSubmitter> sClass = clazz.asSubclass(JobSubmitter.class);
-        Constructor<? extends JobSubmitter> method = sClass.getDeclaredConstructor();
-        JobSubmitter submitter = method.newInstance();
-        submitter.initialize(conf);
-        submitterMap.put(submitter.getSubmitterType(), submitter);
-      } catch (Exception e) {
-        LOG.error(e.toString(), e);
-      }
+  public static JobSubmitter loadSubmitter() {
+    return INSTANCE.submitter;
+  }
+
+  private SubmitterManager() {
+    SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+    String type = conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_SUBMITTER);
+    String clazzName = SUBMITTER_CONFIG_MAP.get(type).clazzName;
+    String classpath = SUBMITTER_CONFIG_MAP.get(type).classpath;
+    try {
+      ClassLoader classLoader = new URLClassLoader(constructUrlsFromClasspath(classpath));
+      Class<?> clazz = Class.forName(clazzName, true, classLoader);
+      Class<? extends JobSubmitter> sClass = clazz.asSubclass(JobSubmitter.class);
+      Constructor<? extends JobSubmitter> method = sClass.getDeclaredConstructor();
+      submitter = method.newInstance();
+      submitter.initialize(conf);
+    } catch (Exception e) {
+      LOG.error("Initialize the submitter failed. " + e.getMessage(), e);
     }
-    LOG.info("Success loaded {} submitters.", submitterMap.size());
   }
 
   private URL[] constructUrlsFromClasspath(String classpath) throws MalformedURLException {
@@ -92,11 +98,13 @@ public class SubmitterManager {
     return urls.toArray(new URL[0]);
   }
 
-  /**
-   * Get the specified submitter by submitter type
-   * @return submitter
-   */
-  public JobSubmitter getSubmitterByType(String type) {
-    return submitterMap.get(type);
+  private static class JobSubmitterConfig {
+    private final String clazzName;
+    private final String classpath;
+
+    JobSubmitterConfig(String clazzName, String classpath) {
+      this.clazzName = clazzName;
+      this.classpath = classpath;
+    }
   }
 }

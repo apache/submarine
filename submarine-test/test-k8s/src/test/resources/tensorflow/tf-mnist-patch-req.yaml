@@ -1,4 +1,5 @@
 name: "mnist"
+namespace: "default"
 librarySpec:
   name: "TensorFlow"
   version: "2.1.0"
@@ -6,12 +7,6 @@ librarySpec:
   cmd: "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150"
   envVars:
     ENV_1: "ENV1"
-submitterSpec:
-  type: "k8s"
-  configPath:
-  namespace: "default"
-  kind: "TFJob"
-  apiVersion: "kubeflow.org/v1"
 taskSpecs:
   Worker:
     name: tensorflow
