@@ -20,6 +20,6 @@ Before digging into details of implementations, you should read [architecture-an
 Here're sub topics of Submarine implementations:
 
 - [Submarine Storage](./storage-implementation.md): How to store metadata, logs, metrics, etc. of Submarine.
-- [Submarine Environment](./environments-implementations.md): How environments created, managed, stored in Submarine. 
-- [Submarine Experiment](./experiment-implementations.md): How experiments managed, stored, and how the predefined experiment template works.
+- [Submarine Environment](./environments-implementation.md): How environments created, managed, stored in Submarine. 
+- [Submarine Experiment](./experiment-implementation.md): How experiments managed, stored, and how the predefined experiment template works.
 
