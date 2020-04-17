@@ -217,7 +217,7 @@ environment = create_environment {
 }
 ```
 
-To better understand how environment works, please refer to [environment-implementation](./environment-implementation,md). 
+To better understand how environment works, please refer to [environment-implementation](./environment-implementation.md). 
 
 ### Create experiment, specify where's training code located, and parameters.
 
