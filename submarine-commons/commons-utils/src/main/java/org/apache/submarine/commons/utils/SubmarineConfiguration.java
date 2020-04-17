@@ -28,11 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 public class SubmarineConfiguration extends XMLConfiguration {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineConfiguration.class);
@@ -311,45 +309,6 @@ public class SubmarineConfiguration extends XMLConfiguration {
 
   public String getWebsocketMaxTextMessageSize() {
     return getString(SubmarineConfVars.ConfVars.WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE);
-  }
-
-  /**
-   * Get all submitters from configuration file
-   * @return list
-   */
-  public List<String> listSubmitter() {
-    List<String> values = new ArrayList<>();
-
-    String submitters = getString(SubmarineConfVars.ConfVars.SUBMARINE_SUBMITTERS);
-    if (submitters != null) {
-      final String delim = ",";
-      StringTokenizer tokenizer = new StringTokenizer(submitters, delim);
-      while (tokenizer.hasMoreTokens()) {
-        values.add(tokenizer.nextToken());
-      }
-    }
-
-    return values;
-  }
-
-  /**
-   * Get the submitter class name by the specified name
-   * @param name the submitter's name
-   * @return class name
-   */
-  public String getSubmitterClass(String name) {
-    return getStringValue(String.format(SubmarineConfVars.ConfVars.SUBMARINE_SUBMITTERS_CLASS.getVarName(), 
-        name), "");
-  }
-
-  /**
-   * Get the submitter's classpath by the specified name
-   * @param name the submitter's name
-   * @return classpath
-   */
-  public String getSubmitterClassPath(String name) {
-    return getStringValue(String.format(SubmarineConfVars.ConfVars.SUBMARINE_SUBMITTERS_CLASSPATH.
-        getVarName(), name), "");
   }
 
   private String getStringValue(String name, String d) {

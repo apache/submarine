@@ -1,5 +1,6 @@
 ---
 name: mnist
+namespace: default
 librarySpec:
   name: pytorch
   version: 2.1.0
@@ -7,9 +8,6 @@ librarySpec:
   cmd: python /var/mnist.py --backend gloo
   envVars:
     ENV_1: ENV1
-submitterSpec:
-  type: k8s
-  namespace: default
 taskSpecs:
   Master:
     name: master

@@ -31,15 +31,12 @@ public class JobSpec {
    */
   private String name;
 
+  private String namespace;
+
   /**
    * The user-specified ML framework spec.
    */
   private JobLibrarySpec librarySpec;
-
-  /**
-   * The user-specified submitter spec.
-   */
-  private JobSubmitterSpec submitterSpec;
 
   /**
    * The tasks of the job.
@@ -65,6 +62,14 @@ public class JobSpec {
     this.name = name;
   }
 
+  public String getNamespace() {
+    return namespace;
+  }
+
+  public void setNamespace(String namespace) {
+    this.namespace = namespace;
+  }
+
   /**
    * Get the library spec.
    * @return JobLibrarySpec
@@ -75,18 +80,6 @@ public class JobSpec {
 
   public void setLibrarySpec(JobLibrarySpec librarySpec) {
     this.librarySpec = librarySpec;
-  }
-
-  /**
-   * Get the submitter spec.
-   * @return JobSubmitterSpec
-   */
-  public JobSubmitterSpec getSubmitterSpec() {
-    return submitterSpec;
-  }
-
-  public void setSubmitterSpec(JobSubmitterSpec submitterSpec) {
-    this.submitterSpec = submitterSpec;
   }
 
   /**
@@ -103,7 +96,6 @@ public class JobSpec {
 
   public boolean validate() {
     return librarySpec != null && librarySpec.validate()
-        && submitterSpec != null && submitterSpec.validate()
         && taskSpecs != null;
   }
 

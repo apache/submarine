@@ -22,7 +22,6 @@ package org.apache.submarine.server.submitter.k8s;
 import java.io.FileReader;
 import java.io.IOException;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import io.kubernetes.client.ApiClient;
@@ -33,7 +32,6 @@ import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
-import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
@@ -50,50 +48,36 @@ import org.slf4j.LoggerFactory;
  * JobSubmitter for Kubernetes Cluster.
  */
 public class K8sJobSubmitter implements JobSubmitter {
-  private final Logger LOG = LoggerFactory.getLogger(K8sJobSubmitter.class);
+  private static final Logger LOG = LoggerFactory.getLogger(K8sJobSubmitter.class);
 
-  private String confPath;
+  private static final String KUBECONFIG_ENV = "KUBECONFIG";
 
   // K8s API client for CRD
   private CustomObjectsApi api;
 
   public K8sJobSubmitter() {}
 
-  @VisibleForTesting
-  public K8sJobSubmitter(String confPath) {
-    this.confPath = confPath;
-  }
-
   @Override
   public void initialize(SubmarineConfiguration conf) {
-    if (confPath == null || confPath.trim().isEmpty()) {
-      confPath = conf.getString(
-          SubmarineConfVars.ConfVars.SUBMARINE_K8S_KUBE_CONFIG);
-    }
-    loadClientConfiguration(confPath);
-    if (api == null) {
-      api = new CustomObjectsApi();
-    }
-  }
-
-  private void loadClientConfiguration(String path) {
+    ApiClient client = null;
     try {
+      String path = System.getenv(KUBECONFIG_ENV);
       KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(path));
-      ApiClient client = ClientBuilder.kubeconfig(config).build();
-      Configuration.setDefaultApiClient(client);
+      client = ClientBuilder.kubeconfig(config).build();
     } catch (Exception e) {
-      LOG.warn("Failed to load the configured K8s kubeconfig file: " +
-          e.getMessage(), e);
-
-      LOG.info("Assume running in the k8s cluster, " +
-          "try to load in-cluster config");
+      LOG.info("Maybe in cluster mode, try to initialize the client again.");
       try {
-        ApiClient client = ClientBuilder.cluster().build();
-        Configuration.setDefaultApiClient(client);
+        client = ClientBuilder.cluster().build();
       } catch (IOException e1) {
         LOG.error("Initialize K8s submitter failed. " + e.getMessage(), e1);
         throw new SubmarineRuntimeException(500, "Initialize K8s submitter failed.");
       }
+    } finally {
+      Configuration.setDefaultApiClient(client);
+    }
+
+    if (api == null) {
+      api = new CustomObjectsApi();
     }
   }
 

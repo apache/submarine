@@ -155,28 +155,9 @@
     <description>Rpc server port</description>
   </property>
 
-  <!-- Submarine Submitters Configuration  -->
-    <property>
-      <name>submarine.submitters</name>
-      <value>k8s</value>
-      <description>Submitter list for the server</description>
-    </property>
-    <property>
-      <name>submarine.submitters.k8s.class</name>
-      <value>org.apache.submarine.server.submitter.k8s.K8sJobSubmitter</value>
-      <description>The entry class for the specified submitter</description>
-    </property>
-    <property>
-      <name>submarine.submitters.k8s.classpath</name>
-      <value>../lib/submitter/k8s/</value>
-      <description>The libs for Kubernetes submitter</description>
-    </property>
-
-    <!-- K8s Configuration -->
-    <property>
-      <name>submarine.k8s.kube.config</name>
-      <value>../conf/k8s/config</value>
-      <description>Kube config for kubernetes, you should get the config from cluster</description>
-    </property>
-
+  <property>
+    <name>submarine.submitter</name>
+    <value>k8s</value>
+    <description>The submitter which you want used in the server. Build-in k8s</description>
+  </property>
 </configuration>

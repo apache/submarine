@@ -243,20 +243,6 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
   }
 
   @Test
-  public void testCreateJobWithInvalidSubmitter() throws Exception {
-    String body = loadContent("tensorflow/tf-mnist-req.json");
-    body = body.replace("k8s", "InvalidSubmitter");
-    PostMethod postMethod = httpPost(JOB_PATH, body, MediaType.APPLICATION_JSON);
-    Assert.assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-        postMethod.getStatusCode());
-
-    String json = postMethod.getResponseBodyAsString();
-    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
-    Assert.assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-        jsonResponse.getCode());
-  }
-
-  @Test
   public void testNotFoundJob() throws Exception {
     GetMethod getMethod = httpGet(JOB_PATH + "/" + "job_123456789_0001");
     Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), getMethod.getStatusCode());
