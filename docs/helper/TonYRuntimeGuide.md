@@ -26,7 +26,7 @@ Check out the [QuickStart](QuickStart.md)
 You need:
 
 * Build a Python virtual environment with TensorFlow 1.13.1 installed
-* A cluster with Hadoop 2.7 or above.
+* A cluster with Hadoop 2.9 or above.
 
 ### Building a Python virtual environment with TensorFlow
 
@@ -127,7 +127,7 @@ the `submarine-core-${SUBMARINE_VERSION}.jar`, `submarine-yarnservice-runtime-${
 You need:
 
 * Build a Python virtual environment with PyTorch 0.4.0+ installed
-* A cluster with Hadoop 2.7 or above.
+* A cluster with Hadoop 2.9 or above.
 
 ### Building a Python virtual environment with PyTorch
 
@@ -154,7 +154,7 @@ Get mnist_distributed.py from https://github.com/linkedin/TonY/tree/master/tony-
 SUBMARINE_VERSION=0.4.0-SNAPSHOT
 SUBMARINE_HADOOP_VERSION=3.1
 CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
-java org.apache.submarine.client.cli.Cli job run --name py-job-001 \
+java org.apache.submarine.client.cli.Cli job run --name PyTorch-job-001 \
  --framework pytorch
  --num_workers 2 \
  --worker_resources memory=3G,vcores=2 \
@@ -187,7 +187,7 @@ You should then be able to see links and status of the jobs from command line:
 SUBMARINE_VERSION=0.4.0-SNAPSHOT
 SUBMARINE_HADOOP_VERSION=3.1
 CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
-java org.apache.submarine.client.cli.Cli job run --name py-job-001 \
+java org.apache.submarine.client.cli.Cli job run --name PyTorch-job-001 \
  --framework pytorch
  --docker_image pytorch-latest-gpu:0.0.1 \
  --input_path "" \
@@ -212,7 +212,7 @@ java org.apache.submarine.client.cli.Cli job run --name py-job-001 \
 You need:
 
 * Build a Python virtual environment with MXNet installed
-* A cluster with Hadoop 2.7 or above.
+* A cluster with Hadoop 2.9 or above.
 
 ### Building a Python virtual environment with MXNet
 
@@ -239,7 +239,7 @@ Get image_classification.py from this [link](https://github.com/apache/submarine
 SUBMARINE_VERSION=0.4.0-SNAPSHOT
 SUBMARINE_HADOOP_VERSION=3.1
 CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
-java org.apache.submarine.client.cli.Cli job run --name mx-job-001 \
+java org.apache.submarine.client.cli.Cli job run --name MXNet-job-001 \
  --framework mxnet
  --input_path "" \
  --num_workers 2 \
@@ -281,7 +281,7 @@ You could refer to this [sample Dockerfile](docker/mxnet/cifar10/Dockerfile.cifa
 SUBMARINE_VERSION=0.4.0-SNAPSHOT
 SUBMARINE_HADOOP_VERSION=3.1
 CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
-java org.apache.submarine.client.cli.Cli job run --name mx-job-001 \
+java org.apache.submarine.client.cli.Cli job run --name MXNet-job-001 \
  --framework mxnet
  --docker_image <your_docker_image> \
  --input_path "" \

@@ -23,7 +23,8 @@ Dockerfile to run MXNet on YARN needs two parts:
 
 1) OS base image, for example ```ubuntu:18.04```
 
-2) MXNet dependent libraries and packages. For example ```python```, ```scipy```. For GPU support, you also need ```cuda```, ```cudnn```, etc.
+2) MXNet dependent libraries and packages. \
+   For example ```python```, ```scipy```. For GPU support, you also need ```cuda```, ```cudnn```, etc.
 
 3) MXNet package.
 
@@ -33,33 +34,17 @@ Dockerfile to run MXNet on YARN needs two parts:
 
 2) Hadoop
 
-Here's an example of a base image (with GPU support) to install MXNet:
+Here's an example of a base image (without GPU support) to install MXNet:
 ```shell
 FROM ubuntu:18.04
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y tzdata build-essential git ninja-build ccache libopenblas-dev \
-    libopencv-dev cmake python3 python3-pip
+# Install some development tools and packages
+# MXNet 1.6 is going to be the last MXNet release to support Python2
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y tzdata git \
+    wget zip python3 python3-pip python3-distutils libgomp1 libopenblas-dev libopencv-dev
 
-# CMake 3.13 or higher is required.
-RUN pip3 install --user --upgrade "cmake==3.13.3"
-
-# Download MXNet sources and configure
-WORKDIR /opt
-RUN git clone --recursive https://github.com/apache/incubator-mxnet.git mxnet
-
-WORKDIR /opt/mxnet
-RUN cp config/linux.cmake config.cmake && \
-    rm -rf build && mkdir -p build
-
-# Build MXNet core shared library.
-WORKDIR /opt/mxnet/build
-RUN ~/.local/bin/cmake -GNinja .. && \
-    ~/.local/bin/cmake --build .
-
-# Install MXNet for Python
-RUN cd /opt/mxnet/python && \
-    pip3 install --user -e .
+# Install latest MXNet using pip (without GPU support)
+RUN pip3 install mxnet
 
 RUN echo "Install python related packages" && \
     pip3 install --user graphviz==0.8.4 ipykernel jupyter matplotlib numpy pandas scipy sklearn  && \
