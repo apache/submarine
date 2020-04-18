@@ -33,7 +33,7 @@ Optional:
 
 ## Submarine Configuration
 
-After submarine 0.2.0, it supports two runtimes which are YARN service runtime and Linkedin's TonY runtime for YARN. Each runtime can support both Tensorflow and PyTorch framework. But we don't need to worry about the usage because the two runtime implements the same interface.
+After submarine 0.2.0, it supports two runtimes which are YARN service runtime and Linkedin's TonY runtime for YARN. Each runtime can support TensorFlow, PyTorch and MXNet framework. But we don't need to worry about the usage because the two runtime implements the same interface.
 
 So before we start running a job, the runtime type should be picked. The runtime choice may vary depending on different requirements. Check below table to choose your runtime.
 
@@ -123,68 +123,137 @@ Or from YARN UI:
 ## Submarine Commandline options
 
 ```$xslt
-usage: ... job run
-
- -framework <arg>             Framework to use.
-                              Valid values are: tensorflow, pytorch.
-                              The default framework is Tensorflow.
- -checkpoint_path <arg>       Training output directory of the job, could
-                              be local or other FS directory. This
-                              typically includes checkpoint files and
-                              exported model
- -docker_image <arg>          Docker image name/tag
- -env <arg>                   Common environment variable of worker/ps
- -input_path <arg>            Input of the job, could be local or other FS
-                              directory
- -name <arg>                  Name of the job
- -num_ps <arg>                Number of PS tasks of the job, by default
-                              it's 0
- -num_workers <arg>           Numnber of worker tasks of the job, by
-                              default it's 1
- -ps_docker_image <arg>       Specify docker image for PS, when this is
-                              not specified, PS uses --docker_image as
-                              default.
- -ps_launch_cmd <arg>         Commandline of worker, arguments will be
-                              directly used to launch the PS
- -ps_resources <arg>          Resource of each PS, for example
-                              memory-mb=2048,vcores=2,yarn.io/gpu=2
- -queue <arg>                 Name of queue to run the job, by default it
-                              uses default queue
- -saved_model_path <arg>      Model exported path (savedmodel) of the job,
-                              which is needed when exported model is not
-                              placed under ${checkpoint_path}could be
-                              local or other FS directory. This will be
-                              used to serve.
- -tensorboard <arg>           Should we run TensorBoard for this job? By
-                              default it's true
- -verbose                     Print verbose log for troubleshooting
- -wait_job_finish             Specified when user want to wait the job
-                              finish
- -worker_docker_image <arg>   Specify docker image for WORKER, when this
-                              is not specified, WORKER uses --docker_image
-                              as default.
- -worker_launch_cmd <arg>     Commandline of worker, arguments will be
-                              directly used to launch the worker
- -worker_resources <arg>      Resource of each worker, for example
-                              memory-mb=2048,vcores=2,yarn.io/gpu=2
- -localization <arg>          Specify localization to remote/local
-                              file/directory available to all container(Docker).
-                              Argument format is "RemoteUri:LocalFilePath[:rw]"
-                              (ro permission is not supported yet).
-                              The RemoteUri can be a file or directory in local
-                              or HDFS or s3 or abfs or http .etc.
-                              The LocalFilePath can be absolute or relative.
-                              If relative, it'll be under container's implied
-                              working directory.
-                              This option can be set mutiple times.
-                              Examples are
-                              -localization "hdfs:///user/yarn/mydir2:/opt/data"
-                              -localization "s3a:///a/b/myfile1:./"
-                              -localization "https:///a/b/myfile2:./myfile"
-                              -localization "/user/yarn/mydir3:/opt/mydir3"
-                              -localization "./mydir1:."
- -conf <arg>                  User specified configuration, as
-                              key=val pairs.
+usage: job run
+ -checkpoint_path <arg>            Training output directory of the job,
+                                   could be local or other FS directory.
+                                   This typically includes checkpoint
+                                   files and exported model
+ -conf <arg>                       User specified configuration, as
+                                   key=val pairs.
+ -distribute_keytab                Distribute local keytab to cluster
+                                   machines for service authentication. If
+                                   not specified, pre-distributed keytab
+                                   of which path specified by
+                                   parameterkeytab on cluster machines
+                                   will be used
+ -docker_image <arg>               Docker image name/tag
+ -env <arg>                        Common environment variable of
+                                   worker/ps
+ -f <arg>                          Config file (in YAML format)
+ -framework <arg>                  Framework to use. Valid values are:
+                                   tensorlow,pytorch,mxnet! The default
+                                   framework is tensorflow.
+ -h,--help                         Print help
+ -input_path <arg>                 Input of the job, could be local or
+                                   other FS directory
+ -insecure                         Cluster is not Kerberos enabled.
+ -keytab <arg>                     Specify keytab used by the job under
+                                   security environment
+ -localization <arg>               Specify localization to make
+                                   remote/local file/directory available
+                                   to all container(Docker). Argument
+                                   format is "RemoteUri:LocalFilePath[:rw]
+                                   " (ro permission is not supported yet)
+                                   The RemoteUri can be a file or
+                                   directory in local or HDFS or s3 or
+                                   abfs or http .etc. The LocalFilePath
+                                   can be absolute or relative. If it's a
+                                   relative path, it'll be under
+                                   container's implied working directory
+                                   but sub directory is not supported yet.
+                                   This option can be set mutiple times.
+                                   Examples are
+                                   -localization
+                                   "hdfs:///user/yarn/mydir2:/opt/data"
+                                   -localization "s3a:///a/b/myfile1:./"
+                                   -localization
+                                   "https:///a/b/myfile2:./myfile"
+                                   -localization
+                                   "/user/yarn/mydir3:/opt/mydir3"
+                                   -localization "./mydir1:."
+ -name <arg>                       Name of the job
+ -num_ps <arg>                     Number of PS tasks of the job, by
+                                   default it's 0. Can be used with
+                                   TensorFlow or MXNet frameworks.
+ -num_schedulers <arg>             Number of scheduler tasks of the job.
+                                   It should be 1 or 0, by default it's
+                                   0.Can only be used with MXNet
+                                   framework.
+ -num_workers <arg>                Number of worker tasks of the job, by
+                                   default it's 1.Can be used with
+                                   TensorFlow or PyTorch or MXNet
+                                   frameworks.
+ -principal <arg>                  Specify principal used by the job under
+                                   security environment
+ -ps_docker_image <arg>            Specify docker image for PS, when this
+                                   is not specified, PS uses
+                                   --docker_image as default.Can be used
+                                   with TensorFlow or MXNet frameworks.
+ -ps_launch_cmd <arg>              Commandline of PS, arguments will be
+                                   directly used to launch the PSCan be
+                                   used with TensorFlow or MXNet
+                                   frameworks.
+ -ps_resources <arg>               Resource of each PS, for example
+                                   memory-mb=2048,vcores=2,yarn.io/gpu=2Ca
+                                   n be used with TensorFlow or MXNet
+                                   frameworks.
+ -queue <arg>                      Name of queue to run the job, by
+                                   default it uses default queue
+ -quicklink <arg>                  Specify quicklink so YARNweb UI shows
+                                   link to given role instance and port.
+                                   When --tensorboard is specified,
+                                   quicklink to tensorboard instance will
+                                   be added automatically. The format of
+                                   quick link is: Quick_link_label=http(or
+                                   https)://role-name:port. For example,
+                                   if want to link to first worker's 7070
+                                   port, and text of quicklink is
+                                   Notebook_UI, user need to specify
+                                   --quicklink
+                                   Notebook_UI=https://master-0:7070
+ -saved_model_path <arg>           Model exported path (savedmodel) of the
+                                   job, which is needed when exported
+                                   model is not placed under
+                                   ${checkpoint_path}could be local or
+                                   other FS directory. This will be used
+                                   to serve.
+ -scheduler_docker_image <arg>     Specify docker image for scheduler,
+                                   when this is not specified, scheduler
+                                   uses --docker_image as default. Can
+                                   only be used with MXNet framework.
+ -scheduler_launch_cmd <arg>       Commandline of scheduler, arguments
+                                   will be directly used to launch the
+                                   scheduler. Can only be used with MXNet
+                                   framework.
+ -scheduler_resources <arg>        Resource of each scheduler, for example
+                                   memory-mb=2048,vcores=2. Can only be
+                                   used with MXNet framework.
+ -tensorboard                      Should we run TensorBoard for this job?
+                                   By default it's disabled.Can only be
+                                   used with TensorFlow framework.
+ -tensorboard_docker_image <arg>   Specify Tensorboard docker image. when
+                                   this is not specified, Tensorboard uses
+                                   --docker_image as default.Can only be
+                                   used with TensorFlow framework.
+ -tensorboard_resources <arg>      Specify resources of Tensorboard, by
+                                   default it is memory=4G,vcores=1.Can
+                                   only be used with TensorFlow framework.
+ -verbose                          Print verbose log for troubleshooting
+ -wait_job_finish                  Specified when user want to wait the
+                                   job finish
+ -worker_docker_image <arg>        Specify docker image for WORKER, when
+                                   this is not specified, WORKER uses
+                                   --docker_image as default.Can be used
+                                   with TensorFlow or PyTorch or MXNet
+                                   frameworks.
+ -worker_launch_cmd <arg>          Commandline of worker, arguments will
+                                   be directly used to launch the
+                                   workerCan be used with TensorFlow or
+                                   PyTorch or MXNet frameworks.
+ -worker_resources <arg>           Resource of each worker, for example
+                                   memory-mb=2048,vcores=2,yarn.io/gpu=2Ca
+                                   n be used with TensorFlow or PyTorch or
+                                   MXNet frameworks.
 ```
 
 #### Notes:
