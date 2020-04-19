@@ -1,4 +1,10 @@
-# Submarine Cluster Server Design
+# Submarine Cluster Server Design - High-Availability (working-in-progress)
+
+## Please note that this design doc is working-in-progress and need more works to complete. 
+
+
+
+## Below is existing proposal:
 
 ## Introduction
 The Submarine system contains a total of two daemon services, Submarine Server and Workbench Server.

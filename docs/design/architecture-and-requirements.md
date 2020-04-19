@@ -241,9 +241,15 @@ We call the web service to "endpoint". Users can manage (add/stop) model serving
 
 Submarine-SDK provides tracking/metrics APIs, which allows developers to add tracking/metrics and view tracking/metrics from Submarine Workbench UI.
 
-### Security / Access Control
+### Deployment
 
-There're 4 kinds of security: 
+Submarine Services (See architecture overview below) should be deployed easily on-prem / on-cloud. Since there're more and more public cloud offering for compute/storage management on cloud, we need to support deploy Submarine compute-related workloads (such as notebook session, experiments, etc.) to cloud-managed clusters. 
+
+This also include Submarine may need to take input parameters from customers and create/manage clusters if needed. It is also a common requirement to use hybrid of on-prem/on-cloud clusters.
+
+### Security / Access Control / User Management / Quota Management
+
+There're 4 kinds of objects need access-control: 
 
 - Assets belong to Submarine system, which includes notebook, experiments and results, models, predefined experiment libraries, environment profiles.
 - Data security. (Who owns what data, and what data can be accessed by each users). 
@@ -253,6 +259,16 @@ There're 4 kinds of security:
 For the data security / user credentials / other security, it will be delegated to 3rd libraries such as Apache Ranger, IAM roles, etc. 
 
 Assets belong to Submarine system will be handled by Submarine itself.
+
+Here're operations which Submarine admin can do for users / teams which can be used to access Submarine's assets. 
+
+**Operations for admins** 
+
+- Admin uses "User Management System" to onboard new users, upload user credentials, assign resource quotas, etc. 
+- Admins can create new users, new teams, update user/team mappings. Or remove users/teams. 
+- Admin can set resource quotas (if different from system default), permissions, upload/update necessary credentials (like Kerberos keytab) of a user.
+- A DE/DS can also be an admin if the DE/DS has admin access. (Like a privileged user). This will be useful when a cluster is exclusively shared by a user or only shared by a small team.
+- `Resource Quota Management System` helps admin to manage resources quotas of teams, organizations. Resources can be machine resources like CPU/Memory/Disk, etc. It can also include non-machine resources like $$-based budgets.
 
 ### Dataset 
 
@@ -277,11 +293,11 @@ Like mentioned above, access to the actual data will be handled by 3rd party sys
      |-----------------------------------------------------------------|
      |                                                                 |
      | +-----------------+ +-----------------+ +---------------------+ |
-     | |Compute Engine   | |RM Connector     | |Other Management     | |
-     | |    Connector    | |                 | |Services             | |
+     | |Experiment       | |Compute Resource | |Other Management     | |
+     | |Manager          | |   Manager       | |Services             | |
      | +-----------------+ +-----------------+ +---------------------+ |
-     |   Spark, Flink         YARN/K8s/Docker                          |
-     |   TF, PyTorch                                                   |
+     |   Spark, template      YARN/K8s/Docker                          |
+     |   TF, PyTorch, pipeline                                         |
      |                                                                 |
      + +-----------------+                                             +
      | |Submarine Meta   |                                             |
@@ -289,109 +305,18 @@ Like mentioned above, access to the actual data will be handled by 3rd party sys
      | +-----------------+                                             |
      |                                                                 |
      +-----------------------------------------------------------------+
-                  
-      (You can use http://stable.ascii-flow.appspot.com/#Draw 
+
+      (You can use http://stable.ascii-flow.appspot.com/#Draw
       to draw such diagrams)
 ```
 
-#### Submarine Server and its APIs.
+`Compute Resource Manager` Helps to manage compute resources on-prem/on-cloud, this module can also handle cluster creation / management, etc.
 
-Submarine server is designed to allow data scientists to access notebooks, submit/manage jobs, manage models, create model training workflows, access datasets, etc.
-
-Submarine Server exposed UI and REST API. Users can also use CLI / SDK to manage assets inside Submarine Server.
-
-```
-           +----------+
-           | CLI      |+---+
-           +----------+    v              +----------------+
-                         +--------------+ | Submarine      |
-           +----------+  | REST API     | |                |
-           | SDK      |+>|              |+>  Server        |
-           +----------+  +--------------+ |                |
-                           ^              +----------------+
-           +----------+    |
-           | UI       |+---+
-           +----------+
-```
-
-REST API will be used by the other 3 approaches.
-
-#### Assets which will be access by Submarine users 
-
-
-| Asset | Supported Action |
-| --- | --- |
-| Notebook | Create / Delete |
-| Experiment | Create / Delete |
-| Model | Create / Delete / Update (Such as tag, etc.) |
-| Endpoint | Create / Delete / Update |
-
-### Implementation Overview
-
-`RM Connector` Helps to submit an experiment or notebook to a resource manager, such as YARN or K8s.
-
-`Compute Engine Connector` Work with Job Orchestrator to submit different kinds of jobs. One connector connects to one specific kind of compute framework, such as (distributed) Tensorflow. 
+`Experiment Manager` Work with "Compute Resource Manager" to submit different kinds of workloads such as (distributed) Tensorflow / Pytorch, etc.
 
 `Submarine SDK` provides Java/Python/REST API to allow DS or other engineers to integrate into Submarine services. It also includes a `mini-submarine` component that launches Submarine components from a single Docker container (or a VM image).
 
-#### Components for SREs 
-
-The following components are designed for SREs (or system admins) of the Machine Learning Platform.
-
-1) `User Management System` helps admin to onboard new users, upload user credentials, assign resource quotas, etc. 
-2) `Resource Quota Management System` helps admin to manage resources quotas of teams, organizations. Resources can be machine resources like CPU/Memory/Disk, etc. It can also include non-machine resources like $$-based budgets.
-
-Both of the above modules could be handled by external services instead of implementing inside Submarine.
-
-### User flows for Admins/SRE
-
-Operations for users/teams: 
-- Admins can create new users, new teams, update user/team mappings. Or remove users/teams. 
-- Admin can set resource quotas (if different from system default), permissions, upload/update necessary credentials (like Kerberos keytab) of a user.
-- A DE/DS can also be an admin if the DE/DS has admin access. (Like a privileged user). This will be useful when a cluster is exclusively shared by a user or only shared by a small team.
-
-## Deployment
-
-```
-    +---------------Submarine Server ---+
-    |                                   |
-    | +------------+ +------------+     |
-    | |Web Svc/Prxy| |Backend Svc |     |    +--Submarine Asset +
-    | +------------+ +------------+     |    |Project/Notebook  |
-    |   ^                               |    |Model/Metrics     |
-    +---|-------------------------------+    |Libraries/Dataset |
-        |                                    +------------------+
-        |
-        |      +----Compute Cluster 1---+    +--Image Registry--+
-        +      |User Notebook Instance  |    |   User's Images  |
-      User /   |Experiment Runs         |    |                  |
-      Admin    |                        |    +------------------+
-               |                        |
-               +------------------------+    +-Data Storage-----+
-                                             | S3/HDFS, etc.    |
-               +----Compute Cluster 2---+    |                  |
-                                             +------------------+
-                        ...
-```
-
-Here's a diagram to illustrate the Submarine's deployment.
-
-- Submarine Server consists of web service/proxy, and backend services. They're like "control planes" of Submarine, and users will interact with these services.
-- Submarine server could be a microservice architecture and can be deployed to one of the compute clusters. (see below, this will be useful when we only have one cluster). 
-- There're multiple compute clusters that could be used by Submarine service. For user's running notebook instance, jobs, etc. they will be placed to one of the compute clusters by user's preference or defined policies.
-- Submarine's asset includes project/notebook(content)/models/metrics/dataset-meta, etc. can be stored inside Submarine's own database.
-- Datasets can be stored in various locations such as S3/HDFS. 
-- Users can push container (such as Docker) images to a preconfigured registry in Submarine, so Submarine service can know how to pull required container images.
-
-## Other implementation discussions 
-
-### Which notebook to support? 
-
-TODO: Jupyter v.s. Zeppelin.
-
-## Security Models
-
-[TODO] (Need help)
+Details of Submarine Server design can be found at [submarine-server-design](./submarine-server/architecture.md).
 
 # References
 
