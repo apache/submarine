@@ -17,7 +17,7 @@
 
 Environment profiles (or environment for short) defines a set of libraries and when Docker is being used, a Docker image in order to run an experiment or a notebook. 
 
-Docker and/or VM image (such as AMI: Amazon Machine Images) defines the base layer of the environment. 
+Docker and/or VM-image (such as, VirtualBox/VMWare images, Amazon Machine Images - AMI, Or custom image of Azure VM) defines the base layer of the environment. Please note that VM-image is different from VM instance type,
 
 On top of that, users can define a set of libraries (such as Python/R) to install, we call it kernel.
 
@@ -38,7 +38,7 @@ On top of that, users can define a set of libraries (such as Python/R) to instal
      +-------------------+
 ```
 
-As you can see, There're base libraries, such as what OS, CUDA version, GPU driver, etc. They can be achieved by specifying a VM image / Docker image.
+As you can see, There're base libraries, such as what OS, CUDA version, GPU driver, etc. They can be achieved by specifying a VM-image / Docker image.
 
 On top of that, user can bring their dependencies, such as different version of Python, Tensorflow, Pandas, etc.
 
@@ -172,6 +172,7 @@ FROM ubuntu:18.04
 <Make sure conda (with our preferred version) is installed>
 <Make sure Jupyter (with our preferred version) is installed>
 
+# This is just a sample of Dockerfile, users can do more customizations if needed
 ENTRYPOINT ["/submarine-bootstrap.sh"]
 ```
 

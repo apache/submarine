@@ -21,7 +21,7 @@ First let's look at what user will interact for most of the time:
 
 - Notebook 
 - Experiment
-- Endpoint
+- Model Servings
 
 ```
 
@@ -31,7 +31,7 @@ First let's look at what user will interact for most of the time:
       +----------+            +---------+    +------------+     +----------------+
       |Trackings |                        <-+|Experiment  |<--+>|Model Artifacts |
       +----------+     +-----------------+   +------------+     +----------------+
-      +----------+<---+|ML-related Metric|<--+Endpoint    |
+      +----------+<---+|ML-related Metric|<--+Servings    |
       |tf.events |     +-----------------+   +------------+
       +----------+                                 ^              +-----------------+
                                                    +              | Environments    |
@@ -52,7 +52,7 @@ First let's look at what user will interact for most of the time:
                                         +----------------------+
 ```
 
-First of all, all the notebook-sessions / experiments / endpoints (model serving instances) are more or less interact with following storage objects:
+First of all, all the notebook-sessions / experiments / model-serving instances) are more or less interact with following storage objects:
 
 - Logs for these tasks for troubleshooting. 
 - ML-related metrics such as loss, epoch, etc. (in contrast of system metrics such as CPU/memory usage, etc.)
@@ -60,8 +60,8 @@ First of all, all the notebook-sessions / experiments / endpoints (model serving
   - Or they can use tracking APIs (such as Submarine tracking, mlflow tracking, etc.) to output customized tracking results for non TF/Pytorch workloads. 
 - Training jobs of experiment typically generate model artifacts (files) which need perisisted, and both of notebook, model serving needs to load model artifacts from persistent storage. 
 - There're various of meta information, such as experiment meta, model registry, model serving, notebook, experiment, environment, etc. We need be able to read these meta information back.
-- We also have code for experiment (like training/batch-prediction), notebook (ipynb), and endpoints.
-- And notebook/experiments/endpoint need depend on environments (dependencies such as pip, and Docker Images).
+- We also have code for experiment (like training/batch-prediction), notebook (ipynb), and model servings.
+- And notebook/experiments/model-serving need depend on environments (dependencies such as pip, and Docker Images).
 
 ### Implementation considerations for ML-related objects
 
@@ -81,15 +81,15 @@ First of all, all the notebook-sessions / experiments / endpoints (model serving
 
 There're following ways to get experiment code: 
 
-**1) Code is part of Docker image:** 
+**1) Code is part of Git repo:** (***<u>Recommended</u>***)
+
+This is our recommended approach, once code is part of Git, it will be stored in version control, any change will be tracked, and much easier for users to trace back what change triggered a new bug, etc.
+
+**2) Code is part of Docker image:** 
 
 ***This is an anti-pattern and we will NOT recommend you to use it***, Docker image can be used to include ANYTHING, like dependencies, the code you will execute, or even data. But this doesn't mean you should do it. We recommend to use Docker image ONLY for libraries/dependencies.
 
 Making code to be part of Docker image makes hard to edit code (if you want to update a value in your Python file, you will have to recreate the Docker image, push it and rerun it).
-
-**2) Code is part of Git repo:** 
-
-This is our recommended approach, once code is part of Git, it will be stored in version control, any change will be tracked, and much easier for users to trace back what change triggered a new bug, etc.
 
 **3) Code is part of S3/HDFS/ABFS:** 
 

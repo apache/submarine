@@ -234,7 +234,7 @@ There's a common misunderstanding about what is the differences between running 
 | --------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | Run mode                          | Offline                                                      | Interactive                                                  |
 | Output Artifacts (a.k.a model)    | Persisted in a shared storage (like S3/NFS)                  | Local in the notebook session container, could be emphameral |
-| Run history (meta, logs, metrics) | Meta/logs/metrics can be traced from experiment UI (or corresponding API) | No run history can be traced from Submarine UI/API           |
+| Run history (meta, logs, metrics) | Meta/logs/metrics can be traced from experiment UI (or corresponding API) | No run history can be traced from Submarine UI/API. Can view the current running paragraph's log/metrics, etc. |
 | What to run?                      | Code from Docker image or shared storage (like Tarball on S3, Github, etc.) | Local in the notebook's paragraph                            |
 
 **Commonalities** 
