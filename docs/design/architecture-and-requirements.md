@@ -20,7 +20,6 @@
 | User | A single data-scientist/data-engineer. User has resource quota, credentials |
 | Team | User belongs to one or more teams, teams have ACLs for artifacts sharing such as notebook content, model, etc. |
 | Admin | Also called SRE, who manages user's quotas, credentials, team, and other components. |
-| Project | A project may include one or multiple notebooks, zero or multiple running jobs. And could be collaborated by multiple users who have ACLs on it |
 
 
 # Background 
@@ -46,7 +45,7 @@ In the last decade, the software industry has built many open source tools for m
    
 6. It was hard to build a data pipeline that flows/transform data from a raw data source to whatever required by ML applications. 
    **Answer to that:** Open source big data industry plays an important role in providing, simplify, unify processes and building blocks for data flows, transformations, etc.
-   
+
 The machine learning industry is moving on the right track to solve major roadblocks. So what are the pain points now for companies which have machine learning needs? What can we help here? To answer this question, let's look at machine learning workflow first. 
 
 ## Machine Learning Workflows & Pain points
@@ -129,11 +128,7 @@ It is also designed to be resource management independent, no matter if you have
 
 ## Requirements and non-requirements
 
-### Requirements
-
-Following items are charters of Submarine project:
-
-#### Notebook
+### Notebook
 
 1) Users should be able to create, edit, delete a notebook. (P0)
 2) Notebooks can be persisted to storage and can be recovered if failure happens. (P0)
@@ -142,210 +137,187 @@ Following items are charters of Submarine project:
 5) Users can define a list of parameters of a notebook (looks like parameters of the notebook's main function) to allow executing a notebook like a job. (P1)
 6) Different users can collaborate on the same notebook at the same time. (P2)
 
-#### Job
+A running notebook instance is called notebook session (or session for short).
 
-Job of Submarine is an executable code section. It could be a shell command, a Python command, a Spark job, a SQL query, a training job (such as Tensorflow), etc. 
+### Experiment
 
-1) Job can be submitted from UI/CLI.
-2) Job can be monitored/managed from UI/CLI.
-3) Job should not bind to one resource management platform (YARN/K8s).
+Experiments of Submarine is an offline task. It could be a shell command, a Python command, a Spark job, a SQL query, or even a workflow. 
 
-#### Training Job
+The primary purposes of experiments under Submarine's context is to do training tasks, offline scoring, etc. However, experiment can be generalized to do other tasks as well.
 
-Training job is a special kind of job, which includes Tensorflow, PyTorch, and other different frameworks: 
+Major requirement of experiment: 
 
-1) Allow model engineer, data scientist to run *unmodified* Tensorflow programs on YARN/K8s/Container-cloud. 
-2) Allow jobs easy access data/models in HDFS and other storage. 
-3) Support run distributed Tensorflow jobs with simple configs.
-4) Support run user-specified Docker images.
-5) Support specify GPU and other resources.
-6) Support launch tensorboard (and other equivalents for non-TF frameworks) for training jobs if user specified.
+1) Experiments can be submitted from UI/CLI/SDK.
+2) Experiments can be monitored/managed from UI/CLI/SDK.
+3) Experiments should not bind to one resource management platform (K8s/YARN).
 
-[TODO] (Need help)
+#### Type of experiments
 
-#### Model Management 
+![](../assets/design/experiments.png)
 
-After training, there will be model artifacts created. Users should be able to:
+There're two types of experiments: 
+`Adhoc experiments`: which includes a Python/R/notebook, or even an adhoc Tensorflow/PyTorch task, etc. 
 
-1) View model metrics.
-2) Save, versioning, tagging model.
-3) Run model verification tasks. 
-4) Run A/B testing, push to production, etc.
+`Predefined experiment library`: This is specialized experiments, which including developed libraries such as CTR, BERT, etc. Users are only required to specify a few parameters such as input, output, hyper parameters, etc. Instead of worrying about where's training script/dependencies located.
 
-#### Metrics for training job and model
+#### Adhoc experiment
+
+Requirements:
+
+- Allow run adhoc scripts.
+- Allow model engineer, data scientist to run Tensorflow/Pytorch programs on YARN/K8s/Container-cloud. 
+- Allow jobs easy access data/models in HDFS/s3, etc. 
+- Support run distributed Tensorflow/Pytorch jobs with simple configs.
+- Support run user-specified Docker images.
+- Support specify GPU and other resources.
+
+#### Predefined experiment library
+
+Here's an example of predefined experiment library to train deepfm model: 
+
+```
+{
+  "input": {
+    "train_data": ["hdfs:///user/submarine/data/tr.libsvm"],
+    "valid_data": ["hdfs:///user/submarine/data/va.libsvm"],
+    "test_data": ["hdfs:///user/submarine/data/te.libsvm"],
+    "type": "libsvm"
+  },
+  "output": {
+    "save_model_dir": "hdfs:///user/submarine/deepfm",
+    "metric": "auc"
+  },
+  "training": {
+    "batch_size" : 512,
+    "field_size": 39,
+    "num_epochs": 3,
+    "feature_size": 117581,
+    ...
+  }
+}
+```
+
+Predefined experiment libraries can be shared across users on the same platform, users can also add new or modified predefined experiment library via UI/REST API.
+
+We will also model AutoML, auto hyper-parameter tuning to predefined experiment library.
+
+#### Pipeline 
+
+Pipeline is a special kind of experiment:
+
+- A pipeline is a DAG of experiments. 
+- Can be also treated as a special kind of experiment.
+- Users can submit/terminate a pipeline.
+- Pipeline can be created/submitted via UI/API.
+
+### Environment Profiles
+
+Environment profiles (or environment for short) defines a set of libraries and when Docker is being used, a Docker image in order to run an experiment or a notebook. 
+
+Docker or VM image (such as AMI: Amazon Machine Images) defines the base layer of the environment. 
+
+On top of that, users can define a set of libraries (such as Python/R) to install.
+
+Users can save different environment configs which can be also shared across the platform. Environment profiles can be used to run a notebook (e.g. by choosing different kernel from Jupyter), or an experiment. Predefined experiment library includes what environment to use so users don't have to choose which environment to use.
+
+Environments can be added/listed/deleted/selected through CLI/SDK.
+
+### Model
+
+#### Model management 
+
+- Model artifacts are generated by experiments or notebook.
+- A model consists of artifacts from one or multiple files. 
+- Users can choose to save, tag, version a produced model.
+- Once The Model is saved, Users can do the online model serving or offline scoring of the model.
+
+#### Model serving
+
+After model saved, users can specify a serving script, a model and create a web service to serve the model. 
+
+We call the web service to "endpoint". Users can manage (add/stop) model serving endpoints via CLI/API/UI.
+
+### Metrics for training job and model
 
 Submarine-SDK provides tracking/metrics APIs, which allows developers to add tracking/metrics and view tracking/metrics from Submarine Workbench UI.
 
-#### Workflow 
+### Deployment
 
-Data-Scientists/Data-Engineers can create workflows from UI. Workflow is DAG of jobs.
+Submarine Services (See architecture overview below) should be deployed easily on-prem / on-cloud. Since there're more and more public cloud offering for compute/storage management on cloud, we need to support deploy Submarine compute-related workloads (such as notebook session, experiments, etc.) to cloud-managed clusters. 
 
-### Non-requirements
+This also include Submarine may need to take input parameters from customers and create/manage clusters if needed. It is also a common requirement to use hybrid of on-prem/on-cloud clusters.
 
-TODO: Add non-requirements which we want to avoid.
+### Security / Access Control / User Management / Quota Management
 
-[TODO] (Need help)
+There're 4 kinds of objects need access-control: 
+
+- Assets belong to Submarine system, which includes notebook, experiments and results, models, predefined experiment libraries, environment profiles.
+- Data security. (Who owns what data, and what data can be accessed by each users). 
+- User credentials. (Such as LDAP).
+- Other security, such as Git repo access, etc.
+
+For the data security / user credentials / other security, it will be delegated to 3rd libraries such as Apache Ranger, IAM roles, etc. 
+
+Assets belong to Submarine system will be handled by Submarine itself.
+
+Here're operations which Submarine admin can do for users / teams which can be used to access Submarine's assets. 
+
+**Operations for admins** 
+
+- Admin uses "User Management System" to onboard new users, upload user credentials, assign resource quotas, etc. 
+- Admins can create new users, new teams, update user/team mappings. Or remove users/teams. 
+- Admin can set resource quotas (if different from system default), permissions, upload/update necessary credentials (like Kerberos keytab) of a user.
+- A DE/DS can also be an admin if the DE/DS has admin access. (Like a privileged user). This will be useful when a cluster is exclusively shared by a user or only shared by a small team.
+- `Resource Quota Management System` helps admin to manage resources quotas of teams, organizations. Resources can be machine resources like CPU/Memory/Disk, etc. It can also include non-machine resources like $$-based budgets.
+
+### Dataset 
+
+There's also need to tag dataset which will be used for training and shared across the platform by different users. 
+
+Like mentioned above, access to the actual data will be handled by 3rd party system like Apache Ranger / Hive Metastore which is out of the Submarine's scope.
 
 ## Architecture Overview
 
 ### Architecture Diagram
 
 ```
-      +-----------------<---+Submarine Workbench+---->------------------+
-      | +---------+ +---------+ +-----------+ +----------+ +----------+ |
-      | |Data Mart| |Notebooks| |Projects   | |Metrics   | |Models    | |
-      | +---------+ +---------+ +-----------+ +----------+ +----------+ |
-      +-----------------------------------------------------------------+
+     +-----------------------------------------------------------------+
+     |            Submarine UI / CLI / REST API / SDK                  |
+     |                 Mini-Submarine                                  |
+     +-----------------------------------------------------------------+
 
+     +--------------------Submarine Server-----------------------------+
+     | +---------+ +---------+ +----------+ +----------+ +------------+|
+     | |Data set | |Notebooks| |Experiment| |Models    | |Servings    ||
+     | +---------+ +---------+ +----------+ +----------+ +------------+|
+     |-----------------------------------------------------------------|
+     |                                                                 |
+     | +-----------------+ +-----------------+ +---------------------+ |
+     | |Experiment       | |Compute Resource | |Other Management     | |
+     | |Manager          | |   Manager       | |Services             | |
+     | +-----------------+ +-----------------+ +---------------------+ |
+     |   Spark, template      YARN/K8s/Docker                          |
+     |   TF, PyTorch, pipeline                                         |
+     |                                                                 |
+     + +-----------------+                                             +
+     | |Submarine Meta   |                                             |
+     | |    Store        |                                             |
+     | +-----------------+                                             |
+     |                                                                 |
+     +-----------------------------------------------------------------+
 
-      +----------------------Submarine Service--------------------------+
-      |                                                                 |
-      | +-----------------+ +-----------------+ +--------------------+  |
-      | |Compute Engine   | |Job Orchestrator | |     SDK            |  |
-      | |    Connector    | |                 | +--------------------+  |
-      | +-----------------+ +-----------------+                         |
-      |   Spark, Flink         YARN/K8s/Docker    Java/Python/REST      |
-      |   TF, PyTorch                               Mini-Submarine      |
-      |                                                                 |
-      |                                                                 |
-      +-----------------------------------------------------------------+
-      
-      (You can use http://stable.ascii-flow.appspot.com/#Draw 
+      (You can use http://stable.ascii-flow.appspot.com/#Draw
       to draw such diagrams)
 ```
 
-#### Submarine Workbench 
+`Compute Resource Manager` Helps to manage compute resources on-prem/on-cloud, this module can also handle cluster creation / management, etc.
 
-Submarine Workbench is a UI designed for data scientists. Data scientists can interact with Submarine Workbench UI to access notebooks, submit/manage jobs, manage models, create model training workflows, access datasets, etc.
+`Experiment Manager` Work with "Compute Resource Manager" to submit different kinds of workloads such as (distributed) Tensorflow / Pytorch, etc.
 
-### Components for Data Scientists
+`Submarine SDK` provides Java/Python/REST API to allow DS or other engineers to integrate into Submarine services. It also includes a `mini-submarine` component that launches Submarine components from a single Docker container (or a VM image).
 
-1) `Notebook Service` helps to do works from data insight to model creation and allows notebook sharing between teams. 
-2) `Workflow Service` helps to construct workflows across notebooks or include other executable code entry points. This module can construct a DAG and execute a user-specified workflow from end to end. 
-
-`NoteBook Service` and `Workflow Service` deployed inside Submarine Workbench Server, and provides Web, CLI, REST APIs for 3rd-party integration.
-
-4) `Data Mart` helps to create, save, and share dataset which can be used by other modules or training.
-5) `Model Training Service`
-   - `Metrics Service` Helps to save metrics during training and analysis training results if needed.
-   - `Job Orchestrator` Helps to submit a job (such as Tensorflow/PyTorch/Spark) to a resource manager, such as YARN or K8s. It also supports submitting a distributed training job. Also, get status/logs, etc. of a job regardless of Resource Manager implementation. 
-   - `Compute Engine Connector` Work with Job Orchestrator to submit different kinds of jobs. One connector connects to one specific kind of compute framework, such as Tensorflow. 
-6) `Model Service` helps to manage, save, version, analysis a model. It also helps to push model to production.
-7) `Submarine SDK` provides Java/Python/REST API to allow DS or other engineers to integrate into Submarine services. It also includes a `mini-submarine` component that launches Submarine components from a single Docker container (or a VM image).
-8) `Project Manager` helps to manage projects. Each project can have multiple notebooks, workflows, etc.
-
-### Components for SREs 
-
-The following components are designed for SREs (or system admins) of the Machine Learning Platform.
-
-1) `User Management System` helps admin to onboard new users, upload user credentials, assign resource quotas, etc. 
-2) `Resource Quota Management System` helps admin to manage resources quotas of teams, organizations. Resources can be machine resources like CPU/Memory/Disk, etc. It can also include non-machine resources like $$-based budgets.
-
-[TODO] (Need help)
-
-## User Flows
-
-### User flows for Data-Scientists/Data-engineers
-
-DS/DE will interact with Submarine to do the following things: 
-
-New onboard to Submarine Service:
-- Need Admin/SRE help to create a user account, set up user credentials (to access storage, metadata, resource manager, etc.), etc.
-- Submarine can integrate with LDAP or similar systems, and users can login using OpenID, etc.
-
-Access Data: 
-- DS/DE can access data via DataMart. DataMart is an abstraction layer to view available datasets that can be accessed. DS/DE needs proper underlying permission to read this data. 
-- DataMart provides UIs/APIs to allow DS/DE to preview, upload, import data-sets from various locations.
-- DS/DE can also bring their data from different sources, on-prem, or on-cloud. They can also add a data quick link (like a URL) to DataMart.
-- Data access could be limited by the physical location of compute clusters. For example, it is not viable to access data stored in another data center that doesn't have a network connectivity setup.
-
-Projects: 
-- Every user starts with a default project. Users can choose to create new projects.
-- A project belongs to one user, and user can share a project with different users/teams.
-- Users can clone a project belongs to other users who have access.
-- A project can have notebooks, dependencies, or any required custom files. (Such as configuration files). We don't suggest to upload any full-sized data-set files to a project.
-- Projects can include folders (It's like a regular FS), and folders can be mounted to a running notebook/jobs.
-
-Notebook: 
-- A notebook belongs to a project.
-- Users can create, clone, import (from file), export (to file) notebook. 
-- Users can ask to attach notebook by notebook service on one of the compute clusters. 
-- In contrast, users can request to detach a running notebook instance.
-- A notebook can be shared with other users, teams.
-- A notebook will be versioned, persisted (using Git, Mysql, etc.), and users can traverse back to older versions.
-
-Dependencies:
-- A dependency belongs to a project.
-- Users can add dependencies (a.k.a libraries) to a project. 
-- Dependency can be jar/python(PyPI, Egg, Wheel), etc.
-- Users can choose to have BYOI (bring your own container image) for a project. 
-
-Job: 
-- A job belongs to a project. 
-- Users can run (or terminate) job with type and parameters on one of the running cluster.
-- Users can get the status of running jobs, retrieve job logs, metrics, etc.
-- Job submission and basic operation should be available on both API (CLI) and UI. 
-- For different types of jobs, Submarine's `Compute Engine Connector` allows taking different parameters to submit a job. For example, submitting a `Tensorflow` job allows a specifying number of parameter servers, workers, etc. Which is different from `Spark` job.
-- A Notebook can be treated as a special kind of job. (Runnable notebook).
-
-Workflow: 
-- A workflow belongs to a project. 
-- A workflow is a DAG of jobs. 
-- Users can submit/terminate a workflow.
-- Users can get status from a workflow, and also get a list of running/finished/failed/pending jobs from the workflow.
-- Workflow can be created/submitted via UI/API.
-
-Model:
-- The Model is generated by training jobs.
-- A model consists of artifacts from one or multiple files. 
-- Users can choose to save, tag, version a produced model.
-- Once The Model is saved, Users can do the online serving or offline scoring of the model.
-
-### User flows for Admins/SRE
-
-Operations for users/teams: 
-- Admins can create new users, new teams, update user/team mappings. Or remove users/teams. 
-- Admin can set resource quotas (if different from system default), permissions, upload/update necessary credentials (like Kerberos keytab) of a user.
-- A DE/DS can also be an admin if the DE/DS has admin access. (Like a privileged user). This will be useful when a cluster is exclusively shared by a user or only shared by a small team.
-
-## Deployment
-
-```
-
-
-    +---------------Submarine Service---+
-    |                                   |
-    | +------------+ +------------+     |
-    | |Web Svc/Prxy| |Backend Svc |     |    +--Submarine Data+-+
-    | +------------+ +------------+     |    |Project/Notebook  |
-    |   ^                               |    |Model/Metrics     |
-    +---|-------------------------------+    |Libraries/DataMart|
-        |                                    +------------------+
-        |
-        |      +----Compute Cluster 1---+    +--Image Registry--+
-        +      |User Notebook Instance  |    |   User's Images  |
-      User /   |Jobs (Spark, TF)        |    |                  |
-      Admin    |                        |    +------------------+
-               |                        |
-               +------------------------+    +-Data Storage-----+
-                                             | S3/HDFS, etc.    |
-               +----Compute Cluster 2---+    |                  |
-                                             +------------------+
-                        ...
-```
-
-Here's a diagram to illustrate the Submarine's deployment.
-
-- Submarine service consists of web service/proxy, and backend services. They're like "control planes" of Submarine, and users will interact with these services.
-- Submarine service could be a microservice architecture and can be deployed to one of the compute clusters. (see below). 
-- There're multiple compute clusters that could be used by Submarine service. For user's running notebook instance, jobs, etc. they will be placed to one of the compute clusters by user's preference or defined policies.
-- Submarine's data includes project/notebook(content)/models/metrics, etc. will be stored separately from dataset (DataMart)
-- Datasets can be stored in various locations such as S3/HDFS. 
-- Users can push container (such as Docker) images to a preconfigured registry in Submarine, so Submarine service can know how to pull required container images.
-
-
-## Security Models
-
-[TODO] (Need help)
+Details of Submarine Server design can be found at [submarine-server-design](./submarine-server/architecture.md).
 
 # References
+
+
