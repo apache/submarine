@@ -163,29 +163,3 @@ TODO
 ## Components/services outside of Submarine Server's scope
 
 TODO: Describe what are the out-of-scope components, which should be handled and managed outside of Submarine server. Candidates are: Identity management, data storage, metastore storage, etc.
-
-## Experiment-related components
-
-#### Experiment Manager
-
-The JobManager receives the job requests, persisting the job metadata in a database(MySQL in production), submitting and monitoring the job. Using the plug-in design pattern for submitter to extends more features. Submitting the job to cluster resource management system through the specified submitter plug-in. 
-
-The JobManager has two main components: plug-ins manager and job monitor.
-
-#### PlugMgr
-The plug-ins manager is responsible for launching the submitter plug-ins, users have to add their jars to submarine-server’s classpath directly, thus put them on the system classloader. But if there are any conflicts between the dependencies introduced by the submitter plug-ins and the submarine-server itself, they can break the submarine-server, the plug-ins manager, or both. To solve this issue, we can instantiate submitter plug-ins using a classloader that is different from the system classloader.
-
-#### Monitor
-The monitor tracks the training life cycle and records the main events and key info in runtime. As the training job progresses, the metrics are needed for evaluation of the ongoing success or failure of the training progress. Due to adapt the different cluster resource management system, so we need a generic metric info structure and each submitter plug-in should inherit and complete it by itself.
-
-#### Submitter Plug-ins
-Each plug-in uses a separate module under the server-submitter module. As the default implements, we provide for YARN and K8s. For YARN cluster, we provide the submitter-yarn and submitter-yarnservice plug-ins. The submitter-yarn plug-in used the [TonY](https://github.com/linkedin/TonY) as the runtime to run the training job, and the submitter-yarnservice plug-in direct use the [YARN Service](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/yarn-service/Overview.html) which supports  Hadoop v3.1 above. The submitter-k8s plug-in is used to submit the job to Kubernetes cluster and use the [operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) as the runtime. The submitter-k8s plug-in implements the operation of CRD object and provides the java interface. In the beginning, we use the [tf-operator](https://github.com/kubeflow/tf-operator) for the TensorFlow.
-
-If Submarine want to support the other resource management system in the future, such as submarine-docker-cluster (submarine uses the Raft algorithm to create a docker cluster on the docker runtime environment on multiple servers, providing the most lightweight resource scheduling system for small-scale users). We should create a new plug-in module named submitter-docker under the server-submitter module.
-
-## Common modules of experiment/notebook-session/model-serving
-
-#### 
-
-#### Failure Recovery
-Use the database(MySQL in production) to do the submarine-server failure recovery. 

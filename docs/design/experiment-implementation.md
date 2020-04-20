@@ -243,6 +243,258 @@ There's a common misunderstanding about what is the differences between running 
 | ----------- | ------------------------------------------------- |
 | Environment | They can share the same Environment configuration |
 
-**Other Common Myths:** 
+## Experiment-related modules inside Submarine-server
 
-1) Can we specify different environment of experiment when submit from 
+(Please refer to [architecture of submarine server](./submarine-server/architecture.md) for more details)
+
+### Experiment Manager
+
+The experiment manager receives the experiment requests, persisting the experiment metas in a database(e.g. MySQL), will invoke subsequence modules to submit and monitor the experiment's execution.
+
+### Compute Cluster Manager
+
+After experiment accepted by experiment manager, based on which cluster the experiment intended to run (like mentioned in the previous sections, Submarine supports to manage multiple compute clusters), compute cluster manager will returns credentials to access the compute cluster. It will also be responsible to create a new compute cluster if needed. 
+
+For most of the on-prem use cases, there's only one cluster involved, for such cases, ComputeClusterManager returns credentials to access local cluster if needed. 
+
+### Experiment Submitter
+
+Experiment Submitter handles different kinds of experiments to run (e.g. ad-hoc script, distributed TF, MPI, pre-defined templates, Pipeline, AutoML, etc.). And such experiments can be managed by different resource management systems (e.g. K8s, YARN, container cloud, etc.)
+
+To meet the requirements to support variant kinds of experiments and resource managers, we choose to use plug-in modules to support different submitters (which requires jars to submarine-server’s classpath). 
+
+To avoid jars and dependencies of plugins break the submarine-server, the plug-ins manager, or both. To solve this issue, we can instantiate submitter plug-ins using a classloader that is different from the system classloader.
+
+#### Submitter Plug-ins
+
+Each plug-in uses a separate module under the server-submitter module. As the default implements, we provide for YARN and K8s. For YARN cluster, we provide the submitter-yarn and submitter-yarnservice plug-ins. The submitter-yarn plug-in used the [TonY](https://github.com/linkedin/TonY) as the runtime to run the training job, and the submitter-yarnservice plug-in direct use the [YARN Service](https://hadoop.apache.org/docs/stable/hadoop-yarn/hadoop-yarn-site/yarn-service/Overview.html) which supports  Hadoop v3.1 above. 
+
+The submitter-k8s plug-in is used to submit the job to Kubernetes cluster and use the [operator](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/) as the runtime. The submitter-k8s plug-in implements the operation of CRD object and provides the java interface. In the beginning, we use the [tf-operator](https://github.com/kubeflow/tf-operator) for the TensorFlow.
+
+If Submarine want to support the other resource management system in the future, such as submarine-docker-cluster (submarine uses the Raft algorithm to create a docker cluster on the docker runtime environment on multiple servers, providing the most lightweight resource scheduling system for small-scale users). We should create a new plug-in module named submitter-docker under the server-submitter module.
+
+### Experiment Monitor
+
+The monitor tracks the experiment life cycle and records the main events and key info in runtime. As the experiment run progresses, the metrics are needed for evaluation of the ongoing success or failure of the execution progress. Due to adapt the different cluster resource management system, so we need a generic metric info structure and each submitter plug-in should inherit and complete it by itself.
+
+### Invoke flows of experiment-related components
+
+```
+ +-----------------+  +----------------+ +----------------+ +-----------------+
+ |Experiments      |  |Compute Cluster | |Experiment      | | Experiment      |
+ |Mgr              |  |Mgr             | |Submitter       | | Monitor         |
+ +-----------------+  +----------------+ +----------------+ +-----------------+
+          +                    +                  +                  +
+ User     |                    |                  |                  |
+ Submit   |+------------------------------------->+                  +
+ Xperiment|          Use submitter.validate(spec) |                  |
+          |          to validate spec and create  |                  |
+          |          experiment object (state-    |                  |
+          |          machine).                    |                  |
+          |                                       |                  |
+          |          The experiment manager will  |                  |
+          |          persist meta-data to Database|                  |
+          |                    |                  |                  |
+          |                    |                  +                  +
+          |+-----------------> +                  |                  |
+          |  Submit Experiments|                  |                  |
+          |   To ComputeCluster|                  |                  |
+          |   Mgr, get existing|+---------------->|                  |
+          |   cluster, or      |  Use Submitter   |                  |
+          |   create a new one.|  to submit       |+---------------> |
+          |                    |  Different kinds |  Once job is     |
+          |                    |  of experiments  |  submitted, use  |+----+
+          |                    |  to k8s/yarn, etc|  monitor to get  |     |
+          |                    |                  |  status updates  |     |
+          |                    |                  |                  |     | Monitor
+          |                    |                  |                  |     | Xperiment
+          |                    |                  |                  |     | status
+          |                    |                  |                  |     |
+          |<--------------------------------------------------------+|     |
+          |                    |                  |                  |     |
+          |                  Update Status back to Experiment        |     |
+          |                    |      Manager     |                  |<----+
+          |                    |                  |                  |
+          |                    |                  |                  |
+          |                    |                  |                  |
+          v                    v                  v                  v
+```
+
+TODO: add more details about template, environment, etc.
+
+## Common modules of experiment/notebook-session/model-serving
+
+Experiment/notebook-session/model-serving share a lot of commonalities, all of them are: 
+
+- Some workloads running on YARN/K8s.
+- Need persist meta data to DB. 
+- Need monitor task/service running status from resource management system. 
+
+We need to make their implementation are loose-coupled, but at the same time, share some building blocks as much as possible (e.g. submit PodSpecs to K8s, monitor status, get logs, etc.) to reduce duplications.
+
+## Support Predefined-experiment-templates
+
+Predefined Experiment Template is just a way to save data-scientists time to repeatly entering parameters which is not error-proof and user experience is also bad. 
+
+### Predefined-experiment-template API to run experiment
+
+Predefined experiment template consists a list of parameters, each of the parameter has 4 properties:
+
+| Key             | Required   | Default Value                                                | Description                  |
+| --------------- | ---------- | ------------------------------------------------------------ | ---------------------------- |
+| Name of the key | true/false | When required = false, a default value can be provided by the template | Description of the parameter |
+
+For the example of deepfm CTR training experiment mentioned in the [architecture-and-requirements.md](./architecture-and-requirements.md)
+
+```
+{
+  "input": {
+    "train_data": ["hdfs:///user/submarine/data/tr.libsvm"],
+    "valid_data": ["hdfs:///user/submarine/data/va.libsvm"],
+    "test_data": ["hdfs:///user/submarine/data/te.libsvm"],
+    "type": "libsvm"
+  },
+  "output": {
+    "save_model_dir": "hdfs:///user/submarine/deepfm",
+    "metric": "auc"
+  },
+  "training": {
+    "batch_size" : 512,
+    "field_size": 39,
+    "num_epochs": 3,
+    "feature_size": 117581,
+    ...
+  }
+}
+```
+
+The template will be (in yaml format):
+
+```yaml
+# deepfm.ctr template
+name: deepfm.ctr
+author: 
+description: >
+  This is a template to run CTR training using deepfm algorithm, by default it runs
+  single node TF job, you can also overwrite training parameters to use distributed
+  training. 
+  
+parameters: 
+  - name: input.train_data
+    required: true 
+    description: >
+      train data is expected in SVM format, and can be stored in HDFS/S3 
+    ...
+  - name: training.batch_size
+    required: false
+    default: 32 
+    description: This is batch size of training
+```
+
+The batch format can be used in UI/API. 
+
+### Handle Predefined-experiment-template from server side
+
+Please note that, the conversion of predefined-experiment-template will be always handled by server. The invoke flow looks like: 
+
+```
+
+                         +------------Submarine Server -----------------------+
+   +--------------+      |  +-----------------+                               |
+   |Client        |+------->|Experimment Mgr  |                               |
+   |              |      |  |                 |                               |
+   +--------------+      |  +-----------------+                               |
+                         |          +                                         |
+          Submit         |  +-------v---------+       Get Experiment Template |
+          Template       |  |Experiment       |<-----+From pre-registered     |
+          Parameters     |  |Template Registry|       Templates               |
+          to Submarine   |  +-------+---------+                               |
+          Server         |          |                                         |
+                         |  +-------v---------+       +-----------------+     |
+                         |  |Deepfm CTR Templ-|       |Experiment-      |     |
+                         |  |ate Handler      +------>|Tensorflow       |     |
+                         |  +-----------------+       +--------+--------+     |
+                         |                                     |              |
+                         |                                     |              |
+                         |                            +--------v--------+     |
+                         |                            |Experiment       |     |
+                         |                            |Submitter        |     |
+                         |                            +--------+--------+     |
+                         |                                     |              |
+                         |                                     |              |
+                         |                            +--------v--------+     |
+                         |                            |                 |     |
+                         |                            | ......          |     |
+                         |                            +-----------------+     |
+                         |                                                    |
+                         +----------------------------------------------------+
+```
+
+Basically, from Client, it submitted template parameters to Submarine Server, inside submarine server, it finds the corresponding template handler based on the name. And the template handler converts input parameters to an actual experiment, such as a distributed TF experiment. After that, it goes the similar route to validate experiment spec, compute cluster manager, etc. to get the experiment submitted and monitored. 
+
+Predefined-experiment-template is able to create any kind of experiment, it could be a pipeline: 
+
+```
+
+   +-----------------+                  +------------------+
+   |Template XYZ     |                  | XYZ Template     |
+   |                 |+---------------> | Handler          |
+   +-----------------+                  +------------------+
+                                                   +
+                                                   |
+                                                   |
+                                                   |
+                                                   |
+                                                   v
+             +--------------------+      +------------------+
+             | +-----------------+|      | Predefined       |
+             | |  Split Train/   ||<----+| Pipeline         |
+             | |  Test data      ||      +------------------+
+             | +-------+---------+|
+             |         |          |
+             | +-------v---------+|
+             | |  Spark Job ETL  ||
+             | |                 ||
+             | +-------+---------+|
+             |         |          |
+             | +-------v---------+|
+             | | Train using     ||
+             | | XGBoost         ||
+             | +-------+---------+|
+             |         |          |
+             | +-------v---------+|
+             | | Validate Train  ||
+             | | Results         ||
+             | +-----------------+|
+             |                    |
+             +--------------------+
+```
+
+Template can be also chained to reuse other template handlers
+
+```
+
+   +-----------------+                  +------------------+
+   |Template XYZ     |                  | XYZ Template     |
+   |                 |+---------------> | Handler          |
+   +-----------------+                  +------------------+
+                                                   +
+                                                   |
+                                                   v
+               +------------------+      +------------------+
+               |Distributed       |      | ABC Template     |
+               |TF Experiment     |<----+| Handler          |
+               +------------------+      +------------------+
+```
+
+Template Handler is a callable class inside Submarine Server with a standard interface defined like.
+
+```java
+interface ExperimentTemplateHandler {
+   ExperimentSpec createExperiment(TemplatedExperimentParameters param)
+}
+```
+
+We should avoid users to do coding when they want to add new template, we should have several standard template handler to deal with most of the template handling.
+
+Experiment templates can be registered/updated/deleted via Submarine Server's REST API, which need to be discussed separately in the doc. (TODO)
