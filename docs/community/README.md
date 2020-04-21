@@ -20,7 +20,7 @@ Your journey of becoming a contributor and committer starts from here: improving
 
 ## Communicating
 
-You can reach out to the community members via any one of the following ways: 
+You can reach out to the community members via any one of the following ways:
 
 + Slack Developer: [https://the-asf.slack.com/submarine-dev/](https://the-asf.slack.com/submarine-dev/)
 
@@ -32,9 +32,9 @@ You can reach out to the community members via any one of the following ways:
 
 ## Your First Contribution
 
-You can start by finding an existing issue with the [https://issues.apache.org/jira/projects/SUBMARINE/issues/SUBMARINE?filter=allopenissues](https://issues.apache.org/jira/projects/SUBMARINE/issues/SUBMARINE?filter=allopenissues) label. These issues are well suited for new contributors. 
+You can start by finding an existing issue with the [https://issues.apache.org/jira/projects/SUBMARINE/issues/SUBMARINE?filter=allopenissues](https://issues.apache.org/jira/projects/SUBMARINE/issues/SUBMARINE?filter=allopenissues) label. These issues are well suited for new contributors.
 
-If a PR (Pull Request) submitted to the [Submarine Github](https://github.com/apache/submarine) projects by you is approved and merged, then you become a Submarine Contributor. 
+If a PR (Pull Request) submitted to the [Submarine Github](https://github.com/apache/submarine) projects by you is approved and merged, then you become a Submarine Contributor.
 
 If you want to work on a new idea of relatively small scope:
 
@@ -42,7 +42,7 @@ If you want to work on a new idea of relatively small scope:
 
 2. The repo owners will respond to your issue promptly.
 
-3. Submit a [pull request of Submarine](https://github.com/apache/submarine) containing a tested change. 
+3. Submit a [pull request of Submarine](https://github.com/apache/submarine) containing a tested change.
 
 Once you become a contributor of Apache Submarine, check your name here: [CONTRIBUTORS](contributors.md)
 
@@ -57,6 +57,10 @@ Based on your track-record as a contributor, Per Apache code, PMCs vote on commi
 Note that becoming a committer is not just about submitting some patches; it‘s also about helping out on the development and user [Slack User](https://the-asf.slack.com/submarine-user/), helping with documentation and the issues.
 
 See [Become a Committer.md](become-a-committer.md) for steps of becoming a committer and more details.
+
+## How to commit
+
+See [How to commit](HowToCommit.md) for helper doc for Submarine committers.
 
 ## Communication
 
