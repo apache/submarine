@@ -24,18 +24,15 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
@@ -51,7 +48,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.apache.submarine.server.api.job.Job;
 import org.apache.submarine.server.api.job.JobId;
-import org.apache.submarine.server.api.job.JobLog;
 import org.apache.submarine.server.json.JobIdDeserializer;
 import org.apache.submarine.server.json.JobIdSerializer;
 import org.apache.submarine.server.response.JsonResponse;
@@ -158,7 +154,7 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
     verifyGetJobApiResult(createdJob, foundJob);
 
     // get log list
-    // TODO(JohnTing): jobLog test
+    // TODO(JohnTing): Test the job log after creating the job
 
     // patch
     // TODO(jiwq): the commons-httpclient not support patch method
@@ -191,10 +187,6 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
     Assert.assertEquals(createdJob.getAcceptedTime(), foundJob.getAcceptedTime());
 
     assertK8sResultEquals(foundJob);
-  }
-
-  private void verifyGetJobLogApiResult(Job createdJob, JobLog foundJobLog) throws Exception {
-    Assert.assertEquals(createdJob.getJobId().toString(), foundJobLog.getJobId());
   }
 
   private void assertK8sResultEquals(Job job) throws Exception {
@@ -263,6 +255,16 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
     String json = getMethod.getResponseBodyAsString();
     JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), jsonResponse.getCode());
+  }
+
+  @Test
+  public void testListJob() throws Exception {
+    GetMethod getMethod = httpGet(JOB_LOG_PATH);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(), getMethod.getStatusCode());
+
+    String json = getMethod.getResponseBodyAsString();
+    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
   }
 
   String loadContent(String resourceName) throws Exception {
