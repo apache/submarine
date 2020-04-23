@@ -28,7 +28,10 @@ import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.Configuration;
 import io.kubernetes.client.JSON;
+import io.kubernetes.client.apis.CoreV1Api;
 import io.kubernetes.client.apis.CustomObjectsApi;
+import io.kubernetes.client.models.V1Pod;
+import io.kubernetes.client.models.V1PodList;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
@@ -37,6 +40,8 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.job.JobSubmitter;
 import org.apache.submarine.server.api.job.Job;
+import org.apache.submarine.server.api.job.JobLog;
+import org.apache.submarine.server.api.spec.JobLibrarySpec;
 import org.apache.submarine.server.api.spec.JobSpec;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
@@ -52,8 +57,13 @@ public class K8sJobSubmitter implements JobSubmitter {
 
   private static final String KUBECONFIG_ENV = "KUBECONFIG";
 
+  private static final String TF_JOB_SELECTOR_KEY = "tf-job-name=";
+  private static final String PYTORCH_JOB_SELECTOR_KEY = "pytorch-job-name=";
+
   // K8s API client for CRD
   private CustomObjectsApi api;
+
+  private CoreV1Api coreApi;
 
   public K8sJobSubmitter() {}
 
@@ -79,6 +89,9 @@ public class K8sJobSubmitter implements JobSubmitter {
     if (api == null) {
       api = new CustomObjectsApi();
     }
+    if (coreApi == null) {
+      coreApi = new CoreV1Api(client);
+    }
   }
 
   @Override
@@ -95,8 +108,10 @@ public class K8sJobSubmitter implements JobSubmitter {
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true");
       job = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
+      LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
+      LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
     return job;
@@ -165,9 +180,66 @@ public class K8sJobSubmitter implements JobSubmitter {
         return MLJobConverter.toJobFromStatus(status);
       }
     } catch (JsonSyntaxException e) {
-      LOG.warn("K8s submitter: parse response object failed by " + e.getMessage(), e);
+      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
     }
     throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
+  }
+
+  @Override
+  public JobLog getJobLogName(JobSpec jobSpec, String jobId) {
+    JobLog jobLog = new JobLog();
+    jobLog.setJobId(jobId);
+    try {
+      final V1PodList podList = coreApi.listNamespacedPod(
+          jobSpec.getNamespace(),
+          "false", null, null,
+          getJobLabelSelector(jobSpec), null, null,
+          null, null);
+      for (V1Pod pod: podList.getItems()) {
+        String podName = pod.getMetadata().getName();
+        jobLog.addPodLog(podName, null);
+      }
+    } catch (final ApiException e) {
+      LOG.error("Error when listing pod for job:" + jobSpec.getName(), e.getMessage());
+    }
+    return jobLog;
+  }
+
+  @Override
+  public JobLog getJobLog(JobSpec jobSpec, String jobId) {
+    JobLog jobLog = new JobLog();
+    jobLog.setJobId(jobId);
+    try {
+      final V1PodList podList = coreApi.listNamespacedPod(
+          jobSpec.getNamespace(),
+          "false", null, null,
+          getJobLabelSelector(jobSpec), null, null,
+          null, null);
+      
+      for (V1Pod pod : podList.getItems()) {
+        String podName = pod.getMetadata().getName();
+        String namespace = pod.getMetadata().getNamespace();
+        String podLog = coreApi.readNamespacedPodLog(
+            podName, namespace, null, Boolean.FALSE,
+            Integer.MAX_VALUE, null, Boolean.FALSE, 
+            Integer.MAX_VALUE, null, Boolean.FALSE);
+
+        jobLog.addPodLog(podName, podLog);
+      }
+    } catch (final ApiException e) {
+      LOG.error("Error when listing pod for job:" + jobSpec.getName(), e.getMessage());
+    }
+    return jobLog;
+  }
+  
+  private String getJobLabelSelector(JobSpec jobSpec) {
+    // TODO(JohnTing): SELECTOR_KEY should be obtained from individual models in MLJOB
+    if (jobSpec.getLibrarySpec()
+        .getName().equalsIgnoreCase(JobLibrarySpec.SupportedMLFramework.TENSORFLOW.getName())) {
+      return TF_JOB_SELECTOR_KEY + jobSpec.getName();
+    } else {
+      return PYTORCH_JOB_SELECTOR_KEY + jobSpec.getName();
+    }
   }
 
   private enum ParseOp {

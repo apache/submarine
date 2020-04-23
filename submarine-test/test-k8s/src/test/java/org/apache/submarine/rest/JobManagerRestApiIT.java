@@ -24,15 +24,19 @@ import javax.ws.rs.core.Response;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.Configuration;
@@ -47,6 +51,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.apache.submarine.server.api.job.Job;
 import org.apache.submarine.server.api.job.JobId;
+import org.apache.submarine.server.api.job.JobLog;
 import org.apache.submarine.server.json.JobIdDeserializer;
 import org.apache.submarine.server.json.JobIdSerializer;
 import org.apache.submarine.server.response.JsonResponse;
@@ -66,6 +71,7 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
   /** Key is the ml framework name, the value is the operator */
   private static Map<String, KfOperator> kfOperatorMap;
   private static String JOB_PATH = "/api/" + RestConstants.V1 + "/" + RestConstants.JOBS;
+  private static String JOB_LOG_PATH = JOB_PATH + "/" + RestConstants.LOGS;
 
   private Gson gson = new GsonBuilder()
       .registerTypeAdapter(JobId.class, new JobIdSerializer())
@@ -151,6 +157,9 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
     Job foundJob = gson.fromJson(gson.toJson(jsonResponse.getResult()), Job.class);
     verifyGetJobApiResult(createdJob, foundJob);
 
+    // get log list
+    // TODO(JohnTing): jobLog test
+
     // patch
     // TODO(jiwq): the commons-httpclient not support patch method
     // https://tools.ietf.org/html/rfc5789
@@ -182,6 +191,10 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
     Assert.assertEquals(createdJob.getAcceptedTime(), foundJob.getAcceptedTime());
 
     assertK8sResultEquals(foundJob);
+  }
+
+  private void verifyGetJobLogApiResult(Job createdJob, JobLog foundJobLog) throws Exception {
+    Assert.assertEquals(createdJob.getJobId().toString(), foundJobLog.getJobId());
   }
 
   private void assertK8sResultEquals(Job job) throws Exception {

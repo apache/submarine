@@ -34,6 +34,7 @@ import org.apache.submarine.server.SubmitterManager;
 import org.apache.submarine.server.api.job.JobSubmitter;
 import org.apache.submarine.server.api.job.Job;
 import org.apache.submarine.server.api.job.JobId;
+import org.apache.submarine.server.api.job.JobLog;
 import org.apache.submarine.server.api.spec.JobSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,6 +163,43 @@ public class JobManager {
     Job patchJob = submitter.deleteJob(spec);
     job.rebuild(patchJob);
     return job;
+  }
+
+  /**
+   * List job logs
+   * @param status job status, if null will return all job logs
+   * @return job log list
+   * @throws SubmarineRuntimeException the service error
+   */
+  public List<JobLog> listJobLogsByStatus(String status) throws SubmarineRuntimeException {
+    List<JobLog> jobLogList = new ArrayList<JobLog>();
+    for (Map.Entry<String, Job> entry : cachedJobMap.entrySet()) {
+      String jobId = entry.getKey();
+      Job job = entry.getValue();
+      JobSpec spec = job.getSpec();
+      Job patchJob = submitter.findJob(spec);
+      LOG.info("Found job: {}", patchJob.getStatus());
+      if (status == null || status.toLowerCase().equals(patchJob.getStatus().toLowerCase())) {
+        job.rebuild(patchJob);
+        jobLogList.add(submitter.getJobLogName(spec, jobId));
+      }
+    }
+    return jobLogList;
+  }
+
+  /**
+   * Get job log
+   * @param id job id
+   * @return object
+   * @throws SubmarineRuntimeException the service error
+   */
+  public JobLog getJobLog(String id) throws SubmarineRuntimeException {
+    checkJobId(id);
+    Job job = cachedJobMap.get(id);
+    JobSpec spec = job.getSpec();
+    Job patchJob = submitter.findJob(spec);
+    job.rebuild(patchJob);
+    return submitter.getJobLog(spec, id);
   }
 
   private void checkSpec(JobSpec spec) throws SubmarineRuntimeException {
