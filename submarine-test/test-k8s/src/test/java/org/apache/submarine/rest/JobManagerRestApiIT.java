@@ -258,7 +258,7 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
   }
 
   @Test
-  public void testListJob() throws Exception {
+  public void testListJobLog() throws Exception {
     GetMethod getMethod = httpGet(JOB_LOG_PATH);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), getMethod.getStatusCode());
 
