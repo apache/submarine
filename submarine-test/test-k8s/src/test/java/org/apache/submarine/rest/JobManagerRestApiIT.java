@@ -33,6 +33,7 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.Configuration;
@@ -66,6 +67,7 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
   /** Key is the ml framework name, the value is the operator */
   private static Map<String, KfOperator> kfOperatorMap;
   private static String JOB_PATH = "/api/" + RestConstants.V1 + "/" + RestConstants.JOBS;
+  private static String JOB_LOG_PATH = JOB_PATH + "/" + RestConstants.LOGS;
 
   private Gson gson = new GsonBuilder()
       .registerTypeAdapter(JobId.class, new JobIdSerializer())
@@ -150,6 +152,9 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
 
     Job foundJob = gson.fromJson(gson.toJson(jsonResponse.getResult()), Job.class);
     verifyGetJobApiResult(createdJob, foundJob);
+
+    // get log list
+    // TODO(JohnTing): Test the job log after creating the job
 
     // patch
     // TODO(jiwq): the commons-httpclient not support patch method
@@ -250,6 +255,16 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
     String json = getMethod.getResponseBodyAsString();
     JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), jsonResponse.getCode());
+  }
+
+  @Test
+  public void testListJobLog() throws Exception {
+    GetMethod getMethod = httpGet(JOB_LOG_PATH);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(), getMethod.getStatusCode());
+
+    String json = getMethod.getResponseBodyAsString();
+    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
   }
 
   String loadContent(String resourceName) throws Exception {

@@ -17,23 +17,41 @@
  * under the License.
  */
 
-package org.apache.submarine.server.rest;
+package org.apache.submarine.server.api.job;
 
-public class RestConstants {
-  public static final String V1 = "v1";
-  public static final String JOBS = "jobs";
-  public static final String JOB_ID = "id";
-  public static final String PING = "ping";
-  public static final String MEDIA_TYPE_YAML = "application/yaml";
-  public static final String CHARSET_UTF8 = "charset=utf-8";
+import java.util.ArrayList;
+import java.util.List;
 
-  public static final String METASTORE = "metastore";
+public class JobLog {
+  private String jobId;
+  private List<podLog> logContent;
 
-  public static final String CLUSTER = "cluster";
-  public static final String ADDRESS = "address";
+  class podLog {
+    String podName;
+    String podLog;
+    podLog(String podName, String podLog) {
+      this.podName = podName;
+      this.podLog = podLog;
+    }
+  }
 
-  public static final String NODES = "nodes";
-  public static final String NODE = "node";
+  public JobLog() {
+    logContent = new ArrayList<podLog>();
+  }
+  
+  public void setJobId(String jobId) {
+    this.jobId = jobId;
+  }
+  
+  public String getJobId() {
+    return jobId;
+  }
 
-  public static final String LOGS = "logs";
+  public void addPodLog(String name, String log) {
+    logContent.add(new podLog(name, log));
+  }
+
+  public void clearPodLog() {
+    logContent.clear();
+  }
 }

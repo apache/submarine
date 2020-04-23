@@ -35,6 +35,7 @@ import java.util.List;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.job.JobManager;
 import org.apache.submarine.server.api.job.Job;
+import org.apache.submarine.server.api.job.JobLog;
 import org.apache.submarine.server.api.spec.JobSpec;
 import org.apache.submarine.server.response.JsonResponse;
 
@@ -128,6 +129,32 @@ public class JobManagerRestApi {
       Job job = jobManager.deleteJob(id);
       return new JsonResponse.Builder<Job>(Response.Status.OK)
           .result(job).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseJobServiceException(e);
+    }
+  }
+  
+  @GET
+  @Path("/logs")
+  public Response listLog(@QueryParam("status") String status) {
+    try {
+      List<JobLog> jobLogList = jobManager.listJobLogsByStatus(status);
+      return new JsonResponse.Builder<List<JobLog>>(Response.Status.OK).
+          result(jobLogList).build();
+
+    } catch (SubmarineRuntimeException e) {
+      return parseJobServiceException(e);
+    }
+  }
+
+  @GET
+  @Path("/logs/{id}")
+  public Response getLog(@PathParam(RestConstants.JOB_ID) String id) {
+    try {
+      JobLog jobLog = jobManager.getJobLog(id);
+      return new JsonResponse.Builder<JobLog>(Response.Status.OK).
+          result(jobLog).build();
+
     } catch (SubmarineRuntimeException e) {
       return parseJobServiceException(e);
     }

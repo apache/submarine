@@ -70,4 +70,20 @@ public interface JobSubmitter {
    * @throws SubmarineRuntimeException running error
    */
   Job deleteJob(JobSpec jobSpec) throws SubmarineRuntimeException;
+
+  /**
+   * Get the pod log list in the job
+   * @param Job job
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  JobLog getJobLog(JobSpec jobSpec, String jobId) throws SubmarineRuntimeException;
+
+  /**
+   * Get the pod name list in the job
+   * @param Job job
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  JobLog getJobLogName(JobSpec jobSpec, String jobId) throws SubmarineRuntimeException;
 }
