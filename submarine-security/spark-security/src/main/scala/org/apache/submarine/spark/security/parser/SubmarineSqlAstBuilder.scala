@@ -17,11 +17,22 @@
  * under the License.
  */
 
-package org.apache.submarine.spark.security
+package org.apache.submarine.spark.security.parser
 
-class SparkAccessControlException(msg: String, e: Throwable) extends Exception(msg, e) {
+import java.util.Locale
 
-  def this(msg: String) = {
-    this(msg, null)
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
+
+import org.apache.submarine.spark.security.command.CreateRoleCommand
+import org.apache.submarine.spark.security.parser.SubmarineSqlBaseParser.{CreateRoleContext, SingleStatementContext}
+
+class SubmarineSqlAstBuilder extends SubmarineSqlBaseBaseVisitor[AnyRef] {
+
+  override def visitSingleStatement(ctx: SingleStatementContext): LogicalPlan = {
+    visit(ctx.statement()).asInstanceOf[LogicalPlan]
+  }
+
+  override def visitCreateRole(ctx: CreateRoleContext): AnyRef = {
+    CreateRoleCommand(ctx.identifier().getText)
   }
 }

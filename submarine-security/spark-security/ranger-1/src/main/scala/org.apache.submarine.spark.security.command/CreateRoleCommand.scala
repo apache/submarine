@@ -17,11 +17,22 @@
  * under the License.
  */
 
-package org.apache.submarine.spark.security
+package org.apache.submarine.spark.security.command
 
-class SparkAccessControlException(msg: String, e: Throwable) extends Exception(msg, e) {
+import java.util.Arrays
 
-  def this(msg: String) = {
-    this(msg, null)
+import scala.util.control.NonFatal
+
+import org.apache.hadoop.security.UserGroupInformation
+import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.execution.command.RunnableCommand
+
+import org.apache.submarine.spark.security.{RangerSparkAuditHandler, RangerSparkPlugin, SparkAccessControlException}
+
+
+case class CreateRoleCommand(roleName: String) extends RunnableCommand {
+  import CreateRoleCommand._
+  override def run(sparkSession: SparkSession): Seq[Row] = {
+    Seq.empty[Row]
   }
 }
