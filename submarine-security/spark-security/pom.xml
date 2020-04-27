@@ -34,6 +34,7 @@
   <artifactId>submarine-spark-security</artifactId>
 
   <properties>
+    <antlr4.version>4.7</antlr4.version>
     <eclipse.jpa.version>2.5.2</eclipse.jpa.version>
     <gson.version>2.2.4</gson.version>
     <httpcomponents.httpclient.version>4.5.3</httpcomponents.httpclient.version>
@@ -44,6 +45,7 @@
     <noggit.version>0.6</noggit.version>
     <ranger.spark.package>submarine_spark_ranger_project</ranger.spark.package>
     <ranger.version>1.1.0</ranger.version>
+    <ranger.major.version>1</ranger.major.version>
     <scala.version>2.11.8</scala.version>
     <scala.binary.version>2.11</scala.binary.version>
     <scalatest.version>2.2.6</scalatest.version>
@@ -235,6 +237,12 @@
       </exclusions>
     </dependency>
 
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+      <version>${antlr4.version}</version>
+    </dependency>
+
     <!-- unit tests-->
     <dependency>
       <groupId>org.scalatest</groupId>
@@ -288,6 +296,25 @@
       </testResource>
     </testResources>
     <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>ranger-${ranger.major.version}/src/main/scala</source>
+                <source>target/generated-sources/antlr4</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>net.alchim31.maven</groupId>
         <artifactId>scala-maven-plugin</artifactId>
@@ -465,6 +492,24 @@
       </plugin>
 
       <plugin>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+        <version>${antlr4.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>antlr4</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <visitor>true</visitor>
+          <sourceDirectory>./src/main/antlr4</sourceDirectory>
+          <treatWarningsAsErrors>true</treatWarningsAsErrors>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.8.0</version>
@@ -561,6 +606,7 @@
         <httpcomponents.httpcore.version>4.4.6</httpcomponents.httpcore.version>
         <httpcomponents.httpmime.version>4.5.3</httpcomponents.httpmime.version>
         <ranger.version>2.0.0</ranger.version>
+        <ranger.major.version>2</ranger.major.version>
         <solr.version>7.7.1</solr.version>
         <gethostname4j.scope>compile</gethostname4j.scope>
         <jna.scope>compile</jna.scope>
