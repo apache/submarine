@@ -112,7 +112,7 @@ Since we have different Docker image, one is using GPU and one is not using GPU,
 
 ## Manage environments for experiment
 
-Please refer to [environment-implementation.md](./environment-implementation.md) for more details
+Please refer to [environment-implementation.md](./environments-implementation.md) for more details
 
 ## Manage storages for experiment
 
