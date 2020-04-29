@@ -32,11 +32,10 @@ import org.apache.submarine.spark.security.{RangerSparkAuditHandler, RangerSpark
 
 
 case class CreateRoleCommand(roleName: String) extends RunnableCommand {
-  import CreateRoleCommand._
+  import CommandUtils._
   override def run(sparkSession: SparkSession): Seq[Row] = {
 
-    require(!RESERVED_ROLE_NAMES.contains(roleName),
-      s"Role name cannot be one of the reserved roles: ${RESERVED_ROLE_NAMES.mkString(",")}")
+    validateRoleName(roleName)
     val auditHandler = RangerSparkAuditHandler()
     val currentUser = UserGroupInformation.getCurrentUser.getShortUserName
 
@@ -57,8 +56,4 @@ case class CreateRoleCommand(roleName: String) extends RunnableCommand {
       // TODO: support auditHandler.flushAudit()
     }
   }
-}
-
-object CreateRoleCommand {
-  final val RESERVED_ROLE_NAMES = Set("ALL", "DEFAULT", "NONE")
 }

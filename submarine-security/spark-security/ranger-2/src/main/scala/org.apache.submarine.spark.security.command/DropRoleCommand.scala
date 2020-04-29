@@ -19,11 +19,27 @@
 
 package org.apache.submarine.spark.security.command
 
+import scala.util.control.NonFatal
+
+import org.apache.hadoop.security.UserGroupInformation
 import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.execution.command.RunnableCommand
 
-case class CreateRoleCommand(roleName: String) extends RunnableCommand {
+import org.apache.submarine.spark.security.{RangerSparkAuditHandler, RangerSparkPlugin, SparkAccessControlException}
+
+case class DropRoleCommand(roleName: String) extends RunnableCommand {
   override def run(sparkSession: SparkSession): Seq[Row] = {
-    throw new UnsupportedOperationException("CREATE ROLE")
+    CommandUtils.validateRoleName(roleName)
+
+    try {
+      val auditHandler = RangerSparkAuditHandler()
+      val currentUser = UserGroupInformation.getCurrentUser.getShortUserName
+      RangerSparkPlugin.dropRole(currentUser, roleName, auditHandler)
+      Seq.empty[Row]
+    } catch {
+      case NonFatal(e) => throw new SparkAccessControlException(e.getMessage, e)
+    } finally {
+      // TODO: support auditHandler.flushAudit()
+    }
   }
 }

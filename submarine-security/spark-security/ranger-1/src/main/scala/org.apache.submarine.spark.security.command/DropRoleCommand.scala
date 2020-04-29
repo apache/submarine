@@ -17,24 +17,13 @@
  * under the License.
  */
 
-package org.apache.submarine.spark.security.parser
+package org.apache.submarine.spark.security.command
 
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
+import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.execution.command.RunnableCommand
 
-import org.apache.submarine.spark.security.command.{CreateRoleCommand, DropRoleCommand}
-import org.apache.submarine.spark.security.parser.SubmarineSqlBaseParser.{CreateRoleContext, DropRoleContext, SingleStatementContext}
-
-class SubmarineSqlAstBuilder extends SubmarineSqlBaseBaseVisitor[AnyRef] {
-
-  override def visitSingleStatement(ctx: SingleStatementContext): LogicalPlan = {
-    visit(ctx.statement()).asInstanceOf[LogicalPlan]
-  }
-
-  override def visitCreateRole(ctx: CreateRoleContext): AnyRef = {
-    CreateRoleCommand(ctx.identifier().getText)
-  }
-
-  override def visitDropRole(ctx: DropRoleContext): AnyRef = {
-    DropRoleCommand(ctx.identifier().getText)
+case class DropRoleCommand (roleName: String) extends RunnableCommand {
+  override def run(sparkSession: SparkSession): Seq[Row] = {
+    throw new UnsupportedOperationException("DROP ROLE")
   }
 }

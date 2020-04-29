@@ -23,15 +23,15 @@ import org.apache.spark.sql.catalyst.parser.ParseException
 import org.apache.spark.sql.hive.test.TestHive
 import org.scalatest.FunSuite
 
-import org.apache.submarine.spark.security.command.CreateRoleCommand
+import org.apache.submarine.spark.security.command.{CreateRoleCommand, DropRoleCommand}
 
 class SubmarineSqlParserTest extends FunSuite {
 
   private val spark = TestHive.sparkSession.newSession()
 
-  test("create role") {
-    val parser = new SubmarineSqlParser(spark.sessionState.sqlParser)
+  val parser = new SubmarineSqlParser(spark.sessionState.sqlParser)
 
+  test("create role") {
     val p1 = parser.parsePlan("create role abc")
     assert(p1.isInstanceOf[CreateRoleCommand])
     assert(p1.asInstanceOf[CreateRoleCommand].roleName === "abc")
@@ -42,5 +42,18 @@ class SubmarineSqlParserTest extends FunSuite {
     assert(p3.isInstanceOf[CreateRoleCommand])
     assert(p3.asInstanceOf[CreateRoleCommand].roleName === "`bob`")
     intercept[ParseException](parser.parsePlan("create role 'bob'"))
+  }
+
+  test("drop role") {
+    val p1 = parser.parsePlan("drop role abc")
+    assert(p1.isInstanceOf[DropRoleCommand])
+    assert(p1.asInstanceOf[DropRoleCommand].roleName === "abc")
+    val p2 = parser.parsePlan("drop role admin")
+    assert(p2.isInstanceOf[DropRoleCommand])
+    assert(p2.asInstanceOf[DropRoleCommand].roleName === "admin")
+    val p3 = parser.parsePlan("drop role `bob`")
+    assert(p3.isInstanceOf[DropRoleCommand])
+    assert(p3.asInstanceOf[DropRoleCommand].roleName === "`bob`")
+    intercept[ParseException](parser.parsePlan("drop role 'bob'"))
   }
 }
