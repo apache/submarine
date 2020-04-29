@@ -30,6 +30,7 @@ singleStatement
 
 statement
     : CREATE ROLE identifier                                           #createRole
+    | DROP ROLE identifier                                             #dropRole
     ;
 
 identifier

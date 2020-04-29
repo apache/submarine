@@ -17,24 +17,17 @@
  * under the License.
  */
 
-package org.apache.submarine.spark.security.parser
+package org.apache.submarine.spark.security.command
 
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
+private[command] object CommandUtils {
 
-import org.apache.submarine.spark.security.command.{CreateRoleCommand, DropRoleCommand}
-import org.apache.submarine.spark.security.parser.SubmarineSqlBaseParser.{CreateRoleContext, DropRoleContext, SingleStatementContext}
+  final val RESERVED_ROLE_NAMES = Set("ALL", "DEFAULT", "NONE")
 
-class SubmarineSqlAstBuilder extends SubmarineSqlBaseBaseVisitor[AnyRef] {
-
-  override def visitSingleStatement(ctx: SingleStatementContext): LogicalPlan = {
-    visit(ctx.statement()).asInstanceOf[LogicalPlan]
+  def validateRoleName(roleName: String): Unit = {
+    if (RESERVED_ROLE_NAMES.exists(roleName.equalsIgnoreCase)) {
+      throw new IllegalArgumentException(s"Role name cannot be one of the reserved roles: " +
+        s"${RESERVED_ROLE_NAMES.mkString(",")}")
+    }
   }
 
-  override def visitCreateRole(ctx: CreateRoleContext): AnyRef = {
-    CreateRoleCommand(ctx.identifier().getText)
-  }
-
-  override def visitDropRole(ctx: DropRoleContext): AnyRef = {
-    DropRoleCommand(ctx.identifier().getText)
-  }
 }
