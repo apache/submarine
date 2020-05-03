@@ -23,7 +23,7 @@ import org.apache.spark.sql.catalyst.parser.ParseException
 import org.apache.spark.sql.hive.test.TestHive
 import org.scalatest.FunSuite
 
-import org.apache.submarine.spark.security.command.{CreateRoleCommand, DropRoleCommand}
+import org.apache.submarine.spark.security.command.{CreateRoleCommand, DropRoleCommand, ShowRolesCommand}
 
 class SubmarineSqlParserTest extends FunSuite {
 
@@ -55,5 +55,10 @@ class SubmarineSqlParserTest extends FunSuite {
     assert(p3.isInstanceOf[DropRoleCommand])
     assert(p3.asInstanceOf[DropRoleCommand].roleName === "`bob`")
     intercept[ParseException](parser.parsePlan("drop role 'bob'"))
+  }
+
+  test("show roles") {
+    val p1 = parser.parsePlan("show roles")
+    assert(p1.isInstanceOf[ShowRolesCommand])
   }
 }

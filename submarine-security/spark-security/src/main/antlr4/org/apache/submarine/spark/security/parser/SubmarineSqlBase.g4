@@ -31,6 +31,7 @@ singleStatement
 statement
     : CREATE ROLE identifier                                           #createRole
     | DROP ROLE identifier                                             #dropRole
+    | SHOW ROLES                                                       #showRoles
     ;
 
 identifier
@@ -54,7 +55,9 @@ nonReserved
     | PRIVILEGES
     | READ
     | ROLE
+    | ROLES
     | SELECT
+    | SHOW
     | UPDATE
     | USE
     | WRITE
@@ -73,7 +76,9 @@ INSERT: 'INSERT';
 PRIVILEGES: 'PRIVILEGES';
 READ: 'READ';
 ROLE: 'ROLE';
+ROLES: 'ROLES';
 SELECT: 'SELECT';
+SHOW: 'SHOW';
 UPDATE: 'UPDATE';
 USE: 'USE';
 WRITE: 'WRITE';

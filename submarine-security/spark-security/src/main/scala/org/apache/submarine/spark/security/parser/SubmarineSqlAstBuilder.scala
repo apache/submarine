@@ -21,8 +21,8 @@ package org.apache.submarine.spark.security.parser
 
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 
-import org.apache.submarine.spark.security.command.{CreateRoleCommand, DropRoleCommand}
-import org.apache.submarine.spark.security.parser.SubmarineSqlBaseParser.{CreateRoleContext, DropRoleContext, SingleStatementContext}
+import org.apache.submarine.spark.security.command.{CreateRoleCommand, DropRoleCommand, ShowRolesCommand}
+import org.apache.submarine.spark.security.parser.SubmarineSqlBaseParser.{CreateRoleContext, DropRoleContext, ShowRolesContext, SingleStatementContext}
 
 class SubmarineSqlAstBuilder extends SubmarineSqlBaseBaseVisitor[AnyRef] {
 
@@ -36,5 +36,9 @@ class SubmarineSqlAstBuilder extends SubmarineSqlBaseBaseVisitor[AnyRef] {
 
   override def visitDropRole(ctx: DropRoleContext): AnyRef = {
     DropRoleCommand(ctx.identifier().getText)
+  }
+
+  override def visitShowRoles(ctx: ShowRolesContext): AnyRef = {
+    ShowRolesCommand()
   }
 }
