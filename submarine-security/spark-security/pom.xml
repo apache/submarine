@@ -415,14 +415,6 @@
               <shadedPattern>${ranger.spark.package}.com.sun.research</shadedPattern>
             </relocation>
             <relocation>
-              <pattern>com.kstruct</pattern>
-              <shadedPattern>${ranger.spark.package}.com.kstruct</shadedPattern>
-            </relocation>
-            <relocation>
-              <pattern>com.sun.jna</pattern>
-              <shadedPattern>${ranger.spark.package}.com.sun.jna</shadedPattern>
-            </relocation>
-            <relocation>
               <pattern>com.sun.ws</pattern>
               <shadedPattern>${ranger.spark.package}.com.sun.ws</shadedPattern>
             </relocation>
