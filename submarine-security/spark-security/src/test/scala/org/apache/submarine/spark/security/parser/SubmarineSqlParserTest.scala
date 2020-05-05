@@ -23,7 +23,7 @@ import org.apache.spark.sql.catalyst.parser.ParseException
 import org.apache.spark.sql.hive.test.TestHive
 import org.scalatest.FunSuite
 
-import org.apache.submarine.spark.security.command.{CreateRoleCommand, DropRoleCommand, ShowRolesCommand}
+import org.apache.submarine.spark.security.command.{CreateRoleCommand, DropRoleCommand, ShowCurrentRolesCommand, ShowRolesCommand}
 
 class SubmarineSqlParserTest extends FunSuite {
 
@@ -60,5 +60,10 @@ class SubmarineSqlParserTest extends FunSuite {
   test("show roles") {
     val p1 = parser.parsePlan("show roles")
     assert(p1.isInstanceOf[ShowRolesCommand])
+  }
+
+  test("show current roles") {
+    val p1 = parser.parsePlan("show current roles")
+    assert(p1.isInstanceOf[ShowCurrentRolesCommand])
   }
 }

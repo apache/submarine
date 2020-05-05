@@ -31,6 +31,7 @@ singleStatement
 statement
     : CREATE ROLE identifier                                           #createRole
     | DROP ROLE identifier                                             #dropRole
+    | SHOW CURRENT ROLES                                               #showCurrentRoles
     | SHOW ROLES                                                       #showRoles
     ;
 
@@ -48,6 +49,7 @@ nonReserved
     : ALL
     | ALTER
     | CREATE
+    | CURRENT
     | DELETE
     | DELETE
     | DROP
@@ -69,6 +71,7 @@ nonReserved
 ALL: 'ALL';
 ALTER: 'ALTER';
 CREATE: 'CREATE';
+CURRENT: 'CURRENT';
 DELETE: 'DELETE';
 DROP: 'DROP';
 GRANT: 'GRANT';
