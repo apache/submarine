@@ -62,12 +62,12 @@ public class departmentIT extends AbstractSubmarineIT{
 
     // Test create new department
     pollingWait(By.xpath("//button[@id='btnAddDepartment']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@id='codeInput']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test code");
-    pollingWait(By.xpath("//input[@id='nameInput']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test name");
+    pollingWait(By.xpath("//input[@id='codeInput'] "), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e Test");
+    pollingWait(By.xpath("//input[@id='nameInput']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e Test");
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[@id='validCode']")));
     pollingWait(By.xpath("//button[@id='btnSubmit']"), MAX_BROWSER_TIMEOUT_SEC).click();
-
-    //TODO(jasoonn): Assert whether new project be created
-
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//nz-table[@id='departmentTable']")));
+    Assert.assertEquals(pollingWait(By.xpath("//td[contains(., 'e2e Test')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     
   }
 }
