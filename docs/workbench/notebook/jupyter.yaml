@@ -43,7 +43,7 @@ spec:
         - name: jupyter-storage
           # this path must be the same as extraMounts.containerPath in the kind config
           hostPath:
-            path: /home/jovyan/
+            path: /tmp/submarine/
             type: DirectoryOrCreate
 ---
 kind: Service

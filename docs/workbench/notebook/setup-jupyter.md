@@ -31,8 +31,8 @@ nodes:
 - role: control-plane
   extraMounts:
   # add a mount from /path/to/my/files on the host to /files on the node
-  - hostPath: /tmp/jovyan
-    containerPath: /home/jovyan
+  - hostPath: /tmp/submarine
+    containerPath: /tmp/submarine
   extraPortMappings:
   - containerPort: 80
     hostPort: 80
