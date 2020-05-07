@@ -58,12 +58,16 @@
           <artifactId>classgraph</artifactId>
         </exclusion>
         <exclusion>
+          <groupId>com.fasterxml.jackson.jaxrs</groupId>
+          <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>com.fasterxml.jackson.module</groupId>
           <artifactId>jackson-module-jaxb-annotations</artifactId>
         </exclusion>
         <exclusion>
           <groupId>org.javassist</groupId>
-	  <artifactId>javassist</artifactId>
+	        <artifactId>javassist</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
