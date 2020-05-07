@@ -32,6 +32,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.job.JobManager;
 import org.apache.submarine.server.api.job.Job;
@@ -53,6 +58,11 @@ public class JobManagerRestApi {
   @GET
   @Path(RestConstants.PING)
   @Consumes(MediaType.APPLICATION_JSON)
+  @Operation(summary = "Ping submarine server",
+          tags = {"jobs"},
+          description = "Return the Pong message for test the connectivity",
+          responses = {
+                  @ApiResponse(responseCode = "200", description = "successful operation")})
   public Response ping() {
     return new JsonResponse.Builder<String>(Response.Status.OK)
         .success(true).result("Pong").build();
@@ -65,6 +75,11 @@ public class JobManagerRestApi {
    */
   @POST
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
+  @Operation(summary = "Create a job",
+          tags = {"jobs"},
+          responses = {
+                  @ApiResponse(description = "successful operation", content = @Content(
+                          schema = @Schema(implementation = Job.class)))})
   public Response createJob(JobSpec spec) {
     try {
       Job job = jobManager.createJob(spec);
@@ -79,6 +94,11 @@ public class JobManagerRestApi {
    * @return job list
    */
   @GET
+  @Operation(summary = "List jobs",
+          tags = {"jobs"},
+          responses = {
+                  @ApiResponse(description = "successful operation", content = @Content(
+                          schema = @Schema(implementation = Job.class)))})
   public Response listJob(@QueryParam("status") String status) {
     try {
       List<Job> jobList = jobManager.listJobsByStatus(status);
@@ -95,6 +115,12 @@ public class JobManagerRestApi {
    */
   @GET
   @Path("/{id}")
+  @Operation(summary = "Find job by id",
+          tags = {"jobs"},
+          responses = {
+                  @ApiResponse(description = "successful operation", content = @Content(
+                          schema = @Schema(implementation = Job.class))),
+                  @ApiResponse(responseCode = "404", description = "Job not found")})
   public Response getJob(@PathParam(RestConstants.JOB_ID) String id) {
     try {
       Job job = jobManager.getJob(id);
@@ -107,6 +133,12 @@ public class JobManagerRestApi {
   @PATCH
   @Path("/{id}")
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
+  @Operation(summary = "Update the job in the submarine server with job spec",
+          tags = {"jobs"},
+          responses = {
+                  @ApiResponse(description = "successful operation", content = @Content(
+                          schema = @Schema(implementation = Job.class))),
+                  @ApiResponse(responseCode = "404", description = "Job not found")})
   public Response patchJob(@PathParam(RestConstants.JOB_ID) String id, JobSpec spec) {
     try {
       Job job = jobManager.patchJob(id, spec);
@@ -124,6 +156,12 @@ public class JobManagerRestApi {
    */
   @DELETE
   @Path("/{id}")
+  @Operation(summary = "Delete the job",
+          tags = {"jobs"},
+          responses = {
+                  @ApiResponse(description = "successful operation", content = @Content(
+                          schema = @Schema(implementation = Job.class))),
+                  @ApiResponse(responseCode = "404", description = "Job not found")})
   public Response deleteJob(@PathParam(RestConstants.JOB_ID) String id) {
     try {
       Job job = jobManager.deleteJob(id);
