@@ -1,0 +1,7 @@
+dn: cn=custom-schema
+objectClass: top
+objectClass: ldapSubEntry
+objectClass: subschema
+cn: custom-schema
+attributeTypes: ( 1.3.6.1.4.1.41609.1.75 NAME 'attribute' DESC 'A simple attribute' SUP name SINGLE-VALUE )
+objectClasses: ( 1.3.6.1.4.1.41609.2.13 NAME 'type' DESC 'A simple objectClass' SUP top STRUCTURAL MUST ( cn $ attribute ) MAY ( description ) )

@@ -1,0 +1,28 @@
+version: 1
+
+dn: dc=zapodot,dc=org
+objectClass: domain
+objectClass: top
+dc: zapodot
+
+dn: ou=groups,dc=zapodot,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: groups
+
+dn: ou=people,dc=zapodot,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: people
+
+dn: cn=Sondre Eikanger Kvalo,ou=people,dc=zapodot,dc=org
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+uid: zapodot
+userPassword: password
+cn: Sondre Eikanger Kvalo
+cn:: U29uZHJlIEVpa2FuZ2VyIEt2YWzDuA==
+sn: Person
+description: Developer
