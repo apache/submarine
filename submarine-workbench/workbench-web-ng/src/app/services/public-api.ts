@@ -23,3 +23,4 @@ export * from './department.service';
 export * from './local-storage.service';
 export * from './system-utils.service';
 export * from './user.service';
+export * from './team.service';

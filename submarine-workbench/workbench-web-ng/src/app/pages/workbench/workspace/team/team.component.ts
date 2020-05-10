@@ -18,8 +18,13 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { SysTeam } from '@submarine/interfaces';
+import { TeamService } from '@submarine/services';
+
+import { Observable } from 'rxjs';
+
+
 
 @Component({
   selector: 'app-team',
@@ -27,157 +32,50 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   styleUrls: ['./team.component.scss']
 })
 export class TeamComponent implements OnInit {  
-  
-  // Get into a Team or not
-  isEntering = false;
 
-  //Get Current Team Data (Now Use Simulated Data) 
-  currentTeamName: string;
-  currentTeamDepartment: string;
-  currentTeamDescription: string;
-  currentTeamProjectNum: Number;
-  currentTeamMemberNum: Number;
-  currentTeamSettingPermission: boolean;
+  //
+  column: string = 'createdTime';
+  order: string = 'description';
+  teamName: string = '';
+  pageNo: number = 1;
+  pageSize: number = 10;
+  teamList: SysTeam[] = [];
 
-  // Is Editging Members or not
-  isEditingMember = false;
+  //Form
+  searchTeamForm: FormGroup; //For Searching
+  newTeamForm: FormGroup; //For Adding Form
 
-  // For CreateTeamModal
-  createTeamModalIsVisible = false;
+  drawerVisible = false;
 
-  // For AddUserModal
-  addUserModalIsVisible = false;
-  addUserIsOkLoading = false;
-
-  // Simulated Data for Members
-  member = [
-    {
-      name: 'Anna',
-      email: 'test@mail.com',
-      permission: 'admin'
-    },
-    {
-      name: 'James',
-      email: 'test@mail.com',
-      permission: 'admin'
-    },
-    {
-      name: 'Jack',
-      email: 'test@mail.com',
-      permission: 'contributer'
-    },
-    {
-      name: 'Ken',
-      email: 'test@mail.com',
-      permission: 'viwer'
-    }
-  ]
-
-  // Simulated Data for Teams
-  existTeams = [
-    {
-      name: "Submarine",
-      department: "Apache",
-      description: "Something about this team...",
-      projectNum: 3,
-      memberNum: 3,
-      role: 'admin',
-      settingPermission: true
-    },
-    {
-      name: "Team2",
-      department: "Apple",
-      description: "Something about this team...",
-      projectNum: 3,
-      memberNum: 3,
-      role: 'viwer',
-      settingPermission: false
-    },
-  ]
-  constructor(
-    private nzMessageService: NzMessageService, 
-    private notification: NzNotificationService,
+  constructor( 
+    private teamService: TeamService,
     ) { }
 
   ngOnInit() {
-  }
+    this.searchTeamForm = new FormGroup({'teamName': new FormControl});
 
-  enter(team) {
-    this.isEntering = true;
-    this.currentTeamName = team.name;
-    this.currentTeamDepartment = team.department;
-    this.currentTeamDescription = team.description;
-    this.currentTeamProjectNum = team.projectNum;
-    this.currentTeamMemberNum = team.memberNum;
-    this.currentTeamSettingPermission = team.settingPermission;
-  }
-
-  startCreateTeam() {
-    this.createTeamModalIsVisible = true;
-  }
-
-  startEditMember() {
-    this.isEditingMember=true;
-  }
-
-  saveEditMember() {
-    this.isEditingMember=false;
-  }
-
-  cancel(): void {
-  }
-
-  confirm(): void {
-    this.nzMessageService.info('Delete Successful!');
-  }
-
-  // For CreateTeamModal
-  createTeamOk() {
-    this.createTeamModalIsVisible = false;
-    console.log("Create Seuccessful!");
-  }
- 
-
-  // For AddUserModal
-  startAddUser(): void {
-    this.addUserModalIsVisible = true;
-  }
-
-  // Add Success
-  createNotification(type: string): void {
-    this.notification.create(
-      type,
-      'Add Successful!',
-      'Make sure that user check invitation!'
-    );
+    this.getTeamList();
+    
   }
   
-  // For AddUserModal
-  addUserOk(): void {
-    this.addUserIsOkLoading = true;
-    setTimeout(() => {
-      this.addUserModalIsVisible = false;
-      this.addUserIsOkLoading = false;
-      this.createNotification("success");
-    }, 1000);
+  getTeamList() {
+    this.teamService.getTeamList({
+      column: this.column,
+      order: this.order,
+      teamName: this.teamName,
+      pageNo: '' + this.pageNo,
+      pageSize: '' + this.pageSize
+    }).subscribe(({ records }) => {
+      this.teamList = records;
+      console.log(records);
+    })
   }
 
-  // For AddUserModal
-  addUserCancel(): void {
-    this.addUserModalIsVisible = false;
+  closeDrawer() {
+    this.drawerVisible = false ;
   }
-
-  //TODO(kobe860219) : Get Team From DataBase
-  getTeamDataFromDB() {
-
+  addTeam(){
+    this.drawerVisible = true ;
   }
-
-  //TODO(kobe860219) : Get User From DataBase
-  getUserDataFromDB() {
-  }
-
-  //TODO(kobe860219) : Update Data to DataBase
-  updateTeamData() {
-
-  }
+  queryTeam(){}
 }

@@ -23,3 +23,4 @@ export * from './user-info';
 export * from './rest';
 export * from './action';
 export * from './sys-user';
+export * from './sys-team';

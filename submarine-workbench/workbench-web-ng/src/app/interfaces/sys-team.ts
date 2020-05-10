@@ -17,9 +17,9 @@
  * under the License.
  */
 
- #teamDiv{
-    margin:20px;
-    background-color: white;
- }
+import { BaseEntity } from './base-entity';
 
- 
+export interface SysTeam extends BaseEntity {
+    teamName: string;
+    owner: string;
+}

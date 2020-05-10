@@ -17,176 +17,67 @@
   ~ under the License.
   -->
 
-<!--TeamHome-->
-<div id="teamDiv" *ngIf="!isEntering">
-  <div id="searchRegion" align="right">
-    <nz-input-group nzSearch [nzAddOnAfter]="searchIconBtn" style="width:300px;margin: 10px;">
-      <input type="text"  nz-input placeholder="Search...">
-    </nz-input-group>
-    <ng-template  #searchIconBtn>
-      <button nz-button nzType="primary" nzSearch>
-        <i nz-icon nzType="search"></i>
-      </button>
-    </ng-template>
-    <button id="createTeamBtn" nz-button nzType="primary" (click)="startCreateTeam()" style="margin: 10px;">
-      <i nz-icon nzType="usergroup-add" nzTheme="outline"></i>Create Team
-    </button>
+<!--Team Home-->
+<div id="teamDiv">
+  <div align="right">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="searchTeamForm">
+      <nz-form-item>
+        <nz-form-label>Nema</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="Enter team name" formControlName="teamName"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button id="btnQueryTeam" nzType="primary" (click)="queryTeam()">
+            <i nz-icon nzType="search"></i>
+            Query
+          </button>
+          <button nz-button id="btnAddTeam" nzType="primary" style="margin-left: 8px" (click)="addTeam()">
+            <i nz-icon nzType="plus"></i>
+            Add Team
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
   </div>
-  <div id="teamList" style="margin: 20px;">
-    <div nz-row [nzGutter]="12" nzType="flex" nzJustify="start">
-      <div *ngFor="let team of existTeams; let i = index" nz-col [nzSpan]="8">
-        <nz-card id="{{ 'team'+i }}" [nzTitle]="team.name" [nzExtra]="team.department" [nzActions]="[actionEnter]">
-          {{ team.description }}
-          <br>
-          <br>
-          <label>
-            <i nz-icon nzType="project" nzTheme="outline"></i> {{ team.projectNum }}
-            <nz-divider nzType="vertical"></nz-divider> 
-            <i nz-icon nzType="user" nzTheme="outline"></i> {{ team.memberNum }}
-            <nz-divider nzType="vertical"></nz-divider>
-            <i nz-icon nzType="idcard" nzTheme="outline"></i> {{ team.role }}
-          </label>
-        </nz-card>
-        <ng-template  #actionEnter>
-          <a (click)="enter(team)"><i nz-icon nzType="arrow-right" nzTheme="outline"></i> Enter</a> 
-        </ng-template>
-      </div>
-    </div>
+  <div style="margin-top: 10px;">
+    <nz-table #teamListTable [nzData]="teamList" nzNoResult="No result">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Owner</th>
+        <th>Created Time</th>
+        <th>Action</th>
+      </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let team of teamListTable.data">
+          <td>{{ team.teamName }}</td>
+          <td>{{ team.owner }}</td>
+          <td>{{ team.createTime }}</td>
+          <td><a>Enter <i nz-icon nzType="select"></i></a></td>
+        </tr>
+      </tbody>
+
+    </nz-table>
   </div>
 </div>
 
-<!--Creating Team-->
-<nz-modal 
-  [(nzVisible)]="createTeamModalIsVisible"
-  nzTitle="Create New Team"
-  (nzOnCancel)="createTeamModalIsVisible=false;"
+<!--Add Team-->
+<nz-drawer
+  nzTitle="Add Team"
+  [nzMaskClosable]="false"
+  [nzWidth]="360"
+  (nzOnClose)="closeDrawer()"
+  [nzVisible]="drawerVisible"
+  [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }">
+  <!--Add Form-->
+  <form 
+  nz-form
+  [formGroup]="newTeamForm"
+  nzLayout="horizontal"
   >
-  <form nz-form>
-    <div *nzModalFooter>
-      <button id="cancelCreateTeam" nz-button nzType="default" (click)="createTeamModalIsVisible=false;"> Cancel </button>
-      <button id="summitCreateTeam" nz-button nzType="primary" (click)="createTeamOk()">Create</button>
-    </div>
-    <nz-form-item>
-      <nz-form-label nzRequired [nzSpan]="6">Team Name</nz-form-label>
-      <nz-form-control [nzSpan]="14">
-        <input id="inputNewTeamName" nz-input id="inputNewTeamName" placeholder="Team Name" style="width: 150px;">
-      </nz-form-control>
-    </nz-form-item >
-    <nz-form-item>
-      <nz-form-label nzRequired [nzSpan]="6">Description</nz-form-label>
-      <nz-form-control [nzSpan]="14">
-        <textarea id="textareaNewTeamDescription" rows="4" nz-input placeholder="Describe this team ..."></textarea>
-      </nz-form-control>
-    </nz-form-item >
-  </form>
-</nz-modal>
-
-<!--Enter a team-->
-<div *ngIf="isEntering" style="margin: 20px;background-color: white;">
-  <nz-card [nzTitle]="currentTeamName" [nzExtra]=cardExtra>
-    <ng-template  #cardExtra>
-      {{ currentTeamDepartment }}
-      <button nz-button nzType="primary" nzSize="small" (click)="isEntering=false" style="margin-left: 10px;">
-        <i nz-icon nzType="rollback" nzTheme="outline"></i>Go Back
-      </button>
-    </ng-template>
-    <nz-tabset>
-      <!--Profile-->
-      <nz-tab [nzTitle]="tab1">
-        <div style="text-align: center;">
-          <nz-spin [nzSize]="'large'" nzSimple></nz-spin>
-        </div>
-      </nz-tab>
-      <!--Projects-->
-      <nz-tab [nzTitle]="tab2">
-        <div style="text-align: center;">
-          <nz-spin [nzSize]="'large'" nzSimple></nz-spin>
-        </div>
-      </nz-tab>
-      <!--Members-->
-      <nz-tab [nzTitle]="tab3">
-        <div style="margin: 15px;" align="right">
-          <button nz-button nzType="primary" style="margin-right: 10px;" (click)="startAddUser()"[disabled]="!currentTeamSettingPermission"><i nz-icon nzType="plus"></i>Add</button>
-          <button nz-button nzType="primary" style="margin-right: 10px;" (click)="startEditMember()" [disabled]="!currentTeamSettingPermission"><i nz-icon nzType="edit"></i>Edit</button>
-          <button nz-button nzType="primary" style="margin-right: 10px;" (click)="saveEditMember()" [disabled]="!isEditingMember"><i nz-icon nzType="check"></i>Save</button>
-        </div>
-        <div>
-          <nz-table #basicTable [nzData]="member">
-            <thead>
-              <tr>
-                <th style="width: 100px;">Name</th>
-                <th style="width: 100px;">Email</th>
-                <th style="width: 100px;">Role</th>
-                <th *ngIf="isEditingMember" style="width: 200px;">Edit</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let data of basicTable.data">
-                <td>{{ data.name }}</td>
-                <td>{{ data.email }}</td>
-                <td>{{ data.permission }}</td>
-                <td *ngIf="isEditingMember">
-                  <nz-select [(ngModel)]="data.permission" style="width: 150px;">
-                    <nz-option nzValue="admin" nzLabel="admin"></nz-option>
-                    <nz-option nzValue="contributer" nzLabel="contributer"></nz-option>
-                    <nz-option nzValue="viwer" nzLabel="viwer"></nz-option>
-                  </nz-select>
-                  <nz-divider nzType="vertical"></nz-divider>
-                  <a
-                    nz-popconfirm
-                    nzTitle="Are you sure to delete this user ?"
-                    nzOkText="Ok"
-                    nzCancelText="Cancel"
-                    (nzOnConfirm)="confirm()"
-                    (nzOnCancel)="cancel()"
-                    >Delete</a>
-                </td>
-              </tr>
-            </tbody>
-          </nz-table>
-        </div>
-      </nz-tab>
-      <!--Cluster-->
-      <nz-tab [nzTitle]="tab4">
-        <div style="text-align: center;">
-          <nz-spin [nzSize]="'large'" nzSimple></nz-spin>
-        </div>
-      </nz-tab>
-      <!--Setting-->
-      <nz-tab [nzTitle]="tab5" [nzDisabled]="!currentTeamSettingPermission">
-        <div style="text-align: center;">
-          <nz-spin [nzSize]="'large'" nzSimple></nz-spin>
-        </div>
-      </nz-tab>
-    </nz-tabset>
-  </nz-card>
-  <!--Template for Title of Tabs-->
-  <ng-template #tab1>
-    <i nz-icon nzType="profile" nzTheme="outline"></i>Profile
-  </ng-template>
-  <ng-template #tab2>
-    <i nz-icon nzType="project" nzTheme="outline"></i>Projects
-  </ng-template>
-  <ng-template #tab3>
-    <i nz-icon nzType="team" nzTheme="outline"></i>Members
-  </ng-template>
-  <ng-template #tab4>
-    <i nz-icon nzType="cluster" nzTheme="outline"></i>Cluster
-  </ng-template>
-  <ng-template #tab5>
-    <i nz-icon nzType="setting" nzTheme="outline"></i>Setting
-  </ng-template>
-</div>
-
-<!--Add User Modal-->
-<nz-modal
-  id="addUserModal"
-  [(nzVisible)]="addUserModalIsVisible"
-  nzTitle="Invite new member"
-  (nzOnCancel)="addUserCancel()"
-  (nzOnOk)="addUserOk()"
-  [nzOkLoading]="addUserIsOkLoading"
->
-  <p>Use E-mail to add member!</p>
-  
-</nz-modal>
+  test
+</form>
+</nz-drawer>

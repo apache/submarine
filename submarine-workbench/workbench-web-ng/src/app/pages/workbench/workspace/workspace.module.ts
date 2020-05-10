@@ -19,7 +19,7 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule , ReactiveFormsModule } from '@angular/forms';
 import { ComponentsModule } from '@submarine/components/components.module';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { NewProjectPageComponent } from './project/new-project-page/new-project-page.component';
@@ -36,13 +36,14 @@ import { TrainingComponent } from './training/training.component';
       TrainingComponent,
       TeamComponent,
       SharedComponent,
-      NewProjectPageComponent
+      NewProjectPageComponent,
     ],
     imports: [
       CommonModule,
       ComponentsModule,
       NgZorroAntdModule,
-      FormsModule
+      FormsModule,
+      ReactiveFormsModule
     ],
     exports: [
       ProjectComponent,
