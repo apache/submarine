@@ -151,6 +151,14 @@ Other than ML-related objects, we have system-related objects, including:
 
 All these information should be handled by 3rd party system, such as Grafana, Prometheus, etc. And system admins are responsible to setup these infrastructures, dashboard. Users of submarine should NOT interact with system related metrics/logs. It is system admin's responsibility.
 
+## Attachable Volumes 
+
+It is possible user has needs to have an attachable volume for their experiment / notebook, this is especially useful for notebook storage, since contents of notebook can be automatically saved, and it can be used as user's home folder. 
+
+Downside of attachable volume is, it is not versioned, even notebook is mainly used for adhoc exploring tasks, an unversioned notebook file can lead to maintenance issues in the future. 
+
+Since this is a common requirement, we can consider to support attachable volumes in Submarine in a long run, but with relatively lower priority.
+
 ## In-scope / Out-of-scope 
 
  Describe what Submarine project should own and what Submarine project should NOT own.
