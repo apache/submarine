@@ -56,7 +56,10 @@
           <td>{{ team.teamName }}</td>
           <td>{{ team.owner }}</td>
           <td>{{ team.createTime }}</td>
-          <td><a>Enter <i nz-icon nzType="select"></i></a></td>
+          <td>
+            <a>Enter <i nz-icon nzType="select"></i></a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <a (click)="deleteTeam(team)">Delete</a></td>
         </tr>
       </tbody>
 
@@ -68,7 +71,7 @@
 <nz-drawer
   nzTitle="Add Team"
   [nzMaskClosable]="false"
-  [nzWidth]="360"
+  [nzWidth]="540"
   (nzOnClose)="closeDrawer()"
   [nzVisible]="drawerVisible"
   [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }">
@@ -78,6 +81,33 @@
   [formGroup]="newTeamForm"
   nzLayout="horizontal"
   >
-  test
-</form>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Team Name</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input new team name!">
+          <input nz-input id="inputNewTeamName" placeholder="Please input team name" formControlName="teamName"/>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Owner</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input owner!">
+          <input nz-input type="text" placeholder="Please input owner" id="inputNewTeamOwner" formControlName="owner"/>
+        </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <div align="right">
+    <button 
+      nz-button 
+      nzType="default" 
+      (click)="drawerVisible=flase;" 
+      style="margin-right: 8px;">Cancel</button>
+    <button 
+      nz-button 
+      id="submitBtn"
+      nzType="primary" 
+      [nzLoading] = "submitBtnIsLoading"
+      (click)="submitNewTeam()" 
+      style="margin-right: 8px;"
+      [disabled] = "!newTeamForm.get('teamName').valid || !newTeamForm.get('owner').valid">Create</button>
+  </div>
 </nz-drawer>

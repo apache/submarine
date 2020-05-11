@@ -59,5 +59,38 @@ export class TeamService {
       })
     );
   }
+
+  createTeam(params): Observable<SysTeam> {
+    const apiUrl = this.baseApi.getRestApi('/team/add');
+    return this.httpClient.post<Rest<SysTeam>>(apiUrl, params).pipe(
+      switchMap(res => {
+        console.log(res)
+        if (res.success) {
+          return of(res.result);
+        }
+        else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', params);
+        }
+      })
+    );
+  }
+
+  deleteTeam(id: string) {
+    const apiUrl = this.baseApi.getRestApi('/team/delete');
+    return this.httpClient.delete<Rest<any>>(apiUrl, {
+      params: {
+        id
+      }
+    }).pipe(
+      switchMap(res => {
+        if (res.success) {
+          return of(true);
+        }
+        else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', id);
+        }
+      })
+    )
+  }
   
 }

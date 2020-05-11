@@ -18,10 +18,10 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators, ValidationErrors } from '@angular/forms';
 import { SysTeam } from '@submarine/interfaces';
 import { TeamService } from '@submarine/services';
-
+import { NzMessageService } from 'ng-zorro-antd';
 import { Observable } from 'rxjs';
 
 
@@ -46,13 +46,19 @@ export class TeamComponent implements OnInit {
   newTeamForm: FormGroup; //For Adding Form
 
   drawerVisible = false;
+  submitBtnIsLoading = false;
 
   constructor( 
     private teamService: TeamService,
+    private nzMessageService: NzMessageService
     ) { }
 
   ngOnInit() {
     this.searchTeamForm = new FormGroup({'teamName': new FormControl});
+    this.newTeamForm = new FormGroup({
+      'teamName': new FormControl(null, Validators.required),
+      'owner': new FormControl(null, Validators.required)
+    })
 
     this.getTeamList();
     
@@ -71,11 +77,42 @@ export class TeamComponent implements OnInit {
     })
   }
 
+  submitNewTeam() {
+    this.submitBtnIsLoading = true;
+    this.teamService.createTeam({
+      teamName: this.newTeamForm.get('teamName').value,
+      owner: this.newTeamForm.get('owner').value
+    }).subscribe(
+      () => {
+      this.nzMessageService.success('Create team success!');
+      this.getTeamList();
+      this.drawerVisible = false ;
+      this.submitBtnIsLoading = false ;
+    }, err => {
+      this.nzMessageService.error(err.message);
+      this.submitBtnIsLoading = false ;
+    })
+  }
+
+  deleteTeam(teamData: SysTeam) {
+    this.teamService.deleteTeam(teamData.id).subscribe(
+      () => {
+        this.nzMessageService.success('Delete team success!');
+        this.getTeamList();
+      }
+      , err => {
+        this.nzMessageService.error(err.message);
+      }
+    )
+  }
+
   closeDrawer() {
     this.drawerVisible = false ;
   }
   addTeam(){
     this.drawerVisible = true ;
   }
+
+  //TODO (kobe860329) : Search Team
   queryTeam(){}
 }
