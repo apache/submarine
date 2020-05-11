@@ -73,7 +73,7 @@ import static org.junit.Assert.*;
     @Test
     public void testList() throws Exception {
         final Context context = embeddedLdapRule.context();
-        NamingEnumeration list = context.list("ou=people,dc=zapodot,dc=org");
+        NamingEnumeration list = context.list("ou=semi-people,dc=zapodot,dc=org");
 
         while (list.hasMore()){
             NameClassPair nc = (NameClassPair)list.next();
