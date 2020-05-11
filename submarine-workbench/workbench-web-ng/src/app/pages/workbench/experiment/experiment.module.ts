@@ -23,4 +23,4 @@ import { ReactiveFormsModule } from '@angular/forms';
 @NgModule({
    exports: [ReactiveFormsModule]
 })
-export class JobModule {}
+export class ExperimentModule {}

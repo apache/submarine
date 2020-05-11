@@ -19,11 +19,11 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ExperimentComponent } from '@submarine/pages/workbench/experiment/experiment.component';
 import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.component';
 import { DataComponent } from './data/data.component';
 import { HomeComponent } from './home/home.component';
 import { InterpreterComponent } from './interpreter/interpreter.component';
-import { JobComponent } from './job/job.component';
 import { ModelComponent } from './model/model.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 
@@ -50,8 +50,8 @@ const routes: Routes = [
         component: InterpreterComponent
       },
       {
-        path: 'job',
-        component: JobComponent
+        path: 'experiment',
+        component: ExperimentComponent
       },
       {
         path: 'data',

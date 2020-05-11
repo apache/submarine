@@ -19,7 +19,6 @@ package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
-import org.apache.submarine.SubmarineITUtils;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +27,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
-public class jobIT extends AbstractSubmarineIT {
+public class experimentIT extends AbstractSubmarineIT {
 
-  public final static Logger LOG = LoggerFactory.getLogger(jobIT.class);
+  public final static Logger LOG = LoggerFactory.getLogger(experimentIT.class);
 
   @BeforeClass
   public static void startUp(){
@@ -53,19 +52,19 @@ public class jobIT extends AbstractSubmarineIT {
     pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
 
     // Routing to workspace
-    pollingWait(By.xpath("//span[contains(text(), \"Job\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/job");
+    pollingWait(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/experiment");
 
-    // Test create new job
-    pollingWait(By.xpath("//button[@id='openJob']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-    pollingWait(By.xpath("//input[@id='jobname']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Job");
+    // Test create new experiment
+    pollingWait(By.xpath("//button[@id='openExperiment']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertTrue(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
+    pollingWait(By.xpath("//input[@id='experimentName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Experiment");
     pollingWait(By.xpath("//textarea"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project description");
     pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
     //Next step
-    Assert.assertEquals(pollingWait(By.xpath("//div[@id='page2']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    Assert.assertTrue(pollingWait(By.xpath("//div[@id='page2']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
     pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//label[@class='pg3-form-label']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    Assert.assertTrue(pollingWait(By.xpath("//label[@class='pg3-form-label']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
     pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
   }
 }
