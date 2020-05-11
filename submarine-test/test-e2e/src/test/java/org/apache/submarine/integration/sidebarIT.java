@@ -60,8 +60,8 @@ public class sidebarIT extends AbstractSubmarineIT {
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
     pollingWait(By.xpath("//span[contains(text(), \"Interpreter\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/interpreter");
-    pollingWait(By.xpath("//span[contains(text(), \"Job\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/job");
+    pollingWait(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/experiment");
     pollingWait(By.xpath("//span[contains(text(), \"Data\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/data");
     pollingWait(By.xpath("//span[contains(text(), \"Model\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
@@ -78,6 +78,6 @@ public class sidebarIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//a[@href='/workbench/manager/dataDict']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/manager/dataDict");
     pollingWait(By.xpath("//span[contains(text(), \"Home\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/home"); 
+    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/home");
   }
 }

@@ -68,7 +68,7 @@ public class JobManagerRestApi {
   public Response createJob(JobSpec spec) {
     try {
       Job job = jobManager.createJob(spec);
-      return new JsonResponse.Builder<Job>(Response.Status.OK).result(job).build();
+      return new JsonResponse.Builder<Job>(Response.Status.OK).success(true).result(job).build();
     } catch (SubmarineRuntimeException e) {
       return parseJobServiceException(e);
     }
@@ -82,7 +82,7 @@ public class JobManagerRestApi {
   public Response listJob(@QueryParam("status") String status) {
     try {
       List<Job> jobList = jobManager.listJobsByStatus(status);
-      return new JsonResponse.Builder<List<Job>>(Response.Status.OK).result(jobList).build();
+      return new JsonResponse.Builder<List<Job>>(Response.Status.OK).success(true).result(jobList).build();
     } catch (SubmarineRuntimeException e) {
       return parseJobServiceException(e);
     }
@@ -98,7 +98,7 @@ public class JobManagerRestApi {
   public Response getJob(@PathParam(RestConstants.JOB_ID) String id) {
     try {
       Job job = jobManager.getJob(id);
-      return new JsonResponse.Builder<Job>(Response.Status.OK).result(job).build();
+      return new JsonResponse.Builder<Job>(Response.Status.OK).success(true).result(job).build();
     } catch (SubmarineRuntimeException e) {
       return parseJobServiceException(e);
     }
@@ -127,20 +127,20 @@ public class JobManagerRestApi {
   public Response deleteJob(@PathParam(RestConstants.JOB_ID) String id) {
     try {
       Job job = jobManager.deleteJob(id);
-      return new JsonResponse.Builder<Job>(Response.Status.OK)
+      return new JsonResponse.Builder<Job>(Response.Status.OK).success(true)
           .result(job).build();
     } catch (SubmarineRuntimeException e) {
       return parseJobServiceException(e);
     }
   }
-  
+
   @GET
   @Path("/logs")
   public Response listLog(@QueryParam("status") String status) {
     try {
       List<JobLog> jobLogList = jobManager.listJobLogsByStatus(status);
-      return new JsonResponse.Builder<List<JobLog>>(Response.Status.OK).
-          result(jobLogList).build();
+      return new JsonResponse.Builder<List<JobLog>>(Response.Status.OK).success(true)
+          .result(jobLogList).build();
 
     } catch (SubmarineRuntimeException e) {
       return parseJobServiceException(e);
@@ -152,8 +152,8 @@ public class JobManagerRestApi {
   public Response getLog(@PathParam(RestConstants.JOB_ID) String id) {
     try {
       JobLog jobLog = jobManager.getJobLog(id);
-      return new JsonResponse.Builder<JobLog>(Response.Status.OK).
-          result(jobLog).build();
+      return new JsonResponse.Builder<JobLog>(Response.Status.OK).success(true)
+          .result(jobLog).build();
 
     } catch (SubmarineRuntimeException e) {
       return parseJobServiceException(e);
