@@ -39,7 +39,7 @@ sn: Person
 description: Developer
 ou: people
 
-dn: cn=Eros-2,ou=semi-people,dc=zapodot,dc=org
+dn: cn=Fake-Eros,ou=semi-people,dc=zapodot,dc=org
 objectclass: top
 objectclass: person
 objectclass: organizationalPerson
