@@ -170,12 +170,12 @@
                   </div>
                   <div>
                     <label class="form-label"><span class="red-star">* </span> Column Delimiter:</label>
-                      <input type="text" style="width: 50px;margin-top: 25px;" nz-input class="form-control" formControlName="columnDelimeter" />
+                      <input type="text" style="width: 50px;margin-top: 25px;" nz-input class="form-control" formControlName="columnDelimiter" />
                       <label nz-checkbox style="margin-left: 20px;" class="form-control" formControlName="header">First row is header</label>
                   </div>
                 </div>
                 <div style="margin-top: 32px;text-align: center;">
-                  <button id="firstNextBtn" nz-button nzType="primary" [disabled]="!createTable.get('columnDelimeter').valid" (click)="newTablePage = newTablePage + 1">Create Table with UI </button>
+                  <button id="firstNextBtn" nz-button nzType="primary" [disabled]="!createTable.get('columnDelimiter').valid" (click)="newTablePage = newTablePage + 1">Create Table with UI </button>
                   <button style="margin-left: 5px;" nz-button nzType="default" [disabled]="true" (click)="openNotebook()">Create Table in Notebook </button>
                 </div>
               </div>

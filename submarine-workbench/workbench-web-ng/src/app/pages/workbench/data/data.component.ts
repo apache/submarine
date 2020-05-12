@@ -67,7 +67,7 @@ export class DataComponent implements OnInit {
       'path': new FormControl(null),
       'uploadFile': new FormControl(null),
       'fileType': new FormControl(null),
-      'columnDelimeter': new FormControl('.', [Validators.required]),
+      'columnDelimiter': new FormControl('.', [Validators.required]),
       'header': new FormControl('false'),
       
       'dataBaseName': new FormControl('db1'),
@@ -170,7 +170,7 @@ export class DataComponent implements OnInit {
       'path': new FormControl(null),
       'uploadFile': new FormControl(null),
       'fileType': new FormControl(null),
-      'columnDelimeter': new FormControl('.', [Validators.required]),
+      'columnDelimiter': new FormControl('.', [Validators.required]),
       'header': new FormControl('false'),
       
       'dataBaseName': new FormControl('db1'),
