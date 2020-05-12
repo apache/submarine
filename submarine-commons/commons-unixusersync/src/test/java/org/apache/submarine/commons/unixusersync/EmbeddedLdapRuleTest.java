@@ -30,6 +30,8 @@ import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SearchScope;
 import org.junit.Rule;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zapodot.junit.ldap.EmbeddedLdapRule;
 import org.zapodot.junit.ldap.EmbeddedLdapRuleBuilder;
 
@@ -46,6 +48,8 @@ import static org.junit.Assert.assertNotNull;
 public class EmbeddedLdapRuleTest {
 
   public static final String DOMAIN_DSN = "dc=zapodot,dc=org";
+  private static final Logger LOG = LoggerFactory.getLogger(EmbeddedLdapRuleTest.class);
+
   @Rule
   public EmbeddedLdapRule embeddedLdapRule = EmbeddedLdapRuleBuilder
           .newInstance()
