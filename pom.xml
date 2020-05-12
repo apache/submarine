@@ -133,6 +133,8 @@
     <jersey.test-framework>2.27</jersey.test-framework>
     <!-- integration test-->
     <plugin.failsafe.version>2.17</plugin.failsafe.version>
+    <!--  embedded-ldap-junit  -->
+    <embedded-ldap-junit.version>0.7</embedded-ldap-junit.version>
   </properties>
 
   <modules>
