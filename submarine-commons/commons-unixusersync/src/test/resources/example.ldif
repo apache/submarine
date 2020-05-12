@@ -28,8 +28,6 @@ objectclass: top
 objectclass: organizationalUnit
 ou: groups
 
-
-
 dn: ou=people,dc=zapodot,dc=org
 objectclass: top
 objectclass: organizationalUnit
@@ -44,7 +42,6 @@ dn: ou=group-2,dc=zapodot,dc=org
 objectclass: top
 objectclass: organizationalUnit
 ou: people
-
 
 dn: cn=Eros,ou=people,dc=zapodot,dc=org
 objectclass: top

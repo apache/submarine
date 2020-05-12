@@ -48,12 +48,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.zapodot</groupId>
-      <artifactId>embedded-ldap-junit</artifactId>
-      <version>0.7</version>
-    </dependency>
-
-    <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
     </dependency>

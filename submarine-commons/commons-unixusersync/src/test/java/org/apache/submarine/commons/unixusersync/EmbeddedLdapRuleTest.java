@@ -43,7 +43,6 @@ import java.util.Arrays;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
 public class EmbeddedLdapRuleTest {
 
   public static final String DOMAIN_DSN = "dc=zapodot,dc=org";
@@ -66,8 +65,7 @@ public class EmbeddedLdapRuleTest {
   @Test
   public void testRawLdapConnection() throws Exception {
     final String commonName = "Test person";
-    final String dn = String.format(
-            "cn=%s,ou=people,dc=zapodot,dc=org", commonName);
+    final String dn = String.format("cn=%s,ou=people,dc=zapodot,dc=org", commonName);
     LDAPConnection ldapConnection = embeddedLdapRule.unsharedLdapConnection();
     try {
       ldapConnection.add(new AddRequest(dn, Arrays.asList(
@@ -127,7 +125,6 @@ public class EmbeddedLdapRuleTest {
   @Test
   public void testEmbeddedServerPort() throws Exception {
     assertTrue(embeddedLdapRule.embeddedServerPort() > 0);
-
   }
 
   private void assertTrue(boolean b) {
@@ -137,6 +134,5 @@ public class EmbeddedLdapRuleTest {
   public void testNoPortAssignedYet() throws Exception {
     final EmbeddedLdapRule embeddedLdapRule = new EmbeddedLdapRuleBuilder().build();
     embeddedLdapRule.embeddedServerPort();
-
   }
 }
