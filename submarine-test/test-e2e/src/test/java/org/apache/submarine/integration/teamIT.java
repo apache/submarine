@@ -60,12 +60,12 @@ public class teamIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//li[contains(text(), \"Team\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(pollingWait(By.xpath("//div[@id='teamDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
 
-    clickAndWait(By.cssSelector("button[id='createTeamBtn']"));
-    pollingWait(By.xpath("//input[@id='inputNewTeamName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamTest");
-    pollingWait(By.xpath("//textarea[@id='textareaNewTeamDescription']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamTest");
-    clickAndWait(By.cssSelector("button[id='summitCreateTeam']"));
-    Assert.assertEquals(pollingWait(By.xpath("//button[@id='createTeamBtn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-
+    clickAndWait(By.cssSelector("button[id='btnAddTeam']"));
+    pollingWait(By.xpath("//input[@id='inputNewTeamName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamNameTest");
+    pollingWait(By.xpath("//input[@id='inputNewTeamOwner']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamOwnerTest");
+    clickAndWait(By.cssSelector("button[id='submitNewTeamBtn']"));
+    Assert.assertEquals(pollingWait(By.xpath("//td[contains(., 'NewTeamNameTest')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    
     Thread.sleep(1500);
   }
 }

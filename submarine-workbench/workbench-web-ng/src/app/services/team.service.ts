@@ -24,14 +24,13 @@ import { ListResult, Rest } from '@submarine/interfaces';
 import { of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SysTeam } from '@submarine/interfaces/sys-team';
+import { ValidationErrors } from '@angular/forms';
 
 interface TeamListQueryParams {
   teamName: string;
   owner: string;
   column: string;
   order: string;
-  pageNo: string;
-  pageSize: string;
 }
 
 @Injectable({
@@ -92,5 +91,23 @@ export class TeamService {
       })
     )
   }
-  
+
+  newTeamNameCheck(nameParams): Promise<ValidationErrors|null> {
+    const promise = new Promise((resolve, reject) => {
+      const apiUrl = this.baseApi.getRestApi('/sys/duplicateCheck');
+      this.httpClient.get<any>(apiUrl,{
+        params: nameParams
+      }).toPromise()
+      .then((res: any) => {
+          console.log(res)
+          resolve(res.success);
+        },
+        err => {
+          console.log(err);
+          reject(err);
+        }
+      );
+    });
+    return promise;
+  }
 }

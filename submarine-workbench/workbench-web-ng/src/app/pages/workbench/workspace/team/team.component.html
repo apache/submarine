@@ -20,28 +20,12 @@
 <!--Team Home-->
 <div id="teamDiv">
   <div align="right">
-    <form nz-form [nzLayout]="'inline'" [formGroup]="searchTeamForm">
-      <nz-form-item>
-        <nz-form-label>Nema</nz-form-label>
-        <nz-form-control>
-          <input nz-input placeholder="Enter team name" formControlName="teamName"/>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-control>
-          <button nz-button id="btnQueryTeam" nzType="primary" (click)="queryTeam()">
-            <i nz-icon nzType="search"></i>
-            Query
-          </button>
-          <button nz-button id="btnAddTeam" nzType="primary" style="margin-left: 8px" (click)="addTeam()">
-            <i nz-icon nzType="plus"></i>
-            Add Team
-          </button>
-        </nz-form-control>
-      </nz-form-item>
-    </form>
+    <button nz-button id="btnAddTeam" nzType="primary" style="margin: 10px" (click)="addTeam()">
+      <i nz-icon nzType="plus"></i>
+        Add Team
+    </button>
   </div>
-  <div style="margin-top: 10px;">
+  <div>
     <nz-table #teamListTable [nzData]="teamList" nzNoResult="No result">
       <thead>
       <tr>
@@ -57,12 +41,13 @@
           <td>{{ team.owner }}</td>
           <td>{{ team.createTime }}</td>
           <td>
-            <a>Enter <i nz-icon nzType="select"></i></a>
+            <a (click)="showOverview(team)">Overview</a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <a>Enter</a>
             <nz-divider nzType="vertical"></nz-divider>
             <a (click)="deleteTeam(team)">Delete</a></td>
         </tr>
       </tbody>
-
     </nz-table>
   </div>
 </div>
@@ -83,14 +68,14 @@
   >
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Team Name</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input new team name!">
+        <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="formTeamNameErrMesg">
           <input nz-input id="inputNewTeamName" placeholder="Please input team name" formControlName="teamName"/>
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Owner</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input owner!">
-          <input nz-input type="text" placeholder="Please input owner" id="inputNewTeamOwner" formControlName="owner"/>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="This is required!">
+          <input nz-input id="inputNewTeamOwner" type="text" placeholder="Please input owner" formControlName="owner"/>
         </nz-form-control>
     </nz-form-item>
   </form>
@@ -103,7 +88,7 @@
       style="margin-right: 8px;">Cancel</button>
     <button 
       nz-button 
-      id="submitBtn"
+      id="submitNewTeamBtn"
       nzType="primary" 
       [nzLoading] = "submitBtnIsLoading"
       (click)="submitNewTeam()" 
@@ -111,3 +96,15 @@
       [disabled] = "!newTeamForm.get('teamName').valid || !newTeamForm.get('owner').valid">Create</button>
   </div>
 </nz-drawer>
+
+<!--Detail-->
+<nz-modal [nzVisible]="overviewModalVisible" [nzWidth]="540" nzTitle="Overview" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+  <h2>Team Name:</h2>
+  <p>{{ currentTeam_teamName }}</p>
+  <h2>ID:</h2>
+  <p>{{  currentTeam_id  }}</p>
+  <h2>Owner:</h2>
+  <p>{{  currentTeam_owner  }}</p>
+  <h2>Create Time</h2>
+  <p>{{  currentTeam_createTime  }}</p>
+</nz-modal>
