@@ -88,7 +88,7 @@ public class EmbeddedLdapRuleTest {
   }
 
   @Test
-    public void testDirContext() throws Exception {
+  public void testDirContext() throws Exception {
     final DirContext dirContext = embeddedLdapRule.dirContext();
     final SearchControls searchControls = new SearchControls();
     searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -98,14 +98,14 @@ public class EmbeddedLdapRuleTest {
   }
 
   @Test
-    public void testContext() throws Exception {
+  public void testContext() throws Exception {
     final Context context = embeddedLdapRule.context();
     final Object user = context.lookup("cn=Eros,ou=people,dc=zapodot,dc=org");
     assertNotNull(user);
   }
 
   @Test
-    public void testList() throws Exception {
+  public void testList() throws Exception {
     final Context context = embeddedLdapRule.context();
     NamingEnumeration list = context.list("ou=semi-people,dc=zapodot,dc=org");
 
@@ -118,14 +118,14 @@ public class EmbeddedLdapRuleTest {
   }
 
   @Test
-    public void testContextClose() throws Exception {
+  public void testContextClose() throws Exception {
     final Context context = embeddedLdapRule.context();
     context.close();
     assertNotNull(context.getNameInNamespace());
   }
 
   @Test
-    public void testEmbeddedServerPort() throws Exception {
+  public void testEmbeddedServerPort() throws Exception {
     assertTrue(embeddedLdapRule.embeddedServerPort() > 0);
 
   }
@@ -134,7 +134,7 @@ public class EmbeddedLdapRuleTest {
   }
 
   @Test(expected = IllegalStateException.class)
-    public void testNoPortAssignedYet() throws Exception {
+  public void testNoPortAssignedYet() throws Exception {
     final EmbeddedLdapRule embeddedLdapRule = new EmbeddedLdapRuleBuilder().build();
     embeddedLdapRule.embeddedServerPort();
 
