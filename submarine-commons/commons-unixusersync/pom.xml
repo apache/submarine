@@ -44,7 +44,7 @@
     <dependency>
       <groupId>org.zapodot</groupId>
       <artifactId>embedded-ldap-junit</artifactId>
-      <version>0.7</version>
+      <version>${embedded-ldap-junit.version}</version>
     </dependency>
 
     <dependency>
