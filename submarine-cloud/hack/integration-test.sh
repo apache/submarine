@@ -75,6 +75,7 @@ function update_docker_images() {
   $SUBMARINE_HOME/dev-support/docker-images/database/build.sh
   $SUBMARINE_HOME/dev-support/docker-images/operator/build.sh
   $SUBMARINE_HOME/dev-support/docker-images/submarine/build.sh
+  $SUBMARINE_HOME/dev-support/docker-images/notebook/build.sh
 
   docker images
 }
