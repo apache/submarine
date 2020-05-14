@@ -1,12 +1,12 @@
 {
     "input": {
-        "train_data": "file:///Users/andrew/workspace/submarine/submarine-sdk/pysubmarine/example/data/dev.libsvm",
-        "val_data": "file:///Users/andrew/workspace/submarine/submarine-sdk/pysubmarine/example/data/dev.libsvm",
-        "test_data": "file:///Users/andrew/workspace/submarine/submarine-sdk/pysubmarine/example/data/dev.libsvm",
+        "train_data": "hdfs://localhost:9000/user/yarn/input/dev.libsvm",
+        "val_data": "hdfs://localhost:9000/user/yarn/input/dev.libsvm",
+        "test_data": "hdfs://localhost:9000/user/yarn/input/dev.libsvm",
         "type": "libsvm"
     },
     "output": {
-        "save_model_dir": "/Users/andrew/workspace/submarine/submarine-sdk/pysubmarine/test_experiment",
+        "save_model_dir": "hdfs://localhost:9000/user/yarn/output",
         "metric": "roc_auc_score"
     },
     "training": {

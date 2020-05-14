@@ -1,0 +1,31 @@
+channels:
+  - pytorch
+  - conda-forge
+  - anaconda 
+  - defaults
+  - comet_ml 
+dependencies:
+  - conda-pack 
+  - python=3.7
+  - comet_ml
+  - cudatoolkit=10.1 
+  - pytorch>=1.5.0
+  - tensorboard   
+  - tensorflow>=1.14.0,<2.0.0
+  - scikit-learn 
+  - pandas>=1.0 
+  - tqdm 
+  - numpy 
+  - pyarrow>=0.17.0
+  - htop 
+  - tmux 
+  - ipython
+  - easydict 
+  - sqlparse
+  - sqlalchemy
+  - pymysql
+  - requests
+  - six 
+  - pip 
+
+
