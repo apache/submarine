@@ -17,10 +17,9 @@
  * under the License.
  */
 
-export * from './auth.service';
-export * from './base-api.service';
-export * from './department.service';
-export * from './local-storage.service';
-export * from './system-utils.service';
-export * from './user.service';
-export * from './team.service';
+import { BaseEntity } from './base-entity';
+
+export interface SysTeam extends BaseEntity {
+    teamName: string;
+    owner: string;
+}
