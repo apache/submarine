@@ -14,7 +14,7 @@
 # limitations under the License.
 
 
-from submarine.ml.model import NFM
+from submarine.ml.tensorflow.model import NFM
 
 
 def test_run_nfm(get_model_param):

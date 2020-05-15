@@ -16,7 +16,7 @@
 import os
 import json
 import tensorflow as tf
-from submarine.ml.optimizer import get_optimizer
+from submarine.ml.tensorflow.optimizer import get_optimizer
 
 
 def _get_session_config_from_env_var(params):

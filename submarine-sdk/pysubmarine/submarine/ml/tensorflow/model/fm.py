@@ -13,18 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+TensorFlow implementation of FM
+
+Reference:
+[1] Factorization machines for CTR Prediction,
+    Steffen Rendle
+"""
+
+import logging
+import tensorflow as tf
+from submarine.ml.tensorflow.layers.core import linear_layer, fm_layer, embedding_layer
 from submarine.ml.tensorflow.model.base_tf_model import BaseTFModel
-import pytest
+from submarine.utils.tf_utils import get_estimator_spec
+
+logger = logging.getLogger(__name__)
 
 
-def test_create_base_tf_model():
-    params = {"learning rate": 0.05}
-    with pytest.raises(AssertionError, match="Does not define any input parameters"):
-        BaseTFModel(params)
+class FM(BaseTFModel):
+    def model_fn(self, features, labels, mode, params):
+        super().model_fn(features, labels, mode, params)
 
-    params.update({'input': {'train_data': '/tmp/train.csv'}})
-    with pytest.raises(AssertionError, match="Does not define any input type"):
-        BaseTFModel(params)
+        linear_logit = linear_layer(features, **params['training'])
+        embedding_outputs = embedding_layer(features, **params['training'])
+        fm_logit = fm_layer(embedding_outputs, **params['training'])
 
-    params.update({'input': {'type': 'libsvm'}})
-    BaseTFModel(params)
+        with tf.variable_scope("FM_out"):
+            logit = linear_logit + fm_logit
+
+        return get_estimator_spec(logit, labels, mode, params)

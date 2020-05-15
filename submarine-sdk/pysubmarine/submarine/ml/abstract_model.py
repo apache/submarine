@@ -13,18 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.ml.tensorflow.model.base_tf_model import BaseTFModel
-import pytest
+import logging
+from abc import ABCMeta, abstractmethod
+
+logger = logging.getLogger(__name__)
 
 
-def test_create_base_tf_model():
-    params = {"learning rate": 0.05}
-    with pytest.raises(AssertionError, match="Does not define any input parameters"):
-        BaseTFModel(params)
+class AbstractModel:
+    """
+    Abstract class for tensorflow/pytorch model.
+    This class defines the API interface for user to create a machine learning model.
+    """
 
-    params.update({'input': {'train_data': '/tmp/train.csv'}})
-    with pytest.raises(AssertionError, match="Does not define any input type"):
-        BaseTFModel(params)
+    __metaclass__ = ABCMeta
 
-    params.update({'input': {'type': 'libsvm'}})
-    BaseTFModel(params)
+    @abstractmethod
+    def __init__(self,):
+        pass
+
+    @abstractmethod
+    def train(self):
+        pass
+
+    @abstractmethod
+    def evaluate(self):
+        pass
+
+    @abstractmethod
+    def predict(self):
+        pass

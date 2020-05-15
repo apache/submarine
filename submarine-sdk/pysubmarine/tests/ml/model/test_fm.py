@@ -14,7 +14,7 @@
 # limitations under the License.
 
 
-from submarine.ml.model import FM
+from submarine.ml.tensorflow.model import FM
 
 
 def test_run_fm(get_model_param):

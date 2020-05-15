@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.ml.model import DeepFM
+from submarine.ml.tensorflow.model import DeepFM
 import argparse
 
 if __name__ == '__main__':

@@ -14,7 +14,7 @@
 # limitations under the License.
 
 import pytest
-from submarine.ml.optimizer import get_optimizer
+from submarine.ml.tensorflow.optimizer import get_optimizer
 
 
 def test_get_optimizer():
