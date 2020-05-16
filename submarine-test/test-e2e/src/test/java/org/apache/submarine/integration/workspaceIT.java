@@ -77,7 +77,7 @@ public class workspaceIT extends AbstractSubmarineIT {
     Assert.assertEquals(pollingWait(By.xpath("//div[@id='addProjectbtn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
 
     WebDriverWait wait = new WebDriverWait( driver, 60);
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//li[contains(text(), \"Release\")]")));
+    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//li[contains(text(), \"Release\")]")));
 
     //Test release part
     pollingWait(By.xpath("//li[contains(text(), \"Release\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
