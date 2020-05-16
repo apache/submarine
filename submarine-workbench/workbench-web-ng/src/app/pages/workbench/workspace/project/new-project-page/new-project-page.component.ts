@@ -20,6 +20,20 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd';
+import { UserService, ProjectService } from '@submarine/services';
+
+interface AddProjectParams {
+  name: string;
+  userName: string;
+  description: string;
+  type: string;
+  teamName: string;
+  visibility: string;
+  permission: string;
+  starNum: number;
+  likeNum: number;
+  messageNum: number;
+}
 
 
 @Component({
@@ -29,6 +43,7 @@ import { NzMessageService } from 'ng-zorro-antd';
 })
 export class NewProjectPageComponent implements OnInit {
   @Output() closeProjectPage = new EventEmitter<boolean>();
+  @Output() addProject = new EventEmitter<AddProjectParams>();
   @ViewChild('f', { static: true }) signupForm: NgForm;
   //TODO(jasoonn): get team from API
   teams = ['ciil'];
@@ -37,6 +52,7 @@ export class NewProjectPageComponent implements OnInit {
   initialState=0;
   
   templateType="Python";
+  username = '';
 
   
   newProjectContent = { projectName: '', description: '', visibility: 'Private', team: '' ,permission: 'View', files: []};
@@ -49,9 +65,16 @@ export class NewProjectPageComponent implements OnInit {
   ];
   
 
-  constructor(private msg: NzMessageService) { }
+  constructor(
+    private msg: NzMessageService,
+    private projectService: ProjectService,
+    private userService: UserService
+  ) { }
 
   ngOnInit() {
+    this.userService.fetchUserInfo().subscribe((data) => {
+      this.username = data.username;
+    })
   }
 
   handleChange({ file, fileList }): void {
@@ -84,10 +107,25 @@ export class NewProjectPageComponent implements OnInit {
 
   }
 
-  //TODO(jasoonn): Add the new project
   done(): void{
-    console.log(this.newProjectContent);
-    this.clearProject();
+    var project =  {
+      name: this.newProjectContent.projectName,
+      userName: this.username,
+      description: this.newProjectContent.description,
+      type: 'PROJECT_TYPE_NOTEBOOK',
+      teamName: this.newProjectContent.team,
+      visibility: this.newProjectContent.visibility,
+      permission: this.newProjectContent.permission,
+      starNum: 0,
+      likeNum: 0,
+      messageNum: 0
+    }
+    console.log(project)
+    // this.projectService.addProject(project).subscribe(() => {
+    // }, err => {
+    //   console.log("ERROR", err)
+    // });
+    this.addProject.emit(project);
   }
 
   //TODO(jasoonn): open in notebook

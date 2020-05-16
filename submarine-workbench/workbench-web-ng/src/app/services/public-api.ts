@@ -18,6 +18,7 @@
  */
 
 export * from './auth.service';
+export * from './project.service';
 export * from './base-api.service';
 export * from './department.service';
 export * from './local-storage.service';
