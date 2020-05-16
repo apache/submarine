@@ -23,8 +23,5 @@ export * from './user-info';
 export * from './rest';
 export * from './action';
 export * from './sys-user';
-<<<<<<< HEAD
 export * from './sys-team';
-=======
 export * from './project';
->>>>>>> SUBMARINE-463
