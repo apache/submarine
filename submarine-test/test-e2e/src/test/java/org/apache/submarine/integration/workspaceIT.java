@@ -56,7 +56,10 @@ public class workspaceIT extends AbstractSubmarineIT {
 
     // Routing to workspace
     pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
+    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:4200/workbench/workspace");
+
+    WebDriverWait wait = new WebDriverWait( driver, 60);
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='addProjectbtn']")));
 
     //Test project part
     pollingWait(By.xpath("//li[contains(text(), \"Project\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
@@ -76,7 +79,7 @@ public class workspaceIT extends AbstractSubmarineIT {
     //return to project page
     Assert.assertEquals(pollingWait(By.xpath("//div[@id='addProjectbtn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
 
-    WebDriverWait wait = new WebDriverWait( driver, 60);
+    // WebDriverWait wait = new WebDriverWait( driver, 60);
     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='addProjectbtn']")));
     
     //Test release part

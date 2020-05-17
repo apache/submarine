@@ -65,7 +65,7 @@ public class WebDriverManager {
     if (System.getenv("url") != null) {
       url = System.getenv("url");
     } else {
-      url = "http://localhost:8080";
+      url = "http://localhost:4200";
     }
 
     long start = System.currentTimeMillis();
