@@ -56,7 +56,7 @@ public class workspaceIT extends AbstractSubmarineIT {
 
     // Routing to workspace
     pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:4200/workbench/workspace");
+    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
 
     WebDriverWait wait = new WebDriverWait( driver, 60);
     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='addProjectbtn']")));

@@ -96,7 +96,7 @@ public class ChromeWebDriverProvider implements WebDriverProvider {
   public WebDriver createWebDriver(String webDriverPath) {
     System.setProperty("webdriver.chrome.driver", webDriverPath);
     ChromeOptions chromeOptions = new ChromeOptions();
-    // chromeOptions.addArguments("--headless");
+    chromeOptions.addArguments("--headless");
     return new ChromeDriver(chromeOptions);
   }
 
