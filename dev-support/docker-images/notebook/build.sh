@@ -17,7 +17,7 @@
 set -eo pipefail
 set -x
 
-TTF_JUPYTER_IMAGE_JUPYTER="apache/submarine:tf2.1.0-jupyter"
+TF_JUPYTER_IMAGE="apache/submarine:tf2.1.0-jupyter"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
   PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
@@ -28,7 +28,6 @@ export CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
 SUBMARINE_HOME=${CURRENT_PATH}/../../..
 
 # build image
-echo "Start building the ${TTF_JUPYTER_IMAGE_JUPYTER} docker image ..."
+echo "Start building the ${TF_JUPYTER_IMAGE} docker image ..."
 cd ${CURRENT_PATH}
-docker build -t ${TTF_JUPYTER_IMAGE_JUPYTER} .
-
+docker build -t ${TF_JUPYTER_IMAGE} .
