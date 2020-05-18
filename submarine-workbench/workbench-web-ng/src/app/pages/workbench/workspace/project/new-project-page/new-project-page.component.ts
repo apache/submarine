@@ -121,10 +121,6 @@ export class NewProjectPageComponent implements OnInit {
       messageNum: 0
     }
     console.log(project)
-    // this.projectService.addProject(project).subscribe(() => {
-    // }, err => {
-    //   console.log("ERROR", err)
-    // });
     this.addProject.emit(project);
   }
 
