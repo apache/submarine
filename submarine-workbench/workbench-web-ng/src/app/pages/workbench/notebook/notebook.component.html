@@ -1,0 +1,84 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<div id="notebookDiv" *ngIf="!isEditing">
+  <div id="searchRegin" align="right">
+    <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm">
+      <nz-form-item>
+        <nz-form-label>Notebook Name</nz-form-label>
+        <nz-form-control>
+          <input nz-input placeholder="Notebook name..." formControlName="notebookName"/>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button id="searchBtn" nz-button nzType="primary">
+            <i nz-icon nzType="search"></i>
+            Query
+          </button>
+          <button id="newBtn" nz-button nzType="primary" style="margin-left: 8px">
+            <i nz-icon nzType="plus"></i>
+            New Notebook
+          </button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </div>
+  <div id="notebookTable">
+    <nz-table #notebookListTable [nzData]="notebookList">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Creator</th>
+          <th>Create Time</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let notebook of notebookListTable.data, let i of index">
+          <td>{{notebook.name}}</td>
+          <td>{{notebook.createBy}}</td>
+          <td>{{notebook.createTime}}</td>
+          <td>
+            <a id="edit{{ i }}" (click)="edit(notebook)"><i nz-icon nzType="edit" nzTheme="outline"></i> Edit</a>
+            <nz-divider nzType="vertical"></nz-divider>
+            <a id="delete{{ i }}"><i nz-icon nzType="delete" nzTheme="outline"></i> Delete</a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+</div>
+
+<div *ngIf="isEditing">
+  <div style="background-color: white;">
+    <button id="btnRun" class="actionBar" nz-button nzType="primary">
+      <i nz-icon nzType="caret-right" nzTheme="outline"></i>Run
+    </button>
+    <button id="btnSave" class="actionBar" nz-button nzType="primary" (click)="saveNotebook()">
+      <i nz-icon nzType="save" nzTheme="outline"></i>Save
+    </button>
+    <button id="btnDelete" class="actionBar" nz-button nzType="danger">
+      <i nz-icon nzType="delete" nzTheme="outline"></i>Delete
+    </button>
+  </div>
+  <div style="margin-top: 5px; background-color: white; height: 500px;">
+    <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="code" style="height: 500px;"></ngx-monaco-editor>
+  </div>
+</div>
