@@ -54,5 +54,4 @@ import { WorkspaceModule } from './workspace/workspace.module';
     InterpreterModule
   ]
 })
-export class WorkbenchModule {
-}
+export class WorkbenchModule {}

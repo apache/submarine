@@ -30,11 +30,11 @@ const routes: Routes = [
   {
     path: 'workbench',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./pages/workbench/workbench.module').then(m => m.WorkbenchModule)
+    loadChildren: () => import('./pages/workbench/workbench.module').then((m) => m.WorkbenchModule)
   },
   {
     path: 'user',
-    loadChildren: () => import('./pages/user/user.module').then(m => m.UserModule)
+    loadChildren: () => import('./pages/user/user.module').then((m) => m.UserModule)
   }
 ];
 

@@ -18,39 +18,57 @@
   -->
 
 <div id="trainingDiv">
-    <h3 class="leaveBothMargin">
-        Category:
-        <button *ngFor="let category of categories" nz-button [nzType]="category.enable ? 'primary' : 'default'" [nzSize]="'small'" (click)="category.enable = ! category.enable" class="leaveMargin">
-            {{ category.name }}
-        </button>
-    </h3>
-    <hr class="horizontal_dotted_line"/>
-    <h3 class="leaveBothMargin"> 
-        Owner:
-        <nz-select [(ngModel)]="tagValue" [nzSize]="size" nzMode="tags" nzPlaceHolder="Please select" id="trainingSearchTag">
-            <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
-        </nz-select>
-        <button nz-button [nzType]="ownProcess ? 'primary' : 'default'" [nzSize]="'default'" class="leaveMargin" (click)="ownProcess=!ownProcess">
-            Myself
-        </button>
-    </h3>
-    
-    <hr class="horizontal_dotted_line"/>
-    <h3 class="leaveBothMargin">
-        Others: 
-        <label class="othersLabel">Active user:</label>
-        <nz-select [(ngModel)]="userSelectedValue" nzPlaceHolder="Choose" class="leaveMargin">
-            <nz-option nzValue="noLimit" nzLabel="No restriction"></nz-option>
-            <nz-option *ngFor="let activeUser of activeUsers" [nzValue]="activeUser" [nzLabel]="activeUser"></nz-option>
-        </nz-select>
-        <label class="othersLabel">Rating:</label>
-        <nz-select [(ngModel)]="ratingSelectedValue" nzPlaceHolder="Choose" class="leaveMargin">
-            <nz-option nzValue="noLimit" nzLabel="No restriction"></nz-option>
-            <nz-option *ngFor="let rating of ratings" [nzValue]="rating" [nzLabel]="rating"></nz-option>
-        </nz-select>
-    </h3>
+  <h3 class="leaveBothMargin">
+    Category:
+    <button
+      *ngFor="let category of categories"
+      nz-button
+      [nzType]="category.enable ? 'primary' : 'default'"
+      [nzSize]="'small'"
+      (click)="category.enable = !category.enable"
+      class="leaveMargin"
+    >
+      {{ category.name }}
+    </button>
+  </h3>
+  <hr class="horizontal_dotted_line" />
+  <h3 class="leaveBothMargin">
+    Owner:
+    <nz-select
+      [(ngModel)]="tagValue"
+      [nzSize]="size"
+      nzMode="tags"
+      nzPlaceHolder="Please select"
+      id="trainingSearchTag"
+    >
+      <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+    </nz-select>
+    <button
+      nz-button
+      [nzType]="ownProcess ? 'primary' : 'default'"
+      [nzSize]="'default'"
+      class="leaveMargin"
+      (click)="ownProcess = !ownProcess"
+    >
+      Myself
+    </button>
+  </h3>
+
+  <hr class="horizontal_dotted_line" />
+  <h3 class="leaveBothMargin">
+    Others:
+    <label class="othersLabel">Active user:</label>
+    <nz-select [(ngModel)]="userSelectedValue" nzPlaceHolder="Choose" class="leaveMargin">
+      <nz-option nzValue="noLimit" nzLabel="No restriction"></nz-option>
+      <nz-option *ngFor="let activeUser of activeUsers" [nzValue]="activeUser" [nzLabel]="activeUser"></nz-option>
+    </nz-select>
+    <label class="othersLabel">Rating:</label>
+    <nz-select [(ngModel)]="ratingSelectedValue" nzPlaceHolder="Choose" class="leaveMargin">
+      <nz-option nzValue="noLimit" nzLabel="No restriction"></nz-option>
+      <nz-option *ngFor="let rating of ratings" [nzValue]="rating" [nzLabel]="rating"></nz-option>
+    </nz-select>
+  </h3>
 </div>
 <div id="spanningDiv">
-    <nz-spin [nzSpinning]="isSpinning">
-    </nz-spin>
+  <nz-spin [nzSpinning]="isSpinning"></nz-spin>
 </div>

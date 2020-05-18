@@ -20,20 +20,20 @@
 <!--Team Home-->
 <div id="teamDiv">
   <div align="right">
-    <button nz-button id="btnAddTeam" nzType="primary" style="margin: 10px" (click)="addTeam()">
+    <button nz-button id="btnAddTeam" nzType="primary" style="margin: 10px;" (click)="addTeam()">
       <i nz-icon nzType="plus"></i>
-        Add Team
+      Add Team
     </button>
   </div>
   <div>
     <nz-table #teamListTable [nzData]="teamList" nzNoResult="No result">
       <thead>
-      <tr>
-        <th>Name</th>
-        <th>Owner</th>
-        <th>Created Time</th>
-        <th>Action</th>
-      </tr>
+        <tr>
+          <th>Name</th>
+          <th>Owner</th>
+          <th>Created Time</th>
+          <th>Action</th>
+        </tr>
       </thead>
       <tbody>
         <tr *ngFor="let team of teamListTable.data">
@@ -45,7 +45,8 @@
             <nz-divider nzType="vertical"></nz-divider>
             <a>Enter</a>
             <nz-divider nzType="vertical"></nz-divider>
-            <a (click)="deleteTeam(team)">Delete</a></td>
+            <a (click)="deleteTeam(team)">Delete</a>
+          </td>
         </tr>
       </tbody>
     </nz-table>
@@ -59,52 +60,54 @@
   [nzWidth]="540"
   (nzOnClose)="closeDrawer()"
   [nzVisible]="drawerVisible"
-  [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }">
+  [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }"
+>
   <!--Add Form-->
-  <form 
-  nz-form
-  [formGroup]="newTeamForm"
-  nzLayout="horizontal"
-  >
+  <form nz-form [formGroup]="newTeamForm" nzLayout="horizontal">
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Team Name</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="formTeamNameErrMesg">
-          <input nz-input id="inputNewTeamName" placeholder="Please input team name" formControlName="teamName"/>
-        </nz-form-control>
+      <nz-form-control [nzSm]="14" [nzXs]="24" [nzErrorTip]="formTeamNameErrMesg">
+        <input nz-input id="inputNewTeamName" placeholder="Please input team name" formControlName="teamName" />
+      </nz-form-control>
     </nz-form-item>
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Owner</nz-form-label>
-        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="This is required!">
-          <input nz-input id="inputNewTeamOwner" type="text" placeholder="Please input owner" formControlName="owner"/>
-        </nz-form-control>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="This is required!">
+        <input nz-input id="inputNewTeamOwner" type="text" placeholder="Please input owner" formControlName="owner" />
+      </nz-form-control>
     </nz-form-item>
   </form>
 
   <div align="right">
-    <button 
-      nz-button 
-      nzType="default" 
-      (click)="drawerVisible=flase;" 
-      style="margin-right: 8px;">Cancel</button>
-    <button 
-      nz-button 
+    <button nz-button nzType="default" (click)="drawerVisible = flase" style="margin-right: 8px;">Cancel</button>
+    <button
+      nz-button
       id="submitNewTeamBtn"
-      nzType="primary" 
-      [nzLoading] = "submitBtnIsLoading"
-      (click)="submitNewTeam()" 
+      nzType="primary"
+      [nzLoading]="submitBtnIsLoading"
+      (click)="submitNewTeam()"
       style="margin-right: 8px;"
-      [disabled] = "!newTeamForm.get('teamName').valid || !newTeamForm.get('owner').valid">Create</button>
+      [disabled]="!newTeamForm.get('teamName').valid || !newTeamForm.get('owner').valid"
+    >
+      Create
+    </button>
   </div>
 </nz-drawer>
 
 <!--Detail-->
-<nz-modal [nzVisible]="overviewModalVisible" [nzWidth]="540" nzTitle="Overview" (nzOnCancel)="handleCancel()" (nzOnOk)="handleOk()">
+<nz-modal
+  [nzVisible]="overviewModalVisible"
+  [nzWidth]="540"
+  nzTitle="Overview"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="handleOk()"
+>
   <h2>Team Name:</h2>
   <p>{{ currentTeam_teamName }}</p>
   <h2>ID:</h2>
-  <p>{{  currentTeam_id  }}</p>
+  <p>{{ currentTeam_id }}</p>
   <h2>Owner:</h2>
-  <p>{{  currentTeam_owner  }}</p>
+  <p>{{ currentTeam_owner }}</p>
   <h2>Create Time</h2>
-  <p>{{  currentTeam_createTime  }}</p>
+  <p>{{ currentTeam_createTime }}</p>
 </nz-modal>

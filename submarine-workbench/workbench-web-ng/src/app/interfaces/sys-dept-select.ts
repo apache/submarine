@@ -29,6 +29,6 @@ export class SysDeptSelect {
     this.value = data.value;
     this.title = data.title;
     this.disabled = data.disabled;
-    this.children = data.children.map(item => new SysDeptSelect(item));
+    this.children = data.children.map((item) => new SysDeptSelect(item));
   }
 }

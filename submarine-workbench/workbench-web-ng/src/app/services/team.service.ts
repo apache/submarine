@@ -19,12 +19,12 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BaseApiService } from './base-api.service';
+import { ValidationErrors } from '@angular/forms';
 import { ListResult, Rest } from '@submarine/interfaces';
+import { SysTeam } from '@submarine/interfaces/sys-team';
 import { of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { SysTeam } from '@submarine/interfaces/sys-team';
-import { ValidationErrors } from '@angular/forms';
+import { BaseApiService } from './base-api.service';
 
 interface TeamListQueryParams {
   teamName: string;
@@ -36,38 +36,35 @@ interface TeamListQueryParams {
 @Injectable({
   providedIn: 'root'
 })
-
 export class TeamService {
-
-  constructor(private httpClient: HttpClient, private baseApi: BaseApiService) {
-  }
+  constructor(private httpClient: HttpClient, private baseApi: BaseApiService) {}
 
   getTeamList(queryParams: Partial<TeamListQueryParams>): Observable<ListResult<SysTeam>> {
     const apiUrl = this.baseApi.getRestApi('/team/list');
-    return this.httpClient.get<Rest<ListResult<SysTeam>>>(apiUrl, {
-      params: queryParams
-    }).pipe(
-      switchMap(res => {
-        if (res.success) {
-          console.log(res.result);
-          return of(res.result);
-        }
-        else {
-          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get', queryParams);
-        }
+    return this.httpClient
+      .get<Rest<ListResult<SysTeam>>>(apiUrl, {
+        params: queryParams
       })
-    );
+      .pipe(
+        switchMap((res) => {
+          if (res.success) {
+            console.log(res.result);
+            return of(res.result);
+          } else {
+            throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get', queryParams);
+          }
+        })
+      );
   }
 
   createTeam(params): Observable<SysTeam> {
     const apiUrl = this.baseApi.getRestApi('/team/add');
     return this.httpClient.post<Rest<SysTeam>>(apiUrl, params).pipe(
-      switchMap(res => {
-        console.log(res)
+      switchMap((res) => {
+        console.log(res);
         if (res.success) {
           return of(res.result);
-        }
-        else {
+        } else {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', params);
         }
       })
@@ -76,37 +73,41 @@ export class TeamService {
 
   deleteTeam(id: string) {
     const apiUrl = this.baseApi.getRestApi('/team/delete');
-    return this.httpClient.delete<Rest<any>>(apiUrl, {
-      params: {
-        id
-      }
-    }).pipe(
-      switchMap(res => {
-        if (res.success) {
-          return of(true);
-        }
-        else {
-          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', id);
+    return this.httpClient
+      .delete<Rest<any>>(apiUrl, {
+        params: {
+          id
         }
       })
-    )
+      .pipe(
+        switchMap((res) => {
+          if (res.success) {
+            return of(true);
+          } else {
+            throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', id);
+          }
+        })
+      );
   }
 
-  newTeamNameCheck(nameParams): Promise<ValidationErrors|null> {
+  newTeamNameCheck(nameParams): Promise<ValidationErrors | null> {
     const promise = new Promise((resolve, reject) => {
       const apiUrl = this.baseApi.getRestApi('/sys/duplicateCheck');
-      this.httpClient.get<any>(apiUrl,{
-        params: nameParams
-      }).toPromise()
-      .then((res: any) => {
-          console.log(res)
-          resolve(res.success);
-        },
-        err => {
-          console.log(err);
-          reject(err);
-        }
-      );
+      this.httpClient
+        .get<any>(apiUrl, {
+          params: nameParams
+        })
+        .toPromise()
+        .then(
+          (res: any) => {
+            console.log(res);
+            resolve(res.success);
+          },
+          (err) => {
+            console.log(err);
+            reject(err);
+          }
+        );
     });
     return promise;
   }

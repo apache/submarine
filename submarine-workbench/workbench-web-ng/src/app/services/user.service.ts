@@ -42,13 +42,12 @@ interface UserListQueryParams {
 export class UserService {
   private userInfo: UserInfo;
 
-  constructor(private httpClient: HttpClient, private baseApi: BaseApiService) {
-  }
+  constructor(private httpClient: HttpClient, private baseApi: BaseApiService) {}
 
   fetchUserInfo(): Observable<UserInfo> {
     const apiUrl = this.baseApi.getRestApi('/sys/user/info');
     return this.httpClient.get<Rest<UserInfo>>(apiUrl).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           this.userInfo = new UserInfo(res.result);
           return of(this.userInfo);
@@ -61,41 +60,45 @@ export class UserService {
 
   fetchUserList(queryParams: Partial<UserListQueryParams>): Observable<ListResult<SysUser>> {
     const apiUrl = this.baseApi.getRestApi('/sys/user/list');
-    return this.httpClient.get<Rest<ListResult<SysUser>>>(apiUrl, {
-      params: queryParams
-    }).pipe(
-      switchMap(res => {
-        if (res.success) {
-          return of(res.result);
-        } else {
-          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get', queryParams);
-        }
+    return this.httpClient
+      .get<Rest<ListResult<SysUser>>>(apiUrl, {
+        params: queryParams
       })
-    );
+      .pipe(
+        switchMap((res) => {
+          if (res.success) {
+            return of(res.result);
+          } else {
+            throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get', queryParams);
+          }
+        })
+      );
   }
 
   changePassword(id: string, password: string): Observable<boolean> {
     const apiUrl = this.baseApi.getRestApi('/sys/user/changePassword');
 
-    return this.httpClient.put<Rest<any>>(apiUrl, {
-      id,
-      password: md5(password)
-    }).pipe(
-      switchMap(res => {
-        if (res.success) {
-          return of(true);
-        } else {
-          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'put', { id, password });
-        }
+    return this.httpClient
+      .put<Rest<any>>(apiUrl, {
+        id,
+        password: md5(password)
       })
-    );
+      .pipe(
+        switchMap((res) => {
+          if (res.success) {
+            return of(true);
+          } else {
+            throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'put', { id, password });
+          }
+        })
+      );
   }
 
   createUser(sysUser: Partial<SysUser>): Observable<SysUser> {
     const apiUrl = this.baseApi.getRestApi('/sys/user/add');
 
     return this.httpClient.post<Rest<SysUser>>(apiUrl, sysUser).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           return of(res.result);
         } else {
@@ -109,7 +112,7 @@ export class UserService {
     const apiUrl = this.baseApi.getRestApi('/sys/user/edit');
 
     return this.httpClient.put<Rest<SysUser>>(apiUrl, sysUser).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           return of(res.result);
         } else {
@@ -122,18 +125,20 @@ export class UserService {
   deleteUser(id: string): Observable<boolean> {
     const apiUrl = this.baseApi.getRestApi(`/sys/user/delete`);
 
-    return this.httpClient.delete<Rest<any>>(apiUrl, {
-      params: {
-        id
-      }
-    }).pipe(
-      switchMap(res => {
-        if (res.success) {
-          return of(true);
-        } else {
-          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete', id);
+    return this.httpClient
+      .delete<Rest<any>>(apiUrl, {
+        params: {
+          id
         }
       })
-    );
+      .pipe(
+        switchMap((res) => {
+          if (res.success) {
+            return of(true);
+          } else {
+            throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete', id);
+          }
+        })
+      );
   }
 }

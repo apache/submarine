@@ -61,11 +61,11 @@ export class InterpreterComponent implements OnInit {
     }
   ];
 
-  statusColor: {[key: string]: string} = {
+  statusColor: { [key: string]: string } = {
     Running: 'blue',
     Idle: 'green'
-  }
-  interpreterQueryForm: FormGroup
+  };
+  interpreterQueryForm: FormGroup;
   // TODO(kevin85421)
   lastUpdatedTime: number = Date.now();
   interpreterInfoList: InterpreterInfo[] = [
@@ -83,7 +83,7 @@ export class InterpreterComponent implements OnInit {
       progress: 65,
       lastUpdated: this.lastUpdatedTime
     }
-  ]
+  ];
 
   // TODO(kevin85421)
   queryInterpreter() {
@@ -96,11 +96,10 @@ export class InterpreterComponent implements OnInit {
   // TODO(kevin85421)
   killInterpreter() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   onShowAddInterpreterModal() {
-    this.addModalTitle = "Add";
+    this.addModalTitle = 'Add';
     this.addModalVisible = true;
   }
 
@@ -108,7 +107,7 @@ export class InterpreterComponent implements OnInit {
     this.addModalVisible = false;
   }
 
-  updateNewInterpreter(newInterpreter: {interpreterName: string, interpreterType: string}) {
+  updateNewInterpreter(newInterpreter: { interpreterName: string; interpreterType: string }) {
     this.interpreterInfoList = [
       ...this.interpreterInfoList,
       {
@@ -118,7 +117,7 @@ export class InterpreterComponent implements OnInit {
         progress: 0,
         lastUpdated: this.lastUpdatedTime
       }
-    ]
+    ];
     this.onHideAddInterpreterModal();
   }
 }

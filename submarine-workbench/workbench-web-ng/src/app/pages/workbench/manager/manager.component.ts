@@ -25,7 +25,7 @@ import _ from 'lodash';
 interface HeaderInfo {
   title: string;
   description: string;
-  breadCrumb: Array<{ title: string, routerLink?: string }>;
+  breadCrumb: Array<{ title: string; routerLink?: string }>;
 }
 
 @Component({
@@ -88,7 +88,7 @@ export class ManagerComponent implements OnInit {
   currentHeaderInfo: HeaderInfo;
 
   constructor(private route: ActivatedRoute, private location: Location, private router: Router) {
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         const lastMatch = _.last(event.urlAfterRedirects.split('/'));
         this.currentHeaderInfo = this.headerInfo[lastMatch];

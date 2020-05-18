@@ -26,15 +26,24 @@ import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { DataDictConfigModalComponent } from './data-dict-config-modal/data-dict-config-modal.component';
 import { DataDictModalComponent } from './data-dict-modal/data-dict-modal.component';
 import { DataDictComponent } from './data-dict/data-dict.component';
+import { DepartmentComponent } from './department/department.component';
 import { ManagerRoutingModule } from './manager-routing.module';
 import { ManagerComponent } from './manager.component';
 import { UserDrawerComponent } from './user-drawer/user-drawer.component';
 import { UserPasswordModalComponent } from './user-password-modal/user-password-modal.component';
 import { UserComponent } from './user/user.component';
-import { DepartmentComponent } from './department/department.component';
 
 @NgModule({
-  declarations: [UserComponent, ManagerComponent, DataDictComponent, UserPasswordModalComponent, UserDrawerComponent, DataDictModalComponent, DataDictConfigModalComponent, DepartmentComponent],
+  declarations: [
+    UserComponent,
+    ManagerComponent,
+    DataDictComponent,
+    UserPasswordModalComponent,
+    UserDrawerComponent,
+    DataDictModalComponent,
+    DataDictConfigModalComponent,
+    DepartmentComponent
+  ],
   imports: [CommonModule, ManagerRoutingModule, NgZorroAntdModule, ComponentsModule, FormsModule, ReactiveFormsModule]
 })
 export class ManagerModule {}

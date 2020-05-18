@@ -41,7 +41,7 @@ export class InterpreterAddModalComponent implements OnChanges {
     });
   }
 
-  ngOnChanges (changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges) {
     this.form.reset({
       interpreterName: this.interpreterName,
       interpreterType: this.interpreterType

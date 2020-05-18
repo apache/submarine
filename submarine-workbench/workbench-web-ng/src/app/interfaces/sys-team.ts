@@ -20,6 +20,6 @@
 import { BaseEntity } from './base-entity';
 
 export interface SysTeam extends BaseEntity {
-    teamName: string;
-    owner: string;
+  teamName: string;
+  owner: string;
 }

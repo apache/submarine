@@ -26,10 +26,10 @@
         </nz-breadcrumb-item>
         <nz-breadcrumb-item>experiment</nz-breadcrumb-item>
       </nz-breadcrumb>
-      <br/>
+      <br />
       <h2>Experiment</h2>
       <nz-content>A experiment is a way of running a adhoc, pre-defined or pipeline on a scheduled basis.</nz-content>
-      <br/>
+      <br />
     </div>
   </nz-layout>
   <div id="experimentData">
@@ -39,14 +39,27 @@
         <label nz-radio-button nzValue="Own">Owned By Me</label>
         <label nz-radio-button nzValue="Access">Accessable By Me</label>
       </nz-radio-group>
-      <nz-input-group nzSearch style="width:300px;margin-top: 15px;margin-left:10px;margin-right:5px;" [nzAddOnAfter]="suffixIconButton">
+      <nz-input-group
+        nzSearch
+        style="width: 300px; margin-top: 15px; margin-left: 10px; margin-right: 5px;"
+        [nzAddOnAfter]="suffixIconButton"
+      >
         <input type="text" nz-input placeholder="input search text" />
       </nz-input-group>
       <ng-template #suffixIconButton>
         <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
       </ng-template>
 
-      <button nz-button id="openExperiment" nzType="primary" style="margin-right: 30px;margin-bottom: 15px;margin-top: 15px;" (click)="isVisible=true;"><i nz-icon nzType="plus"></i>New Experiment</button>
+      <button
+        nz-button
+        id="openExperiment"
+        nzType="primary"
+        style="margin-right: 30px; margin-bottom: 15px; margin-top: 15px;"
+        (click)="isVisible = true"
+      >
+        <i nz-icon nzType="plus"></i>
+        New Experiment
+      </button>
     </div>
     <nz-table id="releaseTable" nzBordered #basicTable [nzData]="experimentList" [nzNoResult]="'No data'">
       <thead>
@@ -69,8 +82,12 @@
           <td>{{ data.runningTime }}</td>
           <td>{{ data.finishedTime }}</td>
           <td>{{ data.status }}</td>
-          <td *ngIf="data.status === 'Succeeded'"><nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress></td>
-          <td *ngIf="data.status !== 'Succeeded'"><nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress></td>
+          <td *ngIf="data.status === 'Succeeded'">
+            <nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress>
+          </td>
+          <td *ngIf="data.status !== 'Succeeded'">
+            <nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress>
+          </td>
           <td class="td-action" nzRight="0px">
             <a (click)="startExperiment(data)">Start</a>
             <a nz-dropdown [nzDropdownMenu]="more">
@@ -99,12 +116,12 @@
     </nz-table>
   </div>
   <nz-modal
-      [(nzVisible)]="isVisible"
-      nzTitle="Create Experiment"
-      [(nzOkText)]="okText"
-      [nzOkLoading]="isOkLoading"
-      (nzOnCancel)="isVisible=false;"
-      [nzWidth]="740"
+    [(nzVisible)]="isVisible"
+    nzTitle="Create Experiment"
+    [(nzOkText)]="okText"
+    [nzOkLoading]="isOkLoading"
+    (nzOnCancel)="isVisible = false"
+    [nzWidth]="740"
   >
     <div>
       <nz-steps [nzCurrent]="current">
@@ -116,50 +133,122 @@
     <div>
       <form [formGroup]="createExperiment">
         <div *nzModalFooter>
-          <button nz-button nzType="default" (click)="isVisible=false;"> Cancel </button>
-          <button id="go" nz-button nzType="primary" [disabled]="!(createExperiment.get('experimentName').valid && createExperiment.get('description').valid)" (click)="handleOk()">{{okText}}</button>
-          <button *ngIf="current>0" nz-button nzType="default" style="float: left;" (click)="current=current-1;okText = 'Next Step';">Prev Step</button>
+          <button nz-button nzType="default" (click)="isVisible = false">Cancel</button>
+          <button
+            id="go"
+            nz-button
+            nzType="primary"
+            [disabled]="!(createExperiment.get('experimentName').valid && createExperiment.get('description').valid)"
+            (click)="handleOk()"
+          >
+            {{ okText }}
+          </button>
+          <button
+            *ngIf="current > 0"
+            nz-button
+            nzType="default"
+            style="float: left;"
+            (click)="current = current - 1; okText = 'Next Step'"
+          >
+            Prev Step
+          </button>
         </div>
         <div [ngSwitch]="current" style="margin-top: 30px;">
           <div *ngSwitchCase="0">
             <div>
-              <label class="form-label"><span class="red-star">* </span> Experiment Name:</label>
-              <input type="text" id="experimentName" style="margin-top: 32px;width: 350px;" class="form-control" formControlName="experimentName">
+              <label class="form-label">
+                <span class="red-star">*</span>
+                Experiment Name:
+              </label>
+              <input
+                type="text"
+                id="experimentName"
+                style="margin-top: 32px; width: 350px;"
+                class="form-control"
+                formControlName="experimentName"
+              />
             </div>
             <div>
-              <label class="form-label"><span class="red-star">* </span>Description:</label>
-              <textarea rows="6" class="form-control" style="margin-top: 32px;width: 350px;" formControlName="description"></textarea>
+              <label class="form-label">
+                <span class="red-star">*</span>
+                Description:
+              </label>
+              <textarea
+                rows="6"
+                class="form-control"
+                style="margin-top: 32px; width: 350px;"
+                formControlName="description"
+              ></textarea>
             </div>
           </div>
           <div *ngSwitchCase="1" id="page2">
             <div>
-              <label class="form-label"><span class="red-star">* </span> Experiment Spec:</label>
-              <nz-select formControlName="experimentSpec" nzPlaceHolder="Choose" style="width: 350px;margin-top: 30px;">
-                <nz-option *ngFor="let experimentSpec of ExperimentSpecs" [nzValue]="experimentSpec" [nzLabel]="experimentSpec"></nz-option>
+              <label class="form-label">
+                <span class="red-star">*</span>
+                Experiment Spec:
+              </label>
+              <nz-select
+                formControlName="experimentSpec"
+                nzPlaceHolder="Choose"
+                style="width: 350px; margin-top: 30px;"
+              >
+                <nz-option
+                  *ngFor="let experimentSpec of ExperimentSpecs"
+                  [nzValue]="experimentSpec"
+                  [nzLabel]="experimentSpec"
+                ></nz-option>
               </nz-select>
             </div>
             <div>
-              <label class="form-label"><span class="red-star">* </span> Rule Template:</label>
-              <nz-select formControlName="ruleTemplate" nzPlaceHolder="Choose" style="width: 350px;margin-top: 30px;">
-                <nz-option *ngFor="let ruleTemplate of ruleTemplates" [nzValue]="ruleTemplate" [nzLabel]="ruleTemplate"></nz-option>
+              <label class="form-label">
+                <span class="red-star">*</span>
+                Rule Template:
+              </label>
+              <nz-select formControlName="ruleTemplate" nzPlaceHolder="Choose" style="width: 350px; margin-top: 30px;">
+                <nz-option
+                  *ngFor="let ruleTemplate of ruleTemplates"
+                  [nzValue]="ruleTemplate"
+                  [nzLabel]="ruleTemplate"
+                ></nz-option>
               </nz-select>
             </div>
             <div>
-              <label class="form-label"><span class="red-star">* </span> Rule Type:</label>
-              <nz-radio-group formControlName="ruleType" style="width: 350px;margin-top: 30px;margin-bottom: 30px;">
+              <label class="form-label">
+                <span class="red-star">*</span>
+                Rule Type:
+              </label>
+              <nz-radio-group formControlName="ruleType" style="width: 350px; margin-top: 30px; margin-bottom: 30px;">
                 <label *ngFor="let ruletype of ruleTypes" nz-radio [nzValue]="ruletype">{{ ruletype }}</label>
               </nz-radio-group>
             </div>
           </div>
           <div *ngSwitchCase="2">
             <div>
-              <label class="pg3-form-label"><span class="red-star">* </span> Start Date:</label>
-              <nz-date-picker [nzFormat]="'yyyy/MM/dd'" formControlName="startDate" style="width: 350px;margin-top: 30px;"></nz-date-picker>
+              <label class="pg3-form-label">
+                <span class="red-star">*</span>
+                Start Date:
+              </label>
+              <nz-date-picker
+                [nzFormat]="'yyyy/MM/dd'"
+                formControlName="startDate"
+                style="width: 350px; margin-top: 30px;"
+              ></nz-date-picker>
             </div>
             <div>
-              <label class="pg3-form-label"><span class="red-star">* </span> Schedule Cycle:</label>
-              <nz-select formControlName="scheduleCycle" nzPlaceHolder="Choose" style="width: 195px;margin-top: 30px;margin-bottom: 30px;">
-                <nz-option *ngFor="let scheduleCycle of scheduleCycles" [nzValue]="scheduleCycle" [nzLabel]="scheduleCycle"></nz-option>
+              <label class="pg3-form-label">
+                <span class="red-star">*</span>
+                Schedule Cycle:
+              </label>
+              <nz-select
+                formControlName="scheduleCycle"
+                nzPlaceHolder="Choose"
+                style="width: 195px; margin-top: 30px; margin-bottom: 30px;"
+              >
+                <nz-option
+                  *ngFor="let scheduleCycle of scheduleCycles"
+                  [nzValue]="scheduleCycle"
+                  [nzLabel]="scheduleCycle"
+                ></nz-option>
               </nz-select>
             </div>
           </div>

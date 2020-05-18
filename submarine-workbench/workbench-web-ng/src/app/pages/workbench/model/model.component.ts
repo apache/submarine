@@ -25,10 +25,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./model.component.scss']
 })
 export class ModelComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

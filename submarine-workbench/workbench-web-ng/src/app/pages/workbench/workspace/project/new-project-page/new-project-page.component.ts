@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewChild, Output, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ProjectService, UserService } from '@submarine/services';
 import { NzMessageService } from 'ng-zorro-antd';
-import { UserService, ProjectService } from '@submarine/services';
 
 interface AddProjectParams {
   name: string;
@@ -35,53 +35,57 @@ interface AddProjectParams {
   messageNum: number;
 }
 
-
 @Component({
-  selector: 'app-new-project-page',
+  selector: 'submarine-new-project-page',
   templateUrl: './new-project-page.component.html',
   styleUrls: ['./new-project-page.component.scss']
 })
 export class NewProjectPageComponent implements OnInit {
-  @Output() closeProjectPage = new EventEmitter<boolean>();
-  @Output() addProject = new EventEmitter<AddProjectParams>();
+  @Output() readonly closeProjectPage = new EventEmitter<boolean>();
+  @Output() readonly addProject = new EventEmitter<AddProjectParams>();
   @ViewChild('f', { static: true }) signupForm: NgForm;
-  //TODO(jasoonn): get team from API
+  // TODO(jasoonn): get team from API
   teams = ['ciil'];
-  
+
   current = 0;
-  initialState=0;
-  
-  templateType="Python";
+  initialState = 0;
+
+  templateType = 'Python';
   username = '';
 
-  
-  newProjectContent = { projectName: '', description: '', visibility: 'Private', team: '' ,permission: 'View', files: []};
+  newProjectContent = {
+    projectName: '',
+    description: '',
+    visibility: 'Private',
+    team: '',
+    permission: 'View',
+    files: []
+  };
   Templates = [
-    {type:'Python', description: 'Python Template', checked: true},
-    {type:'R', description: 'R Template', checked: false},
-    {type:'Spark', description: 'Spark Template', checked: false},
-    {type:'Tensorflow', description: 'Tensorflow Template', checked: false},
-    {type:'Pytorch', description: 'Pytorch Template', checked: false},
+    { type: 'Python', description: 'Python Template', checked: true },
+    { type: 'R', description: 'R Template', checked: false },
+    { type: 'Spark', description: 'Spark Template', checked: false },
+    { type: 'TensorFlow', description: 'TensorFlow Template', checked: false },
+    { type: 'PyTorch', description: 'PyTorch Template', checked: false }
   ];
-  
 
   constructor(
     private msg: NzMessageService,
     private projectService: ProjectService,
     private userService: UserService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.userService.fetchUserInfo().subscribe((data) => {
       this.username = data.username;
-    })
+    });
   }
 
   handleChange({ file, fileList }): void {
     const status = file.status;
     if (status !== 'uploading') {
       console.log(file, fileList);
-      console.log(this.newProjectContent.files)
+      console.log(this.newProjectContent.files);
     }
     if (status === 'done') {
       this.msg.success(`${file.name} file uploaded successfully.`);
@@ -91,24 +95,25 @@ export class NewProjectPageComponent implements OnInit {
     }
   }
 
-
-  clearProject(){
+  clearProject() {
     this.closeProjectPage.emit(true);
   }
 
-  refreshCheck(template){
-    if (template.checked === true){
-      this.Templates.forEach(function(item, index, array){
-        if (item.type !== template.type) array[index].checked = false;
+  refreshCheck(template) {
+    if (template.checked === true) {
+      this.Templates.forEach(function (item, index, array) {
+        if (item.type !== template.type) {
+          array[index].checked = false;
+        }
       });
       this.templateType = template.type;
+    } else {
+      this.templateType = '';
     }
-    else this.templateType = "";
-
   }
 
-  done(): void{
-    var project =  {
+  done(): void {
+    let project = {
       name: this.newProjectContent.projectName,
       userName: this.username,
       description: this.newProjectContent.description,
@@ -119,13 +124,11 @@ export class NewProjectPageComponent implements OnInit {
       starNum: 0,
       likeNum: 0,
       messageNum: 0
-    }
-    console.log(project)
+    };
+    console.log(project);
     this.addProject.emit(project);
   }
 
-  //TODO(jasoonn): open in notebook
-  openNotebook() {
-    ;
-  }
+  // TODO(jasoonn): open in notebook
+  openNotebook() {}
 }

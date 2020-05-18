@@ -8,7 +8,8 @@
     {
       "files": ".prettierrc",
       "options": {
-        "parser": "json"
+        "parser": "json",
+        "trailingComma": "none"
       }
     }
   ]

@@ -34,9 +34,7 @@ export class PageLayoutComponent implements OnInit {
   @Input() description: string;
   @Input() breadCrumb: BreadCrumbItem[];
 
-  constructor() {
-  }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

@@ -85,7 +85,7 @@
         Confirm
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan" [nzErrorTip]="confirmErrorTpl">
-        <input type="password" nz-input formControlName="confirm" placeholder="Please confirm password"/>
+        <input type="password" nz-input formControlName="confirm" placeholder="Please confirm password" />
 
         <ng-template #confirmErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
@@ -104,7 +104,7 @@
         Real Name
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan" nzErrorTip="Please input account's real name">
-        <input type="text" nz-input formControlName="realName" placeholder="User's real name" [readOnly]="readonly"/>
+        <input type="text" nz-input formControlName="realName" placeholder="User's real name" [readOnly]="readonly" />
       </nz-form-control>
     </nz-form-item>
 
@@ -153,7 +153,7 @@
         email
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan" [nzErrorTip]="emailErrorTip">
-        <input type="email" nz-input formControlName="email" [readOnly]="readonly"/>
+        <input type="email" nz-input formControlName="email" [readOnly]="readonly" />
 
         <ng-template #emailErrorTip let-control>
           <ng-container *ngIf="control.hasError('email')">
@@ -172,7 +172,7 @@
         Phone
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan" [nzErrorTip]="phoneErrorTip">
-        <input type="text" nz-input formControlName="phone" [readOnly]="readonly"/>
+        <input type="text" nz-input formControlName="phone" [readOnly]="readonly" />
 
         <ng-template #phoneErrorTip let-control>
           <ng-container *ngIf="control.hasError('duplicated')">

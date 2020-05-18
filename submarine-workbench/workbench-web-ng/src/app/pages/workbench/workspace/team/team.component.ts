@@ -18,82 +18,86 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators, ValidationErrors } from '@angular/forms';
+import { FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { SysTeam } from '@submarine/interfaces';
 import { TeamService } from '@submarine/services';
 import { NzMessageService } from 'ng-zorro-antd';
 
-
-
 @Component({
-  selector: 'app-team',
+  selector: 'submarine-team',
   templateUrl: './team.component.html',
   styleUrls: ['./team.component.scss']
 })
 export class TeamComponent implements OnInit {
   column: string = 'createdTime';
   order: string = 'description';
-  teamName: string = "";
+  teamName: string = '';
   teamList: SysTeam[] = [];
 
-  //Form
-  newTeamForm: FormGroup; //For Adding Form
-  formTeamNameErrMesg = "";
+  // Form
+  newTeamForm: FormGroup; // For Adding Form
+  formTeamNameErrMesg = '';
 
-  //Drawer
+  // Drawer
   drawerVisible = false;
   submitBtnIsLoading = false;
 
-  //Modal
+  // Modal
   overviewModalVisible = false;
   currentTeam_teamName: string;
   currentTeam_id: string;
   currentTeam_owner: string;
   currentTeam_createTime: string;
 
-  constructor( 
-    private teamService: TeamService,
-    private nzMessageService: NzMessageService,
-    ) { }
+  constructor(private teamService: TeamService, private nzMessageService: NzMessageService) {}
 
   ngOnInit() {
     this.newTeamForm = new FormGroup({
-      'teamName': new FormControl(null, [Validators.required, this.teamNameRequired.bind(this)], this.teamNameCheck.bind(this)),
-      'owner': new FormControl(null, Validators.required)
+      teamName: new FormControl(
+        null,
+        [Validators.required, this.teamNameRequired.bind(this)],
+        this.teamNameCheck.bind(this)
+      ),
+      owner: new FormControl(null, Validators.required)
     });
 
     this.getTeamList();
-    
   }
-  
+
   getTeamList() {
-    this.teamService.getTeamList({
-      column: this.column,
-      order: this.order,
-      teamName: this.teamName,
-    }).subscribe(({ records }) => {
-      this.teamList = records;
-      console.log(records);
-    })
+    this.teamService
+      .getTeamList({
+        column: this.column,
+        order: this.order,
+        teamName: this.teamName
+      })
+      .subscribe(({ records }) => {
+        this.teamList = records;
+        console.log(records);
+      });
   }
 
   submitNewTeam() {
     this.submitBtnIsLoading = true;
-    this.teamService.createTeam({
-      teamName: this.newTeamForm.get('teamName').value,
-      owner: this.newTeamForm.get('owner').value,
-      createBy: this.newTeamForm.get('owner').value
-    }).subscribe(
-      () => {
-      this.nzMessageService.success('Create team success!');
-      this.getTeamList();
-      this.drawerVisible = false ;
-      this.submitBtnIsLoading = false ;
-      this.newTeamForm.reset();
-    }, err => {
-      this.nzMessageService.error(err.message);
-      this.submitBtnIsLoading = false ;
-    })
+    this.teamService
+      .createTeam({
+        teamName: this.newTeamForm.get('teamName').value,
+        owner: this.newTeamForm.get('owner').value,
+        createBy: this.newTeamForm.get('owner').value
+      })
+      .subscribe(
+        () => {
+          this.nzMessageService.success('Create team success!');
+          this.getTeamList();
+          this.drawerVisible = false;
+          this.submitBtnIsLoading = false;
+          this.newTeamForm.reset();
+        },
+        (err) => {
+          this.nzMessageService.error(err.message);
+          this.submitBtnIsLoading = false;
+        }
+      );
   }
 
   deleteTeam(teamData: SysTeam) {
@@ -101,59 +105,59 @@ export class TeamComponent implements OnInit {
       () => {
         this.nzMessageService.success('Delete team success!');
         this.getTeamList();
-      }
-      , err => {
+      },
+      (err) => {
         this.nzMessageService.error(err.message);
       }
-    )
+    );
   }
 
   closeDrawer() {
-    this.drawerVisible = false ;
-    this.newTeamForm.reset({
-    });
+    this.drawerVisible = false;
+    this.newTeamForm.reset({});
   }
 
-  addTeam(){
-    this.drawerVisible = true ;
+  addTeam() {
+    this.drawerVisible = true;
   }
 
-  teamNameRequired(check: FormControl): {[key: string]:any}|null{
-    if (check.value === "") {
-      var errorMessage = "Please enter new team name!";
+  teamNameRequired(check: FormControl): { [key: string]: any } | null {
+    if (check.value === '') {
+      const errorMessage = 'Please enter new team name!';
       this.formTeamNameErrMesg = errorMessage;
-      return {mesg: true}
-    }
-    else {
-      this.formTeamNameErrMesg = "";
+      return { mesg: true };
+    } else {
+      this.formTeamNameErrMesg = '';
       return null;
     }
   }
 
-  teamNameCheck(check: FormControl): Promise<ValidationErrors|null>{
-    var params = {
+  teamNameCheck(check: FormControl): Promise<ValidationErrors | null> {
+    const params = {
       tableName: 'team',
       fieldName: 'team_name',
       fieldVal: check.value
-    }
+    };
     const promise = new Promise((resolve, reject) => {
-      this.teamService.newTeamNameCheck(params).then((success) => {
-        if (success) {
-          resolve(null);
+      this.teamService.newTeamNameCheck(params).then(
+        (success) => {
+          if (success) {
+            resolve(null);
+          } else {
+            this.formTeamNameErrMesg = 'This value already exists is not available!';
+            resolve({ 'Duplicate Name': true });
+          }
+        },
+        (err) => {
+          reject(err);
         }
-        else {
-          this.formTeamNameErrMesg = "This value already exists is not available!";
-          resolve({"Duplicate Name": true});
-        }
-      },(err)=>{
-        reject(err);
-      });
+      );
     });
     return promise;
   }
 
   showOverview(team) {
-    this.overviewModalVisible = true ;
+    this.overviewModalVisible = true;
     this.currentTeam_teamName = team.teamName;
     this.currentTeam_id = team.id;
     this.currentTeam_owner = team.owner;
@@ -161,10 +165,10 @@ export class TeamComponent implements OnInit {
   }
 
   handleOk() {
-    this.overviewModalVisible = false ;
+    this.overviewModalVisible = false;
   }
 
   handleCancel() {
-    this.overviewModalVisible = false ;
+    this.overviewModalVisible = false;
   }
 }

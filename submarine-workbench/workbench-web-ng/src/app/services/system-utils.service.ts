@@ -21,9 +21,9 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ListResult, Rest } from '@submarine/interfaces';
 import { SysDictItem } from '@submarine/interfaces/sys-dict-item';
-import { BaseApiService } from './base-api.service';
 import { of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { BaseApiService } from './base-api.service';
 
 export enum SysDictCode {
   'USER_SEX' = 'SYS_USER_SEX',
@@ -36,8 +36,7 @@ export enum SysDictCode {
 export class SystemUtilsService {
   dictItemCache: { [s: string]: ListResult<any> } = {};
 
-  constructor(private httpClient: HttpClient, private baseApi: BaseApiService) {
-  }
+  constructor(private httpClient: HttpClient, private baseApi: BaseApiService) {}
 
   fetchSysDictByCode(code: SysDictCode): Observable<ListResult<SysDictItem>> {
     if (this.dictItemCache[code]) {
@@ -47,7 +46,7 @@ export class SystemUtilsService {
     const apiUrl = `${this.baseApi.getRestApi('/sys/dictItem/getDictItems')}/${code}`;
 
     return this.httpClient.get<Rest<ListResult<SysDictItem>>>(apiUrl).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           this.dictItemCache[code] = res.result;
           return of(res.result);
@@ -70,12 +69,7 @@ export class SystemUtilsService {
     return this.duplicateCheck('sys_user', 'phone', phone, userId);
   }
 
-  private duplicateCheck(
-    tableName: string,
-    fieldName: string,
-    fieldVal: string,
-    dataId?: string
-  ): Observable<boolean> {
+  private duplicateCheck(tableName: string, fieldName: string, fieldVal: string, dataId?: string): Observable<boolean> {
     const apiUrl = this.baseApi.getRestApi('/sys/duplicateCheck');
     const params = {
       tableName,
@@ -84,12 +78,14 @@ export class SystemUtilsService {
       dataId: dataId
     };
 
-    return this.httpClient.get<Rest<string>>(apiUrl, {
-      params
-    }).pipe(
-      switchMap(res => {
-        return of(res.success);
+    return this.httpClient
+      .get<Rest<string>>(apiUrl, {
+        params
       })
-    );
+      .pipe(
+        switchMap((res) => {
+          return of(res.success);
+        })
+      );
   }
 }
