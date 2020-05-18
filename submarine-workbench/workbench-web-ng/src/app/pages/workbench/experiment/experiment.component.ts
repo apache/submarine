@@ -29,7 +29,6 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./experiment.component.scss']
 })
 export class ExperimentComponent implements OnInit {
-
   experimentList: ExperimentInfo[] = [];
   // About show existing experiments
   showExperiment = 'All';
@@ -46,20 +45,17 @@ export class ExperimentComponent implements OnInit {
   ruleTypes = ['Strong', 'Weak'];
   scheduleCycles = ['Month', 'Week'];
 
-  constructor(
-    private experimentService: ExperimentService,
-    private nzMessageService: NzMessageService
-  ) { }
+  constructor(private experimentService: ExperimentService, private nzMessageService: NzMessageService) {}
 
   ngOnInit() {
-    this.createExperiment =  new FormGroup({
-      'experimentName': new FormControl(null, Validators.required),
-      'description': new FormControl(null, [Validators.required]),
-      'experimentSpec': new FormControl('Adhoc'),
-      'ruleTemplate': new FormControl('Template1'),
-      'ruleType': new FormControl('Strong'),
-      'startDate': new FormControl(new Date()),
-      'scheduleCycle': new FormControl('Month')
+    this.createExperiment = new FormGroup({
+      experimentName: new FormControl(null, Validators.required),
+      description: new FormControl(null, [Validators.required]),
+      experimentSpec: new FormControl('Adhoc'),
+      ruleTemplate: new FormControl('Template1'),
+      ruleType: new FormControl('Strong'),
+      startDate: new FormControl(new Date()),
+      scheduleCycle: new FormControl('Month')
     });
     this.fetchExperimentList();
   }
@@ -80,18 +76,17 @@ export class ExperimentComponent implements OnInit {
   }
 
   fetchExperimentList() {
-    this.experimentService
-      .fetchExperimentList()
-      .subscribe((  list ) => {
-        this.experimentList = list;
-      });
+    this.experimentService.fetchExperimentList().subscribe((list) => {
+      this.experimentList = list;
+    });
   }
   onDeleteExperiment(data: ExperimentInfo) {
     this.experimentService.deleteExperiment(data.jobId).subscribe(
       () => {
         this.nzMessageService.success('Delete user success!');
         this.fetchExperimentList();
-      }, err => {
+      },
+      (err) => {
         this.nzMessageService.success(err.message);
       }
     );
@@ -103,7 +98,7 @@ export class ExperimentComponent implements OnInit {
   }
   // TODO(jasoonn): Perform part of list
   showChange() {
-    console.log("Change to " + this.showExperiment);
+    console.log('Change to ' + this.showExperiment);
   }
   // TODO(jasoonn): Start experiment
   startExperiment(Experiment) {

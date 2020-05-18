@@ -1,12 +1,6 @@
 name: Submarine
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+on: [push, pull_request]
 
 jobs:
   build:
@@ -93,3 +87,5 @@ jobs:
         run: ./dev-support/lint-java.sh
       - name: Scala Style
         run: ./dev-support/lint-scala.sh
+      - name: Angular Style
+        run: ./dev-support/lint-angular.sh

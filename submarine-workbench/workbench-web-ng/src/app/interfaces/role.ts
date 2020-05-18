@@ -37,6 +37,6 @@ export class Role {
     this.creatorId = role.creatorId;
     this.createTime = role.createTime;
     this.deleted = role.deleted;
-    this.permissions = role.permissions.map(permission => new Permission(permission));
+    this.permissions = role.permissions.map((permission) => new Permission(permission));
   }
 }

@@ -18,7 +18,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'submarine-data',
@@ -26,12 +26,11 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./data.component.scss']
 })
 export class DataComponent implements OnInit {
-
   listOfDatabaseValue = ['default'];
-  listofDatabase = ['db1', 'db2', 'default'];
-  searchValue = "";
+  listOfDatabase = ['db1', 'db2', 'default'];
+  searchValue = '';
 
-  listData= [
+  listData = [
     {
       name: 'col-0',
       type: 'string',
@@ -53,128 +52,122 @@ export class DataComponent implements OnInit {
   ];
   listCount = 2;
 
-  //Create table part
+  // Create table part
   newTable = false;
   newTablePage = 0;
   createTable: FormGroup;
   listCreateData = [];
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
-    this.createTable =  new FormGroup({
-      'dataSource': new FormControl("upload"),
-      'path': new FormControl(null),
-      'uploadFile': new FormControl(null),
-      'fileType': new FormControl(null),
-      'columnDelimiter': new FormControl('.', [Validators.required]),
-      'header': new FormControl('false'),
-      
-      'dataBaseName': new FormControl('db1'),
-      'tableName': new FormControl(null, [Validators.required])
+    this.createTable = new FormGroup({
+      dataSource: new FormControl('upload'),
+      path: new FormControl(null),
+      uploadFile: new FormControl(null),
+      fileType: new FormControl(null),
+      columnDelimiter: new FormControl('.', [Validators.required]),
+      header: new FormControl('false'),
+
+      dataBaseName: new FormControl('db1'),
+      tableName: new FormControl(null, [Validators.required])
     });
   }
 
-  //TODO(jasoonn): Perform sorting
-  listSort(){
+  // TODO(jasoonn): Perform sorting
+  listSort() {
     console.log('sort list according to ' + this.searchValue);
   }
 
-  cancelEdit(data){
+  cancelEdit(data) {
     data.nameTmp = data.name;
     data.typeTmp = data.type;
     data.commentTmp = data.comment;
     data.edit = false;
   }
 
-  //TODO(jasoonn): Update remote database
-  saveEdit(data){
+  // TODO(jasoonn): Update remote database
+  saveEdit(data) {
     data.name = data.nameTmp;
     data.type = data.typeTmp;
     data.comment = data.commentTmp;
     data.edit = false;
   }
 
-  addCol(){
-    this.listData.push(
-      {
-        name: 'col-' + this.listCount,
-        type: 'string',
-        comment: 'comment...',
-        nameTmp: 'col-' + this.listCount,
-        typeTmp: 'string',
-        commentTmp: 'comment...',
-        edit: false
-      }
-    );
-    this.listData=[...this.listData];
-    this.listCount ++;
+  addCol() {
+    this.listData.push({
+      name: 'col-' + this.listCount,
+      type: 'string',
+      comment: 'comment...',
+      nameTmp: 'col-' + this.listCount,
+      typeTmp: 'string',
+      commentTmp: 'comment...',
+      edit: false
+    });
+    this.listData = [...this.listData];
+    this.listCount++;
   }
 
-  removeCol(name){
-    this.listData = this.listData.filter(d => d.name !== name);
+  removeCol(name) {
+    this.listData = this.listData.filter((d) => d.name !== name);
   }
 
-  //TODO(jasoonn): Create Table in Notebook
-  openNotebook(){
+  // TODO(jasoonn): Create Table in Notebook
+  openNotebook() {
     this.newTable = false;
     this.newTablePage = 0;
   }
 
-  //TODO(jasoonn): Parse column while creating Table
-  parseColumn(){
-    ;
+  // TODO(jasoonn): Parse column while creating Table
+  parseColumn() {}
+
+  addCreateCol() {
+    this.listCreateData.push({
+      name: 'col_' + this.listCreateData.length,
+      type: 'string',
+      comment: 'comment...',
+      nameTmp: 'col_' + this.listCreateData.length,
+      typeTmp: 'string',
+      commentTmp: 'comment...',
+      edit: false
+    });
+    this.listCreateData = [...this.listCreateData];
   }
 
-  addCreateCol(){
-    this.listCreateData.push(
-      {
-        name: 'col_' + this.listCreateData.length,
-        type: 'string',
-        comment: 'comment...',
-        nameTmp: 'col_' + this.listCreateData.length,
-        typeTmp: 'string',
-        commentTmp: 'comment...',
-        edit: false
-      }
-    );
-    this.listCreateData=[...this.listCreateData];
+  removeCreateCol(name) {
+    this.listCreateData = this.listCreateData.filter((d) => d.name !== name);
   }
 
-  removeCreateCol(name){
-    this.listCreateData = this.listCreateData.filter(d => d.name !== name);
-  }
-
-  cancelCreateEdit(data){
+  cancelCreateEdit(data) {
     data.nameTmp = data.name;
     data.typeTmp = data.type;
     data.commentTmp = data.comment;
     data.edit = false;
   }
 
-  //TODO(jasoonn): Update remote database
-  saveCreateEdit(data){
+  // TODO(jasoonn): Update remote database
+  saveCreateEdit(data) {
     data.name = data.nameTmp;
     data.type = data.typeTmp;
     data.comment = data.commentTmp;
     data.edit = false;
   }
 
-  //TODO(jasoonn): Create table
-  submit(){
+  // TODO(jasoonn): Create table
+  submit() {
     this.newTable = false;
     this.newTablePage = 0;
     console.log(this.createTable);
-    this.createTable =  new FormGroup({
-      'dataSource': new FormControl("upload"),
-      'path': new FormControl(null),
-      'uploadFile': new FormControl(null),
-      'fileType': new FormControl(null),
-      'columnDelimiter': new FormControl('.', [Validators.required]),
-      'header': new FormControl('false'),
-      
-      'dataBaseName': new FormControl('db1'),
-      'tableName': new FormControl(null, [Validators.required])
+    this.createTable = new FormGroup({
+      dataSource: new FormControl('upload'),
+      path: new FormControl(null),
+      uploadFile: new FormControl(null),
+      fileType: new FormControl(null),
+      columnDelimiter: new FormControl('.', [Validators.required]),
+      header: new FormControl('false'),
+
+      dataBaseName: new FormControl('db1'),
+      tableName: new FormControl(null, [Validators.required])
     });
     this.listCreateData = [];
   }

@@ -28,5 +28,4 @@ import { PageLayoutComponent } from './page-layout/page-layout.component';
   imports: [CommonModule, RouterModule, NgZorroAntdModule],
   exports: [PageLayoutComponent]
 })
-export class ComponentsModule {
-}
+export class ComponentsModule {}

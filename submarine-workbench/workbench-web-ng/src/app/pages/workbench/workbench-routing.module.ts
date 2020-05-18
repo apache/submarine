@@ -63,7 +63,7 @@ const routes: Routes = [
       },
       {
         path: 'manager',
-        loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
+        loadChildren: () => import('./manager/manager.module').then((m) => m.ManagerModule)
       }
     ]
   }
@@ -72,5 +72,4 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)]
 })
-export class WorkbenchRoutingModule {
-}
+export class WorkbenchRoutingModule {}

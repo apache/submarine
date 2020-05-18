@@ -29,13 +29,12 @@ import { switchMap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ExperimentService {
-  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {
-  }
+  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
   fetchExperimentList(): Observable<ExperimentInfo[]> {
     const apiUrl = this.baseApi.getRestApi('/v1/jobs');
     return this.httpClient.get<Rest<ExperimentInfo[]>>(apiUrl).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           console.log(res.result);
           return of(res.result);
@@ -49,7 +48,7 @@ export class ExperimentService {
   createExperiment(experimentSpec): Observable<ExperimentInfo> {
     const apiUrl = this.baseApi.getRestApi('/v1/jobs');
     return this.httpClient.post<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           return of(res.result);
         } else {
@@ -62,7 +61,7 @@ export class ExperimentService {
   editExperiment(experimentSpec): Observable<ExperimentInfo> {
     const apiUrl = this.baseApi.getRestApi('/v1/jobs');
     return this.httpClient.patch<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           return of(res.result);
         } else {
@@ -75,7 +74,7 @@ export class ExperimentService {
   deleteExperiment(id: string): Observable<ExperimentInfo> {
     const apiUrl = this.baseApi.getRestApi('/v1/jobs/' + id);
     return this.httpClient.delete<Rest<any>>(apiUrl).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           return of(res.result);
         } else {

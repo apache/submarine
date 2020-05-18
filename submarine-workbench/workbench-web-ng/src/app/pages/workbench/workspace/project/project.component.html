@@ -52,9 +52,9 @@
                         <i nz-icon nzType="star" nzTheme="outline"></i> &nbsp;{{ project.starNum }} &nbsp; | &nbsp;
                         <i nz-icon nzType="like" nzTheme="outline"></i> &nbsp; {{ project.likeNum }} &nbsp; | &nbsp;
                         <i nz-icon nzType="message" nzTheme="outline"></i> &nbsp; {{ project.msgNum }}
-                    </label>             
+                    </label>
                 </div>
-                
+
                 <ng-template #actionEdit>
                     <i nz-icon nzType="edit"></i>Edit
                 </ng-template>
@@ -69,8 +69,27 @@
                 </ng-template>
             </nz-card>
           </div>
-        </div>
+
+          <ng-template #actionEdit>
+            <i nz-icon nzType="edit"></i>
+            Edit
+          </ng-template>
+          <ng-template #actionDownload>
+            <i nz-icon nzType="download"></i>
+            Download
+          </ng-template>
+          <ng-template #actionSetting>
+            <i nz-icon nzType="setting"></i>
+            Setting
+          </ng-template>
+          <ng-template #actionDelete>
+            <i nz-icon nzType="delete"></i>
+            Delete
+          </ng-template>
+        </nz-card>
+      </div>
     </div>
+  </div>
 </div>
 <div *ngIf="newProject" id="projectNewDivOuter">
     <div  id="projectNewDivInner">

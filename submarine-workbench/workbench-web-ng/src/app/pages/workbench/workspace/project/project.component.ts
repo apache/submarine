@@ -25,7 +25,7 @@ import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-project',
+  selector: 'submarine-project',
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.scss']
 })
@@ -49,6 +49,7 @@ export class ProjectComponent implements OnInit {
   async ngOnInit() {
     await this.userService.fetchUserInfo().toPromise().then(data => {
       this.username = data.username;
+
     });
     //TODO(chiajoukuo): add pagination
     var params = {
@@ -65,13 +66,13 @@ export class ProjectComponent implements OnInit {
         res = data['records']
         for(var i=0; i<res.length; i++){
           this.existProjects.push({
-            projectName: res[i].name, 
-            description: res[i].description, 
+            projectName: res[i].name,
+            description: res[i].description,
             tags: res[i].tags ===null?[]:res[i].tags, //['12', 'Tag 2']
-            inputTagVisibility: false, 
-            projectInputTag: '', 
-            starNum: res[i].starNum, 
-            likeNum: res[i].likeNum, 
+            inputTagVisibility: false,
+            projectInputTag: '',
+            starNum: res[i].starNum,
+            likeNum: res[i].likeNum,
             msgNum: res[i].messageNum
           })
         }
@@ -85,16 +86,16 @@ export class ProjectComponent implements OnInit {
 
   addProject(event){
     this.existProjects.push({
-      projectName: event.name, 
-      description: event.description, 
+      projectName: event.name,
+      description: event.description,
       tags: [],
-      inputTagVisibility: false, 
-      projectInputTag: '', 
-      starNum: 0, 
-      likeNum: 0, 
+      inputTagVisibility: false,
+      projectInputTag: '',
+      starNum: 0,
+      likeNum: 0,
       msgNum: 0
     })
-    
+
     this.projectService.addProject(event).subscribe(() => {
     }, err => {
       console.log("ERROR", err)
@@ -110,7 +111,7 @@ export class ProjectComponent implements OnInit {
     console.log(project);
     console.log(tag);
   }
-  //TODO(jasoonn): update tag in server
+  // TODO(jasoonn): update tag in server
   handleInputConfirm(project): void {
     console.log(project.tags);
     if (project.projectInputTag && (project.tags == null || (project.tags != null && project.tags.indexOf(project.projectInputTag)=== -1))) {

@@ -18,5 +18,5 @@
  */
 
 export class ExperimentSpec {
-   // TODO(pingsutw): After refactor submarine experiment spec, we could start implementing it.
+  // TODO(pingsutw): After refactor submarine experiment spec, we could start implementing it.
 }

@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
         () => {
           this.loginSuccess();
         },
-        error => {
+        (error) => {
           this.requestFailed(error);
         }
       );
@@ -74,11 +74,12 @@ export class LoginComponent implements OnInit {
   }
 
   requestFailed(error: Error) {
-    this.nzNotificationService.error('Login Failed',
-      'Username and password are incorrect, ' +
-          'please try again or create an account',
+    this.nzNotificationService.error(
+      'Login Failed',
+      'Username and password are incorrect, ' + 'please try again or create an account',
       {
-      nzDuration: 4000
-    });
+        nzDuration: 4000
+      }
+    );
   }
 }

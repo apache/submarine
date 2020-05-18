@@ -26,7 +26,7 @@ export interface SysDeptItem {
   sortOrder: number;
   children: SysDeptItem[];
   id: string;
-  parent?: SysDeptItem
+  parent?: SysDeptItem;
   parentCode?: string;
   level?: number;
   expand?: boolean;
