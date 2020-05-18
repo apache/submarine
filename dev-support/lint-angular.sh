@@ -26,7 +26,7 @@ PRETTIER_ERRORS=$(./node_modules/.bin/prettier --check --trailing-comma none "$W
 
 if test "$PRETTIER_ERRORS"; then
     echo -e "prettier checks failed at following occurrences:\n$PRETTIER_ERRORS\n"
-	echo -e "Please use \\033[31m"./node_modules/.bin/prettier --write --trailing-comma none "$WORKBENCH_NG/src/**/*.{ts,html}""\\033[0m to format code automatically\n"
+    echo -e "Please use \\033[31m"./node_modules/.bin/prettier --write --trailing-comma none "$WORKBENCH_NG/src/**/*.{ts,html}""\\033[0m to format code automatically\n"
     exit 1
 else
     echo -e "Checkstyle checks passed."
