@@ -73,7 +73,7 @@ export class ProjectService {
   }
 
   addProject(params: Partial<AddProjectParams>): Observable<Project> {
-    console.log("addP", params)
+    console.log("addProject", params)
     const apiUrl = this.baseApi.getRestApi('/project/add');
     return this.httpClient.post<Rest<Project>>(apiUrl, params)
     .pipe(
