@@ -98,6 +98,13 @@ cd <submarine_code_path_root>/dev-support/k8s/pytorchjob
 
 ```
 
+#### Use Helm Chart to deploy
+It will deploy submarine server in kubernetes.
+
+##### Local
+```bash
+helm install submarine helm-charts/submarine
+```
 ## Production environment
 
 ### Setup Kubernetes
