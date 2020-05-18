@@ -18,7 +18,9 @@
   -->
 
 <br>
-<div *ngIf="!newProject">
+<nz-spin *ngIf="!newProject && isLoading" style="height: 50px;">
+</nz-spin>
+<div *ngIf="!newProject && !isLoading">
     <div id="addProjectbtn">
         <button nz-button nzBlock (click)="newProject=true">+ Add New Project</button>
     </div>
@@ -72,6 +74,7 @@
 </div>
 <div *ngIf="newProject" id="projectNewDivOuter">
     <div  id="projectNewDivInner">
-        <app-new-project-page (closeProjectPage)="newProject=false;"></app-new-project-page>
+        <app-new-project-page (addProject)="addProject($event)"></app-new-project-page>
+        <!-- <app-new-project-page (closeProjectPage)="newProject=false;"></app-new-project-page> -->
     </div>
 </div>

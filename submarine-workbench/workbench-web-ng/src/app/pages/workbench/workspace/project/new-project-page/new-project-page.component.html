@@ -46,24 +46,24 @@
       <div>
         <label class="form-label"><span class="red-star">* </span>Visibility:</label>
         <nz-radio-group name="visibility" [(ngModel)]="newProjectContent.visibility">
-          <label class="darkLabel" nz-radio nzValue="Private">Private - Only project collaborators can view or edit the
+          <label class="darkLabel" nz-radio nzValue="PROJECT_VISIBILITY_PRIVATE">Private - Only project collaborators can view or edit the
             project.</label>
-          <label class="darkLabel" nz-radio nzValue="Team">Team - All members of the team can view the project.</label>
-          <div *ngIf="newProjectContent.visibility==='Team'"> 
+          <label class="darkLabel" nz-radio nzValue="PROJECT_VISIBILITY_TEAM">Team - All members of the team can view the project.</label>
+          <div *ngIf="newProjectContent.visibility==='PROJECT_VISIBILITY_TEAM'"> 
             <nz-select [(ngModel)]="newProjectContent.team" name="team" nzAllowClear nzPlaceHolder="Choose" style="margin-top: 10px;">
               <nz-option *ngFor="let team of teams" [nzValue]="team" [nzLabel]="team"></nz-option>
             </nz-select>
           </div>
-          <label class="darkLabel" nz-radio nzValue="Public">Public - All authenticated users can view the
+          <label class="darkLabel" nz-radio nzValue="PROJECT_VISIBILITY_PUBLIC">Public - All authenticated users can view the
             project.</label>
         </nz-radio-group>
       </div>
-      <div *ngIf="newProjectContent.visibility==='Team'||newProjectContent.visibility==='Public'">
+      <div *ngIf="newProjectContent.visibility==='PROJECT_VISIBILITY_TEAM'||newProjectContent.visibility==='PROJECT_VISIBILITY_PUBLIC'">
         <label class="form-label"><span class="red-star">* </span>Permission:</label>
         <nz-radio-group name="permission" [(ngModel)]="newProjectContent.permission">
-          <label class="darkLabel" nz-radio nzValue="View">Can View - All members can view the project.</label>
-          <label class="darkLabel" nz-radio nzValue="Edit">Can Edit - All members can edit the project.</label>
-          <label class="darkLabel" nz-radio nzValue="Execute">Can Execute - All members can execute the project.</label>
+          <label class="darkLabel" nz-radio nzValue="PROJECT_PERMISSION_VIEW">Can View - All members can view the project.</label>
+          <label class="darkLabel" nz-radio nzValue="PROJECT_PERMISSION_EDIT">Can Edit - All members can edit the project.</label>
+          <label class="darkLabel" nz-radio nzValue="PROJECT_PERMISSION_EXECUTE">Can Execute - All members can execute the project.</label>
         </nz-radio-group>
       </div>
     </form>

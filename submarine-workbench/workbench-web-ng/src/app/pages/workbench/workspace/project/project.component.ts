@@ -18,6 +18,11 @@
  */
 
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { UserService, ProjectService  } from '@submarine/services';
+import { UserInfo } from '@submarine/interfaces';
+import { NzNotificationService } from 'ng-zorro-antd';
+import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-project',
@@ -27,26 +32,78 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 export class ProjectComponent implements OnInit {
   newProject = false;
   existProjects = [];
-
+  isLoading = false;
+  username = '';
   @ViewChild('inputElement', { static: false }) inputElement: ElementRef;
+  userInfo$: Observable<UserInfo>;
 
-  constructor() { }
+  constructor(
+    private projectService: ProjectService,
+    private userService: UserService,
+    private nzNotificationService: NzNotificationService
+  ) {
+
+  }
 
   //TODO(jasoonn): get projects data from server
-  ngOnInit() {
-    this.existProjects.push({
-      projectName: 'projectName0', description: 'description', tags: ['12', 'Tag 2'], inputTagVisibility: false, projectInputTag: '', starNum:0, likeNum:0, msgNum:0
+  async ngOnInit() {
+    await this.userService.fetchUserInfo().toPromise().then(data => {
+      this.username = data.username;
     });
-    this.existProjects.push({
-      projectName: 'projectName1', description: 'description', tags: ['Unremovable', 'Tag 2'], inputTagVisibility: false, projectInputTag: '', starNum:0, likeNum:0, msgNum:0
-    });
-    this.existProjects.push({
-      projectName: 'projectName1', description: 'description', tags: ['Unremovable', 'Tag 2', 'Tag 3'], inputTagVisibility: false, projectInputTag: '', starNum:0, likeNum:0, msgNum:0
-    });
-    this.existProjects.push({
-      projectName: 'projectName1', description: 'description', tags: ['Unremovable', 'Tag 2', 'Tag 3'], inputTagVisibility: false, projectInputTag: '', starNum:0, likeNum:0, msgNum:0
-    })
+    //TODO(chiajoukuo): add pagination
+    var params = {
+      userName: this.username,
+      column: 'update_time',
+      order: 'desc',
+      pageNo: ''+1,//this.pagination.current,
+      pageSize: ''+99//this.pagination.pageSize
+    }
+    var res;
+    this.projectService.fetchProjectList(params)
+    .subscribe(
+      (data) => {
+        res = data['records']
+        for(var i=0; i<res.length; i++){
+          this.existProjects.push({
+            projectName: res[i].name, 
+            description: res[i].description, 
+            tags: res[i].tags ===null?[]:res[i].tags, //['12', 'Tag 2']
+            inputTagVisibility: false, 
+            projectInputTag: '', 
+            starNum: res[i].starNum, 
+            likeNum: res[i].likeNum, 
+            msgNum: res[i].messageNum
+          })
+        }
+      },
+      error => {
+        console.log("ERROR", error)
+      }
+    );
+
   }
+
+  addProject(event){
+    this.existProjects.push({
+      projectName: event.name, 
+      description: event.description, 
+      tags: [],
+      inputTagVisibility: false, 
+      projectInputTag: '', 
+      starNum: 0, 
+      likeNum: 0, 
+      msgNum: 0
+    })
+    
+    this.projectService.addProject(event).subscribe(() => {
+    }, err => {
+      console.log("ERROR", err)
+    });
+    this.newProject = false;
+    console.log("proj", event);
+  }
+
+
   //TODO(jasoonn): Update tag in server
   handleCloseTag(project, tag){
     project.tags = project.tags.filter(itag => itag!==tag);
@@ -55,7 +112,9 @@ export class ProjectComponent implements OnInit {
   }
   //TODO(jasoonn): update tag in server
   handleInputConfirm(project): void {
-    if (project.projectInputTag && project.tags.indexOf(project.projectInputTag) === -1) {
+    console.log(project.tags);
+    if (project.projectInputTag && (project.tags == null || (project.tags != null && project.tags.indexOf(project.projectInputTag)=== -1))) {
+      console.log(project);
       project.tags = [...project.tags, project.projectInputTag];
     }
     project.inputTagVisibility = false;
