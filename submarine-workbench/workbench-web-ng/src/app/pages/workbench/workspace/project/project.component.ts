@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { UserService, ProjectService  } from '@submarine/services';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { UserInfo } from '@submarine/interfaces';
+import { ProjectService, UserService } from '@submarine/services';
 import { NzNotificationService } from 'ng-zorro-antd';
-import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'submarine-project',
@@ -41,50 +41,48 @@ export class ProjectComponent implements OnInit {
     private projectService: ProjectService,
     private userService: UserService,
     private nzNotificationService: NzNotificationService
-  ) {
+  ) {}
 
-  }
-
-  //TODO(jasoonn): get projects data from server
+  // TODO(jasoonn): get projects data from server
   async ngOnInit() {
-    await this.userService.fetchUserInfo().toPromise().then(data => {
-      this.username = data.username;
-
-    });
-    //TODO(chiajoukuo): add pagination
-    var params = {
+    await this.userService
+      .fetchUserInfo()
+      .toPromise()
+      .then((data) => {
+        this.username = data.username;
+      });
+    // TODO(chiajoukuo): add pagination
+    let params = {
       userName: this.username,
       column: 'update_time',
       order: 'desc',
-      pageNo: ''+1,//this.pagination.current,
-      pageSize: ''+99//this.pagination.pageSize
-    }
-    var res;
-    this.projectService.fetchProjectList(params)
-    .subscribe(
+      pageNo: '' + 1, // this.pagination.current,
+      pageSize: '' + 99 // this.pagination.pageSize
+    };
+    let res;
+    this.projectService.fetchProjectList(params).subscribe(
       (data) => {
-        res = data['records']
-        for(var i=0; i<res.length; i++){
+        res = data.records;
+        for (let i = 0; i < res.length; i++) {
           this.existProjects.push({
             projectName: res[i].name,
             description: res[i].description,
-            tags: res[i].tags ===null?[]:res[i].tags, //['12', 'Tag 2']
+            tags: res[i].tags === null ? [] : res[i].tags, // ['12', 'Tag 2']
             inputTagVisibility: false,
             projectInputTag: '',
             starNum: res[i].starNum,
             likeNum: res[i].likeNum,
             msgNum: res[i].messageNum
-          })
+          });
         }
       },
-      error => {
-        console.log("ERROR", error)
+      (error) => {
+        console.log('ERROR', error);
       }
     );
-
   }
 
-  addProject(event){
+  addProject(event) {
     this.existProjects.push({
       projectName: event.name,
       description: event.description,
@@ -94,27 +92,31 @@ export class ProjectComponent implements OnInit {
       starNum: 0,
       likeNum: 0,
       msgNum: 0
-    })
-
-    this.projectService.addProject(event).subscribe(() => {
-    }, err => {
-      console.log("ERROR", err)
     });
+
+    this.projectService.addProject(event).subscribe(
+      () => {},
+      (err) => {
+        console.log('ERROR', err);
+      }
+    );
     this.newProject = false;
-    console.log("proj", event);
+    console.log('proj', event);
   }
 
-
-  //TODO(jasoonn): Update tag in server
-  handleCloseTag(project, tag){
-    project.tags = project.tags.filter(itag => itag!==tag);
+  // TODO(jasoonn): Update tag in server
+  handleCloseTag(project, tag) {
+    project.tags = project.tags.filter((itag) => itag !== tag);
     console.log(project);
     console.log(tag);
   }
   // TODO(jasoonn): update tag in server
   handleInputConfirm(project): void {
     console.log(project.tags);
-    if (project.projectInputTag && (project.tags == null || (project.tags != null && project.tags.indexOf(project.projectInputTag)=== -1))) {
+    if (
+      project.projectInputTag &&
+      (project.tags == null || (project.tags != null && project.tags.indexOf(project.projectInputTag) === -1))
+    ) {
       console.log(project);
       project.tags = [...project.tags, project.projectInputTag];
     }

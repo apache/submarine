@@ -19,8 +19,8 @@
 
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { ProjectService, UserService } from '@submarine/services';
 import { NzMessageService } from 'ng-zorro-antd';
-import { UserService, ProjectService } from '@submarine/services';
 
 interface AddProjectParams {
   name: string;
@@ -41,19 +41,17 @@ interface AddProjectParams {
   styleUrls: ['./new-project-page.component.scss']
 })
 export class NewProjectPageComponent implements OnInit {
-  @Output() closeProjectPage = new EventEmitter<boolean>();
-  @Output() addProject = new EventEmitter<AddProjectParams>();
+  @Output() readonly closeProjectPage = new EventEmitter<boolean>();
+  @Output() readonly addProject = new EventEmitter<AddProjectParams>();
   @ViewChild('f', { static: true }) signupForm: NgForm;
   // TODO(jasoonn): get team from API
   teams = ['ciil'];
 
   current = 0;
-  initialState=0;
-
-  templateType="Python";
-  username = '';
+  initialState = 0;
 
   templateType = 'Python';
+  username = '';
 
   newProjectContent = {
     projectName: '',
@@ -67,20 +65,20 @@ export class NewProjectPageComponent implements OnInit {
     { type: 'Python', description: 'Python Template', checked: true },
     { type: 'R', description: 'R Template', checked: false },
     { type: 'Spark', description: 'Spark Template', checked: false },
-    { type: 'Tensorflow', description: 'Tensorflow Template', checked: false },
-    { type: 'Pytorch', description: 'Pytorch Template', checked: false }
+    { type: 'TensorFlow', description: 'TensorFlow Template', checked: false },
+    { type: 'PyTorch', description: 'PyTorch Template', checked: false }
   ];
 
   constructor(
     private msg: NzMessageService,
     private projectService: ProjectService,
     private userService: UserService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.userService.fetchUserInfo().subscribe((data) => {
       this.username = data.username;
-    })
+    });
   }
 
   handleChange({ file, fileList }): void {
@@ -113,9 +111,9 @@ export class NewProjectPageComponent implements OnInit {
       this.templateType = '';
     }
   }
-  
-  done(): void{
-    var project =  {
+
+  done(): void {
+    let project = {
       name: this.newProjectContent.projectName,
       userName: this.username,
       description: this.newProjectContent.description,
@@ -126,8 +124,8 @@ export class NewProjectPageComponent implements OnInit {
       starNum: 0,
       likeNum: 0,
       messageNum: 0
-    }
-    console.log(project)
+    };
+    console.log(project);
     this.addProject.emit(project);
   }
 

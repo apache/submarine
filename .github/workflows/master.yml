@@ -84,8 +84,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-io-
       - name: Java Style
-        run: ./dev-support/lint-java.sh
+        run: ./dev-support/style-check/lint-java.sh
       - name: Scala Style
-        run: ./dev-support/lint-scala.sh
+        run: ./dev-support/style-check/lint-scala.sh
       - name: Angular Style
-        run: ./dev-support/lint-angular.sh
+        run: ./dev-support/style-check/lint-angular.sh

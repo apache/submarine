@@ -48,36 +48,29 @@ interface AddProjectParams {
   providedIn: 'root'
 })
 export class ProjectService {
-
-  constructor(
-    private baseApi: BaseApiService,
-    private httpClient: HttpClient
-  ) {
-
-  }
+  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
   fetchProjectList(queryParams: Partial<ProjectQueryParams>): Observable<ListResult<Project>> {
     const apiUrl = this.baseApi.getRestApi('/project/list');
-    console.log(apiUrl)
-    return this.httpClient.get<Rest<ListResult<Project>>>(apiUrl, {params: queryParams})
-    .pipe(
-      switchMap(res => {
-        if (res.success) {
-          return of(res.result);
-        } else {
-          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get', queryParams);
-        }
-      })
-    );;
-
+    console.log(apiUrl);
+    return this.httpClient
+      .get<Rest<ListResult<Project>>>(apiUrl, { params: queryParams })
+      .pipe(
+        switchMap((res) => {
+          if (res.success) {
+            return of(res.result);
+          } else {
+            throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get', queryParams);
+          }
+        })
+      );
   }
 
   addProject(params: Partial<AddProjectParams>): Observable<Project> {
-    console.log("addProject", params)
+    console.log('addProject', params);
     const apiUrl = this.baseApi.getRestApi('/project/add');
-    return this.httpClient.post<Rest<Project>>(apiUrl, params)
-    .pipe(
-      switchMap(res => {
+    return this.httpClient.post<Rest<Project>>(apiUrl, params).pipe(
+      switchMap((res) => {
         if (res.success) {
           return of(res.result);
         } else {

@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
   requestFailed(error: Error) {
     this.nzNotificationService.error(
       'Login Failed',
-      'Username and password are incorrect, ' + 'please try again or create an account',
+      'Username and password are incorrect, please try again or create an account',
       {
         nzDuration: 4000
       }
