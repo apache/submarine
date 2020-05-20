@@ -27,11 +27,8 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   styleUrls: ['./notebook.component.scss']
 })
 export class NotebookComponent implements OnInit {
-
-  isEditing = false ;
-  notebookList = [
-    {name: "Notebook", createTime: "2020-05-16 20:00:00", createBy: "Someone"}
-  ]
+  isEditing = false;
+  notebookList = [{ name: 'Notebook', createTime: '2020-05-16 20:00:00', createBy: 'Someone' }];
 
   //search
   notebookName: string = '';
@@ -57,14 +54,10 @@ export class NotebookComponent implements OnInit {
   #print(x_train[1, :])
   print(np.argmax(y_train[1, :]))`;
 
-  constructor(
-    private fb: FormBuilder,
-    private message: NzMessageService
-    ) 
-    {}
+  constructor(private fb: FormBuilder, private message: NzMessageService) {}
 
   ngOnInit() {
-    this.message.warning("Notebook is in developing",{nzDuration: 5000});
+    this.message.warning('Notebook is in developing', { nzDuration: 5000 });
 
     this.searchForm = this.fb.group({
       notebookName: [this.notebookName]
@@ -72,12 +65,11 @@ export class NotebookComponent implements OnInit {
   }
 
   edit(notebook) {
-    this.isEditing = true ;
+    this.isEditing = true;
   }
 
   saveNotebook() {
-    this.isEditing = false ;
+    this.isEditing = false;
     this.message.success('Save notebook success!');
   }
-
 }

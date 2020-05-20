@@ -28,13 +28,12 @@ import { NgZorroAntdModule } from 'ng-zorro-antd';
 @NgModule({
   declarations: [NotebookComponent],
   imports: [
-    CommonModule, 
-    NotebookRoutingModule, 
-    MonacoEditorModule, 
+    CommonModule,
+    NotebookRoutingModule,
+    MonacoEditorModule,
     FormsModule,
     ReactiveFormsModule,
     NgZorroAntdModule
   ]
 })
-export class NotebookModule {
-}
+export class NotebookModule {}
