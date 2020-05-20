@@ -64,6 +64,10 @@ const routes: Routes = [
       {
         path: 'manager',
         loadChildren: () => import('./manager/manager.module').then((m) => m.ManagerModule)
+      },
+      {
+        path: 'notebook',
+        loadChildren: () => import('./notebook/notebook.module').then((m) => m.NotebookModule)
       }
     ]
   }

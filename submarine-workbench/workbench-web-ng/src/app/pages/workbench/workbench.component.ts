@@ -55,6 +55,11 @@ export class WorkbenchComponent implements OnInit {
       routerLink: '/workbench/workspace'
     },
     {
+      title: 'Notebook',
+      iconType: 'book',
+      routerLink: '/workbench/notebook'
+    },
+    {
       title: 'Interpreter',
       iconType: 'api',
       routerLink: '/workbench/interpreter'
