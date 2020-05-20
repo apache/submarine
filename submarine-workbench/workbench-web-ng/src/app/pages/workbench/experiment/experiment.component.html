@@ -24,96 +24,89 @@
         <nz-breadcrumb-item>
           <a [routerLink]="['/', 'workbench', 'home']">Home</a>
         </nz-breadcrumb-item>
-        <nz-breadcrumb-item>experiment</nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/', 'workbench', 'experiment']" (click)="isInfo=false;">experiment</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item *ngIf="isInfo==true">
+          {{experimentID}}
+        </nz-breadcrumb-item>
       </nz-breadcrumb>
-      <br />
-      <h2>Experiment</h2>
-      <nz-content>A experiment is a way of running a adhoc, pre-defined or pipeline on a scheduled basis.</nz-content>
-      <br />
+      <div *ngIf="isInfo==false">
+        <br/>
+        <h2>Experiment</h2>
+        <nz-content>A experiment is a way of running a adhoc, pre-defined or pipeline on a scheduled basis.</nz-content>
+      </div>
+      <br/>
     </div>
   </nz-layout>
   <div id="experimentData">
-    <div align="right">
-      <nz-radio-group [(ngModel)]="showExperiment" (ngModelChange)="showChange()">
-        <label nz-radio-button nzValue="All">All</label>
-        <label nz-radio-button nzValue="Own">Owned By Me</label>
-        <label nz-radio-button nzValue="Access">Accessable By Me</label>
-      </nz-radio-group>
-      <nz-input-group
-        nzSearch
-        style="width: 300px; margin-top: 15px; margin-left: 10px; margin-right: 5px;"
-        [nzAddOnAfter]="suffixIconButton"
-      >
-        <input type="text" nz-input placeholder="input search text" />
-      </nz-input-group>
-      <ng-template #suffixIconButton>
-        <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
-      </ng-template>
-
-      <button
-        nz-button
-        id="openExperiment"
-        nzType="primary"
-        style="margin-right: 30px; margin-bottom: 15px; margin-top: 15px;"
-        (click)="isVisible = true"
-      >
-        <i nz-icon nzType="plus"></i>
-        New Experiment
-      </button>
+    <div *ngIf="isInfo==false">
+      <div align="right">
+        <nz-radio-group [(ngModel)]="showExperiment" (ngModelChange)="showChange()">
+          <label nz-radio-button nzValue="All">All</label>
+          <label nz-radio-button nzValue="Own">Owned By Me</label>
+          <label nz-radio-button nzValue="Access">Accessable By Me</label>
+        </nz-radio-group>
+        <nz-input-group nzSearch style="width:300px;margin-top: 15px;margin-left:10px;margin-right:5px;" [nzAddOnAfter]="suffixIconButton">
+          <input type="text" nz-input placeholder="input search text" />
+        </nz-input-group>
+        <ng-template #suffixIconButton>
+          <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+        </ng-template>
+  
+        <button nz-button id="openExperiment" nzType="primary" style="margin-right: 30px;margin-bottom: 15px;margin-top: 15px;" (click)="isVisible=true;"><i nz-icon nzType="plus"></i>New Experiment</button>
+      </div>
+      <nz-table id="releaseTable" nzBordered #basicTable [nzData]="experimentList" [nzNoResult]="'No data'">
+        <thead>
+          <tr>
+            <th>Experiment Name</th>
+            <th>Experiment ID</th>
+            <th>Created Time</th>
+            <th>Running Time</th>
+            <th>Finished Time</th>
+            <th>Status</th>
+            <th>Progress</th>
+            <th nzMinWidth="40px">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td>{{ data.name }}</td>
+            <td><a [routerLink]="['info', data.jobId]" (click)="experimentID=data.jobId;isInfo=true;">{{ data.jobId }}</a></td>
+            <td>{{ data.createdTime }}</td>
+            <td>{{ data.runningTime }}</td>
+            <td>{{ data.finishedTime }}</td>
+            <td>{{ data.status }}</td>
+            <td *ngIf="data.status === 'Succeeded'"><nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress></td>
+            <td *ngIf="data.status !== 'Succeeded'"><nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress></td>
+            <td class="td-action" nzRight="0px">
+              <a (click)="startExperiment(data)">Start</a>
+              <a nz-dropdown [nzDropdownMenu]="more">
+                More
+                <i nz-icon nzType="down"></i>
+              </a>
+              <nz-dropdown-menu #more="nzDropdownMenu">
+                <ul nz-menu nzSelectable>
+                  <li nz-menu-item (click)="editExperiment(data)">Edit</li>
+                  <li
+                    nz-menu-item
+                    nz-popconfirm
+                    nzPlacement="left"
+                    nzTitle="Confirm to delete?"
+                    nzCancelText="Cancel"
+                    nzOkText="Ok"
+                    (nzOnConfirm)="onDeleteExperiment(data)"
+                  >
+                    Delete
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
     </div>
-    <nz-table id="releaseTable" nzBordered #basicTable [nzData]="experimentList" [nzNoResult]="'No data'">
-      <thead>
-        <tr>
-          <th>Experiment Name</th>
-          <th>Experiment ID</th>
-          <th>Created Time</th>
-          <th>Running Time</th>
-          <th>Finished Time</th>
-          <th>Status</th>
-          <th>Progress</th>
-          <th nzMinWidth="40px">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let data of basicTable.data">
-          <td>{{ data.name }}</td>
-          <td>{{ data.jobId }}</td>
-          <td>{{ data.createdTime }}</td>
-          <td>{{ data.runningTime }}</td>
-          <td>{{ data.finishedTime }}</td>
-          <td>{{ data.status }}</td>
-          <td *ngIf="data.status === 'Succeeded'">
-            <nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress>
-          </td>
-          <td *ngIf="data.status !== 'Succeeded'">
-            <nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress>
-          </td>
-          <td class="td-action" nzRight="0px">
-            <a (click)="startExperiment(data)">Start</a>
-            <a nz-dropdown [nzDropdownMenu]="more">
-              More
-              <i nz-icon nzType="down"></i>
-            </a>
-            <nz-dropdown-menu #more="nzDropdownMenu">
-              <ul nz-menu nzSelectable>
-                <li nz-menu-item (click)="editExperiment(data)">Edit</li>
-                <li
-                  nz-menu-item
-                  nz-popconfirm
-                  nzPlacement="left"
-                  nzTitle="Confirm to delete?"
-                  nzCancelText="Cancel"
-                  nzOkText="Ok"
-                  (nzOnConfirm)="onDeleteExperiment(data)"
-                >
-                  Delete
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
+    <router-outlet (experimentInfoChange)="isInfo=true;"></router-outlet>
   </div>
   <nz-modal
     [(nzVisible)]="isVisible"
