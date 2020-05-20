@@ -25,10 +25,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./hyper-params.component.scss']
 })
 export class HyperParamsComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

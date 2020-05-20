@@ -17,8 +17,15 @@
   ~ under the License.
   -->
 
-
-<nz-table *ngIf="!isLoading" style="margin-top: 10px;" id="experimentTable" nzBordered #basicTable [nzData]="[experimentInfo]" [nzShowPagination]="false">
+<nz-table
+  *ngIf="!isLoading"
+  style="margin-top: 10px;"
+  id="experimentTable"
+  nzBordered
+  #basicTable
+  [nzData]="[experimentInfo]"
+  [nzShowPagination]="false"
+>
   <thead>
     <tr>
       <th>Experiment Name</th>
@@ -39,8 +46,12 @@
       <td>{{ experimentInfo.runningTime }}</td>
       <td>{{ experimentInfo.finishedTime }}</td>
       <td>{{ experimentInfo.status }}</td>
-      <td *ngIf="experimentInfo.status === 'Succeeded'"><nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress></td>
-      <td *ngIf="experimentInfo.status !== 'Succeeded'"><nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress></td>
+      <td *ngIf="experimentInfo.status === 'Succeeded'">
+        <nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress>
+      </td>
+      <td *ngIf="experimentInfo.status !== 'Succeeded'">
+        <nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress>
+      </td>
       <td class="td-action" nzRight="0px">
         <a (click)="startExperiment()">Start</a>
         <a nz-dropdown [nzDropdownMenu]="more">
@@ -71,10 +82,10 @@
 <nz-layout>
   <nz-sider style="background-color: white;">
     <ul nz-menu>
-      <li nz-menu-item nzSelected (click)="currentState=0;">Charts</li>
-      <li nz-menu-item (click)="currentState=1;">Hyper parameters</li>
-      <li nz-menu-item (click)="currentState=2;">Metrics</li>
-      <li nz-menu-item (click)="currentState=3;">Outpus</li>
+      <li nz-menu-item nzSelected (click)="currentState = 0">Charts</li>
+      <li nz-menu-item (click)="currentState = 1">Hyper parameters</li>
+      <li nz-menu-item (click)="currentState = 2">Metrics</li>
+      <li nz-menu-item (click)="currentState = 3">Outpus</li>
     </ul>
   </nz-sider>
   <nz-layout>

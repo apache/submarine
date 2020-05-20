@@ -25,10 +25,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./metrics.component.scss']
 })
 export class MetricsComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

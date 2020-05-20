@@ -53,11 +53,11 @@ const routes: Routes = [
       },
       {
         path: 'experiment',
-        component: ExperimentComponent, 
+        component: ExperimentComponent,
         children: [
           {
-            path: 'info/:id', 
-            component:ExperimentInfoComponent
+            path: 'info/:id',
+            component: ExperimentInfoComponent
           }
         ]
       },

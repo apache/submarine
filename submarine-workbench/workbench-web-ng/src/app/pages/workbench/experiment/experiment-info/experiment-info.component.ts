@@ -29,27 +29,26 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./experiment-info.component.scss']
 })
 export class ExperimentInfoComponent implements OnInit {
-  
   isLoading = true;
   experimentID;
-  experimentInfo:ExperimentInfo;
+  experimentInfo: ExperimentInfo;
   currentState = 0;
 
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private experimentService: ExperimentService,
-    private nzMessageService:NzMessageService
+    private nzMessageService: NzMessageService
   ) {}
-  
+
   ngOnInit() {
     this.experimentID = this.route.snapshot.params['id'];
     this.experimentService.querySpecificExperiment(this.experimentID).subscribe(
-      item => {
-      this.experimentInfo = item;
-      this.isLoading = false;
+      (item) => {
+        this.experimentInfo = item;
+        this.isLoading = false;
       },
-      err=> {
+      (err) => {
         this.nzMessageService.error('Cannot load ' + this.experimentID);
         this.router.navigate(['/workbench/experiment']);
       }
@@ -61,18 +60,15 @@ export class ExperimentInfoComponent implements OnInit {
       () => {
         this.nzMessageService.success('Delete user success!');
         this.router.navigate(['/workbench/experiment']);
-      }, err => {
+      },
+      (err) => {
         this.nzMessageService.success(err.message);
       }
     );
   }
 
   // TODO(jasoonn): Start experiment
-  startExperiment() {
-  }
+  startExperiment() {}
   // TODO(jasoonn): Edit experiment
-  editExperiment(Experiment) {
-  }
-
-
+  editExperiment(Experiment) {}
 }

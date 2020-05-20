@@ -25,10 +25,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./outputs.component.scss']
 })
 export class OutputsComponent implements OnInit {
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }

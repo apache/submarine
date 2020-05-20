@@ -45,10 +45,10 @@ export class ExperimentService {
     );
   }
 
-  querySpecificExperiment(id:string): Observable<ExperimentInfo>{
-    const apiUrl = this.baseApi.getRestApi('/v1/jobs/'+id);
+  querySpecificExperiment(id: string): Observable<ExperimentInfo> {
+    const apiUrl = this.baseApi.getRestApi('/v1/jobs/' + id);
     return this.httpClient.get<Rest<ExperimentInfo>>(apiUrl).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           return of(res.result);
         } else {
