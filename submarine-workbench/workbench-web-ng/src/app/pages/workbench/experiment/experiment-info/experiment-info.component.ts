@@ -24,7 +24,7 @@ import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
-  selector: 'app-experiment-info',
+  selector: 'submarine-experiment-info',
   templateUrl: './experiment-info.component.html',
   styleUrls: ['./experiment-info.component.scss']
 })
