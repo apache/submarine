@@ -14,23 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-# Default values for submarine.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-submarine:
-  server:
-    imagePullPolicy: IfNotPresent
-    replicas: 1
-    name: submarine-server
-    image: apache/submarine:server-0.4.0-SNAPSHOT
-    servicePort: 8080
-  database:
-    imagePullPolicy: IfNotPresent
-    replicas: 1
-    name: submarine-database
-    image: apache/submarine:database-0.4.0-SNAPSHOT
-    servicePort: 3306
-    mysqlRootPassword: password
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8443"
+  labels:
+    app: tf-job-operator
+  name: tf-job-operator
+spec:
+  ports:
+  - name: monitoring-port
+    port: 8443
+    targetPort: 8443
+  selector:
+    name: tf-job-operator
+  type: ClusterIP

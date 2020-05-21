@@ -14,23 +14,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-# Default values for submarine.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-submarine:
-  server:
-    imagePullPolicy: IfNotPresent
-    replicas: 1
-    name: submarine-server
-    image: apache/submarine:server-0.4.0-SNAPSHOT
-    servicePort: 8080
-  database:
-    imagePullPolicy: IfNotPresent
-    replicas: 1
-    name: submarine-database
-    image: apache/submarine:database-0.4.0-SNAPSHOT
-    servicePort: 3306
-    mysqlRootPassword: password
-
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: submarine-operator
+  namespace: default
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: "submarine-operator"
+    spec:
+      serviceAccountName: "submarine-operator"
+      containers:
+        - name: op
+          image: "apache/submarine:operator-0.4.0-SNAPSHOT"
+          imagePullPolicy: IfNotPresent
+          args: ["--v=7", "--logtostderr=true", "--alsologtostderr"]
+          resources:
+            limits:
+              cpu: 100m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi

@@ -14,23 +14,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-# Default values for submarine.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-submarine:
-  server:
-    imagePullPolicy: IfNotPresent
-    replicas: 1
-    name: submarine-server
-    image: apache/submarine:server-0.4.0-SNAPSHOT
-    servicePort: 8080
-  database:
-    imagePullPolicy: IfNotPresent
-    replicas: 1
-    name: submarine-database
-    image: apache/submarine:database-0.4.0-SNAPSHOT
-    servicePort: 3306
-    mysqlRootPassword: password
-
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: tf-job-operator
+  name: tf-job-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: tf-job-operator
+subjects:
+- kind: ServiceAccount
+  name: tf-job-operator
+  namespace: {{ .Release.Namespace }}

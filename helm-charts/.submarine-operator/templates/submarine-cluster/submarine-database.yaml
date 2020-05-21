@@ -14,23 +14,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: submarine-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: submarine-database
+  template:
+    metadata:
+      labels:
+        app: submarine-database
+    spec:
+      containers:
+        - name: submarine-database
+          image: apache/submarine:database-0.4.0-SNAPSHOT
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "password" # Same submarine-site.xml mysql password
 
-# Default values for submarine.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-submarine:
-  server:
-    imagePullPolicy: IfNotPresent
-    replicas: 1
-    name: submarine-server
-    image: apache/submarine:server-0.4.0-SNAPSHOT
-    servicePort: 8080
-  database:
-    imagePullPolicy: IfNotPresent
-    replicas: 1
-    name: submarine-database
-    image: apache/submarine:database-0.4.0-SNAPSHOT
-    servicePort: 3306
-    mysqlRootPassword: password
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: submarine-database
+spec:
+  ports:
+    - name: submarine-database
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: submarine-database
