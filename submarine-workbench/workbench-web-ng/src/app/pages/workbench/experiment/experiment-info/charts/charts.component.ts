@@ -20,7 +20,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-charts',
+  selector: 'submarine-charts',
   templateUrl: './charts.component.html',
   styleUrls: ['./charts.component.scss']
 })
