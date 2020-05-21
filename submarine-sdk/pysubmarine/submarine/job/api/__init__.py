@@ -13,14 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/usr/bin/env bash
-set -ex
+from __future__ import absolute_import
 
-FWDIR="$(cd "$(dirname "$0")"; pwd)"
-cd "$FWDIR"
-cd ..
+# flake8: noqa
 
-pycodestyle --max-line-length=100  -- submarine tests
-pylint --ignore job --msg-template="{path} ({line},{column}): [{msg_id} {symbol}] {msg}" --rcfile=pylintrc -- submarine tests
-
-set +ex
+# import apis into api package
+from submarine.job.api.jobs_api import JobsApi

@@ -30,11 +30,15 @@ setup(
         'sqlparse',
         'pymysql',
         'tensorflow>=1.14.0,<2.0.0',
-        'requests'
+        'requests',
+        'urllib3 >= 1.15.1',
+        'certifi >= 14.05.14',
+        'python-dateutil >= 2.5.3'
     ],
     classifiers=[
         'Intended Audience :: Developers',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
 )
