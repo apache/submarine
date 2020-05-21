@@ -20,7 +20,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-metrics',
+  selector: 'submarine-metrics',
   templateUrl: './metrics.component.html',
   styleUrls: ['./metrics.component.scss']
 })
