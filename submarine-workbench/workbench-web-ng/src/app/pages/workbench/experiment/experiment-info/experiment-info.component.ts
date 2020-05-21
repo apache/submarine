@@ -70,5 +70,5 @@ export class ExperimentInfoComponent implements OnInit {
   // TODO(jasoonn): Start experiment
   startExperiment() {}
   // TODO(jasoonn): Edit experiment
-  editExperiment(Experiment) {}
+  editExperiment() {}
 }
