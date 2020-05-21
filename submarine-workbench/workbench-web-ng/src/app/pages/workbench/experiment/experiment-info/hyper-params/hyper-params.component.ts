@@ -20,7 +20,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-hyper-params',
+  selector: 'submarine-hyper-params',
   templateUrl: './hyper-params.component.html',
   styleUrls: ['./hyper-params.component.scss']
 })
