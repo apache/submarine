@@ -90,10 +90,10 @@
   </nz-sider>
   <nz-layout>
     <div [ngSwitch]="currentState">
-      <app-charts *ngSwitchCase="0"></app-charts>
-      <app-hyper-params *ngSwitchCase="1"></app-hyper-params>
-      <app-metrics *ngSwitchCase="2"></app-metrics>
-      <app-outputs *ngSwitchCase="3"></app-outputs>
+      <submarine-charts *ngSwitchCase="0"></submarine-charts>
+      <submarine-hyper-params *ngSwitchCase="1"></submarine-hyper-params>
+      <submarine-metrics *ngSwitchCase="2"></submarine-metrics>
+      <submarine-outputs *ngSwitchCase="3"></submarine-outputs>
     </div>
   </nz-layout>
 </nz-layout>
