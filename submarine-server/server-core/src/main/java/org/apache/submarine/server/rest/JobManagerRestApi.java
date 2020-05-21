@@ -62,7 +62,8 @@ public class JobManagerRestApi {
           tags = {"jobs"},
           description = "Return the Pong message for test the connectivity",
           responses = {
-                  @ApiResponse(responseCode = "200", description = "successful operation")})
+                  @ApiResponse(responseCode = "200", description = "successful operation",
+                          content = @Content(schema = @Schema(implementation = String.class)))})
   public Response ping() {
     return new JsonResponse.Builder<String>(Response.Status.OK)
         .success(true).result("Pong").build();
@@ -79,7 +80,7 @@ public class JobManagerRestApi {
           tags = {"jobs"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = Job.class)))})
+                          schema = @Schema(implementation = JsonResponse.class)))})
   public Response createJob(JobSpec spec) {
     try {
       Job job = jobManager.createJob(spec);
@@ -98,7 +99,7 @@ public class JobManagerRestApi {
           tags = {"jobs"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = Job.class)))})
+                          schema = @Schema(implementation = JsonResponse.class)))})
   public Response listJob(@QueryParam("status") String status) {
     try {
       List<Job> jobList = jobManager.listJobsByStatus(status);
@@ -119,7 +120,7 @@ public class JobManagerRestApi {
           tags = {"jobs"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = Job.class))),
+                          schema = @Schema(implementation = JsonResponse.class))),
                   @ApiResponse(responseCode = "404", description = "Job not found")})
   public Response getJob(@PathParam(RestConstants.JOB_ID) String id) {
     try {
@@ -137,7 +138,7 @@ public class JobManagerRestApi {
           tags = {"jobs"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = Job.class))),
+                          schema = @Schema(implementation = JsonResponse.class))),
                   @ApiResponse(responseCode = "404", description = "Job not found")})
   public Response patchJob(@PathParam(RestConstants.JOB_ID) String id, JobSpec spec) {
     try {
@@ -160,7 +161,7 @@ public class JobManagerRestApi {
           tags = {"jobs"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = Job.class))),
+                          schema = @Schema(implementation = JsonResponse.class))),
                   @ApiResponse(responseCode = "404", description = "Job not found")})
   public Response deleteJob(@PathParam(RestConstants.JOB_ID) String id) {
     try {
@@ -174,6 +175,11 @@ public class JobManagerRestApi {
 
   @GET
   @Path("/logs")
+  @Operation(summary = "Log jobs",
+          tags = {"jobs"},
+          responses = {
+                  @ApiResponse(description = "successful operation", content = @Content(
+                          schema = @Schema(implementation = JsonResponse.class)))})
   public Response listLog(@QueryParam("status") String status) {
     try {
       List<JobLog> jobLogList = jobManager.listJobLogsByStatus(status);
@@ -187,6 +193,12 @@ public class JobManagerRestApi {
 
   @GET
   @Path("/logs/{id}")
+  @Operation(summary = "Log job by id",
+          tags = {"jobs"},
+          responses = {
+                  @ApiResponse(description = "successful operation", content = @Content(
+                          schema = @Schema(implementation = JsonResponse.class))),
+                  @ApiResponse(responseCode = "404", description = "Job not found")})
   public Response getLog(@PathParam(RestConstants.JOB_ID) String id) {
     try {
       JobLog jobLog = jobManager.getJobLog(id);
