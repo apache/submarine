@@ -20,7 +20,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-outputs',
+  selector: 'submarine-outputs',
   templateUrl: './outputs.component.html',
   styleUrls: ['./outputs.component.scss']
 })
