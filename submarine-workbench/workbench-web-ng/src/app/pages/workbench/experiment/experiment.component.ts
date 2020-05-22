@@ -22,6 +22,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 
 @Component({
   selector: 'submarine-experiment',
@@ -30,6 +31,10 @@ import { NzMessageService } from 'ng-zorro-antd';
 })
 export class ExperimentComponent implements OnInit {
   experimentList: ExperimentInfo[] = [];
+  //About experiment information
+  isInfo = false;
+  experimentID: string;
+
   // About show existing experiments
   showExperiment = 'All';
   searchText = '';
@@ -45,7 +50,11 @@ export class ExperimentComponent implements OnInit {
   ruleTypes = ['Strong', 'Weak'];
   scheduleCycles = ['Month', 'Week'];
 
-  constructor(private experimentService: ExperimentService, private nzMessageService: NzMessageService) {}
+  constructor(
+    private experimentService: ExperimentService,
+    private nzMessageService: NzMessageService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.createExperiment = new FormGroup({
@@ -58,6 +67,22 @@ export class ExperimentComponent implements OnInit {
       scheduleCycle: new FormControl('Month')
     });
     this.fetchExperimentList();
+    if (this.router.url === '/workbench/experiment') {
+      this.isInfo = false;
+    } else {
+      this.isInfo = true;
+    }
+    this.router.events.subscribe((val) => {
+      if (val instanceof NavigationStart) {
+        console.log(val.url);
+        if (val.url === '/workbench/experiment') {
+          this.isInfo = false;
+          this.fetchExperimentList();
+        } else {
+          this.isInfo = true;
+        }
+      }
+    });
   }
 
   handleOk() {
