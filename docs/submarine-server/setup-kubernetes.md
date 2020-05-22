@@ -98,13 +98,39 @@ cd <submarine_code_path_root>/dev-support/k8s/pytorchjob
 
 ```
 
-#### Use Helm Chart to deploy
-It will deploy submarine server in kubernetes.
+### Use Helm Chart to deploy
 
-##### Local
+#### install helm
+For more info see https://helm.sh/docs/intro/install/
+
+#### tensorflow operator
+```bash
+helm install tensorflow helm-charts/tensorflow
+```
+
+#### pytouch operator
+```bash
+helm install pytouch helm-charts/pytouch
+```
+
+#### submarine server, mysql
+You can modify some settings in helm-charts/submarine/values.yaml
 ```bash
 helm install submarine helm-charts/submarine
 ```
+
+#### Delete deployment
+```bash
+helm delete submarine 
+helm delete pytouch 
+helm delete tensorflow 
+```
+
+#### port-forward {host port}:{container port}
+```bash
+kubectl port-forward svc/submarine-server 8080:8080 --address 0.0.0.0
+```
+
 ## Production environment
 
 ### Setup Kubernetes
