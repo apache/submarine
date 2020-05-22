@@ -13,6 +13,9 @@
 -->
 
 # pysubmarine-tracking
+It helps developers use submarine's internal data caching,
+data exchange, and task tracking capabilities to more efficiently improve the
+development and execution of machine learning productivity
 - Allow data scientist to track distributed ML job
 - Support store ML parameters and metrics in Submarine-server
 - [TODO] Support store ML job output (e.g. csv,images)

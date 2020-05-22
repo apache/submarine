@@ -10,25 +10,26 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  
   See the License for the specific language governing permissions and  
   limitations under the License. See accompanying LICENSE file.  
--->  
+-->
 
 # PySubmarine
-PySubmarine helps developers use submarine's internal data caching,
-data exchange, and task tracking capabilities to more efficiently improve the 
-development and execution of machine learning productivity.
+PySubmarine is aiming to ease the ML engineer's life by providing a set of libraries.
+
+It includes a high-level out-of-box ML library like deepFM, FM, etc.
+low-level library to interact with submarine like creating experiment,
+tracking experiment metrics, parameters.
+
 
 ## Package setup
-- Clone repo
+- Clone repository
 ```bash
 git clone https://github.com/apache/submarine.git 
 cd submarine/submarine-sdk/pysubmarine
 ```
-
 - Install pip package
 ```bash
 pip install .
 ```
-
 - Run tests
 ```bash
 pytest --cov=submarine -vs
@@ -36,10 +37,18 @@ pytest --cov=submarine -vs
 
 - Run checkstyle
 ```bash
-pylint --msg-template="{path} ({line},{column}): \
-[{msg_id} {symbol}] {msg}" --rcfile=pylintrc -- submarine tests
+./submarine-sdk/pysubmarine/github-actions/lint.sh
 ```
+## How to generate REST SDK from swagger
+- [Generate REST SDK from swagger](./generate_api.md)
+
+## Easy-to-use model trainers
+- [FM](../../../submarine-sdk/pysubmarine/example/deepfm)
+- [DeepFM](../../../submarine-sdk/pysubmarine/example/fm)
+
+## Submarine experiment management
+Makes it easy to run distributed or non-distributed TensorFlow, PyTorch experiments on Kubernetes.
+- [submarine_job_ipynb](../../../submarine-sdk/pysubmarine/example/submarine_job_sdk.ipynb)
 
 ## PySubmarine API Reference
-### Tracking
 - [Tracking](tracking.md)
