@@ -565,6 +565,7 @@
             <exclude>**/go.mod</exclude>
             <exclude>**/go.sum</exclude>
             <exclude>**/workbench-web/**</exclude>
+            <exclude>**/*.ipynb</exclude>
           </excludes>
         </configuration>
       </plugin>

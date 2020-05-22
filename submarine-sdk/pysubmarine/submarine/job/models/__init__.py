@@ -16,7 +16,6 @@
 # coding: utf-8
 
 # flake8: noqa
-
 """
     Submarine Experiment API
 
@@ -28,12 +27,8 @@
 """
 
 from __future__ import absolute_import
-# import apis into sdk package
-from submarine.job.api.jobs_api import JobsApi
-# import ApiClient
-from submarine.job.api_client import ApiClient
-from submarine.job.configuration import Configuration
-# import models into sdk package
+
+# import models into model package
 from submarine.job.models.job_library_spec import JobLibrarySpec
 from submarine.job.models.job_spec import JobSpec
 from submarine.job.models.job_task_spec import JobTaskSpec
