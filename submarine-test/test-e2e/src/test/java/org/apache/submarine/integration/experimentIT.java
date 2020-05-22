@@ -33,7 +33,7 @@ public class experimentIT extends AbstractSubmarineIT {
 
   @BeforeClass
   public static void startUp(){
-    LOG.info("[Testcase]: jobIT");
+    LOG.info("[Testcase]: experimentIT");
     driver =  WebDriverManager.getWebDriver();
   }
 
@@ -43,7 +43,7 @@ public class experimentIT extends AbstractSubmarineIT {
   }
 
   @Test
-  public void workspaceNavigation() throws Exception {
+  public void experimentNavigation() throws Exception {
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
