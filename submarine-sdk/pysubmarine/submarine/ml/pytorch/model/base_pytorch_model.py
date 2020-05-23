@@ -26,10 +26,10 @@ from torch.nn.parallel import DistributedDataParallel
 
 import os
 import io
-from argparse import ArgumentParser
+
 from submarine.ml.pytorch.optimizer import get_optimizer
 from submarine.ml.pytorch.loss import get_loss_fn
-from submarine.ml.tensorflow.parameters import default_parameters
+from submarine.ml.pytorch.parameters import default_parameters
 from submarine.utils.env import get_from_registry, get_from_json, get_from_dicts
 from submarine.utils.pytorch_utils import get_device
 
@@ -56,19 +56,11 @@ class BasePyTorchModel(AbstractModel, ABC):
         self.metric = get_metric_fn(key=self.params['output']['metric'])
 
     def init_process_group(self):
-        parser = ArgumentParser()
-        parser.add_argument('--rank', '-r', type=int, default=int(os.environ.get('RANK', 0)))
-        parser.add_argument('--world_size', '-w', type=int, default=int(os.environ.get('WORLD', 1)))
-        parser.add_argument('--init_method', '-i', type=str,
-                            default=os.environ.get('INIT_METHOD', 'tcp://127.0.0.1:23456'))
-        parser.add_argument('--backend', type=str, default=distributed.Backend.GLOO)
-        args, _ = parser.parse_known_args()
-        print(args)
         distributed.init_process_group(
-            backend=args.backend,
-            init_method=args.init_method,
-            world_size=args.world_size,
-            rank=args.rank
+            backend=os.environ.get('backend', distributed.Backend.GLOO),
+            init_method=os.environ.get('INIT_METHOD', 'tcp://127.0.0.1:23456'),
+            world_size=int(os.environ.get('WORLD', 1)),
+            rank=int(os.environ.get('RANK', 0))
         )
 
     def __del__(self):
