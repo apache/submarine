@@ -16,8 +16,8 @@
 #
 
 apiVersion: v2
-name: pytouch opertaor
-description: pytouch opertaor
+name: tfjob
+description: tfjob
 
 # A chart can be either an 'application' or a 'library' chart.
 #
