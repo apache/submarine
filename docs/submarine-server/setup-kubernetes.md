@@ -105,12 +105,12 @@ For more info see https://helm.sh/docs/intro/install/
 
 #### tensorflow operator
 ```bash
-helm install tensorflow helm-charts/tensorflow
+helm install tfjob helm-charts/tfjob
 ```
 
 #### pytouch operator
 ```bash
-helm install pytouch helm-charts/pytouch
+helm install pytorchjob helm-charts/pytorchjob
 ```
 
 #### submarine server, mysql
@@ -122,8 +122,8 @@ helm install submarine helm-charts/submarine
 #### Delete deployment
 ```bash
 helm delete submarine 
-helm delete pytouch 
-helm delete tensorflow 
+helm delete pytorchjob 
+helm delete tfjob 
 ```
 
 #### port-forward {host port}:{container port}
