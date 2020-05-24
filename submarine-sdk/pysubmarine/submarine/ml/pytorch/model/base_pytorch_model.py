@@ -42,8 +42,9 @@ class BasePyTorchModel(AbstractModel, ABC):
         super().__init__()
         self.params = get_from_dicts(params, default_parameters)
         self.params = get_from_json(json_path, self.params)
-        self.input_type = self.params['input']['type']
+        self._sanity_check()
         logging.info("Model parameters : %s", self.params)
+        self.input_type = self.params['input']['type']
 
         self.init_process_group()
         self.model = DistributedDataParallel(self.model_fn(self.params).to(get_device(self.params)))
@@ -147,3 +148,17 @@ class BasePyTorchModel(AbstractModel, ABC):
     def model_fn(self, params):
         seed = params["training"]["seed"]
         torch.manual_seed(seed)
+
+
+    def _sanity_check(self):
+        assert 'input' in self.params, (
+            'Does not define any input parameters'
+        )
+        assert 'type' in self.params['input'], (
+            'Does not define any input type'
+        )
+        assert 'output' in self.params, (
+            'Does not define any output parameters'
+        )
+
+

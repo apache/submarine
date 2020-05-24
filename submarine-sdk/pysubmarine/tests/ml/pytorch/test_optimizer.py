@@ -13,18 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from torch import optim
+import pytest 
+from submarine.ml.pytorch.optimizer import get_optimizer 
 
-class OptimizerKey: 
-    ADAM = 'adam' 
-    ADAGRAD = 'adagrad' 
-    SGD = 'sgd' 
+def test_get_optimizer(): 
+    optimizer_keys = ['adam', 'adagrad', 'sgd'] 
+    invalid_optimizer_keys = ['adddam'] 
+
+    for key in optimizer_keys: 
+        get_optimizer(key) 
+
+    for key_invalid in invalid_optimizer_keys: 
+        with pytest.raises(ValueError, match='Invalid optimizer_key:'): 
+            get_optimizer(key_invalid) 
 
 
-def get_optimizer(key): 
-    key = key.lower() 
-    if key == OptimizerKey.ADAM: return optim.Adam 
-    if key == OptimizerKey.ADAGRAD: return optim.Adagrad 
-    if key == OptimizerKey.SGD: return optim.SGD 
-    raise ValueError('Invalid optimizer_key:', key)
 

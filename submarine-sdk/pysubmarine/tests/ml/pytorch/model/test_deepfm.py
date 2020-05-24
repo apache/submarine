@@ -13,18 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from torch import optim
-
-class OptimizerKey: 
-    ADAM = 'adam' 
-    ADAGRAD = 'adagrad' 
-    SGD = 'sgd' 
+from submarine.ml.pytorch.model.ctr import DeepFM
 
 
-def get_optimizer(key): 
-    key = key.lower() 
-    if key == OptimizerKey.ADAM: return optim.Adam 
-    if key == OptimizerKey.ADAGRAD: return optim.Adagrad 
-    if key == OptimizerKey.SGD: return optim.SGD 
-    raise ValueError('Invalid optimizer_key:', key)
+def test_run_deepfm(get_model_param): 
+    param = get_model_param
+
+    trainer = DeepFM(param) 
+    trainer.fit() 
+    trainer.evaluate() 
+    trainer.predict() 
+
+
+
+
+
+
+
+
+
+
 
