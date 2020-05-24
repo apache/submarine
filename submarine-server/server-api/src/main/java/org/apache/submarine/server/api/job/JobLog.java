@@ -20,23 +20,31 @@
 package org.apache.submarine.server.api.job;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class JobLog {
   private String jobId;
-  private List<podLog> logContent;
+  private List<PodLog> logContent;
 
-  class podLog {
+  class PodLog {
+    
     String podName;
-    String podLog;
-    podLog(String podName, String podLog) {
-      this.podName = podName;
-      this.podLog = podLog;
+    List<String> podLog = new ArrayList<String>();
+
+    PodLog(String name, String log) {
+      this.podName = name;
+      this.podLog = new ArrayList<String>();
+      addLog(log);
+    }
+    void addLog(String log) {
+      if ( log != null)
+        this.podLog.addAll(Arrays.asList(log.split("\n")));
     }
   }
 
   public JobLog() {
-    logContent = new ArrayList<podLog>();
+    logContent = new ArrayList<PodLog>();
   }
   
   public void setJobId(String jobId) {
@@ -48,7 +56,14 @@ public class JobLog {
   }
 
   public void addPodLog(String name, String log) {
-    logContent.add(new podLog(name, log));
+    for (PodLog podlog : logContent) {
+      if (podlog.podName.equals(name))
+      {
+        podlog.addLog(log);
+        return;
+      }
+    }
+    logContent.add(new PodLog(name, log));
   }
 
   public void clearPodLog() {
