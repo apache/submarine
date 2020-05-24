@@ -47,11 +47,12 @@ class BasePyTorchModel(AbstractModel, ABC):
         self.input_type = self.params['input']['type']
 
         self.init_process_group()
-        self.model = DistributedDataParallel(self.model_fn(self.params).to(get_device(self.params)))
+        self.model = DistributedDataParallel(
+            self.model_fn(self.params).to(get_device(self.params)))
         self.optimizer = get_optimizer(key=self.params['optimizer']['name'])(
-                params=self.model.parameters(),
-                **self.params['optimizer']['kwargs']
-            )
+            params=self.model.parameters(),
+            **self.params['optimizer']['kwargs']
+        )
         self.loss = get_loss_fn(key=self.params['loss']['name'])(
             **self.params['loss']['kwargs'])
         self.metric = get_metric_fn(key=self.params['output']['metric'])
@@ -142,13 +143,13 @@ class BasePyTorchModel(AbstractModel, ABC):
             )
             write_file(
                 buffer,
-                path=os.path.join(self.params['output']['save_model_dir'], 'ckpt.pkl')
+                path=os.path.join(
+                    self.params['output']['save_model_dir'], 'ckpt.pkl')
             )
 
     def model_fn(self, params):
         seed = params["training"]["seed"]
         torch.manual_seed(seed)
-
 
     def _sanity_check(self):
         assert 'input' in self.params, (
@@ -160,5 +161,4 @@ class BasePyTorchModel(AbstractModel, ABC):
         assert 'output' in self.params, (
             'Does not define any output parameters'
         )
-
 

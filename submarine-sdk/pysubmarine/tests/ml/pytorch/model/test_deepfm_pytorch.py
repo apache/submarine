@@ -16,21 +16,10 @@
 from submarine.ml.pytorch.model.ctr import DeepFM
 
 
-def test_run_deepfm(get_model_param): 
+def test_run_deepfm(get_model_param):
     param = get_model_param
 
-    trainer = DeepFM(param) 
-    trainer.fit() 
-    trainer.evaluate() 
-    trainer.predict() 
-
-
-
-
-
-
-
-
-
-
-
+    trainer = DeepFM(param)
+    trainer.fit()
+    trainer.evaluate()
+    trainer.predict()
