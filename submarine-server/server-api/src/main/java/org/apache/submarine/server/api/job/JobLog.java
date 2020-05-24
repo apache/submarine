@@ -28,11 +28,18 @@ public class JobLog {
   private List<PodLog> logContent;
 
   class PodLog {
+    
     String podName;
-    List<String> podLog;
+    List<String> podLog = new ArrayList<String>();
+
     PodLog(String name, String log) {
       this.podName = name;
-      this.podLog.addAll(Arrays.asList(log.split("\n")));
+      this.podLog = new ArrayList<String>();
+      addLog(log);
+    }
+    void addLog(String log) {
+      if ( log != null)
+        this.podLog.addAll(Arrays.asList(log.split("\n")));
     }
   }
 
@@ -50,11 +57,13 @@ public class JobLog {
 
   public void addPodLog(String name, String log) {
     for (PodLog podlog : logContent) {
-      if(podlog.podName.equals(name))
+      if (podlog.podName.equals(name))
       {
-        podlog.podLog.addAll(Arrays.asList(log.split("\n")));
+        podlog.addLog(log);
+        return;
       }
     }
+    logContent.add(new PodLog(name, log));
   }
 
   public void clearPodLog() {
