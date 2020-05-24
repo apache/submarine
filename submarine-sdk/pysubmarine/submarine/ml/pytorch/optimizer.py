@@ -15,16 +15,19 @@
 
 from torch import optim
 
-class OptimizerKey: 
-    ADAM = 'adam' 
-    ADAGRAD = 'adagrad' 
-    SGD = 'sgd' 
+
+class OptimizerKey:
+    ADAM = 'adam'
+    ADAGRAD = 'adagrad'
+    SGD = 'sgd'
 
 
-def get_optimizer(key): 
-    key = key.lower() 
-    if key == OptimizerKey.ADAM: return optim.Adam 
-    if key == OptimizerKey.ADAGRAD: return optim.Adagrad 
-    if key == OptimizerKey.SGD: return optim.SGD 
+def get_optimizer(key):
+    key = key.lower()
+    if key == OptimizerKey.ADAM:
+        return optim.Adam
+    if key == OptimizerKey.ADAGRAD:
+        return optim.Adagrad
+    if key == OptimizerKey.SGD:
+        return optim.SGD
     raise ValueError('Invalid optimizer_key:', key)
-

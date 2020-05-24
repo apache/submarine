@@ -26,7 +26,8 @@ class FieldLinear(nn.Module):
         :param out_features: The number of output features.
         """
         super().__init__()
-        self.weight = nn.Embedding(num_embeddings=sum(field_dims), embedding_dim=out_features)
+        self.weight = nn.Embedding(num_embeddings=sum(
+            field_dims), embedding_dim=out_features)
         self.bias = nn.Parameter(torch.zeros((out_features,)))
         self.register_buffer('offset',
                              torch.as_tensor([0, *accumulate(field_dims)][:-1], dtype=torch.long))
@@ -41,7 +42,8 @@ class FieldLinear(nn.Module):
 class FieldEmbedding(nn.Module):
     def __init__(self, field_dims, embedding_dim):
         super().__init__()
-        self.weight = nn.Embedding(num_embeddings=sum(field_dims), embedding_dim=embedding_dim)
+        self.weight = nn.Embedding(num_embeddings=sum(
+            field_dims), embedding_dim=embedding_dim)
         self.register_buffer('offset', torch.as_tensor(
             [0, *accumulate(field_dims)][:-1], dtype=torch.long))
 
@@ -57,8 +59,10 @@ class PairwiseInteraction(nn.Module):
         """
         :param x: torch.Tensor (batch_size, num_fields, embedding_dim)
         """
-        square_of_sum = torch.square(torch.sum(x, dim=1))  # (batch_size, embedding_dim)
-        sum_of_square = torch.sum(torch.square(x), dim=1)  # (batch_size, embedding_dim)
+        square_of_sum = torch.square(
+            torch.sum(x, dim=1))  # (batch_size, embedding_dim)
+        # (batch_size, embedding_dim)
+        sum_of_square = torch.sum(torch.square(x), dim=1)
         return 0.5 * torch.sum(square_of_sum - sum_of_square, dim=1,
                                keepdim=True)  # (batch_size, 1)
 
@@ -66,7 +70,8 @@ class PairwiseInteraction(nn.Module):
 class DNN(nn.Module):
     def __init__(self, in_features, out_features, hidden_units, dropout_rates):
         super().__init__()
-        *layers, out_layer = list(zip([in_features, *hidden_units], [*hidden_units, out_features]))
+        *layers, out_layer = list(zip([in_features, *
+                                       hidden_units], [*hidden_units, out_features]))
         self.net = nn.Sequential(
             *(nn.Sequential(
                 nn.Linear(in_features=i, out_features=o),

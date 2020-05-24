@@ -1,8 +1,8 @@
 {
     "input": {
-        "train_data": "../data/dev.libsvm",
-        "valid_data": "../data/dev.libsvm",
-        "test_data": "../data/dev.libsvm",
+        "train_data": "../data/tr.libsvm",
+        "valid_data": "../data/va.libsvm",
+        "test_data": "../data/te.libsvm",
         "type": "libsvm"
     },
     "output": {

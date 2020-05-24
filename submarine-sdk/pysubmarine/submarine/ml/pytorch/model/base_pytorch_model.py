@@ -161,4 +161,3 @@ class BasePyTorchModel(AbstractModel, ABC):
         assert 'output' in self.params, (
             'Does not define any output parameters'
         )
-

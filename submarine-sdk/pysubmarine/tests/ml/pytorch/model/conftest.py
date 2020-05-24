@@ -36,7 +36,7 @@ def get_model_param(tmpdir):
     data_file = os.path.join(str(tmpdir), "libsvm.txt")
     save_model_dir = os.path.join(str(tmpdir), "experiment")
     os.mkdir(save_model_dir)
-    
+
     with open(data_file, "wt") as writer:
         writer.write(LIBSVM_DATA)
 
@@ -65,7 +65,7 @@ def get_model_param(tmpdir):
             "name": "ctr.deepfm",
             "kwargs": {
                 "field_dims": [15, 52, 30, 19, 111, 51, 26, 19, 53, 5, 13, 8, 23, 21, 77, 25, 39, 11,
-                8, 61, 15, 3, 34, 75, 30, 79, 11, 85, 37, 10, 94, 19, 5, 32, 6, 12, 42, 18, 23],
+                               8, 61, 15, 3, 34, 75, 30, 79, 11, 85, 37, 10, 94, 19, 5, 32, 6, 12, 42, 18, 23],
                 "out_features": 1,
                 "embedding_dim": 16,
                 "hidden_units": [400, 400],
@@ -91,8 +91,3 @@ def get_model_param(tmpdir):
 
     yield params
     os.remove(data_file)
-
-
-
-
-
