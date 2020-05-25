@@ -105,7 +105,7 @@
       <submarine-charts *ngSwitchCase="0"></submarine-charts>
       <submarine-hyper-params *ngSwitchCase="1"></submarine-hyper-params>
       <submarine-metrics *ngSwitchCase="2"></submarine-metrics>
-      <submarine-outputs *ngSwitchCase="3"></submarine-outputs>
+      <submarine-outputs *ngSwitchCase="3" [experimentOutputID]="experimentID"></submarine-outputs>
     </div>
   </nz-layout>
 </nz-layout>

@@ -16,5 +16,10 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-
-<p>outputs works!</p>
+<div id="outputDiv">
+  <div style="margin: 10px;">
+<p *ngFor = "let detail of detailArr, let i of index" style="word-break: break-all;">
+{{ detail }}
+</p>
+</div>
+</div>
