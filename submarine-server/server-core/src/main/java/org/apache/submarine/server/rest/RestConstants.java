@@ -36,11 +36,4 @@ public class RestConstants {
   public static final String NODE = "node";
 
   public static final String LOGS = "logs";
-  
-  /**
-   * Environment
-   */
-  public static final String ENVIRONMENTS = "environments";
-  
-  public static final String ENVIRONMENT_ID = "id";
 }
