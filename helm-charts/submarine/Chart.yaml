@@ -22,11 +22,3 @@ name: submarine
 version: 0.1.0
 icon: https://submarine.apache.org/assets/themes/submarine/img/submarine_white_logo.png
 
-dependencies:
-- name: pytorchhob
-  version: "0.1.0"
-  repository: "file://../pytorchhob"
-dependencies:
-- name: tfjob
-  version: "0.1.0"
-  repository: "file://../tfjob"
