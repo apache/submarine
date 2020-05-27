@@ -60,9 +60,23 @@ _Theodore Levitt_ once said:
 
 - Model management for model-serving/versioning/monitoring is on the roadmap.
 
+## Easy-to-use User-Interface of Submarine
+
+Like mentioned above, Submarine is targeted to bring Data-Scientist-friendly user-interfaces to make their life easier. Here're some examples of Submarine user-interfaces.
+
+<FIXME: Add more contents below>
+
+### Submit a distributed Tensorflow experiment via Submarine Python SDK
+
+### Submit a pre-defined experiment template job
+
+### Submit an experiment via Submarine UI 
+
+(Available on 0.6.0, see Roadmap)
+
 ## Architecture, Design and requirements
 
-Architecture, components, and requirements can be found on [Architecture-and-requirement](docs/design/architecture-and-requirements.md)
+If you want to knwow more about Submarine's architecture, components, requirements and design doc, they can be found on [Architecture-and-requirement](docs/design/architecture-and-requirements.md)
 
 Detailed design documentation, implementation notes can be found at: [Implementation notes](docs/design/implementation-notes.md)
 
@@ -77,6 +91,10 @@ Issue Tracking: https://issues.apache.org/jira/projects/SUBMARINE
 ## User Docuement
 
 FIXME: Add link once user doc finished.
+
+## Roadmap
+
+What to know more about what's coming for Submarine? Please check the roadmap out: https://cwiki.apache.org/confluence/display/SUBMARINE/Roadmap
 
 ## License
 
