@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-apiVersion: v1
+apiVersion: v2
 appVersion: "0.4.0-SNAPSHOT"
 description: Submarine is Cloud Native Machine Learning Platform.
 name: submarine
