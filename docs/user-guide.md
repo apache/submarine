@@ -12,25 +12,19 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-# Docs index
+# User Document of Submarine
 
-Click below contents if you want to understand more.
-
-## Quick Start Guide
-
-[Quick Start Guide](./helper/QuickStart.md)
+This is index of user document of Submarine.
 
 ## Build From Code
 
 [Build From Code Guide](./development/BuildFromCode.md)
 
-## Apache Submarine Community
+FIXME: Where's build for K8s?
 
-[Apache Submarine Community Guide](./community/README.md)
+## Quick Start Guide
 
-## Submarine Workbench
-
-[Submarine Workbench Guide](./workbench/README.md)
+[Quick Start Guide](./helper/QuickStart.md)
 
 ## Submarine Server
 [Submarine Server Guide](./submarine-server/README.md)
@@ -44,12 +38,6 @@ Here're some examples about Submarine usage.
 [Running Standalone CIFAR 10 PyTorch Job_With_Yarn_Service_Runtime](helper/RunningSingleNodeCifar10PTJobsWithYarnService.md)
 
 [Running Distributed thchs30 Kaldi Job](./ecosystem/kaldi/RunningDistributedThchs30KaldiJobs.md)
-
-## Development
-
-[Submarine Project Development Guide](./development/README.md)
-
-[Submarine Project Database Guide](./database/README.md)
 
 ## Dockerfile
 
