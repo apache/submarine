@@ -98,6 +98,39 @@ cd <submarine_code_path_root>/dev-support/k8s/pytorchjob
 
 ```
 
+
+### Use Helm Chart to deploy
+
+#### Create images
+submarine server
+```bash
+./dev-support/docker-images/submarine/build.sh
+```
+
+submarine database
+```bash
+./dev-support/docker-images/database/build.sh
+```
+
+#### install helm
+For more info see https://helm.sh/docs/intro/install/
+
+#### Deploy submarine server, mysql
+You can modify some settings in ./helm-charts/submarine/values.yaml
+```bash
+helm install submarine ./helm-charts/submarine
+```
+
+#### Delete deployment
+```bash
+helm delete submarine 
+```
+
+#### port-forward {host port}:{container port}
+```bash
+kubectl port-forward svc/submarine-server 8080:8080 --address 0.0.0.0
+```
+
 ## Production environment
 
 ### Setup Kubernetes
