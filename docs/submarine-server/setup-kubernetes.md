@@ -98,24 +98,24 @@ cd <submarine_code_path_root>/dev-support/k8s/pytorchjob
 
 ```
 
-### build image
 
-#### submarine database
-```bash
-./dev-support/docker-images/database/build.sh
-```
+### Use Helm Chart to deploy
 
-#### submarine server
+#### Create images
+submarine server
 ```bash
 ./dev-support/docker-images/submarine/build.sh
 ```
 
-### Use Helm Chart to deploy
+submarine database
+```bash
+./dev-support/docker-images/database/build.sh
+```
 
 #### install helm
 For more info see https://helm.sh/docs/intro/install/
 
-#### submarine server, mysql
+#### Deploy submarine server, mysql
 You can modify some settings in ./helm-charts/submarine/values.yaml
 ```bash
 helm install submarine ./helm-charts/submarine
