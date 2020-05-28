@@ -67,8 +67,8 @@ class BaseTFModel(AbstractModel, ABC):
 
     def evaluate(self, eval_input_fn=None, **kwargs):
         """
-        Evaluates a pre-defined Tensorflow estimator model with given evaluate input
-        :param eval_input_fn: A function that provides input input for evaluating.
+        Evaluates a pre-defined Tensorflow estimator model with given evaluate data
+        :param eval_input_fn: A function that provides input data for evaluating.
         :return: A dict containing the evaluation metrics specified in `eval_input_fn` keyed by
         name, as well as an entry `global_step` which contains the value of the
         global step for which this evaluation was performed
