@@ -98,6 +98,18 @@ cd <submarine_code_path_root>/dev-support/k8s/pytorchjob
 
 ```
 
+### build image
+
+#### submarine database
+```bash
+./dev-support/docker-images/database/build.sh
+```
+
+#### submarine server
+```bash
+./dev-support/docker-images/submarine/build.sh
+```
+
 ### Use Helm Chart to deploy
 
 #### install helm
