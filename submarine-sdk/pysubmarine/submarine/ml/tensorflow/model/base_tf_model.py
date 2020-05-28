@@ -43,9 +43,9 @@ class BaseTFModel(AbstractModel, ABC):
 
     def train(self, train_input_fn=None, eval_input_fn=None, **kwargs):
         """
-        Trains a pre-defined tensorflow estimator model with given training input
-        :param train_input_fn: A function that provides input input for training.
-        :param eval_input_fn: A function that provides input input for evaluating.
+        Trains a pre-defined tensorflow estimator model with given training data
+        :param train_input_fn: A function that provides input data for training.
+        :param eval_input_fn: A function that provides input data for evaluating.
         :return: None
         """
         if train_input_fn is None:
