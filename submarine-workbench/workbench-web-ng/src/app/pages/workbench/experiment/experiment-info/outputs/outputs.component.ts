@@ -36,10 +36,10 @@ export class OutputsComponent implements OnInit {
   constructor(private experimentService: ExperimentService, private nzMessageService: NzMessageService) {}
 
   ngOnInit() {
-    this.getExoerimentLog();
+    this.getExperimentLog();
   }
 
-  getExoerimentLog() {
+  getExperimentLog() {
     this.experimentService.getExperimentLog(this.experimentOutputID).subscribe(
       (result) => {
         this.podNameArr = result.logContent.map((item) => Object.values(item)[0]);
