@@ -18,7 +18,7 @@
  */
 
 import { Component, OnInit, Input } from '@angular/core';
-import { ExperimentService } from '../../../../../services/experiment.service'
+import { ExperimentService } from '../../../../../services/experiment.service';
 import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
@@ -27,15 +27,13 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./outputs.component.scss']
 })
 export class OutputsComponent implements OnInit {
-
   @Input() experimentOutputID: string;
-  outputLogPodName: string;
-  detailArr: string[];
+  podNameArr;
+  podLogArr;
+  logDetailArr;
+  isShowing = false;
 
-  constructor(
-    private experimentService: ExperimentService,
-    private nzMessageService: NzMessageService
-  ) {}
+  constructor(private experimentService: ExperimentService, private nzMessageService: NzMessageService) {}
 
   ngOnInit() {
     this.getExoerimentLog();
@@ -43,15 +41,19 @@ export class OutputsComponent implements OnInit {
 
   getExoerimentLog() {
     this.experimentService.getExperimentLog(this.experimentOutputID).subscribe(
-      (log) => {
-        //this.outputLog = JSON.stringify(log);
-        this.outputLogPodName = log.logContent[0].podName;
-        this.detailArr = log.logContent[0].podLog.split('\n');
-        console.log(log);
+      (result) => {
+        this.podNameArr = result.logContent.map((item) => Object.values(item)[0]);
+        this.podLogArr = result.logContent.map((item) => Object.values(item)[1]);
       },
       (err) => {
         this.nzMessageService.error('Cannot load log of ' + this.experimentOutputID);
-      });
+        console.log(err);
+      }
+    );
   }
 
+  show(i: number) {
+    this.isShowing = true;
+    this.logDetailArr = this.podLogArr[i];
+  }
 }
