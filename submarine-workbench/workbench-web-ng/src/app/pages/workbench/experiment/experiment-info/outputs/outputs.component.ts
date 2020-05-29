@@ -17,7 +17,9 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ExperimentService } from '../../../../../services/experiment.service';
+import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'submarine-outputs',
@@ -25,7 +27,33 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./outputs.component.scss']
 })
 export class OutputsComponent implements OnInit {
-  constructor() {}
+  @Input() experimentOutputID: string;
+  podNameArr;
+  podLogArr;
+  logDetailArr;
+  isShowing = false;
 
-  ngOnInit() {}
+  constructor(private experimentService: ExperimentService, private nzMessageService: NzMessageService) {}
+
+  ngOnInit() {
+    this.getExperimentLog();
+  }
+
+  getExperimentLog() {
+    this.experimentService.getExperimentLog(this.experimentOutputID).subscribe(
+      (result) => {
+        this.podNameArr = result.logContent.map((item) => Object.values(item)[0]);
+        this.podLogArr = result.logContent.map((item) => Object.values(item)[1]);
+      },
+      (err) => {
+        this.nzMessageService.error('Cannot load log of ' + this.experimentOutputID);
+        console.log(err);
+      }
+    );
+  }
+
+  show(i: number) {
+    this.isShowing = true;
+    this.logDetailArr = this.podLogArr[i];
+  }
 }

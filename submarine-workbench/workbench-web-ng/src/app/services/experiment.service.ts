@@ -96,4 +96,17 @@ export class ExperimentService {
       })
     );
   }
+
+  getExperimentLog(id: string): Observable<any> {
+    const apiUrl = this.baseApi.getRestApi('/v1/jobs/logs/' + id);
+    return this.httpClient.get<Rest<any>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get', id);
+        }
+      })
+    );
+  }
 }

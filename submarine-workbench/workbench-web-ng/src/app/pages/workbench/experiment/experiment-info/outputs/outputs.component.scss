@@ -17,4 +17,30 @@
  * under the License.
  */
 
+#outputDiv{
+    background-color: white;
+}
 
+#podListDiv{
+    background-color: white;
+    padding: 10px;
+    height:280px;
+    overflow:auto;
+}
+
+#outputActionDiv{
+    padding: 10px;
+}
+
+.logActionBtn{
+    margin: 5px;
+}
+
+#showLogDiv{
+    background-color: gainsboro;
+    color: red;
+    margin: 5px;
+    padding: 5px;
+    height:280px;
+    overflow:auto;
+}

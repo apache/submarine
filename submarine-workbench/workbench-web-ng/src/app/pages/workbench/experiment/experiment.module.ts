@@ -7,6 +7,7 @@ import { ChartsComponent } from './experiment-info/charts/charts.component';
 import { OutputsComponent } from './experiment-info/outputs/outputs.component';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -29,7 +30,7 @@ import { CommonModule } from '@angular/common';
 
 @NgModule({
   exports: [ReactiveFormsModule],
-  imports: [NgZorroAntdModule, CommonModule],
+  imports: [NgZorroAntdModule, CommonModule, FormsModule],
   declarations: [ExperimentInfoComponent, HyperParamsComponent, MetricsComponent, ChartsComponent, OutputsComponent]
 })
 export class ExperimentModule {}
