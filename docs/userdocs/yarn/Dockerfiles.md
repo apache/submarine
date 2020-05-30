@@ -13,16 +13,10 @@
    limitations under the License.
 -->
 
-# Development Guide
+# Write Dockerfiles for Submarine
 
-## Working-in-progress componments
+[How to write Dockerfile for Submarine TensorFlow jobs](WriteDockerfileTF.md)
 
-### Submarine Workbench
+[How to write Dockerfile for Submarine PyTorch jobs](WriteDockerfilePT.md)
 
-[Submarine Workbench Guide](./workbench/README.md)
-
-### Development
-
-[Submarine Project Development Guide](./development/README.md)
-
-[Submarine Project Database Guide](./database/README.md)
+[How to write Dockerfile for Submarine MXNet jobs](WriteDockerfileMX.md)

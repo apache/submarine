@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -26,7 +26,7 @@ It now supports Tensorflow and PyTorch jobs.
 - A K8s cluster
 - The Docker image encapsulated with your deep learning application code
 
-Note that We provide a learning and production environment tutorial. For more deployment info see [Deploy Submarine Server on Kubernetes](./setup-kubernetes.md).
+Note that We provide a learning and production environment tutorial. For more deployment info see [Deploy Submarine Server on Kubernetes](project/github/submarine/docs/userdocs/k8s/setup-kubernetes.md).
 
 ## Training
 A generic job spec was designed for training job request, you should get familiar with the the job spec before submit job.
@@ -114,7 +114,7 @@ or
 }
 ```
 
-For more info about the spec definition see [here](../design/submarine-server/jobspec.md).
+For more info about the spec definition see [here](project/github/submarine/docs/design/submarine-server/jobspec.md).
 
 ## Job Operation by REST API
 ### Create Job

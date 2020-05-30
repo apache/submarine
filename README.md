@@ -20,17 +20,17 @@
 
 # What is Apache Submarine?
 
-Apache Submarine (Submarine for short) is the `ONE PLATFORM` to allow Data Scientists to create end-to-end machine learning workflow. `ONE PLATFORM` means it supports Data Scientists and data engineers to finish their jobs on the same platform without frequently switching their toolsets. From dataset exploring data pipeline creation, model training (experiments), and push model to production (model serving and monitoring). All these steps can be completed within the `ONE PLATFORM`. 
+Apache Submarine (Submarine for short) is the `ONE PLATFORM` to allow Data Scientists to create end-to-end machine learning workflow. `ONE PLATFORM` means it supports Data Scientists and data engineers to finish their jobs on the same platform without frequently switching their toolsets. From dataset exploring data pipeline creation, model training (experiments), and push model to production (model serving and monitoring). All these steps can be completed within the `ONE PLATFORM`.
 
 ## Why Submarine?
 
 There're already a lot of open-source and comericial projects are trying to create a end-to-end machine-learning/deep-learning platform, what's the vision of Submarine?
 
-### Problems 
+### Problems
 
-1) Existing products lack of good User-Interface (API, SDK, etc) to run training workload at scale, repeatable and easy for data scientist to understand on cloud/promise. 
+1) Existing products lack of good User-Interface (API, SDK, etc) to run training workload at scale, repeatable and easy for data scientist to understand on cloud/promise.
 2) Data-Scientist want to focus on domain-specific target (e.g. improve Click-Through-Rate), however available products always give user a platform (a SDK to run distributed Pytorch script).
-3) Many products provided functionalities to do data exploring, model training, and serving/monitoring. However these functionalities are largely disconnected with each other. And cannot organically work with each other. 
+3) Many products provided functionalities to do data exploring, model training, and serving/monitoring. However these functionalities are largely disconnected with each other. And cannot organically work with each other.
 
 _Theodore Levitt_ once said:
 
@@ -40,23 +40,23 @@ _Theodore Levitt_ once said:
 
 ### Goals of Submarine
 
-#### Model Training (Experiment) 
+#### Model Training (Experiment)
 
 - Can run experiment (training jobs) on prem, on cloud. Via easy-to-use User-Interfaces
-- Easy for Data-Scientist (DS) to manage training code and dependencies (Docker, Python Dependencies, etc.) . 
+- Easy for Data-Scientist (DS) to manage training code and dependencies (Docker, Python Dependencies, etc.) .
 - ML-focused APIs to run/track experiment from Python SDK (notebook), REST API, and CLI.
 - Provide APIs to run training jobs by using popular frameworks (Standalone/Distributed TensorFlow/PyTorch/Hovorod).
 - Pre-packaged Training Template for Data-Scientists to focus on domain-specific tasks (like using DeepFM to build a CTR prediction model).
 - Support GPU and other compute speed-up devides.
-- Support running on K8s/YARN or other resource management system. 
+- Support running on K8s/YARN or other resource management system.
 - Pipeline is also on the backlog, we will look into pipeline for training in the future.
 
-#### Notebook Service 
+#### Notebook Service
 
 - Submarine is target to provide notebook service, which allows users to create/edit/delete a notebook instance (such as a Jupyter notebook) running on the cluster.
-- Users can submit experiement, manage models using Submarine SDK.  
+- Users can submit experiement, manage models using Submarine SDK.
 
-#### Model Management (Serving/versioning/monitoring, etc.) 
+#### Model Management (Serving/versioning/monitoring, etc.)
 
 - Model management for model-serving/versioning/monitoring is on the roadmap.
 
@@ -64,13 +64,15 @@ _Theodore Levitt_ once said:
 
 Like mentioned above, Submarine is targeted to bring Data-Scientist-friendly user-interfaces to make their life easier. Here're some examples of Submarine user-interfaces.
 
-<FIXME: Add more contents below>
+<FIXME: Add/FIX more contents below>
+
+<WIP>
 
 ### Submit a distributed Tensorflow experiment via Submarine Python SDK
 
 ### Submit a pre-defined experiment template job
 
-### Submit an experiment via Submarine UI 
+### Submit an experiment via Submarine UI
 
 (Available on 0.6.0, see Roadmap)
 
@@ -88,9 +90,13 @@ How to contribute [Contributing Guide](./docs/community/contributing.md)
 
 Issue Tracking: https://issues.apache.org/jira/projects/SUBMARINE
 
-## User Docuement
+## User Document
 
-FIXME: Add link once user doc finished.
+See [User Guide Home Page](docs/user-guide-home.md)
+
+## Developper Document
+
+See [Developper Guide Home Page](docs/development-guide-home.md)
 
 ## Roadmap
 

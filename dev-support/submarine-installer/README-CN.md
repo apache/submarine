@@ -8,7 +8,7 @@ hadoop 在 2.9 版本中就已经让 YARN 支持了 Docker 容器的资源调度
 
 由于分布式深度学习框架需要运行在多个 Docker 的容器之中，并且需要能够让运行在容器之中的各个服务相互协调，完成分布式机器学习的模型训练和模型发布等服务，这其中就会牵涉到 `DNS`、`Docker` 、 `GPU`、`Network`、`显卡`、`操作系统内核` 修改等多个系统工程问题，正确的部署好 **Hadoop {Submarine}**  的运行环境是一件很困难和耗时的事情。
 
-为了降低 hadoop 2.9 以上版本的 docker 等组件的部署难度，所以我们专门开发了这个用来部署 `Submarine` 运行时环境的 `submarine-installer` 项目，提供一键安装脚本，也可以分步执行安装、卸载、启动和停止各个组件，同时讲解每一步主要参数配置和注意事项。我们同时提供了 [中文手册](../../docs/helper/InstallationGuideChineseVersion.md) 和 [英文手册](../../docs/helper/InstallationGuide.md) ，帮助用户更容易的部署，发现问题也可以及时解决。
+为了降低 hadoop 2.9 以上版本的 docker 等组件的部署难度，所以我们专门开发了这个用来部署 `Submarine` 运行时环境的 `submarine-installer` 项目，提供一键安装脚本，也可以分步执行安装、卸载、启动和停止各个组件，同时讲解每一步主要参数配置和注意事项。我们同时提供了 [中文手册](project/github/submarine/docs/userdocs/yarn/InstallationGuideChineseVersion.md) 和 [英文手册](project/github/submarine/docs/userdocs/yarn/InstallationGuide.md) ，帮助用户更容易的部署，发现问题也可以及时解决。
 
 ## 先决条件
 
