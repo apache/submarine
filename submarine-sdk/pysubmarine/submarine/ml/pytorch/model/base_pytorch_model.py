@@ -116,10 +116,12 @@ class BasePyTorchModel(AbstractModel, ABC):
         return torch.cat(outputs, dim=0).cpu().numpy()
 
     def fit(self):
-        # TODO (andrewhsiehth): 
+        # TODO (andrewhsiehth):
         # Handle the comparison of different kinds of evaluation metrics.
-        # E.g. For roc_auc, the higher the better. But for mse, the lower the better. 
-        # The line "if eval_score > best_eval_score:" should be replaced by a indicator function.
+        # E.g. For roc_auc, the higher the better.
+        # But for mse, the lower the better.
+        # The line "if eval_score > best_eval_score:"
+        # should be replaced by a indicator function.
         best_eval_score = 0.0
         train_loader = get_from_registry(
             self.input_type, input_fn_registry)(

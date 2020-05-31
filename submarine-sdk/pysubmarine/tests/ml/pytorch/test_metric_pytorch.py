@@ -13,27 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sklearn import metrics
+import pytest
+from submarine.ml.pytorch.metric import get_metric_fn
 
 
-class MetricKey:
-    F1_SCORE = 'f1_score'
-    ACCURACY = 'accuracy'
-    ROC_AUC = 'roc_auc'
-    PRECISION = 'precision'
-    RECALL = 'recall'
+def test_get_metric_fn():
+    metric_keys = ['f1_score', 'accuracy', 'roc_auc', 'precision', 'recall']
+    invalid_metric_keys = ['NotExistMetric']
 
+    for key in metric_keys:
+        get_metric_fn(key)
 
-def get_metric_fn(key):
-    key = key.lower()
-    if key == MetricKey.F1_SCORE:
-        return metrics.f1_score
-    if key == MetricKey.ACCURACY:
-        return metrics.accuracy_score
-    if key == MetricKey.ROC_AUC:
-        return metrics.roc_auc_score
-    if key == MetricKey.PRECISION:
-        return metrics.precision_score
-    if key == MetricKey.RECALL:
-        return metrics.recall_score
-    raise ValueError('Invalid metric_key:', key)
+    for key_invalid in invalid_metric_keys:
+        with pytest.raises(ValueError, match='Invalid metric_key:'):
+            get_metric_fn(key_invalid)

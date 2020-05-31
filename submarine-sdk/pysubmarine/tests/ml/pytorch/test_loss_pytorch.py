@@ -13,27 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sklearn import metrics
+import pytest
+from submarine.ml.pytorch.loss import get_loss_fn
 
 
-class MetricKey:
-    F1_SCORE = 'f1_score'
-    ACCURACY = 'accuracy'
-    ROC_AUC = 'roc_auc'
-    PRECISION = 'precision'
-    RECALL = 'recall'
+def test_get_loss_fn():
+    loss_keys = ['BCELoss', 'CrossEntropyLoss', 'NLLLoss', 'BCEWithLogitsLoss']
+    invalid_loss_keys = ['NotExistLoss']
 
+    for key in loss_keys:
+        get_loss_fn(key)
 
-def get_metric_fn(key):
-    key = key.lower()
-    if key == MetricKey.F1_SCORE:
-        return metrics.f1_score
-    if key == MetricKey.ACCURACY:
-        return metrics.accuracy_score
-    if key == MetricKey.ROC_AUC:
-        return metrics.roc_auc_score
-    if key == MetricKey.PRECISION:
-        return metrics.precision_score
-    if key == MetricKey.RECALL:
-        return metrics.recall_score
-    raise ValueError('Invalid metric_key:', key)
+    for key_invalid in invalid_loss_keys:
+        with pytest.raises(ValueError, match='Invalid loss_key:'):
+            get_loss_fn(key_invalid)

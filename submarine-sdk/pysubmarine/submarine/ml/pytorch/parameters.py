@@ -17,7 +17,7 @@
 default_parameters = {
     "output": {
         "save_model_dir": "./output",
-        "metric": "roc_auc_score"
+        "metric": "roc_auc"
     },
     "training": {
         "batch_size": 64,

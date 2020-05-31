@@ -13,12 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from torch.nn.modules import loss
+from torch import nn
+
+
+class LossKey:
+    BCELoss = 'BCELoss'.lower()
+    CrossEntropyLoss = 'CrossEntropyLoss'.lower()
+    NLLLoss = 'NLLLoss'.lower()
+    BCEWithLogitsLoss = 'BCEWithLogitsLoss'.lower()
 
 
 def get_loss_fn(key):
-    def _condition_fn(x):
-        k, v = x
-        return isinstance(v, type) and issubclass(v, loss._Loss) and (k.lower() == key.lower())
-    _, loss_fn = next(iter(filter(_condition_fn, vars(loss).items())))
-    return loss_fn
+    key = key.lower()
+    if key == LossKey.BCELoss:
+        return nn.BCELoss
+    if key == LossKey.BCEWithLogitsLoss:
+        return nn.BCEWithLogitsLoss
+    if key == LossKey.CrossEntropyLoss:
+        return nn.CrossEntropyLoss
+    if key == LossKey.NLLLoss:
+        return nn.NLLLoss
+    raise ValueError('Invalid loss_key:', key)
