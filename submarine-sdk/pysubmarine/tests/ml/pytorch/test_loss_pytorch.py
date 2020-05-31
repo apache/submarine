@@ -13,21 +13,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-mock==2.0.0
-moto==1.3.7
-pandas<=0.23.4
-scikit-learn==0.20.2
-scipy==1.2.1
-attrdict==2.0.0
-pytest==3.2.1
-pytest-cov==2.6.0
-pytest-localserver==0.5.0
-pylint==2.5.2
-sqlalchemy==1.3.0
-PyMySQL==0.9.3
-pytest-mock==1.13.0
-certifi >= 14.05.14
-six >= 1.10
-python_dateutil >= 2.5.3
-setuptools >= 21.0.0
-urllib3 >= 1.15.1
+import pytest
+from submarine.ml.pytorch.loss import get_loss_fn
+
+
+def test_get_loss_fn():
+    loss_keys = ['BCELoss', 'CrossEntropyLoss', 'NLLLoss', 'BCEWithLogitsLoss']
+    invalid_loss_keys = ['NotExistLoss']
+
+    for key in loss_keys:
+        get_loss_fn(key)
+
+    for key_invalid in invalid_loss_keys:
+        with pytest.raises(ValueError, match='Invalid loss_key:'):
+            get_loss_fn(key_invalid)

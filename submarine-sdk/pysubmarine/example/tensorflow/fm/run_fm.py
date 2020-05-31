@@ -13,21 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-mock==2.0.0
-moto==1.3.7
-pandas<=0.23.4
-scikit-learn==0.20.2
-scipy==1.2.1
-attrdict==2.0.0
-pytest==3.2.1
-pytest-cov==2.6.0
-pytest-localserver==0.5.0
-pylint==2.5.2
-sqlalchemy==1.3.0
-PyMySQL==0.9.3
-pytest-mock==1.13.0
-certifi >= 14.05.14
-six >= 1.10
-python_dateutil >= 2.5.3
-setuptools >= 21.0.0
-urllib3 >= 1.15.1
+from submarine.ml.tensorflow.model import FM
+import argparse
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-conf", help="a JSON configuration file for FM", type=str)
+    parser.add_argument("-task_type", default='train',
+                        help="train or evaluate, by default is train")
+    args = parser.parse_args()
+    json_path = args.conf
+    task_type = args.task_type
+
+    model = FM(json_path=json_path)
+
+    if task_type == 'train':
+        model.train()
+    if task_type == 'evaluate':
+        result = model.evaluate()
+        print("Model metrics : ", result)

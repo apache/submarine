@@ -13,10 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .input import libsvm_input_fn
+from submarine.ml.tensorflow.model.base_tf_model import BaseTFModel
+import pytest
 
-LIBSVM = "libsvm"
 
-input_fn_registry = {
-    LIBSVM: libsvm_input_fn
-}
+def test_create_base_tf_model():
+    params = {"learning rate": 0.05}
+    with pytest.raises(AssertionError, match="Does not define any input parameters"):
+        BaseTFModel(params)
+
+    params.update({'input': {'train_data': '/tmp/train.csv'}})
+    with pytest.raises(AssertionError, match="Does not define any input type"):
+        BaseTFModel(params)
+
+    params.update({'input': {'type': 'libsvm'}})
+    BaseTFModel(params)

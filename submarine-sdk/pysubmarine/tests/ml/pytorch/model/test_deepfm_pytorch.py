@@ -13,18 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.ml.model.base_tf_model import BaseTFModel
-import pytest
+from submarine.ml.pytorch.model.ctr import DeepFM
 
 
-def test_create_base_tf_model():
-    params = {"learning rate": 0.05}
-    with pytest.raises(AssertionError, match="Does not define any input parameters"):
-        BaseTFModel(params)
+def test_run_deepfm(get_model_param):
+    param = get_model_param
 
-    params.update({'input': {'train_data': '/tmp/train.csv'}})
-    with pytest.raises(AssertionError, match="Does not define any input type"):
-        BaseTFModel(params)
-
-    params.update({'input': {'type': 'libsvm'}})
-    BaseTFModel(params)
+    trainer = DeepFM(param)
+    trainer.fit()
+    trainer.evaluate()
+    trainer.predict()

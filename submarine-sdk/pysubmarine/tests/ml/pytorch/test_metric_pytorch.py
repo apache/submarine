@@ -14,16 +14,16 @@
 # limitations under the License.
 
 import pytest
-from submarine.ml.optimizer import get_optimizer
+from submarine.ml.pytorch.metric import get_metric_fn
 
 
-def test_get_optimizer():
-    optimizer_keys = ['adam', 'adagrad', 'momentum', 'ftrl']
-    invalid_optimizer_keys = ['adddam']
+def test_get_metric_fn():
+    metric_keys = ['f1_score', 'accuracy', 'roc_auc', 'precision', 'recall']
+    invalid_metric_keys = ['NotExistMetric']
 
-    for optimizer_key in optimizer_keys:
-        get_optimizer(optimizer_key=optimizer_key, learning_rate=0.3)
+    for key in metric_keys:
+        get_metric_fn(key)
 
-    for invalid_optimizer_key in invalid_optimizer_keys:
-        with pytest.raises(ValueError, match="Invalid optimizer_key :"):
-            get_optimizer(optimizer_key=invalid_optimizer_key, learning_rate=0.3)
+    for key_invalid in invalid_metric_keys:
+        with pytest.raises(ValueError, match='Invalid metric_key:'):
+            get_metric_fn(key_invalid)

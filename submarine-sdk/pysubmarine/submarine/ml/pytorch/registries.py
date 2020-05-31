@@ -13,14 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .input.libsvm_dataset import libsvm_input_fn
 
-from submarine.ml.model import NFM
+LIBSVM = "libsvm"
 
-
-def test_run_nfm(get_model_param):
-    params = get_model_param
-
-    model = NFM(model_params=params)
-    model.train()
-    model.evaluate()
-    model.predict()
+input_fn_registry = {
+    LIBSVM: libsvm_input_fn
+}

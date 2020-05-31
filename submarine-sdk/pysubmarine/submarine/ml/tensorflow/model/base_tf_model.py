@@ -17,9 +17,9 @@ from abc import ABC
 import logging
 import tensorflow as tf
 import numpy as np
-from submarine.ml.model.abstract_model import AbstractModel
-from submarine.ml.registries import input_fn_registry
-from submarine.ml.parameters import default_parameters
+from submarine.ml.abstract_model import AbstractModel
+from submarine.ml.tensorflow.registries import input_fn_registry
+from submarine.ml.tensorflow.parameters import default_parameters
 from submarine.utils.env import get_from_registry, get_from_dicts, get_from_json
 from submarine.utils.tf_utils import get_tf_config
 

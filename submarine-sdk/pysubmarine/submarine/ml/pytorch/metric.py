@@ -13,21 +13,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-mock==2.0.0
-moto==1.3.7
-pandas<=0.23.4
-scikit-learn==0.20.2
-scipy==1.2.1
-attrdict==2.0.0
-pytest==3.2.1
-pytest-cov==2.6.0
-pytest-localserver==0.5.0
-pylint==2.5.2
-sqlalchemy==1.3.0
-PyMySQL==0.9.3
-pytest-mock==1.13.0
-certifi >= 14.05.14
-six >= 1.10
-python_dateutil >= 2.5.3
-setuptools >= 21.0.0
-urllib3 >= 1.15.1
+from sklearn import metrics
+
+
+class MetricKey:
+    F1_SCORE = 'f1_score'
+    ACCURACY = 'accuracy'
+    ROC_AUC = 'roc_auc'
+    PRECISION = 'precision'
+    RECALL = 'recall'
+
+
+def get_metric_fn(key):
+    key = key.lower()
+    if key == MetricKey.F1_SCORE:
+        return metrics.f1_score
+    if key == MetricKey.ACCURACY:
+        return metrics.accuracy_score
+    if key == MetricKey.ROC_AUC:
+        return metrics.roc_auc_score
+    if key == MetricKey.PRECISION:
+        return metrics.precision_score
+    if key == MetricKey.RECALL:
+        return metrics.recall_score
+    raise ValueError('Invalid metric_key:', key)

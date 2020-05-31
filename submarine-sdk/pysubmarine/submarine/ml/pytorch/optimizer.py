@@ -13,22 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.ml.model import DeepFM
-import argparse
+from torch import optim
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-conf", help="a JSON configuration file for FM", type=str)
-    parser.add_argument("-task_type", default='train',
-                        help="train or evaluate, by default is train")
-    args = parser.parse_args()
-    json_path = args.conf
-    task_type = args.task_type
 
-    model = DeepFM(json_path=json_path)
+class OptimizerKey:
+    ADAM = 'adam'
+    ADAGRAD = 'adagrad'
+    SGD = 'sgd'
 
-    if task_type == 'train':
-        model.train()
-    if task_type == 'evaluate':
-        result = model.evaluate()
-        print("Model metrics : ", result)
+
+def get_optimizer(key):
+    key = key.lower()
+    if key == OptimizerKey.ADAM:
+        return optim.Adam
+    if key == OptimizerKey.ADAGRAD:
+        return optim.Adagrad
+    if key == OptimizerKey.SGD:
+        return optim.SGD
+    raise ValueError('Invalid optimizer_key:', key)

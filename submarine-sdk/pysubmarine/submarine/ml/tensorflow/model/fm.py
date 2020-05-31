@@ -14,41 +14,31 @@
 # limitations under the License.
 
 """
-Tensorflow implementation of DeepFM
+TensorFlow implementation of FM
 
 Reference:
-[1] DeepFM: A Factorization-Machine based Neural Network for CTR Prediction,
-    Huifeng Guo, Ruiming Tang, Yunming Yey, Zhenguo Li, Xiuqiang He
-[2] Tensorflow implementation of DeepFM for CTR prediction
-    https://github.com/ChenglongChen/tensorflow-DeepFM
-[3] DeepCTR implementation of DeepFM for CTR prediction
-    https://github.com/shenweichen/DeepCTR
+[1] Factorization machines for CTR Prediction,
+    Steffen Rendle
 """
 
 import logging
 import tensorflow as tf
-from submarine.ml.model.base_tf_model import BaseTFModel
-from submarine.ml.layers.core import fm_layer, linear_layer, dnn_layer, embedding_layer
+from submarine.ml.tensorflow.layers.core import linear_layer, fm_layer, embedding_layer
+from submarine.ml.tensorflow.model.base_tf_model import BaseTFModel
 from submarine.utils.tf_utils import get_estimator_spec
 
 logger = logging.getLogger(__name__)
 
 
-class DeepFM(BaseTFModel):
+class FM(BaseTFModel):
     def model_fn(self, features, labels, mode, params):
         super().model_fn(features, labels, mode, params)
 
         linear_logit = linear_layer(features, **params['training'])
-
         embedding_outputs = embedding_layer(features, **params['training'])
         fm_logit = fm_layer(embedding_outputs, **params['training'])
 
-        field_size = params['training']['field_size']
-        embedding_size = params['training']['embedding_size']
-        deep_inputs = tf.reshape(embedding_outputs, shape=[-1, field_size * embedding_size])
-        deep_logit = dnn_layer(deep_inputs, mode, **params['training'])
-
-        with tf.variable_scope("DeepFM_out"):
-            logit = linear_logit + fm_logit + deep_logit
+        with tf.variable_scope("FM_out"):
+            logit = linear_logit + fm_logit
 
         return get_estimator_spec(logit, labels, mode, params)

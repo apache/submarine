@@ -24,8 +24,9 @@ Reference:
 
 import logging
 import tensorflow as tf
-from submarine.ml.model.base_tf_model import BaseTFModel
-from submarine.ml.layers.core import dnn_layer, bilinear_layer, linear_layer, embedding_layer
+from submarine.ml.tensorflow.model.base_tf_model import BaseTFModel
+from submarine.ml.tensorflow.layers.core import dnn_layer, bilinear_layer,\
+    linear_layer, embedding_layer
 from submarine.utils.tf_utils import get_estimator_spec
 
 logger = logging.getLogger(__name__)

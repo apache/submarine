@@ -33,7 +33,9 @@ setup(
         'requests',
         'urllib3 >= 1.15.1',
         'certifi >= 14.05.14',
-        'python-dateutil >= 2.5.3'
+        'python-dateutil >= 2.5.3',
+        'pyarrow==0.17.0',
+        'torch',
     ],
     classifiers=[
         'Intended Audience :: Developers',

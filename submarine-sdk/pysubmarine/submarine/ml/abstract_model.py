@@ -13,32 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-TensorFlow implementation of FM
-
-Reference:
-[1] Factorization machines for CTR Prediction,
-    Steffen Rendle
-"""
-
 import logging
-import tensorflow as tf
-from submarine.ml.layers.core import linear_layer, fm_layer, embedding_layer
-from submarine.ml.model.base_tf_model import BaseTFModel
-from submarine.utils.tf_utils import get_estimator_spec
+from abc import ABCMeta, abstractmethod
 
 logger = logging.getLogger(__name__)
 
 
-class FM(BaseTFModel):
-    def model_fn(self, features, labels, mode, params):
-        super().model_fn(features, labels, mode, params)
+class AbstractModel:
+    """
+    Abstract class for tensorflow/pytorch model.
+    This class defines the API interface for user to create a machine learning model.
+    """
 
-        linear_logit = linear_layer(features, **params['training'])
-        embedding_outputs = embedding_layer(features, **params['training'])
-        fm_logit = fm_layer(embedding_outputs, **params['training'])
+    __metaclass__ = ABCMeta
 
-        with tf.variable_scope("FM_out"):
-            logit = linear_logit + fm_logit
+    @abstractmethod
+    def __init__(self,):
+        pass
 
-        return get_estimator_spec(logit, labels, mode, params)
+    @abstractmethod
+    def train(self):
+        pass
+
+    @abstractmethod
+    def evaluate(self):
+        pass
+
+    @abstractmethod
+    def predict(self):
+        pass
