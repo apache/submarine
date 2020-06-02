@@ -28,7 +28,4 @@ Please refer to [Submarine On YARN](userdocs/yarn/README.md)
 
 ## Use Submarine on K8s
 
-Please refer to [Submarine On YARN]()
-
-## Submarine Server
-[Submarine Server Guide](project/github/submarine/docs/userdocs/k8s/run-tensorflow-on-k8s.md)
+Please refer to [Submarine On K8s](userdocs/k8s/README.md)
