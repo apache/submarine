@@ -13,11 +13,15 @@
    limitations under the License.
 -->
 
-# TonY Runtime Quick Start Guide
+# YARN Runtime Quick Start Guide
 
 ## Prerequisite
 
-Check out the [QuickStart](QuickStart.md)
+Check out the [Readme](README.md)
+
+## Build your own Docker image
+
+When you follow the documents below, and want to build your own Docker image for Tensorflow/PyTorch/MXNet? Please check out [Build your Docker image](Dockerfiles.md) for more details.
 
 ## Launch TensorFlow Application:
 
@@ -276,7 +280,7 @@ You should then be able to see links and status of the jobs from command line:
 ```
 
 ### With Docker
-You could refer to this [sample Dockerfile](docker/mxnet/cifar10/Dockerfile.cifar10.mx_1.5.1) for building your own Docker image.
+You could refer to this [sample Dockerfile](project/github/submarine/docs/userdocs/yarn/docker/mxnet/cifar10/Dockerfile.cifar10.mx_1.5.1) for building your own Docker image.
 ```
 SUBMARINE_VERSION=0.4.0-SNAPSHOT
 SUBMARINE_HADOOP_VERSION=3.1
@@ -298,3 +302,9 @@ java org.apache.submarine.client.cli.Cli job run --name MXNet-job-001 \
  --insecure \
  --conf tony.containers.resources=path-to/image_classification.py,path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar
 ```
+
+## Use YARN Service to run Submarine: Deprecated
+
+Historically, Submarine supports to use [YARN Service](https://hadoop.apache.org/docs/r3.1.0/hadoop-yarn/hadoop-yarn-site/yarn-service/Overview.html) to submit deep learning jobs. Now we stop supporting it because YARN service is not actively developed by community, and extra dependencies such as RegistryDNS/ATS-v2 causes lots of issues for setup.
+
+As of now, you can still use YARN service to run Submarine, but code will be removed in the future release. We will only support use TonY when use Submarine on YARN.
