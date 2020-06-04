@@ -52,8 +52,7 @@ public class MetricService {
     LOG.info("select a metric by PrimaryKey {}", id);
     Metric metric;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
-      MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
-      // sqlSession.commit();
+      MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);;
       metric = mapper.selectByPrimaryKey(id);
 
     } catch (Exception e) {
