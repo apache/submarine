@@ -37,8 +37,9 @@ import javax.inject.Singleton;
 import javax.ws.rs.GET;
 //import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+//import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 //import java.util.HashMap;
 
@@ -57,10 +58,10 @@ public class MetricRestApi {
   @GET
   @Path("/")
   @SubmarineApi
-  public Response getMetric(@PathParam("key") String key) {
+  public Response getMetric(@QueryParam("id") String id) {
     Metric metric;
     try {
-      metric = metricService.selectByPrimaryKey(key);
+      metric = metricService.selectByPrimaryKey(id);
       
     } catch (Exception e) {
 
@@ -68,8 +69,11 @@ public class MetricRestApi {
       e.printStackTrace();
       return null;
     }
-    
 
-    return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result(metric.job_name).build();
+    if (metric != null) {
+      return new JsonResponse.Builder<String>(Response.Status.OK).
+      success(true).result(metric.job_name).build();
+    }
+    return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("none").build();
   }
 }
