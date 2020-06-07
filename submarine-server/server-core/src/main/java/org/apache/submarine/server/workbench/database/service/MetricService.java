@@ -25,6 +25,8 @@ import org.apache.submarine.server.workbench.database.mappers.MetricMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 //import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 
@@ -35,21 +37,44 @@ public class MetricService {
     
   }
 
-  /*
-  List<Metric> selectAll() {
-
+  
+  public List<Metric> selectAll() {
+    return null;
   }
 
-  int deleteByPrimaryKey(String id) {
+  public int deleteByPrimaryKey(String id) throws Exception {
+    LOG.info("Metric deleteByPrimaryKey {}", id);
 
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
+      mapper.deleteByPrimaryKey(id);
+      sqlSession.commit();
+
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    }
+    return 0;
   }
 
-  int insert(Metric metric) {
+  public int insert(Metric metric) throws Exception {
+    LOG.info("Metric insert {}", metric);
 
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
+      mapper.insert(metric);
+      sqlSession.commit();
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    }
+    return 0;
   }
-*/
+
+
+
   public Metric selectByPrimaryKey(String id) throws Exception {
-    LOG.info("select a metric by PrimaryKey {}", id);
+    LOG.info("Metric selectByPrimaryKey {}", id);
     Metric metric;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
@@ -61,8 +86,18 @@ public class MetricService {
     }
     return metric;
   }
-  /*
-  int updateByPrimaryKey(Metric metric) {
-    
-  }*/
+  
+  public int update(Metric metric) throws Exception {
+    LOG.info("Metric update {}", metric);
+
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
+      mapper.update(metric);
+      sqlSession.commit();
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    }
+    return 0;
+  }
 }

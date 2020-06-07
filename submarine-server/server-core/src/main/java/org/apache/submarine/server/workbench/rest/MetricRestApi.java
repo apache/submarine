@@ -34,7 +34,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 //import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 //import javax.ws.rs.PathParam;
@@ -62,7 +65,7 @@ public class MetricRestApi {
     Metric metric;
     try {
       metric = metricService.selectByPrimaryKey(id);
-      
+
     } catch (Exception e) {
 
       LOG.error(e.toString());
@@ -71,8 +74,55 @@ public class MetricRestApi {
     }
 
     if (metric != null) {
-      return new JsonResponse.Builder<String>(Response.Status.OK).
-      success(true).result(metric.job_name).build();
+      return new JsonResponse.Builder<String>(Response.Status.OK)
+      .success(true).result(metric.job_name).build();
+    }
+    return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("none").build();
+  }
+
+  @POST
+  @Path("/")
+  @SubmarineApi
+  public Response postMetric(Metric metric) {
+    try {
+      metricService.insert(metric);
+    } catch (Exception e) {
+
+      LOG.error(e.toString());
+      e.printStackTrace();
+      return null;
+    }
+    if (metric != null) {
+      return new JsonResponse.Builder<String>(Response.Status.OK)
+      .success(true).result(metric.job_name).build();
+    }
+    return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("none").build();
+  }
+
+  @DELETE
+  @Path("/")
+  @SubmarineApi
+  public Response deleteMetric(@QueryParam("id") String id) {
+    try {
+      metricService.deleteByPrimaryKey(id);
+    } catch (Exception e) {
+      LOG.error(e.toString());
+      e.printStackTrace();
+      return null;
+    }
+    return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("none").build();
+  }
+
+  @PUT
+  @Path("")
+  @SubmarineApi
+  public Response putMetric(Metric metric) {
+    try {
+      metricService.update(metric);
+    } catch (Exception e) {
+      LOG.error(e.toString());
+      e.printStackTrace();
+      return null;
     }
     return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("none").build();
   }

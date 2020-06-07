@@ -31,15 +31,8 @@ package org.apache.submarine.server.workbench.database.entity;
 */
 
 public class Metric extends BaseEntity {
-  /*
-  private String key;
-  private float value;
-  private String worker_index;
-  private int timestamp;
-  private int step;
-  private int is_nan;
-  private String job_name;*/
-  public String key;
+
+  public String metric_key;
   public float value;
   public String worker_index;
   public int timestamp;

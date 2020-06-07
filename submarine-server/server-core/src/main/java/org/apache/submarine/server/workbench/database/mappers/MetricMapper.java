@@ -30,8 +30,8 @@ public interface MetricMapper {
   int deleteByPrimaryKey(String id);
 
   int insert(Metric metric);
-
+  
   Metric selectByPrimaryKey(String id);
 
-  int updateByPrimaryKey(Metric metric);
+  int update(Metric metric);
 }
