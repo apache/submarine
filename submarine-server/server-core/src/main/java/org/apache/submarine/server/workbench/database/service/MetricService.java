@@ -53,7 +53,7 @@ public class MetricService {
     }
     return result;
   }
-
+  
   public int deleteByPrimaryKey(String id) throws Exception {
     int result = -1;
     LOG.info("Metric deleteByPrimaryKey {}", id);
