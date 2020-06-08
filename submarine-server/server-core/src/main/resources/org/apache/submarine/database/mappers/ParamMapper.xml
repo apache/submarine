@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.submarine.server.workbench.database.mappers.ParamMapper">
+  <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.workbench.database.entity.BaseEntity">
+    <id property="id" column="id"/>
+    <result column="create_by" property="createBy"/>
+    <result column="create_time" property="createTime"/>
+    <result column="update_by" property="updateBy"/>
+    <result column="update_time" property="updateTime"/>
+  </resultMap>
+
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Param" extends="BaseEntityResultMap">
+    <result column="param_key" jdbcType="VARCHAR" property="param_key" />
+    <result column="value" jdbcType="FLOAT" property="value" />
+    <result column="worker_index" jdbcType="VARCHAR" property="worker_index" />
+    <result column="job_name" jdbcType="VARCHAR" property="job_name" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, param_key, value, worker_index, job_name,
+    create_by, create_time, update_by, update_time
+  </sql>
+
+  <select id="selectAll" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List" />
+    from param
+    where 1 = 1
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List" />
+    from param
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from param
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Param"
+          useGeneratedKeys="true" keyProperty="id">
+    insert into param (param_key, value, worker_index, job_name,
+      create_by, create_time, update_by, update_time)
+    values (#{param_key,jdbcType=VARCHAR}, 
+      #{value,jdbcType=FLOAT},
+      #{worker_index,jdbcType=VARCHAR}, 
+      #{job_name,jdbcType=VARCHAR},
+      #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
+  </insert>
+
+  <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Param">
+    update param
+    set param_key = #{param_key,jdbcType=VARCHAR},
+      value = #{value,jdbcType=FLOAT},
+      worker_index = #{worker_index,jdbcType=VARCHAR},
+      job_name = #{job_name,jdbcType=VARCHAR},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
