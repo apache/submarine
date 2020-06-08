@@ -18,6 +18,8 @@
  */
 package org.apache.submarine.server.workbench.database.entity;
 
+import java.math.BigInteger;
+
 /*
 # +-------+----------+--------------+---------------+------+--------+------------------+
 # | key   | value    | worker_index | timestamp     | step | is_nan | job_name         |
@@ -32,11 +34,68 @@ package org.apache.submarine.server.workbench.database.entity;
 
 public class Metric extends BaseEntity {
 
-  public String metric_key;
-  public float value;
-  public String worker_index;
-  public int timestamp;
-  public int step;
-  public int is_nan;
-  public String job_name;
+  private String metric_key;
+  private float value;
+  private String worker_index;
+  private BigInteger timestamp;
+  private int step;
+  private int is_nan;
+  private String job_name;
+
+  public String getMetric_key() {
+    return this.metric_key;
+  }
+
+  public void setMetric_key(String metric_key) {
+    this.metric_key = metric_key;
+  }
+
+  public float getValue() {
+    return this.value;
+  }
+
+  public void setValue(float value) {
+    this.value = value;
+  }
+
+  public String getWorker_index() {
+    return this.worker_index;
+  }
+
+  public void setWorker_index(String worker_index) {
+    this.worker_index = worker_index;
+  }
+
+  public BigInteger getTimestamp() {
+    return this.timestamp;
+  }
+
+  public void setTimestamp(BigInteger timestamp) {
+    this.timestamp = timestamp;
+  }
+
+  public int getStep() {
+    return this.step;
+  }
+
+  public void setStep(int step) {
+    this.step = step;
+  }
+
+  public int getIs_nan() {
+    return this.is_nan;
+  }
+
+  public void setIs_nan(int is_nan) {
+    this.is_nan = is_nan;
+  }
+
+  public String getJob_name() {
+    return this.job_name;
+  }
+
+  public void setJob_name(String job_name) {
+    this.job_name = job_name;
+  }
+
 }

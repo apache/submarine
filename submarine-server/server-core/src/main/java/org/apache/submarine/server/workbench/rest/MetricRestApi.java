@@ -32,6 +32,8 @@ import org.apache.submarine.server.response.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.DELETE;
@@ -59,6 +61,24 @@ public class MetricRestApi {
   }
 
   @GET
+  @Path("/list")
+  @SubmarineApi
+  public Response listMetric() {
+    List<Metric> metrics;
+    try {
+      metrics = metricService.selectAll();
+
+    } catch (Exception e) {
+
+      LOG.error(e.toString());
+      e.printStackTrace();
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+    }
+    return new JsonResponse.Builder<List<Metric>>(Response.Status.OK).success(true).result(metrics).build();
+  }
+
+
+  @GET
   @Path("/")
   @SubmarineApi
   public Response getMetric(@QueryParam("id") String id) {
@@ -70,60 +90,54 @@ public class MetricRestApi {
 
       LOG.error(e.toString());
       e.printStackTrace();
-      return null;
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
     }
-
-    if (metric != null) {
-      return new JsonResponse.Builder<String>(Response.Status.OK)
-      .success(true).result(metric.job_name).build();
-    }
-    return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("none").build();
+    return new JsonResponse.Builder<Metric>(Response.Status.OK).success(true).result(metric).build();
   }
 
   @POST
   @Path("/")
   @SubmarineApi
   public Response postMetric(Metric metric) {
+    int result = -1;
     try {
-      metricService.insert(metric);
+      result = metricService.insert(metric);
     } catch (Exception e) {
 
       LOG.error(e.toString());
       e.printStackTrace();
-      return null;
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
     }
-    if (metric != null) {
-      return new JsonResponse.Builder<String>(Response.Status.OK)
-      .success(true).result(metric.job_name).build();
-    }
-    return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("none").build();
+    return new JsonResponse.Builder<Integer>(Response.Status.OK).success(true).result(result).build();
   }
 
   @DELETE
   @Path("/")
   @SubmarineApi
   public Response deleteMetric(@QueryParam("id") String id) {
+    int result = -1;
     try {
-      metricService.deleteByPrimaryKey(id);
+      result = metricService.deleteByPrimaryKey(id);
     } catch (Exception e) {
       LOG.error(e.toString());
       e.printStackTrace();
-      return null;
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
     }
-    return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("none").build();
+    return new JsonResponse.Builder<Integer>(Response.Status.OK).success(true).result(result).build();
   }
 
   @PUT
   @Path("")
   @SubmarineApi
   public Response putMetric(Metric metric) {
+    int result = -1;
     try {
-      metricService.update(metric);
+      result = metricService.update(metric);
     } catch (Exception e) {
       LOG.error(e.toString());
       e.printStackTrace();
-      return null;
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
     }
-    return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("none").build();
+    return new JsonResponse.Builder<Integer>(Response.Status.OK).success(true).result(result).build();
   }
 }

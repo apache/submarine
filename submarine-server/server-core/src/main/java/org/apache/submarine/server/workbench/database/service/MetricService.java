@@ -38,40 +38,52 @@ public class MetricService {
   }
 
   
-  public List<Metric> selectAll() {
-    return null;
+  public List<Metric> selectAll() throws Exception {
+    List<Metric> result;
+    LOG.info("Metric selectAll");
+
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
+      result = mapper.selectAll();
+      sqlSession.commit();
+
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    }
+    return result;
   }
 
   public int deleteByPrimaryKey(String id) throws Exception {
+    int result = -1;
     LOG.info("Metric deleteByPrimaryKey {}", id);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
-      mapper.deleteByPrimaryKey(id);
+      result = mapper.deleteByPrimaryKey(id);
       sqlSession.commit();
 
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
     }
-    return 0;
+    return result;
   }
 
   public int insert(Metric metric) throws Exception {
+    int result = -1;
     LOG.info("Metric insert {}", metric);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
-      mapper.insert(metric);
+      result = mapper.insert(metric);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
     }
-    return 0;
+    return result;
   }
-
-
 
   public Metric selectByPrimaryKey(String id) throws Exception {
     LOG.info("Metric selectByPrimaryKey {}", id);
@@ -88,16 +100,17 @@ public class MetricService {
   }
   
   public int update(Metric metric) throws Exception {
+    int result = -1;
     LOG.info("Metric update {}", metric);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
-      mapper.update(metric);
+      result = mapper.update(metric);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
     }
-    return 0;
+    return result;
   }
 }
