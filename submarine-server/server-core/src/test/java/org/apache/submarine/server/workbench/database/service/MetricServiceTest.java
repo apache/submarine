@@ -81,15 +81,14 @@ public class MetricServiceTest {
 
   @Test
   public void testUpdateJob() throws Exception {
-    Job job = new Job();
-    job.setJobId("9e93caeb-8a08-4278-a10a-ff60d5835716");
-    job.setJobName("mnist");
-    job.setJobNamespace("submarine");
-    job.setUserName("JobServiceTest-UserName");
-    job.setJobType("TFJob");
-    job.setJobStatus("Finished");
-    job.setJobFinalStatus("Succeeded");
-    job.setCreateBy("JobServiceTest-UserName");
+    Metric metric = new Metric();
+    metric.setMetric_key("score");
+    metric.setValue((float) 0.666667);
+    metric.setWorker_index("worker-2");
+    metric.setTimestamp(new BigInteger("1569139525098"));
+    metric.setStep(0);
+    metric.setIs_nan(0);
+    metric.setJob_name("application_1234");
 
     Boolean ret = jobService.add(job);
     assertTrue(ret);
