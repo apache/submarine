@@ -35,7 +35,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.environment.Environment;
-import org.apache.submarine.server.api.job.Job;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.environment.EnvironmentManager;
 import org.apache.submarine.server.response.JsonResponse;
@@ -68,7 +67,8 @@ public class EnvironmentRestApi {
   public Response createEnvironment(EnvironmentSpec spec) {
     try {
       Environment environment = environmentManager.createEnvironment(spec);
-      return new JsonResponse.Builder<Environment>(Response.Status.OK).success(true).result(environment).build();
+      return new JsonResponse.Builder<Environment>(Response.Status.OK)
+          .success(true).result(environment).build();
     } catch (SubmarineRuntimeException e) {
       return parseEnvironmentServiceException(e);
     }
@@ -104,7 +104,7 @@ public class EnvironmentRestApi {
           tags = {"environments"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = Job.class))),
+                          schema = @Schema(implementation = Environment.class))),
                   @ApiResponse(responseCode = "404", description = "Job not found")})
   public Response deleteEnvironment(@PathParam(RestConstants.ENVIRONMENT_ID) String id) {
     try {

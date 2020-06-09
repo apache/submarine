@@ -1,6 +1,6 @@
 package org.apache.submarine.server.api.spec;
 
-import java.util.Map;
+import java.util.List;
 
 /**
  * 
@@ -14,14 +14,14 @@ public class KernelSpec {
   private String name;
   
   /**
-   * Name of the channel
+   * Name of the channels
    */
-  private String channels;
+  private List<String> channels;
   
   /**
    * List of kernel dependencies
    */
-  private Map<String, String> dependencies;
+  private List<String> dependencies;
 
   public String getName() {
     return name;
@@ -31,19 +31,19 @@ public class KernelSpec {
     this.name = name;
   }
 
-  public String getChannels() {
+  public List<String> getChannels() {
     return channels;
   }
 
-  public void setChannels(String channels) {
+  public void setChannels(List<String> channels) {
     this.channels = channels;
   }
 
-  public Map<String, String> getDependencies() {
+  public List<String> getDependencies() {
     return dependencies;
   }
 
-  public void setDependencies(Map<String, String> dependencies) {
+  public void setDependencies(List<String> dependencies) {
     this.dependencies = dependencies;
   }  
 }

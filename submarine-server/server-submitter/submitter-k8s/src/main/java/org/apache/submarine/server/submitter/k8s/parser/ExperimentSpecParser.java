@@ -26,10 +26,14 @@ import io.kubernetes.client.models.V1ObjectMeta;
 import io.kubernetes.client.models.V1PodSpec;
 import io.kubernetes.client.models.V1PodTemplateSpec;
 import io.kubernetes.client.models.V1ResourceRequirements;
+
+import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
+import org.apache.submarine.server.api.spec.EnvironmentSpec;
+import org.apache.submarine.server.environment.EnvironmentManager;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
@@ -158,6 +162,41 @@ public class ExperimentSpecParser {
     container.setEnv(parseEnvVars(taskSpec, experimentSpec.getMeta().getEnvVars()));
     containers.add(container);
     podSpec.setContainers(containers);
+
+    /**
+     * Init Containers
+     */
+    Environment environment = getEnvironment(experimentSpec);
+    if (environment != null) {
+      EnvironmentSpec environmentSpec = environment.getEnvironmentSpec();
+      List<V1Container> initContainers = new ArrayList<>();
+      V1Container initContainer = new V1Container();
+      initContainer.setName(environment.getName());
+      initContainer.setImage(environmentSpec.getDockerImage());
+
+      if (environmentSpec.getKernelSpec().getDependencies().size() > 0) {
+        StringBuffer createCommand = new StringBuffer();
+        String condaEnvironmentName = environmentSpec.getKernelSpec().getName();
+
+        createCommand.append("conda create -n " + condaEnvironmentName);
+        for (String channel : environmentSpec.getKernelSpec().getChannels()) {
+          createCommand.append(" ");
+          createCommand.append("-c");
+          createCommand.append(" ");
+          createCommand.append(channel);
+        }
+        for (String dependency : environmentSpec.getKernelSpec()
+            .getDependencies()) {
+          createCommand.append(" ");
+          createCommand.append(dependency);
+        }
+        String activateCommand = "conda activate " + condaEnvironmentName;
+        initContainer.addCommandItem(createCommand.toString());
+        initContainer.addCommandItem(activateCommand);
+        initContainers.add(initContainer);
+      }
+      podSpec.setInitContainers(initContainers);
+    }
     templateSpec.setSpec(podSpec);
     return templateSpec;
   }
@@ -196,5 +235,16 @@ public class ExperimentSpecParser {
       resources.put("nvidia.com/gpu", new Quantity(taskSpec.getGpu()));
     }
     return resources;
+  }
+  
+  private static Environment getEnvironment(ExperimentSpec jobSpec) {
+    if (jobSpec.getEnvironment() != null) {
+      EnvironmentManager environmentManager = EnvironmentManager.getInstance();
+      Environment environment =
+          environmentManager.getEnvironment(jobSpec.getEnvironment().getName());
+      return environment;
+    } else {
+      return null;
+    }
   }
 }

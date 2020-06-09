@@ -20,8 +20,48 @@
 package org.apache.submarine.server.api.spec;
 
 public class Environment {
-  private String image;
+  
+  /**
+   * ID of the environment
+   */
+  private int environmentId;
+  
+  /**
+   * Name of the environment
+   */
+  private String name;
+  
+  /**
+   * Environment Spec
+   */
+  private EnvironmentSpec environmentSpec;
 
+  private String image;
+  
+  public int getEnvironmentId() {
+    return environmentId;
+  }
+
+  public void setEnvironmentId(int environmentId) {
+    this.environmentId = environmentId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public EnvironmentSpec getEnvironmentSpec() {
+    return environmentSpec;
+  }
+
+  public void setEnvironmentSpec(EnvironmentSpec environmentSpec) {
+    this.environmentSpec = environmentSpec;
+  }
+  
   /**
    * Get the image for the experiment. If the {@link ExperimentTaskSpec#getImage()} not
    * specified the image replaced with it.

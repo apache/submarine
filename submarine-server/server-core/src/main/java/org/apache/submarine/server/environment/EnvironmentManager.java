@@ -1,5 +1,3 @@
-package org.apache.submarine.server.environment;
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,8 +16,14 @@ package org.apache.submarine.server.environment;
  * specific language governing permissions and limitations
  * under the License.
  */
+
+package org.apache.submarine.server.environment;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -34,9 +38,15 @@ import org.slf4j.LoggerFactory;
  */
 public class EnvironmentManager {
   
-  private static final Logger LOG = LoggerFactory.getLogger(EnvironmentManager.class);
+  private static final Logger LOG =
+      LoggerFactory.getLogger(EnvironmentManager.class);
 
   private static volatile EnvironmentManager manager;
+
+  private final ConcurrentMap<String, Environment> cachedEnvironments =
+      new ConcurrentHashMap<>();
+
+  private final AtomicInteger environmentId = new AtomicInteger(0);
 
   /**
    * Get the singleton instance
@@ -60,43 +70,61 @@ public class EnvironmentManager {
   /**
    * Create Environment
    * @param spec environment spec
-   * @return object
+   * @return Environment environment
    * @throws SubmarineRuntimeException the service error
    */
-  public Environment createEnvironment(EnvironmentSpec spec) throws SubmarineRuntimeException {
+  public Environment createEnvironment(EnvironmentSpec spec)
+      throws SubmarineRuntimeException {
     checkSpec(spec);
-    return null;
+    Environment env = new Environment();
+    env.setName(spec.getName());
+    env.setEnvironmentId(environmentId.incrementAndGet());
+    env.setEnvironmentSpec(spec);
+    cachedEnvironments.putIfAbsent(spec.getName(), env);
+    return env;
   }
   
   /**
    * Update environment
-   * @param id environment id
+   * @param name Name of the environment
    * @param spec environment spec
-   * @return object
+   * @return Environment environment
    * @throws SubmarineRuntimeException the service error
    */
-  public Environment updateEnvironment(String id, EnvironmentSpec spec) throws SubmarineRuntimeException {
-    return null;
+  public Environment updateEnvironment(String name, EnvironmentSpec spec)
+      throws SubmarineRuntimeException {
+    isEnvironmentExists(name);
+    checkSpec(spec);
+    Environment env = cachedEnvironments.get(name);
+    env.setEnvironmentSpec(spec);
+    cachedEnvironments.putIfAbsent(name, env);
+    return env;
   }
   
   /**
    * Delete environment
-   * @param id environment id
-   * @return object
+   * @param name Name of the environment
+   * @return Environment environment
    * @throws SubmarineRuntimeException the service error
    */
-  public Environment deleteEnvironment(String id) throws SubmarineRuntimeException {
-    return null;
+  public Environment deleteEnvironment(String name)
+      throws SubmarineRuntimeException {
+    isEnvironmentExists(name);
+    Environment environment = cachedEnvironments.remove(name);
+    return environment;
   }
   
   /**
    * Get Environment
-   * @param id environment id
-   * @return object
+   * @param name Name of the environment
+   * @return Environment environment
    * @throws SubmarineRuntimeException the service error
    */
-  public Environment getEnvironment(String id) throws SubmarineRuntimeException {
-    return null;
+  public Environment getEnvironment(String name)
+      throws SubmarineRuntimeException {
+    isEnvironmentExists(name);
+    Environment environment = cachedEnvironments.get(name);
+    return environment;
   }
 
   /**
@@ -105,14 +133,25 @@ public class EnvironmentManager {
    * @return environment list
    * @throws SubmarineRuntimeException the service error
    */
-  public List<Environment> listEnvironments(String status) throws SubmarineRuntimeException {
+  public List<Environment> listEnvironments(String status)
+      throws SubmarineRuntimeException {
     List<Environment> environmentList = new ArrayList<>();
     return environmentList;
   }
 
-  private void checkSpec(EnvironmentSpec spec) throws SubmarineRuntimeException {
+  private void checkSpec(EnvironmentSpec spec)
+      throws SubmarineRuntimeException {
     if (spec == null) {
-      throw new SubmarineRuntimeException(Status.OK.getStatusCode(), "Invalid job spec.");
+      throw new SubmarineRuntimeException(Status.OK.getStatusCode(),
+          "Invalid environment spec.");
+    }
+  }
+
+  private void isEnvironmentExists(String name)
+      throws SubmarineRuntimeException {
+    if (name == null || !cachedEnvironments.containsKey(name)) {
+      throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(),
+          "Environment not found.");
     }
   }
 }

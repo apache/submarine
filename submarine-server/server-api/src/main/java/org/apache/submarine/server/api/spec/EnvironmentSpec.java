@@ -19,10 +19,12 @@
 
 package org.apache.submarine.server.api.spec;
 
-import java.util.Map;
-
 /**
  * Submarine environment spec.
+ */
+/**
+ * @author mani
+ *
  */
 public class EnvironmentSpec {
 
@@ -32,11 +34,6 @@ public class EnvironmentSpec {
    */
   private String name;
 
-  /**
-   * VM-Image of the environment
-   */
-  private String vmImage;
-  
   /**
    * Docker-Image of the environment
    */
@@ -58,14 +55,6 @@ public class EnvironmentSpec {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getVmImage() {
-    return vmImage;
-  }
-
-  public void setVmImage(String vmImage) {
-    this.vmImage = vmImage;
   }
 
   public String getDockerImage() {

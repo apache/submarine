@@ -21,12 +21,17 @@ package org.apache.submarine.server.submitter.k8s;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.kubernetes.client.models.V1ObjectMeta;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
+import org.apache.submarine.server.api.spec.EnvironmentSpec;
+import org.apache.submarine.server.api.spec.KernelSpec;
+import org.apache.submarine.server.environment.EnvironmentManager;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
@@ -37,6 +42,8 @@ import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.junit.Assert;
 import org.junit.Test;
+import io.kubernetes.client.models.V1Container;
+
 
 public class ExperimentSpecParserTest extends SpecBuilder {
   @Test
@@ -173,5 +180,50 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     String actualMasterContainerCpu = mlJobReplicaSpec.getContainerCpu();
     Assert.assertEquals(expectedMasterContainerCpu,
         actualMasterContainerCpu);
+  }
+  
+  @Test
+  public void testValidPyTorchJobSpecWithEnv()
+      throws IOException, URISyntaxException, InvalidSpecException {
+
+    EnvironmentManager environmentManager = EnvironmentManager.getInstance();
+
+    EnvironmentSpec spec = new EnvironmentSpec();
+    spec.setName("my_submarine_env");
+    String dockerImage = "example.com/my-docker-image:0.1.2";
+    spec.setDockerImage(dockerImage);
+
+    KernelSpec kernelSpec = new KernelSpec();
+    String kernelName = "team_python";
+    kernelSpec.setName(kernelName);
+    List<String> channels = new ArrayList<String>();
+    String channel = "default";
+    channels.add(channel);
+    kernelSpec.setChannels(channels);
+
+    List<String> dependencies = new ArrayList<String>();
+    String dependency = "_ipyw_jlab_nb_ext_conf=0.1.0=py37_0";
+    dependencies.add(dependency);
+    kernelSpec.setDependencies(dependencies);
+    spec.setKernelSpec(kernelSpec);
+
+    environmentManager.createEnvironment(spec);
+
+    ExperimentSpec jobSpec = buildFromJsonFile(pytorchJobWithEnvReqFile);
+    PyTorchJob pyTorchJob = (PyTorchJob) ExperimentSpecParser.parseJob(jobSpec);
+
+    MLJobReplicaSpec mlJobReplicaSpec = pyTorchJob.getSpec().getReplicaSpecs()
+        .get(PyTorchJobReplicaType.Master);
+    Assert.assertEquals(1,
+        mlJobReplicaSpec.getTemplate().getSpec().getInitContainers().size());
+    V1Container initContainer =
+        mlJobReplicaSpec.getTemplate().getSpec().getInitContainers().get(0);
+    Assert.assertEquals(dockerImage, initContainer.getImage());
+
+    Assert.assertEquals(
+        "conda create -n " + kernelName + " -c " + channel + " " + dependency,
+        initContainer.getCommand().get(0));
+    Assert.assertEquals("conda activate " + kernelName,
+        initContainer.getCommand().get(1));
   }
 }
