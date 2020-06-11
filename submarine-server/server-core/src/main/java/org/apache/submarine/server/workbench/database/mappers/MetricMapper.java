@@ -27,11 +27,11 @@ public interface MetricMapper {
 
   List<Metric> selectAll();
 
-  int deleteByPrimaryKey(String id);
+  int deleteById(String id);
 
   int insert(Metric metric);
   
-  Metric selectByPrimaryKey(String id);
+  Metric selectById(String id);
 
   int update(Metric metric);
 }

@@ -54,43 +54,41 @@ public class MetricService {
     return result;
   }
   
-  public int deleteByPrimaryKey(String id) throws Exception {
-    int result = -1;
+  public boolean deleteById(String id) throws Exception {
     LOG.info("Metric deleteByPrimaryKey {}", id);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
-      result = mapper.deleteByPrimaryKey(id);
+      mapper.deleteById(id);
       sqlSession.commit();
 
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
     }
-    return result;
+    return true;
   }
 
-  public int insert(Metric metric) throws Exception {
-    int result = -1;
+  public boolean insert(Metric metric) throws Exception {
     LOG.info("Metric insert {}", metric);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
-      result = mapper.insert(metric);
+      mapper.insert(metric);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
     }
-    return result;
+    return true;
   }
 
-  public Metric selectByPrimaryKey(String id) throws Exception {
+  public Metric selectById(String id) throws Exception {
     LOG.info("Metric selectByPrimaryKey {}", id);
     Metric metric;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
-      metric = mapper.selectByPrimaryKey(id);
+      metric = mapper.selectById(id);
 
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -99,18 +97,17 @@ public class MetricService {
     return metric;
   }
   
-  public int update(Metric metric) throws Exception {
-    int result = -1;
+  public boolean update(Metric metric) throws Exception {
     LOG.info("Metric update {}", metric);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
-      result = mapper.update(metric);
+      mapper.update(metric);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
     }
-    return result;
+    return true;
   }
 }

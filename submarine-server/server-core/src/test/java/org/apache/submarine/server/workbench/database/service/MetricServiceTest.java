@@ -40,21 +40,21 @@ public class MetricServiceTest {
     List<Metric> metricList = metricService.selectAll();
     LOG.info("jobList.size():{}", metricList.size());
     for (Metric metric : metricList) {
-      metricService.deleteByPrimaryKey(metric.getId());
+      metricService.deleteById(metric.getId());
     }
   }
 
-/*
-# +-------+----------+--------------+---------------+------+--------+------------------+
-# | key   | value    | worker_index | timestamp     | step | is_nan | job_name         |
-# +-------+----------+--------------+---------------+------+--------+------------------+
-# | score | 0.666667 | worker-1     | 1569139525097 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569149139731 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569169376482 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569236290721 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569236466722 |    0 |      0 | application_1234 |
-# +-------+----------+--------------+---------------+------+--------+------------------+
-*/
+  /*
+  # +-------+----------+--------------+---------------+------+--------+------------------+
+  # | key   | value    | worker_index | timestamp     | step | is_nan | job_name         |
+  # +-------+----------+--------------+---------------+------+--------+------------------+
+  # | score | 0.666667 | worker-1     | 1569139525097 |    0 |      0 | application_1234 |
+  # | score | 0.666667 | worker-1     | 1569149139731 |    0 |      0 | application_1234 |
+  # | score | 0.666667 | worker-1     | 1569169376482 |    0 |      0 | application_1234 |
+  # | score | 0.666667 | worker-1     | 1569236290721 |    0 |      0 | application_1234 |
+  # | score | 0.666667 | worker-1     | 1569236466722 |    0 |      0 | application_1234 |
+  # +-------+----------+--------------+---------------+------+--------+------------------+
+  */
 
   @Test
   public void testSelectMetric() throws Exception {
@@ -66,7 +66,7 @@ public class MetricServiceTest {
     metric.setStep(0);
     metric.setIs_nan(0);
     metric.setJob_name("application_1234");
-    int result = metricService.insert(metric);
+    boolean result = metricService.insert(metric);
     assertNotEquals(result, -1);
     List<Metric> metricList = metricService.selectAll();
 
@@ -75,7 +75,7 @@ public class MetricServiceTest {
     Metric metricDb = metricList.get(0);
     compareMetrics(metric, metricDb);
 
-    Metric metricDb2 = metricService.selectByPrimaryKey("" + result);
+    Metric metricDb2 = metricService.selectById("" + result);
     compareMetrics(metric, metricDb2);
   }
 
@@ -90,53 +90,40 @@ public class MetricServiceTest {
     metric.setIs_nan(0);
     metric.setJob_name("application_1234");
 
-    Boolean ret = jobService.add(job);
-    assertTrue(ret);
+    boolean result = metricService.insert(metric);
+    assertTrue(result);
 
-    job.setJobName("mnistNew");
-    job.setJobNamespace("submarineNew");
-    job.setUserName("JobServiceTest-UserNameNew");
-    job.setJobType("TFJobNew");
-    job.setJobStatus("Running");
-    job.setJobFinalStatus("");
-    job.setUpdateBy("JobServiceTest-UserNameNew");
+    metric.setMetric_key("scoreNew");
+    metric.setValue((float) 0.766667);
+    metric.setWorker_index("worker-New");
+    metric.setTimestamp(new BigInteger("2569139525098"));
+    metric.setStep(1);
+    metric.setIs_nan(1);
+    metric.setJob_name("application_1234New");
 
-    boolean editRet = jobService.updateByPrimaryKeySelective(job);
-    assertTrue(editRet);
+    boolean editResult = metricService.update(metric);
+    assertTrue(editResult);
 
-    Job jobDb2 = jobService.selectByJobId("9e93caeb-8a08-4278-a10a-ff60d5835716");
-    compareJobs(job, jobDb2);
+    Metric metricDb2 = metricService.selectById("" + result);
+    compareMetrics(metric, metricDb2);
   }
 
   @Test
   public void delete() throws Exception {
-    Job job = new Job();
-    job.setJobId("9e93caeb-8a08-4278-a10a-ff60d5835716");
-    job.setJobName("mnist");
-    job.setJobNamespace("submarine");
-    job.setUserName("JobServiceTest-UserName");
-    job.setJobType("TFJob");
-    job.setJobStatus("Finished");
-    job.setJobFinalStatus("Succeeded");
-    job.setCreateBy("JobServiceTest-UserName");
+    Metric metric = new Metric();
+    metric.setMetric_key("score");
+    metric.setValue((float) 0.666667);
+    metric.setWorker_index("worker-2");
+    metric.setTimestamp(new BigInteger("1569139525098"));
+    metric.setStep(0);
+    metric.setIs_nan(0);
+    metric.setJob_name("application_1234");
 
-    Boolean ret = jobService.add(job);
-    assertTrue(ret);
+    boolean result = metricService.insert(metric);
+    assertTrue(result);
 
-    Boolean deleteRet = jobService.delete(job.getId());
-    assertTrue(deleteRet);
-  }
-
-  private void compareJobs(Job job, Job jobDb) {
-    assertEquals(job.getJobId(), jobDb.getJobId());
-    assertEquals(job.getJobName(), jobDb.getJobName());
-    assertEquals(job.getJobNamespace(), jobDb.getJobNamespace());
-    assertEquals(job.getUserName(), jobDb.getUserName());
-    assertEquals(job.getJobType(), jobDb.getJobType());
-    assertEquals(job.getJobStatus(), jobDb.getJobStatus());
-    assertEquals(job.getJobFinalStatus(), jobDb.getJobFinalStatus());
-    assertEquals(job.getCreateBy(), jobDb.getCreateBy());
-    assertEquals(job.getUpdateBy(), jobDb.getUpdateBy());
+    boolean deleteResult = metricService.deleteById("" + result);
+    assertTrue(deleteResult);
   }
 
   private void compareMetrics(Metric metric, Metric metricDb) {

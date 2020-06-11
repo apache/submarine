@@ -88,7 +88,7 @@ public class ParamRestApi {
     
     Param param;
     try {
-      param = paramService.selectByPrimaryKey(id);
+      param = paramService.selectById(id);
 
     } catch (Exception e) {
 
@@ -104,7 +104,7 @@ public class ParamRestApi {
   @SubmarineApi
   public Response postParam(Param param) {
     LOG.info("postParam ({})", param);
-    int result = -1;
+    boolean result = false;
     try {
       result = paramService.insert(param);
     } catch (Exception e) {
@@ -113,7 +113,7 @@ public class ParamRestApi {
       e.printStackTrace();
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
     }
-    return new JsonResponse.Builder<Integer>(Response.Status.OK).success(true).result(result).build();
+    return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
 
   @DELETE
@@ -121,15 +121,15 @@ public class ParamRestApi {
   @SubmarineApi
   public Response deleteParam(@QueryParam("id") String id) {
     LOG.info("deleteParam ({})", id);
-    int result = -1;
+    boolean result = false;
     try {
-      result = paramService.deleteByPrimaryKey(id);
+      result = paramService.deleteById(id);
     } catch (Exception e) {
       LOG.error(e.toString());
       e.printStackTrace();
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
     }
-    return new JsonResponse.Builder<Integer>(Response.Status.OK).success(true).result(result).build();
+    return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
 
   @PUT
@@ -137,7 +137,7 @@ public class ParamRestApi {
   @SubmarineApi
   public Response putParam(Param param) {
     LOG.info("putParam ({})", param);
-    int result = -1;
+    boolean result = false;
     try {
       result = paramService.update(param);
     } catch (Exception e) {
@@ -145,6 +145,6 @@ public class ParamRestApi {
       e.printStackTrace();
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
     }
-    return new JsonResponse.Builder<Integer>(Response.Status.OK).success(true).result(result).build();
+    return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
 }

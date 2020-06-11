@@ -27,11 +27,11 @@ public interface ParamMapper {
 
   List<Param> selectAll();
 
-  int deleteByPrimaryKey(String id);
+  int deleteById(String id);
 
   int insert(Param param);
   
-  Param selectByPrimaryKey(String id);
+  Param selectById(String id);
 
   int update(Param param);
 }

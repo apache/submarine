@@ -84,7 +84,7 @@ public class MetricRestApi {
   public Response getMetric(@QueryParam("id") String id) {
     Metric metric;
     try {
-      metric = metricService.selectByPrimaryKey(id);
+      metric = metricService.selectById(id);
 
     } catch (Exception e) {
 
@@ -99,7 +99,7 @@ public class MetricRestApi {
   @Path("/")
   @SubmarineApi
   public Response postMetric(Metric metric) {
-    int result = -1;
+    boolean result = false;
     try {
       result = metricService.insert(metric);
     } catch (Exception e) {
@@ -108,29 +108,29 @@ public class MetricRestApi {
       e.printStackTrace();
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
     }
-    return new JsonResponse.Builder<Integer>(Response.Status.OK).success(true).result(result).build();
+    return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
 
   @DELETE
   @Path("/")
   @SubmarineApi
   public Response deleteMetric(@QueryParam("id") String id) {
-    int result = -1;
+    boolean result = false;
     try {
-      result = metricService.deleteByPrimaryKey(id);
+      result = metricService.deleteById(id);
     } catch (Exception e) {
       LOG.error(e.toString());
       e.printStackTrace();
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
     }
-    return new JsonResponse.Builder<Integer>(Response.Status.OK).success(true).result(result).build();
+    return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
 
   @PUT
   @Path("")
   @SubmarineApi
   public Response putMetric(Metric metric) {
-    int result = -1;
+    boolean result = false;
     try {
       result = metricService.update(metric);
     } catch (Exception e) {
@@ -138,6 +138,6 @@ public class MetricRestApi {
       e.printStackTrace();
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
     }
-    return new JsonResponse.Builder<Integer>(Response.Status.OK).success(true).result(result).build();
+    return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
 }

@@ -47,43 +47,41 @@ public class ParamService {
   }
   
 
-  public int deleteByPrimaryKey(String id) throws Exception {
-    int result = -1;
-    LOG.info("Metric deleteByPrimaryKey {}", id);
+  public boolean deleteById(String id) throws Exception {
+    LOG.info("Metric deleteById {}", id);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ParamMapper mapper = sqlSession.getMapper(ParamMapper.class);
-      result = mapper.deleteByPrimaryKey(id);
+      mapper.deleteById(id);
       sqlSession.commit();
 
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
     }
-    return result;
+    return true;
   }
 
-  public int insert(Param param) throws Exception {
-    int result = -1;
+  public boolean insert(Param param) throws Exception {
     LOG.info("Param insert {}", param);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ParamMapper mapper = sqlSession.getMapper(ParamMapper.class);
-      result = mapper.insert(param);
+      mapper.insert(param);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
     }
-    return result;
+    return true;
   }
   
-  public Param selectByPrimaryKey(String id) throws Exception {
-    LOG.info("Param selectByPrimaryKey {}", id);
+  public Param selectById(String id) throws Exception {
+    LOG.info("Param selectById {}", id);
     Param param;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ParamMapper mapper = sqlSession.getMapper(ParamMapper.class);
-      param = mapper.selectByPrimaryKey(id);
+      param = mapper.selectById(id);
 
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -92,18 +90,17 @@ public class ParamService {
     return param;
   }
 
-  public int update(Param param) throws Exception {
-    int result = -1;
+  public boolean update(Param param) throws Exception {
     LOG.info("Metric update {}", param);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ParamMapper mapper = sqlSession.getMapper(ParamMapper.class);
-      result = mapper.update(param);
+      mapper.update(param);
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);
     }
-    return result;
+    return true;
   }
 }

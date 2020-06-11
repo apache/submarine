@@ -46,14 +46,14 @@
     where 1 = 1
   </select>
 
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="resultMap">
+  <select id="selectById" parameterType="java.lang.String" resultMap="resultMap">
     select
     <include refid="Base_Column_List" />
     from param
     where id = #{id,jdbcType=VARCHAR}
   </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+  <delete id="deleteById" parameterType="java.lang.String">
     delete from param
     where id = #{id,jdbcType=VARCHAR}
   </delete>
