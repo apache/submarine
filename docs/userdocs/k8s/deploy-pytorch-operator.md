@@ -17,34 +17,16 @@ specific language governing permissions and limitations
 under the License.
 -->
 
+# Deploy PyTorch Operator on Kubernetes
 
-# Deploy Submarine On K8s
+## PyTorchJob
+We support PyTorch job on kubernetes by using the pytorch-operator as a runtime. For more info about tf-operator see [here](https://github.com/kubeflow/pytorch-operator).
 
-## Deploy Submarine using Helm Chart (Recommended)
+### Deploy pytorch-operator
+> If you don't have the `submarine` namespace on your K8s cluster, you should create it first. Run command: `kubectl create namespace submarine`
 
-Submarine's Helm Chart will not only deploy Submarine Server, but also deploys TF Operator / PyTorch Operator (which will be used by Submarine Server to run TF/PyTorch jobs on K8s).
-
-### Create images
-submarine server
-```bash
-./dev-support/docker-images/submarine/build.sh
+Running the follow commands:
+```
+kubectl apply -f ./dev-support/k8s/pytorchjob/
 ```
 
-submarine database
-```bash
-./dev-support/docker-images/database/build.sh
-```
-
-### Install helm
-For more info see https://helm.sh/docs/intro/install/
-
-### Deploy Submarine Server, MySQL
-You can modify some settings in ./helm-charts/submarine/values.yaml
-```bash
-helm install submarine ./helm-charts/submarine
-```
-
-### Delete deployment
-```bash
-helm delete submarine
-```

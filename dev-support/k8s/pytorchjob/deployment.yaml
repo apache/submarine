@@ -3,7 +3,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: pytorch-operator
-  namespace: default
+  namespace: submarine
 spec:
   replicas: 1
   selector:

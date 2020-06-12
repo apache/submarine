@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -17,10 +17,10 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Deploy Tensorflow Operator on Kubernetes
+# Deploy TensorFlow Operator on Kubernetes
 
 ## TFJob
-We support Tensorflow job on kubernetes by using the tf-operator as a runtime. For more info about tf-operator see [here](https://github.com/kubeflow/tf-operator).
+We support TensorFlow job on kubernetes by using the tf-operator as a runtime. For more info about tf-operator see [here](https://github.com/kubeflow/tf-operator).
 
 ### Deploy tf-operator
 > If you don't have the `submarine` namespace on your K8s cluster, you should create it first. Run command: `kubectl create namespace submarine`
