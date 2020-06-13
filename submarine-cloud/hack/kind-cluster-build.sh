@@ -151,7 +151,7 @@ test -d "~/.kube" || mkdir -p "~/.kube"
 export KUBECONFIG=~/.kube/kind-config-${clusterName}
 $KIND_BIN create cluster --config ${configFile} --image kindest/node:${k8sVersion} --name=${clusterName}
 $KIND_BIN export kubeconfig --kubeconfig ${KUBECONFIG}
-$KIND_BIN create namespace submarine
+$KUBECTL_BIN create namespace submarine
 
 echo "deploy docker registry in kind"
 registryNode=${clusterName}-control-plane
