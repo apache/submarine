@@ -101,7 +101,8 @@ public class MetricServiceTest {
     metric.setStep(1);
     metric.setIs_nan(1);
     metric.setJob_name("application_1234New");
-    metric.setCreateBy("MetricServiceTest-CreateBy");
+    metric.setUpdateBy("MetricServiceTest-UpdateBy");
+
     boolean editResult = metricService.update(metric);
     assertTrue(editResult);
 

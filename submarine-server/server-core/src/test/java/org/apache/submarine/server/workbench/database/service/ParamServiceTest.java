@@ -83,7 +83,6 @@ public class ParamServiceTest {
     param.setWorker_index("worker-2");
     param.setJob_name("application_1234");
     param.setCreateBy("ParamServiceTest-CreateBy");
-
     boolean result = paramService.insert(param);
     assertTrue(result);
 
@@ -91,7 +90,7 @@ public class ParamServiceTest {
     param.setValue("100");
     param.setWorker_index("worker-New");
     param.setJob_name("application_1234New");
-
+    param.setUpdateBy("ParamServiceTest-UpdateBy");
     boolean editResult = paramService.update(param);
     assertTrue(editResult);
 
@@ -107,7 +106,7 @@ public class ParamServiceTest {
     param.setWorker_index("worker-2");
     param.setJob_name("application_1234");
     param.setCreateBy("ParamServiceTest-CreateBy");
-    
+
     boolean result = paramService.insert(param);
     assertTrue(result);
 
