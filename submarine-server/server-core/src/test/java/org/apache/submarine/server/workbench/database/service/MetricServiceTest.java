@@ -66,6 +66,7 @@ public class MetricServiceTest {
     metric.setStep(0);
     metric.setIs_nan(0);
     metric.setJob_name("application_1234");
+    metric.setCreateBy("MetricServiceTest-CreateBy");
     boolean result = metricService.insert(metric);
     assertNotEquals(result, -1);
     List<Metric> metricList = metricService.selectAll();
@@ -89,7 +90,7 @@ public class MetricServiceTest {
     metric.setStep(0);
     metric.setIs_nan(0);
     metric.setJob_name("application_1234");
-
+    metric.setCreateBy("MetricServiceTest-CreateBy");
     boolean result = metricService.insert(metric);
     assertTrue(result);
 
@@ -100,7 +101,7 @@ public class MetricServiceTest {
     metric.setStep(1);
     metric.setIs_nan(1);
     metric.setJob_name("application_1234New");
-
+    metric.setCreateBy("MetricServiceTest-CreateBy");
     boolean editResult = metricService.update(metric);
     assertTrue(editResult);
 
@@ -118,7 +119,7 @@ public class MetricServiceTest {
     metric.setStep(0);
     metric.setIs_nan(0);
     metric.setJob_name("application_1234");
-
+    metric.setCreateBy("MetricServiceTest-CreateBy");
     boolean result = metricService.insert(metric);
     assertTrue(result);
 

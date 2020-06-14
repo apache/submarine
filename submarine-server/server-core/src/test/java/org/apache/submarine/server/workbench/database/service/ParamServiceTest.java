@@ -61,6 +61,7 @@ public class ParamServiceTest {
     param.setValue("199");
     param.setWorker_index("worker-1");
     param.setJob_name("application_123651651");
+    param.setCreateBy("ParamServiceTest-CreateBy");
     boolean result = paramService.insert(param);
     assertNotEquals(result, -1);
     List<Param> paramList = paramService.selectAll();
@@ -80,8 +81,8 @@ public class ParamServiceTest {
     param.setParam_key("score");
     param.setValue("100");
     param.setWorker_index("worker-2");
-
     param.setJob_name("application_1234");
+    param.setCreateBy("ParamServiceTest-CreateBy");
 
     boolean result = paramService.insert(param);
     assertTrue(result);
@@ -105,7 +106,8 @@ public class ParamServiceTest {
     param.setValue("100");
     param.setWorker_index("worker-2");
     param.setJob_name("application_1234");
-
+    param.setCreateBy("ParamServiceTest-CreateBy");
+    
     boolean result = paramService.insert(param);
     assertTrue(result);
 
