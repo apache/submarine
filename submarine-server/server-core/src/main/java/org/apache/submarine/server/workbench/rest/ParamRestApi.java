@@ -70,7 +70,6 @@ public class ParamRestApi {
     return new JsonResponse.Builder<List<Param>>(Response.Status.OK).success(true).result(params).build();
   }
 
-
   @GET
   @Path("/")
   @SubmarineApi

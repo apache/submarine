@@ -68,7 +68,6 @@ public class MetricRestApi {
     return new JsonResponse.Builder<List<Metric>>(Response.Status.OK).success(true).result(metrics).build();
   }
 
-
   @GET
   @Path("/")
   @SubmarineApi

@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//import java.math.BigInteger;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -43,16 +42,6 @@ public class ParamServiceTest {
       paramService.deleteById(param.getId());
     }
   }
-
-  /*
-# +----------+-------+--------------+-----------------------+
-# | key      | value | worker_index | job_name              |
-# +----------+-------+--------------+-----------------------+
-# | max_iter | 100   | worker-1     | application_123651651 |
-# | n_jobs   | 5     | worker-1     | application_123456898 |
-# | alpha    | 20    | worker-1     | application_123456789 |
-# +----------+-------+--------------+-----------------------+
-  */
 
   @Test
   public void testSelectParam() throws Exception {

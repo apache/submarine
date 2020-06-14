@@ -44,18 +44,6 @@ public class MetricServiceTest {
     }
   }
 
-  /*
-  # +-------+----------+--------------+---------------+------+--------+------------------+
-  # | key   | value    | worker_index | timestamp     | step | is_nan | job_name         |
-  # +-------+----------+--------------+---------------+------+--------+------------------+
-  # | score | 0.666667 | worker-1     | 1569139525097 |    0 |      0 | application_1234 |
-  # | score | 0.666667 | worker-1     | 1569149139731 |    0 |      0 | application_1234 |
-  # | score | 0.666667 | worker-1     | 1569169376482 |    0 |      0 | application_1234 |
-  # | score | 0.666667 | worker-1     | 1569236290721 |    0 |      0 | application_1234 |
-  # | score | 0.666667 | worker-1     | 1569236466722 |    0 |      0 | application_1234 |
-  # +-------+----------+--------------+---------------+------+--------+------------------+
-  */
-
   @Test
   public void testSelectMetric() throws Exception {
     Metric metric = new Metric();
