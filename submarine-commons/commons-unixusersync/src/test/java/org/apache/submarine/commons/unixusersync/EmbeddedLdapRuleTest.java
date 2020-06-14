@@ -41,6 +41,7 @@ import javax.naming.NamingEnumeration;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import java.util.Arrays;
+import java.util.StringTokenizer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -113,10 +114,21 @@ public class EmbeddedLdapRuleTest {
 
     while (list.hasMore()){
       NameClassPair nc = (NameClassPair) list.next();
-      String user = nc.getName().substring(3, nc.getName().length());
+      String user, group = null;
+      String[] user_sp = new String[5];
+      StringTokenizer user_info = new StringTokenizer(nc.getNameInNamespace(), ",");
+
+      int i = 0;
+      while (user_info.hasMoreTokens()){
+        user_sp[i] = user_info.nextToken();
+        i++;
+      }
+      user = user_sp[0].substring(3, user_sp[0].length());
+      group = user_sp[1].substring(3, user_sp[1].length());
+
       LOG.info(user);
 
-      assertEquals(user , "Fake-Eros");
+      assertEquals((user + "," + group) , "Fake-Eros,semi-people");
     }
 
     context.close();
