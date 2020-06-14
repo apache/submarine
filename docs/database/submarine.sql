@@ -233,10 +233,10 @@ CREATE TABLE `metric` (
   `step` bigint(11) NOT NULL COMMENT 'Step recorded for this metric entry: `BigInteger`.',
   `is_nan` int(11) NOT NULL COMMENT 'True if the value is in fact NaN.',
   `job_name` varchar(32) NOT NULL COMMENT 'JOB NAME to which this metric belongs to: Part of *Primary Key* for ``metrics`` table.',
-  `create_by` varchar(32) NOT NULL,
-  `create_time` datetime NOT NULL,
-  `update_by` varchar(32) NOT NULL,
-  `update_time` datetime NOT NULL,
+  `create_by` varchar(32) default NULL,
+  `create_time` datetime default NULL,
+  `update_by` varchar(32) default NULL,
+  `update_time` datetime default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -246,13 +246,13 @@ CREATE TABLE `metric` (
 DROP TABLE IF EXISTS `param`;
 CREATE TABLE `param` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `param_key` varchar(190) CHARACTER SET utf8 NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
-  `value` varchar(32) CHARACTER SET utf8 NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
-  `worker_index` varchar(32) CHARACTER SET utf8 NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
-  `job_name` varchar(32) CHARACTER SET utf8 NOT NULL COMMENT 'JOB NAME to which this parameter belongs to: Part of *Primary Key* for ``params`` table.',
-  `create_by` varchar(32) CHARACTER SET utf8 NOT NULL,
-  `create_time` datetime NOT NULL,
-  `update_by` varchar(32) CHARACTER SET utf8 NOT NULL,
-  `update_time` datetime NOT NULL,
+  `param_key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
+  `value` varchar(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
+  `worker_index` varchar(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
+  `job_name` varchar(32) NOT NULL COMMENT 'JOB NAME to which this parameter belongs to: Part of *Primary Key* for ``params`` table.',
+  `create_by` varchar(32) default NULL,
+  `create_time` datetime default NULL,
+  `update_by` varchar(32) default NULL,
+  `update_time` datetime default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
