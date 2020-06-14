@@ -34,20 +34,20 @@ import java.math.BigInteger;
 
 public class Metric extends BaseEntity {
 
-  private String metric_key;
+  private String metricKey;
   private float value;
-  private String worker_index;
+  private String workerIndex;
   private BigInteger timestamp;
   private int step;
-  private int is_nan;
-  private String job_name;
+  private int isNan;
+  private String jobName;
 
   public String getMetric_key() {
-    return this.metric_key;
+    return this.metricKey;
   }
 
   public void setMetric_key(String metric_key) {
-    this.metric_key = metric_key;
+    this.metricKey = metric_key;
   }
 
   public float getValue() {
@@ -59,11 +59,11 @@ public class Metric extends BaseEntity {
   }
 
   public String getWorker_index() {
-    return this.worker_index;
+    return this.workerIndex;
   }
 
   public void setWorker_index(String worker_index) {
-    this.worker_index = worker_index;
+    this.workerIndex = worker_index;
   }
 
   public BigInteger getTimestamp() {
@@ -83,19 +83,19 @@ public class Metric extends BaseEntity {
   }
 
   public int getIs_nan() {
-    return this.is_nan;
+    return this.isNan;
   }
 
   public void setIs_nan(int is_nan) {
-    this.is_nan = is_nan;
+    this.isNan = is_nan;
   }
 
   public String getJob_name() {
-    return this.job_name;
+    return this.jobName;
   }
 
   public void setJob_name(String job_name) {
-    this.job_name = job_name;
+    this.jobName = job_name;
   }
 
 }

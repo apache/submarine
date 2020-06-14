@@ -28,10 +28,10 @@
   </resultMap>
 
   <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Param" extends="BaseEntityResultMap">
-    <result column="param_key" jdbcType="VARCHAR" property="param_key" />
+    <result column="param_key" jdbcType="VARCHAR" property="paramKey" />
     <result column="value" jdbcType="FLOAT" property="value" />
-    <result column="worker_index" jdbcType="VARCHAR" property="worker_index" />
-    <result column="job_name" jdbcType="VARCHAR" property="job_name" />
+    <result column="worker_index" jdbcType="VARCHAR" property="workerIndex" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
   </resultMap>
 
   <sql id="Base_Column_List">

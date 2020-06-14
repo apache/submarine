@@ -19,14 +19,8 @@
 package org.apache.submarine.server.workbench.rest;
 
 import com.google.gson.Gson;
-//import com.google.gson.reflect.TypeToken;
-//import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-//import org.apache.submarine.server.workbench.database.MyBatisUtil;
 import org.apache.submarine.server.workbench.database.entity.Metric;
-//import org.apache.submarine.server.workbench.database.entity.SysUser;
-//import org.apache.submarine.server.workbench.database.mappers.MetricMapper;
-//import org.apache.submarine.server.workbench.database.mappers.SysUserMapper;
 import org.apache.submarine.server.workbench.database.service.MetricService;
 import org.apache.submarine.server.response.JsonResponse;
 import org.slf4j.Logger;
@@ -40,13 +34,10 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
-//import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-//import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-//import java.util.HashMap;
 
 @Path("/metric")
 @Produces("application/json")

@@ -28,13 +28,13 @@
   </resultMap>
 
   <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Metric" extends="BaseEntityResultMap">
-    <result column="metric_key" jdbcType="VARCHAR" property="metric_key" />
+    <result column="metric_key" jdbcType="VARCHAR" property="metricKey" />
     <result column="value" jdbcType="FLOAT" property="value" />
-    <result column="worker_index" jdbcType="VARCHAR" property="worker_index" />
+    <result column="worker_index" jdbcType="VARCHAR" property="workerIndex" />
     <result column="timestamp" jdbcType="BIGINT" property="timestamp" />
     <result column="step" jdbcType="INTEGER" property="step" />
-    <result column="is_nan" jdbcType="INTEGER" property="is_nan" />
-    <result column="job_name" jdbcType="VARCHAR" property="job_name" />
+    <result column="is_nan" jdbcType="INTEGER" property="isNan" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
   </resultMap>
 
   <sql id="Base_Column_List">

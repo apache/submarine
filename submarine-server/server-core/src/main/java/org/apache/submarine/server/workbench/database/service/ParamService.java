@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.workbench.database.MyBatisUtil;
-//import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.workbench.database.entity.Param;
 import org.apache.submarine.server.workbench.database.mappers.ParamMapper;
 import org.slf4j.Logger;
