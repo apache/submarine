@@ -40,6 +40,7 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
@@ -115,16 +116,14 @@ public class EmbeddedLdapRuleTest {
     while (list.hasMore()){
       NameClassPair nc = (NameClassPair) list.next();
       String user, group = null;
-      String[] user_sp = new String[5];
+      ArrayList user_sp = new ArrayList();
       StringTokenizer user_info = new StringTokenizer(nc.getNameInNamespace(), ",");
 
-      int i = 0;
       while (user_info.hasMoreTokens()){
-        user_sp[i] = user_info.nextToken();
-        i++;
+        user_sp.add(user_info.nextToken());
       }
-      user = user_sp[0].substring(3, user_sp[0].length());
-      group = user_sp[1].substring(3, user_sp[1].length());
+      user = user_sp.get(0).toString().substring(3, user_sp.get(0).toString().length());
+      group = user_sp.get(1).toString().substring(3, user_sp.get(1).toString().length());
 
       LOG.info(user);
 
