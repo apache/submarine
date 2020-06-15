@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Tensorflow implementation of DeepFM
 
@@ -26,15 +25,19 @@ Reference:
 """
 
 import logging
+
 import tensorflow as tf
+
+from submarine.ml.tensorflow.layers.core import (dnn_layer, embedding_layer,
+                                                 fm_layer, linear_layer)
 from submarine.ml.tensorflow.model.base_tf_model import BaseTFModel
-from submarine.ml.tensorflow.layers.core import fm_layer, linear_layer, dnn_layer, embedding_layer
 from submarine.utils.tf_utils import get_estimator_spec
 
 logger = logging.getLogger(__name__)
 
 
 class DeepFM(BaseTFModel):
+
     def model_fn(self, features, labels, mode, params):
         super().model_fn(features, labels, mode, params)
 
@@ -45,7 +48,8 @@ class DeepFM(BaseTFModel):
 
         field_size = params['training']['field_size']
         embedding_size = params['training']['embedding_size']
-        deep_inputs = tf.reshape(embedding_outputs, shape=[-1, field_size * embedding_size])
+        deep_inputs = tf.reshape(embedding_outputs,
+                                 shape=[-1, field_size * embedding_size])
         deep_logit = dnn_layer(deep_inputs, mode, **params['training'])
 
         with tf.variable_scope("DeepFM_out"):

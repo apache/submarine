@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 TensorFlow implementation of FM
 
@@ -22,8 +21,11 @@ Reference:
 """
 
 import logging
+
 import tensorflow as tf
-from submarine.ml.tensorflow.layers.core import linear_layer, fm_layer, embedding_layer
+
+from submarine.ml.tensorflow.layers.core import (embedding_layer, fm_layer,
+                                                 linear_layer)
 from submarine.ml.tensorflow.model.base_tf_model import BaseTFModel
 from submarine.utils.tf_utils import get_estimator_spec
 
@@ -31,6 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 class FM(BaseTFModel):
+
     def model_fn(self, features, labels, mode, params):
         super().model_fn(features, labels, mode, params)
 

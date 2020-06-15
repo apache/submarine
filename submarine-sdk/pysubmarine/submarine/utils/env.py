@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import json
 import copy
+import json
+import os
 from collections import Mapping
 
 
@@ -64,8 +64,8 @@ def get_from_dicts(params, defaultParams):
 
     dct = copy.deepcopy(defaultParams)
     for k, _ in params.items():
-        if (k in dct and isinstance(dct[k], dict)
-                and isinstance(defaultParams[k], Mapping)):
+        if (k in dct and isinstance(dct[k], dict) and
+                isinstance(defaultParams[k], Mapping)):
             dct[k] = get_from_dicts(params[k], dct[k])
         else:
             dct[k] = params[k]
@@ -78,8 +78,5 @@ def get_from_registry(key, registry):
     if key in registry:
         return registry[key]
     else:
-        raise ValueError(
-            'Key {} not supported, available options: {}'.format(
-                key, registry.keys()
-            )
-        )
+        raise ValueError('Key {} not supported, available options: {}'.format(
+            key, registry.keys()))

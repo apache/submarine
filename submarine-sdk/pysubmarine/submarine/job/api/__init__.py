@@ -15,7 +15,7 @@
 
 from __future__ import absolute_import
 
-# flake8: noqa
-
 # import apis into api package
 from submarine.job.api.jobs_api import JobsApi
+
+# flake8: noqa

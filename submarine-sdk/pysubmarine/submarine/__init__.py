@@ -13,27 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-from submarine.job import ApiClient, JobLibrarySpec, JobSpec, JobTaskSpec,\
-    Configuration, JobsApi
-
-import submarine.tracking.fluent
 import submarine.tracking as tracking
+import submarine.tracking.fluent
+from submarine.job import (ApiClient, Configuration, JobLibrarySpec, JobsApi,
+                           JobSpec, JobTaskSpec)
 
 log_param = submarine.tracking.fluent.log_param
 log_metric = submarine.tracking.fluent.log_metric
 set_tracking_uri = tracking.set_tracking_uri
 get_tracking_uri = tracking.get_tracking_uri
 
-
-__all__ = ["log_metric",
-           "log_param",
-           "set_tracking_uri",
-           "get_tracking_uri",
-           "ApiClient",
-           "JobLibrarySpec",
-           "JobSpec",
-           "JobTaskSpec",
-           "Configuration",
-           "JobsApi"
-           ]
+__all__ = [
+    "log_metric", "log_param", "set_tracking_uri", "get_tracking_uri",
+    "ApiClient", "JobLibrarySpec", "JobSpec", "JobTaskSpec", "Configuration",
+    "JobsApi"
+]

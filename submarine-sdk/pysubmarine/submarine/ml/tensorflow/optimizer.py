@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import logging
+
 import tensorflow as tf
 
 logger = logging.getLogger(__name__)
@@ -32,12 +33,15 @@ def get_optimizer(optimizer_key, learning_rate):
 
     if optimizer_key == OptimizerKey.ADAM:
         op = tf.train.AdamOptimizer(learning_rate=learning_rate,
-                                    beta1=0.9, beta2=0.999, epsilon=1e-8)
+                                    beta1=0.9,
+                                    beta2=0.999,
+                                    epsilon=1e-8)
     elif optimizer_key == OptimizerKey.ADAGRAD:
-        op = tf.train.AdagradOptimizer(
-            learning_rate=learning_rate, initial_accumulator_value=1e-8)
+        op = tf.train.AdagradOptimizer(learning_rate=learning_rate,
+                                       initial_accumulator_value=1e-8)
     elif optimizer_key == OptimizerKey.MOMENTUM:
-        op = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=0.95)
+        op = tf.train.MomentumOptimizer(learning_rate=learning_rate,
+                                        momentum=0.95)
     elif optimizer_key == OptimizerKey.FTRL:
         op = tf.train.FtrlOptimizer(learning_rate)
     else:

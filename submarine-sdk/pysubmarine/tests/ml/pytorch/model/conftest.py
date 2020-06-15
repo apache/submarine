@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 
 import pytest
-import os
 
 # noqa
 LIBSVM_DATA = """
@@ -65,10 +65,11 @@ def get_model_param(tmpdir):
         "model": {
             "name": "ctr.deepfm",
             "kwargs": {
-                "field_dims":
-                [15, 52, 30, 19, 111, 51, 26, 19, 53, 5, 13, 8, 23, 21,
-                    77, 25, 39, 11, 8, 61, 15, 3, 34, 75, 30, 79, 11,
-                    85, 37, 10, 94, 19, 5, 32, 6, 12, 42, 18, 23],
+                "field_dims": [
+                    15, 52, 30, 19, 111, 51, 26, 19, 53, 5, 13, 8, 23, 21, 77,
+                    25, 39, 11, 8, 61, 15, 3, 34, 75, 30, 79, 11, 85, 37, 10,
+                    94, 19, 5, 32, 6, 12, 42, 18, 23
+                ],
                 "out_features": 1,
                 "embedding_dim": 16,
                 "hidden_units": [400, 400],

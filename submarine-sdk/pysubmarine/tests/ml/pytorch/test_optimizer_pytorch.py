@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import pytest
+
 from submarine.ml.pytorch.optimizer import get_optimizer
 
 

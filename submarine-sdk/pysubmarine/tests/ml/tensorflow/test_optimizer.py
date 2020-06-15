@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import pytest
+
 from submarine.ml.tensorflow.optimizer import get_optimizer
 
 
@@ -26,4 +27,5 @@ def test_get_optimizer():
 
     for invalid_optimizer_key in invalid_optimizer_keys:
         with pytest.raises(ValueError, match="Invalid optimizer_key :"):
-            get_optimizer(optimizer_key=invalid_optimizer_key, learning_rate=0.3)
+            get_optimizer(optimizer_key=invalid_optimizer_key,
+                          learning_rate=0.3)

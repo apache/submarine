@@ -17,6 +17,4 @@ from .input.libsvm_dataset import libsvm_input_fn
 
 LIBSVM = "libsvm"
 
-input_fn_registry = {
-    LIBSVM: libsvm_input_fn
-}
+input_fn_registry = {LIBSVM: libsvm_input_fn}

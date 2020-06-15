@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import pytest
+
 from submarine.ml.pytorch.loss import get_loss_fn
 
 

@@ -13,12 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import mock
 import os
+
+import mock
+
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.store.sqlalchemy_store import SqlAlchemyStore
-from submarine.tracking.utils import is_tracking_uri_set, _TRACKING_URI_ENV_VAR, \
-    get_tracking_uri, _JOB_NAME_ENV_VAR, get_job_name, get_sqlalchemy_store
+from submarine.tracking.utils import (_JOB_NAME_ENV_VAR, _TRACKING_URI_ENV_VAR,
+                                      get_job_name, get_sqlalchemy_store,
+                                      get_tracking_uri, is_tracking_uri_set)
 
 
 def test_is_tracking_uri_set():
@@ -39,8 +42,7 @@ def test_get_tracking_uri():
 
 def test_get_job_name():
     env = {
-        _JOB_NAME_ENV_VAR:
-            "application_12346789",
+        _JOB_NAME_ENV_VAR: "application_12346789",
     }
     with mock.patch.dict(os.environ, env):
         assert get_job_name() == "application_12346789"
@@ -49,9 +51,7 @@ def test_get_job_name():
 def test_get_sqlalchemy_store():
     patch_create_engine = mock.patch("sqlalchemy.create_engine")
     uri = DEFAULT_SUBMARINE_JDBC_URL
-    env = {
-        _TRACKING_URI_ENV_VAR: uri
-    }
+    env = {_TRACKING_URI_ENV_VAR: uri}
     with mock.patch.dict(os.environ, env), patch_create_engine as mock_create_engine, \
             mock.patch("submarine.store.sqlalchemy_store.SqlAlchemyStore._initialize_tables"):
         store = get_sqlalchemy_store(uri)
