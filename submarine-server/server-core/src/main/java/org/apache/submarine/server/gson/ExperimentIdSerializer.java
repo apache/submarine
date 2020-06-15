@@ -17,23 +17,19 @@
  * under the License.
  */
 
-package org.apache.submarine.server.rest;
+package org.apache.submarine.server.gson;
 
-public class RestConstants {
-  public static final String V1 = "v1";
-  public static final String EXPERIMENT = "experiment";
-  public static final String ID = "id";
-  public static final String PING = "ping";
-  public static final String MEDIA_TYPE_YAML = "application/yaml";
-  public static final String CHARSET_UTF8 = "charset=utf-8";
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import org.apache.submarine.server.api.experiment.ExperimentId;
 
-  public static final String METASTORE = "metastore";
+import java.lang.reflect.Type;
 
-  public static final String CLUSTER = "cluster";
-  public static final String ADDRESS = "address";
-
-  public static final String NODES = "nodes";
-  public static final String NODE = "node";
-
-  public static final String LOGS = "logs";
+public class ExperimentIdSerializer implements JsonSerializer<ExperimentId> {
+  @Override
+  public JsonElement serialize(ExperimentId src, Type typeOfSrc, JsonSerializationContext context) {
+    return new JsonPrimitive(src.toString());
+  }
 }

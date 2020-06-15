@@ -32,7 +32,7 @@
     </init-param>
     <init-param>
       <param-name>openApi.configuration.resourceClasses</param-name>
-      <param-value>org.apache.submarine.server.rest.JobManagerRestApi</param-value>
+      <param-value>org.apache.submarine.server.rest.ExperimentRestApi</param-value>
     </init-param>
     <init-param>
       <param-name>openApi.configuration.scannerClass</param-name>
@@ -48,7 +48,7 @@
     <param-name>configuration</param-name>
     <param-value>deployment</param-value>
   </context-param>
-  
+
   <servlet-mapping>
     <servlet-name>default</servlet-name>
     <url-pattern>/v1/*</url-pattern>

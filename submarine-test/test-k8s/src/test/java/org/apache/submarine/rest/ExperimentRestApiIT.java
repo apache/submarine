@@ -46,10 +46,10 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.FileUtils;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
-import org.apache.submarine.server.api.job.Job;
-import org.apache.submarine.server.api.job.JobId;
-import org.apache.submarine.server.json.JobIdDeserializer;
-import org.apache.submarine.server.json.JobIdSerializer;
+import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.api.experiment.ExperimentId;
+import org.apache.submarine.server.gson.ExperimentIdDeserializer;
+import org.apache.submarine.server.gson.ExperimentIdSerializer;
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.rest.RestConstants;
 import org.joda.time.DateTime;
@@ -60,18 +60,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("rawtypes")
-public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
-  private static final Logger LOG = LoggerFactory.getLogger(JobManagerRestApiIT.class);
+public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
+  private static final Logger LOG = LoggerFactory.getLogger(ExperimentRestApiIT.class);
 
   private static CustomObjectsApi k8sApi;
   /** Key is the ml framework name, the value is the operator */
   private static Map<String, KfOperator> kfOperatorMap;
-  private static String JOB_PATH = "/api/" + RestConstants.V1 + "/" + RestConstants.JOBS;
-  private static String JOB_LOG_PATH = JOB_PATH + "/" + RestConstants.LOGS;
+  private static final String BASE_API_PATH = "/api/" + RestConstants.V1 + "/" + RestConstants.EXPERIMENT;
+  private static final String LOG_API_PATH = BASE_API_PATH + "/" + RestConstants.LOGS;
 
-  private Gson gson = new GsonBuilder()
-      .registerTypeAdapter(JobId.class, new JobIdSerializer())
-      .registerTypeAdapter(JobId.class, new JobIdDeserializer())
+  private final Gson gson = new GsonBuilder()
+      .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
+      .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer())
       .create();
 
   @BeforeClass
@@ -93,7 +93,7 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
   @Test
   public void testJobServerPing() throws IOException {
     GetMethod response = httpGet("/api/" + RestConstants.V1 + "/"
-        + RestConstants.JOBS + "/" + RestConstants.PING);
+        + RestConstants.EXPERIMENT + "/" + RestConstants.PING);
     String requestBody = response.getResponseBodyAsString();
     Gson gson = new Gson();
     JsonResponse jsonResponse = gson.fromJson(requestBody, JsonResponse.class);
@@ -132,26 +132,26 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
   private void run(String body, String patchBody, String contentType) throws Exception {
     // create
     LOG.info("Create training job by Job REST API");
-    PostMethod postMethod = httpPost(JOB_PATH, body, contentType);
+    PostMethod postMethod = httpPost(BASE_API_PATH, body, contentType);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), postMethod.getStatusCode());
 
     String json = postMethod.getResponseBodyAsString();
     JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
 
-    Job createdJob = gson.fromJson(gson.toJson(jsonResponse.getResult()), Job.class);
-    verifyCreateJobApiResult(createdJob);
+    Experiment createdExperiment = gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
+    verifyCreateJobApiResult(createdExperiment);
 
     // find
-    GetMethod getMethod = httpGet(JOB_PATH + "/" + createdJob.getJobId().toString());
+    GetMethod getMethod = httpGet(BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), getMethod.getStatusCode());
 
     json = getMethod.getResponseBodyAsString();
     jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
 
-    Job foundJob = gson.fromJson(gson.toJson(jsonResponse.getResult()), Job.class);
-    verifyGetJobApiResult(createdJob, foundJob);
+    Experiment foundExperiment = gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
+    verifyGetJobApiResult(createdExperiment, foundExperiment);
 
     // get log list
     // TODO(JohnTing): Test the job log after creating the job
@@ -161,66 +161,66 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
     // https://tools.ietf.org/html/rfc5789
 
     // delete
-    DeleteMethod deleteMethod = httpDelete(JOB_PATH + "/" + createdJob.getJobId().toString());
+    DeleteMethod deleteMethod = httpDelete(BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), deleteMethod.getStatusCode());
 
     json = deleteMethod.getResponseBodyAsString();
     jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
 
-    Job deletedJob = gson.fromJson(gson.toJson(jsonResponse.getResult()), Job.class);
-    verifyDeleteJobApiResult(createdJob, deletedJob);
+    Experiment deletedExperiment = gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
+    verifyDeleteJobApiResult(createdExperiment, deletedExperiment);
   }
 
-  private void verifyCreateJobApiResult(Job createdJob) throws Exception {
-    Assert.assertNotNull(createdJob.getUid());
-    Assert.assertNotNull(createdJob.getAcceptedTime());
-    Assert.assertEquals(Job.Status.STATUS_ACCEPTED.getValue(), createdJob.getStatus());
+  private void verifyCreateJobApiResult(Experiment createdExperiment) throws Exception {
+    Assert.assertNotNull(createdExperiment.getUid());
+    Assert.assertNotNull(createdExperiment.getAcceptedTime());
+    Assert.assertEquals(Experiment.Status.STATUS_ACCEPTED.getValue(), createdExperiment.getStatus());
 
-    assertK8sResultEquals(createdJob);
+    assertK8sResultEquals(createdExperiment);
   }
 
-  private void verifyGetJobApiResult(Job createdJob, Job foundJob) throws Exception {
-    Assert.assertEquals(createdJob.getJobId(), foundJob.getJobId());
-    Assert.assertEquals(createdJob.getUid(), foundJob.getUid());
-    Assert.assertEquals(createdJob.getName(), foundJob.getName());
-    Assert.assertEquals(createdJob.getAcceptedTime(), foundJob.getAcceptedTime());
+  private void verifyGetJobApiResult(Experiment createdExperiment, Experiment foundExperiment) throws Exception {
+    Assert.assertEquals(createdExperiment.getExperimentId(), foundExperiment.getExperimentId());
+    Assert.assertEquals(createdExperiment.getUid(), foundExperiment.getUid());
+    Assert.assertEquals(createdExperiment.getName(), foundExperiment.getName());
+    Assert.assertEquals(createdExperiment.getAcceptedTime(), foundExperiment.getAcceptedTime());
 
-    assertK8sResultEquals(foundJob);
+    assertK8sResultEquals(foundExperiment);
   }
 
-  private void assertK8sResultEquals(Job job) throws Exception {
-    KfOperator operator = kfOperatorMap.get(job.getSpec().getLibrarySpec().getName()
+  private void assertK8sResultEquals(Experiment experiment) throws Exception {
+    KfOperator operator = kfOperatorMap.get(experiment.getSpec().getMeta().getFramework()
         .toLowerCase());
     JsonObject rootObject = getJobByK8sApi(operator.getGroup(), operator.getVersion(),
-        operator.getNamespace(), operator.getPlural(), job.getName());
+        operator.getNamespace(), operator.getPlural(), experiment.getName());
     JsonObject metadataObject = rootObject.getAsJsonObject("metadata");
 
     String uid = metadataObject.getAsJsonPrimitive("uid").getAsString();
-    LOG.info("Uid from Job REST is {}", job.getUid());
+    LOG.info("Uid from Experiment REST is {}", experiment.getUid());
     LOG.info("Uid from K8s REST is {}", uid);
-    Assert.assertEquals(job.getUid(), uid);
+    Assert.assertEquals(experiment.getUid(), uid);
 
     String creationTimestamp = metadataObject.getAsJsonPrimitive("creationTimestamp")
         .getAsString();
-    Date expectedDate = new DateTime(job.getAcceptedTime()).toDate();
+    Date expectedDate = new DateTime(experiment.getAcceptedTime()).toDate();
     Date actualDate = new DateTime(creationTimestamp).toDate();
-    LOG.info("CreationTimestamp from Job REST is {}", expectedDate);
+    LOG.info("CreationTimestamp from Experiment REST is {}", expectedDate);
     LOG.info("CreationTimestamp from K8s REST is {}", actualDate);
     Assert.assertEquals(expectedDate, actualDate);
   }
 
-  private void verifyDeleteJobApiResult(Job createdJob, Job deletedJob) {
-    Assert.assertEquals(createdJob.getName(), deletedJob.getName());
-    Assert.assertEquals(Job.Status.STATUS_DELETED.getValue(), deletedJob.getStatus());
+  private void verifyDeleteJobApiResult(Experiment createdExperiment, Experiment deletedExperiment) {
+    Assert.assertEquals(createdExperiment.getName(), deletedExperiment.getName());
+    Assert.assertEquals(Experiment.Status.STATUS_DELETED.getValue(), deletedExperiment.getStatus());
 
     // verify the result by K8s api
-    KfOperator operator = kfOperatorMap.get(createdJob.getSpec().getLibrarySpec().getName()
+    KfOperator operator = kfOperatorMap.get(createdExperiment.getSpec().getMeta().getFramework()
         .toLowerCase());
     JsonObject rootObject = null;
     try {
       rootObject = getJobByK8sApi(operator.getGroup(), operator.getVersion(),
-          operator.getNamespace(), operator.getPlural(), createdJob.getName());
+          operator.getNamespace(), operator.getPlural(), createdExperiment.getName());
     } catch (ApiException e) {
       Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), e.getCode());
     } finally {
@@ -239,7 +239,7 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
 
   @Test
   public void testCreateJobWithInvalidSpec() throws Exception {
-    PostMethod postMethod = httpPost(JOB_PATH, "", MediaType.APPLICATION_JSON);
+    PostMethod postMethod = httpPost(BASE_API_PATH, "", MediaType.APPLICATION_JSON);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), postMethod.getStatusCode());
 
     String json = postMethod.getResponseBodyAsString();
@@ -249,7 +249,7 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
 
   @Test
   public void testNotFoundJob() throws Exception {
-    GetMethod getMethod = httpGet(JOB_PATH + "/" + "job_123456789_0001");
+    GetMethod getMethod = httpGet(BASE_API_PATH + "/" + "experiment_123456789_0001");
     Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), getMethod.getStatusCode());
 
     String json = getMethod.getResponseBodyAsString();
@@ -259,7 +259,7 @@ public class JobManagerRestApiIT extends AbstractSubmarineServerTest {
 
   @Test
   public void testListJobLog() throws Exception {
-    GetMethod getMethod = httpGet(JOB_LOG_PATH);
+    GetMethod getMethod = httpGet(LOG_API_PATH);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), getMethod.getStatusCode());
 
     String json = getMethod.getResponseBodyAsString();

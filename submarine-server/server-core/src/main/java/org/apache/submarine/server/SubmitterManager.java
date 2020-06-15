@@ -21,7 +21,7 @@ package org.apache.submarine.server;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
-import org.apache.submarine.server.api.job.JobSubmitter;
+import org.apache.submarine.server.api.experiment.Submitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Submitter Manager is responsible for load {@link JobSubmitter} implements class.
+ * Submitter Manager is responsible for load {@link Submitter} implements class.
  */
 public class SubmitterManager {
   private static final Logger LOG = LoggerFactory.getLogger(SubmitterManager.class);
@@ -45,17 +45,17 @@ public class SubmitterManager {
 
   private final Map<String, JobSubmitterConfig> SUBMITTER_CONFIG_MAP = new HashMap<>();
 
-  private JobSubmitter submitter;
+  private Submitter submitter;
 
   {
     String home = System.getenv("SUBMARINE_HOME");
     LOG.info("Submarine Home: {}", home);
     SUBMITTER_CONFIG_MAP.put("k8s", new JobSubmitterConfig(
-        "org.apache.submarine.server.submitter.k8s.K8sJobSubmitter",
+        "org.apache.submarine.server.submitter.k8s.K8sSubmitter",
         home + "/lib/submitter/k8s/"));
   }
 
-  public static JobSubmitter loadSubmitter() {
+  public static Submitter loadSubmitter() {
     return INSTANCE.submitter;
   }
 
@@ -67,8 +67,8 @@ public class SubmitterManager {
     try {
       ClassLoader classLoader = new URLClassLoader(constructUrlsFromClasspath(classpath));
       Class<?> clazz = Class.forName(clazzName, true, classLoader);
-      Class<? extends JobSubmitter> sClass = clazz.asSubclass(JobSubmitter.class);
-      Constructor<? extends JobSubmitter> method = sClass.getDeclaredConstructor();
+      Class<? extends Submitter> sClass = clazz.asSubclass(Submitter.class);
+      Constructor<? extends Submitter> method = sClass.getDeclaredConstructor();
       submitter = method.newInstance();
       submitter.initialize(conf);
     } catch (Exception e) {

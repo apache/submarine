@@ -27,7 +27,7 @@ import io.kubernetes.client.models.V1JobCondition;
 import io.kubernetes.client.models.V1JobStatus;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.models.V1StatusDetails;
-import org.apache.submarine.server.api.job.Job;
+import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.joda.time.DateTime;
 
@@ -36,34 +36,34 @@ import org.joda.time.DateTime;
  * Such as MLJob to Job, V1Status to Job and others.
  */
 public class MLJobConverter {
-  public static Job toJobFromMLJob(MLJob mlJob) {
-    Job job = new Job();
-    job.setUid(mlJob.getMetadata().getUid());
-    job.setName(mlJob.getMetadata().getName());
+  public static Experiment toJobFromMLJob(MLJob mlJob) {
+    Experiment experiment = new Experiment();
+    experiment.setUid(mlJob.getMetadata().getUid());
+    experiment.setName(mlJob.getMetadata().getName());
 
     DateTime dateTime = mlJob.getMetadata().getCreationTimestamp();
     if (dateTime != null) {
-      job.setAcceptedTime(dateTime.toString());
-      job.setStatus(Job.Status.STATUS_ACCEPTED.getValue());
+      experiment.setAcceptedTime(dateTime.toString());
+      experiment.setStatus(Experiment.Status.STATUS_ACCEPTED.getValue());
     }
 
     V1JobStatus status = mlJob.getStatus();
     if (status != null) {
       dateTime = status.getStartTime();
       if (dateTime != null) {
-        job.setCreatedTime(dateTime.toString());
-        job.setStatus(Job.Status.STATUS_CREATED.getValue());
+        experiment.setCreatedTime(dateTime.toString());
+        experiment.setStatus(Experiment.Status.STATUS_CREATED.getValue());
       }
 
       List<V1JobCondition> conditions = status.getConditions();
       if (conditions != null && conditions.size() > 1) {
-        job.setStatus(Job.Status.STATUS_RUNNING.getValue());
+        experiment.setStatus(Experiment.Status.STATUS_RUNNING.getValue());
         for (V1JobCondition condition : conditions) {
           if (Boolean.parseBoolean(condition.getStatus())
               && condition.getType().toLowerCase().equals(
               "running")) {
             dateTime = condition.getLastTransitionTime();
-            job.setRunningTime(dateTime.toString());
+            experiment.setRunningTime(dateTime.toString());
             break;
           }
         }
@@ -71,24 +71,24 @@ public class MLJobConverter {
 
       dateTime = status.getCompletionTime();
       if (dateTime != null) {
-        job.setFinishedTime(dateTime.toString());
-        job.setStatus(Job.Status.STATUS_SUCCEEDED.getValue());
+        experiment.setFinishedTime(dateTime.toString());
+        experiment.setStatus(Experiment.Status.STATUS_SUCCEEDED.getValue());
       }
     }
-    return job;
+    return experiment;
   }
 
-  public static Job toJobFromStatus(V1Status status) {
-    Job job = new Job();
+  public static Experiment toJobFromStatus(V1Status status) {
+    Experiment experiment = new Experiment();
     V1StatusDetails details = status.getDetails();
     if (details != null) {
-      job.setUid(details.getUid());
-      job.setName(details.getName());
+      experiment.setUid(details.getUid());
+      experiment.setName(details.getName());
     }
     if (status.getStatus().toLowerCase().equals("success")) {
-      job.setStatus(Job.Status.STATUS_DELETED.getValue());
+      experiment.setStatus(Experiment.Status.STATUS_DELETED.getValue());
     }
-    return job;
+    return experiment;
   }
 
   public static V1DeleteOptions toDeleteOptionsFromMLJob(MLJob job) {

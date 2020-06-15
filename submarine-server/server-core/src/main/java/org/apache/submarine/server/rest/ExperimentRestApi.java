@@ -38,19 +38,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-import org.apache.submarine.server.job.JobManager;
-import org.apache.submarine.server.api.job.Job;
-import org.apache.submarine.server.api.job.JobLog;
-import org.apache.submarine.server.api.spec.JobSpec;
+import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.experiment.ExperimentManager;
+import org.apache.submarine.server.api.experiment.ExperimentLog;
+import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.response.JsonResponse;
 
 /**
- * Job Service REST API v1. It can accept {@link JobSpec} to create a job.
+ * Experiment Service REST API v1
  */
-@Path(RestConstants.V1 + "/" + RestConstants.JOBS)
+@Path(RestConstants.V1 + "/" + RestConstants.EXPERIMENT)
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
-public class JobManagerRestApi {
-  private final JobManager jobManager = JobManager.getInstance();
+public class ExperimentRestApi {
+  private final ExperimentManager experimentManager = ExperimentManager.getInstance();
   /**
    * Return the Pong message for test the connectivity
    * @return Pong message
@@ -59,7 +59,7 @@ public class JobManagerRestApi {
   @Path(RestConstants.PING)
   @Consumes(MediaType.APPLICATION_JSON)
   @Operation(summary = "Ping submarine server",
-          tags = {"jobs"},
+          tags = {"experiment"},
           description = "Return the Pong message for test the connectivity",
           responses = {
                   @ApiResponse(responseCode = "200", description = "successful operation",
@@ -70,147 +70,150 @@ public class JobManagerRestApi {
   }
 
   /**
-   * Returns the contents of {@link Job} that submitted by user.
-   * @param spec job spec
-   * @return the contents of job
+   * Returns the contents of {@link Experiment} that submitted by user.
+   * @param spec spec
+   * @return the contents of experiment
    */
   @POST
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
-  @Operation(summary = "Create a job",
-          tags = {"jobs"},
+  @Operation(summary = "Create an experiment",
+          tags = {"experiment"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
                           schema = @Schema(implementation = JsonResponse.class)))})
-  public Response createJob(JobSpec spec) {
+  public Response createExperiment(ExperimentSpec spec) {
     try {
-      Job job = jobManager.createJob(spec);
-      return new JsonResponse.Builder<Job>(Response.Status.OK).success(true).result(job).build();
+      Experiment experiment = experimentManager.createExperiment(spec);
+      return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
+          .result(experiment).build();
     } catch (SubmarineRuntimeException e) {
-      return parseJobServiceException(e);
+      return parseExperimentServiceException(e);
     }
   }
 
   /**
-   * List all job for the user
-   * @return job list
+   * List all experiment for the user
+   * @return experiment list
    */
   @GET
-  @Operation(summary = "List jobs",
-          tags = {"jobs"},
+  @Operation(summary = "List experiments",
+          tags = {"experiment"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
                           schema = @Schema(implementation = JsonResponse.class)))})
-  public Response listJob(@QueryParam("status") String status) {
+  public Response listExperiments(@QueryParam("status") String status) {
     try {
-      List<Job> jobList = jobManager.listJobsByStatus(status);
-      return new JsonResponse.Builder<List<Job>>(Response.Status.OK).success(true).result(jobList).build();
+      List<Experiment> experimentList = experimentManager.listExperimentsByStatus(status);
+      return new JsonResponse.Builder<List<Experiment>>(Response.Status.OK).success(true)
+          .result(experimentList).build();
     } catch (SubmarineRuntimeException e) {
-      return parseJobServiceException(e);
+      return parseExperimentServiceException(e);
     }
   }
 
   /**
-   * Returns the job detailed info by specified job id
-   * @param id job id
-   * @return the detailed info of job
+   * Returns the experiment detailed info by specified experiment id
+   * @param id experiment id
+   * @return the detailed info of experiment
    */
   @GET
   @Path("/{id}")
-  @Operation(summary = "Find job by id",
-          tags = {"jobs"},
+  @Operation(summary = "Get the experiment's detailed info by id",
+          tags = {"experiment"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
                           schema = @Schema(implementation = JsonResponse.class))),
-                  @ApiResponse(responseCode = "404", description = "Job not found")})
-  public Response getJob(@PathParam(RestConstants.JOB_ID) String id) {
+                  @ApiResponse(responseCode = "404", description = "Experiment not found")})
+  public Response getExperiment(@PathParam(RestConstants.ID) String id) {
     try {
-      Job job = jobManager.getJob(id);
-      return new JsonResponse.Builder<Job>(Response.Status.OK).success(true).result(job).build();
+      Experiment experiment = experimentManager.getExperiment(id);
+      return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
+          .result(experiment).build();
     } catch (SubmarineRuntimeException e) {
-      return parseJobServiceException(e);
+      return parseExperimentServiceException(e);
     }
   }
 
   @PATCH
   @Path("/{id}")
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
-  @Operation(summary = "Update the job in the submarine server with job spec",
-          tags = {"jobs"},
+  @Operation(summary = "Update the experiment in the submarine server with spec",
+          tags = {"experiment"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
                           schema = @Schema(implementation = JsonResponse.class))),
-                  @ApiResponse(responseCode = "404", description = "Job not found")})
-  public Response patchJob(@PathParam(RestConstants.JOB_ID) String id, JobSpec spec) {
+                  @ApiResponse(responseCode = "404", description = "Experiment not found")})
+  public Response patchExperiment(@PathParam(RestConstants.ID) String id, ExperimentSpec spec) {
     try {
-      Job job = jobManager.patchJob(id, spec);
-      return new JsonResponse.Builder<Job>(Response.Status.OK).success(true)
-          .result(job).build();
+      Experiment experiment = experimentManager.patchExperiment(id, spec);
+      return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
+          .result(experiment).build();
     } catch (SubmarineRuntimeException e) {
-      return parseJobServiceException(e);
+      return parseExperimentServiceException(e);
     }
   }
 
   /**
-   * Returns the job that deleted
-   * @param id job id
-   * @return the detailed info about deleted job
+   * Returns the experiment that deleted
+   * @param id experiment id
+   * @return the detailed info about deleted experiment
    */
   @DELETE
   @Path("/{id}")
-  @Operation(summary = "Delete the job",
-          tags = {"jobs"},
+  @Operation(summary = "Delete the experiment",
+          tags = {"experiment"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
                           schema = @Schema(implementation = JsonResponse.class))),
-                  @ApiResponse(responseCode = "404", description = "Job not found")})
-  public Response deleteJob(@PathParam(RestConstants.JOB_ID) String id) {
+                  @ApiResponse(responseCode = "404", description = "Experiment not found")})
+  public Response deleteExperiment(@PathParam(RestConstants.ID) String id) {
     try {
-      Job job = jobManager.deleteJob(id);
-      return new JsonResponse.Builder<Job>(Response.Status.OK).success(true)
-          .result(job).build();
+      Experiment experiment = experimentManager.deleteExperiment(id);
+      return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
+          .result(experiment).build();
     } catch (SubmarineRuntimeException e) {
-      return parseJobServiceException(e);
+      return parseExperimentServiceException(e);
     }
   }
 
   @GET
   @Path("/logs")
-  @Operation(summary = "Log jobs",
-          tags = {"jobs"},
+  @Operation(summary = "List experiment's log",
+          tags = {"experiment"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
                           schema = @Schema(implementation = JsonResponse.class)))})
   public Response listLog(@QueryParam("status") String status) {
     try {
-      List<JobLog> jobLogList = jobManager.listJobLogsByStatus(status);
-      return new JsonResponse.Builder<List<JobLog>>(Response.Status.OK).success(true)
-          .result(jobLogList).build();
+      List<ExperimentLog> experimentLogList = experimentManager.listExperimentLogsByStatus(status);
+      return new JsonResponse.Builder<List<ExperimentLog>>(Response.Status.OK).success(true)
+          .result(experimentLogList).build();
 
     } catch (SubmarineRuntimeException e) {
-      return parseJobServiceException(e);
+      return parseExperimentServiceException(e);
     }
   }
 
   @GET
   @Path("/logs/{id}")
-  @Operation(summary = "Log job by id",
-          tags = {"jobs"},
+  @Operation(summary = "Log experiment by id",
+          tags = {"experiment"},
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
                           schema = @Schema(implementation = JsonResponse.class))),
-                  @ApiResponse(responseCode = "404", description = "Job not found")})
-  public Response getLog(@PathParam(RestConstants.JOB_ID) String id) {
+                  @ApiResponse(responseCode = "404", description = "Experiment not found")})
+  public Response getLog(@PathParam(RestConstants.ID) String id) {
     try {
-      JobLog jobLog = jobManager.getJobLog(id);
-      return new JsonResponse.Builder<JobLog>(Response.Status.OK).success(true)
-          .result(jobLog).build();
+      ExperimentLog experimentLog = experimentManager.getExperimentLog(id);
+      return new JsonResponse.Builder<ExperimentLog>(Response.Status.OK).success(true)
+          .result(experimentLog).build();
 
     } catch (SubmarineRuntimeException e) {
-      return parseJobServiceException(e);
+      return parseExperimentServiceException(e);
     }
   }
 
-  private Response parseJobServiceException(SubmarineRuntimeException e) {
+  private Response parseExperimentServiceException(SubmarineRuntimeException e) {
     return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage()).build();
   }
 }

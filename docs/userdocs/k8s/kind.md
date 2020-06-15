@@ -17,36 +17,33 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Deploy Submarine Server on Kubernetes
-This guide covers the deployment server on kubernetes cluster.
+# Kind Guide
 
-## Experiment environment
-
-### Setup Kubernetes
+## Create K8s cluster
 We recommend using [`kind`](https://kind.sigs.k8s.io/) to setup a Kubernetes cluster on a local machine.
 
 Running the following command:
 ```
-kind create cluster --image kindest/node:v1.15.6 --name k8s-submarine
+kind create cluster --image kindest/node:v1.15.6 --name submarine
 kubectl create namespace submarine
 ```
 
-### Kubernetes Dashboard (optional)
+## Kubernetes Dashboard (optional)
 
-#### Deploy
+### Deploy
 To deploy Dashboard, execute following command:
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml
 ```
 
-#### Create RBAC
+### Create RBAC
 Ensure to grant the cluster access permission of dashboard, run the following command:
 ```
 kubectl create serviceaccount dashboard-admin-sa
 kubectl create clusterrolebinding dashboard-admin-sa --clusterrole=cluster-admin --serviceaccount=default:dashboard-admin-sa
 ```
 
-#### Get access token (optional)
+### Get access token (optional)
 If you want to use the token to login the dashboard, run the following command to get key:
 ```
 kubectl get secrets
@@ -54,7 +51,7 @@ kubectl get secrets
 kubectl describe secret dashboard-admin-sa-token-6nhkx
 ```
 
-#### Access
+### Start dashboard service
 To start the dashboard service, we can run the following command:
 ```
 kubectl proxy

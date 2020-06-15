@@ -24,8 +24,8 @@ import java.net.URISyntaxException;
 
 import io.kubernetes.client.ApiException;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-import org.apache.submarine.server.api.job.Job;
-import org.apache.submarine.server.api.spec.JobSpec;
+import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,45 +48,45 @@ import org.junit.Test;
  */
 public class K8SJobSubmitterTest extends SpecBuilder {
 
-  private K8sJobSubmitter submitter;
+  private K8sSubmitter submitter;
 
   @Before
   public void before() throws ApiException {
-    submitter = new K8sJobSubmitter();
+    submitter = new K8sSubmitter();
     submitter.initialize(null);
   }
 
   @Test
   public void testRunPyTorchJobPerRequest() throws URISyntaxException,
       IOException, SubmarineRuntimeException {
-    JobSpec spec = buildFromJsonFile(pytorchJobReqFile);
+    ExperimentSpec spec = buildFromJsonFile(pytorchJobReqFile);
     run(spec);
   }
 
   @Test
   public void testRunTFJobPerRequest() throws URISyntaxException,
       IOException, SubmarineRuntimeException {
-    JobSpec spec = buildFromJsonFile(tfJobReqFile);
+    ExperimentSpec spec = buildFromJsonFile(tfJobReqFile);
     run(spec);
   }
 
-  private void run(JobSpec spec) throws SubmarineRuntimeException {
+  private void run(ExperimentSpec spec) throws SubmarineRuntimeException {
     // create
-    Job jobCreated = submitter.createJob(spec);
-    Assert.assertNotNull(jobCreated);
+    Experiment experimentCreated = submitter.createExperiment(spec);
+    Assert.assertNotNull(experimentCreated);
 
     // find
-    Job jobFound = submitter.findJob(spec);
-    Assert.assertNotNull(jobFound);
-    Assert.assertEquals(jobCreated.getUid(), jobFound.getUid());
-    Assert.assertEquals(jobCreated.getName(), jobFound.getName());
-    Assert.assertEquals(jobCreated.getAcceptedTime(), jobFound.getAcceptedTime());
+    Experiment experimentFound = submitter.findExperiment(spec);
+    Assert.assertNotNull(experimentFound);
+    Assert.assertEquals(experimentCreated.getUid(), experimentFound.getUid());
+    Assert.assertEquals(experimentCreated.getName(), experimentFound.getName());
+    Assert.assertEquals(experimentCreated.getAcceptedTime(), experimentFound.getAcceptedTime());
 
     // delete
-    Job jobDeleted = submitter.deleteJob(spec);
-    Assert.assertNotNull(jobDeleted);
-    Assert.assertEquals(Job.Status.STATUS_DELETED.getValue(), jobDeleted.getStatus());
-    Assert.assertEquals(jobFound.getUid(), jobDeleted.getUid());
-    Assert.assertEquals(jobFound.getName(), jobDeleted.getName());
+    Experiment experimentDeleted = submitter.deleteExperiment(spec);
+    Assert.assertNotNull(experimentDeleted);
+    Assert.assertEquals(Experiment.Status.STATUS_DELETED.getValue(), experimentDeleted.getStatus());
+    Assert.assertEquals(experimentFound.getUid(), experimentDeleted.getUid());
+    Assert.assertEquals(experimentFound.getName(), experimentDeleted.getName());
   }
 }

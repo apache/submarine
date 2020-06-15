@@ -17,18 +17,18 @@
  * under the License.
  */
 
-package org.apache.submarine.server.api.job;
+package org.apache.submarine.server.api.experiment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class JobLog {
-  private String jobId;
+public class ExperimentLog {
+  private String experimentId;
   private List<PodLog> logContent;
 
   class PodLog {
-    
+
     String podName;
     List<String> podLog = new ArrayList<String>();
 
@@ -43,16 +43,16 @@ public class JobLog {
     }
   }
 
-  public JobLog() {
+  public ExperimentLog() {
     logContent = new ArrayList<PodLog>();
   }
-  
-  public void setJobId(String jobId) {
-    this.jobId = jobId;
+
+  public void setExperimentId(String experimentId) {
+    this.experimentId = experimentId;
   }
-  
-  public String getJobId() {
-    return jobId;
+
+  public String getExperimentId() {
+    return experimentId;
   }
 
   public void addPodLog(String name, String log) {

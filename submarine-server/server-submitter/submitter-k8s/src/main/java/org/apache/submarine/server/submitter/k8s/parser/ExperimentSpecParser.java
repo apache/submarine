@@ -27,9 +27,9 @@ import io.kubernetes.client.models.V1PodSpec;
 import io.kubernetes.client.models.V1PodTemplateSpec;
 import io.kubernetes.client.models.V1ResourceRequirements;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
-import org.apache.submarine.server.api.spec.JobLibrarySpec;
-import org.apache.submarine.server.api.spec.JobSpec;
-import org.apache.submarine.server.api.spec.JobTaskSpec;
+import org.apache.submarine.server.api.spec.ExperimentMeta;
+import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
@@ -46,131 +46,123 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JobSpecParser {
+public class ExperimentSpecParser {
 
-  public static MLJob parseJob(JobSpec jobSpec) throws InvalidSpecException {
-    MLJob res = null;
-    // Infer from library name
-    String name = jobSpec.getLibrarySpec().getName();
-    if (JobLibrarySpec.SupportedMLFramework.TENSORFLOW.
-        getName().equalsIgnoreCase(name)) {
-      return parseTFJob(jobSpec);
-    } else if (JobLibrarySpec.SupportedMLFramework.PYTORCH.
-        getName().equalsIgnoreCase(name)) {
-      return parsePyTorchJob(jobSpec);
+  public static MLJob parseJob(ExperimentSpec experimentSpec) throws InvalidSpecException {
+    String framework = experimentSpec.getMeta().getFramework();
+    if (ExperimentMeta.SupportedMLFramework.TENSORFLOW.
+        getName().equalsIgnoreCase(framework)) {
+      return parseTFJob(experimentSpec);
+    } else if (ExperimentMeta.SupportedMLFramework.PYTORCH.
+        getName().equalsIgnoreCase(framework)) {
+      return parsePyTorchJob(experimentSpec);
     } else {
-      throw new InvalidSpecException("Unsupported framework name: " + name +
+      throw new InvalidSpecException("Unsupported framework name: " + framework +
           ". Supported frameworks are: " +
-          String.join(",", JobLibrarySpec.SupportedMLFramework.names()));
+          String.join(",", ExperimentMeta.SupportedMLFramework.names()));
     }
   }
 
   public static PyTorchJob parsePyTorchJob(
-      JobSpec jobSpec) throws InvalidSpecException {
+      ExperimentSpec experimentSpec) throws InvalidSpecException {
     PyTorchJob pyTorchJob = new PyTorchJob();
-    pyTorchJob.setMetadata(parseMetadata(jobSpec));
-    pyTorchJob.setSpec(parsePytorchJobSpec(jobSpec));
+    pyTorchJob.setMetadata(parseMetadata(experimentSpec));
+    pyTorchJob.setSpec(parsePyTorchJobSpec(experimentSpec));
     return pyTorchJob;
   }
 
-  public static PyTorchJobSpec parsePytorchJobSpec(JobSpec jobSpec)
+  public static PyTorchJobSpec parsePyTorchJobSpec(ExperimentSpec experimentSpec)
       throws InvalidSpecException {
     PyTorchJobSpec pyTorchJobSpec = new PyTorchJobSpec();
     Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
-    for (Map.Entry<String, JobTaskSpec> entry : jobSpec.getTaskSpecs().entrySet()) {
+    for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
-      JobTaskSpec taskSpec = entry.getValue();
+      ExperimentTaskSpec taskSpec = entry.getValue();
       if (PyTorchJobReplicaType.isSupportedReplicaType(replicaType)) {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
-        replicaSpec.setTemplate(parseTemplateSpec(taskSpec, jobSpec.getLibrarySpec()));
+        replicaSpec.setTemplate(parseTemplateSpec(taskSpec, experimentSpec));
         replicaSpecMap.put(PyTorchJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {
         throw new InvalidSpecException("Unrecognized replica type name: " +
             entry.getKey() + ", it should be " +
             String.join(",", PyTorchJobReplicaType.names()) +
-            " for PyTorch job");
+            " for PyTorch experiment.");
       }
     }
     pyTorchJobSpec.setReplicaSpecs(replicaSpecMap);
     return pyTorchJobSpec;
   }
 
-  /**
-   * Parse the job spec to {@link TFJob}
-   *
-   * @param jobSpec job spec
-   * @return the TFJob object
-   */
-  public static TFJob parseTFJob(JobSpec jobSpec)
+  public static TFJob parseTFJob(ExperimentSpec experimentSpec)
       throws InvalidSpecException {
     TFJob tfJob = new TFJob();
-    tfJob.setMetadata(parseMetadata(jobSpec));
-    tfJob.setSpec(parseTFJobSpec(jobSpec));
+    tfJob.setMetadata(parseMetadata(experimentSpec));
+    tfJob.setSpec(parseTFJobSpec(experimentSpec));
     return tfJob;
   }
 
-  private static V1ObjectMeta parseMetadata(JobSpec jobSpec) {
+  private static V1ObjectMeta parseMetadata(ExperimentSpec experimentSpec) {
     V1ObjectMeta meta = new V1ObjectMeta();
-    meta.setNamespace(jobSpec.getNamespace());
-    meta.setName(jobSpec.getName());
+    meta.setName(experimentSpec.getMeta().getName());
+    meta.setNamespace(experimentSpec.getMeta().getNamespace());
     return meta;
   }
 
-  private static TFJobSpec parseTFJobSpec(JobSpec jobSpec) throws InvalidSpecException {
+  private static TFJobSpec parseTFJobSpec(ExperimentSpec experimentSpec) throws InvalidSpecException {
     TFJobSpec tfJobSpec = new TFJobSpec();
     Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
-    for (Map.Entry<String, JobTaskSpec> entry : jobSpec.getTaskSpecs().entrySet()) {
+    for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
-      JobTaskSpec taskSpec = entry.getValue();
+      ExperimentTaskSpec taskSpec = entry.getValue();
       if (TFJobReplicaType.isSupportedReplicaType(replicaType)) {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
-        replicaSpec.setTemplate(parseTemplateSpec(taskSpec, jobSpec.getLibrarySpec()));
+        replicaSpec.setTemplate(parseTemplateSpec(taskSpec, experimentSpec));
         replicaSpecMap.put(TFJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {
         throw new InvalidSpecException("Unrecognized replica type name: " +
             entry.getKey() +
             ", it should be " +
             String.join(",", TFJobReplicaType.names()) +
-            " for Tensorflow job");
+            " for TensorFlow experiment.");
       }
     }
     tfJobSpec.setReplicaSpecs(replicaSpecMap);
     return tfJobSpec;
   }
 
-  private static V1PodTemplateSpec parseTemplateSpec(JobTaskSpec taskSpec,
-      JobLibrarySpec libSpec) {
+  private static V1PodTemplateSpec parseTemplateSpec(ExperimentTaskSpec taskSpec,
+      ExperimentSpec experimentSpec) {
     V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
     V1PodSpec podSpec = new V1PodSpec();
     List<V1Container> containers = new ArrayList<>();
     V1Container container = new V1Container();
-    container.setName(libSpec.getName().toLowerCase());
+    container.setName(experimentSpec.getMeta().getFramework().toLowerCase());
     // image
     if (taskSpec.getImage() != null) {
       container.setImage(taskSpec.getImage());
     } else {
-      container.setImage(libSpec.getImage());
+      container.setImage(experimentSpec.getEnvironment().getImage());
     }
     // cmd
     if (taskSpec.getCmd() != null) {
       container.setCommand(Arrays.asList(taskSpec.getCmd().split(" ")));
     } else {
-      container.setCommand(Arrays.asList(libSpec.getCmd().split(" ")));
+      container.setCommand(Arrays.asList(experimentSpec.getMeta().getCmd().split(" ")));
     }
     // resources
     V1ResourceRequirements resources = new V1ResourceRequirements();
     resources.setLimits(parseResources(taskSpec));
     container.setResources(resources);
-    container.setEnv(parseEnvVars(taskSpec, libSpec.getEnvVars()));
+    container.setEnv(parseEnvVars(taskSpec, experimentSpec.getMeta().getEnvVars()));
     containers.add(container);
     podSpec.setContainers(containers);
     templateSpec.setSpec(podSpec);
     return templateSpec;
   }
 
-  private static List<V1EnvVar> parseEnvVars(JobTaskSpec spec,
+  private static List<V1EnvVar> parseEnvVars(ExperimentTaskSpec spec,
       Map<String, String> defaultEnvs) {
     if (spec.getEnvVars() != null) {
       return parseEnvVars(spec.getEnvVars());
@@ -189,7 +181,7 @@ public class JobSpecParser {
     return envVars;
   }
 
-  private static Map<String, Quantity> parseResources(JobTaskSpec taskSpec) {
+  private static Map<String, Quantity> parseResources(ExperimentTaskSpec taskSpec) {
     Map<String, Quantity> resources = new HashMap<>();
     taskSpec.setResources(taskSpec.getResources());
     if (taskSpec.getCpu() != null) {

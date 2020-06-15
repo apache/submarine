@@ -1,19 +1,17 @@
 ---
-name: mnist
-namespace: default
-librarySpec:
-  name: pytorch
-  version: 2.1.0
-  image: apache/submarine:pytorch-dist-mnist-1.0
+meta:
+  name: pytorch-mnist-yaml
+  namespace: default
+  framework: PyTorch
   cmd: python /var/mnist.py --backend gloo
   envVars:
     ENV_1: ENV1
-taskSpecs:
+environment:
+  image: apache/submarine:pytorch-dist-mnist-1.0
+spec:
   Master:
-    name: master
     replicas: 1
     resources: cpu=1,memory=1024M
   Worker:
-    name: worker
     replicas: s
     resources: cpu=1,memory=1024M
