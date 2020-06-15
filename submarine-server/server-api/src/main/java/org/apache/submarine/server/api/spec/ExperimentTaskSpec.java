@@ -23,33 +23,45 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The task spec for job, a job consists of tasks.
+ * The task spec for an experiment that can include several tasks.
+ *   Such as:
+ *     The TensorFlow experiment should include Ps/Worker/Chief/Evaluator;
+ *     The PyTorch experiment should include Master/Worker.
  */
-public class JobTaskSpec {
-  /**
-   * The job task name, if not specify using the library name
-   */
+public class ExperimentTaskSpec {
+  private Integer replicas = 1;
+  private String resources;
+
   private String name;
-
-  /**
-   * The user-specified job task image. Such as: gcr.io/your-project/your-image
-   * If not specified will used the {@link JobLibrarySpec#getImage()}.
-   */
   private String image;
-
-  /**
-   * The entry command for running task. If not specified will used the
-   * {@link JobLibrarySpec#getCmd()}.
-   */
   private String cmd;
-
-  /**
-   * The env vars for the task.
-   */
   private Map<String, String> envVars;
 
+  // should ignored in JSON Serialization
+  private Map<String, String> resourceMap;
+
+  public ExperimentTaskSpec() {
+
+  }
+
   /**
-   * The limit resource for the task. Formatter: cpu=%s,memory=%s,nvidia.com/gpu=%s
+   * Get the number of desired tasks.
+   * @return number
+   */
+  public Integer getReplicas() {
+    return replicas;
+  }
+
+  /**
+   * Set the number of desired tasks.
+   * @param replicas number
+   */
+  public void setReplicas(Integer replicas) {
+    this.replicas = replicas;
+  }
+
+  /**
+   * Get the resources. Formatter: cpu=%s,memory=%s,nvidia.com/gpu=%s
    * Resource type list:
    *   <ul>
    *     <li>cpu: In units of core. It known as vcore in YARN.</li>
@@ -57,22 +69,29 @@ public class JobTaskSpec {
    *     <li>nvidia.com/gpu: </li>
    *   </ul>
    * Such as: cpu=4,memory=2048M,nvidia.com/gpu=1
+   * @return resource format string
    */
-  private String resources;
-
-  /**
-   * Number of desired tasks. Defaults to 1.
-   */
-  private Integer replicas = 1;
-
-  private Map<String, String> resourceMap;
-
-  public JobTaskSpec() {
-
+  public String getResources() {
+    return resources;
   }
 
   /**
-   * Get the task name, if not specify using the library name
+   * Set the limit resources for task. Formatter: cpu=%s,memory=%s,nvidia.com/gpu=%s
+   * Resource type list:
+   *   <ul>
+   *     <li>cpu: In units of core. It known as vcore in YARN.</li>
+   *     <li>memory: In units of bytes. Using one of these suffixes: E, P, T, G, M, K</li>
+   *     <li>nvidia.com/gpu: </li>
+   *   </ul>
+   * @param resources resource, such as: cpu=4,memory=2048M,nvidia.com/gpu=1
+   */
+  public void setResources(String resources) {
+    this.resources = resources;
+    parseResources();
+  }
+
+  /**
+   * Get the task name.
    * @return task name
    */
   public String getName() {
@@ -113,7 +132,7 @@ public class JobTaskSpec {
 
   /**
    * Set the entry command to start the tasks
-   * @param cmd
+   * @param cmd cmd
    */
   public void setCmd(String cmd) {
     this.cmd = cmd;
@@ -135,36 +154,6 @@ public class JobTaskSpec {
     this.envVars = envVars;
   }
 
-  /**
-   * Get the resources. Formatter: cpu=%s,memory=%s,nvidia.com/gpu=%s
-   * Resource type list:
-   *   <ul>
-   *     <li>cpu: In units of core. It known as vcore in YARN.</li>
-   *     <li>memory: In units of bytes. Using one of these suffixes: E, P, T, G, M, K</li>
-   *     <li>nvidia.com/gpu: </li>
-   *   </ul>
-   * Such as: cpu=4,memory=2048M,nvidia.com/gpu=1
-   * @return resource format string
-   */
-  public String getResources() {
-    return resources;
-  }
-
-  /**
-   * Set the limit resources for task. Formatter: cpu=%s,memory=%s,nvidia.com/gpu=%s
-   * Resource type list:
-   *   <ul>
-   *     <li>cpu: In units of core. It known as vcore in YARN.</li>
-   *     <li>memory: In units of bytes. Using one of these suffixes: E, P, T, G, M, K</li>
-   *     <li>nvidia.com/gpu: </li>
-   *   </ul>
-   * @param resources resource, such as: cpu=4,memory=2048M,nvidia.com/gpu=1
-   */
-  public void setResources(String resources) {
-    this.resources = resources;
-    parseResources();
-  }
-
   private void parseResources() {
     if (resources != null) {
       resourceMap = new HashMap<>();
@@ -175,22 +164,6 @@ public class JobTaskSpec {
         }
       }
     }
-  }
-
-  /**
-   * Get the number of desired tasks.
-   * @return number
-   */
-  public Integer getReplicas() {
-    return replicas;
-  }
-
-  /**
-   * Set the number of desired tasks.
-   * @param replicas number
-   */
-  public void setReplicas(Integer replicas) {
-    this.replicas = replicas;
   }
 
   /**

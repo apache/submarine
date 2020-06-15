@@ -38,22 +38,22 @@ import io.kubernetes.client.util.KubeConfig;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
-import org.apache.submarine.server.api.job.JobSubmitter;
-import org.apache.submarine.server.api.job.Job;
-import org.apache.submarine.server.api.job.JobLog;
-import org.apache.submarine.server.api.spec.JobLibrarySpec;
-import org.apache.submarine.server.api.spec.JobSpec;
+import org.apache.submarine.server.api.experiment.Submitter;
+import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.api.experiment.ExperimentLog;
+import org.apache.submarine.server.api.spec.ExperimentMeta;
+import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
-import org.apache.submarine.server.submitter.k8s.parser.JobSpecParser;
+import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * JobSubmitter for Kubernetes Cluster.
  */
-public class K8sJobSubmitter implements JobSubmitter {
-  private static final Logger LOG = LoggerFactory.getLogger(K8sJobSubmitter.class);
+public class K8sSubmitter implements Submitter {
+  private static final Logger LOG = LoggerFactory.getLogger(K8sSubmitter.class);
 
   private static final String KUBECONFIG_ENV = "KUBECONFIG";
 
@@ -65,7 +65,7 @@ public class K8sJobSubmitter implements JobSubmitter {
 
   private CoreV1Api coreApi;
 
-  public K8sJobSubmitter() {}
+  public K8sSubmitter() {}
 
   @Override
   public void initialize(SubmarineConfiguration conf) {
@@ -95,18 +95,13 @@ public class K8sJobSubmitter implements JobSubmitter {
   }
 
   @Override
-  public String getSubmitterType() {
-    return "k8s";
-  }
-
-  @Override
-  public Job createJob(JobSpec jobSpec) throws SubmarineRuntimeException {
-    Job job;
+  public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
+    Experiment experiment;
     try {
-      MLJob mlJob = JobSpecParser.parseJob(jobSpec);
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true");
-      job = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
+      experiment = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(200, e.getMessage());
@@ -114,60 +109,60 @@ public class K8sJobSubmitter implements JobSubmitter {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
-    return job;
+    return experiment;
   }
 
   @Override
-  public Job findJob(JobSpec jobSpec) throws SubmarineRuntimeException {
-    Job job;
+  public Experiment findExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
+    Experiment experiment;
     try {
-      MLJob mlJob = JobSpecParser.parseJob(jobSpec);
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       Object object = api.getNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName());
-      job = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
+      experiment = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
-    return job;
+    return experiment;
   }
 
   @Override
-  public Job patchJob(JobSpec jobSpec) throws SubmarineRuntimeException {
-    Job job;
+  public Experiment patchExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
+    Experiment experiment;
     try {
-      MLJob mlJob = JobSpecParser.parseJob(jobSpec);
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       Object object = api.patchNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
           mlJob);
-      job = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
+      experiment = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
-    return job;
+    return experiment;
   }
 
   @Override
-  public Job deleteJob(JobSpec jobSpec) throws SubmarineRuntimeException {
-    Job job;
+  public Experiment deleteExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
+    Experiment experiment;
     try {
-      MLJob mlJob = JobSpecParser.parseJob(jobSpec);
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
           MLJobConverter.toDeleteOptionsFromMLJob(mlJob), null, null, null);
-      job = parseResponseObject(object, ParseOp.PARSE_OP_DELETE);
+      experiment = parseResponseObject(object, ParseOp.PARSE_OP_DELETE);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
-    return job;
+    return experiment;
   }
 
-  private Job parseResponseObject(Object object, ParseOp op) throws SubmarineRuntimeException {
+  private Experiment parseResponseObject(Object object, ParseOp op) throws SubmarineRuntimeException {
     Gson gson = new JSON().getGson();
     String jsonString = gson.toJson(object);
     LOG.info("Upstream response JSON: {}", jsonString);
@@ -186,59 +181,59 @@ public class K8sJobSubmitter implements JobSubmitter {
   }
 
   @Override
-  public JobLog getJobLogName(JobSpec jobSpec, String jobId) {
-    JobLog jobLog = new JobLog();
-    jobLog.setJobId(jobId);
+  public ExperimentLog getExperimentLogName(ExperimentSpec spec, String id) {
+    ExperimentLog experimentLog = new ExperimentLog();
+    experimentLog.setExperimentId(id);
     try {
       final V1PodList podList = coreApi.listNamespacedPod(
-          jobSpec.getNamespace(),
+          spec.getMeta().getNamespace(),
           "false", null, null,
-          getJobLabelSelector(jobSpec), null, null,
+          getJobLabelSelector(spec), null, null,
           null, null);
       for (V1Pod pod: podList.getItems()) {
         String podName = pod.getMetadata().getName();
-        jobLog.addPodLog(podName, null);
+        experimentLog.addPodLog(podName, null);
       }
     } catch (final ApiException e) {
-      LOG.error("Error when listing pod for job:" + jobSpec.getName(), e.getMessage());
+      LOG.error("Error when listing pod for experiment:" + spec.getMeta().getName(), e.getMessage());
     }
-    return jobLog;
+    return experimentLog;
   }
 
   @Override
-  public JobLog getJobLog(JobSpec jobSpec, String jobId) {
-    JobLog jobLog = new JobLog();
-    jobLog.setJobId(jobId);
+  public ExperimentLog getExperimentLog(ExperimentSpec spec, String id) {
+    ExperimentLog experimentLog = new ExperimentLog();
+    experimentLog.setExperimentId(id);
     try {
       final V1PodList podList = coreApi.listNamespacedPod(
-          jobSpec.getNamespace(),
+          spec.getMeta().getNamespace(),
           "false", null, null,
-          getJobLabelSelector(jobSpec), null, null,
+          getJobLabelSelector(spec), null, null,
           null, null);
-      
+
       for (V1Pod pod : podList.getItems()) {
         String podName = pod.getMetadata().getName();
         String namespace = pod.getMetadata().getNamespace();
         String podLog = coreApi.readNamespacedPodLog(
             podName, namespace, null, Boolean.FALSE,
-            Integer.MAX_VALUE, null, Boolean.FALSE, 
+            Integer.MAX_VALUE, null, Boolean.FALSE,
             Integer.MAX_VALUE, null, Boolean.FALSE);
 
-        jobLog.addPodLog(podName, podLog);
+        experimentLog.addPodLog(podName, podLog);
       }
     } catch (final ApiException e) {
-      LOG.error("Error when listing pod for job:" + jobSpec.getName(), e.getMessage());
+      LOG.error("Error when listing pod for experiment:" + spec.getMeta().getName(), e.getMessage());
     }
-    return jobLog;
+    return experimentLog;
   }
-  
-  private String getJobLabelSelector(JobSpec jobSpec) {
+
+  private String getJobLabelSelector(ExperimentSpec experimentSpec) {
     // TODO(JohnTing): SELECTOR_KEY should be obtained from individual models in MLJOB
-    if (jobSpec.getLibrarySpec()
-        .getName().equalsIgnoreCase(JobLibrarySpec.SupportedMLFramework.TENSORFLOW.getName())) {
-      return TF_JOB_SELECTOR_KEY + jobSpec.getName();
+    if (experimentSpec.getMeta().getFramework()
+        .equalsIgnoreCase(ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName())) {
+      return TF_JOB_SELECTOR_KEY + experimentSpec.getMeta().getName();
     } else {
-      return PYTORCH_JOB_SELECTOR_KEY + jobSpec.getName();
+      return PYTORCH_JOB_SELECTOR_KEY + experimentSpec.getMeta().getName();
     }
   }
 

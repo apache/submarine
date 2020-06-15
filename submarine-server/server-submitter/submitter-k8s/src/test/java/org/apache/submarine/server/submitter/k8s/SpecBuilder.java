@@ -29,19 +29,19 @@ import java.nio.file.Files;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.submarine.server.api.spec.JobSpec;
+import org.apache.submarine.server.api.spec.ExperimentSpec;
 
 public abstract class SpecBuilder {
   // The spec files in test/resources
   protected final String tfJobReqFile = "/tf_mnist_req.json";
   protected final String pytorchJobReqFile = "/pytorch_job_req.json";
 
-  protected JobSpec buildFromJsonFile(String filePath) throws IOException,
+  protected ExperimentSpec buildFromJsonFile(String filePath) throws IOException,
       URISyntaxException {
     Gson gson = new GsonBuilder().create();
     try (Reader reader = Files.newBufferedReader(getCustomJobSpecFile(filePath).toPath(),
         StandardCharsets.UTF_8)) {
-      return gson.fromJson(reader, JobSpec.class);
+      return gson.fromJson(reader, ExperimentSpec.class);
     }
   }
 

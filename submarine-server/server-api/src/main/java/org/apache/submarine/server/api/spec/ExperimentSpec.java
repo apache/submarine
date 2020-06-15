@@ -17,23 +17,43 @@
  * under the License.
  */
 
-package org.apache.submarine.server.rest;
+package org.apache.submarine.server.api.spec;
 
-public class RestConstants {
-  public static final String V1 = "v1";
-  public static final String EXPERIMENT = "experiment";
-  public static final String ID = "id";
-  public static final String PING = "ping";
-  public static final String MEDIA_TYPE_YAML = "application/yaml";
-  public static final String CHARSET_UTF8 = "charset=utf-8";
+import java.util.Map;
 
-  public static final String METASTORE = "metastore";
+/**
+ * Specification of the desired behavior of an experiment.
+ */
+public class ExperimentSpec {
+  private ExperimentMeta meta;
+  private Environment environment;
+  private Map<String, ExperimentTaskSpec> spec;
 
-  public static final String CLUSTER = "cluster";
-  public static final String ADDRESS = "address";
+  public ExperimentSpec() {
 
-  public static final String NODES = "nodes";
-  public static final String NODE = "node";
+  }
 
-  public static final String LOGS = "logs";
+  public ExperimentMeta getMeta() {
+    return meta;
+  }
+
+  public void setMeta(ExperimentMeta meta) {
+    this.meta = meta;
+  }
+
+  public Environment getEnvironment() {
+    return environment;
+  }
+
+  public void setEnvironment(Environment environment) {
+    this.environment = environment;
+  }
+
+  public Map<String, ExperimentTaskSpec> getSpec() {
+    return spec;
+  }
+
+  public void setSpec(Map<String, ExperimentTaskSpec> spec) {
+    this.spec = spec;
+  }
 }

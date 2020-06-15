@@ -17,21 +17,21 @@
  * under the License.
  */
 
-package org.apache.submarine.server.json;
+package org.apache.submarine.server.api.spec;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import org.apache.submarine.server.api.job.JobId;
+public class Environment {
+  private String image;
 
-import java.lang.reflect.Type;
+  /**
+   * Get the image for the experiment. If the {@link ExperimentTaskSpec#getImage()} not
+   * specified the image replaced with it.
+   * @return image
+   */
+  public String getImage() {
+    return image;
+  }
 
-public class JobIdDeserializer implements JsonDeserializer<JobId> {
-
-  @Override
-  public JobId deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-      throws JsonParseException {
-    return JobId.fromString(json.getAsJsonPrimitive().getAsString());
+  public void setImage(String image) {
+    this.image = image;
   }
 }

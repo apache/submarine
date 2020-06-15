@@ -17,16 +17,15 @@
  * under the License.
  */
 
-package org.apache.submarine.server.api.job;
+package org.apache.submarine.server.api.experiment;
 
 /**
- * The unique id for submarine's job. Formatter: job_${server_timestamp}_${counter}
- * Such as: job_1577627710_0001
+ * The unique id for experiment. Formatter: experiment_${server_timestamp}_${counter}
+ * Such as: experiment_1577627710_0001
  */
-public class JobId implements Comparable<JobId> {
-  private static final String jobIdStrPrefix = "job";
-  private static final String JOB_ID_PREFIX = jobIdStrPrefix + '_';
-  private static final int JOB_ID_MIN_DIGITS = 4;
+public class ExperimentId implements Comparable<ExperimentId> {
+  private static final String EXPERIMENT_ID_PREFIX = "experiment_";
+  private static final int EXPERIMENT_ID_MIN_DIGITS = 4;
 
   private int id;
 
@@ -37,7 +36,7 @@ public class JobId implements Comparable<JobId> {
    * @param jobId job id string
    * @return object
    */
-  public static JobId fromString(String jobId) {
+  public static ExperimentId fromString(String jobId) {
     if (jobId == null) {
       return null;
     }
@@ -45,7 +44,7 @@ public class JobId implements Comparable<JobId> {
     if (components.length != 3) {
       return null;
     }
-    return JobId.newInstance(Long.parseLong(components[1]), Integer.parseInt(components[2]));
+    return ExperimentId.newInstance(Long.parseLong(components[1]), Integer.parseInt(components[2]));
   }
 
   /**
@@ -54,11 +53,11 @@ public class JobId implements Comparable<JobId> {
    * @param id count
    * @return object
    */
-  public static JobId newInstance(long serverTimestamp, int id) {
-    JobId jobId = new JobId();
-    jobId.setServerTimestamp(serverTimestamp);
-    jobId.setId(id);
-    return jobId;
+  public static ExperimentId newInstance(long serverTimestamp, int id) {
+    ExperimentId experimentId = new ExperimentId();
+    experimentId.setServerTimestamp(serverTimestamp);
+    experimentId.setId(id);
+    return experimentId;
   }
 
   /**
@@ -94,7 +93,7 @@ public class JobId implements Comparable<JobId> {
   }
 
   @Override
-  public int compareTo(JobId o) {
+  public int compareTo(ExperimentId o) {
     return this.getId() > o.getId() ? 1 : 0;
   }
 
@@ -115,7 +114,7 @@ public class JobId implements Comparable<JobId> {
     if (this == obj) {
       return true;
     }
-    JobId other = (JobId) obj;
+    ExperimentId other = (ExperimentId) obj;
     if (this.getServerTimestamp() != other.getServerTimestamp()) {
       return false;
     }
@@ -125,13 +124,13 @@ public class JobId implements Comparable<JobId> {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder(64);
-    sb.append(JOB_ID_PREFIX).append(serverTimestamp).append("_");
+    sb.append(EXPERIMENT_ID_PREFIX).append(serverTimestamp).append("_");
     format(sb, getId());
     return sb.toString();
   }
 
   private void format(StringBuilder sb, long value) {
-    int minimumDigits = JOB_ID_MIN_DIGITS;
+    int minimumDigits = EXPERIMENT_ID_MIN_DIGITS;
     if (value < 0) {
       sb.append('-');
       value = -value;

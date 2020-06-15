@@ -17,25 +17,21 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Running Submarine on K8s
+# Submarine on K8s
+Submarine for K8s supports distributed TensorFlow and PyTorch.
 
-Submarine for K8s supports standalone distributed TensorFlow and PyTorch.
+Submarine can run on K8s >= 1.14, supports features like GPU isolation.
 
-Submarine can run on K8s >= (FIXME, version), supports features like GPU isolation.
+## Install Submarine
+Submarine can be deployed on any K8s environment if version matches. If you don't have a running K8s, you can follow the steps to set up a K8s using [kind, Kubernetes-in-Docker](https://kind.sigs.k8s.io/) for testing purpose, we provides simple [tutorial](kind.md).
 
-## Submarine on K8s guide
+### Use Helm Charts
+After you have an up-and-running K8s, you can follow [Submarine Helm Charts Guide](helm.md) to deploy Submarine services on K8s cluster in minutes.
 
-### Prepare K8s and deploy Submarine Service
+## Use Submarine
 
-[Setup Kubernetes](setup-kubernetes.md): Submarine can be deployed on any K8s environment if version matches. If you don't have a running K8s, you can follow the steps to set up a K8s using [kind, Kubernetes-in-Docker](https://kind.sigs.k8s.io/) for testing purpose.
+### Model training (experiment) on K8s
+- [Run model training using Tensorflow](run-tensorflow-experiment.md)
+- [Run model training using PyTorch](run-pytorch-experiment.md)
+- [Experiment API Reference](api/experiment.md)
 
-After you have an up-and-running K8s, you can follow [Deploy Submarine Services on K8s](deploy-submarine.md) guide to deploy Submarine services on K8s using Helmchart in minutes (FIXME: is it true?).
-
-### Use Submarine
-
-#### Model training (experiment) on K8s
-
-- [Run model training using Tensorflow](run-tensorflow-on-k8s.md)
-- [Run model training using PyTorch](FIXME, add one).
-
-## References

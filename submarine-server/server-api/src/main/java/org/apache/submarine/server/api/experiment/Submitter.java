@@ -17,73 +17,68 @@
  * under the License.
  */
 
-package org.apache.submarine.server.api.job;
+package org.apache.submarine.server.api.experiment;
 
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-import org.apache.submarine.server.api.spec.JobSpec;
+import org.apache.submarine.server.api.spec.ExperimentSpec;
 
 /**
  * The submitter should implement this interface.
  */
-public interface JobSubmitter {
+public interface Submitter {
   /**
    * Initialize the submitter related code
    */
   void initialize(SubmarineConfiguration conf);
 
   /**
-   * Get the submitter type which is the unique identifier.
-   *
-   * @return unique identifier
-   */
-  String getSubmitterType();
-
-  /**
-   * Create job with job spec
-   * @param jobSpec job spec
+   * Create experiment with spec
+   * @param spec experiment spec
    * @return object
    * @throws SubmarineRuntimeException running error
    */
-  Job createJob(JobSpec jobSpec) throws SubmarineRuntimeException;
+  Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException;
 
   /**
-   * Find job by job spec
-   * @param jobSpec job spec
+   * Find experiment by spec
+   * @param spec spec
    * @return object
    * @throws SubmarineRuntimeException running error
    */
-  Job findJob(JobSpec jobSpec) throws SubmarineRuntimeException;
+  Experiment findExperiment(ExperimentSpec spec) throws SubmarineRuntimeException;
 
   /**
-   * Patch job with job spec
-   * @param jobSpec job spec
+   * Patch one experiment with spec
+   * @param spec spec
    * @return object
    * @throws SubmarineRuntimeException running error
    */
-  Job patchJob(JobSpec jobSpec) throws SubmarineRuntimeException;
+  Experiment patchExperiment(ExperimentSpec spec) throws SubmarineRuntimeException;
 
   /**
-   * Delete job by job spec
-   * @param jobSpec job spec
+   * Delete experiment by spec
+   * @param spec spec
    * @return object
    * @throws SubmarineRuntimeException running error
    */
-  Job deleteJob(JobSpec jobSpec) throws SubmarineRuntimeException;
+  Experiment deleteExperiment(ExperimentSpec spec) throws SubmarineRuntimeException;
 
   /**
    * Get the pod log list in the job
-   * @param Job job
+   * @param spec spec
+   * @param id experiment id
    * @return object
    * @throws SubmarineRuntimeException running error
    */
-  JobLog getJobLog(JobSpec jobSpec, String jobId) throws SubmarineRuntimeException;
+  ExperimentLog getExperimentLog(ExperimentSpec spec, String id) throws SubmarineRuntimeException;
 
   /**
    * Get the pod name list in the job
-   * @param Job job
+   * @param spec spec
+   * @param id experiment id
    * @return object
    * @throws SubmarineRuntimeException running error
    */
-  JobLog getJobLogName(JobSpec jobSpec, String jobId) throws SubmarineRuntimeException;
+  ExperimentLog getExperimentLogName(ExperimentSpec spec, String id) throws SubmarineRuntimeException;
 }

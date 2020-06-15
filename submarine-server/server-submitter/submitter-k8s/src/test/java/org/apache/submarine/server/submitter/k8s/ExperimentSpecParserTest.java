@@ -22,10 +22,11 @@ package org.apache.submarine.server.submitter.k8s;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import io.kubernetes.client.models.V1ObjectMeta;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
-import org.apache.submarine.server.api.spec.JobLibrarySpec;
-import org.apache.submarine.server.api.spec.JobSpec;
-import org.apache.submarine.server.api.spec.JobTaskSpec;
+import org.apache.submarine.server.api.spec.ExperimentMeta;
+import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
@@ -33,106 +34,94 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
-import org.apache.submarine.server.submitter.k8s.parser.JobSpecParser;
+import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class JobSpecParserTest extends SpecBuilder {
+public class ExperimentSpecParserTest extends SpecBuilder {
   @Test
-  public void testValidTensorflowJobSpec() throws IOException,
+  public void testValidTensorFlowExperiment() throws IOException,
       URISyntaxException, InvalidSpecException {
-    JobSpec jobSpec = buildFromJsonFile(tfJobReqFile);
-    TFJob tfJob = (TFJob) JobSpecParser.parseJob(jobSpec);
-    // namespace
-    String expectedNS = jobSpec.getNamespace();
-    String actualNS = tfJob.getMetadata().getNamespace();
-    Assert.assertEquals(expectedNS, actualNS);
-    // job name
-    String expectedJobName = jobSpec.getName();
-    String actualJobName = tfJob.getMetadata().getName();
-    Assert.assertEquals(expectedJobName, actualJobName);
-    // framework name
-    String expectedFramework = jobSpec.getLibrarySpec().getName().toLowerCase();
-    String actualFrameworkName = JobLibrarySpec.
-        SupportedMLFramework.TENSORFLOW.getName().toLowerCase();
-    Assert.assertEquals(expectedFramework, actualFrameworkName);
-    validateReplicaSpec(jobSpec, tfJob, TFJobReplicaType.Ps);
-    validateReplicaSpec(jobSpec, tfJob, TFJobReplicaType.Worker);
+    ExperimentSpec experimentSpec = buildFromJsonFile(tfJobReqFile);
+    TFJob tfJob = (TFJob) ExperimentSpecParser.parseJob(experimentSpec);
+    validateMetadata(experimentSpec.getMeta(), tfJob.getMetadata(),
+        ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName().toLowerCase()
+    );
+    validateReplicaSpec(experimentSpec, tfJob, TFJobReplicaType.Ps);
+    validateReplicaSpec(experimentSpec, tfJob, TFJobReplicaType.Worker);
   }
 
   @Test
-  public void testInvalidTFJobSpec() throws IOException,
+  public void testInvalidTensorFlowExperiment() throws IOException,
       URISyntaxException {
-    JobSpec jobSpec = buildFromJsonFile(tfJobReqFile);
+    ExperimentSpec experimentSpec = buildFromJsonFile(tfJobReqFile);
     // Case 1. Invalid framework name
-    jobSpec.getLibrarySpec().setName("fooframework");
+    experimentSpec.getMeta().setFramework("fooframework");
     try {
-      JobSpecParser.parseJob(jobSpec);
-      Assert.assertTrue("It should throw InvalidSpecException", false);
+      ExperimentSpecParser.parseJob(experimentSpec);
+      Assert.fail("It should throw InvalidSpecException");
     } catch (InvalidSpecException e) {
       Assert.assertTrue(e.getMessage().contains("Unsupported framework name"));
     }
 
-    // Case 2. Invalid pytorch replica name. It can only be "master" and "worker"
-    jobSpec = buildFromJsonFile(tfJobReqFile);
-    jobSpec.getTaskSpecs().put("foo", jobSpec.getTaskSpecs().get(TFJobReplicaType.Ps));
-    jobSpec.getTaskSpecs().remove(TFJobReplicaType.Ps);
+    // Case 2. Invalid TensorFlow replica name. It can only be "ps" "worker" "chief" and "Evaluator"
+    experimentSpec = buildFromJsonFile(tfJobReqFile);
+    experimentSpec.getSpec().put("foo", experimentSpec.getSpec().get(TFJobReplicaType.Ps.getTypeName()));
+    experimentSpec.getSpec().remove(TFJobReplicaType.Ps.getTypeName());
     try {
-      JobSpecParser.parseJob(jobSpec);
-      Assert.assertTrue("It should throw InvalidSpecException", false);
+      ExperimentSpecParser.parseJob(experimentSpec);
+      Assert.fail("It should throw InvalidSpecException");
     } catch (InvalidSpecException e) {
       Assert.assertTrue(e.getMessage().contains("Unrecognized replica type name"));
     }
   }
 
   @Test
-  public void testValidPyTorchJobSpec() throws IOException,
+  public void testValidPyTorchExperiment() throws IOException,
       URISyntaxException, InvalidSpecException {
-    JobSpec jobSpec = buildFromJsonFile(pytorchJobReqFile);
-    PyTorchJob pyTorchJob = (PyTorchJob) JobSpecParser.parseJob(jobSpec);
-    // namespace
-    String expectedNS = jobSpec.getNamespace();
-    String actualNS = pyTorchJob.getMetadata().getNamespace();
-    Assert.assertEquals(expectedNS, actualNS);
-    // job name
-    String expectedJobName = jobSpec.getName();
-    String actualJobName = pyTorchJob.getMetadata().getName();
-    Assert.assertEquals(expectedJobName, actualJobName);
-    // framework name
-    String expectedFramework = jobSpec.getLibrarySpec().getName().toLowerCase();
-    String actualFrameworkName = JobLibrarySpec.
-        SupportedMLFramework.PYTORCH.getName().toLowerCase();
-    Assert.assertEquals(expectedFramework, actualFrameworkName);
-    validateReplicaSpec(jobSpec, pyTorchJob, PyTorchJobReplicaType.Master);
-    validateReplicaSpec(jobSpec, pyTorchJob, PyTorchJobReplicaType.Worker);
+    ExperimentSpec experimentSpec = buildFromJsonFile(pytorchJobReqFile);
+    PyTorchJob pyTorchJob = (PyTorchJob) ExperimentSpecParser.parseJob(experimentSpec);
+    validateMetadata(experimentSpec.getMeta(), pyTorchJob.getMetadata(),
+        ExperimentMeta.SupportedMLFramework.PYTORCH.getName().toLowerCase()
+    );
+    validateReplicaSpec(experimentSpec, pyTorchJob, PyTorchJobReplicaType.Master);
+    validateReplicaSpec(experimentSpec, pyTorchJob, PyTorchJobReplicaType.Worker);
   }
 
   @Test
   public void testInvalidPyTorchJobSpec() throws IOException,
       URISyntaxException {
-    JobSpec jobSpec = buildFromJsonFile(pytorchJobReqFile);
+    ExperimentSpec experimentSpec = buildFromJsonFile(pytorchJobReqFile);
     // Case 1. Invalid framework name
-    jobSpec.getLibrarySpec().setName("fooframework");
+    experimentSpec.getMeta().setFramework("fooframework");
     try {
-      JobSpecParser.parseJob(jobSpec);
-      Assert.assertTrue("It should throw InvalidSpecException", false);
+      ExperimentSpecParser.parseJob(experimentSpec);
+      Assert.fail("It should throw InvalidSpecException");
     } catch (InvalidSpecException e) {
       Assert.assertTrue(e.getMessage().contains("Unsupported framework name"));
     }
 
-    // Case 2. Invalid pytorch replica name. It can only be "master" and "worker"
-    jobSpec = buildFromJsonFile(pytorchJobReqFile);
-    jobSpec.getTaskSpecs().put("ps", jobSpec.getTaskSpecs().get(PyTorchJobReplicaType.Master));
-    jobSpec.getTaskSpecs().remove(PyTorchJobReplicaType.Master);
+    // Case 2. Invalid PyTorch replica name. It can only be "master" and "worker"
+    experimentSpec = buildFromJsonFile(pytorchJobReqFile);
+    experimentSpec.getSpec().put("ps", experimentSpec.getSpec().get(
+        PyTorchJobReplicaType.Master.getTypeName()));
+    experimentSpec.getSpec().remove(PyTorchJobReplicaType.Master.getTypeName());
     try {
-      JobSpecParser.parseJob(jobSpec);
-      Assert.assertTrue("It should throw InvalidSpecException", false);
+      ExperimentSpecParser.parseJob(experimentSpec);
+      Assert.fail("It should throw InvalidSpecException");
     } catch (InvalidSpecException e) {
       Assert.assertTrue(e.getMessage().contains("Unrecognized replica type name"));
     }
   }
 
-  public void validateReplicaSpec(JobSpec jobSpec,
+  private void validateMetadata(ExperimentMeta expectedMeta, V1ObjectMeta actualMeta,
+      String actualFramework) {
+    Assert.assertEquals(expectedMeta.getName(), actualMeta.getName());
+    Assert.assertEquals(expectedMeta.getNamespace(), actualMeta.getNamespace());
+    Assert.assertEquals(expectedMeta.getFramework().toLowerCase(), actualFramework);
+  }
+
+  private void validateReplicaSpec(ExperimentSpec experimentSpec,
       MLJob mlJob, MLJobReplicaType type) {
     MLJobReplicaSpec mlJobReplicaSpec = null;
     if (mlJob instanceof PyTorchJob) {
@@ -140,7 +129,9 @@ public class JobSpecParserTest extends SpecBuilder {
     } else if (mlJob instanceof TFJob){
       mlJobReplicaSpec = ((TFJob) mlJob).getSpec().getReplicaSpecs().get(type);
     }
-    JobTaskSpec definedPyTorchMasterTask = jobSpec.getTaskSpecs().
+    Assert.assertNotNull(mlJobReplicaSpec);
+
+    ExperimentTaskSpec definedPyTorchMasterTask = experimentSpec.getSpec().
         get(type.getTypeName());
     // replica
     int expectedMasterReplica = definedPyTorchMasterTask.getReplicas();
@@ -148,14 +139,14 @@ public class JobSpecParserTest extends SpecBuilder {
         (int) mlJobReplicaSpec.getReplicas());
     // Image
     String expectedMasterImage = definedPyTorchMasterTask.getImage() == null ?
-        jobSpec.getLibrarySpec().getImage() : definedPyTorchMasterTask.getImage();
+        experimentSpec.getEnvironment().getImage() : definedPyTorchMasterTask.getImage();
     String actualMasterImage = mlJobReplicaSpec.getContainerImageName();
     Assert.assertEquals(expectedMasterImage, actualMasterImage);
     // command
     String definedMasterCommandInTaskSpec = definedPyTorchMasterTask.getCmd();
     String expectedMasterCommand =
         definedMasterCommandInTaskSpec == null ?
-            jobSpec.getLibrarySpec().getCmd() : definedMasterCommandInTaskSpec;
+            experimentSpec.getMeta().getCmd() : definedMasterCommandInTaskSpec;
     String actualMasterContainerCommand = mlJobReplicaSpec.getContainerCommand();
     Assert.assertEquals(expectedMasterCommand,
         actualMasterContainerCommand);

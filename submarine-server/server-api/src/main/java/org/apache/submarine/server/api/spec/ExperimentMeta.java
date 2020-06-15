@@ -22,90 +22,78 @@ package org.apache.submarine.server.api.spec;
 import java.util.Map;
 
 /**
- * The machine learning related spec for job.
+ * ExperimentMeta is metadata that all experiments must have.
  */
-public class JobLibrarySpec {
-  /**
-   * Machine Learning Framework name. Such as: TensorFlow/PyTorch etc.
-   */
+public class ExperimentMeta {
   private String name;
-
-  /**
-   * The version of ML framework. Such as: 2.1.0
-   */
-  private String version;
-
-  /**
-   * The public image used for each task if not specified. Such as: apache/submarine
-   */
-  private String image;
-
-  /**
-   * The public entry cmd for the task if not specified.
-   */
+  private String namespace;
+  private String framework;
   private String cmd;
-
-  /**
-   * The public env vars for the task if not specified.
-   */
   private Map<String, String> envVars;
 
-  public JobLibrarySpec() {
+  public ExperimentMeta() {
 
   }
 
   /**
-   * Get the name of the machine learning library. Such as: TensorFlow or PyTorch
-   * @return the library's name
+   * Get the experiment name which is unique within a namespace.
+   * @return experiment name
    */
   public String getName() {
     return name;
   }
 
+  /**
+   * Name must be unique within a namespace. Is required when creating experiment.
+   * @param name experiment name
+   */
   public void setName(String name) {
     this.name = name;
   }
 
   /**
-   * Get the version of the library.
-   * @return the library's version
+   * Get the namespace which defines the isolated space for each experiment.
+   * @return namespace
    */
-  public String getVersion() {
-    return version;
-  }
-
-  public void setVersion(String version) {
-    this.version = version;
+  public String getNamespace() {
+    return namespace;
   }
 
   /**
-   * Get the image for the machine learning job. If the {@link JobTaskSpec#getImage()} not
-   * specified the image replaced with it.
-   * @return image url link.
+   * Namespace defines the space within each name must be unique.
+   * @param namespace namespace
    */
-  public String getImage() {
-    return image;
+  public void setNamespace(String namespace) {
+    this.namespace = namespace;
   }
 
-  public void setImage(String image) {
-    this.image = image;
+  public String getFramework() {
+    return framework;
+  }
+
+  public void setFramework(String framework) {
+    this.framework = framework;
   }
 
   /**
-   * The default entry command for job task. If the {@link JobTaskSpec#getCmd()} not specified
-   * the cmd replaced with it.
+   * Get the entry command for task.
    * @return cmd
    */
   public String getCmd() {
     return cmd;
   }
 
+  /**
+   * The entry command for all tasks if the {@link ExperimentTaskSpec#getCmd()} not specified
+   * the cmd replaced with it.
+   * @param cmd entry command for task
+   */
   public void setCmd(String cmd) {
     this.cmd = cmd;
   }
 
   /**
-   * The default env vars for job task. If the @{@link JobTaskSpec#getEnvVars()} not specified
+   * The default env vars for task. If the @{@link ExperimentTaskSpec#getEnvVars()} not specified
    * replaced with it.
    * @return env vars
    */
@@ -117,24 +105,19 @@ public class JobLibrarySpec {
     this.envVars = envVars;
   }
 
-  public boolean validate() {
-    return name != null && image != null && cmd != null;
-  }
-
   /**
-   * The library spec name should be one of the below supported framework name.
-   * The "name" can be used for submitter to infer framework type and take
-   * corresponding action.
-   * */
+   * The {@link ExperimentMeta#framework} should be one of the below supported framework name.
+   */
   public enum SupportedMLFramework {
     TENSORFLOW("tensorflow"),
     PYTORCH("pytorch");
 
-    private String name;
+    private final String name;
 
     SupportedMLFramework(String frName) {
       this.name = frName;
     }
+
     public String getName() {
       return name;
     }
@@ -148,5 +131,4 @@ public class JobLibrarySpec {
       return names;
     }
   }
-
 }
