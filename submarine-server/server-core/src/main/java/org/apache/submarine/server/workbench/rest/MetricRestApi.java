@@ -130,4 +130,23 @@ public class MetricRestApi {
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
+
+  @POST
+  @Path("/selective")
+  @SubmarineApi
+  public Response selectByPrimaryKeySelective(Metric metric) {
+    List<Metric> metrics;
+    try {
+      metrics = metricService.selectByPrimaryKeySelective(metric);
+
+    } catch (Exception e) {
+
+      LOG.error(e.toString());
+      e.printStackTrace();
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+    }
+    return new JsonResponse.Builder<List<Metric>>(Response.Status.OK).success(true).result(metrics).build();
+  }
+
+
 }

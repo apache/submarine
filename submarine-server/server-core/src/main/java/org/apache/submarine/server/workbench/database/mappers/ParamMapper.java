@@ -34,4 +34,6 @@ public interface ParamMapper {
   Param selectById(String id);
 
   int update(Param param);
+
+  List<Param> selectByPrimaryKeySelective(Param param);
 }

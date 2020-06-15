@@ -62,21 +62,39 @@
           useGeneratedKeys="true" keyProperty="id">
     insert into param (param_key, value, worker_index, job_name,
       create_by, create_time, update_by, update_time)
-    values (#{param_key,jdbcType=VARCHAR}, 
+    values (#{paramKey,jdbcType=VARCHAR}, 
       #{value,jdbcType=FLOAT},
-      #{worker_index,jdbcType=VARCHAR}, 
-      #{job_name,jdbcType=VARCHAR},
+      #{workerIndex,jdbcType=VARCHAR}, 
+      #{jobName,jdbcType=VARCHAR},
       #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Param">
     update param
-    set param_key = #{param_key,jdbcType=VARCHAR},
+    set param_key = #{paramKey,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},
-      worker_index = #{worker_index,jdbcType=VARCHAR},
-      job_name = #{job_name,jdbcType=VARCHAR},
+      worker_index = #{workerIndex,jdbcType=VARCHAR},
+      job_name = #{jobName,jdbcType=VARCHAR},
       update_by = #{updateBy,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+  <select id="selectByPrimaryKeySelective" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List" />
+    from param
+    where 1 = 1
+      <if test="paramKey != null">
+        AND param_key = #{paramKey,jdbcType=VARCHAR}
+      </if>
+      <if test="workerIndex != null">
+        AND worker_index = #{workerIndex,jdbcType=FLOAT}
+      </if>
+      <if test="jobName != null">
+        AND job_name = #{jobName,jdbcType=BIGINT}
+      </if>
+   </select>
+
+
 </mapper>

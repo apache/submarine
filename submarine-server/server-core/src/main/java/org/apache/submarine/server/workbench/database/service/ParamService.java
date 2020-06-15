@@ -45,9 +45,8 @@ public class ParamService {
     return params;
   }
   
-
   public boolean deleteById(String id) throws Exception {
-    LOG.info("Metric deleteById {}", id);
+    LOG.info("Param deleteById {}", id);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ParamMapper mapper = sqlSession.getMapper(ParamMapper.class);
@@ -90,7 +89,7 @@ public class ParamService {
   }
 
   public boolean update(Param param) throws Exception {
-    LOG.info("Metric update {}", param);
+    LOG.info("Param update {}", param);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ParamMapper mapper = sqlSession.getMapper(ParamMapper.class);
@@ -101,5 +100,20 @@ public class ParamService {
       throw new Exception(e);
     }
     return true;
+  }
+
+  public List<Param> selectByPrimaryKeySelective(Param param) throws Exception {
+    List<Param> result;
+    LOG.info("Param selectByPrimaryKeySelective");
+
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      ParamMapper mapper = sqlSession.getMapper(ParamMapper.class);
+      result = mapper.selectByPrimaryKeySelective(param);
+
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    }
+    return result;
   }
 }

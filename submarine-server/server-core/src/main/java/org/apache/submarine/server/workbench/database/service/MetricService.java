@@ -109,4 +109,21 @@ public class MetricService {
     }
     return true;
   }
+
+
+  public List<Metric> selectByPrimaryKeySelective(Metric metric) throws Exception {
+    List<Metric> result;
+    LOG.info("Metric selectByPrimaryKeySelective");
+
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
+      result = mapper.selectByPrimaryKeySelective(metric);
+
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    }
+    return result;
+  }
+ 
 }

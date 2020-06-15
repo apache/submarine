@@ -66,27 +66,58 @@
     insert into metric (metric_key, value, worker_index, timestamp,
       step, is_nan, job_name,
       create_by, create_time, update_by, update_time)
-    values (#{metric_key,jdbcType=VARCHAR}, 
+    values (#{metricKey,jdbcType=VARCHAR}, 
       #{value,jdbcType=FLOAT},
-      #{worker_index,jdbcType=VARCHAR}, 
+      #{workerIndex,jdbcType=VARCHAR}, 
       #{timestamp,jdbcType=BIGINT}, 
       #{step,jdbcType=INTEGER},
-      #{is_nan,jdbcType=INTEGER}, 
-      #{job_name,jdbcType=VARCHAR},
+      #{isNan,jdbcType=INTEGER}, 
+      #{jobName,jdbcType=VARCHAR},
       #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Metric">
     update metric
-    set metric_key = #{metric_key,jdbcType=VARCHAR},
+    set metric_key = #{metricKey,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},
-      worker_index = #{worker_index,jdbcType=VARCHAR},
+      worker_index = #{workerIndex,jdbcType=VARCHAR},
       timestamp = #{timestamp,jdbcType=BIGINT},
       step = #{step,jdbcType=INTEGER},
-      is_nan = #{is_nan,jdbcType=INTEGER},
-      job_name = #{job_name,jdbcType=VARCHAR},
+      is_nan = #{isNan,jdbcType=INTEGER},
+      job_name = #{jobName,jdbcType=VARCHAR},
       update_by = #{updateBy,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+
+
+
+    <select id="selectByPrimaryKeySelective" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List" />
+    from metric
+    where 1 = 1
+      <if test="metricKey != null">
+        AND metric_key = #{metricKey,jdbcType=VARCHAR}
+      </if>
+      <if test="value != null">
+        AND value = #{value,jdbcType=FLOAT}
+      </if>
+      <if test="timestamp != null">
+        AND timestamp = #{timestamp,jdbcType=BIGINT}
+      </if>
+      <if test="step != null">
+        AND step = #{step,jdbcType=INTEGER}
+      </if>
+      <if test="isNan != null">
+        AND is_nan = #{isNan,jdbcType=INTEGER}
+      </if>
+      <if test="jobName != null">
+        AND job_name = #{jobName,jdbcType=VARCHAR}
+      </if>
+      <if test="id != null">
+        AND id = #{id,jdbcType=VARCHAR}
+      </if>
+   </select>
+
 </mapper>

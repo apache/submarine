@@ -34,12 +34,12 @@ public class Param extends BaseEntity {
   String workerIndex;
   String jobName;
 
-  public String getParam_key() {
+  public String getParamKey() {
     return this.paramKey;
   }
 
-  public void setParam_key(String Param_key) {
-    this.paramKey = Param_key;
+  public void setParamKey(String paramKey) {
+    this.paramKey = paramKey;
   }
 
   public String getValue() {
@@ -50,20 +50,21 @@ public class Param extends BaseEntity {
     this.value = value;
   }
 
-  public String getWorker_index() {
+  public String getWorkerIndex() {
     return this.workerIndex;
   }
 
-  public void setWorker_index(String worker_index) {
-    this.workerIndex = worker_index;
+  public void setWorkerIndex(String workerIndex) {
+    this.workerIndex = workerIndex;
   }
 
-  public String getJob_name() {
+  public String getJobName() {
     return this.jobName;
   }
 
-  public void setJob_name(String job_name) {
-    this.jobName = job_name;
+  public void setJobName(String jobName) {
+    this.jobName = jobName;
   }
+
 
 }

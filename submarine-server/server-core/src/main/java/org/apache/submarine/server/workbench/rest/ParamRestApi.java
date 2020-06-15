@@ -137,4 +137,22 @@ public class ParamRestApi {
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
+
+  @POST
+  @Path("/selective")
+  @SubmarineApi
+  public Response selectByPrimaryKeySelective(Param metric) {
+    List<Param> params;
+    try {
+      params = paramService.selectByPrimaryKeySelective(metric);
+
+    } catch (Exception e) {
+
+      LOG.error(e.toString());
+      e.printStackTrace();
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+    }
+    return new JsonResponse.Builder<List<Param>>(Response.Status.OK).success(true).result(params).build();
+  }
+
 }

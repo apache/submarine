@@ -47,13 +47,13 @@ public class MetricServiceTest {
   @Test
   public void testSelectMetric() throws Exception {
     Metric metric = new Metric();
-    metric.setMetric_key("score");
+    metric.setMetricKey("score");
     metric.setValue((float) 0.666667);
-    metric.setWorker_index("worker-1");
+    metric.setWorkerIndex("worker-1");
     metric.setTimestamp(new BigInteger("1569139525097"));
     metric.setStep(0);
-    metric.setIs_nan(0);
-    metric.setJob_name("application_1234");
+    metric.setIsNan(0);
+    metric.setJobName("application_1234");
     metric.setCreateBy("MetricServiceTest-CreateBy");
     boolean result = metricService.insert(metric);
     assertNotEquals(result, -1);
@@ -71,24 +71,24 @@ public class MetricServiceTest {
   @Test
   public void testUpdateJob() throws Exception {
     Metric metric = new Metric();
-    metric.setMetric_key("score");
+    metric.setMetricKey("score");
     metric.setValue((float) 0.666667);
-    metric.setWorker_index("worker-2");
+    metric.setWorkerIndex("worker-2");
     metric.setTimestamp(new BigInteger("1569139525098"));
     metric.setStep(0);
-    metric.setIs_nan(0);
-    metric.setJob_name("application_1234");
+    metric.setIsNan(0);
+    metric.setJobName("application_1234");
     metric.setCreateBy("MetricServiceTest-CreateBy");
     boolean result = metricService.insert(metric);
     assertTrue(result);
 
-    metric.setMetric_key("scoreNew");
+    metric.setMetricKey("scoreNew");
     metric.setValue((float) 0.766667);
-    metric.setWorker_index("worker-New");
+    metric.setWorkerIndex("worker-New");
     metric.setTimestamp(new BigInteger("2569139525098"));
     metric.setStep(1);
-    metric.setIs_nan(1);
-    metric.setJob_name("application_1234New");
+    metric.setIsNan(1);
+    metric.setJobName("application_1234New");
     metric.setUpdateBy("MetricServiceTest-UpdateBy");
 
     boolean editResult = metricService.update(metric);
@@ -101,13 +101,13 @@ public class MetricServiceTest {
   @Test
   public void delete() throws Exception {
     Metric metric = new Metric();
-    metric.setMetric_key("score");
+    metric.setMetricKey("score");
     metric.setValue((float) 0.666667);
-    metric.setWorker_index("worker-2");
+    metric.setWorkerIndex("worker-2");
     metric.setTimestamp(new BigInteger("1569139525098"));
     metric.setStep(0);
-    metric.setIs_nan(0);
-    metric.setJob_name("application_1234");
+    metric.setIsNan(0);
+    metric.setJobName("application_1234");
     metric.setCreateBy("MetricServiceTest-CreateBy");
     boolean result = metricService.insert(metric);
     assertTrue(result);
@@ -118,12 +118,12 @@ public class MetricServiceTest {
 
   private void compareMetrics(Metric metric, Metric metricDb) {
     assertEquals(metric.getId(), metricDb.getId());
-    assertEquals(metric.getIs_nan(), metricDb.getIs_nan());
-    assertEquals(metric.getJob_name(), metricDb.getJob_name());
-    assertEquals(metric.getMetric_key(), metricDb.getMetric_key());
+    assertEquals(metric.getIsNan(), metricDb.getIsNan());
+    assertEquals(metric.getJobName(), metricDb.getJobName());
+    assertEquals(metric.getMetricKey(), metricDb.getMetricKey());
     assertEquals(metric.getStep(), metricDb.getStep());
     assertEquals(metric.getTimestamp(), metricDb.getTimestamp());
     assertEquals(metric.getValue(), metricDb.getValue());
-    assertEquals(metric.getWorker_index(), metricDb.getWorker_index());
+    assertEquals(metric.getWorkerIndex(), metricDb.getWorkerIndex());
   }
 }

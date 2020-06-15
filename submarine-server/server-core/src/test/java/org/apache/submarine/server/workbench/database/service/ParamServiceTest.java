@@ -37,7 +37,7 @@ public class ParamServiceTest {
   @After
   public void removeAllRecord() throws Exception {
     List<Param> paramList = paramService.selectAll();
-    LOG.info("jobList.size():{}", paramList.size());
+    LOG.info("paramList.size():{}", paramList.size());
     for (Param param : paramList) {
       paramService.deleteById(param.getId());
     }
@@ -46,10 +46,10 @@ public class ParamServiceTest {
   @Test
   public void testSelectParam() throws Exception {
     Param param = new Param();
-    param.setParam_key("score");
+    param.setParamKey("score");
     param.setValue("199");
-    param.setWorker_index("worker-1");
-    param.setJob_name("application_123651651");
+    param.setWorkerIndex("worker-1");
+    param.setJobName("application_123651651");
     param.setCreateBy("ParamServiceTest-CreateBy");
     boolean result = paramService.insert(param);
     assertNotEquals(result, -1);
@@ -67,18 +67,18 @@ public class ParamServiceTest {
   @Test
   public void testUpdateJob() throws Exception {
     Param param = new Param();
-    param.setParam_key("score");
+    param.setParamKey("score");
     param.setValue("100");
-    param.setWorker_index("worker-2");
-    param.setJob_name("application_1234");
+    param.setWorkerIndex("worker-2");
+    param.setJobName("application_1234");
     param.setCreateBy("ParamServiceTest-CreateBy");
     boolean result = paramService.insert(param);
     assertTrue(result);
 
-    param.setParam_key("scoreNew");
+    param.setParamKey("scoreNew");
     param.setValue("100");
-    param.setWorker_index("worker-New");
-    param.setJob_name("application_1234New");
+    param.setWorkerIndex("worker-New");
+    param.setJobName("application_1234New");
     param.setUpdateBy("ParamServiceTest-UpdateBy");
     boolean editResult = paramService.update(param);
     assertTrue(editResult);
@@ -90,10 +90,10 @@ public class ParamServiceTest {
   @Test
   public void delete() throws Exception {
     Param param = new Param();
-    param.setParam_key("score");
+    param.setParamKey("score");
     param.setValue("100");
-    param.setWorker_index("worker-2");
-    param.setJob_name("application_1234");
+    param.setWorkerIndex("worker-2");
+    param.setJobName("application_1234");
     param.setCreateBy("ParamServiceTest-CreateBy");
 
     boolean result = paramService.insert(param);
@@ -105,9 +105,9 @@ public class ParamServiceTest {
 
   private void compareParams(Param param, Param paramDb) {
     assertEquals(param.getId(), paramDb.getId());
-    assertEquals(param.getJob_name(), paramDb.getJob_name());
-    assertEquals(param.getParam_key(), paramDb.getParam_key());
+    assertEquals(param.getJobName(), paramDb.getJobName());
+    assertEquals(param.getParamKey(), paramDb.getParamKey());
     assertEquals(param.getValue(), paramDb.getValue());
-    assertEquals(param.getWorker_index(), paramDb.getWorker_index());
+    assertEquals(param.getWorkerIndex(), paramDb.getWorkerIndex());
   }
 }

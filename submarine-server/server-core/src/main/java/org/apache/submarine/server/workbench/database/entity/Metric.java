@@ -35,35 +35,35 @@ import java.math.BigInteger;
 public class Metric extends BaseEntity {
 
   private String metricKey;
-  private float value;
+  private Float value;
   private String workerIndex;
   private BigInteger timestamp;
-  private int step;
-  private int isNan;
+  private Integer step;
+  private Integer isNan;
   private String jobName;
 
-  public String getMetric_key() {
+  public String getMetricKey() {
     return this.metricKey;
   }
 
-  public void setMetric_key(String metric_key) {
-    this.metricKey = metric_key;
+  public void setMetricKey(String metricKey) {
+    this.metricKey = metricKey;
   }
 
-  public float getValue() {
+  public Float getValue() {
     return this.value;
   }
 
-  public void setValue(float value) {
+  public void setValue(Float value) {
     this.value = value;
   }
 
-  public String getWorker_index() {
+  public String getWorkerIndex() {
     return this.workerIndex;
   }
 
-  public void setWorker_index(String worker_index) {
-    this.workerIndex = worker_index;
+  public void setWorkerIndex(String workerIndex) {
+    this.workerIndex = workerIndex;
   }
 
   public BigInteger getTimestamp() {
@@ -74,28 +74,28 @@ public class Metric extends BaseEntity {
     this.timestamp = timestamp;
   }
 
-  public int getStep() {
+  public Integer getStep() {
     return this.step;
   }
 
-  public void setStep(int step) {
+  public void setStep(Integer step) {
     this.step = step;
   }
 
-  public int getIs_nan() {
+  public Integer getIsNan() {
     return this.isNan;
   }
 
-  public void setIs_nan(int is_nan) {
-    this.isNan = is_nan;
+  public void setIsNan(Integer isNan) {
+    this.isNan = isNan;
   }
 
-  public String getJob_name() {
+  public String getJobName() {
     return this.jobName;
   }
 
-  public void setJob_name(String job_name) {
-    this.jobName = job_name;
+  public void setJobName(String jobName) {
+    this.jobName = jobName;
   }
 
 }
