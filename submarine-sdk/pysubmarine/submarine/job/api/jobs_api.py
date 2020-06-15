@@ -14,7 +14,6 @@
 # limitations under the License.
 
 # coding: utf-8
-
 """
     Submarine Experiment API
 
@@ -92,10 +91,8 @@ class JobsApi(object):
         params = locals()
         for key, val in six.iteritems(params['kwargs']):
             if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method create_job" % key
-                )
+                raise TypeError("Got an unexpected keyword argument '%s'"
+                                " to method create_job" % key)
             params[key] = val
         del params['kwargs']
 
@@ -118,14 +115,16 @@ class JobsApi(object):
             ['application/json; charset=utf-8'])  # noqa: E501
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/yaml', 'application/json'])  # noqa: E501
+        header_params[
+            'Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+                ['application/yaml', 'application/json'])  # noqa: E501
 
         # Authentication setting
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/jobs', 'POST',
+            '/v1/jobs',
+            'POST',
             path_params,
             query_params,
             header_params,
@@ -185,16 +184,15 @@ class JobsApi(object):
         params = locals()
         for key, val in six.iteritems(params['kwargs']):
             if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method delete_job" % key
-                )
+                raise TypeError("Got an unexpected keyword argument '%s'"
+                                " to method delete_job" % key)
             params[key] = val
         del params['kwargs']
         # verify the required parameter 'id' is set
-        if ('id' not in params or
-                params['id'] is None):
-            raise ValueError("Missing the required parameter `id` when calling `delete_job`")  # noqa: E501
+        if ('id' not in params or params['id'] is None):
+            raise ValueError(
+                "Missing the required parameter `id` when calling `delete_job`"
+            )  # noqa: E501
 
         collection_formats = {}
 
@@ -218,7 +216,8 @@ class JobsApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/jobs/{id}', 'DELETE',
+            '/v1/jobs/{id}',
+            'DELETE',
             path_params,
             query_params,
             header_params,
@@ -278,16 +277,15 @@ class JobsApi(object):
         params = locals()
         for key, val in six.iteritems(params['kwargs']):
             if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method get_job" % key
-                )
+                raise TypeError("Got an unexpected keyword argument '%s'"
+                                " to method get_job" % key)
             params[key] = val
         del params['kwargs']
         # verify the required parameter 'id' is set
-        if ('id' not in params or
-                params['id'] is None):
-            raise ValueError("Missing the required parameter `id` when calling `get_job`")  # noqa: E501
+        if ('id' not in params or params['id'] is None):
+            raise ValueError(
+                "Missing the required parameter `id` when calling `get_job`"
+            )  # noqa: E501
 
         collection_formats = {}
 
@@ -311,7 +309,8 @@ class JobsApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/jobs/{id}', 'GET',
+            '/v1/jobs/{id}',
+            'GET',
             path_params,
             query_params,
             header_params,
@@ -371,16 +370,15 @@ class JobsApi(object):
         params = locals()
         for key, val in six.iteritems(params['kwargs']):
             if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method get_log" % key
-                )
+                raise TypeError("Got an unexpected keyword argument '%s'"
+                                " to method get_log" % key)
             params[key] = val
         del params['kwargs']
         # verify the required parameter 'id' is set
-        if ('id' not in params or
-                params['id'] is None):
-            raise ValueError("Missing the required parameter `id` when calling `get_log`")  # noqa: E501
+        if ('id' not in params or params['id'] is None):
+            raise ValueError(
+                "Missing the required parameter `id` when calling `get_log`"
+            )  # noqa: E501
 
         collection_formats = {}
 
@@ -404,7 +402,8 @@ class JobsApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/jobs/logs/{id}', 'GET',
+            '/v1/jobs/logs/{id}',
+            'GET',
             path_params,
             query_params,
             header_params,
@@ -464,10 +463,8 @@ class JobsApi(object):
         params = locals()
         for key, val in six.iteritems(params['kwargs']):
             if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method list_job" % key
-                )
+                raise TypeError("Got an unexpected keyword argument '%s'"
+                                " to method list_job" % key)
             params[key] = val
         del params['kwargs']
 
@@ -493,7 +490,8 @@ class JobsApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/jobs', 'GET',
+            '/v1/jobs',
+            'GET',
             path_params,
             query_params,
             header_params,
@@ -553,10 +551,8 @@ class JobsApi(object):
         params = locals()
         for key, val in six.iteritems(params['kwargs']):
             if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method list_log" % key
-                )
+                raise TypeError("Got an unexpected keyword argument '%s'"
+                                " to method list_log" % key)
             params[key] = val
         del params['kwargs']
 
@@ -582,7 +578,8 @@ class JobsApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/jobs/logs', 'GET',
+            '/v1/jobs/logs',
+            'GET',
             path_params,
             query_params,
             header_params,
@@ -644,16 +641,15 @@ class JobsApi(object):
         params = locals()
         for key, val in six.iteritems(params['kwargs']):
             if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method patch_job" % key
-                )
+                raise TypeError("Got an unexpected keyword argument '%s'"
+                                " to method patch_job" % key)
             params[key] = val
         del params['kwargs']
         # verify the required parameter 'id' is set
-        if ('id' not in params or
-                params['id'] is None):
-            raise ValueError("Missing the required parameter `id` when calling `patch_job`")  # noqa: E501
+        if ('id' not in params or params['id'] is None):
+            raise ValueError(
+                "Missing the required parameter `id` when calling `patch_job`"
+            )  # noqa: E501
 
         collection_formats = {}
 
@@ -676,14 +672,16 @@ class JobsApi(object):
             ['application/json; charset=utf-8'])  # noqa: E501
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/yaml', 'application/json'])  # noqa: E501
+        header_params[
+            'Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
+                ['application/yaml', 'application/json'])  # noqa: E501
 
         # Authentication setting
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/jobs/{id}', 'PATCH',
+            '/v1/jobs/{id}',
+            'PATCH',
             path_params,
             query_params,
             header_params,
@@ -743,10 +741,8 @@ class JobsApi(object):
         params = locals()
         for key, val in six.iteritems(params['kwargs']):
             if key not in all_params:
-                raise TypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method ping" % key
-                )
+                raise TypeError("Got an unexpected keyword argument '%s'"
+                                " to method ping" % key)
             params[key] = val
         del params['kwargs']
 
@@ -770,7 +766,8 @@ class JobsApi(object):
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/jobs/ping', 'GET',
+            '/v1/jobs/ping',
+            'GET',
             path_params,
             query_params,
             header_params,

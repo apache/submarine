@@ -13,23 +13,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from mock import patch, Mock
-import pytest
 import json
-from submarine.utils.rest_utils import http_request, verify_rest_response
+
+import pytest
+from mock import Mock, patch
+
 from submarine.exceptions import RestException, SubmarineException
+from submarine.utils.rest_utils import http_request, verify_rest_response
 
 
 def test_http_request():
-    dummy_json = json.dumps({'result': {'jobId': 'job_1234567', 'name': 'submarine',
-                                        'identifier': 'test'}})
+    dummy_json = json.dumps({
+        'result': {
+            'jobId': 'job_1234567',
+            'name': 'submarine',
+            'identifier': 'test'
+        }
+    })
 
     with patch('requests.request') as mock_requests:
         mock_requests.return_value.text = dummy_json
         mock_requests.return_value.status_code = 200
 
-        result = http_request('http://submarine:8080', json_body='dummy',
-                              endpoint='/api/v1/jobs', method='POST')
+        result = http_request('http://submarine:8080',
+                              json_body='dummy',
+                              endpoint='/api/v1/jobs',
+                              method='POST')
 
     assert result['jobId'] == 'job_1234567'
     assert result['name'] == 'submarine'
@@ -54,6 +63,7 @@ def test_verify_rest_response():
     # Test response status code not equal 200(OK) and response can not parse as JSON
     mock_json_body = 'test, 123'
     mock_response.text = mock_json_body
-    with pytest.raises(SubmarineException, match='API request to endpoint /api/v1/jobs failed '
-                                                 'with error code 400 != 200'):
+    with pytest.raises(SubmarineException,
+                       match='API request to endpoint /api/v1/jobs failed '
+                       'with error code 400 != 200'):
         verify_rest_response(mock_response, '/api/v1/jobs')

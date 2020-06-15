@@ -17,17 +17,34 @@ import tensorflow as tf
 
 
 def batch_norm_layer(x, train_phase, scope_bn, batch_norm_decay):
-    bn_train = tf.contrib.layers.batch_norm(x, decay=batch_norm_decay, center=True, scale=True,
-                                            updates_collections=None, is_training=True,
-                                            reuse=None, scope=scope_bn)
-    bn_infer = tf.contrib.layers.batch_norm(x, decay=batch_norm_decay, center=True, scale=True,
-                                            updates_collections=None, is_training=False,
-                                            reuse=True, scope=scope_bn)
-    return tf.cond(tf.cast(train_phase, tf.bool), lambda: bn_train, lambda: bn_infer)
+    bn_train = tf.contrib.layers.batch_norm(x,
+                                            decay=batch_norm_decay,
+                                            center=True,
+                                            scale=True,
+                                            updates_collections=None,
+                                            is_training=True,
+                                            reuse=None,
+                                            scope=scope_bn)
+    bn_infer = tf.contrib.layers.batch_norm(x,
+                                            decay=batch_norm_decay,
+                                            center=True,
+                                            scale=True,
+                                            updates_collections=None,
+                                            is_training=False,
+                                            reuse=True,
+                                            scope=scope_bn)
+    return tf.cond(tf.cast(train_phase, tf.bool), lambda: bn_train,
+                   lambda: bn_infer)
 
 
-def dnn_layer(inputs, estimator_mode, batch_norm, deep_layers, dropout, batch_norm_decay=0.9,
-              l2_reg=0, **kwargs):
+def dnn_layer(inputs,
+              estimator_mode,
+              batch_norm,
+              deep_layers,
+              dropout,
+              batch_norm_decay=0.9,
+              l2_reg=0,
+              **kwargs):
     """
     The Multi Layer Percetron
     :param inputs: A tensor of at least rank 2 and static value for the last dimension; i.e.
@@ -51,18 +68,23 @@ def dnn_layer(inputs, estimator_mode, batch_norm, deep_layers, dropout, batch_no
 
         for i in range(len(deep_layers)):
             deep_inputs = tf.contrib.layers.fully_connected(
-                inputs=inputs, num_outputs=deep_layers[i],
+                inputs=inputs,
+                num_outputs=deep_layers[i],
                 weights_regularizer=tf.contrib.layers.l2_regularizer(l2_reg),
                 scope='mlp%d' % i)
             if batch_norm:
                 deep_inputs = batch_norm_layer(
-                    deep_inputs, train_phase=train_phase,
-                    scope_bn='bn_%d' % i, batch_norm_decay=batch_norm_decay)
+                    deep_inputs,
+                    train_phase=train_phase,
+                    scope_bn='bn_%d' % i,
+                    batch_norm_decay=batch_norm_decay)
             if estimator_mode == tf.estimator.ModeKeys.TRAIN:
                 deep_inputs = tf.nn.dropout(deep_inputs, keep_prob=dropout[i])
 
         deep_out = tf.contrib.layers.fully_connected(
-            inputs=deep_inputs, num_outputs=1, activation_fn=tf.identity,
+            inputs=deep_inputs,
+            num_outputs=1,
+            activation_fn=tf.identity,
             weights_regularizer=tf.contrib.layers.l2_regularizer(l2_reg),
             scope='deep_out')
         deep_out = tf.reshape(deep_out, shape=[-1])
@@ -85,18 +107,27 @@ def linear_layer(features, feature_size, field_size, l2_reg=0, **kwargs):
 
     regularizer = tf.contrib.layers.l2_regularizer(l2_reg)
     with tf.variable_scope("LinearLayer_Layer"):
-        linear_bias = tf.get_variable(name='linear_bias', shape=[1],
+        linear_bias = tf.get_variable(name='linear_bias',
+                                      shape=[1],
                                       initializer=tf.constant_initializer(0.0))
-        linear_weight = tf.get_variable(name='linear_weight', shape=[feature_size],
-                                        initializer=tf.glorot_normal_initializer(),
-                                        regularizer=regularizer)
+        linear_weight = tf.get_variable(
+            name='linear_weight',
+            shape=[feature_size],
+            initializer=tf.glorot_normal_initializer(),
+            regularizer=regularizer)
 
         feat_weights = tf.nn.embedding_lookup(linear_weight, feat_ids)
-        linear_out = tf.reduce_sum(tf.multiply(feat_weights, feat_vals), 1) + linear_bias
+        linear_out = tf.reduce_sum(tf.multiply(feat_weights, feat_vals),
+                                   1) + linear_bias
     return linear_out
 
 
-def embedding_layer(features, feature_size, field_size, embedding_size, l2_reg=0, **kwargs):
+def embedding_layer(features,
+                    feature_size,
+                    field_size,
+                    embedding_size,
+                    l2_reg=0,
+                    **kwargs):
     """
     Turns positive integers (indexes) into dense vectors of fixed size.
     eg. [[4], [20]] -> [[0.25, 0.1], [0.6, -0.2]]
@@ -114,10 +145,11 @@ def embedding_layer(features, feature_size, field_size, embedding_size, l2_reg=0
 
     with tf.variable_scope("Embedding_Layer"):
         regularizer = tf.contrib.layers.l2_regularizer(l2_reg)
-        embedding_dict = tf.get_variable(name='embedding_dict',
-                                         shape=[feature_size, embedding_size],
-                                         initializer=tf.glorot_normal_initializer(),
-                                         regularizer=regularizer)
+        embedding_dict = tf.get_variable(
+            name='embedding_dict',
+            shape=[feature_size, embedding_size],
+            initializer=tf.glorot_normal_initializer(),
+            regularizer=regularizer)
         embeddings = tf.nn.embedding_lookup(embedding_dict, feat_ids)
         feat_vals = tf.reshape(feat_vals, shape=[-1, field_size, 1])
         embedding_out = tf.multiply(embeddings, feat_vals)

@@ -17,6 +17,7 @@ import pprint
 
 
 class _SubmarineObject:
+
     def __iter__(self):
         # Iterate through list of properties and yield as key -> value
         for prop in self._properties():
@@ -24,11 +25,16 @@ class _SubmarineObject:
 
     @classmethod
     def _properties(cls):
-        return sorted([p for p in cls.__dict__ if isinstance(getattr(cls, p), property)])
+        return sorted(
+            [p for p in cls.__dict__ if isinstance(getattr(cls, p), property)])
 
     @classmethod
     def from_dictionary(cls, the_dict):
-        filtered_dict = {key: value for key, value in the_dict.items() if key in cls._properties()}
+        filtered_dict = {
+            key: value
+            for key, value in the_dict.items()
+            if key in cls._properties()
+        }
         return cls(**filtered_dict)
 
     def __repr__(self):
@@ -51,8 +57,10 @@ class _SubmarineObjectPrinter:
 
     def to_string(self, obj):
         if isinstance(obj, _SubmarineObject):
-            return "<%s: %s>" % (get_classname(obj), self._entity_to_string(obj))
+            return "<%s: %s>" % (get_classname(obj),
+                                 self._entity_to_string(obj))
         return self.printer.pformat(obj)
 
     def _entity_to_string(self, entity):
-        return ", ".join(["%s=%s" % (key, self.to_string(value)) for key, value in entity])
+        return ", ".join(
+            ["%s=%s" % (key, self.to_string(value)) for key, value in entity])

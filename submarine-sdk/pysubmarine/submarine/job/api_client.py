@@ -28,18 +28,18 @@ from __future__ import absolute_import
 import datetime
 import json
 import mimetypes
-from multiprocessing.pool import ThreadPool
 import os
 import re
 import tempfile
+from multiprocessing.pool import ThreadPool
 
 # python 2 and python 3 compatibility library
 import six
 from six.moves.urllib.parse import quote
 
-from submarine.job.configuration import Configuration
 import submarine.job.models
 from submarine.job import rest
+from submarine.job.configuration import Configuration
 
 
 class ApiClient(object):
@@ -74,7 +74,10 @@ class ApiClient(object):
         'object': object,
     }
 
-    def __init__(self, configuration=None, header_name=None, header_value=None,
+    def __init__(self,
+                 configuration=None,
+                 header_name=None,
+                 header_value=None,
                  cookie=None):
         if configuration is None:
             configuration = Configuration()
@@ -105,12 +108,21 @@ class ApiClient(object):
     def set_default_header(self, header_name, header_value):
         self.default_headers[header_name] = header_value
 
-    def __call_api(
-            self, resource_path, method, path_params=None,
-            query_params=None, header_params=None, body=None, post_params=None,
-            files=None, response_type=None, auth_settings=None,
-            _return_http_data_only=None, collection_formats=None,
-            _preload_content=True, _request_timeout=None):
+    def __call_api(self,
+                   resource_path,
+                   method,
+                   path_params=None,
+                   query_params=None,
+                   header_params=None,
+                   body=None,
+                   post_params=None,
+                   files=None,
+                   response_type=None,
+                   auth_settings=None,
+                   _return_http_data_only=None,
+                   collection_formats=None,
+                   _preload_content=True,
+                   _request_timeout=None):
 
         config = self.configuration
 
@@ -121,8 +133,8 @@ class ApiClient(object):
             header_params['Cookie'] = self.cookie
         if header_params:
             header_params = self.sanitize_for_serialization(header_params)
-            header_params = dict(self.parameters_to_tuples(header_params,
-                                                           collection_formats))
+            header_params = dict(
+                self.parameters_to_tuples(header_params, collection_formats))
 
         # path parameters
         if path_params:
@@ -133,8 +145,7 @@ class ApiClient(object):
                 # specified safe chars, encode everything
                 resource_path = resource_path.replace(
                     '{%s}' % k,
-                    quote(str(v), safe=config.safe_chars_for_path_param)
-                )
+                    quote(str(v), safe=config.safe_chars_for_path_param))
 
         # query parameters
         if query_params:
@@ -160,11 +171,14 @@ class ApiClient(object):
         url = self.configuration.host + resource_path
 
         # perform request and return response
-        response_data = self.request(
-            method, url, query_params=query_params, headers=header_params,
-            post_params=post_params, body=body,
-            _preload_content=_preload_content,
-            _request_timeout=_request_timeout)
+        response_data = self.request(method,
+                                     url,
+                                     query_params=query_params,
+                                     headers=header_params,
+                                     post_params=post_params,
+                                     body=body,
+                                     _preload_content=_preload_content,
+                                     _request_timeout=_request_timeout)
 
         self.last_response = response_data
 
@@ -201,11 +215,10 @@ class ApiClient(object):
         elif isinstance(obj, self.PRIMITIVE_TYPES):
             return obj
         elif isinstance(obj, list):
-            return [self.sanitize_for_serialization(sub_obj)
-                    for sub_obj in obj]
+            return [self.sanitize_for_serialization(sub_obj) for sub_obj in obj]
         elif isinstance(obj, tuple):
-            return tuple(self.sanitize_for_serialization(sub_obj)
-                         for sub_obj in obj)
+            return tuple(
+                self.sanitize_for_serialization(sub_obj) for sub_obj in obj)
         elif isinstance(obj, (datetime.datetime, datetime.date)):
             return obj.isoformat()
 
@@ -217,12 +230,16 @@ class ApiClient(object):
             # and attributes which value is not None.
             # Convert attribute name to json key in
             # model definition for request.
-            obj_dict = {obj.attribute_map[attr]: getattr(obj, attr)
-                        for attr, _ in six.iteritems(obj.swagger_types)
-                        if getattr(obj, attr) is not None}
+            obj_dict = {
+                obj.attribute_map[attr]: getattr(obj, attr)
+                for attr, _ in six.iteritems(obj.swagger_types)
+                if getattr(obj, attr) is not None
+            }
 
-        return {key: self.sanitize_for_serialization(val)
-                for key, val in six.iteritems(obj_dict)}
+        return {
+            key: self.sanitize_for_serialization(val)
+            for key, val in six.iteritems(obj_dict)
+        }
 
     def deserialize(self, response, response_type):
         """Deserializes response into an object.
@@ -260,13 +277,16 @@ class ApiClient(object):
         if type(klass) == str:
             if klass.startswith('list['):
                 sub_kls = re.match(r'list\[(.*)\]', klass).group(1)
-                return [self.__deserialize(sub_data, sub_kls)
-                        for sub_data in data]
+                return [
+                    self.__deserialize(sub_data, sub_kls) for sub_data in data
+                ]
 
             if klass.startswith('dict('):
                 sub_kls = re.match(r'dict\(([^,]*), (.*)\)', klass).group(2)
-                return {k: self.__deserialize(v, sub_kls)
-                        for k, v in six.iteritems(data)}
+                return {
+                    k: self.__deserialize(v, sub_kls)
+                    for k, v in six.iteritems(data)
+                }
 
             # convert str to class
             if klass in self.NATIVE_TYPES_MAPPING:
@@ -285,12 +305,22 @@ class ApiClient(object):
         else:
             return self.__deserialize_model(data, klass)
 
-    def call_api(self, resource_path, method,
-                 path_params=None, query_params=None, header_params=None,
-                 body=None, post_params=None, files=None,
-                 response_type=None, auth_settings=None, async_req=None,
-                 _return_http_data_only=None, collection_formats=None,
-                 _preload_content=True, _request_timeout=None):
+    def call_api(self,
+                 resource_path,
+                 method,
+                 path_params=None,
+                 query_params=None,
+                 header_params=None,
+                 body=None,
+                 post_params=None,
+                 files=None,
+                 response_type=None,
+                 auth_settings=None,
+                 async_req=None,
+                 _return_http_data_only=None,
+                 collection_formats=None,
+                 _preload_content=True,
+                 _request_timeout=None):
         """Makes the HTTP request (synchronous) and returns deserialized data.
 
         To make an async request, set the async_req parameter.
@@ -328,25 +358,29 @@ class ApiClient(object):
             then the method will return the response directly.
         """
         if not async_req:
-            return self.__call_api(resource_path, method,
-                                   path_params, query_params, header_params,
-                                   body, post_params, files,
-                                   response_type, auth_settings,
-                                   _return_http_data_only, collection_formats,
-                                   _preload_content, _request_timeout)
+            return self.__call_api(resource_path, method, path_params,
+                                   query_params, header_params, body,
+                                   post_params, files, response_type,
+                                   auth_settings, _return_http_data_only,
+                                   collection_formats, _preload_content,
+                                   _request_timeout)
         else:
-            thread = self.pool.apply_async(self.__call_api, (resource_path,
-                                           method, path_params, query_params,
-                                           header_params, body,
-                                           post_params, files,
-                                           response_type, auth_settings,
-                                           _return_http_data_only,
-                                           collection_formats,
-                                           _preload_content, _request_timeout))
+            thread = self.pool.apply_async(
+                self.__call_api,
+                (resource_path, method, path_params, query_params,
+                 header_params, body, post_params, files, response_type,
+                 auth_settings, _return_http_data_only, collection_formats,
+                 _preload_content, _request_timeout))
         return thread
 
-    def request(self, method, url, query_params=None, headers=None,
-                post_params=None, body=None, _preload_content=True,
+    def request(self,
+                method,
+                url,
+                query_params=None,
+                headers=None,
+                post_params=None,
+                body=None,
+                _preload_content=True,
                 _request_timeout=None):
         """Makes the HTTP request using RESTClient."""
         if method == "GET":
@@ -401,10 +435,8 @@ class ApiClient(object):
                                            _request_timeout=_request_timeout,
                                            body=body)
         else:
-            raise ValueError(
-                "http method must be `GET`, `HEAD`, `OPTIONS`,"
-                " `POST`, `PATCH`, `PUT` or `DELETE`."
-            )
+            raise ValueError("http method must be `GET`, `HEAD`, `OPTIONS`,"
+                             " `POST`, `PATCH`, `PUT` or `DELETE`.")
 
     def parameters_to_tuples(self, params, collection_formats):
         """Get parameters as list of tuples, formatting collections.
@@ -416,7 +448,8 @@ class ApiClient(object):
         new_params = []
         if collection_formats is None:
             collection_formats = {}
-        for k, v in six.iteritems(params) if isinstance(params, dict) else params:  # noqa: E501
+        for k, v in six.iteritems(params) if isinstance(
+                params, dict) else params:  # noqa: E501
             if k in collection_formats:
                 collection_format = collection_formats[k]
                 if collection_format == 'multi':
@@ -517,8 +550,7 @@ class ApiClient(object):
                     querys.append((auth_setting['key'], auth_setting['value']))
                 else:
                     raise ValueError(
-                        'Authentication token must be in `query` or `header`'
-                    )
+                        'Authentication token must be in `query` or `header`')
 
     def __deserialize_file(self, response):
         """Deserializes body to file
@@ -580,8 +612,7 @@ class ApiClient(object):
         except ValueError:
             raise rest.ApiException(
                 status=0,
-                reason="Failed to parse `{0}` as date object".format(string)
-            )
+                reason="Failed to parse `{0}` as date object".format(string))
 
     def __deserialize_datatime(self, string):
         """Deserializes string to datetime.
@@ -600,10 +631,7 @@ class ApiClient(object):
             raise rest.ApiException(
                 status=0,
                 reason=(
-                    "Failed to parse `{0}` as datetime object"
-                    .format(string)
-                )
-            )
+                    "Failed to parse `{0}` as datetime object".format(string)))
 
     def __hasattr(self, object, name):
         return name in object.__class__.__dict__
@@ -616,22 +644,21 @@ class ApiClient(object):
         :return: model object.
         """
 
-        if not klass.swagger_types and not self.__hasattr(klass, 'get_real_child_model'):
+        if not klass.swagger_types and not self.__hasattr(
+                klass, 'get_real_child_model'):
             return data
 
         kwargs = {}
         if klass.swagger_types is not None:
             for attr, attr_type in six.iteritems(klass.swagger_types):
-                if (data is not None and
-                        klass.attribute_map[attr] in data and
+                if (data is not None and klass.attribute_map[attr] in data and
                         isinstance(data, (list, dict))):
                     value = data[klass.attribute_map[attr]]
                     kwargs[attr] = self.__deserialize(value, attr_type)
 
         instance = klass(**kwargs)
 
-        if (isinstance(instance, dict) and
-                klass.swagger_types is not None and
+        if (isinstance(instance, dict) and klass.swagger_types is not None and
                 isinstance(data, dict)):
             for key, value in data.items():
                 if key not in klass.swagger_types:

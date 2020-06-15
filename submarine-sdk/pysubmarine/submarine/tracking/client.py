@@ -13,13 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import time
-from submarine.entities import Param, Metric
+
+from submarine.entities import Metric, Param
 from submarine.tracking import utils
 from submarine.utils.validation import validate_metric, validate_param
 
 
 class SubmarineClient(object):
-
     """
     Client of an submarine Tracking Server that creates and manages experiments and runs.
     """
@@ -34,7 +34,13 @@ class SubmarineClient(object):
         self.tracking_uri = tracking_uri or utils.get_tracking_uri()
         self.store = utils.get_sqlalchemy_store(self.tracking_uri)
 
-    def log_metric(self, job_name, key, value, worker_index, timestamp=None, step=None):
+    def log_metric(self,
+                   job_name,
+                   key,
+                   value,
+                   worker_index,
+                   timestamp=None,
+                   step=None):
         """
         Log a metric against the run ID.
         :param job_name: The job name to which the metric should be logged.

@@ -13,9 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import json
+import os
+
 import tensorflow as tf
+
 from submarine.ml.tensorflow.optimizer import get_optimizer
 
 
@@ -28,13 +30,17 @@ def _get_session_config_from_env_var(params):
             and 'index' in tf_config['task']:
         # Master should only communicate with itself and ps.
         if tf_config['task']['type'] == 'master':
-            return tf.ConfigProto(device_filters=['/job:ps', '/job:master'],
-                                  intra_op_parallelism_threads=params["resource"]['num_thread'],
-                                  inter_op_parallelism_threads=params["resource"]['num_thread'])
+            return tf.ConfigProto(
+                device_filters=['/job:ps', '/job:master'],
+                intra_op_parallelism_threads=params["resource"]['num_thread'],
+                inter_op_parallelism_threads=params["resource"]['num_thread'])
         # Worker should only communicate with itself and ps.
         elif tf_config['task']['type'] == 'worker':
             return tf.ConfigProto(  # gpu_options=gpu_options,
-                device_filters=['/job:ps', '/job:worker/task:%d' % tf_config['task']['index']],
+                device_filters=[
+                    '/job:ps',
+                    '/job:worker/task:%d' % tf_config['task']['index']
+                ],
                 intra_op_parallelism_threads=params["resource"]['num_thread'],
                 inter_op_parallelism_threads=params["resource"]['num_thread'])
     return None
@@ -52,8 +58,10 @@ def get_tf_config(params):
     if params["training"]['mode'] == 'local':  # local mode
         tf_config = tf.estimator.RunConfig().replace(
             session_config=tf.ConfigProto(
-                device_count={'GPU': params["resource"]['num_gpu'],
-                              'CPU': params["resource"]['num_cpu']},
+                device_count={
+                    'GPU': params["resource"]['num_gpu'],
+                    'CPU': params["resource"]['num_cpu']
+                },
                 intra_op_parallelism_threads=params["resource"]['num_thread'],
                 inter_op_parallelism_threads=params["resource"]['num_thread']),
             log_step_count_steps=params["training"]['log_steps'],
@@ -62,8 +70,10 @@ def get_tf_config(params):
     elif params["training"]['mode'] == 'distributed':
         tf_config = tf.estimator.RunConfig(
             experimental_distribute=tf.contrib.distribute.DistributeConfig(
-                train_distribute=tf.contrib.distribute.ParameterServerStrategy(),
-                eval_distribute=tf.contrib.distribute.ParameterServerStrategy()),
+                train_distribute=tf.contrib.distribute.ParameterServerStrategy(
+                ),
+                eval_distribute=tf.contrib.distribute.ParameterServerStrategy(
+                )),
             session_config=_get_session_config_from_env_var(params),
             save_summary_steps=params["training"]['log_steps'],
             log_step_count_steps=params["training"]['log_steps'])
@@ -90,17 +100,18 @@ def get_estimator_spec(logit, labels, mode, params):
     predictions = {"probabilities": output}
     export_outputs = {
         tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:
-            tf.estimator.export.PredictOutput(predictions)}
+            tf.estimator.export.PredictOutput(predictions)
+    }
     # Provide an estimator spec for `ModeKeys.PREDICT`
     if mode == tf.estimator.ModeKeys.PREDICT:
-        return tf.estimator.EstimatorSpec(
-            mode=mode,
-            predictions=predictions,
-            export_outputs=export_outputs)
+        return tf.estimator.EstimatorSpec(mode=mode,
+                                          predictions=predictions,
+                                          export_outputs=export_outputs)
 
     with tf.name_scope("Loss"):
         loss = tf.reduce_mean(
-            tf.nn.sigmoid_cross_entropy_with_logits(logits=logit, labels=labels))
+            tf.nn.sigmoid_cross_entropy_with_logits(logits=logit,
+                                                    labels=labels))
 
     # Provide an estimator spec for `ModeKeys.EVAL`
     eval_metric_ops = {}
@@ -110,11 +121,10 @@ def get_estimator_spec(logit, labels, mode, params):
         raise TypeError("Invalid metric :", metric)
 
     if mode == tf.estimator.ModeKeys.EVAL:
-        return tf.estimator.EstimatorSpec(
-            mode=mode,
-            predictions=predictions,
-            loss=loss,
-            eval_metric_ops=eval_metric_ops)
+        return tf.estimator.EstimatorSpec(mode=mode,
+                                          predictions=predictions,
+                                          loss=loss,
+                                          eval_metric_ops=eval_metric_ops)
 
     with tf.name_scope("Train"):
         op = get_optimizer(optimizer, learning_rate)
@@ -122,8 +132,7 @@ def get_estimator_spec(logit, labels, mode, params):
 
     # Provide an estimator spec for `ModeKeys.TRAIN` modes
     if mode == tf.estimator.ModeKeys.TRAIN:
-        return tf.estimator.EstimatorSpec(
-            mode=mode,
-            predictions=predictions,
-            loss=loss,
-            train_op=train_op)
+        return tf.estimator.EstimatorSpec(mode=mode,
+                                          predictions=predictions,
+                                          loss=loss,
+                                          train_op=train_op)

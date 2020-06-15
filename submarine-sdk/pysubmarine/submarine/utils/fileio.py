@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyarrow import fs
-
 import io
-from urllib.parse import urlparse
 import os
 from enum import Enum
+from urllib.parse import urlparse
+
+from pyarrow import fs
 
 
 class _Scheme(Enum):

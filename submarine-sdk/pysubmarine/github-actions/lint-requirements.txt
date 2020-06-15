@@ -16,3 +16,5 @@
 pep8==1.7.1
 pylint==2.4.4
 pycodestyle==2.5.0
+yapf==0.30.0
+isort==4.3.21

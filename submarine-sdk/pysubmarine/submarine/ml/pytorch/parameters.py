@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
 default_parameters = {
     "output": {
         "save_model_dir": "./output",
