@@ -1,6 +1,6 @@
 {
-  "name": "my_submarine_env",
-  "dockerImage" : "example.com/my-docker-image:0.1.2",
+  "name": "my-submarine-env",
+  "dockerImage" : "continuumio/anaconda3",
   "kernelSpec" : {
   	"name" : "team_default_python_3.7",
   	"channels" : ["defaults"],

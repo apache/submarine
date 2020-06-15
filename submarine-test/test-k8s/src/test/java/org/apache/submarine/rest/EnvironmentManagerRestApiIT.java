@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.rest;
+package org.apache.submarine.rest;
 
 import java.io.IOException;
 
@@ -27,7 +27,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.response.JsonResponse;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -36,22 +35,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @SuppressWarnings("rawtypes")
-public class EnvironmentManagerRestApiTest extends AbstractSubmarineServerTest {
-
-  private static String ENV_PATH =
-      "/api/" + RestConstants.V1 + "/" + RestConstants.ENVIRONMENTS;
-  private static String ENV_NAME = "my-submarine-env";
+public class EnvironmentManagerRestApiIT extends AbstractSubmarineServerTest {
 
   @BeforeClass
   public static void startUp() throws Exception {
-    AbstractSubmarineServerTest
-        .startUp(EnvironmentManagerRestApiTest.class.getSimpleName());
     Assert.assertTrue(checkIfServerIsRunning());
-  }
-
-  @AfterClass
-  public static void destroy() throws Exception {
-    AbstractSubmarineServerTest.shutDown();
   }
 
   @Test
@@ -60,23 +48,7 @@ public class EnvironmentManagerRestApiTest extends AbstractSubmarineServerTest {
     run(body, "application/json");
     deleteEnvironment();
   }
-
-  @Test
-  public void testUpdateEnvironment() throws IOException {
-
-  }
-
-  @Test
-  public void testDeleteEnvironment() throws Exception {
-    String body = loadContent("environment/test_env_1.json");
-    run(body, "application/json");
-    deleteEnvironment();
-    
-    GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
-    Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
-        getMethod.getStatusCode());
-  }
-
+  
   @Test
   public void testGetEnvironment() throws Exception {
 
@@ -96,22 +68,29 @@ public class EnvironmentManagerRestApiTest extends AbstractSubmarineServerTest {
     Environment getEnvironment =
         gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
     Assert.assertEquals(ENV_NAME, getEnvironment.getName());
-    
     deleteEnvironment();
+  }
+  
+
+  @Test
+  public void testUpdateEnvironment() throws IOException {
+
   }
 
   @Test
-  public void testNotFoundEnvironment() throws Exception {
-
-    Gson gson = new GsonBuilder().create();
-
-    GetMethod getMethod = httpGet(ENV_PATH + "/" + "no_such_env_exists");
+  public void testDeleteEnvironment() throws Exception {
+    String body = loadContent("environment/test_env_1.json");
+    run(body, "application/json");
+    deleteEnvironment();
+    
+    GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
     Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
         getMethod.getStatusCode());
+    
+  }
 
-    String json = getMethod.getResponseBodyAsString();
-    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
-    Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
-        jsonResponse.getCode());
+  @Test
+  public void testListEnvironments() throws IOException {
+
   }
 }

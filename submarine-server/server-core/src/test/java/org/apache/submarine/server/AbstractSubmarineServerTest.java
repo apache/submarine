@@ -16,6 +16,8 @@
  */
 package org.apache.submarine.server;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
@@ -31,17 +33,25 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
+import org.apache.submarine.server.api.environment.Environment;
+import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.rest.RestConstants;
 import org.apache.submarine.server.utils.TestUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.URL;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
@@ -57,6 +67,10 @@ public abstract class AbstractSubmarineServerTest {
   protected static File submarineServerHome;
   protected static File confDir;
 
+  protected static String ENV_PATH =
+      "/api/" + RestConstants.V1 + "/" + RestConstants.ENVIRONMENTS;
+  protected static String ENV_NAME = "my-submarine-env";
+  
   public static String getWebsocketApiUrlToTest() {
     String websocketUrl = "ws://localhost:8080" + WEBSOCKET_API_URL;
     if (System.getProperty("websocketUrl") != null) {
@@ -376,5 +390,54 @@ public abstract class AbstractSubmarineServerTest {
     } else {
       return StringUtils.EMPTY;
     }
+  }
+  
+  protected void run(String body, String contentType) throws Exception {
+    Gson gson = new GsonBuilder().create();
+
+    // create
+    LOG.info("Create Environment using Environment REST API");
+
+    PostMethod postMethod = httpPost(ENV_PATH, body, contentType);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        postMethod.getStatusCode());
+
+    String json = postMethod.getResponseBodyAsString();
+    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        jsonResponse.getCode());
+
+    Environment env =
+        gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
+    verifyCreateEnvironmentApiResult(env);
+  }
+
+  protected void verifyCreateEnvironmentApiResult(Environment env)
+      throws Exception {
+    Assert.assertNotNull(env.getName());
+    Assert.assertNotNull(env.getEnvironmentSpec());
+  }
+
+  protected void deleteEnvironment() throws IOException {
+    Gson gson = new GsonBuilder().create();
+    DeleteMethod deleteMethod = httpDelete(ENV_PATH + "/" + ENV_NAME);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        deleteMethod.getStatusCode());
+
+    String json = deleteMethod.getResponseBodyAsString();
+    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        jsonResponse.getCode());
+
+    Environment deletedEnv =
+        gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
+    Assert.assertEquals(ENV_NAME, deletedEnv.getName());
+  }
+
+  protected String loadContent(String resourceName) throws Exception {
+    URL fileUrl = this.getClass().getResource("/" + resourceName);
+    LOG.info("Resource file: " + fileUrl);
+    return FileUtils.readFileToString(new File(fileUrl.toURI()),
+        StandardCharsets.UTF_8);
   }
 }

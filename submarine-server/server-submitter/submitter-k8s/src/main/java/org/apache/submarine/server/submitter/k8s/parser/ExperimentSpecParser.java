@@ -190,9 +190,14 @@ public class ExperimentSpecParser {
           createCommand.append(" ");
           createCommand.append(dependency);
         }
-        String activateCommand = "conda activate " + condaEnvironmentName;
-        initContainer.addCommandItem(createCommand.toString());
-        initContainer.addCommandItem(activateCommand);
+        String activateCommand =
+            "echo \"source activate " + condaEnvironmentName + "\" > ~/.bashrc";
+        String pathCommand = "PATH=/opt/conda/envs/env/bin:$PATH";
+        String finalCommand = createCommand.toString() + " && "
+            + activateCommand + " && " + pathCommand;
+        initContainer.addCommandItem("/bin/bash");
+        initContainer.addCommandItem("-c");
+        initContainer.addCommandItem(finalCommand);
         initContainers.add(initContainer);
       }
       podSpec.setInitContainers(initContainers);

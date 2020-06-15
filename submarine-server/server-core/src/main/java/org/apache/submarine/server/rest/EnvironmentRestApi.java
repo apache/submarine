@@ -45,12 +45,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
- * Environment REST API v1. It can accept {@link EnvironmentSpec} to create a environment.
+ * Environment REST API v1. It can accept {@link EnvironmentSpec} to create a
+ * environment.
  */
 @Path(RestConstants.V1 + "/" + RestConstants.ENVIRONMENTS)
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
 public class EnvironmentRestApi {
-  private final EnvironmentManager environmentManager = EnvironmentManager.getInstance();
+  private final EnvironmentManager environmentManager =
+      EnvironmentManager.getInstance();
 
   /**
    * Returns the contents of {@link environment}.
@@ -62,8 +64,10 @@ public class EnvironmentRestApi {
   @Operation(summary = "Create a environment",
           tags = {"environment"},
           responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = Environment.class)))})
+                  @ApiResponse(description = "successful operation", 
+                      content = @Content(
+                          schema = @Schema(
+                              implementation = Environment.class)))})
   public Response createEnvironment(EnvironmentSpec spec) {
     try {
       Environment environment = environmentManager.createEnvironment(spec);
@@ -74,28 +78,41 @@ public class EnvironmentRestApi {
     }
   }
   
+  /**
+   * Update environment.
+   * @param name Name of the environment
+   * @param spec environment spec
+   * @return the detailed info about updated environment
+   */
   @PATCH
   @Path("/{id}")
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
   @Operation(summary = "Update the environment with job spec",
           tags = {"environments"},
           responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = Environment.class))),
-                  @ApiResponse(responseCode = "404", description = "Environment not found")})
-  public Response updateEnvironment(@PathParam(RestConstants.ENVIRONMENT_ID) String id, EnvironmentSpec spec) {
+                  @ApiResponse(description = "successful operation", 
+                      content = @Content(
+                          schema = @Schema(
+                              implementation = Environment.class))),
+                  @ApiResponse(
+                      responseCode = "404", 
+                      description = "Environment not found")})
+  public Response updateEnvironment(
+      @PathParam(RestConstants.ENVIRONMENT_ID) String name,
+      EnvironmentSpec spec) {
     try {
-      Environment environment = environmentManager.updateEnvironment(id, spec);
-      return new JsonResponse.Builder<Environment>(Response.Status.OK).success(true)
-          .result(environment).build();
+      Environment environment =
+          environmentManager.updateEnvironment(name, spec);
+      return new JsonResponse.Builder<Environment>(Response.Status.OK)
+          .success(true).result(environment).build();
     } catch (SubmarineRuntimeException e) {
       return parseEnvironmentServiceException(e);
     }
   }
 
   /**
-   * Returns the environment that deleted
-   * @param id environment id
+   * Returns the environment that deleted.
+   * @param name Name of the environment
    * @return the detailed info about deleted environment
    */
   @DELETE
@@ -103,61 +120,75 @@ public class EnvironmentRestApi {
   @Operation(summary = "Delete the environment",
           tags = {"environments"},
           responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
+                  @ApiResponse(description = "successful operation", 
+                      content = @Content(
                           schema = @Schema(implementation = Environment.class))),
-                  @ApiResponse(responseCode = "404", description = "Job not found")})
-  public Response deleteEnvironment(@PathParam(RestConstants.ENVIRONMENT_ID) String id) {
+                  @ApiResponse(
+                      responseCode = "404", description = "Environment not found")})
+  public Response deleteEnvironment(
+      @PathParam(RestConstants.ENVIRONMENT_ID) String name) {
     try {
-      Environment environment = environmentManager.deleteEnvironment(id);
-      return new JsonResponse.Builder<Environment>(Response.Status.OK).success(true)
-          .result(environment).build();
+      Environment environment = environmentManager.deleteEnvironment(name);
+      return new JsonResponse.Builder<Environment>(Response.Status.OK)
+          .success(true).result(environment).build();
     } catch (SubmarineRuntimeException e) {
       return parseEnvironmentServiceException(e);
     }
   }
   
   /**
-   * List all environments
+   * List all environments.
    * @return environment list
    */
   @GET
   @Operation(summary = "List of Environments",
           tags = {"environments"},
           responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = Environment.class)))})
+                  @ApiResponse(description = "successful operation", 
+                      content = @Content(
+                          schema = @Schema(
+                              implementation = Environment.class)))})
   public Response listEnvironment(@QueryParam("status") String status) {
     try {
-      List<Environment> environmentList = environmentManager.listEnvironments(status);
-      return new JsonResponse.Builder<List<Environment>>(Response.Status.OK).success(true).result(environmentList).build();
-    } catch (SubmarineRuntimeException e) {
-      return parseEnvironmentServiceException(e);
-    } 
-  }
-
-  /**
-   * Returns the environment details for the given environment id
-   * @param id environment id
-   * @return the contents of environment
-   */
-  @GET
-  @Path("/{id}")
-  @Operation(summary = "Find environment by id",
-          tags = {"environment"},
-          responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = Environment.class))),
-                  @ApiResponse(responseCode = "404", description = "Environment not found")})
-  public Response getEnvironment(@PathParam(RestConstants.ENVIRONMENT_ID) String id) {
-    try {
-      Environment environment = environmentManager.getEnvironment(id);
-      return new JsonResponse.Builder<Environment>(Response.Status.OK).success(true).result(environment).build();
+      List<Environment> environmentList =
+          environmentManager.listEnvironments(status);
+      return new JsonResponse.Builder<List<Environment>>(Response.Status.OK)
+          .success(true).result(environmentList).build();
     } catch (SubmarineRuntimeException e) {
       return parseEnvironmentServiceException(e);
     }
   }
 
-  private Response parseEnvironmentServiceException(SubmarineRuntimeException e) {
-    return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage()).build();
+  /**
+   * Returns details for the given environment.
+   * @param name Name of the environment
+   * @return the contents of environment
+   */
+  @GET
+  @Path("/{id}")
+  @Operation(summary = "Find environment by name",
+          tags = {"environment"},
+          responses = {
+                  @ApiResponse(description = "successful operation", 
+                      content = @Content(
+                          schema = @Schema(implementation = Environment.class))),
+                  @ApiResponse(
+                      responseCode = "404", 
+                      description = "Environment not found")})
+  public Response getEnvironment(
+      @PathParam(RestConstants.ENVIRONMENT_ID) String name) {
+    try {
+      Environment environment = environmentManager.getEnvironment(name);
+      return new JsonResponse.Builder<Environment>(Response.Status.OK)
+          .success(true).result(environment).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseEnvironmentServiceException(e);
+    }
+  }
+
+  private Response parseEnvironmentServiceException(
+      SubmarineRuntimeException e) {
+    return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage())
+        .build();
   }
 }

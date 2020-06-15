@@ -220,10 +220,12 @@ public class ExperimentSpecParserTest extends SpecBuilder {
         mlJobReplicaSpec.getTemplate().getSpec().getInitContainers().get(0);
     Assert.assertEquals(dockerImage, initContainer.getImage());
 
+    Assert.assertEquals("/bin/bash", initContainer.getCommand().get(0));
+    Assert.assertEquals("-c", initContainer.getCommand().get(1));
     Assert.assertEquals(
-        "conda create -n " + kernelName + " -c " + channel + " " + dependency,
-        initContainer.getCommand().get(0));
-    Assert.assertEquals("conda activate " + kernelName,
-        initContainer.getCommand().get(1));
+        "conda create -n " + kernelName + " -c " + channel + " " + dependency
+            + " && " + "echo \"source activate " + kernelName + "\" > ~/.bashrc"
+            + " && " + "PATH=/opt/conda/envs/env/bin:$PATH",
+        initContainer.getCommand().get(2));
   }
 }
