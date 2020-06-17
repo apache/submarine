@@ -14,6 +14,7 @@
 # limitations under the License.
 
 # coding: utf-8
+
 """
     Submarine Experiment API
 
@@ -60,7 +61,6 @@ class JsonResponse(object):
         'result': 'result',
         'attributes': 'attributes'
     }
-
 
     def __init__(self, code=None, success=None, result=None, attributes=None, local_vars_configuration=None):  # noqa: E501
         """JsonResponse - a model defined in OpenAPI"""  # noqa: E501
@@ -174,17 +174,18 @@ class JsonResponse(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(
-                    map(lambda x: x.to_dict()
-                        if hasattr(x, "to_dict") else x, value))
+                result[attr] = list(map(
+                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
+                    value
+                ))
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(
-                    map(
-                        lambda item: (item[0], item[1].to_dict())
-                        if hasattr(item[1], "to_dict") else item,
-                        value.items()))
+                result[attr] = dict(map(
+                    lambda item: (item[0], item[1].to_dict())
+                    if hasattr(item[1], "to_dict") else item,
+                    value.items()
+                ))
             else:
                 result[attr] = value
 

@@ -14,6 +14,7 @@
 # limitations under the License.
 
 # coding: utf-8
+
 """
     Submarine Experiment API
 
@@ -54,8 +55,8 @@ class ExperimentTaskSpec(object):
         'image': 'str',
         'cmd': 'str',
         'env_vars': 'dict(str, str)',
-        'cpu': 'str',
         'gpu': 'str',
+        'cpu': 'str',
         'memory': 'str'
     }
 
@@ -66,13 +67,12 @@ class ExperimentTaskSpec(object):
         'image': 'image',
         'cmd': 'cmd',
         'env_vars': 'envVars',
-        'cpu': 'cpu',
         'gpu': 'gpu',
+        'cpu': 'cpu',
         'memory': 'memory'
     }
 
-
-    def __init__(self, replicas=None, resources=None, name=None, image=None, cmd=None, env_vars=None, cpu=None, gpu=None, memory=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, replicas=None, resources=None, name=None, image=None, cmd=None, env_vars=None, gpu=None, cpu=None, memory=None, local_vars_configuration=None):  # noqa: E501
         """ExperimentTaskSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -84,8 +84,8 @@ class ExperimentTaskSpec(object):
         self._image = None
         self._cmd = None
         self._env_vars = None
-        self._cpu = None
         self._gpu = None
+        self._cpu = None
         self._memory = None
         self.discriminator = None
 
@@ -101,10 +101,10 @@ class ExperimentTaskSpec(object):
             self.cmd = cmd
         if env_vars is not None:
             self.env_vars = env_vars
-        if cpu is not None:
-            self.cpu = cpu
         if gpu is not None:
             self.gpu = gpu
+        if cpu is not None:
+            self.cpu = cpu
         if memory is not None:
             self.memory = memory
 
@@ -235,27 +235,6 @@ class ExperimentTaskSpec(object):
         self._env_vars = env_vars
 
     @property
-    def cpu(self):
-        """Gets the cpu of this ExperimentTaskSpec.  # noqa: E501
-
-
-        :return: The cpu of this ExperimentTaskSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._cpu
-
-    @cpu.setter
-    def cpu(self, cpu):
-        """Sets the cpu of this ExperimentTaskSpec.
-
-
-        :param cpu: The cpu of this ExperimentTaskSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._cpu = cpu
-
-    @property
     def gpu(self):
         """Gets the gpu of this ExperimentTaskSpec.  # noqa: E501
 
@@ -275,6 +254,27 @@ class ExperimentTaskSpec(object):
         """
 
         self._gpu = gpu
+
+    @property
+    def cpu(self):
+        """Gets the cpu of this ExperimentTaskSpec.  # noqa: E501
+
+
+        :return: The cpu of this ExperimentTaskSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._cpu
+
+    @cpu.setter
+    def cpu(self, cpu):
+        """Sets the cpu of this ExperimentTaskSpec.
+
+
+        :param cpu: The cpu of this ExperimentTaskSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._cpu = cpu
 
     @property
     def memory(self):
@@ -304,17 +304,18 @@ class ExperimentTaskSpec(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(
-                    map(lambda x: x.to_dict()
-                        if hasattr(x, "to_dict") else x, value))
+                result[attr] = list(map(
+                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
+                    value
+                ))
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(
-                    map(
-                        lambda item: (item[0], item[1].to_dict())
-                        if hasattr(item[1], "to_dict") else item,
-                        value.items()))
+                result[attr] = dict(map(
+                    lambda item: (item[0], item[1].to_dict())
+                    if hasattr(item[1], "to_dict") else item,
+                    value.items()
+                ))
             else:
                 result[attr] = value
 

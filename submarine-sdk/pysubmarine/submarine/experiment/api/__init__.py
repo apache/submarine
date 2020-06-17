@@ -15,5 +15,7 @@
 
 from __future__ import absolute_import
 
+# flake8: noqa
+
 # import apis into api package
 from submarine.experiment.api.experiment_api import ExperimentApi

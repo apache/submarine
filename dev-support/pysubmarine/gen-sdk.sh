@@ -77,3 +77,6 @@ done
 
 echo "Move Experiment API to pysubmarine"
 cp -r sdk/python/submarine/experiment ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine/submarine/
+
+echo "Fix Python SDK code style"
+${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine/github-actions/auto-format.sh

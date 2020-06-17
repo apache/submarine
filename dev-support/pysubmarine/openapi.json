@@ -17,14 +17,15 @@
     "url" : "/api"
   } ],
   "paths" : {
-    "/v1/experiment" : {
+    "/v1/experiment/logs/{id}" : {
       "get" : {
         "tags" : [ "experiment" ],
-        "summary" : "List experiments",
-        "operationId" : "listExperiments",
+        "summary" : "Log experiment by id",
+        "operationId" : "getLog",
         "parameters" : [ {
-          "name" : "status",
-          "in" : "query",
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
           "schema" : {
             "type" : "string"
           }
@@ -39,34 +40,26 @@
                 }
               }
             }
+          },
+          "404" : {
+            "description" : "Experiment not found"
           }
         }
-      },
-      "post" : {
+      }
+    },
+    "/v1/experiment/ping" : {
+      "get" : {
         "tags" : [ "experiment" ],
-        "summary" : "Create an experiment",
-        "operationId" : "createExperiment",
-        "requestBody" : {
-          "content" : {
-            "application/yaml" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ExperimentSpec"
-              }
-            },
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/ExperimentSpec"
-              }
-            }
-          }
-        },
+        "summary" : "Ping submarine server",
+        "description" : "Return the Pong message for test the connectivity",
+        "operationId" : "ping",
         "responses" : {
-          "default" : {
+          "200" : {
             "description" : "successful operation",
             "content" : {
               "application/json; charset=utf-8" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/JsonResponse"
+                  "type" : "string"
                 }
               }
             }
@@ -174,15 +167,14 @@
         }
       }
     },
-    "/v1/experiment/logs/{id}" : {
+    "/v1/experiment" : {
       "get" : {
         "tags" : [ "experiment" ],
-        "summary" : "Log experiment by id",
-        "operationId" : "getLog",
+        "summary" : "List experiments",
+        "operationId" : "listExperiments",
         "parameters" : [ {
-          "name" : "id",
-          "in" : "path",
-          "required" : true,
+          "name" : "status",
+          "in" : "query",
           "schema" : {
             "type" : "string"
           }
@@ -197,26 +189,34 @@
                 }
               }
             }
-          },
-          "404" : {
-            "description" : "Experiment not found"
           }
         }
-      }
-    },
-    "/v1/experiment/ping" : {
-      "get" : {
+      },
+      "post" : {
         "tags" : [ "experiment" ],
-        "summary" : "Ping submarine server",
-        "description" : "Return the Pong message for test the connectivity",
-        "operationId" : "ping",
+        "summary" : "Create an experiment",
+        "operationId" : "createExperiment",
+        "requestBody" : {
+          "content" : {
+            "application/yaml" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ExperimentSpec"
+              }
+            },
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/ExperimentSpec"
+              }
+            }
+          }
+        },
         "responses" : {
-          "200" : {
+          "default" : {
             "description" : "successful operation",
             "content" : {
               "application/json; charset=utf-8" : {
                 "schema" : {
-                  "type" : "string"
+                  "$ref" : "#/components/schemas/JsonResponse"
                 }
               }
             }
@@ -347,10 +347,10 @@
               "type" : "string"
             }
           },
-          "cpu" : {
+          "gpu" : {
             "type" : "string"
           },
-          "gpu" : {
+          "cpu" : {
             "type" : "string"
           },
           "memory" : {
