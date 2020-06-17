@@ -59,9 +59,9 @@ public class ParamServiceTest {
 
     Param paramDb = paramList.get(0);
     compareParams(param, paramDb);
-    /*
-    Param paramDb2 = paramService.selectById("" + result);
-    compareParams(param, paramDb2);*/
+    
+    Param paramDb2 = paramService.selectByPrimaryKeySelective(param).get(0);
+    compareParams(param, paramDb2);
   }
 
   @Test
@@ -82,9 +82,9 @@ public class ParamServiceTest {
     param.setUpdateBy("ParamServiceTest-UpdateBy");
     boolean editResult = paramService.update(param);
     assertTrue(editResult);
-    /*
-    Param paramDb2 = paramService.selectById("" + result);
-    compareParams(param, paramDb2);*/
+    
+    Param paramDb2 = paramService.selectByPrimaryKeySelective(param).get(0);
+    compareParams(param, paramDb2);
   }
 
   @Test
@@ -98,9 +98,11 @@ public class ParamServiceTest {
 
     boolean result = paramService.insert(param);
     assertTrue(result);
-    /*
-    boolean deleteResult = paramService.deleteById("" + result);
-    assertTrue(deleteResult);*/
+
+    Param paramDb2 = paramService.selectByPrimaryKeySelective(param).get(0);
+
+    boolean deleteResult = paramService.deleteById(paramDb2.getId());
+    assertTrue(deleteResult);
   }
 
   private void compareParams(Param param, Param paramDb) {
