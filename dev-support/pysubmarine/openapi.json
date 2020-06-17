@@ -347,10 +347,10 @@
               "type" : "string"
             }
           },
-          "gpu" : {
+          "cpu" : {
             "type" : "string"
           },
-          "cpu" : {
+          "gpu" : {
             "type" : "string"
           },
           "memory" : {

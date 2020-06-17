@@ -1,11 +1,11 @@
 # Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements. See the NOTICE file distributed with
+# contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
 # The ASF licenses this file to You under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with
-# the License. You may obtain a copy of the License at
+# the License.  You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -55,8 +55,8 @@ class ExperimentTaskSpec(object):
         'image': 'str',
         'cmd': 'str',
         'env_vars': 'dict(str, str)',
-        'gpu': 'str',
         'cpu': 'str',
+        'gpu': 'str',
         'memory': 'str'
     }
 
@@ -67,12 +67,12 @@ class ExperimentTaskSpec(object):
         'image': 'image',
         'cmd': 'cmd',
         'env_vars': 'envVars',
-        'gpu': 'gpu',
         'cpu': 'cpu',
+        'gpu': 'gpu',
         'memory': 'memory'
     }
 
-    def __init__(self, replicas=None, resources=None, name=None, image=None, cmd=None, env_vars=None, gpu=None, cpu=None, memory=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(self, replicas=None, resources=None, name=None, image=None, cmd=None, env_vars=None, cpu=None, gpu=None, memory=None, local_vars_configuration=None):  # noqa: E501
         """ExperimentTaskSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -84,8 +84,8 @@ class ExperimentTaskSpec(object):
         self._image = None
         self._cmd = None
         self._env_vars = None
-        self._gpu = None
         self._cpu = None
+        self._gpu = None
         self._memory = None
         self.discriminator = None
 
@@ -101,10 +101,10 @@ class ExperimentTaskSpec(object):
             self.cmd = cmd
         if env_vars is not None:
             self.env_vars = env_vars
-        if gpu is not None:
-            self.gpu = gpu
         if cpu is not None:
             self.cpu = cpu
+        if gpu is not None:
+            self.gpu = gpu
         if memory is not None:
             self.memory = memory
 
@@ -235,27 +235,6 @@ class ExperimentTaskSpec(object):
         self._env_vars = env_vars
 
     @property
-    def gpu(self):
-        """Gets the gpu of this ExperimentTaskSpec.  # noqa: E501
-
-
-        :return: The gpu of this ExperimentTaskSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._gpu
-
-    @gpu.setter
-    def gpu(self, gpu):
-        """Sets the gpu of this ExperimentTaskSpec.
-
-
-        :param gpu: The gpu of this ExperimentTaskSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._gpu = gpu
-
-    @property
     def cpu(self):
         """Gets the cpu of this ExperimentTaskSpec.  # noqa: E501
 
@@ -275,6 +254,27 @@ class ExperimentTaskSpec(object):
         """
 
         self._cpu = cpu
+
+    @property
+    def gpu(self):
+        """Gets the gpu of this ExperimentTaskSpec.  # noqa: E501
+
+
+        :return: The gpu of this ExperimentTaskSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._gpu
+
+    @gpu.setter
+    def gpu(self, gpu):
+        """Sets the gpu of this ExperimentTaskSpec.
+
+
+        :param gpu: The gpu of this ExperimentTaskSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._gpu = gpu
 
     @property
     def memory(self):
