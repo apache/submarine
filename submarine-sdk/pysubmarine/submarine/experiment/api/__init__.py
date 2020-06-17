@@ -16,6 +16,4 @@
 from __future__ import absolute_import
 
 # import apis into api package
-from submarine.job.api.jobs_api import JobsApi
-
-# flake8: noqa
+from submarine.experiment.api.experiment_api import ExperimentApi
