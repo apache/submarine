@@ -43,7 +43,9 @@ pytest --cov=submarine -vs
 ./submarine-sdk/pysubmarine/github-actions/lint.sh
 ```
 ## How to generate REST SDK from swagger
-- [Generate REST SDK from swagger](./generate_api.md)
+```bash
+./dev-support/pysubmarine/gen-sdk.sh
+```
 
 ## Easy-to-use model trainers
 - [FM](../../../submarine-sdk/pysubmarine/example/deepfm)
