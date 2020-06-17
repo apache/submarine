@@ -21,10 +21,6 @@
 <mapper namespace="org.apache.submarine.server.workbench.database.mappers.ParamMapper">
   <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.workbench.database.entity.BaseEntity">
     <id property="id" column="id"/>
-    <result column="create_by" property="createBy"/>
-    <result column="create_time" property="createTime"/>
-    <result column="update_by" property="updateBy"/>
-    <result column="update_time" property="updateTime"/>
   </resultMap>
 
   <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Param" extends="BaseEntityResultMap">
@@ -35,8 +31,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, param_key, value, worker_index, job_name,
-    create_by, create_time, update_by, update_time
+    id, param_key, value, worker_index, job_name
   </sql>
 
   <select id="selectAll" parameterType="java.lang.String" resultMap="resultMap">
@@ -60,13 +55,11 @@
 
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Param"
           useGeneratedKeys="true" keyProperty="id">
-    insert into param (param_key, value, worker_index, job_name,
-      create_by, create_time, update_by, update_time)
+    insert into param (param_key, value, worker_index, job_name)
     values (#{paramKey,jdbcType=VARCHAR}, 
       #{value,jdbcType=FLOAT},
       #{workerIndex,jdbcType=VARCHAR}, 
-      #{jobName,jdbcType=VARCHAR},
-      #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
+      #{jobName,jdbcType=VARCHAR})
   </insert>
 
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Param">
@@ -74,9 +67,7 @@
     set param_key = #{paramKey,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},
       worker_index = #{workerIndex,jdbcType=VARCHAR},
-      job_name = #{jobName,jdbcType=VARCHAR},
-      update_by = #{updateBy,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      job_name = #{jobName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 

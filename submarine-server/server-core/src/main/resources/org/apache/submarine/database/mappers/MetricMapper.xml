@@ -21,10 +21,6 @@
 <mapper namespace="org.apache.submarine.server.workbench.database.mappers.MetricMapper">
   <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.workbench.database.entity.BaseEntity">
     <id property="id" column="id"/>
-    <result column="create_by" property="createBy"/>
-    <result column="create_time" property="createTime"/>
-    <result column="update_by" property="updateBy"/>
-    <result column="update_time" property="updateTime"/>
   </resultMap>
 
   <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Metric" extends="BaseEntityResultMap">
@@ -38,8 +34,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, metric_key, value, worker_index, timestamp, step, is_nan, job_name,
-    create_by, create_time, update_by, update_time
+    id, metric_key, value, worker_index, timestamp, step, is_nan, job_name
   </sql>
 
   <select id="selectAll" parameterType="java.lang.String" resultMap="resultMap">
@@ -64,18 +59,16 @@
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Metric"
           useGeneratedKeys="true" keyProperty="id">
     insert into metric (metric_key, value, worker_index, timestamp,
-      step, is_nan, job_name,
-      create_by, create_time, update_by, update_time)
+      step, is_nan, job_name)
     values (#{metricKey,jdbcType=VARCHAR}, 
       #{value,jdbcType=FLOAT},
       #{workerIndex,jdbcType=VARCHAR}, 
       #{timestamp,jdbcType=BIGINT}, 
       #{step,jdbcType=INTEGER},
       #{isNan,jdbcType=INTEGER}, 
-      #{jobName,jdbcType=VARCHAR},
-      #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
+      #{jobName,jdbcType=VARCHAR})
   </insert>
-
+  
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Metric">
     update metric
     set metric_key = #{metricKey,jdbcType=VARCHAR},
@@ -84,12 +77,10 @@
       timestamp = #{timestamp,jdbcType=BIGINT},
       step = #{step,jdbcType=INTEGER},
       is_nan = #{isNan,jdbcType=INTEGER},
-      job_name = #{jobName,jdbcType=VARCHAR},
-      update_by = #{updateBy,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      job_name = #{jobName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
-
+  
 
 
     <select id="selectByPrimaryKeySelective" parameterType="java.lang.String" resultMap="resultMap">
