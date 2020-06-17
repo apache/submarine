@@ -23,7 +23,6 @@ SWAGGER_CODEGEN_JAR="openapi-generator-cli.jar"
 SWAGGER_CODEGEN_CONF="swagger_config.json"
 SWAGGER_CODEGEN_FILE="openapi.json"
 SDK_OUTPUT_PATH="sdk/python"
-# SDK_OUTPUT_PATH="../../submarine-sdk/pysubmarine/submarine"
 
 submarine_dist_exists=$(find -L "${SUBMARINE_PROJECT_PATH}/submarine-dist/target" -name "submarine-dist-*.tar.gz")
 # Build source code if the package doesn't exist.
@@ -33,7 +32,7 @@ if [[ -z "${submarine_dist_exists}" ]]; then
 fi
 
 echo "Generating openAPI 3.0 definition file ..."
-# TODO(pingsutw): generate openapi.yaml without starting submarine server
+# TODO(pingsutw): generate openapi.json without starting submarine server
 bash ${SUBMARINE_PROJECT_PATH}/submarine-dist/target//submarine-dist-*/submarine-dist-*/bin/submarine-daemon.sh start getMysqlJar
 sleep 5
 rm openapi.json
