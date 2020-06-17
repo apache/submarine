@@ -45,7 +45,7 @@ public class MetricServiceTest {
   }
 
   @Test
-  public void testSelectMetric() throws Exception {
+  public void testSelect() throws Exception {
     Metric metric = new Metric();
     metric.setMetricKey("score");
     metric.setValue((float) 0.666667);
@@ -68,7 +68,7 @@ public class MetricServiceTest {
   }
 
   @Test
-  public void testUpdateJob() throws Exception {
+  public void testUpdate() throws Exception {
     Metric metric = new Metric();
     metric.setMetricKey("score");
     metric.setValue((float) 0.666667);
@@ -96,7 +96,7 @@ public class MetricServiceTest {
   }
 
   @Test
-  public void delete() throws Exception {
+  public void testDelete() throws Exception {
     Metric metric = new Metric();
     metric.setMetricKey("score");
     metric.setValue((float) 0.666667);

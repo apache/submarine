@@ -74,6 +74,10 @@ public class Metric extends BaseEntity {
     this.timestamp = timestamp;
   }
 
+  public void setTimestamp(Integer timestamp) {
+    this.timestamp = BigInteger.valueOf(timestamp.longValue());
+  }
+
   public Integer getStep() {
     return this.step;
   }
@@ -97,5 +101,6 @@ public class Metric extends BaseEntity {
   public void setJobName(String jobName) {
     this.jobName = jobName;
   }
+
 
 }

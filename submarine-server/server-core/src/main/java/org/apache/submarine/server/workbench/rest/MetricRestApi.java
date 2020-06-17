@@ -18,7 +18,6 @@
  */
 package org.apache.submarine.server.workbench.rest;
 
-import com.google.gson.Gson;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.Metric;
 import org.apache.submarine.server.workbench.database.service.MetricService;
@@ -26,6 +25,7 @@ import org.apache.submarine.server.response.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -44,20 +44,51 @@ import javax.ws.rs.core.Response;
 @Singleton
 public class MetricRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(LoginRestApi.class);
-  private static final Gson gson = new Gson();
   MetricService metricService = new MetricService();
 
   @Inject
   public MetricRestApi() {
   }
 
+  /*
+  # +-------+----------+--------------+---------------+------+--------+------------------+
+  # | key   | value    | worker_index | timestamp     | step | is_nan | job_name         |
+  # +-------+----------+--------------+---------------+------+--------+------------------+
+  # | score | 0.666667 | worker-1     | 1569139525097 |    0 |      0 | application_1234 |
+  # | score | 0.666667 | worker-1     | 1569149139731 |    0 |      0 | application_1234 |
+  # | score | 0.666667 | worker-1     | 1569169376482 |    0 |      0 | application_1234 |
+  # | score | 0.666667 | worker-1     | 1569236290721 |    0 |      0 | application_1234 |
+  # | score | 0.666667 | worker-1     | 1569236466722 |    0 |      0 | application_1234 |
+  # +-------+----------+--------------+---------------+------+--------+------------------+
+  */
+
   @GET
   @Path("/list")
   @SubmarineApi
-  public Response listMetric() {
+  public Response listMetric(@QueryParam("metricKey") String metricKey,
+                              @QueryParam("value") Float value,
+                              @QueryParam("workerIndex") String workerIndex,
+                              @QueryParam("timestamp") BigInteger timestamp,
+                              @QueryParam("step") Integer step,
+                              @QueryParam("isNan") Integer isNan,
+                              @QueryParam("jobName") String jobName,
+                              @QueryParam("id") String id) {
+
+    Metric metric = new Metric();
+    metric.setMetricKey(metricKey);
+    metric.setValue(value);
+    metric.setWorkerIndex(workerIndex);
+    metric.setTimestamp(timestamp);
+    metric.setStep(step);
+    metric.setIsNan(isNan);
+    metric.setJobName(jobName);
+    metric.setId(id);
+
+    LOG.info("listMetric ({})", metric);
+
     List<Metric> metrics;
     try {
-      metrics = metricService.selectAll();
+      metrics = metricService.selectByPrimaryKeySelective(metric);
 
     } catch (Exception e) {
 
@@ -86,7 +117,7 @@ public class MetricRestApi {
   }
 
   @POST
-  @Path("/")
+  @Path("/add")
   @SubmarineApi
   public Response postMetric(Metric metric) {
     boolean result = false;
@@ -102,7 +133,7 @@ public class MetricRestApi {
   }
 
   @DELETE
-  @Path("/")
+  @Path("/delete")
   @SubmarineApi
   public Response deleteMetric(@QueryParam("id") String id) {
     boolean result = false;
@@ -117,7 +148,7 @@ public class MetricRestApi {
   }
 
   @PUT
-  @Path("")
+  @Path("/edit")
   @SubmarineApi
   public Response putMetric(Metric metric) {
     boolean result = false;

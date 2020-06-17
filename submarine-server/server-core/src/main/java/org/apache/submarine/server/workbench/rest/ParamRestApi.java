@@ -18,7 +18,6 @@
  */
 package org.apache.submarine.server.workbench.rest;
 
-import com.google.gson.Gson;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.Param;
 import org.apache.submarine.server.workbench.database.service.ParamService;
@@ -44,22 +43,43 @@ import javax.ws.rs.core.Response;
 @Singleton
 public class ParamRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(LoginRestApi.class);
-  private static final Gson gson = new Gson();
   ParamService paramService = new ParamService();
 
   @Inject
   public ParamRestApi() {
   }
 
+  /*
+  # +----------+-------+--------------+-----------------------+
+  # | key      | value | worker_index | job_name              |
+  # +----------+-------+--------------+-----------------------+
+  # | max_iter | 100   | worker-1     | application_123651651 |
+  # | n_jobs   | 5     | worker-1     | application_123456898 |
+  # | alpha    | 20    | worker-1     | application_123456789 |
+  # +----------+-------+--------------+-----------------------+
+  */
+
   @GET
   @Path("/list")
   @SubmarineApi
-  public Response listParam(@QueryParam("id") String id) {
-    LOG.info("getParam ({})", id);
+  public Response listParam(@QueryParam("id") String id, 
+                            @QueryParam("paramKey") String paramKey, 
+                            @QueryParam("value") String value, 
+                            @QueryParam("workerIndex") String workerIndex, 
+                            @QueryParam("jobName") String jobName) {
+    
+    Param param = new Param();
+    param.setId(id);
+    param.setParamKey(paramKey);
+    param.setValue(value);
+    param.setWorkerIndex(workerIndex);
+    param.setJobName(jobName);
+
+    LOG.info("listParam ({})", param);
     
     List<Param> params;
     try {
-      params = paramService.selectAll();
+      params = paramService.selectByPrimaryKeySelective(param);
 
     } catch (Exception e) {
 
@@ -90,7 +110,7 @@ public class ParamRestApi {
   }
 
   @POST
-  @Path("/")
+  @Path("/add")
   @SubmarineApi
   public Response postParam(Param param) {
     LOG.info("postParam ({})", param);
@@ -107,7 +127,7 @@ public class ParamRestApi {
   }
 
   @DELETE
-  @Path("/")
+  @Path("/delete")
   @SubmarineApi
   public Response deleteParam(@QueryParam("id") String id) {
     LOG.info("deleteParam ({})", id);
@@ -123,7 +143,7 @@ public class ParamRestApi {
   }
 
   @PUT
-  @Path("")
+  @Path("/edit")
   @SubmarineApi
   public Response putParam(Param param) {
     LOG.info("putParam ({})", param);

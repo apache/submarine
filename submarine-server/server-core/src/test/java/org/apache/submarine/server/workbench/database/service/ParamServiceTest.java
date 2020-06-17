@@ -44,7 +44,7 @@ public class ParamServiceTest {
   }
 
   @Test
-  public void testSelectParam() throws Exception {
+  public void testSelect() throws Exception {
     Param param = new Param();
     param.setParamKey("score");
     param.setValue("199");
@@ -64,7 +64,7 @@ public class ParamServiceTest {
   }
 
   @Test
-  public void testUpdateJob() throws Exception {
+  public void testUpdate() throws Exception {
     Param param = new Param();
     param.setParamKey("score");
     param.setValue("100");
@@ -85,7 +85,7 @@ public class ParamServiceTest {
   }
 
   @Test
-  public void delete() throws Exception {
+  public void testDelete() throws Exception {
     Param param = new Param();
     param.setParamKey("score");
     param.setValue("100");
