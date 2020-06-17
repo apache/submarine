@@ -17,7 +17,6 @@
 # from submarine.job import ApiClient, JobLibrarySpec, JobSpec, JobTaskSpec,\
 #     Configuration, JobsApi
 
-import submarine.tracking.fluent
 import submarine.tracking as tracking
 import submarine.tracking.fluent
 
