@@ -20,8 +20,6 @@
 import submarine.tracking.fluent
 import submarine.tracking as tracking
 import submarine.tracking.fluent
-from submarine.job import (ApiClient, Configuration, JobLibrarySpec, JobsApi,
-                           JobSpec, JobTaskSpec)
 
 log_param = submarine.tracking.fluent.log_param
 log_metric = submarine.tracking.fluent.log_metric
