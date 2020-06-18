@@ -232,7 +232,7 @@ CREATE TABLE `metric` (
   `timestamp` bigint(20) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `BigInteger`. Part of *Primary Key* for   ``metrics`` table.',
   `step` bigint(11) NOT NULL COMMENT 'Step recorded for this metric entry: `BigInteger`.',
   `is_nan` int(11) NOT NULL COMMENT 'True if the value is in fact NaN.',
-  `job_name` varchar(32) NOT NULL COMMENT 'JOB NAME to which this metric belongs to: Part of *Primary Key* for ``metrics`` table.'
+  `job_name` varchar(32) NOT NULL COMMENT 'JOB NAME to which this metric belongs to: Part of *Primary Key* for ``metrics`` table.',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -245,6 +245,6 @@ CREATE TABLE `param` (
   `param_key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
   `value` varchar(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
   `worker_index` varchar(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
-  `job_name` varchar(32) NOT NULL COMMENT 'JOB NAME to which this parameter belongs to: Part of *Primary Key* for ``params`` table.'
+  `job_name` varchar(32) NOT NULL COMMENT 'JOB NAME to which this parameter belongs to: Part of *Primary Key* for ``params`` table.',
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
