@@ -64,11 +64,53 @@ _Theodore Levitt_ once said:
 
 Like mentioned above, Submarine is targeted to bring Data-Scientist-friendly user-interfaces to make their life easier. Here're some examples of Submarine user-interfaces.
 
-<FIXME: Add/FIX more contents below>
-
-<WIP>
-
 ### Submit a distributed Tensorflow experiment via Submarine Python SDK
+
+#### Run a Tensorflow Mnist experiment
+```python
+submarine_client = submarine.ExperimentClient(host='http://submarine:8080')
+
+environment = Environment(image='gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0')
+
+experiment_meta = ExperimentMeta(name='mnist',
+                                 namespace='default',
+                                 framework='Tensorflow',
+                                 cmd='python /var/tf_mnist/mnist_with_summaries.py'
+                                    ' --log_dir=/train/log --learning_rate=0.01'
+                                    ' --batch_size=150')
+ps_spec = ExperimentTaskSpec(resources='cpu=2,memory=1024M',
+                                 replicas=1)
+worker_spec = ExperimentTaskSpec(resources='cpu=2,memory=1024M',
+                                 replicas=1)
+
+experiment_spec = ExperimentSpec(meta=experiment_meta,
+                                 environment=environment,
+                                 spec={'Ps':ps_spec, 'Worker': worker_spec})
+experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
+```
+
+#### Query a specific experiment
+```python
+submarine_client.get_experiment(experiment['experimentId'])
+```
+
+#### Wait for finish
+
+```python
+submarine_client.wait_for_finish(experiment['experimentId'])
+```
+
+#### Get the experiment's log
+```python
+submarine_client.get_log(experiment['experimentId'])
+```
+
+#### Get all running experiment
+```python
+submarine_client.list_experiments(status='running')
+```
+For more details, see [SDK experiment example](submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb)
+
 
 ### Submit a pre-defined experiment template job
 

@@ -36,10 +36,10 @@ environment:
 spec:
   Ps:
     replicas: 1
-    resources: "cpu=1,memory=512M"
+    resources: "cpu=1,memory=1024M"
   Worker:
     replicas: 1
-    resources: "cpu=1,memory=512M"
+    resources: "cpu=1,memory=1024M"
 ```
 
 **JSON Format:**
@@ -60,11 +60,11 @@ spec:
   "spec": {
     "Ps": {
       "replicas": 1,
-      "resources": "cpu=1,memory=512M"
+      "resources": "cpu=1,memory=1024M"
     },
     "Worker": {
       "replicas": 1,
-      "resources": "cpu=1,memory=512M"
+      "resources": "cpu=1,memory=1024M"
     }
   }
 }
@@ -92,15 +92,15 @@ curl -X POST -H "Content-Type: application/json" -d '
   "spec": {
     "Ps": {
       "replicas": 1,
-      "resources": "cpu=1,memory=512M"
+      "resources": "cpu=1,memory=1024M"
     },
     "Worker": {
       "replicas": 1,
-      "resources": "cpu=1,memory=512M"
+      "resources": "cpu=1,memory=1024M"
     }
   }
 }
-' http://127.0.0.1/api/v1/experiment
+' http://127.0.0.1:8080/api/v1/experiment
 ```
 
 **Example Response:**
@@ -130,11 +130,11 @@ curl -X POST -H "Content-Type: application/json" -d '
             "spec": {
                 "Ps": {
                     "replicas": 1,
-                    "resources": "cpu=1,memory=512M"
+                    "resources": "cpu=1,memory=1024M"
                 },
                 "Worker": {
                     "replicas": 1,
-                    "resources": "cpu=1,memory=512M"
+                    "resources": "cpu=1,memory=1024M"
                 }
             }
         }
