@@ -189,7 +189,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     EnvironmentManager environmentManager = EnvironmentManager.getInstance();
 
     EnvironmentSpec spec = new EnvironmentSpec();
-    spec.setName("my_submarine_env");
+    spec.setName("my-submarine-env");
     String dockerImage = "example.com/my-docker-image:0.1.2";
     spec.setDockerImage(dockerImage);
 

@@ -20,7 +20,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.apache.submarine.server.workbench.database.mappers.SysDictMapper">
 
-  <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.workbench.database.entity.BaseEntity">
+  <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.database.entity.BaseEntity">
     <id property="id" column="id"/>
     <result column="create_by" property="createBy"/>
     <result column="create_time" property="createTime"/>

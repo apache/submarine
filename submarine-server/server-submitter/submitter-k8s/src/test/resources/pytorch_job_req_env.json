@@ -1,7 +1,7 @@
 {
   "name": "pytorch-dist-mnist-gloo-env",
   "namespace": "default",
-  "environment": "my_submarine_env",
+  "environment": "my-submarine-env",
   "librarySpec": {
     "name": "pytorch",
     "version": "2.1.0",

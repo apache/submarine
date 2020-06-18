@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.database.service;
 
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.submarine.server.workbench.database.MyBatisUtil;
+import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.workbench.database.entity.Project;
 import org.apache.submarine.server.workbench.database.entity.ProjectFiles;
 import org.apache.submarine.server.workbench.database.mappers.ProjectFilesMapper;

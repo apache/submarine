@@ -16,55 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.database.entity;
+package org.apache.submarine.server.environment.database.entity;
 
 import org.apache.submarine.server.database.entity.BaseEntity;
 
-public class SysDict extends BaseEntity {
+public class EnvironmentEntity extends BaseEntity {
 
-  private String dictCode;
+  private String environmentName;
 
-  private String dictName;
+  private String environmentSpec;
 
-  private String description;
-
-  private Integer deleted;
-
-  private Integer type;
-
-  public void setDictCode(String dictCode) {
-    this.dictCode = dictCode;
+  public String getEnvironmentName() {
+    return environmentName;
   }
 
-  public void setDictName(String dictName) {
-    this.dictName = dictName;
+  public void setEnvironmentName(String environmentName) {
+    this.environmentName = environmentName;
   }
 
-  public void setDescription(String description) {
-    this.description = description;
+  public String getEnvironmentSpec() {
+    return environmentSpec;
   }
 
-  public void setDeleted(Integer deleted) {
-    this.deleted = deleted;
+  public void setEnvironmentSpec(String environmentSpec) {
+    this.environmentSpec = environmentSpec;
   }
-
-  public void setType(Integer type) {
-    this.type = type;
-  }
-
-  public String getDictCode() {
-    return dictCode;
-  }
-
-  public String getDictName() {
-    return dictName;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public Integer getDeleted() {
-    return deleted;
-  }
+  
 }
