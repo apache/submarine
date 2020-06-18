@@ -58,6 +58,10 @@ kubectl delete crd/pytorchjobs.kubeflow.org
 
 ```bash
 kubectl port-forward svc/submarine-server 8080:8080 -n submarine
+
+# In another terminal. Run below command to verify it works
+curl http://127.0.0.1:8080/api/v1/experiment/ping
+{"status":"OK","code":200,"success":true,"message":null,"result":"Pong","attributes":{}}
 ```
 
 ### Uninstall Submarine
