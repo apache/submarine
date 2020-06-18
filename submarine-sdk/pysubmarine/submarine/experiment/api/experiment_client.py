@@ -100,7 +100,7 @@ class ExperimentClient:
         for log_content in log_contents:
             logging.info("The logs of Pod %s:\n", log_content['podName'])
             for log in log_content['podLog']:
-                logging.info("%s:\n", log)
+                logging.info("%s", log)
 
     def list_log(self, status):
         """
