@@ -43,7 +43,9 @@ pytest --cov=submarine -vs
 ./submarine-sdk/pysubmarine/github-actions/lint.sh
 ```
 ## How to generate REST SDK from swagger
-- [Generate REST SDK from swagger](./generate_api.md)
+```bash
+./dev-support/pysubmarine/gen-sdk.sh
+```
 
 ## Easy-to-use model trainers
 - [FM](../../../submarine-sdk/pysubmarine/example/deepfm)
@@ -51,7 +53,7 @@ pytest --cov=submarine -vs
 
 ## Submarine experiment management
 Makes it easy to run distributed or non-distributed TensorFlow, PyTorch experiments on Kubernetes.
-- [mnist example](../../../submarine-sdk/pysubmarine/example/submarine_job_sdk.ipynb)
+- [mnist example](../../../submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb)
 
 ## PySubmarine API Reference
 - [Tracking](tracking.md)

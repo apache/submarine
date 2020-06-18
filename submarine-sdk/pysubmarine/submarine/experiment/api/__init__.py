@@ -1,11 +1,11 @@
 # Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements. See the NOTICE file distributed with
+# contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
 # The ASF licenses this file to You under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with
-# the License. You may obtain a copy of the License at
+# the License.  You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,16 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import submarine.tracking as tracking
-import submarine.tracking.fluent
+from __future__ import absolute_import
 
-log_param = submarine.tracking.fluent.log_param
-log_metric = submarine.tracking.fluent.log_metric
-set_tracking_uri = tracking.set_tracking_uri
-get_tracking_uri = tracking.get_tracking_uri
+# flake8: noqa
 
-__all__ = ["log_metric",
-           "log_param",
-           "set_tracking_uri",
-           "get_tracking_uri"
-           ]
+# import apis into api package
+from submarine.experiment.api.experiment_api import ExperimentApi

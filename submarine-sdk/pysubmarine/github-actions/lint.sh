@@ -21,7 +21,7 @@ cd "$FWDIR"
 cd ..
 
 pycodestyle --max-line-length=100  -- submarine tests
-pylint --ignore job --msg-template="{path} ({line},{column}): [{msg_id} {symbol}] {msg}" --rcfile=pylintrc -- submarine tests
+pylint --ignore experiment --msg-template="{path} ({line},{column}): [{msg_id} {symbol}] {msg}" --rcfile=pylintrc -- submarine tests
 ./github-actions/auto-format.sh
 
 GIT_STATUS="$(git status --porcelain)"
