@@ -53,7 +53,7 @@ pytest --cov=submarine -vs
 
 ## Submarine experiment management
 Makes it easy to run distributed or non-distributed TensorFlow, PyTorch experiments on Kubernetes.
-- [mnist example](../../../submarine-sdk/pysubmarine/example/submarine_job_sdk.ipynb)
+- [mnist example](../../../submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb)
 
 ## PySubmarine API Reference
 - [Tracking](tracking.md)
