@@ -27,7 +27,7 @@ class ExperimentClient:
     def __init__(self, host):
         """
         Submarine experiment client constructor
-        :param host:
+        :param host: An HTTP URI like http://submarine-server:8080.
         """
         # TODO(pingsutw): support authentication for talking to the submarine server
         self.host = host
