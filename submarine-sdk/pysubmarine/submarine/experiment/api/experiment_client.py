@@ -45,6 +45,17 @@ class ExperimentClient:
         response = self.experiment_api.create_experiment(experiment_spec=experiment_spec)
         return response.result
 
+    def wait_for_finish(self, id, timeout_seconds=600, polling_interval=30):
+        """
+        Waits until experiment is finished or failed
+        :param id: submarine experiment id
+        :param timeout_seconds: How long to wait for the experiment. Default is 600s
+        :param polling_interval: How often to poll for the status of the experiment.
+        :return: str: experiment logs
+        """
+        # TODO(pingsutw): Support continue log experiment until experiment is finished or failed
+        raise NotImplementedError("To be implemented")
+
     def patch_experiment(self, id, experiment_spec):
         """
         Patch an experiment
