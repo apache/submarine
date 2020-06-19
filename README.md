@@ -109,7 +109,10 @@ submarine_client.get_log(experiment['experimentId'])
 ```python
 submarine_client.list_experiments(status='running')
 ```
-For more details, see [SDK experiment example](submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb)
+
+For a quick-start, see [Submarine On K8s](docs/userdocs/k8s/README.md)
+
+For more API details, see [SDK experiment example](submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb)
 
 
 ### Submit a pre-defined experiment template job
