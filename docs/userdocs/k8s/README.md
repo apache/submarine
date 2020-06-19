@@ -31,6 +31,25 @@ After you have an up-and-running K8s, you can follow [Submarine Helm Charts Guid
 ## Use Submarine
 
 ### Model training (experiment) on K8s
+
+#### With Submarine SDK (Recommended)
+
+- Install SDK
+```bash
+git clone https://github.com/apache/submarine.git
+cd submarine/submarine-sdk/pysubmarine
+pip install .
+```
+> Note that this assumes Python3.7+.
+> If it fails to install, you should a new Python environment created by `Anoconda` or Python `virtualenv`
+
+- Play with SDK
+Assuming you've installed submarine on K8s and forward the service to localhost, now you can open a Python shell, Jupyter notebook or any tools using the same Python
+environment with Submarine SDK installed.
+
+Follow [SDK experiment example](submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb) to try the SDK.
+
+#### With REST API
 - [Run model training using Tensorflow](run-tensorflow-experiment.md)
 - [Run model training using PyTorch](run-pytorch-experiment.md)
 - [Experiment API Reference](api/experiment.md)
