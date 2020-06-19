@@ -11,7 +11,7 @@ First time? Check out the contributing guide - https://submarine.apache.org/cont
 
 ### What is the Jira issue?
 * Open an issue on Jira https://issues.apache.org/jira/browse/SUBMARINE/
-* Put link here, and add [SUBMARINE-*Jira number*] in PR title, eg. [SUBMARINE-23]
+* Put link here, and add [SUBMARINE-*Jira number*] in PR title, eg. `SUBMARINE-23. PR title`
 
 ### How should this be tested?
 * First time? Setup Travis CI as described on https://submarine.apache.org/contribution/contributions.html#continuous-integration
