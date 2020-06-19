@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ParamServiceTest {
@@ -51,7 +50,7 @@ public class ParamServiceTest {
     param.setWorkerIndex("worker-1");
     param.setJobName("application_123651651");
     boolean result = paramService.insert(param);
-    assertNotEquals(result, -1);
+    assertTrue(result);
     List<Param> paramList = paramService.selectAll();
 
     assertEquals(paramList.size(), 1);

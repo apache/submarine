@@ -34,6 +34,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -82,18 +83,17 @@ public class ParamRestApi {
       params = paramService.selectByPrimaryKeySelective(param);
 
     } catch (Exception e) {
-
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+      
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<List<Param>>(Response.Status.OK).success(true).result(params).build();
   }
 
   @GET
-  @Path("/")
+  @Path("/{id}")
   @SubmarineApi
-  public Response getParam(@QueryParam("id") String id) {
+  public Response getParam(@PathParam("id") String id) {
     LOG.info("getParam ({})", id);
     
     Param param;
@@ -101,10 +101,9 @@ public class ParamRestApi {
       param = paramService.selectById(id);
 
     } catch (Exception e) {
-
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<Param>(Response.Status.OK).success(true).result(param).build();
   }
@@ -117,11 +116,11 @@ public class ParamRestApi {
     boolean result = false;
     try {
       result = paramService.insert(param);
-    } catch (Exception e) {
 
+    } catch (Exception e) {
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -134,10 +133,11 @@ public class ParamRestApi {
     boolean result = false;
     try {
       result = paramService.deleteById(id);
+
     } catch (Exception e) {
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -150,10 +150,11 @@ public class ParamRestApi {
     boolean result = false;
     try {
       result = paramService.update(param);
+
     } catch (Exception e) {
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -167,12 +168,10 @@ public class ParamRestApi {
       params = paramService.selectByPrimaryKeySelective(metric);
 
     } catch (Exception e) {
-
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<List<Param>>(Response.Status.OK).success(true).result(params).build();
   }
-
 }

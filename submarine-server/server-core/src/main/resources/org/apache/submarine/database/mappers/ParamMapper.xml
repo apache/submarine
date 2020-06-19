@@ -86,6 +86,4 @@
         AND job_name = #{jobName,jdbcType=BIGINT}
       </if>
    </select>
-
-
 </mapper>

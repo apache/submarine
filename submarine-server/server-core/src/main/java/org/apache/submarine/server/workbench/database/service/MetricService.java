@@ -33,10 +33,8 @@ public class MetricService {
   private static final Logger LOG = LoggerFactory.getLogger(MetricService.class);
 
   public MetricService() {
-    
   }
 
-  
   public List<Metric> selectAll() throws Exception {
     List<Metric> result;
     LOG.info("Metric selectAll");
@@ -110,7 +108,6 @@ public class MetricService {
     return true;
   }
 
-
   public List<Metric> selectByPrimaryKeySelective(Metric metric) throws Exception {
     List<Metric> result;
     LOG.info("Metric selectByPrimaryKeySelective");
@@ -125,5 +122,4 @@ public class MetricService {
     }
     return result;
   }
- 
 }

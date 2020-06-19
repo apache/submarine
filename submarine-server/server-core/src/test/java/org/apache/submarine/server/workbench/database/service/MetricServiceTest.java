@@ -28,7 +28,6 @@ import java.math.BigInteger;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 public class MetricServiceTest {
@@ -55,7 +54,7 @@ public class MetricServiceTest {
     metric.setIsNan(0);
     metric.setJobName("application_1234");
     boolean result = metricService.insert(metric);
-    assertNotEquals(result, -1);
+    assertTrue(result);
     List<Metric> metricList = metricService.selectAll();
 
     assertEquals(metricList.size(), 1);

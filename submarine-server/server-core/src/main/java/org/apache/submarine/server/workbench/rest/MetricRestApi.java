@@ -35,6 +35,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -91,27 +92,25 @@ public class MetricRestApi {
       metrics = metricService.selectByPrimaryKeySelective(metric);
 
     } catch (Exception e) {
-
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<List<Metric>>(Response.Status.OK).success(true).result(metrics).build();
   }
 
   @GET
-  @Path("/")
+  @Path("/{id}")
   @SubmarineApi
-  public Response getMetric(@QueryParam("id") String id) {
+  public Response getMetric(@PathParam("id") String id) {
     Metric metric;
     try {
       metric = metricService.selectById(id);
 
     } catch (Exception e) {
-
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<Metric>(Response.Status.OK).success(true).result(metric).build();
   }
@@ -123,11 +122,11 @@ public class MetricRestApi {
     boolean result = false;
     try {
       result = metricService.insert(metric);
-    } catch (Exception e) {
 
+    } catch (Exception e) {
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -139,10 +138,11 @@ public class MetricRestApi {
     boolean result = false;
     try {
       result = metricService.deleteById(id);
+
     } catch (Exception e) {
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -154,10 +154,11 @@ public class MetricRestApi {
     boolean result = false;
     try {
       result = metricService.update(metric);
+
     } catch (Exception e) {
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -171,13 +172,10 @@ public class MetricRestApi {
       metrics = metricService.selectByPrimaryKeySelective(metric);
 
     } catch (Exception e) {
-
       LOG.error(e.toString());
-      e.printStackTrace();
-      return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("error").build();
+      
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
     }
     return new JsonResponse.Builder<List<Metric>>(Response.Status.OK).success(true).result(metrics).build();
   }
-
-
 }
