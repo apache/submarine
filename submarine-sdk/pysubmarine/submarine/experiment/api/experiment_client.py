@@ -14,6 +14,8 @@
 # limitations under the License.
 
 import logging
+import time
+
 from submarine.experiment.configuration import Configuration
 from submarine.experiment.api_client import ApiClient
 from submarine.experiment.api.experiment_api import ExperimentApi
@@ -45,16 +47,31 @@ class ExperimentClient:
         response = self.experiment_api.create_experiment(experiment_spec=experiment_spec)
         return response.result
 
-    def wait_for_finish(self, id, timeout_seconds=600, polling_interval=30):
+    def wait_for_finish(self, id, polling_interval=10):
         """
         Waits until experiment is finished or failed
         :param id: submarine experiment id
-        :param timeout_seconds: How long to wait for the experiment. Default is 600s
         :param polling_interval: How often to poll for the status of the experiment.
         :return: str: experiment logs
         """
-        # TODO(pingsutw): Support continue log experiment until experiment is finished or failed
-        raise NotImplementedError("To be implemented")
+        index = 0
+        while True:
+            status = self.get_experiment(id)['status']
+            if status == 'Succeeded' or status == 'Deleted':
+                self._log_pod(id, index)
+                break
+            index = self._log_pod(id, index)
+            time.sleep(polling_interval)
+
+    def _log_pod(self, id, index):
+        response = self.experiment_api.get_log(id)
+        log_content = response.result['logContent'][0]
+        for i, log in enumerate(log_content['podLog']):
+            if i < index:
+                continue
+            index += 1
+            logging.info("%s", log)
+        return index
 
     def patch_experiment(self, id, experiment_spec):
         """
