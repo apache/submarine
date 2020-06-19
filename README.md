@@ -79,7 +79,7 @@ experiment_meta = ExperimentMeta(name='mnist',
                                     ' --log_dir=/train/log --learning_rate=0.01'
                                     ' --batch_size=150')
 ps_spec = ExperimentTaskSpec(resources='cpu=2,memory=1024M',
-                                 replicas=1)
+                             replicas=1)
 worker_spec = ExperimentTaskSpec(resources='cpu=2,memory=1024M',
                                  replicas=1)
 
