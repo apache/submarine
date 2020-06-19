@@ -49,9 +49,7 @@ Unable to continue with install: existing resource conflict: namespace: , name: 
 ```
 It might be caused by the previous installed submarine charts. Fix it by running:
 ```bash
-kubectl delete crd/tfjobs.kubeflow.org
-kubectl delete crd/podgroups.scheduling.incubator.k8s.io
-kubectl delete crd/pytorchjobs.kubeflow.org
+kubectl delete crd/tfjobs.kubeflow.org && kubectl delete crd/podgroups.scheduling.incubator.k8s.io && kubectl delete crd/pytorchjobs.kubeflow.org
 ```
 
 ### Access Submarine Server locally

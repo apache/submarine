@@ -41,9 +41,10 @@ cd submarine/submarine-sdk/pysubmarine
 pip install .
 ```
 > Note that this assumes Python3.7+.
-> If it fails to install, you should a new Python environment created by `Anoconda` or Python `virtualenv`
+> If it fails to install, you should use a new Python environment created by `Anoconda` or Python `virtualenv`
 
 - Play with SDK
+
 Assuming you've installed submarine on K8s and forward the service to localhost, now you can open a Python shell, Jupyter notebook or any tools using the same Python
 environment with Submarine SDK installed.
 
