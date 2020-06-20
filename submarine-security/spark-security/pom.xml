@@ -57,6 +57,7 @@
     <jna.version>5.2.0</jna.version>
     <jna-platform.version>5.2.0</jna-platform.version>
     <jna.scope>test</jna.scope>
+    <codehaus.jackson.version>1.9.13</codehaus.jackson.version>
   </properties>
   <dependencies>
     <dependency>
@@ -288,6 +289,7 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-jaxrs</artifactId>
+      <version>${codehaus.jackson.version}</version>
       <scope>compile</scope>
     </dependency>
 
