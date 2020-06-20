@@ -47,6 +47,12 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     validateMetadata(experimentSpec.getMeta(), tfJob.getMetadata(),
         ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName().toLowerCase()
     );
+    // Validate ExperimentMeta without envVars. Related to SUBMARINE-534.
+    experimentSpec.getMeta().setEnvVars(null);
+    validateMetadata(experimentSpec.getMeta(), tfJob.getMetadata(),
+            ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName().toLowerCase()
+    );
+
     validateReplicaSpec(experimentSpec, tfJob, TFJobReplicaType.Ps);
     validateReplicaSpec(experimentSpec, tfJob, TFJobReplicaType.Worker);
   }
@@ -84,6 +90,12 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     validateMetadata(experimentSpec.getMeta(), pyTorchJob.getMetadata(),
         ExperimentMeta.SupportedMLFramework.PYTORCH.getName().toLowerCase()
     );
+    // Validate ExperimentMeta without envVars. Related to SUBMARINE-534.
+    experimentSpec.getMeta().setEnvVars(null);
+    validateMetadata(experimentSpec.getMeta(), pyTorchJob.getMetadata(),
+            ExperimentMeta.SupportedMLFramework.PYTORCH.getName().toLowerCase()
+    );
+
     validateReplicaSpec(experimentSpec, pyTorchJob, PyTorchJobReplicaType.Master);
     validateReplicaSpec(experimentSpec, pyTorchJob, PyTorchJobReplicaType.Worker);
   }
