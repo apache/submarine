@@ -19,8 +19,8 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ExperimentService } from '../../../../services/experiment.service';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
+import { ExperimentService } from '@submarine/services/experiment.service';
 import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
@@ -42,7 +42,7 @@ export class ExperimentInfoComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.experimentID = this.route.snapshot.params['id'];
+    this.experimentID = this.route.snapshot.params.id;
     this.experimentService.querySpecificExperiment(this.experimentID).subscribe(
       (item) => {
         this.experimentInfo = item;

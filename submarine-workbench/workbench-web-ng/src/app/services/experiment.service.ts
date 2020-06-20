@@ -32,7 +32,7 @@ export class ExperimentService {
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
   fetchExperimentList(): Observable<ExperimentInfo[]> {
-    const apiUrl = this.baseApi.getRestApi('/v1/jobs');
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment');
     return this.httpClient.get<Rest<ExperimentInfo[]>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
@@ -46,7 +46,7 @@ export class ExperimentService {
   }
 
   querySpecificExperiment(id: string): Observable<ExperimentInfo> {
-    const apiUrl = this.baseApi.getRestApi('/v1/jobs/' + id);
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment/' + id);
     return this.httpClient.get<Rest<ExperimentInfo>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
@@ -59,7 +59,7 @@ export class ExperimentService {
   }
 
   createExperiment(experimentSpec): Observable<ExperimentInfo> {
-    const apiUrl = this.baseApi.getRestApi('/v1/jobs');
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment');
     return this.httpClient.post<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
       switchMap((res) => {
         if (res.success) {
@@ -72,7 +72,7 @@ export class ExperimentService {
   }
 
   editExperiment(experimentSpec): Observable<ExperimentInfo> {
-    const apiUrl = this.baseApi.getRestApi('/v1/jobs');
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment');
     return this.httpClient.patch<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
       switchMap((res) => {
         if (res.success) {
@@ -85,7 +85,7 @@ export class ExperimentService {
   }
 
   deleteExperiment(id: string): Observable<ExperimentInfo> {
-    const apiUrl = this.baseApi.getRestApi('/v1/jobs/' + id);
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment/' + id);
     return this.httpClient.delete<Rest<any>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
@@ -98,7 +98,7 @@ export class ExperimentService {
   }
 
   getExperimentLog(id: string): Observable<any> {
-    const apiUrl = this.baseApi.getRestApi('/v1/jobs/logs/' + id);
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment/logs/' + id);
     return this.httpClient.get<Rest<any>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {

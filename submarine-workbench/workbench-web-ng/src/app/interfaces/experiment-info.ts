@@ -20,7 +20,7 @@
 import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
 
 export class ExperimentInfo {
-  jobId: string;
+  experimentId: string;
   name: string;
   uid: string;
   status: string;

@@ -19,10 +19,10 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { NzMessageService } from 'ng-zorro-antd';
-import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router';
 
 @Component({
   selector: 'submarine-experiment',
@@ -31,7 +31,7 @@ import { ActivatedRoute, Params, Router, NavigationStart } from '@angular/router
 })
 export class ExperimentComponent implements OnInit {
   experimentList: ExperimentInfo[] = [];
-  //About experiment information
+  // About experiment information
   isInfo = false;
   experimentID: string;
 
@@ -53,6 +53,7 @@ export class ExperimentComponent implements OnInit {
   constructor(
     private experimentService: ExperimentService,
     private nzMessageService: NzMessageService,
+    private route: ActivatedRoute,
     private router: Router
   ) {}
 
@@ -67,11 +68,8 @@ export class ExperimentComponent implements OnInit {
       scheduleCycle: new FormControl('Month')
     });
     this.fetchExperimentList();
-    if (this.router.url === '/workbench/experiment') {
-      this.isInfo = false;
-    } else {
-      this.isInfo = true;
-    }
+    this.isInfo = this.router.url !== '/workbench/experiment';
+    this.experimentID = this.route.snapshot.params.id;
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationStart) {
         console.log(val.url);
@@ -106,7 +104,7 @@ export class ExperimentComponent implements OnInit {
     });
   }
   onDeleteExperiment(data: ExperimentInfo) {
-    this.experimentService.deleteExperiment(data.jobId).subscribe(
+    this.experimentService.deleteExperiment(data.experimentId).subscribe(
       () => {
         this.nzMessageService.success('Delete user success!');
         this.fetchExperimentList();
