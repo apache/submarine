@@ -92,7 +92,7 @@ class ExperimentClient:
         response = self.experiment_api.get_experiment(id=id)
         return response.result
 
-    def list_experiments(self, status):
+    def list_experiments(self, status=None):
         """
         List all experiment for the user
         :param status: Accepted, Created, Running, Succeeded, Deleted
