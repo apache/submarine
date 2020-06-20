@@ -41,7 +41,7 @@
   <tbody>
     <tr>
       <td>{{ experimentInfo.name }}</td>
-      <td>{{ experimentInfo.jobId }}</td>
+      <td>{{ experimentInfo.experimentId }}</td>
       <td>{{ experimentInfo.createdTime }}</td>
       <td>{{ experimentInfo.runningTime }}</td>
       <td>{{ experimentInfo.finishedTime }}</td>
@@ -88,7 +88,7 @@
       </li>
       <li nz-menu-item (click)="currentState = 1">
         <i nz-icon nzType="bars" nzTheme="outline"></i>
-        Hyper parameters
+        Parameters
       </li>
       <li nz-menu-item (click)="currentState = 2">
         <i nz-icon nzType="appstore" nzTheme="outline"></i>
@@ -96,7 +96,7 @@
       </li>
       <li nz-menu-item (click)="currentState = 3">
         <i nz-icon nzType="desktop" nzTheme="outline"></i>
-        Outpus
+        Outputs
       </li>
     </ul>
   </nz-sider>

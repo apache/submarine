@@ -22,12 +22,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { ExperimentComponent } from '@submarine/pages/workbench/experiment/experiment.component';
 import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.component';
 import { DataComponent } from './data/data.component';
+import { ExperimentInfoComponent } from './experiment/experiment-info/experiment-info.component';
 import { HomeComponent } from './home/home.component';
 import { InterpreterComponent } from './interpreter/interpreter.component';
 import { ModelComponent } from './model/model.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
-import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
-import { ExperimentInfoComponent } from './experiment/experiment-info/experiment-info.component';
 
 const routes: Routes = [
   {
