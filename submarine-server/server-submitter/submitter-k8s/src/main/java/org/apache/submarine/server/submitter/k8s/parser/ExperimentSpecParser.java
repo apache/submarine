@@ -171,7 +171,7 @@ public class ExperimentSpecParser {
   }
 
   private static List<V1EnvVar> parseEnvVars(Map<String, String> envMap) {
-    if(envMap == null)
+    if (envMap == null)
       return null;
     List<V1EnvVar> envVars = new ArrayList<>();
     for (Map.Entry<String, String> entry : envMap.entrySet()) {
