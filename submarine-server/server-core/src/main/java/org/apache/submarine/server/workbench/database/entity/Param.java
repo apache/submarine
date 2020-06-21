@@ -65,6 +65,4 @@ public class Param extends BaseEntity {
   public void setJobName(String jobName) {
     this.jobName = jobName;
   }
-
-
 }

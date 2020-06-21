@@ -101,6 +101,4 @@ public class Metric extends BaseEntity {
   public void setJobName(String jobName) {
     this.jobName = jobName;
   }
-
-
 }
