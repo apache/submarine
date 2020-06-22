@@ -68,41 +68,55 @@ Like mentioned above, Submarine is targeted to bring Data-Scientist-friendly use
 
 #### Run a Tensorflow Mnist experiment
 ```python
-submarine_client = submarine.ExperimentClient(host='http://submarine:8080')
 
-environment = Environment(image='gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0')
+# New a submarine client of the submarine server
+submarine_client = submarine.ExperimentClient(host='http://localhost:8080')
 
-experiment_meta = ExperimentMeta(name='mnist',
+# The experiment's environment, could be Docker image or Conda environment based
+environment = Environment(image='gcr.io/kubeflow-ci/tf-dist-mnist-test:1.0')
+
+# Specify the experiment's name, framework it's using, namespace it will run in,
+# the entry point. It can also accept environment variables. etc.
+# For PyTorch job, the framework should be 'Pytorch'.
+experiment_meta = ExperimentMeta(name='mnist-dist',
                                  namespace='default',
                                  framework='Tensorflow',
-                                 cmd='python /var/tf_mnist/mnist_with_summaries.py'
-                                    ' --log_dir=/train/log --learning_rate=0.01'
-                                    ' --batch_size=150')
+                                 cmd='python /var/tf_dist_mnist/dist_mnist.py --train_steps=100')
+# 1 PS task of 2 cpu, 1GB
 ps_spec = ExperimentTaskSpec(resources='cpu=2,memory=1024M',
                              replicas=1)
+# 1 Worker task
 worker_spec = ExperimentTaskSpec(resources='cpu=2,memory=1024M',
                                  replicas=1)
 
+# Wrap up the meta, environment and task specs into an experiment.
+# For PyTorch job, the specs would be "Master" and "Worker".
 experiment_spec = ExperimentSpec(meta=experiment_meta,
                                  environment=environment,
                                  spec={'Ps':ps_spec, 'Worker': worker_spec})
+
+# Submit the experiment to submarine server
 experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
+
+# Get the experiment ID
+id = experiment['experimentId']
+
 ```
 
 #### Query a specific experiment
 ```python
-submarine_client.get_experiment(experiment['experimentId'])
+submarine_client.get_experiment(id)
 ```
 
 #### Wait for finish
 
 ```python
-submarine_client.wait_for_finish(experiment['experimentId'])
+submarine_client.wait_for_finish(id)
 ```
 
 #### Get the experiment's log
 ```python
-submarine_client.get_log(experiment['experimentId'])
+submarine_client.get_log(id)
 ```
 
 #### Get all running experiment
@@ -111,8 +125,6 @@ submarine_client.list_experiments(status='running')
 ```
 
 For a quick-start, see [Submarine On K8s](docs/userdocs/k8s/README.md)
-
-For more API details, see [SDK experiment example](submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb)
 
 
 ### Submit a pre-defined experiment template job

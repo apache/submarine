@@ -34,19 +34,41 @@ After you have an up-and-running K8s, you can follow [Submarine Helm Charts Guid
 
 #### With Submarine SDK (Recommended)
 
-- Install SDK
+- Install SDK from pypi.org
+
+Starting from 0.4.0, Submarine provides Python SDK. Please change it to a proper version needed.
+
 ```bash
-git clone https://github.com/apache/submarine.git
+pip install submarine-sdk==0.4.0
+```
+
+> Note that this installation assumes Python3.7+ is ready.
+> If it fails to install, you should use a new Python environment created by `Anoconda` or Python `virtualenv`
+> A sample Python virtual env can be setup like this
+```bash
+wget https://files.pythonhosted.org/packages/33/bc/fa0b5347139cd9564f0d44ebd2b147ac97c36b2403943dbee8a25fd74012/virtualenv-16.0.0.tar.gz
+tar xf virtualenv-16.0.0.tar.gz
+
+# Make sure to install using Python 3
+python3 virtualenv-16.0.0/virtualenv.py venv
+. venv/bin/activate
 cd submarine/submarine-sdk/pysubmarine
 pip install .
 ```
-> Note that this assumes Python3.7+.
-> If it fails to install, you should use a new Python environment created by `Anoconda` or Python `virtualenv`
 
-- Play with SDK
+- Install SDK from source code
 
-Assuming you've installed submarine on K8s and forward the service to localhost, now you can open a Python shell, Jupyter notebook or any tools using the same Python
-environment with Submarine SDK installed.
+Please first clone code from github or go to `http://submarine.apache.org/download.html` to download released source code.
+```bash
+git clone https://github.com/apache/submarine.git
+git checkout <correct release tag/branch>
+cd submarine/submarine-sdk/pysubmarine
+pip install .
+```
+
+- Run with Submarine Python SDK
+
+Assuming you've installed submarine on K8s and forward the service to localhost, now you can open a Python shell, Jupyter notebook or any tools with Submarine SDK installed.
 
 Follow [SDK experiment example](submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb) to try the SDK.
 

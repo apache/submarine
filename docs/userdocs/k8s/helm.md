@@ -26,10 +26,18 @@ Submarine's Helm Chart will not only deploy Submarine Server, but also deploys T
 
 
 ### Install Helm
-See https://helm.sh/docs/intro/install/
+
+Helm v3 is minimum requirement.
+See here for installation: https://helm.sh/docs/intro/install/
 
 ### Install Submarine
+
+The Submarine helm charts is released with the source code for now.
+Please go to `http://submarine.apache.org/download.html` to download
+
+- Install Helm charts from source code
 ```bash
+cd <PathTo>/submarine
 helm install submarine ./helm-charts/submarine
 ```
 This will install submarine in the "default" namespace.
@@ -41,7 +49,6 @@ kubectl create namespace submarine
 helm install submarine ./helm-charts/submarine -n submarine
 ```
 
-
 > Note that if you encounter below issue when installation:
 ```bash
 Error: rendered manifests contain a resource that already exists.
@@ -52,10 +59,25 @@ It might be caused by the previous installed submarine charts. Fix it by running
 kubectl delete crd/tfjobs.kubeflow.org && kubectl delete crd/podgroups.scheduling.incubator.k8s.io && kubectl delete crd/pytorchjobs.kubeflow.org
 ```
 
-### Access Submarine Server locally
+- Verify installation
+
+Once you got it installed, check with below commands and you should see similar outputs:
+```bash
+kubectl get pods
+```
 
 ```bash
-kubectl port-forward svc/submarine-server 8080:8080 -n submarine
+NAME                                 READY     STATUS    RESTARTS   AGE
+pytorch-operator-54854bf847-x65nk    1/1       Running   0          5m
+submarine-database-5f74f747d-dzmf6   1/1       Running   0          5m
+submarine-server-6f449bc967-cqkkv    1/1       Running   0          5m
+tf-job-operator-c9cd7ccbd-4dzcs      1/1       Running   0          5m
+```
+
+### Enable local access to Submarine Server
+
+```bash
+kubectl port-forward svc/submarine-server 8080:8080
 
 # In another terminal. Run below command to verify it works
 curl http://127.0.0.1:8080/api/v1/experiment/ping
