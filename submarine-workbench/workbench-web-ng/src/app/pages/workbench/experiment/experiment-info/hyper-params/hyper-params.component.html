@@ -17,4 +17,17 @@
   ~ under the License.
   -->
 
-<p>hyper-params works!</p>
+<nz-table #basicTable [nzFrontPagination]="false" [nzData]="paramsList">
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of basicTable.data">
+      <td>{{ data.key }}</td>
+      <td>{{ data.value }}</td>
+    </tr>
+  </tbody>
+</nz-table>
