@@ -30,7 +30,7 @@ interface HyperParams {
   styleUrls: ['./hyper-params.component.scss']
 })
 export class HyperParamsComponent implements OnInit {
-  paramsList : HyperParams[] = []
+  paramsList: HyperParams[] = [];
 
   constructor() {}
 
@@ -38,29 +38,29 @@ export class HyperParamsComponent implements OnInit {
     // TODO(chiajoukuo): get data from server
     this.paramsList = [
       {
-        key:'conf',
+        key: 'conf',
         value: '/var/tf_deepfm/deepfm.json'
       },
       {
-        key:'train_beta1',
+        key: 'train_beta1',
         value: '0.9'
       },
       {
-        key:'train_beta2',
+        key: 'train_beta2',
         value: '0.999'
       },
       {
-        key:'train_epsilon',
+        key: 'train_epsilon',
         value: '1.0E-8'
       },
       {
-        key:'train_lr',
+        key: 'train_lr',
         value: '5.0E-4'
       },
       {
-        key:'train_Optimizer',
+        key: 'train_Optimizer',
         value: 'AdamOptimizer'
       }
-    ]
+    ];
   }
 }
