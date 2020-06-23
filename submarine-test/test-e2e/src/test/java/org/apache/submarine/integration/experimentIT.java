@@ -26,6 +26,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class experimentIT extends AbstractSubmarineIT {
 
@@ -58,6 +60,8 @@ public class experimentIT extends AbstractSubmarineIT {
     // Test create new experiment
     pollingWait(By.xpath("//button[@id='openExperiment']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertTrue(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
+    WebDriverWait wait = new WebDriverWait( driver, 60);
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), \"Experiment Name\")]")));
     pollingWait(By.xpath("//input[@id='experimentName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Experiment");
     pollingWait(By.xpath("//textarea"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project description");
     pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
