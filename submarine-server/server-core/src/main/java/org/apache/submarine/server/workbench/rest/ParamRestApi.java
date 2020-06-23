@@ -81,11 +81,9 @@ public class ParamRestApi {
     List<Param> params;
     try {
       params = paramService.selectByPrimaryKeySelective(param);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-      
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
     return new JsonResponse.Builder<List<Param>>(Response.Status.OK).success(true).result(params).build();
   }
@@ -99,11 +97,9 @@ public class ParamRestApi {
     Param param;
     try {
       param = paramService.selectById(id);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
     return new JsonResponse.Builder<Param>(Response.Status.OK).success(true).result(param).build();
   }
@@ -116,11 +112,9 @@ public class ParamRestApi {
     boolean result = false;
     try {
       result = paramService.insert(param);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -133,11 +127,9 @@ public class ParamRestApi {
     boolean result = false;
     try {
       result = paramService.deleteById(id);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -150,11 +142,9 @@ public class ParamRestApi {
     boolean result = false;
     try {
       result = paramService.update(param);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -166,11 +156,9 @@ public class ParamRestApi {
     List<Param> params;
     try {
       params = paramService.selectByPrimaryKeySelective(metric);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
     return new JsonResponse.Builder<List<Param>>(Response.Status.OK).success(true).result(params).build();
   }

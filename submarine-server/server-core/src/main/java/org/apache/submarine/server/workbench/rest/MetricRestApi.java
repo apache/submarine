@@ -90,11 +90,9 @@ public class MetricRestApi {
     List<Metric> metrics;
     try {
       metrics = metricService.selectByPrimaryKeySelective(metric);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
     return new JsonResponse.Builder<List<Metric>>(Response.Status.OK).success(true).result(metrics).build();
   }
@@ -106,11 +104,9 @@ public class MetricRestApi {
     Metric metric;
     try {
       metric = metricService.selectById(id);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).build();
     }
     return new JsonResponse.Builder<Metric>(Response.Status.OK).success(true).result(metric).build();
   }
@@ -122,11 +118,9 @@ public class MetricRestApi {
     boolean result = false;
     try {
       result = metricService.insert(metric);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -138,11 +132,9 @@ public class MetricRestApi {
     boolean result = false;
     try {
       result = metricService.deleteById(id);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -154,11 +146,9 @@ public class MetricRestApi {
     boolean result = false;
     try {
       result = metricService.update(metric);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
     return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(result).build();
   }
@@ -170,11 +160,9 @@ public class MetricRestApi {
     List<Metric> metrics;
     try {
       metrics = metricService.selectByPrimaryKeySelective(metric);
-
     } catch (Exception e) {
       LOG.error(e.toString());
-      
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).result(false).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
     return new JsonResponse.Builder<List<Metric>>(Response.Status.OK).success(true).result(metrics).build();
   }
