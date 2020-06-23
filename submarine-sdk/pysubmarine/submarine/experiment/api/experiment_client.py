@@ -125,7 +125,7 @@ class ExperimentClient:
         response = self.experiment_api.get_log(id)
         log_contents = response.result['logContent']
 
-        if master is True and len(log_contents) !=0:
+        if master is True and len(log_contents) != 0:
             log_contents = [log_contents[0]]
 
         for log_content in log_contents:
