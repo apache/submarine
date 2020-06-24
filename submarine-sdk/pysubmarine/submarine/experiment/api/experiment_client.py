@@ -113,14 +113,13 @@ class ExperimentClient:
         response = self.experiment_api.delete_experiment(id)
         return response.result
 
-    def get_log(self, id, master=False):
-        """
-        Get training logs of the experiment.
-        By default only get the logs of Pod that has labels 'job-role: master'.
-        :param master: Get pod with label 'job-role: master' pod if True.
-                    If need to get more Pod Logs, set False.
-        :param id: Experiment ID
-        :return: str: experiment logs
+    def get_log(self, id, onlyMaster=False):
+        """  
+        Get training logs of all pod of the experiment.
+        By default get all the logs of Pod
+        :param id: experiment id
+        :param onlyMaster: By default include pod log of "master" which might be Tensorflow PS/Chief or PyTroch master
+        :return: str: pods logs
         """
         response = self.experiment_api.get_log(id)
         log_contents = response.result['logContent']
