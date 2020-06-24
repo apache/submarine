@@ -45,7 +45,7 @@ public class ParamServiceTest {
   @Test
   public void testSelect() throws Exception {
     Param param = new Param();
-    param.setParamKey("score");
+    param.setKey("score");
     param.setValue("199");
     param.setWorkerIndex("worker-1");
     param.setJobName("application_123651651");
@@ -65,14 +65,14 @@ public class ParamServiceTest {
   @Test
   public void testUpdate() throws Exception {
     Param param = new Param();
-    param.setParamKey("score");
+    param.setKey("score");
     param.setValue("100");
     param.setWorkerIndex("worker-2");
     param.setJobName("application_1234");
     boolean result = paramService.insert(param);
     assertTrue(result);
 
-    param.setParamKey("scoreNew");
+    param.setKey("scoreNew");
     param.setValue("100");
     param.setWorkerIndex("worker-New");
     param.setJobName("application_1234New");
@@ -86,7 +86,7 @@ public class ParamServiceTest {
   @Test
   public void testDelete() throws Exception {
     Param param = new Param();
-    param.setParamKey("score");
+    param.setKey("score");
     param.setValue("100");
     param.setWorkerIndex("worker-2");
     param.setJobName("application_1234");
@@ -103,7 +103,7 @@ public class ParamServiceTest {
   private void compareParams(Param param, Param paramDb) {
     assertEquals(param.getId(), paramDb.getId());
     assertEquals(param.getJobName(), paramDb.getJobName());
-    assertEquals(param.getParamKey(), paramDb.getParamKey());
+    assertEquals(param.getKey(), paramDb.getKey());
     assertEquals(param.getValue(), paramDb.getValue());
     assertEquals(param.getWorkerIndex(), paramDb.getWorkerIndex());
   }

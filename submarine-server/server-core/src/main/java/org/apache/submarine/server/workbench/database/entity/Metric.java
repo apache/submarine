@@ -34,7 +34,7 @@ import java.math.BigInteger;
 
 public class Metric extends BaseEntity {
 
-  private String metricKey;
+  private String key;
   private Float value;
   private String workerIndex;
   private BigInteger timestamp;
@@ -42,12 +42,12 @@ public class Metric extends BaseEntity {
   private Integer isNan;
   private String jobName;
 
-  public String getMetricKey() {
-    return this.metricKey;
+  public String getKey() {
+    return this.key;
   }
 
-  public void setMetricKey(String metricKey) {
-    this.metricKey = metricKey;
+  public void setKey(String key) {
+    this.key = key;
   }
 
   public Float getValue() {
@@ -72,10 +72,6 @@ public class Metric extends BaseEntity {
 
   public void setTimestamp(BigInteger timestamp) {
     this.timestamp = timestamp;
-  }
-
-  public void setTimestamp(Integer timestamp) {
-    this.timestamp = BigInteger.valueOf(timestamp.longValue());
   }
 
   public Integer getStep() {

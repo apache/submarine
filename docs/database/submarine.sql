@@ -226,7 +226,7 @@ CREATE TABLE `job` (
 DROP TABLE IF EXISTS `metric`;
 CREATE TABLE `metric` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `metric_key` varchar(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.',
+  `key` varchar(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.',
   `value` float NOT NULL COMMENT 'Metric value: `Float`. Defined as *Non-null* in schema.',
   `worker_index` varchar(32) NOT NULL COMMENT 'Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
   `timestamp` bigint(20) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `BigInteger`. Part of *Primary Key* for   ``metrics`` table.',
@@ -242,7 +242,7 @@ CREATE TABLE `metric` (
 DROP TABLE IF EXISTS `param`;
 CREATE TABLE `param` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `param_key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
+  `key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
   `value` varchar(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
   `worker_index` varchar(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
   `job_name` varchar(32) NOT NULL COMMENT 'JOB NAME to which this parameter belongs to: Part of *Primary Key* for ``params`` table.',
