@@ -114,17 +114,18 @@ class ExperimentClient:
         return response.result
 
     def get_log(self, id, onlyMaster=False):
-        """  
+        """
         Get training logs of all pod of the experiment.
         By default get all the logs of Pod
         :param id: experiment id
-        :param onlyMaster: By default include pod log of "master" which might be Tensorflow PS/Chief or PyTroch master
+        :param onlyMaster: By default include pod log of "master" which might be
+         Tensorflow PS/Chief or PyTorch master
         :return: str: pods logs
         """
         response = self.experiment_api.get_log(id)
         log_contents = response.result['logContent']
 
-        if master is True and len(log_contents) != 0:
+        if onlyMaster is True and len(log_contents) != 0:
             log_contents = [log_contents[0]]
 
         for log_content in log_contents:
