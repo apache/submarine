@@ -48,7 +48,7 @@ public class Bootstrap extends HttpServlet {
                      "http://localhost:8080/api/v1/experiment/")
              .termsOfService("http://swagger.io/terms/")
              .contact(new Contact()
-             .email("submarine-dev@submarine.apache.org"))
+             .email("dev@submarine.apache.org"))
              .version("0.4.0-SNAPSHOT")
              .license(new License()
              .name("Apache 2.0")
