@@ -46,8 +46,8 @@ public class Metric extends BaseEntity {
     return this.key;
   }
 
-  public void setKey(String metricKey) {
-    this.key = metricKey;
+  public void setKey(String key) {
+    this.key = key;
   }
 
   public Float getValue() {
@@ -72,10 +72,6 @@ public class Metric extends BaseEntity {
 
   public void setTimestamp(BigInteger timestamp) {
     this.timestamp = timestamp;
-  }
-
-  public void setTimestamp(Integer timestamp) {
-    this.timestamp = BigInteger.valueOf(timestamp.longValue());
   }
 
   public Integer getStep() {

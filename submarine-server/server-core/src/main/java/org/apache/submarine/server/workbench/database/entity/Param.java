@@ -38,8 +38,8 @@ public class Param extends BaseEntity {
     return this.key;
   }
 
-  public void setKey(String paramKey) {
-    this.key = paramKey;
+  public void setKey(String key) {
+    this.key = key;
   }
 
   public String getValue() {
