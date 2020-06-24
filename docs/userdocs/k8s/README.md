@@ -31,6 +31,48 @@ After you have an up-and-running K8s, you can follow [Submarine Helm Charts Guid
 ## Use Submarine
 
 ### Model training (experiment) on K8s
+
+#### Prepare Python Environment to run Submarine SDK
+
+Submarine SDK assumes Python3.7+ is ready.
+It's better to use a new Python environment created by `Anoconda` or Python `virtualenv` to try this to avoid trouble to existing Python environment.
+A sample Python virtual env can be setup like this:
+```bash
+wget https://files.pythonhosted.org/packages/33/bc/fa0b5347139cd9564f0d44ebd2b147ac97c36b2403943dbee8a25fd74012/virtualenv-16.0.0.tar.gz
+tar xf virtualenv-16.0.0.tar.gz
+
+# Make sure to install using Python 3
+python3 virtualenv-16.0.0/virtualenv.py venv
+. venv/bin/activate
+```
+
+#### With Submarine SDK (Recommended)
+
+- Install SDK from pypi.org
+
+Starting from 0.4.0, Submarine provides Python SDK. Please change it to a proper version needed.
+
+```bash
+pip install submarine-sdk==0.4.0
+```
+
+- Install SDK from source code
+
+Please first clone code from github or go to `http://submarine.apache.org/download.html` to download released source code.
+```bash
+git clone https://github.com/apache/submarine.git
+git checkout <correct release tag/branch>
+cd submarine/submarine-sdk/pysubmarine
+pip install .
+```
+
+- Run with Submarine Python SDK
+
+Assuming you've installed submarine on K8s and forward the service to localhost, now you can open a Python shell, Jupyter notebook or any tools with Submarine SDK installed.
+
+Follow [SDK experiment example](../../../submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb) to try the SDK.
+
+#### With REST API
 - [Run model training using Tensorflow](run-tensorflow-experiment.md)
 - [Run model training using PyTorch](run-pytorch-experiment.md)
 - [Experiment API Reference](api/experiment.md)
