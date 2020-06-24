@@ -75,6 +75,9 @@ tf-job-operator-c9cd7ccbd-4dzcs      1/1       Running   0          5m
 ```
 
 ### Enable local access to Submarine Server
+Submarine server by default expose 8080 port within K8s cluster.
+To access the server from outside of the cluster, we need to expose the service.
+We can either use port-forward, or use K8s `Ingress`, here is an example of port-forward.
 
 ```bash
 kubectl port-forward svc/submarine-server 8080:8080
