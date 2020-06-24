@@ -5,7 +5,7 @@
     "description" : "The Submarine REST API allows you to create, list, and get experiments. The\nAPI is hosted under the /v1/experiment route on the Submarine server. For example,\nto list experiments on a server hosted at http://localhost:8080, access\nhttp://localhost:8080/api/v1/experiment/",
     "termsOfService" : "http://swagger.io/terms/",
     "contact" : {
-      "email" : "submarine-dev@submarine.apache.org"
+      "email" : "dev@submarine.apache.org"
     },
     "license" : {
       "name" : "Apache 2.0",
