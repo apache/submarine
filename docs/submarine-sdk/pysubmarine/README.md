@@ -48,8 +48,8 @@ pytest --cov=submarine -vs
 ```
 
 ## Easy-to-use model trainers
-- [FM](../../../submarine-sdk/pysubmarine/example/deepfm)
-- [DeepFM](../../../submarine-sdk/pysubmarine/example/fm)
+- [FM](../../../submarine-sdk/pysubmarine/example/tensorflow/fm)
+- [DeepFM](../../../submarine-sdk/pysubmarine/example/tensorflow/deepfm)
 
 ## Submarine experiment management
 Makes it easy to run distributed or non-distributed TensorFlow, PyTorch experiments on Kubernetes.
