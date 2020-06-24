@@ -223,8 +223,8 @@ CREATE TABLE `job` (
 -- ----------------------------
 -- Table structure for metric
 -- ----------------------------
-DROP TABLE IF EXISTS `metric`;
-CREATE TABLE `metric` (
+DROP TABLE IF EXISTS `metrics`;
+CREATE TABLE `metrics` (
   `id` int NOT NULL AUTO_INCREMENT,
   `key` varchar(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.',
   `value` float NOT NULL COMMENT 'Metric value: `Float`. Defined as *Non-null* in schema.',
@@ -239,8 +239,8 @@ CREATE TABLE `metric` (
 -- ----------------------------
 -- Table structure for param
 -- ----------------------------
-DROP TABLE IF EXISTS `param`;
-CREATE TABLE `param` (
+DROP TABLE IF EXISTS `params`;
+CREATE TABLE `params` (
   `id` int NOT NULL AUTO_INCREMENT,
   `key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
   `value` varchar(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
