@@ -239,8 +239,8 @@ CREATE TABLE `metrics` (
 -- ----------------------------
 -- Table structure for param
 -- ----------------------------
-DROP TABLE IF EXISTS `param`;
-CREATE TABLE `param` (
+DROP TABLE IF EXISTS `params`;
+CREATE TABLE `params` (
   `id` int NOT NULL AUTO_INCREMENT,
   `key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
   `value` varchar(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
