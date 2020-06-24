@@ -41,25 +41,25 @@
   <select id="selectAll" parameterType="java.lang.String" resultMap="resultMap">
     select
     <include refid="Base_Column_List" />
-    from metric
+    from metrics
     where 1 = 1
   </select>
 
   <select id="selectById" parameterType="java.lang.String" resultMap="resultMap">
     select
     <include refid="Base_Column_List" />
-    from metric
+    from metrics
     where id = #{id,jdbcType=VARCHAR}
   </select>
 
   <delete id="deleteById" parameterType="java.lang.String">
-    delete from metric
+    delete from metrics
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Metric"
           useGeneratedKeys="true" keyProperty="id">
-    insert into metric (key, value, worker_index, timestamp,
+    insert into metrics (key, value, worker_index, timestamp,
       step, is_nan, job_name)
     values (#{key,jdbcType=VARCHAR}, 
       #{value,jdbcType=FLOAT},
@@ -71,7 +71,7 @@
   </insert>
   
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Metric">
-    update metric
+    update metrics
     set key = #{key,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},
       worker_index = #{workerIndex,jdbcType=VARCHAR},
@@ -85,7 +85,7 @@
   <select id="selectByPrimaryKeySelective" parameterType="java.lang.String" resultMap="resultMap">
   select
   <include refid="Base_Column_List" />
-  from metric
+  from metrics
   where 1 = 1
     <if test="key != null">
       AND key = #{key,jdbcType=VARCHAR}
