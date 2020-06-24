@@ -223,8 +223,8 @@ CREATE TABLE `job` (
 -- ----------------------------
 -- Table structure for metric
 -- ----------------------------
-DROP TABLE IF EXISTS `metric`;
-CREATE TABLE `metric` (
+DROP TABLE IF EXISTS `metrics`;
+CREATE TABLE `metrics` (
   `id` int NOT NULL AUTO_INCREMENT,
   `key` varchar(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.',
   `value` float NOT NULL COMMENT 'Metric value: `Float`. Defined as *Non-null* in schema.',
