@@ -24,7 +24,7 @@
   </resultMap>
 
   <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Metric" extends="BaseEntityResultMap">
-    <result column="metric_key" jdbcType="VARCHAR" property="metricKey" />
+    <result column="key" jdbcType="VARCHAR" property="key" />
     <result column="value" jdbcType="FLOAT" property="value" />
     <result column="worker_index" jdbcType="VARCHAR" property="workerIndex" />
     <result column="timestamp" jdbcType="BIGINT" property="timestamp" />
@@ -33,8 +33,9 @@
     <result column="job_name" jdbcType="VARCHAR" property="jobName" />
   </resultMap>
 
+  <!-- key is reserved word in mysql -->
   <sql id="Base_Column_List">
-    id, metric_key, value, worker_index, timestamp, step, is_nan, job_name
+    id, `key`, value, worker_index, timestamp, step, is_nan, job_name
   </sql>
 
   <select id="selectAll" parameterType="java.lang.String" resultMap="resultMap">
@@ -58,9 +59,9 @@
 
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Metric"
           useGeneratedKeys="true" keyProperty="id">
-    insert into metric (metric_key, value, worker_index, timestamp,
+    insert into metric (key, value, worker_index, timestamp,
       step, is_nan, job_name)
-    values (#{metricKey,jdbcType=VARCHAR}, 
+    values (#{key,jdbcType=VARCHAR}, 
       #{value,jdbcType=FLOAT},
       #{workerIndex,jdbcType=VARCHAR}, 
       #{timestamp,jdbcType=BIGINT}, 
@@ -71,7 +72,7 @@
   
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Metric">
     update metric
-    set metric_key = #{metricKey,jdbcType=VARCHAR},
+    set key = #{key,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},
       worker_index = #{workerIndex,jdbcType=VARCHAR},
       timestamp = #{timestamp,jdbcType=BIGINT},
@@ -86,14 +87,23 @@
   <include refid="Base_Column_List" />
   from metric
   where 1 = 1
-    <if test="metricKey != null">
-      AND metric_key = #{metricKey,jdbcType=VARCHAR}
+    <if test="key != null">
+      AND key = #{key,jdbcType=VARCHAR}
+    </if>
+    <if test="value != null">
+      AND value = #{value,jdbcType=FLOAT}
+    </if>
+    <if test="workerIndex != null">
+      AND worker_index = #{workerIndex,jdbcType=INTEGER}
     </if>
     <if test="timestamp != null">
       AND timestamp = #{timestamp,jdbcType=BIGINT}
     </if>
-    <if test="workerIndex != null">
-      AND worker_index = #{workerIndex,jdbcType=INTEGER}
+    <if test="step != null">
+      AND step = #{step,jdbcType=INTEGER}
+    </if>
+    <if test="isNan != null">
+      AND is_nan = #{isNan,jdbcType=INTEGER}
     </if>
     <if test="jobName != null">
       AND job_name = #{jobName,jdbcType=VARCHAR}

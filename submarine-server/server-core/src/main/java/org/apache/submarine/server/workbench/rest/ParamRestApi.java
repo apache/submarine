@@ -71,7 +71,7 @@ public class ParamRestApi {
     
     Param param = new Param();
     param.setId(id);
-    param.setParamKey(paramKey);
+    param.setKey(paramKey);
     param.setValue(value);
     param.setWorkerIndex(workerIndex);
     param.setJobName(jobName);

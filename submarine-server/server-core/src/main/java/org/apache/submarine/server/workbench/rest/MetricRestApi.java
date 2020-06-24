@@ -76,7 +76,7 @@ public class MetricRestApi {
                               @QueryParam("id") String id) {
 
     Metric metric = new Metric();
-    metric.setMetricKey(metricKey);
+    metric.setKey(metricKey);
     metric.setValue(value);
     metric.setWorkerIndex(workerIndex);
     metric.setTimestamp(timestamp);

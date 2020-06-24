@@ -24,14 +24,15 @@
   </resultMap>
 
   <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Param" extends="BaseEntityResultMap">
-    <result column="param_key" jdbcType="VARCHAR" property="paramKey" />
+    <result column="key" jdbcType="VARCHAR" property="key" />
     <result column="value" jdbcType="FLOAT" property="value" />
     <result column="worker_index" jdbcType="VARCHAR" property="workerIndex" />
     <result column="job_name" jdbcType="VARCHAR" property="jobName" />
   </resultMap>
 
+  <!-- key is reserved word in mysql -->
   <sql id="Base_Column_List">
-    id, param_key, value, worker_index, job_name
+    id, `key`, value, worker_index, job_name
   </sql>
 
   <select id="selectAll" parameterType="java.lang.String" resultMap="resultMap">
@@ -55,8 +56,8 @@
 
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Param"
           useGeneratedKeys="true" keyProperty="id">
-    insert into param (param_key, value, worker_index, job_name)
-    values (#{paramKey,jdbcType=VARCHAR}, 
+    insert into param (key, value, worker_index, job_name)
+    values (#{key,jdbcType=VARCHAR}, 
       #{value,jdbcType=FLOAT},
       #{workerIndex,jdbcType=VARCHAR}, 
       #{jobName,jdbcType=VARCHAR})
@@ -64,7 +65,7 @@
 
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Param">
     update param
-    set param_key = #{paramKey,jdbcType=VARCHAR},
+    set key = #{key,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},
       worker_index = #{workerIndex,jdbcType=VARCHAR},
       job_name = #{jobName,jdbcType=VARCHAR}
@@ -76,8 +77,11 @@
     <include refid="Base_Column_List" />
     from param
     where 1 = 1
-      <if test="paramKey != null">
-        AND param_key = #{paramKey,jdbcType=VARCHAR}
+      <if test="key != null">
+        AND key = #{key,jdbcType=VARCHAR}
+      </if>
+      <if test="value != null">
+        AND value = #{value,jdbcType=FLOAT}
       </if>
       <if test="workerIndex != null">
         AND worker_index = #{workerIndex,jdbcType=FLOAT}

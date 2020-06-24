@@ -29,17 +29,17 @@ package org.apache.submarine.server.workbench.database.entity;
 */
 
 public class Param extends BaseEntity {
-  String paramKey;
+  String key;
   String value;
   String workerIndex;
   String jobName;
 
-  public String getParamKey() {
-    return this.paramKey;
+  public String getKey() {
+    return this.key;
   }
 
-  public void setParamKey(String paramKey) {
-    this.paramKey = paramKey;
+  public void setKey(String paramKey) {
+    this.key = paramKey;
   }
 
   public String getValue() {
