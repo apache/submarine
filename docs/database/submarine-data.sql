@@ -54,3 +54,24 @@ INSERT INTO `sys_department` VALUES ('1bc0cd98c8d311e98edc0242ac110002','AAA','G
 -- Records of sys_user
 -- ----------------------------
 INSERT INTO `sys_user` VALUES ('e9ca23d68d884d4ebb19d07889727dae', 'admin', 'administrator', '21232f297a57a5a743894a0e4a801fc3', 'avatar.png', '2018-12-05 00:00:00', NULL, 'dev@submarine.org', '18566666661', NULL, NULL, NULL, 1, 'admin', '2019-07-05 14:47:22', 'admin', '2019-07-05 14:47:22');
+
+
+-- ----------------------------
+-- Records of metrics
+-- ----------------------------
+INSERT INTO `metrics` (`id`, `key`, `value`, `worker_index`, `timestamp`, `step`, `is_nan`, `job_name`) VALUES
+(13, 'score', 0.666667, 'worker-1', 1569139525097, 0, 0, 'application_1234'),
+(14, 'score', 0.666667, 'worker-1', 1569149139731, 0, 0, 'application_1234'),
+(15, 'score', 0.666667, 'worker-1', 1569169376482, 0, 0, 'application_1234'),
+(16, 'score', 0.666667, 'worker-1', 1569236290721, 0, 0, 'application_1234'),
+(17, 'score', 0.666667, 'worker-1', 1569236466722, 0, 0, 'application_1234');
+
+-- ----------------------------
+-- Records of params
+-- ----------------------------
+INSERT INTO `params` (`id`, `key`, `value`, `worker_index`, `job_name`) VALUES
+(14, 'max_iter', '100', 'worker-1', 'application_123651651'),
+(15, 'n_jobs', '5', 'worker-1', 'application_123456898'),
+(16, 'alpha', '20', 'worker-1', 'application_123456789');
+
+

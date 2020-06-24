@@ -56,8 +56,8 @@
 
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Param"
           useGeneratedKeys="true" keyProperty="id">
-    insert into params (key, value, worker_index, job_name)
-    values (#{key,jdbcType=VARCHAR}, 
+    insert into params (`key`, value, worker_index, job_name)
+    values (#{`key`,jdbcType=VARCHAR}, 
       #{value,jdbcType=FLOAT},
       #{workerIndex,jdbcType=VARCHAR}, 
       #{jobName,jdbcType=VARCHAR})
@@ -65,7 +65,7 @@
 
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Param">
     update params
-    set key = #{key,jdbcType=VARCHAR},
+    set `key` = #{key,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},
       worker_index = #{workerIndex,jdbcType=VARCHAR},
       job_name = #{jobName,jdbcType=VARCHAR}
@@ -78,7 +78,7 @@
     from params
     where 1 = 1
       <if test="key != null">
-        AND key = #{key,jdbcType=VARCHAR}
+        AND `key` = #{key,jdbcType=VARCHAR}
       </if>
       <if test="value != null">
         AND value = #{value,jdbcType=FLOAT}

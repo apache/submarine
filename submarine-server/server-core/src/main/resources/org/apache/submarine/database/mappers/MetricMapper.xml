@@ -59,7 +59,7 @@
 
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Metric"
           useGeneratedKeys="true" keyProperty="id">
-    insert into metrics (key, value, worker_index, timestamp,
+    insert into metrics (`key`, value, worker_index, timestamp,
       step, is_nan, job_name)
     values (#{key,jdbcType=VARCHAR}, 
       #{value,jdbcType=FLOAT},
@@ -72,7 +72,7 @@
   
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Metric">
     update metrics
-    set key = #{key,jdbcType=VARCHAR},
+    set `key` = #{key,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},
       worker_index = #{workerIndex,jdbcType=VARCHAR},
       timestamp = #{timestamp,jdbcType=BIGINT},
@@ -88,7 +88,7 @@
   from metrics
   where 1 = 1
     <if test="key != null">
-      AND key = #{key,jdbcType=VARCHAR}
+      AND `key` = #{key,jdbcType=VARCHAR}
     </if>
     <if test="value != null">
       AND value = #{value,jdbcType=FLOAT}
