@@ -9,7 +9,8 @@
     }
   },
   "environment": {
-    "name": "my-submarine-env"
+    "name": "my-submarine-env",
+    "image": "apache/submarine:pytorch-dist-mnist-1.0"
   },
   "spec": {
     "Master": {

@@ -21,16 +21,10 @@ package org.apache.submarine.server.environment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.hadoop.hive.metastore.api.MetaException;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.submarine.commons.metastore.SubmarineMetaStore;
-import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;

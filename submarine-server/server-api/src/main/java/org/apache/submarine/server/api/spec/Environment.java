@@ -36,8 +36,6 @@ public class Environment {
    */
   private EnvironmentSpec environmentSpec;
 
-  private String image;
-  
   public int getEnvironmentId() {
     return environmentId;
   }
@@ -60,18 +58,5 @@ public class Environment {
 
   public void setEnvironmentSpec(EnvironmentSpec environmentSpec) {
     this.environmentSpec = environmentSpec;
-  }
-  
-  /**
-   * Get the image for the experiment. If the {@link ExperimentTaskSpec#getImage()} not
-   * specified the image replaced with it.
-   * @return image
-   */
-  public String getImage() {
-    return image;
-  }
-
-  public void setImage(String image) {
-    this.image = image;
   }
 }

@@ -1,19 +1,18 @@
 {
-  "name": "mnist",
-  "namespace": "default",
-  "environment": "my-submarine-env",
-  "librarySpec": {
-    "name": "TensorFlow",
-    "version": "2.1.0",
-    "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0",
+  "meta": {
+    "name": "tf-mnist-json",
+    "namespace": "default",
+    "framework": "TensorFlow",
     "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
     "envVars": {
       "ENV_1": "ENV1"
     }
   },
-  "taskSpecs": {
+  "environment": {
+    "name": "my-submarine-env"
+  },
+  "spec": {
     "Worker": {
-      "name": "tensorflow",
       "replicas": 1,
       "resources": "cpu=1,memory=1024M"
     }

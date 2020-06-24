@@ -49,6 +49,12 @@ public class EnvironmentSpec {
    */
   private String description;
 
+  /**
+   * Image
+   * @return
+   */
+  private String image;
+  
   public String getName() {
     return name;
   }
@@ -85,5 +91,27 @@ public class EnvironmentSpec {
    */
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  /**
+   * @return the image
+   */
+  public String getImage() {
+    return image;
+  }
+
+  /**
+   * @param image the image to set
+   */
+  public void setImage(String image) {
+    this.image = image;
+  }
+  
+  public boolean isEmbeddedEnvironment() {
+    return (getImage() != null && getName() == null);
+  }
+  
+  public boolean isValidSpec() {
+    return !(getImage() != null && getName() != null);
   }
 }

@@ -136,8 +136,16 @@ public class ExperimentSpecParser {
     return tfJobSpec;
   }
 
-  private static V1PodTemplateSpec parseTemplateSpec(ExperimentTaskSpec taskSpec,
-      ExperimentSpec experimentSpec) {
+  private static V1PodTemplateSpec parseTemplateSpec(
+      ExperimentTaskSpec taskSpec, ExperimentSpec experimentSpec)
+      throws InvalidSpecException {
+    if (experimentSpec.getEnvironment() != null
+        && !experimentSpec.getEnvironment().isValidSpec()) {
+      throw new InvalidSpecException(
+          "Invalid environment spec: Either " + "image '"
+              + experimentSpec.getEnvironment().getImage() + "' or " + "name '"
+              + experimentSpec.getEnvironment().getName() + "' is allowed.");
+    }
     V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
     V1PodSpec podSpec = new V1PodSpec();
     List<V1Container> containers = new ArrayList<>();
@@ -147,7 +155,9 @@ public class ExperimentSpecParser {
     if (taskSpec.getImage() != null) {
       container.setImage(taskSpec.getImage());
     } else {
-      container.setImage(experimentSpec.getEnvironment().getImage());
+      if (experimentSpec.getEnvironment().isEmbeddedEnvironment()) {
+        container.setImage(experimentSpec.getEnvironment().getImage());
+      }
     }
     // cmd
     if (taskSpec.getCmd() != null) {
@@ -166,41 +176,44 @@ public class ExperimentSpecParser {
     /**
      * Init Containers
      */
-    Environment environment = getEnvironment(experimentSpec);
-    if (environment != null) {
-      EnvironmentSpec environmentSpec = environment.getEnvironmentSpec();
-      List<V1Container> initContainers = new ArrayList<>();
-      V1Container initContainer = new V1Container();
-      initContainer.setName(environment.getName());
-      initContainer.setImage(environmentSpec.getDockerImage());
+    if (!experimentSpec.getEnvironment().isEmbeddedEnvironment()) {
+      Environment environment = getEnvironment(experimentSpec);
+      if (environment != null) {
+        EnvironmentSpec environmentSpec = environment.getEnvironmentSpec();
+        List<V1Container> initContainers = new ArrayList<>();
+        V1Container initContainer = new V1Container();
+        initContainer.setName(environment.getName());
+        initContainer.setImage(environmentSpec.getDockerImage());
 
-      if (environmentSpec.getKernelSpec().getDependencies().size() > 0) {
-        StringBuffer createCommand = new StringBuffer();
-        String condaEnvironmentName = environmentSpec.getKernelSpec().getName();
+        if (environmentSpec.getKernelSpec().getDependencies().size() > 0) {
+          StringBuffer createCommand = new StringBuffer();
+          String condaEnvironmentName =
+              environmentSpec.getKernelSpec().getName();
 
-        createCommand.append("conda create -n " + condaEnvironmentName);
-        for (String channel : environmentSpec.getKernelSpec().getChannels()) {
-          createCommand.append(" ");
-          createCommand.append("-c");
-          createCommand.append(" ");
-          createCommand.append(channel);
+          createCommand.append("conda create -n " + condaEnvironmentName);
+          for (String channel : environmentSpec.getKernelSpec().getChannels()) {
+            createCommand.append(" ");
+            createCommand.append("-c");
+            createCommand.append(" ");
+            createCommand.append(channel);
+          }
+          for (String dependency : environmentSpec.getKernelSpec()
+              .getDependencies()) {
+            createCommand.append(" ");
+            createCommand.append(dependency);
+          }
+          String activateCommand = "echo \"source activate "
+              + condaEnvironmentName + "\" > ~/.bashrc";
+          String pathCommand = "PATH=/opt/conda/envs/env/bin:$PATH";
+          String finalCommand = createCommand.toString() + " && "
+              + activateCommand + " && " + pathCommand;
+          initContainer.addCommandItem("/bin/bash");
+          initContainer.addCommandItem("-c");
+          initContainer.addCommandItem(finalCommand);
         }
-        for (String dependency : environmentSpec.getKernelSpec()
-            .getDependencies()) {
-          createCommand.append(" ");
-          createCommand.append(dependency);
-        }
-        String activateCommand =
-            "echo \"source activate " + condaEnvironmentName + "\" > ~/.bashrc";
-        String pathCommand = "PATH=/opt/conda/envs/env/bin:$PATH";
-        String finalCommand = createCommand.toString() + " && "
-            + activateCommand + " && " + pathCommand;
-        initContainer.addCommandItem("/bin/bash");
-        initContainer.addCommandItem("-c");
-        initContainer.addCommandItem(finalCommand);
         initContainers.add(initContainer);
+        podSpec.setInitContainers(initContainers);
       }
-      podSpec.setInitContainers(initContainers);
     }
     templateSpec.setSpec(podSpec);
     return templateSpec;
@@ -242,11 +255,11 @@ public class ExperimentSpecParser {
     return resources;
   }
   
-  private static Environment getEnvironment(ExperimentSpec jobSpec) {
-    if (jobSpec.getEnvironment() != null) {
+  private static Environment getEnvironment(ExperimentSpec experimentSpec) {
+    if (experimentSpec.getEnvironment().getName() != null) {
       EnvironmentManager environmentManager = EnvironmentManager.getInstance();
-      Environment environment =
-          environmentManager.getEnvironment(jobSpec.getEnvironment().getName());
+      Environment environment = environmentManager
+          .getEnvironment(experimentSpec.getEnvironment().getName());
       return environment;
     } else {
       return null;

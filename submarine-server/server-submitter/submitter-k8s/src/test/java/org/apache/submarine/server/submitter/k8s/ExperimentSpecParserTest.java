@@ -19,6 +19,8 @@
 
 package org.apache.submarine.server.submitter.k8s;
 
+import static org.junit.Assert.fail;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -189,7 +191,8 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     EnvironmentManager environmentManager = EnvironmentManager.getInstance();
 
     EnvironmentSpec spec = new EnvironmentSpec();
-    spec.setName("my-submarine-env");
+    String envName = "my-submarine-env";
+    spec.setName(envName);
     String dockerImage = "example.com/my-docker-image:0.1.2";
     spec.setDockerImage(dockerImage);
 
@@ -227,5 +230,20 @@ public class ExperimentSpecParserTest extends SpecBuilder {
             + " && " + "echo \"source activate " + kernelName + "\" > ~/.bashrc"
             + " && " + "PATH=/opt/conda/envs/env/bin:$PATH",
         initContainer.getCommand().get(2));
+    
+    environmentManager.deleteEnvironment(envName);
+  }
+  
+  @Test (expected = InvalidSpecException.class)
+  public void testValidPyTorchJobSpecWithInvalidEnv() 
+      throws InvalidSpecException, IOException, URISyntaxException {
+    ExperimentSpec experimentSpec;
+    try {
+      experimentSpec = buildFromJsonFile(pytorchJobWithInvalidEnvReqFile);
+      ExperimentSpecParser.parseJob(experimentSpec);
+      fail("Invalid spec exception should have thrown.");
+    } catch (InvalidSpecException e) {
+      throw e;
+    }
   }
 }
