@@ -46,14 +46,6 @@ public class Environment {
     this.environmentId = environmentId;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public EnvironmentSpec getEnvironmentSpec() {
     return environmentSpec;
   }

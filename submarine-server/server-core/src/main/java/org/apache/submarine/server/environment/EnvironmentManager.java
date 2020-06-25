@@ -21,6 +21,8 @@ package org.apache.submarine.server.environment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.ws.rs.core.Response.Status;
 
@@ -46,6 +48,12 @@ public class EnvironmentManager {
       LoggerFactory.getLogger(EnvironmentManager.class);
 
   private static volatile EnvironmentManager manager;
+  
+  /**
+   * Environment Cache
+   */
+  private final ConcurrentMap<String, Environment> cachedEnvironments =
+      new ConcurrentHashMap<>();
   
   /**
    * Get the singleton instance
@@ -89,9 +97,11 @@ public class EnvironmentManager {
       sqlSession.commit();
 
       Environment env = new Environment();
-      env.setName(spec.getName());
       env.setEnvironmentId(environmentId);
       env.setEnvironmentSpec(spec);
+      
+      // Populate cache
+      cachedEnvironments.putIfAbsent(spec.getName(), env);
       return env;
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -127,9 +137,12 @@ public class EnvironmentManager {
       sqlSession.commit();
 
       Environment updatedEnvironment = new Environment();
-      updatedEnvironment.setName(spec.getName());
       updatedEnvironment.setEnvironmentId(environmentId);
       updatedEnvironment.setEnvironmentSpec(spec);
+      
+      // Update cache
+      cachedEnvironments.putIfAbsent(spec.getName(), updatedEnvironment);
+      
       return updatedEnvironment;
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -157,6 +170,9 @@ public class EnvironmentManager {
           sqlSession.getMapper(EnvironmentMapper.class);
       environmentMapper.delete(name);
       sqlSession.commit();
+      
+      // Invalidate cache
+      cachedEnvironments.remove(name);
       return env;
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -204,7 +220,12 @@ public class EnvironmentManager {
   private Environment getEnvironmentDetails(String name)
       throws SubmarineRuntimeException {
 
-    Environment env = null;
+    // Is it available in cache?
+    Environment env = cachedEnvironments.get(name);
+    if(env != null) {
+      return env;
+    }
+    
     try (SqlSession sqlSession = MyBatisUtil.getMetastoreSqlSession()) {
       EnvironmentMapper environmentMapper =
           sqlSession.getMapper(EnvironmentMapper.class);
@@ -212,7 +233,6 @@ public class EnvironmentManager {
 
       if (environmentEntity != null) {
         env = new Environment();
-        env.setName(environmentEntity.getEnvironmentName());
         env.setEnvironmentSpec(new Gson().fromJson(
             environmentEntity.getEnvironmentSpec(), EnvironmentSpec.class));
       }

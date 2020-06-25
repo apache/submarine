@@ -95,7 +95,7 @@ public class EnvironmentManagerRestApiTest extends AbstractSubmarineServerTest {
 
     Environment getEnvironment =
         gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
-    Assert.assertEquals(ENV_NAME, getEnvironment.getName());
+    Assert.assertEquals(ENV_NAME, getEnvironment.getEnvironmentSpec().getName());
     
     deleteEnvironment();
   }
