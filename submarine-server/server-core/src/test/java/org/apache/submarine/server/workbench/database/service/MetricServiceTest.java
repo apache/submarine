@@ -46,13 +46,13 @@ public class MetricServiceTest {
   @Test
   public void testSelect() throws Exception {
     Metric metric = new Metric();
-    metric.setKey("score");
+    metric.setKey("test_score");
     metric.setValue((float) 0.666667);
-    metric.setWorkerIndex("worker-1");
+    metric.setWorkerIndex("test_worker-1");
     metric.setTimestamp(new BigInteger("1569139525097"));
     metric.setStep(0);
     metric.setIsNan(0);
-    metric.setJobName("application_1234");
+    metric.setJobName("test_application_1234");
     boolean result = metricService.insert(metric);
     assertTrue(result);
     List<Metric> metricList = metricService.selectAll();
@@ -69,23 +69,23 @@ public class MetricServiceTest {
   @Test
   public void testUpdate() throws Exception {
     Metric metric = new Metric();
-    metric.setKey("score");
+    metric.setKey("test_score");
     metric.setValue((float) 0.666667);
-    metric.setWorkerIndex("worker-2");
+    metric.setWorkerIndex("test_worker-2");
     metric.setTimestamp(new BigInteger("1569139525098"));
     metric.setStep(0);
     metric.setIsNan(0);
-    metric.setJobName("application_1234");
+    metric.setJobName("test_application_1234");
     boolean result = metricService.insert(metric);
     assertTrue(result);
 
-    metric.setKey("scoreNew");
+    metric.setKey("test_scoreNew");
     metric.setValue((float) 0.766667);
-    metric.setWorkerIndex("worker-New");
+    metric.setWorkerIndex("test_worker-New");
     metric.setTimestamp(new BigInteger("2569139525098"));
     metric.setStep(1);
     metric.setIsNan(1);
-    metric.setJobName("application_1234New");
+    metric.setJobName("test_application_1234New");
 
     boolean editResult = metricService.update(metric);
     assertTrue(editResult);
@@ -97,13 +97,13 @@ public class MetricServiceTest {
   @Test
   public void testDelete() throws Exception {
     Metric metric = new Metric();
-    metric.setKey("score");
+    metric.setKey("test_score");
     metric.setValue((float) 0.666667);
-    metric.setWorkerIndex("worker-2");
+    metric.setWorkerIndex("test_worker-2");
     metric.setTimestamp(new BigInteger("1569139525098"));
     metric.setStep(0);
     metric.setIsNan(0);
-    metric.setJobName("application_1234");
+    metric.setJobName("test_application_1234");
     boolean result = metricService.insert(metric);
     assertTrue(result);
 

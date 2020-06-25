@@ -45,10 +45,10 @@ public class ParamServiceTest {
   @Test
   public void testSelect() throws Exception {
     Param param = new Param();
-    param.setKey("score");
+    param.setKey("test_score");
     param.setValue("199");
-    param.setWorkerIndex("worker-1");
-    param.setJobName("application_123651651");
+    param.setWorkerIndex("test_worker-1");
+    param.setJobName("test_application_123651651");
     boolean result = paramService.insert(param);
     assertTrue(result);
     List<Param> paramList = paramService.selectAll();
@@ -65,10 +65,10 @@ public class ParamServiceTest {
   @Test
   public void testUpdate() throws Exception {
     Param param = new Param();
-    param.setKey("score");
+    param.setKey("test_score");
     param.setValue("100");
-    param.setWorkerIndex("worker-2");
-    param.setJobName("application_1234");
+    param.setWorkerIndex("test_worker-2");
+    param.setJobName("test_application_1234");
     boolean result = paramService.insert(param);
     assertTrue(result);
 
@@ -86,10 +86,10 @@ public class ParamServiceTest {
   @Test
   public void testDelete() throws Exception {
     Param param = new Param();
-    param.setKey("score");
+    param.setKey("test_score");
     param.setValue("100");
-    param.setWorkerIndex("worker-2");
-    param.setJobName("application_1234");
+    param.setWorkerIndex("test_worker-2");
+    param.setJobName("test_application_1234");
 
     boolean result = paramService.insert(param);
     assertTrue(result);

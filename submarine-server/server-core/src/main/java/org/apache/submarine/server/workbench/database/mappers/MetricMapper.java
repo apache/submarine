@@ -36,5 +36,4 @@ public interface MetricMapper {
   int update(Metric metric);
 
   List<Metric> selectByPrimaryKeySelective(Metric metric);
-  
 }
