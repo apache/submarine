@@ -94,7 +94,7 @@
       AND value = #{value,jdbcType=FLOAT}
     </if>
     <if test="workerIndex != null">
-      AND worker_index = #{workerIndex,jdbcType=INTEGER}
+      AND worker_index = #{workerIndex,jdbcType=VARCHAR}
     </if>
     <if test="timestamp != null">
       AND timestamp = #{timestamp,jdbcType=BIGINT}
