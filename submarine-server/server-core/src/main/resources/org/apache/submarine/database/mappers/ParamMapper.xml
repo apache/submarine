@@ -57,7 +57,7 @@
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Param"
           useGeneratedKeys="true" keyProperty="id">
     insert into params (`key`, value, worker_index, job_name)
-    values (#{`key`,jdbcType=VARCHAR}, 
+    values (#{key,jdbcType=VARCHAR}, 
       #{value,jdbcType=FLOAT},
       #{workerIndex,jdbcType=VARCHAR}, 
       #{jobName,jdbcType=VARCHAR})
