@@ -84,10 +84,10 @@
         AND value = #{value,jdbcType=FLOAT}
       </if>
       <if test="workerIndex != null">
-        AND worker_index = #{workerIndex,jdbcType=FLOAT}
+        AND worker_index = #{workerIndex,jdbcType=VARCHAR}
       </if>
       <if test="jobName != null">
-        AND job_name = #{jobName,jdbcType=BIGINT}
+        AND job_name = #{jobName,jdbcType=VARCHAR}
       </if>
    </select>
 </mapper>
