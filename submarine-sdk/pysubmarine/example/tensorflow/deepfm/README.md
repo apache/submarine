@@ -16,12 +16,12 @@ To run the examples here, you need to:
 - Build a Python virtual environment with pysubmarine installed
 - Install Submarine 0.3.0+
 ### Running DeepFM on a local machine
-1. Create a JSON configuration file containing train,valid and test data, model parameters, 
+1. Create a JSON configuration file containing train,valid and test data, model parameters,
 metrics, save model path, resources. e.g. [deepfm.json](./deepfm.json)
 
 2. Install submarine python bindings by setup.py:
 ```
-python ./submarine/submarine-sdk/setup.py install
+python ./submarine/submarine-sdk/pysubmarine/setup.py install
 ```
 2. Train
 ```
