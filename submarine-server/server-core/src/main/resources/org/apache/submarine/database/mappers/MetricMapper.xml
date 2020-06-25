@@ -90,9 +90,6 @@
     <if test="key != null">
       AND `key` = #{key,jdbcType=VARCHAR}
     </if>
-    <if test="value != null">
-      AND value = #{value,jdbcType=FLOAT}
-    </if>
     <if test="workerIndex != null">
       AND worker_index = #{workerIndex,jdbcType=VARCHAR}
     </if>
