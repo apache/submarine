@@ -21,30 +21,33 @@
   *ngIf="!isLoading"
   style="margin-top: 10px;"
   id="experimentTable"
-  nzBordered
   #basicTable
   [nzData]="[experimentInfo]"
   [nzShowPagination]="false"
+  [nzScroll]="{ x: '1500px', y: '240px' }"
+  nzSize="small"
 >
   <thead>
     <tr>
-      <th>Experiment Name</th>
-      <th>Experiment ID</th>
-      <th>Created Time</th>
-      <th>Running Time</th>
-      <th>Finished Time</th>
-      <th>Status</th>
-      <th>Progress</th>
-      <th nzMinWidth="40px">Action</th>
+      <th nzWidth="150px" nzLeft="0px">Experiment Name</th>
+      <th nzWidth="280px">Experiment ID</th>
+      <th nzWidth="150px">Created Time</th>
+      <th nzWidth="150px">Running Time</th>
+      <th nzWidth="150px">Finished Time</th>
+      <th nzWidth="150px">Duration</th>
+      <th nzWidth="130px">Status</th>
+      <th nzWidth="100px">Progress</th>
+      <th nzWidth="120px" nzRight="0px">Action</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>{{ experimentInfo.name }}</td>
+      <td nzWidth="150px" nzLeft="0px">{{ experimentInfo.name }}</td>
       <td>{{ experimentInfo.experimentId }}</td>
-      <td>{{ experimentInfo.createdTime }}</td>
-      <td>{{ experimentInfo.runningTime }}</td>
-      <td>{{ experimentInfo.finishedTime }}</td>
+      <td>{{ experimentInfo.createdTime | date : 'M/d/yyyy, h:mm a' }}</td>
+      <td>{{ experimentInfo.runningTime | date : 'M/d/yyyy, h:mm a' }}</td>
+      <td>{{ experimentInfo.finishedTime | date : 'M/d/yyyy, h:mm a' }}</td>
+      <td></td>
       <td>{{ experimentInfo.status }}</td>
       <td *ngIf="experimentInfo.status === 'Succeeded'">
         <nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress>
@@ -52,8 +55,9 @@
       <td *ngIf="experimentInfo.status !== 'Succeeded'">
         <nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress>
       </td>
-      <td class="td-action" nzRight="0px">
+      <td nzWidth="120px" nzRight="0px" class="td-action">
         <a (click)="startExperiment()">Start</a>
+        <nz-divider nzType="vertical"></nz-divider>
         <a nz-dropdown [nzDropdownMenu]="more">
           More
           <i nz-icon nzType="down"></i>
@@ -81,6 +85,7 @@
 <nz-spin *ngIf="isLoading"></nz-spin>
 <nz-layout>
   <nz-sider style="background-color: white;">
+    <nz-select nzPlaceHolder="test"></nz-select>
     <ul nz-menu>
       <li nz-menu-item nzSelected (click)="currentState = 0">
         <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
