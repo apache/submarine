@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.submarine.server.workbench.database.mappers.ParamMapper">
+  <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.workbench.database.entity.BaseEntity">
+    <id property="id" column="id"/>
+  </resultMap>
+
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Param" extends="BaseEntityResultMap">
+    <result column="key" jdbcType="VARCHAR" property="key" />
+    <result column="value" jdbcType="FLOAT" property="value" />
+    <result column="worker_index" jdbcType="VARCHAR" property="workerIndex" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+  </resultMap>
+
+  <!-- key is reserved word in mysql -->
+  <sql id="Base_Column_List">
+    id, `key`, value, worker_index, job_name
+  </sql>
+
+  <select id="selectAll" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List" />
+    from params
+    where 1 = 1
+  </select>
+
+  <select id="selectById" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List" />
+    from params
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteById" parameterType="java.lang.String">
+    delete from params
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Param"
+          useGeneratedKeys="true" keyProperty="id">
+    insert into params (`key`, value, worker_index, job_name)
+    values (#{key,jdbcType=VARCHAR}, 
+      #{value,jdbcType=FLOAT},
+      #{workerIndex,jdbcType=VARCHAR}, 
+      #{jobName,jdbcType=VARCHAR})
+  </insert>
+
+  <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Param">
+    update params
+    set `key` = #{key,jdbcType=VARCHAR},
+      value = #{value,jdbcType=FLOAT},
+      worker_index = #{workerIndex,jdbcType=VARCHAR},
+      job_name = #{jobName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectByPrimaryKeySelective" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List" />
+    from params
+    where 1 = 1
+      <if test="key != null">
+        AND `key` = #{key,jdbcType=VARCHAR}
+      </if>
+      <if test="workerIndex != null">
+        AND worker_index = #{workerIndex,jdbcType=VARCHAR}
+      </if>
+      <if test="jobName != null">
+        AND job_name = #{jobName,jdbcType=VARCHAR}
+      </if>
+      <if test="id != null">
+        AND id = #{id,jdbcType=VARCHAR}
+      </if>
+   </select>
+</mapper>
