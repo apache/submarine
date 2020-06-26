@@ -65,7 +65,7 @@
     <shaded.dependency.prefix>org.apache.submarine.shaded</shaded.dependency.prefix>
 
     <!--library versions-->
-    <tony.version>0.3.23</tony.version>
+    <tony.version>0.3.25</tony.version>
     <jersey.version>2.27</jersey.version>
     <jersey.servlet.version>1.13</jersey.servlet.version>
     <jetty.version>9.4.18.v20190429</jetty.version>
@@ -123,7 +123,7 @@
     <nimbus-jose-jwt.version>7.9</nimbus-jose-jwt.version>
     <mybatis-generator.version>1.3.7</mybatis-generator.version>
     <derby.version>10.15.1.3</derby.version>
-    <zeppelin.version>0.9.0-SNAPSHOT</zeppelin.version>
+    <zeppelin.version>0.9.0-preview1</zeppelin.version>
     <jgit.version>5.5.1.201910021850-r</jgit.version>
     <atomix.version>3.1.5</atomix.version>
     <spark.scala.version>2.11.8</spark.scala.version>
@@ -553,6 +553,7 @@
             <exclude>**/*.conf</exclude>
             <exclude>**/*.libsvm</exclude>
             <exclude>**/*.yaml</exclude>
+            <exclude>**/*.yapf</exclude>
             <exclude>**/*.libsvm</exclude>
             <exclude>**/src/main/resources/META-INF/services/org.apache.hadoop.security.SecurityInfo</exclude>
             <exclude>**/src/test/resources/typicalHistFolder/job1/application123-1-1-user1-SUCCEEDED.jhist</exclude>
@@ -565,6 +566,7 @@
             <exclude>**/go.mod</exclude>
             <exclude>**/go.sum</exclude>
             <exclude>**/workbench-web/**</exclude>
+            <exclude>**/*.ipynb</exclude>
           </excludes>
         </configuration>
       </plugin>

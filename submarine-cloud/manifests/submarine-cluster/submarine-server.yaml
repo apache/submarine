@@ -108,6 +108,10 @@ spec:
             backend:
               serviceName: submarine-svc
               servicePort: 8080
+          - path: /jupyter
+            backend:
+              serviceName: jupyter-svc
+              servicePort: 8888
 
 ---
 # You can also access the submarine workbench via port-forward

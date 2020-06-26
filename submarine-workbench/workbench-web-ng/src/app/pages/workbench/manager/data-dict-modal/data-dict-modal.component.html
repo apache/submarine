@@ -17,15 +17,21 @@
   ~ under the License.
   -->
 
-<nz-modal [nzVisible]="visible" [nzTitle]="modalTitle" nzCancelText="Close" nzOkText="Ok" (nzOnCancel)="hideModal()"
-          (nzOnOk)="submitForm()">
+<nz-modal
+  [nzVisible]="visible"
+  [nzTitle]="modalTitle"
+  nzCancelText="Close"
+  nzOkText="Ok"
+  (nzOnCancel)="hideModal()"
+  (nzOnOk)="submitForm()"
+>
   <form nz-form nzLayout="horizontal" [formGroup]="form">
     <nz-form-item>
       <nz-form-label nzRequired>
         Dictionary Code
       </nz-form-label>
       <nz-form-control>
-        <input id="inputNewDictCode" type="text" nz-input formControlName="dictCode"/>
+        <input id="inputNewDictCode" type="text" nz-input formControlName="dictCode" />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
@@ -33,7 +39,7 @@
         Dictionary Name
       </nz-form-label>
       <nz-form-control>
-        <input id="inputNewDictName" nz-input formControlName="dictName"/>
+        <input id="inputNewDictName" nz-input formControlName="dictName" />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
@@ -41,7 +47,7 @@
         Description
       </nz-form-label>
       <nz-form-control>
-        <input id="inputNewDictDescription" nz-input formControlName="description"/>
+        <input id="inputNewDictDescription" nz-input formControlName="description" />
       </nz-form-control>
     </nz-form-item>
   </form>

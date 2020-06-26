@@ -29,13 +29,12 @@ import { switchMap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ExperimentService {
-  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {
-  }
+  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
   fetchExperimentList(): Observable<ExperimentInfo[]> {
-    const apiUrl = this.baseApi.getRestApi('/v1/jobs');
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment');
     return this.httpClient.get<Rest<ExperimentInfo[]>>(apiUrl).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           console.log(res.result);
           return of(res.result);
@@ -46,10 +45,23 @@ export class ExperimentService {
     );
   }
 
+  querySpecificExperiment(id: string): Observable<ExperimentInfo> {
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment/' + id);
+    return this.httpClient.get<Rest<ExperimentInfo>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
+  }
+
   createExperiment(experimentSpec): Observable<ExperimentInfo> {
-    const apiUrl = this.baseApi.getRestApi('/v1/jobs');
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment');
     return this.httpClient.post<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           return of(res.result);
         } else {
@@ -60,9 +72,9 @@ export class ExperimentService {
   }
 
   editExperiment(experimentSpec): Observable<ExperimentInfo> {
-    const apiUrl = this.baseApi.getRestApi('/v1/jobs');
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment');
     return this.httpClient.patch<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           return of(res.result);
         } else {
@@ -73,13 +85,26 @@ export class ExperimentService {
   }
 
   deleteExperiment(id: string): Observable<ExperimentInfo> {
-    const apiUrl = this.baseApi.getRestApi('/v1/jobs/' + id);
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment/' + id);
     return this.httpClient.delete<Rest<any>>(apiUrl).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           return of(res.result);
         } else {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete', id);
+        }
+      })
+    );
+  }
+
+  getExperimentLog(id: string): Observable<any> {
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment/logs/' + id);
+    return this.httpClient.get<Rest<any>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get', id);
         }
       })
     );

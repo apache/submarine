@@ -22,6 +22,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ExperimentComponent } from '@submarine/pages/workbench/experiment/experiment.component';
 import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.component';
 import { DataComponent } from './data/data.component';
+import { ExperimentInfoComponent } from './experiment/experiment-info/experiment-info.component';
 import { HomeComponent } from './home/home.component';
 import { InterpreterComponent } from './interpreter/interpreter.component';
 import { ModelComponent } from './model/model.component';
@@ -51,7 +52,13 @@ const routes: Routes = [
       },
       {
         path: 'experiment',
-        component: ExperimentComponent
+        component: ExperimentComponent,
+        children: [
+          {
+            path: 'info/:id',
+            component: ExperimentInfoComponent
+          }
+        ]
       },
       {
         path: 'data',
@@ -63,7 +70,11 @@ const routes: Routes = [
       },
       {
         path: 'manager',
-        loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
+        loadChildren: () => import('./manager/manager.module').then((m) => m.ManagerModule)
+      },
+      {
+        path: 'notebook',
+        loadChildren: () => import('./notebook/notebook.module').then((m) => m.NotebookModule)
       }
     ]
   }
@@ -72,5 +83,4 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)]
 })
-export class WorkbenchRoutingModule {
-}
+export class WorkbenchRoutingModule {}

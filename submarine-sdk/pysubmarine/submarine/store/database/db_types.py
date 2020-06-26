@@ -12,7 +12,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Set of SQLAlchemy database schemas supported in Submarine for tracking server backends.
 """
@@ -22,9 +21,4 @@ MYSQL = 'mysql'
 SQLITE = 'sqlite'
 MSSQL = 'mssql'
 
-DATABASE_ENGINES = [
-    POSTGRES,
-    MYSQL,
-    SQLITE,
-    MSSQL
-]
+DATABASE_ENGINES = [POSTGRES, MYSQL, SQLITE, MSSQL]

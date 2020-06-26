@@ -32,11 +32,11 @@ import io.kubernetes.client.models.V1JobStatusBuilder;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.models.V1StatusBuilder;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
-import org.apache.submarine.server.api.job.Job;
-import org.apache.submarine.server.api.spec.JobSpec;
+import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
-import org.apache.submarine.server.submitter.k8s.parser.JobSpecParser;
+import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,13 +45,13 @@ public class MLJobConverterTest extends SpecBuilder {
   @Test
   public void testMLJob2Job() throws IOException, URISyntaxException, InvalidSpecException {
     // Accepted Status
-    JobSpec spec = buildFromJsonFile(tfJobReqFile);
-    MLJob mlJob = JobSpecParser.parseJob(spec);
+    ExperimentSpec spec = buildFromJsonFile(tfJobReqFile);
+    MLJob mlJob = ExperimentSpecParser.parseJob(spec);
     V1JobStatus status = new V1JobStatusBuilder().build();
     mlJob.setStatus(status);
-    Job job = MLJobConverter.toJobFromMLJob(mlJob);
-    Assert.assertNull(job.getStatus());
-    Assert.assertNull(job.getStatus());
+    Experiment experiment = MLJobConverter.toJobFromMLJob(mlJob);
+    Assert.assertNull(experiment.getStatus());
+    Assert.assertNull(experiment.getStatus());
 
     // Created Status
     DateTime startTime = new DateTime();
@@ -64,9 +64,9 @@ public class MLJobConverterTest extends SpecBuilder {
     conditions.add(condition);
     mlJob.getStatus().setConditions(conditions);
 
-    job = MLJobConverter.toJobFromMLJob(mlJob);
-    Assert.assertEquals(Job.Status.STATUS_CREATED.getValue(), job.getStatus());
-    Assert.assertEquals(startTime.toString(), job.getCreatedTime());
+    experiment = MLJobConverter.toJobFromMLJob(mlJob);
+    Assert.assertEquals(Experiment.Status.STATUS_CREATED.getValue(), experiment.getStatus());
+    Assert.assertEquals(startTime.toString(), experiment.getCreatedTime());
 
     // Running Status
     DateTime runningTime = new DateTime();
@@ -75,31 +75,31 @@ public class MLJobConverterTest extends SpecBuilder {
     conditions.add(condition);
 
     mlJob.getStatus().setConditions(conditions);
-    job = MLJobConverter.toJobFromMLJob(mlJob);
-    Assert.assertEquals(Job.Status.STATUS_RUNNING.toString(), job.getStatus());
-    Assert.assertEquals(runningTime.toString(), job.getRunningTime());
+    experiment = MLJobConverter.toJobFromMLJob(mlJob);
+    Assert.assertEquals(Experiment.Status.STATUS_RUNNING.toString(), experiment.getStatus());
+    Assert.assertEquals(runningTime.toString(), experiment.getRunningTime());
 
     // Succeeded Status
     DateTime finishedTime = new DateTime();
     mlJob.getStatus().setCompletionTime(finishedTime);
-    job = MLJobConverter.toJobFromMLJob(mlJob);
-    Assert.assertEquals(Job.Status.STATUS_SUCCEEDED.toString(), job.getStatus());
-    Assert.assertEquals(finishedTime.toString(), job.getFinishedTime());
+    experiment = MLJobConverter.toJobFromMLJob(mlJob);
+    Assert.assertEquals(Experiment.Status.STATUS_SUCCEEDED.toString(), experiment.getStatus());
+    Assert.assertEquals(finishedTime.toString(), experiment.getFinishedTime());
   }
 
   @Test
   public void testStatus2Job() {
     V1Status status = new V1StatusBuilder().withStatus("Success").build();
-    Job job = MLJobConverter.toJobFromStatus(status);
-    Assert.assertNotNull(job);
-    Assert.assertEquals(Job.Status.STATUS_DELETED.getValue(), job.getStatus());
+    Experiment experiment = MLJobConverter.toJobFromStatus(status);
+    Assert.assertNotNull(experiment);
+    Assert.assertEquals(Experiment.Status.STATUS_DELETED.getValue(), experiment.getStatus());
   }
 
   @Test
   public void testMLJob2DeleteOptions() throws IOException, URISyntaxException,
       InvalidSpecException {
-    JobSpec spec = buildFromJsonFile(tfJobReqFile);
-    MLJob mlJob = JobSpecParser.parseJob(spec);
+    ExperimentSpec spec = buildFromJsonFile(tfJobReqFile);
+    MLJob mlJob = ExperimentSpecParser.parseJob(spec);
     V1DeleteOptions options = MLJobConverter.toDeleteOptionsFromMLJob(mlJob);
     Assert.assertNotNull(options);
     Assert.assertEquals(mlJob.getApiVersion(), options.getApiVersion());

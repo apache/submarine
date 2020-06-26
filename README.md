@@ -20,92 +20,144 @@
 
 # What is Apache Submarine?
 
-Apache Submarine is a unified AI platform which allows engineers and data scientists to run Machine Learning and Deep Learning workload in distributed cluster.
+Apache Submarine (Submarine for short) is the `ONE PLATFORM` to allow Data Scientists to create end-to-end machine learning workflow. `ONE PLATFORM` means it supports Data Scientists to finish their jobs on the same platform without frequently switching their toolsets. From dataset exploring data pipeline creation, model training (experiments), and push model to production (model serving and monitoring). All these steps can be completed within the `ONE PLATFORM`.
 
-Goals of Submarine:
-- It allows jobs easy access data/models in HDFS and other storages.
-- Can launch services to serve TensorFlow/PyTorch/MXNet models.
-- Support run distributed TensorFlow jobs with simple configs.
-- Support run user-specified Docker images.
-- Support specify GPU and other resources.
-- Support launch TensorBoard for training jobs if user specified.
-- Support customized DNS name for roles (like TensorBoard.$user.$domain:6006)
+## Why Submarine?
 
-# Architecture
+There're already a lot of open-source and comericial projects are trying to create a end-to-end machine-learning/deep-learning platform, what's the vision of Submarine?
 
-![image-20190811191220934](docs/assets/architecture.png)
+### Problems
 
-## Components
+1) Existing products lack of good User-Interface (API, SDK, etc) to run training workload at scale, repeatable and easy for data scientist to understand on cloud/premise.
+2) Data-Scientist want to focus on domain-specific target (e.g. improve Click-Through-Rate), however available products always give user a platform (a SDK to run distributed Pytorch script).
+3) Many products provided functionalities to do data exploring, model training, and serving/monitoring. However these functionalities are largely disconnected with each other. And cannot organically work with each other.
 
-### Submarine Workbench
+_Theodore Levitt_ once said:
 
-Submarine Workbench is a WEB system. Algorithm engineers can perform complete lifecycle management of machine learning jobs in the Workbench.
+```
+“People don’t want to buy a quarter-inch drill. They want a quarter-inch hole.”
+```
 
-+ **Projects**
+### Goals of Submarine
 
-  Manage machine learning jobs through project.
+#### Model Training (Experiment)
 
-+ **Data**
+- Can run experiment (training jobs) on prem, on cloud. Via easy-to-use User-Interfaces
+- Easy for Data-Scientist (DS) to manage training code and dependencies (Docker, Python Dependencies, etc.) .
+- ML-focused APIs to run/track experiment from Python SDK (notebook), REST API, and CLI.
+- Provide APIs to run training jobs by using popular frameworks (Standalone/Distributed TensorFlow/PyTorch/Hovorod).
+- Pre-packaged Training Template for Data-Scientists to focus on domain-specific tasks (like using DeepFM to build a CTR prediction model).
+- Support GPU and other compute speed-up devides.
+- Support running on K8s/YARN or other resource management system.
+- Pipeline is also on the backlog, we will look into pipeline for training in the future.
 
-  Data processing, data conversion, feature engineering, etc. in the workbench.
+#### Notebook Service
 
-+ **Job**
+- Submarine is target to provide notebook service, which allows users to create/edit/delete a notebook instance (such as a Jupyter notebook) running on the cluster.
+- Users can submit experiement, manage models using Submarine SDK.
 
-  Data processing, algorithm development, and model training in machine learning jobs as a job run.
+#### Model Management (Serving/versioning/monitoring, etc.)
 
-+ **Model**
+- Model management for model-serving/versioning/monitoring is on the roadmap.
 
-  Algorithm selection, parameter adjustment, model training, model release, model Serving.
+## Easy-to-use User-Interface of Submarine
 
-+ **Workflow**
+Like mentioned above, Submarine is targeted to bring Data-Scientist-friendly user-interfaces to make their life easier. Here're some examples of Submarine user-interfaces.
 
-  Automate the complete life cycle of machine learning operations by scheduling workflows for data processing, model training, and model publishing.
+### Submit a distributed Tensorflow experiment via Submarine Python SDK
 
-+ **Team**
+#### Run a Tensorflow Mnist experiment
+```python
 
-  Support team development, code sharing, comments, code and model version management.
+# New a submarine client of the submarine server
+submarine_client = submarine.ExperimentClient(host='http://localhost:8080')
 
-### Submarine Core
+# The experiment's environment, could be Docker image or Conda environment based
+environment = Environment(image='gcr.io/kubeflow-ci/tf-dist-mnist-test:1.0')
 
-The submarine core is the execution engine of the system and has the following features：
+# Specify the experiment's name, framework it's using, namespace it will run in,
+# the entry point. It can also accept environment variables. etc.
+# For PyTorch job, the framework should be 'Pytorch'.
+experiment_meta = ExperimentMeta(name='mnist-dist',
+                                 namespace='default',
+                                 framework='Tensorflow',
+                                 cmd='python /var/tf_dist_mnist/dist_mnist.py --train_steps=100')
+# 1 PS task of 2 cpu, 1GB
+ps_spec = ExperimentTaskSpec(resources='cpu=2,memory=1024M',
+                             replicas=1)
+# 1 Worker task
+worker_spec = ExperimentTaskSpec(resources='cpu=2,memory=1024M',
+                                 replicas=1)
 
-- **ML Engine**
+# Wrap up the meta, environment and task specs into an experiment.
+# For PyTorch job, the specs would be "Master" and "Worker".
+experiment_spec = ExperimentSpec(meta=experiment_meta,
+                                 environment=environment,
+                                 spec={'Ps':ps_spec, 'Worker': worker_spec})
 
-  Support for multiple machine learning framework access, such as tensorflow, pytorch, mxnet.
+# Submit the experiment to submarine server
+experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
 
-- **Data Engine**
+# Get the experiment ID
+id = experiment['experimentId']
 
-  Docking the externally deployed Spark calculation engine for data processing.
+```
 
-- **SDK**
+#### Query a specific experiment
+```python
+submarine_client.get_experiment(id)
+```
 
-  Support Python, Scala, R language for algorithm development, The SDK is provided to help developers use submarine's internal data caching, data exchange, and task tracking to more efficiently improve the development and execution of machine learning tasks.
+#### Wait for finish
 
-- **Submitter**
+```python
+submarine_client.wait_for_finish(id)
+```
 
-  Compatible with the underlying hybrid scheduling system of yarn and k8s for unified task scheduling and resource management, so that users are not aware.
+#### Get the experiment's log
+```python
+submarine_client.get_log(id)
+```
 
-+ **Hybrid Scheduler**
-  + **YARN**
-  + **Kubernetes**
+#### Get all running experiment
+```python
+submarine_client.list_experiments(status='running')
+```
 
-## Quick start
+For a quick-start, see [Submarine On K8s](docs/userdocs/k8s/README.md)
 
-### Run mini-submarine in one step
 
-You can use [mini-submarine](./dev-support/mini-submarine/README.md) for a quick experience submairne.
+### Submit a pre-defined experiment template job
 
-This is a docker image built for submarine development and quick start test.
+### Submit an experiment via Submarine UI
 
-### Installation and deployment
+(Available on 0.6.0, see Roadmap)
 
-Read the [Quick Start Guide](./docs/helper/QuickStart.md)
+## Architecture, Design and requirements
+
+If you want to knwow more about Submarine's architecture, components, requirements and design doc, they can be found on [Architecture-and-requirement](docs/design/architecture-and-requirements.md)
+
+Detailed design documentation, implementation notes can be found at: [Implementation notes](docs/design/implementation-notes.md)
 
 ## Apache Submarine Community
 
 Read the [Apache Submarine Community Guide](./docs/community/README.md)
 
 How to contribute [Contributing Guide](./docs/community/contributing.md)
+
+Issue Tracking: https://issues.apache.org/jira/projects/SUBMARINE
+
+## User Document
+
+See [User Guide Home Page](docs/user-guide-home.md)
+
+## Developper Document
+
+See [Developper Guide Home Page](docs/development-guide-home.md)
+
+## Roadmap
+
+What to know more about what's coming for Submarine? Please check the roadmap out: https://cwiki.apache.org/confluence/display/SUBMARINE/Roadmap
 
 ## License
 

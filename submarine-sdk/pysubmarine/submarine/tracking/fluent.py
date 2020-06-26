@@ -12,20 +12,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Internal module implementing the fluent API, allowing management of an active
 Submarine run. This module is exposed to users at the top-level :py:mod:`submarine` module.
 """
 from __future__ import print_function
-from submarine.tracking.client import SubmarineClient
-from submarine.tracking.utils import get_job_name
 
-import time
 import logging
 import random
 import string
+import time
 
+from submarine.tracking.client import SubmarineClient
+from submarine.tracking.utils import get_job_name
 
 _RUN_ID_ENV_VAR = "SUBMARINE_RUN_ID"
 _active_run_stack = []
@@ -62,5 +61,5 @@ def log_metric(key, value, worker_index, step=None):
     :param step: Metric step (int). Defaults to zero if unspecified.
     """
     job_name = get_job_name()
-    SubmarineClient().log_metric(
-        job_name, key, value, worker_index, int(time.time() * 1000), step or 0)
+    SubmarineClient().log_metric(job_name, key, value, worker_index,
+                                 int(time.time() * 1000), step or 0)

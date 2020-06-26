@@ -42,13 +42,13 @@ public class Bootstrap extends HttpServlet {
     OpenAPI oas = new OpenAPI();
     Info info = new Info()
              .title("Submarine Experiment API")
-             .description("The Submarine REST API allows you to create, list, and get experiments. The" +
-                     "API is hosted under the /v1/jobs route on the Submarine server. For example," +
-                     "to list experiments on a server hosted at http://localhost:8080, access" +
-                     "http://localhost:8080/api/v1/jobs/")
+             .description("The Submarine REST API allows you to create, list, and get experiments. The\n" +
+                     "API is hosted under the /v1/experiment route on the Submarine server. For example,\n" +
+                     "to list experiments on a server hosted at http://localhost:8080, access\n" +
+                     "http://localhost:8080/api/v1/experiment/")
              .termsOfService("http://swagger.io/terms/")
              .contact(new Contact()
-             .email("submarine-dev@submarine.apache.org"))
+             .email("dev@submarine.apache.org"))
              .version("0.4.0-SNAPSHOT")
              .license(new License()
              .name("Apache 2.0")

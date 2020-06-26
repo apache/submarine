@@ -1,24 +1,25 @@
 {
-  "name": "pytorch-dist-mnist-gloo",
-  "namespace": "default",
-  "librarySpec": {
-    "name": "pytorch",
-    "version": "2.1.0",
-    "image": "apache/submarine:pytorch-dist-mnist-1.0",
+  "meta": {
+    "name": "pytorch-dist-mnist",
+    "namespace": "submarine",
+    "framework": "PyTorch",
     "cmd": "python /var/mnist.py --backend gloo",
     "envVars": {
       "ENV_1": "ENV1"
     }
   },
-  "taskSpecs": {
+  "environment": {
+    "image": "apache/submarine:pytorch-dist-mnist-1.0"
+  },
+  "spec": {
     "Master": {
       "name": "master",
       "replicas": 1,
-      "resources": "cpu=1,memory=1024M"
+      "resources": "cpu=2,memory=2048M"
     },
     "Worker": {
       "name": "worker",
-      "replicas": 1,
+      "replicas": 2,
       "resources": "cpu=1,memory=1024M"
     }
   }

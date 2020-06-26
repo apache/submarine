@@ -58,6 +58,7 @@ venv.bak/
 *.jar
 target
 dev-support/mini-submarine/database
+dev-support/pysubmarine/sdk
 submarine-workbench/workbench-web/node
 submarine-workbench/workbench-web/node_modules
 submarine-workbench/workbench-web/dist
@@ -94,3 +95,6 @@ submarine-security/spark-security/derby.log
 .classpath
 .settings
 .factorypath
+
+# jupyter notebook checkpoints
+.ipynb_checkpoints

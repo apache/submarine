@@ -14,6 +14,7 @@
 # limitations under the License.
 
 from __future__ import print_function
+
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.store.sqlalchemy_store import SqlAlchemyStore
 from submarine.utils import env

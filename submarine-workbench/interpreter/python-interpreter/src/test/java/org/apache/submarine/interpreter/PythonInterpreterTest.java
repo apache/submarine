@@ -63,7 +63,7 @@ public class PythonInterpreterTest {
   public void calcOnePlusOne() throws InterpreterException {
     String code = "1+1";
     InterpreterResult result = pythonInterpreterForCancel.interpret(code);
-    LOG.info("result = {}", result);
+    LOG.info("result = {}", result.toString());
 
     assertEquals(result.code(), InterpreterResult.Code.SUCCESS);
     // 1 + 1 = 2 + '\n'

@@ -19,6 +19,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { NzMessageService } from 'ng-zorro-antd';
@@ -29,8 +30,11 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./experiment.component.scss']
 })
 export class ExperimentComponent implements OnInit {
-
   experimentList: ExperimentInfo[] = [];
+  // About experiment information
+  isInfo = false;
+  experimentID: string;
+
   // About show existing experiments
   showExperiment = 'All';
   searchText = '';
@@ -48,20 +52,35 @@ export class ExperimentComponent implements OnInit {
 
   constructor(
     private experimentService: ExperimentService,
-    private nzMessageService: NzMessageService
-  ) { }
+    private nzMessageService: NzMessageService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.createExperiment =  new FormGroup({
-      'experimentName': new FormControl(null, Validators.required),
-      'description': new FormControl(null, [Validators.required]),
-      'experimentSpec': new FormControl('Adhoc'),
-      'ruleTemplate': new FormControl('Template1'),
-      'ruleType': new FormControl('Strong'),
-      'startDate': new FormControl(new Date()),
-      'scheduleCycle': new FormControl('Month')
+    this.createExperiment = new FormGroup({
+      experimentName: new FormControl(null, Validators.required),
+      description: new FormControl(null, [Validators.required]),
+      experimentSpec: new FormControl('Adhoc'),
+      ruleTemplate: new FormControl('Template1'),
+      ruleType: new FormControl('Strong'),
+      startDate: new FormControl(new Date()),
+      scheduleCycle: new FormControl('Month')
     });
     this.fetchExperimentList();
+    this.isInfo = this.router.url !== '/workbench/experiment';
+    this.experimentID = this.route.snapshot.params.id;
+    this.router.events.subscribe((val) => {
+      if (val instanceof NavigationStart) {
+        console.log(val.url);
+        if (val.url === '/workbench/experiment') {
+          this.isInfo = false;
+          this.fetchExperimentList();
+        } else {
+          this.isInfo = true;
+        }
+      }
+    });
   }
 
   handleOk() {
@@ -80,18 +99,17 @@ export class ExperimentComponent implements OnInit {
   }
 
   fetchExperimentList() {
-    this.experimentService
-      .fetchExperimentList()
-      .subscribe((  list ) => {
-        this.experimentList = list;
-      });
+    this.experimentService.fetchExperimentList().subscribe((list) => {
+      this.experimentList = list;
+    });
   }
   onDeleteExperiment(data: ExperimentInfo) {
-    this.experimentService.deleteExperiment(data.jobId).subscribe(
+    this.experimentService.deleteExperiment(data.experimentId).subscribe(
       () => {
         this.nzMessageService.success('Delete user success!');
         this.fetchExperimentList();
-      }, err => {
+      },
+      (err) => {
         this.nzMessageService.success(err.message);
       }
     );
@@ -103,7 +121,7 @@ export class ExperimentComponent implements OnInit {
   }
   // TODO(jasoonn): Perform part of list
   showChange() {
-    console.log("Change to " + this.showExperiment);
+    console.log('Change to ' + this.showExperiment);
   }
   // TODO(jasoonn): Start experiment
   startExperiment(Experiment) {

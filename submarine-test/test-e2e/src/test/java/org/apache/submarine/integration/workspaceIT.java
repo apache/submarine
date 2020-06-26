@@ -20,6 +20,8 @@ package org.apache.submarine.integration;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
 import org.apache.submarine.SubmarineITUtils;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,8 +58,28 @@ public class workspaceIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
 
+    WebDriverWait wait = new WebDriverWait( driver, 60);
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//li[contains(text(), \"Release\")]")));
+    
+    //Test release part
+    pollingWait(By.xpath("//li[contains(text(), \"Release\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertEquals(pollingWait(By.xpath("//nz-table[@id='releaseTable']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+
+    //Test training part
+    pollingWait(By.xpath("//li[contains(text(), \"Training\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertEquals(pollingWait(By.xpath("//div[@id='trainingDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+
+    //Test team part
+    pollingWait(By.xpath("//li[contains(text(), \"Team\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertEquals(pollingWait(By.xpath("//div[@id='teamDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+
+    // shared part
+    pollingWait(By.xpath("//li[contains(text(), \"Shared\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertEquals(pollingWait(By.xpath("//nz-table[@id='sharedTable']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+
     //Test project part
     pollingWait(By.xpath("//li[contains(text(), \"Project\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='addProjectbtn']")));
     Assert.assertEquals(pollingWait(By.xpath("//div[@id='addProjectbtn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//div[@id='addProjectbtn']/button"), MAX_BROWSER_TIMEOUT_SEC).click();
     //step1
@@ -74,23 +96,7 @@ public class workspaceIT extends AbstractSubmarineIT {
     //return to project page
     Assert.assertEquals(pollingWait(By.xpath("//div[@id='addProjectbtn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
 
-
-    //Test release part
-    pollingWait(By.xpath("//li[contains(text(), \"Release\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//nz-table[@id='releaseTable']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-
-    //Test training part
-    pollingWait(By.xpath("//li[contains(text(), \"Training\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//div[@id='trainingDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-
-    //Test team part
-    pollingWait(By.xpath("//li[contains(text(), \"Team\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//div[@id='teamDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-
-
-    // shared part
-    pollingWait(By.xpath("//li[contains(text(), \"Shared\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//nz-table[@id='sharedTable']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    
     
   }
 }

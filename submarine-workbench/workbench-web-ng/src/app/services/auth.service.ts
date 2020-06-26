@@ -53,7 +53,7 @@ export class AuthService {
     };
 
     return this.httpClient.post<Rest<SysUser>>(apiUrl, params).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           this.isLoggedIn = true;
           this.localStorageService.set(this.authTokenKey, res.result.token);
@@ -67,7 +67,7 @@ export class AuthService {
 
   logout() {
     return this.httpClient.post<Rest<boolean>>(this.baseApi.getRestApi('/auth/logout'), {}).pipe(
-      map(res => {
+      map((res) => {
         if (res.result) {
           this.isLoggedIn = false;
           this.localStorageService.remove(this.authTokenKey);

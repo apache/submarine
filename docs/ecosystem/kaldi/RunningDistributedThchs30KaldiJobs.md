@@ -100,7 +100,7 @@ Explanations:
 - `>1` num_workers indicates it is a distributed training.
 - Parameters / resources / Docker image of parameter server can be specified separately. For many cases, parameter server doesn't require GPU.We don't need parameter server here
 
-For the meaning of the individual parameters, see the [QuickStart](../../helper/QuickStart.md) page!
+For the meaning of the individual parameters, see the [QuickStart](project/github/submarine/docs/userdocs/yarn/QuickStart.md) page!
 
 *Outputs of distributed training*
 
@@ -170,7 +170,7 @@ Get:32 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 python3-reques
 Get:33 http://archive.ubuntu.com/ubuntu xenial/main amd64 ssh-import-id all 5.5-0ubuntu1 [10.2 kB]
 Fetched 12.1 MB in 0s (15.0 MB/s)
 Selecting previously unselected package libatm1:amd64.
-(Reading database ... 
+(Reading database ...
 (Reading database ... 5%
 (Reading database ... 10%
 (Reading database ... 15%
@@ -319,7 +319,7 @@ setting alias database
 changing /etc/mailname to master-0.XXX
 setting myorigin
 setting destinations: $myhostname, master-0.XXX, localhost.XXX, , localhost
-setting relayhost: 
+setting relayhost:
 setting mynetworks: 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
 setting mailbox_size_limit: 0
 setting recipient_delimiter: +
@@ -328,7 +328,7 @@ setting inet_protocols: all
 /etc/aliases does not exist, creating it.
 WARNING: /etc/aliases exists, but does not have a root alias.
 
-Postfix is now set up with a default configuration.  If you need to make 
+Postfix is now set up with a default configuration.  If you need to make
 changes, edit
 /etc/postfix/main.cf (and others) as needed.  To view Postfix configuration
 values, see postconf(1).
@@ -462,7 +462,7 @@ Get:31 http://archive.ubuntu.com/ubuntu xenial-updates/main amd64 python3-reques
 Get:32 http://archive.ubuntu.com/ubuntu xenial/main amd64 ssh-import-id all 5.5-0ubuntu1 [10.2 kB]
 Fetched 9633 kB in 2s (4496 kB/s)
 Selecting previously unselected package libatm1:amd64.
-(Reading database ... 
+(Reading database ...
 (Reading database ... 5%
 (Reading database ... 10%
 (Reading database ... 15%
@@ -608,7 +608,7 @@ setting alias database
 changing /etc/mailname to worker-0.XXX
 setting myorigin
 setting destinations: $myhostname, worker-0.XXX, localhost.XXX, , localhost
-setting relayhost: 
+setting relayhost:
 setting mynetworks: 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
 setting mailbox_size_limit: 0
 setting recipient_delimiter: +
@@ -617,7 +617,7 @@ setting inet_protocols: all
 /etc/aliases does not exist, creating it.
 WARNING: /etc/aliases exists, but does not have a root alias.
 
-Postfix is now set up with a default configuration.  If you need to make 
+Postfix is now set up with a default configuration.  If you need to make
 changes, edit
 /etc/postfix/main.cf (and others) as needed.  To view Postfix configuration
 values, see postconf(1).

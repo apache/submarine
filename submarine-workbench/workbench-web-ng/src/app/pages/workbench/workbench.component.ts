@@ -55,6 +55,11 @@ export class WorkbenchComponent implements OnInit {
       routerLink: '/workbench/workspace'
     },
     {
+      title: 'Notebook',
+      iconType: 'book',
+      routerLink: '/workbench/notebook'
+    },
+    {
       title: 'Interpreter',
       iconType: 'api',
       routerLink: '/workbench/interpreter'
@@ -100,13 +105,12 @@ export class WorkbenchComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private nzNotificationService: NzNotificationService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     if (this.authService.isLoggedIn) {
       this.userInfo$ = this.userService.fetchUserInfo().pipe(
-        tap(userInfo => {
+        tap((userInfo) => {
           this.nzNotificationService.success('Welcome', `Welcome back, ${userInfo.name}`);
         })
       );
@@ -114,7 +118,7 @@ export class WorkbenchComponent implements OnInit {
   }
 
   logout() {
-    this.authService.logout().subscribe(isLogout => {
+    this.authService.logout().subscribe((isLogout) => {
       if (isLogout) {
         this.router.navigate(['/user/login']);
       }

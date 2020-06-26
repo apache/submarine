@@ -17,15 +17,21 @@
   ~ under the License.
   -->
 
-<nz-modal [nzVisible]="visible" [nzTitle]="modalTitle" nzCancelText="Close" nzOkText="Ok" (nzOnCancel)="hideModal()"
-          (nzOnOk)="submitForm()">
+<nz-modal
+  [nzVisible]="visible"
+  [nzTitle]="modalTitle"
+  nzCancelText="Close"
+  nzOkText="Ok"
+  (nzOnCancel)="hideModal()"
+  (nzOnOk)="submitForm()"
+>
   <form nz-form nzLayout="horizontal" [formGroup]="form">
     <nz-form-item>
       <nz-form-label nzRequired>
         Name
       </nz-form-label>
       <nz-form-control>
-        <input id="inputNewInterpreterName" type="text" nz-input formControlName="interpreterName"/>
+        <input id="inputNewInterpreterName" type="text" nz-input formControlName="interpreterName" />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>
@@ -33,7 +39,7 @@
         Type
       </nz-form-label>
       <nz-form-control>
-        <input id="inputNewInterpreterType" nz-input formControlName="interpreterType"/>
+        <input id="inputNewInterpreterType" nz-input formControlName="interpreterType" />
       </nz-form-control>
     </nz-form-item>
   </form>

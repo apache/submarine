@@ -24,7 +24,7 @@
         <nz-form-label>Department</nz-form-label>
         <nz-form-control>
           <nz-tree-select
-            style="width: 171px"
+            style="width: 171px;"
             nzAllowClear
             nzDefaultExpandAll
             nzShowSearch
@@ -37,13 +37,13 @@
       <nz-form-item>
         <nz-form-label>Account Name</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="accountName"/>
+          <input nz-input formControlName="accountName" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>Email</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="email"/>
+          <input nz-input formControlName="email" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -52,7 +52,7 @@
             <i nz-icon nzType="search"></i>
             Query
           </button>
-          <button nz-button style="margin-left: 8px" (click)="onShowUserDrawer()">
+          <button nz-button style="margin-left: 8px;" (click)="onShowUserDrawer()">
             <i nz-icon nzType="plus"></i>
             Add User
           </button>
@@ -63,53 +63,53 @@
 
   <nz-table #table [nzData]="userList" [nzScroll]="{ x: '1100px' }" nzNoResult="No result" nzBordered>
     <thead>
-    <tr>
-      <th>Account Name</th>
-      <th>Real Name</th>
-      <th>Department</th>
-      <th>Role</th>
-      <th>Status</th>
-      <th>Sex</th>
-      <th>Email</th>
-      <th nzWidth="120px">Create Time</th>
-      <th nzWidth="120px" nzRight="0px">Action</th>
-    </tr>
+      <tr>
+        <th>Account Name</th>
+        <th>Real Name</th>
+        <th>Department</th>
+        <th>Role</th>
+        <th>Status</th>
+        <th>Sex</th>
+        <th>Email</th>
+        <th nzWidth="120px">Create Time</th>
+        <th nzWidth="120px" nzRight="0px">Action</th>
+      </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let data of table.data">
-      <td>{{ data.userName }}</td>
-      <td>{{ data.realName }}</td>
-      <td>{{ data.deptName }}</td>
-      <td>{{ data.roleName }}</td>
-      <td>{{ data['status@dict'] }}</td>
-      <td>{{ data['sex@dict'] }}</td>
-      <td>{{ data.email }}</td>
-      <td>{{ data.createTime }}</td>
-      <td class="td-action" nzRight="0px">
-        <a (click)="onShowUserDrawer(data)">Edit</a>
-        <a nz-dropdown [nzDropdownMenu]="more">
-          More
-          <i nz-icon nzType="down"></i>
-        </a>
-        <nz-dropdown-menu #more="nzDropdownMenu">
-          <ul nz-menu nzSelectable>
-            <li nz-menu-item (click)="onShowUserDrawer(data, true)">Details</li>
-            <li nz-menu-item (click)="onShowResetPasswordModal(data)">Password</li>
-            <li
-              nz-menu-item
-              nz-popconfirm
-              nzPlacement="left"
-              nzTitle="Confirm to delete?"
-              nzCancelText="Cancel"
-              nzOkText="Ok"
-              (nzOnConfirm)="onDeleteUser(data)"
-            >
-              Delete
-            </li>
-          </ul>
-        </nz-dropdown-menu>
-      </td>
-    </tr>
+      <tr *ngFor="let data of table.data">
+        <td>{{ data.userName }}</td>
+        <td>{{ data.realName }}</td>
+        <td>{{ data.deptName }}</td>
+        <td>{{ data.roleName }}</td>
+        <td>{{ data['status@dict'] }}</td>
+        <td>{{ data['sex@dict'] }}</td>
+        <td>{{ data.email }}</td>
+        <td>{{ data.createTime }}</td>
+        <td class="td-action" nzRight="0px">
+          <a (click)="onShowUserDrawer(data)">Edit</a>
+          <a nz-dropdown [nzDropdownMenu]="more">
+            More
+            <i nz-icon nzType="down"></i>
+          </a>
+          <nz-dropdown-menu #more="nzDropdownMenu">
+            <ul nz-menu nzSelectable>
+              <li nz-menu-item (click)="onShowUserDrawer(data, true)">Details</li>
+              <li nz-menu-item (click)="onShowResetPasswordModal(data)">Password</li>
+              <li
+                nz-menu-item
+                nz-popconfirm
+                nzPlacement="left"
+                nzTitle="Confirm to delete?"
+                nzCancelText="Cancel"
+                nzOkText="Ok"
+                (nzOnConfirm)="onDeleteUser(data)"
+              >
+                Delete
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </td>
+      </tr>
     </tbody>
   </nz-table>
 </nz-card>

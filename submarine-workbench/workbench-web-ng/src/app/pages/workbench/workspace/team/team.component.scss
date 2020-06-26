@@ -17,12 +17,22 @@
  * under the License.
  */
 
- #searchRegion{
-    margin:20px;
-    background-color: white;
- }
+#teamDiv{
+   margin:20px;
+   background-color: white;
+}
 
- #teamList {
-    margin: 20;
- }
- 
+.redStar{
+   color: red;
+}
+
+.footer{
+   position: absolute;
+   bottom: 0;
+   width: 100%;
+   border-top: 1px solid rgb(232, 232, 232);
+   padding: 10px 16px;
+   text-align: right;
+   left: 0px;
+   background: #fff;
+}

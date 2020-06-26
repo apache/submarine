@@ -30,7 +30,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>spark-interpreter</artifactId>
+  <artifactId>submarine-spark-interpreter</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <name>Submarine: Interpreter Spark</name>
   <description>Submarine spark Interpreter</description>
@@ -38,7 +38,7 @@
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
-      <artifactId>submarine-interpreter-engine</artifactId>
+      <artifactId>submarine-interpreter-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -199,7 +199,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <outputFile>target/submarine-${artifactId}-${project.version}-shade.jar</outputFile>
+              <outputFile>target/${artifactId}-${project.version}-shade.jar</outputFile>
               <filters>
                 <filter>
                   <artifact>*:*</artifact>
@@ -217,10 +217,6 @@
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
               </transformers>
               <relocations>
-                <relocation>
-                  <pattern>org.apache.zeppelin</pattern>
-                  <shadedPattern>${shaded.dependency.prefix}.org.apache.zeppelin</shadedPattern>
-                </relocation>
                 <relocation>
                   <pattern>io.grpc</pattern>
                   <shadedPattern>${shaded.dependency.prefix}.io.grpc</shadedPattern>

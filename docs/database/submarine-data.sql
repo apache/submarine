@@ -78,5 +78,3 @@ INSERT INTO `params` (`id`, `key`, `value`, `worker_index`, `job_name`) VALUES
 (14, 'max_iter', '100', 'worker-1', 'application_123651651'),
 (15, 'n_jobs', '5', 'worker-1', 'application_123456898'),
 (16, 'alpha', '20', 'worker-1', 'application_123456789');
-
-

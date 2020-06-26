@@ -27,7 +27,7 @@
 >
   <div class="sidebar-logo">
     <a routerLink="/workbench/dashboard" target="_blank">
-      <img src="/assets/logo.png" alt="logo"/>
+      <img src="/assets/logo.png" alt="logo" />
       <h1>Submarine</h1>
     </a>
   </div>
@@ -40,9 +40,17 @@
           </li>
         </ul>
       </li>
-      <li *ngIf="!menu.children" nz-menu-item nz-tooltip [nzTitle]="menu.title" nzPlacement="right" nzMatchRouter [routerLink]="menu.routerLink">
-          <i nz-icon [nzType]="menu.iconType"></i>
-          <span>{{ menu.title }}</span>
+      <li
+        *ngIf="!menu.children"
+        nz-menu-item
+        nz-tooltip
+        [nzTitle]="menu.title"
+        nzPlacement="right"
+        nzMatchRouter
+        [routerLink]="menu.routerLink"
+      >
+        <i nz-icon [nzType]="menu.iconType"></i>
+        <span>{{ menu.title }}</span>
       </li>
     </ng-container>
   </ul>
@@ -55,19 +63,25 @@
       </div>
 
       <div class="header-operation">
-        <div nz-dropdown *ngIf="userInfo$ | async as userInfo" [nzDropdownMenu]="userInfoMenu"
-             class="operation-user-info">
+        <div
+          nz-dropdown
+          *ngIf="userInfo$ | async as userInfo"
+          [nzDropdownMenu]="userInfoMenu"
+          class="operation-user-info"
+        >
           <nz-avatar nzIcon="user" nzSize="small"></nz-avatar>
-          {{userInfo.name}}
+          {{ userInfo.name }}
         </div>
         <nz-dropdown-menu #userInfoMenu="nzDropdownMenu">
           <ul nz-menu>
             <li nz-menu-item nzDisabled>
-              <i nz-icon nzType="setting"></i>UserInfo setting
+              <i nz-icon nzType="setting"></i>
+              UserInfo setting
             </li>
             <li nz-menu-divider></li>
             <li nz-menu-item (click)="logout()">
-              <i nz-icon nzType="logout"></i>Sign out
+              <i nz-icon nzType="logout"></i>
+              Sign out
             </li>
           </ul>
         </nz-dropdown-menu>

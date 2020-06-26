@@ -33,11 +33,11 @@
   <artifactId>submarine-interpreter</artifactId>
   <version>0.4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Submarine: Interpreter Parent</name>
+  <name>Submarine: Interpreter</name>
   <description>Submarine Interpreter Parent</description>
 
   <modules>
-    <module>interpreter-engine</module>
+    <module>interpreter-core</module>
     <module>python-interpreter</module>
     <module>spark-interpreter</module>
   </modules>

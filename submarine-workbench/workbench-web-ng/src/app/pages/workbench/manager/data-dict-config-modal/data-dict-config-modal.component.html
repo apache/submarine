@@ -17,20 +17,27 @@
   ~ under the License.
   -->
 
-<nz-modal [nzVisible]="visible" [nzTitle]="modalTitle" nzCancelText="Close" nzOkText="Ok" (nzOnCancel)="hideModal()"
-          (nzOnOk)="hideModal()" [nzWidth]="modalWidth">
+<nz-modal
+  [nzVisible]="visible"
+  [nzTitle]="modalTitle"
+  nzCancelText="Close"
+  nzOkText="Ok"
+  (nzOnCancel)="hideModal()"
+  (nzOnOk)="hideModal()"
+  [nzWidth]="modalWidth"
+>
   <div class="dictItem-table-operate">
     <form nz-form [nzLayout]="'inline'" [formGroup]="dictItemListForm">
       <nz-form-item>
         <nz-form-label>Name</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="dictItemName" placeholder="Enter Item Name"/>
+          <input nz-input formControlName="dictItemName" placeholder="Enter Item Name" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>Code</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="dictItemCode" placeholder="Enter Item Code"/>
+          <input nz-input formControlName="dictItemCode" placeholder="Enter Item Code" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -39,7 +46,7 @@
             <i nz-icon nzType="search"></i>
             Query
           </button>
-          <button id="{{ 'dataDictItemAdd' + dictCode }}" nz-button style="margin-left: 8px" (click)="addDictItem()">
+          <button id="{{ 'dataDictItemAdd' + dictCode }}" nz-button style="margin-left: 8px;" (click)="addDictItem()">
             <i nz-icon nzType="plus"></i>
             Add
           </button>
@@ -61,19 +68,44 @@
         <tbody>
           <tr *ngIf="showNewRow">
             <td>
-              <input id="{{ 'newItemCode' + dictCode }}" type="text" nz-input nzSize="small" formControlName="newItemCode"/>
+              <input
+                id="{{ 'newItemCode' + dictCode }}"
+                type="text"
+                nz-input
+                nzSize="small"
+                formControlName="newItemCode"
+              />
             </td>
             <td>
-              <input id="{{ 'newItemName' + dictCode }}" type="text" nz-input nzSize="small" formControlName="newItemName"/>
+              <input
+                id="{{ 'newItemName' + dictCode }}"
+                type="text"
+                nz-input
+                nzSize="small"
+                formControlName="newItemName"
+              />
             </td>
             <td>
-              <nz-cascader id="{{ 'newItemStatus' + dictCode }}" nzSize="small" [nzOptions]="statusOptions" formControlName="newItemStatus"></nz-cascader>
+              <nz-cascader
+                id="{{ 'newItemStatus' + dictCode }}"
+                nzSize="small"
+                [nzOptions]="statusOptions"
+                formControlName="newItemStatus"
+              ></nz-cascader>
             </td>
             <td>
-              <button *ngIf="newItemForm.get('newItemCode').valid &&
-                             newItemForm.get('newItemName').valid &&
-                             newItemForm.get('newItemStatus').valid; else disabledAddButtonTpl"
-                             nzSize="small" nz-button nzType="default" (click)="addNewItemToList()">
+              <button
+                *ngIf="
+                  newItemForm.get('newItemCode').valid &&
+                    newItemForm.get('newItemName').valid &&
+                    newItemForm.get('newItemStatus').valid;
+                  else disabledAddButtonTpl
+                "
+                nzSize="small"
+                nz-button
+                nzType="default"
+                (click)="addNewItemToList()"
+              >
                 <i nz-icon nzType="file-add"></i>
                 Add
               </button>
@@ -83,7 +115,7 @@
                   Add
                 </button>
               </ng-template>
-              <button nzSize="small" nz-button nzType="default" style="margin-left: 8px" (click)="cancelAddDictItem()">
+              <button nzSize="small" nz-button nzType="default" style="margin-left: 8px;" (click)="cancelAddDictItem()">
                 <i nz-icon nzType="undo"></i>
                 Cancel
               </button>
@@ -92,24 +124,33 @@
           <tr *ngFor="let dictItem of table.data; index as dictItemIndex">
             <td>
               <ng-container *ngIf="!dictItem.edit; else codeInputTpl">
-                {{  dictItem.code }}
+                {{ dictItem.code }}
               </ng-container>
               <ng-template #codeInputTpl>
-                <input type="text" nz-input nzSize="small" formControlName="selectedDictItemCode"/>
+                <input type="text" nz-input nzSize="small" formControlName="selectedDictItemCode" />
               </ng-template>
             </td>
             <td>
               <ng-container *ngIf="!dictItem.edit; else nameInputTpl">
-                {{  dictItem.name }}
+                {{ dictItem.name }}
               </ng-container>
               <ng-template #nameInputTpl>
-                <input type="text" nz-input nzSize="small" formControlName="selectedDictItemName"/>
+                <input type="text" nz-input nzSize="small" formControlName="selectedDictItemName" />
               </ng-template>
             </td>
             <td>
-              <nz-tag *ngIf="!dictItem.edit && (dictItem.status == 'available')" [nzColor]="'blue'">{{ dictItem.status }}</nz-tag>
-              <nz-tag *ngIf="!dictItem.edit && (dictItem.status == 'unavailable')" [nzColor]="'red'">{{ dictItem.status }}</nz-tag>
-              <nz-cascader *ngIf="dictItem.edit" nzSize="small" [nzOptions]="statusOptions" formControlName="selectedDictItemStatus"></nz-cascader>
+              <nz-tag *ngIf="!dictItem.edit && dictItem.status == 'available'" [nzColor]="'blue'">
+                {{ dictItem.status }}
+              </nz-tag>
+              <nz-tag *ngIf="!dictItem.edit && dictItem.status == 'unavailable'" [nzColor]="'red'">
+                {{ dictItem.status }}
+              </nz-tag>
+              <nz-cascader
+                *ngIf="dictItem.edit"
+                nzSize="small"
+                [nzOptions]="statusOptions"
+                formControlName="selectedDictItemStatus"
+              ></nz-cascader>
             </td>
             <td>
               <ng-container *ngIf="!dictItem.edit; else saveTpl">
@@ -119,10 +160,18 @@
                 </a>
               </ng-container>
               <ng-template #saveTpl>
-                <button *ngIf="newItemForm.get('selectedDictItemCode').valid && 
-                               newItemForm.get('selectedDictItemName').valid &&
-                               newItemForm.get('selectedDictItemStatus').valid; else disabledSaveButtonTpl" 
-                        nzSize="small" nz-button nzType="default" (click)="saveEdit(dictItemIndex)">
+                <button
+                  *ngIf="
+                    newItemForm.get('selectedDictItemCode').valid &&
+                      newItemForm.get('selectedDictItemName').valid &&
+                      newItemForm.get('selectedDictItemStatus').valid;
+                    else disabledSaveButtonTpl
+                  "
+                  nzSize="small"
+                  nz-button
+                  nzType="default"
+                  (click)="saveEdit(dictItemIndex)"
+                >
                   <i nz-icon nzType="save" nzTheme="outline"></i>
                   Save
                 </button>
@@ -132,7 +181,13 @@
                     Save
                   </button>
                 </ng-template>
-                <button nzSize="small" nz-button nzType="default" style="margin-left: 8px" (click)="cancelEdit(dictItemIndex)">
+                <button
+                  nzSize="small"
+                  nz-button
+                  nzType="default"
+                  style="margin-left: 8px;"
+                  (click)="cancelEdit(dictItemIndex)"
+                >
                   <i nz-icon nzType="undo" nzTheme="outline"></i>
                   Cancel
                 </button>

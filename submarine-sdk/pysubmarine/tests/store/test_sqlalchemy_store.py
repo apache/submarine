@@ -13,23 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import submarine
-from os import environ
-from submarine.store.database.models import SqlMetric, SqlParam
-from submarine.tracking import utils
-from submarine.store.database import models
-from submarine.entities import Metric, Param
-
 import time
 import unittest
+from os import environ
+
+import submarine
+from submarine.entities import Metric, Param
+from submarine.store.database import models
+from submarine.store.database.models import SqlMetric, SqlParam
+from submarine.tracking import utils
 
 JOB_NAME = "application_123456789"
 
 
 class TestSqlAlchemyStore(unittest.TestCase):
+
     def setUp(self):
         submarine.set_tracking_uri(
-            "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test")
+            "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test"
+        )
         self.tracking_uri = utils.get_tracking_uri()
         self.store = utils.get_sqlalchemy_store(self.tracking_uri)
 
