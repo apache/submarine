@@ -20,13 +20,13 @@ submarine:
     imagePullPolicy: IfNotPresent
     replicas: 1
     name: submarine-server
-    image: apache/submarine:server-0.4.0-SNAPSHOT
+    image: apache/submarine:server-0.4.0
     servicePort: 8080
   database:
     imagePullPolicy: IfNotPresent
     replicas: 1
     name: submarine-database
-    image: apache/submarine:database-0.4.0-SNAPSHOT
+    image: apache/submarine:database-0.4.0
     servicePort: 3306
     mysqlRootPassword: password
 

@@ -17,7 +17,7 @@
 set -eo pipefail
 set -x
 
-SUBMARINE_VERSION=0.4.0-SNAPSHOT
+SUBMARINE_VERSION=0.4.0
 SUBMARINE_IMAGE_NAME="apache/submarine:operator-${SUBMARINE_VERSION}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then

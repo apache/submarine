@@ -49,7 +49,7 @@ public class Bootstrap extends HttpServlet {
              .termsOfService("http://swagger.io/terms/")
              .contact(new Contact()
              .email("dev@submarine.apache.org"))
-             .version("0.4.0-SNAPSHOT")
+             .version("0.4.0")
              .license(new License()
              .name("Apache 2.0")
              .url("http://www.apache.org/licenses/LICENSE-2.0.html"));

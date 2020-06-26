@@ -20,7 +20,7 @@ set -e
 ROOT=$(unset CDPATH && cd $(dirname "${BASH_SOURCE[0]}")/.. && pwd)
 cd $ROOT
 SUBMARINE_HOME=${ROOT}/..
-SUBMARINE_VERSION="0.4.0-SNAPSHOT"
+SUBMARINE_VERSION="0.4.0"
 TF_JUPYTER_IMAGE="apache/submarine:tf2.1.0-jupyter";
 
 source $ROOT/hack/lib.sh

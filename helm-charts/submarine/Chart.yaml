@@ -16,7 +16,7 @@
 #
 
 apiVersion: v2
-appVersion: "0.4.0-SNAPSHOT"
+appVersion: "0.4.0"
 description: Submarine is Cloud Native Machine Learning Platform.
 name: submarine
 version: 0.4.0

@@ -28,16 +28,16 @@ By using the official images of Submarine, only a few docker commands are requir
 ### Launch the Submarine Workbench(Angular)
 * It should be noted that since Submarine Workbench depends on the Submarine database, so you need to run the docker container of the Submarine database first.
 ```
-docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.3.0-SNAPSHOT
-docker run -it -p 8080:8080 -d --link=submarine-database:submarine-database --name submarine-server apache/submarine:server-0.3.0-SNAPSHOT
+docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.4.0
+docker run -it -p 8080:8080 -d --link=submarine-database:submarine-database --name submarine-server apache/submarine:server-0.4.0
 ```
 * The login page of Submarine Workbench will be shown in ```http://127.0.0.1:8080```.
 
 ### Switch from version Angular to version Vue
 *  Step1: Launch submarine-database and submarine-server containers
 ```
-docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.3.0-SNAPSHOT
-docker run -it -p 8080:8080 -d --link=submarine-database:submarine-database --name submarine-server apache/submarine:server-0.3.0-SNAPSHOT
+docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.4.0
+docker run -it -p 8080:8080 -d --link=submarine-database:submarine-database --name submarine-server apache/submarine:server-0.4.0
 ```
 *  Step2: Compile Submarine in your host (not in the container)
 ```
@@ -47,7 +47,7 @@ mvn clean install package -DskipTests
 *  Step3: Copy workbench-web.war into the submarine-server container
 ```
 cd submarine-workbench/workbench-web/target
-docker cp workbench-web.war submarine-server:/opt/submarine-dist-0.3.0-SNAPSHOT-hadoop-2.9
+docker cp workbench-web.war submarine-server:/opt/submarine-dist-0.4.0-hadoop-2.9
 ```
 *  Step4: Enter the submarine-server container
 ```

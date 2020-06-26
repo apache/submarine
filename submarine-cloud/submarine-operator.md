@@ -127,7 +127,7 @@ Refer to the sample-controller project, it is relatively simple to write
 ### Startup controller
 ```
 [root@localhost samplecontroller]# ./samplecontroller
-// This is a simple custom k8s controller, 
+// This is a simple custom k8s controller,
 // used to demonstrate the idea of k8s final state operation and maintenance,
 // https://github.com/gfandada/samplecontroller，
 
@@ -144,7 +144,7 @@ Flags:
   -t, --toggle          Help message for toggle
 
 Use "samplecontroller [command] --help" for more information about a command.
-[root@localhost samplecontroller]# ./samplecontroller run config=/root/.kube/config 
+[root@localhost samplecontroller]# ./samplecontroller run config=/root/.kube/config
 ERROR: logging before flag.Parse: I0415 15:02:28.619121  109337 samplecontroller.go:59] Create event broadcaster
 ERROR: logging before flag.Parse: I0415 15:02:28.619246  109337 samplecontroller.go:76] Listen for student's add / update / delete events
 ERROR: logging before flag.Parse: I0415 15:02:28.619264  109337 samplecontroller.go:102] Start the controller business and start a cache data synchronization
@@ -165,6 +165,6 @@ kubectl describe std test1
 
 ```
 kind load docker-image --name=submarine busybox:1.28.4
-kind load docker-image --name=submarine apache/submarine:server-0.3.0-SNAPSHOT
-kind load docker-image --name=submarine apache/submarine:database-0.3.0-SNAPSHOT
+kind load docker-image --name=submarine apache/submarine:server-0.4.0
+kind load docker-image --name=submarine apache/submarine:database-0.4.0
 ```

@@ -18,7 +18,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pysubmarine',
-    version='0.4.0-SNAPSHOT',
+    version='0.4.0',
     description="A python SDK for submarine",
     url="https://github.com/apache/submarine",
     packages=find_packages(exclude=['tests', 'tests.*']),

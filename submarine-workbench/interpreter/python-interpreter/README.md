@@ -18,10 +18,10 @@
 
 ### Execute test command
 ```
-java -jar python-interpreter-0.4.0-SNAPSHOT-shade.jar python python-interpreter-id test
+java -jar python-interpreter-0.4.0-shade.jar python python-interpreter-id test
 ```
 
-### Print test result 
+### Print test result
 ```
  INFO [2019-10-14 10:35:11,653] ({main} SubmarinePythonInterpreter.java[test]:111) - Execution Python Interpreter, Calculation formula 1 + 1, Result = 2
  INFO [2019-10-14 10:35:11,653] ({main} InterpreterProcess.java[main]:68) - Interpreter test result: true
@@ -33,7 +33,7 @@ java -jar python-interpreter-0.4.0-SNAPSHOT-shade.jar python python-interpreter-
 ### Execute debug command
 
 ```
-java -jar python-interpreter-0.4.0-SNAPSHOT-shade.jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 python python-interpreter-id
+java -jar python-interpreter-0.4.0-shade.jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005 python python-interpreter-id
 ```
 
 Connect via remote debugging in IDEA
