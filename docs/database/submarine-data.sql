@@ -57,6 +57,11 @@ INSERT INTO `sys_user` VALUES ('e9ca23d68d884d4ebb19d07889727dae', 'admin', 'adm
 
 
 -- ----------------------------
+-- Records of team
+-- ----------------------------
+INSERT INTO `team` VALUES ('e9ca23d68d884d4ebb19d07889721234', 'admin', 'Submarine', 'admin', '2020-05-06 14:00:05', 'Jack', '2020-05-06 14:00:14');
+
+-- ----------------------------
 -- Records of metrics
 -- ----------------------------
 INSERT INTO `metrics` (`id`, `key`, `value`, `worker_index`, `timestamp`, `step`, `is_nan`, `job_name`) VALUES
