@@ -11,7 +11,7 @@ Since the distributed deep learning framework needs to run in multiple Docker co
 
 In order to reduce the difficulty of deploying components, we have developed this **submarine-installer** project to deploy the **Submarine** runtime environment, providing a one-click installation script or step-by-step installation. Unload, start, and stop individual components, and explain the main parameter configuration and considerations for each step. We also provides a [Chinese manual](project/github/submarine/docs/userdocs/yarn/InstallationGuideChineseVersion.md) and an [English manual](project/github/submarine/docs/userdocs/yarn/InstallationGuide.md) for the **Submarine** runtime environment to help users deploy more easily and find problems in a timely manner.
 
-This installer is just created for your convenience and for test purpose only. You can choose to install required libraries by yourself, please don't run this script in your production envionrment before fully validate it in a sandbox environment.
+This installer is just created for your convenience and for test purpose only. You can choose to install required libraries by yourself, please don't run this script in your production environment before fully validate it in a sandbox environment.
 
 ## prerequisites
 

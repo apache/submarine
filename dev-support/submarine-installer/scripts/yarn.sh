@@ -20,7 +20,7 @@
 ## @stability    stable
 function install_yarn()
 {
-  # base YARN_SECURITY determain which etc is  
+  # base YARN_SECURITY determine which etc is  
   rm -f ${PACKAGE_DIR}/hadoop/yarn/etc
   ln -s ${PACKAGE_DIR}/hadoop/yarn/etc_secure ${PACKAGE_DIR}/hadoop/yarn/etc
   
@@ -43,11 +43,11 @@ function install_yarn()
   install_yarn_sbin
   install_yarn_rm_nm
   install_yarn_service
-  install_registery_dns
+  install_registry_dns
   install_timeline_server
   install_job_history
   install_mapred
-  install_spark_suffle
+  install_spark_shuffle
   install_lzo_native
 
   # copy file
@@ -131,7 +131,7 @@ function install_yarn_tarball()
     ln -s "/home/hadoop/${HADOOP_VERSION}-${tag}" "${HADOOP_HOME}"
     chown ${HADOOP_SETUP_USER} "${HADOOP_HOME}"
   else
-    echo "ERROR: Please put ${HADOOP_TARBALL} in the path of ${PACKAGE_DIR}/hadoop/ fristly."
+    echo "ERROR: Please put ${HADOOP_TARBALL} in the path of ${PACKAGE_DIR}/hadoop/ firstly."
     return 1
   fi
 }
@@ -150,7 +150,7 @@ function install_java_tarball()
       chown -R ${HADOOP_SETUP_USER} "/home/hadoop/${JAVA_VERSION}"
       ln -s "/home/hadoop/${JAVA_VERSION}" "${JAVA_HOME}" 
     else
-      echo "Error: Failed to install java, please put java tallball in the path of
+      echo "Error: Failed to install java, please put java tarball in the path of
         ${PACKAGE_DIR}/java/${JAVA_TARBALL}"
       return 1
     fi
@@ -268,7 +268,7 @@ function install_yarn_rm_nm()
   install_yarn_container_executor
 }
 
-function install_spark_suffle() {
+function install_spark_shuffle() {
   cp -R ${PACKAGE_DIR}/hadoop/yarn/lib/spark* "${HADOOP_HOME}/share/hadoop/yarn/lib/"
 }
 
@@ -372,7 +372,7 @@ Modify method: In core-site.xml, add parameters:
 HELPINFO
 }
 
-function install_registery_dns() {
+function install_registry_dns() {
   sed -i "s/YARN_REGISTRY_DNS_HOST_REPLACE/${YARN_REGISTRY_DNS_HOST}/g" "$INSTALL_TEMP_DIR/hadoop/yarn/etc/hadoop/yarn-site.xml"
   sed -i "s/YARN_REGISTRY_DNS_HOST_PORT_REPLACE/${YARN_REGISTRY_DNS_HOST_PORT}/g" "$INSTALL_TEMP_DIR/hadoop/yarn/etc/hadoop/yarn-site.xml"
 }

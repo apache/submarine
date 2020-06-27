@@ -38,11 +38,11 @@ import static org.apache.submarine.commons.cluster.meta.ClusterMetaType.SERVER_M
 
 /**
  * cluster monitoring
- * 1. cluster monitoring is also used for submarine-Server and submarine Interperter,
+ * 1. cluster monitoring is also used for submarine-Server and submarine Interpreter,
  *    distinguish by member variable ClusterMetaType
  * 2. Report the average of the server resource CPU and MEMORY usage in the
  *    last few minutes to smooth the server's instantaneous peak
- * 3. checks the heartbeat timeout of the submarine-server and interperter processes
+ * 3. checks the heartbeat timeout of the submarine-server and interpreter processes
  */
 public class ClusterMonitor {
   private static Logger LOG = LoggerFactory.getLogger(ClusterMonitor.class);
@@ -59,8 +59,8 @@ public class ClusterMonitor {
   private int heartbeatInterval = 3000; // Heartbeat reporting interval（milliseconds）
 
   // The submarine-server leader checks the heartbeat timeout of
-  // the submarine-server and submarine-interperter processes in the cluster metadata.
-  // If this time is exceeded, the submarine-server and interperter processes
+  // the submarine-server and submarine-interpreter processes in the cluster metadata.
+  // If this time is exceeded, the submarine-server and interpreter processes
   // can have an exception and no heartbeat is reported.
   private int heartbeatTimeout = 9000;
 
@@ -69,7 +69,7 @@ public class ClusterMonitor {
 
   // The key of the cluster monitoring object,
   // the name of the cluster when monitoring the submarine-server,
-  // and the interperterGroupID when monitoring the interperter processes
+  // and the interpreterGroupID when monitoring the interpreter processes
   private String metaKey;
 
   public ClusterMonitor(ClusterManager clusterManager) {
@@ -126,7 +126,7 @@ public class ClusterMonitor {
     running.set(false);
   }
 
-  // Check the healthy of each service and interperter instance
+  // Check the healthy of each service and interpreter instance
   private void checkHealthy() {
     // only leader check cluster healthy
     if (!clusterManager.isClusterLeader()) {

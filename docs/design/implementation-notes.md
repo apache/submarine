@@ -23,7 +23,7 @@ Here're sub topics of Submarine implementations:
 - [Submarine Environment](./environments-implementation.md): How environments created, managed, stored in Submarine. 
 - [Submarine Experiment](./experiment-implementation.md): How experiments managed, stored, and how the predefined experiment template works.
 - [Submarine Notebook](./notebook-implementation.md): How experiments managed, stored, and how the predefined experiment template works.
-- [Submarine Server](./submarine-server/architecture.md): How Submarine server is designed, architectuer, implementation notes, etc.
+- [Submarine Server](./submarine-server/architecture.md): How Submarine server is designed, architecture, implementation notes, etc.
 
 Working-in-progress designs, Below are designs which are working-in-progress, we will move them to the upper section once design & review is finished: 
 

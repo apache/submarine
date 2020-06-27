@@ -24,7 +24,7 @@ Apache Submarine (Submarine for short) is the `ONE PLATFORM` to allow Data Scien
 
 ## Why Submarine?
 
-There're already a lot of open-source and comericial projects are trying to create a end-to-end machine-learning/deep-learning platform, what's the vision of Submarine?
+There're already a lot of open-source and commercial projects are trying to create a end-to-end machine-learning/deep-learning platform, what's the vision of Submarine?
 
 ### Problems
 
@@ -47,14 +47,14 @@ _Theodore Levitt_ once said:
 - ML-focused APIs to run/track experiment from Python SDK (notebook), REST API, and CLI.
 - Provide APIs to run training jobs by using popular frameworks (Standalone/Distributed TensorFlow/PyTorch/Hovorod).
 - Pre-packaged Training Template for Data-Scientists to focus on domain-specific tasks (like using DeepFM to build a CTR prediction model).
-- Support GPU and other compute speed-up devides.
+- Support GPU and other compute speed-up devices.
 - Support running on K8s/YARN or other resource management system.
 - Pipeline is also on the backlog, we will look into pipeline for training in the future.
 
 #### Notebook Service
 
 - Submarine is target to provide notebook service, which allows users to create/edit/delete a notebook instance (such as a Jupyter notebook) running on the cluster.
-- Users can submit experiement, manage models using Submarine SDK.
+- Users can submit experiment, manage models using Submarine SDK.
 
 #### Model Management (Serving/versioning/monitoring, etc.)
 
@@ -135,7 +135,7 @@ For a quick-start, see [Submarine On K8s](docs/userdocs/k8s/README.md)
 
 ## Architecture, Design and requirements
 
-If you want to knwow more about Submarine's architecture, components, requirements and design doc, they can be found on [Architecture-and-requirement](docs/design/architecture-and-requirements.md)
+If you want to know more about Submarine's architecture, components, requirements and design doc, they can be found on [Architecture-and-requirement](docs/design/architecture-and-requirements.md)
 
 Detailed design documentation, implementation notes can be found at: [Implementation notes](docs/design/implementation-notes.md)
 
@@ -151,9 +151,9 @@ Issue Tracking: https://issues.apache.org/jira/projects/SUBMARINE
 
 See [User Guide Home Page](docs/user-guide-home.md)
 
-## Developper Document
+## Developer Document
 
-See [Developper Guide Home Page](docs/development-guide-home.md)
+See [Developer Guide Home Page](docs/development-guide-home.md)
 
 ## Roadmap
 

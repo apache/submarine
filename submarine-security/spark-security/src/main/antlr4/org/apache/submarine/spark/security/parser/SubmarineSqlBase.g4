@@ -18,7 +18,7 @@
  */
 
 /*
- * The idea an part of the orignal code is adpoted from Apache Spark project
+ * The idea an part of the original code is adopted from Apache Spark project
  * We should obey the same Apache License 2.0 too.
  */
 

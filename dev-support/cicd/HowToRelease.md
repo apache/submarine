@@ -36,7 +36,7 @@ Click "tools"-> "bulk update" to edit all issues:
 1. Change the target version to X+1. Here it is 0.4.0
 2. Add a comment to inform contributors. Like this "Bulk update due to releasing 0.3.0. Please change it back if you think this is a blocker."
 
-Do a double-check to confirm that there's no issues found with the above filter. And send mail to the develeper list informing that we should mark "Target version" to 0.4.0 when creating new JIRAs.
+Do a double-check to confirm that there's no issues found with the above filter. And send mail to the developer list informing that we should mark "Target version" to 0.4.0 when creating new JIRAs.
 
 ## Tagging
 Once the JIRA is cleaned up, we can tag the candidate release with below steps:
@@ -75,10 +75,10 @@ exit
 ```
 ### Staging Docker Images
 #### Package An Existing Release Candidates
-When doing release, the release manager might needs to package a artifact candidatesin this docker image and public the image candidate for a vote.
+When doing release, the release manager might needs to package an artifact candidates in this docker image and public the image candidate for a vote.
 In this scenario, we can do this:
 
-Put submarine candidate aritifacts to a folder like "~/releases/submarine-release"
+Put submarine candidate artifacts to a folder like "~/releases/submarine-release"
 ```
 $ ls $release_candidates_path
 submarine-dist-0.3.0-hadoop-2.9.tar.gz        submarine-dist-0.3.0-src.tar.gz.asc
@@ -103,7 +103,7 @@ export ASF_USERID=yourApacheId
 export ASF_PASSWORD=yourApachePwd
 ./publish_release.sh $version $tag
 ```
-Then to view the staging repo, we can login the the https://repository.apache.org with the apache id. Click the "Staging Reposotories" in the left side of the web page. And click "orgapachesubmarine-1001", then you will see the details of the repo including the URI. The URI is like this:
+Then to view the staging repo, we can login the the https://repository.apache.org with the apache id. Click the "Staging Repositories" in the left side of the web page. And click "orgapachesubmarine-1001", then you will see the details of the repo including the URI. The URI is like this:
 "https://repository.apache.org/content/repositories/orgapachesubmarine-1001"
 
 ### Call A Vote For The Release Candidate

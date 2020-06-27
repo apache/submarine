@@ -277,7 +277,7 @@ public abstract class ClusterManager {
                 clusterMetaQueue.remove(metaEntity);
                 LOG.info("Cluster Meta Consume success! {}", metaEntity);
               } else {
-                LOG.error("Cluster Meta Consume faild!");
+                LOG.error("Cluster Meta Consume failed!");
               }
             } else {
               Thread.sleep(100);
@@ -396,7 +396,7 @@ public abstract class ClusterManager {
 
     boolean result = deleteClusterMeta(metaEntity);
     if (false == result) {
-      LOG.warn(this.getClass().toString() + "::deleteClusterMeta faild, Cache data to queue.");
+      LOG.warn(this.getClass().toString() + "::deleteClusterMeta failed, Cache data to queue.");
       clusterMetaQueue.add(metaEntity);
     }
   }

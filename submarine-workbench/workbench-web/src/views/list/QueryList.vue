@@ -1,6 +1,6 @@
 <template>
   <a-card :bordered="false">
-    <component @onEdit="handleEdit" @onGoBack="handleGoBack" :record="record" :is="currentComponet"></component>
+    <component @onEdit="handleEdit" @onGoBack="handleGoBack" :record="record" :is="currentComponent"></component>
   </a-card>
 </template>
 
@@ -22,7 +22,7 @@ export default {
   },
   data () {
     return {
-      currentComponet: 'List',
+      currentComponent: 'List',
       record: ''
     }
   },
@@ -32,18 +32,18 @@ export default {
   methods: {
     handleEdit (record) {
       this.record = record || ''
-      this.currentComponet = 'Edit'
+      this.currentComponent = 'Edit'
       console.log(record)
     },
     handleGoBack () {
       this.record = ''
-      this.currentComponet = 'List'
+      this.currentComponent = 'List'
     }
   },
   watch: {
     '$route.path' () {
       this.record = ''
-      this.currentComponet = 'List'
+      this.currentComponent = 'List'
     }
   }
 }

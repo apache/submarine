@@ -53,7 +53,7 @@ docker cp workbench-web.war submarine-server:/opt/submarine-dist-0.4.0-hadoop-2.
 ```
 docker exec -it submarine-server bash
 ```
-*  Step5: Modify the value of the configutation **workbench.web.war** in conf/submarine-site.xml from "../submarine-workbench-web-ng.war" to "../submarine-workbench-web.war".
+*  Step5: Modify the value of the configuration **workbench.web.war** in conf/submarine-site.xml from "../submarine-workbench-web-ng.war" to "../submarine-workbench-web.war".
 
 *  Step6: Restart the Submarine Server
 ```
@@ -69,7 +69,7 @@ docker start submarine-server
 ```
 docker exec -it submarine-server bash
 ```
-*  Step2: Modify the value of the configutation **workbench.web.war** in conf/submarine-site.xml from "../workbench-web.war" to "../submarine-workbench-web-ng.war".
+*  Step2: Modify the value of the configuration **workbench.web.war** in conf/submarine-site.xml from "../workbench-web.war" to "../submarine-workbench-web-ng.war".
 *  Step3: Restart the Submarine Server
 ```
 ./bin/submarine-daemon.sh restart

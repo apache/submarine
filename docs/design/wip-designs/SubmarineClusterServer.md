@@ -102,8 +102,8 @@ ServerMeta：key='host:port'，value= {SERVER_HOST=...，SERVER_PORT=...，...}
 
 | Name                  | Description                     |
 | --------------------- | ------------------------------- |
-| SUBAMRINE_SERVER_HOST | Submarine server IP             |
-| SUBAMRINE_SERVER_PORT | Submarine server port           |
+| SUBMARINE_SERVER_HOST | Submarine server IP             |
+| SUBMARINE_SERVER_PORT | Submarine server port           |
 | WORKBENCH_SERVER_HOST | Submarine workbench server IP   |
 | WORKBENCH_SERVER_PORT | Submarine workbench server port |
 

@@ -33,7 +33,7 @@ class SubmarineRowFilterExtensionTest extends FunSuite with BeforeAndAfterAll {
     spark.reset()
   }
 
-  test("applying condition to orginal query if row filter exists in ranger") {
+  test("applying condition to original query if row filter exists in ranger") {
     val extension = SubmarineRowFilterExtension(spark)
     val frame = spark.sql("select * from src")
     SubmarineSparkUtils.withUser("bob") {

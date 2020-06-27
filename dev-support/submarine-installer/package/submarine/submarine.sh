@@ -26,6 +26,6 @@ chown :yarn -R /sys/fs/cgroup/memory
 chmod g+rwx -R /sys/fs/cgroup/memory
 
 
-# If GPUs are used，the access to cgroup devices folder is neede as well
+# If GPUs are used，the access to cgroup devices folder is needed as well
 chown :yarn -R /sys/fs/cgroup/devices
 chmod g+rwx -R /sys/fs/cgroup/devices

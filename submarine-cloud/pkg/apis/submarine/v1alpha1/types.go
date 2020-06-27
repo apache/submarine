@@ -56,7 +56,7 @@ type SubmarineClusterSpec struct {
 	// if ServiceName is empty, the SubmarineCluster.Name will be use for creating the service.
 	ServiceName string `json:"serviceName,omitempty"`
 
-	// PodTemplate contains the pod specificaton that should run the Submarine-server process
+	// PodTemplate contains the pod specification that should run the Submarine-server process
 	PodTemplate *kapiv1.PodTemplateSpec `json:"podTemplate,omitempty"`
 
 	// Labels for created Submarine-cluster (deployment, rs, pod) (if any)
@@ -94,7 +94,7 @@ const (
 	// SubmarineClusterOK means the SubmarineCluster is in a good shape
 	SubmarineClusterOK SubmarineClusterConditionType = "ClusterOK"
 
-	// SubmarineClusterScaling means the SubmarineCluster is currenlty in a scaling stage
+	// SubmarineClusterScaling means the SubmarineCluster is currently in a scaling stage
 	SubmarineClusterScaling SubmarineClusterConditionType = "Scaling"
 
 	// SubmarineClusterRebalancing means the SubmarineCluster is currenlty rebalancing slots and keys
@@ -150,7 +150,7 @@ type SubmarineClusterStatus struct {
 	// StartTime represents time when the workflow was acknowledged by the Workflow controller
 	// It is not guaranteed to be set in happens-before order across separate operations.
 	// It is represented in RFC3339 form and is in UTC.
-	// StartTime doesn't consider startime of `ExternalReference`
+	// StartTime doesn't consider start time of `ExternalReference`
 	StartTime *metav1.Time `json:"startTime,omitempty"`
 	// (brief) reason for the condition's last transition.
 	Reason string `json:"reason,omitempty"`

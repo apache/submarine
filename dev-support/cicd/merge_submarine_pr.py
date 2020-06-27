@@ -279,7 +279,7 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
     asf_jira.transition_issue(
         jira_id, resolve["id"], fixVersions=jira_fix_versions, comment=comment)
 
-    print "Succesfully resolved %s with fixVersions=%s!" % (jira_id, fix_versions)
+    print "Successfully resolved %s with fixVersions=%s!" % (jira_id, fix_versions)
 
 
 def resolve_jira_issues(title, merge_branches, comment):

@@ -54,7 +54,7 @@ cd submarine/dev-support/mini-submarine/
 When doing release, the release manager might needs to package a artifact candidates in this docker image and public the image candidate for a vote.
 In this scenario, we can do this:
 
-Put submarine candidate aritifacts to a folder like "~/releases/submarine-release"
+Put submarine candidate artifacts to a folder like "~/releases/submarine-release"
 ```
 $ ls $release_candidates_path
 submarine-dist-0.4.0-hadoop-2.9.tar.gz        submarine-dist-0.4.0-src.tar.gz.asc
@@ -131,7 +131,7 @@ echo "http://localhost:$(docker inspect --format='{{(index (index .NetworkSettin
 ```
 The URL returned by the command (like to: http://localhost:32819) is opened through a browser. The username and initial password of the workbench are both `admin`.
 
-## Run a sumbarine job
+## Run a submarine job
 
 ### Switch to user yarn
 
@@ -243,7 +243,7 @@ Debug submarine client with the parameter "--debug"
 ```
 
 Port 8000 is used in the mini-submarine.
-You need to find the debug port mapping between mini-subamrine and the host on which run mini-subamrine.
+You need to find the debug port mapping between mini-submarine and the host on which run mini-subamrine.
 
 ```
 docker port <SUBMARINE_CONTAINER_ID>

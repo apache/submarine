@@ -49,7 +49,7 @@ type ClientInterface interface {
 	PipeClear() (int, int)
 
 	// ReadResp will read a Resp off of the connection without sending anything
-	// first (useful after you've sent a SUSBSCRIBE command). This will block until
+	// first (useful after you've sent a SUBSCRIBE command). This will block until
 	// a reply is received or the timeout is reached (returning the IOErr). You can
 	// use IsTimeout to check if the Resp is due to a Timeout
 	//

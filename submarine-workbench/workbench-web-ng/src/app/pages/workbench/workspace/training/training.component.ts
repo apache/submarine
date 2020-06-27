@@ -42,7 +42,7 @@ export class TrainingComponent implements OnInit {
   userSelectedValue = 'noLimit';
   ratingSelectedValue = 'noLimit';
   activeUsers = ['John', 'Jason'];
-  ratings = ['Execellent', 'Good', 'Moderate'];
+  ratings = ['Excellent', 'Good', 'Moderate'];
 
   ngOnInit() {}
 

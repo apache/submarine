@@ -57,7 +57,7 @@ func DefaultSubmarineCluster(undefaultSubmarineCluster *SubmarineCluster) *Subma
 	return rc
 }
 
-// NewInt32 use to instanciate a int32 pointer
+// NewInt32 use to instantiate a int32 pointer
 func NewInt32(val int32) *int32 {
 	output := new(int32)
 	*output = val

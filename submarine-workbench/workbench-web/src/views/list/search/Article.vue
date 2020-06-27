@@ -26,7 +26,7 @@
                 <a-select
                   style="max-width: 268px; width: 100%;"
                   mode="multiple"
-                  placeholder="选择 onwer"
+                  placeholder="选择 owner"
                   v-decorator="['owner']"
                   @change="handleChange"
                 >

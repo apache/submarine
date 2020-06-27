@@ -14,7 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# description: sumbarine install scripts.
+# description: submarine install scripts.
 
 ROOT=$(cd "$(dirname "$0")"; pwd)
 SUBMARINE_INSTALLER_VERSION="v0.8.0"

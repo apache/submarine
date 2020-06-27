@@ -22,7 +22,7 @@
         </a-form-item>
 
         <a-form-item label="Confirm password" :labelCol="labelCol" :wrapperCol="wrapperCol" hasFeedback >
-          <a-input type="password" @blur="handleConfirmBlur" placeholder="Pleae confirm passwod" v-decorator="[ 'confirmpassword', validatorRules.confirmpassword]"/>
+          <a-input type="password" @blur="handleConfirmBlur" placeholder="Please confirm password" v-decorator="[ 'confirmpassword', validatorRules.confirmpassword]"/>
         </a-form-item>
 
       </a-form>

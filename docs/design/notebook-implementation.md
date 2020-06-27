@@ -23,7 +23,7 @@ Users can start N (N >= 0) number of Notebook sessions, a notebook session is a 
 
 - Notebook session can be launched by Submarine UI (P0), and Submarine CLI (P2). 
 - When launch notebook session, users can choose T-shirt size of notebook session (how much mem/cpu/gpu resources, or resource profile such as small, medium, large, etc.). (P0)
-- And user can choose an environment for notebook. More details please refer to [environment implmentation](./environments-implementation.md) (P0)
+- And user can choose an environment for notebook. More details please refer to [environment implementation](./environments-implementation.md) (P0)
 - When start a notebook, user can choose what code to be initialized, similar to experiment. (P1)
 - Optionally, users can choose to attach a persistent volume to a notebook session. (P2)
 
@@ -86,9 +86,9 @@ When there're needs to attach volume (such as user's home folder) to Submarine n
 
 ### Environment
 
-Submarine notebook's environment should be used to run experiment, model serving, etc. Please check [environment implmentation](./environments-implementation.md). (More specific to notebook, please check "How to implement to make user can easily use Submarine environments")
+Submarine notebook's environment should be used to run experiment, model serving, etc. Please check [environment implementation](./environments-implementation.md). (More specific to notebook, please check "How to implement to make user can easily use Submarine environments")
 
-Please note that notebook's Environment should include right version of notebook libraries, and admin should follow the guidance to build correct Docker image, Conda libraris to correctly run Notebook.
+Please note that notebook's Environment should include right version of notebook libraries, and admin should follow the guidance to build correct Docker image, Conda libraries to correctly run Notebook.
 
 ### Submarine SDK (For Experiment, etc.)
 

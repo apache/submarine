@@ -149,7 +149,7 @@ public class RunJobCli extends AbstractCli {
         + " If it's a relative path, it'll be"
         + " under container's implied working directory"
         + " but sub directory is not supported yet."
-        + " This option can be set mutiple times."
+        + " This option can be set multiple times."
         + " Examples are \n"
         + "-localization \"hdfs:///user/yarn/mydir2:/opt/data\"\n"
         + "-localization \"s3a:///a/b/myfile1:./\"\n"

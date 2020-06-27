@@ -119,7 +119,7 @@ public class SysDeptRestApi {
       DepartmentUtil.wrapDeptListToTree(sysDeptList, sysDeptSelects);
 
       if (!StringUtils.isEmpty(disableDeptCode)) {
-        DepartmentUtil.disableTagetDeptCode(sysDeptSelects, disableDeptCode);
+        DepartmentUtil.disableTargetDeptCode(sysDeptSelects, disableDeptCode);
       }
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);

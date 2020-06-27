@@ -65,7 +65,7 @@ public class TeamRestApi {
     List<Team> teams = new ArrayList<>();
     try {
       // TODO(zhulinhao): Front need to correct 'owner' value, and Whether need the
-      //  front to create_by value（At the time of pr commited）
+      //  front to create_by value（At the time of pr committed）
       teams = teamService.queryPageList(owner, column, order, pageNo, pageSize);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);

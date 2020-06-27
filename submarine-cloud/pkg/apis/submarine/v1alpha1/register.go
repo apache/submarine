@@ -56,7 +56,7 @@ func addKnownTypes(scheme *runtime.Scheme) error {
 }
 
 const (
-	// ResourcePlural is the id to indentify pluarals
+	// ResourcePlural is the id to identify plurals
 	ResourcePlural = "submarineclusters"
 	// ResourceSingular represents the id for identify singular resource
 	ResourceSingular = "submarinecluster"

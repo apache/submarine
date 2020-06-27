@@ -17,7 +17,7 @@
 
 ## Handle User's Credential
 
-Users credential includes Kerberoes Keytabs, Docker registry crendentials, Github ssh-keys, etc.
+Users credential includes Kerberoes Keytabs, Docker registry credentials, Github ssh-keys, etc.
 
 User's credential must be stored securitely, for example, via KeyCloak or K8s Secrets.
 

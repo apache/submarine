@@ -112,7 +112,7 @@ Options:
 Usage:
     install: $0 --database database_ip
      OR
-    unstall: $0 -u
+    uninstall: $0 -u
 EOF
 }
 

@@ -70,8 +70,8 @@ public class DepartmentUtilTest {
   }
 
   @Test
-  public void disableTagetDeptCodeTest() {
-    DepartmentUtil.disableTagetDeptCode(sysDeptSelects, "AAA");
+  public void disableTargetDeptCodeTest() {
+    DepartmentUtil.disableTargetDeptCode(sysDeptSelects, "AAA");
     assertEquals(sysDeptSelects.get(0).getChildren().get(0).getChildren().get(0).getDisabled(), Boolean.TRUE);
   }
 }

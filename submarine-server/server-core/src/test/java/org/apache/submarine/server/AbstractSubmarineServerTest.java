@@ -336,7 +336,7 @@ public abstract class AbstractSubmarineServerTest {
       @Override
       public void describeTo(Description description) {
         description.appendText("response in JSON format with \"").appendText(memberName)
-            .appendText("\" beeing a root element ");
+            .appendText("\" being a root element ");
       }
 
       @Override
