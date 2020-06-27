@@ -17,7 +17,7 @@
 package org.apache.submarine.server.workbench.websocket;
 
 /**
- * NoteboookSocket listener.
+ * NotebookSocket listener.
  */
 public interface NotebookSocketListener {
   void onClose(NotebookSocket socket, int code, String message);

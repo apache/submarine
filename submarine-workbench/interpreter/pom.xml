@@ -43,7 +43,7 @@
   </modules>
 
   <properties>
-    <grpc.verison>1.15.0</grpc.verison>
+    <grpc.version>1.15.0</grpc.version>
   </properties>
 
   <dependencyManagement>
@@ -51,17 +51,17 @@
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty-shaded</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-protobuf</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-stub</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

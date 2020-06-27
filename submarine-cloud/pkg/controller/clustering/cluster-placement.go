@@ -22,7 +22,7 @@ import (
 	"github.com/golang/glog"
 )
 
-const unknownVMName = "unknown" // <-- I hope nobody will ever name a VM "unknown" because this will impact the algorythm inside that package. Maybe you should generate a mangled name or amore complex name here to reduce probability.
+const unknownVMName = "unknown" // <-- I hope nobody will ever name a VM "unknown" because this will impact the algorithm inside that package. Maybe you should generate a mangled name or a more complex name here to reduce probability.
 
 // PlaceMasters used to select Submarine Node knowing on which VM they are running in order to spread as possible
 // the masters on different VMs.
@@ -31,7 +31,7 @@ func PlaceMasters(cluster *submarine.Cluster, currentMaster submarine.Nodes, all
 	selection := submarine.Nodes{}
 	selection = append(selection, currentMaster...)
 
-	// in case of scale down the current number of master is supperior to
+	// in case of scale down the current number of master is superior to
 	// the number of needed master so we limit the size of the selection.
 	if len(selection) > int(nbMaster) {
 		selection = selection[0:nbMaster]
@@ -106,7 +106,7 @@ func sortSubmarineNodeByVM(cluster *submarine.Cluster, nodes submarine.Nodes) ma
 func PlaceSlaves(cluster *submarine.Cluster, masters, oldSlaves, newSlaves submarine.Nodes, replicationFactor int32) (map[string]submarine.Nodes, bool) {
 	slavesByMaster := make(map[string]submarine.Nodes)
 
-	// be sure that no oldSlaves is presentin in newSlaves
+	// be sure that no oldSlaves is present in newSlaves
 	for _, newSlave := range newSlaves {
 		for _, oldSlaves := range oldSlaves {
 			if newSlave.ID == oldSlaves.ID {

@@ -107,7 +107,7 @@ export default {
           key: 'deptName'
         },
         {
-          title: 'Parent Deptartment',
+          title: 'Parent Department',
           align: 'left',
           dataIndex: 'parentName',
           key: 'parentName'

@@ -25,7 +25,7 @@ import (
 
 // RunSanityChecks function used to run all the sanity check on the current cluster
 // Return actionDone = true if a modification has been made on the cluster
-func RunSanityChecks(admin submarine.AdminInterface, config *config.Submarine, podControl pod.SubmarineClusterControlInteface, cluster *rapi.SubmarineCluster, infos *submarine.ClusterInfos, dryRun bool) (actionDone bool, err error) {
+func RunSanityChecks(admin submarine.AdminInterface, config *config.Submarine, podControl pod.SubmarineClusterControlInterface, cluster *rapi.SubmarineCluster, infos *submarine.ClusterInfos, dryRun bool) (actionDone bool, err error) {
 	/*
 		// * fix failed nodes: in some cases (cluster without enough master after crash or scale down), some nodes may still know about fail nodes
 		if actionDone, err = FixFailedNodes(admin, cluster, infos, dryRun); err != nil {

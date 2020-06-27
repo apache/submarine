@@ -37,7 +37,7 @@ class RunConfig(tf.contrib.learn.RunConfig):
     Args:
       whitelist: A list of the string names of the properties uid should not
         include. If `None`, defaults to `_DEFAULT_UID_WHITE_LIST`, which
-        includes most properties user allowes to change.
+        includes most properties user allowed to change.
     Returns:
       A uid string.
     """

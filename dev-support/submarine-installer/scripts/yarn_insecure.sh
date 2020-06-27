@@ -43,11 +43,11 @@ function install_yarn_insecure()
   install_yarn_sbin_insecure
   install_yarn_rm_nm_insecure
   install_yarn_service_insecure
-  install_registery_dns_insecure
+  install_registry_dns_insecure
   install_timeline_server_insecure
   install_job_history_insecure
   install_mapred_insecure
-  install_spark_suffle_insecure
+  install_spark_shuffle_insecure
   install_lzo_native_insecure
 
   # copy file
@@ -131,7 +131,7 @@ function install_yarn_tarball_insecure()
     ln -s "/home/hadoop/${HADOOP_VERSION}-${tag}" "${HADOOP_HOME}"
     chown ${HADOOP_SETUP_USER} "${HADOOP_HOME}"
   else
-    echo "ERROR: Please put ${HADOOP_TARBALL} in the path of ${PACKAGE_DIR}/hadoop/ fristly."
+    echo "ERROR: Please put ${HADOOP_TARBALL} in the path of ${PACKAGE_DIR}/hadoop/ firstly."
     return 1
   fi
 }
@@ -150,7 +150,7 @@ function install_java_tarball()
       chown -R ${HADOOP_SETUP_USER} "/home/hadoop/${JAVA_VERSION}"
       ln -s "/home/hadoop/${JAVA_VERSION}" "${JAVA_HOME}" 
     else
-      echo "Error: Failed to install java, please put java tallball in the path of
+      echo "Error: Failed to install java, please put java tarball in the path of
         ${PACKAGE_DIR}/java/${JAVA_TARBALL}"
       return 1
     fi
@@ -258,7 +258,7 @@ function install_yarn_rm_nm_insecure()
   install_yarn_container_executor_insecure
 }
 
-function install_spark_suffle_insecure() {
+function install_spark_shuffle_insecure() {
   cp -R ${PACKAGE_DIR}/hadoop/yarn/lib/spark* "${HADOOP_HOME}/share/hadoop/yarn/lib/"
 }
 
@@ -360,7 +360,7 @@ Modify method: In core-site.xml, add parameters:
 HELPINFO
 }
 
-function install_registery_dns_insecure() {
+function install_registry_dns_insecure() {
   sed -i "s/YARN_REGISTRY_DNS_HOST_REPLACE/${YARN_REGISTRY_DNS_HOST}/g" "$INSTALL_TEMP_DIR/hadoop/yarn/etc/hadoop/yarn-site.xml"
   sed -i "s/YARN_REGISTRY_DNS_HOST_PORT_REPLACE/${YARN_REGISTRY_DNS_HOST_PORT}/g" "$INSTALL_TEMP_DIR/hadoop/yarn/etc/hadoop/yarn-site.xml"
 }

@@ -17,7 +17,7 @@
 # limitations under the License.
 #
 
-# common fucntions
+# common functions
 
 if [[ -z "${TAR}" ]]; then
   TAR="/usr/bin/tar"

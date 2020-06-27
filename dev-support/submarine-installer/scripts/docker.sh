@@ -132,7 +132,7 @@ function install_docker()
   sudo systemctl enable docker.service
 }
 
-## @description  unstall docker
+## @description  uninstall docker
 ## @audience     public
 ## @stability    stable
 function uninstall_docker()

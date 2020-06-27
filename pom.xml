@@ -82,7 +82,7 @@
     <cglib.version>3.2.2</cglib.version>
     <mybatis.version>3.2.8</mybatis.version>
     <mysql-connector-java.version>5.1.39</mysql-connector-java.version>
-    <grpc.verison>1.25.0</grpc.verison>
+    <grpc.version>1.25.0</grpc.version>
 
     <!-- frontend maven plugin related versions-->
     <plugin.frontend.version>1.6</plugin.frontend.version>
@@ -311,17 +311,17 @@
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty-shaded</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-protobuf</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-stub</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.code.gson</groupId>

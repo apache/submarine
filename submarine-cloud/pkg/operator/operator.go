@@ -54,7 +54,7 @@ func NewSubmarineOperator(cfg *Config) *SubmarineOperator {
 
 	extClient, err := apiextensionsclient.NewForConfig(kubeConfig)
 	if err != nil {
-		glog.Fatalf("Unable to init submarinClientset from kubeconfig:%v", err)
+		glog.Fatalf("Unable to init submarineClientset from kubeconfig:%v", err)
 	}
 	_, err = client.DefineSubmarineClusterResource(extClient)
 	if err != nil && !apierrors.IsAlreadyExists(err) {

@@ -63,7 +63,7 @@ type Controller struct {
 	podDisruptionBudgetLister  policyv1listers.PodDisruptionBudgetLister
 	PodDiscruptionBudgetSynced cache.InformerSynced
 
-	podControl                 pod.SubmarineClusterControlInteface
+	podControl                 pod.SubmarineClusterControlInterface
 	serviceControl             ServicesControlInterface
 	podDisruptionBudgetControl PodDisruptionBudgetsControlInterface
 
@@ -338,7 +338,7 @@ func (c *Controller) syncCluster(submarineCluster *rapi.SubmarineCluster) (force
 
 	// Reset all conditions and reconcile
 	if setRebalancingCondition(&submarineCluster.Status, false) ||
-		setRollingUpdategCondition(&submarineCluster.Status, false) ||
+		setRollingUpdateCondition(&submarineCluster.Status, false) ||
 		setScalingCondition(&submarineCluster.Status, false) ||
 		setClusterStatusCondition(&submarineCluster.Status, true) {
 		_, err = c.updateHandler(submarineCluster)

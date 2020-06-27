@@ -142,13 +142,13 @@ hadoop 在 2.9 版本中就已经让 YARN 支持了 Docker 容器的资源调度
 
 6. install component
 
-   + **instll etcd**
+   + **install etcd**
 
      下载 etcd 的 bin 文件，并安装到 `/usr/bin` 目录中；
 
      根据  **ETCD_HOSTS** 配置项生成 `etcd.service` 文件， 安装到 `/etc/systemd/system/` 目录中；
 
-   + **instll docker**
+   + **install docker**
 
      下载 docker 的 RPM 包进行本地安装；
 
@@ -156,7 +156,7 @@ hadoop 在 2.9 版本中就已经让 YARN 支持了 Docker 容器的资源调度
 
      生成 `docker.service` 配置文件，安装到 `/etc/systemd/system/` 目录中；
 
-   + **instll calico network**
+   + **install calico network**
 
      下载 `calico` 、`calicoctl` 和 `calico-ipam` 文件，安装到 `/usr/bin` 目录中；
 
@@ -166,7 +166,7 @@ hadoop 在 2.9 版本中就已经让 YARN 支持了 Docker 容器的资源调度
 
      安装完毕后，会在容器中会根据 **CALICO_NETWORK_NAME** 配置项自动创建 calico network，并自动创建 2 个 Docker 容器，检查 2 个容器是否能偶互相 PING 通；
 
-   + **instll nvidia driver**
+   + **install nvidia driver**
 
      下载 `nvidia-detect` 文件，在服务器中检测显卡版本；
 
@@ -176,19 +176,19 @@ hadoop 在 2.9 版本中就已经让 YARN 支持了 Docker 容器的资源调度
 
      如果本服务器中已经 `disabled Nouveau` ，那么就会进行本地安装；
 
-   + **instll nvidia docker**
+   + **install nvidia docker**
 
      下载 `nvidia-docker` 的 RPM 安装包并进行安装；
 
      显示检测 `nvidia-docker` 是否可用的命令提示信息，需要你另外打开一个终端根据命令顺序执行；
 
-   + **instll yarn container-executor**
+   + **install yarn container-executor**
 
      根据 **YARN_CONTAINER_EXECUTOR_PATH 配置项**，将 `container-executor` 文件复制到 `/etc/yarn/sbin/Linux-amd64-64/` 目录中；
 
      根据配置生成 `container-executor.cfg` 文件，复制到 `/etc/yarn/sbin/etc/hadoop/` 目录中；
 
-   + **instll submarine autorun script**
+   + **install submarine autorun script**
 
      复制 `submarine.sh` 文件到 `/etc/rc.d/init.d/` 目录中；
 
@@ -198,13 +198,13 @@ hadoop 在 2.9 版本中就已经让 YARN 支持了 Docker 容器的资源调度
 
    删除指定组件的 BIN 文件和配置文件，不在复述
 
-   - uninstll etcd
-   - uninstll docker
-   - uninstll calico network
-   - uninstll nvidia driver
-   - uninstll nvidia docker
-   - uninstll yarn container-executor
-   - uninstll submarine autorun script
+   - uninstall etcd
+   - uninstall docker
+   - uninstall calico network
+   - uninstall nvidia driver
+   - uninstall nvidia docker
+   - uninstall yarn container-executor
+   - uninstall submarine autorun script
 
 8. start component
 

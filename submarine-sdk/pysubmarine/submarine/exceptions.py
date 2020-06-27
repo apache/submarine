@@ -21,7 +21,7 @@ class SubmarineException(Exception):
 
     def __init__(self, message):
         """
-        :param message: The message describing the error that occured.
+        :param message: The message describing the error that occurred.
         """
         self.message = message
         super(SubmarineException, self).__init__(message)

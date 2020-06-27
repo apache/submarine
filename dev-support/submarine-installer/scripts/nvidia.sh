@@ -84,7 +84,7 @@ function download_nvidia_driver()
   else
     nvidia_run_file="NVIDIA-Linux-x86_64-${nvidiaVersion}.run"
 
-    # submarin http server
+    # submarine http server
     if [[ -n "$DOWNLOAD_HTTP" ]]; then
       MY_NVIDIA_DRIVER_RUN_URL="${DOWNLOAD_HTTP}/downloads/nvidia/${nvidia_run_file}"
     else

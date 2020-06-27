@@ -42,7 +42,7 @@ public class InterpreterResult {
     } else if (result.code() == org.apache.zeppelin.interpreter.InterpreterResult.Code.KEEP_PREVIOUS_RESULT) {
       code = Code.KEEP_PREVIOUS_RESULT;
     } else {
-      LOG.error("Unknow code type : " + result.code());
+      LOG.error("Unknown code type : " + result.code());
     }
 
     for (org.apache.zeppelin.interpreter.InterpreterResultMessage message: result.message()) {
@@ -69,7 +69,7 @@ public class InterpreterResult {
     } else if (message.getType() == org.apache.zeppelin.interpreter.InterpreterResult.Type.NETWORK) {
       type = Type.NETWORK;
     } else {
-      LOG.error("Unknow type : " + message.getType());
+      LOG.error("Unknown type : " + message.getType());
     }
 
     InterpreterResultMessage interpreterResultMessage = new InterpreterResultMessage(type, message.getData());

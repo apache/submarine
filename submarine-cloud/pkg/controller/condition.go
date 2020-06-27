@@ -49,7 +49,7 @@ func setCondition(clusterStatus *rapi.SubmarineClusterStatus, conditionType rapi
 	return updated
 }
 
-func setRollingUpdategCondition(clusterStatus *rapi.SubmarineClusterStatus, status bool) bool {
+func setRollingUpdateCondition(clusterStatus *rapi.SubmarineClusterStatus, status bool) bool {
 	statusCondition := apiv1.ConditionFalse
 	if status {
 		statusCondition = apiv1.ConditionTrue

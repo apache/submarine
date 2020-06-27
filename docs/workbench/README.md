@@ -38,7 +38,7 @@ In the `Quick Start` list, the most commonly used feature links in the Workbench
 
 In the `Open Recent` list, there are nine items that the user has used recently, so you can work quickly.
 
-At `What's New?` In the list, some of the latest features and project information released by Submarine are displayed to help you understand the latest developments in the Subamrine project.
+At `What's New?` In the list, some of the latest features and project information released by Submarine are displayed to help you understand the latest developments in the Submarine project.
 
 ## Workspace
 

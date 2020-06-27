@@ -114,7 +114,7 @@ When you write the `vue, js` file in `workbench-web` through IDEA, because IDEA 
 yarn run lint
 ```
 
-In fact, you must execute this command when you develop and submit any workbench-web feture. Otherwise, chances are that you won't be able to check the code specification we set up in Travis.
+In fact, you must execute this command when you develop and submit any workbench-web feature. Otherwise, chances are that you won't be able to check the code specification we set up in Travis.
 
 ## 3.3 Workbench-server
 

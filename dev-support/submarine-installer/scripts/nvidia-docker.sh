@@ -71,7 +71,7 @@ function install_nvidia_docker()
   cp /etc/docker/daemon.json "${DOCKER_DAEMON_BAK}"
   echo "Backup /etc/docker/daemon.json in ${DOCKER_DAEMON_BAK}"
 
-  # Remove nividia docker 1.0
+  # Remove nvidia docker 1.0
   remove_nvidia_docker_1.0
   
   # Get nvidia-docker repo

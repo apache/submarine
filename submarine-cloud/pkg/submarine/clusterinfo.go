@@ -137,7 +137,7 @@ func DecodeNodeInfos(input *string, addr string) *NodeInfos {
 // ComputeStatus check the ClusterInfos status based on the current data
 // the status ClusterInfosPartial is set while building the clusterinfos
 // if already set, do nothing
-// returns true if contistent or if another error
+// returns true if consistent or if another error
 func (c *ClusterInfos) ComputeStatus() bool {
 	if c.Status != ClusterInfosUnset {
 		return false

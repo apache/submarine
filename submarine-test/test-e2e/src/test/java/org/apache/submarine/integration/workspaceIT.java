@@ -85,7 +85,7 @@ public class workspaceIT extends AbstractSubmarineIT {
     //step1
     Assert.assertEquals(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//input[@id='username']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project");
-    pollingWait(By.xpath("//textarea[@name='projectDescriptin']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project description");
+    pollingWait(By.xpath("//textarea[@name='projectDescription']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project description");
     pollingWait(By.xpath("//div[@class='centerDiv']/button"), MAX_BROWSER_TIMEOUT_SEC).click();
     //step2
     Assert.assertEquals(pollingWait(By.xpath("//nz-tabset"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);

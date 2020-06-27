@@ -37,7 +37,7 @@ function start() {
     info=`curl -s -m 10 --connect-timeout 10 -I http://127.0.0.1/api/v1/cluster/address`
     code=`echo $info | grep "HTTP" | awk '{print $2}'`
 
-    #############  DON'T DELETE NEXT DEBUG COMAND  #############
+    #############  DON'T DELETE NEXT DEBUG COMMAND  #############
     # $KUBECTL_BIN get node
     # $KUBECTL_BIN get pods
     # $KUBECTL_BIN get svc
@@ -108,7 +108,7 @@ case $key in
     shift
     ;;
     -u|--update)
-    UPDATE_IAMGE="TRUE"
+    UPDATE_IMAGE="TRUE"
     shift
     ;;
     -h|--help)
@@ -124,9 +124,9 @@ esac
 done
 
 OPERATION=${OPERATION:-""}
-UPDATE_IAMGE=${UPDATE_IAMGE:-""}
+UPDATE_IMAGE=${UPDATE_IMAGE:-""}
 
-if [[ $UPDATE_IAMGE == "TRUE" ]]; then
+if [[ $UPDATE_IMAGE == "TRUE" ]]; then
   update_docker_images
 fi
 

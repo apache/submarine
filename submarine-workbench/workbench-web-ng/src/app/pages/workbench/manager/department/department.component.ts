@@ -35,7 +35,7 @@ export class DepartmentComponent implements OnInit {
   sysDeptTreeList: SysDeptItem[] = [];
   listOfMapData: SysDeptItem[] = [];
   isLoading = true;
-  dapartmentDictForm: FormGroup;
+  departmentDictForm: FormGroup;
   isExpandTable = true;
   filterArr: SysDeptItem[] = [];
   mapOfExpandedData: { [key: string]: SysDeptItem[] } = {};
@@ -51,7 +51,7 @@ export class DepartmentComponent implements OnInit {
   constructor(private departmentService: DepartmentService, private nzMessageService: NzMessageService) {}
 
   ngOnInit() {
-    this.dapartmentDictForm = new FormGroup({
+    this.departmentDictForm = new FormGroup({
       departmentName: new FormControl(''),
       departmentCode: new FormControl('')
     });
@@ -75,8 +75,8 @@ export class DepartmentComponent implements OnInit {
     Object.keys(this.mapOfExpandedData).forEach((item) => {
       this.mapOfExpandedData[item].forEach((node) => {
         if (
-          node.deptName.includes(this.dapartmentDictForm.get('departmentName').value) &&
-          node.deptCode.includes(this.dapartmentDictForm.get('departmentCode').value)
+          node.deptName.includes(this.departmentDictForm.get('departmentName').value) &&
+          node.deptCode.includes(this.departmentDictForm.get('departmentCode').value)
         ) {
           this.filterArr.push(node);
         }

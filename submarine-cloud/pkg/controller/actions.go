@@ -97,7 +97,7 @@ func (c *Controller) applyConfiguration(admin submarine.AdminInterface, cluster 
 	}
 	// PodTemplate changes require rolling updates
 	if needRollingUpdate(cluster) {
-		if setRollingUpdategCondition(&cluster.Status, true) {
+		if setRollingUpdateCondition(&cluster.Status, true) {
 			if cluster, err = c.updateHandler(cluster); err != nil {
 				return false, err
 			}
@@ -106,7 +106,7 @@ func (c *Controller) applyConfiguration(admin submarine.AdminInterface, cluster 
 		glog.Info("applyConfiguration needRollingUpdate")
 		return c.manageRollingUpdate(admin, cluster, rCluster, nodes)
 	}
-	if setRollingUpdategCondition(&cluster.Status, false) {
+	if setRollingUpdateCondition(&cluster.Status, false) {
 		if cluster, err = c.updateHandler(cluster); err != nil {
 			return false, err
 		}

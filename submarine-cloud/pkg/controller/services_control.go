@@ -24,7 +24,7 @@ import (
 	"k8s.io/client-go/tools/record"
 )
 
-// ServicesControlInterface inferface for the ServicesControl
+// ServicesControlInterface interface for the ServicesControl
 type ServicesControlInterface interface {
 	// CreateSubmarineClusterService used to create the Kubernetes Service needed to access the Submarine Cluster
 	CreateSubmarineClusterService(submarineCluster *rapi.SubmarineCluster) (*kapiv1.Service, error)

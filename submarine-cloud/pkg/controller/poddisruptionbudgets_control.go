@@ -23,7 +23,7 @@ import (
 	"k8s.io/client-go/tools/record"
 )
 
-// PodDisruptionBudgetsControlInterface inferface for the PodDisruptionBudgetsControl
+// PodDisruptionBudgetsControlInterface interface for the PodDisruptionBudgetsControl
 type PodDisruptionBudgetsControlInterface interface {
 	// CreateSubmarineClusterPodDisruptionBudget used to create the Kubernetes PodDisruptionBudget needed to access the Submarine Cluster
 	CreateSubmarineClusterPodDisruptionBudget(submarineCluster *rapi.SubmarineCluster) (*policyv1.PodDisruptionBudget, error)

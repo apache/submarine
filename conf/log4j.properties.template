@@ -35,7 +35,7 @@ log4j.appender.DRFA=org.apache.log4j.DailyRollingFileAppender
 
 log4j.appender.DRFA.File=${submarine.log.dir}/${submarine.log.file}
 
-# Rollver at midnight
+# Rollover at midnight
 log4j.appender.DRFA.DatePattern=.yyyy-MM-dd
 
 # 30-day backup

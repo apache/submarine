@@ -43,7 +43,7 @@ def log_param(key, value, worker_index):
     """
     Log a parameter under the current run, creating a run if necessary.
     :param key: Parameter name (string)
-    :param value: Parameter value (string, but will be string-ified if not)
+    :param value: Parameter value (string, but will be string-field if not)
     :param worker_index
     """
     job_name = get_job_name()

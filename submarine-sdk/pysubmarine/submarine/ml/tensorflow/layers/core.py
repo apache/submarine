@@ -46,7 +46,7 @@ def dnn_layer(inputs,
               l2_reg=0,
               **kwargs):
     """
-    The Multi Layer Percetron
+    The Multi Layer Perceptron
     :param inputs: A tensor of at least rank 2 and static value for the last dimension; i.e.
            [batch_size, depth], [None, None, None, channels].
     :param estimator_mode: Standard names for Estimator model modes. `TRAIN`, `EVAL`, `PREDICT`
