@@ -69,7 +69,14 @@
           New Experiment
         </button>
       </div>
-      <nz-table id="releaseTable" nzBordered #basicTable [nzData]="experimentList" [nzNoResult]="'No data'" [nzScroll]="{ x: '1900px', y: '240px' }">
+      <nz-table
+        id="releaseTable"
+        nzBordered
+        #basicTable
+        [nzData]="experimentList"
+        [nzNoResult]="'No data'"
+        [nzScroll]="{ x: '1900px', y: '240px' }"
+      >
         <thead>
           <tr>
             <th nzWidth="150px" nzLeft="0px">Experiment Name</th>
@@ -91,9 +98,9 @@
                 {{ data.experimentId }}
               </a>
             </td>
-            <td>{{ data.createdTime | date : 'M/d/yyyy, h:mm a' }}</td>
-            <td>{{ data.runningTime | date : 'M/d/yyyy, h:mm a' }}</td>
-            <td>{{ data.finishedTime | date : 'M/d/yyyy, h:mm a' }}</td>
+            <td>{{ data.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
+            <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
+            <td>{{ data.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td></td>
             <td>{{ data.status }}</td>
             <td *ngIf="data.status === 'Succeeded'">

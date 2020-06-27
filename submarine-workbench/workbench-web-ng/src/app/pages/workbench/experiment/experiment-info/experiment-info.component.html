@@ -44,9 +44,9 @@
     <tr>
       <td nzWidth="150px" nzLeft="0px">{{ experimentInfo.name }}</td>
       <td>{{ experimentInfo.experimentId }}</td>
-      <td>{{ experimentInfo.createdTime | date : 'M/d/yyyy, h:mm a' }}</td>
-      <td>{{ experimentInfo.runningTime | date : 'M/d/yyyy, h:mm a' }}</td>
-      <td>{{ experimentInfo.finishedTime | date : 'M/d/yyyy, h:mm a' }}</td>
+      <td>{{ experimentInfo.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
+      <td>{{ experimentInfo.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
+      <td>{{ experimentInfo.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
       <td></td>
       <td>{{ experimentInfo.status }}</td>
       <td *ngIf="experimentInfo.status === 'Succeeded'">
@@ -85,7 +85,7 @@
 <nz-spin *ngIf="isLoading"></nz-spin>
 <div style="background-color: white;">
   <nz-select style="margin-top: 10px; margin-bottom: 10px;" [(ngModel)]="selectedPod">
-    <nz-option *ngFor="let pod of logContent; let i of index" [nzValue]="i" [nzLabel]="pod.podName"></nz-option>
+    <nz-option *ngFor="let pod of logContent; let i; of: index" [nzValue]="i" [nzLabel]="pod.podName"></nz-option>
   </nz-select>
 </div>
 <nz-layout>

@@ -29,6 +29,5 @@ export class OutputsComponent implements OnInit {
 
   constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

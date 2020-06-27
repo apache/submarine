@@ -58,7 +58,7 @@ export class ExperimentInfoComponent implements OnInit {
         this.router.navigate(['/workbench/experiment']);
       }
     );
-    
+
     this.getExperimentPod();
   }
 
@@ -66,7 +66,7 @@ export class ExperimentInfoComponent implements OnInit {
     this.experimentService.getExperimentLog(this.experimentID).subscribe(
       (result) => {
         this.logContent = result.logContent;
-        this.selectedPod=this.logContent[0];
+        this.selectedPod = this.logContent[0];
       },
       (err) => {
         this.nzMessageService.error('Cannot load pod of ' + this.experimentID);
