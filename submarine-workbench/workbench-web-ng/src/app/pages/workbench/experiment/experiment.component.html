@@ -69,17 +69,25 @@
           New Experiment
         </button>
       </div>
-      <nz-table id="releaseTable" nzBordered #basicTable [nzData]="experimentList" [nzNoResult]="'No data'">
+      <nz-table
+        id="releaseTable"
+        nzBordered
+        #basicTable
+        [nzData]="experimentList"
+        [nzNoResult]="'No data'"
+        nzSize="small"
+      >
         <thead>
           <tr>
             <th>Experiment Name</th>
             <th>Experiment ID</th>
+            <th>Status</th>
+            <th>Finished Time</th>
             <th>Created Time</th>
             <th>Running Time</th>
-            <th>Finished Time</th>
-            <th>Status</th>
+            <th>Duration</th>
             <th>Progress</th>
-            <th nzMinWidth="40px">Action</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -90,18 +98,20 @@
                 {{ data.experimentId }}
               </a>
             </td>
-            <td>{{ data.createdTime }}</td>
-            <td>{{ data.runningTime }}</td>
-            <td>{{ data.finishedTime }}</td>
             <td>{{ data.status }}</td>
+            <td>{{ data.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
+            <td>{{ data.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
+            <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
+            <td></td>
             <td *ngIf="data.status === 'Succeeded'">
               <nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress>
             </td>
             <td *ngIf="data.status !== 'Succeeded'">
               <nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress>
             </td>
-            <td class="td-action" nzRight="0px">
+            <td class="td-action">
               <a (click)="startExperiment(data)">Start</a>
+              <nz-divider nzType="vertical"></nz-divider>
               <a nz-dropdown [nzDropdownMenu]="more">
                 More
                 <i nz-icon nzType="down"></i>

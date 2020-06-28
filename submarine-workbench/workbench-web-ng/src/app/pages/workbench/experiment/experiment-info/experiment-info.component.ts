@@ -22,6 +22,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { isArray } from 'util';
+import { toArray } from 'rxjs/operators';
+import { ArrayType } from '@angular/compiler';
 
 @Component({
   selector: 'submarine-experiment-info',
@@ -33,6 +36,8 @@ export class ExperimentInfoComponent implements OnInit {
   experimentID;
   experimentInfo: ExperimentInfo;
   currentState = 0;
+  logContent;
+  selectedPod;
 
   constructor(
     private router: Router,
@@ -51,6 +56,21 @@ export class ExperimentInfoComponent implements OnInit {
       (err) => {
         this.nzMessageService.error('Cannot load ' + this.experimentID);
         this.router.navigate(['/workbench/experiment']);
+      }
+    );
+
+    this.getExperimentPod();
+  }
+
+  getExperimentPod() {
+    this.experimentService.getExperimentLog(this.experimentID).subscribe(
+      (result) => {
+        this.logContent = result.logContent;
+        this.selectedPod = this.logContent[0];
+      },
+      (err) => {
+        this.nzMessageService.error('Cannot load pod of ' + this.experimentID);
+        console.log(err);
       }
     );
   }

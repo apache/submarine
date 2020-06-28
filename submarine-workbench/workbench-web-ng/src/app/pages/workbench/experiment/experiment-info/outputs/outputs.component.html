@@ -16,34 +16,6 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<div id="outputDiv">
-  <div *ngIf="!isShowing" id="podListDiv">
-    <nz-table #podArr nzSize="middle" [nzData]="podNameArr">
-      <thead>
-        <tr>
-          <th style="padding: 5px;">Pod Name</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let pod of podArr.data; let i = index">
-          <a (click)="show(i)">{{ pod }}</a>
-        </tr>
-      </tbody>
-    </nz-table>
-  </div>
-  <div *ngIf="isShowing">
-    <div id="logActionDiv">
-      <button class="logActionBtn" nz-button nzType="primary" (click)="isShowing = false">
-        <i nz-icon nzType="step-backward" nzTheme="outline"></i>
-        Back
-      </button>
-      <button class="logActionBtn" nz-button nzType="primary" (click)="export()">
-        <i nz-icon nzType="export" nzTheme="outline"></i>
-        Export
-      </button>
-    </div>
-    <div id="showLogDiv">
-      <p style="white-space: nowrap;" *ngFor="let log of logDetailArr; let j = index">[{{ j }}] {{ log }}</p>
-    </div>
-  </div>
+<div id="showLogDiv">
+  <p style="white-space: nowrap;" *ngFor="let log of pod.podLog; let j = index">[{{ j }}] {{ log }}</p>
 </div>

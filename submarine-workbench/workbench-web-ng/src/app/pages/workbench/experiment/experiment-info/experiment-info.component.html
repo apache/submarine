@@ -21,10 +21,10 @@
   *ngIf="!isLoading"
   style="margin-top: 10px;"
   id="experimentTable"
-  nzBordered
   #basicTable
   [nzData]="[experimentInfo]"
   [nzShowPagination]="false"
+  nzSize="small"
 >
   <thead>
     <tr>
@@ -33,18 +33,20 @@
       <th>Created Time</th>
       <th>Running Time</th>
       <th>Finished Time</th>
+      <th>Duration</th>
       <th>Status</th>
       <th>Progress</th>
-      <th nzMinWidth="40px">Action</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>{{ experimentInfo.name }}</td>
       <td>{{ experimentInfo.experimentId }}</td>
-      <td>{{ experimentInfo.createdTime }}</td>
-      <td>{{ experimentInfo.runningTime }}</td>
-      <td>{{ experimentInfo.finishedTime }}</td>
+      <td>{{ experimentInfo.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
+      <td>{{ experimentInfo.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
+      <td>{{ experimentInfo.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
+      <td></td>
       <td>{{ experimentInfo.status }}</td>
       <td *ngIf="experimentInfo.status === 'Succeeded'">
         <nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress>
@@ -52,8 +54,9 @@
       <td *ngIf="experimentInfo.status !== 'Succeeded'">
         <nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress>
       </td>
-      <td class="td-action" nzRight="0px">
+      <td class="td-action">
         <a (click)="startExperiment()">Start</a>
+        <nz-divider nzType="vertical"></nz-divider>
         <a nz-dropdown [nzDropdownMenu]="more">
           More
           <i nz-icon nzType="down"></i>
@@ -79,6 +82,11 @@
   </tbody>
 </nz-table>
 <nz-spin *ngIf="isLoading"></nz-spin>
+<div style="background-color: white;">
+  <nz-select style="margin-top: 10px; margin-bottom: 10px;" [(ngModel)]="selectedPod">
+    <nz-option *ngFor="let pod of logContent; let i; of: index" [nzValue]="i" [nzLabel]="pod.podName"></nz-option>
+  </nz-select>
+</div>
 <nz-layout>
   <nz-sider style="background-color: white;">
     <ul nz-menu>
@@ -105,7 +113,7 @@
       <submarine-charts *ngSwitchCase="0"></submarine-charts>
       <submarine-hyper-params *ngSwitchCase="1"></submarine-hyper-params>
       <submarine-metrics *ngSwitchCase="2"></submarine-metrics>
-      <submarine-outputs *ngSwitchCase="3" [experimentOutputID]="experimentID"></submarine-outputs>
+      <submarine-outputs *ngSwitchCase="3" [pod]="selectedPod"></submarine-outputs>
     </div>
   </nz-layout>
 </nz-layout>
