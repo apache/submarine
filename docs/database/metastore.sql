@@ -964,14 +964,14 @@ CREATE TABLE WRITE_SET (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 CREATE TABLE `environment` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` varchar(64) NOT NULL COMMENT 'Id of the Environment',
   `environment_name` varchar(255) NOT NULL COMMENT 'Name of the Environment',
   `environment_spec` text NOT NULL COMMENT 'Spec of the Environment',
   `create_by` varchar(32) DEFAULT NULL COMMENT 'create user',
   `create_time` datetime DEFAULT NULL COMMENT 'create time',
   `update_by` varchar(32) DEFAULT NULL COMMENT 'last update user',
   `update_time` datetime DEFAULT NULL COMMENT 'last update time',
-   PRIMARY KEY (`id`),
+   PRIMARY KEY `id` (`id`),
    UNIQUE KEY `environment_name` (`environment_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

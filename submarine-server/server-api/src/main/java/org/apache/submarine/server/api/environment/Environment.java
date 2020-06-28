@@ -26,23 +26,18 @@ public class Environment {
   /**
    * ID of the environment
    */
-  private int environmentId;
-  
-  /**
-   * Name of the environment
-   */
-  private String name;
+  private EnvironmentId environmentId;
   
   /**
    * Environment Spec
    */
   private EnvironmentSpec environmentSpec;
 
-  public int getEnvironmentId() {
+  public EnvironmentId getEnvironmentId() {
     return environmentId;
   }
 
-  public void setEnvironmentId(int environmentId) {
+  public void setEnvironmentId(EnvironmentId environmentId) {
     this.environmentId = environmentId;
   }
 

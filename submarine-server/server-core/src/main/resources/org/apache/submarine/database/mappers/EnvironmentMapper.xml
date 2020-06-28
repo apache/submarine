@@ -20,7 +20,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.apache.submarine.server.environment.database.mappers.EnvironmentMapper">
   <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.database.entity.BaseEntity">
-    <id property="id" column="id"/>
+  	<id property="id" column="id"/>
     <result column="create_by" property="createBy"/>
     <result column="create_time" property="createTime"/>
     <result column="update_by" property="updateBy"/>
@@ -48,11 +48,10 @@
     where environment_name = #{environment_name,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.environment.database.entity.EnvironmentEntity"
-          useGeneratedKeys="true" keyProperty="id">
-    insert into environment (environment_name, environment_spec,
+  <insert id="insert" parameterType="org.apache.submarine.server.environment.database.entity.EnvironmentEntity">
+    insert into environment (id, environment_name, environment_spec,
       create_by, create_time, update_by, update_time)
-    values (#{environmentName,jdbcType=VARCHAR}, #{environmentSpec,jdbcType=VARCHAR},
+    values (#{id,jdbcType=VARCHAR}, #{environmentName,jdbcType=VARCHAR}, #{environmentSpec,jdbcType=VARCHAR},
       #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
@@ -60,7 +59,7 @@
     update environment
     <set>
       <if test="environmentSpec != null">
-        enviroment_spec = #{enviromentSpec,jdbcType=VARCHAR},
+        environment_spec = #{environmentSpec,jdbcType=VARCHAR},
       </if>
       update_time = now()
     </set>

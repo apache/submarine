@@ -17,41 +17,46 @@
  * under the License.
  */
 
-package org.apache.submarine.server.api.experiment;
+package org.apache.submarine.server.api.environment;
 
 import org.apache.submarine.commons.utils.AbstractUniqueIdGenerator;
 
 /**
- * The unique id for experiment. Formatter: experiment_${server_timestamp}_${counter}
- * Such as: experiment_1577627710_0001
+ * The unique id for environment. Formatter:
+ * environment_${server_timestamp}_${counter} Such as:
+ * environment__1577627710_0001
  */
-public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
-  private static final String EXPERIMENT_ID_PREFIX = "experiment_";
+public class EnvironmentId extends AbstractUniqueIdGenerator<EnvironmentId> {
   
+  private static final String ENVIRONMENT_ID_PREFIX = "environment_";
+
   /**
-   * Get the object of JobId.
-   * @param jobId job id string
+   * Get the object of EnvironmentId.
+   * 
+   * @param environmentId Id of the environment string
    * @return object
    */
-  public static ExperimentId fromString(String jobId) {
-    if (jobId == null) {
+  public static EnvironmentId fromString(String environmentId) {
+    if (environmentId == null) {
       return null;
     }
-    String[] components = jobId.split("\\_");
+    String[] components = environmentId.split("\\_");
     if (components.length != 3) {
       return null;
     }
-    return ExperimentId.newInstance(Long.parseLong(components[1]), Integer.parseInt(components[2]));
+    return EnvironmentId.newInstance(Long.parseLong(components[1]),
+        Integer.parseInt(components[2]));
   }
 
   /**
-   * Ge the object of JobId.
+   * Ge the object of EnvironmentId.
+   * 
    * @param serverTimestamp the timestamp when the server start
    * @param id count
    * @return object
    */
-  public static ExperimentId newInstance(long serverTimestamp, int id) {
-    ExperimentId experimentId = new ExperimentId();
+  public static EnvironmentId newInstance(long serverTimestamp, int id) {
+    EnvironmentId experimentId = new EnvironmentId();
     experimentId.setServerTimestamp(serverTimestamp);
     experimentId.setId(id);
     return experimentId;
@@ -60,9 +65,8 @@ public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder(64);
-    sb.append(EXPERIMENT_ID_PREFIX).append(getServerTimestamp()).append("_");
+    sb.append(ENVIRONMENT_ID_PREFIX).append(getServerTimestamp()).append("_");
     format(sb, getId());
     return sb.toString();
   }
 }
-

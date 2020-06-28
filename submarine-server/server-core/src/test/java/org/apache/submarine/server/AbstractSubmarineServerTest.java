@@ -16,11 +16,19 @@
  */
 package org.apache.submarine.server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonParser;
+import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
@@ -32,6 +40,16 @@ import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpPatch;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.response.JsonResponse;
@@ -43,18 +61,11 @@ import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.regex.Pattern;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 
 public abstract class AbstractSubmarineServerTest {
   protected static final Logger LOG =
@@ -239,6 +250,36 @@ public abstract class AbstractSubmarineServerTest {
     LOG.info("{} - {}", putMethod.getStatusCode(), putMethod.getStatusText());
     return putMethod;
   }
+  
+  protected static String httpPatch(String path, String body,
+      String contentType) throws IOException {
+    LOG.info("Connecting to {}", URL + path);
+    CloseableHttpClient httpclient = HttpClients.createDefault();
+    
+    HttpPatch httpPatch = new HttpPatch(URL + path);
+    StringEntity entity = new StringEntity(body, ContentType.APPLICATION_JSON);
+    httpPatch.setEntity(entity);
+
+    // Create a custom response handler
+    ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+      @Override
+      public String handleResponse(final HttpResponse response)
+          throws ClientProtocolException, IOException {
+        LOG.info("response " + response);
+        int status = response.getStatusLine().getStatusCode();
+        if (status >= 200 && status < 300) {
+          HttpEntity entity = response.getEntity();
+          return entity != null ? EntityUtils.toString(entity) : null;
+        } else {
+          throw new ClientProtocolException(
+              "Unexpected response status: " + status);
+        }
+      }
+    };
+    String responseBody = httpclient.execute(httpPatch, responseHandler);
+    httpclient.close();
+    return responseBody;
+  }
 
   protected static DeleteMethod httpDelete(String path) throws IOException {
     return httpDelete(path, StringUtils.EMPTY, StringUtils.EMPTY);
@@ -411,13 +452,39 @@ public abstract class AbstractSubmarineServerTest {
         gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
     verifyCreateEnvironmentApiResult(env);
   }
+  
+  protected void update(String body, String contentType) throws Exception {
+    Gson gson = new GsonBuilder().create();
+
+    // update
+    LOG.info("Update Environment using Environment REST API");
+
+    String json = httpPatch(ENV_PATH + "/" + ENV_NAME, body, contentType);
+    
+    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        jsonResponse.getCode());
+
+    Environment env =
+        gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
+    verifyUpdateEnvironmentApiResult(env);
+  }
 
   protected void verifyCreateEnvironmentApiResult(Environment env)
       throws Exception {
-    Assert.assertNotNull(env.getName());
+    Assert.assertNotNull(env.getEnvironmentSpec().getName());
     Assert.assertNotNull(env.getEnvironmentSpec());
   }
 
+  protected void verifyUpdateEnvironmentApiResult(Environment env)
+      throws Exception {
+    Assert.assertEquals(env.getEnvironmentSpec().getDockerImage(),
+        "continuumio/miniconda3");
+    Assert.assertTrue(
+        env.getEnvironmentSpec().getKernelSpec().getDependencies().size() == 1);
+  }
+
+  
   protected void deleteEnvironment() throws IOException {
     Gson gson = new GsonBuilder().create();
     DeleteMethod deleteMethod = httpDelete(ENV_PATH + "/" + ENV_NAME);
@@ -431,7 +498,7 @@ public abstract class AbstractSubmarineServerTest {
 
     Environment deletedEnv =
         gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
-    Assert.assertEquals(ENV_NAME, deletedEnv.getName());
+    Assert.assertEquals(ENV_NAME, deletedEnv.getEnvironmentSpec().getName());
   }
 
   protected String loadContent(String resourceName) throws Exception {

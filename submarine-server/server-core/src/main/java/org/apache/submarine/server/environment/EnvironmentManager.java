@@ -23,12 +23,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
+import org.apache.submarine.server.SubmarineServer;
 import org.apache.submarine.server.api.environment.Environment;
+import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.environment.database.entity.EnvironmentEntity;
@@ -48,6 +51,8 @@ public class EnvironmentManager {
       LoggerFactory.getLogger(EnvironmentManager.class);
 
   private static volatile EnvironmentManager manager;
+  
+  private final AtomicInteger environmentIdCounter = new AtomicInteger(0);
   
   /**
    * Environment Cache
@@ -84,30 +89,8 @@ public class EnvironmentManager {
   public Environment createEnvironment(EnvironmentSpec spec)
       throws SubmarineRuntimeException {
     checkSpec(spec);
-    EnvironmentEntity entity = new EnvironmentEntity();
-    entity.setEnvironmentName(spec.getName());
-    entity.setEnvironmentSpec(
-        new GsonBuilder().disableHtmlEscaping().create().toJson(spec));
-    
-    LOG.info("add({})", entity.toString());
-    try (SqlSession sqlSession = MyBatisUtil.getMetastoreSqlSession()) {
-      EnvironmentMapper environmentMapper =
-          sqlSession.getMapper(EnvironmentMapper.class);
-      int environmentId = environmentMapper.insert(entity);
-      sqlSession.commit();
-
-      Environment env = new Environment();
-      env.setEnvironmentId(environmentId);
-      env.setEnvironmentSpec(spec);
-      
-      // Populate cache
-      cachedEnvironments.putIfAbsent(spec.getName(), env);
-      return env;
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
-          "Unable to process the environment spec.");
-    }
+    LOG.info("Create Environment using spec: " + spec.toString());
+    return createOrUpdateEnvironment(spec, "c");
   }
   
   /**
@@ -125,30 +108,46 @@ public class EnvironmentManager {
           "Environment not found.");
     }
     checkSpec(spec);
-    
+    LOG.info("Update Environment using spec: " + spec.toString());
+    return createOrUpdateEnvironment(spec, "u");
+  }
+  
+  private Environment createOrUpdateEnvironment(EnvironmentSpec spec,
+      String operation) {
     EnvironmentEntity entity = new EnvironmentEntity();
+    String environmentId = generateEnvironmentId().toString();
+    entity.setId(environmentId);
     entity.setEnvironmentName(spec.getName());
     entity.setEnvironmentSpec(
         new GsonBuilder().disableHtmlEscaping().create().toJson(spec));
     try (SqlSession sqlSession = MyBatisUtil.getMetastoreSqlSession()) {
       EnvironmentMapper environmentMapper =
           sqlSession.getMapper(EnvironmentMapper.class);
-      int environmentId = environmentMapper.update(entity);
+      if (operation.equals("c")) {
+        environmentMapper.insert(entity);
+      } else {
+        environmentMapper.update(entity);
+      }
       sqlSession.commit();
 
-      Environment updatedEnvironment = new Environment();
-      updatedEnvironment.setEnvironmentId(environmentId);
-      updatedEnvironment.setEnvironmentSpec(spec);
-      
+      Environment environment = new Environment();
+      environment.setEnvironmentId(EnvironmentId.fromString(environmentId));
+      environment.setEnvironmentSpec(spec);
+
       // Update cache
-      cachedEnvironments.putIfAbsent(spec.getName(), updatedEnvironment);
-      
-      return updatedEnvironment;
+      cachedEnvironments.putIfAbsent(spec.getName(), environment);
+
+      return environment;
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
           "Unable to process the environment spec.");
     }
+  }
+  
+  private EnvironmentId generateEnvironmentId() {
+    return EnvironmentId.newInstance(SubmarineServer.getServerTimeStamp(),
+        environmentIdCounter.incrementAndGet());
   }
   
   /**
@@ -165,6 +164,7 @@ public class EnvironmentManager {
           "Environment not found.");
     }
     
+    LOG.info("Delete Environment for " + name);
     try (SqlSession sqlSession = MyBatisUtil.getMetastoreSqlSession()) {
       EnvironmentMapper environmentMapper =
           sqlSession.getMapper(EnvironmentMapper.class);
@@ -222,7 +222,7 @@ public class EnvironmentManager {
 
     // Is it available in cache?
     Environment env = cachedEnvironments.get(name);
-    if(env != null) {
+    if (env != null) {
       return env;
     }
     

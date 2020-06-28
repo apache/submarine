@@ -134,7 +134,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
 
     Environment getEnvironment =
         gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
-    Assert.assertEquals(ENV_NAME, getEnvironment.getName());
+    Assert.assertEquals(ENV_NAME, getEnvironment.getEnvironmentSpec().getName());
 
     String body = loadContent("tensorflow/tf-mnist-with-env-req.json");
     String patchBody =

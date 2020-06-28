@@ -182,7 +182,7 @@ public class ExperimentSpecParser {
         EnvironmentSpec environmentSpec = environment.getEnvironmentSpec();
         List<V1Container> initContainers = new ArrayList<>();
         V1Container initContainer = new V1Container();
-        initContainer.setName(environment.getName());
+        initContainer.setName(environment.getEnvironmentSpec().getName());
         initContainer.setImage(environmentSpec.getDockerImage());
 
         if (environmentSpec.getKernelSpec().getDependencies().size() > 0) {

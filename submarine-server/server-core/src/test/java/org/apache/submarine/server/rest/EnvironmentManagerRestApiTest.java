@@ -19,14 +19,13 @@
 
 package org.apache.submarine.server.rest;
 
-import java.io.IOException;
-
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.rest.RestConstants;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -62,8 +61,17 @@ public class EnvironmentManagerRestApiTest extends AbstractSubmarineServerTest {
   }
 
   @Test
-  public void testUpdateEnvironment() throws IOException {
-
+  public void testUpdateEnvironment() throws Exception {
+    
+    // Create environment
+    String body = loadContent("environment/test_env_1.json");
+    run(body, "application/json");
+    
+    // Updated spec
+    String updatedBody = loadContent("environment/test_env_2.json");
+    
+    update(updatedBody, "application/json");
+    //deleteEnvironment();
   }
 
   @Test
