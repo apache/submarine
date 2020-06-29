@@ -14,12 +14,13 @@
 # limitations under the License.
 
 import time
-import sqlalchemy as sa
-from sqlalchemy import (Column, String, BigInteger,
-                        PrimaryKeyConstraint, Boolean)
-from sqlalchemy.ext.declarative import declarative_base
-from submarine.entities import (Metric, Param)
 
+import sqlalchemy as sa
+from sqlalchemy import (BigInteger, Boolean, Column, PrimaryKeyConstraint,
+                        String)
+from sqlalchemy.ext.declarative import declarative_base
+
+from submarine.entities import Metric, Param
 
 Base = declarative_base()
 
@@ -68,26 +69,31 @@ class SqlMetric(Base):
     JOB NAME to which this metric belongs to: Part of *Primary Key* for ``metrics`` table.
     """
 
-    __table_args__ = (
-        PrimaryKeyConstraint('key', 'timestamp', 'worker_index', 'step', 'job_name',
-                             'value', "is_nan", name='metric_pk'),
-    )
+    __table_args__ = (PrimaryKeyConstraint('key',
+                                           'timestamp',
+                                           'worker_index',
+                                           'step',
+                                           'job_name',
+                                           'value',
+                                           "is_nan",
+                                           name='metric_pk'),)
 
     def __repr__(self):
-        return '<SqlMetric({}, {}, {}, {}, {})>'.format(self.key, self.value, self.worker_index,
-                                                        self.timestamp, self.step)
+        return '<SqlMetric({}, {}, {}, {}, {})>'.format(self.key, self.value,
+                                                        self.worker_index,
+                                                        self.timestamp,
+                                                        self.step)
 
     def to_submarine_entity(self):
         """
         Convert DB model to corresponding Submarine entity.
         :return: :py:class:`submarine.entities.Metric`.
         """
-        return Metric(
-            key=self.key,
-            value=self.value if not self.is_nan else float("nan"),
-            worker_index=self.worker_index,
-            timestamp=self.timestamp,
-            step=self.step)
+        return Metric(key=self.key,
+                      value=self.value if not self.is_nan else float("nan"),
+                      worker_index=self.worker_index,
+                      timestamp=self.timestamp,
+                      step=self.step)
 
 
 # +----------+-------+--------------+-----------------------+
@@ -120,19 +126,20 @@ class SqlParam(Base):
     JOB NAME to which this parameter belongs to: Part of *Primary Key* for ``params`` table.
     """
 
-    __table_args__ = (
-        PrimaryKeyConstraint('key', 'job_name', 'worker_index', name='param_pk'),
-    )
+    __table_args__ = (PrimaryKeyConstraint('key',
+                                           'job_name',
+                                           'worker_index',
+                                           name='param_pk'),)
 
     def __repr__(self):
-        return '<SqlParam({}, {}, {})>'.format(self.key, self.value, self.worker_index)
+        return '<SqlParam({}, {}, {})>'.format(self.key, self.value,
+                                               self.worker_index)
 
     def to_submarine_entity(self):
         """
         Convert DB model to corresponding submarine entity.
         :return: :py:class:`submarine.entities.Param`.
         """
-        return Param(
-            key=self.key,
-            value=self.value,
-            worker_index=self.worker_index)
+        return Param(key=self.key,
+                     value=self.value,
+                     worker_index=self.worker_index)

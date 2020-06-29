@@ -45,7 +45,7 @@ INSERT INTO `sys_dict_item` VALUES ('40dbb5ece84111e9ab840242ac110002','PROJECT_
 -- Records of sys_department
 -- ----------------------------
 INSERT INTO `sys_department` VALUES ('e3d69d19c8d211e98edc0242ac110002','A','Company',NULL,0,'','0',NULL,'2019-08-27 13:59:30',NULL,'2019-08-27 14:02:05');
-INSERT INTO `sys_department` VALUES ('eec10fe9c8d211e98edc0242ac110002','AA','DeptartmentA','A',0,'','0',NULL,'2019-08-27 13:59:48',NULL,'2019-08-27 14:04:11');
+INSERT INTO `sys_department` VALUES ('eec10fe9c8d211e98edc0242ac110002','AA','DepartmentA','A',0,'','0',NULL,'2019-08-27 13:59:48',NULL,'2019-08-27 14:04:11');
 INSERT INTO `sys_department` VALUES ('f8b42e19c8d211e98edc0242ac110002','AB','DepartmentB','A',0,'','0',NULL,'2019-08-27 14:00:05',NULL,'2019-08-27 14:07:19');
 INSERT INTO `sys_department` VALUES ('13a1916dc8d311e98edc0242ac110002','ABA','GroupA','AB',0,'','0',NULL,'2019-08-27 14:00:50',NULL,'2019-08-27 14:09:21');
 INSERT INTO `sys_department` VALUES ('1bc0cd98c8d311e98edc0242ac110002','AAA','GroupB','AA',0,'','0',NULL,'2019-08-27 14:01:04',NULL,'2019-08-29 16:48:56');
@@ -54,3 +54,27 @@ INSERT INTO `sys_department` VALUES ('1bc0cd98c8d311e98edc0242ac110002','AAA','G
 -- Records of sys_user
 -- ----------------------------
 INSERT INTO `sys_user` VALUES ('e9ca23d68d884d4ebb19d07889727dae', 'admin', 'administrator', '21232f297a57a5a743894a0e4a801fc3', 'avatar.png', '2018-12-05 00:00:00', NULL, 'dev@submarine.org', '18566666661', NULL, NULL, NULL, 1, 'admin', '2019-07-05 14:47:22', 'admin', '2019-07-05 14:47:22');
+
+
+-- ----------------------------
+-- Records of team
+-- ----------------------------
+INSERT INTO `team` VALUES ('e9ca23d68d884d4ebb19d07889721234', 'admin', 'Submarine', 'admin', '2020-05-06 14:00:05', 'Jack', '2020-05-06 14:00:14');
+
+-- ----------------------------
+-- Records of metrics
+-- ----------------------------
+INSERT INTO `metrics` (`id`, `key`, `value`, `worker_index`, `timestamp`, `step`, `is_nan`, `job_name`) VALUES
+(13, 'score', 0.666667, 'worker-1', 1569139525097, 0, 0, 'application_1234'),
+(14, 'score', 0.666667, 'worker-1', 1569149139731, 0, 0, 'application_1234'),
+(15, 'score', 0.666667, 'worker-1', 1569169376482, 0, 0, 'application_1234'),
+(16, 'score', 0.666667, 'worker-1', 1569236290721, 0, 0, 'application_1234'),
+(17, 'score', 0.666667, 'worker-1', 1569236466722, 0, 0, 'application_1234');
+
+-- ----------------------------
+-- Records of params
+-- ----------------------------
+INSERT INTO `params` (`id`, `key`, `value`, `worker_index`, `job_name`) VALUES
+(14, 'max_iter', '100', 'worker-1', 'application_123651651'),
+(15, 'n_jobs', '5', 'worker-1', 'application_123456898'),
+(16, 'alpha', '20', 'worker-1', 'application_123456789');

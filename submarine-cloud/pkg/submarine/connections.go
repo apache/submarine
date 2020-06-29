@@ -53,7 +53,7 @@ type AdminConnectionsInterface interface {
 	//GetSelected returns a map of clients based on the input addresses
 	GetSelected(addrs []string) map[string]ClientInterface
 	// Reconnect force a reconnection on the given address
-	// if the adress is not part of the map, act like Add
+	// if the address is not part of the map, act like Add
 	Reconnect(addr string) error
 	// AddAll connect to the given list of addresses and
 	// register them in the map
@@ -134,7 +134,7 @@ func buildCommandReplaceMapping(filePath string) map[string]string {
 	mapping := make(map[string]string)
 	file, err := os.Open(filePath)
 	if err != nil {
-		glog.Errorf("Cannor open %s: %v", filePath, err)
+		glog.Errorf("Cannot open %s: %v", filePath, err)
 		return mapping
 	}
 	defer file.Close()
@@ -148,7 +148,7 @@ func buildCommandReplaceMapping(filePath string) map[string]string {
 	}
 
 	if err := scanner.Err(); err != nil {
-		glog.Errorf("Cannor parse %s: %v", filePath, err)
+		glog.Errorf("Cannot parse %s: %v", filePath, err)
 		return mapping
 	}
 	return mapping

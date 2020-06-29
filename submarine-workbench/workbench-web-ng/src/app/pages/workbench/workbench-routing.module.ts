@@ -19,11 +19,12 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { ExperimentComponent } from '@submarine/pages/workbench/experiment/experiment.component';
 import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.component';
 import { DataComponent } from './data/data.component';
+import { ExperimentInfoComponent } from './experiment/experiment-info/experiment-info.component';
 import { HomeComponent } from './home/home.component';
 import { InterpreterComponent } from './interpreter/interpreter.component';
-import { JobComponent } from './job/job.component';
 import { ModelComponent } from './model/model.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 
@@ -50,8 +51,14 @@ const routes: Routes = [
         component: InterpreterComponent
       },
       {
-        path: 'job',
-        component: JobComponent
+        path: 'experiment',
+        component: ExperimentComponent,
+        children: [
+          {
+            path: 'info/:id',
+            component: ExperimentInfoComponent
+          }
+        ]
       },
       {
         path: 'data',
@@ -63,7 +70,11 @@ const routes: Routes = [
       },
       {
         path: 'manager',
-        loadChildren: () => import('./manager/manager.module').then(m => m.ManagerModule)
+        loadChildren: () => import('./manager/manager.module').then((m) => m.ManagerModule)
+      },
+      {
+        path: 'notebook',
+        loadChildren: () => import('./notebook/notebook.module').then((m) => m.NotebookModule)
       }
     ]
   }
@@ -72,5 +83,4 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)]
 })
-export class WorkbenchRoutingModule {
-}
+export class WorkbenchRoutingModule {}

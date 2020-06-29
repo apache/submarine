@@ -23,9 +23,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
-import org.apache.submarine.server.api.job.JobId;
-import org.apache.submarine.server.json.JobIdDeserializer;
-import org.apache.submarine.server.json.JobIdSerializer;
+import org.apache.submarine.server.api.experiment.ExperimentId;
+import org.apache.submarine.server.gson.ExperimentIdDeserializer;
+import org.apache.submarine.server.gson.ExperimentIdSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -169,8 +169,8 @@ public class JsonResponse<T> {
 
       safeGson = new GsonBuilder()
           .registerTypeAdapter(Date.class, safeDateTypeAdapter)
-          .registerTypeAdapter(JobId.class, new JobIdSerializer())
-          .registerTypeAdapter(JobId.class, new JobIdDeserializer())
+          .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
+          .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer())
           .serializeNulls()
           .create();
     }

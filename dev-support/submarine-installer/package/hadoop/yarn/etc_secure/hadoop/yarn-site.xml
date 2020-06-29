@@ -177,7 +177,7 @@
 
   <!--scheduler configuration-->
   <property>
-    <description>Miniumum request grant-able by the RM scheduler</description>
+    <description>Minimum request grant-able by the RM scheduler</description>
     <name>yarn.scheduler.minimum-allocation-mb</name>
       <value>512</value>
   </property>
@@ -504,7 +504,7 @@
     <value>YARN_TIMELINE_FS_STORE_DIR_REPLACE/done</value>
   </property>
 
-  <!--To void confilcts with timeline server 8188 port-->
+  <!--To void conflicts with timeline server 8188 port-->
   <property>
     <name>yarn.timeline-service.reader.webapp.address</name>
     <value>YARN_TIMELINE_HOST_REPLACE:8189</value>

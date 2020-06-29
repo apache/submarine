@@ -58,7 +58,7 @@ First of all, all the notebook-sessions / experiments / model-serving instances)
 - ML-related metrics such as loss, epoch, etc. (in contrast of system metrics such as CPU/memory usage, etc.)
   - There're different types of ML-related metrics, for Tensorflow/pytorch, they can use tf.events and get visualizations on tensorboard. 
   - Or they can use tracking APIs (such as Submarine tracking, mlflow tracking, etc.) to output customized tracking results for non TF/Pytorch workloads. 
-- Training jobs of experiment typically generate model artifacts (files) which need perisisted, and both of notebook, model serving needs to load model artifacts from persistent storage. 
+- Training jobs of experiment typically generate model artifacts (files) which need persisted, and both of notebook, model serving needs to load model artifacts from persistent storage. 
 - There're various of meta information, such as experiment meta, model registry, model serving, notebook, experiment, environment, etc. We need be able to read these meta information back.
 - We also have code for experiment (like training/batch-prediction), notebook (ipynb), and model servings.
 - And notebook/experiments/model-serving need depend on environments (dependencies such as pip, and Docker Images).
@@ -97,7 +97,7 @@ User may want to store their training code to a tarball on a shared storage. Sub
 
 #### Localization of experiment/notebook/model-serving code
 
-To make user experiences keeps same across different environment, we will localize code to a same folder after the container is launched, preferrably `/code`
+To make user experiences keeps same across different environment, we will localize code to a same folder after the container is launched, preferably `/code`
 
 For example, there's a git repo need to be synced up for an experiment/notebook/model-serving (example above):
 
@@ -139,7 +139,7 @@ spec:
     emptyDir: {}
 ```
 
-The above K8s spec create a code-dir and mount it to `/code` to launched containers. The initContiner `git-localize` uses `https://github.com/kubernetes/git-sync` to do the sync up. (If other storages are used such as s3, we can use similar initContainer approach to download contents)
+The above K8s spec create a code-dir and mount it to `/code` to launched containers. The initContainer `git-localize` uses `https://github.com/kubernetes/git-sync` to do the sync up. (If other storages are used such as s3, we can use similar initContainer approach to download contents)
 
 ## System-related metrics/logs and their storages
 
@@ -150,6 +150,14 @@ Other than ML-related objects, we have system-related objects, including:
 - System metrics (Physical resource usages by daemons, launched training containers, etc.). 
 
 All these information should be handled by 3rd party system, such as Grafana, Prometheus, etc. And system admins are responsible to setup these infrastructures, dashboard. Users of submarine should NOT interact with system related metrics/logs. It is system admin's responsibility.
+
+## Attachable Volumes 
+
+It is possible user has needs to have an attachable volume for their experiment / notebook, this is especially useful for notebook storage, since contents of notebook can be automatically saved, and it can be used as user's home folder. 
+
+Downside of attachable volume is, it is not versioned, even notebook is mainly used for adhoc exploring tasks, an unversioned notebook file can lead to maintenance issues in the future. 
+
+Since this is a common requirement, we can consider to support attachable volumes in Submarine in a long run, but with relatively lower priority.
 
 ## In-scope / Out-of-scope 
 

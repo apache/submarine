@@ -19,7 +19,9 @@
 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ValidationErrors } from '@angular/forms';
 import { Rest } from '@submarine/interfaces';
+import { SysDeptItem } from '@submarine/interfaces/sys-dept-item';
 import { SysDeptSelect } from '@submarine/interfaces/sys-dept-select';
 import { of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -29,18 +31,79 @@ import { BaseApiService } from './base-api.service';
   providedIn: 'root'
 })
 export class DepartmentService {
-
-  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {
-  }
+  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
   fetchSysDeptSelect(): Observable<SysDeptSelect[]> {
     const apiUrl = this.baseApi.getRestApi('/sys/dept/queryIdTree');
     return this.httpClient.get<Rest<SysDeptSelect[]>>(apiUrl).pipe(
-      switchMap(res => {
+      switchMap((res) => {
         if (res.success) {
           return of(res.result);
         } else {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
+  }
+
+  fetchSysDeptList(): Observable<SysDeptItem[]> {
+    const apiUrl = this.baseApi.getRestApi('/sys/dept/tree');
+    return this.httpClient.get<Rest<any>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          console.log(res.result);
+          return of(res.result.records);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
+  }
+
+  codeCheck(codeParams): Promise<ValidationErrors | null> {
+    const promise = new Promise((resolve, reject) => {
+      const apiUrl = this.baseApi.getRestApi('/sys/duplicateCheck');
+      this.httpClient
+        .get<any>(apiUrl, {
+          params: codeParams
+        })
+        .toPromise()
+        .then(
+          (res: any) => {
+            console.log(res);
+            resolve(res.success);
+          },
+          (err) => {
+            console.log(err);
+            reject(err);
+          }
+        );
+    });
+    return promise;
+  }
+
+  createDept(params): Observable<SysDeptItem> {
+    const apiUrl = this.baseApi.getRestApi('/sys/dept/add');
+    return this.httpClient.post<Rest<SysDeptItem>>(apiUrl, params).pipe(
+      switchMap((res) => {
+        console.log(res);
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', params);
+        }
+      })
+    );
+  }
+
+  editDept(params): Observable<boolean> {
+    const apiUrl = this.baseApi.getRestApi('/sys/dept/edit');
+    return this.httpClient.put<Rest<any>>(apiUrl, params).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(true);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'put', params);
         }
       })
     );

@@ -38,7 +38,7 @@ type AdminInterface interface {
 	AttachNodeToCluster(addr string) error
 	// AttachSlaveToMaster attach a slave to a master node
 	AttachSlaveToMaster(slave *Node, master *Node) error
-	// DetachSlave dettach a slave to its master
+	// DetachSlave detach a slave to its master
 	//DetachSlave(slave *Node) error
 	// StartFailover execute the failover of the Submarine Master corresponding to the addr
 	StartFailover(addr string) error
@@ -46,10 +46,10 @@ type AdminInterface interface {
 	ForgetNode(id string) error
 	// ForgetNodeByAddr execute the Submarine command to force the cluster to forgot the the Node
 	ForgetNodeByAddr(id string) error
-	// SetSlots exect the submarine command to set slots in a pipeline, provide
+	// SetSlots exec the submarine command to set slots in a pipeline, provide
 	// and empty nodeID if the set slots commands doesn't take a nodeID in parameter
 	//SetSlots(addr string, action string, slots []Slot, nodeID string) error
-	// AddSlots exect the submarine command to add slots in a pipeline
+	// AddSlots exec the submarine command to add slots in a pipeline
 	//AddSlots(addr string, slots []Slot) error
 	// DelSlots exec the submarine command to del slots in a pipeline
 	//DelSlots(addr string, slots []Slot) error
@@ -111,7 +111,7 @@ func (a Admin) GetClusterInfos() (*ClusterInfos, error) {
 		if nodeinfos.Node != nil && nodeinfos.Node.IPPort() == addr {
 			infos.Infos[addr] = nodeinfos
 		} else {
-			glog.Warningf("Bad node info retreived from %s", addr)
+			glog.Warningf("Bad node info retrieved from %s", addr)
 		}
 	}
 

@@ -34,7 +34,6 @@ interface DictItemInfo {
   styleUrls: ['./data-dict-config-modal.component.scss']
 })
 export class DataDictConfigModalComponent implements OnChanges {
-
   constructor(private fb: FormBuilder) {
     this.dictItemListForm = this.fb.group({
       dictItemCode: ['', [Validators.required]],
@@ -67,7 +66,7 @@ export class DataDictConfigModalComponent implements OnChanges {
 
   // TODO(kevin85421): mock data
   dictItemList: { [id: string]: DictItemInfo[] } = {
-    "PROJECT_TYPE": [
+    PROJECT_TYPE: [
       {
         code: 'PROJECT_TYPE_NOTEBOOK',
         name: 'notebook',
@@ -105,7 +104,7 @@ export class DataDictConfigModalComponent implements OnChanges {
         edit: false
       }
     ],
-    "PROJECT_VISIBILITY": [
+    PROJECT_VISIBILITY: [
       {
         code: 'PROJECT_VISIBILITY_PRIVATE',
         name: 'private',
@@ -125,7 +124,7 @@ export class DataDictConfigModalComponent implements OnChanges {
         edit: false
       }
     ],
-    "PROJECT_PERMISSION": [
+    PROJECT_PERMISSION: [
       {
         code: 'PROJECT_PERMISSION_VIEW',
         name: 'can view',
@@ -145,7 +144,7 @@ export class DataDictConfigModalComponent implements OnChanges {
         edit: false
       }
     ],
-    "SYS_USER_SEX": [
+    SYS_USER_SEX: [
       {
         code: 'SYS_USER_SEX_MALE',
         name: 'Male',
@@ -159,7 +158,7 @@ export class DataDictConfigModalComponent implements OnChanges {
         edit: false
       }
     ],
-    "SYS_USER_STATUS": [
+    SYS_USER_STATUS: [
       {
         code: 'SYS_USER_STATUS_AVAILABLE',
         name: 'Available',
@@ -235,9 +234,14 @@ export class DataDictConfigModalComponent implements OnChanges {
     }
     this.selectedDictItemList[dictItemIndex].edit = true;
     this.selectedItemIndex = dictItemIndex;
-    this.newItemForm.setValue({ newItemCode: '', newItemName: '', newItemStatus: '',
-                               selectedDictItemCode: dictItemCode, selectedDictItemName: dictItemName,
-                               selectedDictItemStatus: dictItemStatus});
+    this.newItemForm.setValue({
+      newItemCode: '',
+      newItemName: '',
+      newItemStatus: '',
+      selectedDictItemCode: dictItemCode,
+      selectedDictItemName: dictItemName,
+      selectedDictItemStatus: dictItemStatus
+    });
   }
 
   saveEdit(dictItemIndex: number) {
@@ -249,9 +253,14 @@ export class DataDictConfigModalComponent implements OnChanges {
 
   cancelEdit(dictItemIndex: number) {
     this.selectedItemIndex = 0;
-    this.newItemForm.setValue({ newItemCode: '', newItemName: '', newItemStatus: '',
-                                selectedDictItemCode: '', selectedDictItemName: '',
-                                selectedDictItemStatus: ''});
+    this.newItemForm.setValue({
+      newItemCode: '',
+      newItemName: '',
+      newItemStatus: '',
+      selectedDictItemCode: '',
+      selectedDictItemName: '',
+      selectedDictItemStatus: ''
+    });
     if (this.selectedDictItemList.length !== 0) {
       this.selectedDictItemList[dictItemIndex].edit = false;
     }
@@ -285,10 +294,15 @@ export class DataDictConfigModalComponent implements OnChanges {
         edit: false
       },
       ...this.dictItemList[this.dictCode]
-    ]
-    this.newItemForm.setValue({ newItemCode: '', newItemName: '', newItemStatus: '',
-                                selectedDictItemCode: '', selectedDictItemName: '',
-                                selectedDictItemStatus: ''});
+    ];
+    this.newItemForm.setValue({
+      newItemCode: '',
+      newItemName: '',
+      newItemStatus: '',
+      selectedDictItemCode: '',
+      selectedDictItemName: '',
+      selectedDictItemStatus: ''
+    });
     this.cancelAddDictItem();
   }
 }

@@ -18,166 +18,157 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { SysTeam } from '@submarine/interfaces';
+import { TeamService } from '@submarine/services';
+import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
-  selector: 'app-team',
+  selector: 'submarine-team',
   templateUrl: './team.component.html',
   styleUrls: ['./team.component.scss']
 })
-export class TeamComponent implements OnInit {  
-  
-  // Get into a Team or not
-  isEntering = false;
+export class TeamComponent implements OnInit {
+  column: string = 'createdTime';
+  order: string = 'description';
+  teamName: string = '';
+  teamList: SysTeam[] = [];
 
-  //Get Current Team Data (Now Use Simulated Data) 
-  currentTeamName: string;
-  currentTeamDepartment: string;
-  currentTeamDescription: string;
-  currentTeamProjectNum: Number;
-  currentTeamMemberNum: Number;
-  currentTeamSettingPermission: boolean;
+  // Form
+  newTeamForm: FormGroup; // For Adding Form
+  formTeamNameErrMesg = '';
 
-  // Is Editging Members or not
-  isEditingMember = false;
+  // Drawer
+  drawerVisible = false;
+  submitBtnIsLoading = false;
 
-  // For CreateTeamModal
-  createTeamModalIsVisible = false;
+  // Modal
+  overviewModalVisible = false;
+  currentTeam_teamName: string;
+  currentTeam_id: string;
+  currentTeam_owner: string;
+  currentTeam_createTime: string;
 
-  // For AddUserModal
-  addUserModalIsVisible = false;
-  addUserIsOkLoading = false;
-
-  // Simulated Data for Members
-  member = [
-    {
-      name: 'Anna',
-      email: 'test@mail.com',
-      permission: 'admin'
-    },
-    {
-      name: 'James',
-      email: 'test@mail.com',
-      permission: 'admin'
-    },
-    {
-      name: 'Jack',
-      email: 'test@mail.com',
-      permission: 'contributer'
-    },
-    {
-      name: 'Ken',
-      email: 'test@mail.com',
-      permission: 'viwer'
-    }
-  ]
-
-  // Simulated Data for Teams
-  existTeams = [
-    {
-      name: "Submarine",
-      department: "Apache",
-      description: "Something about this team...",
-      projectNum: 3,
-      memberNum: 3,
-      role: 'admin',
-      settingPermission: true
-    },
-    {
-      name: "Team2",
-      department: "Apple",
-      description: "Something about this team...",
-      projectNum: 3,
-      memberNum: 3,
-      role: 'viwer',
-      settingPermission: false
-    },
-  ]
-  constructor(
-    private nzMessageService: NzMessageService, 
-    private notification: NzNotificationService,
-    ) { }
+  constructor(private teamService: TeamService, private nzMessageService: NzMessageService) {}
 
   ngOnInit() {
+    this.newTeamForm = new FormGroup({
+      teamName: new FormControl(
+        null,
+        [Validators.required, this.teamNameRequired.bind(this)],
+        this.teamNameCheck.bind(this)
+      ),
+      owner: new FormControl(null, Validators.required)
+    });
+
+    this.getTeamList();
   }
 
-  enter(team) {
-    this.isEntering = true;
-    this.currentTeamName = team.name;
-    this.currentTeamDepartment = team.department;
-    this.currentTeamDescription = team.description;
-    this.currentTeamProjectNum = team.projectNum;
-    this.currentTeamMemberNum = team.memberNum;
-    this.currentTeamSettingPermission = team.settingPermission;
+  getTeamList() {
+    this.teamService
+      .getTeamList({
+        column: this.column,
+        order: this.order,
+        teamName: this.teamName
+      })
+      .subscribe(({ records }) => {
+        this.teamList = records;
+        console.log(records);
+      });
   }
 
-  startCreateTeam() {
-    this.createTeamModalIsVisible = true;
+  submitNewTeam() {
+    this.submitBtnIsLoading = true;
+    this.teamService
+      .createTeam({
+        teamName: this.newTeamForm.get('teamName').value,
+        owner: this.newTeamForm.get('owner').value,
+        createBy: this.newTeamForm.get('owner').value
+      })
+      .subscribe(
+        () => {
+          this.nzMessageService.success('Create team success!');
+          this.getTeamList();
+          this.drawerVisible = false;
+          this.submitBtnIsLoading = false;
+          this.newTeamForm.reset();
+        },
+        (err) => {
+          this.nzMessageService.error(err.message);
+          this.submitBtnIsLoading = false;
+        }
+      );
   }
 
-  startEditMember() {
-    this.isEditingMember=true;
-  }
-
-  saveEditMember() {
-    this.isEditingMember=false;
-  }
-
-  cancel(): void {
-  }
-
-  confirm(): void {
-    this.nzMessageService.info('Delete Successful!');
-  }
-
-  // For CreateTeamModal
-  createTeamOk() {
-    this.createTeamModalIsVisible = false;
-    console.log("Create Seuccessful!");
-  }
- 
-
-  // For AddUserModal
-  startAddUser(): void {
-    this.addUserModalIsVisible = true;
-  }
-
-  // Add Success
-  createNotification(type: string): void {
-    this.notification.create(
-      type,
-      'Add Successful!',
-      'Make sure that user check invitation!'
+  deleteTeam(teamData: SysTeam) {
+    this.teamService.deleteTeam(teamData.id).subscribe(
+      () => {
+        this.nzMessageService.success('Delete team success!');
+        this.getTeamList();
+      },
+      (err) => {
+        this.nzMessageService.error(err.message);
+      }
     );
   }
-  
-  // For AddUserModal
-  addUserOk(): void {
-    this.addUserIsOkLoading = true;
-    setTimeout(() => {
-      this.addUserModalIsVisible = false;
-      this.addUserIsOkLoading = false;
-      this.createNotification("success");
-    }, 1000);
+
+  closeDrawer() {
+    this.drawerVisible = false;
+    this.newTeamForm.reset({});
   }
 
-  // For AddUserModal
-  addUserCancel(): void {
-    this.addUserModalIsVisible = false;
+  addTeam() {
+    this.drawerVisible = true;
   }
 
-  //TODO(kobe860219) : Get Team From DataBase
-  getTeamDataFromDB() {
-
+  teamNameRequired(check: FormControl): { [key: string]: any } | null {
+    if (check.value === '') {
+      const errorMessage = 'Please enter new team name!';
+      this.formTeamNameErrMesg = errorMessage;
+      return { mesg: true };
+    } else {
+      this.formTeamNameErrMesg = '';
+      return null;
+    }
   }
 
-  //TODO(kobe860219) : Get User From DataBase
-  getUserDataFromDB() {
+  teamNameCheck(check: FormControl): Promise<ValidationErrors | null> {
+    const params = {
+      tableName: 'team',
+      fieldName: 'team_name',
+      fieldVal: check.value
+    };
+    const promise = new Promise((resolve, reject) => {
+      this.teamService.newTeamNameCheck(params).then(
+        (success) => {
+          if (success) {
+            resolve(null);
+          } else {
+            this.formTeamNameErrMesg = 'This value already exists is not available!';
+            resolve({ 'Duplicate Name': true });
+          }
+        },
+        (err) => {
+          reject(err);
+        }
+      );
+    });
+    return promise;
   }
 
-  //TODO(kobe860219) : Update Data to DataBase
-  updateTeamData() {
+  showOverview(team) {
+    this.overviewModalVisible = true;
+    this.currentTeam_teamName = team.teamName;
+    this.currentTeam_id = team.id;
+    this.currentTeam_owner = team.owner;
+    this.currentTeam_createTime = team.createTime;
+  }
 
+  handleOk() {
+    this.overviewModalVisible = false;
+  }
+
+  handleCancel() {
+    this.overviewModalVisible = false;
   }
 }

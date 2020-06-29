@@ -24,12 +24,12 @@
   <parent>
     <artifactId>submarine-server</artifactId>
     <groupId>org.apache.submarine</groupId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.4.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>submarine-server-submitter</artifactId>
-  <version>0.4.0-SNAPSHOT</version>
+  <version>0.4.0</version>
   <packaging>pom</packaging>
   <name>Submarine: Submitter</name>
 

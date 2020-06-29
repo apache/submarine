@@ -20,9 +20,9 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DataDictComponent } from '@submarine/pages/workbench/manager/data-dict/data-dict.component';
+import { DepartmentComponent } from './department/department.component';
 import { ManagerComponent } from './manager.component';
 import { UserComponent } from './user/user.component';
-import { DepartmentComponent } from './department/department.component';
 
 const routes: Routes = [
   {

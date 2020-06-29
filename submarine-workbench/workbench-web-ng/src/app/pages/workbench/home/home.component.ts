@@ -44,77 +44,77 @@ export class HomeComponent implements OnInit {
   newsList = [
     {
       title: 'Submarine supports yarn 2.7.x',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x 123',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x 123',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x 123',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x 123',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x 123',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x 456',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x 456',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x 456',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x 456',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     },
     {
       title: 'Submarine supports yarn 2.7.x 456',
-      newsTime:  this.publishedTime,
+      newsTime: this.publishedTime,
       iconType: 'user'
     }
   ];
@@ -123,97 +123,97 @@ export class HomeComponent implements OnInit {
   openRecentList = [
     {
       title: 'Project1',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project1',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project1',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project1',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project1',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project1',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project2',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project2',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project2',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project2',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project2',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project2',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project3',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project3',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project3',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project3',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project3',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     },
     {
       title: 'Project3',
-      description:  'This is the description',
+      description: 'This is the description',
       avatarType: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'
     }
   ];
 
-  displayOpenRecentList = []
+  displayOpenRecentList = [];
   openRecentPageSize: number;
 
   // constructor
@@ -254,8 +254,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   openRecentChangePage(event: number) {
     const pageIndex: number = event;

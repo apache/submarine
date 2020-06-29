@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DepartmentUtil {
-  public static void disableTagetDeptCode(List<SysDeptSelect> sysDeptSelects,
+  public static void disableTargetDeptCode(List<SysDeptSelect> sysDeptSelects,
                                           String deptCode) {
     if (sysDeptSelects == null) {
       return;
@@ -36,7 +36,7 @@ public class DepartmentUtil {
       if (deptSelect.getKey().equalsIgnoreCase(deptCode)) {
         deptSelect.setDisabled(true);
       }
-      disableTagetDeptCode(deptSelect.getChildren(), deptCode);
+      disableTargetDeptCode(deptSelect.getChildren(), deptCode);
     }
   }
 

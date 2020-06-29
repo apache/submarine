@@ -20,7 +20,7 @@
 ## @stability    stable
 function download_calico_bin()
 {
-  # submarin http server
+  # submarine http server
   if [[ -n "$DOWNLOAD_HTTP" ]]; then
     MY_CALICOCTL_DOWNLOAD_URL=${DOWNLOAD_HTTP}/downloads/calico/calicoctl
     MY_CALICO_DOWNLOAD_URL=${DOWNLOAD_HTTP}/downloads/calico/calico
@@ -133,9 +133,9 @@ function kernel_network_config()
 ## @stability    stable
 function calico_network_exist()
 {
-  local dockerNetwokInfo
-  dockerNetwokInfo=$(docker network ls --filter NAME="${CALICO_NETWORK_NAME}")
-  echo "${dockerNetwokInfo}" | grep "${CALICO_NETWORK_NAME}"
+  local dockerNetworkInfo
+  dockerNetworkInfo=$(docker network ls --filter NAME="${CALICO_NETWORK_NAME}")
+  echo "${dockerNetworkInfo}" | grep "${CALICO_NETWORK_NAME}"
 }
 
 ## @description  verification calico
@@ -144,9 +144,9 @@ function calico_network_exist()
 function verification_calico()
 {
   echo " ===== Check if the network between 2 containers can be connected ====="
-  local claicoNetworkExist
-  claicoNetworkExist=$(calico_network_exist)
-  if [[ "$claicoNetworkExist" = "" ]]; then
+  local calicoNetworkExist
+  calicoNetworkExist=$(calico_network_exist)
+  if [[ "$calicoNetworkExist" = "" ]]; then
     echo "Create a calico network"
     docker network create --driver calico --ipam-driver calico-ipam "${CALICO_NETWORK_NAME}"
   else

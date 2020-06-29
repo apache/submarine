@@ -29,7 +29,7 @@ import { Router } from '@angular/router';
 export class RegisterComponent implements OnInit {
   validateForm: FormGroup;
   // TODO(kevin85421): the mock data must be removed in the future
-  existedUsernames = [ 'test', 'haha'];
+  existedUsernames = ['test', 'haha'];
   existedEmails = ['test@gmail.com'];
 
   constructor(private fb: FormBuilder, private router: Router) {}
@@ -49,7 +49,7 @@ export class RegisterComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
     this.router.navigate(['/user/login']);
-    console.log("SubmitForm (Sign up Page)");
+    console.log('SubmitForm (Sign up Page)');
   }
 
   updateConfirmValidator(): void {
@@ -74,29 +74,29 @@ export class RegisterComponent implements OnInit {
     } else {
       return { agree: false };
     }
-  }
+  };
 
   // Username cannot be the same with existed usernames
-  checkExistedUsernames(control: FormControl): {[s: string]: boolean} {
+  checkExistedUsernames(control: FormControl): { [s: string]: boolean } {
     if (this.existedUsernames.indexOf(control.value) !== -1) {
-      return { 'usernameIsExisted': true };
+      return { usernameIsExisted: true };
     }
     return null;
   }
 
   // Email cannot be the same with existed emails
-  checkExistedEmails(control: FormControl): {[s: string]: boolean} {
+  checkExistedEmails(control: FormControl): { [s: string]: boolean } {
     if (this.existedEmails.indexOf(control.value) !== -1) {
-      return { 'emailIsExisted': true };
+      return { emailIsExisted: true };
     }
     return null;
   }
 
   // Password must be longer than 6 characters and shorter than 20 characters
-  checkPasswordLength(control: FormControl): {[s: string]: boolean} {
+  checkPasswordLength(control: FormControl): { [s: string]: boolean } {
     const controlValue = String(control.value);
     if (controlValue.length < 6 || controlValue.length > 20) {
-      return { 'validPasswordLength': false };
+      return { validPasswordLength: false };
     }
     return null;
   }

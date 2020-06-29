@@ -136,9 +136,12 @@ EOF
     for ((k=1;k<=${volumeNum};k++))
     do
         mkdir -p ${data_dir}/worker${i}/vol${k}
+        mkdir -p ${data_dir}/worker${i}/submarine-jupyter
         cat <<EOF >> ${configFile}
   - containerPath: /mnt/disks/vol${k}
     hostPath: ${data_dir}/worker${i}/vol${k}
+  - containerPath: /mnt/disks/submarine-jupyter
+    hostPath: ${data_dir}/worker${i}/submarine-jupyter
 EOF
     done
 done
@@ -233,7 +236,7 @@ $KIND_BIN load docker-image registry:2
 # https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx
 echo "setting up ingress on a kind cluster."
 
-# load ingress denpendence docker-image into kind
+# load ingress dependence docker-image into kind
 if ! docker inspect quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master >/dev/null ; then
   docker pull quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master
 fi

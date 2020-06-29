@@ -28,7 +28,19 @@
     <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>jersey.config.server.provider.packages</param-name>
-      <param-value>org.apache.submarine.server.rest</param-value>
+      <param-value>io.swagger.v3.jaxrs2.integration.resources,org.apache.submarine.server.rest</param-value>
+    </init-param>
+    <init-param>
+      <param-name>openApi.configuration.resourceClasses</param-name>
+      <param-value>org.apache.submarine.server.rest.ExperimentRestApi</param-value>
+    </init-param>
+    <init-param>
+      <param-name>openApi.configuration.scannerClass</param-name>
+      <param-value>io.swagger.v3.jaxrs2.integration.JaxrsAnnotationScanner</param-value>
+    </init-param>
+    <init-param>
+      <param-name>openApi.configuration.prettyPrint</param-name>
+      <param-value>true</param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -36,6 +48,17 @@
     <param-name>configuration</param-name>
     <param-value>deployment</param-value>
   </context-param>
+
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/v1/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Bootstrap</servlet-name>
+    <servlet-class>org.apache.submarine.server.Bootstrap</servlet-class>
+    <load-on-startup>2</load-on-startup>
+  </servlet>
 
   <session-config>
     <cookie-config>

@@ -37,7 +37,7 @@ public class JsonResponseTest {
   private Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
   @Test
-  public void serializObject() {
+  public void serializeObject() {
     SysDict sysDict = new SysDict();
     sysDict.setDictCode("code");
     sysDict.setDictName("name");
@@ -59,7 +59,7 @@ public class JsonResponseTest {
   }
 
   @Test
-  public void serializListResult() {
+  public void serializeListResult() {
     SysDict sysDict = new SysDict();
     sysDict.setDictCode("code");
     sysDict.setDictName("name");

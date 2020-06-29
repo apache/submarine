@@ -1,0 +1,49 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<div id="outputDiv">
+  <div *ngIf="!isShowing" id="podListDiv">
+    <nz-table #podArr nzSize="middle" [nzData]="podNameArr">
+      <thead>
+        <tr>
+          <th style="padding: 5px;">Pod Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pod of podArr.data; let i = index">
+          <a (click)="show(i)">{{ pod }}</a>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+  <div *ngIf="isShowing">
+    <div id="logActionDiv">
+      <button class="logActionBtn" nz-button nzType="primary" (click)="isShowing = false">
+        <i nz-icon nzType="step-backward" nzTheme="outline"></i>
+        Back
+      </button>
+      <button class="logActionBtn" nz-button nzType="primary" (click)="export()">
+        <i nz-icon nzType="export" nzTheme="outline"></i>
+        Export
+      </button>
+    </div>
+    <div id="showLogDiv">
+      <p style="white-space: nowrap;" *ngFor="let log of logDetailArr; let j = index">[{{ j }}] {{ log }}</p>
+    </div>
+  </div>
+</div>

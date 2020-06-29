@@ -47,37 +47,35 @@ export class UserDrawerComponent implements OnInit, OnChanges {
   statusDictSelect: SysDictItem[] = [];
   title = 'Add';
 
-  constructor(private fb: FormBuilder, private systemUtilsService: SystemUtilsService) {
-  }
+  constructor(private fb: FormBuilder, private systemUtilsService: SystemUtilsService) {}
 
   ngOnInit() {
-    this.form = this.fb.group(
-      {
-        userName: new FormControl('',
-          {
-            updateOn: 'blur',
-            validators: [Validators.required],
-            asyncValidators: [this.userNameValidator]
-          }
-        ),
-        password: ['', [Validators.required, Validators.pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/)]],
-        confirm: ['', this.confirmValidator],
-        realName: ['', Validators.required],
-        deptCode: [],
-        sex: [],
-        status: [],
-        birthday: [],
-        email: new FormControl('', {
-          updateOn: 'blur',
-          validators: [Validators.email],
-          asyncValidators: [this.emailValidator]
-        }),
-        phone: new FormControl('', {
-          updateOn: 'blur',
-          asyncValidators: [this.phoneValidator]
-        })
-      }
-    );
+    this.form = this.fb.group({
+      userName: new FormControl('', {
+        updateOn: 'blur',
+        validators: [Validators.required],
+        asyncValidators: [this.userNameValidator]
+      }),
+      password: [
+        '',
+        [Validators.required, Validators.pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/)]
+      ],
+      confirm: ['', this.confirmValidator],
+      realName: ['', Validators.required],
+      deptCode: [],
+      sex: [],
+      status: [],
+      birthday: [],
+      email: new FormControl('', {
+        updateOn: 'blur',
+        validators: [Validators.email],
+        asyncValidators: [this.emailValidator]
+      }),
+      phone: new FormControl('', {
+        updateOn: 'blur',
+        asyncValidators: [this.phoneValidator]
+      })
+    });
 
     zip(
       this.systemUtilsService.fetchSysDictByCode(SysDictCode.USER_SEX),
@@ -117,7 +115,7 @@ export class UserDrawerComponent implements OnInit, OnChanges {
           disabled: readOnly
         },
         birthday: {
-          value: (sysUser && sysUser.birthday) ? new Date(sysUser.birthday) : '',
+          value: sysUser && sysUser.birthday ? new Date(sysUser.birthday) : '',
           disabled: readOnly
         },
         email: sysUser ? sysUser.email : '',
@@ -137,27 +135,29 @@ export class UserDrawerComponent implements OnInit, OnChanges {
       this.form.controls[key].updateValueAndValidity();
     }
 
-    this.form.statusChanges.pipe(
-      startWith(this.form.status),
-      filter(status => status !== 'PENDING'),
-      take(1),
-      map(status => status === 'VALID')
-    ).subscribe(valid => {
-      if (valid) {
-        const sysUser = this.sysUser ? this.sysUser : {};
-        const formData = { ...sysUser, ...this.form.value };
+    this.form.statusChanges
+      .pipe(
+        startWith(this.form.status),
+        filter((status) => status !== 'PENDING'),
+        take(1),
+        map((status) => status === 'VALID')
+      )
+      .subscribe((valid) => {
+        if (valid) {
+          const sysUser = this.sysUser ? this.sysUser : {};
+          const formData = { ...sysUser, ...this.form.value };
 
-        delete formData.confirm;
-        delete formData['sex@dict'];
-        delete formData['status@dict'];
+          delete formData.confirm;
+          delete formData['sex@dict'];
+          delete formData['status@dict'];
 
-        if (formData.birthday) {
-          formData.birthday = format(formData.birthday, 'yyyy-MM-dd HH:mm:ss');
+          if (formData.birthday) {
+            formData.birthday = format(formData.birthday, 'yyyy-MM-dd HH:mm:ss');
+          }
+
+          this.submit.emit(formData);
         }
-
-        this.submit.emit(formData);
-      }
-    });
+      });
   }
 
   generateTitle(): string {
@@ -190,7 +190,7 @@ export class UserDrawerComponent implements OnInit, OnChanges {
     new Observable((observer: Observer<ValidationErrors | null>) => {
       this.systemUtilsService
         .duplicateCheckUsername(control.value, this.sysUser && this.sysUser.id)
-        .subscribe(status => {
+        .subscribe((status) => {
           if (status) {
             observer.next(null);
           } else {
@@ -210,7 +210,7 @@ export class UserDrawerComponent implements OnInit, OnChanges {
 
       this.systemUtilsService
         .duplicateCheckUserEmail(control.value, this.sysUser && this.sysUser.id)
-        .subscribe(status => {
+        .subscribe((status) => {
           if (status) {
             observer.next(null);
           } else {
@@ -230,7 +230,7 @@ export class UserDrawerComponent implements OnInit, OnChanges {
 
       this.systemUtilsService
         .duplicateCheckUserPhone(control.value, this.sysUser && this.sysUser.id)
-        .subscribe(status => {
+        .subscribe((status) => {
           if (status) {
             observer.next(null);
           } else {

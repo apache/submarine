@@ -23,13 +23,13 @@
       <nz-form-item>
         <nz-form-label>Dictionary Name</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="dictName" placeholder="Enter Dictionary Name"/>
+          <input nz-input formControlName="dictName" placeholder="Enter Dictionary Name" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label>Dictionary Code</nz-form-label>
         <nz-form-control>
-          <input nz-input formControlName="dictCode" placeholder="Enter Dictionary Code"/>
+          <input nz-input formControlName="dictCode" placeholder="Enter Dictionary Code" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -38,7 +38,7 @@
             <i nz-icon nzType="search"></i>
             Query
           </button>
-          <button nz-button style="margin-left: 8px" (click)="onShowAddDataDictModal()">
+          <button nz-button style="margin-left: 8px;" (click)="onShowAddDataDictModal()">
             <i nz-icon nzType="plus"></i>
             Add
           </button>
@@ -60,7 +60,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let data of table.data; index as dictItemIndex">
-        <td nzLeft="0px">{{ dictItemIndex+1 }}</td>
+        <td nzLeft="0px">{{ dictItemIndex + 1 }}</td>
         <td id="{{ 'dataDictCode' + data.dictCode }}">{{ data.dictCode }}</td>
         <td>{{ data.dictName }}</td>
         <td>{{ data.description }}</td>
@@ -78,7 +78,13 @@
           </a>
           <nz-dropdown-menu #more="nzDropdownMenu">
             <ul nz-menu nzSelectable>
-              <li nz-menu-item (click)="onShowConfigModal(data, dictItemIndex)" id="{{ 'dataDictConfiguration' + data.dictCode }}">Configuration</li>
+              <li
+                nz-menu-item
+                (click)="onShowConfigModal(data, dictItemIndex)"
+                id="{{ 'dataDictConfiguration' + data.dictCode }}"
+              >
+                Configuration
+              </li>
               <li
                 id="{{ 'dataDictDelete' + data.dictCode }}"
                 nz-menu-item
@@ -103,7 +109,7 @@
   [visible]="dataDictModalVisible"
   [dictCode]="selectedDictCode"
   [dictName]="selectedDictName"
-  [description]="selectedDescription" 
+  [description]="selectedDescription"
   (close)="onHideDataDictModal()"
   (ok)="updateDataDict($event)"
 ></submarine-data-dict-modal>

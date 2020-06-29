@@ -42,7 +42,7 @@ const (
 	SubmarineServerPortDefault = "6379"
 	// SubmarineMaxMemoryDefault default Submarine max memory
 	SubmarineMaxMemoryDefault = 0
-	// SubmarineMaxMemoryPolicyDefault default Submarine max memory evition policy
+	// SubmarineMaxMemoryPolicyDefault default Submarine max memory eviction policy
 	SubmarineMaxMemoryPolicyDefault = "noeviction"
 )
 

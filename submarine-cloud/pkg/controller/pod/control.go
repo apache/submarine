@@ -32,8 +32,8 @@ import (
 	"k8s.io/client-go/tools/record"
 )
 
-// SubmarineClusterControlInteface interface for the SubmarineClusterPodControl
-type SubmarineClusterControlInteface interface {
+// SubmarineClusterControlInterface interface for the SubmarineClusterPodControl
+type SubmarineClusterControlInterface interface {
 	// GetSubmarineClusterPods return list of Pod attached to a SubmarineCluster
 	GetSubmarineClusterPods(submarineCluster *rapi.SubmarineCluster) ([]*kapiv1.Pod, error)
 	// CreatePod used to create a Pod from the SubmarineCluster pod template
@@ -44,7 +44,7 @@ type SubmarineClusterControlInteface interface {
 	DeletePodNow(submarineCluster *rapi.SubmarineCluster, podName string) error
 }
 
-// SubmarineClusterControl contains requieres accessor to managing the SubmarineCluster pods
+// SubmarineClusterControl contains requires accessor to managing the SubmarineCluster pods
 type SubmarineClusterControl struct {
 	PodLister  corev1listers.PodLister
 	KubeClient clientset.Interface

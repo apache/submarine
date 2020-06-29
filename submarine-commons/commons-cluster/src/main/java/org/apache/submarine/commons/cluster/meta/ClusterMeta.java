@@ -38,7 +38,7 @@ public class ClusterMeta implements Serializable {
   public static String SERVER_PORT          = "SERVER_PORT";
   public static String SERVER_START_TIME    = "SERVER_START_TIME";
 
-  // interperter-process meta
+  // interpreter-process meta
   public static String INTP_PROCESS_NAME    = "INTP_PROCESS_NAME";
   public static String INTP_TSERVER_HOST    = "INTP_TSERVER_HOST";
   public static String INTP_TSERVER_PORT    = "INTP_TSERVER_PORT";
@@ -52,7 +52,7 @@ public class ClusterMeta implements Serializable {
 
   public static String LATEST_HEARTBEAT     = "LATEST_HEARTBEAT";
 
-  // submarine-server or interperter-process status
+  // submarine-server or interpreter-process status
   public static String STATUS               = "STATUS";
   public static String ONLINE_STATUS        = "ONLINE";
   public static String OFFLINE_STATUS       = "OFFLINE";

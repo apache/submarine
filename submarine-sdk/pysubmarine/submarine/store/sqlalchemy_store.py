@@ -14,15 +14,15 @@
 # limitations under the License.
 
 import logging
-from contextlib import contextmanager
 import math
+from contextlib import contextmanager
+
 import sqlalchemy
 
 from submarine.exceptions import SubmarineException
-from submarine.utils import extract_db_type_from_uri
-from submarine.store.database.models import Base, SqlMetric, SqlParam
 from submarine.store.abstract_store import AbstractStore
-
+from submarine.store.database.models import Base, SqlMetric, SqlParam
+from submarine.utils import extract_db_type_from_uri
 
 _logger = logging.getLogger(__name__)
 
@@ -82,6 +82,7 @@ class SqlAlchemyStore(AbstractStore):
         encountered, the session is rolled back. Finally, any session produced by this factory is
         automatically closed when the session's associated context is exited.
         """
+
         @contextmanager
         def make_managed_session():
             """Provide a transactional scope around a series of operations."""
@@ -136,18 +137,26 @@ class SqlAlchemyStore(AbstractStore):
             value = float(metric.value)
         with self.ManagedSessionMaker() as session:
             try:
-                self._get_or_create(model=SqlMetric, job_name=job_name, key=metric.key,
-                                    value=value, worker_index=metric.worker_index,
-                                    timestamp=metric.timestamp, step=metric.step,
-                                    session=session, is_nan=is_nan)
+                self._get_or_create(model=SqlMetric,
+                                    job_name=job_name,
+                                    key=metric.key,
+                                    value=value,
+                                    worker_index=metric.worker_index,
+                                    timestamp=metric.timestamp,
+                                    step=metric.step,
+                                    session=session,
+                                    is_nan=is_nan)
             except sqlalchemy.exc.IntegrityError:
                 session.rollback()
 
     def log_param(self, job_name, param):
         with self.ManagedSessionMaker() as session:
             try:
-                self._get_or_create(model=SqlParam, job_name=job_name, session=session,
-                                    key=param.key, value=param.value,
+                self._get_or_create(model=SqlParam,
+                                    job_name=job_name,
+                                    session=session,
+                                    key=param.key,
+                                    value=param.value,
                                     worker_index=param.worker_index)
                 session.commit()
             except sqlalchemy.exc.IntegrityError:

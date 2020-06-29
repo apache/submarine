@@ -26,7 +26,7 @@
 
   <groupId>org.apache.submarine</groupId>
   <artifactId>submarine</artifactId>
-  <version>0.4.0-SNAPSHOT</version>
+  <version>0.4.0</version>
   <packaging>pom</packaging>
   <name>Submarine</name>
   <description>Submarine project</description>
@@ -65,7 +65,7 @@
     <shaded.dependency.prefix>org.apache.submarine.shaded</shaded.dependency.prefix>
 
     <!--library versions-->
-    <tony.version>0.3.23</tony.version>
+    <tony.version>0.3.25</tony.version>
     <jersey.version>2.27</jersey.version>
     <jersey.servlet.version>1.13</jersey.servlet.version>
     <jetty.version>9.4.18.v20190429</jetty.version>
@@ -82,13 +82,14 @@
     <cglib.version>3.2.2</cglib.version>
     <mybatis.version>3.2.8</mybatis.version>
     <mysql-connector-java.version>5.1.39</mysql-connector-java.version>
-    <grpc.verison>1.25.0</grpc.verison>
+    <grpc.version>1.25.0</grpc.version>
 
     <!-- frontend maven plugin related versions-->
     <plugin.frontend.version>1.6</plugin.frontend.version>
     <node.version>v10.12.0</node.version>
     <yarn.version>v1.10.1</yarn.version>
     <npm.version>6.4.1</npm.version>
+    <io.swagger.version>2.1.2</io.swagger.version>
 
     <hadoop.common.build.dir>${basedir}/../hadoop-common-project/hadoop-common/target</hadoop.common.build.dir>
     <slf4j.version>1.7.25</slf4j.version>
@@ -122,7 +123,7 @@
     <nimbus-jose-jwt.version>7.9</nimbus-jose-jwt.version>
     <mybatis-generator.version>1.3.7</mybatis-generator.version>
     <derby.version>10.15.1.3</derby.version>
-    <zeppelin.version>0.9.0-SNAPSHOT</zeppelin.version>
+    <zeppelin.version>0.9.0-preview1</zeppelin.version>
     <jgit.version>5.5.1.201910021850-r</jgit.version>
     <atomix.version>3.1.5</atomix.version>
     <spark.scala.version>2.11.8</spark.scala.version>
@@ -133,6 +134,8 @@
     <jersey.test-framework>2.27</jersey.test-framework>
     <!-- integration test-->
     <plugin.failsafe.version>2.17</plugin.failsafe.version>
+    <!--  embedded-ldap-junit  -->
+    <embedded-ldap-junit.version>0.7</embedded-ldap-junit.version>
   </properties>
 
   <modules>
@@ -308,17 +311,17 @@
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty-shaded</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-protobuf</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-stub</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.code.gson</groupId>
@@ -550,6 +553,7 @@
             <exclude>**/*.conf</exclude>
             <exclude>**/*.libsvm</exclude>
             <exclude>**/*.yaml</exclude>
+            <exclude>**/*.yapf</exclude>
             <exclude>**/*.libsvm</exclude>
             <exclude>**/src/main/resources/META-INF/services/org.apache.hadoop.security.SecurityInfo</exclude>
             <exclude>**/src/test/resources/typicalHistFolder/job1/application123-1-1-user1-SUCCEEDED.jhist</exclude>
@@ -562,6 +566,7 @@
             <exclude>**/go.mod</exclude>
             <exclude>**/go.sum</exclude>
             <exclude>**/workbench-web/**</exclude>
+            <exclude>**/*.ipynb</exclude>
           </excludes>
         </configuration>
       </plugin>

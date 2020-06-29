@@ -86,7 +86,7 @@ public class ChromeWebDriverProvider implements WebDriverProvider {
       }
 
     } catch (IOException e) {
-      LOG.error("Download of chromeDriver version: " + webDriverVersion + ", falied in path " + tempPath);
+      LOG.error("Download of chromeDriver version: " + webDriverVersion + ", failed in path " + tempPath);
     }
     LOG.info("Download the chromeDriver to " + tempPath +" successfully.");
     return tempPath + chromeDriverName;

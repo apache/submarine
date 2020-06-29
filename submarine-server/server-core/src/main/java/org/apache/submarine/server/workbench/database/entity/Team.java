@@ -53,7 +53,7 @@ public class Team extends BaseEntity {
     this.collaborators = collaborators;
   }
 
-  public void addCollaborator(TeamMember memeber) {
-    this.collaborators.add(memeber);
+  public void addCollaborator(TeamMember member) {
+    this.collaborators.add(member);
   }
 }

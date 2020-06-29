@@ -17,186 +17,76 @@
   ~ under the License.
   -->
 
-  <nz-layout style="margin: -24px -24px 16px;">
-    <nz-layout class="inner-layout">
-      <div id="dataOuter">
-        <nz-breadcrumb>
-          <nz-breadcrumb-item>
-            <a [routerLink]="['/', 'workbench', 'home']">Home</a>
-          </nz-breadcrumb-item>
-          <nz-breadcrumb-item>Data</nz-breadcrumb-item>
-        </nz-breadcrumb>
-        <br/>
-        <h2>Data</h2>
-        <nz-content>A Submarine database is a collection of tables. A Submarine table is a collection of structured data. </nz-content>
-        <br>
+<nz-layout style="margin: -24px -24px 16px;">
+  <nz-layout class="inner-layout">
+    <div id="dataOuter">
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/', 'workbench', 'home']">Home</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>Data</nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <br />
+      <h2>Data</h2>
+      <nz-content>
+        A Submarine database is a collection of tables. A Submarine table is a collection of structured data.
+      </nz-content>
+      <br />
+    </div>
+
+    <div *ngIf="newTable == false">
+      <div class="trainingDiv">
+        <h1 style="margin-top: 15px; margin-left: 25px;">
+          Database
+          <button
+            nz-button
+            id="createBtn"
+            [nzSize]="large"
+            nzType="primary"
+            style="margin-top: 8px; margin-right: 50px; float: right;"
+            (click)="newTable = true"
+          >
+            <i nz-icon nzType="plus"></i>
+            Create Table
+          </button>
+        </h1>
       </div>
-      
-      <div *ngIf="newTable==false">
-        <div class="trainingDiv">
-          <h1 style="margin-top: 15px;margin-left: 25px;">
-            Database
-            <button nz-button id="createBtn" [nzSize]='large' nzType="primary" style="margin-top: 8px;margin-right: 50px;float: right;" (click)="newTable=true;"><i nz-icon nzType="plus"></i>Create Table</button>
-          </h1>
-        </div>
-        <div class="trainingDiv" style="margin-top: 2px;">
-          <div nz-row>
-            <div nz-col [nzSpan]="6">
-              <h3 style="margin-left: 20px;margin-top: 20px;">Database & Table List</h3>
-              <nz-select
-                [nzMaxTagCount]="3"
-                [nzMaxTagPlaceholder]="tagPlaceHolder"
-                nzMode="multiple"
-                nzPlaceHolder="Please select"
-                [(ngModel)]="listOfDatabaseValue"
-                style="width: 80%;margin-left: 20px;margin-top: 20px;"
-              >
-                <nz-option *ngFor="let database of listofDatabase" [nzLabel]="database" [nzValue]="database"></nz-option>
-              </nz-select>
-              <nz-input-group nzSearch style="width:80%;margin-top: 10px;margin-left: 20px;" [nzAddOnAfter]="suffixIconButton">
-                <input type="text" nz-input placeholder="input search text" [(ngModel)]="searchValue"  />
-              </nz-input-group>
-              <ng-template #suffixIconButton>
-                <button nz-button nzSearch (click)="listSort()"><i nz-icon nzType="search"></i></button>
-              </ng-template>
-            </div>
-            <div nz-col [nzSpan]="18">
-              <nz-tabset>
-                <nz-tab nzTitle="Schema">
-                  <nz-table #basicTable nzBordered [nzFrontPagination]="false" [nzData]="listData" [nzNoResult]="'No data'" [nzTitle]="addColButton">
-                    <thead>
-                      <tr>
-                        <th>Column Name</th>
-                        <th>Column Type</th>
-                        <th>Comment</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let data of basicTable.data">
-                        <td>
-                          <ng-container *ngIf="!data.edit; else nameInputTpl">
-                            {{ data.name }}
-                          </ng-container>
-                          <ng-template #nameInputTpl>
-                            <input type="text" nz-input [(ngModel)]="data.nameTmp" />
-                          </ng-template>
-                        </td>
-                        <td>
-                          <ng-container *ngIf="!data.edit; else typeInputTpl">
-                            {{ data.type }}
-                          </ng-container>
-                          <ng-template #typeInputTpl>
-                            <input type="text" nz-input [(ngModel)]="data.typeTmp" />
-                          </ng-template>
-                        </td>
-                        <td>
-                          <ng-container *ngIf="!data.edit; else cmtInputTpl">
-                            {{ data.comment }}
-                          </ng-container>
-                          <ng-template #cmtInputTpl>
-                            <input type="text" nz-input [(ngModel)]="data.commentTmp" />
-                          </ng-template>
-                        </td>
-                        <td>
-                          <ng-container *ngIf="!data.edit; else actionInputTpl">
-                            <button nz-button nzType="link" (click)="data.edit=true;" style="padding-left: 2px;padding-right: 5px;">Edit</button>|<button nz-button nzType="link" (click)="removeCol(data.name)" style="padding-left: 2px;padding-right: 5px;">Delete</button>
-                          </ng-container>
-                          <ng-template #actionInputTpl>
-                            <button nz-button nzType="link" (click)="saveEdit(data);" style="padding-left: 2px;padding-right: 5px;">Save</button>|<button nz-button nzType="link" (click)="cancelEdit(data)" style="padding-left: 2px;padding-right: 5px;">Cancel</button>
-                          </ng-template>
-                        </td>
-                      </tr>
-                    </tbody>
-                    <ng-template #addColButton>
-                      <button nz-button nzSearch (click)="addCol()"><i nz-icon nzType="plus"></i>Add New Column</button>
-                    </ng-template>
-                  </nz-table>
-                </nz-tab>
-                <nz-tab nzTitle="Sample Data">
-                  <nz-spin [nzSpinning]="true" style="height: 50px;">
-                  </nz-spin>
-                </nz-tab>
-              </nz-tabset>
-            </div>
+      <div class="trainingDiv" style="margin-top: 2px;">
+        <div nz-row>
+          <div nz-col [nzSpan]="6">
+            <h3 style="margin-left: 20px; margin-top: 20px;">Database & Table List</h3>
+            <nz-select
+              [nzMaxTagCount]="3"
+              [nzMaxTagPlaceholder]="tagPlaceHolder"
+              nzMode="multiple"
+              nzPlaceHolder="Please select"
+              [(ngModel)]="listOfDatabaseValue"
+              style="width: 80%; margin-left: 20px; margin-top: 20px;"
+            >
+              <nz-option *ngFor="let database of listOfDatabase" [nzLabel]="database" [nzValue]="database"></nz-option>
+            </nz-select>
+            <nz-input-group
+              nzSearch
+              style="width: 80%; margin-top: 10px; margin-left: 20px;"
+              [nzAddOnAfter]="suffixIconButton"
+            >
+              <input type="text" nz-input placeholder="input search text" [(ngModel)]="searchValue" />
+            </nz-input-group>
+            <ng-template #suffixIconButton>
+              <button nz-button nzSearch (click)="listSort()"><i nz-icon nzType="search"></i></button>
+            </ng-template>
           </div>
-        </div>
-      </div>
-      <div *ngIf="newTable">
-        <div class="trainingDiv">
-          <h2 style="margin-top: 15px;margin-left: 25px;">
-            Create a Table in Three Steps
-            <button nz-button nzType="primary" nzShape="circle" style="float:right;margin-right: 15px;" (click)="newTable=false;"><i nz-icon
-              nzType="close" nzTheme="outline"></i></button>
-          </h2>
-        </div>
-        <div class="trainingDiv" style="margin-top: 2px;">
-          <div style="padding-left:25%;padding-right:25%;margin-top: 30px;">
-            <nz-steps [nzCurrent]="newTablePage">
-              <nz-step nzTitle="Specify Data Source"></nz-step>
-              <nz-step nzTitle="Specify Table Attributes"></nz-step>
-              <nz-step nzTitle="Review Table Data"></nz-step>
-            </nz-steps>
-          </div>
-          <div [ngSwitch]="newTablePage">
-            <form [formGroup]="createTable">
-              <div *ngSwitchCase="0">
-                <div>
-                  <label class="form-label" style="margin-top: 62px;">Data soruce:</label>
-                  <nz-radio-group class="form-control" style="margin-top: 55px;" formControlName="dataSource">
-                    <label nz-radio-button nzValue="upload">Upload File</label>
-                    <label nz-radio-button nzValue="hdfs">HDFS</label>
-                    <label nz-radio-button nzValue="s3" nzDisabled>S3</label>
-                  </nz-radio-group>
-                  <div>
-                    <label class="form-label">Path:</label>
-                    <nz-input-group nzAddOnBefore="file://" style="width: 400px;margin-top: 25px;">
-                      <input type="text" nz-input class="form-control" formControlName="path" />
-                    </nz-input-group>
-                  </div>
-                  <div style="margin-left: 38%;" *ngIf="createTable.get('dataSource').value=='upload'">
-                    <label style="float:left;width:200px;text-align: right;padding-right: 12px;clear: left;margin-top: 32px;color: black;margin-left: -21%;">Upload Files:</label>
-                    <nz-upload nzAction="https://jsonplaceholder.typicode.com/posts/">
-                      <button nz-button style="margin-top: 25px;"><i nz-icon nzType="upload"></i><span>Click to Upload</span></button>
-                    </nz-upload>
-                  </div>
-                  <div>
-                    <label class="form-label">File Type:</label>
-                    <nz-select style="width: 200px;margin-top: 25px;" nzShowSearch nzAllowClear nzPlaceHolder="Select file type" class="form-control" formControlName="fileType">
-                      <nz-option nzLabel="csv" nzValue="csv"></nz-option>
-                      <nz-option nzLabel="csv" nzValue="csv"></nz-option>
-                      <nz-option nzLabel="csv" nzValue="csv"></nz-option>
-                    </nz-select>
-                  </div>
-                  <div>
-                    <label class="form-label"><span class="red-star">* </span> Column Delimiter:</label>
-                      <input type="text" style="width: 50px;margin-top: 25px;" nz-input class="form-control" formControlName="columnDelimeter" />
-                      <label nz-checkbox style="margin-left: 20px;" class="form-control" formControlName="header">First row is header</label>
-                  </div>
-                </div>
-                <div style="margin-top: 32px;text-align: center;">
-                  <button id="firstNextBtn" nz-button nzType="primary" [disabled]="!createTable.get('columnDelimeter').valid" (click)="newTablePage = newTablePage + 1">Create Table with UI </button>
-                  <button style="margin-left: 5px;" nz-button nzType="default" [disabled]="true" (click)="openNotebook()">Create Table in Notebook </button>
-                </div>
-              </div>
-              <div *ngSwitchCase="1">
-                <div>
-                  <label class="form-label">Database Name:</label>
-                  <nz-select style="width: 200px;margin-top: 25px;" nzShowSearch nzAllowClear nzPlaceHolder="Select database" class="form-control" formControlName="dataBaseName">
-                    <nz-option nzLabel="default" nzValue="default"></nz-option>
-                    <nz-option nzLabel="db1" nzValue="db1"></nz-option>
-                    <nz-option nzLabel="db2" nzValue="db2"></nz-option>
-                  </nz-select>
-                </div>
-                <div>
-                  <label class="form-label"><span class="red-star">* </span> Table Name:</label>
-                    <input id="tableName" type="text" style="width: 200px;margin-top: 25px;" nz-input class="form-control" formControlName="tableName" />
-                </div>
-                <div>
-                  <label class="form-label">Parse Columns:</label>
-                  <button nz-button style="margin-top: 25px;" nzType="default" (click)="parseColumn()"><i nz-icon nzType="sync" nzTheme="outline"></i>Parse </button>
-                </div>
-                <nz-table #createTTable style="margin-left:30%;margin-right:30%;margin-top: 25px;" nzBordered [nzFrontPagination]="false" [nzData]="listCreateData" [nzNoResult]="'No data'" [nzTitle]="addCreateColButton">
+          <div nz-col [nzSpan]="18">
+            <nz-tabset>
+              <nz-tab nzTitle="Schema">
+                <nz-table
+                  #basicTable
+                  nzBordered
+                  [nzFrontPagination]="false"
+                  [nzData]="listData"
+                  [nzNoResult]="'No data'"
+                  [nzTitle]="addColButton"
+                >
                   <thead>
                     <tr>
                       <th>Column Name</th>
@@ -206,94 +96,426 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let data of createTTable.data">
+                    <tr *ngFor="let data of basicTable.data">
                       <td>
-                        <ng-container *ngIf="!data.edit; else nameCreateInputTpl">
+                        <ng-container *ngIf="!data.edit; else nameInputTpl">
                           {{ data.name }}
                         </ng-container>
-                        <ng-template #nameCreateInputTpl>
-                          <input type="text" style="width: 120px;" nz-input [ngModelOptions]="{standalone: true}" [(ngModel)]="data.nameTmp" />
+                        <ng-template #nameInputTpl>
+                          <input type="text" nz-input [(ngModel)]="data.nameTmp" />
                         </ng-template>
                       </td>
                       <td>
-                        <ng-container *ngIf="!data.edit; else typeCreateInputTpl">
+                        <ng-container *ngIf="!data.edit; else typeInputTpl">
                           {{ data.type }}
                         </ng-container>
-                        <ng-template #typeCreateInputTpl>
-                          <input style="width: 120px;" type="text" nz-input [(ngModel)]="data.typeTmp" [ngModelOptions]="{standalone: true}" />
+                        <ng-template #typeInputTpl>
+                          <input type="text" nz-input [(ngModel)]="data.typeTmp" />
                         </ng-template>
                       </td>
                       <td>
-                        <ng-container *ngIf="!data.edit; else cmtCreateInputTpl">
+                        <ng-container *ngIf="!data.edit; else cmtInputTpl">
                           {{ data.comment }}
                         </ng-container>
-                        <ng-template #cmtCreateInputTpl>
-                          <input type="text" style="width: 120px;" nz-input [(ngModel)]="data.commentTmp" [ngModelOptions]="{standalone: true}" />
+                        <ng-template #cmtInputTpl>
+                          <input type="text" nz-input [(ngModel)]="data.commentTmp" />
                         </ng-template>
                       </td>
                       <td>
-                        <ng-container *ngIf="!data.edit">
-                          <button nz-button nzType="link" (click)="data.edit=true;" style="padding-left: 2px;padding-right: 5px;">Edit</button>|<button nz-button nzType="link" (click)="removeCreateCol(data.name)" style="padding-left: 2px;padding-right: 5px;">Delete</button>
+                        <ng-container *ngIf="!data.edit; else actionInputTpl">
+                          <button
+                            nz-button
+                            nzType="link"
+                            (click)="data.edit = true"
+                            style="padding-left: 2px; padding-right: 5px;"
+                          >
+                            Edit
+                          </button>
+                          |
+                          <button
+                            nz-button
+                            nzType="link"
+                            (click)="removeCol(data.name)"
+                            style="padding-left: 2px; padding-right: 5px;"
+                          >
+                            Delete
+                          </button>
                         </ng-container>
-                        <ng-container *ngIf="data.edit">
-                          <button nz-button nzType="link" (click)="saveCreateEdit(data);" style="padding-left: 2px;padding-right: 5px;">Save</button>|<button nz-button nzType="link" (click)="cancelCreateEdit(data)" style="padding-left: 2px;padding-right: 5px;">Cancel</button>
-                        </ng-container>
+                        <ng-template #actionInputTpl>
+                          <button
+                            nz-button
+                            nzType="link"
+                            (click)="saveEdit(data)"
+                            style="padding-left: 2px; padding-right: 5px;"
+                          >
+                            Save
+                          </button>
+                          |
+                          <button
+                            nz-button
+                            nzType="link"
+                            (click)="cancelEdit(data)"
+                            style="padding-left: 2px; padding-right: 5px;"
+                          >
+                            Cancel
+                          </button>
+                        </ng-template>
                       </td>
                     </tr>
                   </tbody>
-                  <ng-template #addCreateColButton>
-                    <button nz-button nzSearch (click)="addCreateCol()"><i nz-icon nzType="plus"></i>Add New Column</button>
+                  <ng-template #addColButton>
+                    <button nz-button nzSearch (click)="addCol()">
+                      <i nz-icon nzType="plus"></i>
+                      Add New Column
+                    </button>
                   </ng-template>
                 </nz-table>
-                <div style="margin-top: 32px;text-align: center;">
-                  <button nz-button nzType="default" (click)="newTablePage = newTablePage - 1">Previous Step </button>
-                  <button id="secondNextBtn" style="margin-left: 5px;" nz-button nzType="primary" [disabled]="!createTable.get('tableName').valid" (click)="newTablePage = newTablePage + 1">Next Step </button>
-                </div>
-              </div>
-              <div *ngSwitchCase="2">
-                <nz-spin [nzSpinning]="true">
-                  <h3 style="margin-top: 50px;">Sample Data</h3>
-                </nz-spin>
-                <div style="margin-top: 32px;text-align: center;">
-                  <button nz-button nzType="default" (click)="newTablePage = newTablePage - 1">Previous Step </button>
-                  <button id="submit" style="margin-left: 5px;" nz-button nzType="primary" type="button" (click)="submit()">Submit</button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        <div class="trainingDiv" style="margin-top: 2px;padding-left: 100px;">
-          <div [ngSwitch]="newTablePage">
-            <div *ngSwitchCase="0">
-              <h3 style="color: gray;"><strong>Description</strong></h3>
-              <h4 style="color: gray;margin-top: 20px;"><strong>Data source</strong></h4>
-              <h4 style="color: gray;">Upload one or more local files to the store and create table structures and data based on the file to content.</h4>
-              <h4 style="color: gray;margin-top: 15px;"><strong>Path</strong></h4>
-              <h4 style="color: gray;">Specify the storage path of the file.</h4>
-              <h4 style="color: gray;margin-top: 15px;"><strong>Upload Files</strong></h4>
-              <h4 style="color: gray;">When using the `upload file` mode, add the local file to the upload list by clicking the `Select File` button. Click the `Start Upload` button to upload the file to the specified storage directory.</h4>
-              <h4 style="color: gray;margin-top: 15px;"><strong>File type</strong></h4>
-              <h4 style="color: gray;">Select the type of file to upload, the system will parse the file according to the file type you choose.</h4>
-              <h4 style="color: gray;margin-top: 15px;"><strong>Column Delimiter</strong></h4>
-              <h4 style="color: gray;">Sets the separator for each column in the record, and the system splits the field based on the separator.</h4>
-              <h4 style="color: gray;margin-top: 15px;"><strong>Create Table with UI</strong></h4>
-              <h4 style="color: gray;">Use the UI operation interface to set the table schema, preview the data, and create the table step by step.</h4>
-              <h4 style="color: gray;margin-top: 15px;"><strong>Create Table in Notebook</strong></h4>
-              <h4 style="color: gray;">Create a table by handwriting the code through the notebook.</h4>
-            </div>
-            <div *ngSwitchCase="1">
-              <h3 style="color: gray;"><strong>Description</strong></h3>
-              <h4 style="color: gray;margin-top: 20px;"><strong>Database Name</strong></h4>
-              <h4 style="color: gray;">Select which database belongs to which table you want to create.</h4>
-              <h4 style="color: gray;margin-top: 20px;"><strong>Table Name</strong></h4>
-              <h4 style="color: gray;">Set the name of the table and automatically check if the table name conflicts.</h4>
-              <h4 style="color: gray;margin-top: 20px;"><strong>Parse Columns</strong></h4>
-              <h4 style="color: gray;">Click the Parse button to analyze the schema field and type of the table from the uploaded file.</h4>
-              <h4 style="color: gray;margin-top: 20px;"><strong>Columns Attributes Table</strong></h4>
-              <h4 style="color: gray;">You can modify the field name and type for the analyzed schema.</h4>
-            </div>
+              </nz-tab>
+              <nz-tab nzTitle="Sample Data">
+                <nz-spin [nzSpinning]="true" style="height: 50px;"></nz-spin>
+              </nz-tab>
+            </nz-tabset>
           </div>
         </div>
       </div>
+    </div>
+    <div *ngIf="newTable">
+      <div class="trainingDiv">
+        <h2 style="margin-top: 15px; margin-left: 25px;">
+          Create a Table in Three Steps
+          <button
+            nz-button
+            nzType="primary"
+            nzShape="circle"
+            style="float: right; margin-right: 15px;"
+            (click)="newTable = false"
+          >
+            <i nz-icon nzType="close" nzTheme="outline"></i>
+          </button>
+        </h2>
+      </div>
+      <div class="trainingDiv" style="margin-top: 2px;">
+        <div style="padding-left: 25%; padding-right: 25%; margin-top: 30px;">
+          <nz-steps [nzCurrent]="newTablePage">
+            <nz-step nzTitle="Specify Data Source"></nz-step>
+            <nz-step nzTitle="Specify Table Attributes"></nz-step>
+            <nz-step nzTitle="Review Table Data"></nz-step>
+          </nz-steps>
+        </div>
+        <div [ngSwitch]="newTablePage">
+          <form [formGroup]="createTable">
+            <div *ngSwitchCase="0">
+              <div>
+                <label class="form-label" style="margin-top: 62px;">Data source:</label>
+                <nz-radio-group class="form-control" style="margin-top: 55px;" formControlName="dataSource">
+                  <label nz-radio-button nzValue="upload">Upload File</label>
+                  <label nz-radio-button nzValue="hdfs">HDFS</label>
+                  <label nz-radio-button nzValue="s3" nzDisabled>S3</label>
+                </nz-radio-group>
+                <div>
+                  <label class="form-label">Path:</label>
+                  <nz-input-group nzAddOnBefore="file://" style="width: 400px; margin-top: 25px;">
+                    <input type="text" nz-input class="form-control" formControlName="path" />
+                  </nz-input-group>
+                </div>
+                <div style="margin-left: 38%;" *ngIf="createTable.get('dataSource').value == 'upload'">
+                  <label
+                    style="
+                      float: left;
+                      width: 200px;
+                      text-align: right;
+                      padding-right: 12px;
+                      clear: left;
+                      margin-top: 32px;
+                      color: black;
+                      margin-left: -21%;
+                    "
+                  >
+                    Upload Files:
+                  </label>
+                  <nz-upload nzAction="https://jsonplaceholder.typicode.com/posts/">
+                    <button nz-button style="margin-top: 25px;">
+                      <i nz-icon nzType="upload"></i>
+                      <span>Click to Upload</span>
+                    </button>
+                  </nz-upload>
+                </div>
+                <div>
+                  <label class="form-label">File Type:</label>
+                  <nz-select
+                    style="width: 200px; margin-top: 25px;"
+                    nzShowSearch
+                    nzAllowClear
+                    nzPlaceHolder="Select file type"
+                    class="form-control"
+                    formControlName="fileType"
+                  >
+                    <nz-option nzLabel="csv" nzValue="csv"></nz-option>
+                    <nz-option nzLabel="csv" nzValue="csv"></nz-option>
+                    <nz-option nzLabel="csv" nzValue="csv"></nz-option>
+                  </nz-select>
+                </div>
+                <div>
+                  <label class="form-label">
+                    <span class="red-star">*</span>
+                    Column Delimiter:
+                  </label>
+                  <input
+                    type="text"
+                    style="width: 50px; margin-top: 25px;"
+                    nz-input
+                    class="form-control"
+                    formControlName="columnDelimiter"
+                  />
+                  <label nz-checkbox style="margin-left: 20px;" class="form-control" formControlName="header">
+                    First row is header
+                  </label>
+                </div>
+              </div>
+              <div style="margin-top: 32px; text-align: center;">
+                <button
+                  id="firstNextBtn"
+                  nz-button
+                  nzType="primary"
+                  [disabled]="!createTable.get('columnDelimiter').valid"
+                  (click)="newTablePage = newTablePage + 1"
+                >
+                  Create Table with UI
+                </button>
+                <button style="margin-left: 5px;" nz-button nzType="default" [disabled]="true" (click)="openNotebook()">
+                  Create Table in Notebook
+                </button>
+              </div>
+            </div>
+            <div *ngSwitchCase="1">
+              <div>
+                <label class="form-label">Database Name:</label>
+                <nz-select
+                  style="width: 200px; margin-top: 25px;"
+                  nzShowSearch
+                  nzAllowClear
+                  nzPlaceHolder="Select database"
+                  class="form-control"
+                  formControlName="dataBaseName"
+                >
+                  <nz-option nzLabel="default" nzValue="default"></nz-option>
+                  <nz-option nzLabel="db1" nzValue="db1"></nz-option>
+                  <nz-option nzLabel="db2" nzValue="db2"></nz-option>
+                </nz-select>
+              </div>
+              <div>
+                <label class="form-label">
+                  <span class="red-star">*</span>
+                  Table Name:
+                </label>
+                <input
+                  id="tableName"
+                  type="text"
+                  style="width: 200px; margin-top: 25px;"
+                  nz-input
+                  class="form-control"
+                  formControlName="tableName"
+                />
+              </div>
+              <div>
+                <label class="form-label">Parse Columns:</label>
+                <button nz-button style="margin-top: 25px;" nzType="default" (click)="parseColumn()">
+                  <i nz-icon nzType="sync" nzTheme="outline"></i>
+                  Parse
+                </button>
+              </div>
+              <nz-table
+                #createTTable
+                style="margin-left: 30%; margin-right: 30%; margin-top: 25px;"
+                nzBordered
+                [nzFrontPagination]="false"
+                [nzData]="listCreateData"
+                [nzNoResult]="'No data'"
+                [nzTitle]="addCreateColButton"
+              >
+                <thead>
+                  <tr>
+                    <th>Column Name</th>
+                    <th>Column Type</th>
+                    <th>Comment</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let data of createTTable.data">
+                    <td>
+                      <ng-container *ngIf="!data.edit; else nameCreateInputTpl">
+                        {{ data.name }}
+                      </ng-container>
+                      <ng-template #nameCreateInputTpl>
+                        <input
+                          type="text"
+                          style="width: 120px;"
+                          nz-input
+                          [ngModelOptions]="{ standalone: true }"
+                          [(ngModel)]="data.nameTmp"
+                        />
+                      </ng-template>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="!data.edit; else typeCreateInputTpl">
+                        {{ data.type }}
+                      </ng-container>
+                      <ng-template #typeCreateInputTpl>
+                        <input
+                          style="width: 120px;"
+                          type="text"
+                          nz-input
+                          [(ngModel)]="data.typeTmp"
+                          [ngModelOptions]="{ standalone: true }"
+                        />
+                      </ng-template>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="!data.edit; else cmtCreateInputTpl">
+                        {{ data.comment }}
+                      </ng-container>
+                      <ng-template #cmtCreateInputTpl>
+                        <input
+                          type="text"
+                          style="width: 120px;"
+                          nz-input
+                          [(ngModel)]="data.commentTmp"
+                          [ngModelOptions]="{ standalone: true }"
+                        />
+                      </ng-template>
+                    </td>
+                    <td>
+                      <ng-container *ngIf="!data.edit">
+                        <button
+                          nz-button
+                          nzType="link"
+                          (click)="data.edit = true"
+                          style="padding-left: 2px; padding-right: 5px;"
+                        >
+                          Edit
+                        </button>
+                        |
+                        <button
+                          nz-button
+                          nzType="link"
+                          (click)="removeCreateCol(data.name)"
+                          style="padding-left: 2px; padding-right: 5px;"
+                        >
+                          Delete
+                        </button>
+                      </ng-container>
+                      <ng-container *ngIf="data.edit">
+                        <button
+                          nz-button
+                          nzType="link"
+                          (click)="saveCreateEdit(data)"
+                          style="padding-left: 2px; padding-right: 5px;"
+                        >
+                          Save
+                        </button>
+                        |
+                        <button
+                          nz-button
+                          nzType="link"
+                          (click)="cancelCreateEdit(data)"
+                          style="padding-left: 2px; padding-right: 5px;"
+                        >
+                          Cancel
+                        </button>
+                      </ng-container>
+                    </td>
+                  </tr>
+                </tbody>
+                <ng-template #addCreateColButton>
+                  <button nz-button nzSearch (click)="addCreateCol()">
+                    <i nz-icon nzType="plus"></i>
+                    Add New Column
+                  </button>
+                </ng-template>
+              </nz-table>
+              <div style="margin-top: 32px; text-align: center;">
+                <button nz-button nzType="default" (click)="newTablePage = newTablePage - 1">Previous Step</button>
+                <button
+                  id="secondNextBtn"
+                  style="margin-left: 5px;"
+                  nz-button
+                  nzType="primary"
+                  [disabled]="!createTable.get('tableName').valid"
+                  (click)="newTablePage = newTablePage + 1"
+                >
+                  Next Step
+                </button>
+              </div>
+            </div>
+            <div *ngSwitchCase="2">
+              <nz-spin [nzSpinning]="true">
+                <h3 style="margin-top: 50px;">Sample Data</h3>
+              </nz-spin>
+              <div style="margin-top: 32px; text-align: center;">
+                <button nz-button nzType="default" (click)="newTablePage = newTablePage - 1">Previous Step</button>
+                <button
+                  id="submit"
+                  style="margin-left: 5px;"
+                  nz-button
+                  nzType="primary"
+                  type="button"
+                  (click)="submit()"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="trainingDiv" style="margin-top: 2px; padding-left: 100px;">
+        <div [ngSwitch]="newTablePage">
+          <div *ngSwitchCase="0">
+            <h3 style="color: gray;"><strong>Description</strong></h3>
+            <h4 style="color: gray; margin-top: 20px;"><strong>Data source</strong></h4>
+            <h4 style="color: gray;">
+              Upload one or more local files to the store and create table structures and data based on the file to
+              content.
+            </h4>
+            <h4 style="color: gray; margin-top: 15px;"><strong>Path</strong></h4>
+            <h4 style="color: gray;">Specify the storage path of the file.</h4>
+            <h4 style="color: gray; margin-top: 15px;"><strong>Upload Files</strong></h4>
+            <h4 style="color: gray;">
+              When using the `upload file` mode, add the local file to the upload list by clicking the `Select File`
+              button. Click the `Start Upload` button to upload the file to the specified storage directory.
+            </h4>
+            <h4 style="color: gray; margin-top: 15px;"><strong>File type</strong></h4>
+            <h4 style="color: gray;">
+              Select the type of file to upload, the system will parse the file according to the file type you choose.
+            </h4>
+            <h4 style="color: gray; margin-top: 15px;"><strong>Column Delimiter</strong></h4>
+            <h4 style="color: gray;">
+              Sets the separator for each column in the record, and the system splits the field based on the separator.
+            </h4>
+            <h4 style="color: gray; margin-top: 15px;"><strong>Create Table with UI</strong></h4>
+            <h4 style="color: gray;">
+              Use the UI operation interface to set the table schema, preview the data, and create the table step by
+              step.
+            </h4>
+            <h4 style="color: gray; margin-top: 15px;"><strong>Create Table in Notebook</strong></h4>
+            <h4 style="color: gray;">Create a table by handwriting the code through the notebook.</h4>
+          </div>
+          <div *ngSwitchCase="1">
+            <h3 style="color: gray;"><strong>Description</strong></h3>
+            <h4 style="color: gray; margin-top: 20px;"><strong>Database Name</strong></h4>
+            <h4 style="color: gray;">Select which database belongs to which table you want to create.</h4>
+            <h4 style="color: gray; margin-top: 20px;"><strong>Table Name</strong></h4>
+            <h4 style="color: gray;">Set the name of the table and automatically check if the table name conflicts.</h4>
+            <h4 style="color: gray; margin-top: 20px;"><strong>Parse Columns</strong></h4>
+            <h4 style="color: gray;">
+              Click the Parse button to analyze the schema field and type of the table from the uploaded file.
+            </h4>
+            <h4 style="color: gray; margin-top: 20px;"><strong>Columns Attributes Table</strong></h4>
+            <h4 style="color: gray;">You can modify the field name and type for the analyzed schema.</h4>
+          </div>
+        </div>
+      </div>
+    </div>
   </nz-layout>
 </nz-layout>

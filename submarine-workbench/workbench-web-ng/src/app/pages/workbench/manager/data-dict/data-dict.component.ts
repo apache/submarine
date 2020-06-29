@@ -26,10 +26,8 @@ import { SysDictItem } from '@submarine/interfaces/sys-dict-item';
   templateUrl: './data-dict.component.html',
   styleUrls: ['./data-dict.component.scss']
 })
-
 export class DataDictComponent implements OnInit {
-  constructor(private fb: FormBuilder) {
-  }
+  constructor(private fb: FormBuilder) {}
   dataDictForm: FormGroup;
   // TODO(kevin85421): (mock data) Replace it with sys-dict-item.ts
   sysDictList = [
@@ -94,7 +92,7 @@ export class DataDictComponent implements OnInit {
   queryDataDict() {}
   // TODO(kevin85421)
   onShowAddDataDictModal() {
-    this.modalTitle = "Add";
+    this.modalTitle = 'Add';
     this.selectedDictCode = '';
     this.dataDictModalVisible = true;
   }
@@ -102,7 +100,7 @@ export class DataDictComponent implements OnInit {
   // Edit Data Dictionary Modal
   onShowEditDataDictModal(data, dictItemIndex: number) {
     // set selected dict variables
-    this.modalTitle = "Edit";
+    this.modalTitle = 'Edit';
     this.selectedDictCode = data.dictCode;
     this.selectedDictName = data.dictName;
     this.selectedDescription = data.description;
@@ -118,12 +116,12 @@ export class DataDictComponent implements OnInit {
     this.selectedDictName = '';
     this.selectedDescription = '';
     this.selectedDictID = 0;
-    this.modalTitle = "";
+    this.modalTitle = '';
     // hide edit modal
     this.dataDictModalVisible = false;
   }
 
-  updateDataDict(dataDictItem: {dictCode: string, dictName: string, description: string}) {
+  updateDataDict(dataDictItem: { dictCode: string; dictName: string; description: string }) {
     if (this.modalTitle === 'Edit') {
       if (this.sysDictList[this.selectedDictID].dictCode !== dataDictItem.dictCode) {
         this.editDictCodeChanged = true;
@@ -142,7 +140,7 @@ export class DataDictComponent implements OnInit {
           description: dataDictItem.description,
           status: 'available'
         }
-      ]
+      ];
     }
 
     this.onHideDataDictModal();
@@ -167,6 +165,6 @@ export class DataDictComponent implements OnInit {
 
   // delete dataDictItem
   onDeleteDataDictItem(data) {
-    this.sysDictList = this.sysDictList.filter(d => d.dictCode !== data.dictCode);
+    this.sysDictList = this.sysDictList.filter((d) => d.dictCode !== data.dictCode);
   }
 }

@@ -59,7 +59,7 @@ The library spec describes the info about machine learning framework. All the fi
 | envVars | key/value | YES | The public env vars for the task if not specified. |
 
 ### Submitter Spec
-It describes the info of submitter which the user spcified, such as yarn, yarnservice or k8s. All the fields as below:
+It describes the info of submitter which the user specified, such as yarn, yarnservice or k8s. All the fields as below:
 
 | field | type | optional | description |
 |---|---|---|---|
@@ -83,7 +83,7 @@ taskSpecs:
     resources: "cpu=4,memory=2048M,nvidia.com/gpu=1"
 ```
 
-All the fileds as below:
+All the fields as below:
 
 | field | type | optional | description |
 |---|---|---|---|

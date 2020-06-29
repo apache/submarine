@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import static org.apache.submarine.commons.cluster.meta.ClusterMetaType.INTP_PROCESS_META;
 
 /**
- * Cluster management client class instantiated in submarine-interperter
+ * Cluster management client class instantiated in submarine-interpreter
  */
 public class ClusterClient extends ClusterManager {
   private static Logger LOG = LoggerFactory.getLogger(ClusterClient.class);
@@ -60,7 +60,7 @@ public class ClusterClient extends ClusterManager {
     return false;
   }
 
-  // In the ClusterClient metaKey equal interperterGroupId
+  // In the ClusterClient metaKey equal interpreterGroupId
   public void start(String metaKey) {
     LOG.info("ClusterClient::start({})", metaKey);
     if (!sconf.isClusterMode()) {

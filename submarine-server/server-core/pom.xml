@@ -24,7 +24,7 @@
   <parent>
     <artifactId>submarine-server</artifactId>
     <groupId>org.apache.submarine</groupId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.4.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -42,6 +42,39 @@
       <groupId>org.apache.submarine</groupId>
       <artifactId>submarine-server-api</artifactId>
       <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-jaxrs2</artifactId>
+      <version>${io.swagger.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.core</groupId>
+          <artifactId>jackson-databind</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.github.classgraph</groupId>
+          <artifactId>classgraph</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.jaxrs</groupId>
+          <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.module</groupId>
+          <artifactId>jackson-module-jaxb-annotations</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.javassist</groupId>
+	        <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-jaxrs2-servlet-initializer-v2</artifactId>
+      <version>${io.swagger.version}</version>
     </dependency>
 
     <dependency>

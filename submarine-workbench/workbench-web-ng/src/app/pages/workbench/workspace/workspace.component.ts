@@ -24,7 +24,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
   styleUrls: ['./workspace.component.scss']
 })
 export class WorkspaceComponent implements OnInit {
-  @ViewChild('project', {static: true}) signupForm: any;
+  @ViewChild('project', { static: true }) signupForm: any;
 
   basicInfo = {
     project: 3,
@@ -36,13 +36,11 @@ export class WorkspaceComponent implements OnInit {
 
   currentState = 'project';
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
-  switchState(state: string){
+  switchState(state: string) {
     this.currentState = state;
   }
-
 }

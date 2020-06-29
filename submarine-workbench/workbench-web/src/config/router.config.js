@@ -42,9 +42,9 @@ export const asyncRouterMap = [
               },
               {
                 path: '/workbench/workspace/release',
-                name: 'workspaceRelase',
+                name: 'workspaceRelease',
                 component: () => import('../views/workbench/workspace/Release'),
-                meta: { title: 'Relase', permission: [ 'profile' ] }
+                meta: { title: 'Release', permission: [ 'profile' ] }
               },
               {
                 path: '/workbench/workspace/training',

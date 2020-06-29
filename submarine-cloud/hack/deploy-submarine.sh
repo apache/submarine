@@ -20,7 +20,8 @@ set -e
 ROOT=$(unset CDPATH && cd $(dirname "${BASH_SOURCE[0]}")/.. && pwd)
 cd $ROOT
 SUBMARINE_HOME=${ROOT}/..
-SUBMARINE_VERSION="0.4.0-SNAPSHOT"
+SUBMARINE_VERSION="0.4.0"
+TF_JUPYTER_IMAGE="apache/submarine:tf2.1.0-jupyter";
 
 source $ROOT/hack/lib.sh
 
@@ -70,6 +71,11 @@ function install_submarine() {
     fi
     $KIND_BIN load docker-image apache/submarine:database-${SUBMARINE_VERSION}
 
+    if ! docker inspect ${TF_JUPYTER_IMAGE} >/dev/null ; then
+      docker pull ${TF_JUPYTER_IMAGE}
+    fi
+    $KIND_BIN load docker-image ${TF_JUPYTER_IMAGE} >/dev/null
+
     if ! docker inspect apache/submarine:server-${SUBMARINE_VERSION} >/dev/null ; then
       docker pull apache/submarine:server-${SUBMARINE_VERSION}
     fi
@@ -106,7 +112,7 @@ Options:
 Usage:
     install: $0 --database database_ip
      OR
-    unstall: $0 -u
+    uninstall: $0 -u
 EOF
 }
 

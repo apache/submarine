@@ -21,8 +21,8 @@ package org.apache.submarine.server.rest;
 
 public class RestConstants {
   public static final String V1 = "v1";
-  public static final String JOBS = "jobs";
-  public static final String JOB_ID = "id";
+  public static final String EXPERIMENT = "experiment";
+  public static final String ID = "id";
   public static final String PING = "ping";
   public static final String MEDIA_TYPE_YAML = "application/yaml";
   public static final String CHARSET_UTF8 = "charset=utf-8";

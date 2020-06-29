@@ -1,0 +1,30 @@
+{
+  "input": {
+    "train_data": ["../../data/tr.libsvm"],
+    "valid_data": ["../../data/va.libsvm"],
+    "test_data": ["../../data/te.libsvm"],
+    "type": "libsvm"
+  },
+  "output": {
+    "save_model_dir": "./experiment",
+    "metric": "auc"
+  },
+  "training": {
+    "batch_size" : 512,
+    "field_size": 39,
+    "num_epochs": 3,
+    "feature_size": 117581,
+    "embedding_size": 256,
+    "learning_rate": 0.0005,
+    "l2_reg": 0.0001,
+    "optimizer": "adam",
+    "log_steps": 10,
+    "seed": 77,
+    "mode": "local"
+  },
+  "resource": {
+    "num_cpu": 4,
+    "num_gpu": 0,
+    "num_thread": 0
+  }
+}

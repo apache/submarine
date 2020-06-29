@@ -29,7 +29,7 @@ Must:
 
 ## Run mysql on docker
 
-By using the official docker image of submarine databsase, only one docker command is required to run submarine databsase
+By using the official docker image of submarine database, only one docker command is required to run submarine database
 
 ```bash
 docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.3.0

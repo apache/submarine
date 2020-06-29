@@ -26,24 +26,24 @@
   <parent>
     <groupId>org.apache.submarine</groupId>
     <artifactId>submarine-workbench</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.4.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>submarine-interpreter</artifactId>
-  <version>0.4.0-SNAPSHOT</version>
+  <version>0.4.0</version>
   <packaging>pom</packaging>
-  <name>Submarine: Interpreter Parent</name>
+  <name>Submarine: Interpreter</name>
   <description>Submarine Interpreter Parent</description>
 
   <modules>
-    <module>interpreter-engine</module>
+    <module>interpreter-core</module>
     <module>python-interpreter</module>
     <module>spark-interpreter</module>
   </modules>
 
   <properties>
-    <grpc.verison>1.15.0</grpc.verison>
+    <grpc.version>1.15.0</grpc.version>
   </properties>
 
   <dependencyManagement>
@@ -51,17 +51,17 @@
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-netty-shaded</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-protobuf</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
       <dependency>
         <groupId>io.grpc</groupId>
         <artifactId>grpc-stub</artifactId>
-        <version>${grpc.verison}</version>
+        <version>${grpc.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

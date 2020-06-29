@@ -63,13 +63,12 @@ export class UserComponent implements OnInit {
     private deptService: DepartmentService,
     private fb: FormBuilder,
     private nzMessageService: NzMessageService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.fetchUserList();
 
-    this.deptService.fetchSysDeptSelect().subscribe(list => {
+    this.deptService.fetchSysDeptSelect().subscribe((list) => {
       this.sysDeptTreeList = list;
     });
 
@@ -122,11 +121,14 @@ export class UserComponent implements OnInit {
 
     this.resetPasswordModalVisible = false;
 
-    this.userService.changePassword(id, password).subscribe(() => {
-      this.nzMessageService.success('Change password success!');
-    }, () => {
-      this.nzMessageService.error('Change password error');
-    });
+    this.userService.changePassword(id, password).subscribe(
+      () => {
+        this.nzMessageService.success('Change password success!');
+      },
+      () => {
+        this.nzMessageService.error('Change password error');
+      }
+    );
   }
 
   onShowUserDrawer(sysUser?: SysUser, readOnly = false) {
@@ -143,19 +145,25 @@ export class UserComponent implements OnInit {
     this.userDrawerVisible = false;
 
     if (formData.id) {
-      this.userService.updateUser(formData).subscribe(() => {
-        this.nzMessageService.success('Update user success!');
-        this.queryUserList();
-      }, err => {
-        this.nzMessageService.error(err.message);
-      });
+      this.userService.updateUser(formData).subscribe(
+        () => {
+          this.nzMessageService.success('Update user success!');
+          this.queryUserList();
+        },
+        (err) => {
+          this.nzMessageService.error(err.message);
+        }
+      );
     } else {
-      this.userService.createUser(formData).subscribe(() => {
-        this.nzMessageService.success('Add user success!');
-        this.queryUserList();
-      }, err => {
-        this.nzMessageService.error(err.message);
-      });
+      this.userService.createUser(formData).subscribe(
+        () => {
+          this.nzMessageService.success('Add user success!');
+          this.queryUserList();
+        },
+        (err) => {
+          this.nzMessageService.error(err.message);
+        }
+      );
     }
   }
 
@@ -164,7 +172,8 @@ export class UserComponent implements OnInit {
       () => {
         this.nzMessageService.success('Delete user success!');
         this.fetchUserList();
-      }, err => {
+      },
+      (err) => {
         this.nzMessageService.success(err.message);
       }
     );

@@ -37,7 +37,7 @@
 
 在 `Open Recent` 列表中，显示了用户最近使用过的九个项目，方便你快速的进行工作。
 
-在 `What‘s New？` 列表中，显示了 Submarine 最新发布的一些功能特性和项目信息，方便你了解 Subamrine 项目的最新进展。
+在 `What‘s New？` 列表中，显示了 Submarine 最新发布的一些功能特性和项目信息，方便你了解 Submarine 项目的最新进展。
 
 ## Workspace
 
@@ -56,7 +56,7 @@ Workspace 主要有五个 Tab 页组成，每个 Tab 页的标题中显示了各
 3. **Github/Gitlab 集成**：Submarine Workbench 与 `Github`/`Gitlab` 进行了系统集成，每个 Project 都可以在 Workbench 中进行 `Watch`、`Star`、`Frok` 和 `Comment` 操作。
    + **Watch**：[TODO]
    + **Star**：[TODO]
-   + **Frok**：[TODO]
+   + **Fork**：[TODO]
    + **Comment**：用户可以在项目中进行评论
 4. **Edit**：用户通过双击项目或者点击 `Edit` 按钮，可以在 `Notebook` 中打开项目，进行算法开发等操作。
 5. **Download**：用户通过点击 `Download` 按钮，将项目打包下载到本地。
@@ -110,7 +110,7 @@ Workspace 主要有五个 Tab 页组成，每个 Tab 页的标题中显示了各
 
   ![image-20191007184825531](assets/workspace-project-step2-upload.png)
 
-+ **Git Repo**: 在你的 **Github**/**Gitlab** 账号中 **Frok** 一个仓库中的文件内容来初始化项目。
++ **Git Repo**: 在你的 **Github**/**Gitlab** 账号中 **Fork** 一个仓库中的文件内容来初始化项目。
 
   ![image-20191007184840989](assets/workspace-project-step2-git.png)
 

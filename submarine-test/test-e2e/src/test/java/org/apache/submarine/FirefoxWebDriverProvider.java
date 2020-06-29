@@ -90,7 +90,7 @@ public class FirefoxWebDriverProvider implements WebDriverProvider {
 
     } catch (IOException e) {
       LOG.error("Download of Gecko version: " + webDriverVersion +
-          ", falied in path " + tempPath);
+          ", failed in path " + tempPath);
     }
     LOG.info("Download the firefox Gecko driver to " + tempPath +
         " successfully.");

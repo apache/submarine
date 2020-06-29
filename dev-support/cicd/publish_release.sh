@@ -139,7 +139,7 @@ function publish_to_maven() {
   done
 
   nexus_upload="${NEXUS_STAGING}/deployByRepositoryId/${staged_repo_id}"
-  echo "Uplading files to ${nexus_upload}"
+  echo "Uploading files to ${nexus_upload}"
   for file in $(find . -type f); do
     # strip leading ./
     file_short="$(echo "${file}" | sed -e 's/\.\///')"

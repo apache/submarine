@@ -103,7 +103,7 @@ MENULIST
 echo -ne "Please input your choice [\\e[32m1\\e[0m-\\e[32m7\\e[0m,\\e[32mb\\e[0m(back)]:"
 }
 
-## @description  unstall menu
+## @description  uninstall menu
 ## @audience     public
 ## @stability    stable
 uninstall_menu()
@@ -201,9 +201,9 @@ HOST:${LOCAL_HOST_IP}            DOWNLOAD_SERVER:http://${DOWNLOAD_SERVER_IP}:${
 [Main menu] > [install yarn]
 ------------------------------------------------------------------------------------
 MENULIST
-echo -e "  \\e[32m1.instll YARM [every host]\\e[0m"
-echo -e "  \\e[32m2.instll YARM container-executor [every host]\\e[0m"
-echo -e "  \\e[32m3.instll YARM Timeline [one host]\\e[0m"
+echo -e "  \\e[32m1.install YARN [every host]\\e[0m"
+echo -e "  \\e[32m2.install YARN container-executor [every host]\\e[0m"
+echo -e "  \\e[32m3.install YARN Timeline [one host]\\e[0m"
 echo -e ""
 echo -e "  \\e[32mb.back main menu\\e[0m"
 cat<<MENULIST
@@ -227,7 +227,7 @@ HOST:${LOCAL_HOST_IP}            DOWNLOAD_SERVER:http://${DOWNLOAD_SERVER_IP}:${
 [Main menu] > [install yarn]
 ------------------------------------------------------------------------------------
 MENULIST
-echo -e "  \\e[32m1.uninstll Yarn\\e[0m"
+echo -e "  \\e[32m1.uninstall Yarn\\e[0m"
 echo -e ""
 echo -e "  \\e[32mb.back main menu\\e[0m"
 cat<<MENULIST
@@ -507,7 +507,7 @@ menu_process()
     ;;
 # install yarn
     "7-1")
-      echo -n "Do you want to instll YARN?[y|n]"
+      echo -n "Do you want to install YARN?[y|n]"
       read -r myselect
       if [[ "$myselect" = "y" || "$myselect" = "Y" ]]
       then
@@ -521,7 +521,7 @@ menu_process()
       fi
     ;;
     "7-2")
-      echo -n "Do you want to instll container-executor?[y|n]"
+      echo -n "Do you want to install container-executor?[y|n]"
       read -r myselect
       if [[ "$myselect" = "y" || "$myselect" = "Y" ]]
       then
@@ -530,12 +530,12 @@ menu_process()
         elif [[ "${YARN_SECURITY}" = "false" ]];then
           install_yarn_container_executor_insecure
 	else
-	  echo "the YARN_SECURITY Value is not support !!!" 
+	  echo "the YARN_SECURITY Value is not support !!!"
         fi
       fi
     ;;
     "7-3")
-      echo -n "Do you want to instll Timeline?[y|n]"
+      echo -n "Do you want to install Timeline?[y|n]"
       read -r myselect
       if [[ "$myselect" = "y" || "$myselect" = "Y" ]]
       then

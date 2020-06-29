@@ -12,13 +12,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Utilities for validating user inputs such as metric names and parameter names.
 """
 import numbers
-import re
 import posixpath
+import re
 
 from submarine.exceptions import SubmarineException
 from submarine.store.database.db_types import DATABASE_ENGINES
@@ -28,13 +27,12 @@ _VALID_PARAM_AND_METRIC_NAMES = re.compile(r"^[/\w.\- ]*$")
 MAX_ENTITY_KEY_LENGTH = 250
 MAX_PARAM_VAL_LENGTH = 250
 
-
 _BAD_CHARACTERS_MESSAGE = (
     "Names may only contain alphanumerics, underscores (_), dashes (-), periods (.),"
-    " spaces ( ), and slashes (/)."
-)
+    " spaces ( ), and slashes (/).")
 
-_UNSUPPORTED_DB_TYPE_MSG = "Supported database engines are {%s}" % ', '.join(DATABASE_ENGINES)
+_UNSUPPORTED_DB_TYPE_MSG = "Supported database engines are {%s}" % ', '.join(
+    DATABASE_ENGINES)
 
 
 def bad_path_message(name):
@@ -46,27 +44,31 @@ def bad_path_message(name):
 
 def path_not_unique(name):
     norm = posixpath.normpath(name)
-    return norm != name or norm == '.' or norm.startswith('..') or norm.startswith('/')
+    return norm != name or norm == '.' or norm.startswith(
+        '..') or norm.startswith('/')
 
 
 def _validate_param_name(name):
     """Check that `name` is a valid parameter name and raise an exception if it isn't."""
     if not _VALID_PARAM_AND_METRIC_NAMES.match(name):
         raise SubmarineException(
-            "Invalid parameter name: '%s'. %s" % (name, _BAD_CHARACTERS_MESSAGE),)
+            "Invalid parameter name: '%s'. %s" %
+            (name, _BAD_CHARACTERS_MESSAGE),)
 
     if path_not_unique(name):
-        raise SubmarineException(
-            "Invalid parameter name: '%s'. %s" % (name, bad_path_message(name)))
+        raise SubmarineException("Invalid parameter name: '%s'. %s" %
+                                 (name, bad_path_message(name)))
 
 
 def _validate_metric_name(name):
     """Check that `name` is a valid metric name and raise an exception if it isn't."""
     if not _VALID_PARAM_AND_METRIC_NAMES.match(name):
-        raise SubmarineException("Invalid metric name: '%s'. %s" % (name, _BAD_CHARACTERS_MESSAGE),)
+        raise SubmarineException(
+            "Invalid metric name: '%s'. %s" % (name, _BAD_CHARACTERS_MESSAGE),)
 
     if path_not_unique(name):
-        raise SubmarineException("Invalid metric name: '%s'. %s" % (name, bad_path_message(name)))
+        raise SubmarineException("Invalid metric name: '%s'. %s" %
+                                 (name, bad_path_message(name)))
 
 
 def _validate_length_limit(entity_name, limit, value):
@@ -111,5 +113,6 @@ def validate_param(key, value):
 def _validate_db_type_string(db_type):
     """validates db_type parsed from DB URI is supported"""
     if db_type not in DATABASE_ENGINES:
-        error_msg = "Invalid database engine: '%s'. '%s'" % (db_type, _UNSUPPORTED_DB_TYPE_MSG)
+        error_msg = "Invalid database engine: '%s'. '%s'" % (
+            db_type, _UNSUPPORTED_DB_TYPE_MSG)
         raise SubmarineException(error_msg)

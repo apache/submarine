@@ -26,10 +26,10 @@
         </nz-breadcrumb-item>
         <nz-breadcrumb-item>Interpreter</nz-breadcrumb-item>
       </nz-breadcrumb>
-      <br/>
+      <br />
       <h2>Interpreter</h2>
       <nz-content>Users can manage their Interpreters.</nz-content>
-      <br/>
+      <br />
     </div>
   </nz-layout>
 </nz-layout>
@@ -37,25 +37,29 @@
 <nz-card>
   <div class="interpreter-table-operate">
     <form nz-row nz-form [nzLayout]="'inline'" [formGroup]="interpreterQueryForm">
-      <nz-form-item  nz-col nzSpan="8">
+      <nz-form-item nz-col nzSpan="8">
         <nz-form-label nz-col nzSpan="4">Name</nz-form-label>
         <nz-form-control nz-col nzSpan="20">
-          <input nz-input formControlName="interpreterName" placeholder="Enter Interpreter Name"/>
+          <input nz-input formControlName="interpreterName" placeholder="Enter Interpreter Name" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item nz-col nzSpan="8">
         <nz-form-label nz-col nzSpan="4">Status</nz-form-label>
         <nz-form-control nz-col nzSpan="20">
-          <nz-cascader [nzOptions]="statusOptions" formControlName="interpreterStatus" nzPlaceHolder="Enter Interpreter Status"></nz-cascader>
+          <nz-cascader
+            [nzOptions]="statusOptions"
+            formControlName="interpreterStatus"
+            nzPlaceHolder="Enter Interpreter Status"
+          ></nz-cascader>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item nz-col nzSpan="8">
         <nz-form-control>
-          <button nz-button style="margin-left: 8px" nzType="primary" (click)="queryInterpreter()">
+          <button nz-button style="margin-left: 8px;" nzType="primary" (click)="queryInterpreter()">
             <i nz-icon nzType="search"></i>
             Query
-          </button> 
-          <button nz-button style="margin-left: 8px" (click)="onShowAddInterpreterModal()" id="interpreterAddButton">
+          </button>
+          <button nz-button style="margin-left: 8px;" (click)="onShowAddInterpreterModal()" id="interpreterAddButton">
             <i nz-icon nzType="plus"></i>
             Add
           </button>
@@ -71,7 +75,7 @@
           <th>Type</th>
           <th>Status</th>
           <th>Progress</th>
-          <th>Last Updated</th>           
+          <th>Last Updated</th>
           <th nzRight="0px">Action</th>
         </tr>
       </thead>
@@ -85,7 +89,7 @@
           <td>
             <nz-progress nzStrokeLinecap="round" [nzPercent]="data.progress"></nz-progress>
           </td>
-          <td>{{ data.lastUpdated | date: 'medium'}}</td>
+          <td>{{ data.lastUpdated | date: 'medium' }}</td>
           <td class="td-action" nzRight="0px">
             <a>
               <i nz-icon nzType="edit" nzTheme="outline"></i>

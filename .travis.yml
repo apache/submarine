@@ -44,29 +44,23 @@ env:
   global:
     # If you need to compile Phadoop-3.1 or Phadoop-3.2, you need to add `!submarine-server/server-submitter/submitter-yarnservice` in EXCLUDE_SUBMARINE
     - SUBMARINE="org.apache.submarine"
-    - EXCLUDE_SUBMARINE="!${SUBMARINE}:submarine-all,!${SUBMARINE}:submarine-client,!${SUBMARINE}:submarine-dist"
-    - EXCLUDE_SERVER="!${SUBMARINE}:submarine-server-api,!${SUBMARINE}:submarine-server-core,!${SUBMARINE}:submarine-server-rpc"
-    - EXCLUDE_CLIENT="!${SUBMARINE}:submarine-client"
-    - EXCLUDE_ALL="!${SUBMARINE}:submarine-all"
-    - EXCLUDE_WORKBENCH="!${SUBMARINE}:submarine-workbench,!${SUBMARINE}:submarine-workbench-web,!${SUBMARINE}:submarine-workbench-web-ng"
-    - EXCLUDE_INTERPRETER="" # Template disable by SUBMARINE-381 "!submarine-workbench/interpreter,!submarine-workbench/interpreter/interpreter-engine,!submarine-workbench/interpreter/python-interpreter,!submarine-workbench/interpreter/spark-interpreter
-    - EXCLUDE_SUBMITTER_K8S="!${SUBMARINE}:submarine-submitter-k8s"
-    - EXCLUDE_SUBMITTER_YARN="!${SUBMARINE}:submarine-submitter-yarn"
-    - EXCLUDE_SUBMITTER="!${SUBMARINE}:submarine-server-submitter,${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_SUBMITTER_YARN}"
-    - EXCLUDE_COMMONS="!${SUBMARINE}:submarine-commons-cluster,!${SUBMARINE}:submarine-commons-metastore,!${SUBMARINE}:submarine-commons-rpc,!${SUBMARINE}:submarine-commons-runtime,!${SUBMARINE}:submarine-commons-utils"
-    - EXCLUDE_CLOUD="!${SUBMARINE}:submarine-cloud"
-    - EXCLUDE_DIST="!${SUBMARINE}:submarine-dist"
-    - EXCLUDE_TEST="!${SUBMARINE}:submarine-test,!${SUBMARINE}:submarine-test-e2e,!${SUBMARINE}:submarine-test-k8s"
-    - EXCLUDE_SPARK_SECURTITY="!${SUBMARINE}:submarine-spark-security"
+    - EXCLUDE_SUBMARINE="!:submarine-all,!:submarine-client,!:submarine-dist"
+    - EXCLUDE_SERVER="!:submarine-server-api,!:submarine-server-core,!:submarine-server-rpc"
+    - EXCLUDE_CLIENT="!:submarine-client"
+    - EXCLUDE_ALL="!:submarine-all"
+    - EXCLUDE_WORKBENCH="!:submarine-workbench,!:submarine-workbench-web,!:submarine-workbench-web-ng"
+    - EXCLUDE_INTERPRETER="!:submarine-interpreter,!:submarine-interpreter-core,!:submarine-python-interpreter,!:submarine-spark-interpreter"
+    - EXCLUDE_SUBMITTER_K8S="!:submarine-submitter-k8s"
+    - EXCLUDE_SUBMITTER_YARN="!:submarine-submitter-yarn"
+    - EXCLUDE_SUBMITTER="!:submarine-server-submitter,${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_SUBMITTER_YARN}"
+    - EXCLUDE_COMMONS="!:submarine-commons-cluster,!:submarine-commons-metastore,!:submarine-commons-rpc,!:submarine-commons-runtime,!:submarine-commons-utils"
+    - EXCLUDE_CLOUD="!:submarine-cloud"
+    - EXCLUDE_DIST="!:submarine-dist"
+    - EXCLUDE_TEST="!:submarine-test,!:submarine-test-e2e,!:submarine-test-k8s"
+    - EXCLUDE_SPARK_SECURTITY="!:submarine-spark-security"
     - MOZ_HEADLESS=1
 
 before_install:
-  # maven 3.6.1 (3.6.2 build tony failed!!!)
-  - echo "Download Maven 3.6.1"
-  - wget https://archive.apache.org/dist/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.tar.gz
-  - tar zxvf apache-maven-3.6.1-bin.tar.gz || travis_terminate 1
-  - export M2_HOME=$PWD/apache-maven-3.6.1
-  - export PATH=$M2_HOME/bin:$PATH
   # mysql
   - sudo service mysql restart
   - mysql -e "create database submarine_test;"
@@ -111,7 +105,7 @@ matrix:
         - PROFILE="-Phadoop-2.9"
         - BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="verify -DskipRat -am -Durl=http://127.0.0.1"
         - MODULES=""
-        - TEST_MODULES="-pl ${EXCLUDE_SERVER},${EXCLUDE_COMMONS},${EXCLUDE_CLIENT},org.apache.submarine:submarine-test-k8s"
+        - TEST_MODULES="-pl ${EXCLUDE_SERVER},${EXCLUDE_COMMONS},${EXCLUDE_CLIENT},:submarine-test-k8s"
         - TEST_PROJECTS=""
 
     - name: Test submarine test-e2e
@@ -176,6 +170,18 @@ matrix:
         - TEST_MODULES="-pl org.apache.submarine:submarine-commons-runtime"
         - TEST_PROJECTS=""
 
+    - name: Test submarine commons-unixusersync
+      language: java
+      jdk: openjdk8
+      dist: xenial
+      env:
+        - PROFILE="-Phadoop-2.9"
+        - BUILD_FLAG="clean package install -DskipTests"
+        - TEST_FLAG="test -DskipRat -am"
+        - MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
+        - TEST_MODULES="-pl org.apache.submarine:submarine-commons-unixusersync"
+        - TEST_PROJECTS=""
+
     - name: Test submarine server
       language: java
       jdk: openjdk8
@@ -236,40 +242,11 @@ matrix:
         - TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER},${EXCLUDE_SPARK_SECURTITY}"
         - TEST_PROJECTS=""
 
-    - name: Test submarine submitter on Kubernetes
-      dist: xenial
-      services: docker
+    - name: Test submarine interpreter
       language: java
-      jdk: openjdk8
-      env: BUILD_FLAG="clean package install -DskipTests -am" TEST_FLAG="test -am" MODULES="-pl org.apache.submarine:submarine-submitter-k8s" TEST_MODULES="-pl org.apache.submarine:submarine-submitter-k8s" TEST_PROJECTS=""
-      before_install:
-        # deploy Kubernetes cluster
-        - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-        - chmod +x kubectl
-        - sudo mv kubectl /usr/bin
-        - docker run -d --name kube --privileged -p 8443:8443 -p 10080:10080 bsycorp/kind:latest-1.15
-        - until curl -s --fail http://127.0.0.1:10080/kubernetes-ready; do
-          sleep 1;
-          done
-        - echo "Kubernetes ready - run tests!"
-        - mkdir $HOME/.kube
-        - curl http://127.0.0.1:10080/config > $HOME/.kube/config
-        - export KUBECONFIG=$HOME/.kube/config
-        - echo $KUBECONFIG
-        - kubectl config set clusters.kubernetes.server https://127.0.0.1:8443
-        - kubectl get nodes
-        - kubectl create namespace submarine
-        - kubectl apply -f ./dev-support/travis/tf-operator/crd_v1.yaml
-        - kubectl apply -f ./dev-support/travis/tf-operator/tfevent-volume/.
-        # prepare pytroch job CRD
-        - kubectl apply -f ./dev-support/k8s/pytorchjob/crd.yaml
-
-    # Template disable by SUBMARINE-381
-    #- name: Test submarine interpreter
-    #  language: java
-    #  jdk: "openjdk8"
-    #  dist: xenial
-    #  env: PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests" TEST_FLAG="test -DskipRat -am" MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_SUBMARINE},${EXCLUDE_WORKBENCH}" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
+      jdk: "openjdk8"
+      dist: xenial
+      env: PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -am" TEST_FLAG="test -DskipRat -am" MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
 
     - name: Test submarine workbench-web VUE
       language: node_js
@@ -312,7 +289,7 @@ matrix:
       jdk: openjdk8
       env:
         - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
-        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.3 -Pranger-1.0"
         - MODULES="-pl :submarine-spark-security"
@@ -322,7 +299,7 @@ matrix:
       jdk: openjdk8
       env:
         - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
-        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.3 -Pranger-1.1"
         - MODULES="-pl :submarine-spark-security"
@@ -332,7 +309,7 @@ matrix:
       jdk: openjdk8
       env:
         - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
-        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.3 -Pranger-1.2"
         - MODULES="-pl :submarine-spark-security"
@@ -342,7 +319,7 @@ matrix:
       jdk: openjdk8
       env:
         - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
-        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.3 -Pranger-2.0"
         - MODULES="-pl :submarine-spark-security"
@@ -352,7 +329,7 @@ matrix:
       jdk: openjdk8
       env:
         - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
-        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.4 -Pranger-1.0"
         - MODULES="-pl :submarine-spark-security"
@@ -362,7 +339,7 @@ matrix:
       jdk: openjdk8
       env:
         - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
-        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.4 -Pranger-1.1"
         - MODULES="-pl :submarine-spark-security"
@@ -372,7 +349,7 @@ matrix:
       jdk: openjdk8
       env:
         - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
-        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.4 -Pranger-1.2"
         - MODULES="-pl :submarine-spark-security"
@@ -382,7 +359,7 @@ matrix:
       jdk: openjdk8
       env:
         - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
-        - BUILD_FLAG="--no-transfer-progress clean install -Dmaven.javadoc.skip=true"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.4 -Pranger-2.0"
         - MODULES="-pl :submarine-spark-security"

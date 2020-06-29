@@ -24,10 +24,11 @@ import { RouterModule } from '@angular/router';
 import { WorkbenchRoutingModule } from '@submarine/pages/workbench/workbench-routing.module';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { DataComponent } from './data/data.component';
+import { ExperimentComponent } from './experiment/experiment.component';
+import { ExperimentModule } from './experiment/experiment.module';
+
 import { HomeComponent } from './home/home.component';
 import { InterpreterModule } from './interpreter/interpreter.module';
-import { JobComponent } from './job/job.component';
-import { JobModule } from './job/job.module';
 import { ModelComponent } from './model/model.component';
 import { WorkbenchComponent } from './workbench.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
@@ -38,7 +39,7 @@ import { WorkspaceModule } from './workspace/workspace.module';
     WorkbenchComponent,
     HomeComponent,
     WorkspaceComponent,
-    JobComponent,
+    ExperimentComponent,
     DataComponent,
     ModelComponent
   ],
@@ -49,9 +50,8 @@ import { WorkspaceModule } from './workspace/workspace.module';
     RouterModule,
     FormsModule,
     WorkspaceModule,
-    JobModule,
+    ExperimentModule,
     InterpreterModule
   ]
 })
-export class WorkbenchModule {
-}
+export class WorkbenchModule {}

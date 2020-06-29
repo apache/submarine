@@ -178,7 +178,7 @@
     <value>*</value>
   </property> 
 
-  <!--yarn registery config-->
+  <!--yarn registry config-->
   <property>
     <description>
       Is the registry enabled in the YARN Resource Manager?

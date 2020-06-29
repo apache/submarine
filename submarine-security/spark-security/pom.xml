@@ -24,7 +24,7 @@
   <parent>
     <artifactId>submarine</artifactId>
     <groupId>org.apache.submarine</groupId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.4.0</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -57,6 +57,7 @@
     <jna.version>5.2.0</jna.version>
     <jna-platform.version>5.2.0</jna-platform.version>
     <jna.scope>test</jna.scope>
+    <codehaus.jackson.version>1.9.13</codehaus.jackson.version>
   </properties>
   <dependencies>
     <dependency>
@@ -283,6 +284,13 @@
       <artifactId>jna-platform</artifactId>
       <version>${jna-platform.version}</version>
       <scope>${jna.scope}</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-jaxrs</artifactId>
+      <version>${codehaus.jackson.version}</version>
+      <scope>compile</scope>
     </dependency>
 
   </dependencies>

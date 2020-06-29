@@ -45,9 +45,9 @@ if [[ -n "$DATA_URL" ]]; then
   WORKER_CMD="myvenv.zip/venv/bin/python mnist_distributed.py --steps 2 --data_dir /tmp/data --working_dir /tmp/mode --mnist_data_url ${DATA_URL}"
 else
   WORKER_CMD="myvenv.zip/venv/bin/python mnist_distributed.py --steps 2 --data_dir /tmp/data --working_dir /tmp/mode"
-fi 
+fi
 
-SUBMARINE_VERSION=${SUBMARINE_VER:-"0.4.0-SNAPSHOT"}
+SUBMARINE_VERSION=${SUBMARINE_VER:-"0.4.0"}
 
 HADOOP_VERSION=2.9
 

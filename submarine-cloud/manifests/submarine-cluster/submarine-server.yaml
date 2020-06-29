@@ -31,7 +31,7 @@ spec:
       serviceAccountName: "submarine-node"
       containers:
         - name: submarine-node
-          image: "apache/submarine:server-0.4.0-SNAPSHOT"
+          image: "apache/submarine:server-0.4.0"
           args: []
           imagePullPolicy: IfNotPresent
           ports:
@@ -108,6 +108,10 @@ spec:
             backend:
               serviceName: submarine-svc
               servicePort: 8080
+          - path: /jupyter
+            backend:
+              serviceName: jupyter-svc
+              servicePort: 8888
 
 ---
 # You can also access the submarine workbench via port-forward

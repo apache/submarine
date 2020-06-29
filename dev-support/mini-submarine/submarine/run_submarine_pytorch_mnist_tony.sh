@@ -39,7 +39,7 @@ else
   JAVA_CMD="java"
 fi
 
-SUBMARINE_VERSION=0.4.0-SNAPSHOT
+SUBMARINE_VERSION=0.4.0
 HADOOP_VERSION=2.9
 SUBMARINE_PATH=/opt/submarine-current
 HADOOP_CONF_PATH=/usr/local/hadoop/etc/hadoop
