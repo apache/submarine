@@ -188,6 +188,28 @@ case class DataMaskingSQLTest() extends FunSuite with BeforeAndAfterAll {
     }
   }
 
+  test("MASK_SHOW_LAST_4 and functions") {
+    val statement =
+      s"""
+         |select
+         | key,
+         | value,
+         | substr(value, 0, 18),
+         | substr(value, 0, 18) as v1,
+         | substr(cast(value as string), 0, 18) as v2
+         | from default.rangertbl5 where value = 'val_277'""".stripMargin
+    withUser("bob") {
+      val df = sql(statement)
+      println(df.queryExecution.optimizedPlan)
+      val row = df.take(1)(0)
+      assert(row.getString(1) === "xxx_277", "value shows last 4 characters")
+      assert(row.getString(2) === "xxx_277", "value shows last 4 characters")
+      assert(row.getString(3) === "xxx_277", "value shows last 4 characters")
+      assert(row.getString(4) === "xxx_277", "value shows last 4 characters")
+
+    }
+  }
+
   test("NO MASKING") {
     val statement = "select * from default.rangertbl6 where value = 'val_277'"
     withUser("bob") {

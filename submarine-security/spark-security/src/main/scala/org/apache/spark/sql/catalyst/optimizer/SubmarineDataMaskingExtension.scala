@@ -129,7 +129,8 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
   private def collectTransformers(
       plan: LogicalPlan,
       table: CatalogTable,
-      aliases: mutable.Map[Alias, ExprId]): Map[ExprId, NamedExpression] = {
+      aliases: mutable.Map[Alias, ExprId],
+      outputs: Seq[NamedExpression]): Map[ExprId, NamedExpression] = {
     try {
       val maskEnableResults = plan.output.map { expr =>
         expr -> getAccessResult(table.identifier, expr)
@@ -140,6 +141,18 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
       }.filter(_._2 != null).toMap
 
       val aliasedMaskers = new mutable.HashMap[ExprId, Alias]()
+
+      for (output <- outputs) {
+        val newOutput = output transformUp {
+          case ar: AttributeReference => formedMaskers.getOrElse(ar.exprId, ar)
+        }
+
+        if (!output.equals(newOutput)) {
+          val newAlias = Alias(newOutput, output.name)()
+          aliasedMaskers.put(output.exprId, newAlias)
+        }
+      }
+
       for ((alias, id) <- aliases if formedMaskers.contains(id)) {
         val originalAlias = formedMaskers(id)
         val newChild = originalAlias.child mapChildren {
@@ -171,10 +184,10 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
     val aliases = new mutable.HashMap[Alias, ExprId]()
     plan.transformAllExpressions {
       case a: Alias =>
-        a.child match {
+        a.child transformUp {
           case ne: NamedExpression =>
-            aliases.put(a, ne.exprId)
-          case _ =>
+            aliases.getOrElseUpdate(a, ne.exprId)
+            ne
         }
         a
     }
@@ -184,11 +197,16 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
   private def collectAllTransformers(
       plan: LogicalPlan,
       aliases: mutable.Map[Alias, ExprId]): Map[ExprId, NamedExpression] = {
+    val outputs = plan match {
+      case p: Project => p.projectList
+      case o => o.output
+    }
+
     plan.collectLeaves().flatMap {
       case h: HiveTableRelation =>
-        collectTransformers(h, h.tableMeta, aliases)
+        collectTransformers(h, h.tableMeta, aliases, outputs)
       case l: LogicalRelation if l.catalogTable.isDefined =>
-        collectTransformers(l, l.catalogTable.get, aliases)
+        collectTransformers(l, l.catalogTable.get, aliases, outputs)
       case _ => Seq.empty
     }.toMap
   }
