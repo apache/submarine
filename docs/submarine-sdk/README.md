@@ -17,10 +17,8 @@
 ## Summary
 - Support Python, Scala, R language for algorithm development
 
-- support tracking/metrics APIs which allows developers 
+- Support tracking/metrics APIs which allows developers 
 add tracking/metrics and view tracking/metrics from Submarine Workbench UI.
-
-- [TODO] Support user building ML pipeline
 
 ### Python 
 - [pysubmarine](pysubmarine)

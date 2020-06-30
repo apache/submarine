@@ -18,10 +18,7 @@ data exchange, and task tracking capabilities to more efficiently improve the
 development and execution of machine learning productivity
 - Allow data scientist to track distributed ML job
 - Support store ML parameters and metrics in Submarine-server
-- [TODO] Support store ML job output (e.g. csv,images)
 - Support hdfs,S3 and mysql (Currently we only support mysql)
-- [TODO] (WEB) Metric tracking ui in workbench-web
-- [TODO] (WEB) Metric graphical display in workbench-web
 
 ## Quickstart
 1. [Start mini-submarine](../../../dev-support/mini-submarine#run-mini-submarine-image)

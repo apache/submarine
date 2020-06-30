@@ -15,11 +15,15 @@
 
 from setuptools import setup, find_packages
 
+with open('README.md') as f:
+    long_description = f.read()
 
 setup(
-    name='pysubmarine',
+    name='apache-submarine',
     version='0.5.0-SNAPSHOT',
     description="A python SDK for submarine",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     url="https://github.com/apache/submarine",
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[
@@ -43,4 +47,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
+    license='Apache License, Version 2.0',
+    maintainer='Apache Submarine Developers',
+    maintainer_email='dev@submarine.apache.org',
 )
