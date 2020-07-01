@@ -29,7 +29,7 @@ pip install .
 ```
 - Install package from pypi
 ```bash
-pip install submarine-sdk
+pip install apache-submarine
 ```
 
 ## Easy-to-use model trainers
@@ -42,5 +42,4 @@ Makes it easy to run distributed or non-distributed TensorFlow, PyTorch experime
 
 ## Development
 See [Python Development](https://github.com/apache/submarine/tree/master/docs/submarine-sdk/pysubmarine/development.md) in the documentation subproject.
-
 
