@@ -35,13 +35,16 @@ import org.slf4j.LoggerFactory;
 import org.zapodot.junit.ldap.EmbeddedLdapRule;
 import org.zapodot.junit.ldap.EmbeddedLdapRuleBuilder;
 
+import javax.naming.AuthenticationException;
 import javax.naming.Context;
 import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 import static org.junit.Assert.assertEquals;
@@ -131,6 +134,39 @@ public class EmbeddedLdapRuleTest {
     }
 
     context.close();
+  }
+
+  @Test
+  public void  testauth() throws Exception {
+    DirContext ctx = null;
+    Hashtable<String, String> HashEnv = new Hashtable<String, String>();
+
+    String loginId = "uid=curie,dc=example,dc=com";
+    String password = "password";
+
+    HashEnv.put(Context.SECURITY_AUTHENTICATION, "simple");
+    HashEnv.put(Context.SECURITY_PRINCIPAL, loginId);
+    HashEnv.put(Context.SECURITY_CREDENTIALS, password);
+    HashEnv.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+    HashEnv.put("com.sun.jndi.ldap.connect.timeout", "3000");
+    HashEnv.put(Context.PROVIDER_URL, "ldap://ldap.forumsys.com:389");
+
+    try {
+      ctx = new InitialDirContext(HashEnv);
+      System.out.println("Pass");
+    }
+    catch (AuthenticationException e) {
+      System.out.println("fail");
+      e.printStackTrace();
+    }
+    catch (javax.naming.CommunicationException e) {
+      System.out.println("Connection fail");
+      e.printStackTrace();
+    }
+    catch (Exception e) {
+      System.out.println("Unknown identity verification fail");
+      e.printStackTrace();
+    }
   }
 
   @Test
