@@ -48,6 +48,6 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     license='Apache License, Version 2.0',
-    maintainer='Apache Submarine Developers',
+    maintainer='Apache Submarine Community',
     maintainer_email='dev@submarine.apache.org',
 )
