@@ -71,7 +71,7 @@ in your local directory
 ```bash
 python setup.py bdist_wheel
 ```
-4. Upload python package to TestPyPI for Testing 
+4. Upload python package to TestPyPI for testing
 ```bash
 python -m twine upload --repository testpypi dist/*
 ```
