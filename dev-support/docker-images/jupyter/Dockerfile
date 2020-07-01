@@ -19,7 +19,7 @@ FROM $BASE_IMAGE
 
 ARG NB_USER="jovyan"
 ARG NB_UID="1000"
-ARG NB_PREFIX="/jupyter/"
+ARG NB_PREFIX="/"
 ARG NB_PORT=8888
 
 USER root
@@ -72,9 +72,7 @@ RUN mv /tini /usr/local/bin/tini && chmod +x /usr/local/bin/tini
 
 # Install python package
 RUN pip uninstall -y enum34
-RUN pip3 --no-cache-dir install \
-    jupyterhub \
-    jupyterlab
+RUN pip3 --no-cache-dir install jupyterlab
 
 # Configure container startup
 EXPOSE $NB_PORT

@@ -136,12 +136,9 @@ EOF
     for ((k=1;k<=${volumeNum};k++))
     do
         mkdir -p ${data_dir}/worker${i}/vol${k}
-        mkdir -p ${data_dir}/worker${i}/submarine-jupyter
         cat <<EOF >> ${configFile}
   - containerPath: /mnt/disks/vol${k}
     hostPath: ${data_dir}/worker${i}/vol${k}
-  - containerPath: /mnt/disks/submarine-jupyter
-    hostPath: ${data_dir}/worker${i}/submarine-jupyter
 EOF
     done
 done

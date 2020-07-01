@@ -31,6 +31,7 @@ export KUBECONFIG=~/.kube/kind-config-${clusterName:-kind}
 function start() {
   $ROOT/hack/kind-cluster-build.sh
   $SUBMARINE_HOME/dev-support/k8s/deploy-kubeflow-operators.sh -a
+  $SUBMARINE_HOME/dev-support/k8s/deploy-notebook-controller.sh
   $ROOT/hack/deploy-submarine.sh --test
 
   for((i=1;i<=30;i++)); do
@@ -75,7 +76,6 @@ function update_docker_images() {
   $SUBMARINE_HOME/dev-support/docker-images/database/build.sh
   $SUBMARINE_HOME/dev-support/docker-images/operator/build.sh
   $SUBMARINE_HOME/dev-support/docker-images/submarine/build.sh
-  $SUBMARINE_HOME/dev-support/docker-images/jupyter/build.sh
 
   docker images
 }
