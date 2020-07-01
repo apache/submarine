@@ -137,7 +137,7 @@ public class EmbeddedLdapRuleTest {
   }
 
   @Test
-  public void  testauth() throws Exception {
+  public void testauth() throws Exception {
     DirContext ctx = null;
     Hashtable<String, String> HashEnv = new Hashtable<String, String>();
 
@@ -153,19 +153,19 @@ public class EmbeddedLdapRuleTest {
 
     try {
       ctx = new InitialDirContext(HashEnv);
-      System.out.println("Pass");
+      LOG.info("Pass");
     }
     catch (AuthenticationException e) {
-      System.out.println("fail");
-      e.printStackTrace();
+      LOG.info("fail");
+      LOG.error(e.getMessage(), e);
     }
     catch (javax.naming.CommunicationException e) {
-      System.out.println("Connection fail");
-      e.printStackTrace();
+      LOG.info("Connection fail");
+      LOG.error(e.getMessage(), e);
     }
     catch (Exception e) {
-      System.out.println("Unknown identity verification fail");
-      e.printStackTrace();
+      LOG.info("Unknown identity verification fail");
+      LOG.error(e.getMessage(), e);
     }
   }
 
