@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.kubernetes.client.models.V1ObjectMeta;
+
+import org.apache.submarine.commons.utils.SubmarineConfVars;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
@@ -48,6 +51,10 @@ import io.kubernetes.client.models.V1Container;
 
 
 public class ExperimentSpecParserTest extends SpecBuilder {
+  
+  private static SubmarineConfiguration conf =
+      SubmarineConfiguration.getInstance();
+  
   @Test
   public void testValidTensorFlowExperiment() throws IOException,
       URISyntaxException, InvalidSpecException {
@@ -225,25 +232,31 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
     Assert.assertEquals("/bin/bash", initContainer.getCommand().get(0));
     Assert.assertEquals("-c", initContainer.getCommand().get(1));
+    
+    String minVersion = "minVersion=\""
+        + conf.getString(
+            SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION)
+        + "\";";
+    String maxVersion = "maxVersion=\""
+        + conf.getString(
+            SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION)
+        + "\";";
+    String currentVersion = "currentVersion=$(conda -V | cut -f2 -d' ');";
     Assert.assertEquals(
+        minVersion + maxVersion + currentVersion 
+            + "if [ \"$(printf '%s\\n' \"$minVersion\" \"$maxVersion\" "
+               + "\"$currentVersion\" | sort -V | head -n2 | tail -1 )\" "
+                    + "!= \"$currentVersion\" ]; then echo \"Conda version " + 
+                    "should be between minVersion=\"4.0.1\"; " + 
+                    "and maxVersion=\"4.10.10\";\"; exit 1; else echo "
+                    + "\"Conda current version is " + currentVersion + ". "
+                        + "Moving forward with env creation and activation.\"; "
+                        + "fi && " + 
         "conda create -n " + kernelName + " -c " + channel + " " + dependency
             + " && " + "echo \"source activate " + kernelName + "\" > ~/.bashrc"
             + " && " + "PATH=/opt/conda/envs/env/bin:$PATH",
         initContainer.getCommand().get(2));
     
     environmentManager.deleteEnvironment(envName);
-  }
-  
-  @Test (expected = InvalidSpecException.class)
-  public void testValidPyTorchJobSpecWithInvalidEnv() 
-      throws InvalidSpecException, IOException, URISyntaxException {
-    ExperimentSpec experimentSpec;
-    try {
-      experimentSpec = buildFromJsonFile(pytorchJobWithInvalidEnvReqFile);
-      ExperimentSpecParser.parseJob(experimentSpec);
-      fail("Invalid spec exception should have thrown.");
-    } catch (InvalidSpecException e) {
-      throw e;
-    }
   }
 }

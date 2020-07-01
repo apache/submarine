@@ -143,4 +143,12 @@
     <description>RuntimeFactory for Submarine jobs</description>
   </property>
 
+  <property>
+    <name>environment.conda.min.version</name>
+    <value>4.0.1</value>
+  </property>
+  <property>
+    <name>environment.conda.max.version</name>
+    <value>4.10.10</value>
+  </property>
 </configuration>

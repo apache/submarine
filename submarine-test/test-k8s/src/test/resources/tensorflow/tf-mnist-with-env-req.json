@@ -9,6 +9,7 @@
     }
   },
   "environment": {
+  	"image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0",
     "name": "my-submarine-env"
   },
   "spec": {

@@ -106,12 +106,4 @@ public class EnvironmentSpec {
   public void setImage(String image) {
     this.image = image;
   }
-  
-  public boolean isEmbeddedEnvironment() {
-    return (getImage() != null && getName() == null);
-  }
-  
-  public boolean isValidSpec() {
-    return !(getImage() != null && getName() != null);
-  }
 }

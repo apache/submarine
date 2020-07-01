@@ -27,6 +27,8 @@ import io.kubernetes.client.models.V1PodSpec;
 import io.kubernetes.client.models.V1PodTemplateSpec;
 import io.kubernetes.client.models.V1ResourceRequirements;
 
+import org.apache.submarine.commons.utils.SubmarineConfVars;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
@@ -52,6 +54,9 @@ import java.util.Map;
 
 public class ExperimentSpecParser {
 
+  private static SubmarineConfiguration conf =
+      SubmarineConfiguration.getInstance();
+  
   public static MLJob parseJob(ExperimentSpec experimentSpec) throws InvalidSpecException {
     String framework = experimentSpec.getMeta().getFramework();
     if (ExperimentMeta.SupportedMLFramework.TENSORFLOW.
@@ -137,15 +142,7 @@ public class ExperimentSpecParser {
   }
 
   private static V1PodTemplateSpec parseTemplateSpec(
-      ExperimentTaskSpec taskSpec, ExperimentSpec experimentSpec)
-      throws InvalidSpecException {
-    if (experimentSpec.getEnvironment() != null
-        && !experimentSpec.getEnvironment().isValidSpec()) {
-      throw new InvalidSpecException(
-          "Invalid environment spec: Either " + "image '"
-              + experimentSpec.getEnvironment().getImage() + "' or " + "name '"
-              + experimentSpec.getEnvironment().getName() + "' is allowed.");
-    }
+      ExperimentTaskSpec taskSpec, ExperimentSpec experimentSpec) {
     V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
     V1PodSpec podSpec = new V1PodSpec();
     List<V1Container> containers = new ArrayList<>();
@@ -155,7 +152,7 @@ public class ExperimentSpecParser {
     if (taskSpec.getImage() != null) {
       container.setImage(taskSpec.getImage());
     } else {
-      if (experimentSpec.getEnvironment().isEmbeddedEnvironment()) {
+      if (experimentSpec.getEnvironment().getImage() != null) {
         container.setImage(experimentSpec.getEnvironment().getImage());
       }
     }
@@ -176,7 +173,7 @@ public class ExperimentSpecParser {
     /**
      * Init Containers
      */
-    if (!experimentSpec.getEnvironment().isEmbeddedEnvironment()) {
+    if (experimentSpec.getEnvironment().getName() != null) {
       Environment environment = getEnvironment(experimentSpec);
       if (environment != null) {
         EnvironmentSpec environmentSpec = environment.getEnvironmentSpec();
@@ -186,6 +183,28 @@ public class ExperimentSpecParser {
         initContainer.setImage(environmentSpec.getDockerImage());
 
         if (environmentSpec.getKernelSpec().getDependencies().size() > 0) {
+
+          String minVersion = "minVersion=\""
+              + conf.getString(
+                  SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION)
+              + "\";";
+          String maxVersion = "maxVersion=\""
+              + conf.getString(
+                  SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION)
+              + "\";";
+          String currentVersion = "currentVersion=$(conda -V | cut -f2 -d' ');";
+          StringBuffer condaVersionValidationCommand = new StringBuffer();
+          condaVersionValidationCommand.append(minVersion);
+          condaVersionValidationCommand.append(maxVersion);
+          condaVersionValidationCommand.append(currentVersion);
+          condaVersionValidationCommand.append("if [ \"$(printf '%s\\n' "
+              + "\"$minVersion\" \"$maxVersion\" \"$currentVersion\" | sort -V "
+              + "| head -n2 | tail -1 )\" != \"$currentVersion\" ]; then echo "
+              + "\"Conda version should be between " + minVersion + " and "
+              + maxVersion + "\"; exit 1; else echo \"Conda current version is "
+                  + currentVersion + ". Moving forward with env creation and "
+                      + "activation.\"; fi");
+
           StringBuffer createCommand = new StringBuffer();
           String condaEnvironmentName =
               environmentSpec.getKernelSpec().getName();
@@ -205,7 +224,8 @@ public class ExperimentSpecParser {
           String activateCommand = "echo \"source activate "
               + condaEnvironmentName + "\" > ~/.bashrc";
           String pathCommand = "PATH=/opt/conda/envs/env/bin:$PATH";
-          String finalCommand = createCommand.toString() + " && "
+          String finalCommand = condaVersionValidationCommand.toString() + 
+              " && " + createCommand.toString() + " && "
               + activateCommand + " && " + pathCommand;
           initContainer.addCommandItem("/bin/bash");
           initContainer.addCommandItem("-c");
