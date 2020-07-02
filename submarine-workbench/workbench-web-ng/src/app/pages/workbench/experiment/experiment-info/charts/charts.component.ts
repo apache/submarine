@@ -18,6 +18,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { test_data } from './data';
 
 @Component({
   selector: 'submarine-charts',
@@ -25,7 +26,40 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./charts.component.scss']
 })
 export class ChartsComponent implements OnInit {
-  constructor() {}
+  title = 'Metrics';
+
+  data: any[];
+  view: any[] = [800, 500];
+  legend: boolean = true;
+  showLabels: boolean = true;
+  animations: boolean = true;
+  xAxis: boolean = true;
+  yAxis: boolean = true;
+  showYAxisLabel: boolean = true;
+  showXAxisLabel: boolean = true;
+  xAxisLabel: string = 'Epoch';
+  yAxisLabel: string = 'Percent';
+  timeline: boolean = true;
+
+  colorScheme = {
+    domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5']
+  };
+
+  constructor() {
+    this.data = Object.assign([], test_data);
+  }
+
+  onSelect(data): void {
+    console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+  }
+
+  onActivate(data): void {
+    console.log('Activate', JSON.parse(JSON.stringify(data)));
+  }
+
+  onDeactivate(data): void {
+    console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+  }
 
   ngOnInit() {}
 }

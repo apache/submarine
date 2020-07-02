@@ -17,4 +17,22 @@
   ~ under the License.
   -->
 
-<p>charts works!</p>
+<div style="background-color: white; height: 900px; padding: 50px;">
+  <ngx-charts-line-chart
+    [view]="view"
+    [scheme]="colorScheme"
+    [legend]="legend"
+    [showXAxisLabel]="showXAxisLabel"
+    [showYAxisLabel]="showYAxisLabel"
+    [xAxis]="xAxis"
+    [yAxis]="yAxis"
+    [xAxisLabel]="xAxisLabel"
+    [yAxisLabel]="yAxisLabel"
+    [timeline]="timeline"
+    [results]="data"
+    (select)="onSelect($event)"
+    (activate)="onActivate($event)"
+    (deactivate)="onDeactivate($event)"
+    [legendTitle]="title"
+  ></ngx-charts-line-chart>
+</div>
