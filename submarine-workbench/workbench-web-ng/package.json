@@ -21,6 +21,7 @@
     "@angular/platform-browser": "~8.2.9",
     "@angular/platform-browser-dynamic": "~8.2.9",
     "@angular/router": "~8.2.9",
+    "@swimlane/ngx-charts": "^13.0.1",
     "date-fns": "^2.6.0",
     "lint-staged": "^10.2.2",
     "lodash": "^4.17.15",
