@@ -156,15 +156,12 @@ public class EmbeddedLdapRuleTest {
       LOG.info("Pass");
     }
     catch (AuthenticationException e) {
-      LOG.info("fail");
       LOG.error(e.getMessage(), e);
     }
     catch (javax.naming.CommunicationException e) {
-      LOG.info("Connection fail");
       LOG.error(e.getMessage(), e);
     }
     catch (Exception e) {
-      LOG.info("Unknown identity verification fail");
       LOG.error(e.getMessage(), e);
     }
   }
