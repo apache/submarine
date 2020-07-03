@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-set -e
+set -euo pipefail
 
 readonly NOTEBOOK_CONTROLLER_IMAGE="gcr.io/kubeflow-images-public/notebook-controller:v1.1.0-g253890cb"
 

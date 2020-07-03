@@ -25,7 +25,7 @@
 # http://www.apache.org/dev/release-publishing
 # http://www.apache.org/dev/release-signing.html
 
-set -e
+set -euo pipefail
 
 BASEDIR="$(dirname "$0")"
 . "${BASEDIR}/common_release.sh"

@@ -21,7 +21,7 @@
 #
 # Here's some helpful documents for the release.
 # http://www.apache.org/dev/publishing-maven-artifacts.html
-set -e
+set -euo pipefail
 BASEDIR="$(dirname "$0")"
 . "${BASEDIR}/common_release.sh"
 

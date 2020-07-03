@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-set -e
+set -euo pipefail
 
 readonly TF_OPERATOR_IMAGE="gcr.io/kubeflow-images-public/tf_operator:v1.0.0-g92389064"
 readonly PYTORCH_OPERATOR_IMAGE="gcr.io/kubeflow-images-public/pytorch-operator:v1.0.0-g047cf0f"
@@ -68,7 +68,7 @@ function deploy_tf_operator() {
   ${KUBECTL_BIN} kustomize "${CURRENT_PATH}/tfjob/operator" \
     | ${KUBECTL_BIN} apply -f -
 
-  if [[ $1 == "true" ]]; then
+  if [[ ${1:-} == "true" ]]; then
     load_image_to_registry "${TF_MNIST_IMAGE}"
   fi
 }
@@ -86,7 +86,7 @@ function deploy_pytorch_operator() {
   load_image_to_registry "${PYTORCH_OPERATOR_IMAGE}"
   ${KUBECTL_BIN} apply -f "${CURRENT_PATH}/pytorchjob"
 
-  if [[ $1 == "true" ]]; then
+  if [[ ${1:-} == "true" ]]; then
     load_image_to_registry "${PT_MNIST_IMAGE}"
   fi
 }
@@ -145,16 +145,16 @@ function main() {
 
   hack::ensure_kubectl
 
-  if [[ "${opt_tf}" == "true" && "${opt_pt}" == "true" ]]; then
+  if [[ "${opt_tf:-}" == "true" && "${opt_pt:-}" == "true" ]]; then
     opt_all="true"
   fi
-  if [[ "${opt_all}" == "true" ]]; then
-    deploy_tf_operator ${opt_s}
-    deploy_pytorch_operator ${opt_s}
-  elif [[ "${opt_tf}" == "true" ]]; then
-    deploy_tf_operator ${opt_s}
-  elif [[ "${opt_pt}" == "true" ]]; then
-    deploy_pytorch_operator ${opt_s}
+  if [[ "${opt_all:-}" == "true" ]]; then
+    deploy_tf_operator ${opt_s:-}
+    deploy_pytorch_operator ${opt_s:-}
+  elif [[ "${opt_tf:-}" == "true" ]]; then
+    deploy_tf_operator ${opt_s:-}
+  elif [[ "${opt_pt:-}" == "true" ]]; then
+    deploy_pytorch_operator ${opt_s:-}
   fi
 }
 

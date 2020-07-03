@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-set -e
+set -euo pipefail
 
 ROOT=$(unset CDPATH && cd $(dirname "${BASH_SOURCE[0]}")/.. && pwd)
 cd $ROOT
@@ -141,7 +141,7 @@ echo "Submarine database ip: ${DATABASE_IP}"
 
 export KUBECONFIG=~/.kube/kind-config-${clusterName:-kind}
 
-if [[ "$UNINSTALL" == "TRUE" ]]; then
+if [[ "${UNINSTALL:-}" == "TRUE" ]]; then
   uninstall_submarine
 else
   install_submarine
