@@ -25,7 +25,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.response.JsonResponse;
-import org.apache.submarine.server.rest.RestConstants;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

@@ -19,8 +19,6 @@
 
 package org.apache.submarine.server.submitter.k8s;
 
-import static org.junit.Assert.fail;
-
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;

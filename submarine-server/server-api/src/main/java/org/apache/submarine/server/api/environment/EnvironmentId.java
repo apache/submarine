@@ -24,7 +24,7 @@ import org.apache.submarine.commons.utils.AbstractUniqueIdGenerator;
 /**
  * The unique id for environment. Formatter:
  * environment_${server_timestamp}_${counter} Such as:
- * environment__1577627710_0001
+ * environment_1577627710_0001
  */
 public class EnvironmentId extends AbstractUniqueIdGenerator<EnvironmentId> {
   

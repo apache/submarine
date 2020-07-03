@@ -22,10 +22,6 @@ package org.apache.submarine.server.api.spec;
 /**
  * Submarine environment spec.
  */
-/**
- * @author mani
- *
- */
 public class EnvironmentSpec {
 
   

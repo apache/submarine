@@ -20,6 +20,8 @@ package org.apache.submarine.server.workbench.database.entity;
 
 import java.math.BigInteger;
 
+import org.apache.submarine.server.database.entity.BaseEntity;
+
 /*
 # +-------+----------+--------------+---------------+------+--------+------------------+
 # | key   | value    | worker_index | timestamp     | step | is_nan | job_name         |

@@ -423,21 +423,21 @@
       </exclusions>
       <scope>test</scope>
     </dependency>
-    <dependency>
-    	<groupId>org.apache.httpcomponents</groupId>
-    	<artifactId>httpclient</artifactId>
-    	<version>${httpclient.version}</version>
-    	<exclusions>
-        	<exclusion>
-         		<groupId>commons-codec</groupId>
-          		<artifactId>commons-codec</artifactId>
-        	</exclusion>
-   		</exclusions>
+	<dependency>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpclient</artifactId>
+	  <version>${httpclient.version}</version>
+	  <exclusions>
+	    <exclusion>
+	      <groupId>commons-codec</groupId>
+	      <artifactId>commons-codec</artifactId>
+	 	</exclusion>
+	  </exclusions>
 	</dependency>
 	<dependency>
-   		<groupId>org.apache.httpcomponents</groupId>
-    	<artifactId>httpcore</artifactId>
-    	<version>${httpcore.version}</version>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpcore</artifactId>
+	  <version>${httpcore.version}</version>
 	</dependency>
     <dependency>
       <groupId>org.eclipse.jgit</groupId>

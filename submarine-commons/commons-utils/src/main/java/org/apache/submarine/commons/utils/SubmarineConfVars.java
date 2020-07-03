@@ -69,8 +69,8 @@ public class SubmarineConfVars {
     SUBMARINE_RUNTIME_CLASS("submarine.runtime.class",
         "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"),
     SUBMARINE_SUBMITTER("submarine.submitter", "k8s"),
-   ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", "4.0.1"),
-   ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", "4.10.10");
+    ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", "4.0.1"),
+    ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", "4.10.10");
 
     private String varName;
     @SuppressWarnings("rawtypes")
