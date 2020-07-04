@@ -17,7 +17,7 @@ set -e
 hadoop_v=2.9.2
 spark_v=2.3.4
 
-submarine_v=${submarine_version:-"0.4.0"}
+submarine_v=${submarine_version:-"0.5.0-SNAPSHOT"}
 echo "Using submarine version: $submarine_v"
 
 image_name="local/mini-submarine:${submarine_v}"

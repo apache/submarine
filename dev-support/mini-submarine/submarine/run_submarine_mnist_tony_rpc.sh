@@ -47,7 +47,7 @@ else
   WORKER_CMD="myvenv.zip/venv/bin/python mnist_distributed.py --steps 2 --data_dir /tmp/data --working_dir /tmp/mode"
 fi
 
-SUBMARINE_VERSION=${SUBMARINE_VER:-"0.4.0"}
+SUBMARINE_VERSION=${SUBMARINE_VER:-"0.5.0-SNAPSHOT"}
 
 HADOOP_VERSION=2.9
 
