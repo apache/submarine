@@ -59,9 +59,7 @@ public class MLJobConverter {
       if (conditions != null && conditions.size() > 1) {
         experiment.setStatus(Experiment.Status.STATUS_RUNNING.getValue());
         for (V1JobCondition condition : conditions) {
-          if (Boolean.parseBoolean(condition.getStatus())
-              && condition.getType().toLowerCase().equals(
-              "running")) {
+          if (condition.getType().toLowerCase().equals("running")) {
             dateTime = condition.getLastTransitionTime();
             experiment.setRunningTime(dateTime.toString());
             break;
