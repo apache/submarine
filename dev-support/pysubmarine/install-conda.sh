@@ -14,7 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -ex
+set -euo pipefail
+set -x
 
 wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O "$HOME"/miniconda.sh;
 bash "$HOME"/miniconda.sh -b -p "$HOME"/miniconda
