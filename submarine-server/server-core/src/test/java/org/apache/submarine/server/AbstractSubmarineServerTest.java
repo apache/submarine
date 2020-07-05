@@ -16,12 +16,13 @@
  */
 package org.apache.submarine.server;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.URL;
 import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
@@ -502,9 +503,15 @@ public abstract class AbstractSubmarineServerTest {
   }
 
   protected String loadContent(String resourceName) throws Exception {
-    URL fileUrl = this.getClass().getResource("/" + resourceName);
-    LOG.info("Resource file: " + fileUrl);
-    return FileUtils.readFileToString(new File(fileUrl.toURI()),
-        StandardCharsets.UTF_8);
+    StringBuilder content = new StringBuilder();
+    InputStream inputStream =
+        this.getClass().getClassLoader().getResourceAsStream(resourceName);
+    BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
+    String l;
+    while ((l = r.readLine()) != null) {
+      content.append(l).append("\n");
+    }
+    inputStream.close();
+    return content.toString();
   }
 }
