@@ -186,6 +186,7 @@
               </label>
               <label for="experimentName"></label>
               <input
+                nz-input
                 type="text"
                 id="experimentName"
                 style="margin-top: 32px; width: 350px;"
@@ -200,7 +201,8 @@
               </label>
               <label>
                 <textarea
-                  rows="6"
+                  nz-input
+                  [nzAutosize]="{ minRows: 3, maxRows: 6 }"
                   class="form-control"
                   style="margin-top: 32px; width: 350px;"
                   formControlName="description"
@@ -212,17 +214,17 @@
             <div>
               <label class="form-label">
                 <span class="red-star">*</span>
-                Experiment Spec:
+                Frameworks:
               </label>
               <nz-select
-                formControlName="experimentSpec"
+                formControlName="frameworks"
                 nzPlaceHolder="Choose"
                 style="width: 350px; margin-top: 30px;"
               >
                 <nz-option
-                  *ngFor="let experimentSpec of ExperimentSpecs"
-                  [nzValue]="experimentSpec"
-                  [nzLabel]="experimentSpec"
+                  *ngFor="let framework of frameworks"
+                  [nzValue]="framework"
+                  [nzLabel]="framework"
                 ></nz-option>
               </nz-select>
             </div>

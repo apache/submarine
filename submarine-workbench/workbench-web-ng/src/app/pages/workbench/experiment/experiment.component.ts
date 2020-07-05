@@ -45,7 +45,8 @@ export class ExperimentComponent implements OnInit {
   okText = 'Next Step';
   isVisible = false;
 
-  ExperimentSpecs = ['Adhoc', 'Predefined'];
+  // ExperimentSpecs = ['Adhoc', 'Predefined'];
+  frameworks = ['Tensorflow', 'Pytorch'];
   ruleTemplates = ['Template1', 'Template2'];
   ruleTypes = ['Strong', 'Weak'];
   scheduleCycles = ['Month', 'Week'];
@@ -61,7 +62,8 @@ export class ExperimentComponent implements OnInit {
     this.createExperiment = new FormGroup({
       experimentName: new FormControl(null, Validators.required),
       description: new FormControl(null, [Validators.required]),
-      experimentSpec: new FormControl('Adhoc'),
+      // experimentSpec: new FormControl('Adhoc'),
+      frameworks: new FormControl('', [Validators.required]),
       ruleTemplate: new FormControl('Template1'),
       ruleType: new FormControl('Strong'),
       startDate: new FormControl(new Date()),
