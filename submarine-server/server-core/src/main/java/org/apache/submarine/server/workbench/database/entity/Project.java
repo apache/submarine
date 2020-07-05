@@ -18,6 +18,7 @@
  */
 package org.apache.submarine.server.workbench.database.entity;
 
+import org.apache.submarine.server.database.entity.BaseEntity;
 import org.apache.submarine.server.workbench.annotation.Dict;
 
 import java.util.ArrayList;

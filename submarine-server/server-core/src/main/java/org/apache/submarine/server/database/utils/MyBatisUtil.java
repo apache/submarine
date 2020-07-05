@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.database;
+package org.apache.submarine.server.database.utils;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -34,33 +34,39 @@ public class MyBatisUtil {
   private static final Logger LOG = LoggerFactory.getLogger(MyBatisUtil.class);
 
   private static SqlSessionFactory sqlSessionFactory;
+  private static SqlSessionFactory metastoreSqlSessionFactory;
 
   static {
+    SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+    sqlSessionFactory = buildSqlSessionFactory("mybatis-config.xml",
+        conf.getJdbcUrl(), conf.getJdbcUserName(), conf.getJdbcPassword());
+    metastoreSqlSessionFactory = buildSqlSessionFactory(
+        "mybatis-config-metastore.xml", conf.getMetastoreJdbcUrl(),
+        conf.getMetastoreJdbcUserName(), conf.getMetastoreJdbcPassword());
+  }
+
+  private static SqlSessionFactory buildSqlSessionFactory(String configFile,
+      String jdbcUrl, String jdbcUserName, String jdbcPassword) {
     Reader reader = null;
+    SqlSessionFactory sqlSessionFactory = null;
     try {
       try {
-        reader = Resources.getResourceAsReader("mybatis-config.xml");
+        reader = Resources.getResourceAsReader(configFile);
       } catch (IOException e) {
         LOG.error(e.getMessage(), e);
         throw new RuntimeException(e.getMessage());
       }
-
-      checkCalledByTestMethod();
-
-      SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-      String jdbcClassName = conf.getJdbcDriverClassName();
-      String jdbcUrl = conf.getJdbcUrl();
-      String jdbcUserName = conf.getJdbcUserName();
-      String jdbcPassword = conf.getJdbcPassword();
-      LOG.info("MyBatisUtil -> jdbcClassName: {}, jdbcUrl: {}, jdbcUserName: {}, jdbcPassword: {}",
+      checkCalledByTestMethod(jdbcUrl, jdbcUserName, jdbcPassword);
+      String jdbcClassName =
+          SubmarineConfiguration.getInstance().getJdbcDriverClassName();
+      LOG.info(
+          "MyBatisUtil -> jdbcClassName: {}, jdbcUrl: {}, jdbcUserName: {}, jdbcPassword: {}",
           jdbcClassName, jdbcUrl, jdbcUserName, jdbcPassword);
-
       Properties props = new Properties();
       props.setProperty("jdbc.driverClassName", jdbcClassName);
       props.setProperty("jdbc.url", jdbcUrl);
       props.setProperty("jdbc.username", jdbcUserName);
       props.setProperty("jdbc.password", jdbcPassword);
-
       sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, props);
     } finally {
       try {
@@ -71,6 +77,7 @@ public class MyBatisUtil {
         LOG.error(e.getMessage(), e);
       }
     }
+    return sqlSessionFactory;
   }
 
   /**
@@ -81,25 +88,31 @@ public class MyBatisUtil {
   public static SqlSession getSqlSession() {
     return sqlSessionFactory.openSession();
   }
+  
+  public static SqlSession getMetastoreSqlSession() {
+    return metastoreSqlSessionFactory.openSession();
+  }
 
-  private static void checkCalledByTestMethod() {
-    StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+  private static void checkCalledByTestMethod(String jdbcUrl,
+      String jdbcUserName, String jdbcPassword) {
+    StackTraceElement[] stackTraceElements =
+        Thread.currentThread().getStackTrace();
     for (StackTraceElement element : stackTraceElements) {
       if (element.getClassName().endsWith("Test")) {
-        usingTestDatabase();
+        usingTestDatabase(jdbcUrl, jdbcUserName, jdbcPassword);
         return;
       }
     }
   }
 
-  private static void usingTestDatabase() {
+  private static void usingTestDatabase(String jdbcUrl, String jdbcUserName,
+      String jdbcPassword) {
     LOG.info("Run the test unit using the test database");
-    // Run the test unit using the test database
+    String jdbcPropertiesSuffix = "_test";
+    String finalJdbcUrl = jdbcUrl.replace("?", jdbcPropertiesSuffix + "?");
     SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-    conf.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/submarine_test?" +
-        "useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;" +
-        "failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false");
-    conf.setJdbcUserName("submarine_test");
-    conf.setJdbcPassword("password_test");
+    conf.setJdbcUrl(finalJdbcUrl);
+    conf.setJdbcUserName(jdbcUserName + jdbcPropertiesSuffix);
+    conf.setJdbcPassword(jdbcPassword + jdbcPropertiesSuffix);
   }
 }

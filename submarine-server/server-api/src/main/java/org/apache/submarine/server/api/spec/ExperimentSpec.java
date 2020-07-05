@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class ExperimentSpec {
   private ExperimentMeta meta;
-  private Environment environment;
+  private EnvironmentSpec environment;
   private Map<String, ExperimentTaskSpec> spec;
 
   public ExperimentSpec() {
@@ -41,12 +41,12 @@ public class ExperimentSpec {
     this.meta = meta;
   }
 
-  public Environment getEnvironment() {
+  public EnvironmentSpec getEnvironment() {
     return environment;
   }
 
-  public void setEnvironment(Environment environment) {
-    this.environment = environment;
+  public void setEnvironment(EnvironmentSpec environmentSpec) {
+    this.environment = environmentSpec;
   }
 
   public Map<String, ExperimentTaskSpec> getSpec() {

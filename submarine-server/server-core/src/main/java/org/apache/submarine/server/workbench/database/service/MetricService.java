@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.workbench.database.service;
 
-import org.apache.submarine.server.workbench.database.MyBatisUtil;
+import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.workbench.database.entity.Metric;
 import org.apache.submarine.server.workbench.database.mappers.MetricMapper;
 import org.slf4j.Logger;

@@ -19,19 +19,36 @@
 
 package org.apache.submarine.rest;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.apache.commons.httpclient.methods.DeleteMethod;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.submarine.server.AbstractSubmarineServerTest;
+import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.api.experiment.ExperimentId;
+import org.apache.submarine.server.gson.ExperimentIdDeserializer;
+import org.apache.submarine.server.gson.ExperimentIdSerializer;
+import org.apache.submarine.server.api.environment.Environment;
+import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.rest.RestConstants;
+import org.joda.time.DateTime;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import io.kubernetes.client.ApiClient;
@@ -41,23 +58,6 @@ import io.kubernetes.client.JSON;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.io.FileUtils;
-import org.apache.submarine.server.AbstractSubmarineServerTest;
-import org.apache.submarine.server.api.experiment.Experiment;
-import org.apache.submarine.server.api.experiment.ExperimentId;
-import org.apache.submarine.server.gson.ExperimentIdDeserializer;
-import org.apache.submarine.server.gson.ExperimentIdSerializer;
-import org.apache.submarine.server.response.JsonResponse;
-import org.apache.submarine.server.rest.RestConstants;
-import org.joda.time.DateTime;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("rawtypes")
 public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
@@ -113,6 +113,36 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     String body = loadContent("tensorflow/tf-mnist-req.yaml");
     String patchBody = loadContent("tensorflow/tf-mnist-patch-req.yaml");
     run(body, patchBody, "application/yaml");
+  }
+  
+  @Test
+  public void testTensorFlowUsingEnvWithJsonSpec() throws Exception {
+
+    // Create environment
+    String envBody = loadContent("environment/test_env_1.json");
+    run(envBody, "application/json");
+
+    Gson gson = new GsonBuilder().create();
+    GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        getMethod.getStatusCode());
+
+    String json = getMethod.getResponseBodyAsString();
+    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        jsonResponse.getCode());
+
+    Environment getEnvironment =
+        gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
+    Assert.assertEquals(ENV_NAME, getEnvironment.getEnvironmentSpec().getName());
+
+    String body = loadContent("tensorflow/tf-mnist-with-env-req.json");
+    String patchBody =
+        loadContent("tensorflow/tf-mnist-with-env-patch-req.json");
+    run(getEnvironment, body, patchBody, "application/json");
+
+    // Delete environment
+    deleteEnvironment();
   }
 
   @Test
@@ -171,6 +201,54 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     Experiment deletedExperiment = gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
     verifyDeleteJobApiResult(createdExperiment, deletedExperiment);
   }
+  
+  private void run(Environment expectedEnv, String body, String patchBody,
+      String contentType) throws Exception {
+    // create
+    LOG.info("Create training job using Environment by Job REST API");
+    PostMethod postMethod = httpPost(BASE_API_PATH, body, contentType);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        postMethod.getStatusCode());
+
+    String json = postMethod.getResponseBodyAsString();
+    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        jsonResponse.getCode());
+
+    Experiment createdExperiment = 
+        gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
+    verifyCreateJobApiResult(createdExperiment);
+
+    // find
+    GetMethod getMethod =
+        httpGet(BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        getMethod.getStatusCode());
+
+    json = getMethod.getResponseBodyAsString();
+    jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        jsonResponse.getCode());
+
+    Experiment foundExperiment =
+        gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
+    verifyGetJobApiResult(createdExperiment, foundExperiment);
+
+    // delete
+    DeleteMethod deleteMethod =
+        httpDelete(BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        deleteMethod.getStatusCode());
+
+    json = deleteMethod.getResponseBodyAsString();
+    jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        jsonResponse.getCode());
+
+    Experiment deletedExperiment =
+        gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
+    verifyDeleteJobApiResult(createdExperiment, deletedExperiment);
+  }
 
   private void verifyCreateJobApiResult(Experiment createdExperiment) throws Exception {
     Assert.assertNotNull(createdExperiment.getUid());
@@ -178,6 +256,16 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     Assert.assertEquals(Experiment.Status.STATUS_ACCEPTED.getValue(), createdExperiment.getStatus());
 
     assertK8sResultEquals(createdExperiment);
+  }
+  
+  private void verifyCreateJobApiResult(Environment env, Experiment createdJob)
+      throws Exception {
+    Assert.assertNotNull(createdJob.getUid());
+    Assert.assertNotNull(createdJob.getAcceptedTime());
+    Assert.assertEquals(Experiment.Status.STATUS_ACCEPTED.getValue(),
+        createdJob.getStatus());
+
+    assertK8sResultEquals(env, createdJob);
   }
 
   private void verifyGetJobApiResult(Experiment createdExperiment, Experiment foundExperiment) throws Exception {
@@ -189,9 +277,60 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     assertK8sResultEquals(foundExperiment);
   }
 
+  private void assertK8sResultEquals(Environment env, Experiment experiment) throws Exception {
+    KfOperator operator = kfOperatorMap.get(experiment.getSpec().getMeta().getFramework().toLowerCase());
+    JsonObject rootObject =
+        getJobByK8sApi(operator.getGroup(), operator.getVersion(),
+            operator.getNamespace(), operator.getPlural(), experiment.getName());
+    JsonArray actualCommand = (JsonArray) rootObject.getAsJsonObject("spec")
+        .getAsJsonObject("tfReplicaSpecs").getAsJsonObject("Worker")
+        .getAsJsonObject("template").getAsJsonObject("spec")
+        .getAsJsonArray("initContainers").get(0).getAsJsonObject()
+        .get("command");
+
+    JsonArray expected = new JsonArray();
+    expected.add("/bin/bash");
+    expected.add("-c");
+    String initialCommand =
+        "conda create -n " + env.getEnvironmentSpec().getKernelSpec().getName();
+
+    String channels = "";
+    for (String channel : env.getEnvironmentSpec().getKernelSpec()
+        .getChannels()) {
+      channels += " -c " + channel;
+    }
+
+    String dependencies = "";
+    for (String dependency : env.getEnvironmentSpec().getKernelSpec()
+        .getDependencies()) {
+      dependencies += " " + dependency;
+    }
+
+    String fullCommand =
+        initialCommand + channels + dependencies + " && echo \"source activate "
+            + env.getEnvironmentSpec().getKernelSpec().getName()
+            + "\" > ~/.bashrc" + " && PATH=/opt/conda/envs/env/bin:$PATH";
+    expected.add(fullCommand);
+    Assert.assertEquals(expected, actualCommand);
+
+    JsonObject metadataObject = rootObject.getAsJsonObject("metadata");
+
+    String uid = metadataObject.getAsJsonPrimitive("uid").getAsString();
+    LOG.info("Uid from Job REST is {}", experiment.getUid());
+    LOG.info("Uid from K8s REST is {}", uid);
+    Assert.assertEquals(experiment.getUid(), uid);
+
+    String creationTimestamp =
+        metadataObject.getAsJsonPrimitive("creationTimestamp").getAsString();
+    Date expectedDate = new DateTime(experiment.getAcceptedTime()).toDate();
+    Date actualDate = new DateTime(creationTimestamp).toDate();
+    LOG.info("CreationTimestamp from Job REST is {}", expectedDate);
+    LOG.info("CreationTimestamp from K8s REST is {}", actualDate);
+    Assert.assertEquals(expectedDate, actualDate);
+  }
+  
   private void assertK8sResultEquals(Experiment experiment) throws Exception {
-    KfOperator operator = kfOperatorMap.get(experiment.getSpec().getMeta().getFramework()
-        .toLowerCase());
+    KfOperator operator = kfOperatorMap.get(experiment.getSpec().getMeta().getFramework().toLowerCase());
     JsonObject rootObject = getJobByK8sApi(operator.getGroup(), operator.getVersion(),
         operator.getNamespace(), operator.getPlural(), experiment.getName());
     JsonObject metadataObject = rootObject.getAsJsonObject("metadata");
@@ -265,12 +404,6 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     String json = getMethod.getResponseBodyAsString();
     JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
-  }
-
-  String loadContent(String resourceName) throws Exception {
-    URL fileUrl = this.getClass().getResource("/" + resourceName);
-    LOG.info("Resource file: " + fileUrl);
-    return FileUtils.readFileToString(new File(fileUrl.toURI()), StandardCharsets.UTF_8);
   }
 
   /**

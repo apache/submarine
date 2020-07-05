@@ -18,6 +18,8 @@
  */
 package org.apache.submarine.server.workbench.database.entity;
 
+import org.apache.submarine.server.database.entity.BaseEntity;
+
 public class TeamMember extends BaseEntity {
 
   private String teamId;

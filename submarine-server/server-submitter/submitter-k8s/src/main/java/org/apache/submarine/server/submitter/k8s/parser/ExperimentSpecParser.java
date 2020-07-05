@@ -26,10 +26,16 @@ import io.kubernetes.client.models.V1ObjectMeta;
 import io.kubernetes.client.models.V1PodSpec;
 import io.kubernetes.client.models.V1PodTemplateSpec;
 import io.kubernetes.client.models.V1ResourceRequirements;
+
+import org.apache.submarine.commons.utils.SubmarineConfVars;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
+import org.apache.submarine.server.api.spec.EnvironmentSpec;
+import org.apache.submarine.server.environment.EnvironmentManager;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
@@ -48,6 +54,9 @@ import java.util.Map;
 
 public class ExperimentSpecParser {
 
+  private static SubmarineConfiguration conf =
+      SubmarineConfiguration.getInstance();
+  
   public static MLJob parseJob(ExperimentSpec experimentSpec) throws InvalidSpecException {
     String framework = experimentSpec.getMeta().getFramework();
     if (ExperimentMeta.SupportedMLFramework.TENSORFLOW.
@@ -132,8 +141,8 @@ public class ExperimentSpecParser {
     return tfJobSpec;
   }
 
-  private static V1PodTemplateSpec parseTemplateSpec(ExperimentTaskSpec taskSpec,
-      ExperimentSpec experimentSpec) {
+  private static V1PodTemplateSpec parseTemplateSpec(
+      ExperimentTaskSpec taskSpec, ExperimentSpec experimentSpec) {
     V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
     V1PodSpec podSpec = new V1PodSpec();
     List<V1Container> containers = new ArrayList<>();
@@ -143,7 +152,9 @@ public class ExperimentSpecParser {
     if (taskSpec.getImage() != null) {
       container.setImage(taskSpec.getImage());
     } else {
-      container.setImage(experimentSpec.getEnvironment().getImage());
+      if (experimentSpec.getEnvironment().getImage() != null) {
+        container.setImage(experimentSpec.getEnvironment().getImage());
+      }
     }
     // cmd
     if (taskSpec.getCmd() != null) {
@@ -158,6 +169,72 @@ public class ExperimentSpecParser {
     container.setEnv(parseEnvVars(taskSpec, experimentSpec.getMeta().getEnvVars()));
     containers.add(container);
     podSpec.setContainers(containers);
+
+    /**
+     * Init Containers
+     */
+    if (experimentSpec.getEnvironment().getName() != null) {
+      Environment environment = getEnvironment(experimentSpec);
+      if (environment != null) {
+        EnvironmentSpec environmentSpec = environment.getEnvironmentSpec();
+        List<V1Container> initContainers = new ArrayList<>();
+        V1Container initContainer = new V1Container();
+        initContainer.setName(environment.getEnvironmentSpec().getName());
+        initContainer.setImage(environmentSpec.getDockerImage());
+
+        if (environmentSpec.getKernelSpec().getDependencies().size() > 0) {
+
+          String minVersion = "minVersion=\""
+              + conf.getString(
+                  SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION)
+              + "\";";
+          String maxVersion = "maxVersion=\""
+              + conf.getString(
+                  SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION)
+              + "\";";
+          String currentVersion = "currentVersion=$(conda -V | cut -f2 -d' ');";
+          StringBuffer condaVersionValidationCommand = new StringBuffer();
+          condaVersionValidationCommand.append(minVersion);
+          condaVersionValidationCommand.append(maxVersion);
+          condaVersionValidationCommand.append(currentVersion);
+          condaVersionValidationCommand.append("if [ \"$(printf '%s\\n' "
+              + "\"$minVersion\" \"$maxVersion\" \"$currentVersion\" | sort -V "
+              + "| head -n2 | tail -1 )\" != \"$currentVersion\" ]; then echo "
+              + "\"Conda version should be between " + minVersion + " and "
+              + maxVersion + "\"; exit 1; else echo \"Conda current version is "
+                  + currentVersion + ". Moving forward with env creation and "
+                      + "activation.\"; fi");
+
+          StringBuffer createCommand = new StringBuffer();
+          String condaEnvironmentName =
+              environmentSpec.getKernelSpec().getName();
+
+          createCommand.append("conda create -n " + condaEnvironmentName);
+          for (String channel : environmentSpec.getKernelSpec().getChannels()) {
+            createCommand.append(" ");
+            createCommand.append("-c");
+            createCommand.append(" ");
+            createCommand.append(channel);
+          }
+          for (String dependency : environmentSpec.getKernelSpec()
+              .getDependencies()) {
+            createCommand.append(" ");
+            createCommand.append(dependency);
+          }
+          String activateCommand = "echo \"source activate "
+              + condaEnvironmentName + "\" > ~/.bashrc";
+          String pathCommand = "PATH=/opt/conda/envs/env/bin:$PATH";
+          String finalCommand = condaVersionValidationCommand.toString() + 
+              " && " + createCommand.toString() + " && "
+              + activateCommand + " && " + pathCommand;
+          initContainer.addCommandItem("/bin/bash");
+          initContainer.addCommandItem("-c");
+          initContainer.addCommandItem(finalCommand);
+        }
+        initContainers.add(initContainer);
+        podSpec.setInitContainers(initContainers);
+      }
+    }
     templateSpec.setSpec(podSpec);
     return templateSpec;
   }
@@ -196,5 +273,16 @@ public class ExperimentSpecParser {
       resources.put("nvidia.com/gpu", new Quantity(taskSpec.getGpu()));
     }
     return resources;
+  }
+  
+  private static Environment getEnvironment(ExperimentSpec experimentSpec) {
+    if (experimentSpec.getEnvironment().getName() != null) {
+      EnvironmentManager environmentManager = EnvironmentManager.getInstance();
+      Environment environment = environmentManager
+          .getEnvironment(experimentSpec.getEnvironment().getName());
+      return environment;
+    } else {
+      return null;
+    }
   }
 }

@@ -17,21 +17,35 @@
  * under the License.
  */
 
-package org.apache.submarine.server.api.spec;
+package org.apache.submarine.server.api.environment;
+
+import org.apache.submarine.server.api.spec.EnvironmentSpec;
 
 public class Environment {
-  private String image;
 
   /**
-   * Get the image for the experiment. If the {@link ExperimentTaskSpec#getImage()} not
-   * specified the image replaced with it.
-   * @return image
+   * ID of the environment
    */
-  public String getImage() {
-    return image;
+  private EnvironmentId environmentId;
+  
+  /**
+   * Environment Spec
+   */
+  private EnvironmentSpec environmentSpec;
+
+  public EnvironmentId getEnvironmentId() {
+    return environmentId;
   }
 
-  public void setImage(String image) {
-    this.image = image;
+  public void setEnvironmentId(EnvironmentId environmentId) {
+    this.environmentId = environmentId;
+  }
+
+  public EnvironmentSpec getEnvironmentSpec() {
+    return environmentSpec;
+  }
+
+  public void setEnvironmentSpec(EnvironmentSpec environmentSpec) {
+    this.environmentSpec = environmentSpec;
   }
 }

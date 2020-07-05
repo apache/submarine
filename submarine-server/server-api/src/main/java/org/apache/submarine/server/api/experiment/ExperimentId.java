@@ -19,18 +19,15 @@
 
 package org.apache.submarine.server.api.experiment;
 
+import org.apache.submarine.commons.utils.AbstractUniqueIdGenerator;
+
 /**
  * The unique id for experiment. Formatter: experiment_${server_timestamp}_${counter}
  * Such as: experiment_1577627710_0001
  */
-public class ExperimentId implements Comparable<ExperimentId> {
+public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
   private static final String EXPERIMENT_ID_PREFIX = "experiment_";
-  private static final int EXPERIMENT_ID_MIN_DIGITS = 4;
-
-  private int id;
-
-  private long serverTimestamp;
-
+  
   /**
    * Get the object of JobId.
    * @param jobId job id string
@@ -60,90 +57,12 @@ public class ExperimentId implements Comparable<ExperimentId> {
     return experimentId;
   }
 
-  /**
-   * Get the count of job since the server started
-   * @return number
-   */
-  public int getId() {
-    return id;
-  }
-
-  /**
-   * Set the count of job
-   * @param id number
-   */
-  public void setId(int id) {
-    this.id = id;
-  }
-
-  /**
-   * Get the timestamp(s) when the server started
-   * @return timestamp(s)
-   */
-  public long getServerTimestamp() {
-    return serverTimestamp;
-  }
-
-  /**
-   * Set the server started timestamp(s)
-   * @param timestamp seconds
-   */
-  public void setServerTimestamp(long timestamp) {
-    this.serverTimestamp = timestamp;
-  }
-
-  @Override
-  public int compareTo(ExperimentId o) {
-    return this.getId() > o.getId() ? 1 : 0;
-  }
-
-  @Override
-  public int hashCode() {
-    final int prime = 371237;
-    int result = 6521;
-    result = prime * result + (int) (serverTimestamp ^ (serverTimestamp >>> 32));
-    result = prime * result + getId();
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    if (this == obj) {
-      return true;
-    }
-    ExperimentId other = (ExperimentId) obj;
-    if (this.getServerTimestamp() != other.getServerTimestamp()) {
-      return false;
-    }
-    return this.getId() == other.getId();
-  }
-
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder(64);
-    sb.append(EXPERIMENT_ID_PREFIX).append(serverTimestamp).append("_");
+    sb.append(EXPERIMENT_ID_PREFIX).append(getServerTimestamp()).append("_");
     format(sb, getId());
     return sb.toString();
   }
-
-  private void format(StringBuilder sb, long value) {
-    int minimumDigits = EXPERIMENT_ID_MIN_DIGITS;
-    if (value < 0) {
-      sb.append('-');
-      value = -value;
-    }
-
-    long tmp = value;
-    do {
-      tmp /= 10;
-    } while (--minimumDigits > 0 && tmp > 0);
-
-    for (int i = minimumDigits; i > 0; --i) {
-      sb.append('0');
-    }
-    sb.append(value);
-  }
 }
+

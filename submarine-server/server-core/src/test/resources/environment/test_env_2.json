@@ -1,0 +1,10 @@
+{
+  "name": "my-submarine-env",
+  "dockerImage" : "continuumio/miniconda3",
+  "kernelSpec" : {
+  	"name" : "team_default_python_3.7",
+  	"channels" : ["defaults"],
+  	"dependencies" : 
+  		["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0"]
+  }
+}
