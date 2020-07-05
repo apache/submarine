@@ -30,7 +30,6 @@ RUN apt-get update && \
   apt-get update && \
   apt-get -y install docker-ce
 # So no need to mount host's /var/run/docker.sock, dockerd will create in local fs
-VOLUME /var/run/docker.sock
 VOLUME /var/lib/docker
 VOLUME /var/lib/docker.sock
 
@@ -46,10 +45,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /root
 
 # Intstall conda
-ADD ./install-conda.sh /usr/local
+ADD install-conda.sh /usr/local
+ADD bootstrap.sh /usr/local
 RUN chmod 755 /usr/local/install-conda.sh && \
     bash /usr/local/install-conda.sh
 
 ENV PATH=${PATH}:/root/miniconda/bin
 
 WORKDIR /workspace
+
+ENTRYPOINT [ "/usr/local/bootstrap.sh" ]

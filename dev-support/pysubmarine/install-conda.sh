@@ -23,12 +23,13 @@ export PATH="$HOME/miniconda/bin:$PATH"
 cd "$HOME"
 # Useful for debugging any issues with conda
 conda info -a
-if [[ -n "$PYTHON_VERSION" ]]; then
+if [[ -n "${PYTHON_VERSION:-}" ]]; then
   conda create -q -n test-environment python="$PYTHON_VERSION"
 else
   conda create -q -n test-environment python=3.6
 fi
 
+export PATH="/root/miniconda/envs/test-environment/bin/python:$PATH"
 source activate test-environment
 python --version
 pip install --upgrade pip

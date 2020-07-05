@@ -25,6 +25,4 @@ SUBMARINE_PROJECT_PATH="$FWDIR/../.."
 # build image
 echo "Start building the mini-submarine docker image..."
 docker build --tag pysubmarine-ci .
-# shellcheck disable=SC2034
-command='nohup dockerd --host=unix:///var/run/docker.sock > /var/log/dockerd.log 2>&1 &'
-docker run --privileged -v "$SUBMARINE_PROJECT_PATH":/workspace -it pysubmarine-ci command
+docker run --privileged -v "$SUBMARINE_PROJECT_PATH":/workspace -it pysubmarine-ci /bin/bash
