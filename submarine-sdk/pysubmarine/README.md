@@ -21,39 +21,25 @@ tracking experiment metrics, parameters.
 
 
 ## Package setup
-- Clone repository
+- Install latest version of pysubmarine
 ```bash
 git clone https://github.com/apache/submarine.git
 cd submarine/submarine-sdk/pysubmarine
-```
-- Install pip package
-```bash
 pip install .
 ```
-- Run tests
+- Install package from pypi
 ```bash
-pytest --cov=submarine -vs
-```
-- Auto format code
-```bash
-./submarine-sdk/pysubmarine/github-actions/auto-format.sh
-```
-- Run checkstyle
-```bash
-./submarine-sdk/pysubmarine/github-actions/lint.sh
-```
-## How to generate REST SDK from swagger
-```bash
-./dev-support/pysubmarine/gen-sdk.sh
+pip install apache-submarine
 ```
 
 ## Easy-to-use model trainers
-- [FM](../../../submarine-sdk/pysubmarine/example/tensorflow/fm)
-- [DeepFM](../../../submarine-sdk/pysubmarine/example/tensorflow/deepfm)
+- [FM](https://github.com/apache/submarine/tree/master/submarine-sdk/pysubmarine/example/tensorflow/fm)
+- [DeepFM](https://github.com/apache/submarine/tree/master/submarine-sdk/pysubmarine/example/tensorflow/deepfm)
 
 ## Submarine experiment management
 Makes it easy to run distributed or non-distributed TensorFlow, PyTorch experiments on Kubernetes.
-- [mnist example](../../../submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb)
+- [mnist example](https://github.com/apache/submarine/tree/master/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb)
 
-## PySubmarine API Reference
-- [Tracking](tracking.md)
+## Development
+See [Python Development](https://github.com/apache/submarine/tree/master/docs/submarine-sdk/pysubmarine/development.md) in the documentation subproject.
+
