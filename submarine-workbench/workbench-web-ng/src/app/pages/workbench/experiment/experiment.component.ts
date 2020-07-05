@@ -46,7 +46,7 @@ export class ExperimentComponent implements OnInit {
   isVisible = false;
 
   // ExperimentSpecs = ['Adhoc', 'Predefined'];
-  frameworks = ['Tensorflow', 'Pytorch'];
+  frameworks_name = ['Tensorflow', 'Pytorch'];
   ruleTemplates = ['Template1', 'Template2'];
   ruleTypes = ['Strong', 'Weak'];
   scheduleCycles = ['Month', 'Week'];
@@ -63,9 +63,10 @@ export class ExperimentComponent implements OnInit {
       experimentName: new FormControl(null, Validators.required),
       description: new FormControl(null, [Validators.required]),
       // experimentSpec: new FormControl('Adhoc'),
-      frameworks: new FormControl('', [Validators.required]),
-      ruleTemplate: new FormControl('Template1'),
-      ruleType: new FormControl('Strong'),
+      frameworks: new FormControl('Tensorflow', [Validators.required]),
+      Namespace: new FormControl('default', [Validators.required]),
+      // ruleType: new FormControl('Strong'),
+      cmd: new FormControl('', [Validators.required]),
       startDate: new FormControl(new Date()),
       scheduleCycle: new FormControl('Month')
     });
@@ -85,19 +86,36 @@ export class ExperimentComponent implements OnInit {
     });
   }
 
-  handleOk() {
-    if (this.current === 1) {
-      this.okText = 'Submit';
-      this.current++;
-    } else if (this.current === 2) {
-      this.okText = 'Next Step';
-      this.current = 0;
-      this.isVisible = false;
-      // TODO(jasoonn): Create Real experiment
-      console.log(this.createExperiment);
-    } else {
-      this.current++;
+  // Getters of experiment request form
+  get experimentName() {
+    return this.createExperiment.get('experimentName')
+  }
+  get description() {
+    return this.createExperiment.get('description');
+  }
+  get frameworks() {
+    return this.createExperiment.get('frameworks');
+  }
+  get namespace() {
+    return this.createExperiment.get('Namespace');
+  }
+  get cmd() {
+    return this.createExperiment.get('cmd');
+  }
+  /**
+   * Check the validity of the experiment page
+   *
+  */
+  checkStatus() {
+    if (this.current == 0) {
+      return this.experimentName.invalid || this.description.invalid;
+    } else if (this.current == 1) {
+      return this.frameworks.invalid || this.namespace.invalid || this.cmd.invalid;
     }
+  }
+
+  handleOk() {
+    this.current++;
   }
 
   fetchExperimentList() {

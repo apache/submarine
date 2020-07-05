@@ -145,12 +145,13 @@
     [(nzOkText)]="okText"
     [nzOkLoading]="isOkLoading"
     (nzOnCancel)="isVisible = false"
-    [nzWidth]="740"
+    [nzWidth]="1000"
   >
     <div>
       <nz-steps [nzCurrent]="current">
         <nz-step nzTitle="Basic Information"></nz-step>
         <nz-step nzTitle="Configuration"></nz-step>
+        <nz-step nzTitle="Environment variables"></nz-step>
         <nz-step nzTitle="Scheduling Cycle"></nz-step>
       </nz-steps>
     </div>
@@ -162,7 +163,7 @@
             id="go"
             nz-button
             nzType="primary"
-            [disabled]="!(createExperiment.get('experimentName').valid && createExperiment.get('description').valid)"
+            [disabled]="checkStatus()"
             (click)="handleOk()"
           >
             {{ okText }}
@@ -190,7 +191,6 @@
                 type="text"
                 id="experimentName"
                 style="margin-top: 32px; width: 350px;"
-                class="form-control"
                 formControlName="experimentName"
               />
             </div>
@@ -203,7 +203,6 @@
                 <textarea
                   nz-input
                   [nzAutosize]="{ minRows: 3, maxRows: 6 }"
-                  class="form-control"
                   style="margin-top: 32px; width: 350px;"
                   formControlName="description"
                 ></textarea>
@@ -212,7 +211,7 @@
           </div>
           <div *ngSwitchCase="1" id="page2">
             <div>
-              <label class="form-label">
+              <label for="frameworks" class="form-label">
                 <span class="red-star">*</span>
                 Frameworks:
               </label>
@@ -222,36 +221,47 @@
                 style="width: 350px; margin-top: 30px;"
               >
                 <nz-option
-                  *ngFor="let framework of frameworks"
+                  *ngFor="let framework of frameworks_name"
                   [nzValue]="framework"
                   [nzLabel]="framework"
                 ></nz-option>
               </nz-select>
             </div>
             <div>
-              <label class="form-label">
+              <label for="Namespace" class="form-label">
                 <span class="red-star">*</span>
-                Rule Template:
+                Namespace
               </label>
-              <nz-select formControlName="ruleTemplate" nzPlaceHolder="Choose" style="width: 350px; margin-top: 30px;">
-                <nz-option
-                  *ngFor="let ruleTemplate of ruleTemplates"
-                  [nzValue]="ruleTemplate"
-                  [nzLabel]="ruleTemplate"
-                ></nz-option>
-              </nz-select>
+              <input
+                nz-input
+                name="Namespace"
+                formControlName="Namespace"
+                style="margin-top: 32px; width: 350px;"
+              >
             </div>
             <div>
-              <label class="form-label">
+              <label for="cmd" class="form-label">
                 <span class="red-star">*</span>
-                Rule Type:
+                Command:
               </label>
-              <nz-radio-group formControlName="ruleType" style="width: 350px; margin-top: 30px; margin-bottom: 30px;">
-                <label *ngFor="let ruletype of ruleTypes" nz-radio [nzValue]="ruletype">{{ ruletype }}</label>
-              </nz-radio-group>
+              <input
+                nz-input
+                name="cmd"
+                formControlName="cmd"
+                placeholder="Command to run"
+                style="margin-top: 32px; width: 350px;"
+              >
             </div>
           </div>
           <div *ngSwitchCase="2">
+            <div>
+              <label class="pg3-form-label">
+                <span class="red-star">*</span>
+                Environment variables
+              </label>
+            </div>
+          </div>
+          <div *ngSwitchCase="3">
             <div>
               <label class="pg3-form-label">
                 <span class="red-star">*</span>
