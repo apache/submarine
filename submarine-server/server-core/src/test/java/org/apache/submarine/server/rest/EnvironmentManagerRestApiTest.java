@@ -70,7 +70,7 @@ public class EnvironmentManagerRestApiTest extends AbstractSubmarineServerTest {
     String updatedBody = loadContent("environment/test_env_2.json");
     
     update(updatedBody, "application/json");
-    //deleteEnvironment();
+    deleteEnvironment();
   }
 
   @Test
