@@ -67,11 +67,12 @@ kubectl get pods
 ```
 
 ```bash
-NAME                                 READY     STATUS    RESTARTS   AGE
-pytorch-operator-54854bf847-x65nk    1/1       Running   0          5m
-submarine-database-5f74f747d-dzmf6   1/1       Running   0          5m
-submarine-server-6f449bc967-cqkkv    1/1       Running   0          5m
-tf-job-operator-c9cd7ccbd-4dzcs      1/1       Running   0          5m
+NAME                                              READY   STATUS    RESTARTS   AGE
+notebook-controller-deployment-5db8b6cbf7-k65jm   1/1     Running   0          5s
+pytorch-operator-7ff5d96d59-gx7f5                 1/1     Running   0          5s
+submarine-database-8d95d74f7-ntvqp                1/1     Running   0          5s
+submarine-server-b6cd4787b-7bvr7                  1/1     Running   0          5s
+tf-job-operator-7844656dd-lfgmd                   1/1     Running   0          5s
 ```
 
 ### Enable local access to Submarine Server
@@ -111,3 +112,6 @@ Build submarine database image:
 ```bash
 ./dev-support/docker-images/database/build.sh
 ```
+
+### Using Jupyter notebooks in Submarine
+Please refer to [Notebook guide](notebook.md) if you want to use jupyter notebook in Submarine.
