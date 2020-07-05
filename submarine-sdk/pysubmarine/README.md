@@ -33,8 +33,8 @@ pip install apache-submarine
 ```
 
 ## Easy-to-use model trainers
-- [FM](https://github.com/apache/submarine/tree/master/submarine-sdk/pysubmarine/example/tensorflow/deepfm)
-- [DeepFM](https://github.com/apache/submarine/tree/master/submarine-sdk/pysubmarine/example/tensorflow/fm)
+- [FM](https://github.com/apache/submarine/tree/master/submarine-sdk/pysubmarine/example/tensorflow/fm)
+- [DeepFM](https://github.com/apache/submarine/tree/master/submarine-sdk/pysubmarine/example/tensorflow/deepfm)
 
 ## Submarine experiment management
 Makes it easy to run distributed or non-distributed TensorFlow, PyTorch experiments on Kubernetes.
