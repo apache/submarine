@@ -173,41 +173,42 @@
         </div>
         <div [ngSwitch]="current" style="margin-top: 30px;">
           <div *ngSwitchCase="0">
-            <div>
-              <label class="form-label">
+            <div class="single-field-group">
+              <label for="experimentName">
                 <span class="red-star">*</span>
                 Experiment Name:
               </label>
-              <label for="experimentName"></label>
               <input
                 nz-input
                 type="text"
+                name="experimentName"
                 id="experimentName"
-                style="margin-top: 32px; width: 350px;"
                 formControlName="experimentName"
               />
             </div>
-            <div>
-              <label class="form-label">
+            <div class="single-field-group">
+              <label for="description">
                 <span class="red-star">*</span>
                 Description:
               </label>
-              <label>
-                <textarea
-                  nz-input
-                  [nzAutosize]="{ minRows: 3, maxRows: 6 }"
-                  style="margin-top: 32px; width: 350px;"
-                  formControlName="description"
-                ></textarea>
-              </label>
+              <textarea
+                nz-input
+                [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+                name="description"
+                formControlName="description"
+              ></textarea>
             </div>
           
-            <div>
-              <label for="frameworks" class="form-label">
+            <div class="single-field-group">
+              <label for="frameworks">
                 <span class="red-star">*</span>
                 Frameworks:
               </label>
-              <nz-select formControlName="frameworks" nzPlaceHolder="Choose" style="width: 350px; margin-top: 30px;">
+              <nz-select
+                formControlName="frameworks"
+                nzPlaceHolder="Choose"
+                style="width: 48%"
+              >
                 <nz-option
                   *ngFor="let framework of frameworkNames"
                   [nzValue]="framework"
@@ -215,15 +216,19 @@
                 ></nz-option>
               </nz-select>
             </div>
-            <div>
-              <label for="Namespace" class="form-label">
+            <div class="single-field-group">
+              <label for="Namespace">
                 <span class="red-star">*</span>
                 Namespace
               </label>
-              <input nz-input name="Namespace" formControlName="Namespace" style="margin-top: 32px; width: 350px;" />
+              <input
+                nz-input
+                name="Namespace"
+                formControlName="namespace"
+              />
             </div>
-            <div>
-              <label for="cmd" class="form-label">
+            <div class="single-field-group">
+              <label for="cmd">
                 <span class="red-star">*</span>
                 Command:
               </label>
@@ -232,11 +237,22 @@
                 name="cmd"
                 formControlName="cmd"
                 placeholder="Command to run"
-                style="margin-top: 32px; width: 350px;"
               />
             </div>
           </div>
           <div *ngSwitchCase="1">
+            <div class="single-field-group">
+              <label for="image">
+                <span class="red-star">*</span>
+                Image:
+              </label>
+              <input
+                nz-input
+                name="image"
+                formControlName="image"
+                placeholder="Image to use"
+              />
+            </div>
             <div>
               <button nz-button type="default" (click)="createEnvInput()">
                 Add new
@@ -246,6 +262,9 @@
                   <li *ngIf="indexInRange(i)" [formGroupName]="i" class="env-input-group">
                     <input nz-input placeholder="Key" formControlName="key" />
                     <input nz-input placeholder="Value" formControlName="value" />
+                    <div class="alert-message" *ngIf="env.get('key').dirty && env.get('value').dirty && env.getError('envMissing')">
+                      {{ env.getError('envMissing') }}
+                    </div>
                   </li>
                 </ng-container>
               </ul>

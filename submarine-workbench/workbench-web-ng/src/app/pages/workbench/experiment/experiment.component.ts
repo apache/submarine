@@ -73,6 +73,7 @@ export class ExperimentComponent implements OnInit {
       // ruleType: new FormControl('Strong'),
       cmd: new FormControl('', [Validators.required]),
       envs: new FormArray([]),
+      image: new FormControl('', [Validators.required]),
       startDate: new FormControl(new Date()),
       scheduleCycle: new FormControl('Month')
     });
@@ -111,17 +112,21 @@ export class ExperimentComponent implements OnInit {
   get envs() {
     return this.createExperiment.get('envs') as FormArray;
   }
+  get image() {
+    return this.createExperiment.get('image');
+  }
   /**
    * Check the validity of the experiment page
    *
    */
   checkStatus() {
     if (this.current == 0) {
-      return this.experimentName.invalid || this.description.invalid;
+      // return this.experimentName.invalid || this.description.invalid || this.frameworks.invalid || this.namespace.invalid || this.cmd.invalid;
+      return false;
     } else if (this.current == 1) {
-      return this.frameworks.invalid || this.namespace.invalid || this.cmd.invalid;
+      return this.image.invalid || this.envs.invalid;
     } else if (this.current == 2) {
-      return this.envs.invalid;
+      return true;
     }
   }
 
