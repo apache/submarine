@@ -145,14 +145,13 @@
     [(nzOkText)]="okText"
     [nzOkLoading]="isOkLoading"
     (nzOnCancel)="isVisible = false"
-    [nzWidth]="800"
+    [nzWidth]="900"
   >
     <div>
       <nz-steps [nzCurrent]="current">
-        <nz-step nzTitle="Basic Information"></nz-step>
-        <nz-step nzTitle="Configuration"></nz-step>
-        <nz-step nzTitle="Env variables"></nz-step>
-        <nz-step nzTitle="Scheduling Cycle"></nz-step>
+        <nz-step nzTitle="Meta"></nz-step>
+        <nz-step nzTitle="Env"></nz-step>
+        <nz-step nzTitle="Spec"></nz-step>
       </nz-steps>
     </div>
     <div>
@@ -202,8 +201,7 @@
                 ></textarea>
               </label>
             </div>
-          </div>
-          <div *ngSwitchCase="1" id="page2">
+          
             <div>
               <label for="frameworks" class="form-label">
                 <span class="red-star">*</span>
@@ -238,7 +236,7 @@
               />
             </div>
           </div>
-          <div *ngSwitchCase="2">
+          <div *ngSwitchCase="1">
             <div>
               <button nz-button type="default" (click)="createEnvInput()">
                 Add new
@@ -257,36 +255,6 @@
                 [nzTotal]="envs.controls.length"
                 nzSimple
               ></nz-pagination>
-            </div>
-            <div *ngSwitchCase="3">
-              <div>
-                <label class="pg3-form-label">
-                  <span class="red-star">*</span>
-                  Start Date:
-                </label>
-                <nz-date-picker
-                  [nzFormat]="'yyyy/MM/dd'"
-                  formControlName="startDate"
-                  style="width: 350px; margin-top: 30px;"
-                ></nz-date-picker>
-              </div>
-              <div>
-                <label class="pg3-form-label">
-                  <span class="red-star">*</span>
-                  Schedule Cycle:
-                </label>
-                <nz-select
-                  formControlName="scheduleCycle"
-                  nzPlaceHolder="Choose"
-                  style="width: 195px; margin-top: 30px; margin-bottom: 30px;"
-                >
-                  <nz-option
-                    *ngFor="let scheduleCycle of scheduleCycles"
-                    [nzValue]="scheduleCycle"
-                    [nzLabel]="scheduleCycle"
-                  ></nz-option>
-                </nz-select>
-              </div>
             </div>
           </div>
         </div>
