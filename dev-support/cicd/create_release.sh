@@ -36,7 +36,7 @@ if [[ $# -ne 2 ]]; then
 fi
 
 for var in GPG_PASSPHRASE; do
-  if [[ -z "${!var}" ]]; then
+  if [[ -z "${!var:-}" ]]; then
     echo "You need ${var} variable set"
     exit 1
   fi
@@ -52,7 +52,7 @@ function compile_src_and_bin() {
   echo "mvn clean install package -DskipTests -Psrc"
   mvn clean install package -DskipTests -Psrc
   if [[ $? -ne 0 ]]; then
-    echo "Build failed. ${BUILD_FLAGS}"
+    echo "Build failed. ${BUILD_FLAGS:-}"
     exit 1
   fi
 

@@ -66,7 +66,7 @@ fi
 submarine_dist_exists=$(find -L "${SUBMARINE_PROJECT_PATH}/submarine-dist/target" -name "submarine-dist-${submarine_v}*.tar.gz")
 
 # If exists, use the release candidate artifacts to build image
-if [[ ! -z "${release_candidates_path}" ]]; then
+if [[ ! -z "${release_candidates_path:-}" ]]; then
   submarine_dist_exists=${release_candidates_path}
   echo "Using release candidates artifacts: ${release_candidates_path}"
   cp ${release_candidates_path}/submarine-dist-${submarine_v}-hadoop*.tar.gz ${MINI_PATH}

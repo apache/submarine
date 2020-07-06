@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -euo pipefail
+set -euxo pipefail
 
 FWDIR="$(cd "$(dirname "$0")"; pwd)"
 cd "$FWDIR"
@@ -25,4 +25,4 @@ yapf -i submarine/**/*.py tests/**/*.py
 # Sort imports
 isort submarine/**/*.py tests/**/*.py
 
-set +ex
+set +euxo pipefail

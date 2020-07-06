@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -euo pipefail
+set -euxo pipefail
 
 if [ -L ${BASH_SOURCE-$0} ]; then
   PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))

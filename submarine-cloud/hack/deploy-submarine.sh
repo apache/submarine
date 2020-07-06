@@ -136,12 +136,14 @@ case $key in
 esac
 done
 
+TEST=${TEST:-}
+UNINSTALL=${UNINSTALL:-}
 DATABASE_IP=${DATABASE_IP:-submarine-database}
 echo "Submarine database ip: ${DATABASE_IP}"
 
 export KUBECONFIG=~/.kube/kind-config-${clusterName:-kind}
 
-if [[ "${UNINSTALL:-}" == "TRUE" ]]; then
+if [[ "${UNINSTALL}" == "TRUE" ]]; then
   uninstall_submarine
 else
   install_submarine

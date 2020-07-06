@@ -143,18 +143,22 @@ function main() {
     esac
   done
 
+  opt_all=${opt_all:-}
+  opt_tf=${opt_tf:-}
+  opt_pt=${opt_pt:-}
+  opt_s=${opt_s:-}
   hack::ensure_kubectl
 
-  if [[ "${opt_tf:-}" == "true" && "${opt_pt:-}" == "true" ]]; then
+  if [[ "${opt_tf}" == "true" && "${opt_pt}" == "true" ]]; then
     opt_all="true"
   fi
-  if [[ "${opt_all:-}" == "true" ]]; then
-    deploy_tf_operator ${opt_s:-}
-    deploy_pytorch_operator ${opt_s:-}
-  elif [[ "${opt_tf:-}" == "true" ]]; then
-    deploy_tf_operator ${opt_s:-}
-  elif [[ "${opt_pt:-}" == "true" ]]; then
-    deploy_pytorch_operator ${opt_s:-}
+  if [[ "${opt_all}" == "true" ]]; then
+    deploy_tf_operator ${opt_s}
+    deploy_pytorch_operator ${opt_s}
+  elif [[ "${opt_tf}" == "true" ]]; then
+    deploy_tf_operator ${opt_s}
+  elif [[ "${opt_pt}" == "true" ]]; then
+    deploy_pytorch_operator ${opt_s}
   fi
 }
 

@@ -19,15 +19,15 @@
 
 # common functions
 
-if [[ -z "${TAR}" ]]; then
+if [[ -z "${TAR:-}" ]]; then
   TAR="/usr/bin/tar"
 fi
 
-if [[ -z "${SHASUM}" ]]; then
+if [[ -z "${SHASUM:-}" ]]; then
   SHASUM="/usr/bin/shasum"
 fi
 
-if [[ -z "${WORKING_DIR}" ]]; then
+if [[ -z "${WORKING_DIR:-}" ]]; then
   WORKING_DIR="/tmp/submarine-release"
 fi
 

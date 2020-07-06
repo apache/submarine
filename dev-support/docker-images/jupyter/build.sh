@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -euo pipefail
+set -euxo pipefail
 
 TF_JUPYTER_IMAGE="apache/submarine:tf2.1.0-jupyter"
 
