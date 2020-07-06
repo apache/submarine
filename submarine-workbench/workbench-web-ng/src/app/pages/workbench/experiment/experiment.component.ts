@@ -18,10 +18,11 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
+import { envValidator } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
@@ -46,10 +47,14 @@ export class ExperimentComponent implements OnInit {
   isVisible = false;
 
   // ExperimentSpecs = ['Adhoc', 'Predefined'];
-  frameworks_name = ['Tensorflow', 'Pytorch'];
+  frameworkNames = ['Tensorflow', 'Pytorch'];
   ruleTemplates = ['Template1', 'Template2'];
   ruleTypes = ['Strong', 'Weak'];
   scheduleCycles = ['Month', 'Week'];
+
+  // About env page
+  currentEnvPage = 1;
+  PAGESIZE = 5;
 
   constructor(
     private experimentService: ExperimentService,
@@ -67,6 +72,7 @@ export class ExperimentComponent implements OnInit {
       Namespace: new FormControl('default', [Validators.required]),
       // ruleType: new FormControl('Strong'),
       cmd: new FormControl('', [Validators.required]),
+      envs: new FormArray([]),
       startDate: new FormControl(new Date()),
       scheduleCycle: new FormControl('Month')
     });
@@ -88,7 +94,7 @@ export class ExperimentComponent implements OnInit {
 
   // Getters of experiment request form
   get experimentName() {
-    return this.createExperiment.get('experimentName')
+    return this.createExperiment.get('experimentName');
   }
   get description() {
     return this.createExperiment.get('description');
@@ -102,20 +108,56 @@ export class ExperimentComponent implements OnInit {
   get cmd() {
     return this.createExperiment.get('cmd');
   }
+  get envs() {
+    return this.createExperiment.get('envs') as FormArray;
+  }
   /**
    * Check the validity of the experiment page
    *
-  */
+   */
   checkStatus() {
     if (this.current == 0) {
       return this.experimentName.invalid || this.description.invalid;
     } else if (this.current == 1) {
       return this.frameworks.invalid || this.namespace.invalid || this.cmd.invalid;
+    } else if (this.current == 2) {
+      return this.envs.invalid;
     }
   }
 
   handleOk() {
     this.current++;
+  }
+
+  /**
+   * Create a new env variable input
+   */
+  createEnvInput() {
+    // Create a new FormGroup
+    const env = new FormGroup(
+      {
+        key: new FormControl(),
+        value: new FormControl()
+      },
+      [envValidator]
+    );
+    this.envs.push(env);
+    // If the new page is created, jump to that page
+    if (this.envs.controls.length > 1 && this.envs.controls.length % this.PAGESIZE === 1) {
+      this.currentEnvPage += 1;
+    }
+  }
+
+  // Todo(tsungjui) delete envs
+
+  /**
+   * Calculate the range of indexes should show on envs page
+   *
+   * @param index - The current item in envs.control
+   * @returns Whether this item is in the page range or not
+   */
+  indexInRange(index: number): boolean {
+    return index < this.currentEnvPage * this.PAGESIZE && index >= (this.currentEnvPage - 1) * this.PAGESIZE;
   }
 
   fetchExperimentList() {

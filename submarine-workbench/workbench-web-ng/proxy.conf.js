@@ -24,13 +24,13 @@ dotenv.config();
 const proxyConfig = [
   {
     context: ['/api'],
-    target: 'http://submarine:8080',
+    target: 'http://localhost:8080',
     secure: false,
     changeOrigin: true
   },
   {
     context: '/ws',
-    target: 'ws://submarine:8080',
+    target: 'ws://localhost:8080',
     secure: false,
     ws:true,
     changeOrigin: true

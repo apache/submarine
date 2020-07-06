@@ -66,3 +66,24 @@
    clear: left;
    color: black;
 }
+
+/* For env section */
+.env-input-container {
+   padding: 0;
+   margin: 1rem 0;
+}
+
+.env-input-group {
+   display: flex;
+
+   &:not(:first-child) {
+      margin-top: 1rem;
+   }
+
+   & input {
+      width: 30%;
+      &:not(:last-child) {
+         margin-right: .5rem;
+      }
+   }
+}

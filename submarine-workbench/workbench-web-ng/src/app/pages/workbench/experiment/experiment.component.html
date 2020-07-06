@@ -145,13 +145,13 @@
     [(nzOkText)]="okText"
     [nzOkLoading]="isOkLoading"
     (nzOnCancel)="isVisible = false"
-    [nzWidth]="1000"
+    [nzWidth]="800"
   >
     <div>
       <nz-steps [nzCurrent]="current">
         <nz-step nzTitle="Basic Information"></nz-step>
         <nz-step nzTitle="Configuration"></nz-step>
-        <nz-step nzTitle="Environment variables"></nz-step>
+        <nz-step nzTitle="Env variables"></nz-step>
         <nz-step nzTitle="Scheduling Cycle"></nz-step>
       </nz-steps>
     </div>
@@ -159,13 +159,7 @@
       <form [formGroup]="createExperiment">
         <div *nzModalFooter>
           <button nz-button nzType="default" (click)="isVisible = false">Cancel</button>
-          <button
-            id="go"
-            nz-button
-            nzType="primary"
-            [disabled]="checkStatus()"
-            (click)="handleOk()"
-          >
+          <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="handleOk()">
             {{ okText }}
           </button>
           <button
@@ -215,13 +209,9 @@
                 <span class="red-star">*</span>
                 Frameworks:
               </label>
-              <nz-select
-                formControlName="frameworks"
-                nzPlaceHolder="Choose"
-                style="width: 350px; margin-top: 30px;"
-              >
+              <nz-select formControlName="frameworks" nzPlaceHolder="Choose" style="width: 350px; margin-top: 30px;">
                 <nz-option
-                  *ngFor="let framework of frameworks_name"
+                  *ngFor="let framework of frameworkNames"
                   [nzValue]="framework"
                   [nzLabel]="framework"
                 ></nz-option>
@@ -232,12 +222,7 @@
                 <span class="red-star">*</span>
                 Namespace
               </label>
-              <input
-                nz-input
-                name="Namespace"
-                formControlName="Namespace"
-                style="margin-top: 32px; width: 350px;"
-              >
+              <input nz-input name="Namespace" formControlName="Namespace" style="margin-top: 32px; width: 350px;" />
             </div>
             <div>
               <label for="cmd" class="form-label">
@@ -250,45 +235,58 @@
                 formControlName="cmd"
                 placeholder="Command to run"
                 style="margin-top: 32px; width: 350px;"
-              >
+              />
             </div>
           </div>
           <div *ngSwitchCase="2">
             <div>
-              <label class="pg3-form-label">
-                <span class="red-star">*</span>
-                Environment variables
-              </label>
+              <button nz-button type="default" (click)="createEnvInput()">
+                Add new
+              </button>
+              <ul formArrayName="envs" class="env-input-container">
+                <ng-container *ngFor="let env of envs.controls; index as i">
+                  <li *ngIf="indexInRange(i)" [formGroupName]="i" class="env-input-group">
+                    <input nz-input placeholder="Key" formControlName="key" />
+                    <input nz-input placeholder="Value" formControlName="value" />
+                  </li>
+                </ng-container>
+              </ul>
+              <nz-pagination
+                [(nzPageIndex)]="currentEnvPage"
+                [nzPageSize]="PAGESIZE"
+                [nzTotal]="envs.controls.length"
+                nzSimple
+              ></nz-pagination>
             </div>
-          </div>
-          <div *ngSwitchCase="3">
-            <div>
-              <label class="pg3-form-label">
-                <span class="red-star">*</span>
-                Start Date:
-              </label>
-              <nz-date-picker
-                [nzFormat]="'yyyy/MM/dd'"
-                formControlName="startDate"
-                style="width: 350px; margin-top: 30px;"
-              ></nz-date-picker>
-            </div>
-            <div>
-              <label class="pg3-form-label">
-                <span class="red-star">*</span>
-                Schedule Cycle:
-              </label>
-              <nz-select
-                formControlName="scheduleCycle"
-                nzPlaceHolder="Choose"
-                style="width: 195px; margin-top: 30px; margin-bottom: 30px;"
-              >
-                <nz-option
-                  *ngFor="let scheduleCycle of scheduleCycles"
-                  [nzValue]="scheduleCycle"
-                  [nzLabel]="scheduleCycle"
-                ></nz-option>
-              </nz-select>
+            <div *ngSwitchCase="3">
+              <div>
+                <label class="pg3-form-label">
+                  <span class="red-star">*</span>
+                  Start Date:
+                </label>
+                <nz-date-picker
+                  [nzFormat]="'yyyy/MM/dd'"
+                  formControlName="startDate"
+                  style="width: 350px; margin-top: 30px;"
+                ></nz-date-picker>
+              </div>
+              <div>
+                <label class="pg3-form-label">
+                  <span class="red-star">*</span>
+                  Schedule Cycle:
+                </label>
+                <nz-select
+                  formControlName="scheduleCycle"
+                  nzPlaceHolder="Choose"
+                  style="width: 195px; margin-top: 30px; margin-bottom: 30px;"
+                >
+                  <nz-option
+                    *ngFor="let scheduleCycle of scheduleCycles"
+                    [nzValue]="scheduleCycle"
+                    [nzLabel]="scheduleCycle"
+                  ></nz-option>
+                </nz-select>
+              </div>
             </div>
           </div>
         </div>
