@@ -21,7 +21,7 @@
 #
 # Here's some helpful documents for the release.
 # http://www.apache.org/dev/publishing-maven-artifacts.html
-set -e
+set -euo pipefail
 BASEDIR="$(dirname "$0")"
 . "${BASEDIR}/common_release.sh"
 
@@ -30,7 +30,7 @@ if [[ $# -ne 2 ]]; then
 fi
 
 for var in GPG_PASSPHRASE ASF_USERID ASF_PASSWORD; do
-  if [[ -z "${!var}" ]]; then
+  if [[ -z "${!var:-}" ]]; then
     echo "You need ${var} variable set"
     exit 1
   fi
@@ -164,7 +164,7 @@ function publish_to_maven() {
 }
 
 git_clone
-if [[ "${DO_SNAPSHOT}" == 'yes' ]]; then
+if [[ "${DO_SNAPSHOT:-}" == 'yes' ]]; then
   publish_snapshot_to_maven
 else
   publish_to_maven

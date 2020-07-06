@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -ex
+set -euxo pipefail
 
 FWDIR="$(cd "$(dirname "$0")"; pwd)"
 cd "$FWDIR"
@@ -40,4 +40,4 @@ else
 	echo "Test successful"
 fi
 
-set +ex
+set +euxo pipefail

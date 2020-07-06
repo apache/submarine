@@ -14,8 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -eo pipefail
-set -x
+set -euxo pipefail
 
 SUBMARINE_VERSION=0.5.0-SNAPSHOT
 SUBMARINE_IMAGE_NAME="apache/submarine:server-${SUBMARINE_VERSION}"

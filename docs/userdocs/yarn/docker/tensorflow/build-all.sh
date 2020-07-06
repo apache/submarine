@@ -17,7 +17,7 @@
 
 echo "Building base images"
 
-set -e
+set -euo pipefail
 
 cd base/ubuntu-18.04
 

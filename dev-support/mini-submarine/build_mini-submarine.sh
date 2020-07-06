@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-set -e
+set -euo pipefail
 hadoop_v=2.9.2
 spark_v=2.3.4
 
@@ -66,7 +66,7 @@ fi
 submarine_dist_exists=$(find -L "${SUBMARINE_PROJECT_PATH}/submarine-dist/target" -name "submarine-dist-${submarine_v}*.tar.gz")
 
 # If exists, use the release candidate artifacts to build image
-if [[ ! -z "${release_candidates_path}" ]]; then
+if [[ ! -z "${release_candidates_path:-}" ]]; then
   submarine_dist_exists=${release_candidates_path}
   echo "Using release candidates artifacts: ${release_candidates_path}"
   cp ${release_candidates_path}/submarine-dist-${submarine_v}-hadoop*.tar.gz ${MINI_PATH}

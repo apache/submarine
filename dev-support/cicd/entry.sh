@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-set -e
+set -euo pipefail
 # activate python 2.7.13 environment
 . ${PYTHON_VENV_PATH}/venv2.7/bin/activate
 
@@ -42,20 +42,20 @@ function merge_pr(){
   apache_id="id"
   apache_name="name"
 
-  if [ -z "$JIRA_USERNAME" ]; then
+  if [ -z "${JIRA_USERNAME:-}" ]; then
     read -p "Enter Your Apache JIRA User name: "  jira_name
   else
     jira_name=$JIRA_USERNAME
   fi
   echo "Got JIRA name: ${jira_name}"
 
-  if [ -z "$JIRA_PASSWORD" ]; then
+  if [ -z "${JIRA_PASSWORD:-}" ]; then
     read -s -p "Enter Your Apache JIRA User passwd: "  jira_pwd
   else
     jira_pwd=$JIRA_PASSWORD
   fi
 
-  if [ -z "$APACHE_ID" ]; then
+  if [ -z "${APACHE_ID:-}" ]; then
     printf "\n"
     read -p "Enter Your Apache committer ID: "  apache_id
   else
@@ -63,7 +63,7 @@ function merge_pr(){
   fi
   echo "Got Apache ID: ${apache_id}"
 
-  if [ -z "$APACHE_NAME" ]; then
+  if [ -z "${APACHE_NAME:-}" ]; then
     read -p "Enter Your Apache committer name: "  apache_name
   else
     apache_name=$APACHE_NAME
@@ -86,7 +86,7 @@ function update_submarine_site(){
   apache_id="id"
   apache_name="name"
 
-  if [ -z "$APACHE_ID" ]; then
+  if [ -z "${APACHE_ID:-}" ]; then
     printf "\n"
     read -p "Enter Your Apache committer ID: "  apache_id
   else
@@ -94,7 +94,7 @@ function update_submarine_site(){
   fi
   echo "Got Apache ID: ${apache_id}"
 
-  if [ -z "$APACHE_NAME" ]; then
+  if [ -z "${APACHE_NAME:-}" ]; then
     read -p "Enter Your Apache committer name: "  apache_name
   else
     apache_name=$APACHE_NAME
