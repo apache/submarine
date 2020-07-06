@@ -17,20 +17,19 @@
 set -euo pipefail
 set -x
 
-wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O "$HOME"/miniconda.sh;
-bash "$HOME"/miniconda.sh -b -p "$HOME"/miniconda
-export PATH="$HOME/miniconda/bin:$PATH"
+wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh -O "$HOME"/anaconda.sh;
+bash "$HOME"/anaconda.sh -b -p /usr/bin/anaconda
+export PATH="/usr/bin/anaconda/bin:$PATH"
 cd "$HOME"
 # Useful for debugging any issues with conda
 conda info -a
 if [[ -n "${PYTHON_VERSION:-}" ]]; then
-  conda create -q -n test-environment python="$PYTHON_VERSION"
+  conda create -q -n submarine-dev python="$PYTHON_VERSION"
 else
-  conda create -q -n test-environment python=3.6
+  conda create -q -n submarine-dev python=3.6
 fi
 
-export PATH="/root/miniconda/envs/test-environment/bin/python:$PATH"
-source activate test-environment
+source activate submarine-dev
 python --version
 pip install --upgrade pip
 

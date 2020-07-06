@@ -25,4 +25,16 @@ SUBMARINE_PROJECT_PATH="$FWDIR/../.."
 # build image
 echo "Start building the mini-submarine docker image..."
 docker build --tag pysubmarine-ci .
-docker run --privileged -v "$SUBMARINE_PROJECT_PATH":/workspace -it pysubmarine-ci /bin/bash
+
+docker run --rm --pid=host \
+           --privileged \
+           -v "$SUBMARINE_PROJECT_PATH":/workspace \
+           -e "CI_BUILD_HOME=/" \
+           -e "CI_BUILD_USER=$(id -u -n)" \
+           -e "CI_BUILD_UID=$(id -u)" \
+           -e "CI_BUILD_GROUP=$(id -g -n)" \
+           -e "CI_BUILD_GID=$(id -g)" \
+           -e "PATH=/usr/bin/anaconda/envs/submarine-dev/bin:${PATH}" \
+           -e "PYTHONPATH=python:/usr/bin/anaconda/envs/submarine-dev/bin/python"\
+           -it pysubmarine-ci \
+           /bin/bash --login /usr/local/bootstrap.sh bash

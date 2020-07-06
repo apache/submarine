@@ -39,7 +39,7 @@ ENV JRE_HOME /usr/lib/jvm/java-8-openjdk-amd64/jre
 # Install user tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
         git make libgtest-dev cmake wget unzip libtinfo-dev libz-dev \
-        libcurl4-openssl-dev libopenblas-dev g++ \
+        libcurl4-openssl-dev libopenblas-dev g++ sudo \
         apt-transport-https curl vim ca-certificates maven
 
 WORKDIR /root
@@ -50,8 +50,4 @@ ADD bootstrap.sh /usr/local
 RUN chmod 755 /usr/local/install-conda.sh && \
     bash /usr/local/install-conda.sh
 
-ENV PATH=${PATH}:/root/miniconda/bin
-
 WORKDIR /workspace
-
-ENTRYPOINT [ "/usr/local/bootstrap.sh" ]

@@ -28,6 +28,16 @@ pip install -r test-requirements.txt
 # Installs pysubmarine from current checkout
 pip install ./submarine-sdk/pysubmarine
 ```
+### PySubmarine Docker
+We also use docker to provide build environments for CI, development,
+generate python sdk from swagger.
+```bash
+./run-pysubmarine-ci.sh
+```
+The script does the following things:
+- Start an interactive bash session
+- Mount submarine directory to /workspace and set it as home
+- Switch user to be the same user that calls the `run-pysubmarine-ci.sh`
 ### Coding Style
 - Use [yapf](https://github.com/google/yapf) to format Python code
 - yapf style is configured in `.style.yapf` file
