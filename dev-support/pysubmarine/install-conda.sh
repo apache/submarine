@@ -14,30 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -ex
+set -euo pipefail
+set -x
 
-FWDIR="$(cd "$(dirname "$0")"; pwd)"
-cd "$FWDIR"
-cd ..
-
-pycodestyle --max-line-length=100  -- submarine tests
-pylint --ignore experiment --msg-template="{path} ({line},{column}): [{msg_id} {symbol}] {msg}" --rcfile=pylintrc -- submarine tests
-./github-actions/auto-format.sh
-
-GIT_STATUS="$(git status --porcelain)"
-# Only check the files in ./pysubmarine
-GIT_DIFF="$(git diff .)"
-if [ "$GIT_STATUS" ]; then
-	echo "Code is not formatted by yapf and isort. Please run ./github-actions/auto-format.sh"
-	echo "Git status is"
-	echo "------------------------------------------------------------------"
-	echo "$GIT_STATUS"
-	echo "Git diff ./pysubmarine is"
-	echo "------------------------------------------------------------------"
-	echo "$GIT_DIFF"
-	exit 1
+wget https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh -O "$HOME"/anaconda.sh;
+bash "$HOME"/anaconda.sh -b -p /usr/bin/anaconda
+export PATH="/usr/bin/anaconda/bin:$PATH"
+cd "$HOME"
+# Useful for debugging any issues with conda
+conda info -a
+if [[ -n "${PYTHON_VERSION:-}" ]]; then
+  conda create -q -n submarine-dev python="$PYTHON_VERSION"
 else
-	echo "Test successful"
+  conda create -q -n submarine-dev python=3.6
 fi
 
-set +ex
+source activate submarine-dev
+python --version
+pip install --upgrade pip
+
+# Install pysubmarine
+git clone https://github.com/apache/submarine.git
+cd submarine/submarine-sdk/pysubmarine
+pip install .
+pip install -r github-actions/lint-requirements.txt
+pip install -r github-actions/test-requirements.txt
