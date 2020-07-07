@@ -22,6 +22,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WorkbenchRoutingModule } from '@submarine/pages/workbench/workbench-routing.module';
+import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { DataComponent } from './data/data.component';
 import { ExperimentComponent } from './experiment/experiment.component';
@@ -51,7 +52,8 @@ import { WorkspaceModule } from './workspace/workspace.module';
     FormsModule,
     WorkspaceModule,
     ExperimentModule,
-    InterpreterModule
+    InterpreterModule,
+    PipeSharedModule
   ]
 })
 export class WorkbenchModule {}

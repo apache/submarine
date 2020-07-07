@@ -176,7 +176,7 @@
             <div class="single-field-group">
               <label for="experimentName">
                 <span class="red-star">*</span>
-                Experiment Name:
+                Experiment Name
               </label>
               <input
                 nz-input
@@ -189,7 +189,7 @@
             <div class="single-field-group">
               <label for="description">
                 <span class="red-star">*</span>
-                Description:
+                Description
               </label>
               <textarea
                 nz-input
@@ -202,7 +202,7 @@
             <div class="single-field-group">
               <label for="frameworks">
                 <span class="red-star">*</span>
-                Frameworks:
+                Frameworks
               </label>
               <nz-select
                 formControlName="frameworks"
@@ -230,7 +230,7 @@
             <div class="single-field-group">
               <label for="cmd">
                 <span class="red-star">*</span>
-                Command:
+                Command
               </label>
               <input
                 nz-input
@@ -244,7 +244,7 @@
             <div class="single-field-group">
               <label for="image">
                 <span class="red-star">*</span>
-                Image:
+                Image
               </label>
               <input
                 nz-input
@@ -257,12 +257,12 @@
               <button nz-button type="default" (click)="createEnvInput()">
                 Add new
               </button>
-              <ul formArrayName="envs" class="env-input-container">
+              <ul formArrayName="envs" class="list-container">
                 <ng-container *ngFor="let env of envs.controls; index as i">
-                  <li *ngIf="indexInRange(i)" [formGroupName]="i" class="env-input-group">
+                  <li *ngIf="i | indexInRange: currentEnvPage: PAGESIZE" [formGroupName]="i" class="input-group">
                     <input nz-input placeholder="Key" formControlName="key" />
                     <input nz-input placeholder="Value" formControlName="value" />
-                    <div class="alert-message" *ngIf="env.get('key').dirty && env.get('value').dirty && env.getError('envMissing')">
+                    <div class="alert-message" *ngIf="env.get('key').dirty | logicalAnd: env.get('value').dirty : env.getError('envMissing')">
                       {{ env.getError('envMissing') }}
                     </div>
                   </li>
@@ -275,6 +275,27 @@
                 nzSimple
               ></nz-pagination>
             </div>
+          </div>
+          <div *ngSwitchCase="2">
+            <button nz-button type="default" (click)="createSpec()">
+              Add new spec
+            </button>
+            <ul formArrayName="specs" class="list-container">
+              <ng-container *ngFor="let spec of specs.controls; index as i">
+                <li *ngIf="indexInRange(i)" [formGroupName]="i" class="input-group">
+                  <input nz-input placeholder="spec name" formControlName="name" />
+                  <input nz-input type="number" placeholder="number of replica" formControlName="replicas" />
+                  <input nz-input type="number" placeholder="number of cpu" formControlName="cpus" />
+                  <input nz-input placeholder="memory" formControlName="memory" />
+                </li>
+              </ng-container>
+            </ul>
+            <nz-pagination
+              [(nzPageIndex)]="currentSpecPage"
+              [nzPageSize]="PAGESIZE"
+              [nzTotal]="specs.controls.length"
+              nzSimple
+            ></nz-pagination>
           </div>
         </div>
       </form>

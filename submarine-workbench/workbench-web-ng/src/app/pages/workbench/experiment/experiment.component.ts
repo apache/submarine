@@ -22,8 +22,9 @@ import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
-import { envValidator } from '@submarine/services/experiment.validator.service';
+import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
+
 
 @Component({
   selector: 'submarine-experiment',
@@ -48,16 +49,17 @@ export class ExperimentComponent implements OnInit {
 
   // ExperimentSpecs = ['Adhoc', 'Predefined'];
   frameworkNames = ['Tensorflow', 'Pytorch'];
-  ruleTemplates = ['Template1', 'Template2'];
-  ruleTypes = ['Strong', 'Weak'];
-  scheduleCycles = ['Month', 'Week'];
 
   // About env page
   currentEnvPage = 1;
   PAGESIZE = 5;
 
+  // About spec
+  currentSpecPage = 1;
+
   constructor(
     private experimentService: ExperimentService,
+    private experimentFormService: ExperimentFormService,
     private nzMessageService: NzMessageService,
     private route: ActivatedRoute,
     private router: Router
@@ -69,13 +71,12 @@ export class ExperimentComponent implements OnInit {
       description: new FormControl(null, [Validators.required]),
       // experimentSpec: new FormControl('Adhoc'),
       frameworks: new FormControl('Tensorflow', [Validators.required]),
-      Namespace: new FormControl('default', [Validators.required]),
+      namespace: new FormControl('default', [Validators.required]),
       // ruleType: new FormControl('Strong'),
       cmd: new FormControl('', [Validators.required]),
       envs: new FormArray([]),
       image: new FormControl('', [Validators.required]),
-      startDate: new FormControl(new Date()),
-      scheduleCycle: new FormControl('Month')
+      specs: new FormArray([])
     });
     this.fetchExperimentList();
     this.isInfo = this.router.url !== '/workbench/experiment';
@@ -104,7 +105,7 @@ export class ExperimentComponent implements OnInit {
     return this.createExperiment.get('frameworks');
   }
   get namespace() {
-    return this.createExperiment.get('Namespace');
+    return this.createExperiment.get('namespace');
   }
   get cmd() {
     return this.createExperiment.get('cmd');
@@ -114,6 +115,9 @@ export class ExperimentComponent implements OnInit {
   }
   get image() {
     return this.createExperiment.get('image');
+  }
+  get specs() {
+    return this.createExperiment.get('specs') as FormArray;
   }
   /**
    * Check the validity of the experiment page
@@ -144,7 +148,7 @@ export class ExperimentComponent implements OnInit {
         key: new FormControl(),
         value: new FormControl()
       },
-      [envValidator]
+      [this.experimentFormService.envValidator]
     );
     this.envs.push(env);
     // If the new page is created, jump to that page
@@ -154,6 +158,22 @@ export class ExperimentComponent implements OnInit {
   }
 
   // Todo(tsungjui) delete envs
+
+  /**
+   * Create a new spec
+   * 
+   */
+  createSpec() {
+    const spec = new FormGroup(
+      {
+        name: new FormControl(),
+        replicas: new FormControl(null, [Validators.min(1)]),
+        cpus: new FormControl(null, [Validators.min(1)]),
+        memory: new FormControl(),
+      }
+    );
+    this.specs.push(spec);
+  }
 
   /**
    * Calculate the range of indexes should show on envs page

@@ -67,11 +67,15 @@
    color: black;
 }
 
+.list-container {
+   padding: 0;
+   margin: 1rem 0;
+}
+
 /* For env section */
 .env-page-container {
    display: flex;
    flex-direction: column;
-   // align-items: center;
 }
 
 .env-input-container {
@@ -79,14 +83,14 @@
    margin: 1rem 0;
 }
 
-.env-input-group {
+.input-group {
    display: flex;
    &:not(:first-child) {
       margin-top: 1rem;
    }
 
    & input {
-      width: 30%;
+      flex: 0 2 25%;
       &:not(:last-child) {
          margin-right: .5rem;
       }
