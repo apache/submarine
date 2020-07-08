@@ -72,8 +72,8 @@ class BasePyTorchModel(AbstractModel, ABC):
             sample, target = batch
             output = self.model(sample)
             loss = self.loss(output, target)
-            loss.backward()
             self.optimizer.zero_grad()
+            loss.backward()
             self.optimizer.step()
 
     def evaluate(self):
