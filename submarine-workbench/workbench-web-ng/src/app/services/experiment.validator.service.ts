@@ -17,18 +17,18 @@
  * under the License.
  */
 
-import { FormGroup, ValidatorFn, ValidationErrors } from '@angular/forms';
+import { FormGroup, ValidatorFn, ValidationErrors, FormControl, FormArray } from '@angular/forms';
 import { Injectable } from '@angular/core';
 import { ExperimentModule } from '@submarine/pages/workbench/experiment/experiment.module';
 
-/**
- * The validator for env key/value pair
- * @param envGroup A FormGroup resides in `envs` FromArray in createExperiment
- */
 @Injectable({
   providedIn: ExperimentModule
 })
 export class ExperimentFormService {
+  /**
+   * The validator for env key/value pair
+   * @param envGroup A FormGroup resides in `envs` FromArray in createExperiment
+   */
   envValidator: ValidatorFn = (envGroup: FormGroup): ValidationErrors | null => {
     const key = envGroup.get('key');
     const keyValue = envGroup.get('value');
@@ -36,6 +36,51 @@ export class ExperimentFormService {
   };
 
   specValidator: ValidatorFn = (specGroup: FormGroup): ValidationErrors | null => {
+    const name = specGroup.get('name');
+    const replicas = specGroup.get('replicas');
+    const cpus = specGroup.get('cpus');
+    const memory = specGroup.get('memory');
     
+    const allValid = !(name.invalid || replicas.invalid || cpus.invalid || memory.invalid);
+    const exists = (name.value && replicas.value && cpus.value && memory.value) || !(name.value || replicas.value || cpus.value || memory.value);
+    return allValid && exists ? null : {specError: 'Invalid or missing input'};
+  }
+
+  /**
+   * Validate memory input in Spec
+   * 
+   * @param memory - The memory field in Spec
+   */
+  memoryValidator: ValidatorFn = (memory: FormControl): ValidationErrors | null => {
+    // Must match number + digit ex. 512M
+    return memory.value && /^\d+M$/.test(memory.value) ? null : { memoryPatternError: 'Must match number + M ex. "512M"' };
+  }
+
+  /**
+   * Validate name or key property
+   * Name and key cannot have its duplicate, must be unique
+   * @param fieldName - The field name of the form
+   * @returns The actual ValidatorFn to check duplicates
+   */
+  nameValidatorFactory: (fieldName: string) => ValidatorFn = (fieldName) => {
+    return (arr: FormArray): ValidationErrors | null => {
+      const duplicateSet = new Set();
+
+      for (let i = 0; i < arr.length; i++) {
+        const nameControl = arr.controls[i].get(fieldName);
+        // We don't consider empty string
+        if (!nameControl.value) continue;
+        
+        if (duplicateSet.has(nameControl.value)) {
+          // Found duplicates, manually set errors on FormControl level
+          nameControl.setErrors({
+            duplicateError: 'Duplicate key or name'
+          });
+        } else {
+          duplicateSet.add(nameControl.value);
+        }
+      }
+      return null;
+    }
   }
 }

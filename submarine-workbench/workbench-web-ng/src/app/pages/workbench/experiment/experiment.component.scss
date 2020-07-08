@@ -45,28 +45,6 @@
    color: red;
 }
 
-.form-label {
-   float:left;
-   // width:200px;
-   
-   padding-right: 12px;
-   // margin-top: 32px;
-   // margin-left: 10px;
-   clear: left;
-   color: black;
-}
-
-.pg3-form-label {
-   float:left;
-   width:200px;
-   text-align: right;
-   padding-right: 12px;
-   margin-top: 32px;
-   margin-left: 100px;
-   clear: left;
-   color: black;
-}
-
 .list-container {
    padding: 0;
    margin: 1rem 0;
@@ -85,15 +63,21 @@
 
 .input-group {
    display: flex;
+   align-items: center;
    &:not(:first-child) {
       margin-top: 1rem;
    }
 
    & input {
-      flex: 0 2 25%;
+      flex: 0 2 20%;
       &:not(:last-child) {
          margin-right: .5rem;
       }
+   }
+
+   & i {
+      cursor: pointer;
+      font-size: 1.2rem;
    }
 }
 
@@ -120,4 +104,6 @@
 
 .alert-message {
    color: red;
+   margin-top: .3rem;
+   margin-left: .5rem;
 }

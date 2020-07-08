@@ -74,9 +74,9 @@ export class ExperimentComponent implements OnInit {
       namespace: new FormControl('default', [Validators.required]),
       // ruleType: new FormControl('Strong'),
       cmd: new FormControl('', [Validators.required]),
-      envs: new FormArray([]),
+      envs: new FormArray([], [this.experimentFormService.nameValidatorFactory('key')]),
       image: new FormControl('', [Validators.required]),
-      specs: new FormArray([])
+      specs: new FormArray([], [this.experimentFormService.nameValidatorFactory('name')])
     });
     this.fetchExperimentList();
     this.isInfo = this.router.url !== '/workbench/experiment';
@@ -125,17 +125,22 @@ export class ExperimentComponent implements OnInit {
    */
   checkStatus() {
     if (this.current == 0) {
-      // return this.experimentName.invalid || this.description.invalid || this.frameworks.invalid || this.namespace.invalid || this.cmd.invalid;
-      return false;
+      return this.experimentName.invalid || this.description.invalid || this.frameworks.invalid || this.namespace.invalid || this.cmd.invalid;
     } else if (this.current == 1) {
       return this.image.invalid || this.envs.invalid;
     } else if (this.current == 2) {
-      return true;
+      return this.specs.invalid;
     }
   }
 
   handleOk() {
-    this.current++;
+    if (this.current === 1) {
+      this.okText = 'Submit';
+    }
+
+    if (this.current < 2) {
+      this.current ++;
+    }
   }
 
   /**
@@ -145,7 +150,7 @@ export class ExperimentComponent implements OnInit {
     // Create a new FormGroup
     const env = new FormGroup(
       {
-        key: new FormControl(),
+        key: new FormControl(''),
         value: new FormControl()
       },
       [this.experimentFormService.envValidator]
@@ -156,9 +161,6 @@ export class ExperimentComponent implements OnInit {
       this.currentEnvPage += 1;
     }
   }
-
-  // Todo(tsungjui) delete envs
-
   /**
    * Create a new spec
    * 
@@ -166,23 +168,30 @@ export class ExperimentComponent implements OnInit {
   createSpec() {
     const spec = new FormGroup(
       {
-        name: new FormControl(),
-        replicas: new FormControl(null, [Validators.min(1)]),
-        cpus: new FormControl(null, [Validators.min(1)]),
-        memory: new FormControl(),
-      }
+        name: new FormControl(''),
+        replicas: new FormControl(1, [Validators.min(1)]),
+        cpus: new FormControl(1, [Validators.min(1)]),
+        memory: new FormControl('', [this.experimentFormService.memoryValidator])
+      },
+      [
+        this.experimentFormService.specValidator
+      ]
     );
     this.specs.push(spec);
+    // If the new page is created, jump to that page
+    if (this.specs.controls.length > 1 && this.specs.controls.length % this.PAGESIZE === 1) {
+      this.currentSpecPage += 1;
+    }
   }
 
   /**
-   * Calculate the range of indexes should show on envs page
-   *
-   * @param index - The current item in envs.control
-   * @returns Whether this item is in the page range or not
+   * Delete list items(envs or specs)
+   * 
+   * @param arr - The FormArray containing the item
+   * @param index - The index of the item
    */
-  indexInRange(index: number): boolean {
-    return index < this.currentEnvPage * this.PAGESIZE && index >= (this.currentEnvPage - 1) * this.PAGESIZE;
+  deleteItem(arr: FormArray, index: number) {
+    arr.removeAt(index);
   }
 
   fetchExperimentList() {

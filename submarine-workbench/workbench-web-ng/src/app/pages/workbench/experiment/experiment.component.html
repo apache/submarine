@@ -145,7 +145,7 @@
     [(nzOkText)]="okText"
     [nzOkLoading]="isOkLoading"
     (nzOnCancel)="isVisible = false"
-    [nzWidth]="900"
+    [nzWidth]="1000"
   >
     <div>
       <nz-steps [nzCurrent]="current">
@@ -262,10 +262,19 @@
                   <li *ngIf="i | indexInRange: currentEnvPage: PAGESIZE" [formGroupName]="i" class="input-group">
                     <input nz-input placeholder="Key" formControlName="key" />
                     <input nz-input placeholder="Value" formControlName="value" />
-                    <div class="alert-message" *ngIf="env.get('key').dirty | logicalAnd: env.get('value').dirty : env.getError('envMissing')">
-                      {{ env.getError('envMissing') }}
-                    </div>
+                    <i
+                      nz-icon
+                      nzType="close-circle"
+                      nzTheme="fill"
+                      (click)="deleteItem(envs, i)"
+                    ></i>
                   </li>
+                  <div class="alert-message" *ngIf="env.get('key').dirty | logicalAnd: env.get('value').dirty : env.hasError('envMissing')">
+                    {{ env.getError('envMissing') }}
+                  </div>
+                  <div class="alert-message" *ngIf="env.get('key').dirty | logicalAnd: env.get('key').hasError('duplicateError')">
+                    {{ env.get('key').getError('duplicateError') }}
+                  </div>
                 </ng-container>
               </ul>
               <nz-pagination
@@ -282,12 +291,31 @@
             </button>
             <ul formArrayName="specs" class="list-container">
               <ng-container *ngFor="let spec of specs.controls; index as i">
-                <li *ngIf="indexInRange(i)" [formGroupName]="i" class="input-group">
+                <li *ngIf="i | indexInRange: currentSpecPage: PAGESIZE" [formGroupName]="i" class="input-group">
                   <input nz-input placeholder="spec name" formControlName="name" />
                   <input nz-input type="number" placeholder="number of replica" formControlName="replicas" />
                   <input nz-input type="number" placeholder="number of cpu" formControlName="cpus" />
                   <input nz-input placeholder="memory" formControlName="memory" />
+                  <i
+                    nz-icon
+                    nzType="close-circle"
+                    nzTheme="fill"
+                    class="delete-icon"
+                    (click)="deleteItem(specs, i)"
+                  ></i>
                 </li>
+                <div class="alert-message" *ngIf="spec.get('name').dirty | logicalAnd: spec.get('name').hasError('duplicateError')">
+                  {{ spec.get('name').getError('duplicateError') }}
+                </div>
+                <div class="alert-message" *ngIf="spec.get('memory').dirty | logicalAnd: spec.get('memory').hasError('memoryPatternError')">
+                  {{ spec.get('memory').getError('memoryPatternError') }}
+                </div>
+                <div class="alert-message" *ngIf="spec.get('replicas').dirty | logicalAnd: spec.get('replicas').hasError('min')">
+                  replicas must be at least 1
+                </div>
+                <div class="alert-message" *ngIf="spec.get('cpus').dirty | logicalAnd: spec.get('cpus').hasError('min')">
+                  cpus must be at least 1
+                </div>
               </ng-container>
             </ul>
             <nz-pagination

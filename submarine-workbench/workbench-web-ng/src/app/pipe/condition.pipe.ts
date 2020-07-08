@@ -29,7 +29,6 @@ export class LogicalAnd implements PipeTransform {
 @Pipe({name: 'indexInRange'})
 export class IndexInRange implements PipeTransform {
   transform(index: number, currentPage: number, itemPerPage: number): boolean {
-    console.log('run');
     return index < currentPage * itemPerPage && index >= (currentPage - 1) * itemPerPage;
   }
 };
