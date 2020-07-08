@@ -231,7 +231,7 @@
           <div *ngSwitchCase="1" id="page2">
             <div>
               <button nz-button type="default" (click)="createEnvInput()">
-                Add new
+                Add new env
               </button>
               <ul formArrayName="envs" class="list-container">
                 <ng-container *ngFor="let env of envs.controls; index as i">
@@ -263,7 +263,7 @@
             </div>
           </div>
           <div *ngSwitchCase="2">
-            <button nz-button type="default" (click)="createSpec()">
+            <button nz-button type="default" (click)="createSpec()"  class="pg3-form-label">
               Add new spec
             </button>
             <ul formArrayName="specs" class="list-container">
