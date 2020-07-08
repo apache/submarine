@@ -13,60 +13,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import io
-import os
-from enum import Enum
-from urllib.parse import urlparse
-
 from pyarrow import fs
+from pyarrow.lib import NativeFile
+
+import io
 
 
-class _Scheme(Enum):
-    HDFS = 'hdfs'
-    FILE = 'file'
-    DEFAULT = ''
+def open_buffered_file_reader(
+        uri: str,
+        buffer_size: int = io.DEFAULT_BUFFER_SIZE) -> io.BufferedReader:
+    try:
+        input_file = open_input_file(uri)
+        return io.BufferedReader(input_file, buffer_size=buffer_size)
+    except:
+        input_file.close()
 
 
-def read_file(path):
-    scheme, host, port, path = _parse_path(path)
-    if _Scheme(scheme) is _Scheme.HDFS:
-        return _read_hdfs(host=host, port=port, path=path)
-    else:
-        return _read_local(path=path)
+def open_input_file(uri: str) -> NativeFile:
+    filesystem, path = fs.FileSystem.from_uri(uri)
+    return filesystem.open_input_file(path)
 
 
-def write_file(buffer, path):
-    scheme, host, port, path = _parse_path(path)
-    if _Scheme(scheme) is _Scheme.HDFS:
-        _write_hdfs(buffer=buffer, host=host, port=port, path=path)
-    else:
-        _write_local(buffer=buffer, path=path)
-
-
-def _parse_path(path):
-    p = urlparse(path)
-    return p.scheme, p.hostname, p.port, os.path.abspath(p.path)
-
-
-def _read_hdfs(host, port, path):
-    hdfs = fs.HadoopFileSystem(host=host, port=port)
-    with hdfs.open_input_stream(path) as stream:
-        data = stream.read()
-    return io.BytesIO(data)
-
-
-def _read_local(path):
-    with open(path, mode='rb') as f:
-        data = f.read()
-    return io.BytesIO(data)
-
-
-def _write_hdfs(buffer, host, port, path):
-    hdfs = fs.HadoopFileSystem(host=host, port=port)
-    with hdfs.open_output_stream(path) as stream:
-        stream.write(buffer.getbuffer())
-
-
-def _write_local(buffer, path):
-    with open(path, mode='wb') as f:
-        f.write(buffer.getbuffer())
+def file_info(uri: str) -> fs.FileInfo:
+    filesystem, path = fs.FileSystem.from_uri(uri)
+    info, = filesystem.get_file_info([path])
+    return info
