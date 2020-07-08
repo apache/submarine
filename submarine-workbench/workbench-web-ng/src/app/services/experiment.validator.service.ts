@@ -32,7 +32,9 @@ export class ExperimentFormService {
   envValidator: ValidatorFn = (envGroup: FormGroup): ValidationErrors | null => {
     const key = envGroup.get('key');
     const keyValue = envGroup.get('value');
-    return (key.value && keyValue.value) || (!key.value && !keyValue.value) ? null : { envMissing: 'Missing key or value' };
+    return (key.value && keyValue.value) || (!key.value && !keyValue.value)
+      ? null
+      : { envMissing: 'Missing key or value' };
   };
 
   specValidator: ValidatorFn = (specGroup: FormGroup): ValidationErrors | null => {
@@ -40,21 +42,25 @@ export class ExperimentFormService {
     const replicas = specGroup.get('replicas');
     const cpus = specGroup.get('cpus');
     const memory = specGroup.get('memory');
-    
+
     const allValid = !(name.invalid || replicas.invalid || cpus.invalid || memory.invalid);
-    const exists = (name.value && replicas.value && cpus.value && memory.value) || !(name.value || replicas.value || cpus.value || memory.value);
-    return allValid && exists ? null : {specError: 'Invalid or missing input'};
-  }
+    const exists =
+      (name.value && replicas.value && cpus.value && memory.value) ||
+      !(name.value || replicas.value || cpus.value || memory.value);
+    return allValid && exists ? null : { specError: 'Invalid or missing input' };
+  };
 
   /**
    * Validate memory input in Spec
-   * 
+   *
    * @param memory - The memory field in Spec
    */
   memoryValidator: ValidatorFn = (memory: FormControl): ValidationErrors | null => {
     // Must match number + digit ex. 512M
-    return memory.value && /^\d+M$/.test(memory.value) ? null : { memoryPatternError: 'Must match number + M ex. "512M"' };
-  }
+    return memory.value && /^\d+M$/.test(memory.value)
+      ? null
+      : { memoryPatternError: 'Memory pattern must match number + M ex. 512M' };
+  };
 
   /**
    * Validate name or key property
@@ -65,12 +71,11 @@ export class ExperimentFormService {
   nameValidatorFactory: (fieldName: string) => ValidatorFn = (fieldName) => {
     return (arr: FormArray): ValidationErrors | null => {
       const duplicateSet = new Set();
-
       for (let i = 0; i < arr.length; i++) {
         const nameControl = arr.controls[i].get(fieldName);
         // We don't consider empty string
         if (!nameControl.value) continue;
-        
+
         if (duplicateSet.has(nameControl.value)) {
           // Found duplicates, manually set errors on FormControl level
           nameControl.setErrors({
@@ -78,9 +83,13 @@ export class ExperimentFormService {
           });
         } else {
           duplicateSet.add(nameControl.value);
+          if (nameControl.hasError('duplicateError')) {
+            delete nameControl.errors.duplicateError;
+            nameControl.updateValueAndValidity();
+          }
         }
       }
       return null;
-    }
-  }
+    };
+  };
 }

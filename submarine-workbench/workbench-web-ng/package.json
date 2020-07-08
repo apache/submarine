@@ -9,6 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "autoformat": "prettier --write --trailing-comma none --single-quote 'src/**/*.{js,json,ts,html}'",
     "webdriver": "webdriver-manager update --ignore_ssl = true"
   },
   "private": true,

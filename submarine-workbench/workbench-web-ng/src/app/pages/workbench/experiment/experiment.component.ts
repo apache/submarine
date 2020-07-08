@@ -25,7 +25,6 @@ import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
 
-
 @Component({
   selector: 'submarine-experiment',
   templateUrl: './experiment.component.html',
@@ -125,9 +124,16 @@ export class ExperimentComponent implements OnInit {
    */
   checkStatus() {
     if (this.current == 0) {
-      return this.experimentName.invalid || this.description.invalid || this.frameworks.invalid || this.namespace.invalid || this.cmd.invalid;
+      return (
+        this.experimentName.invalid ||
+        this.description.invalid ||
+        this.frameworks.invalid ||
+        this.namespace.invalid ||
+        this.cmd.invalid ||
+        this.image.invalid
+      );
     } else if (this.current == 1) {
-      return this.image.invalid || this.envs.invalid;
+      return this.envs.invalid;
     } else if (this.current == 2) {
       return this.specs.invalid;
     }
@@ -139,7 +145,7 @@ export class ExperimentComponent implements OnInit {
     }
 
     if (this.current < 2) {
-      this.current ++;
+      this.current++;
     }
   }
 
@@ -163,7 +169,7 @@ export class ExperimentComponent implements OnInit {
   }
   /**
    * Create a new spec
-   * 
+   *
    */
   createSpec() {
     const spec = new FormGroup(
@@ -173,9 +179,7 @@ export class ExperimentComponent implements OnInit {
         cpus: new FormControl(1, [Validators.min(1)]),
         memory: new FormControl('', [this.experimentFormService.memoryValidator])
       },
-      [
-        this.experimentFormService.specValidator
-      ]
+      [this.experimentFormService.specValidator]
     );
     this.specs.push(spec);
     // If the new page is created, jump to that page
@@ -186,7 +190,7 @@ export class ExperimentComponent implements OnInit {
 
   /**
    * Delete list items(envs or specs)
-   * 
+   *
    * @param arr - The FormArray containing the item
    * @param index - The index of the item
    */

@@ -22,8 +22,8 @@ import { NgModule } from '@angular/core';
 import { LogicalAnd, IndexInRange } from './condition.pipe';
 
 @NgModule({
- imports:      [ CommonModule ],
- declarations: [ LogicalAnd, IndexInRange ],
- exports:      [ LogicalAnd, IndexInRange ]
+  imports: [CommonModule],
+  declarations: [LogicalAnd, IndexInRange],
+  exports: [LogicalAnd, IndexInRange]
 })
 export class PipeSharedModule {}

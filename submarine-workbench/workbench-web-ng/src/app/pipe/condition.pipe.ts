@@ -19,16 +19,16 @@
 
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({name: 'logicalAnd'}) // The name of the pipe to use in the template
+@Pipe({ name: 'logicalAnd' }) // The name of the pipe to use in the template
 export class LogicalAnd implements PipeTransform {
   transform(value: boolean, ...flags: boolean[]) {
     return value && !flags.includes(false);
   }
-};
+}
 
-@Pipe({name: 'indexInRange'})
+@Pipe({ name: 'indexInRange' })
 export class IndexInRange implements PipeTransform {
   transform(index: number, currentPage: number, itemPerPage: number): boolean {
     return index < currentPage * itemPerPage && index >= (currentPage - 1) * itemPerPage;
   }
-};
+}

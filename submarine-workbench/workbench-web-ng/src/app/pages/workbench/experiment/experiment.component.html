@@ -178,13 +178,7 @@
                 <span class="red-star">*</span>
                 Experiment Name
               </label>
-              <input
-                nz-input
-                type="text"
-                name="experimentName"
-                id="experimentName"
-                formControlName="experimentName"
-              />
+              <input nz-input type="text" name="experimentName" id="experimentName" formControlName="experimentName" />
             </div>
             <div class="single-field-group">
               <label for="description">
@@ -198,17 +192,13 @@
                 formControlName="description"
               ></textarea>
             </div>
-          
+
             <div class="single-field-group">
               <label for="frameworks">
                 <span class="red-star">*</span>
                 Frameworks
               </label>
-              <nz-select
-                formControlName="frameworks"
-                nzPlaceHolder="Choose"
-                style="width: 48%"
-              >
+              <nz-select formControlName="frameworks" nzPlaceHolder="Choose" style="width: 48%;">
                 <nz-option
                   *ngFor="let framework of frameworkNames"
                   [nzValue]="framework"
@@ -221,58 +211,45 @@
                 <span class="red-star">*</span>
                 Namespace
               </label>
-              <input
-                nz-input
-                name="Namespace"
-                formControlName="namespace"
-              />
+              <input nz-input name="Namespace" formControlName="namespace" />
             </div>
             <div class="single-field-group">
               <label for="cmd">
                 <span class="red-star">*</span>
                 Command
               </label>
-              <input
-                nz-input
-                name="cmd"
-                formControlName="cmd"
-                placeholder="Command to run"
-              />
+              <input nz-input name="cmd" formControlName="cmd" placeholder="Command to run" />
             </div>
-          </div>
-          <div *ngSwitchCase="1">
             <div class="single-field-group">
               <label for="image">
                 <span class="red-star">*</span>
                 Image
               </label>
-              <input
-                nz-input
-                name="image"
-                formControlName="image"
-                placeholder="Image to use"
-              />
+              <input nz-input name="image" formControlName="image" placeholder="Image to use" />
             </div>
+          </div>
+          <div *ngSwitchCase="1">
             <div>
               <button nz-button type="default" (click)="createEnvInput()">
                 Add new
               </button>
               <ul formArrayName="envs" class="list-container">
                 <ng-container *ngFor="let env of envs.controls; index as i">
-                  <li *ngIf="i | indexInRange: currentEnvPage: PAGESIZE" [formGroupName]="i" class="input-group">
+                  <li *ngIf="i | indexInRange: currentEnvPage:PAGESIZE" [formGroupName]="i" class="input-group">
                     <input nz-input placeholder="Key" formControlName="key" />
                     <input nz-input placeholder="Value" formControlName="value" />
-                    <i
-                      nz-icon
-                      nzType="close-circle"
-                      nzTheme="fill"
-                      (click)="deleteItem(envs, i)"
-                    ></i>
+                    <i nz-icon nzType="close-circle" nzTheme="fill" (click)="deleteItem(envs, i)"></i>
                   </li>
-                  <div class="alert-message" *ngIf="env.get('key').dirty | logicalAnd: env.get('value').dirty : env.hasError('envMissing')">
+                  <div
+                    class="alert-message"
+                    *ngIf="env.get('key').dirty | logicalAnd: env.get('value').dirty:env.hasError('envMissing')"
+                  >
                     {{ env.getError('envMissing') }}
                   </div>
-                  <div class="alert-message" *ngIf="env.get('key').dirty | logicalAnd: env.get('key').hasError('duplicateError')">
+                  <div
+                    class="alert-message"
+                    *ngIf="env.get('key').dirty | logicalAnd: env.get('key').hasError('duplicateError')"
+                  >
                     {{ env.get('key').getError('duplicateError') }}
                   </div>
                 </ng-container>
@@ -291,7 +268,7 @@
             </button>
             <ul formArrayName="specs" class="list-container">
               <ng-container *ngFor="let spec of specs.controls; index as i">
-                <li *ngIf="i | indexInRange: currentSpecPage: PAGESIZE" [formGroupName]="i" class="input-group">
+                <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
                   <input nz-input placeholder="spec name" formControlName="name" />
                   <input nz-input type="number" placeholder="number of replica" formControlName="replicas" />
                   <input nz-input type="number" placeholder="number of cpu" formControlName="cpus" />
@@ -304,16 +281,28 @@
                     (click)="deleteItem(specs, i)"
                   ></i>
                 </li>
-                <div class="alert-message" *ngIf="spec.get('name').dirty | logicalAnd: spec.get('name').hasError('duplicateError')">
+                <div
+                  class="alert-message"
+                  *ngIf="spec.get('name').dirty | logicalAnd: spec.get('name').hasError('duplicateError')"
+                >
                   {{ spec.get('name').getError('duplicateError') }}
                 </div>
-                <div class="alert-message" *ngIf="spec.get('memory').dirty | logicalAnd: spec.get('memory').hasError('memoryPatternError')">
+                <div
+                  class="alert-message"
+                  *ngIf="spec.get('memory').dirty | logicalAnd: spec.get('memory').hasError('memoryPatternError')"
+                >
                   {{ spec.get('memory').getError('memoryPatternError') }}
                 </div>
-                <div class="alert-message" *ngIf="spec.get('replicas').dirty | logicalAnd: spec.get('replicas').hasError('min')">
+                <div
+                  class="alert-message"
+                  *ngIf="spec.get('replicas').dirty | logicalAnd: spec.get('replicas').hasError('min')"
+                >
                   replicas must be at least 1
                 </div>
-                <div class="alert-message" *ngIf="spec.get('cpus').dirty | logicalAnd: spec.get('cpus').hasError('min')">
+                <div
+                  class="alert-message"
+                  *ngIf="spec.get('cpus').dirty | logicalAnd: spec.get('cpus').hasError('min')"
+                >
                   cpus must be at least 1
                 </div>
               </ng-container>
