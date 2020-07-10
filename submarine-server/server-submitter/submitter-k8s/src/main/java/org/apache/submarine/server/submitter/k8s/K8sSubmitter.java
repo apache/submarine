@@ -38,14 +38,19 @@ import io.kubernetes.client.util.KubeConfig;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
-import org.apache.submarine.server.api.experiment.Submitter;
+import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
+import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.api.spec.NotebookSpec;
+import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
+import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,6 +230,52 @@ public class K8sSubmitter implements Submitter {
       LOG.error("Error when listing pod for experiment:" + spec.getMeta().getName(), e.getMessage());
     }
     return experimentLog;
+  }
+
+  @Override
+  public Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
+    try {
+      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
+      Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
+              notebookCR.getMetadata().getNamespace(), notebookCR.getPlural(), notebookCR, "true");
+
+      Gson gson = new JSON().getGson();
+      String jsonString = gson.toJson(object);
+      LOG.info("Upstream response JSON: {}", jsonString);
+
+      Notebook notebook = new Notebook();
+      notebook.setUid(notebookCR.getMetadata().getUid());
+      notebook.setName(notebookCR.getMetadata().getName());
+
+      // notebook url
+      notebook.setUrl("/notebook/" + notebookCR.getMetadata().getNamespace() + "/" +
+              notebookCR.getMetadata().getName());
+
+      DateTime dateTime = notebookCR.getMetadata().getCreationTimestamp();
+      if (dateTime != null) {
+        notebook.setCreatedTime(dateTime.toString());
+        notebook.setStatus(Notebook.Status.STATUS_CREATED.getValue());
+      }
+      return notebook;
+    } catch (JsonSyntaxException e) {
+      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    }
+  }
+
+  @Override
+  public Notebook findNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
+    //TODO(ryan): Implement this method
+    return null;
+  }
+
+  @Override
+  public Notebook deleteNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
+    //TODO(ryan): Implement this method
+    return null;
   }
 
   private String getJobLabelSelector(ExperimentSpec experimentSpec) {
