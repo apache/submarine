@@ -1,4 +1,4 @@
-/*!
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,14 +17,10 @@
  * under the License.
  */
 
- #nzSelect_selectPod {
-    margin-right: 8px;
-    width: 200px;
-    margin-top: 10px; 
-    margin-bottom: 10px;
- }
-
- #experimentInfo_sider {
-   background-color: white; 
-   height: 500px;
- }
+export class ParamInfo {
+  id: number;
+  keyt: string;
+  value: string;
+  worker_index: string;
+  job_name: string;
+}

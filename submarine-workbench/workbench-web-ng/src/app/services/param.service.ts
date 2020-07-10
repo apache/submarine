@@ -17,28 +17,31 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Rest } from '@submarine/interfaces';
 import { ParamInfo } from '@submarine/interfaces/param-info';
-import { ParamService } from '@submarine/services/param.service';
+import { BaseApiService } from '@submarine/services/base-api.service';
+import { of, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
-@Component({
-  selector: 'submarine-hyper-params',
-  templateUrl: './hyper-params.component.html',
-  styleUrls: ['./hyper-params.component.scss']
+@Injectable({
+  providedIn: 'root'
 })
-export class HyperParamsComponent implements OnInit {
-  paramList: ParamInfo[] = [];
+export class ParamService {
+  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
-  constructor(private paramService: ParamService) {}
-
-  ngOnInit() {
-    this.getParamList();
-  }
-
-  getParamList() {
-    this.paramService.fetchParamList().subscribe((list) => {
-      this.paramList = list;
-      console.log(this.paramList);
-    });
+  fetchParamList(): Observable<ParamInfo[]> {
+    const apiUrl = this.baseApi.getRestApi('/param/list');
+    return this.httpClient.get<Rest<ParamInfo[]>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          console.log(res.result);
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
   }
 }

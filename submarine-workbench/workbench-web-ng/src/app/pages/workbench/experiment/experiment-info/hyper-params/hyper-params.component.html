@@ -17,17 +17,19 @@
   ~ under the License.
   -->
 
-<nz-table #basicTable [nzFrontPagination]="false" [nzData]="paramsList">
-  <thead>
-    <tr>
-      <th>Key</th>
-      <th>Value</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let data of basicTable.data">
-      <td>{{ data.key }}</td>
-      <td>{{ data.value }}</td>
-    </tr>
-  </tbody>
-</nz-table>
+<div id="paramTable">
+  <nz-table #paramTable nzSize="middle" [nzBordered]="false" [nzFrontPagination]="false" [nzData]="paramList">
+    <thead>
+      <tr>
+        <th>Key</th>
+        <th>Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let param of paramTable.data">
+        <td>{{ param.key }}</td>
+        <td>{{ param.value }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

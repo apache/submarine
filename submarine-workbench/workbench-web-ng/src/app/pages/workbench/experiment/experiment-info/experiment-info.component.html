@@ -83,12 +83,12 @@
 </nz-table>
 <nz-spin *ngIf="isLoading"></nz-spin>
 <div style="background-color: white;">
-  <nz-select style="margin-top: 10px; margin-bottom: 10px;" [(ngModel)]="selectedPod">
-    <nz-option *ngFor="let pod of logContent; let i; of: index" [nzValue]="i" [nzLabel]="pod.podName"></nz-option>
+  <nz-select id="nzSelect_selectPod" [(ngModel)]="selectedPod">
+    <nz-option *ngFor="let pod of podNameArr" [nzValue]="pod" [nzLabel]="pod"></nz-option>
   </nz-select>
 </div>
 <nz-layout>
-  <nz-sider style="background-color: white;">
+  <nz-sider style="background-color: white; height: 500px;">
     <ul nz-menu>
       <li nz-menu-item nzSelected (click)="currentState = 0">
         <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
@@ -113,7 +113,12 @@
       <submarine-charts *ngSwitchCase="0"></submarine-charts>
       <submarine-hyper-params *ngSwitchCase="1"></submarine-hyper-params>
       <submarine-metrics *ngSwitchCase="2"></submarine-metrics>
-      <submarine-outputs *ngSwitchCase="3" [pod]="selectedPod"></submarine-outputs>
+      <submarine-outputs
+        *ngSwitchCase="3"
+        [podName]="selectedPod"
+        [experimentID]="experimentID"
+        [podLogArr]="podLogArr"
+      ></submarine-outputs>
     </div>
   </nz-layout>
 </nz-layout>
