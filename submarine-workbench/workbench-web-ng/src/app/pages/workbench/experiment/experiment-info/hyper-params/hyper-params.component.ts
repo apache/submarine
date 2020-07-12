@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { ParamInfo } from '@submarine/interfaces/param-info';
-import { ParamService } from '@submarine/services/param.service';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BaseApiService } from '@submarine/services/base-api.service';
 
 @Component({
   selector: 'submarine-hyper-params',
@@ -27,18 +27,19 @@ import { ParamService } from '@submarine/services/param.service';
   styleUrls: ['./hyper-params.component.scss']
 })
 export class HyperParamsComponent implements OnInit {
-  paramList: ParamInfo[] = [];
+  @Input() workerIndex;
+  @Input() paramData;
+  podParam = [];
 
-  constructor(private paramService: ParamService) {}
+  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
-  ngOnInit() {
-    this.getParamList();
-  }
+  ngOnInit() {}
 
-  getParamList() {
-    this.paramService.fetchParamList().subscribe((list) => {
-      this.paramList = list;
-      console.log(this.paramList);
+  ngOnChanges(chg: SimpleChanges) {
+    this.paramData.forEach((data) => {
+      if (data.workerIndex == this.workerIndex) {
+        this.podParam.push(data);
+      }
     });
   }
 }

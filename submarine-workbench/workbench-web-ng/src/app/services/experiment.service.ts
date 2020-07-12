@@ -109,4 +109,17 @@ export class ExperimentService {
       })
     );
   }
+
+  getExperimentParam(param: object): Observable<any> {
+    const apiUrl = this.baseApi.getRestApi('/param/selective');
+    return this.httpClient.post<any>(apiUrl, param).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', param);
+        }
+      })
+    );
+  }
 }

@@ -88,7 +88,7 @@
   </nz-select>
 </div>
 <nz-layout>
-  <nz-sider style="background-color: white; height: 500px;">
+  <nz-sider id="experimentInfo_sider">
     <ul nz-menu>
       <li nz-menu-item nzSelected (click)="currentState = 0">
         <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
@@ -111,7 +111,11 @@
   <nz-layout>
     <div [ngSwitch]="currentState">
       <submarine-charts *ngSwitchCase="0"></submarine-charts>
-      <submarine-hyper-params *ngSwitchCase="1"></submarine-hyper-params>
+      <submarine-hyper-params
+        *ngSwitchCase="1"
+        [workerIndex]="selectedPod"
+        [paramData]="paramData"
+      ></submarine-hyper-params>
       <submarine-metrics *ngSwitchCase="2"></submarine-metrics>
       <submarine-outputs
         *ngSwitchCase="3"

@@ -36,6 +36,7 @@ export class ExperimentInfoComponent implements OnInit {
   selectedPod;
   podNameArr;
   podLogArr;
+  paramData;
 
   constructor(
     private router: Router,
@@ -63,19 +64,29 @@ export class ExperimentInfoComponent implements OnInit {
   getExperimentPod() {
     this.experimentService.getExperimentLog(this.experimentID).subscribe(
       (result) => {
-        // Get an arr of podName
         this.podNameArr = result.logContent.map((item) => Object.values(item)[0]);
         this.selectedPod = this.podNameArr[0];
-        console.log(this.podNameArr);
-        // Get an arr of log
         this.podLogArr = result.logContent;
-        console.log(this.podLogArr);
       },
       (err) => {
         this.nzMessageService.error('Cannot load pod of ' + this.experimentID);
         console.log(err);
       }
     );
+
+    this.experimentService
+      .getExperimentParam({
+        jobName: null
+      })
+      .subscribe(
+        (result) => {
+          this.paramData = result;
+        },
+        (err) => {
+          this.nzMessageService.error('Cannot load param of ' + this.experimentID);
+          console.log(err);
+        }
+      );
   }
 
   onDeleteExperiment() {
