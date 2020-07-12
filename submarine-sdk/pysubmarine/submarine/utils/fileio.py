@@ -14,7 +14,6 @@
 # limitations under the License.
 
 from pyarrow import fs
-from pyarrow.lib import NativeFile
 
 import io
 from urllib.parse import urlparse
@@ -52,12 +51,12 @@ def write_file(buffer: io.BytesIO,
         output_stream.write(buffer.getbuffer())
 
 
-def open_input_file(uri: str) -> NativeFile:
+def open_input_file(uri: str):
     filesystem, path = _parse_uri(uri)
     return filesystem.open_input_file(path)
 
 
-def open_output_stream(uri: str) -> NativeFile:
+def open_output_stream(uri: str):
     filesystem, path = _parse_uri(uri)
     return filesystem.open_output_stream(path)
 
