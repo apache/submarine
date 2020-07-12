@@ -68,7 +68,9 @@ def get_model_param(tmpdir):
                 "num_features": 117581,
                 "out_features": 1,
                 "embedding_dim": 16,
+                "attention_dim": 64,
                 "hidden_units": [400, 400],
+                "dropout_rate": 0.3, 
                 "dropout_rates": [0.2, 0.2]
             }
         },
