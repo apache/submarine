@@ -70,6 +70,6 @@ def file_info(uri: str) -> fs.FileInfo:
 def _parse_uri(uri: str) -> Tuple[fs.FileSystem, str]:
     parsed = urlparse(uri)
     uri = uri if parsed.scheme else str(
-        Path(parsed.path).expanduser().resolve())
+        Path(parsed.path).expanduser().absolute())
     filesystem, path = fs.FileSystem.from_uri(uri)
     return filesystem, path
