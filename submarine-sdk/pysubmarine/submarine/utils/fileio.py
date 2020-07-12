@@ -18,8 +18,9 @@ from pyarrow.lib import NativeFile
 
 import io
 from urllib.parse import urlparse
-from pathlib import Path 
+from pathlib import Path
 from typing import Tuple
+
 
 def open_buffered_file_reader(
         uri: str,
@@ -31,6 +32,7 @@ def open_buffered_file_reader(
         input_file.close()
         raise e
 
+
 def open_buffered_stream_writer(
         uri: str,
         buffer_size: int = io.DEFAULT_BUFFER_SIZE) -> io.BufferedWriter:
@@ -41,33 +43,34 @@ def open_buffered_stream_writer(
         output_stream.close()
         raise e
 
+
 def write_file(buffer: io.BytesIO,
                uri: str,
                buffer_size: int = io.DEFAULT_BUFFER_SIZE) -> None:
-    with open_buffered_stream_writer(uri, buffer_size=buffer_size) as output_stream:
+    with open_buffered_stream_writer(uri,
+                                     buffer_size=buffer_size) as output_stream:
         output_stream.write(buffer.getbuffer())
+
 
 def open_input_file(uri: str) -> NativeFile:
     filesystem, path = _parse_uri(uri)
     return filesystem.open_input_file(path)
 
+
 def open_output_stream(uri: str) -> NativeFile:
     filesystem, path = _parse_uri(uri)
     return filesystem.open_output_stream(path)
+
 
 def file_info(uri: str) -> fs.FileInfo:
     filesystem, path = _parse_uri(uri)
     info, = filesystem.get_file_info([path])
     return info
 
-def _parse_uri(uri: str) -> Tuple[fs.FileSystem, str]: 
+
+def _parse_uri(uri: str) -> Tuple[fs.FileSystem, str]:
     parsed = urlparse(uri)
-    uri = uri if parsed.scheme else str(Path(parsed.path).expanduser().resolve())
-    filesystem, path = fs.FileSystem.from_uri(uri) 
-    return filesystem, path 
-
-    
-
-
-
-
+    uri = uri if parsed.scheme else str(
+        Path(parsed.path).expanduser().resolve())
+    filesystem, path = fs.FileSystem.from_uri(uri)
+    return filesystem, path
