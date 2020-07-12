@@ -34,7 +34,7 @@ class FeatureLinear(nn.Module):
     def forward(self, feature_idx, feature_value):
         """
         :param feature_idx: torch.LongTensor (batch_size, num_fields)
-        :param feature_value: torch.LongTensor (batch_size, num_fields) 
+        :param feature_value: torch.LongTensor (batch_size, num_fields)
         """
         return torch.sum(
             self.weight(feature_idx) * feature_value.unsqueeze(dim=-1),
@@ -51,7 +51,7 @@ class FeatureEmbedding(nn.Module):
     def forward(self, feature_idx, feature_value):
         """
         :param feature_idx: torch.LongTensor (batch_size, num_fields)
-        :param feature_value: torch.LongTensor (batch_size, num_fields) 
+        :param feature_value: torch.LongTensor (batch_size, num_fields)
         """
         return self.weight(feature_idx) * feature_value.unsqueeze(dim=-1)
 

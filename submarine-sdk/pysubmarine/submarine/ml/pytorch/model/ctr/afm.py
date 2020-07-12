@@ -70,7 +70,7 @@ class AttentionalInteratction(nn.Module):
 
     def forward(self, x: torch.FloatTensor):
         """
-        :param x: torch.FloatTensor (batch_size, num_fields, embedding_dim) 
+        :param x: torch.FloatTensor (batch_size, num_fields, embedding_dim)
         """
         x = self.pairwise_product(x)
         score = self.attention_score(x)
@@ -85,7 +85,7 @@ class PairwiseProduct(nn.Module):
 
     def forward(self, x: torch.FloatTensor):
         """
-        :param x: torch.FloatTensor (batch_sie, num_fields, embedding_dim)  
+        :param x: torch.FloatTensor (batch_sie, num_fields, embedding_dim)
         """
         batch_size, num_fields, embedding_dim = x.size()
 
