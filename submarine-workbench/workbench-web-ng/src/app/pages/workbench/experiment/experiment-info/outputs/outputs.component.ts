@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'submarine-outputs',
@@ -25,9 +25,20 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./outputs.component.scss']
 })
 export class OutputsComponent implements OnInit {
-  @Input() pod: object;
+  @Input() podName;
+  @Input() podLogArr;
+  @Input() experimentID;
+  podLog;
 
   constructor() {}
 
   ngOnInit() {}
+
+  ngOnChanges(chg: SimpleChanges) {
+    this.podLogArr.forEach((item) => {
+      if (item.podName == this.podName) {
+        this.podLog = item.podLog;
+      }
+    });
+  }
 }

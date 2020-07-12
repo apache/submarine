@@ -17,12 +17,9 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-
-interface HyperParams {
-  key: string;
-  value: string;
-}
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BaseApiService } from '@submarine/services/base-api.service';
 
 @Component({
   selector: 'submarine-hyper-params',
@@ -30,37 +27,19 @@ interface HyperParams {
   styleUrls: ['./hyper-params.component.scss']
 })
 export class HyperParamsComponent implements OnInit {
-  paramsList: HyperParams[] = [];
+  @Input() workerIndex;
+  @Input() paramData;
+  podParam = [];
 
-  constructor() {}
+  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
-  ngOnInit() {
-    // TODO(chiajoukuo): get data from server
-    this.paramsList = [
-      {
-        key: 'conf',
-        value: '/var/tf_deepfm/deepfm.json'
-      },
-      {
-        key: 'train_beta1',
-        value: '0.9'
-      },
-      {
-        key: 'train_beta2',
-        value: '0.999'
-      },
-      {
-        key: 'train_epsilon',
-        value: '1.0E-8'
-      },
-      {
-        key: 'train_lr',
-        value: '5.0E-4'
-      },
-      {
-        key: 'train_Optimizer',
-        value: 'AdamOptimizer'
+  ngOnInit() {}
+
+  ngOnChanges(chg: SimpleChanges) {
+    this.paramData.forEach((data) => {
+      if (data.workerIndex == this.workerIndex) {
+        this.podParam.push(data);
       }
-    ];
+    });
   }
 }
