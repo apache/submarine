@@ -14,7 +14,6 @@
 # limitations under the License.
 
 import pytest
-
 from submarine.exceptions import SubmarineException
 from submarine.utils.validation import (_validate_db_type_string,
                                         _validate_length_limit,

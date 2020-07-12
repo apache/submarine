@@ -17,7 +17,6 @@ import json
 from os import environ
 
 import pytest
-
 from submarine.utils.env import (get_env, get_from_dicts, get_from_json,
                                  get_from_registry, unset_variable)
 

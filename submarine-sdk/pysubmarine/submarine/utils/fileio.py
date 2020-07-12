@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pyarrow import fs
-
 import io
-from urllib.parse import urlparse
 from pathlib import Path
 from typing import Tuple
+from urllib.parse import urlparse
+
+from pyarrow import fs
 
 
 def open_buffered_file_reader(

@@ -37,10 +37,10 @@ from multiprocessing.pool import ThreadPool
 
 # python 2 and python 3 compatibility library
 import six
-from dateutil.parser import parse
 from six.moves.urllib.parse import quote
 
 import submarine.experiment.models
+from dateutil.parser import parse
 from submarine.experiment import rest
 from submarine.experiment.configuration import Configuration
 from submarine.experiment.exceptions import ApiException, ApiValueError

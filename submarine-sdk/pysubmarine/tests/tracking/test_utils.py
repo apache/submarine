@@ -16,7 +16,6 @@
 import os
 
 import mock
-
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.store.sqlalchemy_store import SqlAlchemyStore
 from submarine.tracking.utils import (_JOB_NAME_ENV_VAR, _TRACKING_URI_ENV_VAR,

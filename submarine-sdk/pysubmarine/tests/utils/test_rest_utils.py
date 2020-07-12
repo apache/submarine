@@ -17,7 +17,6 @@ import json
 
 import pytest
 from mock import Mock, patch
-
 from submarine.exceptions import RestException, SubmarineException
 from submarine.utils.rest_utils import http_request, verify_rest_response
 
