@@ -40,7 +40,7 @@ class LIBSVMDataset(Dataset):
 
     def __getitem__(self, idx) -> Tuple[torch.Tensor, torch.Tensor, int]:
         with open_buffered_file_reader(self.data_uri) as infile:
-            infile.seek(self.sample_offset[idx], io.SEEK_SET)
+            infile.seek(self.sample_offset[idx], os.SEEK_SET)
             sample = infile.readline()
         return LIBSVMDataset.parse_sample(sample)
 

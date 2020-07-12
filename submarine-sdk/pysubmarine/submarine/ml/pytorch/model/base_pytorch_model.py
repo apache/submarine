@@ -68,32 +68,34 @@ class BasePyTorchModel(AbstractModel, ABC):
         distributed.destroy_process_group()
 
     def train(self, train_loader):
-        for _, batch in enumerate(train_loader):
-            sample, target = batch
-            output = self.model(sample)
-            loss = self.loss(output, target)
-            self.optimizer.zero_grad()
-            loss.backward()
-            self.optimizer.step()
+        self.model.train() 
+        with torch.enable_grad(): 
+            for _, batch in enumerate(train_loader):
+                feature_idx, feature_value, label = batch
+                output = self.model(feature_idx, feature_value).squeeze()
+                loss = self.loss(output, label.float())
+                self.optimizer.zero_grad()
+                loss.backward()
+                self.optimizer.step()
 
     def evaluate(self):
         outputs = []
-        targets = []
+        labels = []
 
         valid_loader = get_from_registry(self.input_type, input_fn_registry)(
             filepath=self.params['input']['valid_data'],
             **self.params['training'])()
-
+        self.model.eval() 
         with torch.no_grad():
             for _, batch in enumerate(valid_loader):
-                sample, target = batch
-                output = self.model(sample)
+                feature_idx, feature_value, label = batch
+                output = self.model(feature_idx, feature_value).squeeze()
 
                 outputs.append(output)
-                targets.append(target)
+                labels.append(label)
 
         return self.metric(
-            torch.cat(targets, dim=0).cpu().numpy(),
+            torch.cat(labels, dim=0).cpu().numpy(),
             torch.cat(outputs, dim=0).cpu().numpy())
 
     def predict(self):
@@ -102,12 +104,12 @@ class BasePyTorchModel(AbstractModel, ABC):
         test_loader = get_from_registry(self.input_type, input_fn_registry)(
             filepath=self.params['input']['test_data'],
             **self.params['training'])()
-
+        self.model.eval() 
         with torch.no_grad():
             for _, batch in enumerate(test_loader):
-                sample, _ = batch
-                output = self.model(sample)
-                outputs.append(output)
+                feature_idx, feature_value, _ = batch
+                output = self.model(feature_idx, feature_value).squeeze()
+                outputs.append(torch.sigmoid(output))
 
         return torch.cat(outputs, dim=0).cpu().numpy()
 
@@ -141,7 +143,7 @@ class BasePyTorchModel(AbstractModel, ABC):
                     'optimizer': self.optimizer.state_dict()
                 }, buffer)
             write_file(buffer,
-                       path=os.path.join(
+                       uri=os.path.join(
                            self.params['output']['save_model_dir'], 'ckpt.pkl'))
 
     def model_fn(self, params):
