@@ -68,8 +68,8 @@ class BasePyTorchModel(AbstractModel, ABC):
         distributed.destroy_process_group()
 
     def train(self, train_loader):
-        self.model.train() 
-        with torch.enable_grad(): 
+        self.model.train()
+        with torch.enable_grad():
             for _, batch in enumerate(train_loader):
                 feature_idx, feature_value, label = batch
                 output = self.model(feature_idx, feature_value).squeeze()
@@ -85,7 +85,7 @@ class BasePyTorchModel(AbstractModel, ABC):
         valid_loader = get_from_registry(self.input_type, input_fn_registry)(
             filepath=self.params['input']['valid_data'],
             **self.params['training'])()
-        self.model.eval() 
+        self.model.eval()
         with torch.no_grad():
             for _, batch in enumerate(valid_loader):
                 feature_idx, feature_value, label = batch
@@ -104,7 +104,7 @@ class BasePyTorchModel(AbstractModel, ABC):
         test_loader = get_from_registry(self.input_type, input_fn_registry)(
             filepath=self.params['input']['test_data'],
             **self.params['training'])()
-        self.model.eval() 
+        self.model.eval()
         with torch.no_grad():
             for _, batch in enumerate(test_loader):
                 feature_idx, feature_value, _ = batch
@@ -143,8 +143,8 @@ class BasePyTorchModel(AbstractModel, ABC):
                     'optimizer': self.optimizer.state_dict()
                 }, buffer)
             write_file(buffer,
-                       uri=os.path.join(
-                           self.params['output']['save_model_dir'], 'ckpt.pkl'))
+                       uri=os.path.join(self.params['output']['save_model_dir'],
+                                        'ckpt.pkl'))
 
     def model_fn(self, params):
         seed = params["training"]["seed"]
