@@ -80,14 +80,11 @@ class AttentionalInteratction(nn.Module):
 
 class PairwiseProduct(nn.Module):
 
-    def __init__(self):
-        super().__init__()
-
     def forward(self, x: torch.FloatTensor):
         """
         :param x: torch.FloatTensor (batch_sie, num_fields, embedding_dim)
         """
-        batch_size, num_fields, embedding_dim = x.size()
+        _, num_fields, _ = x.size()
 
         all_pairs_product = x.unsqueeze(dim=1) * x.unsqueeze(dim=2)
         idx_row, idx_col = torch.unbind(torch.triu_indices(num_fields,
