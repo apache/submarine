@@ -20,8 +20,6 @@ from torch.utils.data.distributed import DistributedSampler
 
 from submarine.utils.fileio import open_buffered_file_reader, file_info
 
-from tqdm.auto import tqdm
-
 import os
 import itertools
 import functools
@@ -74,8 +72,6 @@ class LIBSVMDataset(Dataset):
                 chunk_starts.append(min(infile.tell(), finfo.size))
 
         with mp.Pool(processes=n_jobs,
-                     initializer=tqdm.set_lock,
-                     initargs=(tqdm.get_lock(),),
                      maxtasksperchild=1) as pool:
             return np.asarray(
                 list(
@@ -93,14 +89,9 @@ class LIBSVMDataset(Dataset):
         offsets = [start]
         with open_buffered_file_reader(data_uri) as infile:
             infile.seek(start, os.SEEK_SET)
-            with tqdm(total=None,
-                      desc=f'[Loacate Sample Offsets] job: {job_id}',
-                      position=job_id,
-                      disable=('DISABLE_TQDM' in os.environ)) as pbar:
-                while infile.tell() < end:
-                    infile.readline()
-                    offsets.append(infile.tell())
-                    pbar.update()
+            while infile.tell() < end:
+                infile.readline()
+                offsets.append(infile.tell())
             assert offsets.pop() == end
         return offsets
 
