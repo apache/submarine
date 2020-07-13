@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import pytest
+
 from submarine.utils.tf_utils import get_tf_config
 
 

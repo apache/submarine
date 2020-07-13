@@ -17,6 +17,7 @@ import json
 import os
 
 import tensorflow as tf
+
 from submarine.ml.tensorflow.optimizer import get_optimizer
 
 

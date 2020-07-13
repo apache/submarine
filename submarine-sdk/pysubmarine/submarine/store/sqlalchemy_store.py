@@ -18,6 +18,7 @@ import math
 from contextlib import contextmanager
 
 import sqlalchemy
+
 from submarine.exceptions import SubmarineException
 from submarine.store.abstract_store import AbstractStore
 from submarine.store.database.models import Base, SqlMetric, SqlParam
