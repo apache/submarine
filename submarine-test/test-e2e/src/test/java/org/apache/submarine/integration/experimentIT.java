@@ -17,9 +17,14 @@
 
 package org.apache.submarine.integration;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
@@ -28,6 +33,9 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import sun.rmi.runtime.Log;
+
+import java.io.File;
 
 public class experimentIT extends AbstractSubmarineIT {
 
@@ -54,21 +62,41 @@ public class experimentIT extends AbstractSubmarineIT {
     pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
 
     // Routing to workspace
+    LOG.info("url");
     pollingWait(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/experiment");
 
     // Test create new experiment
+    LOG.info("new experiment");
     pollingWait(By.xpath("//button[@id='openExperiment']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertTrue(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
-    WebDriverWait wait = new WebDriverWait( driver, 60);
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), \"Experiment Name\")]")));
-    pollingWait(By.xpath("//input[@id='experimentName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Experiment");
-    pollingWait(By.xpath("//textarea"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project description");
+    WebDriverWait wait = new WebDriverWait( driver, 15);
+    // Basic information section
+    pollingWait(By.name("experimentName"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Experiment");
+    pollingWait(By.name("description"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project description");
+    pollingWait(By.name("namespace"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e namespace");
+    pollingWait(By.name("cmd"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("python3 -m e2e cmd");
+    pollingWait(By.name("image"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e custom image");
     pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    //Next step
-    Assert.assertTrue(pollingWait(By.xpath("//div[@id='page2']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
+    // env variables section
+    LOG.info("in env");
+    Assert.assertTrue(pollingWait(By.xpath("//button[@id='env-btn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
+    WebElement envBtn = buttonCheck(By.id("env-btn"), MAX_BROWSER_TIMEOUT_SEC);
+    envBtn.click();
+    wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//input[@name='key0' or name='value0']")));
+    pollingWait(By.name("key0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e key");
+    pollingWait(By.name("value0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e value");
+
     pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertTrue(pollingWait(By.xpath("//label[@class='pg3-form-label']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
-    pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Spec section
+    LOG.info("in spec");
+    WebElement specBtn = wait.until(ExpectedConditions.elementToBeClickable(By.id("spec-btn")));
+    specBtn.click();
+    pollingWait(By.name("spec0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e spec");
+    pollingWait(By.name("replica0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("1");
+    pollingWait(By.name("cpu0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("1");
+    pollingWait(By.name("memory0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("512M");
+    Assert.assertTrue(pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).isEnabled());
+//    pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
   }
 }

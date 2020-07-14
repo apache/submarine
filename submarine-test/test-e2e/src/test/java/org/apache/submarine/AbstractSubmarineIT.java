@@ -115,6 +115,23 @@ abstract public class AbstractSubmarineIT {
     });
   }
 
+  protected WebElement buttonCheck(final By locator, final long timeWait) {
+    Wait<WebDriver> wait = new FluentWait<>(driver)
+        .withTimeout(timeWait, TimeUnit.SECONDS)
+        .pollingEvery(1, TimeUnit.SECONDS)
+        .ignoring(NoSuchElementException.class);
+    return wait.until(ExpectedConditions.elementToBeClickable(locator));
+  }
+
+  protected void takeScreenShot(final String path) {
+    File scrFile1 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+    try {
+      FileUtils.copyFile(scrFile1, new File(path));
+    } catch (java.io.IOException e) {
+      e.fillInStackTrace();
+    }
+  }
+
   protected void createNewNote() {
     clickAndWait(By.xpath("//div[contains(@class, \"col-md-4\")]/div/h5/a[contains(.,'Create new" +
         " note')]"));

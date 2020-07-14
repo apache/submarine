@@ -45,24 +45,75 @@
    color: red;
 }
 
-.form-label {
-   float:left;
-   width:200px;
-   text-align: right;
-   padding-right: 12px;
-   margin-top: 32px;
-   margin-left: 10px;
-   clear: left;
-   color: black;
+.list-container {
+   padding: 0;
+   margin: 1rem 0;
+}
+
+/* For env section */
+.env-page-container {
+   display: flex;
+   flex-direction: column;
+}
+
+.env-input-container {
+   padding: 0;
+   margin: 1rem 0;
+}
+
+.input-group {
+   display: flex;
+   align-items: center;
+   &:not(:first-child) {
+      margin-top: 1rem;
+   }
+
+   & input {
+      flex: 0 2 20%;
+      &:not(:last-child) {
+         margin-right: .5rem;
+      }
+   }
+
+   & i {
+      cursor: pointer;
+      font-size: 1.2rem;
+   }
+}
+
+/* utility */
+.single-field-group {
+   display: flex;
+   align-items: center;
+   margin-bottom: 1.5rem;
+   & label {
+      flex: 0 0 25%;
+      text-align: right;
+      font-weight: 500;
+      &:not(:last-child) {
+         margin-right: 1.5rem;
+      }
+   }
+   & input {
+      flex: 0 0 48%;
+   }
+   & textarea {
+      flex: 0 0 55%;
+   }
+}
+
+.alert-message {
+   color: red;
+   margin-top: .3rem;
+   margin-left: .5rem;
+}
+
+.test {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
 }
 
 .pg3-form-label {
-   float:left;
-   width:200px;
-   text-align: right;
-   padding-right: 12px;
-   margin-top: 32px;
-   margin-left: 100px;
-   clear: left;
-   color: black;
+   
 }

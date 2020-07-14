@@ -145,26 +145,20 @@
     [(nzOkText)]="okText"
     [nzOkLoading]="isOkLoading"
     (nzOnCancel)="isVisible = false"
-    [nzWidth]="740"
+    [nzWidth]="1000"
   >
     <div>
       <nz-steps [nzCurrent]="current">
-        <nz-step nzTitle="Basic Information"></nz-step>
-        <nz-step nzTitle="Configuration"></nz-step>
-        <nz-step nzTitle="Scheduling Cycle"></nz-step>
+        <nz-step nzTitle="Meta"></nz-step>
+        <nz-step nzTitle="Env"></nz-step>
+        <nz-step nzTitle="Spec"></nz-step>
       </nz-steps>
     </div>
     <div>
       <form [formGroup]="createExperiment">
         <div *nzModalFooter>
           <button nz-button nzType="default" (click)="isVisible = false">Cancel</button>
-          <button
-            id="go"
-            nz-button
-            nzType="primary"
-            [disabled]="!(createExperiment.get('experimentName').valid && createExperiment.get('description').valid)"
-            (click)="handleOk()"
-          >
+          <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="handleOk()">
             {{ okText }}
           </button>
           <button
@@ -179,105 +173,153 @@
         </div>
         <div [ngSwitch]="current" style="margin-top: 30px;">
           <div *ngSwitchCase="0">
-            <div>
-              <label class="form-label">
+            <div class="single-field-group">
+              <label for="experimentName">
                 <span class="red-star">*</span>
-                Experiment Name:
+                Experiment Name
               </label>
-              <label for="experimentName"></label>
-              <input
-                type="text"
-                id="experimentName"
-                style="margin-top: 32px; width: 350px;"
-                class="form-control"
-                formControlName="experimentName"
-              />
+              <input nz-input type="text" name="experimentName" id="experimentName" formControlName="experimentName" />
             </div>
-            <div>
-              <label class="form-label">
+            <div class="single-field-group">
+              <label for="description">
                 <span class="red-star">*</span>
-                Description:
+                Description
               </label>
-              <label>
-                <textarea
-                  rows="6"
-                  class="form-control"
-                  style="margin-top: 32px; width: 350px;"
-                  formControlName="description"
-                ></textarea>
+              <textarea
+                nz-input
+                [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+                name="description"
+                formControlName="description"
+              ></textarea>
+            </div>
+
+            <div class="single-field-group">
+              <label for="frameworks">
+                <span class="red-star">*</span>
+                Frameworks
               </label>
+              <nz-select formControlName="frameworks" nzPlaceHolder="Choose" style="width: 48%;">
+                <nz-option
+                  *ngFor="let framework of frameworkNames"
+                  [nzValue]="framework"
+                  [nzLabel]="framework"
+                ></nz-option>
+              </nz-select>
+            </div>
+            <div class="single-field-group">
+              <label for="namespace">
+                <span class="red-star">*</span>
+                Namespace
+              </label>
+              <input nz-input name="namespace" formControlName="namespace" />
+            </div>
+            <div class="single-field-group">
+              <label for="cmd">
+                <span class="red-star">*</span>
+                Command
+              </label>
+              <input nz-input name="cmd" formControlName="cmd" placeholder="Command to run" />
+            </div>
+            <div class="single-field-group">
+              <label for="image">
+                <span class="red-star">*</span>
+                Image
+              </label>
+              <input nz-input name="image" formControlName="image" placeholder="Image to use" />
             </div>
           </div>
           <div *ngSwitchCase="1" id="page2">
             <div>
-              <label class="form-label">
-                <span class="red-star">*</span>
-                Experiment Spec:
-              </label>
-              <nz-select
-                formControlName="experimentSpec"
-                nzPlaceHolder="Choose"
-                style="width: 350px; margin-top: 30px;"
-              >
-                <nz-option
-                  *ngFor="let experimentSpec of ExperimentSpecs"
-                  [nzValue]="experimentSpec"
-                  [nzLabel]="experimentSpec"
-                ></nz-option>
-              </nz-select>
-            </div>
-            <div>
-              <label class="form-label">
-                <span class="red-star">*</span>
-                Rule Template:
-              </label>
-              <nz-select formControlName="ruleTemplate" nzPlaceHolder="Choose" style="width: 350px; margin-top: 30px;">
-                <nz-option
-                  *ngFor="let ruleTemplate of ruleTemplates"
-                  [nzValue]="ruleTemplate"
-                  [nzLabel]="ruleTemplate"
-                ></nz-option>
-              </nz-select>
-            </div>
-            <div>
-              <label class="form-label">
-                <span class="red-star">*</span>
-                Rule Type:
-              </label>
-              <nz-radio-group formControlName="ruleType" style="width: 350px; margin-top: 30px; margin-bottom: 30px;">
-                <label *ngFor="let ruletype of ruleTypes" nz-radio [nzValue]="ruletype">{{ ruletype }}</label>
-              </nz-radio-group>
+              <button nz-button id="env-btn" type="default" (click)="createEnvInput()">
+                Add new env
+              </button>
+              <ul formArrayName="envs" class="list-container">
+                <ng-container *ngFor="let env of envs.controls; index as i">
+                  <li *ngIf="i | indexInRange: currentEnvPage:PAGESIZE" [formGroupName]="i" class="input-group">
+                    <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" />
+                    <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" />
+                    <i nz-icon nzType="close-circle" nzTheme="fill" (click)="deleteItem(envs, i)"></i>
+                  </li>
+                  <div
+                    class="alert-message"
+                    *ngIf="env.get('key').dirty | logicalAnd: env.get('value').dirty:env.hasError('envMissing')"
+                  >
+                    {{ env.getError('envMissing') }}
+                  </div>
+                  <div
+                    class="alert-message"
+                    *ngIf="env.get('key').dirty | logicalAnd: env.get('key').hasError('duplicateError')"
+                  >
+                    {{ env.get('key').getError('duplicateError') }}
+                  </div>
+                </ng-container>
+              </ul>
+              <nz-pagination
+                [(nzPageIndex)]="currentEnvPage"
+                [nzPageSize]="PAGESIZE"
+                [nzTotal]="envs.controls.length"
+                nzSimple
+              ></nz-pagination>
             </div>
           </div>
           <div *ngSwitchCase="2">
-            <div>
-              <label class="pg3-form-label">
-                <span class="red-star">*</span>
-                Start Date:
-              </label>
-              <nz-date-picker
-                [nzFormat]="'yyyy/MM/dd'"
-                formControlName="startDate"
-                style="width: 350px; margin-top: 30px;"
-              ></nz-date-picker>
-            </div>
-            <div>
-              <label class="pg3-form-label">
-                <span class="red-star">*</span>
-                Schedule Cycle:
-              </label>
-              <nz-select
-                formControlName="scheduleCycle"
-                nzPlaceHolder="Choose"
-                style="width: 195px; margin-top: 30px; margin-bottom: 30px;"
-              >
-                <nz-option
-                  *ngFor="let scheduleCycle of scheduleCycles"
-                  [nzValue]="scheduleCycle"
-                  [nzLabel]="scheduleCycle"
-                ></nz-option>
-              </nz-select>
-            </div>
+            <label class="pg3-form-label"></label>
+            <button nz-button id="spec-btn" type="default" (click)="createSpec()">
+              Add new spec
+            </button>
+            <ul formArrayName="specs" class="list-container">
+              <ng-container *ngFor="let spec of specs.controls; index as i">
+                <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
+                  <input nz-input name="spec{{ i }}" placeholder="spec name" formControlName="name" />
+                  <input
+                    nz-input
+                    name="replica{{ i }}"
+                    type="number"
+                    placeholder="number of replica"
+                    formControlName="replicas"
+                  />
+                  <input nz-input name="cpu{{ i }}" type="number" placeholder="number of cpu" formControlName="cpus" />
+                  <input nz-input name="memory{{ i }}" placeholder="memory" formControlName="memory" />
+                  <i
+                    nz-icon
+                    nzType="close-circle"
+                    nzTheme="fill"
+                    class="delete-icon"
+                    (click)="deleteItem(specs, i)"
+                  ></i>
+                </li>
+                <div
+                  class="alert-message"
+                  *ngIf="spec.get('name').dirty | logicalAnd: spec.get('name').hasError('duplicateError')"
+                >
+                  {{ spec.get('name').getError('duplicateError') }}
+                </div>
+                <div
+                  class="alert-message"
+                  *ngIf="spec.get('memory').dirty | logicalAnd: spec.get('memory').hasError('memoryPatternError')"
+                >
+                  {{ spec.get('memory').getError('memoryPatternError') }}
+                </div>
+                <div
+                  class="alert-message"
+                  *ngIf="spec.get('replicas').dirty | logicalAnd: spec.get('replicas').hasError('min')"
+                >
+                  replicas must be at least 1
+                </div>
+                <div
+                  class="alert-message"
+                  *ngIf="spec.get('cpus').dirty | logicalAnd: spec.get('cpus').hasError('min')"
+                >
+                  cpus must be at least 1
+                </div>
+              </ng-container>
+            </ul>
+            <nz-pagination
+              [(nzPageIndex)]="currentSpecPage"
+              [nzPageSize]="PAGESIZE"
+              [nzTotal]="specs.controls.length"
+              nzSimple
+            ></nz-pagination>
           </div>
         </div>
       </form>
