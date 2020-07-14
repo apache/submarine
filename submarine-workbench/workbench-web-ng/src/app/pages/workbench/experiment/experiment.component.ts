@@ -175,8 +175,8 @@ export class ExperimentComponent implements OnInit {
     const spec = new FormGroup(
       {
         name: new FormControl(''),
-        replicas: new FormControl(1, [Validators.min(1)]),
-        cpus: new FormControl(1, [Validators.min(1)]),
+        replicas: new FormControl(null, [Validators.min(1)]),
+        cpus: new FormControl(null, [Validators.min(1)]),
         memory: new FormControl('', [this.experimentFormService.memoryValidator])
       },
       [this.experimentFormService.specValidator]

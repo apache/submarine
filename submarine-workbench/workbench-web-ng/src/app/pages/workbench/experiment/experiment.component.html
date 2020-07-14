@@ -207,11 +207,11 @@
               </nz-select>
             </div>
             <div class="single-field-group">
-              <label for="Namespace">
+              <label for="namespace">
                 <span class="red-star">*</span>
                 Namespace
               </label>
-              <input nz-input name="Namespace" formControlName="namespace" />
+              <input nz-input name="namespace" formControlName="namespace" />
             </div>
             <div class="single-field-group">
               <label for="cmd">
@@ -230,14 +230,14 @@
           </div>
           <div *ngSwitchCase="1" id="page2">
             <div>
-              <button nz-button type="default" (click)="createEnvInput()">
+              <button nz-button id="env-btn" type="default" (click)="createEnvInput()">
                 Add new env
               </button>
               <ul formArrayName="envs" class="list-container">
                 <ng-container *ngFor="let env of envs.controls; index as i">
                   <li *ngIf="i | indexInRange: currentEnvPage:PAGESIZE" [formGroupName]="i" class="input-group">
-                    <input nz-input placeholder="Key" formControlName="key" />
-                    <input nz-input placeholder="Value" formControlName="value" />
+                    <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" />
+                    <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" />
                     <i nz-icon nzType="close-circle" nzTheme="fill" (click)="deleteItem(envs, i)"></i>
                   </li>
                   <div
@@ -263,16 +263,23 @@
             </div>
           </div>
           <div *ngSwitchCase="2">
-            <button nz-button type="default" (click)="createSpec()" class="pg3-form-label">
+            <label class="pg3-form-label"></label>
+            <button nz-button id="spec-btn" type="default" (click)="createSpec()">
               Add new spec
             </button>
             <ul formArrayName="specs" class="list-container">
               <ng-container *ngFor="let spec of specs.controls; index as i">
                 <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
-                  <input nz-input placeholder="spec name" formControlName="name" />
-                  <input nz-input type="number" placeholder="number of replica" formControlName="replicas" />
-                  <input nz-input type="number" placeholder="number of cpu" formControlName="cpus" />
-                  <input nz-input placeholder="memory" formControlName="memory" />
+                  <input nz-input name="spec{{ i }}" placeholder="spec name" formControlName="name" />
+                  <input
+                    nz-input
+                    name="replica{{ i }}"
+                    type="number"
+                    placeholder="number of replica"
+                    formControlName="replicas"
+                  />
+                  <input nz-input name="cpu{{ i }}" type="number" placeholder="number of cpu" formControlName="cpus" />
+                  <input nz-input name="memory{{ i }}" placeholder="memory" formControlName="memory" />
                   <i
                     nz-icon
                     nzType="close-circle"
