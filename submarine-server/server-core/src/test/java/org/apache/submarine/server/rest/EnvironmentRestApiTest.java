@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
