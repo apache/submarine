@@ -226,7 +226,7 @@ public class EnvironmentManager {
     }
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
-          sqlSession.getMapper(EnvironmentMapper.class);
+      EnvironmentMapper environmentMapper = sqlSession.getMapper(EnvironmentMapper.class);
       EnvironmentEntity environmentEntity = environmentMapper.select(name);
 
       if (environmentEntity != null) {
