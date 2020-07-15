@@ -57,6 +57,7 @@ public class EnvironmentRestApiTest {
     environmentSpec.setName("foo");
     // Create Environment
     Response createEnvResponse = environmentStoreApi.createEnvironment(environmentSpec);
+    environment = createEnvResponse.readEntity(new GenericType<Environment>() {});
     assertEquals(Response.Status.OK.getStatusCode(), createEnvResponse.getStatus());
 
     // Update Environment
