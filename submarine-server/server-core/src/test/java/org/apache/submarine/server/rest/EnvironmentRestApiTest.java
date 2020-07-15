@@ -1,15 +1,21 @@
 package org.apache.submarine.server.rest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.api.spec.KernelSpec;
+import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.workbench.database.entity.SysDict;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,6 +34,9 @@ public class EnvironmentRestApiTest {
           "anaconda=2020.02=py37_0",
           "anaconda-client=1.7.2=py37_0",
           "anaconda-navigator=1.9.12=py37_0");
+
+  private static GsonBuilder gsonBuilder = new GsonBuilder();
+  private static Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
   @BeforeClass
   public static void init() {
@@ -56,14 +65,14 @@ public class EnvironmentRestApiTest {
     environmentSpec.setName("foo");
     // Create Environment
     Response createEnvResponse = environmentStoreApi.createEnvironment(environmentSpec);
-    environment = (Environment) createEnvResponse.getEntity();
+    environment = getEnvironmentFromResponse(createEnvResponse);
     assertEquals(Response.Status.OK.getStatusCode(), createEnvResponse.getStatus());
 
     // Update Environment
     environmentSpec.setName(environmentName);
     Response updateEnvResponse = environmentStoreApi.updateEnvironment(
             environment.getEnvironmentId().toString(), environmentSpec);
-    environment = (Environment) updateEnvResponse.getEntity();
+    environment = getEnvironmentFromResponse(updateEnvResponse);
     assertEquals(Response.Status.OK.getStatusCode(), updateEnvResponse.getStatus());
   }
 
@@ -78,11 +87,19 @@ public class EnvironmentRestApiTest {
   public void getEnvironment() {
     Response getEnvResponse = environmentStoreApi.getEnvironment(
             environment.getEnvironmentId().toString());
-    Environment responseEntity = (Environment) getEnvResponse.getEntity();
+    Environment responseEntity = getEnvironmentFromResponse(getEnvResponse);
     assertEquals(environmentName, responseEntity.getEnvironmentSpec().getName());
     assertEquals(kernelName, responseEntity.getEnvironmentSpec().getKernelSpec().getName());
     assertEquals(kernelChannels, responseEntity.getEnvironmentSpec().getKernelSpec().getChannels());
     assertEquals(kernelDependencies, responseEntity.getEnvironmentSpec().getKernelSpec().getDependencies());
     assertEquals(dockerImage, responseEntity.getEnvironmentSpec().getDockerImage());
+  }
+
+  private Environment getEnvironmentFromResponse(Response response) {
+    String entity = (String) response.getEntity();
+    Type type = new TypeToken<JsonResponse<Environment>>() {}.getType();
+    JsonResponse<Environment> jsonResponse = gson.fromJson(entity, type);
+    environment = jsonResponse.getResult();
+    return environment;
   }
 }
