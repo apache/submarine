@@ -40,9 +40,6 @@ public class MyBatisUtil {
     SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
     sqlSessionFactory = buildSqlSessionFactory("mybatis-config.xml",
         conf.getJdbcUrl(), conf.getJdbcUserName(), conf.getJdbcPassword());
-    metastoreSqlSessionFactory = buildSqlSessionFactory(
-        "mybatis-config-metastore.xml", conf.getMetastoreJdbcUrl(),
-        conf.getMetastoreJdbcUserName(), conf.getMetastoreJdbcPassword());
   }
 
   private static SqlSessionFactory buildSqlSessionFactory(String configFile,
