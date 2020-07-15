@@ -39,14 +39,14 @@ public class EnvironmentRestApiTest {
   @BeforeClass
   public static void init() {
     SubmarineConfiguration submarineConf = SubmarineConfiguration.getInstance();
-    submarineConf.setMetastoreJdbcUrl("jdbc:mysql://127.0.0.1:3306/metastore_test?" +
+    submarineConf.setMetastoreJdbcUrl("jdbc:mysql://127.0.0.1:3306/submarine_test?" +
             "useUnicode=true&amp;" +
             "characterEncoding=UTF-8&amp;" +
             "autoReconnect=true&amp;" +
             "failOverReadOnly=false&amp;" +
             "zeroDateTimeBehavior=convertToNull&amp;" +
             "useSSL=false");
-    submarineConf.setMetastoreJdbcUserName("metastore_test");
+    submarineConf.setMetastoreJdbcUserName("submarine_test");
     submarineConf.setMetastoreJdbcPassword("password_test");
     environmentStoreApi = new EnvironmentRestApi();
   }
@@ -61,7 +61,7 @@ public class EnvironmentRestApiTest {
     environmentSpec.setDockerImage(dockerImage);
     environmentSpec.setKernelSpec(kernelSpec);
     environmentSpec.setName("foo");
-    
+
     // Create Environment
     Response createEnvResponse = environmentStoreApi.createEnvironment(environmentSpec);
     assertEquals(Response.Status.OK.getStatusCode(), createEnvResponse.getStatus());
@@ -69,7 +69,7 @@ public class EnvironmentRestApiTest {
     // Update Environment
     environmentSpec.setName(environmentName);
     Response updateEnvResponse = environmentStoreApi.updateEnvironment(
-            environmentName, environmentSpec);
+            "foo", environmentSpec);
     assertEquals(Response.Status.OK.getStatusCode(), updateEnvResponse.getStatus());
   }
 
