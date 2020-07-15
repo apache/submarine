@@ -211,7 +211,7 @@ public class EnvironmentManager {
   private void checkSpec(EnvironmentSpec spec)
       throws SubmarineRuntimeException {
     if (spec == null) {
-      throw new SubmarineRuntimeException(Status.OK.getStatusCode(),
+      throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
           "Invalid environment spec.");
     }
   }

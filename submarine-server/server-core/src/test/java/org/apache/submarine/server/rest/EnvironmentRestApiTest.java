@@ -19,11 +19,11 @@ import static org.junit.Assert.assertEquals;
 public class EnvironmentRestApiTest {
   private static EnvironmentRestApi environmentStoreApi;
   private static Environment environment;
-  String environmentName = "my-submarine-env";
-  String kernelName = "team_default_python_3";
-  String dockerImage = "continuumio/anaconda3";
-  List<String> kernelChannels = Arrays.asList("defaults", "anaconda");
-  List<String> kernelDependencies = Arrays.asList(
+  private static String environmentName = "my-submarine-env";
+  private static String kernelName = "team_default_python_3";
+  private static String dockerImage = "continuumio/anaconda3";
+  private static List<String> kernelChannels = Arrays.asList("defaults", "anaconda");
+  private static List<String> kernelDependencies = Arrays.asList(
           "_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
           "alabaster=0.7.12=py37_0",
           "anaconda=2020.02=py37_0",
@@ -57,20 +57,20 @@ public class EnvironmentRestApiTest {
     environmentSpec.setName("foo");
     // Create Environment
     Response createEnvResponse = environmentStoreApi.createEnvironment(environmentSpec);
-    assertEquals(createEnvResponse.getStatus(), Response.Status.OK.getStatusCode());
+    assertEquals(Response.Status.OK.getStatusCode(), createEnvResponse.getStatus());
 
     // Update Environment
     environmentSpec.setName(environmentName);
     Response updateEnvResponse = environmentStoreApi.updateEnvironment(
             environment.getEnvironmentId().toString(), environmentSpec);
     environment = updateEnvResponse.readEntity(new GenericType<Environment>() {});
-    assertEquals(updateEnvResponse.getStatus(), Response.Status.OK.getStatusCode());
+    assertEquals(Response.Status.OK.getStatusCode(), updateEnvResponse.getStatus());
   }
 
   @After
   public void deleteEnvironment() {
-    Response jsonResponse = environmentStoreApi.deleteEnvironment(environment.getEnvironmentId().toString());
-    assertEquals(jsonResponse.getStatus(), Response.Status.OK.getStatusCode());
+    Response deleteEnvResponse = environmentStoreApi.deleteEnvironment(environment.getEnvironmentId().toString());
+    assertEquals(Response.Status.OK.getStatusCode(), deleteEnvResponse.getStatus());
   }
 
   @Test
@@ -78,10 +78,10 @@ public class EnvironmentRestApiTest {
     Response getEnvResponse = environmentStoreApi.getEnvironment(
             environment.getEnvironmentId().toString());
     Environment responseEntity = getEnvResponse.readEntity(new GenericType<Environment>() {});
-    assertEquals(responseEntity.getEnvironmentSpec().getName(), environmentName);
-    assertEquals(responseEntity.getEnvironmentSpec().getKernelSpec().getName(), kernelName);
-    assertEquals(responseEntity.getEnvironmentSpec().getKernelSpec().getChannels(), kernelChannels);
-    assertEquals(responseEntity.getEnvironmentSpec().getKernelSpec().getDependencies(), kernelDependencies);
-    assertEquals(responseEntity.getEnvironmentSpec().getDockerImage(), dockerImage);
+    assertEquals(environmentName, responseEntity.getEnvironmentSpec().getName());
+    assertEquals(kernelName, responseEntity.getEnvironmentSpec().getKernelSpec().getName());
+    assertEquals(kernelChannels, responseEntity.getEnvironmentSpec().getKernelSpec().getChannels());
+    assertEquals(kernelDependencies, responseEntity.getEnvironmentSpec().getKernelSpec().getDependencies());
+    assertEquals(dockerImage, responseEntity.getEnvironmentSpec().getDockerImage());
   }
 }
