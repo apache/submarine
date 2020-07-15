@@ -57,14 +57,14 @@ public class EnvironmentRestApiTest {
     environmentSpec.setName("foo");
     // Create Environment
     Response createEnvResponse = environmentStoreApi.createEnvironment(environmentSpec);
-    environment = createEnvResponse.readEntity(new GenericType<Environment>() {});
+    environment = (Environment) createEnvResponse.getEntity();
     assertEquals(Response.Status.OK.getStatusCode(), createEnvResponse.getStatus());
 
     // Update Environment
     environmentSpec.setName(environmentName);
     Response updateEnvResponse = environmentStoreApi.updateEnvironment(
             environment.getEnvironmentId().toString(), environmentSpec);
-    environment = updateEnvResponse.readEntity(new GenericType<Environment>() {});
+    environment = (Environment) updateEnvResponse.getEntity();
     assertEquals(Response.Status.OK.getStatusCode(), updateEnvResponse.getStatus());
   }
 
@@ -79,7 +79,7 @@ public class EnvironmentRestApiTest {
   public void getEnvironment() {
     Response getEnvResponse = environmentStoreApi.getEnvironment(
             environment.getEnvironmentId().toString());
-    Environment responseEntity = getEnvResponse.readEntity(new GenericType<Environment>() {});
+    Environment responseEntity = (Environment) getEnvResponse.getEntity();
     assertEquals(environmentName, responseEntity.getEnvironmentSpec().getName());
     assertEquals(kernelName, responseEntity.getEnvironmentSpec().getKernelSpec().getName());
     assertEquals(kernelChannels, responseEntity.getEnvironmentSpec().getKernelSpec().getChannels());
