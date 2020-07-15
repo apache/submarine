@@ -69,7 +69,8 @@ public class EnvironmentRestApiTest {
 
   @After
   public void deleteEnvironment() {
-    Response deleteEnvResponse = environmentStoreApi.deleteEnvironment(environment.getEnvironmentId().toString());
+    Response deleteEnvResponse = environmentStoreApi
+            .deleteEnvironment(environment.getEnvironmentId().toString());
     assertEquals(Response.Status.OK.getStatusCode(), deleteEnvResponse.getStatus());
   }
 
