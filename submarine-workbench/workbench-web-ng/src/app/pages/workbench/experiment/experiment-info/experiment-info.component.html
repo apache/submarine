@@ -116,7 +116,11 @@
         [workerIndex]="selectedPod"
         [paramData]="paramData"
       ></submarine-hyper-params>
-      <submarine-metrics *ngSwitchCase="2"></submarine-metrics>
+      <submarine-metrics 
+        *ngSwitchCase="2"
+        [workerIndex]="selectedPod"
+        [metricData]="metricData"
+      ></submarine-metrics>
       <submarine-outputs
         *ngSwitchCase="3"
         [podName]="selectedPod"
