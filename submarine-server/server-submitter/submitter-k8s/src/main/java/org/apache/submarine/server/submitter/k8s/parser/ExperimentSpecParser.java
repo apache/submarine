@@ -56,7 +56,7 @@ public class ExperimentSpecParser {
 
   private static SubmarineConfiguration conf =
       SubmarineConfiguration.getInstance();
-  
+
   public static MLJob parseJob(ExperimentSpec experimentSpec) throws InvalidSpecException {
     String framework = experimentSpec.getMeta().getFramework();
     if (ExperimentMeta.SupportedMLFramework.TENSORFLOW.
@@ -224,7 +224,7 @@ public class ExperimentSpecParser {
           String activateCommand = "echo \"source activate "
               + condaEnvironmentName + "\" > ~/.bashrc";
           String pathCommand = "PATH=/opt/conda/envs/env/bin:$PATH";
-          String finalCommand = condaVersionValidationCommand.toString() + 
+          String finalCommand = condaVersionValidationCommand.toString() +
               " && " + createCommand.toString() + " && "
               + activateCommand + " && " + pathCommand;
           initContainer.addCommandItem("/bin/bash");
@@ -274,13 +274,12 @@ public class ExperimentSpecParser {
     }
     return resources;
   }
-  
+
   private static Environment getEnvironment(ExperimentSpec experimentSpec) {
     if (experimentSpec.getEnvironment().getName() != null) {
       EnvironmentManager environmentManager = EnvironmentManager.getInstance();
-      Environment environment = environmentManager
+      return environmentManager
           .getEnvironment(experimentSpec.getEnvironment().getName());
-      return environment;
     } else {
       return null;
     }
