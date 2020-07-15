@@ -34,12 +34,15 @@ public class MyBatisUtil {
   private static final Logger LOG = LoggerFactory.getLogger(MyBatisUtil.class);
 
   private static SqlSessionFactory sqlSessionFactory;
+  // private static SqlSessionFactory metastoreSqlSessionFactory;
 
   static {
     Reader reader = null;
+    Reader metastoreReader = null;
     try {
       try {
         reader = Resources.getResourceAsReader("mybatis-config.xml");
+        // metastoreReader = Resources.getResourceAsReader("mybatis-config-metastore.xml");
       } catch (IOException e) {
         LOG.error(e.getMessage(), e);
         throw new RuntimeException(e.getMessage());
@@ -62,6 +65,7 @@ public class MyBatisUtil {
       props.setProperty("jdbc.password", jdbcPassword);
 
       sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, props);
+      // metastoreSqlSessionFactory = new SqlSessionFactoryBuilder().build(metastoreReader, props);
     } finally {
       try {
         if (null != reader) {
@@ -81,6 +85,10 @@ public class MyBatisUtil {
   public static SqlSession getSqlSession() {
     return sqlSessionFactory.openSession();
   }
+
+//  public static SqlSession getMetastoreSqlSession() {
+//    return metastoreSqlSessionFactory.openSession();
+//  }
 
   private static void checkCalledByTestMethod() {
     StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
