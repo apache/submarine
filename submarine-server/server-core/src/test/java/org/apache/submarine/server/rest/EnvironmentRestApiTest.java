@@ -8,7 +8,6 @@ import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.api.spec.KernelSpec;
 import org.apache.submarine.server.response.JsonResponse;
-import org.apache.submarine.server.workbench.database.entity.SysDict;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -23,7 +22,6 @@ import static org.junit.Assert.assertEquals;
 
 public class EnvironmentRestApiTest {
   private static EnvironmentRestApi environmentStoreApi;
-  private static Environment environment;
   private static String environmentName = "my-submarine-env";
   private static String kernelName = "team_default_python_3";
   private static String dockerImage = "continuumio/anaconda3";
@@ -63,43 +61,40 @@ public class EnvironmentRestApiTest {
     environmentSpec.setDockerImage(dockerImage);
     environmentSpec.setKernelSpec(kernelSpec);
     environmentSpec.setName("foo");
+    
     // Create Environment
     Response createEnvResponse = environmentStoreApi.createEnvironment(environmentSpec);
-    environment = getEnvironmentFromResponse(createEnvResponse);
     assertEquals(Response.Status.OK.getStatusCode(), createEnvResponse.getStatus());
 
     // Update Environment
     environmentSpec.setName(environmentName);
     Response updateEnvResponse = environmentStoreApi.updateEnvironment(
-            environment.getEnvironmentId().toString(), environmentSpec);
-    environment = getEnvironmentFromResponse(updateEnvResponse);
+            environmentName, environmentSpec);
     assertEquals(Response.Status.OK.getStatusCode(), updateEnvResponse.getStatus());
   }
 
   @After
   public void deleteEnvironment() {
     Response deleteEnvResponse = environmentStoreApi
-            .deleteEnvironment(environment.getEnvironmentId().toString());
+            .deleteEnvironment(environmentName);
     assertEquals(Response.Status.OK.getStatusCode(), deleteEnvResponse.getStatus());
   }
 
   @Test
   public void getEnvironment() {
-    Response getEnvResponse = environmentStoreApi.getEnvironment(
-            environment.getEnvironmentId().toString());
-    Environment responseEntity = getEnvironmentFromResponse(getEnvResponse);
-    assertEquals(environmentName, responseEntity.getEnvironmentSpec().getName());
-    assertEquals(kernelName, responseEntity.getEnvironmentSpec().getKernelSpec().getName());
-    assertEquals(kernelChannels, responseEntity.getEnvironmentSpec().getKernelSpec().getChannels());
-    assertEquals(kernelDependencies, responseEntity.getEnvironmentSpec().getKernelSpec().getDependencies());
-    assertEquals(dockerImage, responseEntity.getEnvironmentSpec().getDockerImage());
+    Response getEnvResponse = environmentStoreApi.getEnvironment(environmentName);
+    Environment environment = getEnvironmentFromResponse(getEnvResponse);
+    assertEquals(environmentName, environment.getEnvironmentSpec().getName());
+    assertEquals(kernelName, environment.getEnvironmentSpec().getKernelSpec().getName());
+    assertEquals(kernelChannels, environment.getEnvironmentSpec().getKernelSpec().getChannels());
+    assertEquals(kernelDependencies, environment.getEnvironmentSpec().getKernelSpec().getDependencies());
+    assertEquals(dockerImage, environment.getEnvironmentSpec().getDockerImage());
   }
 
   private Environment getEnvironmentFromResponse(Response response) {
     String entity = (String) response.getEntity();
     Type type = new TypeToken<JsonResponse<Environment>>() {}.getType();
     JsonResponse<Environment> jsonResponse = gson.fromJson(entity, type);
-    environment = jsonResponse.getResult();
-    return environment;
+    return jsonResponse.getResult();
   }
 }
