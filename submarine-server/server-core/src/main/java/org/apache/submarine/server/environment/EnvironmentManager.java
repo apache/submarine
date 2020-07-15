@@ -46,20 +46,20 @@ import com.google.gson.GsonBuilder;
  * Environment Management
  */
 public class EnvironmentManager {
-  
+
   private static final Logger LOG =
       LoggerFactory.getLogger(EnvironmentManager.class);
 
   private static volatile EnvironmentManager manager;
-  
+
   private final AtomicInteger environmentIdCounter = new AtomicInteger(0);
-  
+
   /**
    * Environment Cache
    */
   private final ConcurrentMap<String, Environment> cachedEnvironments =
       new ConcurrentHashMap<>();
-  
+
   /**
    * Get the singleton instance
    * @return object
@@ -76,7 +76,7 @@ public class EnvironmentManager {
   }
 
   private EnvironmentManager() {
-    
+
   }
 
   /**
@@ -84,7 +84,6 @@ public class EnvironmentManager {
    * @param spec environment spec
    * @return Environment environment
    * @throws SubmarineRuntimeException the service error
-   * @throws MetaException 
    */
   public Environment createEnvironment(EnvironmentSpec spec)
       throws SubmarineRuntimeException {
@@ -92,7 +91,7 @@ public class EnvironmentManager {
     LOG.info("Create Environment using spec: " + spec.toString());
     return createOrUpdateEnvironment(spec, "c");
   }
-  
+
   /**
    * Update environment
    * @param name Name of the environment
@@ -111,7 +110,7 @@ public class EnvironmentManager {
     LOG.info("Update Environment using spec: " + spec.toString());
     return createOrUpdateEnvironment(spec, "u");
   }
-  
+
   private Environment createOrUpdateEnvironment(EnvironmentSpec spec,
       String operation) {
     EnvironmentEntity entity = new EnvironmentEntity();
@@ -120,7 +119,7 @@ public class EnvironmentManager {
     entity.setEnvironmentName(spec.getName());
     entity.setEnvironmentSpec(
         new GsonBuilder().disableHtmlEscaping().create().toJson(spec));
-    try (SqlSession sqlSession = MyBatisUtil.getMetastoreSqlSession()) {
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       EnvironmentMapper environmentMapper =
           sqlSession.getMapper(EnvironmentMapper.class);
       if (operation.equals("c")) {
@@ -144,12 +143,12 @@ public class EnvironmentManager {
           "Unable to process the environment spec.");
     }
   }
-  
+
   private EnvironmentId generateEnvironmentId() {
     return EnvironmentId.newInstance(SubmarineServer.getServerTimeStamp(),
         environmentIdCounter.incrementAndGet());
   }
-  
+
   /**
    * Delete environment
    * @param name Name of the environment
@@ -163,14 +162,14 @@ public class EnvironmentManager {
       throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(),
           "Environment not found.");
     }
-    
+
     LOG.info("Delete Environment for " + name);
-    try (SqlSession sqlSession = MyBatisUtil.getMetastoreSqlSession()) {
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       EnvironmentMapper environmentMapper =
           sqlSession.getMapper(EnvironmentMapper.class);
       environmentMapper.delete(name);
       sqlSession.commit();
-      
+
       // Invalidate cache
       cachedEnvironments.remove(name);
       return env;
@@ -180,7 +179,7 @@ public class EnvironmentManager {
           "Unable to delete the environment.");
     }
   }
-  
+
   /**
    * Get Environment
    * @param name Name of the environment
@@ -225,9 +224,8 @@ public class EnvironmentManager {
     if (env != null) {
       return env;
     }
-    
-    try (SqlSession sqlSession = MyBatisUtil.getMetastoreSqlSession()) {
-      EnvironmentMapper environmentMapper =
+
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
           sqlSession.getMapper(EnvironmentMapper.class);
       EnvironmentEntity environmentEntity = environmentMapper.select(name);
 
