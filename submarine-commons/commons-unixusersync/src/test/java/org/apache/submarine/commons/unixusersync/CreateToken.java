@@ -22,7 +22,7 @@ public class CreateToken {
 
   //Sample method to construct a JWT
 
-  private static String createJWT(String id, String issuer, String subject, long ttlMillis) {
+  public static String createJWT(String id, String issuer, String subject, long ttlMillis) {
     //The JWT signature algorithm we will be using to sign the token
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -51,7 +51,7 @@ public class CreateToken {
   }
 
   //Sample method to validate and read the JWT
-  private void parseJWT(String jwt) {
+  public void parseJWT(String jwt) {
     //This line will throw an exception if it is not a signed JWS (as expected)
     Claims claims = Jwts.parser()
         .setSigningKey(DatatypeConverter.parseBase64Binary(base64SecretBytes))
