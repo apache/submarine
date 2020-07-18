@@ -133,6 +133,6 @@ export class ExperimentService {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', param);
         }
       })
-    )
+    );
   }
 }
