@@ -1,0 +1,49 @@
+{
+    "input": {
+        "train_data": "../../data/tr.libsvm",
+        "valid_data": "../../data/va.libsvm",
+        "test_data": "../../data/te.libsvm",
+        "type": "libsvm"
+    },
+    "output": {
+        "save_model_dir": "./output",
+        "metric": "roc_auc"
+    },
+    "training": {
+        "batch_size": 512,
+        "num_epochs": 3,
+        "log_steps": 10,
+        "num_threads": 2,
+        "num_gpus": 0,
+        "seed": 42,
+        "mode": "distributed",
+        "backend": "gloo"
+    },
+    "model": {
+        "name": "ctr.afm",
+        "kwargs": {
+            "num_fields": 39,
+            "num_features": 117581,
+            "attention_dim": 64, 
+            "out_features": 1,
+            "embedding_dim": 256,
+            "hidden_units": [400, 400, 400],
+            "dropout_rate": 0.3 
+        }
+    },
+    "loss": {
+        "name": "BCEWithLogitsLoss",
+        "kwargs": {}
+    },
+    "optimizer": {
+        "name": "adam",
+        "kwargs": {
+            "lr": 5e-4
+        }
+    },
+    "resource": {
+        "num_cpus": 4,
+        "num_gpus": 0,
+        "num_threads": 2
+    }
+}

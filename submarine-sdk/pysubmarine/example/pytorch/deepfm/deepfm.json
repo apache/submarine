@@ -1,8 +1,8 @@
 {
     "input": {
-        "train_data": "../data/tr.libsvm",
-        "valid_data": "../data/va.libsvm",
-        "test_data": "../data/te.libsvm",
+        "train_data": "../../data/tr.libsvm",
+        "valid_data": "../../data/va.libsvm",
+        "test_data": "../../data/te.libsvm",
         "type": "libsvm"
     },
     "output": {
@@ -10,10 +10,10 @@
         "metric": "roc_auc"
     },
     "training": {
-        "batch_size": 64,
-        "num_epochs": 1,
+        "batch_size": 512,
+        "num_epochs": 3,
         "log_steps": 10,
-        "num_threads": 0,
+        "num_threads": 2,
         "num_gpus": 0,
         "seed": 42,
         "mode": "distributed",
@@ -22,12 +22,12 @@
     "model": {
         "name": "ctr.deepfm",
         "kwargs": {
-            "field_dims": [15, 52, 30, 19, 111, 51, 26, 19, 53, 5, 13, 8, 23, 21, 77, 25, 39, 11,
-              8, 61, 15, 3, 34, 75, 30, 79, 11, 85, 37, 10, 94, 19, 5, 32, 6, 12, 42, 18, 23],
+            "num_fields": 39,
+            "num_features": 117581,
             "out_features": 1,
-            "embedding_dim": 16,
-            "hidden_units": [400, 400],
-            "dropout_rates": [0.2, 0.2]
+            "embedding_dim": 256,
+            "hidden_units": [400, 400, 400],
+            "dropout_rates": [0.3, 0.3, 0.3]
         }
     },
     "loss": {
@@ -37,12 +37,12 @@
     "optimizer": {
         "name": "adam",
         "kwargs": {
-            "lr": 1e-3
+            "lr": 5e-4
         }
     },
     "resource": {
         "num_cpus": 4,
         "num_gpus": 0,
-        "num_threads": 0
+        "num_threads": 2
     }
 }
