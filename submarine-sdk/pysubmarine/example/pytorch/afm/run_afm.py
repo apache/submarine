@@ -14,19 +14,19 @@
 # limitations under the License.
 
 
-from submarine.ml.pytorch.model.ctr import AttentionalFM
+from submarine.ml.pytorch.model.ctr import AFM
 
 import argparse
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-conf", help="a JSON configuration file for AttentionalFM", type=str)
+        "-conf", help="a JSON configuration file for AFM", type=str)
     parser.add_argument("-task_type", default='train',
                         help="train or evaluate, by default is train")
     args = parser.parse_args()
 
-    trainer = AttentionalFM(json_path=args.conf)
+    trainer = AFM(json_path=args.conf)
 
     if args.task_type == 'train':
         trainer.fit()

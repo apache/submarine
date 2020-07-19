@@ -14,6 +14,6 @@
 # limitations under the License.
 
 from .deepfm import DeepFM
-from .afm import AttentionalFM
+from .afm import AFM
 
-__all__ = ['DeepFM', 'AttentionalFM']
+__all__ = ['DeepFM', 'AFM']

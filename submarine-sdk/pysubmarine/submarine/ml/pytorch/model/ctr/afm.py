@@ -20,14 +20,14 @@ from submarine.ml.pytorch.layers.core import (FeatureEmbedding, FeatureLinear)
 from submarine.ml.pytorch.model.base_pytorch_model import BasePyTorchModel
 
 
-class AttentionalFM(BasePyTorchModel):
+class AFM(BasePyTorchModel):
 
     def model_fn(self, params):
         super().model_fn(params)
-        return _AttentionalFM(**self.params['model']['kwargs'])
+        return _AFM(**self.params['model']['kwargs'])
 
 
-class _AttentionalFM(nn.Module):
+class _AFM(nn.Module):
 
     def __init__(self, num_features: int, embedding_dim: int,
                  attention_dim: int, out_features: int, dropout_rate: float,

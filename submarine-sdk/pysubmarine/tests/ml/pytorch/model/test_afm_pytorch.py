@@ -13,13 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.ml.pytorch.model.ctr import AttentionalFM
+from submarine.ml.pytorch.model.ctr import AFM
 
 
 def test_run_afm(get_model_param):
     param = get_model_param
 
-    trainer = AttentionalFM(param)
+    trainer = AFM(param)
     trainer.fit()
     trainer.evaluate()
     trainer.predict()

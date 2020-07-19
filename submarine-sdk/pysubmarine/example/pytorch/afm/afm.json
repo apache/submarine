@@ -1,8 +1,8 @@
 {
     "input": {
-        "train_data": "../data/tr.libsvm",
-        "valid_data": "../data/va.libsvm",
-        "test_data": "../data/te.libsvm",
+        "train_data": "../../data/tr.libsvm",
+        "valid_data": "../../data/va.libsvm",
+        "test_data": "../../data/te.libsvm",
         "type": "libsvm"
     },
     "output": {
@@ -20,14 +20,15 @@
         "backend": "gloo"
     },
     "model": {
-        "name": "ctr.deepfm",
+        "name": "ctr.afm",
         "kwargs": {
             "num_fields": 39,
             "num_features": 117581,
+            "attention_dim": 64, 
             "out_features": 1,
             "embedding_dim": 256,
             "hidden_units": [400, 400, 400],
-            "dropout_rates": [0.3, 0.3, 0.3]
+            "dropout_rate": 0.3 
         }
     },
     "loss": {
