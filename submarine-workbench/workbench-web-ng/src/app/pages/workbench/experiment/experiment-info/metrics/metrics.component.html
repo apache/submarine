@@ -17,4 +17,23 @@
   ~ under the License.
   -->
 
-<p>metrics works!</p>
+<div id="metricTable">
+  <nz-table #metricTable nzSize="middle" [nzBordered]="true" [nzFrontPagination]="false" [nzData]="podMetric">
+    <thead>
+      <tr>
+        <th>Key</th>
+        <th>Value</th>
+        <th>Time</th>
+        <th>Step</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let metric of metricTable.data">
+        <td>{{ metric.key }}</td>
+        <td>{{ metric.value }}</td>
+        <td>{{ metric.timestamp }}</td>
+        <td>{{ metric.step }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>

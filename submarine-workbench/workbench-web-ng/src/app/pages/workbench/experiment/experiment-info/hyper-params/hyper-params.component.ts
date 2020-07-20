@@ -31,11 +31,12 @@ export class HyperParamsComponent implements OnInit {
   @Input() paramData;
   podParam = [];
 
-  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
+  constructor() {}
 
   ngOnInit() {}
 
   ngOnChanges(chg: SimpleChanges) {
+    this.podParam.length = 0;
     this.paramData.forEach((data) => {
       if (data.workerIndex == this.workerIndex) {
         this.podParam.push(data);

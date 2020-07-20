@@ -37,6 +37,7 @@ export class ExperimentInfoComponent implements OnInit {
   podNameArr;
   podLogArr;
   paramData;
+  metricData;
 
   constructor(
     private router: Router,
@@ -76,7 +77,7 @@ export class ExperimentInfoComponent implements OnInit {
 
     this.experimentService
       .getExperimentParam({
-        jobName: null
+        jobName: this.experimentID
       })
       .subscribe(
         (result) => {
@@ -87,12 +88,26 @@ export class ExperimentInfoComponent implements OnInit {
           console.log(err);
         }
       );
+
+    this.experimentService
+      .getExperimentMetric({
+        jobName: this.experimentID
+      })
+      .subscribe(
+        (result) => {
+          this.metricData = result;
+        },
+        (err) => {
+          this.nzMessageService.error('Cannot load metric of ' + this.experimentID);
+          console.log(err);
+        }
+      );
   }
 
   onDeleteExperiment() {
     this.experimentService.deleteExperiment(this.experimentID).subscribe(
       () => {
-        this.nzMessageService.success('Delete user success!');
+        this.nzMessageService.success('Delete experiment success!');
         this.router.navigate(['/workbench/experiment']);
       },
       (err) => {

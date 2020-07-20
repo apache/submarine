@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'submarine-metrics',
@@ -25,7 +25,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./metrics.component.scss']
 })
 export class MetricsComponent implements OnInit {
+  @Input() workerIndex;
+  @Input() metricData;
+  podMetric = [];
+
   constructor() {}
 
   ngOnInit() {}
+
+  ngOnChanges(chg: SimpleChanges) {
+    this.podMetric.length = 0;
+    this.metricData.forEach((data) => {
+      if (data.workerIndex == this.workerIndex) {
+        this.podMetric.push(data);
+      }
+    });
+  }
 }
