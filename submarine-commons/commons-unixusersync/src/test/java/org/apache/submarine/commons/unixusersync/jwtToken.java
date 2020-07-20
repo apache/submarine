@@ -14,7 +14,7 @@ import io.jsonwebtoken.impl.crypto.MacProvider;
 import java.util.Base64;
 import java.util.Date;
 
-public class CreateToken {
+public class jwtToken {
 
   private static final Key secret = MacProvider.generateKey(SignatureAlgorithm.HS256);
   private static final byte[] secretBytes = secret.getEncoded();
