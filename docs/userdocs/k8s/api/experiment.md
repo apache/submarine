@@ -58,39 +58,39 @@ curl -X POST -H "Content-Type: application/json" -d '
 **Example Response:**
 ```json
 {
-    "status": "OK",
-    "code": 200,
-    "result": {
-        "experimentId": "experiment_1586156073228_0001",
+  "status": "OK",
+  "code": 200,
+  "result": {
+    "experimentId": "experiment_1586156073228_0001",
+    "name": "tf-mnist-json",
+    "uid": "28e39dcd-77d4-11ea-8dbb-0242ac110003",
+    "status": "Accepted",
+    "acceptedTime": "2020-06-13T22:59:29.000+08:00",
+    "spec": {
+      "meta": {
         "name": "tf-mnist-json",
-        "uid": "28e39dcd-77d4-11ea-8dbb-0242ac110003",
-        "status": "Accepted",
-        "acceptedTime": "2020-06-13T22:59:29.000+08:00",
-        "spec": {
-            "meta": {
-                "name": "tf-mnist-json",
-                "namespace": "default",
-                "framework": "TensorFlow",
-                "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
-                "envVars": {
-                    "ENV_1": "ENV1"
-                }
-            },
-            "environment": {
-                "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
-            },
-            "spec": {
-                "Ps": {
-                    "replicas": 1,
-                    "resources": "cpu=1,memory=512M"
-                },
-                "Worker": {
-                    "replicas": 1,
-                    "resources": "cpu=1,memory=512M"
-                }
-            }
+        "namespace": "default",
+        "framework": "TensorFlow",
+        "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
+        "envVars": {
+          "ENV_1": "ENV1"
         }
+      },
+      "environment": {
+        "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+      },
+      "spec": {
+        "Ps": {
+          "replicas": 1,
+          "resources": "cpu=1,memory=512M"
+        },
+        "Worker": {
+          "replicas": 1,
+          "resources": "cpu=1,memory=512M"
+        }
+      }
     }
+  }
 }
 ```
 
@@ -131,39 +131,39 @@ Above example assume environment "my-submarine-env" already exists in Submarine.
 **Example Response:**
 ```json
 {
-    "status": "OK",
-    "code": 200,
-    "result": {
-        "experimentId": "experiment_1586156073228_0001",
+  "status": "OK",
+  "code": 200,
+  "result": {
+    "experimentId": "experiment_1586156073228_0001",
+    "name": "tf-mnist-json",
+    "uid": "28e39dcd-77d4-11ea-8dbb-0242ac110003",
+    "status": "Accepted",
+    "acceptedTime": "2020-06-13T22:59:29.000+08:00",
+    "spec": {
+      "meta": {
         "name": "tf-mnist-json",
-        "uid": "28e39dcd-77d4-11ea-8dbb-0242ac110003",
-        "status": "Accepted",
-        "acceptedTime": "2020-06-13T22:59:29.000+08:00",
-        "spec": {
-            "meta": {
-                "name": "tf-mnist-json",
-                "namespace": "default",
-                "framework": "TensorFlow",
-                "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
-                "envVars": {
-                    "ENV_1": "ENV1"
-                }
-            },
-            "environment": {
-                "name": "my-submarine-env"
-            },
-            "spec": {
-                "Ps": {
-                    "replicas": 1,
-                    "resources": "cpu=1,memory=512M"
-                },
-                "Worker": {
-                    "replicas": 1,
-                    "resources": "cpu=1,memory=512M"
-                }
-            }
+        "namespace": "default",
+        "framework": "TensorFlow",
+        "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
+        "envVars": {
+          "ENV_1": "ENV1"
         }
+      },
+      "environment": {
+        "name": "my-submarine-env"
+      },
+      "spec": {
+        "Ps": {
+          "replicas": 1,
+          "resources": "cpu=1,memory=512M"
+        },
+        "Worker": {
+          "replicas": 1,
+          "resources": "cpu=1,memory=512M"
+        }
+      }
     }
+  }
 }
 ```
 

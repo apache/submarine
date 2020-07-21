@@ -29,18 +29,18 @@ under the License.
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '
 {
-	"name": "my-submarine-env",
-	"dockerImage" : "continuumio/anaconda3",
-	"kernelSpec" : {
-		"name" : "team_default_python_3.7",
-		"channels" : ["defaults"],
-		"dependencies" : 
-			["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0", 
-  			"alabaster=0.7.12=py37_0",
-  			"anaconda=2020.02=py37_0",
-  			"anaconda-client=1.7.2=py37_0",
-  			"anaconda-navigator=1.9.12=py37_0"]
-	}
+  "name": "my-submarine-env",
+  "dockerImage" : "continuumio/anaconda3",
+  "kernelSpec" : {
+    "name" : "team_default_python_3.7",
+    "channels" : ["defaults"],
+    "dependencies" : 
+      ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
+      "alabaster=0.7.12=py37_0",
+      "anaconda=2020.02=py37_0",
+      "anaconda-client=1.7.2=py37_0",
+      "anaconda-navigator=1.9.12=py37_0"]
+  }
 }
 ' http://127.0.0.1/api/v1/environment
 ```
@@ -48,25 +48,25 @@ curl -X POST -H "Content-Type: application/json" -d '
 **Example Response:**
 ```json
 {
-    "status": "OK",
-    "code": 200,
-    "result": {
-        "environmentId": "environment_1586156073228_0001",
-        "environmentSpec": {
-        		"name": "my-submarine-env",
-			"dockerImage" : "continuumio/anaconda3",
-			"kernelSpec" : {
-				"name" : "team_default_python_3.7",
-				"channels" : ["defaults"],
-				"dependencies" : 
-					["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0", 
-		  			"alabaster=0.7.12=py37_0",
-		  			"anaconda=2020.02=py37_0",
-		  			"anaconda-client=1.7.2=py37_0",
-		  			"anaconda-navigator=1.9.12=py37_0"]
-			}
-		}
+  "status": "OK",
+  "code": 200,
+  "result": {
+    "environmentId": "environment_1586156073228_0001",
+    "environmentSpec": {
+      "name": "my-submarine-env",
+      "dockerImage" : "continuumio/anaconda3",
+      "kernelSpec" : {
+        "name" : "team_default_python_3.7",
+        "channels" : ["defaults"],
+        "dependencies" : 
+          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
+          "alabaster=0.7.12=py37_0",
+          "anaconda=2020.02=py37_0",
+          "anaconda-client=1.7.2=py37_0",
+          "anaconda-navigator=1.9.12=py37_0"]
+      }
     }
+  }
 }
 ```
 
@@ -81,40 +81,40 @@ curl -X GET http://127.0.0.1/api/v1/environment
 **Example Response:**
 ```json
 {
-    "status": "OK",
-    "code": 200,
-    "result": [
-        {
-        		"environmentId": "environment_1586156073228_0001",
-        		"environmentSpec": {
-        			"name": "my-submarine-env",
-				"dockerImage" : "continuumio/anaconda3",
-				"kernelSpec" : {
-					"name" : "team_default_python_3.7",
-					"channels" : ["defaults"],
-					"dependencies" : 
-						["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0", 
-		  				"alabaster=0.7.12=py37_0",
-		  				"anaconda=2020.02=py37_0",
-		  				"anaconda-client=1.7.2=py37_0",
-		  				"anaconda-navigator=1.9.12=py37_0"]
-				}
-			}
-        },
-        {
-        		"environmentId": "environment_1586156073228_0002",
-        		"environmentSpec": {
-        			"name": "my-submarine-env-2",
-				"dockerImage" : "continuumio/miniconda",
-				"kernelSpec" : {
-					"name" : "team_miniconda_python_3.7",
-					"channels" : ["defaults"],
-					"dependencies" : 
-						["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0"]
-				}
-			}
-        }
-    ]
+  "status": "OK",
+  "code": 200,
+  "result": [
+  {
+    "environmentId": "environment_1586156073228_0001",
+    "environmentSpec": {
+      "name": "my-submarine-env",
+      "dockerImage" : "continuumio/anaconda3",
+      "kernelSpec" : {
+        "name" : "team_default_python_3.7",
+        "channels" : ["defaults"],
+        "dependencies" : 
+          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
+          "alabaster=0.7.12=py37_0",
+          "anaconda=2020.02=py37_0",
+          "anaconda-client=1.7.2=py37_0",
+          "anaconda-navigator=1.9.12=py37_0"]
+      }
+    }
+  },
+  {
+    "environmentId": "environment_1586156073228_0002",
+    "environmentSpec": {
+      "name": "my-submarine-env-2",
+      "dockerImage" : "continuumio/miniconda",
+      "kernelSpec" : {
+        "name" : "team_miniconda_python_3.7",
+        "channels" : ["defaults"],
+        "dependencies" : 
+          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0"]
+      }
+    }
+  }
+  ]
 }
 ```
 
@@ -129,25 +129,25 @@ curl -X GET http://127.0.0.1/api/v1/environment/my-submarine-env
 **Example Response:**
 ```json
 {
-    "status": "OK",
-    "code": 200,
-    "result": {
-    		"environmentId": "environment_1586156073228_0001",
-        "environmentSpec": {
-        		"name": "my-submarine-env",
-			"dockerImage" : "continuumio/anaconda3",
-			"kernelSpec" : {
-				"name" : "team_default_python_3.7",
-				"channels" : ["defaults"],
-				"dependencies" : 
-					["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0", 
-		  			"alabaster=0.7.12=py37_0",
-		  			"anaconda=2020.02=py37_0",
-		  			"anaconda-client=1.7.2=py37_0",
-		  			"anaconda-navigator=1.9.12=py37_0"]
-			}
-		}
+  "status": "OK",
+  "code": 200,
+  "result": {
+    "environmentId": "environment_1586156073228_0001",
+    "environmentSpec": {
+      "name": "my-submarine-env",
+      "dockerImage" : "continuumio/anaconda3",
+      "kernelSpec" : {
+        "name" : "team_default_python_3.7",
+        "channels" : ["defaults"],
+        "dependencies" : 
+          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
+          "alabaster=0.7.12=py37_0",
+          "anaconda=2020.02=py37_0",
+          "anaconda-client=1.7.2=py37_0",
+          "anaconda-navigator=1.9.12=py37_0"]
+      }
     }
+  }
 }
 ```
 
@@ -158,15 +158,15 @@ curl -X GET http://127.0.0.1/api/v1/environment/my-submarine-env
 ```sh
 curl -X PATCH -H "Content-Type: application/json" -d '
 {
-	"name": "my-submarine-env",
-	"dockerImage" : "continuumio/anaconda3",
-	"kernelSpec" : {
-		"name" : "team_default_python_3.7_updated",
-		"channels" : ["defaults"],
-		"dependencies" : 
-			["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0", 
-  			"alabaster=0.7.12=py37_0"]
-	}
+  "name": "my-submarine-env",
+  "dockerImage" : "continuumio/anaconda3",
+  "kernelSpec" : {
+    "name" : "team_default_python_3.7_updated",
+    "channels" : ["defaults"],
+    "dependencies" : 
+      ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
+      "alabaster=0.7.12=py37_0"]
+  }
 }
 ' http://127.0.0.1/api/v1/environment/my-submarine-env
 ```
@@ -174,23 +174,23 @@ curl -X PATCH -H "Content-Type: application/json" -d '
 **Example Response:**
 ```json
 {
-    "status": "OK",
-    "code": 200,
-    "success": true,
-    "result": {
-        	"environmentId": "environment_1586156073228_0001",
-        "environmentSpec": {
-        		"name": "my-submarine-env",
-			"dockerImage" : "continuumio/anaconda3",
-			"kernelSpec" : {
-				"name" : "team_default_python_3.7_updated",
-				"channels" : ["defaults"],
-				"dependencies" : 
-					["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0", 
-  					"alabaster=0.7.12=py37_0"]
-  			}
-		}
+  "status": "OK",
+  "code": 200,
+  "success": true,
+  "result": {
+    "environmentId": "environment_1586156073228_0001",
+    "environmentSpec": {
+      "name": "my-submarine-env",
+      "dockerImage" : "continuumio/anaconda3",
+      "kernelSpec" : {
+        "name" : "team_default_python_3.7_updated",
+        "channels" : ["defaults"],
+        "dependencies" : 
+          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
+          "alabaster=0.7.12=py37_0"]
+      }
     }
+  }
 }
 ```
 
@@ -205,21 +205,21 @@ curl -X DELETE http://127.0.0.1/api/v1/environment/my-submarine-env
 **Example Response:**
 ```json
 {
-    "status": "OK",
-    "code": 200,
-    "result": {
-    		"environmentId": "environment_1586156073228_0001",
-        "environmentSpec": {
-        		"name": "my-submarine-env",
-			"dockerImage" : "continuumio/anaconda3",
-			"kernelSpec" : {
-				"name" : "team_default_python_3.7_updated",
-				"channels" : ["defaults"],
-				"dependencies" : 
-					["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0", 
-  					"alabaster=0.7.12=py37_0"]
-  			}
-		}
+  "status": "OK",
+  "code": 200,
+  "result": {
+    "environmentId": "environment_1586156073228_0001",
+    "environmentSpec": {
+      "name": "my-submarine-env",
+      "dockerImage" : "continuumio/anaconda3",
+      "kernelSpec" : {
+        "name" : "team_default_python_3.7_updated",
+        "channels" : ["defaults"],
+        "dependencies" : 
+          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
+          "alabaster=0.7.12=py37_0"]
+      }
     }
+  }
 }
 ```
