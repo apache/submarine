@@ -32,9 +32,13 @@ Must:
 By using the official docker image of submarine database, only one docker command is required to run submarine database
 
 ```bash
-docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.3.0
+docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.4.0
 ```
-
+## Initialize submarine database
+It will create users and tables that submarine requires
+```shell script
+sudo ./init-database
+```
 ## Manual operation of the submarine database
 
 ### Modify character set (Optional)
@@ -45,10 +49,10 @@ If you need to store Chinese character data in mysql, you need to execute the fo
 
   ```
   bash > mysql -uroot -ppassword
-  
+
   mysql>SHOW VARIABLES LIKE 'character_set_%'; // View database character set
   mysql>SHOW VARIABLES LIKE 'collation_%';
-  
+
   SET NAMES 'utf8';
   ```
 
@@ -58,21 +62,21 @@ If you need to store Chinese character data in mysql, you need to execute the fo
   # install vim
   apt-get update
   apt-get install vim
-  
+
   vi /etc/mysql/mysql.conf.d/mysqld.cnf
-  
+
   [mysqld]
   character_set_server = utf8
-  
+
   [mysql]
   default-character-set = utf8
-  
+
   [mysql.server]
   default-character-set = utf8
-  
+
   [mysqld_safe]
   default-character-set = utf8
-  
+
   [client]
   default-character-set = utf8
   ```
@@ -142,7 +146,7 @@ mysqldump -umetastore -ppassword metastore > metastore.sql;
 
 ## Travis
 
-1. In the submarine's Travis, the `test database`, `database name`, `username` and `password` will be automatically created based on the contents of this document. 
+1. In the submarine's Travis, the `test database`, `database name`, `username` and `password` will be automatically created based on the contents of this document.
 
    Therefore, do not modify the database's `database name`, `username` and `password` configuration to avoid introducing some problems.
 

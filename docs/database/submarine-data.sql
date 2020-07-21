@@ -55,7 +55,6 @@ INSERT INTO `sys_department` VALUES ('1bc0cd98c8d311e98edc0242ac110002','AAA','G
 -- ----------------------------
 INSERT INTO `sys_user` VALUES ('e9ca23d68d884d4ebb19d07889727dae', 'admin', 'administrator', '21232f297a57a5a743894a0e4a801fc3', 'avatar.png', '2018-12-05 00:00:00', NULL, 'dev@submarine.org', '18566666661', NULL, NULL, NULL, 1, 'admin', '2019-07-05 14:47:22', 'admin', '2019-07-05 14:47:22');
 
-
 -- ----------------------------
 -- Records of team
 -- ----------------------------
@@ -78,3 +77,16 @@ INSERT INTO `params` (`id`, `key`, `value`, `worker_index`, `job_name`) VALUES
 (14, 'max_iter', '100', 'worker-1', 'application_123651651'),
 (15, 'n_jobs', '5', 'worker-1', 'application_123456898'),
 (16, 'alpha', '20', 'worker-1', 'application_123456789');
+
+-- ----------------------------
+-- Records of environment
+-- ----------------------------
+INSERT INTO `environment` VALUES ('environment_1595134205164_0002', 'my-submarine-env',
+ '{"name":"my-submarine-env",
+ "dockerImage":"continuumio/anaconda3",
+ "kernelSpec":{"name":"team_default_python_3.7",
+ "channels":["defaults"],
+ "dependencies":["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
+                "alabaster=0.7.12=py37_0","anaconda=2020.02=py37_0",
+                "anaconda-client=1.7.2=py37_0","anaconda-navigator=1.9.12=py37_0"]}}',
+ 'admin', '2020-05-06 14:00:05', 'Jack', '2020-05-06 14:00:14');
