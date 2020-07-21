@@ -24,6 +24,7 @@ import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { SpecMeta, Specs, SpecEnviroment, ExperimentSpec } from '@submarine/interfaces/experiment-spec';
 
 @Component({
   selector: 'submarine-experiment',
@@ -41,7 +42,7 @@ export class ExperimentComponent implements OnInit {
   searchText = '';
 
   // About new experiment
-  createExperiment: FormGroup;
+  experiment: FormGroup;
   current = 0;
   okText = 'Next Step';
   isVisible = false;
@@ -65,7 +66,7 @@ export class ExperimentComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.createExperiment = new FormGroup({
+    this.experiment = new FormGroup({
       experimentName: new FormControl(null, Validators.required),
       description: new FormControl(null, [Validators.required]),
       // experimentSpec: new FormControl('Adhoc'),
@@ -97,28 +98,28 @@ export class ExperimentComponent implements OnInit {
 
   // Getters of experiment request form
   get experimentName() {
-    return this.createExperiment.get('experimentName');
+    return this.experiment.get('experimentName');
   }
   get description() {
-    return this.createExperiment.get('description');
+    return this.experiment.get('description');
   }
   get frameworks() {
-    return this.createExperiment.get('frameworks');
+    return this.experiment.get('frameworks');
   }
   get namespace() {
-    return this.createExperiment.get('namespace');
+    return this.experiment.get('namespace');
   }
   get cmd() {
-    return this.createExperiment.get('cmd');
+    return this.experiment.get('cmd');
   }
   get envs() {
-    return this.createExperiment.get('envs') as FormArray;
+    return this.experiment.get('envs') as FormArray;
   }
   get image() {
-    return this.createExperiment.get('image');
+    return this.experiment.get('image');
   }
   get specs() {
-    return this.createExperiment.get('specs') as FormArray;
+    return this.experiment.get('specs') as FormArray;
   }
   /**
    * Check the validity of the experiment page
@@ -144,6 +145,16 @@ export class ExperimentComponent implements OnInit {
   handleOk() {
     if (this.current === 1) {
       this.okText = 'Submit';
+    } else if (this.current === 2) {
+      const newSpec = this.constructSpec();
+      this.experimentService.createExperiment(newSpec).subscribe({
+        error: msg => {
+          console.log(`Inside subscribe error with ${msg}`);
+        },
+        complete: () => {
+          this.fetchExperimentList();
+        }
+      });
     }
 
     if (this.current < 2) {
@@ -188,6 +199,40 @@ export class ExperimentComponent implements OnInit {
     if (this.specs.controls.length > 1 && this.specs.controls.length % this.PAGESIZE === 1) {
       this.currentSpecPage += 1;
     }
+  }
+
+  constructSpec(): ExperimentSpec {
+    // Construct the spec
+    const meta: SpecMeta = {
+      name: this.experimentName.value,
+      namespace: this.namespace.value,
+      framework: this.frameworks.value,
+      cmd: this.cmd.value,
+      envVars: {}
+    }
+    for (const env of this.envs.controls) {
+      meta.envVars[env.get('key').value] = env.get('value').value; 
+    }
+
+    const specs: Specs = {};
+    for (const spec of this.specs.controls) {
+      specs[spec.get('name').value] = {
+        replicas: spec.get('replicas').value,
+        resources: `cpu=${spec.get('cpus').value},memory=${spec.get('memory').value}`
+      }
+    }
+
+    const enviroment: SpecEnviroment = {
+      image: this.image.value
+    }
+
+    const newExperimentSpec: ExperimentSpec = {
+      meta: meta,
+      environment: enviroment,
+      spec: specs
+    }
+
+    return newExperimentSpec;
   }
 
   /**

@@ -22,8 +22,8 @@ import { Injectable } from '@angular/core';
 import { Rest } from '@submarine/interfaces';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { BaseApiService } from '@submarine/services/base-api.service';
-import { of, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { of, Observable, throwError } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -65,8 +65,14 @@ export class ExperimentService {
         if (res.success) {
           return of(res.result);
         } else {
-          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', experimentSpec);
+          console.log(res);
+          return throwError(this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', experimentSpec));
+          // throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', experimentSpec);
         }
+      }),
+      catchError(e => {
+        console.log(e.message);
+        return throwError(e.message);
       })
     );
   }

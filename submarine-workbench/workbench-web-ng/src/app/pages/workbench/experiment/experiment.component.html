@@ -155,7 +155,7 @@
       </nz-steps>
     </div>
     <div>
-      <form [formGroup]="createExperiment">
+      <form [formGroup]="experiment">
         <div *nzModalFooter>
           <button nz-button nzType="default" (click)="isVisible = false">Cancel</button>
           <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="handleOk()">

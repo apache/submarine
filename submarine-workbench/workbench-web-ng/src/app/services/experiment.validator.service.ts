@@ -63,6 +63,15 @@ export class ExperimentFormService {
   };
 
   /**
+   * 
+   * @param 
+   */
+  // specNameValidator: ValidatorFn = (specName: FormControl): ValidationErrors | null => {
+  //   TENSORFLOW
+  //   return specName.value && 
+  // }
+
+  /**
    * Validate name or key property
    * Name and key cannot have its duplicate, must be unique
    * @param fieldName - The field name of the form
