@@ -148,11 +148,18 @@ export class ExperimentComponent implements OnInit {
     } else if (this.current === 2) {
       const newSpec = this.constructSpec();
       this.experimentService.createExperiment(newSpec).subscribe({
+        next: result => {
+          // Must reconstruct a new array for re-rendering
+          this.experimentList = [...this.experimentList, result];
+        },
         error: msg => {
           console.log(`Inside subscribe error with ${msg}`);
+          this.nzMessageService.error(`${msg}, please try again`);
         },
         complete: () => {
-          this.fetchExperimentList();
+          this.nzMessageService.success('Experiment creation succeeds');
+          this.isVisible = false;
+          this.current = 0;
         }
       });
     }

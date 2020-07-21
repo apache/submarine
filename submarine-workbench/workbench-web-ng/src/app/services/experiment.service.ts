@@ -65,7 +65,6 @@ export class ExperimentService {
         if (res.success) {
           return of(res.result);
         } else {
-          console.log(res);
           return throwError(this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', experimentSpec));
           // throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', experimentSpec);
         }
