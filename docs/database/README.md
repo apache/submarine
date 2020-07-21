@@ -97,15 +97,15 @@ Development database for development environment.
 ```
 # in mysql container
 bash > mysql -uroot -ppassword
-mysql> CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';
+mysql> CREATE USER IF NOT EXISTS 'submarine'@'%' IDENTIFIED BY 'password';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';
-mysql> CREATE DATABASE submarine CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> CREATE DATABASE IF NOT EXISTS submarine CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use submarine;
 mysql> source /submarine.sql;
 mysql> source /submarine-data.sql;
-mysql> CREATE USER 'metastore'@'%' IDENTIFIED BY 'password';
+mysql> CREATE USER IF NOT EXISTS 'metastore'@'%' IDENTIFIED BY 'password';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'metastore'@'%';
-mysql> CREATE DATABASE metastore CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> CREATE DATABASE IF NOT EXISTS metastore CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use metastore;
 mysql> source /metastore.sql;
 mysql> quit
@@ -121,14 +121,14 @@ Test database for program unit testing and Travis test environment.
 ```
 # in mysql container
 bash > mysql -uroot -ppassword
-mysql> CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';
+mysql> CREATE USER IF NOT EXISTS 'submarine_test'@'%' IDENTIFIED BY 'password_test';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';
-mysql> CREATE DATABASE `submarine_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> CREATE DATABASE IF NOT EXISTS `submarine_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use `submarine_test`;
 mysql> source /submarine.sql;
-mysql> CREATE USER 'metastore_test'@'%' IDENTIFIED BY 'password_test';
+mysql> CREATE USER IF NOT EXISTS 'metastore_test'@'%' IDENTIFIED BY 'password_test';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'metastore_test'@'%';
-mysql> CREATE DATABASE `metastore_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> CREATE DATABASE IF NOT EXISTS `metastore_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use `metastore_test`;
 mysql> source /metastore.sql;
 mysql> quit

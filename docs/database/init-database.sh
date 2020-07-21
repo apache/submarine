@@ -16,37 +16,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FWDIR="$(cd "$(dirname "$0")"; pwd)"
-cd "$FWDIR"
-
-mysql -e CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';
-mysql -e GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';
-
-mysql -e CREATE USER 'metastore'@'%' IDENTIFIED BY 'password';
-mysql -e GRANT ALL PRIVILEGES ON * . * TO 'metastore'@'%';
-
-mysql -e CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';
-mysql -e GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';
-
-mysql -e CREATE USER 'metastore_test'@'%' IDENTIFIED BY 'password_test';
-mysql -e GRANT ALL PRIVILEGES ON * . * TO 'metastore_test'@'%';
-
-mysql -e "create database submarine_test;"
-mysql -e "CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';"
+mysql -e "CREATE DATABASE IF NOT EXISTS submarine_test;"
+mysql -e "CREATE USER IF NOT EXISTS 'submarine_test'@'%' IDENTIFIED BY 'password_test';"
 mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'submarine_test'@'%';"
 mysql -e "use submarine_test; source ./submarine.sql; show tables;"
 
-mysql -e "create database metastore_test;"
-mysql -e "CREATE USER 'metastore_test'@'%' IDENTIFIED BY 'password_test';"
+mysql -e "CREATE DATABASE IF NOT EXISTS metastore_test;"
+mysql -e "CREATE USER IF NOT EXISTS 'metastore_test'@'%' IDENTIFIED BY 'password_test';"
 mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'metastore_test'@'%';"
 mysql -e "use metastore_test; source ./metastore.sql; show tables;"
 
-mysql -e "create database submarine;"
-mysql -e "CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';"
+mysql -e "CREATE DATABASE IF NOT EXISTS submarine;"
+mysql -e "CREATE USER IF NOT EXISTS 'submarine'@'%' IDENTIFIED BY 'password';"
 mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'submarine'@'%';"
 mysql -e "use submarine; source ./submarine.sql; source ./submarine-data.sql; show tables;"
 
-mysql -e "create database metastore;"
-mysql -e "CREATE USER 'metastore'@'%' IDENTIFIED BY 'password';"
+mysql -e "CREATE DATABASE IF NOT EXISTS metastore;"
+mysql -e "CREATE USER IF NOT EXISTS 'metastore'@'%' IDENTIFIED BY 'password';"
 mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'metastore'@'%';"
 mysql -e "use metastore; source ./metastore.sql; show tables;"
