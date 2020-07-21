@@ -124,7 +124,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   }
 }
-' http://127.0.0.1/api/v1/experiment
+' http://127.0.0.1:8080/api/v1/experiment
 ```
 Above example assume environment "my-submarine-env" already exists in Submarine. Please refer Environment API Reference doc to Create/Update/Delete/List Environment REST API's
 

@@ -42,7 +42,7 @@ curl -X POST -H "Content-Type: application/json" -d '
       "anaconda-navigator=1.9.12=py37_0"]
   }
 }
-' http://127.0.0.1/api/v1/environment
+' http://127.0.0.1:8080/api/v1/environment
 ```
 
 **Example Response:**
@@ -75,7 +75,7 @@ curl -X POST -H "Content-Type: application/json" -d '
 
 **Example Request:**
 ```sh
-curl -X GET http://127.0.0.1/api/v1/environment
+curl -X GET http://127.0.0.1:8080/api/v1/environment
 ```
 
 **Example Response:**
@@ -123,7 +123,7 @@ curl -X GET http://127.0.0.1/api/v1/environment
 
 **Example Request:**
 ```sh
-curl -X GET http://127.0.0.1/api/v1/environment/my-submarine-env
+curl -X GET http://127.0.0.1:8080/api/v1/environment/my-submarine-env
 ```
 
 **Example Response:**
@@ -168,7 +168,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '
       "alabaster=0.7.12=py37_0"]
   }
 }
-' http://127.0.0.1/api/v1/environment/my-submarine-env
+' http://127.0.0.1:8080/api/v1/environment/my-submarine-env
 ```
 
 **Example Response:**
@@ -201,7 +201,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '
 
 **Example Request:**
 ```sh
-curl -X DELETE http://127.0.0.1/api/v1/environment/my-submarine-env
+curl -X DELETE http://127.0.0.1:8080/api/v1/environment/my-submarine-env
 ```
 
 **Example Response:**
