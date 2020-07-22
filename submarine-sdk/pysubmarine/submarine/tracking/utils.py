@@ -15,12 +15,15 @@
 
 from __future__ import print_function
 
+import uuid
+
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.store.sqlalchemy_store import SqlAlchemyStore
 from submarine.utils import env
 
 _TRACKING_URI_ENV_VAR = "SUBMARINE_TRACKING_URI"
-_JOB_NAME_ENV_VAR = "SUBMARINE_JOB_NAME"
+# https://github.com/linkedin/TonY/pull/431
+_JOB_ID_ENV_VAR = "JOB_ID"
 
 # Extra environment variables which take precedence for setting the basic/bearer
 # auth on http requests.
@@ -54,7 +57,6 @@ def get_tracking_uri():
     the currently active run, since the tracking URI can be updated via ``set_tracking_uri``.
     :return: The tracking URI.
     """
-    # TODO get database url from submarine-site.xml
     global _tracking_uri
     if _tracking_uri is not None:
         return _tracking_uri
@@ -64,13 +66,16 @@ def get_tracking_uri():
         return DEFAULT_SUBMARINE_JDBC_URL
 
 
-def get_job_name():
+def get_experiment_id():
     """
-    Get the current job name.
-    :return The job name:
+    Get the current experiment id.
+    :return The experiment id:
     """
-    if env.get_env(_JOB_NAME_ENV_VAR) is not None:
-        return env.get_env(_JOB_NAME_ENV_VAR)
+    # Get yarn application or K8s experiment ID when running distributed training
+    if env.get_env(_JOB_ID_ENV_VAR) is not None:
+        return env.get_env(_JOB_ID_ENV_VAR)
+    else:  # set Random ID when running local training
+        return uuid.uuid4().hex
 
 
 def get_sqlalchemy_store(store_uri):

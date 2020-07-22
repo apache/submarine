@@ -38,6 +38,10 @@ Base = declarative_base()
 class SqlMetric(Base):
     __tablename__ = 'metrics'
 
+    id = Column(String(64))
+    """
+    ID to which this metric belongs to: Part of *Primary Key* for ``metrics`` table.
+    """
     key = Column(String(190))
     """
     Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.
@@ -46,7 +50,7 @@ class SqlMetric(Base):
     """
     Metric value: `Float`. Defined as *Non-null* in schema.
     """
-    worker_index = Column(String(32))
+    worker_index = Column(String(64))
     """
     Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for
     ``metrics`` table.
@@ -64,16 +68,12 @@ class SqlMetric(Base):
     """
     True if the value is in fact NaN.
     """
-    job_name = Column(String(32))
-    """
-    JOB NAME to which this metric belongs to: Part of *Primary Key* for ``metrics`` table.
-    """
 
-    __table_args__ = (PrimaryKeyConstraint('key',
+    __table_args__ = (PrimaryKeyConstraint('id',
+                                           'key',
                                            'timestamp',
                                            'worker_index',
                                            'step',
-                                           'job_name',
                                            'value',
                                            "is_nan",
                                            name='metric_pk'),)
@@ -108,6 +108,10 @@ class SqlMetric(Base):
 class SqlParam(Base):
     __tablename__ = 'params'
 
+    id = Column(String(64))
+    """
+    ID to which this parameter belongs to: Part of *Primary Key* for ``params`` table.
+    """
     key = Column(String(190))
     """
     Param key: `String` (limit 190 characters). Part of *Primary Key* for ``params`` table.
@@ -121,13 +125,9 @@ class SqlParam(Base):
     Param worker_index: `String` (limit 32 characters). Part of *Primary Key* for
     ``metrics`` table.
     """
-    job_name = Column(String(32))
-    """
-    JOB NAME to which this parameter belongs to: Part of *Primary Key* for ``params`` table.
-    """
 
-    __table_args__ = (PrimaryKeyConstraint('key',
-                                           'job_name',
+    __table_args__ = (PrimaryKeyConstraint('id',
+                                           'key',
                                            'worker_index',
                                            name='param_pk'),)
 

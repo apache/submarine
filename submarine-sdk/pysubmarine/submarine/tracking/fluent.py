@@ -32,13 +32,6 @@ _active_run_stack = []
 _logger = logging.getLogger(__name__)
 
 
-# Todo need to support unique run_id or change to submarine-job name
-def random_string(stringLength=30):
-    """Generate a random string of fixed length """
-    letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for i in range(stringLength))
-
-
 def log_param(key, value, worker_index):
     """
     Log a parameter under the current run, creating a run if necessary.
