@@ -16,6 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+FWDIR="$(cd "$(dirname "$0")"; pwd)"
+cd "$FWDIR"
+
 mysql -e "CREATE DATABASE IF NOT EXISTS submarine_test;"
 mysql -e "CREATE USER IF NOT EXISTS 'submarine_test'@'%' IDENTIFIED BY 'password_test';"
 mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'submarine_test'@'%';"
