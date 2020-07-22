@@ -32,9 +32,13 @@ Must:
 By using the official docker image of submarine database, only one docker command is required to run submarine database
 
 ```bash
-docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.3.0
+docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.4.0
 ```
-
+## Initialize submarine database
+It will create users and tables that submarine requires
+```shell script
+sudo ./init-database
+```
 ## Manual operation of the submarine database
 
 ### Modify character set (Optional)
@@ -45,10 +49,10 @@ If you need to store Chinese character data in mysql, you need to execute the fo
 
   ```
   bash > mysql -uroot -ppassword
-  
+
   mysql>SHOW VARIABLES LIKE 'character_set_%'; // View database character set
   mysql>SHOW VARIABLES LIKE 'collation_%';
-  
+
   SET NAMES 'utf8';
   ```
 
@@ -58,21 +62,21 @@ If you need to store Chinese character data in mysql, you need to execute the fo
   # install vim
   apt-get update
   apt-get install vim
-  
+
   vi /etc/mysql/mysql.conf.d/mysqld.cnf
-  
+
   [mysqld]
   character_set_server = utf8
-  
+
   [mysql]
   default-character-set = utf8
-  
+
   [mysql.server]
   default-character-set = utf8
-  
+
   [mysqld_safe]
   default-character-set = utf8
-  
+
   [client]
   default-character-set = utf8
   ```
@@ -93,15 +97,15 @@ Development database for development environment.
 ```
 # in mysql container
 bash > mysql -uroot -ppassword
-mysql> CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';
+mysql> CREATE USER IF NOT EXISTS 'submarine'@'%' IDENTIFIED BY 'password';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';
-mysql> CREATE DATABASE submarine CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> CREATE DATABASE IF NOT EXISTS submarine CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use submarine;
 mysql> source /submarine.sql;
 mysql> source /submarine-data.sql;
-mysql> CREATE USER 'metastore'@'%' IDENTIFIED BY 'password';
+mysql> CREATE USER IF NOT EXISTS 'metastore'@'%' IDENTIFIED BY 'password';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'metastore'@'%';
-mysql> CREATE DATABASE metastore CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> CREATE DATABASE IF NOT EXISTS metastore CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use metastore;
 mysql> source /metastore.sql;
 mysql> quit
@@ -117,14 +121,14 @@ Test database for program unit testing and Travis test environment.
 ```
 # in mysql container
 bash > mysql -uroot -ppassword
-mysql> CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';
+mysql> CREATE USER IF NOT EXISTS 'submarine_test'@'%' IDENTIFIED BY 'password_test';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine_test'@'%';
-mysql> CREATE DATABASE `submarine_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> CREATE DATABASE IF NOT EXISTS `submarine_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use `submarine_test`;
 mysql> source /submarine.sql;
-mysql> CREATE USER 'metastore_test'@'%' IDENTIFIED BY 'password_test';
+mysql> CREATE USER IF NOT EXISTS 'metastore_test'@'%' IDENTIFIED BY 'password_test';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'metastore_test'@'%';
-mysql> CREATE DATABASE `metastore_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
+mysql> CREATE DATABASE IF NOT EXISTS `metastore_test` CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use `metastore_test`;
 mysql> source /metastore.sql;
 mysql> quit
@@ -142,7 +146,7 @@ mysqldump -umetastore -ppassword metastore > metastore.sql;
 
 ## Travis
 
-1. In the submarine's Travis, the `test database`, `database name`, `username` and `password` will be automatically created based on the contents of this document. 
+1. In the submarine's Travis, the `test database`, `database name`, `username` and `password` will be automatically created based on the contents of this document.
 
    Therefore, do not modify the database's `database name`, `username` and `password` configuration to avoid introducing some problems.
 
