@@ -20,7 +20,7 @@ import mock
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.store.sqlalchemy_store import SqlAlchemyStore
 from submarine.tracking.utils import (_JOB_ID_ENV_VAR, _TRACKING_URI_ENV_VAR,
-                                      get_experiment_id, get_sqlalchemy_store,
+                                      get_job_id, get_sqlalchemy_store,
                                       get_tracking_uri, is_tracking_uri_set)
 
 
@@ -45,7 +45,7 @@ def test_get_job_id():
         _JOB_ID_ENV_VAR: "application_12346789",
     }
     with mock.patch.dict(os.environ, env):
-        assert get_experiment_id() == "application_12346789"
+        assert get_job_id() == "application_12346789"
 
 
 def test_get_sqlalchemy_store():

@@ -66,7 +66,7 @@ def get_tracking_uri():
         return DEFAULT_SUBMARINE_JDBC_URL
 
 
-def get_experiment_id():
+def get_job_id():
     """
     Get the current experiment id.
     :return The experiment id:
