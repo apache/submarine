@@ -142,6 +142,18 @@ export class ExperimentComponent implements OnInit {
     }
   }
 
+  /**
+   * Init a new experiment form, clear all status
+   */
+  initExperimentStatus() {
+    this.isVisible = false;
+    this.current = 0;
+    this.okText = 'Next step';
+  }
+
+  /**
+   * Event handler for Next step/Submit button
+   */
   handleOk() {
     if (this.current === 1) {
       this.okText = 'Submit';
@@ -153,13 +165,14 @@ export class ExperimentComponent implements OnInit {
           this.experimentList = [...this.experimentList, result];
         },
         error: msg => {
-          console.log(`Inside subscribe error with ${msg}`);
-          this.nzMessageService.error(`${msg}, please try again`);
+          this.nzMessageService.error(`${msg}, please try again`, {
+            nzDuration: 0,
+            nzPauseOnHover: true
+          });
         },
         complete: () => {
           this.nzMessageService.success('Experiment creation succeeds');
-          this.isVisible = false;
-          this.current = 0;
+          this.initExperimentStatus();
         }
       });
     }
@@ -208,6 +221,9 @@ export class ExperimentComponent implements OnInit {
     }
   }
 
+  /**
+   * Construct spec for new experiment creation
+   */
   constructSpec(): ExperimentSpec {
     // Construct the spec
     const meta: SpecMeta = {

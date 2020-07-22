@@ -40,10 +40,6 @@ class HttpError extends Error {
     }
   }
 
-  test() {
-
-  }
-
   logError() {
     console.group('Http error');
     console.log('error message: ', this.message);

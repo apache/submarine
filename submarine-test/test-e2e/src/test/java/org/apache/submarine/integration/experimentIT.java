@@ -17,14 +17,10 @@
 
 package org.apache.submarine.integration;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
@@ -33,9 +29,6 @@ import org.testng.annotations.Test;
 import org.testng.Assert;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import sun.rmi.runtime.Log;
-
-import java.io.File;
 
 public class experimentIT extends AbstractSubmarineIT {
 
@@ -97,6 +90,13 @@ public class experimentIT extends AbstractSubmarineIT {
     pollingWait(By.name("cpu0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("1");
     pollingWait(By.name("memory0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("512M");
     Assert.assertTrue(pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).isEnabled());
-//    pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Submit the experiment
+    pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    LOG.info("hello");
+    // Fail due to wrong replica type
+    Assert.assertTrue(pollingWait(By.xpath("//div[contains(@class, 'ant-message-error')]//span"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
+    wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath("//div[contains(@class, 'ant-message-error')]//span")));
+    pollingWait(By.name("spec0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("Ps");
+    Assert.assertTrue(pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).isEnabled());
   }
 }

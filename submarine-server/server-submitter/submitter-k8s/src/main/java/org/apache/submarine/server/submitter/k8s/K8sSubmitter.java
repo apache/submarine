@@ -104,7 +104,7 @@ public class K8sSubmitter implements Submitter {
       experiment = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(200, e.getMessage());
+      throw new SubmarineRuntimeException(400, e.getMessage());
     } catch (ApiException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
