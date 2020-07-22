@@ -81,4 +81,4 @@ INSERT INTO `params` (`id`, `key`, `value`, `worker_index`, `job_name`) VALUES
 -- ----------------------------
 -- Records of environment
 -- ----------------------------
-INSERT INTO `environment` VALUES ('environment_1595134205164_0002', 'my-submarine-env','{"name":"my-submarine-env","dockerImage":"continuumio/anaconda3","kernelSpec":{"name":"team_default_python_3.7","channels":["defaults"],"dependencies":["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0","alabaster=0.7.12=py37_0","anaconda=2020.02=py37_0","anaconda-client=1.7.2=py37_0","anaconda-navigator=1.9.12=py37_0"]}}','admin', '2020-05-06 14:00:05', 'Jack', '2020-05-06 14:00:14');
+INSERT INTO `environment` VALUES ('environment_1595134205164_0002', 'my-submarine-test-env','{"name":"my-submarine-env","dockerImage":"continuumio/anaconda3","kernelSpec":{"name":"team_default_python_3.7","channels":["defaults"],"dependencies":["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0","alabaster=0.7.12=py37_0","anaconda=2020.02=py37_0","anaconda-client=1.7.2=py37_0","anaconda-navigator=1.9.12=py37_0"]}}','admin', '2020-05-06 14:00:05', 'Jack', '2020-05-06 14:00:14');
