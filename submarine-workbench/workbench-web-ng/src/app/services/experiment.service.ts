@@ -22,8 +22,8 @@ import { Injectable } from '@angular/core';
 import { Rest } from '@submarine/interfaces';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { BaseApiService } from '@submarine/services/base-api.service';
-import { of, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { of, Observable, throwError } from 'rxjs';
+import { switchMap, catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -61,12 +61,23 @@ export class ExperimentService {
   createExperiment(experimentSpec): Observable<ExperimentInfo> {
     const apiUrl = this.baseApi.getRestApi('/v1/experiment');
     return this.httpClient.post<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
-      switchMap((res) => {
-        if (res.success) {
-          return of(res.result);
+      map((res) => res.result), // return result directly if succeeding
+      catchError((e) => {
+        let message: string;
+        if (e.error instanceof ErrorEvent) {
+          // client side error
+          message = 'Something went wrong with network or workbench';
         } else {
-          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', experimentSpec);
+          console.log(e);
+          if (e.status === 409) {
+            message = 'You might have a duplicate experiment name';
+          } else if (e.status >= 500) {
+            message = `${e.message}`;
+          } else {
+            message = e.error.message;
+          }
         }
+        return throwError(message);
       })
     );
   }
