@@ -247,7 +247,7 @@ CREATE TABLE `metrics` (
   `worker_index` varchar(32) NOT NULL COMMENT 'Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
   `timestamp` bigint(20) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `BigInteger`. Part of *Primary Key* for   ``metrics`` table.',
   `step` bigint(11) NOT NULL COMMENT 'Step recorded for this metric entry: `BigInteger`.',
-  `is_nan` int(11) NOT NULL COMMENT 'True if the value is in fact NaN.',
+  `is_nan` BOOLEAN NOT NULL COMMENT 'True if the value is in fact NaN.',
   PRIMARY KEY  (`id`, `key`, `timestamp`, `worker_index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

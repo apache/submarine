@@ -50,34 +50,22 @@ public class ParamRestApi {
   public ParamRestApi() {
   }
 
-  /*
-  # +----------+-------+--------------+-----------------------+
-  # | key      | value | worker_index | job_name              |
-  # +----------+-------+--------------+-----------------------+
-  # | max_iter | 100   | worker-1     | application_123651651 |
-  # | n_jobs   | 5     | worker-1     | application_123456898 |
-  # | alpha    | 20    | worker-1     | application_123456789 |
-  # +----------+-------+--------------+-----------------------+
-  */
-
   @GET
   @Path("/list")
   @SubmarineApi
-  public Response listParam(@QueryParam("id") String id, 
-                            @QueryParam("paramKey") String paramKey, 
-                            @QueryParam("value") String value, 
-                            @QueryParam("workerIndex") String workerIndex, 
-                            @QueryParam("jobName") String jobName) {
-    
+  public Response listParam(@QueryParam("id") String id,
+                            @QueryParam("paramKey") String paramKey,
+                            @QueryParam("value") String value,
+                            @QueryParam("workerIndex") String workerIndex) {
+
     Param param = new Param();
     param.setId(id);
     param.setKey(paramKey);
     param.setValue(value);
     param.setWorkerIndex(workerIndex);
-    param.setJobName(jobName);
 
     LOG.info("listParam ({})", param);
-    
+
     List<Param> params;
     try {
       params = paramService.selectByPrimaryKeySelective(param);
@@ -93,7 +81,7 @@ public class ParamRestApi {
   @SubmarineApi
   public Response getParam(@PathParam("id") String id) {
     LOG.info("getParam ({})", id);
-    
+
     Param param;
     try {
       param = paramService.selectById(id);
@@ -109,7 +97,7 @@ public class ParamRestApi {
   @SubmarineApi
   public Response postParam(Param param) {
     LOG.info("postParam ({})", param);
-    boolean result = false;
+    boolean result;
     try {
       result = paramService.insert(param);
     } catch (Exception e) {
@@ -124,7 +112,7 @@ public class ParamRestApi {
   @SubmarineApi
   public Response deleteParam(@QueryParam("id") String id) {
     LOG.info("deleteParam ({})", id);
-    boolean result = false;
+    boolean result;
     try {
       result = paramService.deleteById(id);
     } catch (Exception e) {

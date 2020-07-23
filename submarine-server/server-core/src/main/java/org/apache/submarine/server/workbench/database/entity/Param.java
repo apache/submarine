@@ -21,20 +21,20 @@ package org.apache.submarine.server.workbench.database.entity;
 import org.apache.submarine.server.database.entity.BaseEntity;
 
 /*
-# +----------+-------+--------------+-----------------------+
-# | key      | value | worker_index | job_name              |
-# +----------+-------+--------------+-----------------------+
-# | max_iter | 100   | worker-1     | application_123651651 |
-# | n_jobs   | 5     | worker-1     | application_123456898 |
-# | alpha    | 20    | worker-1     | application_123456789 |
-# +----------+-------+--------------+-----------------------+
+# +-----------------------+----------+-------+--------------+
+# | id                    | key      | value | worker_index |
+# +-----------------------+----------+-------+--------------+
+# | application_123456898 | max_iter | 100   | worker-1     |
+# | application_123456898 | alpha    | 10    | worker-1     |
+# | application_123456898 | n_jobs   | 5     | worker-1     |
+# +-----------------------+----------+-------+--------------+
 */
 
 public class Param extends BaseEntity {
-  String key;
-  String value;
-  String workerIndex;
-  String jobName;
+
+  private String key;
+  private String value;
+  private String workerIndex;
 
   public String getKey() {
     return this.key;
@@ -58,13 +58,5 @@ public class Param extends BaseEntity {
 
   public void setWorkerIndex(String workerIndex) {
     this.workerIndex = workerIndex;
-  }
-
-  public String getJobName() {
-    return this.jobName;
-  }
-
-  public void setJobName(String jobName) {
-    this.jobName = jobName;
   }
 }

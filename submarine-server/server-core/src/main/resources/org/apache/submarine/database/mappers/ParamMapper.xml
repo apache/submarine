@@ -27,12 +27,11 @@
     <result column="key" jdbcType="VARCHAR" property="key" />
     <result column="value" jdbcType="FLOAT" property="value" />
     <result column="worker_index" jdbcType="VARCHAR" property="workerIndex" />
-    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
   </resultMap>
 
   <!-- key is reserved word in mysql -->
   <sql id="Base_Column_List">
-    id, `key`, value, worker_index, job_name
+    id, `key`, value, worker_index
   </sql>
 
   <select id="selectAll" parameterType="java.lang.String" resultMap="resultMap">
@@ -55,20 +54,16 @@
   </delete>
 
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Param"
-          useGeneratedKeys="true" keyProperty="id">
-    insert into params (`key`, value, worker_index, job_name)
-    values (#{key,jdbcType=VARCHAR}, 
-      #{value,jdbcType=FLOAT},
-      #{workerIndex,jdbcType=VARCHAR}, 
-      #{jobName,jdbcType=VARCHAR})
+          keyProperty="id, key, worker_index">
+    insert into params (id, `key`, value, worker_index)
+    values (#{id,jdbcType=VARCHAR}, #{key,jdbcType=VARCHAR}, #{value,jdbcType=FLOAT}, #{workerIndex,jdbcType=VARCHAR})
   </insert>
 
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Param">
     update params
     set `key` = #{key,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},
-      worker_index = #{workerIndex,jdbcType=VARCHAR},
-      job_name = #{jobName,jdbcType=VARCHAR}
+      worker_index = #{workerIndex,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
@@ -82,9 +77,6 @@
       </if>
       <if test="workerIndex != null">
         AND worker_index = #{workerIndex,jdbcType=VARCHAR}
-      </if>
-      <if test="jobName != null">
-        AND job_name = #{jobName,jdbcType=VARCHAR}
       </if>
       <if test="id != null">
         AND id = #{id,jdbcType=VARCHAR}

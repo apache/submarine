@@ -248,10 +248,9 @@ def main(_):
             # Train
             logging.info('Starting training')
             i = 0
-            worker_index = "worker-" + str(task_index)
             while not sess.should_stop():
                 # Before use submarine-sdk, start Mysql server first
-                # submarine.log_param("batch_size", FLAGS.batch_size, worker_index)
+                # submarine.log_param("batch_size", FLAGS.batch_size)
                 batch = mnist.train.next_batch(FLAGS.batch_size)
                 if i % 100 == 0:
                     step, _, train_accuracy = sess.run(
@@ -261,7 +260,7 @@ def main(_):
                     logging.info('Step %d, training accuracy: %g' % (
                     step, train_accuracy))
                     # Before use submarine-sdk, start Mysql server first
-                    # submarine.log_metric("accuracy", train_accuracy, worker_index, i)
+                    # submarine.log_metric("accuracy", train_accuracy, i)
                 else:
                     sess.run([global_step, train_step],
                              feed_dict={features: batch[0], labels: batch[1],

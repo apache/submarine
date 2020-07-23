@@ -1,14 +1,14 @@
-<!---  
+<!---
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
-  
+
    http://www.apache.org/licenses/LICENSE-2.0
-  
+
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  
-  See the License for the specific language governing permissions and 
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
   limitations under the License. See accompanying LICENSE file.
 -->
 
@@ -39,7 +39,7 @@ return the tracking URI.
 
 set the tracking URI. You can also set the
 SUBMARINE_TRACKING_URI environment variable to have Submarine find a URI from
-there. The URI should be database connection string. 
+there. The URI should be database connection string.
 
 **Parameters**
 
@@ -49,25 +49,23 @@ By default it's `mysql+pymysql://submarine:password@localhost:3306/submarine`.
 More detail : [SQLAlchemy docs](https://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls)
 
 <!--
-    TODO : get database url from submarine-site.xml 
+    TODO : get database url from submarine-site.xml
 -->
 
-### `submarine.log_metric(key, value, worker_index, step=0)`
+### `submarine.log_metric(key, value, step=0)`
 
 logs a single key-value metric. The value must always be a number.
 
 **Parameters**
 - key - Metric name (string).
 - value - Metric value (float).
-- worker_index - The index of worker (string). Examples are "rank-1", "worker-2"
 - step - A single integer step at which to log the specified Metrics,
 by default it's 0.
 
-### `submarine.log_param(key, value, worker_index)`
+### `submarine.log_param(key, value)`
 
 logs a single key-value parameter. The key and value are both strings.
 
 **Parameters**
 - key - Parameter name (string).
 - value - Parameter value (string).
-- worker_index - The index of worker (string). Examples are "rank-1", "worker-2"

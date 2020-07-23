@@ -77,7 +77,7 @@ export class ExperimentInfoComponent implements OnInit {
 
     this.experimentService
       .getExperimentParam({
-        jobName: this.experimentID
+        id: this.experimentID
       })
       .subscribe(
         (result) => {
@@ -91,7 +91,7 @@ export class ExperimentInfoComponent implements OnInit {
 
     this.experimentService
       .getExperimentMetric({
-        jobName: this.experimentID
+        id: this.experimentID
       })
       .subscribe(
         (result) => {
