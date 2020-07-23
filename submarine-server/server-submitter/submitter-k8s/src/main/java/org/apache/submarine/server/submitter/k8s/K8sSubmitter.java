@@ -234,29 +234,12 @@ public class K8sSubmitter implements Submitter {
 
   @Override
   public Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
+    Notebook notebook;
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               notebookCR.getMetadata().getNamespace(), notebookCR.getPlural(), notebookCR, "true");
-
-      Gson gson = new JSON().getGson();
-      String jsonString = gson.toJson(object);
-      LOG.info("Upstream response JSON: {}", jsonString);
-
-      Notebook notebook = new Notebook();
-      notebook.setUid(notebookCR.getMetadata().getUid());
-      notebook.setName(notebookCR.getMetadata().getName());
-
-      // notebook url
-      notebook.setUrl("/notebook/" + notebookCR.getMetadata().getNamespace() + "/" +
-              notebookCR.getMetadata().getName());
-
-      DateTime dateTime = notebookCR.getMetadata().getCreationTimestamp();
-      if (dateTime != null) {
-        notebook.setCreatedTime(dateTime.toString());
-        notebook.setStatus(Notebook.Status.STATUS_CREATED.getValue());
-      }
-      return notebook;
+      notebook = parseResponseObject(object);
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
@@ -264,18 +247,44 @@ public class K8sSubmitter implements Submitter {
       LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
+    return notebook;
   }
 
   @Override
   public Notebook findNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
-    //TODO(ryan): Implement this method
+    // TODO(ryan): Implement this method
     return null;
   }
 
   @Override
   public Notebook deleteNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
-    //TODO(ryan): Implement this method
+    // TODO(ryan): Implement this method
     return null;
+  }
+
+  private Notebook parseResponseObject(Object obj) throws SubmarineRuntimeException {
+    Gson gson = new JSON().getGson();
+    String jsonString = gson.toJson(obj);
+    LOG.info("Upstream response JSON: {}", jsonString);
+    Notebook notebook;
+    try {
+      notebook = new Notebook();
+      NotebookCR notebookCR = gson.fromJson(jsonString, NotebookCR.class);
+      notebook.setUid(notebookCR.getMetadata().getUid());
+      notebook.setName(notebookCR.getMetadata().getName());
+      // notebook url
+      notebook.setUrl("/notebook/" + notebookCR.getMetadata().getNamespace() + "/" +
+              notebookCR.getMetadata().getName());
+      DateTime createdTime = notebookCR.getMetadata().getCreationTimestamp();
+      if (createdTime != null) {
+        notebook.setCreatedTime(createdTime.toString());
+        notebook.setStatus(Notebook.Status.STATUS_CREATED.getValue());
+      }
+    } catch (JsonSyntaxException e) {
+      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
+    }
+    return notebook;
   }
 
   private String getJobLabelSelector(ExperimentSpec experimentSpec) {
