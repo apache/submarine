@@ -14,13 +14,14 @@
 # limitations under the License.
 
 import numpy as np
-from os import environ
+from submarine.utils import env
 from sklearn.linear_model import LogisticRegression
 import submarine
 
 if __name__ == "__main__":
-    # note: SUBMARINE_JOB_NAME should be set by submarine submitter
-    environ["SUBMARINE_JOB_NAME"] = "application_1234"
+    print(env.get_env("SUBMARINE_TRACKING_URI"))
+    submarine.set_tracking_uri("mysql+pymysql://submarine:password@192.168.103.9:3306/submarine")
+    print(env.get_env("SUBMARINE_TRACKING_URI"))
     X = np.array([-2, -1, 0, 1, 2, 1]).reshape(-1, 1)
     y = np.array([0, 0, 1, 1, 1, 0])
     lr = LogisticRegression(solver='liblinear', max_iter=100)

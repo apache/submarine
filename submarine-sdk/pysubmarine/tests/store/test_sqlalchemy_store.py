@@ -48,11 +48,11 @@ class TestSqlAlchemyStore(unittest.TestCase):
             params = session \
                 .query(SqlParam) \
                 .options() \
-                .filter(SqlParam.job_name == JOB_ID).all()
+                .filter(SqlParam.id == JOB_ID).all()
             assert params[0].key == "name_1"
             assert params[0].value == "a"
             assert params[0].worker_index == "worker-1"
-            assert params[0].job_name == JOB_ID
+            assert params[0].id == JOB_ID
 
     def test_log_metric(self):
         metric1 = Metric("name_1", 5, "worker-1", int(time.time()), 0)
@@ -65,11 +65,11 @@ class TestSqlAlchemyStore(unittest.TestCase):
             metrics = session \
                 .query(SqlMetric) \
                 .options() \
-                .filter(SqlMetric.job_name == JOB_ID).all()
+                .filter(SqlMetric.id == JOB_ID).all()
             assert len(metrics) == 2
             assert metrics[0].key == "name_1"
             assert metrics[0].value == 5
             assert metrics[0].worker_index == "worker-1"
-            assert metrics[0].job_name == JOB_ID
+            assert metrics[0].id == JOB_ID
             assert metrics[1].value == 6
             assert metrics[1].worker_index == "worker-2"

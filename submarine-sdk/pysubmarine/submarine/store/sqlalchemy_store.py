@@ -125,7 +125,7 @@ class SqlAlchemyStore(AbstractStore):
 
         return instance, created
 
-    def log_metric(self, experiment_id, metric):
+    def log_metric(self, job_id, metric):
         is_nan = math.isnan(metric.value)
         if is_nan:
             value = 0
@@ -138,7 +138,7 @@ class SqlAlchemyStore(AbstractStore):
         with self.ManagedSessionMaker() as session:
             try:
                 self._get_or_create(model=SqlMetric,
-                                    id=experiment_id,
+                                    id=job_id,
                                     key=metric.key,
                                     value=value,
                                     worker_index=metric.worker_index,
@@ -149,11 +149,11 @@ class SqlAlchemyStore(AbstractStore):
             except sqlalchemy.exc.IntegrityError:
                 session.rollback()
 
-    def log_param(self, experiment_id, param):
+    def log_param(self, job_id, param):
         with self.ManagedSessionMaker() as session:
             try:
                 self._get_or_create(model=SqlParam,
-                                    id=experiment_id,
+                                    id=job_id,
                                     session=session,
                                     key=param.key,
                                     value=param.value,

@@ -51,6 +51,6 @@ def log_metric(key, value, worker_index, step=None):
     :param worker_index: Metric worker_index (string).
     :param step: Metric step (int). Defaults to zero if unspecified.
     """
-    job_name = get_job_id()
-    SubmarineClient().log_metric(job_name, key, value, worker_index,
+    job_id = get_job_id()
+    SubmarineClient().log_metric(job_id, key, value, worker_index,
                                  int(time.time() * 1000), step or 0)

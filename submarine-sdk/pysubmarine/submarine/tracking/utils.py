@@ -78,5 +78,13 @@ def get_job_id():
         return uuid.uuid4().hex
 
 
+def get_worker_index():
+    """
+    Get the current worker index.
+    :return: The worker index:
+    """
+    pass
+
+
 def get_sqlalchemy_store(store_uri):
     return SqlAlchemyStore(store_uri)
