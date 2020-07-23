@@ -16,6 +16,7 @@
 from __future__ import print_function
 
 import uuid
+import os
 
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.store.sqlalchemy_store import SqlAlchemyStore
@@ -75,7 +76,9 @@ def get_job_id():
     if env.get_env(_JOB_ID_ENV_VAR) is not None:
         return env.get_env(_JOB_ID_ENV_VAR)
     else:  # set Random ID when running local training
-        return uuid.uuid4().hex
+        job_id = uuid.uuid4().hex
+        os.environ[_JOB_ID_ENV_VAR] = job_id
+        return job_id
 
 
 def get_worker_index():
