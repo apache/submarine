@@ -73,9 +73,6 @@ class SqlMetric(Base):
                                            'key',
                                            'timestamp',
                                            'worker_index',
-                                           'step',
-                                           'value',
-                                           "is_nan",
                                            name='metric_pk'),)
 
     def __repr__(self):

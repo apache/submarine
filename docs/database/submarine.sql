@@ -241,15 +241,14 @@ CREATE TABLE `environment` (
 -- ----------------------------
 DROP TABLE IF EXISTS `metrics`;
 CREATE TABLE `metrics` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` varchar(64) NOT NULL COMMENT 'Id of the Experiment',
   `key` varchar(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.',
   `value` float NOT NULL COMMENT 'Metric value: `Float`. Defined as *Non-null* in schema.',
   `worker_index` varchar(32) NOT NULL COMMENT 'Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
   `timestamp` bigint(20) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `BigInteger`. Part of *Primary Key* for   ``metrics`` table.',
   `step` bigint(11) NOT NULL COMMENT 'Step recorded for this metric entry: `BigInteger`.',
   `is_nan` int(11) NOT NULL COMMENT 'True if the value is in fact NaN.',
-  `job_name` varchar(32) NOT NULL COMMENT 'JOB NAME to which this metric belongs to: Part of *Primary Key* for ``metrics`` table.',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`, `key`, `timestamp`, `worker_index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -257,10 +256,9 @@ CREATE TABLE `metrics` (
 -- ----------------------------
 DROP TABLE IF EXISTS `params`;
 CREATE TABLE `params` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` varchar(64) NOT NULL COMMENT 'Id of the Experiment',
   `key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
   `value` varchar(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
   `worker_index` varchar(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
-  `job_name` varchar(32) NOT NULL COMMENT 'JOB NAME to which this parameter belongs to: Part of *Primary Key* for ``params`` table.',
-  PRIMARY KEY  (`id`)
+  PRIMARY KEY  (`id`, `key`, `worker_index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
