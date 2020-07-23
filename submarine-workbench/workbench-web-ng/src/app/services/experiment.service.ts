@@ -61,8 +61,8 @@ export class ExperimentService {
   createExperiment(experimentSpec): Observable<ExperimentInfo> {
     const apiUrl = this.baseApi.getRestApi('/v1/experiment');
     return this.httpClient.post<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
-      map(res => res.result), // return result directly if succeeding
-      catchError(e => {
+      map((res) => res.result), // return result directly if succeeding
+      catchError((e) => {
         let message: string;
         if (e.error instanceof ErrorEvent) {
           // client side error
@@ -72,7 +72,7 @@ export class ExperimentService {
           if (e.status === 409) {
             message = 'You might have a duplicate experiment name';
           } else if (e.status >= 500) {
-            message = 'Server went wrong';
+            message = `${e.message}`;
           } else {
             message = e.error.message;
           }

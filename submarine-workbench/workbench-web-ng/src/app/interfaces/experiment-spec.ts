@@ -17,32 +17,31 @@
  * under the License.
  */
 
-
 export interface SpecMeta {
-  name: string,
-  namespace: string,
-  framework: string,
-  cmd: string,
+  name: string;
+  namespace: string;
+  framework: string;
+  cmd: string;
   envVars?: {
-    [key: string]: string
-  }
+    [key: string]: string;
+  };
 }
 
 export interface SpecEnviroment {
-  image: string
+  image: string;
 }
 
 export interface Specs {
   [name: string]: {
-    replicas: string,
-    resources: string
-  }
+    replicas: string;
+    resources: string;
+  };
 }
 
 export interface ExperimentSpec {
-  meta: SpecMeta,
+  meta: SpecMeta;
   environment: {
-    image: string
-  },
-  spec: Specs,
+    image: string;
+  };
+  spec: Specs;
 }

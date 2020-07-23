@@ -160,13 +160,12 @@ export class ExperimentComponent implements OnInit {
     } else if (this.current === 2) {
       const newSpec = this.constructSpec();
       this.experimentService.createExperiment(newSpec).subscribe({
-        next: result => {
+        next: (result) => {
           // Must reconstruct a new array for re-rendering
           this.experimentList = [...this.experimentList, result];
         },
-        error: msg => {
+        error: (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {
-            nzDuration: 0,
             nzPauseOnHover: true
           });
         },
@@ -232,28 +231,32 @@ export class ExperimentComponent implements OnInit {
       framework: this.frameworks.value,
       cmd: this.cmd.value,
       envVars: {}
-    }
+    };
     for (const env of this.envs.controls) {
-      meta.envVars[env.get('key').value] = env.get('value').value; 
+      if (env.get('key').value) {
+        meta.envVars[env.get('key').value] = env.get('value').value;
+      }
     }
 
     const specs: Specs = {};
     for (const spec of this.specs.controls) {
-      specs[spec.get('name').value] = {
-        replicas: spec.get('replicas').value,
-        resources: `cpu=${spec.get('cpus').value},memory=${spec.get('memory').value}`
+      if (spec.get('name').value) {
+        specs[spec.get('name').value] = {
+          replicas: spec.get('replicas').value,
+          resources: `cpu=${spec.get('cpus').value},memory=${spec.get('memory').value}`
+        };
       }
     }
 
     const enviroment: SpecEnviroment = {
       image: this.image.value
-    }
+    };
 
     const newExperimentSpec: ExperimentSpec = {
       meta: meta,
       environment: enviroment,
       spec: specs
-    }
+    };
 
     return newExperimentSpec;
   }

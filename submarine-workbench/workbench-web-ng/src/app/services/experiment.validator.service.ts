@@ -56,20 +56,11 @@ export class ExperimentFormService {
    * @param memory - The memory field in Spec
    */
   memoryValidator: ValidatorFn = (memory: FormControl): ValidationErrors | null => {
-    // Must match number + digit ex. 512M
-    return memory.value && /^\d+M$/.test(memory.value)
+    // Must match number + digit ex. 512M or empty
+    return !memory.value || /^\d+M$/.test(memory.value)
       ? null
       : { memoryPatternError: 'Memory pattern must match number + M ex. 512M' };
   };
-
-  /**
-   * 
-   * @param 
-   */
-  // specNameValidator: ValidatorFn = (specName: FormControl): ValidationErrors | null => {
-  //   TENSORFLOW
-  //   return specName.value && 
-  // }
 
   /**
    * Validate name or key property
