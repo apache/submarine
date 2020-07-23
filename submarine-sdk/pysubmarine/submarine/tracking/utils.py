@@ -15,8 +15,8 @@
 
 from __future__ import print_function
 
-import uuid
 import os
+import uuid
 
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.store.sqlalchemy_store import SqlAlchemyStore
@@ -25,6 +25,10 @@ from submarine.utils import env
 _TRACKING_URI_ENV_VAR = "SUBMARINE_TRACKING_URI"
 # https://github.com/linkedin/TonY/pull/431
 _JOB_ID_ENV_VAR = "JOB_ID"
+
+_TASK_INDEX = "TASK_INDEX"
+_JOB_NAME = "JOB_NAME"
+_RANK = "RANK"
 
 # Extra environment variables which take precedence for setting the basic/bearer
 # auth on http requests.
@@ -86,7 +90,24 @@ def get_worker_index():
     Get the current worker index.
     :return: The worker index:
     """
-    pass
+    worker_index = None
+    # Get TensorFlow worker index
+    if env.get_env(_JOB_NAME) is not None:
+        job_name = env.get_env(_JOB_NAME)
+        task_index = env.get_env(_TASK_INDEX)
+        worker_index = job_name + '-' + task_index
+    # Get PyTorch worker index
+    elif env.get_env(_RANK) is not None:
+        rank = env.get_env(_RANK)
+        if rank == 0:
+            worker_index = "master-0"
+        else:
+            worker_index = "worker-" + rank
+    # Set worker index to "worker-0" When running local training
+    else:
+        worker_index = "worker-0"
+
+    return worker_index
 
 
 def get_sqlalchemy_store(store_uri):

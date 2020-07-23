@@ -39,7 +39,7 @@ class TestTracking(unittest.TestCase):
         models.Base.metadata.drop_all(self.store.engine)
 
     def log_param(self):
-        submarine.log_param("name_1", "a", "worker-1")
+        submarine.log_param("name_1", "a")
         # Validate params
         with self.store.ManagedSessionMaker() as session:
             params = session \
@@ -48,12 +48,11 @@ class TestTracking(unittest.TestCase):
                 .filter(SqlParam.id == JOB_ID).all()
             assert params[0].key == "name_1"
             assert params[0].value == "a"
-            assert params[0].worker_index == "worker-1"
             assert params[0].id == JOB_ID
 
     def test_log_metric(self):
-        submarine.log_metric("name_1", 5, "worker-1")
-        submarine.log_metric("name_1", 6, "worker-2")
+        submarine.log_metric("name_1", 5)
+        submarine.log_metric("name_1", 6)
         # Validate params
         with self.store.ManagedSessionMaker() as session:
             metrics = session \
@@ -63,7 +62,5 @@ class TestTracking(unittest.TestCase):
             assert len(metrics) == 2
             assert metrics[0].key == "name_1"
             assert metrics[0].value == 5
-            assert metrics[0].worker_index == "worker-1"
             assert metrics[0].id == JOB_ID
             assert metrics[1].value == 6
-            assert metrics[1].worker_index == "worker-2"
