@@ -15,6 +15,7 @@
 
 from __future__ import print_function
 
+import json
 import os
 import uuid
 
@@ -26,9 +27,12 @@ _TRACKING_URI_ENV_VAR = "SUBMARINE_TRACKING_URI"
 # https://github.com/linkedin/TonY/pull/431
 _JOB_ID_ENV_VAR = "JOB_ID"
 
+_TF_CONFIG = "TF_CONFIG"
+_CLUSTER_SPEC = "CLUSTER_SPEC"
 _TASK_INDEX = "TASK_INDEX"
 _JOB_NAME = "JOB_NAME"
 _RANK = "RANK"
+_TASK = "TASK"
 
 # Extra environment variables which take precedence for setting the basic/bearer
 # auth on http requests.
@@ -90,16 +94,23 @@ def get_worker_index():
     Get the current worker index.
     :return: The worker index:
     """
-    worker_index = None
     # Get TensorFlow worker index
-    if env.get_env(_JOB_NAME) is not None:
-        job_name = env.get_env(_JOB_NAME)
-        task_index = env.get_env(_TASK_INDEX)
-        worker_index = job_name + '-' + task_index
+    if env.get_env(_TF_CONFIG) is not None:
+        tf_config = json.loads(os.environ.get(_TF_CONFIG))
+        task_config = tf_config.get(_TASK)
+        task_type = task_config.get(_JOB_NAME)
+        task_index = task_config.get(_TASK_INDEX)
+        worker_index = task_type + '-' + str(task_index)
+    elif env.get_env(_CLUSTER_SPEC) is not None:
+        cluster_spec = json.loads(os.environ.get(_CLUSTER_SPEC))
+        task_config = cluster_spec.get(_TASK)
+        task_type = task_config.get(_JOB_NAME)
+        task_index = task_config.get(_TASK_INDEX)
+        worker_index = task_type + '-' + str(task_index)
     # Get PyTorch worker index
     elif env.get_env(_RANK) is not None:
         rank = env.get_env(_RANK)
-        if rank == 0:
+        if rank == "0":
             worker_index = "master-0"
         else:
             worker_index = "worker-" + rank
