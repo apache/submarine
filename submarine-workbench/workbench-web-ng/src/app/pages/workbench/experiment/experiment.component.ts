@@ -91,6 +91,8 @@ export class ExperimentComponent implements OnInit {
         }
       }
     });
+
+    this.reloadCheck();
   }
 
   // Getters of experiment request form
@@ -213,6 +215,17 @@ export class ExperimentComponent implements OnInit {
         this.nzMessageService.success(err.message);
       }
     );
+  }
+
+  reloadCheck() {
+    /* 
+      When reload in info page, ths experimentId will turn into undifined, it will cause breadcrumb miss experimentId. 
+      Location.pathname -> /workbench/experiment/info/{experimentID}
+      So slice out experimentId string from location.pathname to reassign experimentId.
+      */
+    if (location.pathname != '/workbench/experiment') {
+      this.experimentID = location.pathname.slice(27);
+    }
   }
 
   // TODO(jasoonn): Filter experiment list
