@@ -224,7 +224,8 @@ export class ExperimentComponent implements OnInit {
       So slice out experimentId string from location.pathname to reassign experimentId.
       */
     if (location.pathname != '/workbench/experiment') {
-      this.experimentID = location.pathname.slice(27);
+      var sliceString = new String('/workbench/experiment/info');
+      this.experimentID = location.pathname.slice(sliceString.length);
     }
   }
 
