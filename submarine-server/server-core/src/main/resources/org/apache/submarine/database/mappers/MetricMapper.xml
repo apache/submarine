@@ -29,13 +29,12 @@
     <result column="worker_index" jdbcType="VARCHAR" property="workerIndex" />
     <result column="timestamp" jdbcType="BIGINT" property="timestamp" />
     <result column="step" jdbcType="INTEGER" property="step" />
-    <result column="is_nan" jdbcType="INTEGER" property="isNan" />
-    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="is_nan" jdbcType="BOOLEAN" property="isNan" />
   </resultMap>
 
   <!-- key is reserved word in mysql -->
   <sql id="Base_Column_List">
-    id, `key`, value, worker_index, timestamp, step, is_nan, job_name
+    id, `key`, value, worker_index, timestamp, step, is_nan
   </sql>
 
   <select id="selectAll" parameterType="java.lang.String" resultMap="resultMap">
@@ -58,18 +57,17 @@
   </delete>
 
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Metric"
-          useGeneratedKeys="true" keyProperty="id">
-    insert into metrics (`key`, value, worker_index, timestamp,
-      step, is_nan, job_name)
-    values (#{key,jdbcType=VARCHAR}, 
+          keyProperty="id, key, worker_index, timestamp">
+    insert into metrics (id, `key`, value, worker_index, timestamp, step, is_nan)
+    values (#{id,jdbcType=VARCHAR},
+      #{key,jdbcType=VARCHAR},
       #{value,jdbcType=FLOAT},
-      #{workerIndex,jdbcType=VARCHAR}, 
-      #{timestamp,jdbcType=BIGINT}, 
+      #{workerIndex,jdbcType=VARCHAR},
+      #{timestamp,jdbcType=BIGINT},
       #{step,jdbcType=INTEGER},
-      #{isNan,jdbcType=INTEGER}, 
-      #{jobName,jdbcType=VARCHAR})
+      #{isNan,jdbcType=BOOLEAN})
   </insert>
-  
+
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Metric">
     update metrics
     set `key` = #{key,jdbcType=VARCHAR},
@@ -77,11 +75,10 @@
       worker_index = #{workerIndex,jdbcType=VARCHAR},
       timestamp = #{timestamp,jdbcType=BIGINT},
       step = #{step,jdbcType=INTEGER},
-      is_nan = #{isNan,jdbcType=INTEGER},
-      job_name = #{jobName,jdbcType=VARCHAR}
+      is_nan = #{isNan,jdbcType=BOOLEAN}
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  
+
   <select id="selectByPrimaryKeySelective" parameterType="java.lang.String" resultMap="resultMap">
   select
   <include refid="Base_Column_List" />
@@ -100,10 +97,7 @@
       AND step = #{step,jdbcType=INTEGER}
     </if>
     <if test="isNan != null">
-      AND is_nan = #{isNan,jdbcType=INTEGER}
-    </if>
-    <if test="jobName != null">
-      AND job_name = #{jobName,jdbcType=VARCHAR}
+      AND is_nan = #{isNan,jdbcType=BOOLEAN}
     </if>
     <if test="id != null">
       AND id = #{id,jdbcType=VARCHAR}

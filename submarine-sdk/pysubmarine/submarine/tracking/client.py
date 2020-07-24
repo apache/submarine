@@ -35,7 +35,7 @@ class SubmarineClient(object):
         self.store = utils.get_sqlalchemy_store(self.tracking_uri)
 
     def log_metric(self,
-                   job_name,
+                   job_id,
                    key,
                    value,
                    worker_index,
@@ -43,7 +43,7 @@ class SubmarineClient(object):
                    step=None):
         """
         Log a metric against the run ID.
-        :param job_name: The job name to which the metric should be logged.
+        :param job_id: The job name to which the metric should be logged.
         :param key: Metric name.
         :param value: Metric value (float). Note that some special values such
                       as +/- Infinity may be replaced by other values depending on the store. For
@@ -56,16 +56,16 @@ class SubmarineClient(object):
         step = step if step is not None else 0
         validate_metric(key, value, timestamp, step)
         metric = Metric(key, value, worker_index, timestamp, step)
-        self.store.log_metric(job_name, metric)
+        self.store.log_metric(job_id, metric)
 
-    def log_param(self, job_name, key, value, worker_index):
+    def log_param(self, job_id, key, value, worker_index):
         """
         Log a parameter against the job name. Value is converted to a string.
-        :param job_name: The job name to which the parameter should be logged.
+        :param job_id: The job name to which the parameter should be logged.
         :param key: Parameter name.
         :param value: Parameter value (string).
         :param worker_index: Parameter worker_index (string).
         """
         validate_param(key, value)
         param = Param(key, str(value), worker_index)
-        self.store.log_param(job_name, param)
+        self.store.log_param(job_id, param)

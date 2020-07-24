@@ -15,12 +15,24 @@
 
 from __future__ import print_function
 
+import json
+import os
+import uuid
+
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
 from submarine.store.sqlalchemy_store import SqlAlchemyStore
 from submarine.utils import env
 
 _TRACKING_URI_ENV_VAR = "SUBMARINE_TRACKING_URI"
-_JOB_NAME_ENV_VAR = "SUBMARINE_JOB_NAME"
+# https://github.com/linkedin/TonY/pull/431
+_JOB_ID_ENV_VAR = "JOB_ID"
+
+_TF_CONFIG = "TF_CONFIG"
+_CLUSTER_SPEC = "CLUSTER_SPEC"
+_TASK_INDEX = "TASK_INDEX"
+_JOB_NAME = "JOB_NAME"
+_RANK = "RANK"
+_TASK = "TASK"
 
 # Extra environment variables which take precedence for setting the basic/bearer
 # auth on http requests.
@@ -54,7 +66,6 @@ def get_tracking_uri():
     the currently active run, since the tracking URI can be updated via ``set_tracking_uri``.
     :return: The tracking URI.
     """
-    # TODO get database url from submarine-site.xml
     global _tracking_uri
     if _tracking_uri is not None:
         return _tracking_uri
@@ -64,13 +75,50 @@ def get_tracking_uri():
         return DEFAULT_SUBMARINE_JDBC_URL
 
 
-def get_job_name():
+def get_job_id():
     """
-    Get the current job name.
-    :return The job name:
+    Get the current experiment id.
+    :return The experiment id:
     """
-    if env.get_env(_JOB_NAME_ENV_VAR) is not None:
-        return env.get_env(_JOB_NAME_ENV_VAR)
+    # Get yarn application or K8s experiment ID when running distributed training
+    if env.get_env(_JOB_ID_ENV_VAR) is not None:
+        return env.get_env(_JOB_ID_ENV_VAR)
+    else:  # set Random ID when running local training
+        job_id = uuid.uuid4().hex
+        os.environ[_JOB_ID_ENV_VAR] = job_id
+        return job_id
+
+
+def get_worker_index():
+    """
+    Get the current worker index.
+    :return: The worker index:
+    """
+    # Get TensorFlow worker index
+    if env.get_env(_TF_CONFIG) is not None:
+        tf_config = json.loads(os.environ.get(_TF_CONFIG))
+        task_config = tf_config.get(_TASK)
+        task_type = task_config.get(_JOB_NAME)
+        task_index = task_config.get(_TASK_INDEX)
+        worker_index = task_type + '-' + str(task_index)
+    elif env.get_env(_CLUSTER_SPEC) is not None:
+        cluster_spec = json.loads(os.environ.get(_CLUSTER_SPEC))
+        task_config = cluster_spec.get(_TASK)
+        task_type = task_config.get(_JOB_NAME)
+        task_index = task_config.get(_TASK_INDEX)
+        worker_index = task_type + '-' + str(task_index)
+    # Get PyTorch worker index
+    elif env.get_env(_RANK) is not None:
+        rank = env.get_env(_RANK)
+        if rank == "0":
+            worker_index = "master-0"
+        else:
+            worker_index = "worker-" + rank
+    # Set worker index to "worker-0" When running local training
+    else:
+        worker_index = "worker-0"
+
+    return worker_index
 
 
 def get_sqlalchemy_store(store_uri):

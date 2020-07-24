@@ -24,20 +24,24 @@ from submarine.entities import Metric, Param
 
 Base = declarative_base()
 
-# +-------+----------+--------------+---------------+------+--------+------------------+
-# | key   | value    | worker_index | timestamp     | step | is_nan | job_name         |
-# +-------+----------+--------------+---------------+------+--------+------------------+
-# | score | 0.666667 | worker-1     | 1569139525097 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569149139731 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569169376482 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569236290721 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569236466722 |    0 |      0 | application_1234 |
-# +-------+----------+--------------+---------------+------+--------+------------------+
+
+# +--------------------+-------+-------------------+--------------+---------------+------+--------+
+# | id                 | key   | value             | worker_index | timestamp     | step | is_nan |
+# +--------------------+-------+-------------------+--------------+---------------+------+--------+
+# | application_123456 | score | 0.666666666666667 | worker-1     | 1595414873838 |    0 |      0 |
+# | application_123456 | score | 0.666666666666667 | worker-1     | 1595472286360 |    0 |      0 |
+# | application_123456 | score | 0.666666666666667 | worker-1     | 1595414632967 |    0 |      0 |
+# | application_123456 | score | 0.666666666666667 | worker-1     | 1595415075067 |    0 |      0 |
+# +--------------------+-------+-------------------+--------------+---------------+------+--------+
 
 
 class SqlMetric(Base):
     __tablename__ = 'metrics'
 
+    id = Column(String(64))
+    """
+    ID to which this metric belongs to: Part of *Primary Key* for ``metrics`` table.
+    """
     key = Column(String(190))
     """
     Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.
@@ -46,7 +50,7 @@ class SqlMetric(Base):
     """
     Metric value: `Float`. Defined as *Non-null* in schema.
     """
-    worker_index = Column(String(32))
+    worker_index = Column(String(64))
     """
     Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for
     ``metrics`` table.
@@ -64,18 +68,11 @@ class SqlMetric(Base):
     """
     True if the value is in fact NaN.
     """
-    job_name = Column(String(32))
-    """
-    JOB NAME to which this metric belongs to: Part of *Primary Key* for ``metrics`` table.
-    """
 
-    __table_args__ = (PrimaryKeyConstraint('key',
+    __table_args__ = (PrimaryKeyConstraint('id',
+                                           'key',
                                            'timestamp',
                                            'worker_index',
-                                           'step',
-                                           'job_name',
-                                           'value',
-                                           "is_nan",
                                            name='metric_pk'),)
 
     def __repr__(self):
@@ -96,18 +93,22 @@ class SqlMetric(Base):
                       step=self.step)
 
 
-# +----------+-------+--------------+-----------------------+
-# | key      | value | worker_index | job_name              |
-# +----------+-------+--------------+-----------------------+
-# | max_iter | 100   | worker-1     | application_123651651 |
-# | n_jobs   | 5     | worker-1     | application_123456898 |
-# | alpha    | 20    | worker-1     | application_123456789 |
-# +----------+-------+--------------+-----------------------+
+# +-----------------------+----------+-------+--------------+
+# | id                    | key      | value | worker_index |
+# +-----------------------+----------+-------+--------------+
+# | application_123456898 | max_iter | 100   | worker-1     |
+# | application_123456898 | alpha    | 10    | worker-1     |
+# | application_123456898 | n_jobs   | 5     | worker-1     |
+# +-----------------------+----------+-------+--------------+
 
 
 class SqlParam(Base):
     __tablename__ = 'params'
 
+    id = Column(String(64))
+    """
+    ID to which this parameter belongs to: Part of *Primary Key* for ``params`` table.
+    """
     key = Column(String(190))
     """
     Param key: `String` (limit 190 characters). Part of *Primary Key* for ``params`` table.
@@ -121,13 +122,9 @@ class SqlParam(Base):
     Param worker_index: `String` (limit 32 characters). Part of *Primary Key* for
     ``metrics`` table.
     """
-    job_name = Column(String(32))
-    """
-    JOB NAME to which this parameter belongs to: Part of *Primary Key* for ``params`` table.
-    """
 
-    __table_args__ = (PrimaryKeyConstraint('key',
-                                           'job_name',
+    __table_args__ = (PrimaryKeyConstraint('id',
+                                           'key',
                                            'worker_index',
                                            name='param_pk'),)
 

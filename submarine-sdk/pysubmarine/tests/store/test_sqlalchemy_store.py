@@ -23,7 +23,7 @@ from submarine.store.database import models
 from submarine.store.database.models import SqlMetric, SqlParam
 from submarine.tracking import utils
 
-JOB_NAME = "application_123456789"
+JOB_ID = "application_123456789"
 
 
 class TestSqlAlchemyStore(unittest.TestCase):
@@ -41,35 +41,35 @@ class TestSqlAlchemyStore(unittest.TestCase):
 
     def test_log_param(self):
         param1 = Param("name_1", "a", "worker-1")
-        self.store.log_param(JOB_NAME, param1)
+        self.store.log_param(JOB_ID, param1)
 
         # Validate params
         with self.store.ManagedSessionMaker() as session:
             params = session \
                 .query(SqlParam) \
                 .options() \
-                .filter(SqlParam.job_name == JOB_NAME).all()
+                .filter(SqlParam.id == JOB_ID).all()
             assert params[0].key == "name_1"
             assert params[0].value == "a"
             assert params[0].worker_index == "worker-1"
-            assert params[0].job_name == JOB_NAME
+            assert params[0].id == JOB_ID
 
     def test_log_metric(self):
         metric1 = Metric("name_1", 5, "worker-1", int(time.time()), 0)
         metric2 = Metric("name_1", 6, "worker-2", int(time.time()), 0)
-        self.store.log_metric(JOB_NAME, metric1)
-        self.store.log_metric(JOB_NAME, metric2)
+        self.store.log_metric(JOB_ID, metric1)
+        self.store.log_metric(JOB_ID, metric2)
 
         # Validate params
         with self.store.ManagedSessionMaker() as session:
             metrics = session \
                 .query(SqlMetric) \
                 .options() \
-                .filter(SqlMetric.job_name == JOB_NAME).all()
+                .filter(SqlMetric.id == JOB_ID).all()
             assert len(metrics) == 2
             assert metrics[0].key == "name_1"
             assert metrics[0].value == 5
             assert metrics[0].worker_index == "worker-1"
-            assert metrics[0].job_name == JOB_NAME
+            assert metrics[0].id == JOB_ID
             assert metrics[1].value == 6
             assert metrics[1].worker_index == "worker-2"

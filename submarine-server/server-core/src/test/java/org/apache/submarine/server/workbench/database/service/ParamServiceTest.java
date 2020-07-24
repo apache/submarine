@@ -45,10 +45,10 @@ public class ParamServiceTest {
   @Test
   public void testSelect() throws Exception {
     Param param = new Param();
+    param.setId("test_application_1234");
     param.setKey("test_score");
     param.setValue("199");
     param.setWorkerIndex("test_worker-1");
-    param.setJobName("test_application_123651651");
     boolean result = paramService.insert(param);
     assertTrue(result);
     List<Param> paramList = paramService.selectAll();
@@ -57,7 +57,7 @@ public class ParamServiceTest {
 
     Param paramDb = paramList.get(0);
     compareParams(param, paramDb);
-    
+
     Param paramDb2 = paramService.selectByPrimaryKeySelective(param).get(0);
     compareParams(param, paramDb2);
   }
@@ -65,20 +65,19 @@ public class ParamServiceTest {
   @Test
   public void testUpdate() throws Exception {
     Param param = new Param();
+    param.setId("test_application_1234");
     param.setKey("test_score");
     param.setValue("100");
     param.setWorkerIndex("test_worker-2");
-    param.setJobName("test_application_1234");
     boolean result = paramService.insert(param);
     assertTrue(result);
 
     param.setKey("scoreNew");
     param.setValue("100");
     param.setWorkerIndex("worker-New");
-    param.setJobName("application_1234New");
     boolean editResult = paramService.update(param);
     assertTrue(editResult);
-    
+
     Param paramDb2 = paramService.selectByPrimaryKeySelective(param).get(0);
     compareParams(param, paramDb2);
   }
@@ -86,10 +85,10 @@ public class ParamServiceTest {
   @Test
   public void testDelete() throws Exception {
     Param param = new Param();
+    param.setId("test_application_1234");
     param.setKey("test_score");
     param.setValue("100");
     param.setWorkerIndex("test_worker-2");
-    param.setJobName("test_application_1234");
 
     boolean result = paramService.insert(param);
     assertTrue(result);
@@ -102,7 +101,7 @@ public class ParamServiceTest {
 
   private void compareParams(Param param, Param paramDb) {
     assertEquals(param.getId(), paramDb.getId());
-    assertEquals(param.getJobName(), paramDb.getJobName());
+    assertEquals(param.getId(), paramDb.getId());
     assertEquals(param.getKey(), paramDb.getKey());
     assertEquals(param.getValue(), paramDb.getValue());
     assertEquals(param.getWorkerIndex(), paramDb.getWorkerIndex());

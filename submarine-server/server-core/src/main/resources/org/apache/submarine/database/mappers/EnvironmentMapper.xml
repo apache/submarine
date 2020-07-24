@@ -52,7 +52,7 @@
     insert into environment (id, environment_name, environment_spec,
       create_by, create_time, update_by, update_time)
     values (#{id,jdbcType=VARCHAR}, #{environmentName,jdbcType=VARCHAR}, #{environmentSpec,jdbcType=VARCHAR},
-      #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
+     #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
   <update id="update" parameterType="org.apache.submarine.server.environment.database.entity.EnvironmentEntity">
