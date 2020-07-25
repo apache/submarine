@@ -40,7 +40,7 @@ public class RestConstants {
   /**
    * Environment
    */
-  public static final String ENVIRONMENTS = "environments";
+  public static final String ENVIRONMENT = "environment";
   
   public static final String ENVIRONMENT_ID = "id";
 }
