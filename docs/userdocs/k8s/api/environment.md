@@ -193,6 +193,8 @@ curl -X PATCH -H "Content-Type: application/json" -d '
   }
 }
 ```
+> dockerImage, "name" (of kernelSpec), "channels", "dependencies" etc can be updated using this API.
+"name" of EnvironmentSpec is not supported.
 
 ### Delete environment
 `GET /api/v1/environment/{name}`
