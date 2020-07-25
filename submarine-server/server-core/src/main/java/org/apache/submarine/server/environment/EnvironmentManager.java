@@ -204,7 +204,8 @@ public class EnvironmentManager {
    */
   public List<Environment> listEnvironments(String status)
       throws SubmarineRuntimeException {
-    List<Environment> environmentList = new ArrayList<>();
+    List<Environment> environmentList =
+        new ArrayList<Environment>(cachedEnvironments.values());
     return environmentList;
   }
 
