@@ -31,5 +31,5 @@ if [[ "${1}"x == "test"x ]]; then
 elif [ "${1}"x == "clean"x ]; then
   rm -rf ./bin
 else
-  docker run --rm -v "$CURRENT_PATH":/go/src/submarine-cloud -w /go/src/submarine-cloud -e GOOS="${GOOS:-darwin}" -e GOARCH="${GOARCH:-amd64}" apache/submarine:build make ${1}
+  docker run --rm -v "$CURRENT_PATH":/go/src/submarine-cloud -w /go/src/submarine-cloud -e GOOS="${GOOS:-darwin}" -e GOARCH="${GOARCH:-amd64}" apache/submarine:build /bin/sh -c "make ${1} && chown -R $(id -u):$(id -g) ./bin"
 fi;
