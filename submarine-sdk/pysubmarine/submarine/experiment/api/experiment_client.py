@@ -15,6 +15,7 @@
 
 import logging
 import time
+import ldap
 
 from submarine.experiment.configuration import Configuration
 from submarine.experiment.api_client import ApiClient
@@ -141,3 +142,22 @@ class ExperimentClient:
         """
         response = self.experiment_api.list_log(status=status)
         return response.result
+
+    def login(self, user_dn, password):
+        """
+        For user login
+        :return: Passed or not
+        """
+        l = ldap.initialize(‘ldap://172.16.1.163:389‘)
+        l.protocol_version = 3
+        l.set_option(ldap.OPT_REFERRALS, 0)
+        l.simple_bind_s(user_dn, password)
+        cn = user_dn.split(‘,‘)[0].split(‘=‘)
+        base_dn = ‘dc=testad,dc=com‘
+        ret = l.search_s(base_dn, ldap.SCOPE_SUBTREE,"%s=%s" % (cn[0], cn[1]))
+        if ret is None or len(ret) == 0:
+            return False
+        return True
+
+
+
