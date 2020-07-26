@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.kubernetes.client.models.V1ObjectMeta;
+import io.kubernetes.client.models.V1Volume;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -46,6 +47,7 @@ import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.junit.Assert;
 import org.junit.Test;
 import io.kubernetes.client.models.V1Container;
+import io.kubernetes.client.models.V1EmptyDirVolumeSource;
 
 
 public class ExperimentSpecParserTest extends SpecBuilder {
@@ -259,5 +261,37 @@ public class ExperimentSpecParserTest extends SpecBuilder {
         initContainer.getCommand().get(2));
 
     environmentManager.deleteEnvironment(envName);
+  }
+  
+  @Test
+  public void testValidPyTorchJobSpecWithHTTPGitCodeLocalizer()
+      throws IOException, URISyntaxException, InvalidSpecException {
+    ExperimentSpec jobSpec =
+        buildFromJsonFile(pytorchJobWithHTTPGitCodeLocalizerFile);
+    PyTorchJob pyTorchJob = (PyTorchJob) ExperimentSpecParser.parseJob(jobSpec);
+
+    MLJobReplicaSpec mlJobReplicaSpec = pyTorchJob.getSpec().getReplicaSpecs()
+        .get(PyTorchJobReplicaType.Master);
+    Assert.assertEquals(1,
+        mlJobReplicaSpec.getTemplate().getSpec().getInitContainers().size());
+    V1Container initContainer =
+        mlJobReplicaSpec.getTemplate().getSpec().getInitContainers().get(0);
+    Assert.assertEquals("git-localizer", initContainer.getName());
+    Assert.assertEquals("git-sync", initContainer.getImage());
+    Assert.assertEquals("code-dir",
+        initContainer.getVolumeMounts().get(0).getName());
+    Assert.assertEquals("/code",
+        initContainer.getVolumeMounts().get(0).getMountPath());
+    
+    V1Container container =
+        mlJobReplicaSpec.getTemplate().getSpec().getContainers().get(0);
+    Assert.assertEquals("code-dir",
+        container.getVolumeMounts().get(0).getName());
+    Assert.assertEquals("/code",
+        container.getVolumeMounts().get(0).getMountPath());
+    
+    V1Volume V1Volume = mlJobReplicaSpec.getTemplate().getSpec().getVolumes().get(0);
+    Assert.assertEquals(new V1EmptyDirVolumeSource(), V1Volume.getEmptyDir());
+    Assert.assertEquals("code-dir", V1Volume.getName());
   }
 }

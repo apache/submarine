@@ -26,6 +26,7 @@ import io.kubernetes.client.models.V1ObjectMeta;
 import io.kubernetes.client.models.V1PodSpec;
 import io.kubernetes.client.models.V1PodTemplateSpec;
 import io.kubernetes.client.models.V1ResourceRequirements;
+import io.kubernetes.client.models.V1VolumeMount;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -36,6 +37,8 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.environment.EnvironmentManager;
+import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
+import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.CodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
@@ -168,8 +171,33 @@ public class ExperimentSpecParser {
     container.setResources(resources);
     container.setEnv(parseEnvVars(taskSpec, experimentSpec.getMeta().getEnvVars()));
     containers.add(container);
-    podSpec.setContainers(containers);
+    
+    /**
+     * Init Git localize Container
+     */
+    if (experimentSpec.getCode() != null) {
+      CodeLocalizer localizer =
+          AbstractCodeLocalizer.getCodeLocalizer(experimentSpec);
+      localizer.localize(podSpec);
 
+      if (podSpec.getInitContainers() != null && podSpec.getInitContainers().size() > 0) {
+        String volumeName = podSpec.getInitContainers().get(0).getVolumeMounts()
+            .get(0).getName();
+        String path = podSpec.getInitContainers().get(0).getVolumeMounts()
+            .get(0).getMountPath();
+
+        V1VolumeMount mount = new V1VolumeMount();
+        mount.setName(volumeName);
+        mount.setMountPath(path);
+        
+        List<V1VolumeMount> volumeMounts = new ArrayList<V1VolumeMount>();
+        volumeMounts.add(mount);
+        container.setVolumeMounts(volumeMounts);
+      }
+    }
+    
+    podSpec.setContainers(containers);
+      
     /**
      * Init Containers
      */
