@@ -70,6 +70,11 @@ export class WorkbenchComponent implements OnInit {
       routerLink: '/workbench/experiment'
     },
     {
+      title: 'Environment',
+      iconType: 'codepen',
+      routerLink: '/workbench/environment'
+    },
+    {
       title: 'Data',
       iconType: 'bar-chart',
       routerLink: '/workbench/data'

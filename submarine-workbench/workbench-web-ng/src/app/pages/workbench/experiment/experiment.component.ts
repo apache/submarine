@@ -18,7 +18,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
@@ -123,7 +123,7 @@ export class ExperimentComponent implements OnInit {
    *
    */
   checkStatus() {
-    if (this.current == 0) {
+    if (this.current === 0) {
       return (
         this.experimentName.invalid ||
         this.description.invalid ||
@@ -132,9 +132,9 @@ export class ExperimentComponent implements OnInit {
         this.cmd.invalid ||
         this.image.invalid
       );
-    } else if (this.current == 1) {
+    } else if (this.current === 1) {
       return this.envs.invalid;
-    } else if (this.current == 2) {
+    } else if (this.current === 2) {
       return this.specs.invalid;
     }
   }
