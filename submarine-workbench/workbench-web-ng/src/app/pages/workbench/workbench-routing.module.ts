@@ -19,6 +19,7 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { EnvironmentComponent } from '@submarine/pages/workbench/environment/environment.component';
 import { ExperimentComponent } from '@submarine/pages/workbench/experiment/experiment.component';
 import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.component';
 import { DataComponent } from './data/data.component';
@@ -59,6 +60,10 @@ const routes: Routes = [
             component: ExperimentInfoComponent
           }
         ]
+      },
+      {
+        path: 'environment',
+        component: EnvironmentComponent
       },
       {
         path: 'data',

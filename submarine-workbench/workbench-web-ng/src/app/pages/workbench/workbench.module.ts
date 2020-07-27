@@ -34,6 +34,7 @@ import { ModelComponent } from './model/model.component';
 import { WorkbenchComponent } from './workbench.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 import { WorkspaceModule } from './workspace/workspace.module';
+import { EnvironmentComponent } from './environment/environment.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { WorkspaceModule } from './workspace/workspace.module';
     WorkspaceComponent,
     ExperimentComponent,
     DataComponent,
-    ModelComponent
+    ModelComponent,
+    EnvironmentComponent
   ],
   imports: [
     CommonModule,
