@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.submarine.server.api.spec.ExperimentSpec;
-import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 
 import io.kubernetes.client.models.V1Container;
 import io.kubernetes.client.models.V1PodSpec;

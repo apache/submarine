@@ -282,15 +282,16 @@ public class ExperimentSpecParserTest extends SpecBuilder {
         initContainer.getVolumeMounts().get(0).getName());
     Assert.assertEquals("/code",
         initContainer.getVolumeMounts().get(0).getMountPath());
-    
+
     V1Container container =
         mlJobReplicaSpec.getTemplate().getSpec().getContainers().get(0);
     Assert.assertEquals("code-dir",
         container.getVolumeMounts().get(0).getName());
     Assert.assertEquals("/code",
         container.getVolumeMounts().get(0).getMountPath());
-    
-    V1Volume V1Volume = mlJobReplicaSpec.getTemplate().getSpec().getVolumes().get(0);
+
+    V1Volume V1Volume =
+        mlJobReplicaSpec.getTemplate().getSpec().getVolumes().get(0);
     Assert.assertEquals(new V1EmptyDirVolumeSource(), V1Volume.getEmptyDir());
     Assert.assertEquals("code-dir", V1Volume.getName());
   }

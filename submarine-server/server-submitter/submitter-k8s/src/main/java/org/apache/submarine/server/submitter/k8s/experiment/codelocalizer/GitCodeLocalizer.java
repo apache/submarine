@@ -1,7 +1,6 @@
 package org.apache.submarine.server.submitter.k8s.experiment.codelocalizer;
 
 import org.apache.submarine.server.api.spec.ExperimentSpec;
-import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 
 import io.kubernetes.client.models.V1PodSpec;
 
@@ -15,8 +14,9 @@ public abstract class GitCodeLocalizer extends AbstractCodeLocalizer {
     super(experimentSpec);
   }
 
-  public static CodeLocalizer getGitCodeLocalizer(ExperimentSpec experimentSpec) {
-    
+  public static CodeLocalizer getGitCodeLocalizer(
+      ExperimentSpec experimentSpec) {
+
     String url = experimentSpec.getCode().getUrl();
     if (url.contains(GitCodeLocalizerModes.HTTP.getMode())) {
       return new HTTPGitCodeLocalizer(experimentSpec);

@@ -171,7 +171,7 @@ public class ExperimentSpecParser {
     container.setResources(resources);
     container.setEnv(parseEnvVars(taskSpec, experimentSpec.getMeta().getEnvVars()));
     containers.add(container);
-    
+
     /**
      * Init Git localize Container
      */
@@ -180,7 +180,8 @@ public class ExperimentSpecParser {
           AbstractCodeLocalizer.getCodeLocalizer(experimentSpec);
       localizer.localize(podSpec);
 
-      if (podSpec.getInitContainers() != null && podSpec.getInitContainers().size() > 0) {
+      if (podSpec.getInitContainers() != null
+          && podSpec.getInitContainers().size() > 0) {
         String volumeName = podSpec.getInitContainers().get(0).getVolumeMounts()
             .get(0).getName();
         String path = podSpec.getInitContainers().get(0).getVolumeMounts()
@@ -189,13 +190,13 @@ public class ExperimentSpecParser {
         V1VolumeMount mount = new V1VolumeMount();
         mount.setName(volumeName);
         mount.setMountPath(path);
-        
+
         List<V1VolumeMount> volumeMounts = new ArrayList<V1VolumeMount>();
         volumeMounts.add(mount);
         container.setVolumeMounts(volumeMounts);
       }
     }
-    
+
     podSpec.setContainers(containers);
       
     /**
