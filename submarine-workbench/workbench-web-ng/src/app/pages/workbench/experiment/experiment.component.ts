@@ -33,6 +33,8 @@ import { SpecMeta, Specs, SpecEnviroment, ExperimentSpec } from '@submarine/inte
 })
 export class ExperimentComponent implements OnInit {
   experimentList: ExperimentInfo[] = [];
+  checkedList: boolean[] = [];
+  selectAllChecked: boolean = false;
   // About experiment information
   isInfo = false;
   experimentID: string;
@@ -274,16 +276,25 @@ export class ExperimentComponent implements OnInit {
   fetchExperimentList() {
     this.experimentService.fetchExperimentList().subscribe((list) => {
       this.experimentList = list;
+      this.checkedList = [];
+      for (let i = 0; i < this.experimentList.length; i++) {
+        this.checkedList.push(false);
+      }
     });
   }
-  onDeleteExperiment(data: ExperimentInfo) {
+
+  onDeleteExperiment(data: ExperimentInfo, onMessage: boolean) {
     this.experimentService.deleteExperiment(data.experimentId).subscribe(
       () => {
-        this.nzMessageService.success('Delete user success!');
+        if (onMessage === true) {
+          this.nzMessageService.success('Delete Experiment Successfully!');
+        }
         this.fetchExperimentList();
       },
       (err) => {
-        this.nzMessageService.success(err.message);
+        if (onMessage === true) {
+          this.nzMessageService.success(err.message);
+        }
       }
     );
   }
@@ -300,6 +311,25 @@ export class ExperimentComponent implements OnInit {
     }
   }
 
+  deleteExperiments() {
+    for (let i = this.checkedList.length - 1; i >= 0; i--) {
+      if (this.checkedList[i] === true) {
+        this.onDeleteExperiment(this.experimentList[i], false);
+      }
+    }
+
+    this.selectAllChecked = false;
+  }
+
+  selectAll() {
+      for (let i = 0; i < this.checkedList.length; i++) {
+        if (this.selectAllChecked === true) {
+          this.checkedList[i] = true;
+        } else {
+          this.checkedList[i] = false;
+        }
+      }
+  }
   // TODO(jasoonn): Filter experiment list
   filter(event) {
     console.log(this.searchText + event.key);
