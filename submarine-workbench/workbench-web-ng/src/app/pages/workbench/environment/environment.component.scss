@@ -23,10 +23,6 @@
   padding-top: 20px;
 }
 
-#dependency{
-  padding-top: 20px;
-}
-
 #environmentData{
   margin-top: 16px;
   margin-left: 25px;
@@ -50,17 +46,6 @@ textarea.ng-invalid.ng-touched {
 }
 
 .list-container {
-  padding: 0;
-  margin: 1rem 0;
-}
-
-/* For env section */
-.env-page-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.env-input-container {
   padding: 0;
   margin: 1rem 0;
 }
@@ -110,14 +95,4 @@ textarea.ng-invalid.ng-touched {
   color: red;
   margin-top: .3rem;
   margin-left: .5rem;
-}
-
-.test {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.pg3-form-label {
-
 }
