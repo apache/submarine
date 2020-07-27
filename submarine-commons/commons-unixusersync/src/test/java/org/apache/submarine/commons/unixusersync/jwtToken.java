@@ -37,7 +37,7 @@ public class jwtToken {
   private static final Key secret = MacProvider.generateKey(SignatureAlgorithm.HS256);
   private static final byte[] secretBytes = secret.getEncoded();
   private static final String base64SecretBytes = Base64.getEncoder().encodeToString(secretBytes);
-  private static final Logger Log = LoggerFactory.getLogger(jwtToken.class);
+  private static final Logger LOG = LoggerFactory.getLogger(jwtToken.class);
 
   //Sample method to construct a JWT
 
@@ -75,9 +75,9 @@ public class jwtToken {
     Claims claims = Jwts.parser()
         .setSigningKey(DatatypeConverter.parseBase64Binary(base64SecretBytes))
         .parseClaimsJws(jwt).getBody();
-    Log.info("ID: " + claims.getId());
-    Log.info("Subject: " + claims.getSubject());
-    Log.info("Issuer: " + claims.getIssuer());
-    Log.info("Expiration: " + claims.getExpiration());
+    LOG.info("ID: " + claims.getId());
+    LOG.info("Subject: " + claims.getSubject());
+    LOG.info("Issuer: " + claims.getIssuer());
+    LOG.info("Expiration: " + claims.getExpiration());
   }
 }
