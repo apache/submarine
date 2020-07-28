@@ -27,7 +27,7 @@ logging.getLogger().setLevel(logging.INFO)
 
 
 class ExperimentClient:
-    def __init__(self, host, user_dn, password):
+    def __init__(self, host):
         """
         Submarine experiment client constructor
         :param host: An HTTP URI like http://submarine-server:8080.
