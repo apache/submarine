@@ -39,7 +39,6 @@ class ExperimentClient:
         api_client = ApiClient(configuration=configuration)
         self.experiment_api = ExperimentApi(api_client=api_client)
 
-
     def create_experiment(self, experiment_spec):
         """
         Create an experiment
