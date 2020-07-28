@@ -30,7 +30,7 @@ import io.kubernetes.client.models.V1ResourceRequirements;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.environment.Environment;
-import org.apache.submarine.server.api.spec.EnvironmentSpec;
+import org.apache.submarine.server.api.spec.KernelSpec;
 import org.apache.submarine.server.api.spec.NotebookPodSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.environment.EnvironmentManager;
@@ -82,9 +82,38 @@ public class NotebookSpecParser {
       container.setEnv(parseEnvVars(notebookPodSpec));
     }
 
-    // Environment (image)
-    if (notebookSpec.getEnvironment().getImage() != null) {
-      container.setImage(notebookSpec.getEnvironment().getImage());
+    // Environment
+    if (getEnvironment(notebookSpec) != null) {
+      String baseImage = getEnvironment(notebookSpec).getEnvironmentSpec().getDockerImage();
+      KernelSpec kernel = getEnvironment(notebookSpec).getEnvironmentSpec().getKernelSpec();
+      container.setImage(baseImage);
+      if (kernel.getDependencies().size() > 0) {
+        String condaVersionValidationCommand = generateCondaVersionValidateCommand();
+        StringBuffer createCommand = new StringBuffer();
+        String condaEnvironmentName = kernel.getName();
+
+        createCommand.append("conda create -q -y -n " + condaEnvironmentName);
+        for (String channel : kernel.getChannels()) {
+          createCommand.append(" ");
+          createCommand.append("-c");
+          createCommand.append(" ");
+          createCommand.append(channel);
+        }
+        for (String dependency : kernel.getDependencies()) {
+          createCommand.append(" ");
+          createCommand.append(dependency);
+        }
+
+        String activateEnvCommand = "source activate " + condaEnvironmentName;
+        String pathCommand = "PATH=/opt/conda/envs/env/bin:$PATH";
+        String finalCommand = condaVersionValidationCommand +
+                " && " + createCommand.toString() + " && "
+                + activateEnvCommand + " && " + pathCommand;
+        V1EnvVar envCommand = new V1EnvVar();
+        envCommand.setName("ENVIRONMENT_COMMAND");
+        envCommand.setValue(finalCommand);
+        container.addEnvItem(envCommand);
+      }
     }
 
     // Resources
@@ -96,70 +125,6 @@ public class NotebookSpecParser {
 
     containers.add(container);
     podSpec.setContainers(containers);
-
-    // set initContainer
-    if (notebookSpec.getEnvironment().getName() != null) {
-      Environment environment = getEnvironment(notebookSpec);
-      if (environment != null) {
-        EnvironmentSpec environmentSpec = environment.getEnvironmentSpec();
-        List<V1Container> initContainers = new ArrayList<>();
-        V1Container initContainer = new V1Container();
-        initContainer.setName(environment.getEnvironmentSpec().getName());
-        initContainer.setImage(environmentSpec.getDockerImage());
-
-        if (environmentSpec.getKernelSpec().getDependencies().size() > 0) {
-
-          String minVersion = "minVersion=\""
-                  + conf.getString(
-                  SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION)
-                  + "\";";
-          String maxVersion = "maxVersion=\""
-                  + conf.getString(
-                  SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION)
-                  + "\";";
-          String currentVersion = "currentVersion=$(conda -V | cut -f2 -d' ');";
-          StringBuffer condaVersionValidationCommand = new StringBuffer();
-          condaVersionValidationCommand.append(minVersion);
-          condaVersionValidationCommand.append(maxVersion);
-          condaVersionValidationCommand.append(currentVersion);
-          condaVersionValidationCommand.append("if [ \"$(printf '%s\\n' "
-                  + "\"$minVersion\" \"$maxVersion\" \"$currentVersion\" | sort -V "
-                  + "| head -n2 | tail -1 )\" != \"$currentVersion\" ]; then echo "
-                  + "\"Conda version should be between " + minVersion + " and "
-                  + maxVersion + "\"; exit 1; else echo \"Conda current version is "
-                  + currentVersion + ". Moving forward with env creation and "
-                  + "activation.\"; fi");
-
-          StringBuffer createCommand = new StringBuffer();
-          String condaEnvironmentName =
-                  environmentSpec.getKernelSpec().getName();
-
-          createCommand.append("conda create -n " + condaEnvironmentName);
-          for (String channel : environmentSpec.getKernelSpec().getChannels()) {
-            createCommand.append(" ");
-            createCommand.append("-c");
-            createCommand.append(" ");
-            createCommand.append(channel);
-          }
-          for (String dependency : environmentSpec.getKernelSpec()
-                  .getDependencies()) {
-            createCommand.append(" ");
-            createCommand.append(dependency);
-          }
-          String activateCommand = "echo \"source activate "
-                  + condaEnvironmentName + "\" > ~/.bashrc";
-          String pathCommand = "PATH=/opt/conda/envs/env/bin:$PATH";
-          String finalCommand = condaVersionValidationCommand.toString() +
-                  " && " + createCommand.toString() + " && "
-                  + activateCommand + " && " + pathCommand;
-          initContainer.addCommandItem("/bin/bash");
-          initContainer.addCommandItem("-c");
-          initContainer.addCommandItem(finalCommand);
-        }
-        initContainers.add(initContainer);
-        podSpec.setInitContainers(initContainers);
-      }
-    }
 
     podTemplateSpec.setSpec(podSpec);
     return podTemplateSpec;
@@ -205,4 +170,25 @@ public class NotebookSpecParser {
     }
   }
 
+  private static String generateCondaVersionValidateCommand() {
+    String currentVersion = "currentVersion=$(conda -V | cut -f2 -d' ');";
+    String minVersion = "minVersion=\""
+            + conf.getString(SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION)
+            + "\";";
+    String maxVersion = "maxVersion=\""
+            + conf.getString(SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION)
+            + "\";";
+    StringBuffer condaVersionValidationCommand = new StringBuffer();
+    condaVersionValidationCommand.append(minVersion);
+    condaVersionValidationCommand.append(maxVersion);
+    condaVersionValidationCommand.append(currentVersion);
+    condaVersionValidationCommand.append("if [ \"$(printf '%s\\n' "
+            + "\"$minVersion\" \"$maxVersion\" \"$currentVersion\" | sort -V "
+            + "| head -n2 | tail -1 )\" != \"$currentVersion\" ]; then echo "
+            + "\"Conda version should be between " + minVersion + " and "
+            + maxVersion + "\"; exit 1; else echo \"Conda current version is "
+            + currentVersion + ". Moving forward with env creation and "
+            + "activation.\"; fi");
+    return condaVersionValidationCommand.toString();
+  }
 }
