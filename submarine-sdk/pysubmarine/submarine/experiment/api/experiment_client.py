@@ -15,7 +15,6 @@
 
 import logging
 import time
-import ldap
 
 from submarine.experiment.configuration import Configuration
 from submarine.experiment.api_client import ApiClient
@@ -142,7 +141,3 @@ class ExperimentClient:
         """
         response = self.experiment_api.list_log(status=status)
         return response.result
-
-
-
-
