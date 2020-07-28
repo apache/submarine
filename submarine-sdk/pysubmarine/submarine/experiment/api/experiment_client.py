@@ -39,20 +39,8 @@ class ExperimentClient:
         api_client = ApiClient(configuration=configuration)
         self.experiment_api = ExperimentApi(api_client=api_client)
 
-        """
-        For user login
-        :return: Passed or not
-        """
-        l = ldap.initialize(‘ldap://172.16.1.163:389‘)
-        l.protocol_version = 3
-        l.set_option(ldap.OPT_REFERRALS, 0)
-        l.simple_bind_s(user_dn, password)
-        cn = user_dn.split(‘,‘)[0].split(‘=‘)
-        base_dn = ‘dc=testad,dc=com‘
-        ret = l.search_s(base_dn, ldap.SCOPE_SUBTREE,"%s=%s" % (cn[0], cn[1]))
-        if ret is None or len(ret) == 0:
-            return False
-        return True
+        self.user_dn = user_dn
+        self.password = password
 
     def create_experiment(self, experiment_spec):
         """
