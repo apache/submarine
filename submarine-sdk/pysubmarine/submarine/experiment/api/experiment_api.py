@@ -52,7 +52,6 @@ class ExperimentApi(object):
             api_client = ApiClient()
         self.api_client = api_client
 
-
     def create_experiment(self, **kwargs):  # noqa: E501
         """Create an experiment  # noqa: E501
 
