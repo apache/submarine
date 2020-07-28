@@ -27,6 +27,13 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.testng.Assert;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import sun.rmi.runtime.Log;
+import org.apache.submarine.CommandExecutor;
+import org.apache.submarine.ProcessData;
+import java.io.File;
 
 public class experimentIT extends AbstractSubmarineIT {
 
@@ -45,6 +52,7 @@ public class experimentIT extends AbstractSubmarineIT {
 
   @Test
   public void experimentNavigation() throws Exception {
+    LOG.info("[Testacse: experimentNavigation]");
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
     // Login
