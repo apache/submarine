@@ -47,25 +47,11 @@ class ExperimentApi(object):
     Do not edit the class manually.
     """
 
-    def __init__(self, api_client=None, user_dn=admin, password=password):
+    def __init__(self, api_client=None):
         if api_client is None:
             api_client = ApiClient()
         self.api_client = api_client
 
-        """
-        For user login
-        :return: Passed or not
-        """
-        l = ldap.initialize(‘ldap://172.16.1.163:389‘)
-        l.protocol_version = 3
-        l.set_option(ldap.OPT_REFERRALS, 0)
-        l.simple_bind_s(user_dn, password)
-        cn = user_dn.split(‘,‘)[0].split(‘=‘)
-        base_dn = ‘dc=testad,dc=com‘
-        ret = l.search_s(base_dn, ldap.SCOPE_SUBTREE,"%s=%s" % (cn[0], cn[1]))
-        if ret is None or len(ret) == 0:
-            return False
-        return True
 
     def create_experiment(self, **kwargs):  # noqa: E501
         """Create an experiment  # noqa: E501
