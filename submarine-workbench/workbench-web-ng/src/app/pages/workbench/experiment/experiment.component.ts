@@ -323,11 +323,7 @@ export class ExperimentComponent implements OnInit {
 
   selectAll() {
     for (let i = 0; i < this.checkedList.length; i++) {
-      if (this.selectAllChecked === true) {
-        this.checkedList[i] = true;
-      } else {
-        this.checkedList[i] = false;
-      }
+      this.checkedList[i] = this.selectAllChecked;
     }
   }
   // TODO(jasoonn): Filter experiment list
