@@ -27,6 +27,7 @@ class AFM(BasePyTorchModel):
         return _AFM(**self.params['model']['kwargs'])
 
 
+# pylint: disable=W0223
 class _AFM(nn.Module):
 
     def __init__(self, num_features: int, embedding_dim: int,

@@ -17,6 +17,7 @@ import torch
 from torch import nn
 
 
+# pylint: disable=W0223
 class FeatureLinear(nn.Module):
 
     def __init__(self, num_features, out_features):

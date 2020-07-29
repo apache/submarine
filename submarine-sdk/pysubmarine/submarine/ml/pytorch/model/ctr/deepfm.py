@@ -29,6 +29,7 @@ class DeepFM(BasePyTorchModel):
         return _DeepFM(**self.params['model']['kwargs'])
 
 
+# pylint: disable=W0223
 class _DeepFM(nn.Module):
 
     def __init__(self, num_fields, num_features, embedding_dim, out_features,
