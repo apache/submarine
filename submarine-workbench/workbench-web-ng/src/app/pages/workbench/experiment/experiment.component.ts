@@ -50,8 +50,12 @@ export class ExperimentComponent implements OnInit {
   okText = 'Next Step';
   isVisible = false;
 
-  // ExperimentSpecs = ['Adhoc', 'Predefined'];
-  frameworkNames = ['Tensorflow', 'Pytorch'];
+  // About edit
+  mode = 'create';
+
+  FRAMEWORK_NAMES = ['Tensorflow', 'Pytorch'];
+  TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
+  PYTORCH_SPECNAMES = ['Master', 'Worker'];
 
   // About env page
   currentEnvPage = 1;
@@ -72,10 +76,8 @@ export class ExperimentComponent implements OnInit {
     this.experiment = new FormGroup({
       experimentName: new FormControl(null, Validators.required),
       description: new FormControl(null, [Validators.required]),
-      // experimentSpec: new FormControl('Adhoc'),
       frameworks: new FormControl('Tensorflow', [Validators.required]),
       namespace: new FormControl('default', [Validators.required]),
-      // ruleType: new FormControl('Strong'),
       cmd: new FormControl('', [Validators.required]),
       envs: new FormArray([], [this.experimentFormService.nameValidatorFactory('key')]),
       image: new FormControl('', [Validators.required]),
@@ -210,8 +212,8 @@ export class ExperimentComponent implements OnInit {
     const spec = new FormGroup(
       {
         name: new FormControl(''),
-        replicas: new FormControl(null, [Validators.min(1)]),
-        cpus: new FormControl(null, [Validators.min(1)]),
+        replicas: new FormControl(1, [Validators.min(1)]),
+        cpus: new FormControl(1, [Validators.min(1)]),
         memory: new FormControl('', [this.experimentFormService.memoryValidator])
       },
       [this.experimentFormService.specValidator]
@@ -230,6 +232,7 @@ export class ExperimentComponent implements OnInit {
     // Construct the spec
     const meta: SpecMeta = {
       name: this.experimentName.value,
+      description: this.description.value,
       namespace: this.namespace.value,
       framework: this.frameworks.value,
       cmd: this.cmd.value,
@@ -297,6 +300,46 @@ export class ExperimentComponent implements OnInit {
     });
   }
 
+  editExperiment(spec: ExperimentSpec) {
+    console.log(spec);
+    // Open Modal in edit mode
+    this.mode = 'edit';
+    this.current = 0;
+    this.isVisible = true;
+    // Put value back
+    this.experimentName.setValue(spec.meta.name);
+    this.description.setValue(spec.meta.description);
+    this.namespace.setValue(spec.meta.namespace);
+    this.cmd.setValue(spec.meta.cmd);
+    this.image.setValue(spec.environment.image);
+
+    for (const [key, value] of Object.entries(spec.meta.envVars)) {
+      const env = new FormGroup(
+        {
+          key: new FormControl(key),
+          value: new FormControl(value)
+        },
+        [this.experimentFormService.envValidator]
+      );
+      this.envs.push(env);
+    }
+
+    for (const [specName, info] of Object.entries(spec.spec)) {
+      const [cpuCount, memory] = info.resources.match(/\d+[A-Z]?/g);
+      const newSpec = new FormGroup(
+        {
+          name: new FormControl(specName),
+          replicas: new FormControl(parseInt(info.replicas), [Validators.min(1)]),
+          cpus: new FormControl(parseInt(cpuCount), [Validators.min(1)]),
+          memory: new FormControl(memory, [this.experimentFormService.memoryValidator])
+        },
+        [this.experimentFormService.specValidator]
+      );
+      this.specs.push(newSpec);
+    }
+    //this.experimentService.editExperiment.
+  }
+
   onDeleteExperiment(data: ExperimentInfo, onMessage: boolean) {
     this.experimentService.deleteExperiment(data.experimentId).subscribe(
       () => {
@@ -351,10 +394,6 @@ export class ExperimentComponent implements OnInit {
   }
   // TODO(jasoonn): Start experiment
   startExperiment(Experiment) {
-    console.log(Experiment);
-  }
-  // TODO(jasoonn): Edit experiment
-  editExperiment(Experiment) {
     console.log(Experiment);
   }
 }

@@ -62,8 +62,13 @@
           nz-button
           id="openExperiment"
           nzType="primary"
+<<<<<<< HEAD
           style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px;"
           (click)="isVisible = true"
+=======
+          style="margin-right: 30px; margin-bottom: 15px; margin-top: 15px;"
+          (click)="isVisible = true; mode = 'create'"
+>>>>>>> Basic edit logic
         >
           <i nz-icon nzType="plus"></i>
           New Experiment
@@ -121,28 +126,18 @@
             <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.duration }}</td>
             <td class="td-action">
-              <a (click)="startExperiment(data)">Start</a>
+              <a (click)="editExperiment(data.spec)">Edit</a>
               <nz-divider nzType="vertical"></nz-divider>
-              <a nz-dropdown [nzDropdownMenu]="more">
-                More
-                <i nz-icon nzType="down"></i>
+              <a
+                nz-popconfirm
+                nzPlacement="left"
+                nzTitle="Confirm to delete?"
+                nzCancelText="Cancel"
+                nzOkText="Ok"
+                (nzOnConfirm)="onDeleteExperiment(data, true)"
+              >
+                Delete
               </a>
-              <nz-dropdown-menu #more="nzDropdownMenu">
-                <ul nz-menu nzSelectable>
-                  <li nz-menu-item (click)="editExperiment(data)">Edit</li>
-                  <li
-                    nz-menu-item
-                    nz-popconfirm
-                    nzPlacement="left"
-                    nzTitle="Confirm to delete?"
-                    nzCancelText="Cancel"
-                    nzOkText="Ok"
-                    (nzOnConfirm)="onDeleteExperiment(data, true)"
-                  >
-                    Delete
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
             </td>
           </tr>
         </tbody>
@@ -211,7 +206,7 @@
               </label>
               <nz-select formControlName="frameworks" nzPlaceHolder="Choose" style="width: 48%;">
                 <nz-option
-                  *ngFor="let framework of frameworkNames"
+                  *ngFor="let framework of FRAMEWORK_NAMES"
                   [nzValue]="framework"
                   [nzLabel]="framework"
                 ></nz-option>
@@ -281,16 +276,47 @@
             <ul formArrayName="specs" class="list-container">
               <ng-container *ngFor="let spec of specs.controls; index as i">
                 <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
-                  <input nz-input name="spec{{ i }}" placeholder="spec name" formControlName="name" />
-                  <input
-                    nz-input
-                    name="replica{{ i }}"
-                    type="number"
-                    placeholder="number of replica"
-                    formControlName="replicas"
-                  />
-                  <input nz-input name="cpu{{ i }}" type="number" placeholder="number of cpu" formControlName="cpus" />
-                  <input nz-input name="memory{{ i }}" placeholder="memory" formControlName="memory" />
+                  <div>
+                    <label> Spec name </label>
+                    <nz-select
+                      formControlName="name"
+                      nzPlaceHolder="Spec name"
+                      [ngSwitch]="frameworks.value"
+                    >
+                    <div *ngSwitchCase="'Tensorflow'">
+                      <nz-option
+                        *ngFor="let spec of TF_SPECNAMES"
+                        [nzValue]="spec"
+                        [nzLabel]="spec"
+                      ></nz-option>
+                    </div>
+                    <div *ngSwitchCase="'Pytorch'">
+                      <nz-option
+                        *ngFor="let spec of PYTORCH_SPECNAMES"
+                        [nzValue]="spec"
+                        [nzLabel]="spec"
+                      ></nz-option>
+                    </div>
+                    </nz-select>
+                  </div>
+                  <div>
+                    <label> Number of Replica </label>
+                    <input
+                      nz-input
+                      name="replica{{ i }}"
+                      type="number"
+                      placeholder="number of replica"
+                      formControlName="replicas"
+                    />
+                  </div>
+                  <div>
+                    <label> Number of cpu </label>
+                    <input nz-input name="cpu{{ i }}" type="number" placeholder="number of cpu" formControlName="cpus" />
+                  </div>
+                  <div>
+                    <label> Memory </label>
+                    <input nz-input name="memory{{ i }}" placeholder="memory" formControlName="memory" />
+                  </div>
                   <i
                     nz-icon
                     nzType="close-circle"

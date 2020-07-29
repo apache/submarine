@@ -68,7 +68,7 @@
       margin-top: 1rem;
    }
 
-   & input {
+   & *:not(:last-child) {
       flex: 0 2 20%;
       &:not(:last-child) {
          margin-right: .5rem;
