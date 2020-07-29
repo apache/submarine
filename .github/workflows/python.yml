@@ -18,6 +18,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: Verify MySQL connection from host
         run: |
+          sudo apt update
           sudo apt-get install -y mysql-client
           sudo service mysql restart
           # default mysql account and password in github actions
