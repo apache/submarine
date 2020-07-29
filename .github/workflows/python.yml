@@ -32,6 +32,9 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+        run: |
+          sudo apt-get install libsasl2-dev python-dev libldap2-dev libssl-dev
+          sudo pip3 install pyldap
       - name: Install dependencies
         run: |
           pip install ./submarine-sdk/pysubmarine/.
