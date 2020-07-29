@@ -34,6 +34,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
+          pip install --upgrade pip
           pip install ./submarine-sdk/pysubmarine/.
           pip install -q tensorflow==${{ matrix.tf-version }}
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
