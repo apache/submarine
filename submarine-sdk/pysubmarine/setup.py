@@ -40,7 +40,7 @@ setup(
         'python-dateutil >= 2.5.3',
         'pyarrow==0.17.0',
         'torch',
-        'python-ldap',
+        'pyldap',
     ],
     classifiers=[
         'Intended Audience :: Developers',
