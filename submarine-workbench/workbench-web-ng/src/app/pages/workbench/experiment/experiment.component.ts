@@ -25,6 +25,7 @@ import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { SpecMeta, Specs, SpecEnviroment, ExperimentSpec } from '@submarine/interfaces/experiment-spec';
+import { stringify } from 'querystring';
 
 @Component({
   selector: 'submarine-experiment',
@@ -276,6 +277,19 @@ export class ExperimentComponent implements OnInit {
   fetchExperimentList() {
     this.experimentService.fetchExperimentList().subscribe((list) => {
       this.experimentList = list;
+      var currentTime = new Date();
+      this.experimentList.forEach((item) => {
+        if (item.status == 'Succeeded') {
+          var finTime = new Date(item.finishedTime);
+          var runTime = new Date(item.runningTime);
+          var result = (finTime.getTime() - runTime.getTime()) / 1000;
+          item.duration = this.durationHandle(result);
+        } else {
+          var runTime = new Date(item.runningTime);
+          var result = (currentTime.getTime() - runTime.getTime()) / 1000;
+          item.duration = this.durationHandle(result);
+        }
+      });
       this.checkedList = [];
       for (let i = 0; i < this.experimentList.length; i++) {
         this.checkedList.push(false);
@@ -326,6 +340,32 @@ export class ExperimentComponent implements OnInit {
       this.checkedList[i] = this.selectAllChecked;
     }
   }
+
+  durationHandle(secs: number) {
+    var hr = Math.floor(secs / 3600);
+    var min = Math.floor((secs - hr * 3600) / 60);
+    var sec = Math.round(secs) - hr * 3600 - min * 60;
+    var showHr;
+    var showMin;
+    var showSec;
+    if (hr < 10) {
+      showHr = '0' + hr;
+    } else {
+      showHr = hr.toString();
+    }
+    if (min < 10) {
+      showMin = '0' + min;
+    } else {
+      showMin = min.toString();
+    }
+    if (sec < 10) {
+      showSec = '0' + sec;
+    } else {
+      showSec = sec.toString();
+    }
+    return showHr + ':' + showMin + ':' + showSec;
+  }
+
   // TODO(jasoonn): Filter experiment list
   filter(event) {
     console.log(this.searchText + event.key);

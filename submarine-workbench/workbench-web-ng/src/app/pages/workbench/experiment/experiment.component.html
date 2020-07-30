@@ -101,7 +101,6 @@
             <th>Created Time</th>
             <th>Running Time</th>
             <th>Duration</th>
-            <th>Progress</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -120,13 +119,7 @@
             <td>{{ data.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
-            <td></td>
-            <td *ngIf="data.status === 'Succeeded'">
-              <nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress>
-            </td>
-            <td *ngIf="data.status !== 'Succeeded'">
-              <nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress>
-            </td>
+            <td>{{ data.duration }}</td>
             <td class="td-action">
               <a (click)="startExperiment(data)">Start</a>
               <nz-divider nzType="vertical"></nz-divider>

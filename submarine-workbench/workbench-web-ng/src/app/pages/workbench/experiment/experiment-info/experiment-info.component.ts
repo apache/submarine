@@ -52,6 +52,17 @@ export class ExperimentInfoComponent implements OnInit {
       (item) => {
         this.experimentInfo = item;
         this.isLoading = false;
+        if (this.experimentInfo.status == 'Succeeded') {
+          var finTime = new Date(this.experimentInfo.finishedTime);
+          var runTime = new Date(this.experimentInfo.runningTime);
+          var result = (finTime.getTime() - runTime.getTime()) / 1000;
+          this.experimentInfo.duration = this.durationHandle(result);
+        } else {
+          var currentTime = new Date();
+          var runTime = new Date(this.experimentInfo.runningTime);
+          var result = (currentTime.getTime() - runTime.getTime()) / 1000;
+          this.experimentInfo.duration = this.durationHandle(result);
+        }
       },
       (err) => {
         this.nzMessageService.error('Cannot load ' + this.experimentID);
@@ -114,6 +125,31 @@ export class ExperimentInfoComponent implements OnInit {
         this.nzMessageService.success(err.message);
       }
     );
+  }
+
+  durationHandle(secs: number) {
+    var hr = Math.floor(secs / 3600);
+    var min = Math.floor((secs - hr * 3600) / 60);
+    var sec = Math.round(secs) - hr * 3600 - min * 60;
+    var showHr;
+    var showMin;
+    var showSec;
+    if (hr < 10) {
+      showHr = '0' + hr;
+    } else {
+      showHr = hr.toString();
+    }
+    if (min < 10) {
+      showMin = '0' + min;
+    } else {
+      showMin = min.toString();
+    }
+    if (sec < 10) {
+      showSec = '0' + sec;
+    } else {
+      showSec = sec.toString();
+    }
+    return showHr + ':' + showMin + ':' + showSec;
   }
 
   // TODO(jasoonn): Start experiment
