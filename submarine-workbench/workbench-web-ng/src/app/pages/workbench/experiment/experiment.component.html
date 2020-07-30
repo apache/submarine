@@ -62,13 +62,8 @@
           nz-button
           id="openExperiment"
           nzType="primary"
-<<<<<<< HEAD
           style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px;"
-          (click)="isVisible = true"
-=======
-          style="margin-right: 30px; margin-bottom: 15px; margin-top: 15px;"
-          (click)="isVisible = true; mode = 'create'"
->>>>>>> Basic edit logic
+          (click)="initExperimentStatus('create');"
         >
           <i nz-icon nzType="plus"></i>
           New Experiment

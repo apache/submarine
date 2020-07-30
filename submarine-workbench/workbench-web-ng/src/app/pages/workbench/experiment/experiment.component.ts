@@ -148,12 +148,24 @@ export class ExperimentComponent implements OnInit {
   }
 
   /**
-   * Init a new experiment form, clear all status
+   * Init a new experiment form, clear all status, clear all form controls and open the form in the mode
+   * 
+   * @param mode - The mode which the form should open in
    */
-  initExperimentStatus() {
-    this.isVisible = false;
+  initExperimentStatus(mode: 'create' | 'edit') {
+    this.mode = mode
     this.current = 0;
     this.okText = 'Next step';
+    this.isVisible = true;
+    // Reset the form
+    this.experimentName.reset();
+    this.description.reset();
+    this.cmd.reset();
+    this.frameworks.reset();
+    this.namespace.reset();
+    this.image.reset();
+    this.envs.reset();
+    this.specs.reset();
   }
 
   /**
@@ -176,7 +188,7 @@ export class ExperimentComponent implements OnInit {
         },
         complete: () => {
           this.nzMessageService.success('Experiment creation succeeds');
-          this.initExperimentStatus();
+          this.isVisible = false;
         }
       });
     }
@@ -303,9 +315,7 @@ export class ExperimentComponent implements OnInit {
   editExperiment(spec: ExperimentSpec) {
     console.log(spec);
     // Open Modal in edit mode
-    this.mode = 'edit';
-    this.current = 0;
-    this.isVisible = true;
+    this.initExperimentStatus('edit');
     // Put value back
     this.experimentName.setValue(spec.meta.name);
     this.description.setValue(spec.meta.description);
