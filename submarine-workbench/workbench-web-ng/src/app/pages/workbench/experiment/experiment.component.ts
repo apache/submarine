@@ -52,6 +52,7 @@ export class ExperimentComponent implements OnInit {
 
   // About edit
   mode = 'create';
+  editId: string = null;
 
   FRAMEWORK_NAMES = ['Tensorflow', 'Pytorch'];
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
@@ -149,23 +150,19 @@ export class ExperimentComponent implements OnInit {
 
   /**
    * Init a new experiment form, clear all status, clear all form controls and open the form in the mode
-   * 
+   *
    * @param mode - The mode which the form should open in
    */
   initExperimentStatus(mode: 'create' | 'edit') {
-    this.mode = mode
+    this.mode = mode;
     this.current = 0;
     this.okText = 'Next step';
     this.isVisible = true;
+    this.editId = null;
     // Reset the form
-    this.experimentName.reset();
-    this.description.reset();
-    this.cmd.reset();
-    this.frameworks.reset();
-    this.namespace.reset();
-    this.image.reset();
-    this.envs.reset();
-    this.specs.reset();
+    this.envs.clear();
+    this.specs.clear();
+    this.experiment.reset({ frameworks: 'Tensorflow', namespace: 'default' });
   }
 
   /**
@@ -175,22 +172,50 @@ export class ExperimentComponent implements OnInit {
     if (this.current === 1) {
       this.okText = 'Submit';
     } else if (this.current === 2) {
-      const newSpec = this.constructSpec();
-      this.experimentService.createExperiment(newSpec).subscribe({
-        next: (result) => {
-          // Must reconstruct a new array for re-rendering
-          this.experimentList = [...this.experimentList, result];
-        },
-        error: (msg) => {
-          this.nzMessageService.error(`${msg}, please try again`, {
-            nzPauseOnHover: true
-          });
-        },
-        complete: () => {
-          this.nzMessageService.success('Experiment creation succeeds');
-          this.isVisible = false;
-        }
-      });
+      if (this.mode === 'create') {
+        const newSpec = this.constructSpec();
+        this.experimentService.createExperiment(newSpec).subscribe({
+          next: (result) => {
+            // Must reconstruct a new array for re-rendering
+            this.experimentList = [...this.experimentList, result];
+          },
+          error: (msg) => {
+            this.nzMessageService.error(`${msg}, please try again`, {
+              nzPauseOnHover: true
+            });
+          },
+          complete: () => {
+            this.nzMessageService.success('Experiment creation succeeds');
+            this.isVisible = false;
+          }
+        });
+      } else if (this.mode === 'edit') {
+        const newSpec = this.constructSpec();
+        this.experimentService.editExperiment(this.editId, newSpec).subscribe(
+          (result) => {
+            console.log(result);
+            // Find the old index
+            const index = this.experimentList.findIndex(
+              (experiment) => experiment.experimentId === result.experimentId
+            );
+            // Create a new list, meanwhile maintaining the order
+            this.experimentList = [
+              ...this.experimentList.slice(0, index),
+              result,
+              ...this.experimentList.slice(index + 1)
+            ];
+          },
+          (msg) => {
+            this.nzMessageService.error(`${msg}, please try again`, {
+              nzPauseOnHover: true
+            });
+          },
+          () => {
+            this.nzMessageService.success('Modification succeeds!');
+            this.isVisible = false;
+          }
+        );
+      }
     }
 
     if (this.current < 2) {
@@ -244,7 +269,6 @@ export class ExperimentComponent implements OnInit {
     // Construct the spec
     const meta: SpecMeta = {
       name: this.experimentName.value,
-      description: this.description.value,
       namespace: this.namespace.value,
       framework: this.frameworks.value,
       cmd: this.cmd.value,
@@ -312,10 +336,11 @@ export class ExperimentComponent implements OnInit {
     });
   }
 
-  editExperiment(spec: ExperimentSpec) {
-    console.log(spec);
+  onEditExperiment(id: string, spec: ExperimentSpec) {
     // Open Modal in edit mode
     this.initExperimentStatus('edit');
+    // Keep id for later request
+    this.editId = id;
     // Put value back
     this.experimentName.setValue(spec.meta.name);
     this.description.setValue(spec.meta.description);
@@ -347,11 +372,10 @@ export class ExperimentComponent implements OnInit {
       );
       this.specs.push(newSpec);
     }
-    //this.experimentService.editExperiment.
   }
 
-  onDeleteExperiment(data: ExperimentInfo, onMessage: boolean) {
-    this.experimentService.deleteExperiment(data.experimentId).subscribe(
+  onDeleteExperiment(id: string, onMessage: boolean) {
+    this.experimentService.deleteExperiment(id).subscribe(
       () => {
         if (onMessage === true) {
           this.nzMessageService.success('Delete Experiment Successfully!');
@@ -381,7 +405,7 @@ export class ExperimentComponent implements OnInit {
   deleteExperiments() {
     for (let i = this.checkedList.length - 1; i >= 0; i--) {
       if (this.checkedList[i] === true) {
-        this.onDeleteExperiment(this.experimentList[i], false);
+        this.onDeleteExperiment(this.experimentList[i].experimentId, false);
       }
     }
 

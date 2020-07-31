@@ -121,7 +121,7 @@
             <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.duration }}</td>
             <td class="td-action">
-              <a (click)="editExperiment(data.spec)">Edit</a>
+              <a (click)="onEditExperiment(data.experimentId, data.spec)">Edit</a>
               <nz-divider nzType="vertical"></nz-divider>
               <a
                 nz-popconfirm
@@ -183,7 +183,6 @@
             </div>
             <div class="single-field-group">
               <label for="description">
-                <span class="red-star">*</span>
                 Description
               </label>
               <textarea
@@ -272,30 +271,18 @@
               <ng-container *ngFor="let spec of specs.controls; index as i">
                 <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
                   <div>
-                    <label> Spec name </label>
-                    <nz-select
-                      formControlName="name"
-                      nzPlaceHolder="Spec name"
-                      [ngSwitch]="frameworks.value"
-                    >
-                    <div *ngSwitchCase="'Tensorflow'">
-                      <nz-option
-                        *ngFor="let spec of TF_SPECNAMES"
-                        [nzValue]="spec"
-                        [nzLabel]="spec"
-                      ></nz-option>
-                    </div>
-                    <div *ngSwitchCase="'Pytorch'">
-                      <nz-option
-                        *ngFor="let spec of PYTORCH_SPECNAMES"
-                        [nzValue]="spec"
-                        [nzLabel]="spec"
-                      ></nz-option>
-                    </div>
+                    <label>Spec name</label>
+                    <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="frameworks.value">
+                      <div *ngSwitchCase="'Tensorflow'">
+                        <nz-option *ngFor="let spec of TF_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
+                      </div>
+                      <div *ngSwitchCase="'Pytorch'">
+                        <nz-option *ngFor="let spec of PYTORCH_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
+                      </div>
                     </nz-select>
                   </div>
                   <div>
-                    <label> Number of Replica </label>
+                    <label>Number of Replica</label>
                     <input
                       nz-input
                       name="replica{{ i }}"
@@ -305,11 +292,17 @@
                     />
                   </div>
                   <div>
-                    <label> Number of cpu </label>
-                    <input nz-input name="cpu{{ i }}" type="number" placeholder="number of cpu" formControlName="cpus" />
+                    <label>Number of cpu</label>
+                    <input
+                      nz-input
+                      name="cpu{{ i }}"
+                      type="number"
+                      placeholder="number of cpu"
+                      formControlName="cpus"
+                    />
                   </div>
                   <div>
-                    <label> Memory </label>
+                    <label>Memory</label>
                     <input nz-input name="memory{{ i }}" placeholder="memory" formControlName="memory" />
                   </div>
                   <i

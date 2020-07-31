@@ -19,7 +19,7 @@
 
 export interface SpecMeta {
   name: string;
-  description: string;
+  description?: string;
   namespace: string;
   framework: string;
   cmd: string;
