@@ -17,11 +17,15 @@
  * under the License.
  */
 
-package org.apache.submarine.server.api.experiment;
+package org.apache.submarine.server.api;
 
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
+import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.api.experiment.ExperimentLog;
+import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.api.spec.NotebookSpec;
 
 /**
  * The submitter should implement this interface.
@@ -81,4 +85,28 @@ public interface Submitter {
    * @throws SubmarineRuntimeException running error
    */
   ExperimentLog getExperimentLogName(ExperimentSpec spec, String id) throws SubmarineRuntimeException;
+
+  /**
+   * Create a notebook with spec
+   * @param spec notebook spec
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException;
+
+  /**
+   * Find a notebook with spec
+   * @param spec spec
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  Notebook findNotebook(NotebookSpec spec) throws SubmarineRuntimeException;
+
+  /**
+   * Delete a notebook with spec
+   * @param spec spec
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  Notebook deleteNotebook(NotebookSpec spec) throws SubmarineRuntimeException;
 }

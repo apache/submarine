@@ -45,7 +45,7 @@ public class MLJobConverterTest extends SpecBuilder {
   @Test
   public void testMLJob2Job() throws IOException, URISyntaxException, InvalidSpecException {
     // Accepted Status
-    ExperimentSpec spec = buildFromJsonFile(tfJobReqFile);
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
     MLJob mlJob = ExperimentSpecParser.parseJob(spec);
     V1JobStatus status = new V1JobStatusBuilder().build();
     mlJob.setStatus(status);
@@ -98,7 +98,7 @@ public class MLJobConverterTest extends SpecBuilder {
   @Test
   public void testMLJob2DeleteOptions() throws IOException, URISyntaxException,
       InvalidSpecException {
-    ExperimentSpec spec = buildFromJsonFile(tfJobReqFile);
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
     MLJob mlJob = ExperimentSpecParser.parseJob(spec);
     V1DeleteOptions options = MLJobConverter.toDeleteOptionsFromMLJob(mlJob);
     Assert.assertNotNull(options);

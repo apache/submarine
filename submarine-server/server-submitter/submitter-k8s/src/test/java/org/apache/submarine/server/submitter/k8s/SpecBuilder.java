@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.api.spec.NotebookSpec;
 
 public abstract class SpecBuilder {
   // The spec files in test/resources
@@ -38,13 +39,18 @@ public abstract class SpecBuilder {
   protected final String pytorchJobWithEnvReqFile = "/pytorch_job_req_env.json";
   protected final String pytorchJobWithInvalidEnvReqFile =
       "/pytorch_job_req_invalid_env.json";
+  protected final String notebookReqFile = "/notebook_req.json";
 
-  protected ExperimentSpec buildFromJsonFile(String filePath) throws IOException,
+  protected Object buildFromJsonFile(Object obj, String filePath) throws IOException,
       URISyntaxException {
     Gson gson = new GsonBuilder().create();
     try (Reader reader = Files.newBufferedReader(getCustomJobSpecFile(filePath).toPath(),
         StandardCharsets.UTF_8)) {
-      return gson.fromJson(reader, ExperimentSpec.class);
+      if (obj.equals(NotebookSpec.class)) {
+        return gson.fromJson(reader, NotebookSpec.class);
+      } else {
+        return gson.fromJson(reader, ExperimentSpec.class);
+      }
     }
   }
 

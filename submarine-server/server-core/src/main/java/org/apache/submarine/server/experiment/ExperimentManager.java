@@ -33,7 +33,7 @@ import org.apache.submarine.server.SubmarineServer;
 import org.apache.submarine.server.SubmitterManager;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentId;
-import org.apache.submarine.server.api.experiment.Submitter;
+import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.slf4j.Logger;
