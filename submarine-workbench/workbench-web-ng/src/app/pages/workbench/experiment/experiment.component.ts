@@ -283,11 +283,11 @@ export class ExperimentComponent implements OnInit {
           var finTime = new Date(item.finishedTime);
           var runTime = new Date(item.runningTime);
           var result = (finTime.getTime() - runTime.getTime()) / 1000;
-          item.duration = this.durationHandle(result);
+          item.duration = this.experimentService.durationHandle(result);
         } else {
           var runTime = new Date(item.runningTime);
           var result = (currentTime.getTime() - runTime.getTime()) / 1000;
-          item.duration = this.durationHandle(result);
+          item.duration = this.experimentService.durationHandle(result);
         }
       });
       this.checkedList = [];
@@ -339,31 +339,6 @@ export class ExperimentComponent implements OnInit {
     for (let i = 0; i < this.checkedList.length; i++) {
       this.checkedList[i] = this.selectAllChecked;
     }
-  }
-
-  durationHandle(secs: number) {
-    var hr = Math.floor(secs / 3600);
-    var min = Math.floor((secs - hr * 3600) / 60);
-    var sec = Math.round(secs) - hr * 3600 - min * 60;
-    var showHr;
-    var showMin;
-    var showSec;
-    if (hr < 10) {
-      showHr = '0' + hr;
-    } else {
-      showHr = hr.toString();
-    }
-    if (min < 10) {
-      showMin = '0' + min;
-    } else {
-      showMin = min.toString();
-    }
-    if (sec < 10) {
-      showSec = '0' + sec;
-    } else {
-      showSec = sec.toString();
-    }
-    return showHr + ':' + showMin + ':' + showSec;
   }
 
   // TODO(jasoonn): Filter experiment list
