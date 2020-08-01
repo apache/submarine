@@ -18,6 +18,8 @@ from sklearn.linear_model import LogisticRegression
 import submarine
 
 if __name__ == "__main__":
+    submarine.set_tracking_uri(
+        "mysql+pymysql://submarine:password@140.116.245.134:3306/submarine")
     X = np.array([-2, -1, 0, 1, 2, 1]).reshape(-1, 1)
     y = np.array([0, 0, 1, 1, 1, 0])
     lr = LogisticRegression(solver='liblinear', max_iter=100)

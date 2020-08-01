@@ -20,6 +20,7 @@
 package org.apache.submarine.server.experiment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +37,7 @@ import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.rest.RestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,8 +87,12 @@ public class ExperimentManager {
    */
   public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     checkSpec(spec);
+    ExperimentId id = generateExperimentId();
+    Map<String, String> evnVars = new HashMap<>();
+    evnVars.put(RestConstants.JOB_ID, id.toString());
+    spec.getMeta().setEnvVars(evnVars);
     Experiment experiment = submitter.createExperiment(spec);
-    experiment.setExperimentId(generateExperimentId());
+    experiment.setExperimentId(id);
     experiment.setSpec(spec);
     cachedExperimentMap.putIfAbsent(experiment.getExperimentId().toString(), experiment);
     return experiment;

@@ -21,10 +21,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Rest } from '@submarine/interfaces';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
-import { BaseApiService } from '@submarine/services/base-api.service';
-import { of, Observable, throwError } from 'rxjs';
-import { switchMap, catchError, map } from 'rxjs/operators';
 import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
+import { BaseApiService } from '@submarine/services/base-api.service';
+import { of, throwError, Observable } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

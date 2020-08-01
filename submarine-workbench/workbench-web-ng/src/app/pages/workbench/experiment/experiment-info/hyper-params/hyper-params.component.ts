@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { BaseApiService } from '@submarine/services/base-api.service';
 
 @Component({
@@ -38,7 +38,7 @@ export class HyperParamsComponent implements OnInit {
   ngOnChanges(chg: SimpleChanges) {
     this.podParam.length = 0;
     this.paramData.forEach((data) => {
-      if (data.workerIndex == this.workerIndex) {
+      if (data.workerIndex === this.workerIndex) {
         this.podParam.push(data);
       }
     });
