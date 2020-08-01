@@ -17,9 +17,7 @@
  * under the License.
  */
 
-import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { BaseApiService } from '@submarine/services/base-api.service';
 
 @Component({
   selector: 'submarine-hyper-params',
@@ -27,7 +25,7 @@ import { BaseApiService } from '@submarine/services/base-api.service';
   styleUrls: ['./hyper-params.component.scss']
 })
 export class HyperParamsComponent implements OnInit {
-  @Input() workerIndex;
+  @Input() workerIndex: string;
   @Input() paramData;
   podParam = [];
 
@@ -38,7 +36,7 @@ export class HyperParamsComponent implements OnInit {
   ngOnChanges(chg: SimpleChanges) {
     this.podParam.length = 0;
     this.paramData.forEach((data) => {
-      if (data.workerIndex === this.workerIndex) {
+      if (this.workerIndex.indexOf(data.workerIndex) >= 0) {
         this.podParam.push(data);
       }
     });
