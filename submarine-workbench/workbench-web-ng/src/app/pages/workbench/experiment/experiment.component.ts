@@ -25,6 +25,7 @@ import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { SpecMeta, Specs, SpecEnviroment, ExperimentSpec } from '@submarine/interfaces/experiment-spec';
+import { stringify } from 'querystring';
 
 @Component({
   selector: 'submarine-experiment',
@@ -276,6 +277,19 @@ export class ExperimentComponent implements OnInit {
   fetchExperimentList() {
     this.experimentService.fetchExperimentList().subscribe((list) => {
       this.experimentList = list;
+      var currentTime = new Date();
+      this.experimentList.forEach((item) => {
+        if (item.status == 'Succeeded') {
+          var finTime = new Date(item.finishedTime);
+          var runTime = new Date(item.runningTime);
+          var result = (finTime.getTime() - runTime.getTime()) / 1000;
+          item.duration = this.experimentService.durationHandle(result);
+        } else {
+          var runTime = new Date(item.runningTime);
+          var result = (currentTime.getTime() - runTime.getTime()) / 1000;
+          item.duration = this.experimentService.durationHandle(result);
+        }
+      });
       this.checkedList = [];
       for (let i = 0; i < this.experimentList.length; i++) {
         this.checkedList.push(false);
@@ -326,6 +340,7 @@ export class ExperimentComponent implements OnInit {
       this.checkedList[i] = this.selectAllChecked;
     }
   }
+
   // TODO(jasoonn): Filter experiment list
   filter(event) {
     console.log(this.searchText + event.key);

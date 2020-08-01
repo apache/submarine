@@ -52,6 +52,17 @@ export class ExperimentInfoComponent implements OnInit {
       (item) => {
         this.experimentInfo = item;
         this.isLoading = false;
+        if (this.experimentInfo.status == 'Succeeded') {
+          var finTime = new Date(this.experimentInfo.finishedTime);
+          var runTime = new Date(this.experimentInfo.runningTime);
+          var result = (finTime.getTime() - runTime.getTime()) / 1000;
+          this.experimentInfo.duration = this.experimentService.durationHandle(result);
+        } else {
+          var currentTime = new Date();
+          var runTime = new Date(this.experimentInfo.runningTime);
+          var result = (currentTime.getTime() - runTime.getTime()) / 1000;
+          this.experimentInfo.duration = this.experimentService.durationHandle(result);
+        }
       },
       (err) => {
         this.nzMessageService.error('Cannot load ' + this.experimentID);

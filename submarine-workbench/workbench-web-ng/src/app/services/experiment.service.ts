@@ -146,4 +146,29 @@ export class ExperimentService {
       })
     );
   }
+
+  durationHandle(secs: number) {
+    const hr = Math.floor(secs / 3600);
+    const min = Math.floor((secs - hr * 3600) / 60);
+    const sec = Math.round(secs) - hr * 3600 - min * 60;
+    let showHr;
+    let showMin;
+    let showSec;
+    if (hr < 10) {
+      showHr = '0' + hr;
+    } else {
+      showHr = hr.toString();
+    }
+    if (min < 10) {
+      showMin = '0' + min;
+    } else {
+      showMin = min.toString();
+    }
+    if (sec < 10) {
+      showSec = '0' + sec;
+    } else {
+      showSec = sec.toString();
+    }
+    return showHr + ':' + showMin + ':' + showSec;
+  }
 }
