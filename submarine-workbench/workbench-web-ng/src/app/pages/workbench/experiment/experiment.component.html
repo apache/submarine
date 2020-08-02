@@ -119,7 +119,11 @@
             <td>{{ data.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
+<<<<<<< HEAD
             <td>{{ data.duration }}</td>
+=======
+            <td></td>
+>>>>>>> Finish form layout
             <td class="td-action">
               <a (click)="onEditExperiment(data.experimentId, data.spec)">Edit</a>
               <nz-divider nzType="vertical"></nz-divider>
@@ -230,19 +234,25 @@
           </div>
           <div *ngSwitchCase="1" id="page2">
             <div>
-              <button nz-button id="env-btn" type="default" (click)="createEnvInput()">
+              <button nz-button id="env-btn" type="default" (click)="onCreateEnv()">
                 Add new env
               </button>
               <ul formArrayName="envs" class="list-container">
                 <ng-container *ngFor="let env of envs.controls; index as i">
                   <li *ngIf="i | indexInRange: currentEnvPage:PAGESIZE" [formGroupName]="i" class="input-group">
-                    <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" />
-                    <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" />
+                    <div>
+                      <label for="key{{ i }}"> Key </label>
+                      <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" />
+                    </div>
+                    <div>
+                      <label for="value{{ i }}"> Value </label>
+                      <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" />
+                    </div>
                     <i nz-icon nzType="close-circle" nzTheme="fill" (click)="deleteItem(envs, i)"></i>
                   </li>
                   <div
                     class="alert-message"
-                    *ngIf="env.get('key').dirty | logicalAnd: env.get('value').dirty:env.hasError('envMissing')"
+                    *ngIf="env.get('key').dirty | logicalAnd: env.get('value').dirty: env.hasError('envMissing')"
                   >
                     {{ env.getError('envMissing') }}
                   </div>
@@ -264,7 +274,7 @@
           </div>
           <div *ngSwitchCase="2">
             <label class="pg3-form-label"></label>
-            <button nz-button id="spec-btn" type="default" (click)="createSpec()">
+            <button nz-button id="spec-btn" type="default" (click)="onCreateSpec()">
               Add new spec
             </button>
             <ul formArrayName="specs" class="list-container">
@@ -303,7 +313,12 @@
                   </div>
                   <div>
                     <label>Memory</label>
-                    <input nz-input name="memory{{ i }}" placeholder="memory" formControlName="memory" />
+                    <div formGroupName="memory" class="memory-input-group">
+                      <input nz-input name="memory{{ i }}" placeholder="Enter number" formControlName="num" />
+                      <nz-select formControlName="unit">
+                        <nz-option *ngFor="let unit of MEMORY_UNITS" [nzValue]="unit" [nzLabel]="unit"></nz-option>
+                      </nz-select>
+                    </div>
                   </div>
                   <i
                     nz-icon
@@ -313,6 +328,12 @@
                     (click)="deleteItem(specs, i)"
                   ></i>
                 </li>
+                <div
+                  class="alert-message"
+                  *ngIf="spec.get('name').dirty | logicalAnd: spec.get('memory').dirty: spec.hasError('specError')"
+                >
+                  {{ spec.getError('specError') }}
+                </div>
                 <div
                   class="alert-message"
                   *ngIf="spec.get('name').dirty | logicalAnd: spec.get('name').hasError('duplicateError')"

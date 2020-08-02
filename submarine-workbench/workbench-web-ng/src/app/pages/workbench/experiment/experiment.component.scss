@@ -64,20 +64,38 @@
 .input-group {
    display: flex;
    align-items: center;
+   font-size: .8rem;
    &:not(:first-child) {
       margin-top: 1rem;
    }
 
-   & *:not(:last-child) {
-      flex: 0 2 20%;
-      &:not(:last-child) {
-         margin-right: .5rem;
-      }
+   & > *:not(:last-child) {
+      margin-right: .8rem;
+   }
+
+   & > div:nth-child(2), & > div:nth-child(3) {
+      flex: 0 1 20%;
+   }
+
+   & > div:nth-child(1), & > div:nth-child(4) {
+      flex: 0 1 25%;
    }
 
    & i {
       cursor: pointer;
-      font-size: 1.2rem;
+      font-size: 20px;
+      margin-top: 20px;
+   }
+}
+
+.memory-input-group {
+   display: flex;
+   & input {
+      width: 70%;
+   }
+
+   & > * {
+      width: 30%;
    }
 }
 
@@ -108,8 +126,4 @@
    margin-left: .5rem;
 }
 
-.test {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-}
+/* For memory  */

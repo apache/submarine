@@ -57,6 +57,7 @@ export class ExperimentComponent implements OnInit {
   FRAMEWORK_NAMES = ['Tensorflow', 'Pytorch'];
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
   PYTORCH_SPECNAMES = ['Master', 'Worker'];
+  MEMORY_UNITS = ['M', 'G'];
 
   // About env page
   currentEnvPage = 1;
@@ -149,7 +150,7 @@ export class ExperimentComponent implements OnInit {
   }
 
   /**
-   * Init a new experiment form, clear all status, clear all form controls and open the form in the mode
+   * Init a new experiment form, clear all status, clear all form controls and open the form in the mode specified in the argument
    *
    * @param mode - The mode which the form should open in
    */
@@ -193,7 +194,6 @@ export class ExperimentComponent implements OnInit {
         const newSpec = this.constructSpec();
         this.experimentService.editExperiment(this.editId, newSpec).subscribe(
           (result) => {
-            console.log(result);
             // Find the old index
             const index = this.experimentList.findIndex(
               (experiment) => experiment.experimentId === result.experimentId
@@ -226,35 +226,51 @@ export class ExperimentComponent implements OnInit {
   /**
    * Create a new env variable input
    */
-  createEnvInput() {
+  createEnv(defaultKey: string = '', defaultValue: string = '') {
     // Create a new FormGroup
-    const env = new FormGroup(
+    return new FormGroup(
       {
-        key: new FormControl(''),
-        value: new FormControl()
+        key: new FormControl(defaultKey, [Validators.required]),
+        value: new FormControl(defaultValue, [Validators.required])
       },
       [this.experimentFormService.envValidator]
     );
+  }
+  /**
+   * Create a new spec
+   */
+  createSpec(defaultName: string = '', defaultReplica: number = 1, defaultCpu: number = 1, defaultMemory: string = '', defaultUnit: string = 'M'): FormGroup {
+    return new FormGroup(
+      {
+        name: new FormControl(defaultName, [Validators.required]),
+        replicas: new FormControl(defaultReplica, [Validators.min(1), Validators.required]),
+        cpus: new FormControl(defaultCpu, [Validators.min(1), Validators.required]),
+        memory: new FormGroup({
+          num: new FormControl(defaultMemory, [Validators.required]),
+          unit: new FormControl(defaultUnit, [Validators.required])
+        }, [this.experimentFormService.memoryValidator])
+      },
+      [this.experimentFormService.specValidator]
+    );
+  }
+
+  /**
+   * Handler for the create env button
+   */
+  onCreateEnv() {
+    const env = this.createEnv();
     this.envs.push(env);
     // If the new page is created, jump to that page
     if (this.envs.controls.length > 1 && this.envs.controls.length % this.PAGESIZE === 1) {
       this.currentEnvPage += 1;
     }
   }
+
   /**
-   * Create a new spec
-   *
+   * Handler for the create spec button
    */
-  createSpec() {
-    const spec = new FormGroup(
-      {
-        name: new FormControl(''),
-        replicas: new FormControl(1, [Validators.min(1)]),
-        cpus: new FormControl(1, [Validators.min(1)]),
-        memory: new FormControl('', [this.experimentFormService.memoryValidator])
-      },
-      [this.experimentFormService.specValidator]
-    );
+  onCreateSpec() {
+    const spec = this.createSpec();
     this.specs.push(spec);
     // If the new page is created, jump to that page
     if (this.specs.controls.length > 1 && this.specs.controls.length % this.PAGESIZE === 1) {
@@ -285,7 +301,7 @@ export class ExperimentComponent implements OnInit {
       if (spec.get('name').value) {
         specs[spec.get('name').value] = {
           replicas: spec.get('replicas').value,
-          resources: `cpu=${spec.get('cpus').value},memory=${spec.get('memory').value}`
+          resources: `cpu=${spec.get('cpus').value},memory=${spec.get('memory').get('num').value}${spec.get('memory').get('unit').value}`
         };
       }
     }
@@ -341,6 +357,10 @@ export class ExperimentComponent implements OnInit {
     this.initExperimentStatus('edit');
     // Keep id for later request
     this.editId = id;
+    
+    // Prevent user from modifying the name
+    this.experimentName.disable();
+    
     // Put value back
     this.experimentName.setValue(spec.meta.name);
     this.description.setValue(spec.meta.description);
@@ -349,27 +369,13 @@ export class ExperimentComponent implements OnInit {
     this.image.setValue(spec.environment.image);
 
     for (const [key, value] of Object.entries(spec.meta.envVars)) {
-      const env = new FormGroup(
-        {
-          key: new FormControl(key),
-          value: new FormControl(value)
-        },
-        [this.experimentFormService.envValidator]
-      );
+      const env = this.createEnv(key, value);
       this.envs.push(env);
     }
 
     for (const [specName, info] of Object.entries(spec.spec)) {
-      const [cpuCount, memory] = info.resources.match(/\d+[A-Z]?/g);
-      const newSpec = new FormGroup(
-        {
-          name: new FormControl(specName),
-          replicas: new FormControl(parseInt(info.replicas), [Validators.min(1)]),
-          cpus: new FormControl(parseInt(cpuCount), [Validators.min(1)]),
-          memory: new FormControl(memory, [this.experimentFormService.memoryValidator])
-        },
-        [this.experimentFormService.specValidator]
-      );
+      const [cpuCount, memory, unit] = info.resources.match(/\d+|[MG]/g);
+      const newSpec = this.createSpec(specName, parseInt(info.replicas), parseInt(cpuCount), memory, unit);
       this.specs.push(newSpec);
     }
   }

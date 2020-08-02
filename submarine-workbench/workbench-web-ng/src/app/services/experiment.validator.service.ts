@@ -32,7 +32,7 @@ export class ExperimentFormService {
   envValidator: ValidatorFn = (envGroup: FormGroup): ValidationErrors | null => {
     const key = envGroup.get('key');
     const keyValue = envGroup.get('value');
-    return (key.value && keyValue.value) || (!key.value && !keyValue.value)
+    return !(key.invalid || keyValue.invalid)
       ? null
       : { envMissing: 'Missing key or value' };
   };
@@ -44,22 +44,21 @@ export class ExperimentFormService {
     const memory = specGroup.get('memory');
 
     const allValid = !(name.invalid || replicas.invalid || cpus.invalid || memory.invalid);
-    const exists =
-      (name.value && replicas.value && cpus.value && memory.value) ||
-      !(name.value || replicas.value || cpus.value || memory.value);
-    return allValid && exists ? null : { specError: 'Invalid or missing input' };
+    return allValid ? null : { specError: 'Invalid or missing input' };
   };
 
   /**
    * Validate memory input in Spec
    *
-   * @param memory - The memory field in Spec
+   * @param memory - The memory group in Spec, containing actual number and unit
    */
-  memoryValidator: ValidatorFn = (memory: FormControl): ValidationErrors | null => {
+  memoryValidator: ValidatorFn = (memoryGroup: FormGroup): ValidationErrors | null => {
     // Must match number + digit ex. 512M or empty
-    return !memory.value || /^\d+M$/.test(memory.value)
+    const memory = `${memoryGroup.get('num').value}${memoryGroup.get('unit').value}`;
+    
+    return /^\d+[GM]$/.test(memory)
       ? null
-      : { memoryPatternError: 'Memory pattern must match number + M ex. 512M' };
+      : { memoryPatternError: 'Memory pattern must match number + (G or M) ex. 512M' };
   };
 
   /**
