@@ -19,9 +19,9 @@ RUN \
   apt-get install -y wget vim git python-pip zlib1g-dev libssl-dev && \
   wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz && \
   tar xzf Python-2.7.13.tgz && cd Python-2.7.13 && ./configure --with-zlib && make install && make altinstall && \
-  cd /root && wget https://files.pythonhosted.org/packages/33/bc/fa0b5347139cd9564f0d44ebd2b147ac97c36b2403943dbee8a25fd74012/virtualenv-16.0.0.tar.gz && \
-  tar xf virtualenv-16.0.0.tar.gz && \
-  python virtualenv-16.0.0/virtualenv.py venv2.7 && \
+  cd /root && wget https://files.pythonhosted.org/packages/59/38/55dd25a965990bd93f77eb765b189e72cf581ce1c2de651cb7b1dea74ed1/virtualenv-16.2.0.tar.gz && \
+  tar xf virtualenv-16.2.0.tar.gz && \
+  python virtualenv-16.2.0/virtualenv.py venv2.7 && \
   . venv2.7/bin/activate && \
   pip install jira && \
   deactivate
