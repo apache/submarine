@@ -17,7 +17,17 @@
  * under the License.
  */
 
- #chartsDiv {
-    background-color: white; 
-    height: 500px;
- }
+#chartsDiv {
+  background-color: white;
+  height: 500px;
+}
+
+.example-viewport {
+  height: 90vh;
+  width: 80vw;
+  background-color: white;
+}
+
+.example-item {
+  height: 700px;
+}

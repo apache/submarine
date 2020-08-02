@@ -407,14 +407,14 @@ export class ExperimentComponent implements OnInit {
   }
 
   reloadCheck() {
-    /* 
-      When reload in info page, ths experimentId will turn into undifined, it will cause breadcrumb miss experimentId. 
+    /*
+      When reload in info page, ths experimentId will turn into undefined, it will cause breadcrumb miss experimentId.
       Location.pathname -> /workbench/experiment/info/{experimentID}
       So slice out experimentId string from location.pathname to reassign experimentId.
       */
     if (location.pathname != '/workbench/experiment') {
       var sliceString = new String('/workbench/experiment/info');
-      this.experimentID = location.pathname.slice(sliceString.length);
+      this.experimentID = location.pathname.slice(sliceString.length + 1);
     }
   }
 

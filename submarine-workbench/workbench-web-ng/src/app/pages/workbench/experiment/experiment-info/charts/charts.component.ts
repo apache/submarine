@@ -17,36 +17,37 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { test_data } from './data';
 
+// @ts-ignore
 @Component({
   selector: 'submarine-charts',
   templateUrl: './charts.component.html',
   styleUrls: ['./charts.component.scss']
 })
 export class ChartsComponent implements OnInit {
-  title = 'Metrics';
+  @Input() workerIndex;
+  @Input() metricData;
 
-  data: any[];
-  view: any[] = [800, 500];
-  legend: boolean = true;
+  title = 'Metrics';
+  podMetrics = {};
+  view: any[] = [600, 400];
+  legend: boolean = false;
   showLabels: boolean = true;
   animations: boolean = true;
   xAxis: boolean = true;
   yAxis: boolean = true;
   showYAxisLabel: boolean = true;
   showXAxisLabel: boolean = true;
-  xAxisLabel: string = 'Epoch';
-  yAxisLabel: string = 'Percent';
-  timeline: boolean = true;
-
-  colorScheme = {
-    domain: ['#5AA454', '#E44D25', '#CFC0BB', '#7aa3e5']
-  };
+  xAxisLabel: string = 'Timestamp';
+  yAxisLabels = [];
+  timeline: boolean = false;
+  items = Array.from({ length: 100000 }).map((_, i) => `Item #${i}`);
+  colorScheme = ['cool', 'fire', 'flame', 'air'];
 
   constructor() {
-    this.data = Object.assign([], test_data);
+    console.log('init');
   }
 
   onSelect(data): void {
@@ -62,4 +63,35 @@ export class ChartsComponent implements OnInit {
   }
 
   ngOnInit() {}
+
+  ngOnChanges(chg: SimpleChanges) {
+    if (this.metricData === undefined) {
+      return;
+    }
+    let key = '';
+    let metrics = [];
+    this.metricData.forEach((data) => {
+      if (data.workerIndex === undefined) {
+        return;
+      }
+      if (this.workerIndex.indexOf(data.workerIndex) >= 0) {
+        if (data.key !== key && metrics.length > 0) {
+          this.yAxisLabels.push(key);
+          this.podMetrics[key] = [];
+          this.podMetrics[key].push({ name: key, series: metrics });
+          metrics = [];
+        }
+        key = data.key;
+        const d = new Date(0);
+        d.setUTCMilliseconds(data.timestamp);
+        const metric = { name: d, value: data.value };
+        metrics.push(metric);
+      }
+    });
+    if (metrics.length > 0) {
+      this.yAxisLabels.push(key);
+      this.podMetrics[key] = [];
+      this.podMetrics[key].push({ name: key, series: metrics });
+    }
+  }
 }

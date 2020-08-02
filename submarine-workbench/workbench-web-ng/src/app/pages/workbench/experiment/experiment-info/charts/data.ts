@@ -17,7 +17,7 @@
  * under the License.
  */
 
-export var test_data = [
+export let test_data = [
   {
     name: 'loss',
     series: [

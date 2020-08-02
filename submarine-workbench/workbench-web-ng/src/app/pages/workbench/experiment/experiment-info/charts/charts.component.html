@@ -17,22 +17,26 @@
   ~ under the License.
   -->
 
-<div id="chartsDiv">
-  <ngx-charts-line-chart
-    [view]="view"
-    [scheme]="colorScheme"
-    [legend]="legend"
-    [showXAxisLabel]="showXAxisLabel"
-    [showYAxisLabel]="showYAxisLabel"
-    [xAxis]="xAxis"
-    [yAxis]="yAxis"
-    [xAxisLabel]="xAxisLabel"
-    [yAxisLabel]="yAxisLabel"
-    [timeline]="timeline"
-    [results]="data"
-    (select)="onSelect($event)"
-    (activate)="onActivate($event)"
-    (deactivate)="onDeactivate($event)"
-    [legendTitle]="title"
-  ></ngx-charts-line-chart>
-</div>
+<cdk-virtual-scroll-viewport itemSize="500" class="example-viewport">
+  <div id="chartsDiv" *cdkVirtualFor="let yAxisLabel of yAxisLabels; let index = index">
+    <ngx-charts-line-chart
+      [view]="view"
+      [scheme]="colorScheme[index]"
+      [legend]="legend"
+      [showXAxisLabel]="showXAxisLabel"
+      [showYAxisLabel]="showYAxisLabel"
+      [xAxis]="xAxis"
+      [yAxis]="yAxis"
+      [xAxisLabel]="xAxisLabel"
+      [yAxisLabel]="yAxisLabel"
+      [timeline]="timeline"
+      [results]="podMetrics[yAxisLabel]"
+      (select)="onSelect($event)"
+      (activate)="onActivate($event)"
+      (deactivate)="onDeactivate($event)"
+      [legendTitle]="title"
+    >
+      {{ yAxisLabel }}
+    </ngx-charts-line-chart>
+  </div>
+</cdk-virtual-scroll-viewport>
