@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.submitter.k8s.experiment.codelocalizer;
 
-import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.api.exception.InvalidSpecException;
 
 import io.kubernetes.client.models.V1EmptyDirVolumeSource;
 import io.kubernetes.client.models.V1PodSpec;
@@ -27,29 +27,33 @@ import io.kubernetes.client.models.V1Volume;
 
 public abstract class AbstractCodeLocalizer implements CodeLocalizer {
 
-  protected ExperimentSpec experimentSpec;
+  private String url;
   
-  public AbstractCodeLocalizer(ExperimentSpec experimentSpec) {
-    this.experimentSpec = experimentSpec;
+  public AbstractCodeLocalizer(String url) {
+    this.url = url;
+  }
+  
+  /**
+   * @return the url
+   */
+  public String getUrl() {
+    return url;
   }
   
   @Override
   public void localize(V1PodSpec podSpec) {
-    
     V1Volume volume = new V1Volume();
     volume.setName("code-dir");
     volume.setEmptyDir(new V1EmptyDirVolumeSource());
     podSpec.addVolumesItem(volume);
-    
   }
 
-  public static CodeLocalizer getCodeLocalizer(ExperimentSpec experimentSpec) {
-
-    String syncMode = experimentSpec.getCode().getSyncMode();
+  public static CodeLocalizer getCodeLocalizer(String syncMode, String url)
+      throws InvalidSpecException {
     if (syncMode.equals(CodeLocalizerModes.GIT.getMode())) {
-      return GitCodeLocalizer.getGitCodeLocalizer(experimentSpec);
+      return GitCodeLocalizer.getGitCodeLocalizer(url);
     } else {
-      return new DummyCodeLocalizer(experimentSpec);
+      return new DummyCodeLocalizer(url);
     }
   }
 

@@ -145,7 +145,7 @@ public class ExperimentSpecParser {
   }
 
   private static V1PodTemplateSpec parseTemplateSpec(
-      ExperimentTaskSpec taskSpec, ExperimentSpec experimentSpec) {
+      ExperimentTaskSpec taskSpec, ExperimentSpec experimentSpec) throws InvalidSpecException {
     V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
     V1PodSpec podSpec = new V1PodSpec();
     List<V1Container> containers = new ArrayList<>();
@@ -176,8 +176,9 @@ public class ExperimentSpecParser {
      * Init Git localize Container
      */
     if (experimentSpec.getCode() != null) {
-      CodeLocalizer localizer =
-          AbstractCodeLocalizer.getCodeLocalizer(experimentSpec);
+      CodeLocalizer localizer = AbstractCodeLocalizer.getCodeLocalizer(
+          experimentSpec.getCode().getSyncMode(),
+          experimentSpec.getCode().getUrl());
       localizer.localize(podSpec);
 
       if (podSpec.getInitContainers() != null

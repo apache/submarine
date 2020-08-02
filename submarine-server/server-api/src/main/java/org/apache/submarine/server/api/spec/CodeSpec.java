@@ -21,16 +21,16 @@ package org.apache.submarine.server.api.spec;
 
 public class CodeSpec {
   
-  private String sync_mode;
+  private String syncMode;
   
   private String url;
   
   public String getSyncMode() {
-    return sync_mode;
+    return syncMode;
   }
 
   public void setSyncMode(String syncMode) {
-    this.sync_mode = syncMode;
+    this.syncMode = syncMode;
   }
 
   public String getUrl() {

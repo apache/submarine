@@ -44,6 +44,7 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobRepl
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
+import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.GitCodeLocalizer;
 import org.junit.Assert;
 import org.junit.Test;
 import io.kubernetes.client.models.V1Container;
@@ -277,10 +278,10 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     V1Container initContainer =
         mlJobReplicaSpec.getTemplate().getSpec().getInitContainers().get(0);
     Assert.assertEquals("git-localizer", initContainer.getName());
-    Assert.assertEquals("git-sync", initContainer.getImage());
+    Assert.assertEquals(GitCodeLocalizer.GIT_SYNC_IMAGE, initContainer.getImage());
     Assert.assertEquals("code-dir",
         initContainer.getVolumeMounts().get(0).getName());
-    Assert.assertEquals("/code",
+    Assert.assertEquals(GitCodeLocalizer.GIT_SYNC_ROOT,
         initContainer.getVolumeMounts().get(0).getMountPath());
 
     V1Container container =
