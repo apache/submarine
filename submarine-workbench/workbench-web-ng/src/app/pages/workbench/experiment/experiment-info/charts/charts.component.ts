@@ -56,10 +56,7 @@ export class ChartsComponent implements OnInit {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
-  ngOnInit() {
-    this.fetchMetric();
-    console.log('ngOnInit', this.metricData);
-  }
+  ngOnInit() {}
 
   ngOnChanges(chg: SimpleChanges) {
     this.fetchMetric();
