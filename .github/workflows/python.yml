@@ -36,10 +36,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install ./submarine-sdk/pysubmarine/.
-          pip install -q tensorflow==${{ matrix.tf-version }}
-          pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-          pip install -r ./submarine-sdk/pysubmarine/github-actions/lint-requirements.txt
+          pip install ./submarine-sdk/pysubmarine/. --no-cache-dir
+          pip install -q tensorflow==${{ matrix.tf-version }} --no-cache-dir
+          pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt --no-cache-dir
+          pip install -r ./submarine-sdk/pysubmarine/github-actions/lint-requirements.txt --no-cache-dir
       - name: Check python sdk code style
         if: matrix.python-version == '3.6'
         run: |
