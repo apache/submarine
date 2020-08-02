@@ -18,9 +18,7 @@
  */
 
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
-import { test_data } from './data';
 
-// @ts-ignore
 @Component({
   selector: 'submarine-charts',
   templateUrl: './charts.component.html',
@@ -32,7 +30,7 @@ export class ChartsComponent implements OnInit {
 
   title = 'Metrics';
   podMetrics = {};
-  view: any[] = [600, 400];
+  view: any[] = [1000, 400];
   legend: boolean = false;
   showLabels: boolean = true;
   animations: boolean = true;
@@ -43,12 +41,8 @@ export class ChartsComponent implements OnInit {
   xAxisLabel: string = 'Timestamp';
   yAxisLabels = [];
   timeline: boolean = false;
-  items = Array.from({ length: 100000 }).map((_, i) => `Item #${i}`);
-  colorScheme = ['cool', 'fire', 'flame', 'air'];
-
-  constructor() {
-    console.log('init');
-  }
+  colorScheme = ['cool', 'fire', 'flame', 'air', 'forest', 'neons', 'ocean'];
+  constructor() {}
 
   onSelect(data): void {
     console.log('Item clicked', JSON.parse(JSON.stringify(data)));
@@ -62,9 +56,15 @@ export class ChartsComponent implements OnInit {
     console.log('Deactivate', JSON.parse(JSON.stringify(data)));
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.fetchMetric();
+    console.log('ngOnInit', this.metricData);
+  }
 
   ngOnChanges(chg: SimpleChanges) {
+    this.fetchMetric();
+  }
+  fetchMetric() {
     if (this.metricData === undefined) {
       return;
     }

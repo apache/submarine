@@ -35,7 +35,6 @@ export class MetricsComponent implements OnInit {
 
   ngOnChanges(chg: SimpleChanges) {
     this.podMetric.length = 0;
-    console.log('metric: ', this.metricData);
     this.metricData.forEach((data) => {
       if (this.workerIndex.indexOf(data.workerIndex) >= 0) {
         this.podMetric.push(data);
