@@ -32,9 +32,7 @@ export class ExperimentFormService {
   envValidator: ValidatorFn = (envGroup: FormGroup): ValidationErrors | null => {
     const key = envGroup.get('key');
     const keyValue = envGroup.get('value');
-    return !(key.invalid || keyValue.invalid)
-      ? null
-      : { envMissing: 'Missing key or value' };
+    return !(key.invalid || keyValue.invalid) ? null : { envMissing: 'Missing key or value' };
   };
 
   specValidator: ValidatorFn = (specGroup: FormGroup): ValidationErrors | null => {
@@ -55,7 +53,7 @@ export class ExperimentFormService {
   memoryValidator: ValidatorFn = (memoryGroup: FormGroup): ValidationErrors | null => {
     // Must match number + digit ex. 512M or empty
     const memory = `${memoryGroup.get('num').value}${memoryGroup.get('unit').value}`;
-    
+
     return /^\d+[GM]$/.test(memory)
       ? null
       : { memoryPatternError: 'Memory pattern must match number + (G or M) ex. 512M' };

@@ -50,9 +50,9 @@ export class ExperimentComponent implements OnInit {
   okText = 'Next Step';
   isVisible = false;
 
-  // About edit
-  mode = 'create';
-  editId: string = null;
+  // About update
+  mode: 'create' | 'update' = 'create';
+  updateId: string = null;
 
   FRAMEWORK_NAMES = ['Tensorflow', 'Pytorch'];
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
@@ -136,7 +136,6 @@ export class ExperimentComponent implements OnInit {
     if (this.current === 0) {
       return (
         this.experimentName.invalid ||
-        this.description.invalid ||
         this.frameworks.invalid ||
         this.namespace.invalid ||
         this.cmd.invalid ||
@@ -154,12 +153,12 @@ export class ExperimentComponent implements OnInit {
    *
    * @param mode - The mode which the form should open in
    */
-  initExperimentStatus(mode: 'create' | 'edit') {
+  initExperimentStatus(mode: 'create' | 'update') {
     this.mode = mode;
     this.current = 0;
     this.okText = 'Next step';
     this.isVisible = true;
-    this.editId = null;
+    this.updateId = null;
     // Reset the form
     this.envs.clear();
     this.specs.clear();
@@ -190,9 +189,9 @@ export class ExperimentComponent implements OnInit {
             this.isVisible = false;
           }
         });
-      } else if (this.mode === 'edit') {
+      } else if (this.mode === 'update') {
         const newSpec = this.constructSpec();
-        this.experimentService.editExperiment(this.editId, newSpec).subscribe(
+        this.experimentService.updateExperiment(this.updateId, newSpec).subscribe(
           (result) => {
             // Find the old index
             const index = this.experimentList.findIndex(
@@ -239,16 +238,25 @@ export class ExperimentComponent implements OnInit {
   /**
    * Create a new spec
    */
-  createSpec(defaultName: string = '', defaultReplica: number = 1, defaultCpu: number = 1, defaultMemory: string = '', defaultUnit: string = 'M'): FormGroup {
+  createSpec(
+    defaultName: string = '',
+    defaultReplica: number = 1,
+    defaultCpu: number = 1,
+    defaultMemory: string = '',
+    defaultUnit: string = 'M'
+  ): FormGroup {
     return new FormGroup(
       {
         name: new FormControl(defaultName, [Validators.required]),
         replicas: new FormControl(defaultReplica, [Validators.min(1), Validators.required]),
         cpus: new FormControl(defaultCpu, [Validators.min(1), Validators.required]),
-        memory: new FormGroup({
-          num: new FormControl(defaultMemory, [Validators.required]),
-          unit: new FormControl(defaultUnit, [Validators.required])
-        }, [this.experimentFormService.memoryValidator])
+        memory: new FormGroup(
+          {
+            num: new FormControl(defaultMemory, [Validators.required]),
+            unit: new FormControl(defaultUnit, [Validators.required])
+          },
+          [this.experimentFormService.memoryValidator]
+        )
       },
       [this.experimentFormService.specValidator]
     );
@@ -301,7 +309,9 @@ export class ExperimentComponent implements OnInit {
       if (spec.get('name').value) {
         specs[spec.get('name').value] = {
           replicas: spec.get('replicas').value,
-          resources: `cpu=${spec.get('cpus').value},memory=${spec.get('memory').get('num').value}${spec.get('memory').get('unit').value}`
+          resources: `cpu=${spec.get('cpus').value},memory=${spec.get('memory').get('num').value}${
+            spec.get('memory').get('unit').value
+          }`
         };
       }
     }
@@ -352,15 +362,15 @@ export class ExperimentComponent implements OnInit {
     });
   }
 
-  onEditExperiment(id: string, spec: ExperimentSpec) {
-    // Open Modal in edit mode
-    this.initExperimentStatus('edit');
+  onUpdateExperiment(id: string, spec: ExperimentSpec) {
+    // Open Modal in update mode
+    this.initExperimentStatus('update');
     // Keep id for later request
-    this.editId = id;
-    
+    this.updateId = id;
+
     // Prevent user from modifying the name
     this.experimentName.disable();
-    
+
     // Put value back
     this.experimentName.setValue(spec.meta.name);
     this.description.setValue(spec.meta.description);

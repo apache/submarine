@@ -17,17 +17,26 @@
 
 package org.apache.submarine.integration.pages;
 
+import org.junit.Assert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class ExperimentPage {
+
+
+  @FindBy(id = "experimentData")
+  private WebElement dataSection;
 
   @FindBy(id = "go")
   private WebElement goButton;
@@ -72,8 +81,8 @@ public class ExperimentPage {
   @FindBy(id = "spec-btn")
   private WebElement specBtn;
 
-  @FindBy(xpath = "//input[contains(@name, 'spec')]")
-  private List<WebElement> specNames;
+  @FindBy(xpath = "//div[contains(@id, 'spec')]//span")
+  private List<WebElement> specNamesSelect;
 
   @FindBy(xpath = "//input[contains(@name, 'replica')]")
   private List<WebElement> replicas;
@@ -84,6 +93,9 @@ public class ExperimentPage {
   @FindBy(xpath = "//input[contains(@name, 'memory')]")
   private List<WebElement> memory;
 
+  @FindBy(css = "ul.ant-select-dropdown-menu-root")
+  private WebElement dropDownMenu;
+
   // Notification
   @FindBy(xpath = "//div[contains(@class, 'ant-message-error')]//span")
   private WebElement errorNotification;
@@ -91,26 +103,19 @@ public class ExperimentPage {
   @FindBy(xpath = "//div[contains(@class, 'ant-message-success')]//span")
   private WebElement successNotification;
 
+  public final static Logger LOG = LoggerFactory.getLogger(ExperimentPage.class);
   private WebDriverWait wait;
+  private Actions action;
 
   public ExperimentPage(WebDriver driver) {
-    // NoSuchElementException will be thrown if the elements are not found
-    PageFactory.initElements(new AjaxElementLocatorFactory(driver, 5), this);
+    PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
     wait = new WebDriverWait(driver, 15);
+    action = new Actions(driver);
   }
 
   // Getter
   public WebElement getGoButton() {
     return goButton;
-  }
-
-  public WebElement getErrorNotification() {
-    return errorNotification;
-  }
-
-
-  public int getSpecs() {
-    return specNames.size();
   }
 
   // button click actions
@@ -129,7 +134,6 @@ public class ExperimentPage {
   public void specBtnClick() {
     wait.until(ExpectedConditions.elementToBeClickable(specBtn)).click();
   }
-
 
   // Real actions
   public void fillMeta(String name, String des, String namespaceStr, String cmdStr, String imageStr) {
@@ -156,17 +160,56 @@ public class ExperimentPage {
     }
   }
 
-  public void fillTfSpec(int specCount, String[] inputNames, int[] replicaCount, int[] cpuCount, String[] inputMemory) {
+  public void fillTfSpec(int specCount, String[] inputNames, int[] replicaCount, int[] cpuCount, int[] inputMemory) {
     for (int i = 0; i < specCount; i++) {
       specBtnClick();
     }
 
+
     for (int i = 0; i < specCount; i++) {
-      specNames.get(i).sendKeys(inputNames[i]);
+      // Click the dropdown menu
+      action.moveToElement(specNamesSelect.get(i)).click().perform();
+      wait.until(ExpectedConditions.visibilityOf(dropDownMenu));
+      String optionStr = ".//li[text()[contains(.,'" + inputNames[i] + "')]]";
+      WebElement option = dropDownMenu.findElement(By.xpath(optionStr));
+      action.moveToElement(option).click().perform();
+      // Rest of the inputs
+      replicas.get(i).clear();
       replicas.get(i).sendKeys(Integer.toString(replicaCount[i]));
+      cpus.get(i).clear();
       cpus.get(i).sendKeys(Integer.toString(cpuCount[i]));
-      memory.get(i).sendKeys(inputMemory[i]);
+      memory.get(i).sendKeys(Integer.toString(inputMemory[i]));
+    }
+  }
+
+  public void editTfSpec(String targetName) {
+    String nameFieldStr = "//td[text()[contains(.,'" + targetName + "')]]";
+    String editButtonStr = ".//tbody" + nameFieldStr + "//following-sibling::td[@class='td-action']/a[1]";
+    LOG.info(editButtonStr);
+    WebElement editButton = dataSection.findElement(By.xpath(editButtonStr));
+    editButton.click();
+    goButtonClick();
+    goButtonClick();
+    for (WebElement m : memory) {
+      m.clear();
+      m.sendKeys("512");
     }
 
+    Assert.assertTrue(getGoButton().isEnabled());
+    goButtonClick();
+    /*
+      Must wait until the whole page is loaded, or StaleElementReference will be thrown
+      dataSection element is destroyed due to page reloading
+     */
+    wait.until(ExpectedConditions.visibilityOf(dataSection));
+    editButton = dataSection.findElement(By.xpath(editButtonStr));
+    wait.until(ExpectedConditions.elementToBeClickable(editButton));
+    editButton.click();
+    goButtonClick();
+    goButtonClick();
+    for (WebElement m : memory) {
+     String v = m.getAttribute("value");
+     Assert.assertEquals(v, "512");
+    }
   }
 }

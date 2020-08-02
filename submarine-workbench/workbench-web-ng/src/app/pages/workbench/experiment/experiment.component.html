@@ -63,7 +63,7 @@
           id="openExperiment"
           nzType="primary"
           style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px;"
-          (click)="initExperimentStatus('create');"
+          (click)="initExperimentStatus('create')"
         >
           <i nz-icon nzType="plus"></i>
           New Experiment
@@ -119,13 +119,9 @@
             <td>{{ data.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
-<<<<<<< HEAD
             <td>{{ data.duration }}</td>
-=======
-            <td></td>
->>>>>>> Finish form layout
             <td class="td-action">
-              <a (click)="onEditExperiment(data.experimentId, data.spec)">Edit</a>
+              <a (click)="onUpdateExperiment(data.experimentId, data.spec)">Update</a>
               <nz-divider nzType="vertical"></nz-divider>
               <a
                 nz-popconfirm
@@ -133,7 +129,7 @@
                 nzTitle="Confirm to delete?"
                 nzCancelText="Cancel"
                 nzOkText="Ok"
-                (nzOnConfirm)="onDeleteExperiment(data, true)"
+                (nzOnConfirm)="onDeleteExperiment(data.experimentId, true)"
               >
                 Delete
               </a>
@@ -148,7 +144,6 @@
     [(nzVisible)]="isVisible"
     nzTitle="Create Experiment"
     [(nzOkText)]="okText"
-    [nzOkLoading]="isOkLoading"
     (nzOnCancel)="isVisible = false"
     [nzWidth]="1000"
   >
@@ -241,18 +236,18 @@
                 <ng-container *ngFor="let env of envs.controls; index as i">
                   <li *ngIf="i | indexInRange: currentEnvPage:PAGESIZE" [formGroupName]="i" class="input-group">
                     <div>
-                      <label for="key{{ i }}"> Key </label>
+                      <label for="key{{ i }}">Key</label>
                       <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" />
                     </div>
                     <div>
-                      <label for="value{{ i }}"> Value </label>
+                      <label for="value{{ i }}">Value</label>
                       <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" />
                     </div>
                     <i nz-icon nzType="close-circle" nzTheme="fill" (click)="deleteItem(envs, i)"></i>
                   </li>
                   <div
                     class="alert-message"
-                    *ngIf="env.get('key').dirty | logicalAnd: env.get('value').dirty: env.hasError('envMissing')"
+                    *ngIf="env.get('key').dirty | logicalAnd: env.get('value').dirty:env.hasError('envMissing')"
                   >
                     {{ env.getError('envMissing') }}
                   </div>
@@ -280,7 +275,7 @@
             <ul formArrayName="specs" class="list-container">
               <ng-container *ngFor="let spec of specs.controls; index as i">
                 <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
-                  <div>
+                  <div id="spec{{ i }}">
                     <label>Spec name</label>
                     <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="frameworks.value">
                       <div *ngSwitchCase="'Tensorflow'">
@@ -311,7 +306,7 @@
                       formControlName="cpus"
                     />
                   </div>
-                  <div>
+                  <div id="memory{{ i }}">
                     <label>Memory</label>
                     <div formGroupName="memory" class="memory-input-group">
                       <input nz-input name="memory{{ i }}" placeholder="Enter number" formControlName="num" />
@@ -330,7 +325,7 @@
                 </li>
                 <div
                   class="alert-message"
-                  *ngIf="spec.get('name').dirty | logicalAnd: spec.get('memory').dirty: spec.hasError('specError')"
+                  *ngIf="spec.get('name').dirty | logicalAnd: spec.get('memory').dirty:spec.hasError('specError')"
                 >
                   {{ spec.getError('specError') }}
                 </div>

@@ -83,7 +83,7 @@ export class ExperimentService {
     );
   }
 
-  editExperiment(id: string, experimentSpec: ExperimentSpec): Observable<ExperimentInfo> {
+  updateExperiment(id: string, experimentSpec: ExperimentSpec): Observable<ExperimentInfo> {
     const apiUrl = this.baseApi.getRestApi(`/v1/experiment/${id}`);
     return this.httpClient.patch<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
       map((res) => res.result),
