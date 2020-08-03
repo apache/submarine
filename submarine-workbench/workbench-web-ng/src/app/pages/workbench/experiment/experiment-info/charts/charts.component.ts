@@ -30,7 +30,7 @@ export class ChartsComponent implements OnInit {
 
   title = 'Metrics';
   podMetrics = {};
-  view: any[] = [1000, 400];
+  view: any[] = [1000, 300];
   legend: boolean = false;
   showLabels: boolean = true;
   animations: boolean = true;
@@ -59,6 +59,8 @@ export class ChartsComponent implements OnInit {
   ngOnInit() {}
 
   ngOnChanges(chg: SimpleChanges) {
+    this.podMetrics = {};
+    this.yAxisLabels = [];
     this.fetchMetric();
   }
   fetchMetric() {

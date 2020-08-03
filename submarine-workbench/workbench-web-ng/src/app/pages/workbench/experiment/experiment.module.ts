@@ -1,6 +1,5 @@
-import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
@@ -31,7 +30,7 @@ import { OutputsComponent } from './experiment-info/outputs/outputs.component';
 
 @NgModule({
   exports: [ReactiveFormsModule],
-  imports: [NgZorroAntdModule, CommonModule, FormsModule, NgxChartsModule, ScrollingModule],
+  imports: [NgZorroAntdModule, CommonModule, FormsModule, NgxChartsModule],
   declarations: [ExperimentInfoComponent, HyperParamsComponent, MetricsComponent, ChartsComponent, OutputsComponent]
 })
 export class ExperimentModule {}
