@@ -262,3 +262,20 @@ CREATE TABLE `params` (
   `worker_index` varchar(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
   PRIMARY KEY  (`id`, `key`, `worker_index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+-- ----------------------------
+-- Table structure for experiment_templates
+-- ----------------------------
+DROP TABLE IF EXISTS `experiment_template`;
+CREATE TABLE `experiment_template` (
+  `id` varchar(64) NOT NULL,
+  `experimentTemplate_name` varchar(32) NOT NULL,
+  `experimentTemplate_spec` json DEFAULT NULL,
+  `create_by` varchar(32) DEFAULT NULL,
+  `create_time` datetime NOT NULL,
+  `update_by` varchar(32) DEFAULT NULL,
+  `update_time` datetime NOT NULL, 
+  PRIMARY KEY `id` (`id`),
+   UNIQUE KEY `experimentTemplate_name` (`experimentTemplate_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

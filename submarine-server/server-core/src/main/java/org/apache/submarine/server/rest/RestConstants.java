@@ -43,4 +43,8 @@ public class RestConstants {
   public static final String ENVIRONMENT = "environment";
   
   public static final String ENVIRONMENT_ID = "id";
+  
+  public static final String EXPERIMENT_TEMPLATES = "templates";
+  
+  public static final String EXPERIMENT_TEMPLATE_ID = "id";
 }
