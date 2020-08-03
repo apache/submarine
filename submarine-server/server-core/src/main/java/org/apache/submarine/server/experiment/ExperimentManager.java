@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.SubmarineServer;
 import org.apache.submarine.server.SubmitterManager;
@@ -87,15 +88,30 @@ public class ExperimentManager {
    */
   public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     checkSpec(spec);
+
+    // Submarine sdk will get experimentID and JDBC URL from environment variables in each worker,
+    // and then log experiment metrics and parameters to submarine server
     ExperimentId id = generateExperimentId();
     Map<String, String> evnVars = new HashMap<>();
     evnVars.put(RestConstants.JOB_ID, id.toString());
+    String url = getSQLalchemyURL();
+    evnVars.put(RestConstants.SUBMARINE_TRACKING_URI, url);
+
     spec.getMeta().setEnvVars(evnVars);
     Experiment experiment = submitter.createExperiment(spec);
     experiment.setExperimentId(id);
     experiment.setSpec(spec);
     cachedExperimentMap.putIfAbsent(experiment.getExperimentId().toString(), experiment);
     return experiment;
+  }
+
+  private String getSQLalchemyURL() {
+    SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+    String jdbcUrl = conf.getJdbcUrl();
+    jdbcUrl = jdbcUrl.substring(jdbcUrl.indexOf("//") + 2, jdbcUrl.indexOf("?"));
+    String jdbcUserName = conf.getJdbcUserName();
+    String jdbcPassword = conf.getJdbcPassword();
+    return "mysql+pymysql://" + jdbcUserName + ":" + jdbcPassword + "@" + jdbcUrl;
   }
 
   private ExperimentId generateExperimentId() {

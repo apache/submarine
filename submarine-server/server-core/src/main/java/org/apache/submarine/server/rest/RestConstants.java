@@ -28,6 +28,8 @@ public class RestConstants {
 
   public static final String JOB_ID = "JOB_ID";
 
+  public static final String SUBMARINE_TRACKING_URI = "SUBMARINE_TRACKING_URI";
+
   public static final String PING = "ping";
 
   public static final String MEDIA_TYPE_YAML = "application/yaml";
@@ -45,7 +47,6 @@ public class RestConstants {
   public static final String NODE = "node";
 
   public static final String LOGS = "logs";
-
   /**
    * Environment
    */
