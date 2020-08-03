@@ -17,8 +17,8 @@
   ~ under the License.
   -->
 
-<cdk-virtual-scroll-viewport itemSize="500" class="example-viewport">
-  <div id="chartsDiv" *cdkVirtualFor="let yAxisLabel of yAxisLabels; let index = index">
+<div id="chartsDiv">
+  <div *ngFor="let yAxisLabel of yAxisLabels; let index = index">
     <ngx-charts-line-chart
       [view]="view"
       [scheme]="colorScheme[index]"
@@ -39,4 +39,4 @@
       {{ yAxisLabel }}
     </ngx-charts-line-chart>
   </div>
-</cdk-virtual-scroll-viewport>
+</div>

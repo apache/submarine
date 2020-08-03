@@ -38,7 +38,7 @@ export class ChartsComponent implements OnInit {
   yAxis: boolean = true;
   showYAxisLabel: boolean = true;
   showXAxisLabel: boolean = true;
-  xAxisLabel: string = 'Timestamp';
+  xAxisLabel: string = 'Time (s)';
   yAxisLabels = [];
   timeline: boolean = false;
   colorScheme = ['cool', 'fire', 'flame', 'air', 'forest', 'neons', 'ocean'];
