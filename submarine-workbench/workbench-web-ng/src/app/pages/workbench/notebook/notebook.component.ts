@@ -18,8 +18,8 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'submarine-notebook',
@@ -27,49 +27,19 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   styleUrls: ['./notebook.component.scss']
 })
 export class NotebookComponent implements OnInit {
-  isEditing = false;
-  notebookList = [{ name: 'Notebook', createTime: '2020-05-16 20:00:00', createBy: 'Someone' }];
+  notebookList = [
+    { status: 'Running', name: 'Notebook1', age: '35 mins', image: 'image1', cpu: '2', memory: '512 MB', volumes: 'volumes1' },
+    { status: 'Stop', name: 'Notebook2', age: '40 mins', image: 'image2', cpu: '4', memory: '1024 MB', volumes: 'volumes2' }
+  ];
 
-  //search
-  notebookName: string = '';
-  searchForm: FormGroup;
+  constructor(private message: NzMessageService, private notification: NzNotificationService) {}
 
-  //editor
-  editorOptions = { theme: 'vs-dark', language: 'python' };
-  code: string = `from tensorflow.examples.tutorials.mnist import input_data
-  import numpy as np
-  
-  mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
-  x_train = mnist.train.images
-  y_train = mnist.train.labels
-  x_test = mnist.test.images
-  y_test = mnist.test.labels
-  
-  print(x_train.shape)
-  print(y_train.shape)
-  print(x_test.shape)
-  print(y_test.shape)
-  print("---")
-  
-  #print(x_train[1, :])
-  print(np.argmax(y_train[1, :]))`;
-
-  constructor(private fb: FormBuilder, private message: NzMessageService) {}
+  statusColor: { [key: string]: string } = {
+    Running: 'green',
+    Stop: 'blue'
+  };
 
   ngOnInit() {
     this.message.warning('Notebook is in developing', { nzDuration: 5000 });
-
-    this.searchForm = this.fb.group({
-      notebookName: [this.notebookName]
-    });
-  }
-
-  edit(notebook) {
-    this.isEditing = true;
-  }
-
-  saveNotebook() {
-    this.isEditing = false;
-    this.message.success('Save notebook success!');
   }
 }

@@ -16,78 +16,75 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-
-<div id="notebookDiv" *ngIf="!isEditing">
-  <div id="searchRegin" align="right">
-    <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm">
-      <nz-form-item>
-        <nz-form-label>Notebook Name</nz-form-label>
-        <nz-form-control>
-          <input nz-input placeholder="Notebook name..." formControlName="notebookName" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-control>
-          <button id="searchBtn" nz-button nzType="primary">
-            <i nz-icon nzType="search"></i>
-            Query
-          </button>
-          <button id="newBtn" nz-button nzType="primary" style="margin-left: 8px;">
-            <i nz-icon nzType="plus"></i>
-            New Notebook
-          </button>
-        </nz-form-control>
-      </nz-form-item>
-    </form>
-  </div>
-  <div id="notebookTable">
-    <nz-table #notebookListTable [nzData]="notebookList">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Creator</th>
-          <th>Create Time</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let notebook of notebookListTable.data; let i; of: index">
-          <td>{{ notebook.name }}</td>
-          <td>{{ notebook.createBy }}</td>
-          <td>{{ notebook.createTime }}</td>
-          <td>
-            <a id="edit{{ i }}" (click)="edit(notebook)">
-              <i nz-icon nzType="edit" nzTheme="outline"></i>
-              Edit
-            </a>
-            <nz-divider nzType="vertical"></nz-divider>
-            <a id="delete{{ i }}">
-              <i nz-icon nzType="delete" nzTheme="outline"></i>
-              Delete
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
-  </div>
-</div>
-
-<div *ngIf="isEditing">
-  <div style="background-color: white;">
-    <button id="btnRun" class="actionBar" nz-button nzType="primary">
-      <i nz-icon nzType="caret-right" nzTheme="outline"></i>
-      Run
-    </button>
-    <button id="btnSave" class="actionBar" nz-button nzType="primary" (click)="saveNotebook()">
-      <i nz-icon nzType="save" nzTheme="outline"></i>
-      Save
-    </button>
-    <button id="btnDelete" class="actionBar" nz-button nzType="danger">
-      <i nz-icon nzType="delete" nzTheme="outline"></i>
-      Delete
-    </button>
-  </div>
-  <div style="margin-top: 5px; background-color: white; height: 500px;">
-    <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="code" style="height: 500px;"></ngx-monaco-editor>
-  </div>
-</div>
+  <nz-layout style="margin: -24px -24px 16px;">
+    <nz-layout class="inner-layout">
+      <div id="notebookOuter">
+        <nz-breadcrumb>
+          <nz-breadcrumb-item>
+            <a [routerLink]="['/', 'workbench', 'home']">Home</a>
+          </nz-breadcrumb-item>
+          <nz-breadcrumb-item>
+            <a [routerLink]="['/', 'workbench', 'notebook']">Notebook</a>
+          </nz-breadcrumb-item>
+        </nz-breadcrumb>
+      <div>
+        <br />
+        <h2>Notebook</h2>
+        <nz-content>Apache submarine support jupyter notebook.</nz-content>
+        <br />
+      </div>
+      </div>
+    </nz-layout>
+    <div id="notebookDiv">
+      <div nz-row>
+        <div nz-col nzSpan="12"><label style="font-size: large;color: black;">Namespaces : </label>
+          <nz-select ngModel="namespace1">
+            <nz-option nzValue="namespace1" nzLabel="namespace1"></nz-option>
+            <nz-option nzValue="namespace2" nzLabel="namespace2"></nz-option>
+            <nz-option nzValue="namespace3" nzLabel="namespace3"></nz-option>
+          </nz-select></div>
+        <div nz-col nzSpan="12" align="right"><button nz-button nzType="primary"><i nz-icon nzType="plus"></i>Create Notebook</button></div>
+      </div>
+      <div>
+        <nz-table style="padding-top: 5px;" #basicTable [nzData]="notebookList">
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Image</th>
+              <th>CPU</th>
+              <th>Memory</th>
+              <th>Volumes</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of basicTable.data">
+              <td><nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag></td>
+              <td><a>{{data.name}}</a></td>
+              <td>{{data.age}}</td>
+              <td>{{data.image}}</td>
+              <td>{{data.cpu}}</td>
+              <td>{{data.memory}}</td>
+              <td>{{data.volumes}}</td>
+              <td>
+                <a>Delete</a>
+                <nz-divider nzType="vertical"></nz-divider>
+                <a nz-dropdown [nzDropdownMenu]="menu">
+                  More
+                  <i nz-icon nzType="down"></i>
+                </a>
+                <nz-dropdown-menu #menu="nzDropdownMenu">
+                  <ul nz-menu nzSelectable>
+                    <li nz-menu-item>Resource Edit</li>
+                    <li nz-menu-item>Enviroment</li>
+                  </ul>
+                </nz-dropdown-menu>
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </div>
+    </div>
+  </nz-layout>

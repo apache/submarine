@@ -17,14 +17,15 @@
  * under the License.
  */
 
-#searchRegin {
+#notebookOuter{
     background-color: white;
-}
+    padding-left: 30px;
+    padding-top: 20px;
+ }
 
-#notebookTable {
-    background-color: white;
-}
-
-.actionBar {
-    margin: 10px;
-}
+ #notebookDiv{
+     margin: 10px;
+     background-color: white;
+     padding: 10px;
+     overflow: auto;
+ }
