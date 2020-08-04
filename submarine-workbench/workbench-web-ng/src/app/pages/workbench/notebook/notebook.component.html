@@ -16,75 +16,86 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-  <nz-layout style="margin: -24px -24px 16px;">
-    <nz-layout class="inner-layout">
-      <div id="notebookOuter">
-        <nz-breadcrumb>
-          <nz-breadcrumb-item>
-            <a [routerLink]="['/', 'workbench', 'home']">Home</a>
-          </nz-breadcrumb-item>
-          <nz-breadcrumb-item>
-            <a [routerLink]="['/', 'workbench', 'notebook']">Notebook</a>
-          </nz-breadcrumb-item>
-        </nz-breadcrumb>
+<nz-layout style="margin: -24px -24px 16px;">
+  <nz-layout class="inner-layout">
+    <div id="notebookOuter">
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/', 'workbench', 'home']">Home</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/', 'workbench', 'notebook']">Notebook</a>
+        </nz-breadcrumb-item>
+      </nz-breadcrumb>
       <div>
         <br />
         <h2>Notebook</h2>
         <nz-content>Apache submarine support jupyter notebook.</nz-content>
         <br />
       </div>
-      </div>
-    </nz-layout>
-    <div id="notebookDiv">
-      <div nz-row>
-        <div nz-col nzSpan="12"><label style="font-size: large;color: black;">Namespaces : </label>
-          <nz-select ngModel="namespace1">
-            <nz-option nzValue="namespace1" nzLabel="namespace1"></nz-option>
-            <nz-option nzValue="namespace2" nzLabel="namespace2"></nz-option>
-            <nz-option nzValue="namespace3" nzLabel="namespace3"></nz-option>
-          </nz-select></div>
-        <div nz-col nzSpan="12" align="right"><button nz-button nzType="primary"><i nz-icon nzType="plus"></i>Create Notebook</button></div>
-      </div>
-      <div>
-        <nz-table style="padding-top: 5px;" #basicTable [nzData]="notebookList">
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Name</th>
-              <th>Age</th>
-              <th>Image</th>
-              <th>CPU</th>
-              <th>Memory</th>
-              <th>Volumes</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let data of basicTable.data">
-              <td><nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag></td>
-              <td><a>{{data.name}}</a></td>
-              <td>{{data.age}}</td>
-              <td>{{data.image}}</td>
-              <td>{{data.cpu}}</td>
-              <td>{{data.memory}}</td>
-              <td>{{data.volumes}}</td>
-              <td>
-                <a>Delete</a>
-                <nz-divider nzType="vertical"></nz-divider>
-                <a nz-dropdown [nzDropdownMenu]="menu">
-                  More
-                  <i nz-icon nzType="down"></i>
-                </a>
-                <nz-dropdown-menu #menu="nzDropdownMenu">
-                  <ul nz-menu nzSelectable>
-                    <li nz-menu-item>Resource Edit</li>
-                    <li nz-menu-item>Enviroment</li>
-                  </ul>
-                </nz-dropdown-menu>
-              </td>
-            </tr>
-          </tbody>
-        </nz-table>
-      </div>
     </div>
   </nz-layout>
+  <div id="notebookDiv">
+    <div nz-row>
+      <div nz-col nzSpan="12">
+        <label style="font-size: large; color: black;">Namespaces :</label>
+        <nz-select ngModel="namespace1">
+          <nz-option nzValue="namespace1" nzLabel="namespace1"></nz-option>
+          <nz-option nzValue="namespace2" nzLabel="namespace2"></nz-option>
+          <nz-option nzValue="namespace3" nzLabel="namespace3"></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="12" align="right">
+        <button nz-button nzType="primary">
+          <i nz-icon nzType="plus"></i>
+          Create Notebook
+        </button>
+      </div>
+    </div>
+    <div>
+      <nz-table style="padding-top: 5px;" #basicTable [nzData]="notebookList">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Image</th>
+            <th>CPU</th>
+            <th>Memory</th>
+            <th>Volumes</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td>
+              <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag>
+            </td>
+            <td>
+              <a>{{ data.name }}</a>
+            </td>
+            <td>{{ data.age }}</td>
+            <td>{{ data.image }}</td>
+            <td>{{ data.cpu }}</td>
+            <td>{{ data.memory }}</td>
+            <td>{{ data.volumes }}</td>
+            <td>
+              <a>Delete</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a nz-dropdown [nzDropdownMenu]="menu">
+                More
+                <i nz-icon nzType="down"></i>
+              </a>
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu nzSelectable>
+                  <li nz-menu-item>Resource Edit</li>
+                  <li nz-menu-item>Enviroment</li>
+                </ul>
+              </nz-dropdown-menu>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+</nz-layout>

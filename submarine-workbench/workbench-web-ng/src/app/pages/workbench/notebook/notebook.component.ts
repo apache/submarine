@@ -28,8 +28,24 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
 })
 export class NotebookComponent implements OnInit {
   notebookList = [
-    { status: 'Running', name: 'Notebook1', age: '35 mins', image: 'image1', cpu: '2', memory: '512 MB', volumes: 'volumes1' },
-    { status: 'Stop', name: 'Notebook2', age: '40 mins', image: 'image2', cpu: '4', memory: '1024 MB', volumes: 'volumes2' }
+    {
+      status: 'Running',
+      name: 'Notebook1',
+      age: '35 mins',
+      image: 'image1',
+      cpu: '2',
+      memory: '512 MB',
+      volumes: 'volumes1'
+    },
+    {
+      status: 'Stop',
+      name: 'Notebook2',
+      age: '40 mins',
+      image: 'image2',
+      cpu: '4',
+      memory: '1024 MB',
+      volumes: 'volumes2'
+    }
   ];
 
   constructor(private message: NzMessageService, private notification: NzNotificationService) {}
