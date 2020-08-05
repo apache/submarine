@@ -27,6 +27,9 @@ import io.kubernetes.client.models.V1Volume;
 
 public abstract class AbstractCodeLocalizer implements CodeLocalizer {
 
+  public static final String CODE_LOCALIZER_PATH = "/code";
+  public static final String CODE_LOCALIZER_MOUNT_NAME = "code-dir";
+  public static final String CODE_LOCALIZER_INIT_CONTAINER_NAME = "code-localizer";
   private String url;
   
   public AbstractCodeLocalizer(String url) {
@@ -43,7 +46,7 @@ public abstract class AbstractCodeLocalizer implements CodeLocalizer {
   @Override
   public void localize(V1PodSpec podSpec) {
     V1Volume volume = new V1Volume();
-    volume.setName("code-dir");
+    volume.setName(CODE_LOCALIZER_MOUNT_NAME);
     volume.setEmptyDir(new V1EmptyDirVolumeSource());
     podSpec.addVolumesItem(volume);
   }

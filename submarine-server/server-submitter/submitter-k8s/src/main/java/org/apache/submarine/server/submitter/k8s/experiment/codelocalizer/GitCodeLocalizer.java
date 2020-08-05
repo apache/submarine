@@ -34,7 +34,6 @@ import io.kubernetes.client.models.V1VolumeMount;
 public abstract class GitCodeLocalizer extends AbstractCodeLocalizer {
 
   public static final String GIT_SYNC_IMAGE = "k8s.gcr.io/git-sync:v3.1.6";
-  public static final String GIT_SYNC_ROOT = "/code";
   
   public GitCodeLocalizer(String url) {
     super(url);
@@ -43,7 +42,7 @@ public abstract class GitCodeLocalizer extends AbstractCodeLocalizer {
   public void localize(V1PodSpec podSpec) {
     
     V1Container container = new V1Container();
-    container.setName("git-localizer");
+    container.setName(CODE_LOCALIZER_INIT_CONTAINER_NAME);
     container.setImage(GIT_SYNC_IMAGE);
     
     V1EnvVar repoEnv = new V1EnvVar();
@@ -52,7 +51,7 @@ public abstract class GitCodeLocalizer extends AbstractCodeLocalizer {
     
     V1EnvVar rootEnv = new V1EnvVar();
     rootEnv.setName("GIT_SYNC_ROOT");
-    rootEnv.setValue(GIT_SYNC_ROOT);
+    rootEnv.setValue(CODE_LOCALIZER_PATH);
     
     V1EnvVar destEnv = new V1EnvVar();
     destEnv.setName("GIT_SYNC_DEST");
@@ -70,8 +69,8 @@ public abstract class GitCodeLocalizer extends AbstractCodeLocalizer {
     container.setEnv(gitSyncEnvVars);
     
     V1VolumeMount mount = new V1VolumeMount();
-    mount.setName("code-dir");
-    mount.setMountPath("/code");
+    mount.setName(CODE_LOCALIZER_MOUNT_NAME);
+    mount.setMountPath(CODE_LOCALIZER_PATH);
     
     List<V1VolumeMount> volumeMounts = new ArrayList<V1VolumeMount>();
     volumeMounts.add(mount);
