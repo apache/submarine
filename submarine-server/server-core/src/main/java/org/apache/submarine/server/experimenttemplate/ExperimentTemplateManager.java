@@ -222,7 +222,8 @@ public class ExperimentTemplateManager {
           tpl.setExperimentTemplateSpec(new Gson().fromJson(
               experimentTemplateEntity.getExperimentTemplateSpec(), ExperimentTemplateSpec.class));
           tpls.add(tpl);
-        }
+          cachedExperimentTemplates.put(tpl.getExperimentTemplateSpec().getName(), tpl);
+        }        
       }
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);

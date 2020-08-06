@@ -32,7 +32,8 @@
     </init-param>
     <init-param>
       <param-name>openApi.configuration.resourceClasses</param-name>
-      <param-value>org.apache.submarine.server.rest.ExperimentRestApi</param-value>
+      <param-value>org.apache.submarine.server.rest.ExperimentRestApi, 
+      org.apache.submarine.server.rest.ExperimentTemplateRestApi</param-value>
     </init-param>
     <init-param>
       <param-name>openApi.configuration.scannerClass</param-name>

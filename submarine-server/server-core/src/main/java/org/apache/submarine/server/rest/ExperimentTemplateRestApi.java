@@ -67,7 +67,7 @@ public class ExperimentTemplateRestApi {
                   @ApiResponse(description = "successful operation", 
                       content = @Content(
                           schema = @Schema(
-                              implementation = ExperimentTemplate.class)))})
+                              implementation = JsonResponse.class)))})
   public Response createExperimentTemplate(ExperimentTemplateSpec spec) {
     try {
       ExperimentTemplate experimentTemplate = experimentTemplateManager.createExperimentTemplate(spec);
@@ -93,7 +93,7 @@ public class ExperimentTemplateRestApi {
                   @ApiResponse(description = "successful operation", 
                       content = @Content(
                           schema = @Schema(
-                              implementation = ExperimentTemplate.class))),
+                              implementation = JsonResponse.class))),
                   @ApiResponse(
                       responseCode = "404", 
                       description = "ExperimentTemplate not found")})
@@ -122,7 +122,7 @@ public class ExperimentTemplateRestApi {
           responses = {
                   @ApiResponse(description = "successful operation", 
                       content = @Content(
-                          schema = @Schema(implementation = ExperimentTemplate.class))),
+                          schema = @Schema(implementation = JsonResponse.class))),
                   @ApiResponse(
                       responseCode = "404", description = "ExperimentTemplate not found")})
   public Response deleteExperimentTemplate(
@@ -147,7 +147,7 @@ public class ExperimentTemplateRestApi {
                   @ApiResponse(description = "successful operation", 
                       content = @Content(
                           schema = @Schema(
-                              implementation = ExperimentTemplate.class)))})
+                              implementation = JsonResponse.class)))})
   public Response listExperimentTemplate(@QueryParam("status") String status) {
     try {
       List<ExperimentTemplate> experimentTemplateList =
@@ -171,7 +171,7 @@ public class ExperimentTemplateRestApi {
           responses = {
                   @ApiResponse(description = "successful operation", 
                       content = @Content(
-                          schema = @Schema(implementation = ExperimentTemplate.class))),
+                          schema = @Schema(implementation = JsonResponse.class))),
                   @ApiResponse(
                       responseCode = "404", 
                       description = "ExperimentTemplate not found")})
