@@ -18,8 +18,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'submarine-notebook',
@@ -27,13 +26,29 @@ import { NzNotificationService } from 'ng-zorro-antd/notification';
   styleUrls: ['./notebook.component.scss']
 })
 export class NotebookComponent implements OnInit {
+  // Checkbox
+  checkedList: boolean[] = [];
+  checked: boolean = false;
+
+  // New notebook modal
+  cancelText = 'Cancel';
+  okText = 'Create';
+  isVisible = false;
+
+  // New notebook(form)
+  notebookForm: FormGroup;
+
+  // Mock Data
+  namespacesList = ['namespaces1', 'namespaces2'];
+  currentNamespaces = this.namespacesList[0];
   notebookList = [
     {
       status: 'Running',
       name: 'Notebook1',
       age: '35 mins',
-      image: 'image1',
+      environment: 'image1',
       cpu: '2',
+      gpu: '1',
       memory: '512 MB',
       volumes: 'volumes1'
     },
@@ -41,14 +56,15 @@ export class NotebookComponent implements OnInit {
       status: 'Stop',
       name: 'Notebook2',
       age: '40 mins',
-      image: 'image2',
+      environment: 'image2',
       cpu: '4',
+      gpu: '4',
       memory: '1024 MB',
       volumes: 'volumes2'
     }
   ];
 
-  constructor(private message: NzMessageService, private notification: NzNotificationService) {}
+  constructor() {}
 
   statusColor: { [key: string]: string } = {
     Running: 'green',
@@ -56,6 +72,28 @@ export class NotebookComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.message.warning('Notebook is in developing', { nzDuration: 5000 });
+    this.notebookForm = new FormGroup({
+      notebookName: new FormControl(null, [Validators.required]),
+      namespaces: new FormControl(this.currentNamespaces, [Validators.required]),
+      environment: new FormControl('env1', [Validators.required]),
+      cpu: new FormControl(null, [Validators.required]),
+      gpu: new FormControl(null, [Validators.required]),
+      memory: new FormControl(null, [Validators.required]),
+      volume: new FormControl('volume1', [Validators.required])
+    });
+    this.checkedList = [];
+    for (let i = 0; i < this.notebookList.length; i++) {
+      this.checkedList.push(false);
+    }
+  }
+
+  selectAll() {
+    for (let i = 0; i < this.checkedList.length; i++) {
+      this.checkedList[i] = this.checked;
+    }
+  }
+
+  createNotebook() {
+    console.log('Create Notebook');
   }
 }

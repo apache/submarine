@@ -39,16 +39,18 @@
     <div nz-row>
       <div nz-col nzSpan="12">
         <label style="font-size: large; color: black;">Namespaces :</label>
-        <nz-select ngModel="namespace1">
-          <nz-option nzValue="namespace1" nzLabel="namespace1"></nz-option>
-          <nz-option nzValue="namespace2" nzLabel="namespace2"></nz-option>
-          <nz-option nzValue="namespace3" nzLabel="namespace3"></nz-option>
+        <nz-select style="margin-left: 5px; width: 240px;" [(ngModel)]="currentNamespaces">
+          <nz-option
+            *ngFor="let namespaces of namespacesList"
+            [nzValue]="namespaces"
+            [nzLabel]="namespaces"
+          ></nz-option>
         </nz-select>
       </div>
       <div nz-col nzSpan="12" align="right">
-        <button nz-button nzType="primary">
+        <button id="btnNewNotebook" nz-button nzType="primary" (click)="isVisible = true">
           <i nz-icon nzType="plus"></i>
-          Create Notebook
+          New Notebook
         </button>
       </div>
     </div>
@@ -56,18 +58,25 @@
       <nz-table style="padding-top: 5px;" #basicTable [nzData]="notebookList">
         <thead>
           <tr>
+            <th>
+              <label nz-checkbox [(ngModel)]="checked" (ngModelChange)="selectAll()"></label>
+            </th>
             <th>Status</th>
             <th>Name</th>
             <th>Age</th>
-            <th>Image</th>
+            <th>Environment</th>
             <th>CPU</th>
+            <th>GPU</th>
             <th>Memory</th>
-            <th>Volumes</th>
+            <th>Volume</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let data of basicTable.data">
+          <tr *ngFor="let data of basicTable.data; let i = index">
+            <td>
+              <label nz-checkbox [(ngModel)]="checkedList[i]"></label>
+            </td>
             <td>
               <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag>
             </td>
@@ -75,8 +84,9 @@
               <a>{{ data.name }}</a>
             </td>
             <td>{{ data.age }}</td>
-            <td>{{ data.image }}</td>
+            <td>{{ data.environment }}</td>
             <td>{{ data.cpu }}</td>
+            <td>{{ data.gpu }}</td>
             <td>{{ data.memory }}</td>
             <td>{{ data.volumes }}</td>
             <td>
@@ -99,3 +109,68 @@
     </div>
   </div>
 </nz-layout>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzTitle="Create Notebook"
+  [(nzCancelText)]="cancelText"
+  [(nzOkText)]="okText"
+  [nzOkLoading]="isOkLoading"
+  (nzOnCancel)="isVisible = false"
+  (nzOnOk)="isVisible = false"
+  [nzWidth]="700"
+>
+  <div>
+    <form [formGroup]="notebookForm">
+      <div class="newNotebookForm">
+        <label for="notebookName">
+          <span class="red-star">*</span>
+          Notebook Name :
+        </label>
+        <input nz-input type="text" name="notebookName" id="notebookName" formControlName="notebookName" required />
+      </div>
+      <div class="newNotebookForm">
+        <label for="namespaces">
+          <span class="red-star">*</span>
+          Namespaces :
+        </label>
+        <input nz-input type="text" name="namespaces" id="namespaces" formControlName="namespaces" />
+      </div>
+      <div class="newNotebookForm">
+        <label for="environment">
+          <span class="red-star">*</span>
+          Environment :
+        </label>
+        <input nz-input type="text" name="environment" id="environment" formControlName="environment" />
+      </div>
+      <div class="newNotebookForm">
+        <label for="cpu">
+          <span class="red-star">*</span>
+          CPU :
+        </label>
+        <input nz-input type="text" name="cpu" id="cpu" formControlName="cpu" />
+      </div>
+      <div class="newNotebookForm">
+        <label for="gpu">
+          <span class="red-star">*</span>
+          GPU :
+        </label>
+        <input nz-input type="text" name="gpu" id="gpu" formControlName="gpu" />
+      </div>
+      <div class="newNotebookForm">
+        <label for="memory">
+          <span class="red-star">*</span>
+          Memory :
+        </label>
+        <input nz-input type="text" name="memory" id="memory" formControlName="memory" />
+      </div>
+      <div class="newNotebookForm">
+        <label for="volume">
+          <span class="red-star">*</span>
+          Volume :
+        </label>
+        <input nz-input type="text" name="volume" id="volume" formControlName="volume" />
+      </div>
+    </form>
+  </div>
+</nz-modal>

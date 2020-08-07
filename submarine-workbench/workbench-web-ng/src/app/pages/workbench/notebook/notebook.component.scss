@@ -29,3 +29,23 @@
      padding: 10px;
      overflow: auto;
  }
+ .red-star {
+     color: red;
+ }
+
+ .newNotebookForm {
+    display: flex;
+   align-items: center;
+   margin-bottom: 1.5rem;
+   & label {
+      flex: 0 0 25%;
+      text-align: right;
+      font-weight: 500;
+      &:not(:last-child) {
+         margin-right: 1.5rem;
+      }
+   }
+   & input {
+      flex: 0 0 48%;
+   }
+ }
