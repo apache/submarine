@@ -95,7 +95,7 @@ public class ExperimentManager {
     String url = getSQLalchemyURL();
     spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id.toString());
     spec.getMeta().getEnvVars().put(RestConstants.SUBMARINE_TRACKING_URI, url);
-    
+
     Experiment experiment = submitter.createExperiment(spec);
     experiment.setExperimentId(id);
 

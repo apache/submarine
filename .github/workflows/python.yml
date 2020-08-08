@@ -36,7 +36,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install tensorflow==${{ matrix.tf-version }}
+          pip install --no-cache-dir tensorflow==${{ matrix.tf-version }}
+          pip install --no-cache-dir torch==1.4.0
           pip install ./submarine-sdk/pysubmarine/.
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
           pip install -r ./submarine-sdk/pysubmarine/github-actions/lint-requirements.txt
