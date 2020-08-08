@@ -15,6 +15,7 @@
 
 import logging
 import time
+import ldap
 
 from submarine.experiment.configuration import Configuration
 from submarine.experiment.api_client import ApiClient
@@ -141,3 +142,17 @@ class ExperimentClient:
         """
         response = self.experiment_api.list_log(status=status)
         return response.result
+
+    def login_ad(self, ldap_url, user_dn, password):
+        ld = ldap.initialize(ldap_url)
+        ld.protocol_version = 3
+        ld.set_option(ldap.OPT_REFERRALS, 0)
+        ld.simple_bind_s(user_dn, password)
+        cn = user_dn.split(',')[0].split('=')
+        base_dn = 'dc=testad,dc=com'
+        domain = 'testad.com'
+        username = '%s@%s' % (cn[1], domain)
+        ret = ld.search_s(base_dn, ldap.SCOPE_SUBTREE, "(userPrincipalName=%s" % username, ["userPrincipalName"])
+        if ret is None or len(ret) == 0:
+            return False
+        return True
