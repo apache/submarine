@@ -17,7 +17,8 @@
  * under the License.
  */
 
- #metricTable {
-    background-color: white;
-    height: 500px;
+#metricTable {
+  background-color: white;
+  height: 90vh;
+  overflow:auto;
 }

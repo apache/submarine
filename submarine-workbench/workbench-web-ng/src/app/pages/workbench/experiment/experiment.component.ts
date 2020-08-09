@@ -21,11 +21,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
+import { ExperimentSpec, Specs, SpecEnviroment, SpecMeta } from '@submarine/interfaces/experiment-spec';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
-import { SpecMeta, Specs, SpecEnviroment, ExperimentSpec } from '@submarine/interfaces/experiment-spec';
-import { stringify } from 'querystring';
 
 @Component({
   selector: 'submarine-experiment',
@@ -342,16 +341,16 @@ export class ExperimentComponent implements OnInit {
   fetchExperimentList() {
     this.experimentService.fetchExperimentList().subscribe((list) => {
       this.experimentList = list;
-      var currentTime = new Date();
+      const currentTime = new Date();
       this.experimentList.forEach((item) => {
-        if (item.status == 'Succeeded') {
-          var finTime = new Date(item.finishedTime);
-          var runTime = new Date(item.runningTime);
-          var result = (finTime.getTime() - runTime.getTime()) / 1000;
+        if (item.status === 'Succeeded') {
+          const finTime = new Date(item.finishedTime);
+          const runTime = new Date(item.runningTime);
+          const result = (finTime.getTime() - runTime.getTime()) / 1000;
           item.duration = this.experimentService.durationHandle(result);
         } else {
-          var runTime = new Date(item.runningTime);
-          var result = (currentTime.getTime() - runTime.getTime()) / 1000;
+          const runTime = new Date(item.runningTime);
+          const result = (currentTime.getTime() - runTime.getTime()) / 1000;
           item.duration = this.experimentService.durationHandle(result);
         }
       });
@@ -407,14 +406,14 @@ export class ExperimentComponent implements OnInit {
   }
 
   reloadCheck() {
-    /* 
-      When reload in info page, ths experimentId will turn into undifined, it will cause breadcrumb miss experimentId. 
+    /*
+      When reload in info page, ths experimentId will turn into undefined, it will cause breadcrumb miss experimentId.
       Location.pathname -> /workbench/experiment/info/{experimentID}
       So slice out experimentId string from location.pathname to reassign experimentId.
       */
-    if (location.pathname != '/workbench/experiment') {
-      var sliceString = new String('/workbench/experiment/info');
-      this.experimentID = location.pathname.slice(sliceString.length);
+    if (location.pathname !== '/workbench/experiment') {
+      const sliceString = String('/workbench/experiment/info');
+      this.experimentID = location.pathname.slice(sliceString.length + 1);
     }
   }
 

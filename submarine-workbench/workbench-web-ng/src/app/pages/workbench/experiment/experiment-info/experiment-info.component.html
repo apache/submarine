@@ -103,7 +103,7 @@
   </nz-sider>
   <nz-layout>
     <div [ngSwitch]="currentState">
-      <submarine-charts *ngSwitchCase="0"></submarine-charts>
+      <submarine-charts *ngSwitchCase="0" [workerIndex]="selectedPod" [metricData]="metricData"></submarine-charts>
       <submarine-hyper-params
         *ngSwitchCase="1"
         [workerIndex]="selectedPod"

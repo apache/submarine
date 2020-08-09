@@ -36,8 +36,9 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install ./submarine-sdk/pysubmarine/.
-          pip install -q tensorflow==${{ matrix.tf-version }}
+          pip install --no-cache-dir tensorflow==${{ matrix.tf-version }}
+          pip install --no-cache-dir torch==1.5.0
+          pip install --no-cache-dir ./submarine-sdk/pysubmarine/.
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
           pip install -r ./submarine-sdk/pysubmarine/github-actions/lint-requirements.txt
       - name: Check python sdk code style
@@ -47,5 +48,3 @@ jobs:
       - name: Test with pytest
         run: |
           pytest --cov=submarine -vs
-
-
