@@ -91,7 +91,7 @@ public class ExperimentManager {
     // Submarine sdk will get experimentID and JDBC URL from environment variables in each worker,
     // and then log experiment metrics and parameters to submarine server
     ExperimentId id = generateExperimentId();
-    String url = getSQLalchemyURL();
+    String url = getSQLAlchemyURL();
     spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id.toString());
     spec.getMeta().getEnvVars().put(RestConstants.SUBMARINE_TRACKING_URI, url);
 
