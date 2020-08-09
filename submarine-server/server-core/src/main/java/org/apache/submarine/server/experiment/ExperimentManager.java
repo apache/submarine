@@ -105,7 +105,7 @@ public class ExperimentManager {
     return experiment;
   }
 
-  private String getSQLalchemyURL() {
+  private String getSQLAlchemyURL() {
     SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
     String jdbcUrl = conf.getJdbcUrl();
     jdbcUrl = jdbcUrl.substring(jdbcUrl.indexOf("//") + 2, jdbcUrl.indexOf("?"));
