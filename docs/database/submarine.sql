@@ -275,7 +275,7 @@ CREATE TABLE `experiment_template` (
   `create_by` varchar(32) DEFAULT NULL,
   `create_time` datetime NOT NULL,
   `update_by` varchar(32) DEFAULT NULL,
-  `update_time` datetime NOT NULL, 
+  `update_time` datetime NOT NULL,
   PRIMARY KEY `id` (`id`),
    UNIQUE KEY `experimentTemplate_name` (`experimentTemplate_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
