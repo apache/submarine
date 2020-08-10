@@ -13,9 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG BASE_IMAGE=tensorflow/tensorflow:2.1.0-py3-jupyter
-
-FROM $BASE_IMAGE
+FROM ubuntu:18.04
 
 ARG NB_USER="jovyan"
 ARG NB_UID="1000"
@@ -28,8 +26,8 @@ ENV NB_UID $NB_UID
 ENV NB_GID $NB_GID
 ENV NB_PREFIX $NB_PREFIX
 ENV NB_PORT $NB_PORT
-
-ENV PATH=$HOME/.local/bin:$PATH
+ENV CONDA_DIR=/opt/conda
+ENV PATH=$CONDA_DIR/bin:$PATH
 ENV HOME=/home/$NB_USER
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
@@ -43,10 +41,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-in
     sudo \
     locales \
     fonts-liberation \
-    run-one \
-    python3-pip \
-    python3-dev \
-    python3-setuptools && \
+    run-one && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN echo "$LOG_TAG Set locale" && \
@@ -70,12 +65,40 @@ ENV TINI_VERSION v0.19.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN mv /tini /usr/local/bin/tini && chmod +x /usr/local/bin/tini
 
-# Install python package
-RUN pip uninstall -y enum34
-RUN pip3 --no-cache-dir install jupyterlab
+# Install conda
+ARG PYTHON_VERSION=default
+ENV MINICONDA_VERSION=4.8.3 \
+    MINICONDA_MD5=751786b92c00b1aeae3f017b781018df \
+    CONDA_VERSION=4.8.3
 
-# Configure container startup
+WORKDIR /tmp
+RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh && \
+    echo "${MINICONDA_MD5} *Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh" | md5sum -c - && \
+    /bin/bash Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
+    rm Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh && \
+    echo "conda ${CONDA_VERSION}" >> $CONDA_DIR/conda-meta/pinned && \
+    conda config --system --prepend channels conda-forge && \
+    conda config --system --set auto_update_conda false && \
+    conda config --system --set show_channel_urls true && \
+    conda config --system --set channel_priority strict && \
+    if [ ! $PYTHON_VERSION = 'default' ]; then conda install --yes python=$PYTHON_VERSION; fi && \
+    conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
+    conda install --quiet --yes conda && \
+    conda install --quiet --yes pip && \
+    conda clean --all -f -y && \
+    rm -rf /home/$NB_USER/.cache/yarn
+
+# Install jupyter
+RUN conda install --quiet --yes notebook=6.0.3 && \
+    conda clean --all -f -y
+
+USER root
+RUN mkdir -p $CONDA_DIR && \
+    chown -R ${NB_USER}:users $CONDA_DIR
+
+USER $NB_USER
 EXPOSE $NB_PORT
-USER $NB_UID
 ENTRYPOINT ["tini", "-g", "--"]
-CMD ["sh","-c", "jupyter notebook --notebook-dir=/home/${NB_USER} --ip=0.0.0.0 --no-browser --allow-root --port=${NB_PORT} --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*' --NotebookApp.base_url=${NB_PREFIX}"]
+WORKDIR ${HOME}
+CMD ["start-notebook.sh"]
+COPY start-notebook.sh /usr/local/bin

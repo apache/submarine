@@ -17,32 +17,19 @@
  * under the License.
  */
 
-export interface SpecMeta {
-  name: string;
-  description?: string;
-  namespace: string;
-  framework: string;
-  cmd: string;
-  envVars?: {
-    [key: string]: string;
-  };
-}
+package org.apache.submarine.server.gson;
 
-export interface SpecEnviroment {
-  image: string;
-}
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import org.apache.submarine.server.api.notebook.NotebookId;
 
-export interface Specs {
-  [name: string]: {
-    replicas: string;
-    resources: string;
-  };
-}
+import java.lang.reflect.Type;
 
-export interface ExperimentSpec {
-  meta: SpecMeta;
-  environment: {
-    image: string;
-  };
-  spec: Specs;
+public class NotebookIdSerializer implements JsonSerializer<NotebookId> {
+  @Override
+  public JsonElement serialize(NotebookId src, Type typeOfSrc, JsonSerializationContext context) {
+    return new JsonPrimitive(src.toString());
+  }
 }

@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "name": "my-nb",
+    "namespace": "default"
+  },
+  "environment": {
+    "image": "apache/submarine:tf2.1.0-jupyter"
+  },
+  "spec": {
+    "envVars": {
+      "env": "env"
+    },
+    "resources": "cpu=1,memory=1Gi"
+  }
+}

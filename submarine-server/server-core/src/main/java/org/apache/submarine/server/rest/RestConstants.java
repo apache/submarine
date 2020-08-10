@@ -36,15 +36,26 @@ public class RestConstants {
   public static final String NODE = "node";
 
   public static final String LOGS = "logs";
-  
+
   /**
    * Environment
    */
   public static final String ENVIRONMENT = "environment";
-  
+
   public static final String ENVIRONMENT_ID = "id";
-  
-  public static final String EXPERIMENT_TEMPLATES = "templates";
+
+  /**
+   * Experimect template
+   */
+  public static final String EXPERIMENT_TEMPLATES = "template";
   
   public static final String EXPERIMENT_TEMPLATE_ID = "id";
+
+  /**
+   * Notebook
+   */
+  public static final String NOTEBOOK = "notebook";
+
+  public static final String NOTEBOOK_ID = "id";
+
 }

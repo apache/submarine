@@ -21,7 +21,7 @@ package org.apache.submarine.server;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
-import org.apache.submarine.server.api.experiment.Submitter;
+import org.apache.submarine.server.api.Submitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

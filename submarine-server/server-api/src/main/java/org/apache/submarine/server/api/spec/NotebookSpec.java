@@ -17,32 +17,40 @@
  * under the License.
  */
 
-export interface SpecMeta {
-  name: string;
-  description?: string;
-  namespace: string;
-  framework: string;
-  cmd: string;
-  envVars?: {
-    [key: string]: string;
-  };
-}
+package org.apache.submarine.server.api.spec;
 
-export interface SpecEnviroment {
-  image: string;
-}
+public class NotebookSpec {
 
-export interface Specs {
-  [name: string]: {
-    replicas: string;
-    resources: string;
-  };
-}
+  private NotebookMeta meta;
+  private EnvironmentSpec environment;
+  private NotebookPodSpec spec;
 
-export interface ExperimentSpec {
-  meta: SpecMeta;
-  environment: {
-    image: string;
-  };
-  spec: Specs;
+  public NotebookSpec() {
+
+  }
+
+  public NotebookMeta getMeta() {
+    return meta;
+  }
+
+  public void setMeta(NotebookMeta meta) {
+    this.meta = meta;
+  }
+
+  public EnvironmentSpec getEnvironment() {
+    return environment;
+  }
+
+  public void setEnvironment(EnvironmentSpec environmentSpec) {
+    this.environment = environmentSpec;
+  }
+
+  public NotebookPodSpec getSpec() {
+    return spec;
+  }
+
+  public void setSpec(NotebookPodSpec podSpec) {
+    this.spec = podSpec;
+  }
+
 }
