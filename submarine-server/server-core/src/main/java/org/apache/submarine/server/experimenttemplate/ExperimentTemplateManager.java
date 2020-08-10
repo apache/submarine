@@ -301,20 +301,22 @@ public class ExperimentTemplateManager {
       if (replacement == null) {
         unmappedKeys.add(key);
       }
+      else {
+        matcher.appendReplacement(sb, replacement);
+      }
       parmMap.remove(key);
-      matcher.appendReplacement(sb, replacement);
     }
     matcher.appendTail(sb);
-
-    if (unmappedKeys.size() > 0) {
-      throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
-          "Template contains unmapped key: " + unmappedKeys);
-    }
 
     if (parmMap.size() > 0) {
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
             "Parameters contains unused key: " + parmMap.keySet());
     }
+
+    if (unmappedKeys.size() > 0) {
+      throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
+          "Template contains unmapped key: " + unmappedKeys);
+    }  
 
     try {
       tplSpec = new Gson().fromJson(sb.toString(), ExperimentTemplateSpec.class);
