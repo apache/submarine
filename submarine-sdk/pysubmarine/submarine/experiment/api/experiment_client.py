@@ -152,7 +152,8 @@ class ExperimentClient:
         base_dn = 'dc=testad,dc=com'
         domain = 'testad.com'
         username = '%s@%s' % (cn[1], domain)
-        ret = ld.search_s(base_dn, ldap.SCOPE_SUBTREE, "(userPrincipalName=%s" % username, ["userPrincipalName"])
+        ret = ld.search_s(base_dn, ldap.SCOPE_SUBTREE,
+                          "(userPrincipalName=%s" % username, ["userPrincipalName"])
         if ret is None or len(ret) == 0:
             return False
         return True
