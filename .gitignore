@@ -95,6 +95,7 @@ submarine-security/spark-security/derby.log
 .classpath
 .settings
 .factorypath
+.vscode/tasks.json
 
 # jupyter notebook checkpoints
 .ipynb_checkpoints
