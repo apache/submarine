@@ -1,0 +1,61 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+            "label": "Checking releases for licenses",
+            "type": "shell",
+            "command": "mvn clean org.apache.rat:apache-rat-plugin:check",
+            "group": "test"
+        },
+        {
+            "label": "build all",
+            "type": "shell",
+            "command": "mvn clean install package -DskipTests -pl '!submarine-cloud'",
+            "group": "test"
+        },
+        {           
+            "label": "server-core",
+            "type": "shell",
+            "command": "mvn clean install package -DskipTests -pl 'submarine-server/server-core';cp submarine-server/server-core/target/submarine-server-core-0.5.0-SNAPSHOT.jar submarine-dist/target/submarine-dist-0.5.0-SNAPSHOT-hadoop-2.9/submarine-dist-0.5.0-SNAPSHOT-hadoop-2.9/lib/;",
+            
+            "group":"test"
+        },
+        {
+            "label": "server-api",
+            "type": "shell",
+            "command": "mvn clean install package -DskipTests -pl 'submarine-server/server-api';cp submarine-server/server-api/target/submarine-server-api-0.5.0-SNAPSHOT.jar submarine-dist/target/submarine-dist-0.5.0-SNAPSHOT-hadoop-2.9/submarine-dist-0.5.0-SNAPSHOT-hadoop-2.9/lib/;",
+            
+            "group": "test"
+        },
+        {
+            "label": "submarine-server",
+            "type": "shell",
+            "command": "",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "server-api",
+                "server-core"
+            ],
+            "group": "test"
+        },
+        {
+            "label": "start getMysqlJar",
+            "type": "shell",
+            "command": "cd submarine-dist/target/submarine-dist-0.5.0-SNAPSHOT-hadoop-2.9/submarine-dist-0.5.0-SNAPSHOT-hadoop-2.9/;rm logs/submarine.log;bin/submarine-daemon.sh start getMysqlJar;cd ~/submarine;",
+            "group": "test"
+        },
+        {
+            "label": "restart",
+            "type": "shell",
+            "command": "bash",
+            "args": ["cd submarine-dist/target/submarine-dist-0.5.0-SNAPSHOT-hadoop-2.9/submarine-dist-0.5.0-SNAPSHOT-hadoop-2.9/;rm logs/submarine.log;bin/submarine-daemon.sh restart;cd ~/submarine;"],
+            "group":"test"
+        },
+        {
+            "label": "rebase",
+            "type": "shell",
+            "command": "git fetch upstream;git checkout master;git rebase upstream/master",
+            "group":"test"
+        }
+	]
+}
