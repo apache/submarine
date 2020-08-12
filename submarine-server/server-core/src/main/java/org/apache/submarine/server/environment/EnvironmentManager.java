@@ -206,18 +206,17 @@ public class EnvironmentManager {
       throws SubmarineRuntimeException {
     List<Environment> envs =
         new ArrayList<Environment>(cachedEnvironments.values());
-    // Is it available in cache?
-    if (envs != null && envs.size() != 0) {
+
+    if (envs.size() != 0) {
       return envs;
     }
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       EnvironmentMapper environmentMapper =
             sqlSession.getMapper(EnvironmentMapper.class);
       List<EnvironmentEntity> environmentEntitys = environmentMapper.selectAll();
-      for (EnvironmentEntity environmentEntity: environmentEntitys) {
+      for (EnvironmentEntity environmentEntity : environmentEntitys) {
         if (environmentEntity != null) {
           Environment env = new Environment();
-
           env.setEnvironmentSpec(new Gson().fromJson(
                 environmentEntity.getEnvironmentSpec(), EnvironmentSpec.class));
           envs.add(env);

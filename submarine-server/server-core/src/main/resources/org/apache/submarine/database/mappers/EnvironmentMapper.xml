@@ -40,7 +40,6 @@
     select
     <include refid="Base_Column_List" />
     from environment
-    where 1 = 1
   </select>
 
   <select id="select" parameterType="java.lang.String" resultMap="resultMap">
