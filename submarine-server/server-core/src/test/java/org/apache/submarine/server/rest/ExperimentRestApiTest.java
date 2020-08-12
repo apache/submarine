@@ -1,10 +1,12 @@
 package org.apache.submarine.server.rest;
 
-import com.google.gson.*;
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.apache.submarine.server.SubmarineServer;
-import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
@@ -13,7 +15,10 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.experiment.ExperimentManager;
 import org.apache.submarine.server.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.gson.ExperimentIdSerializer;
-import org.junit.*;
+import org.junit.Test;
+import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.After;
 
 
 import javax.ws.rs.core.Response;
@@ -23,7 +28,8 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ExperimentRestApiTest {
 
@@ -82,7 +88,8 @@ public class ExperimentRestApiTest {
 
   @Test
   public void patchExperiment() {
-    when(mockExperimentManager.patchExperiment(any(String.class), any(ExperimentSpec.class))).thenReturn(experiment);
+    when(mockExperimentManager.patchExperiment(any(String.class), any(ExperimentSpec.class))).
+        thenReturn(experiment);
     Response patchExperimentResponse = experimentRestApi.patchExperiment("1", new ExperimentSpec());
     Experiment experiment = getResultFromResponse(patchExperimentResponse, Experiment.class);
     assertEquals("0b617cea-81fa-40b6-bbff-da3e400d2be4", experiment.getUid());
