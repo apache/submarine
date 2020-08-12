@@ -50,7 +50,11 @@ import org.apache.submarine.server.response.JsonResponse;
 @Path(RestConstants.V1 + "/" + RestConstants.EXPERIMENT)
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
 public class ExperimentRestApi {
-  private final ExperimentManager experimentManager = ExperimentManager.getInstance();
+    private ExperimentManager experimentManager = ExperimentManager.getInstance();
+
+    public void setExperimentManager(ExperimentManager experimentManager){
+        this.experimentManager = experimentManager;
+    }
   /**
    * Return the Pong message for test the connectivity
    * @return Pong message
