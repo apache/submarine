@@ -204,12 +204,21 @@ public class EnvironmentManager {
    */
   public List<Environment> listEnvironments(String status)
       throws SubmarineRuntimeException {
-    List<Environment> envs =
+    List<Environment> environmentList =
         new ArrayList<Environment>(cachedEnvironments.values());
+    return environmentList;
+  }
 
-    if (envs.size() != 0) {
-      return envs;
-    }
+  /**
+   * List all environments from database
+   * @return environment list
+   * @throws SubmarineRuntimeException the service error
+   */
+  public List<Environment> listAllEnvironments()
+      throws SubmarineRuntimeException {
+    List<Environment> envs =
+        new ArrayList<Environment>();
+
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       EnvironmentMapper environmentMapper =
             sqlSession.getMapper(EnvironmentMapper.class);
@@ -226,7 +235,7 @@ public class EnvironmentManager {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
-            "Unable to get the environment details.");
+            "Unable to get the environment list.");
     }
     return envs;
   }
