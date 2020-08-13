@@ -30,6 +30,7 @@ public abstract class AbstractCodeLocalizer implements CodeLocalizer {
   public static final String CODE_LOCALIZER_PATH = "/code";
   public static final String CODE_LOCALIZER_MOUNT_NAME = "code-dir";
   public static final String CODE_LOCALIZER_INIT_CONTAINER_NAME = "code-localizer";
+  public static final String CODE_LOCALIZER_PATH_ENV_VAR = "CODE_PATH";
   private String url;
   
   public AbstractCodeLocalizer(String url) {

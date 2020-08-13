@@ -29,7 +29,7 @@ public class SSHGitCodeLocalizer extends GitCodeLocalizer {
 
   @Override
   public void localize(V1PodSpec podSpec) {
-    // TODO: Code SSH based logic here
+    // Code SSH based logic here
   }
 
 }

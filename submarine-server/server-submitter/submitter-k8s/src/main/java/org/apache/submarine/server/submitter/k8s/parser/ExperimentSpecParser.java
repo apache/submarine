@@ -170,8 +170,7 @@ public class ExperimentSpecParser {
     resources.setLimits(parseResources(taskSpec));
     container.setResources(resources);
     container.setEnv(parseEnvVars(taskSpec, experimentSpec.getMeta().getEnvVars()));
-    containers.add(container);
-
+    
     /**
      * Init Git localize Container
      */
@@ -195,9 +194,17 @@ public class ExperimentSpecParser {
         List<V1VolumeMount> volumeMounts = new ArrayList<V1VolumeMount>();
         volumeMounts.add(mount);
         container.setVolumeMounts(volumeMounts);
+        
+        V1EnvVar codeEnvVar = new V1EnvVar();
+        codeEnvVar.setName(AbstractCodeLocalizer.CODE_LOCALIZER_PATH_ENV_VAR);
+        codeEnvVar.setValue(AbstractCodeLocalizer.CODE_LOCALIZER_PATH);
+        List<V1EnvVar> envVars = container.getEnv();
+        envVars.add(codeEnvVar);
+        container.setEnv(envVars);
       }
     }
 
+    containers.add(container);
     podSpec.setContainers(containers);
       
     /**

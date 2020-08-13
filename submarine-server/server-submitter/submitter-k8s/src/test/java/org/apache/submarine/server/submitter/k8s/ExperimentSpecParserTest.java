@@ -50,6 +50,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import io.kubernetes.client.models.V1Container;
 import io.kubernetes.client.models.V1EmptyDirVolumeSource;
+import io.kubernetes.client.models.V1EnvVar;
 
 
 public class ExperimentSpecParserTest extends SpecBuilder {
@@ -295,6 +296,13 @@ public class ExperimentSpecParserTest extends SpecBuilder {
         container.getVolumeMounts().get(0).getName());
     Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH,
         container.getVolumeMounts().get(0).getMountPath());
+    for (V1EnvVar env : container.getEnv()) {
+      if (env.getName()
+          .equals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH_ENV_VAR)) {
+        Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH,
+            env.getValue());
+      }
+    }
 
     V1Volume V1Volume =
         mlJobReplicaSpec.getTemplate().getSpec().getVolumes().get(0);
