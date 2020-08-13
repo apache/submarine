@@ -44,4 +44,16 @@ export class EnvironmentService {
       })
     );
   }
+
+  // TODO(kobe860219): Query environment
+  querySpecificEnvironment(id: string) {}
+
+  // TODO(kobe860219): Create new environment
+  createEnvironment(createData) {}
+
+  // TODO(kobe860219): Update an environment
+  updateEnvironment(updateData) {}
+
+  // TODO(kobe860219): Delete an environment
+  deleteEnvironment(id: string) {}
 }

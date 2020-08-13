@@ -53,7 +53,7 @@ export class EnvironmentComponent implements OnInit {
   // TODO(kobe860219): Update an environment
   updateEnvironment(id: string, data) {}
 
-  // TODO(kobe860219): Delete environment
+  // TODO(kobe860219): Delete an environment
   deleteEnvironment(id: string) {}
 
   selectAllEnv() {
