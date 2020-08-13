@@ -24,7 +24,7 @@ import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentSpec, Specs, SpecEnviroment, SpecMeta } from '@submarine/interfaces/experiment-spec';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid';
 import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
