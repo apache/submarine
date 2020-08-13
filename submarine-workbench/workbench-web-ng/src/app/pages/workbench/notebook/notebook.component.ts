@@ -78,8 +78,7 @@ export class NotebookComponent implements OnInit {
       environment: new FormControl('env1', [Validators.required]),
       cpu: new FormControl(null, [Validators.required]),
       gpu: new FormControl(null, [Validators.required]),
-      memory: new FormControl(null, [Validators.required]),
-      volume: new FormControl('volume1', [Validators.required])
+      memory: new FormControl(null, [Validators.required])
     });
     this.checkedList = [];
     for (let i = 0; i < this.notebookList.length; i++) {
@@ -87,13 +86,25 @@ export class NotebookComponent implements OnInit {
     }
   }
 
-  selectAll() {
+  selectAllNotebook() {
     for (let i = 0; i < this.checkedList.length; i++) {
       this.checkedList[i] = this.checked;
     }
   }
 
-  createNotebook() {
-    console.log('Create Notebook');
+  // TODO(kobe860219): Make a notebook run
+  runNotebook(data) {
+    data.status = 'Running';
   }
+
+  // TODO(kobe860219): Stop a running notebook
+  stopNotebook(data) {
+    data.status = 'Stop';
+  }
+
+  // TODO(kobe860219): Create new notebook
+  createNotebook() {}
+
+  // TODO(kobe860219): Delete notebook
+  deleteNotebook() {}
 }

@@ -48,9 +48,19 @@
         </nz-select>
       </div>
       <div nz-col nzSpan="12" align="right">
-        <button id="btnNewNotebook" nz-button nzType="primary" (click)="isVisible = true">
+        <nz-input-group nzSearch style="width: 300px; margin-right: 5px;" [nzAddOnAfter]="suffixIconButton">
+          <input type="text" nz-input placeholder="input search text" />
+        </nz-input-group>
+        <ng-template #suffixIconButton>
+          <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+        </ng-template>
+        <button id="btnNewNotebook" nz-button nzType="primary" style="margin-right: 5px;" (click)="isVisible = true">
           <i nz-icon nzType="plus"></i>
           New Notebook
+        </button>
+        <button id="btnDelNotebook" nz-button nzType="primary">
+          <i nz-icon nzType="delete"></i>
+          Delete
         </button>
       </div>
     </div>
@@ -59,16 +69,15 @@
         <thead>
           <tr>
             <th>
-              <label nz-checkbox [(ngModel)]="checked" (ngModelChange)="selectAll()"></label>
+              <label nz-checkbox [(ngModel)]="checked" (ngModelChange)="selectAllNotebook()"></label>
             </th>
-            <th>Status</th>
+            <th nzWidth="120px">Status</th>
             <th>Name</th>
             <th>Age</th>
             <th>Environment</th>
             <th>CPU</th>
             <th>GPU</th>
             <th>Memory</th>
-            <th>Volume</th>
             <th>Action</th>
           </tr>
         </thead>
@@ -88,18 +97,15 @@
             <td>{{ data.cpu }}</td>
             <td>{{ data.gpu }}</td>
             <td>{{ data.memory }}</td>
-            <td>{{ data.volumes }}</td>
             <td>
-              <a>Delete</a>
-              <nz-divider nzType="vertical"></nz-divider>
               <a nz-dropdown [nzDropdownMenu]="menu">
                 More
                 <i nz-icon nzType="down"></i>
               </a>
               <nz-dropdown-menu #menu="nzDropdownMenu">
                 <ul nz-menu nzSelectable>
-                  <li nz-menu-item>Resource Edit</li>
-                  <li nz-menu-item>Enviroment</li>
+                  <li nz-menu-item (click)="runNotebook(data)">Run</li>
+                  <li nz-menu-item (click)="stopNotebook(data)">Stop</li>
                 </ul>
               </nz-dropdown-menu>
             </td>
@@ -163,13 +169,6 @@
           Memory :
         </label>
         <input nz-input type="text" name="memory" id="memory" formControlName="memory" />
-      </div>
-      <div class="newNotebookForm">
-        <label for="volume">
-          <span class="red-star">*</span>
-          Volume :
-        </label>
-        <input nz-input type="text" name="volume" id="volume" formControlName="volume" />
       </div>
     </form>
   </div>
