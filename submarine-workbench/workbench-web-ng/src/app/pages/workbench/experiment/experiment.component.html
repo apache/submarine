@@ -115,12 +115,16 @@
                 {{ data.experimentId }}
               </a>
             </td>
-            <td>{{ data.status }}</td>
+            <td>
+              <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag>
+            </td>
             <td>{{ data.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.duration }}</td>
             <td class="td-action">
+              <a (click)="onCloneExperiment(data.spec)">Clone</a>
+              <nz-divider nzType="vertical"></nz-divider>
               <a (click)="onUpdateExperiment(data.experimentId, data.spec)">Update</a>
               <nz-divider nzType="vertical"></nz-divider>
               <a
@@ -278,10 +282,10 @@
                   <div id="spec{{ i }}">
                     <label>Spec name</label>
                     <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="frameworks.value">
-                      <div *ngSwitchCase="'Tensorflow'">
+                      <div *ngSwitchCase="'TensorFlow'">
                         <nz-option *ngFor="let spec of TF_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
                       </div>
-                      <div *ngSwitchCase="'Pytorch'">
+                      <div *ngSwitchCase="'PyTorch'">
                         <nz-option *ngFor="let spec of PYTORCH_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
                       </div>
                     </nz-select>

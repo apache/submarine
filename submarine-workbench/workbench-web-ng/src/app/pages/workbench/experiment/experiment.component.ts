@@ -24,6 +24,7 @@ import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentSpec, Specs, SpecEnviroment, SpecMeta } from '@submarine/interfaces/experiment-spec';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
+import { nanoid } from 'nanoid';
 import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
@@ -50,10 +51,10 @@ export class ExperimentComponent implements OnInit {
   isVisible = false;
 
   // About update
-  mode: 'create' | 'update' = 'create';
+  mode: 'create' | 'update' | 'clone' = 'create';
   updateId: string = null;
 
-  FRAMEWORK_NAMES = ['Tensorflow', 'Pytorch'];
+  FRAMEWORK_NAMES = ['TensorFlow', 'PyTorch'];
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
   PYTORCH_SPECNAMES = ['Master', 'Worker'];
   MEMORY_UNITS = ['M', 'G'];
@@ -64,6 +65,13 @@ export class ExperimentComponent implements OnInit {
 
   // About spec
   currentSpecPage = 1;
+
+  statusColor: { [key: string]: string } = {
+    Accepted: 'gold',
+    Created: 'white',
+    Running: 'green',
+    Succeeded: 'blue'
+  };
 
   constructor(
     private experimentService: ExperimentService,
@@ -77,7 +85,7 @@ export class ExperimentComponent implements OnInit {
     this.experiment = new FormGroup({
       experimentName: new FormControl(null, Validators.required),
       description: new FormControl(null, [Validators.required]),
-      frameworks: new FormControl('Tensorflow', [Validators.required]),
+      frameworks: new FormControl('TensorFlow', [Validators.required]),
       namespace: new FormControl('default', [Validators.required]),
       cmd: new FormControl('', [Validators.required]),
       envs: new FormArray([], [this.experimentFormService.nameValidatorFactory('key')]),
@@ -152,16 +160,17 @@ export class ExperimentComponent implements OnInit {
    *
    * @param mode - The mode which the form should open in
    */
-  initExperimentStatus(mode: 'create' | 'update') {
+  initExperimentStatus(mode: 'create' | 'update' | 'clone') {
     this.mode = mode;
     this.current = 0;
     this.okText = 'Next step';
     this.isVisible = true;
     this.updateId = null;
     // Reset the form
+    this.experimentName.enable();
     this.envs.clear();
     this.specs.clear();
-    this.experiment.reset({ frameworks: 'Tensorflow', namespace: 'default' });
+    this.experiment.reset({ frameworks: 'TensorFlow', namespace: 'default' });
   }
 
   /**
@@ -175,8 +184,7 @@ export class ExperimentComponent implements OnInit {
         const newSpec = this.constructSpec();
         this.experimentService.createExperiment(newSpec).subscribe({
           next: (result) => {
-            // Must reconstruct a new array for re-rendering
-            this.experimentList = [...this.experimentList, result];
+            this.fetchExperimentList();
           },
           error: (msg) => {
             this.nzMessageService.error(`${msg}, please try again`, {
@@ -191,17 +199,8 @@ export class ExperimentComponent implements OnInit {
       } else if (this.mode === 'update') {
         const newSpec = this.constructSpec();
         this.experimentService.updateExperiment(this.updateId, newSpec).subscribe(
-          (result) => {
-            // Find the old index
-            const index = this.experimentList.findIndex(
-              (experiment) => experiment.experimentId === result.experimentId
-            );
-            // Create a new list, meanwhile maintaining the order
-            this.experimentList = [
-              ...this.experimentList.slice(0, index),
-              result,
-              ...this.experimentList.slice(index + 1)
-            ];
+          () => {
+            this.fetchExperimentList();
           },
           (msg) => {
             this.nzMessageService.error(`${msg}, please try again`, {
@@ -210,6 +209,22 @@ export class ExperimentComponent implements OnInit {
           },
           () => {
             this.nzMessageService.success('Modification succeeds!');
+            this.isVisible = false;
+          }
+        );
+      } else if (this.mode === 'clone') {
+        const newSpec = this.constructSpec();
+        this.experimentService.createExperiment(newSpec).subscribe(
+          () => {
+            this.fetchExperimentList();
+          },
+          (msg) => {
+            this.nzMessageService.error(`${msg}, please try again`, {
+              nzPauseOnHover: true
+            });
+          },
+          () => {
+            this.nzMessageService.success('Create a new experiment !');
             this.isVisible = false;
           }
         );
@@ -315,13 +330,13 @@ export class ExperimentComponent implements OnInit {
       }
     }
 
-    const enviroment: SpecEnviroment = {
+    const environment: SpecEnviroment = {
       image: this.image.value
     };
 
     const newExperimentSpec: ExperimentSpec = {
       meta: meta,
-      environment: enviroment,
+      environment: environment,
       spec: specs
     };
 
@@ -348,7 +363,7 @@ export class ExperimentComponent implements OnInit {
           const runTime = new Date(item.runningTime);
           const result = (finTime.getTime() - runTime.getTime()) / 1000;
           item.duration = this.experimentService.durationHandle(result);
-        } else {
+        } else if (item.runningTime) {
           const runTime = new Date(item.runningTime);
           const result = (currentTime.getTime() - runTime.getTime()) / 1000;
           item.duration = this.experimentService.durationHandle(result);
@@ -372,6 +387,22 @@ export class ExperimentComponent implements OnInit {
 
     // Put value back
     this.experimentName.setValue(spec.meta.name);
+    this.cloneExperiment(spec);
+  }
+
+  onCloneExperiment(spec: ExperimentSpec) {
+    // Open Modal in update mode
+    this.initExperimentStatus('clone');
+    // Prevent user from modifying the name
+    this.experimentName.enable();
+    // Put value back
+    const id: string = nanoid(8);
+    const cloneExperimentName = spec.meta.name + '-' + id;
+    this.experimentName.setValue(cloneExperimentName.toLocaleLowerCase());
+    this.cloneExperiment(spec);
+  }
+
+  cloneExperiment(spec: ExperimentSpec) {
     this.description.setValue(spec.meta.description);
     this.namespace.setValue(spec.meta.namespace);
     this.cmd.setValue(spec.meta.cmd);
@@ -384,7 +415,7 @@ export class ExperimentComponent implements OnInit {
 
     for (const [specName, info] of Object.entries(spec.spec)) {
       const [cpuCount, memory, unit] = info.resources.match(/\d+|[MG]/g);
-      const newSpec = this.createSpec(specName, parseInt(info.replicas), parseInt(cpuCount), memory, unit);
+      const newSpec = this.createSpec(specName, parseInt(info.replicas, 10), parseInt(cpuCount, 10), memory, unit);
       this.specs.push(newSpec);
     }
   }
