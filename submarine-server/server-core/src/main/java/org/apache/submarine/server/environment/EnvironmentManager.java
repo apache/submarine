@@ -197,26 +197,13 @@ public class EnvironmentManager {
   }
 
   /**
-   * List environments
-   * @param status environment status, if null will return all status
+   * List all environments from database
    * @return environment list
    * @throws SubmarineRuntimeException the service error
    */
   public List<Environment> listEnvironments(String status)
       throws SubmarineRuntimeException {
     List<Environment> environmentList =
-        new ArrayList<Environment>(cachedEnvironments.values());
-    return environmentList;
-  }
-
-  /**
-   * List all environments from database
-   * @return environment list
-   * @throws SubmarineRuntimeException the service error
-   */
-  public List<Environment> listAllEnvironments()
-      throws SubmarineRuntimeException {
-    List<Environment> envs =
         new ArrayList<Environment>();
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -228,7 +215,7 @@ public class EnvironmentManager {
           Environment env = new Environment();
           env.setEnvironmentSpec(new Gson().fromJson(
                 environmentEntity.getEnvironmentSpec(), EnvironmentSpec.class));
-          envs.add(env);
+          environmentList.add(env);
           cachedEnvironments.put(env.getEnvironmentSpec().getName(), env);
         }
       }
@@ -237,7 +224,7 @@ public class EnvironmentManager {
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
             "Unable to get the environment list.");
     }
-    return envs;
+    return environmentList;
   }
 
   private void checkSpec(EnvironmentSpec spec)

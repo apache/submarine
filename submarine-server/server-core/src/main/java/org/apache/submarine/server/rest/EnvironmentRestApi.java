@@ -137,10 +137,11 @@ public class EnvironmentRestApi {
   }
   
   /**
-   * List all environments.
+   * List all environments from database.
    * @return environment list
    */
   @GET
+  @Path("/list")
   @Operation(summary = "List of Environments",
           tags = {"environments"},
           responses = {
@@ -154,30 +155,6 @@ public class EnvironmentRestApi {
           environmentManager.listEnvironments(status);
       return new JsonResponse.Builder<List<Environment>>(Response.Status.OK)
           .success(true).result(environmentList).build();
-    } catch (SubmarineRuntimeException e) {
-      return parseEnvironmentServiceException(e);
-    }
-  }
-
-  /**
-   * List all environments from database.
-   * @return environment list
-   */
-  @GET
-  @Path("/list")
-  @Operation(summary = "List of Environments from database",
-          tags = {"environments"},
-          responses = {
-                  @ApiResponse(description = "successful operation", 
-                      content = @Content(
-                          schema = @Schema(
-                              implementation = Environment.class)))})
-  public Response listAllEnvironments() {
-    try {
-      List<Environment> allEnvironmentList =
-          environmentManager.listAllEnvironments();
-      return new JsonResponse.Builder<List<Environment>>(Response.Status.OK)
-          .success(true).result(allEnvironmentList).build();
     } catch (SubmarineRuntimeException e) {
       return parseEnvironmentServiceException(e);
     }
