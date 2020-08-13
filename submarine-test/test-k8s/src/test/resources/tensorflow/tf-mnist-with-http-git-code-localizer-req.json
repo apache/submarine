@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "name": "tf-mnist-json",
+    "namespace": "default",
+    "framework": "TensorFlow",
+    "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
+    "envVars": {
+      "ENV_1": "ENV1"
+    }
+  },
+  "environment": {
+  	"image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+  },
+  "spec": {
+    "Ps": {
+      "replicas": 1,
+      "resources": "cpu=1,memory=512M"
+    },
+    "Worker": {
+      "replicas": 1,
+      "resources": "cpu=1,memory=512M"
+    }
+  },
+  "code": {
+    "syncMode": "git",
+    "url" : "https://github.com/apache/submarine.git"
+  }
+}

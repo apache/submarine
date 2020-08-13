@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.kubernetes.client.models.V1ObjectMeta;
+import io.kubernetes.client.models.V1Volume;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -43,9 +44,13 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobRepl
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
+import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
+import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.GitCodeLocalizer;
 import org.junit.Assert;
 import org.junit.Test;
 import io.kubernetes.client.models.V1Container;
+import io.kubernetes.client.models.V1EmptyDirVolumeSource;
+import io.kubernetes.client.models.V1EnvVar;
 
 
 public class ExperimentSpecParserTest extends SpecBuilder {
@@ -259,5 +264,50 @@ public class ExperimentSpecParserTest extends SpecBuilder {
         initContainer.getCommand().get(2));
 
     environmentManager.deleteEnvironment(envName);
+  }
+  
+  @Test
+  public void testValidPyTorchJobSpecWithHTTPGitCodeLocalizer()
+      throws IOException, URISyntaxException, InvalidSpecException {
+    ExperimentSpec jobSpec =
+        (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class,
+            pytorchJobWithHTTPGitCodeLocalizerFile);
+    PyTorchJob pyTorchJob = (PyTorchJob) ExperimentSpecParser.parseJob(jobSpec);
+
+    MLJobReplicaSpec mlJobReplicaSpec = pyTorchJob.getSpec().getReplicaSpecs()
+        .get(PyTorchJobReplicaType.Master);
+    Assert.assertEquals(1,
+        mlJobReplicaSpec.getTemplate().getSpec().getInitContainers().size());
+    V1Container initContainer =
+        mlJobReplicaSpec.getTemplate().getSpec().getInitContainers().get(0);
+    Assert.assertEquals(
+        AbstractCodeLocalizer.CODE_LOCALIZER_INIT_CONTAINER_NAME,
+        initContainer.getName());
+    Assert.assertEquals(GitCodeLocalizer.GIT_SYNC_IMAGE,
+        initContainer.getImage());
+    Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME,
+        initContainer.getVolumeMounts().get(0).getName());
+    Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH,
+        initContainer.getVolumeMounts().get(0).getMountPath());
+
+    V1Container container =
+        mlJobReplicaSpec.getTemplate().getSpec().getContainers().get(0);
+    Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME,
+        container.getVolumeMounts().get(0).getName());
+    Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH,
+        container.getVolumeMounts().get(0).getMountPath());
+    for (V1EnvVar env : container.getEnv()) {
+      if (env.getName()
+          .equals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH_ENV_VAR)) {
+        Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH,
+            env.getValue());
+      }
+    }
+
+    V1Volume V1Volume =
+        mlJobReplicaSpec.getTemplate().getSpec().getVolumes().get(0);
+    Assert.assertEquals(new V1EmptyDirVolumeSource(), V1Volume.getEmptyDir());
+    Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME,
+        V1Volume.getName());
   }
 }

@@ -26,6 +26,7 @@ import io.kubernetes.client.models.V1ObjectMeta;
 import io.kubernetes.client.models.V1PodSpec;
 import io.kubernetes.client.models.V1PodTemplateSpec;
 import io.kubernetes.client.models.V1ResourceRequirements;
+import io.kubernetes.client.models.V1VolumeMount;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -36,6 +37,8 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.environment.EnvironmentManager;
+import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
+import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.CodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
@@ -142,7 +145,7 @@ public class ExperimentSpecParser {
   }
 
   private static V1PodTemplateSpec parseTemplateSpec(
-      ExperimentTaskSpec taskSpec, ExperimentSpec experimentSpec) {
+      ExperimentTaskSpec taskSpec, ExperimentSpec experimentSpec) throws InvalidSpecException {
     V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
     V1PodSpec podSpec = new V1PodSpec();
     List<V1Container> containers = new ArrayList<>();
@@ -167,9 +170,43 @@ public class ExperimentSpecParser {
     resources.setLimits(parseResources(taskSpec));
     container.setResources(resources);
     container.setEnv(parseEnvVars(taskSpec, experimentSpec.getMeta().getEnvVars()));
+    
+    /**
+     * Init Git localize Container
+     */
+    if (experimentSpec.getCode() != null) {
+      CodeLocalizer localizer = AbstractCodeLocalizer.getCodeLocalizer(
+          experimentSpec.getCode().getSyncMode(),
+          experimentSpec.getCode().getUrl());
+      localizer.localize(podSpec);
+
+      if (podSpec.getInitContainers() != null
+          && podSpec.getInitContainers().size() > 0) {
+        String volumeName = podSpec.getInitContainers().get(0).getVolumeMounts()
+            .get(0).getName();
+        String path = podSpec.getInitContainers().get(0).getVolumeMounts()
+            .get(0).getMountPath();
+
+        V1VolumeMount mount = new V1VolumeMount();
+        mount.setName(volumeName);
+        mount.setMountPath(path);
+
+        List<V1VolumeMount> volumeMounts = new ArrayList<V1VolumeMount>();
+        volumeMounts.add(mount);
+        container.setVolumeMounts(volumeMounts);
+        
+        V1EnvVar codeEnvVar = new V1EnvVar();
+        codeEnvVar.setName(AbstractCodeLocalizer.CODE_LOCALIZER_PATH_ENV_VAR);
+        codeEnvVar.setValue(AbstractCodeLocalizer.CODE_LOCALIZER_PATH);
+        List<V1EnvVar> envVars = container.getEnv();
+        envVars.add(codeEnvVar);
+        container.setEnv(envVars);
+      }
+    }
+
     containers.add(container);
     podSpec.setContainers(containers);
-
+      
     /**
      * Init Containers
      */

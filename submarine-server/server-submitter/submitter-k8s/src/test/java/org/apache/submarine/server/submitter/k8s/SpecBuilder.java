@@ -40,6 +40,8 @@ public abstract class SpecBuilder {
   protected final String pytorchJobWithInvalidEnvReqFile =
       "/pytorch_job_req_invalid_env.json";
   protected final String notebookReqFile = "/notebook_req.json";
+  protected final String pytorchJobWithHTTPGitCodeLocalizerFile =
+      "/pytorch_job_req_http_git_code_localizer.json";
 
   protected Object buildFromJsonFile(Object obj, String filePath) throws IOException,
       URISyntaxException {

@@ -163,6 +163,13 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     String patchBody = loadContent("pytorch/pt-mnist-patch-req.yaml");
     run(body, patchBody, "application/yaml");
   }
+  
+  @Test
+  public void testTensorFlowUsingCodeWithJsonSpec() throws Exception {
+    String body = loadContent("tensorflow/tf-mnist-with-http-git-code-localizer-req.json");
+    String patchBody = loadContent("tensorflow/tf-mnist-with-http-git-code-localizer-req.json");
+    run(body, patchBody, "application/json");
+  }
 
   private void run(String body, String patchBody, String contentType) throws Exception {
     // create
