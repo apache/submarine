@@ -28,7 +28,6 @@
     "lodash": "^4.17.19",
     "md5": "^2.2.1",
     "ng-zorro-antd": "8.1.2",
-    "ngx-monaco-editor": "^8.0.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"

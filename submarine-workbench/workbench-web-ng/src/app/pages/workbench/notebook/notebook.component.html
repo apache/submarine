@@ -16,78 +16,160 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
+<nz-layout style="margin: -24px -24px 16px;">
+  <nz-layout class="inner-layout">
+    <div id="notebookOuter">
+      <nz-breadcrumb>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/', 'workbench', 'home']">Home</a>
+        </nz-breadcrumb-item>
+        <nz-breadcrumb-item>
+          <a [routerLink]="['/', 'workbench', 'notebook']">Notebook</a>
+        </nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <div>
+        <br />
+        <h2>Notebook</h2>
+        <nz-content>Apache submarine support jupyter notebook.</nz-content>
+        <br />
+      </div>
+    </div>
+  </nz-layout>
+  <div id="notebookDiv">
+    <div nz-row>
+      <div nz-col nzSpan="12">
+        <label style="font-size: large; color: black;">Namespaces :</label>
+        <nz-select style="margin-left: 5px; width: 240px;" [(ngModel)]="currentNamespaces">
+          <nz-option
+            *ngFor="let namespaces of namespacesList"
+            [nzValue]="namespaces"
+            [nzLabel]="namespaces"
+          ></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="12" align="right">
+        <nz-input-group nzSearch style="width: 300px; margin-right: 5px;" [nzAddOnAfter]="suffixIconButton">
+          <input type="text" nz-input placeholder="input search text" />
+        </nz-input-group>
+        <ng-template #suffixIconButton>
+          <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+        </ng-template>
+        <button id="btnNewNotebook" nz-button nzType="primary" style="margin-right: 5px;" (click)="isVisible = true">
+          <i nz-icon nzType="plus"></i>
+          New Notebook
+        </button>
+        <button id="btnDelNotebook" nz-button nzType="primary">
+          <i nz-icon nzType="delete"></i>
+          Delete
+        </button>
+      </div>
+    </div>
+    <div>
+      <nz-table style="padding-top: 5px;" #basicTable [nzData]="notebookList">
+        <thead>
+          <tr>
+            <th>
+              <label nz-checkbox [(ngModel)]="checked" (ngModelChange)="selectAllNotebook()"></label>
+            </th>
+            <th nzWidth="120px">Status</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Environment</th>
+            <th>CPU</th>
+            <th>GPU</th>
+            <th>Memory</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data; let i = index">
+            <td>
+              <label nz-checkbox [(ngModel)]="checkedList[i]"></label>
+            </td>
+            <td>
+              <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag>
+            </td>
+            <td>
+              <a>{{ data.name }}</a>
+            </td>
+            <td>{{ data.age }}</td>
+            <td>{{ data.environment }}</td>
+            <td>{{ data.cpu }}</td>
+            <td>{{ data.gpu }}</td>
+            <td>{{ data.memory }}</td>
+            <td>
+              <a nz-dropdown [nzDropdownMenu]="menu">
+                More
+                <i nz-icon nzType="down"></i>
+              </a>
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu nzSelectable>
+                  <li nz-menu-item (click)="runNotebook(data)">Run</li>
+                  <li nz-menu-item (click)="stopNotebook(data)">Stop</li>
+                </ul>
+              </nz-dropdown-menu>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+</nz-layout>
 
-<div id="notebookDiv" *ngIf="!isEditing">
-  <div id="searchRegin" align="right">
-    <form nz-form [nzLayout]="'inline'" [formGroup]="searchForm">
-      <nz-form-item>
-        <nz-form-label>Notebook Name</nz-form-label>
-        <nz-form-control>
-          <input nz-input placeholder="Notebook name..." formControlName="notebookName" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-control>
-          <button id="searchBtn" nz-button nzType="primary">
-            <i nz-icon nzType="search"></i>
-            Query
-          </button>
-          <button id="newBtn" nz-button nzType="primary" style="margin-left: 8px;">
-            <i nz-icon nzType="plus"></i>
-            New Notebook
-          </button>
-        </nz-form-control>
-      </nz-form-item>
+<nz-modal
+  [(nzVisible)]="isVisible"
+  nzTitle="Create Notebook"
+  [(nzCancelText)]="cancelText"
+  [(nzOkText)]="okText"
+  [nzOkLoading]="isOkLoading"
+  (nzOnCancel)="isVisible = false"
+  (nzOnOk)="isVisible = false"
+  [nzWidth]="700"
+>
+  <div>
+    <form [formGroup]="notebookForm">
+      <div class="newNotebookForm">
+        <label for="notebookName">
+          <span class="red-star">*</span>
+          Notebook Name :
+        </label>
+        <input nz-input type="text" name="notebookName" id="notebookName" formControlName="notebookName" required />
+      </div>
+      <div class="newNotebookForm">
+        <label for="namespaces">
+          <span class="red-star">*</span>
+          Namespaces :
+        </label>
+        <input nz-input type="text" name="namespaces" id="namespaces" formControlName="namespaces" />
+      </div>
+      <div class="newNotebookForm">
+        <label for="environment">
+          <span class="red-star">*</span>
+          Environment :
+        </label>
+        <input nz-input type="text" name="environment" id="environment" formControlName="environment" />
+      </div>
+      <div class="newNotebookForm">
+        <label for="cpu">
+          <span class="red-star">*</span>
+          CPU :
+        </label>
+        <input nz-input type="text" name="cpu" id="cpu" formControlName="cpu" />
+      </div>
+      <div class="newNotebookForm">
+        <label for="gpu">
+          <span class="red-star">*</span>
+          GPU :
+        </label>
+        <input nz-input type="text" name="gpu" id="gpu" formControlName="gpu" />
+      </div>
+      <div class="newNotebookForm">
+        <label for="memory">
+          <span class="red-star">*</span>
+          Memory :
+        </label>
+        <input nz-input type="text" name="memory" id="memory" formControlName="memory" />
+      </div>
     </form>
   </div>
-  <div id="notebookTable">
-    <nz-table #notebookListTable [nzData]="notebookList">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Creator</th>
-          <th>Create Time</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let notebook of notebookListTable.data; let i; of: index">
-          <td>{{ notebook.name }}</td>
-          <td>{{ notebook.createBy }}</td>
-          <td>{{ notebook.createTime }}</td>
-          <td>
-            <a id="edit{{ i }}" (click)="edit(notebook)">
-              <i nz-icon nzType="edit" nzTheme="outline"></i>
-              Edit
-            </a>
-            <nz-divider nzType="vertical"></nz-divider>
-            <a id="delete{{ i }}">
-              <i nz-icon nzType="delete" nzTheme="outline"></i>
-              Delete
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
-  </div>
-</div>
-
-<div *ngIf="isEditing">
-  <div style="background-color: white;">
-    <button id="btnRun" class="actionBar" nz-button nzType="primary">
-      <i nz-icon nzType="caret-right" nzTheme="outline"></i>
-      Run
-    </button>
-    <button id="btnSave" class="actionBar" nz-button nzType="primary" (click)="saveNotebook()">
-      <i nz-icon nzType="save" nzTheme="outline"></i>
-      Save
-    </button>
-    <button id="btnDelete" class="actionBar" nz-button nzType="danger">
-      <i nz-icon nzType="delete" nzTheme="outline"></i>
-      Delete
-    </button>
-  </div>
-  <div style="margin-top: 5px; background-color: white; height: 500px;">
-    <ngx-monaco-editor [options]="editorOptions" [(ngModel)]="code" style="height: 500px;"></ngx-monaco-editor>
-  </div>
-</div>
+</nz-modal>

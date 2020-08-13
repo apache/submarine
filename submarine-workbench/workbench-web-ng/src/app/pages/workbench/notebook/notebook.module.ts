@@ -22,18 +22,10 @@ import { NgModule } from '@angular/core';
 import { NotebookComponent } from './notebook.component';
 import { NotebookRoutingModule } from './notebook-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 
 @NgModule({
   declarations: [NotebookComponent],
-  imports: [
-    CommonModule,
-    NotebookRoutingModule,
-    MonacoEditorModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgZorroAntdModule
-  ]
+  imports: [CommonModule, NotebookRoutingModule, FormsModule, ReactiveFormsModule, NgZorroAntdModule]
 })
 export class NotebookModule {}

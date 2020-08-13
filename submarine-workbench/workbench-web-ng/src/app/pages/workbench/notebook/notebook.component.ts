@@ -18,8 +18,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NzMessageService } from 'ng-zorro-antd/message';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'submarine-notebook',
@@ -27,49 +26,85 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   styleUrls: ['./notebook.component.scss']
 })
 export class NotebookComponent implements OnInit {
-  isEditing = false;
-  notebookList = [{ name: 'Notebook', createTime: '2020-05-16 20:00:00', createBy: 'Someone' }];
+  // Checkbox
+  checkedList: boolean[] = [];
+  checked: boolean = false;
 
-  //search
-  notebookName: string = '';
-  searchForm: FormGroup;
+  // New notebook modal
+  cancelText = 'Cancel';
+  okText = 'Create';
+  isVisible = false;
 
-  //editor
-  editorOptions = { theme: 'vs-dark', language: 'python' };
-  code: string = `from tensorflow.examples.tutorials.mnist import input_data
-  import numpy as np
-  
-  mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
-  x_train = mnist.train.images
-  y_train = mnist.train.labels
-  x_test = mnist.test.images
-  y_test = mnist.test.labels
-  
-  print(x_train.shape)
-  print(y_train.shape)
-  print(x_test.shape)
-  print(y_test.shape)
-  print("---")
-  
-  #print(x_train[1, :])
-  print(np.argmax(y_train[1, :]))`;
+  // New notebook(form)
+  notebookForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private message: NzMessageService) {}
+  // Mock Data
+  namespacesList = ['namespaces1', 'namespaces2'];
+  currentNamespaces = this.namespacesList[0];
+  notebookList = [
+    {
+      status: 'Running',
+      name: 'Notebook1',
+      age: '35 mins',
+      environment: 'image1',
+      cpu: '2',
+      gpu: '1',
+      memory: '512 MB',
+      volumes: 'volumes1'
+    },
+    {
+      status: 'Stop',
+      name: 'Notebook2',
+      age: '40 mins',
+      environment: 'image2',
+      cpu: '4',
+      gpu: '4',
+      memory: '1024 MB',
+      volumes: 'volumes2'
+    }
+  ];
+
+  constructor() {}
+
+  statusColor: { [key: string]: string } = {
+    Running: 'green',
+    Stop: 'blue'
+  };
 
   ngOnInit() {
-    this.message.warning('Notebook is in developing', { nzDuration: 5000 });
-
-    this.searchForm = this.fb.group({
-      notebookName: [this.notebookName]
+    this.notebookForm = new FormGroup({
+      notebookName: new FormControl(null, [Validators.required]),
+      namespaces: new FormControl(this.currentNamespaces, [Validators.required]),
+      environment: new FormControl('env1', [Validators.required]),
+      cpu: new FormControl(null, [Validators.required]),
+      gpu: new FormControl(null, [Validators.required]),
+      memory: new FormControl(null, [Validators.required])
     });
+    this.checkedList = [];
+    for (let i = 0; i < this.notebookList.length; i++) {
+      this.checkedList.push(false);
+    }
   }
 
-  edit(notebook) {
-    this.isEditing = true;
+  selectAllNotebook() {
+    for (let i = 0; i < this.checkedList.length; i++) {
+      this.checkedList[i] = this.checked;
+    }
   }
 
-  saveNotebook() {
-    this.isEditing = false;
-    this.message.success('Save notebook success!');
+  // TODO(kobe860219): Make a notebook run
+  runNotebook(data) {
+    data.status = 'Running';
   }
+
+  // TODO(kobe860219): Stop a running notebook
+  stopNotebook(data) {
+    data.status = 'Stop';
+  }
+
+  // TODO(kobe860219): Create new notebook
+  createNotebook() {}
+
+  // TODO(kobe860219): Delete notebook
+  deleteNotebook() {}
 }
