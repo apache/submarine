@@ -32,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -52,6 +53,7 @@ import org.apache.submarine.server.response.JsonResponse;
 public class ExperimentRestApi {
   private ExperimentManager experimentManager = ExperimentManager.getInstance();
 
+  @VisibleForTesting
   public void setExperimentManager(ExperimentManager experimentManager) {
     this.experimentManager = experimentManager;
   }
