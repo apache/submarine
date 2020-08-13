@@ -28,7 +28,10 @@ import org.apache.submarine.server.SubmarineServer;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
-import org.apache.submarine.server.api.spec.*;
+import org.apache.submarine.server.api.spec.EnvironmentSpec;
+import org.apache.submarine.server.api.spec.ExperimentMeta;
+import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.api.spec.KernelSpec;
 import org.apache.submarine.server.experiment.ExperimentManager;
 import org.apache.submarine.server.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.gson.ExperimentIdSerializer;
@@ -218,10 +221,4 @@ public class ExperimentRestApiTest {
     return list;
   }
 
-  private static ExperimentMeta parseMetadata(ExperimentSpec experimentSpec) {
-    ExperimentMeta meta = new ExperimentMeta();
-    meta.setName(experimentSpec.getMeta().getName());
-    meta.setNamespace(experimentSpec.getMeta().getNamespace());
-    return meta;
-  }
 }
