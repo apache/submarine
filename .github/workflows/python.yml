@@ -4,7 +4,7 @@ name: python-sdk
 on: [push, pull_request]
 
 jobs:
-  build:
+  unit:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -16,19 +16,6 @@ jobs:
       PYTHON: ${{ matrix.python }}
     steps:
       - uses: actions/checkout@v1
-      - name: Verify MySQL connection from host
-        run: |
-          sudo apt update
-          sudo apt-get install -y mysql-client
-          sudo service mysql restart
-          # default mysql account and password in github actions
-          mysql -uroot -proot -e "SHOW DATABASES"
-      - name: Setup submarine database
-        run: |
-          mysql -uroot -proot -e "create database submarine_test;"
-          mysql -uroot -proot -e "CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';"
-          mysql -uroot -proot -e "GRANT ALL PRIVILEGES ON *.* TO 'submarine_test'@'%';"
-          mysql -uroot -proot -e "use submarine_test; source ./docs/database/submarine.sql; show tables;"
       - name: Setup python environment
         uses: actions/setup-python@v1
         with:
@@ -45,6 +32,44 @@ jobs:
         if: matrix.python-version == '3.6'
         run: |
           ./submarine-sdk/pysubmarine/github-actions/lint.sh
-      - name: Test with pytest
+      - name: Run unit test
         run: |
-          pytest --cov=submarine -vs
+          pytest --cov=submarine -vs -m "not e2e"
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v1
+      - uses: engineerd/setup-kind@v0.4.0
+        with:
+          version: "v0.7.0"
+          image: kindest/node:v1.15.6
+      - name: Show K8s cluster information
+        run: |
+          kubectl cluster-info
+          kubectl version
+          kubectl get pods -n kube-system
+          echo "current-context:" $(kubectl config current-context)
+          echo "environment-kubeconfig:" ${KUBECONFIG}
+      - name: Start submarine
+        run: |
+          # Fix submarine-database start failed in kind. https://github.com/kubernetes/minikube/issues/7906
+          sudo ln -s /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
+          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
+          helm install --wait submarine ./helm-charts/submarine
+          kubectl get pods
+          kubectl port-forward svc/submarine-database 3306:3306 &
+          kubectl port-forward svc/submarine-server 8080:8080 &
+      - name: Setup python environment
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install --no-cache-dir ./submarine-sdk/pysubmarine/.
+          pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+      - name: Run integration test
+        run: |
+          cd submarine-sdk/pysubmarine
+          pytest --cov=submarine -vs -m "e2e"

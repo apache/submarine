@@ -16,6 +16,8 @@
 import unittest
 from os import environ
 
+import pytest
+
 import submarine
 from submarine.store.database import models
 from submarine.store.database.models import SqlMetric, SqlParam
@@ -24,6 +26,7 @@ from submarine.tracking import utils
 JOB_ID = "application_123456789"
 
 
+@pytest.mark.e2e
 class TestTracking(unittest.TestCase):
 
     def setUp(self):
