@@ -38,7 +38,6 @@ import org.apache.submarine.server.gson.ExperimentIdSerializer;
 import org.junit.Test;
 import org.junit.BeforeClass;
 import org.junit.Before;
-import org.junit.After;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -56,6 +55,10 @@ public class ExperimentRestApiTest {
   private static ExperimentRestApi experimentRestApi;
   private static ExperimentManager mockExperimentManager;
   private final AtomicInteger experimentCounter = new AtomicInteger(0);
+  EnvironmentSpec environmentSpec = new EnvironmentSpec();
+  KernelSpec kernelSpec = new KernelSpec();
+  ExperimentMeta meta = new ExperimentMeta();
+  ExperimentSpec experimentSpec = new ExperimentSpec();
   private Experiment experiment;
 
   private static GsonBuilder gsonBuilder = new GsonBuilder()
@@ -70,6 +73,18 @@ public class ExperimentRestApiTest {
   private static String experimentName = "tf-example";
   private static String experimentUid = "0b617cea-81fa-40b6-bbff-da3e400d2be4";
   private static String experimentStatus = "Succeeded";
+  private static String metaName = "foo";
+  private static String metaFramwork = "fooFramwork";
+  private static String metaNamespace = "fooNamespace";
+  private static String dockerImage = "continuumio/anaconda3";
+  private static String kernelSpecName = "team_default_python_3";
+  private static List<String> kernelChannels = Arrays.asList("defaults", "anaconda");
+  private static List<String> kernelDependencies = Arrays.asList(
+      "_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
+      "alabaster=0.7.12=py37_0",
+      "anaconda=2020.02=py37_0",
+      "anaconda-client=1.7.2=py37_0",
+      "anaconda-navigator=1.9.12=py37_0");
   private ExperimentId experimentExperimentId = ExperimentId.newInstance(SubmarineServer.getServerTimeStamp(),
       experimentCounter.incrementAndGet());
 
@@ -91,39 +106,22 @@ public class ExperimentRestApiTest {
     experiment.setName(experimentName);
     experiment.setStatus(experimentStatus);
     experiment.setExperimentId(experimentExperimentId);
-    ExperimentSpec experimentSpec = new ExperimentSpec();
-    EnvironmentSpec environmentSpec = new EnvironmentSpec();
-    KernelSpec kernelSpec = new KernelSpec();
-    ExperimentMeta meta = new ExperimentMeta();
-    kernelSpec.setName("team_default_python_3");
-    kernelSpec.setChannels(Arrays.asList("defaults", "anaconda"));
-    kernelSpec.setDependencies(Arrays.asList(
-        "_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
-        "alabaster=0.7.12=py37_0",
-        "anaconda=2020.02=py37_0",
-        "anaconda-client=1.7.2=py37_0",
-        "anaconda-navigator=1.9.12=py37_0"));
-    meta.setName("foo");
-    meta.setFramework("fooFramework");
-    meta.setNamespace("fooNamespace");
-    experimentSpec.setEnvironment(environmentSpec);
-    environmentSpec.setDockerImage("continuumio/anaconda3");
+    kernelSpec.setName(kernelSpecName);
+    kernelSpec.setChannels(kernelChannels);
+    kernelSpec.setDependencies(kernelDependencies);
+    meta.setName(metaName);
+    meta.setFramework(metaFramwork);
+    meta.setNamespace(metaNamespace);
+    environmentSpec.setDockerImage(dockerImage);
     environmentSpec.setKernelSpec(kernelSpec);
     experimentSpec.setMeta(meta);
+    experimentSpec.setEnvironment(environmentSpec);
     experiment.setSpec(experimentSpec);
     when(mockExperimentManager.createExperiment(any(ExperimentSpec.class))).thenReturn(experiment);
     Response createExperimentResponse = experimentRestApi.createExperiment(experimentSpec);
     assertEquals(Response.Status.OK.getStatusCode(), createExperimentResponse.getStatus());
     Experiment result = getResultFromResponse(createExperimentResponse, Experiment.class);
-
-    assertEquals(experimentUid, result.getUid());
-    assertEquals(experimentCreatedTime, result.getCreatedTime());
-    assertEquals(experimentRunningTime, result.getRunningTime());
-    assertEquals(experimentAcceptedTime, result.getAcceptedTime());
-    assertEquals(experimentName, result.getName());
-    assertEquals(experimentStatus, result.getStatus());
-    assertEquals(experimentExperimentId, result.getExperimentId());
-    assertEquals(experimentFinishedTime, result.getFinishedTime());
+    assertExperiment(result);
   }
 
   @Test
@@ -131,14 +129,7 @@ public class ExperimentRestApiTest {
     when(mockExperimentManager.getExperiment(any(String.class))).thenReturn(experiment);
     Response getExperimentResponse = experimentRestApi.getExperiment("1");
     Experiment experiment = getResultFromResponse(getExperimentResponse, Experiment.class);
-    assertEquals(experimentUid, experiment.getUid());
-    assertEquals(experimentCreatedTime, experiment.getCreatedTime());
-    assertEquals(experimentRunningTime, experiment.getRunningTime());
-    assertEquals(experimentAcceptedTime, experiment.getAcceptedTime());
-    assertEquals(experimentName, experiment.getName());
-    assertEquals(experimentStatus, experiment.getStatus());
-    assertEquals(experimentExperimentId, experiment.getExperimentId());
-    assertEquals(experimentFinishedTime, experiment.getFinishedTime());
+    assertExperiment(experiment);
   }
 
   @Test
@@ -147,14 +138,7 @@ public class ExperimentRestApiTest {
         thenReturn(experiment);
     Response patchExperimentResponse = experimentRestApi.patchExperiment("1", new ExperimentSpec());
     Experiment experiment = getResultFromResponse(patchExperimentResponse, Experiment.class);
-    assertEquals(experimentUid, experiment.getUid());
-    assertEquals(experimentCreatedTime, experiment.getCreatedTime());
-    assertEquals(experimentRunningTime, experiment.getRunningTime());
-    assertEquals(experimentAcceptedTime, experiment.getAcceptedTime());
-    assertEquals(experimentName, experiment.getName());
-    assertEquals(experimentStatus, experiment.getStatus());
-    assertEquals(experimentExperimentId, experiment.getExperimentId());
-    assertEquals(experimentFinishedTime, experiment.getFinishedTime());
+    assertExperiment(experiment);
   }
 
   @Test
@@ -184,24 +168,26 @@ public class ExperimentRestApiTest {
   @Test
   public void testListExperiment() {
     Experiment experiment2 = new Experiment();
+    experiment2.rebuild(experiment);
     String experiment2Uid = "0b617cea-81fa-40b6-bbff-da3e400d2be5";
     experiment2.setUid(experiment2Uid);
+    experiment2.setExperimentId(experimentExperimentId);
     List<Experiment> experimentList = new ArrayList<>();
     experimentList.add(experiment);
     experimentList.add(experiment2);
     when(mockExperimentManager.listExperimentsByStatus(any(String.class))).thenReturn(experimentList);
     Response listExperimentResponse = experimentRestApi.listExperiments(Response.Status.OK.toString());
     List<Experiment> experiments = getResultListFromResponse(listExperimentResponse, Experiment.class);
-    assertEquals(experimentUid, experiments.get(0).getUid());
-    assertEquals(experiment2Uid, experiments.get(1).getUid());
+    assertExperiment(experiments.get(0));
+    assertExperiment(experiments.get(1), experiment2Uid);
   }
 
-  @After
+  @Test
   public void testDeleteExperiment() {
     when(mockExperimentManager.deleteExperiment("1")).thenReturn(experiment);
     Response deleteExperimentResponse = experimentRestApi.deleteExperiment("1");
     Experiment experiment = getResultFromResponse(deleteExperimentResponse, Experiment.class);
-    assertEquals(this.experiment.getAcceptedTime(), experiment.getAcceptedTime());
+    assertExperiment(experiment);
   }
 
   private <T> T getResultFromResponse(Response response, Class<T> typeT) {
@@ -223,4 +209,39 @@ public class ExperimentRestApiTest {
     return list;
   }
 
+  private void assertExperiment(Experiment experiment) {
+    assertEquals(experimentUid, experiment.getUid());
+    assertEquals(experimentCreatedTime, experiment.getCreatedTime());
+    assertEquals(experimentRunningTime, experiment.getRunningTime());
+    assertEquals(experimentAcceptedTime, experiment.getAcceptedTime());
+    assertEquals(experimentName, experiment.getName());
+    assertEquals(experimentStatus, experiment.getStatus());
+    assertEquals(experimentExperimentId, experiment.getExperimentId());
+    assertEquals(experimentFinishedTime, experiment.getFinishedTime());
+    assertEquals(metaName, experiment.getSpec().getMeta().getName());
+    assertEquals(metaFramwork, experiment.getSpec().getMeta().getFramework());
+    assertEquals(metaNamespace, experiment.getSpec().getMeta().getNamespace());
+    assertEquals(dockerImage, experiment.getSpec().getEnvironment().getDockerImage());
+    assertEquals(kernelChannels, experiment.getSpec().getEnvironment().getKernelSpec().getChannels());
+    assertEquals(kernelSpecName, experiment.getSpec().getEnvironment().getKernelSpec().getName());
+    assertEquals(kernelDependencies, experiment.getSpec().getEnvironment().getKernelSpec().getDependencies());
+  }
+
+  private void assertExperiment(Experiment experiment, String uid) {
+    assertEquals(uid, experiment.getUid());
+    assertEquals(experimentCreatedTime, experiment.getCreatedTime());
+    assertEquals(experimentRunningTime, experiment.getRunningTime());
+    assertEquals(experimentAcceptedTime, experiment.getAcceptedTime());
+    assertEquals(experimentName, experiment.getName());
+    assertEquals(experimentStatus, experiment.getStatus());
+    assertEquals(experimentExperimentId, experiment.getExperimentId());
+    assertEquals(experimentFinishedTime, experiment.getFinishedTime());
+    assertEquals(metaName, experiment.getSpec().getMeta().getName());
+    assertEquals(metaFramwork, experiment.getSpec().getMeta().getFramework());
+    assertEquals(metaNamespace, experiment.getSpec().getMeta().getNamespace());
+    assertEquals(dockerImage, experiment.getSpec().getEnvironment().getDockerImage());
+    assertEquals(kernelChannels, experiment.getSpec().getEnvironment().getKernelSpec().getChannels());
+    assertEquals(kernelSpecName, experiment.getSpec().getEnvironment().getKernelSpec().getName());
+    assertEquals(kernelDependencies, experiment.getSpec().getEnvironment().getKernelSpec().getDependencies());
+  }
 }
