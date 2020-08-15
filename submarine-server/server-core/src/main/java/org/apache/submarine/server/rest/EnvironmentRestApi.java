@@ -137,11 +137,10 @@ public class EnvironmentRestApi {
   }
   
   /**
-   * List all environments from database.
+   * List all environments.
    * @return environment list
    */
   @GET
-  @Path("/list")
   @Operation(summary = "List of Environments",
           tags = {"environments"},
           responses = {
