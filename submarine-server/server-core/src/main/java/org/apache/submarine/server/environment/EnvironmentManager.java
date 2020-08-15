@@ -220,6 +220,8 @@ public class EnvironmentManager {
             Environment env = new Environment();
             env.setEnvironmentSpec(new Gson().fromJson(
                   environmentEntity.getEnvironmentSpec(), EnvironmentSpec.class));
+            env.setEnvironmentId(
+                  EnvironmentId.fromString(environmentEntity.getId()));
             environmentList.add(env);
             cachedEnvironments.put(env.getEnvironmentSpec().getName(), env);
           }
