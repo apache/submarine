@@ -32,7 +32,7 @@ export class EnvironmentService {
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
   fetchEnvironmentList(): Observable<Environment[]> {
-    const apiUrl = this.baseApi.getRestApi('/v1/environment/list');
+    const apiUrl = this.baseApi.getRestApi('/v1/environment');
     return this.httpClient.get<Rest<Environment[]>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {

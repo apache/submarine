@@ -84,7 +84,6 @@
               <label nz-checkbox [(ngModel)]="selectAllChecked" (ngModelChange)="selectAllEnv()"></label>
             </th>
             <th>Environment Name</th>
-            <th>Environment ID</th>
             <th>Docker image</th>
             <th>Kernel name</th>
             <th>Kernel channel</th>
@@ -97,7 +96,6 @@
               <label nz-checkbox [(ngModel)]="checkedList[i]"></label>
             </td>
             <td>{{ data.environmentSpec.name }}</td>
-            <td>{{ data.environmentId }}</td>
             <td>{{ data.environmentSpec.dockerImage }}</td>
             <td>{{ data.environmentSpec.kernelSpec.name }}</td>
             <td>
