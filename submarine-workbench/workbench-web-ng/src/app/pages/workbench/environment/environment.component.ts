@@ -18,6 +18,8 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { EnvironmentService } from '@submarine/services/environment.service';
+import { Environment } from '@submarine/interfaces/environment-info';
 
 @Component({
   selector: 'submarine-environment',
@@ -25,25 +27,38 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./environment.component.scss']
 })
 export class EnvironmentComponent implements OnInit {
-  constructor() {}
-  environmentList = [
-    {
-      environmentName: 'my-submarine-env',
-      environmentId: 'environment_1586156073228_0001',
-      dockerImage: 'continuumio/anaconda3',
-      kernelName: 'team_default_python_3.7',
-      kernelChannels: 'defaults',
-      kernelDependencies: ['_ipyw_jlab_nb_ext_conf=0.1.0=py37_0', 'alabaster=0.7.12=py37_0']
-    },
-    {
-      environmentName: 'my-submarine-env-2',
-      environmentId: 'environment_1586156073228_0002',
-      dockerImage: 'continuumio/miniconda',
-      kernelName: 'team_default_python_3.8',
-      kernelChannels: 'defaults',
-      kernelDependencies: ['_ipyw_jlab_nb_ext_conf=0.1.0=py38_0']
-    }
-  ];
+  constructor(private environmentService: EnvironmentService) {}
 
-  ngOnInit() {}
+  environmentList: Environment[] = [];
+  checkedList: boolean[] = [];
+  selectAllChecked: boolean = false;
+
+  ngOnInit() {
+    this.fetchEnvironmentList();
+  }
+
+  fetchEnvironmentList() {
+    this.environmentService.fetchEnvironmentList().subscribe((list) => {
+      this.environmentList = list;
+      this.checkedList = [];
+      for (let i = 0; i < this.environmentList.length; i++) {
+        this.checkedList.push(false);
+      }
+    });
+  }
+
+  // TODO(kobe860219): Create new environment
+  createEnvironment(data) {}
+
+  // TODO(kobe860219): Update an environment
+  updateEnvironment(id: string, data) {}
+
+  // TODO(kobe860219): Delete an environment
+  deleteEnvironment(id: string) {}
+
+  selectAllEnv() {
+    for (let i = 0; i < this.checkedList.length; i++) {
+      this.checkedList[i] = this.selectAllChecked;
+    }
+  }
 }

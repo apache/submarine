@@ -57,24 +57,33 @@
           nz-button
           id="createEnvironment"
           nzType="primary"
-          style="margin-right: 30px; margin-bottom: 15px; margin-top: 15px;"
+          style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px;"
         >
           <i nz-icon nzType="plus"></i>
           New Environment
         </button>
+        <button
+          nz-button
+          id="deleteEnvironment"
+          nzType="primary"
+          style="margin-bottom: 15px; margin-top: 15px;"
+          nz-popconfirm
+          nzTitle="Confirm to delete?"
+          nzCancelText="Cancel"
+          nzOkText="Ok"
+          (nzOnConfirm)="deleteEnvironment()"
+        >
+          <i nz-icon nzType="delete" nzTheme="outline"></i>
+          Delete
+        </button>
       </div>
-      <nz-table
-        id="releaseTable"
-        nzBordered
-        #basicTable
-        [nzData]="environmentList"
-        [nzNoResult]="'No data'"
-        nzSize="small"
-      >
+      <nz-table id="releaseTable" nzBordered #basicTable [nzData]="environmentList" [nzNoResult]="'No data'">
         <thead>
           <tr>
+            <th>
+              <label nz-checkbox [(ngModel)]="selectAllChecked" (ngModelChange)="selectAllEnv()"></label>
+            </th>
             <th>Environment Name</th>
-            <th>Environment ID</th>
             <th>Docker image</th>
             <th>Kernel name</th>
             <th>Kernel channel</th>
@@ -82,15 +91,21 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let data of basicTable.data">
-            <td>{{ data.environmentName }}</td>
-            <td>{{ data.environmentId }}</td>
-            <td>{{ data.dockerImage }}</td>
-            <td>{{ data.kernelName }}</td>
-            <td>{{ data.kernelChannels }}</td>
+          <tr *ngFor="let data of basicTable.data; let i = index">
             <td>
-              <dl *ngFor="let Dependency of data.kernelDependencies">
-                <dt>{{ Dependency }}</dt>
+              <label nz-checkbox [(ngModel)]="checkedList[i]"></label>
+            </td>
+            <td>{{ data.environmentSpec.name }}</td>
+            <td>{{ data.environmentSpec.dockerImage }}</td>
+            <td>{{ data.environmentSpec.kernelSpec.name }}</td>
+            <td>
+              <dl *ngFor="let channel of data.environmentSpec.kernelSpec.channels">
+                <dt>{{ channel }}</dt>
+              </dl>
+            </td>
+            <td>
+              <dl *ngFor="let dependency of data.environmentSpec.kernelSpec.dependencies">
+                <dt>{{ dependency }}</dt>
               </dl>
             </td>
           </tr>
