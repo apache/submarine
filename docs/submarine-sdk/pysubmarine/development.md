@@ -63,6 +63,7 @@ pytest --cov=submarine -vs -m "not e2e"
 ```shell script
 pytest --cov=submarine -vs -m "e2e"
 ```
+> Before run this command in local, you should make sure the submarine server is running. 
 
 ### Generate python SDK from swagger
 We use [swagger-codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/)
