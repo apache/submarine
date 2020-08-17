@@ -54,8 +54,17 @@ We are using [pytest](https://docs.pytest.org/en/latest/) to develop our unit te
 After building the project (see below) you can run its unit tests like so:
 ```bash
 cd submarine-sdk/pysubmarine
-pytest --cov=submarine -vs
 ```
+- Run unit test
+```shell script
+pytest --cov=submarine -vs -m "not e2e"
+```
+- Run integration test
+```shell script
+pytest --cov=submarine -vs -m "e2e"
+```
+> Before run this command in local, you should make sure the submarine server is running. 
+
 ### Generate python SDK from swagger
 We use [swagger-codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/)
 to generate pysubmarine client API that used to communicate with submarine server.

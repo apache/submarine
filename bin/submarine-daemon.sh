@@ -113,7 +113,7 @@ function start() {
   pid=`found_submarine_server_pid`
   if [[ ! -z "$pid" && "$pid" != 0 ]]; then
     echo "${SUBMARINE_SERVER_NAME}:${pid} is already running"
-    return 0;
+    return 1;
   fi
 
   check_jdbc_jar "${BIN}/../lib"
@@ -126,7 +126,7 @@ function start() {
   pid=$!
   if [[ ! -z "${pid}" ]]; then
     echo "${SUBMARINE_SERVER_NAME} start"
-    return 1;
+    return 0;
   fi
 }
 

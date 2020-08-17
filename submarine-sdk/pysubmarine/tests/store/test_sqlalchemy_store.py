@@ -15,7 +15,8 @@
 
 import time
 import unittest
-from os import environ
+
+import pytest
 
 import submarine
 from submarine.entities import Metric, Param
@@ -26,6 +27,7 @@ from submarine.tracking import utils
 JOB_ID = "application_123456789"
 
 
+@pytest.mark.e2e
 class TestSqlAlchemyStore(unittest.TestCase):
 
     def setUp(self):
@@ -60,7 +62,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.store.log_metric(JOB_ID, metric1)
         self.store.log_metric(JOB_ID, metric2)
 
-        # Validate params
+        # Validate metrics
         with self.store.ManagedSessionMaker() as session:
             metrics = session \
                 .query(SqlMetric) \
