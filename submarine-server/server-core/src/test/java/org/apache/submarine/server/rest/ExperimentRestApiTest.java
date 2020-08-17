@@ -59,7 +59,7 @@ public class ExperimentRestApiTest {
   KernelSpec kernelSpec = new KernelSpec();
   ExperimentMeta meta = new ExperimentMeta();
   ExperimentSpec experimentSpec = new ExperimentSpec();
-  private Experiment experiment;
+  private Experiment actualExperiment;
 
   private static final GsonBuilder gsonBuilder = new GsonBuilder()
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
@@ -99,15 +99,15 @@ public class ExperimentRestApiTest {
 
   @Before
   public void testCreateExperiment() {
-    experiment = new Experiment();
-    experiment.setAcceptedTime(experimentAcceptedTime);
-    experiment.setCreatedTime(experimentCreatedTime);
-    experiment.setRunningTime(experimentRunningTime);
-    experiment.setFinishedTime(experimentFinishedTime);
-    experiment.setUid(experimentUid);
-    experiment.setName(experimentName);
-    experiment.setStatus(experimentStatus);
-    experiment.setExperimentId(experimentId);
+    actualExperiment = new Experiment();
+    actualExperiment.setAcceptedTime(experimentAcceptedTime);
+    actualExperiment.setCreatedTime(experimentCreatedTime);
+    actualExperiment.setRunningTime(experimentRunningTime);
+    actualExperiment.setFinishedTime(experimentFinishedTime);
+    actualExperiment.setUid(experimentUid);
+    actualExperiment.setName(experimentName);
+    actualExperiment.setStatus(experimentStatus);
+    actualExperiment.setExperimentId(experimentId);
     kernelSpec.setName(kernelSpecName);
     kernelSpec.setChannels(kernelChannels);
     kernelSpec.setDependencies(kernelDependencies);
@@ -118,29 +118,29 @@ public class ExperimentRestApiTest {
     environmentSpec.setKernelSpec(kernelSpec);
     experimentSpec.setMeta(meta);
     experimentSpec.setEnvironment(environmentSpec);
-    experiment.setSpec(experimentSpec);
-    when(mockExperimentManager.createExperiment(any(ExperimentSpec.class))).thenReturn(experiment);
+    actualExperiment.setSpec(experimentSpec);
+    when(mockExperimentManager.createExperiment(any(ExperimentSpec.class))).thenReturn(actualExperiment);
     Response createExperimentResponse = experimentRestApi.createExperiment(experimentSpec);
     assertEquals(Response.Status.OK.getStatusCode(), createExperimentResponse.getStatus());
     Experiment result = getResultFromResponse(createExperimentResponse, Experiment.class);
-    compareExperiment(result, experimentUid);
+    verifyResult(result, experimentUid);
   }
 
   @Test
   public void testGetExperiment() {
-    when(mockExperimentManager.getExperiment(any(String.class))).thenReturn(experiment);
+    when(mockExperimentManager.getExperiment(any(String.class))).thenReturn(actualExperiment);
     Response getExperimentResponse = experimentRestApi.getExperiment(dummyId);
     Experiment result = getResultFromResponse(getExperimentResponse, Experiment.class);
-    compareExperiment(result, experimentUid);
+    verifyResult(result, experimentUid);
   }
 
   @Test
   public void testPatchExperiment() {
     when(mockExperimentManager.patchExperiment(any(String.class), any(ExperimentSpec.class))).
-        thenReturn(experiment);
+        thenReturn(actualExperiment);
     Response patchExperimentResponse = experimentRestApi.patchExperiment(dummyId, new ExperimentSpec());
     Experiment result = getResultFromResponse(patchExperimentResponse, Experiment.class);
-    compareExperiment(result, experimentUid);
+    verifyResult(result, experimentUid);
   }
 
   @Test
@@ -168,27 +168,27 @@ public class ExperimentRestApiTest {
   @Test
   public void testListExperiment() {
     Experiment experiment2 = new Experiment();
-    experiment2.rebuild(experiment);
+    experiment2.rebuild(actualExperiment);
     String experiment2Uid = "0b617cea-81fa-40b6-bbff-da3e400d2be5";
     experiment2.setUid(experiment2Uid);
     experiment2.setExperimentId(experimentId);
     List<Experiment> experimentList = new ArrayList<>();
-    experimentList.add(experiment);
+    experimentList.add(actualExperiment);
     experimentList.add(experiment2);
     when(mockExperimentManager.listExperimentsByStatus(any(String.class))).thenReturn(experimentList);
     Response listExperimentResponse = experimentRestApi.listExperiments(Response.Status.OK.toString());
     List<Experiment> result = getResultListFromResponse(listExperimentResponse, Experiment.class);
-    compareExperiment(result.get(0), experimentUid);
-    compareExperiment(result.get(1), experiment2Uid);
+    verifyResult(result.get(0), experimentUid);
+    verifyResult(result.get(1), experiment2Uid);
   }
 
   @Test
   public void testDeleteExperiment() {
     String log1ID = "experiment_1597012631706_0002";
-    when(mockExperimentManager.deleteExperiment(log1ID)).thenReturn(experiment);
+    when(mockExperimentManager.deleteExperiment(log1ID)).thenReturn(actualExperiment);
     Response deleteExperimentResponse = experimentRestApi.deleteExperiment(log1ID);
     Experiment result = getResultFromResponse(deleteExperimentResponse, Experiment.class);
-    compareExperiment(result, experimentUid);
+    verifyResult(result, experimentUid);
   }
 
   private <T> T getResultFromResponse(Response response, Class<T> typeT) {
@@ -210,7 +210,7 @@ public class ExperimentRestApiTest {
     return list;
   }
 
-  private void compareExperiment(Experiment experiment, String uid) {
+  private void verifyResult(Experiment experiment, String uid) {
     assertEquals(uid, experiment.getUid());
     assertEquals(experimentCreatedTime, experiment.getCreatedTime());
     assertEquals(experimentRunningTime, experiment.getRunningTime());
