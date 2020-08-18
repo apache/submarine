@@ -20,7 +20,11 @@ package org.apache.submarine.server.environment.database.mappers;
 
 import org.apache.submarine.server.environment.database.entity.EnvironmentEntity;
 
+import java.util.List;
+
 public interface EnvironmentMapper {
+
+  List<EnvironmentEntity> selectAll();
 
   EnvironmentEntity select(String environmentName);
 

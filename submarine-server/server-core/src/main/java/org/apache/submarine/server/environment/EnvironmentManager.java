@@ -54,6 +54,8 @@ public class EnvironmentManager {
 
   private final AtomicInteger environmentIdCounter = new AtomicInteger(0);
 
+  private static Boolean readedDB = true;
+
   /**
    * Environment Cache
    */
@@ -206,6 +208,31 @@ public class EnvironmentManager {
       throws SubmarineRuntimeException {
     List<Environment> environmentList =
         new ArrayList<Environment>(cachedEnvironments.values());
+
+    // Is it available in cache?
+    if (this.readedDB == true) {
+      try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+        EnvironmentMapper environmentMapper =
+              sqlSession.getMapper(EnvironmentMapper.class);
+        List<EnvironmentEntity> environmentEntitys = environmentMapper.selectAll();
+        for (EnvironmentEntity environmentEntity : environmentEntitys) {
+          if (environmentEntity != null) {
+            Environment env = new Environment();
+            env.setEnvironmentSpec(new Gson().fromJson(
+                  environmentEntity.getEnvironmentSpec(), EnvironmentSpec.class));
+            env.setEnvironmentId(
+                  EnvironmentId.fromString(environmentEntity.getId()));
+            environmentList.add(env);
+            cachedEnvironments.put(env.getEnvironmentSpec().getName(), env);
+          }
+        }
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+        throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
+              "Unable to get the environment list.");
+      }
+    }
+    this.readedDB = false;
     return environmentList;
   }
 
