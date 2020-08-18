@@ -22,7 +22,7 @@
 </button>
 <br />
 <h1 style="margin-left: 30px;">Create New Project</h1>
-<div style="padding-left: 300px; padding-right: 300px;">
+<div style="padding-left: 100px; padding-right: 100px;">
   <nz-steps [nzCurrent]="current">
     <nz-step nzTitle="Basic Information"></nz-step>
     <nz-step nzTitle="Initial Project"></nz-step>
@@ -114,7 +114,13 @@
     </form>
     <div class="centerDiv">
       <br />
-      <button nz-button nzType="primary" [disabled]="!f.valid" (click)="current = current + 1">
+      <button
+        style="margin-bottom: 10px;"
+        nz-button
+        nzType="primary"
+        [disabled]="!f.valid"
+        (click)="current = current + 1"
+      >
         Next Step
       </button>
     </div>
@@ -186,10 +192,16 @@
 
     <div class="centerDiv">
       <br *ngIf="initialState !== 1" />
-      <button nz-button nzType="default" (click)="current = current - 1">
+      <button
+        style="margin-right: 5px; margin-bottom: 10px;"
+        nz-button
+        nzType="default"
+        (click)="current = current - 1"
+      >
         Previous Step
       </button>
       <button
+        style="margin-left: 5px; margin-bottom: 10px;"
         nz-button
         nzType="primary"
         [disabled]="initialState === 1 && !templateType"
@@ -225,13 +237,18 @@
     </nz-table>
     <div class="centerDiv">
       <br />
-      <button nz-button nzType="default" (click)="current = current - 1" style="margin: 3px;">
+      <button nz-button nzType="default" (click)="current = current - 1" style="margin-bottom: 10px;">
         Previous Step
       </button>
-      <button nz-button nzType="primary" (click)="done()" style="margin: 3px;">
+      <button
+        nz-button
+        nzType="primary"
+        (click)="done()"
+        style="margin-bottom: 10px; margin-right: 10px; margin-left: 10px;"
+      >
         Save
       </button>
-      <button nz-button nzType="primary" (click)="openNotebook()" [disabled]="true" style="margin: 3px;">
+      <button nz-button nzType="primary" (click)="openNotebook()" [disabled]="true" style="margin-bottom: 10px;">
         Open in Notebook
       </button>
     </div>
