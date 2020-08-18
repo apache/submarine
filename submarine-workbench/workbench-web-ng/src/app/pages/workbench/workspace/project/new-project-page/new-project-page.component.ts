@@ -96,7 +96,7 @@ export class NewProjectPageComponent implements OnInit {
   }
 
   clearProject() {
-    this.closeProjectPage.emit(true);
+    this.closeProjectPage.emit(false);
   }
 
   refreshCheck(template) {
@@ -128,7 +128,6 @@ export class NewProjectPageComponent implements OnInit {
     console.log(project);
     this.addProject.emit(project);
   }
-
   // TODO(jasoonn): open in notebook
   openNotebook() {}
 }
