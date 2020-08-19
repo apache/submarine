@@ -40,7 +40,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
 
   public static final String SUBMARINE_RUNTIME_APP_TYPE = "SUBMARINE";
 
-  private static SubmarineConfiguration conf;
+  private static volatile SubmarineConfiguration conf;
 
   private Map<String, String> properties = new HashMap<>();
 
