@@ -28,7 +28,9 @@ import org.apache.submarine.server.api.notebook.NotebookId;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -84,13 +86,22 @@ public class NotebookManager {
 
   /**
    * List notebook instances
-   * @param status status, if null will return all notebooks
+   * @param namespace namespace, if null will return all notebooks
    * @return list
    * @throws SubmarineRuntimeException the service error
    */
-  public List<Notebook> listNotebooksByStatus(String status) throws SubmarineRuntimeException {
-    //TODO(ryan): implement the method
-    return null;
+  public List<Notebook> listNotebooksByNamespace(String namespace) throws SubmarineRuntimeException {
+    List<Notebook> notebookList = new ArrayList<>();
+    for (Map.Entry<String, Notebook> entry : cachedNotebookMap.entrySet()) {
+      Notebook notebook = entry.getValue();
+      Notebook patchNotebook = submitter.findNotebook(notebook.getSpec());
+      if (namespace == null || namespace.length() == 0
+              || namespace.toLowerCase().equals(patchNotebook.getSpec().getMeta().getNamespace())) {
+        notebook.rebuild(patchNotebook);
+        notebookList.add(notebook);
+      }
+    }
+    return notebookList;
   }
 
   /**
@@ -100,8 +111,12 @@ public class NotebookManager {
    * @throws SubmarineRuntimeException the service error
    */
   public Notebook getNotebook(String id) throws SubmarineRuntimeException {
-    //TODO(ryan): implement the method
-    return null;
+    checkNotebookId(id);
+    Notebook notebook = cachedNotebookMap.get(id);
+    NotebookSpec spec = notebook.getSpec();
+    Notebook patchNotebook = submitter.findNotebook(spec);
+    notebook.rebuild(patchNotebook);
+    return notebook;
   }
 
   /**
@@ -111,8 +126,12 @@ public class NotebookManager {
    * @throws SubmarineRuntimeException the service error
    */
   public Notebook deleteNotebook(String id) throws SubmarineRuntimeException {
-    //TODO(ryan): implement the method
-    return null;
+    checkNotebookId(id);
+    Notebook notebook = cachedNotebookMap.remove(id);
+    NotebookSpec spec = notebook.getSpec();
+    Notebook patchNotebook = submitter.deleteNotebook(spec);
+    notebook.rebuild(patchNotebook);
+    return notebook;
   }
 
   /**
@@ -136,4 +155,11 @@ public class NotebookManager {
     }
   }
 
+  private void checkNotebookId(String id) throws SubmarineRuntimeException {
+    NotebookId notebookId = NotebookId.fromString(id);
+    if (notebookId == null || !cachedNotebookMap.containsKey(id)) {
+      throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
+              "Not found notebook server.");
+    }
+  }
 }

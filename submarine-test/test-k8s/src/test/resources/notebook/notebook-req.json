@@ -1,6 +1,6 @@
 {
   "meta": {
-    "name": "my-nb",
+    "name": "test-nb",
     "namespace": "default"
   },
   "environment": {
@@ -8,8 +8,8 @@
   },
   "spec": {
     "envVars": {
-      "env": "env"
+      "TEST_ENV": "test"
     },
-    "resources": "cpu=1,memory=1Gi"
+    "resources": "cpu=1,memory=1.0Gi"
   }
 }

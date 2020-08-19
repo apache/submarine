@@ -21,6 +21,8 @@ package org.apache.submarine.server.submitter.k8s;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -30,6 +32,7 @@ import io.kubernetes.client.Configuration;
 import io.kubernetes.client.JSON;
 import io.kubernetes.client.apis.CoreV1Api;
 import io.kubernetes.client.apis.CustomObjectsApi;
+import io.kubernetes.client.models.V1DeleteOptionsBuilder;
 import io.kubernetes.client.models.V1Pod;
 import io.kubernetes.client.models.V1PodList;
 import io.kubernetes.client.models.V1Status;
@@ -252,14 +255,34 @@ public class K8sSubmitter implements Submitter {
 
   @Override
   public Notebook findNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
-    // TODO(ryan): Implement this method
-    return null;
+    Notebook notebook;
+    try {
+      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
+      Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
+              notebookCR.getMetadata().getNamespace(),
+              notebookCR.getPlural(), notebookCR.getMetadata().getName());
+      notebook = parseResponseObject(object);
+    } catch (ApiException e) {
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    }
+    return notebook;
   }
 
   @Override
   public Notebook deleteNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
-    // TODO(ryan): Implement this method
-    return null;
+    Notebook notebook;
+    try {
+      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
+      Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
+              notebookCR.getMetadata().getNamespace(), notebookCR.getPlural(),
+              notebookCR.getMetadata().getName(),
+              new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
+              null, null, null);
+      notebook = parseResponseObject(object);
+    } catch (ApiException e) {
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    }
+    return notebook;
   }
 
   private Notebook parseResponseObject(Object obj) throws SubmarineRuntimeException {
@@ -280,6 +303,15 @@ public class K8sSubmitter implements Submitter {
         notebook.setCreatedTime(createdTime.toString());
         notebook.setStatus(Notebook.Status.STATUS_CREATED.getValue());
       }
+
+      // deleted notebook
+      if (notebookCR.getMetadata().getName() == null) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+        Date current = new Date();
+        notebook.setDeletedTime(dateFormat.format(current));
+        notebook.setStatus(Notebook.Status.STATUS_DELETED.toString());
+      }
+
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");

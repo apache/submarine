@@ -43,7 +43,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 /**
- * Notebook Service REST API v1
+ * Notebook REST API v1. It can accept {@link NotebookSpec} to create a notebook server.
  */
 @Path(RestConstants.V1 + "/" + RestConstants.NOTEBOOK)
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
@@ -94,8 +94,8 @@ public class NotebookRestApi {
   }
 
   /**
-   * List all notebooks created by the user
-   * @param status status
+   * List all notebooks
+   * @param namespace namespace
    * @return notebook list
    */
   @GET
@@ -105,11 +105,11 @@ public class NotebookRestApi {
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
                           schema = @Schema(implementation = JsonResponse.class)))})
-  public Response listNotebooks(@QueryParam("status") String status) {
+  public Response listNotebooks(@QueryParam("namespace") String namespace) {
     try {
-      List<Notebook> notebookList = notebookManager.listNotebooksByStatus(status);
+      List<Notebook> notebookList = notebookManager.listNotebooksByNamespace(namespace);
       return new JsonResponse.Builder<List<Notebook>>(Response.Status.OK).success(true)
-              .result(notebookList).build();
+              .message("List all notebook instances").result(notebookList).build();
     } catch (SubmarineRuntimeException e) {
       return parseNotebookServiceException(e);
     }
@@ -134,7 +134,7 @@ public class NotebookRestApi {
     try {
       Notebook notebook = notebookManager.getNotebook(id);
       return new JsonResponse.Builder<Notebook>(Response.Status.OK).success(true)
-              .result(notebook).build();
+              .message("Get the notebook instance").result(notebook).build();
     } catch (SubmarineRuntimeException e) {
       return parseNotebookServiceException(e);
     }
@@ -159,7 +159,7 @@ public class NotebookRestApi {
     try {
       Notebook notebook = notebookManager.deleteNotebook(id);
       return new JsonResponse.Builder<Notebook>(Response.Status.OK).success(true)
-              .result(notebook).build();
+              .message("Delete the notebook instance").result(notebook).build();
     } catch (SubmarineRuntimeException e) {
       return parseNotebookServiceException(e);
     }
