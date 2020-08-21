@@ -16,6 +16,7 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
+
 <nz-layout style="margin: -24px -24px 16px;">
   <nz-layout class="inner-layout">
     <div id="notebookOuter">
@@ -39,12 +40,12 @@
     <div nz-row>
       <div nz-col nzSpan="12">
         <label style="font-size: large; color: black;">Namespaces :</label>
-        <nz-select style="margin-left: 5px; width: 240px;" [(ngModel)]="currentNamespaces">
-          <nz-option
-            *ngFor="let namespaces of namespacesList"
-            [nzValue]="namespaces"
-            [nzLabel]="namespaces"
-          ></nz-option>
+        <nz-select
+          style="margin-left: 5px; width: 240px;"
+          [(ngModel)]="currentNamespace"
+          (ngModelChange)="switchNamespace($event)"
+        >
+          <nz-option *ngFor="let namespace of namespacesList" [nzValue]="namespace" [nzLabel]="namespace"></nz-option>
         </nz-select>
       </div>
       <div nz-col nzSpan="12" align="right">
@@ -65,20 +66,18 @@
       </div>
     </div>
     <div>
-      <nz-table style="padding-top: 5px;" #basicTable [nzData]="notebookList">
+      <nz-table style="padding-top: 5px;" #basicTable [nzData]="notebookTable">
         <thead>
           <tr>
             <th>
               <label nz-checkbox [(ngModel)]="checked" (ngModelChange)="selectAllNotebook()"></label>
             </th>
-            <th nzWidth="120px">Status</th>
             <th>Name</th>
-            <th>Age</th>
             <th>Environment</th>
-            <th>CPU</th>
-            <th>GPU</th>
-            <th>Memory</th>
-            <th>Action</th>
+            <th>Docker Image</th>
+            <th>Resources</th>
+            <th>Status</th>
+            <th>Environment</th>
           </tr>
         </thead>
         <tbody>
@@ -87,28 +86,15 @@
               <label nz-checkbox [(ngModel)]="checkedList[i]"></label>
             </td>
             <td>
-              <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag>
-            </td>
-            <td>
               <a>{{ data.name }}</a>
             </td>
-            <td>{{ data.age }}</td>
-            <td>{{ data.environment }}</td>
-            <td>{{ data.cpu }}</td>
-            <td>{{ data.gpu }}</td>
-            <td>{{ data.memory }}</td>
+            <td>{{ data.spec.environment.name }}</td>
+            <td>{{ data.spec.environment.dockerImage }}</td>
             <td>
-              <a nz-dropdown [nzDropdownMenu]="menu">
-                More
-                <i nz-icon nzType="down"></i>
-              </a>
-              <nz-dropdown-menu #menu="nzDropdownMenu">
-                <ul nz-menu nzSelectable>
-                  <li nz-menu-item (click)="runNotebook(data)">Run</li>
-                  <li nz-menu-item (click)="stopNotebook(data)">Stop</li>
-                </ul>
-              </nz-dropdown-menu>
+              {{ data.spec.spec.resources }}
             </td>
+            <td>{{ data.status }}</td>
+            <td>{{ data.spec.environment.name }}</td>
           </tr>
         </tbody>
       </nz-table>
