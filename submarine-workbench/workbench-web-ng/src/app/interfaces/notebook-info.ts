@@ -17,9 +17,16 @@
  * under the License.
  */
 
-import { EnvironmentSpec } from '@submarine/interfaces/environment-spec';
+import { Url } from 'url';
+import { NotebookSpec } from '@submarine/interfaces/notebook-spec';
 
-export class Environment {
-  environmentId: string;
-  environmentSpec: EnvironmentSpec;
+export class Notebook {
+  notebookId: string;
+  name: string;
+  uid: string;
+  url: Url;
+  status: string;
+  createdTime: string;
+  deletedTime: string;
+  spec: NotebookSpec;
 }

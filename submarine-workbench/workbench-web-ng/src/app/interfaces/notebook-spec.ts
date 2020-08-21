@@ -17,9 +17,28 @@
  * under the License.
  */
 
-import { EnvironmentSpec } from '@submarine/interfaces/environment-spec';
+export class NotebookSpec {
+  meta: Meta;
+  environment: Environment;
+  spec: Spec;
+}
+
+export class Meta {
+  name: string;
+  namespace: string;
+}
 
 export class Environment {
-  environmentId: string;
-  environmentSpec: EnvironmentSpec;
+  name: string;
+  dockerImage: string;
+  kernelSpec: string;
+  description: string;
+  image: string;
+}
+
+export class Spec {
+  envVars: {
+    TEST_ENV: string;
+  };
+  resources: string;
 }

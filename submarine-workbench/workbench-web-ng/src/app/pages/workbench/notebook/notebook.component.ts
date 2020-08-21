@@ -19,6 +19,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { NotebookService } from '@submarine/services/notebook.service';
 
 @Component({
   selector: 'submarine-notebook',
@@ -38,33 +39,15 @@ export class NotebookComponent implements OnInit {
   // New notebook(form)
   notebookForm: FormGroup;
 
-  // Mock Data
-  namespacesList = ['namespaces1', 'namespaces2'];
-  currentNamespaces = this.namespacesList[0];
-  notebookList = [
-    {
-      status: 'Running',
-      name: 'Notebook1',
-      age: '35 mins',
-      environment: 'image1',
-      cpu: '2',
-      gpu: '1',
-      memory: '512 MB',
-      volumes: 'volumes1'
-    },
-    {
-      status: 'Stop',
-      name: 'Notebook2',
-      age: '40 mins',
-      environment: 'image2',
-      cpu: '4',
-      gpu: '4',
-      memory: '1024 MB',
-      volumes: 'volumes2'
-    }
-  ];
+  // Namesapces
+  namespacesList = [];
+  currentNamespace;
 
-  constructor() {}
+  // Notebook list
+  notebookList;
+  notebookTable;
+
+  constructor(private notebookService: NotebookService) {}
 
   statusColor: { [key: string]: string } = {
     Running: 'green',
@@ -74,22 +57,54 @@ export class NotebookComponent implements OnInit {
   ngOnInit() {
     this.notebookForm = new FormGroup({
       notebookName: new FormControl(null, [Validators.required]),
-      namespaces: new FormControl(this.currentNamespaces, [Validators.required]),
+      namespaces: new FormControl(this.currentNamespace, [Validators.required]),
       environment: new FormControl('env1', [Validators.required]),
       cpu: new FormControl(null, [Validators.required]),
       gpu: new FormControl(null, [Validators.required]),
       memory: new FormControl(null, [Validators.required])
     });
-    this.checkedList = [];
-    for (let i = 0; i < this.notebookList.length; i++) {
-      this.checkedList.push(false);
-    }
+
+    this.fetchNotebookList();
+  }
+
+  fetchNotebookList() {
+    this.notebookService.fetchNotebookList().subscribe((list) => {
+      this.notebookList = list;
+      this.checkedList = [];
+      for (let i = 0; i < this.notebookList.length; i++) {
+        this.checkedList.push(false);
+      }
+      // Get namespaces
+      this.notebookList.forEach((element) => {
+        if (this.namespacesList.indexOf(element.spec.meta.namespace) < 0) {
+          this.namespacesList.push(element.spec.meta.namespace);
+        }
+      });
+      // Set default namespace and table
+      this.currentNamespace = this.namespacesList[0];
+      this.notebookTable = [];
+      this.notebookList.forEach((item) => {
+        if (item.spec.meta.namespace == this.currentNamespace) {
+          this.notebookTable.push(item);
+        }
+      });
+    });
   }
 
   selectAllNotebook() {
     for (let i = 0; i < this.checkedList.length; i++) {
       this.checkedList[i] = this.checked;
     }
+  }
+
+  switchNamespace(namespace: string) {
+    this.notebookTable = [];
+    this.notebookList.forEach((item) => {
+      if (item.spec.meta.namespace == namespace) {
+        this.notebookTable.push(item);
+      }
+    });
+    console.log(this.notebookTable);
   }
 
   // TODO(kobe860219): Make a notebook run
