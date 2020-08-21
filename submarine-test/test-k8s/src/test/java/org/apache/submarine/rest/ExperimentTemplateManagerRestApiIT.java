@@ -20,6 +20,7 @@
 package org.apache.submarine.rest;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -28,7 +29,15 @@ import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
+import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplate;
+import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateSubmit;
+import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.api.spec.ExperimentTemplateParamSpec;
+import org.apache.submarine.server.api.spec.ExperimentTemplateSpec;
+import org.apache.submarine.server.gson.ExperimentIdDeserializer;
+import org.apache.submarine.server.gson.ExperimentIdSerializer;
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.rest.RestConstants;
 import org.junit.Assert;
@@ -46,7 +55,12 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
       "/api/" + RestConstants.V1 + "/" + RestConstants.EXPERIMENT_TEMPLATES;
   protected static String TPL_NAME = "tf-mnist-test2";
   protected static String TPL_FILE = "experimenttemplate/test_template_2.json";
-  protected Gson gson = new GsonBuilder().create();
+  
+  private final Gson gson = new GsonBuilder()
+      .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
+      .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer())
+      .create();
+
   @BeforeClass
   public static void startUp() throws Exception {
     Assert.assertTrue(checkIfServerIsRunning());
@@ -80,39 +94,10 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
     deleteExperimentTemplate();
   }
 
-
-  @Test
-  public void testUpdateExperimentTemplate() throws Exception {
-    String body = loadContent(TPL_FILE);
-    run(body, "application/json");
-
-    ExperimentTemplate tpl =
-    gson.fromJson(gson.toJson(body), ExperimentTemplate.class);
-    tpl.getExperimentTemplateSpec().setDescription("new description");
-    String newBody = gson.toJson(tpl);
-
-    httpPatch(TPL_PATH + "/" + TPL_NAME, newBody, "application/json");
-
-    GetMethod getMethod = httpGet(TPL_PATH + "/" + TPL_NAME);
-    Assert.assertEquals(Response.Status.OK.getStatusCode(),
-        getMethod.getStatusCode());
-
-    String json = getMethod.getResponseBodyAsString();
-    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
-    Assert.assertEquals(Response.Status.OK.getStatusCode(),
-        jsonResponse.getCode());
-
-    ExperimentTemplate getExperimentTemplate =
-        gson.fromJson(gson.toJson(jsonResponse.getResult()), ExperimentTemplate.class);
-
-    Assert.assertEquals("new description", 
-        getExperimentTemplate.getExperimentTemplateSpec().getDescription());
-
-    deleteExperimentTemplate();
-  }
-
   @Test
   public void testDeleteExperimentTemplate() throws Exception {
+    LOG.info("testDeleteExperimentTemplate");
+
     String body = loadContent(TPL_FILE);
     run(body, "application/json");
     deleteExperimentTemplate();
@@ -120,11 +105,12 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
     GetMethod getMethod = httpGet(TPL_PATH + "/" + TPL_NAME);
     Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
         getMethod.getStatusCode());
-
   }
 
   @Test
   public void testListExperimentTemplates() throws Exception {
+    LOG.info("testListExperimentTemplates");
+
     String body = loadContent(TPL_FILE);
     run(body, "application/json");
     
@@ -148,6 +134,7 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
 
   protected void deleteExperimentTemplate() throws IOException {
 
+    LOG.info("deleteExperimentTemplate");
     DeleteMethod deleteMethod = httpDelete(TPL_PATH + "/" + TPL_NAME);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         deleteMethod.getStatusCode());
@@ -166,9 +153,7 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
 
     // create
     LOG.info("Create ExperimentTemplate using ExperimentTemplate REST API");
-    LOG.info(body);
     PostMethod postMethod = httpPost(TPL_PATH, body, contentType);
-
     LOG.info(postMethod.getResponseBodyAsString());
 
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
@@ -188,5 +173,57 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
       throws Exception {
     Assert.assertNotNull(tpl.getExperimentTemplateSpec().getName());
     Assert.assertNotNull(tpl.getExperimentTemplateSpec());
+  }
+
+  @Test
+  public void submitExperimentTemplate() throws Exception {
+
+    String body = loadContent(TPL_FILE);
+    run(body, "application/json");
+
+    String url = TPL_PATH + "/" + RestConstants.EXPERIMENT_TEMPLATE_SUBMIT;
+    // submit
+    LOG.info("Submit ExperimentTemplate using ExperimentTemplate REST API");
+    LOG.info(body);
+
+    ExperimentTemplateSpec tplspec = 
+    gson.fromJson(body, ExperimentTemplateSpec.class);
+
+    ExperimentTemplateSubmit submit = new ExperimentTemplateSubmit();
+    submit.setParams(new HashMap<String, String>());
+    submit.setName(tplspec.getName());
+    for (ExperimentTemplateParamSpec parmSpec: tplspec.getParameters()) {
+      submit.getParams().put(parmSpec.getName(), parmSpec.getValue());
+    }
+    
+    PostMethod postMethod = httpPost(url, gson.toJson(submit), "application/json");
+    LOG.info(postMethod.getResponseBodyAsString());
+    Assert.assertEquals(Response.Status.OK.getStatusCode(), 
+        postMethod.getStatusCode());
+    
+    String json = postMethod.getResponseBodyAsString();
+    LOG.info(json);
+    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+        jsonResponse.getCode());
+
+
+    deleteExperimentTemplate();
+    LOG.info(gson.toJson(jsonResponse.getResult()));
+    
+    Experiment experiment = gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
+
+    DeleteMethod deleteMethod = httpDelete("/api/" + RestConstants.V1 + "/" + RestConstants.EXPERIMENT + "/" 
+    + experiment.getExperimentId().toString());
+    Assert.assertEquals(Response.Status.OK.getStatusCode(), deleteMethod.getStatusCode());
+
+    json = deleteMethod.getResponseBodyAsString();
+    jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
+    
+    ExperimentSpec tplExpSpec = tplspec.getExperimentSpec();
+    ExperimentSpec expSpec = experiment.getSpec();
+
+    Assert.assertEquals(tplExpSpec.getMeta().getName(), expSpec.getMeta().getName());
   }
 }

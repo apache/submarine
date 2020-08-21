@@ -5,7 +5,7 @@
   "parameters": [
     {
       "name": "training.learning_rate",
-      "value": 150,
+      "value": 0.1,
       "required": true,
       "description": " mnist learning_rate "
     },
