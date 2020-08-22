@@ -117,4 +117,30 @@ public class Notebook {
     }
   }
 
+  public void rebuild(Notebook notebook) {
+    if (notebook != null) {
+      if (notebook.getName() != null) {
+        this.setName(notebook.getName());
+      }
+      if (notebook.getUid() != null) {
+        this.setUid(notebook.getUid());
+      }
+      if (notebook.getUrl() != null) {
+        this.setUrl(notebook.getUrl());
+      }
+      if (notebook.getSpec() != null) {
+        this.setSpec(notebook.getSpec());
+      }
+      if (notebook.getStatus() != null) {
+        this.setStatus(notebook.getStatus());
+      }
+      if (notebook.getCreatedTime() != null) {
+        this.setCreatedTime(notebook.getCreatedTime());
+      }
+      if (notebook.getDeletedTime() != null) {
+        this.setDeletedTime(notebook.getDeletedTime());
+      }
+    }
+  }
+
 }

@@ -27,6 +27,8 @@ rules:
   - tfjobs/status
   - pytorchjobs
   - pytorchjobs/status
+  - notebooks
+  - notebooks/status
   verbs:
   - get
   - list
@@ -36,7 +38,7 @@ rules:
   - deletecollection
   - patch
   - update
-  
+
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
