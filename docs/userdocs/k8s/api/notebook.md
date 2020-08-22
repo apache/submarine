@@ -19,10 +19,9 @@ under the License.
 
 # Notebook API Reference
 
-> Note: The Notebook API is in the alpha stage which is subjected to incompatible changes in
-> future releases.
+> Note: The Notebook API is in the alpha stage which is subjected to incompatible changes in future releases.
 
-## Create notebook instance
+## Create a notebook instance
 `POST /api/v1/notebook`
 
 **Example Request**
@@ -68,8 +67,16 @@ curl -X POST -H "Content-Type: application/json" -d '
       },
       "environment":{
         "name":"my-submarine-env",
-        "dockerImage":null,
-        "kernelSpec":null,
+        "dockerImage":"apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
+        "kernelSpec":{
+          "name": "team_default_python_3.7",
+          "channels": [
+            "defaults"
+          ],
+          "dependencies": [
+            ""
+          ]
+        },
         "description":null,
         "image":null
       },
@@ -77,7 +84,7 @@ curl -X POST -H "Content-Type: application/json" -d '
         "envVars":{
           "TEST_ENV":"test"
         },
-        "resources":"cpu\u003d1,memory\u003d1.0Gi"
+        "resources":"cpu=1,memory=1.0Gi"
       }
     }
   },
@@ -85,7 +92,7 @@ curl -X POST -H "Content-Type: application/json" -d '
 }
 ```
 
-### List notebook instances
+## List notebook instances
 `GET /api/v1/notebook`
 
 **Example Request:**
@@ -116,8 +123,16 @@ curl -X GET http://127.0.0.1:8080/api/v1/notebook
         },
         "environment":{
           "name":"my-submarine-env",
-          "dockerImage":null,
-          "kernelSpec":null,
+          "dockerImage":"apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
+          "kernelSpec":{
+            "name": "team_default_python_3.7",
+            "channels": [
+              "defaults"
+            ],
+            "dependencies": [
+              ""
+            ]
+          },
           "description":null,
           "image":null
         },
@@ -125,7 +140,7 @@ curl -X GET http://127.0.0.1:8080/api/v1/notebook
           "envVars":{
             "TEST_ENV":"test"
           },
-          "resources":"cpu\u003d1,memory\u003d1.0Gi"
+          "resources":"cpu=1,memory=1.0Gi"
         }
       }
     }
@@ -134,12 +149,12 @@ curl -X GET http://127.0.0.1:8080/api/v1/notebook
 }
 ```
 
-### Get notebook
+## Get the notebook instance
 `GET /api/v1/notebook/{id}`
 
 **Example Request:**
 ```sh
-curl -X GET http://127.0.0.1:8080/api/v1/notebook/
+curl -X GET http://127.0.0.1:8080/api/v1/notebook/{id}
 ```
 
 **Example Response:**
@@ -164,8 +179,16 @@ curl -X GET http://127.0.0.1:8080/api/v1/notebook/
       },
       "environment":{
         "name":"my-submarine-env",
-        "dockerImage":null,
-        "kernelSpec":null,
+        "dockerImage":"apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
+        "kernelSpec":{
+          "name": "team_default_python_3.7",
+          "channels": [
+            "defaults"
+          ],
+          "dependencies": [
+            ""
+          ]
+        },
         "description":null,
         "image":null
       },
@@ -173,10 +196,65 @@ curl -X GET http://127.0.0.1:8080/api/v1/notebook/
         "envVars":{
           "TEST_ENV":"test"
         },
-        "resources":"cpu\u003d1,memory\u003d1.0Gi"
+        "resources":"cpu=1,memory=1.0Gi"
       }
     }
   },
   "attributes":{}
+}
+```
+
+## Delete the notebook instance
+`DELETE /api/v1/notebook/{id}`
+
+**Example Request:**
+```sh
+curl -X DELETE http://127.0.0.1:8080/api/v1/notebook/{id}
+```
+
+**Example Response:**
+```json
+{
+  "status": "OK",
+  "code": 200,
+  "success": true,
+  "message": "Delete the notebook instance",
+  "result": {
+    "notebookId": "notebook_1597931805405_0001",
+    "name": "test-nb",
+    "uid": "5a94c01d-6a92-4222-bc66-c610c277546d",
+    "url": "/notebook/null/null",
+    "status": "Deleted",
+    "createdTime": "2020-08-22T14:03:19.000+08:00",
+    "deletedTime": "2020-08-22T14:46:28+0800",
+    "spec": {
+      "meta": {
+        "name": "test-nb",
+        "namespace": "default"
+      },
+      "environment": {
+        "name": "my-submarine-env",
+        "dockerImage": "apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
+        "kernelSpec": {
+          "name": "team_default_python_3.7",
+          "channels": [
+            "defaults"
+          ],
+          "dependencies": [
+            ""
+          ]
+        },
+        "description": null,
+        "image": null
+      },
+      "spec": {
+        "envVars": {
+          "TEST_ENV": "test"
+        },
+        "resources": "cpu=1,memory=1.0Gi"
+      }
+    }
+  },
+  "attributes": {}
 }
 ```
