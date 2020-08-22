@@ -23,9 +23,11 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.SubmarineServer;
 import org.apache.submarine.server.SubmitterManager;
 import org.apache.submarine.server.api.Submitter;
+import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.notebook.NotebookId;
 import org.apache.submarine.server.api.spec.NotebookSpec;
+import org.apache.submarine.server.environment.EnvironmentManager;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -80,6 +82,12 @@ public class NotebookManager {
     Notebook notebook = submitter.createNotebook(spec);
     notebook.setNotebookId(generateNotebookId());
     notebook.setSpec(spec);
+    NotebookSpec notebookSpec = notebook.getSpec();
+    EnvironmentManager environmentManager = EnvironmentManager.getInstance();
+    Environment environment = environmentManager.getEnvironment(spec.getEnvironment().getName());
+    if (environment.getEnvironmentSpec() != null) {
+      notebookSpec.setEnvironment(environment.getEnvironmentSpec());
+    }
     cachedNotebookMap.putIfAbsent(notebook.getNotebookId().toString(), notebook);
     return notebook;
   }
