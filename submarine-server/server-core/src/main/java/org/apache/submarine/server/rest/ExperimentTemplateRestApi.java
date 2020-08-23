@@ -208,15 +208,9 @@ public class ExperimentTemplateRestApi {
     }
   }
 
-
   private Response parseExperimentTemplateServiceException(
       SubmarineRuntimeException e) {
     return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage())
         .build();
   }
-
-
-
-
-
 }
