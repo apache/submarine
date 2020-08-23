@@ -58,6 +58,7 @@ export class ExperimentComponent implements OnInit {
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
   PYTORCH_SPECNAMES = ['Master', 'Worker'];
   MEMORY_UNITS = ['M', 'G'];
+  jobTypes = 'tf';
 
   // About env page
   currentEnvPage = 1;
@@ -234,6 +235,10 @@ export class ExperimentComponent implements OnInit {
     if (this.current < 2) {
       this.current++;
     }
+  }
+
+  test() {
+    console.log('get roasted');
   }
 
   /**

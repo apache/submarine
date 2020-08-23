@@ -272,6 +272,11 @@
             </div>
           </div>
           <div *ngSwitchCase="2">
+            <nz-radio-group [(ngModel)]="jobTypes" [ngModelOptions]="{standalone: true}">
+              <label nz-radio nzValue="tf">Distributed Tensorflow</label>
+              <label nz-radio nzValue="py">Distributed PyTorch</label>
+              <label nz-radio nzValue="ss">Standalone script</label>
+            </nz-radio-group>
             <label class="pg3-form-label"></label>
             <button nz-button id="spec-btn" type="default" (click)="onCreateSpec()">
               Add new spec
