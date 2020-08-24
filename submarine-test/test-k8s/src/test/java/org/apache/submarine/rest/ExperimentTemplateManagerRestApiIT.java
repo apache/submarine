@@ -53,8 +53,8 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
 
   protected static String TPL_PATH =
       "/api/" + RestConstants.V1 + "/" + RestConstants.EXPERIMENT_TEMPLATES;
-  protected static String TPL_NAME = "tf-mnist-test2";
-  protected static String TPL_FILE = "experimenttemplate/test_template_2.json";
+  protected static String TPL_NAME = "tf-mnist-test1";
+  protected static String TPL_FILE = "experimentTemplate/test_template_1.json";
   
   private final Gson gson = new GsonBuilder()
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
@@ -151,7 +151,6 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
 
   protected void run(String body, String contentType) throws Exception {
 
-    // create
     LOG.info("Create ExperimentTemplate using ExperimentTemplate REST API");
     PostMethod postMethod = httpPost(TPL_PATH, body, contentType);
     LOG.info(postMethod.getResponseBodyAsString());
@@ -191,7 +190,7 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
     ExperimentTemplateSubmit submit = new ExperimentTemplateSubmit();
     submit.setParams(new HashMap<String, String>());
     submit.setName(tplspec.getName());
-    for (ExperimentTemplateParamSpec parmSpec: tplspec.getParameters()) {
+    for (ExperimentTemplateParamSpec parmSpec: tplspec.getExperimentTemplateParamSpec()) {
       submit.getParams().put(parmSpec.getName(), parmSpec.getValue());
     }
     

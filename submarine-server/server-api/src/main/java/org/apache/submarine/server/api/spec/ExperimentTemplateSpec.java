@@ -60,11 +60,11 @@ public class ExperimentTemplateSpec {
     this.description = description;
   }
 
-  public List<ExperimentTemplateParamSpec> getParameters() {
+  public List<ExperimentTemplateParamSpec> getExperimentTemplateParamSpec() {
     return this.parameters;
   }
 
-  public void setParameters(List<ExperimentTemplateParamSpec> parameters) {
+  public void setExperimentTemplateParamSpec(List<ExperimentTemplateParamSpec> parameters) {
     this.parameters = parameters;
   }
 }

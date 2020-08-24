@@ -300,16 +300,17 @@ public class ExperimentTemplateManager {
     Map<String, String> params = SubmittedParam.getParams();
 
 
-    for (ExperimentTemplateParamSpec paramSpec: experimentTemplate.getExperimentTemplateSpec().getParameters()) {
+    for (ExperimentTemplateParamSpec paramSpec: 
+          experimentTemplate.getExperimentTemplateSpec().getExperimentTemplateParamSpec()) {
 
-      String value = sparam.get(tpaam.getName());
+      String value = params.get(paramSpec.getName());
       if (value != null) {
-        tpaam.setValue(value);
+        paramSpec.setValue(value);
       }
     }
     String spec = new Gson().toJson(experimentTemplate.getExperimentTemplateSpec());
 
-    ExperimentTemplateSpec experimentTemplateSpec = parameterMapping(spec, sparam);
+    ExperimentTemplateSpec experimentTemplateSpec = parameterMapping(spec, params);
         
     return ExperimentManager.getInstance().createExperiment(experimentTemplateSpec.getExperimentSpec());
   }
@@ -318,7 +319,7 @@ public class ExperimentTemplateManager {
     ExperimentTemplateSpec tplSpec = new Gson().fromJson(spec, ExperimentTemplateSpec.class);
 
     Map<String, String> paramMap = new HashMap<String, String>();
-    for (ExperimentTemplateParamSpec parm : tplSpec.getParameters()) {
+    for (ExperimentTemplateParamSpec parm : tplSpec.getExperimentTemplateParamSpec()) {
       if (parm.getValue() != null) {
         paramMap.put(parm.getName(), parm.getValue());
       } else {
@@ -363,11 +364,11 @@ public class ExperimentTemplateManager {
     ExperimentTemplateSpec experimentTemplateSpec;
 
     try {
-      tplSpec = new Gson().fromJson(sb.toString(), ExperimentTemplateSpec.class);
+      experimentTemplateSpec = new Gson().fromJson(sb.toString(), ExperimentTemplateSpec.class);
     } catch (Exception e) {
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
           "Template mapping fail: " + e.getMessage() + sb.toString());
     }
-    return tplSpec;
+    return experimentTemplateSpec;
   }
 }

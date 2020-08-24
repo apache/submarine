@@ -49,6 +49,8 @@ public class ExperimentTemplateRestApiTest {
   private static GsonBuilder gsonBuilder = new GsonBuilder();
   private static Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
+  protected static String TPL_FILE = "experimentTemplate/test_template_1.json";
+
   @BeforeClass
   public static void init() {
     SubmarineConfiguration submarineConf = SubmarineConfiguration.getInstance();
@@ -62,7 +64,7 @@ public class ExperimentTemplateRestApiTest {
 
   @Before
   public void createAndUpdateExperimentTemplate() {
-    String body = loadContent("experimenttemplate/test_template_1.json");
+    String body = loadContent(TPL_FILE);
     experimentTemplateSpec = gson.fromJson(body, ExperimentTemplateSpec.class);
     
     // Create ExperimentTemplate
@@ -79,7 +81,7 @@ public class ExperimentTemplateRestApiTest {
   @After
   public void deleteExperimentTemplate() {
 
-    String body = loadContent("experimenttemplate/test_template_1.json");
+    String body = loadContent(TPL_FILE);
     experimentTemplateSpec = gson.fromJson(body, ExperimentTemplateSpec.class);
 
     Response deleteEnvResponse = experimentTemplateStoreApi.
@@ -90,7 +92,7 @@ public class ExperimentTemplateRestApiTest {
   @Test
   public void getExperimentTemplate() {
 
-    String body = loadContent("experimenttemplate/test_template_1.json");
+    String body = loadContent(TPL_FILE);
     experimentTemplateSpec = gson.fromJson(body, ExperimentTemplateSpec.class);
 
     Response getEnvResponse = experimentTemplateStoreApi.
@@ -111,7 +113,7 @@ public class ExperimentTemplateRestApiTest {
   @Test
   public void listExperimentTemplate() {
 
-    String body = loadContent("experimenttemplate/test_template_1.json");
+    String body = loadContent(TPL_FILE);
     experimentTemplateSpec = gson.fromJson(body, ExperimentTemplateSpec.class);
 
     Response getEnvResponse = experimentTemplateStoreApi.listExperimentTemplate("");
