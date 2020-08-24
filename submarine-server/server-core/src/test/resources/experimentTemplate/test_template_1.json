@@ -1,7 +1,7 @@
 {
-  "name": "tf-mnist-test",
-  "author": "author",
-  "description": "This is a template to run tf-mnist\n",
+  "name": "tf-mnist-test_1",
+  "author": "test_author_1",
+  "description": "This is a test template to run tf-mnist\n",
   "parameters": [
     {
       "name": "training.learning_rate",
@@ -19,7 +19,7 @@
   "experimentSpec": {
     "meta": {
       "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{training.learning_rate}} --batch_size={{training.batch_size}}",
-      "name": "tf-mnist-template-test",
+      "name": "tf-mnist-template-test1",
       "envVars": {
         "ENV1": "ENV1"
       },

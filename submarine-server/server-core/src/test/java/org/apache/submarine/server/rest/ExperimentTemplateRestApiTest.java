@@ -70,7 +70,7 @@ public class ExperimentTemplateRestApiTest {
     // Create ExperimentTemplate
     Response createEnvResponse = experimentTemplateStoreApi.createExperimentTemplate(experimentTemplateSpec);
     assertEquals(Response.Status.OK.getStatusCode(), createEnvResponse.getStatus());
-
+    
     // Update ExperimentTemplate
     experimentTemplateSpec.setDescription("newdescription");
     Response updateTplResponse = experimentTemplateStoreApi.
@@ -80,7 +80,7 @@ public class ExperimentTemplateRestApiTest {
 
   @After
   public void deleteExperimentTemplate() {
-
+    
     String body = loadContent(TPL_FILE);
     experimentTemplateSpec = gson.fromJson(body, ExperimentTemplateSpec.class);
 

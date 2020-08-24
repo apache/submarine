@@ -50,10 +50,10 @@ import com.google.gson.reflect.TypeToken;
 
 @SuppressWarnings("rawtypes")
 public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerTest {
-
+  
   protected static String TPL_PATH =
       "/api/" + RestConstants.V1 + "/" + RestConstants.EXPERIMENT_TEMPLATES;
-  protected static String TPL_NAME = "tf-mnist-test1";
+  protected static String TPL_NAME = "tf-mnist-test_1";
   protected static String TPL_FILE = "experimentTemplate/test_template_1.json";
   
   private final Gson gson = new GsonBuilder()
