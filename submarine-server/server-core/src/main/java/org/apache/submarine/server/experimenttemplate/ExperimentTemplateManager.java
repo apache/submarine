@@ -300,7 +300,8 @@ public class ExperimentTemplateManager {
     Map<String, String> params = SubmittedParam.getParams();
 
 
-    for (ExperimentTemplateParamSpec tpaam: experimentTemplate.getExperimentTemplateSpec().getParameters()) {
+    for (ExperimentTemplateParamSpec paramSpec: experimentTemplate.getExperimentTemplateSpec().getParameters()) {
+
       String value = sparam.get(tpaam.getName());
       if (value != null) {
         tpaam.setValue(value);
