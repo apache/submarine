@@ -205,7 +205,6 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         jsonResponse.getCode());
 
-
     deleteExperimentTemplate();
     LOG.info(gson.toJson(jsonResponse.getResult()));
     

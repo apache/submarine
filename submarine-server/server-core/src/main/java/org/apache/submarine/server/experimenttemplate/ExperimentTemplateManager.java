@@ -141,19 +141,27 @@ public class ExperimentTemplateManager {
       }
       sqlSession.commit();
       
-      ExperimentTemplate experimentTemplate = new ExperimentTemplate();
-      experimentTemplate.setExperimentTemplateId(ExperimentTemplateId.fromString(experimentTemplateId));
-      experimentTemplate.setExperimentTemplateSpec(spec);
-      
-      // Update cache
-      cachedExperimentTemplates.putIfAbsent(spec.getName(), experimentTemplate);
-
-      return experimentTemplate;
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
-          "Unable to process the experimentTemplate spec.");
+          "Unable to insert or update the experimentTemplate spec: " + e.getMessage());
     }
+
+    ExperimentTemplate experimentTemplate;
+    try {
+      experimentTemplate = new ExperimentTemplate();
+      experimentTemplate.setExperimentTemplateId(ExperimentTemplateId.fromString(experimentTemplateId));
+      experimentTemplate.setExperimentTemplateSpec(spec);
+      
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
+          "Unable to parse the experimentTemplate spec: " + e.getMessage());
+    }
+    // Update cache
+    cachedExperimentTemplates.putIfAbsent(spec.getName(), experimentTemplate);
+
+    return experimentTemplate;
   }
 
   private ExperimentTemplateId generateExperimentTemplateId() {
