@@ -182,7 +182,6 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
     run(body, "application/json");
 
     String url = TPL_PATH + "/" + RestConstants.EXPERIMENT_TEMPLATE_SUBMIT;
-    // submit
     LOG.info("Submit ExperimentTemplate using ExperimentTemplate REST API");
     LOG.info(body);
 
