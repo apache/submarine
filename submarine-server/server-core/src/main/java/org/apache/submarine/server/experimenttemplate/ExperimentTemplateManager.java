@@ -360,7 +360,8 @@ public class ExperimentTemplateManager {
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
           "Template contains unmapped key: " + unmappedKeys);
     }  
-    ExperimentTemplateSpec tplSpec;
+    ExperimentTemplateSpec experimentTemplateSpec;
+
     try {
       tplSpec = new Gson().fromJson(sb.toString(), ExperimentTemplateSpec.class);
     } catch (Exception e) {
