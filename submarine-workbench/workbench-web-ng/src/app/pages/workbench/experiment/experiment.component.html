@@ -195,20 +195,6 @@
                 formControlName="description"
               ></textarea>
             </div>
-
-            <div class="single-field-group">
-              <label for="frameworks">
-                <span class="red-star">*</span>
-                Frameworks
-              </label>
-              <nz-select formControlName="frameworks" nzPlaceHolder="Choose" style="width: 48%;">
-                <nz-option
-                  *ngFor="let framework of FRAMEWORK_NAMES"
-                  [nzValue]="framework"
-                  [nzLabel]="framework"
-                ></nz-option>
-              </nz-select>
-            </div>
             <div class="single-field-group">
               <label for="namespace">
                 <span class="red-star">*</span>
@@ -272,9 +258,13 @@
             </div>
           </div>
           <div *ngSwitchCase="2">
-            <nz-radio-group [(ngModel)]="jobTypes" [ngModelOptions]="{standalone: true}">
-              <label nz-radio nzValue="tf">Distributed Tensorflow</label>
-              <label nz-radio nzValue="py">Distributed PyTorch</label>
+            <nz-radio-group
+              [(ngModel)]="jobTypes"
+              [ngModelOptions]="{standalone: true}"
+              id="jobs-container"
+            >
+              <label nz-radio nzValue="Tensorflow">Distributed Tensorflow</label>
+              <label nz-radio nzValue="Pytorch">Distributed PyTorch</label>
               <label nz-radio nzValue="ss">Standalone script</label>
             </nz-radio-group>
             <label class="pg3-form-label"></label>
@@ -286,11 +276,11 @@
                 <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
                   <div id="spec{{ i }}">
                     <label>Spec name</label>
-                    <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="frameworks.value">
-                      <div *ngSwitchCase="'TensorFlow'">
+                    <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="jobTypes">
+                      <div *ngSwitchCase="'Tensorflow'">
                         <nz-option *ngFor="let spec of TF_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
                       </div>
-                      <div *ngSwitchCase="'PyTorch'">
+                      <div *ngSwitchCase="'Pytorch'">
                         <nz-option *ngFor="let spec of PYTORCH_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
                       </div>
                     </nz-select>

@@ -54,11 +54,10 @@ export class ExperimentComponent implements OnInit {
   mode: 'create' | 'update' | 'clone' = 'create';
   updateId: string = null;
 
-  FRAMEWORK_NAMES = ['TensorFlow', 'PyTorch'];
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
   PYTORCH_SPECNAMES = ['Master', 'Worker'];
   MEMORY_UNITS = ['M', 'G'];
-  jobTypes = 'tf';
+  jobTypes = 'Tensorflow';
 
   // About env page
   currentEnvPage = 1;
@@ -86,7 +85,6 @@ export class ExperimentComponent implements OnInit {
     this.experiment = new FormGroup({
       experimentName: new FormControl(null, Validators.required),
       description: new FormControl(null, [Validators.required]),
-      frameworks: new FormControl('TensorFlow', [Validators.required]),
       namespace: new FormControl('default', [Validators.required]),
       cmd: new FormControl('', [Validators.required]),
       envs: new FormArray([], [this.experimentFormService.nameValidatorFactory('key')]),
@@ -118,9 +116,6 @@ export class ExperimentComponent implements OnInit {
   get description() {
     return this.experiment.get('description');
   }
-  get frameworks() {
-    return this.experiment.get('frameworks');
-  }
   get namespace() {
     return this.experiment.get('namespace');
   }
@@ -142,13 +137,14 @@ export class ExperimentComponent implements OnInit {
    */
   checkStatus() {
     if (this.current === 0) {
-      return (
-        this.experimentName.invalid ||
-        this.frameworks.invalid ||
-        this.namespace.invalid ||
-        this.cmd.invalid ||
-        this.image.invalid
-      );
+      // return (
+      //   this.experimentName.invalid ||
+      //   this.namespace.invalid ||
+      //   this.cmd.invalid ||
+      //   this.image.invalid
+        
+      // );
+      return false;
     } else if (this.current === 1) {
       return this.envs.invalid;
     } else if (this.current === 2) {
@@ -313,7 +309,7 @@ export class ExperimentComponent implements OnInit {
     const meta: SpecMeta = {
       name: this.experimentName.value,
       namespace: this.namespace.value,
-      framework: this.frameworks.value,
+      framework: this.jobTypes,
       cmd: this.cmd.value,
       envVars: {}
     };
