@@ -8,7 +8,10 @@ import { ExperimentInfoComponent } from './experiment-info/experiment-info.compo
 import { HyperParamsComponent } from './experiment-info/hyper-params/hyper-params.component';
 import { MetricsComponent } from './experiment-info/metrics/metrics.component';
 import { OutputsComponent } from './experiment-info/outputs/outputs.component';
-
+import { ExperimentCustomizedForm } from './experiment-customized-form/experiment-customized-form.component';
+import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
+import { ExperimentComponent } from './experiment.component';
+import { RouterModule } from '@angular/router';
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -29,8 +32,16 @@ import { OutputsComponent } from './experiment-info/outputs/outputs.component';
  */
 
 @NgModule({
-  exports: [ReactiveFormsModule],
-  imports: [NgZorroAntdModule, CommonModule, FormsModule, NgxChartsModule],
-  declarations: [ExperimentInfoComponent, HyperParamsComponent, MetricsComponent, ChartsComponent, OutputsComponent]
+  exports: [ReactiveFormsModule, ExperimentComponent],
+  imports: [ReactiveFormsModule, NgZorroAntdModule, CommonModule, FormsModule, NgxChartsModule, RouterModule, PipeSharedModule],
+  declarations: [
+    ExperimentComponent,
+    ExperimentInfoComponent,
+    HyperParamsComponent,
+    MetricsComponent,
+    ChartsComponent,
+    OutputsComponent,
+    ExperimentCustomizedForm
+  ]
 })
 export class ExperimentModule {}

@@ -41,7 +41,6 @@ import { EnvironmentComponent } from './environment/environment.component';
     WorkbenchComponent,
     HomeComponent,
     WorkspaceComponent,
-    ExperimentComponent,
     DataComponent,
     ModelComponent,
     EnvironmentComponent
