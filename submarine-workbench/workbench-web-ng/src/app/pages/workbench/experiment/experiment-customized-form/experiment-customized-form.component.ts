@@ -29,7 +29,7 @@ import { nanoid } from 'nanoid';
   templateUrl: './experiment-customized-form.component.html',
   styleUrls: ['./experiment-customized-form.component.scss']
 })
-export class ExperimentCustomizedForm implements OnInit, OnChanges {
+export class ExperimentCustomizedForm implements OnInit {
   @Input() mode: 'create' | 'update' | 'clone';
   @Input() okText: 'Next step' | 'Submit';
   @Input() isModalVisible: boolean;
@@ -73,18 +73,11 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
       image: new FormControl('', [Validators.required]),
       specs: new FormArray([], [this.experimentFormService.nameValidatorFactory('name')])
     });
-  }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes.hasOwnProperty('mode')) {
-      const newMode = changes['mode'].currentValue;
-      this.initExperimentStatus();
-      if (newMode === 'update') {
-        this.updateExperimentInit(this.targetId, this.targetSpec);
-      } else if (newMode === 'clone') {
-        this.cloneExperimentInit(this.targetSpec);
-      } else if (newMode === 'create') {
-      }
+    if (this.mode === 'update') {
+      this.updateExperimentInit(this.targetId, this.targetSpec);
+    } else if (this.mode === 'clone') {
+      this.cloneExperimentInit(this.targetSpec);
     }
   }
 
@@ -120,7 +113,6 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
     this.current = 0;
     this.okText = 'Next step';
     this.changeModalVisibility(true);
-    // this.targetId = null;
     // Reset the form
     this.experimentName.enable();
     this.envs.clear();
@@ -153,6 +145,7 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
    * Event handler for Next step/Submit button
    */
   handleOk() {
+    console.log('called init');
     if (this.current === 1) {
       this.okText = 'Submit';
     } else if (this.current === 2) {

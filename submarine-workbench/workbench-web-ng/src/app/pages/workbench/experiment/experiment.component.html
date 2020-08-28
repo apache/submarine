@@ -151,9 +151,9 @@
     (nzOnCancel)="isVisible = false"
     [nzWidth]="1000"
   >
-    <nz-button-group *ngIf="!formType">
-      <button nz-button nzType="primary" (click)="formType = 'customized'">Define your experiment</button>
-      <button nz-button nzType="primary" (click)="formType = 'pre'">From predefined experiment library</button>
+    <nz-button-group>
+      <button nz-button nzType="primary" (click)="formType='customized'">Define your experiment</button>
+      <button nz-button nzType="primary" (click)="formType='pre'">From predefined experiment library</button>
     </nz-button-group>
     <experiment-customized-form
       [mode]="mode"
@@ -161,7 +161,7 @@
       [targetSpec]="targetSpec"
       [(okText)]="okText"
       (fetchList)="fetchExperimentList()"
-      *ngIf="formType === 'customized'"
+      *ngIf="formType==='customized'"
     ></experiment-customized-form>
   </nz-modal>
 </nz-layout>

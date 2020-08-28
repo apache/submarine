@@ -17,14 +17,15 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { nanoid } from 'nanoid';
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
+import { ExperimentCustomizedForm } from './experiment-customized-form/experiment-customized-form.component';
 
 @Component({
   selector: 'submarine-experiment',
@@ -35,6 +36,10 @@ export class ExperimentComponent implements OnInit {
   experimentList: ExperimentInfo[] = [];
   checkedList: boolean[] = [];
   selectAllChecked: boolean = false;
+
+  // Modal instance
+  modal = null;
+
   // About experiment information
   isInfo = false;
   experimentID: string;
@@ -44,9 +49,9 @@ export class ExperimentComponent implements OnInit {
   searchText = '';
 
   // About new experiment
-  formType: 'pre' | 'customized' = null;
   okText = 'Next step';
   isVisible = false;
+  formType = null;
 
   // About form management
   current = 0;
@@ -67,6 +72,8 @@ export class ExperimentComponent implements OnInit {
     private nzMessageService: NzMessageService,
     private route: ActivatedRoute,
     private router: Router,
+    private modalService: NzModalService,
+    private viewContainerRef: ViewContainerRef,
     private experimentService: ExperimentService
   ) {}
 
@@ -87,6 +94,13 @@ export class ExperimentComponent implements OnInit {
     });
 
     this.reloadCheck();
+  }
+
+  createModal(formType: 'customized' | 'pre') {
+    this.modal = this.modalService.create({
+      nzTitle: 'Create experiment',
+      nzContent: ExperimentCustomizedForm,
+    })
   }
 
   fetchExperimentList() {
@@ -110,18 +124,6 @@ export class ExperimentComponent implements OnInit {
         this.checkedList.push(false);
       }
     });
-  }
-
-  onUpdateExperiment(id: string, spec: ExperimentSpec) {
-    // Open Modal in update mode
-    // this.initExperimentStatus('update');
-    // // Keep id for later request
-    // this.updateId = id;
-    // // Prevent user from modifying the name
-    // this.experimentName.disable();
-    // // Put value back
-    // this.experimentName.setValue(spec.meta.name);
-    // this.cloneExperiment(spec);
   }
 
   onDeleteExperiment(id: string, onMessage: boolean) {
