@@ -147,21 +147,32 @@
   <nz-modal
     [(nzVisible)]="isVisible"
     nzTitle="Create Experiment"
-    [(nzOkText)]="okText"
-    (nzOnCancel)="isVisible = false"
+    (nzOnCancel)="isVisible = false; formType = null"
     [nzWidth]="1000"
   >
-    <nz-button-group>
-      <button nz-button nzType="primary" (click)="formType='customized'">Define your experiment</button>
-      <button nz-button nzType="primary" (click)="formType='pre'">From predefined experiment library</button>
+    <nz-button-group *ngIf="!formType">
+      <button nz-button nzType="primary" (click)="formType = 'customized'">Define your experiment</button>
+      <button nz-button nzType="primary" (click)="formType = 'pre'">From predefined experiment library</button>
     </nz-button-group>
+    <div *nzModalFooter>
+      <button nz-button nzType="default" (click)="isVisible = false; formType = null">Cancel</button>
+      <button id="go" nz-button nzType="primary" [disabled]="nextBtnDisable" (click)="current = current + 1">
+        {{ okText }}
+      </button>
+      <button *ngIf="current > 0" nz-button nzType="default" style="float: left;" (click)="current = current - 1">
+        Prev Step
+      </button>
+    </div>
     <experiment-customized-form
+      [current]="current"
       [mode]="mode"
       [targetId]="targetId"
       [targetSpec]="targetSpec"
-      [(okText)]="okText"
+      (statusChange)="nextBtnDisable = $event"
       (fetchList)="fetchExperimentList()"
-      *ngIf="formType==='customized'"
+      (modalVisibleChange)="isVisible = $event"
+      (okTextChange)="okText = $event"
+      *ngIf="formType === 'customized'"
     ></experiment-customized-form>
   </nz-modal>
 </nz-layout>

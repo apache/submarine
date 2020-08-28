@@ -5,6 +5,7 @@ import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { nanoid } from 'nanoid';
+import { Observable, Subject } from 'rxjs';
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -29,17 +30,17 @@ import { nanoid } from 'nanoid';
   templateUrl: './experiment-customized-form.component.html',
   styleUrls: ['./experiment-customized-form.component.scss']
 })
-export class ExperimentCustomizedForm implements OnInit {
+export class ExperimentCustomizedForm implements OnInit, OnChanges {
   @Input() mode: 'create' | 'update' | 'clone';
-  @Input() okText: 'Next step' | 'Submit';
-  @Input() isModalVisible: boolean;
+  @Input() current: number;
 
-  @Output() isModalVisibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() okTextChange: EventEmitter<string> = new EventEmitter<string>();
+  @Output() statusChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() modalVisibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
   @Output() fetchList: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   // About new experiment
   experiment: FormGroup;
-  current = 0;
 
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
   PYTORCH_SPECNAMES = ['Master', 'Worker'];
@@ -69,15 +70,35 @@ export class ExperimentCustomizedForm implements OnInit {
       description: new FormControl(null, [Validators.required]),
       namespace: new FormControl('default', [Validators.required]),
       cmd: new FormControl('', [Validators.required]),
-      envs: new FormArray([], [this.experimentFormService.nameValidatorFactory('key')]),
       image: new FormControl('', [Validators.required]),
+      envs: new FormArray([], [this.experimentFormService.nameValidatorFactory('key')]),
       specs: new FormArray([], [this.experimentFormService.nameValidatorFactory('name')])
     });
-
+    this.checkStatus = this.checkStatus.bind(this);
+    this.initExperimentStatus();
     if (this.mode === 'update') {
       this.updateExperimentInit(this.targetId, this.targetSpec);
     } else if (this.mode === 'clone') {
       this.cloneExperimentInit(this.targetSpec);
+    }
+
+    // Fire status to parent
+    this.experiment.valueChanges.subscribe(this.checkStatus);
+  }
+
+  ngOnChanges(change: SimpleChanges) {
+    if (change.current && !change.current.isFirstChange()) {
+      const oldCurrent = change.current.previousValue;
+      const newCurrent = change.current.currentValue;
+      // Check form status no matter forward or back
+      this.checkStatus();
+      if (newCurrent > oldCurrent) {
+        // Forward
+        this.handleOk(oldCurrent);
+      } else {
+        // Backward
+        this.okTextChange.emit('Next step');
+      }
     }
   }
 
@@ -110,9 +131,6 @@ export class ExperimentCustomizedForm implements OnInit {
    * @param mode - The mode which the form should open in
    */
   initExperimentStatus() {
-    this.current = 0;
-    this.okText = 'Next step';
-    this.changeModalVisibility(true);
     // Reset the form
     this.experimentName.enable();
     this.envs.clear();
@@ -126,29 +144,24 @@ export class ExperimentCustomizedForm implements OnInit {
    */
   checkStatus() {
     if (this.current === 0) {
-      // return (
-      //   this.experimentName.invalid ||
-      //   this.namespace.invalid ||
-      //   this.cmd.invalid ||
-      //   this.image.invalid
-
-      // );
-      return false;
+      this.statusChange.emit(
+        this.experimentName.invalid || this.namespace.invalid || this.cmd.invalid || this.image.invalid
+      );
+      // return false;
     } else if (this.current === 1) {
-      return this.envs.invalid;
+      this.statusChange.emit(this.envs.invalid);
     } else if (this.current === 2) {
-      return this.specs.invalid;
+      this.statusChange.emit(this.specs.invalid);
     }
   }
 
   /**
    * Event handler for Next step/Submit button
    */
-  handleOk() {
-    console.log('called init');
-    if (this.current === 1) {
-      this.okText = 'Submit';
-    } else if (this.current === 2) {
+  handleOk(cur: number) {
+    if (cur === 1) {
+      this.okTextChange.emit('Submit');
+    } else if (cur === 2) {
       if (this.mode === 'create') {
         const newSpec = this.constructSpec();
         this.experimentService.createExperiment(newSpec).subscribe({
@@ -163,7 +176,7 @@ export class ExperimentCustomizedForm implements OnInit {
           },
           complete: () => {
             this.nzMessageService.success('Experiment creation succeeds');
-            this.changeModalVisibility(false);
+            this.modalVisibleChange.emit(false);
           }
         });
       } else if (this.mode === 'update') {
@@ -179,7 +192,7 @@ export class ExperimentCustomizedForm implements OnInit {
           },
           () => {
             this.nzMessageService.success('Modification succeeds!');
-            this.changeModalVisibility(false);
+            this.modalVisibleChange.emit(false);
           }
         );
       } else if (this.mode === 'clone') {
@@ -195,20 +208,11 @@ export class ExperimentCustomizedForm implements OnInit {
           },
           () => {
             this.nzMessageService.success('Create a new experiment !');
-            this.changeModalVisibility(false);
+            this.modalVisibleChange.emit(false);
           }
         );
       }
     }
-
-    if (this.current < 2) {
-      this.current++;
-    }
-  }
-
-  changeModalVisibility(isVisible: boolean) {
-    this.isModalVisible = isVisible;
-    this.isModalVisibleChange.emit(isVisible);
   }
 
   /**

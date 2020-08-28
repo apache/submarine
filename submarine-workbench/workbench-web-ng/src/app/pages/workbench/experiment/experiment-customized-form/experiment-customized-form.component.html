@@ -7,21 +7,6 @@
 </div>
 <div>
   <form [formGroup]="experiment">
-    <div *nzModalFooter>
-      <button nz-button nzType="default" (click)="isVisible = false">Cancel</button>
-      <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="handleOk()">
-        {{ okText }}
-      </button>
-      <button
-        *ngIf="current > 0"
-        nz-button
-        nzType="default"
-        style="float: left;"
-        (click)="current = current - 1; okText = 'Next Step'"
-      >
-        Prev Step
-      </button>
-    </div>
     <div [ngSwitch]="current" style="margin-top: 30px;">
       <div *ngSwitchCase="0">
         <div class="single-field-group">

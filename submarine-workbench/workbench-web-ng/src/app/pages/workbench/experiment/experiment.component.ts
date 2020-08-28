@@ -17,15 +17,14 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { nanoid } from 'nanoid';
-import { NzMessageService, NzModalService } from 'ng-zorro-antd';
+import { NzMessageService } from 'ng-zorro-antd';
 import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
-import { ExperimentCustomizedForm } from './experiment-customized-form/experiment-customized-form.component';
 
 @Component({
   selector: 'submarine-experiment',
@@ -37,9 +36,6 @@ export class ExperimentComponent implements OnInit {
   checkedList: boolean[] = [];
   selectAllChecked: boolean = false;
 
-  // Modal instance
-  modal = null;
-
   // About experiment information
   isInfo = false;
   experimentID: string;
@@ -48,13 +44,12 @@ export class ExperimentComponent implements OnInit {
   showExperiment = 'All';
   searchText = '';
 
-  // About new experiment
-  okText = 'Next step';
-  isVisible = false;
-  formType = null;
-
   // About form management
-  current = 0;
+  okText: string = 'Next step';
+  isVisible: boolean = false;
+  formType: 'customized' | 'pre' = null;
+  current: number = 0;
+  nextBtnDisable: boolean = true; // two-way binding
 
   // About update and clone
   mode: 'create' | 'update' | 'clone' = 'create';
@@ -72,8 +67,6 @@ export class ExperimentComponent implements OnInit {
     private nzMessageService: NzMessageService,
     private route: ActivatedRoute,
     private router: Router,
-    private modalService: NzModalService,
-    private viewContainerRef: ViewContainerRef,
     private experimentService: ExperimentService
   ) {}
 
@@ -94,13 +87,6 @@ export class ExperimentComponent implements OnInit {
     });
 
     this.reloadCheck();
-  }
-
-  createModal(formType: 'customized' | 'pre') {
-    this.modal = this.modalService.create({
-      nzTitle: 'Create experiment',
-      nzContent: ExperimentCustomizedForm,
-    })
   }
 
   fetchExperimentList() {
