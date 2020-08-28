@@ -63,7 +63,7 @@
           id="openExperiment"
           nzType="primary"
           style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px;"
-          (click)="initExperimentStatus('create')"
+          (click)="mode = 'create'; isVisible = true"
         >
           <i nz-icon nzType="plus"></i>
           New Experiment
@@ -123,9 +123,9 @@
             <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.duration }}</td>
             <td class="td-action">
-              <a (click)="onCloneExperiment(data.spec)">Clone</a>
+              <a (click)="mode = 'clone'; isVisible = true; targetSpec = data.spec">Clone</a>
               <nz-divider nzType="vertical"></nz-divider>
-              <a (click)="onUpdateExperiment(data.experimentId, data.spec)">Update</a>
+              <a (click)="mode = 'update'; targetId = data.experimentID; targetSpec = data.spec">Update</a>
               <nz-divider nzType="vertical"></nz-divider>
               <a
                 nz-popconfirm
@@ -144,5 +144,24 @@
     </div>
     <router-outlet (experimentInfoChange)="isInfo = true"></router-outlet>
   </div>
-  <experiment-customized-form></experiment-customized-form>
+  <nz-modal
+    [(nzVisible)]="isVisible"
+    nzTitle="Create Experiment"
+    [(nzOkText)]="okText"
+    (nzOnCancel)="isVisible = false"
+    [nzWidth]="1000"
+  >
+    <nz-button-group *ngIf="!formType">
+      <button nz-button nzType="primary" (click)="formType = 'customized'">Define your experiment</button>
+      <button nz-button nzType="primary" (click)="formType = 'pre'">From predefined experiment library</button>
+    </nz-button-group>
+    <experiment-customized-form
+      [mode]="mode"
+      [targetId]="targetId"
+      [targetSpec]="targetSpec"
+      [(okText)]="okText"
+      (fetchList)="fetchExperimentList()"
+      *ngIf="formType === 'customized'"
+    ></experiment-customized-form>
+  </nz-modal>
 </nz-layout>

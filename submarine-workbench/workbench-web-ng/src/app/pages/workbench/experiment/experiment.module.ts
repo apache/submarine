@@ -12,6 +12,7 @@ import { ExperimentCustomizedForm } from './experiment-customized-form/experimen
 import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 import { ExperimentComponent } from './experiment.component';
 import { RouterModule } from '@angular/router';
+import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -33,7 +34,15 @@ import { RouterModule } from '@angular/router';
 
 @NgModule({
   exports: [ReactiveFormsModule, ExperimentComponent],
-  imports: [ReactiveFormsModule, NgZorroAntdModule, CommonModule, FormsModule, NgxChartsModule, RouterModule, PipeSharedModule],
+  imports: [
+    ReactiveFormsModule,
+    NgZorroAntdModule,
+    CommonModule,
+    FormsModule,
+    NgxChartsModule,
+    RouterModule,
+    PipeSharedModule
+  ],
   declarations: [
     ExperimentComponent,
     ExperimentInfoComponent,

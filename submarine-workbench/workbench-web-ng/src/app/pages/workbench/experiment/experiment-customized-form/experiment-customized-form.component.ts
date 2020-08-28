@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ExperimentSpec, Specs, SpecEnviroment, SpecMeta } from '@submarine/interfaces/experiment-spec';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { nanoid } from 'nanoid';
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -28,12 +29,17 @@ import { NzMessageService } from 'ng-zorro-antd';
   templateUrl: './experiment-customized-form.component.html',
   styleUrls: ['./experiment-customized-form.component.scss']
 })
-export class ExperimentCustomizedForm implements OnInit {
+export class ExperimentCustomizedForm implements OnInit, OnChanges {
+  @Input() mode: 'create' | 'update' | 'clone';
+  @Input() okText: 'Next step' | 'Submit';
+  @Input() isModalVisible: boolean;
+
+  @Output() isModalVisibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() fetchList: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   // About new experiment
   experiment: FormGroup;
   current = 0;
-  okText = 'Next Step';
-  isVisible = false;
 
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
   PYTORCH_SPECNAMES = ['Master', 'Worker'];
@@ -48,8 +54,8 @@ export class ExperimentCustomizedForm implements OnInit {
   currentSpecPage = 1;
 
   // About update
-  mode: 'create' | 'update' | 'clone' = 'create';
-  updateId: string = null;
+  @Input() targetId: string = null;
+  @Input() targetSpec: ExperimentSpec = null;
 
   constructor(
     private experimentService: ExperimentService,
@@ -67,6 +73,19 @@ export class ExperimentCustomizedForm implements OnInit {
       image: new FormControl('', [Validators.required]),
       specs: new FormArray([], [this.experimentFormService.nameValidatorFactory('name')])
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.hasOwnProperty('mode')) {
+      const newMode = changes['mode'].currentValue;
+      this.initExperimentStatus();
+      if (newMode === 'update') {
+        this.updateExperimentInit(this.targetId, this.targetSpec);
+      } else if (newMode === 'clone') {
+        this.cloneExperimentInit(this.targetSpec);
+      } else if (newMode === 'create') {
+      }
+    }
   }
 
   // Getters of experiment request form
@@ -97,17 +116,16 @@ export class ExperimentCustomizedForm implements OnInit {
    *
    * @param mode - The mode which the form should open in
    */
-  initExperimentStatus(mode: 'create' | 'update' | 'clone') {
-    this.mode = mode;
+  initExperimentStatus() {
     this.current = 0;
     this.okText = 'Next step';
-    this.isVisible = true;
-    this.updateId = null;
+    this.changeModalVisibility(true);
+    // this.targetId = null;
     // Reset the form
     this.experimentName.enable();
     this.envs.clear();
     this.specs.clear();
-    this.experiment.reset({ frameworks: 'TensorFlow', namespace: 'default' });
+    this.experiment.reset({ namespace: 'default' });
   }
 
   /**
@@ -135,63 +153,69 @@ export class ExperimentCustomizedForm implements OnInit {
    * Event handler for Next step/Submit button
    */
   handleOk() {
-    // if (this.current === 1) {
-    //   this.okText = 'Submit';
-    // } else if (this.current === 2) {
-    //   if (this.mode === 'create') {
-    //     const newSpec = this.constructSpec();
-    //     this.experimentService.createExperiment(newSpec).subscribe({
-    //       next: (result) => {
-    //         this.fetchExperimentList();
-    //       },
-    //       error: (msg) => {
-    //         this.nzMessageService.error(`${msg}, please try again`, {
-    //           nzPauseOnHover: true
-    //         });
-    //       },
-    //       complete: () => {
-    //         this.nzMessageService.success('Experiment creation succeeds');
-    //         this.isVisible = false;
-    //       }
-    //     });
-    //   } else if (this.mode === 'update') {
-    //     const newSpec = this.constructSpec();
-    //     this.experimentService.updateExperiment(this.updateId, newSpec).subscribe(
-    //       () => {
-    //         this.fetchExperimentList();
-    //       },
-    //       (msg) => {
-    //         this.nzMessageService.error(`${msg}, please try again`, {
-    //           nzPauseOnHover: true
-    //         });
-    //       },
-    //       () => {
-    //         this.nzMessageService.success('Modification succeeds!');
-    //         this.isVisible = false;
-    //       }
-    //     );
-    //   } else if (this.mode === 'clone') {
-    //     const newSpec = this.constructSpec();
-    //     this.experimentService.createExperiment(newSpec).subscribe(
-    //       () => {
-    //         this.fetchExperimentList();
-    //       },
-    //       (msg) => {
-    //         this.nzMessageService.error(`${msg}, please try again`, {
-    //           nzPauseOnHover: true
-    //         });
-    //       },
-    //       () => {
-    //         this.nzMessageService.success('Create a new experiment !');
-    //         this.isVisible = false;
-    //       }
-    //     );
-    //   }
-    // }
+    if (this.current === 1) {
+      this.okText = 'Submit';
+    } else if (this.current === 2) {
+      if (this.mode === 'create') {
+        const newSpec = this.constructSpec();
+        this.experimentService.createExperiment(newSpec).subscribe({
+          next: () => {
+            // Tell the parent to fetch experiment lists
+            this.fetchList.emit(true);
+          },
+          error: (msg) => {
+            this.nzMessageService.error(`${msg}, please try again`, {
+              nzPauseOnHover: true
+            });
+          },
+          complete: () => {
+            this.nzMessageService.success('Experiment creation succeeds');
+            this.changeModalVisibility(false);
+          }
+        });
+      } else if (this.mode === 'update') {
+        const newSpec = this.constructSpec();
+        this.experimentService.updateExperiment(this.targetId, newSpec).subscribe(
+          () => {
+            this.fetchList.emit(true);
+          },
+          (msg) => {
+            this.nzMessageService.error(`${msg}, please try again`, {
+              nzPauseOnHover: true
+            });
+          },
+          () => {
+            this.nzMessageService.success('Modification succeeds!');
+            this.changeModalVisibility(false);
+          }
+        );
+      } else if (this.mode === 'clone') {
+        const newSpec = this.constructSpec();
+        this.experimentService.createExperiment(newSpec).subscribe(
+          () => {
+            this.fetchList.emit(true);
+          },
+          (msg) => {
+            this.nzMessageService.error(`${msg}, please try again`, {
+              nzPauseOnHover: true
+            });
+          },
+          () => {
+            this.nzMessageService.success('Create a new experiment !');
+            this.changeModalVisibility(false);
+          }
+        );
+      }
+    }
 
     if (this.current < 2) {
       this.current++;
     }
+  }
+
+  changeModalVisibility(isVisible: boolean) {
+    this.isModalVisible = isVisible;
+    this.isModalVisibleChange.emit(isVisible);
   }
 
   /**
@@ -309,5 +333,41 @@ export class ExperimentCustomizedForm implements OnInit {
    */
   deleteItem(arr: FormArray, index: number) {
     arr.removeAt(index);
+  }
+
+  updateExperimentInit(id: string, spec: ExperimentSpec) {
+    // Keep id for later request
+    this.targetId = id;
+    // Prevent user from modifying the name
+    this.experimentName.disable();
+    // Put value back
+    this.experimentName.setValue(spec.meta.name);
+    this.cloneExperiment(spec);
+  }
+
+  cloneExperimentInit(spec: ExperimentSpec) {
+    // Enable user from modifying the name
+    this.experimentName.enable();
+    // Put value back
+    const id: string = nanoid(8);
+    const cloneExperimentName = spec.meta.name + '-' + id;
+    this.experimentName.setValue(cloneExperimentName.toLocaleLowerCase());
+    this.cloneExperiment(spec);
+  }
+
+  cloneExperiment(spec: ExperimentSpec) {
+    this.description.setValue(spec.meta.description);
+    this.namespace.setValue(spec.meta.namespace);
+    this.cmd.setValue(spec.meta.cmd);
+    this.image.setValue(spec.environment.image);
+    for (const [key, value] of Object.entries(spec.meta.envVars)) {
+      const env = this.createEnv(key, value);
+      this.envs.push(env);
+    }
+    for (const [specName, info] of Object.entries(spec.spec)) {
+      const [cpuCount, memory, unit] = info.resources.match(/\d+|[MG]/g);
+      const newSpec = this.createSpec(specName, parseInt(info.replicas, 10), parseInt(cpuCount, 10), memory, unit);
+      this.specs.push(newSpec);
+    }
   }
 }

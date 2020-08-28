@@ -44,14 +44,17 @@ export class ExperimentComponent implements OnInit {
   searchText = '';
 
   // About new experiment
-  experiment: FormGroup;
-  current = 0;
-  okText = 'Next Step';
+  formType: 'pre' | 'customized' = null;
+  okText = 'Next step';
   isVisible = false;
 
-  // About update
+  // About form management
+  current = 0;
+
+  // About update and clone
   mode: 'create' | 'update' | 'clone' = 'create';
-  updateId: string = null;
+  targetId: string = null;
+  targetSpec: ExperimentSpec = null;
 
   statusColor: { [key: string]: string } = {
     Accepted: 'gold',
@@ -86,128 +89,6 @@ export class ExperimentComponent implements OnInit {
     this.reloadCheck();
   }
 
-  // Getters of experiment request form
-  get experimentName() {
-    return this.experiment.get('experimentName');
-  }
-  get description() {
-    return this.experiment.get('description');
-  }
-  get namespace() {
-    return this.experiment.get('namespace');
-  }
-  get cmd() {
-    return this.experiment.get('cmd');
-  }
-  get envs() {
-    return this.experiment.get('envs') as FormArray;
-  }
-  get image() {
-    return this.experiment.get('image');
-  }
-  get specs() {
-    return this.experiment.get('specs') as FormArray;
-  }
-  /**
-   * Init a new experiment form, clear all status, clear all form controls and open the form in the mode specified in the argument
-   *
-   * @param mode - The mode which the form should open in
-   */
-  initExperimentStatus(mode: 'create' | 'update' | 'clone') {
-    this.mode = mode;
-    this.current = 0;
-    this.okText = 'Next step';
-    this.isVisible = true;
-    this.updateId = null;
-    // Reset the form
-    this.experimentName.enable();
-    this.envs.clear();
-    this.specs.clear();
-    this.experiment.reset({ frameworks: 'TensorFlow', namespace: 'default' });
-  }
-  /**
-   * Check the validity of the experiment page
-   *
-   */
-  checkStatus() {
-    if (this.current === 0) {
-      // return (
-      //   this.experimentName.invalid ||
-      //   this.namespace.invalid ||
-      //   this.cmd.invalid ||
-      //   this.image.invalid
-
-      // );
-      return false;
-    } else if (this.current === 1) {
-      return this.envs.invalid;
-    } else if (this.current === 2) {
-      return this.specs.invalid;
-    }
-  }
-  /**
-   * Event handler for Next step/Submit button
-   */
-  // handleOk() {
-  //   if (this.current === 1) {
-  //     this.okText = 'Submit';
-  //   } else if (this.current === 2) {
-  //     if (this.mode === 'create') {
-  //       const newSpec = this.constructSpec();
-  //       this.experimentService.createExperiment(newSpec).subscribe({
-  //         next: (result) => {
-  //           this.fetchExperimentList();
-  //         },
-  //         error: (msg) => {
-  //           this.nzMessageService.error(`${msg}, please try again`, {
-  //             nzPauseOnHover: true
-  //           });
-  //         },
-  //         complete: () => {
-  //           this.nzMessageService.success('Experiment creation succeeds');
-  //           this.isVisible = false;
-  //         }
-  //       });
-  //     } else if (this.mode === 'update') {
-  //       const newSpec = this.constructSpec();
-  //       this.experimentService.updateExperiment(this.updateId, newSpec).subscribe(
-  //         () => {
-  //           this.fetchExperimentList();
-  //         },
-  //         (msg) => {
-  //           this.nzMessageService.error(`${msg}, please try again`, {
-  //             nzPauseOnHover: true
-  //           });
-  //         },
-  //         () => {
-  //           this.nzMessageService.success('Modification succeeds!');
-  //           this.isVisible = false;
-  //         }
-  //       );
-  //     } else if (this.mode === 'clone') {
-  //       const newSpec = this.constructSpec();
-  //       this.experimentService.createExperiment(newSpec).subscribe(
-  //         () => {
-  //           this.fetchExperimentList();
-  //         },
-  //         (msg) => {
-  //           this.nzMessageService.error(`${msg}, please try again`, {
-  //             nzPauseOnHover: true
-  //           });
-  //         },
-  //         () => {
-  //           this.nzMessageService.success('Create a new experiment !');
-  //           this.isVisible = false;
-  //         }
-  //       );
-  //     }
-  //   }
-
-  //   if (this.current < 2) {
-  //     this.current++;
-  //   }
-  // }
-
   fetchExperimentList() {
     this.experimentService.fetchExperimentList().subscribe((list) => {
       this.experimentList = list;
@@ -233,44 +114,14 @@ export class ExperimentComponent implements OnInit {
 
   onUpdateExperiment(id: string, spec: ExperimentSpec) {
     // Open Modal in update mode
-    this.initExperimentStatus('update');
-    // Keep id for later request
-    this.updateId = id;
-
-    // Prevent user from modifying the name
-    this.experimentName.disable();
-
-    // Put value back
-    this.experimentName.setValue(spec.meta.name);
-    this.cloneExperiment(spec);
-  }
-
-  onCloneExperiment(spec: ExperimentSpec) {
-    // Open Modal in update mode
-    this.initExperimentStatus('clone');
-    // Prevent user from modifying the name
-    this.experimentName.enable();
-    // Put value back
-    const id: string = nanoid(8);
-    const cloneExperimentName = spec.meta.name + '-' + id;
-    this.experimentName.setValue(cloneExperimentName.toLocaleLowerCase());
-    this.cloneExperiment(spec);
-  }
-
-  cloneExperiment(spec: ExperimentSpec) {
-    // this.description.setValue(spec.meta.description);
-    // this.namespace.setValue(spec.meta.namespace);
-    // this.cmd.setValue(spec.meta.cmd);
-    // this.image.setValue(spec.environment.image);
-    // for (const [key, value] of Object.entries(spec.meta.envVars)) {
-    //   const env = this.createEnv(key, value);
-    //   this.envs.push(env);
-    // }
-    // for (const [specName, info] of Object.entries(spec.spec)) {
-    //   const [cpuCount, memory, unit] = info.resources.match(/\d+|[MG]/g);
-    //   const newSpec = this.createSpec(specName, parseInt(info.replicas, 10), parseInt(cpuCount, 10), memory, unit);
-    //   this.specs.push(newSpec);
-    // }
+    // this.initExperimentStatus('update');
+    // // Keep id for later request
+    // this.updateId = id;
+    // // Prevent user from modifying the name
+    // this.experimentName.disable();
+    // // Put value back
+    // this.experimentName.setValue(spec.meta.name);
+    // this.cloneExperiment(spec);
   }
 
   onDeleteExperiment(id: string, onMessage: boolean) {
@@ -279,7 +130,7 @@ export class ExperimentComponent implements OnInit {
         if (onMessage === true) {
           this.nzMessageService.success('Delete Experiment Successfully!');
         }
-        this.fetchExperimentList();
+        this.experimentService.fetchExperimentList();
       },
       (err) => {
         if (onMessage === true) {
