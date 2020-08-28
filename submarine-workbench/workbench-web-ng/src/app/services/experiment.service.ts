@@ -32,6 +32,22 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 export class ExperimentService {
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
+  // fetchExperimentList(successFun: (value) => void, errFun: (err) => void, completeFun: () => void) {
+  //   const apiUrl = this.baseApi.getRestApi('/v1/experiment');
+  //   this.httpClient
+  //     .get<Rest<ExperimentInfo[]>>(apiUrl)
+  //     .pipe(
+  //       switchMap((res) => {
+  //         if (res.success) {
+  //           console.log(res.result);
+  //           return of(res.result);
+  //         } else {
+  //           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+  //         }
+  //       })
+  //     )
+  //     .subscribe(successFun, errFun, completeFun);
+  // }
   fetchExperimentList(): Observable<ExperimentInfo[]> {
     const apiUrl = this.baseApi.getRestApi('/v1/experiment');
     return this.httpClient.get<Rest<ExperimentInfo[]>>(apiUrl).pipe(

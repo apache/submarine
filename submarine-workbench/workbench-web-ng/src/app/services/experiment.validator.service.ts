@@ -17,12 +17,11 @@
  * under the License.
  */
 
-import { FormGroup, ValidatorFn, ValidationErrors, FormControl, FormArray } from '@angular/forms';
+import { FormGroup, ValidatorFn, ValidationErrors, FormArray } from '@angular/forms';
 import { Injectable } from '@angular/core';
-import { ExperimentModule } from '@submarine/pages/workbench/experiment/experiment.module';
 
 @Injectable({
-  providedIn: ExperimentModule
+  providedIn: 'root'
 })
 export class ExperimentFormService {
   /**
