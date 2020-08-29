@@ -1,5 +1,5 @@
 <div>
-  <nz-steps [nzCurrent]="current">
+  <nz-steps [nzCurrent]="step">
     <nz-step nzTitle="Meta"></nz-step>
     <nz-step nzTitle="Env"></nz-step>
     <nz-step nzTitle="Spec"></nz-step>
@@ -7,7 +7,7 @@
 </div>
 <div>
   <form [formGroup]="experiment">
-    <div [ngSwitch]="current" style="margin-top: 30px;">
+    <div [ngSwitch]="step" style="margin-top: 30px;">
       <div *ngSwitchCase="0">
         <div class="single-field-group">
           <label for="experimentName">

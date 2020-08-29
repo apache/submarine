@@ -18,18 +18,19 @@
  */
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
-import { nanoid } from 'nanoid';
 import { NzMessageService } from 'ng-zorro-antd';
 import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
+import { ExperimentFormService } from '@submarine/services/experiment.form.service';
+import { ModalProps } from '@submarine/interfaces/modal-props';
 
 @Component({
   selector: 'submarine-experiment',
   templateUrl: './experiment.component.html',
-  styleUrls: ['./experiment.component.scss']
+  styleUrls: ['./experiment.component.scss'],
+  providers: [ExperimentFormService]
 })
 export class ExperimentComponent implements OnInit {
   experimentList: ExperimentInfo[] = [];
@@ -45,11 +46,13 @@ export class ExperimentComponent implements OnInit {
   searchText = '';
 
   // About form management
-  okText: string = 'Next step';
-  isVisible: boolean = false;
-  formType: 'customized' | 'pre' = null;
-  current: number = 0;
-  nextBtnDisable: boolean = true; // two-way binding
+  modalProps: ModalProps = {
+    okText: 'Next step',
+    isVisible: false,
+    currentStep: 0,
+    formType: null
+  }
+  nextBtnDisable: boolean = true;
 
   // About update and clone
   mode: 'create' | 'update' | 'clone' = 'create';
@@ -67,7 +70,8 @@ export class ExperimentComponent implements OnInit {
     private nzMessageService: NzMessageService,
     private route: ActivatedRoute,
     private router: Router,
-    private experimentService: ExperimentService
+    private experimentService: ExperimentService,
+    private experimentFormService: ExperimentFormService
   ) {}
 
   ngOnInit() {
@@ -85,8 +89,42 @@ export class ExperimentComponent implements OnInit {
         }
       }
     });
+    // sub
+    this.experimentFormService.fetchListService.subscribe(() => {
+      this.fetchExperimentList();
+    });
+
+    this.experimentFormService.btnStatusService.subscribe((status) => {
+      this.nextBtnDisable = status;
+    });
+    this.experimentFormService.modalPropsService.subscribe((props) => {
+      this.modalProps = { ...this.modalProps, ...props }
+    });
 
     this.reloadCheck();
+  }
+
+  initModal(initMode: 'create' | 'update' | 'clone', initFormType = null) {
+    this.mode = initMode;
+    this.modalProps.isVisible = true;
+    this.modalProps.formType = initFormType;
+  }
+
+  proceedForm() {
+    this.experimentFormService.stepChange(1);
+  }
+
+  prevForm() {
+    this.experimentFormService.stepChange(-1);
+  }
+
+  closeModal() {
+    this.modalProps = {
+      okText: 'Next step',
+      isVisible: false,
+      currentStep: 0,
+      formType: null
+    }
   }
 
   fetchExperimentList() {
@@ -112,13 +150,22 @@ export class ExperimentComponent implements OnInit {
     });
   }
 
+  onUpdateExperiment(id: string, spec: ExperimentSpec) {
+    // Keep id for later request
+    this.targetId = id;
+    this.targetSpec = spec;
+
+    // init modal to update/customized mode
+    this.initModal('update', 'customized');
+  }
+
   onDeleteExperiment(id: string, onMessage: boolean) {
     this.experimentService.deleteExperiment(id).subscribe(
       () => {
         if (onMessage === true) {
           this.nzMessageService.success('Delete Experiment Successfully!');
         }
-        this.experimentService.fetchExperimentList();
+        this.fetchExperimentList();
       },
       (err) => {
         if (onMessage === true) {

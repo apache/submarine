@@ -63,7 +63,7 @@
           id="openExperiment"
           nzType="primary"
           style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px;"
-          (click)="mode = 'create'; isVisible = true"
+          (click)="initModal('create')"
         >
           <i nz-icon nzType="plus"></i>
           New Experiment
@@ -123,9 +123,9 @@
             <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.duration }}</td>
             <td class="td-action">
-              <a (click)="mode = 'clone'; isVisible = true; targetSpec = data.spec">Clone</a>
+              <a (click)="mode = 'clone'; targetSpec = data.spec">Clone</a>
               <nz-divider nzType="vertical"></nz-divider>
-              <a (click)="mode = 'update'; targetId = data.experimentID; targetSpec = data.spec">Update</a>
+              <a (click)="onUpdateExperiment(data.experimentId, data.spec)">Update</a>
               <nz-divider nzType="vertical"></nz-divider>
               <a
                 nz-popconfirm
@@ -145,34 +145,31 @@
     <router-outlet (experimentInfoChange)="isInfo = true"></router-outlet>
   </div>
   <nz-modal
-    [(nzVisible)]="isVisible"
+    [(nzVisible)]="this.modalProps.isVisible"
     nzTitle="Create Experiment"
-    (nzOnCancel)="isVisible = false; formType = null"
+    (nzOnCancel)="closeModal()"
     [nzWidth]="1000"
   >
-    <nz-button-group *ngIf="!formType">
-      <button nz-button nzType="primary" (click)="formType = 'customized'">Define your experiment</button>
-      <button nz-button nzType="primary" (click)="formType = 'pre'">From predefined experiment library</button>
+    <nz-button-group *ngIf="!this.modalProps.formType">
+      <button nz-button nzType="primary" id="customized" (click)="this.modalProps.formType = 'customized'">
+        Define your experiment
+      </button>
+      <button nz-button nzType="primary" id="pre" (click)="this.modalProps.formtype = 'pre'">From predefined experiment library</button>
     </nz-button-group>
     <div *nzModalFooter>
-      <button nz-button nzType="default" (click)="isVisible = false; formType = null">Cancel</button>
-      <button id="go" nz-button nzType="primary" [disabled]="nextBtnDisable" (click)="current = current + 1">
-        {{ okText }}
+      <button nz-button nzType="default" (click)="closeModal()">Cancel</button>
+      <button id="go" nz-button nzType="primary" [disabled]="nextBtnDisable" (click)="proceedForm()">
+        {{ this.modalProps.okText }}
       </button>
-      <button *ngIf="current > 0" nz-button nzType="default" style="float: left;" (click)="current = current - 1">
+      <button *ngIf="this.modalProps.currentStep > 0" nz-button nzType="default" style="float: left;" (click)="prevForm()">
         Prev Step
       </button>
     </div>
     <experiment-customized-form
-      [current]="current"
       [mode]="mode"
       [targetId]="targetId"
       [targetSpec]="targetSpec"
-      (statusChange)="nextBtnDisable = $event"
-      (fetchList)="fetchExperimentList()"
-      (modalVisibleChange)="isVisible = $event"
-      (okTextChange)="okText = $event"
-      *ngIf="formType === 'customized'"
+      *ngIf="this.modalProps.formType === 'customized'"
     ></experiment-customized-form>
   </nz-modal>
 </nz-layout>

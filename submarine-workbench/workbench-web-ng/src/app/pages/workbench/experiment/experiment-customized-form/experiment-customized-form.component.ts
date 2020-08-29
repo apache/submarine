@@ -1,11 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ExperimentSpec, Specs, SpecEnviroment, SpecMeta } from '@submarine/interfaces/experiment-spec';
 import { ExperimentService } from '@submarine/services/experiment.service';
-import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
+import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { nanoid } from 'nanoid';
-import { Observable, Subject } from 'rxjs';
+import { Subscription } from 'rxjs';
+import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -30,28 +31,26 @@ import { Observable, Subject } from 'rxjs';
   templateUrl: './experiment-customized-form.component.html',
   styleUrls: ['./experiment-customized-form.component.scss']
 })
-export class ExperimentCustomizedForm implements OnInit, OnChanges {
+export class ExperimentCustomizedForm implements OnInit, OnDestroy {
   @Input() mode: 'create' | 'update' | 'clone';
-  @Input() current: number;
-
-  @Output() okTextChange: EventEmitter<string> = new EventEmitter<string>();
-  @Output() statusChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() modalVisibleChange: EventEmitter<boolean> = new EventEmitter<boolean>();
-  @Output() fetchList: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   // About new experiment
   experiment: FormGroup;
+  step: number = 0;
+  subscriptions: Subscription[] = [];
 
+  // Constants
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
   PYTORCH_SPECNAMES = ['Master', 'Worker'];
   MEMORY_UNITS = ['M', 'G'];
-  jobTypes = 'Tensorflow';
+  TOTAL_STEPS = 2;
 
   // About env page
   currentEnvPage = 1;
   PAGESIZE = 5;
 
   // About spec
+  jobTypes = 'Tensorflow';
   currentSpecPage = 1;
 
   // About update
@@ -60,6 +59,7 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
 
   constructor(
     private experimentService: ExperimentService,
+    private experimentValidatorService: ExperimentValidatorService,
     private experimentFormService: ExperimentFormService,
     private nzMessageService: NzMessageService
   ) {}
@@ -71,35 +71,49 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
       namespace: new FormControl('default', [Validators.required]),
       cmd: new FormControl('', [Validators.required]),
       image: new FormControl('', [Validators.required]),
-      envs: new FormArray([], [this.experimentFormService.nameValidatorFactory('key')]),
-      specs: new FormArray([], [this.experimentFormService.nameValidatorFactory('name')])
+      envs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
+      specs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('name')])
     });
+    
+    // Bind the component method for callback
     this.checkStatus = this.checkStatus.bind(this);
-    this.initExperimentStatus();
+    
     if (this.mode === 'update') {
-      this.updateExperimentInit(this.targetId, this.targetSpec);
+      this.updateExperimentInit();
     } else if (this.mode === 'clone') {
       this.cloneExperimentInit(this.targetSpec);
     }
 
-    // Fire status to parent
-    this.experiment.valueChanges.subscribe(this.checkStatus);
+    // Fire status to parent when form value has changed
+    const sub1 = this.experiment.valueChanges.subscribe(this.checkStatus);
+    
+    const sub2 = this.experimentFormService.stepService.subscribe((n) => {
+      if (n > 0) {
+        if (this.step === this.TOTAL_STEPS) {
+          this.handleSubmit();
+        } else {
+          this.step += 1;
+        }
+      } else {
+        this.step -= 1;
+      }
+      // Send the current step and olText back to parent
+      this.experimentFormService.modalPropsChange({
+        okText: this.step !== this.TOTAL_STEPS ? 'Next step' : 'Submit',
+        currentStep: this.step
+      });
+      // Run check after step is changed
+      this.checkStatus();
+    });
+
+    this.subscriptions.push(sub1, sub2);
   }
 
-  ngOnChanges(change: SimpleChanges) {
-    if (change.current && !change.current.isFirstChange()) {
-      const oldCurrent = change.current.previousValue;
-      const newCurrent = change.current.currentValue;
-      // Check form status no matter forward or back
-      this.checkStatus();
-      if (newCurrent > oldCurrent) {
-        // Forward
-        this.handleOk(oldCurrent);
-      } else {
-        // Backward
-        this.okTextChange.emit('Next step');
-      }
-    }
+  ngOnDestroy() {
+    // Clean up the subscriptions
+    this.subscriptions.forEach((sub) => {
+      sub.unsubscribe();
+    });
   }
 
   // Getters of experiment request form
@@ -125,17 +139,29 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
     return this.experiment.get('specs') as FormArray;
   }
 
+  // /**
+  //  * Init a new experiment form, clear all status, clear all form controls and open the form in the mode specified in the argument
+  //  *
+  //  * @param mode - The mode which the form should open in
+  //  */
+  // initExperimentStatus() {
+  //   // Reset the form
+  //   this.experimentName.enable();
+  //   this.envs.clear();
+  //   this.specs.clear();
+  //   this.experiment.reset({ namespace: 'default' });
+  // }
+
   /**
-   * Init a new experiment form, clear all status, clear all form controls and open the form in the mode specified in the argument
-   *
-   * @param mode - The mode which the form should open in
+   * Reset properies in parent component when the form is about to closed
    */
-  initExperimentStatus() {
-    // Reset the form
-    this.experimentName.enable();
-    this.envs.clear();
-    this.specs.clear();
-    this.experiment.reset({ namespace: 'default' });
+  closeModal() {
+    this.experimentFormService.modalPropsChange({
+      okText: 'Next step',
+      isVisible: false,
+      currentStep: 0,
+      formType: null
+    });
   }
 
   /**
@@ -143,32 +169,26 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
    *
    */
   checkStatus() {
-    if (this.current === 0) {
-      this.statusChange.emit(
+    if (this.step === 0) {
+      this.experimentFormService.btnStatusChange(
         this.experimentName.invalid || this.namespace.invalid || this.cmd.invalid || this.image.invalid
       );
-      // return false;
-    } else if (this.current === 1) {
-      this.statusChange.emit(this.envs.invalid);
-    } else if (this.current === 2) {
-      this.statusChange.emit(this.specs.invalid);
+    } else if (this.step === 1) {
+      this.experimentFormService.btnStatusChange(this.envs.invalid);
+    } else if (this.step === this.TOTAL_STEPS) {
+      this.experimentFormService.btnStatusChange(this.specs.invalid);
     }
   }
 
   /**
    * Event handler for Next step/Submit button
    */
-  handleOk(cur: number) {
-    if (cur === 1) {
-      this.okTextChange.emit('Submit');
-    } else if (cur === 2) {
+  handleSubmit() {
+    
       if (this.mode === 'create') {
         const newSpec = this.constructSpec();
         this.experimentService.createExperiment(newSpec).subscribe({
-          next: () => {
-            // Tell the parent to fetch experiment lists
-            this.fetchList.emit(true);
-          },
+          next: () => {},
           error: (msg) => {
             this.nzMessageService.error(`${msg}, please try again`, {
               nzPauseOnHover: true
@@ -176,14 +196,15 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
           },
           complete: () => {
             this.nzMessageService.success('Experiment creation succeeds');
-            this.modalVisibleChange.emit(false);
+            this.experimentFormService.fetchList();
+            this.closeModal();
           }
         });
       } else if (this.mode === 'update') {
         const newSpec = this.constructSpec();
         this.experimentService.updateExperiment(this.targetId, newSpec).subscribe(
           () => {
-            this.fetchList.emit(true);
+            this.experimentFormService.fetchList();
           },
           (msg) => {
             this.nzMessageService.error(`${msg}, please try again`, {
@@ -192,15 +213,14 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
           },
           () => {
             this.nzMessageService.success('Modification succeeds!');
-            this.modalVisibleChange.emit(false);
+            this.experimentFormService.fetchList();
+            this.closeModal();
           }
         );
       } else if (this.mode === 'clone') {
         const newSpec = this.constructSpec();
         this.experimentService.createExperiment(newSpec).subscribe(
-          () => {
-            this.fetchList.emit(true);
-          },
+          () => {},
           (msg) => {
             this.nzMessageService.error(`${msg}, please try again`, {
               nzPauseOnHover: true
@@ -208,11 +228,12 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
           },
           () => {
             this.nzMessageService.success('Create a new experiment !');
-            this.modalVisibleChange.emit(false);
+            this.experimentFormService.fetchList();
+            this.closeModal();
           }
         );
       }
-    }
+    
   }
 
   /**
@@ -225,7 +246,7 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
         key: new FormControl(defaultKey, [Validators.required]),
         value: new FormControl(defaultValue, [Validators.required])
       },
-      [this.experimentFormService.envValidator]
+      [this.experimentValidatorService.envValidator]
     );
   }
   /**
@@ -248,10 +269,10 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
             num: new FormControl(defaultMemory, [Validators.required]),
             unit: new FormControl(defaultUnit, [Validators.required])
           },
-          [this.experimentFormService.memoryValidator]
+          [this.experimentValidatorService.memoryValidator]
         )
       },
-      [this.experimentFormService.specValidator]
+      [this.experimentValidatorService.specValidator]
     );
   }
 
@@ -332,14 +353,14 @@ export class ExperimentCustomizedForm implements OnInit, OnChanges {
     arr.removeAt(index);
   }
 
-  updateExperimentInit(id: string, spec: ExperimentSpec) {
-    // Keep id for later request
-    this.targetId = id;
+  updateExperimentInit() {
     // Prevent user from modifying the name
     this.experimentName.disable();
     // Put value back
-    this.experimentName.setValue(spec.meta.name);
-    this.cloneExperiment(spec);
+    this.experimentName.setValue(this.targetSpec.meta.name);
+    this.cloneExperiment(this.targetSpec);
+    // Check status to enable next btn
+    this.checkStatus();
   }
 
   cloneExperimentInit(spec: ExperimentSpec) {

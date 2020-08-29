@@ -23,7 +23,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class ExperimentFormService {
+export class ExperimentValidatorService {
   /**
    * The validator for env key/value pair
    * @param envGroup A FormGroup resides in `envs` FromArray in createExperiment
