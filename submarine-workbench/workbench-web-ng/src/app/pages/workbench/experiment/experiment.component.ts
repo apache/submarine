@@ -51,7 +51,7 @@ export class ExperimentComponent implements OnInit {
     isVisible: false,
     currentStep: 0,
     formType: null
-  }
+  };
   nextBtnDisable: boolean = true;
 
   // About update and clone
@@ -98,7 +98,7 @@ export class ExperimentComponent implements OnInit {
       this.nextBtnDisable = status;
     });
     this.experimentFormService.modalPropsService.subscribe((props) => {
-      this.modalProps = { ...this.modalProps, ...props }
+      this.modalProps = { ...this.modalProps, ...props };
     });
 
     this.reloadCheck();
@@ -124,7 +124,7 @@ export class ExperimentComponent implements OnInit {
       isVisible: false,
       currentStep: 0,
       formType: null
-    }
+    };
   }
 
   fetchExperimentList() {

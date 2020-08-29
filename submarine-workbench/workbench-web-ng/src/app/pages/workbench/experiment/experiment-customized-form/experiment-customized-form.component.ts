@@ -74,10 +74,10 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
       envs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
       specs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('name')])
     });
-    
+
     // Bind the component method for callback
     this.checkStatus = this.checkStatus.bind(this);
-    
+
     if (this.mode === 'update') {
       this.updateExperimentInit();
     } else if (this.mode === 'clone') {
@@ -86,7 +86,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
 
     // Fire status to parent when form value has changed
     const sub1 = this.experiment.valueChanges.subscribe(this.checkStatus);
-    
+
     const sub2 = this.experimentFormService.stepService.subscribe((n) => {
       if (n > 0) {
         if (this.step === this.TOTAL_STEPS) {
@@ -184,56 +184,54 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
    * Event handler for Next step/Submit button
    */
   handleSubmit() {
-    
-      if (this.mode === 'create') {
-        const newSpec = this.constructSpec();
-        this.experimentService.createExperiment(newSpec).subscribe({
-          next: () => {},
-          error: (msg) => {
-            this.nzMessageService.error(`${msg}, please try again`, {
-              nzPauseOnHover: true
-            });
-          },
-          complete: () => {
-            this.nzMessageService.success('Experiment creation succeeds');
-            this.experimentFormService.fetchList();
-            this.closeModal();
-          }
-        });
-      } else if (this.mode === 'update') {
-        const newSpec = this.constructSpec();
-        this.experimentService.updateExperiment(this.targetId, newSpec).subscribe(
-          () => {
-            this.experimentFormService.fetchList();
-          },
-          (msg) => {
-            this.nzMessageService.error(`${msg}, please try again`, {
-              nzPauseOnHover: true
-            });
-          },
-          () => {
-            this.nzMessageService.success('Modification succeeds!');
-            this.experimentFormService.fetchList();
-            this.closeModal();
-          }
-        );
-      } else if (this.mode === 'clone') {
-        const newSpec = this.constructSpec();
-        this.experimentService.createExperiment(newSpec).subscribe(
-          () => {},
-          (msg) => {
-            this.nzMessageService.error(`${msg}, please try again`, {
-              nzPauseOnHover: true
-            });
-          },
-          () => {
-            this.nzMessageService.success('Create a new experiment !');
-            this.experimentFormService.fetchList();
-            this.closeModal();
-          }
-        );
-      }
-    
+    if (this.mode === 'create') {
+      const newSpec = this.constructSpec();
+      this.experimentService.createExperiment(newSpec).subscribe({
+        next: () => {},
+        error: (msg) => {
+          this.nzMessageService.error(`${msg}, please try again`, {
+            nzPauseOnHover: true
+          });
+        },
+        complete: () => {
+          this.nzMessageService.success('Experiment creation succeeds');
+          this.experimentFormService.fetchList();
+          this.closeModal();
+        }
+      });
+    } else if (this.mode === 'update') {
+      const newSpec = this.constructSpec();
+      this.experimentService.updateExperiment(this.targetId, newSpec).subscribe(
+        () => {
+          this.experimentFormService.fetchList();
+        },
+        (msg) => {
+          this.nzMessageService.error(`${msg}, please try again`, {
+            nzPauseOnHover: true
+          });
+        },
+        () => {
+          this.nzMessageService.success('Modification succeeds!');
+          this.experimentFormService.fetchList();
+          this.closeModal();
+        }
+      );
+    } else if (this.mode === 'clone') {
+      const newSpec = this.constructSpec();
+      this.experimentService.createExperiment(newSpec).subscribe(
+        () => {},
+        (msg) => {
+          this.nzMessageService.error(`${msg}, please try again`, {
+            nzPauseOnHover: true
+          });
+        },
+        () => {
+          this.nzMessageService.success('Create a new experiment !');
+          this.experimentFormService.fetchList();
+          this.closeModal();
+        }
+      );
+    }
   }
 
   /**
