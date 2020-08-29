@@ -160,7 +160,14 @@
     </nz-button-group>
     <div *nzModalFooter>
       <button nz-button nzType="default" (click)="closeModal()">Cancel</button>
-      <button id="go" nz-button nzType="primary" [disabled]="nextBtnDisable" (click)="proceedForm()">
+      <button
+        id="go"
+        nz-button
+        nzType="primary"
+        *ngIf="this.modalProps.formType"
+        [disabled]="nextBtnDisable"
+        (click)="proceedForm()"
+      >
         {{ this.modalProps.okText }}
       </button>
       <button
