@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
@@ -89,11 +89,11 @@ export class ExperimentComponent implements OnInit {
         }
       }
     });
-    // sub
+
+    // Subscriptions to experimentFormService
     this.experimentFormService.fetchListService.subscribe(() => {
       this.fetchExperimentList();
     });
-
     this.experimentFormService.btnStatusService.subscribe((status) => {
       this.nextBtnDisable = status;
     });
@@ -104,10 +104,25 @@ export class ExperimentComponent implements OnInit {
     this.reloadCheck();
   }
 
-  initModal(initMode: 'create' | 'update' | 'clone', initFormType = null) {
+  initModal(
+    initMode: 'create' | 'update' | 'clone',
+    initFormType = null,
+    id: string = null,
+    spec: ExperimentSpec = null
+  ) {
     this.mode = initMode;
     this.modalProps.isVisible = true;
     this.modalProps.formType = initFormType;
+
+    if (initMode === 'update') {
+      // Keep id for later request
+      this.targetId = id;
+      this.targetSpec = spec;
+    }
+  }
+
+  closeModal() {
+    this.experimentFormService.modalPropsClear();
   }
 
   proceedForm() {
@@ -116,15 +131,6 @@ export class ExperimentComponent implements OnInit {
 
   prevForm() {
     this.experimentFormService.stepChange(-1);
-  }
-
-  closeModal() {
-    this.modalProps = {
-      okText: 'Next step',
-      isVisible: false,
-      currentStep: 0,
-      formType: null
-    };
   }
 
   fetchExperimentList() {
@@ -148,15 +154,6 @@ export class ExperimentComponent implements OnInit {
         this.checkedList.push(false);
       }
     });
-  }
-
-  onUpdateExperiment(id: string, spec: ExperimentSpec) {
-    // Keep id for later request
-    this.targetId = id;
-    this.targetSpec = spec;
-
-    // init modal to update/customized mode
-    this.initModal('update', 'customized');
   }
 
   onDeleteExperiment(id: string, onMessage: boolean) {

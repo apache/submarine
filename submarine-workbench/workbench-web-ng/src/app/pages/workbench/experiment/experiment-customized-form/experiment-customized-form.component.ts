@@ -97,7 +97,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
       } else {
         this.step -= 1;
       }
-      // Send the current step and olText back to parent
+      // Send the current step and okText back to parent
       this.experimentFormService.modalPropsChange({
         okText: this.step !== this.TOTAL_STEPS ? 'Next step' : 'Submit',
         currentStep: this.step
@@ -139,34 +139,15 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
     return this.experiment.get('specs') as FormArray;
   }
 
-  // /**
-  //  * Init a new experiment form, clear all status, clear all form controls and open the form in the mode specified in the argument
-  //  *
-  //  * @param mode - The mode which the form should open in
-  //  */
-  // initExperimentStatus() {
-  //   // Reset the form
-  //   this.experimentName.enable();
-  //   this.envs.clear();
-  //   this.specs.clear();
-  //   this.experiment.reset({ namespace: 'default' });
-  // }
-
   /**
    * Reset properies in parent component when the form is about to closed
    */
   closeModal() {
-    this.experimentFormService.modalPropsChange({
-      okText: 'Next step',
-      isVisible: false,
-      currentStep: 0,
-      formType: null
-    });
+    this.experimentFormService.modalPropsClear();
   }
 
   /**
    * Check the validity of the experiment page
-   *
    */
   checkStatus() {
     if (this.step === 0) {

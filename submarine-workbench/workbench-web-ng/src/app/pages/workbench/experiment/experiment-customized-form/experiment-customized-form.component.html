@@ -112,7 +112,6 @@
         <nz-radio-group [(ngModel)]="jobTypes" [ngModelOptions]="{ standalone: true }" id="jobs-container">
           <label nz-radio nzValue="Tensorflow">Distributed Tensorflow</label>
           <label nz-radio nzValue="Pytorch">Distributed PyTorch</label>
-          <label nz-radio nzValue="ss">Standalone script</label>
         </nz-radio-group>
         <label class="pg3-form-label"></label>
         <button nz-button id="spec-btn" type="default" (click)="onCreateSpec()">

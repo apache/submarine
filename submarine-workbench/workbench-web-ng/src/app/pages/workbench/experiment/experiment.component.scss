@@ -32,6 +32,16 @@
     padding-right: 10px;
  }
 
+ #form-type-container {
+    display: grid;
+    height: 5rem;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    column-gap: 3rem;
+    & button {
+      height: 100%;
+    }
+ }
+
  input.ng-invalid.ng-touched {
    border: 1px solid red;
  }
@@ -39,3 +49,5 @@
  textarea.ng-invalid.ng-touched {
    border: 1px solid red;
 }
+
+
