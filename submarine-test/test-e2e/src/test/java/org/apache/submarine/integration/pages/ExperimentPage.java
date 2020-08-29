@@ -34,7 +34,6 @@ import java.util.List;
 
 public class ExperimentPage {
 
-
   @FindBy(id = "experimentData")
   private WebElement dataSection;
 
@@ -44,6 +43,8 @@ public class ExperimentPage {
   @FindBy(id = "openExperiment")
   private WebElement newExperimentButton;
 
+  @FindBy(id = "customized")
+  private WebElement customizedBtn;
   /*
   * For svg/path/g element tag, we must use //*[name = 'svg'] to select
   * //svg will fail
@@ -125,6 +126,10 @@ public class ExperimentPage {
 
   public void newExperimentButtonClick() {
     wait.until(ExpectedConditions.elementToBeClickable(newExperimentButton)).click();
+  }
+
+  public void customizedBtnClick() {
+    wait.until(ExpectedConditions.elementToBeClickable(customizedBtn)).click();
   }
 
   public void envBtnClick() {
