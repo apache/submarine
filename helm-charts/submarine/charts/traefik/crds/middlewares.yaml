@@ -15,19 +15,15 @@
 # limitations under the License.
 #
 
-apiVersion: v2
-appVersion: "0.5.0-SNAPSHOT"
-description: Submarine is Cloud Native Machine Learning Platform.
-name: submarine
-version: 0.5.0-SNAPSHOT
-icon: https://submarine.apache.org/assets/themes/submarine/img/submarine_white_logo.png
-dependencies:
-- name: tfjob
-  version: "0.1.0"
-- name: pytorchjob
-  version: "0.1.0"
-- name: notebook-controller
-  version: "0.1.0"
-- name: traefik
-  version: "9.1.0"
-  condition: submarine.traefik.enabled
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: middlewares.traefik.containo.us
+spec:
+  group: traefik.containo.us
+  version: v1alpha1
+  names:
+    kind: Middleware
+    plural: middlewares
+    singular: middleware
+  scope: Namespaced

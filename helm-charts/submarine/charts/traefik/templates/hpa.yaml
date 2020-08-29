@@ -15,19 +15,23 @@
 # limitations under the License.
 #
 
-apiVersion: v2
-appVersion: "0.5.0-SNAPSHOT"
-description: Submarine is Cloud Native Machine Learning Platform.
-name: submarine
-version: 0.5.0-SNAPSHOT
-icon: https://submarine.apache.org/assets/themes/submarine/img/submarine_white_logo.png
-dependencies:
-- name: tfjob
-  version: "0.1.0"
-- name: pytorchjob
-  version: "0.1.0"
-- name: notebook-controller
-  version: "0.1.0"
-- name: traefik
-  version: "9.1.0"
-  condition: submarine.traefik.enabled
+{{- if .Values.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "traefik.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "traefik.name" . }}
+    helm.sh/chart: {{ template "traefik.chart" . }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ template "traefik.fullname" . }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics:
+{{ toYaml .Values.autoscaling.metrics | indent 4 }}
+{{- end }}

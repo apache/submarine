@@ -29,4 +29,5 @@ submarine:
     image: apache/submarine:database-0.5.0-SNAPSHOT
     servicePort: 3306
     mysqlRootPassword: password
-
+  traefik:
+    enabled: true
