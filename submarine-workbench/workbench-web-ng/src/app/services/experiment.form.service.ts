@@ -45,6 +45,15 @@ export class ExperimentFormService {
   modalPropsChange(props: ModalProps) {
     this.modalPropsServiceSource.next(props);
   }
+  // Syntax sugar for reset modal
+  modalPropsClear() {
+    this.modalPropsChange({
+      okText: 'Next step',
+      isVisible: false,
+      currentStep: 0,
+      formType: null
+    });
+  }
   fetchList() {
     this.fetchListServiceSource.next(true);
   }

@@ -34,7 +34,7 @@ public class experimentIT extends AbstractSubmarineIT {
 
   @BeforeClass
   public static void startUp(){
-    LOG.info("[Testcase]: experimentNew");
+    LOG.info("[Test case]: experimentNew");
     driver = WebDriverManager.getWebDriver();
   }
 
@@ -45,7 +45,7 @@ public class experimentIT extends AbstractSubmarineIT {
 
   @Test
   public void experimentNavigation() throws Exception {
-    LOG.info("[Testcase: experimentNavigation]");
+    LOG.info("[Test case: experimentNavigation]");
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
     // Login
@@ -84,16 +84,17 @@ public class experimentIT extends AbstractSubmarineIT {
     experimentPage.deleteSpec();
     experimentPage.fillTfSpec(2, new String[]{"Ps", "Worker"}, new int[]{1, 1}, new int[]{1, 1}, new int[]{1024, 1024});
     Assert.assertTrue(experimentPage.getGoButton().isEnabled());
-//    experimentPage.goButtonClick();
-    /*
+
+  }
+
+  /*
       TODO: Launch submarine server and K8s in e2e-test
       Comment out because of Experiment creation failure on Travis
 
-      experimentPage.goButtonClick();
+      @Test
+      public void updateExperiment() {
+        ....
+      }
+  */
 
-      // Patch request
-      LOG.info("In spec patch");
-      experimentPage.editTfSpec(experimentName);
-    */
-  }
 }
