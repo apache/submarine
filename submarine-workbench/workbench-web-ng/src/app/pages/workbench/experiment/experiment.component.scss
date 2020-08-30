@@ -34,7 +34,7 @@
 
  #form-type-container {
     display: grid;
-    height: 5rem;
+    grid-auto-rows: 5rem;
     grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
     column-gap: 3rem;
     & button {
@@ -49,5 +49,3 @@
  textarea.ng-invalid.ng-touched {
    border: 1px solid red;
 }
-
-

@@ -123,7 +123,7 @@
             <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.duration }}</td>
             <td class="td-action">
-              <a (click)="mode = 'clone'; targetSpec = data.spec">Clone</a>
+              <a (click)="initModal('clone', 'customized', null, data.spec)">Clone</a>
               <nz-divider nzType="vertical"></nz-divider>
               <a (click)="initModal('update', 'customized', data.experimentId, data.spec)">Update</a>
               <nz-divider nzType="vertical"></nz-divider>
@@ -154,7 +154,7 @@
       <button nz-button nzType="primary" id="customized" (click)="modalProps.formType = 'customized'">
         Define your experiment
       </button>
-      <button nz-button nzType="primary" id="pre" (click)="modalProps.formtype = 'pre'">
+      <button nz-button nzType="primary" id="pre" (click)="modalProps.formtype = 'pre'" [disabled]="true">
         From predefined experiment library
       </button>
     </nz-button-group>

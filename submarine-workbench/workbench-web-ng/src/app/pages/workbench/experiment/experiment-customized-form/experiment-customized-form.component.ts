@@ -183,9 +183,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
     } else if (this.mode === 'update') {
       const newSpec = this.constructSpec();
       this.experimentService.updateExperiment(this.targetId, newSpec).subscribe(
-        () => {
-          this.experimentFormService.fetchList();
-        },
+        null,
         (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {
             nzPauseOnHover: true
@@ -200,7 +198,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
     } else if (this.mode === 'clone') {
       const newSpec = this.constructSpec();
       this.experimentService.createExperiment(newSpec).subscribe(
-        () => {},
+        null,
         (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {
             nzPauseOnHover: true
