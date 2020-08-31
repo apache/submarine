@@ -78,7 +78,7 @@ public class NotebookSpecParser {
     container.setName(notebookSpec.getMeta().getName());
 
     // Environment variables
-    if (notebookPodSpec.getEnvVars() == null) {
+    if (notebookPodSpec.getEnvVars() != null) {
       container.setEnv(parseEnvVars(notebookPodSpec));
     }
 
