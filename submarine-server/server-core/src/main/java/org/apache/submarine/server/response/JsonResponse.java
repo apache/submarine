@@ -25,6 +25,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.api.experiment.ExperimentId;
+import org.apache.submarine.server.gson.EnvironmentIdDeserializer;
+import org.apache.submarine.server.gson.EnvironmentIdSerializer;
 import org.apache.submarine.server.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.gson.ExperimentIdSerializer;
 import org.slf4j.Logger;
@@ -172,8 +174,8 @@ public class JsonResponse<T> {
           .registerTypeAdapter(Date.class, safeDateTypeAdapter)
           .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
           .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer())
-          .registerTypeAdapter(EnvironmentId.class, new ExperimentIdSerializer())
-          .registerTypeAdapter(EnvironmentId.class, new ExperimentIdDeserializer())
+          .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+          .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
           .serializeNulls()
           .create();
     }

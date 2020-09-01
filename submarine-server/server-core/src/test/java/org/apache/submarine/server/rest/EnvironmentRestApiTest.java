@@ -24,8 +24,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.environment.Environment;
+import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.api.spec.KernelSpec;
+import org.apache.submarine.server.gson.EnvironmentIdDeserializer;
+import org.apache.submarine.server.gson.EnvironmentIdSerializer;
 import org.apache.submarine.server.response.JsonResponse;
 import org.junit.After;
 import org.junit.Before;
@@ -46,25 +49,27 @@ public class EnvironmentRestApiTest {
   private static String dockerImage = "continuumio/anaconda3";
   private static List<String> kernelChannels = Arrays.asList("defaults", "anaconda");
   private static List<String> kernelDependencies = Arrays.asList(
-          "_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
-          "alabaster=0.7.12=py37_0",
-          "anaconda=2020.02=py37_0",
-          "anaconda-client=1.7.2=py37_0",
-          "anaconda-navigator=1.9.12=py37_0");
+      "_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
+      "alabaster=0.7.12=py37_0",
+      "anaconda=2020.02=py37_0",
+      "anaconda-client=1.7.2=py37_0",
+      "anaconda-navigator=1.9.12=py37_0");
 
-  private static GsonBuilder gsonBuilder = new GsonBuilder();
+  private static GsonBuilder gsonBuilder = new GsonBuilder()
+      .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+      .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer());
   private static Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
   @BeforeClass
   public static void init() {
     SubmarineConfiguration submarineConf = SubmarineConfiguration.getInstance();
     submarineConf.setMetastoreJdbcUrl("jdbc:mysql://127.0.0.1:3306/submarine_test?" +
-            "useUnicode=true&amp;" +
-            "characterEncoding=UTF-8&amp;" +
-            "autoReconnect=true&amp;" +
-            "failOverReadOnly=false&amp;" +
-            "zeroDateTimeBehavior=convertToNull&amp;" +
-            "useSSL=false");
+        "useUnicode=true&amp;" +
+        "characterEncoding=UTF-8&amp;" +
+        "autoReconnect=true&amp;" +
+        "failOverReadOnly=false&amp;" +
+        "zeroDateTimeBehavior=convertToNull&amp;" +
+        "useSSL=false");
     submarineConf.setMetastoreJdbcUserName("submarine_test");
     submarineConf.setMetastoreJdbcPassword("password_test");
     environmentStoreApi = new EnvironmentRestApi();
@@ -88,14 +93,14 @@ public class EnvironmentRestApiTest {
     // Update Environment
     environmentSpec.setName(environmentName);
     Response updateEnvResponse = environmentStoreApi.updateEnvironment(
-            "foo", environmentSpec);
+        "foo", environmentSpec);
     assertEquals(Response.Status.OK.getStatusCode(), updateEnvResponse.getStatus());
   }
 
   @After
   public void deleteEnvironment() {
     Response deleteEnvResponse = environmentStoreApi
-            .deleteEnvironment(environmentName);
+        .deleteEnvironment(environmentName);
     assertEquals(Response.Status.OK.getStatusCode(), deleteEnvResponse.getStatus());
   }
 
