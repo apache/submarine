@@ -23,6 +23,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
+import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.gson.ExperimentIdSerializer;
@@ -168,11 +169,13 @@ public class JsonResponse<T> {
       TypeAdapter<Date> safeDateTypeAdapter = dateTypeAdapter.nullSafe();
 
       safeGson = new GsonBuilder()
-          .registerTypeAdapter(Date.class, safeDateTypeAdapter)
-          .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
-          .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer())
-          .serializeNulls()
-          .create();
+              .registerTypeAdapter(Date.class, safeDateTypeAdapter)
+              .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
+              .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer())
+              .registerTypeAdapter(EnvironmentId.class, new ExperimentIdSerializer())
+              .registerTypeAdapter(EnvironmentId.class, new ExperimentIdDeserializer())
+              .serializeNulls()
+              .create();
     }
 
     boolean haveDictAnnotation = false;
