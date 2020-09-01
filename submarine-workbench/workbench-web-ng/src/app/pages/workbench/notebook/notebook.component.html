@@ -45,7 +45,7 @@
           [(ngModel)]="currentNamespace"
           (ngModelChange)="switchNamespace($event)"
         >
-          <nz-option *ngFor="let namespace of namespacesList" [nzValue]="namespace" [nzLabel]="namespace"></nz-option>
+          <nz-option *ngFor="let namespace of allNamespaceList" [nzValue]="namespace" [nzLabel]="namespace"></nz-option>
         </nz-select>
       </div>
       <div nz-col nzSpan="12" align="right">
@@ -55,11 +55,11 @@
         <ng-template #suffixIconButton>
           <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
         </ng-template>
-        <button id="btnNewNotebook" nz-button nzType="primary" style="margin-right: 5px;" (click)="isVisible = true">
+        <button id="btnNewNotebook" nz-button nzType="primary" style="margin-right: 5px;">
           <i nz-icon nzType="plus"></i>
           New Notebook
         </button>
-        <button id="btnDelNotebook" nz-button nzType="primary">
+        <button id="btnDelNotebook" nz-button nzType="primary" (click)="deleteNotebooks()">
           <i nz-icon nzType="delete"></i>
           Delete
         </button>
@@ -70,14 +70,13 @@
         <thead>
           <tr>
             <th>
-              <label nz-checkbox [(ngModel)]="checked" (ngModelChange)="selectAllNotebook()"></label>
+              <label nz-checkbox [(ngModel)]="selectAllChecked" (ngModelChange)="selectAll()"></label>
             </th>
             <th>Name</th>
             <th>Environment</th>
             <th>Docker Image</th>
             <th>Resources</th>
             <th>Status</th>
-            <th>Environment</th>
           </tr>
         </thead>
         <tbody>
@@ -94,14 +93,13 @@
               {{ data.spec.spec.resources }}
             </td>
             <td>{{ data.status }}</td>
-            <td>{{ data.spec.environment.name }}</td>
           </tr>
         </tbody>
       </nz-table>
     </div>
   </div>
 </nz-layout>
-
+<!--
 <nz-modal
   [(nzVisible)]="isVisible"
   nzTitle="Create Notebook"
@@ -159,3 +157,4 @@
     </form>
   </div>
 </nz-modal>
+-->

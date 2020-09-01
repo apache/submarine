@@ -24,7 +24,7 @@ dotenv.config();
 const proxyConfig = [
   {
     context: ['/api'],
-    target: 'http://localhost:8080',
+    target: 'http://120.108.204.13:8080',
     secure: false,
     changeOrigin: true
   },

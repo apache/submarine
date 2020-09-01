@@ -44,4 +44,17 @@ export class NotebookService {
       })
     );
   }
+
+  deleteNotebook(id: string): Observable<Notebook> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/notebook/${id}`);
+    return this.httpClient.delete<Rest<any>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete', id);
+        }
+      })
+    );
+  }
 }

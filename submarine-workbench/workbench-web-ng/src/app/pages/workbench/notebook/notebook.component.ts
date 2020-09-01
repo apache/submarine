@@ -20,6 +20,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NotebookService } from '@submarine/services/notebook.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'submarine-notebook',
@@ -27,99 +28,131 @@ import { NotebookService } from '@submarine/services/notebook.service';
   styleUrls: ['./notebook.component.scss']
 })
 export class NotebookComponent implements OnInit {
-  // Checkbox
+  // Select Checked
   checkedList: boolean[] = [];
-  checked: boolean = false;
-
-  // New notebook modal
-  cancelText = 'Cancel';
-  okText = 'Create';
-  isVisible = false;
-
-  // New notebook(form)
-  notebookForm: FormGroup;
+  selectAllChecked: boolean = false;
 
   // Namesapces
-  namespacesList = [];
+  allNamespaceList = [];
   currentNamespace;
 
   // Notebook list
-  notebookList;
+  allNotebookList;
   notebookTable;
 
-  constructor(private notebookService: NotebookService) {}
-
-  statusColor: { [key: string]: string } = {
-    Running: 'green',
-    Stop: 'blue'
-  };
+  constructor(private notebookService: NotebookService, private nzMessageService: NzMessageService) {}
 
   ngOnInit() {
-    this.notebookForm = new FormGroup({
-      notebookName: new FormControl(null, [Validators.required]),
-      namespaces: new FormControl(this.currentNamespace, [Validators.required]),
-      environment: new FormControl('env1', [Validators.required]),
-      cpu: new FormControl(null, [Validators.required]),
-      gpu: new FormControl(null, [Validators.required]),
-      memory: new FormControl(null, [Validators.required])
-    });
-
     this.fetchNotebookList();
   }
 
   fetchNotebookList() {
     this.notebookService.fetchNotebookList().subscribe((list) => {
-      this.notebookList = list;
+      this.allNotebookList = list;
+
+      // Get namespaces
+      this.getAllNamespaces();
+
+      // Set default namespace and table
+      this.setDefaultTable();
+
       this.checkedList = [];
-      for (let i = 0; i < this.notebookList.length; i++) {
+      for (let i = 0; i < this.notebookTable.length; i++) {
         this.checkedList.push(false);
       }
-      // Get namespaces
-      this.notebookList.forEach((element) => {
-        if (this.namespacesList.indexOf(element.spec.meta.namespace) < 0) {
-          this.namespacesList.push(element.spec.meta.namespace);
-        }
-      });
-      // Set default namespace and table
-      this.currentNamespace = this.namespacesList[0];
-      this.notebookTable = [];
-      this.notebookList.forEach((item) => {
-        if (item.spec.meta.namespace == this.currentNamespace) {
-          this.notebookTable.push(item);
-        }
-      });
     });
   }
 
-  selectAllNotebook() {
-    for (let i = 0; i < this.checkedList.length; i++) {
-      this.checkedList[i] = this.checked;
-    }
+  getAllNamespaces() {
+    this.allNotebookList.forEach((element) => {
+      if (this.allNamespaceList.indexOf(element.spec.meta.namespace) < 0) {
+        this.allNamespaceList.push(element.spec.meta.namespace);
+      }
+    });
+  }
+
+  setDefaultTable() {
+    this.currentNamespace = this.allNamespaceList[0];
+    this.notebookTable = [];
+    this.allNotebookList.forEach((item) => {
+      if (item.spec.meta.namespace == this.currentNamespace) {
+        this.notebookTable.push(item);
+      }
+    });
   }
 
   switchNamespace(namespace: string) {
     this.notebookTable = [];
-    this.notebookList.forEach((item) => {
+    this.allNotebookList.forEach((item) => {
       if (item.spec.meta.namespace == namespace) {
         this.notebookTable.push(item);
       }
     });
     console.log(this.notebookTable);
+
+    this.selectAllChecked = false;
+    this.checkedList.length = 0;
+    for (let i = 0; i < this.notebookTable.length; i++) {
+      this.checkedList.push(false);
+    }
+  }
+
+  selectAll() {
+    for (let i = 0; i < this.checkedList.length; i++) {
+      this.checkedList[i] = this.selectAllChecked;
+    }
+  }
+
+  deleteNotebook(id: string, onMessage: boolean) {
+    this.notebookService.deleteNotebook(id).subscribe(
+      () => {
+        if (onMessage === true) {
+          this.nzMessageService.success('Delete Notebook Successfully!');
+        }
+      },
+      (err) => {
+        if (onMessage === true) {
+          this.nzMessageService.success(err.message);
+        }
+      }
+    );
+  }
+
+  deleteNotebooks() {
+    for (let i = this.checkedList.length - 1; i >= 0; i--) {
+      if (this.checkedList[i] === true) {
+        this.deleteNotebook(this.notebookTable[i].notebookId, false);
+      }
+    }
+
+    this.selectAllChecked = false;
+
+    // Update NotebookTable
+    this.updateNotebookTable();
+  }
+
+  updateNotebookTable() {
+    this.notebookService.fetchNotebookList().subscribe((list) => {
+      this.allNotebookList = list;
+      this.notebookTable = [];
+      this.allNotebookList.forEach((item) => {
+        if (item.spec.meta.namespace == this.currentNamespace) {
+          this.notebookTable.push(item);
+        }
+      });
+      this.checkedList.length = 0;
+      for (let i = 0; i < this.notebookTable.length; i++) {
+        this.checkedList.push(false);
+      }
+    });
   }
 
   // TODO(kobe860219): Make a notebook run
-  runNotebook(data) {
-    data.status = 'Running';
-  }
+  runNotebook() {}
 
   // TODO(kobe860219): Stop a running notebook
-  stopNotebook(data) {
-    data.status = 'Stop';
-  }
+  stopNotebook() {}
 
   // TODO(kobe860219): Create new notebook
   createNotebook() {}
-
-  // TODO(kobe860219): Delete notebook
-  deleteNotebook() {}
 }
