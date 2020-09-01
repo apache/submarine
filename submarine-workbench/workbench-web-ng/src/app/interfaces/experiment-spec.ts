@@ -17,6 +17,32 @@
  * under the License.
  */
 
-export class ExperimentSpec {
-  // TODO(pingsutw): After refactor submarine experiment spec, we could start implementing it.
+export interface SpecMeta {
+  name: string;
+  description?: string;
+  namespace: string;
+  framework: string;
+  cmd: string;
+  envVars?: {
+    [key: string]: string;
+  };
+}
+
+export interface SpecEnviroment {
+  image: string;
+}
+
+export interface Specs {
+  [name: string]: {
+    replicas: string;
+    resources: string;
+  };
+}
+
+export interface ExperimentSpec {
+  meta: SpecMeta;
+  environment: {
+    image: string;
+  };
+  spec: Specs;
 }

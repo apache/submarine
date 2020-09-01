@@ -28,6 +28,7 @@ public class ExperimentSpec {
   private ExperimentMeta meta;
   private EnvironmentSpec environment;
   private Map<String, ExperimentTaskSpec> spec;
+  private CodeSpec code;
 
   public ExperimentSpec() {
 
@@ -55,5 +56,13 @@ public class ExperimentSpec {
 
   public void setSpec(Map<String, ExperimentTaskSpec> spec) {
     this.spec = spec;
+  }
+  
+  public CodeSpec getCode() {
+    return code;
+  }
+
+  public void setCode(CodeSpec code) {
+    this.code = code;
   }
 }

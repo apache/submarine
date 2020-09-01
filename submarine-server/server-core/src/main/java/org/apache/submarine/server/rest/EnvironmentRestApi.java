@@ -48,7 +48,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
  * Environment REST API v1. It can accept {@link EnvironmentSpec} to create a
  * environment.
  */
-@Path(RestConstants.V1 + "/" + RestConstants.ENVIRONMENTS)
+@Path(RestConstants.V1 + "/" + RestConstants.ENVIRONMENT)
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
 public class EnvironmentRestApi {
   private final EnvironmentManager environmentManager =

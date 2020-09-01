@@ -65,7 +65,7 @@ class SqlAlchemyStore(AbstractStore):
         Base.metadata.bind = self.engine
         SessionMaker = sqlalchemy.orm.sessionmaker(bind=self.engine)
         self.ManagedSessionMaker = self._get_managed_session_maker(SessionMaker)
-        # Todo Need to check database's schema is not out of date
+        # TODO(pingsutw): Need to check database's schema is not out of date
         # SqlAlchemyStore._verify_schema(self.engine)
 
     @staticmethod
@@ -125,7 +125,7 @@ class SqlAlchemyStore(AbstractStore):
 
         return instance, created
 
-    def log_metric(self, job_name, metric):
+    def log_metric(self, job_id, metric):
         is_nan = math.isnan(metric.value)
         if is_nan:
             value = 0
@@ -138,7 +138,7 @@ class SqlAlchemyStore(AbstractStore):
         with self.ManagedSessionMaker() as session:
             try:
                 self._get_or_create(model=SqlMetric,
-                                    job_name=job_name,
+                                    id=job_id,
                                     key=metric.key,
                                     value=value,
                                     worker_index=metric.worker_index,
@@ -149,11 +149,11 @@ class SqlAlchemyStore(AbstractStore):
             except sqlalchemy.exc.IntegrityError:
                 session.rollback()
 
-    def log_param(self, job_name, param):
+    def log_param(self, job_id, param):
         with self.ManagedSessionMaker() as session:
             try:
                 self._get_or_create(model=SqlParam,
-                                    job_name=job_name,
+                                    id=job_id,
                                     session=session,
                                     key=param.key,
                                     value=param.value,

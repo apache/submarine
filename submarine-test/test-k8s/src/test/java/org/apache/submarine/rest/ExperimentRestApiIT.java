@@ -31,6 +31,8 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.submarine.commons.utils.SubmarineConfVars;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentId;
@@ -73,6 +75,9 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer())
       .create();
+  
+  private static SubmarineConfiguration conf = 
+      SubmarineConfiguration.getInstance();
 
   @BeforeClass
   public static void startUp() throws IOException {
@@ -158,6 +163,13 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     String patchBody = loadContent("pytorch/pt-mnist-patch-req.yaml");
     run(body, patchBody, "application/yaml");
   }
+  
+  @Test
+  public void testTensorFlowUsingCodeWithJsonSpec() throws Exception {
+    String body = loadContent("tensorflow/tf-mnist-with-http-git-code-localizer-req.json");
+    String patchBody = loadContent("tensorflow/tf-mnist-with-http-git-code-localizer-req.json");
+    run(body, patchBody, "application/json");
+  }
 
   private void run(String body, String patchBody, String contentType) throws Exception {
     // create
@@ -217,7 +229,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
 
     Experiment createdExperiment = 
         gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
-    verifyCreateJobApiResult(createdExperiment);
+    verifyCreateJobApiResult(expectedEnv, createdExperiment);
 
     // find
     GetMethod getMethod =
@@ -291,6 +303,27 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     JsonArray expected = new JsonArray();
     expected.add("/bin/bash");
     expected.add("-c");
+    
+    String minVersion = "minVersion=\""
+        + conf.getString(
+            SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION)
+        + "\";";
+    String maxVersion = "maxVersion=\""
+        + conf.getString(
+            SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION)
+        + "\";";
+    String currentVersion = "currentVersion=$(conda -V | cut -f2 -d' ');";
+    String versionCommand = 
+        minVersion + maxVersion + currentVersion 
+            + "if [ \"$(printf '%s\\n' \"$minVersion\" \"$maxVersion\" "
+               + "\"$currentVersion\" | sort -V | head -n2 | tail -1 )\" "
+                    + "!= \"$currentVersion\" ]; then echo \"Conda version " + 
+                    "should be between minVersion=\"4.0.1\"; " + 
+                    "and maxVersion=\"4.10.10\";\"; exit 1; else echo "
+                    + "\"Conda current version is " + currentVersion + ". "
+                        + "Moving forward with env creation and activation.\"; "
+                        + "fi && ";
+    
     String initialCommand =
         "conda create -n " + env.getEnvironmentSpec().getKernelSpec().getName();
 
@@ -306,10 +339,10 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
       dependencies += " " + dependency;
     }
 
-    String fullCommand =
-        initialCommand + channels + dependencies + " && echo \"source activate "
-            + env.getEnvironmentSpec().getKernelSpec().getName()
-            + "\" > ~/.bashrc" + " && PATH=/opt/conda/envs/env/bin:$PATH";
+    String fullCommand = versionCommand + initialCommand + channels
+        + dependencies + " && echo \"source activate "
+        + env.getEnvironmentSpec().getKernelSpec().getName() + "\" > ~/.bashrc"
+        + " && PATH=/opt/conda/envs/env/bin:$PATH";
     expected.add(fullCommand);
     Assert.assertEquals(expected, actualCommand);
 

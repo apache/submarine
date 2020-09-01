@@ -34,7 +34,7 @@ public class SysUserService {
   private static final Logger LOG = LoggerFactory.getLogger(SysUserService.class);
 
   private static String GET_USER_BY_NAME_STATEMENT
-      = "org.apache.submarine.database.mappers.SysUserMapper.getUserByName";
+      = "org.apache.submarine.server.workbench.database.mappers.SysUserMapper.getUserByName";
 
   public SysUser getUserByName(String name, String password) throws Exception {
     SysUser sysUser = null;

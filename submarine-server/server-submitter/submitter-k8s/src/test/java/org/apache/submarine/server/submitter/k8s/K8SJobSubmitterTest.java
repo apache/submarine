@@ -59,14 +59,14 @@ public class K8SJobSubmitterTest extends SpecBuilder {
   @Test
   public void testRunPyTorchJobPerRequest() throws URISyntaxException,
       IOException, SubmarineRuntimeException {
-    ExperimentSpec spec = buildFromJsonFile(pytorchJobReqFile);
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, pytorchJobReqFile);
     run(spec);
   }
 
   @Test
   public void testRunTFJobPerRequest() throws URISyntaxException,
       IOException, SubmarineRuntimeException {
-    ExperimentSpec spec = buildFromJsonFile(tfJobReqFile);
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
     run(spec);
   }
 

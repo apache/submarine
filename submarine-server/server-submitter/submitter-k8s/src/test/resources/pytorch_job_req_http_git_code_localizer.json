@@ -1,0 +1,30 @@
+{
+  "meta": {
+    "name": "pytorch-dist-mnist",
+    "namespace": "submarine",
+    "framework": "PyTorch",
+    "cmd": "python /var/mnist.py --backend gloo",
+    "envVars": {
+      "ENV_1": "ENV1"
+    }
+  },
+  "environment": {
+    "image": "apache/submarine:pytorch-dist-mnist-1.0"
+  },
+  "spec": {
+    "Master": {
+      "name": "master",
+      "replicas": 1,
+      "resources": "cpu=2,memory=2048M"
+    },
+    "Worker": {
+      "name": "worker",
+      "replicas": 2,
+      "resources": "cpu=1,memory=1024M"
+    }
+  },
+  "code": {
+    "syncMode": "git",
+    "url" : "https://github.com/apache/submarine.git"
+  }
+}

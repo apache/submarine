@@ -1,0 +1,76 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.apache.submarine.server.submitter.k8s;
+
+import io.kubernetes.client.models.V1ObjectMeta;
+import org.apache.submarine.server.api.spec.NotebookMeta;
+import org.apache.submarine.server.api.spec.NotebookPodSpec;
+import org.apache.submarine.server.api.spec.NotebookSpec;
+import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
+import org.apache.submarine.server.submitter.k8s.model.NotebookCRSpec;
+import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+public class NotebookSpecParserTest extends SpecBuilder {
+
+  @Test
+  public void testValidNotebook() throws IOException, URISyntaxException {
+    NotebookSpec notebookSpec = (NotebookSpec) buildFromJsonFile(NotebookSpec.class, notebookReqFile);
+    NotebookCR notebook = NotebookSpecParser.parseNotebook(notebookSpec);
+
+    validateMetadata(notebookSpec.getMeta(), notebook.getMetadata());
+    validateEnvironment(notebookSpec, notebook.getSpec());
+    validatePodSpec(notebookSpec.getSpec(), notebook);
+  }
+
+  private void validateMetadata(NotebookMeta meta, V1ObjectMeta actualMeta) {
+    Assert.assertEquals(meta.getName(), actualMeta.getName());
+    Assert.assertEquals(meta.getNamespace(), actualMeta.getNamespace());
+  }
+
+  private void validateEnvironment(NotebookSpec spec, NotebookCRSpec actualPodSpec) {
+    String expectedImage = spec.getEnvironment().getImage();
+    String actualImage = actualPodSpec.getContainerImageName();
+    Assert.assertEquals(expectedImage, actualImage);
+  }
+
+  private void validatePodSpec(NotebookPodSpec podSpec, NotebookCR notebook) {
+    NotebookCRSpec notebookCRSpec = null;
+    if (notebook != null) {
+      notebookCRSpec = notebook.getSpec();
+    }
+    Assert.assertNotNull(notebookCRSpec);
+
+    // mem
+    String expectedContainerMem = podSpec.getMemory();
+    String actualContainerMem = notebookCRSpec.getContainerMemory();
+    Assert.assertEquals(expectedContainerMem, actualContainerMem);
+
+    // cpu
+    String expectedContainerCpu = podSpec.getCpu();
+    String actualContainerCpu = notebookCRSpec.getContainerCpu();
+    Assert.assertEquals(expectedContainerCpu, actualContainerCpu);
+  }
+
+}

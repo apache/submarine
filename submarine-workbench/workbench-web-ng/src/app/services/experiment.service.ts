@@ -21,9 +21,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Rest } from '@submarine/interfaces';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
+import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
 import { BaseApiService } from '@submarine/services/base-api.service';
-import { of, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { of, throwError, Observable } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -58,34 +59,56 @@ export class ExperimentService {
     );
   }
 
-  createExperiment(experimentSpec): Observable<ExperimentInfo> {
+  createExperiment(experimentSpec: ExperimentSpec): Observable<ExperimentInfo> {
     const apiUrl = this.baseApi.getRestApi('/v1/experiment');
     return this.httpClient.post<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
-      switchMap((res) => {
-        if (res.success) {
-          return of(res.result);
+      map((res) => res.result), // return result directly if succeeding
+      catchError((e) => {
+        let message: string;
+        if (e.error instanceof ErrorEvent) {
+          // client side error
+          message = 'Something went wrong with network or workbench';
         } else {
-          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', experimentSpec);
+          console.log(e);
+          if (e.status === 409) {
+            message = 'You might have a duplicate experiment name';
+          } else if (e.status >= 500) {
+            message = `${e.message}`;
+          } else {
+            message = e.error.message;
+          }
         }
+        return throwError(message);
       })
     );
   }
 
-  editExperiment(experimentSpec): Observable<ExperimentInfo> {
-    const apiUrl = this.baseApi.getRestApi('/v1/experiment');
+  updateExperiment(id: string, experimentSpec: ExperimentSpec): Observable<ExperimentInfo> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/experiment/${id}`);
     return this.httpClient.patch<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
-      switchMap((res) => {
-        if (res.success) {
-          return of(res.result);
+      map((res) => res.result),
+      catchError((e) => {
+        console.log(e);
+        let message: string;
+        if (e.error instanceof ErrorEvent) {
+          // client side error
+          message = 'Something went wrong with network or workbench';
         } else {
-          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'patch', experimentSpec);
+          if (e.status === 409) {
+            message = 'You might have a duplicate experiment name';
+          } else if (e.status >= 500) {
+            message = `${e.message}`;
+          } else {
+            message = e.error.message;
+          }
         }
+        return throwError(message);
       })
     );
   }
 
   deleteExperiment(id: string): Observable<ExperimentInfo> {
-    const apiUrl = this.baseApi.getRestApi('/v1/experiment/' + id);
+    const apiUrl = this.baseApi.getRestApi(`/v1/experiment/${id}`);
     return this.httpClient.delete<Rest<any>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
@@ -134,5 +157,30 @@ export class ExperimentService {
         }
       })
     );
+  }
+
+  durationHandle(secs: number) {
+    const hr = Math.floor(secs / 3600);
+    const min = Math.floor((secs - hr * 3600) / 60);
+    const sec = Math.round(secs) - hr * 3600 - min * 60;
+    let showHr;
+    let showMin;
+    let showSec;
+    if (hr < 10) {
+      showHr = '0' + hr;
+    } else {
+      showHr = hr.toString();
+    }
+    if (min < 10) {
+      showMin = '0' + min;
+    } else {
+      showMin = min.toString();
+    }
+    if (sec < 10) {
+      showSec = '0' + sec;
+    } else {
+      showSec = sec.toString();
+    }
+    return showHr + ':' + showMin + ':' + showSec;
   }
 }

@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - env: []
-        image: apache/submarine:tf2.1.0-jupyter
+        image: apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT
         name: my-nb
         resources:
           limits: {}

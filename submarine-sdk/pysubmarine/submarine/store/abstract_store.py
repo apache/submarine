@@ -31,18 +31,18 @@ class AbstractStore:
         """
         pass
 
-    def log_metric(self, job_name, metric):
+    def log_metric(self, job_id, metric):
         """
         Log a metric for the specified run
-        :param job_name: String id for the run
+        :param job_id: String id for the run
         :param metric: :py:class:`submarine.entities.Metric` instance to log
         """
         pass
 
-    def log_param(self, job_name, param):
+    def log_param(self, job_id, param):
         """
         Log a param for the specified run
-        :param job_name: String id for the run
+        :param job_id: String id for the run
         :param param: :py:class:`submarine.entities.Param` instance to log
         """
         pass

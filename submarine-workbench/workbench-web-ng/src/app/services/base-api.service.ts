@@ -35,7 +35,8 @@ class HttpError extends Error {
     this.params = params;
 
     if (!environment.production) {
-      this.logError();
+      // comment out because weird this behavior
+      // this.logError();
     }
   }
 

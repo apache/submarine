@@ -27,8 +27,11 @@ import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.gson.EnvironmentIdDeserializer;
 import org.apache.submarine.server.gson.EnvironmentIdSerializer;
+import org.apache.submarine.server.api.notebook.NotebookId;
 import org.apache.submarine.server.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.gson.ExperimentIdSerializer;
+import org.apache.submarine.server.gson.NotebookIdDeserializer;
+import org.apache.submarine.server.gson.NotebookIdSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -176,6 +179,8 @@ public class JsonResponse<T> {
           .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer())
           .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
           .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+          .registerTypeAdapter(NotebookId.class, new NotebookIdSerializer())
+          .registerTypeAdapter(NotebookId.class, new NotebookIdDeserializer())
           .serializeNulls()
           .create();
     }

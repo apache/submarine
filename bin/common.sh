@@ -82,7 +82,7 @@ function download_mysql_jdbc_jar(){
   else
     echo 'We need a tool to transfer data from or to a server. Such as wget/curl.'
     echo 'Bye, bye!'
-    exit -1
+    exit 1
   fi
 
   echo "Mysql jdbc jar is downloaded and put in the path of submarine/lib."

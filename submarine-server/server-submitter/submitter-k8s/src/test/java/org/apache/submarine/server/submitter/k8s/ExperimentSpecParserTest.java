@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.kubernetes.client.models.V1ObjectMeta;
+import io.kubernetes.client.models.V1Volume;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -43,20 +44,24 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobRepl
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
+import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
+import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.GitCodeLocalizer;
 import org.junit.Assert;
 import org.junit.Test;
 import io.kubernetes.client.models.V1Container;
+import io.kubernetes.client.models.V1EmptyDirVolumeSource;
+import io.kubernetes.client.models.V1EnvVar;
 
 
 public class ExperimentSpecParserTest extends SpecBuilder {
-  
+
   private static SubmarineConfiguration conf =
       SubmarineConfiguration.getInstance();
-  
+
   @Test
   public void testValidTensorFlowExperiment() throws IOException,
       URISyntaxException, InvalidSpecException {
-    ExperimentSpec experimentSpec = buildFromJsonFile(tfJobReqFile);
+    ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
     TFJob tfJob = (TFJob) ExperimentSpecParser.parseJob(experimentSpec);
     validateMetadata(experimentSpec.getMeta(), tfJob.getMetadata(),
         ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName().toLowerCase()
@@ -74,7 +79,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
   @Test
   public void testInvalidTensorFlowExperiment() throws IOException,
       URISyntaxException {
-    ExperimentSpec experimentSpec = buildFromJsonFile(tfJobReqFile);
+    ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
     // Case 1. Invalid framework name
     experimentSpec.getMeta().setFramework("fooframework");
     try {
@@ -85,7 +90,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     }
 
     // Case 2. Invalid TensorFlow replica name. It can only be "ps" "worker" "chief" and "Evaluator"
-    experimentSpec = buildFromJsonFile(tfJobReqFile);
+    experimentSpec =  (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
     experimentSpec.getSpec().put("foo", experimentSpec.getSpec().get(TFJobReplicaType.Ps.getTypeName()));
     experimentSpec.getSpec().remove(TFJobReplicaType.Ps.getTypeName());
     try {
@@ -99,7 +104,8 @@ public class ExperimentSpecParserTest extends SpecBuilder {
   @Test
   public void testValidPyTorchExperiment() throws IOException,
       URISyntaxException, InvalidSpecException {
-    ExperimentSpec experimentSpec = buildFromJsonFile(pytorchJobReqFile);
+    ExperimentSpec experimentSpec =
+            (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, pytorchJobReqFile);
     PyTorchJob pyTorchJob = (PyTorchJob) ExperimentSpecParser.parseJob(experimentSpec);
     validateMetadata(experimentSpec.getMeta(), pyTorchJob.getMetadata(),
         ExperimentMeta.SupportedMLFramework.PYTORCH.getName().toLowerCase()
@@ -117,7 +123,8 @@ public class ExperimentSpecParserTest extends SpecBuilder {
   @Test
   public void testInvalidPyTorchJobSpec() throws IOException,
       URISyntaxException {
-    ExperimentSpec experimentSpec = buildFromJsonFile(pytorchJobReqFile);
+    ExperimentSpec experimentSpec =
+            (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, pytorchJobReqFile);
     // Case 1. Invalid framework name
     experimentSpec.getMeta().setFramework("fooframework");
     try {
@@ -128,7 +135,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     }
 
     // Case 2. Invalid PyTorch replica name. It can only be "master" and "worker"
-    experimentSpec = buildFromJsonFile(pytorchJobReqFile);
+    experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, pytorchJobReqFile);
     experimentSpec.getSpec().put("ps", experimentSpec.getSpec().get(
         PyTorchJobReplicaType.Master.getTypeName()));
     experimentSpec.getSpec().remove(PyTorchJobReplicaType.Master.getTypeName());
@@ -188,7 +195,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     Assert.assertEquals(expectedMasterContainerCpu,
         actualMasterContainerCpu);
   }
-  
+
   @Test
   public void testValidPyTorchJobSpecWithEnv()
       throws IOException, URISyntaxException, InvalidSpecException {
@@ -217,7 +224,8 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
     environmentManager.createEnvironment(spec);
 
-    ExperimentSpec jobSpec = buildFromJsonFile(pytorchJobWithEnvReqFile);
+    ExperimentSpec jobSpec =
+            (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, pytorchJobWithEnvReqFile);
     PyTorchJob pyTorchJob = (PyTorchJob) ExperimentSpecParser.parseJob(jobSpec);
 
     MLJobReplicaSpec mlJobReplicaSpec = pyTorchJob.getSpec().getReplicaSpecs()
@@ -230,7 +238,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
     Assert.assertEquals("/bin/bash", initContainer.getCommand().get(0));
     Assert.assertEquals("-c", initContainer.getCommand().get(1));
-    
+
     String minVersion = "minVersion=\""
         + conf.getString(
             SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION)
@@ -241,20 +249,65 @@ public class ExperimentSpecParserTest extends SpecBuilder {
         + "\";";
     String currentVersion = "currentVersion=$(conda -V | cut -f2 -d' ');";
     Assert.assertEquals(
-        minVersion + maxVersion + currentVersion 
+        minVersion + maxVersion + currentVersion
             + "if [ \"$(printf '%s\\n' \"$minVersion\" \"$maxVersion\" "
                + "\"$currentVersion\" | sort -V | head -n2 | tail -1 )\" "
-                    + "!= \"$currentVersion\" ]; then echo \"Conda version " + 
-                    "should be between minVersion=\"4.0.1\"; " + 
+                    + "!= \"$currentVersion\" ]; then echo \"Conda version " +
+                    "should be between minVersion=\"4.0.1\"; " +
                     "and maxVersion=\"4.10.10\";\"; exit 1; else echo "
                     + "\"Conda current version is " + currentVersion + ". "
                         + "Moving forward with env creation and activation.\"; "
-                        + "fi && " + 
+                        + "fi && " +
         "conda create -n " + kernelName + " -c " + channel + " " + dependency
             + " && " + "echo \"source activate " + kernelName + "\" > ~/.bashrc"
             + " && " + "PATH=/opt/conda/envs/env/bin:$PATH",
         initContainer.getCommand().get(2));
-    
+
     environmentManager.deleteEnvironment(envName);
+  }
+  
+  @Test
+  public void testValidPyTorchJobSpecWithHTTPGitCodeLocalizer()
+      throws IOException, URISyntaxException, InvalidSpecException {
+    ExperimentSpec jobSpec =
+        (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class,
+            pytorchJobWithHTTPGitCodeLocalizerFile);
+    PyTorchJob pyTorchJob = (PyTorchJob) ExperimentSpecParser.parseJob(jobSpec);
+
+    MLJobReplicaSpec mlJobReplicaSpec = pyTorchJob.getSpec().getReplicaSpecs()
+        .get(PyTorchJobReplicaType.Master);
+    Assert.assertEquals(1,
+        mlJobReplicaSpec.getTemplate().getSpec().getInitContainers().size());
+    V1Container initContainer =
+        mlJobReplicaSpec.getTemplate().getSpec().getInitContainers().get(0);
+    Assert.assertEquals(
+        AbstractCodeLocalizer.CODE_LOCALIZER_INIT_CONTAINER_NAME,
+        initContainer.getName());
+    Assert.assertEquals(GitCodeLocalizer.GIT_SYNC_IMAGE,
+        initContainer.getImage());
+    Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME,
+        initContainer.getVolumeMounts().get(0).getName());
+    Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH,
+        initContainer.getVolumeMounts().get(0).getMountPath());
+
+    V1Container container =
+        mlJobReplicaSpec.getTemplate().getSpec().getContainers().get(0);
+    Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME,
+        container.getVolumeMounts().get(0).getName());
+    Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH,
+        container.getVolumeMounts().get(0).getMountPath());
+    for (V1EnvVar env : container.getEnv()) {
+      if (env.getName()
+          .equals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH_ENV_VAR)) {
+        Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH,
+            env.getValue());
+      }
+    }
+
+    V1Volume V1Volume =
+        mlJobReplicaSpec.getTemplate().getSpec().getVolumes().get(0);
+    Assert.assertEquals(new V1EmptyDirVolumeSource(), V1Volume.getEmptyDir());
+    Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME,
+        V1Volume.getName());
   }
 }

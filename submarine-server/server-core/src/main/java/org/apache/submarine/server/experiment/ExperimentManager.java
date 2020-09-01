@@ -28,14 +28,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.SubmarineServer;
 import org.apache.submarine.server.SubmitterManager;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentId;
-import org.apache.submarine.server.api.experiment.Submitter;
+import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.rest.RestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,11 +87,31 @@ public class ExperimentManager {
    */
   public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     checkSpec(spec);
+
+    // Submarine sdk will get experimentID and JDBC URL from environment variables in each worker,
+    // and then log experiment metrics and parameters to submarine server
+    ExperimentId id = generateExperimentId();
+    String url = getSQLAlchemyURL();
+    spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id.toString());
+    spec.getMeta().getEnvVars().put(RestConstants.SUBMARINE_TRACKING_URI, url);
+
     Experiment experiment = submitter.createExperiment(spec);
-    experiment.setExperimentId(generateExperimentId());
+    experiment.setExperimentId(id);
+
+    spec.getMeta().getEnvVars().remove(RestConstants.JOB_ID);
+    spec.getMeta().getEnvVars().remove(RestConstants.SUBMARINE_TRACKING_URI);
     experiment.setSpec(spec);
     cachedExperimentMap.putIfAbsent(experiment.getExperimentId().toString(), experiment);
     return experiment;
+  }
+
+  private String getSQLAlchemyURL() {
+    SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+    String jdbcUrl = conf.getJdbcUrl();
+    jdbcUrl = jdbcUrl.substring(jdbcUrl.indexOf("//") + 2, jdbcUrl.indexOf("?"));
+    String jdbcUserName = conf.getJdbcUserName();
+    String jdbcPassword = conf.getJdbcPassword();
+    return "mysql+pymysql://" + jdbcUserName + ":" + jdbcPassword + "@" + jdbcUrl;
   }
 
   private ExperimentId generateExperimentId() {

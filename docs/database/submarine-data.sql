@@ -63,22 +63,31 @@ INSERT INTO `team` VALUES ('e9ca23d68d884d4ebb19d07889721234', 'admin', 'Submari
 -- ----------------------------
 -- Records of metrics
 -- ----------------------------
-INSERT INTO `metrics` (`id`, `key`, `value`, `worker_index`, `timestamp`, `step`, `is_nan`, `job_name`) VALUES
-(13, 'score', 0.666667, 'worker-1', 1569139525097, 0, 0, 'application_1234'),
-(14, 'score', 0.666667, 'worker-1', 1569149139731, 0, 0, 'application_1234'),
-(15, 'score', 0.666667, 'worker-1', 1569169376482, 0, 0, 'application_1234'),
-(16, 'score', 0.666667, 'worker-1', 1569236290721, 0, 0, 'application_1234'),
-(17, 'score', 0.666667, 'worker-1', 1569236466722, 0, 0, 'application_1234');
+INSERT INTO `metrics` (`id`, `key`, `value`, `worker_index`, `timestamp`, `step`, `is_nan`) VALUES
+('application_123651651', 'score', 0.666667, 'worker-1', 1569139525097, 0, 0),
+('application_123651651', 'score', 0.666670, 'worker-1', 1569149139731, 1, 0),
+('experiment_1595332719154_0001', 'score', 0.666667, 'worker-1', 1569169376482, 0, 0),
+('experiment_1595332719154_0001', 'score', 0.666671, 'worker-1', 1569236290721, 0, 0),
+('experiment_1595332719154_0001', 'score', 0.666680, 'worker-1', 1569236466722, 0, 0);
 
 -- ----------------------------
 -- Records of params
 -- ----------------------------
-INSERT INTO `params` (`id`, `key`, `value`, `worker_index`, `job_name`) VALUES
-(14, 'max_iter', '100', 'worker-1', 'application_123651651'),
-(15, 'n_jobs', '5', 'worker-1', 'application_123456898'),
-(16, 'alpha', '20', 'worker-1', 'application_123456789');
+INSERT INTO `params` (`id`, `key`, `value`, `worker_index`) VALUES
+('application_123651651', 'max_iter', '100', 'worker-1'),
+('application_123456898', 'n_jobs', '5', 'worker-1'),
+('application_123456789', 'alpha', '20', 'worker-1'),
+('experiment_1595332719154_0001', 'max_iter', '100', 'worker-1'),
+('experiment_1595332719154_0002', 'n_jobs', '5', 'worker-1'),
+('experiment_1595332719154_0003', 'alpha', '20', 'worker-1');
 
 -- ----------------------------
 -- Records of environment
 -- ----------------------------
 INSERT INTO `environment` VALUES ('environment_1595134205164_0002', 'my-submarine-test-env','{"name":"my-submarine-env","dockerImage":"continuumio/anaconda3","kernelSpec":{"name":"team_default_python_3.7","channels":["defaults"],"dependencies":["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0","alabaster=0.7.12=py37_0","anaconda=2020.02=py37_0","anaconda-client=1.7.2=py37_0","anaconda-navigator=1.9.12=py37_0"]}}','admin', '2020-05-06 14:00:05', 'Jack', '2020-05-06 14:00:14');
+
+-- ----------------------------
+-- Records of experiment_templates
+-- ----------------------------
+INSERT INTO `experiment_template` (`id`, `experimentTemplate_name`, `experimentTemplate_spec`, `create_by`, `create_time`, `update_by`, `update_time`) VALUES
+('experimentTemplate_1596391902149_0002', 'tf-mnist', '{\"name\": \"tf-mnist\", \"author\": \"author0\", \"parameters\": [{\"name\": \"input.train_data\", \"required\": \"true\", \"description\": \"train data is expected in SVM format, and can be stored in HDFS/S3 \\n\"}, {\"name\": \"training.batch_size\", \"value\": \"150\", \"required\": \"false\", \"description\": \"This is batch size of training\"}], \"description\": \"This is a template to run tf-mnist\\n\", \"experimentSpec\": {\"meta\": {\"cmd\": \"python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size={{training.batch_size}}\", \"name\": \"tf-mnist-json\", \"envVars\": {\"ENV2\": \"ENV2\", \"input_path\": \"{{input.train_data}}\"}, \"framework\": \"TensorFlow\", \"namespace\": \"default\"}, \"spec\": {\"Ps\": {\"replicas\": 1, \"resources\": \"cpu=1,memory=1024M\", \"resourceMap\": {\"cpu\": \"1\", \"memory\": \"1024M\"}}, \"Worker\": {\"replicas\": 1, \"resources\": \"cpu=1,memory=1024M\", \"resourceMap\": {\"cpu\": \"1\", \"memory\": \"1024M\"}}}, \"environment\": {\"image\": \"gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0\"}}}', NULL, '2020-08-02 18:14:07', NULL, '2020-08-02 18:25:14');

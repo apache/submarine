@@ -32,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -50,20 +51,27 @@ import org.apache.submarine.server.response.JsonResponse;
 @Path(RestConstants.V1 + "/" + RestConstants.EXPERIMENT)
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
 public class ExperimentRestApi {
-  private final ExperimentManager experimentManager = ExperimentManager.getInstance();
+  private ExperimentManager experimentManager = ExperimentManager.getInstance();
+
+  @VisibleForTesting
+  public void setExperimentManager(ExperimentManager experimentManager) {
+    this.experimentManager = experimentManager;
+  }
+
   /**
    * Return the Pong message for test the connectivity
+   *
    * @return Pong message
    */
   @GET
   @Path(RestConstants.PING)
   @Consumes(MediaType.APPLICATION_JSON)
   @Operation(summary = "Ping submarine server",
-          tags = {"experiment"},
-          description = "Return the Pong message for test the connectivity",
-          responses = {
-                  @ApiResponse(responseCode = "200", description = "successful operation",
-                          content = @Content(schema = @Schema(implementation = String.class)))})
+      tags = {"experiment"},
+      description = "Return the Pong message for test the connectivity",
+      responses = {
+          @ApiResponse(responseCode = "200", description = "successful operation",
+              content = @Content(schema = @Schema(implementation = String.class)))})
   public Response ping() {
     return new JsonResponse.Builder<String>(Response.Status.OK)
         .success(true).result("Pong").build();
@@ -71,16 +79,17 @@ public class ExperimentRestApi {
 
   /**
    * Returns the contents of {@link Experiment} that submitted by user.
+   *
    * @param spec spec
    * @return the contents of experiment
    */
   @POST
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
   @Operation(summary = "Create an experiment",
-          tags = {"experiment"},
-          responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = JsonResponse.class)))})
+      tags = {"experiment"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class)))})
   public Response createExperiment(ExperimentSpec spec) {
     try {
       Experiment experiment = experimentManager.createExperiment(spec);
@@ -93,14 +102,15 @@ public class ExperimentRestApi {
 
   /**
    * List all experiment for the user
+   *
    * @return experiment list
    */
   @GET
   @Operation(summary = "List experiments",
-          tags = {"experiment"},
-          responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = JsonResponse.class)))})
+      tags = {"experiment"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class)))})
   public Response listExperiments(@QueryParam("status") String status) {
     try {
       List<Experiment> experimentList = experimentManager.listExperimentsByStatus(status);
@@ -113,17 +123,18 @@ public class ExperimentRestApi {
 
   /**
    * Returns the experiment detailed info by specified experiment id
+   *
    * @param id experiment id
    * @return the detailed info of experiment
    */
   @GET
   @Path("/{id}")
   @Operation(summary = "Get the experiment's detailed info by id",
-          tags = {"experiment"},
-          responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = JsonResponse.class))),
-                  @ApiResponse(responseCode = "404", description = "Experiment not found")})
+      tags = {"experiment"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class))),
+          @ApiResponse(responseCode = "404", description = "Experiment not found")})
   public Response getExperiment(@PathParam(RestConstants.ID) String id) {
     try {
       Experiment experiment = experimentManager.getExperiment(id);
@@ -138,11 +149,11 @@ public class ExperimentRestApi {
   @Path("/{id}")
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
   @Operation(summary = "Update the experiment in the submarine server with spec",
-          tags = {"experiment"},
-          responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = JsonResponse.class))),
-                  @ApiResponse(responseCode = "404", description = "Experiment not found")})
+      tags = {"experiment"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class))),
+          @ApiResponse(responseCode = "404", description = "Experiment not found")})
   public Response patchExperiment(@PathParam(RestConstants.ID) String id, ExperimentSpec spec) {
     try {
       Experiment experiment = experimentManager.patchExperiment(id, spec);
@@ -155,17 +166,18 @@ public class ExperimentRestApi {
 
   /**
    * Returns the experiment that deleted
+   *
    * @param id experiment id
    * @return the detailed info about deleted experiment
    */
   @DELETE
   @Path("/{id}")
   @Operation(summary = "Delete the experiment",
-          tags = {"experiment"},
-          responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = JsonResponse.class))),
-                  @ApiResponse(responseCode = "404", description = "Experiment not found")})
+      tags = {"experiment"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class))),
+          @ApiResponse(responseCode = "404", description = "Experiment not found")})
   public Response deleteExperiment(@PathParam(RestConstants.ID) String id) {
     try {
       Experiment experiment = experimentManager.deleteExperiment(id);
@@ -179,10 +191,10 @@ public class ExperimentRestApi {
   @GET
   @Path("/logs")
   @Operation(summary = "List experiment's log",
-          tags = {"experiment"},
-          responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = JsonResponse.class)))})
+      tags = {"experiment"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class)))})
   public Response listLog(@QueryParam("status") String status) {
     try {
       List<ExperimentLog> experimentLogList = experimentManager.listExperimentLogsByStatus(status);
@@ -197,11 +209,11 @@ public class ExperimentRestApi {
   @GET
   @Path("/logs/{id}")
   @Operation(summary = "Log experiment by id",
-          tags = {"experiment"},
-          responses = {
-                  @ApiResponse(description = "successful operation", content = @Content(
-                          schema = @Schema(implementation = JsonResponse.class))),
-                  @ApiResponse(responseCode = "404", description = "Experiment not found")})
+      tags = {"experiment"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class))),
+          @ApiResponse(responseCode = "404", description = "Experiment not found")})
   public Response getLog(@PathParam(RestConstants.ID) String id) {
     try {
       ExperimentLog experimentLog = experimentManager.getExperimentLog(id);

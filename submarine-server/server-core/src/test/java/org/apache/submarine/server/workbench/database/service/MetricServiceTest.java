@@ -46,13 +46,13 @@ public class MetricServiceTest {
   @Test
   public void testSelect() throws Exception {
     Metric metric = new Metric();
+    metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
     metric.setWorkerIndex("test_worker-1");
     metric.setTimestamp(new BigInteger("1569139525097"));
     metric.setStep(0);
-    metric.setIsNan(0);
-    metric.setJobName("test_application_1234");
+    metric.setIsNan(false);
     boolean result = metricService.insert(metric);
     assertTrue(result);
     List<Metric> metricList = metricService.selectAll();
@@ -61,7 +61,7 @@ public class MetricServiceTest {
 
     Metric metricDb = metricList.get(0);
     compareMetrics(metric, metricDb);
-    
+
     Metric metricDb2 = metricService.selectByPrimaryKeySelective(metric).get(0);
     compareMetrics(metric, metricDb2);
   }
@@ -69,27 +69,27 @@ public class MetricServiceTest {
   @Test
   public void testUpdate() throws Exception {
     Metric metric = new Metric();
+    metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
     metric.setWorkerIndex("test_worker-2");
     metric.setTimestamp(new BigInteger("1569139525098"));
     metric.setStep(0);
-    metric.setIsNan(0);
-    metric.setJobName("test_application_1234");
+    metric.setIsNan(false);
     boolean result = metricService.insert(metric);
     assertTrue(result);
 
+    metric.setId("test_application_1234");
     metric.setKey("test_scoreNew");
     metric.setValue((float) 0.766667);
     metric.setWorkerIndex("test_worker-New");
     metric.setTimestamp(new BigInteger("2569139525098"));
     metric.setStep(1);
-    metric.setIsNan(1);
-    metric.setJobName("test_application_1234New");
+    metric.setIsNan(true);
 
     boolean editResult = metricService.update(metric);
     assertTrue(editResult);
-    
+
     Metric metricDb2 = metricService.selectByPrimaryKeySelective(metric).get(0);
     compareMetrics(metric, metricDb2);
   }
@@ -97,13 +97,13 @@ public class MetricServiceTest {
   @Test
   public void testDelete() throws Exception {
     Metric metric = new Metric();
+    metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
     metric.setWorkerIndex("test_worker-2");
     metric.setTimestamp(new BigInteger("1569139525098"));
     metric.setStep(0);
-    metric.setIsNan(0);
-    metric.setJobName("test_application_1234");
+    metric.setIsNan(false);
     boolean result = metricService.insert(metric);
     assertTrue(result);
 
@@ -114,8 +114,8 @@ public class MetricServiceTest {
 
   private void compareMetrics(Metric metric, Metric metricDb) {
     assertEquals(metric.getId(), metricDb.getId());
+    assertEquals(metric.getId(), metricDb.getId());
     assertEquals(metric.getIsNan(), metricDb.getIsNan());
-    assertEquals(metric.getJobName(), metricDb.getJobName());
     assertEquals(metric.getKey(), metricDb.getKey());
     assertEquals(metric.getStep(), metricDb.getStep());
     assertEquals(metric.getTimestamp(), metricDb.getTimestamp());

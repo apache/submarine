@@ -17,16 +17,13 @@
 
 package org.apache.submarine.integration;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
+import org.apache.submarine.integration.pages.ExperimentPage;
 import org.openqa.selenium.By;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -34,7 +31,8 @@ import org.testng.Assert;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import sun.rmi.runtime.Log;
-
+import org.apache.submarine.CommandExecutor;
+import org.apache.submarine.ProcessData;
 import java.io.File;
 
 public class experimentIT extends AbstractSubmarineIT {
@@ -43,8 +41,8 @@ public class experimentIT extends AbstractSubmarineIT {
 
   @BeforeClass
   public static void startUp(){
-    LOG.info("[Testcase]: experimentIT");
-    driver =  WebDriverManager.getWebDriver();
+    LOG.info("[Testcase]: experimentNew");
+    driver = WebDriverManager.getWebDriver();
   }
 
   @AfterClass
@@ -54,6 +52,9 @@ public class experimentIT extends AbstractSubmarineIT {
 
   @Test
   public void experimentNavigation() throws Exception {
+    LOG.info("[Testacse: experimentNavigation]");
+    // Init the page object
+    ExperimentPage experimentPage = new ExperimentPage(driver);
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
@@ -68,35 +69,36 @@ public class experimentIT extends AbstractSubmarineIT {
 
     // Test create new experiment
     LOG.info("new experiment");
-    pollingWait(By.xpath("//button[@id='openExperiment']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertTrue(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
-    WebDriverWait wait = new WebDriverWait( driver, 15);
-    // Basic information section
-    pollingWait(By.name("experimentName"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Experiment");
-    pollingWait(By.name("description"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project description");
-    pollingWait(By.name("namespace"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e namespace");
-    pollingWait(By.name("cmd"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("python3 -m e2e cmd");
-    pollingWait(By.name("image"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e custom image");
-    pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    // env variables section
-    LOG.info("in env");
-    Assert.assertTrue(pollingWait(By.xpath("//button[@id='env-btn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
-    WebElement envBtn = buttonCheck(By.id("env-btn"), MAX_BROWSER_TIMEOUT_SEC);
-    envBtn.click();
-    wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//input[@name='key0' or name='value0']")));
-    pollingWait(By.name("key0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e key");
-    pollingWait(By.name("value0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e value");
+    String experimentName = "experiment-e2e-test";
+    experimentPage.newExperimentButtonClick();
+    experimentPage.fillMeta(experimentName, "e2e des", "default", "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150", "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0");
+    Assert.assertTrue(experimentPage.getGoButton().isEnabled());
+    experimentPage.goButtonClick();
 
-    pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    // Spec section
-    LOG.info("in spec");
-    WebElement specBtn = wait.until(ExpectedConditions.elementToBeClickable(By.id("spec-btn")));
-    specBtn.click();
-    pollingWait(By.name("spec0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e spec");
-    pollingWait(By.name("replica0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("1");
-    pollingWait(By.name("cpu0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("1");
-    pollingWait(By.name("memory0"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("512M");
-    Assert.assertTrue(pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).isEnabled());
-//    pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    LOG.info("In env");
+    experimentPage.envBtnClick();
+    experimentPage.fillEnv("ENV_1", "ENV1");
+    Assert.assertTrue(experimentPage.getGoButton().isEnabled());
+    experimentPage.goButtonClick();
+
+    // Fail due to incorrect spec name
+    LOG.info("In spec fail");
+    experimentPage.fillTfSpec(1, new String[]{"Master"}, new int[]{-1}, new int[]{-1}, new int[]{512});
+    Assert.assertFalse(experimentPage.getGoButton().isEnabled());
+    // Successful request
+    LOG.info("In spec success");
+    experimentPage.deleteSpec();
+    experimentPage.fillTfSpec(2, new String[]{"Ps", "Worker"}, new int[]{1, 1}, new int[]{1, 1}, new int[]{1024, 1024});
+    Assert.assertTrue(experimentPage.getGoButton().isEnabled());
+    /*
+      TODO: Launch submarine server and K8s in e2e-test
+      Comment out because of Experiment creation failure on Travis
+
+      experimentPage.goButtonClick();
+
+      // Patch request
+      LOG.info("In spec patch");
+      experimentPage.editTfSpec(experimentName);
+    */
   }
 }

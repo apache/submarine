@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "name": "my-nb",
+    "namespace": "default"
+  },
+  "environment": {
+    "name": "my-submarine-env"
+  },
+  "spec": {
+    "envVars": {
+      "env": "env"
+    },
+    "resources": "cpu=1,memory=1Gi"
+  }
+}

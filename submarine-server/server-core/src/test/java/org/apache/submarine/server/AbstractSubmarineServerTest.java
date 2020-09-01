@@ -80,7 +80,7 @@ public abstract class AbstractSubmarineServerTest {
   protected static File confDir;
 
   protected static String ENV_PATH =
-      "/api/" + RestConstants.V1 + "/" + RestConstants.ENVIRONMENTS;
+      "/api/" + RestConstants.V1 + "/" + RestConstants.ENVIRONMENT;
   protected static String ENV_NAME = "my-submarine-env";
   
   public static String getWebsocketApiUrlToTest() {

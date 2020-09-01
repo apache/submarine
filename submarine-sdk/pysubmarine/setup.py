@@ -39,7 +39,7 @@ setup(
         'certifi >= 14.05.14',
         'python-dateutil >= 2.5.3',
         'pyarrow==0.17.0',
-        'torch',
+        'torch>=1.5.0',
     ],
     classifiers=[
         'Intended Audience :: Developers',

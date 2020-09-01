@@ -44,7 +44,6 @@ import static org.junit.Assert.assertEquals;
 
 public class EnvironmentRestApiTest {
   private static EnvironmentRestApi environmentStoreApi;
-  private static String environmentName = "my-submarine-env";
   private static String kernelName = "team_default_python_3";
   private static String dockerImage = "continuumio/anaconda3";
   private static List<String> kernelChannels = Arrays.asList("defaults", "anaconda");
@@ -87,32 +86,35 @@ public class EnvironmentRestApiTest {
     environmentSpec.setName("foo");
 
     // Create Environment
-    Response createEnvResponse = environmentStoreApi.createEnvironment(environmentSpec);
-    assertEquals(Response.Status.OK.getStatusCode(), createEnvResponse.getStatus());
+    Response createEnvResponse =
+        environmentStoreApi.createEnvironment(environmentSpec);
+    assertEquals(Response.Status.OK.getStatusCode(),
+        createEnvResponse.getStatus());
 
     // Update Environment
-    environmentSpec.setName(environmentName);
-    Response updateEnvResponse = environmentStoreApi.updateEnvironment(
-        "foo", environmentSpec);
-    assertEquals(Response.Status.OK.getStatusCode(), updateEnvResponse.getStatus());
+    environmentSpec.setDockerImage("continuumio/miniconda");
+    Response updateEnvResponse =
+        environmentStoreApi.updateEnvironment("foo", environmentSpec);
+    assertEquals(Response.Status.OK.getStatusCode(),
+        updateEnvResponse.getStatus());
   }
 
   @After
   public void deleteEnvironment() {
     Response deleteEnvResponse = environmentStoreApi
-        .deleteEnvironment(environmentName);
+            .deleteEnvironment("foo");
     assertEquals(Response.Status.OK.getStatusCode(), deleteEnvResponse.getStatus());
   }
 
   @Test
   public void getEnvironment() {
-    Response getEnvResponse = environmentStoreApi.getEnvironment(environmentName);
+    Response getEnvResponse = environmentStoreApi.getEnvironment("foo");
     Environment environment = getEnvironmentFromResponse(getEnvResponse);
-    assertEquals(environmentName, environment.getEnvironmentSpec().getName());
+    assertEquals("foo", environment.getEnvironmentSpec().getName());
     assertEquals(kernelName, environment.getEnvironmentSpec().getKernelSpec().getName());
     assertEquals(kernelChannels, environment.getEnvironmentSpec().getKernelSpec().getChannels());
     assertEquals(kernelDependencies, environment.getEnvironmentSpec().getKernelSpec().getDependencies());
-    assertEquals(dockerImage, environment.getEnvironmentSpec().getDockerImage());
+    assertEquals("continuumio/miniconda", environment.getEnvironmentSpec().getDockerImage());
   }
 
   private Environment getEnvironmentFromResponse(Response response) {
@@ -120,5 +122,28 @@ public class EnvironmentRestApiTest {
     Type type = new TypeToken<JsonResponse<Environment>>() {}.getType();
     JsonResponse<Environment> jsonResponse = gson.fromJson(entity, type);
     return jsonResponse.getResult();
+  }
+
+  @Test
+  public void listEnvironment() {
+    Response getEnvResponse = environmentStoreApi.listEnvironment("");
+    String entity = (String) getEnvResponse.getEntity();
+    JsonResponse jsonResponse = gson.fromJson(entity, JsonResponse.class);
+
+    // environments.length = 2; One is created in this test, one is get from database
+    Environment[] environments = gson
+        .fromJson(gson.toJson(jsonResponse.getResult()), Environment[].class);
+    assertEquals(2, environments.length);
+
+    Environment environment = environments[0];
+    assertEquals("foo", environment.getEnvironmentSpec().getName());
+    assertEquals(kernelName,
+        environment.getEnvironmentSpec().getKernelSpec().getName());
+    assertEquals(kernelChannels,
+        environment.getEnvironmentSpec().getKernelSpec().getChannels());
+    assertEquals(kernelDependencies,
+        environment.getEnvironmentSpec().getKernelSpec().getDependencies());
+    assertEquals("continuumio/miniconda",
+        environment.getEnvironmentSpec().getDockerImage());
   }
 }

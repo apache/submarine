@@ -51,18 +51,6 @@ public class MetricRestApi {
   public MetricRestApi() {
   }
 
-  /*
-  # +-------+----------+--------------+---------------+------+--------+------------------+
-  # | key   | value    | worker_index | timestamp     | step | is_nan | job_name         |
-  # +-------+----------+--------------+---------------+------+--------+------------------+
-  # | score | 0.666667 | worker-1     | 1569139525097 |    0 |      0 | application_1234 |
-  # | score | 0.666667 | worker-1     | 1569149139731 |    0 |      0 | application_1234 |
-  # | score | 0.666667 | worker-1     | 1569169376482 |    0 |      0 | application_1234 |
-  # | score | 0.666667 | worker-1     | 1569236290721 |    0 |      0 | application_1234 |
-  # | score | 0.666667 | worker-1     | 1569236466722 |    0 |      0 | application_1234 |
-  # +-------+----------+--------------+---------------+------+--------+------------------+
-  */
-
   @GET
   @Path("/list")
   @SubmarineApi
@@ -71,8 +59,7 @@ public class MetricRestApi {
                               @QueryParam("workerIndex") String workerIndex,
                               @QueryParam("timestamp") BigInteger timestamp,
                               @QueryParam("step") Integer step,
-                              @QueryParam("isNan") Integer isNan,
-                              @QueryParam("jobName") String jobName,
+                              @QueryParam("isNan") Boolean isNan,
                               @QueryParam("id") String id) {
 
     Metric metric = new Metric();
@@ -82,7 +69,6 @@ public class MetricRestApi {
     metric.setTimestamp(timestamp);
     metric.setStep(step);
     metric.setIsNan(isNan);
-    metric.setJobName(jobName);
     metric.setId(id);
 
     LOG.info("listMetric ({})", metric);

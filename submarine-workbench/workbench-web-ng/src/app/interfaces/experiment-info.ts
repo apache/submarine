@@ -28,5 +28,6 @@ export class ExperimentInfo {
   createdTime: string;
   runningTime: string;
   finishedTime: string;
+  duration: string;
   spec: ExperimentSpec;
 }

@@ -30,7 +30,6 @@ import { zh_CN, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IconsProviderModule } from './icons-provider.module';
-import { MonacoEditorModule } from 'ngx-monaco-editor';
 
 registerLocaleData(zh);
 
@@ -43,8 +42,7 @@ registerLocaleData(zh);
     NgZorroAntdModule,
     FormsModule,
     HttpClientModule,
-    BrowserAnimationsModule,
-    MonacoEditorModule.forRoot()
+    BrowserAnimationsModule
   ],
   providers: [{ provide: NZ_I18N, useValue: zh_CN }, LocalStorageService],
   bootstrap: [AppComponent]

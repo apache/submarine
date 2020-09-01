@@ -23,15 +23,14 @@ import java.math.BigInteger;
 import org.apache.submarine.server.database.entity.BaseEntity;
 
 /*
-# +-------+----------+--------------+---------------+------+--------+------------------+
-# | key   | value    | worker_index | timestamp     | step | is_nan | job_name         |
-# +-------+----------+--------------+---------------+------+--------+------------------+
-# | score | 0.666667 | worker-1     | 1569139525097 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569149139731 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569169376482 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569236290721 |    0 |      0 | application_1234 |
-# | score | 0.666667 | worker-1     | 1569236466722 |    0 |      0 | application_1234 |
-# +-------+----------+--------------+---------------+------+--------+------------------+
+# +--------------------+-------+-------------------+--------------+---------------+------+--------+
+# | id                 | key   | value             | worker_index | timestamp     | step | is_nan |
+# +--------------------+-------+-------------------+--------------+---------------+------+--------+
+# | application_123456 | score | 0.666666666666667 | worker-1     | 1595414873838 |    0 |      0 |
+# | application_123456 | score | 0.666666666666667 | worker-1     | 1595472286360 |    0 |      0 |
+# | application_123456 | score | 0.666666666666667 | worker-1     | 1595414632967 |    0 |      0 |
+# | application_123456 | score | 0.666666666666667 | worker-1     | 1595415075067 |    0 |      0 |
+# +--------------------+-------+-------------------+--------------+---------------+------+--------+
 */
 
 public class Metric extends BaseEntity {
@@ -41,8 +40,7 @@ public class Metric extends BaseEntity {
   private String workerIndex;
   private BigInteger timestamp;
   private Integer step;
-  private Integer isNan;
-  private String jobName;
+  private Boolean isNan;
 
   public String getKey() {
     return this.key;
@@ -84,19 +82,11 @@ public class Metric extends BaseEntity {
     this.step = step;
   }
 
-  public Integer getIsNan() {
+  public Boolean getIsNan() {
     return this.isNan;
   }
 
-  public void setIsNan(Integer isNan) {
+  public void setIsNan(Boolean isNan) {
     this.isNan = isNan;
-  }
-
-  public String getJobName() {
-    return this.jobName;
-  }
-
-  public void setJobName(String jobName) {
-    this.jobName = jobName;
   }
 }

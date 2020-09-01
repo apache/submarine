@@ -35,7 +35,6 @@
       <th>Finished Time</th>
       <th>Duration</th>
       <th>Status</th>
-      <th>Progress</th>
       <th>Action</th>
     </tr>
   </thead>
@@ -46,14 +45,8 @@
       <td>{{ experimentInfo.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
       <td>{{ experimentInfo.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
       <td>{{ experimentInfo.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
-      <td></td>
+      <td>{{ experimentInfo.duration }}</td>
       <td>{{ experimentInfo.status }}</td>
-      <td *ngIf="experimentInfo.status === 'Succeeded'">
-        <nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress>
-      </td>
-      <td *ngIf="experimentInfo.status !== 'Succeeded'">
-        <nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress>
-      </td>
       <td class="td-action">
         <a (click)="startExperiment()">Start</a>
         <nz-divider nzType="vertical"></nz-divider>
@@ -110,7 +103,7 @@
   </nz-sider>
   <nz-layout>
     <div [ngSwitch]="currentState">
-      <submarine-charts *ngSwitchCase="0"></submarine-charts>
+      <submarine-charts *ngSwitchCase="0" [workerIndex]="selectedPod" [metricData]="metricData"></submarine-charts>
       <submarine-hyper-params
         *ngSwitchCase="1"
         [workerIndex]="selectedPod"

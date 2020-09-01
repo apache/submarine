@@ -46,7 +46,7 @@
 
   <!-- get user info by user name -->
   <select id="getUserByName" parameterType="java.util.Map" resultMap="resultMap">
-    SELECT id, name, username FROM sys_user WHERE name = #{mapParams.name} AND password = #{mapParams.password}
+    SELECT id, user_name, real_name FROM sys_user WHERE user_name = #{mapParams.name} AND password = #{mapParams.password}
   </select>
 
   <select id="login" parameterType="java.util.Map" resultMap="resultMap">

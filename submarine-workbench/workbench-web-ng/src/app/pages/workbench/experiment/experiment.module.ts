@@ -1,14 +1,13 @@
-import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ExperimentInfoComponent } from './experiment-info/experiment-info.component';
-import { MetricsComponent } from './experiment-info/metrics/metrics.component';
-import { HyperParamsComponent } from './experiment-info/hyper-params/hyper-params.component';
-import { ChartsComponent } from './experiment-info/charts/charts.component';
-import { OutputsComponent } from './experiment-info/outputs/outputs.component';
-import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { ChartsComponent } from './experiment-info/charts/charts.component';
+import { ExperimentInfoComponent } from './experiment-info/experiment-info.component';
+import { HyperParamsComponent } from './experiment-info/hyper-params/hyper-params.component';
+import { MetricsComponent } from './experiment-info/metrics/metrics.component';
+import { OutputsComponent } from './experiment-info/outputs/outputs.component';
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

@@ -21,26 +21,51 @@ package org.apache.submarine.server.rest;
 
 public class RestConstants {
   public static final String V1 = "v1";
+
   public static final String EXPERIMENT = "experiment";
+
   public static final String ID = "id";
+
+  public static final String JOB_ID = "JOB_ID";
+
+  public static final String SUBMARINE_TRACKING_URI = "SUBMARINE_TRACKING_URI";
+
   public static final String PING = "ping";
+
   public static final String MEDIA_TYPE_YAML = "application/yaml";
+
   public static final String CHARSET_UTF8 = "charset=utf-8";
 
   public static final String METASTORE = "metastore";
 
   public static final String CLUSTER = "cluster";
+
   public static final String ADDRESS = "address";
 
   public static final String NODES = "nodes";
+
   public static final String NODE = "node";
 
   public static final String LOGS = "logs";
-  
   /**
    * Environment
    */
-  public static final String ENVIRONMENTS = "environments";
-  
+  public static final String ENVIRONMENT = "environment";
+
   public static final String ENVIRONMENT_ID = "id";
+
+  /**
+   * Experimect template
+   */
+  public static final String EXPERIMENT_TEMPLATES = "template";
+  
+  public static final String EXPERIMENT_TEMPLATE_ID = "id";
+
+  /**
+   * Notebook
+   */
+  public static final String NOTEBOOK = "notebook";
+
+  public static final String NOTEBOOK_ID = "id";
+
 }

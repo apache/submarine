@@ -62,11 +62,23 @@
           nz-button
           id="openExperiment"
           nzType="primary"
-          style="margin-right: 30px; margin-bottom: 15px; margin-top: 15px;"
-          (click)="isVisible = true"
+          style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px;"
+          (click)="initExperimentStatus('create')"
         >
           <i nz-icon nzType="plus"></i>
           New Experiment
+        </button>
+        <button
+          nz-button
+          nzType="primary"
+          style="margin-bottom: 15px; margin-top: 15px;"
+          nz-popconfirm
+          nzTitle="Confirm to delete?"
+          nzCancelText="Cancel"
+          nzOkText="Ok"
+          (nzOnConfirm)="deleteExperiments()"
+        >
+          Delete
         </button>
       </div>
       <nz-table
@@ -79,6 +91,9 @@
       >
         <thead>
           <tr>
+            <th>
+              <label nz-checkbox [(ngModel)]="selectAllChecked" (ngModelChange)="selectAll()"></label>
+            </th>
             <th>Experiment Name</th>
             <th>Experiment ID</th>
             <th>Status</th>
@@ -86,52 +101,42 @@
             <th>Created Time</th>
             <th>Running Time</th>
             <th>Duration</th>
-            <th>Progress</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let data of basicTable.data">
+          <tr *ngFor="let data of basicTable.data; let i = index">
+            <td>
+              <label nz-checkbox [(ngModel)]="checkedList[i]"></label>
+            </td>
             <td>{{ data.name }}</td>
             <td>
               <a [routerLink]="['info', data.experimentId]" (click)="experimentID = data.experimentId; isInfo = true">
                 {{ data.experimentId }}
               </a>
             </td>
-            <td>{{ data.status }}</td>
+            <td>
+              <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag>
+            </td>
             <td>{{ data.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
             <td>{{ data.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
-            <td></td>
-            <td *ngIf="data.status === 'Succeeded'">
-              <nz-progress nzStrokeLinecap="round" [nzPercent]="100"></nz-progress>
-            </td>
-            <td *ngIf="data.status !== 'Succeeded'">
-              <nz-progress nzStrokeLinecap="round" [nzPercent]="50"></nz-progress>
-            </td>
+            <td>{{ data.duration }}</td>
             <td class="td-action">
-              <a (click)="startExperiment(data)">Start</a>
+              <a (click)="onCloneExperiment(data.spec)">Clone</a>
               <nz-divider nzType="vertical"></nz-divider>
-              <a nz-dropdown [nzDropdownMenu]="more">
-                More
-                <i nz-icon nzType="down"></i>
+              <a (click)="onUpdateExperiment(data.experimentId, data.spec)">Update</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a
+                nz-popconfirm
+                nzPlacement="left"
+                nzTitle="Confirm to delete?"
+                nzCancelText="Cancel"
+                nzOkText="Ok"
+                (nzOnConfirm)="onDeleteExperiment(data.experimentId, true)"
+              >
+                Delete
               </a>
-              <nz-dropdown-menu #more="nzDropdownMenu">
-                <ul nz-menu nzSelectable>
-                  <li nz-menu-item (click)="editExperiment(data)">Edit</li>
-                  <li
-                    nz-menu-item
-                    nz-popconfirm
-                    nzPlacement="left"
-                    nzTitle="Confirm to delete?"
-                    nzCancelText="Cancel"
-                    nzOkText="Ok"
-                    (nzOnConfirm)="onDeleteExperiment(data)"
-                  >
-                    Delete
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
             </td>
           </tr>
         </tbody>
@@ -143,7 +148,6 @@
     [(nzVisible)]="isVisible"
     nzTitle="Create Experiment"
     [(nzOkText)]="okText"
-    [nzOkLoading]="isOkLoading"
     (nzOnCancel)="isVisible = false"
     [nzWidth]="1000"
   >
@@ -155,7 +159,7 @@
       </nz-steps>
     </div>
     <div>
-      <form [formGroup]="createExperiment">
+      <form [formGroup]="experiment">
         <div *nzModalFooter>
           <button nz-button nzType="default" (click)="isVisible = false">Cancel</button>
           <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="handleOk()">
@@ -182,7 +186,6 @@
             </div>
             <div class="single-field-group">
               <label for="description">
-                <span class="red-star">*</span>
                 Description
               </label>
               <textarea
@@ -200,7 +203,7 @@
               </label>
               <nz-select formControlName="frameworks" nzPlaceHolder="Choose" style="width: 48%;">
                 <nz-option
-                  *ngFor="let framework of frameworkNames"
+                  *ngFor="let framework of FRAMEWORK_NAMES"
                   [nzValue]="framework"
                   [nzLabel]="framework"
                 ></nz-option>
@@ -230,14 +233,20 @@
           </div>
           <div *ngSwitchCase="1" id="page2">
             <div>
-              <button nz-button id="env-btn" type="default" (click)="createEnvInput()">
+              <button nz-button id="env-btn" type="default" (click)="onCreateEnv()">
                 Add new env
               </button>
               <ul formArrayName="envs" class="list-container">
                 <ng-container *ngFor="let env of envs.controls; index as i">
                   <li *ngIf="i | indexInRange: currentEnvPage:PAGESIZE" [formGroupName]="i" class="input-group">
-                    <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" />
-                    <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" />
+                    <div>
+                      <label for="key{{ i }}">Key</label>
+                      <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" />
+                    </div>
+                    <div>
+                      <label for="value{{ i }}">Value</label>
+                      <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" />
+                    </div>
                     <i nz-icon nzType="close-circle" nzTheme="fill" (click)="deleteItem(envs, i)"></i>
                   </li>
                   <div
@@ -264,22 +273,52 @@
           </div>
           <div *ngSwitchCase="2">
             <label class="pg3-form-label"></label>
-            <button nz-button id="spec-btn" type="default" (click)="createSpec()">
+            <button nz-button id="spec-btn" type="default" (click)="onCreateSpec()">
               Add new spec
             </button>
             <ul formArrayName="specs" class="list-container">
               <ng-container *ngFor="let spec of specs.controls; index as i">
                 <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
-                  <input nz-input name="spec{{ i }}" placeholder="spec name" formControlName="name" />
-                  <input
-                    nz-input
-                    name="replica{{ i }}"
-                    type="number"
-                    placeholder="number of replica"
-                    formControlName="replicas"
-                  />
-                  <input nz-input name="cpu{{ i }}" type="number" placeholder="number of cpu" formControlName="cpus" />
-                  <input nz-input name="memory{{ i }}" placeholder="memory" formControlName="memory" />
+                  <div id="spec{{ i }}">
+                    <label>Spec name</label>
+                    <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="frameworks.value">
+                      <div *ngSwitchCase="'TensorFlow'">
+                        <nz-option *ngFor="let spec of TF_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
+                      </div>
+                      <div *ngSwitchCase="'PyTorch'">
+                        <nz-option *ngFor="let spec of PYTORCH_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
+                      </div>
+                    </nz-select>
+                  </div>
+                  <div>
+                    <label>Number of Replica</label>
+                    <input
+                      nz-input
+                      name="replica{{ i }}"
+                      type="number"
+                      placeholder="number of replica"
+                      formControlName="replicas"
+                    />
+                  </div>
+                  <div>
+                    <label>Number of cpu</label>
+                    <input
+                      nz-input
+                      name="cpu{{ i }}"
+                      type="number"
+                      placeholder="number of cpu"
+                      formControlName="cpus"
+                    />
+                  </div>
+                  <div id="memory{{ i }}">
+                    <label>Memory</label>
+                    <div formGroupName="memory" class="memory-input-group">
+                      <input nz-input name="memory{{ i }}" placeholder="Enter number" formControlName="num" />
+                      <nz-select formControlName="unit">
+                        <nz-option *ngFor="let unit of MEMORY_UNITS" [nzValue]="unit" [nzLabel]="unit"></nz-option>
+                      </nz-select>
+                    </div>
+                  </div>
                   <i
                     nz-icon
                     nzType="close-circle"
@@ -288,6 +327,12 @@
                     (click)="deleteItem(specs, i)"
                   ></i>
                 </li>
+                <div
+                  class="alert-message"
+                  *ngIf="spec.get('name').dirty | logicalAnd: spec.get('memory').dirty:spec.hasError('specError')"
+                >
+                  {{ spec.getError('specError') }}
+                </div>
                 <div
                   class="alert-message"
                   *ngIf="spec.get('name').dirty | logicalAnd: spec.get('name').hasError('duplicateError')"

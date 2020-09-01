@@ -165,4 +165,29 @@ public class SysUserServiceTest {
     assertTrue(DateUtils.isSameDay(updateUser.getCreateTime(), user.getCreateTime()));
     assertTrue(DateUtils.isSameDay(updateUser.getUpdateTime(), user.getUpdateTime()));
   }
+
+  @Test
+  public void getUserByNameTest() throws Exception {
+    SysUser sysUser = new SysUser();
+    sysUser.setUserName("user_name");
+    sysUser.setRealName("real_name");
+    sysUser.setPassword("password");
+    sysUser.setAvatar("avatar");
+    sysUser.setDeleted(1);
+    sysUser.setPhone("123456789");
+    sysUser.setRoleCode("roleCode");
+    sysUser.setEmail("test@submarine.org");
+    sysUser.setBirthday(new Date());
+    sysUser.setCreateTime(new Date());
+    sysUser.setUpdateTime(new Date());
+
+    Boolean ret = userService.add(sysUser);
+    assertTrue(ret);
+
+    SysUser user = userService.getUserByName("user_name", "password");
+    // assertNotNull(user.getDeptName());
+    assertEquals(sysUser.getRealName(), user.getRealName());
+    assertEquals(sysUser.getUserName(), user.getUserName());
+    assertEquals(sysUser.getId(), user.getId());
+  }
 }
