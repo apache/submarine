@@ -104,7 +104,10 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
     String envBody = loadContent("environment/test_env_3.json");
     run(envBody, "application/json");
 
-    Gson gson = new GsonBuilder().create();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
     GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         getMethod.getStatusCode());
@@ -129,7 +132,10 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
     // create environment
     String envBody = loadContent("environment/test_env_3.json");
     run(envBody, "application/json");
-
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
     GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         getMethod.getStatusCode());
