@@ -439,7 +439,10 @@ public abstract class AbstractSubmarineServerTest {
   }
 
   protected void run(String body, String contentType) throws Exception {
-    Gson gson = new GsonBuilder().create();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
 
     // create
     LOG.info("Create Environment using Environment REST API");
