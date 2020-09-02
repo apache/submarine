@@ -129,7 +129,10 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
 
   @Test
   public void testTensorFlowUsingEnvWithJsonSpec() throws Exception {
-
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
     // Create environment
     String envBody = loadContent("environment/test_env_1.json");
     run(envBody, "application/json");
