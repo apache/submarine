@@ -26,6 +26,9 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.apache.submarine.server.api.environment.Environment;
+import org.apache.submarine.server.api.environment.EnvironmentId;
+import org.apache.submarine.server.gson.EnvironmentIdDeserializer;
+import org.apache.submarine.server.gson.EnvironmentIdSerializer;
 import org.apache.submarine.server.response.JsonResponse;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -48,14 +51,17 @@ public class EnvironmentManagerRestApiIT extends AbstractSubmarineServerTest {
     run(body, "application/json");
     deleteEnvironment();
   }
-  
+
   @Test
   public void testGetEnvironment() throws Exception {
 
     String body = loadContent("environment/test_env_1.json");
     run(body, "application/json");
 
-    Gson gson = new GsonBuilder().create();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
     GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         getMethod.getStatusCode());
@@ -70,7 +76,7 @@ public class EnvironmentManagerRestApiIT extends AbstractSubmarineServerTest {
     Assert.assertEquals(ENV_NAME, getEnvironment.getEnvironmentSpec().getName());
     deleteEnvironment();
   }
-  
+
 
   @Test
   public void testUpdateEnvironment() throws IOException {
@@ -82,11 +88,11 @@ public class EnvironmentManagerRestApiIT extends AbstractSubmarineServerTest {
     String body = loadContent("environment/test_env_1.json");
     run(body, "application/json");
     deleteEnvironment();
-    
+
     GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
     Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
         getMethod.getStatusCode());
-    
+
   }
 
   @Test

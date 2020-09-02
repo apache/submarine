@@ -134,7 +134,6 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     String envBody = loadContent("environment/test_env_1.json");
     run(envBody, "application/json");
 
-    Gson gson = new GsonBuilder().create();
     GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         getMethod.getStatusCode());
