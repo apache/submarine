@@ -214,8 +214,9 @@ public abstract class AbstractSubmarineServerTest {
       throws IOException {
     return httpPost(path, request, MediaType.APPLICATION_JSON, user, pwd);
   }
+
   protected static PostMethod httpPost(String path, String request, String mediaType, String user,
-      String pwd) throws IOException {
+                                       String pwd) throws IOException {
     LOG.info("Connecting to {}", URL + path);
 
     HttpClient httpClient = new HttpClient();
@@ -256,7 +257,7 @@ public abstract class AbstractSubmarineServerTest {
   }
 
   protected static String httpPatch(String path, String body,
-      String contentType) throws IOException {
+                                    String contentType) throws IOException {
     LOG.info("Connecting to {}", URL + path);
     CloseableHttpClient httpclient = HttpClients.createDefault();
 
