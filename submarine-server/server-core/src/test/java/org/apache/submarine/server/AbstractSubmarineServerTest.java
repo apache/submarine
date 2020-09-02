@@ -462,7 +462,10 @@ public abstract class AbstractSubmarineServerTest {
   }
 
   protected void update(String body, String contentType) throws Exception {
-    Gson gson = new GsonBuilder().create();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
 
     // update
     LOG.info("Update Environment using Environment REST API");
@@ -494,7 +497,10 @@ public abstract class AbstractSubmarineServerTest {
 
 
   protected void deleteEnvironment() throws IOException {
-    Gson gson = new GsonBuilder().create();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
     DeleteMethod deleteMethod = httpDelete(ENV_PATH + "/" + ENV_NAME);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         deleteMethod.getStatusCode());
