@@ -180,6 +180,13 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     run(body, patchBody, "application/json");
   }
 
+  @Test
+  public void testTensorFlowUsingSSHCodeWithJsonSpec() throws Exception {
+    String body = loadContent("tensorflow/tf-mnist-with-ssh-git-code-localizer-req.json");
+    String patchBody = loadContent("tensorflow/tf-mnist-with-ssh-git-code-localizer-req.json");
+    run(body, patchBody, "application/json");
+  }
+  
   private void run(String body, String patchBody, String contentType) throws Exception {
     // create
     LOG.info("Create training job by Job REST API");
