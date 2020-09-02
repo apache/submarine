@@ -34,8 +34,11 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
+import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentId;
+import org.apache.submarine.server.gson.EnvironmentIdDeserializer;
+import org.apache.submarine.server.gson.EnvironmentIdSerializer;
 import org.apache.submarine.server.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.gson.ExperimentIdSerializer;
 import org.apache.submarine.server.api.environment.Environment;
@@ -66,7 +69,9 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
   private static final Logger LOG = LoggerFactory.getLogger(ExperimentRestApiIT.class);
 
   private static CustomObjectsApi k8sApi;
-  /** Key is the ml framework name, the value is the operator */
+  /**
+   * Key is the ml framework name, the value is the operator
+   */
   private static Map<String, KfOperator> kfOperatorMap;
   private static final String BASE_API_PATH = "/api/" + RestConstants.V1 + "/" + RestConstants.EXPERIMENT;
   private static final String LOG_API_PATH = BASE_API_PATH + "/" + RestConstants.LOGS;
@@ -74,9 +79,11 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
   private final Gson gson = new GsonBuilder()
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer())
+      .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+      .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
       .create();
-  
-  private static SubmarineConfiguration conf = 
+
+  private static SubmarineConfiguration conf =
       SubmarineConfiguration.getInstance();
 
   @BeforeClass
@@ -119,15 +126,17 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     String patchBody = loadContent("tensorflow/tf-mnist-patch-req.yaml");
     run(body, patchBody, "application/yaml");
   }
-  
+
   @Test
   public void testTensorFlowUsingEnvWithJsonSpec() throws Exception {
-
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
     // Create environment
     String envBody = loadContent("environment/test_env_1.json");
     run(envBody, "application/json");
 
-    Gson gson = new GsonBuilder().create();
     GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         getMethod.getStatusCode());
@@ -163,7 +172,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     String patchBody = loadContent("pytorch/pt-mnist-patch-req.yaml");
     run(body, patchBody, "application/yaml");
   }
-  
+
   @Test
   public void testTensorFlowUsingCodeWithJsonSpec() throws Exception {
     String body = loadContent("tensorflow/tf-mnist-with-http-git-code-localizer-req.json");
@@ -213,9 +222,9 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     Experiment deletedExperiment = gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
     verifyDeleteJobApiResult(createdExperiment, deletedExperiment);
   }
-  
+
   private void run(Environment expectedEnv, String body, String patchBody,
-      String contentType) throws Exception {
+                   String contentType) throws Exception {
     // create
     LOG.info("Create training job using Environment by Job REST API");
     PostMethod postMethod = httpPost(BASE_API_PATH, body, contentType);
@@ -227,7 +236,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         jsonResponse.getCode());
 
-    Experiment createdExperiment = 
+    Experiment createdExperiment =
         gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
     verifyCreateJobApiResult(expectedEnv, createdExperiment);
 
@@ -269,7 +278,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
 
     assertK8sResultEquals(createdExperiment);
   }
-  
+
   private void verifyCreateJobApiResult(Environment env, Experiment createdJob)
       throws Exception {
     Assert.assertNotNull(createdJob.getUid());
@@ -303,27 +312,27 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     JsonArray expected = new JsonArray();
     expected.add("/bin/bash");
     expected.add("-c");
-    
+
     String minVersion = "minVersion=\""
         + conf.getString(
-            SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION)
+        SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MIN_VERSION)
         + "\";";
     String maxVersion = "maxVersion=\""
         + conf.getString(
-            SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION)
+        SubmarineConfVars.ConfVars.ENVIRONMENT_CONDA_MAX_VERSION)
         + "\";";
     String currentVersion = "currentVersion=$(conda -V | cut -f2 -d' ');";
-    String versionCommand = 
-        minVersion + maxVersion + currentVersion 
+    String versionCommand =
+        minVersion + maxVersion + currentVersion
             + "if [ \"$(printf '%s\\n' \"$minVersion\" \"$maxVersion\" "
-               + "\"$currentVersion\" | sort -V | head -n2 | tail -1 )\" "
-                    + "!= \"$currentVersion\" ]; then echo \"Conda version " + 
-                    "should be between minVersion=\"4.0.1\"; " + 
-                    "and maxVersion=\"4.10.10\";\"; exit 1; else echo "
-                    + "\"Conda current version is " + currentVersion + ". "
-                        + "Moving forward with env creation and activation.\"; "
-                        + "fi && ";
-    
+            + "\"$currentVersion\" | sort -V | head -n2 | tail -1 )\" "
+            + "!= \"$currentVersion\" ]; then echo \"Conda version " +
+            "should be between minVersion=\"4.0.1\"; " +
+            "and maxVersion=\"4.10.10\";\"; exit 1; else echo "
+            + "\"Conda current version is " + currentVersion + ". "
+            + "Moving forward with env creation and activation.\"; "
+            + "fi && ";
+
     String initialCommand =
         "conda create -n " + env.getEnvironmentSpec().getKernelSpec().getName();
 
@@ -361,7 +370,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     LOG.info("CreationTimestamp from K8s REST is {}", actualDate);
     Assert.assertEquals(expectedDate, actualDate);
   }
-  
+
   private void assertK8sResultEquals(Experiment experiment) throws Exception {
     KfOperator operator = kfOperatorMap.get(experiment.getSpec().getMeta().getFramework().toLowerCase());
     JsonObject rootObject = getJobByK8sApi(operator.getGroup(), operator.getVersion(),
@@ -401,7 +410,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
   }
 
   private JsonObject getJobByK8sApi(String group, String version, String namespace, String plural,
-      String name) throws ApiException {
+                                    String name) throws ApiException {
     Object obj = k8sApi.getNamespacedCustomObject(group, version, namespace, plural, name);
     Gson gson = new JSON().getGson();
     JsonObject rootObject = gson.toJsonTree(obj).getAsJsonObject();

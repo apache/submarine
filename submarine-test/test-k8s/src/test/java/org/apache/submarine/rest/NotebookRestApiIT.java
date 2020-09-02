@@ -35,9 +35,12 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.apache.submarine.server.api.environment.Environment;
+import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.notebook.NotebookId;
+import org.apache.submarine.server.gson.EnvironmentIdDeserializer;
+import org.apache.submarine.server.gson.EnvironmentIdSerializer;
 import org.apache.submarine.server.gson.NotebookIdDeserializer;
 import org.apache.submarine.server.gson.NotebookIdSerializer;
 import org.apache.submarine.server.response.JsonResponse;
@@ -67,9 +70,11 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
   public static final String PLURAL = "notebooks";
 
   private final Gson gson = new GsonBuilder()
-          .registerTypeAdapter(NotebookId.class, new NotebookIdSerializer())
-          .registerTypeAdapter(NotebookId.class, new NotebookIdDeserializer())
-          .create();
+      .registerTypeAdapter(NotebookId.class, new NotebookIdSerializer())
+      .registerTypeAdapter(NotebookId.class, new NotebookIdDeserializer())
+      .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+      .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+      .create();
 
   @BeforeClass
   public static void startUp() throws IOException {
@@ -99,18 +104,21 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
     String envBody = loadContent("environment/test_env_3.json");
     run(envBody, "application/json");
 
-    Gson gson = new GsonBuilder().create();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
     GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
-            getMethod.getStatusCode());
+        getMethod.getStatusCode());
 
     String json = getMethod.getResponseBodyAsString();
     JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
-            jsonResponse.getCode());
+        jsonResponse.getCode());
 
     Environment getEnvironment =
-            gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
+        gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
     Assert.assertEquals(ENV_NAME, getEnvironment.getEnvironmentSpec().getName());
 
     String body = loadContent("notebook/notebook-req.json");
@@ -124,19 +132,21 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
     // create environment
     String envBody = loadContent("environment/test_env_3.json");
     run(envBody, "application/json");
-
-    Gson gson = new GsonBuilder().create();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
     GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
-            getMethod.getStatusCode());
+        getMethod.getStatusCode());
 
     String json = getMethod.getResponseBodyAsString();
     JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
-            jsonResponse.getCode());
+        jsonResponse.getCode());
 
     Environment getEnvironment =
-            gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
+        gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
     Assert.assertEquals(ENV_NAME, getEnvironment.getEnvironmentSpec().getName());
 
     String body = loadContent("notebook/notebook-req.yaml");
@@ -181,7 +191,7 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
 
     // delete
     DeleteMethod deleteMethod =
-            httpDelete(BASE_API_PATH + "/" + createdNotebook.getNotebookId().toString());
+        httpDelete(BASE_API_PATH + "/" + createdNotebook.getNotebookId().toString());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), deleteMethod.getStatusCode());
 
     json = deleteMethod.getResponseBodyAsString();
@@ -216,7 +226,7 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
 
   private void assertGetK8sResult(Notebook notebook) throws Exception {
     JsonObject rootObject = getNotebookByK8sApi(GROUP, VERSION, notebook.getSpec().getMeta().getNamespace(),
-            PLURAL, notebook.getName());
+        PLURAL, notebook.getName());
 
     JsonObject metadataObject = rootObject.getAsJsonObject("metadata");
     String uid = metadataObject.getAsJsonPrimitive("uid").getAsString();
@@ -225,12 +235,12 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
     Assert.assertEquals(notebook.getUid(), uid);
 
     JsonArray envVars = (JsonArray) rootObject.getAsJsonObject("spec")
-            .getAsJsonObject("template").getAsJsonObject("spec")
-            .getAsJsonArray("containers").get(0).getAsJsonObject().get("env");
+        .getAsJsonObject("template").getAsJsonObject("spec")
+        .getAsJsonArray("containers").get(0).getAsJsonObject().get("env");
     Assert.assertNotNull("The environment command not found.", envVars);
 
     String creationTimestamp =
-            metadataObject.getAsJsonPrimitive("creationTimestamp").getAsString();
+        metadataObject.getAsJsonPrimitive("creationTimestamp").getAsString();
     Date expectedDate = new DateTime(notebook.getCreatedTime()).toDate();
     Date actualDate = new DateTime(creationTimestamp).toDate();
     LOG.info("CreationTimestamp from Notebook REST is {}", expectedDate);
@@ -242,7 +252,7 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
     JsonObject rootObject = null;
     try {
       rootObject = getNotebookByK8sApi(GROUP, VERSION, notebook.getSpec().getMeta().getNamespace(),
-              PLURAL, notebook.getName());
+          PLURAL, notebook.getName());
     } catch (ApiException e) {
       Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), e.getCode());
     } finally {
@@ -251,7 +261,7 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
   }
 
   private JsonObject getNotebookByK8sApi(String group, String version, String namespace, String plural,
-                                   String name) throws ApiException {
+                                         String name) throws ApiException {
     Object obj = k8sApi.getNamespacedCustomObject(group, version, namespace, plural, name);
     Gson gson = new JSON().getGson();
     JsonObject rootObject = gson.toJsonTree(obj).getAsJsonObject();

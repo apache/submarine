@@ -53,6 +53,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.server.api.environment.Environment;
+import org.apache.submarine.server.api.environment.EnvironmentId;
+import org.apache.submarine.server.gson.EnvironmentIdDeserializer;
+import org.apache.submarine.server.gson.EnvironmentIdSerializer;
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.rest.RestConstants;
 import org.apache.submarine.server.utils.TestUtils;
@@ -82,7 +85,7 @@ public abstract class AbstractSubmarineServerTest {
   protected static String ENV_PATH =
       "/api/" + RestConstants.V1 + "/" + RestConstants.ENVIRONMENT;
   protected static String ENV_NAME = "my-submarine-env";
-  
+
   public static String getWebsocketApiUrlToTest() {
     String websocketUrl = "ws://localhost:8080" + WEBSOCKET_API_URL;
     if (System.getProperty("websocketUrl") != null) {
@@ -211,8 +214,9 @@ public abstract class AbstractSubmarineServerTest {
       throws IOException {
     return httpPost(path, request, MediaType.APPLICATION_JSON, user, pwd);
   }
+
   protected static PostMethod httpPost(String path, String request, String mediaType, String user,
-      String pwd) throws IOException {
+                                       String pwd) throws IOException {
     LOG.info("Connecting to {}", URL + path);
 
     HttpClient httpClient = new HttpClient();
@@ -251,12 +255,12 @@ public abstract class AbstractSubmarineServerTest {
     LOG.info("{} - {}", putMethod.getStatusCode(), putMethod.getStatusText());
     return putMethod;
   }
-  
+
   protected static String httpPatch(String path, String body,
-      String contentType) throws IOException {
+                                    String contentType) throws IOException {
     LOG.info("Connecting to {}", URL + path);
     CloseableHttpClient httpclient = HttpClients.createDefault();
-    
+
     HttpPatch httpPatch = new HttpPatch(URL + path);
     StringEntity entity = new StringEntity(body, ContentType.APPLICATION_JSON);
     httpPatch.setEntity(entity);
@@ -433,9 +437,12 @@ public abstract class AbstractSubmarineServerTest {
       return StringUtils.EMPTY;
     }
   }
-  
+
   protected void run(String body, String contentType) throws Exception {
-    Gson gson = new GsonBuilder().create();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
 
     // create
     LOG.info("Create Environment using Environment REST API");
@@ -453,15 +460,18 @@ public abstract class AbstractSubmarineServerTest {
         gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
     verifyCreateEnvironmentApiResult(env);
   }
-  
+
   protected void update(String body, String contentType) throws Exception {
-    Gson gson = new GsonBuilder().create();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
 
     // update
     LOG.info("Update Environment using Environment REST API");
 
     String json = httpPatch(ENV_PATH + "/" + ENV_NAME, body, contentType);
-    
+
     JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         jsonResponse.getCode());
@@ -485,9 +495,12 @@ public abstract class AbstractSubmarineServerTest {
         env.getEnvironmentSpec().getKernelSpec().getDependencies().size() == 1);
   }
 
-  
+
   protected void deleteEnvironment() throws IOException {
-    Gson gson = new GsonBuilder().create();
+    Gson gson = new GsonBuilder()
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+        .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+        .create();
     DeleteMethod deleteMethod = httpDelete(ENV_PATH + "/" + ENV_NAME);
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         deleteMethod.getStatusCode());
