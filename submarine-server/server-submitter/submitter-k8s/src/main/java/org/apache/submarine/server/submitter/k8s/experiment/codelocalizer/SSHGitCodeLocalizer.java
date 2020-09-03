@@ -62,7 +62,7 @@ public class SSHGitCodeLocalizer extends GitCodeLocalizer {
         containerSecurityContext
             .setRunAsUser(SSHGitCodeLocalizer.GIT_SYNC_USER);
         container.setSecurityContext(containerSecurityContext);
-       }
+      }
     }
   }
 }
