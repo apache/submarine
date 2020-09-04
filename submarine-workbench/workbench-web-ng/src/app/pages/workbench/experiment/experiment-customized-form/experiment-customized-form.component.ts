@@ -1,12 +1,3 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ExperimentSpec, Specs, SpecEnviroment, SpecMeta } from '@submarine/interfaces/experiment-spec';
-import { ExperimentService } from '@submarine/services/experiment.service';
-import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
-import { NzMessageService } from 'ng-zorro-antd';
-import { nanoid } from 'nanoid';
-import { Subscription } from 'rxjs';
-import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -25,6 +16,16 @@ import { ExperimentFormService } from '@submarine/services/experiment.form.servi
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ExperimentSpec, Specs, SpecEnviroment, SpecMeta } from '@submarine/interfaces/experiment-spec';
+import { ExperimentService } from '@submarine/services/experiment.service';
+import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
+import { NzMessageService } from 'ng-zorro-antd';
+import { nanoid } from 'nanoid';
+import { Subscription } from 'rxjs';
+import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 
 @Component({
   selector: 'experiment-customized-form',
