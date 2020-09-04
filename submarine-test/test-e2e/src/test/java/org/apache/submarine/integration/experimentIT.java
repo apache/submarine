@@ -27,13 +27,6 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.Assert;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import sun.rmi.runtime.Log;
-import org.apache.submarine.CommandExecutor;
-import org.apache.submarine.ProcessData;
-import java.io.File;
 
 public class experimentIT extends AbstractSubmarineIT {
 
@@ -41,7 +34,7 @@ public class experimentIT extends AbstractSubmarineIT {
 
   @BeforeClass
   public static void startUp(){
-    LOG.info("[Testcase]: experimentNew");
+    LOG.info("[Test case]: experimentNew");
     driver = WebDriverManager.getWebDriver();
   }
 
@@ -52,7 +45,7 @@ public class experimentIT extends AbstractSubmarineIT {
 
   @Test
   public void experimentNavigation() throws Exception {
-    LOG.info("[Testacse: experimentNavigation]");
+    LOG.info("[Test case]: experimentNavigation]");
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
     // Login
@@ -69,8 +62,9 @@ public class experimentIT extends AbstractSubmarineIT {
 
     // Test create new experiment
     LOG.info("new experiment");
-    String experimentName = "experiment-e2e-test";
     experimentPage.newExperimentButtonClick();
+    experimentPage.customizedBtnClick();
+    String experimentName = "experiment-e2e-test";
     experimentPage.fillMeta(experimentName, "e2e des", "default", "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150", "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0");
     Assert.assertTrue(experimentPage.getGoButton().isEnabled());
     experimentPage.goButtonClick();
@@ -90,15 +84,17 @@ public class experimentIT extends AbstractSubmarineIT {
     experimentPage.deleteSpec();
     experimentPage.fillTfSpec(2, new String[]{"Ps", "Worker"}, new int[]{1, 1}, new int[]{1, 1}, new int[]{1024, 1024});
     Assert.assertTrue(experimentPage.getGoButton().isEnabled());
-    /*
+
+  }
+
+  /*
       TODO: Launch submarine server and K8s in e2e-test
       Comment out because of Experiment creation failure on Travis
 
-      experimentPage.goButtonClick();
+      @Test
+      public void updateExperiment() {
+        ....
+      }
+  */
 
-      // Patch request
-      LOG.info("In spec patch");
-      experimentPage.editTfSpec(experimentName);
-    */
-  }
 }

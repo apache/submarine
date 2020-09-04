@@ -1,0 +1,134 @@
+/*!
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+ #experimentOuter{
+  background-color: white;
+  padding-left: 30px;
+  padding-top: 20px;
+}
+
+#experimentData{
+  margin-top: 16px;
+  margin-left: 25px;
+  margin-right: 25px;
+  background-color:white;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+input.ng-invalid.ng-touched {
+ border: 1px solid red;
+}
+
+textarea.ng-invalid.ng-touched {
+ border: 1px solid red;
+}
+
+.red-star {
+ margin-top: 20px;
+ color: red;
+}
+
+.list-container {
+ padding: 0;
+ margin: 1rem 0;
+}
+
+/* For env section */
+.env-page-container {
+ display: flex;
+ flex-direction: column;
+}
+
+.env-input-container {
+ padding: 0;
+ margin: 1rem 0;
+}
+
+.input-group {
+ display: flex;
+ align-items: center;
+ font-size: .8rem;
+ &:not(:first-child) {
+    margin-top: 1rem;
+ }
+
+ & > *:not(:last-child) {
+    margin-right: .8rem;
+ }
+
+ & > div:nth-child(2), & > div:nth-child(3) {
+    flex: 0 1 20%;
+ }
+
+ & > div:nth-child(1), & > div:nth-child(4) {
+    flex: 0 1 25%;
+ }
+
+ & i {
+    cursor: pointer;
+    font-size: 20px;
+    margin-top: 20px;
+ }
+}
+
+.memory-input-group {
+ display: flex;
+ & input {
+    width: 70%;
+ }
+
+ & > * {
+    width: 30%;
+ }
+}
+
+/* utility */
+.single-field-group {
+ display: flex;
+ align-items: center;
+ margin-bottom: 1.5rem;
+ & label {
+    flex: 0 0 25%;
+    text-align: right;
+    font-weight: 500;
+    &:not(:last-child) {
+       margin-right: 1.5rem;
+    }
+ }
+ & input {
+    flex: 0 0 48%;
+ }
+ & textarea {
+    flex: 0 0 55%;
+ }
+}
+
+.alert-message {
+ color: red;
+ margin-top: .3rem;
+ margin-left: .5rem;
+}
+
+/* For jobs */
+#jobs-container {
+ display: grid;
+ grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+ margin-bottom: 2rem;
+}

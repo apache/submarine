@@ -17,35 +17,9 @@
  * under the License.
  */
 
- #experimentOuter{
-    background-color: white;
-    padding-left: 30px;
-    padding-top: 20px;
- }
-
- #experimentData{
-    margin-top: 16px;
-    margin-left: 25px;
-    margin-right: 25px;
-    background-color:white;
-    padding-left: 10px;
-    padding-right: 10px;
- }
-
- #form-type-container {
-    display: grid;
-    grid-auto-rows: 5rem;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-    column-gap: 3rem;
-    & button {
-      height: 100%;
-    }
- }
-
- input.ng-invalid.ng-touched {
-   border: 1px solid red;
- }
-
- textarea.ng-invalid.ng-touched {
-   border: 1px solid red;
+export interface ModalProps {
+  okText?: string;
+  isVisible?: boolean;
+  currentStep?: number;
+  formType?: 'customized' | 'predefined';
 }
