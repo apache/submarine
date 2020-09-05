@@ -22,7 +22,9 @@ under the License.
 
 ## Deploy Submarine Using Helm Chart (Recommended)
 
-Submarine's Helm Chart will not only deploy Submarine Server, but also deploys TF Operator / PyTorch Operator (which will be used by Submarine Server to run TF/PyTorch jobs on K8s).
+Submarine's Helm Chart will deploy Submarine Server, TF/PyTorch Operator, Notebook controller
+and Traefik. We use the TF/PyTorch operator to run tf/pytorch job, the notebook controller to
+manage jupyter notebook and Traefik as reverse-proxy.
 
 
 ### Install Helm
@@ -72,15 +74,36 @@ notebook-controller-deployment-5db8b6cbf7-k65jm   1/1     Running   0          5
 pytorch-operator-7ff5d96d59-gx7f5                 1/1     Running   0          5s
 submarine-database-8d95d74f7-ntvqp                1/1     Running   0          5s
 submarine-server-b6cd4787b-7bvr7                  1/1     Running   0          5s
+submarine-traefik-9bb6f8577-66sx6                 1/1     Running   0          5s
 tf-job-operator-7844656dd-lfgmd                   1/1     Running   0          5s
 ```
 
-### Enable local access to Submarine Server
-Submarine server by default expose 8080 port within K8s cluster.
-To access the server from outside of the cluster, we need to expose the service.
-We can either use port-forward, or use K8s `Ingress`, here is an example of port-forward.
+### Access to Submarine Server
+Submarine server by default expose 8080 port within K8s cluster. After Submarine v0.5
+uses Traefik as reverse-proxy by default. If you don't want to
+use Traefik. You can modify below value in `./helm-charts/submarine/values.yaml`.
+```yaml
+# Use Traefik by default
+traefik:
+  enabled: true
+```
+
+To access the server from outside of the cluster, we use Traefik ingress controller and
+NodePort for external access.\
+Please refer to `./helm-charts/submarine/charts/traefik/values.yaml` and [Traefik docs}(https://docs.traefik.io/)
+for more details if you want to customize the default value for Traefik.
+
+```
+# Use nodePort and Traefik ingress controller by default.
+# To access the submarine server, open the following URL in your browser.
+http://127.0.0.1:32080
+```
+
+Or you can use port-forward to forward a local port to a port on the
+submarine server pod.
 
 ```bash
+# Use port-forward
 kubectl port-forward svc/submarine-server 8080:8080
 
 # In another terminal. Run below command to verify it works
