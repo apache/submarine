@@ -42,8 +42,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: Create the kind config
         run: |
-          configFile=/home/runner/work/submarine/submarine/kind-config-kind.yaml
-          cat <<EOF > ${configFile}
+          cat <<EOF > ./kind-config-kind.yaml
           kind: Cluster
           apiVersion: kind.x-k8s.io/v1alpha4
           nodes:
