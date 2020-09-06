@@ -26,7 +26,7 @@ JSON Format example:
 {
   "name": "tf-mnist-test",
   "author": "author",
-  "description": "This is a template to run tf-mnist\n",
+  "description": "This is a template to run tf-mnist",
   "parameters": [
     {
       "name": "training.learning_rate",
@@ -74,7 +74,7 @@ curl -X POST -H "Content-Type: application/json" -d '
 {
   "name": "tf-mnist-test",
   "author": "author",
-  "description": "This is a template to run tf-mnist\n",
+  "description": "This is a template to run tf-mnist",
   "parameters": [
     {
       "name": "training.learning_rate",
