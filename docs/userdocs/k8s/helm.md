@@ -81,7 +81,7 @@ tf-job-operator-7844656dd-lfgmd                   1/1     Running   0          5
 ### Access to Submarine Server
 Submarine server by default expose 8080 port within K8s cluster. After Submarine v0.5
 uses Traefik as reverse-proxy by default. If you don't want to
-use Traefik. You can modify below value in `./helm-charts/submarine/values.yaml`.
+use Traefik, you can modify below value to ***false*** in `./helm-charts/submarine/values.yaml`.
 ```yaml
 # Use Traefik by default
 traefik:
@@ -90,7 +90,7 @@ traefik:
 
 To access the server from outside of the cluster, we use Traefik ingress controller and
 NodePort for external access.\
-Please refer to `./helm-charts/submarine/charts/traefik/values.yaml` and [Traefik docs}(https://docs.traefik.io/)
+Please refer to `./helm-charts/submarine/charts/traefik/values.yaml` and [Traefik docs](https://docs.traefik.io/)
 for more details if you want to customize the default value for Traefik.
 
 ```
