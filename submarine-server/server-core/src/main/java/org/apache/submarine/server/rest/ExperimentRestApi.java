@@ -45,7 +45,6 @@ import org.apache.submarine.server.experiment.ExperimentManager;
 import org.apache.submarine.server.experimenttemplate.ExperimentTemplateManager;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateSubmit;
-import org.apache.submarine.server.api.spec.ExperimentAndTemplateMixedSpec;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.response.JsonResponse;
 
@@ -82,54 +81,20 @@ public class ExperimentRestApi {
   }
 
   
-  @POST
-  @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
-  @Operation(summary = "Create an experiment by ExperimentSpec or ExperimentTemplateSubmit",
-      tags = {"experiment"},
-      responses = {
-          @ApiResponse(description = "successful operation", content = @Content(
-              schema = @Schema(implementation = JsonResponse.class)))})
-  public Response classifyCreateExperiment(ExperimentAndTemplateMixedSpec spec) {
-    
-    Response response = new JsonResponse.Builder<String>(Response.Status.BAD_REQUEST).success(false)
-          .result("Can't tell whether it is ExperimentSpec or ExperimentTemplateSubmit").build();
-    
-    try {
-      if (spec.getMeta() != null && spec.getEnvironment() != null && spec.getSpec() != null) {
-        ExperimentSpec experimentSpec = new ExperimentSpec();
-        experimentSpec.setMeta(spec.getMeta());
-        experimentSpec.setEnvironment(spec.getEnvironment());
-        experimentSpec.setSpec(spec.getSpec());
-        response = createExperiment(experimentSpec);
-      }
-      if (spec.getName() != null && spec.getParams() != null) {
-
-        ExperimentTemplateSubmit experimentTemplateSubmit = new ExperimentTemplateSubmit();
-        experimentTemplateSubmit.setName(spec.getName());
-        experimentTemplateSubmit.setParams(spec.getParams());
-        response = SubmitExperimentTemplate(experimentTemplateSubmit);
-      }
-    } catch (SubmarineRuntimeException e) {
-      return parseExperimentServiceException(e);
-    }
-    return response;
-  }
-
-
   /**
    * Returns the contents of {@link Experiment} that submitted by user.
    *
    * @param spec spec
    * @return the contents of experiment
    */
-  /*
+  
   @POST
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
   @Operation(summary = "Create an experiment",
       tags = {"experiment"},
       responses = {
           @ApiResponse(description = "successful operation", content = @Content(
-              schema = @Schema(implementation = JsonResponse.class)))})*/
+              schema = @Schema(implementation = JsonResponse.class)))})
   public Response createExperiment(ExperimentSpec spec) {
     try {
       Experiment experiment = experimentManager.createExperiment(spec);
@@ -141,24 +106,25 @@ public class ExperimentRestApi {
   }
 
 
-  /**
+  /*
    * Returns the contents of {@link Experiment} that submitted by user.
    *
    * @param spec spec
    * @return the contents of experiment
    */
-  /*
-  @POST
-  @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
   
+  @POST
+  @Path("/{id}")
+  @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
   @Operation(summary = "use experiment template to create an experiment",
       tags = {"experiment"},
       responses = {
           @ApiResponse(description = "successful operation", content = @Content(
               schema = @Schema(implementation = JsonResponse.class)))})
-  */
-  public Response SubmitExperimentTemplate(ExperimentTemplateSubmit spec) {
+  public Response SubmitExperimentTemplate(@PathParam(RestConstants.ID) String templatename, 
+        ExperimentTemplateSubmit spec) {
     try {
+      spec.setName(templatename);
       Experiment experiment = ExperimentTemplateManager.getInstance().submitExperimentTemplate(spec);
       return new JsonResponse.Builder<Experiment>(Response.Status.OK)
           .success(true).result(experiment).build();

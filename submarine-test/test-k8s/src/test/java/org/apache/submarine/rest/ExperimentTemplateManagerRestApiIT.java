@@ -53,6 +53,8 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
   
   protected static String TPL_PATH =
       "/api/" + RestConstants.V1 + "/" + RestConstants.EXPERIMENT_TEMPLATES;
+  protected static String EXP_PATH =
+      "/api/" + RestConstants.V1 + "/" + RestConstants.EXPERIMENT;
   protected static String TPL_NAME = "tf-mnist-test_1";
   protected static String TPL_FILE = "experimentTemplate/test_template_1.json";
   
@@ -178,14 +180,14 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
   public void submitExperimentTemplate() throws Exception {
 
     String body = loadContent(TPL_FILE);
-    run(body, "application/json");
-
-    String url = TPL_PATH + "/" + RestConstants.EXPERIMENT_TEMPLATE_SUBMIT;
-    LOG.info("Submit ExperimentTemplate using ExperimentTemplate REST API");
-    LOG.info(body);
+    run(body, "application/json");   
 
     ExperimentTemplateSpec tplspec = 
     gson.fromJson(body, ExperimentTemplateSpec.class);
+    
+    String url = EXP_PATH + "/" + tplspec.getName();
+    LOG.info("Submit ExperimentTemplate using ExperimentTemplate REST API");
+    LOG.info(body);
 
     ExperimentTemplateSubmit submit = new ExperimentTemplateSubmit();
     submit.setParams(new HashMap<String, String>());
