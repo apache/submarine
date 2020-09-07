@@ -418,7 +418,7 @@ public class YarnServiceRunJobCliTest {
     }
 
     String expectedLaunchScript =
-        "#!/bin/bash\n" + "echo \"CLASSPATH:$CLASSPATH\"\n"
+        "#!/usr/bin/env bash\n" + "echo \"CLASSPATH:$CLASSPATH\"\n"
             + "echo \"HADOOP_CONF_DIR:$HADOOP_CONF_DIR\"\n"
             + "echo \"HADOOP_TOKEN_FILE_LOCATION:" +
             "$HADOOP_TOKEN_FILE_LOCATION\"\n"

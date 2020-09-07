@@ -13,6 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
+#!/usr/bin/env bash
 DS=/usr/local/hadoop/share/hadoop/yarn/hadoop-yarn-applications-distributedshell-${HADOOP_VER}.jar
 /usr/local/hadoop/bin/yarn jar ${DS} -jar ${DS} -shell_command "cat /proc/1/cgroup" -shell_env YARN_CONTAINER_RUNTIME_TYPE=docker -shell_env YARN_CONTAINER_RUNTIME_DOCKER_IMAGE=library/ubuntu

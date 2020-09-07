@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
+#!/usr/bin/env bash
 
 #JAR_PATH=/usr/local/hadoop/share/hadoop/yarn/hadoop-yarn-applications-distributedshell-${HADOOP_VER}.jar
 

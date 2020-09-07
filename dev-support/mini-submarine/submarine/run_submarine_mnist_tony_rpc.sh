@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
+#!/usr/bin/env bash
 while [ $# -gt 0 ]; do
   case "$1" in
     --debug*)

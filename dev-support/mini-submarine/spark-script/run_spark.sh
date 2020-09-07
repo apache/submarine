@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
+#!/usr/bin/env bash
 
 SPARK_HOME=/opt/spark-${SPARK_VER}-bin-hadoop2.7
 ${SPARK_HOME}/bin/spark-submit --class org.apache.spark.examples.SparkPi \

@@ -106,6 +106,6 @@ public class LaunchScriptBuilder {
   }
 
   private void writeBashHeader(PrintWriter pw) {
-    pw.append("#!/bin/bash\n");
+    pw.append("#!/usr/bin/env bash\n");
   }
 }

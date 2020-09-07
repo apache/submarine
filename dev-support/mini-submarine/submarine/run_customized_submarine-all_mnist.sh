@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Need to modify environment variables based on version
 while [ $# -gt 0 ]; do
