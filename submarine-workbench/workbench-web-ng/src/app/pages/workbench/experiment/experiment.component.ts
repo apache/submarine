@@ -166,7 +166,7 @@ export class ExperimentComponent implements OnInit {
       },
       (err) => {
         if (onMessage === true) {
-          this.nzMessageService.success(err.message);
+          this.nzMessageService.error(err.message);
         }
       }
     );
