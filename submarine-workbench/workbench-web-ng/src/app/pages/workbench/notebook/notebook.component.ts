@@ -230,11 +230,13 @@ export class NotebookComponent implements OnInit {
   // EnvVars Form
   createEnvVar(defaultKey: string = '', defaultValue: string = '') {
     // Create a new FormGroup
-    return new FormGroup({
-      key: new FormControl(defaultKey, [Validators.required]),
-      value: new FormControl(defaultValue, [Validators.required])
-    },
-    [this.experimentValidatorService.envValidator]);
+    return new FormGroup(
+      {
+        key: new FormControl(defaultKey, [Validators.required]),
+        value: new FormControl(defaultValue, [Validators.required])
+      },
+      [this.experimentValidatorService.envValidator]
+    );
   }
 
   // EnvVars Form
