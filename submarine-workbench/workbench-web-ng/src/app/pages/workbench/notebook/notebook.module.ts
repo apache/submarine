@@ -23,9 +23,11 @@ import { NotebookComponent } from './notebook.component';
 import { NotebookRoutingModule } from './notebook-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 
 @NgModule({
+  exports: [ReactiveFormsModule],
   declarations: [NotebookComponent],
-  imports: [CommonModule, NotebookRoutingModule, FormsModule, ReactiveFormsModule, NgZorroAntdModule]
+  imports: [CommonModule, NotebookRoutingModule, FormsModule, ReactiveFormsModule, NgZorroAntdModule, PipeSharedModule]
 })
 export class NotebookModule {}
