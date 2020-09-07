@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Below are configurable variables, please adapt base on your local environment.
 # Version of submarine jar

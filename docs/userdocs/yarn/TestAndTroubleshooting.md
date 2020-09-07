@@ -103,7 +103,7 @@ Error response from daemon: Unable to remove filesystem for 0bfafa146431771f6024
 Solution: to find which process leads to a `device or resource busy`, we can add a shell script, named `find-busy-mnt.sh`
 
 ```bash
-#!/bin/bash
+#!/usr/bin/env bash
 
 # A simple script to get information about mount points and pids and their
 # mount namespaces.

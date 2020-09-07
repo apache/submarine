@@ -174,7 +174,7 @@ public abstract class AbstractTFLaunchCommandTestHelper {
         Paths.get(resultFile.toURI()),
         Charset.forName("UTF-8"));
 
-    assertEquals("#!/bin/bash", fileContents.get(0));
+    assertEquals("#!/usr/bin/env bash", fileContents.get(0));
     assertScriptContainsExportedEnvVar(fileContents, "HADOOP_HOME");
     assertScriptContainsExportedEnvVar(fileContents, "HADOOP_YARN_HOME");
     assertScriptContainsExportedEnvVarWithValue(fileContents,
