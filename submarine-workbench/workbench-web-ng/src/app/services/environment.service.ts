@@ -20,10 +20,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Rest } from '@submarine/interfaces';
+import { Environment } from '@submarine/interfaces/environment-info';
 import { BaseApiService } from '@submarine/services/base-api.service';
 import { of, throwError, Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { Environment } from '@submarine/interfaces/environment-info';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +54,16 @@ export class EnvironmentService {
   // TODO(kobe860219): Update an environment
   updateEnvironment(updateData) {}
 
-  // TODO(kobe860219): Delete an environment
-  deleteEnvironment(id: string) {}
+  deleteEnvironment(name: string): Observable<Environment> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/environment/${name}`);
+    return this.httpClient.delete<Rest<Environment>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete', name);
+        }
+      })
+    );
+  }
 }

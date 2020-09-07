@@ -18,8 +18,9 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { EnvironmentService } from '@submarine/services/environment.service';
 import { Environment } from '@submarine/interfaces/environment-info';
+import { EnvironmentService } from '@submarine/services/environment.service';
+import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'submarine-environment',
@@ -27,7 +28,9 @@ import { Environment } from '@submarine/interfaces/environment-info';
   styleUrls: ['./environment.component.scss']
 })
 export class EnvironmentComponent implements OnInit {
-  constructor(private environmentService: EnvironmentService) {}
+  constructor(
+    private environmentService: EnvironmentService,
+    private nzMessageService: NzMessageService) {}
 
   environmentList: Environment[] = [];
   checkedList: boolean[] = [];
@@ -53,8 +56,32 @@ export class EnvironmentComponent implements OnInit {
   // TODO(kobe860219): Update an environment
   updateEnvironment(id: string, data) {}
 
-  // TODO(kobe860219): Delete an environment
-  deleteEnvironment(id: string) {}
+  onDeleteEnvironment(name: string, onMessage: boolean) {
+    this.environmentService.deleteEnvironment(name).subscribe(
+      () => {
+        if (onMessage === true) {
+          this.nzMessageService.success('Delete Experiment Successfully!');
+        }
+        this.fetchEnvironmentList();
+      },
+      (err) => {
+        if (onMessage === true) {
+          this.nzMessageService.error(err.message);
+        }
+      }
+    );
+  }
+
+  deleteEnvironments() {
+    for (let i = this.checkedList.length - 1; i >= 0; i--) {
+      console.log(this.environmentList[i].environmentSpec.name)
+      if (this.checkedList[i] === true) {
+        this.onDeleteEnvironment(this.environmentList[i].environmentSpec.name, false);
+      }
+    }
+
+    this.selectAllChecked = false;
+  }
 
   selectAllEnv() {
     for (let i = 0; i < this.checkedList.length; i++) {
