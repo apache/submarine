@@ -22,7 +22,7 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NotebookService } from '@submarine/services/notebook.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { EnvironmentService } from '@submarine/services/environment.service';
-import { ExperimentFormService } from '@submarine/services/experiment.validator.service';
+import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
 
 @Component({
   selector: 'submarine-notebook',
@@ -57,7 +57,7 @@ export class NotebookComponent implements OnInit {
     private notebookService: NotebookService,
     private nzMessageService: NzMessageService,
     private environmentService: EnvironmentService,
-    private experimentFormService: ExperimentFormService
+    private experimentValidatorService: ExperimentValidatorService
   ) {}
 
   ngOnInit() {
@@ -65,7 +65,7 @@ export class NotebookComponent implements OnInit {
       notebookName: new FormControl(null, Validators.required),
       namespace: new FormControl(this.currentNamespace),
       envName: new FormControl(null, Validators.required), // Environment
-      envVars: new FormArray([], [this.experimentFormService.nameValidatorFactory('key')]),
+      envVars: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
       cpus: new FormControl(null, [Validators.min(1), Validators.required]),
       gpus: new FormControl(null),
       memoryNum: new FormControl(null, [Validators.required]),
@@ -233,7 +233,8 @@ export class NotebookComponent implements OnInit {
     return new FormGroup({
       key: new FormControl(defaultKey, [Validators.required]),
       value: new FormControl(defaultValue, [Validators.required])
-    });
+    },
+    [this.experimentValidatorService.envValidator]);
   }
 
   // EnvVars Form
@@ -279,6 +280,12 @@ export class NotebookComponent implements OnInit {
         resources: resourceSpec
       }
     };
+
+    for (const envVar of this.envVars.controls) {
+      if (envVar.get('key').value) {
+        newNotebookSpec.spec.envVars[envVar.get('key').value] = envVar.get('value').value;
+      }
+    }
 
     // Post
     this.notebookService.createNotebook(newNotebookSpec).subscribe({
