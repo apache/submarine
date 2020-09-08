@@ -1,12 +1,13 @@
 {
-  "name": "tf-mnist-test2",
-  "author": "author",
-  "description": "This is a template to run tf-mnist\n",
+  "name": "tf-mnist-test_1",
+  "author": "test_author_1",
+  "description": "This is a test template to run tf-mnist\n",
   "parameters": [
     {
-      "name": "input.train_data",
+      "name": "training.learning_rate",
+      "value": 0.1,
       "required": true,
-      "description": "train data is expected in SVM format, and can be stored in HDFS/S3 \n"
+      "description": " mnist learning_rate "
     },
     {
       "name": "training.batch_size",
@@ -17,11 +18,10 @@
   ],
   "experimentSpec": {
     "meta": {
-      "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size={{training.batch_size}}",
-      "name": "tf-mnist-json",
+      "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{training.learning_rate}} --batch_size={{training.batch_size}}",
+      "name": "tf-mnist-template-test1",
       "envVars": {
-        "input_path": "{{input.train_data}}", 
-        "ENV2": "ENV2"
+        "ENV1": "ENV1"
       },
       "framework": "TensorFlow",
       "namespace": "default"

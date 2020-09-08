@@ -61,6 +61,8 @@ public class RestConstants {
   
   public static final String EXPERIMENT_TEMPLATE_ID = "id";
 
+  public static final String EXPERIMENT_TEMPLATE_SUBMIT = "submit";
+
   /**
    * Notebook
    */

@@ -34,13 +34,17 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.SubmarineServer;
+import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplate;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateId;
+import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateSubmit;
 import org.apache.submarine.server.api.spec.ExperimentTemplateParamSpec;
 import org.apache.submarine.server.api.spec.ExperimentTemplateSpec;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
+import org.apache.submarine.server.experiment.ExperimentManager;
 import org.apache.submarine.server.experimenttemplate.database.entity.ExperimentTemplateEntity;
 import org.apache.submarine.server.experimenttemplate.database.mappers.ExperimentTemplateMapper;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,19 +141,27 @@ public class ExperimentTemplateManager {
       }
       sqlSession.commit();
       
-      ExperimentTemplate experimentTemplate = new ExperimentTemplate();
-      experimentTemplate.setExperimentTemplateId(ExperimentTemplateId.fromString(experimentTemplateId));
-      experimentTemplate.setExperimentTemplateSpec(spec);
-      
-      // Update cache
-      cachedExperimentTemplates.putIfAbsent(spec.getName(), experimentTemplate);
-
-      return experimentTemplate;
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
-          "Unable to process the experimentTemplate spec.");
+          "Unable to insert or update the experimentTemplate spec: " + e.getMessage());
     }
+
+    ExperimentTemplate experimentTemplate;
+    try {
+      experimentTemplate = new ExperimentTemplate();
+      experimentTemplate.setExperimentTemplateId(ExperimentTemplateId.fromString(experimentTemplateId));
+      experimentTemplate.setExperimentTemplateSpec(spec);
+      
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
+          "Unable to parse the experimentTemplate spec: " + e.getMessage());
+    }
+    // Update cache
+    cachedExperimentTemplates.putIfAbsent(spec.getName(), experimentTemplate);
+
+    return experimentTemplate;
   }
 
   private ExperimentTemplateId generateExperimentTemplateId() {
@@ -276,18 +288,58 @@ public class ExperimentTemplateManager {
     return tpl;
   }
 
-  private ExperimentTemplateSpec parameterMapping(String spec) {
 
-    ExperimentTemplateSpec tplSpec = new Gson().fromJson(spec, ExperimentTemplateSpec.class);
+  /**
+   * Create ExperimentTemplate
+   * 
+   * @param SubmittedParam experimentTemplate spec
+   * @return Experiment experiment
+   * @throws SubmarineRuntimeException the service error
+   */
+  public Experiment submitExperimentTemplate(ExperimentTemplateSubmit SubmittedParam) 
+        throws SubmarineRuntimeException {
 
-    Map<String, String> parmMap = new HashMap<String, String>();
-    for (ExperimentTemplateParamSpec parm : tplSpec.getParameters()) {
-      if (parm.getValue() != null) {
-        parmMap.put(parm.getName(), parm.getValue());
-      } else {
-        parmMap.put(parm.getName(), "");
+    if (SubmittedParam == null) {
+      throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(), 
+            "Invalid ExperimentTemplateSubmit spec.");
+    }
+
+    ExperimentTemplate experimentTemplate = getExperimentTemplate(SubmittedParam.getName());
+    Map<String, String> params = SubmittedParam.getParams();
+
+
+    for (ExperimentTemplateParamSpec paramSpec: 
+          experimentTemplate.getExperimentTemplateSpec().getExperimentTemplateParamSpec()) {
+
+      String value = params.get(paramSpec.getName());
+      if (value != null) {
+        paramSpec.setValue(value);
       }
     }
+    String spec = new Gson().toJson(experimentTemplate.getExperimentTemplateSpec());
+
+    ExperimentTemplateSpec experimentTemplateSpec = parameterMapping(spec, params);
+        
+    return ExperimentManager.getInstance().createExperiment(experimentTemplateSpec.getExperimentSpec());
+  }
+
+  private ExperimentTemplateSpec parameterMapping(String spec) {
+    ExperimentTemplateSpec tplSpec = new Gson().fromJson(spec, ExperimentTemplateSpec.class);
+
+    Map<String, String> paramMap = new HashMap<String, String>();
+    for (ExperimentTemplateParamSpec parm : tplSpec.getExperimentTemplateParamSpec()) {
+      if (parm.getValue() != null) {
+        paramMap.put(parm.getName(), parm.getValue());
+      } else {
+        paramMap.put(parm.getName(), "");
+      }
+    }
+
+    return parameterMapping(spec, paramMap);
+  }
+
+  // Use params to replace the content of spec
+  private ExperimentTemplateSpec parameterMapping(String spec, Map<String, String> paramMap) {
 
     Pattern pattern = Pattern.compile("\\{\\{(.+?)\\}\\}");
     StringBuffer sb = new StringBuffer();
@@ -297,33 +349,34 @@ public class ExperimentTemplateManager {
 
     while (matcher.find()) {
       final String key = matcher.group(1);
-      final String replacement = parmMap.get(key);
+      final String replacement = paramMap.get(key);
       if (replacement == null) {
         unmappedKeys.add(key);
       }
       else {
         matcher.appendReplacement(sb, replacement);
       }
-      parmMap.remove(key);
+      paramMap.remove(key);
     }
     matcher.appendTail(sb);
 
-    if (parmMap.size() > 0) {
+    if (paramMap.size() > 0) {
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
-            "Parameters contains unused key: " + parmMap.keySet());
+            "Parameters contains unused key: " + paramMap.keySet());
     }
 
     if (unmappedKeys.size() > 0) {
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
           "Template contains unmapped key: " + unmappedKeys);
     }  
+    ExperimentTemplateSpec experimentTemplateSpec;
 
     try {
-      tplSpec = new Gson().fromJson(sb.toString(), ExperimentTemplateSpec.class);
+      experimentTemplateSpec = new Gson().fromJson(sb.toString(), ExperimentTemplateSpec.class);
     } catch (Exception e) {
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
           "Template mapping fail: " + e.getMessage() + sb.toString());
     }
-    return tplSpec;
+    return experimentTemplateSpec;
   }
 }
