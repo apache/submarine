@@ -42,7 +42,7 @@ _Theodore Levitt_ once said:
 ### Goals of Submarine
 
 #### Model Training (Experiment)
-- Run/Track distributed training `experiment` on prem or cloud via easy-to-use UI/ API/ SDK.
+- Run/Track distributed training `experiment` on prem or cloud via easy-to-use UI/API/SDK.
 - Easy for data scientists to manage versions of `experiment` and dependencies of `environment`
 - Support popular machine learning frameworks, including **TensorFlow**, **PyTorch**, **Horovod**, and **MXNet**  
 - Provide pre-defined **template** for data scientists to implement domain-specific tasks easily (e.g. using DeepFM template to build a CTR prediction model)
