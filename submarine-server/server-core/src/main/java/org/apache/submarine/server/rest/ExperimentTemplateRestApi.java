@@ -34,9 +34,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-//import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplate;
-//import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateSubmit;
 import org.apache.submarine.server.api.spec.ExperimentTemplateSpec;
 import org.apache.submarine.server.experimenttemplate.ExperimentTemplateManager;
 import org.apache.submarine.server.response.JsonResponse;
@@ -187,27 +185,7 @@ public class ExperimentTemplateRestApi {
       return parseExperimentTemplateServiceException(e);
     }
   }
-  /*
-  @Path(RestConstants.EXPERIMENT_TEMPLATE_SUBMIT)
-  @POST
-  @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
-  @Operation(summary = "use experimentTemplate to create a experiment",
-          tags = {"experimentTemplate"},
-          responses = {
-                  @ApiResponse(description = "successful operation", 
-                      content = @Content(
-                          schema = @Schema(
-                              implementation = JsonResponse.class)))})
-  public Response SubmitExperimentTemplate(ExperimentTemplateSubmit spec) {
-    try {
-      Experiment experiment = experimentTemplateManager.submitExperimentTemplate(spec);
-      return new JsonResponse.Builder<Experiment>(Response.Status.OK)
-          .success(true).result(experiment).build();
-    } catch (SubmarineRuntimeException e) {
-      return parseExperimentTemplateServiceException(e);
-    }
-  }
-  */
+
   private Response parseExperimentTemplateServiceException(
       SubmarineRuntimeException e) {
     return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage())

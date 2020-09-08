@@ -105,26 +105,26 @@ public class ExperimentRestApi {
     }
   }
 
-
-  /*
+  /**
    * Returns the contents of {@link Experiment} that submitted by user.
    *
-   * @param spec spec
+   * @param id template id
+   * @param spec 
    * @return the contents of experiment
    */
-  
   @POST
-  @Path("/{id}")
+  @Path("/{name}")
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
   @Operation(summary = "use experiment template to create an experiment",
       tags = {"experiment"},
       responses = {
           @ApiResponse(description = "successful operation", content = @Content(
               schema = @Schema(implementation = JsonResponse.class)))})
-  public Response SubmitExperimentTemplate(@PathParam(RestConstants.ID) String templatename, 
+  public Response SubmitExperimentTemplate(@PathParam("name") String name, 
         ExperimentTemplateSubmit spec) {
     try {
-      spec.setName(templatename);
+      spec.setName(name);
+      
       Experiment experiment = ExperimentTemplateManager.getInstance().submitExperimentTemplate(spec);
       return new JsonResponse.Builder<Experiment>(Response.Status.OK)
           .success(true).result(experiment).build();
