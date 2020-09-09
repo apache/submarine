@@ -17,7 +17,7 @@
   ~ under the License.
   -->
 
-<nz-layout style="margin: -24px -24px 16px;">
+<nz-layout style="margin: -24px -24px 16px">
   <nz-layout class="inner-layout">
     <div id="experimentOuter">
       <nz-breadcrumb>
@@ -49,7 +49,7 @@
         </nz-radio-group>
         <nz-input-group
           nzSearch
-          style="width: 300px; margin-top: 15px; margin-left: 10px; margin-right: 5px;"
+          style="width: 300px; margin-top: 15px; margin-left: 10px; margin-right: 5px"
           [nzAddOnAfter]="suffixIconButton"
         >
           <input type="text" nz-input placeholder="input search text" />
@@ -62,7 +62,7 @@
           nz-button
           id="openExperiment"
           nzType="primary"
-          style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px;"
+          style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px"
           (click)="initModal('create')"
         >
           <i nz-icon nzType="plus"></i>
@@ -71,7 +71,7 @@
         <button
           nz-button
           nzType="primary"
-          style="margin-bottom: 15px; margin-top: 15px;"
+          style="margin-bottom: 15px; margin-top: 15px"
           nz-popconfirm
           nzTitle="Confirm to delete?"
           nzCancelText="Cancel"
@@ -170,15 +170,15 @@
       >
         {{ modalProps.okText }}
       </button>
-      <button *ngIf="modalProps.currentStep > 0" nz-button nzType="default" style="float: left;" (click)="prevForm()">
+      <button *ngIf="modalProps.currentStep > 0" nz-button nzType="default" style="float: left" (click)="prevForm()">
         Prev Step
       </button>
     </div>
-    <experiment-customized-form
+    <submarine-experiment-customized-form
       [mode]="mode"
       [targetId]="targetId"
       [targetSpec]="targetSpec"
       *ngIf="this.modalProps.formType === 'customized'"
-    ></experiment-customized-form>
+    ></submarine-experiment-customized-form>
   </nz-modal>
 </nz-layout>

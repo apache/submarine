@@ -17,28 +17,29 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ExperimentSpec, Specs, SpecEnviroment, SpecMeta } from '@submarine/interfaces/experiment-spec';
+import { EnvironmentSpec, ExperimentMeta, ExperimentSpec, Specs } from '@submarine/interfaces/experiment-spec';
+import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
-import { NzMessageService } from 'ng-zorro-antd';
 import { nanoid } from 'nanoid';
+import { NzMessageService } from 'ng-zorro-antd';
 import { Subscription } from 'rxjs';
-import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 
 @Component({
-  selector: 'experiment-customized-form',
+  selector: 'submarine-experiment-customized-form',
   templateUrl: './experiment-customized-form.component.html',
   styleUrls: ['./experiment-customized-form.component.scss']
 })
-export class ExperimentCustomizedForm implements OnInit, OnDestroy {
+export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   @Input() mode: 'create' | 'update' | 'clone';
 
   // About new experiment
   experiment: FormGroup;
   step: number = 0;
   subscriptions: Subscription[] = [];
+  defaultSpecName = 'worker';
 
   // Constants
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
@@ -141,7 +142,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
   }
 
   /**
-   * Reset properies in parent component when the form is about to closed
+   * Reset properties in parent component when the form is about to closed
    */
   closeModal() {
     this.experimentFormService.modalPropsClear();
@@ -231,10 +232,11 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
    * Create a new spec
    */
   createSpec(
-    defaultName: string = '',
+    defaultName: string = 'Worker',
     defaultReplica: number = 1,
     defaultCpu: number = 1,
-    defaultMemory: string = '',
+    defaultGpu: number = 0,
+    defaultMemory: number = 1024,
     defaultUnit: string = 'M'
   ): FormGroup {
     return new FormGroup(
@@ -242,6 +244,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
         name: new FormControl(defaultName, [Validators.required]),
         replicas: new FormControl(defaultReplica, [Validators.min(1), Validators.required]),
         cpus: new FormControl(defaultCpu, [Validators.min(1), Validators.required]),
+        gpus: new FormControl(defaultGpu, [Validators.min(0), Validators.required]),
         memory: new FormGroup(
           {
             num: new FormControl(defaultMemory, [Validators.required]),
@@ -283,10 +286,10 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
    */
   constructSpec(): ExperimentSpec {
     // Construct the spec
-    const meta: SpecMeta = {
+    const meta: ExperimentMeta = {
       name: this.experimentName.value,
       namespace: this.namespace.value,
-      framework: this.jobTypes,
+      framework: this.jobTypes === 'Standalone' ? 'Tensorflow' : this.jobTypes,
       cmd: this.cmd.value,
       envVars: {}
     };
@@ -301,14 +304,14 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
       if (spec.get('name').value) {
         specs[spec.get('name').value] = {
           replicas: spec.get('replicas').value,
-          resources: `cpu=${spec.get('cpus').value},memory=${spec.get('memory').get('num').value}${
-            spec.get('memory').get('unit').value
-          }`
+          resources: `cpu=${spec.get('cpus').value},nvidia.com/gpu=${spec.get('gpus').value},memory=${
+            spec.get('memory').get('num').value
+          }${spec.get('memory').get('unit').value}`
         };
       }
     }
 
-    const environment: SpecEnviroment = {
+    const environment: EnvironmentSpec = {
       image: this.image.value
     };
 
@@ -331,6 +334,10 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
     arr.removeAt(index);
   }
 
+  deleteAllItem(arr: FormArray) {
+    arr.clear();
+  }
+
   updateExperimentInit() {
     // Prevent user from modifying the name
     this.experimentName.disable();
@@ -349,6 +356,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
     const cloneExperimentName = spec.meta.name + '-' + id;
     this.experimentName.setValue(cloneExperimentName.toLocaleLowerCase());
     this.cloneExperiment(spec);
+    this.checkStatus();
   }
 
   cloneExperiment(spec: ExperimentSpec) {
@@ -361,8 +369,17 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
       this.envs.push(env);
     }
     for (const [specName, info] of Object.entries(spec.spec)) {
-      const [cpuCount, memory, unit] = info.resources.match(/\d+|[MG]/g);
-      const newSpec = this.createSpec(specName, parseInt(info.replicas, 10), parseInt(cpuCount, 10), memory, unit);
+      const cpuCount = info.resourceMap.cpu;
+      const gpuCount = info.resourceMap.gpu === undefined ? '0' : '1';
+      const [memory, unit] = info.resourceMap.memory.match(/\d+|[MG]/g);
+      const newSpec = this.createSpec(
+        specName,
+        parseInt(info.replicas, 10),
+        parseInt(cpuCount, 10),
+        parseInt(gpuCount, 10),
+        parseInt(memory, 10),
+        unit
+      );
       this.specs.push(newSpec);
     }
   }

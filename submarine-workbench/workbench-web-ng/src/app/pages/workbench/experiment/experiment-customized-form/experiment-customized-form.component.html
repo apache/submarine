@@ -26,7 +26,7 @@
 </div>
 <div>
   <form [formGroup]="experiment">
-    <div [ngSwitch]="step" style="margin-top: 30px;">
+    <div [ngSwitch]="step" style="margin-top: 30px">
       <div *ngSwitchCase="0">
         <div class="single-field-group">
           <label for="experimentName">
@@ -36,9 +36,7 @@
           <input nz-input type="text" name="experimentName" id="experimentName" formControlName="experimentName" />
         </div>
         <div class="single-field-group">
-          <label for="description">
-            Description
-          </label>
+          <label for="description">Description</label>
           <textarea
             nz-input
             [nzAutosize]="{ minRows: 3, maxRows: 6 }"
@@ -70,9 +68,7 @@
       </div>
       <div *ngSwitchCase="1" id="page2">
         <div>
-          <button nz-button id="env-btn" type="default" (click)="onCreateEnv()">
-            Add new env
-          </button>
+          <button nz-button id="env-btn" type="default" (click)="onCreateEnv()">Add new env</button>
           <ul formArrayName="envs" class="list-container">
             <ng-container *ngFor="let env of envs.controls; index as i">
               <li *ngIf="i | indexInRange: currentEnvPage:PAGESIZE" [formGroupName]="i" class="input-group">
@@ -110,17 +106,18 @@
       </div>
       <div *ngSwitchCase="2">
         <nz-radio-group [(ngModel)]="jobTypes" [ngModelOptions]="{ standalone: true }" id="jobs-container">
-          <label nz-radio nzValue="Tensorflow">Distributed Tensorflow</label>
-          <label nz-radio nzValue="Pytorch">Distributed PyTorch</label>
+          <label nz-radio nzValue="Tensorflow" (click)="deleteAllItem(specs)">Distributed Tensorflow</label>
+          <label nz-radio nzValue="Pytorch" (click)="deleteAllItem(specs)">Distributed PyTorch</label>
+          <label nz-radio nzValue="Standalone" (click)="deleteAllItem(specs); onCreateSpec()">Standalone Script</label>
         </nz-radio-group>
         <label class="pg3-form-label"></label>
-        <button nz-button id="spec-btn" type="default" (click)="onCreateSpec()">
+        <button *ngIf="jobTypes !== 'Standalone'" nz-button id="spec-btn" type="default" (click)="onCreateSpec()">
           Add new spec
         </button>
         <ul formArrayName="specs" class="list-container">
           <ng-container *ngFor="let spec of specs.controls; index as i">
             <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
-              <div id="spec{{ i }}">
+              <div id="spec{{ i }}" *ngIf="jobTypes !== 'Standalone'">
                 <label>Spec name</label>
                 <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="jobTypes">
                   <div *ngSwitchCase="'Tensorflow'">
@@ -131,7 +128,7 @@
                   </div>
                 </nz-select>
               </div>
-              <div>
+              <div *ngIf="jobTypes !== 'Standalone'">
                 <label>Number of Replica</label>
                 <input
                   nz-input
@@ -145,10 +142,21 @@
                 <label>Number of cpu</label>
                 <input nz-input name="cpu{{ i }}" type="number" placeholder="number of cpu" formControlName="cpus" />
               </div>
+              <div>
+                <label>Number of gpu</label>
+                <input nz-input name="gpu{{ i }}" type="number" placeholder="number of gpu" formControlName="gpus" />
+              </div>
               <div id="memory{{ i }}">
                 <label>Memory</label>
                 <div formGroupName="memory" class="memory-input-group">
-                  <input nz-input name="memory{{ i }}" placeholder="Enter number" formControlName="num" />
+                  <input
+                    nz-input
+                    name="memory{{ i }}"
+                    type="number"
+                    step="1024"
+                    placeholder="Enter number"
+                    formControlName="num"
+                  />
                   <nz-select formControlName="unit">
                     <nz-option *ngFor="let unit of MEMORY_UNITS" [nzValue]="unit" [nzLabel]="unit"></nz-option>
                   </nz-select>
@@ -162,6 +170,7 @@
             >
               {{ spec.getError('specError') }}
             </div>
+
             <div
               class="alert-message"
               *ngIf="spec.get('name').dirty | logicalAnd: spec.get('name').hasError('duplicateError')"
@@ -182,6 +191,9 @@
             </div>
             <div class="alert-message" *ngIf="spec.get('cpus').dirty | logicalAnd: spec.get('cpus').hasError('min')">
               cpus must be at least 1
+            </div>
+            <div class="alert-message" *ngIf="spec.get('gpus').dirty | logicalAnd: spec.get('gpus').hasError('min')">
+              cpus must be at least 0
             </div>
           </ng-container>
         </ul>
