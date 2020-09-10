@@ -29,12 +29,13 @@
      padding: 10px;
      overflow: auto;
  }
+
  .red-star {
      color: red;
  }
 
  .newNotebookForm {
-    display: flex;
+   display: flex;
    align-items: center;
    margin-bottom: 1.5rem;
    & label {
@@ -48,4 +49,19 @@
    & input {
       flex: 0 0 48%;
    }
+
+   & nz-select {
+      flex: 0 0 48%;
+   }
  }
+
+ .memory-input-group {
+   display: flex;
+   & input {
+      width: 70%;
+   }
+
+   & > * {
+      width: 30%;
+   }
+}

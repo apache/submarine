@@ -44,4 +44,41 @@ export class NotebookService {
       })
     );
   }
+
+  createNotebook(newNotebook: object): Observable<Notebook> {
+    const apiUrl = this.baseApi.getRestApi('/v1/notebook');
+    return this.httpClient.post<Rest<Notebook>>(apiUrl, newNotebook).pipe(
+      map((res) => res.result), // return result directly if succeeding
+      catchError((e) => {
+        let message: string;
+        if (e.error instanceof ErrorEvent) {
+          // client side error
+          message = 'Something went wrong with network or workbench';
+        } else {
+          console.log(e);
+          if (e.status === 409) {
+            message = 'You might have a duplicate notebook name';
+          } else if (e.status >= 500) {
+            message = `${e.message}`;
+          } else {
+            message = e.error.message;
+          }
+        }
+        return throwError(message);
+      })
+    );
+  }
+
+  deleteNotebook(id: string): Observable<Notebook> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/notebook/${id}`);
+    return this.httpClient.delete<Rest<Notebook>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete', id);
+        }
+      })
+    );
+  }
 }

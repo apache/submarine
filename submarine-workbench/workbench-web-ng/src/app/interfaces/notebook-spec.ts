@@ -31,14 +31,18 @@ export class Meta {
 export class Environment {
   name: string;
   dockerImage: string;
-  kernelSpec: string;
-  description: string;
+  kernelSpec: {
+    name: string;
+    channels: string[];
+    dependencies: string[];
+  };
+  description?: string;
   image: string;
 }
 
 export class Spec {
-  envVars: {
-    TEST_ENV: string;
+  envVars?: {
+    [key: string]: string;
   };
   resources: string;
 }

@@ -40,12 +40,8 @@
     <div nz-row>
       <div nz-col nzSpan="12">
         <label style="font-size: large; color: black;">Namespaces :</label>
-        <nz-select
-          style="margin-left: 5px; width: 240px;"
-          [(ngModel)]="currentNamespace"
-          (ngModelChange)="switchNamespace($event)"
-        >
-          <nz-option *ngFor="let namespace of namespacesList" [nzValue]="namespace" [nzLabel]="namespace"></nz-option>
+        <nz-select style="margin-left: 5px; width: 240px;" [(ngModel)]="currentNamespace">
+          <nz-option [nzValue]="currentNamespace" [nzLabel]="currentNamespace"></nz-option>
         </nz-select>
       </div>
       <div nz-col nzSpan="12" align="right">
@@ -55,13 +51,15 @@
         <ng-template #suffixIconButton>
           <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
         </ng-template>
-        <button id="btnNewNotebook" nz-button nzType="primary" style="margin-right: 5px;" (click)="isVisible = true">
+        <button
+          id="btnNewNotebook"
+          nz-button
+          nzType="primary"
+          style="margin-right: 5px;"
+          (click)="initNotebookStatus()"
+        >
           <i nz-icon nzType="plus"></i>
           New Notebook
-        </button>
-        <button id="btnDelNotebook" nz-button nzType="primary">
-          <i nz-icon nzType="delete"></i>
-          Delete
         </button>
       </div>
     </div>
@@ -69,22 +67,16 @@
       <nz-table style="padding-top: 5px;" #basicTable [nzData]="notebookTable">
         <thead>
           <tr>
-            <th>
-              <label nz-checkbox [(ngModel)]="checked" (ngModelChange)="selectAllNotebook()"></label>
-            </th>
             <th>Name</th>
             <th>Environment</th>
             <th>Docker Image</th>
             <th>Resources</th>
             <th>Status</th>
-            <th>Environment</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let data of basicTable.data; let i = index">
-            <td>
-              <label nz-checkbox [(ngModel)]="checkedList[i]"></label>
-            </td>
             <td>
               <a>{{ data.name }}</a>
             </td>
@@ -94,7 +86,7 @@
               {{ data.spec.spec.resources }}
             </td>
             <td>{{ data.status }}</td>
-            <td>{{ data.spec.environment.name }}</td>
+            <td><a (click)="deleteNotebook(data.notebookId)">Delete</a></td>
           </tr>
         </tbody>
       </nz-table>
@@ -105,57 +97,100 @@
 <nz-modal
   [(nzVisible)]="isVisible"
   nzTitle="Create Notebook"
-  [(nzCancelText)]="cancelText"
   [(nzOkText)]="okText"
-  [nzOkLoading]="isOkLoading"
   (nzOnCancel)="isVisible = false"
-  (nzOnOk)="isVisible = false"
   [nzWidth]="700"
 >
-  <div>
-    <form [formGroup]="notebookForm">
+  <form [formGroup]="notebookForm">
+    <div *nzModalFooter>
+      <button nz-button nzType="default" (click)="isVisible = false">Cancel</button>
+      <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="handleOk()">
+        Create
+      </button>
+    </div>
+    <div style="margin-top: 30px;">
       <div class="newNotebookForm">
         <label for="notebookName">
           <span class="red-star">*</span>
-          Notebook Name :
+          Notebook Name
         </label>
-        <input nz-input type="text" name="notebookName" id="notebookName" formControlName="notebookName" required />
+        <input nz-input required type="text" name="notebookName" id="notebookName" formControlName="notebookName" />
       </div>
       <div class="newNotebookForm">
-        <label for="namespaces">
+        <label for="namespace">
           <span class="red-star">*</span>
-          Namespaces :
+          Namespace
         </label>
-        <input nz-input type="text" name="namespaces" id="namespaces" formControlName="namespaces" />
+        <input
+          nz-input
+          [(ngModel)]="currentNamespace"
+          disabled="disabled"
+          name="namespace"
+          id="namespace"
+          formControlName="namespace"
+        />
       </div>
       <div class="newNotebookForm">
         <label for="environment">
           <span class="red-star">*</span>
-          Environment :
+          Environment
         </label>
-        <input nz-input type="text" name="environment" id="environment" formControlName="environment" />
+        <nz-select required name="select-envName" formControlName="envName">
+          <nz-option *ngFor="let env of envNameList" [nzValue]="env" [nzLabel]="env"></nz-option>
+        </nz-select>
       </div>
       <div class="newNotebookForm">
-        <label for="cpu">
+        <label for="cpus">
           <span class="red-star">*</span>
-          CPU :
+          CPU
         </label>
-        <input nz-input type="text" name="cpu" id="cpu" formControlName="cpu" />
+        <input nz-input required type="number" name="cpus" id="cpus" formControlName="cpus" />
       </div>
       <div class="newNotebookForm">
-        <label for="gpu">
-          <span class="red-star">*</span>
-          GPU :
+        <label for="gpus">
+          GPU
         </label>
-        <input nz-input type="text" name="gpu" id="gpu" formControlName="gpu" />
+        <input nz-input type="number" name="gpus" id="gpus" formControlName="gpus" />
       </div>
       <div class="newNotebookForm">
-        <label for="memory">
+        <label for="memoryNum">
           <span class="red-star">*</span>
-          Memory :
+          Memory
         </label>
-        <input nz-input type="text" name="memory" id="memory" formControlName="memory" />
+        <div class="memory-input-group">
+          <input nz-input required name="memoryNum" formControlName="memoryNum" />
+          <nz-select formControlName="unit">
+            <nz-option *ngFor="let unit of MEMORY_UNITS" [nzValue]="unit" [nzLabel]="unit"></nz-option>
+          </nz-select>
+        </div>
       </div>
-    </form>
-  </div>
+      <div formArrayName="envVars">
+        <ng-container *ngFor="let envVar of envVars.controls; index as i">
+          <div [formGroupName]="i" class="newNotebookForm">
+            <label for="envVar{{ i }}">EnvVar {{ i + 1 }}</label>
+            <div>
+              <input style="width: 30%;" nz-input name="key{{ i }}" placeholder="Key" formControlName="key" />
+              <input
+                style="width: 50%; margin-left: 10px;"
+                nz-input
+                name="value{{ i }}"
+                placeholder="Value"
+                formControlName="value"
+              />
+              <i
+                nz-icon
+                style="margin-left: 5px;"
+                nzType="close-circle"
+                nzTheme="fill"
+                (click)="deleteItem(envVars, i)"
+              ></i>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <button nz-button style="display: block; margin: auto;" id="envVar-btn" type="default" (click)="onCreateEnvVar()">
+      Add new env
+    </button>
+  </form>
 </nz-modal>

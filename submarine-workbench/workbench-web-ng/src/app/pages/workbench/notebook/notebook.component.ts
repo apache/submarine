@@ -18,8 +18,11 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NotebookService } from '@submarine/services/notebook.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { EnvironmentService } from '@submarine/services/environment.service';
+import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
 
 @Component({
   selector: 'submarine-notebook',
@@ -27,79 +30,101 @@ import { NotebookService } from '@submarine/services/notebook.service';
   styleUrls: ['./notebook.component.scss']
 })
 export class NotebookComponent implements OnInit {
-  // Checkbox
-  checkedList: boolean[] = [];
-  checked: boolean = false;
-
-  // New notebook modal
-  cancelText = 'Cancel';
-  okText = 'Create';
-  isVisible = false;
-
-  // New notebook(form)
-  notebookForm: FormGroup;
+  // Environment
+  envList;
+  envNameList = [];
 
   // Namesapces
-  namespacesList = [];
+  allNamespaceList = [];
   currentNamespace;
 
   // Notebook list
-  notebookList;
+  allNotebookList;
   notebookTable;
 
-  constructor(private notebookService: NotebookService) {}
+  // New Notebook Form
+  notebookForm: FormGroup;
+  isVisible = false;
+  MEMORY_UNITS = ['M', 'Gi'];
 
-  statusColor: { [key: string]: string } = {
-    Running: 'green',
-    Stop: 'blue'
-  };
+  constructor(
+    private notebookService: NotebookService,
+    private nzMessageService: NzMessageService,
+    private environmentService: EnvironmentService,
+    private experimentValidatorService: ExperimentValidatorService
+  ) {}
 
   ngOnInit() {
     this.notebookForm = new FormGroup({
-      notebookName: new FormControl(null, [Validators.required]),
-      namespaces: new FormControl(this.currentNamespace, [Validators.required]),
-      environment: new FormControl('env1', [Validators.required]),
-      cpu: new FormControl(null, [Validators.required]),
-      gpu: new FormControl(null, [Validators.required]),
-      memory: new FormControl(null, [Validators.required])
+      notebookName: new FormControl(null, Validators.required),
+      namespace: new FormControl(this.currentNamespace),
+      envName: new FormControl(null, Validators.required), // Environment
+      envVars: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
+      cpus: new FormControl(null, [Validators.min(1), Validators.required]),
+      gpus: new FormControl(null),
+      memoryNum: new FormControl(null, [Validators.required]),
+      unit: new FormControl(this.MEMORY_UNITS[0], [Validators.required])
     });
-
     this.fetchNotebookList();
+    this.fetchEnvList();
   }
 
-  fetchNotebookList() {
-    this.notebookService.fetchNotebookList().subscribe((list) => {
-      this.notebookList = list;
-      this.checkedList = [];
-      for (let i = 0; i < this.notebookList.length; i++) {
-        this.checkedList.push(false);
-      }
-      // Get namespaces
-      this.notebookList.forEach((element) => {
-        if (this.namespacesList.indexOf(element.spec.meta.namespace) < 0) {
-          this.namespacesList.push(element.spec.meta.namespace);
+  // Get all environment
+  fetchEnvList() {
+    this.environmentService.fetchEnvironmentList().subscribe((list) => {
+      this.envList = list;
+      this.envList.forEach((env) => {
+        if (this.envNameList.indexOf(env.environmentSpec.name) < 0) {
+          this.envNameList.push(env.environmentSpec.name);
         }
       });
-      // Set default namespace and table
-      this.currentNamespace = this.namespacesList[0];
+    });
+  }
+
+  // Get all notebooks, then set default namespace.
+  fetchNotebookList() {
+    this.notebookService.fetchNotebookList().subscribe((list) => {
+      this.allNotebookList = list;
+      this.currentNamespace = 'default';
       this.notebookTable = [];
-      this.notebookList.forEach((item) => {
+      this.allNotebookList.forEach((item) => {
         if (item.spec.meta.namespace == this.currentNamespace) {
           this.notebookTable.push(item);
         }
       });
+
+      // Get namespaces
+      //this.getAllNamespaces();
+
+      // Set default namespace and table
+      //this.setDefaultTable();
     });
   }
 
-  selectAllNotebook() {
-    for (let i = 0; i < this.checkedList.length; i++) {
-      this.checkedList[i] = this.checked;
-    }
+  // Future work. If we need a api for get all namespaces.
+  getAllNamespaces() {
+    this.allNotebookList.forEach((element) => {
+      if (this.allNamespaceList.indexOf(element.spec.meta.namespace) < 0) {
+        this.allNamespaceList.push(element.spec.meta.namespace);
+      }
+    });
   }
 
+  // Future work. If we have a api for get all namespaces.
+  setDefaultTable() {
+    this.currentNamespace = this.allNamespaceList[0];
+    this.notebookTable = [];
+    this.allNotebookList.forEach((item) => {
+      if (item.spec.meta.namespace == this.currentNamespace) {
+        this.notebookTable.push(item);
+      }
+    });
+  }
+
+  // Future work. If we have a api for get all namespaces.
   switchNamespace(namespace: string) {
     this.notebookTable = [];
-    this.notebookList.forEach((item) => {
+    this.allNotebookList.forEach((item) => {
       if (item.spec.meta.namespace == namespace) {
         this.notebookTable.push(item);
       }
@@ -107,19 +132,163 @@ export class NotebookComponent implements OnInit {
     console.log(this.notebookTable);
   }
 
-  // TODO(kobe860219): Make a notebook run
-  runNotebook(data) {
-    data.status = 'Running';
+  deleteNotebook(id: string) {
+    this.notebookService.deleteNotebook(id).subscribe(
+      () => {
+        this.nzMessageService.success('Delete Notebook Successfully!');
+        this.updateNotebookTable();
+      },
+      (err) => {
+        this.nzMessageService.error(err.message);
+      }
+    );
   }
+
+  // Create or Delete, then update Notebook Table
+  updateNotebookTable() {
+    this.notebookService.fetchNotebookList().subscribe((list) => {
+      this.allNotebookList = list;
+      this.notebookTable = [];
+      this.allNotebookList.forEach((item) => {
+        if (item.spec.meta.namespace == this.currentNamespace) {
+          this.notebookTable.push(item);
+        }
+      });
+    });
+  }
+
+  get notebookName() {
+    return this.notebookForm.get('notebookName');
+  }
+  get namespace() {
+    return this.notebookForm.get('namespace');
+  }
+  get envName() {
+    return this.notebookForm.get('envName');
+  }
+  get envVars() {
+    return this.notebookForm.get('envVars') as FormArray;
+  }
+  get cpus() {
+    return this.notebookForm.get('cpus');
+  }
+  get gpus() {
+    return this.notebookForm.get('gpus');
+  }
+  get memoryNum() {
+    return this.notebookForm.get('memoryNum');
+  }
+  get unit() {
+    return this.notebookForm.get('unit');
+  }
+
+  // Init form when click create-btn
+  initNotebookStatus() {
+    this.isVisible = true;
+    this.notebookName.reset();
+    this.envName.reset(this.envNameList[0]);
+    this.envVars.clear();
+    this.cpus.reset(1);
+    this.gpus.reset(0);
+    this.memoryNum.reset();
+    this.unit.reset(this.MEMORY_UNITS[0]);
+  }
+
+  // Check form
+  checkStatus() {
+    return (
+      this.notebookName.invalid ||
+      this.envName.invalid ||
+      this.cpus.invalid ||
+      this.gpus.invalid ||
+      this.memoryNum.invalid ||
+      this.envVars.invalid
+    );
+  }
+
+  // Submmit
+  handleOk() {
+    this.createNotebookSpec();
+  }
+
+  // EnvVars Form
+  createEnvVar(defaultKey: string = '', defaultValue: string = '') {
+    // Create a new FormGroup
+    return new FormGroup(
+      {
+        key: new FormControl(defaultKey, [Validators.required]),
+        value: new FormControl(defaultValue, [Validators.required])
+      },
+      [this.experimentValidatorService.envValidator]
+    );
+  }
+
+  // EnvVars Form
+  onCreateEnvVar() {
+    const env = this.createEnvVar();
+    this.envVars.push(env);
+  }
+
+  // Delete item in EnvVars Form
+  deleteItem(arr: FormArray, index: number) {
+    arr.removeAt(index);
+  }
+
+  // Develope submmit spec
+  createNotebookSpec() {
+    // Check GPU, then develope resources spec
+    let resourceSpec;
+    if (this.notebookForm.get('gpus').value === 0) {
+      resourceSpec = `cpu=${this.notebookForm.get('cpus').value},memory=${this.notebookForm.get('memoryNum').value}${
+        this.notebookForm.get('unit').value
+      }`;
+    } else {
+      resourceSpec = `cpu=${this.notebookForm.get('cpus').value},gpu=${this.notebookForm.get('gpus').value},memory=${
+        this.notebookForm.get('memoryNum').value
+      }${this.notebookForm.get('unit').value}`;
+    }
+
+    // Develope submmit spec
+    const newNotebookSpec = {
+      meta: {
+        name: this.notebookForm.get('notebookName').value,
+        namespace: this.notebookForm.get('namespace').value
+      },
+      environment: {
+        name: this.notebookForm.get('envName').value
+      },
+      spec: {
+        envVars: {},
+        resources: resourceSpec
+      }
+    };
+
+    for (const envVar of this.envVars.controls) {
+      if (envVar.get('key').value) {
+        newNotebookSpec.spec.envVars[envVar.get('key').value] = envVar.get('value').value;
+      }
+    }
+
+    // Post
+    this.notebookService.createNotebook(newNotebookSpec).subscribe({
+      next: (result) => {
+        this.updateNotebookTable();
+      },
+      error: (msg) => {
+        this.nzMessageService.error(`${msg}, please try again`, {
+          nzPauseOnHover: true
+        });
+      },
+      complete: () => {
+        this.nzMessageService.success('Notebook creation succeeds');
+        this.isVisible = false;
+      }
+    });
+  }
+
+  // TODO(kobe860219): Make a notebook run
+  runNotebook() {}
 
   // TODO(kobe860219): Stop a running notebook
-  stopNotebook(data) {
-    data.status = 'Stop';
-  }
-
-  // TODO(kobe860219): Create new notebook
-  createNotebook() {}
-
-  // TODO(kobe860219): Delete notebook
-  deleteNotebook() {}
+  stopNotebook() {}
 }
