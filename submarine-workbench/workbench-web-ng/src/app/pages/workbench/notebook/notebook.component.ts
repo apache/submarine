@@ -44,14 +44,8 @@ export class NotebookComponent implements OnInit {
 
   // New Notebook Form
   notebookForm: FormGroup;
-  current = 0;
-  okText = 'Next Step';
   isVisible = false;
   MEMORY_UNITS = ['M', 'Gi'];
-
-  // About envVars page
-  currentEnvPage = 1;
-  PAGESIZE = 5;
 
   constructor(
     private notebookService: NotebookService,
@@ -190,41 +184,31 @@ export class NotebookComponent implements OnInit {
 
   // Init form when click create-btn
   initNotebookStatus() {
-    this.current = 0;
-    this.okText = 'Next step';
     this.isVisible = true;
     this.notebookName.reset();
     this.envName.reset(this.envNameList[0]);
     this.envVars.clear();
     this.cpus.reset(1);
-    this.gpus.reset();
+    this.gpus.reset(0);
     this.memoryNum.reset();
     this.unit.reset(this.MEMORY_UNITS[0]);
   }
 
   // Check form
   checkStatus() {
-    if (this.current === 0) {
-      return (
-        this.notebookName.invalid ||
-        this.envName.invalid ||
-        this.cpus.invalid ||
-        this.gpus.invalid ||
-        this.memoryNum.invalid
-      );
-    } else if (this.current === 1) {
-      return this.envVars.invalid;
-    }
+    return (
+      this.notebookName.invalid ||
+      this.envName.invalid ||
+      this.cpus.invalid ||
+      this.gpus.invalid ||
+      this.memoryNum.invalid ||
+      this.envVars.invalid
+    );
   }
 
   // Submmit
   handleOk() {
-    if (this.current < 1) {
-      this.current++;
-      this.okText = 'Create';
-    } else {
-      this.createNotebookSpec();
-    }
+    this.createNotebookSpec();
   }
 
   // EnvVars Form
@@ -243,10 +227,6 @@ export class NotebookComponent implements OnInit {
   onCreateEnvVar() {
     const env = this.createEnvVar();
     this.envVars.push(env);
-    // If the new page is created, jump to that page
-    if (this.envVars.controls.length > 1 && this.envVars.controls.length % this.PAGESIZE === 1) {
-      this.currentEnvPage += 1;
-    }
   }
 
   // Delete item in EnvVars Form
@@ -258,7 +238,7 @@ export class NotebookComponent implements OnInit {
   createNotebookSpec() {
     // Check GPU, then develope resources spec
     let resourceSpec;
-    if (this.notebookForm.get('gpus').value == null) {
+    if (this.notebookForm.get('gpus').value === 0) {
       resourceSpec = `cpu=${this.notebookForm.get('cpus').value},memory=${this.notebookForm.get('memoryNum').value}${
         this.notebookForm.get('unit').value
       }`;
