@@ -17,82 +17,41 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Use Experiment Template Guide
+# Experiment Template API Reference
 
-The {{name}} variable in "experimentSpec" will be replace by the parameters value.
+## Create experiment template
+`POST /api/v1/template`
 
-JSON Format example:
-```json
-{
-  "name": "tf-mnist-test",
-  "author": "author",
-  "description": "This is a template to run tf-mnist",
-  "parameters": [
-    {
-      "name": "training.learning_rate",
-      "value": 0.1,
-      "required": true,
-      "description": " mnist learning_rate "
-    },
-    {
-      "name": "training.batch_size",
-      "value": 150,
-      "required": false,
-      "description": "This is batch size of training"
-    }
-  ],
-  "experimentSpec": {
-    "meta": {
-      "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{training.learning_rate}} --batch_size={{training.batch_size}}",
-      "name": "tf-mnist-template-test",
-      "envVars": {
-        "ENV1": "ENV1"
-      },
-      "framework": "TensorFlow",
-      "namespace": "default"
-    },
-    "spec": {
-      "Ps": {
-        "replicas": 1,
-        "resources": "cpu=1,memory=1024M"
-      },
-      "Worker": {
-        "replicas": 1,
-        "resources": "cpu=1,memory=1024M"
-      }
-    },
-    "environment": {
-      "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
-    }
-  }
-}
-```
-
-### Register experiment template
+**Example Request**
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '
 {
-  "name": "tf-mnist-test",
+  "name": "my-tf-mnist-template",
   "author": "author",
   "description": "This is a template to run tf-mnist",
-  "parameters": [
-    {
+  "parameters": [{
       "name": "training.learning_rate",
       "value": 0.1,
       "required": true,
-      "description": " mnist learning_rate "
+      "description": "This is learning_rate of training."
     },
     {
       "name": "training.batch_size",
       "value": 150,
-      "required": false,
-      "description": "This is batch size of training"
+      "required": true,
+      "description": "This is batch_size of training."
+    },
+    {
+      "name": "experiment.name",
+      "value": "tf-mnist1",
+      "required": true,
+      "description": "the name of experiment."
     }
   ],
   "experimentSpec": {
     "meta": {
       "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{training.learning_rate}} --batch_size={{training.batch_size}}",
-      "name": "tf-mnist-template-test",
+      "name": "{{experiment.name}}",
       "envVars": {
         "ENV1": "ENV1"
       },
@@ -117,26 +76,107 @@ curl -X POST -H "Content-Type: application/json" -d '
 ' http://127.0.0.1:8080/api/v1/template
 ```
 
-JSON Format example:
-```json
-{
-    "name": "tf-mnist-test", 
-    "params": {
-        "training.learning_rate":"0.01", 
-        "training.batch_size":"150"
-    }
-}
+
+
+### List experiment template
+`GET /api/v1/template`
+
+**Example Request:**
+```sh
+curl -X GET http://127.0.0.1:8080/api/v1/template
 ```
 
-### Submit experiment template
+### Get experiment template
+`GET /api/v1/template/{name}`
+
+**Example Request:**
+```sh
+curl -X GET http://127.0.0.1:8080/api/v1/template/my-tf-mnist-template
+```
+
+
+### Patch environment
+`PATCH /api/v1/template/{name}`
+```sh
+curl -X PATCH -H "Content-Type: application/json" -d '
+{
+  "name": "my-tf-mnist-template",
+  "author": "author-new",
+  "description": "This is a template to run tf-mnist",
+  "parameters": [{
+      "name": "training.learning_rate",
+      "value": 0.1,
+      "required": true,
+      "description": "This is learning_rate of training."
+    },
+    {
+      "name": "training.batch_size",
+      "value": 150,
+      "required": true,
+      "description": "This is batch_size of training."
+    },
+    {
+      "name": "experiment.name",
+      "value": "tf-mnist1",
+      "required": true,
+      "description": "the name of experiment."
+    }
+  ],
+  "experimentSpec": {
+    "meta": {
+      "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{training.learning_rate}} --batch_size={{training.batch_size}}",
+      "name": "{{experiment.name}}",
+      "envVars": {
+        "ENV1": "ENV1"
+      },
+      "framework": "TensorFlow",
+      "namespace": "default"
+    },
+    "spec": {
+      "Ps": {
+        "replicas": 1,
+        "resources": "cpu=1,memory=1024M"
+      },
+      "Worker": {
+        "replicas": 1,
+        "resources": "cpu=1,memory=1024M"
+      }
+    },
+    "environment": {
+      "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+    }
+  }
+}
+' http://127.0.0.1:8080/api/v1/template/my-tf-mnist-template
+```
+
+> "description", "parameters", "experimentSpec", "author" etc can be updated using this API.
+"name" of experiment template is not supported.
+
+
+
+### Delete environment
+`GET /api/v1/environment/{name}`
+
+**Example Request:**
+```sh
+curl -X DELETE http://127.0.0.1:8080/api/v1/template/my-tf-mnist-template
+```
+
+
+### Use experiment template to create a experiment
+`POST /api/v1/environment/{name}`
+
+**Example Request:**
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '
 {
-    "name": "tf-mnist-test", 
+    "name": "tf-mnist",
     "params": {
         "training.learning_rate":"0.01", 
-        "training.batch_size":"150"
+        "training.batch_size":"150", 
+        "experiment.name":"newExperiment"
     }
 }
-' http://127.0.0.1:8080/api/v1/template/submit
+' http://127.0.0.1:8080/api/v1/experiment/my-tf-mnist-template
 ```
