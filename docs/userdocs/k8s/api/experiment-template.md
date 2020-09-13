@@ -19,6 +19,25 @@ under the License.
 
 # Experiment Template API Reference
 
+> Note: The Experiment API is in the alpha stage which is subjected to incompatible changes in
+> future releases.
+
+
+Developers can register a parameterized experiment as an experiment template,
+For example, change --learning_rate=0.1 to --learning_rate={{training.learning_rate}}, and add the following in the parameters
+```json
+{
+  "name": "training.learning_rate",
+  "value": 0.1,
+  "required": true,
+  "description": "This is learning_rate of training."
+}
+```
+So users can use existing experiment templates and adjust the default value to create experiments.
+After the user submits the experiment template, the submarine server finds the corresponding template based on the name. And the template handler converts input parameters to an actual experiment, such as a distributed TF experiment.
+
+
+
 ## Create experiment template
 `POST /api/v1/template`
 
@@ -75,7 +94,6 @@ curl -X POST -H "Content-Type: application/json" -d '
 }
 ' http://127.0.0.1:8080/api/v1/template
 ```
-
 
 
 ### List experiment template
