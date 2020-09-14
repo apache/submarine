@@ -174,7 +174,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '
 
 
 ### Delete template
-`GET /api/v1/environment/{name}`
+`GET /api/v1/template/{name}`
 
 **Example Request:**
 ```sh
