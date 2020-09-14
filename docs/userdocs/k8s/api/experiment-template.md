@@ -113,7 +113,7 @@ curl -X GET http://127.0.0.1:8080/api/v1/template/my-tf-mnist-template
 ```
 
 
-### Patch environment
+### Patch template
 `PATCH /api/v1/template/{name}`
 ```sh
 curl -X PATCH -H "Content-Type: application/json" -d '
