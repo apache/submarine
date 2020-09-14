@@ -29,6 +29,7 @@ export KUBECONFIG=~/.kube/kind-config-${clusterName:-kind}
 
 function start() {
   $ROOT/hack/kind-cluster-build.sh
+  $SUBMARINE_HOME/dev-support/k8s/deploy-traefik.sh
   $SUBMARINE_HOME/dev-support/k8s/deploy-kubeflow-operators.sh -a
   $SUBMARINE_HOME/dev-support/k8s/deploy-notebook-controller.sh
   $ROOT/hack/deploy-submarine.sh --test

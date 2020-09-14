@@ -118,10 +118,10 @@ nodes:
     hostPort: 5000
     listenAddress: 127.0.0.1
     protocol: TCP
-  - containerPort: 80
+  - containerPort: 32080
     hostPort: 80
     protocol: TCP
-  - containerPort: 443
+  - containerPort: 32443
     hostPort: 443
     protocol: TCP
 EOF
@@ -229,19 +229,6 @@ if ! docker inspect registry:2 >/dev/null ; then
   docker pull registry:2
 fi
 $KIND_BIN load docker-image registry:2
-
-# https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx
-echo "setting up ingress on a kind cluster."
-
-# load ingress dependence docker-image into kind
-if ! docker inspect quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master >/dev/null ; then
-  docker pull quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master
-fi
-$KIND_BIN load docker-image quay.io/kubernetes-ingress-controller/nginx-ingress-controller:master
-
-$KUBECTL_BIN apply -f $ROOT/hack/ingress/mandatory.yaml
-$KUBECTL_BIN apply -f $ROOT/hack/ingress/service-nodeport.yaml
-$KUBECTL_BIN patch deployments -n ingress-nginx nginx-ingress-controller -p '{"spec":{"template":{"spec":{"containers":[{"name":"nginx-ingress-controller","ports":[{"containerPort":80,"hostPort":80},{"containerPort":443,"hostPort":443}]}],"nodeSelector":{"ingress-ready":"true"},"tolerations":[{"key":"node-role.kubernetes.io/master","operator":"Equal","effect":"NoSchedule"}]}}}}'
 
 $KUBECTL_BIN get pod -A
 
