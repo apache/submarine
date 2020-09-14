@@ -182,7 +182,7 @@ curl -X DELETE http://127.0.0.1:8080/api/v1/template/my-tf-mnist-template
 ```
 
 
-### Use experiment template to create a experiment
+### Use template to create a experiment
 `POST /api/v1/experiment/{template_name}`
 
 **Example Request:**
