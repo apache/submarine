@@ -18,6 +18,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Environment } from '@submarine/interfaces/environment-info';
 import { EnvironmentService } from '@submarine/services/environment.service';
 import { NzMessageService } from 'ng-zorro-antd';
@@ -28,15 +29,23 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./environment.component.scss']
 })
 export class EnvironmentComponent implements OnInit {
-  constructor(
-    private environmentService: EnvironmentService,
-    private nzMessageService: NzMessageService) {}
+  constructor(private environmentService: EnvironmentService, private nzMessageService: NzMessageService) {}
 
   environmentList: Environment[] = [];
   checkedList: boolean[] = [];
   selectAllChecked: boolean = false;
 
+  isVisible = false;
+  environmentForm;
+
   ngOnInit() {
+    this.environmentForm = new FormGroup({
+      environmentName: new FormControl(null, Validators.required),
+      dockerImage: new FormControl(null, Validators.required),
+      name: new FormControl(null, Validators.required),
+      channels: new FormArray([]),
+      dependencies: new FormArray([])
+    });
     this.fetchEnvironmentList();
   }
 
@@ -48,6 +57,100 @@ export class EnvironmentComponent implements OnInit {
         this.checkedList.push(false);
       }
     });
+  }
+
+  get environmentName() {
+    return this.environmentForm.get('environmentName');
+  }
+
+  get dockerImage() {
+    return this.environmentForm.get('dockerImage');
+  }
+
+  get name() {
+    return this.environmentForm.get('name');
+  }
+
+  get channels() {
+    return this.environmentForm.get('channels') as FormArray;
+  }
+
+  get dependencies() {
+    return this.environmentForm.get('dependencies') as FormArray;
+  }
+
+  initEnvForm() {
+    this.isVisible = true;
+    this.environmentName.reset();
+    this.dockerImage.reset();
+    this.name.reset();
+    this.channels.clear();
+    this.dependencies.clear();
+  }
+
+  checkStatus() {
+    return (
+      this.environmentName.invalid ||
+      this.dockerImage.invalid ||
+      this.name.invalid ||
+      this.channels.invalid ||
+      this.dependencies.invalid
+    );
+  }
+
+  closeModal() {
+    this.isVisible = false;
+  }
+
+  addChannel() {
+    this.channels.push(new FormControl('', Validators.required));
+  }
+
+  addDependencies() {
+    this.dependencies.push(new FormControl('', Validators.required));
+  }
+
+  deleteItem(arr: FormArray, index: number) {
+    arr.removeAt(index);
+  }
+
+  submit() {
+    this.isVisible = false;
+    const newEnvironmentSpec = this.createEnvironmentSpec();
+    console.log(newEnvironmentSpec);
+    this.environmentService.createEnvironment(newEnvironmentSpec).subscribe(
+      () => {
+        this.nzMessageService.success('Create Environment Success!');
+        this.fetchEnvironmentList();
+      },
+      (err) => {
+        this.nzMessageService.error(`${err}, please try again`, {
+          nzPauseOnHover: true
+        });
+      }
+    );
+  }
+
+  createEnvironmentSpec() {
+    const environmentSpec = {
+      name: this.environmentForm.get('environmentName').value,
+      dockerImage: this.environmentForm.get('dockerImage').value,
+      kernelSpec: {
+        name: this.environmentForm.get('name').value,
+        channels: [],
+        dependencies: []
+      }
+    };
+
+    for (const channel of this.channels.controls) {
+      environmentSpec.kernelSpec.channels.push(channel.value);
+    }
+
+    for (const dependency of this.dependencies.controls) {
+      environmentSpec.kernelSpec.dependencies.push(dependency.value);
+    }
+
+    return environmentSpec;
   }
 
   // TODO(kobe860219): Create new environment
@@ -74,7 +177,7 @@ export class EnvironmentComponent implements OnInit {
 
   deleteEnvironments() {
     for (let i = this.checkedList.length - 1; i >= 0; i--) {
-      console.log(this.environmentList[i].environmentSpec.name)
+      console.log(this.environmentList[i].environmentSpec.name);
       if (this.checkedList[i] === true) {
         this.onDeleteEnvironment(this.environmentList[i].environmentSpec.name, false);
       }

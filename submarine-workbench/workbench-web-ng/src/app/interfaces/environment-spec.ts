@@ -24,8 +24,6 @@ export interface KernelSpec {
 
 export interface EnvironmentSpec {
   name: string;
-  description: string;
   dockerImage: string;
-  image: string;
   kernelSpec: KernelSpec;
 }
