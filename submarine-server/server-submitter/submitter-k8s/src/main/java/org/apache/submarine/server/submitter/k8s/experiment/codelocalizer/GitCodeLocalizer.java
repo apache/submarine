@@ -86,7 +86,6 @@ public abstract class GitCodeLocalizer extends AbstractCodeLocalizer {
       throws InvalidSpecException {
 
     try {
-      
       URI uriParser = new URI(url);
       String scheme = uriParser.getScheme();
       if (scheme.equals(GitCodeLocalizerModes.HTTP.getMode())) {

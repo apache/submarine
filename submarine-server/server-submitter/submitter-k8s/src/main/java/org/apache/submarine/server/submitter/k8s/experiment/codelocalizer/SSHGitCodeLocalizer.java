@@ -33,7 +33,9 @@ public class SSHGitCodeLocalizer extends GitCodeLocalizer {
   public static final int GIT_SECRET_MODE = 0400;
   public static final String GIT_SECRET_MOUNT_NAME = "git-secret";
   public static final String GIT_SECRET_PATH = "/etc/git-secret";
-  public static final Long GIT_SYNC_USER = new Long(65533);
+  public static final long GIT_SYNC_USER = 65533L;
+  public static final String GIT_SYNC_SSH_NAME = "GIT_SYNC_SSH";
+  public static final String GIT_SYNC_SSH_VALUE = "true";
   
   public SSHGitCodeLocalizer(String url) {
     super(url);
@@ -46,8 +48,8 @@ public class SSHGitCodeLocalizer extends GitCodeLocalizer {
       if (container.getName().equals(CODE_LOCALIZER_INIT_CONTAINER_NAME)) {
         List<V1EnvVar> gitSyncEnvVars = container.getEnv();
         V1EnvVar sshEnv = new V1EnvVar();
-        sshEnv.setName("GIT_SYNC_SSH");
-        sshEnv.setValue("true");
+        sshEnv.setName(GIT_SYNC_SSH_NAME);
+        sshEnv.setValue(GIT_SYNC_SSH_VALUE);
         gitSyncEnvVars.add(sshEnv);
         
         List<V1VolumeMount> mounts = container.getVolumeMounts();
