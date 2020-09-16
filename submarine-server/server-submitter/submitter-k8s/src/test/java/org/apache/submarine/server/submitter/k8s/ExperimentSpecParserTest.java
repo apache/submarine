@@ -46,6 +46,7 @@ import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.GitCodeLocalizer;
+import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.SSHGitCodeLocalizer;
 import org.junit.Assert;
 import org.junit.Test;
 import io.kubernetes.client.models.V1Container;
@@ -335,8 +336,9 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_PATH,
         initContainer.getVolumeMounts().get(0).getMountPath());
     for (V1EnvVar env : initContainer.getEnv()) {
-      if (env.getName().equals("GIT_SYNC_SSH")) {
-        Assert.assertEquals("true", env.getValue());
+      if (env.getName().equals(SSHGitCodeLocalizer.GIT_SYNC_SSH_NAME)) {
+        Assert.assertEquals(SSHGitCodeLocalizer.GIT_SYNC_SSH_VALUE,
+            env.getValue());
       }
     }
 
