@@ -38,6 +38,19 @@ rules:
   - deletecollection
   - patch
   - update
+- apiGroups:
+  - traefik.containo.us
+  resources:
+  - ingressroutes
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
 
 ---
 kind: ClusterRoleBinding

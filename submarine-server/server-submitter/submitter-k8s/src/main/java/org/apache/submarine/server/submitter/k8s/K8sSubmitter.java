@@ -23,6 +23,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -33,6 +37,7 @@ import io.kubernetes.client.JSON;
 import io.kubernetes.client.apis.CoreV1Api;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptionsBuilder;
+import io.kubernetes.client.models.V1ObjectMeta;
 import io.kubernetes.client.models.V1Pod;
 import io.kubernetes.client.models.V1PodList;
 import io.kubernetes.client.models.V1Status;
@@ -48,7 +53,10 @@ import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
+import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute;
+import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRouteSpec;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
+import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
 import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
@@ -239,10 +247,15 @@ public class K8sSubmitter implements Submitter {
   public Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
     try {
+      // create notebook custom resource
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               notebookCR.getMetadata().getNamespace(), notebookCR.getPlural(), notebookCR, "true");
       notebook = parseResponseObject(object);
+
+      // create Traefik custom resource
+      createIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
+
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
@@ -279,6 +292,7 @@ public class K8sSubmitter implements Submitter {
               new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
               null, null, null);
       notebook = parseResponseObject(object);
+      deleteIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -297,7 +311,7 @@ public class K8sSubmitter implements Submitter {
       notebook.setName(notebookCR.getMetadata().getName());
       // notebook url
       notebook.setUrl("/notebook/" + notebookCR.getMetadata().getNamespace() + "/" +
-              notebookCR.getMetadata().getName());
+              notebookCR.getMetadata().getName() + "/");
       DateTime createdTime = notebookCR.getMetadata().getCreationTimestamp();
       if (createdTime != null) {
         notebook.setCreatedTime(createdTime.toString());
@@ -327,6 +341,61 @@ public class K8sSubmitter implements Submitter {
     } else {
       return PYTORCH_JOB_SELECTOR_KEY + experimentSpec.getMeta().getName();
     }
+  }
+
+  private void createIngressRoute(String namespace, String name) {
+    try {
+      IngressRoute ingressRoute = new IngressRoute();
+      V1ObjectMeta meta = new V1ObjectMeta();
+      meta.setName(name);
+      meta.setNamespace(namespace);
+      ingressRoute.setMetadata(meta);
+      ingressRoute.setSpec(parseIngressRouteSpec(meta.getNamespace(), meta.getName()));
+      api.createNamespacedCustomObject(
+              ingressRoute.getGroup(), ingressRoute.getVersion(),
+              ingressRoute.getMetadata().getNamespace(),
+              ingressRoute.getPlural(), ingressRoute, "true");
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: Create Traefik custom resource object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    } catch (JsonSyntaxException e) {
+      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
+    }
+  }
+
+  private void deleteIngressRoute(String namespace, String name) {
+    try {
+      api.deleteNamespacedCustomObject(
+              IngressRoute.CRD_INGRESSROUTE_GROUP_V1, IngressRoute.CRD_INGRESSROUTE_VERSION_V1,
+              namespace, IngressRoute.CRD_INGRESSROUTE_PLURAL_V1, name,
+              new V1DeleteOptionsBuilder().withApiVersion(IngressRoute.CRD_APIVERSION_V1).build(),
+              null, null, null);
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: Delete Traefik custom resource object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    }
+  }
+
+  private IngressRouteSpec parseIngressRouteSpec(String namespace, String name) {
+    IngressRouteSpec spec = new IngressRouteSpec();
+    Set<String> entryPoints = new HashSet<>();
+    entryPoints.add("web");
+    spec.setEntryPoints(entryPoints);
+
+    SpecRoute route = new SpecRoute();
+    route.setKind("Rule");
+    route.setMatch("PathPrefix(`/notebook/" + namespace + "/" + name + "/`)");
+    Set<Map<String, Object>> serviceMap = new HashSet<>();
+    Map<String, Object> service = new HashMap<>();
+    service.put("name", name);
+    service.put("port", 80);
+    serviceMap.add(service);
+    route.setServices(serviceMap);
+    Set<SpecRoute> routes = new HashSet<>();
+    routes.add(route);
+    spec.setRoutes(routes);
+    return spec;
   }
 
   private enum ParseOp {

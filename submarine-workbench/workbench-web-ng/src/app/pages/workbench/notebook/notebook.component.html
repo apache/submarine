@@ -78,7 +78,7 @@
         <tbody>
           <tr *ngFor="let data of basicTable.data; let i = index">
             <td>
-              <a>{{ data.name }}</a>
+              <a href="{{ data.url }}" target="_blank">{{ data.name }}</a>
             </td>
             <td>{{ data.spec.environment.name }}</td>
             <td>{{ data.spec.environment.dockerImage }}</td>
