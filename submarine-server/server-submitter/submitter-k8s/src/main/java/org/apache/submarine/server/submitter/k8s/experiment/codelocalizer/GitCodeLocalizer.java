@@ -19,8 +19,8 @@
 
 package org.apache.submarine.server.submitter.k8s.experiment.codelocalizer;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,16 +86,16 @@ public abstract class GitCodeLocalizer extends AbstractCodeLocalizer {
       throws InvalidSpecException {
 
     try {
-      URL urlParser = new URL(url);
-      String protocol = urlParser.getProtocol();
-      if (protocol.equals(GitCodeLocalizerModes.HTTP.getMode())) {
+      URI uriParser = new URI(url);
+      String scheme = uriParser.getScheme();
+      if (scheme.equals(GitCodeLocalizerModes.HTTP.getMode())) {
         return new HTTPGitCodeLocalizer(url);
-      } else if (protocol.equals(GitCodeLocalizerModes.SSH.getMode())) {
+      } else if (scheme.equals(GitCodeLocalizerModes.SSH.getMode())) {
         return new SSHGitCodeLocalizer(url);
       } else {
         return new DummyCodeLocalizer(url);
       }
-    } catch (MalformedURLException e) {
+    } catch (URISyntaxException e) {
       throw new InvalidSpecException(
           "Invalid Code Spec: URL is malformed. " + url);
     }
