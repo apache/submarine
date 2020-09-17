@@ -58,6 +58,7 @@
           id="createEnvironment"
           nzType="primary"
           style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px;"
+          (click)="initEnvForm()"
         >
           <i nz-icon nzType="plus"></i>
           New Environment
@@ -115,3 +116,106 @@
     <router-outlet></router-outlet>
   </div>
 </nz-layout>
+
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Create Environment" [nzWidth]="700">
+  <div *nzModalFooter>
+    <button nz-button nzType="default" (click)="closeModal()">Cancel</button>
+    <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="createEnvironment()">
+      Create
+    </button>
+  </div>
+  <div>
+    <form [formGroup]="environmentForm">
+      <h2>Meta</h2>
+      <div class="single-field-group">
+        <label for="environmentName">
+          <span class="red-star">*</span>
+          Environment Name
+        </label>
+        <input
+          required
+          nz-input
+          type="text"
+          name="environmentName"
+          id="environmentName"
+          formControlName="environmentName"
+        />
+      </div>
+      <div class="single-field-group">
+        <label for="dockerImage">
+          <span class="red-star">*</span>
+          Docker Image
+        </label>
+        <input required nz-input type="text" name="dockerImage" id="dockerImage" formControlName="dockerImage" />
+      </div>
+      <h2>Kernel Spec</h2>
+      <div class="single-field-group">
+        <label for="name">
+          <span class="red-star">*</span>
+          Name
+        </label>
+        <input required nz-input type="text" name="name" id="name" formControlName="name" />
+      </div>
+      <div formArrayName="channels">
+        <div *ngFor="let channel of channels.controls; let i = index">
+          <div class="single-field-group">
+            <label>Channel {{ i + 1 }}:</label>
+            <input required nz-input type="text" name="channel{{ i }}" id="channel{{ i }}" [formControlName]="i" />
+            <i
+              nz-icon
+              style="margin-left: 5px;"
+              nzType="close-circle"
+              nzTheme="fill"
+              (click)="deleteItem(channels, i)"
+            ></i>
+          </div>
+        </div>
+      </div>
+      <div style="margin: 10px;">
+        <button
+          nz-button
+          style="display: block; margin: auto;"
+          id="addChannel-btn"
+          type="default"
+          (click)="addChannel()"
+        >
+          New Channel
+        </button>
+      </div>
+      <div formArrayName="dependencies">
+        <div *ngFor="let channel of dependencies.controls; let i = index">
+          <div class="single-field-group">
+            <label>Dependency {{ i + 1 }}:</label>
+            <input
+              required
+              nz-input
+              type="text"
+              name="dependencies{{ i }}"
+              id="dependencies{{ i }}"
+              [formControlName]="i"
+            />
+            <i
+              nz-icon
+              style="margin-left: 5px;"
+              nzType="close-circle"
+              nzTheme="fill"
+              (click)="deleteItem(dependencies, i)"
+            ></i>
+          </div>
+        </div>
+      </div>
+      <div style="margin: 10px;">
+        <button
+          style="margin-top: 10px;"
+          nz-button
+          style="display: block; margin: auto;"
+          id="addDep-btn"
+          type="default"
+          (click)="addDependencies()"
+        >
+          New Dependency
+        </button>
+      </div>
+    </form>
+  </div>
+</nz-modal>

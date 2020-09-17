@@ -24,6 +24,7 @@ import { Environment } from '@submarine/interfaces/environment-info';
 import { BaseApiService } from '@submarine/services/base-api.service';
 import { of, throwError, Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
+import { EnvironmentSpec } from '@submarine/interfaces/environment-spec';
 
 @Injectable({
   providedIn: 'root'
@@ -48,8 +49,18 @@ export class EnvironmentService {
   // TODO(kobe860219): Query environment
   querySpecificEnvironment(id: string) {}
 
-  // TODO(kobe860219): Create new environment
-  createEnvironment(createData) {}
+  createEnvironment(spec: object): Observable<Environment> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/environment/`);
+    return this.httpClient.post<Rest<Environment>>(apiUrl, spec).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', spec);
+        }
+      })
+    );
+  }
 
   // TODO(kobe860219): Update an environment
   updateEnvironment(updateData) {}
