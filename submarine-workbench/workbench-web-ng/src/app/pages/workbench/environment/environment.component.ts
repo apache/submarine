@@ -114,7 +114,7 @@ export class EnvironmentComponent implements OnInit {
     arr.removeAt(index);
   }
 
-  submit() {
+  createEnvironment() {
     this.isVisible = false;
     const newEnvironmentSpec = this.createEnvironmentSpec();
     console.log(newEnvironmentSpec);
@@ -152,9 +152,6 @@ export class EnvironmentComponent implements OnInit {
 
     return environmentSpec;
   }
-
-  // TODO(kobe860219): Create new environment
-  createEnvironment(data) {}
 
   // TODO(kobe860219): Update an environment
   updateEnvironment(id: string, data) {}
