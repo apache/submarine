@@ -112,13 +112,11 @@ textarea.ng-invalid.ng-touched {
        margin-right: 1.5rem;
     }
  }
- & input {
+ & input, nz-select, textarea {
     flex: 0 0 48%;
  }
- & textarea {
-    flex: 0 0 55%;
- }
 }
+
 
 .alert-message {
  color: red;

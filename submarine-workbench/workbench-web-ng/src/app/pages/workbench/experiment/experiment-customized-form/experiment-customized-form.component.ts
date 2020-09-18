@@ -37,22 +37,33 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
 
   // About new experiment
   experiment: FormGroup;
+  finialExperimentSpec: ExperimentSpec;
   step: number = 0;
   subscriptions: Subscription[] = [];
-  defaultSpecName = 'worker';
+
+  // TODO: Fetch all namespaces from submarine server
+  nameSpaceList = ['default', 'submarine'];
+
+  // TODO: Fetch all images from submarine server
+  imageList = ['gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0'];
 
   // Constants
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
   PYTORCH_SPECNAMES = ['Master', 'Worker'];
+  defaultSpecName = 'worker';
   MEMORY_UNITS = ['M', 'G'];
-  TOTAL_STEPS = 2;
+
+  SECOND_STEP = 1;
+  PREVIEW_STEP = 2;
+  ADVANCED = false;
 
   // About env page
   currentEnvPage = 1;
   PAGESIZE = 5;
 
   // About spec
-  jobTypes = 'Tensorflow';
+  jobTypes = 'Distributed Tensorflow';
+  framework = 'Tensorflow';
   currentSpecPage = 1;
 
   // About update
@@ -91,8 +102,11 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
 
     const sub2 = this.experimentFormService.stepService.subscribe((n) => {
       if (n > 0) {
-        if (this.step === this.TOTAL_STEPS) {
+        if (this.step === this.PREVIEW_STEP) {
           this.handleSubmit();
+        } else if (this.step === this.SECOND_STEP) {
+          this.onPreview();
+          this.step += 1;
         } else {
           this.step += 1;
         }
@@ -101,7 +115,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       }
       // Send the current step and okText back to parent
       this.experimentFormService.modalPropsChange({
-        okText: this.step !== this.TOTAL_STEPS ? 'Next step' : 'Submit',
+        okText: this.step !== this.PREVIEW_STEP ? 'Next step' : 'Submit',
         currentStep: this.step
       });
       // Run check after step is changed
@@ -154,22 +168,25 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   checkStatus() {
     if (this.step === 0) {
       this.experimentFormService.btnStatusChange(
-        this.experimentName.invalid || this.namespace.invalid || this.cmd.invalid || this.image.invalid
+        this.experimentName.invalid ||
+          this.namespace.invalid ||
+          this.cmd.invalid ||
+          this.image.invalid ||
+          this.envs.invalid
       );
     } else if (this.step === 1) {
-      this.experimentFormService.btnStatusChange(this.envs.invalid);
-    } else if (this.step === this.TOTAL_STEPS) {
       this.experimentFormService.btnStatusChange(this.specs.invalid);
     }
   }
-
+  onPreview() {
+    this.finialExperimentSpec = this.constructSpec();
+  }
   /**
    * Event handler for Next step/Submit button
    */
   handleSubmit() {
     if (this.mode === 'create') {
-      const newSpec = this.constructSpec();
-      this.experimentService.createExperiment(newSpec).subscribe({
+      this.experimentService.createExperiment(this.finialExperimentSpec).subscribe({
         next: () => {},
         error: (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {
@@ -183,8 +200,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
         }
       });
     } else if (this.mode === 'update') {
-      const newSpec = this.constructSpec();
-      this.experimentService.updateExperiment(this.targetId, newSpec).subscribe(
+      this.experimentService.updateExperiment(this.targetId, this.finialExperimentSpec).subscribe(
         null,
         (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {
@@ -198,8 +214,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
         }
       );
     } else if (this.mode === 'clone') {
-      const newSpec = this.constructSpec();
-      this.experimentService.createExperiment(newSpec).subscribe(
+      this.experimentService.createExperiment(this.finialExperimentSpec).subscribe(
         null,
         (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {
@@ -289,7 +304,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     const meta: ExperimentMeta = {
       name: this.experimentName.value,
       namespace: this.namespace.value,
-      framework: this.jobTypes === 'Standalone' ? 'Tensorflow' : this.jobTypes,
+      framework: this.framework === 'Standalone' ? 'Tensorflow' : this.framework,
       cmd: this.cmd.value,
       envVars: {}
     };
