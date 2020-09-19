@@ -26,6 +26,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +39,13 @@ public class ExperimentPage {
   private WebElement dataSection;
 
   @FindBy(id = "go")
-  private WebElement goButton;
+  private WebElement goBtn;
+
+  @FindBy(id = "advancedBtn")
+  private WebElement advancedBtn;
 
   @FindBy(id = "openExperiment")
-  private WebElement newExperimentButton;
+  private WebElement newExperimentBtn;
 
   @FindBy(id = "customized")
   private WebElement customizedBtn;
@@ -116,16 +120,20 @@ public class ExperimentPage {
 
   // Getter
   public WebElement getGoButton() {
-    return goButton;
+    return goBtn;
   }
 
   // button click actions
   public void goButtonClick() {
-    wait.until(ExpectedConditions.elementToBeClickable(goButton)).click();
+    wait.until(ExpectedConditions.elementToBeClickable(goBtn)).click();
+  }
+
+  public void advancedButtonCLick() {
+    wait.until(ExpectedConditions.elementToBeClickable(advancedBtn)).click();
   }
 
   public void newExperimentButtonClick() {
-    wait.until(ExpectedConditions.elementToBeClickable(newExperimentButton)).click();
+    wait.until(ExpectedConditions.elementToBeClickable(newExperimentBtn)).click();
   }
 
   public void customizedBtnClick() {
@@ -141,22 +149,20 @@ public class ExperimentPage {
   }
 
   // Real actions
-  public void fillMeta(String name, String des, String namespaceStr, String cmdStr, String imageStr) {
-    experimentName.clear();
-    experimentName.sendKeys(name);
-    description.clear();
-    description.sendKeys(des);
-    namespace.clear();
-    namespace.sendKeys(namespaceStr);
-    cmd.clear();
-    cmd.sendKeys(cmdStr);
-    image.clear();
-    image.sendKeys(imageStr);
-  }
-
-  public void fillEnv(String key, String value) {
-    envKey.sendKeys(key);
-    envValue.sendKeys(value);
+  public void fillExperimentMeta(String name, String description, String namespace, String cmd, String image,
+              String envKey, String envValue) {
+    this.experimentName.clear();
+    this.experimentName.sendKeys(name);
+    this.description.clear();
+    this.description.sendKeys(description);
+    Select objSelect = new Select(this.namespace);
+    objSelect.selectByVisibleText(namespace);
+    this.cmd.clear();
+    this.cmd.sendKeys(cmd);
+    this.image.clear();
+    this.image.sendKeys(image);
+    this.envKey.sendKeys(envKey);
+    this.envValue.sendKeys(envValue);
   }
 
   public void deleteSpec() {
@@ -165,7 +171,8 @@ public class ExperimentPage {
     }
   }
 
-  public void fillTfSpec(int specCount, String[] inputNames, int[] replicaCount, int[] cpuCount, int[] inputMemory) {
+  public void fillTfSpec(int specCount, String[] inputNames,
+                         int[] replicaCount, int[] cpuCount, int[] inputMemory) {
     for (int i = 0; i < specCount; i++) {
       specBtnClick();
     }

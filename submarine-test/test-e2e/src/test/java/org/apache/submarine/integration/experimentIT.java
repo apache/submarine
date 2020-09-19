@@ -61,20 +61,21 @@ public class experimentIT extends AbstractSubmarineIT {
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/experiment");
 
     // Test create new experiment
-    LOG.info("new experiment");
+    LOG.info("First step");
     experimentPage.newExperimentButtonClick();
     experimentPage.customizedBtnClick();
-    String experimentName = "experiment-e2e-test";
-    experimentPage.fillMeta(experimentName, "e2e des", "default", "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150", "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0");
-    Assert.assertTrue(experimentPage.getGoButton().isEnabled());
-    experimentPage.goButtonClick();
-
-    LOG.info("In env");
+    experimentPage.advancedButtonCLick();
     experimentPage.envBtnClick();
-    experimentPage.fillEnv("ENV_1", "ENV1");
+    String experimentName = "experiment-e2e-test";
+    experimentPage.fillExperimentMeta(experimentName, "e2e des", "default",
+            "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log" +
+                    " --learning_rate=0.01 --batch_size=150",
+            "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0",
+            "ENV_1", "ENV1");
     Assert.assertTrue(experimentPage.getGoButton().isEnabled());
     experimentPage.goButtonClick();
 
+    LOG.info("Second step");
     // Fail due to incorrect spec name
     LOG.info("In spec fail");
     experimentPage.fillTfSpec(1, new String[]{"Master"}, new int[]{-1}, new int[]{-1}, new int[]{512});
@@ -84,7 +85,11 @@ public class experimentIT extends AbstractSubmarineIT {
     experimentPage.deleteSpec();
     experimentPage.fillTfSpec(2, new String[]{"Ps", "Worker"}, new int[]{1, 1}, new int[]{1, 1}, new int[]{1024, 1024});
     Assert.assertTrue(experimentPage.getGoButton().isEnabled());
+    experimentPage.goButtonClick();
 
+    LOG.info("Preview experiment spec");
+    Assert.assertTrue(experimentPage.getGoButton().isEnabled());
+    experimentPage.goButtonClick();
   }
 
   /*
