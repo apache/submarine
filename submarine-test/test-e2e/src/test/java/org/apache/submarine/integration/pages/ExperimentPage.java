@@ -63,13 +63,13 @@ public class ExperimentPage {
   @FindBy(name = "description")
   private WebElement description;
 
-  @FindBy(name = "namespace")
+  @FindBy(id = "namespace")
   private WebElement namespace;
 
   @FindBy(name = "cmd")
   private WebElement cmd;
 
-  @FindBy(name = "image")
+  @FindBy(id = "image")
   private WebElement image;
 
   // Env form
@@ -149,14 +149,17 @@ public class ExperimentPage {
   }
 
   // Real actions
-  public void fillExperimentMeta(String name, String description, String cmd, String image,
+  public void fillExperimentMeta(String name, String description, String namespace, String cmd, String image,
               String envKey, String envValue) {
     this.experimentName.clear();
     this.experimentName.sendKeys(name);
     this.description.clear();
     this.description.sendKeys(description);
+    Select objSelect = new Select(this.namespace);
+    objSelect.selectByVisibleText(namespace);
     this.cmd.clear();
     this.cmd.sendKeys(cmd);
+    this.image.clear();
     this.image.sendKeys(image);
     this.envKey.sendKeys(envKey);
     this.envValue.sendKeys(envValue);
