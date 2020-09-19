@@ -155,8 +155,6 @@ public class ExperimentPage {
     this.experimentName.sendKeys(name);
     this.description.clear();
     this.description.sendKeys(description);
-    Select objSelect = new Select(this.namespace);
-    objSelect.selectByVisibleText(namespace);
     this.cmd.clear();
     this.cmd.sendKeys(cmd);
     this.image.clear();
