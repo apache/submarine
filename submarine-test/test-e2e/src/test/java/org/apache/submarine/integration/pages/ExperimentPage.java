@@ -157,7 +157,6 @@ public class ExperimentPage {
     this.description.sendKeys(description);
     this.cmd.clear();
     this.cmd.sendKeys(cmd);
-    this.image.clear();
     this.image.sendKeys(image);
     this.envKey.sendKeys(envKey);
     this.envValue.sendKeys(envValue);
