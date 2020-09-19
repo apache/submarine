@@ -30,6 +30,7 @@ import io.kubernetes.client.models.V1ResourceRequirements;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.environment.Environment;
+import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.api.spec.KernelSpec;
 import org.apache.submarine.server.api.spec.NotebookPodSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
@@ -84,15 +85,24 @@ public class NotebookSpecParser {
 
     // Environment
     if (getEnvironment(notebookSpec) != null) {
-      String baseImage = getEnvironment(notebookSpec).getEnvironmentSpec().getDockerImage();
-      KernelSpec kernel = getEnvironment(notebookSpec).getEnvironmentSpec().getKernelSpec();
+      EnvironmentSpec environmentSpec = getEnvironment(notebookSpec).getEnvironmentSpec();
+      String baseImage = environmentSpec.getDockerImage();
+      KernelSpec kernel = environmentSpec.getKernelSpec();
+      String submarineEnvName = environmentSpec.getName();
+      V1EnvVar submarineEnv = new V1EnvVar();
+      submarineEnv.setName("SUBMARINE_ENV");
+      submarineEnv.setValue(submarineEnvName);
+      container.addEnvItem(submarineEnv);
       container.setImage(baseImage);
-      if (kernel.getDependencies().size() > 0) {
-        String condaVersionValidationCommand = generateCondaVersionValidateCommand();
-        StringBuffer createCommand = new StringBuffer();
-        String condaEnvironmentName = kernel.getName();
 
-        createCommand.append("conda create -q -y -n " + condaEnvironmentName);
+      String condaVersionValidationCommand = generateCondaVersionValidateCommand();
+      StringBuffer createCommand = new StringBuffer();
+      createCommand.append(condaVersionValidationCommand);
+      createCommand.append(" && ");
+      createCommand.append("conda create -y -n ");
+      createCommand.append(submarineEnvName);
+      // If dependencies isn't empty
+      if (kernel.getDependencies().size() > 0) {
         for (String channel : kernel.getChannels()) {
           createCommand.append(" ");
           createCommand.append("-c");
@@ -103,17 +113,23 @@ public class NotebookSpecParser {
           createCommand.append(" ");
           createCommand.append(dependency);
         }
-
-        String activateEnvCommand = "source activate " + condaEnvironmentName;
-        String pathCommand = "PATH=/opt/conda/envs/env/bin:$PATH";
-        String finalCommand = condaVersionValidationCommand +
-                " && " + createCommand.toString() + " && "
-                + activateEnvCommand + " && " + pathCommand;
-        V1EnvVar envCommand = new V1EnvVar();
-        envCommand.setName("ENVIRONMENT_COMMAND");
-        envCommand.setValue(finalCommand);
-        container.addEnvItem(envCommand);
       }
+      V1EnvVar createCommandEnv = new V1EnvVar();
+      createCommandEnv.setName("CREATE_ENVIRONMENT_COMMAND");
+      createCommandEnv.setValue(createCommand.toString());
+      container.addEnvItem(createCommandEnv);
+
+      String installCommand = "pip --no-cache-dir install notebook==6.1.3 apache-submarine";
+      V1EnvVar installCommandEnv = new V1EnvVar();
+      installCommandEnv.setName("INSTALL_ENVIRONMENT_COMMAND");
+      installCommandEnv.setValue(installCommand);
+      container.addEnvItem(installCommandEnv);
+
+      String createKernelCommand = "ipython kernel install --name " + kernel.getName() + " --user";
+      V1EnvVar createKernelCommandEnv = new V1EnvVar();
+      createKernelCommandEnv.setName("INSTALL_KERNEL_COMMAND");
+      createKernelCommandEnv.setValue(createKernelCommand);
+      container.addEnvItem(createKernelCommandEnv);
     }
 
     // Resources
