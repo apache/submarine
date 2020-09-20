@@ -43,8 +43,7 @@
       <artifactId>submarine-server-api</artifactId>
       <version>${project.version}</version>
     </dependency>
-
-    <dependency>
+      <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-jaxrs2</artifactId>
       <version>${io.swagger.version}</version>
@@ -76,7 +75,6 @@
       <artifactId>swagger-jaxrs2-servlet-initializer-v2</artifactId>
       <version>${io.swagger.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.apache.submarine</groupId>
       <artifactId>submarine-commons-metastore</artifactId>
@@ -454,6 +452,17 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.wnameless.json</groupId>
+      <artifactId>json-flattener</artifactId>
+      <version>0.9.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-text</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 

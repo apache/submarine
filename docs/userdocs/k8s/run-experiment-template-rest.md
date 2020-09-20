@@ -32,9 +32,9 @@ curl -X POST -H "Content-Type: application/json" -d '
 {
     "name": "tf-mnist",
     "params": {
-        "training.learning_rate":"0.01", 
-        "training.batch_size":"150", 
-        "experiment.name":"newExperiment"
+        "learning_rate":"0.01", 
+        "batch_size":"150", 
+        "experiment_name":"newexperiment1"
     }
 }
 ' http://127.0.0.1:8080/api/v1/experiment/my-tf-mnist-template

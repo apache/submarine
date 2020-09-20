@@ -24,18 +24,53 @@ under the License.
 
 
 Developers can register a parameterized experiment as an experiment template,
-For example, change --learning_rate=0.1 to --learning_rate={{training.learning_rate}}, and add the following in the parameters
+For example, if the developer wants to change the following "--learning_rate=0.1" to parameters.
+```json
+"experimentSpec": {
+  "meta": {
+    "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.1 --batch_size=150"
+  }, 
+  "...": "..."
+}
+```
+
+They can use two curly braces as placeholders, the template format will be as
+```json
+"experimentSpec": {
+  "meta": {
+    "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{learning_rate}} --batch_size=150"
+  }, 
+  "...": "..."
+}
+```
+
+The template parameters format will be as
 ```json
 {
-  "name": "training.learning_rate",
+  "name": "learning_rate",
   "value": 0.1,
   "required": true,
   "description": "This is learning_rate of training."
 }
 ```
-So users can use existing experiment templates and adjust the default value to create experiments.
+name: placeholder name
+value; default value
+required: Indicates whether the user must enter parameters, when required is true, value can be null
+description: Introduction of this parameter
+
+Users can use existing experiment templates and adjust the default value to create experiments.
 After the user submits the experiment template, the submarine server finds the corresponding template based on the name. And the template handler converts input parameters to an actual experiment, such as a distributed TF experiment.
 
+The "replicas", "cpu", "memory" of resources will be automatically parameterized, so developers do not need to add them.
+For example, if there are "Ps" and "Worker" under spec, the following parameters will be automatically appended.
+```
+spec.Ps.replicas
+spec.Ps.resourceMap.cpu
+spec.Ps.resourceMap.memory
+spec.Worker.replicas
+spec.Worker.resourceMap.cpu
+spec.Worker.resourceMap.memory
+```
 
 
 ## Create experiment template
@@ -49,19 +84,19 @@ curl -X POST -H "Content-Type: application/json" -d '
   "author": "author",
   "description": "This is a template to run tf-mnist",
   "parameters": [{
-      "name": "training.learning_rate",
+      "name": "learning_rate",
       "value": 0.1,
       "required": true,
       "description": "This is learning_rate of training."
     },
     {
-      "name": "training.batch_size",
+      "name": "batch_size",
       "value": 150,
       "required": true,
       "description": "This is batch_size of training."
     },
     {
-      "name": "experiment.name",
+      "name": "experiment_name",
       "value": "tf-mnist1",
       "required": true,
       "description": "the name of experiment."
@@ -69,8 +104,8 @@ curl -X POST -H "Content-Type: application/json" -d '
   ],
   "experimentSpec": {
     "meta": {
-      "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{training.learning_rate}} --batch_size={{training.batch_size}}",
-      "name": "{{experiment.name}}",
+      "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{learning_rate}} --batch_size={{batch_size}}",
+      "name": "{{experiment_name}}",
       "envVars": {
         "ENV1": "ENV1"
       },
@@ -122,19 +157,19 @@ curl -X PATCH -H "Content-Type: application/json" -d '
   "author": "author-new",
   "description": "This is a template to run tf-mnist",
   "parameters": [{
-      "name": "training.learning_rate",
+      "name": "learning_rate",
       "value": 0.1,
       "required": true,
       "description": "This is learning_rate of training."
     },
     {
-      "name": "training.batch_size",
+      "name": "batch_size",
       "value": 150,
       "required": true,
       "description": "This is batch_size of training."
     },
     {
-      "name": "experiment.name",
+      "name": "experiment_name",
       "value": "tf-mnist1",
       "required": true,
       "description": "the name of experiment."
@@ -142,8 +177,8 @@ curl -X PATCH -H "Content-Type: application/json" -d '
   ],
   "experimentSpec": {
     "meta": {
-      "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{training.learning_rate}} --batch_size={{training.batch_size}}",
-      "name": "{{experiment.name}}",
+      "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{learning_rate}} --batch_size={{batch_size}}",
+      "name": "{{experiment_name}}",
       "envVars": {
         "ENV1": "ENV1"
       },
@@ -191,9 +226,9 @@ curl -X POST -H "Content-Type: application/json" -d '
 {
     "name": "tf-mnist",
     "params": {
-        "training.learning_rate":"0.01",
-        "training.batch_size":"150",
-        "experiment.name":"newExperiment"
+        "learning_rate":"0.01",
+        "batch_size":"150",
+        "experiment_name":"newexperiment1"
     }
 }
 ' http://127.0.0.1:8080/api/v1/experiment/my-tf-mnist-template

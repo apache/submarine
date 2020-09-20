@@ -20,7 +20,6 @@
 package org.apache.submarine.rest;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.core.Response;
@@ -34,7 +33,6 @@ import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplate;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateSubmit;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
-import org.apache.submarine.server.api.spec.ExperimentTemplateParamSpec;
 import org.apache.submarine.server.api.spec.ExperimentTemplateSpec;
 import org.apache.submarine.server.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.gson.ExperimentIdSerializer;
@@ -57,6 +55,8 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
       "/api/" + RestConstants.V1 + "/" + RestConstants.EXPERIMENT;
   protected static String TPL_NAME = "tf-mnist-test_1";
   protected static String TPL_FILE = "experimentTemplate/test_template_1.json";
+  protected static String TPL_SUBMIT_FILE = "experimentTemplate/test_template_1_submit.json";
+  protected static String TPL_SUBMIT_NAME_PARM = "experiment_name";
   
   private final Gson gson = new GsonBuilder()
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
@@ -178,10 +178,9 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
 
   @Test
   public void submitExperimentTemplate() throws Exception {
-
     String body = loadContent(TPL_FILE);
     run(body, "application/json");   
-
+    
     ExperimentTemplateSpec tplspec = 
     gson.fromJson(body, ExperimentTemplateSpec.class);
     
@@ -189,14 +188,11 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
     LOG.info("Submit ExperimentTemplate using ExperimentTemplate REST API");
     LOG.info(body);
 
-    ExperimentTemplateSubmit submit = new ExperimentTemplateSubmit();
-    submit.setParams(new HashMap<String, String>());
-    submit.setName(tplspec.getName());
-    for (ExperimentTemplateParamSpec parmSpec: tplspec.getExperimentTemplateParamSpec()) {
-      submit.getParams().put(parmSpec.getName(), parmSpec.getValue());
-    }
-    
-    PostMethod postMethod = httpPost(url, gson.toJson(submit), "application/json");
+    String submitBody = loadContent(TPL_SUBMIT_FILE);
+    ExperimentTemplateSubmit tplSubmit = 
+    gson.fromJson(submitBody, ExperimentTemplateSubmit.class);
+
+    PostMethod postMethod = httpPost(url, submitBody, "application/json");
     LOG.info(postMethod.getResponseBodyAsString());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), 
         postMethod.getStatusCode());
@@ -220,9 +216,8 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
     jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
     
-    ExperimentSpec tplExpSpec = tplspec.getExperimentSpec();
     ExperimentSpec expSpec = experiment.getSpec();
-
-    Assert.assertEquals(tplExpSpec.getMeta().getName(), expSpec.getMeta().getName());
+    
+    Assert.assertEquals(tplSubmit.getParams().get(TPL_SUBMIT_NAME_PARM), expSpec.getMeta().getName());
   }
 }
