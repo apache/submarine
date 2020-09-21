@@ -29,6 +29,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
+@Ignore("SUBMARINE-628")
 public class interpreterIT extends AbstractSubmarineIT {
 
   public final static Logger LOG = LoggerFactory.getLogger(interpreterIT.class);
@@ -44,7 +45,6 @@ public class interpreterIT extends AbstractSubmarineIT {
     driver.quit();
   }
 
-  @Ignore
   @Test
   public void workspaceNavigation() throws Exception {
     // Login

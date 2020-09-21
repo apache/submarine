@@ -60,12 +60,12 @@ public class teamIT extends AbstractSubmarineIT {
 
     //Test team part
     pollingWait(By.xpath("//li[contains(text(), \"Team\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//div[@id='teamDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    Assert.assertTrue(pollingWait(By.xpath("//div[@id='teamDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
 
     clickAndWait(By.cssSelector("button[id='btnAddTeam']"));
     pollingWait(By.xpath("//input[@id='inputNewTeamName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamNameTest");
     pollingWait(By.xpath("//input[@id='inputNewTeamOwner']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamOwnerTest");
     clickAndWait(By.cssSelector("button[id='submitNewTeamBtn']"));
-    Assert.assertEquals(pollingWait(By.xpath("//td[contains(., 'NewTeamNameTest')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    Assert.assertTrue(pollingWait(By.xpath("//td[contains(., 'NewTeamNameTest')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
   }
 }
