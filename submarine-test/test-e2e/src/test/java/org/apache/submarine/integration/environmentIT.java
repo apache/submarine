@@ -60,5 +60,15 @@ public class environmentIT extends AbstractSubmarineIT {
     // Test create new environment
     LOG.info("Create new environment");
     pollingWait(By.xpath("//button[@id='createEnvironment']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.cssSelector("input[ng-reflect-name='environmentName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testEnvName");
+    pollingWait(By.cssSelector("input[ng-reflect-name='dockerImage']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testDockerImage");
+    pollingWait(By.cssSelector("input[ng-reflect-name='name']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testName");
+    pollingWait(By.xpath("//button[@id='addChannel-btn']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.xpath("//input[@id='channel0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testChannel");
+    pollingWait(By.xpath("//button[@id='addDep-btn']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.xpath("//input[@id='dependencies0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testDep");
+    pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertEquals(pollingWait(By.xpath("//td[contains(., 'testEnvName')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    Thread.sleep(2000);
   }
 }
