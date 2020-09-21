@@ -17,41 +17,56 @@
  * under the License.
  */
 
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ExperimentSpec, Specs, SpecEnviroment, SpecMeta } from '@submarine/interfaces/experiment-spec';
+import { EnvironmentSpec, ExperimentMeta, ExperimentSpec, Specs } from '@submarine/interfaces/experiment-spec';
+import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
-import { NzMessageService } from 'ng-zorro-antd';
 import { nanoid } from 'nanoid';
+import { NzMessageService } from 'ng-zorro-antd';
 import { Subscription } from 'rxjs';
-import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 
 @Component({
-  selector: 'experiment-customized-form',
+  selector: 'submarine-experiment-customized-form',
   templateUrl: './experiment-customized-form.component.html',
   styleUrls: ['./experiment-customized-form.component.scss']
 })
-export class ExperimentCustomizedForm implements OnInit, OnDestroy {
+export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   @Input() mode: 'create' | 'update' | 'clone';
 
   // About new experiment
   experiment: FormGroup;
+  finialExperimentSpec: ExperimentSpec;
   step: number = 0;
   subscriptions: Subscription[] = [];
+
+  // TODO: Fetch all namespaces from submarine server
+  defaultNameSpace = 'default';
+  nameSpaceList = [this.defaultNameSpace, 'submarine'];
+
+  // TODO: Fetch all images from submarine server
+  imageIndex = 0;
+  defaultImage = 'gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0'
+  imageList = [this.defaultImage];
 
   // Constants
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
   PYTORCH_SPECNAMES = ['Master', 'Worker'];
+  defaultSpecName = 'worker';
   MEMORY_UNITS = ['M', 'G'];
-  TOTAL_STEPS = 2;
+
+  SECOND_STEP = 1;
+  PREVIEW_STEP = 2;
+  ADVANCED = false;
 
   // About env page
   currentEnvPage = 1;
   PAGESIZE = 5;
 
   // About spec
-  jobTypes = 'Tensorflow';
+  jobTypes = 'Distributed Tensorflow';
+  framework = 'Tensorflow';
   currentSpecPage = 1;
 
   // About update
@@ -69,9 +84,9 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
     this.experiment = new FormGroup({
       experimentName: new FormControl(null, Validators.required),
       description: new FormControl(null, [Validators.required]),
-      namespace: new FormControl('default', [Validators.required]),
+      namespace: new FormControl(this.defaultNameSpace, [Validators.required]),
       cmd: new FormControl('', [Validators.required]),
-      image: new FormControl('', [Validators.required]),
+      image: new FormControl(this.defaultImage, [Validators.required]),
       envs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
       specs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('name')])
     });
@@ -90,8 +105,11 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
 
     const sub2 = this.experimentFormService.stepService.subscribe((n) => {
       if (n > 0) {
-        if (this.step === this.TOTAL_STEPS) {
+        if (this.step === this.PREVIEW_STEP) {
           this.handleSubmit();
+        } else if (this.step === this.SECOND_STEP) {
+          this.onPreview();
+          this.step += 1;
         } else {
           this.step += 1;
         }
@@ -100,7 +118,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
       }
       // Send the current step and okText back to parent
       this.experimentFormService.modalPropsChange({
-        okText: this.step !== this.TOTAL_STEPS ? 'Next step' : 'Submit',
+        okText: this.step !== this.PREVIEW_STEP ? 'Next step' : 'Submit',
         currentStep: this.step
       });
       // Run check after step is changed
@@ -115,6 +133,13 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => {
       sub.unsubscribe();
     });
+  }
+
+  addItem(input: HTMLInputElement): void {
+    const value = input.value;
+    if (this.imageList.indexOf(value) === -1) {
+      this.imageList = [...this.imageList, input.value || `New item ${this.imageIndex++}`];
+    }
   }
 
   // Getters of experiment request form
@@ -141,7 +166,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
   }
 
   /**
-   * Reset properies in parent component when the form is about to closed
+   * Reset properties in parent component when the form is about to closed
    */
   closeModal() {
     this.experimentFormService.modalPropsClear();
@@ -153,22 +178,25 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
   checkStatus() {
     if (this.step === 0) {
       this.experimentFormService.btnStatusChange(
-        this.experimentName.invalid || this.namespace.invalid || this.cmd.invalid || this.image.invalid
+        this.experimentName.invalid ||
+          this.namespace.invalid ||
+          this.cmd.invalid ||
+          this.image.invalid ||
+          this.envs.invalid
       );
     } else if (this.step === 1) {
-      this.experimentFormService.btnStatusChange(this.envs.invalid);
-    } else if (this.step === this.TOTAL_STEPS) {
       this.experimentFormService.btnStatusChange(this.specs.invalid);
     }
   }
-
+  onPreview() {
+    this.finialExperimentSpec = this.constructSpec();
+  }
   /**
    * Event handler for Next step/Submit button
    */
   handleSubmit() {
     if (this.mode === 'create') {
-      const newSpec = this.constructSpec();
-      this.experimentService.createExperiment(newSpec).subscribe({
+      this.experimentService.createExperiment(this.finialExperimentSpec).subscribe({
         next: () => {},
         error: (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {
@@ -182,8 +210,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
         }
       });
     } else if (this.mode === 'update') {
-      const newSpec = this.constructSpec();
-      this.experimentService.updateExperiment(this.targetId, newSpec).subscribe(
+      this.experimentService.updateExperiment(this.targetId, this.finialExperimentSpec).subscribe(
         null,
         (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {
@@ -197,8 +224,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
         }
       );
     } else if (this.mode === 'clone') {
-      const newSpec = this.constructSpec();
-      this.experimentService.createExperiment(newSpec).subscribe(
+      this.experimentService.createExperiment(this.finialExperimentSpec).subscribe(
         null,
         (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {
@@ -231,10 +257,11 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
    * Create a new spec
    */
   createSpec(
-    defaultName: string = '',
+    defaultName: string = 'Worker',
     defaultReplica: number = 1,
     defaultCpu: number = 1,
-    defaultMemory: string = '',
+    defaultGpu: number = 0,
+    defaultMemory: number = 1024,
     defaultUnit: string = 'M'
   ): FormGroup {
     return new FormGroup(
@@ -242,6 +269,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
         name: new FormControl(defaultName, [Validators.required]),
         replicas: new FormControl(defaultReplica, [Validators.min(1), Validators.required]),
         cpus: new FormControl(defaultCpu, [Validators.min(1), Validators.required]),
+        gpus: new FormControl(defaultGpu, [Validators.min(0), Validators.required]),
         memory: new FormGroup(
           {
             num: new FormControl(defaultMemory, [Validators.required]),
@@ -283,10 +311,10 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
    */
   constructSpec(): ExperimentSpec {
     // Construct the spec
-    const meta: SpecMeta = {
+    const meta: ExperimentMeta = {
       name: this.experimentName.value,
       namespace: this.namespace.value,
-      framework: this.jobTypes,
+      framework: this.framework === 'Standalone' ? 'Tensorflow' : this.framework,
       cmd: this.cmd.value,
       envVars: {}
     };
@@ -301,14 +329,14 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
       if (spec.get('name').value) {
         specs[spec.get('name').value] = {
           replicas: spec.get('replicas').value,
-          resources: `cpu=${spec.get('cpus').value},memory=${spec.get('memory').get('num').value}${
-            spec.get('memory').get('unit').value
-          }`
+          resources: `cpu=${spec.get('cpus').value},nvidia.com/gpu=${spec.get('gpus').value},memory=${
+            spec.get('memory').get('num').value
+          }${spec.get('memory').get('unit').value}`
         };
       }
     }
 
-    const environment: SpecEnviroment = {
+    const environment: EnvironmentSpec = {
       image: this.image.value
     };
 
@@ -331,6 +359,10 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
     arr.removeAt(index);
   }
 
+  deleteAllItem(arr: FormArray) {
+    arr.clear();
+  }
+
   updateExperimentInit() {
     // Prevent user from modifying the name
     this.experimentName.disable();
@@ -349,6 +381,7 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
     const cloneExperimentName = spec.meta.name + '-' + id;
     this.experimentName.setValue(cloneExperimentName.toLocaleLowerCase());
     this.cloneExperiment(spec);
+    this.checkStatus();
   }
 
   cloneExperiment(spec: ExperimentSpec) {
@@ -361,8 +394,17 @@ export class ExperimentCustomizedForm implements OnInit, OnDestroy {
       this.envs.push(env);
     }
     for (const [specName, info] of Object.entries(spec.spec)) {
-      const [cpuCount, memory, unit] = info.resources.match(/\d+|[MG]/g);
-      const newSpec = this.createSpec(specName, parseInt(info.replicas, 10), parseInt(cpuCount, 10), memory, unit);
+      const cpuCount = info.resourceMap.cpu;
+      const gpuCount = info.resourceMap.gpu === undefined ? '0' : '1';
+      const [memory, unit] = info.resourceMap.memory.match(/\d+|[MG]/g);
+      const newSpec = this.createSpec(
+        specName,
+        parseInt(info.replicas, 10),
+        parseInt(cpuCount, 10),
+        parseInt(gpuCount, 10),
+        parseInt(memory, 10),
+        unit
+      );
       this.specs.push(newSpec);
     }
   }

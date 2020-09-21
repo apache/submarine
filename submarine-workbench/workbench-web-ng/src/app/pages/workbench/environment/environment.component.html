@@ -17,7 +17,7 @@
   ~ under the License.
   -->
 
-<nz-layout style="margin: -24px -24px 16px;">
+<nz-layout style="margin: -24px -24px 16px">
   <nz-layout class="inner-layout">
     <div id="environmentOuter">
       <nz-breadcrumb>
@@ -44,7 +44,7 @@
       <div align="right">
         <nz-input-group
           nzSearch
-          style="width: 300px; margin-top: 15px; margin-left: 10px; margin-right: 5px;"
+          style="width: 300px; margin-top: 15px; margin-left: 10px; margin-right: 5px"
           [nzAddOnAfter]="suffixIconButton"
         >
           <input type="text" nz-input placeholder="input search text" />
@@ -57,7 +57,7 @@
           nz-button
           id="createEnvironment"
           nzType="primary"
-          style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px;"
+          style="margin-right: 5px; margin-bottom: 15px; margin-top: 15px"
           (click)="initEnvForm()"
         >
           <i nz-icon nzType="plus"></i>
@@ -67,7 +67,7 @@
           nz-button
           id="deleteEnvironment"
           nzType="primary"
-          style="margin-bottom: 15px; margin-top: 15px;"
+          style="margin-bottom: 15px; margin-top: 15px"
           nz-popconfirm
           nzTitle="Confirm to delete?"
           nzCancelText="Cancel"
@@ -120,9 +120,7 @@
 <nz-modal [(nzVisible)]="isVisible" nzTitle="Create Environment" [nzWidth]="700">
   <div *nzModalFooter>
     <button nz-button nzType="default" (click)="closeModal()">Cancel</button>
-    <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="createEnvironment()">
-      Create
-    </button>
+    <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="createEnvironment()">Create</button>
   </div>
   <div>
     <form [formGroup]="environmentForm">
@@ -163,7 +161,7 @@
             <input required nz-input type="text" name="channel{{ i }}" id="channel{{ i }}" [formControlName]="i" />
             <i
               nz-icon
-              style="margin-left: 5px;"
+              style="margin-left: 5px"
               nzType="close-circle"
               nzTheme="fill"
               (click)="deleteItem(channels, i)"
@@ -171,10 +169,10 @@
           </div>
         </div>
       </div>
-      <div style="margin: 10px;">
+      <div style="margin: 10px">
         <button
           nz-button
-          style="display: block; margin: auto;"
+          style="display: block; margin: auto"
           id="addChannel-btn"
           type="default"
           (click)="addChannel()"
@@ -196,7 +194,7 @@
             />
             <i
               nz-icon
-              style="margin-left: 5px;"
+              style="margin-left: 5px"
               nzType="close-circle"
               nzTheme="fill"
               (click)="deleteItem(dependencies, i)"
@@ -204,11 +202,11 @@
           </div>
         </div>
       </div>
-      <div style="margin: 10px;">
+      <div style="margin: 10px">
         <button
-          style="margin-top: 10px;"
+          style="margin-top: 10px"
           nz-button
-          style="display: block; margin: auto;"
+          style="display: block; margin: auto"
           id="addDep-btn"
           type="default"
           (click)="addDependencies()"

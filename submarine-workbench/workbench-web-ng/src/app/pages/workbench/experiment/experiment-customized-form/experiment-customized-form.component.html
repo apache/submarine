@@ -19,15 +19,15 @@
 
 <div>
   <nz-steps [nzCurrent]="step">
-    <nz-step nzTitle="Meta"></nz-step>
-    <nz-step nzTitle="Env"></nz-step>
-    <nz-step nzTitle="Spec"></nz-step>
+    <nz-step nzTitle="First Step"></nz-step>
+    <nz-step nzTitle="Second Step"></nz-step>
+    <nz-step nzTitle="Preview"></nz-step>
   </nz-steps>
 </div>
 <div>
   <form [formGroup]="experiment">
-    <div [ngSwitch]="step" style="margin-top: 30px;">
-      <div *ngSwitchCase="0">
+    <div [ngSwitch]="step" style="margin-top: 30px">
+      <div *ngSwitchCase="0" id="firstStep">
         <div class="single-field-group">
           <label for="experimentName">
             <span class="red-star">*</span>
@@ -36,53 +36,85 @@
           <input nz-input type="text" name="experimentName" id="experimentName" formControlName="experimentName" />
         </div>
         <div class="single-field-group">
-          <label for="description">
-            Description
-          </label>
+          <label for="description">Description</label>
           <textarea
             nz-input
-            [nzAutosize]="{ minRows: 3, maxRows: 6 }"
+            [nzAutosize]="{ minRows: 1, maxRows: 4 }"
             name="description"
             formControlName="description"
+            id="description"
           ></textarea>
-        </div>
-        <div class="single-field-group">
-          <label for="namespace">
-            <span class="red-star">*</span>
-            Namespace
-          </label>
-          <input nz-input name="namespace" formControlName="namespace" />
         </div>
         <div class="single-field-group">
           <label for="cmd">
             <span class="red-star">*</span>
             Command
           </label>
-          <input nz-input name="cmd" formControlName="cmd" placeholder="Command to run" />
+          <textarea
+            nz-input
+            name="cmd"
+            formControlName="cmd"
+            placeholder="Command to run"
+            id="cmd"
+            [nzAutosize]="{ minRows: 2, maxRows: 4 }"
+          ></textarea>
         </div>
         <div class="single-field-group">
           <label for="image">
             <span class="red-star">*</span>
             Image
           </label>
-          <input nz-input name="image" formControlName="image" placeholder="Image to use" />
+          <nz-select
+            nzShowSearch
+            [nzDropdownRender]="renderTemplate"
+            formControlName="image"
+            id="image"
+          >
+            <nz-option *ngFor="let image of imageList" [nzValue]="image" [nzLabel]="image"></nz-option>
+          </nz-select>
+          <ng-template #renderTemplate>
+            <nz-divider></nz-divider>
+            <div class="container">
+              <input type="text" nz-input #inputElement />
+              <a class="add-item" (click)="addItem(inputElement)">
+                <i nz-icon nzType="plus"></i>
+                Add item
+              </a>
+            </div>
+          </ng-template>
         </div>
-      </div>
-      <div *ngSwitchCase="1" id="page2">
-        <div>
-          <button nz-button id="env-btn" type="default" (click)="onCreateEnv()">
-            Add new env
+        <div style="margin-bottom: 10px">
+          <button
+            nz-button
+            style="display: block; margin: auto"
+            id="advancedBtn"
+            nzType="default"
+            (click)="ADVANCED = !ADVANCED"
+          >
+            Advanced
+            <i nz-icon [nzType]="ADVANCED ? 'up' : 'down'"></i>
           </button>
+        </div>
+        <div *ngIf="ADVANCED" class="single-field-group">
+          <label for="namespace">
+            <span class="red-star">*</span>
+            Namespace
+          </label>
+          <nz-select formControlName="namespace" id="namespace">
+            <nz-option *ngFor="let namespace of nameSpaceList" [nzValue]="namespace" [nzLabel]="namespace"></nz-option>
+          </nz-select>
+        </div>
+        <div *ngIf="ADVANCED">
           <ul formArrayName="envs" class="list-container">
             <ng-container *ngFor="let env of envs.controls; index as i">
-              <li *ngIf="i | indexInRange: currentEnvPage:PAGESIZE" [formGroupName]="i" class="input-group">
-                <div>
+              <li [formGroupName]="i" class="input-group">
+                <div style="margin-left: 30%">
                   <label for="key{{ i }}">Key</label>
-                  <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" />
+                  <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" id="key{{ i }}" />
                 </div>
-                <div>
+                <div style="margin-left: 0">
                   <label for="value{{ i }}">Value</label>
-                  <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" />
+                  <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" id="value{{ i }}" />
                 </div>
                 <i nz-icon nzType="close-circle" nzTheme="fill" (click)="deleteItem(envs, i)"></i>
               </li>
@@ -100,29 +132,37 @@
               </div>
             </ng-container>
           </ul>
-          <nz-pagination
-            [(nzPageIndex)]="currentEnvPage"
-            [nzPageSize]="PAGESIZE"
-            [nzTotal]="envs.controls.length"
-            nzSimple
-          ></nz-pagination>
+          <button nz-button id="env-btn" style="display: block; margin: auto" nzType="primary" (click)="onCreateEnv()">
+            Add new environment variable
+          </button>
         </div>
       </div>
-      <div *ngSwitchCase="2">
-        <nz-radio-group [(ngModel)]="jobTypes" [ngModelOptions]="{ standalone: true }" id="jobs-container">
-          <label nz-radio nzValue="Tensorflow">Distributed Tensorflow</label>
-          <label nz-radio nzValue="Pytorch">Distributed PyTorch</label>
+      <div *ngSwitchCase="1" id="secondStep">
+        <nz-radio-group [(ngModel)]="framework" [ngModelOptions]="{ standalone: true }" id="jobs-container">
+          <label nz-radio nzValue="Tensorflow" (click)="deleteAllItem(specs); jobTypes = 'Distributed Tensorflow'">
+            Distributed Tensorflow
+          </label>
+          <label nz-radio nzValue="Pytorch" (click)="deleteAllItem(specs); jobTypes = 'Distributed Pytorch'">
+            Distributed PyTorch
+          </label>
+          <label
+            nz-radio
+            nzValue="Standalone"
+            (click)="deleteAllItem(specs); onCreateSpec(); jobTypes = 'Standalone Script'"
+          >
+            Standalone Script
+          </label>
         </nz-radio-group>
         <label class="pg3-form-label"></label>
-        <button nz-button id="spec-btn" type="default" (click)="onCreateSpec()">
+        <button *ngIf="framework !== 'Standalone'" nz-button id="spec-btn" nzType="default" (click)="onCreateSpec()">
           Add new spec
         </button>
         <ul formArrayName="specs" class="list-container">
           <ng-container *ngFor="let spec of specs.controls; index as i">
             <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
-              <div id="spec{{ i }}">
+              <div id="spec{{ i }}" *ngIf="framework !== 'Standalone'">
                 <label>Spec name</label>
-                <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="jobTypes">
+                <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="framework">
                   <div *ngSwitchCase="'Tensorflow'">
                     <nz-option *ngFor="let spec of TF_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
                   </div>
@@ -131,7 +171,7 @@
                   </div>
                 </nz-select>
               </div>
-              <div>
+              <div *ngIf="framework !== 'Standalone'">
                 <label>Number of Replica</label>
                 <input
                   nz-input
@@ -145,10 +185,21 @@
                 <label>Number of cpu</label>
                 <input nz-input name="cpu{{ i }}" type="number" placeholder="number of cpu" formControlName="cpus" />
               </div>
+              <div>
+                <label>Number of gpu</label>
+                <input nz-input name="gpu{{ i }}" type="number" placeholder="number of gpu" formControlName="gpus" />
+              </div>
               <div id="memory{{ i }}">
                 <label>Memory</label>
                 <div formGroupName="memory" class="memory-input-group">
-                  <input nz-input name="memory{{ i }}" placeholder="Enter number" formControlName="num" />
+                  <input
+                    nz-input
+                    name="memory{{ i }}"
+                    type="number"
+                    step="1024"
+                    placeholder="Enter number"
+                    formControlName="num"
+                  />
                   <nz-select formControlName="unit">
                     <nz-option *ngFor="let unit of MEMORY_UNITS" [nzValue]="unit" [nzLabel]="unit"></nz-option>
                   </nz-select>
@@ -162,6 +213,7 @@
             >
               {{ spec.getError('specError') }}
             </div>
+
             <div
               class="alert-message"
               *ngIf="spec.get('name').dirty | logicalAnd: spec.get('name').hasError('duplicateError')"
@@ -183,6 +235,9 @@
             <div class="alert-message" *ngIf="spec.get('cpus').dirty | logicalAnd: spec.get('cpus').hasError('min')">
               cpus must be at least 1
             </div>
+            <div class="alert-message" *ngIf="spec.get('gpus').dirty | logicalAnd: spec.get('gpus').hasError('min')">
+              cpus must be at least 0
+            </div>
           </ng-container>
         </ul>
         <nz-pagination
@@ -191,6 +246,28 @@
           [nzTotal]="specs.controls.length"
           nzSimple
         ></nz-pagination>
+      </div>
+      <div *ngSwitchCase="2" id="previewPage">
+        <nz-descriptions nzTitle="{{ jobTypes }}" nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }">
+          <nz-descriptions-item nzTitle="Name">{{ finialExperimentSpec.meta.name }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Namespace">{{ finialExperimentSpec.meta.namespace }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Command" [nzSpan]="2">
+            {{ finialExperimentSpec.meta.cmd }}
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Image" [nzSpan]="2">
+            {{ finialExperimentSpec.environment.image }}
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Environment Variables" [nzSpan]="2">
+            <span *ngFor="let item of finialExperimentSpec.meta.envVars | keyvalue; let isLast = last">
+              {{ item.key }}={{ item.value }}{{ isLast ? '' : ', ' }}
+            </span>
+          </nz-descriptions-item>
+          <div *ngFor="let item of finialExperimentSpec.spec | keyvalue">
+            <nz-descriptions-item nzTitle="{{ item.key }}" [nzSpan]="2">
+              {{ item.value.resources }}
+            </nz-descriptions-item>
+          </div>
+        </nz-descriptions>
       </div>
     </div>
   </form>

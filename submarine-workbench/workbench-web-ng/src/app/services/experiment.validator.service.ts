@@ -70,7 +70,9 @@ export class ExperimentValidatorService {
       for (let i = 0; i < arr.length; i++) {
         const nameControl = arr.controls[i].get(fieldName);
         // We don't consider empty string
-        if (!nameControl.value) continue;
+        if (!nameControl.value) {
+          continue;
+        }
 
         if (duplicateSet.has(nameControl.value)) {
           // Found duplicates, manually set errors on FormControl level

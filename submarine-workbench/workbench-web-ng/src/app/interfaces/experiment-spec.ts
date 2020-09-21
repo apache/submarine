@@ -17,7 +17,7 @@
  * under the License.
  */
 
-export interface SpecMeta {
+export interface ExperimentMeta {
   name: string;
   description?: string;
   namespace: string;
@@ -28,7 +28,7 @@ export interface SpecMeta {
   };
 }
 
-export interface SpecEnviroment {
+export interface EnvironmentSpec {
   image: string;
 }
 
@@ -36,13 +36,16 @@ export interface Specs {
   [name: string]: {
     replicas: string;
     resources: string;
+    resourceMap?: {
+      memory: string;
+      cpu: string;
+      gpu: string;
+    };
   };
 }
 
 export interface ExperimentSpec {
-  meta: SpecMeta;
-  environment: {
-    image: string;
-  };
+  meta: ExperimentMeta;
+  environment: EnvironmentSpec;
   spec: Specs;
 }
