@@ -20,6 +20,7 @@ package org.apache.submarine.integration;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
 import org.apache.submarine.SubmarineITUtils;
+import org.junit.Ignore;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.By;
@@ -45,6 +46,7 @@ public class workspaceIT extends AbstractSubmarineIT {
     driver.quit();
   }
 
+  @Ignore
   @Test
   public void workspaceNavigation() throws Exception {
     // Login
@@ -60,7 +62,7 @@ public class workspaceIT extends AbstractSubmarineIT {
 
     WebDriverWait wait = new WebDriverWait( driver, 60);
     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//li[contains(text(), \"Release\")]")));
-    
+
     //Test release part
     pollingWait(By.xpath("//li[contains(text(), \"Release\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(pollingWait(By.xpath("//nz-table[@id='releaseTable']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
@@ -96,8 +98,8 @@ public class workspaceIT extends AbstractSubmarineIT {
     //return to project page
     Assert.assertEquals(pollingWait(By.xpath("//div[@id='addProjectbtn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
 
-    
-    
+
+
   }
 }
 

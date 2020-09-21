@@ -20,6 +20,7 @@ package org.apache.submarine.integration;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
 import org.apache.submarine.SubmarineITUtils;
+import org.junit.Ignore;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +44,7 @@ public class teamIT extends AbstractSubmarineIT {
     driver.quit();
   }
 
+  @Ignore
   @Test
   public void teamTest() throws Exception {
     // Login
