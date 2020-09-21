@@ -42,10 +42,13 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
 
   // TODO: Fetch all namespaces from submarine server
-  nameSpaceList = ['default', 'submarine'];
+  defaultNameSpace = 'default';
+  nameSpaceList = [this.defaultNameSpace, 'submarine'];
 
   // TODO: Fetch all images from submarine server
-  imageList = ['gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0'];
+  imageIndex = 0;
+  defaultImage = 'gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0'
+  imageList = [this.defaultImage];
 
   // Constants
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
@@ -81,9 +84,9 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     this.experiment = new FormGroup({
       experimentName: new FormControl(null, Validators.required),
       description: new FormControl(null, [Validators.required]),
-      namespace: new FormControl('default', [Validators.required]),
+      namespace: new FormControl(this.defaultNameSpace, [Validators.required]),
       cmd: new FormControl('', [Validators.required]),
-      image: new FormControl('', [Validators.required]),
+      image: new FormControl(this.defaultImage, [Validators.required]),
       envs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
       specs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('name')])
     });
@@ -130,6 +133,13 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     this.subscriptions.forEach((sub) => {
       sub.unsubscribe();
     });
+  }
+
+  addItem(input: HTMLInputElement): void {
+    const value = input.value;
+    if (this.imageList.indexOf(value) === -1) {
+      this.imageList = [...this.imageList, input.value || `New item ${this.imageIndex++}`];
+    }
   }
 
   // Getters of experiment request form

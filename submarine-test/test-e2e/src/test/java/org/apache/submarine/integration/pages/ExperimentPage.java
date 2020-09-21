@@ -155,8 +155,6 @@ public class ExperimentPage {
     this.experimentName.sendKeys(name);
     this.description.clear();
     this.description.sendKeys(description);
-    this.image.sendKeys(image);
-    this.cmd.clear();
     this.cmd.sendKeys(cmd);
     this.envKey.sendKeys(envKey);
     this.envValue.sendKeys(envValue);
@@ -187,6 +185,7 @@ public class ExperimentPage {
       replicas.get(i).sendKeys(Integer.toString(replicaCount[i]));
       cpus.get(i).clear();
       cpus.get(i).sendKeys(Integer.toString(cpuCount[i]));
+      memory.get(i).clear();
       memory.get(i).sendKeys(Integer.toString(inputMemory[i]));
     }
   }
