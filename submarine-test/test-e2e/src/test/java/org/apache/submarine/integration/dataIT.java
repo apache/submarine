@@ -19,14 +19,15 @@ package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.testng.Assert;
+
 
 @Ignore("SUBMARINE-628")
 public class dataIT extends AbstractSubmarineIT {
@@ -46,7 +47,7 @@ public class dataIT extends AbstractSubmarineIT {
 
 
   @Test
-  public void dataNavigation() throws Exception {
+  public void DataNavigation() throws Exception {
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");

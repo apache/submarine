@@ -19,16 +19,16 @@ package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
-import org.apache.submarine.SubmarineITUtils;
 import org.junit.Ignore;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.testng.Assert;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.Assert;
 
+@Ignore("SUBMARINE-628")
 public class teamIT extends AbstractSubmarineIT {
 
   public final static Logger LOG = LoggerFactory.getLogger(teamIT.class);
@@ -44,7 +44,6 @@ public class teamIT extends AbstractSubmarineIT {
     driver.quit();
   }
 
-  @Ignore
   @Test
   public void teamTest() throws Exception {
     // Login

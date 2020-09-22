@@ -19,19 +19,14 @@ package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
-import org.apache.submarine.SubmarineITUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.interactions.Actions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.testng.Assert;
-import java.util.*;
 
 public class datadictIT extends AbstractSubmarineIT {
 
@@ -57,7 +52,7 @@ public class datadictIT extends AbstractSubmarineIT {
     clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
     pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
 
-    // Start Routing & Navigation in data-dict 
+    // Start Routing & Navigation in data-dict
     LOG.info("Start Routing & Navigation in data-dict");
     pollingWait(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     WebDriverWait wait = new WebDriverWait( driver, 60);
@@ -76,14 +71,14 @@ public class datadictIT extends AbstractSubmarineIT {
     pollingWait(By.cssSelector("button[class='ant-btn ng-star-inserted ant-btn-default']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Add\")]")).size(), 0);
     // Add --> set input --> close
-    pollingWait(By.cssSelector("form > nz-form-item:nth-child(3) > nz-form-control > div > span > button.ant-btn.ant-btn-default"), MAX_BROWSER_TIMEOUT_SEC).click(); 
+    pollingWait(By.cssSelector("form > nz-form-item:nth-child(3) > nz-form-control > div > span > button.ant-btn.ant-btn-default"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.xpath("//input[@id='inputNewDictCode']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict code");
     pollingWait(By.xpath("//input[@id='inputNewDictName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict name");
     pollingWait(By.xpath("//input[@id='inputNewDictDescription']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict description");
     pollingWait(By.cssSelector("button[class='ant-btn ng-star-inserted ant-btn-default']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals( driver.findElements(By.xpath("//td[@id='dataDictCodetest new dict code']")).size(), 0);
-    // Add --> set input --> ok --> new dict 
-    pollingWait(By.cssSelector("form > nz-form-item:nth-child(3) > nz-form-control > div > span > button.ant-btn.ant-btn-default"), MAX_BROWSER_TIMEOUT_SEC).click(); 
+    // Add --> set input --> ok --> new dict
+    pollingWait(By.cssSelector("form > nz-form-item:nth-child(3) > nz-form-control > div > span > button.ant-btn.ant-btn-default"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.xpath("//input[@id='inputNewDictCode']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict code");
     pollingWait(By.xpath("//input[@id='inputNewDictName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict name");
     pollingWait(By.xpath("//input[@id='inputNewDictDescription']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict description");
@@ -109,7 +104,7 @@ public class datadictIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//li[@id='dataDictConfigurationPROJECT_TYPE']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals( driver.findElements(By.xpath("//td[contains(text(), \"qqq\")]")).size(), 1);
     pollingWait(By.xpath("//button[@class='ant-btn ng-star-inserted ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
-  
+
     // Edit button
     LOG.info("[TEST] Edit button");
     // Edit dict --> Update --> OK --> More --> Configuration
