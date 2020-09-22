@@ -54,7 +54,7 @@ public class environmentIT extends AbstractSubmarineIT {
 
     // Routing to workspace
     LOG.info("url");
-    pollingWait(By.xpath("//span[contains(text(), \"Environment\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.xpath("//a[@href='/workbench/environment']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/environment");
 
     // Test create new environment
