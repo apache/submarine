@@ -70,6 +70,8 @@ public class sidebarIT extends AbstractSubmarineIT {
 //    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/data");
 //    pollingWait(By.xpath("//span[contains(text(), \"Model\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
 //    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/model");
+//    pollingWait(By.xpath("//span[contains(text(), \"Home\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+//    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/home");
 
     // Lazy-loading
     WebDriverWait wait = new WebDriverWait( driver, 15, 5000);
@@ -79,7 +81,5 @@ public class sidebarIT extends AbstractSubmarineIT {
 
     pollingWait(By.xpath("//a[@href='/workbench/manager/dataDict']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/manager/dataDict");
-    pollingWait(By.xpath("//span[contains(text(), \"Home\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/home");
   }
 }
