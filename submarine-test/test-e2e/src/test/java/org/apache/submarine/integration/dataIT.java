@@ -47,7 +47,7 @@ public class dataIT extends AbstractSubmarineIT {
 
 
   @Test
-  public void DataNavigation() throws Exception {
+  public void dataNavigation() throws Exception {
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");

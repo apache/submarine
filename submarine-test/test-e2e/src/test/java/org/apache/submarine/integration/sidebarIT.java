@@ -56,7 +56,7 @@ public class sidebarIT extends AbstractSubmarineIT {
 
     // Start Routing & Navigation in sidebar
     LOG.info("Start Routing & Navigation in sidebar");
-    pollingWait(By.xpath("//a[@href='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/experiment");
     pollingWait(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC).click();

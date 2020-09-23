@@ -47,11 +47,11 @@
         [nzDisabled]="menu.disabled"
         [nzTitle]="menu.title"
         nzPlacement="right"
-        nzMatchRouter
+        [nzMatchRouter]="!menu.disabled"
+        [routerLink]="menu.disabled ? null : menu.routerLink"
       >
         <i nz-icon [nzType]="menu.iconType"></i>
         <span>{{ menu.title }}</span>
-        <a [routerLink]="menu.routerLink">{{ menu.title }}</a>
       </li>
     </ng-container>
   </ul>

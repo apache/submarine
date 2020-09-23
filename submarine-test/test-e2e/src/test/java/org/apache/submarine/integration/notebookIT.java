@@ -53,7 +53,7 @@ public class notebookIT extends AbstractSubmarineIT {
     pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
 
     // Routing to Notebook
-    pollingWait(By.xpath("//a[@href='/workbench/notebook']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.xpath("//span[contains(text(), \"Notebook\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/notebook");
 
   }
