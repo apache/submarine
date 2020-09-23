@@ -57,7 +57,6 @@ export class NotebookComponent implements OnInit {
   ngOnInit() {
     this.notebookForm = new FormGroup({
       notebookName: new FormControl(null, Validators.required),
-      namespace: new FormControl(this.currentNamespace),
       envName: new FormControl(null, Validators.required), // Environment
       envVars: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
       cpus: new FormControl(null, [Validators.min(1), Validators.required]),
@@ -85,23 +84,10 @@ export class NotebookComponent implements OnInit {
   fetchNotebookList() {
     this.notebookService.fetchNotebookList().subscribe((list) => {
       this.allNotebookList = list;
-      this.currentNamespace = 'default';
-      this.notebookTable = [];
-      this.allNotebookList.forEach((item) => {
-        if (item.spec.meta.namespace == this.currentNamespace) {
-          this.notebookTable.push(item);
-        }
-      });
-
-      // Get namespaces
-      //this.getAllNamespaces();
-
-      // Set default namespace and table
-      //this.setDefaultTable();
     });
   }
 
-  // Future work. If we need a api for get all namespaces.
+  /* (Future work. If we need a api for get all namespaces.)
   getAllNamespaces() {
     this.allNotebookList.forEach((element) => {
       if (this.allNamespaceList.indexOf(element.spec.meta.namespace) < 0) {
@@ -109,8 +95,10 @@ export class NotebookComponent implements OnInit {
       }
     });
   }
+  */
 
   // Future work. If we have a api for get all namespaces.
+  /*
   setDefaultTable() {
     this.currentNamespace = this.allNamespaceList[0];
     this.notebookTable = [];
@@ -120,6 +108,7 @@ export class NotebookComponent implements OnInit {
       }
     });
   }
+  */
 
   // Future work. If we have a api for get all namespaces.
   switchNamespace(namespace: string) {
@@ -159,9 +148,6 @@ export class NotebookComponent implements OnInit {
 
   get notebookName() {
     return this.notebookForm.get('notebookName');
-  }
-  get namespace() {
-    return this.notebookForm.get('namespace');
   }
   get envName() {
     return this.notebookForm.get('envName');
@@ -252,7 +238,7 @@ export class NotebookComponent implements OnInit {
     const newNotebookSpec = {
       meta: {
         name: this.notebookForm.get('notebookName').value,
-        namespace: this.notebookForm.get('namespace').value
+        namespace: 'default'
       },
       environment: {
         name: this.notebookForm.get('envName').value
@@ -269,10 +255,12 @@ export class NotebookComponent implements OnInit {
       }
     }
 
+    console.log(newNotebookSpec);
+
     // Post
     this.notebookService.createNotebook(newNotebookSpec).subscribe({
       next: (result) => {
-        this.updateNotebookTable();
+        this.fetchNotebookList();
       },
       error: (msg) => {
         this.nzMessageService.error(`${msg}, please try again`, {
