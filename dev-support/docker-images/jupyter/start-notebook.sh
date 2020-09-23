@@ -21,20 +21,9 @@
 
 set -euo pipefail
 
-SUBMARINE_ENV="${SUBMARINE_ENV:-"base"}"
-if [[ "${SUBMARINE_ENV}" != "base" ]]; then
-  # Create a new conda environment
-  if [[ -n "${CREATE_ENVIRONMENT_COMMAND:-}" ]]; then
-    /bin/bash -c "${CREATE_ENVIRONMENT_COMMAND}"
-  fi
-  if [[ -n "${INSTALL_ENVIRONMENT_COMMAND:-}" ]]; then
-    /bin/bash -c "conda run -n ${SUBMARINE_ENV} ${INSTALL_ENVIRONMENT_COMMAND}"
-  fi
-  if [[ -n "${INSTALL_KERNEL_COMMAND:-}" ]]; then
-    /bin/bash -c "conda run -n ${SUBMARINE_ENV} ${INSTALL_KERNEL_COMMAND}"
-  fi
-else
-  /bin/bash -c "pip install --quiet --no-cache-dir install notebook==6.1.3 apache-submarine"
+# Install conda dependency
+if [[ -n "${INSTALL_ENVIRONMENT_COMMAND:-}" ]]; then
+  /bin/bash -c "${INSTALL_ENVIRONMENT_COMMAND}"
 fi
 
 NOTEBOOK_ARGS="--ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*'"
@@ -54,8 +43,4 @@ if [[ -n "${NB_PREFIX}" ]]; then
   NOTEBOOK_ARGS="--NotebookApp.base_url=${NB_PREFIX} ${NOTEBOOK_ARGS}"
 fi
 
-if [[ -n "${SUBMARINE_ENV}" ]]; then
-  /bin/bash -c "conda run -n ${SUBMARINE_ENV} jupyter notebook ${NOTEBOOK_ARGS}"
-else
-  /bin/bash -c "jupyter notebook ${NOTEBOOK_ARGS}"
-fi
+/bin/bash -c "jupyter notebook ${NOTEBOOK_ARGS}"                                                                                                                                                 46,48         Bot

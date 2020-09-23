@@ -91,6 +91,9 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     conda clean --all -f -y && \
     rm -rf /home/$NB_USER/.cache/yarn
 
+# Install sumbarine python sdk and notebook
+RUN pip --quiet --no-cache-dir install notebook==6.1.3 apache-submarine
+
 EXPOSE $NB_PORT
 ENTRYPOINT ["tini", "-g", "--"]
 CMD ["start-notebook.sh"]

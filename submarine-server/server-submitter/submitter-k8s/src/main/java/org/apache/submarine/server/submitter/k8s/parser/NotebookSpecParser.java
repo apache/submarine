@@ -88,48 +88,30 @@ public class NotebookSpecParser {
       EnvironmentSpec environmentSpec = getEnvironment(notebookSpec).getEnvironmentSpec();
       String baseImage = environmentSpec.getDockerImage();
       KernelSpec kernel = environmentSpec.getKernelSpec();
-      String submarineEnvName = environmentSpec.getName();
-      V1EnvVar submarineEnv = new V1EnvVar();
-      submarineEnv.setName("SUBMARINE_ENV");
-      submarineEnv.setValue(submarineEnvName);
-      container.addEnvItem(submarineEnv);
       container.setImage(baseImage);
 
       String condaVersionValidationCommand = generateCondaVersionValidateCommand();
-      StringBuffer createCommand = new StringBuffer();
-      createCommand.append(condaVersionValidationCommand);
-      createCommand.append(" && ");
-      createCommand.append("conda create -y -n ");
-      createCommand.append(submarineEnvName);
+      StringBuffer installCommand = new StringBuffer();
+      installCommand.append(condaVersionValidationCommand);
+
       // If dependencies isn't empty
       if (kernel.getDependencies().size() > 0) {
+        installCommand.append(" && conda install -y");
         for (String channel : kernel.getChannels()) {
-          createCommand.append(" ");
-          createCommand.append("-c");
-          createCommand.append(" ");
-          createCommand.append(channel);
+          installCommand.append(" ");
+          installCommand.append("-c");
+          installCommand.append(" ");
+          installCommand.append(channel);
         }
         for (String dependency : kernel.getDependencies()) {
-          createCommand.append(" ");
-          createCommand.append(dependency);
+          installCommand.append(" ");
+          installCommand.append(dependency);
         }
       }
-      V1EnvVar createCommandEnv = new V1EnvVar();
-      createCommandEnv.setName("CREATE_ENVIRONMENT_COMMAND");
-      createCommandEnv.setValue(createCommand.toString());
-      container.addEnvItem(createCommandEnv);
-
-      String installCommand = "pip --no-cache-dir install notebook==6.1.3 apache-submarine";
       V1EnvVar installCommandEnv = new V1EnvVar();
       installCommandEnv.setName("INSTALL_ENVIRONMENT_COMMAND");
-      installCommandEnv.setValue(installCommand);
+      installCommandEnv.setValue(installCommand.toString());
       container.addEnvItem(installCommandEnv);
-
-      String createKernelCommand = "ipython kernel install --name " + kernel.getName() + " --user";
-      V1EnvVar createKernelCommandEnv = new V1EnvVar();
-      createKernelCommandEnv.setName("INSTALL_KERNEL_COMMAND");
-      createKernelCommandEnv.setValue(createKernelCommand);
-      container.addEnvItem(createKernelCommandEnv);
     }
 
     // Resources
