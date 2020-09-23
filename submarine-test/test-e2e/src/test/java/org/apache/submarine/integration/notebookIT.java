@@ -68,7 +68,7 @@ public class notebookIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//button[@id='envVar-btn']"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.xpath("//input[@name='key0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testKey0");
     pollingWait(By.xpath("//input[@name='value0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testValue0");
-    pollingWait(By.xpath("//button[@id='go']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.xpath("//button[@id='create-btn']"), MAX_BROWSER_TIMEOUT_SEC).click();
     /*
     Future add k8s test.
     Assert.assertEquals(pollingWait(By.xpath("//td[contains(., 'test-nb')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
