@@ -19,7 +19,7 @@
 
 <nz-table
   *ngIf="!isLoading"
-  style="margin-top: 10px"
+  style="margin-top: 10px;"
   id="experimentTable"
   #basicTable
   [nzData]="[experimentInfo]"
@@ -77,7 +77,7 @@
   </tbody>
 </nz-table>
 <nz-spin *ngIf="isLoading"></nz-spin>
-<div style="background-color: white">
+<div style="background-color: white;">
   <nz-select id="nzSelect_selectPod" [(ngModel)]="selectedPod">
     <nz-option *ngFor="let pod of podNameArr" [nzValue]="pod" [nzLabel]="pod"></nz-option>
   </nz-select>

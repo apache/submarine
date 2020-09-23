@@ -89,7 +89,7 @@
               {{ data.spec.spec.resources }}
             </td>
             <td>{{ data.status }}</td>
-            <td><a (click)="deleteNotebook(data.notebookId)">Delete</a></td>
+            <td><a id="delete{{ i }}" (click)="deleteNotebook(data.notebookId)">Delete</a></td>
           </tr>
         </tbody>
       </nz-table>
@@ -107,7 +107,7 @@
   <form [formGroup]="notebookForm">
     <div *nzModalFooter>
       <button nz-button nzType="default" (click)="isVisible = false">Cancel</button>
-      <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="handleOk()">
+      <button id="create-btn" nz-button nzType="primary" [disabled]="checkStatus()" (click)="handleOk()">
         Create
       </button>
     </div>
@@ -125,7 +125,12 @@
           Environment
         </label>
         <nz-select required name="select-envName" formControlName="envName">
-          <nz-option *ngFor="let env of envNameList" [nzValue]="env" [nzLabel]="env"></nz-option>
+          <nz-option
+            *ngFor="let env of envNameList; let i; of: index"
+            id="env{{ i }}"
+            [nzValue]="env"
+            [nzLabel]="env"
+          ></nz-option>
         </nz-select>
       </div>
       <div class="newNotebookForm">
