@@ -83,6 +83,17 @@ public class NotebookSpecParser {
       container.setEnv(parseEnvVars(notebookPodSpec));
     }
 
+    // Add submarine server DNS name and port into notebook pod
+    V1EnvVar submarineServerDNSEnv = new V1EnvVar();
+    submarineServerDNSEnv.setName("SUBMARINE_SERVER_DNS_NAME");
+    submarineServerDNSEnv.setValue(System.getenv("SUBMARINE_SERVER_DNS_NAME"));
+    container.addEnvItem(submarineServerDNSEnv);
+
+    V1EnvVar submarineServerPortEnv = new V1EnvVar();
+    submarineServerPortEnv.setName("SUBMARINE_SERVER_PORT");
+    submarineServerPortEnv.setValue(System.getenv("SUBMARINE_SERVER_PORT"));
+    container.addEnvItem(submarineServerPortEnv);
+
     // Environment
     if (getEnvironment(notebookSpec) != null) {
       EnvironmentSpec environmentSpec = getEnvironment(notebookSpec).getEnvironmentSpec();
