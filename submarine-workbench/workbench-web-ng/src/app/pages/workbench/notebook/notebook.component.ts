@@ -255,7 +255,7 @@ export class NotebookComponent implements OnInit {
       }
     }
 
-    console.log(newNotebookSpec);
+    // console.log(newNotebookSpec);
 
     // Post
     this.notebookService.createNotebook(newNotebookSpec).subscribe({
