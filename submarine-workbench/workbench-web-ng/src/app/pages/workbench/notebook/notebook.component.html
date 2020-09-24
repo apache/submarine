@@ -39,14 +39,17 @@
   <div id="notebookDiv">
     <div nz-row>
       <div nz-col nzSpan="12">
+        <h2>Notebook List</h2>
+        <!--
         <label style="font-size: large; color: black;">Namespaces :</label>
-        <nz-select style="margin-left: 5px; width: 240px;" [(ngModel)]="currentNamespace">
+        <nz-select disabled="disabled" style="margin-left: 5px; width: 240px;" [(ngModel)]="currentNamespace">
           <nz-option [nzValue]="currentNamespace" [nzLabel]="currentNamespace"></nz-option>
         </nz-select>
+        -->
       </div>
       <div nz-col nzSpan="12" align="right">
         <nz-input-group nzSearch style="width: 300px; margin-right: 5px;" [nzAddOnAfter]="suffixIconButton">
-          <input type="text" nz-input placeholder="input search text" />
+          <input type="text" nz-input id="searchInput" placeholder="input search text" />
         </nz-input-group>
         <ng-template #suffixIconButton>
           <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
@@ -64,7 +67,7 @@
       </div>
     </div>
     <div>
-      <nz-table style="padding-top: 5px;" #basicTable [nzData]="notebookTable">
+      <nz-table id="notebookListTable" style="padding-top: 5px;" #basicTable [nzData]="allNotebookList">
         <thead>
           <tr>
             <th>Name</th>
@@ -86,7 +89,7 @@
               {{ data.spec.spec.resources }}
             </td>
             <td>{{ data.status }}</td>
-            <td><a (click)="deleteNotebook(data.notebookId)">Delete</a></td>
+            <td><a id="delete{{ i }}" (click)="deleteNotebook(data.notebookId)">Delete</a></td>
           </tr>
         </tbody>
       </nz-table>
@@ -104,7 +107,7 @@
   <form [formGroup]="notebookForm">
     <div *nzModalFooter>
       <button nz-button nzType="default" (click)="isVisible = false">Cancel</button>
-      <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="handleOk()">
+      <button id="create-btn" nz-button nzType="primary" [disabled]="checkStatus()" (click)="handleOk()">
         Create
       </button>
     </div>
@@ -117,26 +120,17 @@
         <input nz-input required type="text" name="notebookName" id="notebookName" formControlName="notebookName" />
       </div>
       <div class="newNotebookForm">
-        <label for="namespace">
-          <span class="red-star">*</span>
-          Namespace
-        </label>
-        <input
-          nz-input
-          [(ngModel)]="currentNamespace"
-          disabled="disabled"
-          name="namespace"
-          id="namespace"
-          formControlName="namespace"
-        />
-      </div>
-      <div class="newNotebookForm">
         <label for="environment">
           <span class="red-star">*</span>
           Environment
         </label>
         <nz-select required name="select-envName" formControlName="envName">
-          <nz-option *ngFor="let env of envNameList" [nzValue]="env" [nzLabel]="env"></nz-option>
+          <nz-option
+            *ngFor="let env of envNameList; let i; of: index"
+            id="env{{ i }}"
+            [nzValue]="env"
+            [nzLabel]="env"
+          ></nz-option>
         </nz-select>
       </div>
       <div class="newNotebookForm">
@@ -158,7 +152,7 @@
           Memory
         </label>
         <div class="memory-input-group">
-          <input nz-input required name="memoryNum" formControlName="memoryNum" />
+          <input nz-input required name="memoryNum" placeholder="EX:1024" formControlName="memoryNum" />
           <nz-select formControlName="unit">
             <nz-option *ngFor="let unit of MEMORY_UNITS" [nzValue]="unit" [nzLabel]="unit"></nz-option>
           </nz-select>
@@ -169,10 +163,18 @@
           <div [formGroupName]="i" class="newNotebookForm">
             <label for="envVar{{ i }}">EnvVar {{ i + 1 }}</label>
             <div>
-              <input style="width: 30%;" nz-input name="key{{ i }}" placeholder="Key" formControlName="key" />
+              <input
+                style="width: 30%;"
+                nz-input
+                id="key{{ i }}"
+                name="key{{ i }}"
+                placeholder="Key"
+                formControlName="key"
+              />
               <input
                 style="width: 50%; margin-left: 10px;"
                 nz-input
+                id="value{{ i }}"
                 name="value{{ i }}"
                 placeholder="Value"
                 formControlName="value"
