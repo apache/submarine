@@ -22,9 +22,8 @@ import { Injectable } from '@angular/core';
 import { Rest } from '@submarine/interfaces';
 import { Environment } from '@submarine/interfaces/environment-info';
 import { BaseApiService } from '@submarine/services/base-api.service';
-import { of, throwError, Observable } from 'rxjs';
-import { catchError, map, switchMap } from 'rxjs/operators';
-import { EnvironmentSpec } from '@submarine/interfaces/environment-spec';
+import { of, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

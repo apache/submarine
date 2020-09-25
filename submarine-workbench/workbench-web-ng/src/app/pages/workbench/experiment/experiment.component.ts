@@ -20,11 +20,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
+import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
+import { ModalProps } from '@submarine/interfaces/modal-props';
+import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { NzMessageService } from 'ng-zorro-antd';
-import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
-import { ExperimentFormService } from '@submarine/services/experiment.form.service';
-import { ModalProps } from '@submarine/interfaces/modal-props';
 
 @Component({
   selector: 'submarine-experiment',
@@ -114,7 +114,7 @@ export class ExperimentComponent implements OnInit {
     this.modalProps.isVisible = true;
     this.modalProps.formType = initFormType;
 
-    if (initMode === 'update') {
+    if (initMode === 'update' || initMode === 'clone') {
       // Keep id for later request
       this.targetId = id;
       this.targetSpec = spec;

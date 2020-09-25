@@ -46,21 +46,28 @@ export class ExperimentInfoComponent implements OnInit {
     private nzMessageService: NzMessageService
   ) {}
 
+  statusColor: { [key: string]: string } = {
+    Accepted: 'gold',
+    Created: 'white',
+    Running: 'green',
+    Succeeded: 'blue'
+  };
+
   ngOnInit() {
     this.experimentID = this.route.snapshot.params.id;
     this.experimentService.querySpecificExperiment(this.experimentID).subscribe(
       (item) => {
         this.experimentInfo = item;
         this.isLoading = false;
-        if (this.experimentInfo.status == 'Succeeded') {
-          var finTime = new Date(this.experimentInfo.finishedTime);
-          var runTime = new Date(this.experimentInfo.runningTime);
-          var result = (finTime.getTime() - runTime.getTime()) / 1000;
+        if (this.experimentInfo.status === 'Succeeded') {
+          const finTime = new Date(this.experimentInfo.finishedTime);
+          const runTime = new Date(this.experimentInfo.runningTime);
+          const result = (finTime.getTime() - runTime.getTime()) / 1000;
           this.experimentInfo.duration = this.experimentService.durationHandle(result);
         } else {
-          var currentTime = new Date();
-          var runTime = new Date(this.experimentInfo.runningTime);
-          var result = (currentTime.getTime() - runTime.getTime()) / 1000;
+          const currentTime = new Date();
+          const runTime = new Date(this.experimentInfo.runningTime);
+          const result = (currentTime.getTime() - runTime.getTime()) / 1000;
           this.experimentInfo.duration = this.experimentService.durationHandle(result);
         }
       },

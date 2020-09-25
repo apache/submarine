@@ -46,7 +46,9 @@
       <td>{{ experimentInfo.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
       <td>{{ experimentInfo.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
       <td>{{ experimentInfo.duration }}</td>
-      <td>{{ experimentInfo.status }}</td>
+      <td>
+        <nz-tag [nzColor]="statusColor[experimentInfo.status]">{{ experimentInfo.status }}</nz-tag>
+      </td>
       <td class="td-action">
         <a (click)="startExperiment()">Start</a>
         <nz-divider nzType="vertical"></nz-divider>

@@ -30,9 +30,7 @@ public class ExperimentSpec {
   private Map<String, ExperimentTaskSpec> spec;
   private CodeSpec code;
 
-  public ExperimentSpec() {
-
-  }
+  public ExperimentSpec() {}
 
   public ExperimentMeta getMeta() {
     return meta;
@@ -57,7 +55,7 @@ public class ExperimentSpec {
   public void setSpec(Map<String, ExperimentTaskSpec> spec) {
     this.spec = spec;
   }
-  
+
   public CodeSpec getCode() {
     return code;
   }

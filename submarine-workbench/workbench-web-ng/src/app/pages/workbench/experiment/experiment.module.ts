@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { ExperimentCustomizedFormComponent } from './experiment-customized-form/experiment-customized-form.component';
 import { ChartsComponent } from './experiment-info/charts/charts.component';
 import { ExperimentInfoComponent } from './experiment-info/experiment-info.component';
 import { HyperParamsComponent } from './experiment-info/hyper-params/hyper-params.component';
 import { MetricsComponent } from './experiment-info/metrics/metrics.component';
 import { OutputsComponent } from './experiment-info/outputs/outputs.component';
-import { ExperimentCustomizedForm } from './experiment-customized-form/experiment-customized-form.component';
-import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 import { ExperimentComponent } from './experiment.component';
-import { RouterModule } from '@angular/router';
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -49,7 +49,7 @@ import { RouterModule } from '@angular/router';
     MetricsComponent,
     ChartsComponent,
     OutputsComponent,
-    ExperimentCustomizedForm
+    ExperimentCustomizedFormComponent
   ]
 })
 export class ExperimentModule {}

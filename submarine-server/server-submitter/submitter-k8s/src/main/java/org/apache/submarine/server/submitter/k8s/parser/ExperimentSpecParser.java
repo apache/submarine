@@ -23,9 +23,12 @@ import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.models.V1Container;
 import io.kubernetes.client.models.V1EnvVar;
 import io.kubernetes.client.models.V1ObjectMeta;
+import io.kubernetes.client.models.V1PodSecurityContext;
 import io.kubernetes.client.models.V1PodSpec;
 import io.kubernetes.client.models.V1PodTemplateSpec;
 import io.kubernetes.client.models.V1ResourceRequirements;
+import io.kubernetes.client.models.V1SecretVolumeSource;
+import io.kubernetes.client.models.V1Volume;
 import io.kubernetes.client.models.V1VolumeMount;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
@@ -39,6 +42,7 @@ import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.environment.EnvironmentManager;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.CodeLocalizer;
+import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.SSHGitCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
@@ -182,18 +186,41 @@ public class ExperimentSpecParser {
 
       if (podSpec.getInitContainers() != null
           && podSpec.getInitContainers().size() > 0) {
-        String volumeName = podSpec.getInitContainers().get(0).getVolumeMounts()
-            .get(0).getName();
-        String path = podSpec.getInitContainers().get(0).getVolumeMounts()
-            .get(0).getMountPath();
 
-        V1VolumeMount mount = new V1VolumeMount();
-        mount.setName(volumeName);
-        mount.setMountPath(path);
-
+        List<V1VolumeMount> initContainerVolumeMounts =
+            podSpec.getInitContainers().get(0).getVolumeMounts();
         List<V1VolumeMount> volumeMounts = new ArrayList<V1VolumeMount>();
-        volumeMounts.add(mount);
-        container.setVolumeMounts(volumeMounts);
+
+        // Populate container volume mounts using Init container info
+        for (V1VolumeMount initContainerVolumeMount : initContainerVolumeMounts) {
+          String volumeName = initContainerVolumeMount.getName();
+          String path = initContainerVolumeMount.getMountPath();
+          if (volumeName
+              .equals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME)) {
+            V1VolumeMount mount = new V1VolumeMount();
+            mount.setName(volumeName);
+            mount.setMountPath(path);
+            volumeMounts.add(mount);
+            container.setVolumeMounts(volumeMounts);
+          } else if (volumeName
+              .equals(SSHGitCodeLocalizer.GIT_SECRET_MOUNT_NAME)) {
+            V1Volume volume = new V1Volume();
+            volume.setName(volumeName);
+
+            List<V1Volume> existingVolumes = podSpec.getVolumes();
+            V1SecretVolumeSource secret = new V1SecretVolumeSource();
+            secret.secretName(SSHGitCodeLocalizer.GIT_SECRET_NAME);
+            secret.setDefaultMode(SSHGitCodeLocalizer.GIT_SECRET_MODE);
+            volume.setSecret(secret);
+            existingVolumes.add(volume);
+
+            // Pod level security context
+            V1PodSecurityContext podSecurityContext =
+                new V1PodSecurityContext();
+            podSecurityContext.setFsGroup(SSHGitCodeLocalizer.GIT_SYNC_USER);
+            podSpec.setSecurityContext(podSecurityContext);
+          }
+        }
         
         V1EnvVar codeEnvVar = new V1EnvVar();
         codeEnvVar.setName(AbstractCodeLocalizer.CODE_LOCALIZER_PATH_ENV_VAR);
