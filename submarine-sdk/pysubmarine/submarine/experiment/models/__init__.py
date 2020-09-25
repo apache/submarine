@@ -30,8 +30,10 @@
 from __future__ import absolute_import
 
 # import models into model package
-from submarine.experiment.models.environment import Environment
+from submarine.experiment.models.code_spec import CodeSpec
+from submarine.experiment.models.environment_spec import EnvironmentSpec
 from submarine.experiment.models.experiment_meta import ExperimentMeta
 from submarine.experiment.models.experiment_spec import ExperimentSpec
 from submarine.experiment.models.experiment_task_spec import ExperimentTaskSpec
 from submarine.experiment.models.json_response import JsonResponse
+from submarine.experiment.models.kernel_spec import KernelSpec

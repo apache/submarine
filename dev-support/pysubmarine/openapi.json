@@ -274,9 +274,32 @@
           }
         }
       },
-      "Environment" : {
+      "CodeSpec" : {
         "type" : "object",
         "properties" : {
+          "syncMode" : {
+            "type" : "string"
+          },
+          "url" : {
+            "type" : "string"
+          }
+        }
+      },
+      "EnvironmentSpec" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "dockerImage" : {
+            "type" : "string"
+          },
+          "kernelSpec" : {
+            "$ref" : "#/components/schemas/KernelSpec"
+          },
+          "description" : {
+            "type" : "string"
+          },
           "image" : {
             "type" : "string"
           }
@@ -312,13 +335,16 @@
             "$ref" : "#/components/schemas/ExperimentMeta"
           },
           "environment" : {
-            "$ref" : "#/components/schemas/Environment"
+            "$ref" : "#/components/schemas/EnvironmentSpec"
           },
           "spec" : {
             "type" : "object",
             "additionalProperties" : {
               "$ref" : "#/components/schemas/ExperimentTaskSpec"
             }
+          },
+          "code" : {
+            "$ref" : "#/components/schemas/CodeSpec"
           }
         }
       },
@@ -355,6 +381,26 @@
           },
           "memory" : {
             "type" : "string"
+          }
+        }
+      },
+      "KernelSpec" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string"
+          },
+          "channels" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "dependencies" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
           }
         }
       }
