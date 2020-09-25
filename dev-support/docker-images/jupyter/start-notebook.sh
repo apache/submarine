@@ -43,4 +43,4 @@ if [[ -n "${NB_PREFIX}" ]]; then
   NOTEBOOK_ARGS="--NotebookApp.base_url=${NB_PREFIX} ${NOTEBOOK_ARGS}"
 fi
 
-/bin/bash -c "jupyter notebook ${NOTEBOOK_ARGS}"                                                                                                                                                 46,48         Bot
+/bin/bash -c "jupyter notebook ${NOTEBOOK_ARGS}"
