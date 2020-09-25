@@ -21,14 +21,8 @@ ARG NB_PREFIX="/"
 ARG NB_PORT=8888
 
 USER root
-ENV NB_USER $NB_USER
-ENV NB_UID $NB_UID
-ENV NB_GID $NB_GID
-ENV NB_PREFIX $NB_PREFIX
-ENV NB_PORT $NB_PORT
-ENV CONDA_DIR=/opt/conda
-ENV PATH=$CONDA_DIR/bin:$PATH
-ENV HOME=/home/$NB_USER
+
+SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
     apt-transport-https \
@@ -50,15 +44,25 @@ RUN echo "$LOG_TAG Set locale" && \
     echo "LANG=en_US.UTF-8" > /etc/locale.conf && \
     locale-gen en_US.UTF-8
 
-ENV LANG=en_US.UTF-8 \
-    LC_ALL=en_US.UTF-8
+ENV NB_USER=$NB_USER \
+    NB_UID=$NB_UID \
+    NB_PREFIX=$NB_PREFIX \
+    NB_PORT=$NB_PORT \
+    CONDA_DIR=/opt/conda \
+    LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8 \
+    LANGUAGE=en_US.UTF-8
+ENV PATH=$CONDA_DIR/bin:$PATH \
+    HOME=/home/$NB_USER
 
 # Create NB_USER user with UID=1000 and in the 'users' group
-RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
+RUN useradd -M -s /bin/bash -N -u $NB_UID $NB_USER && \
     chown -R ${NB_USER}:users /usr/local/bin && \
     mkdir -p $HOME && \
-    chown -R ${NB_USER}:users ${HOME}
-
+    chown -R ${NB_USER}:users ${HOME} && \
+    mkdir -p ${CONDA_DIR} && \
+    chown -R ${NB_USER}:users ${CONDA_DIR} && \
+    chmod g+w /etc/passwd
 
 # Add Tini
 ENV TINI_VERSION v0.19.0
@@ -66,6 +70,7 @@ ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
 RUN mv /tini /usr/local/bin/tini && chmod +x /usr/local/bin/tini
 
 # Install conda
+USER $NB_UID
 ARG PYTHON_VERSION=default
 ENV MINICONDA_VERSION=4.8.3 \
     MINICONDA_MD5=751786b92c00b1aeae3f017b781018df \
@@ -83,22 +88,14 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     conda config --system --set channel_priority strict && \
     if [ ! $PYTHON_VERSION = 'default' ]; then conda install --yes python=$PYTHON_VERSION; fi && \
     conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
-    conda install --quiet --yes conda && \
-    conda install --quiet --yes pip && \
     conda clean --all -f -y && \
     rm -rf /home/$NB_USER/.cache/yarn
 
-# Install jupyter
-RUN conda install --quiet --yes notebook=6.0.3 && \
-    conda clean --all -f -y
+# Install sumbarine python sdk and notebook
+RUN pip --quiet --no-cache-dir install notebook==6.1.3 apache-submarine
 
-USER root
-RUN mkdir -p $CONDA_DIR && \
-    chown -R ${NB_USER}:users $CONDA_DIR
-
-USER $NB_USER
 EXPOSE $NB_PORT
 ENTRYPOINT ["tini", "-g", "--"]
-WORKDIR ${HOME}
 CMD ["start-notebook.sh"]
-COPY start-notebook.sh /usr/local/bin
+COPY --chown=${NB_USER}:users start-notebook.sh /usr/local/bin
+WORKDIR ${HOME}

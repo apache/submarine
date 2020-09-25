@@ -57,13 +57,15 @@ spec:
           value: "8080"
         - name: SUBMARINE_SERVER_PORT_8080_TCP
           value: "8080"
+        - name: SUBMARINE_SERVER_DNS_NAME
+          value: "{{ .Values.submarine.server.name }}.{{ .Release.Namespace }}"
         - name: K8S_APISERVER_URL
           value: "kubernetes.default.svc"
-          
+
         image: "{{ .Values.submarine.server.image }}"
         imagePullPolicy: {{ .Values.submarine.server.imagePullPolicy }}
         command: ["/bin/bash", "-c"]
         args: ["/opt/submarine-current/bin/submarine.sh start getMysqlJar"]
         ports:
         - containerPort: 8080
-        
+
