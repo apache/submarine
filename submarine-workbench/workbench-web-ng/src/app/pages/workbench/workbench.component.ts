@@ -50,7 +50,7 @@ export class WorkbenchComponent implements OnInit {
       title: 'Home',
       iconType: 'home',
       routerLink: '/workbench/home',
-      disabled: false
+      disabled: true
     },
     {
       title: 'Notebook',
