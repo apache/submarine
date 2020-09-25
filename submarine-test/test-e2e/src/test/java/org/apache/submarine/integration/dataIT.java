@@ -19,14 +19,17 @@ package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.testng.Assert;
 
+
+@Ignore("SUBMARINE-628")
 public class dataIT extends AbstractSubmarineIT {
 
   public final static Logger LOG = LoggerFactory.getLogger(dataIT.class);
@@ -41,6 +44,7 @@ public class dataIT extends AbstractSubmarineIT {
   public static void tearDown(){
     driver.quit();
   }
+
 
   @Test
   public void dataNavigation() throws Exception {
@@ -57,13 +61,13 @@ public class dataIT extends AbstractSubmarineIT {
 
     // Test create new Table
     pollingWait(By.xpath("//button[@id='createBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    Assert.assertTrue(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
 
     pollingWait(By.xpath("//button[@id='firstNextBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.xpath("//input[@id='tableName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Table");
     pollingWait(By.xpath("//button[@id='secondNextBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
 
     pollingWait(By.xpath("//button[@id='submit']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//thead"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    Assert.assertTrue(pollingWait(By.xpath("//thead"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
   }
 }

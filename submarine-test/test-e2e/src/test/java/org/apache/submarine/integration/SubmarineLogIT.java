@@ -18,19 +18,12 @@
  */
 package org.apache.submarine.integration;
 
-import bsh.StringUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 public class SubmarineLogIT extends AbstractSubmarineIT {
   public final static Logger LOG = LoggerFactory.getLogger(SubmarineLogIT.class);
