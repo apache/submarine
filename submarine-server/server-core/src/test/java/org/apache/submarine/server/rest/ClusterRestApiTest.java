@@ -52,14 +52,53 @@ public class ClusterRestApiTest {
 
   private static Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
-  private static String dummyHost = "1.3.5.7";
-  private static int dummyPort = 2468;
+  private static HashMap<String, HashMap<String, Object>> clusterMetas = new HashMap<>();
+
+  private static HashMap<String, Object> meta1 = new HashMap<>();
+  private static HashMap<String, Object> meta2 = new HashMap<>();
+  private static String nodeName1 = "dummy";
+  private static LocalDateTime SERVER_START_TIME1 = LocalDateTime.now();
+  private static LocalDateTime INTP_START_TIME = LocalDateTime.now();
+  private static LocalDateTime LATEST_HEARTBEAT = LocalDateTime.now();
+  private static long cpuUsed1 = 20;
+  private static long cpuCapacity1 = 40;
+  private static long memoryUsed1 = 536870912;
+  private static long memoryCapacity1 = 1073741824;
+  private static LocalDateTime SERVER_START_TIME2 = LocalDateTime.now();
+  private static long cpuUsed2 = 25;
+  private static long cpuCapacity2 = 40;
+  private static long memoryUsed2 = 268435456;
+  private static long memoryCapacity2 = 1073741824;
+  private static String nodeName2 = "dummydummy";
 
   @BeforeClass
   public static void init() {
     mockClusterServer = mock(ClusterServer.class);
     clusterRestApi = new ClusterRestApi();
     clusterRestApi.setClusterServer(mockClusterServer);
+
+    meta1.put(ClusterMeta.NODE_NAME, nodeName1);
+    meta1.put(ClusterMeta.SERVER_START_TIME, SERVER_START_TIME1);
+    meta1.put(ClusterMeta.CPU_USED, cpuUsed1);
+    meta1.put(ClusterMeta.CPU_CAPACITY, cpuCapacity1);
+    meta1.put(ClusterMeta.MEMORY_USED, memoryUsed1);
+    meta1.put(ClusterMeta.MEMORY_CAPACITY, memoryCapacity1);
+    meta1.put(ClusterMeta.INTP_START_TIME, INTP_START_TIME);
+    meta1.put(ClusterMeta.LATEST_HEARTBEAT, LATEST_HEARTBEAT);
+    meta1.put(ClusterMeta.STATUS, ClusterMeta.ONLINE_STATUS);
+
+    meta2.put(ClusterMeta.NODE_NAME, nodeName2);
+    meta2.put(ClusterMeta.SERVER_START_TIME, SERVER_START_TIME2);
+    meta2.put(ClusterMeta.CPU_USED, cpuUsed2);
+    meta2.put(ClusterMeta.CPU_CAPACITY, cpuCapacity2);
+    meta2.put(ClusterMeta.MEMORY_USED, memoryUsed2);
+    meta2.put(ClusterMeta.MEMORY_CAPACITY, memoryCapacity2);
+    meta2.put(ClusterMeta.STATUS, ClusterMeta.OFFLINE_STATUS);
+
+    clusterMetas.put(nodeName1, meta1);
+    clusterMetas.put(nodeName2, meta2);
+    mockClusterServer.putClusterMeta(SERVER_META, nodeName1, meta1);
+    mockClusterServer.putClusterMeta(SERVER_META, nodeName2, meta2);
   }
 
   @Test
@@ -77,66 +116,35 @@ public class ClusterRestApiTest {
 
   @Test
   public void testGetClusterNodes() {
-    HashMap<String, HashMap<String, Object>> clusterMetas = new HashMap<>();
-    HashMap<String, Object> meta = new HashMap<>();
-    String nodeName = "dummy";
-    LocalDateTime SERVER_START_TIME = LocalDateTime.now();
-    long cpuUsed = 20;
-    long cpuCapacity = 40;
-    long memoryUsed = 536870912;
-    long memoryCapacity = 1073741824;
-    meta.put(ClusterMeta.NODE_NAME, nodeName);
-    meta.put(ClusterMeta.SERVER_START_TIME, SERVER_START_TIME);
-    meta.put(ClusterMeta.CPU_USED, cpuUsed);
-    meta.put(ClusterMeta.CPU_CAPACITY, cpuCapacity);
-    meta.put(ClusterMeta.MEMORY_USED, memoryUsed);
-    meta.put(ClusterMeta.MEMORY_CAPACITY, memoryCapacity);
-    meta.put(ClusterMeta.STATUS, "OK");
-
-    clusterMetas.put(nodeName, meta);
-    mockClusterServer.putClusterMeta(SERVER_META, nodeName, meta);
     when(mockClusterServer.getClusterMeta(ClusterMetaType.SERVER_META, "")).thenReturn(clusterMetas);
     Response response = clusterRestApi.getClusterNodes();
     ArrayList<HashMap<String, Object>> result = getResultListFromResponse(response);
-    Map<String, Object> properties = (LinkedTreeMap) result.get(0).get(ClusterMeta.PROPERTIES);
+    Map<String, Object> properties1 = (LinkedTreeMap) result.get(0).get(ClusterMeta.PROPERTIES);
+    Map<String, Object> properties2 = (LinkedTreeMap) result.get(1).get(ClusterMeta.PROPERTIES);
 
-    assertEquals(clusterMetas.get(nodeName).get(ClusterMeta.NODE_NAME),
-        result.get(0).get(ClusterMeta.NODE_NAME));
-    assertEquals("OK", properties.get("STATUS"));
-    assertEquals("0.50GB / 1.00GB = 50.00%", properties.get("MEMORY_USED / MEMORY_CAPACITY"));
-    assertEquals("0.20 / 0.40 = 50.00%", properties.get("CPU_USED / CPU_CAPACITY"));
+    assertEquals(nodeName1, result.get(0).get(ClusterMeta.NODE_NAME));
+    assertEquals("ONLINE", properties1.get("STATUS"));
+    assertEquals("0.50GB / 1.00GB = 50.00%", properties1.get("MEMORY_USED / MEMORY_CAPACITY"));
+    assertEquals("0.20 / 0.40 = 50.00%", properties1.get("CPU_USED / CPU_CAPACITY"));
+
+    assertEquals(nodeName2, result.get(1).get(ClusterMeta.NODE_NAME));
+    assertEquals("OFFLINE", properties2.get("STATUS"));
+    assertEquals("0.25GB / 1.00GB = 25.00%", properties2.get("MEMORY_USED / MEMORY_CAPACITY"));
+    assertEquals("0.25 / 0.40 = 62.50%", properties2.get("CPU_USED / CPU_CAPACITY"));
   }
 
   @Test
   public void testGetClusterNode() {
-    HashMap<String, HashMap<String, Object>> clusterMetas = new HashMap<>();
-    HashMap<String, Object> meta = new HashMap<>();
-    String nodeName = "dummy";
-    LocalDateTime SERVER_START_TIME = LocalDateTime.now();
-    long cpuUsed = 20;
-    long cpuCapacity = 40;
-    long memoryUsed = 536870912;
-    long memoryCapacity = 1073741824;
-    meta.put(ClusterMeta.NODE_NAME, nodeName);
-    meta.put(ClusterMeta.SERVER_START_TIME, SERVER_START_TIME);
-    meta.put(ClusterMeta.CPU_USED, cpuUsed);
-    meta.put(ClusterMeta.CPU_CAPACITY, cpuCapacity);
-    meta.put(ClusterMeta.MEMORY_USED, memoryUsed);
-    meta.put(ClusterMeta.MEMORY_CAPACITY, memoryCapacity);
-    meta.put(ClusterMeta.STATUS, "OK");
-
-    clusterMetas.put(nodeName, meta);
-    mockClusterServer.putClusterMeta(SERVER_META, nodeName, meta);
-    when(mockClusterServer.getClusterMeta(ClusterMetaType.SERVER_META, "")).thenReturn(clusterMetas);
-    Response response = clusterRestApi.getClusterNode(nodeName,"");
+    when(mockClusterServer.getClusterMeta(ClusterMetaType.INTP_PROCESS_META, "")).thenReturn(clusterMetas);
+    Response response = clusterRestApi.getClusterNode(nodeName1, "");
     ArrayList<HashMap<String, Object>> result = getResultListFromResponse(response);
     Map<String, Object> properties = (LinkedTreeMap) result.get(0).get(ClusterMeta.PROPERTIES);
 
-    assertEquals(clusterMetas.get(nodeName).get(ClusterMeta.NODE_NAME),
+    assertEquals(clusterMetas.get(nodeName1).get(ClusterMeta.NODE_NAME),
         result.get(0).get(ClusterMeta.NODE_NAME));
-    assertEquals("OK", properties.get("STATUS"));
-    assertEquals("0.50GB / 1.00GB = 50.00%", properties.get("MEMORY_USED / MEMORY_CAPACITY"));
-    assertEquals("0.20 / 0.40 = 50.00%", properties.get("CPU_USED / CPU_CAPACITY"));
+    assertEquals("ONLINE", properties.get("STATUS"));
+    assertEquals(INTP_START_TIME.toString(), properties.get("INTP_START_TIME"));
+    assertEquals(LATEST_HEARTBEAT.toString(), properties.get("LATEST_HEARTBEAT"));
   }
 
   private <T> List<T> getResultListFromResponse(Response response, Class<T> typeT) {
