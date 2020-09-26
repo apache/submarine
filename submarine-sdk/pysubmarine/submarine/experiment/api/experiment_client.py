@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import logging
+import os
 import time
 
 from submarine.experiment.configuration import Configuration
@@ -25,8 +26,19 @@ logging.basicConfig(format='%(message)s')
 logging.getLogger().setLevel(logging.INFO)
 
 
+def generate_host():
+    """
+    Generate submarine host
+    :return: submarine host
+    """
+    submarine_server_dns_name = str(os.environ.get("SUBMARINE_SERVER_DNS_NAME"))
+    submarine_server_port = str(os.environ.get("SUBMARINE_SERVER_PORT"))
+    host = submarine_server_dns_name + ':' + submarine_server_port
+    return host
+
+
 class ExperimentClient:
-    def __init__(self, host):
+    def __init__(self, host=generate_host()):
         """
         Submarine experiment client constructor
         :param host: An HTTP URI like http://submarine-server:8080.

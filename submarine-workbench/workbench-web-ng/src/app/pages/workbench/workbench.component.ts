@@ -29,9 +29,11 @@ interface SidebarMenu {
   title: string;
   iconType: string;
   routerLink?: string;
+  disabled: boolean;
   children?: Array<{
     title: string;
     routerLink?: string;
+    disabled: boolean;
   }>;
 }
 
@@ -47,60 +49,72 @@ export class WorkbenchComponent implements OnInit {
     {
       title: 'Home',
       iconType: 'home',
-      routerLink: '/workbench/home'
-    },
-    {
-      title: 'Workspace',
-      iconType: 'desktop',
-      routerLink: '/workbench/workspace'
+      routerLink: '/workbench/home',
+      disabled: true
     },
     {
       title: 'Notebook',
       iconType: 'book',
-      routerLink: '/workbench/notebook'
-    },
-    {
-      title: 'Interpreter',
-      iconType: 'api',
-      routerLink: '/workbench/interpreter'
+      routerLink: '/workbench/notebook',
+      disabled: false
     },
     {
       title: 'Experiment',
       iconType: 'cluster',
-      routerLink: '/workbench/experiment'
+      routerLink: '/workbench/experiment',
+      disabled: false
     },
     {
       title: 'Environment',
       iconType: 'codepen',
-      routerLink: '/workbench/environment'
-    },
-    {
-      title: 'Data',
-      iconType: 'bar-chart',
-      routerLink: '/workbench/data'
-    },
-    {
-      title: 'Model',
-      iconType: 'experiment',
-      routerLink: '/workbench/model'
+      routerLink: '/workbench/environment',
+      disabled: false
     },
     {
       title: 'Manager',
       iconType: 'setting',
+      disabled: false,
       children: [
         {
           title: 'User',
-          routerLink: '/workbench/manager/user'
+          routerLink: '/workbench/manager/user',
+          disabled: false
         },
         {
           title: 'Data dict',
-          routerLink: '/workbench/manager/dataDict'
+          routerLink: '/workbench/manager/dataDict',
+          disabled: false
         },
         {
           title: 'Department',
-          routerLink: '/workbench/manager/department'
+          routerLink: '/workbench/manager/department',
+          disabled: false
         }
       ]
+    },
+    {
+      title: 'Data',
+      iconType: 'bar-chart',
+      routerLink: '/workbench/data',
+      disabled: true
+    },
+    {
+      title: 'Model',
+      iconType: 'experiment',
+      routerLink: '/workbench/model',
+      disabled: true
+    },
+    {
+      title: 'Workspace',
+      iconType: 'desktop',
+      routerLink: '/workbench/workspace',
+      disabled: true
+    },
+    {
+      title: 'Interpreter',
+      iconType: 'api',
+      routerLink: '/workbench/interpreter',
+      disabled: true
     }
   ];
   userInfo$: Observable<UserInfo>;

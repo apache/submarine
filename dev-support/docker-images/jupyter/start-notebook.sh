@@ -21,8 +21,9 @@
 
 set -euo pipefail
 
-if [[ -n "${ENVIRONMENT_COMMAND:-}" ]]; then
-  /bin/bash -c "${ENVIRONMENT_COMMAND}"
+# Install conda dependency
+if [[ -n "${INSTALL_ENVIRONMENT_COMMAND:-}" ]]; then
+  /bin/bash -c "${INSTALL_ENVIRONMENT_COMMAND}"
 fi
 
 NOTEBOOK_ARGS="--ip=0.0.0.0 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*'"
