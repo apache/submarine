@@ -29,6 +29,7 @@ public class NotebookCR {
   public static final String CRD_APIVERSION_V1 = CRD_NOTEBOOK_GROUP_V1 + "/" + CRD_NOTEBOOK_VERSION_V1;
   public static final String CRD_NOTEBOOK_KIND_V1 = "Notebook";
   public static final String CRD_NOTEBOOK_PLURAL_V1 = "notebooks";
+  public static final String NOTEBOOK_OWNER_SELECTOR_KET = "notebook-owner-id";
 
   @SerializedName("apiVersion")
   private String apiVersion;

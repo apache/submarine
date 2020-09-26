@@ -22,6 +22,7 @@ package org.apache.submarine.server.api.spec;
 public class NotebookMeta {
   private String name;
   private String namespace;
+  private String ownerId;
 
   public NotebookMeta() {
 
@@ -57,5 +58,21 @@ public class NotebookMeta {
    */
   public void setNamespace(String namespace) {
     this.namespace = namespace;
+  }
+
+  /**
+   * Get the ownerId
+   * @return ownerId
+   */
+  public String getOwnerId() {
+    return ownerId;
+  }
+
+  /**
+   * Set the ownerId
+   * @param ownerId ownerId
+   */
+  public void setOwnerId(String ownerId) {
+    this.ownerId = ownerId;
   }
 }

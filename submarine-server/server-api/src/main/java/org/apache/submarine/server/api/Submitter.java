@@ -27,6 +27,8 @@ import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 
+import java.util.List;
+
 /**
  * The submitter should implement this interface.
  */
@@ -109,4 +111,12 @@ public interface Submitter {
    * @throws SubmarineRuntimeException running error
    */
   Notebook deleteNotebook(NotebookSpec spec) throws SubmarineRuntimeException;
+
+  /**
+   * List notebooks with userID
+   * @param id user ID
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  List<Notebook> listNotebook(String id) throws SubmarineRuntimeException;
 }

@@ -95,7 +95,7 @@ public class NotebookRestApi {
 
   /**
    * List all notebooks
-   * @param namespace namespace
+   * @param id user id
    * @return notebook list
    */
   @GET
@@ -105,9 +105,9 @@ public class NotebookRestApi {
           responses = {
                   @ApiResponse(description = "successful operation", content = @Content(
                           schema = @Schema(implementation = JsonResponse.class)))})
-  public Response listNotebooks(@QueryParam("namespace") String namespace) {
+  public Response listNotebooks(@QueryParam("id") String id) {
     try {
-      List<Notebook> notebookList = notebookManager.listNotebooksByNamespace(namespace);
+      List<Notebook> notebookList = notebookManager.listNotebooksByUserId(id);
       return new JsonResponse.Builder<List<Notebook>>(Response.Status.OK).success(true)
               .message("List all notebook instances").result(notebookList).build();
     } catch (SubmarineRuntimeException e) {

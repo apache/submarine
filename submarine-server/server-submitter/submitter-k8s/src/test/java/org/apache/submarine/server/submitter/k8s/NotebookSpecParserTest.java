@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.submitter.k8s;
 
+import io.kubernetes.client.models.V1EnvVar;
 import io.kubernetes.client.models.V1ObjectMeta;
 import org.apache.submarine.server.api.spec.NotebookMeta;
 import org.apache.submarine.server.api.spec.NotebookPodSpec;
@@ -31,6 +32,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 public class NotebookSpecParserTest extends SpecBuilder {
 
@@ -47,6 +49,8 @@ public class NotebookSpecParserTest extends SpecBuilder {
   private void validateMetadata(NotebookMeta meta, V1ObjectMeta actualMeta) {
     Assert.assertEquals(meta.getName(), actualMeta.getName());
     Assert.assertEquals(meta.getNamespace(), actualMeta.getNamespace());
+    Assert.assertEquals(meta.getOwnerId(),
+            actualMeta.getLabels().get(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET));
   }
 
   private void validateEnvironment(NotebookSpec spec, NotebookCRSpec actualPodSpec) {
@@ -61,6 +65,14 @@ public class NotebookSpecParserTest extends SpecBuilder {
       notebookCRSpec = notebook.getSpec();
     }
     Assert.assertNotNull(notebookCRSpec);
+
+    // environment variable
+    for (Map.Entry<String, String> entry : podSpec.getEnvVars().entrySet()) {
+      V1EnvVar env = new V1EnvVar();
+      env.setName(entry.getKey());
+      env.setValue(env.getValue());
+      Assert.assertTrue(notebook.getSpec().getEnvs().contains(env));
+    }
 
     // mem
     String expectedContainerMem = podSpec.getMemory();
