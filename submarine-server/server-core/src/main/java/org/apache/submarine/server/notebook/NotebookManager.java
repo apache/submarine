@@ -113,6 +113,25 @@ public class NotebookManager {
   }
 
   /**
+   * Get a list of notebook with user id
+   * @param id user id
+   * @return a list of notebook
+   */
+  public List<Notebook> listNotebooksByUserId(String id) {
+    List<Notebook> notebookList = submitter.listNotebook(id);
+    for (Notebook notebook : notebookList) {
+      for (Map.Entry<String, Notebook> entry : cachedNotebookMap.entrySet()) {
+        Notebook cachedNotebook = entry.getValue();
+        if (cachedNotebook.getUid().equals(notebook.getUid())) {
+          notebook.setNotebookId(cachedNotebook.getNotebookId());
+          notebook.setSpec(cachedNotebook.getSpec());
+        }
+      }
+    }
+    return notebookList;
+  }
+
+  /**
    * Get a notebook instance
    * @param id notebook id
    * @return object
