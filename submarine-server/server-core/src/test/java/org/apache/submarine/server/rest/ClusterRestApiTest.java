@@ -104,8 +104,8 @@ public class ClusterRestApiTest {
   @Test
   public void testGetClusterAddress() {
     SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-    String addr1 = "0.1.2.3:4569";
-    String addr2 = "4.5.6.7:8888";
+    String addr1 = "127.0.0.1:4569";
+    String addr2 = "127.0.0.1:8888";
     conf.setClusterAddress(addr1 + "," + addr2);
 
     Response response = clusterRestApi.getClusterAddress();
