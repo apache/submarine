@@ -19,7 +19,7 @@
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EnvironmentSpec, ExperimentMeta, ExperimentSpec, Specs } from '@submarine/interfaces/experiment-spec';
+import { EnvironmentSpec, ExperimentMeta, ExperimentSpec, Specs, Code } from '@submarine/interfaces/experiment-spec';
 import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
@@ -88,7 +88,8 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       cmd: new FormControl('', [Validators.required]),
       image: new FormControl(this.defaultImage, [Validators.required]),
       envs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
-      specs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('name')])
+      specs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('name')]),
+      gitRepo: new FormControl(null, Validators.required)
     });
 
     // Bind the component method for callback
@@ -164,6 +165,9 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   get specs() {
     return this.experiment.get('specs') as FormArray;
   }
+  get gitRepo() {
+    return this.experiment.get('gitRepo');
+  }
 
   /**
    * Reset properties in parent component when the form is about to closed
@@ -182,7 +186,8 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
           this.namespace.invalid ||
           this.cmd.invalid ||
           this.image.invalid ||
-          this.envs.invalid
+          this.envs.invalid ||
+          this.gitRepo.invalid
       );
     } else if (this.step === 1) {
       this.experimentFormService.btnStatusChange(this.specs.invalid);
@@ -340,10 +345,16 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       image: this.image.value
     };
 
+    const code: Code = {
+      syncMode: 'git',
+      url: this.gitRepo.value
+    };
+
     const newExperimentSpec: ExperimentSpec = {
       meta: meta,
       environment: environment,
-      spec: specs
+      spec: specs,
+      code: code
     };
 
     return newExperimentSpec;

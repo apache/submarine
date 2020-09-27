@@ -41,8 +41,8 @@ export class ManagerComponent implements OnInit {
       description: 'You can check the user, delete the user, lock and unlock the user, etc.',
       breadCrumb: [
         {
-          title: 'Home',
-          routerLink: '/workbench/home'
+          title: 'Home'
+          //routerLink: '/workbench/home'
         },
         {
           title: 'manager'
@@ -57,8 +57,8 @@ export class ManagerComponent implements OnInit {
       description: 'System Dict Manager',
       breadCrumb: [
         {
-          title: 'Home',
-          routerLink: '/workbench/home'
+          title: 'Home'
+          //routerLink: '/workbench/home'
         },
         {
           title: 'manager'
@@ -73,8 +73,8 @@ export class ManagerComponent implements OnInit {
       description: 'System Department Manager',
       breadCrumb: [
         {
-          title: 'Home',
-          routerLink: '/workbench/home'
+          title: 'Home'
+          //routerLink: '/workbench/home'
         },
         {
           title: 'manager'

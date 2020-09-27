@@ -44,8 +44,14 @@ export interface Specs {
   };
 }
 
+export interface Code {
+  syncMode: string;
+  url: string;
+}
+
 export interface ExperimentSpec {
   meta: ExperimentMeta;
   environment: EnvironmentSpec;
   spec: Specs;
+  code: Code;
 }
