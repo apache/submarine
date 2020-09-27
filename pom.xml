@@ -60,6 +60,7 @@
     <plugin.war.version>2.3</plugin.war.version>
     <plugin.maven.antrun.version>1.8</plugin.maven.antrun.version>
     <plugin.maven.jar.version>3.0.2</plugin.maven.jar.version>
+    <plugin.maven.assembly.version>3.3.0</plugin.maven.assembly.version>
 
     <!-- submarine shaded dependency prefix-->
     <shaded.dependency.prefix>org.apache.submarine.shaded</shaded.dependency.prefix>
