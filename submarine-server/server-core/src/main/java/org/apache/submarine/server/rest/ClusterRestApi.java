@@ -17,6 +17,7 @@
 
 package org.apache.submarine.server.rest;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import org.apache.submarine.commons.cluster.ClusterServer;
 import org.apache.submarine.commons.cluster.meta.ClusterMeta;
@@ -50,6 +51,10 @@ public class ClusterRestApi {
   Gson gson = new Gson();
 
   private ClusterServer clusterServer = ClusterServer.getInstance();
+  @VisibleForTesting
+  public void setClusterServer(ClusterServer clusterServer) {
+    this.clusterServer = clusterServer;
+  }
 
   @GET
   @Path("/" + RestConstants.ADDRESS)
