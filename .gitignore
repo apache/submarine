@@ -59,14 +59,6 @@ venv.bak/
 target
 dev-support/mini-submarine/database
 dev-support/pysubmarine/sdk
-submarine-workbench/workbench-web/node
-submarine-workbench/workbench-web/node_modules
-submarine-workbench/workbench-web/dist
-submarine-workbench/workbench-web/.env.local
-submarine-workbench/workbench-web/.env.*.local
-submarine-workbench/workbench-web/npm-debug.log*
-submarine-workbench/workbench-web/yarn-debug.log*
-submarine-workbench/workbench-web/yarn-error.log*
 submarine-workbench/workbench-web-ng/node
 submarine-workbench/workbench-web-ng/node_modules
 submarine-workbench/workbench-web-ng/dist

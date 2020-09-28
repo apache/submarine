@@ -22,8 +22,6 @@ cache:
   apt: true
   directories:
     - ${HOME}/.m2
-    - submarine-workbench/workbench-web/node
-    - submarine-workbench/workbench-web/node_modules
     - submarine-workbench/workbench-web-ng/node
     - submarine-workbench/workbench-web-ng/node_modules
 
@@ -48,7 +46,7 @@ env:
     - EXCLUDE_SERVER="!:submarine-server-api,!:submarine-server-core,!:submarine-server-rpc"
     - EXCLUDE_CLIENT="!:submarine-client"
     - EXCLUDE_ALL="!:submarine-all"
-    - EXCLUDE_WORKBENCH="!:submarine-workbench,!:submarine-workbench-web,!:submarine-workbench-web-ng"
+    - EXCLUDE_WORKBENCH="!:submarine-workbench,!:submarine-workbench-web-ng"
     - EXCLUDE_INTERPRETER="!:submarine-interpreter,!:submarine-interpreter-core,!:submarine-python-interpreter,!:submarine-spark-interpreter"
     - EXCLUDE_SUBMITTER_K8S="!:submarine-submitter-k8s"
     - EXCLUDE_SUBMITTER_YARN="!:submarine-submitter-yarn"
@@ -231,19 +229,6 @@ matrix:
       jdk: "openjdk8"
       dist: xenial
       env: PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -am" TEST_FLAG="test -DskipRat -am" MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
-
-    - name: Test submarine workbench-web VUE
-      language: node_js
-      node_js:
-        - 10.15.0
-      before_install:
-        - cd submarine-workbench/workbench-web
-      install:
-        - yarn install
-      script:
-        - yarn
-        - yarn run lint --no-fix && yarn run build
-      env: NAME="Build workbench-web"
 
     - name: Test submarine workbench-web Angular
       language: node_js
