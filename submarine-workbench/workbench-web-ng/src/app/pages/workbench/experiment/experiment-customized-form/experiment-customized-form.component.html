@@ -99,6 +99,19 @@
             <nz-option *ngFor="let namespace of nameSpaceList" [nzValue]="namespace" [nzLabel]="namespace"></nz-option>
           </nz-select>
         </div>
+        <div *ngIf="ADVANCED" class="single-field-group">
+          <label for="git-repo">
+            Git repository
+          </label>
+          <input
+            nz-input
+            type="text"
+            name="git-repo"
+            id="git-repo"
+            placeholder="https://github.com/apache/submarine.git"
+            formControlName="gitRepo"
+          />
+        </div>
         <div *ngIf="ADVANCED">
           <ul formArrayName="envs" class="list-container">
             <ng-container *ngFor="let env of envs.controls; index as i">
@@ -131,20 +144,6 @@
             Add new environment variable
           </button>
           <br />
-        </div>
-        <div *ngIf="ADVANCED" class="single-field-group">
-          <label for="git-repo">
-            <span class="red-star">*</span>
-            Git repository
-          </label>
-          <input
-            nz-input
-            type="text"
-            name="git-repo"
-            id="git-repo"
-            placeholder="https://github.com/apache/submarine.git"
-            formControlName="gitRepo"
-          />
         </div>
       </div>
       <div *ngSwitchCase="1" id="secondStep">

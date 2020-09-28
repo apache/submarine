@@ -89,7 +89,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       image: new FormControl(this.defaultImage, [Validators.required]),
       envs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
       specs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('name')]),
-      gitRepo: new FormControl(null, Validators.required)
+      gitRepo: new FormControl(null, [])
     });
 
     // Bind the component method for callback
@@ -186,8 +186,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
           this.namespace.invalid ||
           this.cmd.invalid ||
           this.image.invalid ||
-          this.envs.invalid ||
-          this.gitRepo.invalid
+          this.envs.invalid
       );
     } else if (this.step === 1) {
       this.experimentFormService.btnStatusChange(this.specs.invalid);
