@@ -132,7 +132,7 @@
           </button>
           <br />
         </div>
-        <div class="single-field-group">
+        <div *ngIf="ADVANCED" class="single-field-group">
           <label for="git-repo">
             <span class="red-star">*</span>
             Git repository
@@ -277,7 +277,7 @@
               {{ item.value.resources }}
             </nz-descriptions-item>
           </div>
-          <nz-descriptions-item nzTitle="Git repo">{{ finialExperimentSpec.code.url }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Git repository">{{ finialExperimentSpec.code.url }}</nz-descriptions-item>
         </nz-descriptions>
       </div>
     </div>
