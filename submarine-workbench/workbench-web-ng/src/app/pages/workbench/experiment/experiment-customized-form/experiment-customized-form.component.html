@@ -103,14 +103,19 @@
           <label for="git-repo">
             Git repository
           </label>
-          <input
-            nz-input
-            type="text"
-            name="git-repo"
-            id="git-repo"
-            placeholder="https://github.com/apache/submarine.git"
-            formControlName="gitRepo"
-          />
+          <nz-input-group [nzSuffix]="suffixTemplateInfo">
+            <input
+              nz-input
+              type="text"
+              name="git-repo"
+              id="git-repo"
+              placeholder="https://github.com/apache/submarine.git"
+              formControlName="gitRepo"
+            />
+          </nz-input-group>
+          <ng-template #suffixTemplateInfo>
+            <i nz-icon nz-tooltip nzTitle="Copy git repo to /code/current in container." nzType="info-circle"></i>
+          </ng-template>
         </div>
         <div *ngIf="ADVANCED">
           <ul formArrayName="envs" class="list-container">
