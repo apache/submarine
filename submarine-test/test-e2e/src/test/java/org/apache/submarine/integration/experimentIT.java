@@ -72,6 +72,7 @@ public class experimentIT extends AbstractSubmarineIT {
                     " --learning_rate=0.01 --batch_size=150",
             "apache/submarine:tf-mnist-with-summaries-1.0",
             "ENV_1", "ENV1");
+    pollingWait(By.xpath("//input[@id='git-repo']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("https://github.com/apache/submarine.git");
     Assert.assertTrue(experimentPage.getGoButton().isEnabled());
     experimentPage.goButtonClick();
 

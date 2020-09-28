@@ -112,7 +112,7 @@ textarea.ng-invalid.ng-touched {
        margin-right: 1.5rem;
     }
  }
- & input, nz-select, textarea {
+ & input, nz-select, nz-input-group, textarea {
     flex: 0 0 48%;
  }
 }
