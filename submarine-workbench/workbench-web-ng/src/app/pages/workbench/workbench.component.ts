@@ -130,7 +130,7 @@ export class WorkbenchComponent implements OnInit {
     if (this.authService.isLoggedIn) {
       this.userInfo$ = this.userService.fetchUserInfo().pipe(
         tap((userInfo) => {
-          this.nzNotificationService.success('Welcome', `Welcome back, ${userInfo.name}`);
+          this.nzNotificationService.success('Welcome', `Welcome to submarine workbench!`);
         })
       );
     }
