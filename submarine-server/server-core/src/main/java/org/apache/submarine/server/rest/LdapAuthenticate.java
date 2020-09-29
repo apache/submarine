@@ -26,24 +26,13 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 
-import org.apache.submarine.server.api.environment.Environment;
-import org.apache.submarine.server.api.ldap.Ldap;
-import org.apache.submarine.server.api.spec.LdapSpec;
 import org.apache.submarine.server.ldap.LdapManager;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import java.util.Hashtable;
 
@@ -74,7 +63,7 @@ public class LdapAuthenticate {
     DirContext ctx = null;
     Hashtable<String, String> HashEnv = new Hashtable<>();
 
-    String loginId = "uid="+username+",dc=example,dc=com";
+    String loginId = "uid=" + username + ",dc=example,dc=com";
 
     HashEnv.put(Context.SECURITY_AUTHENTICATION, "simple");
     HashEnv.put(Context.SECURITY_PRINCIPAL, loginId);

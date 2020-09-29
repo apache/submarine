@@ -58,7 +58,7 @@ public class RestConstants {
    * Experimect template
    */
   public static final String EXPERIMENT_TEMPLATES = "template";
-  
+
   public static final String EXPERIMENT_TEMPLATE_ID = "id";
 
   /**
@@ -67,5 +67,10 @@ public class RestConstants {
   public static final String NOTEBOOK = "notebook";
 
   public static final String NOTEBOOK_ID = "id";
+
+  /**
+   * Ldap
+   */
+  public static final String LDAP = "ldap";
 
 }
