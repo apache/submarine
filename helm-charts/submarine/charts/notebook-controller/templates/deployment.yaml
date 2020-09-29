@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: manager
-        image: gcr.io/kubeflow-images-public/notebook-controller:v1.1.0-g253890cb
+        image: apache/submarine:notebook-controller-v1.1.0-g253890cb
         command:
           - /manager
         imagePullPolicy: IfNotPresent

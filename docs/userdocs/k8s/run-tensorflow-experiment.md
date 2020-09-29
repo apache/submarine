@@ -32,7 +32,7 @@ meta:
   envVars:
     ENV_1: "ENV1"
 environment:
-  image: "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+  image: "apache/submarine:tf-mnist-with-summaries-1.0"
 spec:
   Ps:
     replicas: 1
@@ -55,7 +55,7 @@ spec:
     }
   },
   "environment": {
-    "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+    "image": "apache/submarine:tf-mnist-with-summaries-1.0"
   },
   "spec": {
     "Ps": {
@@ -87,7 +87,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   },
   "environment": {
-    "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+    "image": "apache/submarine:tf-mnist-with-summaries-1.0"
   },
   "spec": {
     "Ps": {
@@ -125,7 +125,7 @@ curl -X POST -H "Content-Type: application/json" -d '
                 }
             },
             "environment": {
-                "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+                "image": "apache/submarine:tf-mnist-with-summaries-1.0"
             },
             "spec": {
                 "Ps": {
