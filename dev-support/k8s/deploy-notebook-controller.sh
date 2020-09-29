@@ -18,7 +18,7 @@
 #
 set -euo pipefail
 
-readonly NOTEBOOK_CONTROLLER_IMAGE="gcr.io/kubeflow-images-public/notebook-controller:v1.1.0-g253890cb"
+readonly NOTEBOOK_CONTROLLER_IMAGE="apache/submarine:notebook-controller-v1.1.0-g253890cb"
 
 if [ -L "${BASH_SOURCE-$0}" ]; then
   PWD=$(dirname "$(readlink "${BASH_SOURCE-$0}")")

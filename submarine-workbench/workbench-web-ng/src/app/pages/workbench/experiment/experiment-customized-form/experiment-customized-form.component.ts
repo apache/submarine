@@ -47,7 +47,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
 
   // TODO: Fetch all images from submarine server
   imageIndex = 0;
-  defaultImage = 'gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0';
+  defaultImage = 'apache/submarine:tf-mnist-with-summaries-1.0';
   imageList = [this.defaultImage];
 
   // Constants

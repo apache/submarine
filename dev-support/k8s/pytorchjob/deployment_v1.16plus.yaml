@@ -41,7 +41,7 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.name
-        image: gcr.io/kubeflow-images-public/pytorch-operator:v1.0.0-g047cf0f
+        image: apache/submarine:pytorch-operator-v1.1.0-gd596e904
         imagePullPolicy: IfNotPresent
         name: pytorch-operator
         resources: {}

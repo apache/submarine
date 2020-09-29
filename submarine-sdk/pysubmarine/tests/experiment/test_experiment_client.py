@@ -27,7 +27,7 @@ from submarine.experiment.models.experiment_task_spec import ExperimentTaskSpec
 def test_experiment_e2e():
     submarine_client = submarine.ExperimentClient(host='http://localhost:8080')
     environment = EnvironmentSpec(
-        image='gcr.io/kubeflow-ci/tf-dist-mnist-test:1.0')
+        image='apache/submarine:tf-dist-mnist-test-1.0')
     experiment_meta = ExperimentMeta(
         name='mnist-dist',
         namespace='default',

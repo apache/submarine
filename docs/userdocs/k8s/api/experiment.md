@@ -39,7 +39,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   },
   "environment": {
-    "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+    "image": "apache/submarine:tf-mnist-with-summaries-1.0"
   },
   "spec": {
     "Ps": {
@@ -77,7 +77,7 @@ curl -X POST -H "Content-Type: application/json" -d '
         }
       },
       "environment": {
-        "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+        "image": "apache/submarine:tf-mnist-with-summaries-1.0"
       },
       "spec": {
         "Ps": {
@@ -198,7 +198,7 @@ curl -X GET http://127.0.0.1:8080/api/v1/experiment
                     }
                 },
                 "environment": {
-                    "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+                    "image": "apache/submarine:tf-mnist-with-summaries-1.0"
                 },
                 "spec": {
                     "Ps": {
@@ -277,7 +277,7 @@ curl -X GET http://127.0.0.1:8080/api/v1/experiment/experiment_1592057447228_000
                 }
             },
             "environment": {
-                "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+                "image": "apache/submarine:tf-mnist-with-summaries-1.0"
             },
             "spec": {
                 "Ps": {
@@ -311,7 +311,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '
     }
   },
   "environment": {
-    "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+    "image": "apache/submarine:tf-mnist-with-summaries-1.0"
   },
   "spec": {
     "Ps": {
@@ -344,7 +344,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '
             }
         },
         "environment": {
-            "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+            "image": "apache/submarine:tf-mnist-with-summaries-1.0"
         },
         "spec": {
             "Ps": {
@@ -390,7 +390,7 @@ curl -X DELETE http://127.0.0.1:8080/api/v1/experiment/experiment_1592057447228_
                 }
             },
             "environment": {
-                "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+                "image": "apache/submarine:tf-mnist-with-summaries-1.0"
             },
             "spec": {
                 "Ps": {

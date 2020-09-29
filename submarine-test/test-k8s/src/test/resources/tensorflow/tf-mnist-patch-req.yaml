@@ -6,7 +6,7 @@ meta:
   envVars:
     ENV_1: "ENV1"
 environment:
-  image: "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+  image: "apache/submarine:tf-mnist-with-summaries-1.0"
 spec:
   Worker:
     replicas: 1
