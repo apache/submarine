@@ -225,7 +225,7 @@ public class SysUserRestApi {
     Role role = roleBuilder.describe("Permission").status(1).creatorId("system")
         .createTime(1497160610259L).deleted(0).permissions(permissions).build();
 
-    UserInfo.Builder userInfoBuilder = new UserInfo.Builder("4291d7da9005377ec9aec4a71ea837f", "liuxun");
+    UserInfo.Builder userInfoBuilder = new UserInfo.Builder("4291d7da9005377ec9aec4a71ea837f", "admin");
     UserInfo userInfo = userInfoBuilder.username("admin").password("")
         .avatar("/avatar2.jpg").status(1).telephone("").lastLoginIp("27.154.74.117")
         .lastLoginTime(1534837621348L).creatorId("admin")
