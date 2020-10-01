@@ -29,7 +29,7 @@ interface SidebarMenu {
   title: string;
   iconType: string;
   routerLink?: string;
-  disabled: boolean;
+  disabled?: boolean;
   children?: Array<{
     title: string;
     routerLink?: string;
@@ -42,6 +42,9 @@ interface SidebarMenu {
   templateUrl: './workbench.component.html',
   styleUrls: ['./workbench.component.scss']
 })
+
+// ['data', 'model', 'workspace', 'interpreter'];
+
 export class WorkbenchComponent implements OnInit {
   isCollapsed: boolean = false;
   highlighted: boolean = true;
@@ -49,14 +52,24 @@ export class WorkbenchComponent implements OnInit {
     {
       title: 'Home',
       iconType: 'home',
-      routerLink: '/workbench/home',
+      routerLink: '/workbench/home'
+    },
+    {
+      title: 'Workspace',
+      iconType: 'desktop',
+      routerLink: '/workbench/workspace',
       disabled: true
     },
     {
       title: 'Notebook',
       iconType: 'book',
-      routerLink: '/workbench/notebook',
-      disabled: false
+      routerLink: '/workbench/notebook'
+    },
+    {
+      title: 'Interpreter',
+      iconType: 'api',
+      routerLink: '/workbench/interpreter',
+      disabled: true
     },
     {
       title: 'Experiment',
@@ -67,8 +80,19 @@ export class WorkbenchComponent implements OnInit {
     {
       title: 'Environment',
       iconType: 'codepen',
-      routerLink: '/workbench/environment',
-      disabled: false
+      routerLink: '/workbench/environment'
+    },
+    {
+      title: 'Data',
+      iconType: 'bar-chart',
+      routerLink: '/workbench/data',
+      disabled: true
+    },
+    {
+      title: 'Model',
+      iconType: 'experiment',
+      routerLink: '/workbench/model',
+      disabled: true
     },
     {
       title: 'Manager',
