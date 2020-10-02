@@ -48,34 +48,35 @@ public class homeIT extends AbstractSubmarineIT {
 
   @Test
   public void homePagination() throws Exception {
-    // Login
-    LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
+    LOG.info("homeIT is commented, because the page is not included in release 0.5.");
+    // // Login
+    // LOG.info("Login");
+    // pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    // pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    // clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
+    // pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
 
-    LOG.info("Pagination");
-    List<WebElement> changePageIndexButtons = driver.findElements(By.cssSelector("a[class='ant-pagination-item-link ng-star-inserted']"));
-    // 0: open recent: previous page
-    // 1: open recent: next page
-    // 2: news: previous page
-    // 3: news: next page
-    changePageIndexButtons.get(1).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Project2\")]")).size(), 6);
-    changePageIndexButtons.get(1).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Project3\")]")).size(), 6);
-    changePageIndexButtons.get(0).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Project2\")]")).size(), 6);
-    changePageIndexButtons.get(0).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Project1\")]")).size(), 6);
-    changePageIndexButtons.get(3).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Submarine supports yarn 2.7.x 123\")]")).size(), 5);
-    changePageIndexButtons.get(3).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Submarine supports yarn 2.7.x 456\")]")).size(), 5);
-    changePageIndexButtons.get(2).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Submarine supports yarn 2.7.x 123\")]")).size(), 5);
-    changePageIndexButtons.get(2).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Submarine supports yarn 2.7.x\")]")).size(), 5);
+    // LOG.info("Pagination");
+    // List<WebElement> changePageIndexButtons = driver.findElements(By.cssSelector("a[class='ant-pagination-item-link ng-star-inserted']"));
+    // // 0: open recent: previous page
+    // // 1: open recent: next page
+    // // 2: news: previous page
+    // // 3: news: next page
+    // changePageIndexButtons.get(1).click();
+    // Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Project2\")]")).size(), 6);
+    // changePageIndexButtons.get(1).click();
+    // Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Project3\")]")).size(), 6);
+    // changePageIndexButtons.get(0).click();
+    // Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Project2\")]")).size(), 6);
+    // changePageIndexButtons.get(0).click();
+    // Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Project1\")]")).size(), 6);
+    // changePageIndexButtons.get(3).click();
+    // Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Submarine supports yarn 2.7.x 123\")]")).size(), 5);
+    // changePageIndexButtons.get(3).click();
+    // Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Submarine supports yarn 2.7.x 456\")]")).size(), 5);
+    // changePageIndexButtons.get(2).click();
+    // Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Submarine supports yarn 2.7.x 123\")]")).size(), 5);
+    // changePageIndexButtons.get(2).click();
+    // Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Submarine supports yarn 2.7.x\")]")).size(), 5);
   }
 }

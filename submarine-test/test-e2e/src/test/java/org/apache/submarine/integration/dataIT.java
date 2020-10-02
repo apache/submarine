@@ -48,26 +48,27 @@ public class dataIT extends AbstractSubmarineIT {
 
   @Test
   public void dataNavigation() throws Exception {
-    // Login
-    LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
+    LOG.info("dataIT is commented, because the page is not included in release 0.5.");
+    // // Login
+    // LOG.info("Login");
+    // pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    // pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    // clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
+    // pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
 
-    // Routing to data page
-    pollingWait(By.xpath("//span[contains(text(), \"Data\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/data");
+    // // Routing to data page
+    // pollingWait(By.xpath("//span[contains(text(), \"Data\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/data");
 
-    // Test create new Table
-    pollingWait(By.xpath("//button[@id='createBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertTrue(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
+    // // Test create new Table
+    // pollingWait(By.xpath("//button[@id='createBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertTrue(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
 
-    pollingWait(By.xpath("//button[@id='firstNextBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@id='tableName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Table");
-    pollingWait(By.xpath("//button[@id='secondNextBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // pollingWait(By.xpath("//button[@id='firstNextBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // pollingWait(By.xpath("//input[@id='tableName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Table");
+    // pollingWait(By.xpath("//button[@id='secondNextBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
 
-    pollingWait(By.xpath("//button[@id='submit']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertTrue(pollingWait(By.xpath("//thead"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
+    // pollingWait(By.xpath("//button[@id='submit']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertTrue(pollingWait(By.xpath("//thead"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
   }
 }

@@ -46,25 +46,26 @@ public class teamIT extends AbstractSubmarineIT {
 
   @Test
   public void teamTest() throws Exception {
+    LOG.info("teamIT is commented, because the page is not included in release 0.5.");
     // Login
-    LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
+    // LOG.info("Login");
+    // pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    // pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    // clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
+    // pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
 
-    // Routing to workspace
-    pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
+    // // Routing to workspace
+    // pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
 
-    //Test team part
-    pollingWait(By.xpath("//li[contains(text(), \"Team\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertTrue(pollingWait(By.xpath("//div[@id='teamDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
+    // //Test team part
+    // pollingWait(By.xpath("//li[contains(text(), \"Team\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertTrue(pollingWait(By.xpath("//div[@id='teamDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
 
-    clickAndWait(By.cssSelector("button[id='btnAddTeam']"));
-    pollingWait(By.xpath("//input[@id='inputNewTeamName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamNameTest");
-    pollingWait(By.xpath("//input[@id='inputNewTeamOwner']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamOwnerTest");
-    clickAndWait(By.cssSelector("button[id='submitNewTeamBtn']"));
-    Assert.assertTrue(pollingWait(By.xpath("//td[contains(., 'NewTeamNameTest')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
+    // clickAndWait(By.cssSelector("button[id='btnAddTeam']"));
+    // pollingWait(By.xpath("//input[@id='inputNewTeamName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamNameTest");
+    // pollingWait(By.xpath("//input[@id='inputNewTeamOwner']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamOwnerTest");
+    // clickAndWait(By.cssSelector("button[id='submitNewTeamBtn']"));
+    // Assert.assertTrue(pollingWait(By.xpath("//td[contains(., 'NewTeamNameTest')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
   }
 }

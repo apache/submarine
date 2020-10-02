@@ -46,22 +46,23 @@ public class interpreterIT extends AbstractSubmarineIT {
 
   @Test
   public void workspaceNavigation() throws Exception {
-    // Login
-    LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
+    LOG.info("interpreterIT is commented, because the page is not included in release 0.5.");
+    // // Login
+    // LOG.info("Login");
+    // pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    // pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    // clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
+    // pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
 
-    // Routing to Interpreter
-    pollingWait(By.xpath("//span[contains(text(), \"Interpreter\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/interpreter");
+    // // Routing to Interpreter
+    // pollingWait(By.xpath("//span[contains(text(), \"Interpreter\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/interpreter");
 
-    // Test create new Interpreter
-    pollingWait(By.xpath("//button[@id='interpreterAddButton']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@id='inputNewInterpreterName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("Python Interpreter 2");
-    pollingWait(By.xpath("//input[@id='inputNewInterpreterType']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("Python");
-    pollingWait(By.cssSelector("button[class='ant-btn ng-star-inserted ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//td[@id='interpreterNamePython Interpreter 2']")).size(), 1);
+    // // Test create new Interpreter
+    // pollingWait(By.xpath("//button[@id='interpreterAddButton']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // pollingWait(By.xpath("//input[@id='inputNewInterpreterName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("Python Interpreter 2");
+    // pollingWait(By.xpath("//input[@id='inputNewInterpreterType']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("Python");
+    // pollingWait(By.cssSelector("button[class='ant-btn ng-star-inserted ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertEquals( driver.findElements(By.xpath("//td[@id='interpreterNamePython Interpreter 2']")).size(), 1);
   }
 }

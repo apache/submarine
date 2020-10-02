@@ -48,54 +48,56 @@ public class workspaceIT extends AbstractSubmarineIT {
 
   @Test
   public void workspaceNavigation() throws Exception {
-    // Login
-    LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
+    LOG.info("workspaceIT is commented, because the data page is not included in release 0.5.");
+    // // Login
+    // // Login
+    // LOG.info("Login");
+    // pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    // pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+    // clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
+    // pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
 
-    // Routing to workspace
-    pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
+    // // Routing to workspace
+    // pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
 
-    WebDriverWait wait = new WebDriverWait( driver, 60);
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//li[contains(text(), \"Release\")]")));
+    // WebDriverWait wait = new WebDriverWait( driver, 60);
+    // wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//li[contains(text(), \"Release\")]")));
 
-    //Test release part
-    pollingWait(By.xpath("//li[contains(text(), \"Release\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//nz-table[@id='releaseTable']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    // //Test release part
+    // pollingWait(By.xpath("//li[contains(text(), \"Release\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertEquals(pollingWait(By.xpath("//nz-table[@id='releaseTable']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
 
-    //Test training part
-    pollingWait(By.xpath("//li[contains(text(), \"Training\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//div[@id='trainingDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    // //Test training part
+    // pollingWait(By.xpath("//li[contains(text(), \"Training\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertEquals(pollingWait(By.xpath("//div[@id='trainingDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
 
-    //Test team part
-    pollingWait(By.xpath("//li[contains(text(), \"Team\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//div[@id='teamDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    // //Test team part
+    // pollingWait(By.xpath("//li[contains(text(), \"Team\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertEquals(pollingWait(By.xpath("//div[@id='teamDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
 
-    // shared part
-    pollingWait(By.xpath("//li[contains(text(), \"Shared\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//nz-table[@id='sharedTable']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    // // shared part
+    // pollingWait(By.xpath("//li[contains(text(), \"Shared\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // Assert.assertEquals(pollingWait(By.xpath("//nz-table[@id='sharedTable']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
 
-    //Test project part
-    pollingWait(By.xpath("//li[contains(text(), \"Project\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='addProjectbtn']")));
-    Assert.assertEquals(pollingWait(By.xpath("//div[@id='addProjectbtn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-    pollingWait(By.xpath("//div[@id='addProjectbtn']/button"), MAX_BROWSER_TIMEOUT_SEC).click();
-    //step1
-    Assert.assertEquals(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-    pollingWait(By.xpath("//input[@id='username']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project");
-    pollingWait(By.xpath("//textarea[@name='projectDescription']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project description");
-    pollingWait(By.xpath("//div[@class='centerDiv']/button"), MAX_BROWSER_TIMEOUT_SEC).click();
-    //step2
-    Assert.assertEquals(pollingWait(By.xpath("//nz-tabset"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-    pollingWait(By.xpath("//div[@class='centerDiv']/button[last()]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    //step3
-    Assert.assertEquals(pollingWait(By.xpath("//thead"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-    pollingWait(By.xpath("//div[@class='centerDiv']/button[last()-1]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    //return to project page
-    Assert.assertEquals(pollingWait(By.xpath("//div[@id='addProjectbtn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    // //Test project part
+    // pollingWait(By.xpath("//li[contains(text(), \"Project\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='addProjectbtn']")));
+    // Assert.assertEquals(pollingWait(By.xpath("//div[@id='addProjectbtn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    // pollingWait(By.xpath("//div[@id='addProjectbtn']/button"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // //step1
+    // Assert.assertEquals(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    // pollingWait(By.xpath("//input[@id='username']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project");
+    // pollingWait(By.xpath("//textarea[@name='projectDescription']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project description");
+    // pollingWait(By.xpath("//div[@class='centerDiv']/button"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // //step2
+    // Assert.assertEquals(pollingWait(By.xpath("//nz-tabset"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    // pollingWait(By.xpath("//div[@class='centerDiv']/button[last()]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // //step3
+    // Assert.assertEquals(pollingWait(By.xpath("//thead"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    // pollingWait(By.xpath("//div[@class='centerDiv']/button[last()-1]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    // //return to project page
+    // Assert.assertEquals(pollingWait(By.xpath("//div[@id='addProjectbtn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
 
 
 
