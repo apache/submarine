@@ -42,7 +42,6 @@ interface SidebarMenu {
   templateUrl: './workbench.component.html',
   styleUrls: ['./workbench.component.scss']
 })
-
 export class WorkbenchComponent implements OnInit {
   isCollapsed: boolean = false;
   highlighted: boolean = true;
@@ -50,7 +49,8 @@ export class WorkbenchComponent implements OnInit {
     {
       title: 'Home',
       iconType: 'home',
-      routerLink: '/workbench/home'
+      routerLink: '/workbench/home',
+      disabled: true
     },
     {
       title: 'Workspace',
