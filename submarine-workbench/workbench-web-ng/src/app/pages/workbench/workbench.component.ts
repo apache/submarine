@@ -29,7 +29,7 @@ interface SidebarMenu {
   title: string;
   iconType: string;
   routerLink?: string;
-  disabled?: boolean;
+  disabled: boolean;
   children?: Array<{
     title: string;
     routerLink?: string;
@@ -61,7 +61,8 @@ export class WorkbenchComponent implements OnInit {
     {
       title: 'Notebook',
       iconType: 'book',
-      routerLink: '/workbench/notebook'
+      routerLink: '/workbench/notebook',
+      disabled: false
     },
     {
       title: 'Interpreter',
@@ -78,7 +79,8 @@ export class WorkbenchComponent implements OnInit {
     {
       title: 'Environment',
       iconType: 'codepen',
-      routerLink: '/workbench/environment'
+      routerLink: '/workbench/environment',
+      disabled: false
     },
     {
       title: 'Data',
@@ -113,30 +115,6 @@ export class WorkbenchComponent implements OnInit {
           disabled: false
         }
       ]
-    },
-    {
-      title: 'Data',
-      iconType: 'bar-chart',
-      routerLink: '/workbench/data',
-      disabled: true
-    },
-    {
-      title: 'Model',
-      iconType: 'experiment',
-      routerLink: '/workbench/model',
-      disabled: true
-    },
-    {
-      title: 'Workspace',
-      iconType: 'desktop',
-      routerLink: '/workbench/workspace',
-      disabled: true
-    },
-    {
-      title: 'Interpreter',
-      iconType: 'api',
-      routerLink: '/workbench/interpreter',
-      disabled: true
     }
   ];
   userInfo$: Observable<UserInfo>;
