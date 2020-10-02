@@ -29,11 +29,11 @@ import { InterpreterComponent } from './interpreter/interpreter.component';
 import { ModelComponent } from './model/model.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 
-function disablePage(routes: Routes): Routes {
-  const disabledList: Array<string> = ['data', 'model', 'workspace', 'interpreter'];
-  routes[0].children[0].redirectTo = 'experiment'; // redirect root page to experiment
-  routes[0].children = routes[0].children.filter((item) => !disabledList.includes(item.path)); // filter pages which are incomplete
-  return routes;
+function disablePage(allRoutes: Routes): Routes {
+  const disabledList: string[] = ['data', 'model', 'workspace', 'interpreter'];
+  allRoutes[0].children[0].redirectTo = 'experiment'; // redirect root page to experiment
+  allRoutes[0].children = allRoutes[0].children.filter((item) => !disabledList.includes(item.path)); // filter pages which are incomplete
+  return allRoutes;
 }
 
 const routes: Routes = [
@@ -95,4 +95,4 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(disablePage(routes))]
 })
-export class WorkbenchRoutingModule {}
+export class WorkbenchRoutingModule { }

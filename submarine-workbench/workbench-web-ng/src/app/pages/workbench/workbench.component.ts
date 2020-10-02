@@ -43,8 +43,6 @@ interface SidebarMenu {
   styleUrls: ['./workbench.component.scss']
 })
 
-// ['data', 'model', 'workspace', 'interpreter'];
-
 export class WorkbenchComponent implements OnInit {
   isCollapsed: boolean = false;
   highlighted: boolean = true;
