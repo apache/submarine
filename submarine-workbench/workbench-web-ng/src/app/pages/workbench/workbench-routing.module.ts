@@ -29,7 +29,7 @@ import { InterpreterComponent } from './interpreter/interpreter.component';
 import { ModelComponent } from './model/model.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 
-function disablePage(routes: Routes): Routes{
+function disablePage(routes: Routes): Routes {
   const disabledList: Array<string> = ['data', 'model', 'workspace', 'interpreter'];
   routes[0].children[0].redirectTo = 'experiment'; // redirect root page to experiment
   routes[0].children = routes[0].children.filter((item) => !disabledList.includes(item.path)); // filter pages which are incomplete
