@@ -19,12 +19,9 @@
 
 package org.apache.submarine.server.api.ldap;
 
-import org.apache.submarine.server.api.spec.LdapSpec;
-
 public class Ldap {
   private String username;
   private String password;
-  private String ldapurl;
 
   public String getUsername() {
     return username;
@@ -41,5 +38,4 @@ public class Ldap {
   public void setPassword(String password) {
     this.password = password;
   }
-
 }

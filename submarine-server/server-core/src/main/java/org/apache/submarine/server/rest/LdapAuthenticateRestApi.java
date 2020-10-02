@@ -40,7 +40,7 @@ import java.util.Hashtable;
 @Path(RestConstants.V1 + "/" + RestConstants.LDAP)
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
 
-public class LdapAuthenticate {
+public class LdapAuthenticateRestApi {
   private final LdapManager ldapManager = LdapManager.getInstance();
 
   @POST

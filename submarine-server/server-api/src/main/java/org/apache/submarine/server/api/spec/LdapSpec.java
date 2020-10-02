@@ -31,12 +31,7 @@ public class LdapSpec {
    */
   private String password;
 
-  /**
-   * Ldap server url
-   */
-  private String ldapurl;
-
-  public String getUser_name(){
+  public String getUserName(){
     return user_name;
   }
 
@@ -44,4 +39,11 @@ public class LdapSpec {
     return password;
   }
 
+  public void setUserName(String user_name) {
+    this.user_name = user_name;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
 }
