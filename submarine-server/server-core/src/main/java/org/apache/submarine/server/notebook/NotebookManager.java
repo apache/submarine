@@ -79,8 +79,6 @@ public class NotebookManager {
    */
   public Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     checkNotebookSpec(spec);
-    String lowerName = spec.getMeta().getName().toLowerCase();
-    spec.getMeta().setName(lowerName);
     Notebook notebook = submitter.createNotebook(spec);
     notebook.setNotebookId(generateNotebookId());
     notebook.setSpec(spec);
