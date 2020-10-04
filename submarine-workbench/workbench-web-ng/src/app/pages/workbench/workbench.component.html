@@ -47,8 +47,8 @@
         [nzDisabled]="menu.disabled"
         [nzTitle]="menu.title"
         nzPlacement="right"
-        [nzMatchRouter]="!menu.disabled"
-        [routerLink]="menu.disabled ? null : menu.routerLink"
+        nzMatchRouter
+        [routerLink]="menu.routerLink"
       >
         <i nz-icon [nzType]="menu.iconType"></i>
         <span>{{ menu.title }}</span>
