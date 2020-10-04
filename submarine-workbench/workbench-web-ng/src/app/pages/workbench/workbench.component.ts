@@ -53,22 +53,10 @@ export class WorkbenchComponent implements OnInit {
       disabled: true
     },
     {
-      title: 'Workspace',
-      iconType: 'desktop',
-      routerLink: '/workbench/workspace',
-      disabled: true
-    },
-    {
       title: 'Notebook',
       iconType: 'book',
       routerLink: '/workbench/notebook',
       disabled: false
-    },
-    {
-      title: 'Interpreter',
-      iconType: 'api',
-      routerLink: '/workbench/interpreter',
-      disabled: true
     },
     {
       title: 'Experiment',
@@ -81,18 +69,6 @@ export class WorkbenchComponent implements OnInit {
       iconType: 'codepen',
       routerLink: '/workbench/environment',
       disabled: false
-    },
-    {
-      title: 'Data',
-      iconType: 'bar-chart',
-      routerLink: '/workbench/data',
-      disabled: true
-    },
-    {
-      title: 'Model',
-      iconType: 'experiment',
-      routerLink: '/workbench/model',
-      disabled: true
     },
     {
       title: 'Manager',
@@ -115,6 +91,30 @@ export class WorkbenchComponent implements OnInit {
           disabled: false
         }
       ]
+    },
+    {
+      title: 'Data',
+      iconType: 'bar-chart',
+      routerLink: '/workbench/data',
+      disabled: true
+    },
+    {
+      title: 'Model',
+      iconType: 'experiment',
+      routerLink: '/workbench/model',
+      disabled: true
+    },
+    {
+      title: 'Workspace',
+      iconType: 'desktop',
+      routerLink: '/workbench/workspace',
+      disabled: true
+    },
+    {
+      title: 'Interpreter',
+      iconType: 'api',
+      routerLink: '/workbench/interpreter',
+      disabled: true
     }
   ];
   userInfo$: Observable<UserInfo>;
