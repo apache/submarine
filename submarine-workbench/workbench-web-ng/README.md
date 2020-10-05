@@ -32,6 +32,12 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 If you want to add end-to-end test cases, please click [here](./e2e/README.md) for reference.
 
+## Formatting the code
+There are two ways to format the code.
+
+1. Install node/npm **globally** to enable husky. If you commit the code, it will trigger pre-commit hook and auto-format your code.
+2. If you do not install node/npm globally, it will not trigger pre-commit hook. However, you can run `npm autoformat` to format your code manually.
+
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
