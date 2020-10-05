@@ -19,7 +19,13 @@
 
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EnvironmentSpec, ExperimentMeta, ExperimentSpec, Specs, Code } from '@submarine/interfaces/experiment-spec';
+import {
+  CodeSpec,
+  EnvironmentSpec,
+  ExperimentMeta,
+  ExperimentSpec,
+  Specs
+} from '@submarine/interfaces/experiment-spec';
 import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
@@ -345,7 +351,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       image: this.image.value
     };
 
-    const code: Code = {
+    const code: CodeSpec = {
       syncMode: 'git',
       url: this.gitRepo.value
     };
@@ -353,10 +359,12 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     const newExperimentSpec: ExperimentSpec = {
       meta: meta,
       environment: environment,
-      spec: specs,
-      code: code
+      spec: specs
     };
 
+    if (code.url !== null) {
+      newExperimentSpec.code = code;
+    }
     return newExperimentSpec;
   }
 
@@ -400,6 +408,9 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     this.namespace.setValue(spec.meta.namespace);
     this.cmd.setValue(spec.meta.cmd);
     this.image.setValue(spec.environment.image);
+    if (this.imageList.indexOf(spec.environment.image) === -1) {
+      this.imageList = [...this.imageList, spec.environment.image || `New item ${this.imageIndex++}`];
+    }
     for (const [key, value] of Object.entries(spec.meta.envVars)) {
       const env = this.createEnv(key, value);
       this.envs.push(env);
