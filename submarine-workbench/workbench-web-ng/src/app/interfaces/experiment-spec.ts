@@ -44,7 +44,7 @@ export interface Specs {
   };
 }
 
-export interface Code {
+export interface CodeSpec {
   syncMode: string;
   url: string;
 }
@@ -53,5 +53,5 @@ export interface ExperimentSpec {
   meta: ExperimentMeta;
   environment: EnvironmentSpec;
   spec: Specs;
-  code: Code;
+  code?: CodeSpec;
 }
