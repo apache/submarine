@@ -16,7 +16,8 @@
 import pytest
 
 import submarine
-from submarine.experiment.models.environment import Environment
+from submarine.experiment.models.code_spec import CodeSpec
+from submarine.experiment.models.environment_spec import EnvironmentSpec
 from submarine.experiment.models.experiment_meta import ExperimentMeta
 from submarine.experiment.models.experiment_spec import ExperimentSpec
 from submarine.experiment.models.experiment_task_spec import ExperimentTaskSpec
@@ -25,7 +26,8 @@ from submarine.experiment.models.experiment_task_spec import ExperimentTaskSpec
 @pytest.mark.e2e
 def test_experiment_e2e():
     submarine_client = submarine.ExperimentClient(host='http://localhost:8080')
-    environment = Environment(image='gcr.io/kubeflow-ci/tf-dist-mnist-test:1.0')
+    environment = EnvironmentSpec(
+        image='gcr.io/kubeflow-ci/tf-dist-mnist-test:1.0')
     experiment_meta = ExperimentMeta(
         name='mnist-dist',
         namespace='default',
@@ -36,8 +38,12 @@ def test_experiment_e2e():
     worker_spec = ExperimentTaskSpec(resources='cpu=1,memory=1024M', replicas=1)
     ps_spec = ExperimentTaskSpec(resources='cpu=1,memory=1024M', replicas=1)
 
+    code_spec = CodeSpec(sync_mode='git',
+                         url='https://github.com/apache/submarine.git')
+
     experiment_spec = ExperimentSpec(meta=experiment_meta,
                                      environment=environment,
+                                     code=code_spec,
                                      spec={
                                          'Ps': ps_spec,
                                          'Worker': worker_spec

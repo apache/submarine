@@ -152,6 +152,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>${plugin.maven.assembly.version}</version>
         <executions>
           <execution>
             <id>dist</id>
