@@ -233,11 +233,10 @@ export class NotebookComponent implements OnInit {
         this.notebookForm.get('memoryNum').value
       }${this.notebookForm.get('unit').value}`;
     }
-
     // Develope submmit spec
     const newNotebookSpec = {
       meta: {
-        name: this.notebookForm.get('notebookName').value,
+        name: this.notebookForm.get('notebookName').value.toLowerCase(),
         namespace: 'default'
       },
       environment: {
