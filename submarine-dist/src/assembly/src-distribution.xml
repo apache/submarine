@@ -37,8 +37,8 @@
         <exclude>**/.settings</exclude>
         <exclude>**/target/**</exclude>
         <exclude>submodules/**/target/**</exclude>
-        <exclude>submarine-workbench/workbench-web-ng/dist/**</exclude>
-        <exclude>submarine-workbench/workbench-web-ng/node_modules/**</exclude>
+        <exclude>submarine-workbench/workbench-web/dist/**</exclude>
+        <exclude>submarine-workbench/workbench-web/node_modules/**</exclude>
         <!-- until the code that does this is fixed -->
         <exclude>**/*.log</exclude>
         <exclude>**/build/**</exclude>

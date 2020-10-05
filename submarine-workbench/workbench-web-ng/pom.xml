@@ -30,7 +30,7 @@
   </parent>
 
   <groupId>org.apache.submarine</groupId>
-  <artifactId>submarine-workbench-web-ng</artifactId>
+  <artifactId>submarine-workbench-web</artifactId>
   <packaging>war</packaging>
   <version>0.5.0-SNAPSHOT</version>
   <name>Submarine: Workbench Web Angular</name>
@@ -102,7 +102,7 @@
         <configuration>
           <warName>${project.artifactId}</warName>
           <failOnMissingWebXml>true</failOnMissingWebXml>
-          <warSourceDirectory>dist/workbench-web-ng</warSourceDirectory>
+          <warSourceDirectory>dist/workbench-web</warSourceDirectory>
           <webXml>src/WEB-INF/web.xml</webXml>
         </configuration>
       </plugin>

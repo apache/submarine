@@ -1,5 +1,5 @@
 {
-  "name": "workbench-web-ng",
+  "name": "workbench-web",
   "version": "0.0.0",
   "scripts": {
     "precommit": "lint-staged",
