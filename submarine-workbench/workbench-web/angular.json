@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "workbench-web-ng": {
+    "workbench-web": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/workbench-web-ng",
+            "outputPath": "dist/workbench-web",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -78,18 +78,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "workbench-web-ng:build"
+            "browserTarget": "workbench-web:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "workbench-web-ng:build:production"
+              "browserTarget": "workbench-web:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "workbench-web-ng:build"
+            "browserTarget": "workbench-web:build"
           }
         },
         "test": {
@@ -127,18 +127,18 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "workbench-web-ng:serve"
+            "devServerTarget": "workbench-web:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "workbench-web-ng:serve:production"
+              "devServerTarget": "workbench-web:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "workbench-web-ng",
+  "defaultProject": "workbench-web",
   "cli": {
     "analytics": false
   }

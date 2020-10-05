@@ -19,7 +19,7 @@
 
 npm install prettier@^2.0.5
 
-WORKBENCH_NG=./submarine-workbench/workbench-web-ng
+WORKBENCH_NG=./submarine-workbench/workbench-web
 
 PRETTIER_ERRORS=$(./node_modules/.bin/prettier --check --trailing-comma none "$WORKBENCH_NG/src/**/*.{ts,html}" | grep "Forgot to run Prettier?")
 

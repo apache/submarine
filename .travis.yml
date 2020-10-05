@@ -22,8 +22,8 @@ cache:
   apt: true
   directories:
     - ${HOME}/.m2
-    - submarine-workbench/workbench-web-ng/node
-    - submarine-workbench/workbench-web-ng/node_modules
+    - submarine-workbench/workbench-web/node
+    - submarine-workbench/workbench-web/node_modules
 
 addons:
   apt:
@@ -46,7 +46,7 @@ env:
     - EXCLUDE_SERVER="!:submarine-server-api,!:submarine-server-core,!:submarine-server-rpc"
     - EXCLUDE_CLIENT="!:submarine-client"
     - EXCLUDE_ALL="!:submarine-all"
-    - EXCLUDE_WORKBENCH="!:submarine-workbench,!:submarine-workbench-web-ng"
+    - EXCLUDE_WORKBENCH="!:submarine-workbench,!:submarine-workbench-web"
     - EXCLUDE_INTERPRETER="!:submarine-interpreter,!:submarine-interpreter-core,!:submarine-python-interpreter,!:submarine-spark-interpreter"
     - EXCLUDE_SUBMITTER_K8S="!:submarine-submitter-k8s"
     - EXCLUDE_SUBMITTER_YARN="!:submarine-submitter-yarn"
@@ -235,7 +235,7 @@ matrix:
       node_js:
         - "10"
       before_install:
-        - cd submarine-workbench/workbench-web-ng
+        - cd submarine-workbench/workbench-web
       before_script:
         npm install
       addons:
@@ -249,8 +249,8 @@ matrix:
       env:
         - BUILD_FLAG="clean package -DskipTests"
         - TEST_FLAG="test -DskipRat -am"
-        - MODULES="-pl org.apache.submarine:submarine-workbench-web-ng"
-        - TEST_MODULES="-pl org.apache.submarine:submarine-workbench-web-ng"
+        - MODULES="-pl org.apache.submarine:submarine-workbench-web"
+        - TEST_MODULES="-pl org.apache.submarine:submarine-workbench-web"
         - TEST_PROJECTS=""
 
     - name: Test submarine spark security with spark 2.3 and ranger 1.0

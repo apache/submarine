@@ -57,7 +57,7 @@ Each time a code is submitted, travis is automatically triggered for testing.
   * Step1: Follow [HowToRun.md](https://github.com/apache/submarine/blob/master/docs/workbench/HowToRun.md) to launch the submarine-server and database.
   * Step2: Run workbench (Angular version) locally
   ```
-  cd submarine/submarine-workbench/workbench-web-ng
+  cd submarine/submarine-workbench/workbench-web
   npm start
   // Check 127.0.0.1:4200
   ```
