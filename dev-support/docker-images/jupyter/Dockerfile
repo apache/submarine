@@ -96,6 +96,7 @@ RUN pip install notebook==6.1.3 && \
     git clone https://github.com/apache/submarine && \
     pip install submarine/submarine-sdk/pysubmarine && \
     cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
+    cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME && \
     rm submarine -rf
 
 
