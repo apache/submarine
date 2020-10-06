@@ -28,7 +28,7 @@ setup(
     packages=find_packages(exclude=['tests', 'tests.*']),
     install_requires=[
         'six>=1.10.0',
-        'numpy',
+        'numpy==1.18.5',
         'pandas',
         'sqlalchemy',
         'sqlparse',
