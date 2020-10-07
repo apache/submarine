@@ -56,7 +56,7 @@ You should see your new notebook server. Click the name of your notebook server 
 The environment “notebook-env” includes Submarine Python SDK which can talk to Submarine Server to \
 create experiments, as the example below:
 
-```
+```python
 from __future__ import print_function
 import submarine
 from submarine.experiment.models.environment_spec import EnvironmentSpec
