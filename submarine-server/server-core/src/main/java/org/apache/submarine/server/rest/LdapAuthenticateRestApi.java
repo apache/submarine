@@ -34,6 +34,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.submarine.server.ldap.LdapManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Hashtable;
 
 
@@ -46,7 +49,7 @@ public class LdapAuthenticateRestApi {
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public  Response authenticateUser(@FormParam("username") String username,
+  public  Response authenticateUser(@FormParam("userName") String username,
                                     @FormParam("password") String password) {
     try {
       //Authenticate the user using the credentials provided
@@ -58,6 +61,8 @@ public class LdapAuthenticateRestApi {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
   }
+
+  private static final Logger LOG = LoggerFactory.getLogger(LdapAuthenticateRestApi.class);
 
   private  void authenticate(String username, String password) throws Exception {
     DirContext ctx = null;
@@ -76,7 +81,7 @@ public class LdapAuthenticateRestApi {
       ctx = new InitialDirContext(HashEnv);
     }
     catch (AuthenticationException e) {
-      e.printStackTrace();
+      LOG.error(e.getStackTrace().toString());
     }
 
     if (ctx != null) {
@@ -84,7 +89,7 @@ public class LdapAuthenticateRestApi {
         ctx.close();
       }
       catch (NamingException e) {
-        e.printStackTrace();
+        LOG.error(e.getStackTrace().toString());
       }
     }
   }
