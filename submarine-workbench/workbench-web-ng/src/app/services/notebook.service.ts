@@ -31,12 +31,12 @@ import { Notebook } from '@submarine/interfaces/notebook-info';
 export class NotebookService {
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
-  fetchNotebookList() {
-    const apiUrl = this.baseApi.getRestApi('/v1/notebook');
+  fetchNotebookList(id: string) {
+    const apiUrl = this.baseApi.getRestApi('/v1/notebook?id=' + id);
     return this.httpClient.get<Rest<Notebook>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
-          console.log(res.result);
+          //console.log(res.result);
           return of(res.result);
         } else {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');

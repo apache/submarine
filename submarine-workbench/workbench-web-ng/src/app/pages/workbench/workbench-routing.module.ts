@@ -95,4 +95,4 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(disablePage(routes))]
 })
-export class WorkbenchRoutingModule { }
+export class WorkbenchRoutingModule {}

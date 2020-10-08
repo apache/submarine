@@ -26,6 +26,7 @@ export class NotebookSpec {
 export class Meta {
   name: string;
   namespace: string;
+  ownerId: string;
 }
 
 export class Environment {

@@ -36,7 +36,7 @@ export class EnvironmentService {
     return this.httpClient.get<Rest<Environment[]>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
-          console.log(res.result);
+          //console.log(res.result);
           return of(res.result);
         } else {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
