@@ -36,7 +36,6 @@ export class NotebookService {
     return this.httpClient.get<Rest<Notebook>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
-          //console.log(res.result);
           return of(res.result);
         } else {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
