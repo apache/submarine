@@ -23,6 +23,7 @@ import { NotebookService } from '@submarine/services/notebook.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { EnvironmentService } from '@submarine/services/environment.service';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
+import { UserService } from '@submarine/services/user.service';
 
 @Component({
   selector: 'submarine-notebook',
@@ -47,14 +48,22 @@ export class NotebookComponent implements OnInit {
   isVisible = false;
   MEMORY_UNITS = ['M', 'Gi'];
 
+  userId;
+
   constructor(
     private notebookService: NotebookService,
     private nzMessageService: NzMessageService,
     private environmentService: EnvironmentService,
-    private experimentValidatorService: ExperimentValidatorService
+    private experimentValidatorService: ExperimentValidatorService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
+    this.userService.fetchUserInfo().subscribe((res) => {
+      this.userId = res.id;
+      this.fetchNotebookList(this.userId);
+    });
+
     this.notebookForm = new FormGroup({
       notebookName: new FormControl(null, Validators.required),
       envName: new FormControl(null, Validators.required), // Environment
@@ -64,7 +73,6 @@ export class NotebookComponent implements OnInit {
       memoryNum: new FormControl(null, [Validators.required]),
       unit: new FormControl(this.MEMORY_UNITS[0], [Validators.required])
     });
-    this.fetchNotebookList();
     this.fetchEnvList();
   }
 
@@ -81,8 +89,8 @@ export class NotebookComponent implements OnInit {
   }
 
   // Get all notebooks, then set default namespace.
-  fetchNotebookList() {
-    this.notebookService.fetchNotebookList().subscribe((list) => {
+  fetchNotebookList(id: string) {
+    this.notebookService.fetchNotebookList(id).subscribe((list) => {
       this.allNotebookList = list;
     });
   }
@@ -125,7 +133,7 @@ export class NotebookComponent implements OnInit {
     this.notebookService.deleteNotebook(id).subscribe(
       () => {
         this.nzMessageService.success('Delete Notebook Successfully!');
-        this.updateNotebookTable();
+        this.updateNotebookTable(this.userId);
       },
       (err) => {
         this.nzMessageService.error(err.message);
@@ -134,8 +142,8 @@ export class NotebookComponent implements OnInit {
   }
 
   // Create or Delete, then update Notebook Table
-  updateNotebookTable() {
-    this.notebookService.fetchNotebookList().subscribe((list) => {
+  updateNotebookTable(id: string) {
+    this.notebookService.fetchNotebookList(id).subscribe((list) => {
       this.allNotebookList = list;
       this.notebookTable = [];
       this.allNotebookList.forEach((item) => {
@@ -236,8 +244,9 @@ export class NotebookComponent implements OnInit {
     // Develope submmit spec
     const newNotebookSpec = {
       meta: {
-        name: this.notebookForm.get('notebookName').value.toLowerCase(),
-        namespace: 'default'
+        name: this.notebookForm.get('notebookName').value,
+        namespace: 'default',
+        ownerId: this.userId
       },
       environment: {
         name: this.notebookForm.get('envName').value
@@ -254,12 +263,12 @@ export class NotebookComponent implements OnInit {
       }
     }
 
-    // console.log(newNotebookSpec);
+    //console.log(newNotebookSpec);
 
     // Post
     this.notebookService.createNotebook(newNotebookSpec).subscribe({
       next: (result) => {
-        this.fetchNotebookList();
+        this.fetchNotebookList(this.userId);
       },
       error: (msg) => {
         this.nzMessageService.error(`${msg}, please try again`, {
