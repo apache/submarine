@@ -9,7 +9,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "autoformat": "prettier --write --trailing-comma none --single-quote 'src/**/*.{js,json,ts,html}'",
+    "autoformat": "prettier --config .prettierrc --write 'src/**/*.{js,json,ts,html}'",
     "webdriver": "webdriver-manager update --ignore_ssl = true"
   },
   "private": true,
@@ -24,7 +24,6 @@
     "@angular/router": "~8.2.9",
     "@swimlane/ngx-charts": "^13.0.1",
     "date-fns": "^2.6.0",
-    "lint-staged": "^10.2.2",
     "lodash": "^4.17.19",
     "md5": "^2.2.1",
     "nanoid": "^3.1.12",
@@ -35,8 +34,13 @@
   },
   "lint-staged": {
     "src/**/*.{js,json,ts,html}": [
-      "prettier --write --trailing-comma none --single-quote"
+      "prettier --config .prettierrc"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.803.21",
@@ -49,14 +53,16 @@
     "codelyzer": "^5.1.2",
     "dotenv": "^8.0.0",
     "https-proxy-agent": "^2.2.1",
+    "husky": "^4.3.0",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",
     "karma-chrome-launcher": "~2.2.0",
-    "karma-firefox-launcher": "~1.3.0",
     "karma-coverage-istanbul-reporter": "~2.0.1",
+    "karma-firefox-launcher": "~1.3.0",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "lint-staged": "^10.4.0",
     "prettier": "^2.0.5",
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",

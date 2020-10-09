@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -47,8 +47,8 @@ resources:
 commonLabels:
   kustomize.component: tf-job-operator
 images:
-- name: gcr.io/kubeflow-images-public/tf_operator
-  newName: gcr.io/kubeflow-images-public/tf_operator
-  newTag: v0.7.0
+- name: apache/submarine
+  newName: apache/submarine
+  newTag: tf_operator-v1.1.0-g92389064
 ```
 

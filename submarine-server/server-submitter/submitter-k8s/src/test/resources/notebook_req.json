@@ -1,7 +1,8 @@
 {
   "meta": {
     "name": "my-nb",
-    "namespace": "default"
+    "namespace": "default",
+    "ownerId": "e9ca23d68d884d4ebb19d07889727dae"
   },
   "environment": {
     "name": "my-submarine-env"

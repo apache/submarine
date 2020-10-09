@@ -99,6 +99,24 @@
             <nz-option *ngFor="let namespace of nameSpaceList" [nzValue]="namespace" [nzLabel]="namespace"></nz-option>
           </nz-select>
         </div>
+        <div *ngIf="ADVANCED" class="single-field-group">
+          <label for="git-repo">
+            Git repository
+          </label>
+          <nz-input-group [nzSuffix]="suffixTemplateInfo">
+            <input
+              nz-input
+              type="text"
+              name="git-repo"
+              id="git-repo"
+              placeholder="https://github.com/apache/submarine.git"
+              formControlName="gitRepo"
+            />
+          </nz-input-group>
+          <ng-template #suffixTemplateInfo>
+            <i nz-icon nz-tooltip nzTitle="Copy git repo to /code/current in container." nzType="info-circle"></i>
+          </ng-template>
+        </div>
         <div *ngIf="ADVANCED">
           <ul formArrayName="envs" class="list-container">
             <ng-container *ngFor="let env of envs.controls; index as i">
@@ -130,6 +148,7 @@
           <button nz-button id="env-btn" style="display: block; margin: auto;" nzType="primary" (click)="onCreateEnv()">
             Add new environment variable
           </button>
+          <br />
         </div>
       </div>
       <div *ngSwitchCase="1" id="secondStep">
@@ -262,6 +281,7 @@
               {{ item.value.resources }}
             </nz-descriptions-item>
           </div>
+          <nz-descriptions-item nzTitle="Git repository">{{ finialExperimentSpec.code.url }}</nz-descriptions-item>
         </nz-descriptions>
       </div>
     </div>

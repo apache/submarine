@@ -33,55 +33,55 @@ import io.kubernetes.client.models.V1VolumeMount;
 
 public abstract class GitCodeLocalizer extends AbstractCodeLocalizer {
 
-  public static final String GIT_SYNC_IMAGE = "k8s.gcr.io/git-sync:v3.1.6";
-  
+  public static final String GIT_SYNC_IMAGE = "apache/submarine:git-sync-3.1.6";
+
   public GitCodeLocalizer(String url) {
     super(url);
   }
 
   public void localize(V1PodSpec podSpec) {
-    
+
     V1Container container = new V1Container();
     container.setName(CODE_LOCALIZER_INIT_CONTAINER_NAME);
     container.setImage(GIT_SYNC_IMAGE);
-    
+
     V1EnvVar repoEnv = new V1EnvVar();
     repoEnv.setName("GIT_SYNC_REPO");
     repoEnv.setValue(this.getUrl());
-    
+
     V1EnvVar rootEnv = new V1EnvVar();
     rootEnv.setName("GIT_SYNC_ROOT");
     rootEnv.setValue(CODE_LOCALIZER_PATH);
-    
+
     V1EnvVar destEnv = new V1EnvVar();
     destEnv.setName("GIT_SYNC_DEST");
     destEnv.setValue("current");
-    
+
     V1EnvVar oneTimeEnv = new V1EnvVar();
     oneTimeEnv.setName("GIT_SYNC_ONE_TIME");
     oneTimeEnv.setValue("true");
-    
+
     List<V1EnvVar> gitSyncEnvVars = new ArrayList<V1EnvVar>();
     gitSyncEnvVars.add(repoEnv);
     gitSyncEnvVars.add(rootEnv);
     gitSyncEnvVars.add(destEnv);
     gitSyncEnvVars.add(oneTimeEnv);
     container.setEnv(gitSyncEnvVars);
-    
+
     V1VolumeMount mount = new V1VolumeMount();
     mount.setName(CODE_LOCALIZER_MOUNT_NAME);
     mount.setMountPath(CODE_LOCALIZER_PATH);
-    
+
     List<V1VolumeMount> volumeMounts = new ArrayList<V1VolumeMount>();
     volumeMounts.add(mount);
-    
+
     container.setVolumeMounts(volumeMounts);
-    
+
     podSpec.addInitContainersItem(container);
-    
+
     super.localize(podSpec);
   }
-  
+
   public static CodeLocalizer getGitCodeLocalizer(String url)
       throws InvalidSpecException {
 

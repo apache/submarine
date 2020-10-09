@@ -1,4 +1,4 @@
-<!-- 
+<!--
 Licensed to the Apache Software Foundation (ASF) under one
 or more contributor license agreements.  See the NOTICE file
 distributed with this work for additional information
@@ -29,7 +29,7 @@ name: "mnist"
 librarySpec:
   name: "TensorFlow"
   version: "2.1.0"
-  image: "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+  image: "apache/submarine:tf-mnist-with-summaries-1.0"
   cmd: "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150"
   envVars:
     ENV_1: "ENV1"

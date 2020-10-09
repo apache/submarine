@@ -88,7 +88,7 @@ curl -X POST -H "Content-Type: application/json" -d '
       }
     },
     "environment": {
-      "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+      "image": "apache/submarine:tf-mnist-with-summaries-1.0"
     }
   }
 }
@@ -161,7 +161,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '
       }
     },
     "environment": {
-      "image": "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+      "image": "apache/submarine:tf-mnist-with-summaries-1.0"
     }
   }
 }
@@ -191,8 +191,8 @@ curl -X POST -H "Content-Type: application/json" -d '
 {
     "name": "tf-mnist",
     "params": {
-        "training.learning_rate":"0.01", 
-        "training.batch_size":"150", 
+        "training.learning_rate":"0.01",
+        "training.batch_size":"150",
         "experiment.name":"newExperiment"
     }
 }

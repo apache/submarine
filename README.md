@@ -20,7 +20,7 @@
 
 # What is Apache Submarine?
 
-**Apache Submarine** (Submarine for short) is an **End-to-End Machine Learning PLATFORM** to allow data scientists to create end-to-end machine learning workflows. To elaborate, on **Submarine**, data scientists can finish each stage in the ML model lifecycle, including data exploration, data pipeline creation, model training, serving, and monitoring.  
+**Apache Submarine** (Submarine for short) is an **End-to-End Machine Learning PLATFORM** to allow data scientists to create end-to-end machine learning workflows. To elaborate, on **Submarine**, data scientists can finish each stage in the ML model lifecycle, including data exploration, data pipeline creation, model training, serving, and monitoring.
 
 ## Why Submarine?
 
@@ -44,9 +44,9 @@ _Theodore Levitt_ once said:
 #### Model Training (Experiment)
 - Run/Track distributed training `experiment` on prem or cloud via easy-to-use UI/API/SDK.
 - Easy for data scientists to manage versions of `experiment` and dependencies of `environment`
-- Support popular machine learning frameworks, including **TensorFlow**, **PyTorch**, **Horovod**, and **MXNet**  
+- Support popular machine learning frameworks, including **TensorFlow**, **PyTorch**, **Horovod**, and **MXNet**
 - Provide pre-defined **template** for data scientists to implement domain-specific tasks easily (e.g. using DeepFM template to build a CTR prediction model)
-- Support many compute resources (e.g. CPU and GPU, etc.) 
+- Support many compute resources (e.g. CPU and GPU, etc.)
 - Support **Kubernetes** and **YARN**
 - Pipeline is also on the backlog, we will look into pipeline for training in the future.
 
@@ -71,7 +71,7 @@ As mentioned above, Submarine attempts to provide **Data-Scientist-friendly** UI
 submarine_client = submarine.ExperimentClient(host='http://localhost:8080')
 
 # The experiment's environment, could be Docker image or Conda environment based
-environment = Environment(image='gcr.io/kubeflow-ci/tf-dist-mnist-test:1.0')
+environment = EnvironmentSpec(image='apache/submarine:tf-dist-mnist-test-1.0')
 
 # Specify the experiment's name, framework it's using, namespace it will run in,
 # the entry point. It can also accept environment variables. etc.

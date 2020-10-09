@@ -70,8 +70,9 @@ public class experimentIT extends AbstractSubmarineIT {
     experimentPage.fillExperimentMeta(experimentName, "e2e des", "default",
             "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log" +
                     " --learning_rate=0.01 --batch_size=150",
-            "gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0",
+            "apache/submarine:tf-mnist-with-summaries-1.0",
             "ENV_1", "ENV1");
+    pollingWait(By.xpath("//input[@id='git-repo']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("https://github.com/apache/submarine.git");
     Assert.assertTrue(experimentPage.getGoButton().isEnabled());
     experimentPage.goButtonClick();
 

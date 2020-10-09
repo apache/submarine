@@ -18,9 +18,9 @@
 #
 set -euo pipefail
 
-readonly TF_OPERATOR_IMAGE="gcr.io/kubeflow-images-public/tf_operator:v1.0.0-g92389064"
-readonly PYTORCH_OPERATOR_IMAGE="gcr.io/kubeflow-images-public/pytorch-operator:v1.0.0-g047cf0f"
-readonly TF_MNIST_IMAGE="gcr.io/kubeflow-ci/tf-mnist-with-summaries:1.0"
+readonly TF_OPERATOR_IMAGE="apache/submarine:tf_operator-v1.1.0-g92389064"
+readonly PYTORCH_OPERATOR_IMAGE="apache/submarine:pytorch-operator-v1.1.0-gd596e904"
+readonly TF_MNIST_IMAGE="apache/submarine:tf-mnist-with-summaries-1.0"
 readonly PT_MNIST_IMAGE="apache/submarine:pytorch-dist-mnist-1.0"
 
 if [ -L "${BASH_SOURCE-$0}" ]; then

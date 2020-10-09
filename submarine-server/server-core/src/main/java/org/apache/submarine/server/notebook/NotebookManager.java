@@ -79,6 +79,8 @@ public class NotebookManager {
    */
   public Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     checkNotebookSpec(spec);
+    String lowerName = spec.getMeta().getName().toLowerCase();
+    spec.getMeta().setName(lowerName);
     Notebook notebook = submitter.createNotebook(spec);
     notebook.setNotebookId(generateNotebookId());
     notebook.setSpec(spec);
@@ -107,6 +109,25 @@ public class NotebookManager {
               || namespace.toLowerCase().equals(patchNotebook.getSpec().getMeta().getNamespace())) {
         notebook.rebuild(patchNotebook);
         notebookList.add(notebook);
+      }
+    }
+    return notebookList;
+  }
+
+  /**
+   * Get a list of notebook with user id
+   * @param id user id
+   * @return a list of notebook
+   */
+  public List<Notebook> listNotebooksByUserId(String id) {
+    List<Notebook> notebookList = submitter.listNotebook(id);
+    for (Notebook notebook : notebookList) {
+      for (Map.Entry<String, Notebook> entry : cachedNotebookMap.entrySet()) {
+        Notebook cachedNotebook = entry.getValue();
+        if (cachedNotebook.getUid().equals(notebook.getUid())) {
+          notebook.setNotebookId(cachedNotebook.getNotebookId());
+          notebook.setSpec(cachedNotebook.getSpec());
+        }
       }
     }
     return notebookList;

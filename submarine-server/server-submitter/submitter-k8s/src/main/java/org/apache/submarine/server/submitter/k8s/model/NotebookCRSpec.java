@@ -20,9 +20,11 @@
 package org.apache.submarine.server.submitter.k8s.model;
 
 import com.google.gson.annotations.SerializedName;
+import io.kubernetes.client.models.V1EnvVar;
 import io.kubernetes.client.models.V1PodTemplateSpec;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class NotebookCRSpec {
 
@@ -88,5 +90,10 @@ public class NotebookCRSpec {
   public String getContainerImageName() {
     V1PodTemplateSpec podSpec = getTemplate();
     return podSpec.getSpec().getContainers().get(0).getImage();
+  }
+
+  public List<V1EnvVar> getEnvs() {
+    V1PodTemplateSpec podSpec = getTemplate();
+    return podSpec.getSpec().getContainers().get(0).getEnv();
   }
 }

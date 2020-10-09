@@ -29,7 +29,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-in
     build-essential \
     curl \
     wget \
-    vim \
+    git \
     bzip2 \
     ca-certificates \
     sudo \
@@ -91,8 +91,14 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     conda clean --all -f -y && \
     rm -rf /home/$NB_USER/.cache/yarn
 
-# Install sumbarine python sdk and notebook
-RUN pip --quiet --no-cache-dir install notebook==6.1.3 apache-submarine
+# Install latest sumbarine python sdk and notebook
+RUN pip install notebook==6.1.3 && \
+    git clone https://github.com/apache/submarine && \
+    pip install submarine/submarine-sdk/pysubmarine && \
+    cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
+    rm submarine -rf
+
+
 
 EXPOSE $NB_PORT
 ENTRYPOINT ["tini", "-g", "--"]

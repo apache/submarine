@@ -19,6 +19,17 @@
 
 package org.apache.submarine.server.submitter.k8s;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import io.kubernetes.client.ApiClient;
@@ -46,6 +57,7 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
+import org.apache.submarine.server.submitter.k8s.model.NotebookCRList;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRouteSpec;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
@@ -56,14 +68,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * JobSubmitter for Kubernetes Cluster.
@@ -117,7 +121,7 @@ public class K8sSubmitter implements Submitter {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true");
-      experiment = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
+      experiment = parseNotebookResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(400, e.getMessage());
@@ -135,7 +139,7 @@ public class K8sSubmitter implements Submitter {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       Object object = api.getNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName());
-      experiment = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
+      experiment = parseNotebookResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
@@ -152,7 +156,7 @@ public class K8sSubmitter implements Submitter {
       Object object = api.patchNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
           mlJob);
-      experiment = parseResponseObject(object, ParseOp.PARSE_OP_RESULT);
+      experiment = parseNotebookResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
@@ -169,7 +173,7 @@ public class K8sSubmitter implements Submitter {
       Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
           MLJobConverter.toDeleteOptionsFromMLJob(mlJob), null, null, null);
-      experiment = parseResponseObject(object, ParseOp.PARSE_OP_DELETE);
+      experiment = parseNotebookResponseObject(object, ParseOp.PARSE_OP_DELETE);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
@@ -178,7 +182,7 @@ public class K8sSubmitter implements Submitter {
     return experiment;
   }
 
-  private Experiment parseResponseObject(Object object, ParseOp op) throws SubmarineRuntimeException {
+  private Experiment parseNotebookResponseObject(Object object, ParseOp op) throws SubmarineRuntimeException {
     Gson gson = new JSON().getGson();
     String jsonString = gson.toJson(object);
     LOG.info("Upstream response JSON: {}", jsonString);
@@ -249,9 +253,12 @@ public class K8sSubmitter implements Submitter {
     try {
       // create notebook custom resource
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
+      Map<String, String> labels = new HashMap<>();
+      labels.put(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET, spec.getMeta().getOwnerId());
+      notebookCR.getMetadata().setLabels(labels);
       Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               notebookCR.getMetadata().getNamespace(), notebookCR.getPlural(), notebookCR, "true");
-      notebook = parseResponseObject(object);
+      notebook = parseNotebookResponseObject(object);
 
       // create Traefik custom resource
       createIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
@@ -274,7 +281,7 @@ public class K8sSubmitter implements Submitter {
       Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               notebookCR.getMetadata().getNamespace(),
               notebookCR.getPlural(), notebookCR.getMetadata().getName());
-      notebook = parseResponseObject(object);
+      notebook = parseNotebookResponseObject(object);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -291,7 +298,7 @@ public class K8sSubmitter implements Submitter {
               notebookCR.getMetadata().getName(),
               new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
               null, null, null);
-      notebook = parseResponseObject(object);
+      notebook = parseNotebookResponseObject(object);
       deleteIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -299,27 +306,33 @@ public class K8sSubmitter implements Submitter {
     return notebook;
   }
 
-  private Notebook parseResponseObject(Object obj) throws SubmarineRuntimeException {
+  @Override
+  public List<Notebook> listNotebook(String id) throws SubmarineRuntimeException {
+    List<Notebook> notebookList;
+    try {
+      Object object = api.listClusterCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
+              NotebookCR.CRD_NOTEBOOK_VERSION_V1, NotebookCR.CRD_NOTEBOOK_PLURAL_V1,
+              "true", null, NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET + "=" + id,
+              null, null, null);
+      notebookList = parseNotebookListResponseObject(object);
+    } catch (ApiException e) {
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    }
+    return notebookList;
+  }
+
+  private Notebook parseNotebookResponseObject(Object obj) throws SubmarineRuntimeException {
     Gson gson = new JSON().getGson();
     String jsonString = gson.toJson(obj);
     LOG.info("Upstream response JSON: {}", jsonString);
     Notebook notebook;
     try {
-      notebook = new Notebook();
       NotebookCR notebookCR = gson.fromJson(jsonString, NotebookCR.class);
-      notebook.setUid(notebookCR.getMetadata().getUid());
-      notebook.setName(notebookCR.getMetadata().getName());
-      // notebook url
-      notebook.setUrl("/notebook/" + notebookCR.getMetadata().getNamespace() + "/" +
-              notebookCR.getMetadata().getName() + "/");
-      DateTime createdTime = notebookCR.getMetadata().getCreationTimestamp();
-      if (createdTime != null) {
-        notebook.setCreatedTime(createdTime.toString());
-        notebook.setStatus(Notebook.Status.STATUS_CREATED.getValue());
-      }
-
-      // deleted notebook
-      if (notebookCR.getMetadata().getName() == null) {
+      if (notebookCR.getMetadata().getName() != null) {
+        notebook = buildNotebookResponse(notebookCR);
+        // notebook is deleted
+      } else {
+        notebook = new Notebook();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         Date current = new Date();
         notebook.setDeletedTime(dateFormat.format(current));
@@ -329,6 +342,41 @@ public class K8sSubmitter implements Submitter {
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
+    }
+    return notebook;
+  }
+
+  private List<Notebook> parseNotebookListResponseObject(Object object) {
+    Gson gson = new JSON().getGson();
+    String jsonString = gson.toJson(object);
+    LOG.info("Upstream response JSON: {}", jsonString);
+
+    Notebook notebook;
+    List<Notebook> notebookList = new ArrayList<>();
+    try {
+      NotebookCRList notebookCRList = gson.fromJson(jsonString, NotebookCRList.class);
+      for (NotebookCR notebookCR : notebookCRList.getItems()) {
+        notebook = buildNotebookResponse(notebookCR);
+        notebookList.add(notebook);
+      }
+    } catch (JsonSyntaxException e) {
+      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
+    }
+    return notebookList;
+  }
+
+  private Notebook buildNotebookResponse(NotebookCR notebookCR) {
+    Notebook notebook = new Notebook();
+    notebook.setUid(notebookCR.getMetadata().getUid());
+    notebook.setName(notebookCR.getMetadata().getName());
+    // notebook url
+    notebook.setUrl("/notebook/" + notebookCR.getMetadata().getNamespace() + "/" +
+            notebookCR.getMetadata().getName() + "/");
+    DateTime createdTime = notebookCR.getMetadata().getCreationTimestamp();
+    if (createdTime != null) {
+      notebook.setCreatedTime(createdTime.toString());
+      notebook.setStatus(Notebook.Status.STATUS_CREATED.getValue());
     }
     return notebook;
   }

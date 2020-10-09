@@ -22,6 +22,7 @@ package org.apache.submarine.rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
@@ -163,6 +164,63 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
     String json = postMethod.getResponseBodyAsString();
     JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
+  }
+
+  @Test
+  public void testListNotebooksWithUserId() throws Exception {
+    // create environment
+    String envBody = loadContent("environment/test_env_3.json");
+    run(envBody, "application/json");
+    Gson gson = new GsonBuilder()
+            .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
+            .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdDeserializer())
+            .create();
+    GetMethod getMethod = httpGet(ENV_PATH + "/" + ENV_NAME);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+            getMethod.getStatusCode());
+
+    String json = getMethod.getResponseBodyAsString();
+    JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(),
+            jsonResponse.getCode());
+
+    Environment getEnvironment =
+            gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
+    Assert.assertEquals(ENV_NAME, getEnvironment.getEnvironmentSpec().getName());
+
+    // create notebook instances
+    LOG.info("Create notebook servers by Notebook REST API");
+    String body = loadContent("notebook/notebook-req.json");
+    PostMethod postMethod = httpPost(BASE_API_PATH, body,"application/json");
+    Assert.assertEquals(Response.Status.OK.getStatusCode(), postMethod.getStatusCode());
+
+    body = loadContent("notebook/notebook-req-2.json");
+    postMethod = httpPost(BASE_API_PATH, body,"application/json");
+    Assert.assertEquals(Response.Status.OK.getStatusCode(), postMethod.getStatusCode());
+
+    // Get a list of notebook with user id
+    GetMethod getNotebookList = httpGet(BASE_API_PATH + "?id=e9ca23d68d884d4ebb19d07889727dae");
+    Assert.assertEquals(Response.Status.OK.getStatusCode(), getNotebookList.getStatusCode());
+
+    String jsonString = getNotebookList.getResponseBodyAsString();
+    JsonResponse notebookListJsonResponse = gson.fromJson(jsonString, JsonResponse.class);
+    Assert.assertEquals(Response.Status.OK.getStatusCode(), notebookListJsonResponse.getCode());
+
+    LOG.info("List notebooks: {}", jsonString);
+    JsonArray jsonArray = gson.fromJson(gson.toJson(notebookListJsonResponse.getResult()), JsonArray.class);
+    Assert.assertEquals(2, jsonArray.size());
+
+    // delete notebook instances
+    DeleteMethod deleteMethod;
+    for(JsonElement jsonElement : jsonArray) {
+      String notebookId = jsonElement.getAsJsonObject().get("notebookId").getAsString();
+      LOG.info("Delete notebook: {}", notebookId);
+      deleteMethod = httpDelete(BASE_API_PATH + "/" + notebookId);
+      Assert.assertEquals(Response.Status.OK.getStatusCode(), deleteMethod.getStatusCode());
+    }
+
+    // delete environment
+    deleteEnvironment();
   }
 
   private void runTest(String body, String contentType) throws Exception {

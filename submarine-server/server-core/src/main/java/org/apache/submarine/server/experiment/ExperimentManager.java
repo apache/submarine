@@ -53,8 +53,8 @@ public class ExperimentManager {
 
   /**
    * Used to cache the specs by the experiment id.
-   *  key: the string of experiment id
-   *  value: Experiment object
+   * key: the string of experiment id
+   * value: Experiment object
    */
   private final ConcurrentMap<String, Experiment> cachedExperimentMap = new ConcurrentHashMap<>();
 
@@ -62,6 +62,7 @@ public class ExperimentManager {
 
   /**
    * Get the singleton instance
+   *
    * @return object
    */
   public static ExperimentManager getInstance() {
@@ -81,6 +82,7 @@ public class ExperimentManager {
 
   /**
    * Create experiment
+   *
    * @param spec spec
    * @return object
    * @throws SubmarineRuntimeException the service error
@@ -94,6 +96,8 @@ public class ExperimentManager {
     String url = getSQLAlchemyURL();
     spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id.toString());
     spec.getMeta().getEnvVars().put(RestConstants.SUBMARINE_TRACKING_URI, url);
+    String lowerName = spec.getMeta().getName().toLowerCase();
+    spec.getMeta().setName(lowerName);
 
     Experiment experiment = submitter.createExperiment(spec);
     experiment.setExperimentId(id);
@@ -121,6 +125,7 @@ public class ExperimentManager {
 
   /**
    * Get experiment
+   *
    * @param id experiment id
    * @return object
    * @throws SubmarineRuntimeException the service error
@@ -136,6 +141,7 @@ public class ExperimentManager {
 
   /**
    * List experiments
+   *
    * @param status status, if null will return all experiments
    * @return list
    * @throws SubmarineRuntimeException the service error
@@ -158,7 +164,8 @@ public class ExperimentManager {
 
   /**
    * Patch the experiment
-   * @param id experiment id
+   *
+   * @param id   experiment id
    * @param spec spec
    * @return object
    * @throws SubmarineRuntimeException the service error
@@ -175,6 +182,7 @@ public class ExperimentManager {
 
   /**
    * Delete experiment
+   *
    * @param id experiment id
    * @return object
    * @throws SubmarineRuntimeException the service error
@@ -190,6 +198,7 @@ public class ExperimentManager {
 
   /**
    * List experiment logs
+   *
    * @param status status, if null will return all experiment logs
    * @return log list
    * @throws SubmarineRuntimeException the service error
@@ -212,6 +221,7 @@ public class ExperimentManager {
 
   /**
    * Get experiment log
+   *
    * @param id experiment id
    * @return object
    * @throws SubmarineRuntimeException the service error
