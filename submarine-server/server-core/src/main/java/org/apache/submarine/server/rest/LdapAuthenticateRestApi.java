@@ -81,7 +81,7 @@ public class LdapAuthenticateRestApi {
       ctx = new InitialDirContext(HashEnv);
     }
     catch (AuthenticationException e) {
-      LOG.error(e.getStackTrace().toString());
+      LOG.error(e.getMessage(), e);
     }
 
     if (ctx != null) {
@@ -89,7 +89,7 @@ public class LdapAuthenticateRestApi {
         ctx.close();
       }
       catch (NamingException e) {
-        LOG.error(e.getStackTrace().toString());
+        LOG.error(e.getMessage(), e);
       }
     }
   }
