@@ -19,15 +19,6 @@
 
 package org.apache.submarine.server.submitter.k8s;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import io.kubernetes.client.ApiClient;
@@ -45,25 +36,34 @@ import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.Submitter;
+import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
+import org.apache.submarine.server.submitter.k8s.model.MLJob;
+import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRouteSpec;
-import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
+import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
-import org.apache.submarine.server.submitter.k8s.model.MLJob;
-import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * JobSubmitter for Kubernetes Cluster.
@@ -123,7 +123,7 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(400, e.getMessage());
     } catch (ApiException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+      throw new SubmarineRuntimeException(417, "K8s submitter: parse Job object failed by " + e.getMessage());
     }
     return experiment;
   }
@@ -261,7 +261,7 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
     } catch (ApiException e) {
       LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+      throw new SubmarineRuntimeException(417, "K8s submitter: parse Job object failed by " + e.getMessage());
     }
     return notebook;
   }
