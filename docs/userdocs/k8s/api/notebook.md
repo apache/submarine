@@ -30,10 +30,11 @@ curl -X POST -H "Content-Type: application/json" -d '
 {
   "meta": {
     "name": "test-nb",
-    "namespace": "default"
+    "namespace": "default",
+    "ownerId": "e9ca23d68d884d4ebb19d07889727dae"
   },
   "environment": {
-    "name": "my-submarine-env"
+    "name": "notebook-env"
   },
   "spec": {
     "envVars": {
@@ -56,17 +57,18 @@ curl -X POST -H "Content-Type: application/json" -d '
     "notebookId":"notebook_1597931805405_0001",
     "name":"test-nb",
     "uid":"5a94c01d-6a92-4222-bc66-c610c277546d",
-    "url":"/notebook/default/test-nb",
+    "url":"/notebook/default/test-nb/",
     "status":"Created",
     "createdTime":"2020-08-20T21:58:27.000+08:00",
     "deletedTime":null,
     "spec":{
       "meta":{
         "name":"test-nb",
-        "namespace":"default"
+        "namespace":"default",
+        "ownerId":"e9ca23d68d884d4ebb19d07889727dae"
       },
       "environment":{
-        "name":"my-submarine-env",
+        "name":"notebook-env",
         "dockerImage":"apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
         "kernelSpec":{
           "name": "team_default_python_3.7",
@@ -92,12 +94,12 @@ curl -X POST -H "Content-Type: application/json" -d '
 }
 ```
 
-## List notebook instances
+## List notebook instances which belong to user
 `GET /api/v1/notebook`
 
 **Example Request:**
 ```sh
-curl -X GET http://127.0.0.1:8080/api/v1/notebook
+curl -X GET http://127.0.0.1:8080/api/v1/notebook?id={user_id}
 ```
 
 **Example Response:**
@@ -112,17 +114,18 @@ curl -X GET http://127.0.0.1:8080/api/v1/notebook
       "notebookId":"notebook_1597931805405_0001",
       "name":"test-nb",
       "uid":"5a94c01d-6a92-4222-bc66-c610c277546d",
-      "url":"/notebook/default/test-nb",
+      "url":"/notebook/default/test-nb/",
       "status":"Created",
       "createdTime":"2020-08-20T21:58:27.000+08:00",
       "deletedTime":null,
       "spec":{
         "meta":{
           "name":"test-nb",
-          "namespace":"default"
+          "namespace":"default",
+          "ownerId":"e9ca23d68d884d4ebb19d07889727dae"
         },
         "environment":{
-          "name":"my-submarine-env",
+          "name":"notebook-env",
           "dockerImage":"apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
           "kernelSpec":{
             "name": "team_default_python_3.7",
@@ -168,17 +171,18 @@ curl -X GET http://127.0.0.1:8080/api/v1/notebook/{id}
     "notebookId":"notebook_1597931805405_0001",
     "name":"test-nb",
     "uid":"5a94c01d-6a92-4222-bc66-c610c277546d",
-    "url":"/notebook/default/test-nb",
+    "url":"/notebook/default/test-nb/",
     "status":"Created",
     "createdTime":"2020-08-20T21:58:27.000+08:00",
     "deletedTime":null,
     "spec":{
       "meta":{
         "name":"test-nb",
-        "namespace":"default"
+        "namespace":"default",
+        "ownerId":"e9ca23d68d884d4ebb19d07889727dae"
       },
       "environment":{
-        "name":"my-submarine-env",
+        "name":"notebook-env",
         "dockerImage":"apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
         "kernelSpec":{
           "name": "team_default_python_3.7",
@@ -223,17 +227,18 @@ curl -X DELETE http://127.0.0.1:8080/api/v1/notebook/{id}
     "notebookId": "notebook_1597931805405_0001",
     "name": "test-nb",
     "uid": "5a94c01d-6a92-4222-bc66-c610c277546d",
-    "url": "/notebook/null/null",
+    "url": "/notebook/default/test-nb/",
     "status": "Deleted",
     "createdTime": "2020-08-22T14:03:19.000+08:00",
     "deletedTime": "2020-08-22T14:46:28+0800",
     "spec": {
       "meta": {
         "name": "test-nb",
-        "namespace": "default"
+        "namespace": "default",
+        "ownerId":"e9ca23d68d884d4ebb19d07889727dae"
       },
       "environment": {
-        "name": "my-submarine-env",
+        "name": "notebook-env",
         "dockerImage": "apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
         "kernelSpec": {
           "name": "team_default_python_3.7",

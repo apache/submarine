@@ -17,54 +17,77 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Notebook Guide
-This guide describes how to use Kubeflow's notebook-controller to manage jupyter notebook instances.
+# Notebooks Guide
 
-## Notebook Controller
-The controller creates a StatefulSet to manage the notebook instance, and a Service to expose its port. \
-Please refer to the [link](https://github.com/kubeflow/kubeflow/tree/master/components/notebook-controller) for more info.
+This guide describes how to use Jupyter notebook in Submarine to launch
+and manage Jupyter notebooks.
 
+## Working with notebooks
 
-### Pod Spec
-To specify the PodSpec for the jupyter notebook.
-```yaml
-apiVersion: kubeflow.org/v1alpha1
-kind: Notebook
-metadata:
-  name: {NOTEBOOK_NAME}
-  namespace: {NAMESPACE}
-  labels:
-      app: {NOTEBOOK_NAME}
-spec:
-  template:
-    spec:
-      containers:
-      - image: {IMAGE_NAME}
-        name: {NOTEBOOK_NAME}
-        env: []
-        resources:
-          requests:
-            cpu: "0.5"
-            memory: "1.0Gi"
-      volumes: []
-        ...
-        ..
-```
-You could refer to this sample [Dockerfile](../../../dev-support/docker-images/jupyter/Dockerfile) for building your own
-jupyter docker image and the CR (Notebook) [example](jupyter-example.yaml).
+We recommend using Web UI to manage notebooks.
 
-### Create a notebook instance
-```
-kubectl apply -f jupyter-example.yaml
-```
+### Notebooks Web UI
 
-## Access the notebook locally
-The controller creates a Service which will target TCP port 8888 on jupyter pod and be exposed on port 80 internally. \
-You can use the following command to set up port forwarding to the notebook.
-```
-kubectl port-forward -n ${NAMESPACE} svc/${NOTEBOOK_NAME} 8888:80
-```
-To access the jupyter notebook, open the following URL in your browser.
-```
-http://localhost:8888/notebook/${NAMESPACE}/${NOTEBOOK_NAME}
+Notebooks can be started from the Web UI. You can click the “Notebook” tab in the \
+left-hand panel to manage your notebooks.
+
+#### <img src="../../assets/notebook-list.png" width=70%>
+
+To create a new notebook server, click “New Notebook”. You should see a form for entering \
+details of your new notebook server.
+
+- Notebook Name : Name of the notebook server. It should be unique and include no spaces.
+- Environment : It defines a set of libraries and docker image.
+- CPU and Memory
+- GPU (optional)
+- EnvVar (optional) : Injects environment variables into the notebook.
+
+**If you’re not sure which environment you need, please choose the environment “notebook-env” \
+for the new notebook.**
+
+#### <img src="../../assets/notebook-form.png" width=70%>
+
+You should see your new notebook server. Click the name of your notebook server to connect to it.
+
+#### <img src="../../assets/created-notebook.png" width=70%>
+
+## Experiment with your notebook
+
+The environment “notebook-env” includes Submarine Python SDK which can talk to Submarine Server to \
+create experiments, as the example below:
+
+```python
+from __future__ import print_function
+import submarine
+from submarine.experiment.models.environment_spec import EnvironmentSpec
+from submarine.experiment.models.experiment_spec import ExperimentSpec
+from submarine.experiment.models.experiment_task_spec import ExperimentTaskSpec
+from submarine.experiment.models.experiment_meta import ExperimentMeta
+from submarine.experiment.models.code_spec import CodeSpec
+
+# Create Submarine Client
+submarine_client = submarine.ExperimentClient()
+
+# Define TensorFlow experiment spec
+environment = EnvironmentSpec(image='apache/submarine:tf-dist-mnist-test-1.0')
+experiment_meta = ExperimentMeta(name='mnist-dist',
+                                 namespace='default',
+                                 framework='Tensorflow',
+                                 cmd='python /var/tf_dist_mnist/dist_mnist.py --train_steps=100',
+                                 env_vars={'ENV1': 'ENV1'})
+
+worker_spec = ExperimentTaskSpec(resources='cpu=1,memory=1024M',
+                                 replicas=1)
+ps_spec = ExperimentTaskSpec(resources='cpu=1,memory=1024M',
+                                 replicas=1)
+code_spec = CodeSpec(sync_mode='git', url='https://github.com/apache/submarine.git')
+
+experiment_spec = ExperimentSpec(meta=experiment_meta,
+                                 environment=environment,
+                                 code=code_spec,
+                                 spec={'Ps' : ps_spec,'Worker': worker_spec})
+
+# Create experiment
+experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
+
 ```
