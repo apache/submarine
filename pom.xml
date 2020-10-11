@@ -104,6 +104,7 @@
     <commons-io.version>2.5</commons-io.version>
     <commons-codec.version>1.5</commons-codec.version>
     <junit.version>4.12</junit.version>
+    <jsonwebtoken.version>0.11.2</jsonwebtoken.version>
     <selenium.version>3.8.1</selenium.version>
     <jarchivelib.version>0.7.1</jarchivelib.version>
     <jsr305.version>1.3.9</jsr305.version>

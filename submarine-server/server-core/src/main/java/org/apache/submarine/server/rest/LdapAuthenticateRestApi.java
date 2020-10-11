@@ -91,16 +91,14 @@ public class LdapAuthenticateRestApi {
 
     try {
       ctx = new InitialDirContext(HashEnv);
-    }
-    catch (AuthenticationException e) {
+    } catch (AuthenticationException e) {
       LOG.error(e.getMessage(), e);
     }
 
     if (ctx != null) {
       try {
         ctx.close();
-      }
-      catch (NamingException e) {
+      } catch (NamingException e) {
         LOG.error(e.getMessage(), e);
       }
     }
