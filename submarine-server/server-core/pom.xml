@@ -376,6 +376,12 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>${jsonwebtoken.version}</version>
+      <scope>compile</scope>
+    </dependency>
 
     <dependency>
       <groupId>jakarta.xml.bind</groupId>
