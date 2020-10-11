@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.rest;
 
+import javax.crypto.spec.SecretKeySpec;
 import javax.naming.AuthenticationException;
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -32,11 +33,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.crypto.MacProvider;
 import org.apache.submarine.server.ldap.LdapManager;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.Key;
+import java.util.Base64;
+import java.util.Date;
 import java.util.Hashtable;
 
 
@@ -49,13 +58,16 @@ public class LdapAuthenticateRestApi {
   @POST
   @Produces(MediaType.APPLICATION_JSON)
   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-  public  Response authenticateUser(@FormParam("userName") String username,
+  public  Response authenticateUser(@FormParam("userName") String userName,
                                     @FormParam("password") String password) {
     try {
       //Authenticate the user using the credentials provided
-      authenticate(username, password);
+      authenticate(userName, password);
 
-      return Response.ok().build();
+      //create token for user
+      String token = issueToken(userName);
+
+      return Response.ok(token).build();
     }
     catch (Exception e) {
       return Response.status(Response.Status.FORBIDDEN).build();
@@ -64,7 +76,7 @@ public class LdapAuthenticateRestApi {
 
   private static final Logger LOG = LoggerFactory.getLogger(LdapAuthenticateRestApi.class);
 
-  private  void authenticate(String username, String password) throws Exception {
+  private void authenticate(String username, String password) throws Exception {
     DirContext ctx = null;
     Hashtable<String, String> HashEnv = new Hashtable<>();
 
@@ -92,6 +104,47 @@ public class LdapAuthenticateRestApi {
         LOG.error(e.getMessage(), e);
       }
     }
+  }
+
+  private static final Key secret = MacProvider.generateKey(SignatureAlgorithm.HS256);
+  private static final byte[] secretBytes = secret.getEncoded();
+  private static final String base64SecretBytes = Base64.getEncoder().encodeToString(secretBytes);
+
+  private String issueToken(String userName){
+    String id = userName;
+    long ttlMillis = 600;
+
+    String token = createJWT(userName, ttlMillis);
+
+    return token;
+  }
+
+  private String createJWT(String id, long ttlMillis){
+
+
+    // The JWT signature algorithm we will be using to sign the token
+    SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+
+    long nowMillis = System.currentTimeMillis();
+    Date now = new Date(nowMillis);
+
+    // We will sign our JWT with our ApiKey secret
+    Key signingKey = new SecretKeySpec(secretBytes, signatureAlgorithm.getJcaName());
+
+    //set the JWT Claims
+    JwtBuilder builder = Jwts.builder().setId(id)
+            .setIssuedAt(now)
+            .signWith(signatureAlgorithm, signingKey);
+
+    // if it has been specified, let's add the expiration
+    if (ttlMillis >= 0) {
+      long expMillis = nowMillis + ttlMillis;
+      Date exp = new Date(expMillis);
+      builder.setExpiration(exp);
+    }
+
+    // Builds the JWT and serializes it to a compact, URL-safe string
+    return builder.compact();
   }
 
 }
