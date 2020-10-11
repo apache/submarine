@@ -52,7 +52,7 @@ import java.util.Map;
 public class JsonResponse<T> {
   private static final Logger LOG = LoggerFactory.getLogger(JsonResponse.class);
 
-  private final javax.ws.rs.core.Response.Status status;
+  private javax.ws.rs.core.Response.Status status;
   private final int code;
   private final Boolean success;
   private final String message;
@@ -76,6 +76,7 @@ public class JsonResponse<T> {
       this.status = builder.status;
     } else {
       status = Response.Status.fromStatusCode(this.code);
+      if (status == null) status = Response.Status.fromStatusCode(400);
     }
   }
 

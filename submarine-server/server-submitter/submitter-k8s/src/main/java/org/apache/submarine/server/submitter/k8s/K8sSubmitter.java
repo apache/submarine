@@ -127,7 +127,8 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(400, e.getMessage());
     } catch (ApiException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(400, "K8s submitter: parse Job object failed by " + e.getMessage());
+      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Job object failed by " +
+          e.getMessage());
     }
     return experiment;
   }
@@ -268,7 +269,8 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
     } catch (ApiException e) {
       LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(400, "K8s submitter: parse Job object failed by " + e.getMessage());
+      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Job object failed by " +
+          e.getMessage());
     }
     return notebook;
   }
