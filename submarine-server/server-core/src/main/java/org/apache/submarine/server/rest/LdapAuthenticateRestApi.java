@@ -109,12 +109,9 @@ public class LdapAuthenticateRestApi {
   private static final String base64SecretBytes = Base64.getEncoder().encodeToString(secretBytes);
 
   private String issueToken(String userName){
-    String id = userName;
     long ttlMillis = 600;
 
-    String token = createJWT(userName, ttlMillis);
-
-    return token;
+    return createJWT(userName, ttlMillis);
   }
 
   private String createJWT(String id, long ttlMillis){
