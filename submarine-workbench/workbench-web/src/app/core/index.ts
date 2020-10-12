@@ -17,4 +17,4 @@
  * under the License.
  */
 
-export * from './publick-api';
+export * from './public-api';
