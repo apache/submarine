@@ -76,11 +76,11 @@ public class LdapAuthenticateRestApi {
 
   private static final Logger LOG = LoggerFactory.getLogger(LdapAuthenticateRestApi.class);
 
-  private void authenticate(String username, String password) throws Exception {
+  private void authenticate(String userName, String password) throws Exception {
     DirContext ctx = null;
     Hashtable<String, String> HashEnv = new Hashtable<>();
 
-    String loginId = "uid=" + username + ",dc=example,dc=com";
+    String loginId = "uid=" + userName + ",dc=example,dc=com";
 
     HashEnv.put(Context.SECURITY_AUTHENTICATION, "simple");
     HashEnv.put(Context.SECURITY_PRINCIPAL, loginId);
@@ -115,8 +115,6 @@ public class LdapAuthenticateRestApi {
   }
 
   private String createJWT(String id, long ttlMillis){
-
-
     // The JWT signature algorithm we will be using to sign the token
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 

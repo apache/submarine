@@ -24,7 +24,7 @@ public class LdapSpec {
   /**
    * Name of the user
    */
-  private String user_name;
+  private String userName;
 
   /**
    * password of the user
@@ -32,7 +32,7 @@ public class LdapSpec {
   private String password;
 
   public String getUserName(){
-    return user_name;
+    return userName;
   }
 
   public String getPassword(){
@@ -40,7 +40,7 @@ public class LdapSpec {
   }
 
   public void setUserName(String user_name) {
-    this.user_name = user_name;
+    this.userName = userName;
   }
 
   public void setPassword(String password) {
