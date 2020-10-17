@@ -260,6 +260,6 @@ public class ExperimentRestApi {
 
   private Response parseExperimentServiceException(SubmarineRuntimeException e) {
     return new JsonResponse.Builder<String>(e.getCode())
-      .message(e.getMessage().equals("Conflict") ? "Duplicated Experiment" : e.getMessage()).build();
+      .message(e.getMessage().equals("Conflict") ? "Duplicated experiment name" : e.getMessage()).build();
   }
 }
