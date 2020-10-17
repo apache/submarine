@@ -80,14 +80,14 @@ public class ExperimentRestApi {
         .success(true).result("Pong").build();
   }
 
-  
+
   /**
    * Returns the contents of {@link Experiment} that submitted by user.
    *
    * @param spec spec
    * @return the contents of experiment
    */
-  
+
   @POST
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
   @Operation(summary = "Create an experiment",
@@ -109,7 +109,7 @@ public class ExperimentRestApi {
    * Returns the contents of {@link Experiment} that submitted by user.
    *
    * @param id template id
-   * @param spec 
+   * @param spec
    * @return the contents of experiment
    */
   @POST
@@ -120,11 +120,11 @@ public class ExperimentRestApi {
       responses = {
           @ApiResponse(description = "successful operation", content = @Content(
               schema = @Schema(implementation = JsonResponse.class)))})
-  public Response SubmitExperimentTemplate(@PathParam("name") String name, 
+  public Response SubmitExperimentTemplate(@PathParam("name") String name,
         ExperimentTemplateSubmit spec) {
     try {
       spec.setName(name);
-      
+
       Experiment experiment = ExperimentTemplateManager.getInstance().submitExperimentTemplate(spec);
       return new JsonResponse.Builder<Experiment>(Response.Status.OK)
           .success(true).result(experiment).build();
@@ -259,6 +259,7 @@ public class ExperimentRestApi {
   }
 
   private Response parseExperimentServiceException(SubmarineRuntimeException e) {
-    return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage()).build();
+    return new JsonResponse.Builder<String>(e.getCode())
+      .message(e.getMessage().equals("Conflict") ? "Duplicated experiment name" : e.getMessage()).build();
   }
 }
