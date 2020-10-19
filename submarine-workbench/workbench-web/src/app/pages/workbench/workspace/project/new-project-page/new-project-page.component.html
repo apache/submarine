@@ -118,7 +118,7 @@
         style="margin-bottom: 10px;"
         nz-button
         nzType="primary"
-        [disabled]="!f.valid"
+        [disabled]="!f.valid || !isVisibilityFilled()"
         (click)="current = current + 1"
       >
         Next Step
