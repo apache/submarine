@@ -56,9 +56,9 @@ export class NewProjectPageComponent implements OnInit {
   newProjectContent = {
     projectName: '',
     description: '',
-    visibility: 'Private',
+    visibility: '',
     team: '',
-    permission: 'View',
+    permission: '',
     files: []
   };
   Templates = [
@@ -110,6 +110,27 @@ export class NewProjectPageComponent implements OnInit {
     } else {
       this.templateType = '';
     }
+  }
+
+  isVisibilityFilled(): boolean {
+    // check whether visibility is filled
+    if (this.newProjectContent.visibility === '') {
+      return false;
+    }
+
+    // check whether chosen visibility requires additional information (e.g. permission)
+    if (this.newProjectContent.visibility === 'PROJECT_VISIBILITY_TEAM') {
+      if (this.newProjectContent.team === '' || this.newProjectContent.permission === '') {
+        return false;
+      }
+    }
+
+    if (this.newProjectContent.visibility === 'PROJECT_VISIBILITY_PUBLIC') {
+        if (this.newProjectContent.permission === '') {
+          return false;
+        }
+    }
+    return true;
   }
 
   done(): void {
