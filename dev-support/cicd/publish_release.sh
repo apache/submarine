@@ -134,7 +134,13 @@ function publish_to_maven() {
   for file in $(find . -type f); do
     echo "${GPG_PASSPHRASE}" | gpg --passphrase-fd 0 --output "${file}.asc" \
       --detach-sig --armor "${file}"
-    md5 -q "${file}" > "${file}.md5"
+    if [ $(command -v md5) ]; then
+      # Available on OS X; -q to keep only hash
+      md5 -q $file > $file.md5
+    else
+      # Available on Linux; cut to keep only hash
+      md5sum $file | cut -f1 -d' ' > $file.md5
+    fi
     ${SHASUM} -a 1 "${file}" | cut -f1 -d' ' > "${file}.sha1"
   done
 
