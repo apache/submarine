@@ -30,11 +30,9 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import java.util.Hashtable;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class LdapAuthenticateRestApiTest {
-  private static LdapAuthenticateRestApi ldapAuthenticateRestApi;
   private static final Logger LOG = LoggerFactory.getLogger(LdapAuthenticateRestApiTest.class);
 
   @Test
