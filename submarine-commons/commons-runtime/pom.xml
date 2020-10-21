@@ -24,13 +24,13 @@
   <parent>
     <groupId>org.apache.submarine</groupId>
     <artifactId>submarine-commons</artifactId>
-    <version>0.5.0-SNAPSHOT</version>
+    <version>0.5.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.apache.submarine</groupId>
   <artifactId>submarine-commons-runtime</artifactId>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.5.0</version>
   <name>Submarine: Commons Runtime</name>
 
   <dependencies>
