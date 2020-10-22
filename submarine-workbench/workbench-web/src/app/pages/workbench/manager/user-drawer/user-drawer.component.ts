@@ -154,6 +154,9 @@ export class UserDrawerComponent implements OnInit, OnChanges {
           if (formData.birthday) {
             formData.birthday = format(formData.birthday, 'yyyy-MM-dd HH:mm:ss');
           }
+          else{
+            formData.birthday = format(new Date(2000,0O0,0O1),'yyyy-MM-dd HH:mm:ss');
+          }
 
           this.submit.emit(formData);
         }

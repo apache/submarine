@@ -24,6 +24,8 @@ import * as md5 from 'md5';
 import { of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { BaseApiService } from './base-api.service';
+import {conditionallyCreateMapObjectLiteral} from "@angular/compiler/src/render3/view/util";
+import {isNull} from "util";
 
 interface UserListQueryParams {
   accountName: string;
@@ -96,6 +98,7 @@ export class UserService {
 
   createUser(sysUser: Partial<SysUser>): Observable<SysUser> {
     const apiUrl = this.baseApi.getRestApi('/sys/user/add');
+    sysUser['password'] = md5(sysUser.password);
 
     return this.httpClient.post<Rest<SysUser>>(apiUrl, sysUser).pipe(
       switchMap((res) => {
