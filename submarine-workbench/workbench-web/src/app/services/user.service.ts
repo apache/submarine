@@ -96,6 +96,7 @@ export class UserService {
 
   createUser(sysUser: Partial<SysUser>): Observable<SysUser> {
     const apiUrl = this.baseApi.getRestApi('/sys/user/add');
+    sysUser['password'] = md5(sysUser.password);
 
     return this.httpClient.post<Rest<SysUser>>(apiUrl, sysUser).pipe(
       switchMap((res) => {

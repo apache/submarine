@@ -151,9 +151,7 @@ export class UserDrawerComponent implements OnInit, OnChanges {
           delete formData['sex@dict'];
           delete formData['status@dict'];
 
-          if (formData.birthday) {
-            formData.birthday = format(formData.birthday, 'yyyy-MM-dd HH:mm:ss');
-          }
+          formData.birthday = formData.birthday ? format(formData.birthday, 'yyyy-MM-dd HH:mm:ss'): null;
 
           this.submit.emit(formData);
         }
