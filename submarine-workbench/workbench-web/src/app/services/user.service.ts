@@ -24,8 +24,6 @@ import * as md5 from 'md5';
 import { of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { BaseApiService } from './base-api.service';
-import {conditionallyCreateMapObjectLiteral} from "@angular/compiler/src/render3/view/util";
-import {isNull} from "util";
 
 interface UserListQueryParams {
   accountName: string;
