@@ -17,7 +17,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Run TensorFlow Experiment Guide
+# Run TensorFlow Experiment Guide (REST)
 
 ## Experiment Spec
 The experiment is represented in [JSON](https://www.json.org) or [YAML](https://yaml.org) format.

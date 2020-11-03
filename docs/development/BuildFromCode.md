@@ -23,7 +23,30 @@
 
 ## Quick Start
 
-### Building the code
+### Build Your Custom Submarine Docker Images 
+
+Submarine provides default Docker image in the release artifacts, sometimes you would like to do some modifications on the images. You can rebuild Docker image after you make changes. 
+
+> Note that you need to make sure the images built above can be accessed in k8s
+> Usually this needs a rename and push to a proper Docker registry.
+
+```bash
+mvn clean package -DskipTests
+```
+
+Build submarine server image:
+
+```bash
+./dev-support/docker-images/submarine/build.sh
+```
+
+Build submarine database image:
+
+```bash
+./dev-support/docker-images/database/build.sh
+```
+
+### Building source code / binary distribution
 
 + Checking releases for licenses
 
