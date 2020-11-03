@@ -61,7 +61,7 @@ You can also follow the guidance to run Submarine model training using Python SD
 
 Alternatively, we support use REST API to submit, list, delete experiments (model training)
 
-- [Run model training using Tensorflow](run-tensorflow-experiment.md)
-- [Run model training using PyTorch](run-pytorch-experiment.md)
+- [Run model training using Tensorflow](run-tensorflow-experiment-rest.md)
+- [Run model training using PyTorch](run-pytorch-experiment-rest.md)
 - [Experiment API Reference](api/experiment.md)
 
