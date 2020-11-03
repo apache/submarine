@@ -24,8 +24,6 @@ Submarine can run on K8s >= 1.14, supports features like GPU isolation.
 
 We have validated Submarine on the following versions:
 
-[FIXME]: is it accurate?
-
 | K8s Version   | Support?  |
 | ------------- |:-------------:|
 | 1.13.x (or earlier) | X |
@@ -45,60 +43,25 @@ From our experiences, Docker Desktop is an easier choice.
 ### Install Submarine Use Helm Charts
 After you have an up-and-running K8s, you can follow [Submarine Helm Charts Guide](helm.md) to deploy Submarine services on K8s cluster in minutes.
 
+## Using Jupyter notebooks in Submarine
+
+Please refer to [Notebook guide](notebook.md) if you want to use jupyter notebook in Submarine.
+
 ## Model Training (Experiment) on K8s
+
+### Model Training with Submarine UI
+
+You can now submit Submarine model training on the UI, please refer to [Submit Experiment from Submarine UI](./run-tensorflow-experiment-ui.md)
 
 ### Model Training With Submarine Python SDK
 
-Submarine Python SDK can runs on any machine and it will talk to Submarine Server via REST API. So you can install Submarine Python SDK on your laptop, a gateway machine, your favorite IDE (like PyCharm/Jupyter, etc.).
-
-#### Prepare Python Environment to run Submarine SDK
-
-First of all
-
-Submarine SDK requires Python3.7+.
-It's better to use a new Python environment created by `Anoconda` or Python `virtualenv` to try this to avoid trouble to existing Python environment.
-A sample Python virtual env can be setup like this:
-```bash
-wget https://files.pythonhosted.org/packages/33/bc/fa0b5347139cd9564f0d44ebd2b147ac97c36b2403943dbee8a25fd74012/virtualenv-16.0.0.tar.gz
-tar xf virtualenv-16.0.0.tar.gz
-
-# Make sure to install using Python 3
-python3 virtualenv-16.0.0/virtualenv.py venv
-. venv/bin/activate
-```
-
-#### Install Submarine SDK
-
-**Install SDK from pypi.org (recommended)**
-
-Starting from 0.4.0, Submarine provides Python SDK. Please change it to a proper version needed.
-
-```bash
-pip install submarine-sdk==0.4.0
-```
-
-**Install SDK from source code**
-
-Please first clone code from github or go to `http://submarine.apache.org/download.html` to download released source code.
-
-```bash
-git clone https://github.com/apache/submarine.git
-git checkout <correct release tag/branch>
-cd submarine/submarine-sdk/pysubmarine
-pip install .
-```
-
-#### Run with Submarine Python SDK
-
-Assuming you've installed submarine on K8s and forward the service to localhost, now you can open a Python shell, Jupyter notebook or any tools with Submarine SDK installed.
-
-Follow [SDK experiment example](../../../submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb) to try the SDK.
+You can also follow the guidance to run Submarine model training using Python SDK, please refer to [Submit Experiment using Python SDK](./run-experiment-python-sdk.md)
 
 ### Model Training With Submarine REST API
 
 Alternatively, we support use REST API to submit, list, delete experiments (model training)
 
-- [Run model training using Tensorflow](run-tensorflow-experiment.md)
-- [Run model training using PyTorch](run-pytorch-experiment.md)
+- [Run model training using Tensorflow](run-tensorflow-experiment-rest.md)
+- [Run model training using PyTorch](run-pytorch-experiment-rest.md)
 - [Experiment API Reference](api/experiment.md)
 

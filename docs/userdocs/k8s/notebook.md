@@ -91,3 +91,7 @@ experiment_spec = ExperimentSpec(meta=experiment_meta,
 experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
 
 ```
+
+You can create a new notebook, paste the above code and run it. Or, you can find the notebook `submarine_experiment_sdk.ipynb` inside the launched notebook session. You can open it, try it out. 
+
+After experiment submitted to Submarine server, you can find the experiment jobs on the UI.

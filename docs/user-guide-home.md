@@ -18,9 +18,7 @@ This is index of user-document of Submarine.
 
 ## Build From Code
 
-[Build From Code Guide](./development/BuildFromCode.md)
-
-FIXME: Where's build guide for K8s? How can we make it clear?
+Follow the guidee [Build From Code Guide](./development/BuildFromCode.md) to build source code / binary distribution of Submarine, and rebuild Docker images.
 
 ## Use Submarine on YARN
 

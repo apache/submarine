@@ -17,7 +17,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Experiment Template API Reference
+# Experiment Template REST API Reference
 
 ## Experiment Template Spec
 The experiment is represented in [JSON](https://www.json.org) or [YAML](https://yaml.org) format.
