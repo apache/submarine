@@ -37,7 +37,9 @@
   <description>Submarine Workbench</description>
 
   <modules>
+<!--
     <module>interpreter</module>
+-->
     <module>workbench-web</module>
   </modules>
 

@@ -38,7 +38,9 @@
     <module>commons-utils</module>
     <module>commons-runtime</module>
     <module>commons-cluster</module>
+<!--
     <module>commons-metastore</module>
+-->
     <module>commons-rpc</module>
     <module>commons-unixusersync</module>
   </modules>

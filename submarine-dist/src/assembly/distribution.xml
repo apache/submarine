@@ -115,6 +115,7 @@
         <include>submarine-commons-cluster-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
+<!--
     <fileSet>
       <directory>../submarine-commons/commons-metastore/target</directory>
       <outputDirectory>/lib</outputDirectory>
@@ -122,6 +123,7 @@
         <include>submarine-commons-metastore-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
+-->
     <fileSet>
       <directory>../submarine-commons/commons-rpc/target</directory>
       <outputDirectory>/lib</outputDirectory>
@@ -142,7 +144,7 @@
       <directory>../submarine-server/server-submitter/submitter-k8s/target/dependency</directory>
       <outputDirectory>/lib/submitter/k8s</outputDirectory>
     </fileSet>
-
+<!--
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-yarn/target</directory>
       <outputDirectory>/lib/submitter/yarn</outputDirectory>
@@ -150,6 +152,7 @@
         <include>submarine-submitter-yarn-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
+-->
     <fileSet>
       <directory>../submarine-server/server-submitter/submitter-yarnservice/target</directory>
       <outputDirectory>/lib/submitter/yarnservice</outputDirectory>
@@ -185,8 +188,12 @@
         <!-- atomix & netty-4.1.27.Final already shade in submarine-commons-cluster-${project.version}-shade.jar -->
         <exclude>atomix-*.jar</exclude>
         <exclude>netty-*-4.1.27.Final*.jar</exclude>
+        <exclude>swagger-*.jar</exclude>
+        <exclude>hadoop-yarn-server-*.jar</exclude>
+        <exclude>zookeeper-*.jar</exclude>
       </excludes>
     </fileSet>
+<!--
     <fileSet>
       <directory>../submarine-workbench/interpreter/python-interpreter/target</directory>
       <outputDirectory>/lib/interpreter/python</outputDirectory>
@@ -201,6 +208,6 @@
         <include>submarine-spark-interpreter-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
+-->
   </fileSets>
-
 </assembly>

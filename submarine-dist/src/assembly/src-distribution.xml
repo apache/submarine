@@ -39,6 +39,8 @@
         <exclude>submodules/**/target/**</exclude>
         <exclude>submarine-workbench/workbench-web/dist/**</exclude>
         <exclude>submarine-workbench/workbench-web/node_modules/**</exclude>
+        <exclude>submarine-cloud/bin/**</exclude>
+        <exclude>dev-support/submarine-installer/package/hadoop/yarn/lib/native/**</exclude>
         <!-- until the code that does this is fixed -->
         <exclude>**/*.log</exclude>
         <exclude>**/build/**</exclude>
