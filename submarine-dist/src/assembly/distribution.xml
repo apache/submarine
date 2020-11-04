@@ -187,13 +187,13 @@
         <exclude>netty-*-4.1.27.Final*.jar</exclude>
       </excludes>
     </fileSet>
-    <fileSet>
-      <directory>../submarine-workbench/interpreter/python-interpreter/target</directory>
-      <outputDirectory>/lib/interpreter/python</outputDirectory>
-      <includes>
-        <include>submarine-python-interpreter-${project.version}-shade.jar</include>
-      </includes>
-    </fileSet>
+<!--    <fileSet>-->
+<!--      <directory>../submarine-workbench/interpreter/python-interpreter/target</directory>-->
+<!--      <outputDirectory>/lib/interpreter/python</outputDirectory>-->
+<!--      <includes>-->
+<!--        <include>submarine-python-interpreter-${project.version}-shade.jar</include>-->
+<!--      </includes>-->
+<!--    </fileSet>-->
 <!--    <fileSet>-->
 <!--      <directory>../submarine-workbench/interpreter/spark-interpreter/target</directory>-->
 <!--      <outputDirectory>/lib/interpreter/spark</outputDirectory>-->
