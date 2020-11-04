@@ -150,13 +150,13 @@
         <include>submarine-submitter-yarn-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
-    <fileSet>
-      <directory>../submarine-server/server-submitter/submitter-yarnservice/target</directory>
-      <outputDirectory>/lib/submitter/yarnservice</outputDirectory>
-      <includes>
-        <include>submarine-submitter-yarnservice-${project.version}.jar</include>
-      </includes>
-    </fileSet>
+<!--    <fileSet>-->
+<!--      <directory>../submarine-server/server-submitter/submitter-yarnservice/target</directory>-->
+<!--      <outputDirectory>/lib/submitter/yarnservice</outputDirectory>-->
+<!--      <includes>-->
+<!--        <include>submarine-submitter-yarnservice-${project.version}.jar</include>-->
+<!--      </includes>-->
+<!--    </fileSet>-->
     <fileSet>
       <directory>../submarine-client/target</directory>
       <outputDirectory>/lib</outputDirectory>
@@ -194,13 +194,13 @@
         <include>submarine-python-interpreter-${project.version}-shade.jar</include>
       </includes>
     </fileSet>
-    <fileSet>
-      <directory>../submarine-workbench/interpreter/spark-interpreter/target</directory>
-      <outputDirectory>/lib/interpreter/spark</outputDirectory>
-      <includes>
-        <include>submarine-spark-interpreter-${project.version}-shade.jar</include>
-      </includes>
-    </fileSet>
+<!--    <fileSet>-->
+<!--      <directory>../submarine-workbench/interpreter/spark-interpreter/target</directory>-->
+<!--      <outputDirectory>/lib/interpreter/spark</outputDirectory>-->
+<!--      <includes>-->
+<!--        <include>submarine-spark-interpreter-${project.version}-shade.jar</include>-->
+<!--      </includes>-->
+<!--    </fileSet>-->
   </fileSets>
 
 </assembly>
