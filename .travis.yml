@@ -47,7 +47,7 @@ env:
     - EXCLUDE_CLIENT="!:submarine-client"
     - EXCLUDE_ALL="!:submarine-all"
     - EXCLUDE_WORKBENCH="!:submarine-workbench,!:submarine-workbench-web"
-    - EXCLUDE_INTERPRETER="!:submarine-interpreter,!:submarine-interpreter-core,!:submarine-python-interpreter,!:submarine-spark-interpreter"
+    # - EXCLUDE_INTERPRETER="!:submarine-interpreter,!:submarine-interpreter-core,!:submarine-python-interpreter,!:submarine-spark-interpreter"
     - EXCLUDE_SUBMITTER_K8S="!:submarine-submitter-k8s"
     - EXCLUDE_SUBMITTER_YARN="!:submarine-submitter-yarn"
     - EXCLUDE_SUBMITTER="!:submarine-server-submitter,${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_SUBMITTER_YARN}"
@@ -112,7 +112,7 @@ matrix:
         - PROFILE="-Phadoop-2.9"
         - BUILD_FLAG="clean package install -DskipTests"
         - TEST_FLAG="test -DskipRat -am"
-        - MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
+        - MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
         - TEST_MODULES="-pl org.apache.submarine:submarine-commons-cluster"
         - TEST_PROJECTS=""
 
@@ -124,7 +124,7 @@ matrix:
         - PROFILE="-Phadoop-2.9"
         - BUILD_FLAG="clean package install -DskipTests"
         - TEST_FLAG="test -DskipRat -am"
-        - MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
+        - MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
         - TEST_MODULES="-pl org.apache.submarine:submarine-commons-metastore"
         - TEST_PROJECTS=""
 
@@ -136,7 +136,7 @@ matrix:
         - PROFILE="-Phadoop-2.9"
         - BUILD_FLAG="clean package install -DskipTests"
         - TEST_FLAG="test -DskipRat -am"
-        - MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
+        - MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
         - TEST_MODULES="-pl org.apache.submarine:submarine-commons-rpc"
         - TEST_PROJECTS=""
 
@@ -148,7 +148,7 @@ matrix:
         - PROFILE="-Phadoop-2.9"
         - BUILD_FLAG="clean package install -DskipTests"
         - TEST_FLAG="test -DskipRat -am"
-        - MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
+        - MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
         - TEST_MODULES="-pl org.apache.submarine:submarine-commons-runtime"
         - TEST_PROJECTS=""
 
@@ -160,7 +160,7 @@ matrix:
         - PROFILE="-Phadoop-2.9"
         - BUILD_FLAG="clean package install -DskipTests"
         - TEST_FLAG="test -DskipRat -am"
-        - MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
+        - MODULES="-pl ${EXCLUDE_COMMONS},${EXCLUDE_SUBMITTER},${EXCLUDE_WORKBENCH},${EXCLUDE_CLIENT},${EXCLUDE_CLOUD},${EXCLUDE_SERVER},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
         - TEST_MODULES="-pl org.apache.submarine:submarine-commons-unixusersync"
         - TEST_PROJECTS=""
 
@@ -172,7 +172,7 @@ matrix:
         - PROFILE="-Phadoop-2.9"
         - BUILD_FLAG="clean package install -DskipTests"
         - TEST_FLAG="test -DskipRat -am"
-        - MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
+        - MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_CLOUD},${EXCLUDE_ALL},${EXCLUDE_DIST},${EXCLUDE_TEST}"
         - TEST_MODULES="-pl ${EXCLUDE_COMMONS},org.apache.submarine:submarine-server-core"
         - TEST_PROJECTS=""
 
@@ -184,8 +184,8 @@ matrix:
         - PROFILE="-Phadoop-2.9"
         - BUILD_FLAG="clean package install -DskipTests -DskipRat"
         - TEST_FLAG="test -DskipRat -am"
-        - MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}"
-        - TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER},${EXCLUDE_SPARK_SECURTITY}"
+        - MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_CLOUD},${EXCLUDE_DIST}"
+        - TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER},${EXCLUDE_SPARK_SECURTITY}"
         - TEST_PROJECTS=""
 
     - name: Test submarine submitter on hadoop-2.10
@@ -196,8 +196,8 @@ matrix:
         - PROFILE="-Phadoop-2.10"
         - BUILD_FLAG="clean package install -DskipTests -DskipRat"
         - TEST_FLAG="test -DskipRat -am"
-        - MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}"
-        - TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER},${EXCLUDE_SPARK_SECURTITY}"
+        - MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_CLOUD},${EXCLUDE_DIST}"
+        - TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER},${EXCLUDE_SPARK_SECURTITY}"
         - TEST_PROJECTS=""
 
     - name: Test submarine submitter on hadoop-3.1
@@ -208,8 +208,8 @@ matrix:
         - PROFILE="-Phadoop-3.1"
         - BUILD_FLAG="clean package install -DskipTests -DskipRat"
         - TEST_FLAG="test -DskipRat -am"
-        - MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}"
-        - TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER},${EXCLUDE_SPARK_SECURTITY}"
+        - MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_CLOUD},${EXCLUDE_DIST}"
+        - TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER},${EXCLUDE_SPARK_SECURTITY}"
         - TEST_PROJECTS=""
 
     - name: Test submarine submitter on hadoop-3.2
@@ -220,15 +220,16 @@ matrix:
         - PROFILE="-Phadoop-3.2"
         - BUILD_FLAG="clean package install -DskipTests -DskipRat"
         - TEST_FLAG="test -DskipRat -am"
-        - MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_DIST}"
-        - TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_INTERPRETER},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER},${EXCLUDE_SPARK_SECURTITY}"
+        - MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_CLOUD},${EXCLUDE_DIST}"
+        - TEST_MODULES="-pl ${EXCLUDE_SUBMITTER_K8S},${EXCLUDE_WORKBENCH},${EXCLUDE_CLOUD},${EXCLUDE_COMMONS},${EXCLUDE_DIST},${EXCLUDE_TEST},${EXCLUDE_ALL},${EXCLUDE_SERVER},${EXCLUDE_SPARK_SECURTITY}"
         - TEST_PROJECTS=""
 
-    - name: Test submarine interpreter
-      language: java
-      jdk: "openjdk8"
-      dist: xenial
-      env: PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -am" TEST_FLAG="test -DskipRat -am" MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
+#    Temporary disable this test, refer to SUBMARINE-672
+#    - name: Test submarine interpreter
+#      language: java
+#      jdk: "openjdk8"
+#      dist: xenial
+#      env: PYTHON="3" PROFILE="-Phadoop-2.9" BUILD_FLAG="clean package install -DskipTests -am" TEST_FLAG="test -DskipRat -am" MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_MODULES="-pl $(echo ${EXCLUDE_INTERPRETER} | sed 's/!//g')" TEST_PROJECTS=""
 
     - name: Test submarine workbench-web Angular
       language: node_js

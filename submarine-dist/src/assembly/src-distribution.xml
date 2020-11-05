@@ -44,6 +44,8 @@
         <exclude>**/build/**</exclude>
         <exclude>**/file:/**</exclude>
         <exclude>**/SecurityAuth.audit*</exclude>
+        <exclude>submarine-cloud/bin/**</exclude>
+        <exclude>dev-support/submarine-installer/package/hadoop/yarn/lib/native/**</exclude>
       </excludes>
     </fileSet>
   </fileSets>
