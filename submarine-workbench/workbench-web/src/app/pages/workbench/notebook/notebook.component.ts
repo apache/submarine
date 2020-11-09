@@ -34,6 +34,7 @@ export class NotebookComponent implements OnInit {
   // Environment
   envList;
   envNameList = [];
+  indexOfDeaultEnv;
 
   // Namesapces
   allNamespaceList = [];
@@ -85,6 +86,7 @@ export class NotebookComponent implements OnInit {
           this.envNameList.push(env.environmentSpec.name);
         }
       });
+      this.indexOfDeaultEnv = this.envNameList.indexOf('notebook-env');
     });
   }
 
@@ -180,7 +182,7 @@ export class NotebookComponent implements OnInit {
   initNotebookStatus() {
     this.isVisible = true;
     this.notebookName.reset();
-    this.envName.reset(this.envNameList[0]);
+    this.envName.reset(this.envNameList[this.indexOfDeaultEnv]);
     this.envVars.clear();
     this.cpus.reset(1);
     this.gpus.reset(0);

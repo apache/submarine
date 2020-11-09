@@ -175,7 +175,7 @@ export class EnvironmentComponent implements OnInit {
   deleteEnvironments() {
     for (let i = this.checkedList.length - 1; i >= 0; i--) {
       console.log(this.environmentList[i].environmentSpec.name);
-      if (this.checkedList[i] === true) {
+      if (this.checkedList[i] === true && this.environmentList[i].environmentSpec.name != 'notebook-env') {
         this.onDeleteEnvironment(this.environmentList[i].environmentSpec.name, false);
       }
     }
