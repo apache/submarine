@@ -121,7 +121,7 @@ public class K8sSubmitter implements Submitter {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true");
-      experiment = parseNotebookResponseObject(object, ParseOp.PARSE_OP_RESULT);
+      experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(400, e.getMessage());
@@ -140,7 +140,7 @@ public class K8sSubmitter implements Submitter {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       Object object = api.getNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName());
-      experiment = parseNotebookResponseObject(object, ParseOp.PARSE_OP_RESULT);
+      experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
@@ -157,7 +157,7 @@ public class K8sSubmitter implements Submitter {
       Object object = api.patchNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
           mlJob);
-      experiment = parseNotebookResponseObject(object, ParseOp.PARSE_OP_RESULT);
+      experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
@@ -174,7 +174,7 @@ public class K8sSubmitter implements Submitter {
       Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
           MLJobConverter.toDeleteOptionsFromMLJob(mlJob), null, null, null);
-      experiment = parseNotebookResponseObject(object, ParseOp.PARSE_OP_DELETE);
+      experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_DELETE);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
@@ -183,7 +183,8 @@ public class K8sSubmitter implements Submitter {
     return experiment;
   }
 
-  private Experiment parseNotebookResponseObject(Object object, ParseOp op) throws SubmarineRuntimeException {
+  private Experiment parseExperimentResponseObject(Object object, ParseOp op)
+          throws SubmarineRuntimeException {
     Gson gson = new JSON().getGson();
     String jsonString = gson.toJson(object);
     LOG.info("Upstream response JSON: {}", jsonString);
@@ -269,7 +270,7 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
     } catch (ApiException e) {
       LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Job object failed by " +
+      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
           e.getMessage());
     }
     return notebook;

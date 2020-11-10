@@ -1,6 +1,6 @@
 {
   "name": "my-submarine-env",
-  "dockerImage" : "apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
+  "dockerImage" : "apache/submarine:jupyter-notebook-0.5.0",
   "kernelSpec" : {
     "name" : "team_default_python_3.7",
     "channels" : ["defaults"],

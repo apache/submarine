@@ -320,7 +320,6 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
    * Construct spec for new experiment creation
    */
   constructSpec(): ExperimentSpec {
-
     // Construct the spec
     const meta: ExperimentMeta = {
       name: this.experimentName.value.toLowerCase(),

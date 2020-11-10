@@ -20,7 +20,7 @@ set -euo pipefail
 ROOT=$(unset CDPATH && cd $(dirname "${BASH_SOURCE[0]}")/.. && pwd)
 cd $ROOT
 SUBMARINE_HOME=${ROOT}/..
-SUBMARINE_VERSION="0.5.0-SNAPSHOT"
+SUBMARINE_VERSION="0.5.0"
 
 source $ROOT/hack/lib.sh
 

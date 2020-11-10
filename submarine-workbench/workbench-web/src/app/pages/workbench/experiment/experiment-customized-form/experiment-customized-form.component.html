@@ -26,7 +26,7 @@
 </div>
 <div>
   <form [formGroup]="experiment">
-    <div [ngSwitch]="step" style="margin-top: 30px">
+    <div [ngSwitch]="step" style="margin-top: 30px;">
       <div *ngSwitchCase="0" id="firstStep">
         <div class="single-field-group">
           <label for="experimentName">
@@ -86,10 +86,10 @@
             </div>
           </ng-template>
         </div>
-        <div style="margin-bottom: 10px">
+        <div style="margin-bottom: 10px;">
           <button
             nz-button
-            style="display: block; margin: auto"
+            style="display: block; margin: auto;"
             id="advancedBtn"
             nzType="default"
             (click)="ADVANCED = !ADVANCED"
@@ -127,11 +127,11 @@
           <ul formArrayName="envs" class="list-container">
             <ng-container *ngFor="let env of envs.controls; index as i">
               <li [formGroupName]="i" class="input-group">
-                <div style="margin-left: 30%">
+                <div style="margin-left: 30%;">
                   <label for="key{{ i }}">Key</label>
                   <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" id="key{{ i }}" />
                 </div>
-                <div style="margin-left: 0">
+                <div style="margin-left: 0;">
                   <label for="value{{ i }}">Value</label>
                   <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" id="value{{ i }}" />
                 </div>
@@ -151,7 +151,7 @@
               </div>
             </ng-container>
           </ul>
-          <button nz-button id="env-btn" style="display: block; margin: auto" nzType="primary" (click)="onCreateEnv()">
+          <button nz-button id="env-btn" style="display: block; margin: auto;" nzType="primary" (click)="onCreateEnv()">
             Add new environment variable
           </button>
           <br />

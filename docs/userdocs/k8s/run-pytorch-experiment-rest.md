@@ -17,7 +17,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Run PyTorch Experiment Guide
+# Run PyTorch Experiment Guide (REST)
 
 ## Experiment Spec
 The experiment is represented in [JSON](https://www.json.org) or [YAML](https://yaml.org) format.

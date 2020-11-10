@@ -118,7 +118,7 @@
   </div>
 </nz-layout>
 
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Create Environment" [nzWidth]="700">
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Create Environment" [nzWidth]="700" (nzOnCancel)="isVisible = false">
   <div *nzModalFooter>
     <button nz-button nzType="default" (click)="closeModal()">Cancel</button>
     <button id="go" nz-button nzType="primary" [disabled]="checkStatus()" (click)="createEnvironment()">Create</button>

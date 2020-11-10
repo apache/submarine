@@ -49,7 +49,7 @@ public class Bootstrap extends HttpServlet {
              .termsOfService("http://swagger.io/terms/")
              .contact(new Contact()
              .email("dev@submarine.apache.org"))
-             .version("0.5.0-SNAPSHOT")
+             .version("0.5.0")
              .license(new License()
              .name("Apache 2.0")
              .url("http://www.apache.org/licenses/LICENSE-2.0.html"));
@@ -58,7 +58,7 @@ public class Bootstrap extends HttpServlet {
     List<Server> servers = new ArrayList<>();
     servers.add(new Server().url("/api"));
     oas.servers(servers);
-    
+
     OpenAPI oasEnvironment = new OpenAPI();
     Info infoEnvironment = new Info().title("Submarine Environment API")
         .description("The Submarine REST API allows you to create, update, "
@@ -70,14 +70,14 @@ public class Bootstrap extends HttpServlet {
         .termsOfService("http://swagger.io/terms/")
         .contact(
             new Contact().email("dev@submarine.apache.org"))
-        .version("0.5.0-SNAPSHOT")
+        .version("0.5.0")
         .license(
             new License().name("Apache 2.0").
             url("http://www.apache.org/licenses/LICENSE-2.0.html"));
 
     oasEnvironment.info(infoEnvironment);
     oasEnvironment.servers(servers);
-    
+
     SwaggerConfiguration oasConfig = new SwaggerConfiguration()
             .openAPI(oas)
             .resourcePackages(Stream.of("org.apache.submarine.server.rest").collect(Collectors.toSet()));

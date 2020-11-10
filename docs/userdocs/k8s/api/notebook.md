@@ -69,7 +69,7 @@ curl -X POST -H "Content-Type: application/json" -d '
       },
       "environment":{
         "name":"notebook-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.5.0",
         "kernelSpec":{
           "name": "team_default_python_3.7",
           "channels": [
@@ -126,7 +126,7 @@ curl -X GET http://127.0.0.1:8080/api/v1/notebook?id={user_id}
         },
         "environment":{
           "name":"notebook-env",
-          "dockerImage":"apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
+          "dockerImage":"apache/submarine:jupyter-notebook-0.5.0",
           "kernelSpec":{
             "name": "team_default_python_3.7",
             "channels": [
@@ -183,7 +183,7 @@ curl -X GET http://127.0.0.1:8080/api/v1/notebook/{id}
       },
       "environment":{
         "name":"notebook-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.5.0",
         "kernelSpec":{
           "name": "team_default_python_3.7",
           "channels": [
@@ -239,7 +239,7 @@ curl -X DELETE http://127.0.0.1:8080/api/v1/notebook/{id}
       },
       "environment": {
         "name": "notebook-env",
-        "dockerImage": "apache/submarine:jupyter-notebook-0.5.0-SNAPSHOT",
+        "dockerImage": "apache/submarine:jupyter-notebook-0.5.0",
         "kernelSpec": {
           "name": "team_default_python_3.7",
           "channels": [

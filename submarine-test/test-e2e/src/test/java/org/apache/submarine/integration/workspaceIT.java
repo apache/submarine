@@ -84,13 +84,34 @@ public class workspaceIT extends AbstractSubmarineIT {
     Assert.assertEquals(pollingWait(By.xpath("//div[@id='addProjectbtn']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//div[@id='addProjectbtn']/button"), MAX_BROWSER_TIMEOUT_SEC).click();
     //step1
+    By nextStepButton = By.xpath("//div[@class='centerDiv']/button");
     Assert.assertEquals(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//input[@id='username']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project");
     pollingWait(By.xpath("//textarea[@name='projectDescription']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project description");
-    pollingWait(By.xpath("//div[@class='centerDiv']/button"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertEquals(pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).getAttribute("disabled"), "true"); // nextStepButton disabled (no set visibility)
+    
+    pollingWait(By.xpath("//nz-radio-group[@name='visibility']/label[1]/span/input"), MAX_BROWSER_TIMEOUT_SEC).click(); // select Private
+    Assert.assertEquals(pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).getAttribute("disabled"), null); // nextStepButton enabled
+    
+    pollingWait(By.xpath("//nz-radio-group[@name='visibility']/label[last()]/span/input"), MAX_BROWSER_TIMEOUT_SEC).click(); // select Public
+    Assert.assertEquals(pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).getAttribute("disabled"), "true"); // nextStepButton disabled (no set permission)
+    
+    pollingWait(By.xpath("//nz-radio-group[@name='permission']/label[last()]/span/input"), MAX_BROWSER_TIMEOUT_SEC).click(); // select Can View
+    Assert.assertEquals(pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).getAttribute("disabled"), null); // nextStepButton enabled
+
+    pollingWait(By.xpath("//nz-radio-group[@name='visibility']/label[2]/span/input"), MAX_BROWSER_TIMEOUT_SEC).click(); // select Team
+    Assert.assertEquals(pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).getAttribute("disabled"), "true"); // nextStepButton disabled (no set Team)
+
+    pollingWait(By.xpath("//nz-select[@name='team']"), MAX_BROWSER_TIMEOUT_SEC).click(); // expand team options
+    pollingWait(By.xpath("//li[@nz-option-li][last()]"), MAX_BROWSER_TIMEOUT_SEC).click(); // select a team
+    Assert.assertEquals(pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).getAttribute("disabled"), null); // nextStepButton enabled
+    
+    pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).click();
+    
     //step2
     Assert.assertEquals(pollingWait(By.xpath("//nz-tabset"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//div[@class='centerDiv']/button[last()]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    
     //step3
     Assert.assertEquals(pollingWait(By.xpath("//thead"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//div[@class='centerDiv']/button[last()-1]"), MAX_BROWSER_TIMEOUT_SEC).click();

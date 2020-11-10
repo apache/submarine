@@ -115,26 +115,3 @@ curl http://127.0.0.1:8080/api/v1/experiment/ping
 ```bash
 helm delete submarine
 ```
-
-### Create Your Custom Submarine Images (Optional)
-Sometimes we'd like to do some modifications on the images.
-After that, you need to rebuild submarine images:
-> Note that you need to make sure the images built above can be accessed in k8s
-> Usually this needs a rename and push to a proper Docker registry.
-
-```bash
-mvn clean package -DskipTests
-```
-
-Build submarine server image:
-```bash
-./dev-support/docker-images/submarine/build.sh
-```
-
-Build submarine database image:
-```bash
-./dev-support/docker-images/database/build.sh
-```
-
-### Using Jupyter notebooks in Submarine
-Please refer to [Notebook guide](notebook.md) if you want to use jupyter notebook in Submarine.
