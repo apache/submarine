@@ -36,7 +36,7 @@ left-hand panel to manage your notebooks.
 To create a new notebook server, click “New Notebook”. You should see a form for entering \
 details of your new notebook server.
 
-- Notebook Name : Name of the notebook server. It should be unique and include no spaces.
+- Notebook Name : Name of the notebook server. It should follow the DNS label standard as defined in [RFC](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/).
 - Environment : It defines a set of libraries and docker image.
 - CPU and Memory
 - GPU (optional)
@@ -92,6 +92,6 @@ experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
 
 ```
 
-You can create a new notebook, paste the above code and run it. Or, you can find the notebook `submarine_experiment_sdk.ipynb` inside the launched notebook session. You can open it, try it out. 
+You can create a new notebook, paste the above code and run it. Or, you can find the notebook `submarine_experiment_sdk.ipynb` inside the launched notebook session. You can open it, try it out.
 
 After experiment submitted to Submarine server, you can find the experiment jobs on the UI.
