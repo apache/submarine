@@ -29,7 +29,7 @@ svn ci -m "Add <your name>'s key"
 It's better to send a release plan email informing code freeze date and release date.
 
 ## 3. Clean up the JIRA
-Bulk update JIRA to unassigned from this release all issues that are open non-blockers.
+Bulk update JIRA to move out non-blocker issues by setting the target version to the new release.
 Assuming we're releasing version X, use below advanced filter in [submarine issue page](https://issues.apache.org/jira/projects/SUBMARINE). For instance, if we're releasing `0.3.0`.
 ```
 project in ("Apache Submarine") AND  "Target Version" = 0.3.0 AND statusCategory != Done
@@ -97,6 +97,10 @@ export release_candidates_path=~/releases/submarine-release
 docker tag local/mini-submarine:0.3.0 apache/submarine:mini-0.3.0-RC0
 ```
 In the container, we can verify that the submarine jar version is the expected 0.3.0. Then we can upload this image with a "RC" tag for a vote.
+
+Note: if you don't have permission to push image to docker hub, reate a jira ticket to request the push permission.
+
+Refer to https://issues.apache.org/jira/browse/INFRA-20364
 ```
 docker push apache/submarine:mini-0.3.0-RC0
 ```
