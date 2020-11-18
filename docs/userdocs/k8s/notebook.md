@@ -36,7 +36,11 @@ left-hand panel to manage your notebooks.
 To create a new notebook server, click “New Notebook”. You should see a form for entering \
 details of your new notebook server.
 
-- Notebook Name : Name of the notebook server. It should follow the DNS label standard as defined in [RFC](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/).
+- Notebook Name : Name of the notebook server. It should follow the rules below.
+    1. Contain at most 63 characters.
+    2. Contain only lowercase alphanumeric characters or '-'.
+    3. Start with an alphabetic character.
+    4. End with an alphanumeric character.
 - Environment : It defines a set of libraries and docker image.
 - CPU and Memory
 - GPU (optional)

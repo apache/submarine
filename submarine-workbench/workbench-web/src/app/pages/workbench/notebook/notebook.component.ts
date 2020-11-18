@@ -67,7 +67,7 @@ export class NotebookComponent implements OnInit {
     this.notebookForm = new FormGroup({
       notebookName: new FormControl('', [
         Validators.maxLength(63),
-        Validators.pattern('^([a-z0-9]|[a-z0-9][-a-z0-9]*[a-z0-9])$'),
+        Validators.pattern('^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$'),
         Validators.required
       ]),
       envName: new FormControl(null, Validators.required), // Environment
