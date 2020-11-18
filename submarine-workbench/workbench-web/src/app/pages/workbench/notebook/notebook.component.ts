@@ -18,12 +18,13 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { NotebookService } from '@submarine/services/notebook.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { EnvironmentService } from '@submarine/services/environment.service';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
 import { UserService } from '@submarine/services/user.service';
+import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'submarine-notebook',
@@ -56,7 +57,8 @@ export class NotebookComponent implements OnInit {
     private nzMessageService: NzMessageService,
     private environmentService: EnvironmentService,
     private experimentValidatorService: ExperimentValidatorService,
-    private userService: UserService
+    private userService: UserService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit() {
@@ -65,18 +67,17 @@ export class NotebookComponent implements OnInit {
       this.fetchNotebookList(this.userId);
     });
 
-    this.notebookForm = new FormGroup({
-      notebookName: new FormControl('', [
+    this.notebookForm = this.fb.group({
+      notebookName: [null, [
         Validators.maxLength(63),
         Validators.pattern('^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$'),
-        Validators.required
-      ]),
-      envName: new FormControl(null, Validators.required), // Environment
-      envVars: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
-      cpus: new FormControl(null, [Validators.min(1), Validators.required]),
-      gpus: new FormControl(null),
-      memoryNum: new FormControl(null, [Validators.required]),
-      unit: new FormControl(this.MEMORY_UNITS[0], [Validators.required])
+        Validators.required]],
+      envName: [null, Validators.required], // Environment
+      envVars: this.fb.array([], [this.experimentValidatorService.nameValidatorFactory('key')]),
+      cpus: [null, [Validators.min(1), Validators.required]],
+      gpus: [null],
+      memoryNum: [null, [Validators.required]],
+      unit: [this.MEMORY_UNITS[0], [Validators.required]]
     });
     this.fetchEnvList();
   }
@@ -238,7 +239,7 @@ export class NotebookComponent implements OnInit {
   createNotebookSpec() {
     // Check GPU, then develope resources spec
     let resourceSpec;
-    if (this.notebookForm.get('gpus').value === 0) {
+    if (this.notebookForm.get('gpus').value === 0 || this.notebookForm.get('gpus').value == null) {
       resourceSpec = `cpu=${this.notebookForm.get('cpus').value},memory=${this.notebookForm.get('memoryNum').value}${
         this.notebookForm.get('unit').value
       }`;
