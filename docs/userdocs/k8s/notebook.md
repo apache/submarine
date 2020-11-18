@@ -36,7 +36,11 @@ left-hand panel to manage your notebooks.
 To create a new notebook server, click “New Notebook”. You should see a form for entering \
 details of your new notebook server.
 
-- Notebook Name : Name of the notebook server. It should be unique and include no spaces.
+- Notebook Name : Name of the notebook server. It should follow the rules below.
+    1. Contain at most 63 characters.
+    2. Contain only lowercase alphanumeric characters or '-'.
+    3. Start with an alphabetic character.
+    4. End with an alphanumeric character.
 - Environment : It defines a set of libraries and docker image.
 - CPU and Memory
 - GPU (optional)
@@ -92,6 +96,6 @@ experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
 
 ```
 
-You can create a new notebook, paste the above code and run it. Or, you can find the notebook `submarine_experiment_sdk.ipynb` inside the launched notebook session. You can open it, try it out. 
+You can create a new notebook, paste the above code and run it. Or, you can find the notebook `submarine_experiment_sdk.ipynb` inside the launched notebook session. You can open it, try it out.
 
 After experiment submitted to Submarine server, you can find the experiment jobs on the UI.
