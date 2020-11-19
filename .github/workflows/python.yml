@@ -67,6 +67,8 @@ jobs:
           version: "v0.7.0"
           image: kindest/node:v1.15.6
           config: ./kind-config-kind.yaml
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
