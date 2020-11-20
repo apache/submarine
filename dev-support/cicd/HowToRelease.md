@@ -12,7 +12,10 @@ gpg --list-sigs <your name>
 gpg --keyserver pgp.mit.edu --send-keys <your publish key RSA string like B3097AC in the above cmd output>
 gpg --refresh-keys --keyserver pgp.mit.edu
 
-# adding your key to the submarine KEYS (Only PMCs has permission)
+
+# ask for PMC’s help to sign the key and add your key to the submarine KEYS (Only PMCs has permission). The PMC should do
+gpg --keyserver pgp.mit.edu --recv-key <the release manager's public key id like B3097AC >
+gpg --sign-key <the release manager's public key id>
 svn co --depth immediates https://dist.apache.org/repos/dist apache-dist
 cd apache-dist
 svn update --set-depth infinity release/submarine
@@ -26,16 +29,16 @@ svn ci -m "Add <your name>'s key"
 It's better to send a release plan email informing code freeze date and release date.
 
 ## 3. Clean up the JIRA
-Bulk update JIRA to unassign from this release all issues that are open non-blockers.
+Bulk update JIRA to move out non-blocker issues by setting the target version to the new release.
 Assuming we're releasing version X, use below advanced filter in [submarine issue page](https://issues.apache.org/jira/projects/SUBMARINE). For instance, if we're releasing `0.3.0`.
 ```
 project in ("Apache Submarine") AND  "Target Version" = 0.3.0 AND statusCategory != Done
 ```
 Click "tools"-> "bulk update" to edit all issues:
 1. Change the target version to X+1. Here it is `0.4.0`.
-2. Add a comment to inform contributors. Like this `Bulk update due to releasing 0.3.0. Please change it back if you think this is a blocker.`
+2. Add a comment to inform contributors. Like this. `Bulk update due to releasing 0.3.0. Please change it back if you think this is a blocker.`
 
-Do a double-check to confirm that there's no issues found with the above filter. And send mail to the developer list informing that we should mark "Target version" to `0.4.0` when creating new JIRAs.
+Do a double-check to confirm that there are no issues found with the above filter. And send mail to the developer list informing that we should mark "Target version" to `0.4.0` when creating new JIRAs.
 
 ## 4. Tagging
 Once the JIRA is cleaned up, we can tag the candidate release with below steps:
@@ -94,8 +97,12 @@ export release_candidates_path=~/releases/submarine-release
 docker tag local/mini-submarine:0.3.0 apache/submarine:mini-0.3.0-RC0
 ```
 In the container, we can verify that the submarine jar version is the expected 0.3.0. Then we can upload this image with a "RC" tag for a vote.
+
+Note: if you don't have permission to push image to docker hub, create a jira ticket to request the push permission.
+
+Refer to https://issues.apache.org/jira/browse/INFRA-20364
 ```
-docker push apache/mini-submarine:0.3.0:RC0
+docker push apache/submarine:mini-0.3.0-RC0
 ```
 
 TODO: build the other images by manual.
@@ -107,7 +114,7 @@ export ASF_USERID=yourApacheId
 export ASF_PASSWORD=yourApachePwd
 ./publish_release.sh $version $tag
 ```
-Then to view the staging repo, we can login the the https://repository.apache.org with the apache id. Click the "Staging Repositories" in the left side of the web page. And click "orgapachesubmarine-1001", then you will see the details of the repo including the URI. The URI is like this:
+Then to view the staging repo, we can login the https://repository.apache.org with the apache id. Click the "Staging Repositories" in the left side of the web page. And click "orgapachesubmarine-1001", then you will see the details of the repo including the URI. The URI is like this:
 "https://repository.apache.org/content/repositories/orgapachesubmarine-1001"
 
 ### 6.4 Call A Vote For The Release Candidate
