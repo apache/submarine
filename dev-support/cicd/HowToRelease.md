@@ -98,7 +98,7 @@ docker tag local/mini-submarine:0.3.0 apache/submarine:mini-0.3.0-RC0
 ```
 In the container, we can verify that the submarine jar version is the expected 0.3.0. Then we can upload this image with a "RC" tag for a vote.
 
-Note: if you don't have permission to push image to docker hub, reate a jira ticket to request the push permission.
+Note: if you don't have permission to push image to docker hub, create a jira ticket to request the push permission.
 
 Refer to https://issues.apache.org/jira/browse/INFRA-20364
 ```
