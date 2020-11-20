@@ -108,7 +108,7 @@ By executing the above command, `workbench-web` will publish the web page to the
 
 + **Lints and fixes files**
 
-When you write the `vue, js` file in `workbench-web` through IDEA, because IDEA can't format these files well, you need to execute the following command to format the vue and js files to avoid some warnings during the yarn build.
+When you write the `Angular, js` file in `workbench-web` through IDEA, because IDEA can't format these files well, you need to execute the following command to format the angular and js files to avoid some warnings during the yarn build.
 
 ```
 yarn run lint
@@ -134,4 +134,4 @@ So you can pass http://127.0.0.1:8080 debugging or running to submarine-workbenc
 
 3. The submarine-workbench, IP and 8080 ports that are accessible locally through the port 8080 of 127.0.0.1 are configured via  `workbench-site.xml`, but we do not recommend you to modify it.
 
-4. When you modify the `vue` or `js` of workbench-web, you need to execute the yarn run build command in the workbench-web directory, and let your modified code update to the dist directory, so that you can see the effect of your code modification in the workbench.
+4. When you modify the `angular` or `js` of workbench-web, you need to execute the yarn run build command in the workbench-web directory, and let your modified code update to the dist directory, so that you can see the effect of your code modification in the workbench.

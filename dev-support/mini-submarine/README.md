@@ -38,7 +38,7 @@ git clone https://github.com/apache/submarine.git
 2.Build Submarine
 ```
 cd ./submarine
-mvn clean install package -DskipTests
+mvn clean package -DskipTests
 ```
 
 3.Build image of mini-submarine
@@ -197,7 +197,7 @@ You can follow the documentation instructions to update your own modified and co
 
 ```
 cd submarine-project-dir/
-mvn clean install package -DskipTests
+mvn clean package -DskipTests
 ```
 
 ### Copy submarine jar to mini-submarine container
@@ -233,7 +233,7 @@ When using mini-submarine, you can debug submarine client, applicationMaster and
 Run the following command to start mini-submarine.
 
 ```
-docker run -it -P -h submarine-dev --net=bridge --expose=8000 --privileged local/mini-submarine:0.4.0 /bin/bash
+docker run -it -P -h submarine-dev --net=bridge --expose=8000 --privileged local/mini-submarine:0.5.0 /bin/bash
 ```
 
 Debug submarine client with the parameter "--debug"
@@ -262,7 +262,7 @@ Then port 32804 can be used for remote debug.
 Run the following command to start mini-submarine.
 
 ```
-docker run -it -P -h submarine-dev --net=bridge --expose=8001 --privileged local/mini-submarine:0.4.0 /bin/bash
+docker run -it -P -h submarine-dev --net=bridge --expose=8001 --privileged local/mini-submarine:0.5.0 /bin/bash
 ```
 
 Add the following configuration in the file /usr/local/hadoop/etc/hadoop/tony.xml.
@@ -282,7 +282,7 @@ And the debug port mapping can be obtained using the way as [Debug submarine cli
 Run the following command to start mini-submarine.
 
 ```
-docker run -it -P -h submarine-dev --net=bridge --expose=8002 --privileged local/mini-submarine:0.4.0 /bin/bash
+docker run -it -P -h submarine-dev --net=bridge --expose=8002 --privileged local/mini-submarine:0.5.0 /bin/bash
 ```
 
 Add the following configuration in the file /usr/local/hadoop/etc/hadoop/tony.xml.

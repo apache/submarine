@@ -49,13 +49,12 @@ function compile_src_and_bin() {
   cd ${WORKING_DIR}/submarine
   echo "mvn versions:set -DnewVersion=${RELEASE_VERSION}"
   mvn versions:set -DnewVersion="${RELEASE_VERSION}"
-  echo "mvn clean install package -DskipTests -Psrc"
-  mvn clean install package -DskipTests -Psrc
+  echo "mvn clean package -DskipTests -Psrc"
+  mvn clean package -DskipTests -Psrc
   if [[ $? -ne 0 ]]; then
     echo "Build failed. ${BUILD_FLAGS:-}"
     exit 1
   fi
-
 }
 
 function make_source_package() {

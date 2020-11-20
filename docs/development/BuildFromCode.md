@@ -57,37 +57,37 @@ mvn clean org.apache.rat:apache-rat-plugin:check
 + Create binary distribution with default hadoop version
 
 ```
-mvn clean install package -DskipTests
+mvn clean package -DskipTests
 ```
 
 + Create binary distribution with hadoop-2.9.x version
 
 ```
-mvn clean install package -DskipTests -Phadoop-2.9
+mvn clean package -DskipTests -Phadoop-2.9
 ```
 
 + Create binary distribution with hadoop-2.10.x version
 
 ```
-mvn clean install package -DskipTests -Phadoop-2.10
+mvn clean package -DskipTests -Phadoop-2.10
 ```
 
 + Create binary distribution with hadoop-3.1.x version
 
 ```
-mvn clean install package -DskipTests -Phadoop-3.1
+mvn clean package -DskipTests -Phadoop-3.1
 ```
 
 + Create binary distribution with hadoop-3.2.x version
 
 ```
-mvn clean install package -DskipTests -Phadoop-3.2
+mvn clean package -DskipTests -Phadoop-3.2
 ```
 
 + Create source code distribution
 
 ```
-mvn clean install package -DskipTests -Psrc
+mvn clean package -DskipTests -Psrc
 ```
 
 ## TonY code modification

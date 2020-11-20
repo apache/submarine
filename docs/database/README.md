@@ -32,7 +32,7 @@ Must:
 By using the official docker image of submarine database, only one docker command is required to run submarine database
 
 ```bash
-docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.4.0
+docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.5.0
 ```
 ## Initialize submarine database
 It will create users and tables that submarine requires
@@ -83,7 +83,15 @@ If you need to store Chinese character data in mysql, you need to execute the fo
 
 ### Create Submarine Database
 
+
 #### Create development database
+
+Run [mysql docker container](https://hub.docker.com/_/mysql)
+
+```
+docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+```
+
 Copy the files, submarine.sql, submarine-data.sql and metastore.sql to the mysql docker.
 
 ```

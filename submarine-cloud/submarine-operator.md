@@ -165,6 +165,6 @@ kubectl describe std test1
 
 ```
 kind load docker-image --name=submarine busybox:1.28.4
-kind load docker-image --name=submarine apache/submarine:server-0.4.0
-kind load docker-image --name=submarine apache/submarine:database-0.4.0
+kind load docker-image --name=submarine apache/submarine:server-0.5.0
+kind load docker-image --name=submarine apache/submarine:database-0.5.0
 ```
