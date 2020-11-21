@@ -30,7 +30,7 @@ python run_fm.py -conf=fm.json -task_type evaluate
 
 3. Submit Job
 ```
-SUBMARINE_VERSION=0.4.0
+SUBMARINE_VERSION=<REPLACE_VERSION>
 SUBMARINE_HADOOP_VERSION=2.9
 
 java -cp $(${HADOOP_COMMON_HOME}/bin/hadoop classpath --glob):submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar:${HADOOP_CONF_PATH} \
