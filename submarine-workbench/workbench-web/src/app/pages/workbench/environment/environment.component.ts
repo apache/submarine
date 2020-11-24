@@ -18,10 +18,11 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Environment } from '@submarine/interfaces/environment-info';
 import { EnvironmentService } from '@submarine/services/environment.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
 
 @Component({
   selector: 'submarine-environment',
@@ -29,7 +30,12 @@ import { NzMessageService } from 'ng-zorro-antd';
   styleUrls: ['./environment.component.scss']
 })
 export class EnvironmentComponent implements OnInit {
-  constructor(private environmentService: EnvironmentService, private nzMessageService: NzMessageService) {}
+  constructor(
+    private environmentService: EnvironmentService, 
+    private nzMessageService: NzMessageService,
+    private fb: FormBuilder,
+    private experimentValidatorService: ExperimentValidatorService
+    ) {}
 
   environmentList: Environment[] = [];
   checkedList: boolean[] = [];
@@ -39,13 +45,13 @@ export class EnvironmentComponent implements OnInit {
   environmentForm;
 
   ngOnInit() {
-    this.environmentForm = new FormGroup({
-      environmentName: new FormControl(null, Validators.required),
-      dockerImage: new FormControl(null, Validators.required),
-      name: new FormControl(null, Validators.required),
-      channels: new FormArray([]),
-      dependencies: new FormArray([])
-    });
+    this.environmentForm = this.fb.group({
+      environmentName: [null, Validators.required],
+      dockerImage: [null, Validators.required],
+      name: [null, Validators.required],
+      channels: this.fb.array([]),
+      dependencies: this.fb.array([])
+    })
     this.fetchEnvironmentList();
   }
 
@@ -103,11 +109,11 @@ export class EnvironmentComponent implements OnInit {
   }
 
   addChannel() {
-    this.channels.push(new FormControl('', Validators.required));
+    this.channels.push(this.fb.control(null, Validators.required));
   }
 
   addDependencies() {
-    this.dependencies.push(new FormControl('', Validators.required));
+    this.dependencies.push(this.fb.control(null, Validators.required));
   }
 
   deleteItem(arr: FormArray, index: number) {
