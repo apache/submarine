@@ -30,7 +30,7 @@ import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.catalyst.trees.Origin
 import org.apache.spark.sql.types.{DataType, StructType}
 
-class SubmarineSqlParser(val delegate: ParserInterface) extends ParserInterface {
+abstract class SubmarineSqlParser(val delegate: ParserInterface) extends ParserInterface {
 
   private val astBuilder = new SubmarineSqlAstBuilder
 

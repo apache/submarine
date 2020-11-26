@@ -321,6 +321,19 @@
               </sources>
             </configuration>
           </execution>
+
+          <execution>
+            <id>add-spark-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>spark-${spark.compatible.version}/src/main/scala</source>
+              </sources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -540,6 +553,7 @@
       <properties>
         <spark.version>2.3.4</spark.version>
         <scalatest.version>3.0.3</scalatest.version>
+        <spark.compatible.version>2</spark.compatible.version>
       </properties>
     </profile>
 
@@ -548,6 +562,18 @@
       <properties>
         <spark.version>2.4.5</spark.version>
         <scalatest.version>3.0.3</scalatest.version>
+        <spark.compatible.version>2</spark.compatible.version>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>spark-3.0</id>
+      <properties>
+        <spark.version>3.0.1</spark.version>
+        <scala.version>2.12.12</scala.version>
+        <scala.binary.version>2.12</scala.binary.version>
+        <!--<scalatest.version>3.2.0</scalatest.version>-->
+        <spark.compatible.version>3</spark.compatible.version>
       </properties>
     </profile>
 
