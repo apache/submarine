@@ -70,9 +70,15 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
 
   @Test
   public void testCreateExperimentTemplate() throws Exception {
+    LOG.info("testCreateExperimentTemplate");
+
     String body = loadContent(TPL_FILE);
     run(body, "application/json");
     deleteExperimentTemplate();
+
+    GetMethod getMethod = httpGet(TPL_PATH + "/" + TPL_NAME);
+    Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(),
+        getMethod.getStatusCode());
   }
 
   @Test
@@ -156,7 +162,7 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
     LOG.info("Create ExperimentTemplate using ExperimentTemplate REST API");
     PostMethod postMethod = httpPost(TPL_PATH, body, contentType);
     LOG.info(postMethod.getResponseBodyAsString());
-
+    
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         postMethod.getStatusCode());
 
