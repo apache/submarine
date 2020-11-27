@@ -60,7 +60,7 @@ Get mnist_distributed.py from https://github.com/linkedin/TonY/tree/master/tony-
 
 
 ```
-SUBMARINE_VERSION=0.4.0
+SUBMARINE_VERSION=<REPLACE_VERSION>
 SUBMARINE_HADOOP_VERSION=3.1
 CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
 java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
@@ -94,7 +94,7 @@ You should then be able to see links and status of the jobs from command line:
 ### With Docker
 
 ```
-SUBMARINE_VERSION=0.4.0
+SUBMARINE_VERSION=<REPLACE_VERSION>
 SUBMARINE_HADOOP_VERSION=3.1
 CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
 java org.apache.submarine.client.cli.Cli job run --name tf-job-001 \
@@ -155,7 +155,7 @@ Get mnist_distributed.py from https://github.com/linkedin/TonY/tree/master/tony-
 
 
 ```
-SUBMARINE_VERSION=0.4.0
+SUBMARINE_VERSION=<REPLACE_VERSION>
 SUBMARINE_HADOOP_VERSION=3.1
 CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
 java org.apache.submarine.client.cli.Cli job run --name PyTorch-job-001 \
@@ -188,7 +188,7 @@ You should then be able to see links and status of the jobs from command line:
 ### With Docker
 
 ```
-SUBMARINE_VERSION=0.4.0
+SUBMARINE_VERSION=<REPLACE_VERSION>
 SUBMARINE_HADOOP_VERSION=3.1
 CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
 java org.apache.submarine.client.cli.Cli job run --name PyTorch-job-001 \
@@ -240,7 +240,7 @@ Get image_classification.py from this [link](https://github.com/apache/submarine
 
 
 ```
-SUBMARINE_VERSION=0.4.0
+SUBMARINE_VERSION=<REPLACE_VERSION>
 SUBMARINE_HADOOP_VERSION=3.1
 CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
 java org.apache.submarine.client.cli.Cli job run --name MXNet-job-001 \
@@ -282,7 +282,7 @@ You should then be able to see links and status of the jobs from command line:
 ### With Docker
 You could refer to this [sample Dockerfile](project/github/submarine/docs/userdocs/yarn/docker/mxnet/cifar10/Dockerfile.cifar10.mx_1.5.1) for building your own Docker image.
 ```
-SUBMARINE_VERSION=0.4.0
+SUBMARINE_VERSION=<REPLACE_VERSION>
 SUBMARINE_HADOOP_VERSION=3.1
 CLASSPATH=$(hadoop classpath --glob):path-to/submarine-all-${SUBMARINE_VERSION}-hadoop-${SUBMARINE_HADOOP_VERSION}.jar \
 java org.apache.submarine.client.cli.Cli job run --name MXNet-job-001 \

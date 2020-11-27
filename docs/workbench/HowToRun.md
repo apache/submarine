@@ -28,57 +28,10 @@ By using the official images of Submarine, only a few docker commands are requir
 ### Launch the Submarine Workbench(Angular)
 * It should be noted that since Submarine Workbench depends on the Submarine database, so you need to run the docker container of the Submarine database first.
 ```
-docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.4.0
-docker run -it -p 8080:8080 -d --link=submarine-database:submarine-database --name submarine-server apache/submarine:server-0.4.0
+docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-<REPLACE_VERSION>
+docker run -it -p 8080:8080 -d --link=submarine-database:submarine-database --name submarine-server apache/submarine:server-<REPLACE_VERSION>
 ```
 * The login page of Submarine Workbench will be shown in ```http://127.0.0.1:8080```.
-
-### Switch from version Angular to version Vue
-*  Step1: Launch submarine-database and submarine-server containers
-```
-docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.4.0
-docker run -it -p 8080:8080 -d --link=submarine-database:submarine-database --name submarine-server apache/submarine:server-0.4.0
-```
-*  Step2: Compile Submarine in your host (not in the container)
-```
-cd ./submarine
-mvn clean install package -DskipTests
-```
-*  Step3: Copy workbench-web.war into the submarine-server container
-```
-cd submarine-workbench/workbench-web/target
-docker cp workbench-web.war submarine-server:/opt/submarine-dist-0.4.0-hadoop-2.9
-```
-*  Step4: Enter the submarine-server container
-```
-docker exec -it submarine-server bash
-```
-*  Step5: Modify the value of the configuration **workbench.web.war** in conf/submarine-site.xml from "../submarine-workbench-web-ng.war" to "../submarine-workbench-web.war".
-
-*  Step6: Restart the Submarine Server
-```
-./bin/submarine-daemon.sh restart
-```
-*  Step7: Launch the submarine-server container
-```
-docker start submarine-server
-```
-*  Step8: Open a new **incognito window(not a tab)** and check ```http://127.0.0.1:8080```
-### Switch from version Vue to version Angular
-*  Step1: Enter the submarine-server container
-```
-docker exec -it submarine-server bash
-```
-*  Step2: Modify the value of the configuration **workbench.web.war** in conf/submarine-site.xml from "../workbench-web.war" to "../submarine-workbench-web-ng.war".
-*  Step3: Restart the Submarine Server
-```
-./bin/submarine-daemon.sh restart
-```
-*  Step4: Launch the submarine-server container
-```
-docker start submarine-server
-```
-*  Step5: Open a **new incognito window(not a tab)** and check ```http://127.0.0.1:8080```
 ### Check the data in the submarine-database
 *  Step1: Enter the submarine-database container
 ```

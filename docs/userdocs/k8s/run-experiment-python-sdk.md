@@ -43,7 +43,7 @@ python3 virtualenv-16.0.0/virtualenv.py venv
 Starting from 0.4.0, Submarine provides Python SDK. Please change it to a proper version needed.
 
 ```bash
-pip install submarine-sdk==0.4.0
+pip install submarine-sdk==<REPLACE_VERSION>
 ```
 
 **Install SDK from source code**

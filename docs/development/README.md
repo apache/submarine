@@ -104,7 +104,7 @@ By executing the above command, `workbench-web` will publish the web page to the
 
 + **Lints and fixes files**
 
-When you write the `angular, js` file in `workbench-web` through IDEA, because IDEA can't format these files well, you need to execute the following command to format the angular and js files to avoid some warnings during the yarn build.
+When you write the `Angular, js` file in `workbench-web` through IDEA, because IDEA can't format these files well, you need to execute the following command to format the angular and js files to avoid some warnings during the yarn build.
 
 ```
 yarn run lint

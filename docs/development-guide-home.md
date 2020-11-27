@@ -21,8 +21,10 @@
 
 [Submarine Workbench Guide](./workbench/README.md)
 
-## Development
+## Development 
 
 [Submarine Project Development Guide](./development/README.md)
 
 [Submarine Project Database Guide](./database/README.md)
+
+[Submarine Quick Development Tips](./development/QuickDevTips.md)
