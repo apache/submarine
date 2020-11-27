@@ -278,7 +278,7 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
   private void verifyDeleteNotebookApiResult(Notebook createdNotebook,
                                              Notebook deletedNotebook) {
     Assert.assertEquals(createdNotebook.getName(), deletedNotebook.getName());
-    Assert.assertEquals(Notebook.Status.STATUS_DELETED.getValue(), deletedNotebook.getStatus());
+    Assert.assertEquals(Notebook.Status.STATUS_TERMINATING.getValue(), deletedNotebook.getStatus());
     assertDeleteK8sResult(deletedNotebook);
   }
 

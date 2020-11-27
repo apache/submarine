@@ -84,6 +84,8 @@ public class NotebookManager {
     Notebook notebook = submitter.createNotebook(spec);
     notebook.setNotebookId(generateNotebookId());
     notebook.setSpec(spec);
+
+    // environment information
     NotebookSpec notebookSpec = notebook.getSpec();
     EnvironmentManager environmentManager = EnvironmentManager.getInstance();
     Environment environment = environmentManager.getEnvironment(spec.getEnvironment().getName());

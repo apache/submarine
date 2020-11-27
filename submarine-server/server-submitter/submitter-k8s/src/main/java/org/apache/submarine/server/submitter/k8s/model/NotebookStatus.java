@@ -16,19 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.submarine.server.submitter.k8s.model;
 
 import com.google.gson.annotations.SerializedName;
+import io.kubernetes.client.models.V1ContainerState;
 
 import java.util.List;
 
-public class NotebookCRList {
+public class NotebookStatus {
 
-  @SerializedName("items")
-  private List<NotebookCR> items;
+  @SerializedName("conditions")
+  private List<NotebookCondition> conditions;
 
-  public List<NotebookCR> getItems() {
-    return items;
+  @SerializedName("readyReplicas")
+  private int readyReplicas;
+
+  @SerializedName("containerState")
+  private V1ContainerState containerState;
+
+  NotebookStatus() {
+  }
+
+  public int getReadyReplicas() {
+    return readyReplicas;
+  }
+
+  public V1ContainerState getContainerState() {
+    return containerState;
+  }
+
+  public List<NotebookCondition> getConditions() {
+    return conditions;
   }
 }
