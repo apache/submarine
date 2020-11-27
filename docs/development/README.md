@@ -20,7 +20,34 @@ This document mainly describes the structure of each module of the Submarine pro
 
 ## 2. Submarine Project Structure
 
-### 2.1. dev-support
+### 2.1. submarine-client
+Provide the CLI interface for submarine user. (Currently only support YARN service)
+
+### 2.2. submarine-cloud
+Define submarine operator. (Work in progress)
+
+### 2.3. submarine-commons
+Define utility function used in multiple packages, mainly related to hadoop.
+
+### 2.4. submarine-dist
+Store the pre-release files.
+
+### 2.5. submarine-sdk
+Provide Python SDK for submarine user.
+
+### 2.6. submarine-security
+Provide authorization for Apache Spark to talking to Ranger Admin.
+
+### 2.7. submarine-server
+Include core server, restful api, and k8s/yarn submitter.
+
+### 2.8. submarine-test
+Provide end-to-end and k8s test for submarine.
+### 2.9. submarine-workbench
+
+- workbench-server: is a Jetty-based web server service. Workbench-server provides RESTful interface and Websocket interface. The RESTful interface provides workbench-web with management capabilities for databases such as project, department, user, and role.
+- workbench-web: is a web front-end service based on Angular.js framework. With workbench-web users can manage Submarine project, department, user, role through browser. You can also use the notebook to develop machine learning algorithms, model release and other lifecycle management.
+### 2.10 dev-support
 
 + **mini-submarine**: by using the docker image provided by Submarine, you can
 experience all the functions of Submarine in a single docker environment, while
@@ -32,37 +59,6 @@ environment installation tool for yarn-3.1+ and above.By using
 submarine-installer, it is easy to install and deploy system services such as
 `docker`, `nvidia-docker`, `nvidia driver`, `ETCD`, `Calico network` etc.
 required by yarn-3.1+.
-
-### 2.2. submarine-all
-
-Waiting for supplement
-
-### 2.3. submarine-core
-
-Waiting for supplement
-
-### 2.4. submarine-dist
-
-Waiting for supplement
-
-### 2.5. submarine-runtime
-
-Waiting for supplement
-
-### 2.6. submarine-sdk
-+ **pysubmarine**: By using Submarine's python sdk library, you can output
-metrics such as metrics when the algorithm is executed in your python program by
-importing pysubmarine during the development of the machine learning algorithm.
-
-### 2.7. submarine-workbench
-+ **workbench-server**: is a Jetty-based web server service. Workbench-server
-provides RESTful interface and Websocket interface. The RESTful interface
-provides workbench-web with management capabilities for databases such as
-project, department, user, and role.
-+ **workbench-web**: is a web front-end service based on `VUE.js` framework.
-With `workbench-web` users can manage Submarine project, department, user, role
-through browser. You can also use the notebook to develop machine learning
-algorithms, model release and other lifecycle management.
 
 ## 3. Submarine Workbench Development Guide
 
