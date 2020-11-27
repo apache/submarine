@@ -1,0 +1,6 @@
+{
+  "params" :{
+      "experiment_name": "new-test",
+      "learning_rate": 0.2
+  }
+}

@@ -1,25 +1,31 @@
 {
   "name": "tf-mnist-test_1",
-  "author": "test_author_1",
-  "description": "This is a test template to run tf-mnist\n",
+  "author": "author",
+  "description": "This is a template to run tf-mnist.",
   "parameters": [
     {
-      "name": "training.learning_rate",
+      "name": "learning_rate",
       "value": 0.1,
-      "required": true,
-      "description": " mnist learning_rate "
+      "required": false,
+      "description": "The parameter of train mnist."
     },
     {
-      "name": "training.batch_size",
+      "name": "batch_size",
       "value": 150,
       "required": false,
-      "description": "This is batch size of training"
+      "description": "The parameter of train mnist."
+    },
+    {
+      "name": "experiment_name",
+      "value": "tf-mnist-test_1",
+      "required": true,
+      "description": "experiment name, you should change it to avoid duplication with other experiment names."
     }
   ],
   "experimentSpec": {
     "meta": {
-      "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{training.learning_rate}} --batch_size={{training.batch_size}}",
-      "name": "tf-mnist-template-test1",
+      "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate={{learning_rate}} --batch_size={{batch_size}}",
+      "name": "{{experiment_name}}",
       "envVars": {
         "ENV1": "ENV1"
       },
