@@ -20,16 +20,22 @@
 package org.apache.spark.sql.execution
 
 import org.apache.spark.sql.{Row, SparkSession}
-import org.apache.spark.sql.execution.command.{RunnableCommand, ShowDatabasesCommand}
+import org.apache.spark.sql.execution.command.RunnableCommand
 
+import org.apache.submarine.spark.compatible.CompatibleCommand.ShowDatabasesCommandCompatible
+import org.apache.submarine.spark.compatible.CompatibleFunc
 import org.apache.submarine.spark.security.{RangerSparkAuthorizer, SparkPrivilegeObject, SparkPrivilegeObjectType}
 
-case class SubmarineShowDatabasesCommand(child: ShowDatabasesCommand) extends RunnableCommand {
+case class SubmarineShowDatabasesCommand(child: ShowDatabasesCommandCompatible)
+  extends RunnableCommand {
   override val output = child.output
 
   override def run(sparkSession: SparkSession): Seq[Row] = {
-    val rows = child.run(sparkSession)
-    rows.filter(r => RangerSparkAuthorizer.isAllowed(toSparkPrivilegeObject(r)))
+    val catalog = sparkSession.sessionState.catalog
+    val databases = CompatibleFunc.getPattern(child)
+      .map(catalog.listDatabases).getOrElse(catalog.listDatabases()).map { d => Row(d) }
+
+    databases.filter(r => RangerSparkAuthorizer.isAllowed(toSparkPrivilegeObject(r)))
   }
 
   private def toSparkPrivilegeObject(row: Row): SparkPrivilegeObject = {

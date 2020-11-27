@@ -20,11 +20,12 @@
 package org.apache.spark.sql.catalyst.optimizer
 
 import org.apache.spark.sql.execution.{SubmarineShowDatabasesCommand, SubmarineShowTablesCommand}
-import org.apache.spark.sql.execution.command.{CreateDatabaseCommand, ShowDatabasesCommand, ShowTablesCommand}
+import org.apache.spark.sql.execution.command.{CreateDatabaseCommand, ShowTablesCommand}
 import org.apache.spark.sql.hive.test.TestHive
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 import org.apache.submarine.spark.security.SparkAccessControlException
+
 
 class SubmarineSparkRangerAuthorizationExtensionTest extends FunSuite with BeforeAndAfterAll {
 
@@ -35,7 +36,7 @@ class SubmarineSparkRangerAuthorizationExtensionTest extends FunSuite with Befor
   test("replace submarine show databases") {
     val df = spark.sql("show databases")
     val originalPlan = df.queryExecution.optimizedPlan
-    assert(originalPlan.isInstanceOf[ShowDatabasesCommand])
+    assert(originalPlan.isInstanceOf[ShowDatabasesCommandCompatible])
     val newPlan = authz(originalPlan)
     assert(newPlan.isInstanceOf[SubmarineShowDatabasesCommand])
   }

@@ -35,8 +35,10 @@ import org.apache.spark.sql.execution.command.{CreateDataSourceTableAsSelectComm
 import org.apache.spark.sql.execution.datasources.{InsertIntoDataSourceCommand, InsertIntoHadoopFsRelationCommand, LogicalRelation, SaveIntoDataSourceCommand}
 import org.apache.spark.sql.hive.execution.{CreateHiveTableAsSelectCommand, InsertIntoHiveDirCommand, InsertIntoHiveTable}
 
+import org.apache.submarine.spark.compatible.SubqueryCompatible
 import org.apache.submarine.spark.security._
 import org.apache.submarine.spark.security.SparkObjectType.COLUMN
+
 
 /**
  * An Apache Spark's [[Optimizer]] extension for column data masking.
@@ -233,7 +235,7 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
 
       marked transformAllExpressions {
         case s: SubqueryExpression =>
-          val Subquery(newPlan) = Subquery(SubmarineDataMasking(s.plan))
+          val SubqueryCompatible(newPlan) = SubqueryCompatible(SubmarineDataMasking(s.plan))
           s.withNewPlan(newPlan)
       }
   }

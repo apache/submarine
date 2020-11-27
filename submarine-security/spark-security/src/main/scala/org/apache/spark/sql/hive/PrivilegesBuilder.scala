@@ -28,13 +28,16 @@ import org.apache.spark.sql.catalyst.analysis.UnresolvedRelation
 import org.apache.spark.sql.catalyst.catalog.CatalogTable
 import org.apache.spark.sql.catalyst.expressions.NamedExpression
 import org.apache.spark.sql.catalyst.plans.logical.{Command, LogicalPlan, Project}
-import org.apache.spark.sql.execution.command.{AlterDatabasePropertiesCommand, AlterTableAddPartitionCommand, AlterTableDropPartitionCommand, AlterTableRecoverPartitionsCommand, AlterTableRenameCommand, AlterTableRenamePartitionCommand, AlterTableSerDePropertiesCommand, AlterTableSetLocationCommand, AlterTableSetPropertiesCommand, AlterTableUnsetPropertiesCommand, AlterViewAsCommand, AnalyzeColumnCommand, AnalyzeTableCommand, CacheTableCommand, CreateDatabaseCommand, CreateDataSourceTableAsSelectCommand, CreateDataSourceTableCommand, CreateFunctionCommand, CreateTableCommand, CreateTableLikeCommand, CreateViewCommand, DescribeDatabaseCommand, DescribeFunctionCommand, DescribeTableCommand, DropDatabaseCommand, DropFunctionCommand, DropTableCommand, ExplainCommand, LoadDataCommand, PersistedView, RunnableCommand, SetDatabaseCommand, ShowColumnsCommand, ShowCreateTableCommand, ShowFunctionsCommand, ShowPartitionsCommand, ShowTablePropertiesCommand, ShowTablesCommand, TruncateTableCommand}
+import org.apache.spark.sql.execution.command._
 import org.apache.spark.sql.execution.datasources.{InsertIntoDataSourceCommand, InsertIntoHadoopFsRelationCommand, LogicalRelation}
 import org.apache.spark.sql.hive.execution.CreateHiveTableAsSelectCommand
 import org.apache.spark.sql.types.StructField
 
-import org.apache.submarine.spark.security.{SparkPrivilegeObject, SparkPrivilegeObjectType, SparkPrivObjectActionType}
+import org.apache.submarine.spark.compatible.{CompatibleFunc, PersistedViewCompatible}
+import org.apache.submarine.spark.compatible.CompatibleCommand.SetDatabaseCommandCompatible
+import org.apache.submarine.spark.security.{SparkPrivilegeObject, SparkPrivilegeObjectType}
 import org.apache.submarine.spark.security.SparkPrivObjectActionType.SparkPrivObjectActionType
+
 
 /**
  * [[LogicalPlan]] -> list of [[SparkPrivilegeObject]]s
@@ -119,7 +122,7 @@ private[sql] object PrivilegesBuilder {
         // Unfortunately, the real world is always a place where miracles happen.
         // We check the privileges directly without resolving the plan and leave everything
         // to spark to do.
-        addTableOrViewLevelObjs(u.tableIdentifier, privilegeObjects)
+        addTableOrViewLevelObjs(CompatibleFunc.tableIdentifier(u), privilegeObjects)
 
       case p =>
         for (child <- p.children) {
@@ -203,9 +206,9 @@ private[sql] object PrivilegesBuilder {
 
       case a: AnalyzeColumnCommand =>
         addTableOrViewLevelObjs(
-          a.tableIdent, inputObjs, columns = a.columnNames)
+          a.tableIdent, inputObjs, columns = CompatibleFunc.analyzeColumnName(a))
         addTableOrViewLevelObjs(
-          a.tableIdent, outputObjs, columns = a.columnNames)
+          a.tableIdent, outputObjs, columns = CompatibleFunc.analyzeColumnName(a))
 
       case a if a.nodeName == "AnalyzePartitionCommand" =>
         addTableOrViewLevelObjs(
@@ -252,7 +255,7 @@ private[sql] object PrivilegesBuilder {
 
       case c: CreateViewCommand =>
         c.viewType match {
-          case PersistedView =>
+          case PersistedViewCompatible.obj =>
             // PersistedView will be tied to a database
             addDbLevelObjs(c.name, outputObjs)
             addTableOrViewLevelObjs(c.name, outputObjs)
@@ -328,7 +331,8 @@ private[sql] object PrivilegesBuilder {
       case s if s.nodeName == "SaveIntoDataSourceCommand" =>
         buildQuery(getFieldVal(s, "query").asInstanceOf[LogicalPlan], outputObjs)
 
-      case s: SetDatabaseCommand => addDbLevelObjs(s.databaseName, inputObjs)
+      case s: SetDatabaseCommandCompatible =>
+        addDbLevelObjs(CompatibleFunc.getCatLogName(s), inputObjs)
 
       case s: ShowColumnsCommand => addTableOrViewLevelObjs(s.tableName, inputObjs)
 
