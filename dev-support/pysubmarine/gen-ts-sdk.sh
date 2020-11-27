@@ -22,7 +22,7 @@ SWAGGER_JAR_URL="https://repo1.maven.org/maven2/org/openapitools/openapi-generat
 SWAGGER_CODEGEN_JAR="openapi-generator-cli.jar"
 SWAGGER_CODEGEN_CONF="swagger_config.json"
 SWAGGER_CODEGEN_FILE="openapi.json"
-SDK_OUTPUT_PATH="sdk/python"
+SDK_OUTPUT_PATH="sdk/typescript-angular"
 
 submarine_dist_exists=$(find -L "${SUBMARINE_PROJECT_PATH}/submarine-dist/target" -name "submarine-dist-*.tar.gz")
 # Build source code if the package doesn't exist.
@@ -46,22 +46,22 @@ if [[ -z "${openapi_generator_cli_exists}" ]]; then
   wget -O "${SWAGGER_CODEGEN_JAR}" "${SWAGGER_JAR_URL}"
 fi
 
-echo "Generating Python SDK for Submarine ..."
+echo "Generating typescript-angular SDK for Submarine ..."
 rm -r sdk/
 java -jar ${SWAGGER_CODEGEN_JAR} generate \
      -i "${SWAGGER_CODEGEN_FILE}" \
-     -g python \
+     -g typescript-angular \
      -o ${SDK_OUTPUT_PATH} \
      -c ${SWAGGER_CODEGEN_CONF}
 
-echo "Insert apache license at the top of file ..."
-for filename in $(find ${SDK_OUTPUT_PATH}/submarine/experiment -type f); do
-  echo "$filename"
-  sed -i -e '1 e cat license-header.txt' "$filename"
-done
+# echo "Insert apache license at the top of file ..."
+# for filename in $(find ${SDK_OUTPUT_PATH}/submarine/experiment -type f); do
+#   echo "$filename"
+#   sed -i -e '1 e cat license-header.txt' "$filename"
+# done
 
-echo "Move Experiment API to pysubmarine"
-cp -r sdk/python/submarine/experiment ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine/submarine/
+# echo "Move Experiment API to pysubmarine"
+# cp -r sdk/typescript-angular/submarine/experiment ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine/submarine/
 
-echo "Fix Python SDK code style"
-${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine/github-actions/auto-format.sh
+# echo "Fix typescript-angular SDK code style"
+# ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine/github-actions/auto-format.sh
