@@ -29,6 +29,7 @@ import org.apache.spark.sql.execution.datasources.{CreateTempViewUsing, InsertIn
 import org.apache.spark.sql.hive.PrivilegesBuilder
 import org.apache.spark.sql.hive.execution.CreateHiveTableAsSelectCommand
 
+import org.apache.submarine.spark.compatible.CompatibleCommand._
 import org.apache.submarine.spark.security.{RangerSparkAuthorizer, SparkAccessControlException}
 
 /**
@@ -52,7 +53,7 @@ case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession)
    */
   override def apply(plan: LogicalPlan): LogicalPlan = {
     plan match {
-      case s: ShowDatabasesCommand => SubmarineShowDatabasesCommand(s)
+      case s: ShowDatabasesCommandCompatible => SubmarineShowDatabasesCommand(s)
       case s: SubmarineShowDatabasesCommand => s
       case s: ShowTablesCommand => SubmarineShowTablesCommand(s)
       case s: SubmarineShowTablesCommand => s
@@ -144,10 +145,10 @@ case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession)
 
         case p if p.nodeName == "SaveIntoDataSourceCommand" => QUERY
         case s: SetCommand if s.kv.isEmpty || s.kv.get._2.isEmpty => SHOWCONF
-        case _: SetDatabaseCommand => SWITCHDATABASE
+        case _: SetDatabaseCommandCompatible => SWITCHDATABASE
         case _: ShowCreateTableCommand => SHOW_CREATETABLE
         case _: ShowColumnsCommand => SHOWCOLUMNS
-        case _: ShowDatabasesCommand => SHOWDATABASES
+        case _: ShowDatabasesCommandCompatible => SHOWDATABASES
         case _: ShowFunctionsCommand => SHOWFUNCTIONS
         case _: ShowPartitionsCommand => SHOWPARTITIONS
         case _: ShowTablesCommand => SHOWTABLES

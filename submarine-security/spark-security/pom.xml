@@ -46,6 +46,7 @@
     <ranger.spark.package>submarine_spark_ranger_project</ranger.spark.package>
     <ranger.version>1.1.0</ranger.version>
     <ranger.major.version>1</ranger.major.version>
+    <spark.compatible.version>2</spark.compatible.version>
     <scala.version>2.11.8</scala.version>
     <scala.binary.version>2.11</scala.binary.version>
     <scalatest.version>2.2.6</scalatest.version>
@@ -321,6 +322,19 @@
               </sources>
             </configuration>
           </execution>
+
+          <execution>
+            <id>add-spark-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>spark-${spark.compatible.version}/src/main/scala</source>
+              </sources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -548,6 +562,17 @@
       <properties>
         <spark.version>2.4.5</spark.version>
         <scalatest.version>3.0.3</scalatest.version>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>spark-3.0</id>
+      <properties>
+        <spark.version>3.0.1</spark.version>
+        <scala.version>2.12.12</scala.version>
+        <scala.binary.version>2.12</scala.binary.version>
+        <!--<scalatest.version>3.2.0</scalatest.version>-->
+        <spark.compatible.version>3</spark.compatible.version>
       </properties>
     </profile>
 

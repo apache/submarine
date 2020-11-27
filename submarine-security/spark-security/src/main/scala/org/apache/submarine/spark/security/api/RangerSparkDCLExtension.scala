@@ -22,7 +22,7 @@ package org.apache.submarine.spark.security.api
 import org.apache.spark.sql.SparkSessionExtensions
 
 import org.apache.submarine.spark.security.Extensions
-import org.apache.submarine.spark.security.parser.SubmarineSqlParser
+import org.apache.submarine.spark.security.parser.SubmarineSqlParserCompatible
 
 /**
  * An extension for Spark SQL to activate DCL(Data Control Language)
@@ -57,6 +57,6 @@ import org.apache.submarine.spark.security.parser.SubmarineSqlParser
  */
 class RangerSparkDCLExtension extends Extensions {
   override def apply(ext: SparkSessionExtensions): Unit = {
-    ext.injectParser((_, parser) => new SubmarineSqlParser(parser))
+    ext.injectParser((_, parser) => new SubmarineSqlParserCompatible(parser))
   }
 }
