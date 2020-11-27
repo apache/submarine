@@ -66,7 +66,7 @@ pytest --cov=submarine -vs -m "e2e"
 > Before run this command in local, you should make sure the submarine server is running. 
 
 ### Generate python SDK from swagger
-We use [swagger-codegen](https://swagger.io/docs/open-source-tools/swagger-codegen/)
+We use [open-api generator](https://openapi-generator.tech/docs/installation/#jar)
 to generate pysubmarine client API that used to communicate with submarine server.
 
 If change below files, please run `./dev-support/pysubmarine/gen-sdk.sh`
