@@ -40,4 +40,15 @@ curl -X POST -H "Content-Type: application/json" -d '
 ' http://127.0.0.1:8080/api/v1/experiment/my-tf-mnist-template
 ```
 
+**Example Request:**
+```sh
+curl -X POST -H "Content-Type: application/json" -d '
+{
+    "params": {
+        "experiment_name":"new-pytorch-mnist"
+    }
+}
+' http://127.0.0.1:8080/api/v1/experiment/pytorch-mnist
+```
+
 Register experiment template and more info see [Experiment Template API Reference](api/experiment-template.md).
