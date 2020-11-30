@@ -18,7 +18,7 @@ gpg --keyserver pgp.mit.edu --recv-key <the release manager's public key id like
 gpg --sign-key <the release manager's public key id>
 svn co --depth immediates https://dist.apache.org/repos/dist apache-dist
 cd apache-dist
-svn update --set-depth infinity release/submarine
+svn update --set-depth immediates release/submarine
 cd release/submarine
 gpg --list-sigs <your name> >> KEYS
 gpg --armor --export <your name> >> KEYS
@@ -35,7 +35,7 @@ Assuming we're releasing version X, use below advanced filter in [submarine issu
 project in ("Apache Submarine") AND  "Target Version" = 0.3.0 AND statusCategory != Done
 ```
 Click "tools"-> "bulk update" to edit all issues:
-1. Change the target version to X+1. Here it is `0.4.0`.
+1. Change the target version to X+1. Here it is `0.4.0` (If it doesn't exist, ask for the PMC's help to access [administer-versions](https://issues.apache.org/jira/plugins/servlet/project-config/SUBMARINE/administer-versions?status=no-filter) to add the new version).
 2. Add a comment to inform contributors. Like this. `Bulk update due to releasing 0.3.0. Please change it back if you think this is a blocker.`
 
 Do a double-check to confirm that there are no issues found with the above filter. And send mail to the developer list informing that we should mark "Target version" to `0.4.0` when creating new JIRAs.
