@@ -235,7 +235,8 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
 
       marked transformAllExpressions {
         case s: SubqueryExpression =>
-          val SubqueryCompatible(newPlan) = SubqueryCompatible(SubmarineDataMasking(s.plan))
+          val SubqueryCompatible(newPlan, _) = SubqueryCompatible(
+              SubmarineDataMasking(s.plan), SubqueryExpression.hasCorrelatedSubquery(s))
           s.withNewPlan(newPlan)
       }
   }

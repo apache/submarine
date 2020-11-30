@@ -63,9 +63,9 @@ case class SubmarineRowFilterExtension(spark: SparkSession) extends Rule[Logical
         val analyzed = spark.sessionState.analyzer.execute(Filter(condition, plan))
         val optimized = analyzed transformAllExpressions {
           case s: SubqueryExpression =>
-            val SubqueryCompatible(newPlan) =
-              rangerSparkOptimizer.execute(SubqueryCompatible(SubmarineRowFilter(s.plan)))
-            s.withNewPlan(newPlan)
+            val SubqueryCompatible(newPlan, _) = SubqueryCompatible(
+              SubmarineRowFilter(s.plan), SubqueryExpression.hasCorrelatedSubquery(s))
+            s.withNewPlan(rangerSparkOptimizer.execute(newPlan))
         }
         SubmarineRowFilter(optimized)
       } else {
