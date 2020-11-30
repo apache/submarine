@@ -99,16 +99,19 @@ for more details if you want to customize the default value for Traefik.
 http://127.0.0.1:32080
 ```
 
-Or you can use port-forward to forward a local port to a port on the
-submarine server pod.
+*Notice:*
+If you use `kind` to run local Kubernetes cluster,
+please refer to this [docs](https://kind.sigs.k8s.io/docs/user/configuration/#extra-port-mappings)
+and set the configuration "extraPortMappings" when creating the k8s cluster.
 
-```bash
-# Use port-forward
-kubectl port-forward svc/submarine-server 8080:8080
-
-# In another terminal. Run below command to verify it works
-curl http://127.0.0.1:8080/api/v1/experiment/ping
-{"status":"OK","code":200,"success":true,"message":null,"result":"Pong","attributes":{}}
+```
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  extraPortMappings:
+  - containerPort: 32080
+    hostPort: [the port you want to access]
 ```
 
 ### Uninstall Submarine
