@@ -100,7 +100,7 @@ http://127.0.0.1:32080
 ```
 
 *Notice:*
-If you use KinD to run local Kubernetes clusters,
+If you use `kind` to run local Kubernetes cluster,
 please refer to this [docs](https://kind.sigs.k8s.io/docs/user/configuration/#extra-port-mappings)
 and set the configuration "extraPortMappings" when creating the k8s cluster.
 
