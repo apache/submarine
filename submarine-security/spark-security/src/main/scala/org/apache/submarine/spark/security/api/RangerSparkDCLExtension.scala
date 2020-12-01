@@ -20,6 +20,7 @@
 package org.apache.submarine.spark.security.api
 
 import org.apache.spark.sql.SparkSessionExtensions
+
 import org.apache.submarine.spark.security.Extensions
 import org.apache.submarine.spark.security.parser.SubmarineSqlParser
 
