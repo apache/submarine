@@ -32,6 +32,7 @@ import org.apache.spark.sql.execution.command.{CreateDataSourceTableAsSelectComm
 import org.apache.spark.sql.execution.datasources.{InsertIntoDataSourceCommand, InsertIntoHadoopFsRelationCommand, LogicalRelation, SaveIntoDataSourceCommand}
 import org.apache.spark.sql.hive.execution.{CreateHiveTableAsSelectCommand, InsertIntoHiveDirCommand, InsertIntoHiveTable}
 
+import org.apache.submarine.spark.compatible.SubqueryCompatible
 import org.apache.submarine.spark.security._
 
 /**
@@ -62,9 +63,9 @@ case class SubmarineRowFilterExtension(spark: SparkSession) extends Rule[Logical
         val analyzed = spark.sessionState.analyzer.execute(Filter(condition, plan))
         val optimized = analyzed transformAllExpressions {
           case s: SubqueryExpression =>
-            val Subquery(newPlan) =
-              rangerSparkOptimizer.execute(Subquery(SubmarineRowFilter(s.plan)))
-            s.withNewPlan(newPlan)
+            val SubqueryCompatible(newPlan, _) = SubqueryCompatible(
+              SubmarineRowFilter(s.plan), SubqueryExpression.hasCorrelatedSubquery(s))
+            s.withNewPlan(rangerSparkOptimizer.execute(newPlan))
         }
         SubmarineRowFilter(optimized)
       } else {

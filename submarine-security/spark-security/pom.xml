@@ -46,6 +46,7 @@
     <ranger.spark.package>submarine_spark_ranger_project</ranger.spark.package>
     <ranger.version>1.1.0</ranger.version>
     <ranger.major.version>1</ranger.major.version>
+    <spark.compatible.version>2</spark.compatible.version>
     <scala.version>2.11.8</scala.version>
     <scala.binary.version>2.11</scala.binary.version>
     <scalatest.version>2.2.6</scalatest.version>
@@ -60,6 +61,11 @@
     <codehaus.jackson.version>1.9.13</codehaus.jackson.version>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.scala-lang</groupId>
       <artifactId>scala-library</artifactId>
@@ -321,6 +327,19 @@
               </sources>
             </configuration>
           </execution>
+
+          <execution>
+            <id>add-spark-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>spark-${spark.compatible.version}/src/main/scala</source>
+              </sources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -548,6 +567,20 @@
       <properties>
         <spark.version>2.4.5</spark.version>
         <scalatest.version>3.0.3</scalatest.version>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>spark-3.0</id>
+      <properties>
+        <spark.version>3.0.1</spark.version>
+        <scala.version>2.12.10</scala.version>
+        <scala.binary.version>2.12</scala.binary.version>
+        <!--<scalatest.version>3.2.0</scalatest.version>-->
+        <spark.compatible.version>3</spark.compatible.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
+        <jackson-databind.version>2.10.5</jackson-databind.version>
+        <jackson-annotations.version>2.10.5</jackson-annotations.version>
       </properties>
     </profile>
 
