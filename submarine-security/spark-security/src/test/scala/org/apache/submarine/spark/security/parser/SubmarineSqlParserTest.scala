@@ -29,7 +29,7 @@ class SubmarineSqlParserTest extends FunSuite {
 
   private val spark = TestHive.sparkSession.newSession()
 
-  val parser = new SubmarineSqlParserCompatible(spark.sessionState.sqlParser)
+  val parser = new SubmarineSqlParser(spark.sessionState.sqlParser)
 
   test("create role") {
     val p1 = parser.parsePlan("create role abc")
