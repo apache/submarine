@@ -58,8 +58,8 @@ curl -X POST -H "Content-Type: application/json" -d '
     "name":"test-nb",
     "uid":"5a94c01d-6a92-4222-bc66-c610c277546d",
     "url":"/notebook/default/test-nb/",
-    "status": null,
-    "reason": null,
+    "status":"creating",
+    "reason":"The notebook instance is creating",
     "createdTime":"2020-08-20T21:58:27.000+08:00",
     "deletedTime":null,
     "spec":{
@@ -116,8 +116,8 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook?id={user_id}
       "name":"test-nb",
       "uid":"5a94c01d-6a92-4222-bc66-c610c277546d",
       "url":"/notebook/default/test-nb/",
-      "status": "ready",
-      "reason": "Notebook instance is running",
+      "status": "running",
+      "reason": "The notebook instance is running",
       "createdTime":"2020-08-20T21:58:27.000+08:00",
       "deletedTime":null,
       "spec":{
@@ -174,7 +174,8 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook/{id}
     "name":"test-nb",
     "uid":"5a94c01d-6a92-4222-bc66-c610c277546d",
     "url":"/notebook/default/test-nb/",
-    "status":"Created",
+    "status":"running",
+    "reason":"The notebook instance is running",
     "createdTime":"2020-08-20T21:58:27.000+08:00",
     "deletedTime":null,
     "spec":{
@@ -215,7 +216,7 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook/{id}
 
 **Example Request:**
 ```sh
-curl -X DELETE http://127.0.0.1:8080/api/v1/notebook/{id}
+curl -X DELETE http://127.0.0.1:32080/api/v1/notebook/{id}
 ```
 
 **Example Response:**
@@ -230,7 +231,8 @@ curl -X DELETE http://127.0.0.1:8080/api/v1/notebook/{id}
     "name": "test-nb",
     "uid": "5a94c01d-6a92-4222-bc66-c610c277546d",
     "url": "/notebook/default/test-nb/",
-    "status": "Deleted",
+    "status": "terminating",
+    "reason": "The notebook instance is terminating",
     "createdTime": "2020-08-22T14:03:19.000+08:00",
     "deletedTime": "2020-08-22T14:46:28+0800",
     "spec": {

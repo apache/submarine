@@ -37,7 +37,6 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.environment.EnvironmentId;
-import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.notebook.NotebookId;
 import org.apache.submarine.server.gson.EnvironmentIdDeserializer;
@@ -263,7 +262,7 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
   private void verifyCreateNotebookApiResult(Notebook createdNotebook) {
     Assert.assertNotNull(createdNotebook.getUid());
     Assert.assertNotNull(createdNotebook.getCreatedTime());
-    Assert.assertEquals(Experiment.Status.STATUS_CREATED.getValue(), createdNotebook.getStatus());
+    Assert.assertEquals(Notebook.Status.STATUS_CREATING.toString(), createdNotebook.getStatus());
   }
 
   private void verifyGetNotebookApiResult(Notebook createdNotebook,

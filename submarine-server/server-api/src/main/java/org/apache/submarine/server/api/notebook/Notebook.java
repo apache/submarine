@@ -79,8 +79,8 @@ public class Notebook {
     return reason;
   }
 
-  public void setReason(String message) {
-    this.reason = message;
+  public void setReason(String reason) {
+    this.reason = reason;
   }
 
   public String getCreatedTime() {
@@ -108,12 +108,12 @@ public class Notebook {
   }
 
   public enum Status {
-    STATUS_SCHEDULING("scheduling"),
+    STATUS_CREATING("creating"),
     STATUS_RUNNING("running"),
     STATUS_WAITING("waiting"),
     STATUS_TERMINATING("terminating");
 
-    private final String value;
+    private String value;
     Status(String value) {
       this.value = value;
     }

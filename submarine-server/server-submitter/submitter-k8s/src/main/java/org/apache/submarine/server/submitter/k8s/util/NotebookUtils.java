@@ -112,19 +112,19 @@ public class NotebookUtils {
     // if the notebook instance is deleted
     if (notebookCR.getMetadata().getDeletionTimestamp() != null) {
       statusMap = createStatusMap(Notebook.Status.STATUS_TERMINATING.toString(),
-              "Notebook instance is terminating");
+              "The notebook instance is terminating");
     }
 
-    // Notebook is submitted but its pod is scheduling
     if (notebookCR.getStatus() == null) {
-      statusMap = createStatusMap(Notebook.Status.STATUS_SCHEDULING.toString(),
-              "Pod is scheduling");
+      // if the notebook pod has not been created
+      statusMap = createStatusMap(Notebook.Status.STATUS_CREATING.toString(),
+              "The notebook instance is creating");
     } else {
       // if the notebook instance is ready(Running)
       int replicas = notebookCR.getStatus().getReadyReplicas();
       if (replicas == 1) {
         statusMap = createStatusMap(Notebook.Status.STATUS_RUNNING.toString(),
-                "Notebook instance is running");
+                "The notebook instance is running");
       }
 
       // if the notebook instance is waiting
@@ -149,6 +149,7 @@ public class NotebookUtils {
     Notebook notebook = new Notebook();
     if (status.getStatus().toLowerCase().equals("success")) {
       notebook.setStatus(Notebook.Status.STATUS_TERMINATING.toString());
+      notebook.setReason("The notebook instance is terminating");
     }
 
     if (status.getDetails() != null) {
