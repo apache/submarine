@@ -21,14 +21,11 @@ package org.apache.submarine.server.submitter.k8s;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.List;
-import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -57,14 +54,13 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
-import org.apache.submarine.server.submitter.k8s.model.NotebookCRList;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRouteSpec;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
-import org.joda.time.DateTime;
+import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -260,7 +256,7 @@ public class K8sSubmitter implements Submitter {
       notebookCR.getMetadata().setLabels(labels);
       Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               notebookCR.getMetadata().getNamespace(), notebookCR.getPlural(), notebookCR, "true");
-      notebook = parseNotebookResponseObject(object);
+      notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
 
       // create Traefik custom resource
       createIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
@@ -284,7 +280,7 @@ public class K8sSubmitter implements Submitter {
       Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               notebookCR.getMetadata().getNamespace(),
               notebookCR.getPlural(), notebookCR.getMetadata().getName());
-      notebook = parseNotebookResponseObject(object);
+      notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -301,7 +297,7 @@ public class K8sSubmitter implements Submitter {
               notebookCR.getMetadata().getName(),
               new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
               null, null, null);
-      notebook = parseNotebookResponseObject(object);
+      notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
       deleteIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -317,71 +313,11 @@ public class K8sSubmitter implements Submitter {
               NotebookCR.CRD_NOTEBOOK_VERSION_V1, NotebookCR.CRD_NOTEBOOK_PLURAL_V1,
               "true", null, NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET + "=" + id,
               null, null, null);
-      notebookList = parseNotebookListResponseObject(object);
+      notebookList = NotebookUtils.parseObjectForList(object);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
     return notebookList;
-  }
-
-  private Notebook parseNotebookResponseObject(Object obj) throws SubmarineRuntimeException {
-    Gson gson = new JSON().getGson();
-    String jsonString = gson.toJson(obj);
-    LOG.info("Upstream response JSON: {}", jsonString);
-    Notebook notebook;
-    try {
-      NotebookCR notebookCR = gson.fromJson(jsonString, NotebookCR.class);
-      if (notebookCR.getMetadata().getName() != null) {
-        notebook = buildNotebookResponse(notebookCR);
-        // notebook is deleted
-      } else {
-        notebook = new Notebook();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
-        Date current = new Date();
-        notebook.setDeletedTime(dateFormat.format(current));
-        notebook.setStatus(Notebook.Status.STATUS_DELETED.toString());
-      }
-
-    } catch (JsonSyntaxException e) {
-      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
-    }
-    return notebook;
-  }
-
-  private List<Notebook> parseNotebookListResponseObject(Object object) {
-    Gson gson = new JSON().getGson();
-    String jsonString = gson.toJson(object);
-    LOG.info("Upstream response JSON: {}", jsonString);
-
-    Notebook notebook;
-    List<Notebook> notebookList = new ArrayList<>();
-    try {
-      NotebookCRList notebookCRList = gson.fromJson(jsonString, NotebookCRList.class);
-      for (NotebookCR notebookCR : notebookCRList.getItems()) {
-        notebook = buildNotebookResponse(notebookCR);
-        notebookList.add(notebook);
-      }
-    } catch (JsonSyntaxException e) {
-      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
-    }
-    return notebookList;
-  }
-
-  private Notebook buildNotebookResponse(NotebookCR notebookCR) {
-    Notebook notebook = new Notebook();
-    notebook.setUid(notebookCR.getMetadata().getUid());
-    notebook.setName(notebookCR.getMetadata().getName());
-    // notebook url
-    notebook.setUrl("/notebook/" + notebookCR.getMetadata().getNamespace() + "/" +
-            notebookCR.getMetadata().getName() + "/");
-    DateTime createdTime = notebookCR.getMetadata().getCreationTimestamp();
-    if (createdTime != null) {
-      notebook.setCreatedTime(createdTime.toString());
-      notebook.setStatus(Notebook.Status.STATUS_CREATED.getValue());
-    }
-    return notebook;
   }
 
   private String getJobLabelSelector(ExperimentSpec experimentSpec) {

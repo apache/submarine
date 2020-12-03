@@ -49,6 +49,9 @@ public class NotebookCR {
   @SerializedName("spec")
   private NotebookCRSpec spec;
 
+  @SerializedName("status")
+  private NotebookStatus status;
+
   public NotebookCR() {
     setApiVersion(CRD_APIVERSION_V1);
     setKind(CRD_NOTEBOOK_KIND_V1);
@@ -113,4 +116,11 @@ public class NotebookCR {
     this.spec = spec;
   }
 
+  public NotebookStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(NotebookStatus status) {
+    this.status = status;
+  }
 }

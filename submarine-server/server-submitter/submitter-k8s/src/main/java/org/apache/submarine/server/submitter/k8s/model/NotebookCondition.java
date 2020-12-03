@@ -16,19 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package org.apache.submarine.server.submitter.k8s.model;
 
 import com.google.gson.annotations.SerializedName;
+import org.joda.time.DateTime;
 
-import java.util.List;
+public class NotebookCondition {
 
-public class NotebookCRList {
+  public NotebookCondition() {
 
-  @SerializedName("items")
-  private List<NotebookCR> items;
-
-  public List<NotebookCR> getItems() {
-    return items;
   }
+
+  @SerializedName("type")
+  private String type;
+
+  @SerializedName("lastProbeTime")
+  private DateTime lastProbeTime;
+
+  @SerializedName("reason")
+  private String reason;
+
+  @SerializedName("message")
+  private String message;
+
 }

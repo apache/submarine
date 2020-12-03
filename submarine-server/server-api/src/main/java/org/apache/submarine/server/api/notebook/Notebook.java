@@ -30,6 +30,7 @@ public class Notebook {
   private String uid;
   private String url;
   private String status;
+  private String reason;
   private String createdTime;
   private String deletedTime;
   private NotebookSpec spec;
@@ -74,6 +75,14 @@ public class Notebook {
     this.status = status;
   }
 
+  public String getReason() {
+    return reason;
+  }
+
+  public void setReason(String reason) {
+    this.reason = reason;
+  }
+
   public String getCreatedTime() {
     return createdTime;
   }
@@ -99,8 +108,10 @@ public class Notebook {
   }
 
   public enum Status {
-    STATUS_CREATED("Created"),
-    STATUS_DELETED("Deleted");
+    STATUS_CREATING("creating"),
+    STATUS_RUNNING("running"),
+    STATUS_WAITING("waiting"),
+    STATUS_TERMINATING("terminating");
 
     private String value;
     Status(String value) {
@@ -133,6 +144,9 @@ public class Notebook {
       }
       if (notebook.getStatus() != null) {
         this.setStatus(notebook.getStatus());
+      }
+      if (notebook.getReason() != null) {
+        this.setReason(notebook.getReason());
       }
       if (notebook.getCreatedTime() != null) {
         this.setCreatedTime(notebook.getCreatedTime());
