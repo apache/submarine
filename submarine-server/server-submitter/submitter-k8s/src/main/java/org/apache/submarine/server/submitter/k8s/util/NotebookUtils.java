@@ -50,7 +50,7 @@ public class NotebookUtils {
     PARSE_OPT_DELETE;
   }
 
-  public Notebook parseObject(Object obj, ParseOpt opt) throws SubmarineRuntimeException {
+  public static Notebook parseObject(Object obj, ParseOpt opt) throws SubmarineRuntimeException {
     Gson gson = new JSON().getGson();
     String jsonString = gson.toJson(obj);
     LOG.info("Upstream response JSON: {}", jsonString);
@@ -68,7 +68,7 @@ public class NotebookUtils {
     throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
   }
 
-  public List<Notebook> parseObjectForList(Object object) throws SubmarineRuntimeException {
+  public static List<Notebook> parseObjectForList(Object object) throws SubmarineRuntimeException {
     Gson gson = new JSON().getGson();
     String jsonString = gson.toJson(object);
     LOG.info("Upstream response JSON: {}", jsonString);
@@ -87,7 +87,7 @@ public class NotebookUtils {
     throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
   }
 
-  private Notebook buildNotebookResponse(NotebookCR notebookCR) {
+  private static Notebook buildNotebookResponse(NotebookCR notebookCR) {
     Notebook notebook = new Notebook();
     notebook.setUid(notebookCR.getMetadata().getUid());
     notebook.setName(notebookCR.getMetadata().getName());
@@ -107,7 +107,7 @@ public class NotebookUtils {
     return notebook;
   }
 
-  private Map<String, String> processStatus(NotebookCR notebookCR) {
+  private static Map<String, String> processStatus(NotebookCR notebookCR) {
     Map<String, String> statusMap = new HashMap<>();
     // if the notebook instance is deleted
     if (notebookCR.getMetadata().getDeletionTimestamp() != null) {
@@ -138,14 +138,14 @@ public class NotebookUtils {
     return statusMap;
   }
 
-  public Map<String, String> createStatusMap(String status, String reason) {
+  private static Map<String, String> createStatusMap(String status, String reason) {
     Map<String, String> statusMap = new HashMap<>();
     statusMap.put("status", status);
     statusMap.put("reason", reason);
     return statusMap;
   }
 
-  private Notebook buildNotebookResponseFromStatus(V1Status status) {
+  private static Notebook buildNotebookResponseFromStatus(V1Status status) {
     Notebook notebook = new Notebook();
     if (status.getStatus().toLowerCase().equals("success")) {
       notebook.setStatus(Notebook.Status.STATUS_TERMINATING.toString());

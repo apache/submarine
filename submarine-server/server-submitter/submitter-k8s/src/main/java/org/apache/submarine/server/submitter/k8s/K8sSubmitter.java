@@ -248,7 +248,6 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
-    NotebookUtils utils = new NotebookUtils();
     try {
       // create notebook custom resource
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
@@ -257,7 +256,7 @@ public class K8sSubmitter implements Submitter {
       notebookCR.getMetadata().setLabels(labels);
       Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               notebookCR.getMetadata().getNamespace(), notebookCR.getPlural(), notebookCR, "true");
-      notebook = utils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
+      notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
 
       // create Traefik custom resource
       createIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
@@ -276,13 +275,12 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook findNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
-    NotebookUtils utils = new NotebookUtils();
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               notebookCR.getMetadata().getNamespace(),
               notebookCR.getPlural(), notebookCR.getMetadata().getName());
-      notebook = utils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
+      notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -292,7 +290,6 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook deleteNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
-    NotebookUtils utils = new NotebookUtils();
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
@@ -300,7 +297,7 @@ public class K8sSubmitter implements Submitter {
               notebookCR.getMetadata().getName(),
               new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
               null, null, null);
-      notebook = utils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
+      notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
       deleteIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -311,13 +308,12 @@ public class K8sSubmitter implements Submitter {
   @Override
   public List<Notebook> listNotebook(String id) throws SubmarineRuntimeException {
     List<Notebook> notebookList;
-    NotebookUtils utils = new NotebookUtils();
     try {
       Object object = api.listClusterCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
               NotebookCR.CRD_NOTEBOOK_VERSION_V1, NotebookCR.CRD_NOTEBOOK_PLURAL_V1,
               "true", null, NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET + "=" + id,
               null, null, null);
-      notebookList = utils.parseObjectForList(object);
+      notebookList = NotebookUtils.parseObjectForList(object);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
