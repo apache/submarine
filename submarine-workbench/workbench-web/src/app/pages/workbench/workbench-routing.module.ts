@@ -18,7 +18,7 @@
  */
 
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
 import { EnvironmentComponent } from '@submarine/pages/workbench/environment/environment.component';
 import { ExperimentComponent } from '@submarine/pages/workbench/experiment/experiment.component';
 import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.component';
@@ -27,14 +27,8 @@ import { ExperimentInfoComponent } from './experiment/experiment-info/experiment
 import { HomeComponent } from './home/home.component';
 import { InterpreterComponent } from './interpreter/interpreter.component';
 import { ModelComponent } from './model/model.component';
+import { NotebookComponent } from './notebook/notebook.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
-
-function disablePage(allRoutes: Routes): Routes {
-  const disabledList: string[] = ['home', 'data', 'model', 'workspace', 'interpreter'];
-  allRoutes[0].children[0].redirectTo = 'experiment'; // redirect root page to experiment
-  allRoutes[0].children = allRoutes[0].children.filter((item) => !disabledList.includes(item.path)); // filter pages which are incomplete
-  return allRoutes;
-}
 
 const routes: Routes = [
   {
@@ -44,19 +38,22 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'home'
+        redirectTo: 'experiment'
       },
       {
         path: 'home',
-        component: HomeComponent
+        component: HomeComponent,
+        canActivate: ['canActivatePage']
       },
       {
         path: 'workspace',
-        component: WorkspaceComponent
+        component: WorkspaceComponent,
+        canActivate: ['canActivatePage']
       },
       {
         path: 'interpreter',
-        component: InterpreterComponent
+        component: InterpreterComponent,
+        canActivate: ['canActivatePage']
       },
       {
         path: 'experiment',
@@ -66,33 +63,52 @@ const routes: Routes = [
             path: 'info/:id',
             component: ExperimentInfoComponent
           }
-        ]
+        ],
+        canActivate: ['canActivatePage'],
+        canActivateChild: ['canActivatePage']
       },
       {
         path: 'environment',
-        component: EnvironmentComponent
+        component: EnvironmentComponent,
+        canActivate: ['canActivatePage']
       },
       {
         path: 'data',
-        component: DataComponent
+        component: DataComponent,
+        canActivate: ['canActivatePage']
       },
       {
         path: 'model',
-        component: ModelComponent
-      },
-      {
-        path: 'manager',
-        loadChildren: () => import('./manager/manager.module').then((m) => m.ManagerModule)
+        component: ModelComponent,
+        canActivate: ['canActivatePage']
       },
       {
         path: 'notebook',
-        loadChildren: () => import('./notebook/notebook.module').then((m) => m.NotebookModule)
+        component: NotebookComponent,
+        canActivate: ['canActivatePage'],
+      },
+      {
+        path: 'manager',
+        loadChildren: () => import('./manager/manager.module').then((m) => m.ManagerModule),
+        canActivate: ['canActivatePage']
       }
     ]
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(disablePage(routes))]
+  imports: [RouterModule.forChild(routes)],
+  providers: [
+    {
+      provide: 'canActivatePage',
+      useValue: (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
+        const disablePaths = ['home', 'data', 'model', 'workspace', 'interpreter'];
+        let currentPage = state.url.split('/')[2];
+        console.log('currentPage', currentPage);
+        if (disablePaths.includes(currentPage)) return false;
+        else return true;
+      }
+    }
+  ]
 })
-export class WorkbenchRoutingModule {}
+export class WorkbenchRoutingModule { }
