@@ -25,7 +25,6 @@ import { WorkbenchRoutingModule } from '@submarine/pages/workbench/workbench-rou
 import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { DataComponent } from './data/data.component';
-import { ExperimentComponent } from './experiment/experiment.component';
 import { ExperimentModule } from './experiment/experiment.module';
 
 import { HomeComponent } from './home/home.component';
@@ -35,6 +34,7 @@ import { WorkbenchComponent } from './workbench.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 import { WorkspaceModule } from './workspace/workspace.module';
 import { EnvironmentComponent } from './environment/environment.component';
+import { NotebookComponent } from './notebook/notebook.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +43,8 @@ import { EnvironmentComponent } from './environment/environment.component';
     WorkspaceComponent,
     DataComponent,
     ModelComponent,
-    EnvironmentComponent
+    EnvironmentComponent,
+    NotebookComponent
   ],
   imports: [
     CommonModule,
@@ -57,4 +58,4 @@ import { EnvironmentComponent } from './environment/environment.component';
     PipeSharedModule
   ]
 })
-export class WorkbenchModule {}
+export class WorkbenchModule { }
