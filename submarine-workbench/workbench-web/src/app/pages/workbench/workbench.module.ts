@@ -19,7 +19,7 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { WorkbenchRoutingModule } from '@submarine/pages/workbench/workbench-routing.module';
 import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
@@ -52,6 +52,7 @@ import { NotebookComponent } from './notebook/notebook.component';
     NgZorroAntdModule,
     RouterModule,
     FormsModule,
+    ReactiveFormsModule,
     WorkspaceModule,
     ExperimentModule,
     InterpreterModule,

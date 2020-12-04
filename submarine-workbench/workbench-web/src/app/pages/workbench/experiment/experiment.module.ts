@@ -32,7 +32,7 @@ import { ExperimentComponent } from './experiment.component';
  */
 
 @NgModule({
-  exports: [ReactiveFormsModule, ExperimentComponent],
+  exports: [ExperimentComponent],
   imports: [
     ReactiveFormsModule,
     NgZorroAntdModule,
