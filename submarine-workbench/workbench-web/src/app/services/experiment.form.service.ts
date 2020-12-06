@@ -21,7 +21,9 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ModalProps } from '@submarine/interfaces/modal-props';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ExperimentFormService {
   // Subject(observable source)
   private stepServiceSource = new Subject<number>();

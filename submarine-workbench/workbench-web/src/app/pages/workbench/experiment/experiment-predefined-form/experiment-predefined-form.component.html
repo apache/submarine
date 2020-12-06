@@ -1,0 +1,64 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+   http: //www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+-->
+
+<form nz-form [formGroup]="predefinedForm">
+  <nz-form-item>
+    <nz-form-label [nzSpan]="5" nzFor="predefined-template" nzRequired>predefined-template</nz-form-label>
+    <nz-form-control [nzSpan]="12" nzErrorTip="Please select templates.">
+      <nz-select
+        id="predefined-template"
+        nzPlaceHolder="Select a predefined experiment template"
+        formControlName="templateName"
+        (ngModelChange)="onTemplateChange()"
+      >
+        <nz-option *ngFor="let item of optionList" [nzLabel]="item" [nzValue]="item"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div formGroupName="params" *ngIf="currentOption != null">
+    <h4 nz-typography>Configurable Parameters</h4>
+    <nz-form-item *ngFor="let item of paramList">
+      <nz-form-label [nzSpan]="5" [nzRequired]="item.required" [nzFor]="item.name">{{ item.name }}</nz-form-label>
+      <nz-form-control [nzSpan]="12" nzErrorTip="Please provide the value!">
+        <input type="text" nz-input [id]="item.name" [formControlName]="item.name" />
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+
+  <nz-form-item *ngIf="currentOption != null">
+    <nz-descriptions nzTitle="Spec" nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }">
+      <nz-descriptions-item nzTitle="Name">
+        {{ templates[currentOption].experimentName }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Namespace">
+        {{ templates[currentOption].experimentNamespace }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Command" [nzSpan]="2">
+        {{ templates[currentOption].experimentCommand }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Image" [nzSpan]="2">
+        {{ templates[currentOption].experimentImage }}
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Environment Variables" [nzSpan]="2">
+        {{ templates[currentOption].experimentVars }}
+      </nz-descriptions-item>
+    </nz-descriptions>
+  </nz-form-item>
+</form>

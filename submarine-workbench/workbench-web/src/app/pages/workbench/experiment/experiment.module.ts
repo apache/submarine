@@ -12,6 +12,9 @@ import { HyperParamsComponent } from './experiment-info/hyper-params/hyper-param
 import { MetricsComponent } from './experiment-info/metrics/metrics.component';
 import { OutputsComponent } from './experiment-info/outputs/outputs.component';
 import { ExperimentComponent } from './experiment.component';
+import { ExperimentRoutingModule } from './experiment-routing.module';
+import { ExperimentHomeComponent } from './experiment-home/experiment-home.component';
+import { ExperimentPredefinedFormComponent } from './experiment-predefined-form/experiment-predefined-form.component';
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -40,7 +43,8 @@ import { ExperimentComponent } from './experiment.component';
     FormsModule,
     NgxChartsModule,
     RouterModule,
-    PipeSharedModule
+    PipeSharedModule,
+    ExperimentRoutingModule
   ],
   declarations: [
     ExperimentComponent,
@@ -49,7 +53,9 @@ import { ExperimentComponent } from './experiment.component';
     MetricsComponent,
     ChartsComponent,
     OutputsComponent,
-    ExperimentCustomizedFormComponent
+    ExperimentCustomizedFormComponent,
+    ExperimentHomeComponent,
+    ExperimentPredefinedFormComponent
   ]
 })
 export class ExperimentModule {}
