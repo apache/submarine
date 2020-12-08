@@ -17,19 +17,19 @@
  * under the License.
  */
 
-export class NotebookSpec {
+export interface NotebookSpec {
   meta: Meta;
   environment: Environment;
   spec: Spec;
 }
 
-export class Meta {
+export interface Meta {
   name: string;
   namespace: string;
   ownerId: string;
 }
 
-export class Environment {
+export interface Environment {
   name: string;
   dockerImage: string;
   kernelSpec: {
@@ -41,7 +41,7 @@ export class Environment {
   image: string;
 }
 
-export class Spec {
+export interface Spec {
   envVars?: {
     [key: string]: string;
   };

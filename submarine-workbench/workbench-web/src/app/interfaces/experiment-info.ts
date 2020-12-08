@@ -19,7 +19,7 @@
 
 import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
 
-export class ExperimentInfo {
+export interface ExperimentInfo {
   experimentId: string;
   name: string;
   uid: string;
