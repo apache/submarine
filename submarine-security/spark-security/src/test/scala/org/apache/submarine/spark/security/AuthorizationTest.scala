@@ -118,8 +118,12 @@ class AuthorizationTest extends FunSuite with BeforeAndAfterAll {
   test("use database") {
     withUser("alice") {
       val e = intercept[SparkAccessControlException](sql("use default"))
-      assert(e.getMessage === "Permission denied: user [alice] does not have [USE] privilege" +
-        " on [default]")
+      assert(
+        e.getMessage === "Permission denied: user [alice] " +
+          "does not have [USE] privilege on [default]"
+          ||
+        e.getMessage === "Permission denied: user [alice] " +
+          "does not have [USE] privilege on [spark_catalog]")
     }
     withUser("bob") {
       sql("use default")

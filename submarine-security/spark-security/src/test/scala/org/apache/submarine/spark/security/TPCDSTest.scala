@@ -35,7 +35,6 @@ class TPCDSTest extends FunSuite with BeforeAndAfterAll {
 
   override def beforeAll(): Unit = {
     super.beforeAll()
-    SubmarineSparkUtils.enableAll(spark)
     spark.conf.set(SQLConf.CROSS_JOINS_ENABLED.key, "true")
 
     sql(
@@ -322,6 +321,8 @@ class TPCDSTest extends FunSuite with BeforeAndAfterAll {
         |`wp_image_count` INT, `wp_max_ad_count` INT)
         |USING parquet
       """.stripMargin)
+
+    SubmarineSparkUtils.enableAll(spark)
   }
 
   private val tpcdsQueries = Seq(

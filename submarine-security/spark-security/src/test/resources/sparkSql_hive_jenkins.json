@@ -336,7 +336,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -433,7 +434,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -652,7 +654,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -806,7 +809,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -920,7 +924,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -977,7 +982,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1034,7 +1040,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1091,7 +1098,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1156,7 +1164,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1221,7 +1230,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1285,7 +1295,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1349,7 +1360,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1413,7 +1425,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1477,7 +1490,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1541,7 +1555,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1598,7 +1613,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1655,7 +1671,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1712,7 +1729,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1769,7 +1787,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1826,7 +1845,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1883,7 +1903,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -1947,7 +1968,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -2011,7 +2033,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -2075,7 +2098,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false
@@ -2139,7 +2163,8 @@
       "resources": {
         "database": {
           "values": [
-            "default"
+            "default",
+            "spark_catalog"
           ],
           "isExcludes": false,
           "isRecursive": false

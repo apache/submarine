@@ -333,6 +333,46 @@ matrix:
         - TEST_FLAG=$BUILD_FLAG
         - PROFILE="-Pspark-2.4 -Pranger-2.0"
         - MODULES="-pl :submarine-spark-security"
+
+    - name: Test submarine spark security with spark 3.0 and ranger 1.0
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-3.0 -Pranger-1.0"
+        - MODULES="-pl :submarine-spark-security"
+
+    - name: Test submarine spark security with spark 3.0 and ranger 1.1
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-3.0 -Pranger-1.1"
+        - MODULES="-pl :submarine-spark-security"
+
+    - name: Test submarine spark security with spark 3.0 and ranger 1.2
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-3.0 -Pranger-1.2"
+        - MODULES="-pl :submarine-spark-security"
+
+    - name: Test submarine spark security with spark 3.0 and ranger 2.0
+      language: scala
+      jdk: openjdk8
+      env:
+        - MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+        - BUILD_FLAG="--batch-mode clean install -Dmaven.javadoc.skip=true"
+        - TEST_FLAG=$BUILD_FLAG
+        - PROFILE="-Pspark-3.0 -Pranger-2.0"
+        - MODULES="-pl :submarine-spark-security"
 install:
   - mvn --version
   - echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
