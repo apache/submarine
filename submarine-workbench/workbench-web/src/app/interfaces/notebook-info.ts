@@ -20,7 +20,7 @@
 import { Url } from 'url';
 import { NotebookSpec } from '@submarine/interfaces/notebook-spec';
 
-export class Notebook {
+export interface Notebook {
   notebookId: string;
   name: string;
   uid: string;
