@@ -20,27 +20,29 @@ under the License.
 # Experiment Template REST API Reference
 
 ## Experiment Template Spec
+
 The experiment is represented in [JSON](https://www.json.org) or [YAML](https://yaml.org) format.
 
-
 ### Use existing experiment template to create a experiment
-`POST /api/v1/environment/{name}`
+
+`POST /api/v1/experiment/{template-name}`
 
 **Example Request:**
+
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '
 {
-    "name": "tf-mnist",
     "params": {
-        "learning_rate":"0.01", 
-        "batch_size":"150", 
+        "learning_rate":"0.01",
+        "batch_size":"150",
         "experiment_name":"newexperiment1"
     }
 }
-' http://127.0.0.1:8080/api/v1/experiment/my-tf-mnist-template
+' http://127.0.0.1:32080/api/v1/experiment/tf-mnist
 ```
 
 **Example Request:**
+
 ```sh
 curl -X POST -H "Content-Type: application/json" -d '
 {
@@ -48,7 +50,7 @@ curl -X POST -H "Content-Type: application/json" -d '
         "experiment_name":"new-pytorch-mnist"
     }
 }
-' http://127.0.0.1:8080/api/v1/experiment/pytorch-mnist
+' http://127.0.0.1:32080/api/v1/experiment/pytorch-mnist
 ```
 
 Register experiment template and more info see [Experiment Template API Reference](api/experiment-template.md).

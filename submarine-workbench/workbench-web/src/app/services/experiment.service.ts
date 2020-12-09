@@ -22,12 +22,14 @@ import { Injectable } from '@angular/core';
 import { Rest } from '@submarine/interfaces';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
+import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
+import { ExperimentTemplateSubmit } from '@submarine/interfaces/experiment-template-submit';
 import { BaseApiService } from '@submarine/services/base-api.service';
 import { of, throwError, Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ExperimentService {
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
@@ -155,6 +157,46 @@ export class ExperimentService {
         } else {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', param);
         }
+      })
+    );
+  }
+
+  fetchExperimentTemplateList(): Observable<ExperimentTemplate[]> {
+    const apiUrl = this.baseApi.getRestApi('/v1/template');
+    return this.httpClient.get<Rest<ExperimentTemplate[]>>(apiUrl).pipe(
+      map((res) => {
+        if (res.success) {
+          return res.result;
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
+  }
+
+  createExperimentfromTemplate(
+    experimentSpec: ExperimentTemplateSubmit,
+    templateName: string
+  ): Observable<ExperimentInfo> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/experiment/${templateName}`);
+    return this.httpClient.post<Rest<ExperimentInfo>>(apiUrl, experimentSpec).pipe(
+      map((res) => res.result),
+      catchError((e) => {
+        let message: string;
+        if (e.error instanceof ErrorEvent) {
+          // client side error
+          message = 'Something went wrong with network or workbench';
+        } else {
+          console.log(e);
+          if (e.status === 409) {
+            message = 'You might have a duplicate experiment name';
+          } else if (e.status >= 500) {
+            message = `${e.message}`;
+          } else {
+            message = e.error.message;
+          }
+        }
+        return throwError(message);
       })
     );
   }

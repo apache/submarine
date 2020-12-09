@@ -43,7 +43,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
 
   // About new experiment
   experiment: FormGroup;
-  finialExperimentSpec: ExperimentSpec;
+  finalExperimentSpec: ExperimentSpec;
   step: number = 0;
   subscriptions: Subscription[] = [];
 
@@ -199,14 +199,14 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     }
   }
   onPreview() {
-    this.finialExperimentSpec = this.constructSpec();
+    this.finalExperimentSpec = this.constructSpec();
   }
   /**
    * Event handler for Next step/Submit button
    */
   handleSubmit() {
     if (this.mode === 'create') {
-      this.experimentService.createExperiment(this.finialExperimentSpec).subscribe({
+      this.experimentService.createExperiment(this.finalExperimentSpec).subscribe({
         next: () => {},
         error: (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {
@@ -220,7 +220,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
         }
       });
     } else if (this.mode === 'update') {
-      this.experimentService.updateExperiment(this.targetId, this.finialExperimentSpec).subscribe(
+      this.experimentService.updateExperiment(this.targetId, this.finalExperimentSpec).subscribe(
         null,
         (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {
@@ -234,7 +234,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
         }
       );
     } else if (this.mode === 'clone') {
-      this.experimentService.createExperiment(this.finialExperimentSpec).subscribe(
+      this.experimentService.createExperiment(this.finalExperimentSpec).subscribe(
         null,
         (msg) => {
           this.nzMessageService.error(`${msg}, please try again`, {

@@ -57,15 +57,8 @@ const routes: Routes = [
       },
       {
         path: 'experiment',
-        component: ExperimentComponent,
-        children: [
-          {
-            path: 'info/:id',
-            component: ExperimentInfoComponent
-          }
-        ],
-        canActivate: ['canActivatePage'],
-        canActivateChild: ['canActivatePage']
+        loadChildren: () => import('./experiment/experiment.module').then((m) => m.ExperimentModule),
+        canActivate: ['canActivatePage']
       },
       {
         path: 'environment',

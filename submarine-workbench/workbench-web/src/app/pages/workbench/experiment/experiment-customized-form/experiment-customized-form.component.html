@@ -26,7 +26,7 @@
 </div>
 <div>
   <form [formGroup]="experiment">
-    <div [ngSwitch]="step" style="margin-top: 30px;">
+    <div [ngSwitch]="step" style="margin-top: 30px">
       <div *ngSwitchCase="0" id="firstStep">
         <div class="single-field-group">
           <label for="experimentName">
@@ -86,10 +86,10 @@
             </div>
           </ng-template>
         </div>
-        <div style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px">
           <button
             nz-button
-            style="display: block; margin: auto;"
+            style="display: block; margin: auto"
             id="advancedBtn"
             nzType="default"
             (click)="ADVANCED = !ADVANCED"
@@ -127,11 +127,11 @@
           <ul formArrayName="envs" class="list-container">
             <ng-container *ngFor="let env of envs.controls; index as i">
               <li [formGroupName]="i" class="input-group">
-                <div style="margin-left: 30%;">
+                <div style="margin-left: 30%">
                   <label for="key{{ i }}">Key</label>
                   <input nz-input name="key{{ i }}" placeholder="Key" formControlName="key" id="key{{ i }}" />
                 </div>
-                <div style="margin-left: 0;">
+                <div style="margin-left: 0">
                   <label for="value{{ i }}">Value</label>
                   <input nz-input name="value{{ i }}" placeholder="Value" formControlName="value" id="value{{ i }}" />
                 </div>
@@ -151,7 +151,7 @@
               </div>
             </ng-container>
           </ul>
-          <button nz-button id="env-btn" style="display: block; margin: auto;" nzType="primary" (click)="onCreateEnv()">
+          <button nz-button id="env-btn" style="display: block; margin: auto" nzType="primary" (click)="onCreateEnv()">
             Add new environment variable
           </button>
           <br />
@@ -269,26 +269,26 @@
       </div>
       <div *ngSwitchCase="2" id="previewPage">
         <nz-descriptions nzTitle="{{ jobTypes }}" nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }">
-          <nz-descriptions-item nzTitle="Name">{{ finialExperimentSpec.meta.name }}</nz-descriptions-item>
-          <nz-descriptions-item nzTitle="Namespace">{{ finialExperimentSpec.meta.namespace }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Name">{{ finalExperimentSpec.meta.name }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Namespace">{{ finalExperimentSpec.meta.namespace }}</nz-descriptions-item>
           <nz-descriptions-item nzTitle="Command" [nzSpan]="2">
-            {{ finialExperimentSpec.meta.cmd }}
+            {{ finalExperimentSpec.meta.cmd }}
           </nz-descriptions-item>
           <nz-descriptions-item nzTitle="Image" [nzSpan]="2">
-            {{ finialExperimentSpec.environment.image }}
+            {{ finalExperimentSpec.environment.image }}
           </nz-descriptions-item>
           <nz-descriptions-item nzTitle="Environment Variables" [nzSpan]="2">
-            <span *ngFor="let item of finialExperimentSpec.meta.envVars | keyvalue; let isLast = last">
+            <span *ngFor="let item of finalExperimentSpec.meta.envVars | keyvalue; let isLast = last">
               {{ item.key }}={{ item.value }}{{ isLast ? '' : ', ' }}
             </span>
           </nz-descriptions-item>
-          <div *ngFor="let item of finialExperimentSpec.spec | keyvalue">
+          <div *ngFor="let item of finalExperimentSpec.spec | keyvalue">
             <nz-descriptions-item nzTitle="{{ item.key }}" [nzSpan]="2">
               {{ item.value.resources }}
             </nz-descriptions-item>
           </div>
-          <div *ngIf="finialExperimentSpec.code">
-            <nz-descriptions-item nzTitle="Git repository">{{ finialExperimentSpec.code.url }}</nz-descriptions-item>
+          <div *ngIf="finalExperimentSpec.code">
+            <nz-descriptions-item nzTitle="Git repository">{{ finalExperimentSpec.code.url }}</nz-descriptions-item>
           </div>
         </nz-descriptions>
       </div>

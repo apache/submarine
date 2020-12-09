@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
@@ -30,7 +30,6 @@ import { NzMessageService } from 'ng-zorro-antd';
   selector: 'submarine-experiment',
   templateUrl: './experiment.component.html',
   styleUrls: ['./experiment.component.scss'],
-  providers: [ExperimentFormService]
 })
 export class ExperimentComponent implements OnInit {
   experimentList: ExperimentInfo[] = [];
@@ -50,7 +49,7 @@ export class ExperimentComponent implements OnInit {
     okText: 'Next step',
     isVisible: false,
     currentStep: 0,
-    formType: null
+    formType: null,
   };
   nextBtnDisable: boolean = true;
 
@@ -63,7 +62,7 @@ export class ExperimentComponent implements OnInit {
     Accepted: 'gold',
     Created: 'white',
     Running: 'green',
-    Succeeded: 'blue'
+    Succeeded: 'blue',
   };
 
   constructor(
@@ -78,6 +77,7 @@ export class ExperimentComponent implements OnInit {
     this.fetchExperimentList();
     this.isInfo = this.router.url !== '/workbench/experiment';
     this.experimentID = this.route.snapshot.params.id;
+
     this.router.events.subscribe((val) => {
       if (val instanceof NavigationStart) {
         console.log(val.url);
