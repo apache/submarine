@@ -49,7 +49,7 @@ export class ExperimentComponent implements OnInit {
     okText: 'Next step',
     isVisible: false,
     currentStep: 0,
-    formType: null
+    formType: null,
   };
   nextBtnDisable: boolean = true;
 
@@ -62,7 +62,7 @@ export class ExperimentComponent implements OnInit {
     Accepted: 'gold',
     Created: 'white',
     Running: 'green',
-    Succeeded: 'blue'
+    Succeeded: 'blue',
   };
 
   constructor(
@@ -101,7 +101,7 @@ export class ExperimentComponent implements OnInit {
       this.modalProps = { ...this.modalProps, ...props };
     });
 
-    // this.reloadCheck();
+    this.reloadCheck();
   }
 
   initModal(
