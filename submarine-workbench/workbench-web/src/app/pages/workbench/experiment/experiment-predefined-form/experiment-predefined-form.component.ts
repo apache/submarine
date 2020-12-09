@@ -70,7 +70,7 @@ export class ExperimentPredefinedFormComponent implements OnInit, OnDestroy {
       this.templates = this.parseTemplateRespond(res);
 
       if (Object.keys(this.templates).length != 0) {
-        // default: switch to option 1
+        // default: switch to first template
         const defaultTemplate = Object.keys(this.templates)[0];
         this.predefinedForm.get('templateName').setValue(defaultTemplate);
         console.log(this.predefinedForm.get('templateName').value);
