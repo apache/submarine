@@ -244,7 +244,7 @@ export class NotebookComponent implements OnInit {
         this.notebookForm.get('unit').value
       }`;
     } else {
-      resourceSpec = `cpu=${this.notebookForm.get('cpus').value},gpu=${this.notebookForm.get('gpus').value},memory=${
+      resourceSpec = `cpu=${this.notebookForm.get('cpus').value},nvidia.com/gpu=${this.notebookForm.get('gpus').value},memory=${
         this.notebookForm.get('memoryNum').value
       }${this.notebookForm.get('unit').value}`;
     }
