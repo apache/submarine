@@ -10,7 +10,7 @@ You can run each module individually and only need to re-package the submarine-s
 1. Run db docker
 
 ```
-docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.5.0-SNAPSHOT
+docker run -it -p 3306:3306 -d --name submarine-database -e MYSQL_ROOT_PASSWORD=password apache/submarine:database-0.6.0-SNAPSHOT
 ```
 
 2. Run k8s
@@ -20,7 +20,7 @@ minikube start # or other alternatives, such as kind
 kubectl apply -f ./dev-support/k8s/tfjob/crd.yaml
 kubectl kustomize ./dev-support/k8s/tfjob/operator | kubectl apply -f -
 kubectl apply -f ./dev-support/k8s/pytorchjob/
-export KUBECONFIG=/home/<user_name>/.kube/config # (in ~/.bashrc) 
+export KUBECONFIG=/home/<user_name>/.kube/config # (in ~/.bashrc)
 ```
 3. Package server
 
@@ -30,7 +30,7 @@ mvn clean package -DskipTests
 
 4. Start server
 
-cd submarine-dist/target/submarine-dist-0.5.0-SNAPSHOT-hadoop-2.9/submarine-dist-0.5.0-SNAPSHOT-hadoop-2.9/
+cd submarine-dist/target/submarine-dist-0.6.0-SNAPSHOT-hadoop-2.9/submarine-dist-0.6.0-SNAPSHOT-hadoop-2.9/
 ./bin/submarine-daemon.sh start getMysqlJar
 ```
 ```

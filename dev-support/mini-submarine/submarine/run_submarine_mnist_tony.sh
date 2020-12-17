@@ -17,7 +17,7 @@
 
 # Below are configurable variables, please adapt base on your local environment.
 # Version of submarine jar
-SUBMARINE_VERSION=${SUBMARINE_VER:-"0.5.0"}
+SUBMARINE_VERSION=${SUBMARINE_VER:-"0.6.0-SNAPSHOT"}
 
 # Version of affiliated Hadoop version for this Submarine jar.
 SUBMARINE_HADOOP_VERSION=2.9
