@@ -16,7 +16,7 @@
 
 set -euxo pipefail
 
-JUPYTER_IMAGE="apache/submarine:jupyter-notebook-0.5.0"
+JUPYTER_IMAGE="apache/submarine:jupyter-notebook-0.6.0-SNAPSHOT"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
   PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
