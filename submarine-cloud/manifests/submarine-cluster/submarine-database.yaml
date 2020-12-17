@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
         - name: submarine-database
-          image: apache/submarine:database-0.5.0
+          image: apache/submarine:database-0.6.0-SNAPSHOT
           ports:
             - containerPort: 3306
           env:
