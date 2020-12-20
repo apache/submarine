@@ -43,6 +43,7 @@ import io.kubernetes.client.models.V1PersistentVolumeClaim;
 import io.kubernetes.client.models.V1Pod;
 import io.kubernetes.client.models.V1PodList;
 import io.kubernetes.client.models.V1Service;
+import io.kubernetes.client.models.V1PersistentVolumeClaimVolumeSource;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
@@ -129,12 +130,17 @@ public class K8sSubmitter implements Submitter {
   public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
     final String name = spec.getMeta().getName();
+    final String pvName = TensorboardUtils.PV_PREFIX + name;
+    final String hostPath = TensorboardUtils.HOST_PREFIX + name;
+    final String storage = TensorboardUtils.STORAGE;
+    final String pvcName = TensorboardUtils.PVC_PREFIX + name;
+    final String volume = TensorboardUtils.PV_PREFIX + name;
 
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
 
-      createTFBoardPersistentVolume(name);
-      createTFBoardPersistentVolumeClaim(name, spec.getMeta().getNamespace());
+      createPersistentVolume(pvName, hostPath, storage);
+      createPersistentVolumeClaim(pvcName, spec.getMeta().getNamespace(), volume, storage);
       createTFBoard(name, spec.getMeta().getNamespace());
 
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
@@ -188,12 +194,14 @@ public class K8sSubmitter implements Submitter {
   public Experiment deleteExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
     final String name = spec.getMeta().getName(); // spec.getMeta().getEnvVars().get(RestConstants.JOB_ID);
+    final String pvName = TensorboardUtils.PV_PREFIX + name;
+    final String pvcName = TensorboardUtils.PVC_PREFIX + name;
 
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
 
-      deleteTFBoardPersistentVolume(name);
-      deleteTFBoardPersistentVolumeClaim(name, spec.getMeta().getNamespace());
+      deletePersistentVolume(pvName);
+      deletePersistentVolumeClaim(pvcName, spec.getMeta().getNamespace());
       deleteTFBoard(name, spec.getMeta().getNamespace());
 
       Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
@@ -277,12 +285,29 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
+    final String name = spec.getMeta().getName();
+    final String pvName = NotebookUtils.PV_PREFIX + name;
+    final String host = NotebookUtils.HOST_PATH;
+    final String storage = NotebookUtils.STORAGE;
+    final String pvcName = NotebookUtils.PVC_PREFIX + name;
     try {
       // create notebook custom resource
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Map<String, String> labels = new HashMap<>();
       labels.put(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET, spec.getMeta().getOwnerId());
       notebookCR.getMetadata().setLabels(labels);
+
+      // create persistent volume
+      createPersistentVolume(pvName, host, storage);
+
+      // create persistent volume claim
+      createPersistentVolumeClaim(pvcName, spec.getMeta().getNamespace(), pvName, storage);
+
+      // bind persistent volume claim
+      V1PersistentVolumeClaimVolumeSource pvcSource = new V1PersistentVolumeClaimVolumeSource()
+              .claimName(pvcName);
+      notebookCR.getSpec().getTemplate().getSpec().getVolumes().get(0).persistentVolumeClaim(pvcSource);
+
       Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               notebookCR.getMetadata().getNamespace(), notebookCR.getPlural(), notebookCR, "true");
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
@@ -319,6 +344,9 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook deleteNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
+    final String name = spec.getMeta().getName();
+    final String pvName = NotebookUtils.PV_PREFIX + name;
+    final String pvcName = NotebookUtils.PVC_PREFIX + name;
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
@@ -328,6 +356,8 @@ public class K8sSubmitter implements Submitter {
               null, null, null);
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
       deleteIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
+      deletePersistentVolumeClaim(pvcName, spec.getMeta().getNamespace());
+      deletePersistentVolume(pvName);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -411,11 +441,7 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public void createTFBoardPersistentVolume(String name) throws ApiException {
-    final String pvName = TensorboardUtils.PV_PREFIX + name;
-    final String hostPath = TensorboardUtils.HOST_PREFIX + name;
-    final String storage = TensorboardUtils.STORAGE;
-
+  public void createPersistentVolume(String pvName, String hostPath, String storage) throws ApiException {
     V1PersistentVolume pv = VolumeSpecParser.parsePersistentVolume(pvName, hostPath, storage);
 
     try {
@@ -426,14 +452,12 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public void deleteTFBoardPersistentVolume(String name) throws ApiException {
+  public void deletePersistentVolume(String pvName) throws ApiException {
     /*
     This version of Kubernetes-client/java has bug here.
     It will trigger exception as in https://github.com/kubernetes-client/java/issues/86
     but it can still work fine and delete the PV.
     */
-    final String pvName = TensorboardUtils.PV_PREFIX + name;
-
     try {
       V1Status result = coreApi.deletePersistentVolume(
               pvName, "true", null,
@@ -454,11 +478,8 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public void createTFBoardPersistentVolumeClaim(String name, String namespace) throws ApiException {
-    final String pvcName = TensorboardUtils.PVC_PREFIX + name;
-    final String volume = TensorboardUtils.PV_PREFIX + name;
-    final String storage = TensorboardUtils.STORAGE;
-
+  public void createPersistentVolumeClaim(String pvcName, String namespace, String volume, String storage)
+          throws ApiException {
     V1PersistentVolumeClaim pvc = VolumeSpecParser.parsePersistentVolumeClaim(pvcName, volume, storage);
 
     try {
@@ -471,14 +492,12 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public void deleteTFBoardPersistentVolumeClaim(String name, String namespace) throws ApiException {
+  public void deletePersistentVolumeClaim(String pvcName, String namespace) throws ApiException {
     /*
     This version of Kubernetes-client/java has bug here.
     It will trigger exception as in https://github.com/kubernetes-client/java/issues/86
     but it can still work fine and delete the PVC
     */
-    final String pvcName = TensorboardUtils.PVC_PREFIX + name;
-
     try {
       V1Status result = coreApi.deleteNamespacedPersistentVolumeClaim(
                 pvcName, namespace, "true",
