@@ -56,6 +56,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.Thread;
 import java.util.Date;
 
 @SuppressWarnings("rawtypes")
@@ -188,6 +189,7 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
     Assert.assertEquals(ENV_NAME, getEnvironment.getEnvironmentSpec().getName());
 
     // create notebook instances
+    Thread.sleep(15000);
     LOG.info("Create notebook servers by Notebook REST API");
     String body = loadContent("notebook/notebook-req.json");
     PostMethod postMethod = httpPost(BASE_API_PATH, body,"application/json");
@@ -224,6 +226,7 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
 
   private void runTest(String body, String contentType) throws Exception {
     // create
+    Thread.sleep(15000);
     LOG.info("Create a notebook server by Notebook REST API");
     PostMethod postMethod = httpPost(BASE_API_PATH, body, contentType);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), postMethod.getStatusCode());
