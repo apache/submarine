@@ -25,6 +25,9 @@ import { EnvironmentService } from '@submarine/services/environment.service';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
 import { UserService } from '@submarine/services/user.service';
 import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
+import { Subscription } from 'rxjs';
+import { ExponentialBackoff } from '@submarine/services/polling';
+import { isEqual } from "lodash";
 
 @Component({
   selector: 'submarine-notebook',
@@ -50,7 +53,15 @@ export class NotebookComponent implements OnInit {
   isVisible = false;
   MEMORY_UNITS = ['M', 'Gi'];
 
+  // User Information
   userId;
+
+  // Sync
+  resources = [];
+  // Subscription
+  subscriptions = new Subscription();
+  // Poller
+  poller: ExponentialBackoff;
 
   constructor(
     private notebookService: NotebookService,
@@ -62,10 +73,21 @@ export class NotebookComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.userService.fetchUserInfo().subscribe((res) => {
-      this.userId = res.id;
-      this.fetchNotebookList(this.userId);
+    this.poller = new ExponentialBackoff({ interval: 1000, retries: 3 });
+    const resourcesSub = this.poller.start().subscribe(() => {
+      this.userService.fetchUserInfo().subscribe((res) => {
+        this.userId = res.id;
+        this.notebookService.fetchNotebookList(this.userId).subscribe(resources => {
+          if (!isEqual(this.resources, resources)) {
+            this.resources = resources;
+            this.allNotebookList = this.resources;
+            this.poller.reset();
+          }
+        });
+      });
     });
+    
+    this.subscriptions.add(resourcesSub);
 
     this.notebookForm = this.fb.group({
       notebookName: [null, [
@@ -80,6 +102,10 @@ export class NotebookComponent implements OnInit {
       unit: [this.MEMORY_UNITS[0], [Validators.required]]
     });
     this.fetchEnvList();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   // Get all environment
@@ -99,6 +125,7 @@ export class NotebookComponent implements OnInit {
   fetchNotebookList(id: string) {
     this.notebookService.fetchNotebookList(id).subscribe((list) => {
       this.allNotebookList = list;
+      console.log(this.allNotebookList);
     });
   }
 

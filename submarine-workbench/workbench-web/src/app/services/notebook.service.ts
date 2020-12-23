@@ -33,7 +33,7 @@ export class NotebookService {
 
   fetchNotebookList(id: string) {
     const apiUrl = this.baseApi.getRestApi('/v1/notebook?id=' + id);
-    return this.httpClient.get<Rest<Notebook>>(apiUrl).pipe(
+    return this.httpClient.get<any>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
           return of(res.result);
