@@ -57,8 +57,7 @@ export class NotebookComponent implements OnInit {
   // User Information
   userId;
 
-  // Sync
-  resources = [];
+  // Sync //
   // Subscription
   subscriptions = new Subscription();
   // Poller
@@ -80,9 +79,8 @@ export class NotebookComponent implements OnInit {
       this.userService.fetchUserInfo().subscribe((res) => {
         this.userId = res.id;
         this.notebookService.fetchNotebookList(this.userId).subscribe(resources => {
-          if (!isEqual(this.resources, resources)) {
-            this.resources = resources;
-            this.allNotebookList = this.resources;
+          if (!isEqual(this.allNotebookList, resources)) {
+            this.allNotebookList = resources;
             this.poller.reset();
           }
         });
