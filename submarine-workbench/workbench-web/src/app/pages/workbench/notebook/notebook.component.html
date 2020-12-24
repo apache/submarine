@@ -71,18 +71,20 @@
       <nz-table id="notebookListTable" style="padding-top: 5px;" #basicTable [nzData]="allNotebookList">
         <thead>
           <tr>
-            <th>Status</th>
+            <th></th>
             <th>Name</th>
             <th>Environment</th>
             <th>Docker Image</th>
             <th>Resources</th>
+            <th>Status</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let data of basicTable.data; let i = index">
             <td *ngIf="data.status === 'running'">
-              <i nz-icon 
+              <i
+                nz-icon
                 [nzType]="'check-circle'" 
                 [nzTheme]="'twotone'" 
                 [nzTwotoneColor]="'#52c41a'"
@@ -90,7 +92,12 @@
               </i>
             </td>
             <td *ngIf="data.status !== 'running'">
-              <i nz-icon nzType="loading" nzTheme="outline" style="color: #08c; font-size: 24px;"></i>
+              <i 
+                nz-icon 
+                nzType="loading" 
+                nzTheme="outline" 
+                style="color: #08c; font-size: 24px;">
+              </i>
             </td>
             <td *ngIf="data.status === 'running'">
               <a href="{{ data.url }}" target="_blank">{{ data.name }}</a>
@@ -103,7 +110,11 @@
             <td>
               {{ data.spec.spec.resources }}
             </td>
-            <td><a id="delete{{ i }}" (click)="deleteNotebook(data.notebookId)">Delete</a></td>
+            <td>
+              <a (click)=showReason(data.reason)>{{ data.status }}</a>
+            </td>
+            <td>
+              <a id="delete{{ i }}" (click)="deleteNotebook(data.notebookId)">Delete</a></td>
           </tr>
         </tbody>
       </nz-table>

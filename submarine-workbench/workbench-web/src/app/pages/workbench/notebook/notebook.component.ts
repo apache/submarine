@@ -28,6 +28,7 @@ import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Subscription } from 'rxjs';
 import { ExponentialBackoff } from '@submarine/services/polling';
 import { isEqual } from "lodash";
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'submarine-notebook',
@@ -69,7 +70,8 @@ export class NotebookComponent implements OnInit {
     private environmentService: EnvironmentService,
     private experimentValidatorService: ExperimentValidatorService,
     private userService: UserService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private nzNotificationService: NzNotificationService
   ) {}
 
   ngOnInit() {
@@ -166,7 +168,6 @@ export class NotebookComponent implements OnInit {
   deleteNotebook(id: string) {
     this.notebookService.deleteNotebook(id).subscribe(
       () => {
-        this.nzMessageService.success('Delete Notebook Successfully!');
         this.updateNotebookTable(this.userId);
       },
       (err) => {
@@ -310,10 +311,16 @@ export class NotebookComponent implements OnInit {
         });
       },
       complete: () => {
-        this.nzMessageService.success('Notebook creation succeeds');
         this.isVisible = false;
       }
     });
+  }
+
+  showReason(reason: string) {
+    this.nzNotificationService.blank(
+      'Notebook Status',
+      reason
+      );
   }
 
   // TODO(kobe860219): Make a notebook run
