@@ -39,6 +39,9 @@ public class SpecRoute {
   @SerializedName("services")
   private Set<Map<String, Object>> services;
 
+  @SerializedName("middlewares")
+  private Set<Map<String, String>> middlewares;
+
   public String getMatch() {
     return match;
   }
@@ -61,5 +64,13 @@ public class SpecRoute {
 
   public void setServices(Set<Map<String, Object>> services) {
     this.services = services;
+  }
+
+  public Set<Map<String, String>> getMiddlewares() {
+    return middlewares;
+  }
+
+  public void setMiddlewares(Set<Map<String, String>> middlewares) {
+    this.middlewares = middlewares;
   }
 }

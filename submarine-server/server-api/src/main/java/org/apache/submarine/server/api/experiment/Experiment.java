@@ -34,6 +34,7 @@ public class Experiment {
   private String runningTime;
   private String finishedTime;
   private ExperimentSpec spec;
+  private String tfboardURL;
 
   /**
    * Get the job id which is unique in submarine
@@ -133,6 +134,14 @@ public class Experiment {
 
   public void setSpec(ExperimentSpec spec) {
     this.spec = spec;
+  }
+
+  public String getTfboardURL() {
+    return tfboardURL;
+  }
+
+  public void setTfboardURL(String tfboardURL) {
+    this.tfboardURL = tfboardURL;
   }
 
   public enum Status {

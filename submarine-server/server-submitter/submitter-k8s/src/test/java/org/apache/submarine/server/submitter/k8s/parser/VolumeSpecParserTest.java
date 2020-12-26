@@ -28,9 +28,9 @@ public class VolumeSpecParserTest  {
     V1PersistentVolume pv = VolumeSpecParser.parsePersistentVolume(name, host_path, storage);
     LOG.info(pv.toString());
 
-    Assert.assertEquals(pv.getMetadata().getName(), name);
-    Assert.assertEquals(pv.getSpec().getHostPath().getPath(), host_path);
-    Assert.assertEquals(pv.getSpec().getCapacity().get("storage"), new Quantity(storage));
+    Assert.assertEquals(name, pv.getMetadata().getName());
+    Assert.assertEquals(host_path, pv.getSpec().getHostPath().getPath());
+    Assert.assertEquals(new Quantity(storage), pv.getSpec().getCapacity().get("storage"));
   }
 
   @Test
@@ -44,8 +44,8 @@ public class VolumeSpecParserTest  {
     V1PersistentVolumeClaim pvc = VolumeSpecParser.parsePersistentVolumeClaim(name, volume, storage);
 
     LOG.info(pvc.toString());
-    Assert.assertEquals(pvc.getMetadata().getName(), name);
-    Assert.assertEquals(pvc.getSpec().getVolumeName(), volume);
-    Assert.assertEquals(pvc.getSpec().getResources().getRequests().get("storage"), new Quantity(storage));
+    Assert.assertEquals(name, pvc.getMetadata().getName());
+    Assert.assertEquals(volume, pvc.getSpec().getVolumeName());
+    Assert.assertEquals(new Quantity(storage), pvc.getSpec().getResources().getRequests().get("storage"));
   }
 }

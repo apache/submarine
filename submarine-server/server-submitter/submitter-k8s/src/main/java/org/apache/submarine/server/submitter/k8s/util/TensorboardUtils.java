@@ -14,4 +14,8 @@ public class TensorboardUtils {
   public static final String SVC_PREFIX = "tfboard-svc-";
   public static final String INGRESS_PREFIX = "tfboard-ingressroute";
   public static final String PATH_PREFIX = "/tfboard-";
+
+  public static String getURLfromId(String id) {
+    return PATH_PREFIX + id + '/';
+  }
 }

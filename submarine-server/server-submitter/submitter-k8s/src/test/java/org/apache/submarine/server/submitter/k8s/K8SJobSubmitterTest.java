@@ -26,9 +26,12 @@ import io.kubernetes.client.ApiException;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.rest.RestConstants;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * We have two ways to test submitter for K8s cluster, local and travis CI.
@@ -47,7 +50,7 @@ import org.junit.Test;
  * Travis: See '.travis.yml'
  */
 public class K8SJobSubmitterTest extends SpecBuilder {
-
+  private static final Logger LOG = LoggerFactory.getLogger(K8SJobSubmitterTest.class);
   private K8sSubmitter submitter;
 
   @Before
@@ -70,7 +73,105 @@ public class K8SJobSubmitterTest extends SpecBuilder {
     run(spec);
   }
 
+  @Test
+  public void testCreateTFBoardPersistentVolume() throws ApiException {
+    try {
+      submitter.createTFBoardPersistentVolume("b05901011");
+    } catch (ApiException e) {
+      LOG.error("there is an error", e);
+      throw e;
+    }
+    Assert.assertTrue(true);
+  }
+
+
+  @Test
+  public void testDeleteTFBoardPersistentVolume() throws ApiException {
+    try {
+      submitter.deleteTFBoardPersistentVolume("b05901011");
+    } catch (ApiException e) {
+      LOG.error("there is an error", e);
+      throw e;
+    }
+    Assert.assertTrue(true);
+  }
+
+  @Test
+  public void testCreateTFBoardPersistentVolumeClaim() throws ApiException {
+    try {
+      submitter.createTFBoardPersistentVolumeClaim("b05901011", "default");
+    } catch (ApiException e) {
+      LOG.error("there is an error", e);
+      throw e;
+    }
+    Assert.assertTrue(true);
+  }
+
+  @Test
+  public void testDeleteTFBoardPersistentVolumeClaim() throws ApiException {
+    try {
+      submitter.deleteTFBoardPersistentVolumeClaim("b05901011", "default");
+    } catch (ApiException e) {
+      LOG.error("there is an error", e);
+      throw e;
+    }
+    Assert.assertTrue(true);
+  }
+
+  @Test
+  public void testCombinationalTFBoardPVandPVC() throws ApiException {
+    try {
+      submitter.createTFBoardPersistentVolume("b05901011");
+      submitter.createTFBoardPersistentVolumeClaim("b05901011", "default");
+
+      submitter.createTFBoardPersistentVolume("b05901012");
+      submitter.createTFBoardPersistentVolumeClaim("b05901012", "default");
+    } catch (ApiException e) {
+      LOG.error("there is an error", e);
+      throw e;
+    }
+    Assert.assertTrue(true);
+  }
+
+  @Test
+  public void testCreateTFBoard() throws ApiException {
+    try {
+      final String name = "b05901011-crearte-tfboard";
+      //submitter.createTFBoardPersistentVolume(name);
+      //submitter.createTFBoardPersistentVolumeClaim(name, "default");
+      submitter.createTFBoard(name, "default");
+    } catch (ApiException e) {
+      LOG.error("there is an error", e);
+      throw e;
+    }
+    Assert.assertTrue(true);
+    // submitter.createIngressRoute("default","testnotebookroute");
+  }
+
+  @Test
+  public void testCreateTFJob() throws IOException, URISyntaxException {
+    String id = "experiment-123456789";
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
+    spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id);
+
+    Experiment experiment = submitter.createExperiment(spec);
+
+    Assert.assertTrue(true);
+  }
+
+  @Test
+  public void testDeleteTFJob() throws IOException, URISyntaxException {
+    String id = "experiment-123456789";
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
+    spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id);
+
+    Experiment experiment = submitter.deleteExperiment(spec);
+
+    Assert.assertTrue(true);
+  }
+
   private void run(ExperimentSpec spec) throws SubmarineRuntimeException {
+    System.out.println(spec.toString());
     // create
     Experiment experimentCreated = submitter.createExperiment(spec);
     Assert.assertNotNull(experimentCreated);

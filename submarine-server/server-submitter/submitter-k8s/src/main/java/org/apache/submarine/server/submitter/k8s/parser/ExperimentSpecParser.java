@@ -20,9 +20,11 @@
 package org.apache.submarine.server.submitter.k8s.parser;
 
 import io.kubernetes.client.custom.Quantity;
+
 import io.kubernetes.client.models.V1Container;
 import io.kubernetes.client.models.V1EnvVar;
 import io.kubernetes.client.models.V1ObjectMeta;
+import io.kubernetes.client.models.V1PersistentVolumeClaimVolumeSource;
 import io.kubernetes.client.models.V1PodSecurityContext;
 import io.kubernetes.client.models.V1PodSpec;
 import io.kubernetes.client.models.V1PodTemplateSpec;
@@ -30,7 +32,6 @@ import io.kubernetes.client.models.V1ResourceRequirements;
 import io.kubernetes.client.models.V1SecretVolumeSource;
 import io.kubernetes.client.models.V1Volume;
 import io.kubernetes.client.models.V1VolumeMount;
-
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.environment.Environment;
@@ -40,6 +41,7 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.environment.EnvironmentManager;
+import org.apache.submarine.server.rest.RestConstants;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.CodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.SSHGitCodeLocalizer;
@@ -156,6 +158,7 @@ public class ExperimentSpecParser {
     V1Container container = new V1Container();
     container.setName(experimentSpec.getMeta().getFramework().toLowerCase());
     // image
+
     if (taskSpec.getImage() != null) {
       container.setImage(taskSpec.getImage());
     } else {
@@ -174,7 +177,18 @@ public class ExperimentSpecParser {
     resources.setLimits(parseResources(taskSpec));
     container.setResources(resources);
     container.setEnv(parseEnvVars(taskSpec, experimentSpec.getMeta().getEnvVars()));
-    
+
+    // volumeMount
+    container.addVolumeMountsItem(new V1VolumeMount().mountPath("/logs").name("volume"));
+
+    // volume
+    final String PVC_NAME_PREFIX = "tfboard-pvc-";
+    final String id = experimentSpec.getMeta().getEnvVars().get(RestConstants.JOB_ID);
+    V1Volume podVolume = new V1Volume().name("volume");
+    podVolume.setPersistentVolumeClaim(
+          new V1PersistentVolumeClaimVolumeSource().claimName(PVC_NAME_PREFIX + id)
+    );
+    podSpec.addVolumesItem(podVolume);
     /**
      * Init Git localize Container
      */
@@ -221,7 +235,7 @@ public class ExperimentSpecParser {
             podSpec.setSecurityContext(podSecurityContext);
           }
         }
-        
+
         V1EnvVar codeEnvVar = new V1EnvVar();
         codeEnvVar.setName(AbstractCodeLocalizer.CODE_LOCALIZER_PATH_ENV_VAR);
         codeEnvVar.setValue(AbstractCodeLocalizer.CODE_LOCALIZER_PATH);
@@ -233,7 +247,7 @@ public class ExperimentSpecParser {
 
     containers.add(container);
     podSpec.setContainers(containers);
-      
+
     /**
      * Init Containers
      */

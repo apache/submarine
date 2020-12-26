@@ -63,4 +63,14 @@ public class ExperimentSpec {
   public void setCode(CodeSpec code) {
     this.code = code;
   }
+
+    @Override
+    public String toString() {
+        return "ExperimentSpec{" +
+                "meta=" + meta +
+                ", environment=" + environment +
+                ", spec=" + spec +
+                ", code=" + code +
+                '}';
+    }
 }
