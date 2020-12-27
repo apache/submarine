@@ -28,7 +28,11 @@ items:
           - services
           - endpoints
           - pods
-        verbs: ["list", "get"]
+        verbs: ["*"]
+      - apiGroups: ["apps"]
+        resources:
+          - deployments
+        verbs: ["*"]
       - apiGroups: ["kubeflow.org"]
         resources:
           - tfjobs

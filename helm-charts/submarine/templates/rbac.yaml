@@ -61,7 +61,8 @@ rules:
   - persistentvolumeclaims
   verbs:
   - '*'
-- apiGroups: ["extensions", "apps"]
+- apiGroups:
+  - "apps"
   resources:
   - deployments
   verbs:
