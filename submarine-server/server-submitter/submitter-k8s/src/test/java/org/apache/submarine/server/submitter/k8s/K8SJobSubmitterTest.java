@@ -26,7 +26,6 @@ import io.kubernetes.client.ApiException;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
-import org.apache.submarine.server.rest.RestConstants;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,23 +74,15 @@ public class K8SJobSubmitterTest extends SpecBuilder {
 
   @Test
   public void testCreateTFJob() throws IOException, URISyntaxException {
-    String id = "experiment-123456789";
-    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
-    spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id);
-
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobwReqFile);
     Experiment experiment = submitter.createExperiment(spec);
-
     Assert.assertTrue(true);
   }
 
   @Test
   public void testDeleteTFJob() throws IOException, URISyntaxException {
-    String id = "experiment-123456789";
-    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
-    spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id);
-
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobwReqFile);
     Experiment experiment = submitter.deleteExperiment(spec);
-
     Assert.assertTrue(true);
   }
 

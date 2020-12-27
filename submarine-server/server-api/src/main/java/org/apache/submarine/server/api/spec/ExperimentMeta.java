@@ -132,14 +132,14 @@ public class ExperimentMeta {
     }
   }
 
-    @Override
-    public String toString() {
-        return "ExperimentMeta{" +
-                "name='" + name + '\'' +
-                ", namespace='" + namespace + '\'' +
-                ", framework='" + framework + '\'' +
-                ", cmd='" + cmd + '\'' +
-                ", envVars=" + envVars +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "ExperimentMeta{" +
+      "name='" + name + '\'' +
+      ", namespace='" + namespace + '\'' +
+      ", framework='" + framework + '\'' +
+      ", cmd='" + cmd + '\'' +
+      ", envVars=" + envVars +
+      '}';
+  }
 }

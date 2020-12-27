@@ -56,7 +56,6 @@ import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
-import org.apache.submarine.server.rest.RestConstants;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute;
@@ -129,7 +128,7 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
-    final String id = spec.getMeta().getEnvVars().get(RestConstants.JOB_ID);
+    final String id = spec.getMeta().getName(); // spec.getMeta().getEnvVars().get(RestConstants.JOB_ID);
 
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
@@ -188,7 +187,7 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Experiment deleteExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
-    final String id = spec.getMeta().getEnvVars().get(RestConstants.JOB_ID);
+    final String id = spec.getMeta().getName(); // spec.getMeta().getEnvVars().get(RestConstants.JOB_ID);
 
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
@@ -350,15 +349,15 @@ public class K8sSubmitter implements Submitter {
     return notebookList;
   }
 
-  public void createTFBoard(String id, String namespace) throws ApiException {
-    final String deploy_name = TensorboardUtils.DEPLOY_PREFIX + id;
-    final String pod_name = TensorboardUtils.POD_PREFIX + id;
-    final String svc_name = TensorboardUtils.SVC_PREFIX + id;
-    final String ingress_name = TensorboardUtils.INGRESS_PREFIX + id;
+  public void createTFBoard(String name, String namespace) throws ApiException {
+    final String deploy_name = TensorboardUtils.DEPLOY_PREFIX + name;
+    final String pod_name = TensorboardUtils.POD_PREFIX + name;
+    final String svc_name = TensorboardUtils.SVC_PREFIX + name;
+    final String ingress_name = TensorboardUtils.INGRESS_PREFIX + name;
 
     final String image = TensorboardUtils.IMAGE_NAME;
-    final String route_path = TensorboardUtils.PATH_PREFIX + id;
-    final String pvc = TensorboardUtils.PVC_PREFIX + id;
+    final String route_path = TensorboardUtils.PATH_PREFIX + name;
+    final String pvc = TensorboardUtils.PVC_PREFIX + name;
 
     V1Deployment deployment = TensorboardSpecParser.parseDeployment(deploy_name, image, route_path, pvc);
     V1Service svc = TensorboardSpecParser.parseService(svc_name, pod_name);
@@ -379,15 +378,15 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public void deleteTFBoard(String id, String namespace) throws ApiException {
-    final String deploy_name = TensorboardUtils.DEPLOY_PREFIX + id;
-    final String pod_name = TensorboardUtils.POD_PREFIX + id;
-    final String svc_name = TensorboardUtils.SVC_PREFIX + id;
-    final String ingress_name = TensorboardUtils.INGRESS_PREFIX + id;
+  public void deleteTFBoard(String name, String namespace) throws ApiException {
+    final String deploy_name = TensorboardUtils.DEPLOY_PREFIX + name;
+    final String pod_name = TensorboardUtils.POD_PREFIX + name;
+    final String svc_name = TensorboardUtils.SVC_PREFIX + name;
+    final String ingress_name = TensorboardUtils.INGRESS_PREFIX + name;
 
     final String image = TensorboardUtils.IMAGE_NAME;
-    final String route_path = TensorboardUtils.PATH_PREFIX + id;
-    final String pvc = TensorboardUtils.PVC_PREFIX + id;
+    final String route_path = TensorboardUtils.PATH_PREFIX + name;
+    final String pvc = TensorboardUtils.PVC_PREFIX + name;
 
     V1Deployment deployment = TensorboardSpecParser.parseDeployment(deploy_name, image, route_path, pvc);
     V1Service svc = TensorboardSpecParser.parseService(svc_name, pod_name);
@@ -412,12 +411,12 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public void createTFBoardPersistentVolume(String id) throws ApiException {
-    final String name = TensorboardUtils.PV_PREFIX + id;
-    final String host_path = TensorboardUtils.HOST_PREFIX + id;
+  public void createTFBoardPersistentVolume(String name) throws ApiException {
+    final String pv_name = TensorboardUtils.PV_PREFIX + name;
+    final String host_path = TensorboardUtils.HOST_PREFIX + name;
     final String storage = TensorboardUtils.STORAGE;
 
-    V1PersistentVolume pv = VolumeSpecParser.parsePersistentVolume(name, host_path, storage);
+    V1PersistentVolume pv = VolumeSpecParser.parsePersistentVolume(pv_name, host_path, storage);
 
     try {
       V1PersistentVolume result = coreApi.createPersistentVolume(pv, "true", null, null);
@@ -428,17 +427,17 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public void deleteTFBoardPersistentVolume(String id) throws ApiException {
+  public void deleteTFBoardPersistentVolume(String name) throws ApiException {
     /*
     This version of Kubernetes-client/java has bug here.
     It will trigger exception as in https://github.com/kubernetes-client/java/issues/86
     but it can still work fine and delete the PV.
     */
-    final String name = TensorboardUtils.PV_PREFIX + id;
+    final String pv_name = TensorboardUtils.PV_PREFIX + name;
 
     try {
       V1Status result = coreApi.deletePersistentVolume(
-              name, "true", null,
+              pv_name, "true", null,
               null, null, null, null
       );
       LOG.info("result", result);
@@ -457,12 +456,12 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public void createTFBoardPersistentVolumeClaim(String id, String namespace) throws ApiException {
-    final String name = TensorboardUtils.PVC_PREFIX + id;
-    final String volume = TensorboardUtils.PV_PREFIX + id;
+  public void createTFBoardPersistentVolumeClaim(String name, String namespace) throws ApiException {
+    final String pvc_name = TensorboardUtils.PVC_PREFIX + name;
+    final String volume = TensorboardUtils.PV_PREFIX + name;
     final String storage = TensorboardUtils.STORAGE;
 
-    V1PersistentVolumeClaim pvc = VolumeSpecParser.parsePersistentVolumeClaim(name, volume, storage);
+    V1PersistentVolumeClaim pvc = VolumeSpecParser.parsePersistentVolumeClaim(pvc_name, volume, storage);
 
     try {
       V1PersistentVolumeClaim result = coreApi.createNamespacedPersistentVolumeClaim(
@@ -475,17 +474,17 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public void deleteTFBoardPersistentVolumeClaim(String id, String namespace) throws ApiException {
+  public void deleteTFBoardPersistentVolumeClaim(String name, String namespace) throws ApiException {
     /*
     This version of Kubernetes-client/java has bug here.
     It will trigger exception as in https://github.com/kubernetes-client/java/issues/86
     but it can still work fine and delete the PVC
     */
-    final String name = TensorboardUtils.PVC_PREFIX + id;
+    final String pvc_name = TensorboardUtils.PVC_PREFIX + name;
 
     try {
       V1Status result = coreApi.deleteNamespacedPersistentVolumeClaim(
-                name, namespace, "true",
+                pvc_name, namespace, "true",
           null, null, null,
             null, null
       );

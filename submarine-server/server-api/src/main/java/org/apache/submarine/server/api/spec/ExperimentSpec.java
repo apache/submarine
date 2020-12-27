@@ -64,13 +64,13 @@ public class ExperimentSpec {
     this.code = code;
   }
 
-    @Override
-    public String toString() {
-        return "ExperimentSpec{" +
-                "meta=" + meta +
-                ", environment=" + environment +
-                ", spec=" + spec +
-                ", code=" + code +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "ExperimentSpec{" +
+      "meta=" + meta +
+      ", environment=" + environment +
+      ", spec=" + spec +
+      ", code=" + code +
+      '}';
+  }
 }

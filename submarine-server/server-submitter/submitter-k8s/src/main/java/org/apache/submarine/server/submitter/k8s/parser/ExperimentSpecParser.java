@@ -41,7 +41,6 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.environment.EnvironmentManager;
-import org.apache.submarine.server.rest.RestConstants;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.CodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.SSHGitCodeLocalizer;
@@ -183,10 +182,10 @@ public class ExperimentSpecParser {
 
     // volume
     final String PVC_NAME_PREFIX = "tfboard-pvc-";
-    final String id = experimentSpec.getMeta().getEnvVars().get(RestConstants.JOB_ID);
+    final String name = experimentSpec.getMeta().getName();
     V1Volume podVolume = new V1Volume().name("volume");
     podVolume.setPersistentVolumeClaim(
-          new V1PersistentVolumeClaimVolumeSource().claimName(PVC_NAME_PREFIX + id)
+          new V1PersistentVolumeClaimVolumeSource().claimName(PVC_NAME_PREFIX + name)
     );
     podSpec.addVolumesItem(podVolume);
     /**
