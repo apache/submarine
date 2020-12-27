@@ -28,6 +28,8 @@ items:
           - services
           - endpoints
           - pods
+          - persistentvolumes
+          - persistentvolumeclaims
         verbs: ["*"]
       - apiGroups: ["apps"]
         resources:
