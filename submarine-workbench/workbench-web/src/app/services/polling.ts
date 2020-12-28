@@ -70,10 +70,10 @@
      }
 
      private iterate() {
-         this.n++;
-         this.poller.next(this.n);
+        this.n++;
+        this.poller.next(this.n);
 
-         this.scheduler.unsubscribe();
+        this.scheduler.unsubscribe();
         this.remainingTries--;
         if (this.remainingTries === 0) {
             this.remainingTries = this.retries;
@@ -85,21 +85,22 @@
         });
     }
 
-        public reset() {
-            this.n = 0;
-            this.currInterval = this.interval;
-            this.remainingTries = this.retries + 1;
+    public reset() {
+        this.n = 0;
+        this.currInterval = this.interval;
+        this.remainingTries = this.retries + 1;
 
         this.start();
-        }
+    }
 
-        public stop() {
-            if (this.scheduler) {
-                this.scheduler.unsubscribe();
-            }
+    public stop() {
+        if (this.scheduler) {
+            this.scheduler.unsubscribe();
         }
+    }
 
-        public getPoller() {
-            return this.poller;
-        }
+    public getPoller() {
+        return this.poller;
+    }
  }
+ 
