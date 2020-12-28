@@ -102,5 +102,4 @@
     public getPoller() {
         return this.poller;
     }
- }
- 
+}
