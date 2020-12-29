@@ -48,7 +48,8 @@ spec:
     metadata:
       labels:
         run: "{{ .Values.submarine.server.name }}"
-        date: "1234567567"
+      annotations:
+        timestamp: {{ now | quote }}
     spec:
       serviceAccountName: "{{ .Values.submarine.server.name }}"
       containers:
