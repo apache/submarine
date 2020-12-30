@@ -15,6 +15,7 @@
 
 from submarine.ml.tensorflow.model import CCPM
 
+
 def test_run_ccpm(get_model_param):
     params = get_model_param
 

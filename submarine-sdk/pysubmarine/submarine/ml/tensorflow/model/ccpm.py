@@ -38,16 +38,17 @@ class CCPM(BaseTFModel):
         conv_kernel_width = params['training']['conv_kernel_width']
 
         n = params['training']['embedding_size']
-        l = len(conv_filters)
+        conv_filters_len = len(conv_filters)
         conv_input = tf.concat(embedding_outputs, axis=1)
 
         pooling_result = tf.keras.layers.Lambda(
             lambda x: tf.expand_dims(x, axis=3))(conv_input)
 
-        for i in range(1, l + 1):
+        for i in range(1, conv_filters_len + 1):
             filters = conv_filters[i - 1]
             width = conv_kernel_width[i - 1]
-            k = max(1, int((1 - pow(i / l, l - i)) * n)) if i < l else 3
+            p = pow(i / conv_filters_len, conv_filters_len - i)
+            k = max(1, int((1 - p) * n)) if i < conv_filters_len else 3
 
             conv_result = tf.keras.layers.Conv2D(filters=filters, kernel_size=(width, 1),
                                                  strides=(1, 1), padding='same',
@@ -63,4 +64,3 @@ class CCPM(BaseTFModel):
             logit = linear_logit + deep_logit
 
         return get_estimator_spec(logit, labels, mode, params)
-

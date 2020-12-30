@@ -198,6 +198,7 @@ class NoMask(tf.keras.layers.Layer):
     def compute_mask(self, inputs, mask):
         return None
 
+
 class KMaxPooling(Layer):
     """K Max pooling that selects the k biggest value along the specific axis.
       Input shape
