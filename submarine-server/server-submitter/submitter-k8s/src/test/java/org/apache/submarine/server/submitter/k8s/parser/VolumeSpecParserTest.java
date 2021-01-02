@@ -35,14 +35,14 @@ public class VolumeSpecParserTest  {
     final String id = "123456789";
 
     final String name = TensorboardUtils.PV_PREFIX + id;
-    final String host_path = TensorboardUtils.HOST_PREFIX + id;
+    final String hostPath = TensorboardUtils.HOST_PREFIX + id;
     final String storage = TensorboardUtils.STORAGE;
 
-    V1PersistentVolume pv = VolumeSpecParser.parsePersistentVolume(name, host_path, storage);
+    V1PersistentVolume pv = VolumeSpecParser.parsePersistentVolume(name, hostPath, storage);
     LOG.info(pv.toString());
 
     Assert.assertEquals(name, pv.getMetadata().getName());
-    Assert.assertEquals(host_path, pv.getSpec().getHostPath().getPath());
+    Assert.assertEquals(hostPath, pv.getSpec().getHostPath().getPath());
     Assert.assertEquals(new Quantity(storage), pv.getSpec().getCapacity().get("storage"));
   }
 

@@ -350,19 +350,19 @@ public class K8sSubmitter implements Submitter {
   }
 
   public void createTFBoard(String name, String namespace) throws ApiException {
-    final String deploy_name = TensorboardUtils.DEPLOY_PREFIX + name;
-    final String pod_name = TensorboardUtils.POD_PREFIX + name;
-    final String svc_name = TensorboardUtils.SVC_PREFIX + name;
-    final String ingress_name = TensorboardUtils.INGRESS_PREFIX + name;
+    final String deployName = TensorboardUtils.DEPLOY_PREFIX + name;
+    final String podName = TensorboardUtils.POD_PREFIX + name;
+    final String svcName = TensorboardUtils.SVC_PREFIX + name;
+    final String ingressName = TensorboardUtils.INGRESS_PREFIX + name;
 
     final String image = TensorboardUtils.IMAGE_NAME;
-    final String route_path = TensorboardUtils.PATH_PREFIX + name;
+    final String routePath = TensorboardUtils.PATH_PREFIX + name;
     final String pvc = TensorboardUtils.PVC_PREFIX + name;
 
-    V1Deployment deployment = TensorboardSpecParser.parseDeployment(deploy_name, image, route_path, pvc);
-    V1Service svc = TensorboardSpecParser.parseService(svc_name, pod_name);
+    V1Deployment deployment = TensorboardSpecParser.parseDeployment(deployName, image, routePath, pvc);
+    V1Service svc = TensorboardSpecParser.parseService(svcName, podName);
     IngressRoute ingressRoute = TensorboardSpecParser.parseIngressRoute(
-        ingress_name, namespace, route_path, svc_name
+        ingressName, namespace, routePath, svcName
     );
 
     try {
@@ -379,29 +379,29 @@ public class K8sSubmitter implements Submitter {
   }
 
   public void deleteTFBoard(String name, String namespace) throws ApiException {
-    final String deploy_name = TensorboardUtils.DEPLOY_PREFIX + name;
-    final String pod_name = TensorboardUtils.POD_PREFIX + name;
-    final String svc_name = TensorboardUtils.SVC_PREFIX + name;
-    final String ingress_name = TensorboardUtils.INGRESS_PREFIX + name;
+    final String deployName = TensorboardUtils.DEPLOY_PREFIX + name;
+    final String podName = TensorboardUtils.POD_PREFIX + name;
+    final String svcName = TensorboardUtils.SVC_PREFIX + name;
+    final String ingressName = TensorboardUtils.INGRESS_PREFIX + name;
 
     final String image = TensorboardUtils.IMAGE_NAME;
-    final String route_path = TensorboardUtils.PATH_PREFIX + name;
+    final String routePath = TensorboardUtils.PATH_PREFIX + name;
     final String pvc = TensorboardUtils.PVC_PREFIX + name;
 
-    V1Deployment deployment = TensorboardSpecParser.parseDeployment(deploy_name, image, route_path, pvc);
-    V1Service svc = TensorboardSpecParser.parseService(svc_name, pod_name);
+    V1Deployment deployment = TensorboardSpecParser.parseDeployment(deployName, image, routePath, pvc);
+    V1Service svc = TensorboardSpecParser.parseService(svcName, podName);
     IngressRoute ingressRoute = TensorboardSpecParser.parseIngressRoute(
-        ingress_name, namespace, route_path, svc_name
+        ingressName, namespace, routePath, svcName
     );
 
     try {
-      appsV1Api.deleteNamespacedDeployment(deploy_name, namespace, "true",
+      appsV1Api.deleteNamespacedDeployment(deployName, namespace, "true",
           null, null, null, null, null);
-      coreApi.deleteNamespacedService(svc_name, namespace, "true",
+      coreApi.deleteNamespacedService(svcName, namespace, "true",
           null, null, null, null, null);
       api.deleteNamespacedCustomObject(
           ingressRoute.getGroup(), ingressRoute.getVersion(),
-          ingressRoute.getMetadata().getNamespace(), ingressRoute.getPlural(), ingress_name,
+          ingressRoute.getMetadata().getNamespace(), ingressRoute.getPlural(), ingressName,
           new V1DeleteOptionsBuilder().withApiVersion(ingressRoute.getApiVersion()).build(),
           null, null, null);
 
@@ -412,11 +412,11 @@ public class K8sSubmitter implements Submitter {
   }
 
   public void createTFBoardPersistentVolume(String name) throws ApiException {
-    final String pv_name = TensorboardUtils.PV_PREFIX + name;
-    final String host_path = TensorboardUtils.HOST_PREFIX + name;
+    final String pvName = TensorboardUtils.PV_PREFIX + name;
+    final String hostPath = TensorboardUtils.HOST_PREFIX + name;
     final String storage = TensorboardUtils.STORAGE;
 
-    V1PersistentVolume pv = VolumeSpecParser.parsePersistentVolume(pv_name, host_path, storage);
+    V1PersistentVolume pv = VolumeSpecParser.parsePersistentVolume(pvName, hostPath, storage);
 
     try {
       V1PersistentVolume result = coreApi.createPersistentVolume(pv, "true", null, null);
@@ -432,11 +432,11 @@ public class K8sSubmitter implements Submitter {
     It will trigger exception as in https://github.com/kubernetes-client/java/issues/86
     but it can still work fine and delete the PV.
     */
-    final String pv_name = TensorboardUtils.PV_PREFIX + name;
+    final String pvName = TensorboardUtils.PV_PREFIX + name;
 
     try {
       V1Status result = coreApi.deletePersistentVolume(
-              pv_name, "true", null,
+              pvName, "true", null,
               null, null, null, null
       );
     } catch (ApiException e) {
@@ -455,11 +455,11 @@ public class K8sSubmitter implements Submitter {
   }
 
   public void createTFBoardPersistentVolumeClaim(String name, String namespace) throws ApiException {
-    final String pvc_name = TensorboardUtils.PVC_PREFIX + name;
+    final String pvcName = TensorboardUtils.PVC_PREFIX + name;
     final String volume = TensorboardUtils.PV_PREFIX + name;
     final String storage = TensorboardUtils.STORAGE;
 
-    V1PersistentVolumeClaim pvc = VolumeSpecParser.parsePersistentVolumeClaim(pvc_name, volume, storage);
+    V1PersistentVolumeClaim pvc = VolumeSpecParser.parsePersistentVolumeClaim(pvcName, volume, storage);
 
     try {
       V1PersistentVolumeClaim result = coreApi.createNamespacedPersistentVolumeClaim(
@@ -477,11 +477,11 @@ public class K8sSubmitter implements Submitter {
     It will trigger exception as in https://github.com/kubernetes-client/java/issues/86
     but it can still work fine and delete the PVC
     */
-    final String pvc_name = TensorboardUtils.PVC_PREFIX + name;
+    final String pvcName = TensorboardUtils.PVC_PREFIX + name;
 
     try {
       V1Status result = coreApi.deleteNamespacedPersistentVolumeClaim(
-                pvc_name, namespace, "true",
+                pvcName, namespace, "true",
           null, null, null,
             null, null
       );

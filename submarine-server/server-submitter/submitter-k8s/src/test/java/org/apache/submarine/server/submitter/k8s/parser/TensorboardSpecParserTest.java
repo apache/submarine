@@ -35,10 +35,10 @@ public class TensorboardSpecParserTest extends TestCase {
 
     final String name = TensorboardUtils.DEPLOY_PREFIX + id;
     final String image = TensorboardUtils.IMAGE_NAME;
-    final String route_path = TensorboardUtils.PATH_PREFIX + id;
+    final String routePath = TensorboardUtils.PATH_PREFIX + id;
     final String pvc = TensorboardUtils.PVC_PREFIX + id;
 
-    V1Deployment deployment = TensorboardSpecParser.parseDeployment(name, image, route_path, pvc);
+    V1Deployment deployment = TensorboardSpecParser.parseDeployment(name, image, routePath, pvc);
 
     Assert.assertEquals(name, deployment.getMetadata().getName());
     Assert.assertEquals(image,
@@ -53,13 +53,13 @@ public class TensorboardSpecParserTest extends TestCase {
   public void testParseService() {
     final String id = "123456789";
 
-    final String svc_name = TensorboardUtils.SVC_PREFIX + id;
-    final String pod_name = TensorboardUtils.DEPLOY_PREFIX + id;
+    final String svcName = TensorboardUtils.SVC_PREFIX + id;
+    final String podName = TensorboardUtils.DEPLOY_PREFIX + id;
 
-    V1Service svc = TensorboardSpecParser.parseService(svc_name, pod_name);
+    V1Service svc = TensorboardSpecParser.parseService(svcName, podName);
 
-    Assert.assertEquals(svc_name, svc.getMetadata().getName());
-    Assert.assertEquals(pod_name, svc.getSpec().getSelector().get("app"));
+    Assert.assertEquals(svcName, svc.getMetadata().getName());
+    Assert.assertEquals(podName, svc.getSpec().getSelector().get("app"));
   }
 
   @Test
@@ -67,14 +67,14 @@ public class TensorboardSpecParserTest extends TestCase {
     final String id = "123456789";
     final String namespace = "default";
 
-    final String ingress_name = TensorboardUtils.INGRESS_PREFIX + id;
-    final String route_path = TensorboardUtils.PATH_PREFIX + id;
-    final String svc_name = TensorboardUtils.SVC_PREFIX + id;
+    final String ingressName = TensorboardUtils.INGRESS_PREFIX + id;
+    final String routePath = TensorboardUtils.PATH_PREFIX + id;
+    final String svcName = TensorboardUtils.SVC_PREFIX + id;
 
     IngressRoute ingressRoute = TensorboardSpecParser.parseIngressRoute(
-        ingress_name, namespace, route_path, svc_name
+        ingressName, namespace, routePath, svcName
       );
 
-    Assert.assertEquals(ingressRoute.getMetadata().getName(), ingress_name);
+    Assert.assertEquals(ingressRoute.getMetadata().getName(), ingressName);
   }
 }
