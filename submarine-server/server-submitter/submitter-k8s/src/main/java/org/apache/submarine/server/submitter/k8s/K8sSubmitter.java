@@ -187,7 +187,7 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Experiment deleteExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
-    final String id = spec.getMeta().getName(); // spec.getMeta().getEnvVars().get(RestConstants.JOB_ID);
+    final String name = spec.getMeta().getName(); // spec.getMeta().getEnvVars().get(RestConstants.JOB_ID);
 
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
