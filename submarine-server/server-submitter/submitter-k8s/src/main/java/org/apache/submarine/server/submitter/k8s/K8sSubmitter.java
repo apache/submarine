@@ -133,9 +133,9 @@ public class K8sSubmitter implements Submitter {
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
 
-      createTFBoardPersistentVolume(id);
-      createTFBoardPersistentVolumeClaim(id, spec.getMeta().getNamespace());
-      createTFBoard(id, spec.getMeta().getNamespace());
+      createTFBoardPersistentVolume(name);
+      createTFBoardPersistentVolumeClaim(name, spec.getMeta().getNamespace());
+      createTFBoard(name, spec.getMeta().getNamespace());
 
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true");
