@@ -406,7 +406,7 @@ public class K8sSubmitter implements Submitter {
           null, null, null);
 
     } catch (ApiException e) {
-      LOG.error("Exception when calling createTFBoard");
+      LOG.error("Exception when deleting TensorBoard " + e.getMessage(), e);
       throw e;
     }
   }
@@ -420,9 +420,8 @@ public class K8sSubmitter implements Submitter {
 
     try {
       V1PersistentVolume result = coreApi.createPersistentVolume(pv, "true", null, null);
-      LOG.info("result", result);
     } catch (ApiException e) {
-      LOG.error("Exception when calling CoreV1Api#createPersistentVolume");
+      LOG.error("Exception when creating persistent volume " + e.getMessage(), e);
       throw e;
     }
   }
@@ -440,9 +439,8 @@ public class K8sSubmitter implements Submitter {
               pv_name, "true", null,
               null, null, null, null
       );
-      LOG.info("result", result);
     } catch (ApiException e) {
-      LOG.error("Exception when calling CoreV1Api#deletePersistentVolume");
+      LOG.error("Exception when deleting persistent volume " + e.getMessage(), e);
       throw e;
     } catch (JsonSyntaxException e) {
       if (e.getCause() instanceof IllegalStateException) {
@@ -467,9 +465,8 @@ public class K8sSubmitter implements Submitter {
       V1PersistentVolumeClaim result = coreApi.createNamespacedPersistentVolumeClaim(
               namespace, pvc, "true", null, null
       );
-      LOG.info("result", result);
     } catch (ApiException e) {
-      LOG.error("Exception when calling CoreV1Api#createPersistentVolumeClaim");
+      LOG.error("Exception when creating persistent volume claim " + e.getMessage(), e);
       throw e;
     }
   }
@@ -488,9 +485,8 @@ public class K8sSubmitter implements Submitter {
           null, null, null,
             null, null
       );
-      LOG.info("result", result);
     } catch (ApiException e) {
-      LOG.error("Exception when calling CoreV1Api#deletePersistentVolumeClaim");
+      LOG.error("Exception when deleting persistent volume claim " + e.getMessage(), e);
       throw e;
     } catch (JsonSyntaxException e) {
       if (e.getCause() instanceof IllegalStateException) {
