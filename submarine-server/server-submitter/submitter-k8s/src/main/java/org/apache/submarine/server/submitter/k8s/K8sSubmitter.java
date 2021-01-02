@@ -192,9 +192,9 @@ public class K8sSubmitter implements Submitter {
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
 
-      deleteTFBoardPersistentVolume(id);
-      deleteTFBoardPersistentVolumeClaim(id, spec.getMeta().getNamespace());
-      deleteTFBoard(id, spec.getMeta().getNamespace());
+      deleteTFBoardPersistentVolume(name);
+      deleteTFBoardPersistentVolumeClaim(name, spec.getMeta().getNamespace());
+      deleteTFBoard(name, spec.getMeta().getNamespace());
 
       Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
