@@ -46,95 +46,94 @@ import java.util.HashSet;
 import java.util.Map;
 
 public class TensorboardSpecParser {
-  public static V1Deployment parseDeployment(String name, String image, String route_path, String pvc) {
+  public static V1Deployment parseDeployment(String name, String image, String routePath, String pvc) {
 
     V1Deployment deployment = new V1Deployment();
 
-    V1ObjectMeta deployment_metedata = new V1ObjectMeta();
-    deployment_metedata.setName(name);
-    deployment.setMetadata(deployment_metedata);
-
-    V1DeploymentSpec deployment_spec = new V1DeploymentSpec();
-    deployment_spec.setSelector(
+    V1ObjectMeta deploymentMetedata = new V1ObjectMeta();
+    deploymentMetedata.setName(name);
+    deployment.setMetadata(deploymentMetedata);
+    V1DeploymentSpec deploymentSpec = new V1DeploymentSpec();
+    deploymentSpec.setSelector(
         new V1LabelSelector().matchLabels(Collections.singletonMap("app", name)) // match the template
     );
 
-    V1PodTemplateSpec deployment_template_spec = new V1PodTemplateSpec();
-    deployment_template_spec.setMetadata(
+    V1PodTemplateSpec deploymentTemplateSpec = new V1PodTemplateSpec();
+    deploymentTemplateSpec.setMetadata(
         new V1ObjectMeta().labels(Collections.singletonMap("app", name)) // bind to replicaset and service
     );
 
-    V1PodSpec deployment_template_pod_spec = new V1PodSpec();
+    V1PodSpec deploymentTemplatePodSpec = new V1PodSpec();
 
     V1Container container = new V1Container();
     container.setName(name);
     container.setImage(image);
     container.setCommand(Arrays.asList(
         "tensorboard", "--logdir=/logs",
-        String.format("--path_prefix=%s", route_path)
+        String.format("--path_prefix=%s", routePath)
     ));
     container.setImagePullPolicy("IfNotPresent");
     container.addPortsItem(new V1ContainerPort().containerPort(TensorboardUtils.DEFAULT_TENSORBOARD_PORT));
     container.addVolumeMountsItem(new V1VolumeMount().mountPath("/logs").name("volume"));
-    deployment_template_pod_spec.addContainersItem(container);
+    deploymentTemplatePodSpec.addContainersItem(container);
 
     V1Volume volume = new V1Volume().name("volume");
     volume.setPersistentVolumeClaim(
         new V1PersistentVolumeClaimVolumeSource().claimName(pvc)
     );
-    deployment_template_pod_spec.addVolumesItem(volume);
+    deploymentTemplatePodSpec.addVolumesItem(volume);
 
-    deployment_template_spec.setSpec(deployment_template_pod_spec);
+    deploymentTemplateSpec.setSpec(deploymentTemplatePodSpec);
 
-    deployment_spec.setTemplate(deployment_template_spec);
+    deploymentSpec.setTemplate(deploymentTemplateSpec);
 
-    deployment.setSpec(deployment_spec);
+    deployment.setSpec(deploymentSpec);
 
     return deployment;
   }
 
-  public static V1Service parseService(String svc_name, String pod_name) {
+  public static V1Service parseService(String svcName, String podName) {
     V1Service svc = new V1Service();
-    svc.metadata(new V1ObjectMeta().name(svc_name));
+    svc.metadata(new V1ObjectMeta().name(svcName));
 
-    V1ServiceSpec svc_spec = new V1ServiceSpec();
-    svc_spec.setSelector(Collections.singletonMap("app", pod_name)); // bind to pod
-    svc_spec.addPortsItem(new V1ServicePort().protocol("TCP").targetPort(
+    V1ServiceSpec svcSpec = new V1ServiceSpec();
+    svcSpec.setSelector(Collections.singletonMap("app", podName)); // bind to pod
+    svcSpec.addPortsItem(new V1ServicePort().protocol("TCP").targetPort(
         new IntOrString(TensorboardUtils.DEFAULT_TENSORBOARD_PORT)).port(TensorboardUtils.SERVICE_PORT));
-    svc.setSpec(svc_spec);
+    svc.setSpec(svcSpec);
     return svc;
   }
 
-  public static IngressRoute parseIngressRoute(String ingress_name, String namespace,
-                                               String route_path, String svc_name) {
+  public static IngressRoute parseIngressRoute(String ingressName, String namespace,
+                                               String routePath, String svcName) {
 
     IngressRoute ingressRoute = new IngressRoute();
     ingressRoute.setMetadata(
-        new V1ObjectMeta().name(ingress_name).namespace((namespace))
+        new V1ObjectMeta().name(ingressName).namespace((namespace))
     );
 
-    IngressRouteSpec ingressRoute_spec = new IngressRouteSpec();
-    ingressRoute_spec.setEntryPoints(new HashSet<>(Collections.singletonList("web")));
-    SpecRoute spec_route = new SpecRoute();
-    spec_route.setKind("Rule");
-    spec_route.setMatch(String.format("PathPrefix(`%s`)", route_path));
+    IngressRouteSpec ingressRouteSpec = new IngressRouteSpec();
+    ingressRouteSpec.setEntryPoints(new HashSet<>(Collections.singletonList("web")));
+    SpecRoute specRoute = new SpecRoute();
+    specRoute.setKind("Rule");
+    specRoute.setMatch(String.format("PathPrefix(`%s`)", routePath));
 
     Map<String, Object> service = new HashMap<String, Object>() {{
         put("kind", "Service");
-        put("name", svc_name);
+        put("name", svcName);
         put("port", TensorboardUtils.SERVICE_PORT);
         put("namespace", namespace);
       }};
 
-    spec_route.setServices(new HashSet<Map<String, Object>>() {{
+    specRoute.setServices(new HashSet<Map<String, Object>>() {{
         add(service);
       }});
 
-    ingressRoute_spec.setRoutes(new HashSet<SpecRoute>() {{
-        add(spec_route);
+    ingressRouteSpec.setRoutes(new HashSet<SpecRoute>() {{
+        add(specRoute);
       }});
 
-    ingressRoute.setSpec(ingressRoute_spec);
+    ingressRoute.setSpec(ingressRouteSpec);
 
     return ingressRoute;
   }
