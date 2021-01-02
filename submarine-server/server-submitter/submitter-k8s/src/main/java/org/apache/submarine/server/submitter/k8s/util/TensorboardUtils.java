@@ -33,8 +33,6 @@ public class TensorboardUtils {
   public static final String SVC_PREFIX = "tfboard-svc-";
   public static final String INGRESS_PREFIX = "tfboard-ingressroute";
   public static final String PATH_PREFIX = "/tfboard-";
-
-  public static String getURLfromId(String id) {
-    return PATH_PREFIX + id + '/';
-  }
+  public static final Integer DEFAULT_TENSORBOARD_PORT = 6006;
+  public static final Integer SERVICE_PORT = 8080;
 }

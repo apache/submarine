@@ -14,7 +14,7 @@
   "spec": {
     "Worker": {
       "replicas": 1,
-       "resources": ""
+      "resources": "cpu=1,memory=1024M"
     }
   }
 }

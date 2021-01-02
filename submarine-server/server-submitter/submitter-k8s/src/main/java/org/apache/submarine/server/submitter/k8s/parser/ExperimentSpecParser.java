@@ -53,6 +53,7 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobSpec
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobSpec;
+import org.apache.submarine.server.submitter.k8s.util.TensorboardUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -181,11 +182,10 @@ public class ExperimentSpecParser {
     container.addVolumeMountsItem(new V1VolumeMount().mountPath("/logs").name("volume"));
 
     // volume
-    final String PVC_NAME_PREFIX = "tfboard-pvc-";
     final String name = experimentSpec.getMeta().getName();
     V1Volume podVolume = new V1Volume().name("volume");
     podVolume.setPersistentVolumeClaim(
-          new V1PersistentVolumeClaimVolumeSource().claimName(PVC_NAME_PREFIX + name)
+          new V1PersistentVolumeClaimVolumeSource().claimName(TensorboardUtils.PVC_PREFIX + name)
     );
     podSpec.addVolumesItem(podVolume);
     /**

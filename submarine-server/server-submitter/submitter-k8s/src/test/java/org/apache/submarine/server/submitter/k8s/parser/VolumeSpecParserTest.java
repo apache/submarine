@@ -23,18 +23,12 @@ import io.kubernetes.client.models.V1PersistentVolume;
 import io.kubernetes.client.models.V1PersistentVolumeClaim;
 import org.apache.submarine.server.submitter.k8s.util.TensorboardUtils;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class VolumeSpecParserTest  {
   private static final Logger LOG = LoggerFactory.getLogger(VolumeSpecParserTest.class);
-
-  @Before
-  public void before() {
-
-  }
 
   @Test
   public void testParsePersistentVolume() {

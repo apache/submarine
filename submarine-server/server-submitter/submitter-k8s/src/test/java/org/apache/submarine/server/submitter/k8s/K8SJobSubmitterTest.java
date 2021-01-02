@@ -76,18 +76,15 @@ public class K8SJobSubmitterTest extends SpecBuilder {
   public void testCreateTFJob() throws IOException, URISyntaxException {
     ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobwReqFile);
     Experiment experiment = submitter.createExperiment(spec);
-    Assert.assertTrue(true);
   }
 
   @Test
   public void testDeleteTFJob() throws IOException, URISyntaxException {
     ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobwReqFile);
     Experiment experiment = submitter.deleteExperiment(spec);
-    Assert.assertTrue(true);
   }
 
   private void run(ExperimentSpec spec) throws SubmarineRuntimeException {
-    System.out.println(spec.toString());
     // create
     Experiment experimentCreated = submitter.createExperiment(spec);
     Assert.assertNotNull(experimentCreated);
