@@ -373,7 +373,7 @@ public class K8sSubmitter implements Submitter {
             ingressRoute.getMetadata().getNamespace(),
             ingressRoute.getPlural(), ingressRoute, "true");
     } catch (ApiException e) {
-      LOG.error("Exception when calling createTFBoard");
+      LOG.error("Exception when creating TensorBoard " + e.getMessage(), e);
       throw e;
     }
   }
