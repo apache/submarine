@@ -131,4 +131,15 @@ public class ExperimentMeta {
       return names;
     }
   }
+
+  @Override
+  public String toString() {
+    return "ExperimentMeta{" +
+      "name='" + name + '\'' +
+      ", namespace='" + namespace + '\'' +
+      ", framework='" + framework + '\'' +
+      ", cmd='" + cmd + '\'' +
+      ", envVars=" + envVars +
+      '}';
+  }
 }

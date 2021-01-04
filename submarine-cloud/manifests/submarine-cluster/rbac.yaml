@@ -28,7 +28,13 @@ items:
           - services
           - endpoints
           - pods
-        verbs: ["list", "get"]
+          - persistentvolumes
+          - persistentvolumeclaims
+        verbs: ["*"]
+      - apiGroups: ["apps"]
+        resources:
+          - deployments
+        verbs: ["*"]
       - apiGroups: ["kubeflow.org"]
         resources:
           - tfjobs

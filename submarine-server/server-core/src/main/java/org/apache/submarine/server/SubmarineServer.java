@@ -307,7 +307,7 @@ public class SubmarineServer extends ResourceConfig {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+        throws ServletException, IOException {
       response.setContentType("text/html");
       response.encodeRedirectURL("/");
       response.setStatus(HttpServletResponse.SC_OK);

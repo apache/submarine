@@ -56,6 +56,15 @@ rules:
   resources:
   - pods
   - pods/log
+  - services
+  - persistentvolumes
+  - persistentvolumeclaims
+  verbs:
+  - '*'
+- apiGroups:
+  - "apps"
+  resources:
+  - deployments
   verbs:
   - '*'
 ---

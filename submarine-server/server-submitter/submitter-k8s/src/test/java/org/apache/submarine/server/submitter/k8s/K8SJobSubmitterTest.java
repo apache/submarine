@@ -29,6 +29,8 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * We have two ways to test submitter for K8s cluster, local and travis CI.
@@ -47,7 +49,7 @@ import org.junit.Test;
  * Travis: See '.travis.yml'
  */
 public class K8SJobSubmitterTest extends SpecBuilder {
-
+  private static final Logger LOG = LoggerFactory.getLogger(K8SJobSubmitterTest.class);
   private K8sSubmitter submitter;
 
   @Before
@@ -68,6 +70,18 @@ public class K8SJobSubmitterTest extends SpecBuilder {
       IOException, SubmarineRuntimeException {
     ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
     run(spec);
+  }
+
+  @Test
+  public void testCreateTFJob() throws IOException, URISyntaxException {
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobwReqFile);
+    Experiment experiment = submitter.createExperiment(spec);
+  }
+
+  @Test
+  public void testDeleteTFJob() throws IOException, URISyntaxException {
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobwReqFile);
+    Experiment experiment = submitter.deleteExperiment(spec);
   }
 
   private void run(ExperimentSpec spec) throws SubmarineRuntimeException {

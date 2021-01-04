@@ -20,9 +20,11 @@
 package org.apache.submarine.server.submitter.k8s.parser;
 
 import io.kubernetes.client.custom.Quantity;
+
 import io.kubernetes.client.models.V1Container;
 import io.kubernetes.client.models.V1EnvVar;
 import io.kubernetes.client.models.V1ObjectMeta;
+import io.kubernetes.client.models.V1PersistentVolumeClaimVolumeSource;
 import io.kubernetes.client.models.V1PodSecurityContext;
 import io.kubernetes.client.models.V1PodSpec;
 import io.kubernetes.client.models.V1PodTemplateSpec;
@@ -30,7 +32,6 @@ import io.kubernetes.client.models.V1ResourceRequirements;
 import io.kubernetes.client.models.V1SecretVolumeSource;
 import io.kubernetes.client.models.V1Volume;
 import io.kubernetes.client.models.V1VolumeMount;
-
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.environment.Environment;
@@ -52,6 +53,7 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobSpec
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobSpec;
+import org.apache.submarine.server.submitter.k8s.util.TensorboardUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -156,6 +158,7 @@ public class ExperimentSpecParser {
     V1Container container = new V1Container();
     container.setName(experimentSpec.getMeta().getFramework().toLowerCase());
     // image
+
     if (taskSpec.getImage() != null) {
       container.setImage(taskSpec.getImage());
     } else {
@@ -174,7 +177,17 @@ public class ExperimentSpecParser {
     resources.setLimits(parseResources(taskSpec));
     container.setResources(resources);
     container.setEnv(parseEnvVars(taskSpec, experimentSpec.getMeta().getEnvVars()));
-    
+
+    // volumeMount
+    container.addVolumeMountsItem(new V1VolumeMount().mountPath("/logs").name("volume"));
+
+    // volume
+    final String name = experimentSpec.getMeta().getName();
+    V1Volume podVolume = new V1Volume().name("volume");
+    podVolume.setPersistentVolumeClaim(
+          new V1PersistentVolumeClaimVolumeSource().claimName(TensorboardUtils.PVC_PREFIX + name)
+    );
+    podSpec.addVolumesItem(podVolume);
     /**
      * Init Git localize Container
      */
@@ -221,7 +234,7 @@ public class ExperimentSpecParser {
             podSpec.setSecurityContext(podSecurityContext);
           }
         }
-        
+
         V1EnvVar codeEnvVar = new V1EnvVar();
         codeEnvVar.setName(AbstractCodeLocalizer.CODE_LOCALIZER_PATH_ENV_VAR);
         codeEnvVar.setValue(AbstractCodeLocalizer.CODE_LOCALIZER_PATH);
@@ -233,7 +246,7 @@ public class ExperimentSpecParser {
 
     containers.add(container);
     podSpec.setContainers(containers);
-      
+
     /**
      * Init Containers
      */

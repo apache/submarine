@@ -46,6 +46,7 @@ import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.rest.RestConstants;
 import org.joda.time.DateTime;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -100,6 +101,11 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     kfOperatorMap = new HashMap<>();
     kfOperatorMap.put("tensorflow", new KfOperator("v1", "tfjobs"));
     kfOperatorMap.put("pytorch", new KfOperator("v1", "pytorchjobs"));
+  }
+
+  @Before
+  public void setUp() throws Exception {
+    Thread.sleep(5000); // timeout for each case, ensuring k8s-client has enough time to delete resoures
   }
 
   @Test
@@ -186,7 +192,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     String patchBody = loadContent("tensorflow/tf-mnist-with-ssh-git-code-localizer-req.json");
     run(body, patchBody, "application/json");
   }
-  
+
   private void run(String body, String patchBody, String contentType) throws Exception {
     // create
     LOG.info("Create training job by Job REST API");
@@ -219,7 +225,8 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     // https://tools.ietf.org/html/rfc5789
 
     // delete
-    DeleteMethod deleteMethod = httpDelete(BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
+    DeleteMethod deleteMethod = httpDelete(
+        BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), deleteMethod.getStatusCode());
 
     json = deleteMethod.getResponseBodyAsString();
@@ -296,7 +303,8 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     assertK8sResultEquals(env, createdJob);
   }
 
-  private void verifyGetJobApiResult(Experiment createdExperiment, Experiment foundExperiment) throws Exception {
+  private void verifyGetJobApiResult(
+      Experiment createdExperiment, Experiment foundExperiment) throws Exception {
     Assert.assertEquals(createdExperiment.getExperimentId(), foundExperiment.getExperimentId());
     Assert.assertEquals(createdExperiment.getUid(), foundExperiment.getUid());
     Assert.assertEquals(createdExperiment.getName(), foundExperiment.getName());
