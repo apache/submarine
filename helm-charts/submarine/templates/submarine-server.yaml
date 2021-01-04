@@ -66,8 +66,6 @@ spec:
 
         image: "{{ .Values.submarine.server.image }}"
         imagePullPolicy: {{ .Values.submarine.server.imagePullPolicy }}
-        command: ["/bin/bash", "-c"]
-        args: ["/opt/submarine-current/bin/submarine.sh start getMysqlJar"]
         ports:
         - containerPort: 8080
 
