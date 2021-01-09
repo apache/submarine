@@ -27,7 +27,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 export class ExperimentFormService {
   // Subject(observable source)
   private stepServiceSource = new Subject<number>();
-  private fetchListServiceSource = new BehaviorSubject<boolean>(true); // use behaviorSubject to immediately emit fetch for the first time
+  private fetchListServiceSource = new BehaviorSubject<boolean>(true); // use behaviorSubject to immediately fetch for the first time
   private btnStatusServiceSource = new Subject<boolean>();
   private modalPropsServiceSource = new Subject<ModalProps>();
 
