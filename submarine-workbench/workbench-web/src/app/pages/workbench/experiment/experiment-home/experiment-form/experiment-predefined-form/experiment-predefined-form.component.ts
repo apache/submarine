@@ -22,7 +22,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
 import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 import { ExperimentService } from '@submarine/services/experiment.service';
-import { interval, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ExperimentTemplateSubmit } from '@submarine/interfaces/experiment-template-submit';
 import { NzMessageService } from 'ng-zorro-antd';
 
@@ -73,7 +73,6 @@ export class ExperimentPredefinedFormComponent implements OnInit, OnDestroy {
         // default: switch to first template
         const defaultTemplate = Object.keys(this.templates)[0];
         this.predefinedForm.get('templateName').setValue(defaultTemplate);
-        console.log(this.predefinedForm.get('templateName').value);
         this.onTemplateChange();
       }
     });
@@ -95,11 +94,8 @@ export class ExperimentPredefinedFormComponent implements OnInit, OnDestroy {
       // handle submit
       this.onSubmit();
     });
-    const sub2 = interval(1000).subscribe(() => {
-      console.log(this.templates);
-    });
+
     this.subs.push(sub);
-    this.subs.push(sub2);
   }
   ngOnDestroy() {
     this.subs.forEach((sub) => sub.unsubscribe());

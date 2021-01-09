@@ -18,16 +18,16 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
 import { ModalProps } from '@submarine/interfaces/modal-props';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ExperimentFormService {
   // Subject(observable source)
   private stepServiceSource = new Subject<number>();
-  private fetchListServiceSource = new Subject<boolean>();
+  private fetchListServiceSource = new BehaviorSubject<boolean>(true); // use behaviorSubject to immediately emit fetch for the first time
   private btnStatusServiceSource = new Subject<boolean>();
   private modalPropsServiceSource = new Subject<ModalProps>();
 
@@ -53,9 +53,10 @@ export class ExperimentFormService {
       okText: 'Next step',
       isVisible: false,
       currentStep: 0,
-      formType: null
+      formType: null,
     });
   }
+
   fetchList() {
     this.fetchListServiceSource.next(true);
   }

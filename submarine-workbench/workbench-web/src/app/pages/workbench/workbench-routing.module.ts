@@ -23,7 +23,6 @@ import { EnvironmentComponent } from '@submarine/pages/workbench/environment/env
 import { ExperimentComponent } from '@submarine/pages/workbench/experiment/experiment.component';
 import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.component';
 import { DataComponent } from './data/data.component';
-import { ExperimentInfoComponent } from './experiment/experiment-info/experiment-info.component';
 import { HomeComponent } from './home/home.component';
 import { InterpreterComponent } from './interpreter/interpreter.component';
 import { ModelComponent } from './model/model.component';
@@ -38,42 +37,42 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'experiment'
+        redirectTo: 'experiment',
       },
       {
         path: 'home',
         component: HomeComponent,
-        canActivate: ['canActivatePage']
+        canActivate: ['canActivatePage'],
       },
       {
         path: 'workspace',
         component: WorkspaceComponent,
-        canActivate: ['canActivatePage']
+        canActivate: ['canActivatePage'],
       },
       {
         path: 'interpreter',
         component: InterpreterComponent,
-        canActivate: ['canActivatePage']
+        canActivate: ['canActivatePage'],
       },
       {
         path: 'experiment',
         loadChildren: () => import('./experiment/experiment.module').then((m) => m.ExperimentModule),
-        canActivate: ['canActivatePage']
+        canActivate: ['canActivatePage'],
       },
       {
         path: 'environment',
         component: EnvironmentComponent,
-        canActivate: ['canActivatePage']
+        canActivate: ['canActivatePage'],
       },
       {
         path: 'data',
         component: DataComponent,
-        canActivate: ['canActivatePage']
+        canActivate: ['canActivatePage'],
       },
       {
         path: 'model',
         component: ModelComponent,
-        canActivate: ['canActivatePage']
+        canActivate: ['canActivatePage'],
       },
       {
         path: 'notebook',
@@ -83,10 +82,10 @@ const routes: Routes = [
       {
         path: 'manager',
         loadChildren: () => import('./manager/manager.module').then((m) => m.ManagerModule),
-        canActivate: ['canActivatePage']
-      }
-    ]
-  }
+        canActivate: ['canActivatePage'],
+      },
+    ],
+  },
 ];
 
 @NgModule({
@@ -100,8 +99,8 @@ const routes: Routes = [
         console.log('currentPage', currentPage);
         if (disablePaths.includes(currentPage)) return false;
         else return true;
-      }
-    }
-  ]
+      },
+    },
+  ],
 })
-export class WorkbenchRoutingModule { }
+export class WorkbenchRoutingModule {}
