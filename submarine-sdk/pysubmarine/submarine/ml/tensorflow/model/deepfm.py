@@ -41,7 +41,6 @@ class DeepFM(BaseTFModel):
     def model_fn(self, features, labels, mode, params):
         super().model_fn(features, labels, mode, params)
 
-        print("mode: \n", mode)
         linear_logit = linear_layer(features, **params['training'])
 
         embedding_outputs = embedding_layer(features, **params['training'])
@@ -56,10 +55,4 @@ class DeepFM(BaseTFModel):
         with tf.variable_scope("DeepFM_out"):
             logit = linear_logit + fm_logit + deep_logit
 
-        print("------------------------ \n")
-        print("logit: \n", logit)
-        print("labels: \n", labels)
-        print("mode: \n", mode)
-        print("params: \n", params)
-        print("------------------------ \n")
         return get_estimator_spec(logit, labels, mode, params)
