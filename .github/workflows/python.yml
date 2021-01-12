@@ -62,10 +62,10 @@ jobs:
               hostPort: 443
               protocol: TCP
           EOF
-      - uses: engineerd/setup-kind@v0.5.0
+      - uses: container-tools/kind-action@v1
         with:
-          version: "v0.7.0"
-          image: kindest/node:v1.15.6
+          version: "v0.9.0"
+          node_image: kindest/node:v1.15.6
           config: ./kind-config-kind.yaml
       - name: Show K8s cluster information
         run: |
