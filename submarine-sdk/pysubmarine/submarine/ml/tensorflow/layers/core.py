@@ -14,7 +14,7 @@
 # limitations under the License.
 
 import tensorflow as tf
-from tensorflow.python.keras.layers import Layer
+from tensorflow.keras.layers import Layer
 
 
 def batch_norm_layer(x, train_phase, scope_bn, batch_norm_decay):
@@ -197,6 +197,7 @@ class KMaxPooling(Layer):
 
     def __init__(self, k=1, axis=-1, **kwargs):
 
+        self.dims = 1
         self.k = k
         self.axis = axis
         super(KMaxPooling, self).__init__(**kwargs)
@@ -215,12 +216,10 @@ class KMaxPooling(Layer):
 
     def call(self, inputs):
 
-        # swap the last and the axis dimensions since top_k will be applied along the last dimension
         perm = list(range(self.dims))
         perm[-1], perm[self.axis] = perm[self.axis], perm[-1]
         shifted_input = tf.transpose(inputs, perm)
 
-        # extract top_k, returns two tensors [values, indices]
         top_k = tf.nn.top_k(shifted_input, k=self.k, sorted=True, name=None)[0]
         output = tf.transpose(top_k, perm)
 
