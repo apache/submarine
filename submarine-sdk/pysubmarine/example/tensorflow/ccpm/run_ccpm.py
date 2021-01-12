@@ -13,9 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .deepfm import DeepFM
-from .fm import FM
-from .nfm import NFM
-from .ccpm import CCPM
+from submarine.ml.tensorflow.model import CCPM
+import argparse
 
-__all__ = ["DeepFM", "FM", "NFM", "CCPM"]
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-conf", help="a JSON configuration file for CCPM", type=str)
+    parser.add_argument("-task_type", default='train',
+                        help="train or evaluate, by default is train")
+    args = parser.parse_args()
+    json_path = args.conf
+    task_type = args.task_type
+
+    model = CCPM(json_path=json_path)
+
+    if task_type == 'train':
+        model.train()
+    if task_type == 'evaluate':
+        result = model.evaluate()
+        print("Model metrics : ", result)

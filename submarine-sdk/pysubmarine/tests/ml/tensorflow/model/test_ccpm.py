@@ -13,9 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .deepfm import DeepFM
-from .fm import FM
-from .nfm import NFM
-from .ccpm import CCPM
+from submarine.ml.tensorflow.model import CCPM
 
-__all__ = ["DeepFM", "FM", "NFM", "CCPM"]
+
+def test_run_ccpm(get_model_param):
+    params = get_model_param
+
+    model = CCPM(model_params=params)
+    model.train()
+    model.evaluate()
+    model.predict()
