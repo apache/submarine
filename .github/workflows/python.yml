@@ -62,7 +62,7 @@ jobs:
               hostPort: 443
               protocol: TCP
           EOF
-      - uses: helm/kind-action@v1.1.0
+      - uses: container-tools/kind-action@v1
         with:
           version: "v0.9.0"
           node_image: kindest/node:v1.15.6
