@@ -74,13 +74,13 @@ public class K8SJobSubmitterTest extends SpecBuilder {
 
   @Test
   public void testCreateTFJob() throws IOException, URISyntaxException {
-    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobwReqFile);
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobReqFile);
     Experiment experiment = submitter.createExperiment(spec);
   }
 
   @Test
   public void testDeleteTFJob() throws IOException, URISyntaxException {
-    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobwReqFile);
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobReqFile);
     Experiment experiment = submitter.deleteExperiment(spec);
   }
 
