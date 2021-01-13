@@ -25,21 +25,31 @@ import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
 import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
 import { ExperimentTemplateSubmit } from '@submarine/interfaces/experiment-template-submit';
 import { BaseApiService } from '@submarine/services/base-api.service';
-import { of, throwError, Observable } from 'rxjs';
+import { of, throwError, Observable, Subject } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ExperimentService {
+  /*
+    communicate between route-outlet and parent
+    send experiment-id from ExperimentInfo to ExperimentHome
+  */
+  private emitInfoSource = new Subject<string>();
+  infoEmitted$ = this.emitInfoSource.asObservable();
+
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
+
+  emitInfo(id: string) {
+    this.emitInfoSource.next(id);
+  }
 
   fetchExperimentList(): Observable<ExperimentInfo[]> {
     const apiUrl = this.baseApi.getRestApi('/v1/experiment');
     return this.httpClient.get<Rest<ExperimentInfo[]>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
-          console.log(res.result);
           return of(res.result);
         } else {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
@@ -223,6 +233,6 @@ export class ExperimentService {
     } else {
       showSec = sec.toString();
     }
-    return showHr + ':' + showMin + ':' + showSec;
+    return `${showHr}:${showMin}:${showSec}`;
   }
 }

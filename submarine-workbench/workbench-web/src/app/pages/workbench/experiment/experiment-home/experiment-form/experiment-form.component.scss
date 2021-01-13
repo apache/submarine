@@ -16,3 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+#form-type-container {
+  display: grid;
+  grid-auto-rows: 5rem;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  column-gap: 3rem;
+  & button {
+    height: 100%;
+  }
+}

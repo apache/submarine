@@ -17,107 +17,109 @@
   ~ under the License.
   -->
 
-<nz-table
-  *ngIf="!isLoading"
-  style="margin-top: 10px;"
-  id="experimentTable"
-  #basicTable
-  [nzData]="[experimentInfo]"
-  [nzShowPagination]="false"
-  nzSize="small"
->
-  <thead>
-    <tr>
-      <th>Experiment Name</th>
-      <th>Experiment ID</th>
-      <th>Created Time</th>
-      <th>Running Time</th>
-      <th>Finished Time</th>
-      <th>Duration</th>
-      <th>Status</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>{{ experimentInfo.name }}</td>
-      <td>{{ experimentInfo.experimentId }}</td>
-      <td>{{ experimentInfo.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
-      <td>{{ experimentInfo.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
-      <td>{{ experimentInfo.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
-      <td>{{ experimentInfo.duration }}</td>
-      <td>
-        <nz-tag [nzColor]="statusColor[experimentInfo.status]">{{ experimentInfo.status }}</nz-tag>
-      </td>
-      <td class="td-action">
-        <a (click)="startExperiment()">Start</a>
-        <nz-divider nzType="vertical"></nz-divider>
-        <a nz-dropdown [nzDropdownMenu]="more">
-          More
-          <i nz-icon nzType="down"></i>
-        </a>
-        <nz-dropdown-menu #more="nzDropdownMenu">
-          <ul nz-menu nzSelectable>
-            <li nz-menu-item (click)="editExperiment()">Edit</li>
-            <li
-              nz-menu-item
-              nz-popconfirm
-              nzPlacement="left"
-              nzTitle="Confirm to delete?"
-              nzCancelText="Cancel"
-              nzOkText="Ok"
-              (nzOnConfirm)="onDeleteExperiment()"
-            >
-              Delete
-            </li>
-          </ul>
-        </nz-dropdown-menu>
-      </td>
-    </tr>
-  </tbody>
-</nz-table>
-<nz-spin *ngIf="isLoading"></nz-spin>
-<div style="background-color: white;">
-  <nz-select id="nzSelect_selectPod" [(ngModel)]="selectedPod">
-    <nz-option *ngFor="let pod of podNameArr" [nzValue]="pod" [nzLabel]="pod"></nz-option>
-  </nz-select>
-</div>
-<nz-layout>
-  <nz-sider id="experimentInfo_sider">
-    <ul nz-menu>
-      <li nz-menu-item nzSelected (click)="currentState = 0">
-        <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
-        Charts
-      </li>
-      <li nz-menu-item (click)="currentState = 1">
-        <i nz-icon nzType="bars" nzTheme="outline"></i>
-        Parameters
-      </li>
-      <li nz-menu-item (click)="currentState = 2">
-        <i nz-icon nzType="appstore" nzTheme="outline"></i>
-        Metrics
-      </li>
-      <li nz-menu-item (click)="currentState = 3">
-        <i nz-icon nzType="desktop" nzTheme="outline"></i>
-        Outputs
-      </li>
-    </ul>
-  </nz-sider>
+<div style="margin: 15px; padding: 15px; background-color: white">
+  <nz-table
+    *ngIf="!isLoading"
+    style="margin-top: 10px"
+    id="experimentTable"
+    #basicTable
+    [nzData]="[experimentInfo]"
+    [nzShowPagination]="false"
+    nzSize="small"
+  >
+    <thead>
+      <tr>
+        <th>Experiment Name</th>
+        <th>Experiment ID</th>
+        <th>Created Time</th>
+        <th>Running Time</th>
+        <th>Finished Time</th>
+        <th>Duration</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ experimentInfo.name }}</td>
+        <td>{{ experimentInfo.experimentId }}</td>
+        <td>{{ experimentInfo.createdTime | date: 'M/d/yyyy, h:mm a' }}</td>
+        <td>{{ experimentInfo.runningTime | date: 'M/d/yyyy, h:mm a' }}</td>
+        <td>{{ experimentInfo.finishedTime | date: 'M/d/yyyy, h:mm a' }}</td>
+        <td>{{ experimentInfo.duration }}</td>
+        <td>
+          <nz-tag [nzColor]="statusColor[experimentInfo.status]">{{ experimentInfo.status }}</nz-tag>
+        </td>
+        <td class="td-action">
+          <a (click)="startExperiment()">Start</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a nz-dropdown [nzDropdownMenu]="more">
+            More
+            <i nz-icon nzType="down"></i>
+          </a>
+          <nz-dropdown-menu #more="nzDropdownMenu">
+            <ul nz-menu nzSelectable>
+              <li nz-menu-item (click)="editExperiment()">Edit</li>
+              <li
+                nz-menu-item
+                nz-popconfirm
+                nzPlacement="left"
+                nzTitle="Are you sure you want to delete?"
+                nzCancelText="Cancel"
+                nzOkText="Ok"
+                (nzOnConfirm)="onDeleteExperiment()"
+              >
+                Delete
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <nz-spin *ngIf="isLoading"></nz-spin>
+  <div style="background-color: white">
+    <nz-select id="nzSelect_selectPod" [(ngModel)]="selectedPod">
+      <nz-option *ngFor="let pod of podNameArr" [nzValue]="pod" [nzLabel]="pod"></nz-option>
+    </nz-select>
+  </div>
   <nz-layout>
-    <div [ngSwitch]="currentState">
-      <submarine-charts *ngSwitchCase="0" [workerIndex]="selectedPod" [metricData]="metricData"></submarine-charts>
-      <submarine-hyper-params
-        *ngSwitchCase="1"
-        [workerIndex]="selectedPod"
-        [paramData]="paramData"
-      ></submarine-hyper-params>
-      <submarine-metrics *ngSwitchCase="2" [workerIndex]="selectedPod" [metricData]="metricData"></submarine-metrics>
-      <submarine-outputs
-        *ngSwitchCase="3"
-        [podName]="selectedPod"
-        [experimentID]="experimentID"
-        [podLogArr]="podLogArr"
-      ></submarine-outputs>
-    </div>
+    <nz-sider id="experimentInfo_sider">
+      <ul nz-menu>
+        <li nz-menu-item nzSelected (click)="currentState = 0">
+          <i nz-icon nzType="bar-chart" nzTheme="outline"></i>
+          Charts
+        </li>
+        <li nz-menu-item (click)="currentState = 1">
+          <i nz-icon nzType="bars" nzTheme="outline"></i>
+          Parameters
+        </li>
+        <li nz-menu-item (click)="currentState = 2">
+          <i nz-icon nzType="appstore" nzTheme="outline"></i>
+          Metrics
+        </li>
+        <li nz-menu-item (click)="currentState = 3">
+          <i nz-icon nzType="desktop" nzTheme="outline"></i>
+          Outputs
+        </li>
+      </ul>
+    </nz-sider>
+    <nz-layout>
+      <div [ngSwitch]="currentState">
+        <submarine-charts *ngSwitchCase="0" [workerIndex]="selectedPod" [metricData]="metricData"></submarine-charts>
+        <submarine-hyper-params
+          *ngSwitchCase="1"
+          [workerIndex]="selectedPod"
+          [paramData]="paramData"
+        ></submarine-hyper-params>
+        <submarine-metrics *ngSwitchCase="2" [workerIndex]="selectedPod" [metricData]="metricData"></submarine-metrics>
+        <submarine-outputs
+          *ngSwitchCase="3"
+          [podName]="selectedPod"
+          [experimentID]="experimentID"
+          [podLogArr]="podLogArr"
+        ></submarine-outputs>
+      </div>
+    </nz-layout>
   </nz-layout>
-</nz-layout>
+</div>
