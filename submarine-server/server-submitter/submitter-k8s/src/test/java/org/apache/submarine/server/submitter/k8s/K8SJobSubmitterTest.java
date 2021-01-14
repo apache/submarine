@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import io.kubernetes.client.ApiException;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.junit.Assert;
 import org.junit.Before;
@@ -86,7 +87,9 @@ public class K8SJobSubmitterTest extends SpecBuilder {
 
   @Test
   public void testGetTensorboardInfo() throws IOException, URISyntaxException {
-    submitter.getTensorboardInfo();
+    TensorboardInfo tensorboardInfo = submitter.getTensorboardInfo();
+    Assert.assertEquals(tensorboardInfo.getUrl(), "/tensorboard/");
+    Assert.assertTrue(tensorboardInfo.isAvailable());
   }
 
   private void run(ExperimentSpec spec) throws SubmarineRuntimeException {
