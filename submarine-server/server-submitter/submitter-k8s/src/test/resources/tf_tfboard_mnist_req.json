@@ -1,6 +1,6 @@
 {
   "meta": {
-    "name": "tensorflow-tensorboard-dist-mnist",
+    "name": "tensorflow-tensorboard-dist-mnist-1234",
     "namespace": "default",
     "framework": "TensorFlow",
     "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/logs/mylog --learning_rate=0.01 --batch_size=20",

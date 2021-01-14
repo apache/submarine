@@ -23,26 +23,22 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.Configuration;
 import io.kubernetes.client.JSON;
-import io.kubernetes.client.apis.AppsV1Api;
 import io.kubernetes.client.apis.CoreV1Api;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptionsBuilder;
-import io.kubernetes.client.models.V1Deployment;
 import io.kubernetes.client.models.V1ObjectMeta;
-import io.kubernetes.client.models.V1PersistentVolume;
-import io.kubernetes.client.models.V1PersistentVolumeClaim;
 import io.kubernetes.client.models.V1Pod;
 import io.kubernetes.client.models.V1PodList;
-import io.kubernetes.client.models.V1Service;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
@@ -63,11 +59,8 @@ import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
-import org.apache.submarine.server.submitter.k8s.parser.TensorboardSpecParser;
-import org.apache.submarine.server.submitter.k8s.parser.VolumeSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
-import org.apache.submarine.server.submitter.k8s.util.TensorboardUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,14 +81,11 @@ public class K8sSubmitter implements Submitter {
 
   private CoreV1Api coreApi;
 
-  private AppsV1Api appsV1Api;
-
-  public K8sSubmitter() { }
+  public K8sSubmitter() {}
 
   @Override
   public void initialize(SubmarineConfiguration conf) {
     ApiClient client = null;
-
     try {
       String path = System.getenv(KUBECONFIG_ENV);
       KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(path));
@@ -118,25 +108,13 @@ public class K8sSubmitter implements Submitter {
     if (coreApi == null) {
       coreApi = new CoreV1Api(client);
     }
-    if (appsV1Api == null) {
-      appsV1Api = new AppsV1Api();
-    }
-
-    client.setDebugging(true);
   }
 
   @Override
   public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
-    final String name = spec.getMeta().getName();
-
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-
-      // createTFBoardPersistentVolume(name);
-      // createTFBoardPersistentVolumeClaim(name, spec.getMeta().getNamespace());
-      // createTFBoard(name, spec.getMeta().getNamespace());
-
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true");
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
@@ -187,15 +165,8 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Experiment deleteExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
-    final String name = spec.getMeta().getName(); // spec.getMeta().getEnvVars().get(RestConstants.JOB_ID);
-
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-
-      deleteTFBoardPersistentVolume(name);
-      deleteTFBoardPersistentVolumeClaim(name, spec.getMeta().getNamespace());
-      deleteTFBoard(name, spec.getMeta().getNamespace());
-
       Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
           MLJobConverter.toDeleteOptionsFromMLJob(mlJob), null, null, null);
@@ -347,157 +318,6 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
     return notebookList;
-  }
-
-  public void createTFBoard(String name, String namespace) throws ApiException {
-    final String deployName = TensorboardUtils.DEPLOY_PREFIX + name;
-    final String podName = TensorboardUtils.POD_PREFIX + name;
-    final String svcName = TensorboardUtils.SVC_PREFIX + name;
-    final String ingressName = TensorboardUtils.INGRESS_PREFIX + name;
-
-    final String image = TensorboardUtils.IMAGE_NAME;
-    final String routePath = TensorboardUtils.PATH_PREFIX + name;
-    final String pvc = TensorboardUtils.PVC_PREFIX + name;
-
-    V1Deployment deployment = TensorboardSpecParser.parseDeployment(deployName, image, routePath, pvc);
-    V1Service svc = TensorboardSpecParser.parseService(svcName, podName);
-    IngressRoute ingressRoute = TensorboardSpecParser.parseIngressRoute(
-        ingressName, namespace, routePath, svcName
-    );
-
-    try {
-      appsV1Api.createNamespacedDeployment(namespace, deployment, "true", null, null);
-      coreApi.createNamespacedService(namespace, svc, "true", null, null);
-      api.createNamespacedCustomObject(
-            ingressRoute.getGroup(), ingressRoute.getVersion(),
-            ingressRoute.getMetadata().getNamespace(),
-            ingressRoute.getPlural(), ingressRoute, "true");
-    } catch (ApiException e) {
-      LOG.error("Exception when creating TensorBoard " + e.getMessage(), e);
-      throw e;
-    }
-  }
-
-  public void deleteTFBoard(String name, String namespace) throws ApiException {
-    final String deployName = TensorboardUtils.DEPLOY_PREFIX + name;
-    final String podName = TensorboardUtils.POD_PREFIX + name;
-    final String svcName = TensorboardUtils.SVC_PREFIX + name;
-    final String ingressName = TensorboardUtils.INGRESS_PREFIX + name;
-
-    final String image = TensorboardUtils.IMAGE_NAME;
-    final String routePath = TensorboardUtils.PATH_PREFIX + name;
-    final String pvc = TensorboardUtils.PVC_PREFIX + name;
-
-    V1Deployment deployment = TensorboardSpecParser.parseDeployment(deployName, image, routePath, pvc);
-    V1Service svc = TensorboardSpecParser.parseService(svcName, podName);
-    IngressRoute ingressRoute = TensorboardSpecParser.parseIngressRoute(
-        ingressName, namespace, routePath, svcName
-    );
-
-    try {
-      appsV1Api.deleteNamespacedDeployment(deployName, namespace, "true",
-          null, null, null, null, null);
-      coreApi.deleteNamespacedService(svcName, namespace, "true",
-          null, null, null, null, null);
-      api.deleteNamespacedCustomObject(
-          ingressRoute.getGroup(), ingressRoute.getVersion(),
-          ingressRoute.getMetadata().getNamespace(), ingressRoute.getPlural(), ingressName,
-          new V1DeleteOptionsBuilder().withApiVersion(ingressRoute.getApiVersion()).build(),
-          null, null, null);
-
-    } catch (ApiException e) {
-      LOG.error("Exception when deleting TensorBoard " + e.getMessage(), e);
-      throw e;
-    }
-  }
-
-  public void createTFBoardPersistentVolume(String name) throws ApiException {
-    final String pvName = TensorboardUtils.PV_PREFIX + name;
-    final String hostPath = TensorboardUtils.HOST_PREFIX + name;
-    final String storage = TensorboardUtils.STORAGE;
-
-    V1PersistentVolume pv = VolumeSpecParser.parsePersistentVolume(pvName, hostPath, storage);
-
-    try {
-      V1PersistentVolume result = coreApi.createPersistentVolume(pv, "true", null, null);
-    } catch (ApiException e) {
-      LOG.error("Exception when creating persistent volume " + e.getMessage(), e);
-      throw e;
-    }
-  }
-
-  public void deleteTFBoardPersistentVolume(String name) throws ApiException {
-    /*
-    This version of Kubernetes-client/java has bug here.
-    It will trigger exception as in https://github.com/kubernetes-client/java/issues/86
-    but it can still work fine and delete the PV.
-    */
-    final String pvName = TensorboardUtils.PV_PREFIX + name;
-
-    try {
-      V1Status result = coreApi.deletePersistentVolume(
-              pvName, "true", null,
-              null, null, null, null
-      );
-    } catch (ApiException e) {
-      LOG.error("Exception when deleting persistent volume " + e.getMessage(), e);
-      throw e;
-    } catch (JsonSyntaxException e) {
-      if (e.getCause() instanceof IllegalStateException) {
-        IllegalStateException ise = (IllegalStateException) e.getCause();
-        if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT"))
-          LOG.debug("Catching exception because of issue " +
-            "https://github.com/kubernetes-client/java/issues/86", e);
-        else throw e;
-      }
-      else throw e;
-    }
-  }
-
-  public void createTFBoardPersistentVolumeClaim(String name, String namespace) throws ApiException {
-    final String pvcName = TensorboardUtils.PVC_PREFIX + name;
-    final String volume = TensorboardUtils.PV_PREFIX + name;
-    final String storage = TensorboardUtils.STORAGE;
-
-    V1PersistentVolumeClaim pvc = VolumeSpecParser.parsePersistentVolumeClaim(pvcName, volume, storage);
-
-    try {
-      V1PersistentVolumeClaim result = coreApi.createNamespacedPersistentVolumeClaim(
-              namespace, pvc, "true", null, null
-      );
-    } catch (ApiException e) {
-      LOG.error("Exception when creating persistent volume claim " + e.getMessage(), e);
-      throw e;
-    }
-  }
-
-  public void deleteTFBoardPersistentVolumeClaim(String name, String namespace) throws ApiException {
-    /*
-    This version of Kubernetes-client/java has bug here.
-    It will trigger exception as in https://github.com/kubernetes-client/java/issues/86
-    but it can still work fine and delete the PVC
-    */
-    final String pvcName = TensorboardUtils.PVC_PREFIX + name;
-
-    try {
-      V1Status result = coreApi.deleteNamespacedPersistentVolumeClaim(
-                pvcName, namespace, "true",
-          null, null, null,
-            null, null
-      );
-    } catch (ApiException e) {
-      LOG.error("Exception when deleting persistent volume claim " + e.getMessage(), e);
-      throw e;
-    } catch (JsonSyntaxException e) {
-      if (e.getCause() instanceof IllegalStateException) {
-        IllegalStateException ise = (IllegalStateException) e.getCause();
-        if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT"))
-          LOG.debug("Catching exception because of issue " +
-            "https://github.com/kubernetes-client/java/issues/86", e);
-        else throw e;
-      }
-      else throw e;
-    }
   }
 
   private String getJobLabelSelector(ExperimentSpec experimentSpec) {

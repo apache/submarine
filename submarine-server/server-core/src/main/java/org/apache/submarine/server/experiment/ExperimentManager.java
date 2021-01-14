@@ -101,12 +101,6 @@ public class ExperimentManager {
 
     Experiment experiment = submitter.createExperiment(spec);
     experiment.setExperimentId(id);
-    /*
-    TODO(byronhsu) Importing tensorboardUtils will
-    cause a dependency circle. Hard-code it as a temporary solution
-     */
-
-    experiment.setTfboardURL("/tfboard-" + spec.getMeta().getName() + "/");
 
     spec.getMeta().getEnvVars().remove(RestConstants.JOB_ID);
     spec.getMeta().getEnvVars().remove(RestConstants.SUBMARINE_TRACKING_URI);

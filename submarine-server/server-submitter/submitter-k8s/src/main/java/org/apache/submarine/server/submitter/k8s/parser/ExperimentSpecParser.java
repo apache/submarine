@@ -53,7 +53,6 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobSpec
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobSpec;
-import org.apache.submarine.server.submitter.k8s.util.TensorboardUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
