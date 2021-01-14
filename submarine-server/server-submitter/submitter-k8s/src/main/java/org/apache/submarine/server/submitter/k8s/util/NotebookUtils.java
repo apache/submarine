@@ -43,6 +43,10 @@ import org.slf4j.LoggerFactory;
 public class NotebookUtils {
 
   private static final Logger LOG = LoggerFactory.getLogger(NotebookUtils.class);
+  public static final String STORAGE = "10Gi";
+  public static final String PV_PREFIX = "notebook-pv-";
+  public static final String PVC_PREFIX = "notebook-pvc-";
+  public static final String HOST_PATH = "/mnt";
 
   public enum ParseOpt {
     PARSE_OPT_CREATE,
