@@ -21,7 +21,7 @@ package org.apache.submarine.spark.security
 
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.spark.sql.SubmarineSparkUtils.{enableDataMasking, withUser}
-import org.apache.spark.sql.catalyst.plans.logical.{Project, SubmarineDataMasking}
+import org.apache.spark.sql.catalyst.plans.logical.{GlobalLimit, Project, SubmarineDataMasking}
 import org.apache.spark.sql.hive.test.TestHive
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
@@ -280,6 +280,16 @@ case class DataMaskingSQLTest() extends FunSuite with BeforeAndAfterAll {
       val row = df.take(1)(0)
       assert(row.getString(0) === "xxx_277", "value shows last 4 characters")
       assert(row.getString(1) === "xxx_277", "value shows last 4 characters")
+    }
+  }
+
+  test("query limit expression") {
+    withUser("bob") {
+      val df = sql("select * from default.src limit 10")
+      assert(df.queryExecution.optimizedPlan.find(_.isInstanceOf[SubmarineDataMasking]).nonEmpty)
+      assert(df.queryExecution.optimizedPlan.isInstanceOf[GlobalLimit])
+      val row = df.take(1)(0)
+      assert(row.getString(1).startsWith("x"), "values should be masked")
     }
   }
 }
