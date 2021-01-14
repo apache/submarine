@@ -59,7 +59,8 @@ public class K8SJobSubmitterTest extends SpecBuilder {
   }
 
   @Test
-  public void testRunPyTorchJobPerRequest() throws URISyntaxException, IOException, SubmarineRuntimeException {
+  public void testRunPyTorchJobPerRequest() throws URISyntaxException, IOException,
+      SubmarineRuntimeException {
     ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, pytorchJobReqFile);
     run(spec);
   }
