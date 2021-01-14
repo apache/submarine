@@ -124,7 +124,7 @@ export class ExperimentHomeComponent implements OnInit {
 
   getTensorboardInfo(period: number, due: number) {
     /*
-      It will keep polling every ${period} msec, and stop polling when either
+      It will keep polling every ${period} msec, and stop polling whenever
         1. The tensorboard status turns from unavailble to available
         2. It takes over ${due} msec
     */
