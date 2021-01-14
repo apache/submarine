@@ -134,31 +134,26 @@ public class NotebookSpecParser {
       container.setResources(resources);
     }
 
-    // Volume Mount
-    List<V1VolumeMount> mounts = new ArrayList<>();
-    V1VolumeMount mount = new V1VolumeMount();
-    mount.setMountPath("/home/jovyan/workspace");
-    mount.setName("notebook-pv-" + notebookSpec.getMeta().getName());
-    mounts.add(mount);
-    container.setVolumeMounts(mounts);
+    // Volume spec
+    final String DEFAULT_MOUNT_PATH = "/home/jovyan/workspace";
+
+    List<V1VolumeMount> volumeMountList = new ArrayList<>();
+    V1VolumeMount  volumeMount = new V1VolumeMount();
+    volumeMount.setMountPath(DEFAULT_MOUNT_PATH);
+    volumeMount.setName("notebook-pv-" + notebookSpec.getMeta().getName());
+    volumeMountList.add(volumeMount);
+    container.setVolumeMounts(volumeMountList);
 
     containers.add(container);
     podSpec.setContainers(containers);
 
-    // Set Volumes
-    if (podSpec.getVolumes() != null) {
-      V1Volume volume = new V1Volume();
-      String volumeName = "notebook-pv-" + notebookSpec.getMeta().getName();
-      volume.setName(volumeName);
-      podSpec.getVolumes().add(volume);
-    } else {
-      List<V1Volume> volumes = new ArrayList<>();
-      V1Volume volume = new V1Volume();
-      String volumeName = "notebook-pv-" + notebookSpec.getMeta().getName();
-      volume.setName(volumeName);
-      volumes.add(volume);
-      podSpec.setVolumes(volumes);
-    }
+    // create volume object for persistent volume
+    List<V1Volume> volumeList = new ArrayList<>();
+    V1Volume volume = new V1Volume();
+    String volumeName = "notebook-pv-" + notebookSpec.getMeta().getName();
+    volume.setName(volumeName);
+    volumeList.add(volume);
+    podSpec.setVolumes(volumeList);
 
     podTemplateSpec.setSpec(podSpec);
     return podTemplateSpec;

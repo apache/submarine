@@ -188,8 +188,9 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
             gson.fromJson(gson.toJson(jsonResponse.getResult()), Environment.class);
     Assert.assertEquals(ENV_NAME, getEnvironment.getEnvironmentSpec().getName());
 
-    // create notebook instances
+    // waiting for deleting previous persistent volume
     Thread.sleep(15000);
+    // create notebook instances
     LOG.info("Create notebook servers by Notebook REST API");
     String body = loadContent("notebook/notebook-req.json");
     PostMethod postMethod = httpPost(BASE_API_PATH, body,"application/json");
@@ -225,8 +226,9 @@ public class NotebookRestApiIT extends AbstractSubmarineServerTest {
   }
 
   private void runTest(String body, String contentType) throws Exception {
-    // create
+    // waiting for deleting previous persistent volume
     Thread.sleep(15000);
+    // create
     LOG.info("Create a notebook server by Notebook REST API");
     PostMethod postMethod = httpPost(BASE_API_PATH, body, contentType);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), postMethod.getStatusCode());
