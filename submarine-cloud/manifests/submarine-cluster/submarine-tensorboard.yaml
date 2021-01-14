@@ -22,10 +22,10 @@ spec:
   accessModes:
     - ReadWriteMany
   capacity:
-    storage: "{{ .Values.submarine.tensorboard.storage }}"
+    storage: 10Gi
   storageClassName: standard
   hostPath:
-    path: "{{ .Values.submarine.tensorboard.hostPath }}"
+    path: /tmp/tfboard/
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -37,7 +37,7 @@ spec:
   storageClassName: standard
   resources:
     requests:
-      storage: "{{ .Values.submarine.tensorboard.storage }}"
+      storage: 10Gi
   volumeName: tensorboard-pv # bind to specific pv
 ---
 apiVersion: apps/v1
@@ -92,7 +92,7 @@ spec:
     - web
   routes:
     - kind: Rule
-      match: "{{ .Values.submarine.tensorboard.ingressPath }}"
+      match: PathPrefix(`/tensorboard`)
       services:
         - kind: Service
           name: tensorboard-service
