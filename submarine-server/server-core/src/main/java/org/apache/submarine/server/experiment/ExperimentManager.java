@@ -36,6 +36,7 @@ import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
+import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.rest.RestConstants;
 import org.slf4j.Logger;
@@ -233,6 +234,16 @@ public class ExperimentManager {
     Experiment patchExperiment = submitter.findExperiment(spec);
     experiment.rebuild(patchExperiment);
     return submitter.getExperimentLog(spec, id);
+  }
+
+  /**
+   * Get tensorboard meta data
+   *
+   * @return tensorboardinfo
+   * @throws SubmarineRuntimeException the service error
+   */
+  public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
+    return submitter.getTensorboardInfo();
   }
 
   private void checkSpec(ExperimentSpec spec) throws SubmarineRuntimeException {

@@ -33,9 +33,11 @@ import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.Configuration;
 import io.kubernetes.client.JSON;
+import io.kubernetes.client.apis.AppsV1Api;
 import io.kubernetes.client.apis.CoreV1Api;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptionsBuilder;
+import io.kubernetes.client.models.V1Deployment;
 import io.kubernetes.client.models.V1ObjectMeta;
 import io.kubernetes.client.models.V1Pod;
 import io.kubernetes.client.models.V1PodList;
@@ -48,6 +50,7 @@ import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
+import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
@@ -81,6 +84,8 @@ public class K8sSubmitter implements Submitter {
 
   private CoreV1Api coreApi;
 
+  private AppsV1Api appsV1Api;
+
   public K8sSubmitter() {}
 
   @Override
@@ -108,6 +113,12 @@ public class K8sSubmitter implements Submitter {
     if (coreApi == null) {
       coreApi = new CoreV1Api(client);
     }
+
+    if (appsV1Api == null) {
+      appsV1Api = new AppsV1Api();
+    }
+
+    // client.setDebugging(true);
   }
 
   @Override
@@ -243,6 +254,45 @@ public class K8sSubmitter implements Submitter {
       LOG.error("Error when listing pod for experiment:" + spec.getMeta().getName(), e.getMessage());
     }
     return experimentLog;
+  }
+
+  @Override
+  public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
+    final String name = "tensorboard";
+    final String namespace = "default";
+    final String ingressRouteName = "tensorboard-ingressroute";
+
+    try {
+      V1Deployment deploy =  appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
+      boolean available = deploy.getStatus().getAvailableReplicas() > 0; // at least one replica is running
+
+      IngressRoute ingressRoute = new IngressRoute();
+      V1ObjectMeta meta = new V1ObjectMeta();
+      meta.setName(ingressRouteName);
+      meta.setNamespace(namespace);
+      ingressRoute.setMetadata(meta);
+      Object object = api.getNamespacedCustomObject(
+          ingressRoute.getGroup(), ingressRoute.getVersion(),
+          ingressRoute.getMetadata().getNamespace(),
+          ingressRoute.getPlural(), ingressRouteName
+      );
+
+      Gson gson = new JSON().getGson();
+      String jsonString = gson.toJson(object);
+      IngressRoute result = gson.fromJson(jsonString, IngressRoute.class);
+
+
+      String route = result.getSpec().getRoutes().stream().findFirst().get().getMatch();
+
+      //  replace "PathPrefix(`/tensorboard`)" with "/tensorboard/"
+      String url = route.replace("PathPrefix(`", "").replace("`)", "/");
+
+      TensorboardInfo tensorboardInfo = new TensorboardInfo(available, url);
+
+      return tensorboardInfo;
+    } catch (ApiException e) {
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    }
   }
 
   @Override

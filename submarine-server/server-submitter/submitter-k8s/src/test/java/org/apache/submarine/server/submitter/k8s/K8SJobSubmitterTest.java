@@ -84,6 +84,11 @@ public class K8SJobSubmitterTest extends SpecBuilder {
     Experiment experiment = submitter.deleteExperiment(spec);
   }
 
+  @Test
+  public void testGetTensorboardInfo() throws IOException, URISyntaxException {
+    submitter.getTensorboardInfo();
+  }
+
   private void run(ExperimentSpec spec) throws SubmarineRuntimeException {
     // create
     Experiment experimentCreated = submitter.createExperiment(spec);
