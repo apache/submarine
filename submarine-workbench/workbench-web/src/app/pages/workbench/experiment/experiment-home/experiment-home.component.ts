@@ -22,6 +22,8 @@ import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { interval } from 'rxjs';
+import { filter, mergeMap, take, tap, timeout } from 'rxjs/operators';
 import { ExperimentFormComponent } from './experiment-form/experiment-form.component';
 
 @Component({
@@ -37,9 +39,13 @@ export class ExperimentHomeComponent implements OnInit {
     the modification will be sync to parent.
   */
   experimentList: ExperimentInfo[];
-  isLoading: boolean = true;
+  isListLoading: boolean = true;
   checkedList: boolean[];
   selectAllChecked: boolean = false;
+
+  // tensorboard
+  isTensorboardLoading: boolean = true;
+  tensorboardUrl: string = '';
 
   @ViewChild('form', { static: true }) form: ExperimentFormComponent;
 
@@ -55,12 +61,13 @@ export class ExperimentHomeComponent implements OnInit {
     });
 
     this.experimentService.emitInfo(null);
+    this.getTensorboardInfo(1000, 50000);
   }
 
   fetchExperimentList() {
     this.experimentService.fetchExperimentList().subscribe(
       (list) => {
-        this.isLoading = false;
+        this.isListLoading = false;
         this.experimentList = list;
         const currentTime = new Date();
         this.experimentList.forEach((item) => {
@@ -113,5 +120,29 @@ export class ExperimentHomeComponent implements OnInit {
 
   onInitModal(obj) {
     this.form.initModal(obj.initMode, obj.initFormType, obj.id, obj.spec);
+  }
+
+  getTensorboardInfo(period: number, due: number) {
+    /*
+      It will keep polling every ${period} msec, and stop polling whenever
+        1. The tensorboard status turns from unavailble to available
+        2. It takes over ${due} msec
+    */
+
+    interval(period)
+      .pipe(
+        mergeMap(() => this.experimentService.getTensorboardInfo()), // map interval observable to tensorboardInfo observable
+        tap((x) => console.log(x)), // monitoring the process
+        filter((res) => res.available), // only emit the success ones
+        take(1), // if succeed, stop emitting new value from source observable
+        timeout(due) // if timeout, it will throw an error
+      )
+      .subscribe(
+        (res) => {
+          this.isTensorboardLoading = !res.available;
+          this.tensorboardUrl = res.url;
+        },
+        (err) => console.log(err)
+      );
   }
 }
