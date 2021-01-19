@@ -28,6 +28,10 @@ spec:
     metadata:
       labels:
         app: "{{ .Values.submarine.database.name }}"
+      {{ if .Values.submarine.database.dev }}
+      annotations:
+        timestamp: {{ now | quote }}
+      {{ end }}
     spec:
       containers:
         - name: "{{ .Values.submarine.database.name }}"

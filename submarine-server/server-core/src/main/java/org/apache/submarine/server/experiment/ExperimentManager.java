@@ -105,6 +105,8 @@ public class ExperimentManager {
     spec.getMeta().getEnvVars().remove(RestConstants.JOB_ID);
     spec.getMeta().getEnvVars().remove(RestConstants.SUBMARINE_TRACKING_URI);
     experiment.setSpec(spec);
+
+    // service createExperiment(experimentEntity)
     cachedExperimentMap.putIfAbsent(experiment.getExperimentId().toString(), experiment);
     return experiment;
   }
@@ -131,8 +133,12 @@ public class ExperimentManager {
    * @throws SubmarineRuntimeException the service error
    */
   public Experiment getExperiment(String id) throws SubmarineRuntimeException {
+    // check if experiment is in cache
+    // if not, service getExperiment(id)
     checkExperimentId(id);
     Experiment experiment = cachedExperimentMap.get(id);
+
+
     ExperimentSpec spec = experiment.getSpec();
     Experiment patchExperiment = submitter.findExperiment(spec);
     experiment.rebuild(patchExperiment);

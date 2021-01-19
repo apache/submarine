@@ -27,3 +27,4 @@ indent_size = 4
 [*.java]
 indent_style = space
 max_line_length = 110
+indent_size = 2
