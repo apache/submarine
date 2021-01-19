@@ -8,6 +8,13 @@ public class ExperimentEntity extends BaseEntity {
   */
   private String experimentSpec;
 
+  public ExperimentEntity() {}
+
+  public ExperimentEntity(String id, String experimentSpec) {
+    this.id = id;
+    this.experimentSpec = experimentSpec;
+  }
+
   public String getExperimentSpec() {
     return experimentSpec;
   }

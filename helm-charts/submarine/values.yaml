@@ -30,6 +30,6 @@ submarine:
     image: apache/submarine:database-0.6.0-SNAPSHOT
     servicePort: 3306
     mysqlRootPassword: password
-    dev: true # if true, restart database pod every time at helm upgrade
+    dev: false # if true, restart database pod every time at helm upgrade
   traefik:
     enabled: true

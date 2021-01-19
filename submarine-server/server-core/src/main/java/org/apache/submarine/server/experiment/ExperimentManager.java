@@ -21,13 +21,14 @@ package org.apache.submarine.server.experiment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ws.rs.core.Response.Status;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.SubmarineServer;
@@ -37,6 +38,8 @@ import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.experiment.database.ExperimentEntity;
+import org.apache.submarine.server.experiment.database.ExperimentService;
 import org.apache.submarine.server.rest.RestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +62,7 @@ public class ExperimentManager {
   private final ConcurrentMap<String, Experiment> cachedExperimentMap = new ConcurrentHashMap<>();
 
   private final Submitter submitter;
+  private final ExperimentService experimentService = new ExperimentService();
 
   /**
    * Get the singleton instance
@@ -106,23 +110,12 @@ public class ExperimentManager {
     spec.getMeta().getEnvVars().remove(RestConstants.SUBMARINE_TRACKING_URI);
     experiment.setSpec(spec);
 
-    // service createExperiment(experimentEntity)
-    cachedExperimentMap.putIfAbsent(experiment.getExperimentId().toString(), experiment);
+    ExperimentEntity entity = new ExperimentEntity();
+    entity.setId(experiment.getExperimentId().toString());
+    entity.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(experiment.getSpec()));
+    experimentService.insert(entity);
+
     return experiment;
-  }
-
-  private String getSQLAlchemyURL() {
-    SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-    String jdbcUrl = conf.getJdbcUrl();
-    jdbcUrl = jdbcUrl.substring(jdbcUrl.indexOf("//") + 2, jdbcUrl.indexOf("?"));
-    String jdbcUserName = conf.getJdbcUserName();
-    String jdbcPassword = conf.getJdbcPassword();
-    return "mysql+pymysql://" + jdbcUserName + ":" + jdbcPassword + "@" + jdbcUrl;
-  }
-
-  private ExperimentId generateExperimentId() {
-    return ExperimentId.newInstance(SubmarineServer.getServerTimeStamp(),
-        experimentCounter.incrementAndGet());
   }
 
   /**
@@ -133,15 +126,12 @@ public class ExperimentManager {
    * @throws SubmarineRuntimeException the service error
    */
   public Experiment getExperiment(String id) throws SubmarineRuntimeException {
-    // check if experiment is in cache
-    // if not, service getExperiment(id)
     checkExperimentId(id);
-    Experiment experiment = cachedExperimentMap.get(id);
 
+    ExperimentEntity entity = experimentService.select(id);
+    ExperimentSpec spec = new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class);
+    Experiment experiment = submitter.findExperiment(spec);
 
-    ExperimentSpec spec = experiment.getSpec();
-    Experiment patchExperiment = submitter.findExperiment(spec);
-    experiment.rebuild(patchExperiment);
     return experiment;
   }
 
@@ -154,13 +144,13 @@ public class ExperimentManager {
    */
   public List<Experiment> listExperimentsByStatus(String status) throws SubmarineRuntimeException {
     List<Experiment> experimentList = new ArrayList<>();
-    for (Map.Entry<String, Experiment> entry : cachedExperimentMap.entrySet()) {
-      Experiment experiment = entry.getValue();
-      ExperimentSpec spec = experiment.getSpec();
-      Experiment patchExperiment = submitter.findExperiment(spec);
-      LOG.info("Found experiment: {}", patchExperiment.getStatus());
-      if (status == null || status.toLowerCase().equals(patchExperiment.getStatus().toLowerCase())) {
-        experiment.rebuild(patchExperiment);
+    List<ExperimentEntity> entities = experimentService.selectAll();
+
+    for (ExperimentEntity entity: entities) {
+      ExperimentSpec spec = new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class);
+      Experiment experiment = submitter.findExperiment(spec);
+      LOG.info("Found experiment: {}", experiment.getStatus());
+      if (status == null || status.toLowerCase().equals(experiment.getStatus().toLowerCase())) {
         experimentList.add(experiment);
       }
     }
@@ -179,10 +169,17 @@ public class ExperimentManager {
   public Experiment patchExperiment(String id, ExperimentSpec spec) throws SubmarineRuntimeException {
     checkExperimentId(id);
     checkSpec(spec);
-    Experiment experiment = cachedExperimentMap.get(id);
-    Experiment patchExperiment = submitter.patchExperiment(spec);
-    experiment.setSpec(spec);
-    experiment.rebuild(patchExperiment);
+
+    ExperimentEntity entity = new ExperimentEntity();
+    entity.setId(id);
+    entity.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(spec));
+
+    Experiment experiment = submitter.patchExperiment(spec);
+
+    // updated spec
+    entity.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(experiment.getSpec()));
+    experimentService.update(entity);
+
     return experiment;
   }
 
@@ -195,10 +192,13 @@ public class ExperimentManager {
    */
   public Experiment deleteExperiment(String id) throws SubmarineRuntimeException {
     checkExperimentId(id);
-    Experiment experiment = cachedExperimentMap.remove(id);
-    ExperimentSpec spec = experiment.getSpec();
-    Experiment patchExperiment = submitter.deleteExperiment(spec);
-    experiment.rebuild(patchExperiment);
+
+    ExperimentEntity entity = experimentService.select(id);
+    ExperimentSpec spec = new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class);
+
+    Experiment experiment = submitter.deleteExperiment(spec);
+    experimentService.delete(id);
+
     return experiment;
   }
 
@@ -210,17 +210,20 @@ public class ExperimentManager {
    * @throws SubmarineRuntimeException the service error
    */
   public List<ExperimentLog> listExperimentLogsByStatus(String status) throws SubmarineRuntimeException {
-    List<ExperimentLog> experimentLogList = new ArrayList<ExperimentLog>();
-    for (Map.Entry<String, Experiment> entry : cachedExperimentMap.entrySet()) {
-      String id = entry.getKey();
-      Experiment experiment = entry.getValue();
-      ExperimentSpec spec = experiment.getSpec();
-      Experiment patchExperiment = submitter.findExperiment(spec);
-      LOG.info("Found experiment: {}", patchExperiment.getStatus());
-      if (status == null || status.toLowerCase().equals(patchExperiment.getStatus().toLowerCase())) {
-        experiment.rebuild(patchExperiment);
+    List<ExperimentLog> experimentLogList = new ArrayList<>();
+    List<ExperimentEntity> entities = experimentService.selectAll();
+
+    for (ExperimentEntity entity: entities) {
+      String id = entity.getId();
+      ExperimentSpec spec = new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class);
+      Experiment experiment = submitter.findExperiment(spec);
+
+      LOG.info("Found experiment: {}", experiment.getStatus());
+
+      if (status == null || status.toLowerCase().equals(experiment.getStatus().toLowerCase())) {
         experimentLogList.add(submitter.getExperimentLogName(spec, id));
       }
+
     }
     return experimentLogList;
   }
@@ -234,10 +237,11 @@ public class ExperimentManager {
    */
   public ExperimentLog getExperimentLog(String id) throws SubmarineRuntimeException {
     checkExperimentId(id);
-    Experiment experiment = cachedExperimentMap.get(id);
-    ExperimentSpec spec = experiment.getSpec();
-    Experiment patchExperiment = submitter.findExperiment(spec);
-    experiment.rebuild(patchExperiment);
+
+    ExperimentEntity entity = experimentService.select(id);
+    ExperimentSpec spec = new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class);
+    Experiment experiment = submitter.findExperiment(spec);
+
     return submitter.getExperimentLog(spec, id);
   }
 
@@ -252,5 +256,19 @@ public class ExperimentManager {
     if (experimentId == null || !cachedExperimentMap.containsKey(id)) {
       throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(), "Not found experiment.");
     }
+  }
+
+  private String getSQLAlchemyURL() {
+    SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+    String jdbcUrl = conf.getJdbcUrl();
+    jdbcUrl = jdbcUrl.substring(jdbcUrl.indexOf("//") + 2, jdbcUrl.indexOf("?"));
+    String jdbcUserName = conf.getJdbcUserName();
+    String jdbcPassword = conf.getJdbcPassword();
+    return "mysql+pymysql://" + jdbcUserName + ":" + jdbcPassword + "@" + jdbcUrl;
+  }
+
+  private ExperimentId generateExperimentId() {
+    return ExperimentId.newInstance(SubmarineServer.getServerTimeStamp(),
+      experimentCounter.incrementAndGet());
   }
 }
