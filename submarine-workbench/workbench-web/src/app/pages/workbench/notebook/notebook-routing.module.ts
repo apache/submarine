@@ -17,17 +17,32 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { NotebookFormComponent } from './notebook-home/notebook-form/notebook-form.component';
+import { NotebookHomeComponent } from './notebook-home/notebook-home.component';
+import { NotebookComponent } from './notebook.component';
 
-@Component({
-  selector: 'submarine-notebook',
-  templateUrl: './notebook.component.html',
-  styleUrls: ['./notebook.component.scss']
+const routes: Routes = [
+  {
+    path: '',
+    component: NotebookComponent,
+    children: [
+      {
+        path: '',
+        component: NotebookHomeComponent
+      },
+      {
+        path: 'new',
+        component: NotebookFormComponent
+      }
+    ]
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
-export class NotebookComponent implements OnInit {
-  
-  constructor() {}
 
-  ngOnInit() {}
-    
-}
+export class NotebookRoutingModule {}

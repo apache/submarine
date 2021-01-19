@@ -17,33 +17,17 @@
  * under the License.
  */
 
-export interface NotebookSpec {
-  meta: Meta;
-  environment: Environment;
-  spec: Spec;
-}
+import { Url } from 'url';
+import { NotebookSpec } from '@submarine/interfaces/notebook-interfaces/notebook-spec';
 
-export interface Meta {
+export interface NotebookInfo {
+  notebookId: string;
   name: string;
-  namespace: string;
-  ownerId: string;
-}
-
-export interface Environment {
-  name: string;
-  dockerImage: string;
-  kernelSpec: {
-    name: string;
-    channels: string[];
-    dependencies: string[];
-  };
-  description?: string;
-  image: string;
-}
-
-export interface Spec {
-  envVars?: {
-    [key: string]: string;
-  };
-  resources: string;
+  uid: string;
+  url: Url;
+  status: string;
+  reason: string;
+  createdTime: string;
+  deletedTime: string;
+  spec: NotebookSpec;
 }

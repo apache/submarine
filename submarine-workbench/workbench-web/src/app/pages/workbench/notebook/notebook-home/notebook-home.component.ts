@@ -20,14 +20,15 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'submarine-notebook',
-  templateUrl: './notebook.component.html',
-  styleUrls: ['./notebook.component.scss']
-})
-export class NotebookComponent implements OnInit {
-  
-  constructor() {}
+    selector: 'submarine-notebook-home',
+    templateUrl: './notebook-home.component.html',
+    styleUrls: ['./notebook-home.component.scss']
+  })
 
-  ngOnInit() {}
-    
+export class NotebookHomeComponent implements OnInit {
+
+constructor(){}
+
+ngOnInit() {}
+
 }

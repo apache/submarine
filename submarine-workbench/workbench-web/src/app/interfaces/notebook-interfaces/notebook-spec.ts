@@ -17,17 +17,33 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-
-@Component({
-  selector: 'submarine-notebook',
-  templateUrl: './notebook.component.html',
-  styleUrls: ['./notebook.component.scss']
-})
-export class NotebookComponent implements OnInit {
+export interface NotebookSpec {
+    meta: Meta;
+    environment: Environment;
+    spec: Spec;
+  }
   
-  constructor() {}
-
-  ngOnInit() {}
-    
-}
+  export interface Meta {
+    name: string;
+    namespace: string;
+    ownerId: string;
+  }
+  
+  export interface Environment {
+    name: string;
+    dockerImage: string;
+    kernelSpec: {
+      name: string;
+      channels: string[];
+      dependencies: string[];
+    };
+    description?: string;
+    image: string;
+  }
+  
+  export interface Spec {
+    envVars?: {
+      [key: string]: string;
+    };
+    resources: string;
+  }
