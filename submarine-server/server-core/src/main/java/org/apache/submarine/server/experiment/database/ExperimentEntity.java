@@ -29,11 +29,6 @@ public class ExperimentEntity extends BaseEntity {
 
   public ExperimentEntity() {}
 
-  public ExperimentEntity(String id, String experimentSpec) {
-    this.id = id;
-    this.experimentSpec = experimentSpec;
-  }
-
   public String getExperimentSpec() {
     return experimentSpec;
   }
