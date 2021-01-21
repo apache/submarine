@@ -85,7 +85,7 @@ INSERT INTO `params` (`id`, `key`, `value`, `worker_index`) VALUES
 -- Records of environment
 -- ----------------------------
 INSERT INTO `environment` VALUES
-('environment_1600862964725_0001', 'notebook-env', '{"name":"notebook-env","dockerImage":"apache/submarine:jupyter-notebook-0.5.0","kernelSpec":{"name":"submarine_jupyter_py3","channels":["defaults"],"dependencies":[]}}', 'admin', '2020-09-21 14:00:05', 'admin', '2020-09-21 14:00:14');
+('environment_1600862964725_0001', 'notebook-env', '{"name":"notebook-env","dockerImage":"apache/submarine:jupyter-notebook-0.6.0-SNAPSHOT","kernelSpec":{"name":"submarine_jupyter_py3","channels":["defaults"],"dependencies":[]}}', 'admin', '2020-09-21 14:00:05', 'admin', '2020-09-21 14:00:14');
 
 -- ----------------------------
 -- Records of experiment_templates
