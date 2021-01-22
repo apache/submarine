@@ -36,4 +36,16 @@ public class ExperimentEntity extends BaseEntity {
   public void setExperimentSpec(String experimentSpec) {
     this.experimentSpec = experimentSpec;
   }
+
+  @Override
+  public String toString() {
+    return "ExperimentEntity{" +
+      "experimentSpec='" + experimentSpec + '\'' +
+      ", id='" + id + '\'' +
+      ", createBy='" + createBy + '\'' +
+      ", createTime=" + createTime +
+      ", updateBy='" + updateBy + '\'' +
+      ", updateTime=" + updateTime +
+      '}';
+  }
 }

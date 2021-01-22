@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.ws.rs.core.Response.Status;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -62,7 +63,7 @@ public class ExperimentManager {
   private final ConcurrentMap<String, Experiment> cachedExperimentMap = new ConcurrentHashMap<>();
 
   private final Submitter submitter;
-  private final ExperimentService experimentService = new ExperimentService();
+  private final ExperimentService experimentService;
 
   /**
    * Get the singleton instance
@@ -73,15 +74,17 @@ public class ExperimentManager {
     if (manager == null) {
       synchronized (ExperimentManager.class) {
         if (manager == null) {
-          manager = new ExperimentManager(SubmitterManager.loadSubmitter());
+          manager = new ExperimentManager(SubmitterManager.loadSubmitter(), new ExperimentService());
         }
       }
     }
     return manager;
   }
 
-  private ExperimentManager(Submitter submitter) {
+  @VisibleForTesting
+  protected ExperimentManager(Submitter submitter, ExperimentService experimentService) {
     this.submitter = submitter;
+    this.experimentService = experimentService;
   }
 
   /**
@@ -91,6 +94,7 @@ public class ExperimentManager {
    * @return object
    * @throws SubmarineRuntimeException the service error
    */
+
   public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     checkSpec(spec);
 
@@ -110,13 +114,12 @@ public class ExperimentManager {
     spec.getMeta().getEnvVars().remove(RestConstants.SUBMARINE_TRACKING_URI);
     experiment.setSpec(spec);
 
-    ExperimentEntity entity = new ExperimentEntity();
-    entity.setId(experiment.getExperimentId().toString());
-    entity.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(experiment.getSpec()));
+    ExperimentEntity entity = buildEntityFromExperiment(experiment);
     experimentService.insert(entity);
 
     return experiment;
   }
+
 
   /**
    * Get experiment
@@ -129,8 +132,9 @@ public class ExperimentManager {
     checkExperimentId(id);
 
     ExperimentEntity entity = experimentService.select(id);
-    ExperimentSpec spec = new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class);
-    Experiment experiment = submitter.findExperiment(spec);
+    Experiment experiment = buildExperimentFromEntity(entity);
+    Experiment foundExperiment = submitter.findExperiment(experiment.getSpec());
+    experiment.rebuild(foundExperiment);
 
     return experiment;
   }
@@ -147,10 +151,12 @@ public class ExperimentManager {
     List<ExperimentEntity> entities = experimentService.selectAll();
 
     for (ExperimentEntity entity: entities) {
-      ExperimentSpec spec = new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class);
-      Experiment experiment = submitter.findExperiment(spec);
-      LOG.info("Found experiment: {}", experiment.getStatus());
-      if (status == null || status.toLowerCase().equals(experiment.getStatus().toLowerCase())) {
+      Experiment experiment = buildExperimentFromEntity(entity);
+      Experiment foundExperiment = submitter.findExperiment(experiment.getSpec());
+
+      LOG.info("Found experiment: {}", foundExperiment.getStatus());
+      if (status == null || status.toLowerCase().equals(foundExperiment.getStatus().toLowerCase())) {
+        experiment.rebuild(foundExperiment);
         experimentList.add(experiment);
       }
     }
@@ -162,23 +168,27 @@ public class ExperimentManager {
    * Patch the experiment
    *
    * @param id   experiment id
-   * @param spec spec
+   * @param newSpec spec
    * @return object
    * @throws SubmarineRuntimeException the service error
    */
-  public Experiment patchExperiment(String id, ExperimentSpec spec) throws SubmarineRuntimeException {
+  public Experiment patchExperiment(String id, ExperimentSpec newSpec) throws SubmarineRuntimeException {
     checkExperimentId(id);
-    checkSpec(spec);
+    checkSpec(newSpec);
 
-    ExperimentEntity entity = new ExperimentEntity();
-    entity.setId(id);
-    entity.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(spec));
+    ExperimentEntity entity = experimentService.select(id);
+    Experiment experiment = buildExperimentFromEntity(entity);
+    Experiment patchExperiment = submitter.patchExperiment(newSpec);
 
-    Experiment experiment = submitter.patchExperiment(spec);
+    // update spec in returned experiment
+    experiment.setSpec(newSpec);
 
-    // updated spec
-    entity.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(experiment.getSpec()));
+    // update entity and commit
+    entity.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(newSpec));
     experimentService.update(entity);
+
+    // patch new information in experiment
+    experiment.rebuild(patchExperiment);
 
     return experiment;
   }
@@ -194,11 +204,11 @@ public class ExperimentManager {
     checkExperimentId(id);
 
     ExperimentEntity entity = experimentService.select(id);
-    ExperimentSpec spec = new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class);
-
-    Experiment experiment = submitter.deleteExperiment(spec);
+    Experiment experiment = buildExperimentFromEntity(entity);
+    Experiment deletedExperiment = submitter.deleteExperiment(experiment.getSpec());
     experimentService.delete(id);
 
+    experiment.rebuild(deletedExperiment);
     return experiment;
   }
 
@@ -214,14 +224,18 @@ public class ExperimentManager {
     List<ExperimentEntity> entities = experimentService.selectAll();
 
     for (ExperimentEntity entity: entities) {
-      String id = entity.getId();
-      ExperimentSpec spec = new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class);
-      Experiment experiment = submitter.findExperiment(spec);
+      Experiment experiment = buildExperimentFromEntity(entity);
+      Experiment foundExperiment = submitter.findExperiment(experiment.getSpec());
 
-      LOG.info("Found experiment: {}", experiment.getStatus());
+      LOG.info("Found experiment: {}", foundExperiment.getStatus());
 
-      if (status == null || status.toLowerCase().equals(experiment.getStatus().toLowerCase())) {
-        experimentLogList.add(submitter.getExperimentLogName(spec, id));
+      if (status == null || status.toLowerCase().equals(foundExperiment.getStatus().toLowerCase())) {
+        experiment.rebuild(foundExperiment);
+
+        experimentLogList.add(submitter.getExperimentLogName(
+            experiment.getSpec(),
+            experiment.getExperimentId().toString()
+        ));
       }
 
     }
@@ -239,10 +253,15 @@ public class ExperimentManager {
     checkExperimentId(id);
 
     ExperimentEntity entity = experimentService.select(id);
-    ExperimentSpec spec = new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class);
-    Experiment experiment = submitter.findExperiment(spec);
+    Experiment experiment = buildExperimentFromEntity(entity);
 
-    return submitter.getExperimentLog(spec, id);
+    Experiment foundExperiment = submitter.findExperiment(experiment.getSpec());
+    experiment.rebuild(foundExperiment);
+
+    return submitter.getExperimentLogName(
+      experiment.getSpec(),
+      experiment.getExperimentId().toString()
+    );
   }
 
   private void checkSpec(ExperimentSpec spec) throws SubmarineRuntimeException {
@@ -252,8 +271,8 @@ public class ExperimentManager {
   }
 
   private void checkExperimentId(String id) throws SubmarineRuntimeException {
-    ExperimentId experimentId = ExperimentId.fromString(id);
-    if (experimentId == null || !cachedExperimentMap.containsKey(id)) {
+    ExperimentEntity entity = experimentService.select(id);
+    if (entity == null) {
       throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(), "Not found experiment.");
     }
   }
@@ -267,8 +286,35 @@ public class ExperimentManager {
     return "mysql+pymysql://" + jdbcUserName + ":" + jdbcPassword + "@" + jdbcUrl;
   }
 
-  private ExperimentId generateExperimentId() {
+  public ExperimentId generateExperimentId() {
     return ExperimentId.newInstance(SubmarineServer.getServerTimeStamp(),
       experimentCounter.incrementAndGet());
+  }
+
+  /**
+   * Create a new experiment instance from entity, and filled
+   *   1. experimentId
+   *   2. spec
+   * @param entity
+   * @return Experiment
+   */
+  private Experiment buildExperimentFromEntity(ExperimentEntity entity) {
+    Experiment experiment = new Experiment();
+    experiment.setExperimentId(ExperimentId.fromString(entity.getId()));
+    experiment.setSpec(new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class));
+    return experiment;
+  }
+
+  /**
+   * Create a ExperimentEntity instance from experiment
+   *
+   * @param experiment
+   * @return ExperimentEntity
+   */
+  private ExperimentEntity buildEntityFromExperiment(Experiment experiment) {
+    ExperimentEntity entity = new ExperimentEntity();
+    entity.setId(experiment.getExperimentId().toString());
+    entity.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(experiment.getSpec()));
+    return entity;
   }
 }

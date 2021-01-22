@@ -46,7 +46,7 @@ public class ExperimentService {
   }
 
   public ExperimentEntity select(String id) throws SubmarineRuntimeException {
-    LOG.info("Experiment select");
+    LOG.info("Experiment select " + id);
     ExperimentEntity entity;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ExperimentMapper mapper = sqlSession.getMapper(ExperimentMapper.class);
@@ -61,6 +61,8 @@ public class ExperimentService {
 
   public boolean insert(ExperimentEntity experiment) throws SubmarineRuntimeException {
     LOG.info("Experiment insert");
+    LOG.debug(experiment.toString());
+
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ExperimentMapper mapper = sqlSession.getMapper(ExperimentMapper.class);
       mapper.insert(experiment);
@@ -86,7 +88,8 @@ public class ExperimentService {
   }
 
   public boolean delete(String id) throws SubmarineRuntimeException {
-    LOG.info("Experiment delete");
+    LOG.info("Experiment delete " + id);
+
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ExperimentMapper mapper = sqlSession.getMapper(ExperimentMapper.class);
       mapper.delete(id);

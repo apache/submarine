@@ -42,94 +42,74 @@ public class ExperimentServiceTest {
 
   @Test
   public void testInsert() throws Exception {
-    try {
-      ExperimentEntity entity = new ExperimentEntity();
-      String id = "experiment_1230";
-      String spec = "{\"value\": 1}";
+    ExperimentEntity entity = new ExperimentEntity();
+    String id = "experiment_1230";
+    String spec = "{\"value\": 1}";
 
-      entity.setId(id);
-      entity.setExperimentSpec(spec);
+    entity.setId(id);
+    entity.setExperimentSpec(spec);
 
-      experimentService.insert(entity);
+    experimentService.insert(entity);
 
-      ExperimentEntity entitySelected = experimentService.select(id);
+    ExperimentEntity entitySelected = experimentService.select(id);
 
-      compareEntity(entity, entitySelected);
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new Exception(e);
-    }
+    compareEntity(entity, entitySelected);
   }
 
   @Test
   public void testSelectAll() throws Exception  {
-    try {
-      final int SIZE = 3;
-      List<ExperimentEntity> entities = new ArrayList<ExperimentEntity>();
+    final int SIZE = 3;
+    List<ExperimentEntity> entities = new ArrayList<ExperimentEntity>();
 
-      for (int i = 0; i < SIZE; i++) {
-        ExperimentEntity entity = new ExperimentEntity();
-        entity.setId(String.format("experiment_%d", i));
-        entity.setExperimentSpec(String.format("{\"value\": %d}", i));
-        experimentService.insert(entity);
-        entities.add(entity);
-      }
+    for (int i = 0; i < SIZE; i++) {
+      ExperimentEntity entity = new ExperimentEntity();
+      entity.setId(String.format("experiment_%d", i));
+      entity.setExperimentSpec(String.format("{\"value\": %d}", i));
+      experimentService.insert(entity);
+      entities.add(entity);
+    }
 
-      List<ExperimentEntity> entities_selected = experimentService.selectAll();
+    List<ExperimentEntity> entities_selected = experimentService.selectAll();
 
-      Assert.assertEquals(SIZE, entities_selected.size());
-      for (int i = 0; i < entities_selected.size(); i++) {
-        compareEntity(entities.get(i), entities_selected.get(i));
-      }
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new Exception(e);
+    Assert.assertEquals(SIZE, entities_selected.size());
+    for (int i = 0; i < entities_selected.size(); i++) {
+      compareEntity(entities.get(i), entities_selected.get(i));
     }
   };
 
   @Test
   public void testUpdate() throws Exception {
-    try {
-      ExperimentEntity entity = new ExperimentEntity();
-      String id = "experiment_1230";
-      String spec = "{\"value\": 1}";
-      entity.setId(id);
-      entity.setExperimentSpec(spec);
-      experimentService.insert(entity);
+    ExperimentEntity entity = new ExperimentEntity();
+    String id = "experiment_1230";
+    String spec = "{\"value\": 1}";
+    entity.setId(id);
+    entity.setExperimentSpec(spec);
+    experimentService.insert(entity);
 
-      String new_spec = "{\"value\": 2}";
-      entity.setExperimentSpec(new_spec);
-      experimentService.update(entity);
+    String new_spec = "{\"value\": 2}";
+    entity.setExperimentSpec(new_spec);
+    experimentService.update(entity);
 
-      ExperimentEntity entitySelected = experimentService.select(id);
-      compareEntity(entity, entitySelected);
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new Exception(e);
-    }
+    ExperimentEntity entitySelected = experimentService.select(id);
+    compareEntity(entity, entitySelected);
   };
 
   @Test
   public void testDelete() throws Exception {
-    try {
-      ExperimentEntity entity = new ExperimentEntity();
-      String id = "experiment_1230";
-      String spec = "{\"value\": 1}";
+    ExperimentEntity entity = new ExperimentEntity();
+    String id = "experiment_1230";
+    String spec = "{\"value\": 1}";
 
-      entity.setId(id);
-      entity.setExperimentSpec(spec);
+    entity.setId(id);
+    entity.setExperimentSpec(spec);
 
-      experimentService.insert(entity);
+    experimentService.insert(entity);
 
-      experimentService.delete(id);
+    experimentService.delete(id);
 
-      List<ExperimentEntity> entitySelected = experimentService.selectAll();
+    List<ExperimentEntity> entitySelected = experimentService.selectAll();
 
-      Assert.assertEquals(0, entitySelected.size());
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      throw new Exception(e);
-    }
+    Assert.assertEquals(0, entitySelected.size());
   };
 
   private void compareEntity(ExperimentEntity expected, ExperimentEntity actual) {
