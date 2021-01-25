@@ -19,18 +19,20 @@
 
   <div style="margin: 15px; padding: 15px; background-color: white">
     <div align="right">
-      <a routerLink="new">
         <button
           nz-button
           id="btn-newNotebook"
           nzType="primary"
           style="margin: 10px 4px 10px 4px"
+          (click)="form.initModal()"
         >
           <i nz-icon nzType="plus"></i>
           New Notebook
         </button>
-      </a>
     </div>
-    <submarine-notebook-list></submarine-notebook-list>
+    <submarine-notebook-list
+      [notebookList]="notebookList"
+      (deleteNotebook)="onDeleteNotebook($event)"></submarine-notebook-list>
+      <submarine-notebook-form #form></submarine-notebook-form>
   </div>
   

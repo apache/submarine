@@ -24,7 +24,6 @@ import { EnvironmentService } from '@submarine/services/environment.service';
 import { NotebookService } from '@submarine/services/notebook-services/notebook.service';
 import { UserService } from '@submarine/services/user.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'submarine-notebook-form',
@@ -32,6 +31,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./notebook-form.component.scss']
 })
 export class NotebookFormComponent implements OnInit {
+
+  isVisible: boolean;
 
   // User Information
   userId;
@@ -52,7 +53,6 @@ export class NotebookFormComponent implements OnInit {
     private notebookService: NotebookService,
     private userService: UserService,
     private nzMessageService: NzMessageService,
-    private router: Router
   ) { }
 
   ngOnInit() {
@@ -76,8 +76,13 @@ export class NotebookFormComponent implements OnInit {
 
     this.fetchEnvList();
 
-    this.initNotebookStatus();
+    this.initFormStatus();
 
+  }
+
+  initModal() {
+    this.isVisible = true;
+    this.initFormStatus();
   }
 
   // Get all environment
@@ -94,7 +99,7 @@ export class NotebookFormComponent implements OnInit {
   }
 
   // Init Form
-  initNotebookStatus() {
+  initFormStatus() {
     this.notebookName.reset();
     this.envName.reset(this.envNameList[this.indexOfDeaultEnv]);
     this.envVars.clear();
@@ -161,13 +166,8 @@ export class NotebookFormComponent implements OnInit {
     );
   }
 
-   // Submmit
-   handleOk() {
-    this.createNotebookSpec();
-  }
-
   // Develope submmit spec
-  createNotebookSpec() {
+  submitForm() {
     // Check GPU, then develope resources spec
     let resourceSpec;
     if (this.notebookForm.get('gpus').value === 0 || this.notebookForm.get('gpus').value == null) {
@@ -212,10 +212,10 @@ export class NotebookFormComponent implements OnInit {
         });
       },
       complete: () => {
-        this.router.navigate(['/', 'workbench', 'notebook']);
         this.nzMessageService.info(`Notebook Creating`, {
           nzPauseOnHover: true
         });
+        this.isVisible=false;
       }
     });
   }

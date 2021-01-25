@@ -17,10 +17,31 @@
   ~ under the License.
   -->
 
-<div style="margin: 10px; background-color: white;">
-  <div align="center">
-    <h2 style="padding: 10px;">Create Notebook</h2>
-  <form [formGroup]="notebookForm" style="max-width: 600px;">
+<nz-modal
+  [(nzVisible)]="isVisible"
+  (nzOnCancel)="isVisible=false"
+  nzTitle="Create Notebook"
+  [nzWidth]="700">
+  <div *nzModalFooter>
+    <button 
+      nz-button
+      id="nb-form-btn-cancel"
+      nzType="default"
+      (click)="isVisible=false"
+      >
+      Cancel
+    </button>
+    <button 
+      nz-button
+      id="nb-form-btn-create"
+      nzType="primary"
+      [disabled]="checkStatus()"
+      (click)="submitForm()"
+      >
+      Create
+    </button>
+  </div>
+  <form [formGroup]="notebookForm">
     <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="notebookName">
           Notebook Name
@@ -115,15 +136,4 @@
       New EnvVar
     </button>
   </form>
-  <div align="right" style="background-color: white;">
-    <a [routerLink]="['/', 'workbench', 'notebook']">
-      <button class="form-btn" id="btn-cancel" nz-button nzType="primary">
-        Cancel
-      </button>
-    </a>
-    <button class="form-btn" id="btn-create" nz-button nzType="primary" [disabled]="checkStatus()" (click)="handleOk()">
-      Create
-    </button>
-  </div>
-</div>
-</div>
+</nz-modal>

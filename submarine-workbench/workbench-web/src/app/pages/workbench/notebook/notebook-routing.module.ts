@@ -19,7 +19,6 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { NotebookFormComponent } from './notebook-home/notebook-form/notebook-form.component';
 import { NotebookHomeComponent } from './notebook-home/notebook-home.component';
 import { NotebookComponent } from './notebook.component';
 
@@ -30,11 +29,8 @@ const routes: Routes = [
     children: [
       {
         path: '',
+        pathMatch: 'full',
         component: NotebookHomeComponent
-      },
-      {
-        path: 'new',
-        component: NotebookFormComponent
       }
     ]
   },

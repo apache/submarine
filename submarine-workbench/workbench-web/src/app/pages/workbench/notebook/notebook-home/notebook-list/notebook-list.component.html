@@ -17,8 +17,12 @@
   ~ under the License.
   -->
 
-  <div>
-    <nz-table id="notebookListTable" style="padding-top: 5px;" #basicTable [nzData]="allNotebookList">
+    <nz-table 
+      id="notebookListTable" 
+      style="padding-top: 5px;" 
+      #basicTable 
+      [nzData]="notebookList"
+      [nzNoResult]="'No data'">
       <thead>
         <tr>
           <th></th>
@@ -61,11 +65,11 @@
             {{ data.spec.spec.resources }}
           </td>
           <td>
-            <a (click)=showReason(data.reason)>{{ data.status }}</a>
+            <a (click)=showReason(data.reason)>
+              <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag></a>
           </td>
           <td>
-            <a id="delete{{ i }}" (click)="deleteNotebook(data.notebookId)">Delete</a></td>
+            <a id="btn-deleteNotebook{{ i }}" (click)="delete(data.notebookId)">Delete</a></td>
         </tr>
       </tbody>
     </nz-table>
-  </div>
