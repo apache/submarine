@@ -79,19 +79,10 @@ tf-job-operator-7844656dd-lfgmd                   1/1     Running   0          5
 ```
 
 ### Configure volume type
-Submarine can support various [volume types](https://kubernetes.io/docs/concepts/storage/volumes/#nfs), currently including hostPath and NFS. It can be easily configured in the `./helm-charts/submarine/values.yaml`, or you can override the default values in `values.yaml` by [helm CLI](https://helm.sh/docs/helm/helm_install/).
+Submarine can support various [volume types](https://kubernetes.io/docs/concepts/storage/volumes/#nfs), currently including hostPath (default) and NFS. It can be easily configured in the `./helm-charts/submarine/values.yaml`, or you can override the default values in `values.yaml` by [helm CLI](https://helm.sh/docs/helm/helm_install/).
 
-```yaml
-# ./helm-charts/submarine/values.yaml
-storage:
-  type: host # "host" or "nfs"
-  host:
-    root: /tmp
-  nfs:
-    ip: 10.96.0.2
-```
 #### hostPath
-- In hostPath, you store data in the file systems of your nodes.
+- In hostPath, you can store data directly in your node.
 - Usage:
   1. Configure setting in `./helm-charts/submarine/values.yaml`.
   2. To enable hostPath storage, set `.storage.type` to `host`.

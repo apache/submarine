@@ -66,5 +66,3 @@ spec:
         - name: nfs-vol
           hostPath:
             path: /tmp/nfs-vol
-            # path: /nfs-vol  # modify this to specify another path to store nfs share data
-            # type: DirectoryOrCreate
