@@ -57,7 +57,7 @@ Based on your track-record as a contributor, Per Apache code, PMCs vote on commi
 Note that becoming a committer is not just about submitting some patches; it‘s also about helping out on the development and user [Slack User](https://the-asf.slack.com/submarine-user/), helping with documentation and the issues.
 
 See [Become a Committer.md](become-a-committer.md) for steps of becoming a committer and more details.
-Mailing list
+
 ## How to commit
 
 See [How to commit](HowToCommit.md) for helper doc for Submarine committers.
