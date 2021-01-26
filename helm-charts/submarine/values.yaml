@@ -31,3 +31,9 @@ submarine:
     mysqlRootPassword: password
   traefik:
     enabled: true
+  storage:
+    type: host # "host" or "nfs"
+    host:
+      root: /tmp
+    nfs:
+      ip: 10.96.0.2

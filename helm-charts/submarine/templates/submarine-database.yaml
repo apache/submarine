@@ -14,7 +14,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: submarine-database-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 1Gi
 
+{{- with .Values.submarine.storage }}
+
+  {{- if eq (.type | lower) "nfs" }}
+  nfs:
+    server: {{ .nfs.ip }}
+    path: "/"
+  {{- else }}
+  hostPath:
+    path: "{{ .host.root }}"
+  {{- end }}
+
+{{- end}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: submarine-database-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: submarine-database-pv
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,13 +67,20 @@ spec:
       containers:
         - name: "{{ .Values.submarine.database.name }}"
           image: "{{ .Values.submarine.database.image }}"
-          imagePullPolicy: {{ .Values.submarine.database.imagePullPolicy }}
+          imagePullPolicy: "{{ .Values.submarine.database.imagePullPolicy }}"
           ports:
             - containerPort: 3306
           env:
             - name: MYSQL_ROOT_PASSWORD
               value: "{{ .Values.submarine.database.mysqlRootPassword }}"
-
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: volume
+              subPath: submarine-database
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
+            claimName: submarine-database-pvc
 ---
 apiVersion: v1
 kind: Service

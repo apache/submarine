@@ -78,6 +78,65 @@ submarine-traefik-9bb6f8577-66sx6                 1/1     Running   0          5
 tf-job-operator-7844656dd-lfgmd                   1/1     Running   0          5s
 ```
 
+### Configure volume type
+Submarine can support various [volume types](https://kubernetes.io/docs/concepts/storage/volumes/#nfs), currently including hostPath and NFS. It can be easily configured in the `./helm-charts/submarine/values.yaml`, or you can override the default values in `values.yaml` by [helm CLI](https://helm.sh/docs/helm/helm_install/).
+
+```yaml
+# ./helm-charts/submarine/values.yaml
+storage:
+  type: host # "host" or "nfs"
+  host:
+    root: /tmp
+  nfs:
+    ip: 10.96.0.2
+```
+#### hostPath
+- In hostPath, you store data in the file systems of your nodes.
+- Usage:
+  1. Configure setting in `./helm-charts/submarine/values.yaml`.
+  2. To enable hostPath storage, set `.storage.type` to `host`.
+  3. To set the root path for your storage, set `.storage.host.root` to `<any-path>`
+- Example:
+  ```yaml
+  # ./helm-charts/submarine/values.yaml
+  storage:
+    type: host
+    host:
+      root: /tmp
+  ```
+
+
+#### NFS (Network File System)
+- In NFS, it allows multiple clients to access a shared space.
+- Prerequisite:
+  1. A pre-existing NFS server. You have two options.
+      1. Create NFS server
+          ```bash
+          kubectl create -f ./dev-support/nfs-server/nfs-server.yaml
+          ```
+          It will create a nfs-server pod in kubernetes cluster, and expose nfs-server ip at `10.96.0.2`
+      2. Use your own NFS server
+  2. Install NFS dependencies in your nodes
+      - Ubuntu
+          ```bash
+          apt-get install -y nfs-common
+          ```
+      - CentOS
+          ```bash
+          yum install nfs-util
+          ```
+- Usage:
+  1. Configure setting in `./helm-charts/submarine/values.yaml`.
+  2. To enable NFS storage, set `.storage.type` to `nfs`.
+  3. To set the ip for NFS server, set `.storage.nfs.ip` to `<any-ip>`
+- Example:
+  ```yaml
+  # ./helm-charts/submarine/values.yaml
+  storage:
+    type: nfs
+    nfs:
+      ip: 10.96.0.2
+  ```
 ### Access to Submarine Server
 Submarine server by default expose 8080 port within K8s cluster. After Submarine v0.5
 uses Traefik as reverse-proxy by default. If you don't want to
