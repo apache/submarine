@@ -70,11 +70,11 @@ Communication within the Submarine community abides by [Apache’s Code of Condu
 
 Get help using Apache Submarine or contribute to the project on our mailing lists:
 
-+ [Users](https://lists.apache.org/list.html?users@submarine.apache.org) : [subscribe](users-subscribe@submarine.apache.org), [unsubscribe](users-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?users@submarine.apache.org)
++ [Users](https://lists.apache.org/list.html?users@submarine.apache.org) : [subscribe](mailto:users-subscribe@submarine.apache.org), [unsubscribe](mailto:users-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?users@submarine.apache.org)
 for usage questions, help, and announcements.
-+ [Dev](https://lists.apache.org/list.html?dev@submarine.apache.org) : [subscribe](dev-subscribe@submarine.apache.org), [unsubscribe](dev-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?dev@submarine.apache.org)
++ [Dev](https://lists.apache.org/list.html?dev@submarine.apache.org) : [subscribe](mailto:dev-subscribe@submarine.apache.org), [unsubscribe](mailto:dev-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?dev@submarine.apache.org)
 for people wanting to contribute to the project.
-+ [Commits](https://lists.apache.org/list.html?commits@submarine.apache.org) : [subscribe](commits-subscribe@submarine.apache.org), [unsubscribe](commits-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?commits@submarine.apache.org)
++ [Commits](https://lists.apache.org/list.html?commits@submarine.apache.org) : [subscribe](mailto:commits-subscribe@submarine.apache.org), [unsubscribe](mailto:commits-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?commits@submarine.apache.org)
 for commit messages and patches.
 
 ## License
