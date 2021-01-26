@@ -66,7 +66,7 @@ See [How to commit](HowToCommit.md) for helper doc for Submarine committers.
 
 Communication within the Submarine community abides by [Apache’s Code of Conduct](https://www.apache.org/foundation/policies/conduct.html).
 
-## Mailing list
+## Mailing lists
 
 Get help using Apache Submarine or contribute to the project on our mailing lists:
 
