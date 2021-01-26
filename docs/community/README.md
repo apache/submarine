@@ -57,7 +57,7 @@ Based on your track-record as a contributor, Per Apache code, PMCs vote on commi
 Note that becoming a committer is not just about submitting some patches; it‘s also about helping out on the development and user [Slack User](https://the-asf.slack.com/submarine-user/), helping with documentation and the issues.
 
 See [Become a Committer.md](become-a-committer.md) for steps of becoming a committer and more details.
-
+Mailing list
 ## How to commit
 
 See [How to commit](HowToCommit.md) for helper doc for Submarine committers.
@@ -65,6 +65,17 @@ See [How to commit](HowToCommit.md) for helper doc for Submarine committers.
 ## Communication
 
 Communication within the Submarine community abides by [Apache’s Code of Conduct](https://www.apache.org/foundation/policies/conduct.html).
+
+## Mailing list
+
+Get help using Apache Submarine or contribute to the project on our mailing lists:
+
++ [Users](https://lists.apache.org/list.html?users@submarine.apache.org) : [subscribe](users-subscribe@submarine.apache.org), [unsubscribe](users-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?users@submarine.apache.org)
+for usage questions, help, and announcements.
++ [Dev](https://lists.apache.org/list.html?dev@submarine.apache.org) : [subscribe](dev-subscribe@submarine.apache.org), [unsubscribe](dev-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?dev@submarine.apache.org)
+for people wanting to contribute to the project.
++ [Commits](https://lists.apache.org/list.html?commits@submarine.apache.org) : [subscribe](commits-subscribe@submarine.apache.org), [unsubscribe](commits-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?commits@submarine.apache.org)
+for commit messages and patches.
 
 ## License
 
