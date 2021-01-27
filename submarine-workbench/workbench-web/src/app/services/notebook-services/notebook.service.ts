@@ -27,62 +27,58 @@ import { NotebookInfo } from '@submarine/interfaces/notebook-interfaces/notebook
 import { NotebookSpec } from '@submarine/interfaces/notebook-interfaces/notebook-spec';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class NotebookService {
-    constructor(
-        private baseApi: BaseApiService, 
-        private httpClient: HttpClient
-    ) {}
-    
-    fetchNotebookList(id: string): Observable<NotebookInfo[]> {
-      const apiUrl = this.baseApi.getRestApi('/v1/notebook?id=' + id);
-      return this.httpClient.get<Rest<NotebookInfo[]>>(apiUrl).pipe(
-        switchMap((res) => {
-          if (res.success) {
-            return of(res.result);
-          } else {
-            throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
-          }
-        })
-      );
-    }
+  constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
-    createNotebook(notebookSpec: object): Observable<NotebookSpec> {
-      const apiUrl = this.baseApi.getRestApi('/v1/notebook');
-      return this.httpClient.post<Rest<NotebookSpec>>(apiUrl, notebookSpec).pipe(
-        map((res) => res.result), // return result directly if succeeding
-        catchError((e) => {
-          let message: string;
-          if (e.error instanceof ErrorEvent) {
-            // client side error
-            message = 'Something went wrong with network or workbench';
-          } else {
-            console.log(e);
-            if (e.status === 409) {
-              message = 'You might have a duplicate notebook name';
-            } else if (e.status >= 500) {
-              message = `${e.message}`;
-            } else {
-              message = e.error.message;
-            }
-          }
-          return throwError(message);
-        })
-      );
-    }
+  fetchNotebookList(id: string): Observable<NotebookInfo[]> {
+    const apiUrl = this.baseApi.getRestApi('/v1/notebook?id=' + id);
+    return this.httpClient.get<Rest<NotebookInfo[]>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
+  }
 
-    deleteNotebook(id: string): Observable<NotebookInfo> {
-      const apiUrl = this.baseApi.getRestApi(`/v1/notebook/${id}`);
-      return this.httpClient.delete<Rest<NotebookInfo>>(apiUrl).pipe(
-        switchMap((res) => {
-          if (res.success) {
-            return of(res.result);
+  createNotebook(notebookSpec: object): Observable<NotebookSpec> {
+    const apiUrl = this.baseApi.getRestApi('/v1/notebook');
+    return this.httpClient.post<Rest<NotebookSpec>>(apiUrl, notebookSpec).pipe(
+      map((res) => res.result), // return result directly if succeeding
+      catchError((e) => {
+        let message: string;
+        if (e.error instanceof ErrorEvent) {
+          // client side error
+          message = 'Something went wrong with network or workbench';
+        } else {
+          console.log(e);
+          if (e.status === 409) {
+            message = 'You might have a duplicate notebook name';
+          } else if (e.status >= 500) {
+            message = `${e.message}`;
           } else {
-            throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete', id);
+            message = e.error.message;
           }
-        })
-      );
-    }
+        }
+        return throwError(message);
+      })
+    );
+  }
+
+  deleteNotebook(id: string): Observable<NotebookInfo> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/notebook/${id}`);
+    return this.httpClient.delete<Rest<NotebookInfo>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete', id);
+        }
+      })
+    );
+  }
 }

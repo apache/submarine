@@ -18,32 +18,32 @@
  */
 
 export interface NotebookSpec {
-    meta: Meta;
-    environment: Environment;
-    spec: Spec;
-  }
-  
-  export interface Meta {
+  meta: Meta;
+  environment: Environment;
+  spec: Spec;
+}
+
+export interface Meta {
+  name: string;
+  namespace: string;
+  ownerId: string;
+}
+
+export interface Environment {
+  name: string;
+  dockerImage: string;
+  kernelSpec: {
     name: string;
-    namespace: string;
-    ownerId: string;
-  }
-  
-  export interface Environment {
-    name: string;
-    dockerImage: string;
-    kernelSpec: {
-      name: string;
-      channels: string[];
-      dependencies: string[];
-    };
-    description?: string;
-    image: string;
-  }
-  
-  export interface Spec {
-    envVars?: {
-      [key: string]: string;
-    };
-    resources: string;
-  }
+    channels: string[];
+    dependencies: string[];
+  };
+  description?: string;
+  image: string;
+}
+
+export interface Spec {
+  envVars?: {
+    [key: string]: string;
+  };
+  resources: string;
+}
