@@ -69,7 +69,17 @@
               <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag></a>
           </td>
           <td>
-            <a id="btn-deleteNotebook{{ i }}" (click)="delete(data.notebookId)">Delete</a></td>
+            <a 
+              id="btn-deleteNotebook{{ i }}" 
+              nz-popconfirm
+              nzPlacement="left"
+              nzTitle="Are you sure you want to delete?"
+              nzCancelText="Cancel"
+              nzOkText="Ok"
+              (nzOnConfirm)="onDeleteNotebook(data.notebookId)">
+              Delete
+            </a>
+          </td>
         </tr>
       </tbody>
     </nz-table>

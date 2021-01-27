@@ -53,7 +53,7 @@ export class NotebookListComponent implements OnInit {
       );
   }
 
-  delete(id: string) {
+  onDeleteNotebook(id: string) {
     this.deleteNotebook.emit(id);
   }
 
