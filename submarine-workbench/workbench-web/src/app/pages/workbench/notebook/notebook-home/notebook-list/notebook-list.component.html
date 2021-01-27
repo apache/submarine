@@ -17,69 +17,61 @@
   ~ under the License.
   -->
 
-    <nz-table 
-      id="notebookListTable" 
-      style="padding-top: 5px;" 
-      #basicTable 
-      [nzData]="notebookList"
-      [nzNoResult]="'No data'">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Name</th>
-          <th>Environment</th>
-          <th>Docker Image</th>
-          <th>Resources</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let data of basicTable.data; let i = index">
-          <td *ngIf="data.status === 'running'">
-            <i
-              nz-icon
-              [nzType]="'check-circle'" 
-              [nzTheme]="'twotone'" 
-              [nzTwotoneColor]="'#52c41a'"
-              style="color: #08c; font-size: 24px;">
-            </i>
-          </td>
-          <td *ngIf="data.status !== 'running'">
-            <i 
-              nz-icon 
-              nzType="loading" 
-              nzTheme="outline" 
-              style="color: #08c; font-size: 24px;">
-            </i>
-          </td>
-          <td *ngIf="data.status === 'running'">
-            <a href="{{ data.url }}" target="_blank">{{ data.name }}</a>
-          </td>
-          <td *ngIf="data.status !== 'running'">
-            {{ data.name }}
-          </td>
-          <td>{{ data.spec.environment.name }}</td>
-          <td>{{ data.spec.environment.dockerImage }}</td>
-          <td>
-            {{ data.spec.spec.resources }}
-          </td>
-          <td>
-            <a (click)=showReason(data.reason)>
-              <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag></a>
-          </td>
-          <td>
-            <a 
-              id="btn-deleteNotebook{{ i }}" 
-              nz-popconfirm
-              nzPlacement="left"
-              nzTitle="Are you sure you want to delete?"
-              nzCancelText="Cancel"
-              nzOkText="Ok"
-              (nzOnConfirm)="onDeleteNotebook(data.notebookId)">
-              Delete
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
+<nz-table id="notebookListTable" style="padding-top: 5px" #basicTable [nzData]="notebookList" [nzNoResult]="'No data'">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Name</th>
+      <th>Environment</th>
+      <th>Docker Image</th>
+      <th>Resources</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of basicTable.data; let i = index">
+      <td *ngIf="data.status === 'running'">
+        <i
+          nz-icon
+          [nzType]="'check-circle'"
+          [nzTheme]="'twotone'"
+          [nzTwotoneColor]="'#52c41a'"
+          style="color: #08c; font-size: 24px"
+        ></i>
+      </td>
+      <td *ngIf="data.status !== 'running'">
+        <i nz-icon nzType="loading" nzTheme="outline" style="color: #08c; font-size: 24px"></i>
+      </td>
+      <td *ngIf="data.status === 'running'">
+        <a href="{{ data.url }}" target="_blank">{{ data.name }}</a>
+      </td>
+      <td *ngIf="data.status !== 'running'">
+        {{ data.name }}
+      </td>
+      <td>{{ data.spec.environment.name }}</td>
+      <td>{{ data.spec.environment.dockerImage }}</td>
+      <td>
+        {{ data.spec.spec.resources }}
+      </td>
+      <td>
+        <a (click)="showReason(data.reason)">
+          <nz-tag [nzColor]="statusColor[data.status]">{{ data.status }}</nz-tag>
+        </a>
+      </td>
+      <td>
+        <a
+          id="btn-deleteNotebook{{ i }}"
+          nz-popconfirm
+          nzPlacement="left"
+          nzTitle="Are you sure you want to delete?"
+          nzCancelText="Cancel"
+          nzOkText="Ok"
+          (nzOnConfirm)="onDeleteNotebook(data.notebookId)"
+        >
+          Delete
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

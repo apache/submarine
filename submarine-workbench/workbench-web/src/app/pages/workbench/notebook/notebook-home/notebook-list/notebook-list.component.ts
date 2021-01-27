@@ -18,43 +18,35 @@
  */
 
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { NotebookInfo } from '@submarine/interfaces/notebook-interfaces/notebook-info'
+import { NotebookInfo } from '@submarine/interfaces/notebook-interfaces/notebook-info';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'submarine-notebook-list',
   templateUrl: './notebook-list.component.html',
-  styleUrls: ['./notebook-list.component.scss']
+  styleUrls: ['./notebook-list.component.scss'],
 })
 export class NotebookListComponent implements OnInit {
-
-  constructor(
-    private nzNotificationService: NzNotificationService
-  ) { }
+  constructor(private nzNotificationService: NzNotificationService) {}
 
   @Input() notebookList: NotebookInfo[];
 
   @Output() deleteNotebook = new EventEmitter<string>();
 
-  statusColor: { [key: string]: string} = {
+  statusColor: { [key: string]: string } = {
     creating: 'gold',
     waiting: 'gold',
     running: 'green',
-    terminating: 'blue'
-  }
+    terminating: 'blue',
+  };
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   showReason(reason: string) {
-    this.nzNotificationService.blank(
-      'Notebook Status',
-      reason
-      );
+    this.nzNotificationService.blank('Notebook Status', reason);
   }
 
   onDeleteNotebook(id: string) {
     this.deleteNotebook.emit(id);
   }
-
 }

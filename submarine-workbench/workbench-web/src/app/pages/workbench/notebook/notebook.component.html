@@ -16,22 +16,22 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-  <nz-layout style="margin: -24px -24px 16px">
-    <div style="background-color: white; padding-left: 30px; padding-top: 20px">
-      <nz-breadcrumb>
-        <nz-breadcrumb-item>
-          <a>Home</a>
-        </nz-breadcrumb-item>
-        <nz-breadcrumb-item>
-          <a [routerLink]="['/', 'workbench', 'notebook']">notebook</a>
-        </nz-breadcrumb-item>
-      </nz-breadcrumb>
-      <div>
-        <br />
-        <h2>Notebook</h2>
-        <nz-content>Apache submarine support jupyter notebook.</nz-content>
-      </div>
+<nz-layout style="margin: -24px -24px 16px">
+  <div style="background-color: white; padding-left: 30px; padding-top: 20px">
+    <nz-breadcrumb>
+      <nz-breadcrumb-item>
+        <a>Home</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item>
+        <a [routerLink]="['/', 'workbench', 'notebook']">notebook</a>
+      </nz-breadcrumb-item>
+    </nz-breadcrumb>
+    <div>
       <br />
+      <h2>Notebook</h2>
+      <nz-content>Apache submarine support jupyter notebook.</nz-content>
     </div>
-    <router-outlet></router-outlet>
+    <br />
+  </div>
+  <router-outlet></router-outlet>
 </nz-layout>

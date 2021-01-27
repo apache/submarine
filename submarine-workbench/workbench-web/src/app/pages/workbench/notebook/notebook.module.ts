@@ -26,31 +26,23 @@ import { NotebookService } from '@submarine/services/notebook-services/notebook.
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { NotebookRoutingModule } from './notebook-routing.module';
 
-
 import { NotebookComponent } from './notebook.component';
 import { NotebookHomeComponent } from './notebook-home/notebook-home.component';
 import { NotebookListComponent } from './notebook-home/notebook-list/notebook-list.component';
 import { NotebookFormComponent } from './notebook-home/notebook-form/notebook-form.component';
 
-
 @NgModule({
   imports: [
-    CommonModule, 
-    FormsModule, 
-    ReactiveFormsModule, 
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     RouterModule,
     PipeSharedModule,
     NgZorroAntdModule,
     NotebookRoutingModule,
   ],
   providers: [NotebookService],
-  declarations: [
-    NotebookComponent,
-    NotebookHomeComponent,
-    NotebookListComponent,
-    NotebookFormComponent,
-  ],
-  exports: [NotebookComponent]
+  declarations: [NotebookComponent, NotebookHomeComponent, NotebookListComponent, NotebookFormComponent],
+  exports: [NotebookComponent],
 })
-
 export class NotebookModule {}

@@ -17,80 +17,70 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { ExponentialBackoff } from '@submarine/services/notebook-services/polling';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { NotebookService } from '@submarine/services/notebook-services/notebook.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { UserService } from '@submarine/services/user.service';
-import { isEqual } from "lodash";
-import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { isEqual } from 'lodash';
 import { NotebookFormComponent } from './notebook-form/notebook-form.component';
+import { interval, Subscription } from 'rxjs';
+import { mergeMap, timeout } from 'rxjs/operators';
 
 @Component({
-    selector: 'submarine-notebook-home',
-    templateUrl: './notebook-home.component.html',
-    styleUrls: ['./notebook-home.component.scss']
-  })
-
-export class NotebookHomeComponent implements OnInit {
-
+  selector: 'submarine-notebook-home',
+  templateUrl: './notebook-home.component.html',
+  styleUrls: ['./notebook-home.component.scss'],
+})
+export class NotebookHomeComponent implements OnInit, OnDestroy {
   // User Information
   userId;
 
   // Notebook list
   notebookList;
 
-  // Sync //
-  // Subscription
-  subscriptions = new Subscription();
-  // Poller
-  poller: ExponentialBackoff;
+  subscribtions = new Subscription();
 
-  @ViewChild('form', {static: true}) form: NotebookFormComponent;
+  @ViewChild('form', { static: true }) form: NotebookFormComponent;
 
-constructor(
-  private notebookService: NotebookService,
-  private nzMessageService: NzMessageService,
-  private userService: UserService,
-){}
+  constructor(
+    private notebookService: NotebookService,
+    private nzMessageService: NzMessageService,
+    private userService: UserService
+  ) {}
 
-ngOnInit() {
-  this.poller = new ExponentialBackoff({ interval: 1000, retries: 3 });
-    const resourcesSub = this.poller.start().subscribe(() => {
-      this.userService.fetchUserInfo().subscribe((res) => {
-        this.userId = res.id;
-        this.notebookService.fetchNotebookList(this.userId).subscribe(resources => {
-          if (!isEqual(this.notebookList, resources)) {
-            this.notebookList = resources;
-            this.poller.reset();
-          }
-        });
+  ngOnInit() {
+    this.userService.fetchUserInfo().subscribe((res) => {
+      this.userId = res.id;
+    });
+
+    const resourceSub = interval(1000).subscribe(() => {
+      this.notebookService.fetchNotebookList(this.userId).subscribe((res) => {
+        if (!isEqual(this.notebookList, res)) {
+          this.notebookList = res;
+        }
       });
     });
-    
-    this.subscriptions.add(resourcesSub);
-}
 
-ngOnDestroy() {
-  this.subscriptions.unsubscribe();
-}
+    this.subscribtions.add(resourceSub);
+  }
 
-onDeleteNotebook(id: string) {
-  this.notebookService.deleteNotebook(id).subscribe({
-    next: (result) => {
-    },
-    error: (msg) => {
-      this.nzMessageService.error(`${msg}, please try again`, {
-        nzPauseOnHover: true
-      });
-    },
-    complete: () => {
-      this.nzMessageService.info(`Delete Notebook...`, {
-        nzPauseOnHover: true
-      });
-    }
-  });
-}
+  ngOnDestroy() {
+    this.subscribtions.unsubscribe();
+  }
 
+  onDeleteNotebook(id: string) {
+    this.notebookService.deleteNotebook(id).subscribe({
+      next: (result) => {},
+      error: (msg) => {
+        this.nzMessageService.error(`${msg}, please try again`, {
+          nzPauseOnHover: true,
+        });
+      },
+      complete: () => {
+        this.nzMessageService.info(`Delete Notebook...`, {
+          nzPauseOnHover: true,
+        });
+      },
+    });
+  }
 }

@@ -30,9 +30,9 @@ const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        component: NotebookHomeComponent
-      }
-    ]
+        component: NotebookHomeComponent,
+      },
+    ],
   },
 ];
 
@@ -40,5 +40,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-
 export class NotebookRoutingModule {}

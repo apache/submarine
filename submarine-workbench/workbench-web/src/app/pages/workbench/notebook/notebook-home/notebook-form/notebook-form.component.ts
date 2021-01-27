@@ -28,10 +28,9 @@ import { NzMessageService } from 'ng-zorro-antd/message';
 @Component({
   selector: 'submarine-notebook-form',
   templateUrl: './notebook-form.component.html',
-  styleUrls: ['./notebook-form.component.scss']
+  styleUrls: ['./notebook-form.component.scss'],
 })
 export class NotebookFormComponent implements OnInit {
-
   isVisible: boolean;
 
   // User Information
@@ -52,32 +51,30 @@ export class NotebookFormComponent implements OnInit {
     private environmentService: EnvironmentService,
     private notebookService: NotebookService,
     private userService: UserService,
-    private nzMessageService: NzMessageService,
-  ) { }
+    private nzMessageService: NzMessageService
+  ) {}
 
   ngOnInit() {
-
     this.userService.fetchUserInfo().subscribe((res) => {
       this.userId = res.id;
     });
 
     this.notebookForm = this.fb.group({
-      notebookName: [null, [
-        Validators.maxLength(63),
-        Validators.pattern('^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$'),
-        Validators.required]],
+      notebookName: [
+        null,
+        [Validators.maxLength(63), Validators.pattern('^([a-z]|[a-z][-a-z0-9]*[a-z0-9])$'), Validators.required],
+      ],
       envName: [null, Validators.required], // Environment
       envVars: this.fb.array([], [this.experimentValidatorService.nameValidatorFactory('key')]),
       cpus: [null, [Validators.min(1), Validators.required]],
       gpus: [null],
       memoryNum: [null, [Validators.required]],
-      unit: [this.MEMORY_UNITS[0], [Validators.required]]
+      unit: [this.MEMORY_UNITS[0], [Validators.required]],
     });
 
     this.fetchEnvList();
 
     this.initFormStatus();
-
   }
 
   initModal() {
@@ -137,7 +134,7 @@ export class NotebookFormComponent implements OnInit {
     return new FormGroup(
       {
         key: new FormControl(defaultKey, [Validators.required]),
-        value: new FormControl(defaultValue, [Validators.required])
+        value: new FormControl(defaultValue, [Validators.required]),
       },
       [this.experimentValidatorService.envValidator]
     );
@@ -175,9 +172,9 @@ export class NotebookFormComponent implements OnInit {
         this.notebookForm.get('unit').value
       }`;
     } else {
-      resourceSpec = `cpu=${this.notebookForm.get('cpus').value},nvidia.com/gpu=${this.notebookForm.get('gpus').value},memory=${
-        this.notebookForm.get('memoryNum').value
-      }${this.notebookForm.get('unit').value}`;
+      resourceSpec = `cpu=${this.notebookForm.get('cpus').value},nvidia.com/gpu=${
+        this.notebookForm.get('gpus').value
+      },memory=${this.notebookForm.get('memoryNum').value}${this.notebookForm.get('unit').value}`;
     }
 
     // Develope submmit spec
@@ -185,15 +182,15 @@ export class NotebookFormComponent implements OnInit {
       meta: {
         name: this.notebookForm.get('notebookName').value,
         namespace: 'default',
-        ownerId: this.userId
+        ownerId: this.userId,
       },
       environment: {
-        name: this.notebookForm.get('envName').value
+        name: this.notebookForm.get('envName').value,
       },
       spec: {
         envVars: {},
-        resources: resourceSpec
-      }
+        resources: resourceSpec,
+      },
     };
 
     for (const envVar of this.envVars.controls) {
@@ -204,20 +201,18 @@ export class NotebookFormComponent implements OnInit {
 
     // Post
     this.notebookService.createNotebook(newNotebookSpec).subscribe({
-      next: (result) => {
-      },
+      next: (result) => {},
       error: (msg) => {
         this.nzMessageService.error(`${msg}, please try again`, {
-          nzPauseOnHover: true
+          nzPauseOnHover: true,
         });
       },
       complete: () => {
         this.nzMessageService.info(`Notebook Creating`, {
-          nzPauseOnHover: true
+          nzPauseOnHover: true,
         });
-        this.isVisible=false;
-      }
+        this.isVisible = false;
+      },
     });
   }
-
 }
