@@ -23,9 +23,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import io.kubernetes.client.ApiClient;
@@ -40,10 +41,9 @@ import io.kubernetes.client.models.V1Deployment;
 import io.kubernetes.client.models.V1ObjectMeta;
 import io.kubernetes.client.models.V1PersistentVolume;
 import io.kubernetes.client.models.V1PersistentVolumeClaim;
+import io.kubernetes.client.models.V1PersistentVolumeClaimVolumeSource;
 import io.kubernetes.client.models.V1Pod;
 import io.kubernetes.client.models.V1PodList;
-import io.kubernetes.client.models.V1Service;
-import io.kubernetes.client.models.V1PersistentVolumeClaimVolumeSource;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
@@ -53,6 +53,7 @@ import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
+import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
@@ -64,11 +65,9 @@ import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
-import org.apache.submarine.server.submitter.k8s.parser.TensorboardSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.VolumeSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
-import org.apache.submarine.server.submitter.k8s.util.TensorboardUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,12 +90,11 @@ public class K8sSubmitter implements Submitter {
 
   private AppsV1Api appsV1Api;
 
-  public K8sSubmitter() { }
+  public K8sSubmitter() {}
 
   @Override
   public void initialize(SubmarineConfiguration conf) {
     ApiClient client = null;
-
     try {
       String path = System.getenv(KUBECONFIG_ENV);
       KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(path));
@@ -119,30 +117,19 @@ public class K8sSubmitter implements Submitter {
     if (coreApi == null) {
       coreApi = new CoreV1Api(client);
     }
+
     if (appsV1Api == null) {
       appsV1Api = new AppsV1Api();
     }
 
-    client.setDebugging(true);
+    // client.setDebugging(true);
   }
 
   @Override
   public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
-    final String name = spec.getMeta().getName();
-    final String pvName = TensorboardUtils.PV_PREFIX + name;
-    final String hostPath = TensorboardUtils.HOST_PREFIX + name;
-    final String storage = TensorboardUtils.STORAGE;
-    final String pvcName = TensorboardUtils.PVC_PREFIX + name;
-    final String volume = TensorboardUtils.PV_PREFIX + name;
-
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-
-      createPersistentVolume(pvName, hostPath, storage);
-      createPersistentVolumeClaim(pvcName, spec.getMeta().getNamespace(), volume, storage);
-      createTFBoard(name, spec.getMeta().getNamespace());
-
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true");
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
@@ -193,17 +180,8 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Experiment deleteExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
-    final String name = spec.getMeta().getName(); // spec.getMeta().getEnvVars().get(RestConstants.JOB_ID);
-    final String pvName = TensorboardUtils.PV_PREFIX + name;
-    final String pvcName = TensorboardUtils.PVC_PREFIX + name;
-
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-
-      deletePersistentVolume(pvName);
-      deletePersistentVolumeClaim(pvcName, spec.getMeta().getNamespace());
-      deleteTFBoard(name, spec.getMeta().getNamespace());
-
       Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
           MLJobConverter.toDeleteOptionsFromMLJob(mlJob), null, null, null);
@@ -280,6 +258,45 @@ public class K8sSubmitter implements Submitter {
       LOG.error("Error when listing pod for experiment:" + spec.getMeta().getName(), e.getMessage());
     }
     return experimentLog;
+  }
+
+  @Override
+  public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
+    final String name = "tensorboard";
+    final String namespace = "default";
+    final String ingressRouteName = "tensorboard-ingressroute";
+
+    try {
+      V1Deployment deploy =  appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
+      boolean available = deploy.getStatus().getAvailableReplicas() > 0; // at least one replica is running
+
+      IngressRoute ingressRoute = new IngressRoute();
+      V1ObjectMeta meta = new V1ObjectMeta();
+      meta.setName(ingressRouteName);
+      meta.setNamespace(namespace);
+      ingressRoute.setMetadata(meta);
+      Object object = api.getNamespacedCustomObject(
+          ingressRoute.getGroup(), ingressRoute.getVersion(),
+          ingressRoute.getMetadata().getNamespace(),
+          ingressRoute.getPlural(), ingressRouteName
+      );
+
+      Gson gson = new JSON().getGson();
+      String jsonString = gson.toJson(object);
+      IngressRoute result = gson.fromJson(jsonString, IngressRoute.class);
+
+
+      String route = result.getSpec().getRoutes().stream().findFirst().get().getMatch();
+
+      //  replace "PathPrefix(`/tensorboard`)" with "/tensorboard/"
+      String url = route.replace("PathPrefix(`", "").replace("`)", "/");
+
+      TensorboardInfo tensorboardInfo = new TensorboardInfo(available, url);
+
+      return tensorboardInfo;
+    } catch (ApiException e) {
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    }
   }
 
   @Override
@@ -377,68 +394,6 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
     return notebookList;
-  }
-
-  public void createTFBoard(String name, String namespace) throws ApiException {
-    final String deployName = TensorboardUtils.DEPLOY_PREFIX + name;
-    final String podName = TensorboardUtils.POD_PREFIX + name;
-    final String svcName = TensorboardUtils.SVC_PREFIX + name;
-    final String ingressName = TensorboardUtils.INGRESS_PREFIX + name;
-
-    final String image = TensorboardUtils.IMAGE_NAME;
-    final String routePath = TensorboardUtils.PATH_PREFIX + name;
-    final String pvc = TensorboardUtils.PVC_PREFIX + name;
-
-    V1Deployment deployment = TensorboardSpecParser.parseDeployment(deployName, image, routePath, pvc);
-    V1Service svc = TensorboardSpecParser.parseService(svcName, podName);
-    IngressRoute ingressRoute = TensorboardSpecParser.parseIngressRoute(
-        ingressName, namespace, routePath, svcName
-    );
-
-    try {
-      appsV1Api.createNamespacedDeployment(namespace, deployment, "true", null, null);
-      coreApi.createNamespacedService(namespace, svc, "true", null, null);
-      api.createNamespacedCustomObject(
-            ingressRoute.getGroup(), ingressRoute.getVersion(),
-            ingressRoute.getMetadata().getNamespace(),
-            ingressRoute.getPlural(), ingressRoute, "true");
-    } catch (ApiException e) {
-      LOG.error("Exception when creating TensorBoard " + e.getMessage(), e);
-      throw e;
-    }
-  }
-
-  public void deleteTFBoard(String name, String namespace) throws ApiException {
-    final String deployName = TensorboardUtils.DEPLOY_PREFIX + name;
-    final String podName = TensorboardUtils.POD_PREFIX + name;
-    final String svcName = TensorboardUtils.SVC_PREFIX + name;
-    final String ingressName = TensorboardUtils.INGRESS_PREFIX + name;
-
-    final String image = TensorboardUtils.IMAGE_NAME;
-    final String routePath = TensorboardUtils.PATH_PREFIX + name;
-    final String pvc = TensorboardUtils.PVC_PREFIX + name;
-
-    V1Deployment deployment = TensorboardSpecParser.parseDeployment(deployName, image, routePath, pvc);
-    V1Service svc = TensorboardSpecParser.parseService(svcName, podName);
-    IngressRoute ingressRoute = TensorboardSpecParser.parseIngressRoute(
-        ingressName, namespace, routePath, svcName
-    );
-
-    try {
-      appsV1Api.deleteNamespacedDeployment(deployName, namespace, "true",
-          null, null, null, null, null);
-      coreApi.deleteNamespacedService(svcName, namespace, "true",
-          null, null, null, null, null);
-      api.deleteNamespacedCustomObject(
-          ingressRoute.getGroup(), ingressRoute.getVersion(),
-          ingressRoute.getMetadata().getNamespace(), ingressRoute.getPlural(), ingressName,
-          new V1DeleteOptionsBuilder().withApiVersion(ingressRoute.getApiVersion()).build(),
-          null, null, null);
-
-    } catch (ApiException e) {
-      LOG.error("Exception when deleting TensorBoard " + e.getMessage(), e);
-      throw e;
-    }
   }
 
   public void createPersistentVolume(String pvName, String hostPath, String storage) throws ApiException {

@@ -31,3 +31,7 @@ submarine:
     mysqlRootPassword: password
   traefik:
     enabled: true
+  tensorboard:
+    storage: 10Gi
+    hostPath: /tmp/tfboard/
+    ingressPath: PathPrefix(`/tensorboard`)

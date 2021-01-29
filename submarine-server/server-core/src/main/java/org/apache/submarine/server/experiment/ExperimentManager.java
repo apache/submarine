@@ -36,6 +36,7 @@ import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
+import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.rest.RestConstants;
 import org.slf4j.Logger;
@@ -101,12 +102,6 @@ public class ExperimentManager {
 
     Experiment experiment = submitter.createExperiment(spec);
     experiment.setExperimentId(id);
-    /*
-    TODO(byronhsu) Importing tensorboardUtils will
-    cause a dependency circle. Hard-code it as a temporary solution
-     */
-
-    experiment.setTfboardURL("/tfboard-" + spec.getMeta().getName() + "/");
 
     spec.getMeta().getEnvVars().remove(RestConstants.JOB_ID);
     spec.getMeta().getEnvVars().remove(RestConstants.SUBMARINE_TRACKING_URI);
@@ -239,6 +234,16 @@ public class ExperimentManager {
     Experiment patchExperiment = submitter.findExperiment(spec);
     experiment.rebuild(patchExperiment);
     return submitter.getExperimentLog(spec, id);
+  }
+
+  /**
+   * Get tensorboard meta data
+   *
+   * @return tensorboardinfo
+   * @throws SubmarineRuntimeException the service error
+   */
+  public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
+    return submitter.getTensorboardInfo();
   }
 
   private void checkSpec(ExperimentSpec spec) throws SubmarineRuntimeException {

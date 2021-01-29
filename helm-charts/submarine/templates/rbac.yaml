@@ -65,6 +65,7 @@ rules:
   - "apps"
   resources:
   - deployments
+  - deployments/status
   verbs:
   - '*'
 ---

@@ -41,6 +41,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.experiment.ExperimentManager;
 import org.apache.submarine.server.experimenttemplate.ExperimentTemplateManager;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
@@ -108,7 +109,7 @@ public class ExperimentRestApi {
   /**
    * Returns the contents of {@link Experiment} that submitted by user.
    *
-   * @param id template id
+   * @param name template name
    * @param spec
    * @return the contents of experiment
    */
@@ -227,7 +228,8 @@ public class ExperimentRestApi {
       tags = {"experiment"},
       responses = {
           @ApiResponse(description = "successful operation", content = @Content(
-              schema = @Schema(implementation = JsonResponse.class)))})
+              schema = @Schema(implementation = JsonResponse.class))),
+      })
   public Response listLog(@QueryParam("status") String status) {
     try {
       List<ExperimentLog> experimentLogList = experimentManager.listExperimentLogsByStatus(status);
@@ -253,6 +255,24 @@ public class ExperimentRestApi {
       return new JsonResponse.Builder<ExperimentLog>(Response.Status.OK).success(true)
           .result(experimentLog).build();
 
+    } catch (SubmarineRuntimeException e) {
+      return parseExperimentServiceException(e);
+    }
+  }
+
+  @GET
+  @Path("/tensorboard")
+  @Operation(summary = "Get tensorboard's information",
+      tags = {"experiment"},
+      responses = {
+        @ApiResponse(description = "successful operation", content = @Content(
+          schema = @Schema(implementation = JsonResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Tensorboard not found")})
+  public Response getTensorboardInfo() {
+    try {
+      TensorboardInfo tensorboardInfo = experimentManager.getTensorboardInfo();
+      return new JsonResponse.Builder<TensorboardInfo>(Response.Status.OK).success(true)
+        .result(tensorboardInfo).build();
     } catch (SubmarineRuntimeException e) {
       return parseExperimentServiceException(e);
     }
