@@ -1,3 +1,7 @@
+---
+title: Guide for Apache Submarine Contributor
+---
+
 <!--
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -11,8 +15,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-
-# Contribution Guidelines
 
 **Apache Hadoop Submarine** is an [Apache 2.0 License](https://github.com/apache/submarine/blob/master/LICENSE) Software.
 
@@ -254,7 +256,7 @@ git push --set-upstream ${your_remote_name} my-cherry-pick
 
 ## Build
 
-[Build From Code](../development/BuildFromCode.md)
+[Build From Code](../devDocs/BuildFromCode)
 
 ## Continuous Integration
 
