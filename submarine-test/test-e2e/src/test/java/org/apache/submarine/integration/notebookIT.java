@@ -58,7 +58,7 @@ public class notebookIT extends AbstractSubmarineIT {
 
     // Test for creating new notebook
     LOG.info("Create Notebook Test");
-    pollingWait(By.xpath("//button[@id='btnNewNotebook']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.xpath("//button[@id='btn-newNotebook']"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.cssSelector("input[ng-reflect-name='notebookName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test-nb");
     pollingWait(By.cssSelector("input[ng-reflect-name='cpus']"), MAX_BROWSER_TIMEOUT_SEC).clear();
     pollingWait(By.cssSelector("input[ng-reflect-name='cpus']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("2");
@@ -68,12 +68,12 @@ public class notebookIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//button[@id='envVar-btn']"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.xpath("//input[@name='key0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testKey0");
     pollingWait(By.xpath("//input[@name='value0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testValue0");
-    pollingWait(By.xpath("//button[@id='create-btn']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.xpath("//button[@id='nb-form-btn-create']"), MAX_BROWSER_TIMEOUT_SEC).click();
     /*
     Future add k8s test.
     Assert.assertEquals(pollingWait(By.xpath("//td[contains(., 'test-nb')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     */
-    Assert.assertEquals(pollingWait(By.xpath("//button[@id='btnNewNotebook']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-newNotebook']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     LOG.info("Test Success!");
 
   }
