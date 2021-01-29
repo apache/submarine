@@ -26,6 +26,8 @@ import io.kubernetes.client.models.V1ObjectMeta;
 import io.kubernetes.client.models.V1PodTemplateSpec;
 import io.kubernetes.client.models.V1PodSpec;
 import io.kubernetes.client.models.V1ResourceRequirements;
+import io.kubernetes.client.models.V1Volume;
+import io.kubernetes.client.models.V1VolumeMount;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -132,8 +134,26 @@ public class NotebookSpecParser {
       container.setResources(resources);
     }
 
+    // Volume spec
+    final String DEFAULT_MOUNT_PATH = "/home/jovyan/workspace";
+
+    List<V1VolumeMount> volumeMountList = new ArrayList<>();
+    V1VolumeMount  volumeMount = new V1VolumeMount();
+    volumeMount.setMountPath(DEFAULT_MOUNT_PATH);
+    volumeMount.setName("notebook-pv-" + notebookSpec.getMeta().getName());
+    volumeMountList.add(volumeMount);
+    container.setVolumeMounts(volumeMountList);
+
     containers.add(container);
     podSpec.setContainers(containers);
+
+    // create volume object for persistent volume
+    List<V1Volume> volumeList = new ArrayList<>();
+    V1Volume volume = new V1Volume();
+    String volumeName = "notebook-pv-" + notebookSpec.getMeta().getName();
+    volume.setName(volumeName);
+    volumeList.add(volume);
+    podSpec.setVolumes(volumeList);
 
     podTemplateSpec.setSpec(podSpec);
     return podTemplateSpec;

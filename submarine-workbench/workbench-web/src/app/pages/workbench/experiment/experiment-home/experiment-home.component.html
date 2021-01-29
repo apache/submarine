@@ -7,7 +7,7 @@
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
 
-   http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
@@ -17,5 +17,63 @@
  under the License.
 -->
 
-<!-- <p>experiment-home works!</p> -->
-<!-- TODO: should split home page from experiment root components -->
+<div style="margin: 15px; padding: 15px; background-color: white">
+  <div align="right">
+    <nz-radio-group>
+      <label nz-radio-button nzValue="All">All</label>
+      <label nz-radio-button nzValue="Own">Owned By Me</label>
+      <label nz-radio-button nzValue="Access">Accessible By Me</label>
+    </nz-radio-group>
+    <a
+      nz-button
+      nzType="primary"
+      style="margin: 0px 4px 0px 4px"
+      [nzLoading]="isTensorboardLoading"
+      [href]="tensorboardUrl"
+    >
+      <i nz-icon nzType="area-chart"></i>
+      TensorBoard
+    </a>
+    <br />
+    <nz-input-group nzSearch style="width: 300px; margin: 10px 4px 10px 4px" [nzAddOnAfter]="suffixIconButton">
+      <input type="text" nz-input placeholder="input search text" />
+    </nz-input-group>
+    <ng-template #suffixIconButton>
+      <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+    </ng-template>
+
+    <button
+      nz-button
+      id="openExperiment"
+      nzType="primary"
+      style="margin: 10px 4px 10px 4px"
+      (click)="form.initModal('create')"
+    >
+      <i nz-icon nzType="plus"></i>
+      New Experiment
+    </button>
+
+    <button
+      nz-button
+      nzType="primary"
+      style="margin: 10px 4px 10px 4px"
+      nz-popconfirm
+      nzTitle="Confirm to delete?"
+      nzCancelText="Cancel"
+      nzOkText="Ok"
+      (nzOnConfirm)="deleteExperiments()"
+    >
+      <i nz-icon nzType="delete"></i>
+      Delete
+    </button>
+  </div>
+  <submarine-experiment-list
+    [experimentList]="experimentList"
+    [checkedList]="checkedList"
+    [isLoading]="isListLoading"
+    (deleteExperiment)="onDeleteExperiment($event, true)"
+    (initModal)="onInitModal($event)"
+    [(selectAllChecked)]="selectAllChecked"
+  ></submarine-experiment-list>
+  <submarine-experiment-form #form></submarine-experiment-form>
+</div>

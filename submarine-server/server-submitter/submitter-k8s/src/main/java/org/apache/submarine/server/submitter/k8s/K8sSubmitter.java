@@ -41,6 +41,8 @@ import io.kubernetes.client.models.V1Deployment;
 import io.kubernetes.client.models.V1ObjectMeta;
 import io.kubernetes.client.models.V1Pod;
 import io.kubernetes.client.models.V1PodList;
+import io.kubernetes.client.models.V1Service;
+import io.kubernetes.client.models.V1PersistentVolumeClaimVolumeSource;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
@@ -298,12 +300,29 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
+    final String name = spec.getMeta().getName();
+    final String pvName = NotebookUtils.PV_PREFIX + name;
+    final String host = NotebookUtils.HOST_PATH;
+    final String storage = NotebookUtils.STORAGE;
+    final String pvcName = NotebookUtils.PVC_PREFIX + name;
     try {
       // create notebook custom resource
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Map<String, String> labels = new HashMap<>();
       labels.put(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET, spec.getMeta().getOwnerId());
       notebookCR.getMetadata().setLabels(labels);
+
+      // create persistent volume
+      createPersistentVolume(pvName, host, storage);
+
+      // create persistent volume claim
+      createPersistentVolumeClaim(pvcName, spec.getMeta().getNamespace(), pvName, storage);
+
+      // bind persistent volume claim
+      V1PersistentVolumeClaimVolumeSource pvcSource = new V1PersistentVolumeClaimVolumeSource()
+              .claimName(pvcName);
+      notebookCR.getSpec().getTemplate().getSpec().getVolumes().get(0).persistentVolumeClaim(pvcSource);
+
       Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               notebookCR.getMetadata().getNamespace(), notebookCR.getPlural(), notebookCR, "true");
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
@@ -340,6 +359,9 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook deleteNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
+    final String name = spec.getMeta().getName();
+    final String pvName = NotebookUtils.PV_PREFIX + name;
+    final String pvcName = NotebookUtils.PVC_PREFIX + name;
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
@@ -349,6 +371,8 @@ public class K8sSubmitter implements Submitter {
               null, null, null);
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
       deleteIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
+      deletePersistentVolumeClaim(pvcName, spec.getMeta().getNamespace());
+      deletePersistentVolume(pvName);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -368,6 +392,84 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
     return notebookList;
+  }
+
+  public void createPersistentVolume(String pvName, String hostPath, String storage) throws ApiException {
+    V1PersistentVolume pv = VolumeSpecParser.parsePersistentVolume(pvName, hostPath, storage);
+
+    try {
+      V1PersistentVolume result = coreApi.createPersistentVolume(pv, "true", null, null);
+    } catch (ApiException e) {
+      LOG.error("Exception when creating persistent volume " + e.getMessage(), e);
+      throw e;
+    }
+  }
+
+  public void deletePersistentVolume(String pvName) throws ApiException {
+    /*
+    This version of Kubernetes-client/java has bug here.
+    It will trigger exception as in https://github.com/kubernetes-client/java/issues/86
+    but it can still work fine and delete the PV.
+    */
+    try {
+      V1Status result = coreApi.deletePersistentVolume(
+              pvName, "true", null,
+              null, null, null, null
+      );
+    } catch (ApiException e) {
+      LOG.error("Exception when deleting persistent volume " + e.getMessage(), e);
+      throw e;
+    } catch (JsonSyntaxException e) {
+      if (e.getCause() instanceof IllegalStateException) {
+        IllegalStateException ise = (IllegalStateException) e.getCause();
+        if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT"))
+          LOG.debug("Catching exception because of issue " +
+            "https://github.com/kubernetes-client/java/issues/86", e);
+        else throw e;
+      }
+      else throw e;
+    }
+  }
+
+  public void createPersistentVolumeClaim(String pvcName, String namespace, String volume, String storage)
+          throws ApiException {
+    V1PersistentVolumeClaim pvc = VolumeSpecParser.parsePersistentVolumeClaim(pvcName, volume, storage);
+
+    try {
+      V1PersistentVolumeClaim result = coreApi.createNamespacedPersistentVolumeClaim(
+              namespace, pvc, "true", null, null
+      );
+    } catch (ApiException e) {
+      LOG.error("Exception when creating persistent volume claim " + e.getMessage(), e);
+      throw e;
+    }
+  }
+
+  public void deletePersistentVolumeClaim(String pvcName, String namespace) throws ApiException {
+    /*
+    This version of Kubernetes-client/java has bug here.
+    It will trigger exception as in https://github.com/kubernetes-client/java/issues/86
+    but it can still work fine and delete the PVC
+    */
+    try {
+      V1Status result = coreApi.deleteNamespacedPersistentVolumeClaim(
+                pvcName, namespace, "true",
+          null, null, null,
+            null, null
+      );
+    } catch (ApiException e) {
+      LOG.error("Exception when deleting persistent volume claim " + e.getMessage(), e);
+      throw e;
+    } catch (JsonSyntaxException e) {
+      if (e.getCause() instanceof IllegalStateException) {
+        IllegalStateException ise = (IllegalStateException) e.getCause();
+        if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT"))
+          LOG.debug("Catching exception because of issue " +
+            "https://github.com/kubernetes-client/java/issues/86", e);
+        else throw e;
+      }
+      else throw e;
+    }
   }
 
   private String getJobLabelSelector(ExperimentSpec experimentSpec) {

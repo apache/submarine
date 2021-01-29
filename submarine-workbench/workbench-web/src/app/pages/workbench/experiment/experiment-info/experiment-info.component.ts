@@ -26,7 +26,7 @@ import { NzMessageService } from 'ng-zorro-antd';
 @Component({
   selector: 'submarine-experiment-info',
   templateUrl: './experiment-info.component.html',
-  styleUrls: ['./experiment-info.component.scss']
+  styleUrls: ['./experiment-info.component.scss'],
 })
 export class ExperimentInfoComponent implements OnInit {
   isLoading = true;
@@ -50,7 +50,7 @@ export class ExperimentInfoComponent implements OnInit {
     Accepted: 'gold',
     Created: 'white',
     Running: 'green',
-    Succeeded: 'blue'
+    Succeeded: 'blue',
   };
 
   ngOnInit() {
@@ -78,6 +78,7 @@ export class ExperimentInfoComponent implements OnInit {
     );
 
     this.getExperimentPod();
+    this.experimentService.emitInfo(this.experimentID);
   }
 
   getExperimentPod() {
@@ -95,7 +96,7 @@ export class ExperimentInfoComponent implements OnInit {
 
     this.experimentService
       .getExperimentParam({
-        id: this.experimentID
+        id: this.experimentID,
       })
       .subscribe(
         (result) => {
@@ -109,7 +110,7 @@ export class ExperimentInfoComponent implements OnInit {
 
     this.experimentService
       .getExperimentMetric({
-        id: this.experimentID
+        id: this.experimentID,
       })
       .subscribe(
         (result) => {

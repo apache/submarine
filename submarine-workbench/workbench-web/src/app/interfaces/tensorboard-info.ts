@@ -17,31 +17,7 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { ExperimentHomeComponent } from './experiment-home/experiment-home.component';
-import { ExperimentInfoComponent } from './experiment-info/experiment-info.component';
-import { ExperimentComponent } from './experiment.component';
-
-const routes: Routes = [
-  {
-    path: '',
-    component: ExperimentComponent,
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        component: ExperimentHomeComponent,
-      },
-      {
-        path: 'info/:id',
-        component: ExperimentInfoComponent,
-      },
-    ],
-  },
-];
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class ExperimentRoutingModule {}
+export interface TensorboardInfo {
+  available: boolean;
+  url: string;
+}
