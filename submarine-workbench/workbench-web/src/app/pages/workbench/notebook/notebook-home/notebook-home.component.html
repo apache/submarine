@@ -16,22 +16,23 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<nz-layout style="margin: -24px -24px 16px">
-  <div style="background-color: white; padding-left: 30px; padding-top: 20px">
-    <nz-breadcrumb>
-      <nz-breadcrumb-item>
-        <a>Home</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a [routerLink]="['/', 'workbench', 'notebook']">notebook</a>
-      </nz-breadcrumb-item>
-    </nz-breadcrumb>
-    <div>
-      <br />
-      <h2>Notebook</h2>
-      <nz-content>Apache submarine support jupyter notebook.</nz-content>
-    </div>
-    <br />
+
+<div style="margin: 15px; padding: 15px; background-color: white">
+  <div align="right">
+    <button
+      nz-button
+      id="btn-newNotebook"
+      nzType="primary"
+      style="margin: 10px 4px 10px 4px"
+      (click)="form.initModal()"
+    >
+      <i nz-icon nzType="plus"></i>
+      New Notebook
+    </button>
   </div>
-  <router-outlet></router-outlet>
-</nz-layout>
+  <submarine-notebook-list
+    [notebookList]="notebookList"
+    (deleteNotebook)="onDeleteNotebook($event)"
+  ></submarine-notebook-list>
+  <submarine-notebook-form #form></submarine-notebook-form>
+</div>

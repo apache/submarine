@@ -1,4 +1,4 @@
-/*!
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,3 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { NotebookHomeComponent } from './notebook-home/notebook-home.component';
+import { NotebookComponent } from './notebook.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: NotebookComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: NotebookHomeComponent,
+      },
+    ],
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+})
+export class NotebookRoutingModule {}
