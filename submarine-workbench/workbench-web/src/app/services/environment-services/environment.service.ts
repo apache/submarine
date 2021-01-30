@@ -20,13 +20,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Rest } from '@submarine/interfaces';
-import { Environment } from '@submarine/interfaces/environment-info';
+import { Environment } from '@submarine/interfaces/environment-interfaces/environment-info';
 import { BaseApiService } from '@submarine/services/base-api.service';
 import { of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EnvironmentService {
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}

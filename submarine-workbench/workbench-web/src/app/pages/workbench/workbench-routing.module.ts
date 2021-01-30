@@ -19,7 +19,6 @@
 
 import { NgModule } from '@angular/core';
 import { ActivatedRouteSnapshot, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
-import { EnvironmentComponent } from '@submarine/pages/workbench/environment/environment.component';
 import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.component';
 import { DataComponent } from './data/data.component';
 import { HomeComponent } from './home/home.component';
@@ -59,7 +58,7 @@ const routes: Routes = [
       },
       {
         path: 'environment',
-        component: EnvironmentComponent,
+        loadChildren: () => import('./environment/environment.module').then((m) => m.EnvironmentModule),
         canActivate: ['canActivatePage'],
       },
       {

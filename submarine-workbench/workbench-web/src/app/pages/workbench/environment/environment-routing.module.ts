@@ -17,9 +17,27 @@
  * under the License.
  */
 
-import { EnvironmentSpec } from '@submarine/interfaces/environment-spec';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { EnvironmentHomeComponent } from './environment-home/environment-home.component';
+import { EnvironmentComponent } from './environment.component';
 
-export interface Environment {
-  environmentId: string;
-  environmentSpec: EnvironmentSpec;
-}
+const routes: Routes = [
+  {
+    path: '',
+    component: EnvironmentComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: EnvironmentHomeComponent,
+      },
+    ],
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+})
+export class EnvironmentRoutingModule {}

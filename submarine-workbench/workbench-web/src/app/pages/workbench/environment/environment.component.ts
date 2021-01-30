@@ -19,23 +19,23 @@
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Environment } from '@submarine/interfaces/environment-info';
-import { EnvironmentService } from '@submarine/services/environment.service';
+import { Environment } from '@submarine/interfaces/environment-interfaces/environment-info';
+import { EnvironmentService } from '@submarine/services/environment-services/environment.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
 
 @Component({
   selector: 'submarine-environment',
   templateUrl: './environment.component.html',
-  styleUrls: ['./environment.component.scss']
+  styleUrls: ['./environment.component.scss'],
 })
 export class EnvironmentComponent implements OnInit {
   constructor(
-    private environmentService: EnvironmentService, 
+    private environmentService: EnvironmentService,
     private nzMessageService: NzMessageService,
     private fb: FormBuilder,
     private experimentValidatorService: ExperimentValidatorService
-    ) {}
+  ) {}
 
   environmentList: Environment[] = [];
   checkedList: boolean[] = [];
@@ -50,8 +50,8 @@ export class EnvironmentComponent implements OnInit {
       dockerImage: [null, Validators.required],
       name: [null, Validators.required],
       channels: this.fb.array([]),
-      dependencies: this.fb.array([])
-    })
+      dependencies: this.fb.array([]),
+    });
     this.fetchEnvironmentList();
   }
 
@@ -131,7 +131,7 @@ export class EnvironmentComponent implements OnInit {
       },
       (err) => {
         this.nzMessageService.error(`${err}, please try again`, {
-          nzPauseOnHover: true
+          nzPauseOnHover: true,
         });
       }
     );
@@ -144,8 +144,8 @@ export class EnvironmentComponent implements OnInit {
       kernelSpec: {
         name: this.environmentForm.get('name').value,
         channels: [],
-        dependencies: []
-      }
+        dependencies: [],
+      },
     };
 
     for (const channel of this.channels.controls) {

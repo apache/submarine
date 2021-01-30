@@ -20,7 +20,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
-import { EnvironmentService } from '@submarine/services/environment.service';
+import { EnvironmentService } from '@submarine/services/environment-services/environment.service';
 import { NotebookService } from '@submarine/services/notebook-services/notebook.service';
 import { UserService } from '@submarine/services/user.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
