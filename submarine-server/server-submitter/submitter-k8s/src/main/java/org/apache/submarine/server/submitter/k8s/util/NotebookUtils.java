@@ -98,7 +98,7 @@ public class NotebookUtils {
     notebook.setCreatedTime(notebookCR.getMetadata().getCreationTimestamp().toString());
     // notebook url
     notebook.setUrl("/notebook/" + notebookCR.getMetadata().getNamespace() + "/" +
-            notebookCR.getMetadata().getName() + "/");
+            notebookCR.getMetadata().getName() + "/lab");
 
     // process status
     Map<String, String> statusMap = processStatus(notebookCR);
