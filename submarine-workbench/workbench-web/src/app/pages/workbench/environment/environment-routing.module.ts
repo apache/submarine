@@ -19,8 +19,8 @@
 
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { EnvironmentHomeComponent } from './environment-home/environment-home.component';
 import { EnvironmentComponent } from './environment.component';
+import { EnvironmentHomeComponent } from './environment-home/environment-home.component';
 
 const routes: Routes = [
   {

@@ -19,7 +19,7 @@
 
 import { EnvironmentSpec } from '@submarine/interfaces/environment-interfaces/environment-spec';
 
-export interface Environment {
+export interface EnvironmentInfo {
   environmentId: string;
   environmentSpec: EnvironmentSpec;
 }

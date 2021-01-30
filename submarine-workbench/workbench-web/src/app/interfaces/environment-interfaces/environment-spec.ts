@@ -16,14 +16,15 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export interface KernelSpec {
-  name: string;
-  channels: string[];
-  dependencies: string[];
-}
 
 export interface EnvironmentSpec {
   name: string;
   dockerImage: string;
   kernelSpec: KernelSpec;
+}
+
+export interface KernelSpec {
+  name: string;
+  channels: string[];
+  dependencies: string[];
 }

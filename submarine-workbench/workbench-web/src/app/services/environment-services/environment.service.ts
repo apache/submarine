@@ -20,7 +20,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Rest } from '@submarine/interfaces';
-import { Environment } from '@submarine/interfaces/environment-interfaces/environment-info';
+import { EnvironmentInfo } from '@submarine/interfaces/environment-interfaces/environment-info';
+import { EnvironmentSpec } from '@submarine/interfaces/environment-interfaces/environment-spec';
 import { BaseApiService } from '@submarine/services/base-api.service';
 import { of, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
@@ -31,9 +32,9 @@ import { switchMap } from 'rxjs/operators';
 export class EnvironmentService {
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
-  fetchEnvironmentList(): Observable<Environment[]> {
+  fetchEnvironmentList(): Observable<EnvironmentInfo[]> {
     const apiUrl = this.baseApi.getRestApi('/v1/environment');
-    return this.httpClient.get<Rest<Environment[]>>(apiUrl).pipe(
+    return this.httpClient.get<Rest<EnvironmentInfo[]>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
           return of(res.result);
@@ -44,12 +45,9 @@ export class EnvironmentService {
     );
   }
 
-  // TODO(kobe860219): Query environment
-  querySpecificEnvironment(id: string) {}
-
-  createEnvironment(spec: object): Observable<Environment> {
+  createEnvironment(spec: object): Observable<EnvironmentSpec> {
     const apiUrl = this.baseApi.getRestApi(`/v1/environment/`);
-    return this.httpClient.post<Rest<Environment>>(apiUrl, spec).pipe(
+    return this.httpClient.post<Rest<EnvironmentSpec>>(apiUrl, spec).pipe(
       switchMap((res) => {
         if (res.success) {
           return of(res.result);
@@ -60,12 +58,9 @@ export class EnvironmentService {
     );
   }
 
-  // TODO(kobe860219): Update an environment
-  updateEnvironment(updateData) {}
-
-  deleteEnvironment(name: string): Observable<Environment> {
+  deleteEnvironment(name: string): Observable<EnvironmentInfo> {
     const apiUrl = this.baseApi.getRestApi(`/v1/environment/${name}`);
-    return this.httpClient.delete<Rest<Environment>>(apiUrl).pipe(
+    return this.httpClient.delete<Rest<EnvironmentInfo>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
           return of(res.result);
