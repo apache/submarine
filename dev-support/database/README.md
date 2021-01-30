@@ -95,9 +95,9 @@ docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
 Copy the files, submarine.sql, submarine-data.sql and metastore.sql to the mysql docker.
 
 ```
-docker cp ${SUBMARINE_HOME}/docs/database/submarine.sql ${DOCKER_ID}:/
-docker cp ${SUBMARINE_HOME}/docs/database/submarine-data.sql ${DOCKER_ID}:/
-docker cp ${SUBMARINE_HOME}/docs/database/metastore.sql ${DOCKER_ID}:/
+docker cp ${SUBMARINE_HOME}/dev-support/database/submarine.sql ${DOCKER_ID}:/
+docker cp ${SUBMARINE_HOME}/dev-support/database/submarine-data.sql ${DOCKER_ID}:/
+docker cp ${SUBMARINE_HOME}/dev-support/database/metastore.sql ${DOCKER_ID}:/
 ```
 
 Development database for development environment.
