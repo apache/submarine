@@ -93,13 +93,13 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
 
 # Install latest sumbarine python sdk and notebook
 RUN git clone https://github.com/apache/submarine && \
-pip install submarine/submarine-sdk/pysubmarine && \
-conda install nodejs && \
-conda install -c conda-forge jupyterlab jupyterlab-git && \
-jupyter lab build && \
-cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
-cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME && \
-rm submarine -rf
+    pip install submarine/submarine-sdk/pysubmarine && \
+    conda install nodejs && \
+    conda install -c conda-forge jupyterlab jupyterlab-git && \
+    jupyter lab build && \
+    cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
+    cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME && \
+    rm submarine -rf
 
 
 
