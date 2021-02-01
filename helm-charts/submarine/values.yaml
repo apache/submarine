@@ -32,8 +32,8 @@ submarine:
   traefik:
     enabled: true
   storage:
-    type: host # "host" or "nfs"
+    type: nfs # "host" or "nfs"
     host:
-      root: /tmp
+      root: /.submarine/host
     nfs:
       ip: 10.96.0.2

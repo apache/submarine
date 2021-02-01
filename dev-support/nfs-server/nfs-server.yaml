@@ -48,21 +48,22 @@ spec:
         role: nfs-server
     spec:
       containers:
-      - name: nfs-server
-        image: k8s.gcr.io/volume-nfs:0.8
-        ports:
-          - name: nfs
-            containerPort: 2049
-          - name: mountd
-            containerPort: 20048
-          - name: rpcbind
-            containerPort: 111
-        securityContext:
-          privileged: true
-        volumeMounts:
-          - mountPath: /exports
-            name: nfs-vol
+        - name: nfs-server
+          image: k8s.gcr.io/volume-nfs:0.8
+          ports:
+            - name: nfs
+              containerPort: 2049
+            - name: mountd
+              containerPort: 20048
+            - name: rpcbind
+              containerPort: 111
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /exports
+              name: nfs-vol
       volumes:
         - name: nfs-vol
           hostPath:
-            path: /tmp/nfs-vol
+            path: /.submarine/nfs-vol # /tmp/nfs-vol
+            type: DirectoryOrCreate

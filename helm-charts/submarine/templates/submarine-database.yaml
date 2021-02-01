@@ -33,6 +33,7 @@ spec:
   {{- else }}
   hostPath:
     path: "{{ .host.root }}"
+    type: DirectoryOrCreate
   {{- end }}
 
 {{- end}}
