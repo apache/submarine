@@ -43,6 +43,10 @@ import org.slf4j.LoggerFactory;
 public class NotebookUtils {
 
   private static final Logger LOG = LoggerFactory.getLogger(NotebookUtils.class);
+  public static final String STORAGE = "10Gi";
+  public static final String PV_PREFIX = "notebook-pv-";
+  public static final String PVC_PREFIX = "notebook-pvc-";
+  public static final String HOST_PATH = "/mnt";
 
   public enum ParseOpt {
     PARSE_OPT_CREATE,
@@ -94,7 +98,7 @@ public class NotebookUtils {
     notebook.setCreatedTime(notebookCR.getMetadata().getCreationTimestamp().toString());
     // notebook url
     notebook.setUrl("/notebook/" + notebookCR.getMetadata().getNamespace() + "/" +
-            notebookCR.getMetadata().getName() + "/");
+            notebookCR.getMetadata().getName() + "/lab");
 
     // process status
     Map<String, String> statusMap = processStatus(notebookCR);

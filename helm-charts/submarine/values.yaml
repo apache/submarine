@@ -22,6 +22,7 @@ submarine:
     name: submarine-server
     image: apache/submarine:server-0.6.0-SNAPSHOT
     servicePort: 8080
+    dev: false # if true, restart server pod every time at helm upgrade
   database:
     imagePullPolicy: IfNotPresent
     replicas: 1
@@ -29,6 +30,7 @@ submarine:
     image: apache/submarine:database-0.6.0-SNAPSHOT
     servicePort: 3306
     mysqlRootPassword: password
+    dev: false # if true, restart database pod every time at helm upgrade
   traefik:
     enabled: true
   storage:
@@ -37,3 +39,7 @@ submarine:
       root: /.submarine/host
     nfs:
       ip: 10.96.0.2
+  tensorboard:
+    storage: 10Gi
+    hostPath: /tmp/tfboard/
+    ingressPath: PathPrefix(`/tensorboard`)

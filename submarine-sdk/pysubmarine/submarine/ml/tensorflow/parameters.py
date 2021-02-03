@@ -28,6 +28,8 @@ default_parameters = {
         "batch_norm_decay": 0.9,
         "l2_reg": 0.0001,
         "deep_layers": [400, 400, 400],
+        "conv_kernel_width": [6, 5],
+        "conv_filters": [4, 4],
         "dropout": [0.3, 0.3, 0.3],
         "batch_norm": "false",
         "optimizer": "adam",

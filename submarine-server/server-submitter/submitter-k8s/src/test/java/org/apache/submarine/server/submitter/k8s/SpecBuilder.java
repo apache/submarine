@@ -44,7 +44,7 @@ public abstract class SpecBuilder {
       "/pytorch_job_req_http_git_code_localizer.json";
   protected final String pytorchJobWithSSHGitCodeLocalizerFile =
       "/pytorch_job_req_ssh_git_code_localizer.json";
-  protected final String tfTfboardJobwReqFile = "/tf_tfboard_mnist_req.json";
+  protected final String tfTfboardJobReqFile = "/tf_tfboard_mnist_req.json";
 
   protected Object buildFromJsonFile(Object obj, String filePath) throws IOException,
       URISyntaxException {

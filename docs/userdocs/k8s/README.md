@@ -31,7 +31,7 @@ We have validated Submarine on the following versions:
 | 1.15.x | √ |
 | 1.16.x | √ |
 | 1.17.x | To be verified |
-| 1.17.x | To be verified |
+| 1.18.x | To be verified |
 
 ## Install Submarine
 

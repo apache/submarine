@@ -24,21 +24,21 @@ dotenv.config();
 const proxyConfig = [
   {
     context: ['/api'],
-    target: 'http://localhost:8080',
+    target: 'http://localhost:32080',
     secure: false,
-    changeOrigin: true
+    changeOrigin: true,
   },
   {
     context: '/ws',
-    target: 'ws://localhost:8080',
+    target: 'ws://localhost:32080',
     secure: false,
-    ws:true,
-    changeOrigin: true
-  }
+    ws: true,
+    changeOrigin: true,
+  },
 ];
 
 function httpUrlToWSUrl(url) {
-  return url.replace(/(http)(s)?\/\//, "ws$2://");
+  return url.replace(/(http)(s)?\/\//, 'ws$2://');
 }
 
 function setupForCorporateProxy(proxyConfig) {
@@ -49,9 +49,9 @@ function setupForCorporateProxy(proxyConfig) {
     if (httpProxy) {
       agent = new HttpsProxyAgent(httpProxy);
     }
-    proxyConfig.forEach(function(entry) {
+    proxyConfig.forEach(function (entry) {
       if (entry.context === '/ws') {
-        entry.target = httpUrlToWSUrl(proxyServer)
+        entry.target = httpUrlToWSUrl(proxyServer);
       } else {
         entry.target = proxyServer;
       }

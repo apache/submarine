@@ -25,7 +25,6 @@ import { DataComponent } from './data/data.component';
 import { HomeComponent } from './home/home.component';
 import { InterpreterComponent } from './interpreter/interpreter.component';
 import { ModelComponent } from './model/model.component';
-import { NotebookComponent } from './notebook/notebook.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 
 const routes: Routes = [
@@ -75,7 +74,7 @@ const routes: Routes = [
       },
       {
         path: 'notebook',
-        component: NotebookComponent,
+        loadChildren: () => import('./notebook/notebook.module').then((m) => m.NotebookModule),
         canActivate: ['canActivatePage'],
       },
       {
