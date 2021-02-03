@@ -32,7 +32,7 @@ submarine:
   traefik:
     enabled: true
   storage:
-    type: nfs # "host" or "nfs"
+    type: host # "host" or "nfs"
     host:
       root: /.submarine/host
     nfs:
