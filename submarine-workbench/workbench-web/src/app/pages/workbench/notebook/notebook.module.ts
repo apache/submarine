@@ -19,14 +19,30 @@
 
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { NotebookComponent } from './notebook.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { RouterModule } from '@angular/router';
 import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
+import { NotebookService } from '@submarine/services/notebook-services/notebook.service';
+import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { NotebookRoutingModule } from './notebook-routing.module';
+
+import { NotebookComponent } from './notebook.component';
+import { NotebookHomeComponent } from './notebook-home/notebook-home.component';
+import { NotebookListComponent } from './notebook-home/notebook-list/notebook-list.component';
+import { NotebookFormComponent } from './notebook-home/notebook-form/notebook-form.component';
 
 @NgModule({
-  declarations: [NotebookComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    PipeSharedModule,
+    NgZorroAntdModule,
+    NotebookRoutingModule,
+  ],
+  providers: [NotebookService],
+  declarations: [NotebookComponent, NotebookHomeComponent, NotebookListComponent, NotebookFormComponent],
   exports: [NotebookComponent],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgZorroAntdModule, PipeSharedModule]
 })
 export class NotebookModule {}

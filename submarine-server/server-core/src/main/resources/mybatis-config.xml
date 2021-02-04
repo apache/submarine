@@ -68,5 +68,6 @@
     <mapper resource='org/apache/submarine/database/mappers/ParamMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/EnvironmentMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/ExperimentTemplateMapper.xml'/>
+    <mapper resource='org/apache/submarine/database/mappers/ExperimentMapper.xml'/>
   </mappers>
 </configuration>

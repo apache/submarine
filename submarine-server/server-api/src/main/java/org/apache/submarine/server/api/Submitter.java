@@ -23,6 +23,7 @@ import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
+import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
@@ -119,4 +120,12 @@ public interface Submitter {
    * @throws SubmarineRuntimeException running error
    */
   List<Notebook> listNotebook(String id) throws SubmarineRuntimeException;
+
+  /**
+   * Get tensorboard meta data
+   * @param
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException;
 }

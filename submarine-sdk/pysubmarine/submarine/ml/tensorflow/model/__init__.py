@@ -16,5 +16,6 @@
 from .deepfm import DeepFM
 from .fm import FM
 from .nfm import NFM
+from .ccpm import CCPM
 
-__all__ = ["DeepFM", "FM", "NFM"]
+__all__ = ["DeepFM", "FM", "NFM", "CCPM"]

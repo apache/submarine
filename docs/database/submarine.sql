@@ -237,6 +237,20 @@ CREATE TABLE `environment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Table structure for experiment
+-- ----------------------------
+DROP TABLE IF EXISTS `experiment`;
+CREATE TABLE `experiment` (
+  `id` varchar(64) NOT NULL COMMENT 'Id of the Experiment',
+  `experiment_spec` text NOT NULL COMMENT 'Spec of the experiment',
+  `create_by` varchar(32) DEFAULT NULL COMMENT 'create user',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_by` varchar(32) DEFAULT NULL COMMENT 'last update user',
+  `update_time` datetime DEFAULT NULL COMMENT 'last update time',
+   PRIMARY KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Table structure for metric
 -- ----------------------------
 DROP TABLE IF EXISTS `metrics`;

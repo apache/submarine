@@ -143,9 +143,11 @@ def merge_pr(pr_num, target_ref):
 
     merge_message_flags += ["-m", authors]
 
+    committer_name = run_cmd("git config --get user.name").strip()
+    committer_email = run_cmd("git config --get user.email").strip()
+    merge_message_flags += ["-m", "\n" + "Signed-off-by: %s <%s>" % (committer_name, committer_email)]
+
     if had_conflicts:
-        committer_name = run_cmd("git config --get user.name").strip()
-        committer_email = run_cmd("git config --get user.email").strip()
         message = "This patch had conflicts when merged, resolved by\nCommitter: %s <%s>" % (
             committer_name, committer_email)
         merge_message_flags += ["-m", message]

@@ -23,17 +23,18 @@ import { Rest } from '@submarine/interfaces';
 import { BaseApiService } from '@submarine/services/base-api.service';
 import { of, throwError, Observable } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
-import { Notebook } from '@submarine/interfaces/notebook-info';
+import { NotebookInfo } from '@submarine/interfaces/notebook-interfaces/notebook-info';
+import { NotebookSpec } from '@submarine/interfaces/notebook-interfaces/notebook-spec';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class NotebookService {
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
-  fetchNotebookList(id: string) {
+  fetchNotebookList(id: string): Observable<NotebookInfo[]> {
     const apiUrl = this.baseApi.getRestApi('/v1/notebook?id=' + id);
-    return this.httpClient.get<Rest<Notebook>>(apiUrl).pipe(
+    return this.httpClient.get<Rest<NotebookInfo[]>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
           return of(res.result);
@@ -44,9 +45,9 @@ export class NotebookService {
     );
   }
 
-  createNotebook(newNotebook: object): Observable<Notebook> {
+  createNotebook(notebookSpec: object): Observable<NotebookSpec> {
     const apiUrl = this.baseApi.getRestApi('/v1/notebook');
-    return this.httpClient.post<Rest<Notebook>>(apiUrl, newNotebook).pipe(
+    return this.httpClient.post<Rest<NotebookSpec>>(apiUrl, notebookSpec).pipe(
       map((res) => res.result), // return result directly if succeeding
       catchError((e) => {
         let message: string;
@@ -68,9 +69,9 @@ export class NotebookService {
     );
   }
 
-  deleteNotebook(id: string): Observable<Notebook> {
+  deleteNotebook(id: string): Observable<NotebookInfo> {
     const apiUrl = this.baseApi.getRestApi(`/v1/notebook/${id}`);
-    return this.httpClient.delete<Rest<Notebook>>(apiUrl).pipe(
+    return this.httpClient.delete<Rest<NotebookInfo>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
           return of(res.result);

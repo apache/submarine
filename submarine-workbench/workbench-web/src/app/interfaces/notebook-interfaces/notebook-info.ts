@@ -18,14 +18,15 @@
  */
 
 import { Url } from 'url';
-import { NotebookSpec } from '@submarine/interfaces/notebook-spec';
+import { NotebookSpec } from '@submarine/interfaces/notebook-interfaces/notebook-spec';
 
-export interface Notebook {
+export interface NotebookInfo {
   notebookId: string;
   name: string;
   uid: string;
   url: Url;
   status: string;
+  reason: string;
   createdTime: string;
   deletedTime: string;
   spec: NotebookSpec;

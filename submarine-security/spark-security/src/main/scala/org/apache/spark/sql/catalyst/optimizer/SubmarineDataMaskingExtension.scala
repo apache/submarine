@@ -28,7 +28,7 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.{FunctionIdentifier, TableIdentifier}
 import org.apache.spark.sql.catalyst.analysis.UnresolvedAttribute
 import org.apache.spark.sql.catalyst.catalog.{CatalogFunction, CatalogTable, HiveTableRelation}
-import org.apache.spark.sql.catalyst.expressions.{Alias, Attribute, AttributeReference, ExprId, NamedExpression, SubqueryExpression}
+import org.apache.spark.sql.catalyst.expressions.{Alias, Attribute, AttributeReference, Expression, ExprId, NamedExpression, SubqueryExpression}
 import org.apache.spark.sql.catalyst.plans.logical._
 import org.apache.spark.sql.catalyst.rules.Rule
 import org.apache.spark.sql.execution.command.{CreateDataSourceTableAsSelectCommand, CreateViewCommand, InsertIntoDataSourceDirCommand}
@@ -233,7 +233,16 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
         case p if hasCatalogTable(p) => SubmarineDataMasking(p)
       }
 
-      marked transformAllExpressions {
+      // Extract global/local limit if any and apply after masking projection
+      val limitExpr: Option[Expression] = plan match {
+        case globalLimit: GlobalLimit => Some(globalLimit.limitExpr)
+        case localLimit: LocalLimit => Some(localLimit.limitExpr)
+        case _ => None
+      }
+
+      val markedWithLimit = if (limitExpr.isDefined) Limit(limitExpr.get, marked) else marked
+
+      markedWithLimit transformAllExpressions {
         case s: SubqueryExpression =>
           val SubqueryCompatible(newPlan, _) = SubqueryCompatible(
               SubmarineDataMasking(s.plan), SubqueryExpression.hasCorrelatedSubquery(s))

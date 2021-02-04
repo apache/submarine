@@ -143,11 +143,6 @@ NodePort for external access.\
 Please refer to `./helm-charts/submarine/charts/traefik/values.yaml` and [Traefik docs](https://docs.traefik.io/)
 for more details if you want to customize the default value for Traefik.
 
-```
-# Use nodePort and Traefik ingress controller by default.
-# To access the submarine server, open the following URL in your browser.
-http://127.0.0.1:32080
-```
 
 *Notice:*
 If you use `kind` to run local Kubernetes cluster,
@@ -163,6 +158,20 @@ nodes:
   - containerPort: 32080
     hostPort: [the port you want to access]
 ```
+
+
+```
+# Use nodePort and Traefik ingress controller by default.
+# To access the submarine server, open the following URL in your browser.
+http://127.0.0.1:32080
+```
+
+
+If minikube is installed, use the following command to find the URL to the Submarine server.
+```
+$ minikube service submarine-traefik --url
+```
+
 
 ### Uninstall Submarine
 ```bash

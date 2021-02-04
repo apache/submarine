@@ -24,17 +24,17 @@ import { RouterModule } from '@angular/router';
 import { WorkbenchRoutingModule } from '@submarine/pages/workbench/workbench-routing.module';
 import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
-import { DataComponent } from './data/data.component';
+import { WorkspaceModule } from './workspace/workspace.module';
 import { ExperimentModule } from './experiment/experiment.module';
+import { InterpreterModule } from './interpreter/interpreter.module';
+import { NotebookModule } from './notebook/notebook.module';
 
 import { HomeComponent } from './home/home.component';
-import { InterpreterModule } from './interpreter/interpreter.module';
 import { ModelComponent } from './model/model.component';
 import { WorkbenchComponent } from './workbench.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
-import { WorkspaceModule } from './workspace/workspace.module';
 import { EnvironmentComponent } from './environment/environment.component';
-import { NotebookComponent } from './notebook/notebook.component';
+import { DataComponent } from './data/data.component';
 
 @NgModule({
   declarations: [
@@ -43,8 +43,7 @@ import { NotebookComponent } from './notebook/notebook.component';
     WorkspaceComponent,
     DataComponent,
     ModelComponent,
-    EnvironmentComponent,
-    NotebookComponent
+    EnvironmentComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +55,8 @@ import { NotebookComponent } from './notebook/notebook.component';
     WorkspaceModule,
     ExperimentModule,
     InterpreterModule,
-    PipeSharedModule
+    PipeSharedModule,
+    NotebookModule
   ]
 })
 export class WorkbenchModule { }
