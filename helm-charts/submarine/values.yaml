@@ -33,13 +33,13 @@ submarine:
     dev: false # if true, restart database pod every time at helm upgrade
   traefik:
     enabled: true
-  storage:
-    type: host # "host" or "nfs"
-    host:
-      root: /.submarine/host
-    nfs:
-      ip: 10.96.0.2
   tensorboard:
     storage: 10Gi
-    hostPath: /tmp/tfboard/
-    ingressPath: PathPrefix(`/tensorboard`)
+    ingressPath: "/tensorboard"
+  storage:
+    type: nfs # "host" or "nfs"
+    host:
+      path: "/tmp/submarine/host"
+    nfs:
+      ip: 10.96.0.2
+      path: "/"

@@ -23,19 +23,16 @@ spec:
     - ReadWriteMany
   capacity:
     storage: 1Gi
-
 {{- with .Values.submarine.storage }}
-
   {{- if eq (.type | lower) "nfs" }}
   nfs:
     server: {{ .nfs.ip }}
-    path: "/"
+    path: {{ .nfs.path }}
   {{- else }}
   hostPath:
-    path: "{{ .host.root }}"
+    path: "{{ .host.path }}"
     type: DirectoryOrCreate
   {{- end }}
-
 {{- end}}
 ---
 apiVersion: v1
