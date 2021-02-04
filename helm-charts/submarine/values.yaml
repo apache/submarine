@@ -37,7 +37,7 @@ submarine:
     storage: 10Gi
     ingressPath: "/tensorboard"
   storage:
-    type: nfs # "host" or "nfs"
+    type: host # "host" or "nfs"
     host:
       path: "/tmp/submarine/host"
     nfs:
