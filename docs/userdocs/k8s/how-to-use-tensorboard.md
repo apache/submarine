@@ -53,10 +53,10 @@ under the License.
 
 ## Connect to the tensorboard webpaage
 
-1. Open the experiment page in the workbench.
+1. Open the experiment page in the workbench, and Click the `TensorBoard` button.
 
 <img src="../../assets/tensorboard-experiment-page.png">
 
-2. Click the `tensorboard` button.
+2. Inspect the process on tensorboard page.
 
 <img src="../../assets/tensorboard-webpage.png">
