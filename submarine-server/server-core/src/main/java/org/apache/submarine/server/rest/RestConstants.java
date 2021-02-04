@@ -70,4 +70,10 @@ public class RestConstants {
 
   public static final String NOTEBOOK_ID = "id";
 
+  /**
+   * Tensorboard
+   */
+  public static final String LOG_DIR_KEY = "LOG_DIR";
+  public static final String LOG_DIR_VALUE = "/logs/mylog";
+
 }
