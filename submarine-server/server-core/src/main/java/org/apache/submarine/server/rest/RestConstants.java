@@ -73,7 +73,7 @@ public class RestConstants {
   /**
    * Tensorboard
    */
-  public static final String LOG_DIR_KEY = "LOG_DIR";
+  public static final String LOG_DIR_KEY = "SUBMARINE_LOG_DIR";
   public static final String LOG_DIR_VALUE = "/logs/mylog";
 
 }
