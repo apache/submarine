@@ -24,7 +24,6 @@ import { UserService } from '@submarine/services/user.service';
 import { isEqual } from 'lodash';
 import { NotebookFormComponent } from './notebook-form/notebook-form.component';
 import { interval, Subscription } from 'rxjs';
-import { mergeMap, timeout } from 'rxjs/operators';
 
 @Component({
   selector: 'submarine-notebook-home',

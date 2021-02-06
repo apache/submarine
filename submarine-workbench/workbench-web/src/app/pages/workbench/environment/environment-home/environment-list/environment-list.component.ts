@@ -16,3 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
+
+@Component({
+  selector: 'submarine-environment-list',
+  templateUrl: './environment-list.component.html',
+  styleUrls: ['./environment-list.component.scss'],
+})
+export class EnvironmentListComponent implements OnInit {
+  @Input() environmentList: ExperimentInfo[];
+  @Output() deleteEnvironment = new EventEmitter<string>();
+
+  constructor() {}
+
+  ngOnInit() {}
+
+  onDeleteEnvironment(name: string) {
+    this.deleteEnvironment.emit(name);
+  }
+}

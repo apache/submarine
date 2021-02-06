@@ -17,22 +17,22 @@
   ~ under the License.
   -->
 
-<nz-layout style="margin: -24px -24px 16px">
-  <div style="background-color: white; padding-left: 30px; padding-top: 20px">
-    <nz-breadcrumb>
-      <nz-breadcrumb-item>
-        <a>Home</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a [routerLink]="['/', 'workbench', 'environment']">environment</a>
-      </nz-breadcrumb-item>
-    </nz-breadcrumb>
-    <div>
-      <br />
-      <h2>Environment</h2>
-      <nz-content>Apache submarine support environment management for experiments and notebooks.</nz-content>
-    </div>
-    <br />
+<div style="margin: 15px; padding: 15px; background-color: white">
+  <div align="right">
+    <button
+      nz-button
+      id="btn-newEnvironment"
+      nzType="primary"
+      style="margin: 10px 4px 10px 4px"
+      (click)="form.initModal()"
+    >
+      <i nz-icon nzType="plus"></i>
+      New Environment
+    </button>
   </div>
-  <router-outlet></router-outlet>
-</nz-layout>
+  <submarine-environment-list
+    [environmentList]="environmentList"
+    (deleteEnvironment)="onDeleteEnvironment($event)"
+  ></submarine-environment-list>
+  <submarine-environment-form #form (updater)="updateEnvironmentList($event)"></submarine-environment-form>
+</div>

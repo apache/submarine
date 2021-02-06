@@ -1,4 +1,4 @@
-/*!
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,3 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import { EnvironmentSpec } from '@submarine/interfaces/environment-interfaces/environment-spec';
+
+export interface EnvironmentInfo {
+  environmentId: string;
+  environmentSpec: EnvironmentSpec;
+}
