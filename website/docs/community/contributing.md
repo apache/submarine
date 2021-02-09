@@ -16,9 +16,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-**Apache Hadoop Submarine** is an [Apache 2.0 License](https://github.com/apache/submarine/blob/master/LICENSE) Software.
+**Apache Submarine** is an [Apache 2.0 License](https://github.com/apache/submarine/blob/master/LICENSE) Software.
 
-Contributing to Hadoop Submarine (Source code, Documents, Image, Website) means you agree to the Apache 2.0 License.
+Contributing to Submarine (Source code, Documents, Image, Website) means you agree to the Apache 2.0 License.
 
 1. Make sure your issue is not already in the [Jira issue tracker](https://issues.apache.org/jira/browse/SUBMARINE)
 2. If not, create a ticket describing the change you're proposing in the [Jira issue tracker](https://issues.apache.org/jira/browse/SUBMARINE)
@@ -36,7 +36,7 @@ Filling it thoroughly can improve the speed of the review process.
 
     ### What is this PR for?
     A few sentences describing the overall goals of the pull request's commits.
-    First time? Check out the contribution guidelines - 
+    First time? Check out the contribution guidelines -
     https://github.com/apache/submarine/tree/master/docs/community/contributing.md
 
     ### What type of PR is it?
@@ -61,7 +61,7 @@ Filling it thoroughly can improve the speed of the review process.
 
 
 ## Source Control Workflow
-Hadoop Submarine follows [Fork & Pull](https://github.com/sevntu-checkstyle/sevntu.checkstyle/wiki/Development-workflow-with-Git:-Fork,-Branching,-Commits,-and-Pull-Request) model.
+Submarine follows [Fork & Pull](https://github.com/sevntu-checkstyle/sevntu.checkstyle/wiki/Development-workflow-with-Git:-Fork,-Branching,-Commits,-and-Pull-Request) model.
 
 ## The Review Process
 
@@ -76,11 +76,11 @@ When a Pull Request is submitted, it is being merged or rejected by the followin
 
 
 ## Setting up
-Here are some things you will need to build and test the Hadoop Submarine.
+Here are some things you will need to build and test the Submarine.
 
 ### Software Configuration Management (SCM)
 
-Hadoop Submarine uses Git for its SCM system. So you'll need a git client installed on your development machine.
+Submarine uses Git for its SCM system. So you'll need a git client installed on your development machine.
 
 ### Integrated Development Environment (IDE)
 
@@ -260,7 +260,7 @@ git push --set-upstream ${your_remote_name} my-cherry-pick
 
 ## Continuous Integration
 
-Hadoop Submarine project's CI system will collect information from pull request author's Travis-ci and display status in the pull request.
+Submarine project's CI system will collect information from pull request author's Travis-ci and display status in the pull request.
 
 Each individual contributor should setup Travis-ci for the fork before making a pull-request. Go to [https://travis-ci.org/profile](https://travis-ci.org/profile) and switch on 'submarine' repository.
 
