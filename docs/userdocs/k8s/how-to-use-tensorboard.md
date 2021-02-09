@@ -23,7 +23,7 @@ under the License.
 
 ### Usage
 
-- `SUBMARINE_LOG_DIR`: This environment variable already exists in every experiment container. You just need to direct your logs to `$(SUBMARINE_LOG_DIR)` (**NOTICE: it is `()` not `{}`**), and you can inspect the process on the tensorboard webpage.
+- `SUBMARINE_TENSORBOARD_LOG_DIR`: This environment variable already exists in every experiment container. You just need to direct your logs to `$(SUBMARINE_TENSORBOARD_LOG_DIR)` (**NOTICE: it is `()` not `{}`**), and you can inspect the process on the tensorboard webpage.
 
 ### Example
 
@@ -33,7 +33,7 @@ under the License.
     "name": "tensorflow-tensorboard-dist-mnist",
     "namespace": "default",
     "framework": "TensorFlow",
-    "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=$(SUBMARINE_LOG_DIR) --learning_rate=0.01 --batch_size=20",
+    "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=$(SUBMARINE_TENSORBOARD_LOG_DIR) --learning_rate=0.01 --batch_size=20",
     "envVars": {
       "ENV_1": "ENV1"
     }
