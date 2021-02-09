@@ -21,9 +21,9 @@ under the License.
 
 ## Write to LogDirs by the environment variable
 
-### Usage
+### Environment variable
 
-- `SUBMARINE_TENSORBOARD_LOG_DIR`: This environment variable already exists in every experiment container. You just need to direct your logs to `$(SUBMARINE_TENSORBOARD_LOG_DIR)` (**NOTICE: it is `()` not `{}`**), and you can inspect the process on the tensorboard webpage.
+- `SUBMARINE_TENSORBOARD_LOG_DIR`: Exist in every experiment container. You just need to direct your logs to `$(SUBMARINE_TENSORBOARD_LOG_DIR)` (**NOTICE: it is `()` not `{}`**), and you can inspect the process on the tensorboard webpage.
 
 ### Example
 
