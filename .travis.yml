@@ -61,7 +61,7 @@ env:
 before_install:
   # mysql
   - sudo service mysql restart
-  - ./docs/database/init-database.sh
+  - ./dev-support/database/init-database.sh
   - ./dev-support/travis/install_external_dependencies.sh
   # protobuf 3.10.1
   - PROTOBUF_VERSION=3.10.1
