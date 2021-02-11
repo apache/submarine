@@ -46,11 +46,11 @@ curl -X POST -H "Content-Type: application/json" -d '
   "spec": {
     "Ps": {
       "replicas": 1,
-      "resources": "cpu=1,memory=512M"
+      "resources": "cpu=1,memory=1024M"
     },
     "Worker": {
       "replicas": 1,
-      "resources": "cpu=1,memory=512M"
+      "resources": "cpu=1,memory=2048M"
     }
   }
 }
@@ -84,11 +84,11 @@ curl -X POST -H "Content-Type: application/json" -d '
       "spec": {
         "Ps": {
           "replicas": 1,
-          "resources": "cpu=1,memory=512M"
+          "resources": "cpu=1,memory=1024M"
         },
         "Worker": {
           "replicas": 1,
-          "resources": "cpu=1,memory=512M"
+          "resources": "cpu=1,memory=2048M"
         }
       }
     }
@@ -118,11 +118,11 @@ curl -X POST -H "Content-Type: application/json" -d '
   "spec": {
     "Ps": {
       "replicas": 1,
-      "resources": "cpu=1,memory=512M"
+      "resources": "cpu=1,memory=1024M"
     },
     "Worker": {
       "replicas": 1,
-      "resources": "cpu=1,memory=512M"
+      "resources": "cpu=1,memory=2048M"
     }
   }
 }
@@ -157,11 +157,11 @@ Above example assume environment "my-submarine-env" already exists in Submarine.
       "spec": {
         "Ps": {
           "replicas": 1,
-          "resources": "cpu=1,memory=512M"
+          "resources": "cpu=1,memory=1024M"
         },
         "Worker": {
           "replicas": 1,
-          "resources": "cpu=1,memory=512M"
+          "resources": "cpu=1,memory=2048M"
         }
       }
     }
@@ -205,11 +205,11 @@ curl -X GET http://127.0.0.1:8080/api/v1/experiment
                 "spec": {
                     "Ps": {
                         "replicas": 1,
-                        "resources": "cpu=1,memory=512M"
+                        "resources": "cpu=1,memory=1024M"
                     },
                     "Worker": {
                         "replicas": 1,
-                        "resources": "cpu=1,memory=512M"
+                        "resources": "cpu=1,memory=2048M"
                     }
                 }
             }
@@ -284,11 +284,11 @@ curl -X GET http://127.0.0.1:8080/api/v1/experiment/experiment_1592057447228_000
             "spec": {
                 "Ps": {
                     "replicas": 1,
-                    "resources": "cpu=1,memory=512M"
+                    "resources": "cpu=1,memory=1024M"
                 },
                 "Worker": {
                     "replicas": 1,
-                    "resources": "cpu=1,memory=512M"
+                    "resources": "cpu=1,memory=2048M"
                 }
             }
         }
@@ -318,11 +318,11 @@ curl -X PATCH -H "Content-Type: application/json" -d '
   "spec": {
     "Ps": {
       "replicas": 1,
-      "resources": "cpu=1,memory=512M"
+      "resources": "cpu=1,memory=1024M"
     },
     "Worker": {
       "replicas": 2,
-      "resources": "cpu=1,memory=512M"
+      "resources": "cpu=1,memory=2048M"
     }
   }
 }
@@ -351,11 +351,11 @@ curl -X PATCH -H "Content-Type: application/json" -d '
         "spec": {
             "Ps": {
                 "replicas": 1,
-                "resources": "cpu=1,memory=512M"
+                "resources": "cpu=1,memory=1024M"
             },
             "Worker": {
                 "replicas": 2,
-                "resources": "cpu=1,memory=512M"
+                "resources": "cpu=1,memory=2048M"
             }
         }
     }
@@ -397,11 +397,11 @@ curl -X DELETE http://127.0.0.1:8080/api/v1/experiment/experiment_1592057447228_
             "spec": {
                 "Ps": {
                     "replicas": 1,
-                    "resources": "cpu=1,memory=512M"
+                    "resources": "cpu=1,memory=1024M"
                 },
                 "Worker": {
                     "replicas": 2,
-                    "resources": "cpu=1,memory=512M"
+                    "resources": "cpu=1,memory=2048M"
                 }
             }
         }
