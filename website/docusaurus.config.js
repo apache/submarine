@@ -32,7 +32,7 @@ module.exports = {
       title: 'Apache Submarine',
       logo: {
         alt: 'Apache Submarine Site Logo',
-        src: 'https://github.com/apache/submarine/blob/master/docs/assets/128-black.png?raw=true',
+        src: 'https://github.com/apache/submarine/blob/master/website/docs/assets/128-black.png?raw=true',
       },
       items: [
         {
