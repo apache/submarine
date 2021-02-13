@@ -91,6 +91,19 @@ mvn clean package -DskipTests -Phadoop-3.2
 mvn clean package -DskipTests -Psrc
 ```
 
+### Building source code / binary distribution with Maven Wrapper
++ Maven Wrapper (Optional): Maven Wrapper can help you avoid dependencies problem about Maven version.
+```
+# Setup Maven Wrapper (Maven 3.6.1)
+mvn -N io.takari:maven:0.7.7:wrapper -Dmaven=3.6.1
+
+# Check Maven Wrapper
+./mvnw -version
+
+# Replace 'mvn' with 'mvnw'. Example: 
+./mvnw clean package -DskipTests
+```
+
 ## TonY code modification
 
 If it is needed to make modifications to TonY project, please make a PR
