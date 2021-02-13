@@ -50,7 +50,7 @@ public class environmentIT extends AbstractSubmarineIT {
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
     pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
     clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
+    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
 
     // Routing to workspace
     LOG.info("url");
@@ -71,6 +71,6 @@ public class environmentIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//input[@id='dependencies0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testDep");
     pollingWait(By.xpath("//button[@id='btn-submit']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(pollingWait(By.xpath("//td[contains(., 'testEnvName')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-    Thread.sleep(2000);
+    LOG.info("Environment created.");
   }
 }

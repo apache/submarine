@@ -67,7 +67,7 @@ public class loginIT extends AbstractSubmarineIT {
     pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
     clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
     // Validate login result.
-    pollingWait(By.cssSelector("a[routerlink='/workbench/dashboard']"), MAX_BROWSER_TIMEOUT_SEC);
+    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
     LOG.info("User login is done.");
   }
 }
