@@ -44,7 +44,7 @@ public class environmentIT extends AbstractSubmarineIT {
   }
 
   @Test
-  public void experimentNavigation() throws Exception {
+  public void environmentNavigation() throws Exception {
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
@@ -59,8 +59,7 @@ public class environmentIT extends AbstractSubmarineIT {
 
     // Test create new environment
     LOG.info("Create new environment");
-    pollingWait(By.xpath("//button[@id='btn-newEnvironment']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//button[@id='btn-cancel']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-newEnvironment']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//button[@id='btn-newEnvironment']"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.cssSelector("input[ng-reflect-name='environmentName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testEnvName");
     pollingWait(By.cssSelector("input[ng-reflect-name='dockerImage']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testDockerImage");
@@ -69,8 +68,9 @@ public class environmentIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//input[@id='channel0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testChannel");
     pollingWait(By.xpath("//button[@id='addDep-btn']"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.xpath("//input[@id='dependencies0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testDep");
+    Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-submit']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//button[@id='btn-submit']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//td[contains(., 'testEnvName')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-    LOG.info("Environment created.");
+    Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-newEnvironment']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    LOG.info("Test done.");
   }
 }
