@@ -87,8 +87,8 @@
       </excludes>
     </fileSet>
     <fileSet>
-      <directory>../docs/database</directory>
-      <outputDirectory>/docs/database</outputDirectory>
+      <directory>../dev-support/database</directory>
+      <outputDirectory>/dev-support/database</outputDirectory>
     </fileSet>
     <fileSet>
       <directory>../dev-support/docker-images</directory>

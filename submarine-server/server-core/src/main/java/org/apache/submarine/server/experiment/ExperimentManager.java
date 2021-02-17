@@ -105,6 +105,8 @@ public class ExperimentManager {
     String url = getSQLAlchemyURL();
     spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id.toString());
     spec.getMeta().getEnvVars().put(RestConstants.SUBMARINE_TRACKING_URI, url);
+    spec.getMeta().getEnvVars().put(RestConstants.LOG_DIR_KEY, RestConstants.LOG_DIR_VALUE);
+    
     String lowerName = spec.getMeta().getName().toLowerCase();
     spec.getMeta().setName(lowerName);
 
@@ -113,6 +115,8 @@ public class ExperimentManager {
 
     spec.getMeta().getEnvVars().remove(RestConstants.JOB_ID);
     spec.getMeta().getEnvVars().remove(RestConstants.SUBMARINE_TRACKING_URI);
+    spec.getMeta().getEnvVars().remove(RestConstants.LOG_DIR_KEY);
+
     experiment.setSpec(spec);
 
     ExperimentEntity entity = buildEntityFromExperiment(experiment);

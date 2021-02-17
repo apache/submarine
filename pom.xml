@@ -567,6 +567,8 @@
             <exclude>**/go.mod</exclude>
             <exclude>**/go.sum</exclude>
             <exclude>**/*.ipynb</exclude>
+            <exclude>**/.nojekyll</exclude>
+            <exclude>**/yarn.lock</exclude>
           </excludes>
         </configuration>
       </plugin>

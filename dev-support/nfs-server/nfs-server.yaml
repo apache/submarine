@@ -59,11 +59,3 @@ spec:
               containerPort: 111
           securityContext:
             privileged: true
-          volumeMounts:
-            - mountPath: /exports
-              name: nfs-vol
-      volumes:
-        - name: nfs-vol
-          hostPath:
-            path: /tmp/submarine/nfs-vol
-            type: DirectoryOrCreate

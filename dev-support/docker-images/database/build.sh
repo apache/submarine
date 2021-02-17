@@ -27,7 +27,7 @@ SUBMARINE_HOME=${CURRENT_PATH}/../../..
 SUBMARINE_VERSION="0.6.0-SNAPSHOT"
 SUBMARINE_IMAGE_NAME="apache/submarine:database-${SUBMARINE_VERSION}"
 
-cp -rf "${SUBMARINE_HOME}/docs/database" "${CURRENT_PATH}"
+cp -rf "${SUBMARINE_HOME}/dev-support/database" "${CURRENT_PATH}"
 
 # build image
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
