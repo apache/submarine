@@ -262,9 +262,9 @@ public class K8sSubmitter implements Submitter {
 
   @Override
   public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
-    final String name = "tensorboard";
+    final String name = "submarine-tensorboard";
     final String namespace = "default";
-    final String ingressRouteName = "tensorboard-ingressroute";
+    final String ingressRouteName = "submarine-tensorboard-ingressroute";
 
     try {
       V1Deployment deploy =  appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");

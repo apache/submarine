@@ -180,12 +180,15 @@ public class ExperimentSpecParser {
 
     final String name = experimentSpec.getMeta().getName();
     // volumeMount
-    container.addVolumeMountsItem(new V1VolumeMount().mountPath("/logs").name("volume").subPath(name));
+    container.addVolumeMountsItem(
+        new V1VolumeMount().mountPath("/logs").
+        name("volume").subPath("submarine-tensorboard/" + name)
+    );
 
     // volume
     V1Volume podVolume = new V1Volume().name("volume");
     podVolume.setPersistentVolumeClaim(
-          new V1PersistentVolumeClaimVolumeSource().claimName("tensorboard-pvc")
+        new V1PersistentVolumeClaimVolumeSource().claimName("submarine-tensorboard-pvc")
     );
     podSpec.addVolumesItem(podVolume);
     /**
