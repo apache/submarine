@@ -65,7 +65,7 @@ jobs:
       - uses: container-tools/kind-action@v1
         with:
           version: "v0.9.0"
-          node_image: kindest/node:v1.15.6
+          node_image: kindest/node:v1.15.11
           config: ./kind-config-kind.yaml
       - name: Show K8s cluster information
         run: |

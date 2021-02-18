@@ -33,18 +33,11 @@ import { HomeComponent } from './home/home.component';
 import { ModelComponent } from './model/model.component';
 import { WorkbenchComponent } from './workbench.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
-import { EnvironmentComponent } from './environment/environment.component';
 import { DataComponent } from './data/data.component';
+import { EnvironmentModule } from './environment/environment.module';
 
 @NgModule({
-  declarations: [
-    WorkbenchComponent,
-    HomeComponent,
-    WorkspaceComponent,
-    DataComponent,
-    ModelComponent,
-    EnvironmentComponent
-  ],
+  declarations: [WorkbenchComponent, HomeComponent, WorkspaceComponent, DataComponent, ModelComponent],
   imports: [
     CommonModule,
     WorkbenchRoutingModule,
@@ -56,7 +49,8 @@ import { DataComponent } from './data/data.component';
     ExperimentModule,
     InterpreterModule,
     PipeSharedModule,
-    NotebookModule
-  ]
+    NotebookModule,
+    EnvironmentModule,
+  ],
 })
-export class WorkbenchModule { }
+export class WorkbenchModule {}

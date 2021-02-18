@@ -80,7 +80,7 @@ fi
 
 cp ${SUBMARINE_PROJECT_PATH}/submarine-dist/target/submarine-dist-${submarine_v}*.tar.gz ${MINI_PATH}
 cp -r ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine ${MINI_PATH}
-cp -r ${SUBMARINE_PROJECT_PATH}/docs/database ${MINI_PATH}
+cp -r ${SUBMARINE_PROJECT_PATH}/dev-support/database ${MINI_PATH}
 
 # build image
 echo "Start building the mini-submarine docker image..."
