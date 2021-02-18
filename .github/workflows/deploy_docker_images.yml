@@ -2,6 +2,7 @@ name: Deploy submarine docker images
 
 on:
   push:
+    branches: [master]
 jobs:
   deploy-images:
     if: github.repository == ‘apache/submarine’
