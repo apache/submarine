@@ -71,6 +71,7 @@ module.exports = {
             ],
             "Developer Docs": [
                 "devDocs/README",
+                "devDocs/BuildFromCode",
                 "devDocs/Development",
                 "devDocs/IntegrationTest",
             ],
