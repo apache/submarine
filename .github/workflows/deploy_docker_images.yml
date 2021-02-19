@@ -5,7 +5,7 @@ on:
     branches: [master]
 jobs:
   deploy-images:
-    if: github.repository == ‘apache/submarine’
+    if: github.repository == 'apache/submarine'
     runs-on: ubuntu-latest
     timeout-minutes: 240
     strategy:
