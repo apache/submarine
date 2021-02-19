@@ -96,11 +96,18 @@ RUN git clone https://github.com/apache/submarine && \
     pip install submarine/submarine-sdk/pysubmarine && \
     conda install nodejs && \
     conda install -c conda-forge jupyterlab jupyterlab-git && \
-    jupyter lab build && \
-    cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
+    jupyter lab build
+
+# Add DeepFM example into notebook
+RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
     cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME && \
     rm submarine -rf
 
+# Install latest stable qlib
+RUN pip install numpy==1.19.5 pyqlib==0.6.1
+
+# Add qlib example in notebook
+RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME
 
 
 EXPOSE $NB_PORT
