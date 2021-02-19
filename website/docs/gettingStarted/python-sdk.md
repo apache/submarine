@@ -1,5 +1,5 @@
 ---
-title: Install Python SDK
+title: Submarine Python SDK
 ---
 
 <!--
@@ -23,7 +23,9 @@ under the License.
 
 Submarine Python SDK can runs on any machine and it will talk to Submarine Server via REST API. So you can install Submarine Python SDK on your laptop, a gateway machine, your favorite IDE (like PyCharm/Jupyter, etc.).
 
-#### Prepare Python Environment to run Submarine SDK
+Furthermore, Submarine supports an extensible package of CTR models based on **TensorFlow** and **PyTorch** along with lots of core components layers that can be used to easily build custom models. You can train any model with `model.train()` and `model.predict()`.
+
+## Prepare Python Environment to run Submarine SDK
 
 Submarine SDK requires Python3.7+.
 It's better to use a new Python environment created by `Anoconda` or Python `virtualenv` to try this to avoid trouble to existing Python environment.
@@ -38,29 +40,41 @@ python3 virtualenv-16.0.0/virtualenv.py venv
 . venv/bin/activate
 ```
 
-#### Install Submarine SDK
+## Install Submarine SDK
 
-**Install SDK from pypi.org (recommended)**
+### Install SDK from pypi.org (recommended)
 
-Starting from 0.4.0, Submarine provides Python SDK. Please change it to a proper version needed.
+Starting from `0.4.0`, Submarine provides Python SDK. Please change it to a proper version needed. 
+
+More detail: https://pypi.org/project/apache-submarine/
 
 ```bash
-pip install submarine-sdk==<REPLACE_VERSION>
+# Install latest stable version
+pip install apache-submarine
+# Install specific version
+pip install apache-submarine==<REPLACE_VERSION>
 ```
 
-**Install SDK from source code**
+### Install SDK from source code
 
 Please first clone code from github or go to `http://submarine.apache.org/download.html` to download released source code.
 
 ```bash
 git clone https://github.com/apache/submarine.git
+# (optional) chackout specific branch or release
 git checkout <correct release tag/branch>
 cd submarine/submarine-sdk/pysubmarine
 pip install .
 ```
 
-#### Run with Submarine Python SDK
+## Manage Submarine Experiment
 
-Assuming you've installed submarine on K8s and forward the service to localhost, now you can open a Python shell, Jupyter notebook or any tools with Submarine SDK installed.
+Assuming you've installed submarine on K8s and forward the traefik service to localhost, now you can open a Python shell, Jupyter notebook or any tools with Submarine SDK installed.
 
-Follow [SDK experiment example](https://github.com/apache/submarine/blob/master/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb) to try the SDK.
+Follow [SDK experiment example](https://github.com/apache/submarine/blob/master/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb) to run an experiment.
+
+## Training a DeepFM model 
+The Submarine also supports users to train an easy-to-use CTR model with a few lines of code and a configuration file, so they don’t need to reimplement the model by themself. In addition, they can train the model on both local on distributed systems, such as Hadoop or Kubernetes.
+
+
+Follow [SDK DeepFM example](https://github.com/apache/submarine/blob/master/submarine-sdk/pysubmarine/example/deepfm_example.ipynb) to try the model.
