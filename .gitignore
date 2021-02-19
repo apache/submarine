@@ -51,6 +51,9 @@ venv.bak/
 .python-version
 .DS_Store
 .idea
+.mvn/
+mvnw
+mvnw.cmd
 *.iml
 *.gradle
 *.tgz
