@@ -105,12 +105,13 @@ git push origin SUBMARINE-${jira_number}
 ### Step9: Create a pull request on github UI
 * Visit your fork at `https://github.com/${USERNAME}/submarine.git`
 * Click `Compare & Pull Request` button to create pull request.
+![compare_pull_request_button](../assets/compare_pull_request_button.png)
 
 #### Pull Request template
 * [Pull request template](https://github.com/apache/submarine/blob/bd7578cc28f8280f9170938d4469fcc965e24a89/.github/PULL_REQUEST_TEMPLATE)
 * Filling the template thoroughly can improve the speed of the review process. Example: 
 
-// TODO
+![pull_request_template_example](../assets/pull_request_template_example.png)
 
 ### Step10: Check Travis-ci status of your pull request in apache/submarine
 * Visit https://travis-ci.com/github/apache/submarine/pull_requests
