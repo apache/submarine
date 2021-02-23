@@ -51,7 +51,7 @@
     <scala.binary.version>2.11</scala.binary.version>
     <scalatest.version>2.2.6</scalatest.version>
     <solr.version>5.5.4</solr.version>
-    <spark.version>2.3.4</spark.version>
+    <spark.version>2.4.7</spark.version>
     <spark.scope>provided</spark.scope>
     <gethostname4j.version>0.0.2</gethostname4j.version>
     <gethostname4j.scope>test</gethostname4j.scope>
@@ -555,17 +555,9 @@
 
   <profiles>
     <profile>
-      <id>spark-2.3</id>
-      <properties>
-        <spark.version>2.3.4</spark.version>
-        <scalatest.version>3.0.3</scalatest.version>
-      </properties>
-    </profile>
-
-    <profile>
       <id>spark-2.4</id>
       <properties>
-        <spark.version>2.4.5</spark.version>
+        <spark.version>2.4.7</spark.version>
         <scalatest.version>3.0.3</scalatest.version>
       </properties>
     </profile>
@@ -573,7 +565,7 @@
     <profile>
       <id>spark-3.0</id>
       <properties>
-        <spark.version>3.0.1</spark.version>
+        <spark.version>3.0.2</spark.version>
         <scala.version>2.12.10</scala.version>
         <scala.binary.version>2.12</scala.binary.version>
         <!--<scalatest.version>3.2.0</scalatest.version>-->
