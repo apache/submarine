@@ -173,7 +173,7 @@ object RangerSparkAuthorizer {
       case SparkPrivilegeObjectType.DATABASE =>
         Some(RangerSparkResource(SparkObjectType.DATABASE, Option(objectName)))
       case SparkPrivilegeObjectType.TABLE_OR_VIEW =>
-        Some(RangerSparkResource(SparkObjectType.DATABASE, Option(dbName), objectName))
+        Some(RangerSparkResource(SparkObjectType.TABLE, Option(dbName), objectName))
       case _ =>
         LOG.warn(s"RangerSparkAuthorizer.createSparkResource: unexpected objectType: $objectType")
         None
