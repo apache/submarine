@@ -122,7 +122,7 @@ submarine_client.get_log(id)
 submarine_client.list_experiments(status='running')
 ```
 
-For a quick-start, see [Submarine On K8s](docs/userdocs/k8s/README.md)
+For a quick-start, see [Submarine On K8s](./docs/userdocs/k8s/README.md)
 
 
 ### Example: Submit a pre-defined experiment template job
@@ -133,9 +133,9 @@ For a quick-start, see [Submarine On K8s](docs/userdocs/k8s/README.md)
 
 ## Architecture, Design and requirements
 
-If you want to know more about Submarine's architecture, components, requirements and design doc, they can be found on [Architecture-and-requirement](docs/design/architecture-and-requirements.md)
+If you want to know more about Submarine's architecture, components, requirements and design doc, they can be found on [Architecture-and-requirement](./docs/design/architecture-and-requirements.md)
 
-Detailed design documentation, implementation notes can be found at: [Implementation notes](docs/design/implementation-notes.md)
+Detailed design documentation, implementation notes can be found at: [Implementation notes](./docs/design/implementation-notes.md)
 
 ## Apache Submarine Community
 
@@ -147,11 +147,11 @@ Issue Tracking: https://issues.apache.org/jira/projects/SUBMARINE
 
 ## User Document
 
-See [User Guide Home Page](docs/user-guide-home.md)
+See [User Guide Home Page](./docs/user-guide-home.md)
 
 ## Developer Document
 
-See [Developer Guide Home Page](docs/development-guide-home.md)
+See [Developer Guide Home Page](./docs/development-guide-home.md)
 
 ## Roadmap
 
