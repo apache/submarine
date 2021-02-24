@@ -122,7 +122,7 @@ submarine_client.get_log(id)
 submarine_client.list_experiments(status='running')
 ```
 
-For a quick-start, see [Submarine On K8s](website/docs/userdocs/k8s/README.md)
+For a quick-start, see [Submarine On K8s](https://submarine.apache.org/docs/adminDocs/k8s/README)
 
 
 ### Example: Submit a pre-defined experiment template job
@@ -133,25 +133,25 @@ For a quick-start, see [Submarine On K8s](website/docs/userdocs/k8s/README.md)
 
 ## Architecture, Design and requirements
 
-If you want to know more about Submarine's architecture, components, requirements and design doc, they can be found on [Architecture-and-requirement](./docs/design/architecture-and-requirements.md)
+If you want to know more about Submarine's architecture, components, requirements and design doc, they can be found on [Architecture-and-requirement](https://submarine.apache.org/docs/designDocs/architecture-and-requirements)
 
-Detailed design documentation, implementation notes can be found at: [Implementation notes](website/docs/design/implementation-notes.md)
+Detailed design documentation, implementation notes can be found at: [Implementation notes](https://submarine.apache.org/docs/designDocs/implementation-notes)
 
 ## Apache Submarine Community
 
-Read the [Apache Submarine Community Guide](website/ocs/community/README.md)
+Read the [Apache Submarine Community Guide](https://submarine.apache.org/docs/community/README)
 
-How to contribute [Contributing Guide](website/docs/community/contributing.md)
+How to contribute [Contributing Guide](https://submarine.apache.org/docs/community/contributing)
 
 Issue Tracking: https://issues.apache.org/jira/projects/SUBMARINE
 
 ## User Document
 
-See [User Guide Home Page](website/docs/user-guide-home.md)
+See [User Guide Home Page](https://submarine.apache.org/docs/)
 
 ## Developer Document
 
-See [Developer Guide Home Page](website/docs/development-guide-home.md)
+See [Developer Guide Home Page](https://submarine.apache.org/docs/devDocs/Development/)
 
 ## Roadmap
 
