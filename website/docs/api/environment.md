@@ -125,7 +125,7 @@ curl -X GET http://127.0.0.1:8080/api/v1/environment
 
 **Example Request:**
 ```sh
-curl -X GET http://127.0.0.1:8080/api/v1/environment/my-submarine-env
+curl -X GET http://127.0.0.1:32080/api/v1/environment/my-submarine-env
 ```
 
 **Example Response:**
