@@ -42,6 +42,12 @@ export class ExperimentHomeComponent implements OnInit {
   isListLoading: boolean = true;
   checkedList: boolean[];
   selectAllChecked: boolean = false;
+  switchValue: boolean = false;
+
+  // auto reload
+  reloadPeriod: number = 10000; // default 10s
+  reloadInterval = interval(this.reloadPeriod);
+  reloadSub = null;
 
   // tensorboard
   isTensorboardLoading: boolean = true;
@@ -120,6 +126,32 @@ export class ExperimentHomeComponent implements OnInit {
 
   onInitModal(obj) {
     this.form.initModal(obj.initMode, obj.initFormType, obj.id, obj.spec);
+  }
+
+  /* ngDoCheck() {
+    console.log(this.switchValue);
+    if (this.switchValue) {
+      this.reloadSub = this.reloadInterval.subscribe((res) => {
+        this.fetchExperimentList();
+      });
+    } else {
+      if (this.reloadSub) {
+        this.reloadSub.unsubscribe();
+      }
+    }
+  } */
+
+  onSwitchAutoReload() {
+    console.log(this.switchValue);
+    if (this.switchValue) {
+      this.reloadSub = this.reloadInterval.subscribe((res) => {
+        this.fetchExperimentList();
+      });
+    } else {
+      if (this.reloadSub) {
+        this.reloadSub.unsubscribe();
+      }
+    }
   }
 
   getTensorboardInfo(period: number, due: number) {
