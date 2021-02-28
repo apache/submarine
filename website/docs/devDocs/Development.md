@@ -37,7 +37,7 @@ In this document, we only focus on the last two components. You can learn how to
 
 ## Vedio
 
-From [this vedio](https://youtu.be/32Na2k6Alv4),you will know how to deal with the configuration of Submarine and be able to contribute to it.
+From [this vedio](https://youtu.be/32Na2k6Alv4),you will know how to deal with the configuration of Submarine and be able to contribute to it via github.
 
 ## Develop server
 
