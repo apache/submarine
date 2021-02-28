@@ -15,6 +15,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+There are several ways to contribute to Submarine:
+1. Develop and Commit source code (This document will primarily focus on this.)
+2. Report issues (You can report issues with both Github or Jira.)
+3. Discuss/Answer questions on the mailing list
+4. Share use cases
 
 ## Preface
 * **Apache Submarine** is an [Apache 2.0 License](https://github.com/apache/submarine/blob/master/LICENSE) Software. Contributing to Submarine means you agree to the Apache 2.0 License. 
