@@ -128,19 +128,6 @@ export class ExperimentHomeComponent implements OnInit {
     this.form.initModal(obj.initMode, obj.initFormType, obj.id, obj.spec);
   }
 
-  /* ngDoCheck() {
-    console.log(this.switchValue);
-    if (this.switchValue) {
-      this.reloadSub = this.reloadInterval.subscribe((res) => {
-        this.fetchExperimentList();
-      });
-    } else {
-      if (this.reloadSub) {
-        this.reloadSub.unsubscribe();
-      }
-    }
-  } */
-
   onSwitchAutoReload() {
     console.log(this.switchValue);
     if (this.switchValue) {
