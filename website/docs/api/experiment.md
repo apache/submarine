@@ -54,7 +54,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   }
 }
-' http://127.0.0.1:8080/api/v1/experiment
+' http://127.0.0.1:32080/api/v1/experiment
 ```
 
 **Example Response:**
@@ -126,7 +126,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   }
 }
-' http://127.0.0.1:8080/api/v1/experiment
+' http://127.0.0.1:32080/api/v1/experiment
 ```
 Above example assume environment "my-submarine-env" already exists in Submarine. Please refer Environment API Reference doc to Create/Update/Delete/List Environment REST API's
 
@@ -174,7 +174,7 @@ Above example assume environment "my-submarine-env" already exists in Submarine.
 
 **Example Request:**
 ```sh
-curl -X GET http://127.0.0.1:8080/api/v1/experiment
+curl -X GET http://127.0.0.1:32080/api/v1/experiment
 ```
 
 **Example Response:**
@@ -254,7 +254,7 @@ curl -X GET http://127.0.0.1:8080/api/v1/experiment
 
 **Example Request:**
 ```sh
-curl -X GET http://127.0.0.1:8080/api/v1/experiment/experiment_1592057447228_0001
+curl -X GET http://127.0.0.1:32080/api/v1/experiment/experiment_1592057447228_0001
 ```
 
 **Example Response:**
@@ -326,7 +326,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '
     }
   }
 }
-' http://127.0.0.1:8080/api/v1/experiment/experiment_1592057447228_0001
+' http://127.0.0.1:32080/api/v1/experiment/experiment_1592057447228_0001
 ```
 
 **Example Response:**
@@ -367,7 +367,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '
 
 **Example Request:**
 ```sh
-curl -X DELETE http://127.0.0.1:8080/api/v1/experiment/experiment_1592057447228_0001
+curl -X DELETE http://127.0.0.1:32080/api/v1/experiment/experiment_1592057447228_0001
 ```
 
 **Example Response:**
@@ -414,7 +414,7 @@ curl -X DELETE http://127.0.0.1:8080/api/v1/experiment/experiment_1592057447228_
 
 **Example Request:**
 ```sh
-curl -X GET http://127.0.0.1:8080/api/v1/experiment/logs
+curl -X GET http://127.0.0.1:32080/api/v1/experiment/logs
 ```
 
 **Example Response:**
@@ -457,7 +457,7 @@ curl -X GET http://127.0.0.1:8080/api/v1/experiment/logs
 
 **Example Request:**
 ```sh
-curl -X GET http://127.0.0.1:8080/api/v1/experiment/logs/experiment_1589199154923_0002
+curl -X GET http://127.0.0.1:32080/api/v1/experiment/logs/experiment_1589199154923_0002
 ```
 
 **Example Response:**
