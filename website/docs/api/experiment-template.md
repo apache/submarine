@@ -129,7 +129,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   }
 }
-' http://127.0.0.1:8080/api/v1/template
+' http://127.0.0.1:32080/api/v1/template
 ```
 
 
@@ -138,7 +138,7 @@ curl -X POST -H "Content-Type: application/json" -d '
 
 **Example Request:**
 ```sh
-curl -X GET http://127.0.0.1:8080/api/v1/template
+curl -X GET http://127.0.0.1:32080/api/v1/template
 ```
 
 ### Get experiment template
@@ -146,7 +146,7 @@ curl -X GET http://127.0.0.1:8080/api/v1/template
 
 **Example Request:**
 ```sh
-curl -X GET http://127.0.0.1:8080/api/v1/template/my-tf-mnist-template
+curl -X GET http://127.0.0.1:32080/api/v1/template/my-tf-mnist-template
 ```
 
 
@@ -202,7 +202,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '
     }
   }
 }
-' http://127.0.0.1:8080/api/v1/template/my-tf-mnist-template
+' http://127.0.0.1:32080/api/v1/template/my-tf-mnist-template
 ```
 
 > "description", "parameters", "experimentSpec", "author" etc can be updated using this API.
@@ -215,7 +215,7 @@ curl -X PATCH -H "Content-Type: application/json" -d '
 
 **Example Request:**
 ```sh
-curl -X DELETE http://127.0.0.1:8080/api/v1/template/my-tf-mnist-template
+curl -X DELETE http://127.0.0.1:32080/api/v1/template/my-tf-mnist-template
 ```
 
 
@@ -233,5 +233,5 @@ curl -X POST -H "Content-Type: application/json" -d '
         "experiment_name":"newexperiment1"
     }
 }
-' http://127.0.0.1:8080/api/v1/experiment/my-tf-mnist-template
+' http://127.0.0.1:32080/api/v1/experiment/my-tf-mnist-template
 ```
