@@ -19,6 +19,7 @@ ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_PREFIX="/"
 ARG NB_PORT=8888
+ARG MLFLOW_TRACKING_URI="http://10.96.0.3:8080"
 
 USER root
 
@@ -54,6 +55,8 @@ ENV NB_USER=$NB_USER \
     LANGUAGE=en_US.UTF-8
 ENV PATH=$CONDA_DIR/bin:$PATH \
     HOME=/home/$NB_USER
+
+ENV MLFLOW_TRACKING_URI=$MLFLOW_TRACKING_URI
 
 # Create NB_USER user with UID=1000 and in the 'users' group
 RUN useradd -M -s /bin/bash -N -u $NB_UID $NB_USER && \

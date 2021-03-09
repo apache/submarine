@@ -42,6 +42,9 @@ submarine:
   tensorboard:
     storage: 10Gi
     ingressPath: "/tensorboard"
+  mlflow:
+    storage: 10Gi
+    ingressPath: "/mlflow"
   storage:
     type: host # "host" or "nfs"
     host:
