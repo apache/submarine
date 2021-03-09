@@ -35,7 +35,7 @@ The purpose of the components are as the following:
 
 In this document, we only focus on the last two components. You can learn how to develop server, database, and workbench here.
 
-## Vedio
+## Video
 
 From [This Video](https://youtu.be/32Na2k6Alv4), you will know how to deal with the configuration of Submarine and be able to contribute to it via Github.
 
