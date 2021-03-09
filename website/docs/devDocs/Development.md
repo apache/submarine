@@ -35,6 +35,10 @@ The purpose of the components are as the following:
 
 In this document, we only focus on the last two components. You can learn how to develop server, database, and workbench here.
 
+## Video
+
+From [This Video](https://youtu.be/32Na2k6Alv4), you will know how to deal with the configuration of Submarine and be able to contribute to it via Github.
+
 ## Develop server
 
 ### Prerequisites
@@ -49,96 +53,96 @@ Checkstyle plugin may help to detect violations directly from the IDE.
 
 1. Install Checkstyle+IDEA plugin from Preference -> Plugins
 2. Open Preference -> Tools -> Checkstyle ->
-    1. Set Checkstyle version:
-        - Checkstyle version: 8.0
-    2. Add (+) a new Configuration File
-        - Description: Submarine
-        - Use a local checkstyle ${SUBMARINE_HOME}/dev-support/maven-config/checkstyle.xml
+   1. Set Checkstyle version:
+      - Checkstyle version: 8.0
+   2. Add (+) a new Configuration File
+      - Description: Submarine
+      - Use a local checkstyle ${SUBMARINE_HOME}/dev-support/maven-config/checkstyle.xml
 3. Open the Checkstyle Tool Window, select the Submarine rule and execute the check
 
 ### Testing
 
 - Unit Test
 
-    For each class, there is a corresponding testClass. For example, `SubmarineServerTest` is used for testing `SubmarineServer`. Whenever you add a funtion in classes, you must write a unit test to test it.
+  For each class, there is a corresponding testClass. For example, `SubmarineServerTest` is used for testing `SubmarineServer`. Whenever you add a funtion in classes, you must write a unit test to test it.
 
 - Integration Test
 
-    See [IntegrationTest.md](./IntegrationTest.md)
+  See [IntegrationTest.md](./IntegrationTest.md)
 
 ### Build from source
 
 - Before building
 
-    1. We assume the developer use **minikube** as a local kubernetes cluster.
-    2. Make sure you have **installed the submarine helm-chart** in the cluster.
+  1. We assume the developer use **minikube** as a local kubernetes cluster.
+  2. Make sure you have **installed the submarine helm-chart** in the cluster.
 
 1. Package the Submarine server into a new jar file
 
-    ```bash
-    mvn package -DskipTests
-    ```
+   ```bash
+   mvn package -DskipTests
+   ```
 
 2. Build the new server docker image in minikube
 
-    ```bash
-    # switch to minikube docker daemon to build image directly in minikube
-    eval $(minikube docker-env)
+   ```bash
+   # switch to minikube docker daemon to build image directly in minikube
+   eval $(minikube docker-env)
 
-    # run docker build
-    ./dev-support/docker-images/submarine/build.sh
+   # run docker build
+   ./dev-support/docker-images/submarine/build.sh
 
-    # exit minikube docker daemon
-    eval $(minikube docker-env -u)
-    ```
+   # exit minikube docker daemon
+   eval $(minikube docker-env -u)
+   ```
 
 3. Update server pod
 
-    ```bash
-    helm upgrade --set submarine.server.dev=true submarine ./helm-charts/submarine
-    ```
+   ```bash
+   helm upgrade --set submarine.server.dev=true submarine ./helm-charts/submarine
+   ```
 
-    Set `submarine.server.dev` to `true`, enabling the server pod to be launched with the new docker image.
+   Set `submarine.server.dev` to `true`, enabling the server pod to be launched with the new docker image.
 
 ## Develop workbench
 
 1. Deploy the Submarine
 
-    Follow [Getting Started/Submarine Local Deployment](../gettingStarted/localDeployment.md), and make sure you can connect to `http://localhost:32080` in the browser.
+   Follow [Getting Started/Submarine Local Deployment](../gettingStarted/localDeployment.md), and make sure you can connect to `http://localhost:32080` in the browser.
 
 2. Install the dependencies
 
-    ```bash
-    cd submarine-workbench/workbench-web
-    npm install
-    ```
+   ```bash
+   cd submarine-workbench/workbench-web
+   npm install
+   ```
 
 3. Run the workbench based on proxy server
 
-    ```bash
-    npm run start
-    ```
+   ```bash
+   npm run start
+   ```
 
-    1. The request sent to `http://localhost:4200` will be redirected to `http://localhost:32080`.
-    2. Open `http://localhost:4200` in browser to see the real-time change of workbench.
+   1. The request sent to `http://localhost:4200` will be redirected to `http://localhost:32080`.
+   2. Open `http://localhost:4200` in browser to see the real-time change of workbench.
 
 ## Develop database
 
 1. Build the docker image
 
-    ```bash
-    # switch to minikube docker daemon to build image directly in minikube
-    eval $(minikube docker-env)
+   ```bash
+   # switch to minikube docker daemon to build image directly in minikube
+   eval $(minikube docker-env)
 
-    # run docker build
-    ./dev-support/docker-images/database/build.sh
+   # run docker build
+   ./dev-support/docker-images/database/build.sh
 
-    # exit minikube docker daemon
-    eval $(minikube docker-env -u)
-    ```
+   # exit minikube docker daemon
+   eval $(minikube docker-env -u)
+   ```
 
 2. Deploy new pods in the cluster
 
-    ```bash
-    helm upgrade --set submarine.database.dev=true submarine ./helm-charts/submarine
-    ```
+   ```bash
+   helm upgrade --set submarine.database.dev=true submarine ./helm-charts/submarine
+   ```
