@@ -1,5 +1,5 @@
 ---
-title: Guide for Apache Submarine Contributor
+title: How To Contribute to Submarine
 ---
 
 <!--
@@ -15,76 +15,124 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+There are several ways to contribute to Submarine:
+1. Develop and Commit source code (This document will primarily focus on this.)
+2. Report issues (You can report issues with both Github or Jira.)
+3. Discuss/Answer questions on the mailing list
+4. Share use cases
 
-**Apache Submarine** is an [Apache 2.0 License](https://github.com/apache/submarine/blob/master/LICENSE) Software.
+## Preface
+* **Apache Submarine** is an [Apache 2.0 License](https://github.com/apache/submarine/blob/master/LICENSE) Software. Contributing to Submarine means you agree to the Apache 2.0 License. 
+* Please read [Code of Conduct](http://www.apache.org/foundation/policies/conduct.html) carefully.
+* The document [How It Works](http://www.apache.org/foundation/how-it-works.html) can help you understand Apache Software Foundation further.
 
-Contributing to Submarine (Source code, Documents, Image, Website) means you agree to the Apache 2.0 License.
+## Build Submarine
+* [Build From Code](https://github.com/apache/submarine/blob/master/website/docs/devDocs/BuildFromCode.md)
 
-1. Make sure your issue is not already in the [Jira issue tracker](https://issues.apache.org/jira/browse/SUBMARINE)
-2. If not, create a ticket describing the change you're proposing in the [Jira issue tracker](https://issues.apache.org/jira/browse/SUBMARINE)
-3. Setup Travis [Continuous Integration](#continuous-integration)
-4. Contribute your patch via Pull Request on our [Github Mirror](https://github.com/apache/submarine).
-
-Before you start, please read the [Code of Conduct](http://www.apache.org/foundation/policies/conduct.html) carefully, familiarize yourself with it and refer to it whenever you need it.
-
-For those of you who are not familiar with the Apache project, understanding [How it works](http://www.apache.org/foundation/how-it-works.html) would be quite helpful.
-
-## Creating a Pull Request
-When creating a Pull Request, you will automatically get the template below.
-
-Filling it thoroughly can improve the speed of the review process.
-
-    ### What is this PR for?
-    A few sentences describing the overall goals of the pull request's commits.
-    First time? Check out the contribution guidelines -
-    https://github.com/apache/submarine/tree/master/docs/community/contributing.md
-
-    ### What type of PR is it?
-    [Bug Fix | Improvement | Feature | Documentation | Hot Fix | Refactoring]
-
-    ### Todos
-    * [ ] - Task
-
-    ### What is the Jira issue?
-    * Open an issue on Jira https://issues.apache.org/jira/browse/SUBMARINE/
-    * Put link here, and add [SUBMARINE-${jira_number}] in PR title, e.g. [SUBMARINE-323]
-
-    ### How should this be tested?
-    Outline the steps to test the PR here.
-
-    ### Screenshots (if appropriate)
-
-    ### Questions:
-    * Do the licenses files require updates?
-    * Are there breaking changes for older versions?
-    * Does this need documentation?
-
-
-## Source Control Workflow
+## Creating patches
 Submarine follows [Fork & Pull](https://github.com/sevntu-checkstyle/sevntu.checkstyle/wiki/Development-workflow-with-Git:-Fork,-Branching,-Commits,-and-Pull-Request) model.
 
-## The Review Process
+### Step1: Fork apache/submarine github repository (first time)
+* Visit https://github.com/apache/submarine
+* Click the `Fork` button to create a fork of the repository
 
-When a Pull Request is submitted, it is being merged or rejected by the following review process.
+### Step2: Clone the Submarine to your local machine 
+```sh
+# USERNAME – your Github user account name.
+git clone git@github.com:${USERNAME}/submarine.git
+# or: git clone https://github.com/${USERNAME}/submarine.git 
+ 
+cd submarine
+# set upstream 
+git remote add upstream git@github.com:apache/submarine.git
+# or: git remote add upstream https://github.com/apache/submarine.git
 
-* Anybody can be a reviewer and may comment on the change or suggest modifications.
-* Reviewer can indicate that a patch looks suitable for merging with a comment such as: "Looks good", "LGTM", "+1".
-* At least one indication of suitability (e.g. "LGTM") from a committer is required to be merged.
-* Pull request is open for 1 or 2 days for potential additional review unless it's got enough indication of suitability.
+# Don't push to the upstream master.
+git remote set-url --push upstream no_push
+
+# Check upstream/origin:
+# origin    git@github.com:${USERNAME}/submarine.git (fetch)
+# origin    git@github.com:${USERNAME}/submarine.git (push)
+# upstream  git@github.com:apache/submarine.git (fetch)
+# upstream  no_push (push)
+git remote -v
+```
+
+### Step3: Create a new Jira in Submarine project
+* New contributors need privilege to create JIRA issues. Please email kaihsun@apache.org with your Jira username. In addition, the email title should be "[New Submarine Contributor]".
+* Check [Jira issue tracker](https://issues.apache.org/jira/projects/SUBMARINE/issues/SUBMARINE-748?filter=allopenissues) for existing issues.
+* Create a new Jira issue in Submarine project. When the issue is created, a Jira number (eg. SUBMARINE-748) will be assigned to the issue automatically. 
+![jira_number_example](../assets/jira_number_example.png)
+
+
+### Step4: Create a local branch for your contribution
+```sh
+cd submarine
+
+# Make your local master up-to-date
+git checkout master
+git fetch upstream 
+git rebase upstream/master
+
+# Create a new branch fro issue SUBMARINE-${jira_number}
+git checkout -b SUBMARINE-${jira_number}
+
+# Example: git checkout -b SUBMARINE-748 
+```
+
+### Step5: Develop & Create commits
+* You can edit the code on the `SUBMARINE-${jira_number}` branch. (Coding Style: [Code Convention](#code-convention))
+* Create commits
+```sh
+git add ${edited files}
+git commit -m "SUBMARINE-${jira_number}. ${Commit Message}"
+# Example: git commit -m "SUBMARINE-748. Update Contributing guide" 
+```
+
+### Step6: Syncing your local branch with upstream/master 
+```sh
+# On SUBMARINE-${jira_number} branch
+git fetch upstream
+git rebase upstream/master
+```
+
+* Please do not use `git pull` to synchronize your local branch. Because `git pull` does a merge to create merged commits, these will make commit history messy.
+
+### Step7: Push your local branch to your personal fork
+```sh
+git push origin SUBMARINE-${jira_number} 
+```
+
+### Step8: Check Travis-ci status of your personal fork
+* Visit `https://travis-ci.com/github/${USERNAME}/submarine`
+* Please make sure your new commits can pass all integration tests before creating a pull request.
+
+### Step9: Create a pull request on github UI
+* Visit your fork at `https://github.com/${USERNAME}/submarine.git`
+* Click `Compare & Pull Request` button to create pull request.
+![compare_pull_request_button](../assets/compare_pull_request_button.png)
+
+#### Pull Request template
+* [Pull request template](https://github.com/apache/submarine/blob/bd7578cc28f8280f9170938d4469fcc965e24a89/.github/PULL_REQUEST_TEMPLATE)
+* Filling the template thoroughly can improve the speed of the review process. Example: 
+
+![pull_request_template_example](../assets/pull_request_template_example.png)
+
+### Step10: Check Travis-ci status of your pull request in apache/submarine
+* Visit https://travis-ci.com/github/apache/submarine/pull_requests
+* Please make sure your pull request can pass all integration tests. 
+
+### Step11: The Review Process
+* Anyone can be a reviewer and comment on the pull requests.
+* Reviewer can indicate that a patch looks suitable for merging with a comment such as: "Looks good", "LGTM", "+1". (PS: LGTM = Looks Good To Me)
+* At least one indication of suitability (e.g. "LGTM") from a committer is required to be merged. 
 * A committer can then initiate lazy consensus ("Merge if there is no more discussion") after which the code can be merged after a particular time (usually 24 hours) if there are no more reviews.
-* Contributors can ping reviewers (including committers) by commenting 'Ready to review' or suitable indication.
+* Contributors can ping reviewers (including committers) by commenting 'Ready to review'.
 
+### Step12: Address review comments 
+* Push new commits to SUBMARINE-${jira_number} branch. The pull request will update automatically.
+* After you address all review comments, committers will merge the pull request.
 
-## Setting up
-Here are some things you will need to build and test the Submarine.
-
-### Software Configuration Management (SCM)
-
-Submarine uses Git for its SCM system. So you'll need a git client installed on your development machine.
-
-### Integrated Development Environment (IDE)
-
-You are free to use whatever IDE you prefer, or your favorite command-line editor.
 
 ### Code convention
 We are following Google Code style:
@@ -96,171 +144,3 @@ There are some plugins to format, lint your code in IDE (use [dev-support/maven-
 
 * [Checkstyle plugin for Intellij](https://plugins.jetbrains.com/plugin/1065) ([Setting Guide](http://stackoverflow.com/questions/26955766/intellij-idea-checkstyle))
 * [Checkstyle plugin for Eclipse](http://eclipse-cs.sourceforge.net/#!/) ([Setting Guide](http://eclipse-cs.sourceforge.net/#!/project-setup))
-
-
-## Getting the source code
-
-### Step 1: Fork in the cloud
-
-1. Visit https://github.com/apache/submarine
-2. On the top right of the page, click the `Fork` button (top right) to create a cloud-based fork of the repository.
-
-### Step 2: Clone fork to local storage
-
-Create your clone:
-
-> ${user} is your github user name
-
-```sh
-mkdir -p ${working_dir}
-cd ${working_dir}
-
-git clone https://github.com/${user}/submarine.git
-# or: git clone git@github.com:${user}/submarine.git
-
-cd ${working_dir}/submarine
-git remote add upstream https://github.com/apache/submarine.git
-# or: git remote add upstream git@github.com:apache/submarine.git
-
-# Never push to the upstream master.
-git remote set-url --push upstream no_push
-
-# Confirm that your remotes make sense:
-# It should look like:
-# origin    git@github.com:${user}/submarine.git (fetch)
-# origin    git@github.com:${user}/submarine.git (push)
-# upstream  https://github.com/apache/submarine (fetch)
-# upstream  no_push (push)
-git remote -v
-```
-
-### Step 3: Branch
-
-Get your local master up to date:
-
-```sh
-cd ${working_dir}/submarine
-git fetch upstream
-git checkout master
-git rebase upstream/master
-```
-
-Branch from master:
-
-```sh
-git checkout -b SUBMARINE-${jira_number}
-```
-
-### Step 4: Develop
-
-#### Edit the code
-
-You can now edit the code on the `SUBMARINE-${jira_number}` branch.
-
-#### Test
-
-Build and run all tests:
-
-### Step 5: Keep your branch in sync
-
-```sh
-# While on your SUBMARINE-${jira_number} branch.
-git fetch upstream
-git rebase upstream/master
-```
-
-Please don't use `git pull` instead of the above `fetch`/`rebase`. `git pull` does a merge, which leaves merge commits. These make the commit history messy and violate the principle that commits ought to be individually understandable and useful (see below). You can also consider changing your `.git/config` file via `git config branch.autoSetupRebase` always to change the behavior of `git pull`.
-
-### Step 6: Commit
-
-Commit your changes.
-
-```sh
-git commit
-```
-
-Likely you'll go back and edit/build/test further and then `commit --amend` in a few cycles.
-
-### Step 7: Push
-
-When the changes are ready to review (or you just want to create an offsite backup of your work), push your branch to your fork on `github.com`:
-
-```sh
-git push --set-upstream ${your_remote_name} SUBMARINE-${jira_number}
-```
-
-### Step 8: Create a pull request
-
-1. Visit your fork at `https://github.com/${user}/submarine`.
-2. Click the `Compare & Pull Request` button next to your `SUBMARINE-${jira_number}` branch.
-3. Fill in the required information in the PR template.
-
-#### Get a code review
-
-If your pull request (PR) is opened, it will be assigned to one or more reviewers. Those reviewers will do a thorough code review, looking at correctness, bugs, opportunities for improvement, documentation comments, and style.
-
-To address review comments, you should commit the changes to the same branch of the PR on your fork.
-
-#### Revert a commit
-
-In case you wish to revert a commit, follow the instructions below:
-
-> NOTE: If you have upstream write access, please refrain from using the Revert
-> button in the GitHub UI for creating the PR, because GitHub will create the
-> PR branch inside the main repository rather than inside your fork.
-
-Create a branch and synchronize it with the upstream:
-
-```sh
-# create a branch
-git checkout -b myrevert
-
-# sync the branch with upstream
-git fetch upstream
-git rebase upstream/master
-
-# SHA is the hash of the commit you wish to revert
-git revert SHA
-```
-
-This creates a new commit reverting the change. Push this new commit to your remote:
-
-```sh
-git push ${your_remote_name} myrevert
-```
-
-Create a PR based on this branch.
-
-#### Cherry pick a commit to a release branch
-
-In case you wish to cherry pick a commit to a release branch, follow the instructions below:
-
-Create a branch and synchronize it with the upstream:
-
-```sh
-# sync the branch with upstream.
-git fetch upstream
-
-# checkout the release branch.
-# ${release_branch_name} is the release branch you wish to cherry pick to.
-git checkout upstream/${release_branch_name}
-git checkout -b my-cherry-pick
-
-# cherry pick the commit to my-cherry-pick branch.
-# ${SHA} is the hash of the commit you wish to revert.
-git cherry-pick ${SHA}
-
-# push this branch to your repo, file an PR based on this branch.
-git push --set-upstream ${your_remote_name} my-cherry-pick
-```
-
-## Build
-
-[Build From Code](../devDocs/BuildFromCode)
-
-## Continuous Integration
-
-Submarine project's CI system will collect information from pull request author's Travis-ci and display status in the pull request.
-
-Each individual contributor should setup Travis-ci for the fork before making a pull-request. Go to [https://travis-ci.org/profile](https://travis-ci.org/profile) and switch on 'submarine' repository.
-
