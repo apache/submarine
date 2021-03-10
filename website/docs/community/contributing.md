@@ -104,7 +104,7 @@ git push origin SUBMARINE-${jira_number}
 ```
 
 ### Step8: Check Travis-ci status of your personal fork
-* Visit `https://travis-ci.org/github/${USERNAME}/submarine`
+* Visit `https://travis-ci.com/github/${USERNAME}/submarine`
 * Please make sure your new commits can pass all integration tests before creating a pull request.
 
 ### Step9: Create a pull request on github UI
