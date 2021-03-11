@@ -11,11 +11,11 @@ jobs:
     strategy:
       fail-fast: true
     env:
-      SUBMARINE_VERSION: 0.6.0-SNAPSHOT 
+      SUBMARINE_VERSION: 0.6.0-SNAPSHOT
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-        with: 
+        with:
           repository: apache/submarine
       - uses: docker/login-action@v1
         name: Login to Docker Hub
@@ -34,18 +34,23 @@ jobs:
         run: ./dev-support/docker-images/submarine/build.sh
       - name: Push submarine-server docker image
         run: docker push apache/submarine:server-$SUBMARINE_VERSION
-      
+
       - name: Build submarine database
         run: ./dev-support/docker-images/database/build.sh
       - name: Push submarine-database docker image
         run: docker push apache/submarine:database-$SUBMARINE_VERSION
-      
+
       - name: Build submarine jupyter
         run: ./dev-support/docker-images/jupyter/build.sh
       - name: Push submarine-jupyter docker image
         run: docker push apache/submarine:jupyter-notebook-$SUBMARINE_VERSION
-      
+
       - name: Build submarine operator
         run: ./dev-support/docker-images/operator/build.sh
       - name: Push submarine-operator docker image
         run: docker push apache/submarine:operator-$SUBMARINE_VERSION
+
+      - name: Build submarine mlflow
+        run: ./dev-support/docker-images/mlflow/build.sh
+      - name: Push submarine-mlflow docker image
+        run: docker push apache/submarine:mlflow-$SUBMARINE_VERSION
