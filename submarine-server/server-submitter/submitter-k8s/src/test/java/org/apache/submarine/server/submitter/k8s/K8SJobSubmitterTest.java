@@ -26,6 +26,7 @@ import io.kubernetes.client.ApiException;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
+import org.apache.submarine.server.api.experiment.MlflowInfo;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.junit.Assert;
 import org.junit.Before;
@@ -86,6 +87,11 @@ public class K8SJobSubmitterTest extends SpecBuilder {
   @Test
   public void testGetTensorboardInfo() throws IOException, URISyntaxException {
     TensorboardInfo tensorboardInfo = submitter.getTensorboardInfo();
+  }
+
+  @Test
+  public void testGetMlflowInfo() throws IOException, URISyntaxException {
+    MlflowInfo mlflowInfo = submitter.getMlflowInfo();
   }
 
   private void run(ExperimentSpec spec) throws SubmarineRuntimeException {

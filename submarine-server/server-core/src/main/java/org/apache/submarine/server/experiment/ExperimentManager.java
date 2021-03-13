@@ -39,6 +39,7 @@ import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
+import org.apache.submarine.server.api.experiment.MlflowInfo;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.experiment.database.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.ExperimentService;
@@ -106,7 +107,7 @@ public class ExperimentManager {
     spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id.toString());
     spec.getMeta().getEnvVars().put(RestConstants.SUBMARINE_TRACKING_URI, url);
     spec.getMeta().getEnvVars().put(RestConstants.LOG_DIR_KEY, RestConstants.LOG_DIR_VALUE);
-    
+
     String lowerName = spec.getMeta().getName().toLowerCase();
     spec.getMeta().setName(lowerName);
 
@@ -277,6 +278,16 @@ public class ExperimentManager {
    */
   public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
     return submitter.getTensorboardInfo();
+  }
+
+  /**
+   * Get mlflow meta data
+   *
+   * @return mlflowinfo
+   * @throws SubmarineRuntimeException the service error
+   */
+  public MlflowInfo getMLflowInfo() throws SubmarineRuntimeException {
+    return submitter.getMlflowInfo();
   }
 
   private void checkSpec(ExperimentSpec spec) throws SubmarineRuntimeException {

@@ -25,6 +25,7 @@ import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
 import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
 import { ExperimentTemplateSubmit } from '@submarine/interfaces/experiment-template-submit';
 import { TensorboardInfo } from '@submarine/interfaces/tensorboard-info';
+import { MlflowInfo } from '@submarine/interfaces/mlflow-info';
 import { BaseApiService } from '@submarine/services/base-api.service';
 import { of, throwError, Observable, Subject } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -215,6 +216,19 @@ export class ExperimentService {
   getTensorboardInfo(): Observable<TensorboardInfo> {
     const apiUrl = this.baseApi.getRestApi('/v1/experiment/tensorboard');
     return this.httpClient.get<Rest<TensorboardInfo>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
+  }
+
+  getMlflowInfo(): Observable<MlflowInfo> {
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment/mlflow');
+    return this.httpClient.get<Rest<MlflowInfo>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
           return of(res.result);
