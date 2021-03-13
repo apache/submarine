@@ -34,6 +34,17 @@
       target="_blank"
       nzType="primary"
       style="margin: 0px 4px 0px 4px"
+      [nzLoading]="isMlflowLoading"
+      [href]="mlflowUrl"
+    >
+      <i nz-icon nzType="area-chart"></i>
+      MLflow UI
+    </a>
+    <a
+      nz-button
+      target="_blank"
+      nzType="primary"
+      style="margin: 0px 4px 0px 4px"
       [nzLoading]="isTensorboardLoading"
       [href]="tensorboardUrl"
     >

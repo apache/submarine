@@ -49,6 +49,10 @@ export class ExperimentHomeComponent implements OnInit {
   reloadInterval = interval(this.reloadPeriod);
   reloadSub = null;
 
+  //mlflow
+  isMlflowLoading: boolean = true;
+  mlflowUrl: string = '';
+
   // tensorboard
   isTensorboardLoading: boolean = true;
   tensorboardUrl: string = '';
@@ -68,6 +72,7 @@ export class ExperimentHomeComponent implements OnInit {
 
     this.experimentService.emitInfo(null);
     this.getTensorboardInfo(1000, 50000);
+    this.getMlflowInfo(1000, 50000);
   }
 
   fetchExperimentList() {
@@ -160,6 +165,24 @@ export class ExperimentHomeComponent implements OnInit {
         (res) => {
           this.isTensorboardLoading = !res.available;
           this.tensorboardUrl = res.url;
+        },
+        (err) => console.log(err)
+      );
+  }
+
+  getMlflowInfo(period: number, due: number) {
+    interval(period)
+      .pipe(
+        mergeMap(() => this.experimentService.getMlflowInfo()), // map interval observable to tensorboardInfo observable
+        tap((x) => console.log(x)), // monitoring the process
+        filter((res) => res.available), // only emit the success ones
+        take(1), // if succeed, stop emitting new value from source observable
+        timeout(due) // if timeout, it will throw an error
+      )
+      .subscribe(
+        (res) => {
+          this.isMlflowLoading = !res.available;
+          this.mlflowUrl = res.url;
         },
         (err) => console.log(err)
       );
