@@ -281,7 +281,7 @@ public class ExperimentManager {
   }
 
   /**
-   * Get tensorboard meta data
+   * Get mlflow meta data
    *
    * @return mlflowinfo
    * @throws SubmarineRuntimeException the service error

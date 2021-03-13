@@ -131,7 +131,7 @@ public interface Submitter {
   TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException;
 
   /**
-   * Get tensorboard meta data
+   * Get mlflow meta data
    * @param
    * @return object
    * @throws SubmarineRuntimeException running error

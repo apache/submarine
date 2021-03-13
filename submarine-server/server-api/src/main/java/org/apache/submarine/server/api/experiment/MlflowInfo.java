@@ -28,14 +28,6 @@ public class MlflowInfo {
     this.url = url;
   }
 
-  public boolean isAvailable() {
-    return available;
-  }
-
-  public void setAvailable(boolean available) {
-    this.available = available;
-  }
-
   public String getUrl() {
     return url;
   }

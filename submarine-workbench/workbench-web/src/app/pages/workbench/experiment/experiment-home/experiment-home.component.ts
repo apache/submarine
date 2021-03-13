@@ -173,11 +173,11 @@ export class ExperimentHomeComponent implements OnInit {
   getMlflowInfo(period: number, due: number) {
     interval(period)
       .pipe(
-        mergeMap(() => this.experimentService.getMlflowInfo()), // map interval observable to tensorboardInfo observable
-        tap((x) => console.log(x)), // monitoring the process
-        filter((res) => res.available), // only emit the success ones
-        take(1), // if succeed, stop emitting new value from source observable
-        timeout(due) // if timeout, it will throw an error
+        mergeMap(() => this.experimentService.getMlflowInfo()),
+        tap((x) => console.log(x)),
+        filter((res) => res.available),
+        take(1),
+        timeout(due)
       )
       .subscribe(
         (res) => {
