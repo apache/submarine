@@ -17,7 +17,7 @@
   ~ under the License.
   -->
 
-<nz-modal [(nzVisible)]="isVisible" nzTitle="Create Environment" [nzWidth]="700" (nzOnCancel)="isVisible = false">
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Create Environment" [nzWidth]="700" (nzOnCancel)="closeModal()">
   <form nz-form [formGroup]="environmentForm" nzLayout="horizontal">
     <div *nzModalFooter>
       <button id="btn-cancel" nz-button nzType="default" (click)="closeModal()">Cancel</button>
@@ -58,6 +58,25 @@
         </nz-form-control>
       </div>
     </nz-form-item>
+    <nz-form-item style="margin-bottom: 0">
+      <!-- nzAction is not supported yet -->
+      <nz-upload
+        nzType="drag"
+        [nzMultiple]="false"
+        [nzFileList]="configFileList"
+        [nzPreview]="isPreview"
+        [nzRemove]="closePreview"
+        nzAccept=".yml"
+        nzAction="api/v1/environment/config"
+        (nzChange)="fileUpload($event)"
+      >
+        <p class="ant-upload-drag-icon">
+          <i nz-icon nzType="inbox"></i>
+        </p>
+        <p class="ant-upload-text">Click or drag a conda config YAML file here</p>
+      </nz-upload>
+    </nz-form-item>
+    <div #preview *ngIf="isPreviewVisible" [innerText]="previewConfigFile"></div>
     <h2>Kernel Spec</h2>
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Name</nz-form-label>

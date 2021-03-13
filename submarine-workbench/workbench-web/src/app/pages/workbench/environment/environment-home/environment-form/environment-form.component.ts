@@ -22,6 +22,8 @@ import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { EnvironmentService } from '@submarine/services/environment-services/environment.service';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
+import { UploadChangeParam, UploadFile, UploadListType } from 'ng-zorro-antd/upload';
+import { BaseApiService } from '@submarine/services/base-api.service';
 
 @Component({
   selector: 'submarine-environment-form',
@@ -33,6 +35,9 @@ export class EnvironmentFormComponent implements OnInit {
 
   isVisible: boolean;
   environmentForm;
+  configFileList = [];
+  isPreviewVisible: boolean;
+  previewConfigFile = '';
 
   constructor(
     private fb: FormBuilder,
@@ -45,6 +50,7 @@ export class EnvironmentFormComponent implements OnInit {
     this.environmentForm = this.fb.group({
       environmentName: [null, Validators.required],
       dockerImage: [null, Validators.required],
+      configFile: null,
       name: [null, Validators.required],
       channels: this.fb.array([]),
       dependencies: this.fb.array([]),
@@ -53,6 +59,7 @@ export class EnvironmentFormComponent implements OnInit {
 
   initModal() {
     this.isVisible = true;
+    this.isPreviewVisible = true;
     this.initFormStatus();
   }
 
@@ -66,6 +73,14 @@ export class EnvironmentFormComponent implements OnInit {
 
   get dockerImage() {
     return this.environmentForm.get('dockerImage');
+  }
+
+  get configFile() {
+    return this.environmentForm.get('configFile');
+  }
+
+  set configFile(file: UploadFile) {
+    this.environmentForm.controls['configFile'].setValue(file);
   }
 
   get name() {
@@ -84,6 +99,7 @@ export class EnvironmentFormComponent implements OnInit {
     this.isVisible = true;
     this.environmentName.reset();
     this.dockerImage.reset();
+    this.configFile.reset();
     this.name.reset();
     this.channels.clear();
     this.dependencies.clear();
@@ -101,6 +117,8 @@ export class EnvironmentFormComponent implements OnInit {
 
   closeModal() {
     this.isVisible = false;
+    this.configFileList = [];
+    this.previewConfigFile = '';
   }
 
   addChannel() {
@@ -114,6 +132,33 @@ export class EnvironmentFormComponent implements OnInit {
   deleteItem(arr: FormArray, index: number) {
     arr.removeAt(index);
   }
+
+  fileUpload(info: UploadChangeParam) {
+    info.fileList = info.fileList.slice(-1);
+    this.configFileList = info.fileList;
+    let file = info.file;
+    if (info.type === 'success') {
+      this.configFile = file;
+      this.isPreviewVisible = true;
+      var reader = new FileReader();
+      reader.readAsText(info.file.originFileObj);
+      reader.onload = () => {
+        this.previewConfigFile = reader.result.toString();
+      };
+      this.nzMessageService.success(`${file.name} file uploaded successfully.`);
+    } else if (status === 'error') {
+      this.nzMessageService.error(`${file.name} file upload failed.`);
+    }
+  }
+
+  isPreview = () => {
+    this.isPreviewVisible = !this.isPreviewVisible;
+  };
+
+  closePreview = () => {
+    this.configFileList = [];
+    this.isPreviewVisible = false;
+  };
 
   createEnvironment() {
     this.isVisible = false;
