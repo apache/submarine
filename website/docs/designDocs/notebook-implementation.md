@@ -104,7 +104,7 @@ Submarine Server IP will be configured automatically by Submarine Server, and ad
 
 ### Security 
 
-Please refer to [Security Implementation](./wip-designs/security-implementation)
+Please refer to [Security Implementation](./wip-designs/security-implementation.md)
 
 Once user accessed to a running notebook session, the user can also access resources of the notebook, capability of submit new experiment, and access data. This is also very dangerous so we have to protect it. 
 
