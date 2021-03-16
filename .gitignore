@@ -85,6 +85,9 @@ submarine-cloud/bin/*
 submarine-security/spark-security/dependency-reduced-pom.xml
 submarine-security/spark-security/derby.log
 
+# submarine-cloud-v2
+submarine-cloud-v2/vendor/*
+
 # vscode file
 .project
 .classpath
