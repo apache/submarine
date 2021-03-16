@@ -71,7 +71,7 @@ const Search = props => {
       Promise.all([
         getSearchDoc(),
         getLunrIndex(),
-        import("./lib/DocSearch"),
+        import("./search_lib/DocSearch"),
         import("./algolia.css")
       ]).then(([searchDocs, searchIndex, { default: DocSearch }]) => {
         initAlgolia(searchDocs, searchIndex, DocSearch);
