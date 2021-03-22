@@ -137,7 +137,7 @@ public class EnvironmentRestApiTest {
     // environments.length = 2; One is created in this test, one is get from database
     Environment[] environments = gson
         .fromJson(gson.toJson(jsonResponse.getResult()), Environment[].class);
-    assertEquals(4, environments.length);
+    assertEquals(2, environments.length);
 
     Environment environment = environments[0];
     assertEquals("foo", environment.getEnvironmentSpec().getName());
