@@ -110,7 +110,7 @@ public class ExperimentRestApiTest {
     actualExperiment.setExperimentId(experimentId);
     kernelSpec.setName(kernelSpecName);
     kernelSpec.setChannels(kernelChannels);
-    kernelSpec.setDependencies(kernelDependencies);
+    kernelSpec.setCondaDependencies(kernelDependencies);
     meta.setName(metaName);
     meta.setFramework(metaFramework);
     meta.setNamespace(metaNamespace);
@@ -225,6 +225,7 @@ public class ExperimentRestApiTest {
     assertEquals(dockerImage, experiment.getSpec().getEnvironment().getDockerImage());
     assertEquals(kernelChannels, experiment.getSpec().getEnvironment().getKernelSpec().getChannels());
     assertEquals(kernelSpecName, experiment.getSpec().getEnvironment().getKernelSpec().getName());
-    assertEquals(kernelDependencies, experiment.getSpec().getEnvironment().getKernelSpec().getDependencies());
+    assertEquals(kernelDependencies,
+        experiment.getSpec().getEnvironment().getKernelSpec().getCondaDependencies());
   }
 }

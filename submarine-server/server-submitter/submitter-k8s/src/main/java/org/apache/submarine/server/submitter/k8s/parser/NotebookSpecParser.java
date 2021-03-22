@@ -107,8 +107,8 @@ public class NotebookSpecParser {
       StringBuffer installCommand = new StringBuffer();
       installCommand.append(condaVersionValidationCommand);
 
-      // If dependencies isn't empty
-      if (kernel.getDependencies().size() > 0) {
+      // If conda dependencies isn't empty
+      if (kernel.getCondaDependencies().size() > 0) {
         installCommand.append(" && conda install -y");
         for (String channel : kernel.getChannels()) {
           installCommand.append(" ");
@@ -116,7 +116,16 @@ public class NotebookSpecParser {
           installCommand.append(" ");
           installCommand.append(channel);
         }
-        for (String dependency : kernel.getDependencies()) {
+        for (String dependency : kernel.getCondaDependencies()) {
+          installCommand.append(" ");
+          installCommand.append(dependency);
+        }
+      }
+
+      // If conda dependencies isn't empty
+      if (kernel.getPipDependencies().size() > 0) {
+        installCommand.append(" && pip install");
+        for (String dependency : kernel.getPipDependencies()) {
           installCommand.append(" ");
           installCommand.append(dependency);
         }

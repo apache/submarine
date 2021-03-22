@@ -492,7 +492,7 @@ public abstract class AbstractSubmarineServerTest {
     Assert.assertEquals(env.getEnvironmentSpec().getDockerImage(),
         "continuumio/miniconda3");
     Assert.assertTrue(
-        env.getEnvironmentSpec().getKernelSpec().getDependencies().size() == 1);
+        env.getEnvironmentSpec().getKernelSpec().getCondaDependencies().size() == 1);
   }
 
 

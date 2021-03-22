@@ -262,7 +262,7 @@ public class ExperimentSpecParser {
         initContainer.setName(environment.getEnvironmentSpec().getName());
         initContainer.setImage(environmentSpec.getDockerImage());
 
-        if (environmentSpec.getKernelSpec().getDependencies().size() > 0) {
+        if (environmentSpec.getKernelSpec().getCondaDependencies().size() > 0) {
 
           String minVersion = "minVersion=\""
               + conf.getString(
@@ -297,7 +297,7 @@ public class ExperimentSpecParser {
             createCommand.append(channel);
           }
           for (String dependency : environmentSpec.getKernelSpec()
-              .getDependencies()) {
+              .getCondaDependencies()) {
             createCommand.append(" ");
             createCommand.append(dependency);
           }

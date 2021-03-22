@@ -47,12 +47,15 @@ public class EnvironmentRestApiTest {
   private static String kernelName = "team_default_python_3";
   private static String dockerImage = "continuumio/anaconda3";
   private static List<String> kernelChannels = Arrays.asList("defaults", "anaconda");
-  private static List<String> kernelDependencies = Arrays.asList(
+  private static List<String> kernelCondaDependencies = Arrays.asList(
       "_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
       "alabaster=0.7.12=py37_0",
       "anaconda=2020.02=py37_0",
       "anaconda-client=1.7.2=py37_0",
       "anaconda-navigator=1.9.12=py37_0");
+  private static List<String> kernelPipDependencies = Arrays.asList(
+      "apache-submarine==0.5.0",
+      "pyarrow==0.17.0");
 
   private static GsonBuilder gsonBuilder = new GsonBuilder()
       .registerTypeAdapter(EnvironmentId.class, new EnvironmentIdSerializer())
@@ -79,7 +82,7 @@ public class EnvironmentRestApiTest {
     KernelSpec kernelSpec = new KernelSpec();
     kernelSpec.setName(kernelName);
     kernelSpec.setChannels(kernelChannels);
-    kernelSpec.setDependencies(kernelDependencies);
+    kernelSpec.setCondaDependencies(kernelCondaDependencies);
     EnvironmentSpec environmentSpec = new EnvironmentSpec();
     environmentSpec.setDockerImage(dockerImage);
     environmentSpec.setKernelSpec(kernelSpec);
@@ -113,7 +116,8 @@ public class EnvironmentRestApiTest {
     assertEquals("foo", environment.getEnvironmentSpec().getName());
     assertEquals(kernelName, environment.getEnvironmentSpec().getKernelSpec().getName());
     assertEquals(kernelChannels, environment.getEnvironmentSpec().getKernelSpec().getChannels());
-    assertEquals(kernelDependencies, environment.getEnvironmentSpec().getKernelSpec().getDependencies());
+    assertEquals(kernelCondaDependencies,
+        environment.getEnvironmentSpec().getKernelSpec().getCondaDependencies());
     assertEquals("continuumio/miniconda", environment.getEnvironmentSpec().getDockerImage());
   }
 
@@ -133,7 +137,7 @@ public class EnvironmentRestApiTest {
     // environments.length = 2; One is created in this test, one is get from database
     Environment[] environments = gson
         .fromJson(gson.toJson(jsonResponse.getResult()), Environment[].class);
-    assertEquals(2, environments.length);
+    assertEquals(4, environments.length);
 
     Environment environment = environments[0];
     assertEquals("foo", environment.getEnvironmentSpec().getName());
@@ -141,8 +145,8 @@ public class EnvironmentRestApiTest {
         environment.getEnvironmentSpec().getKernelSpec().getName());
     assertEquals(kernelChannels,
         environment.getEnvironmentSpec().getKernelSpec().getChannels());
-    assertEquals(kernelDependencies,
-        environment.getEnvironmentSpec().getKernelSpec().getDependencies());
+    assertEquals(kernelCondaDependencies,
+        environment.getEnvironmentSpec().getKernelSpec().getCondaDependencies());
     assertEquals("continuumio/miniconda",
         environment.getEnvironmentSpec().getDockerImage());
   }
