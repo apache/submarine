@@ -396,7 +396,13 @@
               "type" : "string"
             }
           },
-          "dependencies" : {
+          "condaDependencies" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "pipDependencies" : {
             "type" : "array",
             "items" : {
               "type" : "string"
