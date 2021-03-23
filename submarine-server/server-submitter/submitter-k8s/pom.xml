@@ -78,10 +78,10 @@
           <groupId>joda-time</groupId>
           <artifactId>joda-time</artifactId>
         </exclusion>
-<!--        <exclusion>-->
-<!--          <groupId>mysql</groupId>-->
-<!--          <artifactId>mysql-connector-java</artifactId>-->
-<!--        </exclusion>-->
+        <exclusion>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
