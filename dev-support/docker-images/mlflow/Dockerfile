@@ -21,8 +21,22 @@ RUN mkdir /submarine-mlflow
 
 WORKDIR /submarine-mlflow
 
+RUN apt-get update && apt-get -y install --no-install-recommends default-libmysqlclient-dev libpq-dev build-essential sqlite3
+    
+RUN pip install \
+    mlflow \
+    sqlalchemy \
+    boto3
+
+RUN sqlite3 store.db
+
 EXPOSE 5000
+
+ENV BACKEND_URI sqlite:///store.db
+ENV ARTIFACT_ROOT /submarine-mlflow/mlflow-artifacts
 
 CMD mlflow server \
     --host 0.0.0.0 \
+    --backend-store-uri ${BACKEND_URI} \
+    --default-artifact-root ${ARTIFACT_ROOT} \
     --static-prefix "/mlflow"
