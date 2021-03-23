@@ -27,3 +27,15 @@ go get ${new_dependency} # Example: go get k8s.io/code-generator
 # Step2: Download the dependency to vendor/
 go mod vendor
 ```
+
+# Run Unit Test
+```bash
+# Step1: Register Custom Resource Definition
+kubectl apply -f artifacts/examples/crd.yaml
+
+# Step2: Create a Custom Resource
+kubectl apply -f artifacts/examples/example-submarine.yaml
+
+# Step3: Run unit test
+go test
+```

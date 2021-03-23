@@ -1,0 +1,7 @@
+apiVersion: submarine.k8s.io/v1alpha1
+kind: Submarine
+metadata:
+  name: example-submarine
+spec:
+  deploymentName: example-submarine
+  replicas: 1
