@@ -26,13 +26,10 @@ import (
 	"k8s.io/client-go/kubernetes"
     "testing"
     "reflect"
-    "os"
 )
 
 
 var (
-    masterURL = ""
-    kubeconfig = os.Getenv("HOME") + "/.kube/config"
     namespace = "default"
 )
 
