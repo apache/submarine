@@ -35,33 +35,33 @@ var (
 
 func TestSubmarineClient(t *testing.T) {
     ctx := context.Background()
-	config, e := clientcmd.BuildConfigFromFlags(masterURL, kubeconfig)
-	if e != nil {
-		panic(e.Error())
-	}
-	client, e := v1alpha1.NewForConfig(config)
+    config, e := clientcmd.BuildConfigFromFlags(masterURL, kubeconfig)
     if e != nil {
-		panic(e.Error())
-	}
-    
-	submarineList, e := client.Submarines(namespace).List(ctx, metav1.ListOptions{})
+        panic(e.Error())
+    }
+    client, e := v1alpha1.NewForConfig(config)
     if e != nil {
-		panic(e.Error())
-	}
+        panic(e.Error())
+    }
+
+    submarineList, e := client.Submarines(namespace).List(ctx, metav1.ListOptions{})
+    if e != nil {
+        panic(e.Error())
+    }
     fmt.Println(reflect.TypeOf(submarineList), e)    
     // fmt.Println(submarineList, e)
 }
 
 func TestK8sClient(t *testing.T) {
     ctx := context.Background()
-	config, e := clientcmd.BuildConfigFromFlags(masterURL, kubeconfig)
-	if e != nil {
-		panic(e.Error())
-	}
-	client, e := kubernetes.NewForConfig(config)
+    config, e := clientcmd.BuildConfigFromFlags(masterURL, kubeconfig)
     if e != nil {
-		panic(e.Error())
-	}
+        panic(e.Error())
+    }
+    client, e := kubernetes.NewForConfig(config)
+    if e != nil {
+        panic(e.Error())
+    }
     PodsList, e := client.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
     fmt.Println(reflect.TypeOf(PodsList), e)    
     // fmt.Println(PodsList, e)
