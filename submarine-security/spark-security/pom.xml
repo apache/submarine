@@ -50,7 +50,7 @@
     <scala.version>2.11.8</scala.version>
     <scala.binary.version>2.11</scala.binary.version>
     <scalatest.version>2.2.6</scalatest.version>
-    <solr.version>5.5.4</solr.version>
+    <solr.version>8.4.0</solr.version>
     <spark.version>2.4.7</spark.version>
     <spark.scope>provided</spark.scope>
     <gethostname4j.version>0.0.2</gethostname4j.version>
