@@ -19,11 +19,11 @@ package main
 
 import (
     "context"
-	"submarine-cloud-v2/pkg/generated/clientset/versioned/typed/submarine/v1alpha1"
-	"fmt"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/tools/clientcmd"
-	"k8s.io/client-go/kubernetes"
+    "submarine-cloud-v2/pkg/generated/clientset/versioned/typed/submarine/v1alpha1"
+    "fmt"
+    metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+    "k8s.io/client-go/tools/clientcmd"
+    "k8s.io/client-go/kubernetes"
     "testing"
     "reflect"
 )
