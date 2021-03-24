@@ -27,7 +27,6 @@
   <artifactId>submarine-submitter-yarn</artifactId>
   <version>0.6.0-SNAPSHOT</version>
   <name>Submarine: YARN Submitter</name>
-
   <dependencies>
     <dependency>
       <groupId>org.apache.submarine</groupId>
@@ -306,6 +305,30 @@
             </exclusion>
           </exclusions>
         </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-hdfs</artifactId>
+          <version>${hadoop.version}</version>
+          <scope>compile</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>org.eclipse.jetty</groupId>
+              <artifactId>jetty-util-ajax</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>com.google.guava</groupId>
+              <artifactId>guava</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>io.netty</groupId>
+              <artifactId>netty</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>com.fasterxml.jackson.core</groupId>
+              <artifactId>jackson-databind</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
       </dependencies>
     </profile>
 
@@ -318,6 +341,30 @@
           <version>${hadoop.version}</version>
           <scope>compile</scope>
           <exclusions>
+            <exclusion>
+              <groupId>com.fasterxml.jackson.core</groupId>
+              <artifactId>jackson-databind</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.hadoop</groupId>
+          <artifactId>hadoop-hdfs</artifactId>
+          <version>${hadoop.version}</version>
+          <scope>compile</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>org.eclipse.jetty</groupId>
+              <artifactId>jetty-util-ajax</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>com.google.guava</groupId>
+              <artifactId>guava</artifactId>
+            </exclusion>
+            <exclusion>
+              <groupId>io.netty</groupId>
+              <artifactId>netty</artifactId>
+            </exclusion>
             <exclusion>
               <groupId>com.fasterxml.jackson.core</groupId>
               <artifactId>jackson-databind</artifactId>
