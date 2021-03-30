@@ -39,3 +39,9 @@ kubectl apply -f artifacts/examples/example-submarine.yaml
 # Step3: Run unit test
 go test
 ```
+
+# Build Project
+```bash
+go build -o submarine-operator
+./submarine-operator
+```

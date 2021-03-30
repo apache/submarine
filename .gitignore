@@ -87,6 +87,7 @@ submarine-security/spark-security/derby.log
 
 # submarine-cloud-v2
 submarine-cloud-v2/vendor/*
+submarine-cloud-v2/submarine-operator
 
 # vscode file
 .project
