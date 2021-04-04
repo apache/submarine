@@ -220,7 +220,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     List<String> dependencies = new ArrayList<String>();
     String dependency = "_ipyw_jlab_nb_ext_conf=0.1.0=py37_0";
     dependencies.add(dependency);
-    kernelSpec.setDependencies(dependencies);
+    kernelSpec.setCondaDependencies(dependencies);
     spec.setKernelSpec(kernelSpec);
 
     environmentManager.createEnvironment(spec);
@@ -266,7 +266,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
     environmentManager.deleteEnvironment(envName);
   }
-  
+
   @Test
   public void testValidPyTorchJobSpecWithHTTPGitCodeLocalizer()
       throws IOException, URISyntaxException, InvalidSpecException {
@@ -311,7 +311,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME,
         V1Volume.getName());
   }
-  
+
   @Test
   public void testValidPyTorchJobSpecWithSSHGitCodeLocalizer()
       throws IOException, URISyntaxException, InvalidSpecException {

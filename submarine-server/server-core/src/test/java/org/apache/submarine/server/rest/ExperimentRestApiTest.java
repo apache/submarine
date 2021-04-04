@@ -79,12 +79,16 @@ public class ExperimentRestApiTest {
   private static final String dockerImage = "continuumio/anaconda3";
   private static final String kernelSpecName = "team_default_python_3";
   private static final List<String> kernelChannels = Arrays.asList("defaults", "anaconda");
-  private static final List<String> kernelDependencies = Arrays.asList(
+  private static final List<String> kernelCondaDependencies = Arrays.asList(
       "_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
       "alabaster=0.7.12=py37_0",
       "anaconda=2020.02=py37_0",
       "anaconda-client=1.7.2=py37_0",
       "anaconda-navigator=1.9.12=py37_0");
+  private static final List<String> kernelPipDependencies = Arrays.asList(
+      "apache-submarine==0.5.0",
+      "pyarrow==0.17.0"
+  );
   private final ExperimentId experimentId = ExperimentId.newInstance(SubmarineServer.getServerTimeStamp(),
       experimentCounter.incrementAndGet());
 
@@ -110,7 +114,8 @@ public class ExperimentRestApiTest {
     actualExperiment.setExperimentId(experimentId);
     kernelSpec.setName(kernelSpecName);
     kernelSpec.setChannels(kernelChannels);
-    kernelSpec.setDependencies(kernelDependencies);
+    kernelSpec.setCondaDependencies(kernelCondaDependencies);
+    kernelSpec.setPipDependencies(kernelPipDependencies);
     meta.setName(metaName);
     meta.setFramework(metaFramework);
     meta.setNamespace(metaNamespace);
@@ -225,6 +230,9 @@ public class ExperimentRestApiTest {
     assertEquals(dockerImage, experiment.getSpec().getEnvironment().getDockerImage());
     assertEquals(kernelChannels, experiment.getSpec().getEnvironment().getKernelSpec().getChannels());
     assertEquals(kernelSpecName, experiment.getSpec().getEnvironment().getKernelSpec().getName());
-    assertEquals(kernelDependencies, experiment.getSpec().getEnvironment().getKernelSpec().getDependencies());
+    assertEquals(kernelCondaDependencies,
+        experiment.getSpec().getEnvironment().getKernelSpec().getCondaDependencies());
+    assertEquals(kernelPipDependencies,
+        experiment.getSpec().getEnvironment().getKernelSpec().getPipDependencies());
   }
 }
