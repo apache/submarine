@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: submarine-operator-demo
+  name: submarine-operator-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: submarine-operator-demo
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: submarine-operator-demo
+    spec:
+      containers:
+      - image: submarine-operator
+        name: submarine-operator
+        resources: {}
+        imagePullPolicy: Never
+      serviceAccountName: submarine-operator
+status: {}
