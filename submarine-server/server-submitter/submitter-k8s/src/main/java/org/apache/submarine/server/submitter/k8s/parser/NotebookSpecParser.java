@@ -122,7 +122,7 @@ public class NotebookSpecParser {
         }
       }
 
-      // If conda dependencies isn't empty
+      // If pip dependencies isn't empty
       if (kernel.getPipDependencies().size() > 0) {
         installCommand.append(" && pip install");
         for (String dependency : kernel.getPipDependencies()) {

@@ -83,6 +83,7 @@ public class EnvironmentRestApiTest {
     kernelSpec.setName(kernelName);
     kernelSpec.setChannels(kernelChannels);
     kernelSpec.setCondaDependencies(kernelCondaDependencies);
+    kernelSpec.setPipDependencies(kernelPipDependencies);
     EnvironmentSpec environmentSpec = new EnvironmentSpec();
     environmentSpec.setDockerImage(dockerImage);
     environmentSpec.setKernelSpec(kernelSpec);
@@ -118,6 +119,8 @@ public class EnvironmentRestApiTest {
     assertEquals(kernelChannels, environment.getEnvironmentSpec().getKernelSpec().getChannels());
     assertEquals(kernelCondaDependencies,
         environment.getEnvironmentSpec().getKernelSpec().getCondaDependencies());
+    assertEquals(kernelPipDependencies,
+        environment.getEnvironmentSpec().getKernelSpec().getPipDependencies());
     assertEquals("continuumio/miniconda", environment.getEnvironmentSpec().getDockerImage());
   }
 
