@@ -186,6 +186,19 @@ export class ExperimentService {
     );
   }
 
+  querySpecificTemplate(name: string): Observable<ExperimentTemplate> {
+    const apiUrl = this.baseApi.getRestApi('/v1/template/' + name);
+    return this.httpClient.get<Rest<ExperimentTemplate>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
+  }
+
   createExperimentfromTemplate(
     experimentSpec: ExperimentTemplateSubmit,
     templateName: string

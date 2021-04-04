@@ -18,6 +18,10 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
+import { ExperimentService } from '@submarine/services/experiment.service';
+import { NzMessageService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'submarine-template-info',
@@ -25,7 +29,33 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./template-info.component.scss'],
 })
 export class TemplateInfoComponent implements OnInit {
-  constructor() {}
+  isLoading = true;
+  templateName;
+  templateInfo: ExperimentTemplate;
+  templateVars: string;
 
-  ngOnInit() {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute,
+    private experimentService: ExperimentService,
+    private nzMessageService: NzMessageService
+  ) {}
+
+  ngOnInit() {
+    this.templateName = this.route.snapshot.params.name;
+    console.log(this.templateName);
+    this.experimentService.querySpecificTemplate(this.templateName).subscribe(
+      (item) => {
+        this.templateInfo = item;
+        this.templateVars = JSON.stringify(this.templateInfo.experimentTemplateSpec.experimentSpec.meta.envVars);
+        console.log(this.templateInfo.experimentTemplateSpec);
+        this.isLoading = false;
+      },
+      (err) => {
+        this.nzMessageService.error('Cannot load ' + this.templateName);
+        this.router.navigate(['/workbench/template']);
+      }
+    );
+    this.experimentService.emitInfo(this.templateName);
+  }
 }

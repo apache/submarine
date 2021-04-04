@@ -21,6 +21,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TemplateComponent } from './template.component';
 import { TemplateHomeComponent } from './template-home/template-home.component';
+import { TemplateInfoComponent } from './template-info/template-info.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
         path: '',
         pathMatch: 'full',
         component: TemplateHomeComponent,
+      },
+      {
+        path: 'info/:name',
+        component: TemplateInfoComponent,
       },
     ],
   },

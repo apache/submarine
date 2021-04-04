@@ -26,8 +26,11 @@
       <nz-breadcrumb-item>
         <a [routerLink]="['/', 'workbench', 'template']">template</a>
       </nz-breadcrumb-item>
+      <nz-breadcrumb-item *ngIf="templateName != null">
+        {{ templateName }}
+      </nz-breadcrumb-item>
     </nz-breadcrumb>
-    <div>
+    <div *ngIf="templateName == null">
       <br />
       <h2>Template</h2>
       <nz-content>Apache submarine support predefined-template for experiment.</nz-content>

@@ -27,7 +27,11 @@
   </thead>
   <tbody>
     <tr *ngFor="let data of basicTable.data; let i = index">
-      <td>{{ data.experimentTemplateSpec.name }}</td>
+      <td>
+        <a [routerLink]="['info', data.experimentTemplateSpec.name]">
+          {{ data.experimentTemplateSpec.name }}
+        </a>
+      </td>
       <td>{{ data.experimentTemplateSpec.experimentSpec.meta.framework }}</td>
       <td>{{ data.experimentTemplateSpec.description }}</td>
     </tr>

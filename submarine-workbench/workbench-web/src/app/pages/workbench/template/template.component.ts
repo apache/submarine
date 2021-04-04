@@ -18,6 +18,8 @@
  */
 
 import { Component, OnInit } from '@angular/core';
+import { ExperimentService } from '@submarine/services/experiment.service';
+import { delay } from 'rxjs/operators';
 
 @Component({
   selector: 'submarine-template',
@@ -25,7 +27,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./template.component.scss'],
 })
 export class TemplateComponent implements OnInit {
-  constructor() {}
+  templateName: string = null;
 
-  ngOnInit(): void {}
+  constructor(private experimentService: ExperimentService) {}
+
+  ngOnInit() {
+    this.experimentService.infoEmitted$.pipe(delay(0)).subscribe((name) => (this.templateName = name));
+  }
 }
