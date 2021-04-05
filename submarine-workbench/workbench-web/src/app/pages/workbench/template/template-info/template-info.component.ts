@@ -43,8 +43,12 @@ export class TemplateInfoComponent implements OnInit {
 
   ngOnInit() {
     this.templateName = this.route.snapshot.params.name;
-    console.log(this.templateName);
-    this.experimentService.querySpecificTemplate(this.templateName).subscribe(
+    this.getTemplateInfo(this.templateName);
+    this.experimentService.emitInfo(this.templateName);
+  }
+
+  getTemplateInfo(name: string) {
+    this.experimentService.querySpecificTemplate(name).subscribe(
       (item) => {
         this.templateInfo = item;
         this.templateVars = JSON.stringify(this.templateInfo.experimentTemplateSpec.experimentSpec.meta.envVars);
@@ -52,10 +56,20 @@ export class TemplateInfoComponent implements OnInit {
         this.isLoading = false;
       },
       (err) => {
-        this.nzMessageService.error('Cannot load ' + this.templateName);
+        this.nzMessageService.error('Cannot load ' + name);
         this.router.navigate(['/workbench/template']);
       }
     );
-    this.experimentService.emitInfo(this.templateName);
+  }
+
+  deleteTemplate() {
+    this.experimentService.deleteTemplate(this.templateName).subscribe(
+      () => {
+        this.router.navigate(['/workbench/template']);
+      },
+      (err) => {
+        this.nzMessageService.error(err);
+      }
+    );
   }
 }

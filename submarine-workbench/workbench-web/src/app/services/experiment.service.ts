@@ -226,6 +226,19 @@ export class ExperimentService {
     );
   }
 
+  deleteTemplate(name: string): Observable<ExperimentTemplate> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/template/${name}`);
+    return this.httpClient.delete<Rest<any>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete', name);
+        }
+      })
+    );
+  }
+
   getTensorboardInfo(): Observable<TensorboardInfo> {
     const apiUrl = this.baseApi.getRestApi('/v1/experiment/tensorboard');
     return this.httpClient.get<Rest<TensorboardInfo>>(apiUrl).pipe(

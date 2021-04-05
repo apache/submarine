@@ -24,7 +24,7 @@
         <a>Home</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/', 'workbench', 'template']">template</a>
+        <a [routerLink]="['/', 'workbench', 'template']" (click)="templateName = null">template</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item *ngIf="templateName != null">
         {{ templateName }}
