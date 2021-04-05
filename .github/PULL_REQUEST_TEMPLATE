@@ -1,7 +1,7 @@
 ### What is this PR for?
-A few sentences describing the overall goals of the pull request's commits.
+<!-- A few sentences describing the overall goals of the pull request's commits.
 First time? Check out the contributing guide - https://submarine.apache.org/contribution/contributions.html
-
+-->
 
 ### What type of PR is it?
 [Bug Fix | Improvement | Feature | Documentation | Hot Fix | Refactoring]
@@ -10,17 +10,18 @@ First time? Check out the contributing guide - https://submarine.apache.org/cont
 * [ ] - Task
 
 ### What is the Jira issue?
-* Open an issue on Jira https://issues.apache.org/jira/browse/SUBMARINE/
+<!-- * Open an issue on Jira https://issues.apache.org/jira/browse/SUBMARINE/
 * Put link here, and add [SUBMARINE-*Jira number*] in PR title, eg. `SUBMARINE-23. PR title`
-
+-->
 ### How should this be tested?
+<!--
 * First time? Setup Travis CI as described on https://submarine.apache.org/contribution/contributions.html#continuous-integration
 * Strongly recommended: add automated unit tests for any new or changed behavior
 * Outline any manual steps to test the PR here.
-
+-->
 ### Screenshots (if appropriate)
 
 ### Questions:
-* Does the licenses files need update? Yes/No
-* Is there breaking changes for older versions? Yes/No
-* Does this needs documentation? Yes/No
+* Do the license files need updating? Yes/No
+* Are there breaking changes for older versions? Yes/No
+* Does this need new documentation? Yes/No
