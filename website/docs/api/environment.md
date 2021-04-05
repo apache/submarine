@@ -36,12 +36,15 @@ curl -X POST -H "Content-Type: application/json" -d '
   "kernelSpec" : {
     "name" : "team_default_python_3.7",
     "channels" : ["defaults"],
-    "dependencies" : 
+    "condaDependencies" : 
       ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
       "alabaster=0.7.12=py37_0",
       "anaconda=2020.02=py37_0",
       "anaconda-client=1.7.2=py37_0",
-      "anaconda-navigator=1.9.12=py37_0"]
+      "anaconda-navigator=1.9.12=py37_0"],
+    "pipDependencies" : 
+      ["apache-submarine==0.5.0",
+      "pyarrow==0.17.0"]
   }
 }
 ' http://127.0.0.1:32080/api/v1/environment
@@ -60,12 +63,15 @@ curl -X POST -H "Content-Type: application/json" -d '
       "kernelSpec" : {
         "name" : "team_default_python_3.7",
         "channels" : ["defaults"],
-        "dependencies" : 
+        "condaDependencies" : 
           ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
           "alabaster=0.7.12=py37_0",
           "anaconda=2020.02=py37_0",
           "anaconda-client=1.7.2=py37_0",
-          "anaconda-navigator=1.9.12=py37_0"]
+          "anaconda-navigator=1.9.12=py37_0"],
+        "pipDependencies" : 
+          ["apache-submarine==0.5.0",
+          "pyarrow==0.17.0"]
       }
     }
   }
@@ -94,12 +100,15 @@ curl -X GET http://127.0.0.1:32080/api/v1/environment
       "kernelSpec" : {
         "name" : "team_default_python_3.7",
         "channels" : ["defaults"],
-        "dependencies" : 
+        "condaDependencies" : 
           ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
           "alabaster=0.7.12=py37_0",
           "anaconda=2020.02=py37_0",
           "anaconda-client=1.7.2=py37_0",
-          "anaconda-navigator=1.9.12=py37_0"]
+          "anaconda-navigator=1.9.12=py37_0"],
+        "pipDependencies" : 
+          ["apache-submarine==0.5.0",
+          "pyarrow==0.17.0"]
       }
     }
   },
@@ -111,8 +120,10 @@ curl -X GET http://127.0.0.1:32080/api/v1/environment
       "kernelSpec" : {
         "name" : "team_miniconda_python_3.7",
         "channels" : ["defaults"],
-        "dependencies" : 
-          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0"]
+        "condaDependencies" : 
+          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0"],
+        "pipDependencies" : 
+          [],
       }
     }
   }
@@ -141,12 +152,15 @@ curl -X GET http://127.0.0.1:32080/api/v1/environment/my-submarine-env
       "kernelSpec" : {
         "name" : "team_default_python_3.7",
         "channels" : ["defaults"],
-        "dependencies" : 
+        "condaDependencies" : 
           ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
           "alabaster=0.7.12=py37_0",
           "anaconda=2020.02=py37_0",
           "anaconda-client=1.7.2=py37_0",
-          "anaconda-navigator=1.9.12=py37_0"]
+          "anaconda-navigator=1.9.12=py37_0"],
+        "pipDependencies" : 
+          ["apache-submarine==0.5.0",
+          "pyarrow==0.17.0"]
       }
     }
   }
@@ -165,9 +179,11 @@ curl -X PATCH -H "Content-Type: application/json" -d '
   "kernelSpec" : {
     "name" : "team_default_python_3.7_updated",
     "channels" : ["defaults"],
-    "dependencies" : 
+    "condaDependencies" : 
       ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
-      "alabaster=0.7.12=py37_0"]
+      "alabaster=0.7.12=py37_0"],
+    "pipDependencies" : 
+      []
   }
 }
 ' http://127.0.0.1:32080/api/v1/environment/my-submarine-env
@@ -187,15 +203,17 @@ curl -X PATCH -H "Content-Type: application/json" -d '
       "kernelSpec" : {
         "name" : "team_default_python_3.7_updated",
         "channels" : ["defaults"],
-        "dependencies" : 
+        "condaDependencies" : 
           ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
-          "alabaster=0.7.12=py37_0"]
+          "alabaster=0.7.12=py37_0"],
+        "pipDependencies" :
+          []
       }
     }
   }
 }
 ```
-> dockerImage, "name" (of kernelSpec), "channels", "dependencies" etc can be updated using this API.
+> dockerImage, "name" (of kernelSpec), "channels", "condaDependencies", "pipDependencies" etc can be updated using this API.
 "name" of EnvironmentSpec is not supported.
 
 ### Delete environment
@@ -219,9 +237,11 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/environment/my-submarine-env
       "kernelSpec" : {
         "name" : "team_default_python_3.7_updated",
         "channels" : ["defaults"],
-        "dependencies" : 
+        "condaDependencies" : 
           ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
-          "alabaster=0.7.12=py37_0"]
+          "alabaster=0.7.12=py37_0"],
+        "pipDependencies" :
+          []
       }
     }
   }
