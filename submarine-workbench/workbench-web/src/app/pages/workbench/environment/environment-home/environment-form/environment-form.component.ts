@@ -23,7 +23,6 @@ import { EnvironmentService } from '@submarine/services/environment-services/env
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { UploadChangeParam, UploadFile, UploadListType } from 'ng-zorro-antd/upload';
-import { BaseApiService } from '@submarine/services/base-api.service';
 
 @Component({
   selector: 'submarine-environment-form',
@@ -41,7 +40,6 @@ export class EnvironmentFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private experimentValidatorService: ExperimentValidatorService,
     private environmentService: EnvironmentService,
     private nzMessageService: NzMessageService
   ) {}

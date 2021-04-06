@@ -19,7 +19,7 @@
 
 import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
 
-interface ExperimentTemplateParamSpec {
+export interface ExperimentTemplateParamSpec {
   name: string;
   required: string;
   description: string;

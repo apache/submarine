@@ -17,9 +17,10 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
 import { ExperimentService } from '@submarine/services/experiment.service';
+import { TemplateFormComponent } from './template-form/template-form.component';
 
 @Component({
   selector: 'submarine-template-home',
@@ -30,6 +31,8 @@ export class TemplateHomeComponent implements OnInit {
   constructor(private experimentService: ExperimentService) {}
 
   templateList: ExperimentTemplate[];
+
+  @ViewChild('form', { static: true }) form: TemplateFormComponent;
 
   ngOnInit() {
     this.fetchTemplateList();

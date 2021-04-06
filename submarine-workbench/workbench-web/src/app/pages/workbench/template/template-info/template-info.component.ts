@@ -72,4 +72,10 @@ export class TemplateInfoComponent implements OnInit {
       }
     );
   }
+
+  backHome() {
+    this.router.navigate(['/workbench/template']);
+    this.templateName = null;
+    this.experimentService.emitInfo(this.templateName);
+  }
 }

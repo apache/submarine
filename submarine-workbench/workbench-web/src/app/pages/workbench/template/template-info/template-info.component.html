@@ -19,9 +19,9 @@
 
 <div *ngIf="isLoading == false" style="margin: 15px; padding: 15px; background-color: white">
   <div align="right">
-    <button nz-button id="btn-udTemplate" nzType="primary" style="margin: 10px 4px 10px 4px">
-      <i nz-icon nzType="edit"></i>
-      Edit Template
+    <button nz-button id="btn-backHome" nzType="primary" style="margin: 10px 4px 10px 4px" (click)="backHome()">
+      <i nz-icon nzType="caret-left"></i>
+      Back
     </button>
     <button
       nz-button

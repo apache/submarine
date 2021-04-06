@@ -17,4 +17,42 @@
   ~ under the License.
   -->
 
-<p>template-form works!</p>
+<nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="isVisible = false" nzTitle="Create Template" [nzWidth]="700">
+  <div *nzModalFooter>
+    <button nz-button id="btn-tp-form-cancel" nzType="default" (click)="isVisible = false">Cancel</button>
+    <button nz-button id="btn-tp-form-create" nzType="primary" (click)="isVisible = false">Create</button>
+  </div>
+  <div>
+    <form nz-form [formGroup]="templateForm" nzLayout="horizontal">
+      <div style="margin-top: 30px">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="templateName">Template Name</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input template name!">
+            <input
+              required
+              nz-input
+              type="text"
+              name="templateName"
+              id="templateName"
+              formControlName="name"
+              placeholder="Name for template."
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="description">Description</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input description for this template!">
+            <textarea
+              nz-input
+              [nzAutosize]="{ minRows: 1, maxRows: 4 }"
+              name="description"
+              formControlName="description"
+              id="description"
+              placeholder="Description for this template."
+            ></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </form>
+  </div>
+</nz-modal>

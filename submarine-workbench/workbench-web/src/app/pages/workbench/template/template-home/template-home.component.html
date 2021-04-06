@@ -19,10 +19,17 @@
 
 <div style="margin: 15px; padding: 15px; background-color: white">
   <div align="right">
-    <button nz-button id="btn-newTemplate" nzType="primary" style="margin: 10px 4px 10px 4px">
+    <button
+      nz-button
+      id="btn-newTemplate"
+      nzType="primary"
+      style="margin: 10px 4px 10px 4px"
+      (click)="form.initModal()"
+    >
       <i nz-icon nzType="plus"></i>
       New Template
     </button>
   </div>
   <submarine-template-list [templateList]="templateList"></submarine-template-list>
+  <submarine-template-form #form></submarine-template-form>
 </div>
