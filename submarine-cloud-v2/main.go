@@ -24,6 +24,7 @@ import (
 	"k8s.io/klog/v2"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"os"
 	"submarine-cloud-v2/pkg/signals"
 	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
@@ -33,7 +34,15 @@ import (
 var (
 	masterURL  string
 	kubeconfig string
+	incluster  bool
 )
+
+func initKubeConfig() (*rest.Config, error) {
+	if !incluster {
+		return clientcmd.BuildConfigFromFlags(masterURL, kubeconfig) // out-of-cluster config
+	}
+	return rest.InClusterConfig() // in-cluster config
+}
 
 func main() {
 	klog.InitFlags(nil)
@@ -42,7 +51,8 @@ func main() {
 	// set up signals so we handle the first shutdown signal gracefully
 	stopCh := signals.SetupSignalHandler()
 
-	cfg, err := clientcmd.BuildConfigFromFlags(masterURL, kubeconfig)
+	cfg, err := initKubeConfig()
+	
 	if err != nil {
 		klog.Fatalf("Error building kubeconfig: %s", err.Error())
 	}
@@ -80,6 +90,7 @@ func main() {
 }
 
 func init() {
+	flag.BoolVar(&incluster, "incluster", false, "Run submarine-operator in-cluster")
 	flag.StringVar(&kubeconfig, "kubeconfig", os.Getenv("HOME") + "/.kube/config", "Path to a kubeconfig. Only required if out-of-cluster.")
 	flag.StringVar(&masterURL, "master", "", "The address of the Kubernetes API server. Overrides any value in kubeconfig. Only required if out-of-cluster.")
 }

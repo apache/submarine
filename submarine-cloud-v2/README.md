@@ -37,11 +37,27 @@ kubectl apply -f artifacts/examples/crd.yaml
 kubectl apply -f artifacts/examples/example-submarine.yaml
 
 # Step3: Run unit test
-go test
+make test-unit
 ```
 
-# Build Project
+# Run submarine-operator out-of-cluster
 ```bash
 go build -o submarine-operator
 ./submarine-operator
+```
+
+# Run operator in-cluster
+```bash
+# Step1: Build image "submarine-operator" to minikube's Docker 
+eval $(minikube docker-env)
+make image
+
+# Step2: RBAC (ClusterRole, ClusterRoleBinding, and ServiceAccount)
+kubectl apply -f artifacts/examples/submarine-operator-service-account.yaml
+
+# Step3: Deploy a submarine-operator
+kubectl apply -f artifacts/examples/submarine-operator.yaml
+
+# Step4: Inspect submarine-operator POD logs 
+kubectl logs ${submarine-operator POD}
 ```
