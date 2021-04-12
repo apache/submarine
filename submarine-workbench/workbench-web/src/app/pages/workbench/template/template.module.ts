@@ -28,10 +28,25 @@ import { TemplateFormComponent } from './template-home/template-form/template-fo
 import { TemplateListComponent } from './template-home/template-list/template-list.component';
 import { TemplateComponent } from './template.component';
 import { TemplateInfoComponent } from './template-info/template-info.component';
+import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 
 @NgModule({
-  declarations: [TemplateComponent, TemplateHomeComponent, TemplateFormComponent, TemplateListComponent, TemplateInfoComponent],
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NgZorroAntdModule, RouterModule, TemplateRoutingModule],
+  declarations: [
+    TemplateComponent,
+    TemplateHomeComponent,
+    TemplateFormComponent,
+    TemplateListComponent,
+    TemplateInfoComponent,
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgZorroAntdModule,
+    RouterModule,
+    TemplateRoutingModule,
+    PipeSharedModule,
+  ],
   providers: [],
   exports: [TemplateComponent],
 })

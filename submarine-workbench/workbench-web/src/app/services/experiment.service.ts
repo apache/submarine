@@ -22,7 +22,7 @@ import { Injectable } from '@angular/core';
 import { Rest } from '@submarine/interfaces';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
-import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
+import { ExperimentTemplate, ExperimentTemplateSpec } from '@submarine/interfaces/experiment-template';
 import { ExperimentTemplateSubmit } from '@submarine/interfaces/experiment-template-submit';
 import { TensorboardInfo } from '@submarine/interfaces/tensorboard-info';
 import { MlflowInfo } from '@submarine/interfaces/mlflow-info';
@@ -222,6 +222,19 @@ export class ExperimentService {
           }
         }
         return throwError(message);
+      })
+    );
+  }
+
+  createTemplate(templateSpec: ExperimentTemplateSpec): Observable<ExperimentTemplate> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/template`);
+    return this.httpClient.post<Rest<ExperimentTemplate>>(apiUrl, templateSpec).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', templateSpec);
+        }
       })
     );
   }

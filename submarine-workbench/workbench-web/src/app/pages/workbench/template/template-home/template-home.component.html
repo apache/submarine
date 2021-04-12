@@ -31,5 +31,5 @@
     </button>
   </div>
   <submarine-template-list [templateList]="templateList"></submarine-template-list>
-  <submarine-template-form #form></submarine-template-form>
+  <submarine-template-form #form (updater)="updateTemplateList($event)"></submarine-template-form>
 </div>

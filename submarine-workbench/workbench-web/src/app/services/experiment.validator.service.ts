@@ -21,7 +21,7 @@ import { FormGroup, ValidatorFn, ValidationErrors, FormArray } from '@angular/fo
 import { Injectable } from '@angular/core';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ExperimentValidatorService {
   /**
@@ -31,6 +31,12 @@ export class ExperimentValidatorService {
   envValidator: ValidatorFn = (envGroup: FormGroup): ValidationErrors | null => {
     const key = envGroup.get('key');
     const keyValue = envGroup.get('value');
+    return !(key.invalid || keyValue.invalid) ? null : { envMissing: 'Missing key or value' };
+  };
+
+  paramValidator: ValidatorFn = (paramGroup: FormGroup): ValidationErrors | null => {
+    const key = paramGroup.get('name');
+    const keyValue = paramGroup.get('value');
     return !(key.invalid || keyValue.invalid) ? null : { envMissing: 'Missing key or value' };
   };
 
@@ -77,7 +83,7 @@ export class ExperimentValidatorService {
         if (duplicateSet.has(nameControl.value)) {
           // Found duplicates, manually set errors on FormControl level
           nameControl.setErrors({
-            duplicateError: 'Duplicate key or name'
+            duplicateError: 'Duplicate key or name',
           });
         } else {
           duplicateSet.add(nameControl.value);

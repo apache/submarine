@@ -26,7 +26,7 @@ export interface ExperimentTemplateParamSpec {
   value: string;
 }
 
-interface ExperimentTemplateSpec {
+export interface ExperimentTemplateSpec {
   name: string;
   author: string;
   description: string;

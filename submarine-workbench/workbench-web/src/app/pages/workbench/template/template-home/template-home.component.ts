@@ -41,7 +41,10 @@ export class TemplateHomeComponent implements OnInit {
   fetchTemplateList() {
     this.experimentService.fetchExperimentTemplateList().subscribe((res) => {
       this.templateList = res;
-      console.log(this.templateList);
     });
+  }
+
+  updateTemplateList(msg: string) {
+    this.fetchTemplateList();
   }
 }

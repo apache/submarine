@@ -20,9 +20,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import { EnvironmentService } from '@submarine/services/environment-services/environment.service';
-import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
 import { NzMessageService } from 'ng-zorro-antd';
-import { UploadChangeParam, UploadFile, UploadListType } from 'ng-zorro-antd/upload';
+import { UploadChangeParam, UploadFile } from 'ng-zorro-antd/upload';
 
 @Component({
   selector: 'submarine-environment-form',
