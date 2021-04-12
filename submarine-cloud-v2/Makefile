@@ -15,6 +15,17 @@
 # limitations under the License.
 #
 
+all: # The default target
+
+.PHONY: all
+all:
+	go build -o submarine-operator
+
+.PHONY: api
+api:
+	@cd hack; echo "Generating API..."; ./update-codegen.sh; \
+		echo "Verifying API..."; ./verify-codegen.sh
+
 .PHONY: image
 image:
 	GOOS=linux go build -o submarine-operator

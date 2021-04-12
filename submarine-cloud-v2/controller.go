@@ -1,40 +1,43 @@
- /*
-  * Licensed to the Apache Software Foundation (ASF) under one or more
-  * contributor license agreements.  See the NOTICE file distributed with
-  * this work for additional information regarding copyright ownership.
-  * The ASF licenses this file to You under the Apache License, Version 2.0
-  * (the "License"); you may not use this file except in compliance with
-  * the License.  You may obtain a copy of the License at
-  *
-  *    http://www.apache.org/licenses/LICENSE-2.0
-  *
-  * Unless required by applicable law or agreed to in writing, software
-  * distributed under the License is distributed on an "AS IS" BASIS,
-  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"time"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
+	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+	"k8s.io/apimachinery/pkg/util/wait"
+	appsinformers "k8s.io/client-go/informers/apps/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
-	appsinformers "k8s.io/client-go/informers/apps/v1"
-	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
-	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
-	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
 	typedcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
-	"k8s.io/klog/v2"
-	"k8s.io/client-go/util/workqueue"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/record"
-	"k8s.io/apimachinery/pkg/util/wait"
+	"k8s.io/client-go/util/workqueue"
+	"k8s.io/klog/v2"
+	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
 	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
 	"submarine-cloud-v2/pkg/helm"
+	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
+	listers "submarine-cloud-v2/pkg/generated/listers/submarine/v1alpha1"
+	"time"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -45,8 +48,10 @@ type Controller struct {
 	kubeclientset kubernetes.Interface
 	// sampleclientset is a clientset for our own API group
 	submarineclientset clientset.Interface
-	
-	submarinesSynced        cache.InformerSynced
+
+	submarinesLister listers.SubmarineLister
+	submarinesSynced cache.InformerSynced
+
 	// workqueue is a rate limited work queue. This is used to queue work to be
 	// processed instead of performing it as soon as a change happens. This
 	// means we can ensure we only process a fixed amount of resources at a
@@ -75,14 +80,14 @@ func NewController(
 	eventBroadcaster.StartRecordingToSink(&typedcorev1.EventSinkImpl{Interface: kubeclientset.CoreV1().Events("")})
 	recorder := eventBroadcaster.NewRecorder(scheme.Scheme, corev1.EventSource{Component: controllerAgentName})
 
-
 	// Initialize controller
 	controller := &Controller{
-		kubeclientset:     kubeclientset,
-		submarineclientset:   submarineclientset,
-		submarinesSynced:        submarineInformer.Informer().HasSynced,
-		workqueue:         workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
-		recorder:          recorder,
+		kubeclientset:      kubeclientset,
+		submarineclientset: submarineclientset,
+		submarinesLister:   submarineInformer.Lister(),
+		submarinesSynced:   submarineInformer.Informer().HasSynced,
+		workqueue:          workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
+		recorder:           recorder,
 	}
 
 	// Setting up event handler for Submarine
@@ -117,7 +122,7 @@ func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
 	// 		helm repo add k8s-as-helm https://ameijer.github.io/k8s-as-helm/
 	// .	helm repo update
 	//  	helm install helm-install-example-release k8s-as-helm/svc --set ports[0].protocol=TCP,ports[0].port=80,ports[0].targetPort=9376
-	// Useful Links: 
+	// Useful Links:
 	//   (1) https://github.com/PrasadG193/helm-clientgo-example
 	// . (2) https://github.com/ameijer/k8s-as-helm/tree/master/charts/svc
 	klog.Info("[Helm example] Install")
@@ -129,7 +134,7 @@ func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
 		"default",
 		map[string]string {
 			"set": "ports[0].protocol=TCP,ports[0].port=80,ports[0].targetPort=9376",
-		},	
+		},
 	)
 
 	klog.Info("[Helm example] Sleep 60 seconds")
@@ -138,7 +143,7 @@ func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
 	klog.Info("[Helm example] Uninstall")
 	helm.HelmUninstall("helm-install-example-release", helmActionConfig)
 
-	
+
 
 	klog.Info("Starting workers")
 	// Launch two workers to process Submarine resources
@@ -193,7 +198,31 @@ func (c *Controller) processNextWorkItem() bool {
 // with the current status of the resource.
 func (c *Controller) syncHandler(key string) error {
 	// TODO: business logic
+
+	// Convert the namespace/name string into a distinct namespace and name
+	namespace, name, err := cache.SplitMetaNamespaceKey(key)
+	if err != nil {
+		utilruntime.HandleError(fmt.Errorf("Invalid resource key: %s", key))
+		return nil
+	}
+
+	// Get the Submarine resource with this namespace/name
+	submarine, err := c.submarinesLister.Submarines(namespace).Get(name)
+	if err != nil {
+		// The Submarine resource may no longer exist, in which case we stop
+		// processing
+		if errors.IsNotFound(err) {
+			utilruntime.HandleError(fmt.Errorf("submarine '%s' in work queue no longer exists", key))
+			return nil
+		}
+	}
+
 	klog.Info("syncHandler: ", key)
+
+	// Print out the spec of the Submarine resource
+	b, err := json.MarshalIndent(submarine.Spec, "", "  ")
+	fmt.Println(string(b))
+
 	return nil
 }
 
@@ -209,6 +238,6 @@ func (c *Controller) enqueueSubmarine(obj interface{}) {
 	}
 
 	// key: [namespace]/[CR name]
-	// Example: default/example-submarine 
+	// Example: default/example-submarine
 	c.workqueue.Add(key)
 }
