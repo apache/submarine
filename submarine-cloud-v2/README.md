@@ -66,7 +66,7 @@ kubectl logs ${submarine-operator POD}
 * Function `HelmInstall` is defined in pkg/helm/helm.go.
 * Example: (You can see this example in controller.go:123.)
 ```go
-// Example: HelmInstall:
+// Example: HelmInstall
 // This is equal to:
 // 		helm repo add k8s-as-helm https://ameijer.github.io/k8s-as-helm/
 // .	helm repo update
@@ -74,7 +74,7 @@ kubectl logs ${submarine-operator POD}
 // Useful Links: 
 //   (1) https://github.com/PrasadG193/helm-clientgo-example
 // . (2) https://github.com/ameijer/k8s-as-helm/tree/master/charts/svc
-helm.HelmInstall(
+helmActionConfig := helm.HelmInstall(
     "https://ameijer.github.io/k8s-as-helm/",
     "k8s-as-helm",
     "svc",
@@ -84,6 +84,11 @@ helm.HelmInstall(
         "set": "ports[0].protocol=TCP,ports[0].port=80,ports[0].targetPort=9376",
     },	
 )
+
+// Example: HelmUninstall
+// This is equal to:
+//    helm uninstall helm-install-example-release 
+helm.HelmUninstall("helm-install-example-release", helmActionConfig)
 ```
 * Troubleshooting: 
   * If the release name exists, Helm will report the error "cannot re-use a name that is still in use".
