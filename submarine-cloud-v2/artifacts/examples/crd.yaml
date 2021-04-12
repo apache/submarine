@@ -9,3 +9,62 @@ spec:
     kind: Submarine
     plural: submarines
   scope: Namespaced
+  validation:
+    openAPIV3Schema:
+      type: object
+      required: ["spec"]
+      properties:
+        spec:
+          type: object
+          required:
+            - version
+          properties:
+            version: # submarine docker image version
+              type: string
+            replicas:
+              type: integer
+              minimum: 1
+            server:
+              type: object
+              properties:
+                image: # Use this to overwrite the image when development
+                  type: string
+                replicas:
+                  type: integer
+                  minimum: 1
+            database:
+              type: object
+              properties:
+                image: # Use this to overwrite the image when development
+                  type: string
+                replicas:
+                  type: integer
+                  minimum: 1
+                mysqlRootPasswordSecret:
+                  type: string
+            tensorboard:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                storageSizeGiB:
+                  type: integer
+            mlflow:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                storageSizeGiB:
+                  type: integer
+            storage:
+              type: object
+              properties:
+                storageType:
+                  type: string
+                  pattern: "^(host|nfs)$"
+                hostPath:
+                  type: string
+                nfsPath:
+                  type: string
+                nfsIP:
+                  type: string
