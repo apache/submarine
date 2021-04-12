@@ -120,7 +120,8 @@ func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
 	// Useful Links: 
 	//   (1) https://github.com/PrasadG193/helm-clientgo-example
 	// . (2) https://github.com/ameijer/k8s-as-helm/tree/master/charts/svc
-	helm.HelmInstall(
+	klog.Info("[Helm example] Install")
+	helmActionConfig := helm.HelmInstall(
 		"https://ameijer.github.io/k8s-as-helm/",
 		"k8s-as-helm",
 		"svc",
@@ -130,6 +131,13 @@ func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
 			"set": "ports[0].protocol=TCP,ports[0].port=80,ports[0].targetPort=9376",
 		},	
 	)
+
+	klog.Info("[Helm example] Sleep 60 seconds")
+	time.Sleep(time.Duration(60) * time.Second)
+
+	klog.Info("[Helm example] Uninstall")
+	helm.HelmUninstall("helm-install-example-release", helmActionConfig)
+
 	
 
 	klog.Info("Starting workers")

@@ -44,7 +44,7 @@ import (
 	"helm.sh/helm/v3/pkg/strvals"
 )
 
-func HelmInstall(url string, repoName string, chartName string, releaseName string, namespace string, args map[string]string) {
+func HelmInstall(url string, repoName string, chartName string, releaseName string, namespace string, args map[string]string) (*action.Configuration){
 	var settings *cli.EnvSettings
 	os.Setenv("HELM_NAMESPACE", namespace)
 	settings = cli.New()
@@ -53,7 +53,14 @@ func HelmInstall(url string, repoName string, chartName string, releaseName stri
 	// Update charts from the helm repo
 	RepoUpdate(settings)
 	// Install charts
-	InstallChart(releaseName, repoName, chartName, args, settings)
+	cfg := InstallChart(releaseName, repoName, chartName, args, settings)
+	return cfg
+}
+
+func HelmUninstall(releaseName string, cfg *action.Configuration) error {
+	uninstall := action.NewUninstall(cfg)
+	_, err := uninstall.Run(releaseName)
+	return err
 }
 
 // RepoAdd adds repo with given name and url
@@ -151,7 +158,7 @@ func RepoUpdate(settings *cli.EnvSettings) {
 }
 
 // InstallChart
-func InstallChart(name, repo, chart string, args map[string]string, settings *cli.EnvSettings) {
+func InstallChart(name, repo, chart string, args map[string]string, settings *cli.EnvSettings) (*action.Configuration) {
 	actionConfig := new(action.Configuration)
 	debug("KUBECONFIG: %s", settings.KubeConfig)
 	if err := actionConfig.Init(settings.RESTClientGetter(), settings.Namespace(), os.Getenv("HELM_DRIVER"), debug); err != nil {
@@ -224,6 +231,7 @@ func InstallChart(name, repo, chart string, args map[string]string, settings *cl
 		log.Fatal(err)
 	}
 	fmt.Println(release.Manifest)
+	return actionConfig
 }
 
 func isChartInstallable(ch *chart.Chart) (bool, error) {
