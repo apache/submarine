@@ -17,24 +17,21 @@
  * under the License.
  */
 
-import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
+import { Component, OnInit } from '@angular/core';
+import { ExperimentService } from '@submarine/services/experiment.service';
+import { delay } from 'rxjs/operators';
 
-export interface ExperimentTemplateParamSpec {
-  name: string;
-  required: string;
-  description: string;
-  value: string;
-}
+@Component({
+  selector: 'submarine-template',
+  templateUrl: './template.component.html',
+  styleUrls: ['./template.component.scss'],
+})
+export class TemplateComponent implements OnInit {
+  templateName: string = null;
 
-export interface ExperimentTemplateSpec {
-  name: string;
-  author: string;
-  description: string;
-  parameters: ExperimentTemplateParamSpec[];
-  experimentSpec: ExperimentSpec;
-}
+  constructor(private experimentService: ExperimentService) {}
 
-export interface ExperimentTemplate {
-  experimentTemplateId: string;
-  experimentTemplateSpec: ExperimentTemplateSpec;
+  ngOnInit() {
+    this.experimentService.infoEmitted$.pipe(delay(0)).subscribe((name) => (this.templateName = name));
+  }
 }

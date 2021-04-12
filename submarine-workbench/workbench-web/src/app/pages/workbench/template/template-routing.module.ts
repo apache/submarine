@@ -17,24 +17,32 @@
  * under the License.
  */
 
-import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { TemplateComponent } from './template.component';
+import { TemplateHomeComponent } from './template-home/template-home.component';
+import { TemplateInfoComponent } from './template-info/template-info.component';
 
-export interface ExperimentTemplateParamSpec {
-  name: string;
-  required: string;
-  description: string;
-  value: string;
-}
+const routes: Routes = [
+  {
+    path: '',
+    component: TemplateComponent,
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        component: TemplateHomeComponent,
+      },
+      {
+        path: 'info/:name',
+        component: TemplateInfoComponent,
+      },
+    ],
+  },
+];
 
-export interface ExperimentTemplateSpec {
-  name: string;
-  author: string;
-  description: string;
-  parameters: ExperimentTemplateParamSpec[];
-  experimentSpec: ExperimentSpec;
-}
-
-export interface ExperimentTemplate {
-  experimentTemplateId: string;
-  experimentTemplateSpec: ExperimentTemplateSpec;
-}
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+})
+export class TemplateRoutingModule {}

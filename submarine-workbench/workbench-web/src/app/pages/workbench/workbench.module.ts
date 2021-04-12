@@ -35,6 +35,7 @@ import { WorkbenchComponent } from './workbench.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 import { DataComponent } from './data/data.component';
 import { EnvironmentModule } from './environment/environment.module';
+import { TemplateModule } from './template/template.module';
 
 @NgModule({
   declarations: [WorkbenchComponent, HomeComponent, WorkspaceComponent, DataComponent, ModelComponent],
@@ -51,6 +52,7 @@ import { EnvironmentModule } from './environment/environment.module';
     PipeSharedModule,
     NotebookModule,
     EnvironmentModule,
+    TemplateModule,
   ],
 })
 export class WorkbenchModule {}

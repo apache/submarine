@@ -17,24 +17,18 @@
  * under the License.
  */
 
-import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
+import { Component, Input, OnInit } from '@angular/core';
+import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
 
-export interface ExperimentTemplateParamSpec {
-  name: string;
-  required: string;
-  description: string;
-  value: string;
-}
+@Component({
+  selector: 'submarine-template-list',
+  templateUrl: './template-list.component.html',
+  styleUrls: ['./template-list.component.scss'],
+})
+export class TemplateListComponent implements OnInit {
+  @Input() templateList: ExperimentTemplate[];
 
-export interface ExperimentTemplateSpec {
-  name: string;
-  author: string;
-  description: string;
-  parameters: ExperimentTemplateParamSpec[];
-  experimentSpec: ExperimentSpec;
-}
+  constructor() {}
 
-export interface ExperimentTemplate {
-  experimentTemplateId: string;
-  experimentTemplateSpec: ExperimentTemplateSpec;
+  ngOnInit() {}
 }

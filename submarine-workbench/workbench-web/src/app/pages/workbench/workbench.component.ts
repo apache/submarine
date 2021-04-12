@@ -40,7 +40,7 @@ interface SidebarMenu {
 @Component({
   selector: 'submarine-workbench',
   templateUrl: './workbench.component.html',
-  styleUrls: ['./workbench.component.scss']
+  styleUrls: ['./workbench.component.scss'],
 })
 export class WorkbenchComponent implements OnInit {
   isCollapsed: boolean = false;
@@ -50,25 +50,31 @@ export class WorkbenchComponent implements OnInit {
       title: 'Home',
       iconType: 'home',
       routerLink: '/workbench/home',
-      disabled: true
+      disabled: true,
     },
     {
       title: 'Notebook',
       iconType: 'book',
       routerLink: '/workbench/notebook',
-      disabled: false
+      disabled: false,
     },
     {
       title: 'Experiment',
       iconType: 'cluster',
       routerLink: '/workbench/experiment',
-      disabled: false
+      disabled: false,
+    },
+    {
+      title: 'Template',
+      iconType: 'file',
+      routerLink: '/workbench/template',
+      disabled: false,
     },
     {
       title: 'Environment',
       iconType: 'codepen',
       routerLink: '/workbench/environment',
-      disabled: false
+      disabled: false,
     },
     {
       title: 'Manager',
@@ -78,44 +84,44 @@ export class WorkbenchComponent implements OnInit {
         {
           title: 'User',
           routerLink: '/workbench/manager/user',
-          disabled: false
+          disabled: false,
         },
         {
           title: 'Data dict',
           routerLink: '/workbench/manager/dataDict',
-          disabled: false
+          disabled: false,
         },
         {
           title: 'Department',
           routerLink: '/workbench/manager/department',
-          disabled: false
-        }
-      ]
+          disabled: false,
+        },
+      ],
     },
     {
       title: 'Data',
       iconType: 'bar-chart',
       routerLink: '/workbench/data',
-      disabled: true
+      disabled: true,
     },
     {
       title: 'Model',
       iconType: 'experiment',
       routerLink: '/workbench/model',
-      disabled: true
+      disabled: true,
     },
     {
       title: 'Workspace',
       iconType: 'desktop',
       routerLink: '/workbench/workspace',
-      disabled: true
+      disabled: true,
     },
     {
       title: 'Interpreter',
       iconType: 'api',
       routerLink: '/workbench/interpreter',
-      disabled: true
-    }
+      disabled: true,
+    },
   ];
   userInfo$: Observable<UserInfo>;
 

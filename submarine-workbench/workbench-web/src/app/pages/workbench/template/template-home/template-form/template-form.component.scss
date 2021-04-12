@@ -1,4 +1,4 @@
-/*
+/*!
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,25 +16,47 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
-
-export interface ExperimentTemplateParamSpec {
-  name: string;
-  required: string;
-  description: string;
-  value: string;
+ 
+.list-container {
+ padding: 0;
+ margin: 1rem 0;
 }
 
-export interface ExperimentTemplateSpec {
-  name: string;
-  author: string;
-  description: string;
-  parameters: ExperimentTemplateParamSpec[];
-  experimentSpec: ExperimentSpec;
+.input-group {
+ display: flex;
+ align-items: center;
+ font-size: .8rem;
+ &:not(:first-child) {
+    margin-top: 1rem;
+ }
+
+ & > *:not(:last-child) {
+    margin-right: .8rem;
+ }
+
+ & > div:nth-child(2), & > div:nth-child(3) {
+    flex: 0 1 20%;
+ }
+
+ & > div:nth-child(1), & > div:nth-child(4) {
+    flex: 0 1 20%;
+ }
+
+ & i {
+    cursor: pointer;
+    font-size: 20px;
+    margin-top: 20px;
+ }
 }
 
-export interface ExperimentTemplate {
-  experimentTemplateId: string;
-  experimentTemplateSpec: ExperimentTemplateSpec;
+.memory-input-group {
+ display: flex;
+ & input {
+    width: 70%;
+ }
+
+ & > * {
+    width: 30%;
+ }
 }
+

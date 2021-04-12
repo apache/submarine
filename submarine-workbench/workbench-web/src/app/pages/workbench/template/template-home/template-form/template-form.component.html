@@ -1,0 +1,300 @@
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="isVisible = false" nzTitle="Create Template" [nzWidth]="1000">
+  <div [ngSwitch]="step">
+    <div *nzModalFooter>
+      <button
+        nz-button
+        id="btn-tp-form-preStep"
+        style="float: left"
+        nzType="defult"
+        (click)="step = step - 1"
+        *ngIf="step !== 0"
+      >
+        Pre Step
+      </button>
+      <button nz-button id="btn-tp-form-cancel" nzType="default" (click)="onCancel()">Cancel</button>
+      <button
+        nz-button
+        id="btn-tp-form-page0"
+        nzType="primary"
+        [disabled]="checkTemplateInfo()"
+        (click)="step = step + 1"
+        *ngIf="step === 0"
+      >
+        Next to experiment spec
+      </button>
+      <button
+        nz-button
+        id="btn-tp-form-page1"
+        nzType="primary"
+        [disabled]="checkExperimentInfo()"
+        (click)="step = step + 1"
+        *ngIf="step === 1"
+      >
+        Next to resource spec
+      </button>
+      <button
+        nz-button
+        id="btn-tp-form-creat"
+        nzType="primary"
+        [disabled]="checkResourceSpec()"
+        (click)="createTemplate()"
+        *ngIf="step === 2"
+      >
+        Creat
+      </button>
+    </div>
+    <form nz-form [formGroup]="templateForm" nzLayout="horizontal">
+      <div *ngSwitchCase="0" style="margin-top: 10px">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="templateName">Template Name</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input template name!">
+            <input
+              required
+              nz-input
+              type="text"
+              name="templateName"
+              id="templateName"
+              formControlName="templateName"
+              placeholder="Name of template."
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="description">Description</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input description for this template!">
+            <textarea
+              nz-input
+              [nzAutosize]="{ minRows: 1, maxRows: 4 }"
+              name="description"
+              formControlName="description"
+              id="description"
+              placeholder="Description for this template."
+            ></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <div formArrayName="parameters">
+          <ng-container *ngFor="let param of parameters.controls; index as i">
+            <nz-form-item>
+              <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">Param{{ i + 1 }}</nz-form-label>
+              <div [formGroupName]="i">
+                <div nz-col nzSpan="12">
+                  <input
+                    style="width: 50%"
+                    nz-input
+                    required
+                    id="name{{ i }}"
+                    name="name{{ i }}"
+                    placeholder="Name"
+                    formControlName="name"
+                  />
+                  <input
+                    style="width: 40%; margin-left: 10px"
+                    nz-input
+                    required
+                    id="value{{ i }}"
+                    name="value{{ i }}"
+                    placeholder="Value"
+                    formControlName="value"
+                  />
+                  <i
+                    nz-icon
+                    style="margin-left: 5px"
+                    nzType="close-circle"
+                    nzTheme="fill"
+                    (click)="deleteItem(parameters, i)"
+                  ></i>
+                  <br />
+                  <input
+                    style="margin-top: 5px"
+                    nz-input
+                    required
+                    id="description{{ i }}"
+                    name="description{{ i }}"
+                    placeholder="Description"
+                    formControlName="description"
+                  />
+                </div>
+              </div>
+            </nz-form-item>
+          </ng-container>
+        </div>
+        <button
+          nz-button
+          style="display: block; margin: auto"
+          id="btn-addParam"
+          type="default"
+          (click)="onCreateParam()"
+        >
+          Add Param
+        </button>
+      </div>
+      <div *ngSwitchCase="1" style="margin-top: 10px">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="image">Image</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input image!">
+            <input
+              required
+              nz-input
+              type="text"
+              name="image"
+              id="image"
+              formControlName="image"
+              placeholder="Image for experiment."
+            />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cmd">Command</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input command for this template!">
+            <textarea
+              nz-input
+              [nzAutosize]="{ minRows: 1, maxRows: 4 }"
+              name="cmd"
+              formControlName="cmd"
+              id="cmd"
+              placeholder="Command for this template."
+            ></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <div formArrayName="envVars">
+          <ng-container *ngFor="let env of envVars.controls; index as i">
+            <nz-form-item>
+              <nz-form-label nzRequired [nzSm]="6" [nzXs]="24">Env Var{{ i + 1 }}</nz-form-label>
+              <div [formGroupName]="i">
+                <div nz-col nzSpan="12">
+                  <input
+                    style="width: 30%"
+                    nz-input
+                    required
+                    id="key{{ i }}"
+                    name="key{{ i }}"
+                    placeholder="key"
+                    formControlName="key"
+                  />
+                  <input
+                    style="width: 60%; margin-left: 10px"
+                    nz-input
+                    required
+                    id="value{{ i }}"
+                    name="value{{ i }}"
+                    placeholder="Value"
+                    formControlName="value"
+                  />
+                  <i
+                    nz-icon
+                    style="margin-left: 5px"
+                    nzType="close-circle"
+                    nzTheme="fill"
+                    (click)="deleteItem(envVars, i)"
+                  ></i>
+                </div>
+              </div>
+            </nz-form-item>
+          </ng-container>
+        </div>
+        <button nz-button style="display: block; margin: auto" id="btn-addEnv" type="default" (click)="onCreateEnv()">
+          Add New Environment Variable
+        </button>
+      </div>
+      <div *ngSwitchCase="2" style="margin-top: 10px">
+        <nz-radio-group [(ngModel)]="framework" [ngModelOptions]="{ standalone: true }">
+          <label nz-radio nzValue="Tensorflow" (click)="deleteAllItem(specs); jobTypes = 'Distributed Tensorflow'">
+            Distributed Tensorflow
+          </label>
+          <label nz-radio nzValue="Pytorch" (click)="deleteAllItem(specs); jobType = 'Distributed Pytorch'">
+            Distributed PyTorch
+          </label>
+          <label
+            nz-radio
+            nzValue="Standalone"
+            (click)="deleteAllItem(specs); onCreateSpec(); jobType = 'Standalone Script'"
+          >
+            Standalone Script
+          </label>
+        </nz-radio-group>
+        <br />
+        <button
+          nz-button
+          *ngIf="framework !== 'Standalone'"
+          id="spec-btn"
+          nzType="default"
+          style="margin-top: 10px"
+          (click)="onCreateSpec()"
+        >
+          Add new spec
+        </button>
+        <ul formArrayName="specs" class="list-container">
+          <ng-container *ngFor="let spec of specs.controls; index as i">
+            <li *ngIf="i | indexInRange: currentSpecPage:PAGESIZE" [formGroupName]="i" class="input-group">
+              <div id="spec{{ i }}" *ngIf="framework !== 'Standalone'">
+                <label>Spec name</label>
+                <nz-select formControlName="name" nzPlaceHolder="Spec name" [ngSwitch]="framework">
+                  <div *ngSwitchCase="'Tensorflow'">
+                    <nz-option *ngFor="let spec of TF_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
+                  </div>
+                  <div *ngSwitchCase="'Pytorch'">
+                    <nz-option *ngFor="let spec of PYTORCH_SPECNAMES" [nzValue]="spec" [nzLabel]="spec"></nz-option>
+                  </div>
+                </nz-select>
+              </div>
+              <div *ngIf="framework !== 'Standalone'">
+                <label>Number of Replica</label>
+                <input
+                  nz-input
+                  name="replica{{ i }}"
+                  type="number"
+                  placeholder="number of replica"
+                  formControlName="replicas"
+                />
+              </div>
+              <div>
+                <label>Number of cpu</label>
+                <input nz-input name="cpu{{ i }}" type="number" placeholder="number of cpu" formControlName="cpus" />
+              </div>
+              <div>
+                <label>Number of gpu</label>
+                <input nz-input name="gpu{{ i }}" type="number" placeholder="number of gpu" formControlName="gpus" />
+              </div>
+              <div id="memory{{ i }}">
+                <label>Memory</label>
+                <div formGroupName="memory" class="memory-input-group">
+                  <input
+                    nz-input
+                    name="memory{{ i }}"
+                    type="number"
+                    step="1024"
+                    placeholder="Enter number"
+                    formControlName="num"
+                  />
+                  <nz-select formControlName="unit">
+                    <nz-option *ngFor="let unit of MEMORY_UNITS" [nzValue]="unit" [nzLabel]="unit"></nz-option>
+                  </nz-select>
+                </div>
+              </div>
+              <i nz-icon nzType="close-circle" nzTheme="fill" class="delete-icon" (click)="deleteItem(specs, i)"></i>
+            </li>
+          </ng-container>
+        </ul>
+      </div>
+    </form>
+  </div>
+</nz-modal>

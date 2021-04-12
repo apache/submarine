@@ -1,4 +1,4 @@
-/*
+/*!
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,25 +16,4 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
-
-export interface ExperimentTemplateParamSpec {
-  name: string;
-  required: string;
-  description: string;
-  value: string;
-}
-
-export interface ExperimentTemplateSpec {
-  name: string;
-  author: string;
-  description: string;
-  parameters: ExperimentTemplateParamSpec[];
-  experimentSpec: ExperimentSpec;
-}
-
-export interface ExperimentTemplate {
-  experimentTemplateId: string;
-  experimentTemplateSpec: ExperimentTemplateSpec;
-}
+ 
