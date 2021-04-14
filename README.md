@@ -16,9 +16,10 @@
 
 ![Colored_logo_with_text](website/docs/assets/color_logo_with_text.png)
 
-[![Build Status](https://travis-ci.org/apache/submarine.svg?branch=master)](https://travis-ci.org/apache/submarine) [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)  [![HitCount](http://hits.dwyl.io/apache/submarine.svg)](http://hits.dwyl.io/apache/submarine) [![PyPI version](https://badge.fury.io/py/apache-submarine.svg)](https://badge.fury.io/py/apache-submarine)
+[![Build Status](https://travis-ci.org/apache/submarine.svg?branch=master)](https://travis-ci.org/apache/submarine) [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)  [![HitCount](http://hits.dwyl.com/apache/submarine.svg)](http://hits.dwyl.io/apache/submarine) [![PyPI version](https://badge.fury.io/py/apache-submarine.svg)](https://badge.fury.io/py/apache-submarine)
 
 </div>
+
 # What is Apache Submarine?
 
 **Apache Submarine** (Submarine for short) is an **End-to-End Machine Learning Platform** to allow data scientists to create end-to-end machine learning workflows. On **Submarine**, data scientists can finish each stage in the ML model lifecycle, including data exploration, data pipeline creation, model training, serving, and monitoring.
