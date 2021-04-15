@@ -34,6 +34,7 @@ import (
 	"k8s.io/client-go/tools/record"
 	"k8s.io/apimachinery/pkg/util/wait"
 	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
+	"submarine-cloud-v2/pkg/helm"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -110,6 +111,34 @@ func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
 	if ok := cache.WaitForCacheSync(stopCh, c.submarinesSynced); !ok {
 		return fmt.Errorf("failed to wait for caches to sync")
 	}
+
+	// Example: HelmInstall (can be removed in the future):
+	// This is equal to:
+	// 		helm repo add k8s-as-helm https://ameijer.github.io/k8s-as-helm/
+	// .	helm repo update
+	//  	helm install helm-install-example-release k8s-as-helm/svc --set ports[0].protocol=TCP,ports[0].port=80,ports[0].targetPort=9376
+	// Useful Links: 
+	//   (1) https://github.com/PrasadG193/helm-clientgo-example
+	// . (2) https://github.com/ameijer/k8s-as-helm/tree/master/charts/svc
+	klog.Info("[Helm example] Install")
+	helmActionConfig := helm.HelmInstall(
+		"https://ameijer.github.io/k8s-as-helm/",
+		"k8s-as-helm",
+		"svc",
+		"helm-install-example-release",
+		"default",
+		map[string]string {
+			"set": "ports[0].protocol=TCP,ports[0].port=80,ports[0].targetPort=9376",
+		},	
+	)
+
+	klog.Info("[Helm example] Sleep 60 seconds")
+	time.Sleep(time.Duration(60) * time.Second)
+
+	klog.Info("[Helm example] Uninstall")
+	helm.HelmUninstall("helm-install-example-release", helmActionConfig)
+
+	
 
 	klog.Info("Starting workers")
 	// Launch two workers to process Submarine resources
