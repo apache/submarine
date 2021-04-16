@@ -29,4 +29,4 @@ Currently, available profiles are:
 
 **Spark**: `-Pspark-2.3`, `-Pspark-2.4`, `-Pspark-3.0`
 
-**Ranger**: `-Pranger-1.0`, `-Pranger-1.1`, `-Pranger-1.2`, `-Pranger-2.0`
+**Ranger**: `-Pranger-1.2`, `-Pranger-2.0`
