@@ -76,6 +76,8 @@ func main() {
 	// Create a Submarine operator
 	controller := NewController(kubeClient, submarineClient,
 		kubeInformerFactory.Apps().V1().Deployments(),
+		kubeInformerFactory.Core().V1().Services(),		
+		kubeInformerFactory.Core().V1().ServiceAccounts(),	
 		submarineInformerFactory.Submarine().V1alpha1().Submarines())
 
 	// notice that there is no need to run Start methods in a separate goroutine. (i.e. go kubeInformerFactory.Start(stopCh)

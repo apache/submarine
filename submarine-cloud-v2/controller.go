@@ -18,13 +18,27 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
+	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
+	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
+	listers "submarine-cloud-v2/pkg/generated/listers/submarine/v1alpha1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"submarine-cloud-v2/pkg/helm"
+	"time"
+
+	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/util/intstr"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	appsinformers "k8s.io/client-go/informers/apps/v1"
+	appslisters "k8s.io/client-go/listers/apps/v1"
+	coreinformers "k8s.io/client-go/informers/core/v1"
+	corelisters "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 	typedcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
@@ -32,12 +46,6 @@ import (
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
-	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
-	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
-	"submarine-cloud-v2/pkg/helm"
-	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
-	listers "submarine-cloud-v2/pkg/generated/listers/submarine/v1alpha1"
-	"time"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -52,6 +60,9 @@ type Controller struct {
 	submarinesLister listers.SubmarineLister
 	submarinesSynced cache.InformerSynced
 
+	deploymentLister appslisters.DeploymentLister
+	serviceaccountLister corelisters.ServiceAccountLister
+	serviceLister corelisters.ServiceLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
 	// processed instead of performing it as soon as a change happens. This
 	// means we can ensure we only process a fixed amount of resources at a
@@ -68,6 +79,8 @@ func NewController(
 	kubeclientset kubernetes.Interface,
 	submarineclientset clientset.Interface,
 	deploymentInformer appsinformers.DeploymentInformer,
+	serviceInformer coreinformers.ServiceInformer,
+	serviceaccountInformer coreinformers.ServiceAccountInformer,
 	submarineInformer informers.SubmarineInformer) *Controller {
 
 	// TODO: Create event broadcaster
@@ -82,12 +95,15 @@ func NewController(
 
 	// Initialize controller
 	controller := &Controller{
-		kubeclientset:      kubeclientset,
-		submarineclientset: submarineclientset,
-		submarinesLister:   submarineInformer.Lister(),
-		submarinesSynced:   submarineInformer.Informer().HasSynced,
-		workqueue:          workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
-		recorder:           recorder,
+		kubeclientset:      	kubeclientset,
+		submarineclientset: 	submarineclientset,
+		submarinesLister:   	submarineInformer.Lister(),
+		submarinesSynced:  		submarineInformer.Informer().HasSynced,
+		deploymentLister:		deploymentInformer.Lister(),
+		serviceLister: 			serviceInformer.Lister(),
+		serviceaccountLister: 	serviceaccountInformer.Lister(),
+		workqueue:          	workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
+		recorder:           	recorder,
 	}
 
 	// Setting up event handler for Submarine
@@ -116,34 +132,6 @@ func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
 	if ok := cache.WaitForCacheSync(stopCh, c.submarinesSynced); !ok {
 		return fmt.Errorf("failed to wait for caches to sync")
 	}
-
-	// Example: HelmInstall (can be removed in the future):
-	// This is equal to:
-	// 		helm repo add k8s-as-helm https://ameijer.github.io/k8s-as-helm/
-	// .	helm repo update
-	//  	helm install helm-install-example-release k8s-as-helm/svc --set ports[0].protocol=TCP,ports[0].port=80,ports[0].targetPort=9376
-	// Useful Links:
-	//   (1) https://github.com/PrasadG193/helm-clientgo-example
-	// . (2) https://github.com/ameijer/k8s-as-helm/tree/master/charts/svc
-	klog.Info("[Helm example] Install")
-	helmActionConfig := helm.HelmInstall(
-		"https://ameijer.github.io/k8s-as-helm/",
-		"k8s-as-helm",
-		"svc",
-		"helm-install-example-release",
-		"default",
-		map[string]string {
-			"set": "ports[0].protocol=TCP,ports[0].port=80,ports[0].targetPort=9376",
-		},
-	)
-
-	klog.Info("[Helm example] Sleep 60 seconds")
-	time.Sleep(time.Duration(60) * time.Second)
-
-	klog.Info("[Helm example] Uninstall")
-	helm.HelmUninstall("helm-install-example-release", helmActionConfig)
-
-
 
 	klog.Info("Starting workers")
 	// Launch two workers to process Submarine resources
@@ -193,6 +181,147 @@ func (c *Controller) processNextWorkItem() bool {
 	return true
 }
 
+// newSubmarineServer is a function to create submarine-server.
+// Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-server.yaml
+func (c *Controller) newSubmarineServer(serverImage string, serverReplicas int32, namespace string) error {
+	klog.Info("[newSubmarineServer]")
+	serverName := "submarine-server"
+
+	// Step1: Create ServiceAccount
+	serviceaccount, serviceaccount_err := c.serviceaccountLister.ServiceAccounts(namespace).Get(serverName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(serviceaccount_err) {
+		serviceaccount, serviceaccount_err = c.kubeclientset.CoreV1().ServiceAccounts(namespace).Create(context.TODO(), 
+			&corev1.ServiceAccount {
+				ObjectMeta: metav1.ObjectMeta{
+					Name:	serverName,	
+				},
+			}, 
+			metav1.CreateOptions{})
+		klog.Info("	Create ServiceAccount: ", serviceaccount.Name)
+	}
+
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if serviceaccount_err != nil {
+		return serviceaccount_err
+	}
+
+	// TODO: (sample-controller) controller.go:287 ~ 293
+
+	// Step2: Create Service
+	service, service_err := c.serviceLister.Services(namespace).Get(serverName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(service_err) {
+		service, service_err = c.kubeclientset.CoreV1().Services(namespace).Create(context.TODO(), 
+			&corev1.Service {
+				ObjectMeta: metav1.ObjectMeta{
+					Name:	serverName,
+					Labels: map[string]string{
+						"run":	serverName,
+					},
+				},
+				Spec: corev1.ServiceSpec {
+					Ports:[]corev1.ServicePort{
+						{
+							Port: 8080,
+							TargetPort: intstr.FromInt(8080),
+							Protocol: "TCP",
+						},
+					},
+					Selector: map[string]string{
+						"run":	serverName,
+					}, 
+				},
+			}, 
+			metav1.CreateOptions{})
+		klog.Info("	Create Service: ", service.Name)
+	}
+
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if service_err != nil {
+		return service_err
+	}
+
+	// TODO: (sample-controller) controller.go:287 ~ 293
+
+	// Step3: Create Deployment
+	deployment, deployment_err := c.deploymentLister.Deployments(namespace).Get(serverName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(deployment_err) {
+		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(namespace).Create(context.TODO(), 
+			&appsv1.Deployment {
+				ObjectMeta: metav1.ObjectMeta{
+					Name:	serverName,
+				},
+				Spec: appsv1.DeploymentSpec {
+					Selector: &metav1.LabelSelector{
+						MatchLabels: map[string]string{
+							"run":	serverName,
+						},
+					},
+					Replicas: &serverReplicas,
+					Template: corev1.PodTemplateSpec{
+						ObjectMeta: metav1.ObjectMeta{
+							Labels: map[string]string{
+								"run":	serverName,
+							},
+						},
+						Spec: corev1.PodSpec{
+							ServiceAccountName: serverName,
+							Containers: []corev1.Container{
+								{
+									Name:  serverName,
+									Image: serverImage,
+									Env: []corev1.EnvVar{
+										{
+											Name: 	"SUBMARINE_SERVER_PORT",
+											Value: 	"8080",
+										},
+										{
+											Name: 	"SUBMARINE_SERVER_PORT_8080_TCP",
+											Value: 	"8080",
+										},
+										{
+											Name: 	"SUBMARINE_SERVER_DNS_NAME",
+											Value: 	serverName + "." + namespace,
+										},
+										{
+											Name: 	"K8S_APISERVER_URL",
+											Value: 	"kubernetes.default.svc",
+										},
+									},
+									Ports: []corev1.ContainerPort{
+										{
+											ContainerPort: 8080,
+										},
+									},
+									ImagePullPolicy: "IfNotPresent",
+								},
+							},
+						},
+					},
+				},
+			}, 
+			metav1.CreateOptions{})
+		klog.Info("	Create Deployment: ", deployment.Name)
+	}
+
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if deployment_err != nil {
+		return deployment_err
+	}
+
+	// TODO: (sample-controller) controller.go:287 ~ 293
+
+	return nil
+}
+
 // syncHandler compares the actual state with the desired, and attempts to
 // converge the two. It then updates the Status block of the Foo resource
 // with the current status of the resource.
@@ -222,6 +351,18 @@ func (c *Controller) syncHandler(key string) error {
 	// Print out the spec of the Submarine resource
 	b, err := json.MarshalIndent(submarine.Spec, "", "  ")
 	fmt.Println(string(b))
+
+	// Create submarine-server
+	serverImage := submarine.Spec.Server.Image
+	serverReplicas := *submarine.Spec.Server.Replicas
+	if serverImage == "" {
+		serverImage = "apache/submarine:server-" + submarine.Spec.Version
+	}
+	err = c.newSubmarineServer(serverImage, serverReplicas, namespace)
+	
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
