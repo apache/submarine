@@ -26,7 +26,6 @@ import (
 	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
 	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
 	listers "submarine-cloud-v2/pkg/generated/listers/submarine/v1alpha1"
-	"submarine-cloud-v2/pkg/helm"
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
