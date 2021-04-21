@@ -21,11 +21,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
 	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
 	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
 	listers "submarine-cloud-v2/pkg/generated/listers/submarine/v1alpha1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"submarine-cloud-v2/pkg/helm"
 	"time"
 
@@ -36,12 +36,12 @@ import (
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	appsinformers "k8s.io/client-go/informers/apps/v1"
-	appslisters "k8s.io/client-go/listers/apps/v1"
 	coreinformers "k8s.io/client-go/informers/core/v1"
-	corelisters "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 	typedcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
+	appslisters "k8s.io/client-go/listers/apps/v1"
+	corelisters "k8s.io/client-go/listers/core/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
@@ -60,9 +60,9 @@ type Controller struct {
 	submarinesLister listers.SubmarineLister
 	submarinesSynced cache.InformerSynced
 
-	deploymentLister appslisters.DeploymentLister
+	deploymentLister     appslisters.DeploymentLister
 	serviceaccountLister corelisters.ServiceAccountLister
-	serviceLister corelisters.ServiceLister
+	serviceLister        corelisters.ServiceLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
 	// processed instead of performing it as soon as a change happens. This
 	// means we can ensure we only process a fixed amount of resources at a
@@ -95,15 +95,15 @@ func NewController(
 
 	// Initialize controller
 	controller := &Controller{
-		kubeclientset:      	kubeclientset,
-		submarineclientset: 	submarineclientset,
-		submarinesLister:   	submarineInformer.Lister(),
-		submarinesSynced:  		submarineInformer.Informer().HasSynced,
-		deploymentLister:		deploymentInformer.Lister(),
-		serviceLister: 			serviceInformer.Lister(),
-		serviceaccountLister: 	serviceaccountInformer.Lister(),
-		workqueue:          	workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
-		recorder:           	recorder,
+		kubeclientset:        kubeclientset,
+		submarineclientset:   submarineclientset,
+		submarinesLister:     submarineInformer.Lister(),
+		submarinesSynced:     submarineInformer.Informer().HasSynced,
+		deploymentLister:     deploymentInformer.Lister(),
+		serviceLister:        serviceInformer.Lister(),
+		serviceaccountLister: serviceaccountInformer.Lister(),
+		workqueue:            workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
+		recorder:             recorder,
 	}
 
 	// Setting up event handler for Submarine
@@ -191,12 +191,12 @@ func (c *Controller) newSubmarineServer(serverImage string, serverReplicas int32
 	serviceaccount, serviceaccount_err := c.serviceaccountLister.ServiceAccounts(namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(serviceaccount_err) {
-		serviceaccount, serviceaccount_err = c.kubeclientset.CoreV1().ServiceAccounts(namespace).Create(context.TODO(), 
-			&corev1.ServiceAccount {
+		serviceaccount, serviceaccount_err = c.kubeclientset.CoreV1().ServiceAccounts(namespace).Create(context.TODO(),
+			&corev1.ServiceAccount{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:	serverName,	
+					Name: serverName,
 				},
-			}, 
+			},
 			metav1.CreateOptions{})
 		klog.Info("	Create ServiceAccount: ", serviceaccount.Name)
 	}
@@ -214,27 +214,27 @@ func (c *Controller) newSubmarineServer(serverImage string, serverReplicas int32
 	service, service_err := c.serviceLister.Services(namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(service_err) {
-		service, service_err = c.kubeclientset.CoreV1().Services(namespace).Create(context.TODO(), 
-			&corev1.Service {
+		service, service_err = c.kubeclientset.CoreV1().Services(namespace).Create(context.TODO(),
+			&corev1.Service{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:	serverName,
+					Name: serverName,
 					Labels: map[string]string{
-						"run":	serverName,
+						"run": serverName,
 					},
 				},
-				Spec: corev1.ServiceSpec {
-					Ports:[]corev1.ServicePort{
+				Spec: corev1.ServiceSpec{
+					Ports: []corev1.ServicePort{
 						{
-							Port: 8080,
+							Port:       8080,
 							TargetPort: intstr.FromInt(8080),
-							Protocol: "TCP",
+							Protocol:   "TCP",
 						},
 					},
 					Selector: map[string]string{
-						"run":	serverName,
-					}, 
+						"run": serverName,
+					},
 				},
-			}, 
+			},
 			metav1.CreateOptions{})
 		klog.Info("	Create Service: ", service.Name)
 	}
@@ -252,22 +252,22 @@ func (c *Controller) newSubmarineServer(serverImage string, serverReplicas int32
 	deployment, deployment_err := c.deploymentLister.Deployments(namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(deployment_err) {
-		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(namespace).Create(context.TODO(), 
-			&appsv1.Deployment {
+		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(namespace).Create(context.TODO(),
+			&appsv1.Deployment{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:	serverName,
+					Name: serverName,
 				},
-				Spec: appsv1.DeploymentSpec {
+				Spec: appsv1.DeploymentSpec{
 					Selector: &metav1.LabelSelector{
 						MatchLabels: map[string]string{
-							"run":	serverName,
+							"run": serverName,
 						},
 					},
 					Replicas: &serverReplicas,
 					Template: corev1.PodTemplateSpec{
 						ObjectMeta: metav1.ObjectMeta{
 							Labels: map[string]string{
-								"run":	serverName,
+								"run": serverName,
 							},
 						},
 						Spec: corev1.PodSpec{
@@ -278,20 +278,20 @@ func (c *Controller) newSubmarineServer(serverImage string, serverReplicas int32
 									Image: serverImage,
 									Env: []corev1.EnvVar{
 										{
-											Name: 	"SUBMARINE_SERVER_PORT",
-											Value: 	"8080",
+											Name:  "SUBMARINE_SERVER_PORT",
+											Value: "8080",
 										},
 										{
-											Name: 	"SUBMARINE_SERVER_PORT_8080_TCP",
-											Value: 	"8080",
+											Name:  "SUBMARINE_SERVER_PORT_8080_TCP",
+											Value: "8080",
 										},
 										{
-											Name: 	"SUBMARINE_SERVER_DNS_NAME",
-											Value: 	serverName + "." + namespace,
+											Name:  "SUBMARINE_SERVER_DNS_NAME",
+											Value: serverName + "." + namespace,
 										},
 										{
-											Name: 	"K8S_APISERVER_URL",
-											Value: 	"kubernetes.default.svc",
+											Name:  "K8S_APISERVER_URL",
+											Value: "kubernetes.default.svc",
 										},
 									},
 									Ports: []corev1.ContainerPort{
@@ -305,7 +305,7 @@ func (c *Controller) newSubmarineServer(serverImage string, serverReplicas int32
 						},
 					},
 				},
-			}, 
+			},
 			metav1.CreateOptions{})
 		klog.Info("	Create Deployment: ", deployment.Name)
 	}
@@ -359,7 +359,7 @@ func (c *Controller) syncHandler(key string) error {
 		serverImage = "apache/submarine:server-" + submarine.Spec.Version
 	}
 	err = c.newSubmarineServer(serverImage, serverReplicas, namespace)
-	
+
 	if err != nil {
 		return err
 	}

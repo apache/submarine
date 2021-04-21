@@ -19,16 +19,16 @@ package main
 
 import (
 	"flag"
-	"time"
 	kubeinformers "k8s.io/client-go/informers"
-	"k8s.io/klog/v2"
-	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
+	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/klog/v2"
 	"os"
-	"submarine-cloud-v2/pkg/signals"
 	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
 	informers "submarine-cloud-v2/pkg/generated/informers/externalversions"
+	"submarine-cloud-v2/pkg/signals"
+	"time"
 )
 
 var (
@@ -52,7 +52,7 @@ func main() {
 	stopCh := signals.SetupSignalHandler()
 
 	cfg, err := initKubeConfig()
-	
+
 	if err != nil {
 		klog.Fatalf("Error building kubeconfig: %s", err.Error())
 	}
@@ -69,15 +69,15 @@ func main() {
 
 	kubeInformerFactory := kubeinformers.NewSharedInformerFactory(kubeClient, time.Second*30)
 	submarineInformerFactory := informers.NewSharedInformerFactory(submarineClient, time.Second*30)
-	
+
 	// TODO: Pass informers to NewController()
 	//       ex: namespace informer
 
 	// Create a Submarine operator
 	controller := NewController(kubeClient, submarineClient,
 		kubeInformerFactory.Apps().V1().Deployments(),
-		kubeInformerFactory.Core().V1().Services(),		
-		kubeInformerFactory.Core().V1().ServiceAccounts(),	
+		kubeInformerFactory.Core().V1().Services(),
+		kubeInformerFactory.Core().V1().ServiceAccounts(),
 		submarineInformerFactory.Submarine().V1alpha1().Submarines())
 
 	// notice that there is no need to run Start methods in a separate goroutine. (i.e. go kubeInformerFactory.Start(stopCh)
@@ -93,6 +93,6 @@ func main() {
 
 func init() {
 	flag.BoolVar(&incluster, "incluster", false, "Run submarine-operator in-cluster")
-	flag.StringVar(&kubeconfig, "kubeconfig", os.Getenv("HOME") + "/.kube/config", "Path to a kubeconfig. Only required if out-of-cluster.")
+	flag.StringVar(&kubeconfig, "kubeconfig", os.Getenv("HOME")+"/.kube/config", "Path to a kubeconfig. Only required if out-of-cluster.")
 	flag.StringVar(&masterURL, "master", "", "The address of the Kubernetes API server. Overrides any value in kubeconfig. Only required if out-of-cluster.")
 }
