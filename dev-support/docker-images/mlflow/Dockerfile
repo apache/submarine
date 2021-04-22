@@ -17,11 +17,7 @@ FROM python:3.7.0-slim
 
 RUN pip install mlflow
 
-RUN mkdir /submarine-mlflow
-
-WORKDIR /submarine-mlflow
-
-RUN apt-get update && apt-get -y install --no-install-recommends default-libmysqlclient-dev libpq-dev build-essential sqlite3
+RUN apt-get update && apt-get -y install --no-install-recommends default-libmysqlclient-dev libpq-dev build-essential sqlite3 wget
     
 RUN pip install \
     mlflow \
@@ -30,13 +26,21 @@ RUN pip install \
 
 RUN sqlite3 store.db
 
+COPY set.sh /usr/local/bin
+
+WORKDIR /usr/local/bin
+
+RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x mc
+
+ENV MLFLOW_S3_ENDPOINT_URL http://10.96.0.4:9000
+ENV AWS_ACCESS_KEY_ID submarine_minio
+ENV AWS_SECRET_ACCESS_KEY submarine_minio
+ENV BACKEND_URI sqlite:///store.db
+
 EXPOSE 5000
 
-ENV BACKEND_URI sqlite:///store.db
-ENV ARTIFACT_ROOT /submarine-mlflow/mlflow-artifacts
-
-CMD mlflow server \
+CMD ./set.sh && mlflow server \
     --host 0.0.0.0 \
     --backend-store-uri ${BACKEND_URI} \
-    --default-artifact-root ${ARTIFACT_ROOT} \
+    --default-artifact-root s3:/mlflow \
     --static-prefix "/mlflow"
