@@ -34,11 +34,14 @@ submarine:
   traefik:
     enabled: true
   tensorboard:
-    storage: 10Gi
+    storage: 5Gi
     ingressPath: "/tensorboard"
   mlflow:
-    storage: 10Gi
+    storage: 5Gi
     ingressPath: "/mlflow"
+  minio:
+    storage: 5Gi
+    ingressPath: "/minio"
   storage:
     type: host # "host" or "nfs"
     host:
