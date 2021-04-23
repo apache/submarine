@@ -59,7 +59,7 @@
       </div>
     </nz-form-item>
     <nz-form-item style="margin-bottom: 0">
-      <nz-upload nzType="drag" [nzMultiple]="false" nzAccept=".yml" [nzBeforeUpload]="beforeUpload">
+      <nz-upload id="upload-config" nzType="drag" [nzMultiple]="false" [nzBeforeUpload]="beforeUpload">
         <p class="ant-upload-drag-icon">
           <i nz-icon nzType="inbox"></i>
         </p>
@@ -68,7 +68,7 @@
           <div
             #preview
             style="overflow-y: auto"
-            [style.height]="previewCondaConfig !== '' ? '10rem' : '0rem'"
+            [style.height]="previewCondaConfig !== '' ? '8rem' : '0rem'"
             [innerText]="previewCondaConfig"
           ></div>
         </div>

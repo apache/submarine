@@ -114,6 +114,7 @@ export class EnvironmentFormComponent implements OnInit {
         config['dependencies'].map((e: object | string) => {
           if (typeof e === 'object') {
             if (!e['pip']) {
+              this.nzMessageService.error('dependencies include unknown object');
               throw Error('dependencies include unknown object');
             } else {
               config['pipDependencies'] = e['pip'];
@@ -124,7 +125,7 @@ export class EnvironmentFormComponent implements OnInit {
         });
       }
     } catch (error) {
-      this.nzMessageService.error(error);
+      this.nzMessageService.error('Unable to parse the conda config file');
       throw error;
     }
     return config;
