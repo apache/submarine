@@ -30,6 +30,7 @@
     "ng-zorro-antd": "8.1.2",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
+    "yaml": "^1.10.2",
     "zone.js": "~0.9.1"
   },
   "lint-staged": {

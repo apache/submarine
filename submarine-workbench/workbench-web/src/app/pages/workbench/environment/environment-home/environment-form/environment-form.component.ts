@@ -18,10 +18,10 @@
  */
 
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { EnvironmentService } from '@submarine/services/environment-services/environment.service';
 import { NzMessageService } from 'ng-zorro-antd';
-import { UploadChangeParam, UploadFile } from 'ng-zorro-antd/upload';
+import { parse } from 'yaml';
 
 @Component({
   selector: 'submarine-environment-form',
@@ -33,9 +33,7 @@ export class EnvironmentFormComponent implements OnInit {
 
   isVisible: boolean;
   environmentForm;
-  configFileList = [];
-  isPreviewVisible: boolean;
-  previewConfigFile = '';
+  previewCondaConfig = '';
 
   constructor(
     private fb: FormBuilder,
@@ -47,16 +45,11 @@ export class EnvironmentFormComponent implements OnInit {
     this.environmentForm = this.fb.group({
       environmentName: [null, Validators.required],
       dockerImage: [null, Validators.required],
-      configFile: null,
-      name: [null, Validators.required],
-      channels: this.fb.array([]),
-      dependencies: this.fb.array([]),
     });
   }
 
   initModal() {
     this.isVisible = true;
-    this.isPreviewVisible = true;
     this.initFormStatus();
   }
 
@@ -72,90 +65,71 @@ export class EnvironmentFormComponent implements OnInit {
     return this.environmentForm.get('dockerImage');
   }
 
-  get configFile() {
-    return this.environmentForm.get('configFile');
-  }
-
-  set configFile(file: UploadFile) {
-    this.environmentForm.controls['configFile'].setValue(file);
-  }
-
-  get name() {
-    return this.environmentForm.get('name');
-  }
-
-  get channels() {
-    return this.environmentForm.get('channels') as FormArray;
-  }
-
-  get dependencies() {
-    return this.environmentForm.get('dependencies') as FormArray;
-  }
-
   initFormStatus() {
     this.isVisible = true;
     this.environmentName.reset();
     this.dockerImage.reset();
-    this.configFile.reset();
-    this.name.reset();
-    this.channels.clear();
-    this.dependencies.clear();
   }
 
   checkStatus() {
-    return (
-      this.environmentName.invalid ||
-      this.dockerImage.invalid ||
-      this.name.invalid ||
-      this.channels.invalid ||
-      this.dependencies.invalid
-    );
+    return this.environmentName.invalid || this.dockerImage.invalid;
   }
 
   closeModal() {
     this.isVisible = false;
-    this.configFileList = [];
-    this.previewConfigFile = '';
+    this.previewCondaConfig = '';
   }
 
-  addChannel() {
-    this.channels.push(this.fb.control(null, Validators.required));
-  }
+  beforeUpload = (file: File): boolean => {
+    let reader = new FileReader();
+    reader.readAsText(file);
+    reader.onload = () => {
+      this.previewCondaConfig = reader.result.toString();
+      this.nzMessageService.success(`${file.name} file read successfully.`);
+      const config = parse(reader.result.toString());
+    };
+    return false;
+  };
 
-  addDependencies() {
-    this.dependencies.push(this.fb.control(null, Validators.required));
-  }
-
-  deleteItem(arr: FormArray, index: number) {
-    arr.removeAt(index);
-  }
-
-  fileUpload(info: UploadChangeParam) {
-    info.fileList = info.fileList.slice(-1);
-    this.configFileList = info.fileList;
-    let file = info.file;
-    if (info.type === 'success') {
-      this.configFile = file;
-      this.isPreviewVisible = true;
-      var reader = new FileReader();
-      reader.readAsText(info.file.originFileObj);
-      reader.onload = () => {
-        this.previewConfigFile = reader.result.toString();
-      };
-      this.nzMessageService.success(`${file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      this.nzMessageService.error(`${file.name} file upload failed.`);
+  checkCondaConfig(config): Object {
+    if (config === null) {
+      config = {};
     }
+    if (!config['channels']) {
+      config['channels'] = [];
+    }
+    if (!config['name']) {
+      config['name'] = '';
+    }
+    config['condaDependencies'] = [];
+    config['pipDependencies'] = [];
+    return config;
   }
 
-  isPreview = () => {
-    this.isPreviewVisible = !this.isPreviewVisible;
-  };
-
-  closePreview = () => {
-    this.configFileList = [];
-    this.isPreviewVisible = false;
-  };
+  parseCondaConfig(): Object {
+    let config = this.checkCondaConfig(parse(this.previewCondaConfig));
+    this.previewCondaConfig = '';
+    try {
+      if (config['dependencies'] !== undefined || null) {
+        config['dependencies'].map((e: object | string) => {
+          if (typeof e === 'object') {
+            if (!e['pip']) {
+              this.nzMessageService.error('dependencies include unknown object');
+              throw Error('dependencies include unknown object');
+            } else {
+              config['pipDependencies'] = e['pip'];
+            }
+          } else if (typeof e === 'string') {
+            config['condaDependencies'].push(e);
+          }
+        });
+      }
+    } catch (error) {
+      this.nzMessageService.error('Unable to parse the conda config file');
+      throw error;
+    }
+    return config;
+  }
 
   createEnvironment() {
     this.isVisible = false;
@@ -174,24 +148,17 @@ export class EnvironmentFormComponent implements OnInit {
   }
 
   createEnvironmentSpec() {
+    let config = this.parseCondaConfig();
     const environmentSpec = {
       name: this.environmentForm.get('environmentName').value,
       dockerImage: this.environmentForm.get('dockerImage').value,
       kernelSpec: {
-        name: this.environmentForm.get('name').value,
-        channels: [],
-        dependencies: [],
+        name: config['name'],
+        channels: config['channels'],
+        condaDependencies: config['condaDependencies'],
+        pipDependencies: config['pipDependencies'],
       },
     };
-
-    for (const channel of this.channels.controls) {
-      environmentSpec.kernelSpec.channels.push(channel.value);
-    }
-
-    for (const dependency of this.dependencies.controls) {
-      environmentSpec.kernelSpec.dependencies.push(dependency.value);
-    }
-
     return environmentSpec;
   }
 }

@@ -63,11 +63,8 @@ public class environmentIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//button[@id='btn-newEnvironment']"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.cssSelector("input[ng-reflect-name='environmentName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testEnvName");
     pollingWait(By.cssSelector("input[ng-reflect-name='dockerImage']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testDockerImage");
-    pollingWait(By.cssSelector("input[ng-reflect-name='name']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testName");
-    pollingWait(By.xpath("//button[@id='addChannel-btn']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@id='channel0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testChannel");
-    pollingWait(By.xpath("//button[@id='addDep-btn']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@id='dependencies0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testDep");
+    pollingWait(By.xpath("//nz-upload[@id='upload-config']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.cssSelector("input[type=file]"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(System.getProperty("user.dir") + "/src/test/resources/test_config_1.yml");
     Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-submit']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//button[@id='btn-submit']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-newEnvironment']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
