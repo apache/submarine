@@ -30,17 +30,20 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
 	appsinformers "k8s.io/client-go/informers/apps/v1"
 	coreinformers "k8s.io/client-go/informers/core/v1"
+	extinformers "k8s.io/client-go/informers/extensions/v1beta1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 	typedcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	appslisters "k8s.io/client-go/listers/apps/v1"
 	corelisters "k8s.io/client-go/listers/core/v1"
+	extlisters "k8s.io/client-go/listers/extensions/v1beta1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
@@ -62,6 +65,7 @@ type Controller struct {
 	deploymentLister     appslisters.DeploymentLister
 	serviceaccountLister corelisters.ServiceAccountLister
 	serviceLister        corelisters.ServiceLister
+	ingressLister        extlisters.IngressLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
 	// processed instead of performing it as soon as a change happens. This
 	// means we can ensure we only process a fixed amount of resources at a
@@ -80,6 +84,7 @@ func NewController(
 	deploymentInformer appsinformers.DeploymentInformer,
 	serviceInformer coreinformers.ServiceInformer,
 	serviceaccountInformer coreinformers.ServiceAccountInformer,
+	ingressInformer extinformers.IngressInformer,
 	submarineInformer informers.SubmarineInformer) *Controller {
 
 	// TODO: Create event broadcaster
@@ -101,6 +106,7 @@ func NewController(
 		deploymentLister:     deploymentInformer.Lister(),
 		serviceLister:        serviceInformer.Lister(),
 		serviceaccountLister: serviceaccountInformer.Lister(),
+		ingressLister:        ingressInformer.Lister(),
 		workqueue:            workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
 		recorder:             recorder,
 	}
@@ -321,6 +327,55 @@ func (c *Controller) newSubmarineServer(serverImage string, serverReplicas int32
 	return nil
 }
 
+// newIngress is a function to create Ingress.
+// Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-ingress.yaml
+func (c *Controller) newIngress(namespace string) error {
+	klog.Info("[newIngress]")
+	serverName := "submarine-server"
+
+	// Step1: Create ServiceAccount
+	ingress, ingress_err := c.ingressLister.Ingresses(namespace).Get(serverName + "-ingress")
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(ingress_err) {
+		ingress, ingress_err = c.kubeclientset.ExtensionsV1beta1().Ingresses(namespace).Create(context.TODO(),
+			&extensionsv1beta1.Ingress{
+				ObjectMeta: metav1.ObjectMeta{
+					Name:      serverName + "-ingress",
+					Namespace: namespace,
+				},
+				Spec: extensionsv1beta1.IngressSpec{
+					Rules: []extensionsv1beta1.IngressRule{
+						{
+							IngressRuleValue: extensionsv1beta1.IngressRuleValue{
+								HTTP: &extensionsv1beta1.HTTPIngressRuleValue{
+									Paths: []extensionsv1beta1.HTTPIngressPath{
+										{
+											Backend: extensionsv1beta1.IngressBackend{
+												ServiceName: serverName,
+												ServicePort: intstr.FromInt(8080),
+											},
+											Path: "/",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			metav1.CreateOptions{})
+		klog.Info("	Create Ingress: ", ingress.Name)
+	}
+
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if ingress_err != nil {
+		return ingress_err
+	}
+	return nil
+}
+
 // syncHandler compares the actual state with the desired, and attempts to
 // converge the two. It then updates the Status block of the Foo resource
 // with the current status of the resource.
@@ -357,8 +412,14 @@ func (c *Controller) syncHandler(key string) error {
 	if serverImage == "" {
 		serverImage = "apache/submarine:server-" + submarine.Spec.Version
 	}
-	err = c.newSubmarineServer(serverImage, serverReplicas, namespace)
 
+	err = c.newSubmarineServer(serverImage, serverReplicas, namespace)
+	if err != nil {
+		return err
+	}
+
+	// Create ingress
+	err = c.newIngress(namespace)
 	if err != nil {
 		return err
 	}
