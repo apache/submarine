@@ -79,6 +79,8 @@ func main() {
 		kubeInformerFactory.Core().V1().Services(),
 		kubeInformerFactory.Core().V1().ServiceAccounts(),
 		kubeInformerFactory.Extensions().V1beta1().Ingresses(),
+		kubeInformerFactory.Rbac().V1().ClusterRoles(),
+		kubeInformerFactory.Rbac().V1().ClusterRoleBindings(),
 		submarineInformerFactory.Submarine().V1alpha1().Submarines())
 
 	// notice that there is no need to run Start methods in a separate goroutine. (i.e. go kubeInformerFactory.Start(stopCh)
