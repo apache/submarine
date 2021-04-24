@@ -31,6 +31,7 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
+	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -38,12 +39,14 @@ import (
 	appsinformers "k8s.io/client-go/informers/apps/v1"
 	coreinformers "k8s.io/client-go/informers/core/v1"
 	extinformers "k8s.io/client-go/informers/extensions/v1beta1"
+	rbacinformers "k8s.io/client-go/informers/rbac/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/kubernetes/scheme"
 	typedcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	appslisters "k8s.io/client-go/listers/apps/v1"
 	corelisters "k8s.io/client-go/listers/core/v1"
 	extlisters "k8s.io/client-go/listers/extensions/v1beta1"
+	rbaclisters "k8s.io/client-go/listers/rbac/v1"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
@@ -62,10 +65,12 @@ type Controller struct {
 	submarinesLister listers.SubmarineLister
 	submarinesSynced cache.InformerSynced
 
-	deploymentLister     appslisters.DeploymentLister
-	serviceaccountLister corelisters.ServiceAccountLister
-	serviceLister        corelisters.ServiceLister
-	ingressLister        extlisters.IngressLister
+	deploymentLister         appslisters.DeploymentLister
+	serviceaccountLister     corelisters.ServiceAccountLister
+	serviceLister            corelisters.ServiceLister
+	ingressLister            extlisters.IngressLister
+	clusterroleLister        rbaclisters.ClusterRoleLister
+	clusterrolebindingLister rbaclisters.ClusterRoleBindingLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
 	// processed instead of performing it as soon as a change happens. This
 	// means we can ensure we only process a fixed amount of resources at a
@@ -85,6 +90,8 @@ func NewController(
 	serviceInformer coreinformers.ServiceInformer,
 	serviceaccountInformer coreinformers.ServiceAccountInformer,
 	ingressInformer extinformers.IngressInformer,
+	clusterroleInformer rbacinformers.ClusterRoleInformer,
+	clusterrolebindingInformer rbacinformers.ClusterRoleBindingInformer,
 	submarineInformer informers.SubmarineInformer) *Controller {
 
 	// TODO: Create event broadcaster
@@ -99,16 +106,18 @@ func NewController(
 
 	// Initialize controller
 	controller := &Controller{
-		kubeclientset:        kubeclientset,
-		submarineclientset:   submarineclientset,
-		submarinesLister:     submarineInformer.Lister(),
-		submarinesSynced:     submarineInformer.Informer().HasSynced,
-		deploymentLister:     deploymentInformer.Lister(),
-		serviceLister:        serviceInformer.Lister(),
-		serviceaccountLister: serviceaccountInformer.Lister(),
-		ingressLister:        ingressInformer.Lister(),
-		workqueue:            workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
-		recorder:             recorder,
+		kubeclientset:            kubeclientset,
+		submarineclientset:       submarineclientset,
+		submarinesLister:         submarineInformer.Lister(),
+		submarinesSynced:         submarineInformer.Informer().HasSynced,
+		deploymentLister:         deploymentInformer.Lister(),
+		serviceLister:            serviceInformer.Lister(),
+		serviceaccountLister:     serviceaccountInformer.Lister(),
+		ingressLister:            ingressInformer.Lister(),
+		clusterroleLister:        clusterroleInformer.Lister(),
+		clusterrolebindingLister: clusterrolebindingInformer.Lister(),
+		workqueue:                workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
+		recorder:                 recorder,
 	}
 
 	// Setting up event handler for Submarine
@@ -373,6 +382,96 @@ func (c *Controller) newIngress(namespace string) error {
 	if ingress_err != nil {
 		return ingress_err
 	}
+
+	// TODO: (sample-controller) controller.go:287 ~ 293
+
+	return nil
+}
+
+// newSubmarineServerRBAC is a function to create RBAC for submarine-server.
+// Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/rbac.yaml
+func (c *Controller) newSubmarineServerRBAC(serviceaccount_namespace string) error {
+	klog.Info("[newSubmarineServerRBAC]")
+	serverName := "submarine-server"
+	// Step1: Create ClusterRole
+	clusterrole, clusterrole_err := c.clusterroleLister.Get(serverName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(clusterrole_err) {
+		clusterrole, clusterrole_err = c.kubeclientset.RbacV1().ClusterRoles().Create(context.TODO(),
+			&rbacv1.ClusterRole{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: serverName,
+				},
+				Rules: []rbacv1.PolicyRule{
+					{
+						Verbs:     []string{"get", "list", "watch", "create", "delete", "deletecollection", "patch", "update"},
+						APIGroups: []string{"kubeflow.org"},
+						Resources: []string{"tfjobs", "tfjobs/status", "pytorchjobs", "pytorchjobs/status", "notebooks", "notebooks/status"},
+					},
+					{
+						Verbs:     []string{"get", "list", "watch", "create", "delete", "deletecollection", "patch", "update"},
+						APIGroups: []string{"traefik.containo.us"},
+						Resources: []string{"ingressroutes"},
+					},
+					{
+						Verbs:     []string{"*"},
+						APIGroups: []string{""},
+						Resources: []string{"pods", "pods/log", "services", "persistentvolumes", "persistentvolumeclaims"},
+					},
+					{
+						Verbs:     []string{"*"},
+						APIGroups: []string{"apps"},
+						Resources: []string{"deployments", "deployments/status"},
+					},
+				},
+			},
+			metav1.CreateOptions{})
+		klog.Info("	Create ClusterRole: ", clusterrole.Name)
+	}
+
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if clusterrole_err != nil {
+		return clusterrole_err
+	}
+
+	// TODO: (sample-controller) controller.go:287 ~ 293
+
+	clusterrolebinding, clusterrolebinding_err := c.clusterrolebindingLister.Get(serverName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(clusterrolebinding_err) {
+		clusterrolebinding, clusterrolebinding_err = c.kubeclientset.RbacV1().ClusterRoleBindings().Create(context.TODO(),
+			&rbacv1.ClusterRoleBinding{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: serverName,
+				},
+				Subjects: []rbacv1.Subject{
+					rbacv1.Subject{
+						Kind:      "ServiceAccount",
+						Namespace: serviceaccount_namespace,
+						Name:      serverName,
+					},
+				},
+				RoleRef: rbacv1.RoleRef{
+					Kind:     "ClusterRole",
+					Name:     serverName,
+					APIGroup: "rbac.authorization.k8s.io",
+				},
+			},
+			metav1.CreateOptions{})
+		klog.Info("	Create ClusterRoleBinding: ", clusterrolebinding.Name)
+	}
+
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if clusterrolebinding_err != nil {
+		return clusterrolebinding_err
+	}
+
+	// TODO: (sample-controller) controller.go:287 ~ 293
+
 	return nil
 }
 
@@ -413,6 +512,7 @@ func (c *Controller) syncHandler(key string) error {
 		serverImage = "apache/submarine:server-" + submarine.Spec.Version
 	}
 
+	// Create Submarine Server
 	err = c.newSubmarineServer(serverImage, serverReplicas, namespace)
 	if err != nil {
 		return err
@@ -420,6 +520,12 @@ func (c *Controller) syncHandler(key string) error {
 
 	// Create ingress
 	err = c.newIngress(namespace)
+	if err != nil {
+		return err
+	}
+
+	// Create RBAC
+	err = c.newSubmarineServerRBAC(namespace)
 	if err != nil {
 		return err
 	}
