@@ -552,6 +552,43 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 
 	// TODO: (sample-controller) controller.go:287 ~ 293
 
+	// Step2: Create PersistentVolumeClaim
+	pvcName := databaseName + "-pvc"
+	pvc, pvc_err := c.persistentvolumeclaimLister.PersistentVolumeClaims(namespace).Get(pvcName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(pvc_err) {
+		storageClassName := ""
+		pvc, pvc_err = c.kubeclientset.CoreV1().PersistentVolumeClaims(namespace).Create(context.TODO(),
+			&corev1.PersistentVolumeClaim{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: pvcName,
+				},
+				Spec: corev1.PersistentVolumeClaimSpec{
+					AccessModes: []corev1.PersistentVolumeAccessMode{
+						corev1.ReadWriteMany,
+					},
+					Resources: corev1.ResourceRequirements{
+						Requests: corev1.ResourceList{
+							corev1.ResourceStorage: resource.MustParse(spec.Database.StorageSize),
+						},
+					},
+					VolumeName:       pvName,
+					StorageClassName: &storageClassName,
+				},
+			},
+			metav1.CreateOptions{})
+		if pvc_err != nil {
+			klog.Info(pvc_err)
+		}
+		klog.Info("	Create PersistentVolumeClaim: ", pvc.Name)
+	}
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if pvc_err != nil {
+		return pvc_err
+	}
+
 	return nil
 }
 
