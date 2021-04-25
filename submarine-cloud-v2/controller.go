@@ -589,6 +589,85 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 		return pvc_err
 	}
 
+	// TODO: (sample-controller) controller.go:287 ~ 293
+
+	// Step3: Create Deployment
+	deployment, deployment_err := c.deploymentLister.Deployments(namespace).Get(databaseName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(deployment_err) {
+		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(namespace).Create(context.TODO(),
+			&appsv1.Deployment{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: databaseName,
+				},
+				Spec: appsv1.DeploymentSpec{
+					Selector: &metav1.LabelSelector{
+						MatchLabels: map[string]string{
+							"app": databaseName,
+						},
+					},
+					Replicas: spec.Database.Replicas,
+					Template: corev1.PodTemplateSpec{
+						ObjectMeta: metav1.ObjectMeta{
+							Labels: map[string]string{
+								"app": databaseName,
+							},
+						},
+						Spec: corev1.PodSpec{
+							Containers: []corev1.Container{
+								{
+									Name:            databaseName,
+									Image:           databaseImage,
+									ImagePullPolicy: "IfNotPresent",
+									Ports: []corev1.ContainerPort{
+										{
+											ContainerPort: 3306,
+										},
+									},
+									Env: []corev1.EnvVar{
+										{
+											Name:  "MYSQL_ROOT_PASSWORD",
+											Value: "password",
+										},
+									},
+									VolumeMounts: []corev1.VolumeMount{
+										{
+											MountPath: "/var/lib/mysql",
+											Name:      "volume",
+											SubPath:   databaseName,
+										},
+									},
+								},
+							},
+							Volumes: []corev1.Volume{
+								{
+									Name: "volume",
+									VolumeSource: corev1.VolumeSource{
+										PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
+											ClaimName: pvcName,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			metav1.CreateOptions{})
+		if deployment_err != nil {
+			klog.Info(deployment_err)
+		}
+		klog.Info("	Create Deployment: ", deployment.Name)
+	}
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if deployment_err != nil {
+		return deployment_err
+	}
+
+	// TODO: (sample-controller) controller.go:287 ~ 293
+
 	return nil
 }
 
