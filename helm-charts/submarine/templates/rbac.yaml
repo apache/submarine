@@ -80,4 +80,4 @@ subjects:
 roleRef:
   kind: ClusterRole
   name: "{{ .Values.submarine.server.name }}"
-  apiGroup: ""
+  apiGroup: rbac.authorization.k8s.io
