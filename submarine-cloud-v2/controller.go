@@ -668,6 +668,42 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 
 	// TODO: (sample-controller) controller.go:287 ~ 293
 
+	// Step4: Create Service
+	service, service_err := c.serviceLister.Services(namespace).Get(databaseName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(service_err) {
+		service, service_err = c.kubeclientset.CoreV1().Services(namespace).Create(context.TODO(),
+			&corev1.Service{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: databaseName,
+				},
+				Spec: corev1.ServiceSpec{
+					Ports: []corev1.ServicePort{
+						{
+							Port:       3306,
+							TargetPort: intstr.FromInt(3306),
+							Name:       databaseName,
+						},
+					},
+					Selector: map[string]string{
+						"app": databaseName,
+					},
+				},
+			},
+			metav1.CreateOptions{})
+		if deployment_err != nil {
+			klog.Info(service_err)
+		}
+		klog.Info("	Create Service: ", service.Name)
+	}
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if service_err != nil {
+		return service_err
+	}
+
+	// TODO: (sample-controller) controller.go:287 ~ 293
 	return nil
 }
 
