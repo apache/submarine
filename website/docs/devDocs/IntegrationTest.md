@@ -74,7 +74,7 @@ Each time a code is submitted, travis is automatically triggered for testing.
 * Run E2E tests in Travis:
   *  Step1: Make sure that the port must be 8080 rather than in [WebDriverManager.java](https://github.com/apache/submarine/blob/master/submarine-test/test-e2e/src/test/java/org/apache/submarine/WebDriverManager.java) and [all test cases](https://github.com/apache/submarine/tree/master/submarine-test/test-e2e/src/test/java/org/apache/submarine/integration).
   *  Step2: Make sure that the `headless` option is not commented in [ChromeWebDriverProvider.java](https://github.com/apache/submarine/blob/master/submarine-test/test-e2e/src/test/java/org/apache/submarine/ChromeWebDriverProvider.java).
-  *  Step3: If you push the commit to Github, the Travis CI will execute automatically and you can check it in `https://travis-ci.org/${your_github_account}/${your_repo_name}`.
+  *  Step3: If you push the commit to Github, the Travis CI will execute automatically and you can check it in `https://travis-ci.com/${your_github_account}/${your_repo_name}`.
 ### Run the existing tests.
 ##### Move to the working directory.
 ```
