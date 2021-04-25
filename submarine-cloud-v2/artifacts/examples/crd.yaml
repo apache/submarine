@@ -57,6 +57,8 @@ spec:
                 replicas:
                   type: integer
                   minimum: 1
+                storageSize:
+                  type: string
                 mysqlRootPasswordSecret:
                   type: string
             tensorboard:
@@ -64,15 +66,15 @@ spec:
               properties:
                 enabled:
                   type: boolean
-                storageSizeGiB:
-                  type: integer
+                storageSize:
+                  type: string
             mlflow:
               type: object
               properties:
                 enabled:
                   type: boolean
-                storageSizeGiB:
-                  type: integer
+                storageSize:
+                  type: string
             storage:
               type: object
               properties:

@@ -40,17 +40,18 @@ type SubmarineServer struct {
 type SubmarineDatabase struct {
 	Image                   string `json:"image"`
 	Replicas                *int32 `json:"replicas"`
+	StorageSize             string `json:"storageSize"`
 	MysqlRootPasswordSecret string `json:"mysqlRootPasswordSecret"`
 }
 
 type SubmarineTensorboard struct {
-	Enabled        *bool  `json:"enabled"`
-	StorageSizeGiB *int32 `json:"storageSizeGiB"`
+	Enabled     *bool  `json:"enabled"`
+	StorageSize string `json:"storageSize"`
 }
 
 type SubmarineMlflow struct {
-	Enabled        *bool  `json:"enabled"`
-	StorageSizeGiB *int32 `json:"storageSizeGiB"`
+	Enabled     *bool  `json:"enabled"`
+	StorageSize string `json:"storageSize"`
 }
 
 type SubmarineStorage struct {

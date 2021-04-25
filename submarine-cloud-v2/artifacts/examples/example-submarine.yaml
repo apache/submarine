@@ -28,14 +28,17 @@ spec:
   database:
     # image: "apache/submarine:database-0.6.0-SNAPSHOT" # overwrite the image when development
     replicas: 1
+    storageSize: "1Gi"
     mysqlRootPasswordSecret: "root-pass-secret"
   tensorboard:
     enabled: true
-    storageSizeGiB: 10
+    storageSize: "10Gi"
   mlflow:
     enabled: true
-    storageSizeGiB: 10
+    storageSize: "10Gi"
   storage:
-    storageType: "nfs"
-    nfsPath: "/"
-    nfsIP: 10.96.0.2
+    # storageType: "nfs"
+    # nfsPath: "/"
+    # nfsIP: "10.96.0.2"
+    storageType: "host"
+    hostPath: "/tmp/submarine/host"

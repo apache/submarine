@@ -26,6 +26,7 @@ import (
 	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
 	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
 	listers "submarine-cloud-v2/pkg/generated/listers/submarine/v1alpha1"
+	v1alpha1 "submarine-cloud-v2/pkg/submarine/v1alpha1"
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -33,6 +34,7 @@ import (
 	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -65,12 +67,14 @@ type Controller struct {
 	submarinesLister listers.SubmarineLister
 	submarinesSynced cache.InformerSynced
 
-	deploymentLister         appslisters.DeploymentLister
-	serviceaccountLister     corelisters.ServiceAccountLister
-	serviceLister            corelisters.ServiceLister
-	ingressLister            extlisters.IngressLister
-	clusterroleLister        rbaclisters.ClusterRoleLister
-	clusterrolebindingLister rbaclisters.ClusterRoleBindingLister
+	deploymentLister            appslisters.DeploymentLister
+	serviceaccountLister        corelisters.ServiceAccountLister
+	serviceLister               corelisters.ServiceLister
+	persistentvolumeLister      corelisters.PersistentVolumeLister
+	persistentvolumeclaimLister corelisters.PersistentVolumeClaimLister
+	ingressLister               extlisters.IngressLister
+	clusterroleLister           rbaclisters.ClusterRoleLister
+	clusterrolebindingLister    rbaclisters.ClusterRoleBindingLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
 	// processed instead of performing it as soon as a change happens. This
 	// means we can ensure we only process a fixed amount of resources at a
@@ -89,6 +93,8 @@ func NewController(
 	deploymentInformer appsinformers.DeploymentInformer,
 	serviceInformer coreinformers.ServiceInformer,
 	serviceaccountInformer coreinformers.ServiceAccountInformer,
+	persistentvolumeInformer coreinformers.PersistentVolumeInformer,
+	persistentvolumeclaimInformer coreinformers.PersistentVolumeClaimInformer,
 	ingressInformer extinformers.IngressInformer,
 	clusterroleInformer rbacinformers.ClusterRoleInformer,
 	clusterrolebindingInformer rbacinformers.ClusterRoleBindingInformer,
@@ -106,18 +112,20 @@ func NewController(
 
 	// Initialize controller
 	controller := &Controller{
-		kubeclientset:            kubeclientset,
-		submarineclientset:       submarineclientset,
-		submarinesLister:         submarineInformer.Lister(),
-		submarinesSynced:         submarineInformer.Informer().HasSynced,
-		deploymentLister:         deploymentInformer.Lister(),
-		serviceLister:            serviceInformer.Lister(),
-		serviceaccountLister:     serviceaccountInformer.Lister(),
-		ingressLister:            ingressInformer.Lister(),
-		clusterroleLister:        clusterroleInformer.Lister(),
-		clusterrolebindingLister: clusterrolebindingInformer.Lister(),
-		workqueue:                workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
-		recorder:                 recorder,
+		kubeclientset:               kubeclientset,
+		submarineclientset:          submarineclientset,
+		submarinesLister:            submarineInformer.Lister(),
+		submarinesSynced:            submarineInformer.Informer().HasSynced,
+		deploymentLister:            deploymentInformer.Lister(),
+		serviceLister:               serviceInformer.Lister(),
+		serviceaccountLister:        serviceaccountInformer.Lister(),
+		persistentvolumeLister:      persistentvolumeInformer.Lister(),
+		persistentvolumeclaimLister: persistentvolumeclaimInformer.Lister(),
+		ingressLister:               ingressInformer.Lister(),
+		clusterroleLister:           clusterroleInformer.Lister(),
+		clusterrolebindingLister:    clusterrolebindingInformer.Lister(),
+		workqueue:                   workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
+		recorder:                    recorder,
 	}
 
 	// Setting up event handler for Submarine
@@ -197,7 +205,7 @@ func (c *Controller) processNextWorkItem() bool {
 
 // newSubmarineServer is a function to create submarine-server.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-server.yaml
-func (c *Controller) newSubmarineServer(serverImage string, serverReplicas int32, namespace string) error {
+func (c *Controller) newSubmarineServer(namespace string, serverImage string, serverReplicas int32) error {
 	klog.Info("[newSubmarineServer]")
 	serverName := "submarine-server"
 
@@ -475,6 +483,78 @@ func (c *Controller) newSubmarineServerRBAC(serviceaccount_namespace string) err
 	return nil
 }
 
+// newSubmarineDatabase is a function to create submarine-database.
+// Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-database.yaml
+func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.SubmarineSpec) error {
+	klog.Info("[newSubmarineDatabase]")
+	databaseName := "submarine-database"
+
+	databaseImage := spec.Database.Image
+	if databaseImage == "" {
+		databaseImage = "apache/submarine:database-" + spec.Version
+	}
+
+	// Step1: Create PersistentVolume
+	// PersistentVolumes are not namespaced resources, so we add the namespace
+	// as a suffix to distinguish them
+	pvName := databaseName + "-pv--" + namespace
+	pv, pv_err := c.persistentvolumeLister.Get(pvName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(pv_err) {
+		var persistentVolumeSource corev1.PersistentVolumeSource
+		switch spec.Storage.StorageType {
+		case "nfs":
+			persistentVolumeSource = corev1.PersistentVolumeSource{
+				NFS: &corev1.NFSVolumeSource{
+					Server: spec.Storage.NfsIP,
+					Path:   spec.Storage.NfsPath,
+				},
+			}
+		case "host":
+			hostPathType := corev1.HostPathDirectoryOrCreate
+			persistentVolumeSource = corev1.PersistentVolumeSource{
+				HostPath: &corev1.HostPathVolumeSource{
+					Path: spec.Storage.HostPath,
+					Type: &hostPathType,
+				},
+			}
+		default:
+			klog.Warningln("	Invalid storageType found in submarine spec, nothing will be created!")
+			return nil
+		}
+		pv, pv_err = c.kubeclientset.CoreV1().PersistentVolumes().Create(context.TODO(),
+			&corev1.PersistentVolume{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: pvName,
+				},
+				Spec: corev1.PersistentVolumeSpec{
+					AccessModes: []corev1.PersistentVolumeAccessMode{
+						corev1.ReadWriteMany,
+					},
+					Capacity: corev1.ResourceList{
+						corev1.ResourceStorage: resource.MustParse(spec.Database.StorageSize),
+					},
+					PersistentVolumeSource: persistentVolumeSource,
+				},
+			},
+			metav1.CreateOptions{})
+		if pv_err != nil {
+			klog.Info(pv_err)
+		}
+		klog.Info("	Create PersistentVolume: ", pv.Name)
+	}
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if pv_err != nil {
+		return pv_err
+	}
+
+	// TODO: (sample-controller) controller.go:287 ~ 293
+
+	return nil
+}
+
 // syncHandler compares the actual state with the desired, and attempts to
 // converge the two. It then updates the Status block of the Foo resource
 // with the current status of the resource.
@@ -511,9 +591,13 @@ func (c *Controller) syncHandler(key string) error {
 	if serverImage == "" {
 		serverImage = "apache/submarine:server-" + submarine.Spec.Version
 	}
+	err = c.newSubmarineServer(namespace, serverImage, serverReplicas)
+	if err != nil {
+		return err
+	}
 
-	// Create Submarine Server
-	err = c.newSubmarineServer(serverImage, serverReplicas, namespace)
+	// Create Submarine Database
+	err = c.newSubmarineDatabase(namespace, &submarine.Spec)
 	if err != nil {
 		return err
 	}
