@@ -21,6 +21,17 @@
 
 set -euo pipefail
 
-/bin/bash -c "sleep 60; ./mc config host add minio http://10.96.0.4:9000 submarine_minio submarine_minio"
+MLFLOW_S3_ENDPOINT_URL="http://10.96.0.4:9000"
+AWS_ACCESS_KEY_ID="submarine_minio"
+AWS_SECRET_ACCESS_KEY="submarine_minio"
+BACKEND_URI="sqlite:///store.db"
+DEFAULT_ARTIFACT_ROOT="s3://mlflow"
+STATIC_PREFIX="/mlflow"
+
+/bin/bash -c "sqlite3 store.db"
+
+/bin/bash -c "sleep 60; ./mc config host add minio ${MLFLOW_S3_ENDPOINT_URL} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}"
 
 /bin/bash -c "./mc mb minio/mlflow"
+
+/bin/bash -c "mlflow server --host 0.0.0.0 --backend-store-uri ${BACKEND_URI} --default-artifact-root ${DEFAULT_ARTIFACT_ROOT} --static-prefix ${STATIC_PREFIX}"
