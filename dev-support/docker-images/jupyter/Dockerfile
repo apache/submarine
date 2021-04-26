@@ -107,11 +107,15 @@ RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipyn
     rm submarine -rf
 
 # Install latest stable qlib
-RUN pip install numpy==1.19.5 pyqlib==0.6.1
+RUN pip install numpy==1.19.5 pyqlib==0.6.1 boto3
 
 # Add qlib example in notebook
 RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME
 
+
+ENV MLFLOW_S3_ENDPOINT_URL http://10.96.0.4:9000
+ENV AWS_ACCESS_KEY_ID submarine_minio
+ENV AWS_SECRET_ACCESS_KEY submarine_minio
 
 EXPOSE $NB_PORT
 ENTRYPOINT ["tini", "-g", "--"]

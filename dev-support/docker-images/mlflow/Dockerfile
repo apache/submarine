@@ -24,9 +24,7 @@ RUN pip install \
     sqlalchemy \
     boto3
 
-RUN sqlite3 store.db
-
-COPY set.sh /usr/local/bin
+COPY start.sh /usr/local/bin
 
 WORKDIR /usr/local/bin
 
@@ -39,8 +37,4 @@ ENV BACKEND_URI sqlite:///store.db
 
 EXPOSE 5000
 
-CMD ./set.sh && mlflow server \
-    --host 0.0.0.0 \
-    --backend-store-uri ${BACKEND_URI} \
-    --default-artifact-root s3:/mlflow \
-    --static-prefix "/mlflow"
+CMD ./start.sh
