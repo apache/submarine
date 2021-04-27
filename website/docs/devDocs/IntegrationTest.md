@@ -57,7 +57,7 @@ Each time a code is submitted, travis is automatically triggered for testing.
 
 ### E2E tests can be executed both locally and in Travis (For workbench developer)
 * Run E2E tests locally:
-  * Step1: Follow [HowToRun.md](https://github.com/apache/submarine/blob/master/docs/workbench/HowToRun.md) to launch the submarine-server and database.
+  * Step1: Follow [HowToRun.md](https://github.com/apache/submarine/blob/master/website/docs/adminDocs/yarn/workbench/HowToRun.md) to launch the submarine-server and database.
   * Step2: Run workbench (Angular version) locally
   ```
   cd submarine/submarine-workbench/workbench-web
@@ -93,7 +93,7 @@ mvn clean install -U
 ```
 > Run a specific testcase
 ```
-mvn -Dtest=${your_test_case_file_name} test //ex: mvn -Dtest=loginIT test 
+mvn -Dtest=${your_test_case_file_name} test //ex: mvn -Dtest=loginIT test
 ```
 
 ##### Result
