@@ -115,11 +115,6 @@ func (in *SubmarineMlflow) DeepCopyInto(out *SubmarineMlflow) {
 		*out = new(bool)
 		**out = **in
 	}
-	if in.StorageSizeGiB != nil {
-		in, out := &in.StorageSizeGiB, &out.StorageSizeGiB
-		*out = new(int32)
-		**out = **in
-	}
 	return
 }
 
@@ -238,11 +233,6 @@ func (in *SubmarineTensorboard) DeepCopyInto(out *SubmarineTensorboard) {
 	if in.Enabled != nil {
 		in, out := &in.Enabled, &out.Enabled
 		*out = new(bool)
-		**out = **in
-	}
-	if in.StorageSizeGiB != nil {
-		in, out := &in.StorageSizeGiB, &out.StorageSizeGiB
-		*out = new(int32)
 		**out = **in
 	}
 	return
