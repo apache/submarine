@@ -38,5 +38,5 @@ public interface WebDriverProvider {
    * @param webDriverPath
    * @return a new web driver
    */
-  public WebDriver createWebDriver(String webDriverPath);
+  public WebDriver createWebDriver(String webDriverPath, String downloadPath);
 }
