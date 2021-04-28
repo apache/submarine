@@ -53,6 +53,7 @@ import (
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
+	"submarine-cloud-v2/pkg/helm"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -707,6 +708,31 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 	return nil
 }
 
+// subcharts: https://github.com/apache/submarine/tree/master/helm-charts/submarine/charts
+
+func (c *Controller) newSubCharts(namespace string) error {
+	// Install traefik
+	// Reference: https://github.com/apache/submarine/tree/master/helm-charts/submarine/charts/traefik
+
+	if !helm.CheckRelease("traefik", namespace) {
+		klog.Info("[Helm] Install Traefik")
+		helm.HelmInstallLocalChart(
+			"traefik",
+			"charts/traefik",
+			"traefik",
+			namespace,
+			map[string]string{},
+		)
+	}
+
+	// TODO: maintain "error"
+	// TODO: (sample-controller) controller.go:287 ~ 293
+	// TODO: port-forward
+	// 		kubectl port-forward --address 0.0.0.0 service/traefik 32080:80
+
+	return nil
+}
+
 // syncHandler compares the actual state with the desired, and attempts to
 // converge the two. It then updates the Status block of the Foo resource
 // with the current status of the resource.
@@ -765,6 +791,9 @@ func (c *Controller) syncHandler(key string) error {
 	if err != nil {
 		return err
 	}
+
+	// Install subcharts
+	c.newSubCharts(namespace)
 
 	return nil
 }
