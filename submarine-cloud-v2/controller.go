@@ -21,7 +21,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
 	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
 	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
@@ -29,12 +28,15 @@ import (
 	v1alpha1 "submarine-cloud-v2/pkg/submarine/v1alpha1"
 	"time"
 
+	"submarine-cloud-v2/pkg/helm"
+
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -53,7 +55,11 @@ import (
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
-	"submarine-cloud-v2/pkg/helm"
+
+	traefik "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
+	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions/traefik/v1alpha1"
+	traefiklisters "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/listers/traefik/v1alpha1"
+	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -64,6 +70,7 @@ type Controller struct {
 	kubeclientset kubernetes.Interface
 	// sampleclientset is a clientset for our own API group
 	submarineclientset clientset.Interface
+	traefikclientset   traefik.Interface
 
 	submarinesLister listers.SubmarineLister
 	submarinesSynced cache.InformerSynced
@@ -74,6 +81,7 @@ type Controller struct {
 	persistentvolumeLister      corelisters.PersistentVolumeLister
 	persistentvolumeclaimLister corelisters.PersistentVolumeClaimLister
 	ingressLister               extlisters.IngressLister
+	ingressrouteLister          traefiklisters.IngressRouteLister
 	clusterroleLister           rbaclisters.ClusterRoleLister
 	clusterrolebindingLister    rbaclisters.ClusterRoleBindingLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
@@ -91,12 +99,14 @@ type Controller struct {
 func NewController(
 	kubeclientset kubernetes.Interface,
 	submarineclientset clientset.Interface,
+	traefikclientset traefik.Interface,
 	deploymentInformer appsinformers.DeploymentInformer,
 	serviceInformer coreinformers.ServiceInformer,
 	serviceaccountInformer coreinformers.ServiceAccountInformer,
 	persistentvolumeInformer coreinformers.PersistentVolumeInformer,
 	persistentvolumeclaimInformer coreinformers.PersistentVolumeClaimInformer,
 	ingressInformer extinformers.IngressInformer,
+	ingressrouteInformer traefikinformers.IngressRouteInformer,
 	clusterroleInformer rbacinformers.ClusterRoleInformer,
 	clusterrolebindingInformer rbacinformers.ClusterRoleBindingInformer,
 	submarineInformer informers.SubmarineInformer) *Controller {
@@ -115,6 +125,7 @@ func NewController(
 	controller := &Controller{
 		kubeclientset:               kubeclientset,
 		submarineclientset:          submarineclientset,
+		traefikclientset:            traefikclientset,
 		submarinesLister:            submarineInformer.Lister(),
 		submarinesSynced:            submarineInformer.Informer().HasSynced,
 		deploymentLister:            deploymentInformer.Lister(),
@@ -123,6 +134,7 @@ func NewController(
 		persistentvolumeLister:      persistentvolumeInformer.Lister(),
 		persistentvolumeclaimLister: persistentvolumeclaimInformer.Lister(),
 		ingressLister:               ingressInformer.Lister(),
+		ingressrouteLister:          ingressrouteInformer.Lister(),
 		clusterroleLister:           clusterroleInformer.Lister(),
 		clusterrolebindingLister:    clusterrolebindingInformer.Lister(),
 		workqueue:                   workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
@@ -692,7 +704,7 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 				},
 			},
 			metav1.CreateOptions{})
-		if deployment_err != nil {
+		if service_err != nil {
 			klog.Info(service_err)
 		}
 		klog.Info("	Create Service: ", service.Name)
@@ -744,6 +756,261 @@ func (c *Controller) newSubCharts(namespace string) error {
 	return nil
 }
 
+// newSubmarineTensorboard is a function to create submarine-tensorboard.
+// Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-tensorboard.yaml
+func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.SubmarineSpec) error {
+	klog.Info("[newSubmarineTensorboard]")
+	tensorboardName := "submarine-tensorboard"
+
+	// Step 1: Create PersistentVolume
+	// PersistentVolumes are not namespaced resources, so we add the namespace
+	// as a suffix to distinguish them
+	pvName := tensorboardName + "-pv--" + namespace
+	pv, pv_err := c.persistentvolumeLister.Get(pvName)
+
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(pv_err) {
+		var persistentVolumeSource corev1.PersistentVolumeSource
+		switch spec.Storage.StorageType {
+		case "nfs":
+			persistentVolumeSource = corev1.PersistentVolumeSource{
+				NFS: &corev1.NFSVolumeSource{
+					Server: spec.Storage.NfsIP,
+					Path:   spec.Storage.NfsPath,
+				},
+			}
+		case "host":
+			hostPathType := corev1.HostPathDirectoryOrCreate
+			persistentVolumeSource = corev1.PersistentVolumeSource{
+				HostPath: &corev1.HostPathVolumeSource{
+					Path: spec.Storage.HostPath,
+					Type: &hostPathType,
+				},
+			}
+		default:
+			klog.Warningln("	Invalid storageType found in submarine spec, nothing will be created!")
+			return nil
+		}
+		pv, pv_err = c.kubeclientset.CoreV1().PersistentVolumes().Create(context.TODO(),
+			&corev1.PersistentVolume{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: pvName,
+				},
+				Spec: corev1.PersistentVolumeSpec{
+					AccessModes: []corev1.PersistentVolumeAccessMode{
+						corev1.ReadWriteMany,
+					},
+					Capacity: corev1.ResourceList{
+						corev1.ResourceStorage: resource.MustParse(spec.Tensorboard.StorageSize),
+					},
+					PersistentVolumeSource: persistentVolumeSource,
+				},
+			},
+			metav1.CreateOptions{})
+		if pv_err != nil {
+			klog.Info(pv_err)
+		}
+		klog.Info("	Create PersistentVolume: ", pv.Name)
+	}
+
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if pv_err != nil {
+		return pv_err
+	}
+
+	// Step 2: Create PersistentVolumeClaim
+	pvcName := tensorboardName + "-pvc"
+	pvc, pvc_err := c.persistentvolumeclaimLister.PersistentVolumeClaims(namespace).Get(pvcName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(pvc_err) {
+		storageClassName := ""
+		pvc, pvc_err = c.kubeclientset.CoreV1().PersistentVolumeClaims(namespace).Create(context.TODO(),
+			&corev1.PersistentVolumeClaim{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: pvcName,
+				},
+				Spec: corev1.PersistentVolumeClaimSpec{
+					AccessModes: []corev1.PersistentVolumeAccessMode{
+						corev1.ReadWriteMany,
+					},
+					Resources: corev1.ResourceRequirements{
+						Requests: corev1.ResourceList{
+							corev1.ResourceStorage: resource.MustParse(spec.Tensorboard.StorageSize),
+						},
+					},
+					VolumeName:       pvName,
+					StorageClassName: &storageClassName,
+				},
+			},
+			metav1.CreateOptions{})
+		if pvc_err != nil {
+			klog.Info(pvc_err)
+		}
+		klog.Info("	Create PersistentVolumeClaim: ", pvc.Name)
+	}
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if pvc_err != nil {
+		return pvc_err
+	}
+
+	// Step 3: Create Deployment
+	deployment, deployment_err := c.deploymentLister.Deployments(namespace).Get(tensorboardName)
+	if errors.IsNotFound(deployment_err) {
+		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(namespace).Create(context.TODO(),
+			&appsv1.Deployment{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: tensorboardName,
+				},
+				Spec: appsv1.DeploymentSpec{
+					Selector: &metav1.LabelSelector{
+						MatchLabels: map[string]string{
+							"app": tensorboardName + "-pod",
+						},
+					},
+					Template: corev1.PodTemplateSpec{
+						ObjectMeta: metav1.ObjectMeta{
+							Labels: map[string]string{
+								"app": tensorboardName + "-pod",
+							},
+						},
+						Spec: corev1.PodSpec{
+							Containers: []corev1.Container{
+								{
+									Name:  tensorboardName + "-container",
+									Image: "tensorflow/tensorflow:1.11.0",
+									Command: []string{
+										"tensorboard",
+										"--logdir=/logs",
+										"--path_prefix=/tensorboard",
+									},
+									ImagePullPolicy: "IfNotPresent",
+									Ports: []corev1.ContainerPort{
+										{
+											ContainerPort: 6006,
+										},
+									},
+									VolumeMounts: []corev1.VolumeMount{
+										{
+											MountPath: "/logs",
+											Name:      "volume",
+											SubPath:   tensorboardName,
+										},
+									},
+								},
+							},
+							Volumes: []corev1.Volume{
+								{
+									Name: "volume",
+									VolumeSource: corev1.VolumeSource{
+										PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
+											ClaimName: pvcName,
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			metav1.CreateOptions{})
+		if deployment_err != nil {
+			klog.Info(deployment_err)
+		}
+		klog.Info("	Create Deployment: ", deployment.Name)
+	}
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if deployment_err != nil {
+		return deployment_err
+	}
+
+	// Step 4: Create Service
+	serviceName := tensorboardName + "-service"
+	service, service_err := c.serviceLister.Services(namespace).Get(serviceName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(service_err) {
+		service, service_err = c.kubeclientset.CoreV1().Services(namespace).Create(context.TODO(),
+			&corev1.Service{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: serviceName,
+				},
+				Spec: corev1.ServiceSpec{
+					Selector: map[string]string{
+						"app": tensorboardName + "-pod",
+					},
+					Ports: []corev1.ServicePort{
+						{
+							Protocol:   "TCP",
+							Port:       8080,
+							TargetPort: intstr.FromInt(6006),
+						},
+					},
+				},
+			},
+			metav1.CreateOptions{})
+		if service_err != nil {
+			klog.Info(service_err)
+		}
+		klog.Info(" Create Service: ", service.Name)
+	}
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if service_err != nil {
+		return service_err
+	}
+
+	// Step 5: Create IngressRoute
+	ingressroute, ingressroute_err := c.ingressrouteLister.IngressRoutes(namespace).Get(tensorboardName + "-ingressroute")
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(ingressroute_err) {
+		ingressroute, ingressroute_err = c.traefikclientset.TraefikV1alpha1().IngressRoutes(namespace).Create(context.TODO(),
+			&traefikv1alpha1.IngressRoute{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: tensorboardName + "-ingressroute",
+				},
+				Spec: traefikv1alpha1.IngressRouteSpec{
+					EntryPoints: []string{
+						"web",
+					},
+					Routes: []traefikv1alpha1.Route{
+						{
+							Kind:  "Rule",
+							Match: "PathPrefix(`/tensorboard`)",
+							Services: []traefikv1alpha1.Service{
+								{
+									LoadBalancerSpec: traefikv1alpha1.LoadBalancerSpec{
+										Kind: "Service",
+										Name: serviceName,
+										Port: 8080,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			metav1.CreateOptions{})
+		if ingressroute_err != nil {
+			klog.Info(ingressroute_err)
+		}
+		klog.Info(" Create IngressRoute: ", ingressroute.Name)
+	}
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if ingressroute_err != nil {
+		return ingressroute_err
+	}
+
+	return nil
+}
+
 // syncHandler compares the actual state with the desired, and attempts to
 // converge the two. It then updates the Status block of the Foo resource
 // with the current status of the resource.
@@ -774,6 +1041,9 @@ func (c *Controller) syncHandler(key string) error {
 	b, err := json.MarshalIndent(submarine.Spec, "", "  ")
 	fmt.Println(string(b))
 
+	// Install subcharts
+	c.newSubCharts(namespace)
+
 	// Create submarine-server
 	serverImage := submarine.Spec.Server.Image
 	serverReplicas := *submarine.Spec.Server.Replicas
@@ -803,8 +1073,11 @@ func (c *Controller) syncHandler(key string) error {
 		return err
 	}
 
-	// Install subcharts
-	c.newSubCharts(namespace)
+	// Create Submarine Tensorboard
+	err = c.newSubmarineTensorboard(namespace, &submarine.Spec)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
