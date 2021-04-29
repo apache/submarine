@@ -908,13 +908,14 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 	}
 
 	// Step 4: Create Service
-	service, service_err := c.serviceLister.Services(namespace).Get(tensorboardName)
+	serviceName := tensorboardName + "-service"
+	service, service_err := c.serviceLister.Services(namespace).Get(serviceName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(service_err) {
 		service, service_err = c.kubeclientset.CoreV1().Services(namespace).Create(context.TODO(),
 			&corev1.Service{
 				ObjectMeta: metav1.ObjectMeta {
-					Name: tensorboardName + "-service",
+					Name: serviceName,
 				},
 				Spec: corev1.ServiceSpec{
 					Selector: map[string]string {
@@ -942,8 +943,7 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 		return service_err
 	}
 
-	// Step 5: Create traefik
-	// TODO
+	// Step 5: Create IngressRoute
 	return nil
 }
 
