@@ -21,7 +21,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
 	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
 	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
@@ -29,12 +28,15 @@ import (
 	v1alpha1 "submarine-cloud-v2/pkg/submarine/v1alpha1"
 	"time"
 
+	"submarine-cloud-v2/pkg/helm"
+
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -53,7 +55,6 @@ import (
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
-	"submarine-cloud-v2/pkg/helm"
 
 	traefik "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
 	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions/traefik/v1alpha1"
@@ -69,7 +70,7 @@ type Controller struct {
 	kubeclientset kubernetes.Interface
 	// sampleclientset is a clientset for our own API group
 	submarineclientset clientset.Interface
-	traefikclientset traefik.Interface
+	traefikclientset   traefik.Interface
 
 	submarinesLister listers.SubmarineLister
 	submarinesSynced cache.InformerSynced
@@ -80,7 +81,7 @@ type Controller struct {
 	persistentvolumeLister      corelisters.PersistentVolumeLister
 	persistentvolumeclaimLister corelisters.PersistentVolumeClaimLister
 	ingressLister               extlisters.IngressLister
-	ingressrouteLister  		traefiklisters.IngressRouteLister
+	ingressrouteLister          traefiklisters.IngressRouteLister
 	clusterroleLister           rbaclisters.ClusterRoleLister
 	clusterrolebindingLister    rbaclisters.ClusterRoleBindingLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
@@ -124,7 +125,7 @@ func NewController(
 	controller := &Controller{
 		kubeclientset:               kubeclientset,
 		submarineclientset:          submarineclientset,
-		traefikclientset:			 traefikclientset,
+		traefikclientset:            traefikclientset,
 		submarinesLister:            submarineInformer.Lister(),
 		submarinesSynced:            submarineInformer.Informer().HasSynced,
 		deploymentLister:            deploymentInformer.Lister(),
@@ -133,7 +134,7 @@ func NewController(
 		persistentvolumeLister:      persistentvolumeInformer.Lister(),
 		persistentvolumeclaimLister: persistentvolumeclaimInformer.Lister(),
 		ingressLister:               ingressInformer.Lister(),
-		ingressrouteLister:			 ingressrouteInformer.Lister(),
+		ingressrouteLister:          ingressrouteInformer.Lister(),
 		clusterroleLister:           clusterroleInformer.Lister(),
 		clusterrolebindingLister:    clusterrolebindingInformer.Lister(),
 		workqueue:                   workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
@@ -744,7 +745,6 @@ func (c *Controller) newSubCharts(namespace string) error {
 	return nil
 }
 
-
 // newSubmarineTensorboard is a function to create submarine-tensorboard.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-tensorboard.yaml
 func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.SubmarineSpec) error {
@@ -869,9 +869,9 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 						Spec: corev1.PodSpec{
 							Containers: []corev1.Container{
 								{
-									Name:            tensorboardName + "-container",
-									Image:           "tensorflow/tensorflow:1.11.0",
-									Command: []string {
+									Name:  tensorboardName + "-container",
+									Image: "tensorflow/tensorflow:1.11.0",
+									Command: []string{
 										"tensorboard",
 										"--logdir=/logs",
 										"--path_prefix=/tensorboard",
@@ -925,17 +925,17 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 	if errors.IsNotFound(service_err) {
 		service, service_err = c.kubeclientset.CoreV1().Services(namespace).Create(context.TODO(),
 			&corev1.Service{
-				ObjectMeta: metav1.ObjectMeta {
+				ObjectMeta: metav1.ObjectMeta{
 					Name: serviceName,
 				},
 				Spec: corev1.ServiceSpec{
-					Selector: map[string]string {
+					Selector: map[string]string{
 						"app": tensorboardName + "-pod",
 					},
 					Ports: []corev1.ServicePort{
 						{
-							Protocol: "TCP",
-							Port: 8080,
+							Protocol:   "TCP",
+							Port:       8080,
 							TargetPort: intstr.FromInt(6006),
 						},
 					},
@@ -959,21 +959,21 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(ingressroute_err) {
 		ingressroute, ingressroute_err = c.traefikclientset.TraefikV1alpha1().IngressRoutes(namespace).Create(context.TODO(),
-			&traefikv1alpha1.IngressRoute {
-				ObjectMeta: metav1.ObjectMeta {
+			&traefikv1alpha1.IngressRoute{
+				ObjectMeta: metav1.ObjectMeta{
 					Name: tensorboardName + "-ingressroute",
 				},
-				Spec: traefikv1alpha1.IngressRouteSpec {
-					EntryPoints: []string {
+				Spec: traefikv1alpha1.IngressRouteSpec{
+					EntryPoints: []string{
 						"web",
 					},
-					Routes: []traefikv1alpha1.Route {
+					Routes: []traefikv1alpha1.Route{
 						{
-							Kind: "Rule",
-							Match: "PathPrefix(/tensorboard)",
-							Services: []traefikv1alpha1.Service {
+							Kind:  "Rule",
+							Match: "PathPrefix(`/tensorboard`)",
+							Services: []traefikv1alpha1.Service{
 								{
-									LoadBalancerSpec: traefikv1alpha1.LoadBalancerSpec {
+									LoadBalancerSpec: traefikv1alpha1.LoadBalancerSpec{
 										Kind: "Service",
 										Name: serviceName,
 										Port: 8080,
@@ -999,7 +999,6 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 
 	return nil
 }
-
 
 // syncHandler compares the actual state with the desired, and attempts to
 // converge the two. It then updates the Status block of the Foo resource
@@ -1031,6 +1030,9 @@ func (c *Controller) syncHandler(key string) error {
 	b, err := json.MarshalIndent(submarine.Spec, "", "  ")
 	fmt.Println(string(b))
 
+	// Install subcharts
+	c.newSubCharts(namespace)
+
 	// Create submarine-server
 	serverImage := submarine.Spec.Server.Image
 	serverReplicas := *submarine.Spec.Server.Replicas
@@ -1048,12 +1050,6 @@ func (c *Controller) syncHandler(key string) error {
 		return err
 	}
 
-	// Create Submarine Tensorboard
-	err = c.newSubmarineTensorboard(namespace, &submarine.Spec)
-	if err != nil {
-		return err
-	}
-
 	// Create ingress
 	err = c.newIngress(namespace)
 	if err != nil {
@@ -1066,8 +1062,11 @@ func (c *Controller) syncHandler(key string) error {
 		return err
 	}
 
-	// Install subcharts
-	c.newSubCharts(namespace)
+	// Create Submarine Tensorboard
+	err = c.newSubmarineTensorboard(namespace, &submarine.Spec)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
