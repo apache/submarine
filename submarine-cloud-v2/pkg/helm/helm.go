@@ -41,10 +41,11 @@ import (
 	"helm.sh/helm/v3/pkg/downloader"
 	"helm.sh/helm/v3/pkg/getter"
 	"helm.sh/helm/v3/pkg/repo"
+	"helm.sh/helm/v3/pkg/storage/driver"
 	"helm.sh/helm/v3/pkg/strvals"
 )
 
-func HelmInstall(url string, repoName string, chartName string, releaseName string, namespace string, args map[string]string) (*action.Configuration){
+func HelmInstall(url string, repoName string, chartName string, releaseName string, namespace string, args map[string]string) *action.Configuration {
 	var settings *cli.EnvSettings
 	os.Setenv("HELM_NAMESPACE", namespace)
 	settings = cli.New()
@@ -54,6 +55,15 @@ func HelmInstall(url string, repoName string, chartName string, releaseName stri
 	RepoUpdate(settings)
 	// Install charts
 	cfg := InstallChart(releaseName, repoName, chartName, args, settings)
+	return cfg
+}
+
+func HelmInstallLocalChart(chartName string, chartPath string, releaseName string, namespace string, args map[string]string) *action.Configuration {
+	var settings *cli.EnvSettings
+	os.Setenv("HELM_NAMESPACE", namespace)
+	settings = cli.New()
+	// Install charts
+	cfg := InstallLocalChart(releaseName, chartName, chartPath, args, settings)
 	return cfg
 }
 
@@ -158,19 +168,20 @@ func RepoUpdate(settings *cli.EnvSettings) {
 }
 
 // InstallChart
-func InstallChart(name, repo, chart string, args map[string]string, settings *cli.EnvSettings) (*action.Configuration) {
+func InstallChart(releaseName string, repo string, chart string, args map[string]string, settings *cli.EnvSettings) *action.Configuration {
 	actionConfig := new(action.Configuration)
 	debug("KUBECONFIG: %s", settings.KubeConfig)
 	if err := actionConfig.Init(settings.RESTClientGetter(), settings.Namespace(), os.Getenv("HELM_DRIVER"), debug); err != nil {
 		log.Fatal(err)
 	}
+
 	client := action.NewInstall(actionConfig)
 
 	if client.Version == "" && client.Devel {
 		client.Version = ">0.0.0-0"
 	}
-	//name, chart, err := client.NameAndChart(args)
-	client.ReleaseName = name
+
+	client.ReleaseName = releaseName
 	cp, err := client.ChartPathOptions.LocateChart(fmt.Sprintf("%s/%s", repo, chart), settings)
 	if err != nil {
 		log.Fatal(err)
@@ -232,6 +243,100 @@ func InstallChart(name, repo, chart string, args map[string]string, settings *cl
 	}
 	fmt.Println(release.Manifest)
 	return actionConfig
+}
+
+// InstallChart
+func InstallLocalChart(releaseName string, chart string, chartPath string, args map[string]string, settings *cli.EnvSettings) *action.Configuration {
+	actionConfig := new(action.Configuration)
+	if err := actionConfig.Init(settings.RESTClientGetter(), settings.Namespace(), os.Getenv("HELM_DRIVER"), debug); err != nil {
+		log.Fatal(err)
+	}
+
+	client := action.NewInstall(actionConfig)
+
+	if client.Version == "" && client.Devel {
+		client.Version = ">0.0.0-0"
+	}
+
+	client.ReleaseName = releaseName
+
+	debug("CHART PATH: %s\n", chartPath)
+
+	p := getter.All(settings)
+	valueOpts := &values.Options{}
+	vals, err := valueOpts.MergeValues(p)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Add args
+	if err := strvals.ParseInto(args["set"], vals); err != nil {
+		log.Fatal(errors.Wrap(err, "failed parsing --set data"))
+	}
+
+	// Check chart dependencies to make sure all are present in /charts
+	chartRequested, err := loader.Load(chartPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	validInstallableChart, err := isChartInstallable(chartRequested)
+	if !validInstallableChart {
+		log.Fatal(err)
+	}
+
+	if req := chartRequested.Metadata.Dependencies; req != nil {
+		// If CheckDependencies returns an error, we have unfulfilled dependencies.
+		// As of Helm 2.4.0, this is treated as a stopping condition:
+		// https://github.com/helm/helm/issues/2209
+		if err := action.CheckDependencies(chartRequested, req); err != nil {
+			if client.DependencyUpdate {
+				man := &downloader.Manager{
+					Out:              os.Stdout,
+					ChartPath:        chartPath,
+					Keyring:          client.ChartPathOptions.Keyring,
+					SkipUpdate:       false,
+					Getters:          p,
+					RepositoryConfig: settings.RepositoryConfig,
+					RepositoryCache:  settings.RepositoryCache,
+				}
+				if err := man.Update(); err != nil {
+					log.Fatal(err)
+				}
+			} else {
+				log.Fatal(err)
+			}
+		}
+	}
+
+	client.Namespace = settings.Namespace()
+	release, err := client.Run(chartRequested, vals)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(release.Manifest)
+	return actionConfig
+}
+
+func CheckRelease(releaseName string, namespace string) bool {
+	debug("[CheckRelease] %s %s\n", releaseName, namespace)
+	var settings *cli.EnvSettings
+	os.Setenv("HELM_NAMESPACE", namespace)
+	settings = cli.New()
+
+	actionConfig := new(action.Configuration)
+	if err := actionConfig.Init(settings.RESTClientGetter(), settings.Namespace(), os.Getenv("HELM_DRIVER"), debug); err != nil {
+		log.Fatal(err)
+	}
+
+	histClient := action.NewHistory(actionConfig)
+	if _, err := histClient.Run(releaseName); err == driver.ErrReleaseNotFound {
+		debug("		The release %s does not exist.\n", releaseName)
+		return false
+	}
+
+	debug("		The release %s exists.\n", releaseName)
+	return true
 }
 
 func isChartInstallable(ch *chart.Chart) (bool, error) {
