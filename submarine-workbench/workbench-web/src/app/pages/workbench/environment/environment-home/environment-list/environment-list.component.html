@@ -22,9 +22,7 @@
     <tr>
       <th>Environment Name</th>
       <th>Docker image</th>
-      <th>Kernel name</th>
-      <th>Kernel channel</th>
-      <th>Kernel dependencies</th>
+      <th>Preview</th>
       <th>Action</th>
     </tr>
   </thead>
@@ -32,18 +30,30 @@
     <tr *ngFor="let data of basicTable.data; let i = index">
       <td>{{ data.environmentSpec.name }}</td>
       <td>{{ data.environmentSpec.dockerImage }}</td>
-      <td>{{ data.environmentSpec.kernelSpec.name }}</td>
       <td>
-        <dl *ngFor="let channel of data.environmentSpec.kernelSpec.channels">
-          <dt>{{ channel }}</dt>
-        </dl>
+        <a
+          id="anchor-preview{{ i }}"
+          class="anchor-preview"
+          nz-popover
+          nzPopoverTrigger="click"
+          nzPopoverTitle="Preview environment Spec"
+          nzPopoverPlacement="left"
+          nzType="dashed"
+          [nzPopoverContent]="contentTemplate"
+        >
+          <i nz-icon id="icon-preview{{ i }}" class="icon-preview" nzType="eye" nzTheme="fill"></i>
+        </a>
+        <ng-template #contentTemplate id="test">
+          <div style="white-space: pre-wrap">
+            {{ data.environmentSpec | json }}
+          </div>
+        </ng-template>
       </td>
       <td>
-        <dl *ngFor="let dependency of data.environmentSpec.kernelSpec.dependencies">
-          <dt>{{ dependency }}</dt>
-        </dl>
-      </td>
-      <td>
+        <a id="btn-downloadEnvironmentSpec{{ i }}" (click)="onDownloadEnvironmentSpec(data.environmentSpec)">
+          Download
+        </a>
+        <nz-divider nzType="vertical"></nz-divider>
         <a
           id="btn-deleteEnvironment{{ i }}"
           nz-popconfirm

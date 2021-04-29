@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.HashMap;
 
 public class ChromeWebDriverProvider implements WebDriverProvider {
 
@@ -93,9 +94,13 @@ public class ChromeWebDriverProvider implements WebDriverProvider {
   }
 
   @Override
-  public WebDriver createWebDriver(String webDriverPath) {
+  public WebDriver createWebDriver(String webDriverPath, String downloadPath) {
     System.setProperty("webdriver.chrome.driver", webDriverPath);
+    HashMap<String, Object> chromePrefs = new HashMap<String, Object>();
+    chromePrefs.put("download.default_directory", downloadPath);
     ChromeOptions chromeOptions = new ChromeOptions();
+    chromeOptions.setExperimentalOption("prefs", chromePrefs);
+    LOG.info("Set default download directory: " + downloadPath);
     chromeOptions.addArguments("--headless");
     return new ChromeDriver(chromeOptions);
   }

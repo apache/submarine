@@ -17,15 +17,24 @@
 
 package org.apache.submarine.integration;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import org.testng.Assert;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 
 public class environmentIT extends AbstractSubmarineIT {
@@ -39,7 +48,9 @@ public class environmentIT extends AbstractSubmarineIT {
   }
 
   @AfterClass
-  public static void tearDown(){
+  public static void tearDown() throws IOException {
+    File dir = new File(WebDriverManager.getDownloadPath());
+    FileUtils.cleanDirectory(dir);
     driver.quit();
   }
 
@@ -68,6 +79,12 @@ public class environmentIT extends AbstractSubmarineIT {
     Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-submit']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//button[@id='btn-submit']"), MAX_BROWSER_TIMEOUT_SEC).click();
     Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-newEnvironment']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+
+    // Test download environment spec
+    pollingWait(By.xpath("//a[@id='btn-downloadEnvironmentSpec0']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    File fileToCheck = Paths.get(WebDriverManager.getDownloadPath()).resolve("environmentSpec.json").toFile();
+    Wait wait = new FluentWait(driver).withTimeout(MAX_BROWSER_TIMEOUT_SEC, SECONDS);
+    wait.until(WebDriver -> fileToCheck.exists());
     LOG.info("Test done.");
   }
 }

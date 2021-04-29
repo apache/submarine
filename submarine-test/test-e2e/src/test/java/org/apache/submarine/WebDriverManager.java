@@ -19,6 +19,7 @@ package org.apache.submarine;
 
 import static org.junit.Assert.fail;
 
+import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
@@ -34,7 +35,7 @@ public class WebDriverManager {
 
   public final static Logger LOG = LoggerFactory.getLogger(WebDriverManager.class);
 
-  private static String downLoadsDir = "";
+  private static String downloadPath = Paths.get(System.getProperty("user.dir"), "src", "test", "resources", "downloads").toString();
 
   private static boolean webDriverIsDownloaded = false;
 
@@ -102,6 +103,10 @@ public class WebDriverManager {
     return driver;
   }
 
+  public static String getDownloadPath() {
+      return downloadPath;
+  }
+
   private static WebDriver generateWebDriver(WebDriverProvider provide) {
     if (!webDriverIsDownloaded) {
       String webDriverVersion = provide.getWebDriverVersion();
@@ -110,7 +115,7 @@ public class WebDriverManager {
         webDriverIsDownloaded = true;
       }
     }
-    WebDriver driver = provide.createWebDriver(webDriverPath);
+    WebDriver driver = provide.createWebDriver(webDriverPath, downloadPath);
     return driver;
   }
 }

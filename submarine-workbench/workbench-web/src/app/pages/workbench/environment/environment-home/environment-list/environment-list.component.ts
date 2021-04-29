@@ -36,4 +36,12 @@ export class EnvironmentListComponent implements OnInit {
   onDeleteEnvironment(name: string) {
     this.deleteEnvironment.emit(name);
   }
+
+  onDownloadEnvironmentSpec = (data) => {
+    var spec = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data, null, '\t'));
+    var downloader = document.createElement('a');
+    downloader.setAttribute('href', spec);
+    downloader.setAttribute('download', 'environmentSpec.json');
+    downloader.click();
+  };
 }
