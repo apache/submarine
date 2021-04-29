@@ -54,6 +54,11 @@ import (
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
 	"submarine-cloud-v2/pkg/helm"
+
+	traefik "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
+	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions/traefik/v1alpha1"
+	traefiklisters "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/listers/traefik/v1alpha1"
+	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -64,6 +69,7 @@ type Controller struct {
 	kubeclientset kubernetes.Interface
 	// sampleclientset is a clientset for our own API group
 	submarineclientset clientset.Interface
+	traefikclientset traefik.Interface
 
 	submarinesLister listers.SubmarineLister
 	submarinesSynced cache.InformerSynced
@@ -74,6 +80,7 @@ type Controller struct {
 	persistentvolumeLister      corelisters.PersistentVolumeLister
 	persistentvolumeclaimLister corelisters.PersistentVolumeClaimLister
 	ingressLister               extlisters.IngressLister
+	ingressrouteLister  		traefiklisters.IngressRouteLister
 	clusterroleLister           rbaclisters.ClusterRoleLister
 	clusterrolebindingLister    rbaclisters.ClusterRoleBindingLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
@@ -91,12 +98,14 @@ type Controller struct {
 func NewController(
 	kubeclientset kubernetes.Interface,
 	submarineclientset clientset.Interface,
+	traefikclientset traefik.Interface,
 	deploymentInformer appsinformers.DeploymentInformer,
 	serviceInformer coreinformers.ServiceInformer,
 	serviceaccountInformer coreinformers.ServiceAccountInformer,
 	persistentvolumeInformer coreinformers.PersistentVolumeInformer,
 	persistentvolumeclaimInformer coreinformers.PersistentVolumeClaimInformer,
 	ingressInformer extinformers.IngressInformer,
+	ingressrouteInformer traefikinformers.IngressRouteInformer,
 	clusterroleInformer rbacinformers.ClusterRoleInformer,
 	clusterrolebindingInformer rbacinformers.ClusterRoleBindingInformer,
 	submarineInformer informers.SubmarineInformer) *Controller {
@@ -115,6 +124,7 @@ func NewController(
 	controller := &Controller{
 		kubeclientset:               kubeclientset,
 		submarineclientset:          submarineclientset,
+		traefikclientset:			 traefikclientset,
 		submarinesLister:            submarineInformer.Lister(),
 		submarinesSynced:            submarineInformer.Informer().HasSynced,
 		deploymentLister:            deploymentInformer.Lister(),
@@ -123,6 +133,7 @@ func NewController(
 		persistentvolumeLister:      persistentvolumeInformer.Lister(),
 		persistentvolumeclaimLister: persistentvolumeclaimInformer.Lister(),
 		ingressLister:               ingressInformer.Lister(),
+		ingressrouteLister:			 ingressrouteInformer.Lister(),
 		clusterroleLister:           clusterroleInformer.Lister(),
 		clusterrolebindingLister:    clusterrolebindingInformer.Lister(),
 		workqueue:                   workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
@@ -944,6 +955,48 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 	}
 
 	// Step 5: Create IngressRoute
+	ingressroute, ingressroute_err := c.ingressrouteLister.IngressRoutes(namespace).Get(tensorboardName + "-ingressroute")
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(ingressroute_err) {
+		ingressroute, ingressroute_err = c.traefikclientset.TraefikV1alpha1().IngressRoutes(namespace).Create(context.TODO(),
+			&traefikv1alpha1.IngressRoute {
+				ObjectMeta: metav1.ObjectMeta {
+					Name: tensorboardName + "-ingressroute",
+				},
+				Spec: traefikv1alpha1.IngressRouteSpec {
+					EntryPoints: []string {
+						"web",
+					},
+					Routes: []traefikv1alpha1.Route {
+						{
+							Kind: "Rule",
+							Match: "PathPrefix(/tensorboard)",
+							Services: []traefikv1alpha1.Service {
+								{
+									LoadBalancerSpec: traefikv1alpha1.LoadBalancerSpec {
+										Kind: "Service",
+										Name: serviceName,
+										Port: 8080,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+			metav1.CreateOptions{})
+		if ingressroute_err != nil {
+			klog.Info(ingressroute_err)
+		}
+		klog.Info(" Create IngressRoute: ", ingressroute.Name)
+	}
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if ingressroute_err != nil {
+		return ingressroute_err
+	}
+
 	return nil
 }
 
