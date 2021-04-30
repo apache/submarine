@@ -102,10 +102,10 @@ to generate latest version of SDK.
 
 ### Model Management Model Development
 
-For local development, we can access cluster's service easily thanks to [telepresence](https://www.telepresence.io/)
+For local development, we can access cluster's service easily thanks to [telepresence](https://www.telepresence.io/).
 To elaborate, we can develop the sdk in local but can reach out to mlflow server by proxy.
 
-1. Install telepresence follow [the instruction](https://www.telepresence.io/reference/install)
+1. Install telepresence follow [the instruction](https://www.telepresence.io/reference/install).
 2. Start proxy pod
 
 ```
