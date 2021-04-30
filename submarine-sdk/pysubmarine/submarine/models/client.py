@@ -19,6 +19,7 @@
 import mlflow
 import os
 from .constant import MLFLOW_S3_ENDPOINT_URL, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, MLFLOW_TRACKING_URI
+from mlflow.tracking import MlflowClient
 
 
 class ModelsClient():
@@ -29,16 +30,29 @@ class ModelsClient():
         os.environ["MLFLOW_S3_ENDPOINT_URL"] = MLFLOW_S3_ENDPOINT_URL
         os.environ["AWS_ACCESS_KEY_ID"] = AWS_ACCESS_KEY_ID
         os.environ["AWS_SECRET_ACCESS_KEY"] = AWS_SECRET_ACCESS_KEY
-        mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
+        os.environ["MLFLOW_TRACKING_URI"] = MLFLOW_TRACKING_URI
+        self._client = MlflowClient()
 
-    def log_model(self, name, checkpoint, input, output):
-        pass
+    def log_model(self, name, checkpoint):
+        mlflow.pytorch.log_model(
+            registered_model_name=name,
+            pytorch_model=checkpoint,
+            artifact_path="pytorch-model"
+        )
 
     def load_model(self, name, version):
-        pass
+        model = mlflow.pyfunc.load_model(
+            model_uri=f"models:/{name}/{version}")
+        return model
 
     def update_model(self, name, new_name):
-        pass
+        self._client.rename_registered_model(
+            name=name,
+            new_name=new_name
+        )
 
     def delete_model(self, name, version):
-        pass
+        self._client.delete_model_version(
+            name=name,
+            version=version
+        )

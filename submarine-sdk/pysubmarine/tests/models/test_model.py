@@ -18,9 +18,44 @@
 """
 
 from submarine import ModelsClient
+from pytorch import LinearNNModel
+import numpy as np
+import pytest
 
-
+# Temporarily skip these tests after the following is solved:
+# TODO: Setup cluster by helm in CI/CD to enable mlflow server connection
+# TODO: Set an cooldown time between each test case
+@pytest.mark.skip(reason="no way of currently testing this")
 class TestSubmarineModelsClient():
-    def test_init(self):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
+    def test_log_model(self):
         client = ModelsClient()
-        # client.log_model()
+        model = LinearNNModel()
+        name = "simple-nn-model"
+        client.log_model(name, model)
+
+    def test_update_model(self):
+        client = ModelsClient()
+        name = "simple-nn-model"
+        new_name = "new-simple-nn-model"
+        client.update_model(name, new_name)
+
+    def test_load_model(self):
+        client = ModelsClient()
+        name = "simple-nn-model"
+        version = "1"
+        model = client.load_model(name, version)
+        x = np.float32([[1.0], [2.0]])
+        y = model.predict(x)
+        assert y.shape[0] == 2
+        assert y.shape[1] == 1
+
+    def test_delete_model(self):
+        client = ModelsClient()
+        name = "simple-nn-model"
+        client.delete_model(name, '1')
