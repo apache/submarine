@@ -40,6 +40,8 @@ setup(
         'python-dateutil >= 2.5.3',
         'pyarrow==0.17.0',
         'torch>=1.5.0',
+        'mlflow==1.16.0',
+        'boto3==1.17.61'
     ],
     classifiers=[
         'Intended Audience :: Developers',
