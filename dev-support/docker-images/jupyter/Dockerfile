@@ -107,7 +107,7 @@ RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipyn
     rm submarine -rf
 
 # Install mlflow & minio dependencies
-RUN pip install boto3=1.17.58 mlflow=1.15.0
+RUN pip install boto3==1.17.58 mlflow==1.15.0
 
 # Install latest stable qlib
 RUN pip install numpy==1.19.5 pyqlib==0.6.1
