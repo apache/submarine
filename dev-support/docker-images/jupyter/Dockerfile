@@ -19,7 +19,7 @@ ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_PREFIX="/"
 ARG NB_PORT=8888
-ARG MLFLOW_TRACKING_URI="http://10.96.0.3:8080"
+ARG MLFLOW_TRACKING_URI="http://10.96.0.3:5000"
 
 USER root
 
@@ -107,7 +107,10 @@ RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipyn
     rm submarine -rf
 
 # Install latest stable qlib
-RUN pip install numpy==1.19.5 pyqlib==0.6.1 boto3
+RUN pip install numpy==1.19.5 pyqlib==0.6.1
+
+# Install mlflow & minio dependencies
+RUN pip install boto3
 
 # Add qlib example in notebook
 RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME
