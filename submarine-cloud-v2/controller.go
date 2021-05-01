@@ -725,6 +725,17 @@ func (c *Controller) newSubCharts(namespace string) error {
 		)
 	}
 
+	if !helm.CheckRelease("notebook-controller", namespace) {
+		klog.Info("[Helm] Install Notebook-Controller")
+		helm.HelmInstallLocalChart(
+			"notebook-controller",
+			"charts/notebook-controller",
+			"notebook-controller",
+			namespace,
+			map[string]string{},
+		)
+	}
+
 	// TODO: maintain "error"
 	// TODO: (sample-controller) controller.go:287 ~ 293
 	// TODO: port-forward
