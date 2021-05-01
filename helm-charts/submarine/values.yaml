@@ -39,6 +39,9 @@ submarine:
   mlflow:
     storage: 10Gi
     ingressPath: "/mlflow"
+  minio:
+    storage: 10Gi
+    ingressPath: "/minio"
   storage:
     type: host # "host" or "nfs"
     host:
