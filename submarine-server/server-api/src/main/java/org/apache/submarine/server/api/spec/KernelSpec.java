@@ -25,21 +25,25 @@ import java.util.List;
  * Kernel Spec.
  */
 public class KernelSpec {
-  
+
   /**
    * Name of the kernel
    */
   private String name;
-  
+
   /**
    * Name of the channels
    */
   private List<String> channels;
-  
+
   /**
-   * List of kernel dependencies
+   * List of kernel conda dependencies
    */
-  private List<String> dependencies;
+  private List<String> condaDependencies;
+  /**
+   * List of kernel pip dependencies
+   */
+  private List<String> pipDependencies;
 
   public String getName() {
     return name;
@@ -57,11 +61,19 @@ public class KernelSpec {
     this.channels = channels;
   }
 
-  public List<String> getDependencies() {
-    return dependencies;
+  public List<String> getCondaDependencies() {
+    return condaDependencies;
   }
 
-  public void setDependencies(List<String> dependencies) {
-    this.dependencies = dependencies;
-  }  
+  public void setCondaDependencies(List<String> condaDependencies) {
+    this.condaDependencies = condaDependencies;
+  }
+
+  public List<String> getPipDependencies() {
+    return pipDependencies;
+  }
+
+  public void setPipDependencies(List<String> pipDependencies) {
+    this.pipDependencies = pipDependencies;
+  }
 }

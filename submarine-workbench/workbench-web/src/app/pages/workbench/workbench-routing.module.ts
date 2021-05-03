@@ -62,6 +62,11 @@ const routes: Routes = [
         canActivate: ['canActivatePage'],
       },
       {
+        path: 'template',
+        loadChildren: () => import('./template/template.module').then((m) => m.TemplateModule),
+        canActivate: ['canActivatePage'],
+      },
+      {
         path: 'data',
         component: DataComponent,
         canActivate: ['canActivatePage'],

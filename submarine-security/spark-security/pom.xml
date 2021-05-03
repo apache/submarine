@@ -44,13 +44,13 @@
     <jersey-bundle.version>1.19.3</jersey-bundle.version>
     <noggit.version>0.6</noggit.version>
     <ranger.spark.package>submarine_spark_ranger_project</ranger.spark.package>
-    <ranger.version>1.1.0</ranger.version>
+    <ranger.version>1.2.0</ranger.version>
     <ranger.major.version>1</ranger.major.version>
     <spark.compatible.version>2</spark.compatible.version>
     <scala.version>2.11.8</scala.version>
     <scala.binary.version>2.11</scala.binary.version>
     <scalatest.version>2.2.6</scalatest.version>
-    <solr.version>5.5.4</solr.version>
+    <solr.version>8.4.0</solr.version>
     <spark.version>2.4.7</spark.version>
     <spark.scope>provided</spark.scope>
     <gethostname4j.version>0.0.2</gethostname4j.version>
@@ -573,38 +573,6 @@
         <commons-lang3.version>3.9</commons-lang3.version>
         <jackson-databind.version>2.10.5</jackson-databind.version>
         <jackson-annotations.version>2.10.5</jackson-annotations.version>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>ranger-1.0</id>
-      <properties>
-        <eclipse.jpa.version>2.5.2</eclipse.jpa.version>
-        <gson.version>2.2.4</gson.version>
-        <httpcomponents.httpclient.version>4.2.5</httpcomponents.httpclient.version>
-        <httpcomponents.httpcore.version>4.2.4</httpcomponents.httpcore.version>
-        <httpcomponents.httpmime.version>4.5.3</httpcomponents.httpmime.version>
-        <javax.persistence.version>2.1.0</javax.persistence.version>
-        <jersey-bundle.version>1.19.3</jersey-bundle.version>
-        <noggit.version>0.6</noggit.version>
-        <ranger.version>1.0.0</ranger.version>
-        <solr.version>5.5.4</solr.version>
-      </properties>
-    </profile>
-
-    <profile>
-      <id>ranger-1.1</id>
-      <properties>
-        <eclipse.jpa.version>2.5.2</eclipse.jpa.version>
-        <gson.version>2.2.4</gson.version>
-        <httpcomponents.httpclient.version>4.5.3</httpcomponents.httpclient.version>
-        <httpcomponents.httpcore.version>4.4.6</httpcomponents.httpcore.version>
-        <httpcomponents.httpmime.version>4.5.3</httpcomponents.httpmime.version>
-        <javax.persistence.version>2.1.0</javax.persistence.version>
-        <jersey-bundle.version>1.19.3</jersey-bundle.version>
-        <noggit.version>0.6</noggit.version>
-        <ranger.version>1.1.0</ranger.version>
-        <solr.version>5.5.4</solr.version>
       </properties>
     </profile>
 

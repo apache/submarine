@@ -19,7 +19,7 @@ ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_PREFIX="/"
 ARG NB_PORT=8888
-ARG MLFLOW_TRACKING_URI="http://10.96.0.3:8080"
+ARG MLFLOW_TRACKING_URI="http://10.96.0.3:5000"
 
 USER root
 
@@ -105,6 +105,9 @@ RUN git clone https://github.com/apache/submarine && \
 RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
     cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME && \
     rm submarine -rf
+
+# Install mlflow & minio dependencies
+RUN pip install boto3==1.17.58 mlflow==1.15.0
 
 # Install latest stable qlib
 RUN pip install numpy==1.19.5 pyqlib==0.6.1 boto3

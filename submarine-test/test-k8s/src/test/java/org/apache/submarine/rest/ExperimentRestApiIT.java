@@ -359,7 +359,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
 
     String dependencies = "";
     for (String dependency : env.getEnvironmentSpec().getKernelSpec()
-        .getDependencies()) {
+        .getCondaDependencies()) {
       dependencies += " " + dependency;
     }
 

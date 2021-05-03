@@ -42,6 +42,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
+import org.apache.submarine.server.api.experiment.MlflowInfo;
 import org.apache.submarine.server.experiment.ExperimentManager;
 import org.apache.submarine.server.experimenttemplate.ExperimentTemplateManager;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
@@ -273,6 +274,24 @@ public class ExperimentRestApi {
       TensorboardInfo tensorboardInfo = experimentManager.getTensorboardInfo();
       return new JsonResponse.Builder<TensorboardInfo>(Response.Status.OK).success(true)
         .result(tensorboardInfo).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseExperimentServiceException(e);
+    }
+  }
+
+  @GET
+  @Path("/mlflow")
+  @Operation(summary = "Get mlflow's information",
+          tags = {"experiment"},
+          responses = {
+                  @ApiResponse(description = "successful operation", content = @Content(
+                          schema = @Schema(implementation = JsonResponse.class))),
+                  @ApiResponse(responseCode = "404", description = "MLflow not found")})
+  public Response getMLflowInfo() {
+    try {
+      MlflowInfo mlflowInfo = experimentManager.getMLflowInfo();
+      return new JsonResponse.Builder<MlflowInfo>(Response.Status.OK).success(true)
+              .result(mlflowInfo).build();
     } catch (SubmarineRuntimeException e) {
       return parseExperimentServiceException(e);
     }

@@ -22,9 +22,10 @@ import { Injectable } from '@angular/core';
 import { Rest } from '@submarine/interfaces';
 import { ExperimentInfo } from '@submarine/interfaces/experiment-info';
 import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
-import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
+import { ExperimentTemplate, ExperimentTemplateSpec } from '@submarine/interfaces/experiment-template';
 import { ExperimentTemplateSubmit } from '@submarine/interfaces/experiment-template-submit';
 import { TensorboardInfo } from '@submarine/interfaces/tensorboard-info';
+import { MlflowInfo } from '@submarine/interfaces/mlflow-info';
 import { BaseApiService } from '@submarine/services/base-api.service';
 import { of, throwError, Observable, Subject } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -185,6 +186,19 @@ export class ExperimentService {
     );
   }
 
+  querySpecificTemplate(name: string): Observable<ExperimentTemplate> {
+    const apiUrl = this.baseApi.getRestApi('/v1/template/' + name);
+    return this.httpClient.get<Rest<ExperimentTemplate>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
+  }
+
   createExperimentfromTemplate(
     experimentSpec: ExperimentTemplateSubmit,
     templateName: string
@@ -212,9 +226,48 @@ export class ExperimentService {
     );
   }
 
+  createTemplate(templateSpec: ExperimentTemplateSpec): Observable<ExperimentTemplate> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/template`);
+    return this.httpClient.post<Rest<ExperimentTemplate>>(apiUrl, templateSpec).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', templateSpec);
+        }
+      })
+    );
+  }
+
+  deleteTemplate(name: string): Observable<ExperimentTemplate> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/template/${name}`);
+    return this.httpClient.delete<Rest<any>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete', name);
+        }
+      })
+    );
+  }
+
   getTensorboardInfo(): Observable<TensorboardInfo> {
     const apiUrl = this.baseApi.getRestApi('/v1/experiment/tensorboard');
     return this.httpClient.get<Rest<TensorboardInfo>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
+  }
+
+  getMlflowInfo(): Observable<MlflowInfo> {
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment/mlflow');
+    return this.httpClient.get<Rest<MlflowInfo>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
           return of(res.result);

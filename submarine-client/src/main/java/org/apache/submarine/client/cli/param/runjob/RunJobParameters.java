@@ -347,7 +347,7 @@ public abstract class RunJobParameters extends RunParameters {
   @VisibleForTesting
   public static class UnderscoreConverterPropertyUtils extends PropertyUtils {
     @Override
-    public Property getProperty(Class<? extends Object> type, String name) throws IntrospectionException {
+    public Property getProperty(Class<? extends Object> type, String name) {
       if (name.indexOf('_') > -1) {
         name = convertName(name);
       }

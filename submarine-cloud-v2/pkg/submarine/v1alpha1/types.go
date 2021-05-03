@@ -32,10 +32,44 @@ type Submarine struct {
 	Status SubmarineStatus `json:"status"`
 }
 
+type SubmarineServer struct {
+	Image    string `json:"image"`
+	Replicas *int32 `json:"replicas"`
+}
+
+type SubmarineDatabase struct {
+	Image                   string `json:"image"`
+	Replicas                *int32 `json:"replicas"`
+	StorageSize             string `json:"storageSize"`
+	MysqlRootPasswordSecret string `json:"mysqlRootPasswordSecret"`
+}
+
+type SubmarineTensorboard struct {
+	Enabled     *bool  `json:"enabled"`
+	StorageSize string `json:"storageSize"`
+}
+
+type SubmarineMlflow struct {
+	Enabled     *bool  `json:"enabled"`
+	StorageSize string `json:"storageSize"`
+}
+
+type SubmarineStorage struct {
+	StorageType string `json:"storageType"`
+	HostPath    string `json:"hostPath"`
+	NfsPath     string `json:"nfsPath"`
+	NfsIP       string `json:"nfsIP"`
+}
+
 // SubmarineSpec is the spec for a Submarine resource
 type SubmarineSpec struct {
-	DeploymentName string `json:"deploymentName"`
-	Replicas       *int32 `json:"replicas"`
+	Version     string                `json:"version"`
+	Replicas    *int32                `json:"replicas"`
+	Server      *SubmarineServer      `json:"server"`
+	Database    *SubmarineDatabase    `json:"database"`
+	Tensorboard *SubmarineTensorboard `json:"tensorboard"`
+	Mlflow      *SubmarineMlflow      `json:"mlflow"`
+	Storage     *SubmarineStorage     `json:"storage"`
 }
 
 // SubmarineStatus is the status for a Submarine resource
@@ -52,4 +86,3 @@ type SubmarineList struct {
 
 	Items []Submarine `json:"items"`
 }
-
