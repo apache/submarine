@@ -28,9 +28,9 @@ jobs:
           pip install --no-cache-dir ./submarine-sdk/pysubmarine/.
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
           pip install -r ./submarine-sdk/pysubmarine/github-actions/lint-requirements.txt
-      - name: Check python sdk code style
-        run: |
-          ./submarine-sdk/pysubmarine/github-actions/lint.sh
+      # - name: Check python sdk code style
+      #   run: |
+      #     ./submarine-sdk/pysubmarine/github-actions/lint.sh
       - name: Run unit test
         run: |
           pytest --cov=submarine -vs -m "not e2e"
