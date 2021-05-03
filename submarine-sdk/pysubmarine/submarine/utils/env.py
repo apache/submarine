@@ -16,7 +16,7 @@
 import copy
 import json
 import os
-from collections import Mapping
+from collections.abc import Mapping
 
 
 def get_env(variable_name):

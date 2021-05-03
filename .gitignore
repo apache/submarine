@@ -101,3 +101,5 @@ submarine-cloud-v2/charts/*
 # jupyter notebook checkpoints
 .ipynb_checkpoints
 
+# redundant logging files
+*.log

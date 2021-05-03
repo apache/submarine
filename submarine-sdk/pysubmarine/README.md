@@ -49,4 +49,4 @@ Makes it easy to run distributed or non-distributed TensorFlow, PyTorch experime
 
 ## Development
 
-See [Python Development](https://github.com/apache/submarine/blob/master/website/docs/userDocs/submarine-sdk/pysubmarine/development.md) in the documentation subproject.
+See [Python Development](https://github.com/apache/submarine/tree/master/website/docs/userDocs/submarine-sdk/pysubmarine/development.md) in the documentation subproject.
