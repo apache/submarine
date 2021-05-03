@@ -59,103 +59,20 @@
       </div>
     </nz-form-item>
     <nz-form-item style="margin-bottom: 0">
-      <!-- nzAction is not supported yet -->
-      <nz-upload
-        nzType="drag"
-        [nzMultiple]="false"
-        [nzFileList]="configFileList"
-        [nzPreview]="isPreview"
-        [nzRemove]="closePreview"
-        nzAccept=".yml"
-        nzAction="api/v1/environment/config"
-        (nzChange)="fileUpload($event)"
-      >
+      <nz-upload id="upload-config" nzType="drag" [nzMultiple]="false" [nzBeforeUpload]="beforeUpload">
         <p class="ant-upload-drag-icon">
           <i nz-icon nzType="inbox"></i>
         </p>
         <p class="ant-upload-text">Click or drag a conda config YAML file here</p>
+        <div style="text-align: left; margin: 1rem">
+          <div
+            #preview
+            style="overflow-y: auto"
+            [style.height]="previewCondaConfig !== '' ? '8rem' : '0rem'"
+            [innerText]="previewCondaConfig"
+          ></div>
+        </div>
       </nz-upload>
     </nz-form-item>
-    <div #preview *ngIf="isPreviewVisible" [innerText]="previewConfigFile"></div>
-    <h2>Kernel Spec</h2>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Name</nz-form-label>
-      <div nz-col nzSpan="16">
-        <nz-form-control nzErrorTip="Please input name!">
-          <input required nz-input style="width: 80%" type="text" name="name" id="name" formControlName="name" />
-        </nz-form-control>
-      </div>
-    </nz-form-item>
-    <div formArrayName="channels">
-      <div *ngFor="let channel of channels.controls; let i = index">
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="channel">Channel {{ i + 1 }}</nz-form-label>
-          <div nz-col nzSpan="16">
-            <nz-form-control nzErrorTip="Please input channel!">
-              <input
-                required
-                nz-input
-                style="width: 80%"
-                type="text"
-                name="channel{{ i }}"
-                id="channel{{ i }}"
-                [formControlName]="i"
-              />
-              <i
-                nz-icon
-                style="margin-left: 5px"
-                nzType="close-circle"
-                nzTheme="fill"
-                (click)="deleteItem(channels, i)"
-              ></i>
-            </nz-form-control>
-          </div>
-        </nz-form-item>
-      </div>
-    </div>
-    <div style="margin: 10px">
-      <button nz-button style="display: block; margin: auto" id="addChannel-btn" type="default" (click)="addChannel()">
-        New Channel
-      </button>
-    </div>
-    <div formArrayName="dependencies">
-      <div *ngFor="let channel of dependencies.controls; let i = index">
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dependency">Dependency {{ i + 1 }}</nz-form-label>
-          <div nz-col nzSpan="16">
-            <nz-form-control nzErrorTip="Please input dependency!">
-              <input
-                required
-                nz-input
-                style="width: 80%"
-                type="text"
-                name="dependencies{{ i }}"
-                id="dependencies{{ i }}"
-                [formControlName]="i"
-              />
-              <i
-                nz-icon
-                style="margin-left: 5px"
-                nzType="close-circle"
-                nzTheme="fill"
-                (click)="deleteItem(dependencies, i)"
-              ></i>
-            </nz-form-control>
-          </div>
-        </nz-form-item>
-      </div>
-    </div>
-    <div style="margin: 10px">
-      <button
-        style="margin-top: 10px"
-        nz-button
-        style="display: block; margin: auto"
-        id="addDep-btn"
-        type="default"
-        (click)="addDependencies()"
-      >
-        New Dependency
-      </button>
-    </div>
   </form>
 </nz-modal>

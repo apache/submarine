@@ -29,6 +29,9 @@ import (
 	informers "submarine-cloud-v2/pkg/generated/informers/externalversions"
 	"submarine-cloud-v2/pkg/signals"
 	"time"
+
+	traefikclientset "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
+	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions"
 )
 
 var (
@@ -67,20 +70,27 @@ func main() {
 		klog.Fatalf("Error building submarine clientset: %s", err.Error())
 	}
 
+	traefikClient, err := traefikclientset.NewForConfig(cfg)
+	if err != nil {
+		klog.Fatalf("Error building traefik clientset: %s", err.Error())
+	}
+
 	kubeInformerFactory := kubeinformers.NewSharedInformerFactory(kubeClient, time.Second*30)
 	submarineInformerFactory := informers.NewSharedInformerFactory(submarineClient, time.Second*30)
+	traefikInformerFactory := traefikinformers.NewSharedInformerFactory(traefikClient, time.Second*30)
 
 	// TODO: Pass informers to NewController()
 	//       ex: namespace informer
 
 	// Create a Submarine operator
-	controller := NewController(kubeClient, submarineClient,
+	controller := NewController(kubeClient, submarineClient, traefikClient,
 		kubeInformerFactory.Apps().V1().Deployments(),
 		kubeInformerFactory.Core().V1().Services(),
 		kubeInformerFactory.Core().V1().ServiceAccounts(),
 		kubeInformerFactory.Core().V1().PersistentVolumes(),
 		kubeInformerFactory.Core().V1().PersistentVolumeClaims(),
 		kubeInformerFactory.Extensions().V1beta1().Ingresses(),
+		traefikInformerFactory.Traefik().V1alpha1().IngressRoutes(),
 		kubeInformerFactory.Rbac().V1().ClusterRoles(),
 		kubeInformerFactory.Rbac().V1().ClusterRoleBindings(),
 		submarineInformerFactory.Submarine().V1alpha1().Submarines())
@@ -89,6 +99,7 @@ func main() {
 	// Start method is non-blocking and runs all registered informers in a dedicated goroutine.
 	kubeInformerFactory.Start(stopCh)
 	submarineInformerFactory.Start(stopCh)
+	traefikInformerFactory.Start(stopCh)
 
 	// Run controller
 	if err = controller.Run(2, stopCh); err != nil {

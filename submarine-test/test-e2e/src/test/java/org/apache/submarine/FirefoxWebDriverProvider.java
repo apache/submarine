@@ -98,7 +98,7 @@ public class FirefoxWebDriverProvider implements WebDriverProvider {
   }
 
   @Override
-  public WebDriver createWebDriver(String webDriverPath) {
+  public WebDriver createWebDriver(String webDriverPath, String downloadPath) {
     FirefoxBinary ffox = new FirefoxBinary();
     if ("true".equals(System.getenv("TRAVIS"))) {
       // xvfb is supposed to run with DISPLAY 99
@@ -108,8 +108,7 @@ public class FirefoxWebDriverProvider implements WebDriverProvider {
 
     FirefoxProfile profile = new FirefoxProfile();
     profile.setPreference("browser.download.folderList", 2);
-    profile.setPreference("browser.download.dir",
-        FileUtils.getTempDirectory().toString() + "/firefox/");
+    profile.setPreference("browser.download.dir", downloadPath);
     profile.setPreference("browser.helperApps.alwaysAsk.force", false);
     profile.setPreference("browser.download.manager.showWhenStarting", false);
     profile.setPreference("browser.download.manager.showAlertOnComplete", false);
