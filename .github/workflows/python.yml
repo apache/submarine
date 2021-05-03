@@ -9,8 +9,8 @@ jobs:
     timeout-minutes: 120
     strategy:
       matrix:
-        python-version: [3.5,3.6,3.7]
-        tf-version: [1.14.0,1.15.0]
+        python-version: [3.6, 3.7]
+        tf-version: [1.14.0, 1.15.0]
       fail-fast: false
     env:
       PYTHON: ${{ matrix.python }}
@@ -29,7 +29,6 @@ jobs:
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
           pip install -r ./submarine-sdk/pysubmarine/github-actions/lint-requirements.txt
       - name: Check python sdk code style
-        if: matrix.python-version == '3.6'
         run: |
           ./submarine-sdk/pysubmarine/github-actions/lint.sh
       - name: Run unit test

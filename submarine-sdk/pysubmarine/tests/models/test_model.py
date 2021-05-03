@@ -6,9 +6,7 @@
  to you under the Apache License, Version 2.0 (the
  "License"); you may not use this file except in compliance
  with the License.  You may obtain a copy of the License at
- 
  http://www.apache.org/licenses/LICENSE-2.0
- 
  Unless required by applicable law or agreed to in writing,
  software distributed under the License is distributed on an
  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
@@ -17,16 +15,19 @@
  under the License.
 """
 
-from submarine import ModelsClient
-from pytorch import LinearNNModel
 import numpy as np
 import pytest
+
+from pytorch import LinearNNModel
+from submarine import ModelsClient
+
 
 # Temporarily skip these tests after the following is solved:
 # TODO: Setup cluster by helm in CI/CD to enable mlflow server connection
 # TODO: Set an cooldown time between each test case
 @pytest.mark.skip(reason="no way of currently testing this")
 class TestSubmarineModelsClient():
+
     def setUp(self):
         pass
 
