@@ -748,6 +748,17 @@ func (c *Controller) newSubCharts(namespace string) error {
 		)
 	}
 
+	if !helm.CheckRelease("tfjob", namespace) {
+		klog.Info("[Helm] Install TFjob")
+		helm.HelmInstallLocalChart(
+			"tfjob",
+			"charts/tfjob",
+			"tfjob",
+			namespace,
+			map[string]string{},
+		)
+	}
+
 	// TODO: maintain "error"
 	// TODO: (sample-controller) controller.go:287 ~ 293
 	// TODO: port-forward
