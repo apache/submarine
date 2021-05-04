@@ -23,11 +23,11 @@ from mlflow.tracking import MlflowClient
 from pytorch import LinearNNModel
 from submarine import ModelsClient
 
-
 # Temporarily skip these tests after the following is solved:
 # TODO: Setup cluster by helm in CI/CD to enable mlflow server connection
 # TODO: Set an cooldown time between each test case
-# @pytest.mark.skip(reason="no way of currently testing this")
+
+
 class TestSubmarineModelsClient():
 
     def setUp(self):
