@@ -20,12 +20,13 @@ import pytest
 
 from pytorch import LinearNNModel
 from submarine import ModelsClient
+import mlflow
 
 
 # Temporarily skip these tests after the following is solved:
 # TODO: Setup cluster by helm in CI/CD to enable mlflow server connection
 # TODO: Set an cooldown time between each test case
-@pytest.mark.skip(reason="no way of currently testing this")
+# @pytest.mark.skip(reason="no way of currently testing this")
 class TestSubmarineModelsClient():
 
     def setUp(self):
@@ -34,29 +35,38 @@ class TestSubmarineModelsClient():
     def tearDown(self):
         pass
 
-    def test_log_model(self):
+    def test_log_model(self, mocker):
+        mock_method = mocker.patch.object(ModelsClient, "log_model")
         client = ModelsClient()
         model = LinearNNModel()
         name = "simple-nn-model"
         client.log_model(name, model)
+        mock_method.assert_called_once_with("simple-nn-model", model)
 
-    def test_update_model(self):
+    def test_update_model(self, mocker):
+        mock_method = mocker.patch.object(ModelsClient, "update_model")
         client = ModelsClient()
         name = "simple-nn-model"
         new_name = "new-simple-nn-model"
         client.update_model(name, new_name)
+        mock_method.assert_called_once_with("simple-nn-model", "new-simple-nn-model")
 
-    def test_load_model(self):
+    def test_load_model(self, mocker):
+        mock_method = mocker.patch.object(ModelsClient, "load_model")
+        mock_method.return_value = mlflow.pytorch._PyTorchWrapper(LinearNNModel())
         client = ModelsClient()
         name = "simple-nn-model"
         version = "1"
         model = client.load_model(name, version)
+        mock_method.assert_called_once_with("simple-nn-model", "1")
         x = np.float32([[1.0], [2.0]])
         y = model.predict(x)
         assert y.shape[0] == 2
         assert y.shape[1] == 1
 
-    def test_delete_model(self):
+    def test_delete_model(self, mocker):
+        mock_method = mocker.patch.object(ModelsClient, "delete_model")
         client = ModelsClient()
         name = "simple-nn-model"
         client.delete_model(name, '1')
+        mock_method.assert_called_once_with("simple-nn-model", "1")
