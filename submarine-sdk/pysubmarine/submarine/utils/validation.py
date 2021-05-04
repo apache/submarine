@@ -19,7 +19,6 @@ import numbers
 import posixpath
 import re
 
-
 from submarine.exceptions import SubmarineException
 from submarine.store.database.db_types import DATABASE_ENGINES
 
