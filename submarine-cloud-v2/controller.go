@@ -95,6 +95,11 @@ type Controller struct {
 	recorder record.EventRecorder
 }
 
+type WorkQueueItem struct {
+	key    string
+	action string
+}
+
 // NewController returns a new sample controller
 func NewController(
 	kubeclientset kubernetes.Interface,
@@ -144,9 +149,14 @@ func NewController(
 	// Setting up event handler for Submarine
 	klog.Info("Setting up event handlers")
 	submarineInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.enqueueSubmarine,
+		AddFunc: func(toAdd interface{}) {
+			controller.enqueueSubmarine(toAdd, "ADD")
+		},
 		UpdateFunc: func(old, new interface{}) {
-			controller.enqueueSubmarine(new)
+			controller.enqueueSubmarine(new, "UPDATE")
+		},
+		DeleteFunc: func(toDelete interface{}) {
+			controller.enqueueSubmarine(toDelete, "DELETE")
 		},
 	})
 
@@ -201,10 +211,12 @@ func (c *Controller) processNextWorkItem() bool {
 	err := func(obj interface{}) error {
 		// TODO: Maintain workqueue
 		defer c.workqueue.Done(obj)
-		key, _ := obj.(string)
-		c.syncHandler(key)
+		var item WorkQueueItem
+
+		item, _ = obj.(WorkQueueItem)
+		c.syncHandler(item)
 		c.workqueue.Forget(obj)
-		klog.Infof("Successfully synced '%s'", key)
+		klog.Infof("Successfully synced '%s'", item.key)
 		return nil
 	}(obj)
 
@@ -1036,8 +1048,10 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 // syncHandler compares the actual state with the desired, and attempts to
 // converge the two. It then updates the Status block of the Foo resource
 // with the current status of the resource.
-func (c *Controller) syncHandler(key string) error {
+func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 	// TODO: business logic
+	key := workqueueItem.key
+	action := workqueueItem.action
 
 	// Convert the namespace/name string into a distinct namespace and name
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
@@ -1046,59 +1060,80 @@ func (c *Controller) syncHandler(key string) error {
 		return nil
 	}
 
-	// Get the Submarine resource with this namespace/name
-	submarine, err := c.submarinesLister.Submarines(namespace).Get(name)
-	if err != nil {
-		// The Submarine resource may no longer exist, in which case we stop
-		// processing
-		if errors.IsNotFound(err) {
-			utilruntime.HandleError(fmt.Errorf("submarine '%s' in work queue no longer exists", key))
-			return nil
+	klog.Info("syncHandler: ", key, " / ", action)
+
+	if action != "DELETE" { // Case: ADD & UPDATE
+		klog.Info("Add / Update: ", key)
+		// Get the Submarine resource with this namespace/name
+		submarine, err := c.submarinesLister.Submarines(namespace).Get(name)
+		if err != nil {
+			// The Submarine resource may no longer exist, in which case we stop
+			// processing
+			if errors.IsNotFound(err) {
+				utilruntime.HandleError(fmt.Errorf("submarine '%s' in work queue no longer exists", key))
+				return nil
+			}
 		}
-	}
 
-	klog.Info("syncHandler: ", key)
+		// Print out the spec of the Submarine resource
+		b, err := json.MarshalIndent(submarine.Spec, "", "  ")
+		fmt.Println(string(b))
 
-	// Print out the spec of the Submarine resource
-	b, err := json.MarshalIndent(submarine.Spec, "", "  ")
-	fmt.Println(string(b))
+		// Install subcharts
+		c.newSubCharts(namespace)
 
-	// Install subcharts
-	c.newSubCharts(namespace)
+		// Create submarine-server
+		serverImage := submarine.Spec.Server.Image
+		serverReplicas := *submarine.Spec.Server.Replicas
+		if serverImage == "" {
+			serverImage = "apache/submarine:server-" + submarine.Spec.Version
+		}
+		err = c.newSubmarineServer(namespace, serverImage, serverReplicas)
+		if err != nil {
+			return err
+		}
 
-	// Create submarine-server
-	serverImage := submarine.Spec.Server.Image
-	serverReplicas := *submarine.Spec.Server.Replicas
-	if serverImage == "" {
-		serverImage = "apache/submarine:server-" + submarine.Spec.Version
-	}
-	err = c.newSubmarineServer(namespace, serverImage, serverReplicas)
-	if err != nil {
-		return err
-	}
+		// Create Submarine Database
+		err = c.newSubmarineDatabase(namespace, &submarine.Spec)
+		if err != nil {
+			return err
+		}
 
-	// Create Submarine Database
-	err = c.newSubmarineDatabase(namespace, &submarine.Spec)
-	if err != nil {
-		return err
-	}
+		// Create ingress
+		err = c.newIngress(namespace)
+		if err != nil {
+			return err
+		}
 
-	// Create ingress
-	err = c.newIngress(namespace)
-	if err != nil {
-		return err
-	}
+		// Create RBAC
+		err = c.newSubmarineServerRBAC(namespace)
+		if err != nil {
+			return err
+		}
 
-	// Create RBAC
-	err = c.newSubmarineServerRBAC(namespace)
-	if err != nil {
-		return err
-	}
+		// Create Submarine Tensorboard
+		err = c.newSubmarineTensorboard(namespace, &submarine.Spec)
+		if err != nil {
+			return err
+		}
+	} else {
+		// DELETE
+		err = c.kubeclientset.CoreV1().Namespaces().Delete(context.TODO(), namespace, metav1.DeleteOptions{})
+		if err != nil {
+			return err
+		}
 
-	// Create Submarine Tensorboard
-	err = c.newSubmarineTensorboard(namespace, &submarine.Spec)
-	if err != nil {
-		return err
+		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-database-pv--"+namespace, metav1.DeleteOptions{})
+		if err != nil {
+			return err
+		}
+
+		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-tensorboard-pv--"+namespace, metav1.DeleteOptions{})
+		if err != nil {
+			return err
+		}
+
+		klog.Info("Delete Namespace: ", namespace)
 	}
 
 	return nil
@@ -1107,7 +1142,7 @@ func (c *Controller) syncHandler(key string) error {
 // enqueueFoo takes a Submarine resource and converts it into a namespace/name
 // string which is then put onto the work queue. This method should *not* be
 // passed resources of any type other than Submarine.
-func (c *Controller) enqueueSubmarine(obj interface{}) {
+func (c *Controller) enqueueSubmarine(obj interface{}, action string) {
 	var key string
 	var err error
 	if key, err = cache.MetaNamespaceKeyFunc(obj); err != nil {
@@ -1117,5 +1152,8 @@ func (c *Controller) enqueueSubmarine(obj interface{}) {
 
 	// key: [namespace]/[CR name]
 	// Example: default/example-submarine
-	c.workqueue.Add(key)
+	c.workqueue.Add(WorkQueueItem{
+		key:    key,
+		action: action,
+	})
 }
