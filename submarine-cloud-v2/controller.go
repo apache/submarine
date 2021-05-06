@@ -759,6 +759,17 @@ func (c *Controller) newSubCharts(namespace string) error {
 		)
 	}
 
+	if !helm.CheckRelease("pytorchjob", namespace) {
+		klog.Info("[Helm] Install pytorchjob")
+		helm.HelmInstallLocalChart(
+			"pytorchjob",
+			"charts/pytorchjob",
+			"pytorchjob",
+			namespace,
+			map[string]string{},
+		)
+	}
+
 	// TODO: maintain "error"
 	// TODO: (sample-controller) controller.go:287 ~ 293
 	// TODO: port-forward
