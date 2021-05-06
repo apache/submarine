@@ -62,7 +62,8 @@ make image
 kubectl apply -f artifacts/examples/submarine-operator-service-account.yaml
 
 # Step3: Deploy a submarine-operator
-kubectl apply -f artifacts/examples/submarine-operator.yaml
+kubectl create ns submarine-operator-test
+kubectl apply -n submarine-operator-test -f artifacts/examples/example-submarine.yaml
 
 # Step4: Inspect submarine-operator POD logs 
 kubectl logs ${submarine-operator POD}
