@@ -25,12 +25,7 @@ from submarine.experiment.models.experiment_task_spec import ExperimentTaskSpec
 
 @pytest.mark.e2e
 def test_experiment_e2e():
-<<<<<<< Updated upstream
     submarine_client = submarine.ExperimentClient(host='http://localhost:8080')
-=======
-    submarine_client = submarine.ExperimentClient(
-        host='http://localhost:8080')
->>>>>>> Stashed changes
     environment = EnvironmentSpec(
         image='apache/submarine:tf-dist-mnist-test-1.0')
     experiment_meta = ExperimentMeta(

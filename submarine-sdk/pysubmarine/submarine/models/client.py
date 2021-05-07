@@ -29,7 +29,8 @@ class ModelsClient():
         """
         Set up mlflow server connection, including: s3 endpoint, aws, tracking server
         """
-        os.environ["MLFLOW_S3_ENDPOINT_URL"] = registry_uri or MLFLOW_S3_ENDPOINT_URL
+        os.environ[
+            "MLFLOW_S3_ENDPOINT_URL"] = registry_uri or MLFLOW_S3_ENDPOINT_URL
         os.environ["AWS_ACCESS_KEY_ID"] = AWS_ACCESS_KEY_ID
         os.environ["AWS_SECRET_ACCESS_KEY"] = AWS_SECRET_ACCESS_KEY
         os.environ["MLFLOW_TRACKING_URI"] = tracking_uri or MLFLOW_TRACKING_URI
