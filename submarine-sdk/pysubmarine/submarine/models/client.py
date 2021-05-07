@@ -25,14 +25,14 @@ from .constant import (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
 
 class ModelsClient():
 
-    def __init__(self):
+    def __init__(self, tracking_uri=None, registry_uri=None):
         """
         Set up mlflow server connection, including: s3 endpoint, aws, tracking server
         """
-        os.environ["MLFLOW_S3_ENDPOINT_URL"] = MLFLOW_S3_ENDPOINT_URL
+        os.environ["MLFLOW_S3_ENDPOINT_URL"] = registry_uri or MLFLOW_S3_ENDPOINT_URL
         os.environ["AWS_ACCESS_KEY_ID"] = AWS_ACCESS_KEY_ID
         os.environ["AWS_SECRET_ACCESS_KEY"] = AWS_SECRET_ACCESS_KEY
-        os.environ["MLFLOW_TRACKING_URI"] = MLFLOW_TRACKING_URI
+        os.environ["MLFLOW_TRACKING_URI"] = tracking_uri or MLFLOW_TRACKING_URI
         self._client = MlflowClient()
 
     def log_model(self, name, checkpoint):
