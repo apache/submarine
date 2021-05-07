@@ -27,7 +27,7 @@ from submarine.models import constant
 
 @pytest.fixture(name="models_client", scope="class")
 def models_client_fixture():
-    client = ModelsClient("http://localhost:5000", "http://localhost:9000")
+    client = ModelsClient("http://localhost:5001", "http://localhost:9000")
     return client
 
 
