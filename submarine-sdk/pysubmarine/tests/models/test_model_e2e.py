@@ -16,8 +16,10 @@
 """
 
 import os
+
 import numpy as np
 import pytest
+
 from pytorch import LinearNNModel
 from submarine import ModelsClient
 from submarine.models import constant
