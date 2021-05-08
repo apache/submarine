@@ -95,9 +95,15 @@ type Controller struct {
 	recorder record.EventRecorder
 }
 
+const (
+	ADD = iota
+	UPDATE
+	DELETE
+)
+
 type WorkQueueItem struct {
 	key    string
-	action string
+	action int
 }
 
 // NewController returns a new sample controller
@@ -150,13 +156,13 @@ func NewController(
 	klog.Info("Setting up event handlers")
 	submarineInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: func(toAdd interface{}) {
-			controller.enqueueSubmarine(toAdd, "ADD")
+			controller.enqueueSubmarine(toAdd, ADD)
 		},
 		UpdateFunc: func(old, new interface{}) {
-			controller.enqueueSubmarine(new, "UPDATE")
+			controller.enqueueSubmarine(new, UPDATE)
 		},
 		DeleteFunc: func(toDelete interface{}) {
-			controller.enqueueSubmarine(toDelete, "DELETE")
+			controller.enqueueSubmarine(toDelete, DELETE)
 		},
 	})
 
@@ -1062,7 +1068,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 
 	klog.Info("syncHandler: ", key, " / ", action)
 
-	if action != "DELETE" { // Case: ADD & UPDATE
+	if action != DELETE { // Case: ADD & UPDATE
 		klog.Info("Add / Update: ", key)
 		// Get the Submarine resource with this namespace/name
 		submarine, err := c.submarinesLister.Submarines(namespace).Get(name)
@@ -1142,7 +1148,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 // enqueueFoo takes a Submarine resource and converts it into a namespace/name
 // string which is then put onto the work queue. This method should *not* be
 // passed resources of any type other than Submarine.
-func (c *Controller) enqueueSubmarine(obj interface{}, action string) {
+func (c *Controller) enqueueSubmarine(obj interface{}, action int) {
 	var key string
 	var err error
 	if key, err = cache.MetaNamespaceKeyFunc(obj); err != nil {
