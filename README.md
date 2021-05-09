@@ -16,7 +16,7 @@
 
 ![Colored_logo_with_text](website/docs/assets/color_logo_with_text.png)
 
-[![Build Status](https://travis-ci.com/apache/submarine.svg?branch=master)](https://travis-ci.com/apache/submarine) [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)  [![HitCount](http://hits.dwyl.com/apache/submarine.svg)](http://hits.dwyl.io/apache/submarine) [![PyPI version](https://badge.fury.io/py/apache-submarine.svg)](https://badge.fury.io/py/apache-submarine)
+[![Build Status](https://travis-ci.org/apache/submarine.svg?branch=master)](https://travis-ci.org/apache/submarine) [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html) [![PyPI version](https://badge.fury.io/py/apache-submarine.svg)](https://badge.fury.io/py/apache-submarine)
 
 </div>
 
@@ -30,10 +30,10 @@ Some open-source and commercial projects are trying to build an end-to-end ML pl
 
 ### Problems
 
-1) Many platforms lack easy-to-use user interfaces (API, SDK, and IDE, etc.)
-2) In the same company, data scientists in different teams usually spend much time on developments of existing feature sets and models.
-3) Data scientists put emphasis on domain-specific tasks (e.g. Click-Through-Rate), but they need to implement their models from scratch with SDKs provided by existing platforms.
-4) Many platforms lack a unified workbench to manage each component in the ML lifecycle.
+1. Many platforms lack easy-to-use user interfaces (API, SDK, and IDE, etc.)
+2. In the same company, data scientists in different teams usually spend much time on developments of existing feature sets and models.
+3. Data scientists put emphasis on domain-specific tasks (e.g. Click-Through-Rate), but they need to implement their models from scratch with SDKs provided by existing platforms.
+4. Many platforms lack a unified workbench to manage each component in the ML lifecycle.
 
 _Theodore Levitt_ once said:
 
@@ -44,8 +44,9 @@ _Theodore Levitt_ once said:
 ### Goals of Submarine
 
 #### Model Training (Experiment)
+
 - Run/Track distributed training `experiment` on prem or cloud via easy-to-use UI/API/SDK.
-- Easy for data scientists to manage versions of `experiment` and dependencies of `environment`
+- Easy for data scientists to manage versions of `experiment` and dependencies of `environment`.
 - Support popular machine learning frameworks, including **TensorFlow**, **PyTorch**, **Horovod**, and **MXNet**
 - Provide pre-defined **template** for data scientists to implement domain-specific tasks easily (e.g. using DeepFM template to build a CTR prediction model)
 - Support many compute resources (e.g. CPU and GPU, etc.)
@@ -67,6 +68,7 @@ As mentioned above, Submarine attempts to provide **Data-Scientist-friendly** UI
 ### Example: Submit a distributed Tensorflow experiment via Submarine Python SDK
 
 #### Run a Tensorflow Mnist experiment
+
 ```python
 
 # New a submarine client of the submarine server
@@ -104,6 +106,7 @@ id = experiment['experimentId']
 ```
 
 #### Query a specific experiment
+
 ```python
 submarine_client.get_experiment(id)
 ```
@@ -115,18 +118,18 @@ submarine_client.wait_for_finish(id)
 ```
 
 #### Get the experiment's log
+
 ```python
 submarine_client.get_log(id)
 ```
 
 #### Get all running experiment
+
 ```python
 submarine_client.list_experiments(status='running')
 ```
 
-
 For a quick-start, see [Submarine On K8s](https://submarine.apache.org/docs/adminDocs/k8s/README)
-
 
 ### Example: Submit a pre-defined experiment template job
 
@@ -146,11 +149,9 @@ Read the [Apache Submarine Community Guide](https://submarine.apache.org/docs/co
 
 How to contribute [Contributing Guide](https://submarine.apache.org/docs/community/contributing)
 
-
 Issue Tracking: https://issues.apache.org/jira/projects/SUBMARINE
 
 ## User Document
-
 
 See [User Guide Home Page](https://submarine.apache.org/docs/)
 

@@ -22,7 +22,7 @@ jobs:
           java -version
       - uses: actions/cache@v1
         with:
-          path: ~/.m2/repository/com
+          path: ~/.m2/repository/com1
           key: ${{ runner.os }}-maven-com-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-com-
