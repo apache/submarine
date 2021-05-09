@@ -44,7 +44,7 @@ From [This Video](https://youtu.be/32Na2k6Alv4), you will know how to deal with 
 ### Prerequisites
 
 - JDK 1.8
-- Maven 3.3 or later ( 3.6.2 is known to fail, see SUBMARINE-273 )
+- Maven 3.3 or later ( < 3.8.1 )
 - Docker
 
 ### Setting up checkstyle in IDE
