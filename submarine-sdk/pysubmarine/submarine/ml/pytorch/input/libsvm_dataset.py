@@ -30,6 +30,7 @@ from typing import List, Tuple
 class LIBSVMDataset(Dataset):
 
     def __init__(self, data_uri: str, sample_offset: np.ndarray):
+        super().__init__()
         self.data_uri = data_uri
         self.sample_offset = sample_offset
 
