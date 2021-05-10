@@ -82,6 +82,8 @@ jobs:
           kubectl get pods
           kubectl port-forward svc/submarine-database 3306:3306 &
           kubectl port-forward svc/submarine-server 8080:8080 &
+          kubectl port-forward svc/submarine-minio-service 9000:9000 &
+          kubectl port-forward svc/submarine-mlflow-service 5001:5000 &
       - name: Setup python environment
         uses: actions/setup-python@v1
         with:
