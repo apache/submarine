@@ -72,6 +72,14 @@ kubectl apply -n submarine-operator-test -f artifacts/examples/example-submarine
 kubectl logs ${submarine-operator POD}
 ```
 
+# Create a Submarine in specific namespace and see workbench
+
+```bash
+kubectl create ns submarine-operator-test
+kubectl apply -n submarine-operator-test -f artifacts/examples/example-submarine.yaml
+kubectl port-forward --address 0.0.0.0 -n submarine-operator-test service/traefik 32080:80
+```
+
 # Helm Golang API
 * Function `HelmInstall` is defined in pkg/helm/helm.go.
 * Example: (You can see this example in controller.go:123.)
@@ -94,15 +102,30 @@ helmActionConfig := helm.HelmInstall(
         "set": "ports[0].protocol=TCP,ports[0].port=80,ports[0].targetPort=9376",
     },	
 )
-
 // Example: HelmUninstall
 // This is equal to:
 //    helm uninstall helm-install-example-release 
 helm.HelmUninstall("helm-install-example-release", helmActionConfig)
+
 ```
 * Troubleshooting: 
   * If the release name exists, Helm will report the error "cannot re-use a name that is still in use".
 ```
 helm ls
 helm uninstall helm-install-example-release 
+```
+
+# Build custom images when development
+
+Use the following helper script to build images and update the images used by running pods.
+
+```
+./hack/build_image.sh [all|server|database|jupyter|jupyter-gpu|mlflow]
+```
+
+Examples:
+
+```
+./hack/build_image.sh all     # build all images
+./hack/build_image.sh server  # only build the server image
 ```
