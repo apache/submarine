@@ -93,6 +93,10 @@ type Controller struct {
 	// recorder is an event recorder for recording Event resources to the
 	// Kubernetes API.
 	recorder record.EventRecorder
+
+	// TODO: Need to be modified to implement multi-tenant
+	// Store charts
+	charts []helm.HelmUninstallInfo
 }
 
 const (
@@ -746,46 +750,46 @@ func (c *Controller) newSubCharts(namespace string) error {
 
 	if !helm.CheckRelease("traefik", namespace) {
 		klog.Info("[Helm] Install Traefik")
-		helm.HelmInstallLocalChart(
+		c.charts = append(c.charts, helm.HelmInstallLocalChart(
 			"traefik",
 			"charts/traefik",
 			"traefik",
 			namespace,
 			map[string]string{},
-		)
+		))
 	}
 
 	if !helm.CheckRelease("notebook-controller", namespace) {
 		klog.Info("[Helm] Install Notebook-Controller")
-		helm.HelmInstallLocalChart(
+		c.charts = append(c.charts, helm.HelmInstallLocalChart(
 			"notebook-controller",
 			"charts/notebook-controller",
 			"notebook-controller",
 			namespace,
 			map[string]string{},
-		)
+		))
 	}
 
 	if !helm.CheckRelease("tfjob", namespace) {
 		klog.Info("[Helm] Install TFjob")
-		helm.HelmInstallLocalChart(
+		c.charts = append(c.charts, helm.HelmInstallLocalChart(
 			"tfjob",
 			"charts/tfjob",
 			"tfjob",
 			namespace,
 			map[string]string{},
-		)
+		))
 	}
 
 	if !helm.CheckRelease("pytorchjob", namespace) {
 		klog.Info("[Helm] Install pytorchjob")
-		helm.HelmInstallLocalChart(
+		c.charts = append(c.charts, helm.HelmInstallLocalChart(
 			"pytorchjob",
 			"charts/pytorchjob",
 			"pytorchjob",
 			namespace,
 			map[string]string{},
-		)
+		))
 	}
 
 	// TODO: maintain "error"
@@ -1122,13 +1126,20 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		if err != nil {
 			return err
 		}
-	} else {
-		// DELETE
+	} else { // Case: DELETE
+		// Uninstall Helm charts
+		for _, chart := range c.charts {
+			helm.HelmUninstall(chart)
+		}
+		c.charts = nil
+
+		// Delete namespace: Delete all namespaced resources, ex: POD, Deployment, ... etc.
 		err = c.kubeclientset.CoreV1().Namespaces().Delete(context.TODO(), namespace, metav1.DeleteOptions{})
 		if err != nil {
 			return err
 		}
 
+		// Delete non-namespaced resources (ex: PersistentVolume)
 		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-database-pv--"+namespace, metav1.DeleteOptions{})
 		if err != nil {
 			return err
@@ -1138,8 +1149,6 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		if err != nil {
 			return err
 		}
-
-		klog.Info("Delete Namespace: ", namespace)
 	}
 
 	return nil
