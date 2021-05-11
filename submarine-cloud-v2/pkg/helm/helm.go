@@ -45,7 +45,12 @@ import (
 	"helm.sh/helm/v3/pkg/strvals"
 )
 
-func HelmInstall(url string, repoName string, chartName string, releaseName string, namespace string, args map[string]string) *action.Configuration {
+type HelmUninstallInfo struct {
+	config      *action.Configuration
+	releaseName string
+}
+
+func HelmInstall(url string, repoName string, chartName string, releaseName string, namespace string, args map[string]string) HelmUninstallInfo {
 	var settings *cli.EnvSettings
 	os.Setenv("HELM_NAMESPACE", namespace)
 	settings = cli.New()
@@ -55,21 +60,22 @@ func HelmInstall(url string, repoName string, chartName string, releaseName stri
 	RepoUpdate(settings)
 	// Install charts
 	cfg := InstallChart(releaseName, repoName, chartName, args, settings)
-	return cfg
+	return HelmUninstallInfo{config: cfg, releaseName: releaseName}
 }
 
-func HelmInstallLocalChart(chartName string, chartPath string, releaseName string, namespace string, args map[string]string) *action.Configuration {
+func HelmInstallLocalChart(chartName string, chartPath string, releaseName string, namespace string, args map[string]string) HelmUninstallInfo {
 	var settings *cli.EnvSettings
 	os.Setenv("HELM_NAMESPACE", namespace)
 	settings = cli.New()
 	// Install charts
 	cfg := InstallLocalChart(releaseName, chartName, chartPath, args, settings)
-	return cfg
+	return HelmUninstallInfo{config: cfg, releaseName: releaseName}
 }
 
-func HelmUninstall(releaseName string, cfg *action.Configuration) error {
-	uninstall := action.NewUninstall(cfg)
-	_, err := uninstall.Run(releaseName)
+func HelmUninstall(info HelmUninstallInfo) error {
+	debug("HelmUninstall: release %s", info.releaseName)
+	uninstall := action.NewUninstall(info.config)
+	_, err := uninstall.Run(info.releaseName)
 	return err
 }
 
