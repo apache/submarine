@@ -1069,16 +1069,9 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		utilruntime.HandleError(fmt.Errorf("Invalid resource key: %s", key))
 		return nil
 	}
+	newNamespace := "submarine-user-test"
 
 	klog.Info("syncHandler: ", key, " / ", action)
-
-	// create submarine in a new namespace
-	newNamespace := "submarine-user-test"
-	nsSpec := &corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: newNamespace}}
-	_, err = c.kubeclientset.CoreV1().Namespaces().Create(context.TODO(), nsSpec, metav1.CreateOptions{})
-	if err != nil {
-		return err
-	}
 
 	if action != DELETE { // Case: ADD & UPDATE
 		klog.Info("Add / Update: ", key)
@@ -1096,6 +1089,13 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		// Print out the spec of the Submarine resource
 		b, err := json.MarshalIndent(submarine.Spec, "", "  ")
 		fmt.Println(string(b))
+
+		// create submarine in a new namespace
+		nsSpec := &corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: newNamespace}}
+		_, err = c.kubeclientset.CoreV1().Namespaces().Create(context.TODO(), nsSpec, metav1.CreateOptions{})
+		if err != nil {
+			return err
+		}
 
 		// Install subcharts
 		c.newSubCharts(newNamespace)
