@@ -264,7 +264,7 @@ public class K8sSubmitter implements Submitter {
   @Override
   public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
     final String name = "submarine-tensorboard";
-    final String namespace = "default";
+    final String namespace = "submarine-operator-test";
     final String ingressRouteName = "submarine-tensorboard-ingressroute";
 
     try {
@@ -303,7 +303,7 @@ public class K8sSubmitter implements Submitter {
   @Override
   public MlflowInfo getMlflowInfo() throws SubmarineRuntimeException {
     final String name = "submarine-mlflow";
-    final String namespace = "default";
+    final String namespace = "submarine-operator-test";
     final String ingressRouteName = "submarine-mlflow-ingressroute";
 
     try {
