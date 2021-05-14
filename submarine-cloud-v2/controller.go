@@ -21,14 +21,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
 	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
 	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
 	listers "submarine-cloud-v2/pkg/generated/listers/submarine/v1alpha1"
+	"submarine-cloud-v2/pkg/helm"
+	"submarine-cloud-v2/pkg/k8sutil"
 	v1alpha1 "submarine-cloud-v2/pkg/submarine/v1alpha1"
 	"time"
-
-	"submarine-cloud-v2/pkg/helm"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -60,6 +61,8 @@ import (
 	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions/traefik/v1alpha1"
 	traefiklisters "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/listers/traefik/v1alpha1"
 	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
+
+	"github.com/fatih/color"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -1133,6 +1136,14 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		err = c.newSubmarineTensorboard(newNamespace, &submarine.Spec)
 		if err != nil {
 			return err
+		}
+
+		// Port-forwarding
+		// TODO:
+		//   (1) multi-tenant port-forwarding
+		//   (2) Basic operations: on/off/modify (change port)
+		if action == ADD {
+			k8sutil.ServicePortForwardPort(context.TODO(), namespace, "traefik", 32080, 80, color.FgGreen)
 		}
 	} else { // Case: DELETE
 		// Uninstall Helm charts
