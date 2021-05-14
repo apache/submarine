@@ -1069,6 +1069,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		utilruntime.HandleError(fmt.Errorf("Invalid resource key: %s", key))
 		return nil
 	}
+	newNamespace := "submarine-user-test"
 
 	klog.Info("syncHandler: ", key, " / ", action)
 
@@ -1089,8 +1090,15 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		b, err := json.MarshalIndent(submarine.Spec, "", "  ")
 		fmt.Println(string(b))
 
+		// create submarine in a new namespace
+		nsSpec := &corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: newNamespace}}
+		_, err = c.kubeclientset.CoreV1().Namespaces().Create(context.TODO(), nsSpec, metav1.CreateOptions{})
+		if err != nil {
+			return err
+		}
+
 		// Install subcharts
-		c.newSubCharts(namespace)
+		c.newSubCharts(newNamespace)
 
 		// Create submarine-server
 		serverImage := submarine.Spec.Server.Image
@@ -1098,31 +1106,31 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		if serverImage == "" {
 			serverImage = "apache/submarine:server-" + submarine.Spec.Version
 		}
-		err = c.newSubmarineServer(namespace, serverImage, serverReplicas)
+		err = c.newSubmarineServer(newNamespace, serverImage, serverReplicas)
 		if err != nil {
 			return err
 		}
 
 		// Create Submarine Database
-		err = c.newSubmarineDatabase(namespace, &submarine.Spec)
+		err = c.newSubmarineDatabase(newNamespace, &submarine.Spec)
 		if err != nil {
 			return err
 		}
 
 		// Create ingress
-		err = c.newIngress(namespace)
+		err = c.newIngress(newNamespace)
 		if err != nil {
 			return err
 		}
 
 		// Create RBAC
-		err = c.newSubmarineServerRBAC(namespace)
+		err = c.newSubmarineServerRBAC(newNamespace)
 		if err != nil {
 			return err
 		}
 
 		// Create Submarine Tensorboard
-		err = c.newSubmarineTensorboard(namespace, &submarine.Spec)
+		err = c.newSubmarineTensorboard(newNamespace, &submarine.Spec)
 		if err != nil {
 			return err
 		}
@@ -1134,18 +1142,24 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		c.charts = nil
 
 		// Delete namespace: Delete all namespaced resources, ex: POD, Deployment, ... etc.
+		err = c.kubeclientset.CoreV1().Namespaces().Delete(context.TODO(), newNamespace, metav1.DeleteOptions{})
+		if err != nil {
+			return err
+		}
+		klog.Info("Delete Namespace: ", newNamespace)
+
 		err = c.kubeclientset.CoreV1().Namespaces().Delete(context.TODO(), namespace, metav1.DeleteOptions{})
 		if err != nil {
 			return err
 		}
 
 		// Delete non-namespaced resources (ex: PersistentVolume)
-		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-database-pv--"+namespace, metav1.DeleteOptions{})
+		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-database-pv--"+newNamespace, metav1.DeleteOptions{})
 		if err != nil {
 			return err
 		}
 
-		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-tensorboard-pv--"+namespace, metav1.DeleteOptions{})
+		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-tensorboard-pv--"+newNamespace, metav1.DeleteOptions{})
 		if err != nil {
 			return err
 		}
