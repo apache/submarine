@@ -1152,8 +1152,8 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		if err != nil {
 			return err
 		}
-		klog.Info("Delete Namespace: ", namespace)
 
+		// Delete non-namespaced resources (ex: PersistentVolume)
 		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-database-pv--"+newNamespace, metav1.DeleteOptions{})
 		if err != nil {
 			return err
@@ -1163,7 +1163,6 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		if err != nil {
 			return err
 		}
-		klog.Info("Delete pv")
 	}
 
 	return nil
