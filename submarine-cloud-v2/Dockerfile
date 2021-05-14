@@ -19,7 +19,7 @@ MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 WORKDIR /usr/src
 
 RUN apt-get update &&\
-    apt-get install -y wget vim git
+    apt-get install -y wget vim git curl
 
 ENV GOROOT="/usr/local/go"
 ENV GOPATH=$HOME/gocode
@@ -28,6 +28,10 @@ ENV PATH=$PATH:$GOPATH:$GOBIN:$GOROOT/bin
 
 RUN wget https://dl.google.com/go/go1.16.2.linux-amd64.tar.gz &&\
     tar -C /usr/local -xzf go1.16.2.linux-amd64.tar.gz
+
+RUN curl -LO https://dl.k8s.io/release/v1.14.2/bin/linux/amd64/kubectl &&\
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl &&\
+    kubectl version --client
 
 ADD charts/ /usr/src/charts
 

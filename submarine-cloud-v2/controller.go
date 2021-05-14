@@ -115,6 +115,7 @@ type WorkQueueItem struct {
 
 // NewController returns a new sample controller
 func NewController(
+	incluster bool,
 	kubeclientset kubernetes.Interface,
 	submarineclientset clientset.Interface,
 	traefikclientset traefik.Interface,
@@ -1142,8 +1143,11 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		// TODO:
 		//   (1) multi-tenant port-forwarding
 		//   (2) Basic operations: on/off/modify (change port)
+		//   (3) in-cluster
 		if action == ADD {
-			k8sutil.ServicePortForwardPort(context.TODO(), namespace, "traefik", 32080, 80, color.FgGreen)
+			if !incluster {
+				k8sutil.ServicePortForwardPort(context.TODO(), namespace, "traefik", 32080, 80, color.FgGreen)
+			}
 		}
 	} else { // Case: DELETE
 		// Uninstall Helm charts
