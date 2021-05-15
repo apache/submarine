@@ -798,8 +798,6 @@ func (c *Controller) newSubCharts(namespace string) error {
 
 	// TODO: maintain "error"
 	// TODO: (sample-controller) controller.go:287 ~ 293
-	// TODO: port-forward
-	// 		kubectl port-forward --address 0.0.0.0 service/traefik 32080:80
 
 	return nil
 }
@@ -1146,7 +1144,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		//   (3) in-cluster
 		if action == ADD {
 			if !incluster {
-				k8sutil.ServicePortForwardPort(context.TODO(), namespace, "traefik", 32080, 80, color.FgGreen)
+				k8sutil.ServicePortForwardPort(context.TODO(), newNamespace, "traefik", 32080, 80, color.FgGreen)
 			}
 		}
 	} else { // Case: DELETE
@@ -1162,11 +1160,6 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 			return err
 		}
 		klog.Info("Delete Namespace: ", newNamespace)
-
-		err = c.kubeclientset.CoreV1().Namespaces().Delete(context.TODO(), namespace, metav1.DeleteOptions{})
-		if err != nil {
-			return err
-		}
 
 		// Delete non-namespaced resources (ex: PersistentVolume)
 		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-database-pv--"+newNamespace, metav1.DeleteOptions{})
