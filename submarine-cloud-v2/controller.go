@@ -102,6 +102,7 @@ type Controller struct {
 	// Store charts
 	charts     []helm.HelmUninstallInfo
 	portfwdCmd *exec.Cmd
+	incluster  bool
 }
 
 const (
@@ -117,6 +118,7 @@ type WorkQueueItem struct {
 
 // NewController returns a new sample controller
 func NewController(
+	incluster bool,
 	kubeclientset kubernetes.Interface,
 	submarineclientset clientset.Interface,
 	traefikclientset traefik.Interface,
@@ -160,6 +162,7 @@ func NewController(
 		workqueue:                   workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
 		recorder:                    recorder,
 		portfwdCmd:                  nil,
+		incluster:                   incluster,
 	}
 
 	// Setting up event handler for Submarine
@@ -1145,7 +1148,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		//   (2) Basic operations: on/off/modify (change port)
 		//   (3) in-cluster
 		if action == ADD {
-			if !incluster {
+			if !c.incluster {
 				c.portfwdCmd = k8sutil.ServicePortForwardPort(context.TODO(), newNamespace, "traefik", 32080, 80, color.FgGreen)
 			}
 		}
@@ -1175,7 +1178,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		}
 
 		// Kill port-forward process:
-		if !incluster {
+		if !c.incluster {
 			err = c.portfwdCmd.Process.Kill()
 			if err != nil {
 				return err

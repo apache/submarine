@@ -84,7 +84,7 @@ func main() {
 	//       ex: namespace informer
 
 	// Create a Submarine operator
-	controller := NewController(kubeClient, submarineClient, traefikClient,
+	controller := NewController(incluster, kubeClient, submarineClient, traefikClient,
 		kubeInformerFactory.Apps().V1().Deployments(),
 		kubeInformerFactory.Core().V1().Services(),
 		kubeInformerFactory.Core().V1().ServiceAccounts(),
