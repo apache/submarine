@@ -63,6 +63,7 @@ import (
 	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 
 	"github.com/fatih/color"
+	"os/exec"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -99,7 +100,8 @@ type Controller struct {
 
 	// TODO: Need to be modified to implement multi-tenant
 	// Store charts
-	charts []helm.HelmUninstallInfo
+	charts     []helm.HelmUninstallInfo
+	portfwdCmd *exec.Cmd
 }
 
 const (
@@ -115,7 +117,6 @@ type WorkQueueItem struct {
 
 // NewController returns a new sample controller
 func NewController(
-	incluster bool,
 	kubeclientset kubernetes.Interface,
 	submarineclientset clientset.Interface,
 	traefikclientset traefik.Interface,
@@ -158,6 +159,7 @@ func NewController(
 		clusterrolebindingLister:    clusterrolebindingInformer.Lister(),
 		workqueue:                   workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
 		recorder:                    recorder,
+		portfwdCmd:                  nil,
 	}
 
 	// Setting up event handler for Submarine
@@ -1144,7 +1146,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		//   (3) in-cluster
 		if action == ADD {
 			if !incluster {
-				k8sutil.ServicePortForwardPort(context.TODO(), newNamespace, "traefik", 32080, 80, color.FgGreen)
+				c.portfwdCmd = k8sutil.ServicePortForwardPort(context.TODO(), newNamespace, "traefik", 32080, 80, color.FgGreen)
 			}
 		}
 	} else { // Case: DELETE
@@ -1170,6 +1172,14 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-tensorboard-pv--"+newNamespace, metav1.DeleteOptions{})
 		if err != nil {
 			return err
+		}
+
+		// Kill port-forward process:
+		if !incluster {
+			err = c.portfwdCmd.Process.Kill()
+			if err != nil {
+				return err
+			}
 		}
 	}
 

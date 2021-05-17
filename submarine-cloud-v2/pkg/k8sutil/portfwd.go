@@ -31,15 +31,14 @@ import (
 )
 
 // run the command inside a goroutine, return a channel that closes then the command dies
-func ServicePortForwardPort(ctx context.Context, namespace string, service string, localPort int, remotePort int, dcolor color.Attribute) chan interface{} {
-	ch := make(chan interface{})
-	go func() {
-		defer close(ch)
-		// service we are going to forward
-		serviceName := fmt.Sprintf("service/%s", service)
-		// command to run
-		portStr := strconv.Itoa(localPort) + ":" + strconv.Itoa(remotePort)
-		cmd := exec.CommandContext(ctx, "kubectl", "port-forward", "--address", "0.0.0.0", "-n", namespace, serviceName, portStr)
+func ServicePortForwardPort(ctx context.Context, namespace string, service string, localPort int, remotePort int, dcolor color.Attribute) *exec.Cmd {
+	// service we are going to forward
+	serviceName := fmt.Sprintf("service/%s", service)
+	// command to run
+	portStr := strconv.Itoa(localPort) + ":" + strconv.Itoa(remotePort)
+	cmd := exec.CommandContext(ctx, "kubectl", "port-forward", "--address", "0.0.0.0", "-n", namespace, serviceName, portStr)
+
+	go func(cmd *exec.Cmd) {
 		// prepare to capture the output
 		var errStdout, errStderr error
 		stdoutIn, _ := cmd.StdoutPipe()
@@ -65,15 +64,20 @@ func ServicePortForwardPort(ctx context.Context, namespace string, service strin
 
 		err = cmd.Wait()
 		if err != nil {
-			log.Printf("cmd.Run() failed with %s\n", err.Error())
+			if err.Error() == "signal: killed" {
+				log.Printf("Stop port-forward\n")
+			} else {
+				log.Printf("cmd.Run() failed with %s\n", err.Error())
+			}
 			return
 		}
 		if errStdout != nil || errStderr != nil {
 			log.Printf("failed to capture stdout or stderr\n")
 			return
 		}
-	}()
-	return ch
+	}(cmd)
+
+	return cmd
 }
 
 // capture and print the output of the command
