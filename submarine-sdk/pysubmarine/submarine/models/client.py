@@ -22,8 +22,15 @@ from mlflow.tracking import MlflowClient
 from .constant import (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
                        MLFLOW_S3_ENDPOINT_URL, MLFLOW_TRACKING_URI)
 
+from enum import Enum
 
-class ModelsClient():
+class types(Enum):
+    PYTORCH="pytorch"
+    TENSORFLOW="tensorflow"
+    KERAS="keras"
+    SKLEARN="sklearn"
+
+class ModelsClient(package_type):
 
     def __init__(self, tracking_uri=None, registry_uri=None):
         """
@@ -36,10 +43,28 @@ class ModelsClient():
         os.environ["MLFLOW_TRACKING_URI"] = tracking_uri or MLFLOW_TRACKING_URI
         self._client = MlflowClient()
 
+        self.type=types(package_type)
+
     def log_model(self, name, checkpoint):
-        mlflow.pytorch.log_model(registered_model_name=name,
-                                 pytorch_model=checkpoint,
-                                 artifact_path="pytorch-model")
+        if self.type.name==types.PYTORCH.name:
+            mlflow.pytorch.log_model(registered_model_name=name,
+                                    pytorch_model=checkpoint,
+                                    artifact_path="pytorch-model")
+
+        elif self.type.name==types.TENSORFLOW.name:
+            mlfow.tensorflow.log_model(registered_model_name=name,
+                                    tf_saved_model_dir=checkpoint,
+                                    artifact_path="tensorflow-model")
+
+        elif self.type.name==types.KERAS.name:
+            mlflow.keras.log_model(registered_model_name=name,
+                                    keras_model=checkpoint,
+                                    artifact_path="keras-model")
+
+        elif self.type.name==types.SKLEARN.name:
+            mlflow.sklearn.log_model(registered_model_name=name,
+                                    sk_model=checkpoint,
+                                    artifact_path="sklearn-model")
 
     def load_model(self, name, version):
         model = mlflow.pyfunc.load_model(model_uri=f"models:/{name}/{version}")

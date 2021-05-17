@@ -18,7 +18,7 @@ import numpy as np
 import torch
 
 
-class LinearNNModel(torch.nn.Module):
+class LinearNNModelTorch(torch.nn.Module):
 
     def __init__(self):
         super(LinearNNModel, self).__init__()

@@ -20,7 +20,7 @@ import os
 import numpy as np
 import pytest
 
-from pytorch import LinearNNModel
+from pytorch import LinearNNModelTorch
 from submarine import ModelsClient
 from submarine.models import constant
 
@@ -35,7 +35,7 @@ def models_client_fixture():
 class TestSubmarineModelsClientE2E():
 
     def test_model(self, models_client):
-        model = LinearNNModel()
+        model = LinearNNModelTorch()
         # log
         name = "simple-nn-model"
         models_client.log_model(name, model)
