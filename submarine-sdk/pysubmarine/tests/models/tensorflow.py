@@ -4,7 +4,7 @@ from tensorflow.python.keras import layers
 
 class LinearNNModelTf(keras.Model):
     def __init__(self):
-        super(network,self).__init__()
+        super(LinearNNModelTf,self).__init__()
         self.layer = layers.Dense(1 , activation='relu')
         
     def call(self,x):

@@ -21,7 +21,7 @@ import torch
 class LinearNNModelTorch(torch.nn.Module):
 
     def __init__(self):
-        super(LinearNNModel, self).__init__()
+        super(LinearNNModelTorch, self).__init__()
         self.linear = torch.nn.Linear(1, 1)  # One in and one out
 
     def forward(self, x):
