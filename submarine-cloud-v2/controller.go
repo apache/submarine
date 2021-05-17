@@ -21,14 +21,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
 	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
 	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
 	listers "submarine-cloud-v2/pkg/generated/listers/submarine/v1alpha1"
+	"submarine-cloud-v2/pkg/helm"
+	"submarine-cloud-v2/pkg/k8sutil"
 	v1alpha1 "submarine-cloud-v2/pkg/submarine/v1alpha1"
 	"time"
-
-	"submarine-cloud-v2/pkg/helm"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -60,6 +61,9 @@ import (
 	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions/traefik/v1alpha1"
 	traefiklisters "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/listers/traefik/v1alpha1"
 	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
+
+	"github.com/fatih/color"
+	"os/exec"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -96,7 +100,9 @@ type Controller struct {
 
 	// TODO: Need to be modified to implement multi-tenant
 	// Store charts
-	charts []helm.HelmUninstallInfo
+	charts     []helm.HelmUninstallInfo
+	portfwdCmd *exec.Cmd
+	incluster  bool
 }
 
 const (
@@ -112,6 +118,7 @@ type WorkQueueItem struct {
 
 // NewController returns a new sample controller
 func NewController(
+	incluster bool,
 	kubeclientset kubernetes.Interface,
 	submarineclientset clientset.Interface,
 	traefikclientset traefik.Interface,
@@ -154,6 +161,8 @@ func NewController(
 		clusterrolebindingLister:    clusterrolebindingInformer.Lister(),
 		workqueue:                   workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
 		recorder:                    recorder,
+		portfwdCmd:                  nil,
+		incluster:                   incluster,
 	}
 
 	// Setting up event handler for Submarine
@@ -794,8 +803,6 @@ func (c *Controller) newSubCharts(namespace string) error {
 
 	// TODO: maintain "error"
 	// TODO: (sample-controller) controller.go:287 ~ 293
-	// TODO: port-forward
-	// 		kubectl port-forward --address 0.0.0.0 service/traefik 32080:80
 
 	return nil
 }
@@ -1134,6 +1141,17 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		if err != nil {
 			return err
 		}
+
+		// Port-forwarding
+		// TODO:
+		//   (1) multi-tenant port-forwarding
+		//   (2) Basic operations: on/off/modify (change port)
+		//   (3) in-cluster
+		if action == ADD {
+			if !c.incluster {
+				c.portfwdCmd = k8sutil.ServicePortForwardPort(context.TODO(), newNamespace, "traefik", 32080, 80, color.FgGreen)
+			}
+		}
 	} else { // Case: DELETE
 		// Uninstall Helm charts
 		for _, chart := range c.charts {
@@ -1148,11 +1166,6 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		}
 		klog.Info("Delete Namespace: ", newNamespace)
 
-		err = c.kubeclientset.CoreV1().Namespaces().Delete(context.TODO(), namespace, metav1.DeleteOptions{})
-		if err != nil {
-			return err
-		}
-
 		// Delete non-namespaced resources (ex: PersistentVolume)
 		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-database-pv--"+newNamespace, metav1.DeleteOptions{})
 		if err != nil {
@@ -1162,6 +1175,14 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-tensorboard-pv--"+newNamespace, metav1.DeleteOptions{})
 		if err != nil {
 			return err
+		}
+
+		// Kill port-forward process:
+		if !c.incluster {
+			err = c.portfwdCmd.Process.Kill()
+			if err != nil {
+				return err
+			}
 		}
 	}
 

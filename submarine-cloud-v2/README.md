@@ -48,8 +48,24 @@ make test-unit
 
 # Run submarine-operator out-of-cluster
 ```bash
+# Step1: Build & Run "submarine-operator"
 go build -o submarine-operator
 ./submarine-operator
+
+# Step2: Deploy a submarine
+kubectl create ns submarine-admin
+kubectl apply -n submarine-admin -f artifacts/examples/example-submarine.yaml
+
+# Step3: "submarine-operator" will perform port-forwarding automatically.
+
+# Step4: View workbench (127.0.0.1:32080) with your web browser
+
+# Step5: Delete: 
+#   (1) Remove all relevant Helm chart releases
+#   (2) Remove all resources in the namespace "submariner-user-test"
+#   (3) Remove all non-namespaced resources (Ex: PersistentVolume) created by client-go API 
+#   (4) **Note:** The namespace "submarine-admin" will not be deleted
+kubectl delete submarine example-submarine -n submarine-admin 
 ```
 
 # Run operator in-cluster
@@ -65,19 +81,29 @@ kubectl apply -f artifacts/examples/submarine-operator-service-account.yaml
 kubectl apply -f artifacts/examples/submarine-operator.yaml
 
 # Step4: Deploy a submarine
-kubectl create ns submarine-operator-test
-kubectl apply -n submarine-operator-test -f artifacts/examples/example-submarine.yaml
+kubectl create ns submarine-admin
+kubectl apply -n submarine-admin -f artifacts/examples/example-submarine.yaml
 
 # Step5: Inspect submarine-operator POD logs 
-kubectl logs ${submarine-operator POD}
-```
+kubectl logs -f ${submarine-operator POD}
 
-# Create a Submarine in specific namespace and see workbench
+# Step6: The operator will create a new namespace "submarine-user-test"
+kubectl get all -n submarine-user-test 
 
-```bash
-kubectl create ns submarine-operator-test
-kubectl apply -n submarine-operator-test -f artifacts/examples/example-submarine.yaml
-kubectl port-forward --address 0.0.0.0 -n submarine-operator-test service/traefik 32080:80
+# Step7: port-forwarding
+kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
+
+# Step8: View workbench (127.0.0.1:32080) with your web browser
+
+# Step9: Delete: 
+#   (1) Remove all relevant Helm chart releases
+#   (2) Remove all resources in the namespace "submariner-user-test"
+#   (3) Remove all non-namespaced resources (Ex: PersistentVolume) created by client-go API 
+#   (4) **Note:** The namespace "submarine-admin" will not be deleted
+kubectl delete submarine example-submarine -n submarine-admin 
+
+# Step10: Delete "submarine-operator"
+kubectl delete deployment submarine-operator-demo
 ```
 
 # Helm Golang API
