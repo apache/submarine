@@ -359,6 +359,10 @@ func (c *Controller) newSubmarineServer(namespace string, serverImage string, se
 											Name:  "K8S_APISERVER_URL",
 											Value: "kubernetes.default.svc",
 										},
+										{
+											Name: "ENV_NAMESPACE",
+											Value: namespace,
+										},
 									},
 									Ports: []corev1.ContainerPort{
 										{
