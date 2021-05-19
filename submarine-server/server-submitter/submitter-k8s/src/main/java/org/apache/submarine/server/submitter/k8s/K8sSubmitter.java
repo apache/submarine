@@ -83,6 +83,8 @@ public class K8sSubmitter implements Submitter {
 
   private static final String TF_JOB_SELECTOR_KEY = "tf-job-name=";
   private static final String PYTORCH_JOB_SELECTOR_KEY = "pytorch-job-name=";
+  
+  private static final String ENV_NAMESPACE = "ENV_NAMESPACE";
 
   // K8s API client for CRD
   private CustomObjectsApi api;
@@ -264,8 +266,11 @@ public class K8sSubmitter implements Submitter {
   @Override
   public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
     final String name = "submarine-tensorboard";
-    final String namespace = "default";
     final String ingressRouteName = "submarine-tensorboard-ingressroute";
+    String namespace = "default";
+    if (System.getenv(ENV_NAMESPACE) != null) {
+      namespace = System.getenv(ENV_NAMESPACE);
+    }
 
     try {
       V1Deployment deploy =  appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
@@ -303,8 +308,11 @@ public class K8sSubmitter implements Submitter {
   @Override
   public MlflowInfo getMlflowInfo() throws SubmarineRuntimeException {
     final String name = "submarine-mlflow";
-    final String namespace = "default";
     final String ingressRouteName = "submarine-mlflow-ingressroute";
+    String namespace = "default";
+    if (System.getenv(ENV_NAMESPACE) != null) {
+      namespace = System.getenv(ENV_NAMESPACE);
+    }
 
     try {
       V1Deployment deploy =  appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
