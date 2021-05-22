@@ -28,5 +28,5 @@ __all__ = ["log_metric",
            "set_tracking_uri",
            "get_tracking_uri",
            "ExperimentClient",
-           "ModelsClien"
+           "ModelsClient"
            ]
