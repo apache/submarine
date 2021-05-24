@@ -68,6 +68,12 @@ import (
 
 const controllerAgentName = "submarine-controller"
 
+const (
+	// MessageResourceExists is the message used for Events when a resource
+	// fails to sync due to a Deployment already existing
+	MessageResourceExists = "Resource %q already exists and is not managed by Foo"
+)
+
 // Controller is the controller implementation for Foo resources
 type Controller struct {
 	// kubeclientset is a standard kubernetes clientset
@@ -79,6 +85,7 @@ type Controller struct {
 	submarinesLister listers.SubmarineLister
 	submarinesSynced cache.InformerSynced
 
+	namespaceLister             corelisters.NamespaceLister
 	deploymentLister            appslisters.DeploymentLister
 	serviceaccountLister        corelisters.ServiceAccountLister
 	serviceLister               corelisters.ServiceLister
@@ -122,6 +129,7 @@ func NewController(
 	kubeclientset kubernetes.Interface,
 	submarineclientset clientset.Interface,
 	traefikclientset traefik.Interface,
+	namespaceInformer coreinformers.NamespaceInformer,
 	deploymentInformer appsinformers.DeploymentInformer,
 	serviceInformer coreinformers.ServiceInformer,
 	serviceaccountInformer coreinformers.ServiceAccountInformer,
@@ -150,6 +158,7 @@ func NewController(
 		traefikclientset:            traefikclientset,
 		submarinesLister:            submarineInformer.Lister(),
 		submarinesSynced:            submarineInformer.Informer().HasSynced,
+		namespaceLister:             namespaceInformer.Lister(),
 		deploymentLister:            deploymentInformer.Lister(),
 		serviceLister:               serviceInformer.Lister(),
 		serviceaccountLister:        serviceaccountInformer.Lister(),
@@ -249,7 +258,7 @@ func (c *Controller) processNextWorkItem() bool {
 
 // newSubmarineServer is a function to create submarine-server.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-server.yaml
-func (c *Controller) newSubmarineServer(namespace string, serverImage string, serverReplicas int32) error {
+func (c *Controller) newSubmarineServer(submarine *v1alpha1.Submarine, namespace string, serverImage string, serverReplicas int32) error {
 	klog.Info("[newSubmarineServer]")
 	serverName := "submarine-server"
 
@@ -261,6 +270,9 @@ func (c *Controller) newSubmarineServer(namespace string, serverImage string, se
 			&corev1.ServiceAccount{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: serverName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 			},
 			metav1.CreateOptions{})
@@ -274,7 +286,10 @@ func (c *Controller) newSubmarineServer(namespace string, serverImage string, se
 		return serviceaccount_err
 	}
 
-	// TODO: (sample-controller) controller.go:287 ~ 293
+	if !metav1.IsControlledBy(serviceaccount, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, serviceaccount.Name)
+		return fmt.Errorf(msg)
+	}
 
 	// Step2: Create Service
 	service, service_err := c.serviceLister.Services(namespace).Get(serverName)
@@ -286,6 +301,9 @@ func (c *Controller) newSubmarineServer(namespace string, serverImage string, se
 					Name: serverName,
 					Labels: map[string]string{
 						"run": serverName,
+					},
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 					},
 				},
 				Spec: corev1.ServiceSpec{
@@ -312,7 +330,10 @@ func (c *Controller) newSubmarineServer(namespace string, serverImage string, se
 		return service_err
 	}
 
-	// TODO: (sample-controller) controller.go:287 ~ 293
+	if !metav1.IsControlledBy(service, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, service.Name)
+		return fmt.Errorf(msg)
+	}
 
 	// Step3: Create Deployment
 	deployment, deployment_err := c.deploymentLister.Deployments(namespace).Get(serverName)
@@ -322,6 +343,9 @@ func (c *Controller) newSubmarineServer(namespace string, serverImage string, se
 			&appsv1.Deployment{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: serverName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Spec: appsv1.DeploymentSpec{
 					Selector: &metav1.LabelSelector{
@@ -387,14 +411,17 @@ func (c *Controller) newSubmarineServer(namespace string, serverImage string, se
 		return deployment_err
 	}
 
-	// TODO: (sample-controller) controller.go:287 ~ 293
+	if !metav1.IsControlledBy(deployment, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, deployment.Name)
+		return fmt.Errorf(msg)
+	}
 
 	return nil
 }
 
 // newIngress is a function to create Ingress.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-ingress.yaml
-func (c *Controller) newIngress(namespace string) error {
+func (c *Controller) newIngress(submarine *v1alpha1.Submarine, namespace string) error {
 	klog.Info("[newIngress]")
 	serverName := "submarine-server"
 
@@ -407,6 +434,9 @@ func (c *Controller) newIngress(namespace string) error {
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      serverName + "-ingress",
 					Namespace: namespace,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Spec: extensionsv1beta1.IngressSpec{
 					Rules: []extensionsv1beta1.IngressRule{
@@ -439,14 +469,17 @@ func (c *Controller) newIngress(namespace string) error {
 		return ingress_err
 	}
 
-	// TODO: (sample-controller) controller.go:287 ~ 293
+	if !metav1.IsControlledBy(ingress, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, ingress.Name)
+		return fmt.Errorf(msg)
+	}
 
 	return nil
 }
 
 // newSubmarineServerRBAC is a function to create RBAC for submarine-server.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/rbac.yaml
-func (c *Controller) newSubmarineServerRBAC(serviceaccount_namespace string) error {
+func (c *Controller) newSubmarineServerRBAC(submarine *v1alpha1.Submarine, serviceaccount_namespace string) error {
 	klog.Info("[newSubmarineServerRBAC]")
 	serverName := "submarine-server"
 	// Step1: Create ClusterRole
@@ -457,6 +490,9 @@ func (c *Controller) newSubmarineServerRBAC(serviceaccount_namespace string) err
 			&rbacv1.ClusterRole{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: serverName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Rules: []rbacv1.PolicyRule{
 					{
@@ -492,7 +528,10 @@ func (c *Controller) newSubmarineServerRBAC(serviceaccount_namespace string) err
 		return clusterrole_err
 	}
 
-	// TODO: (sample-controller) controller.go:287 ~ 293
+	if !metav1.IsControlledBy(clusterrole, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, clusterrole.Name)
+		return fmt.Errorf(msg)
+	}
 
 	clusterrolebinding, clusterrolebinding_err := c.clusterrolebindingLister.Get(serverName)
 	// If the resource doesn't exist, we'll create it
@@ -501,9 +540,12 @@ func (c *Controller) newSubmarineServerRBAC(serviceaccount_namespace string) err
 			&rbacv1.ClusterRoleBinding{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: serverName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Subjects: []rbacv1.Subject{
-					rbacv1.Subject{
+					{
 						Kind:      "ServiceAccount",
 						Namespace: serviceaccount_namespace,
 						Name:      serverName,
@@ -526,14 +568,17 @@ func (c *Controller) newSubmarineServerRBAC(serviceaccount_namespace string) err
 		return clusterrolebinding_err
 	}
 
-	// TODO: (sample-controller) controller.go:287 ~ 293
+	if !metav1.IsControlledBy(clusterrolebinding, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, clusterrolebinding.Name)
+		return fmt.Errorf(msg)
+	}
 
 	return nil
 }
 
 // newSubmarineDatabase is a function to create submarine-database.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-database.yaml
-func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.SubmarineSpec) error {
+func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespace string, spec *v1alpha1.SubmarineSpec) error {
 	klog.Info("[newSubmarineDatabase]")
 	databaseName := "submarine-database"
 
@@ -574,6 +619,9 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 			&corev1.PersistentVolume{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: pvName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Spec: corev1.PersistentVolumeSpec{
 					AccessModes: []corev1.PersistentVolumeAccessMode{
@@ -598,7 +646,10 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 		return pv_err
 	}
 
-	// TODO: (sample-controller) controller.go:287 ~ 293
+	if !metav1.IsControlledBy(pv, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, pv.Name)
+		return fmt.Errorf(msg)
+	}
 
 	// Step2: Create PersistentVolumeClaim
 	pvcName := databaseName + "-pvc"
@@ -610,6 +661,9 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 			&corev1.PersistentVolumeClaim{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: pvcName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Spec: corev1.PersistentVolumeClaimSpec{
 					AccessModes: []corev1.PersistentVolumeAccessMode{
@@ -637,7 +691,10 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 		return pvc_err
 	}
 
-	// TODO: (sample-controller) controller.go:287 ~ 293
+	if !metav1.IsControlledBy(pvc, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, pvc.Name)
+		return fmt.Errorf(msg)
+	}
 
 	// Step3: Create Deployment
 	deployment, deployment_err := c.deploymentLister.Deployments(namespace).Get(databaseName)
@@ -647,6 +704,9 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 			&appsv1.Deployment{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: databaseName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Spec: appsv1.DeploymentSpec{
 					Selector: &metav1.LabelSelector{
@@ -714,7 +774,10 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 		return deployment_err
 	}
 
-	// TODO: (sample-controller) controller.go:287 ~ 293
+	if !metav1.IsControlledBy(deployment, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, deployment.Name)
+		return fmt.Errorf(msg)
+	}
 
 	// Step4: Create Service
 	service, service_err := c.serviceLister.Services(namespace).Get(databaseName)
@@ -724,6 +787,9 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 			&corev1.Service{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: databaseName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Spec: corev1.ServiceSpec{
 					Ports: []corev1.ServicePort{
@@ -751,7 +817,11 @@ func (c *Controller) newSubmarineDatabase(namespace string, spec *v1alpha1.Subma
 		return service_err
 	}
 
-	// TODO: (sample-controller) controller.go:287 ~ 293
+	if !metav1.IsControlledBy(service, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, service.Name)
+		return fmt.Errorf(msg)
+	}
+
 	return nil
 }
 
@@ -813,7 +883,7 @@ func (c *Controller) newSubCharts(namespace string) error {
 
 // newSubmarineTensorboard is a function to create submarine-tensorboard.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-tensorboard.yaml
-func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.SubmarineSpec) error {
+func (c *Controller) newSubmarineTensorboard(submarine *v1alpha1.Submarine, namespace string, spec *v1alpha1.SubmarineSpec) error {
 	klog.Info("[newSubmarineTensorboard]")
 	tensorboardName := "submarine-tensorboard"
 
@@ -850,6 +920,9 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 			&corev1.PersistentVolume{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: pvName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Spec: corev1.PersistentVolumeSpec{
 					AccessModes: []corev1.PersistentVolumeAccessMode{
@@ -875,6 +948,11 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 		return pv_err
 	}
 
+	if !metav1.IsControlledBy(pv, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, pv.Name)
+		return fmt.Errorf(msg)
+	}
+
 	// Step 2: Create PersistentVolumeClaim
 	pvcName := tensorboardName + "-pvc"
 	pvc, pvc_err := c.persistentvolumeclaimLister.PersistentVolumeClaims(namespace).Get(pvcName)
@@ -885,6 +963,9 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 			&corev1.PersistentVolumeClaim{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: pvcName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Spec: corev1.PersistentVolumeClaimSpec{
 					AccessModes: []corev1.PersistentVolumeAccessMode{
@@ -912,6 +993,11 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 		return pvc_err
 	}
 
+	if !metav1.IsControlledBy(pvc, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, pvc.Name)
+		return fmt.Errorf(msg)
+	}
+
 	// Step 3: Create Deployment
 	deployment, deployment_err := c.deploymentLister.Deployments(namespace).Get(tensorboardName)
 	if errors.IsNotFound(deployment_err) {
@@ -919,6 +1005,9 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 			&appsv1.Deployment{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: tensorboardName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Spec: appsv1.DeploymentSpec{
 					Selector: &metav1.LabelSelector{
@@ -984,6 +1073,11 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 		return deployment_err
 	}
 
+	if !metav1.IsControlledBy(deployment, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, deployment.Name)
+		return fmt.Errorf(msg)
+	}
+
 	// Step 4: Create Service
 	serviceName := tensorboardName + "-service"
 	service, service_err := c.serviceLister.Services(namespace).Get(serviceName)
@@ -993,6 +1087,9 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 			&corev1.Service{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: serviceName,
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Spec: corev1.ServiceSpec{
 					Selector: map[string]string{
@@ -1020,6 +1117,11 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 		return service_err
 	}
 
+	if !metav1.IsControlledBy(service, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, service.Name)
+		return fmt.Errorf(msg)
+	}
+
 	// Step 5: Create IngressRoute
 	ingressroute, ingressroute_err := c.ingressrouteLister.IngressRoutes(namespace).Get(tensorboardName + "-ingressroute")
 	// If the resource doesn't exist, we'll create it
@@ -1028,6 +1130,9 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 			&traefikv1alpha1.IngressRoute{
 				ObjectMeta: metav1.ObjectMeta{
 					Name: tensorboardName + "-ingressroute",
+					OwnerReferences: []metav1.OwnerReference{
+						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+					},
 				},
 				Spec: traefikv1alpha1.IngressRouteSpec{
 					EntryPoints: []string{
@@ -1061,6 +1166,11 @@ func (c *Controller) newSubmarineTensorboard(namespace string, spec *v1alpha1.Su
 	// temporary network failure, or any other transient reason.
 	if ingressroute_err != nil {
 		return ingressroute_err
+	}
+
+	if !metav1.IsControlledBy(ingressroute, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, ingressroute.Name)
+		return fmt.Errorf(msg)
 	}
 
 	return nil
@@ -1102,10 +1212,25 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		fmt.Println(string(b))
 
 		// create submarine in a new namespace
-		nsSpec := &corev1.Namespace{ObjectMeta: metav1.ObjectMeta{Name: newNamespace}}
-		_, err = c.kubeclientset.CoreV1().Namespaces().Create(context.TODO(), nsSpec, metav1.CreateOptions{})
+		ns, err := c.namespaceLister.Get(newNamespace)
+		if errors.IsNotFound(err) {
+			ns, err = c.kubeclientset.CoreV1().Namespaces().Create(context.TODO(),
+				&corev1.Namespace{
+					ObjectMeta: metav1.ObjectMeta{
+						Name: newNamespace,
+						OwnerReferences: []metav1.OwnerReference{
+							*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+						},
+					},
+				},
+				metav1.CreateOptions{})
+		}
 		if err != nil {
 			return err
+		}
+		if !metav1.IsControlledBy(ns, submarine) {
+			msg := fmt.Sprintf(MessageResourceExists, ns.Name)
+			return fmt.Errorf(msg)
 		}
 
 		// Install subcharts
@@ -1117,31 +1242,31 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		if serverImage == "" {
 			serverImage = "apache/submarine:server-" + submarine.Spec.Version
 		}
-		err = c.newSubmarineServer(newNamespace, serverImage, serverReplicas)
+		err = c.newSubmarineServer(submarine, newNamespace, serverImage, serverReplicas)
 		if err != nil {
 			return err
 		}
 
 		// Create Submarine Database
-		err = c.newSubmarineDatabase(newNamespace, &submarine.Spec)
+		err = c.newSubmarineDatabase(submarine, newNamespace, &submarine.Spec)
 		if err != nil {
 			return err
 		}
 
 		// Create ingress
-		err = c.newIngress(newNamespace)
+		err = c.newIngress(submarine, newNamespace)
 		if err != nil {
 			return err
 		}
 
 		// Create RBAC
-		err = c.newSubmarineServerRBAC(newNamespace)
+		err = c.newSubmarineServerRBAC(submarine, newNamespace)
 		if err != nil {
 			return err
 		}
 
 		// Create Submarine Tensorboard
-		err = c.newSubmarineTensorboard(newNamespace, &submarine.Spec)
+		err = c.newSubmarineTensorboard(submarine, newNamespace, &submarine.Spec)
 		if err != nil {
 			return err
 		}
@@ -1162,24 +1287,6 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 			helm.HelmUninstall(chart)
 		}
 		c.charts = nil
-
-		// Delete namespace: Delete all namespaced resources, ex: POD, Deployment, ... etc.
-		err = c.kubeclientset.CoreV1().Namespaces().Delete(context.TODO(), newNamespace, metav1.DeleteOptions{})
-		if err != nil {
-			return err
-		}
-		klog.Info("Delete Namespace: ", newNamespace)
-
-		// Delete non-namespaced resources (ex: PersistentVolume)
-		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-database-pv--"+newNamespace, metav1.DeleteOptions{})
-		if err != nil {
-			return err
-		}
-
-		err = c.kubeclientset.CoreV1().PersistentVolumes().Delete(context.TODO(), "submarine-tensorboard-pv--"+newNamespace, metav1.DeleteOptions{})
-		if err != nil {
-			return err
-		}
 
 		// Kill port-forward process:
 		if !c.incluster {
