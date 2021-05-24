@@ -360,7 +360,7 @@ func (c *Controller) newSubmarineServer(namespace string, serverImage string, se
 											Value: "kubernetes.default.svc",
 										},
 										{
-											Name: "ENV_NAMESPACE",
+											Name:  "ENV_NAMESPACE",
 											Value: namespace,
 										},
 									},
@@ -1153,7 +1153,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		//   (3) in-cluster
 		if action == ADD {
 			if !c.incluster {
-				c.portfwdCmd = k8sutil.ServicePortForwardPort(context.TODO(), newNamespace, "traefik", 32080, 80, color.FgGreen)
+				c.portfwdCmd = k8sutil.ServicePortForwardPort(context.TODO(), newNamespace, "traefik", 8080, 80, color.FgGreen)
 			}
 		}
 	} else { // Case: DELETE
