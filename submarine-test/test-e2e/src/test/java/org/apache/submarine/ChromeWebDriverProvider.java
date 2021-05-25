@@ -101,7 +101,9 @@ public class ChromeWebDriverProvider implements WebDriverProvider {
     ChromeOptions chromeOptions = new ChromeOptions();
     chromeOptions.setExperimentalOption("prefs", chromePrefs);
     LOG.info("Set default download directory: " + downloadPath);
-    chromeOptions.addArguments("--headless");
+    if (Boolean.valueOf(System.getProperty("SUBMARINE_E2E_LOCAL")) == false) {
+      chromeOptions.addArguments("--headless");
+    }
     return new ChromeDriver(chromeOptions);
   }
 

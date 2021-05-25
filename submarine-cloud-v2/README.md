@@ -155,3 +155,19 @@ Examples:
 ./hack/build_image.sh all     # build all images
 ./hack/build_image.sh server  # only build the server image
 ```
+
+# Run frontend E2E tests
+
+Use the following helper script to run frontend E2E tests.
+
+```
+# Prerequisite: Make sure Workbench is running on 127.0.0.1:8080.
+./hack/run_frontend_e2e.sh [testcase]
+```
+* [testcase]: Check the directory [integration](../submarine-test/test-e2e/src/test/java/org/apache/submarine/integration/).
+
+Examples:
+
+```
+./hack/run_frontend_e2e.sh loginIT
+```
