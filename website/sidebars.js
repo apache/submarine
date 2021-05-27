@@ -32,6 +32,7 @@ module.exports = {
                         "userDocs/k8s/run-experiment-template-rest",
                         "userDocs/k8s/run-pytorch-experiment-rest",
                         "userDocs/k8s/run-tensorflow-experiment-rest",
+                        "userDocs/k8s/how-to-use-tensorboard",
                     ],
                 },
                 {
