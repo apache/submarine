@@ -44,9 +44,7 @@ class RangerAdminClientImpl extends RangerAdminRESTClient {
     }
   }
 
-  override def getServicePoliciesIfUpdated(
-      lastKnownVersion: Long,
-      lastActivationTimeInMillis: Long): ServicePolicies = {
+  override def getServicePoliciesIfUpdated(lastKnownVersion: Long, lastActivationTimeInMillis: Long): ServicePolicies = {
     policies
   }
 
@@ -54,9 +52,7 @@ class RangerAdminClientImpl extends RangerAdminRESTClient {
 
   override def revokeAccess(request: GrantRevokeRequest): Unit = {}
 
-  override def getServiceTagsIfUpdated(
-      lastKnownVersion: Long,
-      lastActivationTimeInMillis: Long): ServiceTags = null
+  override def getServiceTagsIfUpdated(lastKnownVersion: Long, lastActivationTimeInMillis: Long): ServiceTags = null
 
   override def getTagTypes(tagTypePattern: String): util.List[String] = null
 }
