@@ -36,6 +36,7 @@
   <properties>
     <antlr4.version>4.7</antlr4.version>
     <eclipse.jpa.version>2.5.2</eclipse.jpa.version>
+    <elasticsearch.version>7.10.2</elasticsearch.version>
     <gson.version>2.2.4</gson.version>
     <httpcomponents.httpclient.version>4.5.3</httpcomponents.httpclient.version>
     <httpcomponents.httpcore.version>4.4.6</httpcomponents.httpcore.version>
@@ -154,6 +155,11 @@
           <artifactId>*</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>${elasticsearch.version}</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -337,6 +343,18 @@
             <configuration>
               <sources>
                 <source>spark-${spark.compatible.version}/src/main/scala</source>
+              </sources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>add-test-source</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>ranger-${ranger.major.version}/src/test/scala</source>
               </sources>
             </configuration>
           </execution>
@@ -599,8 +617,22 @@
         <httpcomponents.httpcore.version>4.4.6</httpcomponents.httpcore.version>
         <httpcomponents.httpmime.version>4.5.3</httpcomponents.httpmime.version>
         <ranger.version>2.0.0</ranger.version>
-        <ranger.major.version>2</ranger.major.version>
+        <ranger.major.version>2.0</ranger.major.version>
         <solr.version>7.7.1</solr.version>
+        <gethostname4j.scope>compile</gethostname4j.scope>
+        <jna.scope>compile</jna.scope>
+      </properties>
+    </profile>
+    <profile>
+      <id>ranger-2.1</id>
+      <properties>
+        <httpcomponents.httpclient.version>4.5.3</httpcomponents.httpclient.version>
+        <httpcomponents.httpcore.version>4.4.6</httpcomponents.httpcore.version>
+        <httpcomponents.httpmime.version>4.5.3</httpcomponents.httpmime.version>
+        <ranger.version>2.1.0</ranger.version>
+        <ranger.major.version>2.1</ranger.major.version>
+        <solr.version>7.7.1</solr.version>
+        <elasticsearch.version>7.10.2</elasticsearch.version>
         <gethostname4j.scope>compile</gethostname4j.scope>
         <jna.scope>compile</jna.scope>
       </properties>
