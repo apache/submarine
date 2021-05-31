@@ -9,6 +9,7 @@ For `yaml` files, please use [prettier](https://prettier.io/) to format the code
 
 # Initialization
 ```bash
+minikube start --vm-driver=docker  --kubernetes-version v1.15.11
 go mod vendor
 chmod -R 777 vendor
 ```
@@ -161,7 +162,7 @@ Examples:
 Use the following helper script to run frontend E2E tests.
 
 ```
-# Prerequisite: Make sure Workbench is running on 127.0.0.1:8080.
+# Prerequisite: Make sure Workbench is running on $URL:$WORKBENCH_PORT.
 ./hack/run_frontend_e2e.sh [testcase]
 ```
 * [testcase]: Check the directory [integration](../submarine-test/test-e2e/src/test/java/org/apache/submarine/integration/).

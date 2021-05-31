@@ -45,6 +45,7 @@ public class notebookIT extends AbstractSubmarineIT {
 
   @Test
   public void notebookNavigation() throws Exception {
+    String URL = getURL("http://localhost", 8080);
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
@@ -54,7 +55,7 @@ public class notebookIT extends AbstractSubmarineIT {
 
     // Routing to Notebook
     pollingWait(By.xpath("//span[contains(text(), \"Notebook\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/notebook");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/notebook"));
 
     // Test for creating new notebook
     LOG.info("Create Notebook Test");

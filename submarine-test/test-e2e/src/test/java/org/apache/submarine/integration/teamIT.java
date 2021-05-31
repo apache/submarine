@@ -46,6 +46,7 @@ public class teamIT extends AbstractSubmarineIT {
 
   @Test
   public void teamTest() throws Exception {
+    String URL = getURL("http://localhost", 8080);
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
@@ -55,7 +56,7 @@ public class teamIT extends AbstractSubmarineIT {
 
     // Routing to workspace
     pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/workspace"));
 
     //Test team part
     pollingWait(By.xpath("//li[contains(text(), \"Team\")]"), MAX_BROWSER_TIMEOUT_SEC).click();

@@ -66,6 +66,21 @@ public class WebDriverManager {
     String url;
     if (System.getenv("url") != null) {
       url = System.getenv("url");
+    } else if ((System.getProperty("SUBMARINE_WORKBENCH_URL") != null) || (System.getProperty("SUBMARINE_WORKBENCH_PORT") == null)) {
+      if (System.getProperty("SUBMARINE_WORKBENCH_URL") == null) {
+        url = "http://localhost";
+      } else {
+        url = System.getProperty("SUBMARINE_WORKBENCH_URL"); 
+      }
+
+      url = url.concat(":");
+
+      if (System.getProperty("SUBMARINE_WORKBENCH_PORT") == null) {
+        url = url.concat("8080");      
+      } else {
+        String port = System.getProperty("SUBMARINE_WORKBENCH_PORT");
+        url = url.concat(String.valueOf(port));
+      }
     } else {
       url = "http://localhost:8080";
     }

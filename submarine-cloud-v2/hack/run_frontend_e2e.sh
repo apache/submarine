@@ -22,12 +22,14 @@
 #       Testcase: Check the directory "submarine-test/test-e2e/src/test/java/org/apache/submarine/integration"
 #       Example : ./run_frontend_e2e.sh loginIT
 
-SUBMARINE_HOME=`git rev-parse --show-toplevel`
-
-# Do not modify these two variables.
+# ======= Modifiable Variables ======= #
+# Note: URL must start with "http" 
+# (Ref: https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebDriver.html#get(java.lang.String))
 WORKBENCH_PORT=8080
-URL="127.0.0.1"
+URL="http://127.0.0.1"
+# ==================================== #
 
+SUBMARINE_HOME=`git rev-parse --show-toplevel`
 cd "$SUBMARINE_HOME"
 
 HTTP_CODE=$(curl -sL -w "%{http_code}\\n" $URL:$WORKBENCH_PORT -o /dev/null)
@@ -40,4 +42,4 @@ fi
 
 set -e
 TESTCASE=$1
-mvn -f submarine-test/test-e2e/ -Dtest=$TESTCASE -DSUBMARINE_E2E_LOCAL=true test
+mvn -f submarine-test/test-e2e/ -DSUBMARINE_WORKBENCH_URL=$URL -DSUBMARINE_WORKBENCH_PORT=$WORKBENCH_PORT -Dtest=$TESTCASE -DSUBMARINE_E2E_LOCAL=true test
