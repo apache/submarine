@@ -48,6 +48,7 @@ public class workspaceIT extends AbstractSubmarineIT {
 
   @Test
   public void workspaceNavigation() throws Exception {
+    String URL = getURL("http://localhost", 8080);
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
@@ -57,7 +58,7 @@ public class workspaceIT extends AbstractSubmarineIT {
 
     // Routing to workspace
     pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/workspace");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/workspace"));
 
     WebDriverWait wait = new WebDriverWait( driver, 60);
     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//li[contains(text(), \"Release\")]")));

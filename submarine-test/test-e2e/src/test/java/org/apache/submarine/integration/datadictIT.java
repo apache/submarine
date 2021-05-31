@@ -45,6 +45,7 @@ public class datadictIT extends AbstractSubmarineIT {
 
   // @Test TODO(kevin85421): Due to the undeterministic behavior of travis, I decide to comment it.
   public void dataDictTest() throws Exception {
+    String URL = getURL("http://localhost", 8080);
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
@@ -58,7 +59,7 @@ public class datadictIT extends AbstractSubmarineIT {
     WebDriverWait wait = new WebDriverWait( driver, 60);
     pollingWait(By.xpath("//a[@href='/workbench/manager/dataDict']"), MAX_BROWSER_TIMEOUT_SEC).click();
     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ant-breadcrumb-link ng-star-inserted']")));
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/manager/dataDict");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/manager/dataDict"));
 
     // Add button
     LOG.info("[TEST] Add button");

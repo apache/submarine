@@ -45,6 +45,7 @@ public class experimentIT extends AbstractSubmarineIT {
 
   @Test
   public void experimentNavigation() throws Exception {
+    String URL = getURL("http://localhost", 8080);
     LOG.info("[Test case]: experimentNavigation]");
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
@@ -58,7 +59,7 @@ public class experimentIT extends AbstractSubmarineIT {
     // Routing to workspace
     LOG.info("url");
     pollingWait(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/experiment");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/experiment"));
 
     // Test create new experiment
     LOG.info("First step");

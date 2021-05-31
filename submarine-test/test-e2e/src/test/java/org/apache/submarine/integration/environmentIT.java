@@ -56,6 +56,7 @@ public class environmentIT extends AbstractSubmarineIT {
 
   @Test
   public void environmentNavigation() throws Exception {
+    String URL = getURL("http://localhost", 8080);
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
@@ -66,7 +67,7 @@ public class environmentIT extends AbstractSubmarineIT {
     // Routing to workspace
     LOG.info("url");
     pollingWait(By.xpath("//span[contains(text(), \"Environment\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/environment");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/environment"));
 
     // Test create new environment
     LOG.info("Create new environment");

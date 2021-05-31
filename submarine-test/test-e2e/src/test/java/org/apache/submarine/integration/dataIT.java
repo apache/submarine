@@ -48,6 +48,7 @@ public class dataIT extends AbstractSubmarineIT {
 
   @Test
   public void dataNavigation() throws Exception {
+    String URL = getURL("http://localhost", 8080);
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
@@ -57,7 +58,7 @@ public class dataIT extends AbstractSubmarineIT {
 
     // Routing to data page
     pollingWait(By.xpath("//span[contains(text(), \"Data\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/data");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/data"));
 
     // Test create new Table
     pollingWait(By.xpath("//button[@id='createBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();

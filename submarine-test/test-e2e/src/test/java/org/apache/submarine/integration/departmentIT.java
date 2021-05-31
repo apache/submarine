@@ -46,6 +46,7 @@ public class departmentIT extends AbstractSubmarineIT{
 
   @Test
   public void dataNavigation() throws Exception {
+    String URL = getURL("http://localhost", 8080);
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
@@ -58,7 +59,7 @@ public class departmentIT extends AbstractSubmarineIT{
     WebDriverWait wait = new WebDriverWait( driver, 60);
     pollingWait(By.xpath("//a[@href='/workbench/manager/department']"), MAX_BROWSER_TIMEOUT_SEC).click();
     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ant-breadcrumb-link ng-star-inserted']")));
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/manager/department");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/manager/department"));
 
     // Test create new department
     pollingWait(By.xpath("//button[@id='btnAddDepartment']"), MAX_BROWSER_TIMEOUT_SEC).click();

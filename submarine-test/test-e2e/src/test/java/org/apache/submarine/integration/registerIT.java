@@ -46,10 +46,11 @@ public class registerIT extends AbstractSubmarineIT {
 
   @Test
   public void registerFrontEndInvalidTest() throws Exception {
+    String URL = getURL("http://localhost", 8080);
     // Navigate from Login page to Registration page
     LOG.info("Navigate from Login page to Registration page");
     pollingWait(By.xpath("//a[contains(text(), \"Create an account!\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/user/register");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/user/register"));
 
     // Username test
     //   Case1: empty username
@@ -93,20 +94,21 @@ public class registerIT extends AbstractSubmarineIT {
     pollingWait(By.cssSelector("input[formcontrolname='checkPassword']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("1234"); // "1234" != "testtesttest"
     Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Passwords must match!\")]")).size(), 1);
     pollingWait(By.xpath("//a[@href='/user/login']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/user/login"); 
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/user/login")); 
   }
 
   @Test
   public void registerFrontEndValidTest() throws Exception {
+    String URL = getURL("http://localhost", 8080);
     // Sign-Up successfully
     pollingWait(By.xpath("//a[contains(text(), \"Create an account!\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/user/register");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/user/register"));
     pollingWait(By.cssSelector("input[formcontrolname='username']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("validusername");
     pollingWait(By.cssSelector("input[formcontrolname='email']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("validemail@gmail.com");
     pollingWait(By.cssSelector("input[formcontrolname='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("validpassword");
     pollingWait(By.cssSelector("input[formcontrolname='checkPassword']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("validpassword");
     pollingWait(By.cssSelector("label[formcontrolname='agree']"), MAX_BROWSER_TIMEOUT_SEC).click();
     pollingWait(By.cssSelector("button[class='ant-btn ant-btn-primary ant-btn-block']"), MAX_BROWSER_TIMEOUT_SEC).click(); 
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/user/login");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/user/login"));
   }
 }

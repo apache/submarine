@@ -115,6 +115,25 @@ abstract public class AbstractSubmarineIT {
     });
   }
 
+  protected String getURL(final String defaultURL, final int defaultPort) {
+    String URL;
+    if (System.getProperty("SUBMARINE_WORKBENCH_URL") == null) {
+      URL = defaultURL;
+    } else {
+      URL = System.getProperty("SUBMARINE_WORKBENCH_URL"); 
+    }
+
+    URL = URL.concat(":");
+
+    if (System.getProperty("SUBMARINE_WORKBENCH_PORT") == null) {
+      URL = URL.concat(String.valueOf(defaultPort));      
+    } else {
+      String port = System.getProperty("SUBMARINE_WORKBENCH_PORT");
+      URL = URL.concat(String.valueOf(port));
+    }
+    return URL;
+  }
+
   protected WebElement buttonCheck(final By locator, final long timeWait) {
     Wait<WebDriver> wait = new FluentWait<>(driver)
         .withTimeout(timeWait, TimeUnit.SECONDS)

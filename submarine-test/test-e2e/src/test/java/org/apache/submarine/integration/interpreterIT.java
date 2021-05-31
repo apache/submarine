@@ -46,6 +46,7 @@ public class interpreterIT extends AbstractSubmarineIT {
 
   @Test
   public void workspaceNavigation() throws Exception {
+    String URL = getURL("http://localhost", 8080);
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
@@ -55,7 +56,7 @@ public class interpreterIT extends AbstractSubmarineIT {
 
     // Routing to Interpreter
     pollingWait(By.xpath("//span[contains(text(), \"Interpreter\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), "http://localhost:8080/workbench/interpreter");
+    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/interpreter"));
 
     // Test create new Interpreter
     pollingWait(By.xpath("//button[@id='interpreterAddButton']"), MAX_BROWSER_TIMEOUT_SEC).click();
