@@ -196,7 +196,127 @@ func NewController(
 		},
 	})
 
-	// TODO: Setting up event handler for other resources. E.g. namespace
+	// Setting up event handler for other resources
+	namespaceInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newNamespace := new.(*corev1.Namespace)
+			oldNamespace := old.(*corev1.Namespace)
+			if newNamespace.ResourceVersion == oldNamespace.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
+	deploymentInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newDeployment := new.(*appsv1.Deployment)
+			oldDeployment := old.(*appsv1.Deployment)
+			if newDeployment.ResourceVersion == oldDeployment.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
+	serviceInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newService := new.(*corev1.Service)
+			oldService := old.(*corev1.Service)
+			if newService.ResourceVersion == oldService.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
+	serviceaccountInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newServiceAccount := new.(*corev1.ServiceAccount)
+			oldServiceAccount := old.(*corev1.ServiceAccount)
+			if newServiceAccount.ResourceVersion == oldServiceAccount.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
+	persistentvolumeInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newPV := new.(*corev1.PersistentVolume)
+			oldPV := old.(*corev1.PersistentVolume)
+			if newPV.ResourceVersion == oldPV.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
+	persistentvolumeclaimInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newPVC := new.(*corev1.PersistentVolumeClaim)
+			oldPVC := old.(*corev1.PersistentVolumeClaim)
+			if newPVC.ResourceVersion == oldPVC.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
+	ingressInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newIngress := new.(*extensionsv1beta1.Ingress)
+			oldIngress := old.(*extensionsv1beta1.Ingress)
+			if newIngress.ResourceVersion == oldIngress.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
+	ingressrouteInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newIngressRoute := new.(*traefikv1alpha1.IngressRoute)
+			oldIngressRoute := old.(*traefikv1alpha1.IngressRoute)
+			if newIngressRoute.ResourceVersion == oldIngressRoute.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
+	clusterroleInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newClusterRole := new.(*rbacv1.ClusterRole)
+			oldClusterRole := old.(*rbacv1.ClusterRole)
+			if newClusterRole.ResourceVersion == oldClusterRole.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
+	clusterrolebindingInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newClusterRoleBinding := new.(*rbacv1.ClusterRoleBinding)
+			oldClusterRoleBinding := old.(*rbacv1.ClusterRoleBinding)
+			if newClusterRoleBinding.ResourceVersion == oldClusterRoleBinding.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
 
 	return controller
 }
@@ -1343,4 +1463,44 @@ func (c *Controller) enqueueSubmarine(obj interface{}, action int) {
 		key:    key,
 		action: action,
 	})
+}
+
+// handleObject will take any resource implementing metav1.Object and attempt
+// to find the Submarine resource that 'owns' it. It does this by looking at the
+// objects metadata.ownerReferences field for an appropriate OwnerReference.
+// It then enqueues that Submarine resource to be processed. If the object does not
+// have an appropriate OwnerReference, it will simply be skipped.
+func (c *Controller) handleObject(obj interface{}) {
+	var object metav1.Object
+	var ok bool
+	if object, ok = obj.(metav1.Object); !ok {
+		tombstone, ok := obj.(cache.DeletedFinalStateUnknown)
+		if !ok {
+			utilruntime.HandleError(fmt.Errorf("error decoding object, invalid type"))
+			return
+		}
+		object, ok = tombstone.Obj.(metav1.Object)
+		if !ok {
+			utilruntime.HandleError(fmt.Errorf("error decoding object tombstone, invalid type"))
+			return
+		}
+		klog.V(4).Infof("Recovered deleted object '%s' from tombstone", object.GetName())
+	}
+	klog.V(4).Infof("Processing object: %s", object.GetName())
+	if ownerRef := metav1.GetControllerOf(object); ownerRef != nil {
+		// If this object is not owned by a Submarine, we should not do anything
+		// more with it.
+		if ownerRef.Kind != "Submarine" {
+			return
+		}
+
+		submarine, err := c.submarinesLister.Submarines(object.GetNamespace()).Get(ownerRef.Name)
+		if err != nil {
+			klog.V(4).Infof("ignoring orphaned object '%s' of submarine '%s'", object.GetSelfLink(), ownerRef.Name)
+			return
+		}
+
+		c.enqueueSubmarine(submarine, UPDATE)
+		return
+	}
 }
