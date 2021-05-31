@@ -69,12 +69,21 @@ import (
 const controllerAgentName = "submarine-controller"
 
 const (
+	// SuccessSynced is used as part of the Event 'reason' when a Submarine is synced
+	SuccessSynced = "Synced"
+	// ErrResourceExists is used as part of the Event 'reason' when a Submarine fails
+	// to sync due to a Deployment of the same name already existing.
+	ErrResourceExists = "ErrResourceExists"
+
 	// MessageResourceExists is the message used for Events when a resource
 	// fails to sync due to a Deployment already existing
-	MessageResourceExists = "Resource %q already exists and is not managed by Foo"
+	MessageResourceExists = "Resource %q already exists and is not managed by Submarine"
+	// MessageResourceSynced is the message used for an Event fired when a
+	// Submarine is synced successfully
+	MessageResourceSynced = "Submarine synced successfully"
 )
 
-// Controller is the controller implementation for Foo resources
+// Controller is the controller implementation for Submarine resources
 type Controller struct {
 	// kubeclientset is a standard kubernetes clientset
 	kubeclientset kubernetes.Interface
@@ -141,7 +150,6 @@ func NewController(
 	clusterrolebindingInformer rbacinformers.ClusterRoleBindingInformer,
 	submarineInformer informers.SubmarineInformer) *Controller {
 
-	// TODO: Create event broadcaster
 	// Add Submarine types to the default Kubernetes Scheme so Events can be
 	// logged for Submarine types.
 	utilruntime.Must(submarinescheme.AddToScheme(scheme.Scheme))
@@ -288,6 +296,7 @@ func (c *Controller) newSubmarineServer(submarine *v1alpha1.Submarine, namespace
 
 	if !metav1.IsControlledBy(serviceaccount, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, serviceaccount.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -332,6 +341,7 @@ func (c *Controller) newSubmarineServer(submarine *v1alpha1.Submarine, namespace
 
 	if !metav1.IsControlledBy(service, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, service.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -413,6 +423,7 @@ func (c *Controller) newSubmarineServer(submarine *v1alpha1.Submarine, namespace
 
 	if !metav1.IsControlledBy(deployment, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, deployment.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -471,6 +482,7 @@ func (c *Controller) newIngress(submarine *v1alpha1.Submarine, namespace string)
 
 	if !metav1.IsControlledBy(ingress, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, ingress.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -530,6 +542,7 @@ func (c *Controller) newSubmarineServerRBAC(submarine *v1alpha1.Submarine, servi
 
 	if !metav1.IsControlledBy(clusterrole, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, clusterrole.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -570,6 +583,7 @@ func (c *Controller) newSubmarineServerRBAC(submarine *v1alpha1.Submarine, servi
 
 	if !metav1.IsControlledBy(clusterrolebinding, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, clusterrolebinding.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -648,6 +662,7 @@ func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespa
 
 	if !metav1.IsControlledBy(pv, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, pv.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -693,6 +708,7 @@ func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespa
 
 	if !metav1.IsControlledBy(pvc, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, pvc.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -776,6 +792,7 @@ func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespa
 
 	if !metav1.IsControlledBy(deployment, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, deployment.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -819,6 +836,7 @@ func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespa
 
 	if !metav1.IsControlledBy(service, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, service.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -950,6 +968,7 @@ func (c *Controller) newSubmarineTensorboard(submarine *v1alpha1.Submarine, name
 
 	if !metav1.IsControlledBy(pv, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, pv.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -995,6 +1014,7 @@ func (c *Controller) newSubmarineTensorboard(submarine *v1alpha1.Submarine, name
 
 	if !metav1.IsControlledBy(pvc, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, pvc.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -1075,6 +1095,7 @@ func (c *Controller) newSubmarineTensorboard(submarine *v1alpha1.Submarine, name
 
 	if !metav1.IsControlledBy(deployment, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, deployment.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -1119,6 +1140,7 @@ func (c *Controller) newSubmarineTensorboard(submarine *v1alpha1.Submarine, name
 
 	if !metav1.IsControlledBy(service, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, service.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -1170,6 +1192,7 @@ func (c *Controller) newSubmarineTensorboard(submarine *v1alpha1.Submarine, name
 
 	if !metav1.IsControlledBy(ingressroute, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, ingressroute.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
@@ -1177,7 +1200,7 @@ func (c *Controller) newSubmarineTensorboard(submarine *v1alpha1.Submarine, name
 }
 
 // syncHandler compares the actual state with the desired, and attempts to
-// converge the two. It then updates the Status block of the Foo resource
+// converge the two. It then updates the Status block of the Submarine resource
 // with the current status of the resource.
 func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 	// TODO: business logic
@@ -1230,6 +1253,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		}
 		if !metav1.IsControlledBy(ns, submarine) {
 			msg := fmt.Sprintf(MessageResourceExists, ns.Name)
+			c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 			return fmt.Errorf(msg)
 		}
 
@@ -1281,6 +1305,8 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 				c.portfwdCmd = k8sutil.ServicePortForwardPort(context.TODO(), newNamespace, "traefik", 8080, 80, color.FgGreen)
 			}
 		}
+
+		c.recorder.Event(submarine, corev1.EventTypeNormal, SuccessSynced, MessageResourceSynced)
 	} else { // Case: DELETE
 		// Uninstall Helm charts
 		for _, chart := range c.charts {
@@ -1300,7 +1326,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 	return nil
 }
 
-// enqueueFoo takes a Submarine resource and converts it into a namespace/name
+// enqueueSubmarine takes a Submarine resource and converts it into a namespace/name
 // string which is then put onto the work queue. This method should *not* be
 // passed resources of any type other than Submarine.
 func (c *Controller) enqueueSubmarine(obj interface{}, action int) {
