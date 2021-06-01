@@ -63,7 +63,7 @@ class TestSubmarineModelsClient():
     def test_load_model(self, mocker):
         mock_method = mocker.patch.object(mlflow.pyfunc, "load_model")
         mock_method.return_value = mlflow.pytorch._PyTorchWrapper(
-            LinearNNModel())
+            LinearNNModelTorch())
         client = ModelsClient()
         name = "simple-nn-model"
         version = "1"

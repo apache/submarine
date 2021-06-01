@@ -31,7 +31,7 @@ class types(Enum):
     SKLEARN = "sklearn"
 
 
-class ModelsClient(package_type):
+class ModelsClient():
 
     def __init__(self,
                  tracking_uri=None,
