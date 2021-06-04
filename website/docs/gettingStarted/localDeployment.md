@@ -23,21 +23,25 @@ under the License.
 -->
 
 ## Prerequisite
-- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) 
+
+- [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [helm](https://helm.sh/docs/intro/install/) (Helm v3 is minimum requirement.)
 - [minikube](https://minikube.sigs.k8s.io/docs/start/).
 
 ## Deploy Kubernetes Cluster
+
 ```
 $ minikube start --vm-driver=docker --cpus 8 --memory 4096 --disk-size=20G --kubernetes-version v1.15.11
 ```
 
 ## Install Submarine on Kubernetes
+
 ```
 $ git clone https://github.com/apache/submarine.git
 $ cd submarine
 $ helm install submarine ./helm-charts/submarine
 ```
+
 ```
 NAME: submarine
 LAST DEPLOYED: Fri Jan 29 05:35:36 2021
@@ -48,7 +52,9 @@ TEST SUITE: None
 ```
 
 ## Verify installation
+
 Once you got it installed, check with below commands and you should see similar outputs:
+
 ```bash
 $ kubectl get pods
 ```
@@ -66,26 +72,41 @@ tf-job-operator-7844656dd-lfgmd                   1/1     Running   0          5
 :::warning
 Note that if you encounter below issue when installation:
 :::
+
 ```bash
 Error: rendered manifests contain a resource that already exists.
 Unable to continue with install: existing resource conflict: namespace: , name: podgroups.scheduling.incubator.k8s.io, existing_kind: apiextensions.k8s.io/v1beta1, Kind=CustomResourceDefinition, new_kind: apiextensions.k8s.io/v1beta1, Kind=CustomResourceDefinition
 ```
+
 It might be caused by the previous installed submarine charts. Fix it by running:
+
 ```bash
 $ kubectl delete crd/tfjobs.kubeflow.org && kubectl delete crd/podgroups.scheduling.incubator.k8s.io && kubectl delete crd/pytorchjobs.kubeflow.org
 ```
 
-## Use Port Forwarding to Access Submarine in a Cluster
-```bash=
-# # Listen on port 32080 on all addresses, forwarding to 80 in the pod
+## Access Submarine in a Cluster
+
+```bash
+# #Listen on port 32080 on all addresses, forwarding to 80 in the pod
+# Method1 -- using minikube ip + NodePort
+$ minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
+
+# Method2 -- using port-forwarding
 $ kubectl port-forward --address 0.0.0.0 service/submarine-traefik 32080:80
 ```
+
 ## Open Workbench in the browser.
-Open http://127.0.0.1:32080. The default username and password is `admin` and `admin`
+
+Open http://{minikube ip}:32080(from Method1), ex: http://192.168.49.2:32080
+
+or http://127.0.0.1:32080 (from Method 2).
+
+The default username and password is `admin` and `admin`
 
 ![](https://i.imgur.com/DkZhyEG.png)
 
 ## Uninstall Submarine
+
 ```bash
 $ helm delete submarine
 ```

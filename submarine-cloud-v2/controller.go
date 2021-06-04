@@ -27,7 +27,6 @@ import (
 	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
 	listers "submarine-cloud-v2/pkg/generated/listers/submarine/v1alpha1"
 	"submarine-cloud-v2/pkg/helm"
-	"submarine-cloud-v2/pkg/k8sutil"
 	v1alpha1 "submarine-cloud-v2/pkg/submarine/v1alpha1"
 	"time"
 
@@ -62,7 +61,6 @@ import (
 	traefiklisters "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/listers/traefik/v1alpha1"
 	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 
-	"github.com/fatih/color"
 	"os/exec"
 )
 
@@ -1271,16 +1269,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 			return err
 		}
 
-		// Port-forwarding
-		// TODO:
-		//   (1) multi-tenant port-forwarding
-		//   (2) Basic operations: on/off/modify (change port)
-		//   (3) in-cluster
-		if action == ADD {
-			if !c.incluster {
-				c.portfwdCmd = k8sutil.ServicePortForwardPort(context.TODO(), newNamespace, "traefik", 8080, 80, color.FgGreen)
-			}
-		}
+
 	} else { // Case: DELETE
 		// Uninstall Helm charts
 		for _, chart := range c.charts {
