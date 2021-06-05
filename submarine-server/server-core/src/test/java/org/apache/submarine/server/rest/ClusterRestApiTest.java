@@ -145,7 +145,8 @@ public class ClusterRestApiTest {
         result.get(0).get(ClusterMeta.NODE_NAME));
     assertEquals("ONLINE", properties.get("STATUS"));
     assertEquals(INTP_START_TIME.format(DateTimeFormatter.ISO_DATE_TIME), properties.get("INTP_START_TIME"));
-    assertEquals(LATEST_HEARTBEAT.format(DateTimeFormatter.ISO_DATE_TIME), properties.get("LATEST_HEARTBEAT"));
+    assertEquals(LATEST_HEARTBEAT.format(DateTimeFormatter.ISO_DATE_TIME),
+        properties.get("LATEST_HEARTBEAT"));
   }
 
   private <T> List<T> getResultListFromResponse(Response response, Class<T> typeT) {
