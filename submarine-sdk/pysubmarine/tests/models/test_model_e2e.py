@@ -20,31 +20,26 @@ import os
 import numpy as np
 import pytest
 
-from sklearn.linear_model import LogisticRegression
 from keras import LinearNNModelKeras
 from pytorch import LinearNNModelTorch
+from sklearn.linear_model import LogisticRegression
 from submarine import ModelsClient, types
 from submarine.models import constant
 
 
-@pytest.fixture(name="models_client", scope="class", params=["pytorch", "keras", "sklearn"])
+@pytest.fixture(name="models_client",
+                scope="class",
+                params=["pytorch", "keras", "sklearn"])
 def models_client_fixture(request):
-    client = ModelsClient("http://localhost:5001", "http://localhost:9000", request.param)
-    return client
-
-@pytest.fixture(name="models_client_pytorch", scope="class")
-def models_client_pytorch_fixture():
-    """
-    Temporarily,can be removed when finished expansion of other funtions 
-    """
-    client = ModelsClient("http://localhost:5001", "http://localhost:9000")
+    client = ModelsClient("http://localhost:5001", "http://localhost:9000",
+                          request.param)
     return client
 
 
 @pytest.mark.e2e
 class TestSubmarineModelsClientE2E():
 
-    def test_model(self, models_client, models_client_pytorch):
+    def test_model(self, models_client):
         if models_client.type.name == types.PYTORCH.name:
             model = LinearNNModelTorch()
 
@@ -56,17 +51,18 @@ class TestSubmarineModelsClientE2E():
 
         # log
         name = "simple-nn-model"
-        models_client_pytorch.log_model(name, model)
-        # update
-        new_name = "new-simple-nn-model"
-        models_client_pytorch.update_model(name, new_name)
-        # load
-        name = new_name
-        version = "1"
-        model = models_client_pytorch.load_model(name, version)
-        x = np.float32([[1.0], [2.0]])
-        y = model.predict(x)
-        assert y.shape[0] == 2
-        assert y.shape[1] == 1
-        # delete
-        models_client_pytorch.delete_model(name, '1')
+        models_client.log_model(name, model)
+        if models_client.type.name == types.PYTORCH.name:
+            # update
+            new_name = "new-simple-nn-model"
+            models_client.update_model(name, new_name)
+            # load
+            name = new_name
+            version = "1"
+            model = models_client.load_model(name, version)
+            x = np.float32([[1.0], [2.0]])
+            y = model.predict(x)
+            assert y.shape[0] == 2
+            assert y.shape[1] == 1
+            # delete
+            models_client.delete_model(name, '1')

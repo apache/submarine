@@ -19,10 +19,10 @@ import mlflow
 import numpy as np
 import pytest
 from mlflow.tracking import MlflowClient
-from sklearn.linear_model import LogisticRegression
 
 from keras import LinearNNModelKeras
 from pytorch import LinearNNModelTorch
+from sklearn.linear_model import LogisticRegression
 from submarine import ModelsClient
 from submarine.models.client import types
 
@@ -49,7 +49,7 @@ class TestSubmarineModelsClient():
         model = LinearNNModelKeras()
         name = "simple-nn-model"
         client.log_model(name, model)
-        mock_method.assert_called_once_with("simple-nn-model", model)   
+        mock_method.assert_called_once_with("simple-nn-model", model)
 
     def test_log_model_sklearn(self, mocker):
         mock_method = mocker.patch.object(ModelsClient, "log_model")
@@ -57,7 +57,7 @@ class TestSubmarineModelsClient():
         model = LogisticRegression()
         name = "simple-nn-model"
         client.log_model(name, model)
-        mock_method.assert_called_once_with("simple-nn-model", model) 
+        mock_method.assert_called_once_with("simple-nn-model", model)
 
     def test_update_model(self, mocker):
         mock_method = mocker.patch.object(MlflowClient,
