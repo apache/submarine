@@ -35,20 +35,29 @@ class TestSubmarineModelsClient():
     def tearDown(self):
         pass
 
-    @pytest.mark.skip(reason="Developing")
-    def test_log_model(self, mocker, package_type):
+    def test_log_model_pytorch(self, mocker):
         mock_method = mocker.patch.object(ModelsClient, "log_model")
-        client = ModelsClient(package_type)
-        if types(package_type).name == types.PYTORCH.name:
-            model = LinearNNModelTorch()
-        elif types(package_type).name == types.KERAS.name:
-            model = LinearNNModelKeras()
-        elif types(package_type).name == types.SKLEARN.name:
-            model = LogisticRegression()
-
+        client = ModelsClient("pytorch")
+        model = LinearNNModelTorch()
         name = "simple-nn-model"
         client.log_model(name, model)
         mock_method.assert_called_once_with("simple-nn-model", model)
+
+    def test_log_model_keras(self, mocker):
+        mock_method = mocker.patch.object(ModelsClient, "log_model")
+        client = ModelsClient("keras")
+        model = LinearNNModelKeras()
+        name = "simple-nn-model"
+        client.log_model(name, model)
+        mock_method.assert_called_once_with("simple-nn-model", model)   
+
+    def test_log_model_sklearn(self, mocker):
+        mock_method = mocker.patch.object(ModelsClient, "log_model")
+        client = ModelsClient("sklearn")
+        model = LogisticRegression()
+        name = "simple-nn-model"
+        client.log_model(name, model)
+        mock_method.assert_called_once_with("simple-nn-model", model) 
 
     def test_update_model(self, mocker):
         mock_method = mocker.patch.object(MlflowClient,

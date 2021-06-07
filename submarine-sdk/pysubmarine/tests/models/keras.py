@@ -22,7 +22,7 @@ class LinearNNModelKeras(tf.keras.Model):
 
     def __init__(self):
         super(LinearNNModelKeras, self).__init__()
-        self.layer = tf.keras.Dense(1, activation='relu')
+        self.layer = tf.keras.layers.Dense(1, activation='relu')
 
     def call(self, x):
         y_pred = self.layer_1(x)

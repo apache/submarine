@@ -16,7 +16,7 @@
 import submarine.tracking as tracking
 import submarine.tracking.fluent
 from submarine.experiment.api.experiment_client import ExperimentClient
-from submarine.models.client import ModelsClient
+from submarine.models.client import ModelsClient ,types
 
 log_param = submarine.tracking.fluent.log_param
 log_metric = submarine.tracking.fluent.log_metric
