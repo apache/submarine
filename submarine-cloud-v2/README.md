@@ -65,11 +65,15 @@ kubectl create ns submarine-admin
 kubectl apply -n submarine-admin -f artifacts/examples/example-submarine.yaml
 
 # Step3: Exposing Service
-# Using minikube ip + NodePort
+# Method1 -- using minikube ip + NodePort
 $ minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
 
+# Method2 -- using port-forwarding
+$ kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
+
 # Step4: View workbench
-# http://{minikube ip}:32080, ex: http://192.168.49.2:32080
+# http://{minikube ip}:32080(from Method1), ex: http://192.168.49.2:32080
+# or http://127.0.0.1:32080 (from Method 2).
 
 # Step5: Delete:
 #   (1) Remove all relevant Helm chart releases

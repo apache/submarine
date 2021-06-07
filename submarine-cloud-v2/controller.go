@@ -60,7 +60,6 @@ import (
 	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions/traefik/v1alpha1"
 	traefiklisters "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/listers/traefik/v1alpha1"
 	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
-
 )
 
 const controllerAgentName = "submarine-controller"
@@ -1296,7 +1295,6 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 			helm.HelmUninstall(chart)
 		}
 		c.charts = nil
-
 
 	}
 
