@@ -196,6 +196,8 @@ Examples:
 
 # Run Operator E2E tests
 
+Reference: [spark-on-k8s-operator e2e test](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/tree/master/test/e2e)
+
 ```bash
 # Step1: Build image "submarine-operator" to minikube's Docker 
 eval $(minikube docker-env)
@@ -204,7 +206,10 @@ make image
 # Step2: Register Custom Resource Definition
 kubectl apply -f artifacts/examples/crd.yaml
 
-# Step3: Run test
+# Step3: Install go module
 cd ./test/e2e
+go mod tidy
+
+# Step4: Run test
 go test
 ```
