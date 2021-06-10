@@ -193,3 +193,18 @@ Examples:
 ```
 ./hack/run_frontend_e2e.sh loginIT
 ```
+
+# Run Operator E2E tests
+
+```bash
+# Step1: Build image "submarine-operator" to minikube's Docker 
+eval $(minikube docker-env)
+make image
+
+# Step2: Register Custom Resource Definition
+kubectl apply -f artifacts/examples/crd.yaml
+
+# Step3: Run test
+cd ./test/e2e
+go test
+```
