@@ -88,8 +88,11 @@ function download_mysql_jdbc_jar(){
   echo "Mysql jdbc jar is downloaded and put in the path of submarine/lib."
 }
 
+ENV_NAMESPACE="default"
+
 JAVA_OPTS+=" -Dfile.encoding=UTF-8"
 JAVA_OPTS+=" -Dlog4j.configuration=file://${SUBMARINE_CONF_DIR}/log4j.properties"
+JAVA_OPTS+=" -DENV_NAMESPACE=${ENV_NAMESPACEn}"
 export JAVA_OPTS
 
 if [[ -n "${JAVA_HOME}" ]]; then
