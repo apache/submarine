@@ -118,7 +118,6 @@ public class K8sSubmitter implements Submitter {
       api = new CustomObjectsApi();
     }
     if (coreApi == null) {
-      client.setDebugging(true);
       coreApi = new CoreV1Api(client);
     }
 
@@ -405,7 +404,7 @@ public class K8sSubmitter implements Submitter {
     String namespace = "default";
     
     if (System.getProperty(ENV_NAMESPACE) != null) {
-      namespace = System.getenv(ENV_NAMESPACE);
+      namespace = System.getProperty(ENV_NAMESPACE);
     }
     
     try {
