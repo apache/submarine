@@ -92,7 +92,7 @@ ENV_NAMESPACE="default"
 
 JAVA_OPTS+=" -Dfile.encoding=UTF-8"
 JAVA_OPTS+=" -Dlog4j.configuration=file://${SUBMARINE_CONF_DIR}/log4j.properties"
-JAVA_OPTS+=" -DENV_NAMESPACE=${ENV_NAMESPACEn}"
+JAVA_OPTS+=" -DENV_NAMESPACE=${ENV_NAMESPACE}"
 export JAVA_OPTS
 
 if [[ -n "${JAVA_HOME}" ]]; then
