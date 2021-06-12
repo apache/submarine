@@ -310,8 +310,8 @@ public class K8sSubmitter implements Submitter {
     final String name = "submarine-mlflow";
     final String ingressRouteName = "submarine-mlflow-ingressroute";
     String namespace = "default";
-    if (System.getProperty(ENV_NAMESPACE) != null) {
-      namespace = System.getProperty(ENV_NAMESPACE);
+    if (System.getenv(ENV_NAMESPACE) != null) {
+      namespace = System.getenv(ENV_NAMESPACE);
     }
 
     try {
@@ -357,8 +357,8 @@ public class K8sSubmitter implements Submitter {
     final String pvcName = NotebookUtils.PVC_PREFIX + name;
     String namespace = "default";
     
-    if (System.getProperty(ENV_NAMESPACE) != null) {
-      namespace = System.getProperty(ENV_NAMESPACE);
+    if (System.getenv(ENV_NAMESPACE) != null) {
+      namespace = System.getenv(ENV_NAMESPACE);
     }
     
     try {
@@ -403,8 +403,8 @@ public class K8sSubmitter implements Submitter {
     Notebook notebook;
     String namespace = "default";
     
-    if (System.getProperty(ENV_NAMESPACE) != null) {
-      namespace = System.getProperty(ENV_NAMESPACE);
+    if (System.getenv(ENV_NAMESPACE) != null) {
+      namespace = System.getenv(ENV_NAMESPACE);
     }
     
     try {
