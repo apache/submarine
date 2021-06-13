@@ -268,9 +268,9 @@ public class K8sSubmitter implements Submitter {
     final String name = "submarine-tensorboard";
     final String ingressRouteName = "submarine-tensorboard-ingressroute";
     String namespace = "default";
-    if (System.getProperty(ENV_NAMESPACE) != null) {
-      namespace = System.getProperty(ENV_NAMESPACE);
-    }
+    if (System.getenv(ENV_NAMESPACE) != null) {
+        namespace = System.getenv(ENV_NAMESPACE);
+      }
 
     try {
       V1Deployment deploy =  appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
@@ -429,9 +429,9 @@ public class K8sSubmitter implements Submitter {
     final String pvcName = NotebookUtils.PVC_PREFIX + name;
     String namespace = "default";
     
-    if (System.getProperty(ENV_NAMESPACE) != null) {
-      namespace = System.getenv(ENV_NAMESPACE);
-    }
+    if (System.getenv(ENV_NAMESPACE) != null) {
+        namespace = System.getenv(ENV_NAMESPACE);
+      }
     
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
