@@ -55,10 +55,6 @@ abstract public class AbstractSubmarineIT {
   protected static final long MAX_BROWSER_TIMEOUT_SEC = 60;
   protected static final long MAX_PARAGRAPH_TIMEOUT_SEC = 120;
 
-  protected String getParagraphXPath(int paragraphNo) {
-    return "(//div[@ng-controller=\"ParagraphCtrl\"])[" + paragraphNo + "]";
-  }
-
   protected WebElement pollingWait(final By locator, final long timeWait) {
     Wait<WebDriver> wait = new FluentWait<>(driver)
         .withTimeout(timeWait, TimeUnit.SECONDS)
@@ -91,12 +87,50 @@ abstract public class AbstractSubmarineIT {
     return URL;
   }
 
+  protected void Login() {
+    String username = "admin";
+    String password = "admin";
+    waitToPresent(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(username);
+    waitToPresent(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(password);
+    Click(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC);
+    waitToPresent(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+  }
+
   protected WebElement buttonCheck(final By locator, final long timeWait) {
-    Wait<WebDriver> wait = new FluentWait<>(driver)
-        .withTimeout(timeWait, TimeUnit.SECONDS)
-        .pollingEvery(1, TimeUnit.SECONDS)
-        .ignoring(NoSuchElementException.class);
-    return wait.until(ExpectedConditions.elementToBeClickable(locator));
+    return new WebDriverWait(driver, timeWait)
+            .until(ExpectedConditions.elementToBeClickable(locator));
+  }
+
+  protected WebElement waitToPresent(final By locator, final long timeWait) {
+    return new WebDriverWait(driver, timeWait)
+              .until(ExpectedConditions.presenceOfElementLocated(locator));
+  }
+
+  protected void waitURL(String URL, final long timeWait) {
+    new WebDriverWait(driver, timeWait).until(ExpectedConditions.urlToBe​(URL)); 
+  }
+
+  protected void waitVisibility(WebElement element, final long timeWait) {
+    new WebDriverWait(driver, timeWait).until(ExpectedConditions.visibilityOf(element));
+  }
+
+  protected WebElement SendKeys(final By locator, final long timeWait, String content) {
+    WebElement input = waitToPresent(locator, timeWait);
+    waitVisibility(input, timeWait);
+    input.sendKeys(content);
+    return input;
+  }
+
+  protected WebElement Click(final By locator, final long timeWait) {
+    WebElement button = buttonCheck(locator, timeWait);
+    button.click();
+    return button;
+  }
+
+  protected WebElement ClickAndNavigate(final By locator, final long timeWait, String URL) {
+    WebElement button = Click(locator, timeWait);
+    waitURL(URL, timeWait);
+    return button;
   }
 
   protected void takeScreenShot(final String path) {

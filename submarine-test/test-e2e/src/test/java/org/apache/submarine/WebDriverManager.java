@@ -68,7 +68,7 @@ public class WebDriverManager {
       url = System.getenv("url");
     } else if ((System.getProperty("SUBMARINE_WORKBENCH_URL") != null) || (System.getProperty("SUBMARINE_WORKBENCH_PORT") == null)) {
       if (System.getProperty("SUBMARINE_WORKBENCH_URL") == null) {
-        url = "http://localhost";
+        url = "http://127.0.0.1";
       } else {
         url = System.getProperty("SUBMARINE_WORKBENCH_URL"); 
       }
@@ -82,13 +82,11 @@ public class WebDriverManager {
         url = url.concat(String.valueOf(port));
       }
     } else {
-      url = "http://localhost:8080";
+      url = "http://127.0.0.1:8080";
     }
 
     long start = System.currentTimeMillis();
     boolean loaded = false;
-    driver.manage().timeouts().implicitlyWait(AbstractSubmarineIT.MAX_IMPLICIT_WAIT,
-        TimeUnit.SECONDS);
     driver.get(url);
 
     while (System.currentTimeMillis() - start < 60 * 1000) {

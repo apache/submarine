@@ -46,29 +46,20 @@ public class departmentIT extends AbstractSubmarineIT{
 
   @Test
   public void dataNavigation() throws Exception {
-    String URL = getURL("http://localhost", 8080);
+    String URL = getURL("http://127.0.0.1", 8080);
     // Login
-    LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+    Login();
 
     // Routing to department page
-    pollingWait(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    WebDriverWait wait = new WebDriverWait( driver, 60);
-    pollingWait(By.xpath("//a[@href='/workbench/manager/department']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ant-breadcrumb-link ng-star-inserted']")));
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/manager/department"));
+    Click(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC);
+    ClickAndNavigate(By.xpath("//a[@href='/workbench/manager/department']"), MAX_BROWSER_TIMEOUT_SEC, 
+                      URL.concat("/workbench/manager/department"));
 
     // Test create new department
-    pollingWait(By.xpath("//button[@id='btnAddDepartment']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@id='codeInput'] "), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e Test");
-    pollingWait(By.xpath("//input[@id='nameInput']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e Test");
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[@id='validCode']")));
-    pollingWait(By.xpath("//button[@id='btnSubmit']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//nz-table[@id='departmentTable']")));
-    Assert.assertEquals(pollingWait(By.xpath("//td[contains(., 'e2e Test')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-    
+    Click(By.xpath("//button[@id='btnAddDepartment']"), MAX_BROWSER_TIMEOUT_SEC);
+    SendKeys(By.xpath("//input[@id='codeInput'] "), MAX_BROWSER_TIMEOUT_SEC, "e2e Test");
+    SendKeys(By.xpath("//input[@id='nameInput']"), MAX_BROWSER_TIMEOUT_SEC, "e2e Test");
+    Click(By.xpath("//button[@id='btnSubmit']"), MAX_BROWSER_TIMEOUT_SEC);
+    waitToPresent(By.xpath("//td[contains(., 'e2e Test')]"), MAX_BROWSER_TIMEOUT_SEC); 
   }
 }

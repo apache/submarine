@@ -19,6 +19,9 @@ package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,26 +49,22 @@ public class loginIT extends AbstractSubmarineIT {
     // Testcase1
     LOG.info("[Sub-Testcase-1] Invalid User");
     LOG.info("Enter blank username and password");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
+    WebElement signin_button = buttonCheck(By.xpath("//span[text()='Sign In']/parent::button"), MAX_BROWSER_TIMEOUT_SEC);
+    signin_button.click();
     Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Please input your username!\")]")).size(), 1);
     Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Please input your Password!\")]")).size(), 1);
     LOG.info("Enter invalid username and password");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("123");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("123");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Username and password are incorrect, " +
-            "please try again or create an account\")]")).size(), 1);
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("\b\b\b");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("\b\b\b");
+    SendKeys(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC, "123");
+    SendKeys(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC, "123");
+    signin_button.click();
+
+    waitToPresent(By.xpath("//div[contains(text(), \"Username and password are incorrect,\")]"), MAX_BROWSER_TIMEOUT_SEC);
+
+    SendKeys(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC, "\b\b\b");
+    SendKeys(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC, "\b\b\b");
 
     // Testcase2
     LOG.info("[Sub-Testcase-2] Valid User");
-    LOG.info("Start to login user to submarine workbench.");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    // Validate login result.
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
-    LOG.info("User login is done.");
+    Login();
   }
 }

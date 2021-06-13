@@ -46,69 +46,65 @@ public class registerIT extends AbstractSubmarineIT {
 
   @Test
   public void registerFrontEndInvalidTest() throws Exception {
-    String URL = getURL("http://localhost", 8080);
+    String URL = getURL("http://127.0.0.1", 8080);
     // Navigate from Login page to Registration page
     LOG.info("Navigate from Login page to Registration page");
-    pollingWait(By.xpath("//a[contains(text(), \"Create an account!\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/user/register"));
+    ClickAndNavigate(By.xpath("//a[contains(text(), \"Create an account!\")]"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/user/register"));
 
     // Username test
     //   Case1: empty username
-    pollingWait(By.cssSelector("input[formcontrolname='username']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(" \b");
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Enter your username!\")]")).size(), 1);
+    SendKeys(By.cssSelector("input[formcontrolname='username']"), MAX_BROWSER_TIMEOUT_SEC, " \b");
+    waitToPresent(By.xpath("//div[contains(text(), \"Enter your username!\")]"), MAX_BROWSER_TIMEOUT_SEC);
     //   Case2: existed username
-    pollingWait(By.cssSelector("input[formcontrolname='username']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test");
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"The username already exists!\")]")).size(), 1);
+    SendKeys(By.cssSelector("input[formcontrolname='username']"), MAX_BROWSER_TIMEOUT_SEC, "test");
+    waitToPresent(By.xpath("//div[contains(text(), \"The username already exists!\")]"), MAX_BROWSER_TIMEOUT_SEC);
 
     // Email test
     //   Case1: empty email
-    pollingWait(By.cssSelector("input[formcontrolname='email']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(" \b");
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Type your email!\")]")).size(), 1);
+    SendKeys(By.cssSelector("input[formcontrolname='email']"), MAX_BROWSER_TIMEOUT_SEC, " \b");
+    waitToPresent(By.xpath("//div[contains(text(), \"Type your email!\")]"), MAX_BROWSER_TIMEOUT_SEC);
     //   Case2: existed email
     String existedEmailTestCase = "test@gmail.com";
-    pollingWait(By.cssSelector("input[formcontrolname='email']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(existedEmailTestCase);
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"The email is already used!\")]")).size(), 1); 
+    SendKeys(By.cssSelector("input[formcontrolname='email']"), MAX_BROWSER_TIMEOUT_SEC, existedEmailTestCase);
+    waitToPresent(By.xpath("//div[contains(text(), \"The email is already used!\")]"), MAX_BROWSER_TIMEOUT_SEC); 
     //   Case3: invalid email
     String backspaceKeys = "";
     for ( int i=0; i < (existedEmailTestCase.length() - existedEmailTestCase.indexOf("@")); i++) {
         backspaceKeys += "\b";
     };
-    pollingWait(By.cssSelector("input[formcontrolname='email']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(backspaceKeys);
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"The email is invalid!\")]")).size(), 1); 
+    SendKeys(By.cssSelector("input[formcontrolname='email']"), MAX_BROWSER_TIMEOUT_SEC, backspaceKeys);
+    waitToPresent(By.xpath("//div[contains(text(), \"The email is invalid!\")]"), MAX_BROWSER_TIMEOUT_SEC); 
     
     // Password test
     //   Case1: empty password
-    pollingWait(By.cssSelector("input[formcontrolname='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(" \b");
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Type your password!\")]")).size(), 1);
+    SendKeys(By.cssSelector("input[formcontrolname='password']"), MAX_BROWSER_TIMEOUT_SEC, " \b");
+    waitToPresent(By.xpath("//div[contains(text(), \"Type your password!\")]"), MAX_BROWSER_TIMEOUT_SEC);
     //   Case2: string length must be in 6 ~ 20 characters
-    pollingWait(By.cssSelector("input[formcontrolname='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testtesttesttesttesttest"); // length = 24
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Password's length must be in 6 ~ 20 characters.\")]")).size(), 1);
-    pollingWait(By.cssSelector("input[formcontrolname='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("\b\b\b\b\b\b\b\b\b\b\b\b"); // length = 12
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Password's length must be in 6 ~ 20 characters.\")]")).size(), 0);
+    SendKeys(By.cssSelector("input[formcontrolname='password']"), MAX_BROWSER_TIMEOUT_SEC, "testtesttesttesttesttest"); // length = 24
+    waitToPresent(By.xpath("//div[contains(text(), \"Password's length must be in 6 ~ 20 characters.\")]"), MAX_BROWSER_TIMEOUT_SEC);
+    SendKeys(By.cssSelector("input[formcontrolname='password']"), MAX_BROWSER_TIMEOUT_SEC, "\b\b\b\b\b\b\b\b\b\b\b\b"); // length = 12
+     Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Password's length must be in 6 ~ 20 characters.\")]")).size(), 0);
 
     // Re-enter password test
     //   Case1: empty re-enter password
-    pollingWait(By.cssSelector("input[formcontrolname='checkPassword']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(" \b");
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Type your password again!\")]")).size(), 1);
+    SendKeys(By.cssSelector("input[formcontrolname='checkPassword']"), MAX_BROWSER_TIMEOUT_SEC, " \b");
+    waitToPresent(By.xpath("//div[contains(text(), \"Type your password again!\")]"), MAX_BROWSER_TIMEOUT_SEC);
     //   Case2: re-enter password != password    
-    pollingWait(By.cssSelector("input[formcontrolname='checkPassword']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("1234"); // "1234" != "testtesttest"
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Passwords must match!\")]")).size(), 1);
-    pollingWait(By.xpath("//a[@href='/user/login']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/user/login")); 
+    SendKeys(By.cssSelector("input[formcontrolname='checkPassword']"), MAX_BROWSER_TIMEOUT_SEC, "1234"); // "1234" != "testtesttest"
+    waitToPresent(By.xpath("//div[contains(text(), \"Passwords must match!\")]"), MAX_BROWSER_TIMEOUT_SEC);
+    ClickAndNavigate(By.xpath("//a[@href='/user/login']"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/user/login"));
   }
 
   @Test
   public void registerFrontEndValidTest() throws Exception {
-    String URL = getURL("http://localhost", 8080);
+    String URL = getURL("http://127.0.0.1", 8080);
     // Sign-Up successfully
-    pollingWait(By.xpath("//a[contains(text(), \"Create an account!\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/user/register"));
-    pollingWait(By.cssSelector("input[formcontrolname='username']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("validusername");
-    pollingWait(By.cssSelector("input[formcontrolname='email']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("validemail@gmail.com");
-    pollingWait(By.cssSelector("input[formcontrolname='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("validpassword");
-    pollingWait(By.cssSelector("input[formcontrolname='checkPassword']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("validpassword");
-    pollingWait(By.cssSelector("label[formcontrolname='agree']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.cssSelector("button[class='ant-btn ant-btn-primary ant-btn-block']"), MAX_BROWSER_TIMEOUT_SEC).click(); 
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/user/login"));
+    ClickAndNavigate(By.xpath("//a[contains(text(), \"Create an account!\")]"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/user/register"));
+    SendKeys(By.cssSelector("input[formcontrolname='username']"), MAX_BROWSER_TIMEOUT_SEC, "validusername");
+    SendKeys(By.cssSelector("input[formcontrolname='email']"), MAX_BROWSER_TIMEOUT_SEC, "validemail@gmail.com");
+    SendKeys(By.cssSelector("input[formcontrolname='password']"), MAX_BROWSER_TIMEOUT_SEC, "validpassword");
+    SendKeys(By.cssSelector("input[formcontrolname='checkPassword']"), MAX_BROWSER_TIMEOUT_SEC, "validpassword");
+    Click(By.cssSelector("label[formcontrolname='agree']"), MAX_BROWSER_TIMEOUT_SEC);
+    ClickAndNavigate(By.cssSelector("button[class='ant-btn ant-btn-primary ant-btn-block']"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/user/login")); 
   }
 }

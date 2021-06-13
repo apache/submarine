@@ -45,21 +45,17 @@ public class experimentIT extends AbstractSubmarineIT {
 
   @Test
   public void experimentNavigation() throws Exception {
-    String URL = getURL("http://localhost", 8080);
+    String URL = getURL("http://127.0.0.1", 8080);
     LOG.info("[Test case]: experimentNavigation]");
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
     // Login
     LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+    Login();
 
     // Routing to workspace
     LOG.info("url");
-    pollingWait(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/experiment"));
+    ClickAndNavigate(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/experiment"));
 
     // Test create new experiment
     LOG.info("First step");
@@ -73,7 +69,7 @@ public class experimentIT extends AbstractSubmarineIT {
                     " --learning_rate=0.01 --batch_size=150",
             "apache/submarine:tf-mnist-with-summaries-1.0",
             "ENV_1", "ENV1");
-    pollingWait(By.xpath("//input[@id='git-repo']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("https://github.com/apache/submarine.git");
+    SendKeys(By.xpath("//input[@id='git-repo']"), MAX_BROWSER_TIMEOUT_SEC, "https://github.com/apache/submarine.git");
     Assert.assertTrue(experimentPage.getGoButton().isEnabled());
     experimentPage.goButtonClick();
 
