@@ -33,13 +33,11 @@ public class loginIT extends AbstractSubmarineIT {
   @BeforeClass
   public static void startUp(){
     LOG.info("[Testcase]: loginIT");
-    printSubmarineLog();
     driver =  WebDriverManager.getWebDriver();
   }
 
   @AfterClass
   public static void tearDown(){
-    printSubmarineLog();
     driver.quit();
   }
 
