@@ -112,8 +112,8 @@ type Controller struct {
 
 	// TODO: Need to be modified to implement multi-tenant
 	// Store charts
-	charts     []helm.HelmUninstallInfo
-	incluster  bool
+	charts    []helm.HelmUninstallInfo
+	incluster bool
 }
 
 const (
@@ -1327,8 +1327,6 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		utilruntime.HandleError(fmt.Errorf("Invalid resource key: %s", key))
 		return nil
 	}
-	newNamespace := "submarine-user-test"
-
 	klog.Info("syncHandler: ", key, " / ", action)
 
 	if action != DELETE { // Case: ADD & UPDATE
@@ -1348,31 +1346,8 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		b, err := json.MarshalIndent(submarine.Spec, "", "  ")
 		fmt.Println(string(b))
 
-		// create submarine in a new namespace
-		ns, err := c.namespaceLister.Get(newNamespace)
-		if errors.IsNotFound(err) {
-			ns, err = c.kubeclientset.CoreV1().Namespaces().Create(context.TODO(),
-				&corev1.Namespace{
-					ObjectMeta: metav1.ObjectMeta{
-						Name: newNamespace,
-						OwnerReferences: []metav1.OwnerReference{
-							*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-						},
-					},
-				},
-				metav1.CreateOptions{})
-		}
-		if err != nil {
-			return err
-		}
-		if !metav1.IsControlledBy(ns, submarine) {
-			msg := fmt.Sprintf(MessageResourceExists, ns.Name)
-			c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-			return fmt.Errorf(msg)
-		}
-
 		// Install subcharts
-		c.newSubCharts(newNamespace)
+		c.newSubCharts(namespace)
 
 		// Create submarine-server
 		serverImage := submarine.Spec.Server.Image
@@ -1380,31 +1355,31 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		if serverImage == "" {
 			serverImage = "apache/submarine:server-" + submarine.Spec.Version
 		}
-		err = c.newSubmarineServer(submarine, newNamespace, serverImage, serverReplicas)
+		err = c.newSubmarineServer(submarine, namespace, serverImage, serverReplicas)
 		if err != nil {
 			return err
 		}
 
 		// Create Submarine Database
-		err = c.newSubmarineDatabase(submarine, newNamespace, &submarine.Spec)
+		err = c.newSubmarineDatabase(submarine, namespace, &submarine.Spec)
 		if err != nil {
 			return err
 		}
 
 		// Create ingress
-		err = c.newIngress(submarine, newNamespace)
+		err = c.newIngress(submarine, namespace)
 		if err != nil {
 			return err
 		}
 
 		// Create RBAC
-		err = c.newSubmarineServerRBAC(submarine, newNamespace)
+		err = c.newSubmarineServerRBAC(submarine, namespace)
 		if err != nil {
 			return err
 		}
 
 		// Create Submarine Tensorboard
-		err = c.newSubmarineTensorboard(submarine, newNamespace, &submarine.Spec)
+		err = c.newSubmarineTensorboard(submarine, namespace, &submarine.Spec)
 		if err != nil {
 			return err
 		}
