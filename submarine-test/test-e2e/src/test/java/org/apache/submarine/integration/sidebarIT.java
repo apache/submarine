@@ -47,40 +47,18 @@ public class sidebarIT extends AbstractSubmarineIT {
 
   @Test
   public void sidebarNavigation() throws Exception {
-    String URL = getURL("http://localhost", 8080);
+    String URL = getURL("http://127.0.0.1", 8080);
     // Login
-    LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+    Login();
 
     // Start Routing & Navigation in sidebar
     LOG.info("Start Routing & Navigation in sidebar");
-    pollingWait(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/experiment"));
-    pollingWait(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC).click();
-
-    // SUBMARINE-628. [WEB] Disable WIP page link
-//    pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click()
-//    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/workspace"));
-//    pollingWait(By.xpath("//span[contains(text(), \"Interpreter\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-//    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/interpreter"));
-//    pollingWait(By.xpath("//span[contains(text(), \"Data\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-//    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/data"));
-//    pollingWait(By.xpath("//span[contains(text(), \"Model\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-//    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/model"));
-//    pollingWait(By.xpath("//span[contains(text(), \"Home\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-//    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/home"));
+    ClickAndNavigate(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/experiment"));
+    Click(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC);
+    Click(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC);
 
     // Lazy-loading
-    WebDriverWait wait = new WebDriverWait( driver, 15, 5000);
-    pollingWait(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ant-breadcrumb-link ng-star-inserted']")));
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/manager/user"));
-
-    pollingWait(By.xpath("//a[@href='/workbench/manager/dataDict']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/manager/dataDict"));
+    ClickAndNavigate(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/manager/user"));
+    ClickAndNavigate(By.xpath("//a[@href='/workbench/manager/dataDict']"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/manager/dataDict"));
   }
 }

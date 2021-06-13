@@ -45,7 +45,7 @@ public class datadictIT extends AbstractSubmarineIT {
 
   // @Test TODO(kevin85421): Due to the undeterministic behavior of travis, I decide to comment it.
   public void dataDictTest() throws Exception {
-    String URL = getURL("http://localhost", 8080);
+    String URL = getURL("http://127.0.0.1", 8080);
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");

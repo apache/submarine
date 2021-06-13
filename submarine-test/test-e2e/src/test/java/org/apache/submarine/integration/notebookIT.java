@@ -45,36 +45,29 @@ public class notebookIT extends AbstractSubmarineIT {
 
   @Test
   public void notebookNavigation() throws Exception {
-    String URL = getURL("http://localhost", 8080);
+    String URL = getURL("http://127.0.0.1", 8080);
     // Login
-    LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+    Login();
 
     // Routing to Notebook
-    pollingWait(By.xpath("//span[contains(text(), \"Notebook\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/notebook"));
+    ClickAndNavigate(By.xpath("//span[contains(text(), \"Notebook\")]"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/notebook"));
 
     // Test for creating new notebook
     LOG.info("Create Notebook Test");
-    pollingWait(By.xpath("//button[@id='btn-newNotebook']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.cssSelector("input[ng-reflect-name='notebookName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test-nb");
-    pollingWait(By.cssSelector("input[ng-reflect-name='cpus']"), MAX_BROWSER_TIMEOUT_SEC).clear();
-    pollingWait(By.cssSelector("input[ng-reflect-name='cpus']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("2");
-    pollingWait(By.cssSelector("input[ng-reflect-name='gpus']"), MAX_BROWSER_TIMEOUT_SEC).clear();
-    pollingWait(By.cssSelector("input[ng-reflect-name='gpus']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("1");
-    pollingWait(By.cssSelector("input[ng-reflect-name='memoryNum']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("1024");
-    pollingWait(By.xpath("//button[@id='envVar-btn']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@name='key0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testKey0");
-    pollingWait(By.xpath("//input[@name='value0']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testValue0");
-    pollingWait(By.xpath("//button[@id='nb-form-btn-create']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Click(By.xpath("//button[@id='btn-newNotebook']"), MAX_BROWSER_TIMEOUT_SEC);
+    SendKeys(By.cssSelector("input[ng-reflect-name='notebookName']"), MAX_BROWSER_TIMEOUT_SEC, "test-nb");
+    SendKeys(By.cssSelector("input[ng-reflect-name='cpus']"), MAX_BROWSER_TIMEOUT_SEC,"2");
+    SendKeys(By.cssSelector("input[ng-reflect-name='gpus']"), MAX_BROWSER_TIMEOUT_SEC, "1");
+    SendKeys(By.cssSelector("input[ng-reflect-name='memoryNum']"), MAX_BROWSER_TIMEOUT_SEC, "1024");
+    Click(By.xpath("//button[@id='envVar-btn']"), MAX_BROWSER_TIMEOUT_SEC);
+    SendKeys(By.xpath("//input[@name='key0']"), MAX_BROWSER_TIMEOUT_SEC, "testKey0");
+    SendKeys(By.xpath("//input[@name='value0']"), MAX_BROWSER_TIMEOUT_SEC, "testValue0");
+    Click(By.xpath("//button[@id='nb-form-btn-create']"), MAX_BROWSER_TIMEOUT_SEC);
     /*
     Future add k8s test.
     Assert.assertEquals(pollingWait(By.xpath("//td[contains(., 'test-nb')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     */
-    Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-newNotebook']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    waitToPresent(By.xpath("//button[@id='btn-newNotebook']"), MAX_BROWSER_TIMEOUT_SEC);
     LOG.info("Test Success!");
 
   }

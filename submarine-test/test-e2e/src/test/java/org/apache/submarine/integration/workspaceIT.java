@@ -48,7 +48,7 @@ public class workspaceIT extends AbstractSubmarineIT {
 
   @Test
   public void workspaceNavigation() throws Exception {
-    String URL = getURL("http://localhost", 8080);
+    String URL = getURL("http://127.0.0.1", 8080);
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");

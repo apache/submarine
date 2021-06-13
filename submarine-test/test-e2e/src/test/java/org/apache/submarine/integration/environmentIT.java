@@ -56,33 +56,26 @@ public class environmentIT extends AbstractSubmarineIT {
 
   @Test
   public void environmentNavigation() throws Exception {
-    String URL = getURL("http://localhost", 8080);
+    String URL = getURL("http://127.0.0.1", 8080);
     // Login
-    LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+    Login();
 
     // Routing to workspace
-    LOG.info("url");
-    pollingWait(By.xpath("//span[contains(text(), \"Environment\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/environment"));
+    ClickAndNavigate(By.xpath("//span[contains(text(), \"Environment\")]"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/environment"));
 
     // Test create new environment
     LOG.info("Create new environment");
-    Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-newEnvironment']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-    pollingWait(By.xpath("//button[@id='btn-newEnvironment']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.cssSelector("input[ng-reflect-name='environmentName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testEnvName");
-    pollingWait(By.cssSelector("input[ng-reflect-name='dockerImage']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("testDockerImage");
-    pollingWait(By.xpath("//nz-upload[@id='upload-config']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.cssSelector("input[type=file]"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(System.getProperty("user.dir") + "/src/test/resources/test_config_1.yml");
-    Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-submit']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
-    pollingWait(By.xpath("//button[@id='btn-submit']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(pollingWait(By.xpath("//button[@id='btn-newEnvironment']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
+    Click(By.xpath("//button[@id='btn-newEnvironment']"), MAX_BROWSER_TIMEOUT_SEC);
+    SendKeys(By.cssSelector("input[ng-reflect-name='environmentName']"), MAX_BROWSER_TIMEOUT_SEC, "testEnvName");
+    SendKeys(By.cssSelector("input[ng-reflect-name='dockerImage']"), MAX_BROWSER_TIMEOUT_SEC, "testDockerImage");
+    Click(By.xpath("//nz-upload[@id='upload-config']"), MAX_BROWSER_TIMEOUT_SEC);
+
+    // Because "//input[@type="file"]" will not display, we cannot use SendKeys which calls waitVisibility.   
+    waitToPresent(By.xpath("//input[@type=\"file\"]"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(System.getProperty("user.dir") + "/src/test/resources/test_config_1.yml");
+    Click(By.xpath("//button[@id='btn-submit']"), MAX_BROWSER_TIMEOUT_SEC);
 
     // Test download environment spec
-    pollingWait(By.xpath("//a[@id='btn-downloadEnvironmentSpec0']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Click(By.xpath("//a[@id='btn-downloadEnvironmentSpec0']"), MAX_BROWSER_TIMEOUT_SEC);
     File fileToCheck = Paths.get(WebDriverManager.getDownloadPath()).resolve("environmentSpec.json").toFile();
     Wait wait = new FluentWait(driver).withTimeout(MAX_BROWSER_TIMEOUT_SEC, SECONDS);
     wait.until(WebDriver -> fileToCheck.exists());
