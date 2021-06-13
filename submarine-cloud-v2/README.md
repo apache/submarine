@@ -61,8 +61,9 @@ go build -o submarine-operator
 ./submarine-operator
 
 # Step2: Deploy a submarine
-kubectl create ns submarine-admin
-kubectl apply -n submarine-admin -f artifacts/examples/example-submarine.yaml
+kubectl apply -f artifacts/examples/crd.yaml
+kubectl create ns submarine-user-test
+kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
 
 # Step3: Exposing Service
 # Method1 -- using minikube ip + NodePort
@@ -79,8 +80,8 @@ $ kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 
 #   (1) Remove all relevant Helm chart releases
 #   (2) Remove all resources in the namespace "submariner-user-test"
 #   (3) Remove all non-namespaced resources (Ex: PersistentVolume) created by client-go API
-#   (4) **Note:** The namespace "submarine-admin" will not be deleted
-kubectl delete submarine example-submarine -n submarine-admin
+#   (4) **Note:** The namespace "submarine-user-test" will not be deleted
+kubectl delete submarine example-submarine -n submarine-user-test
 ```
 
 # Run operator in-cluster
@@ -97,8 +98,9 @@ kubectl apply -f artifacts/examples/submarine-operator-service-account.yaml
 kubectl apply -f artifacts/examples/submarine-operator.yaml
 
 # Step4: Deploy a submarine
-kubectl create ns submarine-admin
-kubectl apply -n submarine-admin -f artifacts/examples/example-submarine.yaml
+kubectl apply -f artifacts/examples/crd.yaml
+kubectl create ns submarine-user-test
+kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
 
 # Step5: Inspect submarine-operator POD logs
 kubectl logs -f ${submarine-operator POD}
@@ -121,8 +123,8 @@ $ kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 
 #   (1) Remove all relevant Helm chart releases
 #   (2) Remove all resources in the namespace "submariner-user-test"
 #   (3) Remove all non-namespaced resources (Ex: PersistentVolume) created by client-go API
-#   (4) **Note:** The namespace "submarine-admin" will not be deleted
-kubectl delete submarine example-submarine -n submarine-admin
+#   (4) **Note:** The namespace "submarine-user-test" will not be deleted
+kubectl delete submarine example-submarine -n submarine-user-test
 
 # Step10: Delete "submarine-operator"
 kubectl delete deployment submarine-operator-demo
