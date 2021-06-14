@@ -355,18 +355,25 @@ public class K8sSubmitter implements Submitter {
     final String host = NotebookUtils.HOST_PATH;
     final String storage = NotebookUtils.STORAGE;
     final String pvcName = NotebookUtils.PVC_PREFIX + name;
+    String namespace = "default";
+    
+    if (System.getenv(ENV_NAMESPACE) != null) {
+      namespace = System.getenv(ENV_NAMESPACE);
+    }
+    
     try {
       // create notebook custom resource
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Map<String, String> labels = new HashMap<>();
       labels.put(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET, spec.getMeta().getOwnerId());
       notebookCR.getMetadata().setLabels(labels);
-
+      notebookCR.getMetadata().setNamespace(namespace);
+      
       // create persistent volume
       createPersistentVolume(pvName, host, storage);
 
       // create persistent volume claim
-      createPersistentVolumeClaim(pvcName, spec.getMeta().getNamespace(), pvName, storage);
+      createPersistentVolumeClaim(pvcName, namespace, pvName, storage);
 
       // bind persistent volume claim
       V1PersistentVolumeClaimVolumeSource pvcSource = new V1PersistentVolumeClaimVolumeSource()
@@ -374,7 +381,7 @@ public class K8sSubmitter implements Submitter {
       notebookCR.getSpec().getTemplate().getSpec().getVolumes().get(0).persistentVolumeClaim(pvcSource);
 
       Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
-              notebookCR.getMetadata().getNamespace(), notebookCR.getPlural(), notebookCR, "true");
+              namespace, notebookCR.getPlural(), notebookCR, "true");
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
 
       // create Traefik custom resource
@@ -394,10 +401,18 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook findNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
+    String namespace = "default";
+    
+    if (System.getenv(ENV_NAMESPACE) != null) {
+      namespace = System.getenv(ENV_NAMESPACE);
+    }
+    
     try {
+           
+        
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
-              notebookCR.getMetadata().getNamespace(),
+              namespace,
               notebookCR.getPlural(), notebookCR.getMetadata().getName());
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
     } catch (ApiException e) {
@@ -412,16 +427,22 @@ public class K8sSubmitter implements Submitter {
     final String name = spec.getMeta().getName();
     final String pvName = NotebookUtils.PV_PREFIX + name;
     final String pvcName = NotebookUtils.PVC_PREFIX + name;
+    String namespace = "default";
+    
+    if (System.getenv(ENV_NAMESPACE) != null) {
+      namespace = System.getenv(ENV_NAMESPACE);
+    }
+    
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
-              notebookCR.getMetadata().getNamespace(), notebookCR.getPlural(),
+              namespace, notebookCR.getPlural(),
               notebookCR.getMetadata().getName(),
               new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
               null, null, null);
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
-      deleteIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
-      deletePersistentVolumeClaim(pvcName, spec.getMeta().getNamespace());
+      deleteIngressRoute(namespace, notebookCR.getMetadata().getName());
+      deletePersistentVolumeClaim(pvcName, namespace);
       deletePersistentVolume(pvName);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
