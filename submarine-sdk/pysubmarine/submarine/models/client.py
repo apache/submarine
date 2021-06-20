@@ -54,6 +54,27 @@ class ModelsClient(): # Periscope
         experiment_id = self._get_or_create_experiment(experiment_name)
         return mlflow.start_run(run_name=run_name, experiment_id=experiment_id)
 
+    def log_param(self, key, value):
+        mlflow.log_param(key, value)
+
+    def log_metric(self, key, value, step=None):
+        mlflow.log_metric(key, value, step)
+
+    def log_model(self, name, checkpoint):
+        mlflow.pytorch.log_model(registered_model_name=name,
+                                 pytorch_model=checkpoint,
+                                 artifact_path="pytorch-model")
+
+    def load_model(self, name, version):
+        model = mlflow.pyfunc.load_model(model_uri=f"models:/{name}/{version}")
+        return model
+
+    def update_model(self, name, new_name):
+        self.client.rename_registered_model(name=name, new_name=new_name)
+
+    def delete_model(self, name, version):
+        self.client.delete_model_version(name=name, version=version)
+
     def _get_or_create_experiment(
         self,
         experiment_name
@@ -71,24 +92,3 @@ class ModelsClient(): # Periscope
         except MlflowException:
             experiment = mlflow.create_experiment(name=experiment_name)
             return experiment
-
-    def log_param(self, key, value):
-        mlflow.log_param(key, value)
-
-    def log_metric(self, key, value, step=None):
-        mlflow.log_metric(key, value, step)
-
-    def log_model(self, name, checkpoint):
-        mlflow.pytorch.log_model(registered_model_name=name,
-                                 pytorch_model=checkpoint,
-                                 artifact_path="pytorch-model")
-
-    def load_model(self, name, version):
-        model = mlflow.pyfunc.load_model(model_uri=f"models:/{name}/{version}")
-        return model
-
-    def update_model(self, name, new_name):
-        self._client.rename_registered_model(name=name, new_name=new_name)
-
-    def delete_model(self, name, version):
-        self._client.delete_model_version(name=name, version=version)
