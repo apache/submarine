@@ -17,10 +17,12 @@
 import os
 
 import mlflow
+from mlflow.exceptions import MlflowException
 from mlflow.tracking import MlflowClient
 
 from .constant import (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
                        MLFLOW_S3_ENDPOINT_URL, MLFLOW_TRACKING_URI)
+from .utils import get_job_id, get_worker_index
 
 
 class ModelsClient():
@@ -29,12 +31,34 @@ class ModelsClient():
         """
         Set up mlflow server connection, including: s3 endpoint, aws, tracking server
         """
+        # if setting url in environment variable,
+        # there is no need to set it by MlflowClient() or mlflow.set_tracking_uri() again
         os.environ[
             "MLFLOW_S3_ENDPOINT_URL"] = registry_uri or MLFLOW_S3_ENDPOINT_URL
         os.environ["AWS_ACCESS_KEY_ID"] = AWS_ACCESS_KEY_ID
         os.environ["AWS_SECRET_ACCESS_KEY"] = AWS_SECRET_ACCESS_KEY
         os.environ["MLFLOW_TRACKING_URI"] = tracking_uri or MLFLOW_TRACKING_URI
-        self._client = MlflowClient()
+        self.client = MlflowClient()
+
+    def start(self):
+        """
+        1. Start a new Mlflow run
+        2. Direct the logging of the artifacts and metadata
+            to the Run named "worker_i" under Experiment "job_id"
+        3. If in distributed training, worker and job id would be parsed from environment variable
+        4. If in local traning, worker and job id will be generated.
+        :return: Active Run
+        """
+        experiment_name = get_job_id()
+        run_name = get_worker_index()
+        experiment_id = self._get_or_create_experiment(experiment_name)
+        return mlflow.start_run(run_name=run_name, experiment_id=experiment_id)
+
+    def log_param(self, key, value):
+        mlflow.log_param(key, value)
+
+    def log_metric(self, key, value, step=None):
+        mlflow.log_metric(key, value, step)
 
     def log_model(self, name, checkpoint):
         mlflow.pytorch.log_model(registered_model_name=name,
@@ -46,7 +70,22 @@ class ModelsClient():
         return model
 
     def update_model(self, name, new_name):
-        self._client.rename_registered_model(name=name, new_name=new_name)
+        self.client.rename_registered_model(name=name, new_name=new_name)
 
     def delete_model(self, name, version):
-        self._client.delete_model_version(name=name, version=version)
+        self.client.delete_model_version(name=name, version=version)
+
+    def _get_or_create_experiment(self, experiment_name):
+        """
+        Return the id of experiment.
+        If non-exist, create one. Otherwise, return the existing one.
+        :return: Experiment id
+        """
+        try:
+            experiment = mlflow.get_experiment_by_name(experiment_name)
+            if experiment is None:  # if not found
+                raise MlflowException("No valid experiment has been found")
+            return experiment.experiment_id  # if found
+        except MlflowException:
+            experiment = mlflow.create_experiment(name=experiment_name)
+            return experiment
