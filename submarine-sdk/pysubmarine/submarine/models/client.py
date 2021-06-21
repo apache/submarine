@@ -17,8 +17,8 @@
 import os
 
 import mlflow
-from mlflow.tracking import MlflowClient
 from mlflow.exceptions import MlflowException
+from mlflow.tracking import MlflowClient
 
 from .constant import (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
                        MLFLOW_S3_ENDPOINT_URL, MLFLOW_TRACKING_URI)
@@ -26,6 +26,7 @@ from .utils import get_job_id, get_worker_index
 
 
 class ModelsClient():
+
     def __init__(self, tracking_uri=None, registry_uri=None):
         """
         Set up mlflow server connection, including: s3 endpoint, aws, tracking server
@@ -39,9 +40,7 @@ class ModelsClient():
         os.environ["MLFLOW_TRACKING_URI"] = tracking_uri or MLFLOW_TRACKING_URI
         self.client = MlflowClient()
 
-    def start(
-        self
-    ):
+    def start(self):
         """
         1. Start a new Mlflow run
         2. Direct the logging of the artifacts and metadata
@@ -76,10 +75,7 @@ class ModelsClient():
     def delete_model(self, name, version):
         self.client.delete_model_version(name=name, version=version)
 
-    def _get_or_create_experiment(
-        self,
-        experiment_name
-    ):
+    def _get_or_create_experiment(self, experiment_name):
         """
         Return the id of experiment.
         If non-exist, create one. Otherwise, return the existing one.
