@@ -35,10 +35,10 @@ fi
 mkdir -p "${CURRENT_PATH}/tmp"
 cp -r "${SUBMARINE_HOME}/submarine-sdk" "${CURRENT_PATH}/tmp"
 
-# # build image
-# cd ${CURRENT_PATH}
-# echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
-# docker build -t ${SUBMARINE_IMAGE_NAME} .
+# build image
+cd ${CURRENT_PATH}
+echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
+docker build -t ${SUBMARINE_IMAGE_NAME} .
 
-# # clean temp file
-# rm -rf "${CURRENT_PATH}/tmp"
+# clean temp file
+rm -rf "${CURRENT_PATH}/tmp"
