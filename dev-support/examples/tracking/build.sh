@@ -27,13 +27,18 @@ fi
 export CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
 export SUBMARINE_HOME=${CURRENT_PATH}/../../..
 
+if [ -d "${CURRENT_PATH}/tmp" ] # if old tmp folder is still there, delete it.
+then
+  rm -rf "${CURRENT_PATH}/tmp"
+fi
+
 mkdir -p "${CURRENT_PATH}/tmp"
 cp -r "${SUBMARINE_HOME}/submarine-sdk" "${CURRENT_PATH}/tmp"
 
-# build image
-cd ${CURRENT_PATH}
-echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
-docker build -t ${SUBMARINE_IMAGE_NAME} .
+# # build image
+# cd ${CURRENT_PATH}
+# echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
+# docker build -t ${SUBMARINE_IMAGE_NAME} .
 
-# clean temp file
-rm -rf "${CURRENT_PATH}/tmp"
+# # clean temp file
+# rm -rf "${CURRENT_PATH}/tmp"

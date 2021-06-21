@@ -19,8 +19,6 @@ import json
 import os
 import uuid
 
-from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
-from submarine.store.sqlalchemy_store import SqlAlchemyStore
 from submarine.utils import env
 
 _JOB_ID_ENV_VAR = "JOB_ID"

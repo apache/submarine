@@ -24,8 +24,8 @@ from .constant import (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
                        MLFLOW_S3_ENDPOINT_URL, MLFLOW_TRACKING_URI)
 from .utils import get_job_id, get_worker_index
 
-class ModelsClient(): # Periscope
 
+class ModelsClient():
     def __init__(self, tracking_uri=None, registry_uri=None):
         """
         Set up mlflow server connection, including: s3 endpoint, aws, tracking server
@@ -44,7 +44,8 @@ class ModelsClient(): # Periscope
     ):
         """
         1. Start a new Mlflow run
-        2. Direct the logging of the artifacts and metadata to the Run named "worker_i" under Experiment "job_id"
+        2. Direct the logging of the artifacts and metadata
+            to the Run named "worker_i" under Experiment "job_id"
         3. If in distributed training, worker and job id would be parsed from environment variable
         4. If in local traning, worker and job id will be generated.
         :return: Active Run
@@ -86,9 +87,9 @@ class ModelsClient(): # Periscope
         """
         try:
             experiment = mlflow.get_experiment_by_name(experiment_name)
-            if experiment is None: # if not found
+            if experiment is None:  # if not found
                 raise MlflowException("No valid experiment has been found")
-            return experiment.experiment_id # if found
+            return experiment.experiment_id  # if found
         except MlflowException:
             experiment = mlflow.create_experiment(name=experiment_name)
             return experiment

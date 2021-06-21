@@ -2,7 +2,7 @@
 curl -X POST -H "Content-Type: application/json" -d '
 {
   "meta": {
-    "name": "tracking-example2",
+    "name": "tracking-example",
     "namespace": "default",
     "framework": "TensorFlow",
     "cmd": "python /opt/tracking.py",
