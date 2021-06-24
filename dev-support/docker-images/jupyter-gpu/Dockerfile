@@ -19,7 +19,7 @@ ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_PREFIX="/"
 ARG NB_PORT=8888
-ARG MLFLOW_TRACKING_URI="http://10.96.0.3:8080"
+ARG MLFLOW_TRACKING_URI="http://submarine-mlflow-service:5000"
 
 USER root
 

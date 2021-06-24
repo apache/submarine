@@ -82,7 +82,6 @@ kind: Service
 metadata:
   name: submarine-mlflow-service
 spec:
-  clusterIP: 10.96.0.3
   selector:
     app: submarine-mlflow-pod
   ports:
