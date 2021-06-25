@@ -18,7 +18,7 @@ FROM python:3.7.0-slim
 RUN pip install mlflow
 
 RUN apt-get update && apt-get -y install --no-install-recommends default-libmysqlclient-dev libpq-dev build-essential sqlite3 wget
-    
+
 RUN pip install mlflow==1.15.0 sqlalchemy==1.4.11 boto3==1.17.58
 
 COPY start.sh /usr/local/bin
