@@ -30,7 +30,7 @@ check_minio_mlflow_bucket_exists() {
     fi
 }
 
-MLFLOW_S3_ENDPOINT_URL="http://10.96.0.4:9000"
+MLFLOW_S3_ENDPOINT_URL="http://submarine-minio-service:9000"
 AWS_ACCESS_KEY_ID="submarine_minio"
 AWS_SECRET_ACCESS_KEY="submarine_minio"
 BACKEND_URI="sqlite:///store.db"
