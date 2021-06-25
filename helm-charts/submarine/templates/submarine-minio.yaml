@@ -90,7 +90,7 @@ kind: Service
 metadata:
   name: submarine-minio-service
 spec:
-  clusterIP: 10.96.0.4
+  type: ClusterIP
   selector:
     app: submarine-minio-pod
   ports:

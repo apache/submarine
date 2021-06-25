@@ -18,7 +18,7 @@ FROM python:3.7.0-slim
 RUN pip install mlflow
 
 RUN apt-get update && apt-get -y install --no-install-recommends default-libmysqlclient-dev libpq-dev build-essential sqlite3 wget
-    
+
 RUN pip install mlflow==1.15.0 sqlalchemy==1.4.11 boto3==1.17.58
 
 COPY start.sh /usr/local/bin
@@ -27,7 +27,7 @@ WORKDIR /usr/local/bin
 
 RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x mc
 
-ENV MLFLOW_S3_ENDPOINT_URL http://10.96.0.4:9000
+ENV MLFLOW_S3_ENDPOINT_URL http://submarine-minio-service:9000
 ENV AWS_ACCESS_KEY_ID submarine_minio
 ENV AWS_SECRET_ACCESS_KEY submarine_minio
 ENV BACKEND_URI sqlite:///store.db

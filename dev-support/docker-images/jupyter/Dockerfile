@@ -19,7 +19,7 @@ ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_PREFIX="/"
 ARG NB_PORT=8888
-ARG MLFLOW_TRACKING_URI="http://10.96.0.3:5000"
+ARG MLFLOW_TRACKING_URI="http://submarine-mlflow-service:5000"
 
 USER root
 
@@ -116,7 +116,7 @@ RUN pip install numpy==1.19.5 pyqlib==0.6.1
 RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME
 
 
-ENV MLFLOW_S3_ENDPOINT_URL http://10.96.0.4:9000
+ENV MLFLOW_S3_ENDPOINT_URL http://submarine-minio-service:9000
 ENV AWS_ACCESS_KEY_ID submarine_minio
 ENV AWS_SECRET_ACCESS_KEY submarine_minio
 

@@ -15,7 +15,7 @@
  under the License.
 """
 
-MLFLOW_S3_ENDPOINT_URL = "http://10.96.0.4:9000"
+MLFLOW_S3_ENDPOINT_URL = "http://submarine-minio-service:9000"
 AWS_ACCESS_KEY_ID = "submarine_minio"
 AWS_SECRET_ACCESS_KEY = "submarine_minio"
-MLFLOW_TRACKING_URI = "http://10.96.0.3:5000"
+MLFLOW_TRACKING_URI = "http://submarine-mlflow-service:5000"
