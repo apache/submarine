@@ -15,6 +15,18 @@
 # limitations under the License.
 set -euo pipefail
 
+
+if [ -L ${BASH_SOURCE-$0} ]; then
+  PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
+else
+  PWD=$(dirname ${BASH_SOURCE-$0})
+fi
+CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
+
+# So it can executed from any directory
+# e.g. We can run ./dev-support/cicd/build_and_start_cicd_image.sh from the root of submarine project
+cd ${CURRENT_PATH}
+
 printf "Building Submarine CI/CD Image.\n"
 docker build -t submarine-cicd .
 printf "Start Submarine CI/CD.\n"

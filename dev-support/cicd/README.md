@@ -52,14 +52,10 @@ $ docker run -it -e JIRA_USERNAME="${JIRA_USERNAME}" -e JIRA_PASSWORD="${JIRA_PA
 The screen outputs the following information: 
 
 ```
-Menu:
-	1. Merge PR
-	2. Update Submarine Website
-Enter Menu ID:
+Start Submarine CI/CD.
+==== Merge PR Begin ====
+Enter Your Apache JIRA User name: 
 ```
-
-As you can see, the Docker mode support several features like merging PR and updating the web site. Choose the task you need to do and follow the popup tip to go on.
-
 ## Manual mode (Not Recommended)
 
 First, You need install `python 2.7.13` and `pip insall jira`
