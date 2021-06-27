@@ -73,6 +73,9 @@ jobs:
           kubectl get pods -n kube-system
           echo "current-context:" $(kubectl config current-context)
           echo "environment-kubeconfig:" ${KUBECONFIG}
+      - name: Build Image locally
+        run: |
+          .github/scripts/build-image-locally.sh
       - name: Start submarine
         run: |
           # Fix submarine-database start failed in kind. https://github.com/kubernetes/minikube/issues/7906
