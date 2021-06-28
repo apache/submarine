@@ -17,12 +17,14 @@
 #
 
 SUBMARINE_VERSION="0.6.0-SNAPSHOT"
-# IMAGE_LIST=("database" "mlflow" "submarine")
-IMAGE_LIST=("submarine")
+FOLDER_LIST=("database" "mlflow" "submarine")
+IMAGE_LIST=("apache/submarine:database-${SUBMARINE_VERSION}" "apache/submarine:mlflow-${SUBMARINE_VERSION}" "apache/submarine:server-${SUBMARINE_VERSION}")
 
-for image in "${IMAGE_LIST[@]}"
+for i in "${!IMAGE_LIST[@]}"
 do
-  echo "Build Image apache/submarine-${image}:${SUBMARINE_VERSION}"
-  ./dev-support/docker-images/"${image}"/build.sh
-  kind load docker-image apache/submarine:"${image}"-"${SUBMARINE_VERSION}"
+  echo "Build Image ${IMAGE_LIST[i]}"
+  echo "Execute ./dev-support/docker-images/${FOLDER_LIST[i]}/build.sh"
+  ./dev-support/docker-images/"${FOLDER_LIST[i]}"/build.sh
+  kind load docker-image "${IMAGE_LIST[i]}"
 done
+
