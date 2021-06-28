@@ -17,7 +17,8 @@
 #
 
 SUBMARINE_VERSION="0.6.0-SNAPSHOT"
-IMAGE_LIST=("database" "jupyter" "mlflow" "submarine")
+# IMAGE_LIST=("database" "jupyter" "mlflow" "submarine")
+IMAGE_LIST=("mlflow")
 
 for image in "${IMAGE_LIST[@]}"
 do
