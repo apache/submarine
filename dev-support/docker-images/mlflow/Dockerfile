@@ -30,7 +30,7 @@ RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x mc
 ENV MLFLOW_S3_ENDPOINT_URL http://submarine-minio-service:9000
 ENV AWS_ACCESS_KEY_ID submarine_minio
 ENV AWS_SECRET_ACCESS_KEY submarine_minio
-ENV BACKEND_URI sqlite:///store.db
+ENV BACKEND_URI mysql+pymysql://mlflow:password@localhost:3306/mlflow
 
 EXPOSE 5000
 

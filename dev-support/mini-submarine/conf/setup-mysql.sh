@@ -36,3 +36,8 @@ mysql -e "CREATE DATABASE metastore;"
 mysql -e "CREATE USER 'metastore'@'%' IDENTIFIED BY 'password';"
 mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'metastore'@'%';"
 mysql -e "use metastore; source /home/yarn/database/metastore.sql;"
+
+mysql -e "CREATE DATABASE mlflow;"
+mysql -e "CREATE USER 'mlflow'@'%' IDENTIFIED BY 'password';"
+mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'mlflow'@'%';"
+mysql -e "use mlflow; source /home/yarn/database/mlflow.sql;"
