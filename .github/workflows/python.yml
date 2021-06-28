@@ -52,10 +52,9 @@ jobs:
         run: |
           mvn --version
           java -version
-      - name: Checkout project
-        uses: actions/checkout@v1
       - name: Build submarine
         run: mvn clean package -DskipTests
+
       # - name: Create the kind config
       #   run: |
       #     cat <<EOF > ./kind-config-kind.yaml
