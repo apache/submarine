@@ -15,6 +15,7 @@ jobs:
     env:
       PYTHON: ${{ matrix.python }}
     steps:
+      - name: Checkout project
       - uses: actions/checkout@v1
       - name: Setup python environment
         uses: actions/setup-python@v1
@@ -51,98 +52,102 @@ jobs:
         run: |
           mvn --version
           java -version
-      - uses: actions/checkout@v1
-      - name: Create the kind config
+      - name: Checkout project
+        uses: actions/checkout@v1
+      - name: Build submarine
         run: |
-          cat <<EOF > ./kind-config-kind.yaml
-          kind: Cluster
-          apiVersion: kind.x-k8s.io/v1alpha4
-          nodes:
-          - role: control-plane
-            kubeadmConfigPatches:
-            - |
-              kind: InitConfiguration
-              nodeRegistration:
-                kubeletExtraArgs:
-                  node-labels: "ingress-ready=true"
-                  authorization-mode: "AlwaysAllow"
-            extraPortMappings:
-            - containerPort: 32080
-              hostPort: 80
-              protocol: TCP
-            - containerPort: 443
-              hostPort: 443
-              protocol: TCP
-          EOF
-      - uses: container-tools/kind-action@v1
-        with:
-          version: "v0.9.0"
-          node_image: kindest/node:v1.15.11
-          config: ./kind-config-kind.yaml
-      - name: Show K8s cluster information
-        run: |
-          kubectl cluster-info
-          kubectl version
-          kubectl get pods -n kube-system
-          echo "current-context:" $(kubectl config current-context)
-          echo "environment-kubeconfig:" ${KUBECONFIG}
+          mvn clean package -DskipTests
+      # - name: Create the kind config
+      #   run: |
+      #     cat <<EOF > ./kind-config-kind.yaml
+      #     kind: Cluster
+      #     apiVersion: kind.x-k8s.io/v1alpha4
+      #     nodes:
+      #     - role: control-plane
+      #       kubeadmConfigPatches:
+      #       - |
+      #         kind: InitConfiguration
+      #         nodeRegistration:
+      #           kubeletExtraArgs:
+      #             node-labels: "ingress-ready=true"
+      #             authorization-mode: "AlwaysAllow"
+      #       extraPortMappings:
+      #       - containerPort: 32080
+      #         hostPort: 80
+      #         protocol: TCP
+      #       - containerPort: 443
+      #         hostPort: 443
+      #         protocol: TCP
+      #     EOF
+      # - uses: container-tools/kind-action@v1
+      #   with:
+      #     version: "v0.9.0"
+      #     node_image: kindest/node:v1.15.11
+      #     config: ./kind-config-kind.yaml
+      # - name: Show K8s cluster information
+      #   run: |
+      #     kubectl cluster-info
+      #     kubectl version
+      #     kubectl get pods -n kube-system
+      #     echo "current-context:" $(kubectl config current-context)
+      #     echo "environment-kubeconfig:" ${KUBECONFIG}
 
-      # Cache docker layer
-      
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        # Ignore the failure of a step and avoid terminating the job.
-        continue-on-error: true
+      # # Cache docker layer
+      # - name: Cache docker layer
+      #   uses: satackey/action-docker-layer-caching@v0.0.11
+      #   # Ignore the failure of a step and avoid terminating the job.
+      #   continue-on-error: true
 
-      # Cache maven (for submarine server)
-      - uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository/com
-          key: ${{ runner.os }}-maven-com-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-com-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository/org
-          key: ${{ runner.os }}-maven-org-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-org-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository/net
-          key: ${{ runner.os }}-maven-net-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-net-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository/io
-          key: ${{ runner.os }}-maven-io-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-io-
+      # # Cache maven (for submarine server)
+      # - uses: actions/cache@v1
+      #   with:
+      #     path: ~/.m2/repository/com
+      #     key: ${{ runner.os }}-maven-com-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-maven-com-
+      # - uses: actions/cache@v1
+      #   with:
+      #     path: ~/.m2/repository/org
+      #     key: ${{ runner.os }}-maven-org-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-maven-org-
+      # - uses: actions/cache@v1
+      #   with:
+      #     path: ~/.m2/repository/net
+      #     key: ${{ runner.os }}-maven-net-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-maven-net-
+      # - uses: actions/cache@v1
+      #   with:
+      #     path: ~/.m2/repository/io
+      #     key: ${{ runner.os }}-maven-io-${{ hashFiles('**/pom.xml') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-maven-io-
 
-      - name: Build Image locally
-        run: |
-          .github/scripts/build-image-locally.sh
-      - name: Start submarine
-        run: |
-          # Fix submarine-database start failed in kind. https://github.com/kubernetes/minikube/issues/7906
-          sudo ln -s /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
-          sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
-          helm install --wait submarine ./helm-charts/submarine
-          kubectl get pods
-          kubectl port-forward svc/submarine-database 3306:3306 &
-          kubectl port-forward svc/submarine-server 8080:8080 &
-          kubectl port-forward svc/submarine-minio-service 9000:9000 &
-          kubectl port-forward svc/submarine-mlflow-service 5001:5000 &
-      - name: Setup python environment
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.6
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install --no-cache-dir ./submarine-sdk/pysubmarine/.
-          pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-      - name: Run integration test
-        run: |
-          cd submarine-sdk/pysubmarine
-          pytest --cov=submarine -vs -m "e2e"
+      # - name: Build Image locally
+      #   run: |
+      #     .github/scripts/build-image-locally.sh
+      # - name: Start submarine
+      #   run: |
+      #     # Fix submarine-database start failed in kind. https://github.com/kubernetes/minikube/issues/7906
+      #     sudo ln -s /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
+      #     sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
+      #     helm install --wait submarine ./helm-charts/submarine
+      #     kubectl get pods
+      #     kubectl port-forward svc/submarine-database 3306:3306 &
+      #     kubectl port-forward svc/submarine-server 8080:8080 &
+      #     kubectl port-forward svc/submarine-minio-service 9000:9000 &
+      #     kubectl port-forward svc/submarine-mlflow-service 5001:5000 &
+      # - name: Setup python environment
+      #   uses: actions/setup-python@v1
+      #   with:
+      #     python-version: 3.6
+      # - name: Install dependencies
+      #   run: |
+      #     pip install --upgrade pip
+      #     pip install --no-cache-dir ./submarine-sdk/pysubmarine/.
+      #     pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+      # - name: Run integration test
+      #   run: |
+      #     cd submarine-sdk/pysubmarine
+      #     pytest --cov=submarine -vs -m "e2e"
