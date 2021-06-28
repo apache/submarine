@@ -13,7 +13,7 @@
 
 
 DROP TABLE IF EXISTS `alembic_version`;
-CREATE TABLE alembic_version (
+CREATE TABLE `alembic_version` (
 	`version_num` VARCHAR(32) NOT NULL,
 	CONSTRAINT `alembic_version_pkc` PRIMARY KEY (`version_num`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -149,5 +149,4 @@ CREATE TABLE `tags` (
 	`run_uuid` VARCHAR(32) NOT NULL,
 	CONSTRAINT `tag_pk` PRIMARY KEY (`key`, `run_uuid`),
 	FOREIGN KEY(`run_uuid`) REFERENCES `runs` (`run_uuid`)
-)
- ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
