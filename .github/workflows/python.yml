@@ -52,9 +52,9 @@ jobs:
         run: |
           mvn --version
           java -version
-      - name: Build submarine
-        run: |
-          mvn clean package -DskipTests
+      # - name: Build submarine
+      #   run: |
+      #     mvn clean package -DskipTests
 
       # - name: Create the kind config
       #   run: |
@@ -97,32 +97,35 @@ jobs:
       #   # Ignore the failure of a step and avoid terminating the job.
       #   continue-on-error: true
 
-      # # Cache maven (for submarine server)
-      # - uses: actions/cache@v1
-      #   with:
-      #     path: ~/.m2/repository/com
-      #     key: ${{ runner.os }}-maven-com-${{ hashFiles('**/pom.xml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-maven-com-
-      # - uses: actions/cache@v1
-      #   with:
-      #     path: ~/.m2/repository/org
-      #     key: ${{ runner.os }}-maven-org-${{ hashFiles('**/pom.xml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-maven-org-
-      # - uses: actions/cache@v1
-      #   with:
-      #     path: ~/.m2/repository/net
-      #     key: ${{ runner.os }}-maven-net-${{ hashFiles('**/pom.xml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-maven-net-
-      # - uses: actions/cache@v1
-      #   with:
-      #     path: ~/.m2/repository/io
-      #     key: ${{ runner.os }}-maven-io-${{ hashFiles('**/pom.xml') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-maven-io-
-
+      # Cache maven (for submarine server)
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/com
+          key: ${{ runner.os }}-maven-com-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-com-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/org
+          key: ${{ runner.os }}-maven-org-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-org-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/net
+          key: ${{ runner.os }}-maven-net-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-net-
+      - uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository/io
+          key: ${{ runner.os }}-maven-io-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-io-
+      - name: Build submarine
+        run: |
+          mvn clean package -DskipTests
+          
       # - name: Build Image locally
       #   run: |
       #     .github/scripts/build-image-locally.sh
