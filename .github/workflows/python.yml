@@ -16,7 +16,7 @@ jobs:
       PYTHON: ${{ matrix.python }}
     steps:
       - name: Checkout project
-      - uses: actions/checkout@v1
+        uses: actions/checkout@v1
       - name: Setup python environment
         uses: actions/setup-python@v1
         with:
@@ -52,8 +52,9 @@ jobs:
         run: |
           mvn --version
           java -version
-      # - name: Build submarine
-      #   run: mvn clean package -DskipTests
+      - name: Build submarine
+        run: |
+          mvn clean package -DskipTests
 
       # - name: Create the kind config
       #   run: |
