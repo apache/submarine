@@ -24,5 +24,5 @@ for image in "${IMAGE_LIST[@]}"
 do
   echo "Build Image apache/submarine-${image}:${SUBMARINE_VERSION}"
   ./dev-support/docker-images/"${image}"/build.sh
-  kind load docker-image apache/submarine-"${image}":"${SUBMARINE_VERSION}"
+  kind load docker-image apache/submarine:"${image}":"${SUBMARINE_VERSION}"
 done
