@@ -17,40 +17,27 @@
 
 package org.apache.submarine.integration.pages;
 
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 public class LoginPage extends AbstractSubmarineIT{
 
-    @FindBy(css = "input[ng-reflect-name='userName']")
-    private By userNameInput;
+    private By userNameInput = By.cssSelector("input[ng-reflect-name='userName']");
 
-    @FindBy(css = "input[ng-reflect-name='password']")
-    private By passwordInput;
+    private By passwordInput = By.cssSelector("input[ng-reflect-name='password']");
 
-    @FindBy(xpath = "//span[text()='Sign In']/parent::button")
-    private By signInButton;
+    private By signInButton = By.xpath("//span[text()='Sign In']/parent::button");
 
-    @FindBy(xpath = "//div[contains(text(), \"Please input your username!\")]")
-    private By userNameSignInWarning;
+    private By userNameSignInWarning = By.xpath("//div[contains(text(), \"Please input your username!\")]");
 
-    @FindBy(xpath = "//div[contains(text(), \"Please input your Password!\")]")
-    private By passwordSignInWarning;
+    private By passwordSignInWarning = By.xpath("//div[contains(text(), \"Please input your Password!\")]");
 
-    @FindBy(xpath = "//div[contains(text(), \"Username and password are incorrect,\")]")
-    private By warningText;
+    private By warningText = By.xpath("//div[contains(text(), \"Username and password are incorrect,\")]");
 
     private Actions action;
 
@@ -78,5 +65,14 @@ public class LoginPage extends AbstractSubmarineIT{
 
     public By getPasswordSignInWarning() {
         return passwordSignInWarning;
+    }
+
+    public void Login() {
+        String username = "admin";
+        String password = "admin";
+        waitToPresent(userNameInput, MAX_BROWSER_TIMEOUT_SEC).sendKeys(username);
+        waitToPresent(passwordInput, MAX_BROWSER_TIMEOUT_SEC).sendKeys(password);
+        Click(signInButton, MAX_BROWSER_TIMEOUT_SEC);
+        waitToPresent(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
     }
 }

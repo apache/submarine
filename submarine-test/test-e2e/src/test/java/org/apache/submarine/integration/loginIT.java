@@ -20,10 +20,6 @@ package org.apache.submarine.integration;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
 import org.apache.submarine.integration.pages.LoginPage;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
@@ -58,8 +54,8 @@ public class loginIT extends AbstractSubmarineIT {
     loginPage.clickSignInBtn();
 
     // Assert the warning texts
-    Assert.assertEquals(driver.findElement(loginPage.getUserNameSignInWarning()), 1);
-    Assert.assertEquals(driver.findElement(loginPage.getPasswordSignInWarning()).getSize(), 1);
+    Assert.assertEquals(driver.findElements(loginPage.getUserNameSignInWarning()).size(), 1);
+    Assert.assertEquals(driver.findElements(loginPage.getPasswordSignInWarning()).size(), 1);
 
     LOG.info("Enter invalid username and password");
 
@@ -71,22 +67,8 @@ public class loginIT extends AbstractSubmarineIT {
 
     loginPage.fillLoginForm("\b\b\b", "\b\b\b");
 
-//    WebElement signin_button = buttonCheck(By.xpath("//span[text()='Sign In']/parent::button"), MAX_BROWSER_TIMEOUT_SEC);
-//    signin_button.click();
-//    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Please input your username!\")]")).size(), 1);
-//    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Please input your Password!\")]")).size(), 1);
-//    LOG.info("Enter invalid username and password");
-//    SendKeys(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC, "123");
-//    SendKeys(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC, "123");
-//    signin_button.click();
-//
-//    waitToPresent(By.xpath("//div[contains(text(), \"Username and password are incorrect,\")]"), MAX_BROWSER_TIMEOUT_SEC);
-//
-//    SendKeys(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC, "\b\b\b");
-//    SendKeys(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC, "\b\b\b");
-
     // Testcase2
     LOG.info("[Sub-Testcase-2] Valid User");
-    Login();
+    loginPage.Login();
   }
 }

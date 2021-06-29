@@ -20,6 +20,7 @@ package org.apache.submarine.integration;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.WebDriverManager;
+import org.apache.submarine.integration.pages.LoginPage;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.By;
@@ -51,10 +52,12 @@ public class departmentIT extends AbstractSubmarineIT{
     Sidebars sidebars = new Sidebars(URL);
 
     // Login
-    Login();
+      LoginPage loginPage = new LoginPage(driver);
+      loginPage.Login();
 
     // Routing to department page
     sidebars.gotoDepartment();
+
 
     // Test create new department
     Click(By.xpath("//button[@id='btnAddDepartment']"), MAX_BROWSER_TIMEOUT_SEC);

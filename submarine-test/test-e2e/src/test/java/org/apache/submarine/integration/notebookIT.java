@@ -20,6 +20,7 @@ package org.apache.submarine.integration;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.WebDriverManager;
+import org.apache.submarine.integration.pages.LoginPage;
 import org.apache.submarine.SubmarineITUtils;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
@@ -48,8 +49,9 @@ public class notebookIT extends AbstractSubmarineIT {
   public void notebookNavigation() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
     Sidebars sidebars = new Sidebars(URL);
-      // Login
-    Login();
+    // Login
+    LoginPage loginPage = new LoginPage(driver);
+    loginPage.Login();
 
     // Routing to Notebook
     sidebars.gotoNoteBook();
