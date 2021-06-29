@@ -18,6 +18,7 @@
 package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
+import org.apache.submarine.integration.pages.LoginPage;
 import org.apache.submarine.WebDriverManager;
 import org.apache.submarine.integration.components.Sidebars;
 import org.junit.Ignore;
@@ -48,13 +49,19 @@ public class interpreterIT extends AbstractSubmarineIT {
   @Test
   public void workspaceNavigation() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
+<<<<<<< HEAD
     Sidebars sidebars = new Sidebars(URL);
     // Login
+=======
+    LoginPage loginPage = new LoginPage(driver);
+      // Login
+>>>>>>> login in the current non-used page
     LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+    loginPage.Login();
+//    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+//    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
+//    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
+//    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
 
     // Routing to Interpreter
     sidebars.gotoInterpreter();
