@@ -52,6 +52,15 @@ public class Sidebars extends AbstractSubmarineIT{
     private By toUser = By.xpath("//a[@href='/workbench/manager/user']");
     private String userURL = "/workbench/manager/user";
 
+    private By toData = By.xpath("//span[contains(text(), \"Data\")]");
+    private String dataURL = "/workbench/data";
+
+    private By toWorkSpace = By.xpath("//span[contains(text(), \"Workspace\")]");
+    private String workSpaceURL = "/workbench/workspace";
+
+    private By toInterpreter = By.xpath("//span[contains(text(), \"Interpreter\")]");
+    private String interpreterURL = "/workbench/interpreter";
+
     private Actions action;
 
     public Sidebars(WebDriver driver) {
@@ -92,4 +101,17 @@ public class Sidebars extends AbstractSubmarineIT{
         ClickAndNavigate(toDepartment, MAX_BROWSER_TIMEOUT_SEC, URL.concat(departmentURL));
         Click(toManager, MAX_BROWSER_TIMEOUT_SEC);
     }
+
+    public void gotoData() {
+        ClickAndNavigate(toData, MAX_BROWSER_TIMEOUT_SEC, URL.concat(dataURL));
+    }
+
+    public void gotoWorkSpace() {
+        ClickAndNavigate(toWorkSpace, MAX_BROWSER_TIMEOUT_SEC, URL.concat(workSpaceURL));
+    }
+
+    public void gotoInterpreter() {
+        ClickAndNavigate(toInterpreter, MAX_BROWSER_TIMEOUT_SEC, URL.concat(interpreterURL));
+    }
+
 }
