@@ -18,6 +18,7 @@
 package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
+import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.WebDriverManager;
 import org.apache.submarine.SubmarineITUtils;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -47,18 +48,23 @@ public class sidebarIT extends AbstractSubmarineIT {
 
   @Test
   public void sidebarNavigation() throws Exception {
-    String URL = getURL("http://127.0.0.1", 8080);
+//    String URL = getURL("http://127.0.0.1", 8080);
     // Login
     Login();
+    Sidebars sidebars = new Sidebars(driver);
 
     // Start Routing & Navigation in sidebar
     LOG.info("Start Routing & Navigation in sidebar");
-    ClickAndNavigate(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/experiment"));
-    Click(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC);
-    Click(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC);
+    sidebars.gotoExperiment();
+    sidebars.gotoUser();
+    sidebars.gotoDataDict();
+
+//    ClickAndNavigate(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/experiment"));
+//    Click(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC);
+//    Click(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC);
 
     // Lazy-loading
-    ClickAndNavigate(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/manager/user"));
-    ClickAndNavigate(By.xpath("//a[@href='/workbench/manager/dataDict']"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/manager/dataDict"));
+//    ClickAndNavigate(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/manager/user"));
+//    ClickAndNavigate(By.xpath("//a[@href='/workbench/manager/dataDict']"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/manager/dataDict"));
   }
 }

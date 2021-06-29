@@ -54,7 +54,7 @@ public class Sidebars extends AbstractSubmarineIT{
 
     private Actions action;
 
-    public void Sidebars(WebDriver driver) {
+    public Sidebars(WebDriver driver) {
         PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
         action = new Actions(driver);
     }
