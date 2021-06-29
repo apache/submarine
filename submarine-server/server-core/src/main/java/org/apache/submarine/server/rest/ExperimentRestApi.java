@@ -51,6 +51,7 @@ import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateSubmit;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.response.JsonResponse;
+import org.mlflow.tracking.MlflowClient;
 
 /**
  * Experiment Service REST API v1
@@ -216,13 +217,16 @@ public class ExperimentRestApi {
               schema = @Schema(implementation = JsonResponse.class))),
           @ApiResponse(responseCode = "404", description = "Experiment not found")})
   public Response deleteExperiment(@PathParam(RestConstants.ID) String id) {
+    Experiment experiment;
     try {
-      Experiment experiment = experimentManager.deleteExperiment(id);
-      return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
-          .result(experiment).build();
+      experiment = experimentManager.deleteExperiment(id);
     } catch (SubmarineRuntimeException e) {
       return parseExperimentServiceException(e);
     }
+    MlflowClient mlflowclient = MlflowClient("http://submarine-mlflow-service:5000");
+    mlflowclient.deleteExperiment(id);
+    return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
+            .result(experiment).build();
   }
 
   @GET
