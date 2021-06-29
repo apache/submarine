@@ -18,6 +18,7 @@
 package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
+import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -46,20 +47,19 @@ public class departmentIT extends AbstractSubmarineIT{
 
   @Test
   public void dataNavigation() throws Exception {
-    String URL = getURL("http://127.0.0.1", 8080);
+
+    Sidebars sidebars = new Sidebars(driver);
     // Login
     Login();
 
     // Routing to department page
-    Click(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC);
-    ClickAndNavigate(By.xpath("//a[@href='/workbench/manager/department']"), MAX_BROWSER_TIMEOUT_SEC, 
-                      URL.concat("/workbench/manager/department"));
+    sidebars.gotoDepartment();
 
     // Test create new department
     Click(By.xpath("//button[@id='btnAddDepartment']"), MAX_BROWSER_TIMEOUT_SEC);
     SendKeys(By.xpath("//input[@id='codeInput'] "), MAX_BROWSER_TIMEOUT_SEC, "e2e Test");
     SendKeys(By.xpath("//input[@id='nameInput']"), MAX_BROWSER_TIMEOUT_SEC, "e2e Test");
     Click(By.xpath("//button[@id='btnSubmit']"), MAX_BROWSER_TIMEOUT_SEC);
-    waitToPresent(By.xpath("//td[contains(., 'e2e Test')]"), MAX_BROWSER_TIMEOUT_SEC); 
+    waitToPresent(By.xpath("//td[contains(., 'e2e Test')]"), MAX_BROWSER_TIMEOUT_SEC);
   }
 }

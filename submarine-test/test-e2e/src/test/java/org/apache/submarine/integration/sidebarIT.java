@@ -48,7 +48,6 @@ public class sidebarIT extends AbstractSubmarineIT {
 
   @Test
   public void sidebarNavigation() throws Exception {
-//    String URL = getURL("http://127.0.0.1", 8080);
     // Login
     Login();
     Sidebars sidebars = new Sidebars(driver);
@@ -58,13 +57,5 @@ public class sidebarIT extends AbstractSubmarineIT {
     sidebars.gotoExperiment();
     sidebars.gotoUser();
     sidebars.gotoDataDict();
-
-//    ClickAndNavigate(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/experiment"));
-//    Click(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC);
-//    Click(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC);
-
-    // Lazy-loading
-//    ClickAndNavigate(By.xpath("//a[@href='/workbench/manager/user']"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/manager/user"));
-//    ClickAndNavigate(By.xpath("//a[@href='/workbench/manager/dataDict']"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/manager/dataDict"));
   }
 }

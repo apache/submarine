@@ -72,24 +72,24 @@ public class Sidebars extends AbstractSubmarineIT{
     }
 
     public void gotoEnvironment() {
-        ClickAndNavigate(toEnvironment, MAX_BROWSER_TIMEOUT_SEC, URL.concat(experimentURL));
+        ClickAndNavigate(toEnvironment, MAX_BROWSER_TIMEOUT_SEC, URL.concat(environmentURL));
     }
 
     public void gotoUser() {
         Click(toManager, MAX_BROWSER_TIMEOUT_SEC);
         ClickAndNavigate(toUser, MAX_BROWSER_TIMEOUT_SEC, URL.concat(userURL));
+        Click(toManager, MAX_BROWSER_TIMEOUT_SEC);
     }
 
     public void gotoDataDict() {
         Click(toManager, MAX_BROWSER_TIMEOUT_SEC);
         ClickAndNavigate(toDataDict, MAX_BROWSER_TIMEOUT_SEC, URL.concat(dataDictURL));
+        Click(toManager, MAX_BROWSER_TIMEOUT_SEC);
     }
 
     public void gotoDepartment() {
         Click(toManager, MAX_BROWSER_TIMEOUT_SEC);
         ClickAndNavigate(toDepartment, MAX_BROWSER_TIMEOUT_SEC, URL.concat(departmentURL));
+        Click(toManager, MAX_BROWSER_TIMEOUT_SEC);
     }
-
-
-
 }
