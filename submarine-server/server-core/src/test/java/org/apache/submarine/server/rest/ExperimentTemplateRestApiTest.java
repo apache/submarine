@@ -54,23 +54,23 @@ public class ExperimentTemplateRestApiTest {
   @BeforeClass
   public static void init() {
     SubmarineConfiguration submarineConf = SubmarineConfiguration.getInstance();
-    submarineConf.setMetastoreJdbcUrl("jdbc:mysql://127.0.0.1:3306/submarine_test?" + "useUnicode=true&amp;"
-        + "characterEncoding=UTF-8&amp;" + "autoReconnect=true&amp;" + "failOverReadOnly=false&amp;"
-        + "zeroDateTimeBehavior=convertToNull&amp;" + "useSSL=false");
+    submarineConf.setMetastoreJdbcUrl("jdbc:mysql://127.0.0.1:3306/submarine_test?" + "useUnicode=true&"
+        + "characterEncoding=UTF-8&" + "autoReconnect=true&" + "failOverReadOnly=false&"
+        + "zeroDateTimeBehavior=convertToNull&" + "useSSL=false");
     submarineConf.setMetastoreJdbcUserName("submarine_test");
     submarineConf.setMetastoreJdbcPassword("password_test");
-    experimentTemplateStoreApi = new ExperimentTemplateRestApi();  
+    experimentTemplateStoreApi = new ExperimentTemplateRestApi();
   }
 
   @Before
   public void createAndUpdateExperimentTemplate() {
     String body = loadContent(TPL_FILE);
     experimentTemplateSpec = gson.fromJson(body, ExperimentTemplateSpec.class);
-    
+
     // Create ExperimentTemplate
     Response createEnvResponse = experimentTemplateStoreApi.createExperimentTemplate(experimentTemplateSpec);
     assertEquals(Response.Status.OK.getStatusCode(), createEnvResponse.getStatus());
-    
+
     // Update ExperimentTemplate
     experimentTemplateSpec.setDescription("newdescription");
     Response updateTplResponse = experimentTemplateStoreApi.
@@ -80,7 +80,7 @@ public class ExperimentTemplateRestApiTest {
 
   @After
   public void deleteExperimentTemplate() {
-    
+
     String body = loadContent(TPL_FILE);
     experimentTemplateSpec = gson.fromJson(body, ExperimentTemplateSpec.class);
 
