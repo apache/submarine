@@ -36,6 +36,12 @@
       <groupId>org.apache.submarine</groupId>
       <artifactId>submarine-commons-cluster</artifactId>
       <version>${project.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -43,7 +49,7 @@
       <artifactId>submarine-server-api</artifactId>
       <version>${project.version}</version>
     </dependency>
-      <dependency>
+    <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-jaxrs2</artifactId>
       <version>${io.swagger.version}</version>
@@ -239,6 +245,10 @@
         <exclusion>
           <groupId>javax.servlet</groupId>
           <artifactId>servlet-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

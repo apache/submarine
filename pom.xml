@@ -80,7 +80,7 @@
     <commons-configuration.version>1.10</commons-configuration.version>
     <commons-httpclient.version>3.1</commons-httpclient.version>
 
-    <cglib.version>3.2.2</cglib.version>
+    <cglib.version>3.3.0</cglib.version>
     <mybatis.version>3.2.8</mybatis.version>
     <mysql-connector-java.version>5.1.41</mysql-connector-java.version>
     <grpc.version>1.25.0</grpc.version>
