@@ -87,15 +87,6 @@ abstract public class AbstractSubmarineIT {
     return URL;
   }
 
-//  protected void Login() {
-//    String username = "admin";
-//    String password = "admin";
-//    waitToPresent(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(username);
-//    waitToPresent(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(password);
-//    Click(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC);
-//    waitToPresent(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
-//  }
-
   protected WebElement buttonCheck(final By locator, final long timeWait) {
     return new WebDriverWait(driver, timeWait)
             .until(ExpectedConditions.elementToBeClickable(locator));

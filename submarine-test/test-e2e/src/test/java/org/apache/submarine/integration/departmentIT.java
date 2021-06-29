@@ -52,8 +52,8 @@ public class departmentIT extends AbstractSubmarineIT{
     Sidebars sidebars = new Sidebars(URL);
 
     // Login
-      LoginPage loginPage = new LoginPage(driver);
-      loginPage.Login();
+    LoginPage loginPage = new LoginPage(driver);
+    loginPage.Login();
 
     // Routing to department page
     sidebars.gotoDepartment();
