@@ -57,8 +57,14 @@ class ModelsClient():
     def log_param(self, key, value):
         mlflow.log_param(key, value)
 
+    def log_params(self, params):
+        mlflow.log_params(params)
+
     def log_metric(self, key, value, step=None):
         mlflow.log_metric(key, value, step)
+
+    def log_metrics(self, metrics, step=None):
+        mlflow.log_metrics(metrics, step)
 
     def log_model(self, name, checkpoint):
         mlflow.pytorch.log_model(registered_model_name=name,
