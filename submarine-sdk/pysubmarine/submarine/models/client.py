@@ -22,7 +22,7 @@ from mlflow.tracking import MlflowClient
 
 from .constant import (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
                        MLFLOW_S3_ENDPOINT_URL, MLFLOW_TRACKING_URI)
-from .utils import get_job_id, get_worker_index
+from .utils import get_job_id, get_ps, get_worker_index
 
 
 class ModelsClient():
@@ -39,6 +39,12 @@ class ModelsClient():
         os.environ["AWS_SECRET_ACCESS_KEY"] = AWS_SECRET_ACCESS_KEY
         os.environ["MLFLOW_TRACKING_URI"] = tracking_uri or MLFLOW_TRACKING_URI
         self.client = MlflowClient()
+        self.type_to_log_model = {
+            "pytorch": mlflow.pytorch.log_model,
+            "sklearn": mlflow.sklearn.log_model,
+            "tensorflow": mlflow.tensorflow.log_model,
+            "keras": mlflow.keras.log_model
+        }
 
     def start(self):
         """
@@ -66,11 +72,6 @@ class ModelsClient():
     def log_metrics(self, metrics, step=None):
         mlflow.log_metrics(metrics, step)
 
-    def log_model(self, name, checkpoint):
-        mlflow.pytorch.log_model(registered_model_name=name,
-                                 pytorch_model=checkpoint,
-                                 artifact_path="pytorch-model")
-
     def load_model(self, name, version):
         model = mlflow.pyfunc.load_model(model_uri=f"models:/{name}/{version}")
         return model
@@ -80,6 +81,24 @@ class ModelsClient():
 
     def delete_model(self, name, version):
         self.client.delete_model_version(name=name, version=version)
+
+    def save_model(self,
+                   model_type,
+                   model,
+                   artifact_path,
+                   registered_model_name=None):
+        run_name = get_worker_index()
+        if get_ps():
+            # TODO for Tensorflow ParameterServer strategy
+            return
+        elif run_name == "worker-0":
+            if model_type in self.type_to_log_model:
+                self.type_to_log_model[model_type](
+                    model,
+                    artifact_path,
+                    registered_model_name=registered_model_name)
+            else:
+                raise MlflowException("No valid type of model has been matched")
 
     def _get_or_create_experiment(self, experiment_name):
         """

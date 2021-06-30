@@ -32,14 +32,13 @@ class TestSubmarineModelsClient():
     def tearDown(self):
         pass
 
-    @pytest.mark.skip(reason="Developing")
-    def test_log_model(self, mocker):
-        mock_method = mocker.patch.object(ModelsClient, "log_model")
+    def test_save_model(self, mocker):
+        mock_method = mocker.patch.object(ModelsClient, "save_model")
         client = ModelsClient()
         model = LinearNNModel()
         name = "simple-nn-model"
-        client.log_model(name, model)
-        mock_method.assert_called_once_with("simple-nn-model", model)
+        client.save_model("pytorch", model, name)
+        mock_method.assert_called_once_with("pytorch", model, "simple-nn-model")
 
     def test_update_model(self, mocker):
         mock_method = mocker.patch.object(MlflowClient,
