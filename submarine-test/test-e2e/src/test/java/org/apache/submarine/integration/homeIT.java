@@ -50,13 +50,10 @@ public class homeIT extends AbstractSubmarineIT {
   @Test
   public void homePagination() throws Exception {
     LoginPage loginPage = new LoginPage(driver);
-      // Login
+    // Login
     LOG.info("Login");
     loginPage.Login();
-//    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-//    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-//    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-//    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+
 
     LOG.info("Pagination");
     List<WebElement> changePageIndexButtons = driver.findElements(By.cssSelector("a[class='ant-pagination-item-link ng-star-inserted']"));

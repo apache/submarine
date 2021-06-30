@@ -50,13 +50,9 @@ public class teamIT extends AbstractSubmarineIT {
     String URL = getURL("http://127.0.0.1", 8080);
     LoginPage loginPage = new LoginPage(driver);
 
-      // Login
+    // Login
     LOG.info("Login");
     loginPage.Login();
-//    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-//    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-//    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-//    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
 
     // Routing to workspace
     pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();

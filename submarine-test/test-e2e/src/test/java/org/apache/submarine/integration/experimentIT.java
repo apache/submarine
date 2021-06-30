@@ -58,8 +58,12 @@ public class experimentIT extends AbstractSubmarineIT {
 =======
     LoginPage loginPage = new LoginPage(driver);
 
+<<<<<<< HEAD
       // Login
 >>>>>>> login
+=======
+    // Login
+>>>>>>> fix indent and remove comment
     LOG.info("Login");
     loginPage.Login();
 

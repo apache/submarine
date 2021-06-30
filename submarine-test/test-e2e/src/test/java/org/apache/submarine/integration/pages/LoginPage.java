@@ -39,11 +39,8 @@ public class LoginPage extends AbstractSubmarineIT{
 
     private By warningText = By.xpath("//div[contains(text(), \"Username and password are incorrect,\")]");
 
-    private Actions action;
-
     public LoginPage(WebDriver driver) {
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
-        action = new Actions(driver);
+
     }
 
     public void clickSignInBtn() {
