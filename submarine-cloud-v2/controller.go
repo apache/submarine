@@ -65,6 +65,11 @@ import (
 const controllerAgentName = "submarine-controller"
 
 const (
+	serverName   = "submarine-server"
+	databaseName = "submarine-database"
+)
+
+const (
 	// SuccessSynced is used as part of the Event 'reason' when a Submarine is synced
 	SuccessSynced = "Synced"
 	// ErrResourceExists is used as part of the Event 'reason' when a Submarine fails
@@ -391,11 +396,147 @@ func (c *Controller) processNextWorkItem() bool {
 	return true
 }
 
+func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployment {
+	serverImage := submarine.Spec.Server.Image
+	serverReplicas := *submarine.Spec.Server.Replicas
+	if serverImage == "" {
+		serverImage = "apache/submarine:server-" + submarine.Spec.Version
+	}
+
+	return &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: serverName,
+			OwnerReferences: []metav1.OwnerReference{
+				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+			},
+		},
+		Spec: appsv1.DeploymentSpec{
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					"run": serverName,
+				},
+			},
+			Replicas: &serverReplicas,
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						"run": serverName,
+					},
+				},
+				Spec: corev1.PodSpec{
+					ServiceAccountName: serverName,
+					Containers: []corev1.Container{
+						{
+							Name:  serverName,
+							Image: serverImage,
+							Env: []corev1.EnvVar{
+								{
+									Name:  "SUBMARINE_SERVER_PORT",
+									Value: "8080",
+								},
+								{
+									Name:  "SUBMARINE_SERVER_PORT_8080_TCP",
+									Value: "8080",
+								},
+								{
+									Name:  "SUBMARINE_SERVER_DNS_NAME",
+									Value: serverName + "." + submarine.Namespace,
+								},
+								{
+									Name:  "K8S_APISERVER_URL",
+									Value: "kubernetes.default.svc",
+								},
+								{
+									Name:  "ENV_NAMESPACE",
+									Value: submarine.Namespace,
+								},
+							},
+							Ports: []corev1.ContainerPort{
+								{
+									ContainerPort: 8080,
+								},
+							},
+							ImagePullPolicy: "IfNotPresent",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
+func newSubmarineDatabaseDeployment(submarine *v1alpha1.Submarine, pvcName string) *appsv1.Deployment {
+	databaseImage := submarine.Spec.Database.Image
+	if databaseImage == "" {
+		databaseImage = "apache/submarine:database-" + submarine.Spec.Version
+	}
+
+	return &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: databaseName,
+			OwnerReferences: []metav1.OwnerReference{
+				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+			},
+		},
+		Spec: appsv1.DeploymentSpec{
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					"app": databaseName,
+				},
+			},
+			Replicas: submarine.Spec.Database.Replicas,
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						"app": databaseName,
+					},
+				},
+				Spec: corev1.PodSpec{
+					Containers: []corev1.Container{
+						{
+							Name:            databaseName,
+							Image:           databaseImage,
+							ImagePullPolicy: "IfNotPresent",
+							Ports: []corev1.ContainerPort{
+								{
+									ContainerPort: 3306,
+								},
+							},
+							Env: []corev1.EnvVar{
+								{
+									Name:  "MYSQL_ROOT_PASSWORD",
+									Value: "password",
+								},
+							},
+							VolumeMounts: []corev1.VolumeMount{
+								{
+									MountPath: "/var/lib/mysql",
+									Name:      "volume",
+									SubPath:   databaseName,
+								},
+							},
+						},
+					},
+					Volumes: []corev1.Volume{
+						{
+							Name: "volume",
+							VolumeSource: corev1.VolumeSource{
+								PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
+									ClaimName: pvcName,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 // newSubmarineServer is a function to create submarine-server.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-server.yaml
-func (c *Controller) newSubmarineServer(submarine *v1alpha1.Submarine, namespace string, serverImage string, serverReplicas int32) error {
+func (c *Controller) newSubmarineServer(submarine *v1alpha1.Submarine, namespace string) (*appsv1.Deployment, error) {
 	klog.Info("[newSubmarineServer]")
-	serverName := "submarine-server"
 
 	// Step1: Create ServiceAccount
 	serviceaccount, serviceaccount_err := c.serviceaccountLister.ServiceAccounts(namespace).Get(serverName)
@@ -418,13 +559,13 @@ func (c *Controller) newSubmarineServer(submarine *v1alpha1.Submarine, namespace
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if serviceaccount_err != nil {
-		return serviceaccount_err
+		return nil, serviceaccount_err
 	}
 
 	if !metav1.IsControlledBy(serviceaccount, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, serviceaccount.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return fmt.Errorf(msg)
+		return nil, fmt.Errorf(msg)
 	}
 
 	// Step2: Create Service
@@ -463,81 +604,20 @@ func (c *Controller) newSubmarineServer(submarine *v1alpha1.Submarine, namespace
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if service_err != nil {
-		return service_err
+		return nil, service_err
 	}
 
 	if !metav1.IsControlledBy(service, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, service.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return fmt.Errorf(msg)
+		return nil, fmt.Errorf(msg)
 	}
 
 	// Step3: Create Deployment
 	deployment, deployment_err := c.deploymentLister.Deployments(namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(deployment_err) {
-		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(namespace).Create(context.TODO(),
-			&appsv1.Deployment{
-				ObjectMeta: metav1.ObjectMeta{
-					Name: serverName,
-					OwnerReferences: []metav1.OwnerReference{
-						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-					},
-				},
-				Spec: appsv1.DeploymentSpec{
-					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{
-							"run": serverName,
-						},
-					},
-					Replicas: &serverReplicas,
-					Template: corev1.PodTemplateSpec{
-						ObjectMeta: metav1.ObjectMeta{
-							Labels: map[string]string{
-								"run": serverName,
-							},
-						},
-						Spec: corev1.PodSpec{
-							ServiceAccountName: serverName,
-							Containers: []corev1.Container{
-								{
-									Name:  serverName,
-									Image: serverImage,
-									Env: []corev1.EnvVar{
-										{
-											Name:  "SUBMARINE_SERVER_PORT",
-											Value: "8080",
-										},
-										{
-											Name:  "SUBMARINE_SERVER_PORT_8080_TCP",
-											Value: "8080",
-										},
-										{
-											Name:  "SUBMARINE_SERVER_DNS_NAME",
-											Value: serverName + "." + namespace,
-										},
-										{
-											Name:  "K8S_APISERVER_URL",
-											Value: "kubernetes.default.svc",
-										},
-										{
-											Name:  "ENV_NAMESPACE",
-											Value: namespace,
-										},
-									},
-									Ports: []corev1.ContainerPort{
-										{
-											ContainerPort: 8080,
-										},
-									},
-									ImagePullPolicy: "IfNotPresent",
-								},
-							},
-						},
-					},
-				},
-			},
-			metav1.CreateOptions{})
+		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(namespace).Create(context.TODO(), newSubmarineServerDeployment(submarine), metav1.CreateOptions{})
 		klog.Info("	Create Deployment: ", deployment.Name)
 	}
 
@@ -545,16 +625,26 @@ func (c *Controller) newSubmarineServer(submarine *v1alpha1.Submarine, namespace
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if deployment_err != nil {
-		return deployment_err
+		return nil, deployment_err
 	}
 
 	if !metav1.IsControlledBy(deployment, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, deployment.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return fmt.Errorf(msg)
+		return nil, fmt.Errorf(msg)
 	}
 
-	return nil
+	// Update the replicas of the server deployment if it is not equal to spec
+	if submarine.Spec.Server.Replicas != nil && *submarine.Spec.Server.Replicas != *deployment.Spec.Replicas {
+		klog.V(4).Infof("Submarine %s server spec replicas: %d, actual replicas: %d", submarine.Name, *submarine.Spec.Server.Replicas, *deployment.Spec.Replicas)
+		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Update(context.TODO(), newSubmarineServerDeployment(submarine), metav1.UpdateOptions{})
+	}
+
+	if deployment_err != nil {
+		return nil, deployment_err
+	}
+
+	return deployment, nil
 }
 
 // newIngress is a function to create Ingress.
@@ -719,14 +809,8 @@ func (c *Controller) newSubmarineServerRBAC(submarine *v1alpha1.Submarine, servi
 
 // newSubmarineDatabase is a function to create submarine-database.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-database.yaml
-func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespace string, spec *v1alpha1.SubmarineSpec) error {
+func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespace string) (*appsv1.Deployment, error) {
 	klog.Info("[newSubmarineDatabase]")
-	databaseName := "submarine-database"
-
-	databaseImage := spec.Database.Image
-	if databaseImage == "" {
-		databaseImage = "apache/submarine:database-" + spec.Version
-	}
 
 	// Step1: Create PersistentVolume
 	// PersistentVolumes are not namespaced resources, so we add the namespace
@@ -736,25 +820,25 @@ func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespa
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(pv_err) {
 		var persistentVolumeSource corev1.PersistentVolumeSource
-		switch spec.Storage.StorageType {
+		switch submarine.Spec.Storage.StorageType {
 		case "nfs":
 			persistentVolumeSource = corev1.PersistentVolumeSource{
 				NFS: &corev1.NFSVolumeSource{
-					Server: spec.Storage.NfsIP,
-					Path:   spec.Storage.NfsPath,
+					Server: submarine.Spec.Storage.NfsIP,
+					Path:   submarine.Spec.Storage.NfsPath,
 				},
 			}
 		case "host":
 			hostPathType := corev1.HostPathDirectoryOrCreate
 			persistentVolumeSource = corev1.PersistentVolumeSource{
 				HostPath: &corev1.HostPathVolumeSource{
-					Path: spec.Storage.HostPath,
+					Path: submarine.Spec.Storage.HostPath,
 					Type: &hostPathType,
 				},
 			}
 		default:
 			klog.Warningln("	Invalid storageType found in submarine spec, nothing will be created!")
-			return nil
+			return nil, nil
 		}
 		pv, pv_err = c.kubeclientset.CoreV1().PersistentVolumes().Create(context.TODO(),
 			&corev1.PersistentVolume{
@@ -769,7 +853,7 @@ func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespa
 						corev1.ReadWriteMany,
 					},
 					Capacity: corev1.ResourceList{
-						corev1.ResourceStorage: resource.MustParse(spec.Database.StorageSize),
+						corev1.ResourceStorage: resource.MustParse(submarine.Spec.Database.StorageSize),
 					},
 					PersistentVolumeSource: persistentVolumeSource,
 				},
@@ -784,13 +868,13 @@ func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespa
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if pv_err != nil {
-		return pv_err
+		return nil, pv_err
 	}
 
 	if !metav1.IsControlledBy(pv, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, pv.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return fmt.Errorf(msg)
+		return nil, fmt.Errorf(msg)
 	}
 
 	// Step2: Create PersistentVolumeClaim
@@ -813,7 +897,7 @@ func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespa
 					},
 					Resources: corev1.ResourceRequirements{
 						Requests: corev1.ResourceList{
-							corev1.ResourceStorage: resource.MustParse(spec.Database.StorageSize),
+							corev1.ResourceStorage: resource.MustParse(submarine.Spec.Database.StorageSize),
 						},
 					},
 					VolumeName:       pvName,
@@ -830,81 +914,20 @@ func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespa
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if pvc_err != nil {
-		return pvc_err
+		return nil, pvc_err
 	}
 
 	if !metav1.IsControlledBy(pvc, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, pvc.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return fmt.Errorf(msg)
+		return nil, fmt.Errorf(msg)
 	}
 
 	// Step3: Create Deployment
 	deployment, deployment_err := c.deploymentLister.Deployments(namespace).Get(databaseName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(deployment_err) {
-		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(namespace).Create(context.TODO(),
-			&appsv1.Deployment{
-				ObjectMeta: metav1.ObjectMeta{
-					Name: databaseName,
-					OwnerReferences: []metav1.OwnerReference{
-						*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-					},
-				},
-				Spec: appsv1.DeploymentSpec{
-					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{
-							"app": databaseName,
-						},
-					},
-					Replicas: spec.Database.Replicas,
-					Template: corev1.PodTemplateSpec{
-						ObjectMeta: metav1.ObjectMeta{
-							Labels: map[string]string{
-								"app": databaseName,
-							},
-						},
-						Spec: corev1.PodSpec{
-							Containers: []corev1.Container{
-								{
-									Name:            databaseName,
-									Image:           databaseImage,
-									ImagePullPolicy: "IfNotPresent",
-									Ports: []corev1.ContainerPort{
-										{
-											ContainerPort: 3306,
-										},
-									},
-									Env: []corev1.EnvVar{
-										{
-											Name:  "MYSQL_ROOT_PASSWORD",
-											Value: "password",
-										},
-									},
-									VolumeMounts: []corev1.VolumeMount{
-										{
-											MountPath: "/var/lib/mysql",
-											Name:      "volume",
-											SubPath:   databaseName,
-										},
-									},
-								},
-							},
-							Volumes: []corev1.Volume{
-								{
-									Name: "volume",
-									VolumeSource: corev1.VolumeSource{
-										PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-											ClaimName: pvcName,
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-			metav1.CreateOptions{})
+		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(namespace).Create(context.TODO(), newSubmarineDatabaseDeployment(submarine, pvcName), metav1.CreateOptions{})
 		if deployment_err != nil {
 			klog.Info(deployment_err)
 		}
@@ -914,13 +937,23 @@ func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespa
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if deployment_err != nil {
-		return deployment_err
+		return nil, deployment_err
 	}
 
 	if !metav1.IsControlledBy(deployment, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, deployment.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return fmt.Errorf(msg)
+		return nil, fmt.Errorf(msg)
+	}
+
+	// Update the replicas of the database deployment if it is not equal to spec
+	if submarine.Spec.Database.Replicas != nil && *submarine.Spec.Database.Replicas != *deployment.Spec.Replicas {
+		klog.V(4).Infof("Submarine %s database spec replicas: %d, actual replicas: %d", submarine.Name, *submarine.Spec.Database.Replicas, *deployment.Spec.Replicas)
+		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Update(context.TODO(), newSubmarineDatabaseDeployment(submarine, pvcName), metav1.UpdateOptions{})
+	}
+
+	if deployment_err != nil {
+		return nil, deployment_err
 	}
 
 	// Step4: Create Service
@@ -958,16 +991,16 @@ func (c *Controller) newSubmarineDatabase(submarine *v1alpha1.Submarine, namespa
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if service_err != nil {
-		return service_err
+		return nil, service_err
 	}
 
 	if !metav1.IsControlledBy(service, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, service.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return fmt.Errorf(msg)
+		return nil, fmt.Errorf(msg)
 	}
 
-	return nil
+	return deployment, nil
 }
 
 // subcharts: https://github.com/apache/submarine/tree/master/helm-charts/submarine/charts
@@ -1330,7 +1363,6 @@ func (c *Controller) newSubmarineTensorboard(submarine *v1alpha1.Submarine, name
 // converge the two. It then updates the Status block of the Submarine resource
 // with the current status of the resource.
 func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
-	// TODO: business logic
 	key := workqueueItem.key
 	action := workqueueItem.action
 
@@ -1360,6 +1392,9 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		b, err := json.MarshalIndent(submarine.Spec, "", "  ")
 		fmt.Println(string(b))
 
+		var serverDeployment *appsv1.Deployment
+		var databaseDeployment *appsv1.Deployment
+
 		// Install subcharts
 		err = c.newSubCharts(namespace)
 		if err != nil {
@@ -1367,18 +1402,13 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		}
 
 		// Create submarine-server
-		serverImage := submarine.Spec.Server.Image
-		serverReplicas := *submarine.Spec.Server.Replicas
-		if serverImage == "" {
-			serverImage = "apache/submarine:server-" + submarine.Spec.Version
-		}
-		err = c.newSubmarineServer(submarine, namespace, serverImage, serverReplicas)
+		serverDeployment, err = c.newSubmarineServer(submarine, namespace)
 		if err != nil {
 			return err
 		}
 
 		// Create Submarine Database
-		err = c.newSubmarineDatabase(submarine, namespace, &submarine.Spec)
+		databaseDeployment, err = c.newSubmarineDatabase(submarine, namespace)
 		if err != nil {
 			return err
 		}
@@ -1401,7 +1431,13 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 			return err
 		}
 
+		err = c.updateSubmarineStatus(submarine, serverDeployment, databaseDeployment)
+		if err != nil {
+			return err
+		}
+
 		c.recorder.Event(submarine, corev1.EventTypeNormal, SuccessSynced, MessageResourceSynced)
+
 	} else { // Case: DELETE
 		// Uninstall Helm charts
 		for _, chart := range c.charts {
@@ -1411,6 +1447,14 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 	}
 
 	return nil
+}
+
+func (c *Controller) updateSubmarineStatus(submarine *v1alpha1.Submarine, serverDeployment *appsv1.Deployment, databaseDeployment *appsv1.Deployment) error {
+	submarineCopy := submarine.DeepCopy()
+	submarineCopy.Status.AvailableServerReplicas = serverDeployment.Status.AvailableReplicas
+	submarineCopy.Status.AvailableDatabaseReplicas = databaseDeployment.Status.AvailableReplicas
+	_, err := c.submarineclientset.SubmarineV1alpha1().Submarines(submarine.Namespace).Update(context.TODO(), submarineCopy, metav1.UpdateOptions{})
+	return err
 }
 
 // enqueueSubmarine takes a Submarine resource and converts it into a namespace/name
