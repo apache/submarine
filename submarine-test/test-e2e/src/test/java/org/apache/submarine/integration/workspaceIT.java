@@ -52,7 +52,7 @@ public class workspaceIT extends AbstractSubmarineIT {
 
     Sidebars sidebars = new Sidebars(driver);
 
-      // Login
+    // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
     pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");

@@ -61,11 +61,8 @@ public class Sidebars extends AbstractSubmarineIT{
     private By toInterpreter = By.xpath("//span[contains(text(), \"Interpreter\")]");
     private String interpreterURL = "/workbench/interpreter";
 
-    private Actions action;
 
     public Sidebars(WebDriver driver) {
-        PageFactory.initElements(new AjaxElementLocatorFactory(driver, 10), this);
-        action = new Actions(driver);
     }
 
     public void gotoNoteBook() {
