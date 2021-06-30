@@ -50,7 +50,7 @@ public class sidebarIT extends AbstractSubmarineIT {
   public void sidebarNavigation() throws Exception {
     // Login
     Login();
-    Sidebars sidebars = new Sidebars(driver);
+    Sidebars sidebars = new Sidebars();
 
     // Start Routing & Navigation in sidebar
     LOG.info("Start Routing & Navigation in sidebar");

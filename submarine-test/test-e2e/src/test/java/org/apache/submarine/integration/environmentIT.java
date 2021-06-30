@@ -57,7 +57,7 @@ public class environmentIT extends AbstractSubmarineIT {
 
   @Test
   public void environmentNavigation() throws Exception {
-    Sidebars sidebars = new Sidebars(driver);
+    Sidebars sidebars = new Sidebars();
     // Login
     Login();
 

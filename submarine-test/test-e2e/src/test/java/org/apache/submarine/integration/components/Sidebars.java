@@ -61,10 +61,6 @@ public class Sidebars extends AbstractSubmarineIT{
     private By toInterpreter = By.xpath("//span[contains(text(), \"Interpreter\")]");
     private String interpreterURL = "/workbench/interpreter";
 
-
-    public Sidebars(WebDriver driver) {
-    }
-
     public void gotoNoteBook() {
         ClickAndNavigate(toNoteBook, MAX_BROWSER_TIMEOUT_SEC, URL.concat(noteBookURL));
     }

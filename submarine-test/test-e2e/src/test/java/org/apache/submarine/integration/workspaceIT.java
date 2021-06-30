@@ -50,7 +50,7 @@ public class workspaceIT extends AbstractSubmarineIT {
   @Test
   public void workspaceNavigation() throws Exception {
 
-    Sidebars sidebars = new Sidebars(driver);
+    Sidebars sidebars = new Sidebars();
 
     // Login
     LOG.info("Login");

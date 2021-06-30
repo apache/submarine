@@ -49,7 +49,7 @@ public class experimentIT extends AbstractSubmarineIT {
     LOG.info("[Test case]: experimentNavigation]");
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
-    Sidebars sidebars = new Sidebars(driver);
+    Sidebars sidebars = new Sidebars();
       // Login
     LOG.info("Login");
     Login();

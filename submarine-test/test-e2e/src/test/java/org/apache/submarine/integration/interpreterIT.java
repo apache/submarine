@@ -48,7 +48,7 @@ public class interpreterIT extends AbstractSubmarineIT {
   @Test
   public void workspaceNavigation() throws Exception {
 
-    Sidebars sidebars = new Sidebars(driver);
+    Sidebars sidebars = new Sidebars();
       // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");

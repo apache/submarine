@@ -47,7 +47,7 @@ public class notebookIT extends AbstractSubmarineIT {
   @Test
   public void notebookNavigation() throws Exception {
 
-    Sidebars sidebars = new Sidebars(driver);
+    Sidebars sidebars = new Sidebars();
       // Login
     Login();
 

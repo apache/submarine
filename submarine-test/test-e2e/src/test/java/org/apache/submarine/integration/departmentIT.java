@@ -48,7 +48,7 @@ public class departmentIT extends AbstractSubmarineIT{
   @Test
   public void dataNavigation() throws Exception {
 
-    Sidebars sidebars = new Sidebars(driver);
+    Sidebars sidebars = new Sidebars();
     // Login
     Login();
 
