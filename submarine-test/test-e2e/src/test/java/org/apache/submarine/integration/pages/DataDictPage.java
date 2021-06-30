@@ -56,11 +56,7 @@ public class DataDictPage extends AbstractSubmarineIT {
     private By statusUnavailable = By.xpath("//li[@title='unavailable']");
 
     private By addActionBtn = By.xpath("//button[@class='ant-btn ng-star-inserted ant-btn-default ant-btn-sm']");
-
-    public DataDictPage(WebDriver driver){
-
-    }
-
+    
     public By moreBtn(String dict_code) {
         String xpath = String.format("//a[@id='dataDictMore%s']", dict_code);
         return By.xpath(xpath);
