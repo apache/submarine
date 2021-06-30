@@ -36,6 +36,6 @@ pip install --upgrade pip
 # Install pysubmarine
 git clone https://github.com/apache/submarine.git
 cd submarine/submarine-sdk/pysubmarine
-pip install .
+pip install -e .[tf,pytorch]
 pip install -r github-actions/lint-requirements.txt
 pip install -r github-actions/test-requirements.txt
