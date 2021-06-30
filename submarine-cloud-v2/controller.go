@@ -359,12 +359,25 @@ func (c *Controller) processNextWorkItem() bool {
 
 	// We wrap this block in a func so we can defer c.workqueue.Done.
 	err := func(obj interface{}) error {
-		// TODO: Maintain workqueue
 		defer c.workqueue.Done(obj)
 		var item WorkQueueItem
-
-		item, _ = obj.(WorkQueueItem)
-		c.syncHandler(item)
+		var ok bool
+		if item, ok = obj.(WorkQueueItem); !ok {
+			// As the item in the workqueue is actually invalid, we call
+			// Forget here else we'd go into a loop of attempting to
+			// process a work item that is invalid.
+			c.workqueue.Forget(obj)
+			utilruntime.HandleError(fmt.Errorf("expected WorkQueueItem in workqueue but got %#v", obj))
+			return nil
+		}
+		// Run the syncHandler
+		if err := c.syncHandler(item); err != nil {
+			// Put the item back on the workqueue to handle any transient errors.
+			c.workqueue.AddRateLimited(item)
+			return fmt.Errorf("error syncing '%s': %s, requeuing", item.key, err.Error())
+		}
+		// Finally, if no error occurs we Forget this item so it does not
+		// get queued again until another change happens.
 		c.workqueue.Forget(obj)
 		klog.Infof("Successfully synced '%s'", item.key)
 		return nil
@@ -1340,6 +1353,7 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 				utilruntime.HandleError(fmt.Errorf("submarine '%s' in work queue no longer exists", key))
 				return nil
 			}
+			return err
 		}
 
 		// Print out the spec of the Submarine resource
@@ -1347,7 +1361,10 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		fmt.Println(string(b))
 
 		// Install subcharts
-		c.newSubCharts(namespace)
+		err = c.newSubCharts(namespace)
+		if err != nil {
+			return err
+		}
 
 		// Create submarine-server
 		serverImage := submarine.Spec.Server.Image
@@ -1384,13 +1401,13 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 			return err
 		}
 
+		c.recorder.Event(submarine, corev1.EventTypeNormal, SuccessSynced, MessageResourceSynced)
 	} else { // Case: DELETE
 		// Uninstall Helm charts
 		for _, chart := range c.charts {
 			helm.HelmUninstall(chart)
 		}
 		c.charts = nil
-
 	}
 
 	return nil
