@@ -50,7 +50,7 @@ public class notebookIT extends AbstractSubmarineIT {
     String URL = getURL("http://127.0.0.1", 8080);
     Sidebars sidebars = new Sidebars(URL);
     // Login
-    LoginPage loginPage = new LoginPage(driver);
+    LoginPage loginPage = new LoginPage();
     loginPage.Login();
 
     // Routing to Notebook

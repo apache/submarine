@@ -52,11 +52,15 @@ public class datadictIT extends AbstractSubmarineIT {
   public void dataDictTest() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
 <<<<<<< HEAD
+<<<<<<< HEAD
     Sidebars sidebars = new Sidebars(URL);
 
 =======
     LoginPage loginPage = new LoginPage(driver);
 >>>>>>> login in the current non-used page
+=======
+    LoginPage loginPage = new LoginPage();
+>>>>>>> bug fix
     // Login
     LOG.info("Login");
     loginPage.Login();

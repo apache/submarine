@@ -49,7 +49,7 @@ public class homeIT extends AbstractSubmarineIT {
 
   @Test
   public void homePagination() throws Exception {
-    LoginPage loginPage = new LoginPage(driver);
+    LoginPage loginPage = new LoginPage();
     // Login
     LOG.info("Login");
     loginPage.Login();

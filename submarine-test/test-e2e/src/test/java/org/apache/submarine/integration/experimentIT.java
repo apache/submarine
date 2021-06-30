@@ -52,18 +52,11 @@ public class experimentIT extends AbstractSubmarineIT {
     LOG.info("[Test case]: experimentNavigation]");
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
-<<<<<<< HEAD
     Sidebars sidebars = new Sidebars(URL);
     // Login
-=======
     LoginPage loginPage = new LoginPage(driver);
 
-<<<<<<< HEAD
       // Login
->>>>>>> login
-=======
-    // Login
->>>>>>> fix indent and remove comment
     LOG.info("Login");
     loginPage.Login();
 

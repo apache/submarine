@@ -48,7 +48,7 @@ public class loginIT extends AbstractSubmarineIT {
     LOG.info("Enter blank username and password");
 
     // Init the page object
-    LoginPage loginPage = new LoginPage(driver);
+    LoginPage loginPage = new LoginPage();
 
     // Click sign in without input
     loginPage.clickSignInBtn();

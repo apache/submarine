@@ -48,7 +48,7 @@ public class teamIT extends AbstractSubmarineIT {
   @Test
   public void teamTest() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
-    LoginPage loginPage = new LoginPage(driver);
+    LoginPage loginPage = new LoginPage();
 
     // Login
     LOG.info("Login");

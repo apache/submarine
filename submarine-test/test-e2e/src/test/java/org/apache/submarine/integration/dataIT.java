@@ -55,6 +55,7 @@ public class dataIT extends AbstractSubmarineIT {
   public void dataNavigation() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
 <<<<<<< HEAD
+<<<<<<< HEAD
     Sidebars sidebars = new Sidebars(URL);
 
     // Login
@@ -64,6 +65,9 @@ public class dataIT extends AbstractSubmarineIT {
       // Login
 >>>>>>> login in the current non-used page
 =======
+=======
+    LoginPage loginPage = new LoginPage();
+>>>>>>> bug fix
     // Login
 >>>>>>> fix indent and remove comment
     LOG.info("Login");

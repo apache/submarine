@@ -62,7 +62,7 @@ public class environmentIT extends AbstractSubmarineIT {
     Sidebars sidebars = new Sidebars(URL);
 
     // Login
-    LoginPage loginPage = new LoginPage(driver);
+    LoginPage loginPage = new LoginPage();
     loginPage.Login();
 
     // Routing to workspace
