@@ -97,6 +97,8 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
 # Install latest sumbarine python sdk and notebook
 RUN git clone https://github.com/apache/submarine && \
     pip install submarine/submarine-sdk/pysubmarine && \
+    pip install apache-submarine[tf] && \
+    pip install apache-submarine[torch] && \
     conda install nodejs && \
     conda install -c conda-forge jupyterlab jupyterlab-git && \
     jupyter lab build

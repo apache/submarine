@@ -39,7 +39,11 @@ setup(
         'python-dateutil >= 2.5.3',
         'pyarrow==0.17.0',
         'mlflow>=1.15.0',
-        'boto3>=1.17.58 '
+        'boto3>=1.17.58',
+    ],
+    extras_require=[
+        'tf':['tensorflow>=1.14.0,<2.0.0'],
+        'torch':['torch>=1.5.0','torchvision>=0.6.0'],
     ],
     classifiers=[
         'Intended Audience :: Developers',
