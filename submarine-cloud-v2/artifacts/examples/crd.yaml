@@ -38,9 +38,6 @@ spec:
           properties:
             version: # submarine docker image version
               type: string
-            replicas:
-              type: integer
-              minimum: 1
             server:
               type: object
               properties:

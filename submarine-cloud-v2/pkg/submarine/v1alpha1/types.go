@@ -64,7 +64,6 @@ type SubmarineStorage struct {
 // SubmarineSpec is the spec for a Submarine resource
 type SubmarineSpec struct {
 	Version     string                `json:"version"`
-	Replicas    *int32                `json:"replicas"`
 	Server      *SubmarineServer      `json:"server"`
 	Database    *SubmarineDatabase    `json:"database"`
 	Tensorboard *SubmarineTensorboard `json:"tensorboard"`
@@ -74,7 +73,8 @@ type SubmarineSpec struct {
 
 // SubmarineStatus is the status for a Submarine resource
 type SubmarineStatus struct {
-	AvailableReplicas int32 `json:"availableReplicas"`
+	AvailableServerReplicas   int32 `json:"availableServerReplicas"`
+	AvailableDatabaseReplicas int32 `json:"availableDatabaseReplicas"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

@@ -21,7 +21,6 @@ metadata:
   name: example-submarine
 spec:
   version: "0.6.0-SNAPSHOT"
-  replicas: 1
   server:
     # image: "apache/submarine:server-0.6.0-SNAPSHOT" # overwrite the image when development
     replicas: 1
