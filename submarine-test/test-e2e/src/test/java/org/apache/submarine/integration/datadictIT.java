@@ -20,6 +20,7 @@ package org.apache.submarine.integration;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.integration.pages.LoginPage;
 import org.apache.submarine.integration.components.Sidebars;
+import org.apache.submarine.integration.pages.DataDictPage;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 public class datadictIT extends AbstractSubmarineIT {
 
@@ -45,8 +47,9 @@ public class datadictIT extends AbstractSubmarineIT {
     driver.quit();
   }
 
-  // @Test TODO(kevin85421): Due to the undeterministic behavior of travis, I decide to comment it.
+  @Test //TODO(kevin85421): Due to the undeterministic behavior of travis, I decide to comment it.
   public void dataDictTest() throws Exception {
+    DataDictPage dataDictPage = new DataDictPage(driver);
     String URL = getURL("http://127.0.0.1", 8080);
 
     Sidebars sidebars = new Sidebars(URL);
@@ -55,101 +58,47 @@ public class datadictIT extends AbstractSubmarineIT {
     // Login
     LOG.info("Login");
     loginPage.Login();
-    
+
     // Start Routing & Navigation in data-dict
     LOG.info("Start Routing & Navigation in data-dict");
     sidebars.gotoDataDict();
     WebDriverWait wait = new WebDriverWait( driver, 60);
     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ant-breadcrumb-link ng-star-inserted']")));
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/manager/dataDict"));
 
     // Add button
     LOG.info("[TEST] Add button");
-    // Add --> Ok --> required feedback
-    pollingWait(By.cssSelector("form > nz-form-item:nth-child(3) > nz-form-control > div > span > button.ant-btn.ant-btn-default"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Add\")]")).size(), 1);
-    pollingWait(By.cssSelector("button[class='ant-btn ng-star-inserted ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Add\")]")).size(), 1);
-    // Add --> Close
-    pollingWait(By.cssSelector("button[class='ant-btn ng-star-inserted ant-btn-default']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//div[contains(text(), \"Add\")]")).size(), 0);
+    // Add --> Ok --> required feedback --> close
+    dataDictPage.addNothing();
+
     // Add --> set input --> close
-    pollingWait(By.cssSelector("form > nz-form-item:nth-child(3) > nz-form-control > div > span > button.ant-btn.ant-btn-default"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@id='inputNewDictCode']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict code");
-    pollingWait(By.xpath("//input[@id='inputNewDictName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict name");
-    pollingWait(By.xpath("//input[@id='inputNewDictDescription']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict description");
-    pollingWait(By.cssSelector("button[class='ant-btn ng-star-inserted ant-btn-default']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//td[@id='dataDictCodetest new dict code']")).size(), 0);
+    dataDictPage.addNewDict("test new dict code", "test new dict name", "test new dict description", true);
+
     // Add --> set input --> ok --> new dict
-    pollingWait(By.cssSelector("form > nz-form-item:nth-child(3) > nz-form-control > div > span > button.ant-btn.ant-btn-default"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@id='inputNewDictCode']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict code");
-    pollingWait(By.xpath("//input[@id='inputNewDictName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict name");
-    pollingWait(By.xpath("//input[@id='inputNewDictDescription']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("test new dict description");
-    pollingWait(By.cssSelector("button[class='ant-btn ng-star-inserted ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//td[@id='dataDictCodetest new dict code']")).size(), 1);
+    dataDictPage.addNewDict("test new dict code", "test new dict name", "test new dict description", false);
+
 
     // Configuration button
     LOG.info("[TEST] PROJECT_TYPE Configuration button");
+
     // old dict --> More --> Configuration --> Add --> set input --> OK
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@id='dataDictMorePROJECT_TYPE']")));
-    pollingWait(By.xpath("//a[@id='dataDictMorePROJECT_TYPE']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//li[@id='dataDictConfigurationPROJECT_TYPE']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//button[@id='dataDictItemAddPROJECT_TYPE']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//span[@class='ant-cascader-picker-label']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//li[@title='unavailable']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@id='newItemCodePROJECT_TYPE']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("qqq");
-    pollingWait(By.xpath("//input[@id='newItemNamePROJECT_TYPE']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("www");
-    pollingWait(By.xpath("//button[@class='ant-btn ng-star-inserted ant-btn-default ant-btn-sm']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//td[contains(text(), \"qqq\")]")).size(), 1);
-    pollingWait(By.xpath("//button[@class='ant-btn ng-star-inserted ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    // Check old dict
-    pollingWait(By.xpath("//a[@id='dataDictMorePROJECT_TYPE']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//li[@id='dataDictConfigurationPROJECT_TYPE']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//td[contains(text(), \"qqq\")]")).size(), 1);
-    pollingWait(By.xpath("//button[@class='ant-btn ng-star-inserted ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    dataDictPage.addItem("PROJECT_TYPE","qqq", "www", false);
+
 
     // Edit button
     LOG.info("[TEST] Edit button");
+
     // Edit dict --> Update --> OK --> More --> Configuration
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@id='dataDictEditPROJECT_VISIBILITY']")));
-    pollingWait(By.xpath("//a[@id='dataDictEditPROJECT_VISIBILITY']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@id='inputNewDictCode']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("123");
-    pollingWait(By.cssSelector("button[class='ant-btn ng-star-inserted ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//td[@id='dataDictCodePROJECT_VISIBILITY123']")).size(), 1);
-    pollingWait(By.xpath("//a[@id='dataDictMorePROJECT_VISIBILITY123']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//li[@id='dataDictConfigurationPROJECT_VISIBILITY123']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//td[contains(text(), \"PROJECT_VISIBILITY_PRIVATE\")]")).size(), 1);
-    Assert.assertEquals( driver.findElements(By.xpath("//td[contains(text(), \"PROJECT_VISIBILITY_TEAM\")]")).size(), 1);
-    Assert.assertEquals( driver.findElements(By.xpath("//td[contains(text(), \"PROJECT_VISIBILITY_PUBLIC\")]")).size(), 1);
-    pollingWait(By.xpath("//button[@class='ant-btn ng-star-inserted ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    dataDictPage.editDict("PROJECT_VISIBILITY", "123");
 
     LOG.info("[TEST] test new dict code Configuration button");
+
     // new dict --> More --> Configuration --> Add --> set input --> OK
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@id='dataDictMoretest new dict code']")));
-    pollingWait(By.xpath("//a[@id='dataDictMoretest new dict code']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//li[@id='dataDictConfigurationtest new dict code']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//button[@id='dataDictItemAddtest new dict code']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//span[@class='ant-cascader-picker-label']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//li[@title='available']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//input[@id='newItemCodetest new dict code']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("aaa");
-    pollingWait(By.xpath("//input[@id='newItemNametest new dict code']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("bbb");
-    pollingWait(By.xpath("//button[@class='ant-btn ng-star-inserted ant-btn-default ant-btn-sm']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//td[contains(text(), \"aaa\")]")).size(), 1);
-    pollingWait(By.xpath("//button[@class='ant-btn ng-star-inserted ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    // Check new dict
-    pollingWait(By.xpath("//a[@id='dataDictMoretest new dict code']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//li[@id='dataDictConfigurationtest new dict code']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//td[contains(text(), \"aaa\")]")).size(), 1);
-    pollingWait(By.xpath("//button[@class='ant-btn ng-star-inserted ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    dataDictPage.addItem("test new dict code", "aaa", "bbb", true);
 
     // Delete button
     LOG.info("[TEST] Delete button");
+
     // More --> Delete
-    Assert.assertEquals( driver.findElements(By.xpath("//td[@id='dataDictCodeSYS_USER_SEX']")).size(), 1);
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[@id='dataDictMoreSYS_USER_SEX']")));
-    pollingWait(By.xpath("//a[@id='dataDictMoreSYS_USER_SEX']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//li[@id='dataDictDeleteSYS_USER_SEX']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    pollingWait(By.xpath("//span[text()='Ok']/ancestor::button[@ng-reflect-nz-type='primary']"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals( driver.findElements(By.xpath("//td[@id='dataDictCodeSYS_USER_SEX']")).size(), 0);
+    dataDictPage.deleteDict("SYS_USER_SEX");
   }
 }
