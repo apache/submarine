@@ -36,7 +36,7 @@ func TestMain(m *testing.M) {
 	opImage := flag.String("operator-image", "", "operator image, e.g. image:tag")
 	opImagePullPolicy := flag.String("operator-image-pullPolicy", "Never", "pull policy, e.g. Always")
 	ns := flag.String("namespace", "default", "e2e test operator namespace") 
-	submarineTestNamespace := flag.String("submarine-test-namespace", "submarine-admin", "e2e test submarine namespace")
+	submarineTestNamespace := flag.String("submarine-test-namespace", "submarine-user-test", "e2e test submarine namespace")
 	flag.Parse()
 	
 	var (

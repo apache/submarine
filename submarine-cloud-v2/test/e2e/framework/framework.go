@@ -41,7 +41,7 @@ type Framework struct {
 	DefaultTimeout time.Duration
 }
 
-var SubmarineTestNamespace = "submarine-admin"
+var SubmarineTestNamespace = "submarine-user-test"
 
 
 func New(ns, submarineNs, kubeconfig, opImage, opImagePullPolicy string) (*Framework, error) {
