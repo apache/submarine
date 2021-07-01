@@ -27,38 +27,18 @@ import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 
 public class LoginPage extends AbstractSubmarineIT{
 
-    private By userNameInput = By.cssSelector("input[ng-reflect-name='userName']");
+    public By userNameInput = By.cssSelector("input[ng-reflect-name='userName']");
 
-    private By passwordInput = By.cssSelector("input[ng-reflect-name='password']");
+    public By passwordInput = By.cssSelector("input[ng-reflect-name='password']");
 
-    private By signInButton = By.xpath("//span[text()='Sign In']/parent::button");
+    public By signInButton = By.xpath("//span[text()='Sign In']/parent::button");
 
-    private By userNameSignInWarning = By.xpath("//div[contains(text(), \"Please input your username!\")]");
+    public By userNameSignInWarning = By.xpath("//div[contains(text(), \"Please input your username!\")]");
 
-    private By passwordSignInWarning = By.xpath("//div[contains(text(), \"Please input your Password!\")]");
+    public By passwordSignInWarning = By.xpath("//div[contains(text(), \"Please input your Password!\")]");
 
-    private By warningText = By.xpath("//div[contains(text(), \"Username and password are incorrect,\")]");
+    public By warningText = By.xpath("//div[contains(text(), \"Username and password are incorrect,\")]");
 
-    public void clickSignInBtn() {
-        buttonCheck(signInButton, MAX_BROWSER_TIMEOUT_SEC).click();
-    }
-
-    public void fillLoginForm(String username, String password) {
-        SendKeys(userNameInput, MAX_BROWSER_TIMEOUT_SEC, username);
-        SendKeys(passwordInput, MAX_BROWSER_TIMEOUT_SEC, password);
-    }
-
-    public void waitForWarningPresent() {
-        waitToPresent(warningText, MAX_BROWSER_TIMEOUT_SEC);
-    }
-
-    public By getUserNameSignInWarning() {
-        return userNameSignInWarning;
-    }
-
-    public By getPasswordSignInWarning() {
-        return passwordSignInWarning;
-    }
 
     public void Login() {
         String username = "admin";

@@ -51,21 +51,26 @@ public class loginIT extends AbstractSubmarineIT {
     LoginPage loginPage = new LoginPage();
 
     // Click sign in without input
-    loginPage.clickSignInBtn();
+    buttonCheck(loginPage.signInButton, MAX_BROWSER_TIMEOUT_SEC).click();
 
     // Assert the warning texts
-    Assert.assertEquals(driver.findElements(loginPage.getUserNameSignInWarning()).size(), 1);
-    Assert.assertEquals(driver.findElements(loginPage.getPasswordSignInWarning()).size(), 1);
+    Assert.assertEquals(driver.findElements(loginPage.userNameSignInWarning).size(), 1);
+    Assert.assertEquals(driver.findElements(loginPage.passwordSignInWarning).size(), 1);
 
     LOG.info("Enter invalid username and password");
 
-    loginPage.fillLoginForm("123", "123");
+    // fill the form
+    SendKeys(loginPage.userNameInput, MAX_BROWSER_TIMEOUT_SEC, "123");
+    SendKeys(loginPage.passwordInput, MAX_BROWSER_TIMEOUT_SEC, "123");
 
-    loginPage.clickSignInBtn();
+    // click submit
+    buttonCheck(loginPage.signInButton, MAX_BROWSER_TIMEOUT_SEC).click();
 
-    loginPage.waitForWarningPresent();
+    waitToPresent(loginPage.warningText, MAX_BROWSER_TIMEOUT_SEC);
 
-    loginPage.fillLoginForm("\b\b\b", "\b\b\b");
+    // delete current input
+    SendKeys(loginPage.userNameInput, MAX_BROWSER_TIMEOUT_SEC, "\b\b\b");
+    SendKeys(loginPage.passwordInput, MAX_BROWSER_TIMEOUT_SEC, "\b\b\b");
 
     // Testcase2
     LOG.info("[Sub-Testcase-2] Valid User");
