@@ -51,9 +51,9 @@ public class datadictIT extends AbstractSubmarineIT {
   public void dataDictTest() throws Exception {
     DataDictPage dataDictPage = new DataDictPage();
     String URL = getURL("http://127.0.0.1", 8080);
-
     Sidebars sidebars = new Sidebars(URL);
     LoginPage loginPage = new LoginPage();
+    String dictCode, newItemCode, newItemName, newPostfix;
 
     // Login
     LOG.info("Login");
@@ -62,43 +62,143 @@ public class datadictIT extends AbstractSubmarineIT {
     // Start Routing & Navigation in data-dict
     LOG.info("Start Routing & Navigation in data-dict");
     sidebars.gotoDataDict();
-    WebDriverWait wait = new WebDriverWait( driver, 60);
-    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ant-breadcrumb-link ng-star-inserted']")));
 
     // Add button
     LOG.info("[TEST] Add button");
-    // Add --> Ok --> required feedback --> close
-    dataDictPage.addNothing();
+    // // 1. Add --> Ok --> required feedback --> close
+    // Add
+    Click(dataDictPage.addBtn, MAX_BROWSER_TIMEOUT_SEC);
+    // Ok
+    Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
+    // check if the modal doesn't disappear
+    Assert.assertEquals(driver.findElements(By.xpath("//div[contains(text(), \"Add\")]")).size(), 1);
+    // Close
+    Click(dataDictPage.closeBtn, MAX_BROWSER_TIMEOUT_SEC);
+    // check if the model disappear
+    Assert.assertEquals(driver.findElements(By.xpath("//div[contains(text(), \"Add\")]")).size(), 0);
 
-    // Add --> set input --> close
-    dataDictPage.addNewDict("test new dict code", "test new dict name", "test new dict description", true);
+    // 2. Add --> set input --> close
+    // Add
+    Click(dataDictPage.addBtn, MAX_BROWSER_TIMEOUT_SEC);
+    // Set input
+    SendKeys(dataDictPage.dictCodeInput, MAX_BROWSER_TIMEOUT_SEC, "test new dict code");
+    SendKeys(dataDictPage.dictNameInput, MAX_BROWSER_TIMEOUT_SEC, "test new dict name");
+    SendKeys(dataDictPage.dictDescription, MAX_BROWSER_TIMEOUT_SEC, "test new dict description");
+    // close
+    Click(dataDictPage.closeBtn, MAX_BROWSER_TIMEOUT_SEC);
+    // check there is no new dict
+    Assert.assertEquals(driver.findElements(By.xpath("//td[@id='dataDictCodetest new dict code']")).size(), 0);
 
-    // Add --> set input --> ok --> new dict
-    dataDictPage.addNewDict("test new dict code", "test new dict name", "test new dict description", false);
-
+    // 3. Add --> set input --> ok --> new dict
+    // dataDictPage.addNewDict("test new dict code", "test new dict name", "test new dict description", false);
+    // Add
+    Click(dataDictPage.addBtn, MAX_BROWSER_TIMEOUT_SEC);
+    // Set input
+    SendKeys(dataDictPage.dictCodeInput, MAX_BROWSER_TIMEOUT_SEC, "test new dict code");
+    SendKeys(dataDictPage.dictNameInput, MAX_BROWSER_TIMEOUT_SEC, "test new dict name");
+    SendKeys(dataDictPage.dictDescription, MAX_BROWSER_TIMEOUT_SEC, "test new dict description");
+    // Ok
+    Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
+    // check there is new dict
+    Assert.assertEquals(driver.findElements(By.xpath("//td[@id='dataDictCodetest new dict code']")).size(), 1);
 
     // Configuration button
     LOG.info("[TEST] PROJECT_TYPE Configuration button");
 
-    // old dict --> More --> Configuration --> Add --> set input --> OK
-    dataDictPage.addItem("PROJECT_TYPE","qqq", "www", false);
+    // 3. old dict --> More --> Configuration --> Add --> set input --> OK
+    dictCode = "PROJECT_TYPE";
+    newItemCode = "qqq";
+    newItemName = "www";
+    // More
+    waitToPresent(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    // Configuration
+    waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    // Add Item
+    waitToPresent(dataDictPage.itemAddBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.itemAddBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    // Set Input
+    Click(dataDictPage.statusDropDown, MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.statusUnavailable, MAX_BROWSER_TIMEOUT_SEC);
+    SendKeys(dataDictPage.itemCodeInput(dictCode), MAX_BROWSER_TIMEOUT_SEC, newItemCode);
+    SendKeys(dataDictPage.itemNameInput(dictCode), MAX_BROWSER_TIMEOUT_SEC, newItemName);
+    Click(dataDictPage.addActionBtn, MAX_BROWSER_TIMEOUT_SEC);
+    // Ok
+    Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
 
+    // check if add successful
+    Click(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Assert.assertEquals(driver.findElements(By.xpath(String.format("//td[contains(text(), \"%s\")]", newItemCode))).size(), 1);
+    Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
 
     // Edit button
     LOG.info("[TEST] Edit button");
 
-    // Edit dict --> Update --> OK --> More --> Configuration
-    dataDictPage.editDict("PROJECT_VISIBILITY", "123");
+    // 4. Edit dict --> Update --> OK --> More --> Configuration --> OK
+    dictCode = "PROJECT_VISIBILITY";
+    newPostfix = "123";
+    // Edit
+    waitToPresent(dataDictPage.editBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.editBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    // Update
+    SendKeys(dataDictPage.dictCodeInput, MAX_BROWSER_TIMEOUT_SEC, newPostfix);
+    // Ok
+    Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
+    // More
+    Click(dataDictPage.moreBtn(dictCode.concat(newPostfix)), MAX_BROWSER_TIMEOUT_SEC);
+    // Configuration
+    waitToPresent(dataDictPage.configBtn(dictCode.concat(newPostfix)), MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.configBtn(dictCode.concat(newPostfix)), MAX_BROWSER_TIMEOUT_SEC);
+    // Ok
+    Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
 
     LOG.info("[TEST] test new dict code Configuration button");
 
-    // new dict --> More --> Configuration --> Add --> set input --> OK
-    dataDictPage.addItem("test new dict code", "aaa", "bbb", true);
+    // 5. new dict --> More --> Configuration --> Add --> set input --> OK
+    dictCode = "test new dict code";
+    newItemCode = "aaa";
+    newItemName = "bbb";
+    // More
+    waitToPresent(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    // Configuration
+    waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    // Add Item
+    waitToPresent(dataDictPage.itemAddBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.itemAddBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    // Set Input
+    Click(dataDictPage.statusDropDown, MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.statusAvailable, MAX_BROWSER_TIMEOUT_SEC);
+    SendKeys(dataDictPage.itemCodeInput(dictCode), MAX_BROWSER_TIMEOUT_SEC, newItemCode);
+    SendKeys(dataDictPage.itemNameInput(dictCode), MAX_BROWSER_TIMEOUT_SEC, newItemName);
+    Click(dataDictPage.addActionBtn, MAX_BROWSER_TIMEOUT_SEC);
+    // Ok
+    Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
+
+    // check if add successful
+    Click(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Assert.assertEquals(driver.findElements(By.xpath(String.format("//td[contains(text(), \"%s\")]", newItemCode))).size(), 1);
+    Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
 
     // Delete button
     LOG.info("[TEST] Delete button");
 
-    // More --> Delete
-    dataDictPage.deleteDict("SYS_USER_SEX");
+    // 6. More --> Delete
+    dictCode = "SYS_USER_SEX";
+    // More
+    waitToPresent(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    // Delete
+    Click(dataDictPage.deleteBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    waitToPresent(dataDictPage.okDeleteBtn, MAX_BROWSER_TIMEOUT_SEC);
+    Click(dataDictPage.okDeleteBtn, MAX_BROWSER_TIMEOUT_SEC);
+    // check if delete successfully
+    Assert.assertEquals(driver.findElements(By.xpath(String.format("//td[@id='dataDictCode%s']", dictCode))).size(), 0);
   }
 }
