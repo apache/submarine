@@ -52,7 +52,6 @@ jobs:
         run: |
           mvn --version
           java -version
-
       - name: Create the kind config
         run: |
           cat <<EOF > ./kind-config-kind.yaml
@@ -75,11 +74,9 @@ jobs:
               hostPort: 443
               protocol: TCP
           EOF
-      - uses: container-tools/kind-action@v1
-        with:
-          version: "v0.9.0"
-          node_image: kindest/node:v1.15.11
-          config: ./kind-config-kind.yaml
+      - name: Create kind cluster
+        run: |
+          kind create cluster --config ./kind-config-kind.yaml --wait 3m --image kindest/node:v1.15.12
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
@@ -87,13 +84,6 @@ jobs:
           kubectl get pods -n kube-system
           echo "current-context:" $(kubectl config current-context)
           echo "environment-kubeconfig:" ${KUBECONFIG}
-
-      # Cache docker layer
-      - name: Cache docker layer
-        uses: satackey/action-docker-layer-caching@v0.0.11
-        # Ignore the failure of a step and avoid terminating the job.
-        continue-on-error: true
-
       # Cache maven (for submarine server)
       - uses: actions/cache@v1
         with:
@@ -146,3 +136,9 @@ jobs:
         run: |
           cd submarine-sdk/pysubmarine
           pytest --cov=submarine -vs -m "e2e"
+      - name: Failure status
+        run: |
+          kubectl get pods
+          kubectl -n default get events --sort-by='{.lastTimestamp}'
+          kubectl describe nodes
+        if: ${{ failure() }}
