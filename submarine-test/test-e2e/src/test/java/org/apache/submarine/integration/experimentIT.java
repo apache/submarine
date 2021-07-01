@@ -46,10 +46,12 @@ public class experimentIT extends AbstractSubmarineIT {
 
   @Test
   public void experimentNavigation() throws Exception {
+    String URL = getURL("http://127.0.0.1", 8080);
+
     LOG.info("[Test case]: experimentNavigation]");
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
-    Sidebars sidebars = new Sidebars();
+    Sidebars sidebars = new Sidebars(URL);
       // Login
     LOG.info("Login");
     Login();

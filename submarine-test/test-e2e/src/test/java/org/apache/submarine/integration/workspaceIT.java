@@ -49,8 +49,8 @@ public class workspaceIT extends AbstractSubmarineIT {
 
   @Test
   public void workspaceNavigation() throws Exception {
-
-    Sidebars sidebars = new Sidebars();
+    String URL = getURL("http://127.0.0.1", 8080);
+    Sidebars sidebars = new Sidebars(URL);
 
     // Login
     LOG.info("Login");

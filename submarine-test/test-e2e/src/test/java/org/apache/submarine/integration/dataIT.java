@@ -49,8 +49,9 @@ public class dataIT extends AbstractSubmarineIT {
 
   @Test
   public void dataNavigation() throws Exception {
+    String URL = getURL("http://127.0.0.1", 8080);
+    Sidebars sidebars = new Sidebars(URL);
 
-    Sidebars sidebars = new Sidebars();
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");

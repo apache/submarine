@@ -47,7 +47,7 @@ public class datadictIT extends AbstractSubmarineIT {
   // @Test TODO(kevin85421): Due to the undeterministic behavior of travis, I decide to comment it.
   public void dataDictTest() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
-    Sidebars sidebars = new Sidebars();
+    Sidebars sidebars = new Sidebars(URL);
 
     // Login
     LOG.info("Login");

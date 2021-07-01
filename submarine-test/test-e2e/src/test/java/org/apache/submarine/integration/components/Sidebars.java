@@ -26,7 +26,7 @@ import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 
 public class Sidebars extends AbstractSubmarineIT{
 
-    private String URL = getURL("http://127.0.0.1", 8080);
+    private String URL;
 
     private By toNoteBook = By.xpath("//span[contains(text(), \"Notebook\")]");
     private String noteBookURL = "/workbench/notebook";
@@ -60,6 +60,10 @@ public class Sidebars extends AbstractSubmarineIT{
 
     private By toInterpreter = By.xpath("//span[contains(text(), \"Interpreter\")]");
     private String interpreterURL = "/workbench/interpreter";
+
+    public Sidebars(String url) {
+        URL = url;
+    }
 
     public void gotoNoteBook() {
         ClickAndNavigate(toNoteBook, MAX_BROWSER_TIMEOUT_SEC, URL.concat(noteBookURL));

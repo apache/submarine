@@ -46,8 +46,8 @@ public class notebookIT extends AbstractSubmarineIT {
 
   @Test
   public void notebookNavigation() throws Exception {
-
-    Sidebars sidebars = new Sidebars();
+    String URL = getURL("http://127.0.0.1", 8080);
+    Sidebars sidebars = new Sidebars(URL);
       // Login
     Login();
 

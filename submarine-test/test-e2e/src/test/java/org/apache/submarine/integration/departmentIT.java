@@ -47,8 +47,9 @@ public class departmentIT extends AbstractSubmarineIT{
 
   @Test
   public void dataNavigation() throws Exception {
+    String URL = getURL("http://127.0.0.1", 8080);
+    Sidebars sidebars = new Sidebars(URL);
 
-    Sidebars sidebars = new Sidebars();
     // Login
     Login();
 
