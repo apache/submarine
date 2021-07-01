@@ -37,6 +37,11 @@ jobs:
         run: |
           echo ">>> mvn ${BUILD_FLAG} ${PROFILE} -B"
           mvn ${BUILD_FLAG} ${PROFILE} -B
+      - name: Store build binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: submarine-bin
+          path: submarine-dist/target/submarine-dist*.tar.gz
   submarine-e2e:
     runs-on: ubuntu-latest
     needs: [build]
@@ -125,7 +130,7 @@ jobs:
           kind version
       - name: Create kind cluster
         run: |
-          kind create cluster --config ./github/config/kind-config-kind.yaml --wait 3m --image kindest/node:v1.15.12
+          kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:v1.15.12
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
@@ -149,7 +154,7 @@ jobs:
         run: |
           .github/scripts/build-image-locally.sh
       - name: Start submarine
-        run: ./.github/scripts/start-submarine.sh
+        run: bash ./.github/scripts/start-submarine.sh
       - name: Test
         env:
           TEST_FLAG: "verify -DskipRat -ntp -am -Durl=http://127.0.0.1"
