@@ -126,6 +126,20 @@ abstract public class AbstractSubmarineIT {
     return button;
   }
 
+  protected WebElement Hover(final By locator, final long timeWait) {
+    waitToPresent(locator, timeWait);
+    WebElement item = buttonCheck(locator, timeWait);
+    action.moveToElement(item).build().perform();
+    return item;
+  }
+
+  protected WebElement HoverAndClick(final By locator, final long timeWait) {
+    waitToPresent(locator, timeWait);
+    WebElement item = buttonCheck(locator, timeWait);
+    action.moveToElement(item).click().build().perform();
+    return item;
+  }
+
   protected void takeScreenShot(final String path) {
     File scrFile1 = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
     try {
