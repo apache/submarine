@@ -73,27 +73,18 @@ abstract public class AbstractSubmarineIT {
     if (System.getProperty("SUBMARINE_WORKBENCH_URL") == null) {
       URL = defaultURL;
     } else {
-      URL = System.getProperty("SUBMARINE_WORKBENCH_URL"); 
+      URL = System.getProperty("SUBMARINE_WORKBENCH_URL");
     }
 
     URL = URL.concat(":");
 
     if (System.getProperty("SUBMARINE_WORKBENCH_PORT") == null) {
-      URL = URL.concat(String.valueOf(defaultPort));      
+      URL = URL.concat(String.valueOf(defaultPort));
     } else {
       String port = System.getProperty("SUBMARINE_WORKBENCH_PORT");
       URL = URL.concat(String.valueOf(port));
     }
     return URL;
-  }
-
-  protected void Login() {
-    String username = "admin";
-    String password = "admin";
-    waitToPresent(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(username);
-    waitToPresent(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(password);
-    Click(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"), MAX_BROWSER_TIMEOUT_SEC);
-    waitToPresent(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
   }
 
   protected WebElement buttonCheck(final By locator, final long timeWait) {
@@ -107,7 +98,7 @@ abstract public class AbstractSubmarineIT {
   }
 
   protected void waitURL(String URL, final long timeWait) {
-    new WebDriverWait(driver, timeWait).until(ExpectedConditions.urlToBe​(URL)); 
+    new WebDriverWait(driver, timeWait).until(ExpectedConditions.urlToBe​(URL));
   }
 
   protected void waitVisibility(WebElement element, final long timeWait) {

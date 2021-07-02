@@ -19,6 +19,7 @@ package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.integration.components.Sidebars;
+import org.apache.submarine.integration.pages.LoginPage;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -51,7 +52,8 @@ public class departmentIT extends AbstractSubmarineIT{
     Sidebars sidebars = new Sidebars(URL);
 
     // Login
-    Login();
+    LoginPage loginPage = new LoginPage();
+    loginPage.Login();
 
     // Routing to department page
     sidebars.gotoDepartment();

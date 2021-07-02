@@ -20,6 +20,7 @@ package org.apache.submarine.integration;
 import org.apache.commons.io.FileUtils;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.integration.components.Sidebars;
+import org.apache.submarine.integration.pages.LoginPage;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -61,7 +62,8 @@ public class environmentIT extends AbstractSubmarineIT {
     Sidebars sidebars = new Sidebars(URL);
 
     // Login
-    Login();
+    LoginPage loginPage = new LoginPage();
+    loginPage.Login();
 
     // Routing to workspace
     sidebars.gotoEnvironment();

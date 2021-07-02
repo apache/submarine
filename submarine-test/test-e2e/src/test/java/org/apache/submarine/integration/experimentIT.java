@@ -21,6 +21,7 @@ import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
 import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.integration.pages.ExperimentPage;
+import org.apache.submarine.integration.pages.LoginPage;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,9 +53,11 @@ public class experimentIT extends AbstractSubmarineIT {
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
     Sidebars sidebars = new Sidebars(URL);
+    LoginPage loginPage = new LoginPage();
+
     // Login
     LOG.info("Login");
-    Login();
+    loginPage.Login();
 
     // Routing to workspace
     LOG.info("url");

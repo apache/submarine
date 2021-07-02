@@ -18,6 +18,7 @@
 package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
+import org.apache.submarine.integration.pages.LoginPage;
 import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.By;
@@ -47,15 +48,14 @@ public class datadictIT extends AbstractSubmarineIT {
   // @Test TODO(kevin85421): Due to the undeterministic behavior of travis, I decide to comment it.
   public void dataDictTest() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
+
     Sidebars sidebars = new Sidebars(URL);
+    LoginPage loginPage = new LoginPage();
 
     // Login
     LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
-
+    loginPage.Login();
+    
     // Start Routing & Navigation in data-dict
     LOG.info("Start Routing & Navigation in data-dict");
     sidebars.gotoDataDict();

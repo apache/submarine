@@ -18,6 +18,7 @@
 package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
+import org.apache.submarine.integration.pages.LoginPage;
 import org.apache.submarine.WebDriverManager;
 import org.junit.Ignore;
 import org.openqa.selenium.WebElement;
@@ -48,12 +49,11 @@ public class homeIT extends AbstractSubmarineIT {
 
   @Test
   public void homePagination() throws Exception {
+    LoginPage loginPage = new LoginPage();
     // Login
     LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+    loginPage.Login();
+
 
     LOG.info("Pagination");
     List<WebElement> changePageIndexButtons = driver.findElements(By.cssSelector("a[class='ant-pagination-item-link ng-star-inserted']"));
