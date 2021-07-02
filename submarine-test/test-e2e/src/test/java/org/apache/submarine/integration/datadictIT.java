@@ -47,7 +47,7 @@ public class datadictIT extends AbstractSubmarineIT {
     driver.quit();
   }
 
-  @Test //TODO(kevin85421): Due to the undeterministic behavior of travis, I decide to comment it.
+  @Test
   public void dataDictTest() throws Exception {
     DataDictPage dataDictPage = new DataDictPage();
     String URL = getURL("http://127.0.0.1", 8080);
