@@ -37,6 +37,7 @@ import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.openqa.selenium.interactions.Actions;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -48,6 +49,7 @@ import java.util.concurrent.TimeUnit;
 
 abstract public class AbstractSubmarineIT {
   protected static WebDriver driver;
+  protected static Actions action;
 
   protected final static Logger LOG = LoggerFactory.getLogger(AbstractSubmarineIT.class);
   protected static final long MIN_IMPLICIT_WAIT = 5;
@@ -122,6 +124,20 @@ abstract public class AbstractSubmarineIT {
     WebElement button = Click(locator, timeWait);
     waitURL(URL, timeWait);
     return button;
+  }
+
+  protected WebElement Hover(final By locator, final long timeWait) {
+    waitToPresent(locator, timeWait);
+    WebElement item = buttonCheck(locator, timeWait);
+    action.moveToElement(item).build().perform();
+    return item;
+  }
+
+  protected WebElement HoverAndClick(final By locator, final long timeWait) {
+    waitToPresent(locator, timeWait);
+    WebElement item = buttonCheck(locator, timeWait);
+    action.moveToElement(item).click().build().perform();
+    return item;
   }
 
   protected void takeScreenShot(final String path) {

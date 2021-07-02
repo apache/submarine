@@ -29,6 +29,7 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.openqa.selenium.Dimension;
 
 
 public class WebDriverManager {
@@ -111,8 +112,8 @@ public class WebDriverManager {
     if (loaded == false) {
       fail();
     }
-
-    driver.manage().window().maximize();
+    Dimension d = new Dimension(1920, 1080);
+    driver.manage().window().setSize(d);
     return driver;
   }
 
