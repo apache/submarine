@@ -31,15 +31,19 @@ import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.openqa.selenium.interactions.Actions;
+
 
 public class datadictIT extends AbstractSubmarineIT {
 
   public final static Logger LOG = LoggerFactory.getLogger(datadictIT.class);
 
+
   @BeforeClass
   public static void startUp(){
     LOG.info("[Testcase]: datadictIT");
     driver =  WebDriverManager.getWebDriver();
+    action = new Actions(driver);
   }
 
   @AfterClass
@@ -110,8 +114,7 @@ public class datadictIT extends AbstractSubmarineIT {
     newItemCode = "qqq";
     newItemName = "www";
     // More
-    waitToPresent(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
-    Click(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).perform();
     // Configuration
     waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
@@ -128,7 +131,7 @@ public class datadictIT extends AbstractSubmarineIT {
     Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
 
     // check if add successful
-    Click(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).perform();
     waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     Assert.assertEquals(driver.findElements(By.xpath(String.format("//td[contains(text(), \"%s\")]", newItemCode))).size(), 1);
@@ -148,7 +151,7 @@ public class datadictIT extends AbstractSubmarineIT {
     // Ok
     Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
     // More
-    Click(dataDictPage.moreBtn(dictCode.concat(newPostfix)), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode.concat(newPostfix)))).perform();
     // Configuration
     waitToPresent(dataDictPage.configBtn(dictCode.concat(newPostfix)), MAX_BROWSER_TIMEOUT_SEC);
     Click(dataDictPage.configBtn(dictCode.concat(newPostfix)), MAX_BROWSER_TIMEOUT_SEC);
@@ -162,8 +165,7 @@ public class datadictIT extends AbstractSubmarineIT {
     newItemCode = "aaa";
     newItemName = "bbb";
     // More
-    waitToPresent(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
-    Click(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).perform();
     // Configuration
     waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
@@ -180,7 +182,7 @@ public class datadictIT extends AbstractSubmarineIT {
     Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
 
     // check if add successful
-    Click(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).perform();
     waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     Assert.assertEquals(driver.findElements(By.xpath(String.format("//td[contains(text(), \"%s\")]", newItemCode))).size(), 1);
@@ -192,9 +194,9 @@ public class datadictIT extends AbstractSubmarineIT {
     // 6. More --> Delete
     dictCode = "SYS_USER_SEX";
     // More
-    waitToPresent(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
-    Click(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).perform();
     // Delete
+    waitToPresent(dataDictPage.deleteBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     Click(dataDictPage.deleteBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     waitToPresent(dataDictPage.okDeleteBtn, MAX_BROWSER_TIMEOUT_SEC);
     Click(dataDictPage.okDeleteBtn, MAX_BROWSER_TIMEOUT_SEC);
