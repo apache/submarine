@@ -32,6 +32,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.Keys;
 
 
 public class datadictIT extends AbstractSubmarineIT {
@@ -114,10 +115,10 @@ public class datadictIT extends AbstractSubmarineIT {
     newItemCode = "qqq";
     newItemName = "www";
     // More
-    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).perform();
+    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).build().perform();
     // Configuration
     waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
-    Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.configBtn(dictCode))).click().build().perform();
     // Add Item
     waitToPresent(dataDictPage.itemAddBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     Click(dataDictPage.itemAddBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
@@ -131,9 +132,9 @@ public class datadictIT extends AbstractSubmarineIT {
     Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
 
     // check if add successful
-    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).perform();
+    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).build().perform();
     waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
-    Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.configBtn(dictCode))).click().build().perform();
     Assert.assertEquals(driver.findElements(By.xpath(String.format("//td[contains(text(), \"%s\")]", newItemCode))).size(), 1);
     Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
 
@@ -151,10 +152,10 @@ public class datadictIT extends AbstractSubmarineIT {
     // Ok
     Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
     // More
-    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode.concat(newPostfix)))).perform();
+    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode.concat(newPostfix)))).build().perform();
     // Configuration
     waitToPresent(dataDictPage.configBtn(dictCode.concat(newPostfix)), MAX_BROWSER_TIMEOUT_SEC);
-    Click(dataDictPage.configBtn(dictCode.concat(newPostfix)), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.configBtn(dictCode.concat(newPostfix)))).click().build().perform();
     // Ok
     Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
 
@@ -165,10 +166,10 @@ public class datadictIT extends AbstractSubmarineIT {
     newItemCode = "aaa";
     newItemName = "bbb";
     // More
-    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).perform();
+    action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).build().perform();
     // Configuration
     waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
-    Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.configBtn(dictCode))).click().build().perform();
     // Add Item
     waitToPresent(dataDictPage.itemAddBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     Click(dataDictPage.itemAddBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
@@ -184,7 +185,7 @@ public class datadictIT extends AbstractSubmarineIT {
     // check if add successful
     action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).perform();
     waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
-    Click(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.configBtn(dictCode))).click().build().perform();
     Assert.assertEquals(driver.findElements(By.xpath(String.format("//td[contains(text(), \"%s\")]", newItemCode))).size(), 1);
     Click(dataDictPage.okBtn, MAX_BROWSER_TIMEOUT_SEC);
 
@@ -197,7 +198,7 @@ public class datadictIT extends AbstractSubmarineIT {
     action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).perform();
     // Delete
     waitToPresent(dataDictPage.deleteBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
-    Click(dataDictPage.deleteBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
+    action.moveToElement(driver.findElement(dataDictPage.deleteBtn(dictCode))).click().build().perform();
     waitToPresent(dataDictPage.okDeleteBtn, MAX_BROWSER_TIMEOUT_SEC);
     Click(dataDictPage.okDeleteBtn, MAX_BROWSER_TIMEOUT_SEC);
     // check if delete successfully
