@@ -19,6 +19,7 @@ package org.apache.submarine.integration;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.submarine.AbstractSubmarineIT;
+import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -57,11 +58,13 @@ public class environmentIT extends AbstractSubmarineIT {
   @Test
   public void environmentNavigation() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
+    Sidebars sidebars = new Sidebars(URL);
+
     // Login
     Login();
 
     // Routing to workspace
-    ClickAndNavigate(By.xpath("//span[contains(text(), \"Environment\")]"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/environment"));
+    sidebars.gotoEnvironment();
 
     // Test create new environment
     LOG.info("Create new environment");
@@ -70,7 +73,7 @@ public class environmentIT extends AbstractSubmarineIT {
     SendKeys(By.cssSelector("input[ng-reflect-name='dockerImage']"), MAX_BROWSER_TIMEOUT_SEC, "testDockerImage");
     Click(By.xpath("//nz-upload[@id='upload-config']"), MAX_BROWSER_TIMEOUT_SEC);
 
-    // Because "//input[@type="file"]" will not display, we cannot use SendKeys which calls waitVisibility.   
+    // Because "//input[@type="file"]" will not display, we cannot use SendKeys which calls waitVisibility.
     waitToPresent(By.xpath("//input[@type=\"file\"]"), MAX_BROWSER_TIMEOUT_SEC).sendKeys(System.getProperty("user.dir") + "/src/test/resources/test_config_1.yml");
     Click(By.xpath("//button[@id='btn-submit']"), MAX_BROWSER_TIMEOUT_SEC);
 

@@ -18,6 +18,7 @@
 package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
+import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -46,6 +47,8 @@ public class datadictIT extends AbstractSubmarineIT {
   // @Test TODO(kevin85421): Due to the undeterministic behavior of travis, I decide to comment it.
   public void dataDictTest() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
+    Sidebars sidebars = new Sidebars(URL);
+
     // Login
     LOG.info("Login");
     pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
@@ -55,9 +58,8 @@ public class datadictIT extends AbstractSubmarineIT {
 
     // Start Routing & Navigation in data-dict
     LOG.info("Start Routing & Navigation in data-dict");
-    pollingWait(By.xpath("//span[contains(text(), \"Manager\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
+    sidebars.gotoDataDict();
     WebDriverWait wait = new WebDriverWait( driver, 60);
-    pollingWait(By.xpath("//a[@href='/workbench/manager/dataDict']"), MAX_BROWSER_TIMEOUT_SEC).click();
     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[@class='ant-breadcrumb-link ng-star-inserted']")));
     Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/manager/dataDict"));
 
