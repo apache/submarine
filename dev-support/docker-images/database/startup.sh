@@ -31,8 +31,7 @@ CREATE DATABASE metastore;
 CREATE USER 'metastore'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON * . * TO 'metastore'@'%';
 use metastore; source /tmp/database/metastore.sql;
-CREATE DATABASE mlflow;
+CREATE DATABASE mlflowdb;
 CREATE USER 'mlflow'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON * . * TO 'mlflow'@'%';
-use mlflow; source /tmp/database/mlflow.sql;
 EOF

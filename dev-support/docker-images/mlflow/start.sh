@@ -33,11 +33,9 @@ check_minio_mlflow_bucket_exists() {
 MLFLOW_S3_ENDPOINT_URL="http://submarine-minio-service:9000"
 AWS_ACCESS_KEY_ID="submarine_minio"
 AWS_SECRET_ACCESS_KEY="submarine_minio"
-BACKEND_URI="mysql+pymysql://mlflow:password@localhost:3306/mlflow"
+BACKEND_URI="mysql+pymysql://mlflow:password@submarine-database:3306/mlflowdb"
 DEFAULT_ARTIFACT_ROOT="s3://mlflow"
 STATIC_PREFIX="/mlflow"
-
-/bin/bash -c "sqlite3 store.db"
 
 /bin/bash -c "sleep 60; ./mc config host add minio ${MLFLOW_S3_ENDPOINT_URL} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}"
 
