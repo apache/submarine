@@ -97,12 +97,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - name: Remove useless application
-        uses: easimon/maximize-build-space@v4
-        with:
-          root-reserve-mb: 40960
-          swap-size-mb: 5120
-          remove-dotnet: "true"
       - uses: actions/checkout@v2
         with:
           fetch-depth: 50
