@@ -168,7 +168,6 @@ public class datadictIT extends AbstractSubmarineIT {
     newItemName = "bbb";
 
     // More
-    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", driver.findElement(dataDictPage.moreBtn(dictCode)));
     waitToPresent(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).build().perform();
     // Configuration
