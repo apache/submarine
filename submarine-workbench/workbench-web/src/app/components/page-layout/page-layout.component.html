@@ -18,7 +18,11 @@
   -->
 
 <div [ngStyle]="!title ? { margin: '-24px -24px 0' } : null">
-  <nz-page-header [nzTitle]="title | titlecase" *ngIf="breadCrumb">
+  <nz-page-header
+    [nzTitle]="title | titlecase"
+    *ngIf="breadCrumb"
+    style="background-color: white; padding-left: 30px; padding-top: 20px"
+  >
     <nz-breadcrumb nz-page-header-breadcrumb>
       <nz-breadcrumb-item *ngFor="let item of breadCrumb">
         <a *ngIf="item.routerLink" [routerLink]="item.routerLink">{{ item.title | titlecase }}</a>
@@ -26,11 +30,11 @@
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <nz-page-header-content *ngIf="description">
-      <p>{{ description }}</p>
+      <h2>{{ description }}</h2>
     </nz-page-header-content>
   </nz-page-header>
 
-  <div class="content">
+  <div class="content" style="margin: 15px; padding: 15px; background-color: white">
     <ng-content></ng-content>
   </div>
 </div>
