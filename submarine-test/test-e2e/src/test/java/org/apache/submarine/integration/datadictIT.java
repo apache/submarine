@@ -32,6 +32,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 
 
@@ -165,7 +166,10 @@ public class datadictIT extends AbstractSubmarineIT {
     dictCode = "test new dict code";
     newItemCode = "aaa";
     newItemName = "bbb";
+
     // More
+    ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", driver.findElement(dataDictPage.moreBtn(dictCode)));
+    waitToPresent(dataDictPage.moreBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
     action.moveToElement(driver.findElement(dataDictPage.moreBtn(dictCode))).build().perform();
     // Configuration
     waitToPresent(dataDictPage.configBtn(dictCode), MAX_BROWSER_TIMEOUT_SEC);
