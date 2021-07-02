@@ -18,11 +18,8 @@
 package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
-<<<<<<< HEAD
-import org.apache.submarine.integration.components.Sidebars;
-=======
 import org.apache.submarine.integration.pages.LoginPage;
->>>>>>> login in the current non-used page
+import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -51,16 +48,10 @@ public class datadictIT extends AbstractSubmarineIT {
   // @Test TODO(kevin85421): Due to the undeterministic behavior of travis, I decide to comment it.
   public void dataDictTest() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
-<<<<<<< HEAD
-<<<<<<< HEAD
-    Sidebars sidebars = new Sidebars(URL);
 
-=======
-    LoginPage loginPage = new LoginPage(driver);
->>>>>>> login in the current non-used page
-=======
+    Sidebars sidebars = new Sidebars(URL);
     LoginPage loginPage = new LoginPage();
->>>>>>> bug fix
+
     // Login
     LOG.info("Login");
     loginPage.Login();

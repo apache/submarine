@@ -18,11 +18,8 @@
 package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
-<<<<<<< HEAD
-import org.apache.submarine.integration.components.Sidebars;
-=======
 import org.apache.submarine.integration.pages.LoginPage;
->>>>>>> login in the current non-used page
+import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.WebDriverManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -54,22 +51,12 @@ public class dataIT extends AbstractSubmarineIT {
   @Test
   public void dataNavigation() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     Sidebars sidebars = new Sidebars(URL);
 
     // Login
-=======
-    LoginPage loginPage = new LoginPage(driver);
-<<<<<<< HEAD
-      // Login
->>>>>>> login in the current non-used page
-=======
-=======
     LoginPage loginPage = new LoginPage();
->>>>>>> bug fix
-    // Login
->>>>>>> fix indent and remove comment
+
     LOG.info("Login");
     loginPage.Login();
 

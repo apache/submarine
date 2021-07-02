@@ -53,10 +53,9 @@ public class experimentIT extends AbstractSubmarineIT {
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
     Sidebars sidebars = new Sidebars(URL);
-    // Login
-    LoginPage loginPage = new LoginPage(driver);
+    LoginPage loginPage = new LoginPage();
 
-      // Login
+    // Login
     LOG.info("Login");
     loginPage.Login();
 

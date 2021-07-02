@@ -49,21 +49,12 @@ public class interpreterIT extends AbstractSubmarineIT {
   @Test
   public void workspaceNavigation() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     Sidebars sidebars = new Sidebars(URL);
-    // Login
-=======
-    LoginPage loginPage = new LoginPage(driver);
-<<<<<<< HEAD
-      // Login
->>>>>>> login in the current non-used page
-=======
-=======
+
     LoginPage loginPage = new LoginPage();
->>>>>>> bug fix
+
     // Login
->>>>>>> fix indent and remove comment
     LOG.info("Login");
     loginPage.Login();
 
