@@ -52,7 +52,7 @@ public class experimentIT extends AbstractSubmarineIT {
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
     Sidebars sidebars = new Sidebars(URL);
-      // Login
+    // Login
     LOG.info("Login");
     Login();
 
