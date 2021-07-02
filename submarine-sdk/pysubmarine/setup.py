@@ -43,6 +43,7 @@ setup(
     ],
     extras_require={
         'tf':['tensorflow>=1.14.0,<2.0.0'],
+        'tf-latest':['tensorflow'],
         'pytorch':['torch>=1.5.0','torchvision>=0.6.0'],
     },
     classifiers=[
