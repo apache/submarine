@@ -55,8 +55,7 @@ public class datadictIT extends AbstractSubmarineIT {
     // Login
     LOG.info("Login");
     loginPage.Login();
-
-
+    
     // Start Routing & Navigation in data-dict
     LOG.info("Start Routing & Navigation in data-dict");
     sidebars.gotoDataDict();

@@ -58,7 +58,6 @@ public class departmentIT extends AbstractSubmarineIT{
     // Routing to department page
     sidebars.gotoDepartment();
 
-
     // Test create new department
     Click(By.xpath("//button[@id='btnAddDepartment']"), MAX_BROWSER_TIMEOUT_SEC);
     SendKeys(By.xpath("//input[@id='codeInput'] "), MAX_BROWSER_TIMEOUT_SEC, "e2e Test");
