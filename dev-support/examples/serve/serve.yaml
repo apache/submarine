@@ -42,7 +42,7 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
-        readinessProbe: # make container ready until mlflow serve is ready to receive request
+        readinessProbe: # make container ready until mlflow serving server is ready to receive request
           httpGet:
             path: /ping # from mlflow scoring_server
             port: 5000
@@ -70,7 +70,7 @@ spec:
     - web
   routes:
   - kind: Rule
-    match: "PathPrefix(`/serve`)"
+    match: "PathPrefix(`/serve/mymodel`)"
     middlewares:
     - name: stripprefix
     services:
@@ -78,7 +78,10 @@ spec:
       name: serve-example-service
       port: 5000
 ---
-# Strip prefix /foobar and /fiibar
+# strip the prefix
+# e.g. Make a HTTP POST: localhost:32080/serve/invocations
+#      The serve pod (with ingressroute `/serve`) receives path "/serve/invocations"
+#      We should strip the prefix and make it become "/invocations"
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
@@ -86,4 +89,4 @@ metadata:
 spec:
   stripPrefix:
     prefixes:
-      - /serve
+      - /serve/mymodel
