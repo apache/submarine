@@ -26,7 +26,6 @@ import (
 	operatorFramework "submarine-cloud-v2/test/e2e/framework"
 )
 
-
 var (
 	framework *operatorFramework.Framework
 )
@@ -35,27 +34,25 @@ func TestMain(m *testing.M) {
 	kubeconfig := flag.String("kubeconfig", os.Getenv("HOME")+"/.kube/config", "Path to a kubeconfig. Only required if out-of-cluster.")
 	opImage := flag.String("operator-image", "", "operator image, e.g. image:tag")
 	opImagePullPolicy := flag.String("operator-image-pullPolicy", "Never", "pull policy, e.g. Always")
-	ns := flag.String("namespace", "default", "e2e test operator namespace") 
+	ns := flag.String("namespace", "default", "e2e test operator namespace")
 	submarineTestNamespace := flag.String("submarine-test-namespace", "submarine-user-test", "e2e test submarine namespace")
 	flag.Parse()
-	
+
 	var (
-		err error
+		err      error
 		exitCode int
 	)
 
 	if framework, err = operatorFramework.New(*ns, *submarineTestNamespace, *kubeconfig, *opImage, *opImagePullPolicy); err != nil {
-		log.Fatalf("Error setting up framework: %v", err)
+		log.Fatalf("Error setting up framework: %+v", err)
 	}
 
 	operatorFramework.SubmarineTestNamespace = *submarineTestNamespace
 
 	exitCode = m.Run()
 
-	// if err := framework.Teardown(); err != nil {
-	// 	log.Fatalf("Failed to tear down framework :%v\n", err)
-	// }
+	if err := framework.Teardown(); err != nil {
+		log.Fatalf("Failed to tear down framework :%v\n", err)
+	}
 	os.Exit(exitCode)
 }
-
-
