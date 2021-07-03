@@ -17,10 +17,6 @@
   ~ under the License.
   -->
 
-<submarine-page-layout
-  [title]="currentHeaderInfo?.title"
-  [breadCrumb]="currentHeaderInfo?.breadCrumb"
-  [description]="currentHeaderInfo?.description"
->
+<submarine-page-layout [title]="currentHeaderInfo?.title" [breadCrumb]="currentHeaderInfo?.breadCrumb">
   <router-outlet></router-outlet>
 </submarine-page-layout>

@@ -17,7 +17,8 @@
   ~ under the License.
   -->
 
-<nz-table id="notebookListTable" style="padding-top: 5px" #basicTable [nzData]="notebookList" [nzNoResult]="'No data'">
+<!-- style="padding-top: 5px" -->
+<nz-table id="notebookListTable" #basicTable [nzData]="notebookList" [nzNoResult]="'No data'" nzBordered>
   <thead>
     <tr>
       <th></th>

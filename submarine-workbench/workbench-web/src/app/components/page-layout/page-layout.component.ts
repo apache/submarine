@@ -27,11 +27,10 @@ interface BreadCrumbItem {
 @Component({
   selector: 'submarine-page-layout',
   templateUrl: './page-layout.component.html',
-  styleUrls: ['./page-layout.component.scss']
+  styleUrls: ['./page-layout.component.scss'],
 })
 export class PageLayoutComponent implements OnInit {
   @Input() title: string;
-  @Input() description: string;
   @Input() breadCrumb: BreadCrumbItem[];
 
   constructor() {}
