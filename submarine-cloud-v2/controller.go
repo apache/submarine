@@ -22,12 +22,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
-	submarinescheme "submarine-cloud-v2/pkg/generated/clientset/versioned/scheme"
-	informers "submarine-cloud-v2/pkg/generated/informers/externalversions/submarine/v1alpha1"
-	listers "submarine-cloud-v2/pkg/generated/listers/submarine/v1alpha1"
-	"submarine-cloud-v2/pkg/helm"
-	v1alpha1 "submarine-cloud-v2/pkg/submarine/v1alpha1"
+	v1alpha1 "github.com/apache/submarine/submarine-cloud-v2/pkg/apis/submarine/v1alpha1"
+	clientset "github.com/apache/submarine/submarine-cloud-v2/pkg/client/clientset/versioned"
+	submarinescheme "github.com/apache/submarine/submarine-cloud-v2/pkg/client/clientset/versioned/scheme"
+	informers "github.com/apache/submarine/submarine-cloud-v2/pkg/client/informers/externalversions/submarine/v1alpha1"
+	listers "github.com/apache/submarine/submarine-cloud-v2/pkg/client/listers/submarine/v1alpha1"
+	"github.com/apache/submarine/submarine-cloud-v2/pkg/helm"
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"

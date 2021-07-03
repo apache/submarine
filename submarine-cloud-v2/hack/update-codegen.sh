@@ -21,14 +21,13 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-# generate the code with:
-# --output-base    because this script should also be able to run inside the vendor dir of
-#                  k8s.io/kubernetes. The output-base is needed for the generators to output into the vendor dir
-#                  instead of the $GOPATH directly. For normal projects this can be dropped.
-../vendor/k8s.io/code-generator/generate-groups.sh \
+SCRIPT_ROOT=$(dirname "${BASH_SOURCE[0]}")/..
+CODEGEN_PKG=${CODEGEN_PKG:-$(cd "${SCRIPT_ROOT}"; ls -d -1 ./vendor/k8s.io/code-generator 2>/dev/null || echo ../code-generator)}
+
+bash "${CODEGEN_PKG}"/generate-groups.sh \
   "deepcopy,client,informer,lister" \
-  submarine-cloud-v2/pkg/generated \
-  submarine-cloud-v2/pkg \
+  github.com/apache/submarine/submarine-cloud-v2/pkg/client \
+  github.com/apache/submarine/submarine-cloud-v2/pkg/apis \
   submarine:v1alpha1 \
-  --go-header-file $(pwd)/boilerplate.go.txt \
-  --output-base $(pwd)/../../
+  --go-header-file "${SCRIPT_ROOT}"/hack/boilerplate.go.txt \
+  --output-base "$(dirname ${BASH_SOURCE[0]})/../../../../.."

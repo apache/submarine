@@ -26,8 +26,7 @@ all: charts
 
 .PHONY: api
 api:
-	@cd hack; echo "Generating API..."; ./update-codegen.sh; \
-		echo "Verifying API..."; ./verify-codegen.sh
+	./hack/update-codegen.sh
 
 .PHONY: image
 image: charts

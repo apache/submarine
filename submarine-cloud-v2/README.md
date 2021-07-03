@@ -13,22 +13,15 @@ For `yaml` files, please use [prettier](https://prettier.io/) to format the code
 ```bash
 minikube start --vm-driver=docker  --kubernetes-version v1.15.11
 go mod vendor
-chmod -R 777 vendor
 ```
 
 # Generate API
 
-- It makes use of the generators in [k8s.io/code-generator](https://github.com/kubernetes/code-generator) to generate a typed client, informers, listers and deep-copy functions. You can do this yourself using the ./update-codegen.sh script. (Note: Before you run update-codegen.sh and verify-codegen.sh, you need to move to hack/ directory at first.)
+We use the generators in [k8s.io/code-generator](https://github.com/kubernetes/code-generator) to generate a typed client, informers, listers and deep-copy functions.
 
-```bash
-# Step1: Modify doc.go & types.go
-# Step2: Generate API to pkg/generated
-cd hack
-./update-codegen.sh
+**Important**: You **MUST** put this repository in a folder named `github.com/apache/`, otherwise the code will be generated into wrong folder. Therefore the full path of this `README.md` should be like `SOMEWHERE_IN_FILESYSTEM/github.com/apache/submarine/submarine-cloud-v2/README.md`.
 
-# Step3: Verify API
-./verify-codegen.sh
-```
+Everytime when you change the codes in `pkg/apis`, you must run `make api` to re-generate the API.
 
 # Add new dependencies
 
