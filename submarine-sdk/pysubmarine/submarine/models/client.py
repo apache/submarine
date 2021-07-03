@@ -22,7 +22,7 @@ from mlflow.tracking import MlflowClient
 
 from .constant import (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
                        MLFLOW_S3_ENDPOINT_URL, MLFLOW_TRACKING_URI)
-from .utils import get_job_id, get_ps, get_worker_index
+from .utils import exist_ps, get_job_id, get_worker_index
 
 
 class ModelsClient():
@@ -88,7 +88,7 @@ class ModelsClient():
                    artifact_path,
                    registered_model_name=None):
         run_name = get_worker_index()
-        if get_ps():
+        if exist_ps():
             # TODO for Tensorflow ParameterServer strategy
             return
         elif run_name == "worker-0":

@@ -79,7 +79,7 @@ def get_worker_index():
     return worker_index
 
 
-def get_ps():
+def exist_ps():
     if env.get_env(_TF_CONFIG) is not None:
         tf_config = json.loads(os.environ.get(_TF_CONFIG))
         cluster = tf_config.get(_CLUSTER)
