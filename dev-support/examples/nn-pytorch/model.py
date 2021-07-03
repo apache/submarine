@@ -1,4 +1,3 @@
-from submarine import ModelsClient
 """
  Licensed to the Apache Software Foundation (ASF) under one
  or more contributor license agreements.  See the NOTICE file
@@ -15,6 +14,7 @@ from submarine import ModelsClient
  specific language governing permissions and limitations
  under the License.
 """
+from submarine import ModelsClient
 import numpy as np
 import torch
 from submarine import ModelsClient

@@ -612,4 +612,8 @@ public class K8sSubmitter implements Submitter {
     PARSE_OP_RESULT,
     PARSE_OP_DELETE
   }
+
+  public void createServe(String modelPath) {
+    
+  }
 }
