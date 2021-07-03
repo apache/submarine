@@ -25,6 +25,7 @@ _JOB_ID_ENV_VAR = "JOB_ID"
 
 _TF_CONFIG = "TF_CONFIG"
 _CLUSTER_SPEC = "CLUSTER_SPEC"
+_CLUSTER = "cluster"
 _JOB_NAME = "JOB_NAME"
 _TYPE = "type"
 _TASK = "task"
@@ -76,3 +77,12 @@ def get_worker_index():
         worker_index = "worker-0"
 
     return worker_index
+
+
+def exist_ps():
+    if env.get_env(_TF_CONFIG) is not None:
+        tf_config = json.loads(os.environ.get(_TF_CONFIG))
+        cluster = tf_config.get(_CLUSTER)
+        if "ps" in cluster:
+            return True
+    return False

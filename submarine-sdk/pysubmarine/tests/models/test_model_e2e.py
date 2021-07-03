@@ -38,7 +38,10 @@ class TestSubmarineModelsClientE2E():
         model = LinearNNModel()
         # log
         name = "simple-nn-model"
-        models_client.log_model(name, model)
+        models_client.save_model("pytorch",
+                                 model,
+                                 name,
+                                 registered_model_name=name)
         # update
         new_name = "new-simple-nn-model"
         models_client.update_model(name, new_name)
