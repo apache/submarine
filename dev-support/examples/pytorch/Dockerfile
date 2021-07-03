@@ -17,9 +17,8 @@ FROM python:3.7
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 ADD ./tmp/submarine-sdk /opt/
-RUN pip install /opt/pysubmarine && \
-    pip uninstall torchvision && \
-    pip install torchvision=torchvision=0.4.0=py36_cu92
+RUN pip install pillow==8.2.0 && \
+    pip install /opt/pysubmarine && \
     pip install tensorboardX
 
 ADD ./distribution.py /opt/

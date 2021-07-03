@@ -65,7 +65,7 @@ def train(args, model, device, train_loader, optimizer, epoch, writer, periscope
                 100. * batch_idx / len(train_loader), loss.item()))
             niter = epoch * len(train_loader) + batch_idx
             writer.add_scalar('loss', loss.item(), niter)
-    periscope.log_metric('loss', loss.item(), epoch)
+            periscope.log_metric('loss', loss.item(), niter)
 
 def test(args, model, device, test_loader, writer, epoch, periscope):
     model.eval()
@@ -99,8 +99,8 @@ if __name__ == '__main__':
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N',
                         help='input batch size for testing (default: 1000)')
-    parser.add_argument('--epochs', type=int, default=1, metavar='N',
-                        help='number of epochs to train (default: 10)')
+    parser.add_argument('--epochs', type=int, default=5, metavar='N',
+                        help='number of epochs to train (default: 5)')
     parser.add_argument('--lr', type=float, default=0.01, metavar='LR',
                         help='learning rate (default: 0.01)')
     parser.add_argument('--momentum', type=float, default=0.5, metavar='M',
@@ -160,6 +160,7 @@ if __name__ == '__main__':
     periscope = ModelsClient()
     with periscope.start() as run:
       for epoch in range(1, args.epochs + 1):
+        # for epoch in range(1, 6):
           train(args, model, device, train_loader, optimizer, epoch, writer, periscope)
           test(args, model, device, test_loader, writer, epoch, periscope)
 
