@@ -19,39 +19,65 @@
 
 package org.apache.submarine.server.submitter.k8s.model.middlewares;
 
+import java.util.List;
+
 import com.google.gson.annotations.SerializedName;
 
-public class MiddlewaresSpec {
 
-  @SerializedName("stripPrefix")
-  private StripPrefix stripPrefix;
+public class StripPrefix {
+
+  @SerializedName("prefixes")
+  private List<String> prefixes;
+
+  @SerializedName("forceSlash")
+  private Boolean forceSlash;
   
-  // other middlewares
 
-  public MiddlewaresSpec() {
+  public StripPrefix() {
+    forceSlash = true; // default to true
   }
 
-  public MiddlewaresSpec(StripPrefix stripPrefix) {
-    this.stripPrefix = stripPrefix;
+  public StripPrefix(List<String> prefixes, Boolean forceSlash) {
+    this.prefixes = prefixes;
+    this.forceSlash = forceSlash;
   }
 
-  public StripPrefix getStripPrefix() {
-    return this.stripPrefix;
+  public List<String> getPrefixes() {
+    return this.prefixes;
   }
 
-  public void setStripPrefix(StripPrefix stripPrefix) {
-    this.stripPrefix = stripPrefix;
+  public void setPrefixes(List<String> prefixes) {
+    this.prefixes = prefixes;
   }
 
-  public MiddlewaresSpec stripPrefix(StripPrefix stripPrefix) {
-    setStripPrefix(stripPrefix);
+  public Boolean isForceSlash() {
+    return this.forceSlash;
+  }
+
+  public Boolean getForceSlash() {
+    return this.forceSlash;
+  }
+
+  public void setForceSlash(Boolean forceSlash) {
+    this.forceSlash = forceSlash;
+  }
+
+  public StripPrefix prefixes(List<String> prefixes) {
+    setPrefixes(prefixes);
+    return this;
+  }
+
+  public StripPrefix forceSlash(Boolean forceSlash) {
+    setForceSlash(forceSlash);
     return this;
   }
 
   @Override
   public String toString() {
     return "{" +
-      " stripPrefix='" + getStripPrefix() + "'" +
+      " prefixes='" + getPrefixes() + "'" +
+      ", forceSlash='" + isForceSlash() + "'" +
       "}";
   }
+  
 }

@@ -126,7 +126,14 @@ public class ExperimentManager {
     return experiment;
   }
 
+  // public Serve createServe(String modelUrl) throws SubmarineRuntimeException {
+  //   // submitter createServe
+  //   // 1. create deployment
+  //   // 2. create service
+  //   // 3. create ingressroute and middleware
 
+  //   // return serving url
+  // }
   /**
    * Get experiment
    *

@@ -18,11 +18,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: serve-example
+  name: serve-example # name == ${model-registry}-{version}
 spec:
   selector:
     matchLabels:
-      app: serve-example-pod
+      app: serve-example-pod # 
   template:
     metadata:
       labels:

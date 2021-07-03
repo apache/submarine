@@ -17,41 +17,23 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model.middlewares;
+package org.apache.submarine.server.api.experiment;
 
-import com.google.gson.annotations.SerializedName;
+public class Serve {
+  public String url;
 
-public class MiddlewaresSpec {
-
-  @SerializedName("stripPrefix")
-  private StripPrefix stripPrefix;
-  
-  // other middlewares
-
-  public MiddlewaresSpec() {
+  public String getUrl() {
+    return this.url;
   }
 
-  public MiddlewaresSpec(StripPrefix stripPrefix) {
-    this.stripPrefix = stripPrefix;
+  public void setUrl(String url) {
+    this.url = url;
   }
 
-  public StripPrefix getStripPrefix() {
-    return this.stripPrefix;
-  }
-
-  public void setStripPrefix(StripPrefix stripPrefix) {
-    this.stripPrefix = stripPrefix;
-  }
-
-  public MiddlewaresSpec stripPrefix(StripPrefix stripPrefix) {
-    setStripPrefix(stripPrefix);
+  public Serve url(String url) {
+    setUrl(url);
     return this;
   }
 
-  @Override
-  public String toString() {
-    return "{" +
-      " stripPrefix='" + getStripPrefix() + "'" +
-      "}";
-  }
+
 }
