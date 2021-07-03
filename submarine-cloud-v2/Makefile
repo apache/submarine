@@ -30,8 +30,9 @@ api:
 
 .PHONY: image
 image: charts
+	eval $(minikube docker-env)
 	GOOS=linux go build -o submarine-operator
-	docker build -t submarine-operator .
+	docker build -t submarine-operator -f dev.Dockerfile .
 	go build -o submarine-operator
 
 .PHONY: test-unit

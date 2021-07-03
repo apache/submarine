@@ -13,15 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM alpine:3.10
+FROM golang:1.16.2 AS build-image
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
-# If you are in China, enabling the following two lines of code can speed up the build of the image, but it may cause failure in travis.
-# So when submitting the code, please make sure the following 2 lines of code are in a commented state
-# RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/main" > /etc/apk/repositories
-# RUN echo "http://mirrors.ustc.edu.cn/alpine/v3.10/community" >> /etc/apk/repositories
+ADD tmp/submarine-cloud-v2 /usr/src
 
-RUN apk add tzdata --no-cache
-ADD ./tmp/submarine-operator /usr/local/bin/submarine-operator
+WORKDIR /usr/src
 
-ENTRYPOINT [ "/usr/local/bin/submarine-operator" ]
+RUN GOOS=linux go build -o submarine-operator
+
+FROM gcr.io/distroless/base-debian10
+WORKDIR /usr/src
+COPY --from=build-image /usr/src/submarine-operator /usr/src/submarine-operator
+ADD tmp/charts/ /usr/src/charts
+
+CMD ["/usr/src/submarine-operator", "-incluster=true"] 

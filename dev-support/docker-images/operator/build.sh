@@ -27,20 +27,10 @@ fi
 export CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
 export SUBMARINE_HOME=${CURRENT_PATH}/../../..
 
-if [ ! -d "${SUBMARINE_HOME}/submarine-cloud/bin" ]; then
-  mkdir "${SUBMARINE_HOME}/submarine-cloud/bin"
-fi
-submarine_operator_exists=$(find -L "${SUBMARINE_HOME}/submarine-cloud/bin" -name "submarine-operator")
-# Build source code if the package doesn't exist.
-if [[ -z "${submarine_operator_exists}" ]]; then
-  cd "${SUBMARINE_HOME}/submarine-cloud"
-  mvn package
-fi
-
 mkdir -p "${CURRENT_PATH}/tmp"
-cp ${SUBMARINE_HOME}/submarine-cloud/bin/submarine-operator "${CURRENT_PATH}/tmp"
+cp -r ${SUBMARINE_HOME}/submarine-cloud-v2/ "${CURRENT_PATH}/tmp/submarine-cloud-v2/"
+cp -r ${SUBMARINE_HOME}/helm-charts/submarine/charts/ "${CURRENT_PATH}/tmp/charts" 
 
-# build image
 cd ${CURRENT_PATH}
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
 docker build -t ${SUBMARINE_IMAGE_NAME} .

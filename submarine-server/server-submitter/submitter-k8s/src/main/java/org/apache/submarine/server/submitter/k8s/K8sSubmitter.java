@@ -407,9 +407,7 @@ public class K8sSubmitter implements Submitter {
       namespace = System.getenv(ENV_NAMESPACE);
     }
     
-    try {
-           
-        
+    try { 
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               namespace,
