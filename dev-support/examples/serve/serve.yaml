@@ -30,16 +30,15 @@ spec:
     spec:
       containers:
       - name: serve-example-container
-        image: flask:0.6.0-SNAPSHOT
-        # image: apache/submarine:serve-0.6.0-SNAPSHOT
-        # command:
-        #   - "mlflow"
-        #   - "models"
-        #   - "serve"
-        #   - "--model-uri"
-        #   - "models:/simple-nn-model/1"
-        #   - "--host"
-        #   - "0.0.0.0" # make it accessible from the outside
+        image: apache/submarine:serve-0.6.0-SNAPSHOT
+        command:
+          - "mlflow"
+          - "models"
+          - "serve"
+          - "--model-uri"
+          - "models:/simple-nn-model/1"
+          - "--host"
+          - "0.0.0.0" # make it accessible from the outside
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000

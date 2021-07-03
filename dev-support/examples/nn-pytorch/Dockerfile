@@ -20,4 +20,4 @@ ADD ./tmp/submarine-sdk /opt/
 RUN pip install "torch==1.5.0" "torchvision==0.6.0"
 RUN pip install /opt/pysubmarine
 
-ADD ./model.py /opt/1
+ADD ./model.py /opt
