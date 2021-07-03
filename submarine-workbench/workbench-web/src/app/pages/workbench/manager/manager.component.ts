@@ -24,7 +24,6 @@ import _ from 'lodash';
 
 interface HeaderInfo {
   title: string;
-  description: string;
   breadCrumb: Array<{ title: string; routerLink?: string }>;
 }
 
@@ -37,9 +36,7 @@ interface HeaderInfo {
 export class ManagerComponent implements OnInit {
   private headerInfo: { [key: string]: HeaderInfo } = {
     user: {
-      title: '',
-      // description: 'You can check the user, delete the user, lock and unlock the user, etc.',
-      description: 'User',
+      title: 'user',
       breadCrumb: [
         {
           title: 'Home',
@@ -54,9 +51,7 @@ export class ManagerComponent implements OnInit {
       ],
     },
     dataDict: {
-      title: '',
-      // description: 'System Dict Manager',
-      description: 'Data Dict',
+      title: 'dataDict',
       breadCrumb: [
         {
           title: 'Home',
@@ -71,9 +66,7 @@ export class ManagerComponent implements OnInit {
       ],
     },
     department: {
-      title: '',
-      // description: 'System Department Manager',
-      description: 'Department',
+      title: 'department',
       breadCrumb: [
         {
           title: 'Home',
