@@ -156,6 +156,7 @@ export class ExperimentHomeComponent implements OnInit {
     interval(period)
       .pipe(
         mergeMap(() => this.experimentService.getTensorboardInfo()), // map interval observable to tensorboardInfo observable
+        retryWhen((error) => error), //  retry to get tensorboardInfo
         tap((x) => console.log(x)), // monitoring the process
         filter((res) => res.available), // only emit the success ones
         take(1), // if succeed, stop emitting new value from source observable
