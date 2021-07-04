@@ -23,7 +23,7 @@ import { ExperimentFormService } from '@submarine/services/experiment.form.servi
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { interval } from 'rxjs';
-import { filter, mergeMap, take, tap, timeout } from 'rxjs/operators';
+import { filter, mergeMap, take, tap, timeout, retryWhen } from 'rxjs/operators';
 import { ExperimentFormComponent } from './experiment-form/experiment-form.component';
 
 @Component({
@@ -72,7 +72,7 @@ export class ExperimentHomeComponent implements OnInit {
 
     this.experimentService.emitInfo(null);
     this.getTensorboardInfo(1000, 50000);
-    this.getMlflowInfo(1000, 50000);
+    this.getMlflowInfo(1000, 100000);
   }
 
   fetchExperimentList() {
@@ -174,6 +174,7 @@ export class ExperimentHomeComponent implements OnInit {
     interval(period)
       .pipe(
         mergeMap(() => this.experimentService.getMlflowInfo()),
+        retryWhen((error) => error),
         tap((x) => console.log(x)),
         filter((res) => res.available),
         take(1),
