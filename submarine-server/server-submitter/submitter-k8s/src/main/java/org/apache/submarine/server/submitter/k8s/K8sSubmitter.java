@@ -566,7 +566,7 @@ public class K8sSubmitter implements Submitter {
         IllegalStateException ise = (IllegalStateException) e.getCause();
         if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
           LOG.debug("Catching exception because of issue " +
-            "https://github.com/kubernetes-client/java/issues/86", e);
+              "https://github.com/kubernetes-client/java/issues/86", e);
         } else {
           throw e;
         }
@@ -610,7 +610,7 @@ public class K8sSubmitter implements Submitter {
         IllegalStateException ise = (IllegalStateException) e.getCause();
         if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
           LOG.debug("Catching exception because of issue " +
-            "https://github.com/kubernetes-client/java/issues/86", e);
+              "https://github.com/kubernetes-client/java/issues/86", e);
         } else {
           throw e;
         }
@@ -688,9 +688,5 @@ public class K8sSubmitter implements Submitter {
   private enum ParseOp {
     PARSE_OP_RESULT,
     PARSE_OP_DELETE
-  }
-
-  public void createServe(String modelPath) {
-    
-  }
+  
 }

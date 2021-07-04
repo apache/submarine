@@ -27,9 +27,11 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
+import org.apache.submarine.server.api.experiment.ServeRequest;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,63 +61,66 @@ public class K8SJobSubmitterTest extends SpecBuilder {
     submitter.initialize(null);
   }
 
+  @Ignore // TODO(byronhsu): make sure saving a model before create serve
   @Test
   public void tmpTest() {
-    submitter.deleteServe("simple-nn-model", "1", "default");
+    ServeRequest request = new ServeRequest()
+          .modelName("simple-nn-model").modelVersion("1").namespace("default");
+    submitter.createServe(request);
   }
 
-  // @Test
-  // public void testRunPyTorchJobPerRequest() throws URISyntaxException, IOException,
-  //     SubmarineRuntimeException {
-  //   ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, pytorchJobReqFile);
-  //   run(spec);
-  // }
+  @Test
+  public void testRunPyTorchJobPerRequest() throws URISyntaxException, IOException,
+      SubmarineRuntimeException {
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, pytorchJobReqFile);
+    run(spec);
+  }
 
-  // @Test
-  // public void testRunTFJobPerRequest() throws URISyntaxException, IOException, SubmarineRuntimeException {
-  //   ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
-  //   run(spec);
-  // }
+  @Test
+  public void testRunTFJobPerRequest() throws URISyntaxException, IOException, SubmarineRuntimeException {
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
+    run(spec);
+  }
 
-  // @Test
-  // public void testCreateTFJob() throws IOException, URISyntaxException {
-  //   ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobReqFile);
-  //   Experiment experiment = submitter.createExperiment(spec);
-  // }
+  @Test
+  public void testCreateTFJob() throws IOException, URISyntaxException {
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobReqFile);
+    Experiment experiment = submitter.createExperiment(spec);
+  }
 
-  // @Test
-  // public void testDeleteTFJob() throws IOException, URISyntaxException {
-  //   ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobReqFile);
-  //   Experiment experiment = submitter.deleteExperiment(spec);
-  // }
+  @Test
+  public void testDeleteTFJob() throws IOException, URISyntaxException {
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobReqFile);
+    Experiment experiment = submitter.deleteExperiment(spec);
+  }
 
-  // @Test
-  // public void testGetTensorboardInfo() throws IOException, URISyntaxException {
-  //   TensorboardInfo tensorboardInfo = submitter.getTensorboardInfo();
-  // }
+  @Test
+  public void testGetTensorboardInfo() throws IOException, URISyntaxException {
+    TensorboardInfo tensorboardInfo = submitter.getTensorboardInfo();
+  }
 
-  // @Test
-  // public void testGetMlflowInfo() throws IOException, URISyntaxException {
-  //   MlflowInfo mlflowInfo = submitter.getMlflowInfo();
-  // }
+  @Test
+  public void testGetMlflowInfo() throws IOException, URISyntaxException {
+    MlflowInfo mlflowInfo = submitter.getMlflowInfo();
+  }
 
-  // private void run(ExperimentSpec spec) throws SubmarineRuntimeException {
-  //   // create
-  //   Experiment experimentCreated = submitter.createExperiment(spec);
-  //   Assert.assertNotNull(experimentCreated);
+  private void run(ExperimentSpec spec) throws SubmarineRuntimeException {
+    // create
+    Experiment experimentCreated = submitter.createExperiment(spec);
+    Assert.assertNotNull(experimentCreated);
 
-  //   // find
-  //   Experiment experimentFound = submitter.findExperiment(spec);
-  //   Assert.assertNotNull(experimentFound);
-  //   Assert.assertEquals(experimentCreated.getUid(), experimentFound.getUid());
-  //   Assert.assertEquals(experimentCreated.getName(), experimentFound.getName());
-  //   Assert.assertEquals(experimentCreated.getAcceptedTime(), experimentFound.getAcceptedTime());
+    // find
+    Experiment experimentFound = submitter.findExperiment(spec);
+    Assert.assertNotNull(experimentFound);
+    Assert.assertEquals(experimentCreated.getUid(), experimentFound.getUid());
+    Assert.assertEquals(experimentCreated.getName(), experimentFound.getName());
+    Assert.assertEquals(experimentCreated.getAcceptedTime(), experimentFound.getAcceptedTime());
 
-  //   // delete
-  //   Experiment experimentDeleted = submitter.deleteExperiment(spec);
-  //   Assert.assertNotNull(experimentDeleted);
-  //   Assert.assertEquals(Experiment.Status.STATUS_DELETED.getValue(), experimentDeleted.getStatus());
-  //   Assert.assertEquals(experimentFound.getUid(), experimentDeleted.getUid());
-  //   Assert.assertEquals(experimentFound.getName(), experimentDeleted.getName());
-  // }
+    // delete
+    Experiment experimentDeleted = submitter.deleteExperiment(spec);
+    Assert.assertNotNull(experimentDeleted);
+    Assert.assertEquals(Experiment.Status.STATUS_DELETED.getValue(), experimentDeleted.getStatus());
+    Assert.assertEquals(experimentFound.getUid(), experimentDeleted.getUid());
+    Assert.assertEquals(experimentFound.getName(), experimentDeleted.getName());
+  }
 }

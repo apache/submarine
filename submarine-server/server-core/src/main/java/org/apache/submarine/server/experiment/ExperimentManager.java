@@ -129,30 +129,6 @@ public class ExperimentManager {
   }
 
   /**
-   * Create serve
-   *
-   * @param spec spec
-   * @return object
-   * @throws SubmarineRuntimeException the service error
-   */
-  public ServeResponse createServe(ServeRequest spec) throws SubmarineRuntimeException {
-    ServeResponse serve = submitter.createServe(spec);
-    return serve;
-  }
-
-  /**
-   * Delete serve
-   *
-   * @param spec spec
-   * @return object
-   * @throws SubmarineRuntimeException the service error
-   */
-  public ServeResponse deleteServe(ServeRequest spec) throws SubmarineRuntimeException {
-    ServeResponse serve = submitter.deleteServe(spec);
-    return serve;
-  }
-
-  /**
    * Get experiment
    *
    * @param id experiment id
@@ -314,6 +290,31 @@ public class ExperimentManager {
   public MlflowInfo getMLflowInfo() throws SubmarineRuntimeException {
     return submitter.getMlflowInfo();
   }
+
+  /**
+   * Create serve
+   *
+   * @param spec spec
+   * @return object
+   * @throws SubmarineRuntimeException the service error
+   */
+  public ServeResponse createServe(ServeRequest spec) throws SubmarineRuntimeException {
+    ServeResponse serve = submitter.createServe(spec);
+    return serve;
+  }
+
+  /**
+   * Delete serve
+   *
+   * @param spec spec
+   * @return object
+   * @throws SubmarineRuntimeException the service error
+   */
+  public ServeResponse deleteServe(ServeRequest spec) throws SubmarineRuntimeException {
+    ServeResponse serve = submitter.deleteServe(spec);
+    return serve;
+  }
+
 
   private void checkSpec(ExperimentSpec spec) throws SubmarineRuntimeException {
     if (spec == null) {

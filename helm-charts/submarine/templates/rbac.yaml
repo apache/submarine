@@ -42,6 +42,7 @@ rules:
   - traefik.containo.us
   resources:
   - ingressroutes
+  - middlewares
   verbs:
   - get
   - list

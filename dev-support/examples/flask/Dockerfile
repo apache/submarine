@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# An lightweight flask server for debugging the connectivity in the cluster
 FROM python:3.7
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
