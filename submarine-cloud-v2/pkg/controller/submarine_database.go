@@ -32,10 +32,29 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func newSubmarineDatabasePersistentVolume(submarine *v1alpha1.Submarine, persistentVolumeSource *corev1.PersistentVolumeSource, pvName string) *corev1.PersistentVolume {
+func newSubmarineDatabasePersistentVolume(submarine *v1alpha1.Submarine) *corev1.PersistentVolume {
+	var persistentVolumeSource corev1.PersistentVolumeSource
+	switch submarine.Spec.Storage.StorageType {
+	case "nfs":
+		persistentVolumeSource = corev1.PersistentVolumeSource{
+			NFS: &corev1.NFSVolumeSource{
+				Server: submarine.Spec.Storage.NfsIP,
+				Path:   submarine.Spec.Storage.NfsPath,
+			},
+		}
+	case "host":
+		hostPathType := corev1.HostPathDirectoryOrCreate
+		persistentVolumeSource = corev1.PersistentVolumeSource{
+			HostPath: &corev1.HostPathVolumeSource{
+				Path: submarine.Spec.Storage.HostPath,
+				Type: &hostPathType,
+			},
+		}
+	}
+
 	return &corev1.PersistentVolume{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: pvName,
+			Name: pvName(databasePvNamePrefix, submarine.Namespace),
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 			},
@@ -47,16 +66,16 @@ func newSubmarineDatabasePersistentVolume(submarine *v1alpha1.Submarine, persist
 			Capacity: corev1.ResourceList{
 				corev1.ResourceStorage: resource.MustParse(submarine.Spec.Database.StorageSize),
 			},
-			PersistentVolumeSource: *persistentVolumeSource,
+			PersistentVolumeSource: persistentVolumeSource,
 		},
 	}
 }
 
-func newSubmarineDatabasePersistentVolumeClaim(submarine *v1alpha1.Submarine, pvcName string, pvName string) *corev1.PersistentVolumeClaim {
+func newSubmarineDatabasePersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
 	storageClassName := ""
 	return &corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: pvcName,
+			Name: databasePvcName,
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 			},
@@ -70,13 +89,13 @@ func newSubmarineDatabasePersistentVolumeClaim(submarine *v1alpha1.Submarine, pv
 					corev1.ResourceStorage: resource.MustParse(submarine.Spec.Database.StorageSize),
 				},
 			},
-			VolumeName:       pvName,
+			VolumeName:       pvName(databasePvNamePrefix, submarine.Namespace),
 			StorageClassName: &storageClassName,
 		},
 	}
 }
 
-func newSubmarineDatabaseDeployment(submarine *v1alpha1.Submarine, pvcName string) *appsv1.Deployment {
+func newSubmarineDatabaseDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployment {
 	databaseImage := submarine.Spec.Database.Image
 	if databaseImage == "" {
 		databaseImage = "apache/submarine:database-" + submarine.Spec.Version
@@ -133,7 +152,7 @@ func newSubmarineDatabaseDeployment(submarine *v1alpha1.Submarine, pvcName strin
 							Name: "volume",
 							VolumeSource: corev1.VolumeSource{
 								PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-									ClaimName: pvcName,
+									ClaimName: databasePvcName,
 								},
 							},
 						},
@@ -169,48 +188,24 @@ func newSubmarineDatabaseService(submarine *v1alpha1.Submarine) *corev1.Service 
 
 // createSubmarineDatabase is a function to create submarine-database.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-database.yaml
-func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine, namespace string) (*appsv1.Deployment, error) {
+func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) (*appsv1.Deployment, error) {
 	klog.Info("[createSubmarineDatabase]")
 
 	// Step1: Create PersistentVolume
-	// PersistentVolumes are not namespaced resources, so we add the namespace
-	// as a suffix to distinguish them
-	pvName := databaseName + "-pv--" + namespace
-	pv, pv_err := c.persistentvolumeLister.Get(pvName)
+	pv, err := c.persistentvolumeLister.Get(pvName(databasePvNamePrefix, submarine.Namespace))
 	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(pv_err) {
-		var persistentVolumeSource corev1.PersistentVolumeSource
-		switch submarine.Spec.Storage.StorageType {
-		case "nfs":
-			persistentVolumeSource = corev1.PersistentVolumeSource{
-				NFS: &corev1.NFSVolumeSource{
-					Server: submarine.Spec.Storage.NfsIP,
-					Path:   submarine.Spec.Storage.NfsPath,
-				},
-			}
-		case "host":
-			hostPathType := corev1.HostPathDirectoryOrCreate
-			persistentVolumeSource = corev1.PersistentVolumeSource{
-				HostPath: &corev1.HostPathVolumeSource{
-					Path: submarine.Spec.Storage.HostPath,
-					Type: &hostPathType,
-				},
-			}
-		default:
-			klog.Warningln("	Invalid storageType found in submarine spec, nothing will be created!")
-			return nil, nil
-		}
-		pv, pv_err = c.kubeclientset.CoreV1().PersistentVolumes().Create(context.TODO(), newSubmarineDatabasePersistentVolume(submarine, &persistentVolumeSource, pvName), metav1.CreateOptions{})
-		if pv_err != nil {
-			klog.Info(pv_err)
+	if errors.IsNotFound(err) {
+		pv, err = c.kubeclientset.CoreV1().PersistentVolumes().Create(context.TODO(), newSubmarineDatabasePersistentVolume(submarine), metav1.CreateOptions{})
+		if err != nil {
+			klog.Info(err)
 		}
 		klog.Info("	Create PersistentVolume: ", pv.Name)
 	}
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
-	if pv_err != nil {
-		return nil, pv_err
+	if err != nil {
+		return nil, err
 	}
 
 	if !metav1.IsControlledBy(pv, submarine) {
@@ -220,21 +215,20 @@ func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine, name
 	}
 
 	// Step2: Create PersistentVolumeClaim
-	pvcName := databaseName + "-pvc"
-	pvc, pvc_err := c.persistentvolumeclaimLister.PersistentVolumeClaims(namespace).Get(pvcName)
+	pvc, err := c.persistentvolumeclaimLister.PersistentVolumeClaims(submarine.Namespace).Get(databasePvcName)
 	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(pvc_err) {
-		pvc, pvc_err = c.kubeclientset.CoreV1().PersistentVolumeClaims(namespace).Create(context.TODO(), newSubmarineDatabasePersistentVolumeClaim(submarine, pvcName, pvName), metav1.CreateOptions{})
-		if pvc_err != nil {
-			klog.Info(pvc_err)
+	if errors.IsNotFound(err) {
+		pvc, err = c.kubeclientset.CoreV1().PersistentVolumeClaims(submarine.Namespace).Create(context.TODO(), newSubmarineDatabasePersistentVolumeClaim(submarine), metav1.CreateOptions{})
+		if err != nil {
+			klog.Info(err)
 		}
 		klog.Info("	Create PersistentVolumeClaim: ", pvc.Name)
 	}
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
-	if pvc_err != nil {
-		return nil, pvc_err
+	if err != nil {
+		return nil, err
 	}
 
 	if !metav1.IsControlledBy(pvc, submarine) {
@@ -244,20 +238,20 @@ func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine, name
 	}
 
 	// Step3: Create Deployment
-	deployment, deployment_err := c.deploymentLister.Deployments(namespace).Get(databaseName)
+	deployment, err := c.deploymentLister.Deployments(submarine.Namespace).Get(databaseName)
 	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(deployment_err) {
-		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(namespace).Create(context.TODO(), newSubmarineDatabaseDeployment(submarine, pvcName), metav1.CreateOptions{})
-		if deployment_err != nil {
-			klog.Info(deployment_err)
+	if errors.IsNotFound(err) {
+		deployment, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Create(context.TODO(), newSubmarineDatabaseDeployment(submarine), metav1.CreateOptions{})
+		if err != nil {
+			klog.Info(err)
 		}
 		klog.Info("	Create Deployment: ", deployment.Name)
 	}
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
-	if deployment_err != nil {
-		return nil, deployment_err
+	if err != nil {
+		return nil, err
 	}
 
 	if !metav1.IsControlledBy(deployment, submarine) {
@@ -269,28 +263,28 @@ func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine, name
 	// Update the replicas of the database deployment if it is not equal to spec
 	if submarine.Spec.Database.Replicas != nil && *submarine.Spec.Database.Replicas != *deployment.Spec.Replicas {
 		klog.V(4).Infof("Submarine %s database spec replicas: %d, actual replicas: %d", submarine.Name, *submarine.Spec.Database.Replicas, *deployment.Spec.Replicas)
-		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Update(context.TODO(), newSubmarineDatabaseDeployment(submarine, pvcName), metav1.UpdateOptions{})
+		deployment, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Update(context.TODO(), newSubmarineDatabaseDeployment(submarine), metav1.UpdateOptions{})
 	}
 
-	if deployment_err != nil {
-		return nil, deployment_err
+	if err != nil {
+		return nil, err
 	}
 
 	// Step4: Create Service
-	service, service_err := c.serviceLister.Services(namespace).Get(databaseName)
+	service, err := c.serviceLister.Services(submarine.Namespace).Get(databaseName)
 	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(service_err) {
-		service, service_err = c.kubeclientset.CoreV1().Services(namespace).Create(context.TODO(), newSubmarineDatabaseService(submarine), metav1.CreateOptions{})
-		if service_err != nil {
-			klog.Info(service_err)
+	if errors.IsNotFound(err) {
+		service, err = c.kubeclientset.CoreV1().Services(submarine.Namespace).Create(context.TODO(), newSubmarineDatabaseService(submarine), metav1.CreateOptions{})
+		if err != nil {
+			klog.Info(err)
 		}
 		klog.Info("	Create Service: ", service.Name)
 	}
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
-	if service_err != nil {
-		return nil, service_err
+	if err != nil {
+		return nil, err
 	}
 
 	if !metav1.IsControlledBy(service, submarine) {

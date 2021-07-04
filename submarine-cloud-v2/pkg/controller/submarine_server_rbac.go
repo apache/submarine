@@ -63,7 +63,7 @@ func newSubmarineServerClusterRole(submarine *v1alpha1.Submarine) *rbacv1.Cluste
 	}
 }
 
-func newSubmarineServerClusterRoleBinding(submarine *v1alpha1.Submarine, serviceaccount_namespace string) *rbacv1.ClusterRoleBinding {
+func newSubmarineServerClusterRoleBinding(submarine *v1alpha1.Submarine) *rbacv1.ClusterRoleBinding {
 	return &rbacv1.ClusterRoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: serverName,
@@ -74,7 +74,7 @@ func newSubmarineServerClusterRoleBinding(submarine *v1alpha1.Submarine, service
 		Subjects: []rbacv1.Subject{
 			{
 				Kind:      "ServiceAccount",
-				Namespace: serviceaccount_namespace,
+				Namespace: submarine.Namespace,
 				Name:      serverName,
 			},
 		},
@@ -88,22 +88,22 @@ func newSubmarineServerClusterRoleBinding(submarine *v1alpha1.Submarine, service
 
 // createSubmarineServerRBAC is a function to create RBAC for submarine-server.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/rbac.yaml
-func (c *Controller) createSubmarineServerRBAC(submarine *v1alpha1.Submarine, serviceaccount_namespace string) error {
+func (c *Controller) createSubmarineServerRBAC(submarine *v1alpha1.Submarine) error {
 	klog.Info("[createSubmarineServerRBAC]")
-	serverName := "submarine-server"
+
 	// Step1: Create ClusterRole
-	clusterrole, clusterrole_err := c.clusterroleLister.Get(serverName)
+	clusterrole, err := c.clusterroleLister.Get(serverName)
 	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(clusterrole_err) {
-		clusterrole, clusterrole_err = c.kubeclientset.RbacV1().ClusterRoles().Create(context.TODO(), newSubmarineServerClusterRole(submarine), metav1.CreateOptions{})
+	if errors.IsNotFound(err) {
+		clusterrole, err = c.kubeclientset.RbacV1().ClusterRoles().Create(context.TODO(), newSubmarineServerClusterRole(submarine), metav1.CreateOptions{})
 		klog.Info("	Create ClusterRole: ", clusterrole.Name)
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
-	if clusterrole_err != nil {
-		return clusterrole_err
+	if err != nil {
+		return err
 	}
 
 	if !metav1.IsControlledBy(clusterrole, submarine) {
@@ -115,7 +115,7 @@ func (c *Controller) createSubmarineServerRBAC(submarine *v1alpha1.Submarine, se
 	clusterrolebinding, clusterrolebinding_err := c.clusterrolebindingLister.Get(serverName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(clusterrolebinding_err) {
-		clusterrolebinding, clusterrolebinding_err = c.kubeclientset.RbacV1().ClusterRoleBindings().Create(context.TODO(), newSubmarineServerClusterRoleBinding(submarine, serviceaccount_namespace), metav1.CreateOptions{})
+		clusterrolebinding, clusterrolebinding_err = c.kubeclientset.RbacV1().ClusterRoleBindings().Create(context.TODO(), newSubmarineServerClusterRoleBinding(submarine), metav1.CreateOptions{})
 		klog.Info("	Create ClusterRoleBinding: ", clusterrolebinding.Name)
 	}
 
