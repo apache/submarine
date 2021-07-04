@@ -21,7 +21,7 @@ import (
 	"context"
 	"time"
 
-	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
+	clientset "github.com/apache/submarine/submarine-cloud-v2/pkg/client/clientset/versioned"
 
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"

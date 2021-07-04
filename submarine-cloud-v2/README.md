@@ -206,10 +206,6 @@ make image
 # Step2: Register Custom Resource Definition
 kubectl apply -f artifacts/examples/crd.yaml
 
-# Step3: Install go module
-cd ./test/e2e
-go mod tidy
-
-# Step4: Run test
-go test
+# Step3: Run Test
+go ./test/e2e
 ```

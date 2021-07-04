@@ -23,7 +23,7 @@ import (
 	"os"
 	"testing"
 
-	operatorFramework "submarine-cloud-v2/test/e2e/framework"
+	operatorFramework "github.com/apache/submarine/submarine-cloud-v2/test/e2e/framework"
 )
 
 var (

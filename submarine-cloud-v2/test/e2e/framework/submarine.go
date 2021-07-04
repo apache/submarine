@@ -20,8 +20,9 @@ package framework
 import (
 	"context"
 	"fmt"
-	clientset "submarine-cloud-v2/pkg/generated/clientset/versioned"
-	v1alpha1 "submarine-cloud-v2/pkg/submarine/v1alpha1"
+
+	v1alpha1 "github.com/apache/submarine/submarine-cloud-v2/pkg/apis/submarine/v1alpha1"
+	clientset "github.com/apache/submarine/submarine-cloud-v2/pkg/client/clientset/versioned"
 
 	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
