@@ -17,7 +17,7 @@
 curl -X POST -H "Content-Type: application/json" -d '
 {
   "meta": {
-    "name": "nn-pytorch-example-1",
+    "name": "nn-pytorch-example",
     "namespace": "default",
     "framework": "Tensorflow",
     "cmd": "python /opt/model.py",
