@@ -139,22 +139,22 @@ func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 
 // createSubmarineServer is a function to create submarine-server.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-server.yaml
-func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine, namespace string) (*appsv1.Deployment, error) {
+func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine) (*appsv1.Deployment, error) {
 	klog.Info("[createSubmarineServer]")
 
 	// Step1: Create ServiceAccount
-	serviceaccount, serviceaccount_err := c.serviceaccountLister.ServiceAccounts(namespace).Get(serverName)
+	serviceaccount, err := c.serviceaccountLister.ServiceAccounts(submarine.Namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(serviceaccount_err) {
-		serviceaccount, serviceaccount_err = c.kubeclientset.CoreV1().ServiceAccounts(namespace).Create(context.TODO(), newSubmarineServerServiceAccount(submarine), metav1.CreateOptions{})
+	if errors.IsNotFound(err) {
+		serviceaccount, err = c.kubeclientset.CoreV1().ServiceAccounts(submarine.Namespace).Create(context.TODO(), newSubmarineServerServiceAccount(submarine), metav1.CreateOptions{})
 		klog.Info("	Create ServiceAccount: ", serviceaccount.Name)
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
-	if serviceaccount_err != nil {
-		return nil, serviceaccount_err
+	if err != nil {
+		return nil, err
 	}
 
 	if !metav1.IsControlledBy(serviceaccount, submarine) {
@@ -164,18 +164,18 @@ func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine, namesp
 	}
 
 	// Step2: Create Service
-	service, service_err := c.serviceLister.Services(namespace).Get(serverName)
+	service, err := c.serviceLister.Services(submarine.Namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(service_err) {
-		service, service_err = c.kubeclientset.CoreV1().Services(namespace).Create(context.TODO(), newSubmarineServerService(submarine), metav1.CreateOptions{})
+	if errors.IsNotFound(err) {
+		service, err = c.kubeclientset.CoreV1().Services(submarine.Namespace).Create(context.TODO(), newSubmarineServerService(submarine), metav1.CreateOptions{})
 		klog.Info("	Create Service: ", service.Name)
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
-	if service_err != nil {
-		return nil, service_err
+	if err != nil {
+		return nil, err
 	}
 
 	if !metav1.IsControlledBy(service, submarine) {
@@ -185,18 +185,18 @@ func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine, namesp
 	}
 
 	// Step3: Create Deployment
-	deployment, deployment_err := c.deploymentLister.Deployments(namespace).Get(serverName)
+	deployment, err := c.deploymentLister.Deployments(submarine.Namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(deployment_err) {
-		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(namespace).Create(context.TODO(), newSubmarineServerDeployment(submarine), metav1.CreateOptions{})
+	if errors.IsNotFound(err) {
+		deployment, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Create(context.TODO(), newSubmarineServerDeployment(submarine), metav1.CreateOptions{})
 		klog.Info("	Create Deployment: ", deployment.Name)
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
-	if deployment_err != nil {
-		return nil, deployment_err
+	if err != nil {
+		return nil, err
 	}
 
 	if !metav1.IsControlledBy(deployment, submarine) {
@@ -208,11 +208,11 @@ func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine, namesp
 	// Update the replicas of the server deployment if it is not equal to spec
 	if submarine.Spec.Server.Replicas != nil && *submarine.Spec.Server.Replicas != *deployment.Spec.Replicas {
 		klog.V(4).Infof("Submarine %s server spec replicas: %d, actual replicas: %d", submarine.Name, *submarine.Spec.Server.Replicas, *deployment.Spec.Replicas)
-		deployment, deployment_err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Update(context.TODO(), newSubmarineServerDeployment(submarine), metav1.UpdateOptions{})
+		deployment, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Update(context.TODO(), newSubmarineServerDeployment(submarine), metav1.UpdateOptions{})
 	}
 
-	if deployment_err != nil {
-		return nil, deployment_err
+	if err != nil {
+		return nil, err
 	}
 
 	return deployment, nil

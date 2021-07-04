@@ -31,11 +31,11 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func newSubmarineServerIngress(submarine *v1alpha1.Submarine, namespace string) *extensionsv1beta1.Ingress {
+func newSubmarineServerIngress(submarine *v1alpha1.Submarine) *extensionsv1beta1.Ingress {
 	return &extensionsv1beta1.Ingress{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      serverName + "-ingress",
-			Namespace: namespace,
+			Name:      ingressName,
+			Namespace: submarine.Namespace,
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 			},
@@ -64,16 +64,15 @@ func newSubmarineServerIngress(submarine *v1alpha1.Submarine, namespace string) 
 
 // createIngress is a function to create Ingress.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-ingress.yaml
-func (c *Controller) createIngress(submarine *v1alpha1.Submarine, namespace string) error {
+func (c *Controller) createIngress(submarine *v1alpha1.Submarine) error {
 	klog.Info("[createIngress]")
-	serverName := "submarine-server"
 
 	// Step1: Create ServiceAccount
-	ingress, ingress_err := c.ingressLister.Ingresses(namespace).Get(serverName + "-ingress")
+	ingress, err := c.ingressLister.Ingresses(submarine.Namespace).Get(ingressName)
 	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(ingress_err) {
-		ingress, ingress_err = c.kubeclientset.ExtensionsV1beta1().Ingresses(namespace).Create(context.TODO(),
-			newSubmarineServerIngress(submarine, namespace),
+	if errors.IsNotFound(err) {
+		ingress, err = c.kubeclientset.ExtensionsV1beta1().Ingresses(submarine.Namespace).Create(context.TODO(),
+			newSubmarineServerIngress(submarine),
 			metav1.CreateOptions{})
 		klog.Info("	Create Ingress: ", ingress.Name)
 	}
@@ -81,8 +80,8 @@ func (c *Controller) createIngress(submarine *v1alpha1.Submarine, namespace stri
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
-	if ingress_err != nil {
-		return ingress_err
+	if err != nil {
+		return err
 	}
 
 	if !metav1.IsControlledBy(ingress, submarine) {

@@ -19,12 +19,13 @@ package main
 
 import (
 	"flag"
+	"os"
+	"time"
+
 	clientset "github.com/apache/submarine/submarine-cloud-v2/pkg/client/clientset/versioned"
 	informers "github.com/apache/submarine/submarine-cloud-v2/pkg/client/informers/externalversions"
 	"github.com/apache/submarine/submarine-cloud-v2/pkg/controller"
 	"github.com/apache/submarine/submarine-cloud-v2/pkg/signals"
-	"os"
-	"time"
 
 	kubeinformers "k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"

@@ -63,9 +63,23 @@ import (
 const controllerAgentName = "submarine-controller"
 
 const (
-	serverName   = "submarine-server"
-	databaseName = "submarine-database"
+	serverName                  = "submarine-server"
+	databaseName                = "submarine-database"
+	tensorboardName             = "submarine-tensorboard"
+	ingressName                 = serverName + "-ingress"
+	databasePvNamePrefix        = databaseName + "-pv"
+	databasePvcName             = databaseName + "-pvc"
+	tensorboardPvNamePrefix     = tensorboardName + "-pv"
+	tensorboardPvcName          = tensorboardName + "-pvc"
+	tensorboardServiceName      = tensorboardName + "-service"
+	tensorboardIngressRouteName = tensorboardName + "-ingressroute"
 )
+
+// PersistentVolumes are not namespaced resources, so we add the namespace as a
+// suffix to distinguish them
+func pvName(pvPrefix string, namespace string) string {
+	return pvPrefix + "--" + namespace
+}
 
 const (
 	// SuccessSynced is used as part of the Event 'reason' when a Submarine is synced
@@ -427,6 +441,12 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		b, err := json.MarshalIndent(submarine.Spec, "", "  ")
 		fmt.Println(string(b))
 
+		storageType := submarine.Spec.Storage.StorageType
+		if storageType != "nfs" && storageType != "host" {
+			utilruntime.HandleError(fmt.Errorf("Invalid storageType '%s' found in submarine spec, nothing will be created. Valid storage types are 'nfs' and 'host'", storageType))
+			return nil
+		}
+
 		var serverDeployment *appsv1.Deployment
 		var databaseDeployment *appsv1.Deployment
 
@@ -435,27 +455,27 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 			return err
 		}
 
-		serverDeployment, err = c.createSubmarineServer(submarine, namespace)
+		serverDeployment, err = c.createSubmarineServer(submarine)
 		if err != nil {
 			return err
 		}
 
-		databaseDeployment, err = c.createSubmarineDatabase(submarine, namespace)
+		databaseDeployment, err = c.createSubmarineDatabase(submarine)
 		if err != nil {
 			return err
 		}
 
-		err = c.createIngress(submarine, namespace)
+		err = c.createIngress(submarine)
 		if err != nil {
 			return err
 		}
 
-		err = c.createSubmarineServerRBAC(submarine, namespace)
+		err = c.createSubmarineServerRBAC(submarine)
 		if err != nil {
 			return err
 		}
 
-		err = c.createSubmarineTensorboard(submarine, namespace, &submarine.Spec)
+		err = c.createSubmarineTensorboard(submarine)
 		if err != nil {
 			return err
 		}
