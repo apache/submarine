@@ -6,7 +6,9 @@ require (
 	github.com/fatih/color v1.7.0
 	github.com/gofrs/flock v0.8.0
 	github.com/pkg/errors v0.9.1
+	github.com/stretchr/testify v1.7.0
 	github.com/traefik/traefik/v2 v2.4.8
+	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	gopkg.in/yaml.v2 v2.4.0
 	helm.sh/helm/v3 v3.5.3
 	k8s.io/api v0.20.4
