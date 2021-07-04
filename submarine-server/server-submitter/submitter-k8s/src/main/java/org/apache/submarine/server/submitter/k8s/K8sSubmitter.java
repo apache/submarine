@@ -688,5 +688,5 @@ public class K8sSubmitter implements Submitter {
   private enum ParseOp {
     PARSE_OP_RESULT,
     PARSE_OP_DELETE
-  
+  }
 }

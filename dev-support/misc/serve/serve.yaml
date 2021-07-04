@@ -46,7 +46,6 @@ spec:
           httpGet:
             path: /ping # from mlflow scoring_server
             port: 5000
-
 ---
 apiVersion: v1
 kind: Service
@@ -79,8 +78,8 @@ spec:
       port: 5000
 ---
 # strip the prefix
-# e.g. Make a HTTP POST: localhost:32080/serve/invocations
-#      The serve pod (with ingressroute `/serve`) receives path "/serve/invocations"
+# e.g. Make a HTTP POST: localhost:32080/serve/mymodel/invocations
+#      The serve pod (with ingressroute `/serve/mymodel/`) receives path "/serve/mymodel/invocations"
 #      We should strip the prefix and make it become "/invocations"
 apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware

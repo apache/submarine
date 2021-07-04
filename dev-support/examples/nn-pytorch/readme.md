@@ -45,7 +45,7 @@ This is an easy example of saving a pytorch linear model to model registry.
   }
   ```
 
-3. Send data to be inferenced
+3. Send data to inference
 - Request
   ```
   curl -d '{"data":[[-1, -1]]}' -H 'Content-Type: application/json; format=pandas-split' -X POST http://127.0.0.1:32080/serve/simple-nn-model-1/invocations
