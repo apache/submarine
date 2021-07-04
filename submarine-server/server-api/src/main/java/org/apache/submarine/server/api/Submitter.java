@@ -25,6 +25,8 @@ import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
+import org.apache.submarine.server.api.experiment.ServeRequest;
+import org.apache.submarine.server.api.experiment.ServeResponse;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
@@ -121,6 +123,23 @@ public interface Submitter {
    * @throws SubmarineRuntimeException running error
    */
   List<Notebook> listNotebook(String id) throws SubmarineRuntimeException;
+
+  /**
+   * Create Serve with spec
+   * @param ServeRequest
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  ServeResponse createServe(ServeRequest spec) throws SubmarineRuntimeException;
+
+
+  /**
+   * Delete Serve with spec
+   * @param ServeRequest
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  ServeResponse deleteServe(ServeRequest spec) throws SubmarineRuntimeException;
 
   /**
    * Get tensorboard meta data
