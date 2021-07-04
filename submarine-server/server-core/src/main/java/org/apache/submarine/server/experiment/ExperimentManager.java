@@ -299,6 +299,7 @@ public class ExperimentManager {
    * @throws SubmarineRuntimeException the service error
    */
   public ServeResponse createServe(ServeRequest spec) throws SubmarineRuntimeException {
+    // TODO(byronhsu): use mlflow api to make sure the model exists. Otherwise, raise exception.
     ServeResponse serve = submitter.createServe(spec);
     return serve;
   }
