@@ -25,7 +25,11 @@ import java.util.Map;
  * ExperimentMeta is metadata that all experiments must have.
  */
 public class ExperimentMeta {
+
+  public static final String SUBMARINE_EXPERIMENT_NAME = "submarine-experiment-name";
+
   private String name;
+  private String podName;
   private String namespace;
   private String framework;
   private String cmd;
@@ -49,6 +53,22 @@ public class ExperimentMeta {
    */
   public void setName(String name) {
     this.name = name;
+  }
+
+  /**
+   * Get the pod name which is unique within a namespace.
+   * @return pod name
+   */
+  public String getPodName() {
+    return podName;
+  }
+
+  /**
+   * POD Name must be unique within a namespace. Is required when creating experiment.
+   * @param name pod name
+   */
+  public void setPodName(String podName) {
+    this.podName = podName;
   }
 
   /**

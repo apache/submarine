@@ -28,8 +28,11 @@ import io.kubernetes.client.models.V1JobStatus;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.models.V1StatusDetails;
 import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.joda.time.DateTime;
+
+import java.util.Map;
 
 /**
  * Converter for different types.
@@ -39,8 +42,8 @@ public class MLJobConverter {
   public static Experiment toJobFromMLJob(MLJob mlJob) {
     Experiment experiment = new Experiment();
     experiment.setUid(mlJob.getMetadata().getUid());
-    experiment.setName(mlJob.getMetadata().getName());
-
+    Map<String, String> labels = mlJob.getMetadata().getLabels();
+    experiment.setName(labels.get(ExperimentMeta.SUBMARINE_EXPERIMENT_NAME));
     DateTime dateTime = mlJob.getMetadata().getCreationTimestamp();
     if (dateTime != null) {
       experiment.setAcceptedTime(dateTime.toString());
