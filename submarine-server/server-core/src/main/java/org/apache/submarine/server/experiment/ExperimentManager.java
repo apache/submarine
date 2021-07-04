@@ -40,6 +40,8 @@ import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
+import org.apache.submarine.server.api.experiment.ServeRequest;
+import org.apache.submarine.server.api.experiment.ServeResponse;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.experiment.database.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.ExperimentService;
@@ -126,14 +128,30 @@ public class ExperimentManager {
     return experiment;
   }
 
-  // public Serve createServe(String modelUrl) throws SubmarineRuntimeException {
-  //   // submitter createServe
-  //   // 1. create deployment
-  //   // 2. create service
-  //   // 3. create ingressroute and middleware
+  /**
+   * Create serve
+   *
+   * @param spec spec
+   * @return object
+   * @throws SubmarineRuntimeException the service error
+   */
+  public ServeResponse createServe(ServeRequest spec) throws SubmarineRuntimeException {
+    ServeResponse serve = submitter.createServe(spec);
+    return serve;
+  }
 
-  //   // return serving url
-  // }
+  /**
+   * Delete serve
+   *
+   * @param spec spec
+   * @return object
+   * @throws SubmarineRuntimeException the service error
+   */
+  public ServeResponse deleteServe(ServeRequest spec) throws SubmarineRuntimeException {
+    ServeResponse serve = submitter.deleteServe(spec);
+    return serve;
+  }
+
   /**
    * Get experiment
    *

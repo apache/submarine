@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.api.experiment;
 
-public class Serve {
+public class ServeResponse {
   public String url;
 
   public String getUrl() {
@@ -30,10 +30,8 @@ public class Serve {
     this.url = url;
   }
 
-  public Serve url(String url) {
+  public ServeResponse url(String url) {
     setUrl(url);
     return this;
   }
-
-
 }

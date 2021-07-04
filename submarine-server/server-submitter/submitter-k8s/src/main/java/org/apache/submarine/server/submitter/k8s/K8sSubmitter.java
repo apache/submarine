@@ -56,7 +56,8 @@ import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
-import org.apache.submarine.server.api.experiment.Serve;
+import org.apache.submarine.server.api.experiment.ServeRequest;
+import org.apache.submarine.server.api.experiment.ServeResponse;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
@@ -470,14 +471,18 @@ public class K8sSubmitter implements Submitter {
   }
 
   @Override
-  public Serve createServe(String modelName, String modelVersion, String namespace) 
+  public ServeResponse createServe(ServeRequest spec) 
       throws SubmarineRuntimeException {
+    String modelName = spec.getModelName();
+    String modelVersion = spec.getModelVersion();
+    String namespace = spec.getNamespace();
+
     ServeSpecParser parser = new ServeSpecParser(modelName, modelVersion, namespace);
     V1Deployment deployment = parser.getDeployment();
     V1Service svc = parser.getService();
     IngressRoute ingressRoute = parser.getIngressRoute();
     Middlewares middleware = parser.getMiddlewares();
-    Serve serveInfo = new Serve().url(parser.getRoutePath());
+    ServeResponse serveInfo = new ServeResponse().url(parser.getRoutePath());
 
     try {
       appsV1Api.createNamespacedDeployment(namespace, deployment, "true", null, null);
@@ -499,12 +504,16 @@ public class K8sSubmitter implements Submitter {
   }
 
   @Override
-  public Serve deleteServe(String modelName, String modelVersion, String namespace) 
+  public ServeResponse deleteServe(ServeRequest spec) 
       throws SubmarineRuntimeException {
+    String modelName = spec.getModelName();
+    String modelVersion = spec.getModelVersion();
+    String namespace = spec.getNamespace();
+
     ServeSpecParser parser = new ServeSpecParser(modelName, modelVersion, namespace);
     IngressRoute ingressRoute = parser.getIngressRoute();
     Middlewares middleware = parser.getMiddlewares();
-    Serve serveInfo = new Serve().url(parser.getRoutePath());
+    ServeResponse serveInfo = new ServeResponse().url(parser.getRoutePath());
 
     try {
       appsV1Api.deleteNamespacedDeployment(parser.getGeneralName(), namespace, "true",
