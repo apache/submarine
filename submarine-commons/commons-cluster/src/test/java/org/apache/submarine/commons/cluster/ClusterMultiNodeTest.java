@@ -154,6 +154,7 @@ public class ClusterMultiNodeTest {
     return true;
   }
 
+  @Ignore
   @Test
   public void testClusterServerMeta() {
     LOG.info("ClusterMultiNodeTest::testClusterServerMeta >>>");
@@ -169,6 +170,7 @@ public class ClusterMultiNodeTest {
     LOG.info("ClusterMultiNodeTest::testClusterServerMeta <<<");
   }
 
+  @Ignore
   @Test
   public void testClusterClientMeta() {
     LOG.info("ClusterMultiNodeTest::testClusterClientMeta >>>");
