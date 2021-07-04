@@ -24,6 +24,7 @@ import org.apache.submarine.commons.utils.NetworkUtils;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +107,7 @@ public class InterpreterClusterTest {
     LOG.info("stopCluster");
   }
 
+  @Ignore
   @Test
   public void testInterpreterProcess() throws IOException, InterruptedException {
     InterpreterProcess interpreterProcess = new InterpreterProcess("python", "testInterpreterProcess", false);
