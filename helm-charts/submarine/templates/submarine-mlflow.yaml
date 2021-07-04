@@ -72,6 +72,11 @@ spec:
           - mountPath: "/logs"
             name: "volume"
             subPath: "submarine-mlflow"
+        readinessProbe:
+          tcpSocket:
+            port: 5000
+          initialDelaySeconds: 60
+          periodSeconds: 10
       volumes:
         - name: "volume"
           persistentVolumeClaim:
