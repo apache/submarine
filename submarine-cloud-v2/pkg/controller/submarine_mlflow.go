@@ -168,6 +168,7 @@ func newSubmarineMlflowService(submarine *v1alpha1.Submarine) *corev1.Service {
 			},
 		},
 		Spec: corev1.ServiceSpec{
+			Type: corev1.ServiceTypeClusterIP,
 			Selector: map[string]string{
 				"app": mlflowName + "-pod",
 			},
