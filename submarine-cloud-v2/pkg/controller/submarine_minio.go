@@ -34,7 +34,7 @@ import (
 	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 )
 
-func newSubmarineTensorboardPersistentVolume(submarine *v1alpha1.Submarine) *corev1.PersistentVolume {
+func newSubmarineMinioPersistentVolume(submarine *v1alpha1.Submarine) *corev1.PersistentVolume {
 	var persistentVolumeSource corev1.PersistentVolumeSource
 	switch submarine.Spec.Storage.StorageType {
 	case "nfs":
@@ -55,7 +55,7 @@ func newSubmarineTensorboardPersistentVolume(submarine *v1alpha1.Submarine) *cor
 	}
 	return &corev1.PersistentVolume{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: pvName(tensorboardPvNamePrefix, submarine.Namespace),
+			Name: pvName(minioPvNamePrefix, submarine.Namespace),
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 			},
@@ -65,18 +65,18 @@ func newSubmarineTensorboardPersistentVolume(submarine *v1alpha1.Submarine) *cor
 				corev1.ReadWriteMany,
 			},
 			Capacity: corev1.ResourceList{
-				corev1.ResourceStorage: resource.MustParse(submarine.Spec.Tensorboard.StorageSize),
+				corev1.ResourceStorage: resource.MustParse(submarine.Spec.Minio.StorageSize),
 			},
 			PersistentVolumeSource: persistentVolumeSource,
 		},
 	}
 }
 
-func newSubmarineTensorboardPersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
+func newSubmarineMinioPersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
 	storageClassName := ""
 	return &corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: tensorboardPvcName,
+			Name: minioPvcName,
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 			},
@@ -87,19 +87,19 @@ func newSubmarineTensorboardPersistentVolumeClaim(submarine *v1alpha1.Submarine)
 			},
 			Resources: corev1.ResourceRequirements{
 				Requests: corev1.ResourceList{
-					corev1.ResourceStorage: resource.MustParse(submarine.Spec.Tensorboard.StorageSize),
+					corev1.ResourceStorage: resource.MustParse(submarine.Spec.Minio.StorageSize),
 				},
 			},
-			VolumeName:       pvName(tensorboardPvNamePrefix, submarine.Namespace),
+			VolumeName:       pvName(minioPvNamePrefix, submarine.Namespace),
 			StorageClassName: &storageClassName,
 		},
 	}
 }
 
-func newSubmarineTensorboardDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployment {
+func newSubmarineMinioDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployment {
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: tensorboardName,
+			Name: minioName,
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 			},
@@ -107,45 +107,47 @@ func newSubmarineTensorboardDeployment(submarine *v1alpha1.Submarine) *appsv1.De
 		Spec: appsv1.DeploymentSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app": tensorboardName + "-pod",
+					"app": minioName + "-pod",
 				},
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app": tensorboardName + "-pod",
+						"app": minioName + "-pod",
 					},
 				},
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Name:  tensorboardName + "-container",
-							Image: "tensorflow/tensorflow:1.11.0",
-							Command: []string{
-								"tensorboard",
-								"--logdir=/logs",
-								"--path_prefix=/tensorboard",
-							},
+							Name:            minioName + "-container",
+							Image:           "minio/minio:latest",
 							ImagePullPolicy: "IfNotPresent",
+							Args: []string{
+								"server",
+								"/data",
+							},
+							Env: []corev1.EnvVar{
+								{
+									Name:  "MINIO_ACCESS_KEY",
+									Value: "submarine_minio",
+								},
+								{
+									Name:  "MINIO_SECRET_KEY",
+									Value: "submarine_minio",
+								},
+							},
+							// TODO env
 							Ports: []corev1.ContainerPort{
 								{
-									ContainerPort: 6006,
+									ContainerPort: 9000,
 								},
 							},
 							VolumeMounts: []corev1.VolumeMount{
 								{
-									MountPath: "/logs",
+									MountPath: "/data",
 									Name:      "volume",
-									SubPath:   tensorboardName,
+									SubPath:   minioName,
 								},
-							},
-							ReadinessProbe: &corev1.Probe{
-								Handler: corev1.Handler{
-									TCPSocket: &corev1.TCPSocketAction{
-										Port: intstr.FromInt(6006),
-									},
-								},
-								PeriodSeconds: 10,
 							},
 						},
 					},
@@ -154,7 +156,7 @@ func newSubmarineTensorboardDeployment(submarine *v1alpha1.Submarine) *appsv1.De
 							Name: "volume",
 							VolumeSource: corev1.VolumeSource{
 								PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-									ClaimName: tensorboardPvcName,
+									ClaimName: minioPvcName,
 								},
 							},
 						},
@@ -165,33 +167,34 @@ func newSubmarineTensorboardDeployment(submarine *v1alpha1.Submarine) *appsv1.De
 	}
 }
 
-func newSubmarineTensorboardService(submarine *v1alpha1.Submarine) *corev1.Service {
+func newSubmarineMinioService(submarine *v1alpha1.Submarine) *corev1.Service {
 	return &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: tensorboardServiceName,
+			Name: minioServiceName,
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 			},
 		},
 		Spec: corev1.ServiceSpec{
+			Type: corev1.ServiceTypeClusterIP,
 			Selector: map[string]string{
-				"app": tensorboardName + "-pod",
+				"app": minioName + "-pod",
 			},
 			Ports: []corev1.ServicePort{
 				{
 					Protocol:   "TCP",
-					Port:       8080,
-					TargetPort: intstr.FromInt(6006),
+					Port:       9000,
+					TargetPort: intstr.FromInt(9000),
 				},
 			},
 		},
 	}
 }
 
-func newSubmarineTensorboardIngressRoute(submarine *v1alpha1.Submarine) *traefikv1alpha1.IngressRoute {
+func newSubmarineMinioIngressRoute(submarine *v1alpha1.Submarine) *traefikv1alpha1.IngressRoute {
 	return &traefikv1alpha1.IngressRoute{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: tensorboardName + "-ingressroute",
+			Name: minioIngressRouteName,
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 			},
@@ -203,13 +206,13 @@ func newSubmarineTensorboardIngressRoute(submarine *v1alpha1.Submarine) *traefik
 			Routes: []traefikv1alpha1.Route{
 				{
 					Kind:  "Rule",
-					Match: "PathPrefix(`/tensorboard`)",
+					Match: "PathPrefix(`/minio`)",
 					Services: []traefikv1alpha1.Service{
 						{
 							LoadBalancerSpec: traefikv1alpha1.LoadBalancerSpec{
 								Kind: "Service",
-								Name: tensorboardServiceName,
-								Port: 8080,
+								Name: minioServiceName,
+								Port: 9000,
 							},
 						},
 					},
@@ -219,23 +222,23 @@ func newSubmarineTensorboardIngressRoute(submarine *v1alpha1.Submarine) *traefik
 	}
 }
 
-// createSubmarineTensorboard is a function to create submarine-tensorboard.
-// Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-tensorboard.yaml
-func (c *Controller) createSubmarineTensorboard(submarine *v1alpha1.Submarine) error {
-	klog.Info("[createSubmarineTensorboard]")
+// createSubmarineMinio is a function to create submarine-minio.
+// Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-minio.yaml
+func (c *Controller) createSubmarineMinio(submarine *v1alpha1.Submarine) error {
+	klog.Info("[createSubmarineMinio]")
 
 	// Step 1: Create PersistentVolume
 	// PersistentVolumes are not namespaced resources, so we add the namespace
 	// as a suffix to distinguish them
-	pv, err := c.persistentvolumeLister.Get(pvName(tensorboardPvNamePrefix, submarine.Namespace))
+	pv, err := c.persistentvolumeLister.Get(pvName(minioPvNamePrefix, submarine.Namespace))
 
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
-		pv, err = c.kubeclientset.CoreV1().PersistentVolumes().Create(context.TODO(), newSubmarineTensorboardPersistentVolume(submarine), metav1.CreateOptions{})
+		pv, err = c.kubeclientset.CoreV1().PersistentVolumes().Create(context.TODO(), newSubmarineMinioPersistentVolume(submarine), metav1.CreateOptions{})
 		if err != nil {
 			klog.Info(err)
 		}
-		klog.Info("	Create PersistentVolume: ", pv.Name)
+		klog.Info(" Create PersistentVolume: ", pv.Name)
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
@@ -252,16 +255,16 @@ func (c *Controller) createSubmarineTensorboard(submarine *v1alpha1.Submarine) e
 	}
 
 	// Step 2: Create PersistentVolumeClaim
-	pvc, err := c.persistentvolumeclaimLister.PersistentVolumeClaims(submarine.Namespace).Get(tensorboardPvcName)
+	pvc, err := c.persistentvolumeclaimLister.PersistentVolumeClaims(submarine.Namespace).Get(minioPvcName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
 		pvc, err = c.kubeclientset.CoreV1().PersistentVolumeClaims(submarine.Namespace).Create(context.TODO(),
-			newSubmarineTensorboardPersistentVolumeClaim(submarine),
+			newSubmarineMinioPersistentVolumeClaim(submarine),
 			metav1.CreateOptions{})
 		if err != nil {
 			klog.Info(err)
 		}
-		klog.Info("	Create PersistentVolumeClaim: ", pvc.Name)
+		klog.Info(" Create PersistentVolumeClaim: ", pvc.Name)
 	}
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
@@ -277,13 +280,13 @@ func (c *Controller) createSubmarineTensorboard(submarine *v1alpha1.Submarine) e
 	}
 
 	// Step 3: Create Deployment
-	deployment, err := c.deploymentLister.Deployments(submarine.Namespace).Get(tensorboardName)
+	deployment, err := c.deploymentLister.Deployments(submarine.Namespace).Get(minioName)
 	if errors.IsNotFound(err) {
-		deployment, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Create(context.TODO(), newSubmarineTensorboardDeployment(submarine), metav1.CreateOptions{})
+		deployment, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Create(context.TODO(), newSubmarineMinioDeployment(submarine), metav1.CreateOptions{})
 		if err != nil {
 			klog.Info(err)
 		}
-		klog.Info("	Create Deployment: ", deployment.Name)
+		klog.Info(" Create Deployment: ", deployment.Name)
 	}
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
@@ -299,10 +302,10 @@ func (c *Controller) createSubmarineTensorboard(submarine *v1alpha1.Submarine) e
 	}
 
 	// Step 4: Create Service
-	service, err := c.serviceLister.Services(submarine.Namespace).Get(tensorboardServiceName)
+	service, err := c.serviceLister.Services(submarine.Namespace).Get(minioServiceName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
-		service, err = c.kubeclientset.CoreV1().Services(submarine.Namespace).Create(context.TODO(), newSubmarineTensorboardService(submarine), metav1.CreateOptions{})
+		service, err = c.kubeclientset.CoreV1().Services(submarine.Namespace).Create(context.TODO(), newSubmarineMinioService(submarine), metav1.CreateOptions{})
 		if err != nil {
 			klog.Info(err)
 		}
@@ -322,10 +325,10 @@ func (c *Controller) createSubmarineTensorboard(submarine *v1alpha1.Submarine) e
 	}
 
 	// Step 5: Create IngressRoute
-	ingressroute, err := c.ingressrouteLister.IngressRoutes(submarine.Namespace).Get(tensorboardIngressRouteName)
+	ingressroute, err := c.ingressrouteLister.IngressRoutes(submarine.Namespace).Get(minioIngressRouteName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
-		ingressroute, err = c.traefikclientset.TraefikV1alpha1().IngressRoutes(submarine.Namespace).Create(context.TODO(), newSubmarineTensorboardIngressRoute(submarine), metav1.CreateOptions{})
+		ingressroute, err = c.traefikclientset.TraefikV1alpha1().IngressRoutes(submarine.Namespace).Create(context.TODO(), newSubmarineMinioIngressRoute(submarine), metav1.CreateOptions{})
 		if err != nil {
 			klog.Info(err)
 		}

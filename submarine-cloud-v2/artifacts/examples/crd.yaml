@@ -72,6 +72,13 @@ spec:
                   type: boolean
                 storageSize:
                   type: string
+            minio:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                storageSize:
+                  type: string
             storage:
               type: object
               properties:
