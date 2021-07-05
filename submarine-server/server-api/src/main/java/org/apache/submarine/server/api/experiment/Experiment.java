@@ -27,7 +27,6 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 public class Experiment {
   private ExperimentId experimentId;
   private String name;
-  private String expName;
   private String uid;
   private String status;
   private String acceptedTime;
@@ -66,22 +65,6 @@ public class Experiment {
    */
   public void setName(String name) {
     this.name = name;
-  }
-
-  /**
-   * Get the exp name which specified by user through the JobSpec
-   * @return the exp name
-   */
-  public String getExpName() {
-    return expName;
-  }
-
-  /**
-   * Set the exp name which specified by user
-   * @param name exp name
-   */
-  public void setExpName(String expName) {
-    this.expName = expName;
   }
 
   /**

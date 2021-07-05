@@ -124,7 +124,6 @@ public class ExperimentManager {
 
     experiment.setSpec(spec);
     ExperimentEntity entity = buildEntityFromExperiment(experiment);
-    LOG.info(entity.getExperimentSpec());
     experimentService.insert(entity);
 
     return experiment;

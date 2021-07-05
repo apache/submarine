@@ -82,7 +82,6 @@ export class ExperimentHomeComponent implements OnInit {
         this.experimentList = list;
         const currentTime = new Date();
         this.experimentList.forEach((item) => {
-          console.log(item);
           if (item.status === 'Succeeded') {
             const finTime = new Date(item.finishedTime);
             const runTime = new Date(item.runningTime);
