@@ -54,6 +54,11 @@ type SubmarineMlflow struct {
 	StorageSize string `json:"storageSize"`
 }
 
+type SubmarineMinio struct {
+	Enabled		*bool  `json:"enabled"`
+	StorageSize string `json:"storageSize"`
+}
+
 type SubmarineStorage struct {
 	StorageType string `json:"storageType"`
 	HostPath    string `json:"hostPath"`
@@ -68,6 +73,7 @@ type SubmarineSpec struct {
 	Database    *SubmarineDatabase    `json:"database"`
 	Tensorboard *SubmarineTensorboard `json:"tensorboard"`
 	Mlflow      *SubmarineMlflow      `json:"mlflow"`
+	Minio		*SubmarineMinio	      `json:"minio"`
 	Storage     *SubmarineStorage     `json:"storage"`
 }
 
