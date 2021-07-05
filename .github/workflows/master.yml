@@ -6,6 +6,19 @@ env:
   VERSION: "0.6.0-SNAPSHOT"
   HADOOP_VERSION: "2.9"
   PROFILE: "-Phadoop-2.9"
+  BUILD_FLAG: "clean install -ntp -DskipTests"
+  TEST_FLAG: "test -DskipRat -ntp -am"
+  EXCLUDE_SERVER: "!:submarine-server-api,!:submarine-server-core,!:submarine-server-rpc"
+  EXCLUDE_CLIENT: "!:submarine-client"
+  EXCLUDE_ALL: "!:submarine-all"
+  EXCLUDE_WORKBENCH: "!:submarine-workbench,!:submarine-workbench-web"
+  EXCLUDE_SUBMITTER_K8S: "!:submarine-submitter-k8s"
+  EXCLUDE_SUBMITTER: "!:submarine-server-submitter,!:submarine-submitter-k8s,!:submarine-submitter-yarn"
+  EXCLUDE_COMMONS: "!:submarine-commons-cluster,!:submarine-commons-metastore,!:submarine-commons-rpc,!:submarine-commons-runtime,!:submarine-commons-utils"
+  EXCLUDE_CLOUD: "!:submarine-cloud"
+  EXCLUDE_DIST: "!:submarine-dist"
+  EXCLUDE_TEST: "!:submarine-test,!:submarine-test-e2e,!:submarine-test-k8s"
+  EXCLUDE_SPARK_SECURTITY: "!:submarine-spark-security"
 
 jobs:
   build:
@@ -161,6 +174,328 @@ jobs:
           kubectl -n default get events --sort-by='{.lastTimestamp}'
           kubectl describe nodes
         if: ${{ failure() }}
+  submarine-commons-cluster:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl org.apache.submarine:submarine-commons-cluster"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-commons-metastore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: "password"
+        ports:
+        - 3306:3306
+        # wait until mysql is health
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 10s --health-retries 10
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Prepate default mysql-data
+      run: |
+        python3 -V
+        pip install mysql-connector-python
+        python3 ./dev-support/database/init-database.py
+    - name: Build
+      env:
+        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl org.apache.submarine:submarine-commons-metastore"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-commons-rpc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl org.apache.submarine:submarine-commons-rpc"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-commons-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl org.apache.submarine:submarine-commons-runtime"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-commons-unixusersync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl org.apache.submarine:submarine-commons-unixusersync"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-server:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: "password"
+        ports:
+        - 3306:3306
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 10s --health-retries 10
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Set up Chrome latest
+      uses: browser-actions/setup-chrome@latest
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Prepate default mysql-data
+      run: |
+        python3 -V
+        sudo apt-get install python3-mysql.connector
+        python3 ./dev-support/database/init-database.py
+    - name: Build
+      env:
+        MODULES: "-pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl ${{env.EXCLUDE_COMMONS}},org.apache.submarine:submarine-server-core"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-workbench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Use Node.js 14
+      uses: actions/setup-node@v2
+      with:
+        node-version: 14.x
+    - name: Check version
+      run: |
+        mvn --version
+        node --version
+        npm --version
+    - name: Maven Build
+      env:
+        MODULES: "-pl org.apache.submarine:submarine-workbench-web"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES -B"
+        mvn $BUILD_FLAG $MODULES -B
+    - name: NPM install
+      working-directory: ./submarine-workbench/workbench-web
+      run: |
+        npm install
+    - name: Test with chrome
+      working-directory: ./submarine-workbench/workbench-web
+      run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+    - name: Test with firefox
+      working-directory: ./submarine-workbench/workbench-web
+      run: npm run test -- --no-watch --no-progress --browsers=FirefoxHeadless
+  submarine-submitter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        hadoop-version: ["2.9", "2.10", "3.1", "3.2"]
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_DIST}}"
+        PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: -pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_SPARK_SECURTITY}}
+        PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        spark-version: ["2.3", "2.4", "3.0"]
+        range-version: ["1.2", "2.0"]
+        exclude:
+        - spark-version: "2.3"
+          range-version: "1.2"
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build and Test
+      env:
+        BUILD_FLAG: "clean install -Dmaven.javadoc.skip=true -ntp"
+        MODULES: "-pl :submarine-spark-security"
+        PROFILE: "-Pspark-${{matrix.spark-version}} -Pranger-${{matrix.range-version}}"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
   rat:
     name: Check License
     runs-on: ubuntu-latest
