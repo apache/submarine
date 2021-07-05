@@ -29,7 +29,7 @@ public class ExperimentMeta {
   public static final String SUBMARINE_EXPERIMENT_NAME = "submarine-experiment-name";
 
   private String name;
-  private String podName;
+  private String expName;
   private String namespace;
   private String framework;
   private String cmd;
@@ -56,19 +56,19 @@ public class ExperimentMeta {
   }
 
   /**
-   * Get the pod name which is unique within a namespace.
-   * @return pod name
+   * Get the exp name which is unique within a namespace.
+   * @return exp name
    */
-  public String getPodName() {
-    return podName;
+  public String getExpName() {
+    return expName;
   }
 
   /**
-   * POD Name must be unique within a namespace. Is required when creating experiment.
-   * @param name pod name
+   * Exp Name must be unique within a namespace. Is required when creating experiment.
+   * @param name exp name
    */
-  public void setPodName(String podName) {
-    this.podName = podName;
+  public void setExpName(String expName) {
+    this.expName = expName;
   }
 
   /**

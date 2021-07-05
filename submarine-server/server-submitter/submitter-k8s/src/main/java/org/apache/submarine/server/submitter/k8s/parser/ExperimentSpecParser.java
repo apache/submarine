@@ -121,9 +121,9 @@ public class ExperimentSpecParser {
 
   private static V1ObjectMeta parseMetadata(ExperimentSpec experimentSpec) {
     V1ObjectMeta meta = new V1ObjectMeta();
-    meta.setName(experimentSpec.getMeta().getPodName());
+    meta.setName(experimentSpec.getMeta().getName());
     Map<String, String> labels = new HashMap<>();
-    labels.put(ExperimentMeta.SUBMARINE_EXPERIMENT_NAME, experimentSpec.getMeta().getName());
+    labels.put(ExperimentMeta.SUBMARINE_EXPERIMENT_NAME, experimentSpec.getMeta().getExpName());
     meta.setLabels(labels);
     meta.setNamespace(experimentSpec.getMeta().getNamespace());
     return meta;

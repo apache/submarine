@@ -52,6 +52,7 @@ export class ExperimentService {
     return this.httpClient.get<Rest<ExperimentInfo[]>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
+          console.log(res);
           return of(res.result);
         } else {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');

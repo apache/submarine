@@ -113,7 +113,7 @@ public class ExperimentManager {
     String podName = lowerName.concat("-").concat(expCounter);
     // spec.getMeta().setName(lowerName);
     spec.getMeta().setName(podName);
-    spec.getMeta().setPodName(podName);
+    spec.getMeta().setExpName(lowerName);
 
     Experiment experiment = submitter.createExperiment(spec);
     experiment.setExperimentId(id);
@@ -124,6 +124,7 @@ public class ExperimentManager {
 
     experiment.setSpec(spec);
     ExperimentEntity entity = buildEntityFromExperiment(experiment);
+    LOG.info(entity.getExperimentSpec());
     experimentService.insert(entity);
 
     return experiment;
