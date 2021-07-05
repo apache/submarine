@@ -51,18 +51,18 @@ func newSubmarineMlflowPersistentVolume(submarine *v1alpha1.Submarine) *corev1.P
 			},
 		}
 	}
-	return &corev1.PersistentVolume {
+	return &corev1.PersistentVolume{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: pvName(mlflowPvNamePrefix, submarine.Namespace),
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 			},
 		},
-		Spec: corev1.PersistentVolumeSpec {
-			AccessModes: []corev1.PersistentVolumeAccessMode {
+		Spec: corev1.PersistentVolumeSpec{
+			AccessModes: []corev1.PersistentVolumeAccessMode{
 				corev1.ReadWriteMany,
 			},
-			Capacity: corev1.ResourceList {
+			Capacity: corev1.ResourceList{
 				corev1.ResourceStorage: resource.MustParse(submarine.Spec.Mlflow.StorageSize),
 			},
 			PersistentVolumeSource: persistentVolumeSource,
@@ -117,8 +117,8 @@ func newSubmarineMlflowDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 				Spec: corev1.PodSpec{
 					Containers: []corev1.Container{
 						{
-							Name:  mlflowName + "-container",
-							Image: "apache/submarine:mlflow-0.6.0-SNAPSHOT",
+							Name:            mlflowName + "-container",
+							Image:           "apache/submarine:mlflow-0.6.0-SNAPSHOT",
 							ImagePullPolicy: "IfNotPresent",
 							Ports: []corev1.ContainerPort{
 								{
@@ -133,13 +133,13 @@ func newSubmarineMlflowDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 								},
 							},
 							ReadinessProbe: &corev1.Probe{
-								Handler: corev1.Handler {
-									TCPSocket: &corev1.TCPSocketAction {
+								Handler: corev1.Handler{
+									TCPSocket: &corev1.TCPSocketAction{
 										Port: intstr.FromInt(5000),
 									},
 								},
 								InitialDelaySeconds: 60,
-								PeriodSeconds: 10,
+								PeriodSeconds:       10,
 							},
 						},
 					},
@@ -245,7 +245,6 @@ func (c *Controller) createSubmarineMlflow(submarine *v1alpha1.Submarine) error 
 		return fmt.Errorf(msg)
 	}
 
-
 	// Step 2: Create PersistentVolumeClaim
 	pvc, err := c.persistentvolumeclaimLister.PersistentVolumeClaims(submarine.Namespace).Get(mlflowPvcName)
 	// If the resource doesn't exist, we'll create it
@@ -270,7 +269,6 @@ func (c *Controller) createSubmarineMlflow(submarine *v1alpha1.Submarine) error 
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
-
 
 	// Step 3: Create Deployment
 	deployment, err := c.deploymentLister.Deployments(submarine.Namespace).Get(mlflowName)
