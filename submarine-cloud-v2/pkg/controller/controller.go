@@ -66,6 +66,7 @@ const (
 	serverName                  = "submarine-server"
 	databaseName                = "submarine-database"
 	tensorboardName             = "submarine-tensorboard"
+	mlflowName                  = "submarine-mlflow"
 	ingressName                 = serverName + "-ingress"
 	databasePvNamePrefix        = databaseName + "-pv"
 	databasePvcName             = databaseName + "-pvc"
@@ -73,6 +74,10 @@ const (
 	tensorboardPvcName          = tensorboardName + "-pvc"
 	tensorboardServiceName      = tensorboardName + "-service"
 	tensorboardIngressRouteName = tensorboardName + "-ingressroute"
+	mlflowPvNamePrefix			= mlflowName + "-pv"
+	mlflowPvcName				= mlflowName + "-pvc"
+	mlflowServiceName			= mlflowName + "-service"
+	mlflowIngressRouteName		= mlflowName + "-ingressroute"
 )
 
 // PersistentVolumes are not namespaced resources, so we add the namespace as a
@@ -476,6 +481,11 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 		}
 
 		err = c.createSubmarineTensorboard(submarine)
+		if err != nil {
+			return err
+		}
+
+		err = c.createSubmarineMlflow(submarine)
 		if err != nil {
 			return err
 		}
