@@ -16,7 +16,7 @@
 
 ![Colored_logo_with_text](website/docs/assets/color_logo_with_text.png)
 
-[![Build Status](https://travis-ci.org/apache/submarine.svg?branch=master)](https://travis-ci.org/apache/submarine) [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html) [![PyPI version](https://badge.fury.io/py/apache-submarine.svg)](https://badge.fury.io/py/apache-submarine)
+![Submarine workflow](https://github.com/apache/submarine/actions/workflows/master.yml/badge.svg?branch=master) ![python-sdk workflow](https://github.com/apache/submarine/actions/workflows/python.yml/badge.svg?branch=master) [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html) [![PyPI version](https://badge.fury.io/py/apache-submarine.svg)](https://badge.fury.io/py/apache-submarine)
 
 </div>
 
