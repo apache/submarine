@@ -156,10 +156,16 @@ public class ExperimentManager {
     List<Experiment> experimentList = new ArrayList<>();
     List<ExperimentEntity> entities = experimentService.selectAll();
 
-    for (ExperimentEntity entity: entities) {
+    for (ExperimentEntity entity : entities) {
       Experiment experiment = buildExperimentFromEntity(entity);
-      Experiment foundExperiment = submitter.findExperiment(experiment.getSpec());
-
+      Experiment foundExperiment;
+      try {
+        foundExperiment = submitter.findExperiment(experiment.getSpec());
+      } catch (SubmarineRuntimeException e) {
+        LOG.warn("Submitter can not find experiment: {}, will delete it", entity.getId());
+        experimentService.delete(entity.getId());
+        continue;
+      }
       LOG.info("Found experiment: {}", foundExperiment.getStatus());
       if (status == null || status.toLowerCase().equals(foundExperiment.getStatus().toLowerCase())) {
         experiment.rebuild(foundExperiment);
@@ -173,7 +179,7 @@ public class ExperimentManager {
   /**
    * Patch the experiment
    *
-   * @param id   experiment id
+   * @param id      experiment id
    * @param newSpec spec
    * @return object
    * @throws SubmarineRuntimeException the service error
@@ -229,7 +235,7 @@ public class ExperimentManager {
     List<ExperimentLog> experimentLogList = new ArrayList<>();
     List<ExperimentEntity> entities = experimentService.selectAll();
 
-    for (ExperimentEntity entity: entities) {
+    for (ExperimentEntity entity : entities) {
       Experiment experiment = buildExperimentFromEntity(entity);
       Experiment foundExperiment = submitter.findExperiment(experiment.getSpec());
 
@@ -265,8 +271,8 @@ public class ExperimentManager {
     experiment.rebuild(foundExperiment);
 
     return submitter.getExperimentLogName(
-      experiment.getSpec(),
-      experiment.getExperimentId().toString()
+        experiment.getSpec(),
+        experiment.getExperimentId().toString()
     );
   }
 
@@ -314,13 +320,14 @@ public class ExperimentManager {
 
   public ExperimentId generateExperimentId() {
     return ExperimentId.newInstance(SubmarineServer.getServerTimeStamp(),
-      experimentCounter.incrementAndGet());
+        experimentCounter.incrementAndGet());
   }
 
   /**
    * Create a new experiment instance from entity, and filled
-   *   1. experimentId
-   *   2. spec
+   * 1. experimentId
+   * 2. spec
+   *
    * @param entity
    * @return Experiment
    */
