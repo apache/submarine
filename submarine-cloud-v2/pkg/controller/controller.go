@@ -74,10 +74,10 @@ const (
 	tensorboardPvcName          = tensorboardName + "-pvc"
 	tensorboardServiceName      = tensorboardName + "-service"
 	tensorboardIngressRouteName = tensorboardName + "-ingressroute"
-	mlflowPvNamePrefix			= mlflowName + "-pv"
-	mlflowPvcName				= mlflowName + "-pvc"
-	mlflowServiceName			= mlflowName + "-service"
-	mlflowIngressRouteName		= mlflowName + "-ingressroute"
+	mlflowPvNamePrefix          = mlflowName + "-pv"
+	mlflowPvcName               = mlflowName + "-pvc"
+	mlflowServiceName           = mlflowName + "-service"
+	mlflowIngressRouteName      = mlflowName + "-ingressroute"
 )
 
 // PersistentVolumes are not namespaced resources, so we add the namespace as a
