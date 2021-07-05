@@ -139,6 +139,14 @@ func newSubmarineTensorboardDeployment(submarine *v1alpha1.Submarine) *appsv1.De
 									SubPath:   tensorboardName,
 								},
 							},
+							ReadinessProbe: &corev1.Probe{
+								Handler: corev1.Handler {
+									TCPSocket: &corev1.TCPSocketAction {
+										Port: intstr.FromInt(6006),
+									},
+								},
+								PeriodSeconds: 10,
+							},
 						},
 					},
 					Volumes: []corev1.Volume{
