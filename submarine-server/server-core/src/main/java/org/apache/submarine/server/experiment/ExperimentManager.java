@@ -320,7 +320,7 @@ public class ExperimentManager {
    */
   public ServeResponse createServe(ServeRequest spec) throws SubmarineRuntimeException {
     if (!mlflowModelRegistryClient.checkModelExist(spec.getModelName())){
-      throw new SubmarineRuntimeException(Status.OK.getStatusCode(), "Invalid model name.");
+      throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(), "Invalid model name.");
     }
     // TODO(jeff-901): check if model version exists.
 
