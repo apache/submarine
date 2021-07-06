@@ -30,8 +30,8 @@ import torch.nn.functional as F
 import torch.optim as optim
 
 WORLD_SIZE = int(os.environ.get('WORLD_SIZE', 1))
-
-
+rank = int(os.environ.get('RANK', 0))
+print('WORLD={} , RANK={}'.format(WORLD_SIZE,rank))
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -123,6 +123,8 @@ if __name__ == '__main__':
     use_cuda = not args.no_cuda and torch.cuda.is_available()
     if use_cuda:
         print('Using CUDA')
+    else :
+        print('Not Using CUDA')
 
     writer = SummaryWriter(args.dir)
 
@@ -132,16 +134,31 @@ if __name__ == '__main__':
 
     if should_distribute():
         print('Using distributed PyTorch with {} backend'.format(args.backend))
-        dist.init_process_group(backend=args.backend)
+        dist.init_process_group(
+            backend=args.backend,
+            world_size=WORLD_SIZE,
+            rank=rank)
 
     kwargs = {'num_workers': 1, 'pin_memory': True} if use_cuda else {}
-    train_loader = torch.utils.data.DataLoader(
-        datasets.FashionMNIST('../data', train=True, download=True,
+
+    train_dataset = datasets.FashionMNIST('../data', train=True, download=True,
                        transform=transforms.Compose([
                            transforms.ToTensor(),
                            transforms.Normalize((0.1307,), (0.3081,))
-                       ])),
-        batch_size=args.batch_size, shuffle=True, **kwargs)
+                       ]))
+    train_sampler = torch.utils.data.distributed.DistributedSampler(
+        train_dataset,
+        num_replicas = WORLD_SIZE,
+        rank=rank
+    )
+
+    train_loader = torch.utils.data.DataLoader(
+        dataset = train_dataset,
+        batch_size = args.batch_size, 
+        shuffle = False, 
+        sampler = train_sampler,
+        **kwargs)
+
     test_loader = torch.utils.data.DataLoader(
         datasets.FashionMNIST('../data', train=False, transform=transforms.Compose([
                            transforms.ToTensor(),

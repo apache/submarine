@@ -17,7 +17,7 @@
 curl -X POST -H "Content-Type: application/json" -d '
 {
   "meta": {
-    "name": "pytorch-distributive-example",
+    "name": "pytorch-distributive-example2",
     "namespace": "default",
     "framework": "PyTorch",
     "cmd": "python /opt/distribution.py",
