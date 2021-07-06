@@ -31,7 +31,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.Optional;
 
 import com.google.common.annotations.VisibleForTesting;
 
@@ -52,7 +51,6 @@ import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateSubmit;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.response.JsonResponse;
-import org.mlflow.tracking.MlflowClient;
 
 /**
  * Experiment Service REST API v1
@@ -61,8 +59,6 @@ import org.mlflow.tracking.MlflowClient;
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
 public class ExperimentRestApi {
   private ExperimentManager experimentManager = ExperimentManager.getInstance();
-  private Optional<org.mlflow.api.proto.Service.Experiment> MlflowExperimentOptional;
-  private org.mlflow.api.proto.Service.Experiment MlflowExperiment;
 
   @VisibleForTesting
   public void setExperimentManager(ExperimentManager experimentManager) {
@@ -226,12 +222,6 @@ public class ExperimentRestApi {
     } catch (SubmarineRuntimeException e) {
       return parseExperimentServiceException(e);
     }
-    MlflowClient mlflowClient = new MlflowClient("http://submarine-mlflow-service:5000");
-    MlflowExperimentOptional = mlflowClient.getExperimentByName(id);
-    MlflowExperiment = MlflowExperimentOptional.get();
-    String mlflowId = MlflowExperiment.getExperimentId();
-    
-    mlflowClient.deleteExperiment(mlflowId);
     return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
           .result(experiment).build();
   }
