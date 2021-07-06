@@ -216,13 +216,14 @@ public class ExperimentRestApi {
               schema = @Schema(implementation = JsonResponse.class))),
           @ApiResponse(responseCode = "404", description = "Experiment not found")})
   public Response deleteExperiment(@PathParam(RestConstants.ID) String id) {
+    Experiment experiment;
     try {
-      Experiment experiment = experimentManager.deleteExperiment(id);
-      return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
-          .result(experiment).build();
+      experiment = experimentManager.deleteExperiment(id);
     } catch (SubmarineRuntimeException e) {
       return parseExperimentServiceException(e);
     }
+    return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
+          .result(experiment).build();
   }
 
   @GET
