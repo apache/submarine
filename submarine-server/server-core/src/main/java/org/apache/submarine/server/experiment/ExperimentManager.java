@@ -111,7 +111,6 @@ public class ExperimentManager {
     String lowerName = spec.getMeta().getName().toLowerCase(); 
     String expCounter = id.toString().substring(id.toString().lastIndexOf("_") + 1);
     String podName = lowerName.concat("-").concat(expCounter);
-    // spec.getMeta().setName(lowerName);
     spec.getMeta().setName(podName);
     spec.getMeta().setExpName(lowerName);
 
