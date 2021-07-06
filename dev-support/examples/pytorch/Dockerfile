@@ -18,7 +18,7 @@ MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 ADD ./tmp/submarine-sdk /opt/
 RUN pip install pillow==8.2.0 && \
-    pip install /opt/pysubmarine && \
+    pip install /opt/pysubmarine[pytorch] && \
     pip install tensorboardX
 
 ADD ./distribution.py /opt/

@@ -155,7 +155,7 @@ if __name__ == '__main__':
     train_loader = torch.utils.data.DataLoader(
         dataset = train_dataset,
         batch_size = args.batch_size, 
-        shuffle = False, 
+        shuffle = False,
         sampler = train_sampler,
         **kwargs)
 
@@ -176,10 +176,12 @@ if __name__ == '__main__':
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
     periscope = ModelsClient()
     with periscope.start() as run:
-      for epoch in range(1, args.epochs + 1):
+        periscope.log_param("learning_rate", args.lr)
+        periscope.log_param("batch_size", args.batch_size)
+        for epoch in range(1, args.epochs + 1):
         # for epoch in range(1, 6):
-          train(args, model, device, train_loader, optimizer, epoch, writer, periscope)
-          test(args, model, device, test_loader, writer, epoch, periscope)
-
+            train(args, model, device, train_loader, optimizer, epoch, writer, periscope)
+            test(args, model, device, test_loader, writer, epoch, periscope)
+        periscope.save_model(model_type = "pytorch", model = model, artifact_path="pytorch-model", registered_model_name="pytorch-ddp-example")
     if (args.save_model):
         torch.save(model.state_dict(),"mnist_cnn.pt")

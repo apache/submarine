@@ -16,27 +16,8 @@
 
 curl -X POST -H "Content-Type: application/json" -d '
 {
-  "meta": {
-    "name": "pytorch-distributive-example",
-    "namespace": "default",
-    "framework": "PyTorch",
-    "cmd": "python /opt/distribution.py",
-    "envVars": {
-      "ENV_1": "ENV1"
-    }
-  },
-  "environment": {
-    "image": "distribution:0.6.0-SNAPSHOT"
-  },
-  "spec": {
-    "Master": {
-      "replicas": 1,
-      "resources": "cpu=1,memory=128M"
-    },
-    "Worker": {
-      "replicas": 3,
-      "resources": "cpu=1,memory=128M"
-    }
-  }
+  "modelName":"pytorch-ddp-example",
+  "modelVersion":"1",
+  "namespace":"default"
 }
-' http://127.0.0.1:32080/api/v1/experiment
+' http://127.0.0.1:32080/api/v1/experiment/serve

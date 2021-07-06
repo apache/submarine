@@ -68,10 +68,7 @@ def get_worker_index():
     # Get PyTorch worker index
     elif env.get_env(_RANK) is not None:
         rank = env.get_env(_RANK)
-        if rank == "0":
-            worker_index = "master-0"
-        else:
-            worker_index = "worker-" + rank
+        worker_index = "worker-" + rank
     # Set worker index to "worker-0" When running local training
     else:
         worker_index = "worker-0"

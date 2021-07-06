@@ -13,11 +13,11 @@ The logging of `worker-i` will be directed to `experiment_12345678` / `worker-i`
 1. Build the docker image
 
 ```bash
-./dev-support/examples/tracking/build.sh
+./dev-support/examples/pytorch/build.sh
 ```
 
 2. Submit a post request
 
 ```bash
-./dev-support/examples/tracking/post.sh
+./dev-support/examples/pytorch/post.sh
 ```
