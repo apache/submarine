@@ -366,8 +366,6 @@ jobs:
       uses: stCarolas/setup-maven@v4
       with:
         maven-version: 3.6.3
-    - name: Set up Chrome latest
-      uses: browser-actions/setup-chrome@latest
     - name: Check version
       run: |
         mvn --version
