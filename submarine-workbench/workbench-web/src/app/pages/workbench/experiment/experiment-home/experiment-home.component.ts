@@ -42,10 +42,10 @@ export class ExperimentHomeComponent implements OnInit {
   isListLoading: boolean = true;
   checkedList: boolean[];
   selectAllChecked: boolean = false;
-  switchValue: boolean = false;
+  switchValue: boolean = true;
 
   // auto reload
-  reloadPeriod: number = 10000; // default 10s
+  reloadPeriod: number = 3000; // default 3s
   reloadInterval = interval(this.reloadPeriod);
   reloadSub = null;
 
@@ -73,6 +73,7 @@ export class ExperimentHomeComponent implements OnInit {
     this.experimentService.emitInfo(null);
     this.getTensorboardInfo(1000, 50000);
     this.getMlflowInfo(1000, 100000);
+    this.onSwitchAutoReload();
   }
 
   fetchExperimentList() {
