@@ -142,6 +142,14 @@ public interface Submitter {
   ServeResponse deleteServe(ServeRequest spec) throws SubmarineRuntimeException;
 
   /**
+   * Get ServePod ready status with modelName and modelVersion
+   * @param name
+   * @return object
+   * @throws SubmarineRuntimeException running error
+   */
+  ServeResponse checkServePodReady(String name) throws SubmarineRuntimeException;
+
+  /**
    * Get tensorboard meta data
    * @param
    * @return object

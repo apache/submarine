@@ -43,6 +43,7 @@ import io.kubernetes.client.models.V1PersistentVolume;
 import io.kubernetes.client.models.V1PersistentVolumeClaim;
 import io.kubernetes.client.models.V1PersistentVolumeClaimVolumeSource;
 import io.kubernetes.client.models.V1Pod;
+import io.kubernetes.client.models.V1PodCondition;
 import io.kubernetes.client.models.V1PodList;
 import io.kubernetes.client.models.V1Service;
 import io.kubernetes.client.models.V1Status;
@@ -532,6 +533,49 @@ public class K8sSubmitter implements Submitter {
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
+  }
+
+  @Override
+  public ServeResponse checkServePodReady(String name)
+      throws SubmarineRuntimeException {
+    V1Pod pod = null;
+    V1PodList list;
+    try {
+      list = coreApi.listPodForAllNamespaces(null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null);
+    } catch (ApiException e){
+      throw new SubmarineRuntimeException(e.getCode(), "K8s ApiException" + e.getMessage());
+    }
+    for (V1Pod item : list.getItems()){
+      try {
+        if (item.getMetadata().getLabels().get("app").equals(name)){
+          pod = item;
+          break;
+        }
+      } catch (NullPointerException e){
+        continue;
+      }
+    }
+    if (pod == null) {
+      throw new SubmarineRuntimeException(404, "Pod " + name + " not fund.");
+    }
+    List<V1PodCondition> conditions = pod.getStatus().getConditions();
+    for (V1PodCondition condition : conditions) {
+      if (condition.getType().equals("Ready")) {
+        if (condition.getStatus().equals("True")) {
+          return new ServeResponse().ready("True");
+        } else {
+          return new ServeResponse().ready("False");
+        }
+      }
+    }
+    return new ServeResponse().ready("False");
   }
 
   public void createPersistentVolume(String pvName, String hostPath, String storage) throws ApiException {
