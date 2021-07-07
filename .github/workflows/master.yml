@@ -85,7 +85,7 @@ jobs:
           java -version
           chromedriver --version
           python3 -V
-      - name: Prepate default mysql-data
+      - name: Prepare default mysql-data
         run: |
           pip install mysql-connector-python
           python3 ./dev-support/database/init-database.py
@@ -233,7 +233,7 @@ jobs:
       run: |
         mvn --version
         java -version
-    - name: Prepate default mysql-data
+    - name: Prepare default mysql-data
       run: |
         python3 -V
         pip install mysql-connector-python
@@ -370,7 +370,7 @@ jobs:
       run: |
         mvn --version
         java -version
-    - name: Prepate default mysql-data
+    - name: Prepare default mysql-data
       run: |
         python3 -V
         sudo apt-get install python3-mysql.connector
