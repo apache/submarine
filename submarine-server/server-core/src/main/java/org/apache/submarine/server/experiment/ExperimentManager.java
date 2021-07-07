@@ -285,7 +285,7 @@ public class ExperimentManager {
     Experiment foundExperiment = submitter.findExperiment(experiment.getSpec());
     experiment.rebuild(foundExperiment);
 
-    return submitter.getExperimentLogName(
+    return submitter.getExperimentLog(
         experiment.getSpec(),
         experiment.getExperimentId().toString()
     );
