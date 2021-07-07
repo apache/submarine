@@ -28,8 +28,8 @@ public class ExperimentMeta {
 
   public static final String SUBMARINE_EXPERIMENT_NAME = "submarine-experiment-name";
 
+  private String experimentId;
   private String name;
-  private String expName;
   private String namespace;
   private String framework;
   private String cmd;
@@ -56,19 +56,19 @@ public class ExperimentMeta {
   }
 
   /**
-   * Get the exp name which is unique within a namespace.
-   * @return exp name
+   * Get the experiment id which is unique within a namespace.
+   * @return experiment id
    */
-  public String getExpName() {
-    return expName;
+  public String getExpID() {
+    return experimentId;
   }
 
   /**
-   * Exp Name must be unique within a namespace. Is required when creating experiment.
-   * @param name exp name
+   * experiment id must be unique within a namespace. Is required when creating experiment.
+   * @param name experiment name
    */
-  public void setExpName(String expName) {
-    this.expName = expName;
+  public void setExpID(String experimentId) {
+    this.experimentId = experimentId;
   }
 
   /**

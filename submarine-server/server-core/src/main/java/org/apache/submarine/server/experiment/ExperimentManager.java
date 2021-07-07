@@ -109,10 +109,8 @@ public class ExperimentManager {
     spec.getMeta().getEnvVars().put(RestConstants.LOG_DIR_KEY, RestConstants.LOG_DIR_VALUE);
 
     String lowerName = spec.getMeta().getName().toLowerCase(); 
-    String expCounter = id.toString().substring(id.toString().lastIndexOf("_") + 1);
-    String podName = lowerName.concat("-").concat(expCounter);
-    spec.getMeta().setName(podName);
-    spec.getMeta().setExpName(lowerName);
+    spec.getMeta().setName(lowerName);
+    spec.getMeta().setExpID(id.toString().replaceAll("_", "-"));
 
     Experiment experiment = submitter.createExperiment(spec);
     experiment.setExperimentId(id);
