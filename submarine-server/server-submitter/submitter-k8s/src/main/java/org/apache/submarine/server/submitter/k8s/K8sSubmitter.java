@@ -88,7 +88,7 @@ public class K8sSubmitter implements Submitter {
 
   private static final String TF_JOB_SELECTOR_KEY = "tf-job-name=";
   private static final String PYTORCH_JOB_SELECTOR_KEY = "pytorch-job-name=";
-  
+
   private static final String ENV_NAMESPACE = "ENV_NAMESPACE";
 
   // K8s API client for CRD
@@ -361,32 +361,45 @@ public class K8sSubmitter implements Submitter {
     final String storage = NotebookUtils.STORAGE;
     final String pvcName = NotebookUtils.PVC_PREFIX + name;
     String namespace = "default";
-    
+
     if (System.getenv(ENV_NAMESPACE) != null) {
       namespace = System.getenv(ENV_NAMESPACE);
     }
-    
+
+    // create notebook custom resource
+    NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
+    Map<String, String> labels = new HashMap<>();
+    labels.put(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET, spec.getMeta().getOwnerId());
+    notebookCR.getMetadata().setLabels(labels);
+    notebookCR.getMetadata().setNamespace(namespace);
+
+    // create persistent volume
     try {
-      // create notebook custom resource
-      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
-      Map<String, String> labels = new HashMap<>();
-      labels.put(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET, spec.getMeta().getOwnerId());
-      notebookCR.getMetadata().setLabels(labels);
-      notebookCR.getMetadata().setNamespace(namespace);
-      
-      // create persistent volume
       createPersistentVolume(pvName, host, storage);
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
+          e.getMessage());
+    }
 
-      // create persistent volume claim
+    // create persistent volume claim
+    try {
       createPersistentVolumeClaim(pvcName, namespace, pvName, storage);
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
+      rollbackCreationNotebook(pvName);
+      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
+          e.getMessage());
+    }
 
-      // bind persistent volume claim
+    // bind persistent volume claim
+    try {
       V1PersistentVolumeClaimVolumeSource pvcSource = new V1PersistentVolumeClaimVolumeSource()
-              .claimName(pvcName);
+          .claimName(pvcName);
       notebookCR.getSpec().getTemplate().getSpec().getVolumes().get(0).persistentVolumeClaim(pvcSource);
 
       Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
-              namespace, notebookCR.getPlural(), notebookCR, "true");
+          namespace, notebookCR.getPlural(), notebookCR, "true");
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
 
       // create Traefik custom resource
@@ -394,9 +407,11 @@ public class K8sSubmitter implements Submitter {
 
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
+      rollbackCreationNotebook(pvName, pvcName, namespace);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
     } catch (ApiException e) {
       LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
+      rollbackCreationNotebook(pvName, pvcName, namespace);
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
           e.getMessage());
     }
@@ -407,12 +422,12 @@ public class K8sSubmitter implements Submitter {
   public Notebook findNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
     String namespace = "default";
-    
+
     if (System.getenv(ENV_NAMESPACE) != null) {
       namespace = System.getenv(ENV_NAMESPACE);
     }
-    
-    try { 
+
+    try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               namespace,
@@ -431,11 +446,11 @@ public class K8sSubmitter implements Submitter {
     final String pvName = NotebookUtils.PV_PREFIX + name;
     final String pvcName = NotebookUtils.PVC_PREFIX + name;
     String namespace = "default";
-    
+
     if (System.getenv(ENV_NAMESPACE) != null) {
       namespace = System.getenv(ENV_NAMESPACE);
     }
-    
+
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
@@ -469,7 +484,7 @@ public class K8sSubmitter implements Submitter {
   }
 
   @Override
-  public ServeResponse createServe(ServeRequest spec) 
+  public ServeResponse createServe(ServeRequest spec)
       throws SubmarineRuntimeException {
     String modelName = spec.getModelName();
     String modelVersion = spec.getModelVersion();
@@ -490,7 +505,7 @@ public class K8sSubmitter implements Submitter {
             middleware.getGroup(), middleware.getVersion(),
             middleware.getMetadata().getNamespace(),
             middleware.getPlural(), middleware, "true");
-            
+
       api.createNamespacedCustomObject(
             ingressRoute.getGroup(), ingressRoute.getVersion(),
             ingressRoute.getMetadata().getNamespace(),
@@ -502,7 +517,7 @@ public class K8sSubmitter implements Submitter {
   }
 
   @Override
-  public ServeResponse deleteServe(ServeRequest spec) 
+  public ServeResponse deleteServe(ServeRequest spec)
       throws SubmarineRuntimeException {
     String modelName = spec.getModelName();
     String modelVersion = spec.getModelVersion();
@@ -681,6 +696,30 @@ public class K8sSubmitter implements Submitter {
     routes.add(route);
     spec.setRoutes(routes);
     return spec;
+  }
+
+  private void rollbackCreationNotebook(String pvName) {
+    try {
+      deletePersistentVolume(pvName);
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: delete persistent volume failed by {}, may cause some dirty data",
+          e.getMessage());
+    }
+  }
+
+  private void rollbackCreationNotebook(String pvName, String pvcName, String namespace) {
+    try {
+      deletePersistentVolumeClaim(pvcName, namespace);
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: delete persistent volume claim failed by {}, may cause some dirty data",
+          e.getMessage());
+    }
+    try {
+      deletePersistentVolume(pvName);
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: delete persistent volume failed by {}, may cause some dirty data",
+          e.getMessage());
+    }
   }
 
   private enum ParseOp {
