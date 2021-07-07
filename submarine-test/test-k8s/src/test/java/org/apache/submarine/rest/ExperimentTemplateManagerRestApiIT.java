@@ -223,7 +223,7 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
     jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
     
-    ExperimentSpec expSpec = experiment.getSpec(); // expName = name + "-" + ${experimentCounter} (SUBMARINE-880)
+    ExperimentSpec expSpec = experiment.getSpec();
     String expID = expSpec.getMeta().getExpID();
     Assert.assertEquals(tplSubmit.getParams().get(TPL_SUBMIT_NAME_PARM), expID);
   }
