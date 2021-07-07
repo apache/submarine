@@ -24,7 +24,6 @@ import _ from 'lodash';
 
 interface HeaderInfo {
   title: string;
-  description: string;
   breadCrumb: Array<{ title: string; routerLink?: string }>;
 }
 
@@ -32,58 +31,55 @@ interface HeaderInfo {
   selector: 'submarine-manager',
   templateUrl: './manager.component.html',
   styleUrls: ['./manager.component.scss'],
-  providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }]
+  providers: [Location, { provide: LocationStrategy, useClass: PathLocationStrategy }],
 })
 export class ManagerComponent implements OnInit {
   private headerInfo: { [key: string]: HeaderInfo } = {
     user: {
       title: 'user',
-      description: 'You can check the user, delete the user, lock and unlock the user, etc.',
       breadCrumb: [
         {
-          title: 'Home'
-          //routerLink: '/workbench/home'
+          title: 'Home',
+          // routerLink: '/workbench/home'
         },
         {
-          title: 'manager'
+          title: 'manager',
         },
         {
-          title: 'user'
-        }
-      ]
+          title: 'user',
+        },
+      ],
     },
     dataDict: {
-      title: 'Data Dict',
-      description: 'System Dict Manager',
+      title: 'dataDict',
       breadCrumb: [
         {
-          title: 'Home'
-          //routerLink: '/workbench/home'
+          title: 'Home',
+          // routerLink: '/workbench/home'
         },
         {
-          title: 'manager'
+          title: 'manager',
         },
         {
-          title: 'Data Dict'
-        }
-      ]
+          title: 'Data Dict',
+        },
+      ],
     },
     department: {
       title: 'department',
-      description: 'System Department Manager',
       breadCrumb: [
         {
-          title: 'Home'
+          title: 'Home',
           //routerLink: '/workbench/home'
         },
         {
-          title: 'manager'
+          title: 'manager',
         },
         {
-          title: 'department'
-        }
-      ]
-    }
+          title: 'department',
+        },
+      ],
+    },
   };
   currentHeaderInfo: HeaderInfo;
 

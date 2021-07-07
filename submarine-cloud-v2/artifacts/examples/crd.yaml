@@ -38,9 +38,6 @@ spec:
           properties:
             version: # submarine docker image version
               type: string
-            replicas:
-              type: integer
-              minimum: 1
             server:
               type: object
               properties:
@@ -69,6 +66,13 @@ spec:
                 storageSize:
                   type: string
             mlflow:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                storageSize:
+                  type: string
+            minio:
               type: object
               properties:
                 enabled:

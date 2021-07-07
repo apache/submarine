@@ -29,11 +29,13 @@ import org.apache.submarine.commons.cluster.meta.ClusterMeta;
 import org.apache.submarine.commons.cluster.meta.ClusterMetaType;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.cluster.ClusterServer;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.BeforeClass;
 
 import javax.ws.rs.core.Response;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,6 +103,7 @@ public class ClusterRestApiTest {
     mockClusterServer.putClusterMeta(SERVER_META, nodeName2, meta2);
   }
 
+  @Ignore
   @Test
   public void testGetClusterAddress() {
     SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
@@ -114,6 +117,7 @@ public class ClusterRestApiTest {
     assertEquals(addr2, result.get(1));
   }
 
+  @Ignore
   @Test
   public void testGetClusterNodes() {
     when(mockClusterServer.getClusterMeta(ClusterMetaType.SERVER_META, "")).thenReturn(clusterMetas);
@@ -133,6 +137,7 @@ public class ClusterRestApiTest {
     assertEquals("0.25 / 0.40 = 62.50%", properties2.get("CPU_USED / CPU_CAPACITY"));
   }
 
+  @Ignore
   @Test
   public void testGetClusterNode() {
     when(mockClusterServer.getClusterMeta(ClusterMetaType.INTP_PROCESS_META, "")).thenReturn(clusterMetas);
@@ -143,8 +148,9 @@ public class ClusterRestApiTest {
     assertEquals(clusterMetas.get(nodeName1).get(ClusterMeta.NODE_NAME),
         result.get(0).get(ClusterMeta.NODE_NAME));
     assertEquals("ONLINE", properties.get("STATUS"));
-    assertEquals(INTP_START_TIME.toString(), properties.get("INTP_START_TIME"));
-    assertEquals(LATEST_HEARTBEAT.toString(), properties.get("LATEST_HEARTBEAT"));
+    assertEquals(INTP_START_TIME.format(DateTimeFormatter.ISO_DATE_TIME), properties.get("INTP_START_TIME"));
+    assertEquals(LATEST_HEARTBEAT.format(DateTimeFormatter.ISO_DATE_TIME),
+        properties.get("LATEST_HEARTBEAT"));
   }
 
   private <T> List<T> getResultListFromResponse(Response response, Class<T> typeT) {

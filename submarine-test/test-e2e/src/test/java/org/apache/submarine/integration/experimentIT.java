@@ -19,7 +19,9 @@ package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.WebDriverManager;
+import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.integration.pages.ExperimentPage;
+import org.apache.submarine.integration.pages.LoginPage;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,16 +48,20 @@ public class experimentIT extends AbstractSubmarineIT {
   @Test
   public void experimentNavigation() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
+
     LOG.info("[Test case]: experimentNavigation]");
     // Init the page object
     ExperimentPage experimentPage = new ExperimentPage(driver);
+    Sidebars sidebars = new Sidebars(URL);
+    LoginPage loginPage = new LoginPage();
+
     // Login
     LOG.info("Login");
-    Login();
+    loginPage.Login();
 
     // Routing to workspace
     LOG.info("url");
-    ClickAndNavigate(By.xpath("//span[contains(text(), \"Experiment\")]"), MAX_BROWSER_TIMEOUT_SEC, URL.concat("/workbench/experiment"));
+    sidebars.gotoExperiment();
 
     // Test create new experiment
     LOG.info("First step");

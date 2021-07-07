@@ -26,13 +26,13 @@ all: charts
 
 .PHONY: api
 api:
-	@cd hack; echo "Generating API..."; ./update-codegen.sh; \
-		echo "Verifying API..."; ./verify-codegen.sh
+	./hack/update-codegen.sh
 
 .PHONY: image
 image: charts
+	eval $(minikube docker-env)
 	GOOS=linux go build -o submarine-operator
-	docker build -t submarine-operator .
+	docker build -t submarine-operator -f dev.Dockerfile .
 	go build -o submarine-operator
 
 .PHONY: test-unit

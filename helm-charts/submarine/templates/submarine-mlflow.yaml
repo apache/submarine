@@ -72,6 +72,11 @@ spec:
           - mountPath: "/logs"
             name: "volume"
             subPath: "submarine-mlflow"
+        readinessProbe:
+          tcpSocket:
+            port: 5000
+          initialDelaySeconds: 60
+          periodSeconds: 10
       volumes:
         - name: "volume"
           persistentVolumeClaim:
@@ -82,7 +87,7 @@ kind: Service
 metadata:
   name: submarine-mlflow-service
 spec:
-  clusterIP: 10.96.0.3
+  type: ClusterIP
   selector:
     app: submarine-mlflow-pod
   ports:

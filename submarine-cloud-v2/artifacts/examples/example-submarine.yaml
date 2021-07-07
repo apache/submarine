@@ -21,7 +21,6 @@ metadata:
   name: example-submarine
 spec:
   version: "0.6.0-SNAPSHOT"
-  replicas: 1
   server:
     # image: "apache/submarine:server-0.6.0-SNAPSHOT" # overwrite the image when development
     replicas: 1
@@ -34,6 +33,9 @@ spec:
     enabled: true
     storageSize: "10Gi"
   mlflow:
+    enabled: true
+    storageSize: "10Gi"
+  minio:
     enabled: true
     storageSize: "10Gi"
   storage:

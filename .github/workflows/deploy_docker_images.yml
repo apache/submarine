@@ -61,3 +61,8 @@ jobs:
         run: ./dev-support/docker-images/mlflow/build.sh
       - name: Push submarine-mlflow docker image
         run: docker push apache/submarine:mlflow-$SUBMARINE_VERSION
+
+      - name: Build submarine serve
+        run: ./dev-support/docker-images/serve/build.sh
+      - name: Push submarine-serve docker image
+        run: docker push apache/submarine:serve-$SUBMARINE_VERSION

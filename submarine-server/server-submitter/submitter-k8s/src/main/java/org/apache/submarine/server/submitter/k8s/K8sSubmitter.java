@@ -44,6 +44,7 @@ import io.kubernetes.client.models.V1PersistentVolumeClaim;
 import io.kubernetes.client.models.V1PersistentVolumeClaimVolumeSource;
 import io.kubernetes.client.models.V1Pod;
 import io.kubernetes.client.models.V1PodList;
+import io.kubernetes.client.models.V1Service;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
@@ -55,6 +56,8 @@ import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
+import org.apache.submarine.server.api.experiment.ServeRequest;
+import org.apache.submarine.server.api.experiment.ServeResponse;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
@@ -64,8 +67,10 @@ import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRouteSpec;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
+import org.apache.submarine.server.submitter.k8s.model.middlewares.Middlewares;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
+import org.apache.submarine.server.submitter.k8s.parser.ServeSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.VolumeSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
@@ -125,7 +130,7 @@ public class K8sSubmitter implements Submitter {
       appsV1Api = new AppsV1Api();
     }
 
-    // client.setDebugging(true);
+    client.setDebugging(true);
   }
 
   @Override
@@ -407,9 +412,7 @@ public class K8sSubmitter implements Submitter {
       namespace = System.getenv(ENV_NAMESPACE);
     }
     
-    try {
-           
-        
+    try { 
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
               namespace,
@@ -465,6 +468,72 @@ public class K8sSubmitter implements Submitter {
     return notebookList;
   }
 
+  @Override
+  public ServeResponse createServe(ServeRequest spec) 
+      throws SubmarineRuntimeException {
+    String modelName = spec.getModelName();
+    String modelVersion = spec.getModelVersion();
+    String namespace = spec.getNamespace();
+
+    ServeSpecParser parser = new ServeSpecParser(modelName, modelVersion, namespace);
+    V1Deployment deployment = parser.getDeployment();
+    V1Service svc = parser.getService();
+    IngressRoute ingressRoute = parser.getIngressRoute();
+    Middlewares middleware = parser.getMiddlewares();
+    ServeResponse serveInfo = new ServeResponse().url(parser.getRoutePath());
+
+    try {
+      appsV1Api.createNamespacedDeployment(namespace, deployment, "true", null, null);
+      coreApi.createNamespacedService(namespace, svc, "true", null, null);
+
+      api.createNamespacedCustomObject(
+            middleware.getGroup(), middleware.getVersion(),
+            middleware.getMetadata().getNamespace(),
+            middleware.getPlural(), middleware, "true");
+            
+      api.createNamespacedCustomObject(
+            ingressRoute.getGroup(), ingressRoute.getVersion(),
+            ingressRoute.getMetadata().getNamespace(),
+            ingressRoute.getPlural(), ingressRoute, "true");
+      return serveInfo;
+    } catch (ApiException e) {
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    }
+  }
+
+  @Override
+  public ServeResponse deleteServe(ServeRequest spec) 
+      throws SubmarineRuntimeException {
+    String modelName = spec.getModelName();
+    String modelVersion = spec.getModelVersion();
+    String namespace = spec.getNamespace();
+
+    ServeSpecParser parser = new ServeSpecParser(modelName, modelVersion, namespace);
+    IngressRoute ingressRoute = parser.getIngressRoute();
+    Middlewares middleware = parser.getMiddlewares();
+    ServeResponse serveInfo = new ServeResponse().url(parser.getRoutePath());
+
+    try {
+      appsV1Api.deleteNamespacedDeployment(parser.getGeneralName(), namespace, "true",
+          null, null, null, null, null);
+      coreApi.deleteNamespacedService(parser.getSvcName(), namespace, "true",
+          null, null, null, null, null);
+      api.deleteNamespacedCustomObject(
+          middleware.getGroup(), middleware.getVersion(),
+          middleware.getMetadata().getNamespace(), middleware.getPlural(), parser.getMiddlewareName(),
+          new V1DeleteOptionsBuilder().withApiVersion(middleware.getApiVersion()).build(),
+          null, null, null);
+      api.deleteNamespacedCustomObject(
+          ingressRoute.getGroup(), ingressRoute.getVersion(),
+          ingressRoute.getMetadata().getNamespace(), ingressRoute.getPlural(), parser.getRouteName(),
+          new V1DeleteOptionsBuilder().withApiVersion(ingressRoute.getApiVersion()).build(),
+          null, null, null);
+      return serveInfo;
+    } catch (ApiException e) {
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    }
+  }
+
   public void createPersistentVolume(String pvName, String hostPath, String storage) throws ApiException {
     V1PersistentVolume pv = VolumeSpecParser.parsePersistentVolume(pvName, hostPath, storage);
 
@@ -493,12 +562,15 @@ public class K8sSubmitter implements Submitter {
     } catch (JsonSyntaxException e) {
       if (e.getCause() instanceof IllegalStateException) {
         IllegalStateException ise = (IllegalStateException) e.getCause();
-        if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT"))
+        if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
           LOG.debug("Catching exception because of issue " +
-            "https://github.com/kubernetes-client/java/issues/86", e);
-        else throw e;
+              "https://github.com/kubernetes-client/java/issues/86", e);
+        } else {
+          throw e;
+        }
+      } else {
+        throw e;
       }
-      else throw e;
     }
   }
 
@@ -534,12 +606,15 @@ public class K8sSubmitter implements Submitter {
     } catch (JsonSyntaxException e) {
       if (e.getCause() instanceof IllegalStateException) {
         IllegalStateException ise = (IllegalStateException) e.getCause();
-        if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT"))
+        if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
           LOG.debug("Catching exception because of issue " +
-            "https://github.com/kubernetes-client/java/issues/86", e);
-        else throw e;
+              "https://github.com/kubernetes-client/java/issues/86", e);
+        } else {
+          throw e;
+        }
+      } else {
+        throw e;
       }
-      else throw e;
     }
   }
 

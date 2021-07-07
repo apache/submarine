@@ -18,7 +18,9 @@
 package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
+import org.apache.submarine.integration.pages.LoginPage;
 import org.apache.submarine.WebDriverManager;
+import org.apache.submarine.integration.components.Sidebars;
 import org.junit.Ignore;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
@@ -47,16 +49,15 @@ public class interpreterIT extends AbstractSubmarineIT {
   @Test
   public void workspaceNavigation() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
+    Sidebars sidebars = new Sidebars(URL);
+    LoginPage loginPage = new LoginPage();
+
     // Login
     LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+    loginPage.Login();
 
     // Routing to Interpreter
-    pollingWait(By.xpath("//span[contains(text(), \"Interpreter\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/interpreter"));
+    sidebars.gotoInterpreter();
 
     // Test create new Interpreter
     pollingWait(By.xpath("//button[@id='interpreterAddButton']"), MAX_BROWSER_TIMEOUT_SEC).click();

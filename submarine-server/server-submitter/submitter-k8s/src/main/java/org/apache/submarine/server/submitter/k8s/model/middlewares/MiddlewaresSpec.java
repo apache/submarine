@@ -21,21 +21,37 @@ package org.apache.submarine.server.submitter.k8s.model.middlewares;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.Map;
-
 public class MiddlewaresSpec {
 
-  @SerializedName("replacePathRegex")
-  private Map<String, String> replacePathRegex;
+  @SerializedName("stripPrefix")
+  private StripPrefix stripPrefix;
+  
+  // other middlewares
 
   public MiddlewaresSpec() {
   }
 
-  public Map<String, String> getReplacePathRegex() {
-    return replacePathRegex;
+  public MiddlewaresSpec(StripPrefix stripPrefix) {
+    this.stripPrefix = stripPrefix;
   }
 
-  public void setReplacePathRegex(Map<String, String> replacePathRegex) {
-    this.replacePathRegex = replacePathRegex;
+  public StripPrefix getStripPrefix() {
+    return this.stripPrefix;
+  }
+
+  public void setStripPrefix(StripPrefix stripPrefix) {
+    this.stripPrefix = stripPrefix;
+  }
+
+  public MiddlewaresSpec stripPrefix(StripPrefix stripPrefix) {
+    setStripPrefix(stripPrefix);
+    return this;
+  }
+
+  @Override
+  public String toString() {
+    return "{" +
+      " stripPrefix='" + getStripPrefix() + "'" +
+      "}";
   }
 }

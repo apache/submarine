@@ -18,6 +18,8 @@
 package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
+import org.apache.submarine.integration.components.Sidebars;
+import org.apache.submarine.integration.pages.LoginPage;
 import org.apache.submarine.WebDriverManager;
 import org.junit.Ignore;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -49,16 +51,15 @@ public class workspaceIT extends AbstractSubmarineIT {
   @Test
   public void workspaceNavigation() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
+    Sidebars sidebars = new Sidebars(URL);
+    LoginPage loginPage = new LoginPage();
+
     // Login
     LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+    loginPage.Login();
 
     // Routing to workspace
-    pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/workspace"));
+    sidebars.gotoWorkSpace();
 
     WebDriverWait wait = new WebDriverWait( driver, 60);
     wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//li[contains(text(), \"Release\")]")));
@@ -90,13 +91,13 @@ public class workspaceIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//input[@id='username']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project");
     pollingWait(By.xpath("//textarea[@name='projectDescription']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Project description");
     Assert.assertEquals(pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).getAttribute("disabled"), "true"); // nextStepButton disabled (no set visibility)
-    
+
     pollingWait(By.xpath("//nz-radio-group[@name='visibility']/label[1]/span/input"), MAX_BROWSER_TIMEOUT_SEC).click(); // select Private
     Assert.assertEquals(pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).getAttribute("disabled"), null); // nextStepButton enabled
-    
+
     pollingWait(By.xpath("//nz-radio-group[@name='visibility']/label[last()]/span/input"), MAX_BROWSER_TIMEOUT_SEC).click(); // select Public
     Assert.assertEquals(pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).getAttribute("disabled"), "true"); // nextStepButton disabled (no set permission)
-    
+
     pollingWait(By.xpath("//nz-radio-group[@name='permission']/label[last()]/span/input"), MAX_BROWSER_TIMEOUT_SEC).click(); // select Can View
     Assert.assertEquals(pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).getAttribute("disabled"), null); // nextStepButton enabled
 
@@ -106,13 +107,13 @@ public class workspaceIT extends AbstractSubmarineIT {
     pollingWait(By.xpath("//nz-select[@name='team']"), MAX_BROWSER_TIMEOUT_SEC).click(); // expand team options
     pollingWait(By.xpath("//li[@nz-option-li][last()]"), MAX_BROWSER_TIMEOUT_SEC).click(); // select a team
     Assert.assertEquals(pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).getAttribute("disabled"), null); // nextStepButton enabled
-    
+
     pollingWait(nextStepButton, MAX_BROWSER_TIMEOUT_SEC).click();
-    
+
     //step2
     Assert.assertEquals(pollingWait(By.xpath("//nz-tabset"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//div[@class='centerDiv']/button[last()]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    
+
     //step3
     Assert.assertEquals(pollingWait(By.xpath("//thead"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed(), true);
     pollingWait(By.xpath("//div[@class='centerDiv']/button[last()-1]"), MAX_BROWSER_TIMEOUT_SEC).click();

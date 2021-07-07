@@ -75,6 +75,10 @@ spec:
           - mountPath: "/logs"
             name: "volume"
             subPath: "submarine-tensorboard"
+        readinessProbe:
+          tcpSocket:
+            port: 6006
+          periodSeconds: 10
       volumes:
         - name: "volume"
           persistentVolumeClaim:

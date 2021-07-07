@@ -41,6 +41,9 @@
             formControlName="experimentName"
             placeholder="mnist-example"
           />
+          <div class="alert-message" *ngIf="experiment.get('experimentName').hasError('pattern')">
+            Only letters(a-z), numbers(0-9), and hyphens(-) are allowed.
+          </div>
         </div>
         <div class="single-field-group">
           <label for="description">Description</label>

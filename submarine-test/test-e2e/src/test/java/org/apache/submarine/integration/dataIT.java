@@ -18,6 +18,8 @@
 package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
+import org.apache.submarine.integration.pages.LoginPage;
+import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.WebDriverManager;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -49,16 +51,17 @@ public class dataIT extends AbstractSubmarineIT {
   @Test
   public void dataNavigation() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
+
+    Sidebars sidebars = new Sidebars(URL);
+
     // Login
+    LoginPage loginPage = new LoginPage();
+
     LOG.info("Login");
-    pollingWait(By.cssSelector("input[ng-reflect-name='userName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    pollingWait(By.cssSelector("input[ng-reflect-name='password']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("admin");
-    clickAndWait(By.cssSelector("button[class='login-form-button ant-btn ant-btn-primary']"));
-    pollingWait(By.cssSelector("a[routerlink='/workbench/experiment']"), MAX_BROWSER_TIMEOUT_SEC);
+    loginPage.Login();
 
     // Routing to data page
-    pollingWait(By.xpath("//span[contains(text(), \"Data\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/data"));
+    sidebars.gotoData();
 
     // Test create new Table
     pollingWait(By.xpath("//button[@id='createBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();

@@ -31,6 +31,7 @@ import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.rest.RestConstants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,6 +104,7 @@ public class SubmarineServerClusterTest extends AbstractSubmarineServerTest {
     LOG.info("SubmarineServerClusterTest::stop <<<");
   }
 
+  @Ignore
   @Test
   public void testGetServerClusterMeta() {
     LOG.info("SubmarineServerClusterTest::testGetServerClusterMeta >>>");
@@ -118,6 +120,7 @@ public class SubmarineServerClusterTest extends AbstractSubmarineServerTest {
     LOG.info("SubmarineServerClusterTest::testGetServerClusterMeta <<<");
   }
 
+  @Ignore
   @Test
   public void testGetClusterAddress() throws IOException {
     GetMethod response = httpGet("/api/" + RestConstants.V1 + "/"
@@ -159,11 +162,13 @@ public class SubmarineServerClusterTest extends AbstractSubmarineServerTest {
     return listNodes;
   }
 
+  @Ignore
   @Test
   public void testGetClusterNodes() throws IOException {
     getClusterNodes();
   }
 
+  @Ignore
   @Test
   public void testGetClusterNode() throws IOException {
     ArrayList<HashMap<String, Object>> listNodes = getClusterNodes();

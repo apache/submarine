@@ -43,6 +43,8 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
+import org.apache.submarine.server.api.experiment.ServeRequest;
+import org.apache.submarine.server.api.experiment.ServeResponse;
 import org.apache.submarine.server.experiment.ExperimentManager;
 import org.apache.submarine.server.experimenttemplate.ExperimentTemplateManager;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
@@ -214,13 +216,14 @@ public class ExperimentRestApi {
               schema = @Schema(implementation = JsonResponse.class))),
           @ApiResponse(responseCode = "404", description = "Experiment not found")})
   public Response deleteExperiment(@PathParam(RestConstants.ID) String id) {
+    Experiment experiment;
     try {
-      Experiment experiment = experimentManager.deleteExperiment(id);
-      return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
-          .result(experiment).build();
+      experiment = experimentManager.deleteExperiment(id);
     } catch (SubmarineRuntimeException e) {
       return parseExperimentServiceException(e);
     }
+    return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
+          .result(experiment).build();
   }
 
   @GET
@@ -292,6 +295,58 @@ public class ExperimentRestApi {
       MlflowInfo mlflowInfo = experimentManager.getMLflowInfo();
       return new JsonResponse.Builder<MlflowInfo>(Response.Status.OK).success(true)
               .result(mlflowInfo).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseExperimentServiceException(e);
+    }
+  }
+
+  /**
+   * Returns the contents of {@link Serve} that submitted by user.
+   *
+   * @param spec spec
+   * @return the contents of serve
+   */
+
+  @POST
+  @Path("/serve")
+  @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
+  @Operation(summary = "Create an serve",
+      tags = {"serve"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class)))})
+  public Response createServe(ServeRequest spec) {
+    try {
+      ServeResponse serve = experimentManager.createServe(spec);
+      return new JsonResponse.Builder<ServeResponse>(Response.Status.OK).success(true)
+          .result(serve).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseExperimentServiceException(e);
+    }
+  }
+
+  /**
+   * Delete {@link Serve} that submitted by user.
+   *
+   * @param spec spec
+   * @return the contents of serve
+   */
+
+  @DELETE
+  @Path("/serve")
+  @Operation(summary = "Delete a serve",
+      tags = {"serve"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class)))})
+  public Response deleteServe(@QueryParam("modelName") String modelName, 
+      @QueryParam("modelVersion") String modelVersion, @QueryParam("namespace") String namespace) {
+    try {
+      ServeRequest spec = new ServeRequest()
+          .modelName(modelName).modelVersion(modelVersion).namespace(namespace);
+      ServeResponse serve = experimentManager.deleteServe(spec);
+      return new JsonResponse.Builder<ServeResponse>(Response.Status.OK).success(true)
+          .result(serve).build();
     } catch (SubmarineRuntimeException e) {
       return parseExperimentServiceException(e);
     }

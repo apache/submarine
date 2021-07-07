@@ -21,17 +21,28 @@
 
 set -euo pipefail
 
-MLFLOW_S3_ENDPOINT_URL="http://10.96.0.4:9000"
+# Check if the bucket "minio/mlflow" already exists
+check_minio_mlflow_bucket_exists() {
+    if /bin/bash -c "./mc ls minio/mlflow" >/dev/null 2>&1; then
+       true
+    else
+       false
+    fi
+}
+
+MLFLOW_S3_ENDPOINT_URL="http://submarine-minio-service:9000"
 AWS_ACCESS_KEY_ID="submarine_minio"
 AWS_SECRET_ACCESS_KEY="submarine_minio"
-BACKEND_URI="sqlite:///store.db"
+BACKEND_URI="mysql+pymysql://mlflow:password@submarine-database:3306/mlflowdb"
 DEFAULT_ARTIFACT_ROOT="s3://mlflow"
 STATIC_PREFIX="/mlflow"
 
-/bin/bash -c "sqlite3 store.db"
-
 /bin/bash -c "sleep 60; ./mc config host add minio ${MLFLOW_S3_ENDPOINT_URL} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}"
 
-/bin/bash -c "./mc mb minio/mlflow"
+if ! check_minio_mlflow_bucket_exists; then
+	/bin/bash -c "./mc mb minio/mlflow"
+else
+	echo "Bucket minio/mlflow already exists, skipping creation."
+fi
 
 /bin/bash -c "mlflow server --host 0.0.0.0 --backend-store-uri ${BACKEND_URI} --default-artifact-root ${DEFAULT_ARTIFACT_ROOT} --static-prefix ${STATIC_PREFIX}"

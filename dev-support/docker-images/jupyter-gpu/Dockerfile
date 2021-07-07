@@ -19,7 +19,7 @@ ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_PREFIX="/"
 ARG NB_PORT=8888
-ARG MLFLOW_TRACKING_URI="http://10.96.0.3:8080"
+ARG MLFLOW_TRACKING_URI="http://submarine-mlflow-service:5000"
 
 USER root
 
@@ -96,7 +96,7 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
 
 # Install latest sumbarine python sdk and notebook
 RUN git clone https://github.com/apache/submarine && \
-    pip install submarine/submarine-sdk/pysubmarine && \
+    pip install -e submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
     conda install nodejs && \
     conda install -c conda-forge jupyterlab jupyterlab-git && \
     jupyter lab build

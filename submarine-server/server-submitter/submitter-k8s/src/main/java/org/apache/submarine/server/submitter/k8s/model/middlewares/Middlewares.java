@@ -39,7 +39,7 @@ public class Middlewares {
   private String kind;
 
   @SerializedName("metadata")
-  private V1ObjectMeta metedata;
+  private V1ObjectMeta metadata;
 
   @SerializedName("spec")
   private MiddlewaresSpec spec;
@@ -75,12 +75,12 @@ public class Middlewares {
     this.kind = kind;
   }
 
-  public V1ObjectMeta getMetedata() {
-    return metedata;
+  public V1ObjectMeta getMetadata() {
+    return metadata;
   }
 
-  public void setMetedata(V1ObjectMeta metedata) {
-    this.metedata = metedata;
+  public void setMetadata(V1ObjectMeta metadata) {
+    this.metadata = metadata;
   }
 
   public MiddlewaresSpec getSpec() {
@@ -114,4 +114,16 @@ public class Middlewares {
   public void setPlural(String plural) {
     this.plural = plural;
   }
+
+
+  @Override
+  public String toString() {
+    return "{" +
+      " apiVersion='" + getApiVersion() + "'" +
+      ", kind='" + getKind() + "'" +
+      ", metadata='" + getMetadata() + "'" +
+      ", spec='" + getSpec() + "'" +
+      "}";
+  }
+
 }
