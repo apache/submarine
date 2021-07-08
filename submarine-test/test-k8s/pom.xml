@@ -143,6 +143,10 @@
           <argLine>-Xmx2g -Xms1g -Dfile.encoding=UTF-8</argLine>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+      </plugin>
     </plugins>
   </build>
 
