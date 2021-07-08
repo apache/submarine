@@ -65,7 +65,7 @@ jobs:
           mvn --version
           java -version
       - name: Create kind cluster
-        run: kind create cluster --config ./.github/kind-config-kind.yaml --wait 3m --image kindest/node:v1.15.12
+        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:v1.15.12
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
