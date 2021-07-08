@@ -361,35 +361,40 @@ public class K8sSubmitter implements Submitter {
     final String storage = NotebookUtils.STORAGE;
     final String pvcName = NotebookUtils.PVC_PREFIX + name;
     String namespace = "default";
+    NotebookCR notebookCR;
 
     if (System.getenv(ENV_NAMESPACE) != null) {
       namespace = System.getenv(ENV_NAMESPACE);
     }
 
-    // create notebook custom resource
-    NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
-    Map<String, String> labels = new HashMap<>();
-    labels.put(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET, spec.getMeta().getOwnerId());
-    notebookCR.getMetadata().setLabels(labels);
-    notebookCR.getMetadata().setNamespace(namespace);
-
-    // create persistent volume
     try {
+      // create notebook custom resource
+      notebookCR = NotebookSpecParser.parseNotebook(spec);
+      Map<String, String> labels = new HashMap<>();
+      labels.put(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET, spec.getMeta().getOwnerId());
+      notebookCR.getMetadata().setLabels(labels);
+      notebookCR.getMetadata().setNamespace(namespace);
+
+      // create persistent volume
       createPersistentVolume(pvName, host, storage);
     } catch (ApiException e) {
-      LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
-          e.getMessage());
+      LOG.error("K8s submitter: Create persistent volume for Notebook object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: Create persistent volume for " +
+          "Notebook object failed by " + e.getMessage());
+    } catch (JsonSyntaxException e) {
+      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
     }
 
     // create persistent volume claim
     try {
       createPersistentVolumeClaim(pvcName, namespace, pvName, storage);
     } catch (ApiException e) {
-      LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
+      LOG.error("K8s submitter: Create persistent volume claim for Notebook object failed by " +
+          e.getMessage(), e);
       rollbackCreationNotebook(pvName);
-      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
-          e.getMessage());
+      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: Create persistent volume claim for " +
+          "Notebook object failed by " + e.getMessage());
     }
 
     // bind persistent volume claim
