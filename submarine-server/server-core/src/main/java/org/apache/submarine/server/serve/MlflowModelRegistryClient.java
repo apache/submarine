@@ -29,14 +29,13 @@ import java.net.URI;
 
 public class MlflowModelRegistryClient {
 
-  private final HttpClient client = HttpClients.createDefault();
-
-  public boolean checkModelExist(String modelName){
+  public boolean checkModelExist(String modelName, String modelVersion){
+    HttpClient client = HttpClients.createDefault();
     HttpGet request = new HttpGet();
     request.setHeader("Content-Type", "application/json");
     String base = "http://submarine-mlflow-service:5000/api/" +
-        "2.0/preview/mlflow/registered-models/get";
-    String query = "?name=" + modelName;
+        "2.0/preview/mlflow/model-versions/get";
+    String query = "?name=" + modelName + "&version=" + modelVersion;
     request.setURI(URI.create(base + query));
     HttpResponse response;
     try {
@@ -44,16 +43,6 @@ public class MlflowModelRegistryClient {
     } catch (IOException e){
       return false;
     }
-    int retryLeft = 5;
-    while (response.getStatusLine().getStatusCode() == 429 && retryLeft > 0){
-      try {
-        Thread.sleep(100);
-        response = client.execute(request);
-      } catch (Exception e){
-        return false;
-      }
-      retryLeft--;
-    }
-    return (response.getStatusLine().getStatusCode() != 200) ? false : true;
+    return response.getStatusLine().getStatusCode() == 200;
   }
 }

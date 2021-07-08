@@ -48,6 +48,7 @@ import org.apache.submarine.server.experiment.database.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.ExperimentService;
 import org.apache.submarine.server.rest.RestConstants;
 import org.apache.submarine.server.serve.MlflowModelRegistryClient;
+import org.mlflow.api.proto.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.mlflow.tracking.MlflowClient;
@@ -61,6 +62,9 @@ public class ExperimentManager {
   private static volatile ExperimentManager manager;
 
   private final AtomicInteger experimentCounter = new AtomicInteger(0);
+
+  private Optional<Service.Experiment> MlflowExperimentOptional;
+  private org.mlflow.api.proto.Service.Experiment MlflowExperiment;
 
   private static MlflowModelRegistryClient mlflowModelRegistryClient = new MlflowModelRegistryClient();
 
@@ -319,10 +323,19 @@ public class ExperimentManager {
    * @throws SubmarineRuntimeException the service error
    */
   public ServeResponse createServe(ServeRequest spec) throws SubmarineRuntimeException {
-    if (!mlflowModelRegistryClient.checkModelExist(spec.getModelName())){
+    int retryLeft = 5;
+    while (!mlflowModelRegistryClient.checkModelExist(spec.getModelName(), spec.getModelVersion())
+        && retryLeft > 0) {
+      try {
+        Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        continue;
+      }
+      retryLeft--;
+    }
+    if (retryLeft == 0){
       throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(), "Invalid model name.");
     }
-    // TODO(jeff-901): check if model version exists.
 
     ServeResponse serve = submitter.createServe(spec);
     return serve;
