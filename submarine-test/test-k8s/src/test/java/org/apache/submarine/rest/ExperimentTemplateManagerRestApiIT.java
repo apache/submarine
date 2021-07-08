@@ -32,7 +32,6 @@ import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplate;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateSubmit;
-import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTemplateSpec;
 import org.apache.submarine.server.gson.ExperimentIdDeserializer;
@@ -224,8 +223,6 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
     Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
     
     ExperimentSpec expSpec = experiment.getSpec();
-    // ExperimentMeta expMeta = expSpec.getMeta();
-    // String expID = experiment.getSpec().getMeta().getExpID();
     LOG.info(expSpec.getMeta().toString());
     Assert.assertEquals(tplSubmit.getParams().get(TPL_SUBMIT_NAME_PARM), expSpec.getMeta().getName());
   }
