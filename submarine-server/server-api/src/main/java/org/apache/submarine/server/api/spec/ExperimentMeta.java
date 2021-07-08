@@ -65,7 +65,7 @@ public class ExperimentMeta {
 
   /**
    * experiment id must be unique within a namespace. Is required when creating experiment.
-   * @param name experiment name
+   * @param experimentId experiment id
    */
   public void setExpID(String experimentId) {
     this.experimentId = experimentId;
@@ -156,6 +156,7 @@ public class ExperimentMeta {
   public String toString() {
     return "ExperimentMeta{" +
       "name='" + name + '\'' +
+      ", experimentId='" + experimentId + '\'' +
       ", namespace='" + namespace + '\'' +
       ", framework='" + framework + '\'' +
       ", cmd='" + cmd + '\'' +
