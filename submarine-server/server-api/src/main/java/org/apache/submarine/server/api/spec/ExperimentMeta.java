@@ -59,7 +59,7 @@ public class ExperimentMeta {
    * Get the experiment id which is unique within a namespace.
    * @return experiment id
    */
-  public String getExpID() {
+  public String getExperimentId() {
     return experimentId;
   }
 
@@ -67,7 +67,7 @@ public class ExperimentMeta {
    * experiment id must be unique within a namespace. Is required when creating experiment.
    * @param experimentId experiment id
    */
-  public void setExpID(String experimentId) {
+  public void setExperimentId(String experimentId) {
     this.experimentId = experimentId;
   }
 

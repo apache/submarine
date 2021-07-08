@@ -121,7 +121,7 @@ public class ExperimentSpecParser {
 
   private static V1ObjectMeta parseMetadata(ExperimentSpec experimentSpec) {
     V1ObjectMeta meta = new V1ObjectMeta();
-    meta.setName(experimentSpec.getMeta().getExpID());
+    meta.setName(experimentSpec.getMeta().getExperimentId());
     Map<String, String> labels = new HashMap<>();
     labels.put(ExperimentMeta.SUBMARINE_EXPERIMENT_NAME, experimentSpec.getMeta().getName());
     meta.setLabels(labels);
