@@ -25,6 +25,10 @@ import java.util.Map;
  * ExperimentMeta is metadata that all experiments must have.
  */
 public class ExperimentMeta {
+
+  public static final String SUBMARINE_EXPERIMENT_NAME = "submarine-experiment-name";
+
+  private String experimentId;
   private String name;
   private String namespace;
   private String framework;
@@ -49,6 +53,22 @@ public class ExperimentMeta {
    */
   public void setName(String name) {
     this.name = name;
+  }
+
+  /**
+   * Get the experiment id which is unique within a namespace.
+   * @return experiment id
+   */
+  public String getExperimentId() {
+    return experimentId;
+  }
+
+  /**
+   * experiment id must be unique within a namespace. Is required when creating experiment.
+   * @param experimentId experiment id
+   */
+  public void setExperimentId(String experimentId) {
+    this.experimentId = experimentId;
   }
 
   /**
@@ -136,6 +156,7 @@ public class ExperimentMeta {
   public String toString() {
     return "ExperimentMeta{" +
       "name='" + name + '\'' +
+      ", experimentId='" + experimentId + '\'' +
       ", namespace='" + namespace + '\'' +
       ", framework='" + framework + '\'' +
       ", cmd='" + cmd + '\'' +

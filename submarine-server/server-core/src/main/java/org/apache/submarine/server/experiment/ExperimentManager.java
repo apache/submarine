@@ -114,8 +114,10 @@ public class ExperimentManager {
     spec.getMeta().getEnvVars().put(RestConstants.SUBMARINE_TRACKING_URI, url);
     spec.getMeta().getEnvVars().put(RestConstants.LOG_DIR_KEY, RestConstants.LOG_DIR_VALUE);
 
-    String lowerName = spec.getMeta().getName().toLowerCase();
+    String lowerName = spec.getMeta().getName().toLowerCase(); 
     spec.getMeta().setName(lowerName);
+    spec.getMeta().setExperimentId(id.toString().replaceAll("_", "-"));
+    LOG.info(spec.getMeta().getExperimentId());
 
     Experiment experiment = submitter.createExperiment(spec);
     experiment.setExperimentId(id);
@@ -125,7 +127,6 @@ public class ExperimentManager {
     spec.getMeta().getEnvVars().remove(RestConstants.LOG_DIR_KEY);
 
     experiment.setSpec(spec);
-
     ExperimentEntity entity = buildEntityFromExperiment(experiment);
     experimentService.insert(entity);
 

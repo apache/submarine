@@ -40,7 +40,6 @@ public class MLJobConverter {
     Experiment experiment = new Experiment();
     experiment.setUid(mlJob.getMetadata().getUid());
     experiment.setName(mlJob.getMetadata().getName());
-
     DateTime dateTime = mlJob.getMetadata().getCreationTimestamp();
     if (dateTime != null) {
       experiment.setAcceptedTime(dateTime.toString());

@@ -45,7 +45,7 @@
       <td>
         <label nz-checkbox [(ngModel)]="checkedList[i]"></label>
       </td>
-      <td>{{ data.name }}</td>
+      <td>{{ data.spec.meta.name }}</td>
       <td>
         <a [routerLink]="['info', data.experimentId]">
           {{ data.experimentId }}
