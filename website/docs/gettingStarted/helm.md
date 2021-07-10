@@ -1,5 +1,5 @@
 ---
-title: Deploy Submarine On K8s
+title: Deploy Submarine with Helm
 ---
 
 <!--
@@ -20,66 +20,40 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
+# Deploy Submarine with Helm
+With the help of [Helm](https://helm.sh/), users can deploy Submarine service to Kubernetes in one command. 
+Check [helm-charts/submarine](https://github.com/apache/submarine/tree/master/helm-charts/submarine) for more details.
 
-## Deploy Submarine Using Helm Chart (Recommended)
+## Prerequisite
+* Install Helm v3: https://helm.sh/docs/intro/install/ 
+* A Kubernetes environment (ex: minikube or kind)
 
-Submarine's Helm Chart will deploy Submarine Server, TF/PyTorch Operator, Notebook controller
-and Traefik. We use the TF/PyTorch operator to run tf/pytorch job, the notebook controller to
-manage jupyter notebook and Traefik as reverse-proxy.
-
-
-### Install Helm
-
-Helm v3 is minimum requirement.
-See here for installation: https://helm.sh/docs/intro/install/
-
-### Install Submarine
-
-The Submarine helm charts is released with the source code for now.
-Please go to `http://submarine.apache.org/download.html` to download
-
-- Install Helm charts from source code
+## Deploy Submarine to Kubernetes
 ```bash
-cd <PathTo>/submarine
+git clone https://github.com/apache/submarine.git
+cd submarine
 helm install submarine ./helm-charts/submarine
 ```
-This will install submarine in the "default" namespace.
-The images are from Docker hub `apache/submarine`. See `./helm-charts/submarine/values.yaml` for more details
+* With these commands, the Submarine service will be deployed to the "default" namespace.
+* The first time installation will take about 10 mins because the docker images are pulled from [apache/submarine](https://hub.docker.com/r/apache/submarine) on DockerHub.
 
-If we'd like use a different namespace like "submarine"
+
+## Verify installation
 ```bash
-kubectl create namespace submarine
-helm install submarine ./helm-charts/submarine -n submarine
+kubectl get all
 ```
+* TODO: screenshot
 
-> Note that if you encounter below issue when installation:
+## Uninstall Submarine
 ```bash
-Error: rendered manifests contain a resource that already exists.
-Unable to continue with install: existing resource conflict: namespace: , name: podgroups.scheduling.incubator.k8s.io, existing_kind: apiextensions.k8s.io/v1beta1, Kind=CustomResourceDefinition, new_kind: apiextensions.k8s.io/v1beta1, Kind=CustomResourceDefinition
-```
-It might be caused by the previous installed submarine charts. Fix it by running:
-```bash
-kubectl delete crd/tfjobs.kubeflow.org && kubectl delete crd/podgroups.scheduling.incubator.k8s.io && kubectl delete crd/pytorchjobs.kubeflow.org
-```
+helm uninstall submarine
 
-- Verify installation
+# Check
+helm ls 
+``` 
 
-Once you got it installed, check with below commands and you should see similar outputs:
-```bash
-kubectl get pods
-```
-
-```bash
-NAME                                              READY   STATUS    RESTARTS   AGE
-notebook-controller-deployment-5db8b6cbf7-k65jm   1/1     Running   0          5s
-pytorch-operator-7ff5d96d59-gx7f5                 1/1     Running   0          5s
-submarine-database-8d95d74f7-ntvqp                1/1     Running   0          5s
-submarine-server-b6cd4787b-7bvr7                  1/1     Running   0          5s
-submarine-traefik-9bb6f8577-66sx6                 1/1     Running   0          5s
-tf-job-operator-7844656dd-lfgmd                   1/1     Running   0          5s
-```
-
-### Configure volume type
+# Helm chart configuation (values.yaml)
+## Volume Type
 Submarine can support various [volume types](https://kubernetes.io/docs/concepts/storage/volumes/#nfs), currently including hostPath (default) and NFS. It can be easily configured in the `./helm-charts/submarine/values.yaml`, or you can override the default values in `values.yaml` by [helm CLI](https://helm.sh/docs/helm/helm_install/).
 
 #### hostPath
@@ -171,10 +145,4 @@ http://127.0.0.1:32080
 If minikube is installed, use the following command to find the URL to the Submarine server.
 ```
 $ minikube service submarine-traefik --url
-```
-
-
-### Uninstall Submarine
-```bash
-helm delete submarine
 ```

@@ -1,5 +1,5 @@
 ---
-title: Submarine on K8s
+title: Dependencies for Submarine
 ---
 <!--
 Licensed to the Apache Software Foundation (ASF) under one
@@ -19,13 +19,11 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-Submarine for K8s supports distributed TensorFlow and PyTorch.
+# Dependencies
+* These are the dependencies currently used by Apache Submarine.
 
-Submarine can run on K8s >= `1.14`, supports features like GPU isolation.
-
-We have validated Submarine on the following versions:
-
-| K8s Version   | Support?  |
+# Kubernetes
+| Kubernetes Version   | Support?  |
 | ------------- |:-------------:|
 | 1.13.x (or earlier) | X |
 | 1.14.x | √ |
@@ -34,12 +32,11 @@ We have validated Submarine on the following versions:
 | 1.17.x | To be verified |
 | 1.18.x | To be verified |
 
-## Install Submarine
+# Java
+* TODO
 
-### Setup Kubernetes
-Submarine can be deployed on any K8s environment if version matches. If you don't have a running K8s, you can set up a K8s using [Docker Desktop](https://www.docker.com/products/docker-desktop), [MiniKube](https://kubernetes.io/docs/tasks/tools/install-minikube/), or [kind, Kubernetes-in-Docker](https://kind.sigs.k8s.io/).
+# Maven
+* TODO
 
-From our experiences, Docker Desktop is an easier choice.
-
-### Install Submarine Use Helm Charts
-After you have an up-and-running K8s, you can follow [Submarine Helm Charts Guide](helm) to deploy Submarine services on K8s cluster in minutes.
+# Docker
+* TODO
