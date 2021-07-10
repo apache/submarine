@@ -60,13 +60,6 @@ module.exports = {
             ],
             "Administrator Docs": [
                 {
-                    "Submarine on Kubernetes": [
-                        "adminDocs/k8s/README",
-                        "adminDocs/k8s/kind",
-                        "adminDocs/k8s/helm",
-                    ],
-                },
-                {
                     "Submarine on Yarn": ["adminDocs/yarn/README"],
                 },
             ],
