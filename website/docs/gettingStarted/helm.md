@@ -22,7 +22,7 @@ under the License.
 -->
 # Deploy Submarine with Helm
 With the help of [Helm](https://helm.sh/), users can deploy Submarine service to Kubernetes in one command. 
-Check [helm-charts/submarine](../../../helm-charts/submarine) for more details.
+Check [helm-charts/submarine](https://github.com/apache/submarine/tree/master/helm-charts/submarine) for more details.
 
 ## Prerequisite
 * Install Helm v3: https://helm.sh/docs/intro/install/ 
