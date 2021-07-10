@@ -49,9 +49,9 @@ mvn -Phadoop-2.9 clean package install -DskipTests verify -DskipRat -am -pl subm
     + Call `submarine-cloud/hack/deploy-submarine.sh` to deploy the submarine system in the k8s cluster using the latest `submarine`, `database` and `operator` docker images.
     + Call the test cases in `submarine-test/test-k8s/` for testing.
 
-### Run k8s test in travis
+### Run k8s test in Github Action
 
-Each time a code is submitted, travis is automatically triggered for testing.
+Each time a code is submitted, Github Action is automatically triggered for testing.
 
 ## E2E test
 
