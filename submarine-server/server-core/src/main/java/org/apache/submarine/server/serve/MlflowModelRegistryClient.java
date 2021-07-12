@@ -23,13 +23,15 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 
 import java.io.IOException;
 import java.net.URI;
+import javax.ws.rs.core.Response.Status;
 
 public class MlflowModelRegistryClient {
 
-  public boolean checkModelExist(String modelName, String modelVersion){
+  public void checkModelExist(String modelName, String modelVersion) throws SubmarineRuntimeException {
     HttpClient client = HttpClients.createDefault();
     HttpGet request = new HttpGet();
     request.setHeader("Content-Type", "application/json");
@@ -40,9 +42,11 @@ public class MlflowModelRegistryClient {
     HttpResponse response;
     try {
       response = client.execute(request);
-    } catch (IOException e){
-      return false;
+    } catch (IOException e) {
+      throw new SubmarineRuntimeException(Status.INTERNAL_SERVER_ERROR.getStatusCode() , e.getMessage());
     }
-    return response.getStatusLine().getStatusCode() == 200;
+    if (response.getStatusLine().getStatusCode() != 200) {
+      throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode() , "Invalid model name.");
+    }
   }
 }

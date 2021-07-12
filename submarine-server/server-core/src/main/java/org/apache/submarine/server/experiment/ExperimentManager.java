@@ -323,20 +323,7 @@ public class ExperimentManager {
    * @throws SubmarineRuntimeException the service error
    */
   public ServeResponse createServe(ServeRequest spec) throws SubmarineRuntimeException {
-    int retryLeft = 5;
-    while (!mlflowModelRegistryClient.checkModelExist(spec.getModelName(), spec.getModelVersion())
-        && retryLeft > 0) {
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException e) {
-        continue;
-      }
-      retryLeft--;
-    }
-    if (retryLeft == 0){
-      throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(), "Invalid model name.");
-    }
-
+    mlflowModelRegistryClient.checkModelExist(spec.getModelName(), spec.getModelVersion());
     ServeResponse serve = submitter.createServe(spec);
     return serve;
   }
