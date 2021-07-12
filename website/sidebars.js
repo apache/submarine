@@ -23,6 +23,7 @@ module.exports = {
             "Introduction": [],
             "Getting Started": [
                 "gettingStarted/localDeployment",
+                "gettingStarted/kind",
                 "gettingStarted/notebook",
                 "gettingStarted/python-sdk",
             ],
@@ -62,6 +63,7 @@ module.exports = {
             ],
             "Developer Docs": [
                 "devDocs/README",
+                "devDocs/Dependencies",
                 "devDocs/BuildFromCode",
                 "devDocs/Development",
                 "devDocs/IntegrationTest",
