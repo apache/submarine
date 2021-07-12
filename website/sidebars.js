@@ -20,7 +20,7 @@
 module.exports = {
     docs: [
         {
-            Introduction: [],
+            "Introduction": [],
             "Getting Started": [
                 "gettingStarted/localDeployment",
                 "gettingStarted/notebook",
@@ -28,33 +28,30 @@ module.exports = {
             ],
             "User Docs": [
                 {
-                    "Submarine on Kubernetes": [
-                        "userDocs/k8s/run-experiment-template-rest",
-                        "userDocs/k8s/run-pytorch-experiment-rest",
-                        "userDocs/k8s/run-tensorflow-experiment-rest",
-                        "userDocs/k8s/how-to-use-tensorboard",
-                    ],
-                },
-                {
-                    "Submarine on Yarn": [
-                        "userDocs/yarn/YARNRuntimeGuide",
-                        "userDocs/yarn/TestAndTroubleshooting",
-                        "userDocs/yarn/Dockerfiles",
-                        "userDocs/yarn/WriteDockerfileMX",
-                        "userDocs/yarn/WriteDockerfilePT",
-                        "userDocs/yarn/WriteDockerfileTF",
+                    "API documentation": [
+                        "userDocs/api/experiment",
+                        "userDocs/api/environment",
+                        "userDocs/api/experiment-template",
+                        "userDocs/api/notebook",
                     ],
                 },
                 {
                     "Submarine SDK": [
-                        "userDocs/submarine-sdk/pysubmarine/development",
-                        "userDocs/submarine-sdk/pysubmarine/tracking",
+                        "userDocs/submarine-sdk/experiment-client",
+                        "userDocs/submarine-sdk/model-client",
+                        "userDocs/submarine-sdk/tracking",
                     ],
                 },
                 {
                     "Submarine Security": [
                         "userDocs/submarine-security/spark-security/README",
                         "userDocs/submarine-security/spark-security/build-submarine-spark-security-plugin",
+                    ],
+                },
+                {
+                    "Others": [
+                        "userDocs/others/mlflow",
+                        "userDocs/others/tensorboard",
                     ],
                 },
             ],
@@ -76,7 +73,7 @@ module.exports = {
                 "devDocs/Development",
                 "devDocs/IntegrationTest",
             ],
-            Community: [
+            "Community": [
                 "community/README",
                 "community/HowToCommit",
                 "community/contributing",
@@ -102,13 +99,13 @@ module.exports = {
                     ],
                 },
             ],
-            Releases: [
+            "Releases": [
                 "releases/submarine-release-0.2.0",
                 "releases/submarine-release-0.3.0",
                 "releases/submarine-release-0.4.0",
                 "releases/submarine-release-0.5.0",
             ],
-            RoadMap: [],
+            "RoadMap": [],
         },
     ],
     api: [
