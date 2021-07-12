@@ -75,7 +75,7 @@ tf-job-operator-6bb69fd44-mc8ww                   1/1     Running   0          3
 
 ## Example: Submit a mnist distributed example
 
-We put the code of this example [here](google.com). `train.py` is our training script, and `build.sh` is the script to build a docker image.
+We put the code of this example [here](https://github.com/apache/submarine/tree/master/dev-support/examples/quickstart). `train.py` is our training script, and `build.sh` is the script to build a docker image.
 
 ### 1. Write a python script for distributed training
 
