@@ -103,7 +103,3 @@ submarine-cloud-v2/charts/*
 
 # redundant logging files
 *.log
-
-# mlflow
-mlruns/
-mlflow*
