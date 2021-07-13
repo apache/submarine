@@ -67,6 +67,7 @@ module.exports = {
                 "devDocs/BuildFromCode",
                 "devDocs/Development",
                 "devDocs/IntegrationTest",
+                "devDocs/IntegrationTestK8s"
             ],
             "Community": [
                 "community/README",

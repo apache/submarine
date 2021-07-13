@@ -23,36 +23,6 @@ title: How to Run Integration Test
 
 3.  These two test modules can be applied to different test scenarios. (In the future, these two test modules may be combined or adjusted)
 
-## k8s test
-
-k8s test: When the user submits the code to his/her repository or the `apache/submarine` git repository, the travis test task will automatically start.
-
-test-k8s runs test cases in travis. It will first create a k8s cluster by using the kind tool in travis,
-
-and then compile and package the submarine project in `submarine-dist` directory to build a docker image.
-
-Then use this latest code to build a docker image and deploy a submarine system in k8s. Then run test case in the `test-k8s/..` directory.
-
-### Run k8s test in locally
-
-Executing the following command will perform the following actions:
-
-```
-mvn -Phadoop-2.9 clean package install -DskipTests verify -DskipRat -am -pl submarine-test/test-k8s
-```
-
-1. The submarine project will be compiled and packaged to generate `submarine-dist/target/submarine-<version>.tar.gz`
-2. Call the `submarine-cloud/hack/integration-test.sh` script
-
-    + Call the `build.sh` script under `submarine/dev-support/docker-images/` to generate the latest `submarine`, `database` and `operator` docker images.
-    + Call `submarine-cloud/hack/kind-cluster-build.sh` to create a k8s cluster
-    + Call `submarine-cloud/hack/deploy-submarine.sh` to deploy the submarine system in the k8s cluster using the latest `submarine`, `database` and `operator` docker images.
-    + Call the test cases in `submarine-test/test-k8s/` for testing.
-
-### Run k8s test in Github Action
-
-Each time a code is submitted, Github Action is automatically triggered for testing.
-
 ## E2E test
 
 ### E2E tests can be executed both locally and in Travis (For workbench developer)
