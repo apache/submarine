@@ -27,9 +27,9 @@ This document mainly describes the structure of each module of the Submarine pro
 
 Provide the CLI interface for submarine user. (Currently only support YARN service)
 
-### 2.2. submarine-cloud
+### 2.2. submarine-cloud-v2
 
-Define submarine operator. (Work in progress)
+The operator for Submarine application. For details, please see the [README on github](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/README.md).
 
 ### 2.3. submarine-commons
 
