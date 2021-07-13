@@ -23,45 +23,6 @@ title: How to Run Integration Test
 
 3.  These two test modules can be applied to different test scenarios. (In the future, these two test modules may be combined or adjusted)
 
-## k8s test
-
-* It checks the API on each page works correctly.
-
-* You can run the test-k8s either locally or on GitHub Actions.
-  * Before running the test-k8s, the KinD cluster must be created and also need to export the kubeconfig. 
-  * Then, compile and package the submarine project in `submarine-dist` directory for building a docker image. 
-  * Otherwise, the 8080 port in submarine-traefik should be forward. 
-  * Finally, the test case under the `test-k8s` directory is ready to run.
-
-### Run k8s test locally
-
-1. Ensure you have setup the KinD cluster. If you haven't, follow this [`tutorial`](../gettingStarted/kind)
-
-2. Create the KinD kubeconfig for test.
-
-  ```bash
-  export KUBECONFIG=~/.kube/kind-config-kind
-  # you must specify your kind cluster name (default: kind)
-  kind export kubeconfig --kubeconfig ${KUBECONFIG} --name ${KIND_CLUSTER_NAME}
-  ```
-3. Build the submarine from source and upgrade the server pod through this [`guide`](./Development/#build-from-source)
-
-4. Forward port
-
-  ```bash
-  kubectl port-forward --address 0.0.0.0 service/submarine-traefik 8080:80
-  ```
-
-5. Execute the test command
-
-  ```bash
-  mvn verify -DskipRat -pl :submarine-test-k8s -Phadoop-2.9 -B
-  ```
-
-### Run k8s test in Github Action
-
-Each time a code is submitted, Github Action is automatically triggered for testing.
-
 ## E2E test
 
 ### E2E tests can be executed both locally and in Travis (For workbench developer)
