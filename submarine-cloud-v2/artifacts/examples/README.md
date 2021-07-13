@@ -15,6 +15,20 @@ Before you start reading this document, you need to understand the following Kub
 * Custom Resource (CR)
 * Role-based access control (RBAC): Cluster Role, Cluster Role Binding, and Service Account
 
+`crd.yaml`
 
+This file defines the schema of our [custom resource](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/).
+
+`example-submarine.yaml`
+
+This file specifies the metadata of our custom resource, we can apply this file to deploy it.
+
+`submarine-operator-service-account.yaml`
+
+This file grants that submarine-operator has cluster-wide access, which allow it to operate on other resources.
+
+`submarine-operator.yaml`
+
+We can apply this file to deploy submarine-operator.
 
 
