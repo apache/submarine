@@ -38,7 +38,7 @@ Put ExperimentSpec in request body.
 | meta        | ExperimentMeta                    | Meta data of the experiment template.   |
 | environment | EnvironmentSpec                   | Environment of the experiment template. |
 | spec        | Map\<String, ExperimentTaskSpec\> | Spec of pods.                           |
-| code        | CodeSpec                          | TODO                                    |
+| code        | CodeSpec                          | Experiment codespec.                    |
 
 #### **ExperimentMeta**
 
@@ -67,10 +67,10 @@ See more details in [environment api](https://submarine.apache.org/docs/userDocs
 
 #### **CodeSpec**
 
-| Field Name | Type   | Description |
-| ---------- | ------ | ----------- |
-| syncMode   | String | TODO        |
-| url        | String | TODO        |
+| Field Name | Type   | Description             |
+| ---------- | ------ | ----------------------- |
+| syncMode   | String | sync mode of code spec. |
+| url        | String | url of code spec.       |
 
 ### Code Example
 
@@ -477,7 +477,7 @@ PATCH /api/v1/experiment/{id}
 | Field Name  | Type                              | In   | Description                             |
 | ----------- | --------------------------------- | ---- | --------------------------------------- |
 | id          | String                            | path | Experiment id.                          |
-| meta        | ExperimentMeta                    | body | Meta of the experiment template.        |
+| meta        | ExperimentMeta                    | body | Meta data of the experiment template.   |
 | environment | EnvironmentSpec                   | body | Environment of the experiment template. |
 | spec        | Map\<String, ExperimentTaskSpec\> | body | Spec of pods.                           |
 | code        | CodeSpec                          | body | TODO                                    |

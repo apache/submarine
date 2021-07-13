@@ -50,10 +50,10 @@ POST /api/v1/template
 
 | Field Name  | Type                              | Description                             |
 | ----------- | --------------------------------- | --------------------------------------- |
-| meta        | ExperimentMeta                    | Meta of the experiment template.        |
+| meta        | ExperimentMeta                    | Meta data of the experiment template.   |
 | environment | EnvironmentSpec                   | Environment of the experiment template. |
-| spec        | Map\<String, ExperimentTaskSpec\> | description of                          |
-| code        | CodeSpec                          | TODO                                    |
+| spec        | Map\<String, ExperimentTaskSpec\> | Spec of pods.                           |
+| code        | CodeSpec                          | Experiment codespec.                    |
 
 #### **ExperimentMeta**
 | Field Name | Type                  | Description              |
@@ -81,10 +81,10 @@ See more details in [environment api](https://submarine.apache.org/docs/userDocs
 
 #### **CodeSpec**
 
-| Field Name | Type   | Description |
-| ---------- | ------ | ----------- |
-| syncMode   | String | TODO        |
-| url        | String | TODO        |
+| Field Name | Type   | Description             |
+| ---------- | ------ | ----------------------- |
+| syncMode   | String | sync mode of code spec. |
+| url        | String | url of code spec.       |
 
 ### Code Example
 
