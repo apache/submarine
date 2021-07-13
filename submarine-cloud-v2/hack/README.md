@@ -18,7 +18,6 @@ This script will use the generators in [k8s.io/code-generator](https://github.co
 
 The codes will be generated at `github.com/apache/submarine/submarine-cloud-v2/pkg/client/`.
 
-To run the script: 
 ```bash
 # You should be under the folder `submarine-cloud-v2`
 ./hack/update-codegen.sh
@@ -28,7 +27,6 @@ To run the script:
 
 This script will verify whether your codes are outdated. If your codes are outdated, please regenerate using `update-codegen.sh`.
 
-To run the script:
 ```bash
 # You should be under the folder `submarine-cloud-v2`
 ./hack/verify-codegen.sh
