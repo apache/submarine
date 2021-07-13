@@ -19,9 +19,9 @@ title: Development Guide
 
 ## Overview
 
-From [Getting Started/Submarine Local Deployment](../gettingStarted/localDeployment.md), you already know that Submarine is installed and uninstalled by Helm. As you can see by `kubectl get pods`, there are six major components in Submarine, including `notebook-controller`, `pytorch-operator`, `submarine-database`, `submarine-server`, `submarine-traefik` and `tf-job-operator`. They are launched as pods in kubernetes from the corresponding docker images.
+From [Getting Started/Submarine Local Deployment](../gettingStarted/localDeployment.md), you already know that Submarine is installed and uninstalled by Helm. As you can see by `kubectl get pods`, there are nine major components in Submarine, including `notebook-controller`, `pytorch-operator`, `submarine-database`, `submarine-minio`, `submarine-mlflow`, `submarine-server`, `submarine-tensorboard`, `submarine-traefik`, and `tf-job-operator`. They are launched as pods in kubernetes from the corresponding docker images.
 
-Some of the components are borrowed from other projects (kubeflow, traefik), including `notebook-controller`, `pytorch-operator`, `submarine-traefik` and `tf-job-operator`. The rest of them are built by ourselves, including `submarine-database` and `submarine-server`.
+Some of the components are borrowed from other projects (kubeflow, traefik), including `notebook-controller`, `pytorch-operator`, `submarine-traefik` and `tf-job-operator`. The rest of them are built by ourselves, including `submarine-database`, `submarine-minio`, `submarine-mlflow`, `submarine-tensorboard`, and `submarine-server`.
 
 The purpose of the components are as the following:
 
@@ -31,9 +31,12 @@ The purpose of the components are as the following:
 4. `submarine-traefik`: manage the ingress service
 
 5. `submarine-database`: store metadata in mysql database
-6. `submarine-server`: handle api request, submit job to container orchestration, and connect with database.
+6. `submarine-minio`: store machine learning artifacts in minio object storage
+7. `submarine-mlflow`: platform for managing the end-to-end machine learning lifecycle
+8. `submarine-tensorboard`: tool for providing the measurements and visualizations during ml workflow.
+9. `submarine-server`: handle api request, submit job to container orchestration, and connect with database.
 
-In this document, we only focus on the last two components. You can learn how to develop server, database, and workbench here.
+In this document, we focus on `submarine-server` and `submarine-database`. You can learn how to develop server, database, and workbench here.
 
 ## Video
 
