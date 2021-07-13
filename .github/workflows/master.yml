@@ -157,11 +157,6 @@ jobs:
           kubectl cluster-info
           kubectl version
           kubectl get pods -n kube-system
-
-          # test-k8s require this config
-          export KUBECONFIG=~/.kube/kind-config-kind
-          kind export kubeconfig --kubeconfig ${KUBECONFIG}
-
           echo "current-context:" $(kubectl config current-context)
           echo "environment-kubeconfig:" ${KUBECONFIG}
       - name: Download compiled Submarine binaries

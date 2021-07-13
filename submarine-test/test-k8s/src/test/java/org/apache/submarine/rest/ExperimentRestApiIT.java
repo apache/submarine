@@ -91,8 +91,8 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
   public static void startUp() throws IOException {
     Assert.assertTrue(checkIfServerIsRunning());
 
-    // The kube config path defined by kind-cluster-build.sh
-    String confPath = System.getProperty("user.home") + "/.kube/kind-config-kind";
+    // The kube config is created when the cluster builds
+    String confPath = System.getProperty("user.home") + "/.kube/config";
     KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(confPath));
     ApiClient client = ClientBuilder.kubeconfig(config).build();
     Configuration.setDefaultApiClient(client);
