@@ -25,29 +25,38 @@ title: How to Run Integration Test
 
 ## k8s test
 
-k8s test: When the user submits the code to his/her repository or the `apache/submarine` git repository, the travis test task will automatically start.
+* It checks the API on each page works correctly.
 
-test-k8s runs test cases in travis. It will first create a k8s cluster by using the kind tool in travis,
+* You can run the test-k8s either locally or on GitHub Actions.
+  * Before running the test-k8s, the KinD cluster must be created and also need to export the kubeconfig. 
+  * Then, compile and package the submarine project in `submarine-dist` directory for building a docker image. 
+  * Otherwise, the 8080 port in submarine-traefik should be forward. 
+  * Finally, the test case under the `test-k8s` directory is ready to run.
 
-and then compile and package the submarine project in `submarine-dist` directory to build a docker image.
+### Run k8s test locally
 
-Then use this latest code to build a docker image and deploy a submarine system in k8s. Then run test case in the `test-k8s/..` directory.
+1. Ensure you have setup the KinD cluster. If you haven't, follow this [`tutorial`](../gettingStarted/kind)
 
-### Run k8s test in locally
+2. Create the KinD kubeconfig for test.
 
-Executing the following command will perform the following actions:
+  ```bash
+  export KUBECONFIG=~/.kube/kind-config-kind
+  # you must specify your kind cluster name (default: kind)
+  kind export kubeconfig --kubeconfig ${KUBECONFIG} --name ${KIND_CLUSTER_NAME}
+  ```
+3. Build the submarine from source and upgrade the server pod through this [`guide`](./Development/#build-from-source)
 
-```
-mvn -Phadoop-2.9 clean package install -DskipTests verify -DskipRat -am -pl submarine-test/test-k8s
-```
+4. Forward port
 
-1. The submarine project will be compiled and packaged to generate `submarine-dist/target/submarine-<version>.tar.gz`
-2. Call the `submarine-cloud/hack/integration-test.sh` script
+  ```bash
+  kubectl port-forward --address 0.0.0.0 service/submarine-traefik 8080:80
+  ```
 
-    + Call the `build.sh` script under `submarine/dev-support/docker-images/` to generate the latest `submarine`, `database` and `operator` docker images.
-    + Call `submarine-cloud/hack/kind-cluster-build.sh` to create a k8s cluster
-    + Call `submarine-cloud/hack/deploy-submarine.sh` to deploy the submarine system in the k8s cluster using the latest `submarine`, `database` and `operator` docker images.
-    + Call the test cases in `submarine-test/test-k8s/` for testing.
+5. Execute the test command
+
+  ```bash
+  mvn verify -DskipRat -pl :submarine-test-k8s -Phadoop-2.9 -B
+  ```
 
 ### Run k8s test in Github Action
 
