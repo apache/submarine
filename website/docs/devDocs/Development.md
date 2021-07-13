@@ -146,3 +146,66 @@ Checkstyle plugin may help to detect violations directly from the IDE.
    ```bash
    helm upgrade --set submarine.database.dev=true submarine ./helm-charts/submarine
    ```
+
+## Develop operator
+
+- Before building
+
+  1. We assume the developer use **minikube** as a local kubernetes cluster.
+  2. Make sure you have **NOT** installed the submarine helm-chart in the cluster.
+
+1. Start the minikube cluster
+
+  ```bash
+  minikube start --vm-driver=docker --kubernetes-version v1.15.11
+  ```
+
+2. Install the dependencies
+
+  ```bash
+  cd submarine-cloud-v2/
+  go mod vendor
+  ```
+
+3. Run the operator out-of-cluster
+
+  ```bash
+  make
+  ./submarine-operator
+  ```
+
+4. Deploy a Submarine
+
+  ```bash
+  kubectl apply -f artifacts/examples/crd.yaml
+  kubectl create ns submarine-user-test
+  kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
+  ```
+
+5. Exposing service
+
+  ```bash
+  # Method1 -- use minikube ip
+  minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
+
+  # Method2 -- use port-forwarding
+  kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
+  ```
+
+6. View workbench
+
+  If you use method 1 in step 5, please go to `http://{minikube ip}:32080`, ex: http://192.168.49.2:32080
+
+  If you use method 2 in step 5, please go to http://127.0.0.1:32080
+
+7. Delete submarine
+
+  ```bash
+  kubectl delete submarine example-submarine -n submarine-user-test
+  ```
+
+8. Stop the operator
+
+  Press ctrl+c to stop the operator.
+
+For other details, please check out the [README](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/README.md) and [Developer Guide](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/docs/developer-guide.md) on GitHub.
