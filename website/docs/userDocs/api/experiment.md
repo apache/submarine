@@ -21,8 +21,6 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-# Experiment
-
 ## Create Experiment (Using Anonymous/Embedded Environment)
 
 ```sh
