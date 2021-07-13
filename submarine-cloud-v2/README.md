@@ -110,3 +110,7 @@ kubectl delete submarine example-submarine -n submarine-user-test
 # Step9: Delete the submarine-operator
 kubectl delete deployment submarine-operator-demo
 ```
+
+## Development
+
+Please check out the [Developer Guide](./docs/developer-guide.md).
