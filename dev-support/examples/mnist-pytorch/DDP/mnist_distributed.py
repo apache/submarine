@@ -31,6 +31,7 @@ import torch.optim as optim
 
 WORLD_SIZE = int(os.environ.get('WORLD_SIZE', 1))
 rank = int(os.environ.get('RANK', 0))
+
 print('WORLD={} , RANK={}'.format(WORLD_SIZE,rank))
 class Net(nn.Module):
     def __init__(self):
@@ -182,6 +183,10 @@ if __name__ == '__main__':
         # for epoch in range(1, 6):
             train(args, model, device, train_loader, optimizer, epoch, writer, periscope)
             test(args, model, device, test_loader, writer, epoch, periscope)
-        periscope.save_model(model_type = "pytorch", model = model, artifact_path="pytorch-model", registered_model_name="pytorch-ddp-example")
     if (args.save_model):
         torch.save(model.state_dict(),"mnist_cnn.pt")
+
+"""
+Reference:
+https://github.com/kubeflow/pytorch-operator/blob/master/examples/mnist/mnist.py
+"""

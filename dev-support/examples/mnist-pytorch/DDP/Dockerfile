@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -14,31 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -euxo pipefail
+FROM python:3.7
+MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
-SUBMARINE_VERSION=0.6.0-SNAPSHOT
-SUBMARINE_IMAGE_NAME="distribution:${SUBMARINE_VERSION}"
+ADD ./tmp/submarine-sdk /opt/
+RUN pip install pillow==8.2.0 && \
+    pip install /opt/pysubmarine[pytorch] && \
+    pip install tensorboardX
 
-if [ -L ${BASH_SOURCE-$0} ]; then
-  PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
-else
-  PWD=$(dirname ${BASH_SOURCE-$0})
-fi
-export CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
-export SUBMARINE_HOME=${CURRENT_PATH}/../../..
-
-if [ -d "${CURRENT_PATH}/tmp" ] # if old tmp folder is still there, delete it.
-then
-  rm -rf "${CURRENT_PATH}/tmp"
-fi
-
-mkdir -p "${CURRENT_PATH}/tmp"
-cp -r "${SUBMARINE_HOME}/submarine-sdk" "${CURRENT_PATH}/tmp"
-
-# build image
-cd ${CURRENT_PATH}
-echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
-docker build -t ${SUBMARINE_IMAGE_NAME} .
-
-# clean temp file
-rm -rf "${CURRENT_PATH}/tmp"
+ADD ./mnist_distributed.py /opt/

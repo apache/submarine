@@ -14,29 +14,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-curl -X POST -H "Content-Type: application/json" -d '
-{
-  "meta": {
-    "name": "pytorch-distributive-example",
-    "namespace": "default",
-    "framework": "PyTorch",
-    "cmd": "python /opt/distribution.py",
-    "envVars": {
-      "ENV_1": "ENV1"
-    }
-  },
-  "environment": {
-    "image": "distribution:0.6.0-SNAPSHOT"
-  },
-  "spec": {
-    "Master": {
-      "replicas": 1,
-      "resources": "cpu=1,memory=128M"
-    },
-    "Worker": {
-      "replicas": 3,
-      "resources": "cpu=1,memory=128M"
-    }
-  }
-}
-' http://127.0.0.1:32080/api/v1/experiment
+set -euxo pipefail
+
+SUBMARINE_VERSION=0.6.0-SNAPSHOT
+SUBMARINE_IMAGE_NAME="ddp:${SUBMARINE_VERSION}"
+
+if [ -L ${BASH_SOURCE-$0} ]; then
+  PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
+else
+  PWD=$(dirname ${BASH_SOURCE-$0})
+fi
+export CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
+export SUBMARINE_HOME=${CURRENT_PATH}/../../../..
+
+if [ -d "${CURRENT_PATH}/tmp" ] # if old tmp folder is still there, delete it.
+then
+  rm -rf "${CURRENT_PATH}/tmp"
+fi
+
+mkdir -p "${CURRENT_PATH}/tmp"
+cp -r "${SUBMARINE_HOME}/submarine-sdk" "${CURRENT_PATH}/tmp"
+
+# build image
+cd ${CURRENT_PATH}
+echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
+docker build -t ${SUBMARINE_IMAGE_NAME} .
+
+# clean temp file
+rm -rf "${CURRENT_PATH}/tmp"
