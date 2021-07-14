@@ -156,20 +156,22 @@ If you want to update the website, you can click “Edit this page” on the web
 
 ![](https://lh4.googleusercontent.com/gYcKpxbsGAKv2giTRqkxOehPGnuvnhE31WjsAsYhFmACIZF3Wh2ipar7mZ7F_KRwecM-L1J8YJAgNigJsJUjqc-5IXeO2XGxCIcYpP9CdSc3YByuUkjT_Bezby2HHtkBLyE1ZY_F)
 
+### Add a new page
+If you want to add a new page to the website, make sure to add the file path to [sidebars.js](https://github.com/apache/submarine/blob/master/website/sidebars.js). 
 
-## Installation
+### Installation
 It's used to install all dependencies for the website.
 ```console
 yarn install
 ```
 
-## Build
+### Build
 Make sure you can successfully build the website before creating a pull request.
 ```console
 yarn build
 ```
 
-## Local Development
+### Local Development
 This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
 ```console
 yarn start
