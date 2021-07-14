@@ -150,7 +150,7 @@ Checkstyle plugin may help to detect violations directly from the IDE.
 ## Develop Submarine Website
 Submarine website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
 
-When committing a new patch to the `submarine` repo, Docusaurus will help us generate the `html` and `javascript` files and push them to  https://github.com/apache/submarine-site/tree/asf-site.
+We store all the website content in markdown format in the `submarine/website/docs`. When committing a new patch to the `submarine` repo, Docusaurus will help us generate the `html` and `javascript` files and push them to  https://github.com/apache/submarine-site/tree/asf-site.
 
 If you want to update the website, you can click “Edit this page” on the website.
 
