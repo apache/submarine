@@ -55,7 +55,7 @@ See more details in [environment api](https://submarine.apache.org/docs/userDocs
 
 | Field Name | Type                  | Description              |
 | ---------- | --------------------- | ------------------------ |
-| envVars    | Map\<String, String\> | Environmental variables. |
+| envVars    | Map<String, String\>  | Environmental variables. |
 | resources  | String                | Resourecs of the pod.    |
 
 ### Code Example

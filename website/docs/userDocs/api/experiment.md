@@ -37,7 +37,7 @@ Put ExperimentSpec in request body.
 | ----------- | --------------------------------- | --------------------------------------- |
 | meta        | ExperimentMeta                    | Meta data of the experiment template.   |
 | environment | EnvironmentSpec                   | Environment of the experiment template. |
-| spec        | Map\<String, ExperimentTaskSpec\> | Spec of pods.                           |
+| spec        | Map<String, ExperimentTaskSpec> | Spec of pods.                           |
 | code        | CodeSpec                          | Experiment codespec.                    |
 
 #### **ExperimentMeta**
@@ -48,9 +48,13 @@ Put ExperimentSpec in request body.
 | namespace  | String                | Experiment namespace.    |
 | framework  | String                | Experiemnt framework.    |
 | cmd        | String                | Command.                 |
-| envVars    | Map\<String, String\> | Environmental variables. |
+| envVars    | Map<String, String>   | Environmental variables. |
 
 #### **EnvironmentSpec**
+
+There are two types of environment: Anonymous and Predefined.
+- Anonymous environment: only specify `dockerImage` in environment spec. The container will be built on the docker image.
+- Embedded environment: specify `name` in environment spec. The container will be built on the existing environment (including dockerImage and kernalSpec).
 
 See more details in [environment api](https://submarine.apache.org/docs/userDocs/api/environment).
 
@@ -63,14 +67,16 @@ See more details in [environment api](https://submarine.apache.org/docs/userDocs
 | name       | String                | Task name.               |
 | image      | String                | Image name.              |
 | cmd        | String                | Command.                 |
-| envVars    | Map\<String, String\> | Environmental variables. |
+| envVars    | Map<String, String>   | Environmental variables. |
 
 #### **CodeSpec**
 
-| Field Name | Type   | Description             |
-| ---------- | ------ | ----------------------- |
-| syncMode   | String | sync mode of code spec. |
-| url        | String | url of code spec.       |
+Currently only support pulling from github. HDFS, NFS and s3 are in development
+
+| Field Name | Type                          | Description             |
+| ---------- | ------------------------------| ----------------------- |
+| syncMode   | String \(git\|hdfs\|nfs\|s3\) | sync mode of code spec. |
+| url        | String                        | url of code spec.       |
 
 ### Code Example
 
@@ -479,7 +485,7 @@ PATCH /api/v1/experiment/{id}
 | id          | String                            | path | Experiment id.                          |
 | meta        | ExperimentMeta                    | body | Meta data of the experiment template.   |
 | environment | EnvironmentSpec                   | body | Environment of the experiment template. |
-| spec        | Map\<String, ExperimentTaskSpec\> | body | Spec of pods.                           |
+| spec        | Map<String, ExperimentTaskSpec>   | body | Spec of pods.                           |
 | code        | CodeSpec                          | body | TODO                                    |
 
 ### Code Example

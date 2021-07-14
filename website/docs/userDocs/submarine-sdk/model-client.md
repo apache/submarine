@@ -21,122 +21,123 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-The submarine ModelsClient provides a high-level API for managing and serving your models.
+## class ModelClient()
 
-## ModelsClient.start()->[Active Run](https://mlflow.org/docs/latest/_modules/mlflow/tracking/fluent.html#ActiveRun)
+The submarine ModelsClient provides a high-level API for logging metrics / parameters and managing models.
 
-1. Start a new Mlflow run
-2. Direct the logging of the artifacts and metadata to the Run named "worker_i" under Experiment "job_id"
-3. If in distributed training, worker and job id would be parsed from environment variable
-4. If in local traning, worker and job id will be generated.
-   :return: Active Run
+### `ModelsClient(tracking_uri=None, registry_uri=None)->ModelsClient`
 
-## ModelsClient.log_param(key, value)->None
+Initialize a `ModelsClient` instance.
+
+> **Parameters**
+  - **tracking_uri**: If run in Submarine, you do not need to specify it. Otherwise, specify the external tracking_uri.
+  - **registry_uri**:  If run in Submarine, you do not need to specify it. Otherwise, specify the external registry_uri.
+
+> **Returns**
+  - ModelsClient instance
+
+Example
+
+```python
+from submarine import ModelsClient
+
+modelClient = ModelsClient(tracking_uri="0.0.0.0:4000", tracking_uri="0.0.0.0:5000")
+```
+### `ModelsClient.start()->[Active Run]`
+
+For details of [Active Run](https://mlflow.org/docs/latest/_modules/mlflow/tracking/fluent.html#ActiveRun)
+
+Start a new Mlflow run, and direct the logging of the artifacts and metadata to the Run named "worker_i" under Experiment "job_id". If in distributed training, worker and job id would be parsed from environment variable. If in local traning, worker and job id will be generated.
+
+> **Returns**
+  - Active Run
+
+### `ModelsClient.log_param(key, value)->None`
 
 Log parameter under the current run.
 
-- ### Parameters
-  - **key** – Parameter name (string)
-  - **value** – Parameter value (string, but will be string-ified if not)
-- ### example
+> **Parameters**
+  - **key** – Parameter name
+  - **value** – Parameter value
 
-```
+Example
+
+```python
 from submarine import ModelsClient
 
-periscope = ModelsClient()
-with periscope.start() as run:
-  periscope.log_param("learning_rate", 0.01)
+modelClient = ModelsClient()
+with modelClient.start() as run:
+  modelClient.log_param("learning_rate", 0.01)
 ```
 
-## ModelsClient.log_params(params)->None
+### `ModelsClient.log_params(params)->None`
 
 Log a batch of params for the current run.
 
-- ### Parameters
+> **Parameters**
+  - **params** – Dictionary of param_name: String -> value
 
-  - **params** – Dictionary of param_name: String -> value: (String, but will be string-ified if not)
+Example
 
-- ### example
-
-```
+```python
 from submarine import ModelsClient
 
 params = {"learning_rate": 0.01, "n_estimators": 10}
 
-periscope = ModelsClient()
-with periscope.start() as run:
-  periscope.log_params(params)
+modelClient = ModelsClient()
+with modelClient.start() as run:
+  modelClient.log_params(params)
 ```
 
-## ModelsClient.log_metric(self, key, value, step=None)->None
+### `ModelsClient.log_metric(self, key, value, step=None)->None`
 
 Log a metric under the current run.
 
-- ### Parameters
-
+> **Parameters**
   - **key** – Metric name (string).
-  - **value** – Metric value (float). Note that some special values such as +/- Infinity may be replaced by other values depending on the store. For example, the SQLAlchemy store replaces +/- Infinity with max / min float values.
+  - **value** – Metric value (float).
   - **step** – Metric step (int). Defaults to zero if unspecified.
 
-- ### example
+Example
 
-```
+```python
 from submarine import ModelsClient
 
-periscope = ModelsClient()
-with periscope.start() as run:
-  periscope.log_metric("mse", 2500.00)
+modelClient = ModelsClient()
+with modelClient.start() as run:
+  modelClient.log_metric("mse", 2500.00)
 ```
 
-## ModelsClient.log_metrics(self, metrics, step=None)->None
+### `ModelsClient.log_metrics(self, metrics, step=None)->None`
 
 Log multiple metrics for the current run.
 
-- ### Parameters
-
-  - **metrics** – Dictionary of metric_name: String -> value: Float. Note that some special values such as +/- Infinity may be replaced by other values depending on the store. For example, sql based store may replace +/- Infinity with max / min float values.
+> **Parameters**
+  - **metrics** – Dictionary of metric_name: String -> value: Float.
   - **step** – A single integer step at which to log the specified Metrics. If unspecified, each metric is logged at step zero.
 
-- ### example
+Example
 
-```
+```python
 from submarine import ModelsClient
 
 metrics = {"mse": 2500.00, "rmse": 50.00}
 
-periscope = ModelsClient()
-with periscope.start() as run:
-  periscope.log_metrics(metrics)
+modelClient = ModelsClient()
+with modelClient.start() as run:
+  modelClient.log_metrics(metrics)
 ```
 
-## ModelsClient.load_model(self, name, version)->[ mlflow.pyfunc.PyFuncModel](https://mlflow.org/docs/latest/_modules/mlflow/pyfunc.html#PyFuncModel)
+### `(Beta) ModelsClient.save_model(self, model_type, model, artifact_path, registered_model_name=None)`
 
-Load a model stored in models Python function format with specific name and version.
+Save model to model registry.
+### `(Beta) ModelsClient.load_model(self, name, version)->mlflow.pyfunc.PyFuncModel`
 
-- ### Parameters
-  - **name** – Name of the containing registered model.(string).
-  - **version** – Version number of the model version.(string).
+Load a model from model registry.
+### `(Beta) ModelsClient.update_model(self, name, new_name)->None`
 
-## ModelsClient.update_model(self, name, new_name)->None
+Update a model by new name.
 
-Update registered model name.
+### `(Beta) ModelsClient.delete_model(self, name, version)->None`
 
-- ### Parameters
-  - **name** – Name of the registered model to update(string).
-  - **new name** – New proposed name for the registered model(string).
-
-## ModelsClient.delete_model(self, name, version)->None
-
-Delete model version in backend.
-
-- ### Parameters
-  - **name** – Name of the containing registered model.(string).
-  - **version** – Version number of the model version.(string).
-
-## ModelsClient.save_model(self, model_type, model, artifact_path, registered_model_name=None)
-
-Beta: Save model to server for managment and servering.
-
-- ### Parameters
-  - **name** – Name of the containing registered model.(string).
-  - **version** – Version number of the model version.(string).
+Delete a model in model registry.

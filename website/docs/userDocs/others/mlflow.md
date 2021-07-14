@@ -29,11 +29,25 @@ the result in MLflow UI. Below is the example of the usage of MLflow
 UI.
 
 ### Example
-1. `cd ./submarine/dev-support/examples/tracking`
-2. `eval $(minikube -p minikube docker-env)`
-3. `sh build.sh`(it will take few minutes)
-4. `sh post.sh`
-5. In the MLflow UI page, you can see the log_param and the log_metric
+1. Run the following code in the cluster
+
+```python
+from submarine import ModelsClient
+import random
+import time
+
+if __name__ == "__main__":
+  modelClient = ModelsClient()
+  with modelClient.start() as run:
+      modelClient.log_param("learning_rate", random.random())
+      for i in range(100):
+        time.sleep(1)
+        modelClient.log_metric("mse", random.random() * 100, i)
+        modelClient.log_metric("acc", random.random(), i)
+```
+
+2. In the MLflow UI page, you can see the log_param and the log_metric
     result. You can also compare the training between different workers.
+
 ![](../../assets/mlflow-ui.png)
 

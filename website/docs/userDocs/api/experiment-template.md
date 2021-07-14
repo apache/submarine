@@ -34,7 +34,7 @@ POST /api/v1/template
 | name           | String                              | body | Experiment template name. This is required. |
 | author         | String                              | body | Author name.                                |
 | description    | String                              | body | Description of the experiment template.     |
-| parameters     | List\<ExperimentTemplateParamSpec\> | body | Parameters of the experiment template.      |
+| parameters     | List<ExperimentTemplateParamSpec\>  | body | Parameters of the experiment template.      |
 | experimentSpec | ExperimentSpec                      | body | Spec of the experiment template.            |
 
 #### **ExperimentTemplateParamSpec**
@@ -52,7 +52,7 @@ POST /api/v1/template
 | ----------- | --------------------------------- | --------------------------------------- |
 | meta        | ExperimentMeta                    | Meta data of the experiment template.   |
 | environment | EnvironmentSpec                   | Environment of the experiment template. |
-| spec        | Map\<String, ExperimentTaskSpec\> | Spec of pods.                           |
+| spec        | Map<String, ExperimentTaskSpec\>  | Spec of pods.                           |
 | code        | CodeSpec                          | Experiment codespec.                    |
 
 #### **ExperimentMeta**
@@ -62,7 +62,7 @@ POST /api/v1/template
 | namespace  | String                | Experiment namespace.    |
 | framework  | String                | Experiment framework.    |
 | cmd        | String                | Command.                 |
-| envVars    | Map\<String, String\> | Environmental variables. |
+| envVars    | Map<String, String\>  | Environmental variables. |
 
 #### **EnvironmentSpec**
 
@@ -77,7 +77,7 @@ See more details in [environment api](https://submarine.apache.org/docs/userDocs
 | name       | String                | Task name.               |
 | image      | String                | Image name.              |
 | cmd        | String                | Command.                 |
-| envVars    | Map\<String, String\> | Environmental variables. |
+| envVars    | Map<String, String\>  | Environmental variables. |
 
 #### **CodeSpec**
 
@@ -413,7 +413,7 @@ PATCH /api/v1/template{name}
 | name           | String                              | path and body | Experiment template name. This is required. |
 | author         | String                              | body          | Author name.                                |
 | description    | String                              | body          | Description of the experiment template.     |
-| parameters     | List\<ExperimentTemplateParamSpec\> | body          | Parameters of the experiment template.      |
+| parameters     | List<ExperimentTemplateParamSpec\>  | body          | Parameters of the experiment template.      |
 | experimentSpec | ExperimentSpec                      | body          | Spec of the experiment template.            |
 
 ### Code Example
