@@ -150,23 +150,27 @@ Checkstyle plugin may help to detect violations directly from the IDE.
 ## Develop Submarine Website
 Submarine website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
 
+When committing a new patch to the `submarine` repo, Docusaurus will help us generate the `html` and `javascript` files and push them to  https://github.com/apache/submarine-site/tree/asf-site.
+
+If you want to update the website, you can click “Edit this page” on the website.
+
+![](https://lh3.googleusercontent.com/keep-bbsk/AGk0z-N-RrIK-ke-fBbgCJsBbz4xbI-sGrC_RLaMbAJPQ0GvXvurUm1n4NPkdtkRInKIAp9nWHSmpqi7UE49bg8VOxWCdtwHZ7wGEaOnxK4)
+
 
 ## Installation
-
+It's used to install all dependencies for the website.
 ```console
 yarn install
 ```
 
-## Local Development
-
-```console
-yarn start
-```
-This command starts a local development server and open up a browser window. Most changes are reflected
-live without having to restart the server.
 ## Build
-
+Make sure you can successfully build the website before creating a pull request.
 ```console
 yarn build
 ```
 
+## Local Development
+This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
+```console
+yarn start
+```
