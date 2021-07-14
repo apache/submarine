@@ -27,7 +27,7 @@ The submarine ModelsClient provides a high-level API for logging metrics / param
 
 ### `ModelsClient(tracking_uri=None, registry_uri=None)->ModelsClient`
 
-Intialize a `ModelsClient` instance.
+Initialize a `ModelsClient` instance.
 
 > **Parameters**
   - **tracking_uri**: If run in Submarine, you do not need to specify it. Otherwise, specify the external tracking_uri.
