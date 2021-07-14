@@ -21,7 +21,7 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-This document gives you a quick view on the basic usage of Submarine platform. You can finish each steps of ML model lifecycle on the platform without messing up with the troublesome environment problems.
+This document gives you a quick view on the basic usage of Submarine platform. You can finish each step of ML model lifecycle on the platform without messing up with the troublesome environment problems.
 
 ## Installation
 
@@ -29,7 +29,7 @@ This document gives you a quick view on the basic usage of Submarine platform. Y
 
 1. Prerequisite
 
-- Check dependency page for the compatible version
+- Check [dependency page](https://github.com/apache/submarine/blob/master/website/docs/devDocs/Dependencies.md) for the compatible version
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [helm](https://helm.sh/docs/intro/install/) (Helm v3 is minimum requirement.)
 - [minikube](https://minikube.sigs.k8s.io/docs/start/).
@@ -51,7 +51,6 @@ $ git clone https://github.com/apache/submarine.git
 $ cd submarine
 $ helm install submarine ./helm-charts/submarine
 ```
-
 ### Ensure submarine is ready
 
 1. Use kubectl to query the status of pods
@@ -72,6 +71,19 @@ submarine-tensorboard-6c44944dfb-tvbr9            1/1     Running   0          3
 submarine-traefik-7cbcfd4bd9-4bczn                1/1     Running   0          3h33m
 tf-job-operator-6bb69fd44-mc8ww                   1/1     Running   0          3h33m
 ```
+
+### Connect to workbench
+
+1. Port-forwarding
+
+```
+# using port-forwarding
+$ kubectl port-forward --address 0.0.0.0 service/submarine-traefik 32080:80
+```
+
+2. Open `http://0.0.0.0:32080`
+
+![](../assets/quickstart-worbench.png)
 
 ## Example: Submit a mnist distributed example
 
@@ -184,6 +196,8 @@ $ ./dev-support/examples/quickstart/build.sh
 2. To compare the metrics of each worker, you can select all workers and then click `compare`
 
   ![](../assets/quickstart-mlflow.png)
+
+  ![](../assets/quickstart-mlflow-2.png)
 
 
 ### 5. Serve the model (In development)
