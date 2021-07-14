@@ -18,7 +18,7 @@
 #
 
 export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m  -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
-mvn --no-transfer-progress install -DskipTests -pl "!org.apache.submarine:submarine-cloud"
+mvn --no-transfer-progress install -DskipTests
 
 ERRORS=$(mvn checkstyle:check | grep ERROR)
 
