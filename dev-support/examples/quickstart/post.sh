@@ -14,12 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo "Building base images"
 
-set -euo pipefail
-
-cd base/ubuntu-18.04
-
-docker build . -f Dockerfile.cpu.mx_latest -t mxnet-latest-cpu-base:0.0.1
-docker build . -f Dockerfile.gpu.mx_latest -t mxnet-latest-gpu-base:0.0.1
-echo "Finished building base images"
+curl -X POST -H "Content-Type: application/json" -d '
+{
+  "meta": {
+    "name": "quickstart",
+    "namespace": "default",
+    "framework": "TensorFlow",
+    "cmd": "python /opt/train.py",
+    "envVars": {
+      "ENV_1": "ENV1"
+    }
+  },
+  "environment": {
+    "image": "quickstart:0.6.0-SNAPSHOT"
+  },
+  "spec": {
+    "Worker": {
+      "replicas": 3,
+      "resources": "cpu=1,memory=1024M"
+    }
+  }
+}
+' http://127.0.0.1:32080/api/v1/experiment

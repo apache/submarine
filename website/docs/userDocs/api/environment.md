@@ -45,9 +45,9 @@ Put EnvironmentSpec in request body.
 | Field Name        | Type           | Description                        |
 | ----------------- | -------------- | ---------------------------------- |
 | name              | String         | Kernel name.                       |
-| channels          | List\<String\> | Names of the channels.             |
-| condaDependencies | List\<String\> | List of kernel conda dependencies. |
-| pipDependencies   | List\<String\> | List of kernel pip dependencies.   |
+| channels          | List<String\>   | Names of the channels.             |
+| condaDependencies | List<String\>   | List of kernel conda dependencies. |
+| pipDependencies   | List<String\>   | List of kernel pip dependencies.   |
 
 ### Code Example
 
