@@ -154,7 +154,7 @@ When committing a new patch to the `submarine` repo, Docusaurus will help us gen
 
 If you want to update the website, you can click “Edit this page” on the website.
 
-![](https://lh3.googleusercontent.com/keep-bbsk/AGk0z-N-RrIK-ke-fBbgCJsBbz4xbI-sGrC_RLaMbAJPQ0GvXvurUm1n4NPkdtkRInKIAp9nWHSmpqi7UE49bg8VOxWCdtwHZ7wGEaOnxK4)
+![](https://lh4.googleusercontent.com/gYcKpxbsGAKv2giTRqkxOehPGnuvnhE31WjsAsYhFmACIZF3Wh2ipar7mZ7F_KRwecM-L1J8YJAgNigJsJUjqc-5IXeO2XGxCIcYpP9CdSc3YByuUkjT_Bezby2HHtkBLyE1ZY_F)
 
 
 ## Installation
