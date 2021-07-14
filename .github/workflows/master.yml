@@ -15,7 +15,6 @@ env:
   EXCLUDE_SUBMITTER_K8S: "!:submarine-submitter-k8s"
   EXCLUDE_SUBMITTER: "!:submarine-server-submitter,!:submarine-submitter-k8s,!:submarine-submitter-yarn"
   EXCLUDE_COMMONS: "!:submarine-commons-cluster,!:submarine-commons-metastore,!:submarine-commons-rpc,!:submarine-commons-runtime,!:submarine-commons-utils"
-  EXCLUDE_CLOUD: "!:submarine-cloud"
   EXCLUDE_DIST: "!:submarine-dist"
   EXCLUDE_TEST: "!:submarine-test,!:submarine-test-e2e,!:submarine-test-k8s"
   EXCLUDE_SPARK_SECURTITY: "!:submarine-spark-security"
@@ -195,7 +194,7 @@ jobs:
         java -version
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
@@ -240,7 +239,7 @@ jobs:
         python3 ./dev-support/database/init-database.py
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
@@ -271,7 +270,7 @@ jobs:
         java -version
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
@@ -302,7 +301,7 @@ jobs:
         java -version
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
@@ -333,7 +332,7 @@ jobs:
         java -version
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
@@ -377,7 +376,7 @@ jobs:
         python3 ./dev-support/database/init-database.py
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
@@ -448,14 +447,14 @@ jobs:
         java -version
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_DIST}}"
+        MODULES: "-pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_DIST}}"
         PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
     - name: Test
       env:
-        TEST_MODULES: -pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLOUD}},${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_SPARK_SECURTITY}}
+        TEST_MODULES: -pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_SPARK_SECURTITY}}
         PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
       run: |
         echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
