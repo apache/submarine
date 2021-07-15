@@ -147,8 +147,7 @@ Checkstyle plugin may help to detect violations directly from the IDE.
    ```bash
    helm upgrade --set submarine.database.dev=true submarine ./helm-charts/submarine
    ```
-
-## Develop operator
+ ## Develop operator
 
 - Before building
 
@@ -210,3 +209,33 @@ Checkstyle plugin may help to detect violations directly from the IDE.
     Press ctrl+c to stop the operator.
 
 For other details, please check out the [README](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/README.md) and [Developer Guide](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/docs/developer-guide.md) on GitHub.
+
+## Develop Submarine Website
+Submarine website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
+
+We store all the website content in markdown format in the `submarine/website/docs`. When committing a new patch to the `submarine` repo, Docusaurus will help us generate the `html` and `javascript` files and push them to  https://github.com/apache/submarine-site/tree/asf-site.
+
+To update the website, click “Edit this page” on the website.
+
+![](https://lh4.googleusercontent.com/gYcKpxbsGAKv2giTRqkxOehPGnuvnhE31WjsAsYhFmACIZF3Wh2ipar7mZ7F_KRwecM-L1J8YJAgNigJsJUjqc-5IXeO2XGxCIcYpP9CdSc3YByuUkjT_Bezby2HHtkBLyE1ZY_F)
+
+### Add a new page
+If you want to add a new page to the website, make sure to add the file path to [sidebars.js](https://github.com/apache/submarine/blob/master/website/sidebars.js). 
+
+### Installation
+We use the yarn package manager to install all dependencies for the website
+```console
+yarn install
+```
+
+### Build
+Make sure you can successfully build the website before creating a pull request.
+```console
+yarn build
+```
+
+### Local Development
+This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
+```console
+yarn start
+```
