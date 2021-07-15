@@ -25,7 +25,7 @@ For `yaml` files, please use [prettier](https://prettier.io/) to format the code
 
 ## Generate API
 
-**Important**: You **MUST** put this repository in a folder named `github.com/apache/`, otherwise the code will be generated into wrong folder. Therefore the full path of this `developer-guide.md` should be like `SOMEWHERE_IN_FILESYSTEM/github.com/apache/submarine/submarine-cloud-v2/docs/developer-guide.md`.
+**Important**: You **MUST** put this repository in a folder named `github.com/apache/`, otherwise, the code will be generated into the wrong folder. Therefore, the full path of this `developer-guide.md` should be like `SOMEWHERE_IN_FILESYSTEM/github.com/apache/submarine/submarine-cloud-v2/docs/developer-guide.md`.
 
 We use [code-generator](https://github.com/kubernetes/code-generator) to generate a typed client, informers, listers and deep-copy functions.
 
@@ -118,12 +118,4 @@ helmActionConfig := helm.HelmInstall(
 //    helm uninstall helm-install-example-release
 helm.HelmUninstall("helm-install-example-release", helmActionConfig)
 
-```
-
-- Troubleshooting:
-  - If the release name exists, Helm will report the error "cannot re-use a name that is still in use".
-
-```
-helm ls
-helm uninstall helm-install-example-release
 ```
