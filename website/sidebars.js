@@ -66,7 +66,6 @@ module.exports = {
                 "devDocs/Dependencies",
                 "devDocs/BuildFromCode",
                 "devDocs/Development",
-                "devDocs/IntegrationTest",
                 "devDocs/IntegrationTestK8s",
                 "devDocs/IntegrationTestE2E",
             ],

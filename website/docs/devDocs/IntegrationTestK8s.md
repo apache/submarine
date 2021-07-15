@@ -18,13 +18,12 @@ title: How to Run Integration K8s Test
 
 ## Introduction
 
-* It checks the API on each page works correctly.
+* The test cases under the directory `test-k8s` are integration tests to ensure the correctness of the Submarine RESTful API.
 
-* You can run the test-k8s either locally or on GitHub Actions.
-  * Before running the test-k8s, the minikube (KinD) cluster must be created. 
+* You can run these tests either locally or on GitHub Actions.
+  * Before running the tests, the minikube (KinD) cluster must be created. 
   * Then, compile and package the submarine project in `submarine-dist` directory for building a docker image. 
-  * Otherwise, the 8080 port in submarine-traefik should be forward. 
-  * Finally, the test case under the `test-k8s` directory is ready to run.
+  * In addition, the 8080 port in submarine-traefik should be forwarded.
 
 ## Run k8s test locally
 
@@ -45,5 +44,4 @@ title: How to Run Integration K8s Test
   ```
 
 ## Run k8s test in GitHub Actions
-
-Each time a code is submitted, GitHub Actions is automatically triggered for testing.
+* Each time a code is submitted, GitHub Actions is triggered automatically.

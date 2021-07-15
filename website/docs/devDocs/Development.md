@@ -17,30 +17,28 @@ title: Development Guide
    limitations under the License.
 -->
 
-## Overview
+# Project Overview
+The document [Submarine Local Deployment](../gettingStarted/localDeployment.md) shows how to deploy the Submarine service to your Kubernetes cluster. The Submarine service consists mainly of nine components, and you can check them with the following command:
 
-From [Getting Started/Submarine Local Deployment](../gettingStarted/localDeployment.md), you already know that Submarine is installed and uninstalled by Helm. As you can see by `kubectl get pods`, there are nine major components in Submarine, including `notebook-controller`, `pytorch-operator`, `submarine-database`, `submarine-minio`, `submarine-mlflow`, `submarine-server`, `submarine-tensorboard`, `submarine-traefik`, and `tf-job-operator`. They are launched as pods in kubernetes from the corresponding docker images.
+```
+kubectl get pods -n ${your_namespace}
+```
 
-Some of the components are borrowed from other projects (kubeflow, traefik), including `notebook-controller`, `pytorch-operator`, `submarine-traefik` and `tf-job-operator`. The rest of them are built by ourselves, including `submarine-database`, `submarine-minio`, `submarine-mlflow`, `submarine-tensorboard`, and `submarine-server`.
+A brief introduction about these components: 
 
-The purpose of the components are as the following:
+1. **tf-operator**: Enable users to run TensorFlow jobs distributedly
+2. **pytorch-operator**: Enable users to run PyTorch jobs distributedly
+3. **notebook-controller**: Jupyter Notebook controller
+4. **submarine-traefik**: Kubernetes Ingress controller
+5. **submarine-database**: A MySQL database to store metadata
+6. **submarine-minio**: An object store for machine learning artifacts
+7. **submarine-mlflow**: A platform for model management
+8. **submarine-tensorboard**: A visualization tool for distributed training experiments
+9. **submarine-server**: Handle API requests, and submit distributed training experiments to Kubernetes.
 
-1. `tf-job-operator`: manage the operation of tensorflow jobs
-2. `pytorch-operator`: manage the operation of pytorch jobs
-3. `notebook-controller`: manage the operation of notebook instances
-4. `submarine-traefik`: manage the ingress service
-
-5. `submarine-database`: store metadata in mysql database
-6. `submarine-minio`: store machine learning artifacts in minio object storage
-7. `submarine-mlflow`: platform for managing the end-to-end machine learning lifecycle
-8. `submarine-tensorboard`: tool for providing the measurements and visualizations during ml workflow.
-9. `submarine-server`: handle api request, submit job to container orchestration, and connect with database.
-
-In this document, we focus on `submarine-server` and `submarine-database`. You can learn how to develop server, database, and workbench here.
-
+# Submarine Development
 ## Video
-
-From [This Video](https://youtu.be/32Na2k6Alv4), you will know how to deal with the configuration of Submarine and be able to contribute to it via Github.
+* From this [Video](https://youtu.be/32Na2k6Alv4), you will know how to deal with the configuration of Submarine and be able to contribute to it via Github.
 
 ## Develop server
 
@@ -69,9 +67,7 @@ Checkstyle plugin may help to detect violations directly from the IDE.
 
   For each class, there is a corresponding testClass. For example, `SubmarineServerTest` is used for testing `SubmarineServer`. Whenever you add a funtion in classes, you must write a unit test to test it.
 
-- Integration Test
-
-  See [IntegrationTest.md](./IntegrationTest.md)
+- Integration Test: [IntegrationTestK8s.md](./IntegrationTestK8s.md)
 
 ### Build from source
 
@@ -129,6 +125,8 @@ Checkstyle plugin may help to detect violations directly from the IDE.
    1. The request sent to `http://localhost:4200` will be redirected to `http://localhost:32080`.
    2. Open `http://localhost:4200` in browser to see the real-time change of workbench.
 
+4. Frontend E2E test: [IntegrationTestE2E.md](./IntegrationTestE2E.md) 
+
 ## Develop database
 
 1. Build the docker image
@@ -159,56 +157,56 @@ Checkstyle plugin may help to detect violations directly from the IDE.
 
 1. Start the minikube cluster
 
-  ```bash
-  minikube start --vm-driver=docker --kubernetes-version v1.15.11
-  ```
+    ```bash
+    minikube start --vm-driver=docker --kubernetes-version v1.15.11
+    ```
 
 2. Install the dependencies
 
-  ```bash
-  cd submarine-cloud-v2/
-  go mod vendor
-  ```
+    ```bash
+    cd submarine-cloud-v2/
+    go mod vendor
+    ```
 
 3. Run the operator out-of-cluster
 
-  ```bash
-  make
-  ./submarine-operator
-  ```
+    ```bash
+    make
+    ./submarine-operator
+    ```
 
 4. Deploy a Submarine
 
-  ```bash
-  kubectl apply -f artifacts/examples/crd.yaml
-  kubectl create ns submarine-user-test
-  kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
-  ```
+    ```bash
+    kubectl apply -f artifacts/examples/crd.yaml
+    kubectl create ns submarine-user-test
+    kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
+    ```
 
 5. Exposing service
 
-  ```bash
-  # Method1 -- use minikube ip
-  minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
+    ```bash
+    # Method1 -- use minikube ip
+    minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
 
-  # Method2 -- use port-forwarding
-  kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
-  ```
+    # Method2 -- use port-forwarding
+    kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
+    ```
 
 6. View workbench
 
-  If you use method 1 in step 5, please go to `http://{minikube ip}:32080`, ex: http://192.168.49.2:32080
+    If you use method 1 in step 5, please go to `http://{minikube ip}:32080`, ex: http://192.168.49.2:32080
 
-  If you use method 2 in step 5, please go to http://127.0.0.1:32080
+    If you use method 2 in step 5, please go to http://127.0.0.1:32080
 
 7. Delete submarine
 
-  ```bash
-  kubectl delete submarine example-submarine -n submarine-user-test
-  ```
+    ```bash
+    kubectl delete submarine example-submarine -n submarine-user-test
+    ```
 
 8. Stop the operator
 
-  Press ctrl+c to stop the operator.
+    Press ctrl+c to stop the operator.
 
 For other details, please check out the [README](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/README.md) and [Developer Guide](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/docs/developer-guide.md) on GitHub.
