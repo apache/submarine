@@ -392,7 +392,7 @@ public class K8sSubmitter implements Submitter {
     } catch (ApiException e) {
       LOG.error("K8s submitter: Create persistent volume claim for Notebook object failed by " +
           e.getMessage(), e);
-      rollbackCreationNotebook(pvName);
+      rollbackCreationPV(pvName);
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: Create persistent volume claim for " +
           "Notebook object failed by " + e.getMessage());
     }
@@ -412,11 +412,11 @@ public class K8sSubmitter implements Submitter {
 
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
-      rollbackCreationNotebook(pvName, pvcName, namespace);
+      rollbackCreationPVC(pvName, pvcName, namespace);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
     } catch (ApiException e) {
       LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
-      rollbackCreationNotebook(pvName, pvcName, namespace);
+      rollbackCreationPVC(pvName, pvcName, namespace);
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
           e.getMessage());
     }
