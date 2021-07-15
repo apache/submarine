@@ -14,7 +14,7 @@
 
 `update-codegen.sh`
 
-This script will use the generators in [k8s.io/code-generator](https://github.com/kubernetes/code-generator) to generate a typed client, informers, listers and deep-copy functions.
+This script will use the generators in [k8s.io/code-generator](https://github.com/kubernetes/code-generator) to generate a typed client, informers, listers, and deep-copy functions.
 
 The codes will be generated at `github.com/apache/submarine/submarine-cloud-v2/pkg/client/`.
 

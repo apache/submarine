@@ -15,13 +15,11 @@
   limitations under the License.
 -->
 
-# submarine-cloud-v2
+# submarine-cloud-v2 (submarine operator)
+`submarine-cloud-v2`, i.e. **submarine-operator**, implements the operator for Submarine application. The operator provides a new option for users to deploy the Submarine service to their Kubernetes clusters. The **submarine-operator** can fix some errors automatically. However, if the Submarine service is deployed with Helm, the errors need to be fixed by human operators.
 
-`submarine-cloud-v2` implements the operator for Submarine application.
-
-## Why submarine-cloud-v2?
-
-Because `submarine-cloud` is outdated, `submarine-cloud-v2` is the refactored version of `submarine-cloud`. In addition, after `submarine-cloud-v2` finishes, we will replace `submarine-cloud` with `submarine-cloud-v2`.
+# Getting Started
+* In this section, we provide two methods, including **out-of-cluter** method and **in-cluster** method, for you to deploy your **submarine-operator**. In addition, the out-of-cluster method is convenient for operator developers. On the other hand, the in-cluster method is suitable for production.
 
 ## Initialization
 
@@ -111,6 +109,6 @@ kubectl delete submarine example-submarine -n submarine-user-test
 kubectl delete deployment submarine-operator-demo
 ```
 
-## Development
+# Development
 
 Please check out the [Developer Guide](./docs/developer-guide.md).
