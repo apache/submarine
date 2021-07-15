@@ -19,10 +19,9 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-# Dependencies
 * These are the dependencies currently used by Apache Submarine.
 
-# Kubernetes
+## Kubernetes
 | Kubernetes Version   | Support?  |
 | ------------- |:-------------:|
 | 1.13.x (or earlier) | X |
@@ -32,11 +31,22 @@ under the License.
 | 1.17.x | To be verified |
 | 1.18.x | To be verified |
 
-# Java
+## KinD
+| KinD Version   | Support?  |
+| ------------- |:-------------:|
+| 0.5.x (or earlier) | X |
+| 0.6.x | √ |
+| 0.7.x | √ |
+| 0.8.x | √ |
+| 0.9.x | √ |
+| 0.10.x | √ |
+| 0.11.x | √ |
+
+## Java
 * TODO
 
-# Maven
+## Maven
 * TODO
 
-# Docker
+## Docker
 * TODO

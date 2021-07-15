@@ -24,12 +24,12 @@ title: How to Build Submarine
 
 ## Quick Start
 
-### Build Your Custom Submarine Docker Images 
+### Build Your Custom Submarine Docker Images
 
-Submarine provides default Docker image in the release artifacts, sometimes you would like to do some modifications on the images. You can rebuild Docker image after you make changes. 
+Submarine provides default Docker image in the release artifacts, sometimes you would like to do some modifications on the images. You can rebuild Docker image after you make changes.
 
 > Note that you need to make sure the images built above can be accessed in k8s
-> Usually this needs a rename and push to a proper Docker registry.
+> Usually this needs to rename and push to a proper Docker registry.
 
 ```bash
 mvn clean package -DskipTests
@@ -100,11 +100,6 @@ mvn -N io.takari:maven:0.7.7:wrapper -Dmaven=3.6.1
 # Check Maven Wrapper
 ./mvnw -version
 
-# Replace 'mvn' with 'mvnw'. Example: 
+# Replace 'mvn' with 'mvnw'. Example:
 ./mvnw clean package -DskipTests
 ```
-
-## TonY code modification
-
-If it is needed to make modifications to TonY project, please make a PR
-to [Tony repository](https://github.com/linkedin/TonY).

@@ -19,9 +19,9 @@ title: Development Guide
 
 ## Overview
 
-From [Getting Started/Submarine Local Deployment](../gettingStarted/localDeployment.md), you already know that Submarine is installed and uninstalled by Helm. As you can see by `kubectl get pods`, there are six major components in Submarine, including `notebook-controller`, `pytorch-operator`, `submarine-database`, `submarine-server`, `submarine-traefik` and `tf-job-operator`. They are launched as pods in kubernetes from the corresponding docker images.
+From [Getting Started/Submarine Local Deployment](../gettingStarted/localDeployment.md), you already know that Submarine is installed and uninstalled by Helm. As you can see by `kubectl get pods`, there are nine major components in Submarine, including `notebook-controller`, `pytorch-operator`, `submarine-database`, `submarine-minio`, `submarine-mlflow`, `submarine-server`, `submarine-tensorboard`, `submarine-traefik`, and `tf-job-operator`. They are launched as pods in kubernetes from the corresponding docker images.
 
-Some of the components are borrowed from other projects (kubeflow, traefik), including `notebook-controller`, `pytorch-operator`, `submarine-traefik` and `tf-job-operator`. The rest of them are built by ourselves, including `submarine-database` and `submarine-server`.
+Some of the components are borrowed from other projects (kubeflow, traefik), including `notebook-controller`, `pytorch-operator`, `submarine-traefik` and `tf-job-operator`. The rest of them are built by ourselves, including `submarine-database`, `submarine-minio`, `submarine-mlflow`, `submarine-tensorboard`, and `submarine-server`.
 
 The purpose of the components are as the following:
 
@@ -31,9 +31,12 @@ The purpose of the components are as the following:
 4. `submarine-traefik`: manage the ingress service
 
 5. `submarine-database`: store metadata in mysql database
-6. `submarine-server`: handle api request, submit job to container orchestration, and connect with database.
+6. `submarine-minio`: store machine learning artifacts in minio object storage
+7. `submarine-mlflow`: platform for managing the end-to-end machine learning lifecycle
+8. `submarine-tensorboard`: tool for providing the measurements and visualizations during ml workflow.
+9. `submarine-server`: handle api request, submit job to container orchestration, and connect with database.
 
-In this document, we only focus on the last two components. You can learn how to develop server, database, and workbench here.
+In this document, we focus on `submarine-server` and `submarine-database`. You can learn how to develop server, database, and workbench here.
 
 ## Video
 
@@ -146,6 +149,68 @@ Checkstyle plugin may help to detect violations directly from the IDE.
    ```bash
    helm upgrade --set submarine.database.dev=true submarine ./helm-charts/submarine
    ```
+ ## Develop operator
+
+- Before building
+
+  1. We assume the developer use **minikube** as a local kubernetes cluster.
+  2. Make sure you have **NOT** installed the submarine helm-chart in the cluster.
+
+1. Start the minikube cluster
+
+  ```bash
+  minikube start --vm-driver=docker --kubernetes-version v1.15.11
+  ```
+
+2. Install the dependencies
+
+  ```bash
+  cd submarine-cloud-v2/
+  go mod vendor
+  ```
+
+3. Run the operator out-of-cluster
+
+  ```bash
+  make
+  ./submarine-operator
+  ```
+
+4. Deploy a Submarine
+
+  ```bash
+  kubectl apply -f artifacts/examples/crd.yaml
+  kubectl create ns submarine-user-test
+  kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
+  ```
+
+5. Exposing service
+
+  ```bash
+  # Method1 -- use minikube ip
+  minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
+
+  # Method2 -- use port-forwarding
+  kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
+  ```
+
+6. View workbench
+
+  If you use method 1 in step 5, please go to `http://{minikube ip}:32080`, ex: http://192.168.49.2:32080
+
+  If you use method 2 in step 5, please go to http://127.0.0.1:32080
+
+7. Delete submarine
+
+  ```bash
+  kubectl delete submarine example-submarine -n submarine-user-test
+  ```
+
+8. Stop the operator
+
+  Press ctrl+c to stop the operator.
+
+For other details, please check out the [README](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/README.md) and [Developer Guide](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/docs/developer-guide.md) on GitHub.
 
 ## Develop Submarine Website
 Submarine website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
