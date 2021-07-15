@@ -703,7 +703,7 @@ public class K8sSubmitter implements Submitter {
     return spec;
   }
 
-  private void rollbackCreationNotebook(String pvName) {
+  private void rollbackCreationPV(String pvName) {
     try {
       deletePersistentVolume(pvName);
     } catch (ApiException e) {
@@ -712,7 +712,7 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  private void rollbackCreationNotebook(String pvName, String pvcName, String namespace) {
+  private void rollbackCreationPVC(String pvName, String pvcName, String namespace) {
     try {
       deletePersistentVolumeClaim(pvcName, namespace);
     } catch (ApiException e) {
