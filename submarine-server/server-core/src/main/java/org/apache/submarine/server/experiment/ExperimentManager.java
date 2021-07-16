@@ -116,7 +116,7 @@ public class ExperimentManager {
 
     String lowerName = spec.getMeta().getName().toLowerCase(); 
     spec.getMeta().setName(lowerName);
-    spec.getMeta().setExperimentId(id.toString().replaceAll("_", "-"));
+    spec.getMeta().setExperimentId(id.toString());
     LOG.info(spec.getMeta().getExperimentId());
 
     Experiment experiment = submitter.createExperiment(spec);
