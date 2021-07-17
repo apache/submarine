@@ -102,7 +102,7 @@
     <httpclient.version>4.5.2</httpclient.version>
     <commons-lang.version>2.6</commons-lang.version>
     <commons-lang3.version>3.4</commons-lang3.version>
-    <commons-io.version>2.5</commons-io.version>
+    <commons-io.version>2.11</commons-io.version>
     <commons-codec.version>1.5</commons-codec.version>
     <junit.version>4.12</junit.version>
     <selenium.version>3.8.1</selenium.version>
