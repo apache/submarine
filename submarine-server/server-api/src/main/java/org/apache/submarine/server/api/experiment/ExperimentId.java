@@ -20,13 +20,17 @@
 package org.apache.submarine.server.api.experiment;
 
 import org.apache.submarine.commons.utils.AbstractUniqueIdGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The unique id for experiment. Formatter: experiment-${server_timestamp}-${counter}
  * Such as: experiment-1577627710-0001
  */
 public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
+  private static final Logger LOG = LoggerFactory.getLogger(ExperimentId.class);
   private static final String EXPERIMENT_ID_PREFIX = "experiment-";
+  // private static final String EXPERIMENT_ID_PREFIX = "experiment_";
   
   /**
    * Get the object of JobId.
@@ -34,13 +38,17 @@ public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
    * @return object
    */
   public static ExperimentId fromString(String jobId) {
+    LOG.info("ExperimentId fromString: {}", jobId);
     if (jobId == null) {
       return null;
     }
     String[] components = jobId.split("\\-");
+    // String[] components = jobId.split("\\_");
     if (components.length != 3) {
+      LOG.info("ExperimentId fromString: length != 3");
       return null;
     }
+    LOG.info("ExperimentId fromString newInstance: {} {}", components[1], components[2]); 
     return ExperimentId.newInstance(Long.parseLong(components[1]), Integer.parseInt(components[2]));
   }
 
@@ -61,7 +69,9 @@ public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
   public String toString() {
     StringBuilder sb = new StringBuilder(64);
     sb.append(EXPERIMENT_ID_PREFIX).append(getServerTimestamp()).append("-");
+    // sb.append(EXPERIMENT_ID_PREFIX).append(getServerTimestamp()).append("_");
     format(sb, getId());
+    LOG.info("ExperimentId toString: {}", sb.toString());
     return sb.toString();
   }
 }

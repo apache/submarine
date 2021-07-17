@@ -57,6 +57,14 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
+    <!-- <dependency>
+      <groupId>org.apache.submarine</groupId>
+      <artifactId>submarine-server-api</artifactId>
+      <version>${project.version}</version>
+      <type>test-jar</type>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency> -->
 
     <dependency>
       <groupId>junit</groupId>

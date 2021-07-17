@@ -159,6 +159,9 @@ public class Experiment {
 
   public void rebuild(Experiment experiment) {
     if (experiment != null) {
+      if (experiment.getExperimentId() != null) {
+        this.setExperimentId(experiment.getExperimentId());
+      }
       if (experiment.getName() != null) {
         this.setName(experiment.getName());
       }
