@@ -20,7 +20,6 @@
 package org.apache.submarine.server.experiment;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -210,14 +209,14 @@ public class ExperimentManager {
         experiment.rebuild(foundExperiment);
         experimentList.add(experiment);
       } else {
-          for (String tag: experiment.getSpec().getMeta().getTags()) {
-              if (tag.equalsIgnoreCase(searchTag)) {
-                  experiment.rebuild(foundExperiment);
-                  experimentList.add(experiment);
-                  break;
-              }
+        for (String tag: experiment.getSpec().getMeta().getTags()) {
+          if (tag.equalsIgnoreCase(searchTag)) {
+            experiment.rebuild(foundExperiment);
+            experimentList.add(experiment);
+            break;
+            }
           }
-      }
+        }
     }
     LOG.info("List experiment: {}", experimentList.size());
     return experimentList;
