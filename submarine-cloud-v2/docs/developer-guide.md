@@ -74,17 +74,30 @@ Example:
 ./hack/run_frontend_e2e.sh loginIT
 ```
 
-## Build Custom Images
+## Rebuild Operator Image
+
+When running operator in-cluster by Helm, we need to rebuild the operator image for changes to take effect.
+
+```bash
+eval $(minikube docker-env)
+make image
+eval $(minikube docker-env -u)
+
+# Update the operator pod
+helm upgrade submarine-operator ./helm-charts/sumbarine-operator
+```
+
+## Rebuild Images for Other Components
 
 Use the following helper script to build images and update the images used by running pods.
 
-```
+```bash
 ./hack/build_image.sh [all|server|database|jupyter|jupyter-gpu|mlflow]
 ```
 
 Examples:
 
-```
+```bash
 ./hack/build_image.sh all     # build all images
 ./hack/build_image.sh server  # only build the server image
 ```
