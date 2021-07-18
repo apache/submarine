@@ -26,14 +26,10 @@ import com.google.gson.JsonSerializer;
 import org.apache.submarine.server.api.experiment.ExperimentId;
 
 import java.lang.reflect.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExperimentIdSerializer implements JsonSerializer<ExperimentId> {
-  private static final Logger LOG = LoggerFactory.getLogger(ExperimentIdSerializer.class);
   @Override
   public JsonElement serialize(ExperimentId src, Type typeOfSrc, JsonSerializationContext context) {
-    LOG.info(src.toString());
     return new JsonPrimitive(src.toString());
   }
 }

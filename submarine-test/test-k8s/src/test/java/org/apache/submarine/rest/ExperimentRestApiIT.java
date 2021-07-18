@@ -200,25 +200,12 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     Assert.assertEquals(Response.Status.OK.getStatusCode(), postMethod.getStatusCode());
 
     String json = postMethod.getResponseBodyAsString();
-    LOG.info(json);
     JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
-    LOG.info(jsonResponse.toString());
     Experiment createdExperiment = gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
-    // ExperimentId createdExperimentId = ExperimentId.fromString(createdExperiment.getName());
-    LOG.info(createdExperiment.getName()); // experiment-1231231-0001
-    String[] components = createdExperiment.getName().split("\\-");
-    ExperimentId createdExperimentId = ExperimentId.newInstance(Long.parseLong(components[1]), Integer.parseInt(components[2]));
-
-    LOG.info(createdExperimentId.toString());
-    createdExperiment.setExperimentId(createdExperimentId);
     verifyCreateJobApiResult(createdExperiment);
-
+    LOG.info(createdExperiment.getExperimentId().toString());
     // find
-    LOG.info(gson.toJson(jsonResponse.getResult()));
-    LOG.info(createdExperiment.getName());
-    LOG.info(createdExperiment.getSpec().toString());
-    // GetMethod getMethod = httpGet(BASE_API_PATH + "/" + createdExperiment.getName());
     GetMethod getMethod = httpGet(BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), getMethod.getStatusCode());
 
@@ -238,8 +225,6 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
 
     // delete
     LOG.info(createdExperiment.getExperimentId().toString());
-    // DeleteMethod deleteMethod = httpDelete(
-        // BASE_API_PATH + "/" + createdExperiment.getName());
     DeleteMethod deleteMethod = httpDelete(
       BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), deleteMethod.getStatusCode());

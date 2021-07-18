@@ -26,15 +26,11 @@ import com.google.gson.JsonParseException;
 import org.apache.submarine.server.api.experiment.ExperimentId;
 
 import java.lang.reflect.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ExperimentIdDeserializer implements JsonDeserializer<ExperimentId> {
-  private static final Logger LOG = LoggerFactory.getLogger(ExperimentIdDeserializer.class);
   @Override
   public ExperimentId deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {
-    LOG.info(json.getAsJsonPrimitive().getAsString());
     return ExperimentId.fromString(json.getAsJsonPrimitive().getAsString());
   }
 }
