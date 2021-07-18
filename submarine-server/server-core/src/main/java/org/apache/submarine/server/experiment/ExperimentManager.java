@@ -20,6 +20,7 @@
 package org.apache.submarine.server.experiment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -110,6 +111,7 @@ public class ExperimentManager {
     // and then log experiment metrics and parameters to submarine server
     ExperimentId id = generateExperimentId();
     String url = getSQLAlchemyURL();
+
     spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id.toString());
     spec.getMeta().getEnvVars().put(RestConstants.SUBMARINE_TRACKING_URI, url);
     spec.getMeta().getEnvVars().put(RestConstants.LOG_DIR_KEY, RestConstants.LOG_DIR_VALUE);
@@ -174,6 +176,37 @@ public class ExperimentManager {
       }
       LOG.info("Found experiment: {}", foundExperiment.getStatus());
       if (status == null || status.toLowerCase().equals(foundExperiment.getStatus().toLowerCase())) {
+        experiment.rebuild(foundExperiment);
+        experimentList.add(experiment);
+      }
+    }
+    LOG.info("List experiment: {}", experimentList.size());
+    return experimentList;
+  }
+
+  /**
+   * List experiments
+   *
+   * @param tag, if null will return all experiments
+   * @return list
+   * @throws SubmarineRuntimeException the service error
+   */
+  public List<Experiment> listExperimentsByTag(String tag) throws SubmarineRuntimeException {
+    List<Experiment> experimentList = new ArrayList<>();
+    List<ExperimentEntity> entities = experimentService.selectAll();
+
+    for (ExperimentEntity entity : entities) {
+      Experiment experiment = buildExperimentFromEntity(entity);
+      Experiment foundExperiment;
+      try {
+        foundExperiment = submitter.findExperiment(experiment.getSpec());
+      } catch (SubmarineRuntimeException e) {
+        LOG.warn("Submitter can not find experiment: {}, will delete it", entity.getId());
+        experimentService.delete(entity.getId());
+        continue;
+      }
+      LOG.info("Found experiment: {}", foundExperiment.getSpec().getMeta().getTags());
+      if (tag == null || experiment.getSpec().getMeta().getTags().contains(tag)) {
         experiment.rebuild(foundExperiment);
         experimentList.add(experiment);
       }
