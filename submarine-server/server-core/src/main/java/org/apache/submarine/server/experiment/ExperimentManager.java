@@ -191,7 +191,7 @@ public class ExperimentManager {
    * @return list
    * @throws SubmarineRuntimeException the service error
    */
-  public List<Experiment> listExperimentsByTag(String tag) throws SubmarineRuntimeException {
+  public List<Experiment> listExperimentsByTag(String searchTag) throws SubmarineRuntimeException {
     List<Experiment> experimentList = new ArrayList<>();
     List<ExperimentEntity> entities = experimentService.selectAll();
 
@@ -206,9 +206,17 @@ public class ExperimentManager {
         continue;
       }
       LOG.info("Found experiment: {}", foundExperiment.getSpec().getMeta().getTags());
-      if (tag == null || experiment.getSpec().getMeta().getTags().contains(tag)) {
+      if (searchTag == null) {
         experiment.rebuild(foundExperiment);
         experimentList.add(experiment);
+      } else {
+          for (String tag: experiment.getSpec().getMeta().getTags()) {
+              if (tag.equalsIgnoreCase(searchTag)) {
+                  experiment.rebuild(foundExperiment);
+                  experimentList.add(experiment);
+                  break;
+              }
+          }
       }
     }
     LOG.info("List experiment: {}", experimentList.size());
