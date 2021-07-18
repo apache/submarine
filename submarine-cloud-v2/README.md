@@ -38,7 +38,7 @@ make
 ./submarine-operator
 
 # Step2: Deploy a Submarine
-kubectl apply -f artifacts/examples/crd.yaml
+kubectl apply -f helm-charts/submarine-operator/crds/crd.yaml
 kubectl create ns submarine-user-test
 kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
 
@@ -68,36 +68,28 @@ kubectl delete submarine example-submarine -n submarine-user-test
 ## Run operator in-cluster
 
 ```bash
-# Step1: Build image "submarine-operator" to minikube's Docker
-eval $(minikube docker-env)
-make image
+# Step1: Deploye submarine-operator
+helm install submarine-operator ./helm-charts/submarine-operator/
 
-# Step2: Setup RBAC (ClusterRole, ClusterRoleBinding, and ServiceAccount)
-kubectl apply -f artifacts/examples/submarine-operator-service-account.yaml
-
-# Step3: Deploy a submarine-operator
-kubectl apply -f artifacts/examples/submarine-operator.yaml
-
-# Step4: Deploy a submarine
-kubectl apply -f artifacts/examples/crd.yaml
+# Step2: Deploy a submarine
 kubectl create ns submarine-user-test
 kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
 
-# Step5: Inspect the logs of submarine-operator
+# Step3: Inspect the logs of submarine-operator
 kubectl logs -f $(kubectl get pods --output=name | grep submarine-operator)
 
-# Step6: Exposing Service
+# Step4: Exposing Service
 # Method1 -- use minikube ip
 minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
 
 # Method2 -- use port-forwarding
 kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
 
-# Step7: View Workbench
+# Step5: View Workbench
 # http://{minikube ip}:32080 (from Method 1), ex: http://192.168.49.2:32080
 # or http://127.0.0.1:32080 (from Method 2).
 
-# Step8: Delete Submarine
+# Step6: Delete Submarine
 # By deleting the submarine custom resource, the operator will do the following things:
 #   (1) Remove all relevant Helm chart releases
 #   (2) Remove all resources in the namespace "submariner-user-test"
@@ -105,8 +97,8 @@ kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32
 #   (4) **Note:** The namespace "submarine-user-test" will not be deleted
 kubectl delete submarine example-submarine -n submarine-user-test
 
-# Step9: Delete the submarine-operator
-kubectl delete deployment submarine-operator-demo
+# Step7: Delete the submarine-operator
+helm delete submarine-operator
 ```
 
 # Development
