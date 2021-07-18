@@ -269,7 +269,10 @@ public class ExperimentManagerTest {
         actual.getSpec().getEnvironment().getImage())
     ;
 
-    assertEquals(expected.getSpec().getMeta().getTags().toString(), actual.getSpec().getMeta().getTags().toString());
+    assertEquals(
+            expected.getSpec().getMeta().getTags().toString(),
+            actual.getSpec().getMeta().getTags().toString())
+    ;
   }
 
   private Object buildFromJsonFile(Object obj, String filePath) throws SubmarineException {
