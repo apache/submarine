@@ -214,9 +214,9 @@ public class ExperimentManager {
             experiment.rebuild(foundExperiment);
             experimentList.add(experiment);
             break;
-            }
           }
         }
+      }
     }
     LOG.info("List experiment: {}", experimentList.size());
     return experimentList;
