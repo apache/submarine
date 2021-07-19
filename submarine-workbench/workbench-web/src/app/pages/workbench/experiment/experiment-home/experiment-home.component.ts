@@ -76,7 +76,7 @@ export class ExperimentHomeComponent implements OnInit {
     this.onSwitchAutoReload();
   }
 
-  fetchExperimentList(isRefetch: boolean) {
+  fetchExperimentList(isAutoReload: boolean) {
     this.experimentService.fetchExperimentList().subscribe(
       (list) => {
         this.isListLoading = false;
@@ -94,7 +94,8 @@ export class ExperimentHomeComponent implements OnInit {
             item.duration = this.experimentService.durationHandle(result);
           }
         });
-        if(!isRefetch){
+        if(!isAutoReload){
+          // If it is auto-reloading, we do not want to change the state of checkbox.
           this.checkedList = [];
           for (let i = 0; i < this.experimentList.length; i++) {
             this.checkedList.push(false);
