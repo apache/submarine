@@ -204,7 +204,6 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
     Experiment createdExperiment = gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
     verifyCreateJobApiResult(createdExperiment);
-    LOG.info(createdExperiment.getExperimentId().toString());
     // find
     GetMethod getMethod = httpGet(BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), getMethod.getStatusCode());
@@ -224,9 +223,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     // https://tools.ietf.org/html/rfc5789
 
     // delete
-    LOG.info(createdExperiment.getExperimentId().toString());
-    DeleteMethod deleteMethod = httpDelete(
-      BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
+    DeleteMethod deleteMethod = httpDelete(BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), deleteMethod.getStatusCode());
 
     json = deleteMethod.getResponseBodyAsString();

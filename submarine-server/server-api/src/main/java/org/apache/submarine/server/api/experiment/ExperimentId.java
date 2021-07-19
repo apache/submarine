@@ -20,15 +20,12 @@
 package org.apache.submarine.server.api.experiment;
 
 import org.apache.submarine.commons.utils.AbstractUniqueIdGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The unique id for experiment. Formatter: experiment-${server_timestamp}-${counter}
  * Such as: experiment-1577627710-0001
  */
 public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
-  private static final Logger LOG = LoggerFactory.getLogger(ExperimentId.class);
   private static final String EXPERIMENT_ID_PREFIX = "experiment-";
 
   /**
@@ -42,7 +39,6 @@ public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
     }
     String[] components = jobId.split("\\-");
     if (components.length != 3) {
-      LOG.info("ExperimentId fromString: length != 3");
       return null;
     }
     return ExperimentId.newInstance(Long.parseLong(components[1]), Integer.parseInt(components[2]));
@@ -66,7 +62,6 @@ public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
     StringBuilder sb = new StringBuilder(64);
     sb.append(EXPERIMENT_ID_PREFIX).append(getServerTimestamp()).append("-");
     format(sb, getId());
-    LOG.info("ExperimentId toString: {}", sb.toString());
     return sb.toString();
   }
 }

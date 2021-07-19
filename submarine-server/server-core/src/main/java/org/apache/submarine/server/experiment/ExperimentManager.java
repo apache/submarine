@@ -117,8 +117,6 @@ public class ExperimentManager {
     String lowerName = spec.getMeta().getName().toLowerCase(); 
     spec.getMeta().setName(lowerName);
     spec.getMeta().setExperimentId(id.toString());
-    // spec.getMeta().setExperimentId(id.toString().replaceAll("_", "-"));
-    LOG.info(spec.getMeta().getExperimentId());
 
     Experiment experiment = submitter.createExperiment(spec);
     experiment.setExperimentId(id);
@@ -142,7 +140,6 @@ public class ExperimentManager {
    * @throws SubmarineRuntimeException the service error
    */
   public Experiment getExperiment(String id) throws SubmarineRuntimeException {
-    LOG.info(id);
     checkExperimentId(id);
 
     ExperimentEntity entity = experimentService.select(id);
@@ -193,7 +190,6 @@ public class ExperimentManager {
    * @throws SubmarineRuntimeException the service error
    */
   public Experiment patchExperiment(String id, ExperimentSpec newSpec) throws SubmarineRuntimeException {
-    LOG.info(id);
     checkExperimentId(id);
     checkSpec(newSpec);
 
@@ -222,7 +218,6 @@ public class ExperimentManager {
    * @throws SubmarineRuntimeException the service error
    */
   public Experiment deleteExperiment(String id) throws SubmarineRuntimeException {
-    LOG.info(id);
     checkExperimentId(id);
 
     ExperimentEntity entity = experimentService.select(id);
@@ -281,7 +276,6 @@ public class ExperimentManager {
    * @throws SubmarineRuntimeException the service error
    */
   public ExperimentLog getExperimentLog(String id) throws SubmarineRuntimeException {
-    LOG.info(id);
     checkExperimentId(id);
 
     ExperimentEntity entity = experimentService.select(id);

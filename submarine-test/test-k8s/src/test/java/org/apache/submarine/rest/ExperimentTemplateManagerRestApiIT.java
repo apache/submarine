@@ -213,7 +213,6 @@ public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerT
     LOG.info(gson.toJson(jsonResponse.getResult()));
     
     Experiment experiment = gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
-    LOG.info(experiment.getExperimentId().toString());
     DeleteMethod deleteMethod = httpDelete("/api/" + RestConstants.V1 + "/" + RestConstants.EXPERIMENT + "/" 
       + experiment.getExperimentId().toString());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), deleteMethod.getStatusCode());
