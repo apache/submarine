@@ -41,6 +41,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -103,6 +105,40 @@ public class ExperimentManagerTest {
     Experiment actualExperiment = spyExperimentManager.createExperiment(spec);
 
     verifyResult(expectedExperiment, actualExperiment);
+  }
+
+  @Test
+  public void testFinaExperimentByTag() {
+
+    // Build two experiment objects, only experiment1 has tags
+    ExperimentId experimentId1 = new ExperimentId();
+    experimentId1.setServerTimestamp(System.currentTimeMillis());
+    experimentId1.setId(1);
+
+    Experiment experiment1 = new Experiment();
+    experiment1.setSpec(spec);
+    experiment1.setExperimentId(experimentId1);
+    experiment1.rebuild(result);
+
+    ExperimentId experimentId2 = new ExperimentId();
+    experimentId2.setServerTimestamp(System.currentTimeMillis());
+    experimentId2.setId(2);
+
+    ExperimentEntity entity1 = new ExperimentEntity();
+    entity1.setId(experiment1.getExperimentId().toString());
+    entity1.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(experiment1.getSpec()));
+
+    doReturn(Arrays.asList(entity1)).when(mockService).selectAll();
+
+    when(mockSubmitter.findExperiment(any(ExperimentSpec.class))).thenReturn(experiment1);
+
+    ExperimentManager spyExperimentManager = spy(experimentManager);
+    // only the experiment1 object should be found with giving tag stable
+    List<Experiment> foundExperiments = spyExperimentManager.listExperimentsByTag("stable");
+    assertEquals(1, foundExperiments.size());
+    // no object should be found when we're searching with tag "test"
+    List<Experiment> foundExperiments2 = spyExperimentManager.listExperimentsByTag("test");
+    assertEquals(0, foundExperiments2.size());
   }
 
   @Test
@@ -233,6 +269,11 @@ public class ExperimentManagerTest {
     assertEquals(
         expected.getSpec().getEnvironment().getImage(),
         actual.getSpec().getEnvironment().getImage())
+    ;
+
+    assertEquals(
+            expected.getSpec().getMeta().getTags().toString(),
+            actual.getSpec().getMeta().getTags().toString())
     ;
   }
 

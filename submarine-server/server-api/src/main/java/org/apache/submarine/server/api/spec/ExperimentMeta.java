@@ -19,6 +19,9 @@
 
 package org.apache.submarine.server.api.spec;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,7 +36,8 @@ public class ExperimentMeta {
   private String namespace;
   private String framework;
   private String cmd;
-  private Map<String, String> envVars;
+  private Map<String, String> envVars = new HashMap<>();
+  private List<String> tags = new ArrayList<>();
 
   public ExperimentMeta() {
 
@@ -126,6 +130,19 @@ public class ExperimentMeta {
   }
 
   /**
+   * The default tag list for task. If the @{@link ExperimentTaskSpec#getEnvVars()} not specified
+   * replaced with it.
+   * @return tags
+   */
+  public List<String> getTags() {
+    return tags;
+  }
+
+  public void setTags(List<String> tags) {
+    this.tags = tags;
+  }
+
+  /**
    * The {@link ExperimentMeta#framework} should be one of the below supported framework name.
    */
   public enum SupportedMLFramework {
@@ -161,6 +178,7 @@ public class ExperimentMeta {
       ", framework='" + framework + '\'' +
       ", cmd='" + cmd + '\'' +
       ", envVars=" + envVars +
+      ", tags=" + tags +
       '}';
   }
 }

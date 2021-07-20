@@ -110,6 +110,7 @@ public class ExperimentManager {
     // and then log experiment metrics and parameters to submarine server
     ExperimentId id = generateExperimentId();
     String url = getSQLAlchemyURL();
+
     spec.getMeta().getEnvVars().put(RestConstants.JOB_ID, id.toString());
     spec.getMeta().getEnvVars().put(RestConstants.SUBMARINE_TRACKING_URI, url);
     spec.getMeta().getEnvVars().put(RestConstants.LOG_DIR_KEY, RestConstants.LOG_DIR_VALUE);
@@ -175,6 +176,45 @@ public class ExperimentManager {
       if (status == null || status.toLowerCase().equals(foundExperiment.getStatus().toLowerCase())) {
         experiment.rebuild(foundExperiment);
         experimentList.add(experiment);
+      }
+    }
+    LOG.info("List experiment: {}", experimentList.size());
+    return experimentList;
+  }
+
+  /**
+   * List experiments
+   *
+   * @param tag, if null will return all experiments
+   * @return list
+   * @throws SubmarineRuntimeException the service error
+   */
+  public List<Experiment> listExperimentsByTag(String searchTag) throws SubmarineRuntimeException {
+    List<Experiment> experimentList = new ArrayList<>();
+    List<ExperimentEntity> entities = experimentService.selectAll();
+
+    for (ExperimentEntity entity : entities) {
+      Experiment experiment = buildExperimentFromEntity(entity);
+      Experiment foundExperiment;
+      try {
+        foundExperiment = submitter.findExperiment(experiment.getSpec());
+      } catch (SubmarineRuntimeException e) {
+        LOG.warn("Submitter can not find experiment: {}, will delete it", entity.getId());
+        experimentService.delete(entity.getId());
+        continue;
+      }
+      LOG.info("Found experiment: {}", foundExperiment.getSpec().getMeta().getTags());
+      if (searchTag == null) {
+        experiment.rebuild(foundExperiment);
+        experimentList.add(experiment);
+      } else {
+        for (String tag: experiment.getSpec().getMeta().getTags()) {
+          if (tag.equalsIgnoreCase(searchTag)) {
+            experiment.rebuild(foundExperiment);
+            experimentList.add(experiment);
+            break;
+          }
+        }
       }
     }
     LOG.info("List experiment: {}", experimentList.size());
