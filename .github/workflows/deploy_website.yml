@@ -15,6 +15,9 @@
 
 name: Deploy Submarine documentation
 
+# Trigger the workflow on push or pull request
+on: [push, pull_request]
+
 jobs:
   checks-website:
     runs-on: ubuntu-latest
