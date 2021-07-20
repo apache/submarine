@@ -22,18 +22,8 @@ env:
   VERSION: "0.6.0-SNAPSHOT"
   HADOOP_VERSION: "2.9"
   PROFILE: "-Phadoop-2.9"
-  BUILD_FLAG: "clean install -ntp -DskipTests"
-  TEST_FLAG: "test -DskipRat -ntp -am"
-  EXCLUDE_SERVER: "!:submarine-server-api,!:submarine-server-core,!:submarine-server-rpc"
-  EXCLUDE_CLIENT: "!:submarine-client"
-  EXCLUDE_ALL: "!:submarine-all"
-  EXCLUDE_WORKBENCH: "!:submarine-workbench,!:submarine-workbench-web"
-  EXCLUDE_SUBMITTER_K8S: "!:submarine-submitter-k8s"
-  EXCLUDE_SUBMITTER: "!:submarine-server-submitter,!:submarine-submitter-k8s,!:submarine-submitter-yarn"
-  EXCLUDE_COMMONS: "!:submarine-commons-cluster,!:submarine-commons-metastore,!:submarine-commons-rpc,!:submarine-commons-runtime,!:submarine-commons-utils"
-  EXCLUDE_DIST: "!:submarine-dist"
-  EXCLUDE_TEST: "!:submarine-test,!:submarine-test-e2e,!:submarine-test-k8s"
-  EXCLUDE_SPARK_SECURTITY: "!:submarine-spark-security"
+  BUILD_FLAG: "clean install -ntp -DskipTests -am"
+  TEST_FLAG: "test -DskipRat -ntp"
 
 jobs:
   build:
@@ -60,8 +50,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Build with Maven
-        env:
-          BUILD_FLAG: "clean install -DskipTests -ntp"
         run: |
           echo ">>> mvn ${BUILD_FLAG} ${PROFILE} -B"
           mvn ${BUILD_FLAG} ${PROFILE} -B
@@ -117,8 +105,8 @@ jobs:
           sudo chmod -R a+rwX submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
       - name: Test
         env:
-          TEST_FLAG: "verify -DskipRat -ntp -am"
-          TEST_MODULES: "-pl org.apache.submarine:submarine-test-e2e"
+          TEST_FLAG: "verify -DskipRat -ntp"
+          TEST_MODULES: "-pl :submarine-test-e2e"
         run: |
           echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B"
           mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B
@@ -175,9 +163,8 @@ jobs:
         run: bash ./.github/scripts/start-submarine.sh
       - name: Test
         env:
-          TEST_FLAG: "verify -DskipRat -ntp -am -Durl=http://127.0.0.1"
-          TEST_MODULES: "-pl !:submarine-server-api,!:submarine-server-core,!:submarine-server-rpc,!:submarine-commons-cluster,!:submarine-commons-metastore,!:submarine-commons-rpc,!:submarine-commons-runtime,!:submarine-commons-utils,!:submarine-client,:submarine-test-k8s"
-          TEST_PROJECTS: ""
+          TEST_FLAG: "verify -DskipRat -ntp"
+          TEST_MODULES: "-pl :submarine-test-k8s"
         run: |
           echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B"
           mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B
@@ -208,13 +195,13 @@ jobs:
         java -version
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl :submarine-commons-cluster"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
     - name: Test
       env:
-        TEST_MODULES: "-pl org.apache.submarine:submarine-commons-cluster"
+        TEST_MODULES: "-pl :submarine-commons-cluster"
       run: |
         echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
         mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
@@ -253,13 +240,13 @@ jobs:
         python3 ./dev-support/database/init-database.py
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl :submarine-commons-metastore"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
     - name: Test
       env:
-        TEST_MODULES: "-pl org.apache.submarine:submarine-commons-metastore"
+        TEST_MODULES: "-pl :submarine-commons-metastore"
       run: |
         echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
         mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
@@ -284,13 +271,13 @@ jobs:
         java -version
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl :submarine-commons-rpc"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
     - name: Test
       env:
-        TEST_MODULES: "-pl org.apache.submarine:submarine-commons-rpc"
+        TEST_MODULES: "-pl :submarine-commons-rpc"
       run: |
         echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
         mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
@@ -315,13 +302,13 @@ jobs:
         java -version
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl :submarine-commons-runtime"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
     - name: Test
       env:
-        TEST_MODULES: "-pl org.apache.submarine:submarine-commons-runtime"
+        TEST_MODULES: "-pl :submarine-commons-runtime"
       run: |
         echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
         mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
@@ -346,13 +333,44 @@ jobs:
         java -version
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_SUBMITTER}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_CLIENT}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl :submarine-commons-unixusersync"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
     - name: Test
       env:
-        TEST_MODULES: "-pl org.apache.submarine:submarine-commons-unixusersync"
+        TEST_MODULES: "-pl :submarine-commons-unixusersync"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-client:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl :submarine-client"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl :submarine-client"
       run: |
         echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
         mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
@@ -391,13 +409,13 @@ jobs:
         python3 ./dev-support/database/init-database.py
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}}"
+        MODULES: "-pl :submarine-server-core,:submarine-server-rpc"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
     - name: Test
       env:
-        TEST_MODULES: "-pl ${{env.EXCLUDE_COMMONS}},org.apache.submarine:submarine-server-core"
+        TEST_MODULES: "-pl :submarine-server-core,:submarine-server-rpc"
       run: |
         echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
         mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
@@ -412,24 +430,15 @@ jobs:
       uses: stCarolas/setup-maven@v4
       with:
         maven-version: 3.6.3
-    - name: Use Node.js 14
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14.x
     - name: Check version
       run: |
         mvn --version
-        node --version
-        npm --version
     - name: Maven Build
       env:
-        MODULES: "-pl org.apache.submarine:submarine-workbench-web"
+        MODULES: "-pl :submarine-workbench-web"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES -B"
         mvn $BUILD_FLAG $MODULES -B
-    - name: NPM install
-      working-directory: ./submarine-workbench/workbench-web
-      run: npm install
     - name: Test with chrome
       working-directory: ./submarine-workbench/workbench-web
       run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
@@ -461,14 +470,14 @@ jobs:
         java -version
     - name: Build
       env:
-        MODULES: "-pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_DIST}}"
+        MODULES: "-pl :submarine-server-submitter,:submarine-submitter-yarn"
         PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
     - name: Test
       env:
-        TEST_MODULES: -pl ${{env.EXCLUDE_SUBMITTER_K8S}},${{env.EXCLUDE_WORKBENCH}},${{env.EXCLUDE_COMMONS}},${{env.EXCLUDE_DIST}},${{env.EXCLUDE_TEST}},${{env.EXCLUDE_ALL}},${{env.EXCLUDE_SERVER}},${{env.EXCLUDE_SPARK_SECURTITY}}
+        TEST_MODULES: "-pl :submarine-server-submitter,:submarine-submitter-yarn"
         PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
       run: |
         echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
