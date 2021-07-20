@@ -110,6 +110,7 @@ public class ExperimentManagerTest {
   @Test
   public void testFinaExperimentByTag() {
 
+    // Build two experiment objects, only experiment1 has tags
     ExperimentId experimentId1 = new ExperimentId();
     experimentId1.setServerTimestamp(System.currentTimeMillis());
     experimentId1.setId(1);
@@ -132,8 +133,10 @@ public class ExperimentManagerTest {
     when(mockSubmitter.findExperiment(any(ExperimentSpec.class))).thenReturn(experiment1);
 
     ExperimentManager spyExperimentManager = spy(experimentManager);
+    // only the experiment1 object should be found with giving tag stable
     List<Experiment> foundExperiments = spyExperimentManager.listExperimentsByTag("stable");
     assertEquals(1, foundExperiments.size());
+    // no object should be found when we're searching with tag "test"
     List<Experiment> foundExperiments2 = spyExperimentManager.listExperimentsByTag("test");
     assertEquals(0, foundExperiments2.size());
   }
