@@ -15,16 +15,11 @@
 
 name: Deploy Submarine documentation
 
-# Trigger the workflow on master branch push and pull request
-on:
-  pull_request:
-    branches: [master]
-  push:
-    branches: [master]
+# Trigger the workflow on push or pull request
+on: [push, pull_request]
 
 jobs:
   checks-website:
-    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -43,7 +38,7 @@ jobs:
           fi
           npm run build
   deploy-website:
-    if: github.event_name != 'pull_request'
+    if: github.repository == 'apache/submarine' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
