@@ -50,8 +50,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Build with Maven
-        env:
-          BUILD_FLAG: "clean install -DskipTests -ntp"
         run: |
           echo ">>> mvn ${BUILD_FLAG} ${PROFILE} -B"
           mvn ${BUILD_FLAG} ${PROFILE} -B
@@ -167,7 +165,6 @@ jobs:
         env:
           TEST_FLAG: "verify -DskipRat -ntp"
           TEST_MODULES: "-pl :submarine-test-k8s"
-          TEST_PROJECTS: ""
         run: |
           echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B"
           mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B
