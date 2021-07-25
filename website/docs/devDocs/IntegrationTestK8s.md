@@ -32,18 +32,16 @@ title: How to Run Integration K8s Test
 2. Build the submarine from source and upgrade the server pod through this [`guide`](./Development/#build-from-source)
 
 3. Forward port
-    ```bash
-    kubectl port-forward --address 0.0.0.0 service/submarine-traefik 8080:80
-    ```
-4. Install the latest package "submarine-server-core" into the local repository, for use as a dependency in the module `test-k8s`
-    ```bash
-    mvn install -DskipTests
-    ```
 
-5. Execute the test command
-    ```bash
-    mvn verify -DskipRat -pl :submarine-test-k8s -Phadoop-2.9 -B
-    ```
+  ```bash
+  kubectl port-forward --address 0.0.0.0 service/submarine-traefik 8080:80
+  ```
+
+4. Execute the test command
+
+  ```bash
+  mvn verify -DskipRat -pl :submarine-test-k8s -Phadoop-2.9 -B
+  ```
 
 ![](../assets/test-k8s-result.png)
 

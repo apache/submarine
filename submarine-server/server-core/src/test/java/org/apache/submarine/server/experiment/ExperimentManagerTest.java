@@ -224,6 +224,7 @@ public class ExperimentManagerTest {
     assertEquals(expected.getCreatedTime(), actual.getCreatedTime());
     assertEquals(expected.getRunningTime(), actual.getRunningTime());
     assertEquals(expected.getAcceptedTime(), actual.getAcceptedTime());
+    assertEquals(expected.getName(), actual.getName());
     assertEquals(expected.getStatus(), actual.getStatus());
     assertEquals(expected.getExperimentId(), actual.getExperimentId());
     assertEquals(expected.getFinishedTime(), actual.getFinishedTime());

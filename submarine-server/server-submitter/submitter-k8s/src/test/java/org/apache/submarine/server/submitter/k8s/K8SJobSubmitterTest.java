@@ -113,6 +113,7 @@ public class K8SJobSubmitterTest extends SpecBuilder {
     Experiment experimentFound = submitter.findExperiment(spec);
     Assert.assertNotNull(experimentFound);
     Assert.assertEquals(experimentCreated.getUid(), experimentFound.getUid());
+    Assert.assertEquals(experimentCreated.getName(), experimentFound.getName());
     Assert.assertEquals(experimentCreated.getAcceptedTime(), experimentFound.getAcceptedTime());
 
     // delete
@@ -120,5 +121,6 @@ public class K8SJobSubmitterTest extends SpecBuilder {
     Assert.assertNotNull(experimentDeleted);
     Assert.assertEquals(Experiment.Status.STATUS_DELETED.getValue(), experimentDeleted.getStatus());
     Assert.assertEquals(experimentFound.getUid(), experimentDeleted.getUid());
+    Assert.assertEquals(experimentFound.getName(), experimentDeleted.getName());
   }
 }

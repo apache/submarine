@@ -109,6 +109,7 @@ public class ExperimentRestApiTest {
     actualExperiment.setRunningTime(experimentRunningTime);
     actualExperiment.setFinishedTime(experimentFinishedTime);
     actualExperiment.setUid(experimentUid);
+    actualExperiment.setName(experimentName);
     actualExperiment.setStatus(experimentStatus);
     actualExperiment.setExperimentId(experimentId);
     kernelSpec.setName(kernelSpecName);
@@ -219,6 +220,7 @@ public class ExperimentRestApiTest {
     assertEquals(experimentCreatedTime, experiment.getCreatedTime());
     assertEquals(experimentRunningTime, experiment.getRunningTime());
     assertEquals(experimentAcceptedTime, experiment.getAcceptedTime());
+    assertEquals(experimentName, experiment.getName());
     assertEquals(experimentStatus, experiment.getStatus());
     assertEquals(experimentId, experiment.getExperimentId());
     assertEquals(experimentFinishedTime, experiment.getFinishedTime());
