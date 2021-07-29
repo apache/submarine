@@ -22,10 +22,10 @@ module.exports = {
         {
             "Introduction": [],
             "Getting Started": [
-                "gettingStarted/localDeployment",
-                "gettingStarted/kind",
+                "gettingStarted/quickstart",
+                // "gettingStarted/localDeployment",
                 "gettingStarted/notebook",
-                "gettingStarted/python-sdk",
+                // "gettingStarted/python-sdk",
             ],
             "User Docs": [
                 {

@@ -1,5 +1,5 @@
 ---
-title: Notebook Tutorial
+title: Jupyter Notebook
 ---
 
 <!--

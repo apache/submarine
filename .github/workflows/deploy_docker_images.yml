@@ -79,3 +79,8 @@ jobs:
         run: ./dev-support/docker-images/serve/build.sh
       - name: Push submarine-serve docker image
         run: docker push apache/submarine:serve-$SUBMARINE_VERSION
+
+      - name: Build submarine quickstart
+        run: ./dev-support/examples/quickstart/build.sh
+      - name: Push submarine quickstart docker image
+        run: docker push apache/submarine:quickstart-$SUBMARINE_VERSION

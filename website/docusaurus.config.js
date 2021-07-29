@@ -37,7 +37,7 @@ module.exports = {
       items: [
         {
           type: 'doc',
-          docId: 'gettingStarted/localDeployment',
+          docId: 'gettingStarted/quickstart',
           label: 'Docs',
           position: 'left',
         },
