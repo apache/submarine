@@ -32,7 +32,7 @@ api:
 image: charts
 	eval $(minikube docker-env)
 	GOOS=linux go build -o submarine-operator
-	docker build -t submarine-operator -f dev.Dockerfile .
+	docker build -t "apache/submarine:operator-0.6.0-SNAPSHOT" -f dev.Dockerfile .
 	go build -o submarine-operator
 
 .PHONY: test-unit

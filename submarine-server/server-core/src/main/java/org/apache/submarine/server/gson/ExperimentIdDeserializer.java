@@ -28,7 +28,6 @@ import org.apache.submarine.server.api.experiment.ExperimentId;
 import java.lang.reflect.Type;
 
 public class ExperimentIdDeserializer implements JsonDeserializer<ExperimentId> {
-
   @Override
   public ExperimentId deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
       throws JsonParseException {

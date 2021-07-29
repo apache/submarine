@@ -22,12 +22,12 @@ package org.apache.submarine.server.api.experiment;
 import org.apache.submarine.commons.utils.AbstractUniqueIdGenerator;
 
 /**
- * The unique id for experiment. Formatter: experiment_${server_timestamp}_${counter}
- * Such as: experiment_1577627710_0001
+ * The unique id for experiment. Formatter: experiment-${server_timestamp}-${counter}
+ * Such as: experiment-1577627710-0001
  */
 public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
-  private static final String EXPERIMENT_ID_PREFIX = "experiment_";
-  
+  private static final String EXPERIMENT_ID_PREFIX = "experiment-";
+
   /**
    * Get the object of JobId.
    * @param jobId job id string
@@ -37,7 +37,7 @@ public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
     if (jobId == null) {
       return null;
     }
-    String[] components = jobId.split("\\_");
+    String[] components = jobId.split("\\-");
     if (components.length != 3) {
       return null;
     }
@@ -60,7 +60,7 @@ public class ExperimentId extends AbstractUniqueIdGenerator<ExperimentId> {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder(64);
-    sb.append(EXPERIMENT_ID_PREFIX).append(getServerTimestamp()).append("_");
+    sb.append(EXPERIMENT_ID_PREFIX).append(getServerTimestamp()).append("-");
     format(sb, getId());
     return sb.toString();
   }

@@ -18,7 +18,7 @@
 #
 
 set -e
-NAMESPACE="submarine-operator-test"
+NAMESPACE="submarine-user-test"
 
 # ========================================
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -17,15 +15,31 @@
 # limitations under the License.
 #
 
-export MAVEN_OPTS="-Xmx2g -XX:ReservedCodeCacheSize=512m  -Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
-mvn --no-transfer-progress install -DskipTests
-
-ERRORS=$(mvn checkstyle:check | grep ERROR)
-
-if test ! -z "$ERRORS"; then
-    echo -e "Checkstyle checks failed at following occurrences:\n$ERRORS"
-    find . -name checkstyle-output.xml | xargs cat | grep -v checkstyle | grep -v "<?xml"
-    exit 1
-else
-    echo -e "Checkstyle checks passed."
-fi
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: "{{ .Values.name }}"
+  name: "{{ .Values.name }}"
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: "{{ .Values.name }}"
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: "{{ .Values.name }}"
+      annotations:
+        timestamp: {{ now | quote }}
+    spec:
+      containers:
+        - image: "{{ .Values.image }}"
+          name: "{{ .Values.name }}"
+          resources: {}
+          imagePullPolicy: IfNotPresent
+      serviceAccountName: submarine-operator
+status: {}
