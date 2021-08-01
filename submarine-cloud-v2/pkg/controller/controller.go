@@ -139,17 +139,6 @@ type Controller struct {
 	incluster bool
 }
 
-const (
-	ADD = iota
-	UPDATE
-	DELETE
-)
-
-type WorkQueueItem struct {
-	key    string
-	action int
-}
-
 // NewController returns a new sample controller
 func NewController(
 	incluster bool,
@@ -202,14 +191,9 @@ func NewController(
 	// Setting up event handler for Submarine
 	klog.Info("Setting up event handlers")
 	submarineInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: func(toAdd interface{}) {
-			controller.enqueueSubmarine(toAdd, ADD)
-		},
+		AddFunc: controller.enqueueSubmarine,
 		UpdateFunc: func(old, new interface{}) {
-			controller.enqueueSubmarine(new, UPDATE)
-		},
-		DeleteFunc: func(toDelete interface{}) {
-			controller.enqueueSubmarine(toDelete, DELETE)
+			controller.enqueueSubmarine(new)
 		},
 	})
 
@@ -383,9 +367,9 @@ func (c *Controller) processNextWorkItem() bool {
 	// We wrap this block in a func so we can defer c.workqueue.Done.
 	err := func(obj interface{}) error {
 		defer c.workqueue.Done(obj)
-		var item WorkQueueItem
+		var key string
 		var ok bool
-		if item, ok = obj.(WorkQueueItem); !ok {
+		if key, ok = obj.(string); !ok {
 			// As the item in the workqueue is actually invalid, we call
 			// Forget here else we'd go into a loop of attempting to
 			// process a work item that is invalid.
@@ -394,15 +378,15 @@ func (c *Controller) processNextWorkItem() bool {
 			return nil
 		}
 		// Run the syncHandler
-		if err := c.syncHandler(item); err != nil {
+		if err := c.syncHandler(key); err != nil {
 			// Put the item back on the workqueue to handle any transient errors.
-			c.workqueue.AddRateLimited(item)
-			return fmt.Errorf("error syncing '%s': %s, requeuing", item.key, err.Error())
+			c.workqueue.AddRateLimited(key)
+			return fmt.Errorf("error syncing '%s': %s, requeuing", key, err.Error())
 		}
 		// Finally, if no error occurs we Forget this item so it does not
 		// get queued again until another change happens.
 		c.workqueue.Forget(obj)
-		klog.Infof("Successfully synced '%s'", item.key)
+		klog.Infof("Successfully synced '%s'", key)
 		return nil
 	}(obj)
 
@@ -417,17 +401,14 @@ func (c *Controller) processNextWorkItem() bool {
 // syncHandler compares the actual state with the desired, and attempts to
 // converge the two. It then updates the Status block of the Submarine resource
 // with the current status of the resource.
-func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
-	key := workqueueItem.key
-	action := workqueueItem.action
-
+func (c *Controller) syncHandler(key string) error {
 	// Convert the namespace/name string into a distinct namespace and name
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
 	if err != nil {
 		utilruntime.HandleError(fmt.Errorf("Invalid resource key: %s", key))
 		return nil
 	}
-	klog.Info("syncHandler: ", key, " / ", action)
+	klog.Info("syncHandler: ", key)
 
 	// Get the Submarine resource with this namespace/name
 	submarine, err := c.submarinesLister.Submarines(namespace).Get(name)
@@ -514,7 +495,7 @@ func (c *Controller) updateSubmarineStatus(submarine *v1alpha1.Submarine, server
 // enqueueSubmarine takes a Submarine resource and converts it into a namespace/name
 // string which is then put onto the work queue. This method should *not* be
 // passed resources of any type other than Submarine.
-func (c *Controller) enqueueSubmarine(obj interface{}, action int) {
+func (c *Controller) enqueueSubmarine(obj interface{}) {
 	var key string
 	var err error
 	if key, err = cache.MetaNamespaceKeyFunc(obj); err != nil {
@@ -524,10 +505,7 @@ func (c *Controller) enqueueSubmarine(obj interface{}, action int) {
 
 	// key: [namespace]/[CR name]
 	// Example: default/example-submarine
-	c.workqueue.Add(WorkQueueItem{
-		key:    key,
-		action: action,
-	})
+	c.workqueue.Add(key)
 }
 
 // handleObject will take any resource implementing metav1.Object and attempt
@@ -565,7 +543,7 @@ func (c *Controller) handleObject(obj interface{}) {
 			return
 		}
 
-		c.enqueueSubmarine(submarine, UPDATE)
+		c.enqueueSubmarine(submarine)
 		return
 	}
 }
