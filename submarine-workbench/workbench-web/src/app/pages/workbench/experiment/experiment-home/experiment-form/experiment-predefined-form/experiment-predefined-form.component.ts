@@ -151,8 +151,11 @@ export class ExperimentPredefinedFormComponent implements OnInit, OnDestroy {
     let controls = {};
     for (let item of this.templates[this.currentOption].templateParams) {
       controls[item.name] = [item.value];
-      if (item.required === 'true') controls[item.name].push([Validators.required]);
+      if (item.required === 'true') {
+        if(item.name !== 'experiment_name') controls[item.name].push([Validators.required]);
+        else controls[item.name].push([Validators.required, Validators.pattern('[a-zA-Z0-9]+[a-zA-Z0-9\-]*')]);
     }
+  }
     const new_param_group = this.fb.group(controls);
     this.predefinedForm.setControl('params', new_param_group);
   }

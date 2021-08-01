@@ -36,8 +36,14 @@
     <h4 nz-typography>Configurable Parameters</h4>
     <nz-form-item *ngFor="let item of paramList">
       <nz-form-label [nzSpan]="5" [nzRequired]="item.required" [nzFor]="item.name">{{ item.name }}</nz-form-label>
-      <nz-form-control [nzSpan]="12" nzErrorTip="Please provide the value!">
+      <nz-form-control [nzSpan]="12" nzErrorTip="Please provide the value!" *ngIf="item.name != 'experiment_name'">
         <input type="text" nz-input [id]="item.name" [formControlName]="item.name" />
+      </nz-form-control>
+      <nz-form-control [nzSpan]="12" *ngIf="item.name == 'experiment_name'">
+        <input type="text" nz-input [id]="item.name" [formControlName]="item.name" />
+        <div class="alert-message" *ngIf="predefinedForm.get('params').get(item.name).hasError('pattern')">
+          Only letters(a-z), numbers(0-9), and hyphens(-)(but cannot start with them) are allowed.
+        </div>
       </nz-form-control>
     </nz-form-item>
   </div>
