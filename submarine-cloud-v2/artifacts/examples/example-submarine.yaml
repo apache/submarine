@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-apiVersion: submarine.k8s.io/v1alpha1
+apiVersion: submarine.apache.org/v1alpha1
 kind: Submarine
 metadata:
   name: example-submarine

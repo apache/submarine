@@ -30,7 +30,7 @@ type SubmarineV1alpha1Interface interface {
 	SubmarinesGetter
 }
 
-// SubmarineV1alpha1Client is used to interact with features provided by the submarine.k8s.io group.
+// SubmarineV1alpha1Client is used to interact with features provided by the submarine.apache.org group.
 type SubmarineV1alpha1Client struct {
 	restClient rest.Interface
 }
