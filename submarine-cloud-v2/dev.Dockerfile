@@ -33,7 +33,5 @@ RUN curl -LO https://dl.k8s.io/release/v1.14.2/bin/linux/amd64/kubectl &&\
     install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl &&\
     kubectl version --client
 
-ADD charts/ /usr/src/charts
-
 ADD submarine-operator /usr/src
-CMD ["/usr/src/submarine-operator", "-incluster=true"] 
+CMD ["/usr/src/submarine-operator", "-incluster=true"]

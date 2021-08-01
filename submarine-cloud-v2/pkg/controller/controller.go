@@ -28,7 +28,6 @@ import (
 	submarinescheme "github.com/apache/submarine/submarine-cloud-v2/pkg/client/clientset/versioned/scheme"
 	informers "github.com/apache/submarine/submarine-cloud-v2/pkg/client/informers/externalversions/submarine/v1alpha1"
 	listers "github.com/apache/submarine/submarine-cloud-v2/pkg/client/listers/submarine/v1alpha1"
-	"github.com/apache/submarine/submarine-cloud-v2/pkg/helm"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -137,9 +136,6 @@ type Controller struct {
 	// Kubernetes API.
 	recorder record.EventRecorder
 
-	// TODO: Need to be modified to implement multi-tenant
-	// Store charts
-	charts    []helm.HelmUninstallInfo
 	incluster bool
 }
 
@@ -433,87 +429,76 @@ func (c *Controller) syncHandler(workqueueItem WorkQueueItem) error {
 	}
 	klog.Info("syncHandler: ", key, " / ", action)
 
-	if action != DELETE { // Case: ADD & UPDATE
-		klog.Info("Add / Update: ", key)
-		// Get the Submarine resource with this namespace/name
-		submarine, err := c.submarinesLister.Submarines(namespace).Get(name)
-		if err != nil {
-			// The Submarine resource may no longer exist, in which case we stop
-			// processing
-			if errors.IsNotFound(err) {
-				utilruntime.HandleError(fmt.Errorf("submarine '%s' in work queue no longer exists", key))
-				return nil
-			}
-			return err
-		}
-
-		// Print out the spec of the Submarine resource
-		b, err := json.MarshalIndent(submarine.Spec, "", "  ")
-		fmt.Println(string(b))
-
-		storageType := submarine.Spec.Storage.StorageType
-		if storageType != "nfs" && storageType != "host" {
-			utilruntime.HandleError(fmt.Errorf("Invalid storageType '%s' found in submarine spec, nothing will be created. Valid storage types are 'nfs' and 'host'", storageType))
+	// Get the Submarine resource with this namespace/name
+	submarine, err := c.submarinesLister.Submarines(namespace).Get(name)
+	if err != nil {
+		// The Submarine resource may no longer exist, in which case we stop
+		// processing
+		if errors.IsNotFound(err) {
+			utilruntime.HandleError(fmt.Errorf("submarine '%s' in work queue no longer exists", key))
 			return nil
 		}
-
-		var serverDeployment *appsv1.Deployment
-		var databaseDeployment *appsv1.Deployment
-
-		err = c.installSubCharts(namespace)
-		if err != nil {
-			return err
-		}
-
-		serverDeployment, err = c.createSubmarineServer(submarine)
-		if err != nil {
-			return err
-		}
-
-		databaseDeployment, err = c.createSubmarineDatabase(submarine)
-		if err != nil {
-			return err
-		}
-
-		err = c.createIngress(submarine)
-		if err != nil {
-			return err
-		}
-
-		err = c.createSubmarineServerRBAC(submarine)
-		if err != nil {
-			return err
-		}
-
-		err = c.createSubmarineTensorboard(submarine)
-		if err != nil {
-			return err
-		}
-
-		err = c.createSubmarineMlflow(submarine)
-		if err != nil {
-			return err
-		}
-
-		err = c.createSubmarineMinio(submarine)
-		if err != nil {
-			return err
-		}
-
-		err = c.updateSubmarineStatus(submarine, serverDeployment, databaseDeployment)
-		if err != nil {
-			return err
-		}
-
-		c.recorder.Event(submarine, corev1.EventTypeNormal, SuccessSynced, MessageResourceSynced)
-
-	} else { // Case: DELETE
-		// Uninstall Helm charts
-		for _, chart := range c.charts {
-			helm.HelmUninstall(chart)
-		}
-		c.charts = nil
+		return err
 	}
+
+	// Print out the spec of the Submarine resource
+	b, err := json.MarshalIndent(submarine.Spec, "", "  ")
+	fmt.Println(string(b))
+
+	storageType := submarine.Spec.Storage.StorageType
+	if storageType != "nfs" && storageType != "host" {
+		utilruntime.HandleError(fmt.Errorf("Invalid storageType '%s' found in submarine spec, nothing will be created. Valid storage types are 'nfs' and 'host'", storageType))
+		return nil
+	}
+
+	var serverDeployment *appsv1.Deployment
+	var databaseDeployment *appsv1.Deployment
+
+	if err != nil {
+		return err
+	}
+
+	serverDeployment, err = c.createSubmarineServer(submarine)
+	if err != nil {
+		return err
+	}
+
+	databaseDeployment, err = c.createSubmarineDatabase(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.createIngress(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.createSubmarineServerRBAC(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.createSubmarineTensorboard(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.createSubmarineMlflow(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.createSubmarineMinio(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.updateSubmarineStatus(submarine, serverDeployment, databaseDeployment)
+	if err != nil {
+		return err
+	}
+
+	c.recorder.Event(submarine, corev1.EventTypeNormal, SuccessSynced, MessageResourceSynced)
 
 	return nil
 }
