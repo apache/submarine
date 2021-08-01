@@ -37,9 +37,9 @@ type FakeSubmarines struct {
 	ns   string
 }
 
-var submarinesResource = schema.GroupVersionResource{Group: "submarine.k8s.io", Version: "v1alpha1", Resource: "submarines"}
+var submarinesResource = schema.GroupVersionResource{Group: "submarine.apache.org", Version: "v1alpha1", Resource: "submarines"}
 
-var submarinesKind = schema.GroupVersionKind{Group: "submarine.k8s.io", Version: "v1alpha1", Kind: "Submarine"}
+var submarinesKind = schema.GroupVersionKind{Group: "submarine.apache.org", Version: "v1alpha1", Kind: "Submarine"}
 
 // Get takes name of the submarine, and returns the corresponding submarine object, and an error if there is any.
 func (c *FakeSubmarines) Get(ctx context.Context, name string, options v1.GetOptions) (result *v1alpha1.Submarine, err error) {

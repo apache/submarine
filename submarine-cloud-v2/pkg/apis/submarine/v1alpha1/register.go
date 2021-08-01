@@ -24,7 +24,7 @@ import (
 )
 
 const (
-	GroupName    = "submarine.k8s.io"
+	GroupName    = "submarine.apache.org"
 	GroupVersion = "v1alpha1"
 )
 

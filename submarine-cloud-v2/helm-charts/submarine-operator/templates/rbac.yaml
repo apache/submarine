@@ -21,7 +21,7 @@ metadata:
   name: submarine-operator
 rules:
   - apiGroups:
-      - submarine.k8s.io
+      - submarine.apache.org
     resources:
       - submarines
     verbs:
