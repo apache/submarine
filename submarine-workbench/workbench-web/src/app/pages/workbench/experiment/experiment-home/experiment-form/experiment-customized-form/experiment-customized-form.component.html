@@ -57,6 +57,20 @@
           ></textarea>
         </div>
         <div class="single-field-group">
+          <label for="tags">
+            <span class="red-star">*</span>
+            Tags
+          </label>
+          <nz-select
+            formControlName="tags"
+            nzMode="tags"
+            [nzTokenSeparators]="[',']"
+            nzPlaceHolder="AutoEncoder"
+          >
+            <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+          </nz-select>
+        </div>
+        <div class="single-field-group">
           <label for="cmd">
             <span class="red-star">*</span>
             Command

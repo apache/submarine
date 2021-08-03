@@ -138,7 +138,6 @@ export class ExperimentHomeComponent implements OnInit {
   }
 
   onSwitchAutoReload() {
-    console.log(this.switchValue);
     if (this.switchValue) {
       this.reloadSub = this.reloadInterval.subscribe((res) => {
         this.fetchExperimentList(true);

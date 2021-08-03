@@ -25,6 +25,7 @@ export interface ExperimentMeta {
   envVars?: {
     [key: string]: string;
   };
+  tags: string[];
 }
 
 export interface EnvironmentSpec {
