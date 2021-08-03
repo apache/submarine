@@ -68,7 +68,11 @@ public class MLJobConverter {
       dateTime = status.getCompletionTime();
       if (dateTime != null) {
         experiment.setFinishedTime(dateTime.toString());
-        experiment.setStatus(Experiment.Status.STATUS_SUCCEEDED.getValue());
+        if ("Succeeded".equalsIgnoreCase(conditions.get(conditions.size() - 1).getType())) {
+          experiment.setStatus(Experiment.Status.STATUS_SUCCEEDED.getValue());
+        } else if ("Failed".equalsIgnoreCase(conditions.get(conditions.size() - 1).getType())) {
+          experiment.setStatus(Experiment.Status.STATUS_FAILED.getValue());
+        }
       }
     }
     return experiment;

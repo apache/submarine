@@ -138,6 +138,7 @@ public class K8sSubmitter implements Submitter {
     Experiment experiment;
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
+
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true");
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
@@ -160,11 +161,13 @@ public class K8sSubmitter implements Submitter {
       Object object = api.getNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName());
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
+
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
+
     return experiment;
   }
 

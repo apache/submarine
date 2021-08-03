@@ -26,13 +26,13 @@ import org.apache.submarine.server.submitter.k8s.model.MLJobSpec;
 
 import java.util.Map;
 
-public class PyTorchJobSpec implements MLJobSpec {
+public class PyTorchJobSpec extends MLJobSpec {
 
   /**
    * Key: Master, Worker
    */
   @SerializedName("pytorchReplicaSpecs")
-  private Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecs;
+  private Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecs; 
 
   /**
    * Get the replica specs.
@@ -54,4 +54,5 @@ public class PyTorchJobSpec implements MLJobSpec {
       Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecs) {
     this.replicaSpecs = replicaSpecs;
   }
+
 }

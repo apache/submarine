@@ -21,7 +21,21 @@ package org.apache.submarine.server.submitter.k8s.model;
 
 import java.util.Map;
 
-public interface MLJobSpec {
-  Map<MLJobReplicaType, MLJobReplicaSpec> getReplicaSpecs();
-  void setReplicaSpecs(Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecs);
+import com.google.gson.annotations.SerializedName;
+
+public abstract class MLJobSpec {
+  
+  @SerializedName("backoffLimit")
+  private Integer backoffLimit = 3;
+  
+  public abstract Map<MLJobReplicaType, MLJobReplicaSpec> getReplicaSpecs();
+  public abstract void setReplicaSpecs(Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecs);
+  public Integer getBackoffLimit() {
+    return backoffLimit;
+  }
+  
+  public void setBackoffLimit(Integer backoffLimit) {
+    this.backoffLimit = backoffLimit;
+  }
+
 }
