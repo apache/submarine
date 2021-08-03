@@ -123,7 +123,8 @@ public class Experiment {
     STATUS_CREATED("Created"),
     STATUS_RUNNING("Running"),
     STATUS_SUCCEEDED("Succeeded"),
-    STATUS_DELETED("Deleted");
+    STATUS_DELETED("Deleted"),
+    STATUS_FAILED("Failed");
 
     private String value;
     Status(String value) {
