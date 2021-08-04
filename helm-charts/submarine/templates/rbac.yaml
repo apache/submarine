@@ -16,7 +16,7 @@
 #
 
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
   name: "{{ .Values.submarine.server.name }}"
 rules:
@@ -58,7 +58,6 @@ rules:
   - pods
   - pods/log
   - services
-  - persistentvolumes
   - persistentvolumeclaims
   verbs:
   - '*'
@@ -70,7 +69,7 @@ rules:
   verbs:
   - '*'
 ---
-kind: ClusterRoleBinding
+kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: "{{ .Values.submarine.server.name }}"
@@ -79,6 +78,6 @@ subjects:
   namespace: {{ .Release.Namespace }}
   name: "{{ .Values.submarine.server.name }}"
 roleRef:
-  kind: ClusterRole
+  kind: Role
   name: "{{ .Values.submarine.server.name }}"
   apiGroup: rbac.authorization.k8s.io
