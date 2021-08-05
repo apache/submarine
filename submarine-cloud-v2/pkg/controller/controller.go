@@ -127,8 +127,8 @@ type Controller struct {
 	ingressrouteLister          traefiklisters.IngressRouteLister
 	clusterroleLister           rbaclisters.ClusterRoleLister
 	clusterrolebindingLister    rbaclisters.ClusterRoleBindingLister
-	roleLister           		rbaclisters.RoleLister
-	rolebindingLister    		rbaclisters.RoleBindingLister
+	roleLister                  rbaclisters.RoleLister
+	rolebindingLister           rbaclisters.RoleBindingLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
 	// processed instead of performing it as soon as a change happens. This
 	// means we can ensure we only process a fixed amount of resources at a
