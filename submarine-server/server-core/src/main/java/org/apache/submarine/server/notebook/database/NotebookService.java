@@ -67,7 +67,7 @@ public class NotebookService {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException("Unable to get notebook entity from database");
     }
-    if(entity != null) {
+    if (entity != null) {
       notebook = buildNotebookFromEntity(entity);
       return notebook;
     }
