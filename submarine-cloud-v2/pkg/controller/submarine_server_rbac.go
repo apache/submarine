@@ -30,8 +30,8 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func newSubmarineServerClusterRole(submarine *v1alpha1.Submarine) *rbacv1.ClusterRole {
-	return &rbacv1.ClusterRole{
+func newSubmarineServerRole(submarine *v1alpha1.Submarine) *rbacv1.Role {
+	return &rbacv1.Role{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: serverName,
 			OwnerReferences: []metav1.OwnerReference{
@@ -63,8 +63,8 @@ func newSubmarineServerClusterRole(submarine *v1alpha1.Submarine) *rbacv1.Cluste
 	}
 }
 
-func newSubmarineServerClusterRoleBinding(submarine *v1alpha1.Submarine) *rbacv1.ClusterRoleBinding {
-	return &rbacv1.ClusterRoleBinding{
+func newSubmarineServerRoleBinding(submarine *v1alpha1.Submarine) *rbacv1.RoleBinding {
+	return &rbacv1.RoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: serverName,
 			OwnerReferences: []metav1.OwnerReference{
@@ -79,7 +79,7 @@ func newSubmarineServerClusterRoleBinding(submarine *v1alpha1.Submarine) *rbacv1
 			},
 		},
 		RoleRef: rbacv1.RoleRef{
-			Kind:     "ClusterRole",
+			Kind:     "Role",
 			Name:     serverName,
 			APIGroup: "rbac.authorization.k8s.io",
 		},
@@ -91,12 +91,12 @@ func newSubmarineServerClusterRoleBinding(submarine *v1alpha1.Submarine) *rbacv1
 func (c *Controller) createSubmarineServerRBAC(submarine *v1alpha1.Submarine) error {
 	klog.Info("[createSubmarineServerRBAC]")
 
-	// Step1: Create ClusterRole
-	clusterrole, err := c.clusterroleLister.Get(serverName)
+	// Step1: Create Role
+	role, err := c.roleLister.Roles(submarine.Namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
-		clusterrole, err = c.kubeclientset.RbacV1().ClusterRoles().Create(context.TODO(), newSubmarineServerClusterRole(submarine), metav1.CreateOptions{})
-		klog.Info("	Create ClusterRole: ", clusterrole.Name)
+		role, err = c.kubeclientset.RbacV1().Roles(submarine.Namespace).Create(context.TODO(), newSubmarineServerRole(submarine), metav1.CreateOptions{})
+		klog.Info("	Create Role: ", role.Name)
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
@@ -106,28 +106,28 @@ func (c *Controller) createSubmarineServerRBAC(submarine *v1alpha1.Submarine) er
 		return err
 	}
 
-	if !metav1.IsControlledBy(clusterrole, submarine) {
-		msg := fmt.Sprintf(MessageResourceExists, clusterrole.Name)
+	if !metav1.IsControlledBy(role, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, role.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
 
-	clusterrolebinding, clusterrolebinding_err := c.clusterrolebindingLister.Get(serverName)
+	rolebinding, rolebinding_err := c.rolebindingLister.RoleBindings(submarine.Namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(clusterrolebinding_err) {
-		clusterrolebinding, clusterrolebinding_err = c.kubeclientset.RbacV1().ClusterRoleBindings().Create(context.TODO(), newSubmarineServerClusterRoleBinding(submarine), metav1.CreateOptions{})
-		klog.Info("	Create ClusterRoleBinding: ", clusterrolebinding.Name)
+	if errors.IsNotFound(rolebinding_err) {
+		rolebinding, rolebinding_err = c.kubeclientset.RbacV1().RoleBindings(submarine.Namespace).Create(context.TODO(), newSubmarineServerRoleBinding(submarine), metav1.CreateOptions{})
+		klog.Info("	Create RoleBinding: ", rolebinding.Name)
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
-	if clusterrolebinding_err != nil {
-		return clusterrolebinding_err
+	if rolebinding_err != nil {
+		return rolebinding_err
 	}
 
-	if !metav1.IsControlledBy(clusterrolebinding, submarine) {
-		msg := fmt.Sprintf(MessageResourceExists, clusterrolebinding.Name)
+	if !metav1.IsControlledBy(rolebinding, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, rolebinding.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}

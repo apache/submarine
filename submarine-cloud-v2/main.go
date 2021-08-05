@@ -97,6 +97,8 @@ func main() {
 		traefikInformerFactory.Traefik().V1alpha1().IngressRoutes(),
 		kubeInformerFactory.Rbac().V1().ClusterRoles(),
 		kubeInformerFactory.Rbac().V1().ClusterRoleBindings(),
+		kubeInformerFactory.Rbac().V1().Roles(),
+		kubeInformerFactory.Rbac().V1().RoleBindings(),
 		submarineInformerFactory.Submarine().V1alpha1().Submarines())
 
 	// notice that there is no need to run Start methods in a separate goroutine. (i.e. go kubeInformerFactory.Start(stopCh)

@@ -127,6 +127,8 @@ type Controller struct {
 	ingressrouteLister          traefiklisters.IngressRouteLister
 	clusterroleLister           rbaclisters.ClusterRoleLister
 	clusterrolebindingLister    rbaclisters.ClusterRoleBindingLister
+	roleLister           		rbaclisters.RoleLister
+	rolebindingLister    		rbaclisters.RoleBindingLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
 	// processed instead of performing it as soon as a change happens. This
 	// means we can ensure we only process a fixed amount of resources at a
@@ -170,6 +172,8 @@ func NewController(
 	ingressrouteInformer traefikinformers.IngressRouteInformer,
 	clusterroleInformer rbacinformers.ClusterRoleInformer,
 	clusterrolebindingInformer rbacinformers.ClusterRoleBindingInformer,
+	roleInformer rbacinformers.RoleInformer,
+	rolebindingInformer rbacinformers.RoleBindingInformer,
 	submarineInformer informers.SubmarineInformer) *Controller {
 
 	// Add Submarine types to the default Kubernetes Scheme so Events can be
@@ -198,6 +202,8 @@ func NewController(
 		ingressrouteLister:          ingressrouteInformer.Lister(),
 		clusterroleLister:           clusterroleInformer.Lister(),
 		clusterrolebindingLister:    clusterrolebindingInformer.Lister(),
+		roleLister:                  roleInformer.Lister(),
+		rolebindingLister:           rolebindingInformer.Lister(),
 		workqueue:                   workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
 		recorder:                    recorder,
 		incluster:                   incluster,
@@ -332,6 +338,30 @@ func NewController(
 			newClusterRoleBinding := new.(*rbacv1.ClusterRoleBinding)
 			oldClusterRoleBinding := old.(*rbacv1.ClusterRoleBinding)
 			if newClusterRoleBinding.ResourceVersion == oldClusterRoleBinding.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
+	roleInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newRole := new.(*rbacv1.Role)
+			oldRole := old.(*rbacv1.Role)
+			if newRole.ResourceVersion == oldRole.ResourceVersion {
+				return
+			}
+			controller.handleObject(new)
+		},
+		DeleteFunc: controller.handleObject,
+	})
+	rolebindingInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newRoleBinding := new.(*rbacv1.RoleBinding)
+			oldRoleBinding := old.(*rbacv1.RoleBinding)
+			if newRoleBinding.ResourceVersion == oldRoleBinding.ResourceVersion {
 				return
 			}
 			controller.handleObject(new)
