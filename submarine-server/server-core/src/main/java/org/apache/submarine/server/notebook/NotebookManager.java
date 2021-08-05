@@ -151,6 +151,10 @@ public class NotebookManager {
     checkNotebookId(id);
 
     Notebook notebook = notebookService.select(id);
+    if (notebook == null) {
+      throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
+          "Not found notebook");
+    }
     Notebook foundNotebook = submitter.findNotebook(notebook.getSpec());
     foundNotebook.rebuild(notebook);
 
