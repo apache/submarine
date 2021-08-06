@@ -131,8 +131,8 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(sub1, sub2);
 
-    // get tags from server
-    this.listOfOption = []; //TODO
+    //TODO: get tags from server
+    this.listOfOption = []; 
   
   }
 
