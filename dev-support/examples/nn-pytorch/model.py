@@ -32,4 +32,4 @@ class LinearNNModel(torch.nn.Module):
 if __name__ == "__main__":
     client = ModelsClient()
     net = LinearNNModel()
-    client.log_model("simple-nn-model", net)
+    # client.log_model("simple-nn-model", net)
