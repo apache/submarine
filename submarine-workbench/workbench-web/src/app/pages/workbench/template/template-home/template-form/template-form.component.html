@@ -175,6 +175,27 @@
             ></textarea>
           </nz-form-control>
         </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="tags">Tags</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Please input tags for this template!">
+            <!-- <textarea
+              nz-input
+              [nzAutosize]="{ minRows: 1, maxRows: 4 }"
+              name="cmd"
+              formControlName="cmd"
+              id="cmd"
+              placeholder="Command for this template."
+            ></textarea> -->
+            <nz-select
+            formControlName="tags"
+            nzMode="tags"
+            [nzTokenSeparators]="[',']"
+            nzPlaceHolder="AutoEncoder"
+            >
+            <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+          </nz-select>
+          </nz-form-control>
+        </nz-form-item>
         <div formArrayName="envVars">
           <ng-container *ngFor="let env of envVars.controls; index as i">
             <nz-form-item>
