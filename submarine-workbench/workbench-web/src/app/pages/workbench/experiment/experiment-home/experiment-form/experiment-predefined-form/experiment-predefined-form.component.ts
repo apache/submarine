@@ -37,6 +37,7 @@ interface ParsedTemplate {
   experimentCommand: string;
   experimentImage: string;
   experimentVars: string;
+  experimentTags: string[];
 }
 
 interface TemplateTable {
@@ -132,6 +133,7 @@ export class ExperimentPredefinedFormComponent implements OnInit, OnDestroy {
         experimentCommand: item.experimentTemplateSpec.experimentSpec.meta.cmd,
         experimentImage: item.experimentTemplateSpec.experimentSpec.environment.image,
         experimentVars: JSON.stringify(item.experimentTemplateSpec.experimentSpec.meta.envVars),
+        experimentTags: item.experimentTemplateSpec.experimentSpec.meta.tags,
       };
       templates[item.experimentTemplateSpec.name] = template;
     }
