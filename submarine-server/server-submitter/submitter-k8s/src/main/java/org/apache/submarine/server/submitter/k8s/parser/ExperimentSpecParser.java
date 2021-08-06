@@ -61,9 +61,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ExperimentSpecParser {
-
-  private static SubmarineConfiguration conf =
-      SubmarineConfiguration.getInstance();
+  private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
   public static MLJob parseJob(ExperimentSpec experimentSpec) throws InvalidSpecException {
     String framework = experimentSpec.getMeta().getFramework();
@@ -176,7 +174,8 @@ public class ExperimentSpecParser {
     }
     // resources
     V1ResourceRequirements resources = new V1ResourceRequirements();
-    resources.setLimits(parseResources(taskSpec));
+    resources.setRequests(parseResources(taskSpec, true));
+    resources.setLimits(parseResources(taskSpec, false));
     container.setResources(resources);
     container.setEnv(parseEnvVars(taskSpec, experimentSpec.getMeta().getEnvVars()));
 
@@ -343,14 +342,22 @@ public class ExperimentSpecParser {
     return envVars;
   }
 
-  private static Map<String, Quantity> parseResources(ExperimentTaskSpec taskSpec) {
+  private static Map<String, Quantity> parseResources(ExperimentTaskSpec taskSpec, boolean request) {
     Map<String, Quantity> resources = new HashMap<>();
     taskSpec.setResources(taskSpec.getResources());
     if (taskSpec.getCpu() != null) {
       resources.put("cpu", new Quantity(taskSpec.getCpu()));
     }
     if (taskSpec.getMemory() != null) {
-      resources.put("memory", new Quantity(taskSpec.getMemory()));
+      String memoryRequest = taskSpec.getMemory();
+      if (request) {
+        resources.put("memory", new Quantity(memoryRequest)); // ex: 1024M
+      } else {
+        String suffix = memoryRequest.substring(memoryRequest.length() - 1);
+        String value = memoryRequest.substring(0, memoryRequest.length() - 1);
+        String memoryLimit = String.valueOf(Integer.parseInt(value) * 2) + suffix;
+        resources.put("memory", new Quantity(memoryLimit));
+      }
     }
     if (taskSpec.getGpu() != null) {
       resources.put("nvidia.com/gpu", new Quantity(taskSpec.getGpu()));
