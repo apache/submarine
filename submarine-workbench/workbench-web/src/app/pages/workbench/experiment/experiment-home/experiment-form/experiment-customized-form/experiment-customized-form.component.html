@@ -42,7 +42,7 @@
             placeholder="mnist-example"
           />
           <div class="alert-message" *ngIf="experiment.get('experimentName').hasError('pattern')">
-            Only letters(a-z), numbers(0-9), and hyphens(-)(but cannot start with them) are allowed.
+            Only letters(a-z), numbers(0-9), and hyphens are allowed, but you can't start with hyphens.
           </div>
         </div>
         <div class="single-field-group">
