@@ -125,7 +125,7 @@ public class ExperimentManagerTest {
     experimentId2.setId(2);
 
     ExperimentEntity entity1 = new ExperimentEntity();
-    entity1.setId(experiment1.getExperimentId().toString());
+    entity1.setId(experiment1.getSpec().getMeta().getExperimentId());
     entity1.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(experiment1.getSpec()));
 
     doReturn(Arrays.asList(entity1)).when(mockService).selectAll();

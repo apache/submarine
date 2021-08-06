@@ -115,7 +115,7 @@ public class ExperimentManager {
     spec.getMeta().getEnvVars().put(RestConstants.SUBMARINE_TRACKING_URI, url);
     spec.getMeta().getEnvVars().put(RestConstants.LOG_DIR_KEY, RestConstants.LOG_DIR_VALUE);
 
-    String lowerName = spec.getMeta().getName().toLowerCase(); 
+    String lowerName = spec.getMeta().getName().toLowerCase();
     spec.getMeta().setName(lowerName);
     spec.getMeta().setExperimentId(id.toString());
 
@@ -300,7 +300,7 @@ public class ExperimentManager {
 
         experimentLogList.add(submitter.getExperimentLogName(
             experiment.getSpec(),
-            experiment.getExperimentId().toString()
+            experiment.getSpec().getMeta().getExperimentId()
         ));
       }
 
@@ -326,7 +326,7 @@ public class ExperimentManager {
 
     return submitter.getExperimentLog(
         experiment.getSpec(),
-        experiment.getExperimentId().toString()
+        experiment.getSpec().getMeta().getExperimentId()
     );
   }
 
@@ -426,7 +426,7 @@ public class ExperimentManager {
    */
   private ExperimentEntity buildEntityFromExperiment(Experiment experiment) {
     ExperimentEntity entity = new ExperimentEntity();
-    entity.setId(experiment.getExperimentId().toString());
+    entity.setId(experiment.getSpec().getMeta().getExperimentId());
     entity.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(experiment.getSpec()));
     return entity;
   }

@@ -58,6 +58,11 @@ jobs:
         with:
           name: submarine-bin
           path: submarine-dist/target/submarine-dist*.tar.gz
+      - name: Delete temporary build artifacts before caching
+        run: |
+          #Never cache local artifacts
+          rm -rf ~/.m2/repository/org/apache/submarine
+        if: always()
   submarine-e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -174,6 +179,11 @@ jobs:
           kubectl get pods
           kubectl -n default get events --sort-by='{.lastTimestamp}'
         if: ${{ failure() }}
+      - name: Delete temporary build artifacts before caching
+        run: |
+          #Never cache local artifacts
+          rm -rf ~/.m2/repository/org/apache/submarine
+        if: always()
   submarine-commons-cluster:
     runs-on: ubuntu-latest
     timeout-minutes: 30
