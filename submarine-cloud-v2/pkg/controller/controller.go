@@ -125,8 +125,6 @@ type Controller struct {
 	persistentvolumeclaimLister corelisters.PersistentVolumeClaimLister
 	ingressLister               extlisters.IngressLister
 	ingressrouteLister          traefiklisters.IngressRouteLister
-	clusterroleLister           rbaclisters.ClusterRoleLister
-	clusterrolebindingLister    rbaclisters.ClusterRoleBindingLister
 	roleLister                  rbaclisters.RoleLister
 	rolebindingLister           rbaclisters.RoleBindingLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
@@ -170,8 +168,6 @@ func NewController(
 	persistentvolumeclaimInformer coreinformers.PersistentVolumeClaimInformer,
 	ingressInformer extinformers.IngressInformer,
 	ingressrouteInformer traefikinformers.IngressRouteInformer,
-	clusterroleInformer rbacinformers.ClusterRoleInformer,
-	clusterrolebindingInformer rbacinformers.ClusterRoleBindingInformer,
 	roleInformer rbacinformers.RoleInformer,
 	rolebindingInformer rbacinformers.RoleBindingInformer,
 	submarineInformer informers.SubmarineInformer) *Controller {
@@ -200,8 +196,6 @@ func NewController(
 		persistentvolumeclaimLister: persistentvolumeclaimInformer.Lister(),
 		ingressLister:               ingressInformer.Lister(),
 		ingressrouteLister:          ingressrouteInformer.Lister(),
-		clusterroleLister:           clusterroleInformer.Lister(),
-		clusterrolebindingLister:    clusterrolebindingInformer.Lister(),
 		roleLister:                  roleInformer.Lister(),
 		rolebindingLister:           rolebindingInformer.Lister(),
 		workqueue:                   workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
@@ -314,30 +308,6 @@ func NewController(
 			newIngressRoute := new.(*traefikv1alpha1.IngressRoute)
 			oldIngressRoute := old.(*traefikv1alpha1.IngressRoute)
 			if newIngressRoute.ResourceVersion == oldIngressRoute.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-	clusterroleInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newClusterRole := new.(*rbacv1.ClusterRole)
-			oldClusterRole := old.(*rbacv1.ClusterRole)
-			if newClusterRole.ResourceVersion == oldClusterRole.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-	clusterrolebindingInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newClusterRoleBinding := new.(*rbacv1.ClusterRoleBinding)
-			oldClusterRoleBinding := old.(*rbacv1.ClusterRoleBinding)
-			if newClusterRoleBinding.ResourceVersion == oldClusterRoleBinding.ResourceVersion {
 				return
 			}
 			controller.handleObject(new)
