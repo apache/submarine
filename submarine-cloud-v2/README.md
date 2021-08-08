@@ -52,7 +52,7 @@ kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yam
 minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
 
 # Method2 -- use port-forwarding
-kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
+kubectl port-forward --address 0.0.0.0 service/submarine-operator-traefik 32080:80
 
 # Step5: View Workbench
 # http://{minikube ip}:32080 (from Method 1), ex: http://192.168.49.2:32080
@@ -91,7 +91,7 @@ kubectl logs -f $(kubectl get pods --output=name | grep submarine-operator)
 minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
 
 # Method2 -- use port-forwarding
-kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
+kubectl port-forward --address 0.0.0.0 service/submarine-operator-traefik 32080:80
 
 # Step5: View Workbench
 # http://{minikube ip}:32080 (from Method 1), ex: http://192.168.49.2:32080
