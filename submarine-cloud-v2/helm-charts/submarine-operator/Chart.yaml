@@ -21,3 +21,12 @@ description: A Helm chart for Submarine operator
 type: application
 version: 0.1.0
 appVersion: "0.6.0"
+dependencies:
+  - name: tfjob
+    version: "0.1.0"
+  - name: pytorchjob
+    version: "0.1.0"
+  - name: notebook-controller
+    version: "0.1.0"
+  - name: traefik
+    version: "9.1.0"

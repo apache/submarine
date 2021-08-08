@@ -18,3 +18,4 @@
 name: submarine-operator-demo
 replicas: 1
 image: apache/submarine:operator-0.6.0-SNAPSHOT
+dev: false
