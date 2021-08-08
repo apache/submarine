@@ -172,6 +172,7 @@ jobs:
           TEST_MODULES: "-pl :submarine-test-k8s"
         run: |
           echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B"
+          mvn install -DskipTests
           mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B
       - name: Failure status
         run: |
