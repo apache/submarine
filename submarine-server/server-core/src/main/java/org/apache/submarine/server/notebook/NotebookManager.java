@@ -153,7 +153,7 @@ public class NotebookManager {
     Notebook notebook = notebookService.select(id);
     if (notebook == null) {
       throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
-          "Not found notebook");
+          "Notebook not found.");
     }
     Notebook foundNotebook = submitter.findNotebook(notebook.getSpec());
     foundNotebook.rebuild(notebook);
@@ -203,7 +203,7 @@ public class NotebookManager {
     NotebookId notebookId = NotebookId.fromString(id);
     if (notebookId == null) {
       throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
-          "Not found notebook server.");
+          "Notebook not found.");
     }
   }
 
