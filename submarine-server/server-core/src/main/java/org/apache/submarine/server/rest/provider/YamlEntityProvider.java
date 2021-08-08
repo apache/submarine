@@ -58,9 +58,7 @@ public class YamlEntityProvider<T> implements MessageBodyWriter<T>, MessageBodyR
       MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
       throws WebApplicationException {
     Yaml yaml = new Yaml();
-    String entityStreamString = toString(entityStream);
-    LOG.info("YAML readFrom: {}", entityStreamString); 
-    T t = yaml.loadAs(entityStreamString, type);
+    T t = yaml.loadAs(toString(entityStream), type);
     return t;
   }
 
