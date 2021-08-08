@@ -40,7 +40,10 @@ public class ExperimentMeta {
   private List<String> tags = new ArrayList<>();
 
   public ExperimentMeta() {
-
+    namespace = "default";
+    if (System.getenv("ENV_NAMESPACE") != null) {
+      namespace = System.getenv("ENV_NAMESPACE");
+    }
   }
 
   /**
@@ -88,7 +91,7 @@ public class ExperimentMeta {
    * @param namespace namespace
    */
   public void setNamespace(String namespace) {
-    this.namespace = namespace;
+    return;
   }
 
   public String getFramework() {

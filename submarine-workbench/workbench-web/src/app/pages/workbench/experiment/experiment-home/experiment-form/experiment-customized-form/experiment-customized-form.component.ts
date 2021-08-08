@@ -47,10 +47,6 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   step: number = 0;
   subscriptions: Subscription[] = [];
 
-  // TODO: Fetch all namespaces from submarine server
-  defaultNameSpace = 'default';
-  nameSpaceList = [this.defaultNameSpace, 'submarine'];
-
   // TODO: Fetch all images from submarine server
   imageIndex = 0;
   defaultImage = 'apache/submarine:tf-mnist-with-summaries-1.0';
@@ -90,7 +86,6 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     this.experiment = new FormGroup({
       experimentName: new FormControl(null, [Validators.pattern('[a-zA-Z0-9\-]*'), Validators.required]),
       description: new FormControl(null, [Validators.required]),
-      namespace: new FormControl(this.defaultNameSpace, [Validators.required]),
       cmd: new FormControl('', [Validators.required]),
       image: new FormControl(this.defaultImage, [Validators.required]),
       envs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
@@ -156,9 +151,6 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   get description() {
     return this.experiment.get('description');
   }
-  get namespace() {
-    return this.experiment.get('namespace');
-  }
   get cmd() {
     return this.experiment.get('cmd');
   }
@@ -189,7 +181,6 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     if (this.step === 0) {
       this.experimentFormService.btnStatusChange(
         this.experimentName.invalid ||
-          this.namespace.invalid ||
           this.cmd.invalid ||
           this.image.invalid ||
           this.envs.invalid
@@ -323,7 +314,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     // Construct the spec
     const meta: ExperimentMeta = {
       name: this.experimentName.value.toLowerCase(),
-      namespace: this.namespace.value,
+      namespace: "default",
       framework: this.framework === 'Standalone' ? 'Tensorflow' : this.framework,
       cmd: this.cmd.value,
       envVars: {}
@@ -404,7 +395,6 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
 
   cloneExperiment(spec: ExperimentSpec) {
     this.description.setValue(spec.meta.description);
-    this.namespace.setValue(spec.meta.namespace);
     this.cmd.setValue(spec.meta.cmd);
     this.image.setValue(spec.environment.image);
     if (this.imageList.indexOf(spec.environment.image) === -1) {
