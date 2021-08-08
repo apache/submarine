@@ -314,7 +314,6 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     // Construct the spec
     const meta: ExperimentMeta = {
       name: this.experimentName.value.toLowerCase(),
-      namespace: "default",
       framework: this.framework === 'Standalone' ? 'Tensorflow' : this.framework,
       cmd: this.cmd.value,
       envVars: {}
