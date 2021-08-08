@@ -36,14 +36,11 @@ import java.io.OutputStreamWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Scanner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Provider
 @Consumes({"application/yaml", MediaType.TEXT_PLAIN})
 @Produces({"application/yaml", MediaType.TEXT_PLAIN})
 public class YamlEntityProvider<T> implements MessageBodyWriter<T>, MessageBodyReader<T> {
-  private static final Logger LOG = LoggerFactory.getLogger(YamlEntityProvider.class);
 
   @Override
   public boolean isReadable(Class<?> type, Type genericType,
