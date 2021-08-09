@@ -22,7 +22,9 @@ import os
 import tensorboard
 
 print(tf.__version__)
-
+print("=============================")
+print(os.environ['TF_CONFIG'])
+print("=============================")
 datasets, info = tfds.load(name='mnist', with_info=True, as_supervised=True)
 mnist_train, mnist_test = datasets['train'], datasets['test']
 

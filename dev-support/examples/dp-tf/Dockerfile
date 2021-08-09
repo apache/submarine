@@ -17,8 +17,10 @@ FROM python:3.7
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 ADD ./tmp/submarine-sdk /opt/
-RUN pip install /opt/pysubmarine[tf-latest]
-RUN pip install install tensorboard
-RUN pip install tensorflow_datasets
+RUN pip install /opt/pysubmarine
+# RUN pip install tf-nightly
+RUN pip install tensorflow==2.3.0
+RUN pip install tensorboard
+RUN pip install tensorflow_datasets==2.1.0
 
-ADD ./distribution.py /opt/
+ADD ./multiWorker.py /opt/

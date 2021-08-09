@@ -20,21 +20,17 @@ curl -X POST -H "Content-Type: application/json" -d '
     "name": "tf-example",
     "namespace": "default",
     "framework": "TensorFlow",
-    "cmd": "python /opt/distribution.py",
+    "cmd": "python /opt/multiWorker.py",
     "envVars": {
       "ENV_1": "ENV1"
     }
   },
   "environment": {
-    "image": "distribution:0.6.0-SNAPSHOT"
+    "image": "multiworker:0.6.0-SNAPSHOT"
   },
   "spec": {
-    "Ps": {
-      "replicas": 1,
-      "resources": "cpu=1,memory=512M"
-    },
     "Worker": {
-      "replicas": 3,
+      "replicas": 4,
       "resources": "cpu=1,memory=512M"
     }
   }
