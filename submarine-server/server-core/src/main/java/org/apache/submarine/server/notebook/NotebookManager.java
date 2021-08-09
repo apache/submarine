@@ -157,6 +157,7 @@ public class NotebookManager {
     }
     Notebook foundNotebook = submitter.findNotebook(notebook.getSpec());
     foundNotebook.rebuild(notebook);
+    foundNotebook.setNotebookId(NotebookId.fromString(id));
 
     return foundNotebook;
   }
