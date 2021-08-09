@@ -352,6 +352,25 @@ public class ExperimentRestApi {
     }
   }
 
+  @GET
+  @Path("/serve")
+  @Operation(summary = "Get a serve ready status",
+      tags = {"serve"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class)))})
+  public Response checkServePodReady(@QueryParam("modelName") String modelName,
+                              @QueryParam("modelVersion") String modelVersion) {
+    try {
+      ServeResponse serve = experimentManager.checkServePodReady(modelName + "-"
+          + modelVersion + "-pod");
+      return new JsonResponse.Builder<ServeResponse>(Response.Status.OK).success(true)
+          .result(serve).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseExperimentServiceException(e);
+    }
+  }
+
   private Response parseExperimentServiceException(SubmarineRuntimeException e) {
     return new JsonResponse.Builder<String>(e.getCode())
       .message(e.getMessage().equals("Conflict") ? "Duplicated experiment name" : e.getMessage()).build();

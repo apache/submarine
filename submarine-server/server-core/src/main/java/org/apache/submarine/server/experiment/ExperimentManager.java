@@ -375,6 +375,17 @@ public class ExperimentManager {
     return serve;
   }
 
+  /**
+   * Get ServePod ready status with modelName and modelVersion
+   *
+   * @param name
+   * @return object
+   * @throws SubmarineRuntimeException the service error
+   */
+  public ServeResponse checkServePodReady(String name) throws SubmarineRuntimeException {
+    ServeResponse serve = submitter.checkServePodReady(name);
+    return serve;
+  }
 
   private void checkSpec(ExperimentSpec spec) throws SubmarineRuntimeException {
     if (spec == null) {

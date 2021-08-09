@@ -21,6 +21,7 @@ package org.apache.submarine.server.api.experiment;
 
 public class ServeResponse {
   public String url;
+  public String ready;
 
   public String getUrl() {
     return this.url;
@@ -30,8 +31,17 @@ public class ServeResponse {
     this.url = url;
   }
 
+  public String getReady() { return this.ready; }
+
+  public void setReady(String ready) { this.ready = ready; }
+
   public ServeResponse url(String url) {
     setUrl(url);
+    return this;
+  }
+
+  public ServeResponse ready(String ready){
+    setReady(ready);
     return this;
   }
 }
