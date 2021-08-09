@@ -185,7 +185,7 @@ public class ExperimentManager {
   /**
    * List experiments
    *
-   * @param tag, if null will return all experiments
+   * @param searchTag, if null will return all experiments
    * @return list
    * @throws SubmarineRuntimeException the service error
    */
@@ -321,13 +321,7 @@ public class ExperimentManager {
     ExperimentEntity entity = experimentService.select(id);
     Experiment experiment = buildExperimentFromEntity(entity);
 
-    Experiment foundExperiment = submitter.findExperiment(experiment.getSpec());
-    experiment.rebuild(foundExperiment);
-
-    return submitter.getExperimentLog(
-        experiment.getSpec(),
-        experiment.getSpec().getMeta().getExperimentId()
-    );
+    return submitter.getExperimentLog(experiment.getSpec(), id);
   }
 
   /**
