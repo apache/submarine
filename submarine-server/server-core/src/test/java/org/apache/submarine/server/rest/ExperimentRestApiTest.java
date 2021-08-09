@@ -222,6 +222,7 @@ public class ExperimentRestApiTest {
     assertEquals(experimentFinishedTime, experiment.getFinishedTime());
     assertEquals(metaName, experiment.getSpec().getMeta().getName());
     assertEquals(metaFramework, experiment.getSpec().getMeta().getFramework());
+    assertEquals("default", experiment.getSpec().getMeta().getNamespace());
     assertEquals(dockerImage, experiment.getSpec().getEnvironment().getDockerImage());
     assertEquals(kernelChannels, experiment.getSpec().getEnvironment().getKernelSpec().getChannels());
     assertEquals(kernelSpecName, experiment.getSpec().getEnvironment().getKernelSpec().getName());
