@@ -41,7 +41,9 @@ public class ExperimentMeta {
 
   public ExperimentMeta() {
     namespace = "default";
-    if (System.getenv("ENV_NAMESPACE") != null) {
+    /* The environment variable "ENV_NAMESPACE" will be set by submarine-operator. 
+       On the other hand, if the user creates Submarine with Helm, the variable "namespace" will always be "default". */
+    if (System.getenv("ENV_NAMESPACE") != null) { 
       namespace = System.getenv("ENV_NAMESPACE");
     }
   }
