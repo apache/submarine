@@ -96,7 +96,8 @@ public class K8sSubmitter implements Submitter {
 
   private AppsV1Api appsV1Api;
 
-  public K8sSubmitter() {}
+  public K8sSubmitter() {
+  }
 
   @Override
   public void initialize(SubmarineConfiguration conf) {
@@ -204,7 +205,7 @@ public class K8sSubmitter implements Submitter {
   }
 
   private Experiment parseExperimentResponseObject(Object object, ParseOp op)
-          throws SubmarineRuntimeException {
+      throws SubmarineRuntimeException {
     Gson gson = new JSON().getGson();
     String jsonString = gson.toJson(object);
     LOG.info("Upstream response JSON: {}", jsonString);
@@ -232,7 +233,7 @@ public class K8sSubmitter implements Submitter {
           "false", null, null,
           getJobLabelSelector(spec), null, null,
           null, null);
-      for (V1Pod pod: podList.getItems()) {
+      for (V1Pod pod : podList.getItems()) {
         String podName = pod.getMetadata().getName();
         experimentLog.addPodLog(podName, null);
       }
@@ -279,7 +280,7 @@ public class K8sSubmitter implements Submitter {
     }
 
     try {
-      V1Deployment deploy =  appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
+      V1Deployment deploy = appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
       boolean available = deploy.getStatus().getAvailableReplicas() > 0; // at least one replica is running
 
       IngressRoute ingressRoute = new IngressRoute();
@@ -321,7 +322,7 @@ public class K8sSubmitter implements Submitter {
     }
 
     try {
-      V1Deployment deploy =  appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
+      V1Deployment deploy = appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
       boolean available = deploy.getStatus().getAvailableReplicas() > 0; // at least one replica is running
 
       IngressRoute ingressRoute = new IngressRoute();
@@ -330,9 +331,9 @@ public class K8sSubmitter implements Submitter {
       meta.setNamespace(namespace);
       ingressRoute.setMetadata(meta);
       Object object = api.getNamespacedCustomObject(
-              ingressRoute.getGroup(), ingressRoute.getVersion(),
-              ingressRoute.getMetadata().getNamespace(),
-              ingressRoute.getPlural(), ingressRouteName
+          ingressRoute.getGroup(), ingressRoute.getVersion(),
+          ingressRoute.getMetadata().getNamespace(),
+          ingressRoute.getPlural(), ingressRouteName
       );
 
       Gson gson = new JSON().getGson();
@@ -362,11 +363,11 @@ public class K8sSubmitter implements Submitter {
     final String storage = NotebookUtils.STORAGE;
     final String pvcName = NotebookUtils.PVC_PREFIX + name;
     String namespace = "default";
-    
+
     if (System.getenv(ENV_NAMESPACE) != null) {
       namespace = System.getenv(ENV_NAMESPACE);
     }
-    
+
     // parse notebook custom resource
     NotebookCR notebookCR;
     try {
@@ -379,7 +380,7 @@ public class K8sSubmitter implements Submitter {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
     }
-    
+
     // create persistent volume claim
     try {
       createPersistentVolumeClaim(pvcName, namespace, scName, storage);
@@ -389,7 +390,7 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: Create persistent volume claim for " +
           "Notebook object failed by " + e.getMessage());
     }
-    
+
     // create notebook custom resource
     try {
       Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
@@ -433,8 +434,8 @@ public class K8sSubmitter implements Submitter {
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
-              namespace,
-              notebookCR.getPlural(), notebookCR.getMetadata().getName());
+          namespace,
+          notebookCR.getPlural(), notebookCR.getMetadata().getName());
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -456,10 +457,10 @@ public class K8sSubmitter implements Submitter {
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
-              namespace, notebookCR.getPlural(),
-              notebookCR.getMetadata().getName(),
-              new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
-              null, null, null);
+          namespace, notebookCR.getPlural(),
+          notebookCR.getMetadata().getName(),
+          new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
+          null, null, null);
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
       deleteIngressRoute(namespace, notebookCR.getMetadata().getName());
       deletePersistentVolumeClaim(pvcName, namespace);
@@ -481,9 +482,9 @@ public class K8sSubmitter implements Submitter {
 
     try {
       Object object = api.listNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
-              NotebookCR.CRD_NOTEBOOK_VERSION_V1, namespace , NotebookCR.CRD_NOTEBOOK_PLURAL_V1,
-              "true", null, NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET + "=" + id,
-              null, null, null);
+          NotebookCR.CRD_NOTEBOOK_VERSION_V1, namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1,
+          "true", null, NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET + "=" + id,
+          null, null, null);
       notebookList = NotebookUtils.parseObjectForList(object);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -510,14 +511,14 @@ public class K8sSubmitter implements Submitter {
       coreApi.createNamespacedService(namespace, svc, "true", null, null);
 
       api.createNamespacedCustomObject(
-            middleware.getGroup(), middleware.getVersion(),
-            middleware.getMetadata().getNamespace(),
-            middleware.getPlural(), middleware, "true");
+          middleware.getGroup(), middleware.getVersion(),
+          middleware.getMetadata().getNamespace(),
+          middleware.getPlural(), middleware, "true");
 
       api.createNamespacedCustomObject(
-            ingressRoute.getGroup(), ingressRoute.getVersion(),
-            ingressRoute.getMetadata().getNamespace(),
-            ingressRoute.getPlural(), ingressRoute, "true");
+          ingressRoute.getGroup(), ingressRoute.getVersion(),
+          ingressRoute.getMetadata().getNamespace(),
+          ingressRoute.getPlural(), ingressRoute, "true");
       return serveInfo;
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -558,12 +559,12 @@ public class K8sSubmitter implements Submitter {
   }
 
   public void createPersistentVolumeClaim(String pvcName, String namespace, String scName, String storage)
-          throws ApiException {
+      throws ApiException {
     V1PersistentVolumeClaim pvc = VolumeSpecParser.parsePersistentVolumeClaim(pvcName, scName, storage);
 
     try {
       V1PersistentVolumeClaim result = coreApi.createNamespacedPersistentVolumeClaim(
-              namespace, pvc, "true", null, null
+          namespace, pvc, "true", null, null
       );
     } catch (ApiException e) {
       LOG.error("Exception when creating persistent volume claim " + e.getMessage(), e);
@@ -579,9 +580,9 @@ public class K8sSubmitter implements Submitter {
     */
     try {
       V1Status result = coreApi.deleteNamespacedPersistentVolumeClaim(
-                pvcName, namespace, "true",
+          pvcName, namespace, "true",
           null, null, null,
-            null, null
+          null, null
       );
     } catch (ApiException e) {
       LOG.error("Exception when deleting persistent volume claim " + e.getMessage(), e);
@@ -605,9 +606,9 @@ public class K8sSubmitter implements Submitter {
     // TODO(JohnTing): SELECTOR_KEY should be obtained from individual models in MLJOB
     if (experimentSpec.getMeta().getFramework()
         .equalsIgnoreCase(ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName())) {
-      return TF_JOB_SELECTOR_KEY + experimentSpec.getMeta().getName();
+      return TF_JOB_SELECTOR_KEY + experimentSpec.getMeta().getExperimentId();
     } else {
-      return PYTORCH_JOB_SELECTOR_KEY + experimentSpec.getMeta().getName();
+      return PYTORCH_JOB_SELECTOR_KEY + experimentSpec.getMeta().getExperimentId();
     }
   }
 
@@ -620,9 +621,9 @@ public class K8sSubmitter implements Submitter {
       ingressRoute.setMetadata(meta);
       ingressRoute.setSpec(parseIngressRouteSpec(meta.getNamespace(), meta.getName()));
       api.createNamespacedCustomObject(
-              ingressRoute.getGroup(), ingressRoute.getVersion(),
-              ingressRoute.getMetadata().getNamespace(),
-              ingressRoute.getPlural(), ingressRoute, "true");
+          ingressRoute.getGroup(), ingressRoute.getVersion(),
+          ingressRoute.getMetadata().getNamespace(),
+          ingressRoute.getPlural(), ingressRoute, "true");
     } catch (ApiException e) {
       LOG.error("K8s submitter: Create Traefik custom resource object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -635,10 +636,10 @@ public class K8sSubmitter implements Submitter {
   private void deleteIngressRoute(String namespace, String name) {
     try {
       api.deleteNamespacedCustomObject(
-              IngressRoute.CRD_INGRESSROUTE_GROUP_V1, IngressRoute.CRD_INGRESSROUTE_VERSION_V1,
-              namespace, IngressRoute.CRD_INGRESSROUTE_PLURAL_V1, name,
-              new V1DeleteOptionsBuilder().withApiVersion(IngressRoute.CRD_APIVERSION_V1).build(),
-              null, null, null);
+          IngressRoute.CRD_INGRESSROUTE_GROUP_V1, IngressRoute.CRD_INGRESSROUTE_VERSION_V1,
+          namespace, IngressRoute.CRD_INGRESSROUTE_PLURAL_V1, name,
+          new V1DeleteOptionsBuilder().withApiVersion(IngressRoute.CRD_APIVERSION_V1).build(),
+          null, null, null);
     } catch (ApiException e) {
       LOG.error("K8s submitter: Delete Traefik custom resource object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -675,19 +676,19 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  private void rollbackCreationNotebook(NotebookCR notebookCR, String namespace) 
-    throws SubmarineRuntimeException {
+  private void rollbackCreationNotebook(NotebookCR notebookCR, String namespace)
+      throws SubmarineRuntimeException {
     try {
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
-              namespace, notebookCR.getPlural(),
-              notebookCR.getMetadata().getName(),
-              new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
-              null, null, null);
+          namespace, notebookCR.getPlural(),
+          notebookCR.getMetadata().getName(),
+          new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
+          null, null, null);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
   }
-  
+
   private enum ParseOp {
     PARSE_OP_RESULT,
     PARSE_OP_DELETE
