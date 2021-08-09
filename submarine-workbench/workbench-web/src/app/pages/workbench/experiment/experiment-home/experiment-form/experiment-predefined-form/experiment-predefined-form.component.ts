@@ -34,7 +34,6 @@ interface ParsedTemplate {
     value: string;
   }[];
   experimentName: string;
-  experimentNamespace: string;
   experimentCommand: string;
   experimentImage: string;
   experimentVars: string;
@@ -130,7 +129,6 @@ export class ExperimentPredefinedFormComponent implements OnInit, OnDestroy {
       let template: ParsedTemplate = {
         templateParams: item.experimentTemplateSpec.parameters.filter((item) => !item.name.startsWith('spec.')),
         experimentName: item.experimentTemplateSpec.experimentSpec.meta.name,
-        experimentNamespace: item.experimentTemplateSpec.experimentSpec.meta.namespace,
         experimentCommand: item.experimentTemplateSpec.experimentSpec.meta.cmd,
         experimentImage: item.experimentTemplateSpec.experimentSpec.environment.image,
         experimentVars: JSON.stringify(item.experimentTemplateSpec.experimentSpec.meta.envVars),

@@ -102,15 +102,6 @@
           </button>
         </div>
         <div *ngIf="ADVANCED" class="single-field-group">
-          <label for="namespace">
-            <span class="red-star">*</span>
-            Namespace
-          </label>
-          <nz-select formControlName="namespace" id="namespace">
-            <nz-option *ngFor="let namespace of nameSpaceList" [nzValue]="namespace" [nzLabel]="namespace"></nz-option>
-          </nz-select>
-        </div>
-        <div *ngIf="ADVANCED" class="single-field-group">
           <label for="git-repo">Git repository</label>
           <nz-input-group [nzSuffix]="suffixTemplateInfo">
             <input
@@ -273,7 +264,6 @@
       <div *ngSwitchCase="2" id="previewPage">
         <nz-descriptions nzTitle="{{ jobTypes }}" nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }">
           <nz-descriptions-item nzTitle="Name">{{ finalExperimentSpec.meta.name }}</nz-descriptions-item>
-          <nz-descriptions-item nzTitle="Namespace">{{ finalExperimentSpec.meta.namespace }}</nz-descriptions-item>
           <nz-descriptions-item nzTitle="Command" [nzSpan]="2">
             {{ finalExperimentSpec.meta.cmd }}
           </nz-descriptions-item>

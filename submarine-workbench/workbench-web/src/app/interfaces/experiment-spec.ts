@@ -20,7 +20,6 @@
 export interface ExperimentMeta {
   name: string;
   description?: string;
-  namespace: string;
   framework: string;
   cmd: string;
   envVars?: {

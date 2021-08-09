@@ -54,7 +54,6 @@ export class TemplateFormComponent implements OnInit {
   MEMORY_UNITS = ['M', 'G'];
 
   AUTHOR = 'admin';
-  NAMESPACE = 'default';
 
   constructor(
     private experimentValidatorService: ExperimentValidatorService,
@@ -254,7 +253,6 @@ export class TemplateFormComponent implements OnInit {
           name: this.defaultExperimentName,
           envVars: envVars,
           framework: this.framework,
-          namespace: this.NAMESPACE,
         },
         spec: specs,
         environment: {
