@@ -30,7 +30,7 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: print secret
-        run: echo "${{ secrets.SONARCLOUD_TOKEN }}"
+        run: echo "${{ secrets.SONARCLOUD_TOKEN }}" && echo "${{ secrets.SONAR_TOKEN }}"
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
