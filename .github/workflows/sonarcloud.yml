@@ -22,6 +22,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   sonarcloud:
+    if: github.repository == 'apache/submarine'
     name: SonarCloud
     runs-on: ubuntu-latest
     steps:
@@ -33,3 +34,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+        run: echo "${{ secrets.SONARCLOUD_TOKEN }}"
