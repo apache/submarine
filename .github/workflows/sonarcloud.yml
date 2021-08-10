@@ -34,4 +34,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
+      - name: print secret
         run: echo "${{ secrets.SONARCLOUD_TOKEN }}"
+       
+  
