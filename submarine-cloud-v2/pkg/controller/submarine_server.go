@@ -75,11 +75,13 @@ func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 		serverImage = "apache/submarine:server-" + submarine.Spec.Version
 	}
 
+	ownerReference := *metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine"))
+
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: serverName,
 			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+				ownerReference,
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
@@ -121,6 +123,22 @@ func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 								{
 									Name:  "ENV_NAMESPACE",
 									Value: submarine.Namespace,
+								},
+								{
+									Name:  "SUBMARINE_APIVERSION",
+									Value: ownerReference.APIVersion,
+								},
+								{
+									Name:  "SUBMARINE_KIND",
+									Value: ownerReference.Kind,
+								},
+								{
+									Name:  "SUBMARINE_NAME",
+									Value: ownerReference.Name,
+								},
+								{
+									Name:  "SUBMARINE_UID",
+									Value: string(ownerReference.UID),
 								},
 							},
 							Ports: []corev1.ContainerPort{
