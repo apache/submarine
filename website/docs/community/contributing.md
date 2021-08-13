@@ -103,9 +103,11 @@ git rebase upstream/master
 git push origin SUBMARINE-${jira_number} 
 ```
 
-### Step8: Check Travis-ci status of your personal fork
-* Visit `https://travis-ci.com/github/${USERNAME}/submarine`
-* Please make sure your new commits can pass all integration tests before creating a pull request.
+### Step8: Check GitHub Actions status of your personal commit
+* Visit `https://github.com/${USERNAME}/submarine/actions`
+* Please make sure your new commits can pass all workflows before creating a pull request.
+
+![check_ci_pass](../assets/check_ci_pass.png)
 
 ### Step9: Create a pull request on github UI
 * Visit your fork at `https://github.com/${USERNAME}/submarine.git`
