@@ -43,7 +43,7 @@ func newSubmarineDatabasePersistentVolumeClaim(submarine *v1alpha1.Submarine) *c
 		},
 		Spec: corev1.PersistentVolumeClaimSpec{
 			AccessModes: []corev1.PersistentVolumeAccessMode{
-				corev1.ReadWriteOnce,
+				corev1.ReadWriteMany,
 			},
 			Resources: corev1.ResourceRequirements{
 				Requests: corev1.ResourceList{
