@@ -120,9 +120,9 @@ git push origin SUBMARINE-${jira_number}
 
 ![pull_request_template_example](../assets/pull_request_template_example.png)
 
-### Step10: Check Travis-ci status of your pull request in apache/submarine
-* Visit https://travis-ci.com/github/apache/submarine/pull_requests
-* Please make sure your pull request can pass all integration tests. 
+### Step10: Check GitHub Actions status of your pull request in apache/submarine
+* Visit https://github.com/apache/submarine/actions
+* Please make sure your pull request can pass all workflows. 
 
 ### Step11: The Review Process
 * Anyone can be a reviewer and comment on the pull requests.
