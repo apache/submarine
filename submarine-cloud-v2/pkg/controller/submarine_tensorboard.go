@@ -34,46 +34,8 @@ import (
 	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 )
 
-func newSubmarineTensorboardPersistentVolume(submarine *v1alpha1.Submarine) *corev1.PersistentVolume {
-	var persistentVolumeSource corev1.PersistentVolumeSource
-	switch submarine.Spec.Storage.StorageType {
-	case "nfs":
-		persistentVolumeSource = corev1.PersistentVolumeSource{
-			NFS: &corev1.NFSVolumeSource{
-				Server: submarine.Spec.Storage.NfsIP,
-				Path:   submarine.Spec.Storage.NfsPath,
-			},
-		}
-	case "host":
-		hostPathType := corev1.HostPathDirectoryOrCreate
-		persistentVolumeSource = corev1.PersistentVolumeSource{
-			HostPath: &corev1.HostPathVolumeSource{
-				Path: submarine.Spec.Storage.HostPath,
-				Type: &hostPathType,
-			},
-		}
-	}
-	return &corev1.PersistentVolume{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: pvName(tensorboardPvNamePrefix, submarine.Namespace),
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: corev1.PersistentVolumeSpec{
-			AccessModes: []corev1.PersistentVolumeAccessMode{
-				corev1.ReadWriteMany,
-			},
-			Capacity: corev1.ResourceList{
-				corev1.ResourceStorage: resource.MustParse(submarine.Spec.Tensorboard.StorageSize),
-			},
-			PersistentVolumeSource: persistentVolumeSource,
-		},
-	}
-}
-
 func newSubmarineTensorboardPersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	storageClassName := ""
+	storageClassName := tensorboardScName
 	return &corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: tensorboardPvcName,
@@ -90,7 +52,6 @@ func newSubmarineTensorboardPersistentVolumeClaim(submarine *v1alpha1.Submarine)
 					corev1.ResourceStorage: resource.MustParse(submarine.Spec.Tensorboard.StorageSize),
 				},
 			},
-			VolumeName:       pvName(tensorboardPvNamePrefix, submarine.Namespace),
 			StorageClassName: &storageClassName,
 		},
 	}
@@ -224,34 +185,7 @@ func newSubmarineTensorboardIngressRoute(submarine *v1alpha1.Submarine) *traefik
 func (c *Controller) createSubmarineTensorboard(submarine *v1alpha1.Submarine) error {
 	klog.Info("[createSubmarineTensorboard]")
 
-	// Step 1: Create PersistentVolume
-	// PersistentVolumes are not namespaced resources, so we add the namespace
-	// as a suffix to distinguish them
-	pv, err := c.persistentvolumeLister.Get(pvName(tensorboardPvNamePrefix, submarine.Namespace))
-
-	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(err) {
-		pv, err = c.kubeclientset.CoreV1().PersistentVolumes().Create(context.TODO(), newSubmarineTensorboardPersistentVolume(submarine), metav1.CreateOptions{})
-		if err != nil {
-			klog.Info(err)
-		}
-		klog.Info("	Create PersistentVolume: ", pv.Name)
-	}
-
-	// If an error occurs during Get/Create, we'll requeue the item so we can
-	// attempt processing again later. This could have been caused by a
-	// temporary network failure, or any other transient reason.
-	if err != nil {
-		return err
-	}
-
-	if !metav1.IsControlledBy(pv, submarine) {
-		msg := fmt.Sprintf(MessageResourceExists, pv.Name)
-		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return fmt.Errorf(msg)
-	}
-
-	// Step 2: Create PersistentVolumeClaim
+	// Step 1: Create PersistentVolumeClaim
 	pvc, err := c.persistentvolumeclaimLister.PersistentVolumeClaims(submarine.Namespace).Get(tensorboardPvcName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
@@ -276,7 +210,7 @@ func (c *Controller) createSubmarineTensorboard(submarine *v1alpha1.Submarine) e
 		return fmt.Errorf(msg)
 	}
 
-	// Step 3: Create Deployment
+	// Step 2: Create Deployment
 	deployment, err := c.deploymentLister.Deployments(submarine.Namespace).Get(tensorboardName)
 	if errors.IsNotFound(err) {
 		deployment, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Create(context.TODO(), newSubmarineTensorboardDeployment(submarine), metav1.CreateOptions{})
@@ -298,7 +232,7 @@ func (c *Controller) createSubmarineTensorboard(submarine *v1alpha1.Submarine) e
 		return fmt.Errorf(msg)
 	}
 
-	// Step 4: Create Service
+	// Step 3: Create Service
 	service, err := c.serviceLister.Services(submarine.Namespace).Get(tensorboardServiceName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
@@ -321,7 +255,7 @@ func (c *Controller) createSubmarineTensorboard(submarine *v1alpha1.Submarine) e
 		return fmt.Errorf(msg)
 	}
 
-	// Step 5: Create IngressRoute
+	// Step 4: Create IngressRoute
 	ingressroute, err := c.ingressrouteLister.IngressRoutes(submarine.Namespace).Get(tensorboardIngressRouteName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {

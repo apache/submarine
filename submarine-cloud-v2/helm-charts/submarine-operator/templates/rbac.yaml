@@ -56,7 +56,6 @@ rules:
       - namespaces
       - jobs
       - serviceaccounts
-      - persistentvolumes
       - persistentvolumeclaims
       - pods/portforward
       - events
@@ -78,8 +77,8 @@ rules:
   - apiGroups:
       - "rbac.authorization.k8s.io"
     resources:
-      - clusterroles
-      - clusterrolebindings
+      - roles
+      - rolebindings
     verbs:
       - "*"
   - apiGroups:

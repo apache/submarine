@@ -32,47 +32,8 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func newSubmarineDatabasePersistentVolume(submarine *v1alpha1.Submarine) *corev1.PersistentVolume {
-	var persistentVolumeSource corev1.PersistentVolumeSource
-	switch submarine.Spec.Storage.StorageType {
-	case "nfs":
-		persistentVolumeSource = corev1.PersistentVolumeSource{
-			NFS: &corev1.NFSVolumeSource{
-				Server: submarine.Spec.Storage.NfsIP,
-				Path:   submarine.Spec.Storage.NfsPath,
-			},
-		}
-	case "host":
-		hostPathType := corev1.HostPathDirectoryOrCreate
-		persistentVolumeSource = corev1.PersistentVolumeSource{
-			HostPath: &corev1.HostPathVolumeSource{
-				Path: submarine.Spec.Storage.HostPath,
-				Type: &hostPathType,
-			},
-		}
-	}
-
-	return &corev1.PersistentVolume{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: pvName(databasePvNamePrefix, submarine.Namespace),
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: corev1.PersistentVolumeSpec{
-			AccessModes: []corev1.PersistentVolumeAccessMode{
-				corev1.ReadWriteMany,
-			},
-			Capacity: corev1.ResourceList{
-				corev1.ResourceStorage: resource.MustParse(submarine.Spec.Database.StorageSize),
-			},
-			PersistentVolumeSource: persistentVolumeSource,
-		},
-	}
-}
-
 func newSubmarineDatabasePersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	storageClassName := ""
+	storageClassName := databaseScName
 	return &corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: databasePvcName,
@@ -82,14 +43,13 @@ func newSubmarineDatabasePersistentVolumeClaim(submarine *v1alpha1.Submarine) *c
 		},
 		Spec: corev1.PersistentVolumeClaimSpec{
 			AccessModes: []corev1.PersistentVolumeAccessMode{
-				corev1.ReadWriteMany,
+				corev1.ReadWriteOnce,
 			},
 			Resources: corev1.ResourceRequirements{
 				Requests: corev1.ResourceList{
 					corev1.ResourceStorage: resource.MustParse(submarine.Spec.Database.StorageSize),
 				},
 			},
-			VolumeName:       pvName(databasePvNamePrefix, submarine.Namespace),
 			StorageClassName: &storageClassName,
 		},
 	}
@@ -191,30 +151,7 @@ func newSubmarineDatabaseService(submarine *v1alpha1.Submarine) *corev1.Service 
 func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) (*appsv1.Deployment, error) {
 	klog.Info("[createSubmarineDatabase]")
 
-	// Step1: Create PersistentVolume
-	pv, err := c.persistentvolumeLister.Get(pvName(databasePvNamePrefix, submarine.Namespace))
-	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(err) {
-		pv, err = c.kubeclientset.CoreV1().PersistentVolumes().Create(context.TODO(), newSubmarineDatabasePersistentVolume(submarine), metav1.CreateOptions{})
-		if err != nil {
-			klog.Info(err)
-		}
-		klog.Info("	Create PersistentVolume: ", pv.Name)
-	}
-	// If an error occurs during Get/Create, we'll requeue the item so we can
-	// attempt processing again later. This could have been caused by a
-	// temporary network failure, or any other transient reason.
-	if err != nil {
-		return nil, err
-	}
-
-	if !metav1.IsControlledBy(pv, submarine) {
-		msg := fmt.Sprintf(MessageResourceExists, pv.Name)
-		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return nil, fmt.Errorf(msg)
-	}
-
-	// Step2: Create PersistentVolumeClaim
+	// Step 1: Create PersistentVolumeClaim
 	pvc, err := c.persistentvolumeclaimLister.PersistentVolumeClaims(submarine.Namespace).Get(databasePvcName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
@@ -237,7 +174,7 @@ func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) (*ap
 		return nil, fmt.Errorf(msg)
 	}
 
-	// Step3: Create Deployment
+	// Step 2: Create Deployment
 	deployment, err := c.deploymentLister.Deployments(submarine.Namespace).Get(databaseName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
@@ -270,7 +207,7 @@ func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) (*ap
 		return nil, err
 	}
 
-	// Step4: Create Service
+	// Step 3: Create Service
 	service, err := c.serviceLister.Services(submarine.Namespace).Get(databaseName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {

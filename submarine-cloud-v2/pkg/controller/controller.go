@@ -68,27 +68,21 @@ const (
 	mlflowName                  = "submarine-mlflow"
 	minioName                   = "submarine-minio"
 	ingressName                 = serverName + "-ingress"
-	databasePvNamePrefix        = databaseName + "-pv"
+	databaseScName              = databaseName + "-sc"
 	databasePvcName             = databaseName + "-pvc"
-	tensorboardPvNamePrefix     = tensorboardName + "-pv"
+	tensorboardScName           = tensorboardName + "-sc"
 	tensorboardPvcName          = tensorboardName + "-pvc"
 	tensorboardServiceName      = tensorboardName + "-service"
 	tensorboardIngressRouteName = tensorboardName + "-ingressroute"
-	mlflowPvNamePrefix          = mlflowName + "-pv"
+	mlflowScName                = mlflowName + "-sc"
 	mlflowPvcName               = mlflowName + "-pvc"
 	mlflowServiceName           = mlflowName + "-service"
 	mlflowIngressRouteName      = mlflowName + "-ingressroute"
-	minioPvNamePrefix           = minioName + "-pv"
+	minioScName                 = minioName + "-sc"
 	minioPvcName                = minioName + "-pvc"
 	minioServiceName            = minioName + "-service"
 	minioIngressRouteName       = minioName + "-ingressroute"
 )
-
-// PersistentVolumes are not namespaced resources, so we add the namespace as a
-// suffix to distinguish them
-func pvName(pvPrefix string, namespace string) string {
-	return pvPrefix + "--" + namespace
-}
 
 const (
 	// SuccessSynced is used as part of the Event 'reason' when a Submarine is synced
@@ -120,7 +114,6 @@ type Controller struct {
 	deploymentLister            appslisters.DeploymentLister
 	serviceaccountLister        corelisters.ServiceAccountLister
 	serviceLister               corelisters.ServiceLister
-	persistentvolumeLister      corelisters.PersistentVolumeLister
 	persistentvolumeclaimLister corelisters.PersistentVolumeClaimLister
 	ingressLister               extlisters.IngressLister
 	ingressrouteLister          traefiklisters.IngressRouteLister
@@ -149,7 +142,6 @@ func NewController(
 	deploymentInformer appsinformers.DeploymentInformer,
 	serviceInformer coreinformers.ServiceInformer,
 	serviceaccountInformer coreinformers.ServiceAccountInformer,
-	persistentvolumeInformer coreinformers.PersistentVolumeInformer,
 	persistentvolumeclaimInformer coreinformers.PersistentVolumeClaimInformer,
 	ingressInformer extinformers.IngressInformer,
 	ingressrouteInformer traefikinformers.IngressRouteInformer,
@@ -177,7 +169,6 @@ func NewController(
 		deploymentLister:            deploymentInformer.Lister(),
 		serviceLister:               serviceInformer.Lister(),
 		serviceaccountLister:        serviceaccountInformer.Lister(),
-		persistentvolumeLister:      persistentvolumeInformer.Lister(),
 		persistentvolumeclaimLister: persistentvolumeclaimInformer.Lister(),
 		ingressLister:               ingressInformer.Lister(),
 		ingressrouteLister:          ingressrouteInformer.Lister(),
@@ -240,18 +231,6 @@ func NewController(
 			newServiceAccount := new.(*corev1.ServiceAccount)
 			oldServiceAccount := old.(*corev1.ServiceAccount)
 			if newServiceAccount.ResourceVersion == oldServiceAccount.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-	persistentvolumeInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newPV := new.(*corev1.PersistentVolume)
-			oldPV := old.(*corev1.PersistentVolume)
-			if newPV.ResourceVersion == oldPV.ResourceVersion {
 				return
 			}
 			controller.handleObject(new)
@@ -420,6 +399,11 @@ func (c *Controller) syncHandler(key string) error {
 			return nil
 		}
 		return err
+	}
+
+	// Submarine is in the terminating process
+	if !submarine.DeletionTimestamp.IsZero() {
+		return nil
 	}
 
 	// Print out the spec of the Submarine resource
