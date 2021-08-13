@@ -36,6 +36,10 @@
   justify-content: center;
 }
 
+.buttons a:last-of-type {
+  margin: 20px 36px;
+}
+
 .features {
   display: flex;
   align-items: center;
