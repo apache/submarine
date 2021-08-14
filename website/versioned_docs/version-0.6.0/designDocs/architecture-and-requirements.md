@@ -157,7 +157,7 @@ Major requirement of experiment:
 
 #### Type of experiments
 
-![](../assets/design/experiments.png)
+![](/img/design/experiments.png)
 
 There're two types of experiments: 
 `Adhoc experiments`: which includes a Python/R/notebook, or even an adhoc Tensorflow/PyTorch task, etc. 

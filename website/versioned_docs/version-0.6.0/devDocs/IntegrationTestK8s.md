@@ -45,7 +45,7 @@ title: How to Run Integration K8s Test
     mvn verify -DskipRat -pl :submarine-test-k8s -Phadoop-2.9 -B
     ```
 
-![](../assets/test-k8s-result.png)
+![](/img/test-k8s-result.png)
 
 ## Run k8s test in GitHub Actions
 * Each time a code is submitted, GitHub Actions is triggered automatically.

@@ -59,9 +59,9 @@ under the License.
 
 1. Open the experiment page in the workbench, and Click the `TensorBoard` button.
 
-![](../../assets/tensorboard-experiment-page.png)
+![](/img/tensorboard-experiment-page.png)
 
 2. Inspect the process on tensorboard page.
 
-![](../../assets/tensorboard-webpage.png)
+![](/img/tensorboard-webpage.png)
 

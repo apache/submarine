@@ -62,7 +62,7 @@ git remote -v
 * New contributors need privilege to create JIRA issues. Please email kaihsun@apache.org with your Jira username. In addition, the email title should be "[New Submarine Contributor]".
 * Check [Jira issue tracker](https://issues.apache.org/jira/projects/SUBMARINE/issues/SUBMARINE-748?filter=allopenissues) for existing issues.
 * Create a new Jira issue in Submarine project. When the issue is created, a Jira number (eg. SUBMARINE-748) will be assigned to the issue automatically. 
-![jira_number_example](../assets/jira_number_example.png)
+![jira_number_example](/img/jira_number_example.png)
 
 
 ### Step4: Create a local branch for your contribution
@@ -107,18 +107,18 @@ git push origin SUBMARINE-${jira_number}
 * Visit `https://github.com/${USERNAME}/submarine/actions`
 * Please make sure your new commits can pass all workflows before creating a pull request.
 
-![check_ci_pass](../assets/check_ci_pass.png)
+![check_ci_pass](/img/check_ci_pass.png)
 
 ### Step9: Create a pull request on github UI
 * Visit your fork at `https://github.com/${USERNAME}/submarine.git`
 * Click `Compare & Pull Request` button to create pull request.
-![compare_pull_request_button](../assets/compare_pull_request_button.png)
+![compare_pull_request_button](/img/compare_pull_request_button.png)
 
 #### Pull Request template
 * [Pull request template](https://github.com/apache/submarine/blob/bd7578cc28f8280f9170938d4469fcc965e24a89/.github/PULL_REQUEST_TEMPLATE)
 * Filling the template thoroughly can improve the speed of the review process. Example: 
 
-![pull_request_template_example](../assets/pull_request_template_example.png)
+![pull_request_template_example](/img/pull_request_template_example.png)
 
 ### Step10: Check GitHub Actions status of your pull request in apache/submarine
 * Visit https://github.com/apache/submarine/actions

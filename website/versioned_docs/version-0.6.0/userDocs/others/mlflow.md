@@ -49,5 +49,5 @@ if __name__ == "__main__":
 2. In the MLflow UI page, you can see the log_param and the log_metric
     result. You can also compare the training between different workers.
 
-![](../../assets/mlflow-ui.png)
+![](/img/mlflow-ui.png)
 

@@ -673,6 +673,6 @@ done for worker-0.XXX worker.
 ```
 
 Sample output of sge:
-![alt text](pictures/sge_cluster.png "SGE for multiple jobs")
+![alt text](/img/sge/sge_cluster.png "SGE for multiple jobs")
 
-![alt text](pictures/sge_stat.png "SGE for user multiple jobs")
+![alt text](/img/sge/sge_stat.png "SGE for user multiple jobs")

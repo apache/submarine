@@ -83,7 +83,7 @@ $ kubectl port-forward --address 0.0.0.0 service/submarine-traefik 32080:80
 
 2. Open `http://0.0.0.0:32080`
 
-![](../assets/quickstart-worbench.png)
+![](/img/quickstart-worbench.png)
 
 ## Example: Submit a mnist distributed example
 
@@ -182,22 +182,22 @@ $ ./dev-support/examples/quickstart/build.sh
 2. Fill the form accordingly. Here we set 3 workers.
 
     1. Step 1
-    ![](../assets/quickstart-submit-1.png)
+    ![](/img/quickstart-submit-1.png)
     2. Step 2
-    ![](../assets/quickstart-submit-2.png)
+    ![](/img/quickstart-submit-2.png)
     3. Step 3
-    ![](../assets/quickstart-submit-3.png)
+    ![](/img/quickstart-submit-3.png)
     4. The experiment is successfully submitted
-    ![](../assets/quickstart-submit-4.png)
+    ![](/img/quickstart-submit-4.png)
 
 ### 4. Monitor the process (modelClient)
 
 1. In our code, we use `modelClient` from `submarine-sdk` to record the metrics. To see the result, click `MLflow UI` in the workbench.
 2. To compare the metrics of each worker, you can select all workers and then click `compare`
 
-  ![](../assets/quickstart-mlflow.png)
+  ![](/img/quickstart-mlflow.png)
 
-  ![](../assets/quickstart-mlflow-2.png)
+  ![](/img/quickstart-mlflow-2.png)
 
 
 ### 5. Serve the model (In development)

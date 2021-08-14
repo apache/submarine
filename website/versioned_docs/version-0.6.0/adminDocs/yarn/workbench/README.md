@@ -48,7 +48,7 @@ Workspace consists primarily of five tab pages, with the total number of items i
 
 In the Project page, all the projects created by the user themselves are displayed as cards.
 
-![image-20191007161424534](assets/workspace-project.png)
+![image-20191007161424534](/img/workspace/workspace-project.png)
 
 Each Project card consists of the following sections:
 
@@ -70,7 +70,7 @@ Clicking the **Add New Project** button on the project page will display the gui
 
 **Step 1**: Fill in the project name and project description in the **Base Information** step.
 
-![image-20191007171638338](assets/workspace-project-step1.png)
+![image-20191007171638338](/img/workspace/workspace-project-step1.png)
 
 + **Visibility**: Set the visibility level of the item externally
   
@@ -101,23 +101,23 @@ Clicking the **Add New Project** button on the project page will display the gui
 
 + **Template**: Workbench Project templates with several different development languages and algorithm frameworks are built in. You can choose any template to initialize your project and you can execute it directly in Notebook without any modification. It is especially suitable for novices to experience quickly.
 
-  ![image-20191007184749193](assets/workspace-project-step2-template.png)
+  ![image-20191007184749193](/img/workspace/workspace-project-step2-template.png)
 
 + **Blank**：Create a blank project, and later we can manually add the project's file in Notebook
 
-  ![image-20191007184811389](assets/workspace-project-step2-blank.png)
+  ![image-20191007184811389](/img/workspace/workspace-project-step2-blank.png)
 
 + **Upload**: Initialize your project by uploading a file in notebook format that is compatible with the **Jupyter Notebook** and **Zeppelin Notebook** file formats.
 
-  ![image-20191007184825531](assets/workspace-project-step2-upload.png)
+  ![image-20191007184825531](/img/workspace/workspace-project-step2-upload.png)
 
 + **Git Repo**: Fork a file in the repository to initialize the project in your **Github**/**Gitlab** account.
 
-  ![image-20191007184840989](assets/workspace-project-step2-git.png)
+  ![image-20191007184840989](/img/workspace/workspace-project-step2-git.png)
 
 **Step 3**：Preview the included files in the project
 
-![image-20191007191205660](assets/workspace-project-step3.png)
+![image-20191007191205660](/img/workspace/workspace-project-step3.png)
 
 + **Save**: Save the project to Workspace.
 + **Open In Notebook**: Save the project to Workspace and open the project with Notebook.

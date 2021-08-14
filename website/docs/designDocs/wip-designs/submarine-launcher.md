@@ -60,7 +60,7 @@ Submarine cluster management will automatically maintain the relationship betwee
 
 ## Design
 
-![cloud-service](../../assets/design/multi-dc-cloud.png)
+![cloud-service](/img/design/multi-dc-cloud.png)
 
 
 ### Launcher

@@ -71,4 +71,4 @@ Now access Dashboard at:
 
 Dashboard screenshot:
 
-![](../assets/kind-dashboard.png)
+![](/img/kind-dashboard.png)

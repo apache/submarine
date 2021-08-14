@@ -47,7 +47,7 @@ Workspace 主要有五个 Tab 页组成，每个 Tab 页的标题中显示了各
 
 在 Project 页面中，以卡片的方式显示了用户自己创建的所有 Project。
 
-![image-20191007161424534](assets/workspace-project.png)
+![image-20191007161424534](/img/workspace/workspace-project.png)
 
 每个 Project 卡片由以下部分内容组成：
 
@@ -69,7 +69,7 @@ Workspace 主要有五个 Tab 页组成，每个 Tab 页的标题中显示了各
 
 第一步：在 **Base Information** 步骤中填写项目名称、项目简介。
 
-![image-20191007171638338](assets/workspace-project-step1.png)
+![image-20191007171638338](/img/workspace/workspace-project-step1.png)
 
 + **Visibility**: 设置项目对外的可见级别
   
@@ -100,23 +100,23 @@ Workspace 主要有五个 Tab 页组成，每个 Tab 页的标题中显示了各
 
 + **Template**: **Workbench** 内置了几种不同开发语言和算法框架的项目模版，你可以选择任何一种模版初始化你的项目，无需做任何修改就可以直接在 **Notebook** 中执行，特别适合新手进行快速的体验。
 
-  ![image-20191007184749193](assets/workspace-project-step2-template.png)
+  ![image-20191007184749193](/img/workspace/workspace-project-step2-template.png)
 
 + **Blank**：创建一个空白的项目，稍后，我们可以通过在 **Notebook** 中手工添加项目的文件
 
-  ![image-20191007184811389](assets/workspace-project-step2-blank.png)
+  ![image-20191007184811389](/img/workspace/workspace-project-step2-blank.png)
 
 + **Upload**: 通过上传 **notebook** 格式的文件来初始化你的项目，**notebook** 格式兼容 **Jupyter Notebook** 和 **Zeppelin Notebook** 文件格式。
 
-  ![image-20191007184825531](assets/workspace-project-step2-upload.png)
+  ![image-20191007184825531](/img/workspace/workspace-project-step2-upload.png)
 
 + **Git Repo**: 在你的 **Github**/**Gitlab** 账号中 **Fork** 一个仓库中的文件内容来初始化项目。
 
-  ![image-20191007184840989](assets/workspace-project-step2-git.png)
+  ![image-20191007184840989](/img/workspace/workspace-project-step2-git.png)
 
 第三步：预览项目中的所包含的文件
 
-![image-20191007191205660](assets/workspace-project-step3.png)
+![image-20191007191205660](/img/workspace/workspace-project-step3.png)
 
 + **Save**: 将项目保存到 Workspace 中。
 + **Open In Notebook**: 将项目保存到 **Workspace** 中，并用 **Notebook** 打开项目。
