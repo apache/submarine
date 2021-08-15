@@ -18,8 +18,7 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    types: [opened, synchronize, reopened]
+
 jobs:
   sonarcloud:
     if: github.repository == 'apache/submarine'
@@ -29,11 +28,35 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: print secret
-        run: echo "${{ secrets.SONARCLOUD_TOKEN }}" && echo "${{ secrets.SONAR_TOKEN }}"
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: "1.8"
+      - name: Set up Maven 3.6.3
+        uses: stCarolas/setup-maven@v4
+        with:
+          maven-version: 3.6.3
+      - name: Build the project with JDK 8
+        run: mvn clean install -DskipTests
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build and analyze with JDK 11 # sonar-maven-plugin only support JDK 11
+        run: mvn verify -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -pl $EXCLUDE_MODULE -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_submarine
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+          EXCLUDE_MODULE: '!:submarine-commons-rpc,!:submarine-spark-security' # Exclude the modules that can't be compiled with JDK 11
