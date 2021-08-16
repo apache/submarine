@@ -86,7 +86,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.experiment = new FormGroup({
-      experimentName: new FormControl(null, [Validators.pattern('[a-zA-Z0-9][a-zA-Z0-9\-]*'), Validators.required]),
+      experimentName: new FormControl(null, [Validators.pattern('([a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]|[a-zA-Z0-9]+)'), Validators.required]),
       description: new FormControl(null, [Validators.required]),
       tags: new FormControl([], []),
       cmd: new FormControl('', [Validators.required]),
