@@ -46,6 +46,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   finalExperimentSpec: ExperimentSpec;
   step: number = 0;
   subscriptions: Subscription[] = [];
+  listOfOption: Array<{ label: string; value: string }> = [];
 
   // TODO: Fetch all images from submarine server
   imageIndex = 0;
@@ -71,6 +72,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   framework = 'Tensorflow';
   currentSpecPage = 1;
 
+
   // About update
   @Input() targetId: string = null;
   @Input() targetSpec: ExperimentSpec = null;
@@ -86,6 +88,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     this.experiment = new FormGroup({
       experimentName: new FormControl(null, [Validators.pattern('[a-zA-Z0-9][a-zA-Z0-9\-]*'), Validators.required]),
       description: new FormControl(null, [Validators.required]),
+      tags: new FormControl([], []),
       cmd: new FormControl('', [Validators.required]),
       image: new FormControl(this.defaultImage, [Validators.required]),
       envs: new FormArray([], [this.experimentValidatorService.nameValidatorFactory('key')]),
@@ -128,6 +131,10 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(sub1, sub2);
+
+    //TODO: get tags from server
+    this.listOfOption = []; 
+  
   }
 
   ngOnDestroy() {
@@ -147,6 +154,9 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   // Getters of experiment request form
   get experimentName() {
     return this.experiment.get('experimentName');
+  }
+  get tags() {
+    return this.experiment.get('tags');
   }
   get description() {
     return this.experiment.get('description');
@@ -180,10 +190,11 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   checkStatus() {
     if (this.step === 0) {
       this.experimentFormService.btnStatusChange(
-        this.experimentName.invalid ||
+        this.experimentName.invalid || 
+          this.tags.invalid ||          
           this.cmd.invalid ||
           this.image.invalid ||
-          this.envs.invalid
+          this.envs.invalid 
       );
     } else if (this.step === 1) {
       this.experimentFormService.btnStatusChange(this.specs.invalid);
@@ -314,6 +325,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     // Construct the spec
     const meta: ExperimentMeta = {
       name: this.experimentName.value.toLowerCase(),
+      tags: this.tags.value,
       framework: this.framework === 'Standalone' ? 'Tensorflow' : this.framework,
       cmd: this.cmd.value,
       envVars: {}
@@ -393,6 +405,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
   }
 
   cloneExperiment(spec: ExperimentSpec) {
+    this.tags.setValue(spec.meta.tags);
     this.description.setValue(spec.meta.description);
     this.cmd.setValue(spec.meta.cmd);
     this.image.setValue(spec.environment.image);

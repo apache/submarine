@@ -253,6 +253,7 @@ export class TemplateFormComponent implements OnInit {
           name: this.defaultExperimentName,
           envVars: envVars,
           framework: this.framework,
+          tags: [],
         },
         spec: specs,
         environment: {
