@@ -70,9 +70,8 @@ public class experimentIT extends AbstractSubmarineIT {
     experimentPage.advancedButtonCLick();
     experimentPage.envBtnClick();
     String experimentName = "experiment-e2e-test";
-    experimentPage.fillExperimentMeta(experimentName, "e2e des", "default",
-            "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log" +
-                    " --learning_rate=0.01 --batch_size=150",
+    experimentPage.fillExperimentMeta(experimentName, "e2e des", "default", new String[]{"stable","default","v1.0"},
+            "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log" + " --learning_rate=0.01 --batch_size=150",
             "apache/submarine:tf-mnist-with-summaries-1.0",
             "ENV_1", "ENV1");
     SendKeys(By.xpath("//input[@id='git-repo']"), MAX_BROWSER_TIMEOUT_SEC, "https://github.com/apache/submarine.git");
