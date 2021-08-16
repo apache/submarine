@@ -44,7 +44,7 @@
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
                 <property name="driver" value="com.mysql.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://10.99.132.48:3306/mlflowdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"/>
+                <property name="url" value="jdbc:mysql://127.0.0.1:3306/mlflowdb?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false"/>
                 <property name="username" value="mlflow"/>
                 <property name="password" value="password"/>
                 <property name="poolPingQuery" value="SELECT NOW()"/>
