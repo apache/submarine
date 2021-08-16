@@ -42,7 +42,7 @@
       <nz-form-control [nzSpan]="12" *ngIf="item.name == 'experiment_name'">
         <input type="text" nz-input [id]="item.name" [formControlName]="item.name" />
         <div class="alert-message" *ngIf="predefinedForm.get('params').get(item.name).hasError('pattern')">
-          Only letters(a-z), numbers(0-9), and hyphens are allowed, but you can't start with hyphens.
+          Only letters(a-z), numbers(0-9), and hyphens are allowed, but you can't start or end with hyphens.
         </div>
       </nz-form-control>
     </nz-form-item>

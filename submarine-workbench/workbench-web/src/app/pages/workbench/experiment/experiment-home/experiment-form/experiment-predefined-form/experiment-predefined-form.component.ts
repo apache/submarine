@@ -151,7 +151,7 @@ export class ExperimentPredefinedFormComponent implements OnInit, OnDestroy {
       controls[item.name] = [item.value];
       if (item.required === 'true') {
         if(item.name !== 'experiment_name') controls[item.name].push([Validators.required]);
-        else controls[item.name].push([Validators.required, Validators.pattern('[a-zA-Z0-9][a-zA-Z0-9\-]*')]);
+        else controls[item.name].push([Validators.required, Validators.pattern('([a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9]|[a-zA-Z0-9]+)')]);
       }
     }
     const new_param_group = this.fb.group(controls);
