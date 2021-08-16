@@ -44,53 +44,101 @@ public class ModelVersionEntity {
 
   private String runLink;
 
-  public String getName() { return name; }
+  public String getName() {
+    return name;
+  }
 
-  public void setName(String name) { this.name = name; }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-  public Integer getVersion() { return version; }
+  public Integer getVersion() {
+    return version;
+  }
 
-  public void setVersion(Integer version) { this.version = version; }
+  public void setVersion(Integer version) {
+    this.version = version;
+  }
 
-  public Long getCreateTime() { return createTime; }
+  public Long getCreateTime() {
+    return createTime;
+  }
 
-  public void setCreateTime(Long createTime) { this.createTime = createTime;  }
+  public void setCreateTime(Long createTime) {
+    this.createTime = createTime;
+  }
 
-  public Long getLastUpdatedTime() { return lastUpdatedTime; }
+  public Long getLastUpdatedTime() {
+    return lastUpdatedTime;
+  }
 
-  public void setLastUpdatedTime(Long lastUpdatedTime) { this.lastUpdatedTime = lastUpdatedTime; }
+  public void setLastUpdatedTime(Long lastUpdatedTime) {
+    this.lastUpdatedTime = lastUpdatedTime;
+  }
 
-  public String getDescription() { return description; }
+  public String getDescription() {
+    return description;
+  }
 
-  public void setDescription(String description) { this.description = description; }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-  public String getUserId() { return userId; }
+  public String getUserId() {
+    return userId;
+  }
 
-  public void setUserId(String userId) { this.userId = userId; }
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 
-  public String getCurrentStage() { return currentStage; }
+  public String getCurrentStage() {
+    return currentStage;
+  }
 
-  public void setCurrentStage(String currentStage) { this.currentStage = currentStage; }
+  public void setCurrentStage(String currentStage) {
+    this.currentStage = currentStage;
+  }
 
-  public String getSource() { return source; }
+  public String getSource() {
+    return source;
+  }
 
-  public void setSource(String source) { this.source = source; }
+  public void setSource(String source) {
+    this.source = source;
+  }
 
-  public String getRunId() { return runId; }
+  public String getRunId() {
+    return runId;
+  }
 
-  public void setRunId(String runId) { this.runId = runId; }
+  public void setRunId(String runId) {
+    this.runId = runId;
+  }
 
-  public String getStatus() { return status;  }
+  public String getStatus() {
+    return status;
+  }
 
-  public void setStatus(String status) { this.status = status;  }
+  public void setStatus(String status) {
+    this.status = status;
+  }
 
-  public String getStatusMessage() { return statusMessage; }
+  public String getStatusMessage() {
+    return statusMessage;
+  }
 
-  public void setStatusMessage(String statusMessage) { this.statusMessage = statusMessage;  }
+  public void setStatusMessage(String statusMessage) {
+    this.statusMessage = statusMessage;
+  }
 
-  public String getRunLink() { return runLink;  }
+  public String getRunLink() {
+    return runLink;
+  }
 
-  public void setRunLink(String runLink) { this.runLink = runLink;  }
+  public void setRunLink(String runLink) {
+    this.runLink = runLink;
+  }
 
   public String toString() {
     return "ModelVersionEntity{" +

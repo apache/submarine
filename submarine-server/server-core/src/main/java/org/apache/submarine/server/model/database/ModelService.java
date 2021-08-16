@@ -63,7 +63,8 @@ public class ModelService {
     return entity;
   }
 
-  public boolean insertRegisteredModelName(RegisteredModelNameEntity entity) throws SubmarineRuntimeException {
+  public boolean insertRegisteredModelName(RegisteredModelNameEntity entity)
+      throws SubmarineRuntimeException {
     LOG.info("Registered Model Name insert " + entity.getName());
     try (SqlSession sqlSession = ModelBatisUtil.getSqlSession()) {
       RegisteredModelNameMapper mapper = sqlSession.getMapper(RegisteredModelNameMapper.class);
@@ -76,7 +77,8 @@ public class ModelService {
     return true;
   }
 
-  public boolean updateRegisteredModelName(RegisteredModelNameEntity entity) throws SubmarineRuntimeException {
+  public boolean updateRegisteredModelName(RegisteredModelNameEntity entity)
+      throws SubmarineRuntimeException {
     LOG.info("Registered Model Name update " + entity.getName());
     try (SqlSession sqlSession = ModelBatisUtil.getSqlSession()) {
       RegisteredModelNameMapper mapper = sqlSession.getMapper(RegisteredModelNameMapper.class);
@@ -116,7 +118,8 @@ public class ModelService {
     return entities;
   }
 
-  public ModelVersionEntity selectModelVersion(String name, Integer version) throws SubmarineRuntimeException {
+  public ModelVersionEntity selectModelVersion(String name, Integer version)
+      throws SubmarineRuntimeException {
     LOG.info("Model Version select " + name + " " + version.toString());
     ModelVersionEntity entity = new ModelVersionEntity();
     entity.setName(name);
