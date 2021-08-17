@@ -329,7 +329,6 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       framework: this.framework === 'Standalone' ? 'Tensorflow' : this.framework,
       cmd: this.cmd.value,
       envVars: {},
-      tags: []
     };
     for (const env of this.envs.controls) {
       if (env.get('key').value) {
