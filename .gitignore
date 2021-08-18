@@ -103,3 +103,6 @@ submarine-cloud-v2/helm-charts/submarine-operator/charts/*
 
 # redundant logging files
 *.log
+
+# installation binary
+dev-support/installation/istioctl

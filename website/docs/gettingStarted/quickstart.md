@@ -49,7 +49,7 @@ $ git clone https://github.com/apache/submarine.git
 2. Install the resources by helm chart
 ```
 $ cd submarine
-$ helm install submarine ./helm-charts/submarine
+$ ./dev-support/installation/install.sh
 ```
 ### Ensure submarine is ready
 
@@ -84,6 +84,14 @@ $ kubectl port-forward --address 0.0.0.0 service/submarine-traefik 32080:80
 2. Open `http://0.0.0.0:32080`
 
 ![](/img/quickstart-worbench.png)
+
+### Uninstall
+
+```
+$ helm delete submarine
+$ kubectl delete ns istio-system
+$ kubectl delete ns seldon-system
+```
 
 ## Example: Submit a mnist distributed example
 
