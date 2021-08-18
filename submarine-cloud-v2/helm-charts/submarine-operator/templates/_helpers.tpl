@@ -15,27 +15,18 @@
 # limitations under the License.
 #
 
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: submarine-database-sc
-{{- template "storageClass.fields" . }}
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: submarine-tensorboard-sc
-{{- template "storageClass.fields" . }}
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: submarine-mlflow-sc
-{{- template "storageClass.fields" . }}
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: submarine-minio-sc
-{{- template "storageClass.fields" . }}
-
+{{/*
+Set up storage class fields
+*/}}
+{{ define "storageClass.fields" }}
+{{ with .Values.storageClass }}
+reclaimPolicy: {{ .reclaimPolicy | default "Delete" }}
+provisioner: {{ .provisioner | default "k8s.io/minikube-hostpath" }}
+{{ if .parameters }}
+parameters:
+  {{ range $key, $val := .parameters }}
+  {{ $key }}: {{ $val | quote }}
+  {{ end }}
+{{ end }}
+{{ end }}
+{{ end }}
