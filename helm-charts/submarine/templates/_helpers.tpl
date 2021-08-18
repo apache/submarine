@@ -14,11 +14,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: notebook-storageclass
-  labels:
-    app: notebook-controller
-provisioner: k8s.io/minikube-hostpath
-reclaimPolicy: Delete
+
+{{/*
+Set up storage class fields
+*/}}
+{{ define "storageClass.fields" }}
+{{ with .Values.storageClass }}
+reclaimPolicy: {{ .reclaimPolicy | default "Delete" }}
+volumeBindingMode: {{ .volumeBindingMode | default "Immediate" }}
+provisioner: {{ .provisioner | default "k8s.io/minikube-hostpath" }}
+{{ if .parameters }}
+parameters:
+  {{ range $key, $val := .parameters }}
+  {{ $key }}: {{ $val | quote }}
+  {{ end }}
+{{ end }}
+{{ end }}
+{{ end }}

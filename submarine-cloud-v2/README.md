@@ -16,10 +16,12 @@
 -->
 
 # submarine-cloud-v2 (submarine operator)
+
 `submarine-cloud-v2`, i.e. **submarine-operator**, implements the operator for Submarine application. The operator provides a new option for users to deploy the Submarine service to their Kubernetes clusters. The **submarine-operator** can fix some errors automatically. However, if the Submarine service is deployed with Helm, the errors need to be fixed by human operators.
 
 # Getting Started
-* In this section, we provide two methods, including **out-of-cluter** method and **in-cluster** method, for you to deploy your **submarine-operator**. In addition, the out-of-cluster method is convenient for operator developers. On the other hand, the in-cluster method is suitable for production.
+
+- In this section, we provide two methods, including **out-of-cluter** method and **in-cluster** method, for you to deploy your **submarine-operator**. In addition, the out-of-cluster method is convenient for operator developers. On the other hand, the in-cluster method is suitable for production.
 
 ## Initialization
 
@@ -31,6 +33,14 @@ go mod vendor
 # Run the cluster
 minikube start --vm-driver=docker  --kubernetes-version v1.15.11
 ```
+
+## Set up storage class fields
+
+One can set up storage class fields in `values.yaml` or using helm with `--set`. We've set up minikube's provisioner for storage class as default.
+
+For example, if you are using kind in local, please add `--set storageClass.provisioner=rancher.io/local-path --set storageClass.volumeBindingMode=WaitForFirstConsumer` to helm install command.
+
+Documentation for storage class: https://kubernetes.io/docs/concepts/storage/storage-classes/
 
 ## Run operator out-of-cluster
 

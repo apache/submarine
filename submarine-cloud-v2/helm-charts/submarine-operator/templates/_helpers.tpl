@@ -21,6 +21,7 @@ Set up storage class fields
 {{ define "storageClass.fields" }}
 {{ with .Values.storageClass }}
 reclaimPolicy: {{ .reclaimPolicy | default "Delete" }}
+volumeBindingMode: {{ .volumeBindingMode | default "Immediate" }}
 provisioner: {{ .provisioner | default "k8s.io/minikube-hostpath" }}
 {{ if .parameters }}
 parameters:
