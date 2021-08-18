@@ -65,6 +65,9 @@
       <nz-descriptions-item nzTitle="Environment Variables" [nzSpan]="2">
         {{ templates[currentOption].experimentVars }}
       </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Tags">
+        <nz-tag *ngFor="let tag of templates[currentOption].experimentTags">{{tag}}</nz-tag>
+      </nz-descriptions-item>
     </nz-descriptions>
   </nz-form-item>
 </form>
