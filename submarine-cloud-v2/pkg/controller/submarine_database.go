@@ -148,7 +148,7 @@ func newSubmarineDatabaseService(submarine *v1alpha1.Submarine) *corev1.Service 
 
 // createSubmarineDatabase is a function to create submarine-database.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-database.yaml
-func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) (*appsv1.Deployment, error) {
+func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) error {
 	klog.Info("[createSubmarineDatabase]")
 
 	// Step 1: Create PersistentVolumeClaim
@@ -165,13 +165,13 @@ func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) (*ap
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if !metav1.IsControlledBy(pvc, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, pvc.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return nil, fmt.Errorf(msg)
+		return fmt.Errorf(msg)
 	}
 
 	// Step 2: Create Deployment
@@ -188,23 +188,23 @@ func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) (*ap
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if !metav1.IsControlledBy(deployment, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, deployment.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return nil, fmt.Errorf(msg)
+		return fmt.Errorf(msg)
 	}
 
 	// Update the replicas of the database deployment if it is not equal to spec
 	if submarine.Spec.Database.Replicas != nil && *submarine.Spec.Database.Replicas != *deployment.Spec.Replicas {
 		klog.V(4).Infof("Submarine %s database spec replicas: %d, actual replicas: %d", submarine.Name, *submarine.Spec.Database.Replicas, *deployment.Spec.Replicas)
-		deployment, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Update(context.TODO(), newSubmarineDatabaseDeployment(submarine), metav1.UpdateOptions{})
+		_, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Update(context.TODO(), newSubmarineDatabaseDeployment(submarine), metav1.UpdateOptions{})
 	}
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// Step 3: Create Service
@@ -221,14 +221,14 @@ func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) (*ap
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if !metav1.IsControlledBy(service, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, service.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return nil, fmt.Errorf(msg)
+		return fmt.Errorf(msg)
 	}
 
-	return deployment, nil
+	return nil
 }
