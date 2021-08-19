@@ -45,7 +45,7 @@ func newSubmarineMinioPersistentVolumeClaim(submarine *v1alpha1.Submarine) *core
 		},
 		Spec: corev1.PersistentVolumeClaimSpec{
 			AccessModes: []corev1.PersistentVolumeAccessMode{
-				corev1.ReadWriteMany,
+				corev1.ReadWriteOnce,
 			},
 			Resources: corev1.ResourceRequirements{
 				Requests: corev1.ResourceList{
