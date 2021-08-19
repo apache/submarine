@@ -18,4 +18,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: notebook-storageclass
-{{- template "storageClass.fields" . }}
+  labels:
+    app: notebook-controller
+provisioner: k8s.io/minikube-hostpath
+reclaimPolicy: Delete
