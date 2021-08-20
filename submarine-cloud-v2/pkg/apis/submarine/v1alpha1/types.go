@@ -82,11 +82,10 @@ type SubmarineStateType string
 
 // Different states a submarine may have.
 const (
-	NewState         SubmarineStateType = ""
-	CreatingState    SubmarineStateType = "CREATING"
-	RunningState     SubmarineStateType = "RUNNING"
-	FailedState      SubmarineStateType = "FAILED"
-	TerminatingState SubmarineStateType = "TERMINATING"
+	NewState      SubmarineStateType = ""
+	CreatingState SubmarineStateType = "CREATING"
+	RunningState  SubmarineStateType = "RUNNING"
+	FailedState   SubmarineStateType = "FAILED"
 )
 
 // SubmarineState tells the current state of the submarine and an error message in case of failures.

@@ -383,6 +383,22 @@ func (c *Controller) processNextWorkItem() bool {
 // syncHandler compares the actual state with the desired, and attempts to
 // converge the two. It then updates the Status block of the Submarine resource
 // with the current status of the resource.
+// State Machine for Submarine
+//+-----------------------------------------------------------------+
+//|      +---------+         +----------+          +----------+     |
+//|      |         |         |          |          |          |     |
+//|      |   New   +---------> Creating +----------> Running  |     |
+//|      |         |         |          |          |          |     |
+//|      +----+----+         +-----+----+          +-----+----+     |
+//|           |                    |                     |          |
+//|           |                    |                     |          |
+//|           |                    |                     |          |
+//|           |                    |               +-----v----+     |
+//|           |                    |               |          |     |
+//|           +--------------------+--------------->  Failed  |     |
+//|                                                |          |     |
+//|                                                +----------+     |
+//+-----------------------------------------------------------------+
 func (c *Controller) syncHandler(key string) error {
 	// Convert the namespace/name string into a distinct namespace and name
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
@@ -469,7 +485,7 @@ func (c *Controller) updateSubmarineStatus(submarine, submarineCopy *v1alpha1.Su
 		submarineCopy.Status.AvailableServerReplicas = serverDeployment.Status.AvailableReplicas
 	}
 
-	// Update server replicas
+	// Update database replicas
 	databaseDeployment, err := c.getDeployment(submarine.Namespace, databaseName)
 	if err != nil {
 		return err
