@@ -68,13 +68,13 @@ func newSubmarineMinioDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployme
 		Spec: appsv1.DeploymentSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app": minioName + "-pod",
+					"app": minioName,
 				},
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app": minioName + "-pod",
+						"app": minioName,
 					},
 				},
 				Spec: corev1.PodSpec{
@@ -139,7 +139,7 @@ func newSubmarineMinioService(submarine *v1alpha1.Submarine) *corev1.Service {
 		Spec: corev1.ServiceSpec{
 			Type: corev1.ServiceTypeClusterIP,
 			Selector: map[string]string{
-				"app": minioName + "-pod",
+				"app": minioName,
 			},
 			Ports: []corev1.ServicePort{
 				{

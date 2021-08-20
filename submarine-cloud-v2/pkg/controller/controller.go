@@ -85,6 +85,8 @@ const (
 	minioIngressRouteName       = minioName + "-ingressroute"
 )
 
+var dependents = []string{serverName, databaseName, tensorboardName, mlflowName, minioName}
+
 const (
 	// SuccessSynced is used as part of the Event 'reason' when a Submarine is synced
 	SuccessSynced = "Synced"
@@ -385,7 +387,7 @@ func (c *Controller) syncHandler(key string) error {
 	// Convert the namespace/name string into a distinct namespace and name
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
 	if err != nil {
-		utilruntime.HandleError(fmt.Errorf("Invalid resource key: %s", key))
+		utilruntime.HandleError(fmt.Errorf("invalid resource key: %s", key))
 		return nil
 	}
 	klog.Info("syncHandler: ", key)
@@ -412,48 +414,36 @@ func (c *Controller) syncHandler(key string) error {
 	// Take action based on submarine state
 	switch submarineCopy.Status.SubmarineState.State {
 	case v1alpha1.NewState:
-		c.recorder.Eventf(
-			submarineCopy,
-			corev1.EventTypeNormal,
-			"SubmarineAdded",
-			"Submarine %s was added",
-			submarineCopy.Name)
+		c.recordSubmarineEvent(submarineCopy)
 		if err := c.validateSubmarine(submarineCopy); err != nil {
 			submarineCopy.Status.SubmarineState.State = v1alpha1.FailedState
 			submarineCopy.Status.SubmarineState.ErrorMessage = err.Error()
-			c.recorder.Eventf(
-				submarineCopy,
-				corev1.EventTypeWarning,
-				"SubmarineFailed",
-				"Submarine %s was failed: %s",
-				submarineCopy.Name,
-				submarineCopy.Status.SubmarineState.ErrorMessage,
-			)
+			c.recordSubmarineEvent(submarineCopy)
 		} else {
 			submarineCopy.Status.SubmarineState.State = v1alpha1.CreatingState
-			c.recorder.Eventf(
-				submarineCopy,
-				corev1.EventTypeNormal,
-				"SubmarineCreating",
-				"Submarine %s was creating",
-				submarineCopy.Name,
-			)
+			c.recordSubmarineEvent(submarineCopy)
 		}
-	case v1alpha1.CreatingState, v1alpha1.RunningState:
+	case v1alpha1.CreatingState:
 		if err := c.createSubmarine(submarineCopy); err != nil {
 			submarineCopy.Status.SubmarineState.State = v1alpha1.FailedState
 			submarineCopy.Status.SubmarineState.ErrorMessage = err.Error()
+			c.recordSubmarineEvent(submarineCopy)
 		}
-		// TODO: wait for all ready and running and switch to running
-		if submarineCopy.Status.SubmarineState.State == v1alpha1.CreatingState {
+		ok, err := c.checkSubmarineDependentsReady(submarineCopy)
+		if err != nil {
+			submarineCopy.Status.SubmarineState.State = v1alpha1.FailedState
+			submarineCopy.Status.SubmarineState.ErrorMessage = err.Error()
+			c.recordSubmarineEvent(submarineCopy)
+		}
+		if ok {
 			submarineCopy.Status.SubmarineState.State = v1alpha1.RunningState
-			c.recorder.Eventf(
-				submarineCopy,
-				corev1.EventTypeNormal,
-				"SubmarineRunning",
-				"Submarine %s was running",
-				submarineCopy.Name,
-			)
+			c.recordSubmarineEvent(submarineCopy)
+		}
+	case v1alpha1.RunningState:
+		if err := c.createSubmarine(submarineCopy); err != nil {
+			submarineCopy.Status.SubmarineState.State = v1alpha1.FailedState
+			submarineCopy.Status.SubmarineState.ErrorMessage = err.Error()
+			c.recordSubmarineEvent(submarineCopy)
 		}
 	}
 
@@ -593,7 +583,7 @@ func (c *Controller) validateSubmarine(submarine *v1alpha1.Submarine) error {
 	// Check storage type
 	storageType := submarine.Spec.Storage.StorageType
 	if storageType != "nfs" && storageType != "host" {
-		utilruntime.HandleError(fmt.Errorf("Invalid storageType '%s' found in submarine spec, nothing will be created. Valid storage types are 'nfs' and 'host'", storageType))
+		utilruntime.HandleError(fmt.Errorf("invalid storageType '%s' found in submarine spec, nothing will be created. Valid storage types are 'nfs' and 'host'", storageType))
 		return nil
 	}
 
@@ -638,4 +628,59 @@ func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 	}
 
 	return nil
+}
+
+func (c *Controller) checkSubmarineDependentsReady(submarine *v1alpha1.Submarine) (bool, error) {
+	for _, name := range dependents {
+		podList, err := c.kubeclientset.CoreV1().Pods(submarine.Namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: fmt.Sprintf("app=%s", name)})
+		if err != nil {
+			return false, err
+		}
+		for _, pod := range podList.Items {
+			for _, condition := range pod.Status.Conditions {
+				if condition.Type == corev1.PodReady && condition.Status != corev1.ConditionTrue {
+					return false, nil
+				}
+			}
+		}
+	}
+
+	return true, nil
+}
+
+func (c *Controller) recordSubmarineEvent(submarine *v1alpha1.Submarine) {
+	switch submarine.Status.SubmarineState.State {
+	case v1alpha1.NewState:
+		c.recorder.Eventf(
+			submarine,
+			corev1.EventTypeNormal,
+			"SubmarineAdded",
+			"Submarine %s was added",
+			submarine.Name)
+	case v1alpha1.CreatingState:
+		c.recorder.Eventf(
+			submarine,
+			corev1.EventTypeNormal,
+			"SubmarineCreating",
+			"Submarine %s was creating",
+			submarine.Name,
+		)
+	case v1alpha1.RunningState:
+		c.recorder.Eventf(
+			submarine,
+			corev1.EventTypeNormal,
+			"SubmarineRunning",
+			"Submarine %s was running",
+			submarine.Name,
+		)
+	case v1alpha1.FailedState:
+		c.recorder.Eventf(
+			submarine,
+			corev1.EventTypeWarning,
+			"SubmarineFailed",
+			"Submarine %s was failed: %s",
+			submarine.Name,
+			submarine.Status.SubmarineState.ErrorMessage,
+		)
+	}
 }

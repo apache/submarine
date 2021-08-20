@@ -47,7 +47,7 @@ func newSubmarineServerService(submarine *v1alpha1.Submarine) *corev1.Service {
 		ObjectMeta: metav1.ObjectMeta{
 			Name: serverName,
 			Labels: map[string]string{
-				"run": serverName,
+				"app": serverName,
 			},
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
@@ -62,7 +62,7 @@ func newSubmarineServerService(submarine *v1alpha1.Submarine) *corev1.Service {
 				},
 			},
 			Selector: map[string]string{
-				"run": serverName,
+				"app": serverName,
 			},
 		},
 	}
@@ -87,14 +87,14 @@ func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 		Spec: appsv1.DeploymentSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"run": serverName,
+					"app": serverName,
 				},
 			},
 			Replicas: &serverReplicas,
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"run": serverName,
+						"app": serverName,
 					},
 				},
 				Spec: corev1.PodSpec{

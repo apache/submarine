@@ -66,13 +66,13 @@ func newSubmarineMlflowDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 		Spec: appsv1.DeploymentSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app": mlflowName + "-pod",
+					"app": mlflowName,
 				},
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app": mlflowName + "-pod",
+						"app": mlflowName,
 					},
 				},
 				Spec: corev1.PodSpec{
@@ -131,7 +131,7 @@ func newSubmarineMlflowService(submarine *v1alpha1.Submarine) *corev1.Service {
 		Spec: corev1.ServiceSpec{
 			Type: corev1.ServiceTypeClusterIP,
 			Selector: map[string]string{
-				"app": mlflowName + "-pod",
+				"app": mlflowName,
 			},
 			Ports: []corev1.ServicePort{
 				{
