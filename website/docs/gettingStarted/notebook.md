@@ -48,6 +48,14 @@ details of your new notebook server.
 - GPU (optional)
 - EnvVar (optional) : Injects environment variables into the notebook.
 
+If you want to use notebook-gpu-env, you should set up the gpu environment in your kubernetes.
+You can install [NVIDIA/k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin).
+The list of prerequisites for running the NVIDIA device plugin is described below
+- NVIDIA drivers ~= 384.81
+- nvidia-docker version > 2.0
+- docker configured with nvidia as the default runtime
+- Kubernetes version >= 1.10
+
 **If you’re not sure which environment you need, please choose the environment “notebook-env”
 for the new notebook.**
 
