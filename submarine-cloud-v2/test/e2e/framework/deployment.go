@@ -24,6 +24,8 @@ import (
 
 	"github.com/pkg/errors"
 	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -42,6 +44,45 @@ func MakeDeployment(pathToYaml string) (*appsv1.Deployment, error) {
 	}
 
 	return &deployment, nil
+}
+
+func MakeOperatorDeployment() *appsv1.Deployment {
+	name := "submarine-operator-demo"
+	var replicas int32 = 1
+	image := "apache/submarine:operator-0.6.0-SNAPSHOT"
+	return &appsv1.Deployment{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+			Labels: map[string]string{
+				"app": name,
+			},
+		},
+		Spec: appsv1.DeploymentSpec{
+			Replicas: &replicas,
+			Selector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					"app": name,
+				},
+			},
+			Template: corev1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						"app": name,
+					},
+				},
+				Spec: corev1.PodSpec{
+					ServiceAccountName: "submarine-operator",
+					Containers: []corev1.Container{
+						{
+							Name:            name,
+							Image:           image,
+							ImagePullPolicy: "IfNotPresent",
+						},
+					},
+				},
+			},
+		},
+	}
 }
 
 func CreateDeployment(kubeClient kubernetes.Interface, namespace string, d *appsv1.Deployment) error {

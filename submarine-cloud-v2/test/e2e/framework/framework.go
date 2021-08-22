@@ -33,19 +33,16 @@ import (
 )
 
 type Framework struct {
-	KubeClient	kubernetes.Interface
+	KubeClient      kubernetes.Interface
 	SubmarineClient clientset.Interface
-	Namespace *corev1.Namespace
-	OperatorPod *corev1.Pod
-	MasterHost string
-	DefaultTimeout time.Duration
+	Namespace       *corev1.Namespace
+	OperatorPod     *corev1.Pod
+	MasterHost      string
+	DefaultTimeout  time.Duration
 }
 
-var SubmarineTestNamespace = "submarine-user-test"
+func New(ns, kubeconfig, opImage, opImagePullPolicy string) (*Framework, error) {
 
-
-func New(ns, submarineNs, kubeconfig, opImage, opImagePullPolicy string) (*Framework, error) {
-	
 	cfg, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
 	if err != nil {
 		return nil, errors.Wrap(err, "build config failed")
@@ -55,14 +52,14 @@ func New(ns, submarineNs, kubeconfig, opImage, opImagePullPolicy string) (*Frame
 	if err != nil {
 		return nil, errors.Wrap(err, "creating new kube-client fail")
 	}
-	
+
 	// create submarine-operator namespace
 	namespace, err := kubeClient.CoreV1().Namespaces().Create(context.TODO(), &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: ns,
 		},
 	},
-	metav1.CreateOptions{})
+		metav1.CreateOptions{})
 	if apierrors.IsAlreadyExists(err) {
 		namespace, err = kubeClient.CoreV1().Namespaces().Get(context.TODO(), ns, metav1.GetOptions{})
 	} else {
@@ -74,14 +71,14 @@ func New(ns, submarineNs, kubeconfig, opImage, opImagePullPolicy string) (*Frame
 		return nil, errors.Wrap(err, "creating new submarine-client fail")
 	}
 
-	f := &Framework {
-		MasterHost: cfg.Host,
-		KubeClient: kubeClient,
+	f := &Framework{
+		MasterHost:      cfg.Host,
+		KubeClient:      kubeClient,
 		SubmarineClient: submarineClient,
-		Namespace: namespace,
-		DefaultTimeout: time.Minute,
+		Namespace:       namespace,
+		DefaultTimeout:  time.Minute,
 	}
-	err = f.Setup(submarineNs, opImage, opImagePullPolicy)
+	err = f.Setup(opImage, opImagePullPolicy)
 	if err != nil {
 		return nil, errors.Wrap(err, "setup test environment failed")
 	}
@@ -89,32 +86,30 @@ func New(ns, submarineNs, kubeconfig, opImage, opImagePullPolicy string) (*Frame
 	return f, nil
 }
 
-func (f *Framework) Setup(submarineNs, opImage, opImagePullPolicy string) error {
-	if err := f.setupOperator(submarineNs, opImage, opImagePullPolicy); err != nil {
+func (f *Framework) Setup(opImage, opImagePullPolicy string) error {
+	if err := f.setupOperator(opImage, opImagePullPolicy); err != nil {
 		return errors.Wrap(err, "setup operator failed")
 	}
 	return nil
 }
 
-func (f* Framework) setupOperator(submarineNs, opImage, opImagePullPolicy string) error {
+func (f *Framework) setupOperator(opImage, opImagePullPolicy string) error {
 
 	// setup RBAC (ClusterRole, ClusterRoleBinding, and ServiceAccount)
-	if _, err := CreateServiceAccount(f.KubeClient, f.Namespace.Name, "../../artifacts/examples/submarine-operator-service-account.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
-		return errors.Wrap(err, "failed to create operator service account")
-	}
+	// helm will help setup rbac
+	// if _, err := CreateServiceAccount(f.KubeClient, f.Namespace.Name, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
+	// 	return errors.Wrap(err, "failed to create operator service account")
+	// }
 
-	if err := CreateClusterRole(f.KubeClient, "../../artifacts/examples/submarine-operator-service-account.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
-		return errors.Wrap(err, "failed to create cluster role")
-	}
+	// if err := CreateClusterRole(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
+	// 	return errors.Wrap(err, "failed to create cluster role")
+	// }
 
-	if _, err := CreateClusterRoleBinding(f.KubeClient, "../../artifacts/examples/submarine-operator-service-account.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
-		return errors.Wrap(err, "failed to create cluster role binding")
-	}
+	// if _, err := CreateClusterRoleBinding(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
+	// 	return errors.Wrap(err, "failed to create cluster role binding")
+	// }
 	// Deploy a submarine-operator
-	deploy, err := MakeDeployment("../../artifacts/examples/submarine-operator.yaml")
-	if err != nil {
-		return err
-	}
+	deploy := MakeOperatorDeployment()
 
 	if opImage != "" {
 		// Override operator image used, if specified when running tests.
@@ -125,7 +120,7 @@ func (f* Framework) setupOperator(submarineNs, opImage, opImagePullPolicy string
 		container.ImagePullPolicy = corev1.PullPolicy(opImagePullPolicy)
 	}
 
-	err = CreateDeployment(f.KubeClient, f.Namespace.Name, deploy)
+	err := CreateDeployment(f.KubeClient, f.Namespace.Name, deploy)
 	if err != nil {
 		return err
 	}
@@ -147,13 +142,13 @@ func (f* Framework) setupOperator(submarineNs, opImage, opImagePullPolicy string
 
 // Teardown ters down a previously initialized test environment
 func (f *Framework) Teardown() error {
-	if err := DeleteClusterRole(f.KubeClient, "../../artifacts/examples/submarine-operator-service-account.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
-		return errors.Wrap(err, "failed to delete operator cluster role")
-	}
+	// if err := DeleteClusterRole(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
+	// 	return errors.Wrap(err, "failed to delete operator cluster role")
+	// }
 
-	if err := DeleteClusterRoleBinding(f.KubeClient, "../../artifacts/examples/submarine-operator-service-account.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
-		return errors.Wrap(err, "failed to delete operator cluster role binding")
-	}
+	// if err := DeleteClusterRoleBinding(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
+	// 	return errors.Wrap(err, "failed to delete operator cluster role binding")
+	// }
 
 	if err := f.KubeClient.AppsV1().Deployments(f.Namespace.Name).Delete(context.TODO(), "submarine-operator-demo", metav1.DeleteOptions{}); err != nil {
 		return err
