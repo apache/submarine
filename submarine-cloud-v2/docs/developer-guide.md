@@ -50,10 +50,7 @@ Reference: [spark-on-k8s-operator e2e test](https://github.com/GoogleCloudPlatfo
 eval $(minikube docker-env)
 make image
 
-# Step2: install helm charts without submarine operator
-helm install submarine-operator ./helm-charts/submarine-operator --set dev=true
-
-# Step3: Run Tests
+# Step2: Run Tests
 ## one can add -v to see additional logs
 go test ./test/e2e
 ```

@@ -96,18 +96,32 @@ func (f *Framework) Setup(opImage, opImagePullPolicy string) error {
 func (f *Framework) setupOperator(opImage, opImagePullPolicy string) error {
 
 	// setup RBAC (ClusterRole, ClusterRoleBinding, and ServiceAccount)
-	// helm will help setup rbac
-	// if _, err := CreateServiceAccount(f.KubeClient, f.Namespace.Name, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
-	// 	return errors.Wrap(err, "failed to create operator service account")
-	// }
+	if _, err := CreateServiceAccount(f.KubeClient, f.Namespace.Name, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
+		return errors.Wrap(err, "failed to create operator service account")
+	}
 
-	// if err := CreateClusterRole(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
-	// 	return errors.Wrap(err, "failed to create cluster role")
-	// }
+	if err := CreateClusterRole(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
+		return errors.Wrap(err, "failed to create cluster role")
+	}
 
-	// if _, err := CreateClusterRoleBinding(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
-	// 	return errors.Wrap(err, "failed to create cluster role binding")
-	// }
+	if _, err := CreateClusterRoleBinding(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
+		return errors.Wrap(err, "failed to create cluster role binding")
+	}
+
+	// setup storage class
+	if _, err := CreateStorageClass(f.KubeClient, "submarine-database-sc"); err != nil && !apierrors.IsAlreadyExists(err) {
+		return errors.Wrap(err, "failed to create storageclass")
+	}
+	if _, err := CreateStorageClass(f.KubeClient, "submarine-tensorboard-sc"); err != nil && !apierrors.IsAlreadyExists(err) {
+		return errors.Wrap(err, "failed to create storageclass")
+	}
+	if _, err := CreateStorageClass(f.KubeClient, "submarine-mlflow-sc"); err != nil && !apierrors.IsAlreadyExists(err) {
+		return errors.Wrap(err, "failed to create storageclass")
+	}
+	if _, err := CreateStorageClass(f.KubeClient, "submarine-minio-sc"); err != nil && !apierrors.IsAlreadyExists(err) {
+		return errors.Wrap(err, "failed to create storageclass")
+	}
+
 	// Deploy a submarine-operator
 	deploy := MakeOperatorDeployment()
 
@@ -142,20 +156,35 @@ func (f *Framework) setupOperator(opImage, opImagePullPolicy string) error {
 
 // Teardown ters down a previously initialized test environment
 func (f *Framework) Teardown() error {
-	// if err := DeleteClusterRole(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
-	// 	return errors.Wrap(err, "failed to delete operator cluster role")
-	// }
+	// delete rbac
+	if err := DeleteClusterRole(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil {
+		return errors.Wrap(err, "failed to delete operator cluster role")
+	}
 
-	// if err := DeleteClusterRoleBinding(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil && !apierrors.IsAlreadyExists(err) {
-	// 	return errors.Wrap(err, "failed to delete operator cluster role binding")
-	// }
+	if err := DeleteClusterRoleBinding(f.KubeClient, "../../helm-charts/submarine-operator/templates/rbac.yaml"); err != nil {
+		return errors.Wrap(err, "failed to delete operator cluster role binding")
+	}
+
+	// delete storage class
+	if err := DeleteStorageClass(f.KubeClient, "submarine-database-sc"); err != nil {
+		return errors.Wrap(err, "failed to delete storageclass submarine-database-sc")
+	}
+	if err := DeleteStorageClass(f.KubeClient, "submarine-tensorboard-sc"); err != nil {
+		return errors.Wrap(err, "failed to delete storageclass submarine-tensorboard-sc")
+	}
+	if err := DeleteStorageClass(f.KubeClient, "submarine-mlflow-sc"); err != nil {
+		return errors.Wrap(err, "failed to delete storageclass submarine-mlflow-sc")
+	}
+	if err := DeleteStorageClass(f.KubeClient, "submarine-minio-sc"); err != nil {
+		return errors.Wrap(err, "failed to delete storageclass submarine-minio-sc")
+	}
 
 	if err := f.KubeClient.AppsV1().Deployments(f.Namespace.Name).Delete(context.TODO(), "submarine-operator-demo", metav1.DeleteOptions{}); err != nil {
-		return err
+		return errors.Wrap(err, "failed to delete deployment submarine-operator-demo")
 	}
 
 	if err := DeleteNamespace(f.KubeClient, f.Namespace.Name); err != nil && !apierrors.IsForbidden(err) {
-		return err
+		return errors.Wrap(err, "failed to delete namespace")
 	}
 
 	return nil
