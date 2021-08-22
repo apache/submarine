@@ -653,9 +653,16 @@ func (c *Controller) checkSubmarineDependentsReady(submarine *v1alpha1.Submarine
 			return false, err
 		}
 		for _, pod := range podList.Items {
-			for _, condition := range pod.Status.Conditions {
-				if condition.Type == corev1.PodReady && condition.Status != corev1.ConditionTrue {
-					return false, nil
+			switch pod.Status.Phase {
+			case corev1.PodPending:
+				return false, nil
+			case corev1.PodFailed, corev1.PodSucceeded:
+				return false, fmt.Errorf("pod completed")
+			case corev1.PodRunning:
+				for _, condition := range pod.Status.Conditions {
+					if condition.Type == corev1.PodReady && condition.Status != corev1.ConditionTrue {
+						return false, nil
+					}
 				}
 			}
 		}
