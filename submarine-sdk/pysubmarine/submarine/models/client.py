@@ -15,9 +15,9 @@
  under the License.
 """
 import os
+import time
 
 import mlflow
-import time
 from mlflow.exceptions import MlflowException
 from mlflow.tracking import MlflowClient
 
@@ -116,7 +116,8 @@ class ModelsClient():
                 else:
                     while experiment is None:
                         time.sleep(1)
-                        experiment = mlflow.get_experiment_by_name(experiment_name)
+                        experiment = mlflow.get_experiment_by_name(
+                            experiment_name)
             return experiment.experiment_id  # if found
         except MlflowException:
             experiment = mlflow.create_experiment(name=experiment_name)
