@@ -17,20 +17,20 @@
 curl -X POST -H "Content-Type: application/json" -d '
 {
   "meta": {
-    "name": "tf-example",
+    "name": "mirrored-example",
     "namespace": "default",
     "framework": "TensorFlow",
-    "cmd": "python /opt/multiWorker.py",
+    "cmd": "python /opt/mnist_keras_distributed.py",
     "envVars": {
       "ENV_1": "ENV1"
     }
   },
   "environment": {
-    "image": "multiworker:0.6.0-SNAPSHOT"
+    "image": "mirrored:0.6.0-SNAPSHOT"
   },
   "spec": {
     "Worker": {
-      "replicas": 4,
+      "replicas": 1,
       "resources": "cpu=1,memory=512M"
     }
   }

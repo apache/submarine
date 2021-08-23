@@ -57,6 +57,7 @@ def build_and_compile_cnn_model():
 
 tf_config = json.loads(os.environ['TF_CONFIG'])
 NUM_WORKERS = len(tf_config['cluster']['worker'])
+
 #Here the batch size scales up by number of workers since 
 #`tf.data.Dataset.batch` expects the global batch size. Previously we used 64, 
 #and now this becomes 128.
@@ -89,54 +90,9 @@ if __name__ == "__main__":
     for i in range(EPOCHS):
       modelClient.log_metric("val_loss", hist.history['loss'][i])
       modelClient.log_metric("Val_accuracy", hist.history['accuracy'][i])
-# tfds.disable_progress_bar()
-# strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
-# BUFFER_SIZE = 10000
-# BATCH_SIZE = 64
 
-# def make_datasets_unbatched():
-#   # 将 MNIST 数据从 (0, 255] 缩放到 (0., 1.]
-#   def scale(image, label):
-#     image = tf.cast(image, tf.float32)
-#     image /= 255
-#     return image, label
 
-#   datasets, info = tfds.load(name='mnist',
-#                             with_info=True,
-#                             as_supervised=True)
-
-#   return datasets['train'].map(scale).cache().shuffle(BUFFER_SIZE)
-
-# # train_datasets = make_datasets_unbatched().batch(BATCH_SIZE)
-
-# def build_and_compile_cnn_model():
-#   model = tf.keras.Sequential([
-#       tf.keras.layers.Conv2D(32, 3, activation='relu', input_shape=(28, 28, 1)),
-#       tf.keras.layers.MaxPooling2D(),
-#       tf.keras.layers.Flatten(),
-#       tf.keras.layers.Dense(64, activation='relu'),
-#       tf.keras.layers.Dense(10)
-#   ])
-#   model.compile(
-#       loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-#       optimizer=tf.keras.optimizers.SGD(learning_rate=0.001),
-#       metrics=['accuracy'])
-#   return model
-
-# tf_config = json.loads(os.environ['TF_CONFIG'])
-# NUM_WORKERS = len(tf_config['cluster']['worker'])
-# # 由于 `tf.data.Dataset.batch` 需要全局的批处理大小，
-# # 因此此处的批处理大小按工作器数量增加。
-# # 以前我们使用64，现在变成128。
-# GLOBAL_BATCH_SIZE = 64 * NUM_WORKERS
-
-# # 创建数据集需要在 MultiWorkerMirroredStrategy 对象
-# # 实例化后。
-# train_datasets = make_datasets_unbatched().batch(GLOBAL_BATCH_SIZE)
-# with strategy.scope():
-#   # 模型的建立/编译需要在 `strategy.scope()` 内部。
-#   multi_worker_model = build_and_compile_cnn_model()
-
-# # Keras 的 `model.fit()` 以特定的时期数和每时期的步数训练模型。
-# # 注意此处的数量仅用于演示目的，并不足以产生高质量的模型。
-# multi_worker_model.fit(x=train_datasets, epochs=3, steps_per_epoch=5)
+"""Reference
+https://www.tensorflow.org/tutorials/distribute/multi_worker_with_keras
+https://reurl.cc/no9Zk8
+"""

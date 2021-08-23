@@ -86,3 +86,7 @@ if __name__ == "__main__":
     # modelClient.log_param("loss", eval_loss)
     # modelClient.log_param("acc", eval_acc)
 
+"""
+Reference:
+https://www.tensorflow.org/tutorials/distribute/parameter_server_training
+"""

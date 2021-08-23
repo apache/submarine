@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -13,14 +14,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.7
-MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
-
-ADD ./tmp/submarine-sdk /opt/
-RUN pip install /opt/pysubmarine
-# RUN pip install tf-nightly
-RUN pip install tensorflow==2.3.0
-RUN pip install tensorboard
-RUN pip install tensorflow_datasets==2.1.0
-
-ADD ./multiWorker.py /opt/
+curl -X POST -H "Content-Type: application/json" -d '
+{
+  "meta": {
+    "name": "multi-worker-mirrored-example",
+    "namespace": "default",
+    "framework": "TensorFlow",
+    "cmd": "python /opt/mnist_keras_distributed.py",
+    "envVars": {
+      "ENV_1": "ENV1"
+    }
+  },
+  "environment": {
+    "image": "multi-worker-mirrored:0.6.0-SNAPSHOT"
+  },
+  "spec": {
+    "Worker": {
+      "replicas": 4,
+      "resources": "cpu=1,memory=512M"
+    }
+  }
+}
+' http://127.0.0.1:32080/api/v1/experiment

@@ -21,10 +21,6 @@ import tensorflow as tf
 import os
 import tensorboard
 
-print(tf.__version__)
-print("=============================")
-print(os.environ['TF_CONFIG'])
-print("=============================")
 datasets, info = tfds.load(name='mnist', with_info=True, as_supervised=True)
 mnist_train, mnist_test = datasets['train'], datasets['test']
 
@@ -109,3 +105,7 @@ if __name__ == "__main__":
     print('Eval loss: {}, Eval accuracy: {}'.format(eval_loss, eval_acc))
     modelClient.log_param("loss", eval_loss)
     modelClient.log_param("acc", eval_acc)
+
+"""Reference:
+https://www.tensorflow.org/api_docs/python/tf/distribute/MirroredStrategy
+"""

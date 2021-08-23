@@ -17,6 +17,7 @@
 import os
 
 import mlflow
+import time
 from mlflow.exceptions import MlflowException
 from mlflow.tracking import MlflowClient
 
@@ -109,7 +110,13 @@ class ModelsClient():
         try:
             experiment = mlflow.get_experiment_by_name(experiment_name)
             if experiment is None:  # if not found
-                raise MlflowException("No valid experiment has been found")
+                run_name = get_worker_index()
+                if run_name == "worker-0":
+                    raise MlflowException("No valid experiment has been found")
+                else:
+                    while experiment is None:
+                        time.sleep(1)
+                        experiment = mlflow.get_experiment_by_name(experiment_name)
             return experiment.experiment_id  # if found
         except MlflowException:
             experiment = mlflow.create_experiment(name=experiment_name)

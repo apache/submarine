@@ -17,7 +17,7 @@
 set -euxo pipefail
 
 SUBMARINE_VERSION=0.6.0-SNAPSHOT
-SUBMARINE_IMAGE_NAME="multiworker:${SUBMARINE_VERSION}"
+SUBMARINE_IMAGE_NAME="multi-worker-mirrored:${SUBMARINE_VERSION}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
   PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))
@@ -25,7 +25,7 @@ else
   PWD=$(dirname ${BASH_SOURCE-$0})
 fi
 export CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
-export SUBMARINE_HOME=${CURRENT_PATH}/../../..
+export SUBMARINE_HOME=${CURRENT_PATH}/../../../..
 
 if [ -d "${CURRENT_PATH}/tmp" ] # if old tmp folder is still there, delete it.
 then
