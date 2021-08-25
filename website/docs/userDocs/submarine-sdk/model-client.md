@@ -41,7 +41,7 @@ Example
 ```python
 from submarine import ModelsClient
 
-modelClient = ModelsClient(tracking_uri="0.0.0.0:4000", tracking_uri="0.0.0.0:5000")
+modelClient = ModelsClient(tracking_uri="0.0.0.0:4000", registry_uri="0.0.0.0:5000")
 ```
 ### `ModelsClient.start()->[Active Run]`
 
