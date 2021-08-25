@@ -91,16 +91,14 @@ function Home() {
               to={useBaseUrl('/docs')}>
               Get Started
             </Link>
-              <span className="index-ctas-github-button">
-                <iframe
-                    src="https://ghbtns.com/github-btn.html?user=apache&amp;repo=submarine&amp;type=star&amp;count=true&amp;size=large"
-                    frameBorder={0}
-                    scrolling={0}
-                    width={160}
-                    height={30}
-                    title="GitHub Stars"
-                />
-              </span>
+            <iframe
+              src="https://ghbtns.com/github-btn.html?user=apache&amp;repo=submarine&amp;type=star&amp;count=true&amp;size=large"
+              frameBorder={0}
+              scrolling={0}
+              width={160}
+              height={30}
+              title="GitHub Stars"
+            />
           </div>
         </div>
       </header>
