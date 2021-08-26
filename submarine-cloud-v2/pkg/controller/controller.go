@@ -33,6 +33,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	rbacv1 "k8s.io/api/rbac/v1"
+	"k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
@@ -83,6 +84,8 @@ const (
 	minioServiceName            = minioName + "-service"
 	minioIngressRouteName       = minioName + "-ingressroute"
 )
+
+var dependents = []string{serverName, databaseName, tensorboardName, mlflowName, minioName}
 
 const (
 	// SuccessSynced is used as part of the Event 'reason' when a Submarine is synced
@@ -380,100 +383,124 @@ func (c *Controller) processNextWorkItem() bool {
 // syncHandler compares the actual state with the desired, and attempts to
 // converge the two. It then updates the Status block of the Submarine resource
 // with the current status of the resource.
+// State Machine for Submarine
+//+-----------------------------------------------------------------+
+//|      +---------+         +----------+          +----------+     |
+//|      |         |         |          |          |          |     |
+//|      |   New   +---------> Creating +----------> Running  |     |
+//|      |         |         |          |          |          |     |
+//|      +----+----+         +-----+----+          +-----+----+     |
+//|           |                    |                     |          |
+//|           |                    |                     |          |
+//|           |                    |                     |          |
+//|           |                    |               +-----v----+     |
+//|           |                    |               |          |     |
+//|           +--------------------+--------------->  Failed  |     |
+//|                                                |          |     |
+//|                                                +----------+     |
+//+-----------------------------------------------------------------+
 func (c *Controller) syncHandler(key string) error {
 	// Convert the namespace/name string into a distinct namespace and name
 	namespace, name, err := cache.SplitMetaNamespaceKey(key)
 	if err != nil {
-		utilruntime.HandleError(fmt.Errorf("Invalid resource key: %s", key))
+		utilruntime.HandleError(fmt.Errorf("invalid resource key: %s", key))
 		return nil
 	}
 	klog.Info("syncHandler: ", key)
 
 	// Get the Submarine resource with this namespace/name
-	submarine, err := c.submarinesLister.Submarines(namespace).Get(name)
+	submarine, err := c.getSubmarine(namespace, name)
 	if err != nil {
-		// The Submarine resource may no longer exist, in which case we stop
-		// processing
-		if errors.IsNotFound(err) {
-			utilruntime.HandleError(fmt.Errorf("submarine '%s' in work queue no longer exists", key))
-			return nil
-		}
 		return err
 	}
+	if submarine == nil {
+		// The Submarine resource may no longer exist, in which case we stop
+		// processing
+		utilruntime.HandleError(fmt.Errorf("submarine '%s' in work queue no longer exists", key))
+		return nil
+	}
 
-	// Submarine is in the terminating process
+	// Submarine is in the terminating process, only used when in foreground cascading deletion, otherwise the submarine will be recreated
 	if !submarine.DeletionTimestamp.IsZero() {
 		return nil
 	}
 
-	// Print out the spec of the Submarine resource
-	b, err := json.MarshalIndent(submarine.Spec, "", "  ")
-	fmt.Println(string(b))
+	submarineCopy := submarine.DeepCopy()
 
-	storageType := submarine.Spec.Storage.StorageType
-	if storageType != "nfs" && storageType != "host" {
-		utilruntime.HandleError(fmt.Errorf("Invalid storageType '%s' found in submarine spec, nothing will be created. Valid storage types are 'nfs' and 'host'", storageType))
-		return nil
+	// Take action based on submarine state
+	switch submarineCopy.Status.SubmarineState.State {
+	case v1alpha1.NewState:
+		c.recordSubmarineEvent(submarineCopy)
+		if err := c.validateSubmarine(submarineCopy); err != nil {
+			submarineCopy.Status.SubmarineState.State = v1alpha1.FailedState
+			submarineCopy.Status.SubmarineState.ErrorMessage = err.Error()
+			c.recordSubmarineEvent(submarineCopy)
+		} else {
+			submarineCopy.Status.SubmarineState.State = v1alpha1.CreatingState
+			c.recordSubmarineEvent(submarineCopy)
+		}
+	case v1alpha1.CreatingState:
+		if err := c.createSubmarine(submarineCopy); err != nil {
+			submarineCopy.Status.SubmarineState.State = v1alpha1.FailedState
+			submarineCopy.Status.SubmarineState.ErrorMessage = err.Error()
+			c.recordSubmarineEvent(submarineCopy)
+		}
+		ok, err := c.checkSubmarineDependentsReady(submarineCopy)
+		if err != nil {
+			submarineCopy.Status.SubmarineState.State = v1alpha1.FailedState
+			submarineCopy.Status.SubmarineState.ErrorMessage = err.Error()
+			c.recordSubmarineEvent(submarineCopy)
+		}
+		if ok {
+			submarineCopy.Status.SubmarineState.State = v1alpha1.RunningState
+			c.recordSubmarineEvent(submarineCopy)
+		}
+	case v1alpha1.RunningState:
+		if err := c.createSubmarine(submarineCopy); err != nil {
+			submarineCopy.Status.SubmarineState.State = v1alpha1.FailedState
+			submarineCopy.Status.SubmarineState.ErrorMessage = err.Error()
+			c.recordSubmarineEvent(submarineCopy)
+		}
 	}
 
-	var serverDeployment *appsv1.Deployment
-	var databaseDeployment *appsv1.Deployment
-
+	// update submarine status
+	err = c.updateSubmarineStatus(submarine, submarineCopy)
 	if err != nil {
 		return err
 	}
-
-	serverDeployment, err = c.createSubmarineServer(submarine)
-	if err != nil {
-		return err
-	}
-
-	databaseDeployment, err = c.createSubmarineDatabase(submarine)
-	if err != nil {
-		return err
-	}
-
-	err = c.createIngress(submarine)
-	if err != nil {
-		return err
-	}
-
-	err = c.createSubmarineServerRBAC(submarine)
-	if err != nil {
-		return err
-	}
-
-	err = c.createSubmarineTensorboard(submarine)
-	if err != nil {
-		return err
-	}
-
-	err = c.createSubmarineMlflow(submarine)
-	if err != nil {
-		return err
-	}
-
-	err = c.createSubmarineMinio(submarine)
-	if err != nil {
-		return err
-	}
-
-	err = c.updateSubmarineStatus(submarine, serverDeployment, databaseDeployment)
-	if err != nil {
-		return err
-	}
-
-	c.recorder.Event(submarine, corev1.EventTypeNormal, SuccessSynced, MessageResourceSynced)
 
 	return nil
 }
 
-func (c *Controller) updateSubmarineStatus(submarine *v1alpha1.Submarine, serverDeployment *appsv1.Deployment, databaseDeployment *appsv1.Deployment) error {
-	submarineCopy := submarine.DeepCopy()
-	submarineCopy.Status.AvailableServerReplicas = serverDeployment.Status.AvailableReplicas
-	submarineCopy.Status.AvailableDatabaseReplicas = databaseDeployment.Status.AvailableReplicas
-	_, err := c.submarineclientset.SubmarineV1alpha1().Submarines(submarine.Namespace).Update(context.TODO(), submarineCopy, metav1.UpdateOptions{})
-	return err
+func (c *Controller) updateSubmarineStatus(submarine, submarineCopy *v1alpha1.Submarine) error {
+	// Update server replicas
+	serverDeployment, err := c.getDeployment(submarine.Namespace, serverName)
+	if err != nil {
+		return err
+	}
+	if serverDeployment != nil {
+		submarineCopy.Status.AvailableServerReplicas = serverDeployment.Status.AvailableReplicas
+	}
+
+	// Update database replicas
+	databaseDeployment, err := c.getDeployment(submarine.Namespace, databaseName)
+	if err != nil {
+		return err
+	}
+	if databaseDeployment != nil {
+		submarineCopy.Status.AvailableDatabaseReplicas = databaseDeployment.Status.AvailableReplicas
+	}
+
+	// Skip update if nothing changed.
+	if equality.Semantic.DeepEqual(submarine.Status, submarineCopy.Status) {
+		return nil
+	}
+
+	_, err = c.submarineclientset.SubmarineV1alpha1().Submarines(submarine.Namespace).Update(context.TODO(), submarineCopy, metav1.UpdateOptions{})
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // enqueueSubmarine takes a Submarine resource and converts it into a namespace/name
@@ -529,5 +556,149 @@ func (c *Controller) handleObject(obj interface{}) {
 
 		c.enqueueSubmarine(submarine)
 		return
+	}
+}
+
+func (c *Controller) getSubmarine(namespace, name string) (*v1alpha1.Submarine, error) {
+	submarine, err := c.submarinesLister.Submarines(namespace).Get(name)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return submarine, nil
+}
+
+func (c *Controller) getDeployment(namespace, name string) (*appsv1.Deployment, error) {
+	deployment, err := c.deploymentLister.Deployments(namespace).Get(name)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return deployment, nil
+}
+
+func (c *Controller) validateSubmarine(submarine *v1alpha1.Submarine) error {
+
+	// Print out the spec of the Submarine resource
+	b, err := json.MarshalIndent(submarine.Spec, "", "  ")
+	fmt.Println(string(b))
+
+	if err != nil {
+		return err
+	}
+
+	// Check storage type
+	storageType := submarine.Spec.Storage.StorageType
+	if storageType != "nfs" && storageType != "host" {
+		err = fmt.Errorf("invalid storageType '%s' found in submarine spec, nothing will be created. Valid storage types are 'nfs' and 'host'", storageType)
+		return err
+	}
+
+	return nil
+}
+
+func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
+	var err error
+	err = c.createSubmarineServer(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.createSubmarineDatabase(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.createIngress(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.createSubmarineServerRBAC(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.createSubmarineTensorboard(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.createSubmarineMlflow(submarine)
+	if err != nil {
+		return err
+	}
+
+	err = c.createSubmarineMinio(submarine)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Controller) checkSubmarineDependentsReady(submarine *v1alpha1.Submarine) (bool, error) {
+	for _, name := range dependents {
+		deployment, err := c.getDeployment(submarine.Namespace, name)
+		if err != nil {
+			return false, err
+		}
+		// check if deployment replicas failed
+		for _, condition := range deployment.Status.Conditions {
+			if condition.Type == appsv1.DeploymentReplicaFailure {
+				return false, fmt.Errorf("failed creating replicas of %s, message: %s", deployment.Name, condition.Message)
+			}
+			// progressing error, ex. ProgressDeadlineExceeded
+			if condition.Type == appsv1.DeploymentProgressing && condition.Status == corev1.ConditionFalse {
+				return false, fmt.Errorf("failed creating replicas of %s, message: %s", deployment.Name, condition.Message)
+			}
+		}
+		// check if ready replicas are same as targeted replicas
+		if deployment.Status.ReadyReplicas != deployment.Status.Replicas {
+			return false, nil
+		}
+	}
+
+	return true, nil
+}
+
+func (c *Controller) recordSubmarineEvent(submarine *v1alpha1.Submarine) {
+	switch submarine.Status.SubmarineState.State {
+	case v1alpha1.NewState:
+		c.recorder.Eventf(
+			submarine,
+			corev1.EventTypeNormal,
+			"SubmarineAdded",
+			"Submarine %s was added",
+			submarine.Name)
+	case v1alpha1.CreatingState:
+		c.recorder.Eventf(
+			submarine,
+			corev1.EventTypeNormal,
+			"SubmarineCreating",
+			"Submarine %s was creating",
+			submarine.Name,
+		)
+	case v1alpha1.RunningState:
+		c.recorder.Eventf(
+			submarine,
+			corev1.EventTypeNormal,
+			"SubmarineRunning",
+			"Submarine %s was running",
+			submarine.Name,
+		)
+	case v1alpha1.FailedState:
+		c.recorder.Eventf(
+			submarine,
+			corev1.EventTypeWarning,
+			"SubmarineFailed",
+			"Submarine %s was failed: %s",
+			submarine.Name,
+			submarine.Status.SubmarineState.ErrorMessage,
+		)
 	}
 }

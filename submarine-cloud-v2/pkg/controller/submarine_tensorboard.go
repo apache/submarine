@@ -68,13 +68,13 @@ func newSubmarineTensorboardDeployment(submarine *v1alpha1.Submarine) *appsv1.De
 		Spec: appsv1.DeploymentSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app": tensorboardName + "-pod",
+					"app": tensorboardName,
 				},
 			},
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"app": tensorboardName + "-pod",
+						"app": tensorboardName,
 					},
 				},
 				Spec: corev1.PodSpec{
@@ -136,7 +136,7 @@ func newSubmarineTensorboardService(submarine *v1alpha1.Submarine) *corev1.Servi
 		},
 		Spec: corev1.ServiceSpec{
 			Selector: map[string]string{
-				"app": tensorboardName + "-pod",
+				"app": tensorboardName,
 			},
 			Ports: []corev1.ServicePort{
 				{

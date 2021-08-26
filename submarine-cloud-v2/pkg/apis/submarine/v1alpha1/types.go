@@ -77,10 +77,29 @@ type SubmarineSpec struct {
 	Storage     *SubmarineStorage     `json:"storage"`
 }
 
+// SubmarineStateType represents the type of the current state of a submarine.
+type SubmarineStateType string
+
+// Different states a submarine may have.
+const (
+	NewState      SubmarineStateType = ""
+	CreatingState SubmarineStateType = "CREATING"
+	RunningState  SubmarineStateType = "RUNNING"
+	FailedState   SubmarineStateType = "FAILED"
+)
+
+// SubmarineState tells the current state of the submarine and an error message in case of failures.
+type SubmarineState struct {
+	State        SubmarineStateType `json:"state"`
+	ErrorMessage string             `json:"errorMessage,omitempty"`
+}
+
 // SubmarineStatus is the status for a Submarine resource
 type SubmarineStatus struct {
 	AvailableServerReplicas   int32 `json:"availableServerReplicas"`
 	AvailableDatabaseReplicas int32 `json:"availableDatabaseReplicas"`
+	// SubmarineState tells the overall submarine state.
+	SubmarineState `json:"submarineState,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
