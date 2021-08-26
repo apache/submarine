@@ -180,7 +180,6 @@ if __name__ == '__main__':
         periscope.log_param("learning_rate", args.lr)
         periscope.log_param("batch_size", args.batch_size)
         for epoch in range(1, args.epochs + 1):
-        # for epoch in range(1, 6):
             train(args, model, device, train_loader, optimizer, epoch, writer, periscope)
             test(args, model, device, test_loader, writer, epoch, periscope)
     if (args.save_model):
