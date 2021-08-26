@@ -81,10 +81,6 @@ if __name__ == "__main__":
       modelClient.log_metric("val_loss", hist.history['loss'][i])
       modelClient.log_metric("Val_accuracy", hist.history['accuracy'][i])
     model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
-    # eval_loss, eval_acc = model.evaluate(eval_dataset)
-    # print('Eval loss: {}, Eval accuracy: {}'.format(eval_loss, eval_acc))
-    # modelClient.log_param("loss", eval_loss)
-    # modelClient.log_param("acc", eval_acc)
 
 """
 Reference:

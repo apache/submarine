@@ -52,9 +52,6 @@ def build_and_compile_cnn_model():
       metrics=['accuracy'])
   return model
   
-#single_worker_model = build_and_compile_cnn_model()
-#single_worker_model.fit(x=train_datasets, epochs=3, steps_per_epoch=5)
-
 tf_config = json.loads(os.environ['TF_CONFIG'])
 NUM_WORKERS = len(tf_config['cluster']['worker'])
 
