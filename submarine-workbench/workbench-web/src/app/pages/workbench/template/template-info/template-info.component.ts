@@ -22,7 +22,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { NzMessageService } from 'ng-zorro-antd';
-
+import { NzTagModule } from 'ng-zorro-antd/tag';
 @Component({
   selector: 'submarine-template-info',
   templateUrl: './template-info.component.html',

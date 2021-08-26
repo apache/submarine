@@ -68,6 +68,9 @@
         <nz-descriptions-item nzTitle="Environment Varibles">
           {{ templateVars }}
         </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Tags">
+          <nz-tag *ngFor="let tag of templateInfo.experimentTemplateSpec.experimentSpec.meta.tags">{{tag}}</nz-tag>
+        </nz-descriptions-item>
       </nz-descriptions>
     </nz-tab>
     <nz-tab nzTitle="Parameters">

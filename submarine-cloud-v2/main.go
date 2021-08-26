@@ -91,7 +91,6 @@ func main() {
 		kubeInformerFactory.Apps().V1().Deployments(),
 		kubeInformerFactory.Core().V1().Services(),
 		kubeInformerFactory.Core().V1().ServiceAccounts(),
-		kubeInformerFactory.Core().V1().PersistentVolumes(),
 		kubeInformerFactory.Core().V1().PersistentVolumeClaims(),
 		kubeInformerFactory.Extensions().V1beta1().Ingresses(),
 		traefikInformerFactory.Traefik().V1alpha1().IngressRoutes(),

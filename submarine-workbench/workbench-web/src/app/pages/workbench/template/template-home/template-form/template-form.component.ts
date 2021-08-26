@@ -47,6 +47,8 @@ export class TemplateFormComponent implements OnInit {
   currentSpecPage = 1;
   PAGESIZE = 5;
 
+  listOfOption: Array<{ label: string; value: string }> = [];
+
   // Constants
   TF_SPECNAMES = ['Master', 'Worker', 'Ps'];
   PYTORCH_SPECNAMES = ['Master', 'Worker'];
@@ -54,7 +56,6 @@ export class TemplateFormComponent implements OnInit {
   MEMORY_UNITS = ['M', 'G'];
 
   AUTHOR = 'admin';
-  NAMESPACE = 'default';
 
   constructor(
     private experimentValidatorService: ExperimentValidatorService,
@@ -64,6 +65,9 @@ export class TemplateFormComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    //TODO: get tags from server
+    this.listOfOption = []; 
+
     this.templateForm = this.fb.group({
       templateName: [null, Validators.required],
       description: [null, Validators.required],
@@ -71,6 +75,7 @@ export class TemplateFormComponent implements OnInit {
       code: [null],
       specs: this.fb.array([], [this.experimentValidatorService.nameValidatorFactory('name')]),
       cmd: [null, Validators.required],
+      tags: [[], Validators.required],
       envVars: this.fb.array([], [this.experimentValidatorService.nameValidatorFactory('key')]),
       image: [null, Validators.required],
     });
@@ -100,6 +105,10 @@ export class TemplateFormComponent implements OnInit {
     return this.templateForm.get('cmd');
   }
 
+  get tags() {
+    return this.templateForm.get('tags');
+  }
+
   get envVars() {
     return this.templateForm.get('envVars') as FormArray;
   }
@@ -119,6 +128,7 @@ export class TemplateFormComponent implements OnInit {
     this.parameters.clear();
     this.specs.clear();
     this.cmd.reset();
+    this.tags.reset();
     this.envVars.clear();
     this.image.reset();
   }
@@ -128,7 +138,7 @@ export class TemplateFormComponent implements OnInit {
   }
 
   checkExperimentInfo() {
-    return this.image.invalid || this.cmd.invalid || this.envVars.invalid;
+    return this.image.invalid || this.cmd.invalid || this.tags.invalid || this.envVars.invalid;
   }
 
   checkResourceSpec() {
@@ -254,7 +264,7 @@ export class TemplateFormComponent implements OnInit {
           name: this.defaultExperimentName,
           envVars: envVars,
           framework: this.framework,
-          namespace: this.NAMESPACE,
+          tags: this.templateForm.get('tags').value,
         },
         spec: specs,
         environment: {

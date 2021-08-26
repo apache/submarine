@@ -18,4 +18,15 @@
 name: submarine-operator-demo
 replicas: 1
 image: apache/submarine:operator-0.6.0-SNAPSHOT
+# dev is to tell helm to install submarine-operator or not
 dev: false
+# storageClass is for dynamically creating persistent volumes
+storageClass:
+  # reclaimPolicy is to determine the action after the persistent volume is released
+  reclaimPolicy: Delete
+  # volumeBindingMode controls when volume binding and dynamically provisioning should occur
+  volumeBindingMode: Immediate
+  # provisioner is to determine what volume plugin is used for provisioning PVs
+  provisioner: k8s.io/minikube-hostpath
+  # parameters describe volumes belonging to the storage class
+  parameters:

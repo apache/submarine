@@ -42,7 +42,7 @@
             placeholder="mnist-example"
           />
           <div class="alert-message" *ngIf="experiment.get('experimentName').hasError('pattern')">
-            Only letters(a-z), numbers(0-9), and hyphens are allowed, but you can't start with hyphens.
+            Only letters(a-z), numbers(0-9), and hyphens are allowed, but you can't start or end with hyphens.
           </div>
         </div>
         <div class="single-field-group">
@@ -55,6 +55,20 @@
             id="description"
             placeholder="Run distributed mnist example"
           ></textarea>
+        </div>
+        <div class="single-field-group">
+          <label for="tags">
+            Tags
+          </label>
+          <nz-select
+            formControlName="tags"
+            nzMode="tags"
+            name = "tags"
+            [nzTokenSeparators]="[',']"
+            nzPlaceHolder="AutoEncoder"
+          >
+            <nz-option *ngFor="let option of listOfOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+          </nz-select>
         </div>
         <div class="single-field-group">
           <label for="cmd">
@@ -100,15 +114,6 @@
             Advanced
             <i nz-icon [nzType]="ADVANCED ? 'up' : 'down'"></i>
           </button>
-        </div>
-        <div *ngIf="ADVANCED" class="single-field-group">
-          <label for="namespace">
-            <span class="red-star">*</span>
-            Namespace
-          </label>
-          <nz-select formControlName="namespace" id="namespace">
-            <nz-option *ngFor="let namespace of nameSpaceList" [nzValue]="namespace" [nzLabel]="namespace"></nz-option>
-          </nz-select>
         </div>
         <div *ngIf="ADVANCED" class="single-field-group">
           <label for="git-repo">Git repository</label>
@@ -273,7 +278,6 @@
       <div *ngSwitchCase="2" id="previewPage">
         <nz-descriptions nzTitle="{{ jobTypes }}" nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 2, sm: 2, xs: 1 }">
           <nz-descriptions-item nzTitle="Name">{{ finalExperimentSpec.meta.name }}</nz-descriptions-item>
-          <nz-descriptions-item nzTitle="Namespace">{{ finalExperimentSpec.meta.namespace }}</nz-descriptions-item>
           <nz-descriptions-item nzTitle="Command" [nzSpan]="2">
             {{ finalExperimentSpec.meta.cmd }}
           </nz-descriptions-item>

@@ -72,6 +72,8 @@ import org.apache.submarine.server.submitter.k8s.parser.ServeSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.VolumeSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
+import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,6 +139,8 @@ public class K8sSubmitter implements Submitter {
     Experiment experiment;
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
+      mlJob.getMetadata().setNamespace(getServerNamespace());
+      mlJob.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
 
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true");
@@ -157,6 +161,8 @@ public class K8sSubmitter implements Submitter {
     Experiment experiment;
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
+      mlJob.getMetadata().setNamespace(getServerNamespace());
+
       Object object = api.getNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName());
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
@@ -175,6 +181,8 @@ public class K8sSubmitter implements Submitter {
     Experiment experiment;
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
+      mlJob.getMetadata().setNamespace(getServerNamespace());
+
       Object object = api.patchNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
           mlJob);
@@ -192,6 +200,8 @@ public class K8sSubmitter implements Submitter {
     Experiment experiment;
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
+      mlJob.getMetadata().setNamespace(getServerNamespace());
+
       Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
           MLJobConverter.toDeleteOptionsFromMLJob(mlJob), null, null, null);
@@ -229,7 +239,7 @@ public class K8sSubmitter implements Submitter {
     experimentLog.setExperimentId(id);
     try {
       final V1PodList podList = coreApi.listNamespacedPod(
-          spec.getMeta().getNamespace(),
+          getServerNamespace(),
           "false", null, null,
           getJobLabelSelector(spec), null, null,
           null, null);
@@ -249,16 +259,15 @@ public class K8sSubmitter implements Submitter {
     experimentLog.setExperimentId(id);
     try {
       final V1PodList podList = coreApi.listNamespacedPod(
-          spec.getMeta().getNamespace(),
+          getServerNamespace(),
           "false", null, null,
           getJobLabelSelector(spec), null, null,
           null, null);
 
       for (V1Pod pod : podList.getItems()) {
         String podName = pod.getMetadata().getName();
-        String namespace = pod.getMetadata().getNamespace();
         String podLog = coreApi.readNamespacedPodLog(
-            podName, namespace, null, Boolean.FALSE,
+            podName, getServerNamespace(), null, Boolean.FALSE,
             Integer.MAX_VALUE, null, Boolean.FALSE,
             Integer.MAX_VALUE, null, Boolean.FALSE);
 
@@ -274,10 +283,7 @@ public class K8sSubmitter implements Submitter {
   public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
     final String name = "submarine-tensorboard";
     final String ingressRouteName = "submarine-tensorboard-ingressroute";
-    String namespace = "default";
-    if (System.getenv(ENV_NAMESPACE) != null) {
-      namespace = System.getenv(ENV_NAMESPACE);
-    }
+    String namespace = getServerNamespace();
 
     try {
       V1Deployment deploy = appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
@@ -316,10 +322,7 @@ public class K8sSubmitter implements Submitter {
   public MlflowInfo getMlflowInfo() throws SubmarineRuntimeException {
     final String name = "submarine-mlflow";
     final String ingressRouteName = "submarine-mlflow-ingressroute";
-    String namespace = "default";
-    if (System.getenv(ENV_NAMESPACE) != null) {
-      namespace = System.getenv(ENV_NAMESPACE);
-    }
+    String namespace = getServerNamespace();
 
     try {
       V1Deployment deploy = appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
@@ -362,12 +365,8 @@ public class K8sSubmitter implements Submitter {
     final String host = NotebookUtils.HOST_PATH;
     final String storage = NotebookUtils.STORAGE;
     final String pvcName = NotebookUtils.PVC_PREFIX + name;
-    String namespace = "default";
-
-    if (System.getenv(ENV_NAMESPACE) != null) {
-      namespace = System.getenv(ENV_NAMESPACE);
-    }
-
+    String namespace = getServerNamespace();
+    
     // parse notebook custom resource
     NotebookCR notebookCR;
     try {
@@ -376,6 +375,7 @@ public class K8sSubmitter implements Submitter {
       labels.put(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET, spec.getMeta().getOwnerId());
       notebookCR.getMetadata().setLabels(labels);
       notebookCR.getMetadata().setNamespace(namespace);
+      notebookCR.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
@@ -425,11 +425,7 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook findNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
-    String namespace = "default";
-
-    if (System.getenv(ENV_NAMESPACE) != null) {
-      namespace = System.getenv(ENV_NAMESPACE);
-    }
+    String namespace = getServerNamespace();
 
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
@@ -448,11 +444,7 @@ public class K8sSubmitter implements Submitter {
     Notebook notebook;
     final String name = spec.getMeta().getName();
     final String pvcName = NotebookUtils.PVC_PREFIX + name;
-    String namespace = "default";
-
-    if (System.getenv(ENV_NAMESPACE) != null) {
-      namespace = System.getenv(ENV_NAMESPACE);
-    }
+    String namespace = getServerNamespace();
 
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
@@ -473,13 +465,8 @@ public class K8sSubmitter implements Submitter {
   @Override
   public List<Notebook> listNotebook(String id) throws SubmarineRuntimeException {
     List<Notebook> notebookList;
-
-    String namespace = "default";
-
-    if (System.getenv(ENV_NAMESPACE) != null) {
-      namespace = System.getenv(ENV_NAMESPACE);
-    }
-
+    String namespace = getServerNamespace();
+    
     try {
       Object object = api.listNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
           NotebookCR.CRD_NOTEBOOK_VERSION_V1, namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1,
@@ -561,7 +548,7 @@ public class K8sSubmitter implements Submitter {
   public void createPersistentVolumeClaim(String pvcName, String namespace, String scName, String storage)
       throws ApiException {
     V1PersistentVolumeClaim pvc = VolumeSpecParser.parsePersistentVolumeClaim(pvcName, scName, storage);
-
+    pvc.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
     try {
       V1PersistentVolumeClaim result = coreApi.createNamespacedPersistentVolumeClaim(
           namespace, pvc, "true", null, null
@@ -618,6 +605,7 @@ public class K8sSubmitter implements Submitter {
       V1ObjectMeta meta = new V1ObjectMeta();
       meta.setName(name);
       meta.setNamespace(namespace);
+      meta.setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
       ingressRoute.setMetadata(meta);
       ingressRoute.setSpec(parseIngressRouteSpec(meta.getNamespace(), meta.getName()));
       api.createNamespacedCustomObject(
@@ -689,6 +677,14 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
+  private String getServerNamespace() {
+    String namespace = "default";
+    if (System.getenv(ENV_NAMESPACE) != null) {
+      namespace = System.getenv(ENV_NAMESPACE);
+    }
+    return namespace;
+  }
+  
   private enum ParseOp {
     PARSE_OP_RESULT,
     PARSE_OP_DELETE

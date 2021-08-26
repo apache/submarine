@@ -26,47 +26,9 @@ env:
   TEST_FLAG: "test -DskipRat -ntp"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: '1.8'
-      - name: Set up Maven 3.6.3
-        uses: stCarolas/setup-maven@v4
-        with:
-          maven-version: 3.6.3
-      - name: Check version
-        run: |
-          mvn --version
-          java -version
-      - uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Build with Maven
-        run: |
-          echo ">>> mvn ${BUILD_FLAG} ${PROFILE} -B"
-          mvn ${BUILD_FLAG} ${PROFILE} -B
-      - name: Store build binary
-        uses: actions/upload-artifact@v2
-        with:
-          name: submarine-bin
-          path: submarine-dist/target/submarine-dist*.tar.gz
-      - name: Delete temporary build artifacts before caching
-        run: |
-          #Never cache local artifacts
-          rm -rf ~/.m2/repository/org/apache/submarine
-        if: always()
   submarine-e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [build]
     services:
       mysql:
         image: mysql:5.7
@@ -98,16 +60,10 @@ jobs:
         run: |
           pip install mysql-connector-python
           python3 ./dev-support/database/init-database.py
-      - name: Download compiled Submarine binaries
-        uses: actions/download-artifact@v2
-        with:
-          name: submarine-bin
-      - name: Untar binaries
+      - name: Build with Maven
         run: |
-          mkdir -p submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
-          tar zxvf submarine-dist*.tar.gz -C submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
-          mv submarine-dist*.tar.gz submarine-dist/target/
-          sudo chmod -R a+rwX submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
+          echo ">>> mvn ${BUILD_FLAG} ${PROFILE} -B"
+          mvn ${BUILD_FLAG} ${PROFILE} -B
       - name: Test
         env:
           TEST_FLAG: "verify -DskipRat -ntp"
@@ -118,7 +74,6 @@ jobs:
   submarine-k8s:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    needs: [build]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -152,16 +107,10 @@ jobs:
           kubectl get pods -n kube-system
           echo "current-context:" $(kubectl config current-context)
           echo "environment-kubeconfig:" ${KUBECONFIG}
-      - name: Download compiled Submarine binaries
-        uses: actions/download-artifact@v2
-        with:
-          name: submarine-bin
-      - name: Untar binaries
+      - name: Build with Maven
         run: |
-          mkdir -p submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
-          tar zxvf submarine-dist*.tar.gz -C submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
-          mv submarine-dist*.tar.gz submarine-dist/target/
-          sudo chmod -R a+rwX submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
+          echo ">>> mvn ${BUILD_FLAG} ${PROFILE} -B"
+          mvn ${BUILD_FLAG} ${PROFILE} -B
       - name: Build Image locally
         run: .github/scripts/build-image-locally.sh
       - name: Start submarine
