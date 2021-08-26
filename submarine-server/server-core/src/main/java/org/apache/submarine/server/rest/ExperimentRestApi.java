@@ -193,6 +193,7 @@ public class ExperimentRestApi {
           @ApiResponse(responseCode = "404", description = "Experiment not found")})
   public Response patchExperiment(@PathParam(RestConstants.ID) String id, ExperimentSpec spec) {
     try {
+      spec.getMeta().setExperimentId(id.toString());
       Experiment experiment = experimentManager.patchExperiment(id, spec);
       return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
           .result(experiment).build();
@@ -339,7 +340,7 @@ public class ExperimentRestApi {
       responses = {
           @ApiResponse(description = "successful operation", content = @Content(
               schema = @Schema(implementation = JsonResponse.class)))})
-  public Response deleteServe(@QueryParam("modelName") String modelName, 
+  public Response deleteServe(@QueryParam("modelName") String modelName,
       @QueryParam("modelVersion") String modelVersion, @QueryParam("namespace") String namespace) {
     try {
       ServeRequest spec = new ServeRequest()

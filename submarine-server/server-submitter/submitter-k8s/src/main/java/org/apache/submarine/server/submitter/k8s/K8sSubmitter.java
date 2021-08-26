@@ -163,6 +163,8 @@ public class K8sSubmitter implements Submitter {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       mlJob.getMetadata().setNamespace(getServerNamespace());
 
+      LOG.info("mlJob metadata: {}", mlJob.getMetadata());
+
       Object object = api.getNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName());
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
@@ -366,7 +368,7 @@ public class K8sSubmitter implements Submitter {
     final String storage = NotebookUtils.STORAGE;
     final String pvcName = NotebookUtils.PVC_PREFIX + name;
     String namespace = getServerNamespace();
-    
+
     // parse notebook custom resource
     NotebookCR notebookCR;
     try {
@@ -466,7 +468,7 @@ public class K8sSubmitter implements Submitter {
   public List<Notebook> listNotebook(String id) throws SubmarineRuntimeException {
     List<Notebook> notebookList;
     String namespace = getServerNamespace();
-    
+
     try {
       Object object = api.listNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
           NotebookCR.CRD_NOTEBOOK_VERSION_V1, namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1,
@@ -684,7 +686,7 @@ public class K8sSubmitter implements Submitter {
     }
     return namespace;
   }
-  
+
   private enum ParseOp {
     PARSE_OP_RESULT,
     PARSE_OP_DELETE

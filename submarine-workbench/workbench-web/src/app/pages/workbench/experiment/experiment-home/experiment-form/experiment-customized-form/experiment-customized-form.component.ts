@@ -223,6 +223,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       });
     } else if (this.mode === 'update') {
       console.log(this.finalExperimentSpec)
+      console.log(this.targetId)
       this.experimentService.updateExperiment(this.targetId, this.finalExperimentSpec).subscribe(
         null,
         (msg) => {
