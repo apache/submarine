@@ -420,7 +420,7 @@ func (c *Controller) syncHandler(key string) error {
 		return nil
 	}
 
-	// Submarine is in the terminating process
+	// Submarine is in the terminating process, only used when in foreground cascading deletion, otherwise the submarine will be recreated
 	if !submarine.DeletionTimestamp.IsZero() {
 		return nil
 	}
@@ -464,14 +464,11 @@ func (c *Controller) syncHandler(key string) error {
 	}
 
 	// update submarine status
-	if submarineCopy != nil {
-		err = c.updateSubmarineStatus(submarine, submarineCopy)
-		if err != nil {
-			return err
-		}
+	err = c.updateSubmarineStatus(submarine, submarineCopy)
+	if err != nil {
+		return err
 	}
 
-	// c.recorder.Event(submarine, corev1.EventTypeNormal, SuccessSynced, MessageResourceSynced)
 	return nil
 }
 
@@ -565,8 +562,6 @@ func (c *Controller) handleObject(obj interface{}) {
 func (c *Controller) getSubmarine(namespace, name string) (*v1alpha1.Submarine, error) {
 	submarine, err := c.submarinesLister.Submarines(namespace).Get(name)
 	if err != nil {
-		// The Submarine resource may no longer exist, in which case we stop
-		// processing
 		if errors.IsNotFound(err) {
 			return nil, nil
 		}
@@ -599,8 +594,8 @@ func (c *Controller) validateSubmarine(submarine *v1alpha1.Submarine) error {
 	// Check storage type
 	storageType := submarine.Spec.Storage.StorageType
 	if storageType != "nfs" && storageType != "host" {
-		utilruntime.HandleError(fmt.Errorf("invalid storageType '%s' found in submarine spec, nothing will be created. Valid storage types are 'nfs' and 'host'", storageType))
-		return nil
+		err = fmt.Errorf("invalid storageType '%s' found in submarine spec, nothing will be created. Valid storage types are 'nfs' and 'host'", storageType)
+		return err
 	}
 
 	return nil
@@ -648,23 +643,19 @@ func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 
 func (c *Controller) checkSubmarineDependentsReady(submarine *v1alpha1.Submarine) (bool, error) {
 	for _, name := range dependents {
-		podList, err := c.kubeclientset.CoreV1().Pods(submarine.Namespace).List(context.TODO(), metav1.ListOptions{LabelSelector: fmt.Sprintf("app=%s", name)})
+		deployment, err := c.getDeployment(submarine.Namespace, name)
 		if err != nil {
 			return false, err
 		}
-		for _, pod := range podList.Items {
-			switch pod.Status.Phase {
-			case corev1.PodPending:
-				return false, nil
-			case corev1.PodFailed, corev1.PodSucceeded:
-				return false, fmt.Errorf("pod completed")
-			case corev1.PodRunning:
-				for _, condition := range pod.Status.Conditions {
-					if condition.Type == corev1.PodReady && condition.Status != corev1.ConditionTrue {
-						return false, nil
-					}
-				}
+		// check if deployment replicas failed
+		for _, condition := range deployment.Status.Conditions {
+			if condition.Type == appsv1.DeploymentReplicaFailure {
+				return false, fmt.Errorf("failed creating replicas of %s, message: %s", deployment.Name, condition.Message)
 			}
+		}
+		// check if ready replicas are same as targeted replicas
+		if deployment.Status.ReadyReplicas != deployment.Status.Replicas {
+			return false, nil
 		}
 	}
 
