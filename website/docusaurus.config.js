@@ -26,7 +26,7 @@ module.exports = {
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/submarine.ico',
   organizationName: 'apache', // Usually your GitHub org/user name.
-  projectName: 'submarine', // Usually your repo name.
+  projectName: 'submarine-site', // Don't change the project name, the website will be updated to submarine-site repo
   themeConfig: {
     navbar: {
       title: 'Apache Submarine',
