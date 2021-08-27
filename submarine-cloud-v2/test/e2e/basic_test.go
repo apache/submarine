@@ -37,27 +37,24 @@ func TestSubmitSubmarineCustomResourceYaml(t *testing.T) {
 
 	// create a test namespace
 	submarineNs := "submarine-test-submit-custom-resource"
+	t.Logf("[Creating] Namespace %s", submarineNs)
 	_, err := framework.KubeClient.CoreV1().Namespaces().Create(context.TODO(), &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: submarineNs,
 		},
 	}, metav1.CreateOptions{})
-	if apierrors.IsAlreadyExists(err) {
-		_, err = framework.KubeClient.CoreV1().Namespaces().Get(context.TODO(), submarineNs, metav1.GetOptions{})
-	}
 	assert.Equal(t, nil, err)
 
 	submarine, err := operatorFramework.MakeSubmarineFromYaml("../../artifacts/examples/example-submarine.yaml")
 	assert.Equal(t, nil, err)
-	submarineName := submarine.Name
 
 	// create submarine
-	t.Logf("[Create] Submarine %s/%s", submarineNs, submarineName)
+	submarineName := submarine.Name
+	t.Logf("[Creating] Submarine %s/%s", submarineNs, submarineName)
 	err = operatorFramework.CreateSubmarine(framework.SubmarineClient, submarineNs, submarine)
 	assert.Equal(t, nil, err)
 
 	// wait for submarine to be in RUNNING state
-	t.Logf("[Wait] Submarine %s/%s", submarineNs, submarineName)
 	status := GetJobStatus(t, submarineNs, submarineName)
 	err = wait.Poll(INTERVAL, TIMEOUT, func() (done bool, err error) {
 		if status == v1alpha1.RunningState {
@@ -70,7 +67,7 @@ func TestSubmitSubmarineCustomResourceYaml(t *testing.T) {
 	assert.Equal(t, nil, err)
 
 	// delete submarine
-	t.Logf("[Delete] Submarine %s/%s", submarineNs, submarineName)
+	t.Logf("[Deleting] Submarine %s/%s", submarineNs, submarineName)
 	err = operatorFramework.DeleteSubmarine(framework.SubmarineClient, submarineNs, submarineName)
 	assert.Equal(t, nil, err)
 
@@ -86,6 +83,7 @@ func TestSubmitSubmarineCustomResourceYaml(t *testing.T) {
 	assert.Equal(t, nil, err)
 
 	// delete the test namespace
+	t.Logf("[Deleting] Namespace %s", submarineNs)
 	err = framework.KubeClient.CoreV1().Namespaces().Delete(context.TODO(), submarineNs, metav1.DeleteOptions{})
 	assert.Equal(t, nil, err)
 }
