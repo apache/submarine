@@ -38,9 +38,3 @@ spec:
   minio:
     enabled: true
     storageSize: "10Gi"
-  storage:
-    # storageType: "nfs"
-    # nfsPath: "/"
-    # nfsIP: "10.96.0.2"
-    storageType: "host"
-    hostPath: "/tmp/submarine/host"

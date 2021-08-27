@@ -53,7 +53,6 @@ make
 ./submarine-operator
 
 # Step3: Deploy a Submarine
-kubectl apply -f helm-charts/submarine-operator/crds/crd.yaml
 kubectl create ns submarine-user-test
 kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
 
