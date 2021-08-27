@@ -62,6 +62,8 @@ import (
 
 const controllerAgentName = "submarine-controller"
 
+const storageClassName = "submarine-storageclass"
+
 const (
 	serverName                  = "submarine-server"
 	databaseName                = "submarine-database"
@@ -69,17 +71,13 @@ const (
 	mlflowName                  = "submarine-mlflow"
 	minioName                   = "submarine-minio"
 	ingressName                 = serverName + "-ingress"
-	databaseScName              = databaseName + "-sc"
 	databasePvcName             = databaseName + "-pvc"
-	tensorboardScName           = tensorboardName + "-sc"
 	tensorboardPvcName          = tensorboardName + "-pvc"
 	tensorboardServiceName      = tensorboardName + "-service"
 	tensorboardIngressRouteName = tensorboardName + "-ingressroute"
-	mlflowScName                = mlflowName + "-sc"
 	mlflowPvcName               = mlflowName + "-pvc"
 	mlflowServiceName           = mlflowName + "-service"
 	mlflowIngressRouteName      = mlflowName + "-ingressroute"
-	minioScName                 = minioName + "-sc"
 	minioPvcName                = minioName + "-pvc"
 	minioServiceName            = minioName + "-service"
 	minioIngressRouteName       = minioName + "-ingressroute"

@@ -33,7 +33,7 @@ import (
 )
 
 func newSubmarineMlflowPersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	storageClassName := mlflowScName
+	storageClassName := storageClassName
 	return &corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: mlflowPvcName,

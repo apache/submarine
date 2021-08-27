@@ -17,7 +17,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: notebook-storageclass
+  name: submarine-storageclass
   labels:
     app: notebook-controller
 provisioner: k8s.io/minikube-hostpath

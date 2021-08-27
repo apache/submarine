@@ -35,7 +35,7 @@ import (
 )
 
 func newSubmarineMinioPersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	storageClassName := minioScName
+	storageClassName := storageClassName
 	return &corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: minioPvcName,
