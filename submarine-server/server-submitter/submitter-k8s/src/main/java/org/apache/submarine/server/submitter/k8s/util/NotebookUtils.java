@@ -44,7 +44,7 @@ public class NotebookUtils {
 
   private static final Logger LOG = LoggerFactory.getLogger(NotebookUtils.class);
   public static final String STORAGE = "10Gi";
-  public static final String SC_NAME = "notebook-storageclass";
+  public static final String SC_NAME = "submarine-storageclass";
   public static final String STORAGE_PREFIX = "notebook-storage-";
   public static final String PV_PREFIX = "notebook-pv-";
   public static final String PVC_PREFIX = "notebook-pvc-";

@@ -33,7 +33,7 @@ import (
 )
 
 func newSubmarineDatabasePersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	storageClassName := databaseScName
+	storageClassName := storageClassName
 	return &corev1.PersistentVolumeClaim{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: databasePvcName,

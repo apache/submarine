@@ -18,30 +18,6 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: submarine-database-sc
-{{- template "storageClass.fields" . }}
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: submarine-tensorboard-sc
-{{- template "storageClass.fields" . }}
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: submarine-mlflow-sc
-{{- template "storageClass.fields" . }}
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: submarine-minio-sc
-{{- template "storageClass.fields" . }}
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: notebook-storageclass
+  name: submarine-storageclass
 {{- template "storageClass.fields" . }}
 
