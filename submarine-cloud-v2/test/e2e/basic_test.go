@@ -19,6 +19,7 @@ package e2e
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/apache/submarine/submarine-cloud-v2/pkg/apis/submarine/v1alpha1"
@@ -60,6 +61,10 @@ func TestSubmitSubmarineCustomResourceYaml(t *testing.T) {
 		if status == v1alpha1.RunningState {
 			return true, nil
 		}
+		if status == v1alpha1.FailedState {
+			return true, fmt.Errorf("fail to create submarine %s/%s", submarineNs, submarineName)
+		}
+
 		status = GetJobStatus(t, submarineNs, submarineName)
 
 		return false, nil
