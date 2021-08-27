@@ -32,49 +32,41 @@ type Submarine struct {
 	Status SubmarineStatus `json:"status"`
 }
 
-type SubmarineServer struct {
+type SubmarineServerSpec struct {
 	Image    string `json:"image"`
 	Replicas *int32 `json:"replicas"`
 }
 
-type SubmarineDatabase struct {
+type SubmarineDatabaseSpec struct {
 	Image                   string `json:"image"`
 	Replicas                *int32 `json:"replicas"`
 	StorageSize             string `json:"storageSize"`
 	MysqlRootPasswordSecret string `json:"mysqlRootPasswordSecret"`
 }
 
-type SubmarineTensorboard struct {
+type SubmarineTensorboardSpec struct {
 	Enabled     *bool  `json:"enabled"`
 	StorageSize string `json:"storageSize"`
 }
 
-type SubmarineMlflow struct {
+type SubmarineMlflowSpec struct {
 	Enabled     *bool  `json:"enabled"`
 	StorageSize string `json:"storageSize"`
 }
 
-type SubmarineMinio struct {
+type SubmarineMinioSpec struct {
 	Enabled     *bool  `json:"enabled"`
 	StorageSize string `json:"storageSize"`
-}
-
-type SubmarineStorage struct {
-	StorageType string `json:"storageType"`
-	HostPath    string `json:"hostPath"`
-	NfsPath     string `json:"nfsPath"`
-	NfsIP       string `json:"nfsIP"`
 }
 
 // SubmarineSpec is the spec for a Submarine resource
 type SubmarineSpec struct {
-	Version     string                `json:"version"`
-	Server      *SubmarineServer      `json:"server"`
-	Database    *SubmarineDatabase    `json:"database"`
-	Tensorboard *SubmarineTensorboard `json:"tensorboard"`
-	Mlflow      *SubmarineMlflow      `json:"mlflow"`
-	Minio       *SubmarineMinio       `json:"minio"`
-	Storage     *SubmarineStorage     `json:"storage"`
+	Version     string                    `json:"version"`
+	Server      *SubmarineServerSpec      `json:"server"`
+	Database    *SubmarineDatabaseSpec    `json:"database"`
+	Tensorboard *SubmarineTensorboardSpec `json:"tensorboard"`
+	Mlflow      *SubmarineMlflowSpec      `json:"mlflow"`
+	Minio       *SubmarineMinioSpec       `json:"minio"`
 }
 
 // SubmarineStateType represents the type of the current state of a submarine.

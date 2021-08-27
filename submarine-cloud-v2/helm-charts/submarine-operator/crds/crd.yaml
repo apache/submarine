@@ -79,15 +79,3 @@ spec:
                   type: boolean
                 storageSize:
                   type: string
-            storage:
-              type: object
-              properties:
-                storageType:
-                  type: string
-                  pattern: "^(host|nfs)$"
-                hostPath:
-                  type: string
-                nfsPath:
-                  type: string
-                nfsIP:
-                  type: string

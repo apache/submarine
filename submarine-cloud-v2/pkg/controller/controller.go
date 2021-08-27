@@ -591,13 +591,6 @@ func (c *Controller) validateSubmarine(submarine *v1alpha1.Submarine) error {
 		return err
 	}
 
-	// Check storage type
-	storageType := submarine.Spec.Storage.StorageType
-	if storageType != "nfs" && storageType != "host" {
-		err = fmt.Errorf("invalid storageType '%s' found in submarine spec, nothing will be created. Valid storage types are 'nfs' and 'host'", storageType)
-		return err
-	}
-
 	return nil
 }
 
