@@ -91,8 +91,8 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
   public static void startUp() throws IOException {
     Assert.assertTrue(checkIfServerIsRunning());
 
-    // The kube config path defined by kind-cluster-build.sh
-    String confPath = System.getProperty("user.home") + "/.kube/kind-config-kind";
+    // The kube config is created when the cluster builds
+    String confPath = System.getProperty("user.home") + "/.kube/config";
     KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(confPath));
     ApiClient client = ClientBuilder.kubeconfig(config).build();
     Configuration.setDefaultApiClient(client);
@@ -105,7 +105,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
 
   @Before
   public void setUp() throws Exception {
-    Thread.sleep(5000); // timeout for each case, ensuring k8s-client has enough time to delete resoures
+    Thread.sleep(5000); // timeout for each case, ensuring k8s-client has enough time to delete resources
   }
 
   @Test
@@ -202,12 +202,12 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     String json = postMethod.getResponseBodyAsString();
     JsonResponse jsonResponse = gson.fromJson(json, JsonResponse.class);
     Assert.assertEquals(Response.Status.OK.getStatusCode(), jsonResponse.getCode());
-
     Experiment createdExperiment = gson.fromJson(gson.toJson(jsonResponse.getResult()), Experiment.class);
     verifyCreateJobApiResult(createdExperiment);
 
     // find
-    GetMethod getMethod = httpGet(BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
+    GetMethod getMethod = httpGet(BASE_API_PATH + "/" +
+            createdExperiment.getSpec().getMeta().getExperimentId());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), getMethod.getStatusCode());
 
     json = getMethod.getResponseBodyAsString();
@@ -225,8 +225,8 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     // https://tools.ietf.org/html/rfc5789
 
     // delete
-    DeleteMethod deleteMethod = httpDelete(
-        BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
+    DeleteMethod deleteMethod = httpDelete(BASE_API_PATH + "/" +
+            createdExperiment.getSpec().getMeta().getExperimentId());
     Assert.assertEquals(Response.Status.OK.getStatusCode(), deleteMethod.getStatusCode());
 
     json = deleteMethod.getResponseBodyAsString();
@@ -256,7 +256,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
 
     // find
     GetMethod getMethod =
-        httpGet(BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
+        httpGet(BASE_API_PATH + "/" + createdExperiment.getSpec().getMeta().getExperimentId());
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         getMethod.getStatusCode());
 
@@ -271,7 +271,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
 
     // delete
     DeleteMethod deleteMethod =
-        httpDelete(BASE_API_PATH + "/" + createdExperiment.getExperimentId().toString());
+        httpDelete(BASE_API_PATH + "/" + createdExperiment.getSpec().getMeta().getExperimentId());
     Assert.assertEquals(Response.Status.OK.getStatusCode(),
         deleteMethod.getStatusCode());
 
@@ -307,7 +307,8 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
       Experiment createdExperiment, Experiment foundExperiment) throws Exception {
     Assert.assertEquals(createdExperiment.getExperimentId(), foundExperiment.getExperimentId());
     Assert.assertEquals(createdExperiment.getUid(), foundExperiment.getUid());
-    Assert.assertEquals(createdExperiment.getName(), foundExperiment.getName());
+    Assert.assertEquals(createdExperiment.getSpec().getMeta().getExperimentId(),
+            foundExperiment.getSpec().getMeta().getExperimentId());
     Assert.assertEquals(createdExperiment.getAcceptedTime(), foundExperiment.getAcceptedTime());
 
     assertK8sResultEquals(foundExperiment);
@@ -317,7 +318,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     KfOperator operator = kfOperatorMap.get(experiment.getSpec().getMeta().getFramework().toLowerCase());
     JsonObject rootObject =
         getJobByK8sApi(operator.getGroup(), operator.getVersion(),
-            operator.getNamespace(), operator.getPlural(), experiment.getName());
+            operator.getNamespace(), operator.getPlural(), experiment.getSpec().getMeta().getExperimentId());
     JsonArray actualCommand = (JsonArray) rootObject.getAsJsonObject("spec")
         .getAsJsonObject("tfReplicaSpecs").getAsJsonObject("Worker")
         .getAsJsonObject("template").getAsJsonObject("spec")
@@ -389,7 +390,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
   private void assertK8sResultEquals(Experiment experiment) throws Exception {
     KfOperator operator = kfOperatorMap.get(experiment.getSpec().getMeta().getFramework().toLowerCase());
     JsonObject rootObject = getJobByK8sApi(operator.getGroup(), operator.getVersion(),
-        operator.getNamespace(), operator.getPlural(), experiment.getName());
+        operator.getNamespace(), operator.getPlural(), experiment.getSpec().getMeta().getExperimentId());
     JsonObject metadataObject = rootObject.getAsJsonObject("metadata");
 
     String uid = metadataObject.getAsJsonPrimitive("uid").getAsString();
@@ -407,7 +408,8 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
   }
 
   private void verifyDeleteJobApiResult(Experiment createdExperiment, Experiment deletedExperiment) {
-    Assert.assertEquals(createdExperiment.getName(), deletedExperiment.getName());
+    Assert.assertEquals(createdExperiment.getSpec().getMeta().getExperimentId(),
+            deletedExperiment.getSpec().getMeta().getExperimentId());
     Assert.assertEquals(Experiment.Status.STATUS_DELETED.getValue(), deletedExperiment.getStatus());
 
     // verify the result by K8s api
@@ -416,7 +418,8 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
     JsonObject rootObject = null;
     try {
       rootObject = getJobByK8sApi(operator.getGroup(), operator.getVersion(),
-          operator.getNamespace(), operator.getPlural(), createdExperiment.getName());
+          operator.getNamespace(), operator.getPlural(),
+              createdExperiment.getSpec().getMeta().getExperimentId());
     } catch (ApiException e) {
       Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), e.getCode());
     } finally {

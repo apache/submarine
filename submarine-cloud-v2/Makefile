@@ -17,11 +17,8 @@
 
 all: # The default target
 
-charts:
-	cp -r ../helm-charts/submarine/charts  .
-
 .PHONY: all
-all: charts
+all:
 	go build -o submarine-operator
 
 .PHONY: api
@@ -29,10 +26,9 @@ api:
 	./hack/update-codegen.sh
 
 .PHONY: image
-image: charts
-	eval $(minikube docker-env)
+image:
 	GOOS=linux go build -o submarine-operator
-	docker build -t submarine-operator -f dev.Dockerfile .
+	docker build -t "apache/submarine:operator-0.6.0-SNAPSHOT" -f dev.Dockerfile .
 	go build -o submarine-operator
 
 .PHONY: test-unit

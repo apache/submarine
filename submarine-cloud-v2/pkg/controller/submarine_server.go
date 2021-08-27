@@ -47,7 +47,7 @@ func newSubmarineServerService(submarine *v1alpha1.Submarine) *corev1.Service {
 		ObjectMeta: metav1.ObjectMeta{
 			Name: serverName,
 			Labels: map[string]string{
-				"run": serverName,
+				"app": serverName,
 			},
 			OwnerReferences: []metav1.OwnerReference{
 				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
@@ -62,7 +62,7 @@ func newSubmarineServerService(submarine *v1alpha1.Submarine) *corev1.Service {
 				},
 			},
 			Selector: map[string]string{
-				"run": serverName,
+				"app": serverName,
 			},
 		},
 	}
@@ -75,24 +75,26 @@ func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 		serverImage = "apache/submarine:server-" + submarine.Spec.Version
 	}
 
+	ownerReference := *metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine"))
+
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: serverName,
 			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+				ownerReference,
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"run": serverName,
+					"app": serverName,
 				},
 			},
 			Replicas: &serverReplicas,
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
-						"run": serverName,
+						"app": serverName,
 					},
 				},
 				Spec: corev1.PodSpec{
@@ -122,6 +124,22 @@ func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 									Name:  "ENV_NAMESPACE",
 									Value: submarine.Namespace,
 								},
+								{
+									Name:  "SUBMARINE_APIVERSION",
+									Value: ownerReference.APIVersion,
+								},
+								{
+									Name:  "SUBMARINE_KIND",
+									Value: ownerReference.Kind,
+								},
+								{
+									Name:  "SUBMARINE_NAME",
+									Value: ownerReference.Name,
+								},
+								{
+									Name:  "SUBMARINE_UID",
+									Value: string(ownerReference.UID),
+								},
 							},
 							Ports: []corev1.ContainerPort{
 								{
@@ -139,7 +157,7 @@ func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 
 // createSubmarineServer is a function to create submarine-server.
 // Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/submarine-server.yaml
-func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine) (*appsv1.Deployment, error) {
+func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine) error {
 	klog.Info("[createSubmarineServer]")
 
 	// Step1: Create ServiceAccount
@@ -154,13 +172,13 @@ func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine) (*apps
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if !metav1.IsControlledBy(serviceaccount, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, serviceaccount.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return nil, fmt.Errorf(msg)
+		return fmt.Errorf(msg)
 	}
 
 	// Step2: Create Service
@@ -175,13 +193,13 @@ func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine) (*apps
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if !metav1.IsControlledBy(service, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, service.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return nil, fmt.Errorf(msg)
+		return fmt.Errorf(msg)
 	}
 
 	// Step3: Create Deployment
@@ -196,24 +214,24 @@ func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine) (*apps
 	// attempt processing again later. This could have been caused by a
 	// temporary network failure, or any other transient reason.
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	if !metav1.IsControlledBy(deployment, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, deployment.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return nil, fmt.Errorf(msg)
+		return fmt.Errorf(msg)
 	}
 
 	// Update the replicas of the server deployment if it is not equal to spec
 	if submarine.Spec.Server.Replicas != nil && *submarine.Spec.Server.Replicas != *deployment.Spec.Replicas {
 		klog.V(4).Infof("Submarine %s server spec replicas: %d, actual replicas: %d", submarine.Name, *submarine.Spec.Server.Replicas, *deployment.Spec.Replicas)
-		deployment, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Update(context.TODO(), newSubmarineServerDeployment(submarine), metav1.UpdateOptions{})
+		_, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Update(context.TODO(), newSubmarineServerDeployment(submarine), metav1.UpdateOptions{})
 	}
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return deployment, nil
+	return nil
 }

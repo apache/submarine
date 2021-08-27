@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-apiVersion: submarine.k8s.io/v1alpha1
+apiVersion: submarine.apache.org/v1alpha1
 kind: Submarine
 metadata:
   name: example-submarine
@@ -33,6 +33,9 @@ spec:
     enabled: true
     storageSize: "10Gi"
   mlflow:
+    enabled: true
+    storageSize: "10Gi"
+  minio:
     enabled: true
     storageSize: "10Gi"
   storage:

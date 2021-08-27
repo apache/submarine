@@ -146,37 +146,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>start-integration-ks8-test</id>
-            <phase>pre-integration-test</phase>
-            <configuration>
-              <target unless="skipTests">
-                <exec executable="./integration-test.sh" dir="${submarine.cloud.path}" spawn="false">
-                  <arg value="--start"/>
-                  <arg value="--update"/>
-                </exec>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>stop-integration-ks8-test</id>
-            <phase>post-integration-test</phase>
-            <configuration>
-              <target unless="skipTests">
-                <exec executable="./integration-test.sh" dir="${submarine.cloud.path}" spawn="false">
-                  <arg value="--stop"/>
-                </exec>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

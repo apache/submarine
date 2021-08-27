@@ -39,8 +39,6 @@ public class MLJobConverter {
   public static Experiment toJobFromMLJob(MLJob mlJob) {
     Experiment experiment = new Experiment();
     experiment.setUid(mlJob.getMetadata().getUid());
-    experiment.setName(mlJob.getMetadata().getName());
-
     DateTime dateTime = mlJob.getMetadata().getCreationTimestamp();
     if (dateTime != null) {
       experiment.setAcceptedTime(dateTime.toString());
@@ -70,7 +68,11 @@ public class MLJobConverter {
       dateTime = status.getCompletionTime();
       if (dateTime != null) {
         experiment.setFinishedTime(dateTime.toString());
-        experiment.setStatus(Experiment.Status.STATUS_SUCCEEDED.getValue());
+        if ("Succeeded".equalsIgnoreCase(conditions.get(conditions.size() - 1).getType())) {
+          experiment.setStatus(Experiment.Status.STATUS_SUCCEEDED.getValue());
+        } else if ("Failed".equalsIgnoreCase(conditions.get(conditions.size() - 1).getType())) {
+          experiment.setStatus(Experiment.Status.STATUS_FAILED.getValue());
+        }
       }
     }
     return experiment;
@@ -81,7 +83,6 @@ public class MLJobConverter {
     V1StatusDetails details = status.getDetails();
     if (details != null) {
       experiment.setUid(details.getUid());
-      experiment.setName(details.getName());
     }
     if (status.getStatus().toLowerCase().equals("success")) {
       experiment.setStatus(Experiment.Status.STATUS_DELETED.getValue());

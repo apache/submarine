@@ -251,6 +251,20 @@ CREATE TABLE `experiment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Table structure for notebook
+-- ----------------------------
+DROP TABLE IF EXISTS `notebook`;
+CREATE TABLE `notebook` (
+  `id` varchar(64) NOT NULL COMMENT 'Id of the notebook',
+  `notebook_spec` text NOT NULL COMMENT 'Spec of the notebook',
+  `create_by` varchar(32) DEFAULT NULL COMMENT 'create user',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_by` varchar(32) DEFAULT NULL COMMENT 'last update user',
+  `update_time` datetime DEFAULT NULL COMMENT 'last update time',
+   PRIMARY KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
 -- Table structure for metric
 -- ----------------------------
 DROP TABLE IF EXISTS `metrics`;

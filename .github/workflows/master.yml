@@ -1,50 +1,34 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements. See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License. You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 name: Submarine
 
+# Trigger the workflow on push or pull request
 on: [push, pull_request]
 
 env:
   VERSION: "0.6.0-SNAPSHOT"
   HADOOP_VERSION: "2.9"
   PROFILE: "-Phadoop-2.9"
+  BUILD_FLAG: "clean install -ntp -DskipTests -am"
+  TEST_FLAG: "test -DskipRat -ntp"
 
 jobs:
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: '1.8'
-      - name: Set up Maven 3.6.3
-        uses: stCarolas/setup-maven@v4
-        with:
-          maven-version: 3.6.3
-      - name: Check version
-        run: |
-          mvn --version
-          java -version
-      - uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Build with Maven
-        env:
-          BUILD_FLAG: "clean install -DskipTests -ntp"
-        run: |
-          echo ">>> mvn ${BUILD_FLAG} ${PROFILE} -B"
-          mvn ${BUILD_FLAG} ${PROFILE} -B
-      - name: Store build binary
-        uses: actions/upload-artifact@v2
-        with:
-          name: submarine-bin
-          path: submarine-dist/target/submarine-dist*.tar.gz
   submarine-e2e:
     runs-on: ubuntu-latest
-    needs: [build]
+    timeout-minutes: 30
     services:
       mysql:
         image: mysql:5.7
@@ -72,30 +56,24 @@ jobs:
           java -version
           chromedriver --version
           python3 -V
-      - name: Prepate default mysql-data
+      - name: Prepare default mysql-data
         run: |
           pip install mysql-connector-python
           python3 ./dev-support/database/init-database.py
-      - name: Download compiled Submarine binaries
-        uses: actions/download-artifact@v2
-        with:
-          name: submarine-bin
-      - name: Untar binaries
+      - name: Build with Maven
         run: |
-          mkdir -p submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
-          tar zxvf submarine-dist*.tar.gz -C submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
-          mv submarine-dist*.tar.gz submarine-dist/target/
-          sudo chmod -R a+rwX submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
+          echo ">>> mvn ${BUILD_FLAG} ${PROFILE} -B"
+          mvn ${BUILD_FLAG} ${PROFILE} -B
       - name: Test
         env:
-          TEST_FLAG: "verify -DskipRat -ntp -am"
-          TEST_MODULES: "-pl org.apache.submarine:submarine-test-e2e"
+          TEST_FLAG: "verify -DskipRat -ntp"
+          TEST_MODULES: "-pl :submarine-test-e2e"
         run: |
           echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B"
           mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B
   submarine-k8s:
     runs-on: ubuntu-latest
-    needs: [build]
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2
         with:
@@ -121,46 +99,382 @@ jobs:
           helm version
           kind version
       - name: Create kind cluster
-        run: |
-          kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:v1.15.12
+        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:v1.15.12
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
           kubectl version
           kubectl get pods -n kube-system
-          export KUBECONFIG=~/.kube/kind-config-kind
-          kind export kubeconfig --kubeconfig ${KUBECONFIG}
           echo "current-context:" $(kubectl config current-context)
           echo "environment-kubeconfig:" ${KUBECONFIG}
-      - name: Download compiled Submarine binaries
-        uses: actions/download-artifact@v2
-        with:
-          name: submarine-bin
-      - name: Untar binaries
+      - name: Build with Maven
         run: |
-          mkdir -p submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
-          tar zxvf submarine-dist*.tar.gz -C submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
-          mv submarine-dist*.tar.gz submarine-dist/target/
-          sudo chmod -R a+rwX submarine-dist/target/submarine-dist-${VERSION}-hadoop-${HADOOP_VERSION}
+          echo ">>> mvn ${BUILD_FLAG} ${PROFILE} -B"
+          mvn ${BUILD_FLAG} ${PROFILE} -B
       - name: Build Image locally
-        run: |
-          .github/scripts/build-image-locally.sh
+        run: .github/scripts/build-image-locally.sh
       - name: Start submarine
         run: bash ./.github/scripts/start-submarine.sh
       - name: Test
         env:
-          TEST_FLAG: "verify -DskipRat -ntp -am -Durl=http://127.0.0.1"
-          TEST_MODULES: "-pl !:submarine-server-api,!:submarine-server-core,!:submarine-server-rpc,!:submarine-commons-cluster,!:submarine-commons-metastore,!:submarine-commons-rpc,!:submarine-commons-runtime,!:submarine-commons-utils,!:submarine-client,:submarine-test-k8s"
-          TEST_PROJECTS: ""
+          TEST_FLAG: "verify -DskipRat -ntp"
+          TEST_MODULES: "-pl :submarine-test-k8s"
         run: |
           echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B"
           mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B
       - name: Failure status
         run: |
+          kubectl describe nodes
           kubectl get pods
           kubectl -n default get events --sort-by='{.lastTimestamp}'
-          kubectl describe nodes
         if: ${{ failure() }}
+      - name: Delete temporary build artifacts before caching
+        run: |
+          #Never cache local artifacts
+          rm -rf ~/.m2/repository/org/apache/submarine
+        if: always()
+  submarine-commons-cluster:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl :submarine-commons-cluster"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl :submarine-commons-cluster"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-commons-metastore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: "password"
+        ports:
+        - 3306:3306
+        # wait until mysql is health
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 10s --health-retries 10
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Prepare default mysql-data
+      run: |
+        python3 -V
+        pip install mysql-connector-python
+        python3 ./dev-support/database/init-database.py
+    - name: Build
+      env:
+        MODULES: "-pl :submarine-commons-metastore"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl :submarine-commons-metastore"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-commons-rpc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl :submarine-commons-rpc"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl :submarine-commons-rpc"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-commons-runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl :submarine-commons-runtime"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl :submarine-commons-runtime"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-commons-unixusersync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl :submarine-commons-unixusersync"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl :submarine-commons-unixusersync"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-client:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl :submarine-client"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl :submarine-client"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-server:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: "password"
+        ports:
+        - 3306:3306
+        # wait until mysql is health
+        options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 10s --health-retries 10
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Prepare default mysql-data
+      run: |
+        python3 -V
+        sudo apt-get install python3-mysql.connector
+        python3 ./dev-support/database/init-database.py
+    - name: Build
+      env:
+        MODULES: "-pl :submarine-server-core,:submarine-server-rpc"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl :submarine-server-core,:submarine-server-rpc"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-workbench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+    - name: Maven Build
+      env:
+        MODULES: "-pl :submarine-workbench-web"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES -B"
+        mvn $BUILD_FLAG $MODULES -B
+    - name: Test with chrome
+      working-directory: ./submarine-workbench/workbench-web
+      run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+    - name: Test with firefox
+      working-directory: ./submarine-workbench/workbench-web
+      run: npm run test -- --no-watch --no-progress --browsers=FirefoxHeadless
+  submarine-submitter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        hadoop-version: ["2.9", "2.10", "3.1", "3.2"]
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build
+      env:
+        MODULES: "-pl :submarine-server-submitter,:submarine-submitter-yarn"
+        PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
+    - name: Test
+      env:
+        TEST_MODULES: "-pl :submarine-server-submitter,:submarine-submitter-yarn"
+        PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
+      run: |
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
+        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+  submarine-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        spark-version: ["2.3", "2.4", "3.0"]
+        range-version: ["1.2", "2.0", "2.1"]
+        exclude:
+        - spark-version: "2.3"
+          range-version: "1.2"
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: "1.8"
+    - name: Set up Maven 3.6.3
+      uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.6.3
+    - name: Check version
+      run: |
+        mvn --version
+        java -version
+    - name: Build and Test
+      env:
+        BUILD_FLAG: "clean install -Dmaven.javadoc.skip=true -ntp"
+        MODULES: "-pl :submarine-spark-security"
+        PROFILE: "-Pspark-${{matrix.spark-version}} -Pranger-${{matrix.range-version}}"
+      run: |
+        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
+        mvn $BUILD_FLAG $MODULES $PROFILE -B
   rat:
     name: Check License
     runs-on: ubuntu-latest
@@ -174,6 +488,7 @@ jobs:
   linter:
     name: Check Style
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
@@ -188,30 +503,12 @@ jobs:
         run: |
           mvn --version
           java -version
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
-          path: ~/.m2/repository/com
-          key: ${{ runner.os }}-maven-com-${{ hashFiles('**/pom.xml') }}
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven-com-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository/org
-          key: ${{ runner.os }}-maven-org-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-org-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository/net
-          key: ${{ runner.os }}-maven-net-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-net-
-      - uses: actions/cache@v1
-        with:
-          path: ~/.m2/repository/io
-          key: ${{ runner.os }}-maven-io-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-io-
+            ${{ runner.os }}-maven-
       - name: Java Style
         run: ./dev-support/style-check/lint-java.sh
       - name: Scala Style

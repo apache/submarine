@@ -18,6 +18,7 @@
 package org.apache.submarine.integration.pages;
 
 import org.junit.Assert;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -62,6 +63,9 @@ public class ExperimentPage {
 
   @FindBy(name = "description")
   private WebElement description;
+
+  @FindBy(xpath = "//*[@id=\"firstStep\"]/div[3]/nz-select/div/div/ul/li/input")
+  private WebElement tags;
 
   @FindBy(id = "namespace")
   private WebElement namespace;
@@ -149,12 +153,18 @@ public class ExperimentPage {
   }
 
   // Real actions
-  public void fillExperimentMeta(String name, String description, String namespace, String cmd, String image,
+  public void fillExperimentMeta(String name, String description, String namespace, String[] tags, String cmd, String image,
               String envKey, String envValue) {
     this.experimentName.clear();
     this.experimentName.sendKeys(name);
     this.description.clear();
     this.description.sendKeys(description);
+    this.tags.click();
+    for(int i = 0; i < tags.length; i++){
+        this.tags.sendKeys(tags[i]);
+        this.tags.sendKeys(Keys.RETURN);
+    }
+    this.tags.sendKeys(Keys.ESCAPE);
     this.cmd.sendKeys(cmd);
     this.envKey.sendKeys(envKey);
     this.envValue.sendKeys(envValue);

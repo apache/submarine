@@ -29,12 +29,13 @@ import java.util.Map;
 /**
  * The replica spec of TFJob.
  */
-public class TFJobSpec implements MLJobSpec {
+public class TFJobSpec extends MLJobSpec {
   /**
    * Key: Chief, Ps, Worker, Evaluator
    */
   @SerializedName("tfReplicaSpecs")
   private Map<MLJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs;
+
 
   /**
    * Get the replica specs.
@@ -56,4 +57,5 @@ public class TFJobSpec implements MLJobSpec {
       Map<MLJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs) {
     this.tfReplicaSpecs = tfReplicaSpecs;
   }
+
 }

@@ -1,5 +1,5 @@
 ---
-title: Notebook Tutorial
+title: Jupyter Notebook
 ---
 
 <!--
@@ -30,12 +30,12 @@ We recommend using Web UI to manage notebooks.
 
 ### Notebooks Web UI
 
-Notebooks can be started from the Web UI. You can click the “Notebook” tab in the \
+Notebooks can be started from the Web UI. You can click the “Notebook” tab in the
 left-hand panel to manage your notebooks.
 
-![](../assets/notebook-list.png)
+![](/img/notebook-list.png)
 
-To create a new notebook server, click “New Notebook”. You should see a form for entering \
+To create a new notebook server, click “New Notebook”. You should see a form for entering
 details of your new notebook server.
 
 - Notebook Name : Name of the notebook server. It should follow the rules below.
@@ -48,18 +48,26 @@ details of your new notebook server.
 - GPU (optional)
 - EnvVar (optional) : Injects environment variables into the notebook.
 
-**If you’re not sure which environment you need, please choose the environment “notebook-env” \
+If you want to use notebook-gpu-env, you should set up the gpu environment in your kubernetes.
+You can install [NVIDIA/k8s-device-plugin](https://github.com/NVIDIA/k8s-device-plugin).
+The list of prerequisites for running the NVIDIA device plugin is described below
+- NVIDIA drivers ~= 384.81
+- nvidia-docker version > 2.0
+- docker configured with nvidia as the default runtime
+- Kubernetes version >= 1.10
+
+**If you’re not sure which environment you need, please choose the environment “notebook-env”
 for the new notebook.**
 
-![](../assets/notebook-form.png)
+![](/img/notebook-form.png)
 
 You should see your new notebook server. Click the name of your notebook server to connect to it.
 
-![](../assets/created-notebook.png)
+![](/img/created-notebook.png)
 
 ## Experiment with your notebook
 
-The environment “notebook-env” includes Submarine Python SDK which can talk to Submarine Server to \
+The environment “notebook-env” includes Submarine Python SDK which can talk to Submarine Server to
 create experiments, as the example below:
 
 ```python

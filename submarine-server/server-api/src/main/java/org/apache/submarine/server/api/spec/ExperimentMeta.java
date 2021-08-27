@@ -19,20 +19,34 @@
 
 package org.apache.submarine.server.api.spec;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * ExperimentMeta is metadata that all experiments must have.
  */
 public class ExperimentMeta {
+
+  public static final String SUBMARINE_EXPERIMENT_NAME = "submarine-experiment-name";
+
+  private String experimentId;
   private String name;
   private String namespace;
   private String framework;
   private String cmd;
-  private Map<String, String> envVars;
+  private Map<String, String> envVars = new HashMap<>();
+  private List<String> tags = new ArrayList<>();
 
   public ExperimentMeta() {
-
+    namespace = "default";
+    /* The environment variable "ENV_NAMESPACE" will be set by submarine-operator. Hence, 
+     * if the user creates Submarine with Helm, the variable "namespace" will always be "default". 
+     */
+    if (System.getenv("ENV_NAMESPACE") != null) { 
+      namespace = System.getenv("ENV_NAMESPACE");
+    }
   }
 
   /**
@@ -52,6 +66,22 @@ public class ExperimentMeta {
   }
 
   /**
+   * Get the experiment id which is unique within a namespace.
+   * @return experiment id
+   */
+  public String getExperimentId() {
+    return experimentId;
+  }
+
+  /**
+   * experiment id must be unique within a namespace. Is required when creating experiment.
+   * @param experimentId experiment id
+   */
+  public void setExperimentId(String experimentId) {
+    this.experimentId = experimentId;
+  }
+
+  /**
    * Get the namespace which defines the isolated space for each experiment.
    * @return namespace
    */
@@ -64,7 +94,8 @@ public class ExperimentMeta {
    * @param namespace namespace
    */
   public void setNamespace(String namespace) {
-    this.namespace = namespace;
+    // TODO(kevin85421): Remove the function
+    return;
   }
 
   public String getFramework() {
@@ -106,6 +137,19 @@ public class ExperimentMeta {
   }
 
   /**
+   * The default tag list for task. If the @{@link ExperimentTaskSpec#getEnvVars()} not specified
+   * replaced with it.
+   * @return tags
+   */
+  public List<String> getTags() {
+    return tags;
+  }
+
+  public void setTags(List<String> tags) {
+    this.tags = tags;
+  }
+
+  /**
    * The {@link ExperimentMeta#framework} should be one of the below supported framework name.
    */
   public enum SupportedMLFramework {
@@ -136,10 +180,12 @@ public class ExperimentMeta {
   public String toString() {
     return "ExperimentMeta{" +
       "name='" + name + '\'' +
+      ", experimentId='" + experimentId + '\'' +
       ", namespace='" + namespace + '\'' +
       ", framework='" + framework + '\'' +
       ", cmd='" + cmd + '\'' +
       ", envVars=" + envVars +
+      ", tags=" + tags +
       '}';
   }
 }

@@ -24,9 +24,9 @@ module.exports = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/submarine.ico',
   organizationName: 'apache', // Usually your GitHub org/user name.
-  projectName: 'submarine-site', // Usually your repo name.
+  projectName: 'submarine-site', // Don't change the project name, the website will be updated to submarine-site repo
   themeConfig: {
     navbar: {
       title: 'Apache Submarine',
@@ -37,7 +37,7 @@ module.exports = {
       items: [
         {
           type: 'doc',
-          docId: 'gettingStarted/localDeployment',
+          docId: 'gettingStarted/quickstart',
           label: 'Docs',
           position: 'left',
         },
@@ -54,6 +54,12 @@ module.exports = {
           position: 'left'
         },
           // right
+        {
+          type: 'docsVersionDropdown',
+          dropdownItemsAfter: [{to: '/versions', label: 'All versions'}],
+          dropdownActiveClassDisabled: true,
+          position: 'right',
+        },
         {
           href: 'https://github.com/apache/submarine',
           label: 'GitHub',
@@ -138,6 +144,11 @@ module.exports = {
           // Please change this to your repo.
           editUrl:
             'https://github.com/apache/submarine/edit/master/website/',
+            versions: {
+              current: {
+                label: `master 🏃`,
+              },
+            },
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

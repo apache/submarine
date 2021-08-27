@@ -26,7 +26,6 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
  */
 public class Experiment {
   private ExperimentId experimentId;
-  private String name;
   private String uid;
   private String status;
   private String acceptedTime;
@@ -49,22 +48,6 @@ public class Experiment {
    */
   public void setExperimentId(ExperimentId experimentId) {
     this.experimentId = experimentId;
-  }
-
-  /**
-   * Get the job name which specified by user through the JobSpec
-   * @return the job name
-   */
-  public String getName() {
-    return name;
-  }
-
-  /**
-   * Set the job name which specified by user
-   * @param name job name
-   */
-  public void setName(String name) {
-    this.name = name;
   }
 
   /**
@@ -140,7 +123,8 @@ public class Experiment {
     STATUS_CREATED("Created"),
     STATUS_RUNNING("Running"),
     STATUS_SUCCEEDED("Succeeded"),
-    STATUS_DELETED("Deleted");
+    STATUS_DELETED("Deleted"),
+    STATUS_FAILED("Failed");
 
     private String value;
     Status(String value) {
@@ -159,8 +143,8 @@ public class Experiment {
 
   public void rebuild(Experiment experiment) {
     if (experiment != null) {
-      if (experiment.getName() != null) {
-        this.setName(experiment.getName());
+      if (experiment.getExperimentId() != null) {
+        this.setExperimentId(experiment.getExperimentId());
       }
       if (experiment.getUid() != null) {
         this.setUid(experiment.getUid());

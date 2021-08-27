@@ -28,6 +28,7 @@ import io.kubernetes.client.models.V1PodSpec;
 import io.kubernetes.client.models.V1ResourceRequirements;
 import io.kubernetes.client.models.V1Volume;
 import io.kubernetes.client.models.V1VolumeMount;
+import io.kubernetes.client.models.V1PersistentVolumeClaimVolumeSource;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -39,6 +40,7 @@ import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.environment.EnvironmentManager;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCRSpec;
+import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,7 +151,7 @@ public class NotebookSpecParser {
     List<V1VolumeMount> volumeMountList = new ArrayList<>();
     V1VolumeMount  volumeMount = new V1VolumeMount();
     volumeMount.setMountPath(DEFAULT_MOUNT_PATH);
-    volumeMount.setName("notebook-pv-" + notebookSpec.getMeta().getName());
+    volumeMount.setName(NotebookUtils.STORAGE_PREFIX + notebookSpec.getMeta().getName());
     volumeMountList.add(volumeMount);
     container.setVolumeMounts(volumeMountList);
 
@@ -159,8 +161,12 @@ public class NotebookSpecParser {
     // create volume object for persistent volume
     List<V1Volume> volumeList = new ArrayList<>();
     V1Volume volume = new V1Volume();
-    String volumeName = "notebook-pv-" + notebookSpec.getMeta().getName();
+    String volumeName = NotebookUtils.STORAGE_PREFIX + notebookSpec.getMeta().getName();
+    V1PersistentVolumeClaimVolumeSource persistentVolumeClaim = new V1PersistentVolumeClaimVolumeSource();
+    String claimName = NotebookUtils.PVC_PREFIX + notebookSpec.getMeta().getName();
+    persistentVolumeClaim.setClaimName(claimName);
     volume.setName(volumeName);
+    volume.setPersistentVolumeClaim(persistentVolumeClaim);
     volumeList.add(volume);
     podSpec.setVolumes(volumeList);
 

@@ -54,6 +54,11 @@ type SubmarineMlflow struct {
 	StorageSize string `json:"storageSize"`
 }
 
+type SubmarineMinio struct {
+	Enabled     *bool  `json:"enabled"`
+	StorageSize string `json:"storageSize"`
+}
+
 type SubmarineStorage struct {
 	StorageType string `json:"storageType"`
 	HostPath    string `json:"hostPath"`
@@ -68,13 +73,33 @@ type SubmarineSpec struct {
 	Database    *SubmarineDatabase    `json:"database"`
 	Tensorboard *SubmarineTensorboard `json:"tensorboard"`
 	Mlflow      *SubmarineMlflow      `json:"mlflow"`
+	Minio       *SubmarineMinio       `json:"minio"`
 	Storage     *SubmarineStorage     `json:"storage"`
+}
+
+// SubmarineStateType represents the type of the current state of a submarine.
+type SubmarineStateType string
+
+// Different states a submarine may have.
+const (
+	NewState      SubmarineStateType = ""
+	CreatingState SubmarineStateType = "CREATING"
+	RunningState  SubmarineStateType = "RUNNING"
+	FailedState   SubmarineStateType = "FAILED"
+)
+
+// SubmarineState tells the current state of the submarine and an error message in case of failures.
+type SubmarineState struct {
+	State        SubmarineStateType `json:"state"`
+	ErrorMessage string             `json:"errorMessage,omitempty"`
 }
 
 // SubmarineStatus is the status for a Submarine resource
 type SubmarineStatus struct {
 	AvailableServerReplicas   int32 `json:"availableServerReplicas"`
 	AvailableDatabaseReplicas int32 `json:"availableDatabaseReplicas"`
+	// SubmarineState tells the overall submarine state.
+	SubmarineState `json:"submarineState,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object

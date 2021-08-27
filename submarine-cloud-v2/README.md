@@ -1,211 +1,124 @@
-# Why submarine-cloud-v2?
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
 
-- Because `submarine-cloud` is outdated, `submarine-cloud-v2` is the refactored version of `submarine-cloud`. In addition, after `submarine-cloud-v2` finishes, we will replace `submarine-cloud` with `submarine-cloud-v2`.
+     http://www.apache.org/licenses/LICENSE-2.0
 
-# Formatting the code
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 
-For `go` files, please use [gofmt](https://golang.org/pkg/cmd/gofmt/) to format the code.
+# submarine-cloud-v2 (submarine operator)
 
-For `yaml` files, please use [prettier](https://prettier.io/) to format the code.
+`submarine-cloud-v2`, i.e. **submarine-operator**, implements the operator for Submarine application. The operator provides a new option for users to deploy the Submarine service to their Kubernetes clusters. The **submarine-operator** can fix some errors automatically. However, if the Submarine service is deployed with Helm, the errors need to be fixed by human operators.
 
-# Initialization
+# Getting Started
+
+- In this section, we provide two methods, including **out-of-cluter** method and **in-cluster** method, for you to deploy your **submarine-operator**. In addition, the out-of-cluster method is convenient for operator developers. On the other hand, the in-cluster method is suitable for production.
+
+## Initialization
 
 ```bash
+# Add helm-chart dependencies
+cp -r ../helm-charts/submarine/charts ./helm-charts/submarine-operator/
+# Install dependencies
+go mod vendor
+# Run the cluster
 minikube start --vm-driver=docker  --kubernetes-version v1.15.11
-go mod vendor
 ```
 
-# Generate API
+## Set up storage class fields
 
-We use the generators in [k8s.io/code-generator](https://github.com/kubernetes/code-generator) to generate a typed client, informers, listers and deep-copy functions.
+One can set up storage class fields in `values.yaml` or using helm with `--set`. We've set up minikube's provisioner for storage class as default.
 
-**Important**: You **MUST** put this repository in a folder named `github.com/apache/`, otherwise the code will be generated into wrong folder. Therefore the full path of this `README.md` should be like `SOMEWHERE_IN_FILESYSTEM/github.com/apache/submarine/submarine-cloud-v2/README.md`.
+For example, if you are using kind in local, please add `--set storageClass.provisioner=rancher.io/local-path --set storageClass.volumeBindingMode=WaitForFirstConsumer` to helm install command.
 
-Everytime when you change the codes in `pkg/apis`, you must run `make api` to re-generate the API.
+Documentation for storage class: https://kubernetes.io/docs/concepts/storage/storage-classes/
 
-# Add new dependencies
-
-```bash
-# Step1: Add the dependency to go.mod
-go get ${new_dependency} # Example: go get k8s.io/code-generator
-
-# Step2: Download the dependency to vendor/
-go mod vendor
-```
-
-# Run Unit Test
+## Run operator out-of-cluster
 
 ```bash
-# Step1: Register Custom Resource Definition
-kubectl apply -f artifacts/examples/crd.yaml
+# Step1: Install helm chart dependencies
+helm install --set dev=true submarine-operator ./helm-charts/submarine-operator/
 
-# Step2: Create a Custom Resource
-kubectl apply -f artifacts/examples/example-submarine.yaml
-
-# Step3: Run unit test
-make test-unit
-```
-
-# Run submarine-operator out-of-cluster
-
-```bash
-# Step1: Build & Run "submarine-operator"
-go build -o submarine-operator
+# Step2: Build & Run "submarine-operator"
+make
 ./submarine-operator
 
+# Step3: Deploy a Submarine
+kubectl apply -f helm-charts/submarine-operator/crds/crd.yaml
+kubectl create ns submarine-user-test
+kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
+
+# Step4: Exposing Service
+# Method1 -- use minikube ip
+minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
+
+# Method2 -- use port-forwarding
+kubectl port-forward --address 0.0.0.0 service/submarine-operator-traefik 32080:80
+
+# Step5: View Workbench
+# http://{minikube ip}:32080 (from Method 1), ex: http://192.168.49.2:32080
+# or http://127.0.0.1:32080 (from Method 2).
+
+# Step6: Delete Submarine
+# By deleting the submarine custom resource, the operator will do the following things:
+#   (1) Remove all relevant Helm chart releases
+#   (2) Remove all resources in the namespace "submariner-user-test"
+#   (3) Remove all non-namespaced resources (Ex: PersistentVolume) created by client-go API
+#   (4) **Note:** The namespace "submarine-user-test" will not be deleted
+kubectl delete submarine example-submarine -n submarine-user-test
+
+# Step6: Stop the operator
+# Press ctrl+c to stop the operator
+
+# Step7: Uninstall helm chart dependencies
+helm delete submarine-operator
+```
+
+## Run operator in-cluster
+
+```bash
+# Step1: Install submarine-operator
+helm install submarine-operator ./helm-charts/submarine-operator/
+
 # Step2: Deploy a submarine
-kubectl apply -f artifacts/examples/crd.yaml
 kubectl create ns submarine-user-test
 kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
 
-# Step3: Exposing Service
-# Method1 -- using minikube ip + NodePort
-$ minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
+# Step3: Inspect the logs of submarine-operator
+kubectl logs -f $(kubectl get pods --output=name | grep submarine-operator)
 
-# Method2 -- using port-forwarding
-$ kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
+# Step4: Exposing Service
+# Method1 -- use minikube ip
+minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
 
-# Step4: View workbench
-# http://{minikube ip}:32080(from Method1), ex: http://192.168.49.2:32080
+# Method2 -- use port-forwarding
+kubectl port-forward --address 0.0.0.0 service/submarine-operator-traefik 32080:80
+
+# Step5: View Workbench
+# http://{minikube ip}:32080 (from Method 1), ex: http://192.168.49.2:32080
 # or http://127.0.0.1:32080 (from Method 2).
 
-# Step5: Delete:
-#   (1) Remove all relevant Helm chart releases
-#   (2) Remove all resources in the namespace "submariner-user-test"
-#   (3) Remove all non-namespaced resources (Ex: PersistentVolume) created by client-go API
-#   (4) **Note:** The namespace "submarine-user-test" will not be deleted
-kubectl delete submarine example-submarine -n submarine-user-test
-```
-
-# Run operator in-cluster
-
-```bash
-# Step1: Build image "submarine-operator" to minikube's Docker
-eval $(minikube docker-env)
-make image
-
-# Step2: RBAC (ClusterRole, ClusterRoleBinding, and ServiceAccount)
-kubectl apply -f artifacts/examples/submarine-operator-service-account.yaml
-
-# Step3: Deploy a submarine-operator
-kubectl apply -f artifacts/examples/submarine-operator.yaml
-
-# Step4: Deploy a submarine
-kubectl apply -f artifacts/examples/crd.yaml
-kubectl create ns submarine-user-test
-kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
-
-# Step5: Inspect submarine-operator POD logs
-kubectl logs -f ${submarine-operator POD}
-
-# Step6: The operator will create a new namespace "submarine-user-test"
-kubectl get all -n submarine-user-test
-
-# Step7: Exposing Service
-# Method1 -- using minikube ip + NodePort
-$ minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
-
-# Method2 -- using port-forwarding
-$ kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
-
-# Step8: View workbench
-# http://{minikube ip}:32080(from Method1), ex: http://192.168.49.2:32080
-# or http://127.0.0.1:32080 (from Method 2).
-
-# Step9: Delete:
+# Step6: Delete Submarine
+# By deleting the submarine custom resource, the operator will do the following things:
 #   (1) Remove all relevant Helm chart releases
 #   (2) Remove all resources in the namespace "submariner-user-test"
 #   (3) Remove all non-namespaced resources (Ex: PersistentVolume) created by client-go API
 #   (4) **Note:** The namespace "submarine-user-test" will not be deleted
 kubectl delete submarine example-submarine -n submarine-user-test
 
-# Step10: Delete "submarine-operator"
-kubectl delete deployment submarine-operator-demo
+# Step7: Delete the submarine-operator
+helm delete submarine-operator
 ```
 
-# Helm Golang API
+# Development
 
-- Function `HelmInstall` is defined in pkg/helm/helm.go.
-- Example: (You can see this example in controller.go:123.)
-
-```go
-// Example: HelmInstall
-// This is equal to:
-// 		helm repo add k8s-as-helm https://ameijer.github.io/k8s-as-helm/
-// .	helm repo update
-//  	helm install helm-install-example-release k8s-as-helm/svc --set ports[0].protocol=TCP,ports[0].port=80,ports[0].targetPort=9376
-// Useful Links:
-//   (1) https://github.com/PrasadG193/helm-clientgo-example
-// . (2) https://github.com/ameijer/k8s-as-helm/tree/master/charts/svc
-helmActionConfig := helm.HelmInstall(
-    "https://ameijer.github.io/k8s-as-helm/",
-    "k8s-as-helm",
-    "svc",
-    "helm-install-example-release",
-    "default",
-    map[string]string {
-        "set": "ports[0].protocol=TCP,ports[0].port=80,ports[0].targetPort=9376",
-    },
-)
-// Example: HelmUninstall
-// This is equal to:
-//    helm uninstall helm-install-example-release
-helm.HelmUninstall("helm-install-example-release", helmActionConfig)
-
-```
-
-- Troubleshooting:
-  - If the release name exists, Helm will report the error "cannot re-use a name that is still in use".
-
-```
-helm ls
-helm uninstall helm-install-example-release
-```
-
-# Build custom images when development
-
-Use the following helper script to build images and update the images used by running pods.
-
-```
-./hack/build_image.sh [all|server|database|jupyter|jupyter-gpu|mlflow]
-```
-
-Examples:
-
-```
-./hack/build_image.sh all     # build all images
-./hack/build_image.sh server  # only build the server image
-```
-
-# Run frontend E2E tests
-
-Use the following helper script to run frontend E2E tests.
-
-```
-# Prerequisite: Make sure Workbench is running on $URL:$WORKBENCH_PORT.
-./hack/run_frontend_e2e.sh [testcase]
-```
-
-- [testcase]: Check the directory [integration](../submarine-test/test-e2e/src/test/java/org/apache/submarine/integration/).
-
-Examples:
-
-```
-./hack/run_frontend_e2e.sh loginIT
-```
-
-# Run Operator E2E tests
-
-Reference: [spark-on-k8s-operator e2e test](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/tree/master/test/e2e)
-
-```bash
-# Step1: Build image "submarine-operator" to minikube's Docker 
-eval $(minikube docker-env)
-make image
-
-# Step2: Register Custom Resource Definition
-kubectl apply -f artifacts/examples/crd.yaml
-
-# Step3: Run Test
-go ./test/e2e
-```
+Please check out the [Developer Guide](./docs/developer-guide.md).

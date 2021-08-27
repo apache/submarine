@@ -1,0 +1,94 @@
+{
+	"docs": [
+		{
+			"Introduction": [],
+			"Getting Started": [
+				"version-0.6.0/gettingStarted/quickstart",
+				"version-0.6.0/gettingStarted/notebook"
+			],
+			"User Docs": [
+				{
+					"API documentation": [
+						"version-0.6.0/userDocs/api/experiment",
+						"version-0.6.0/userDocs/api/environment",
+						"version-0.6.0/userDocs/api/experiment-template",
+						"version-0.6.0/userDocs/api/notebook"
+					]
+				},
+				{
+					"Submarine SDK": [
+						"version-0.6.0/userDocs/submarine-sdk/experiment-client",
+						"version-0.6.0/userDocs/submarine-sdk/model-client",
+						"version-0.6.0/userDocs/submarine-sdk/tracking"
+					]
+				},
+				{
+					"Submarine Security": [
+						"version-0.6.0/userDocs/submarine-security/spark-security/README",
+						"version-0.6.0/userDocs/submarine-security/spark-security/build-submarine-spark-security-plugin"
+					]
+				},
+				{
+					"Others": [
+						"version-0.6.0/userDocs/others/mlflow",
+						"version-0.6.0/userDocs/others/tensorboard"
+					]
+				}
+			],
+			"Administrator Docs": [
+				{
+					"Submarine on Yarn": [
+						"version-0.6.0/adminDocs/yarn/README"
+					]
+				}
+			],
+			"Developer Docs": [
+				"version-0.6.0/devDocs/README",
+				"version-0.6.0/devDocs/Dependencies",
+				"version-0.6.0/devDocs/BuildFromCode",
+				"version-0.6.0/devDocs/Development",
+				"version-0.6.0/devDocs/IntegrationTestK8s",
+				"version-0.6.0/devDocs/IntegrationTestE2E"
+			],
+			"Community": [
+				"version-0.6.0/community/README",
+				"version-0.6.0/community/HowToCommit",
+				"version-0.6.0/community/contributing"
+			],
+			"Design Docs": [
+				"version-0.6.0/designDocs/architecture-and-requirements",
+				"version-0.6.0/designDocs/implementation-notes",
+				"version-0.6.0/designDocs/environments-implementation",
+				"version-0.6.0/designDocs/experiment-implementation",
+				"version-0.6.0/designDocs/notebook-implementation",
+				"version-0.6.0/designDocs/storage-implementation",
+				{
+					"Submarine Server": [
+						"version-0.6.0/designDocs/submarine-server/architecture",
+						"version-0.6.0/designDocs/submarine-server/experimentSpec"
+					]
+				},
+				{
+					"WIP Design Docs": [
+						"version-0.6.0/designDocs/wip-designs/submarine-launcher",
+						"version-0.6.0/designDocs/wip-designs/submarine-clusterServer",
+						"version-0.6.0/designDocs/wip-designs/security-implementation"
+					]
+				}
+			],
+			"Releases": [
+				"version-0.6.0/releases/submarine-release-0.2.0",
+				"version-0.6.0/releases/submarine-release-0.3.0",
+				"version-0.6.0/releases/submarine-release-0.4.0",
+				"version-0.6.0/releases/submarine-release-0.5.0"
+			],
+			"RoadMap": []
+		}
+	],
+	"api": [
+		"version-0.6.0/api/environment",
+		"version-0.6.0/api/experiment",
+		"version-0.6.0/api/experiment-template",
+		"version-0.6.0/api/notebook"
+	]
+}

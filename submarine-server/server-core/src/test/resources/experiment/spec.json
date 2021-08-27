@@ -6,7 +6,10 @@
     "cmd": "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log --learning_rate=0.01 --batch_size=150",
     "envVars": {
       "ENV_1": "ENV1"
-    }
+    },
+    "tags": [
+      "default", "stable"
+    ]
   },
   "environment": {
     "image": "apache/submarine:tf-mnist-with-summaries-1.0"

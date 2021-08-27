@@ -70,4 +70,3 @@ spec:
         imagePullPolicy: {{ .Values.submarine.server.imagePullPolicy }}
         ports:
         - containerPort: 8080
-

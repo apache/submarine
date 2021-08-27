@@ -75,7 +75,6 @@ public class ExperimentRestApiTest {
   private static final String experimentStatus = "Succeeded";
   private static final String metaName = "foo";
   private static final String metaFramework = "TensorFlow";
-  private static final String metaNamespace = "fooNamespace";
   private static final String dockerImage = "continuumio/anaconda3";
   private static final String kernelSpecName = "team_default_python_3";
   private static final List<String> kernelChannels = Arrays.asList("defaults", "anaconda");
@@ -109,7 +108,6 @@ public class ExperimentRestApiTest {
     actualExperiment.setRunningTime(experimentRunningTime);
     actualExperiment.setFinishedTime(experimentFinishedTime);
     actualExperiment.setUid(experimentUid);
-    actualExperiment.setName(experimentName);
     actualExperiment.setStatus(experimentStatus);
     actualExperiment.setExperimentId(experimentId);
     kernelSpec.setName(kernelSpecName);
@@ -118,7 +116,6 @@ public class ExperimentRestApiTest {
     kernelSpec.setPipDependencies(kernelPipDependencies);
     meta.setName(metaName);
     meta.setFramework(metaFramework);
-    meta.setNamespace(metaNamespace);
     environmentSpec.setDockerImage(dockerImage);
     environmentSpec.setKernelSpec(kernelSpec);
     experimentSpec.setMeta(meta);
@@ -220,13 +217,12 @@ public class ExperimentRestApiTest {
     assertEquals(experimentCreatedTime, experiment.getCreatedTime());
     assertEquals(experimentRunningTime, experiment.getRunningTime());
     assertEquals(experimentAcceptedTime, experiment.getAcceptedTime());
-    assertEquals(experimentName, experiment.getName());
     assertEquals(experimentStatus, experiment.getStatus());
     assertEquals(experimentId, experiment.getExperimentId());
     assertEquals(experimentFinishedTime, experiment.getFinishedTime());
     assertEquals(metaName, experiment.getSpec().getMeta().getName());
     assertEquals(metaFramework, experiment.getSpec().getMeta().getFramework());
-    assertEquals(metaNamespace, experiment.getSpec().getMeta().getNamespace());
+    assertEquals("default", experiment.getSpec().getMeta().getNamespace());
     assertEquals(dockerImage, experiment.getSpec().getEnvironment().getDockerImage());
     assertEquals(kernelChannels, experiment.getSpec().getEnvironment().getKernelSpec().getChannels());
     assertEquals(kernelSpecName, experiment.getSpec().getEnvironment().getKernelSpec().getName());

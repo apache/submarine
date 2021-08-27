@@ -57,7 +57,7 @@ public class VolumeSpecParser {
   }
 
   public static V1PersistentVolumeClaim parsePersistentVolumeClaim(
-      String name, String volume, String storage) {
+      String name, String scName, String storage) {
     V1PersistentVolumeClaim pvc = new V1PersistentVolumeClaim();
     /*
       Required value
@@ -73,10 +73,9 @@ public class VolumeSpecParser {
     pvc.setMetadata(pvcMetadata);
 
     V1PersistentVolumeClaimSpec pvcSpec = new V1PersistentVolumeClaimSpec();
-    pvcSpec.setAccessModes(Collections.singletonList("ReadWriteMany"));
-    pvcSpec.setStorageClassName("standard");
+    pvcSpec.setAccessModes(Collections.singletonList("ReadWriteOnce"));
+    pvcSpec.setStorageClassName(scName);
     pvcSpec.setResources(new V1ResourceRequirements().putRequestsItem("storage", new Quantity(storage)));
-    pvcSpec.setVolumeName(volume); // bind pvc to specific pv
     pvc.setSpec(pvcSpec);
 
     return pvc;
