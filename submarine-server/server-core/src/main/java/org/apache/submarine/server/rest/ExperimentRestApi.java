@@ -193,7 +193,6 @@ public class ExperimentRestApi {
           @ApiResponse(responseCode = "404", description = "Experiment not found")})
   public Response patchExperiment(@PathParam(RestConstants.ID) String id, ExperimentSpec spec) {
     try {
-      spec.getMeta().setExperimentId(id.toString());
       Experiment experiment = experimentManager.patchExperiment(id, spec);
       return new JsonResponse.Builder<Experiment>(Response.Status.OK).success(true)
           .result(experiment).build();

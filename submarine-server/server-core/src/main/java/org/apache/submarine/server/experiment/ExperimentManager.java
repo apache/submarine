@@ -235,7 +235,6 @@ public class ExperimentManager {
 
     ExperimentEntity entity = experimentService.select(id);
     Experiment experiment = buildExperimentFromEntity(entity);
-
     Experiment patchExperiment = submitter.patchExperiment(newSpec);
 
     // update spec in returned experiment
