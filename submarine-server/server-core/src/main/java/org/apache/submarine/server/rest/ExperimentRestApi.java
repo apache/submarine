@@ -339,7 +339,7 @@ public class ExperimentRestApi {
       responses = {
           @ApiResponse(description = "successful operation", content = @Content(
               schema = @Schema(implementation = JsonResponse.class)))})
-  public Response deleteServe(@QueryParam("modelName") String modelName, 
+  public Response deleteServe(@QueryParam("modelName") String modelName,
       @QueryParam("modelVersion") String modelVersion, @QueryParam("namespace") String namespace) {
     try {
       ServeRequest spec = new ServeRequest()
