@@ -25,7 +25,7 @@
 # ======= Modifiable Variables ======= #
 # Note: URL must start with "http" 
 # (Ref: https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebDriver.html#get(java.lang.String))
-WORKBENCH_PORT=4200
+WORKBENCH_PORT=8080
 URL="http://127.0.0.1"
 # ==================================== #
 

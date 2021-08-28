@@ -162,9 +162,7 @@ public class K8sSubmitter implements Submitter {
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       mlJob.getMetadata().setNamespace(getServerNamespace());
-
-      LOG.info("mlJob metadata: {}", mlJob.getMetadata());
-
+      
       Object object = api.getNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName());
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);

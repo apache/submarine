@@ -53,9 +53,6 @@
         </a>
       </td>
       <td>
-        <!-- <nz-select nzMode="tags" [nzTokenSeparators]="[',']">
-          <nz-option *ngFor="let tag of data.spec.meta.tags" [nzLabel]="tag" [nzValue]="tag"></nz-option>
-        </nz-select> -->
         <nz-tag *ngFor="let tag of data.spec.meta.tags">{{tag}}</nz-tag>
       </td>
       <td>
