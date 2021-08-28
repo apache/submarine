@@ -22,20 +22,40 @@ import (
 	"log"
 	"os"
 	"testing"
+	"time"
+
+	v1alpha1 "github.com/apache/submarine/submarine-cloud-v2/pkg/apis/submarine/v1alpha1"
 
 	operatorFramework "github.com/apache/submarine/submarine-cloud-v2/test/e2e/framework"
+	"github.com/stretchr/testify/assert"
 )
 
 var (
 	framework *operatorFramework.Framework
 )
 
+// Wait for test job to finish. Poll for updates once a second. Time out after 240 seconds.
+var TIMEOUT = 300 * time.Second
+var INTERVAL = 1 * time.Second
+
+var STATES = [4]string{
+	"",
+	"CREATING",
+	"RUNNING",
+	"FAILED",
+}
+
+func GetJobStatus(t *testing.T, submarineNs, submarineName string) v1alpha1.SubmarineStateType {
+	submarine, err := operatorFramework.GetSubmarine(framework.SubmarineClient, submarineNs, submarineName)
+	assert.Equal(t, nil, err)
+	return submarine.Status.SubmarineState.State
+}
+
 func TestMain(m *testing.M) {
 	kubeconfig := flag.String("kubeconfig", os.Getenv("HOME")+"/.kube/config", "Path to a kubeconfig. Only required if out-of-cluster.")
 	opImage := flag.String("operator-image", "", "operator image, e.g. image:tag")
 	opImagePullPolicy := flag.String("operator-image-pullPolicy", "Never", "pull policy, e.g. Always")
 	ns := flag.String("namespace", "default", "e2e test operator namespace")
-	submarineTestNamespace := flag.String("submarine-test-namespace", "submarine-user-test", "e2e test submarine namespace")
 	flag.Parse()
 
 	var (
@@ -43,11 +63,9 @@ func TestMain(m *testing.M) {
 		exitCode int
 	)
 
-	if framework, err = operatorFramework.New(*ns, *submarineTestNamespace, *kubeconfig, *opImage, *opImagePullPolicy); err != nil {
+	if framework, err = operatorFramework.New(*ns, *kubeconfig, *opImage, *opImagePullPolicy); err != nil {
 		log.Fatalf("Error setting up framework: %+v", err)
 	}
-
-	operatorFramework.SubmarineTestNamespace = *submarineTestNamespace
 
 	exitCode = m.Run()
 

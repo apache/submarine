@@ -66,7 +66,10 @@ func GetSubmarine(clientset clientset.Interface, namespace string, name string) 
 }
 
 func DeleteSubmarine(clientset clientset.Interface, namespace string, name string) error {
-	err := clientset.SubmarineV1alpha1().Submarines(namespace).Delete(context.TODO(), name, metav1.DeleteOptions{})
+	foreground := metav1.DeletePropagationForeground
+	err := clientset.SubmarineV1alpha1().Submarines(namespace).Delete(context.TODO(), name, metav1.DeleteOptions{
+		PropagationPolicy: &foreground,
+	})
 	if err != nil {
 		return err
 	}

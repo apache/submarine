@@ -50,10 +50,8 @@ Reference: [spark-on-k8s-operator e2e test](https://github.com/GoogleCloudPlatfo
 eval $(minikube docker-env)
 make image
 
-# Step2: Register Custom Resource Definition
-kubectl apply -f artifacts/examples/crd.yaml
-
-# Step3: Run Tests
+# Step2: Run Tests
+## one can add -v to see additional logs
 go test ./test/e2e
 ```
 
