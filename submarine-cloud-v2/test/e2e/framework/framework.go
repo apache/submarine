@@ -109,17 +109,8 @@ func (f *Framework) setupOperator(opImage, opImagePullPolicy string) error {
 	}
 
 	// setup storage class
-	if _, err := CreateStorageClass(f.KubeClient, "submarine-database-sc"); err != nil && !apierrors.IsAlreadyExists(err) {
-		return errors.Wrap(err, "failed to create storageclass")
-	}
-	if _, err := CreateStorageClass(f.KubeClient, "submarine-tensorboard-sc"); err != nil && !apierrors.IsAlreadyExists(err) {
-		return errors.Wrap(err, "failed to create storageclass")
-	}
-	if _, err := CreateStorageClass(f.KubeClient, "submarine-mlflow-sc"); err != nil && !apierrors.IsAlreadyExists(err) {
-		return errors.Wrap(err, "failed to create storageclass")
-	}
-	if _, err := CreateStorageClass(f.KubeClient, "submarine-minio-sc"); err != nil && !apierrors.IsAlreadyExists(err) {
-		return errors.Wrap(err, "failed to create storageclass")
+	if _, err := CreateStorageClass(f.KubeClient, "submarine-storageclass"); err != nil && !apierrors.IsAlreadyExists(err) {
+		return errors.Wrap(err, "failed to create storageclass submarine-storageclass")
 	}
 
 	// Deploy a submarine-operator
@@ -166,17 +157,8 @@ func (f *Framework) Teardown() error {
 	}
 
 	// delete storage class
-	if err := DeleteStorageClass(f.KubeClient, "submarine-database-sc"); err != nil {
-		return errors.Wrap(err, "failed to delete storageclass submarine-database-sc")
-	}
-	if err := DeleteStorageClass(f.KubeClient, "submarine-tensorboard-sc"); err != nil {
-		return errors.Wrap(err, "failed to delete storageclass submarine-tensorboard-sc")
-	}
-	if err := DeleteStorageClass(f.KubeClient, "submarine-mlflow-sc"); err != nil {
-		return errors.Wrap(err, "failed to delete storageclass submarine-mlflow-sc")
-	}
-	if err := DeleteStorageClass(f.KubeClient, "submarine-minio-sc"); err != nil {
-		return errors.Wrap(err, "failed to delete storageclass submarine-minio-sc")
+	if err := DeleteStorageClass(f.KubeClient, "submarine-storageclass"); err != nil {
+		return errors.Wrap(err, "failed to delete storageclass submarine-storageclass")
 	}
 
 	if err := f.KubeClient.AppsV1().Deployments(f.Namespace.Name).Delete(context.TODO(), "submarine-operator-demo", metav1.DeleteOptions{}); err != nil {
