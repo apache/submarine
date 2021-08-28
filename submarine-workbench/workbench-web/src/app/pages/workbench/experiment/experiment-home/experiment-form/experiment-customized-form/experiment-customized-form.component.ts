@@ -29,7 +29,8 @@ import {
 import { ExperimentFormService } from '@submarine/services/experiment.form.service';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentValidatorService } from '@submarine/services/experiment.validator.service';
-import { nanoid } from 'nanoid';
+import { customAlphabet } from 'nanoid';
+import { alphanumeric } from 'nanoid-dictionary';
 import { NzMessageService } from 'ng-zorro-antd';
 import { Subscription } from 'rxjs';
 
@@ -397,7 +398,7 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
     // Enable user from modifying the name
     this.experimentName.enable();
     // Put value back
-    const id: string = nanoid(8);
+    const id: string = customAlphabet(alphanumeric, 8)();
     const cloneExperimentName = spec.meta.name + '-' + id;
     this.experimentName.setValue(cloneExperimentName.toLocaleLowerCase());
     this.cloneExperiment(spec);
