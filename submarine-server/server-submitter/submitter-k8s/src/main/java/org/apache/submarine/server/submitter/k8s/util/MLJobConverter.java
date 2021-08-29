@@ -20,7 +20,6 @@
 package org.apache.submarine.server.submitter.k8s.util;
 
 import java.util.List;
-
 import io.kubernetes.client.models.V1DeleteOptions;
 import io.kubernetes.client.models.V1DeleteOptionsBuilder;
 import io.kubernetes.client.models.V1JobCondition;
@@ -66,7 +65,7 @@ public class MLJobConverter {
       }
 
       dateTime = status.getCompletionTime();
-      if (dateTime != null) {
+      if (conditions != null && dateTime != null) {
         experiment.setFinishedTime(dateTime.toString());
         if ("Succeeded".equalsIgnoreCase(conditions.get(conditions.size() - 1).getType())) {
           experiment.setStatus(Experiment.Status.STATUS_SUCCEEDED.getValue());
