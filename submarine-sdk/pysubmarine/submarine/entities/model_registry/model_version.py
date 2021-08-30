@@ -31,8 +31,8 @@ class ModelVersion(_SubmarineObject):
                  last_updated_time,
                  source,
                  dataset=None,
-                 description=None):
-        super().__init__()
+                 description=None,
+                 tags=[]):
         self._name = name
         self._version = version
         self._user_id = user_id
@@ -43,6 +43,7 @@ class ModelVersion(_SubmarineObject):
         self._source = source
         self._dataset = dataset
         self._description = description
+        self._tags = [tag.tag for tag in tags]
 
     @property
     def name(self):
@@ -94,3 +95,11 @@ class ModelVersion(_SubmarineObject):
     def description(self):
         """String. Description"""
         return self._description
+
+    @property
+    def tags(self):
+        """List of tags"""
+        return self._tags
+
+    def _add_tag(self, tag):
+        self._tags.append(tag)

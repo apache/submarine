@@ -23,7 +23,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from submarine.entities import Metric, Param
 from submarine.entities.model_registry import (RegisteredModel, RegisteredModelTag,
-                                               ModelVersion, ModelVersionTag)
+                                               ModelVersion, ModelVersionTag, registered_model_tag)
 from submarine.entities.model_registry.model_version_stages import STAGE_NONE
 Base = declarative_base()
 
@@ -75,7 +75,8 @@ class SqlRegisteredModel(Base):
         return RegisteredModel(name=self.name,
                                creation_time=self.creation_time,
                                last_updated_time=self.last_updated_time,
-                               description=self.description)
+                               description=self.description,
+                               tags=[tag.to_submarine_entity for tag in self.registered_model_tags])
 
 
 # +---------------------+-------+
@@ -210,7 +211,8 @@ class SqlModelVersion(Base):
                             last_updated_time=self.last_updated_time,
                             source=self.source,
                             dataset=self.dataset,
-                            description=self.description)
+                            description=self.description,
+                            tags=[tag.to_submarine_entity for tag in self.model_version_tags])
 
 
 # +---------------------+---------+-----------------+
