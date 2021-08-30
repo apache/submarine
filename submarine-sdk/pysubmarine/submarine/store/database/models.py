@@ -21,9 +21,10 @@ from sqlalchemy import (Integer, BigInteger, Boolean, Column, PrimaryKeyConstrai
                         String, ForeignKey, ForeignKeyConstraint)
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
-from submarine.entities import (Metric, Param, RegisteredModel, RegisteredModelTag,
-                                ModelVersion, ModelVersionTag)
-from submarine.entities.model_version_stages import STAGE_NONE
+from submarine.entities import Metric, Param
+from submarine.entities.model_registry import (RegisteredModel, RegisteredModelTag,
+                                               ModelVersion, ModelVersionTag)
+from submarine.entities.model_registry.model_version_stages import STAGE_NONE
 Base = declarative_base()
 
 # +---------------------+---------------+-------------------+-------------+
