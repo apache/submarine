@@ -52,6 +52,7 @@ commit("CREATE USER IF NOT EXISTS 'submarine_test'@'%' IDENTIFIED BY 'password_t
 commit("GRANT ALL PRIVILEGES ON *.* TO 'submarine_test'@'%';")
 commit("use submarine_test;")
 commit_from_file("./dev-support/database/submarine.sql")
+commit_from_file("./dev-support/database/submarine-model.sql")
 commit("show tables;")
 
 
@@ -68,6 +69,7 @@ commit("CREATE USER IF NOT EXISTS 'submarine'@'%' IDENTIFIED BY 'password';")
 commit("GRANT ALL PRIVILEGES ON *.* TO 'submarine'@'%';")
 commit("use submarine;")
 commit_from_file("./dev-support/database/submarine.sql")
+commit_from_file("./dev-support/database/submarine-model.sql")
 commit_from_file("./dev-support/database/submarine-data.sql")
 commit("show tables;")
 
