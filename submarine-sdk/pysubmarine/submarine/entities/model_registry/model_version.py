@@ -89,7 +89,7 @@ class ModelVersion(_SubmarineObject):
     @property
     def dataset(self):
         """String. Dataset used by this model version"""
-        return self._current_stage
+        return self._dataset
 
     @property
     def description(self):
