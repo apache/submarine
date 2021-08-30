@@ -13,18 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.entities.Metric import Metric
-from submarine.entities.model_version import ModelVersion
-from submarine.entities.model_version_tag import ModelVersionTag
-from submarine.entities.Param import Param
-from submarine.entities.registered_model import RegisteredModel
-from submarine.entities.registered_model_tag import RegisteredModelTag
+STAGE_NONE = "None"
+STAGE_STAGING = "Staging"
+STAGE_PRODUCTION = "Production"
+STAGE_ARCHIVED = "Archived"
 
-__all__ = [
-    "RegisteredModel",
-    "RegisteredModelTag",
-    "ModelVersion",
-    "ModelVersionTag",
-    "Metric",
-    "Param",
-]
+ALL_STAGES = [STAGE_NONE, STAGE_STAGING, STAGE_PRODUCTION, STAGE_ARCHIVED]
