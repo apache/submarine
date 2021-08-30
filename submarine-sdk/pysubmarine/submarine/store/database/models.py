@@ -18,7 +18,7 @@ from typing import Any
 
 import sqlalchemy as sa
 from sqlalchemy import (Integer, BigInteger, Boolean, Column, PrimaryKeyConstraint,
-                        String, ForeignKey)
+                        String, ForeignKey, ForeignKeyConstraint)
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from submarine.entities import (Metric, Param, RegisteredModel, RegisteredModelTag,
@@ -225,16 +225,16 @@ class SqlModelVersion(Base):
 class SqlModelVersionTag(Base):
     __tablename__ = 'model_version_tags'
 
-    name = Column(String(256), ForeignKey("model_versions.name", onupdate="cascade"))
+    name = Column(String(256), nullable=False)
     """
-    Name for registered models: Part of *Primary Key* for ``model_version_tags`` table. Refer to
+    Name for registered models: Part of *Foreign Key* for ``model_version_tags`` table. Refer to
     name of ``model_versions`` table.
     """
 
-    version = Column(Integer, ForeignKey("model_versions.version", onupdate="cascade"))
+    version = Column(Integer, nullable=False)
     """
-    version of model: Part of *Primary Key* for ``model_version_tags`` table. Refer to
-    name of ``model_versions`` table.
+    version of model: Part of *Foreign Key* for ``model_version_tags`` table. Refer to
+    version of ``model_versions`` table.
     """
 
     tag = Column(String(256), nullable=False)
@@ -244,11 +244,20 @@ class SqlModelVersionTag(Base):
     """
 
     # linked entities
-    registered_model = relationship(
-        "SqlModelVersion", backref=backref("model_version_tags", cascade="all")
+    model_version = relationship(
+        "SqlModelVersion",
+        foreign_keys=[name, version],
+        backref=backref("model_version_tags", cascade="all")
     )
 
-    __table_args__ = (PrimaryKeyConstraint("name", "tag", name="model_version_tag_pk"),)
+    __table_args__ = (
+        PrimaryKeyConstraint("name", "tag", name="model_version_tag_pk"),
+        ForeignKeyConstraint(
+            ("name", "version"),
+            ("model_versions.name", "model_versions.version"),
+            onupdate="cascade",
+        ),
+    )
 
     def __repr__(self):
         return "<SqlRegisteredModelTag ({}, {}, {})>".format(self.name, self.version, self.tag)
