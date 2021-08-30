@@ -32,7 +32,7 @@ class ModelVersion(_SubmarineObject):
                  source,
                  dataset=None,
                  description=None,
-                 tags=[]):
+                 tags=None):
         self._name = name
         self._version = version
         self._user_id = user_id
@@ -43,7 +43,7 @@ class ModelVersion(_SubmarineObject):
         self._source = source
         self._dataset = dataset
         self._description = description
-        self._tags = [tag.tag for tag in tags]
+        self._tags = [tag.tag for tag in (tags or [])]
 
     @property
     def name(self):

@@ -18,6 +18,7 @@ import time
 from submarine.entities.model_registry.registered_model import RegisteredModel
 from submarine.entities.model_registry.registered_model_tag import RegisteredModelTag
 
+
 class TestRegisteredModel():
     default_data = {
         "name": "test",
@@ -26,6 +27,7 @@ class TestRegisteredModel():
         "description": "registered model description",
         "tags": []
     }
+
     def _check(
         self,
         registered_model,
@@ -70,4 +72,3 @@ class TestRegisteredModel():
                     self.default_data["last_updated_time"],
                     self.default_data["description"],
                     [t.tag for t in tags])
-

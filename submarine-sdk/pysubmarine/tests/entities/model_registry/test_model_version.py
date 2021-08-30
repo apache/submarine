@@ -18,6 +18,7 @@ from submarine.entities.model_registry.model_version import ModelVersion
 from submarine.entities.model_registry.model_version_tag import ModelVersionTag
 from submarine.entities.model_registry.model_version_stages import STAGE_NONE
 
+
 class TestModelVersion():
     default_data = {
         "name": "test",
@@ -32,6 +33,7 @@ class TestModelVersion():
         "description": "registered model description",
         "tags": []
     }
+
     def _check(
         self,
         model_version,
@@ -112,6 +114,3 @@ class TestModelVersion():
                     self.default_data["dataset"],
                     self.default_data["description"],
                     [t.tag for t in tags])
-
-
-    

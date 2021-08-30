@@ -26,12 +26,12 @@ class RegisteredModel(_SubmarineObject):
                  creation_time,
                  last_updated_time,
                  description=None,
-                 tags=[]):
+                 tags=None):
         self._name = name
         self._creation_time = creation_time
         self._last_updated_time = last_updated_time
         self._description = description
-        self._tags= [tag.tag for tag in tags]
+        self._tags = [tag.tag for tag in (tags or [])]
 
     @property
     def name(self):
