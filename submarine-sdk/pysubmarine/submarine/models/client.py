@@ -134,7 +134,7 @@ class ModelsClient:
                 "No valid type of model has been matched to {}".format(
                     model_type))
         self.artifact_repo.log_artifacts(local_dir, artifact_path)
-        ## TODO for registering model ()
+        # TODO for registering model ()
 
     def _get_or_create_experiment(self, experiment_name):
         """
