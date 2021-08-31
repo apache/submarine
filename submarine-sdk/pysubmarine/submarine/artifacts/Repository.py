@@ -33,8 +33,6 @@ class Repository:
                 endpoint_url=config.get("S3_ENDPOINT_URL"),
             )
         self.dest_path = experiment_id
-        if not self._is_submarine_bucket_exist():
-            self.client.create_bucket(Bucket="submarine")
 
     def _get_s3_client(self):
         return boto3.client(
@@ -43,13 +41,6 @@ class Repository:
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
             endpoint_url=S3_ENDPOINT_URL,
         )
-
-    def _is_submarine_bucket_exist(self):
-        response = self.client.list_buckets()
-        for bucket in response["Buckets"]:
-            if bucket["Name"] == "submarine":
-                return True
-        return False
 
     def _upload_file(self, local_file, bucket, key):
         self.client.upload_file(Filename=local_file, Bucket=bucket, Key=key)
