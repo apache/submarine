@@ -15,11 +15,14 @@
  under the License.
 """
 import os
+import re
+import tempfile
 import time
 
 import mlflow
 from mlflow.exceptions import MlflowException
 from mlflow.tracking import MlflowClient
+from submarine.artifacts.Repository import Repository
 
 from .constant import (
     AWS_ACCESS_KEY_ID,
@@ -48,6 +51,8 @@ class ModelsClient:
             "tensorflow": mlflow.tensorflow.log_model,
             "keras": mlflow.keras.log_model,
         }
+        self.artifact_repo = Repository(get_job_id())
+        self.root = tempfile.mkdtemp()
 
     def start(self):
         """
@@ -97,6 +102,38 @@ class ModelsClient:
                 )
             else:
                 raise MlflowException("No valid type of model has been matched")
+
+    def save_model_submarine(self,
+                             model_type,
+                             model,
+                             artifact_path,
+                             registered_model_name=None):
+        pattern = r"[0-9A-Za-z][0-9A-Za-z-_]*[0-9A-Za-z]|[0-9A-Za-z]"
+        if not re.fullmatch(pattern, artifact_path):
+            raise Exception(
+                "artifact_path must only contains numbers, characters, hyphen and underscore.  \
+            The artifact_path must starts and ends with numbers or characters.")
+        local_dir = os.path.join(self.root, artifact_path)
+        if os.path.exists(local_dir):
+            version = len(os.listdir(local_dir)) + 1
+        else:
+            version = 1
+        artifact_path = os.path.join(artifact_path, str(version))
+        local_dir = os.path.join(local_dir, str(version))
+        os.makedirs(local_dir)
+        if model_type == "pytorch":
+            import submarine.models.pytorch
+
+            submarine.models.pytorch.save_model(model, local_dir)
+        elif model_type == "tensorflow":
+            import submarine.models.tensorflow
+
+            submarine.models.tensorflow.save_model(model, local_dir)
+        else:
+            raise Exception(
+                "No valid type of model has benn matched to {}".format(
+                    model_type))
+        self.artifact_repo.log_artifacts(local_dir, artifact_path)
 
     def _get_or_create_experiment(self, experiment_name):
         """
