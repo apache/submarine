@@ -63,7 +63,8 @@ CREATE TABLE `metrics` (
   `timestamp` bigint(20) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `BigInteger`. Part of *Primary Key* for   ``metrics`` table.',
   `step` bigint(11) NOT NULL COMMENT 'Step recorded for this metric entry: `BigInteger`.',
   `is_nan` BOOLEAN NOT NULL COMMENT 'True if the value is in fact NaN.',
-  PRIMARY KEY  (`id`, `key`, `timestamp`, `worker_index`)
+  CONSTRAINT `metrics_pk` PRIMARY KEY  (`id`, `key`, `timestamp`, `worker_index`)
+  FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `params`;
@@ -72,7 +73,8 @@ CREATE TABLE `params` (
   `key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
   `value` varchar(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
   `worker_index` varchar(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
-  PRIMARY KEY  (`id`, `key`, `worker_index`)
+  CONSTRAINT `params_pk` PRIMARY KEY  (`id`, `key`, `worker_index`)
+  FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

@@ -286,9 +286,10 @@ class SqlModelVersionTag(Base):
 class SqlMetric(Base):
     __tablename__ = "metrics"
 
-    id = Column(String(64))
+    id = Column(String(64), ForeignKey("experiment.id", onupdate="cascade"))
     """
-    ID to which this metric belongs to: Part of *Primary Key* for ``metrics`` table.
+    ID to which this metric belongs to: *Foreign Key* for ``experiment`` table.
+    Part of *Primary Key* for ``metrics`` table.
     """
     key = Column(String(190))
     """
@@ -352,9 +353,10 @@ class SqlMetric(Base):
 class SqlParam(Base):
     __tablename__ = "params"
 
-    id = Column(String(64))
+    id = Column(String(64), ForeignKey("experiment.id", onupdate="cascade"))
     """
-    ID to which this parameter belongs to: Part of *Primary Key* for ``params`` table.
+    ID to which this parameter belongs to: *Foreign Key* for ``experiment`` table.
+    Part of *Primary Key* for ``params`` table.
     """
     key = Column(String(190))
     """
