@@ -14,10 +14,8 @@
 # limitations under the License.
 
 import os
-import urllib.parse
 
 import boto3
-import posixpath
 
 from .constant import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_ENDPOINT_URL
 

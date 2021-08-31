@@ -111,8 +111,8 @@ class ModelsClient:
         pattern = r"[0-9A-Za-z][0-9A-Za-z-_]*[0-9A-Za-z]|[0-9A-Za-z]"
         if not re.fullmatch(pattern, artifact_path):
             raise Exception(
-                "artifact_path must only contains numbers, characters, hyphen and underscore.  \
-            The artifact_path must starts and ends with numbers or characters.")
+                "Artifact_path must only contains numbers, characters, hyphen and underscore.  \
+            Artifact_path must starts and ends with numbers or characters.")
         local_dir = os.path.join(self.root, artifact_path)
         if os.path.exists(local_dir):
             version = len(os.listdir(local_dir)) + 1
@@ -131,9 +131,10 @@ class ModelsClient:
             submarine.models.tensorflow.save_model(model, local_dir)
         else:
             raise Exception(
-                "No valid type of model has benn matched to {}".format(
+                "No valid type of model has been matched to {}".format(
                     model_type))
         self.artifact_repo.log_artifacts(local_dir, artifact_path)
+        ## TODO for registering model ()
 
     def _get_or_create_experiment(self, experiment_name):
         """
