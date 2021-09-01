@@ -59,6 +59,7 @@ rules:
   - pods/log
   - services
   - persistentvolumeclaims
+  - events
   verbs:
   - '*'
 - apiGroups:
