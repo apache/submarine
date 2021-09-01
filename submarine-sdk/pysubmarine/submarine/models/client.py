@@ -53,7 +53,6 @@ class ModelsClient:
             "keras": mlflow.keras.log_model,
         }
         self.artifact_repo = Repository(get_job_id())
-        self.root = tempfile.mkdtemp()
 
     def start(self):
         """
@@ -114,27 +113,18 @@ class ModelsClient:
             raise Exception(
                 "Artifact_path must only contains numbers, characters, hyphen and underscore.  \
             Artifact_path must starts and ends with numbers or characters.")
-        local_dir = os.path.join(self.root, artifact_path)
-        if os.path.exists(local_dir):
-            version = len(os.listdir(local_dir)) + 1
-        else:
-            version = 1
-        artifact_path = os.path.join(artifact_path, str(version))
-        local_dir = os.path.join(local_dir, str(version))
-        os.makedirs(local_dir)
-        if model_type == "pytorch":
-            import submarine.models.pytorch
-
-            submarine.models.pytorch.save_model(model, local_dir)
-        elif model_type == "tensorflow":
-            import submarine.models.tensorflow
-
-            submarine.models.tensorflow.save_model(model, local_dir)
-        else:
-            raise Exception(
-                "No valid type of model has been matched to {}".format(
-                    model_type))
-        self.artifact_repo.log_artifacts(local_dir, artifact_path)
+        with tempfile.TemporaryDirectory() as tempdir:
+            if model_type == "pytorch":
+                import submarine.models.pytorch
+                submarine.models.pytorch.save_model(model, tempdir)
+            elif model_type == "tensorflow":
+                import submarine.models.tensorflow
+                submarine.models.tensorflow.save_model(model, tempdir)
+            else:
+                raise Exception(
+                    "No valid type of model has been matched to {}".format(
+                        model_type))
+            self.artifact_repo.log_artifacts(tempdir, artifact_path)
         # TODO for registering model ()
 
     def _get_or_create_experiment(self, experiment_name):

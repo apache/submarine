@@ -22,12 +22,12 @@ S3_ENDPOINT_URL="http://submarine-minio-service:9000"
 AWS_ACCESS_KEY_ID="submarine_minio"
 AWS_SECRET_ACCESS_KEY="submarine_minio"
 
-/bin/bash -c "sleep 60; ./mc config host add minio ${S3_ENDPOINT_URL} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}"
+/bin/bash -c "sleep 60; mc config host add minio ${S3_ENDPOINT_URL} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}"
 
 # Create if the bucket "minio/submarine" not exists
 
-if /bin/bash -c "./mc ls minio/submarine" >/dev/null 2>&1; then
+if /bin/bash -c "mc ls minio/submarine" >/dev/null 2>&1; then
     echo "Bucket minio/submarine already exists, skipping creation."
 else
-    /bin/bash -c "./mc mb minio/submarine"
+    /bin/bash -c "mc mb minio/submarine"
 fi

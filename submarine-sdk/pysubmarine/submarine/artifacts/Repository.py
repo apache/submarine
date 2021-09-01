@@ -45,11 +45,17 @@ class Repository:
     def _upload_file(self, local_file, bucket, key):
         self.client.upload_file(Filename=local_file, Bucket=bucket, Key=key)
 
-    def log_artifact(self, local_file, artifact_path=None):
+    def _list_artifact_subfolder(self, artifact_path):
+        response = self.client.list_objects(
+            Bucket="submarine",
+            Prefix=os.path.join(self.dest_path, artifact_path) + "/",
+            Delimiter="/")
+        return response.get("CommonPrefixes")
+
+    def log_artifact(self, local_file, artifact_path):
         bucket = "submarine"
         dest_path = self.dest_path
-        if artifact_path:
-            dest_path = os.path.join(dest_path, artifact_path)
+        dest_path = os.path.join(dest_path, artifact_path)
         dest_path = os.path.join(dest_path, os.path.basename(local_file))
         self._upload_file(
             local_file=local_file,
@@ -57,11 +63,16 @@ class Repository:
             key=dest_path,
         )
 
-    def log_artifacts(self, local_dir, artifact_path=None):
+    def log_artifacts(self, local_dir, artifact_path):
         bucket = "submarine"
         dest_path = self.dest_path
-        if artifact_path:
-            dest_path = os.path.join(dest_path, artifact_path)
+        list_of_subfolder = self._list_artifact_subfolder(artifact_path)
+        if list_of_subfolder is None:
+            artifact_path = os.path.join(artifact_path, "1")
+        else:
+            artifact_path = os.path.join(artifact_path,
+                                         str(len(list_of_subfolder) + 1))
+        dest_path = os.path.join(dest_path, artifact_path)
         local_dir = os.path.abspath(local_dir)
         for (root, _, filenames) in os.walk(local_dir):
             upload_path = dest_path
