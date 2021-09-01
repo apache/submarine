@@ -13,10 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from submarine.entities.experiment import Experiment
 from submarine.entities.Metric import Metric
 from submarine.entities.Param import Param
 
 __all__ = [
+    "Experiment",
     "Metric",
     "Param",
 ]

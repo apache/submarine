@@ -26,7 +26,7 @@ CREATE TABLE `registered_model_tags` (
 	`name` VARCHAR(256) NOT NULL,
 	`tag` VARCHAR(256) NOT NULL,
 	CONSTRAINT `registered_model_tag_pk` PRIMARY KEY (`name`, `tag`),
-	FOREIGN KEY(`name`) REFERENCES `registered_models` (`name`) ON UPDATE CASCADE
+	FOREIGN KEY(`name`) REFERENCES `registered_models` (`name`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `model_versions`;
@@ -51,7 +51,7 @@ CREATE TABLE `model_version_tags` (
 	`version` INTEGER NOT NULL,
 	`tag` VARCHAR(256) NOT NULL,
 	CONSTRAINT `model_version_tag_pk` PRIMARY KEY (`name`, `version`, `tag`),
-	FOREIGN KEY(`name`, `version`) REFERENCES `model_versions` (`name`, `version`) ON UPDATE CASCADE
+	FOREIGN KEY(`name`, `version`) REFERENCES `model_versions` (`name`, `version`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `metrics`;
@@ -63,8 +63,8 @@ CREATE TABLE `metrics` (
   `timestamp` bigint(20) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `BigInteger`. Part of *Primary Key* for   ``metrics`` table.',
   `step` bigint(11) NOT NULL COMMENT 'Step recorded for this metric entry: `BigInteger`.',
   `is_nan` BOOLEAN NOT NULL COMMENT 'True if the value is in fact NaN.',
-  CONSTRAINT `metrics_pk` PRIMARY KEY  (`id`, `key`, `timestamp`, `worker_index`)
-  FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `metrics_pk` PRIMARY KEY  (`id`, `key`, `timestamp`, `worker_index`),
+  FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `params`;
@@ -73,8 +73,8 @@ CREATE TABLE `params` (
   `key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
   `value` varchar(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
   `worker_index` varchar(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
-  CONSTRAINT `params_pk` PRIMARY KEY  (`id`, `key`, `worker_index`)
-  FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `params_pk` PRIMARY KEY  (`id`, `key`, `worker_index`),
+  FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

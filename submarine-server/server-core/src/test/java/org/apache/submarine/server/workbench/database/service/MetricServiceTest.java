@@ -18,8 +18,11 @@
  */
 package org.apache.submarine.server.workbench.database.service;
 
+import org.apache.submarine.server.experiment.database.ExperimentEntity;
+import org.apache.submarine.server.experiment.database.ExperimentService;
 import org.apache.submarine.server.workbench.database.entity.Metric;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,20 @@ import static org.junit.Assert.assertTrue;
 public class MetricServiceTest {
   private static final Logger LOG = LoggerFactory.getLogger(MetricServiceTest.class);
   MetricService metricService = new MetricService();
+  ExperimentService experimentService = new ExperimentService();
+
+  // Id of metric is a foreign key for experiment id so experiment must be created before test.
+  @Before
+  public void createExperiment() throws Exception {
+    ExperimentEntity entity = new ExperimentEntity();
+    String id = "test_application_1234";
+    String spec = "{\"value\": 1}";
+
+    entity.setId(id);
+    entity.setExperimentSpec(spec);
+
+    experimentService.insert(entity);
+  }
 
   @After
   public void removeAllRecord() throws Exception {
@@ -41,6 +58,8 @@ public class MetricServiceTest {
     for (Metric metric : metricList) {
       metricService.deleteById(metric.getId());
     }
+
+    experimentService.selectAll().forEach(e -> experimentService.delete(e.getId()));
   }
 
   @Test

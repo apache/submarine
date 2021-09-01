@@ -15,13 +15,14 @@
 
 import time
 import unittest
+from datetime import datetime
 
 import pytest
 
 import submarine
 from submarine.entities import Metric, Param
 from submarine.store.database import models
-from submarine.store.database.models import SqlMetric, SqlParam
+from submarine.store.database.models import SqlExperiment, SqlMetric, SqlParam
 from submarine.tracking import utils
 
 JOB_ID = "application_123456789"
@@ -35,6 +36,16 @@ class TestSqlAlchemyStore(unittest.TestCase):
         )
         self.tracking_uri = utils.get_tracking_uri()
         self.store = utils.get_sqlalchemy_store(self.tracking_uri)
+        # TODO: use submarine.tracking.fluent to support experiment create
+        with self.store.ManagedSessionMaker() as session:
+            instance = SqlExperiment(id=JOB_ID,
+                                     experiment_spec="{\"value\": 1}",
+                                     create_by="test",
+                                     create_time=datetime.now(),
+                                     update_by=None,
+                                     update_time=None)
+            session.add(instance)
+            session.commit()
 
     def tearDown(self):
         submarine.set_tracking_uri(None)
@@ -54,7 +65,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
 
     def test_log_metric(self):
         metric1 = Metric("name_1", 5, "worker-1", int(time.time()), 0)
-        metric2 = Metric("name_1", 6, "worker-2", int(time.time()), 0)
+        metric2 = Metric("name_1", 6, "worker-2", int(time.time()) + 1, 0)
         self.store.log_metric(JOB_ID, metric1)
         self.store.log_metric(JOB_ID, metric2)
 

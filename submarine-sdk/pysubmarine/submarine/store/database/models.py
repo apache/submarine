@@ -17,11 +17,11 @@ import time
 from typing import Any
 
 import sqlalchemy as sa
-from sqlalchemy import (Integer, BigInteger, Boolean, Column, PrimaryKeyConstraint,
+from sqlalchemy import (Integer, BigInteger, Boolean, Text, DateTime, Column, PrimaryKeyConstraint,
                         String, ForeignKey, ForeignKeyConstraint)
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
-from submarine.entities import Metric, Param
+from submarine.entities import Metric, Param, Experiment
 from submarine.entities.model_registry import (RegisteredModel, RegisteredModelTag,
                                                ModelVersion, ModelVersionTag)
 from submarine.entities.model_registry.model_version_stages import STAGE_NONE
@@ -91,7 +91,8 @@ class SqlRegisteredModel(Base):
 class SqlRegisteredModelTag(Base):
     __tablename__ = 'registered_model_tags'
 
-    name = Column(String(256), ForeignKey("registered_models.name", onupdate="cascade"))
+    name = Column(String(256),
+                  ForeignKey("registered_models.name", onupdate="cascade", ondelete="cascade"))
     """
     Name for registered models: Part of *Primary Key* for ``registered_model_tags`` table. Refer to
     name of ``registered_models`` table.
@@ -259,6 +260,7 @@ class SqlModelVersionTag(Base):
             ("name", "version"),
             ("model_versions.name", "model_versions.version"),
             onupdate="cascade",
+            ondelete="cascade",
         ),
     )
 
@@ -273,6 +275,63 @@ class SqlModelVersionTag(Base):
         """
         return ModelVersionTag(self.tag)
 
+# +--------------------+-----------------+-----------+---------------+-----------+-------------+
+# | id                 | experiment_spec | create_by | create_time   | update_by | update_time |
+# +--------------------+-----------------+-----------+---------------+-----------+-------------+
+# | application_123456 | ...             | root      | 1595414873500 |           |             |
+# +--------------------+-----------------+-----------+---------------+-----------+-------------+
+
+
+class SqlExperiment(Base):
+    __tablename__ = 'experiment'
+
+    id = Column(String(64))
+    """
+    ID to which this metric belongs to: Part of *Primary Key* for ``experiment`` table.
+    """
+    experiment_spec = Column(Text)
+    """
+    The spec to create this experiment
+    """
+    create_by = Column(String(32))
+    """
+    This experiment is created by whom.
+    """
+    create_time = Column(DateTime)
+    """
+    Time of this experiment be created
+    """
+    update_by = Column(String(32))
+    """
+    This experiment is created by whom.
+    """
+    update_time = Column(DateTime)
+    """
+    Time of this experiment be updated
+    """
+
+    __table_args__ = (PrimaryKeyConstraint('id'),)
+
+    def __repr__(self):
+        return '<SqlMetric({}, {}, {}, {}, {}, {})>'.format(self.id,
+                                                            self.experiment_spec,
+                                                            self.create_by,
+                                                            self.create_time,
+                                                            self.update_by,
+                                                            self.update_time)
+
+    def to_submarine_entity(self):
+        """
+        Convert DB model to corresponding Submarine entity.
+        :return: :py:class:`submarine.entities.Experiment`.
+        """
+        return Experiment(id=self.id,
+                          experiment_spec=self.experiment_spec,
+                          create_by=self.create_by,
+                          create_time=self.create_time,
+                          update_by=self.update_by,
+                          update_time=self.update_time)
+
 # +--------------------+-------+-------------------+--------------+---------------+------+--------+
 # | id                 | key   | value             | worker_index | timestamp     | step | is_nan |
 # +--------------------+-------+-------------------+--------------+---------------+------+--------+
@@ -286,7 +345,7 @@ class SqlModelVersionTag(Base):
 class SqlMetric(Base):
     __tablename__ = "metrics"
 
-    id = Column(String(64), ForeignKey("experiment.id", onupdate="cascade"))
+    id = Column(String(64), ForeignKey("experiment.id", onupdate="cascade", ondelete="cascade"))
     """
     ID to which this metric belongs to: *Foreign Key* for ``experiment`` table.
     Part of *Primary Key* for ``metrics`` table.
@@ -353,7 +412,7 @@ class SqlMetric(Base):
 class SqlParam(Base):
     __tablename__ = "params"
 
-    id = Column(String(64), ForeignKey("experiment.id", onupdate="cascade"))
+    id = Column(String(64), ForeignKey("experiment.id", onupdate="cascade", ondelete="cascade"))
     """
     ID to which this parameter belongs to: *Foreign Key* for ``experiment`` table.
     Part of *Primary Key* for ``params`` table.

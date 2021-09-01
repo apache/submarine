@@ -14,13 +14,14 @@
 # limitations under the License.
 
 import unittest
+from datetime import datetime
 from os import environ
 
 import pytest
 
 import submarine
 from submarine.store.database import models
-from submarine.store.database.models import SqlMetric, SqlParam
+from submarine.store.database.models import SqlExperiment, SqlMetric, SqlParam
 from submarine.tracking import utils
 
 JOB_ID = "application_123456789"
@@ -35,12 +36,22 @@ class TestTracking(unittest.TestCase):
         )
         self.tracking_uri = utils.get_tracking_uri()
         self.store = utils.get_sqlalchemy_store(self.tracking_uri)
+        # TODO: use submarine.tracking.fluent to support experiment create
+        with self.store.ManagedSessionMaker() as session:
+            instance = SqlExperiment(id=JOB_ID,
+                                     experiment_spec="{\"value\": 1}",
+                                     create_by="test",
+                                     create_time=datetime.now(),
+                                     update_by=None,
+                                     update_time=None)
+            session.add(instance)
+            session.commit()
 
     def tearDown(self):
         submarine.set_tracking_uri(None)
         models.Base.metadata.drop_all(self.store.engine)
 
-    def log_param(self):
+    def test_log_param(self):
         submarine.log_param("name_1", "a")
         # Validate params
         with self.store.ManagedSessionMaker() as session:
