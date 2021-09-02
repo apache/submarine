@@ -437,21 +437,17 @@ public class K8sSubmitter implements Submitter {
       if (notebook.getStatus().equalsIgnoreCase("waiting")) {
         LOG.info(String.format("notebook status: waiting; check the pods in namespace:[%s] to "
             + "ensure is the waiting caused by image pulling", namespace));
-        V1PodList podList = coreApi.listNamespacedPod(namespace, null, null, null, null,
+        String podLabelSelector = String.format("notebook-name=%s", notebook.getName());
+        
+        V1PodList podList = coreApi.listNamespacedPod(namespace, null, null, null, podLabelSelector,
             null, null, null, null);
-        for (V1Pod pod: podList.getItems()) {
-          if (pod.getMetadata().getName().startsWith(notebook.getName() + "-")) {
-            String podName = pod.getMetadata().getName();
-            String fieldSelector = String.format("involvedObject.name=%s", podName);
-            V1EventList events = coreApi.listNamespacedEvent(namespace, null, null, fieldSelector,
-                null, null, null, null, null);
-            if (events.getItems().get(events.getItems().size() - 1).getReason().equalsIgnoreCase("Pulling")) {
-              notebook.setStatus("pulling");
-              break;
-            }
-            break;
-          }
-        }
+        String podName = podList.getItems().get(0).getMetadata().getName();
+        String fieldSelector = String.format("involvedObject.name=%s", podName);
+        V1EventList events = coreApi.listNamespacedEvent(namespace, null, null, fieldSelector,
+            null, null, null, null, null);
+        if (events.getItems().get(events.getItems().size() - 1).getReason().equalsIgnoreCase("Pulling")) {
+          notebook.setStatus("pulling");
+        }  
       }
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
