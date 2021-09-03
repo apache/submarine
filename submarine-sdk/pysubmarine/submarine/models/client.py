@@ -23,7 +23,7 @@ import mlflow
 from mlflow.exceptions import MlflowException
 from mlflow.tracking import MlflowClient
 
-from submarine.artifacts.Repository import Repository
+from submarine.artifacts.repository import Repository
 
 from .constant import (
     AWS_ACCESS_KEY_ID,

@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.artifacts.Repository import Repository
+from submarine.artifacts.repository import Repository
 
 __all__ = [
     "Repository",
