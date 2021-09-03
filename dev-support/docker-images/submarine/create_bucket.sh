@@ -22,6 +22,8 @@ S3_ENDPOINT_URL="http://submarine-minio-service:9000"
 AWS_ACCESS_KEY_ID="submarine_minio"
 AWS_SECRET_ACCESS_KEY="submarine_minio"
 
+
+# Wait for minio pod to setup
 /bin/bash -c "sleep 60; mc config host add minio ${S3_ENDPOINT_URL} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}"
 
 # Create if the bucket "minio/submarine" not exists
