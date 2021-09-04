@@ -23,7 +23,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from submarine.entities import Metric, Param, Experiment
 from submarine.entities.model_registry import (RegisteredModel, RegisteredModelTag,
-                                               ModelVersion, ModelVersionTag)
+                                               ModelVersion, ModelTag)
 from submarine.entities.model_registry.model_version_stages import STAGE_NONE
 Base = declarative_base()
 
@@ -213,7 +213,7 @@ class SqlModelVersion(Base):
                             source=self.source,
                             dataset=self.dataset,
                             description=self.description,
-                            tags=[tag.to_submarine_entity for tag in self.model_version_tags])
+                            tags=[tag.to_submarine_entity for tag in self.model_tags])
 
 
 # +---------------------+---------+-----------------+
@@ -226,36 +226,36 @@ class SqlModelVersion(Base):
 # +---------------------+---------+-----------------+
 
 
-class SqlModelVersionTag(Base):
-    __tablename__ = 'model_version_tags'
+class SqlModelTag(Base):
+    __tablename__ = 'model_tags'
 
     name = Column(String(256), nullable=False)
     """
-    Name for registered models: Part of *Foreign Key* for ``model_version_tags`` table. Refer to
+    Name for registered models: Part of *Foreign Key* for ``model_tags`` table. Refer to
     name of ``model_versions`` table.
     """
 
     version = Column(Integer, nullable=False)
     """
-    version of model: Part of *Foreign Key* for ``model_version_tags`` table. Refer to
+    version of model: Part of *Foreign Key* for ``model_tags`` table. Refer to
     version of ``model_versions`` table.
     """
 
     tag = Column(String(256), nullable=False)
     """
     tag of model version: `String` (limit 256 characters). Part of *Primary Key* for
-    ``model_version_tags`` table.
+    ``model_tags`` table.
     """
 
     # linked entities
     model_version = relationship(
         "SqlModelVersion",
         foreign_keys=[name, version],
-        backref=backref("model_version_tags", cascade="all")
+        backref=backref("model_tags", cascade="all")
     )
 
     __table_args__ = (
-        PrimaryKeyConstraint("name", "tag", name="model_version_tag_pk"),
+        PrimaryKeyConstraint("name", "tag", name="model_tag_pk"),
         ForeignKeyConstraint(
             ("name", "version"),
             ("model_versions.name", "model_versions.version"),
@@ -271,9 +271,9 @@ class SqlModelVersionTag(Base):
     def to_submarine_entity(self):
         """
         Convert DB model to corresponding submarine entity.
-        :return: :py:class:`submarine.entities.ModelVersionTag`.
+        :return: :py:class:`submarine.entities.ModelTag`.
         """
-        return ModelVersionTag(self.tag)
+        return ModelTag(self.tag)
 
 # +--------------------+-----------------+-----------+---------------+-----------+-------------+
 # | id                 | experiment_spec | create_by | create_time   | update_by | update_time |

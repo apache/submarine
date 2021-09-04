@@ -45,36 +45,36 @@ CREATE TABLE `model_versions` (
 	FOREIGN KEY(`name`) REFERENCES `registered_models` (`name`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `model_version_tags`;
-CREATE TABLE `model_version_tags` (
+DROP TABLE IF EXISTS `model_tags`;
+CREATE TABLE `model_tags` (
 	`name` VARCHAR(256) NOT NULL,
 	`version` INTEGER NOT NULL,
 	`tag` VARCHAR(256) NOT NULL,
-	CONSTRAINT `model_version_tag_pk` PRIMARY KEY (`name`, `version`, `tag`),
+	CONSTRAINT `model_tag_pk` PRIMARY KEY (`name`, `version`, `tag`),
 	FOREIGN KEY(`name`, `version`) REFERENCES `model_versions` (`name`, `version`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `metrics`;
 CREATE TABLE `metrics` (
-  `id` varchar(64) NOT NULL COMMENT 'Id of the Experiment',
-  `key` varchar(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.',
-  `value` float NOT NULL COMMENT 'Metric value: `Float`. Defined as *Non-null* in schema.',
-  `worker_index` varchar(32) NOT NULL COMMENT 'Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
-  `timestamp` bigint(20) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `BigInteger`. Part of *Primary Key* for   ``metrics`` table.',
-  `step` bigint(11) NOT NULL COMMENT 'Step recorded for this metric entry: `BigInteger`.',
-  `is_nan` BOOLEAN NOT NULL COMMENT 'True if the value is in fact NaN.',
-  CONSTRAINT `metrics_pk` PRIMARY KEY  (`id`, `key`, `timestamp`, `worker_index`),
-  FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+	`id` varchar(64) NOT NULL COMMENT 'Id of the Experiment',
+	`key` varchar(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.',
+	`value` float NOT NULL COMMENT 'Metric value: `Float`. Defined as *Non-null* in schema.',
+	`worker_index` varchar(32) NOT NULL COMMENT 'Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
+	`timestamp` bigint(20) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `BigInteger`. Part of *Primary Key* for   ``metrics`` table.',
+	`step` bigint(11) NOT NULL COMMENT 'Step recorded for this metric entry: `BigInteger`.',
+	`is_nan` BOOLEAN NOT NULL COMMENT 'True if the value is in fact NaN.',
+	CONSTRAINT `metrics_pk` PRIMARY KEY  (`id`, `key`, `timestamp`, `worker_index`),
+	FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `params`;
 CREATE TABLE `params` (
-  `id` varchar(64) NOT NULL COMMENT 'Id of the Experiment',
-  `key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
-  `value` varchar(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
-  `worker_index` varchar(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
-  CONSTRAINT `params_pk` PRIMARY KEY  (`id`, `key`, `worker_index`),
-  FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+	`id` varchar(64) NOT NULL COMMENT 'Id of the Experiment',
+	`key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
+	`value` varchar(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
+	`worker_index` varchar(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
+	CONSTRAINT `params_pk` PRIMARY KEY  (`id`, `key`, `worker_index`),
+	FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

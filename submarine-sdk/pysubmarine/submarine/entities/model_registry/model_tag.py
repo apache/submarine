@@ -16,7 +16,7 @@
 from submarine.entities._submarine_object import _SubmarineObject
 
 
-class ModelVersionTag(_SubmarineObject):
+class ModelTag(_SubmarineObject):
     """
     Tag object associated with a model version.
     """

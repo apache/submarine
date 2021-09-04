@@ -15,7 +15,7 @@
 
 import time
 from submarine.entities.model_registry.model_version import ModelVersion
-from submarine.entities.model_registry.model_version_tag import ModelVersionTag
+from submarine.entities.model_registry.model_tag import ModelTag
 from submarine.entities.model_registry.model_version_stages import STAGE_NONE
 
 
