@@ -446,11 +446,11 @@ public class K8sSubmitter implements Submitter {
         String fieldSelector = String.format("involvedObject.name=%s", podName);
         V1EventList events = coreApi.listNamespacedEvent(namespace, null, null, fieldSelector,
             null, null, null, null, null);
-        V1Event lastestEvent = events.getItems().get(events.getItems().size() - 1);
+        V1Event latestEvent = events.getItems().get(events.getItems().size() - 1);
 
-        if (lastestEvent.getReason().equalsIgnoreCase("Pulling")) {
+        if (latestEvent.getReason().equalsIgnoreCase("Pulling")) {
           notebook.setStatus(Notebook.Status.STATUS_PULLING.getValue());
-          notebook.setReason(lastestEvent.getReason());
+          notebook.setReason(latestEvent.getReason());
         }  
       }
     } catch (ApiException e) {

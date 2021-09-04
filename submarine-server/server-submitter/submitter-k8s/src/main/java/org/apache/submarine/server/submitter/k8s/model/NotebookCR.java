@@ -30,7 +30,7 @@ public class NotebookCR {
   public static final String CRD_NOTEBOOK_KIND_V1 = "Notebook";
   public static final String CRD_NOTEBOOK_PLURAL_V1 = "notebooks";
   public static final String NOTEBOOK_OWNER_SELECTOR_KEY = "notebook-owner-id";
-  public static final String NOTEBOOK_ID = "notebookId";
+  public static final String NOTEBOOK_ID = "notebook-id";
 
   @SerializedName("apiVersion")
   private String apiVersion;
