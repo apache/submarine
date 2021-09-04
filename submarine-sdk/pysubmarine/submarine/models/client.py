@@ -34,16 +34,18 @@ from .constant import (
 from .utils import exist_ps, get_job_id, get_worker_index
 
 
-class ModelsClient:
-    def __init__(self, tracking_uri=None, registry_uri=None):
+class ModelsClient():
+
+    def __init__(self, tracking_uri=None, registry_uri=None, aws_access_key_id=None, aws_secret_access_key=None):
         """
         Set up mlflow server connection, including: s3 endpoint, aws, tracking server
         """
         # if setting url in environment variable,
         # there is no need to set it by MlflowClient() or mlflow.set_tracking_uri() again
-        os.environ["MLFLOW_S3_ENDPOINT_URL"] = registry_uri or MLFLOW_S3_ENDPOINT_URL
-        os.environ["AWS_ACCESS_KEY_ID"] = AWS_ACCESS_KEY_ID
-        os.environ["AWS_SECRET_ACCESS_KEY"] = AWS_SECRET_ACCESS_KEY
+        os.environ[
+            "MLFLOW_S3_ENDPOINT_URL"] = registry_uri or MLFLOW_S3_ENDPOINT_URL
+        os.environ["AWS_ACCESS_KEY_ID"] = aws_access_key_id or AWS_ACCESS_KEY_ID
+        os.environ["AWS_SECRET_ACCESS_KEY"] = aws_secret_access_key or AWS_SECRET_ACCESS_KEY
         os.environ["MLFLOW_TRACKING_URI"] = tracking_uri or MLFLOW_TRACKING_URI
         self.client = MlflowClient()
         self.type_to_log_model = {

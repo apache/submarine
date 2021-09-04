@@ -23,7 +23,7 @@ MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 # INSTALL openjdk
 RUN apk update && \
-    apk add --no-cache openjdk8 tzdata bash tini && \
+    apk add --no-cache openjdk8 tzdata bash tini&& \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo Asia/Shanghai > /etc/timezone && \
     apk del tzdata && \
@@ -41,6 +41,7 @@ ADD ./tmp/mysql-connector-java-5.1.39.jar "/opt/submarine-current/lib/"
 # Create submarine Bucket
 WORKDIR /usr/local/bin
 RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x mc
+RUN wget https://dl.k8s.io/release/v1.15.11/bin/linux/amd64/kubectl && chmod +x kubectl
 COPY create_bucket.sh /usr/local/bin
 
 WORKDIR /opt/submarine-current

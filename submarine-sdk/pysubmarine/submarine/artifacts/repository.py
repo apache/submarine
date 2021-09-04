@@ -17,30 +17,16 @@ import os
 
 import boto3
 
-from .constant import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_ENDPOINT_URL
-
-
 class Repository:
 
-    def __init__(self, experiment_id, config=None):
-        if config is None:
-            self.client = self._get_s3_client()
-        else:
-            self.client = boto3.client(
-                "s3",
-                aws_access_key_id=config.get("AWS_ACCESS_KEY_ID"),
-                aws_secret_access_key=config.get("AWS_SECRET_ACCESS_KEY"),
-                endpoint_url=config.get("S3_ENDPOINT_URL"),
-            )
-        self.dest_path = experiment_id
-
-    def _get_s3_client(self):
-        return boto3.client(
+    def __init__(self, experiment_id):
+        self.client = boto3.client(
             "s3",
-            aws_access_key_id=AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-            endpoint_url=S3_ENDPOINT_URL,
+            aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
+            aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+            endpoint_url=os.environ.get("MLFLOW_S3_ENDPOINT_URL"),
         )
+        self.dest_path = experiment_id
 
     def _upload_file(self, local_file, bucket, key):
         self.client.upload_file(Filename=local_file, Bucket=bucket, Key=key)
