@@ -64,6 +64,7 @@ public class NotebookSpecParser {
     V1ObjectMeta meta = new V1ObjectMeta();
     meta.setName(spec.getMeta().getName());
     meta.setNamespace(spec.getMeta().getNamespace());
+    meta.setLabels(spec.getMeta().getLabels());
     return meta;
   }
 

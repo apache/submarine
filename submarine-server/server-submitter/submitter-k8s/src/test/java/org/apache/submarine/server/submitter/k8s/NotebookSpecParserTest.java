@@ -50,7 +50,7 @@ public class NotebookSpecParserTest extends SpecBuilder {
     Assert.assertEquals(meta.getName(), actualMeta.getName());
     Assert.assertEquals(meta.getNamespace(), actualMeta.getNamespace());
     Assert.assertEquals(meta.getOwnerId(),
-            actualMeta.getLabels().get(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET));
+            actualMeta.getLabels().get(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KEY));
   }
 
   private void validateEnvironment(NotebookSpec spec, NotebookCRSpec actualPodSpec) {

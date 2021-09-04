@@ -31,7 +31,9 @@ import org.apache.submarine.server.environment.EnvironmentManager;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.submarine.server.notebook.database.NotebookService;
 import org.slf4j.Logger;
@@ -81,7 +83,17 @@ public class NotebookManager {
     String lowerName = spec.getMeta().getName().toLowerCase();
     spec.getMeta().setName(lowerName);
     NotebookId notebookId = generateNotebookId();
+
+    Map<String, String> labels = spec.getMeta().getLabels();
+
+    if (labels == null) {
+      labels = new HashMap<>();
+    }
+    labels.put("notebook-owner-id", spec.getMeta().getOwnerId());
+    labels.put("notebook-id", notebookId.toString());
+    spec.getMeta().setLabels(labels);
     Notebook notebook = submitter.createNotebook(spec);
+
     notebook.setNotebookId(notebookId);
     notebook.setSpec(spec);
 
@@ -197,6 +209,13 @@ public class NotebookManager {
     if (spec == null) {
       throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
           "Invalid. Notebook Spec object is null.");
+    }
+    List<Notebook> serviceNotebooks = notebookService.selectAll();
+    for (Notebook notebook: serviceNotebooks) {
+      if (notebook.getSpec().getMeta().getName().equals(spec.getMeta().getName())) {
+        throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+          "Invalid. Notebook with same name is already existed.");
+      }
     }
   }
 

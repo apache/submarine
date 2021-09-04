@@ -19,10 +19,13 @@
 
 package org.apache.submarine.server.api.spec;
 
+import java.util.Map;
+
 public class NotebookMeta {
   private String name;
   private String namespace;
   private String ownerId;
+  private Map<String, String> labels;
 
   public NotebookMeta() {
 
@@ -75,4 +78,20 @@ public class NotebookMeta {
   public void setOwnerId(String ownerId) {
     this.ownerId = ownerId;
   }
+
+  /**
+   * Set the labels on Notebook
+   * @param Map labels
+   */
+  public Map<String, String> getLabels() {
+    return labels;
+  }
+  /**
+   * get labels on Notebook
+   * @return labels
+   */
+  public void setLabels(Map<String, String> labels) {
+    this.labels = labels;
+  }
+
 }

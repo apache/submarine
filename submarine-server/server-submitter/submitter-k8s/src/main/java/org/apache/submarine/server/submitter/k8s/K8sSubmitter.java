@@ -38,6 +38,8 @@ import io.kubernetes.client.apis.CoreV1Api;
 import io.kubernetes.client.apis.CustomObjectsApi;
 import io.kubernetes.client.models.V1DeleteOptionsBuilder;
 import io.kubernetes.client.models.V1Deployment;
+import io.kubernetes.client.models.V1Event;
+import io.kubernetes.client.models.V1EventList;
 import io.kubernetes.client.models.V1ObjectMeta;
 import io.kubernetes.client.models.V1PersistentVolumeClaim;
 import io.kubernetes.client.models.V1Pod;
@@ -371,9 +373,7 @@ public class K8sSubmitter implements Submitter {
     NotebookCR notebookCR;
     try {
       notebookCR = NotebookSpecParser.parseNotebook(spec);
-      Map<String, String> labels = new HashMap<>();
-      labels.put(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET, spec.getMeta().getOwnerId());
-      notebookCR.getMetadata().setLabels(labels);
+
       notebookCR.getMetadata().setNamespace(namespace);
       notebookCR.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
     } catch (JsonSyntaxException e) {
@@ -429,10 +429,30 @@ public class K8sSubmitter implements Submitter {
 
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
+
       Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
           namespace,
           notebookCR.getPlural(), notebookCR.getMetadata().getName());
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
+      if (notebook.getStatus().equals(Notebook.Status.STATUS_WAITING.toString())) {
+        LOG.info(String.format("notebook status: waiting; check the pods in namespace:[%s] to "
+            + "ensure is the waiting caused by image pulling", namespace));
+        String podLabelSelector = String.format("%s=%s", NotebookCR.NOTEBOOK_ID,
+            spec.getMeta().getLabels().get(NotebookCR.NOTEBOOK_ID).toString());
+
+        V1PodList podList = coreApi.listNamespacedPod(namespace, null, null, null, podLabelSelector,
+            null, null, null, null);
+        String podName = podList.getItems().get(0).getMetadata().getName();
+        String fieldSelector = String.format("involvedObject.name=%s", podName);
+        V1EventList events = coreApi.listNamespacedEvent(namespace, null, null, fieldSelector,
+            null, null, null, null, null);
+        V1Event latestEvent = events.getItems().get(events.getItems().size() - 1);
+
+        if (latestEvent.getReason().equalsIgnoreCase("Pulling")) {
+          notebook.setStatus(Notebook.Status.STATUS_PULLING.getValue());
+          notebook.setReason(latestEvent.getReason());
+        }  
+      }
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -470,7 +490,7 @@ public class K8sSubmitter implements Submitter {
     try {
       Object object = api.listNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
           NotebookCR.CRD_NOTEBOOK_VERSION_V1, namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1,
-          "true", null, NotebookCR.NOTEBOOK_OWNER_SELECTOR_KET + "=" + id,
+          "true", null, NotebookCR.NOTEBOOK_OWNER_SELECTOR_KEY + "=" + id,
           null, null, null);
       notebookList = NotebookUtils.parseObjectForList(object);
     } catch (ApiException e) {
