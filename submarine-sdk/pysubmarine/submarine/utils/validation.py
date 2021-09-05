@@ -18,6 +18,7 @@ Utilities for validating user inputs such as metric names and parameter names.
 import numbers
 import posixpath
 import re
+from datetime import datetime
 
 from submarine.exceptions import SubmarineException
 from submarine.store.database.db_types import DATABASE_ENGINES
@@ -92,7 +93,7 @@ def validate_metric(key, value, timestamp, step):
             "double (64-bit floating point)" % (value, key, timestamp),
         )
 
-    if not isinstance(timestamp, numbers.Number) or timestamp < 0:
+    if not isinstance(timestamp, datetime):
         raise SubmarineException(
             "Got invalid timestamp %s for metric '%s' (value=%s). Timestamp must be a nonnegative "
             "long (64-bit integer) " % (timestamp, key, value),

@@ -19,7 +19,7 @@ Submarine run. This module is exposed to users at the top-level :py:mod:`submari
 from __future__ import print_function
 
 import logging
-import time
+from datetime import datetime
 
 from submarine.tracking.client import SubmarineClient
 from submarine.tracking.utils import get_job_id, get_worker_index
