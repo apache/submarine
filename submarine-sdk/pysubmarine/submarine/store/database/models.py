@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
-from typing import Any
+from datetime import datetime
 
 import sqlalchemy as sa
-from sqlalchemy import (Integer, BigInteger, Boolean, Text, DateTime, Column, PrimaryKeyConstraint,
+from sqlalchemy import (Integer, BigInteger, Boolean, Text, Column, PrimaryKeyConstraint,
                         String, ForeignKey, ForeignKeyConstraint)
+from sqlalchemy.dialects.mysql import DATETIME
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 from submarine.entities import Metric, Param, Experiment
@@ -45,12 +45,12 @@ class SqlRegisteredModel(Base):
     Name for registered models: Part of *Primary Key* for ``registered_model`` table.
     """
 
-    creation_time = Column(DateTime, default=lambda: int(time.time() * 1000))
+    creation_time = Column(DATETIME(fsp=3), default=datetime.now())
     """
     Creation time of registered models: default current time in milliseconds
     """
 
-    last_updated_time = Column(DateTime, nullable=True, default=None)
+    last_updated_time = Column(DATETIME(fsp=3), nullable=True, default=None)
     """
     Last updated time of registered model
     """
@@ -160,12 +160,12 @@ class SqlModelVersion(Base):
     Current stage of this model: it can be `None`, `Staging`, `Production` and `Achieved`
     """
 
-    creation_time = Column(DateTime, default=lambda: int(time.time() * 1000))
+    creation_time = Column(DATETIME(fsp=3), default=datetime.now())
     """
     Creation time of this model version: default current time in milliseconds
     """
 
-    last_updated_time = Column(DateTime, nullable=True, default=None)
+    last_updated_time = Column(DATETIME(fsp=3), nullable=True, default=None)
     """
     Last updated time of this model version
     """
@@ -297,7 +297,7 @@ class SqlExperiment(Base):
     """
     This experiment is created by whom.
     """
-    create_time = Column(DateTime)
+    create_time = Column(DATETIME(fsp=3), default=datetime.now())
     """
     Datetime of this experiment be created
     """
@@ -305,7 +305,7 @@ class SqlExperiment(Base):
     """
     This experiment is created by whom.
     """
-    update_time = Column(DateTime)
+    update_time = Column(DATETIME(fsp=3))
     """
     Datetime of this experiment be updated
     """
@@ -363,9 +363,9 @@ class SqlMetric(Base):
     Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for
     ``metric`` table.
     """
-    timestamp = Column(DateTime, default=lambda: int(time.time()))
+    timestamp = Column(DATETIME(fsp=3), default=datetime.now())
     """
-    Timestamp recorded for this metric entry: `DateTime`. Part of *Primary Key* for
+    Timestamp recorded for this metric entry: `DATETIME`. Part of *Primary Key* for
     ``metric`` table.
     """
     step = Column(BigInteger, default=0, nullable=False)

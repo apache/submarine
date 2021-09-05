@@ -14,8 +14,8 @@
 DROP TABLE IF EXISTS `registered_model`;
 CREATE TABLE `registered_model` (
 	`name` VARCHAR(256) NOT NULL,
-	`creation_time` DATETIME,
-	`last_updated_time` DATETIME,
+	`creation_time` DATETIME(3) COMMENT 'Millisecond precision',
+	`last_updated_time` DATETIME(3) COMMENT 'Millisecond precision',
 	`description` VARCHAR(5000),
 	CONSTRAINT `registered_model_pk` PRIMARY KEY (`name`),
 	UNIQUE (`name`)
@@ -36,8 +36,8 @@ CREATE TABLE `model_version` (
 	`user_id` VARCHAR(64) NOT NULL COMMENT 'Id of the created user',
 	`experiment_id` VARCHAR(64) NOT NULL,
 	`current_stage` VARCHAR(20) COMMENT 'Model stage ex: None, production...',
-	`creation_time` DATETIME,
-	`last_updated_time` DATETIME,
+	`creation_time` DATETIME(3) COMMENT 'Millisecond precision',
+	`last_updated_time` DATETIME(3) COMMENT 'Millisecond precision',
 	`source` VARCHAR(512) COMMENT 'Model saved link',
 	`dataset` VARCHAR(256) COMMENT 'Which dataset is used',
 	`description` VARCHAR(5000),
@@ -60,8 +60,9 @@ CREATE TABLE `metric` (
 	`key` VARCHAR(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metric`` table.',
 	`value` FLOAT NOT NULL COMMENT 'Metric value: `Float`. Defined as *Non-null* in schema.',
 	`worker_index` VARCHAR(32) NOT NULL COMMENT 'Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
-	`timestamp` DATETIME NOT NULL COMMENT 'Timestamp recorded for this metric entry: `DATETIME`. Part of *Primary Key* for   ``metrics`` table.',
-	`step` INTEGER NOT NULL COMMENT 'Step recorded for this metric entry: `DATETIME`.',
+	`timestamp` DATETIME(3) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `DATETIME` (millisecond precision). 
+											 Part of *Primary Key* for   ``metrics`` table.',
+	`step` INTEGER NOT NULL COMMENT 'Step recorded for this metric entry: `INTEGER`.',
 	`is_nan` BOOLEAN NOT NULL COMMENT 'True if the value is in fact NaN.',
 	CONSTRAINT `metric_pk` PRIMARY KEY  (`id`, `key`, `timestamp`, `worker_index`),
 	FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE ON DELETE CASCADE

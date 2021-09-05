@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -42,7 +41,7 @@ public class MetricServiceTest {
 
   // Id of metric is a foreign key for experiment id so experiment must be created before test.
   @Before
-  public void createExperiment() throws Exception {
+  public void createExperiment() {
     ExperimentEntity entity = new ExperimentEntity();
     String id = "test_application_1234";
     String spec = "{\"value\": 1}";
@@ -66,8 +65,7 @@ public class MetricServiceTest {
 
   @Test
   public void testSelect() throws Exception {
-    String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-    Timestamp timestamp = Timestamp.valueOf(dateStr);
+    Timestamp timestamp = new Timestamp(new Date().getTime());
 
     Metric metric = new Metric();
     metric.setId("test_application_1234");
@@ -92,8 +90,7 @@ public class MetricServiceTest {
 
   @Test
   public void testUpdate() throws Exception {
-    String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-    Timestamp timestamp = Timestamp.valueOf(dateStr);
+    Timestamp timestamp = new Timestamp(new Date().getTime());
 
     Metric metric = new Metric();
     metric.setId("test_application_1234");
@@ -106,8 +103,7 @@ public class MetricServiceTest {
     boolean result = metricService.insert(metric);
     assertTrue(result);
 
-    dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-    Timestamp nextTimestamp = Timestamp.valueOf(dateStr);
+    Timestamp nextTimestamp = new Timestamp(new Date().getTime());
 
     metric.setId("test_application_1234");
     metric.setKey("test_scoreNew");
@@ -126,8 +122,7 @@ public class MetricServiceTest {
 
   @Test
   public void testDelete() throws Exception {
-    String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-    Timestamp timestamp = Timestamp.valueOf(dateStr);
+    Timestamp timestamp = new Timestamp(new Date().getTime());
 
     Metric metric = new Metric();
     metric.setId("test_application_1234");
