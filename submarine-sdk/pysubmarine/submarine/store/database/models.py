@@ -38,11 +38,11 @@ Base = declarative_base()
 Base: Any = declarative_base()
 
 class SqlRegisteredModel(Base):
-    __tablename__ = "registered_models"
+    __tablename__ = "registered_model"
 
     name = Column(String(256), unique=True, nullable=False)
     """
-    Name for registered models: Part of *Primary Key* for ``registered_models`` table.
+    Name for registered models: Part of *Primary Key* for ``registered_model`` table.
     """
 
     creation_time = Column(DateTime, default=lambda: int(time.time() * 1000))
@@ -52,12 +52,12 @@ class SqlRegisteredModel(Base):
 
     last_updated_time = Column(DateTime, nullable=True, default=None)
     """
-    Last updated time of registered models
+    Last updated time of registered model
     """
 
     description = Column(String(5000), nullable=True, default="")
     """
-    Description for registered models
+    Description for registered model
     """
 
     __table_args__ = (PrimaryKeyConstraint("name", name="registered_model_pk"),)
@@ -76,7 +76,7 @@ class SqlRegisteredModel(Base):
                                creation_time=self.creation_time,
                                last_updated_time=self.last_updated_time,
                                description=self.description,
-                               tags=[tag.to_submarine_entity for tag in self.registered_model_tags])
+                               tags=[tag.to_submarine_entity for tag in self.registered_model_tag])
 
 
 # +---------------------+-------+
@@ -89,24 +89,24 @@ class SqlRegisteredModel(Base):
 
 
 class SqlRegisteredModelTag(Base):
-    __tablename__ = 'registered_model_tags'
+    __tablename__ = 'registered_model_tag'
 
     name = Column(String(256),
-                  ForeignKey("registered_models.name", onupdate="cascade", ondelete="cascade"))
+                  ForeignKey("registered_model.name", onupdate="cascade", ondelete="cascade"))
     """
-    Name for registered models: Part of *Primary Key* for ``registered_model_tags`` table. Refer to
-    name of ``registered_models`` table.
+    Name for registered models: Part of *Primary Key* for ``registered_model_tag`` table. Refer to
+    name of ``registered_model`` table.
     """
 
     tag = Column(String(256), nullable=False)
     """
     Registered model tag: `String` (limit 256 characters). Part of *Primary Key* for
-    ``registered_model_tags`` table.
+    ``registered_model_tag`` table.
     """
 
     # linked entities
     registered_model = relationship(
-        "SqlRegisteredModel", backref=backref("registered_model_tags", cascade="all")
+        "SqlRegisteredModel", backref=backref("registered_model_tag", cascade="all")
     )
 
     __table_args__ = (PrimaryKeyConstraint("name", "tag", name="registered_model_tag_pk"),)
@@ -132,17 +132,17 @@ class SqlRegisteredModelTag(Base):
 
 
 class SqlModelVersion(Base):
-    __tablename__ = 'model_versions'
+    __tablename__ = 'model_version'
 
-    name = Column(String(256), ForeignKey("registered_models.name", onupdate="cascade"))
+    name = Column(String(256), ForeignKey("registered_model.name", onupdate="cascade"))
     """
-    Name for registered models: Part of *Primary Key* for ``registered_model_tags`` table. Refer to
-    name of ``registered_models`` table.
+    Name for registered models: Part of *Primary Key* for ``registered_model_tag`` table. Refer to
+    name of ``registered_model`` table.
     """
 
     version = Column(Integer, nullable=False)
     """
-    Model version: Part of *Primary Key* for ``registered_model_tags`` table.
+    Model version: Part of *Primary Key* for ``registered_model_tag`` table.
     """
 
     user_id = Column(String(64), nullable=False)
@@ -187,7 +187,7 @@ class SqlModelVersion(Base):
 
     # linked entities
     registered_model = relationship(
-        "SqlRegisteredModel", backref=backref("model_versions", cascade="all")
+        "SqlRegisteredModel", backref=backref("model_version", cascade="all")
     )
 
     __table_args__ = (PrimaryKeyConstraint("name", "version", name="model_version_pk"),)
@@ -213,7 +213,7 @@ class SqlModelVersion(Base):
                             source=self.source,
                             dataset=self.dataset,
                             description=self.description,
-                            tags=[tag.to_submarine_entity for tag in self.model_tags])
+                            tags=[tag.to_submarine_entity for tag in self.model_tag])
 
 
 # +---------------------+---------+-----------------+
@@ -227,38 +227,38 @@ class SqlModelVersion(Base):
 
 
 class SqlModelTag(Base):
-    __tablename__ = 'model_tags'
+    __tablename__ = 'model_tag'
 
     name = Column(String(256), nullable=False)
     """
-    Name for registered models: Part of *Foreign Key* for ``model_tags`` table. Refer to
-    name of ``model_versions`` table.
+    Name for registered models: Part of *Foreign Key* for ``model_tag`` table. Refer to
+    name of ``model_version`` table.
     """
 
     version = Column(Integer, nullable=False)
     """
-    version of model: Part of *Foreign Key* for ``model_tags`` table. Refer to
-    version of ``model_versions`` table.
+    version of model: Part of *Foreign Key* for ``model_tag`` table. Refer to
+    version of ``model_version`` table.
     """
 
     tag = Column(String(256), nullable=False)
     """
     tag of model version: `String` (limit 256 characters). Part of *Primary Key* for
-    ``model_tags`` table.
+    ``model_tag`` table.
     """
 
     # linked entities
     model_version = relationship(
         "SqlModelVersion",
         foreign_keys=[name, version],
-        backref=backref("model_tags", cascade="all")
+        backref=backref("model_tag", cascade="all")
     )
 
     __table_args__ = (
         PrimaryKeyConstraint("name", "tag", name="model_tag_pk"),
         ForeignKeyConstraint(
             ("name", "version"),
-            ("model_versions.name", "model_versions.version"),
+            ("model_version.name", "model_version.version"),
             onupdate="cascade",
             ondelete="cascade",
         ),
@@ -343,16 +343,16 @@ class SqlExperiment(Base):
 
 
 class SqlMetric(Base):
-    __tablename__ = "metrics"
+    __tablename__ = 'metric'
 
     id = Column(String(64), ForeignKey("experiment.id", onupdate="cascade", ondelete="cascade"))
     """
     ID to which this metric belongs to: *Foreign Key* for ``experiment`` table.
-    Part of *Primary Key* for ``metrics`` table.
+    Part of *Primary Key* for ``metric`` table.
     """
     key = Column(String(190))
     """
-    Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.
+    Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metric`` table.
     """
     value = Column(sa.types.Float(precision=53), nullable=False)
     """
@@ -361,12 +361,12 @@ class SqlMetric(Base):
     worker_index = Column(String(64))
     """
     Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for
-    ``metrics`` table.
+    ``metric`` table.
     """
     timestamp = Column(DateTime, default=lambda: int(time.time()))
     """
     Timestamp recorded for this metric entry: `DateTime`. Part of *Primary Key* for
-    ``metrics`` table.
+    ``metric`` table.
     """
     step = Column(BigInteger, default=0, nullable=False)
     """
@@ -410,16 +410,16 @@ class SqlMetric(Base):
 
 
 class SqlParam(Base):
-    __tablename__ = "params"
+    __tablename__ = 'param'
 
     id = Column(String(64), ForeignKey("experiment.id", onupdate="cascade", ondelete="cascade"))
     """
     ID to which this parameter belongs to: *Foreign Key* for ``experiment`` table.
-    Part of *Primary Key* for ``params`` table.
+    Part of *Primary Key* for ``param`` table.
     """
     key = Column(String(190))
     """
-    Param key: `String` (limit 190 characters). Part of *Primary Key* for ``params`` table.
+    Param key: `String` (limit 190 characters). Part of *Primary Key* for ``param`` table.
     """
     value = Column(String(190), nullable=False)
     """
@@ -428,7 +428,7 @@ class SqlParam(Base):
     worker_index = Column(String(32), nullable=False)
     """
     Param worker_index: `String` (limit 32 characters). Part of *Primary Key* for
-    ``metrics`` table.
+    ``metric`` table.
     """
 
     __table_args__ = (PrimaryKeyConstraint("id", "key", "worker_index", name="param_pk"),)

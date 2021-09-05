@@ -37,30 +37,30 @@
   <select id="selectAll" parameterType="java.lang.String" resultMap="resultMap">
     select
     <include refid="Base_Column_List" />
-    from params
+    from param
     where 1 = 1
   </select>
 
   <select id="selectById" parameterType="java.lang.String" resultMap="resultMap">
     select
     <include refid="Base_Column_List" />
-    from params
+    from param
     where id = #{id,jdbcType=VARCHAR}
   </select>
 
   <delete id="deleteById" parameterType="java.lang.String">
-    delete from params
+    delete from param
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Param"
           keyProperty="id, key, worker_index">
-    insert into params (id, `key`, value, worker_index)
+    insert into param (id, `key`, value, worker_index)
     values (#{id,jdbcType=VARCHAR}, #{key,jdbcType=VARCHAR}, #{value,jdbcType=FLOAT}, #{workerIndex,jdbcType=VARCHAR})
   </insert>
 
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Param">
-    update params
+    update param
     set `key` = #{key,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},
       worker_index = #{workerIndex,jdbcType=VARCHAR}
@@ -70,7 +70,7 @@
   <select id="selectByPrimaryKeySelective" parameterType="java.lang.String" resultMap="resultMap">
     select
     <include refid="Base_Column_List" />
-    from params
+    from param
     where 1 = 1
       <if test="key != null">
         AND `key` = #{key,jdbcType=VARCHAR}
