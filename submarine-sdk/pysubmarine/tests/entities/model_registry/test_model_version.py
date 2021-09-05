@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
+from datetime import datetime
 from submarine.entities.model_registry.model_version import ModelVersion
 from submarine.entities.model_registry.model_tag import ModelTag
 from submarine.entities.model_registry.model_version_stages import STAGE_NONE
@@ -26,8 +26,8 @@ class TestModelVersion():
         "user_id": "admin",
         "experiment_id": "experiment_1",
         "current_stage": STAGE_NONE,
-        "creation_time": int(time.time()),
-        "last_updated_time": int(time.time()),
+        "creation_time": datetime.now(),
+        "last_updated_time": datetime.now(),
         "source": "path/to/source",
         "dataset": "test",
         "description": "registered model description",
@@ -88,8 +88,8 @@ class TestModelVersion():
                     self.default_data["tags"])
 
     def test_with_tags(self):
-        tag1 = ModelVersionTag("tag1")
-        tag2 = ModelVersionTag("tag2")
+        tag1 = ModelTag("tag1")
+        tag2 = ModelTag("tag2")
         tags = [tag1, tag2]
         mv = ModelVersion(self.default_data["name"],
                           self.default_data["version"],

@@ -27,7 +27,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -64,12 +66,15 @@ public class MetricServiceTest {
 
   @Test
   public void testSelect() throws Exception {
+    String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    Timestamp timestamp = Timestamp.valueOf(dateStr);
+
     Metric metric = new Metric();
     metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
     metric.setWorkerIndex("test_worker-1");
-    metric.setTimestamp(new BigInteger("1569139525097"));
+    metric.setTimestamp(timestamp);
     metric.setStep(0);
     metric.setIsNan(false);
     boolean result = metricService.insert(metric);
@@ -87,22 +92,28 @@ public class MetricServiceTest {
 
   @Test
   public void testUpdate() throws Exception {
+    String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    Timestamp timestamp = Timestamp.valueOf(dateStr);
+
     Metric metric = new Metric();
     metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
     metric.setWorkerIndex("test_worker-2");
-    metric.setTimestamp(new BigInteger("1569139525098"));
+    metric.setTimestamp(timestamp);
     metric.setStep(0);
     metric.setIsNan(false);
     boolean result = metricService.insert(metric);
     assertTrue(result);
 
+    dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    Timestamp nextTimestamp = Timestamp.valueOf(dateStr);
+
     metric.setId("test_application_1234");
     metric.setKey("test_scoreNew");
     metric.setValue((float) 0.766667);
     metric.setWorkerIndex("test_worker-New");
-    metric.setTimestamp(new BigInteger("2569139525098"));
+    metric.setTimestamp(nextTimestamp);
     metric.setStep(1);
     metric.setIsNan(true);
 
@@ -115,12 +126,15 @@ public class MetricServiceTest {
 
   @Test
   public void testDelete() throws Exception {
+    String dateStr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+    Timestamp timestamp = Timestamp.valueOf(dateStr);
+
     Metric metric = new Metric();
     metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
     metric.setWorkerIndex("test_worker-2");
-    metric.setTimestamp(new BigInteger("1569139525098"));
+    metric.setTimestamp(timestamp);
     metric.setStep(0);
     metric.setIsNan(false);
     boolean result = metricService.insert(metric);

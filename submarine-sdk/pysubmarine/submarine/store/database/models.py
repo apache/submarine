@@ -45,12 +45,12 @@ class SqlRegisteredModel(Base):
     Name for registered models: Part of *Primary Key* for ``registered_models`` table.
     """
 
-    creation_time = Column(BigInteger, default=lambda: int(time.time() * 1000))
+    creation_time = Column(DateTime, default=lambda: int(time.time() * 1000))
     """
     Creation time of registered models: default current time in milliseconds
     """
 
-    last_updated_time = Column(BigInteger, nullable=True, default=None)
+    last_updated_time = Column(DateTime, nullable=True, default=None)
     """
     Last updated time of registered models
     """
@@ -160,12 +160,12 @@ class SqlModelVersion(Base):
     Current stage of this model: it can be `None`, `Staging`, `Production` and `Achieved`
     """
 
-    creation_time = Column(BigInteger, default=lambda: int(time.time() * 1000))
+    creation_time = Column(DateTime, default=lambda: int(time.time() * 1000))
     """
     Creation time of this model version: default current time in milliseconds
     """
 
-    last_updated_time = Column(BigInteger, nullable=True, default=None)
+    last_updated_time = Column(DateTime, nullable=True, default=None)
     """
     Last updated time of this model version
     """
@@ -299,7 +299,7 @@ class SqlExperiment(Base):
     """
     create_time = Column(DateTime)
     """
-    Time of this experiment be created
+    Datetime of this experiment be created
     """
     update_by = Column(String(32))
     """
@@ -307,7 +307,7 @@ class SqlExperiment(Base):
     """
     update_time = Column(DateTime)
     """
-    Time of this experiment be updated
+    Datetime of this experiment be updated
     """
 
     __table_args__ = (PrimaryKeyConstraint('id'),)
@@ -363,9 +363,9 @@ class SqlMetric(Base):
     Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for
     ``metrics`` table.
     """
-    timestamp = Column(BigInteger, default=lambda: int(time.time()))
+    timestamp = Column(DateTime, default=lambda: int(time.time()))
     """
-    Timestamp recorded for this metric entry: `BigInteger`. Part of *Primary Key* for
+    Timestamp recorded for this metric entry: `DateTime`. Part of *Primary Key* for
     ``metrics`` table.
     """
     step = Column(BigInteger, default=0, nullable=False)

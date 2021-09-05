@@ -45,7 +45,7 @@ class Metric(_SubmarineObject):
 
     @property
     def timestamp(self):
-        """Metric timestamp as an integer (milliseconds since the Unix epoch)."""
+        """Metric timestamp as aa datetime object."""
         return self._timestamp
 
     @property

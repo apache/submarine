@@ -52,7 +52,7 @@ class ModelVersion(_SubmarineObject):
 
     @property
     def version(self):
-        """version"""
+        """String. version"""
         return self._version
 
     @property
@@ -67,13 +67,12 @@ class ModelVersion(_SubmarineObject):
 
     @property
     def creation_time(self):
-        """Integer. Model version creation timestamp (milliseconds since the Unix epoch)."""
+        """Datetime object. Model version creation timestamp."""
         return self._creation_time
 
     @property
     def last_updated_time(self):
-        """Integer. Timestamp of last update for this model version (milliseconds since the Unix
-        epoch)."""
+        """Datetime object. Timestamp of last update for this model version."""
         return self._last_updated_time
 
     @property
@@ -98,7 +97,7 @@ class ModelVersion(_SubmarineObject):
 
     @property
     def tags(self):
-        """List of tags"""
+        """List of strings"""
         return self._tags
 
     def _add_tag(self, tag):

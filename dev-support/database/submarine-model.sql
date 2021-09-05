@@ -14,8 +14,8 @@
 DROP TABLE IF EXISTS `registered_models`;
 CREATE TABLE `registered_models` (
 	`name` VARCHAR(256) NOT NULL,
-	`creation_time` BIGINT,
-	`last_updated_time` BIGINT,
+	`creation_time` DATETIME,
+	`last_updated_time` DATETIME,
 	`description` VARCHAR(5000),
 	CONSTRAINT `registered_models_pk` PRIMARY KEY (`name`),
 	UNIQUE (`name`)
@@ -36,8 +36,8 @@ CREATE TABLE `model_versions` (
 	`user_id` VARCHAR(64) NOT NULL COMMENT 'Id of the created user',
 	`experiment_id` VARCHAR(64) NOT NULL,
 	`current_stage` VARCHAR(20) COMMENT 'Model stage ex: None, production...',
-	`creation_time` BIGINT,
-	`last_updated_time` BIGINT,
+	`creation_time` DATETIME,
+	`last_updated_time` DATETIME,
 	`source` VARCHAR(512) COMMENT 'Model saved link',
 	`dataset` VARCHAR(256) COMMENT 'Which dataset is used',
 	`description` VARCHAR(5000),
@@ -56,12 +56,12 @@ CREATE TABLE `model_tags` (
 
 DROP TABLE IF EXISTS `metrics`;
 CREATE TABLE `metrics` (
-	`id` varchar(64) NOT NULL COMMENT 'Id of the Experiment',
-	`key` varchar(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.',
-	`value` float NOT NULL COMMENT 'Metric value: `Float`. Defined as *Non-null* in schema.',
-	`worker_index` varchar(32) NOT NULL COMMENT 'Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
-	`timestamp` bigint(20) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `BigInteger`. Part of *Primary Key* for   ``metrics`` table.',
-	`step` bigint(11) NOT NULL COMMENT 'Step recorded for this metric entry: `BigInteger`.',
+	`id` VARCHAR(64) NOT NULL COMMENT 'Id of the Experiment',
+	`key` VARCHAR(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metrics`` table.',
+	`value` FLOAT NOT NULL COMMENT 'Metric value: `Float`. Defined as *Non-null* in schema.',
+	`worker_index` VARCHAR(32) NOT NULL COMMENT 'Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
+	`timestamp` DATETIME NOT NULL COMMENT 'Timestamp recorded for this metric entry: `DATETIME`. Part of *Primary Key* for   ``metrics`` table.',
+	`step` INTEGER NOT NULL COMMENT 'Step recorded for this metric entry: `DATETIME`.',
 	`is_nan` BOOLEAN NOT NULL COMMENT 'True if the value is in fact NaN.',
 	CONSTRAINT `metrics_pk` PRIMARY KEY  (`id`, `key`, `timestamp`, `worker_index`),
 	FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
@@ -69,10 +69,10 @@ CREATE TABLE `metrics` (
 
 DROP TABLE IF EXISTS `params`;
 CREATE TABLE `params` (
-	`id` varchar(64) NOT NULL COMMENT 'Id of the Experiment',
-	`key` varchar(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
-	`value` varchar(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
-	`worker_index` varchar(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
+	`id` VARCHAR(64) NOT NULL COMMENT 'Id of the Experiment',
+	`key` VARCHAR(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``params`` table.',
+	`value` VARCHAR(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
+	`worker_index` VARCHAR(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
 	CONSTRAINT `params_pk` PRIMARY KEY  (`id`, `key`, `worker_index`),
 	FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

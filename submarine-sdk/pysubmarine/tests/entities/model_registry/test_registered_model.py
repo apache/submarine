@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
+from datetime import datetime
 
 from submarine.entities.model_registry.registered_model import RegisteredModel
 from submarine.entities.model_registry.registered_model_tag import RegisteredModelTag
@@ -22,8 +22,8 @@ from submarine.entities.model_registry.registered_model_tag import RegisteredMod
 class TestRegisteredModel():
     default_data = {
         "name": "test",
-        "creation_time": int(time.time()),
-        "last_updated_time": int(time.time()),
+        "creation_time": datetime.now(),
+        "last_updated_time": datetime.now(),
         "description": "registered model description",
         "tags": []
     }

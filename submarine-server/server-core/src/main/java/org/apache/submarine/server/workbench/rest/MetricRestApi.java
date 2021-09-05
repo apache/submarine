@@ -18,15 +18,12 @@
  */
 package org.apache.submarine.server.workbench.rest;
 
+import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.Metric;
 import org.apache.submarine.server.workbench.database.service.MetricService;
-import org.apache.submarine.server.response.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigInteger;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -39,6 +36,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import java.sql.Timestamp;
+import java.util.List;
 
 @Path("/metric")
 @Produces("application/json")
@@ -57,7 +56,7 @@ public class MetricRestApi {
   public Response listMetric(@QueryParam("metricKey") String metricKey,
                               @QueryParam("value") Float value,
                               @QueryParam("workerIndex") String workerIndex,
-                              @QueryParam("timestamp") BigInteger timestamp,
+                              @QueryParam("timestamp") Timestamp timestamp,
                               @QueryParam("step") Integer step,
                               @QueryParam("isNan") Boolean isNan,
                               @QueryParam("id") String id) {

@@ -47,7 +47,7 @@ class Experiment(_SubmarineObject):
 
     @property
     def create_time(self):
-        """Integer of create time."""
+        """Datetime of create time."""
         return self._create_time
 
     @property
@@ -57,5 +57,5 @@ class Experiment(_SubmarineObject):
 
     @property
     def update_time(self):
-        """Integer of update time."""
+        """Datetime of update time."""
         return self._update_time

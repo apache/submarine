@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
 import unittest
 from datetime import datetime
 
@@ -64,8 +63,8 @@ class TestSqlAlchemyStore(unittest.TestCase):
             assert params[0].id == JOB_ID
 
     def test_log_metric(self):
-        metric1 = Metric("name_1", 5, "worker-1", int(time.time()), 0)
-        metric2 = Metric("name_1", 6, "worker-2", int(time.time()) + 1, 0)
+        metric1 = Metric("name_1", 5, "worker-1", datetime.now(), 0)
+        metric2 = Metric("name_1", 6, "worker-2", datetime.now(), 0)
         self.store.log_metric(JOB_ID, metric1)
         self.store.log_metric(JOB_ID, metric2)
 
