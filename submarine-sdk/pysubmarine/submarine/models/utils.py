@@ -58,13 +58,13 @@ def get_worker_index():
         task_config = tf_config.get(_TASK)
         task_type = task_config.get(_TYPE)
         task_index = task_config.get(_INDEX)
-        worker_index = task_type + '-' + str(task_index)
+        worker_index = task_type + "-" + str(task_index)
     elif env.get_env(_CLUSTER_SPEC) is not None:
         cluster_spec = json.loads(os.environ.get(_CLUSTER_SPEC))
         task_config = cluster_spec.get(_TASK)
         task_type = task_config.get(_JOB_NAME)
         task_index = task_config.get(_INDEX)
-        worker_index = task_type + '-' + str(task_index)
+        worker_index = task_type + "-" + str(task_index)
     # Get PyTorch worker index
     elif env.get_env(_RANK) is not None:
         rank = env.get_env(_RANK)

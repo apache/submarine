@@ -16,8 +16,7 @@
 import time
 
 import sqlalchemy as sa
-from sqlalchemy import (BigInteger, Boolean, Column, PrimaryKeyConstraint,
-                        String)
+from sqlalchemy import BigInteger, Boolean, Column, PrimaryKeyConstraint, String
 from sqlalchemy.ext.declarative import declarative_base
 
 from submarine.entities import Metric, Param
@@ -36,7 +35,7 @@ Base = declarative_base()
 
 
 class SqlMetric(Base):
-    __tablename__ = 'metrics'
+    __tablename__ = "metrics"
 
     id = Column(String(64))
     """
@@ -69,28 +68,27 @@ class SqlMetric(Base):
     True if the value is in fact NaN.
     """
 
-    __table_args__ = (PrimaryKeyConstraint('id',
-                                           'key',
-                                           'timestamp',
-                                           'worker_index',
-                                           name='metric_pk'),)
+    __table_args__ = (
+        PrimaryKeyConstraint("id", "key", "timestamp", "worker_index", name="metric_pk"),
+    )
 
     def __repr__(self):
-        return '<SqlMetric({}, {}, {}, {}, {})>'.format(self.key, self.value,
-                                                        self.worker_index,
-                                                        self.timestamp,
-                                                        self.step)
+        return "<SqlMetric({}, {}, {}, {}, {})>".format(
+            self.key, self.value, self.worker_index, self.timestamp, self.step
+        )
 
     def to_submarine_entity(self):
         """
         Convert DB model to corresponding Submarine entity.
         :return: :py:class:`submarine.entities.Metric`.
         """
-        return Metric(key=self.key,
-                      value=self.value if not self.is_nan else float("nan"),
-                      worker_index=self.worker_index,
-                      timestamp=self.timestamp,
-                      step=self.step)
+        return Metric(
+            key=self.key,
+            value=self.value if not self.is_nan else float("nan"),
+            worker_index=self.worker_index,
+            timestamp=self.timestamp,
+            step=self.step,
+        )
 
 
 # +-----------------------+----------+-------+--------------+
@@ -103,7 +101,7 @@ class SqlMetric(Base):
 
 
 class SqlParam(Base):
-    __tablename__ = 'params'
+    __tablename__ = "params"
 
     id = Column(String(64))
     """
@@ -123,20 +121,14 @@ class SqlParam(Base):
     ``metrics`` table.
     """
 
-    __table_args__ = (PrimaryKeyConstraint('id',
-                                           'key',
-                                           'worker_index',
-                                           name='param_pk'),)
+    __table_args__ = (PrimaryKeyConstraint("id", "key", "worker_index", name="param_pk"),)
 
     def __repr__(self):
-        return '<SqlParam({}, {}, {})>'.format(self.key, self.value,
-                                               self.worker_index)
+        return "<SqlParam({}, {}, {})>".format(self.key, self.value, self.worker_index)
 
     def to_submarine_entity(self):
         """
         Convert DB model to corresponding submarine entity.
         :return: :py:class:`submarine.entities.Param`.
         """
-        return Param(key=self.key,
-                     value=self.value,
-                     worker_index=self.worker_index)
+        return Param(key=self.key, value=self.value, worker_index=self.worker_index)

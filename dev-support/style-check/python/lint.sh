@@ -18,26 +18,13 @@ set -euxo pipefail
 
 FWDIR="$(cd "$(dirname "$0")"; pwd)"
 cd "$FWDIR"
-cd ..
+cd ../../../
 
-pycodestyle --max-line-length=100  -- submarine tests
-pylint --ignore experiment --msg-template="{path} ({line},{column}): [{msg_id} {symbol}] {msg}" --rcfile=pylintrc -- submarine tests
-./github-actions/auto-format.sh
-
-GIT_STATUS="$(git status --porcelain)"
-# Only check the files in ./pysubmarine
-GIT_DIFF="$(git diff .)"
-if [ "$GIT_STATUS" ]; then
-	echo "Code is not formatted by yapf and isort. Please run ./github-actions/auto-format.sh"
-	echo "Git status is"
-	echo "------------------------------------------------------------------"
-	echo "$GIT_STATUS"
-	echo "Git diff ./pysubmarine is"
-	echo "------------------------------------------------------------------"
-	echo "$GIT_DIFF"
-	exit 1
-else
-	echo "Test successful"
-fi
+# Check imports
+isort -c submarine-sdk/ dev-support/ website/
+# Check code format
+black submarine-sdk/ dev-support/ website/ --check --experimental-string-processing
+# Check lint: Not checking the code in website
+flake8 submarine-sdk/ dev-support/
 
 set +euxo pipefail

@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from .ccpm import CCPM
 from .deepfm import DeepFM
 from .fm import FM
 from .nfm import NFM
-from .ccpm import CCPM
 
 __all__ = ["DeepFM", "FM", "NFM", "CCPM"]

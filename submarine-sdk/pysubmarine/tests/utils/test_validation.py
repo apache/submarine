@@ -16,10 +16,12 @@
 import pytest
 
 from submarine.exceptions import SubmarineException
-from submarine.utils.validation import (_validate_db_type_string,
-                                        _validate_length_limit,
-                                        _validate_metric_name,
-                                        _validate_param_name)
+from submarine.utils.validation import (
+    _validate_db_type_string,
+    _validate_length_limit,
+    _validate_metric_name,
+    _validate_param_name,
+)
 
 GOOD_METRIC_OR_PARAM_NAMES = [
     "a",

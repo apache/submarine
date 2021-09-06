@@ -14,10 +14,7 @@
 # limitations under the License.
 
 default_parameters = {
-    "output": {
-        "save_model_dir": "./experiment",
-        "metric": "auc"
-    },
+    "output": {"save_model_dir": "./experiment", "metric": "auc"},
     "training": {
         "batch_size": 512,
         "field_size": 39,
@@ -37,11 +34,7 @@ default_parameters = {
         "num_threads": 4,
         "num_gpu": 0,
         "seed": 77,
-        "mode": "local"
+        "mode": "local",
     },
-    "resource": {
-        "num_cpu": 4,
-        "num_gpu": 0,
-        "num_thread": 0  # tf determines automatically
-    }
+    "resource": {"num_cpu": 4, "num_gpu": 0, "num_thread": 0},  # tf determines automatically
 }

@@ -14,56 +14,54 @@
  specific language governing permissions and limitations
  under the License.
 """
-import os
-import random
-import tensorflow as tf
 import json
-from tensorflow.keras.layers.experimental import preprocessing
-import tensorflow_datasets as tfds
-import tensorboard
+import os
+
+import tensorflow as tf
+
+from submarine import ModelsClient
 
 print(tf.__version__)
 
-TF_CONFIG = os.environ.get('TF_CONFIG', '')
-NUM_PS = len(json.loads(TF_CONFIG)['cluster']['ps'])
+TF_CONFIG = os.environ.get("TF_CONFIG", "")
+NUM_PS = len(json.loads(TF_CONFIG)["cluster"]["ps"])
 cluster_resolver = tf.distribute.cluster_resolver.TFConfigClusterResolver()
 
-variable_partitioner = (
-    tf.distribute.experimental.partitioners.MinSizePartitioner(
-        min_shard_bytes=(256 << 10),
-        max_shards=NUM_PS))
+variable_partitioner = tf.distribute.experimental.partitioners.MinSizePartitioner(
+    min_shard_bytes=(256 << 10), max_shards=NUM_PS
+)
 
 strategy = tf.distribute.experimental.ParameterServerStrategy(
-    cluster_resolver,
-    variable_partitioner=variable_partitioner)
+    cluster_resolver, variable_partitioner=variable_partitioner
+)
+
 
 def dataset_fn(input_context):
-  global_batch_size = 64
-  batch_size = input_context.get_per_replica_batch_size(global_batch_size)
+    global_batch_size = 64
+    batch_size = input_context.get_per_replica_batch_size(global_batch_size)
 
-  x = tf.random.uniform((10, 10))
-  y = tf.random.uniform((10,))
+    x = tf.random.uniform((10, 10))
+    y = tf.random.uniform((10,))
 
-  dataset = tf.data.Dataset.from_tensor_slices((x, y)).shuffle(10).repeat()
-  dataset = dataset.shard(
-      input_context.num_input_pipelines,
-      input_context.input_pipeline_id)
-  dataset = dataset.batch(batch_size)
-  dataset = dataset.prefetch(2)
+    dataset = tf.data.Dataset.from_tensor_slices((x, y)).shuffle(10).repeat()
+    dataset = dataset.shard(input_context.num_input_pipelines, input_context.input_pipeline_id)
+    dataset = dataset.batch(batch_size)
+    dataset = dataset.prefetch(2)
 
-  return dataset
+    return dataset
+
 
 dc = tf.keras.utils.experimental.DatasetCreator(dataset_fn)
 
 with strategy.scope():
-  model = tf.keras.models.Sequential([tf.keras.layers.Dense(10)])
+    model = tf.keras.models.Sequential([tf.keras.layers.Dense(10)])
 
-model.compile(tf.keras.optimizers.SGD(), loss='mse', steps_per_execution=10)
+model.compile(tf.keras.optimizers.SGD(), loss="mse", steps_per_execution=10)
 
-working_dir = '/tmp/my_working_dir'
-log_dir = os.path.join(working_dir, 'log')
-ckpt_filepath = os.path.join(working_dir, 'ckpt')
-backup_dir = os.path.join(working_dir, 'backup')
+working_dir = "/tmp/my_working_dir"
+log_dir = os.path.join(working_dir, "log")
+ckpt_filepath = os.path.join(working_dir, "ckpt")
+backup_dir = os.path.join(working_dir, "backup")
 
 callbacks = [
     tf.keras.callbacks.TensorBoard(log_dir=log_dir),
@@ -71,16 +69,19 @@ callbacks = [
     tf.keras.callbacks.experimental.BackupAndRestore(backup_dir=backup_dir),
 ]
 
+# Define the checkpoint directory to store the checkpoints.
+checkpoint_dir = "./training_checkpoints"
+
 model.fit(dc, epochs=5, steps_per_epoch=20, callbacks=callbacks)
 if __name__ == "__main__":
-  modelClient = ModelsClient()
-  with modelClient.start() as run:
-    EPOCHS = 5
-    hist = model.fit(dc, epochs=EPOCHS, steps_per_epoch=20, callbacks=callbacks)
-    for i in range(EPOCHS):
-      modelClient.log_metric("val_loss", hist.history['loss'][i])
-      modelClient.log_metric("Val_accuracy", hist.history['accuracy'][i])
-    model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
+    modelClient = ModelsClient()
+    with modelClient.start() as run:
+        EPOCHS = 5
+        hist = model.fit(dc, epochs=EPOCHS, steps_per_epoch=20, callbacks=callbacks)
+        for i in range(EPOCHS):
+            modelClient.log_metric("val_loss", hist.history["loss"][i])
+            modelClient.log_metric("Val_accuracy", hist.history["accuracy"][i])
+        model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
 
 """
 Reference:

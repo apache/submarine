@@ -29,7 +29,6 @@ JOB_ID = "application_123456789"
 
 @pytest.mark.e2e
 class TestSqlAlchemyStore(unittest.TestCase):
-
     def setUp(self):
         submarine.set_tracking_uri(
             "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test"
@@ -47,10 +46,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
 
         # Validate params
         with self.store.ManagedSessionMaker() as session:
-            params = session \
-                .query(SqlParam) \
-                .options() \
-                .filter(SqlParam.id == JOB_ID).all()
+            params = session.query(SqlParam).options().filter(SqlParam.id == JOB_ID).all()
             assert params[0].key == "name_1"
             assert params[0].value == "a"
             assert params[0].worker_index == "worker-1"
@@ -64,10 +60,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
 
         # Validate metrics
         with self.store.ManagedSessionMaker() as session:
-            metrics = session \
-                .query(SqlMetric) \
-                .options() \
-                .filter(SqlMetric.id == JOB_ID).all()
+            metrics = session.query(SqlMetric).options().filter(SqlMetric.id == JOB_ID).all()
             assert len(metrics) == 2
             assert metrics[0].key == "name_1"
             assert metrics[0].value == 5

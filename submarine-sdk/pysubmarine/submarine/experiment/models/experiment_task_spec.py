@@ -49,30 +49,42 @@ class ExperimentTaskSpec(object):
                             and the value is json key in definition.
     """
     openapi_types = {
-        'replicas': 'int',
-        'resources': 'str',
-        'name': 'str',
-        'image': 'str',
-        'cmd': 'str',
-        'env_vars': 'dict(str, str)',
-        'cpu': 'str',
-        'gpu': 'str',
-        'memory': 'str'
+        "replicas": "int",
+        "resources": "str",
+        "name": "str",
+        "image": "str",
+        "cmd": "str",
+        "env_vars": "dict(str, str)",
+        "cpu": "str",
+        "gpu": "str",
+        "memory": "str",
     }
 
     attribute_map = {
-        'replicas': 'replicas',
-        'resources': 'resources',
-        'name': 'name',
-        'image': 'image',
-        'cmd': 'cmd',
-        'env_vars': 'envVars',
-        'cpu': 'cpu',
-        'gpu': 'gpu',
-        'memory': 'memory'
+        "replicas": "replicas",
+        "resources": "resources",
+        "name": "name",
+        "image": "image",
+        "cmd": "cmd",
+        "env_vars": "envVars",
+        "cpu": "cpu",
+        "gpu": "gpu",
+        "memory": "memory",
     }
 
-    def __init__(self, replicas=None, resources=None, name=None, image=None, cmd=None, env_vars=None, cpu=None, gpu=None, memory=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(
+        self,
+        replicas=None,
+        resources=None,
+        name=None,
+        image=None,
+        cmd=None,
+        env_vars=None,
+        cpu=None,
+        gpu=None,
+        memory=None,
+        local_vars_configuration=None,
+    ):  # noqa: E501
         """ExperimentTaskSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -304,18 +316,20 @@ class ExperimentTaskSpec(object):
         for attr, _ in six.iteritems(self.openapi_types):
             value = getattr(self, attr)
             if isinstance(value, list):
-                result[attr] = list(map(
-                    lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
-                    value
-                ))
+                result[attr] = list(
+                    map(lambda x: x.to_dict() if hasattr(x, "to_dict") else x, value)
+                )
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             elif isinstance(value, dict):
-                result[attr] = dict(map(
-                    lambda item: (item[0], item[1].to_dict())
-                    if hasattr(item[1], "to_dict") else item,
-                    value.items()
-                ))
+                result[attr] = dict(
+                    map(
+                        lambda item: (item[0], item[1].to_dict())
+                        if hasattr(item[1], "to_dict")
+                        else item,
+                        value.items(),
+                    )
+                )
             else:
                 result[attr] = value
 

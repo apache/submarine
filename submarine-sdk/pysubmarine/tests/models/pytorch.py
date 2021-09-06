@@ -14,12 +14,10 @@
  specific language governing permissions and limitations
  under the License.
 """
-import numpy as np
 import torch
 
 
 class LinearNNModel(torch.nn.Module):
-
     def __init__(self):
         super(LinearNNModel, self).__init__()
         self.linear = torch.nn.Linear(1, 1)  # One in and one out

@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements. See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -13,21 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from torch import optim
+set -euxo pipefail
 
+FWDIR="$(cd "$(dirname "$0")"; pwd)"
+cd "$FWDIR"
+cd ../../../
 
-class OptimizerKey:
-    ADAM = "adam"
-    ADAGRAD = "adagrad"
-    SGD = "sgd"
+# Sort imports
+isort submarine-sdk/ dev-support/ website/
+# Autoformat code
+black submarine-sdk/ dev-support/ website/ --experimental-string-processing
 
-
-def get_optimizer(key):
-    key = key.lower()
-    if key == OptimizerKey.ADAM:
-        return optim.Adam
-    if key == OptimizerKey.ADAGRAD:
-        return optim.Adagrad
-    if key == OptimizerKey.SGD:
-        return optim.SGD
-    raise ValueError("Invalid optimizer_key:", key)
+set +euxo pipefail

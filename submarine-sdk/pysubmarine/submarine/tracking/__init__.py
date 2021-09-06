@@ -14,8 +14,12 @@
 # limitations under the License.
 
 from submarine.tracking.client import SubmarineClient
-from submarine.tracking.utils import (_JOB_ID_ENV_VAR, _TRACKING_URI_ENV_VAR,
-                                      get_tracking_uri, set_tracking_uri)
+from submarine.tracking.utils import (
+    _JOB_ID_ENV_VAR,
+    _TRACKING_URI_ENV_VAR,
+    get_tracking_uri,
+    set_tracking_uri,
+)
 
 __all__ = [
     "SubmarineClient",

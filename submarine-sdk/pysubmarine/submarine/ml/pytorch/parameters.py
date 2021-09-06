@@ -14,10 +14,7 @@
 # limitations under the License.
 
 default_parameters = {
-    "output": {
-        "save_model_dir": "./output",
-        "metric": "roc_auc"
-    },
+    "output": {"save_model_dir": "./output", "metric": "roc_auc"},
     "training": {
         "batch_size": 64,
         "num_epochs": 1,
@@ -26,7 +23,7 @@ default_parameters = {
         "num_gpus": 0,
         "seed": 42,
         "mode": "distributed",
-        "backend": "gloo"
+        "backend": "gloo",
     },
     "model": {
         "name": "ctr.deepfm",
@@ -34,22 +31,10 @@ default_parameters = {
             "out_features": 1,
             "embedding_dim": 256,
             "hidden_units": [400, 400],
-            "dropout_rates": [0.2, 0.2]
-        }
+            "dropout_rates": [0.2, 0.2],
+        },
     },
-    "loss": {
-        "name": "BCEWithLogitsLoss",
-        "kwargs": {}
-    },
-    "optimizer": {
-        "name": "adam",
-        "kwargs": {
-            "lr": 1e-3
-        }
-    },
-    "resource": {
-        "num_cpus": 4,
-        "num_gpus": 0,
-        "num_threads": 0
-    }
+    "loss": {"name": "BCEWithLogitsLoss", "kwargs": {}},
+    "optimizer": {"name": "adam", "kwargs": {"lr": 1e-3}},
+    "resource": {"num_cpus": 4, "num_gpus": 0, "num_threads": 0},
 }

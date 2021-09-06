@@ -13,21 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from torch import optim
-
-
-class OptimizerKey:
-    ADAM = "adam"
-    ADAGRAD = "adagrad"
-    SGD = "sgd"
-
-
-def get_optimizer(key):
-    key = key.lower()
-    if key == OptimizerKey.ADAM:
-        return optim.Adam
-    if key == OptimizerKey.ADAGRAD:
-        return optim.Adagrad
-    if key == OptimizerKey.SGD:
-        return optim.SGD
-    raise ValueError("Invalid optimizer_key:", key)
+black[jupyter]==21.8b0
+flake8==3.9.2
+isort==5.9.3

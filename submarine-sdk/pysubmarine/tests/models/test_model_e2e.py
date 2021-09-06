@@ -15,14 +15,11 @@
  under the License.
 """
 
-import os
-
 import numpy as np
 import pytest
-
 from pytorch import LinearNNModel
+
 from submarine import ModelsClient
-from submarine.models import constant
 
 
 @pytest.fixture(name="models_client", scope="class")
@@ -32,16 +29,12 @@ def models_client_fixture():
 
 
 @pytest.mark.e2e
-class TestSubmarineModelsClientE2E():
-
+class TestSubmarineModelsClientE2E:
     def test_model(self, models_client):
         model = LinearNNModel()
         # log
         name = "simple-nn-model"
-        models_client.save_model("pytorch",
-                                 model,
-                                 name,
-                                 registered_model_name=name)
+        models_client.save_model("pytorch", model, name, registered_model_name=name)
         # update
         new_name = "new-simple-nn-model"
         models_client.update_model(name, new_name)
@@ -54,4 +47,4 @@ class TestSubmarineModelsClientE2E():
         assert y.shape[0] == 2
         assert y.shape[1] == 1
         # delete
-        models_client.delete_model(name, '1')
+        models_client.delete_model(name, "1")

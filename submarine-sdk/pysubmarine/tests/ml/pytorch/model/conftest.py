@@ -45,12 +45,9 @@ def get_model_param(tmpdir):
             "train_data": data_file,
             "valid_data": data_file,
             "test_data": data_file,
-            "type": "libsvm"
+            "type": "libsvm",
         },
-        "output": {
-            "save_model_dir": save_model_dir,
-            "metric": "roc_auc"
-        },
+        "output": {"save_model_dir": save_model_dir, "metric": "roc_auc"},
         "training": {
             "batch_size": 4,
             "num_epochs": 1,
@@ -59,7 +56,7 @@ def get_model_param(tmpdir):
             "num_gpus": 0,
             "seed": 42,
             "mode": "distributed",
-            "backend": "gloo"
+            "backend": "gloo",
         },
         "model": {
             "name": "ctr.deepfm",
@@ -71,24 +68,12 @@ def get_model_param(tmpdir):
                 "attention_dim": 64,
                 "hidden_units": [400, 400],
                 "dropout_rate": 0.3,
-                "dropout_rates": [0.2, 0.2]
-            }
+                "dropout_rates": [0.2, 0.2],
+            },
         },
-        "loss": {
-            "name": "BCEWithLogitsLoss",
-            "kwargs": {}
-        },
-        "optimizer": {
-            "name": "adam",
-            "kwargs": {
-                "lr": 1e-3
-            }
-        },
-        "resource": {
-            "num_cpus": 2,
-            "num_gpus": 0,
-            "num_threads": 0
-        }
+        "loss": {"name": "BCEWithLogitsLoss", "kwargs": {}},
+        "optimizer": {"name": "adam", "kwargs": {"lr": 1e-3}},
+        "resource": {"num_cpus": 2, "num_gpus": 0, "num_threads": 0},
     }
 
     yield params

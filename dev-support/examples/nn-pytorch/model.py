@@ -14,9 +14,8 @@
  specific language governing permissions and limitations
  under the License.
 """
-from submarine import ModelsClient
-import numpy as np
 import torch
+
 from submarine import ModelsClient
 
 
@@ -29,7 +28,13 @@ class LinearNNModel(torch.nn.Module):
         y_pred = self.linear(x)
         return y_pred
 
+
 if __name__ == "__main__":
     client = ModelsClient()
     net = LinearNNModel()
-    client.save_model(model_type = "pytorch", model = net, artifact_path="pytorch-nn-model", registered_model_name="simple-nn-model")
+    client.save_model(
+        model_type="pytorch",
+        model=net,
+        artifact_path="pytorch-nn-model",
+        registered_model_name="simple-nn-model",
+    )

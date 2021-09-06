@@ -17,11 +17,11 @@ from sklearn import metrics
 
 
 class MetricKey:
-    F1_SCORE = 'f1_score'
-    ACCURACY = 'accuracy'
-    ROC_AUC = 'roc_auc'
-    PRECISION = 'precision'
-    RECALL = 'recall'
+    F1_SCORE = "f1_score"
+    ACCURACY = "accuracy"
+    ROC_AUC = "roc_auc"
+    PRECISION = "precision"
+    RECALL = "recall"
 
 
 def get_metric_fn(key):
@@ -36,4 +36,4 @@ def get_metric_fn(key):
         return metrics.precision_score
     if key == MetricKey.RECALL:
         return metrics.recall_score
-    raise ValueError('Invalid metric_key:', key)
+    raise ValueError("Invalid metric_key:", key)

@@ -24,25 +24,28 @@ from submarine.ml.tensorflow.optimizer import get_optimizer
 def _get_session_config_from_env_var(params):
     """Returns a tf.ConfigProto instance with appropriate device_filters set."""
 
-    tf_config = json.loads(os.environ.get('TF_CONFIG', '{}'))
+    tf_config = json.loads(os.environ.get("TF_CONFIG", "{}"))
 
-    if tf_config and 'task' in tf_config and 'type' in tf_config['task'] \
-            and 'index' in tf_config['task']:
+    if (
+        tf_config
+        and "task" in tf_config
+        and "type" in tf_config["task"]
+        and "index" in tf_config["task"]
+    ):
         # Master should only communicate with itself and ps.
-        if tf_config['task']['type'] == 'master':
+        if tf_config["task"]["type"] == "master":
             return tf.ConfigProto(
-                device_filters=['/job:ps', '/job:master'],
-                intra_op_parallelism_threads=params["resource"]['num_thread'],
-                inter_op_parallelism_threads=params["resource"]['num_thread'])
+                device_filters=["/job:ps", "/job:master"],
+                intra_op_parallelism_threads=params["resource"]["num_thread"],
+                inter_op_parallelism_threads=params["resource"]["num_thread"],
+            )
         # Worker should only communicate with itself and ps.
-        elif tf_config['task']['type'] == 'worker':
+        elif tf_config["task"]["type"] == "worker":
             return tf.ConfigProto(  # gpu_options=gpu_options,
-                device_filters=[
-                    '/job:ps',
-                    '/job:worker/task:%d' % tf_config['task']['index']
-                ],
-                intra_op_parallelism_threads=params["resource"]['num_thread'],
-                inter_op_parallelism_threads=params["resource"]['num_thread'])
+                device_filters=["/job:ps", "/job:worker/task:%d" % tf_config["task"]["index"]],
+                intra_op_parallelism_threads=params["resource"]["num_thread"],
+                inter_op_parallelism_threads=params["resource"]["num_thread"],
+            )
     return None
 
 
@@ -55,28 +58,30 @@ def get_tf_config(params):
     :type params: Dictionary
     :return: The class specifies the configurations for an Estimator run
     """
-    if params["training"]['mode'] == 'local':  # local mode
+    if params["training"]["mode"] == "local":  # local mode
         tf_config = tf.estimator.RunConfig().replace(
             session_config=tf.ConfigProto(
                 device_count={
-                    'GPU': params["resource"]['num_gpu'],
-                    'CPU': params["resource"]['num_cpu']
+                    "GPU": params["resource"]["num_gpu"],
+                    "CPU": params["resource"]["num_cpu"],
                 },
-                intra_op_parallelism_threads=params["resource"]['num_thread'],
-                inter_op_parallelism_threads=params["resource"]['num_thread']),
-            log_step_count_steps=params["training"]['log_steps'],
-            save_summary_steps=params["training"]['log_steps'])
+                intra_op_parallelism_threads=params["resource"]["num_thread"],
+                inter_op_parallelism_threads=params["resource"]["num_thread"],
+            ),
+            log_step_count_steps=params["training"]["log_steps"],
+            save_summary_steps=params["training"]["log_steps"],
+        )
 
-    elif params["training"]['mode'] == 'distributed':
+    elif params["training"]["mode"] == "distributed":
         tf_config = tf.estimator.RunConfig(
             experimental_distribute=tf.contrib.distribute.DistributeConfig(
-                train_distribute=tf.contrib.distribute.ParameterServerStrategy(
-                ),
-                eval_distribute=tf.contrib.distribute.ParameterServerStrategy(
-                )),
+                train_distribute=tf.contrib.distribute.ParameterServerStrategy(),
+                eval_distribute=tf.contrib.distribute.ParameterServerStrategy(),
+            ),
             session_config=_get_session_config_from_env_var(params),
-            save_summary_steps=params["training"]['log_steps'],
-            log_step_count_steps=params["training"]['log_steps'])
+            save_summary_steps=params["training"]["log_steps"],
+            log_step_count_steps=params["training"]["log_steps"],
+        )
     else:
         raise ValueError("mode should be local or distributed")
     return tf_config
@@ -94,37 +99,37 @@ def get_estimator_spec(logit, labels, mode, params):
     """
     learning_rate = params["training"]["learning_rate"]
     optimizer = params["training"]["optimizer"]
-    metric = params['output']['metric']
+    metric = params["output"]["metric"]
 
     output = tf.sigmoid(logit)
     predictions = {"probabilities": output}
     export_outputs = {
+        # https://github.com/psf/black/issues/2434
+        # fmt: off
         tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:
             tf.estimator.export.PredictOutput(predictions)
+        # fmt: on
     }
     # Provide an estimator spec for `ModeKeys.PREDICT`
     if mode == tf.estimator.ModeKeys.PREDICT:
-        return tf.estimator.EstimatorSpec(mode=mode,
-                                          predictions=predictions,
-                                          export_outputs=export_outputs)
+        return tf.estimator.EstimatorSpec(
+            mode=mode, predictions=predictions, export_outputs=export_outputs
+        )
 
     with tf.name_scope("Loss"):
-        loss = tf.reduce_mean(
-            tf.nn.sigmoid_cross_entropy_with_logits(logits=logit,
-                                                    labels=labels))
+        loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=logit, labels=labels))
 
     # Provide an estimator spec for `ModeKeys.EVAL`
     eval_metric_ops = {}
-    if metric == 'auc':
-        eval_metric_ops['auc'] = tf.metrics.auc(labels, output)
+    if metric == "auc":
+        eval_metric_ops["auc"] = tf.metrics.auc(labels, output)
     else:
         raise TypeError("Invalid metric :", metric)
 
     if mode == tf.estimator.ModeKeys.EVAL:
-        return tf.estimator.EstimatorSpec(mode=mode,
-                                          predictions=predictions,
-                                          loss=loss,
-                                          eval_metric_ops=eval_metric_ops)
+        return tf.estimator.EstimatorSpec(
+            mode=mode, predictions=predictions, loss=loss, eval_metric_ops=eval_metric_ops
+        )
 
     with tf.name_scope("Train"):
         op = get_optimizer(optimizer, learning_rate)
@@ -132,7 +137,6 @@ def get_estimator_spec(logit, labels, mode, params):
 
     # Provide an estimator spec for `ModeKeys.TRAIN` modes
     if mode == tf.estimator.ModeKeys.TRAIN:
-        return tf.estimator.EstimatorSpec(mode=mode,
-                                          predictions=predictions,
-                                          loss=loss,
-                                          train_op=train_op)
+        return tf.estimator.EstimatorSpec(
+            mode=mode, predictions=predictions, loss=loss, train_op=train_op
+        )

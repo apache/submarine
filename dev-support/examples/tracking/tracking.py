@@ -15,15 +15,16 @@
  under the License.
 """
 
-from submarine import ModelsClient
 import random
 import time
 
+from submarine import ModelsClient
+
 if __name__ == "__main__":
-  modelClient = ModelsClient()
-  with modelClient.start() as run:
-      modelClient.log_param("learning_rate", random.random())
-      for i in range(100):
-        time.sleep(1)
-        modelClient.log_metric("mse", random.random() * 100, i)
-        modelClient.log_metric("acc", random.random(), i)
+    modelClient = ModelsClient()
+    with modelClient.start() as run:
+        modelClient.log_param("learning_rate", random.random())
+        for i in range(100):
+            time.sleep(1)
+            modelClient.log_metric("mse", random.random() * 100, i)
+            modelClient.log_metric("acc", random.random(), i)

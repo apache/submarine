@@ -18,8 +18,7 @@
 
 import mysql.connector
 
-conn = mysql.connector.connect(
-   user='root', password='password', host='127.0.0.1')
+conn = mysql.connector.connect(user="root", password="password", host="127.0.0.1")
 
 cursor = conn.cursor(buffered=True)
 
@@ -35,9 +34,11 @@ def commit(sql):
         # Commit your changes in the database
         conn.commit()
 
-    except:
+    except mysql.connector.Error as err:
+        print("Something went wrong: {}".format(err))
         # Rolling back in case of error
         conn.rollback()
+
 
 def commit_from_file(file_path):
     with open(file_path) as f:

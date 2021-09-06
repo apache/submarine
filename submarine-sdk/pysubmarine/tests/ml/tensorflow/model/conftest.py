@@ -40,18 +40,10 @@ def get_model_param(tmpdir):
             "train_data": data_file,
             "valid_data": data_file,
             "test_data": data_file,
-            "type": "libsvm"
+            "type": "libsvm",
         },
-        "output": {
-            "save_model_dir": save_model_dir,
-            "metric": "auc"
-        },
-        "training": {
-            "batch_size": 256,
-            "num_epochs": 1,
-            "field_size": 10,
-            "feature_size": 1000
-        }
+        "output": {"save_model_dir": save_model_dir, "metric": "auc"},
+        "training": {"batch_size": 256, "num_epochs": 1, "field_size": 10, "feature_size": 1000},
     }
 
     yield params

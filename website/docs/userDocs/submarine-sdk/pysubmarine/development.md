@@ -27,8 +27,10 @@ in its own conda environment by running the following
 conda create --name submarine-dev python=3.6
 conda activate submarine-dev
 
-# lint-requirements.txt and test-requirements.txt are in ./submarine-sdk/pysubmarine/github-actions
+# Install auto-format and lints (lint-requirements.txt is in ./dev-support/style-check/python)
 pip install -r lint-requirements.txt
+
+# test-requirements.txt is in ./submarine-sdk/pysubmarine/github-actions
 pip install -r test-requirements.txt
 
 # Installs pysubmarine from current checkout
@@ -52,18 +54,26 @@ The script does the following things:
 
 ### Coding Style
 
-- Use [yapf](https://github.com/google/yapf) to format Python code
-- yapf style is configured in `.style.yapf` file
+- Use [isort](https://github.com/PyCQA/isort) to sort the Python imports and [black](https://github.com/psf/black) to format Python code
+- Both style is configured in `pyproject.toml`
 - To autoformat code
 
 ```bash
-./submarine-sdk/pysubmarine/github-actions/auto-format.sh
+./dev-support/style-check/python/auto-format.sh
 ```
 
+- Use [flake8](https://github.com/PyCQA/flake8) to verify the linter, its' configure is in `.flake8`
 - Verify linter pass before submitting a pull request by running:
 
 ```bash
-./submarine-sdk/pysubmarine/github-actions/lint.sh
+./dev-support/style-check/python/lint.sh
+```
+
+- If you encouter a unexpected format, use the following method
+```python
+# fmt: off
+  "Unexpected format, formated by yourself"
+# fmt: on
 ```
 
 ### Unit Testing
