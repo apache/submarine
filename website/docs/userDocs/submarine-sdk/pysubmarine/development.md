@@ -69,6 +69,13 @@ The script does the following things:
 ./dev-support/style-check/python/lint.sh
 ```
 
+- If you encouter a unexpected format, use the following method
+```python
+# fmt: off
+  "Unexpected format, formated by yourself"
+# fmt: on
+```
+
 ### Unit Testing
 
 We are using [pytest](https://docs.pytest.org/en/latest/) to develop our unit test suite.
