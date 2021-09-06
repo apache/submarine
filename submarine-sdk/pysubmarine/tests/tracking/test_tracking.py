@@ -28,7 +28,6 @@ JOB_ID = "application_123456789"
 
 @pytest.mark.e2e
 class TestTracking(unittest.TestCase):
-
     def setUp(self):
         environ["JOB_ID"] = JOB_ID
         submarine.set_tracking_uri(
@@ -45,10 +44,7 @@ class TestTracking(unittest.TestCase):
         submarine.log_param("name_1", "a")
         # Validate params
         with self.store.ManagedSessionMaker() as session:
-            params = session \
-                .query(SqlParam) \
-                .options() \
-                .filter(SqlParam.id == JOB_ID).all()
+            params = session.query(SqlParam).options().filter(SqlParam.id == JOB_ID).all()
             assert params[0].key == "name_1"
             assert params[0].value == "a"
             assert params[0].id == JOB_ID
@@ -58,10 +54,7 @@ class TestTracking(unittest.TestCase):
         submarine.log_metric("name_1", 6)
         # Validate params
         with self.store.ManagedSessionMaker() as session:
-            metrics = session \
-                .query(SqlMetric) \
-                .options() \
-                .filter(SqlMetric.id == JOB_ID).all()
+            metrics = session.query(SqlMetric).options().filter(SqlMetric.id == JOB_ID).all()
             assert len(metrics) == 2
             assert metrics[0].key == "name_1"
             assert metrics[0].value == 5

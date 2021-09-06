@@ -28,8 +28,7 @@ import logging
 
 import tensorflow as tf
 
-from submarine.ml.tensorflow.layers.core import (dnn_layer, embedding_layer,
-                                                 fm_layer, linear_layer)
+from submarine.ml.tensorflow.layers.core import dnn_layer, embedding_layer, fm_layer, linear_layer
 from submarine.ml.tensorflow.model.base_tf_model import BaseTFModel
 from submarine.utils.tf_utils import get_estimator_spec
 
@@ -37,20 +36,18 @@ logger = logging.getLogger(__name__)
 
 
 class DeepFM(BaseTFModel):
-
     def model_fn(self, features, labels, mode, params):
         super().model_fn(features, labels, mode, params)
 
-        linear_logit = linear_layer(features, **params['training'])
+        linear_logit = linear_layer(features, **params["training"])
 
-        embedding_outputs = embedding_layer(features, **params['training'])
-        fm_logit = fm_layer(embedding_outputs, **params['training'])
+        embedding_outputs = embedding_layer(features, **params["training"])
+        fm_logit = fm_layer(embedding_outputs, **params["training"])
 
-        field_size = params['training']['field_size']
-        embedding_size = params['training']['embedding_size']
-        deep_inputs = tf.reshape(embedding_outputs,
-                                 shape=[-1, field_size * embedding_size])
-        deep_logit = dnn_layer(deep_inputs, mode, **params['training'])
+        field_size = params["training"]["field_size"]
+        embedding_size = params["training"]["embedding_size"]
+        deep_inputs = tf.reshape(embedding_outputs, shape=[-1, field_size * embedding_size])
+        deep_logit = dnn_layer(deep_inputs, mode, **params["training"])
 
         with tf.variable_scope("DeepFM_out"):
             logit = linear_logit + fm_logit + deep_logit

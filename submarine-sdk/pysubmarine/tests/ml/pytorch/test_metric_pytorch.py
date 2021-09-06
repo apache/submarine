@@ -19,12 +19,12 @@ from submarine.ml.pytorch.metric import get_metric_fn
 
 
 def test_get_metric_fn():
-    metric_keys = ['f1_score', 'accuracy', 'roc_auc', 'precision', 'recall']
-    invalid_metric_keys = ['NotExistMetric']
+    metric_keys = ["f1_score", "accuracy", "roc_auc", "precision", "recall"]
+    invalid_metric_keys = ["NotExistMetric"]
 
     for key in metric_keys:
         get_metric_fn(key)
 
     for key_invalid in invalid_metric_keys:
-        with pytest.raises(ValueError, match='Invalid metric_key:'):
+        with pytest.raises(ValueError, match="Invalid metric_key:"):
             get_metric_fn(key_invalid)

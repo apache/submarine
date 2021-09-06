@@ -18,8 +18,8 @@ https://pytorch.org/docs/master/distributed.html
 https://pytorch.org/tutorials/intermediate/dist_tuto.html
 https://github.com/narumiruna/pytorch-distributed-example/blob/master/mnist/main.py
 
-Each worker reads the full MNIST dataset and asynchronously trains a CNN with dropout and using the Adam optimizer,
-updating the model parameters on shared parameter servers.
+Each worker reads the full MNIST dataset and asynchronously trains a CNN with dropout and
+using the Adam optimizer, updating the model parameters on shared parameter servers.
 
 The current training accuracy is printed out after every 100 steps.
 """
@@ -27,18 +27,17 @@ The current training accuracy is printed out after every 100 steps.
 from __future__ import division, print_function
 
 import argparse
-
 import os
+
 import torch
 import torch.nn.functional as F
 from torch import distributed, nn
-from torch.utils import data
+from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 from torchvision import datasets, transforms
 
 
 class AverageMeter(object):
-
     def __init__(self):
         self.sum = 0
         self.count = 0
@@ -53,7 +52,6 @@ class AverageMeter(object):
 
 
 class AccuracyMeter(object):
-
     def __init__(self):
         self.correct = 0
         self.count = 0
@@ -71,7 +69,6 @@ class AccuracyMeter(object):
 
 
 class Trainer(object):
-
     def __init__(self, net, optimizer, train_loader, test_loader, device):
         self.net = net
         self.optimizer = optimizer
@@ -130,8 +127,7 @@ class Trainer(object):
 
             tensor = p.grad.data.cpu()
 
-            distributed.all_reduce(
-                tensor, op=distributed.reduce_op.SUM, group=group)
+            distributed.all_reduce(tensor, op=distributed.reduce_op.SUM, group=group)
 
             tensor /= float(world_size)
 
@@ -139,7 +135,6 @@ class Trainer(object):
 
 
 class Net(nn.Module):
-
     def __init__(self):
         super(Net, self).__init__()
         self.fc = nn.Linear(784, 10)
@@ -149,31 +144,32 @@ class Net(nn.Module):
 
 
 def get_dataloader(root, batch_size):
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.13066047740239478,), (0.3081078087569972,))
-    ])
+    transform = transforms.Compose(
+        # https://github.com/psf/black/issues/2434
+        # fmt: off
+        [transforms.ToTensor(),
+         transforms.Normalize((0.13066047740239478,), (0.3081078087569972,))]
+        # fmt: on
+    )
 
-    train_set = datasets.MNIST(
-        root, train=True, transform=transform, download=True)
+    train_set = datasets.MNIST(root, train=True, transform=transform, download=True)
     sampler = DistributedSampler(train_set)
 
-    train_loader = data.DataLoader(
-        train_set,
-        batch_size=batch_size,
-        shuffle=(sampler is None),
-        sampler=sampler)
+    train_loader = DataLoader(
+        train_set, batch_size=batch_size, shuffle=(sampler is None), sampler=sampler
+    )
 
-    test_loader = data.DataLoader(
+    test_loader = DataLoader(
         datasets.MNIST(root, train=False, transform=transform, download=True),
         batch_size=batch_size,
-        shuffle=False)
+        shuffle=False,
+    )
 
     return train_loader, test_loader
 
 
 def solve(args):
-    device = torch.device('cuda' if args.cuda else 'cpu')
+    device = torch.device("cuda" if args.cuda else "cpu")
 
     net = Net().to(device)
 
@@ -188,9 +184,11 @@ def solve(args):
         test_loss, test_acc = trainer.evaluate()
 
         print(
-            'Epoch: {}/{},'.format(epoch, args.epochs),
-            'train loss: {:.6f}, train acc: {:.6f}, test loss: {:.6f}, test acc: {:.6f}.'.
-                format(train_loss, train_acc, test_loss, test_acc))
+            "Epoch: {}/{},".format(epoch, args.epochs),
+            "train loss: {:.6f}, train acc: {:.6f}, test loss: {:.6f}, test acc: {:.6f}.".format(
+                train_loss, train_acc, test_loss, test_acc
+            ),
+        )
 
 
 def init_process(args):
@@ -198,38 +196,39 @@ def init_process(args):
         backend=args.backend,
         init_method=args.init_method,
         rank=args.rank,
-        world_size=args.world_size)
+        world_size=args.world_size,
+    )
 
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--backend", type=str, default="tcp", help="Name of the backend to use.")
     parser.add_argument(
-        '--backend',
+        "--init-method",
+        "-i",
         type=str,
-        default='tcp',
-        help='Name of the backend to use.')
+        default=os.environ.get("INIT_METHOD", "tcp://127.0.0.1:23456"),
+        help="URL specifying how to initialize the package.",
+    )
     parser.add_argument(
-        '--init-method',
-        '-i',
-        type=str,
-        default=os.environ.get('INIT_METHOD', 'tcp://127.0.0.1:23456'),
-        help='URL specifying how to initialize the package.')
-    parser.add_argument(
-        '--rank', '-r',
+        "--rank",
+        "-r",
         type=int,
-        default=int(os.environ.get('RANK')),
-        help='Rank of the current process.')
+        default=int(os.environ.get("RANK")),
+        help="Rank of the current process.",
+    )
     parser.add_argument(
-        '--world-size',
-        '-s',
+        "--world-size",
+        "-s",
         type=int,
-        default=int(os.environ.get('WORLD')),
-        help='Number of processes participating in the job.')
-    parser.add_argument('--epochs', type=int, default=20)
-    parser.add_argument('--no-cuda', action='store_true')
-    parser.add_argument('--learning-rate', '-lr', type=float, default=1e-3)
-    parser.add_argument('--root', type=str, default='data')
-    parser.add_argument('--batch-size', type=int, default=128)
+        default=int(os.environ.get("WORLD")),
+        help="Number of processes participating in the job.",
+    )
+    parser.add_argument("--epochs", type=int, default=20)
+    parser.add_argument("--no-cuda", action="store_true")
+    parser.add_argument("--learning-rate", "-lr", type=float, default=1e-3)
+    parser.add_argument("--root", type=str, default="data")
+    parser.add_argument("--batch-size", type=int, default=128)
     args = parser.parse_args()
     args.cuda = torch.cuda.is_available() and not args.no_cuda
     print(args)
@@ -238,5 +237,5 @@ def main():
     solve(args)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

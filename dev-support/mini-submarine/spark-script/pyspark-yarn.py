@@ -14,19 +14,19 @@
 # limitations under the License.
 
 
-from pyspark import SparkConf
-from pyspark import SparkContext
+from pyspark import SparkConf, SparkContext
 
 conf = SparkConf()
-conf.setMaster('yarn-client')
-conf.setAppName('spark-yarn')
+conf.setMaster("yarn-client")
+conf.setAppName("spark-yarn")
 sc = SparkContext(conf=conf)
 
 
 def mod(x):
-    #import time
-    #time.sleep(120)
+    # import time
+    # time.sleep(120)
     return x
 
+
 rdd = sc.parallelize(range(1000)).map(mod).take(10)
-print rdd
+print(rdd)

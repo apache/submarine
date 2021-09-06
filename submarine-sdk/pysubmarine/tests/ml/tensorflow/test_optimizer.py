@@ -19,13 +19,12 @@ from submarine.ml.tensorflow.optimizer import get_optimizer
 
 
 def test_get_optimizer():
-    optimizer_keys = ['adam', 'adagrad', 'momentum', 'ftrl']
-    invalid_optimizer_keys = ['adddam']
+    optimizer_keys = ["adam", "adagrad", "momentum", "ftrl"]
+    invalid_optimizer_keys = ["adddam"]
 
     for optimizer_key in optimizer_keys:
         get_optimizer(optimizer_key=optimizer_key, learning_rate=0.3)
 
     for invalid_optimizer_key in invalid_optimizer_keys:
         with pytest.raises(ValueError, match="Invalid optimizer_key :"):
-            get_optimizer(optimizer_key=invalid_optimizer_key,
-                          learning_rate=0.3)
+            get_optimizer(optimizer_key=invalid_optimizer_key, learning_rate=0.3)

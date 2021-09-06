@@ -34,13 +34,7 @@ class SubmarineClient(object):
         self.tracking_uri = tracking_uri or utils.get_tracking_uri()
         self.store = utils.get_sqlalchemy_store(self.tracking_uri)
 
-    def log_metric(self,
-                   job_id,
-                   key,
-                   value,
-                   worker_index,
-                   timestamp=None,
-                   step=None):
+    def log_metric(self, job_id, key, value, worker_index, timestamp=None, step=None):
         """
         Log a metric against the run ID.
         :param job_id: The job name to which the metric should be logged.

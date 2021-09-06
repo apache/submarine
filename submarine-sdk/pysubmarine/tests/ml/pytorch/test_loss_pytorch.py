@@ -19,12 +19,12 @@ from submarine.ml.pytorch.loss import get_loss_fn
 
 
 def test_get_loss_fn():
-    loss_keys = ['BCELoss', 'CrossEntropyLoss', 'NLLLoss', 'BCEWithLogitsLoss']
-    invalid_loss_keys = ['NotExistLoss']
+    loss_keys = ["BCELoss", "CrossEntropyLoss", "NLLLoss", "BCEWithLogitsLoss"]
+    invalid_loss_keys = ["NotExistLoss"]
 
     for key in loss_keys:
         get_loss_fn(key)
 
     for key_invalid in invalid_loss_keys:
-        with pytest.raises(ValueError, match='Invalid loss_key:'):
+        with pytest.raises(ValueError, match="Invalid loss_key:"):
             get_loss_fn(key_invalid)

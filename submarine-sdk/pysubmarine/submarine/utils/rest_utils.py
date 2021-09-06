@@ -23,13 +23,7 @@ from submarine.exceptions import RestException, SubmarineException
 _logger = logging.getLogger(__name__)
 
 
-def http_request(base_url,
-                 endpoint,
-                 method,
-                 json_body,
-                 timeout=60,
-                 headers=None,
-                 **kwargs):
+def http_request(base_url, endpoint, method, json_body, timeout=60, headers=None, **kwargs):
     """
     Perform requests.
     :param base_url: http request base url containing hostname and port. e.g. https://submarine:8088
@@ -41,24 +35,19 @@ def http_request(base_url,
     :return:
     """
     method = method.upper()
-    assert method in [
-        'GET', 'HEAD', 'DELETE', 'POST', 'PUT', 'PATCH', 'OPTIONS'
-    ]
+    assert method in ["GET", "HEAD", "DELETE", "POST", "PUT", "PATCH", "OPTIONS"]
     headers = headers or {}
-    if 'Content-Type' not in headers:
-        headers['Content-Type'] = 'application/json'
+    if "Content-Type" not in headers:
+        headers["Content-Type"] = "application/json"
 
     url = base_url + endpoint
-    response = requests.request(url=url,
-                                method=method,
-                                json=json_body,
-                                headers=headers,
-                                timeout=timeout,
-                                **kwargs)
+    response = requests.request(
+        url=url, method=method, json=json_body, headers=headers, timeout=timeout, **kwargs
+    )
     verify_rest_response(response, endpoint)
 
     response = json.loads(response.text)
-    result = response['result']
+    result = response["result"]
     return result
 
 
@@ -76,8 +65,9 @@ def verify_rest_response(response, endpoint):
         if _can_parse_as_json(response.text):
             raise RestException(json.loads(response.text))
         else:
-            base_msg = "API request to endpoint %s failed with error code " \
-                       "%s != 200" % (endpoint, response.status_code)
-            raise SubmarineException("%s. Response body: '%s'" %
-                                     (base_msg, response.text))
+            base_msg = "API request to endpoint %s failed with error code %s != 200" % (
+                endpoint,
+                response.status_code,
+            )
+            raise SubmarineException("%s. Response body: '%s'" % (base_msg, response.text))
     return response

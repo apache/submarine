@@ -17,10 +17,10 @@ from torch import nn
 
 
 class LossKey:
-    BCELoss = 'BCELoss'.lower()
-    CrossEntropyLoss = 'CrossEntropyLoss'.lower()
-    NLLLoss = 'NLLLoss'.lower()
-    BCEWithLogitsLoss = 'BCEWithLogitsLoss'.lower()
+    BCELoss = "BCELoss".lower()
+    CrossEntropyLoss = "CrossEntropyLoss".lower()
+    NLLLoss = "NLLLoss".lower()
+    BCEWithLogitsLoss = "BCEWithLogitsLoss".lower()
 
 
 def get_loss_fn(key):
@@ -33,4 +33,4 @@ def get_loss_fn(key):
         return nn.CrossEntropyLoss
     if key == LossKey.NLLLoss:
         return nn.NLLLoss
-    raise ValueError('Invalid loss_key:', key)
+    raise ValueError("Invalid loss_key:", key)

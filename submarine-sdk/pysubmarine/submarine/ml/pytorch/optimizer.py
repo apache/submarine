@@ -17,9 +17,9 @@ from torch import optim
 
 
 class OptimizerKey:
-    ADAM = 'adam'
-    ADAGRAD = 'adagrad'
-    SGD = 'sgd'
+    ADAM = "adam"
+    ADAGRAD = "adagrad"
+    SGD = "sgd"
 
 
 def get_optimizer(key):
@@ -30,4 +30,4 @@ def get_optimizer(key):
         return optim.Adagrad
     if key == OptimizerKey.SGD:
         return optim.SGD
-    raise ValueError('Invalid optimizer_key:', key)
+    raise ValueError("Invalid optimizer_key:", key)

@@ -21,21 +21,23 @@ import mlflow
 from mlflow.exceptions import MlflowException
 from mlflow.tracking import MlflowClient
 
-from .constant import (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY,
-                       MLFLOW_S3_ENDPOINT_URL, MLFLOW_TRACKING_URI)
+from .constant import (
+    AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY,
+    MLFLOW_S3_ENDPOINT_URL,
+    MLFLOW_TRACKING_URI,
+)
 from .utils import exist_ps, get_job_id, get_worker_index
 
 
-class ModelsClient():
-
+class ModelsClient:
     def __init__(self, tracking_uri=None, registry_uri=None):
         """
         Set up mlflow server connection, including: s3 endpoint, aws, tracking server
         """
         # if setting url in environment variable,
         # there is no need to set it by MlflowClient() or mlflow.set_tracking_uri() again
-        os.environ[
-            "MLFLOW_S3_ENDPOINT_URL"] = registry_uri or MLFLOW_S3_ENDPOINT_URL
+        os.environ["MLFLOW_S3_ENDPOINT_URL"] = registry_uri or MLFLOW_S3_ENDPOINT_URL
         os.environ["AWS_ACCESS_KEY_ID"] = AWS_ACCESS_KEY_ID
         os.environ["AWS_SECRET_ACCESS_KEY"] = AWS_SECRET_ACCESS_KEY
         os.environ["MLFLOW_TRACKING_URI"] = tracking_uri or MLFLOW_TRACKING_URI
@@ -44,7 +46,7 @@ class ModelsClient():
             "pytorch": mlflow.pytorch.log_model,
             "sklearn": mlflow.sklearn.log_model,
             "tensorflow": mlflow.tensorflow.log_model,
-            "keras": mlflow.keras.log_model
+            "keras": mlflow.keras.log_model,
         }
 
     def start(self):
@@ -83,11 +85,7 @@ class ModelsClient():
     def delete_model(self, name, version):
         self.client.delete_model_version(name=name, version=version)
 
-    def save_model(self,
-                   model_type,
-                   model,
-                   artifact_path,
-                   registered_model_name=None):
+    def save_model(self, model_type, model, artifact_path, registered_model_name=None):
         run_name = get_worker_index()
         if exist_ps():
             # TODO for Tensorflow ParameterServer strategy
@@ -95,9 +93,8 @@ class ModelsClient():
         elif run_name == "worker-0":
             if model_type in self.type_to_log_model:
                 self.type_to_log_model[model_type](
-                    model,
-                    artifact_path,
-                    registered_model_name=registered_model_name)
+                    model, artifact_path, registered_model_name=registered_model_name
+                )
             else:
                 raise MlflowException("No valid type of model has been matched")
 
@@ -116,8 +113,7 @@ class ModelsClient():
                 else:
                     while experiment is None:
                         time.sleep(1)
-                        experiment = mlflow.get_experiment_by_name(
-                            experiment_name)
+                        experiment = mlflow.get_experiment_by_name(experiment_name)
             return experiment.experiment_id  # if found
         except MlflowException:
             experiment = mlflow.create_experiment(name=experiment_name)

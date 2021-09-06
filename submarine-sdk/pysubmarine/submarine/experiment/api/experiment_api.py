@@ -34,10 +34,7 @@ import re  # noqa: F401
 import six
 
 from submarine.experiment.api_client import ApiClient
-from submarine.experiment.exceptions import (  # noqa: F401
-    ApiTypeError,
-    ApiValueError
-)
+from submarine.experiment.exceptions import ApiTypeError, ApiValueError  # noqa: F401
 
 
 class ExperimentApi(object):
@@ -73,7 +70,7 @@ class ExperimentApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
+        kwargs["_return_http_data_only"] = True
         return self.create_experiment_with_http_info(**kwargs)  # noqa: E501
 
     def create_experiment_with_http_info(self, **kwargs):  # noqa: E501
@@ -102,26 +99,18 @@ class ExperimentApi(object):
 
         local_var_params = locals()
 
-        all_params = [
-            'experiment_spec'
-        ]
+        all_params = ["experiment_spec"]
         all_params.extend(
-            [
-                'async_req',
-                '_return_http_data_only',
-                '_preload_content',
-                '_request_timeout'
-            ]
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
         )
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method create_experiment" % key
+                    "Got an unexpected keyword argument '%s' to method create_experiment" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
 
         collection_formats = {}
 
@@ -135,34 +124,38 @@ class ExperimentApi(object):
         local_var_files = {}
 
         body_params = None
-        if 'experiment_spec' in local_var_params:
-            body_params = local_var_params['experiment_spec']
+        if "experiment_spec" in local_var_params:
+            body_params = local_var_params["experiment_spec"]
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json; charset=utf-8'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json; charset=utf-8"]
+        )  # noqa: E501
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/yaml', 'application/json'])  # noqa: E501
+        header_params["Content-Type"] = self.api_client.select_header_content_type(  # noqa: E501
+            ["application/yaml", "application/json"]
+        )  # noqa: E501
 
         # Authentication setting
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/experiment', 'POST',
+            "/v1/experiment",
+            "POST",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='JsonResponse',  # noqa: E501
+            response_type="JsonResponse",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get("_return_http_data_only"),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def delete_experiment(self, id, **kwargs):  # noqa: E501
         """Delete the experiment  # noqa: E501
@@ -185,7 +178,7 @@ class ExperimentApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
+        kwargs["_return_http_data_only"] = True
         return self.delete_experiment_with_http_info(id, **kwargs)  # noqa: E501
 
     def delete_experiment_with_http_info(self, id, **kwargs):  # noqa: E501
@@ -214,36 +207,31 @@ class ExperimentApi(object):
 
         local_var_params = locals()
 
-        all_params = [
-            'id'
-        ]
+        all_params = ["id"]
         all_params.extend(
-            [
-                'async_req',
-                '_return_http_data_only',
-                '_preload_content',
-                '_request_timeout'
-            ]
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
         )
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method delete_experiment" % key
+                    "Got an unexpected keyword argument '%s' to method delete_experiment" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
-        if self.api_client.client_side_validation and ('id' not in local_var_params or  # noqa: E501
-                                                        local_var_params['id'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `id` when calling `delete_experiment`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "id" not in local_var_params or local_var_params["id"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `id` when calling `delete_experiment`"
+            )  # noqa: E501
 
         collection_formats = {}
 
         path_params = {}
-        if 'id' in local_var_params:
-            path_params['id'] = local_var_params['id']  # noqa: E501
+        if "id" in local_var_params:
+            path_params["id"] = local_var_params["id"]  # noqa: E501
 
         query_params = []
 
@@ -254,27 +242,30 @@ class ExperimentApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json; charset=utf-8'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json; charset=utf-8"]
+        )  # noqa: E501
 
         # Authentication setting
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/experiment/{id}', 'DELETE',
+            "/v1/experiment/{id}",
+            "DELETE",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='JsonResponse',  # noqa: E501
+            response_type="JsonResponse",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get("_return_http_data_only"),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def get_experiment(self, id, **kwargs):  # noqa: E501
         """Get the experiment's detailed info by id  # noqa: E501
@@ -297,7 +288,7 @@ class ExperimentApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
+        kwargs["_return_http_data_only"] = True
         return self.get_experiment_with_http_info(id, **kwargs)  # noqa: E501
 
     def get_experiment_with_http_info(self, id, **kwargs):  # noqa: E501
@@ -326,36 +317,31 @@ class ExperimentApi(object):
 
         local_var_params = locals()
 
-        all_params = [
-            'id'
-        ]
+        all_params = ["id"]
         all_params.extend(
-            [
-                'async_req',
-                '_return_http_data_only',
-                '_preload_content',
-                '_request_timeout'
-            ]
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
         )
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method get_experiment" % key
+                    "Got an unexpected keyword argument '%s' to method get_experiment" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
-        if self.api_client.client_side_validation and ('id' not in local_var_params or  # noqa: E501
-                                                        local_var_params['id'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `id` when calling `get_experiment`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "id" not in local_var_params or local_var_params["id"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `id` when calling `get_experiment`"
+            )  # noqa: E501
 
         collection_formats = {}
 
         path_params = {}
-        if 'id' in local_var_params:
-            path_params['id'] = local_var_params['id']  # noqa: E501
+        if "id" in local_var_params:
+            path_params["id"] = local_var_params["id"]  # noqa: E501
 
         query_params = []
 
@@ -366,27 +352,30 @@ class ExperimentApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json; charset=utf-8'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json; charset=utf-8"]
+        )  # noqa: E501
 
         # Authentication setting
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/experiment/{id}', 'GET',
+            "/v1/experiment/{id}",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='JsonResponse',  # noqa: E501
+            response_type="JsonResponse",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get("_return_http_data_only"),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def get_log(self, id, **kwargs):  # noqa: E501
         """Log experiment by id  # noqa: E501
@@ -409,7 +398,7 @@ class ExperimentApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
+        kwargs["_return_http_data_only"] = True
         return self.get_log_with_http_info(id, **kwargs)  # noqa: E501
 
     def get_log_with_http_info(self, id, **kwargs):  # noqa: E501
@@ -438,36 +427,31 @@ class ExperimentApi(object):
 
         local_var_params = locals()
 
-        all_params = [
-            'id'
-        ]
+        all_params = ["id"]
         all_params.extend(
-            [
-                'async_req',
-                '_return_http_data_only',
-                '_preload_content',
-                '_request_timeout'
-            ]
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
         )
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method get_log" % key
+                    "Got an unexpected keyword argument '%s' to method get_log" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
-        if self.api_client.client_side_validation and ('id' not in local_var_params or  # noqa: E501
-                                                        local_var_params['id'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `id` when calling `get_log`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "id" not in local_var_params or local_var_params["id"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `id` when calling `get_log`"
+            )  # noqa: E501
 
         collection_formats = {}
 
         path_params = {}
-        if 'id' in local_var_params:
-            path_params['id'] = local_var_params['id']  # noqa: E501
+        if "id" in local_var_params:
+            path_params["id"] = local_var_params["id"]  # noqa: E501
 
         query_params = []
 
@@ -478,27 +462,30 @@ class ExperimentApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json; charset=utf-8'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json; charset=utf-8"]
+        )  # noqa: E501
 
         # Authentication setting
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/experiment/logs/{id}', 'GET',
+            "/v1/experiment/logs/{id}",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='JsonResponse',  # noqa: E501
+            response_type="JsonResponse",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get("_return_http_data_only"),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def list_experiments(self, **kwargs):  # noqa: E501
         """List experiments  # noqa: E501
@@ -521,7 +508,7 @@ class ExperimentApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
+        kwargs["_return_http_data_only"] = True
         return self.list_experiments_with_http_info(**kwargs)  # noqa: E501
 
     def list_experiments_with_http_info(self, **kwargs):  # noqa: E501
@@ -550,34 +537,26 @@ class ExperimentApi(object):
 
         local_var_params = locals()
 
-        all_params = [
-            'status'
-        ]
+        all_params = ["status"]
         all_params.extend(
-            [
-                'async_req',
-                '_return_http_data_only',
-                '_preload_content',
-                '_request_timeout'
-            ]
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
         )
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method list_experiments" % key
+                    "Got an unexpected keyword argument '%s' to method list_experiments" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
 
         collection_formats = {}
 
         path_params = {}
 
         query_params = []
-        if 'status' in local_var_params and local_var_params['status'] is not None:  # noqa: E501
-            query_params.append(('status', local_var_params['status']))  # noqa: E501
+        if "status" in local_var_params and local_var_params["status"] is not None:  # noqa: E501
+            query_params.append(("status", local_var_params["status"]))  # noqa: E501
 
         header_params = {}
 
@@ -586,27 +565,30 @@ class ExperimentApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json; charset=utf-8'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json; charset=utf-8"]
+        )  # noqa: E501
 
         # Authentication setting
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/experiment', 'GET',
+            "/v1/experiment",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='JsonResponse',  # noqa: E501
+            response_type="JsonResponse",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get("_return_http_data_only"),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def list_log(self, **kwargs):  # noqa: E501
         """List experiment's log  # noqa: E501
@@ -629,7 +611,7 @@ class ExperimentApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
+        kwargs["_return_http_data_only"] = True
         return self.list_log_with_http_info(**kwargs)  # noqa: E501
 
     def list_log_with_http_info(self, **kwargs):  # noqa: E501
@@ -658,34 +640,26 @@ class ExperimentApi(object):
 
         local_var_params = locals()
 
-        all_params = [
-            'status'
-        ]
+        all_params = ["status"]
         all_params.extend(
-            [
-                'async_req',
-                '_return_http_data_only',
-                '_preload_content',
-                '_request_timeout'
-            ]
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
         )
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method list_log" % key
+                    "Got an unexpected keyword argument '%s' to method list_log" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
 
         collection_formats = {}
 
         path_params = {}
 
         query_params = []
-        if 'status' in local_var_params and local_var_params['status'] is not None:  # noqa: E501
-            query_params.append(('status', local_var_params['status']))  # noqa: E501
+        if "status" in local_var_params and local_var_params["status"] is not None:  # noqa: E501
+            query_params.append(("status", local_var_params["status"]))  # noqa: E501
 
         header_params = {}
 
@@ -694,27 +668,30 @@ class ExperimentApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json; charset=utf-8'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json; charset=utf-8"]
+        )  # noqa: E501
 
         # Authentication setting
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/experiment/logs', 'GET',
+            "/v1/experiment/logs",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='JsonResponse',  # noqa: E501
+            response_type="JsonResponse",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get("_return_http_data_only"),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def patch_experiment(self, id, **kwargs):  # noqa: E501
         """Update the experiment in the submarine server with spec  # noqa: E501
@@ -738,7 +715,7 @@ class ExperimentApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
+        kwargs["_return_http_data_only"] = True
         return self.patch_experiment_with_http_info(id, **kwargs)  # noqa: E501
 
     def patch_experiment_with_http_info(self, id, **kwargs):  # noqa: E501
@@ -768,37 +745,31 @@ class ExperimentApi(object):
 
         local_var_params = locals()
 
-        all_params = [
-            'id',
-            'experiment_spec'
-        ]
+        all_params = ["id", "experiment_spec"]
         all_params.extend(
-            [
-                'async_req',
-                '_return_http_data_only',
-                '_preload_content',
-                '_request_timeout'
-            ]
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
         )
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
                 raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method patch_experiment" % key
+                    "Got an unexpected keyword argument '%s' to method patch_experiment" % key
                 )
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
-        if self.api_client.client_side_validation and ('id' not in local_var_params or  # noqa: E501
-                                                        local_var_params['id'] is None):  # noqa: E501
-            raise ApiValueError("Missing the required parameter `id` when calling `patch_experiment`")  # noqa: E501
+        if self.api_client.client_side_validation and (
+            "id" not in local_var_params or local_var_params["id"] is None  # noqa: E501
+        ):  # noqa: E501
+            raise ApiValueError(
+                "Missing the required parameter `id` when calling `patch_experiment`"
+            )  # noqa: E501
 
         collection_formats = {}
 
         path_params = {}
-        if 'id' in local_var_params:
-            path_params['id'] = local_var_params['id']  # noqa: E501
+        if "id" in local_var_params:
+            path_params["id"] = local_var_params["id"]  # noqa: E501
 
         query_params = []
 
@@ -808,34 +779,38 @@ class ExperimentApi(object):
         local_var_files = {}
 
         body_params = None
-        if 'experiment_spec' in local_var_params:
-            body_params = local_var_params['experiment_spec']
+        if "experiment_spec" in local_var_params:
+            body_params = local_var_params["experiment_spec"]
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json; charset=utf-8'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json; charset=utf-8"]
+        )  # noqa: E501
 
         # HTTP header `Content-Type`
-        header_params['Content-Type'] = self.api_client.select_header_content_type(  # noqa: E501
-            ['application/yaml', 'application/json'])  # noqa: E501
+        header_params["Content-Type"] = self.api_client.select_header_content_type(  # noqa: E501
+            ["application/yaml", "application/json"]
+        )  # noqa: E501
 
         # Authentication setting
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/experiment/{id}', 'PATCH',
+            "/v1/experiment/{id}",
+            "PATCH",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='JsonResponse',  # noqa: E501
+            response_type="JsonResponse",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get("_return_http_data_only"),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )
 
     def ping(self, **kwargs):  # noqa: E501
         """Ping submarine server  # noqa: E501
@@ -858,7 +833,7 @@ class ExperimentApi(object):
                  If the method is called asynchronously,
                  returns the request thread.
         """
-        kwargs['_return_http_data_only'] = True
+        kwargs["_return_http_data_only"] = True
         return self.ping_with_http_info(**kwargs)  # noqa: E501
 
     def ping_with_http_info(self, **kwargs):  # noqa: E501
@@ -887,25 +862,16 @@ class ExperimentApi(object):
 
         local_var_params = locals()
 
-        all_params = [
-        ]
+        all_params = []
         all_params.extend(
-            [
-                'async_req',
-                '_return_http_data_only',
-                '_preload_content',
-                '_request_timeout'
-            ]
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
         )
 
-        for key, val in six.iteritems(local_var_params['kwargs']):
+        for key, val in six.iteritems(local_var_params["kwargs"]):
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s'"
-                    " to method ping" % key
-                )
+                raise ApiTypeError("Got an unexpected keyword argument '%s' to method ping" % key)
             local_var_params[key] = val
-        del local_var_params['kwargs']
+        del local_var_params["kwargs"]
 
         collection_formats = {}
 
@@ -920,24 +886,27 @@ class ExperimentApi(object):
 
         body_params = None
         # HTTP header `Accept`
-        header_params['Accept'] = self.api_client.select_header_accept(
-            ['application/json; charset=utf-8'])  # noqa: E501
+        header_params["Accept"] = self.api_client.select_header_accept(
+            ["application/json; charset=utf-8"]
+        )  # noqa: E501
 
         # Authentication setting
         auth_settings = []  # noqa: E501
 
         return self.api_client.call_api(
-            '/v1/experiment/ping', 'GET',
+            "/v1/experiment/ping",
+            "GET",
             path_params,
             query_params,
             header_params,
             body=body_params,
             post_params=form_params,
             files=local_var_files,
-            response_type='str',  # noqa: E501
+            response_type="str",  # noqa: E501
             auth_settings=auth_settings,
-            async_req=local_var_params.get('async_req'),
-            _return_http_data_only=local_var_params.get('_return_http_data_only'),  # noqa: E501
-            _preload_content=local_var_params.get('_preload_content', True),
-            _request_timeout=local_var_params.get('_request_timeout'),
-            collection_formats=collection_formats)
+            async_req=local_var_params.get("async_req"),
+            _return_http_data_only=local_var_params.get("_return_http_data_only"),  # noqa: E501
+            _preload_content=local_var_params.get("_preload_content", True),
+            _request_timeout=local_var_params.get("_request_timeout"),
+            collection_formats=collection_formats,
+        )

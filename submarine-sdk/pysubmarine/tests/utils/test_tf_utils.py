@@ -19,34 +19,24 @@ from submarine.utils.tf_utils import get_tf_config
 
 
 def test_get_tf_config():
-    params = {'training': {'mode': 'test'}}
+    params = {"training": {"mode": "test"}}
     with pytest.raises(ValueError, match="mode should be local or distributed"):
         get_tf_config(params)
 
     # conf for local training
-    params.update({
-        'training': {
-            'mode': 'local',
-            'log_steps': 10
-        },
-        'resource': {
-            'num_cpu': 4,
-            'num_thread': 4,
-            'num_gpu': 1
+    params.update(
+        {
+            "training": {"mode": "local", "log_steps": 10},
+            "resource": {"num_cpu": 4, "num_thread": 4, "num_gpu": 1},
         }
-    })
+    )
     get_tf_config(params)
 
     # conf for distributed training
-    params.update({
-        'training': {
-            'mode': 'distributed',
-            'log_steps': 10
-        },
-        'resource': {
-            'num_cpu': 4,
-            'num_thread': 4,
-            'num_gpu': 2
+    params.update(
+        {
+            "training": {"mode": "distributed", "log_steps": 10},
+            "resource": {"num_cpu": 4, "num_thread": 4, "num_gpu": 2},
         }
-    })
+    )
     get_tf_config(params)

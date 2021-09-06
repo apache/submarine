@@ -22,8 +22,8 @@ from pyarrow import fs
 
 
 def open_buffered_file_reader(
-        uri: str,
-        buffer_size: int = io.DEFAULT_BUFFER_SIZE) -> io.BufferedReader:
+    uri: str, buffer_size: int = io.DEFAULT_BUFFER_SIZE
+) -> io.BufferedReader:
     try:
         input_file = open_input_file(uri)
         return io.BufferedReader(input_file, buffer_size=buffer_size)
@@ -33,8 +33,8 @@ def open_buffered_file_reader(
 
 
 def open_buffered_stream_writer(
-        uri: str,
-        buffer_size: int = io.DEFAULT_BUFFER_SIZE) -> io.BufferedWriter:
+    uri: str, buffer_size: int = io.DEFAULT_BUFFER_SIZE
+) -> io.BufferedWriter:
     try:
         output_stream = open_output_stream(uri)
         return io.BufferedWriter(output_stream, buffer_size=buffer_size)
@@ -43,11 +43,8 @@ def open_buffered_stream_writer(
         raise e
 
 
-def write_file(buffer: io.BytesIO,
-               uri: str,
-               buffer_size: int = io.DEFAULT_BUFFER_SIZE) -> None:
-    with open_buffered_stream_writer(uri,
-                                     buffer_size=buffer_size) as output_stream:
+def write_file(buffer: io.BytesIO, uri: str, buffer_size: int = io.DEFAULT_BUFFER_SIZE) -> None:
+    with open_buffered_stream_writer(uri, buffer_size=buffer_size) as output_stream:
         output_stream.write(buffer.getbuffer())
 
 
@@ -63,13 +60,12 @@ def open_output_stream(uri: str):
 
 def file_info(uri: str) -> fs.FileInfo:
     filesystem, path = _parse_uri(uri)
-    info, = filesystem.get_file_info([path])
+    (info,) = filesystem.get_file_info([path])
     return info
 
 
 def _parse_uri(uri: str) -> Tuple[fs.FileSystem, str]:
     parsed = urlparse(uri)
-    uri = uri if parsed.scheme else str(
-        Path(parsed.path).expanduser().absolute())
+    uri = uri if parsed.scheme else str(Path(parsed.path).expanduser().absolute())
     filesystem, path = fs.FileSystem.from_uri(uri)
     return filesystem, path

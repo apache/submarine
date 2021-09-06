@@ -64,8 +64,7 @@ def get_from_dicts(params, defaultParams):
 
     dct = copy.deepcopy(defaultParams)
     for k, _ in params.items():
-        if (k in dct and isinstance(dct[k], dict) and
-                isinstance(defaultParams[k], Mapping)):
+        if k in dct and isinstance(dct[k], dict) and isinstance(defaultParams[k], Mapping):
             dct[k] = get_from_dicts(params[k], dct[k])
         else:
             dct[k] = params[k]
@@ -73,10 +72,9 @@ def get_from_dicts(params, defaultParams):
 
 
 def get_from_registry(key, registry):
-    if hasattr(key, 'lower'):
+    if hasattr(key, "lower"):
         key = key.lower()
     if key in registry:
         return registry[key]
     else:
-        raise ValueError('Key {} not supported, available options: {}'.format(
-            key, registry.keys()))
+        raise ValueError("Key {} not supported, available options: {}".format(key, registry.keys()))

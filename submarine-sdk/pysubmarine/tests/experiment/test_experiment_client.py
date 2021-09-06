@@ -25,33 +25,30 @@ from submarine.experiment.models.experiment_task_spec import ExperimentTaskSpec
 
 @pytest.mark.e2e
 def test_experiment_e2e():
-    submarine_client = submarine.ExperimentClient(host='http://localhost:8080')
-    environment = EnvironmentSpec(
-        image='apache/submarine:tf-dist-mnist-test-1.0')
+    submarine_client = submarine.ExperimentClient(host="http://localhost:8080")
+    environment = EnvironmentSpec(image="apache/submarine:tf-dist-mnist-test-1.0")
     experiment_meta = ExperimentMeta(
-        name='mnist-dist',
-        namespace='default',
-        framework='Tensorflow',
-        cmd='python /var/tf_dist_mnist/dist_mnist.py --train_steps=100',
-        env_vars={'ENV1': 'ENV1'})
+        name="mnist-dist",
+        namespace="default",
+        framework="Tensorflow",
+        cmd="python /var/tf_dist_mnist/dist_mnist.py --train_steps=100",
+        env_vars={"ENV1": "ENV1"},
+    )
 
-    worker_spec = ExperimentTaskSpec(resources='cpu=1,memory=1024M', replicas=1)
-    ps_spec = ExperimentTaskSpec(resources='cpu=1,memory=1024M', replicas=1)
+    worker_spec = ExperimentTaskSpec(resources="cpu=1,memory=1024M", replicas=1)
+    ps_spec = ExperimentTaskSpec(resources="cpu=1,memory=1024M", replicas=1)
 
-    code_spec = CodeSpec(sync_mode='git',
-                         url='https://github.com/apache/submarine.git')
+    code_spec = CodeSpec(sync_mode="git", url="https://github.com/apache/submarine.git")
 
-    experiment_spec = ExperimentSpec(meta=experiment_meta,
-                                     environment=environment,
-                                     code=code_spec,
-                                     spec={
-                                         'Ps': ps_spec,
-                                         'Worker': worker_spec
-                                     })
+    experiment_spec = ExperimentSpec(
+        meta=experiment_meta,
+        environment=environment,
+        code=code_spec,
+        spec={"Ps": ps_spec, "Worker": worker_spec},
+    )
 
-    experiment = submarine_client.create_experiment(
-        experiment_spec=experiment_spec)
-    id = experiment['experimentId']
+    experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
+    id = experiment["experimentId"]
 
     submarine_client.get_experiment(id)
     submarine_client.list_experiments()

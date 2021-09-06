@@ -137,27 +137,31 @@ class SqlAlchemyStore(AbstractStore):
             value = float(metric.value)
         with self.ManagedSessionMaker() as session:
             try:
-                self._get_or_create(model=SqlMetric,
-                                    id=job_id,
-                                    key=metric.key,
-                                    value=value,
-                                    worker_index=metric.worker_index,
-                                    timestamp=metric.timestamp,
-                                    step=metric.step,
-                                    session=session,
-                                    is_nan=is_nan)
+                self._get_or_create(
+                    model=SqlMetric,
+                    id=job_id,
+                    key=metric.key,
+                    value=value,
+                    worker_index=metric.worker_index,
+                    timestamp=metric.timestamp,
+                    step=metric.step,
+                    session=session,
+                    is_nan=is_nan,
+                )
             except sqlalchemy.exc.IntegrityError:
                 session.rollback()
 
     def log_param(self, job_id, param):
         with self.ManagedSessionMaker() as session:
             try:
-                self._get_or_create(model=SqlParam,
-                                    id=job_id,
-                                    session=session,
-                                    key=param.key,
-                                    value=param.value,
-                                    worker_index=param.worker_index)
+                self._get_or_create(
+                    model=SqlParam,
+                    id=job_id,
+                    session=session,
+                    key=param.key,
+                    value=param.value,
+                    worker_index=param.worker_index,
+                )
                 session.commit()
             except sqlalchemy.exc.IntegrityError:
                 session.rollback()
