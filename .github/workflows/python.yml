@@ -40,9 +40,9 @@ jobs:
           pip install --no-cache-dir torch==1.5.0
           pip install --no-cache-dir ./submarine-sdk/pysubmarine/.
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-          pip install -r ./submarine-sdk/pysubmarine/github-actions/lint-requirements.txt
+          pip install -r ./dev-support/style-check/python/lint-requirements.txt
       - name: Check python sdk code style
-        run: ./submarine-sdk/pysubmarine/github-actions/lint.sh
+        run: ./dev-support/style-check/python/lint.sh
       - name: Run unit test
         run: pytest --cov=submarine -vs -m "not e2e"
   integration:
