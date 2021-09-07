@@ -17,7 +17,7 @@ import functools
 import itertools
 import multiprocessing as mp
 import os
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -53,9 +53,12 @@ class LIBSVMDataset(Dataset):
         return feature_idx, feature_value, int(label)
 
     @classmethod
-    def prepare_dataset(cls, data_uri: str, n_jobs: int = os.cpu_count()):
-        sample_offset = LIBSVMDataset._locate_sample_offsets(data_uri=data_uri, n_jobs=n_jobs)
-        return LIBSVMDataset(data_uri=data_uri, sample_offset=sample_offset)
+    def prepare_dataset(cls, data_uri: str, n_jobs: Optional[int] = os.cpu_count()):
+        if n_jobs is None:
+            raise Exception("No enough cpu!")
+        else:
+            sample_offset = LIBSVMDataset._locate_sample_offsets(data_uri=data_uri, n_jobs=n_jobs)
+            return LIBSVMDataset(data_uri=data_uri, sample_offset=sample_offset)
 
     @classmethod
     def _locate_sample_offsets(cls, data_uri: str, n_jobs: int) -> np.ndarray:

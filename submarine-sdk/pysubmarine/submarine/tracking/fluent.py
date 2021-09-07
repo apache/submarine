@@ -25,7 +25,6 @@ from submarine.tracking.client import SubmarineClient
 from submarine.tracking.utils import get_job_id, get_worker_index
 
 _RUN_ID_ENV_VAR = "SUBMARINE_RUN_ID"
-_active_run_stack = []
 
 _logger = logging.getLogger(__name__)
 
