@@ -24,13 +24,13 @@ Your journey of becoming a contributor and committer starts from here: improving
 
 You can reach out to the community members via any one of the following ways:
 
-+ Slack Developer: [https://the-asf.slack.com/submarine-dev/](https://the-asf.slack.com/submarine-dev/)
+- Slack Developer: [https://the-asf.slack.com/submarine-dev/](https://the-asf.slack.com/submarine-dev/)
 
-+ Slack User: [https://the-asf.slack.com/submarine-user/](https://the-asf.slack.com/submarine-user/)
+- Slack User: [https://the-asf.slack.com/submarine-user/](https://the-asf.slack.com/submarine-user/)
 
-+ Zoom: [https://cloudera.zoom.us/j/880548968](https://cloudera.zoom.us/j/880548968)
+- Zoom: [https://cloudera.zoom.us/j/880548968](https://cloudera.zoom.us/j/880548968)
 
-+ Sync Up: [https://docs.google.com/document/d/16pUO3TP4SxSeLduG817GhVAjtiph9HYpRHo_JgduDvw/edit](https://docs.google.com/document/d/16pUO3TP4SxSeLduG817GhVAjtiph9HYpRHo_JgduDvw/edit)
+- Sync Up: [https://docs.google.com/document/d/16pUO3TP4SxSeLduG817GhVAjtiph9HYpRHo_JgduDvw/edit](https://docs.google.com/document/d/16pUO3TP4SxSeLduG817GhVAjtiph9HYpRHo_JgduDvw/edit)
 
 ## Your First Contribution
 
@@ -68,12 +68,18 @@ Communication within the Submarine community abides by [Apache’s Code of Condu
 
 Get help using Apache Submarine or contribute to the project on our mailing lists:
 
-+ [Users](https://lists.apache.org/list.html?users@submarine.apache.org) : [subscribe](mailto:users-subscribe@submarine.apache.org), [unsubscribe](mailto:users-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?users@submarine.apache.org)
-for usage questions, help, and announcements.
-+ [Dev](https://lists.apache.org/list.html?dev@submarine.apache.org) : [subscribe](mailto:dev-subscribe@submarine.apache.org), [unsubscribe](mailto:dev-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?dev@submarine.apache.org)
-for people wanting to contribute to the project.
-+ [Commits](https://lists.apache.org/list.html?commits@submarine.apache.org) : [subscribe](mailto:commits-subscribe@submarine.apache.org), [unsubscribe](mailto:commits-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?commits@submarine.apache.org)
-for commit messages and patches.
+- [Users](https://lists.apache.org/list.html?users@submarine.apache.org) : [subscribe](mailto:users-subscribe@submarine.apache.org), [unsubscribe](mailto:users-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?users@submarine.apache.org)
+  for usage questions, help, and announcements.
+- [Dev](https://lists.apache.org/list.html?dev@submarine.apache.org) : [subscribe](mailto:dev-subscribe@submarine.apache.org), [unsubscribe](mailto:dev-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?dev@submarine.apache.org)
+  for people wanting to contribute to the project.
+- [Commits](https://lists.apache.org/list.html?commits@submarine.apache.org) : [subscribe](mailto:commits-subscribe@submarine.apache.org), [unsubscribe](mailto:commits-unsubscribe@submarine.apache.org), [archives](https://lists.apache.org/list.html?commits@submarine.apache.org)
+  for commit messages and patches.
+
+Take subscribe Dev as an example, you should send an email to dev-subscribe@submarine.apache.org.
+
+Usually, this happens when you just click the "subscribe" link. If this does not work, simply copy the address and paste it into the "To:" field of a new message.
+
+After that, you will get an email from dev-help@submarine.apache.org, follow the directives of the mail to reply, then you will subscribe dev@submarine.apache.org successfully.
 
 ## License
 
