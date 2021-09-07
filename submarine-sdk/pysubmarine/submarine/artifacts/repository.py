@@ -19,7 +19,6 @@ import boto3
 
 
 class Repository:
-
     def __init__(self, experiment_id):
         self.client = boto3.client(
             "s3",
@@ -36,7 +35,8 @@ class Repository:
         response = self.client.list_objects(
             Bucket="submarine",
             Prefix=os.path.join(self.dest_path, artifact_path) + "/",
-            Delimiter="/")
+            Delimiter="/",
+        )
         return response.get("CommonPrefixes")
 
     def log_artifact(self, local_file, artifact_path):
@@ -57,8 +57,7 @@ class Repository:
         if list_of_subfolder is None:
             artifact_path = os.path.join(artifact_path, "1")
         else:
-            artifact_path = os.path.join(artifact_path,
-                                         str(len(list_of_subfolder) + 1))
+            artifact_path = os.path.join(artifact_path, str(len(list_of_subfolder) + 1))
         dest_path = os.path.join(dest_path, artifact_path)
         local_dir = os.path.abspath(local_dir)
         for (root, _, filenames) in os.walk(local_dir):
