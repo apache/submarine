@@ -16,15 +16,30 @@
 from datetime import datetime
 
 import sqlalchemy as sa
-from sqlalchemy import (Integer, BigInteger, Boolean, Text, Column, PrimaryKeyConstraint,
-                        String, ForeignKey, ForeignKeyConstraint)
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    ForeignKey,
+    ForeignKeyConstraint,
+    Integer,
+    PrimaryKeyConstraint,
+    String,
+    Text,
+)
 from sqlalchemy.dialects.mysql import DATETIME
-from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
-from submarine.entities import Metric, Param, Experiment
-from submarine.entities.model_registry import (RegisteredModel, RegisteredModelTag,
-                                               ModelVersion, ModelTag)
+from sqlalchemy.orm import backref, relationship
+
+from submarine.entities import Experiment, Metric, Param
+from submarine.entities.model_registry import (
+    ModelTag,
+    ModelVersion,
+    RegisteredModel,
+    RegisteredModelTag,
+)
 from submarine.entities.model_registry.model_version_stages import STAGE_NONE
+
 Base = declarative_base()
 
 # +---------------------+---------------+-------------------+-------------+
@@ -72,11 +87,13 @@ class SqlRegisteredModel(Base):
         Convert DB model to corresponding Submarine entity.
         :return: :py:class:`submarine.entities.RegisteredModel`.
         """
-        return RegisteredModel(name=self.name,
-                               creation_time=self.creation_time,
-                               last_updated_time=self.last_updated_time,
-                               description=self.description,
-                               tags=[tag.to_submarine_entity for tag in self.registered_model_tag])
+        return RegisteredModel(
+            name=self.name,
+            creation_time=self.creation_time,
+            last_updated_time=self.last_updated_time,
+            description=self.description,
+            tags=[tag.to_submarine_entity for tag in self.registered_model_tag],
+        )
 
 
 # +---------------------+-------+
@@ -89,10 +106,11 @@ class SqlRegisteredModel(Base):
 
 
 class SqlRegisteredModelTag(Base):
-    __tablename__ = 'registered_model_tag'
+    __tablename__ = "registered_model_tag"
 
-    name = Column(String(256),
-                  ForeignKey("registered_model.name", onupdate="cascade", ondelete="cascade"))
+    name = Column(
+        String(256), ForeignKey("registered_model.name", onupdate="cascade", ondelete="cascade")
+    )
     """
     Name for registered models: Part of *Primary Key* for ``registered_model_tag`` table. Refer to
     name of ``registered_model`` table.
@@ -122,6 +140,7 @@ class SqlRegisteredModelTag(Base):
         """
         return RegisteredModelTag(self.tag)
 
+
 # +---------------------+---------+-----+-------------------------------+-----+
 # | name                | version | ... | source                        | ... |
 # +---------------------+---------+-----+-------------------------------+-----+
@@ -132,7 +151,7 @@ class SqlRegisteredModelTag(Base):
 
 
 class SqlModelVersion(Base):
-    __tablename__ = 'model_version'
+    __tablename__ = "model_version"
 
     name = Column(String(256), ForeignKey("registered_model.name", onupdate="cascade"))
     """
@@ -194,8 +213,16 @@ class SqlModelVersion(Base):
 
     def __repr__(self):
         return "<SqlModelVersion ({}, {}, {}, {}, {}, {}, {}, {}, {}, {})>".format(
-            self.name, self.version, self.user_id, self.experiment_id, self.current_stage,
-            self.creation_time, self.last_updated_time, self.source, self.dataset, self.description
+            self.name,
+            self.version,
+            self.user_id,
+            self.experiment_id,
+            self.current_stage,
+            self.creation_time,
+            self.last_updated_time,
+            self.source,
+            self.dataset,
+            self.description,
         )
 
     def to_submarine_entity(self):
@@ -203,17 +230,19 @@ class SqlModelVersion(Base):
         Convert DB model to corresponding Submarine entity.
         :return: :py:class:`submarine.entities.RegisteredModel`.
         """
-        return ModelVersion(name=self.name,
-                            version=self.version,
-                            user_id=self.user_id,
-                            experiment_id=self.experiment_id,
-                            current_stage=self.current_stage,
-                            creation_time=self.creation_time,
-                            last_updated_time=self.last_updated_time,
-                            source=self.source,
-                            dataset=self.dataset,
-                            description=self.description,
-                            tags=[tag.to_submarine_entity for tag in self.model_tag])
+        return ModelVersion(
+            name=self.name,
+            version=self.version,
+            user_id=self.user_id,
+            experiment_id=self.experiment_id,
+            current_stage=self.current_stage,
+            creation_time=self.creation_time,
+            last_updated_time=self.last_updated_time,
+            source=self.source,
+            dataset=self.dataset,
+            description=self.description,
+            tags=[tag.to_submarine_entity for tag in self.model_tag],
+        )
 
 
 # +---------------------+---------+-----------------+
@@ -227,7 +256,7 @@ class SqlModelVersion(Base):
 
 
 class SqlModelTag(Base):
-    __tablename__ = 'model_tag'
+    __tablename__ = "model_tag"
 
     name = Column(String(256), nullable=False)
     """
@@ -249,9 +278,7 @@ class SqlModelTag(Base):
 
     # linked entities
     model_version = relationship(
-        "SqlModelVersion",
-        foreign_keys=[name, version],
-        backref=backref("model_tag", cascade="all")
+        "SqlModelVersion", foreign_keys=[name, version], backref=backref("model_tag", cascade="all")
     )
 
     __table_args__ = (
@@ -275,6 +302,7 @@ class SqlModelTag(Base):
         """
         return ModelTag(self.tag)
 
+
 # +--------------------+-----------------+-----------+---------------+-----------+-------------+
 # | id                 | experiment_spec | create_by | create_time   | update_by | update_time |
 # +--------------------+-----------------+-----------+---------------+-----------+-------------+
@@ -283,7 +311,7 @@ class SqlModelTag(Base):
 
 
 class SqlExperiment(Base):
-    __tablename__ = 'experiment'
+    __tablename__ = "experiment"
 
     id = Column(String(64))
     """
@@ -310,27 +338,32 @@ class SqlExperiment(Base):
     Datetime of this experiment be updated
     """
 
-    __table_args__ = (PrimaryKeyConstraint('id'),)
+    __table_args__ = (PrimaryKeyConstraint("id"),)
 
     def __repr__(self):
-        return '<SqlMetric({}, {}, {}, {}, {}, {})>'.format(self.id,
-                                                            self.experiment_spec,
-                                                            self.create_by,
-                                                            self.create_time,
-                                                            self.update_by,
-                                                            self.update_time)
+        return "<SqlMetric({}, {}, {}, {}, {}, {})>".format(
+            self.id,
+            self.experiment_spec,
+            self.create_by,
+            self.create_time,
+            self.update_by,
+            self.update_time,
+        )
 
     def to_submarine_entity(self):
         """
         Convert DB model to corresponding Submarine entity.
         :return: :py:class:`submarine.entities.Experiment`.
         """
-        return Experiment(id=self.id,
-                          experiment_spec=self.experiment_spec,
-                          create_by=self.create_by,
-                          create_time=self.create_time,
-                          update_by=self.update_by,
-                          update_time=self.update_time)
+        return Experiment(
+            id=self.id,
+            experiment_spec=self.experiment_spec,
+            create_by=self.create_by,
+            create_time=self.create_time,
+            update_by=self.update_by,
+            update_time=self.update_time,
+        )
+
 
 # +--------------------+-------+-------------------+--------------+---------------+------+--------+
 # | id                 | key   | value             | worker_index | timestamp     | step | is_nan |
@@ -343,7 +376,7 @@ class SqlExperiment(Base):
 
 
 class SqlMetric(Base):
-    __tablename__ = 'metric'
+    __tablename__ = "metric"
 
     id = Column(String(64), ForeignKey("experiment.id", onupdate="cascade", ondelete="cascade"))
     """
@@ -410,7 +443,7 @@ class SqlMetric(Base):
 
 
 class SqlParam(Base):
-    __tablename__ = 'param'
+    __tablename__ = "param"
 
     id = Column(String(64), ForeignKey("experiment.id", onupdate="cascade", ondelete="cascade"))
     """

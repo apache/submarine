@@ -51,6 +51,4 @@ def log_metric(key, value, step=None):
     """
     job_id = get_job_id()
     worker_index = get_worker_index()
-    SubmarineClient().log_metric(
-        job_id, key, value, worker_index, int(time.time() * 1000), step or 0
-    )
+    SubmarineClient().log_metric(job_id, key, value, worker_index, datetime.now(), step or 0)

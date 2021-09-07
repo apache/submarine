@@ -38,12 +38,14 @@ class TestTracking(unittest.TestCase):
         self.store = utils.get_sqlalchemy_store(self.tracking_uri)
         # TODO: use submarine.tracking.fluent to support experiment create
         with self.store.ManagedSessionMaker() as session:
-            instance = SqlExperiment(id=JOB_ID,
-                                     experiment_spec="{\"value\": 1}",
-                                     create_by="test",
-                                     create_time=datetime.now(),
-                                     update_by=None,
-                                     update_time=None)
+            instance = SqlExperiment(
+                id=JOB_ID,
+                experiment_spec='{"value": 1}',
+                create_by="test",
+                create_time=datetime.now(),
+                update_by=None,
+                update_time=None,
+            )
             session.add(instance)
             session.commit()
 

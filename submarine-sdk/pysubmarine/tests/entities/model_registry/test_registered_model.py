@@ -19,24 +19,16 @@ from submarine.entities.model_registry.registered_model import RegisteredModel
 from submarine.entities.model_registry.registered_model_tag import RegisteredModelTag
 
 
-class TestRegisteredModel():
+class TestRegisteredModel:
     default_data = {
         "name": "test",
         "creation_time": datetime.now(),
         "last_updated_time": datetime.now(),
         "description": "registered model description",
-        "tags": []
+        "tags": [],
     }
 
-    def _check(
-        self,
-        registered_model,
-        name,
-        creation_time,
-        last_updated_time,
-        description,
-        tags
-    ):
+    def _check(self, registered_model, name, creation_time, last_updated_time, description, tags):
         isinstance(registered_model, RegisteredModel)
         assert registered_model.name == name
         assert registered_model.creation_time == creation_time
@@ -45,30 +37,38 @@ class TestRegisteredModel():
         assert registered_model.tags == tags
 
     def test_creation_and_hydration(self):
-        rm = RegisteredModel(self.default_data["name"],
-                             self.default_data["creation_time"],
-                             self.default_data["last_updated_time"],
-                             self.default_data["description"],
-                             self.default_data["tags"])
-        self._check(rm,
-                    self.default_data["name"],
-                    self.default_data["creation_time"],
-                    self.default_data["last_updated_time"],
-                    self.default_data["description"],
-                    self.default_data["tags"])
+        rm = RegisteredModel(
+            self.default_data["name"],
+            self.default_data["creation_time"],
+            self.default_data["last_updated_time"],
+            self.default_data["description"],
+            self.default_data["tags"],
+        )
+        self._check(
+            rm,
+            self.default_data["name"],
+            self.default_data["creation_time"],
+            self.default_data["last_updated_time"],
+            self.default_data["description"],
+            self.default_data["tags"],
+        )
 
     def test_with_tags(self):
         tag1 = RegisteredModelTag("tag1")
         tag2 = RegisteredModelTag("tag2")
         tags = [tag1, tag2]
-        rm = RegisteredModel(self.default_data["name"],
-                             self.default_data["creation_time"],
-                             self.default_data["last_updated_time"],
-                             self.default_data["description"],
-                             tags)
-        self._check(rm,
-                    self.default_data["name"],
-                    self.default_data["creation_time"],
-                    self.default_data["last_updated_time"],
-                    self.default_data["description"],
-                    [t.tag for t in tags])
+        rm = RegisteredModel(
+            self.default_data["name"],
+            self.default_data["creation_time"],
+            self.default_data["last_updated_time"],
+            self.default_data["description"],
+            tags,
+        )
+        self._check(
+            rm,
+            self.default_data["name"],
+            self.default_data["creation_time"],
+            self.default_data["last_updated_time"],
+            self.default_data["description"],
+            [t.tag for t in tags],
+        )

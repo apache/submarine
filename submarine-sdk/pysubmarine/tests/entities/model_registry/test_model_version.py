@@ -14,12 +14,13 @@
 # limitations under the License.
 
 from datetime import datetime
-from submarine.entities.model_registry.model_version import ModelVersion
+
 from submarine.entities.model_registry.model_tag import ModelTag
+from submarine.entities.model_registry.model_version import ModelVersion
 from submarine.entities.model_registry.model_version_stages import STAGE_NONE
 
 
-class TestModelVersion():
+class TestModelVersion:
     default_data = {
         "name": "test",
         "version": 1,
@@ -31,7 +32,7 @@ class TestModelVersion():
         "source": "path/to/source",
         "dataset": "test",
         "description": "registered model description",
-        "tags": []
+        "tags": [],
     }
 
     def _check(
@@ -47,7 +48,7 @@ class TestModelVersion():
         source,
         dataset,
         description,
-        tags
+        tags,
     ):
         isinstance(model_version, ModelVersion)
         assert model_version.name == name
@@ -63,54 +64,62 @@ class TestModelVersion():
         assert model_version.tags == tags
 
     def test_creation_and_hydration(self):
-        mv = ModelVersion(self.default_data["name"],
-                          self.default_data["version"],
-                          self.default_data["user_id"],
-                          self.default_data["experiment_id"],
-                          self.default_data["current_stage"],
-                          self.default_data["creation_time"],
-                          self.default_data["last_updated_time"],
-                          self.default_data["source"],
-                          self.default_data["dataset"],
-                          self.default_data["description"],
-                          self.default_data["tags"])
-        self._check(mv,
-                    self.default_data["name"],
-                    self.default_data["version"],
-                    self.default_data["user_id"],
-                    self.default_data["experiment_id"],
-                    self.default_data["current_stage"],
-                    self.default_data["creation_time"],
-                    self.default_data["last_updated_time"],
-                    self.default_data["source"],
-                    self.default_data["dataset"],
-                    self.default_data["description"],
-                    self.default_data["tags"])
+        mv = ModelVersion(
+            self.default_data["name"],
+            self.default_data["version"],
+            self.default_data["user_id"],
+            self.default_data["experiment_id"],
+            self.default_data["current_stage"],
+            self.default_data["creation_time"],
+            self.default_data["last_updated_time"],
+            self.default_data["source"],
+            self.default_data["dataset"],
+            self.default_data["description"],
+            self.default_data["tags"],
+        )
+        self._check(
+            mv,
+            self.default_data["name"],
+            self.default_data["version"],
+            self.default_data["user_id"],
+            self.default_data["experiment_id"],
+            self.default_data["current_stage"],
+            self.default_data["creation_time"],
+            self.default_data["last_updated_time"],
+            self.default_data["source"],
+            self.default_data["dataset"],
+            self.default_data["description"],
+            self.default_data["tags"],
+        )
 
     def test_with_tags(self):
         tag1 = ModelTag("tag1")
         tag2 = ModelTag("tag2")
         tags = [tag1, tag2]
-        mv = ModelVersion(self.default_data["name"],
-                          self.default_data["version"],
-                          self.default_data["user_id"],
-                          self.default_data["experiment_id"],
-                          self.default_data["current_stage"],
-                          self.default_data["creation_time"],
-                          self.default_data["last_updated_time"],
-                          self.default_data["source"],
-                          self.default_data["dataset"],
-                          self.default_data["description"],
-                          tags)
-        self._check(mv,
-                    self.default_data["name"],
-                    self.default_data["version"],
-                    self.default_data["user_id"],
-                    self.default_data["experiment_id"],
-                    self.default_data["current_stage"],
-                    self.default_data["creation_time"],
-                    self.default_data["last_updated_time"],
-                    self.default_data["source"],
-                    self.default_data["dataset"],
-                    self.default_data["description"],
-                    [t.tag for t in tags])
+        mv = ModelVersion(
+            self.default_data["name"],
+            self.default_data["version"],
+            self.default_data["user_id"],
+            self.default_data["experiment_id"],
+            self.default_data["current_stage"],
+            self.default_data["creation_time"],
+            self.default_data["last_updated_time"],
+            self.default_data["source"],
+            self.default_data["dataset"],
+            self.default_data["description"],
+            tags,
+        )
+        self._check(
+            mv,
+            self.default_data["name"],
+            self.default_data["version"],
+            self.default_data["user_id"],
+            self.default_data["experiment_id"],
+            self.default_data["current_stage"],
+            self.default_data["creation_time"],
+            self.default_data["last_updated_time"],
+            self.default_data["source"],
+            self.default_data["dataset"],
+            self.default_data["description"],
+            [t.tag for t in tags],
+        )

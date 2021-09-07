@@ -21,8 +21,7 @@ class Experiment(_SubmarineObject):
     Experiment object.
     """
 
-    def __init__(self, id, experiment_spec, create_by, create_time, update_by,
-                 update_time):
+    def __init__(self, id, experiment_spec, create_by, create_time, update_by, update_time):
         self._id = id
         self._experiment_spec = experiment_spec
         self._create_by = create_by

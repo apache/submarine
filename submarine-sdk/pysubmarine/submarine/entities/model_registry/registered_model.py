@@ -21,12 +21,7 @@ class RegisteredModel(_SubmarineObject):
     Registered Model object.
     """
 
-    def __init__(self,
-                 name,
-                 creation_time,
-                 last_updated_time,
-                 description=None,
-                 tags=None):
+    def __init__(self, name, creation_time, last_updated_time, description=None, tags=None):
         self._name = name
         self._creation_time = creation_time
         self._last_updated_time = last_updated_time

@@ -21,18 +21,20 @@ class ModelVersion(_SubmarineObject):
     Model Version object.
     """
 
-    def __init__(self,
-                 name,
-                 version,
-                 user_id,
-                 experiment_id,
-                 current_stage,
-                 creation_time,
-                 last_updated_time,
-                 source,
-                 dataset=None,
-                 description=None,
-                 tags=None):
+    def __init__(
+        self,
+        name,
+        version,
+        user_id,
+        experiment_id,
+        current_stage,
+        creation_time,
+        last_updated_time,
+        source,
+        dataset=None,
+        description=None,
+        tags=None,
+    ):
         self._name = name
         self._version = version
         self._user_id = user_id
