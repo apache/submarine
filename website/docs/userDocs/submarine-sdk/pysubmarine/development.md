@@ -30,6 +30,9 @@ conda activate submarine-dev
 # Install auto-format and lints (lint-requirements.txt is in ./dev-support/style-check/python)
 pip install -r lint-requirements.txt
 
+# Install mypy (mypy-requirements.txt is in ./dev-support/style-check/python)
+pip install -r mypy-requirements.txt
+
 # test-requirements.txt is in ./submarine-sdk/pysubmarine/github-actions
 pip install -r test-requirements.txt
 
@@ -62,7 +65,8 @@ The script does the following things:
 ./dev-support/style-check/python/auto-format.sh
 ```
 
-- Use [flake8](https://github.com/PyCQA/flake8) to verify the linter, its' configure is in `.flake8`
+- Use [flake8](https://github.com/PyCQA/flake8) to verify the linter, its' configure is in `.flake8`.
+- Also, we are using [mypy](https://github.com/python/mypy) to check the static type in `submarine-sdk/pysubmarine/submarine`.
 - Verify linter pass before submitting a pull request by running:
 
 ```bash

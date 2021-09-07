@@ -41,6 +41,7 @@ jobs:
           pip install --no-cache-dir ./submarine-sdk/pysubmarine/.
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
           pip install -r ./dev-support/style-check/python/lint-requirements.txt
+          pip install -r ./dev-support/style-check/python/mypy-requirements.txt
       - name: Check python sdk code style
         run: ./dev-support/style-check/python/lint.sh
       - name: Run unit test

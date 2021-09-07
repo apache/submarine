@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import time
+from typing import Any
 
 import sqlalchemy as sa
 from sqlalchemy import BigInteger, Boolean, Column, PrimaryKeyConstraint, String
@@ -21,7 +22,8 @@ from sqlalchemy.ext.declarative import declarative_base
 
 from submarine.entities import Metric, Param
 
-Base = declarative_base()
+# Base class in sqlalchemy is a dynamic type
+Base: Any = declarative_base()
 
 
 # +--------------------+-------+-------------------+--------------+---------------+------+--------+
