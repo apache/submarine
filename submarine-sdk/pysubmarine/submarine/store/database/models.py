@@ -14,6 +14,7 @@
 # limitations under the License.
 
 from datetime import datetime
+from typing import Any
 
 import sqlalchemy as sa
 from sqlalchemy import (
@@ -40,7 +41,8 @@ from submarine.entities.model_registry import (
 )
 from submarine.entities.model_registry.model_version_stages import STAGE_NONE
 
-Base = declarative_base()
+# Base class in sqlalchemy is a dynamic type
+Base: Any = declarative_base()
 
 # +---------------------+-------------------------+-------------------------+-------------+
 # | name                | creation_time           | last_updated_time       | description |
@@ -49,8 +51,6 @@ Base = declarative_base()
 # | speech_recoginition | 2021-08-31 16:16:16.166 | 2021-08-31 20:20:20.200 | ...         |
 # +---------------------+-------------------------+-------------------------+-------------+
 
-# Base class in sqlalchemy is a dynamic type
-Base: Any = declarative_base()
 
 class SqlRegisteredModel(Base):
     __tablename__ = "registered_model"
