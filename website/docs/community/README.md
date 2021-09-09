@@ -24,9 +24,7 @@ Your journey of becoming a contributor and committer starts from here: improving
 
 You can reach out to the community members via any one of the following ways:
 
-- Slack Developer: [https://the-asf.slack.com/submarine-dev/](https://the-asf.slack.com/submarine-dev/)
-
-- Slack User: [https://the-asf.slack.com/submarine-user/](https://the-asf.slack.com/submarine-user/)
+- Slack Developer: [https://join.slack.com/t/the-asf/shared_invite/zt-vlfbf7ch-HkbNHiU_uDlcH_RvaHv9gQ](https://join.slack.com/t/the-asf/shared_invite/zt-vlfbf7ch-HkbNHiU_uDlcH_RvaHv9gQ)
 
 - Zoom: [https://cloudera.zoom.us/j/880548968](https://cloudera.zoom.us/j/880548968)
 
