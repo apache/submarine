@@ -569,7 +569,7 @@ jobs:
       - name: Angular Style
         run: ./dev-support/style-check/lint-angular.sh
   sonarcloud:
-    if: github.repository == 'apache/submarine'
+    if: github.repository == 'apache/submarine' && github.event_name == 'push' && github.ref == 'refs/heads/master'
     name: SonarCloud
     runs-on: ubuntu-latest
     needs:
