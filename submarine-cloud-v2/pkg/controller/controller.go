@@ -643,10 +643,6 @@ func (c *Controller) checkSubmarineDependentsReady(submarine *v1alpha1.Submarine
 			if condition.Type == appsv1.DeploymentReplicaFailure {
 				return false, fmt.Errorf("failed creating replicas of %s, message: %s", deployment.Name, condition.Message)
 			}
-			// progressing error, ex. ProgressDeadlineExceeded
-			if condition.Type == appsv1.DeploymentProgressing && condition.Status == corev1.ConditionFalse {
-				return false, fmt.Errorf("failed creating replicas of %s, message: %s", deployment.Name, condition.Message)
-			}
 		}
 		// check if ready replicas are same as targeted replicas
 		if deployment.Status.ReadyReplicas != deployment.Status.Replicas {
