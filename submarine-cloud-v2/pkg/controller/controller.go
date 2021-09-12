@@ -67,6 +67,7 @@ const storageClassName = "submarine-storageclass"
 const (
 	serverName                  = "submarine-server"
 	databaseName                = "submarine-database"
+	databasePort                = 3306
 	tensorboardName             = "submarine-tensorboard"
 	mlflowName                  = "submarine-mlflow"
 	minioName                   = "submarine-minio"

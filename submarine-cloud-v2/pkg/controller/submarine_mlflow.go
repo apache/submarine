@@ -76,6 +76,17 @@ func newSubmarineMlflowDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 					},
 				},
 				Spec: corev1.PodSpec{
+					InitContainers: []corev1.Container{
+						{
+							Name:  "check-database-connection",
+							Image: "busybox:1.28",
+							Command: []string{
+								"sh",
+								"-c",
+								fmt.Sprintf("until nc -z %s %d; do echo waiting for database connection; sleep 20; done", databaseName, databasePort),
+							},
+						},
+					},
 					Containers: []corev1.Container{
 						{
 							Name:            mlflowName + "-container",
