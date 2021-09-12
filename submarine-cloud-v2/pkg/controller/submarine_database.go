@@ -89,7 +89,7 @@ func newSubmarineDatabaseDeployment(submarine *v1alpha1.Submarine) *appsv1.Deplo
 							ImagePullPolicy: "IfNotPresent",
 							Ports: []corev1.ContainerPort{
 								{
-									ContainerPort: 3306,
+									ContainerPort: databasePort,
 								},
 							},
 							Env: []corev1.EnvVar{
@@ -103,6 +103,13 @@ func newSubmarineDatabaseDeployment(submarine *v1alpha1.Submarine) *appsv1.Deplo
 									MountPath: "/var/lib/mysql",
 									Name:      "volume",
 									SubPath:   databaseName,
+								},
+							},
+							ReadinessProbe: &corev1.Probe{
+								Handler: corev1.Handler{
+									TCPSocket: &corev1.TCPSocketAction{
+										Port: intstr.FromInt(databasePort),
+									},
 								},
 							},
 						},
@@ -134,8 +141,8 @@ func newSubmarineDatabaseService(submarine *v1alpha1.Submarine) *corev1.Service 
 		Spec: corev1.ServiceSpec{
 			Ports: []corev1.ServicePort{
 				{
-					Port:       3306,
-					TargetPort: intstr.FromInt(3306),
+					Port:       databasePort,
+					TargetPort: intstr.FromInt(databasePort),
 					Name:       databaseName,
 				},
 			},
