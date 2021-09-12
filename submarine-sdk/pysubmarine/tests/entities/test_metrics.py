@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import time
+from datetime import datetime
 
 from submarine.entities import Metric
 
@@ -31,7 +31,7 @@ def test_creation_and_hydration():
     key = "alpha"
     value = 10000
     worker_index = 1
-    ts = int(time.time())
+    ts = datetime.now()
     step = 0
 
     metric = Metric(key, value, worker_index, ts, step)

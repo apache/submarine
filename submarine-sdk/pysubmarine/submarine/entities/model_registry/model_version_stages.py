@@ -13,12 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.entities.experiment import Experiment
-from submarine.entities.Metric import Metric
-from submarine.entities.Param import Param
+STAGE_NONE = "None"
+STAGE_STAGING = "Staging"
+STAGE_PRODUCTION = "Production"
+STAGE_ARCHIVED = "Archived"
 
-__all__ = [
-    "Experiment",
-    "Metric",
-    "Param",
-]
+ALL_STAGES = [STAGE_NONE, STAGE_STAGING, STAGE_PRODUCTION, STAGE_ARCHIVED]

@@ -18,9 +18,9 @@
  */
 package org.apache.submarine.server.workbench.database.entity;
 
-import java.math.BigInteger;
-
 import org.apache.submarine.server.database.entity.BaseEntity;
+
+import java.sql.Timestamp;
 
 /*
 # +--------------------+-------+-------------------+--------------+---------------+------+--------+
@@ -38,7 +38,7 @@ public class Metric extends BaseEntity {
   private String key;
   private Float value;
   private String workerIndex;
-  private BigInteger timestamp;
+  private Timestamp timestamp;
   private Integer step;
   private Boolean isNan;
 
@@ -66,11 +66,11 @@ public class Metric extends BaseEntity {
     this.workerIndex = workerIndex;
   }
 
-  public BigInteger getTimestamp() {
+  public Timestamp getTimestamp() {
     return this.timestamp;
   }
 
-  public void setTimestamp(BigInteger timestamp) {
+  public void setTimestamp(Timestamp timestamp) {
     this.timestamp = timestamp;
   }
 

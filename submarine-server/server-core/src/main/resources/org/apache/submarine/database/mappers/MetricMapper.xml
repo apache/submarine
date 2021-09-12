@@ -27,7 +27,7 @@
     <result column="key" jdbcType="VARCHAR" property="key" />
     <result column="value" jdbcType="FLOAT" property="value" />
     <result column="worker_index" jdbcType="VARCHAR" property="workerIndex" />
-    <result column="timestamp" jdbcType="BIGINT" property="timestamp" />
+    <result column="timestamp" jdbcType="TIMESTAMP" property="timestamp" />
     <result column="step" jdbcType="INTEGER" property="step" />
     <result column="is_nan" jdbcType="BOOLEAN" property="isNan" />
   </resultMap>
@@ -40,40 +40,40 @@
   <select id="selectAll" parameterType="java.lang.String" resultMap="resultMap">
     select
     <include refid="Base_Column_List" />
-    from metrics
+    from metric
     where 1 = 1
   </select>
 
   <select id="selectById" parameterType="java.lang.String" resultMap="resultMap">
     select
     <include refid="Base_Column_List" />
-    from metrics
+    from metric
     where id = #{id,jdbcType=VARCHAR}
   </select>
 
   <delete id="deleteById" parameterType="java.lang.String">
-    delete from metrics
+    delete from metric
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
   <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Metric"
           keyProperty="id, key, worker_index, timestamp">
-    insert into metrics (id, `key`, value, worker_index, timestamp, step, is_nan)
+    insert into metric (id, `key`, value, worker_index, timestamp, step, is_nan)
     values (#{id,jdbcType=VARCHAR},
       #{key,jdbcType=VARCHAR},
       #{value,jdbcType=FLOAT},
       #{workerIndex,jdbcType=VARCHAR},
-      #{timestamp,jdbcType=BIGINT},
+      #{timestamp,jdbcType=TIMESTAMP},
       #{step,jdbcType=INTEGER},
       #{isNan,jdbcType=BOOLEAN})
   </insert>
 
   <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Metric">
-    update metrics
+    update metric
     set `key` = #{key,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},
       worker_index = #{workerIndex,jdbcType=VARCHAR},
-      timestamp = #{timestamp,jdbcType=BIGINT},
+      timestamp = #{timestamp,jdbcType=TIMESTAMP},
       step = #{step,jdbcType=INTEGER},
       is_nan = #{isNan,jdbcType=BOOLEAN}
     where id = #{id,jdbcType=VARCHAR}
@@ -82,7 +82,7 @@
   <select id="selectByPrimaryKeySelective" parameterType="java.lang.String" resultMap="resultMap">
   select
   <include refid="Base_Column_List" />
-  from metrics
+  from metric
   where 1 = 1
     <if test="key != null">
       AND `key` = #{key,jdbcType=VARCHAR}
@@ -91,7 +91,7 @@
       AND worker_index = #{workerIndex,jdbcType=VARCHAR}
     </if>
     <if test="timestamp != null">
-      AND timestamp = #{timestamp,jdbcType=BIGINT}
+      AND timestamp = #{timestamp,jdbcType=TIMESTAMP}
     </if>
     <if test="step != null">
       AND step = #{step,jdbcType=INTEGER}

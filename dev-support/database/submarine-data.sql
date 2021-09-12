@@ -61,27 +61,6 @@ INSERT INTO `sys_user` VALUES ('e9ca23d68d884d4ebb19d07889727dae', 'admin', 'adm
 INSERT INTO `team` VALUES ('e9ca23d68d884d4ebb19d07889721234', 'admin', 'Submarine', 'admin', '2020-05-06 14:00:05', 'Jack', '2020-05-06 14:00:14');
 
 -- ----------------------------
--- Records of metrics
--- ----------------------------
-INSERT INTO `metrics` (`id`, `key`, `value`, `worker_index`, `timestamp`, `step`, `is_nan`) VALUES
-('application_123651651', 'score', 0.666667, 'worker-1', 1569139525097, 0, 0),
-('application_123651651', 'score', 0.666670, 'worker-1', 1569149139731, 1, 0),
-('experiment_1595332719154_0001', 'score', 0.666667, 'worker-1', 1569169376482, 0, 0),
-('experiment_1595332719154_0001', 'score', 0.666671, 'worker-1', 1569236290721, 0, 0),
-('experiment_1595332719154_0001', 'score', 0.666680, 'worker-1', 1569236466722, 0, 0);
-
--- ----------------------------
--- Records of params
--- ----------------------------
-INSERT INTO `params` (`id`, `key`, `value`, `worker_index`) VALUES
-('application_123651651', 'max_iter', '100', 'worker-1'),
-('application_123456898', 'n_jobs', '5', 'worker-1'),
-('application_123456789', 'alpha', '20', 'worker-1'),
-('experiment_1595332719154_0001', 'max_iter', '100', 'worker-1'),
-('experiment_1595332719154_0002', 'n_jobs', '5', 'worker-1'),
-('experiment_1595332719154_0003', 'alpha', '20', 'worker-1');
-
--- ----------------------------
 -- Records of environment
 -- ----------------------------
 INSERT INTO `environment` VALUES

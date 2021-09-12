@@ -18,13 +18,17 @@
  */
 package org.apache.submarine.server.workbench.database.service;
 
+import org.apache.submarine.server.experiment.database.ExperimentEntity;
+import org.apache.submarine.server.experiment.database.ExperimentService;
 import org.apache.submarine.server.workbench.database.entity.Metric;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
@@ -33,6 +37,20 @@ import static org.junit.Assert.assertTrue;
 public class MetricServiceTest {
   private static final Logger LOG = LoggerFactory.getLogger(MetricServiceTest.class);
   MetricService metricService = new MetricService();
+  ExperimentService experimentService = new ExperimentService();
+
+  // Id of metric is a foreign key for experiment id so experiment must be created before test.
+  @Before
+  public void createExperiment() {
+    ExperimentEntity entity = new ExperimentEntity();
+    String id = "test_application_1234";
+    String spec = "{\"value\": 1}";
+
+    entity.setId(id);
+    entity.setExperimentSpec(spec);
+
+    experimentService.insert(entity);
+  }
 
   @After
   public void removeAllRecord() throws Exception {
@@ -41,16 +59,20 @@ public class MetricServiceTest {
     for (Metric metric : metricList) {
       metricService.deleteById(metric.getId());
     }
+
+    experimentService.selectAll().forEach(e -> experimentService.delete(e.getId()));
   }
 
   @Test
   public void testSelect() throws Exception {
+    Timestamp timestamp = new Timestamp(new Date().getTime());
+
     Metric metric = new Metric();
     metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
     metric.setWorkerIndex("test_worker-1");
-    metric.setTimestamp(new BigInteger("1569139525097"));
+    metric.setTimestamp(timestamp);
     metric.setStep(0);
     metric.setIsNan(false);
     boolean result = metricService.insert(metric);
@@ -68,22 +90,26 @@ public class MetricServiceTest {
 
   @Test
   public void testUpdate() throws Exception {
+    Timestamp timestamp = new Timestamp(new Date().getTime());
+
     Metric metric = new Metric();
     metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
     metric.setWorkerIndex("test_worker-2");
-    metric.setTimestamp(new BigInteger("1569139525098"));
+    metric.setTimestamp(timestamp);
     metric.setStep(0);
     metric.setIsNan(false);
     boolean result = metricService.insert(metric);
     assertTrue(result);
 
+    Timestamp nextTimestamp = new Timestamp(new Date().getTime());
+
     metric.setId("test_application_1234");
     metric.setKey("test_scoreNew");
     metric.setValue((float) 0.766667);
     metric.setWorkerIndex("test_worker-New");
-    metric.setTimestamp(new BigInteger("2569139525098"));
+    metric.setTimestamp(nextTimestamp);
     metric.setStep(1);
     metric.setIsNan(true);
 
@@ -96,12 +122,14 @@ public class MetricServiceTest {
 
   @Test
   public void testDelete() throws Exception {
+    Timestamp timestamp = new Timestamp(new Date().getTime());
+
     Metric metric = new Metric();
     metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
     metric.setWorkerIndex("test_worker-2");
-    metric.setTimestamp(new BigInteger("1569139525098"));
+    metric.setTimestamp(timestamp);
     metric.setStep(0);
     metric.setIsNan(false);
     boolean result = metricService.insert(metric);

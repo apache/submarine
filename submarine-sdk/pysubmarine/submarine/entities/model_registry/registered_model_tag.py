@@ -13,12 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.entities.experiment import Experiment
-from submarine.entities.Metric import Metric
-from submarine.entities.Param import Param
+from submarine.entities._submarine_object import _SubmarineObject
 
-__all__ = [
-    "Experiment",
-    "Metric",
-    "Param",
-]
+
+class RegisteredModelTag(_SubmarineObject):
+    """
+    Tag object associated with a registered model.
+    """
+
+    def __init__(self, tag):
+        self._tag = tag
+
+    @property
+    def tag(self):
+        """String tag."""
+        return self._tag

@@ -18,11 +18,13 @@ mysql -uroot -p$MYSQL_ROOT_PASSWORD <<EOF
 CREATE DATABASE submarine_test;
 CREATE USER 'submarine_test'@'%' IDENTIFIED BY 'password_test';
 GRANT ALL PRIVILEGES ON *.* TO 'submarine_test'@'%';
-use submarine_test; source /tmp/database/submarine.sql; source /tmp/database/submarine-data.sql;
+use submarine_test; source /tmp/database/submarine.sql; source /tmp/database/submarine-model.sql;
+source /tmp/database/submarine-data.sql;
 CREATE DATABASE submarine;
 CREATE USER 'submarine'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON *.* TO 'submarine'@'%';
-use submarine; source /tmp/database/submarine.sql; source /tmp/database/submarine-data.sql;
+use submarine; source /tmp/database/submarine.sql; source /tmp/database/submarine-model.sql;
+source /tmp/database/submarine-data.sql;
 CREATE DATABASE metastore_test;
 CREATE USER 'metastore_test'@'%' IDENTIFIED BY 'password_test';
 GRANT ALL PRIVILEGES ON * . * TO 'metastore_test'@'%';

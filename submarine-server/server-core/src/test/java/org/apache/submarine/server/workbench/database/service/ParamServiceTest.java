@@ -18,8 +18,11 @@
  */
 package org.apache.submarine.server.workbench.database.service;
 
+import org.apache.submarine.server.experiment.database.ExperimentEntity;
+import org.apache.submarine.server.experiment.database.ExperimentService;
 import org.apache.submarine.server.workbench.database.entity.Param;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +35,19 @@ import static org.junit.Assert.assertTrue;
 public class ParamServiceTest {
   private static final Logger LOG = LoggerFactory.getLogger(ParamServiceTest.class);
   ParamService paramService = new ParamService();
+  ExperimentService experimentService = new ExperimentService();
 
+  @Before
+  public void createExperiment() throws Exception {
+    ExperimentEntity entity = new ExperimentEntity();
+    String id = "test_application_12345";
+    String spec = "{\"value\": 1}";
+
+    entity.setId(id);
+    entity.setExperimentSpec(spec);
+
+    experimentService.insert(entity);
+  }
   @After
   public void removeAllRecord() throws Exception {
     List<Param> paramList = paramService.selectAll();
@@ -40,12 +55,14 @@ public class ParamServiceTest {
     for (Param param : paramList) {
       paramService.deleteById(param.getId());
     }
+
+    experimentService.selectAll().forEach(e -> experimentService.delete(e.getId()));
   }
 
   @Test
   public void testSelect() throws Exception {
     Param param = new Param();
-    param.setId("test_application_1234");
+    param.setId("test_application_12345");
     param.setKey("test_score");
     param.setValue("199");
     param.setWorkerIndex("test_worker-1");
@@ -65,7 +82,7 @@ public class ParamServiceTest {
   @Test
   public void testUpdate() throws Exception {
     Param param = new Param();
-    param.setId("test_application_1234");
+    param.setId("test_application_12345");
     param.setKey("test_score");
     param.setValue("100");
     param.setWorkerIndex("test_worker-2");
@@ -85,7 +102,7 @@ public class ParamServiceTest {
   @Test
   public void testDelete() throws Exception {
     Param param = new Param();
-    param.setId("test_application_1234");
+    param.setId("test_application_12345");
     param.setKey("test_score");
     param.setValue("100");
     param.setWorkerIndex("test_worker-2");

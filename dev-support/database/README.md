@@ -92,10 +92,11 @@ Run [mysql docker container](https://hub.docker.com/_/mysql)
 docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
 ```
 
-Copy the files, submarine.sql, submarine-data.sql and metastore.sql to the mysql docker.
+Copy the files, submarine.sql,  submarine-model.sql, submarine-data.sql and metastore.sql to the mysql docker.
 
 ```
 docker cp ${SUBMARINE_HOME}/dev-support/database/submarine.sql ${DOCKER_ID}:/
+docker cp ${SUBMARINE_HOME}/dev-support/database/submarine-model.sql ${DOCKER_ID}:/
 docker cp ${SUBMARINE_HOME}/dev-support/database/submarine-data.sql ${DOCKER_ID}:/
 docker cp ${SUBMARINE_HOME}/dev-support/database/metastore.sql ${DOCKER_ID}:/
 ```
@@ -110,6 +111,7 @@ mysql> GRANT ALL PRIVILEGES ON * . * TO 'submarine'@'%';
 mysql> CREATE DATABASE IF NOT EXISTS submarine CHARACTER SET utf8 COLLATE utf8_general_ci;
 mysql> use submarine;
 mysql> source /submarine.sql;
+mysql> source /submarine-model.sql;
 mysql> source /submarine-data.sql;
 mysql> CREATE USER IF NOT EXISTS 'metastore'@'%' IDENTIFIED BY 'password';
 mysql> GRANT ALL PRIVILEGES ON * . * TO 'metastore'@'%';
