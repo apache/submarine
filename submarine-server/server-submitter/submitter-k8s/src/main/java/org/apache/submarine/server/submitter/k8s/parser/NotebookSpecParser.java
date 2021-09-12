@@ -100,7 +100,7 @@ public class NotebookSpecParser {
     container.addEnvItem(submarineServerPortEnv);
 
     // Environment
-    if (getEnvironment(notebookSpec) != null) {
+    if (getEnvironment(notebookSpec) != null && getEnvironment(notebookSpec).getEnvironmentSpec() != null) {
       EnvironmentSpec environmentSpec = getEnvironment(notebookSpec).getEnvironmentSpec();
       String baseImage = environmentSpec.getDockerImage();
       KernelSpec kernel = environmentSpec.getKernelSpec();
