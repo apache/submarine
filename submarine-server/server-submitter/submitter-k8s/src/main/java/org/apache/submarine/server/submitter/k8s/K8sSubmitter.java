@@ -48,6 +48,12 @@ import io.kubernetes.client.models.V1Service;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
+
+import io.kubernetes.client.informer.ResourceEventHandler;
+import io.kubernetes.client.informer.SharedIndexInformer;
+import io.kubernetes.client.informer.SharedInformerFactory;
+import io.kubernetes.client.util.CallGeneratorParams;
+
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.Submitter;
@@ -134,6 +140,8 @@ public class K8sSubmitter implements Submitter {
     }
 
     client.setDebugging(true);
+
+    createExperimentInformer();
   }
 
   @Override
@@ -164,7 +172,7 @@ public class K8sSubmitter implements Submitter {
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       mlJob.getMetadata().setNamespace(getServerNamespace());
-      
+
       Object object = api.getNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName());
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
@@ -563,6 +571,60 @@ public class K8sSubmitter implements Submitter {
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
+  }
+
+  public void createExperimentInformer() throws SubmarineRuntimeException {
+      try {
+
+
+          String namespace = getServerNamespace();
+          SharedInformerFactory factory = new SharedInformerFactory();
+
+          SharedIndexInformer<Object> experimentInformer = factory.sharedIndexInformerFor(
+                  (CallGeneratorParams params) -> {
+                      return api.listNamespacedCustomObjectCall(
+                              "kubeflow.org",
+                              null,
+                              namespace,
+                              null,
+                              null,
+                              null,
+                              null,
+                              params.resourceVersion,
+                              params.timeoutSeconds,
+                              params.watch,
+                              null,
+                              null);
+                  },
+                  Object.class,
+                  List<Object>.class
+          );
+
+          experimentInformer.addEventHandler(
+                  new ResourceEventHandler<Object>() {
+                      @Override
+                      public void onAdd(Object experiment) {
+                          System.out.printf("{} experiment added!\n", experiment);
+                      }
+
+                      @Override
+                      public void onUpdate(Object oldExperiment, Object newExperiment) {
+                          System.out.printf(
+                                  "{} => {} node updated!\n",
+                                  oldExperiment, newExperiment);
+                      }
+
+                      @Override
+                      public void onDelete(Object experiment, boolean deletedFinalStateUnknown) {
+                          System.out.printf("{} node deleted!\n", experiment);
+                      }
+                  }
+          );
+
+          factory.startAllRegisteredInformers();
+      } catch (ApiException e){
+          throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+      }
   }
 
   public void createPersistentVolumeClaim(String pvcName, String namespace, String scName, String storage)
