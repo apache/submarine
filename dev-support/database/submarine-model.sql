@@ -42,7 +42,7 @@ CREATE TABLE `model_version` (
 	`dataset` VARCHAR(256) COMMENT 'Which dataset is used',
 	`description` VARCHAR(5000),
 	CONSTRAINT `model_version_pk` PRIMARY KEY (`name`, `version`),
-	FOREIGN KEY(`name`) REFERENCES `registered_model` (`name`) ON UPDATE CASCADE
+	FOREIGN KEY(`name`) REFERENCES `registered_model` (`name`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `model_tag`;

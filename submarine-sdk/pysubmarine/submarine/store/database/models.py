@@ -153,7 +153,9 @@ class SqlRegisteredModelTag(Base):
 class SqlModelVersion(Base):
     __tablename__ = "model_version"
 
-    name = Column(String(256), ForeignKey("registered_model.name", onupdate="cascade"))
+    name = Column(
+        String(256), ForeignKey("registered_model.name", onupdate="cascade", ondelete="cascade")
+    )
     """
     Name for registered models: Part of *Primary Key* for ``registered_model_tag`` table. Refer to
     name of ``registered_model`` table.
