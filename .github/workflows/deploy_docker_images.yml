@@ -84,3 +84,8 @@ jobs:
         run: ./dev-support/examples/quickstart/build.sh
       - name: Push submarine quickstart docker image
         run: docker push apache/submarine:quickstart-$SUBMARINE_VERSION
+      
+      - name: Build submarine check minio
+        run: ./dev-support/docker-images/check-minio/build.sh
+      - name: Push submarine-check-minio docker image
+        run: docker push apache/submarine:check-minio-$SUBMARINE_VERSION
