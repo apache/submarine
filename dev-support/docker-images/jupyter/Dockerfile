@@ -95,19 +95,12 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     rm -rf /home/$NB_USER/.cache/yarn
 
 # Install latest sumbarine python sdk and notebook
-#RUN git clone https://github.com/apache/submarine && \
-#    cd submarine/submarine-sdk/pysubmarine && \
-#    pip install -e .[tf,pytorch] && \
-#    conda install nodejs && \
-#    conda install -c conda-forge jupyterlab jupyterlab-git && \
-#    jupyter lab build
-
-RUN pip install pip==21.0.1
-RUN git clone https://github.com/apache/submarine
-RUN cd submarine/submarine-sdk/pysubmarine && pip install .
-RUN conda install nodejs -y
-RUN conda install -c conda-forge jupyterlab jupyterlab-git
-RUN jupyter lab build
+RUN git clone https://github.com/apache/submarine && \
+    cd submarine/submarine-sdk/pysubmarine && \
+    pip install -e .[tf,pytorch] && \
+    conda install nodejs && \
+    conda install -c conda-forge jupyterlab jupyterlab-git && \
+    jupyter lab build
 
 # Add DeepFM example into notebook
 RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
@@ -118,9 +111,10 @@ RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipyn
 RUN pip install boto3==1.17.58 mlflow==1.15.0
 
 # Install latest stable qlib
-RUN pip install numpy==1.19.5 pyqlib==0.6.1
+RUN pip install numpy==1.19.5 pyqlib==0.6.2
 
 # Add qlib example in notebook
+RUN conda install -c conda-forge cvxpy==1.0.21
 RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME
 
 
