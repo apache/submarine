@@ -87,7 +87,7 @@ func newSubmarineServerRoleBinding(submarine *v1alpha1.Submarine) *rbacv1.RoleBi
 }
 
 // createSubmarineServerRBAC is a function to create RBAC for submarine-server.
-// Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/rbac.yaml
+// Reference: https://github.com/apache/submarine/blob/master/helm-charts/submarine/templates/server_rbac.yaml
 func (c *Controller) createSubmarineServerRBAC(submarine *v1alpha1.Submarine) error {
 	klog.Info("[createSubmarineServerRBAC]")
 
