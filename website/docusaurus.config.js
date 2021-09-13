@@ -69,38 +69,51 @@ module.exports = {
           label: 'Apache',
           position: 'right',
           items: [
-            {
-              label: 'Apache Software Foundation',
-              href: 'http://www.apache.org/foundation/how-it-works.html',
-            },
-            {
-              label: 'Apache License',
-              href: 'http://www.apache.org/licenses/',
-            },
-            {
-              label: 'Sponsorship',
-              href: 'http://www.apache.org/foundation/sponsorship.html',
-            },
-            {
-              label: 'Thanks',
-              href: 'http://www.apache.org/foundation/thanks.html',
-            },
+              {
+                  label: 'Apache Software Foundation',
+                  href: 'https://www.apache.org/foundation/how-it-works.html',
+              },
+              {
+                  label: 'Events',
+                  href: 'https://www.apache.org/events/current-event',
+              },
+              {
+                  label: 'Apache License',
+                  href: 'https://www.apache.org/licenses/',
+              },
+              {
+                  label: 'Thanks',
+                  href: 'https://www.apache.org/foundation/thanks.html',
+              },
+              {
+                  label: 'Security',
+                  href: 'https://www.apache.org/security/',
+              },
+              {
+                  label: 'Sponsorship',
+                  href: 'https://www.apache.org/foundation/sponsorship.html',
+              },
           ],
         }
       ],
     },
     footer: {
-      style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
+        style: 'dark',
+        logo: {
+            alt: 'Apache Open Source Logo',
+            src: 'https://hadoop.apache.org/asf_logo_wide.png',
+            href: 'https://www.apache.org/',
+        },
+        links: [
             {
-              label: 'Getting Started',
-              to: 'docs/',
-            },
-            {
-              label: 'API docs',
+                title: 'Docs',
+                items: [
+                    {
+                        label: 'Getting Started',
+                        to: 'docs/',
+                    },
+                    {
+                        label: 'API docs',
               to: 'docs/api/environment',
             },
           ],
@@ -122,17 +135,19 @@ module.exports = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: 'https://medium.com/@apache.submarine',
+                label: 'Blog',
+                to: 'https://medium.com/@apache.submarine',
             },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/apache/submarine',
-            },
+              {
+                  label: 'GitHub',
+                  href: 'https://github.com/apache/submarine',
+              },
           ],
         },
-      ],
-      copyright: `Copyright © ${new Date().getFullYear()} Apache Submarine is Apache2 Licensed software.`,
+        ],
+        copyright: `Apache Hadoop, Hadoop, Apache, the Apache feather logo, and the Apache Submarine project logo are
+       either registered trademarks or trademarks of the Apache Software Foundation in the United States and other
+        countries.<br> Copyright © ${new Date().getFullYear()} Apache Submarine is Apache2 Licensed software.`,
     },
   },
   presets: [
