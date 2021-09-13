@@ -96,8 +96,7 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
 
 # Install latest sumbarine python sdk and notebook
 RUN git clone https://github.com/apache/submarine && \
-    cd submarine/submarine-sdk/pysubmarine && \
-    pip install -e .[tf,pytorch] && \
+    pip install -e submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
     conda install nodejs && \
     conda install -c conda-forge jupyterlab jupyterlab-git && \
     jupyter lab build
@@ -111,10 +110,10 @@ RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipyn
 RUN pip install boto3==1.17.58 mlflow==1.15.0
 
 # Install latest stable qlib
+RUN conda install -c conda-forge cvxpy==1.0.21
 RUN pip install numpy==1.19.5 pyqlib==0.6.2
 
 # Add qlib example in notebook
-RUN conda install -c conda-forge cvxpy==1.0.21
 RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME
 
 
