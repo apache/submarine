@@ -24,7 +24,7 @@ AWS_SECRET_ACCESS_KEY="submarine_minio"
 
 
 # Wait for minio pod to setup
-/bin/bash -c "kubectl wait --for=condition=ready pod -l app=submarine-minio-pod; mc config host add minio ${S3_ENDPOINT_URL} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}"
+/bin/bash -c "mc config host add minio ${S3_ENDPOINT_URL} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}"
 
 # Create if the bucket "minio/submarine" not exists
 

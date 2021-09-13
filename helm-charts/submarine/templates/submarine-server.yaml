@@ -54,6 +54,9 @@ spec:
       {{ end }}
     spec:
       serviceAccountName: "{{ .Values.submarine.server.name }}"
+      initContainers:
+      - name: submarine-mlflow-initcontainer
+        image: "apache/submarine:check-minio-0.6.0-SNAPSHOT"
       containers:
       - name: "{{ .Values.submarine.server.name }}"
         env:
