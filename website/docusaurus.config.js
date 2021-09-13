@@ -145,7 +145,7 @@ module.exports = {
           ],
         },
         ],
-        copyright: `Apache Hadoop, Hadoop, Apache, the Apache feather logo, and the Apache Submarine project logo are
+        copyright: `Apache Submarine, Submarine, Apache, the Apache feather logo, and the Apache Submarine project logo are
        either registered trademarks or trademarks of the Apache Software Foundation in the United States and other
         countries.<br> Copyright © ${new Date().getFullYear()} Apache Submarine is Apache2 Licensed software.`,
     },
