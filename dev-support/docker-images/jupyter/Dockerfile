@@ -95,11 +95,19 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     rm -rf /home/$NB_USER/.cache/yarn
 
 # Install latest sumbarine python sdk and notebook
-RUN git clone https://github.com/apache/submarine && \
-    pip install -e submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
-    conda install nodejs && \
-    conda install -c conda-forge jupyterlab jupyterlab-git && \
-    jupyter lab build
+#RUN git clone https://github.com/apache/submarine && \
+#    cd submarine/submarine-sdk/pysubmarine && \
+#    pip install -e .[tf,pytorch] && \
+#    conda install nodejs && \
+#    conda install -c conda-forge jupyterlab jupyterlab-git && \
+#    jupyter lab build
+
+RUN pip install pip==21.0.1
+RUN git clone https://github.com/apache/submarine
+RUN cd submarine/submarine-sdk/pysubmarine && pip install .
+RUN conda install nodejs -y
+RUN conda install -c conda-forge jupyterlab jupyterlab-git
+RUN jupyter lab build
 
 # Add DeepFM example into notebook
 RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
