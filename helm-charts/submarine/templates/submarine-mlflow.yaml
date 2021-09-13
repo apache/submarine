@@ -49,6 +49,11 @@ spec:
       storage: "{{ .Values.submarine.mlflow.storage }}"
   volumeName: submarine-mlflow-pv
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "{{ .Values.submarine.mlflow.name }}"
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -62,6 +67,10 @@ spec:
       labels:
         app: submarine-mlflow-pod
     spec:
+      serviceAccountName: "{{ .Values.submarine.mlflow.name }}"
+      initContainers:
+      - name: submarine-mlflow-initcontainer
+        image: "apache/submarine:check-minio-0.6.0-SNAPSHOT"
       containers:
       - name: submarine-mlflow-container
         image: apache/submarine:mlflow-0.6.0-SNAPSHOT

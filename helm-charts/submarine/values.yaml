@@ -37,6 +37,7 @@ submarine:
     storage: 10Gi
     ingressPath: "/tensorboard"
   mlflow:
+    name: submarine-mlflow
     storage: 10Gi
     ingressPath: "/mlflow"
   minio:

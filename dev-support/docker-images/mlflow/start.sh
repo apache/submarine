@@ -37,7 +37,7 @@ BACKEND_URI="mysql+pymysql://mlflow:password@submarine-database:3306/mlflowdb"
 DEFAULT_ARTIFACT_ROOT="s3://mlflow"
 STATIC_PREFIX="/mlflow"
 
-/bin/bash -c "sleep 60; ./mc config host add minio ${MLFLOW_S3_ENDPOINT_URL} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}"
+/bin/bash -c "./mc config host add minio ${MLFLOW_S3_ENDPOINT_URL} ${AWS_ACCESS_KEY_ID} ${AWS_SECRET_ACCESS_KEY}"
 
 if ! check_minio_mlflow_bucket_exists; then
 	/bin/bash -c "./mc mb minio/mlflow"
