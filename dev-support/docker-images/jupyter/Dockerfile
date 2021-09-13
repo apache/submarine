@@ -110,7 +110,8 @@ RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipyn
 RUN pip install boto3==1.17.58 mlflow==1.15.0
 
 # Install latest stable qlib
-RUN pip install numpy==1.19.5 pyqlib==0.6.1
+RUN conda install -c conda-forge cvxpy==1.0.21
+RUN pip install numpy==1.19.5 pyqlib==0.6.2
 
 # Add qlib example in notebook
 RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME

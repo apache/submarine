@@ -107,7 +107,8 @@ RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipyn
     rm submarine -rf
 
 # Install latest stable qlib
-RUN pip install numpy==1.19.5 pyqlib==0.6.1
+RUN conda install -c conda-forge cvxpy==1.0.21
+RUN pip install numpy==1.19.5 pyqlib==0.6.2
 
 # Add qlib example in notebook
 RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME
