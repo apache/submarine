@@ -459,7 +459,7 @@ public class K8sSubmitter implements Submitter {
         if (latestEvent.getReason().equalsIgnoreCase("Pulling")) {
           notebook.setStatus(Notebook.Status.STATUS_PULLING.getValue());
           notebook.setReason(latestEvent.getReason());
-        }  
+        }
       }
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -575,8 +575,6 @@ public class K8sSubmitter implements Submitter {
 
   public void createExperimentInformer() throws SubmarineRuntimeException {
       try {
-
-
           String namespace = getServerNamespace();
           SharedInformerFactory factory = new SharedInformerFactory();
 
@@ -604,19 +602,19 @@ public class K8sSubmitter implements Submitter {
                   new ResourceEventHandler<Object>() {
                       @Override
                       public void onAdd(Object experiment) {
-                          System.out.printf("{} experiment added!\n", experiment);
+                          LOG.info("{} experiment added!\n", experiment);
                       }
 
                       @Override
                       public void onUpdate(Object oldExperiment, Object newExperiment) {
-                          System.out.printf(
+                          LOG.info(
                                   "{} => {} node updated!\n",
                                   oldExperiment, newExperiment);
                       }
 
                       @Override
                       public void onDelete(Object experiment, boolean deletedFinalStateUnknown) {
-                          System.out.printf("{} node deleted!\n", experiment);
+                          LOG.info("{} node deleted!\n", experiment);
                       }
                   }
           );
