@@ -23,8 +23,6 @@ COPY start.sh /usr/local/bin
 
 WORKDIR /usr/local/bin
 
-RUN wget https://dl.min.io/client/mc/release/linux-amd64/mc && chmod +x mc
-
 ENV MLFLOW_S3_ENDPOINT_URL http://submarine-minio-service:9000
 ENV AWS_ACCESS_KEY_ID submarine_minio
 ENV AWS_SECRET_ACCESS_KEY submarine_minio

@@ -54,6 +54,19 @@ spec:
       {{ end }}
     spec:
       serviceAccountName: "{{ .Values.submarine.server.name }}"
+      initContainers:
+      - name: submarine-server-initcontainer
+        image: "minio/mc"
+        command: ["sh", "-c", 
+        "if ! /bin/bash -c 'mc config host add minio http://submarine-minio-service:9000 
+        submarine_minio submarine_minio' 2>&1; then
+          exit 1;
+        fi;
+        if /bin/bash -c 'mc ls minio/submarine' >/dev/null 2>&1; then
+          echo 'Bucket minio/submarine already exists, skipping creation.';
+        else
+          /bin/bash -c 'mc mb minio/submarine';
+        fi;"]
       containers:
       - name: "{{ .Values.submarine.server.name }}"
         env:

@@ -55,10 +55,4 @@ if [[ ! -d "${SUBMARINE_LOG_DIR}" ]]; then
   $(mkdir -p "${SUBMARINE_LOG_DIR}")
 fi
 
-/usr/local/bin/create_bucket.sh
-if [ $? -ne 0 ];then
-  echo "Create submarine bucket fail" 
-  exit 1
-fi
-
 exec $JAVA_RUNNER $JAVA_OPTS -cp ${SUBMARINE_SERVER_CLASSPATH} ${SUBMARINE_SERVER_MAIN} "$@" | tee -a "${SUBMARINE_SERVER_LOGFILE}" 2>&1
