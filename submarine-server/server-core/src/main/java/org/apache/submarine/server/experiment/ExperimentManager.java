@@ -233,6 +233,8 @@ public class ExperimentManager {
     checkExperimentId(id);
     checkSpec(newSpec);
 
+    newSpec.getMeta().setExperimentId(id);
+
     ExperimentEntity entity = experimentService.select(id);
     Experiment experiment = buildExperimentFromEntity(entity);
     Experiment patchExperiment = submitter.patchExperiment(newSpec);
