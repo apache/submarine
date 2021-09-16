@@ -14,7 +14,7 @@
 # limitations under the License.
 
 from datetime import datetime
-from typing import Any
+from typing import List
 
 import sqlalchemy as sa
 from sqlalchemy import (
@@ -30,7 +30,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.mysql import DATETIME
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import backref, relationship
+from sqlalchemy.orm import Mapped, relationship
 
 from submarine.entities import Experiment, Metric, Param
 from submarine.entities.model_registry import (
@@ -42,7 +42,7 @@ from submarine.entities.model_registry import (
 from submarine.entities.model_registry.model_version_stages import STAGE_NONE
 
 # Base class in sqlalchemy is a dynamic type
-Base: Any = declarative_base()
+Base = declarative_base()
 
 # +---------------------+-------------------------+-------------------------+-------------+
 # | name                | creation_time           | last_updated_time       | description |
@@ -62,17 +62,31 @@ class SqlRegisteredModel(Base):
 
     creation_time = Column(DATETIME(fsp=3), default=datetime.now())
     """
-    Creation time of registered models: default current time in milliseconds
+    Creation time of registered models: default current time in milliseconds.
     """
 
     last_updated_time = Column(DATETIME(fsp=3), nullable=True, default=None)
     """
-    Last updated time of registered model
+    Last updated time of registered model.
     """
 
-    description = Column(String(5000), nullable=True, default="")
+    description = Column(String(5000), nullable=True, default=None)
     """
-    Description for registered model
+    Description for registered model.
+    """
+
+    registered_model_tags: Mapped[List["SqlRegisteredModelTag"]] = relationship(
+        "SqlRegisteredModelTag", back_populates="registered_model", cascade="all"
+    )
+    """
+    Registered Model Tags reference to SqlRegisteredModelTag.
+    """
+
+    model_versions: Mapped[List["SqlModelVersion"]] = relationship(
+        "SqlModelVersion", back_populates="registered_model", cascade="all"
+    )
+    """
+    Model versions reference to SqlModelVersion
     """
 
     __table_args__ = (PrimaryKeyConstraint("name", name="registered_model_pk"),)
@@ -92,7 +106,7 @@ class SqlRegisteredModel(Base):
             creation_time=self.creation_time,
             last_updated_time=self.last_updated_time,
             description=self.description,
-            tags=[tag.to_submarine_entity for tag in self.registered_model_tag],
+            tags=[tag.to_submarine_entity() for tag in self.registered_model_tags],
         )
 
 
@@ -123,8 +137,8 @@ class SqlRegisteredModelTag(Base):
     """
 
     # linked entities
-    registered_model = relationship(
-        "SqlRegisteredModel", backref=backref("registered_model_tag", cascade="all")
+    registered_model: SqlRegisteredModel = relationship(
+        "SqlRegisteredModel", back_populates="registered_model_tags"
     )
 
     __table_args__ = (PrimaryKeyConstraint("name", "tag", name="registered_model_tag_pk"),)
@@ -141,13 +155,13 @@ class SqlRegisteredModelTag(Base):
         return RegisteredModelTag(self.tag)
 
 
-# +---------------------+---------+-----+-------------------------------+-----+
-# | name                | version | ... | source                        | ... |
-# +---------------------+---------+-----+-------------------------------+-----+
-# | image_classfication | 1       | ... | s3://submarine/ResNet50/1/    | ... |
-# | image_classfication | 2       | ... | s3://submarine/DenseNet121/2/ | ... |
-# | speech_recoginition | 1       | ... | s3://submarine/ASR/1/         | ... |
-# +---------------------+---------+-----+-------------------------------+-----+
+# +---------------------+---------+-------------------------------+-----+
+# | name                | version | source                        | ... |
+# +---------------------+---------+-------------------------------+-----+
+# | image_classfication | 1       | s3://submarine/ResNet50/1/    | ... |
+# | image_classfication | 2       | s3://submarine/DenseNet121/2/ | ... |
+# | speech_recoginition | 1       | s3://submarine/ASR/1/         | ... |
+# +---------------------+---------+-------------------------------+-----+
 
 
 class SqlModelVersion(Base):
@@ -164,6 +178,11 @@ class SqlModelVersion(Base):
     version = Column(Integer, nullable=False)
     """
     Model version: Part of *Primary Key* for ``registered_model_tag`` table.
+    """
+
+    source = Column(String(512), nullable=False)
+    """
+    Source of model: database link refer to this model
     """
 
     user_id = Column(String(64), nullable=False)
@@ -191,11 +210,6 @@ class SqlModelVersion(Base):
     Last updated time of this model version
     """
 
-    source = Column(String(512), nullable=True, default=None)
-    """
-    Source of model: database link refer to this model
-    """
-
     dataset = Column(String(256), nullable=True, default=None)
     """
     Dataset used for this model.
@@ -206,9 +220,16 @@ class SqlModelVersion(Base):
     Description for model version.
     """
 
+    model_tags: Mapped[List["SqlModelTag"]] = relationship(
+        "SqlModelTag", back_populates="model_version", cascade="all"
+    )
+    """
+    Model tags reference to SqlModlTag.
+    """
+
     # linked entities
-    registered_model = relationship(
-        "SqlRegisteredModel", backref=backref("model_version", cascade="all")
+    registered_model: SqlRegisteredModel = relationship(
+        "SqlRegisteredModel", back_populates="model_versions"
     )
 
     __table_args__ = (PrimaryKeyConstraint("name", "version", name="model_version_pk"),)
@@ -243,7 +264,7 @@ class SqlModelVersion(Base):
             source=self.source,
             dataset=self.dataset,
             description=self.description,
-            tags=[tag.to_submarine_entity for tag in self.model_tag],
+            tags=[tag.to_submarine_entity() for tag in self.model_tags],
         )
 
 
@@ -279,12 +300,12 @@ class SqlModelTag(Base):
     """
 
     # linked entities
-    model_version = relationship(
-        "SqlModelVersion", foreign_keys=[name, version], backref=backref("model_tag", cascade="all")
+    model_version: SqlModelVersion = relationship(
+        "SqlModelVersion", foreign_keys=[name, version], back_populates="model_tags"
     )
 
     __table_args__ = (
-        PrimaryKeyConstraint("name", "tag", name="model_tag_pk"),
+        PrimaryKeyConstraint("name", "version", "tag", name="model_tag_pk"),
         ForeignKeyConstraint(
             ("name", "version"),
             ("model_version.name", "model_version.version"),

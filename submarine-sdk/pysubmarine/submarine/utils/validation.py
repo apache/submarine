@@ -19,6 +19,7 @@ import numbers
 import posixpath
 import re
 from datetime import datetime
+from typing import List, Optional
 
 from submarine.exceptions import SubmarineException
 from submarine.store.database.db_types import DATABASE_ENGINES
@@ -114,6 +115,36 @@ def validate_param(key, value):
     _validate_param_name(key)
     _validate_length_limit("Param key", MAX_ENTITY_KEY_LENGTH, key)
     _validate_length_limit("Param value", MAX_PARAM_VAL_LENGTH, str(value))
+
+
+def validate_tags(tags: Optional[List[str]]) -> None:
+    if tags is not None and not isinstance(tags, list):
+        raise SubmarineException(message="parameter tags must be list or None.")
+    for tag in tags or []:
+        validate_tag(tag)
+
+
+def validate_tag(tag: str) -> None:
+    """Check that `tag` is a valid tag value and raise an exception if it isn't."""
+    # Reuse param & metric check.
+    if tag is None or tag == "":
+        raise SubmarineException("Tag cannot be empty.")
+    if not _VALID_PARAM_AND_METRIC_NAMES.match(tag):
+        raise SubmarineException("Invalid tag name: '%s'. %s" % (tag, _BAD_CHARACTERS_MESSAGE))
+
+
+def validate_model_name(model_name: str) -> None:
+    if model_name is None or model_name == "":
+        raise SubmarineException("Registered model name cannot be empty.")
+
+
+def validate_model_version(model_version: int) -> None:
+    if not isinstance(model_version, int):
+        raise SubmarineException(
+            f"Model version must be an integer, got {type(model_version)} type."
+        )
+    elif model_version < 1:
+        raise SubmarineException(f"Model version must bigger than 0, but got {model_version}")
 
 
 def _validate_db_type_string(db_type):
