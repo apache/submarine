@@ -16,6 +16,7 @@
 from six.moves import urllib
 
 from submarine.exceptions import SubmarineException
+from submarine.utils.db_utils import get_db_uri, set_db_uri
 
 
 def extract_db_type_from_uri(db_uri):
@@ -35,3 +36,9 @@ def extract_db_type_from_uri(db_uri):
         raise SubmarineException(error_msg)
 
     return db_type
+
+
+__all__ = [
+    "get_db_uri",
+    "set_db_uri",
+]

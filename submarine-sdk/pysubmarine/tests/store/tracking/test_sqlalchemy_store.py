@@ -22,7 +22,7 @@ import submarine
 from submarine.entities import Metric, Param
 from submarine.store.database import models
 from submarine.store.database.models import SqlExperiment, SqlMetric, SqlParam
-from submarine.tracking import utils
+from submarine.store.sqlalchemy_store import SqlAlchemyStore
 
 JOB_ID = "application_123456789"
 
@@ -30,12 +30,12 @@ JOB_ID = "application_123456789"
 @pytest.mark.e2e
 class TestSqlAlchemyStore(unittest.TestCase):
     def setUp(self):
-        submarine.set_tracking_uri(
+        submarine.set_db_uri(
             "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test"
         )
-        self.tracking_uri = utils.get_tracking_uri()
-        self.store = utils.get_sqlalchemy_store(self.tracking_uri)
-        # TODO: use submarine.tracking.fluent to support experiment create
+        self.db_uri = submarine.get_db_uri()
+        self.store = SqlAlchemyStore(self.db_uri)
+        # TODO(KUAN-HSUN-LI): use submarine.tracking.fluent to support experiment create
         with self.store.ManagedSessionMaker() as session:
             instance = SqlExperiment(
                 id=JOB_ID,
@@ -49,7 +49,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
             session.commit()
 
     def tearDown(self):
-        submarine.set_tracking_uri(None)
+        submarine.set_db_uri(None)
         models.Base.metadata.drop_all(self.store.engine)
 
     def test_log_param(self):

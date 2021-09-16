@@ -14,6 +14,7 @@
 # limitations under the License.
 import time
 
+import submarine
 from submarine.entities import Metric, Param
 from submarine.tracking import utils
 from submarine.utils.validation import validate_metric, validate_param
@@ -24,15 +25,15 @@ class SubmarineClient(object):
     Client of an submarine Tracking Server that creates and manages experiments and runs.
     """
 
-    def __init__(self, tracking_uri=None):
+    def __init__(self, db_uri=None):
         """
-        :param tracking_uri: Address of local or remote tracking server. If not provided, defaults
-                             to the service set by ``submarine.tracking.set_tracking_uri``. See
+        :param db_uri: Address of local or remote tracking server. If not provided, defaults
+                             to the service set by ``submarine.tracking.set_db_uri``. See
                              `Where Runs Get Recorded <../tracking.html#where-runs-get-recorded>`_
                              for more info.
         """
-        self.tracking_uri = tracking_uri or utils.get_tracking_uri()
-        self.store = utils.get_sqlalchemy_store(self.tracking_uri)
+        self.db_uri = db_uri or submarine.get_db_uri()
+        self.store = utils.get_sqlalchemy_store(self.db_uri)
 
     def log_metric(self, job_id, key, value, worker_index, timestamp=None, step=None):
         """

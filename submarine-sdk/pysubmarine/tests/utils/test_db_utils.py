@@ -18,31 +18,21 @@ import os
 import mock
 
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
-from submarine.store.sqlalchemy_store import SqlAlchemyStore
-from submarine.tracking.utils import (
-    _JOB_ID_ENV_VAR,
-    _TRACKING_URI_ENV_VAR,
-    get_job_id,
-    get_sqlalchemy_store,
-)
+from submarine.utils import get_db_uri
+from submarine.utils.db_utils import _DB_URI_ENV_VAR, is_db_uri_set
 
 
-def test_get_job_id():
+def test_is_db_uri_set():
     env = {
-        _JOB_ID_ENV_VAR: "application_12346789",
+        _DB_URI_ENV_VAR: DEFAULT_SUBMARINE_JDBC_URL,
     }
     with mock.patch.dict(os.environ, env):
-        assert get_job_id() == "application_12346789"
+        assert is_db_uri_set() is True
 
 
-def test_get_sqlalchemy_store():
-    patch_create_engine = mock.patch("sqlalchemy.create_engine")
-    uri = DEFAULT_SUBMARINE_JDBC_URL
-    env = {_TRACKING_URI_ENV_VAR: uri}
-    with mock.patch.dict(os.environ, env), patch_create_engine as mock_create_engine, mock.patch(
-        "submarine.store.sqlalchemy_store.SqlAlchemyStore._initialize_tables"
-    ):
-        store = get_sqlalchemy_store(uri)
-        assert isinstance(store, SqlAlchemyStore)
-        assert store.db_uri == uri
-    mock_create_engine.assert_called_once_with(uri, pool_pre_ping=True)
+def test_get_db_uri():
+    env = {
+        _DB_URI_ENV_VAR: DEFAULT_SUBMARINE_JDBC_URL,
+    }
+    with mock.patch.dict(os.environ, env):
+        assert get_db_uri() == DEFAULT_SUBMARINE_JDBC_URL
