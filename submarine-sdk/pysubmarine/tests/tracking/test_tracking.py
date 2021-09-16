@@ -34,7 +34,7 @@ class TestTracking(unittest.TestCase):
         submarine.set_db_uri(
             "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test"
         )
-        self.db_uri = submarine.get_db_uri
+        self.db_uri = submarine.get_db_uri()
         self.store = SqlAlchemyStore(self.db_uri)
         # TODO: use submarine.tracking.fluent to support experiment create
         with self.store.ManagedSessionMaker() as session:
