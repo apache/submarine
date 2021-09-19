@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 240
     env:
-      SUBMARINE_VERSION: 0.6.0-SNAPSHOT
+      SUBMARINE_VERSION: 0.6.0
     steps:
       - uses: actions/checkout@v2
         with:

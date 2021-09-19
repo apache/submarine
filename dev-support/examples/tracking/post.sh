@@ -26,7 +26,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   },
   "environment": {
-    "image": "tracking:0.6.0-SNAPSHOT"
+    "image": "tracking:0.6.0"
   },
   "spec": {
     "Ps": {

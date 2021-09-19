@@ -24,10 +24,10 @@ curl -X POST -H "Content-Type: application/json" -d '
     "envVars": {
       "ENV_1": "ENV1"
     }
-    
+
   },
   "environment": {
-    "image": "nn-pytorch:0.6.0-SNAPSHOT"
+    "image": "nn-pytorch:0.6.0"
   },
   "spec": {
     "Worker": {

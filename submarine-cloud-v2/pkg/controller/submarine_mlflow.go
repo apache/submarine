@@ -90,7 +90,7 @@ func newSubmarineMlflowDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 					Containers: []corev1.Container{
 						{
 							Name:            mlflowName + "-container",
-							Image:           "apache/submarine:mlflow-0.6.0-SNAPSHOT",
+							Image:           "apache/submarine:mlflow-0.6.0",
 							ImagePullPolicy: "IfNotPresent",
 							Ports: []corev1.ContainerPort{
 								{

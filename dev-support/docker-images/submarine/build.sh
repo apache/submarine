@@ -16,7 +16,7 @@
 
 set -euxo pipefail
 
-SUBMARINE_VERSION=0.6.0-SNAPSHOT
+SUBMARINE_VERSION=0.6.0
 SUBMARINE_IMAGE_NAME="apache/submarine:server-${SUBMARINE_VERSION}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then

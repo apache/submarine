@@ -28,7 +28,7 @@ api:
 .PHONY: image
 image:
 	GOOS=linux go build -o submarine-operator
-	docker build -t "apache/submarine:operator-0.6.0-SNAPSHOT" -f dev.Dockerfile .
+	docker build -t "apache/submarine:operator-0.6.0" -f dev.Dockerfile .
 	go build -o submarine-operator
 
 .PHONY: test-unit

@@ -88,11 +88,11 @@ public class ServeSpecParser {
   public V1Deployment getDeployment() {
     // Container related
     // TODO(byronhsu) This should not be hard-coded.
-    final String serveImage = 
-        "apache/submarine:serve-0.6.0-SNAPSHOT"; 
+    final String serveImage =
+        "apache/submarine:serve-0.6.0";
 
     ArrayList<String> cmds = new ArrayList<>(
-        Arrays.asList("mlflow", "models", "serve", 
+        Arrays.asList("mlflow", "models", "serve",
         "--model-uri", modelURI, "--host", "0.0.0.0")
     );
 
@@ -101,7 +101,7 @@ public class ServeSpecParser {
     V1ObjectMeta deploymentMetedata = new V1ObjectMeta();
     deploymentMetedata.setName(generalName);
     deployment.setMetadata(deploymentMetedata);
-    
+
     V1DeploymentSpec deploymentSpec = new V1DeploymentSpec();
     deploymentSpec.setSelector(
         new V1LabelSelector().matchLabels(Collections.singletonMap("app", podName)) // match the template
@@ -124,7 +124,7 @@ public class ServeSpecParser {
         new V1Probe().httpGet(new V1HTTPGetAction().path("/ping").port(new IntOrString(PORT)))
     );
 
-    
+
     deploymentTemplatePodSpec.addContainersItem(container);
     deploymentTemplateSpec.setSpec(deploymentTemplatePodSpec);
     deploymentSpec.setTemplate(deploymentTemplateSpec);
@@ -166,11 +166,11 @@ public class ServeSpecParser {
     specRoute.setServices(new HashSet<Map<String, Object>>() {{
         add(service);
       }});
-    
+
     Map<String, String> middleware = new HashMap<String, String>() {{
         put("name", middlewareName);
       }};
-  
+
     specRoute.setMiddlewares(new HashSet<Map<String, String>>() {{
         add(middleware);
       }});
@@ -186,7 +186,7 @@ public class ServeSpecParser {
   public Middlewares getMiddlewares() {
     Middlewares middleware = new Middlewares();
     middleware.setMetadata(new V1ObjectMeta().name(middlewareName).namespace(namespace));
-    
+
     MiddlewaresSpec middlewareSpec = new MiddlewaresSpec().stripPrefix(
         new StripPrefix().prefixes(Arrays.asList(routePath))
     );
