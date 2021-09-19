@@ -98,22 +98,22 @@ module.exports = {
       ],
     },
     footer: {
-        style: 'dark',
-        logo: {
-            alt: 'Apache Open Source Logo',
-            src: 'https://hadoop.apache.org/asf_logo_wide.png',
-            href: 'https://www.apache.org/',
-        },
-        links: [
+      style: 'dark',
+      logo: {
+          alt: 'Apache Open Source Logo',
+          src: 'https://hadoop.apache.org/asf_logo_wide.png',
+          href: 'https://www.apache.org/',
+      },
+      links: [
+        {
+          title: 'Docs',
+          items: [
             {
-                title: 'Docs',
-                items: [
-                    {
-                        label: 'Getting Started',
-                        to: 'docs/',
-                    },
-                    {
-                        label: 'API docs',
+              label: 'Getting Started',
+              to: 'docs/gettingStarted/quickstart',
+            },
+            {
+              label: 'API docs',
               to: 'docs/api/environment',
             },
           ],
@@ -144,8 +144,8 @@ module.exports = {
               },
           ],
         },
-        ],
-        copyright: `Apache Submarine, Submarine, Apache, the Apache feather logo, and the Apache Submarine project logo are
+      ],
+      copyright: `Apache Submarine, Submarine, Apache, the Apache feather logo, and the Apache Submarine project logo are
        either registered trademarks or trademarks of the Apache Software Foundation in the United States and other
         countries.<br> Copyright © ${new Date().getFullYear()} Apache Submarine is Apache2 Licensed software.`,
     },

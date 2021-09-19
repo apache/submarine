@@ -88,7 +88,7 @@ function Home() {
                 'button button--outline button--secondary button--lg',
                 styles.getStarted,
               )}
-              to={useBaseUrl('/docs')}>
+              to={useBaseUrl('/docs/gettingStarted/quickstart')}>
               Get Started
             </Link>
             <iframe
