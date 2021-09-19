@@ -18,7 +18,7 @@ title: Development Guide
 -->
 
 # Project Overview
-The document [Submarine Local Deployment](../gettingStarted/localDeployment.md) shows how to deploy the Submarine service to your Kubernetes cluster. The Submarine service consists mainly of nine components, and you can check them with the following command:
+The document [Getting Started/Quickstart](../gettingStarted/quickstart.md) shows how to deploy the Submarine service to your Kubernetes cluster. The Submarine service consists mainly of nine components, and you can check them with the following command:
 
 ```
 kubectl get pods -n ${your_namespace}
@@ -107,7 +107,7 @@ Checkstyle plugin may help to detect violations directly from the IDE.
 
 1. Deploy the Submarine
 
-   Follow [Getting Started/Submarine Local Deployment](../gettingStarted/localDeployment.md), and make sure you can connect to `http://localhost:32080` in the browser.
+   Follow [Getting Started/Quickstart](../gettingStarted/quickstart.md), and make sure you can connect to `http://localhost:32080` in the browser.
 
 2. Install the dependencies
 
