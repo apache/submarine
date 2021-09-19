@@ -26,7 +26,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   },
   "environment": {
-    "image": "quickstart:0.6.0-SNAPSHOT"
+    "image": "quickstart:0.6.0"
   },
   "spec": {
     "Worker": {

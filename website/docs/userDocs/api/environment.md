@@ -61,13 +61,13 @@ curl -X POST -H "Content-Type: application/json" -d '
   "kernelSpec" : {
     "name" : "team_default_python_3.7",
     "channels" : ["defaults"],
-    "condaDependencies" : 
+    "condaDependencies" :
       ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
       "alabaster=0.7.12=py37_0",
       "anaconda=2020.02=py37_0",
       "anaconda-client=1.7.2=py37_0",
       "anaconda-navigator=1.9.12=py37_0"],
-    "pipDependencies" : 
+    "pipDependencies" :
       ["apache-submarine==0.5.0",
       "pyarrow==0.17.0"]
   }
@@ -136,7 +136,7 @@ curl -X GET http://127.0.0.1:32080/api/v1/environment
       "environmentId":"environment_1600862964725_0002",
       "environmentSpec":{
         "name":"notebook-gpu-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-gpu-0.6.0-SNAPSHOT",
+        "dockerImage":"apache/submarine:jupyter-notebook-gpu-0.6.0",
         "kernelSpec":{
           "name":"submarine_jupyter_py3",
           "channels":["defaults"],
@@ -173,7 +173,7 @@ curl -X GET http://127.0.0.1:32080/api/v1/environment
       "environmentId":"environment_1600862964725_0001",
       "environmentSpec":{
         "name":"notebook-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-0.6.0-SNAPSHOT",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.6.0",
         "kernelSpec":{
           "name":"submarine_jupyter_py3",
           "channels":["defaults"],
@@ -184,7 +184,7 @@ curl -X GET http://127.0.0.1:32080/api/v1/environment
         "image":null
       }
     }
-  ],  
+  ],
   "attributes":{}
 }
 ```
@@ -270,10 +270,10 @@ curl -X PATCH -H "Content-Type: application/json" -d '
   "kernelSpec" : {
     "name" : "team_default_python_3.7_updated",
     "channels" : ["defaults"],
-    "condaDependencies" : 
+    "condaDependencies" :
       ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
       "alabaster=0.7.12=py37_0"],
-    "pipDependencies" : 
+    "pipDependencies" :
       []
   }
 }

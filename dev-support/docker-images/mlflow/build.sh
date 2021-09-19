@@ -16,7 +16,7 @@
 
 set -euxo pipefail
 
-MLFLOW_IMAGE="apache/submarine:mlflow-0.6.0-SNAPSHOT"
+MLFLOW_IMAGE="apache/submarine:mlflow-0.6.0"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
   PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))

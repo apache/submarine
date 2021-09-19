@@ -34,7 +34,7 @@ spec:
       serviceAccountName: "submarine-operator"
       containers:
         - name: op
-          image: "apache/submarine:operator-0.6.0-SNAPSHOT"
+          image: "apache/submarine:operator-0.6.0"
           imagePullPolicy: IfNotPresent
           args: ["--v=7", "--logtostderr=true", "--alsologtostderr"]
           resources:

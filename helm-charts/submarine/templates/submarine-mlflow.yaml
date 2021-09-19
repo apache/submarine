@@ -65,10 +65,10 @@ spec:
       initContainers:
       - name: submarine-mlflow-initcontainer
         image: "minio/mc"
-        command: ["/bin/bash", "-c", 
+        command: ["/bin/bash", "-c",
         "cnt=0;
-        while ! /bin/bash -c 'mc config host add minio http://submarine-minio-service:9000 
-        submarine_minio submarine_minio' 2>&1; 
+        while ! /bin/bash -c 'mc config host add minio http://submarine-minio-service:9000
+        submarine_minio submarine_minio' 2>&1;
         do
           sleep 15;
           ((cnt=cnt+1));
@@ -84,7 +84,7 @@ spec:
         fi;"]
       containers:
       - name: submarine-mlflow-container
-        image: apache/submarine:mlflow-0.6.0-SNAPSHOT
+        image: apache/submarine:mlflow-0.6.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000

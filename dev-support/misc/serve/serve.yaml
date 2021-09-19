@@ -22,7 +22,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: serve-example-pod # 
+      app: serve-example-pod #
   template:
     metadata:
       labels:
@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: serve-example-container
-        image: apache/submarine:serve-0.6.0-SNAPSHOT
+        image: apache/submarine:serve-0.6.0
         command:
           - "mlflow"
           - "models"
