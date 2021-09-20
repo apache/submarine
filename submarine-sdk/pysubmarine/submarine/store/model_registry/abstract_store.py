@@ -49,7 +49,7 @@ class AbstractStore:
         pass
 
     @abstractmethod
-    def update_registered_model_discription(self, name: str, description: str) -> RegisteredModel:
+    def update_registered_model_description(self, name: str, description: str) -> RegisteredModel:
         """
         Update description of the registered model.
         :param name: Registered model name.

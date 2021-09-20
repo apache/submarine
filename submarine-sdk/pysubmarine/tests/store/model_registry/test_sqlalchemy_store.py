@@ -86,7 +86,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
         with self.assertRaises(SubmarineException):
             self.store.create_registered_model("")
 
-    def test_update_registered_model_discription(self):
+    def test_update_registered_model_description(self):
         name = "test_update_RM"
         rm1 = self.store.create_registered_model(name)
         rmd1 = self.store.get_registered_model(name)
@@ -96,7 +96,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
         # update description
         fake_datetime = datetime.strptime("2021-11-11 11:11:11.111000", "%Y-%m-%d %H:%M:%S.%f")
         with freeze_time(fake_datetime):
-            rm2 = self.store.update_registered_model_discription(name, "New description.")
+            rm2 = self.store.update_registered_model_description(name, "New description.")
             rm2d = self.store.get_registered_model(name)
             self.assertEqual(rm2.name, name)
             self.assertEqual(rm2.description, "New description.")
@@ -570,47 +570,53 @@ class TestSqlAlchemyStore(unittest.TestCase):
 
     @freeze_time("2021-11-11 11:11:11.111000")
     def test_list_model_version(self):
-        name = "test_list_MV"
-        self.store.create_registered_model(name)
+        name1 = "test_list_MV_1"
+        name2 = "test_list_MV_2"
+        self.store.create_registered_model(name1)
+        self.store.create_registered_model(name2)
         tags = ["tag1", "tag2", "tag3"]
         mvs = [
-            self.store.create_model_version(name, "path/to/source", "test", "application_1234"),
+            self.store.create_model_version(name1, "path/to/source", "test", "application_1234"),
             self.store.create_model_version(
-                name, "path/to/source", "test", "application_1234", tags=[tags[0]]
+                name1, "path/to/source", "test", "application_1234", tags=[tags[0]]
             ),
             self.store.create_model_version(
-                name, "path/to/source", "test", "application_1234", tags=[tags[1]]
+                name1, "path/to/source", "test", "application_1234", tags=[tags[1]]
             ),
             self.store.create_model_version(
-                name, "path/to/source", "test", "application_1234", tags=[tags[0], tags[2]]
+                name1, "path/to/source", "test", "application_1234", tags=[tags[0], tags[2]]
             ),
             self.store.create_model_version(
-                name, "path/to/source", "test", "application_1234", tags=tags
+                name1, "path/to/source", "test", "application_1234", tags=tags
             ),
         ]
 
-        results = self.store.list_model_version(name)
+        results = self.store.list_model_version(name1)
         self.assertEqual(len(results), 5)
         self._compare_model_versions(results, mvs)
 
-        results = self.store.list_model_version(name, filter_tags=tags[0:1])
+        results = self.store.list_model_version(name1, filter_tags=tags[0:1])
         self.assertEqual(len(results), 3)
         self._compare_model_versions(results, [mvs[1], mvs[3], mvs[4]])
 
-        results = self.store.list_model_version(name, filter_tags=tags[0:2])
+        results = self.store.list_model_version(name1, filter_tags=tags[0:2])
         self.assertEqual(len(results), 1)
         self._compare_model_versions(results, [mvs[-1]])
 
         # empty result
         other_tag = ["tag4"]
-        results = self.store.list_model_version(name, filter_tags=other_tag)
+        results = self.store.list_model_version(name1, filter_tags=other_tag)
         self.assertEqual(len(results), 0)
-        self.assertEqual(results, [])
 
         # empty result
-        results = self.store.list_registered_model(filter_tags=tags + other_tag)
+        results = self.store.list_model_version(name1, filter_tags=tags + other_tag)
         self.assertEqual(len(results), 0)
-        self.assertEqual(results, [])
+
+        # empty result for other registered model
+        results = self.store.list_model_version(name2)
+        self.assertEqual(len(results), 0)
+        results = self.store.list_model_version(name2, filter_tags=tags)
+        self.assertEqual(len(results), 0)
 
     def test_get_model_version_uri(self):
         name = "test_get_MV_uri"

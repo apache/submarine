@@ -39,6 +39,7 @@ from submarine.store.database.models import (
 from submarine.store.model_registry.abstract_store import AbstractStore
 from submarine.utils import extract_db_type_from_uri
 from submarine.utils.validation import (
+    validate_description,
     validate_model_name,
     validate_model_version,
     validate_tag,
@@ -104,7 +105,7 @@ class SqlAlchemyStore(AbstractStore):
                 raise
             except Exception as e:
                 session.rollback()
-                raise SubmarineException(message=e)
+                raise SubmarineException(e)
             finally:
                 session.close()
 
@@ -151,7 +152,7 @@ class SqlAlchemyStore(AbstractStore):
         """
         validate_model_name(name)
         validate_tags(tags)
-
+        validate_description(description)
         with self.ManagedSessionMaker() as session:
             try:
                 creation_time = datetime.now()
@@ -167,7 +168,7 @@ class SqlAlchemyStore(AbstractStore):
                 return registered_model.to_submarine_entity()
             except sqlalchemy.exc.IntegrityError as e:
                 raise SubmarineException(
-                    message=f"Registered Model (name={name}) already exists.\nError: {str(e)}"
+                    f"Registered Model (name={name}) already exists.\nError: {str(e)}"
                 )
 
     @classmethod
@@ -198,7 +199,7 @@ class SqlAlchemyStore(AbstractStore):
         else:
             return models[0]
 
-    def update_registered_model_discription(self, name: str, description: str) -> RegisteredModel:
+    def update_registered_model_description(self, name: str, description: str) -> RegisteredModel:
         """
         Update description of the registered model.
         :param name: Registered model name.
@@ -206,6 +207,7 @@ class SqlAlchemyStore(AbstractStore):
         :return: A single updated :py:class:`submarine.entities.model_registry.RegisteredModel`
                  object.
         """
+        validate_description(description)
         with self.ManagedSessionMaker() as session:
             sql_registered_model = self._get_registered_model(session, name)
             sql_registered_model.description = description
@@ -239,7 +241,7 @@ class SqlAlchemyStore(AbstractStore):
                 return sql_registered_model.to_submarine_entity()
             except sqlalchemy.exc.IntegrityError as e:
                 raise SubmarineException(
-                    message=f"Registered Model (name={name}) already exists. Error: {str(e)}"
+                    f"Registered Model (name={name}) already exists. Error: {str(e)}"
                 )
 
     def delete_registered_model(self, name: str) -> None:
@@ -297,9 +299,7 @@ class SqlAlchemyStore(AbstractStore):
             .all()
         )
         if len(tags) == 0:
-            raise SubmarineException(
-                message=f"Registered model tag with name={name}, tag={tag} not found"
-            )
+            raise SubmarineException(f"Registered model tag with name={name}, tag={tag} not found")
         elif len(tags) > 1:
             raise SubmarineException(
                 f"Expected only 1 registered model version tag with name={name}, tag={tag}. Found"
@@ -368,6 +368,7 @@ class SqlAlchemyStore(AbstractStore):
 
         validate_model_name(name)
         validate_tags(tags)
+        validate_description(description)
         with self.ManagedSessionMaker() as session:
             try:
                 creation_time = datetime.now()
@@ -389,7 +390,7 @@ class SqlAlchemyStore(AbstractStore):
                 session.flush()
                 return model_version.to_submarine_entity()
             except sqlalchemy.exc.IntegrityError:
-                raise SubmarineException(message=f"Model Version creation error (name={name}).")
+                raise SubmarineException(f"Model Version creation error (name={name}).")
 
     @classmethod
     def _get_model_version(
@@ -433,6 +434,7 @@ class SqlAlchemyStore(AbstractStore):
         :param description: New model description.
         :return: A single :py:class:`submarine.entities.model_registry.ModelVersion` object.
         """
+        validate_description(description)
         with self.ManagedSessionMaker() as session:
             update_time = datetime.now()
             sql_model_version = self._get_model_version(session, name, version)
@@ -497,7 +499,7 @@ class SqlAlchemyStore(AbstractStore):
         """
         conditions = [SqlModelVersion.name == name]
         if filter_tags is not None:
-            conditions = [
+            conditions += [
                 SqlModelVersion.model_tags.any(SqlModelTag.tag.contains(tag)) for tag in filter_tags
             ]
         with self.ManagedSessionMaker() as session:
@@ -526,7 +528,7 @@ class SqlAlchemyStore(AbstractStore):
         )
         if len(tags) == 0:
             raise SubmarineException(
-                message=f"Model tag with name={name}, version={version}, tag={tag} not found"
+                f"Model tag with name={name}, version={version}, tag={tag} not found"
             )
         elif len(tags) > 1:
             raise SubmarineException(

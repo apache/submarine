@@ -119,7 +119,7 @@ def validate_param(key, value):
 
 def validate_tags(tags: Optional[List[str]]) -> None:
     if tags is not None and not isinstance(tags, list):
-        raise SubmarineException(message="parameter tags must be list or None.")
+        raise SubmarineException("parameter tags must be list or None.")
     for tag in tags or []:
         validate_tag(tag)
 
@@ -147,8 +147,18 @@ def validate_model_version(model_version: int) -> None:
         raise SubmarineException(f"Model version must bigger than 0, but got {model_version}")
 
 
+def validate_description(description: Optional[str]) -> None:
+    if not isinstance(description, str) and description is not None:
+        raise SubmarineException(f"Description must be String or None, but got {type(description)}")
+    if isinstance(description, str) and len(description) > 5000:
+        raise SubmarineException(
+            f"Description must less than 5000 words, but got {len(description)}"
+        )
+
+
 def _validate_db_type_string(db_type):
     """validates db_type parsed from DB URI is supported"""
     if db_type not in DATABASE_ENGINES:
-        error_msg = "Invalid database engine: '%s'. '%s'" % (db_type, _UNSUPPORTED_DB_TYPE_MSG)
-        raise SubmarineException(error_msg)
+        raise SubmarineException(
+            f"Invalid database engine: '{db_type}'. '{_UNSUPPORTED_DB_TYPE_MSG}'"
+        )

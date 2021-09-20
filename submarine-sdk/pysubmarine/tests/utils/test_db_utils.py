@@ -18,7 +18,7 @@ import os
 import mock
 
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
-from submarine.utils import get_db_uri
+from submarine.utils import get_db_uri, set_db_uri
 from submarine.utils.db_utils import _DB_URI_ENV_VAR, is_db_uri_set
 
 
@@ -28,6 +28,13 @@ def test_is_db_uri_set():
     }
     with mock.patch.dict(os.environ, env):
         assert is_db_uri_set() is True
+
+
+def test_set_db_uri():
+    test_db_uri = "mysql+pymysql://submarine:password@localhost:3306/submarine_test"
+    set_db_uri(test_db_uri)
+    assert get_db_uri() == test_db_uri
+    set_db_uri(None)
 
 
 def test_get_db_uri():

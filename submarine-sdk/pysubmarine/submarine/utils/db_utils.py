@@ -34,14 +34,14 @@ def set_db_uri(uri):
     Set the DB URI. This does not affect the currently active run (if one exists),
     but takes effect for successive runs.
     """
-    global _tracking_uri
-    _tracking_uri = uri
+    global _db_uri
+    _db_uri = uri
 
 
 def get_db_uri():
     """
     Get the current DB URI.
-    :return: The tracking URI.
+    :return: The DB URI.
     """
     global _db_uri
     if _db_uri is not None:
