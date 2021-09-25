@@ -40,9 +40,10 @@ class AbstractStore:
     ) -> RegisteredModel:
         """
         Create a new registered model in backend store.
-        :param name: Name of the new model. This is expected to be unique in the backend store.
-        :param description: Description of the model.
-        :param tags: A list of string associated with this registered model.
+        :param name: Name of the new registered model.
+                     This is expected to be unique in the backend store.
+        :param description: Description of the registered model.
+        :param tags: A list of tags associated with this registered model.
         :return: A single object of :py:class:`submarine.entities.model_registry.RegisteredModel`
                  created in the backend.
         """
@@ -75,7 +76,7 @@ class AbstractStore:
         """
         Delete the registered model.
         :param name: Registered model name.
-        :return: None
+        :return: None.
         """
         pass
 
@@ -84,7 +85,7 @@ class AbstractStore:
         self, filter_str: str = None, filter_tags: List[str] = None
     ) -> List[RegisteredModel]:
         """
-        List of all registered models.
+        List of all models.
         :param filter_string: Filter query string, defaults to searching all registered models.
         :param filter_tags: Filter tags, defaults not to filter any tags.
         :return: A List of :py:class:`submarine.entities.model_registry.RegisteredModel` objects
@@ -105,9 +106,9 @@ class AbstractStore:
     def add_registered_model_tag(self, name: str, tag: str) -> None:
         """
         Add a tag for the registered model.
-        :param name: Registered model name.
+        :param name: registered model name.
         :param tag: String of tag value.
-        :return: None
+        :return: None.
         """
         pass
 
@@ -115,9 +116,9 @@ class AbstractStore:
     def delete_registered_model_tag(self, name: str, tag: str) -> None:
         """
         Delete a tag associated with the registered model.
-        :param name: Registered model name.
+        :param name: Model name.
         :param tag: String of tag value.
-        :return: None
+        :return: None.
         """
         pass
 
@@ -128,20 +129,20 @@ class AbstractStore:
         source: str,
         user_id: str,
         experiment_id: str,
-        dataset: str,
+        dataset: str = None,
         description: str = None,
         tags: List[str] = None,
     ) -> ModelVersion:
         """
-        Create a new model version
+        Create a new version of the registered model
         :param name: Registered model name.
+        :param source: Source path where this version of model is stored.
         :param user_id: User ID from server that created this model
         :param experiment_id: Experiment ID which this model is created.
-        :param source: Source path where this model is stored.
-        :param dataset: Dataset which this model is used.
-        :param description: Description of the version.
-        :param tags: A list of string associated with this model.
-        :return: A single object of :py:class:`submarine.entities.model_registry.ModelVersion`
+        :param dataset: Dataset which this version of model is used.
+        :param description: Description of this version.
+        :param tags: A list of string associated with this version of model.
+        :return: A single object of :py:class:`submarine.entities.model_registry.ModelMetadata`
                  created in the backend.
         """
         pass
@@ -151,9 +152,9 @@ class AbstractStore:
         self, name: str, version: int, description: str
     ) -> ModelVersion:
         """
-        Update description associated with a model version in backend.
+        Update description associated with the version of model in backend.
         :param name: Registered model name.
-        :param version: Registered model version.
+        :param version: Version of the registered model.
         :param description: New model description.
         :return: A single :py:class:`submarine.entities.model_registry.ModelVersion` object.
         """
@@ -162,10 +163,10 @@ class AbstractStore:
     @abstractmethod
     def transition_model_version_stage(self, name: str, version: int, stage: str) -> ModelVersion:
         """
-        Update model version stage.
+        Update this version's stage.
         :param name: Registered model name.
-        :param version: Registered model version.
-        :param stage: New desired stage for this model version.
+        :param version: Version of the registered model.
+        :param stage: New desired stage for this version of registered model.
         :return: A single :py:class:`submarine.entities.model_registry.ModelVersion` object.
         """
 
@@ -174,7 +175,7 @@ class AbstractStore:
         """
         Delete model version in backend.
         :param name: Registered model name.
-        :param version: Registered model version.
+        :param version: Version of the registered model.
         :return: None
         """
         pass
@@ -182,18 +183,17 @@ class AbstractStore:
     @abstractmethod
     def get_model_version(self, name: str, version: int) -> ModelVersion:
         """
-        Get the model version instance by name and version.
+        Get the model by name and version.
         :param name: Registered model name.
-        :param version: Registered model version.
+        :param version: Version of registered model.
         :return: A single :py:class:`submarine.entities.model_registry.ModelVersion` object.
         """
         pass
 
     @abstractmethod
-    def list_model_version(self, name: str, filter_tags: list) -> List[ModelVersion]:
-
+    def list_model_versions(self, name: str, filter_tags: list = None) -> List[ModelVersion]:
         """
-        List of all model versions that satisfy the filter criteria.
+        List of all models that satisfy the filter criteria.
         :param name: Registered model name.
         :param filter_tags: Filter tags, defaults not to filter any tags.
         :return: A List of :py:class:`submarine.entities.model_registry.ModelVersion` objects
@@ -204,31 +204,31 @@ class AbstractStore:
     @abstractmethod
     def get_model_version_uri(self, name: str, version: int) -> str:
         """
-        Get the location in Model Registry for this model version.
+        Get the location in Model registry for this version.
         :param name: Registered model name.
-        :param version: Registered model version.
+        :param version: Version of registered model.
         :return: A single URI location.
         """
         pass
 
     @abstractmethod
-    def add_model_tag(self, name: str, version: int, tag: str) -> None:
+    def add_model_version_tag(self, name: str, version: int, tag: str) -> None:
         """
-        Add a tag for the model version.
+        Add a tag for this version of model.
         :param name: Registered model name.
-        :param version: Registered model version.
+        :param version: Version of registered model.
         :param tag: String of tag value.
-        :return: None
+        :return: None.
         """
         pass
 
     @abstractmethod
-    def delete_model_tag(self, name: str, version: int, tag: str) -> None:
+    def delete_model_version_tag(self, name: str, version: int, tag: str) -> None:
         """
-        Delete a tag associated with the model version.
+        Delete a tag associated with this version of model.
         :param name: Registered model name.
-        :param version: Registered model version.
+        :param version: Version of registered model.
         :param tag: String of tag value.
-        :return: None
+        :return: None.
         """
         pass

@@ -133,18 +133,16 @@ def validate_tag(tag: str) -> None:
         raise SubmarineException("Invalid tag name: '%s'. %s" % (tag, _BAD_CHARACTERS_MESSAGE))
 
 
-def validate_model_name(model_name: str) -> None:
-    if model_name is None or model_name == "":
-        raise SubmarineException("Registered model name cannot be empty.")
+def validate_model_name(name: str) -> None:
+    if name is None or name == "":
+        raise SubmarineException("Model name cannot be empty.")
 
 
-def validate_model_version(model_version: int) -> None:
-    if not isinstance(model_version, int):
-        raise SubmarineException(
-            f"Model version must be an integer, got {type(model_version)} type."
-        )
-    elif model_version < 1:
-        raise SubmarineException(f"Model version must bigger than 0, but got {model_version}")
+def validate_model_version(version: int) -> None:
+    if not isinstance(version, int):
+        raise SubmarineException(f"Model version must be an integer, got {type(version)} type.")
+    elif version < 1:
+        raise SubmarineException(f"Model version must bigger than 0, but got {version}")
 
 
 def validate_description(description: Optional[str]) -> None:

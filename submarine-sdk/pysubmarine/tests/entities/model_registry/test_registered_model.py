@@ -15,8 +15,7 @@
 
 from datetime import datetime
 
-from submarine.entities.model_registry.registered_model import RegisteredModel
-from submarine.entities.model_registry.registered_model_tag import RegisteredModelTag
+from submarine.entities.model_registry import RegisteredModel, RegisteredModelTag
 
 
 class TestRegisteredModel:

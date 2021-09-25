@@ -22,14 +22,13 @@ import pytest
 from freezegun import freeze_time
 
 import submarine
-from submarine.entities.model_registry.model_version import ModelVersion
-from submarine.entities.model_registry.model_version_stages import (
+from submarine.entities.model_registry import ModelVersion, RegisteredModel
+from submarine.entities.model_registry.model_stages import (
     STAGE_ARCHIVED,
+    STAGE_DEVELOPING,
     STAGE_NONE,
     STAGE_PRODUCTION,
-    STAGE_STAGING,
 )
-from submarine.entities.model_registry.registered_model import RegisteredModel
 from submarine.exceptions import SubmarineException
 from submarine.store.database import models
 from submarine.store.model_registry.sqlalchemy_store import SqlAlchemyStore
@@ -74,11 +73,11 @@ class TestSqlAlchemyStore(unittest.TestCase):
         name3 = "test_create_RM_3"
         description = "A test description."
         rm3 = self.store.create_registered_model(name3, description)
-        rmd3 = self.store.get_registered_model(name3)
+        rm3d = self.store.get_registered_model(name3)
         self.assertEqual(rm3.name, name3)
         self.assertEqual(rm3.description, description)
-        self.assertEqual(rmd3.name, name3)
-        self.assertEqual(rmd3.description, description)
+        self.assertEqual(rm3d.name, name3)
+        self.assertEqual(rm3d.description, description)
 
         # invalid model name
         with self.assertRaises(SubmarineException):
@@ -89,9 +88,9 @@ class TestSqlAlchemyStore(unittest.TestCase):
     def test_update_registered_model_description(self):
         name = "test_update_RM"
         rm1 = self.store.create_registered_model(name)
-        rmd1 = self.store.get_registered_model(name)
+        rm1d = self.store.get_registered_model(name)
         self.assertEqual(rm1.name, name)
-        self.assertEqual(rmd1.description, None)
+        self.assertEqual(rm1d.description, None)
 
         # update description
         fake_datetime = datetime.strptime("2021-11-11 11:11:11.111000", "%Y-%m-%d %H:%M:%S.%f")
@@ -106,24 +105,24 @@ class TestSqlAlchemyStore(unittest.TestCase):
 
     def test_rename_registered_model(self):
         name = "test_rename_RM"
-        new_name = "test_rename_RM_new"
+        new_name = "test_rename_RN_new"
         rm = self.store.create_registered_model(name)
-        self.store.create_model_version(name, "path/to/source", "test", "application_1234")
-        self.store.create_model_version(name, "path/to/source", "test", "application_1235")
-        mvd1 = self.store.get_model_version(name, 1)
-        mvd2 = self.store.get_model_version(name, 2)
+        self.store.create_model_version(name, "path/to/source1", "test", "application_1234")
+        self.store.create_model_version(name, "path/to/source2", "test", "application_1235")
+        mv1d = self.store.get_model_version(name, 1)
+        mv2d = self.store.get_model_version(name, 2)
         self.assertEqual(rm.name, name)
-        self.assertEqual(mvd1.name, name)
-        self.assertEqual(mvd2.name, name)
+        self.assertEqual(mv1d.name, name)
+        self.assertEqual(mv2d.name, name)
 
-        # test renaming registered model also updates its model versions
+        # test renaming registered model also updates its models
         self.store.rename_registered_model(name, new_name)
         rm = self.store.get_registered_model(new_name)
-        mv1 = self.store.get_model_version(new_name, 1)
-        mv2 = self.store.get_model_version(new_name, 2)
+        mv1d = self.store.get_model_version(new_name, 1)
+        mv2d = self.store.get_model_version(new_name, 2)
         self.assertEqual(rm.name, new_name)
-        self.assertEqual(mv1.name, new_name)
-        self.assertEqual(mv2.name, new_name)
+        self.assertEqual(mv1d.name, new_name)
+        self.assertEqual(mv2d.name, new_name)
 
         # test accessing the registered model with the original name will fail
         with self.assertRaises(SubmarineException):
@@ -143,16 +142,16 @@ class TestSqlAlchemyStore(unittest.TestCase):
         rm2 = self.store.create_registered_model(name2, tags=rm_tags)
         mv_tags = ["mv_tag1", "mv_tag2"]
         rm1mv1 = self.store.create_model_version(
-            rm1.name, "path/to/source", "test", "application_1234", tags=mv_tags
+            rm1.name, "path/to/source1", "test", "application_1234", tags=mv_tags
         )
         rm2mv1 = self.store.create_model_version(
-            rm2.name, "path/to/source", "test", "application_1234", tags=mv_tags
+            rm2.name, "path/to/source2", "test", "application_1234", tags=mv_tags
         )
 
         # check store
-        rmd1 = self.store.get_registered_model(rm1.name)
-        self.assertEqual(rmd1.name, name1)
-        self.assertEqual(rmd1.tags, rm_tags)
+        rm1d = self.store.get_registered_model(rm1.name)
+        self.assertEqual(rm1d.name, name1)
+        self.assertEqual(rm1d.tags, rm_tags)
         rm1mv1d = self.store.get_model_version(rm1mv1.name, rm1mv1.version)
         self.assertEqual(rm1mv1d.name, name1)
         self.assertEqual(rm1mv1d.tags, mv_tags)
@@ -173,30 +172,30 @@ class TestSqlAlchemyStore(unittest.TestCase):
             with self.assertRaises(SubmarineException):
                 self.store.delete_registered_model_tag(rm1.name, tag)
 
-        # model versions are cascade deleted with the registered model
+        # models are cascade deleted with the registered model
         with self.assertRaises(SubmarineException):
             self.store.get_model_version(rm1mv1.name, rm1mv1.version)
 
         # model tags are cascade deleted with the registered model
-        for tag in mv_tags:
+        for tag in rm_tags:
             with self.assertRaises(SubmarineException):
-                self.store.delete_model_tag(rm1mv1.name, rm1mv1.version, tag)
+                self.store.delete_model_version_tag(rm1mv1.name, rm1mv1.version, tag)
 
-        # Other registered model and model version is not affected
+        # Other registered models and model versions are not affected
         rm2d = self.store.get_registered_model(rm2.name)
         self.assertEqual(rm2d.name, rm2.name)
         self.assertEqual(rm2d.tags, rm2.tags)
-        rm2mv1d = self.store.get_model_version(rm2mv1.name, rm2mv1.version)
-        self.assertEqual(rm2mv1d.name, rm2mv1.name)
-        self.assertEqual(rm2mv1d.tags, rm2mv1.tags)
+        rm2mv1 = self.store.get_model_version(rm2mv1.name, rm2mv1.version)
+        self.assertEqual(rm2mv1.name, rm2mv1.name)
+        self.assertEqual(rm2mv1.tags, rm2mv1.tags)
 
     def _compare_registered_model_names(
         self, results: List[RegisteredModel], rms: List[RegisteredModel]
     ):
         result_names = set([result.name for result in results])
-        rms_names = set([rm.name for rm in rms])
+        rm_names = set([rm.name for rm in rms])
 
-        self.assertEqual(result_names, rms_names)
+        self.assertEqual(result_names, rm_names)
 
     def test_list_registered_model(self):
         rms = [self.store.create_registered_model(f"test_list_RM_{i}") for i in range(10)]
@@ -304,8 +303,8 @@ class TestSqlAlchemyStore(unittest.TestCase):
         name1 = "test_add_RM_tag"
         name2 = "test_add_RM_tag_2"
         tags = ["tag1", "tag2"]
-        self.store.create_registered_model(name1, tags=tags)
-        self.store.create_registered_model(name2, tags=tags)
+        rm1 = self.store.create_registered_model(name1, tags=tags)
+        rm2 = self.store.create_registered_model(name2, tags=tags)
         new_tag = "new tag"
         self.store.add_registered_model_tag(name1, new_tag)
         rmd = self.store.get_registered_model(name1)
@@ -315,56 +314,56 @@ class TestSqlAlchemyStore(unittest.TestCase):
         # test add the same tag
         same_tag = "tag1"
         self.store.add_registered_model_tag(name1, same_tag)
-        rmd = self.store.get_registered_model(name1)
-        self.assertEqual(rmd.tags, all_tags)
+        rm1d = self.store.get_registered_model(rm1.name)
+        self.assertEqual(rm1d.tags, all_tags)
 
         # does not affect other models
-        rm2d = self.store.get_registered_model(name2)
+        rm2d = self.store.get_registered_model(rm2.name)
         self.assertEqual(rm2d.tags, tags)
 
         # cannot set invalid tag
         with self.assertRaises(SubmarineException):
-            self.store.add_registered_model_tag(name1, None)
+            self.store.add_registered_model_tag(rm1.name, None)
         with self.assertRaises(SubmarineException):
-            self.store.add_registered_model_tag(name1, "")
+            self.store.add_registered_model_tag(rm1.name, "")
 
         # cannot use invalid model name
         with self.assertRaises(SubmarineException):
             self.store.add_registered_model_tag(None, new_tag)
 
         # cannot set tag on deleted registered model
-        self.store.delete_registered_model(name1)
+        self.store.delete_registered_model(rm1.name)
         with self.assertRaises(SubmarineException):
             new_tag = "new tag2"
             self.store.add_registered_model_tag(name1, new_tag)
 
     def test_delete_registered_model_tag(self):
-        name1 = "test_registered_model"
-        name2 = "test_registered_model_2"
+        name1 = "test_delete_RM_tag"
+        name2 = "test_delete_RM_tag_2"
         tags = ["tag1", "tag2"]
-        self.store.create_registered_model(name1, tags=tags)
-        self.store.create_registered_model(name2, tags=tags)
+        rm1 = self.store.create_registered_model(name1, tags=tags)
+        rm2 = self.store.create_registered_model(name2, tags=tags)
         new_tag = "new tag"
-        self.store.add_registered_model_tag(name1, new_tag)
-        self.store.delete_registered_model_tag(name1, new_tag)
-        rmd1 = self.store.get_registered_model(name1)
-        self.assertEqual(rmd1.tags, tags)
+        self.store.add_registered_model_tag(rm1.name, new_tag)
+        self.store.delete_registered_model_tag(rm1.name, new_tag)
+        rm1d = self.store.get_registered_model(rm1.name)
+        self.assertEqual(rm1d.tags, tags)
 
         # delete tag that is already deleted
         with self.assertRaises(SubmarineException):
-            self.store.delete_registered_model_tag(name1, new_tag)
-        rmd1 = self.store.get_registered_model(name1)
-        self.assertEqual(rmd1.tags, tags)
+            self.store.delete_registered_model_tag(rm1.name, new_tag)
+        rm1d = self.store.get_registered_model(rm1.name)
+        self.assertEqual(rm1d.tags, tags)
 
         # does not affect other models
-        rm2d = self.store.get_registered_model(name2)
+        rm2d = self.store.get_registered_model(rm2.name)
         self.assertEqual(rm2d.tags, tags)
 
         # Cannot delete invalid key
         with self.assertRaises(SubmarineException):
-            self.store.delete_registered_model_tag(name1, None)
+            self.store.delete_registered_model_tag(rm1.name, None)
         with self.assertRaises(SubmarineException):
-            self.store.delete_registered_model_tag(name1, "")
+            self.store.delete_registered_model_tag(rm1.name, "")
 
         # Cannot use invalid model name
         with self.assertRaises(SubmarineException):
@@ -377,118 +376,121 @@ class TestSqlAlchemyStore(unittest.TestCase):
 
     @freeze_time("2021-11-11 11:11:11.111000")
     def test_create_model_version(self):
-        name = "test_registered_model"
-        self.store.create_registered_model(name)
+        model_name = "test_create_MV"
+        self.store.create_registered_model(model_name)
         fake_datetime = datetime.now()
-        mv1 = self.store.create_model_version(name, "path/to/source", "test", "application_1234")
-        self.assertEqual(mv1.name, name)
+        mv1 = self.store.create_model_version(
+            model_name, "path/to/source1", "test", "application_1234"
+        )
+        self.assertEqual(mv1.name, model_name)
         self.assertEqual(mv1.version, 1)
         self.assertEqual(mv1.creation_time, fake_datetime)
 
-        mvd1 = self.store.get_model_version(mv1.name, mv1.version)
-        self.assertEqual(mvd1.name, name)
-        self.assertEqual(mvd1.user_id, "test")
-        self.assertEqual(mvd1.experiment_id, "application_1234")
-        self.assertEqual(mvd1.current_stage, STAGE_NONE)
-        self.assertEqual(mvd1.creation_time, fake_datetime)
-        self.assertEqual(mvd1.last_updated_time, fake_datetime)
-        self.assertEqual(mvd1.source, "path/to/source")
-        self.assertEqual(mvd1.dataset, None)
-        self.assertEqual(mvd1.dataset, None)
+        m1d = self.store.get_model_version(mv1.name, mv1.version)
+        self.assertEqual(m1d.name, model_name)
+        self.assertEqual(m1d.user_id, "test")
+        self.assertEqual(m1d.experiment_id, "application_1234")
+        self.assertEqual(m1d.current_stage, STAGE_NONE)
+        self.assertEqual(m1d.creation_time, fake_datetime)
+        self.assertEqual(m1d.last_updated_time, fake_datetime)
+        self.assertEqual(m1d.source, "path/to/source1")
+        self.assertEqual(m1d.dataset, None)
 
-        # new model versions for same name autoincrement versions
-        mv2 = self.store.create_model_version(name, "path/to/source", "test", "application_1234")
-        mvd2 = self.store.get_model_version(name=mv2.name, version=mv2.version)
-        self.assertEqual(mv2.version, 2)
-        self.assertEqual(mvd2.version, 2)
+        # new model for same registered model autoincrement version
+        m2 = self.store.create_model_version(
+            model_name, "path/to/source2", "test", "application_1234"
+        )
+        m2d = self.store.get_model_version(m2.name, m2.version)
+        self.assertEqual(m2.version, 2)
+        self.assertEqual(m2d.version, 2)
 
-        # create model version with tags
+        # create model with tags
         tags = ["tag1", "tag2"]
-        mv3 = self.store.create_model_version(
-            name, "path/to/source", "test", "application_1234", tags=tags
+        m3 = self.store.create_model_version(
+            model_name, "path/to/source3", "test", "application_1234", tags=tags
         )
-        mvd3 = self.store.get_model_version(mv3.name, mv3.version)
-        self.assertEqual(mv3.version, 3)
-        self.assertEqual(mv3.tags, tags)
-        self.assertEqual(mvd3.version, 3)
-        self.assertEqual(mvd3.tags, tags)
+        m3d = self.store.get_model_version(m3.name, m3.version)
+        self.assertEqual(m3.version, 3)
+        self.assertEqual(m3.tags, tags)
+        self.assertEqual(m3d.version, 3)
+        self.assertEqual(m3d.tags, tags)
 
-        # create model version with description
+        # create model with description
         description = "A test description."
-        mv4 = self.store.create_model_version(
-            name, "path/to/source", "test", "application_1234", description=description
+        m4 = self.store.create_model_version(
+            model_name, "path/to/source4", "test", "application_1234", description=description
         )
-        mvd4 = self.store.get_model_version(mv4.name, mv4.version)
-        self.assertEqual(mv4.version, 4)
-        self.assertEqual(mv4.description, description)
-        self.assertEqual(mvd4.version, 4)
-        self.assertEqual(mvd4.description, description)
+        m4d = self.store.get_model_version(m4.name, m4.version)
+        self.assertEqual(m4.version, 4)
+        self.assertEqual(m4.description, description)
+        self.assertEqual(m4d.version, 4)
+        self.assertEqual(m4d.description, description)
 
     def test_update_model_version_description(self):
-        name = "test_for_update_MV_description"
+        name = "test_update_MV_description"
         self.store.create_registered_model(name)
         mv1 = self.store.create_model_version(name, "path/to/source", "test", "application_1234")
-        mvd1 = self.store.get_model_version(mv1.name, mv1.version)
-        self.assertEqual(mvd1.name, name)
-        self.assertEqual(mvd1.version, 1)
-        self.assertEqual(mvd1.description, None)
+        m1d = self.store.get_model_version(mv1.name, mv1.version)
+        self.assertEqual(m1d.name, name)
+        self.assertEqual(m1d.version, 1)
+        self.assertEqual(m1d.description, None)
 
         # update description
         fake_datetime = datetime.strptime("2021-11-11 11:11:11.111000", "%Y-%m-%d %H:%M:%S.%f")
         with freeze_time(fake_datetime):
             self.store.update_model_version_description(mv1.name, mv1.version, "New description.")
-            mvd2 = self.store.get_model_version(mv1.name, mv1.version)
-            self.assertEqual(mvd2.name, name)
-            self.assertEqual(mvd2.version, 1)
-            self.assertEqual(mvd2.description, "New description.")
-            self.assertEqual(mvd2.last_updated_time, fake_datetime)
+            m1d = self.store.get_model_version(mv1.name, mv1.version)
+            self.assertEqual(m1d.name, name)
+            self.assertEqual(m1d.version, 1)
+            self.assertEqual(m1d.description, "New description.")
+            self.assertEqual(m1d.last_updated_time, fake_datetime)
 
     def test_transition_model_version_stage(self):
         name = "test_transition_MV_stage"
         self.store.create_registered_model(name)
-        mv1 = self.store.create_model_version(name, "path/to/source", "test", "application_1234")
-        mv2 = self.store.create_model_version(name, "path/to/source", "test", "application_1234")
+        mv1 = self.store.create_model_version(name, "path/to/source1", "test", "application_1234")
+        m2 = self.store.create_model_version(name, "path/to/source2", "test", "application_1234")
 
         fake_datetime = datetime.strptime("2021-11-11 11:11:11.111000", "%Y-%m-%d %H:%M:%S.%f")
         with freeze_time(fake_datetime):
-            self.store.transition_model_version_stage(mv1.name, mv1.version, STAGE_STAGING)
-            mv1d = self.store.get_model_version(mv1.name, mv1.version)
-            self.assertEqual(mv1d.current_stage, STAGE_STAGING)
+            self.store.transition_model_version_stage(mv1.name, mv1.version, STAGE_DEVELOPING)
+            m1d = self.store.get_model_version(mv1.name, mv1.version)
+            self.assertEqual(m1d.current_stage, STAGE_DEVELOPING)
 
             # check last updated time
-            self.assertEqual(mv1d.last_updated_time, fake_datetime)
+            self.assertEqual(m1d.last_updated_time, fake_datetime)
             rmd = self.store.get_registered_model(name)
             self.assertEqual(rmd.last_updated_time, fake_datetime)
 
         fake_datetime = datetime.strptime("2021-11-11 11:11:22.222000", "%Y-%m-%d %H:%M:%S.%f")
         with freeze_time(fake_datetime):
             self.store.transition_model_version_stage(mv1.name, mv1.version, STAGE_PRODUCTION)
-            mv1d = self.store.get_model_version(mv1.name, mv1.version)
-            self.assertEqual(mv1d.current_stage, STAGE_PRODUCTION)
+            m1d = self.store.get_model_version(mv1.name, mv1.version)
+            self.assertEqual(m1d.current_stage, STAGE_PRODUCTION)
 
             # check last updated time
-            self.assertEqual(mv1d.last_updated_time, fake_datetime)
+            self.assertEqual(m1d.last_updated_time, fake_datetime)
             rmd = self.store.get_registered_model(name)
             self.assertEqual(rmd.last_updated_time, fake_datetime)
 
         fake_datetime = datetime.strptime("2021-11-11 11:11:22.333000", "%Y-%m-%d %H:%M:%S.%f")
         with freeze_time(fake_datetime):
             self.store.transition_model_version_stage(mv1.name, mv1.version, STAGE_ARCHIVED)
-            mv1d = self.store.get_model_version(mv1.name, mv1.version)
-            self.assertEqual(mv1d.current_stage, STAGE_ARCHIVED)
+            m1d = self.store.get_model_version(mv1.name, mv1.version)
+            self.assertEqual(m1d.current_stage, STAGE_ARCHIVED)
 
             # check last updated time
-            self.assertEqual(mv1d.last_updated_time, fake_datetime)
+            self.assertEqual(m1d.last_updated_time, fake_datetime)
             rmd = self.store.get_registered_model(name)
             self.assertEqual(rmd.last_updated_time, fake_datetime)
 
         # uncanonical stage
-        for uncanonical_stage_name in ["STAGING", "staging", "StAgInG"]:
+        for uncanonical_stage_name in ["DEVELOPING", "developing", "DevElopIng"]:
             self.store.transition_model_version_stage(mv1.name, mv1.version, STAGE_NONE)
             self.store.transition_model_version_stage(mv1.name, mv1.version, uncanonical_stage_name)
 
-            mv1d = self.store.get_model_version(mv1.name, mv1.version)
-            self.assertEqual(mv1d.current_stage, STAGE_STAGING)
+            m1d = self.store.get_model_version(mv1.name, mv1.version)
+            self.assertEqual(m1d.current_stage, STAGE_DEVELOPING)
 
         # Not matching stages
         with self.assertRaises(SubmarineException):
@@ -498,8 +500,8 @@ class TestSqlAlchemyStore(unittest.TestCase):
             self.store.transition_model_version_stage(mv1.name, mv1.version, "stage")
 
         # No change for other model
-        mv2d = self.store.get_model_version(mv2.name, mv2.version)
-        self.assertEqual(mv2d.current_stage, STAGE_NONE)
+        m2d = self.store.get_model_version(m2.name, m2.version)
+        self.assertEqual(m2d.current_stage, STAGE_NONE)
 
     def test_delete_model_version(self):
         name = "test_for_delete_MV"
@@ -513,17 +515,17 @@ class TestSqlAlchemyStore(unittest.TestCase):
 
         self.store.delete_model_version(name=mv.name, version=mv.version)
 
-        # model tags are cascade deleted with the model version
+        # model tags are cascade deleted with the model
         with self.assertRaises(SubmarineException):
-            self.store.delete_model_tag(mv.name, mv.version, tags[0])
+            self.store.delete_model_version_tag(mv.name, mv.version, tags[0])
         with self.assertRaises(SubmarineException):
-            self.store.delete_model_tag(mv.name, mv.version, tags[1])
+            self.store.delete_model_version_tag(mv.name, mv.version, tags[1])
 
-        # cannot get a deleted model version
+        # cannot get a deleted model
         with self.assertRaises(SubmarineException):
             self.store.get_model_version(mv.name, mv.version)
 
-        # cannot update description of a deleted model version
+        # cannot update description of a deleted model
         with self.assertRaises(SubmarineException):
             self.store.update_model_version_description(mv.name, mv.version, "New description.")
 
@@ -537,7 +539,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
 
     @freeze_time("2021-11-11 11:11:11.111000")
     def test_get_model_version(self):
-        name = "test_for_delete_MV"
+        name = "test_get_MV"
         tags = ["tag1", "tag2"]
         self.store.create_registered_model(name)
         fake_datetime = datetime.now()
@@ -562,64 +564,64 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.assertEqual(mvd.description, None)
         self.assertEqual(mvd.tags, tags)
 
-    def _compare_model_versions(self, results: List[ModelVersion], mvs: List[ModelVersion]) -> None:
+    def _compare_model_versions(self, results: List[ModelVersion], mms: List[ModelVersion]) -> None:
         result_versions = set([result.version for result in results])
-        model_versions = set([mv.version for mv in mvs])
+        model_versions = set([mm.version for mm in mms])
 
         self.assertEqual(result_versions, model_versions)
 
     @freeze_time("2021-11-11 11:11:11.111000")
-    def test_list_model_version(self):
-        name1 = "test_list_MV_1"
-        name2 = "test_list_MV_2"
+    def test_list_model_versions(self):
+        name1 = "test_list_models_1"
+        name2 = "test_list_models_2"
         self.store.create_registered_model(name1)
         self.store.create_registered_model(name2)
         tags = ["tag1", "tag2", "tag3"]
-        mvs = [
-            self.store.create_model_version(name1, "path/to/source", "test", "application_1234"),
+        models = [
+            self.store.create_model_version(name1, "path/to/source1", "test", "application_1234"),
             self.store.create_model_version(
-                name1, "path/to/source", "test", "application_1234", tags=[tags[0]]
+                name1, "path/to/source2", "test", "application_1234", tags=[tags[0]]
             ),
             self.store.create_model_version(
-                name1, "path/to/source", "test", "application_1234", tags=[tags[1]]
+                name1, "path/to/source3", "test", "application_1234", tags=[tags[1]]
             ),
             self.store.create_model_version(
-                name1, "path/to/source", "test", "application_1234", tags=[tags[0], tags[2]]
+                name1, "path/to/source4", "test", "application_1234", tags=[tags[0], tags[2]]
             ),
             self.store.create_model_version(
-                name1, "path/to/source", "test", "application_1234", tags=tags
+                name1, "path/to/source5", "test", "application_1234", tags=tags
             ),
         ]
 
-        results = self.store.list_model_version(name1)
+        results = self.store.list_model_versions(name1)
         self.assertEqual(len(results), 5)
-        self._compare_model_versions(results, mvs)
+        self._compare_model_versions(results, models)
 
-        results = self.store.list_model_version(name1, filter_tags=tags[0:1])
+        results = self.store.list_model_versions(name1, filter_tags=tags[0:1])
         self.assertEqual(len(results), 3)
-        self._compare_model_versions(results, [mvs[1], mvs[3], mvs[4]])
+        self._compare_model_versions(results, [models[1], models[3], models[4]])
 
-        results = self.store.list_model_version(name1, filter_tags=tags[0:2])
+        results = self.store.list_model_versions(name1, filter_tags=tags[0:2])
         self.assertEqual(len(results), 1)
-        self._compare_model_versions(results, [mvs[-1]])
+        self._compare_model_versions(results, [models[-1]])
 
         # empty result
         other_tag = ["tag4"]
-        results = self.store.list_model_version(name1, filter_tags=other_tag)
+        results = self.store.list_model_versions(name1, filter_tags=other_tag)
         self.assertEqual(len(results), 0)
 
         # empty result
-        results = self.store.list_model_version(name1, filter_tags=tags + other_tag)
+        results = self.store.list_model_versions(name1, filter_tags=tags + other_tag)
         self.assertEqual(len(results), 0)
 
-        # empty result for other registered model
-        results = self.store.list_model_version(name2)
+        # empty result for other models
+        results = self.store.list_model_versions(name2)
         self.assertEqual(len(results), 0)
-        results = self.store.list_model_version(name2, filter_tags=tags)
+        results = self.store.list_model_versions(name2, filter_tags=tags)
         self.assertEqual(len(results), 0)
 
     def test_get_model_version_uri(self):
-        name = "test_get_MV_uri"
+        name = "test_get_model_version_uri"
         self.store.create_registered_model(name)
         mv = self.store.create_model_version(name, "path/to/source", "test", "application_1234")
         uri = self.store.get_model_version_uri(mv.name, mv.version)
@@ -631,107 +633,107 @@ class TestSqlAlchemyStore(unittest.TestCase):
         uri = self.store.get_model_version_uri(mv.name, mv.version)
         self.assertEqual(uri, "path/to/source")
 
-        # cannot retrieve URI for deleted model versions
+        # cannot retrieve URI for deleted model version
         self.store.delete_model_version(mv.name, mv.version)
         with self.assertRaises(SubmarineException):
             self.store.get_model_version_uri(mv.name, mv.version)
 
-    def test_add_model_tag(self):
+    def test_add_model_version_tag(self):
         name1 = "test_add_MV_tag"
         name2 = "test_add_MV_tag_2"
         tags = ["tag1", "tag2"]
         self.store.create_registered_model(name1)
         self.store.create_registered_model(name2)
         rm1mv1 = self.store.create_model_version(
-            name1, "path/to/source", "test", "application_1234", tags=tags
+            name1, "path/to/source1", "test", "application_1234", tags=tags
         )
-        rm1mv2 = self.store.create_model_version(
-            name1, "path/to/source", "test", "application_1234", tags=tags
+        rm1m2 = self.store.create_model_version(
+            name1, "path/to/source2", "test", "application_1234", tags=tags
         )
         rm2mv1 = self.store.create_model_version(
-            name2, "path/to/source", "test", "application_1234", tags=tags
+            name2, "path/to/source3", "test", "application_1234", tags=tags
         )
         new_tag = "new tag"
-        self.store.add_model_tag(rm1mv1.name, rm1mv1.version, new_tag)
+        self.store.add_model_version_tag(rm1mv1.name, rm1mv1.version, new_tag)
         all_tags = [new_tag] + tags
-        rm1mv1d = self.store.get_model_version(rm1mv1.name, rm1mv1.version)
-        self.assertEqual(rm1mv1d.name, name1)
-        self.assertEqual(rm1mv1d.tags, all_tags)
+        rm1m1d = self.store.get_model_version(rm1mv1.name, rm1mv1.version)
+        self.assertEqual(rm1m1d.name, name1)
+        self.assertEqual(rm1m1d.tags, all_tags)
 
         # test add a same tag
         same_tag = "tag1"
-        self.store.add_model_tag(rm1mv1.name, rm1mv1.version, same_tag)
+        self.store.add_model_version_tag(rm1mv1.name, rm1mv1.version, same_tag)
         mvd = self.store.get_model_version(rm1mv1.name, rm1mv1.version)
         self.assertEqual(mvd.tags, all_tags)
 
-        # does not affect other model versions
-        rm1mv2d = self.store.get_model_version(rm1mv2.name, rm1mv2.version)
-        self.assertEqual(rm1mv2d.name, name1)
-        self.assertEqual(rm1mv2d.tags, tags)
-        rm2mv1d = self.store.get_model_version(rm2mv1.name, rm2mv1.version)
-        self.assertEqual(rm2mv1d.name, name2)
-        self.assertEqual(rm2mv1d.tags, tags)
+        # does not affect other models
+        rm1m2d = self.store.get_model_version(rm1m2.name, rm1m2.version)
+        self.assertEqual(rm1m2d.name, name1)
+        self.assertEqual(rm1m2d.tags, tags)
+        rm2mv1 = self.store.get_model_version(rm2mv1.name, rm2mv1.version)
+        self.assertEqual(rm2mv1.name, name2)
+        self.assertEqual(rm2mv1.tags, tags)
 
         # cannot add an invalid tag
         with self.assertRaises(SubmarineException):
-            self.store.add_model_tag(rm1mv1.name, rm1mv1.version, None)
+            self.store.add_model_version_tag(rm1mv1.name, rm1mv1.version, None)
         with self.assertRaises(SubmarineException):
-            self.store.add_model_tag(rm1mv1.name, rm1mv1.version, "")
+            self.store.add_model_version_tag(rm1mv1.name, rm1mv1.version, "")
 
-        # cannot add tag on deleted (non-existed) model version
+        # cannot add tag on deleted (non-existed) model
         self.store.delete_model_version(rm1mv1.name, rm1mv1.version)
         with self.assertRaises(SubmarineException):
-            self.store.add_model_tag(rm1mv1.name, rm1mv1.version, same_tag)
+            self.store.add_model_version_tag(rm1mv1.name, rm1mv1.version, same_tag)
 
     def test_delete_model_tag(self):
-        name1 = "test_add_MV_tag"
-        name2 = "test_add_MV_tag_2"
+        name1 = "test_delete_MV_tag"
+        name2 = "test_delete_MV_tag_2"
         tags = ["tag1", "tag2"]
         self.store.create_registered_model(name1)
         self.store.create_registered_model(name2)
         rm1mv1 = self.store.create_model_version(
-            name1, "path/to/source", "test", "application_1234", tags=tags
+            name1, "path/to/source1", "test", "application_1234", tags=tags
         )
-        rm1mv2 = self.store.create_model_version(
-            name1, "path/to/source", "test", "application_1234", tags=tags
+        rm1m2 = self.store.create_model_version(
+            name1, "path/to/source2", "test", "application_1234", tags=tags
         )
         rm2mv1 = self.store.create_model_version(
-            name2, "path/to/source", "test", "application_1234", tags=tags
+            name2, "path/to/source3", "test", "application_1234", tags=tags
         )
         new_tag = "new tag"
-        self.store.add_model_tag(rm1mv1.name, rm1mv1.version, new_tag)
-        self.store.delete_model_tag(rm1mv1.name, rm1mv1.version, new_tag)
-        rm1mv1d = self.store.get_model_version(rm1mv1.name, rm1mv1.version)
-        self.assertEqual(rm1mv1d.tags, tags)
+        self.store.add_model_version_tag(rm1mv1.name, rm1mv1.version, new_tag)
+        self.store.delete_model_version_tag(rm1mv1.name, rm1mv1.version, new_tag)
+        rm1m1d = self.store.get_model_version(rm1mv1.name, rm1mv1.version)
+        self.assertEqual(rm1m1d.tags, tags)
 
-        # deleting a tag does not affect other model versions
-        self.store.delete_model_tag(rm1mv1.name, rm1mv1.version, tags[0])
-        rm1mv1d = self.store.get_model_version(rm1mv1.name, rm1mv1.version)
-        rm1mv2d = self.store.get_model_version(rm1mv2.name, rm1mv2.version)
-        rm2mv1d = self.store.get_model_version(rm2mv1.name, rm2mv1.version)
-        self.assertEqual(rm1mv1d.tags, tags[1:])
-        self.assertEqual(rm1mv2d.tags, tags)
-        self.assertEqual(rm2mv1d.tags, tags)
+        # deleting a tag does not affect other models
+        self.store.delete_model_version_tag(rm1mv1.name, rm1mv1.version, tags[0])
+        rm1m1d = self.store.get_model_version(rm1mv1.name, rm1mv1.version)
+        rm1m2d = self.store.get_model_version(rm1m2.name, rm1m2.version)
+        rm2mv1 = self.store.get_model_version(rm2mv1.name, rm2mv1.version)
+        self.assertEqual(rm1m1d.tags, tags[1:])
+        self.assertEqual(rm1m2d.tags, tags)
+        self.assertEqual(rm2mv1.tags, tags)
 
         # delete a tag that is already deleted
         with self.assertRaises(SubmarineException):
-            self.store.delete_model_tag(rm1mv1.name, rm1mv1.version, tags[0])
-        rm1mv1d = self.store.get_model_version(rm1mv1.name, rm1mv1.version)
-        self.assertEqual(rm1mv1d.tags, tags[1:])
+            self.store.delete_model_version_tag(rm1mv1.name, rm1mv1.version, tags[0])
+        rm1m1d = self.store.get_model_version(rm1mv1.name, rm1mv1.version)
+        self.assertEqual(rm1m1d.tags, tags[1:])
 
         # cannot delete tag with invalid value
         with self.assertRaises(SubmarineException):
-            self.store.delete_model_tag(rm1mv1.name, rm1mv1.version, None)
+            self.store.delete_model_version_tag(rm1mv1.name, rm1mv1.version, None)
         with self.assertRaises(SubmarineException):
-            self.store.delete_model_tag(rm1mv1.name, rm1mv1.version, "")
+            self.store.delete_model_version_tag(rm1mv1.name, rm1mv1.version, "")
 
-        # cannot delete tag on deleted (non-existed) model version
-        self.store.delete_model_version(rm1mv2.name, rm1mv2.version)
+        # cannot delete tag on deleted (non-existed) model
+        self.store.delete_model_version(rm1m2.name, rm1m2.version)
         with self.assertRaises(SubmarineException):
-            self.store.delete_model_tag(rm1mv2.name, rm1mv2.version, tags[0])
+            self.store.delete_model_version_tag(rm1m2.name, rm1m2.version, tags[0])
 
         # cannot use invalid model name or version
         with self.assertRaises(SubmarineException):
-            self.store.delete_model_tag(None, rm1mv1.version, tags[1])
+            self.store.delete_model_version_tag(None, rm1mv1.version, tags[1])
         with self.assertRaises(SubmarineException):
-            self.store.delete_model_tag(rm1mv1.name, None, tags[1])
+            self.store.delete_model_version_tag(rm1mv1.name, None, tags[1])

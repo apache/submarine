@@ -34,38 +34,38 @@ from sqlalchemy.orm import Mapped, relationship
 
 from submarine.entities import Experiment, Metric, Param
 from submarine.entities.model_registry import (
-    ModelTag,
     ModelVersion,
+    ModelVersionTag,
     RegisteredModel,
     RegisteredModelTag,
 )
-from submarine.entities.model_registry.model_version_stages import STAGE_NONE
+from submarine.entities.model_registry.model_stages import STAGE_NONE
 
 # Base class in sqlalchemy is a dynamic type
 Base = declarative_base()
 
-# +---------------------+-------------------------+-------------------------+-------------+
-# | name                | creation_time           | last_updated_time       | description |
-# +---------------------+-------------------------+-------------------------+-------------+
-# | image_classfication | 2021-08-31 11:11:11.111 | 2021-09-02 11:11:11.111 | ...         |
-# | speech_recoginition | 2021-08-31 16:16:16.166 | 2021-08-31 20:20:20.200 | ...         |
-# +---------------------+-------------------------+-------------------------+-------------+
+# +----------+-------------------------+-------------------------+-------------+
+# | name     | creation_time           | last_updated_time       | description |
+# +----------+-------------------------+-------------------------+-------------+
+# | ResNet50 | 2021-08-31 11:11:11.111 | 2021-09-02 11:11:11.111 | ...         |
+# | BERT     | 2021-08-31 16:16:16.166 | 2021-08-31 20:20:20.200 | ...         |
+# +----------+-------------------------+-------------------------+-------------+
 
 
 class SqlRegisteredModel(Base):
     __tablename__ = "registered_model"
 
-    name = Column(String(256), unique=True, nullable=False)
+    name = Column(String(256), unique=True)
     """
-    Name for registered models: Part of *Primary Key* for ``registered_model`` table.
+    Name of registered model: Part of *Primary Key* for ``registered_model`` table.
     """
 
     creation_time = Column(DATETIME(fsp=3), default=datetime.now())
     """
-    Creation time of registered models: default current time in milliseconds.
+    Creation time of registered model: default current time in milliseconds.
     """
 
-    last_updated_time = Column(DATETIME(fsp=3), nullable=True, default=None)
+    last_updated_time = Column(DATETIME(fsp=3), nullable=True)
     """
     Last updated time of registered model.
     """
@@ -75,25 +75,26 @@ class SqlRegisteredModel(Base):
     Description for registered model.
     """
 
-    registered_model_tags: Mapped[List["SqlRegisteredModelTag"]] = relationship(
+    tags: Mapped[List["SqlRegisteredModelTag"]] = relationship(
         "SqlRegisteredModelTag", back_populates="registered_model", cascade="all"
     )
     """
-    Registered Model Tags reference to SqlRegisteredModelTag.
+    Registered model Tags reference to SqlRegisteredModelTag.
     """
 
     model_versions: Mapped[List["SqlModelVersion"]] = relationship(
         "SqlModelVersion", back_populates="registered_model", cascade="all"
     )
     """
-    Model versions reference to SqlModelVersion
+    Metadatas reference to SqlRegisteredModel
     """
 
-    __table_args__ = (PrimaryKeyConstraint("name", name="registered_model_pk"),)
+    __table_args__ = (PrimaryKeyConstraint("name", name="model_pk"),)
 
     def __repr__(self):
-        return "<SqlRegisteredModel ({}, {}, {}, {})>".format(
-            self.name, self.creation_time, self.last_updated_time, self.description
+        return (
+            f"<SqlRegisteredModel ({self.name}, {self.creation_time}, {self.last_updated_time},"
+            f" {self.description})>"
         )
 
     def to_submarine_entity(self):
@@ -106,17 +107,17 @@ class SqlRegisteredModel(Base):
             creation_time=self.creation_time,
             last_updated_time=self.last_updated_time,
             description=self.description,
-            tags=[tag.to_submarine_entity() for tag in self.registered_model_tags],
+            tags=[tag.to_submarine_entity() for tag in self.tags],
         )
 
 
-# +---------------------+-------+
-# | name                | tag   |
-# +---------------------+-------+
-# | image_classfication | image |
-# | image_classfication | major |
-# | speech_recoginition | audio |
-# +---------------------+-------+
+# +----------+-----------+
+# | name     | tag       |
+# +----------+-----------+
+# | ResNet50 | image     |
+# | ResNet50 | marketing |
+# | BERT     | text      |
+# +----------+-----------+
 
 
 class SqlRegisteredModelTag(Base):
@@ -126,25 +127,23 @@ class SqlRegisteredModelTag(Base):
         String(256), ForeignKey("registered_model.name", onupdate="cascade", ondelete="cascade")
     )
     """
-    Name for registered models: Part of *Primary Key* for ``registered_model_tag`` table. Refer to
-    name of ``registered_model`` table.
+    Name of registered model: Part of *Primary Key* for ``registered_model_tag`` table.
+                              Refer to name of ``registered_model`` table.
     """
 
     tag = Column(String(256), nullable=False)
     """
-    Registered model tag: `String` (limit 256 characters). Part of *Primary Key* for
-    ``registered_model_tag`` table.
+    Registered model tag: `String` (limit 256 characters).
+                          Part of *Primary Key* for ``registered_model_tag`` table.
     """
 
     # linked entities
-    registered_model: SqlRegisteredModel = relationship(
-        "SqlRegisteredModel", back_populates="registered_model_tags"
-    )
+    registered_model: SqlRegisteredModel = relationship("SqlRegisteredModel", back_populates="tags")
 
     __table_args__ = (PrimaryKeyConstraint("name", "tag", name="registered_model_tag_pk"),)
 
     def __repr__(self):
-        return "<SqlRegisteredModelTag ({}, {})>".format(self.name, self.tag)
+        return f"<SqlRegisteredModelTag ({self.name}, {self.tag})>"
 
     # entity mappers
     def to_submarine_entity(self):
@@ -155,76 +154,79 @@ class SqlRegisteredModelTag(Base):
         return RegisteredModelTag(self.tag)
 
 
-# +---------------------+---------+-------------------------------+-----+
-# | name                | version | source                        | ... |
-# +---------------------+---------+-------------------------------+-----+
-# | image_classfication | 1       | s3://submarine/ResNet50/1/    | ... |
-# | image_classfication | 2       | s3://submarine/DenseNet121/2/ | ... |
-# | speech_recoginition | 1       | s3://submarine/ASR/1/         | ... |
-# +---------------------+---------+-------------------------------+-----+
+# +----------+---------+-------------------------------+-----+
+# | name     | version | source                        | ... |
+# +----------+---------+-------------------------------+-----+
+# | ResNet50 | 1       | s3://submarine/ResNet50/1/    | ... |
+# | ResNet50 | 2       | s3://submarine/ResNet50/2/    | ... |
+# | BERT     | 1       | s3://submarine/BERT/1/        | ... |
+# +----------+---------+-------------------------------+-----+
 
 
 class SqlModelVersion(Base):
     __tablename__ = "model_version"
 
     name = Column(
-        String(256), ForeignKey("registered_model.name", onupdate="cascade", ondelete="cascade")
+        String(256),
+        ForeignKey("registered_model.name", onupdate="cascade", ondelete="cascade"),
+        nullable=False,
     )
     """
-    Name for registered models: Part of *Primary Key* for ``registered_model_tag`` table. Refer to
-    name of ``registered_model`` table.
+    Name of model version: Part of *Primary Key* for ``model_version`` table.
     """
 
     version = Column(Integer, nullable=False)
     """
-    Model version: Part of *Primary Key* for ``registered_model_tag`` table.
+    Version of registered model: Part of *Primary Key* for ``model_version`` table.
     """
 
-    source = Column(String(512), nullable=False)
+    source = Column(String(512), nullable=False, unique=True)
     """
-    Source of model: database link refer to this model
+    Source of model: Part of *Primary Key* for ``model_version`` table.
+                     database link refer to this version of model.
     """
 
     user_id = Column(String(64), nullable=False)
     """
-    ID to whom this model is created
+    ID to whom this model is created.
     """
 
     experiment_id = Column(String(64), nullable=False)
     """
-    ID to which this model belongs to
+    ID to which this version of model belongs to.
     """
 
-    current_stage = Column(String(20), default=STAGE_NONE)
+    current_stage = Column(String(64), default=STAGE_NONE)
     """
-    Current stage of this model: it can be `None`, `Staging`, `Production` and `Achieved`
+    Current stage of this version of model: it can be `None`, `Developing`,
+                                            `Production` and `Achieved`
     """
 
     creation_time = Column(DATETIME(fsp=3), default=datetime.now())
     """
-    Creation time of this model version: default current time in milliseconds
+    Creation time of this version of model: default current time in milliseconds
     """
 
-    last_updated_time = Column(DATETIME(fsp=3), nullable=True, default=None)
+    last_updated_time = Column(DATETIME(fsp=3), nullable=True)
     """
-    Last updated time of this model version
+    Last updated time of this version of model.
     """
 
     dataset = Column(String(256), nullable=True, default=None)
     """
-    Dataset used for this model.
+    Dataset used for this version of model.
     """
 
     description = Column(String(5000), nullable=True)
     """
-    Description for model version.
+    Description for this version of model.
     """
 
-    model_tags: Mapped[List["SqlModelTag"]] = relationship(
-        "SqlModelTag", back_populates="model_version", cascade="all"
+    tags: Mapped[List["SqlModelVersionTag"]] = relationship(
+        "SqlModelVersionTag", back_populates="model_version", cascade="all"
     )
     """
-    Model tags reference to SqlModlTag.
+    Model version tags reference to SqlModelVersionTag.
     """
 
     # linked entities
@@ -232,80 +234,73 @@ class SqlModelVersion(Base):
         "SqlRegisteredModel", back_populates="model_versions"
     )
 
-    __table_args__ = (PrimaryKeyConstraint("name", "version", name="model_version_pk"),)
+    __table_args__ = (PrimaryKeyConstraint("name", "version", "source", name="model_version_pk"),)
 
     def __repr__(self):
-        return "<SqlModelVersion ({}, {}, {}, {}, {}, {}, {}, {}, {}, {})>".format(
-            self.name,
-            self.version,
-            self.user_id,
-            self.experiment_id,
-            self.current_stage,
-            self.creation_time,
-            self.last_updated_time,
-            self.source,
-            self.dataset,
-            self.description,
+        return (
+            f"<SqlModelMetadata ({self.name}, {self.version}, {self.source}, {self.user_id},"
+            f" {self.experiment_id}, {self.current_stage}, {self.creation_time},"
+            f" {self.last_updated_time}, {self.dataset}, {self.description})>"
         )
 
     def to_submarine_entity(self):
         """
         Convert DB model to corresponding Submarine entity.
-        :return: :py:class:`submarine.entities.RegisteredModel`.
+        :return: :py:class:`submarine.entities.ModelMetadata`.
         """
         return ModelVersion(
             name=self.name,
             version=self.version,
+            source=self.source,
             user_id=self.user_id,
             experiment_id=self.experiment_id,
             current_stage=self.current_stage,
             creation_time=self.creation_time,
             last_updated_time=self.last_updated_time,
-            source=self.source,
             dataset=self.dataset,
             description=self.description,
-            tags=[tag.to_submarine_entity() for tag in self.model_tags],
+            tags=[tag.to_submarine_entity() for tag in self.tags],
         )
 
 
-# +---------------------+---------+-----------------+
-# | name                | version | tag             |
-# +---------------------+---------+-----------------+
-# | image_classfication | 1       | best            |
-# | image_classfication | 1       | anomaly_support |
-# | image_classfication | 2       | testing         |
-# | speech_recoginition | 1       | best            |
-# +---------------------+---------+-----------------+
+# +----------+---------+----------+
+# | name     | version | tag      |
+# +----------+---------+----------+
+# | ResNet50 | 1       | best     |
+# | ResNet50 | 1       | serving  |
+# | ResNet50 | 2       | new      |
+# | BERT     | 1       | testing  |
+# +----------+---------+----------+
 
 
-class SqlModelTag(Base):
-    __tablename__ = "model_tag"
+class SqlModelVersionTag(Base):
+    __tablename__ = "model_version_tag"
 
     name = Column(String(256), nullable=False)
     """
-    Name for registered models: Part of *Foreign Key* for ``model_tag`` table. Refer to
-    name of ``model_version`` table.
+    Name of registered model: Part of *Foreign Key* for ``model_version_tag`` table.
+                              Refer to name of ``model_metadata`` table.
     """
 
     version = Column(Integer, nullable=False)
     """
-    version of model: Part of *Foreign Key* for ``model_tag`` table. Refer to
-    version of ``model_version`` table.
+    version of model: Part of *Foreign Key* for ``model_version_tag`` table.
+                      Refer to version of ``model_metadata`` table.
     """
 
     tag = Column(String(256), nullable=False)
     """
-    tag of model version: `String` (limit 256 characters). Part of *Primary Key* for
-    ``model_tag`` table.
+    tag of model version: `String` (limit 256 characters).
+                          Part of *Primary Key* for ``model_tag`` table.
     """
 
     # linked entities
     model_version: SqlModelVersion = relationship(
-        "SqlModelVersion", foreign_keys=[name, version], back_populates="model_tags"
+        "SqlModelVersion", foreign_keys=[name, version], back_populates="tags"
     )
 
     __table_args__ = (
-        PrimaryKeyConstraint("name", "version", "tag", name="model_tag_pk"),
+        PrimaryKeyConstraint("name", "version", "tag", name="model_version_tag_pk"),
         ForeignKeyConstraint(
             ("name", "version"),
             ("model_version.name", "model_version.version"),
@@ -315,15 +310,15 @@ class SqlModelTag(Base):
     )
 
     def __repr__(self):
-        return "<SqlRegisteredModelTag ({}, {}, {})>".format(self.name, self.version, self.tag)
+        return f"<SqlModelVersionTag ({self.name}, {self.version}, {self.tag})>"
 
     # entity mappers
     def to_submarine_entity(self):
         """
         Convert DB model to corresponding submarine entity.
-        :return: :py:class:`submarine.entities.ModelTag`.
+        :return: :py:class:`submarine.entities.ModelVersionTag`.
         """
-        return ModelTag(self.tag)
+        return ModelVersionTag(self.tag)
 
 
 # +--------------------+-----------------+-----------+-------------------------+-----+

@@ -16,13 +16,13 @@
 from submarine.exceptions import SubmarineException
 
 STAGE_NONE = "None"
-STAGE_STAGING = "Staging"
+STAGE_DEVELOPING = "Developing"
 STAGE_PRODUCTION = "Production"
 STAGE_ARCHIVED = "Archived"
 
 STAGE_DELETED_INTERNAL = "Deleted_Internal"
 
-ALL_STAGES = [STAGE_NONE, STAGE_STAGING, STAGE_PRODUCTION, STAGE_ARCHIVED]
+ALL_STAGES = [STAGE_NONE, STAGE_DEVELOPING, STAGE_PRODUCTION, STAGE_ARCHIVED]
 _CANONICAL_MAPPING = {stage.lower(): stage for stage in ALL_STAGES}
 
 
