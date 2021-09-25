@@ -13,32 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from six.moves import urllib
-
-from submarine.exceptions import SubmarineException
-from submarine.utils.db_utils import get_db_uri, set_db_uri
+from submarine.entities._submarine_object import _SubmarineObject
 
 
-def extract_db_type_from_uri(db_uri):
+class ModelVersionTag(_SubmarineObject):
     """
-    Parse the specified DB URI to extract the database type. Confirm the database type is
-    supported. If a driver is specified, confirm it passes a plausible regex.
+    Tag object associated with a model version.
     """
-    scheme = urllib.parse.urlparse(db_uri).scheme
-    scheme_plus_count = scheme.count("+")
 
-    if scheme_plus_count == 0:
-        db_type = scheme
-    elif scheme_plus_count == 1:
-        db_type, _ = scheme.split("+")
-    else:
-        error_msg = "Invalid database URI: '%s'. %s" % (db_uri, "INVALID_DB_URI_MSG")
-        raise SubmarineException(error_msg)
+    def __init__(self, tag):
+        self._tag = tag
 
-    return db_type
-
-
-__all__ = [
-    "get_db_uri",
-    "set_db_uri",
-]
+    @property
+    def tag(self):
+        """String tag."""
+        return self._tag

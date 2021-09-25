@@ -30,7 +30,7 @@ setup(
         "six>=1.10.0",
         "numpy==1.18.5",
         "pandas",
-        "sqlalchemy",
+        "sqlalchemy>=1.4.0",
         "sqlparse",
         "pymysql",
         "requests==2.26.0",

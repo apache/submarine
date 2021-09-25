@@ -13,18 +13,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.entities._submarine_object import _SubmarineObject
+import os
+
+import mock
+
+from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
+from submarine.utils import get_db_uri, set_db_uri
+from submarine.utils.db_utils import _DB_URI_ENV_VAR, is_db_uri_set
 
 
-class ModelTag(_SubmarineObject):
-    """
-    Tag object associated with a model version.
-    """
+def test_is_db_uri_set():
+    env = {
+        _DB_URI_ENV_VAR: DEFAULT_SUBMARINE_JDBC_URL,
+    }
+    with mock.patch.dict(os.environ, env):
+        assert is_db_uri_set() is True
 
-    def __init__(self, tag):
-        self._tag = tag
 
-    @property
-    def tag(self):
-        """String tag"""
-        return self._tag
+def test_set_db_uri():
+    test_db_uri = "mysql+pymysql://submarine:password@localhost:3306/submarine_test"
+    set_db_uri(test_db_uri)
+    assert get_db_uri() == test_db_uri
+    set_db_uri(None)
+
+
+def test_get_db_uri():
+    env = {
+        _DB_URI_ENV_VAR: DEFAULT_SUBMARINE_JDBC_URL,
+    }
+    with mock.patch.dict(os.environ, env):
+        assert get_db_uri() == DEFAULT_SUBMARINE_JDBC_URL

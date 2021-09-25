@@ -13,14 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.entities.model_registry.model_tag import ModelTag
 from submarine.entities.model_registry.model_version import ModelVersion
+from submarine.entities.model_registry.model_version_tag import ModelVersionTag
 from submarine.entities.model_registry.registered_model import RegisteredModel
 from submarine.entities.model_registry.registered_model_tag import RegisteredModelTag
 
 __all__ = [
-    "ModelVersion",
-    "ModelTag",
     "RegisteredModel",
     "RegisteredModelTag",
+    "ModelVersion",
+    "ModelVersionTag",
 ]

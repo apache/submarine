@@ -26,5 +26,5 @@ class RegisteredModelTag(_SubmarineObject):
 
     @property
     def tag(self):
-        """String tag."""
+        """String tag"""
         return self._tag

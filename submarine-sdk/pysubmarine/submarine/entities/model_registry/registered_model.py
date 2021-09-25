@@ -18,7 +18,7 @@ from submarine.entities._submarine_object import _SubmarineObject
 
 class RegisteredModel(_SubmarineObject):
     """
-    Registered Model object.
+    Registered model object.
     """
 
     def __init__(self, name, creation_time, last_updated_time, description=None, tags=None):
@@ -35,12 +35,12 @@ class RegisteredModel(_SubmarineObject):
 
     @property
     def creation_time(self):
-        """Datetime object. Model version creation timestamp."""
+        """Datetime object. Registered model creation datetime."""
         return self._creation_time
 
     @property
     def last_updated_time(self):
-        """Datetime object. Timestamp of last update for this model version."""
+        """Datetime object. Datetime of last update for this model."""
         return self._last_updated_time
 
     @property
@@ -52,6 +52,3 @@ class RegisteredModel(_SubmarineObject):
     def tags(self):
         """List of strings"""
         return self._tags
-
-    def _add_tag(self, tag):
-        self._tags.append(tag)
