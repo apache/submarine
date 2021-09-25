@@ -14,10 +14,12 @@
 # limitations under the License.
 
 import pytest
+import tensorflow as tf
 
 from submarine.ml.tensorflow_v2.model import NFM
 
-@pytest.mark.tf2
+
+@pytest.mark.skipif(tf.__version__ < "2.0.0", reason="requires tf2")
 def test_run_nfm(get_model_param):
     params = get_model_param
 

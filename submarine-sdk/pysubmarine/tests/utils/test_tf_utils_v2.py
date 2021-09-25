@@ -16,14 +16,30 @@
 import pytest
 import tensorflow as tf
 
-from submarine.ml.tensorflow_v2.model import FM
+from submarine.utils.tf_utils_v2 import get_tf_config
 
 
 @pytest.mark.skipif(tf.__version__ < "2.0.0", reason="requires tf2")
-def test_run_fm(get_model_param):
-    params = get_model_param
+def test_get_tf_config():
+    params = {"training": {"mode": "test"}}
+    with pytest.raises(ValueError, match="mode should be local or distributed"):
+        get_tf_config(params)
 
-    model = FM(model_params=params)
-    model.train()
-    model.evaluate()
-    model.predict()
+    # conf for local training
+    params.update(
+        {
+            "training": {"mode": "local", "log_steps": 10},
+            "resource": {"num_cpu": 4, "num_thread": 4, "num_gpu": 1},
+        }
+    )
+    get_tf_config(params)
+
+    # conf for distributed training
+    # skip temporary
+    # params.update(
+    #     {
+    #         "training": {"mode": "distributed", "log_steps": 10},
+    #         "resource": {"num_cpu": 4, "num_thread": 4, "num_gpu": 2},
+    #     }
+    # )
+    # get_tf_config(params)

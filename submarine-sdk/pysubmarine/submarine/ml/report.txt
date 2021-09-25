@@ -1,0 +1,189 @@
+TensorFlow 2.0 Upgrade Script
+-----------------------------
+Converted 14 files
+Detected 9 issues that require attention
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+File: tensorflow/layers/core.py
+--------------------------------------------------------------------------------
+tensorflow/layers/core.py:21:15: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+tensorflow/layers/core.py:31:15: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+tensorflow/layers/core.py:76:26: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+tensorflow/layers/core.py:92:19: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+tensorflow/layers/core.py:119:22: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+tensorflow/layers/core.py:122:24: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+tensorflow/layers/core.py:129:23: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+tensorflow/layers/core.py:152:25: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+tensorflow/layers/core.py:158:21: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+================================================================================
+Detailed log follows:
+
+================================================================================
+================================================================================
+Input tree: 'tensorflow/'
+================================================================================
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/parameters.py'
+ outputting to 'tensorflow_v2_1/parameters.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/__init__.py'
+ outputting to 'tensorflow_v2_1/__init__.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/optimizer.py'
+ outputting to 'tensorflow_v2_1/optimizer.py'
+--------------------------------------------------------------------------------
+
+36:13: INFO: Renamed 'tf.train.AdamOptimizer' to 'tf.compat.v1.train.AdamOptimizer'
+40:13: INFO: Renamed 'tf.train.AdagradOptimizer' to 'tf.compat.v1.train.AdagradOptimizer'
+42:13: INFO: Renamed 'tf.train.MomentumOptimizer' to 'tf.compat.v1.train.MomentumOptimizer'
+44:13: INFO: Renamed 'tf.train.FtrlOptimizer' to 'tf.compat.v1.train.FtrlOptimizer'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/registries.py'
+ outputting to 'tensorflow_v2_1/registries.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/layers/__init__.py'
+ outputting to 'tensorflow_v2_1/layers/__init__.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/layers/core.py'
+ outputting to 'tensorflow_v2_1/layers/core.py'
+--------------------------------------------------------------------------------
+
+21:15: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+31:15: ERROR: Using member tf.contrib.layers.batch_norm in deprecated module tf.contrib. tf.contrib.layers.batch_norm cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+41:11: INFO: Added keywords to args of function 'tf.cond'
+68:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+76:26: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+79:36: INFO: Multiplying scale arg of tf.contrib.layers.l2_regularizer by half to what tf.keras.regularizers.l2 expects.
+
+90:30: INFO: Changing keep_prob arg of tf.nn.dropout to rate
+
+92:19: ERROR: Using member tf.contrib.layers.fully_connected in deprecated module tf.contrib. tf.contrib.layers.fully_connected cannot be converted automatically. tf.contrib will not be distributed with TensorFlow 2.0, please consider an alternative in non-contrib TensorFlow, a community-maintained repository such as tensorflow/addons, or fork the required code.
+96:32: INFO: Multiplying scale arg of tf.contrib.layers.l2_regularizer by half to what tf.keras.regularizers.l2 expects.
+
+117:18: INFO: Multiplying scale arg of tf.contrib.layers.l2_regularizer by half to what tf.keras.regularizers.l2 expects.
+
+118:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+119:22: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+119:22: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+120:55: INFO: tf.constant_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+120:55: INFO: Renamed 'tf.constant_initializer' to 'tf.compat.v1.constant_initializer'
+122:24: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+122:24: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+125:24: INFO: tf.glorot_normal_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+125:24: INFO: Renamed 'tf.glorot_normal_initializer' to 'tf.compat.v1.glorot_normal_initializer'
+129:23: INFO: Added keywords to args of function 'tf.nn.embedding_lookup'
+129:23: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+130:21: INFO: Added keywords to args of function 'tf.reduce_sum'
+150:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+151:22: INFO: Multiplying scale arg of tf.contrib.layers.l2_regularizer by half to what tf.keras.regularizers.l2 expects.
+
+152:25: WARNING: tf.get_variable requires manual check. tf.get_variable returns ResourceVariables by default in 2.0, which have well-defined semantics and are stricter about shapes. You can disable this behavior by passing use_resource=False, or by calling tf.compat.v1.disable_resource_variables().
+152:25: INFO: Renamed 'tf.get_variable' to 'tf.compat.v1.get_variable'
+155:24: INFO: tf.glorot_normal_initializer requires manual check. Initializers no longer have the dtype argument in the constructor or partition_info argument in the __call__ method.
+The calls have been converted to compat.v1 for safety (even though they may already have been correct).
+155:24: INFO: Renamed 'tf.glorot_normal_initializer' to 'tf.compat.v1.glorot_normal_initializer'
+158:21: INFO: Added keywords to args of function 'tf.nn.embedding_lookup'
+158:21: WARNING: tf.nn.embedding_lookup requires manual check. `partition_strategy` has been removed from tf.nn.embedding_lookup.  The 'div' strategy will be used by default.
+171:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+172:31: INFO: Added keywords to args of function 'tf.reduce_sum'
+173:21: INFO: Added keywords to args of function 'tf.reduce_sum'
+184:9: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+185:31: INFO: Added keywords to args of function 'tf.reduce_sum'
+186:21: INFO: Added keywords to args of function 'tf.reduce_sum'
+187:23: INFO: Added keywords to args of function 'tf.reduce_sum'
+223:24: INFO: Added keywords to args of function 'tf.transpose'
+226:17: INFO: Added keywords to args of function 'tf.transpose'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/model/base_tf_model.py'
+ outputting to 'tensorflow_v2_1/model/base_tf_model.py'
+--------------------------------------------------------------------------------
+
+106:8: INFO: Renamed 'tf.set_random_seed' to 'tf.compat.v1.set_random_seed'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/model/__init__.py'
+ outputting to 'tensorflow_v2_1/model/__init__.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/model/deepfm.py'
+ outputting to 'tensorflow_v2_1/model/deepfm.py'
+--------------------------------------------------------------------------------
+
+52:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/model/fm.py'
+ outputting to 'tensorflow_v2_1/model/fm.py'
+--------------------------------------------------------------------------------
+
+42:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/model/ccpm.py'
+ outputting to 'tensorflow_v2_1/model/ccpm.py'
+--------------------------------------------------------------------------------
+
+70:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/model/nfm.py'
+ outputting to 'tensorflow_v2_1/model/nfm.py'
+--------------------------------------------------------------------------------
+
+49:13: INFO: Renamed 'tf.variable_scope' to 'tf.compat.v1.variable_scope'
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/input/__init__.py'
+ outputting to 'tensorflow_v2_1/input/__init__.py'
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+Processing file 'tensorflow/input/input.py'
+ outputting to 'tensorflow_v2_1/input/input.py'
+--------------------------------------------------------------------------------
+
+35:22: INFO: Renamed 'tf.string_split' to 'tf.compat.v1.string_split'
+36:21: INFO: Renamed 'tf.string_to_number' to 'tf.strings.to_number'
+37:21: INFO: Renamed 'tf.string_split' to 'tf.compat.v1.string_split'
+40:23: INFO: Renamed 'tf.string_to_number' to 'tf.strings.to_number'
+41:24: INFO: Renamed 'tf.string_to_number' to 'tf.strings.to_number'
+--------------------------------------------------------------------------------
+

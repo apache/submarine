@@ -14,10 +14,12 @@
 # limitations under the License.
 
 import pytest
+import tensorflow as tf
 
 from submarine.utils.tf_utils import get_tf_config
 
 
+@pytest.mark.skipif(tf.__version__ >= "2.0.0", reason="requires tf1")
 def test_get_tf_config():
     params = {"training": {"mode": "test"}}
     with pytest.raises(ValueError, match="mode should be local or distributed"):

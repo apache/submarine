@@ -13,9 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pytest
+import tensorflow as tf
+
 from submarine.ml.tensorflow.model import CCPM
 
 
+@pytest.mark.skipif(tf.__version__ >= "2.0.0", reason="requires tf1")
 def test_run_ccpm(get_model_param):
     params = get_model_param
 
