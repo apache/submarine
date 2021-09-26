@@ -94,20 +94,19 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     conda clean --all -f -y && \
     rm -rf /home/$NB_USER/.cache/yarn
 
+RUN conda init bash 
 # Install latest sumbarine python sdk and notebook
-RUN git clone https://github.com/apache/submarine && \
-    pip install -e submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
+RUN source ~/.bashrc && conda activate && \
+    git clone https://github.com/apache/submarine && \
+    pip install submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
     conda install nodejs && \
     conda install -c conda-forge jupyterlab jupyterlab-git && \
-    jupyter lab build
+    jupyter lab build 
 
 # Add DeepFM example into notebook
 RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
     cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME && \
     rm submarine -rf
-
-# Install mlflow & minio dependencies
-RUN pip install boto3==1.17.58 mlflow==1.15.0
 
 # Install latest stable qlib
 RUN conda install -c conda-forge cvxpy==1.0.21
