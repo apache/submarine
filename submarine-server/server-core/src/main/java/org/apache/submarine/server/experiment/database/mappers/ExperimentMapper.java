@@ -17,7 +17,9 @@
  * under the License.
  */
 
-package org.apache.submarine.server.experiment.database;
+package org.apache.submarine.server.experiment.database.mappers;
+
+import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 
 import java.util.List;
 

@@ -18,7 +18,7 @@
   under the License.
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.apache.submarine.server.notebook.database.NotebookMapper">
+<mapper namespace="org.apache.submarine.server.notebook.database.mappers.NotebookMapper">
   <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.database.entity.BaseEntity">
     <id property="id" column="id"/>
     <result column="create_by" property="createBy"/>
@@ -27,7 +27,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="NotebookEntityResultMap" type="org.apache.submarine.server.notebook.database.NotebookEntity" extends="BaseEntityResultMap">
+  <resultMap id="NotebookEntityResultMap" type="org.apache.submarine.server.notebook.database.entity.NotebookEntity" extends="BaseEntityResultMap">
     <result column="notebook_spec" jdbcType="VARCHAR" property="notebookSpec" />
   </resultMap>
 
@@ -53,13 +53,13 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.notebook.database.NotebookEntity">
+  <insert id="insert" parameterType="org.apache.submarine.server.notebook.database.entity.NotebookEntity">
     insert into notebook (id, notebook_spec, create_by, create_time, update_by, update_time)
     values (#{id,jdbcType=VARCHAR}, #{notebookSpec,jdbcType=VARCHAR},
             #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
-  <update id="update" parameterType="org.apache.submarine.server.notebook.database.NotebookEntity">
+  <update id="update" parameterType="org.apache.submarine.server.notebook.database.entity.NotebookEntity">
     update notebook
     <set>
       <if test="notebookSpec != null">

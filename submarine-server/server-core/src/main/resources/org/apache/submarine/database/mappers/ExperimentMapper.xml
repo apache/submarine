@@ -18,7 +18,7 @@
   under the License.
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.apache.submarine.server.experiment.database.ExperimentMapper">
+<mapper namespace="org.apache.submarine.server.experiment.database.mappers.ExperimentMapper">
   <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.database.entity.BaseEntity">
     <id property="id" column="id"/>
     <result column="create_by" property="createBy"/>
@@ -27,7 +27,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="ExperimentEntityResultMap" type="org.apache.submarine.server.experiment.database.ExperimentEntity" extends="BaseEntityResultMap">
+  <resultMap id="ExperimentEntityResultMap" type="org.apache.submarine.server.experiment.database.entity.ExperimentEntity" extends="BaseEntityResultMap">
     <result column="experiment_spec" jdbcType="VARCHAR" property="experimentSpec" />
   </resultMap>
 
@@ -53,13 +53,13 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.experiment.database.ExperimentEntity">
+  <insert id="insert" parameterType="org.apache.submarine.server.experiment.database.entity.ExperimentEntity">
     insert into experiment (id, experiment_spec, create_by, create_time, update_by, update_time)
     values (#{id,jdbcType=VARCHAR}, #{experimentSpec,jdbcType=VARCHAR},
             #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
-  <update id="update" parameterType="org.apache.submarine.server.experiment.database.ExperimentEntity">
+  <update id="update" parameterType="org.apache.submarine.server.experiment.database.entity.ExperimentEntity">
     update experiment
     <set>
       <if test="experimentSpec != null">

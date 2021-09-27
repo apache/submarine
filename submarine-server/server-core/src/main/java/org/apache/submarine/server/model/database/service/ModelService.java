@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.model.database;
+package org.apache.submarine.server.model.database.service;
 
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ import org.apache.submarine.server.model.database.mappers.ModelVersionMapper;
 public class ModelService {
 
   private static final Logger
-      LOG = LoggerFactory.getLogger(org.apache.submarine.server.model.database.ModelService.class);
+      LOG = LoggerFactory.getLogger(ModelService.class);
 
   public List<RegisteredModelNameEntity> selectAllRegisteredModelName() throws SubmarineRuntimeException {
     LOG.info("Registered Model Name selectAll");

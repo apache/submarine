@@ -41,5 +41,5 @@ public class EnvironmentEntity extends BaseEntity {
   public void setEnvironmentSpec(String environmentSpec) {
     this.environmentSpec = environmentSpec;
   }
-  
+
 }

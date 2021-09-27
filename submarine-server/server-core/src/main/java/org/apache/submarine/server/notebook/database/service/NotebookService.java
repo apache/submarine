@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.notebook.database;
+package org.apache.submarine.server.notebook.database.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,6 +28,8 @@ import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.notebook.NotebookId;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
+import org.apache.submarine.server.notebook.database.entity.NotebookEntity;
+import org.apache.submarine.server.notebook.database.mappers.NotebookMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
