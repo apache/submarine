@@ -17,7 +17,9 @@
  * under the License.
  */
 
-package org.apache.submarine.server.notebook.database;
+package org.apache.submarine.server.notebook.database.mappers;
+
+import org.apache.submarine.server.notebook.database.entity.NotebookEntity;
 
 import java.util.List;
 

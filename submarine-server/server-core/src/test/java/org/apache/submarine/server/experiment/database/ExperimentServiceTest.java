@@ -19,6 +19,8 @@
 
 package org.apache.submarine.server.experiment.database;
 
+import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
+import org.apache.submarine.server.experiment.database.service.ExperimentService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
