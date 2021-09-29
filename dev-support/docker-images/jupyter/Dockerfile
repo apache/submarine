@@ -101,7 +101,7 @@ RUN source ~/.bashrc && conda activate && \
     pip install submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
     conda install nodejs && \
     conda install -c conda-forge jupyterlab jupyterlab-git && \
-    jupyter lab build 
+    jupyter lab build
 
 # Add DeepFM example into notebook
 RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
