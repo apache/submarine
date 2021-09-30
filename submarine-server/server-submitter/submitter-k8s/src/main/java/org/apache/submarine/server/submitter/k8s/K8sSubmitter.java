@@ -76,7 +76,6 @@ import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
 import org.apache.submarine.server.submitter.k8s.model.middlewares.Middlewares;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
-//import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
