@@ -26,9 +26,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.squareup.okhttp.OkHttpClient;
 import io.kubernetes.client.ApiClient;
 import io.kubernetes.client.ApiException;
 import io.kubernetes.client.Configuration;
@@ -46,13 +51,9 @@ import io.kubernetes.client.models.V1Pod;
 import io.kubernetes.client.models.V1PodList;
 import io.kubernetes.client.models.V1Service;
 import io.kubernetes.client.models.V1Status;
+import io.kubernetes.client.util.Watch;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
-
-import io.kubernetes.client.informer.ResourceEventHandler;
-import io.kubernetes.client.informer.SharedIndexInformer;
-import io.kubernetes.client.informer.SharedInformerFactory;
-import io.kubernetes.client.util.CallGeneratorParams;
 
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
@@ -74,6 +75,9 @@ import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRouteSpec;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
 import org.apache.submarine.server.submitter.k8s.model.middlewares.Middlewares;
+import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
+//import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
+import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.ServeSpecParser;
@@ -84,7 +88,6 @@ import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * JobSubmitter for Kubernetes Cluster.
@@ -106,12 +109,13 @@ public class K8sSubmitter implements Submitter {
 
   private AppsV1Api appsV1Api;
 
+  private ApiClient client = null;
+
   public K8sSubmitter() {
   }
 
   @Override
   public void initialize(SubmarineConfiguration conf) {
-    ApiClient client = null;
     try {
       String path = System.getenv(KUBECONFIG_ENV);
       KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(path));
@@ -125,6 +129,10 @@ public class K8sSubmitter implements Submitter {
         throw new SubmarineRuntimeException(500, "Initialize K8s submitter failed.");
       }
     } finally {
+      // let watcher can wait until the next change
+      OkHttpClient httpClient = client.getHttpClient();
+      httpClient.setReadTimeout(0, TimeUnit.SECONDS);
+      client.setHttpClient(httpClient);
       Configuration.setDefaultApiClient(client);
     }
 
@@ -139,9 +147,13 @@ public class K8sSubmitter implements Submitter {
       appsV1Api = new AppsV1Api();
     }
 
-    client.setDebugging(true);
+    try {
+      watchExperiment();
+    } catch (Exception e){
+      LOG.error("Experiment watch failed. " + e.getMessage());
+    }
 
-    createExperimentInformer();
+    // client.setDebugging(true);
   }
 
   @Override
@@ -573,56 +585,77 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public void createExperimentInformer() throws SubmarineRuntimeException {
-      try {
-          String namespace = getServerNamespace();
-          SharedInformerFactory factory = new SharedInformerFactory();
+  public void watchExperiment() throws ApiException{
 
-          SharedIndexInformer<Object> experimentInformer = factory.sharedIndexInformerFor(
-                  (CallGeneratorParams params) -> {
-                      return api.listNamespacedCustomObjectCall(
-                              "kubeflow.org",
-                              null,
-                              namespace,
-                              null,
-                              null,
-                              null,
-                              null,
-                              params.resourceVersion,
-                              params.timeoutSeconds,
-                              params.watch,
-                              null,
-                              null);
-                  },
-                  Object.class,
-                  List<Object>.class
-          );
+    Watch<MLJob> watchTF = Watch.createWatch(
+              client,
+              api.listNamespacedCustomObjectCall(
+                      TFJob.CRD_TF_GROUP_V1,
+                      TFJob.CRD_TF_VERSION_V1,
+                      getServerNamespace(),
+                      TFJob.CRD_TF_PLURAL_V1,
+                      "true",
+                      null,
+                      null,
+                      null,
+                      null,
+                      Boolean.TRUE,
+                      null,
+                      null
+              ),
+              new TypeToken<Watch.Response<MLJob>>() {}.getType()
+      );
 
-          experimentInformer.addEventHandler(
-                  new ResourceEventHandler<Object>() {
-                      @Override
-                      public void onAdd(Object experiment) {
-                          LOG.info("{} experiment added!\n", experiment);
-                      }
+    Watch<MLJob> watchPytorch = Watch.createWatch(
+            client,
+            api.listNamespacedCustomObjectCall(
+                    PyTorchJob.CRD_PYTORCH_GROUP_V1,
+                    PyTorchJob.CRD_PYTORCH_VERSION_V1,
+                    getServerNamespace(),
+                    PyTorchJob.CRD_PYTORCH_PLURAL_V1,
+                    "true",
+                    null,
+                    null,
+                    null,
+                    null,
+                    Boolean.TRUE,
+                    null,
+                    null
+            ),
+            new TypeToken<Watch.Response<MLJob>>() {}.getType()
+    );
 
-                      @Override
-                      public void onUpdate(Object oldExperiment, Object newExperiment) {
-                          LOG.info(
-                                  "{} => {} node updated!\n",
-                                  oldExperiment, newExperiment);
-                      }
+    ExecutorService experimentThread = Executors.newFixedThreadPool(2);
 
-                      @Override
-                      public void onDelete(Object experiment, boolean deletedFinalStateUnknown) {
-                          LOG.info("{} node deleted!\n", experiment);
-                      }
-                  }
-          );
+    experimentThread.execute(new Runnable() {
+        @Override
+        public void run() {
+            try {
+              LOG.info("Start watching on TFJobs...");
+              for (Watch.Response<MLJob> experiment : watchTF) {
+                LOG.info("{}", experiment.object.getStatus());
+              }
+            } finally {
+              LOG.info("WATCH TFJob END");
+              throw new RuntimeException();
+            }
+        }
+    });
 
-          factory.startAllRegisteredInformers();
-      } catch (ApiException e){
-          throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
-      }
+    experimentThread.execute(new Runnable() {
+        @Override
+        public void run() {
+            try {
+              LOG.info("Start watching on PytorchJobs...");
+              for (Watch.Response<MLJob> experiment : watchPytorch) {
+                LOG.info("{}", experiment.object.getStatus());
+              }
+            } finally {
+              LOG.info("WATCH PytorchJob END");
+              throw new RuntimeException();
+            }
+        }
+    });
   }
 
   public void createPersistentVolumeClaim(String pvcName, String namespace, String scName, String storage)
