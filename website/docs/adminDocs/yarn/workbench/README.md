@@ -22,7 +22,7 @@ Data scientists can interactively access notebooks, submit/manage jobs, manage m
 
 ## Register
 
-Everyone who needs to use Submarine for machine learning algorithm development can log in to Submarine Workbench's WEB homepage. On the homepage, click the registration link, fill in the user name, email address and password to register the user. At this time, the user status is `waiting for approval` status. 
+Everyone who needs to use Submarine for machine learning algorithm development can log in to Submarine Workbench's WEB homepage. On the homepage, click the registration link, fill in the user name, email address and password to register the user. At this time, the user status is `waiting for approval` status.
 
 After receiving the registration request from the user in Submarine Workbench, the administrator sets the operation authority according to the user's needs, sets the user's organization and allocates resources, and sets the user status to `pass the audit`. The user can log in to the Submarine Workbench. Different users have different permission.
 
@@ -62,7 +62,7 @@ Each Project card consists of the following sections:
 4. **Edit**：Users can open projects in **Notebook** and perform algorithm development by double-clicking on the project or by clicking the **Edit** button.
 5. **Download**：The user downloads the project package locally by clicking the **Download** button.
 6. **Setting**：Edit project information such as project name, profile, visibility level and permissions.
-7. **Delete**：Delete the project and all included files. 
+7. **Delete**：Delete the project and all included files.
 
 #### Add New Project
 
@@ -73,28 +73,28 @@ Clicking the **Add New Project** button on the project page will display the gui
 ![image-20191007171638338](/img/workspace/workspace-project-step1.png)
 
 + **Visibility**: Set the visibility level of the item externally
-  
+
   + **Private**: (Default) Set to private project, and all the files included in the project are not publicly displayed. but the execution result of the project can be individually set and exposed in Notebook, so that others can view the visual report of the project.
   + **Team**: Set to team project, select the team name in the team selection box, and other members of the team can access the project according to the set permissions.
   + **Public**: Set to public project, all users in Workbench can view this project through search.
 + **Permission**: Set the external access rights of the project. The permission setting interface will appear only when the **Visibility** of the project is set to **Team** or **Public**.
-  
+
   + **Can View**
-  
+
     When the project's **Visibility** is set to **Team**, other members of the team can **only view** the files for this project.
-  
+
     When the project's **Visibility** is set to **Public**, other members of the Workbench can **only view** the files for this project.
-  
+
   + **Can Edit**
-  
+
     When the project's **Visibility** is set to **Team**, other members of the team can **view** and **edit** the files for this project.
-  
+
     When the project's **Visibility** is set to **Public**, other members of the Workbench can **view** and **edit** the files for this project.
-  
+
   + **Can Execute**
-  
+
     When the project's **Visibility** is set to **Team**, other members of the team can **view**, **edit**, and **execute** the project's files.
-  
+
     When the project's **Visibility** is set to **Public**, other members of the Workbench can **view**, **edit**, and **execute** the project's files.
 
 **Step 2**: In the Initial Project step, Workbench provides four ways to initialize the project.

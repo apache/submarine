@@ -26,7 +26,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   },
   "environment": {
-    "image": "parameter-server:0.6.0"
+    "image": "parameter-server:0.7.0-SNAPSHOT"
   },
   "spec": {
     "Ps": {

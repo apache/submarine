@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: serve-example-container
-        image: apache/submarine:serve-0.6.0
+        image: apache/submarine:serve-0.7.0-SNAPSHOT
         command:
           - "mlflow"
           - "models"

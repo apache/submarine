@@ -20,7 +20,7 @@ name: submarine-operator
 description: A Helm chart for Submarine operator
 type: application
 version: 0.1.0
-appVersion: "0.6.0"
+appVersion: "0.7.0-SNAPSHOT"
 dependencies:
   - name: tfjob
     version: "0.1.0"

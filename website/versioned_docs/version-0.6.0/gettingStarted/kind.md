@@ -26,7 +26,7 @@ We recommend users developing Submarine with minikube. However, [`KinD`](https:/
 
 Run the following command, and specify the KinD version and Kubernetes version [`here`](../devDocs/Dependencies).
 ```bash
-# Download the specific version of KinD (must >= v0.6.0)
+# Download the specific version of KinD (must >= v0.7.0-SNAPSHOT)
 export KIND_VERSION=v0.11.1
 curl -Lo ./kind https://github.com/kubernetes-sigs/kind/releases/download/${KIND_VERSION}/kind-linux-amd64
 # Make the binary executable
