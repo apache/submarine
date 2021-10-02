@@ -20,7 +20,6 @@ package org.apache.submarine.server;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
-import org.apache.submarine.server.rpc.SubmarineRpcServer;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.commons.cluster.ClusterServer;
 import org.eclipse.jetty.http.HttpVersion;
@@ -70,7 +69,6 @@ public class SubmarineServer extends ResourceConfig {
   private static long serverTimeStamp = System.currentTimeMillis();
 
   public static Server jettyWebServer;
-  public static SubmarineRpcServer rpcServer;
   public static ServiceLocator sharedServiceLocator;
   private static WebAppContext webApp;
   private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
@@ -121,7 +119,6 @@ public class SubmarineServer extends ResourceConfig {
     // Cluster Server is useless for submarine now. Shield it to improve performance.
     // setupClusterServer();
 
-    rpcServer = SubmarineRpcServer.startRpcServer();
     startServer();
   }
 

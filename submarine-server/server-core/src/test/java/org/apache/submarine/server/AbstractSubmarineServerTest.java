@@ -176,7 +176,6 @@ public abstract class AbstractSubmarineServerTest {
     if (!WAS_RUNNING) {
       LOG.info("Terminating test Submarine server...");
       SubmarineServer.jettyWebServer.stop();
-      SubmarineServer.rpcServer.stop();
       executor.shutdown();
 
       long s = System.currentTimeMillis();

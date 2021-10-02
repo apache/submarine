@@ -54,66 +54,9 @@
       <artifactId>submarine-client</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.apache.submarine</groupId>
-      <artifactId>submarine-submitter-yarn</artifactId>
-      <version>${project.version}</version>
-    </dependency>
   </dependencies>
 
   <profiles>
-    <profile>
-      <id>hadoop-3.2</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.submarine</groupId>
-          <artifactId>submarine-submitter-yarnservice</artifactId>
-          <version>${project.version}</version>
-          <exclusions>
-            <exclusion>
-              <groupId>org.apache.avro</groupId>
-              <artifactId>avro</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
-      <id>hadoop-3.1</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.apache.submarine</groupId>
-          <artifactId>submarine-submitter-yarnservice</artifactId>
-          <version>${project.version}</version>
-          <exclusions>
-            <exclusion>
-              <groupId>org.apache.avro</groupId>
-              <artifactId>avro</artifactId>
-            </exclusion>
-          </exclusions>
-        </dependency>
-      </dependencies>
-    </profile>
-
-    <profile>
-      <id>hadoop-2.10</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-      </activation>
-      <dependencies>
-      </dependencies>
-    </profile>
-
-    <profile>
-      <id>hadoop-2.9</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-      </dependencies>
-    </profile>
-
     <profile>
       <id>src</id>
       <activation>
