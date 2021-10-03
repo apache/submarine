@@ -45,7 +45,7 @@ DO_SNAPSHOT='no'
 
 usage() {
   echo "usage) $0 [Release version] [Branch or Tag]"
-  echo "   ex. $0 0.6.0 v0.6.0"
+  echo "   ex. $0 0.7.0 v0.7.0"
   exit 1
 }
 

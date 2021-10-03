@@ -89,7 +89,7 @@ public class ServeSpecParser {
     // Container related
     // TODO(byronhsu) This should not be hard-coded.
     final String serveImage =
-        "apache/submarine:serve-0.6.0";
+        "apache/submarine:serve-0.7.0-SNAPSHOT";
 
     ArrayList<String> cmds = new ArrayList<>(
         Arrays.asList("mlflow", "models", "serve",

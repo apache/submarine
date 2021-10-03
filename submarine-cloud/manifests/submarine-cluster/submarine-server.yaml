@@ -31,7 +31,7 @@ spec:
       serviceAccountName: "submarine-node"
       containers:
         - name: submarine-node
-          image: "apache/submarine:server-0.6.0"
+          image: "apache/submarine:server-0.7.0-SNAPSHOT"
           args: []
           imagePullPolicy: IfNotPresent
           ports:
