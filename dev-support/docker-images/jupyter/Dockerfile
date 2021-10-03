@@ -94,7 +94,7 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     conda clean --all -f -y && \
     rm -rf /home/$NB_USER/.cache/yarn
 
-RUN conda init bash 
+RUN conda init bash
 # Install latest sumbarine python sdk and notebook
 RUN source ~/.bashrc && conda activate && \
     git clone https://github.com/apache/submarine && \
@@ -110,7 +110,7 @@ RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipyn
 
 # Install latest stable qlib
 RUN conda install -c conda-forge cvxpy==1.0.21
-RUN pip install numpy=1.20.0 pyqlib==0.6.2
+RUN pip install numpy==1.20.0 pyqlib==0.6.2
 
 # Add qlib example in notebook
 RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME
