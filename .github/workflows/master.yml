@@ -271,7 +271,6 @@ jobs:
       uses: actions/cache@v2
       with:
         path: |
-          ./submarine-server/server-rpc/target/jacoco.exec
           ./submarine-server/server-core/target/jacoco.exec
         key: ${{ runner.os }}-docker-${{ github.sha }}
     - name: Set up JDK 1.8
@@ -293,13 +292,13 @@ jobs:
         python3 ./dev-support/database/init-database.py
     - name: Build
       env:
-        MODULES: "-pl :submarine-server-core,:submarine-server-rpc"
+        MODULES: "-pl :submarine-server-core"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
     - name: Test
       env:
-        TEST_MODULES: "-pl :submarine-server-core,:submarine-server-rpc"
+        TEST_MODULES: "-pl :submarine-server-core"
       run: |
         echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
         mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
@@ -345,7 +344,6 @@ jobs:
       with:
         path: |
           ./submarine-server/server-submitter/target/jacoco.exec
-          ./submarine-server/server-submitter/submitter-yarn/target/jacoco.exec
         key: ${{ runner.os }}-docker-${{ github.sha }}
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
@@ -361,14 +359,14 @@ jobs:
         java -version
     - name: Build
       env:
-        MODULES: "-pl :submarine-server-submitter,:submarine-submitter-yarn"
+        MODULES: "-pl :submarine-server-submitter"
         PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
       run: |
         echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
         mvn $BUILD_FLAG $MODULES $PROFILE -B
     - name: Test
       env:
-        TEST_MODULES: "-pl :submarine-server-submitter,:submarine-submitter-yarn"
+        TEST_MODULES: "-pl :submarine-server-submitter"
         PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
       run: |
         echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
@@ -484,25 +482,10 @@ jobs:
         with:
           path: ./submarine-commons/commons-cluster/target/jacoco.exec
           key: ${{ runner.os }}-docker-${{ github.sha }}
-      - name: Cache commons-metastore data
-        uses: actions/cache@v2
-        with:
-          path: ./submarine-commons/commons-metastore/target/jacoco.exec
-          key: ${{ runner.os }}-docker-${{ github.sha }}
-      - name: Cache commons-rpc data
-        uses: actions/cache@v2
-        with:
-          path: ./submarine-commons/commons-rpc/target/jacoco.exec
-          key: ${{ runner.os }}-docker-${{ github.sha }}
       - name: Cache commons-runtime data
         uses: actions/cache@v2
         with:
           path: ./submarine-commons/commons-runtime/target/jacoco.exec
-          key: ${{ runner.os }}-docker-${{ github.sha }}
-      - name: Cache commons-unixusersync data
-        uses: actions/cache@v2
-        with:
-          path: ./submarine-commons/commons-unixusersync/target/jacoco.exec
           key: ${{ runner.os }}-docker-${{ github.sha }}
       - name: Cache submarine-client data
         uses: actions/cache@v2
@@ -513,7 +496,6 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-            ./submarine-server/server-rpc/target/jacoco.exec
             ./submarine-server/server-core/target/jacoco.exec
           key: ${{ runner.os }}-docker-${{ github.sha }}
       - name: Cache submarine-submitter data
@@ -521,7 +503,6 @@ jobs:
         with:
           path: |
             ./submarine-server/server-submitter/target/jacoco.exec
-            ./submarine-server/server-submitter/submitter-yarn/target/jacoco.exec
           key: ${{ runner.os }}-docker-${{ github.sha }}
       - name: Cache SonarCloud packages
         uses: actions/cache@v1
@@ -555,7 +536,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          EXCLUDE_MODULE: '!:submarine-commons-rpc,!:submarine-spark-security' # Exclude the modules that can't be compiled with JDK 11
+          EXCLUDE_MODULE: '!:submarine-spark-security' # Exclude the modules that can't be compiled with JDK 11
       - name: Delete temporary build artifacts before caching
         run: |
           #Never cache local artifacts
