@@ -17,11 +17,13 @@
  * under the License.
  */
 
-package org.apache.submarine.server.experiment.database;
+package org.apache.submarine.server.experiment.database.service;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
+import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
+import org.apache.submarine.server.experiment.database.mappers.ExperimentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

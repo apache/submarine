@@ -135,7 +135,7 @@ For a quick-start, see [Submarine On K8s](https://submarine.apache.org/docs/admi
 
 ### Example: Submit an experiment via Submarine UI
 
-(Available on 0.6.0, see Roadmap)
+(Available on 0.7.0-SNAPSHOT, see Roadmap)
 
 ## Architecture, Design and requirements
 

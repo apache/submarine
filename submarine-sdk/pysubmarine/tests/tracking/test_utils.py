@@ -24,25 +24,7 @@ from submarine.tracking.utils import (
     _TRACKING_URI_ENV_VAR,
     get_job_id,
     get_sqlalchemy_store,
-    get_tracking_uri,
-    is_tracking_uri_set,
 )
-
-
-def test_is_tracking_uri_set():
-    env = {
-        _TRACKING_URI_ENV_VAR: DEFAULT_SUBMARINE_JDBC_URL,
-    }
-    with mock.patch.dict(os.environ, env):
-        assert is_tracking_uri_set() is True
-
-
-def test_get_tracking_uri():
-    env = {
-        _TRACKING_URI_ENV_VAR: DEFAULT_SUBMARINE_JDBC_URL,
-    }
-    with mock.patch.dict(os.environ, env):
-        assert get_tracking_uri() == DEFAULT_SUBMARINE_JDBC_URL
 
 
 def test_get_job_id():

@@ -61,7 +61,7 @@ Workspace 主要有五个 Tab 页组成，每个 Tab 页的标题中显示了各
 4. **Edit**：用户通过双击项目或者点击 `Edit` 按钮，可以在 `Notebook` 中打开项目，进行算法开发等操作。
 5. **Download**：用户通过点击 `Download` 按钮，将项目打包下载到本地。
 6. **Setting**：编辑项目信息，例如项目的名字，简介，分享级别和权限。
-7. **Delete**：删除项目中所有包含的文件。 
+7. **Delete**：删除项目中所有包含的文件。
 
 #### Add New Project
 
@@ -72,28 +72,28 @@ Workspace 主要有五个 Tab 页组成，每个 Tab 页的标题中显示了各
 ![image-20191007171638338](/img/workspace/workspace-project-step1.png)
 
 + **Visibility**: 设置项目对外的可见级别
-  
+
   + **Private**: （默认）设置为私有项目，不对外公开项目中包含的所有文件，但是可以在 **Notebook** 中将项目的执行结果单独设置公开，方便其他人查看项目的可视化报告。
   + **Team**: 设置为团队项目，在团队选择框中选择团队的名称，团队的其他成员可以根据设置的权限访问这个项目。
   + **Public**: 设置为公开项目，**Workbench** 中的所有用户都可以通过搜索查看到这个项目。
 + **Permission**: 设置项目对外的访问权限，只有将项目的 **Visibility** 设置为 **Team** 或 **Public** 的时候，才会出现权限设置界面。
-  
+
   + **Can View**
-  
+
     当项目的 **Visibility** 设置为 **Team** 时，团队中其他成员都只能**查看**这个项目的文件。
-  
+
     当项目的 Visibility 设置为 **Public** 时，**Workbench** 中其他成员都只能**查看**这个项目的文件。
-  
+
   + **Can Edit**
-  
+
     当项目的 **Visibility** 设置为 **Team** 时，团队中其他成员都可以**查看**、**编辑**这个项目的文件。
-  
+
     当项目的 **Visibility** 设置为 **Public** 时，**Workbench** 中其他成员都可以**查看**、**编辑**这个项目的文件。
-  
+
   + **Can Execute**
-  
+
     当项目的 **Visibility** 设置为 **Team** 时，团队中其他成员都可以**查看**、**编辑**、**执行**这个项目的文件。
-  
+
     当项目的 **Visibility** 设置为 **Public** 时，**Workbench** 中其他成员都可以**查看**、**编辑**、**执行**这个项目的文件。
 
 第二步：在 **Initial Project** 步骤中，**Workbench** 提供了四种项目初始化的方式

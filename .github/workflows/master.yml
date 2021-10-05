@@ -19,7 +19,7 @@ name: Submarine
 on: [push, pull_request]
 
 env:
-  VERSION: "0.6.0"
+  VERSION: "0.7.0-SNAPSHOT"
   HADOOP_VERSION: "2.9"
   PROFILE: "-Phadoop-2.9"
   BUILD_FLAG: "clean install -ntp -DskipTests -am"

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.notebook.database;
+package org.apache.submarine.server.notebook.database.entity;
 
 import org.apache.submarine.server.database.entity.BaseEntity;
 

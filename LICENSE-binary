@@ -271,7 +271,7 @@ org.apache.hadoop:hadoop-hdfs-client:2.9.2
 org.apache.htrace:htrace-core4:4.1.0-incubating
 org.apache.httpcomponents:httpclient:4.5.2
 org.apache.httpcomponents:httpcore:4.4.4
-org.apache.submarine:submarine-core:0.6.0
+org.apache.submarine:submarine-core:0.7.0-SNAPSHOT
 org.apache.zookeeper:zookeeper:3.4.6
 org.codehaus.jackson:jackson-core-asl:1.9.13
 org.codehaus.jackson:jackson-mapper-asl:1.9.13

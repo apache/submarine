@@ -31,26 +31,27 @@ CREATE TABLE `registered_model_tag` (
 
 DROP TABLE IF EXISTS `model_version`;
 CREATE TABLE `model_version` (
-	`name` VARCHAR(256) NOT NULL,
+	`name` VARCHAR(256) NOT NULL COMMENT 'Name of model',
 	`version` INTEGER NOT NULL,
+	`source` VARCHAR(512) NOT NULL COMMENT 'Model saved link',
 	`user_id` VARCHAR(64) NOT NULL COMMENT 'Id of the created user',
 	`experiment_id` VARCHAR(64) NOT NULL,
-	`current_stage` VARCHAR(20) COMMENT 'Model stage ex: None, production...',
+	`current_stage` VARCHAR(64) COMMENT 'Model stage ex: None, production...',
 	`creation_time` DATETIME(3) COMMENT 'Millisecond precision',
 	`last_updated_time` DATETIME(3) COMMENT 'Millisecond precision',
-	`source` VARCHAR(512) COMMENT 'Model saved link',
 	`dataset` VARCHAR(256) COMMENT 'Which dataset is used',
 	`description` VARCHAR(5000),
 	CONSTRAINT `model_version_pk` PRIMARY KEY (`name`, `version`),
-	FOREIGN KEY(`name`) REFERENCES `registered_model` (`name`) ON UPDATE CASCADE ON DELETE CASCADE
+	FOREIGN KEY(`name`) REFERENCES `registered_model` (`name`) ON UPDATE CASCADE ON DELETE CASCADE,
+	UNIQUE(`source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `model_tag`;
-CREATE TABLE `model_tag` (
-	`name` VARCHAR(256) NOT NULL,
+DROP TABLE IF EXISTS `model_version_tag`;
+CREATE TABLE `model_version_tag` (
+	`name` VARCHAR(256) NOT NULL COMMENT 'Name of model',
 	`version` INTEGER NOT NULL,
 	`tag` VARCHAR(256) NOT NULL,
-	CONSTRAINT `model_tag_pk` PRIMARY KEY (`name`, `version`, `tag`),
+	CONSTRAINT `model_version_tag_pk` PRIMARY KEY (`name`, `version`, `tag`),
 	FOREIGN KEY(`name`, `version`) REFERENCES `model_version` (`name`, `version`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -72,7 +73,7 @@ DROP TABLE IF EXISTS `param`;
 CREATE TABLE `param` (
 	`id` VARCHAR(64) NOT NULL COMMENT 'Id of the Experiment',
 	`key` VARCHAR(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``param`` table.',
-	`value` VARCHAR(32) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
+	`value` VARCHAR(190) NOT NULL COMMENT '`String` (limit 190 characters). Defined as *Non-null* in schema.',
 	`worker_index` VARCHAR(32) NOT NULL COMMENT '`String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metric`` table.',
 	CONSTRAINT `param_pk` PRIMARY KEY  (`id`, `key`, `worker_index`),
 	FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE ON DELETE CASCADE

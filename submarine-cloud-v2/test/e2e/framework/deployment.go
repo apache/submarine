@@ -49,7 +49,7 @@ func MakeDeployment(pathToYaml string) (*appsv1.Deployment, error) {
 func MakeOperatorDeployment() *appsv1.Deployment {
 	name := "submarine-operator-demo"
 	var replicas int32 = 1
-	image := "apache/submarine:operator-0.6.0"
+	image := "apache/submarine:operator-0.7.0-SNAPSHOT"
 	return &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,

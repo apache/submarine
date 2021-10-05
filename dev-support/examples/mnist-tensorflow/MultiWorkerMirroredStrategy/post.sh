@@ -26,7 +26,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   },
   "environment": {
-    "image": "multi-worker-mirrored:0.6.0"
+    "image": "multi-worker-mirrored:0.7.0-SNAPSHOT"
   },
   "spec": {
     "Worker": {

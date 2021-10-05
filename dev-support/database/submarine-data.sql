@@ -64,8 +64,8 @@ INSERT INTO `team` VALUES ('e9ca23d68d884d4ebb19d07889721234', 'admin', 'Submari
 -- Records of environment
 -- ----------------------------
 INSERT INTO `environment` VALUES
-('environment_1600862964725_0001', 'notebook-env', '{"name":"notebook-env","dockerImage":"apache/submarine:jupyter-notebook-0.6.0","kernelSpec":{"name":"submarine_jupyter_py3","channels":["defaults"],"condaDependencies":[],"pipDependencies":[]}}', 'admin', '2020-09-21 14:00:05', 'admin', '2020-09-21 14:00:14'),
-('environment_1600862964725_0002', 'notebook-gpu-env', '{"name":"notebook-gpu-env","dockerImage":"apache/submarine:jupyter-notebook-gpu-0.6.0","kernelSpec":{"name":"submarine_jupyter_py3","channels":["defaults"],"condaDependencies":[],"pipDependencies":[]}}', 'admin', '2021-03-28 17:00:00', 'admin', '2021-03-28 17:00:00');
+('environment_1600862964725_0001', 'notebook-env', '{"name":"notebook-env","dockerImage":"apache/submarine:jupyter-notebook-0.7.0-SNAPSHOT","kernelSpec":{"name":"submarine_jupyter_py3","channels":["defaults"],"condaDependencies":[],"pipDependencies":[]}}', 'admin', '2020-09-21 14:00:05', 'admin', '2020-09-21 14:00:14'),
+('environment_1600862964725_0002', 'notebook-gpu-env', '{"name":"notebook-gpu-env","dockerImage":"apache/submarine:jupyter-notebook-gpu-0.7.0-SNAPSHOT","kernelSpec":{"name":"submarine_jupyter_py3","channels":["defaults"],"condaDependencies":[],"pipDependencies":[]}}', 'admin', '2021-03-28 17:00:00', 'admin', '2021-03-28 17:00:00');
 
 -- ----------------------------
 -- Records of experiment_templates

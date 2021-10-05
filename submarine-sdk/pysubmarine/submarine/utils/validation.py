@@ -19,6 +19,7 @@ import numbers
 import posixpath
 import re
 from datetime import datetime
+from typing import List, Optional
 
 from submarine.exceptions import SubmarineException
 from submarine.store.database.db_types import DATABASE_ENGINES
@@ -116,8 +117,46 @@ def validate_param(key, value):
     _validate_length_limit("Param value", MAX_PARAM_VAL_LENGTH, str(value))
 
 
+def validate_tags(tags: Optional[List[str]]) -> None:
+    if tags is not None and not isinstance(tags, list):
+        raise SubmarineException("parameter tags must be list or None.")
+    for tag in tags or []:
+        validate_tag(tag)
+
+
+def validate_tag(tag: str) -> None:
+    """Check that `tag` is a valid tag value and raise an exception if it isn't."""
+    # Reuse param & metric check.
+    if tag is None or tag == "":
+        raise SubmarineException("Tag cannot be empty.")
+    if not _VALID_PARAM_AND_METRIC_NAMES.match(tag):
+        raise SubmarineException("Invalid tag name: '%s'. %s" % (tag, _BAD_CHARACTERS_MESSAGE))
+
+
+def validate_model_name(name: str) -> None:
+    if name is None or name == "":
+        raise SubmarineException("Model name cannot be empty.")
+
+
+def validate_model_version(version: int) -> None:
+    if not isinstance(version, int):
+        raise SubmarineException(f"Model version must be an integer, got {type(version)} type.")
+    elif version < 1:
+        raise SubmarineException(f"Model version must bigger than 0, but got {version}")
+
+
+def validate_description(description: Optional[str]) -> None:
+    if not isinstance(description, str) and description is not None:
+        raise SubmarineException(f"Description must be String or None, but got {type(description)}")
+    if isinstance(description, str) and len(description) > 5000:
+        raise SubmarineException(
+            f"Description must less than 5000 words, but got {len(description)}"
+        )
+
+
 def _validate_db_type_string(db_type):
     """validates db_type parsed from DB URI is supported"""
     if db_type not in DATABASE_ENGINES:
-        error_msg = "Invalid database engine: '%s'. '%s'" % (db_type, _UNSUPPORTED_DB_TYPE_MSG)
-        raise SubmarineException(error_msg)
+        raise SubmarineException(
+            f"Invalid database engine: '{db_type}'. '{_UNSUPPORTED_DB_TYPE_MSG}'"
+        )

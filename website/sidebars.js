@@ -20,7 +20,7 @@
 module.exports = {
     docs: [
         {
-            "Introduction": [],
+            Introduction: [],
             "Getting Started": [
                 "gettingStarted/quickstart",
                 // "gettingStarted/localDeployment",
@@ -50,7 +50,7 @@ module.exports = {
                     ],
                 },
                 {
-                    "Others": [
+                    Others: [
                         "userDocs/others/mlflow",
                         "userDocs/others/tensorboard",
                     ],
@@ -69,7 +69,8 @@ module.exports = {
                 "devDocs/IntegrationTestK8s",
                 "devDocs/IntegrationTestE2E",
             ],
-            "Community": [
+            Community: [
+                "community/Bylaws",
                 "community/README",
                 "community/HowToCommit",
                 "community/contributing",
@@ -95,13 +96,14 @@ module.exports = {
                     ],
                 },
             ],
-            "Releases": [
+            Releases: [
                 "releases/submarine-release-0.2.0",
                 "releases/submarine-release-0.3.0",
                 "releases/submarine-release-0.4.0",
                 "releases/submarine-release-0.5.0",
+                "releases/submarine-release-0.6.0",
             ],
-            "RoadMap": [],
+            RoadMap: [],
         },
     ],
     api: [
