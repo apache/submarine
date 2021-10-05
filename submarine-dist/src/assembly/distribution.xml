@@ -130,13 +130,6 @@
       <outputDirectory>/lib/submitter/k8s</outputDirectory>
     </fileSet>
 
-    <fileSet>
-      <directory>../submarine-server/server-submitter/submitter-yarn/target</directory>
-      <outputDirectory>/lib/submitter/yarn</outputDirectory>
-      <includes>
-        <include>submarine-submitter-yarn-${project.version}-shade.jar</include>
-      </includes>
-    </fileSet>
 <!--    <fileSet>-->
 <!--      <directory>../submarine-server/server-submitter/submitter-yarnservice/target</directory>-->
 <!--      <outputDirectory>/lib/submitter/yarnservice</outputDirectory>-->

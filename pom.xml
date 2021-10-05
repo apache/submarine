@@ -355,9 +355,6 @@
         <jsr305.version>3.0.2</jsr305.version>
         <profile-id>hadoop-3.2</profile-id>
       </properties>
-      <modules>
-        <module>submarine-server/server-submitter/submitter-yarnservice</module>
-      </modules>
     </profile>
 
     <profile>
@@ -371,9 +368,6 @@
         <zookeeper.version>3.4.13</zookeeper.version>
         <profile-id>hadoop-3.1</profile-id>
       </properties>
-      <modules>
-        <module>submarine-server/server-submitter/submitter-yarnservice</module>
-      </modules>
     </profile>
 
     <profile>

@@ -34,7 +34,6 @@
   <name>Submarine: Submitter</name>
 
   <modules>
-    <module>submitter-yarn</module>
     <module>submitter-k8s</module>
   </modules>
 
