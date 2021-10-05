@@ -27,7 +27,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.ProjectFiles" extends="BaseEntityResultMap">
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity" extends="BaseEntityResultMap">
     <result column="project_id" jdbcType="VARCHAR" property="projectId" />
     <result column="file_name" jdbcType="VARCHAR" property="fileName" />
     <result column="file_content" jdbcType="LONGVARCHAR" property="fileContent" />
@@ -59,7 +59,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
-  <delete id="deleteSelective" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFiles">
+  <delete id="deleteSelective" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity">
     delete from project_files
     where 1 = 1
     <if test="projectId != null">
@@ -67,7 +67,7 @@
     </if>
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFiles">
+  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity">
     <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
       SELECT REPLACE(UUID(),"-","")
     </selectKey>
@@ -77,7 +77,7 @@
       #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now(), #{fileContent,jdbcType=LONGVARCHAR})
   </insert>
 
-  <insert id="insertSelective" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFiles">
+  <insert id="insertSelective" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity">
     insert into project_files
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -123,7 +123,7 @@
     </trim>
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFiles">
+  <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity">
     update project_files
     <set>
       <if test="projectId != null">
@@ -145,7 +145,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFiles">
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity">
     update project_files
     set project_id = #{projectId,jdbcType=VARCHAR},
       file_name = #{fileName,jdbcType=VARCHAR},
@@ -157,7 +157,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFiles">
+  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity">
     update project_files
     set project_id = #{projectId,jdbcType=VARCHAR},
       file_name = #{fileName,jdbcType=VARCHAR},

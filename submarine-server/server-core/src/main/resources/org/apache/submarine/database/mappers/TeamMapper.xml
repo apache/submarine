@@ -27,7 +27,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Team" extends="BaseEntityResultMap">
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.TeamEntity" extends="BaseEntityResultMap">
     <result column="owner" jdbcType="VARCHAR" property="owner"/>
     <result column="team_name" jdbcType="VARCHAR" property="teamName"/>
   </resultMap>
@@ -57,7 +57,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Team">
+  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.TeamEntity">
     <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
       SELECT REPLACE(UUID(),"-","")
     </selectKey>
@@ -66,7 +66,7 @@
     #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
-  <insert id="insertSelective" parameterType="org.apache.submarine.server.workbench.database.entity.Team">
+  <insert id="insertSelective" parameterType="org.apache.submarine.server.workbench.database.entity.TeamEntity">
     insert into team
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -116,7 +116,7 @@
     </trim>
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.server.workbench.database.entity.Team">
+  <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.server.workbench.database.entity.TeamEntity">
     update team
     <set>
       <if test="owner != null">
@@ -133,7 +133,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.server.workbench.database.entity.Team">
+  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.server.workbench.database.entity.TeamEntity">
     update team
     set owner = #{owner,jdbcType=VARCHAR},
       team_name = #{teamName,jdbcType=VARCHAR},

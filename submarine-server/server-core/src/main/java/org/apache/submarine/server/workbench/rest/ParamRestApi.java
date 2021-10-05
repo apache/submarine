@@ -19,7 +19,7 @@
 package org.apache.submarine.server.workbench.rest;
 
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.Param;
+import org.apache.submarine.server.workbench.database.entity.ParamEntity;
 import org.apache.submarine.server.workbench.database.service.ParamService;
 import org.apache.submarine.server.response.JsonResponse;
 import org.slf4j.Logger;
@@ -58,7 +58,7 @@ public class ParamRestApi {
                             @QueryParam("value") String value,
                             @QueryParam("workerIndex") String workerIndex) {
 
-    Param param = new Param();
+    ParamEntity param = new ParamEntity();
     param.setId(id);
     param.setKey(paramKey);
     param.setValue(value);
@@ -66,14 +66,14 @@ public class ParamRestApi {
 
     LOG.info("listParam ({})", param);
 
-    List<Param> params;
+    List<ParamEntity> params;
     try {
       params = paramService.selectByPrimaryKeySelective(param);
     } catch (Exception e) {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<List<Param>>(Response.Status.OK).success(true).result(params).build();
+    return new JsonResponse.Builder<List<ParamEntity>>(Response.Status.OK).success(true).result(params).build();
   }
 
   @GET
@@ -82,20 +82,20 @@ public class ParamRestApi {
   public Response getParam(@PathParam("id") String id) {
     LOG.info("getParam ({})", id);
 
-    Param param;
+    ParamEntity param;
     try {
       param = paramService.selectById(id);
     } catch (Exception e) {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<Param>(Response.Status.OK).success(true).result(param).build();
+    return new JsonResponse.Builder<ParamEntity>(Response.Status.OK).success(true).result(param).build();
   }
 
   @POST
   @Path("/add")
   @SubmarineApi
-  public Response postParam(Param param) {
+  public Response postParam(ParamEntity param) {
     LOG.info("postParam ({})", param);
     boolean result;
     try {
@@ -125,7 +125,7 @@ public class ParamRestApi {
   @PUT
   @Path("/edit")
   @SubmarineApi
-  public Response putParam(Param param) {
+  public Response putParam(ParamEntity param) {
     LOG.info("putParam ({})", param);
     boolean result = false;
     try {
@@ -140,14 +140,14 @@ public class ParamRestApi {
   @POST
   @Path("/selective")
   @SubmarineApi
-  public Response selectByPrimaryKeySelective(Param metric) {
-    List<Param> params;
+  public Response selectByPrimaryKeySelective(ParamEntity metric) {
+    List<ParamEntity> params;
     try {
       params = paramService.selectByPrimaryKeySelective(metric);
     } catch (Exception e) {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<List<Param>>(Response.Status.OK).success(true).result(params).build();
+    return new JsonResponse.Builder<List<ParamEntity>>(Response.Status.OK).success(true).result(params).build();
   }
 }

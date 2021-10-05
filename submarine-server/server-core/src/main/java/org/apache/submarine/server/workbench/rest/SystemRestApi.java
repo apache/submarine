@@ -22,7 +22,7 @@ import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.SysUser;
+import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.apache.submarine.server.workbench.database.mappers.SystemMapper;
 import org.apache.submarine.server.workbench.database.service.SysUserService;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
@@ -103,21 +103,21 @@ public class SystemRestApi {
                                @QueryParam("keyword") String keyword) {
 
     if (StringUtils.equals(tableName, "sys_user")) {
-      List<SysUser> list = null;
+      List<SysUserEntity> list = null;
       try {
         list = userService.queryPageList(keyword, null, null, null, null, 1, 1000);
       } catch (Exception e) {
         LOG.error(e.getMessage(), e);
         return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
       }
-      PageInfo<SysUser> page = new PageInfo<>(list);
-      ListResult<SysUser> listResult = new ListResult(list, page.getTotal());
+      PageInfo<SysUserEntity> page = new PageInfo<>(list);
+      ListResult<SysUserEntity> listResult = new ListResult(list, page.getTotal());
 
-      return new JsonResponse.Builder<ListResult<SysUser>>(Response.Status.OK)
+      return new JsonResponse.Builder<ListResult<SysUserEntity>>(Response.Status.OK)
           .success(true).result(listResult).build();
     }
 
-    return new JsonResponse.Builder<ListResult<SysUser>>(Response.Status.OK)
+    return new JsonResponse.Builder<ListResult<SysUserEntity>>(Response.Status.OK)
         .success(false).build();
   }
 }

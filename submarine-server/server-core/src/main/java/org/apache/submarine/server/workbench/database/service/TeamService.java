@@ -21,8 +21,8 @@ package org.apache.submarine.server.workbench.database.service;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.workbench.database.entity.Team;
-import org.apache.submarine.server.workbench.database.entity.TeamMember;
+import org.apache.submarine.server.workbench.database.entity.TeamEntity;
+import org.apache.submarine.server.workbench.database.entity.TeamMemberEntity;
 import org.apache.submarine.server.workbench.database.mappers.TeamMapper;
 import org.apache.submarine.server.workbench.database.mappers.TeamMemberMapper;
 import org.slf4j.Logger;
@@ -36,15 +36,15 @@ import java.util.Map;
 public class TeamService {
   private static final Logger LOG = LoggerFactory.getLogger(TeamService.class);
 
-  public List<Team> queryPageList(String owner,
-                                  String column,
-                                  String order,
-                                  int pageNo,
-                                  int pageSize) throws Exception {
+  public List<TeamEntity> queryPageList(String owner,
+                                        String column,
+                                        String order,
+                                        int pageNo,
+                                        int pageSize) throws Exception {
     LOG.info("queryPageList owner:{}, column:{}, order:{}, pageNo:{}, pageSize:{}",
         owner, column, order, pageNo, pageSize);
 
-    List<Team> list = null;
+    List<TeamEntity> list = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       TeamMapper teamMapper = sqlSession.getMapper(TeamMapper.class);
       Map<String, Object> where = new HashMap<>();
@@ -55,11 +55,11 @@ public class TeamService {
 
       TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
       // query from team_member table, and set to team
-      for (Team team : list) {
+      for (TeamEntity team : list) {
         Map<String, Object> whereMember = new HashMap<>();
         whereMember.put("teamId", team.getId());
-        List<TeamMember> teamMembers = teamMemberMapper.selectAll(whereMember);
-        for (TeamMember teamMember : teamMembers) {
+        List<TeamMemberEntity> teamMembers = teamMemberMapper.selectAll(whereMember);
+        for (TeamMemberEntity teamMember : teamMembers) {
           team.addCollaborator(teamMember);
         }
       }
@@ -70,7 +70,7 @@ public class TeamService {
     return list;
   }
 
-  public boolean add(Team team) throws Exception {
+  public boolean add(TeamEntity team) throws Exception {
     LOG.info("add({})", team.toString());
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -79,8 +79,8 @@ public class TeamService {
 
       TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
       // add teamMember, when add team, should insert 'Collaborators' to team_member
-      List<TeamMember> list = team.getCollaborators();
-      for (TeamMember teamMember : list) {
+      List<TeamMemberEntity> list = team.getCollaborators();
+      for (TeamMemberEntity teamMember : list) {
         // TODO(zhulinhao): teamMember's member is sys_user's id now.
         teamMember.setTeamId(team.getId());
         teamMemberMapper.insert(teamMember);
@@ -94,7 +94,7 @@ public class TeamService {
     return true;
   }
 
-  public boolean updateByPrimaryKeySelective(Team team) throws Exception {
+  public boolean updateByPrimaryKeySelective(TeamEntity team) throws Exception {
     LOG.info("updateByPrimaryKeySelective({})", team.toString());
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -106,25 +106,25 @@ public class TeamService {
       where.put("teamId", team.getId());
 
       // Take two lists of difference
-      List<TeamMember> oldTeamMembers = teamMemberMapper.selectAll(where);
+      List<TeamMemberEntity> oldTeamMembers = teamMemberMapper.selectAll(where);
       List<String> oldMembers = new ArrayList<>();
-      for (TeamMember oldTeamMember : oldTeamMembers) {
+      for (TeamMemberEntity oldTeamMember : oldTeamMembers) {
         oldMembers.add(oldTeamMember.getMember());
       }
 
-      List<TeamMember> newTeamMembers = team.getCollaborators();
+      List<TeamMemberEntity> newTeamMembers = team.getCollaborators();
       List<String> newMembers = new ArrayList<>();
-      for (TeamMember newTeamMember : newTeamMembers) {
+      for (TeamMemberEntity newTeamMember : newTeamMembers) {
         newMembers.add(newTeamMember.getMember());
       }
 
-      for (TeamMember oldTeamMember : oldTeamMembers) {
+      for (TeamMemberEntity oldTeamMember : oldTeamMembers) {
         if (!newMembers.contains(oldTeamMember.getMember())) {
           teamMemberMapper.deleteByPrimaryKey(oldTeamMember.getId());
         }
       }
 
-      for (TeamMember newTeamMember : newTeamMembers) {
+      for (TeamMemberEntity newTeamMember : newTeamMembers) {
         if (!oldMembers.contains(newTeamMember.getMember())) {
           // TODO(zhulinhao)：teamId Send it by the front desk, here there is no assignment
           newTeamMember.setTeamId(team.getId());
@@ -134,7 +134,7 @@ public class TeamService {
       }
 
       // Updates all team_name of corresponding members in the teamMember table
-      TeamMember teamMember = new TeamMember();
+      TeamMemberEntity teamMember = new TeamMemberEntity();
       teamMember.setTeamName(team.getTeamName());
       teamMember.setTeamId(team.getId());
       teamMemberMapper.updateSelective(teamMember);
@@ -154,7 +154,7 @@ public class TeamService {
       teamMapper.deleteByPrimaryKey(id);
 
       TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
-      TeamMember teamMember = new TeamMember();
+      TeamMemberEntity teamMember = new TeamMemberEntity();
       teamMember.setTeamId(id);
       teamMemberMapper.deleteSelective(teamMember);
       sqlSession.commit();

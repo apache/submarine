@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.SysDictItem;
+import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysDictItemMapper;
 import org.apache.submarine.server.workbench.database.service.SysDictItemService;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
@@ -73,7 +73,7 @@ public class SysDictItemRestApi {
     LOG.info("queryList dictId:{}, itemText:{}, itemValue:{}, pageNo:{}, pageSize:{}",
         dictCode, itemText, itemValue, pageNo, pageSize);
 
-    List<SysDictItem> list = null;
+    List<SysDictItemEntity> list = null;
     SqlSession sqlSession = MyBatisUtil.getSqlSession();
     SysDictItemMapper sysDictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
     try {
@@ -88,8 +88,8 @@ public class SysDictItemRestApi {
     } finally {
       sqlSession.close();
     }
-    PageInfo<SysDictItem> page = new PageInfo<>(list);
-    ListResult<SysDictItem> listResult = new ListResult(list, page.getTotal());
+    PageInfo<SysDictItemEntity> page = new PageInfo<>(list);
+    ListResult<SysDictItemEntity> listResult = new ListResult(list, page.getTotal());
 
     return new JsonResponse.Builder<ListResult>(Response.Status.OK)
         .success(true).result(listResult).build();
@@ -98,7 +98,7 @@ public class SysDictItemRestApi {
   @POST
   @Path("/add")
   @SubmarineApi
-  public Response add(SysDictItem sysDictItem) {
+  public Response add(SysDictItemEntity sysDictItem) {
     LOG.info("addDict sysDictItem:{}", sysDictItem.toString());
 
     try {
@@ -125,12 +125,12 @@ public class SysDictItemRestApi {
   @PUT
   @Path("/edit")
   @SubmarineApi
-  public Response edit(SysDictItem sysDictItem) {
+  public Response edit(SysDictItemEntity sysDictItem) {
     try {
       SqlSession sqlSession = MyBatisUtil.getSqlSession();
       SysDictItemMapper sysDictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
       try {
-        SysDictItem dictItem = sysDictItemMapper.getById(sysDictItem.getId());
+        SysDictItemEntity dictItem = sysDictItemMapper.getById(sysDictItem.getId());
         if (dictItem == null) {
           return new JsonResponse.Builder<>(Response.Status.OK)
               .message("Can not found dict item:" + sysDictItem.getId()).success(false).build();
@@ -165,7 +165,7 @@ public class SysDictItemRestApi {
       SqlSession sqlSession = MyBatisUtil.getSqlSession();
       SysDictItemMapper sysDictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
       try {
-        SysDictItem dictItem = new SysDictItem();
+        SysDictItemEntity dictItem = new SysDictItemEntity();
         dictItem.setId(id);
         dictItem.setDeleted(deleted);
         sysDictItemMapper.updateBy(dictItem);
@@ -217,10 +217,10 @@ public class SysDictItemRestApi {
     LOG.info("dictCode : " + dictCode);
 
     SysDictItemService sysDictItemService = new SysDictItemService();
-    List<SysDictItem> dictItems = sysDictItemService.queryDictByCode(dictCode);
-    ListResult<SysDictItem> listResult = new ListResult(dictItems, dictItems.size());
+    List<SysDictItemEntity> dictItems = sysDictItemService.queryDictByCode(dictCode);
+    ListResult<SysDictItemEntity> listResult = new ListResult(dictItems, dictItems.size());
 
-    return new JsonResponse.Builder<ListResult<SysDictItem>>(Response.Status.OK)
+    return new JsonResponse.Builder<ListResult<SysDictItemEntity>>(Response.Status.OK)
         .success(true).result(listResult).build();
   }
 }

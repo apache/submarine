@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.database.service;
 
 import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.service.ExperimentService;
-import org.apache.submarine.server.workbench.database.entity.Metric;
+import org.apache.submarine.server.workbench.database.entity.MetricEntity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,9 +54,9 @@ public class MetricServiceTest {
 
   @After
   public void removeAllRecord() throws Exception {
-    List<Metric> metricList = metricService.selectAll();
+    List<MetricEntity> metricList = metricService.selectAll();
     LOG.info("jobList.size():{}", metricList.size());
-    for (Metric metric : metricList) {
+    for (MetricEntity metric : metricList) {
       metricService.deleteById(metric.getId());
     }
 
@@ -67,7 +67,7 @@ public class MetricServiceTest {
   public void testSelect() throws Exception {
     Timestamp timestamp = new Timestamp(new Date().getTime());
 
-    Metric metric = new Metric();
+    MetricEntity metric = new MetricEntity();
     metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
@@ -77,14 +77,14 @@ public class MetricServiceTest {
     metric.setIsNan(false);
     boolean result = metricService.insert(metric);
     assertTrue(result);
-    List<Metric> metricList = metricService.selectAll();
+    List<MetricEntity> metricList = metricService.selectAll();
 
     assertEquals(metricList.size(), 1);
 
-    Metric metricDb = metricList.get(0);
+    MetricEntity metricDb = metricList.get(0);
     compareMetrics(metric, metricDb);
 
-    Metric metricDb2 = metricService.selectByPrimaryKeySelective(metric).get(0);
+    MetricEntity metricDb2 = metricService.selectByPrimaryKeySelective(metric).get(0);
     compareMetrics(metric, metricDb2);
   }
 
@@ -92,7 +92,7 @@ public class MetricServiceTest {
   public void testUpdate() throws Exception {
     Timestamp timestamp = new Timestamp(new Date().getTime());
 
-    Metric metric = new Metric();
+    MetricEntity metric = new MetricEntity();
     metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
@@ -116,7 +116,7 @@ public class MetricServiceTest {
     boolean editResult = metricService.update(metric);
     assertTrue(editResult);
 
-    Metric metricDb2 = metricService.selectByPrimaryKeySelective(metric).get(0);
+    MetricEntity metricDb2 = metricService.selectByPrimaryKeySelective(metric).get(0);
     compareMetrics(metric, metricDb2);
   }
 
@@ -124,7 +124,7 @@ public class MetricServiceTest {
   public void testDelete() throws Exception {
     Timestamp timestamp = new Timestamp(new Date().getTime());
 
-    Metric metric = new Metric();
+    MetricEntity metric = new MetricEntity();
     metric.setId("test_application_1234");
     metric.setKey("test_score");
     metric.setValue((float) 0.666667);
@@ -135,12 +135,12 @@ public class MetricServiceTest {
     boolean result = metricService.insert(metric);
     assertTrue(result);
 
-    Metric metricDb2 = metricService.selectByPrimaryKeySelective(metric).get(0);
+    MetricEntity metricDb2 = metricService.selectByPrimaryKeySelective(metric).get(0);
     boolean deleteResult = metricService.deleteById(metricDb2.getId());
     assertTrue(deleteResult);
   }
 
-  private void compareMetrics(Metric metric, Metric metricDb) {
+  private void compareMetrics(MetricEntity metric, MetricEntity metricDb) {
     assertEquals(metric.getId(), metricDb.getId());
     assertEquals(metric.getId(), metricDb.getId());
     assertEquals(metric.getIsNan(), metricDb.getIsNan());

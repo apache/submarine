@@ -19,7 +19,7 @@
 package org.apache.submarine.server.workbench.database.service;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.submarine.server.workbench.database.entity.SysUser;
+import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -40,16 +40,16 @@ public class SysUserServiceTest {
   public void removeAllRecord() throws Exception {
     SysUserService userService = new SysUserService();
 
-    List<SysUser> userList = userService.queryPageList("", null, null, null, null, 0, 10);
+    List<SysUserEntity> userList = userService.queryPageList("", null, null, null, null, 0, 10);
     assertTrue(userList.size() > 0);
-    for (SysUser user : userList) {
+    for (SysUserEntity user : userList) {
       userService.delete(user.getId());
     }
   }
 
   @Test
   public void addUserTest() throws Exception {
-    SysUser sysUser = new SysUser();
+    SysUserEntity sysUser = new SysUserEntity();
     sysUser.setUserName("user_name");
     sysUser.setRealName("real_name");
     sysUser.setPassword("password");
@@ -68,10 +68,10 @@ public class SysUserServiceTest {
     Boolean ret = userService.add(sysUser);
     assertTrue(ret);
 
-    List<SysUser> userList = userService.queryPageList(sysUser.getUserName(), null, null, null, null, 0, 10);
+    List<SysUserEntity> userList = userService.queryPageList(sysUser.getUserName(), null, null, null, null, 0, 10);
     LOG.debug("userList.size():{}", userList.size());
     assertEquals(userList.size(), 1);
-    SysUser user = userList.get(0);
+    SysUserEntity user = userList.get(0);
 
     assertEquals(sysUser.getEmail(), user.getEmail());
     assertEquals(sysUser.getToken(), user.getToken());
@@ -98,7 +98,7 @@ public class SysUserServiceTest {
 
   @Test
   public void updateUserTest() throws Exception {
-    SysUser sysUser = new SysUser();
+    SysUserEntity sysUser = new SysUserEntity();
     sysUser.setUserName("update_user_name");
     sysUser.setRealName("update_real_name");
     sysUser.setPassword("update_password");
@@ -118,7 +118,7 @@ public class SysUserServiceTest {
     assertTrue(ret);
 
     // update sys user
-    SysUser updateUser = new SysUser();
+    SysUserEntity updateUser = new SysUserEntity();
     updateUser.setId(sysUser.getId());
     updateUser.setUserName(sysUser.getUserName() + "_1");
     updateUser.setUserName(sysUser.getUserName() + "_1");
@@ -139,10 +139,10 @@ public class SysUserServiceTest {
     ret = userService.edit(updateUser);
     assertTrue(ret);
 
-    List<SysUser> userList = userService.queryPageList(
+    List<SysUserEntity> userList = userService.queryPageList(
         updateUser.getUserName(), null, null, null, null, 0, 10);
     assertEquals(userList.size(), 1);
-    SysUser user = userList.get(0);
+    SysUserEntity user = userList.get(0);
 
     assertEquals(updateUser.getEmail(), user.getEmail());
     assertEquals(updateUser.getToken(), user.getToken());
@@ -168,7 +168,7 @@ public class SysUserServiceTest {
 
   @Test
   public void getUserByNameTest() throws Exception {
-    SysUser sysUser = new SysUser();
+    SysUserEntity sysUser = new SysUserEntity();
     sysUser.setUserName("user_name");
     sysUser.setRealName("real_name");
     sysUser.setPassword("password");
@@ -184,7 +184,7 @@ public class SysUserServiceTest {
     Boolean ret = userService.add(sysUser);
     assertTrue(ret);
 
-    SysUser user = userService.getUserByName("user_name", "password");
+    SysUserEntity user = userService.getUserByName("user_name", "password");
     // assertNotNull(user.getDeptName());
     assertEquals(sysUser.getRealName(), user.getRealName());
     assertEquals(sysUser.getUserName(), user.getUserName());

@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.submarine.server.workbench.database.entity.SysDept;
+import org.apache.submarine.server.workbench.database.entity.SysDeptEntity;
 import org.apache.submarine.server.workbench.database.entity.SysDeptTree;
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.response.JsonResponse.ListResult;
@@ -50,20 +50,20 @@ public class SysDeptRestApiTest {
   @Test
   public void correctDeptDepend() {
     // Correct department dependencies
-    SysDept deptA = new SysDept("A", "deptA");
-    SysDept deptAA = new SysDept("AA", "deptAA");
+    SysDeptEntity deptA = new SysDeptEntity("A", "deptA");
+    SysDeptEntity deptAA = new SysDeptEntity("AA", "deptAA");
     deptAA.setParentCode("A");
-    SysDept deptAB = new SysDept("AB", "deptAB");
+    SysDeptEntity deptAB = new SysDeptEntity("AB", "deptAB");
     deptAB.setParentCode("A");
-    SysDept deptAAA = new SysDept("AAA", "deptAAA");
+    SysDeptEntity deptAAA = new SysDeptEntity("AAA", "deptAAA");
     deptAAA.setParentCode("AA");
-    SysDept deptABA = new SysDept("ABA", "deptABA");
+    SysDeptEntity deptABA = new SysDeptEntity("ABA", "deptABA");
     deptABA.setParentCode("AB");
 
-    List<SysDept> depts = new ArrayList<>();
+    List<SysDeptEntity> depts = new ArrayList<>();
     depts.addAll(Arrays.asList(deptA, deptAA, deptAB, deptAAA, deptABA));
 
-    for (SysDept dept : depts) {
+    for (SysDeptEntity dept : depts) {
       Response response = sysDeptRestApi.add(dept);
       CommonDataTest.assertDeptResponseSuccess(response);
     }
@@ -76,19 +76,19 @@ public class SysDeptRestApiTest {
   @Test
   public void errorDeptDepend() {
     // error department dependencies
-    SysDept deptA = new SysDept("A", "deptA");
-    SysDept deptAA = new SysDept("AA", "deptAA");
+    SysDeptEntity deptA = new SysDeptEntity("A", "deptA");
+    SysDeptEntity deptAA = new SysDeptEntity("AA", "deptAA");
     deptAA.setParentCode("A");
-    SysDept deptAB = new SysDept("AB", "deptAB");
+    SysDeptEntity deptAB = new SysDeptEntity("AB", "deptAB");
     deptAB.setParentCode("A");
-    SysDept deptAAA = new SysDept("AAA", "deptAAA");
+    SysDeptEntity deptAAA = new SysDeptEntity("AAA", "deptAAA");
     deptAAA.setParentCode("AA");
-    SysDept deptABA = new SysDept("ABA", "deptABA");
+    SysDeptEntity deptABA = new SysDeptEntity("ABA", "deptABA");
     deptABA.setParentCode("AB");
 
-    List<SysDept> depts = new ArrayList<>();
+    List<SysDeptEntity> depts = new ArrayList<>();
     depts.addAll(Arrays.asList(deptA, deptAA, deptAB, deptAAA, deptABA));
-    for (SysDept dept : depts) {
+    for (SysDeptEntity dept : depts) {
       Response response = sysDeptRestApi.add(dept);
       CommonDataTest.assertDeptResponseSuccess(response);
     }
@@ -107,7 +107,7 @@ public class SysDeptRestApiTest {
 
   @Test
   public void editTest() {
-    SysDept deptA = new SysDept("A", "deptA");
+    SysDeptEntity deptA = new SysDeptEntity("A", "deptA");
     Response response = sysDeptRestApi.add(deptA);
     CommonDataTest.assertDeptResponseSuccess(response);
 
@@ -136,15 +136,15 @@ public class SysDeptRestApiTest {
 
   @Test
   public void resetParentDeptTest() {
-    SysDept deptA = new SysDept("A", "deptA");
-    SysDept deptAA = new SysDept("AA", "deptAA");
+    SysDeptEntity deptA = new SysDeptEntity("A", "deptA");
+    SysDeptEntity deptAA = new SysDeptEntity("AA", "deptAA");
     deptAA.setParentCode("A");
-    SysDept deptAB = new SysDept("AB", "deptAB");
+    SysDeptEntity deptAB = new SysDeptEntity("AB", "deptAB");
     deptAB.setParentCode("A");
 
-    List<SysDept> depts = new ArrayList<>();
+    List<SysDeptEntity> depts = new ArrayList<>();
     depts.addAll(Arrays.asList(deptA, deptAA, deptAB));
-    for (SysDept dept : depts) {
+    for (SysDeptEntity dept : depts) {
       Response response = sysDeptRestApi.add(dept);
       CommonDataTest.assertDeptResponseSuccess(response);
     }
@@ -161,16 +161,16 @@ public class SysDeptRestApiTest {
 
   @Test
   public void deleteTest() {
-    SysDept deptA = new SysDept("A", "deptA");
+    SysDeptEntity deptA = new SysDeptEntity("A", "deptA");
 
-    List<SysDept> depts = new ArrayList<>();
+    List<SysDeptEntity> depts = new ArrayList<>();
     depts.addAll(Arrays.asList(deptA));
-    for (SysDept dept : depts) {
+    for (SysDeptEntity dept : depts) {
       Response response = sysDeptRestApi.add(dept);
       CommonDataTest.assertDeptResponseSuccess(response);
     }
 
-    for (SysDept dept : depts) {
+    for (SysDeptEntity dept : depts) {
       Response response = sysDeptRestApi.delete(dept.getId(), 1);
       CommonDataTest.assertDeptResponseSuccess(response);
     }
@@ -184,14 +184,14 @@ public class SysDeptRestApiTest {
 
   @Test
   public void deleteBatchTest() {
-    SysDept deptA = new SysDept("A", "deptA");
-    SysDept deptAA = new SysDept("AA", "deptAA");
-    SysDept deptAB = new SysDept("AB", "deptAB");
+    SysDeptEntity deptA = new SysDeptEntity("A", "deptA");
+    SysDeptEntity deptAA = new SysDeptEntity("AA", "deptAA");
+    SysDeptEntity deptAB = new SysDeptEntity("AB", "deptAB");
 
     StringBuilder ids = new StringBuilder();
-    List<SysDept> depts = new ArrayList<>();
+    List<SysDeptEntity> depts = new ArrayList<>();
     depts.addAll(Arrays.asList(deptA, deptAA, deptAB));
-    for (SysDept dept : depts) {
+    for (SysDeptEntity dept : depts) {
       Response response = sysDeptRestApi.add(dept);
       CommonDataTest.assertDeptResponseSuccess(response);
       ids.append(dept.getId() + ",");

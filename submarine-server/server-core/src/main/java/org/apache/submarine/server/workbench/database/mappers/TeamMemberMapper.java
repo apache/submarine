@@ -18,25 +18,25 @@
  */
 package org.apache.submarine.server.workbench.database.mappers;
 
-import org.apache.submarine.server.workbench.database.entity.TeamMember;
+import org.apache.submarine.server.workbench.database.entity.TeamMemberEntity;
 
 import java.util.List;
 import java.util.Map;
 
 public interface TeamMemberMapper {
-  List<TeamMember> selectAll(Map<String, Object> where);
+  List<TeamMemberEntity> selectAll(Map<String, Object> where);
 
   int deleteByPrimaryKey(String id);
 
-  int deleteSelective(TeamMember record);
+  int deleteSelective(TeamMemberEntity record);
 
-  int insert(TeamMember record);
+  int insert(TeamMemberEntity record);
 
-  int insertSelective(TeamMember record);
+  int insertSelective(TeamMemberEntity record);
 
-  TeamMember selectByPrimaryKey(String id);
+  TeamMemberEntity selectByPrimaryKey(String id);
 
-  int updateSelective(TeamMember record);
+  int updateSelective(TeamMemberEntity record);
 
-  int updateByPrimaryKey(TeamMember record);
+  int updateByPrimaryKey(TeamMemberEntity record);
 }

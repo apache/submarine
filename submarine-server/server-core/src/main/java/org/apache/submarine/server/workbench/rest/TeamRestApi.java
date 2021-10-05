@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.rest;
 
 import com.github.pagehelper.PageInfo;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.Team;
+import org.apache.submarine.server.workbench.database.entity.TeamEntity;
 import org.apache.submarine.server.workbench.database.service.TeamService;
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.response.JsonResponse.ListResult;
@@ -62,7 +62,7 @@ public class TeamRestApi {
                        @QueryParam("pageSize") int pageSize) {
     LOG.info("TeamRestApi.list() owner:{}, pageNo:{}, pageSize:{}", owner, pageNo, pageSize);
 
-    List<Team> teams = new ArrayList<>();
+    List<TeamEntity> teams = new ArrayList<>();
     try {
       // TODO(zhulinhao): Front need to correct 'owner' value, and Whether need the
       //  front to create_by value（At the time of pr committed）
@@ -71,16 +71,16 @@ public class TeamRestApi {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
     }
-    PageInfo<Team> page = new PageInfo<>(teams);
-    ListResult<Team> listResult = new ListResult(teams, page.getTotal());
-    return new JsonResponse.Builder<ListResult<Team>>(Response.Status.OK)
+    PageInfo<TeamEntity> page = new PageInfo<>(teams);
+    ListResult<TeamEntity> listResult = new ListResult(teams, page.getTotal());
+    return new JsonResponse.Builder<ListResult<TeamEntity>>(Response.Status.OK)
         .success(true).result(listResult).build();
   }
 
   @POST
   @Path("/add")
   @SubmarineApi
-  public Response add(Team team) {
+  public Response add(TeamEntity team) {
     LOG.info("add team:{}", team.toString());
 
     // insert into database, return id
@@ -104,14 +104,14 @@ public class TeamRestApi {
      .message("Save team failed!").build();
      }*/
 
-    return new JsonResponse.Builder<Team>(Response.Status.OK)
+    return new JsonResponse.Builder<TeamEntity>(Response.Status.OK)
         .message("Save team successfully!").result(team).success(true).build();
   }
 
   @PUT
   @Path("/edit")
   @SubmarineApi
-  public Response edit(Team team) {
+  public Response edit(TeamEntity team) {
     LOG.info("edit team:{}", team.toString());
 
     // TODO(zhulinhao): need set update_by value

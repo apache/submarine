@@ -18,7 +18,7 @@
  */
 package org.apache.submarine.server.workbench.database.service;
 
-import org.apache.submarine.server.workbench.database.entity.TeamMember;
+import org.apache.submarine.server.workbench.database.entity.TeamMemberEntity;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -35,16 +35,16 @@ public class TeamMemberServiceTest {
 
   @After
   public void removeAllRecord() throws Exception {
-    List<TeamMember> teamMemberList = teamMemberService.queryList("teamId");
+    List<TeamMemberEntity> teamMemberList = teamMemberService.queryList("teamId");
     assertTrue(teamMemberList.size() > 0);
-    for (TeamMember member : teamMemberList) {
+    for (TeamMemberEntity member : teamMemberList) {
       teamMemberService.deleteByPrimaryKey(member.getId());
     }
   }
 
   @Test
   public void insertSelective() throws Exception {
-    TeamMember teamMember = new TeamMember();
+    TeamMemberEntity teamMember = new TeamMemberEntity();
     teamMember.setTeamId("teamId");
     teamMember.setTeamName("teamName");
     teamMember.setCreateBy("createBy");
@@ -53,9 +53,9 @@ public class TeamMemberServiceTest {
     Boolean ret = teamMemberService.insertSelective(teamMember);
     assertTrue(ret);
 
-    List<TeamMember> teamMemberList = teamMemberService.queryList("teamId");
+    List<TeamMemberEntity> teamMemberList = teamMemberService.queryList("teamId");
     assertEquals(teamMemberList.size(), 1);
-    for (TeamMember member : teamMemberList) {
+    for (TeamMemberEntity member : teamMemberList) {
       assertEquals(member.getTeamName(), teamMember.getTeamName());
       assertEquals(member.getTeamId(), teamMember.getTeamId());
       assertEquals(member.getCreateBy(), teamMember.getCreateBy());

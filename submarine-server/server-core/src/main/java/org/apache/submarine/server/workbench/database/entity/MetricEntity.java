@@ -33,7 +33,7 @@ import java.sql.Timestamp;
 # +--------------------+-------+-------------------+--------------+---------------+------+--------+
 */
 
-public class Metric extends BaseEntity {
+public class MetricEntity extends BaseEntity {
 
   private String key;
   private Float value;

@@ -18,8 +18,8 @@
  */
 package org.apache.submarine.server.workbench.database.utils;
 
-import org.apache.submarine.server.workbench.database.entity.SysDept;
-import org.apache.submarine.server.workbench.database.entity.SysDeptSelect;
+import org.apache.submarine.server.workbench.database.entity.SysDeptEntity;
+import org.apache.submarine.server.workbench.database.entity.SysDeptSelectEntity;
 import org.apache.submarine.server.workbench.database.entity.SysDeptTree;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,19 +31,19 @@ import java.util.List;
 import static junit.framework.TestCase.assertEquals;
 
 public class DepartmentUtilTest {
-  private static List<SysDept> sysDeptList = new ArrayList<>();
-  private static List<SysDeptSelect> sysDeptSelects = new ArrayList<>();
+  private static List<SysDeptEntity> sysDeptList = new ArrayList<>();
+  private static List<SysDeptSelectEntity> sysDeptSelects = new ArrayList<>();
 
   @BeforeClass
   public static void init() {
-    SysDept deptA = new SysDept("A", "deptA");
-    SysDept deptAA = new SysDept("AA", "deptAA");
+    SysDeptEntity deptA = new SysDeptEntity("A", "deptA");
+    SysDeptEntity deptAA = new SysDeptEntity("AA", "deptAA");
     deptAA.setParentCode("A");
-    SysDept deptAB = new SysDept("AB", "deptAB");
+    SysDeptEntity deptAB = new SysDeptEntity("AB", "deptAB");
     deptAB.setParentCode("A");
-    SysDept deptAAA = new SysDept("AAA", "deptAAA");
+    SysDeptEntity deptAAA = new SysDeptEntity("AAA", "deptAAA");
     deptAAA.setParentCode("AA");
-    SysDept deptABA = new SysDept("ABA", "deptABA");
+    SysDeptEntity deptABA = new SysDeptEntity("ABA", "deptABA");
     deptABA.setParentCode("AB");
     sysDeptList.addAll(Arrays.asList(deptA, deptAA, deptAB, deptAAA, deptABA));
   }

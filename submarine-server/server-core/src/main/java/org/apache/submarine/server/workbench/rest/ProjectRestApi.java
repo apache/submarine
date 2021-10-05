@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.rest;
 
 import com.github.pagehelper.PageInfo;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.Project;
+import org.apache.submarine.server.workbench.database.entity.ProjectEntity;
 import org.apache.submarine.server.workbench.database.service.ProjectService;
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.response.JsonResponse.ListResult;
@@ -62,23 +62,23 @@ public class ProjectRestApi {
                        @QueryParam("pageSize") int pageSize) {
     LOG.info("ProjectRestApi.list() owner:{}, pageNo:{}, pageSize:{}", userName, pageNo, pageSize);
 
-    List<Project> projectList = new ArrayList<>();
+    List<ProjectEntity> projectList = new ArrayList<>();
     try {
       projectList = projectService.queryPageList(userName, column, order, pageNo, pageSize);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
     }
-    PageInfo<Project> page = new PageInfo<>(projectList);
-    ListResult<Project> listResult = new ListResult(projectList, page.getTotal());
-    return new JsonResponse.Builder<ListResult<Project>>(Response.Status.OK)
+    PageInfo<ProjectEntity> page = new PageInfo<>(projectList);
+    ListResult<ProjectEntity> listResult = new ListResult(projectList, page.getTotal());
+    return new JsonResponse.Builder<ListResult<ProjectEntity>>(Response.Status.OK)
         .success(true).result(listResult).build();
   }
 
   @POST
   @Path("/add")
   @SubmarineApi
-  public Response add(Project project) {
+  public Response add(ProjectEntity project) {
     LOG.info("add project:{}", project.toString());
 
     // insert into database, return id
@@ -90,14 +90,14 @@ public class ProjectRestApi {
           .message("Save project failed!").build();
     }
 
-    return new JsonResponse.Builder<Project>(Response.Status.OK)
+    return new JsonResponse.Builder<ProjectEntity>(Response.Status.OK)
         .message("Save project successfully!").result(project).success(true).build();
   }
 
   @PUT
   @Path("/edit")
   @SubmarineApi
-  public Response edit(Project project) {
+  public Response edit(ProjectEntity project) {
     LOG.info("edit project:{}", project.toString());
 
     try {

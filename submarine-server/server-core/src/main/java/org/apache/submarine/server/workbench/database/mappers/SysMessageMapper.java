@@ -18,20 +18,20 @@
  */
 package org.apache.submarine.server.workbench.database.mappers;
 
-import org.apache.submarine.server.workbench.database.entity.SysMessage;
+import org.apache.submarine.server.workbench.database.entity.SysMessageEntity;
 
 public interface SysMessageMapper {
   int deleteByPrimaryKey(String id);
 
-  int insert(SysMessage record);
+  int insert(SysMessageEntity record);
 
-  int insertSelective(SysMessage record);
+  int insertSelective(SysMessageEntity record);
 
-  SysMessage selectByPrimaryKey(String id);
+  SysMessageEntity selectByPrimaryKey(String id);
 
-  int updateByPrimaryKeySelective(SysMessage record);
+  int updateByPrimaryKeySelective(SysMessageEntity record);
 
-  int updateByPrimaryKeyWithBLOBs(SysMessage record);
+  int updateByPrimaryKeyWithBLOBs(SysMessageEntity record);
 
-  int updateByPrimaryKey(SysMessage record);
+  int updateByPrimaryKey(SysMessageEntity record);
 }

@@ -27,7 +27,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.TeamMember" extends="BaseEntityResultMap">
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.TeamMemberEntity" extends="BaseEntityResultMap">
     <result column="team_id" jdbcType="VARCHAR" property="teamId"/>
     <result column="team_name" jdbcType="VARCHAR" property="teamName"/>
     <result column="member" jdbcType="VARCHAR" property="member"/>
@@ -60,7 +60,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
-  <delete id="deleteSelective" parameterType="org.apache.submarine.server.workbench.database.entity.TeamMember">
+  <delete id="deleteSelective" parameterType="org.apache.submarine.server.workbench.database.entity.TeamMemberEntity">
     delete from team_member
     where 1 = 1
     <if test="teamId != null">
@@ -68,7 +68,7 @@
     </if>
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.TeamMember">
+  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.TeamMemberEntity">
     <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
       SELECT REPLACE(UUID(),"-","")
     </selectKey>
@@ -78,7 +78,7 @@
       #{inviter,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
-  <insert id="insertSelective" parameterType="org.apache.submarine.server.workbench.database.entity.TeamMember">
+  <insert id="insertSelective" parameterType="org.apache.submarine.server.workbench.database.entity.TeamMemberEntity">
     <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
       SELECT REPLACE(UUID(),"-","")
     </selectKey>
@@ -131,7 +131,7 @@
     </trim>
   </insert>
 
-  <update id="updateSelective" parameterType="org.apache.submarine.server.workbench.database.entity.TeamMember">
+  <update id="updateSelective" parameterType="org.apache.submarine.server.workbench.database.entity.TeamMemberEntity">
     update team_member
     <set>
       <if test="teamName != null">
@@ -165,7 +165,7 @@
     </if>
   </update>
 
-  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.server.workbench.database.entity.TeamMember">
+  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.server.workbench.database.entity.TeamMemberEntity">
     update team_member
     set team_id = #{teamId,jdbcType=VARCHAR},
       team_name = #{teamName,jdbcType=VARCHAR},

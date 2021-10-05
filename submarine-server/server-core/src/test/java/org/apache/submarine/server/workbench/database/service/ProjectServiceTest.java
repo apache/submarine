@@ -18,8 +18,8 @@
  */
 package org.apache.submarine.server.workbench.database.service;
 
-import org.apache.submarine.server.workbench.database.entity.Project;
-import org.apache.submarine.server.workbench.database.entity.ProjectFiles;
+import org.apache.submarine.server.workbench.database.entity.ProjectEntity;
+import org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -37,39 +37,39 @@ public class ProjectServiceTest {
 
   @After
   public void removeAllRecord() throws Exception {
-    List<Project> projectList = projectService.queryPageList(null, "create_time", "desc", 0, 100);
+    List<ProjectEntity> projectList = projectService.queryPageList(null, "create_time", "desc", 0, 100);
     LOG.info("projectList.size():{}", projectList.size());
-    for (Project project : projectList) {
+    for (ProjectEntity project : projectList) {
       projectService.delete(project.getId());
     }
   }
 
   @Test
   public void queryPageList() throws Exception {
-    ProjectFiles projectFiles = new ProjectFiles();
+    ProjectFilesEntity projectFiles = new ProjectFilesEntity();
     projectFiles.setFileContent("ProjectServiceTest-FileContent");
     projectFiles.setFileName("ProjectServiceTest-FileName");
     projectFiles.setCreateBy("ProjectServiceTest-UserName");
 
-    Project project = new Project();
+    ProjectEntity project = new ProjectEntity();
     project.setDescription("ProjectServiceTest-Description");
     project.setName("ProjectServiceTest-ProjectName");
     project.setType("PROJECT_TYPE_NOTEBOOK");
     project.setUserName("ProjectServiceTest-UserName");
     project.setVisibility("PROJECT_VISIBILITY_PRIVATE");
     project.setCreateBy("ProjectServiceTest-UserName");
-    List list = new ArrayList<ProjectFiles>();
+    List list = new ArrayList<ProjectFilesEntity>();
     list.add(projectFiles);
     project.setProjectFilesList(list);
 
     Boolean ret = projectService.add(project);
     assertTrue(ret);
 
-    List<Project> projectList = projectService.queryPageList("ProjectServiceTest-UserName",
+    List<ProjectEntity> projectList = projectService.queryPageList("ProjectServiceTest-UserName",
         "create_time", "desc", 0, 100);
     assertEquals(projectList.size(), 1);
 
-    Project projectDb = projectList.get(0);
+    ProjectEntity projectDb = projectList.get(0);
     assertEquals(project.getDescription(), projectDb.getDescription());
     assertEquals(project.getName(), projectDb.getName());
     assertEquals(project.getType(), projectDb.getType());
@@ -79,7 +79,7 @@ public class ProjectServiceTest {
 
     assertEquals(projectDb.getProjectFilesList().size(), 1);
 
-    ProjectFiles projectFilesDb = projectDb.getProjectFilesList().get(0);
+    ProjectFilesEntity projectFilesDb = projectDb.getProjectFilesList().get(0);
     assertEquals(project.getId(), projectFilesDb.getProjectId());
     assertEquals(projectFiles.getFileContent(), projectFilesDb.getFileContent());
     assertEquals(projectFiles.getFileName(), projectFilesDb.getFileName());
@@ -88,19 +88,19 @@ public class ProjectServiceTest {
 
   @Test
   public void updateByPrimaryKeySelective() throws Exception {
-    ProjectFiles projectFiles = new ProjectFiles();
+    ProjectFilesEntity projectFiles = new ProjectFilesEntity();
     projectFiles.setFileContent("ProjectServiceTest-FileContent");
     projectFiles.setFileName("ProjectServiceTest-FileName");
     projectFiles.setCreateBy("ProjectServiceTest-UserName");
 
-    Project project = new Project();
+    ProjectEntity project = new ProjectEntity();
     project.setDescription("ProjectServiceTest-Description");
     project.setName("ProjectServiceTest-ProjectName");
     project.setType("PROJECT_TYPE_NOTEBOOK");
     project.setUserName("ProjectServiceTest-UserName");
     project.setVisibility("PROJECT_VISIBILITY_PRIVATE");
     project.setCreateBy("ProjectServiceTest-UserName");
-    List list = new ArrayList<ProjectFiles>();
+    List list = new ArrayList<ProjectFilesEntity>();
     list.add(projectFiles);
     project.setProjectFilesList(list);
 
@@ -111,7 +111,7 @@ public class ProjectServiceTest {
     project.setDescription("update_description");
     project.setVisibility("PROJECT_VISIBILITY_PUBLIC");
     project.setUpdateBy("project_updateBy");
-    ProjectFiles projectFilesUpdate = new ProjectFiles();
+    ProjectFilesEntity projectFilesUpdate = new ProjectFilesEntity();
     projectFilesUpdate.setFileContent("ProjectServiceTest-FileContent2");
     projectFilesUpdate.setFileName("ProjectServiceTest-FileName2");
     projectFilesUpdate.setCreateBy("ProjectServiceTest-UserName2");
@@ -121,19 +121,19 @@ public class ProjectServiceTest {
     projectFiles.setUpdateBy("projectFiles_updateby");
     boolean editRet = projectService.updateByPrimaryKeySelective(project);
     assertTrue(editRet);
-    List<Project> projectList = projectService.queryPageList("ProjectServiceTest-UserName",
+    List<ProjectEntity> projectList = projectService.queryPageList("ProjectServiceTest-UserName",
         "create_time", "desc", 0, 100);
     assertEquals(projectList.size(), 1);
 
-    Project projectDb = projectList.get(0);
+    ProjectEntity projectDb = projectList.get(0);
     assertEquals(project.getName(), projectDb.getName());
     assertEquals(project.getDescription(), projectDb.getDescription());
     assertEquals(project.getVisibility(), projectDb.getVisibility());
     assertEquals(project.getUpdateBy(), projectDb.getUpdateBy());
     LOG.info("update_time:{}", projectDb.getUpdateTime());
 
-    List<ProjectFiles> projectFilesList = projectDb.getProjectFilesList();
-    for (ProjectFiles files : projectFilesList) {
+    List<ProjectFilesEntity> projectFilesList = projectDb.getProjectFilesList();
+    for (ProjectFilesEntity files : projectFilesList) {
       if (!files.getFileContent().equals("ProjectServiceTest-FileContent2")) {
         assertEquals(files.getFileName(), projectFiles.getFileName());
         assertEquals(files.getFileContent(), projectFiles.getFileContent());
@@ -145,19 +145,19 @@ public class ProjectServiceTest {
 
   @Test
   public void delete() throws Exception {
-    ProjectFiles projectFiles = new ProjectFiles();
+    ProjectFilesEntity projectFiles = new ProjectFilesEntity();
     projectFiles.setFileContent("ProjectServiceTest-FileContent");
     projectFiles.setFileName("ProjectServiceTest-FileName");
     projectFiles.setCreateBy("ProjectServiceTest-UserName");
 
-    Project project = new Project();
+    ProjectEntity project = new ProjectEntity();
     project.setDescription("ProjectServiceTest-Description");
     project.setName("ProjectServiceTest-ProjectName");
     project.setType("PROJECT_TYPE_NOTEBOOK");
     project.setUserName("ProjectServiceTest-UserName");
     project.setVisibility("PROJECT_VISIBILITY_PRIVATE");
     project.setCreateBy("ProjectServiceTest-UserName");
-    List list = new ArrayList<ProjectFiles>();
+    List list = new ArrayList<ProjectFilesEntity>();
     list.add(projectFiles);
     project.setProjectFilesList(list);
 
@@ -167,12 +167,12 @@ public class ProjectServiceTest {
     Boolean deleteRet = projectService.delete(project.getId());
     assertTrue(deleteRet);
 
-    List<Project> projectList = projectService.queryPageList("ProjectServiceTest-UserName",
+    List<ProjectEntity> projectList = projectService.queryPageList("ProjectServiceTest-UserName",
         "create_time", "desc", 0, 100);
     assertEquals(projectList.size(), 0);
 
     ProjectFilesService projectFilesService = new ProjectFilesService();
-    List<ProjectFiles> projectFilesList = projectFilesService.queryList(project.getId());
+    List<ProjectFilesEntity> projectFilesList = projectFilesService.queryList(project.getId());
     assertEquals(projectFilesList.size(), 0);
   }
 }

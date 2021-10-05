@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Corresponding to the workbench-web front-end tree table control
-public class SysDeptTree extends SysDept {
+public class SysDeptTree extends SysDeptEntity {
   // Use the SysDept.id field as the key in the front-end data tree
   private String key;
 
-  public SysDeptTree(SysDept sysOrg) {
+  public SysDeptTree(SysDeptEntity sysOrg) {
     this.key = sysOrg.getDeptCode();
 
     this.setId(sysOrg.getId());

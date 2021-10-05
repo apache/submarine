@@ -21,19 +21,19 @@ package org.apache.submarine.server.workbench.database.mappers;
 
 import java.util.List;
 
-import org.apache.submarine.server.workbench.database.entity.Metric;
+import org.apache.submarine.server.workbench.database.entity.MetricEntity;
 
 public interface MetricMapper {
 
-  List<Metric> selectAll();
+  List<MetricEntity> selectAll();
 
   int deleteById(String id);
 
-  int insert(Metric metric);
-  
-  Metric selectById(String id);
+  int insert(MetricEntity metric);
 
-  int update(Metric metric);
+  MetricEntity selectById(String id);
 
-  List<Metric> selectByPrimaryKeySelective(Metric metric);
+  int update(MetricEntity metric);
+
+  List<MetricEntity> selectByPrimaryKeySelective(MetricEntity metric);
 }

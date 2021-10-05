@@ -21,7 +21,7 @@ package org.apache.submarine.server.workbench.database.service;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.workbench.database.entity.Job;
+import org.apache.submarine.server.workbench.database.entity.JobEntity;
 import org.apache.submarine.server.workbench.database.mappers.JobMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +33,12 @@ import java.util.Map;
 public class JobService {
   private static final Logger LOG = LoggerFactory.getLogger(JobService.class);
 
-  public List<Job> queryJobList(String userName,
-      String column, String order, int pageNo, int pageSize) throws Exception {
+  public List<JobEntity> queryJobList(String userName,
+                                      String column, String order, int pageNo, int pageSize) throws Exception {
     LOG.info("queryJobList owner:{}, column:{}, order:{}, pageNo:{}, pageSize:{}",
         userName, column, order, pageNo, pageSize);
 
-    List<Job> list = null;
+    List<JobEntity> list = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       JobMapper projectMapper = sqlSession.getMapper(JobMapper.class);
       Map<String, Object> where = new HashMap<>();
@@ -53,9 +53,9 @@ public class JobService {
     return list;
   }
 
-  public Job selectByJobId(String jobId) throws Exception {
+  public JobEntity selectByJobId(String jobId) throws Exception {
     LOG.info("select a job by jobid {}", jobId);
-    Job job;
+    JobEntity job;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       JobMapper projectMapper = sqlSession.getMapper(JobMapper.class);
       job = projectMapper.selectByJobId(jobId);
@@ -66,9 +66,9 @@ public class JobService {
     return job;
   }
 
-  public Job selectById(String id) throws Exception {
+  public JobEntity selectById(String id) throws Exception {
     LOG.info("select a job by id {}", id);
-    Job job;
+    JobEntity job;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       JobMapper projectMapper = sqlSession.getMapper(JobMapper.class);
       job = projectMapper.selectByPrimaryKey(id);
@@ -79,7 +79,7 @@ public class JobService {
     return job;
   }
 
-  public boolean add(Job job) throws Exception {
+  public boolean add(JobEntity job) throws Exception {
     LOG.info("add({})", job.toString());
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -93,7 +93,7 @@ public class JobService {
     return true;
   }
 
-  public boolean updateByPrimaryKeySelective(Job job) throws Exception {
+  public boolean updateByPrimaryKeySelective(JobEntity job) throws Exception {
     LOG.info("updateByPrimaryKeySelective({})", job.toString());
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       JobMapper jobMapper = sqlSession.getMapper(JobMapper.class);

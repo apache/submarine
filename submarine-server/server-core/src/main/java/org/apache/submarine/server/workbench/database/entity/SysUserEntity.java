@@ -26,7 +26,7 @@ import org.apache.submarine.server.workbench.database.utils.CustomJsonDateDeseri
 
 import java.util.Date;
 
-public class SysUser extends BaseEntity {
+public class SysUserEntity extends BaseEntity {
   private String userName;
   private String realName;
   private String password;

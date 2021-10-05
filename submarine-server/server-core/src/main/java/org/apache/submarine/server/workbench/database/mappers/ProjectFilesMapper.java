@@ -18,27 +18,27 @@
  */
 package org.apache.submarine.server.workbench.database.mappers;
 
-import org.apache.submarine.server.workbench.database.entity.ProjectFiles;
+import org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ProjectFilesMapper {
-  List<ProjectFiles> selectAll(Map<String, Object> where);
+  List<ProjectFilesEntity> selectAll(Map<String, Object> where);
 
   int deleteByPrimaryKey(String id);
 
-  int deleteSelective(ProjectFiles record);
+  int deleteSelective(ProjectFilesEntity record);
 
-  int insert(ProjectFiles record);
+  int insert(ProjectFilesEntity record);
 
-  int insertSelective(ProjectFiles record);
+  int insertSelective(ProjectFilesEntity record);
 
-  ProjectFiles selectByPrimaryKey(String id);
+  ProjectFilesEntity selectByPrimaryKey(String id);
 
-  int updateByPrimaryKeySelective(ProjectFiles record);
+  int updateByPrimaryKeySelective(ProjectFilesEntity record);
 
-  int updateByPrimaryKeyWithBLOBs(ProjectFiles record);
+  int updateByPrimaryKeyWithBLOBs(ProjectFilesEntity record);
 
-  int updateByPrimaryKey(ProjectFiles record);
+  int updateByPrimaryKey(ProjectFilesEntity record);
 }
