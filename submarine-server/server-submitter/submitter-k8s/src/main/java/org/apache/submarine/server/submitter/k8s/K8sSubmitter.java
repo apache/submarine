@@ -149,7 +149,7 @@ public class K8sSubmitter implements Submitter {
     try {
       watchExperiment();
     } catch (Exception e){
-      LOG.error("Experiment watch failed. " + e.getMessage());
+      LOG.error("Experiment watch failed. " + e.getMessage(), e);
     }
 
     // client.setDebugging(true);
