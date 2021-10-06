@@ -33,13 +33,7 @@ jobs:
       - name: Test Build
         working-directory: ./website
         run: |
-          if [ -e yarn.lock ]; then
           yarn install --frozen-lockfile
-          elif [ -e package-lock.json ]; then
-          npm ci
-          else
-          npm i
-          fi
           npm run build
   deploy-website:
     if: github.repository == 'apache/submarine' && github.ref == 'refs/heads/master'
@@ -66,12 +60,6 @@ jobs:
         run: |
           git config --global user.email "pingsutw@apache.org"
           git config --global user.name "pingsutw"
-          if [ -e yarn.lock ]; then
           yarn install --frozen-lockfile
-          elif [ -e package-lock.json ]; then
-          npm ci
-          else
-          npm i
-          fi
           yarn deploy
 
