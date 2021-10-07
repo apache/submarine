@@ -23,8 +23,6 @@ import { ModelComponent } from './model.component';
 import { ModelHomeComponent } from './model-home/model-home.component';
 import { ModelInfoComponent } from './model-info/model-info.component';
 import { ModelVersionComponent } from './model-version/model-version.component';
-// import { TemplateHomeComponent } from './template-home/template-home.component';
-// import { TemplateInfoComponent } from './template-info/template-info.component';
 
 const routes: Routes = [
   {

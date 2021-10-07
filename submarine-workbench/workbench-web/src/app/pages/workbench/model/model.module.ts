@@ -24,12 +24,9 @@ import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { ModelRoutingModule } from './model-routing.module';
 import { RouterModule } from '@angular/router';
 import { ModelHomeComponent } from './model-home/model-home.component';
-// import { TemplateFormComponent } from './template-home/template-form/template-form.component';
-// import { TemplateListComponent } from './template-home/template-list/template-list.component';
 import { ModelComponent } from './model.component';
 import { ModelInfoComponent } from './model-info/model-info.component';
 import { ModelVersionComponent } from './model-version/model-version.component';
-// import { TemplateInfoComponent } from './template-info/template-info.component';
 import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 
 @NgModule({
@@ -38,11 +35,6 @@ import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
     ModelHomeComponent,
     ModelInfoComponent,
     ModelVersionComponent,
-    // TemplateComponent,
-    // TemplateHomeComponent,
-    // TemplateFormComponent,
-    // TemplateListComponent,
-    // TemplateInfoComponent,
   ],
   imports: [
     CommonModule,
