@@ -108,7 +108,7 @@ export class WorkbenchComponent implements OnInit {
       title: 'Model',
       iconType: 'experiment',
       routerLink: '/workbench/model',
-      disabled: true,
+      disabled: false,
     },
     {
       title: 'Workspace',

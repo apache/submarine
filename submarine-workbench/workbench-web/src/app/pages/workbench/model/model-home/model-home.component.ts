@@ -1,4 +1,4 @@
-/*!
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,21 +17,15 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { ExperimentService } from '@submarine/services/experiment.service';
-import { delay } from 'rxjs/operators';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 @Component({
-  selector: 'submarine-model',
-  templateUrl: './model.component.html',
-  styleUrls: ['./model.component.scss']
+  selector: 'submarine-model-home',
+  templateUrl: './model-home.component.html',
+  styleUrls: ['./model-home.component.scss'],
 })
-export class ModelComponent implements OnInit {
-  modelName: string = null;
+export class ModelHomeComponent implements OnInit {
+  constructor() {}
 
-  constructor(private experimentService: ExperimentService) {}
-
-  ngOnInit() {
-    this.experimentService.infoEmitted$.pipe(delay(0)).subscribe((name) => (this.modelName = name));
-  }
+  ngOnInit() {}
 }

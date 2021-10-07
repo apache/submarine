@@ -17,25 +17,4 @@
   ~ under the License.
   -->
 
-  <nz-layout style="margin: -24px -24px 16px">
-    <div style="background-color: white; padding-left: 30px; padding-top: 20px">
-      <nz-breadcrumb>
-        <nz-breadcrumb-item>
-          <a>Home</a>
-        </nz-breadcrumb-item>
-        <nz-breadcrumb-item>
-          <a [routerLink]="['/', 'workbench', 'model']" (click)="modelName = null">model</a>
-        </nz-breadcrumb-item>
-        <nz-breadcrumb-item *ngIf="modelName != null">
-          {{ modelName }}
-        </nz-breadcrumb-item>
-      </nz-breadcrumb>
-      <div *ngIf="modelName == null">
-        <br />
-        <h2>Model</h2>
-      </div>
-      <br />
-    </div>
-    <router-outlet></router-outlet>
-  </nz-layout>
-  
+<div style="margin: 15px; padding: 15px; background-color: white">This is model info page of "{{ modelName }}".</div>

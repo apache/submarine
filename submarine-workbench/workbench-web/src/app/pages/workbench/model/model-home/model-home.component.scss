@@ -16,22 +16,4 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import { Component, OnInit } from '@angular/core';
-import { ExperimentService } from '@submarine/services/experiment.service';
-import { delay } from 'rxjs/operators';
-
-@Component({
-  selector: 'submarine-model',
-  templateUrl: './model.component.html',
-  styleUrls: ['./model.component.scss']
-})
-export class ModelComponent implements OnInit {
-  modelName: string = null;
-
-  constructor(private experimentService: ExperimentService) {}
-
-  ngOnInit() {
-    this.experimentService.infoEmitted$.pipe(delay(0)).subscribe((name) => (this.modelName = name));
-  }
-}
+ 

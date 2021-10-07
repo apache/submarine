@@ -1,4 +1,4 @@
-/*!
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,21 +17,23 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ExperimentService } from '@submarine/services/experiment.service';
-import { delay } from 'rxjs/operators';
 
 @Component({
-  selector: 'submarine-model',
-  templateUrl: './model.component.html',
-  styleUrls: ['./model.component.scss']
+  selector: 'submarine-model-info',
+  templateUrl: './model-info.component.html',
+  styleUrls: ['./model-info.component.scss'],
 })
-export class ModelComponent implements OnInit {
-  modelName: string = null;
+export class ModelInfoComponent implements OnInit {
+  isLoading = true;
+  modelName;
 
-  constructor(private experimentService: ExperimentService) {}
+  constructor(private router: Router, private route: ActivatedRoute, private experimentService: ExperimentService) {}
 
   ngOnInit() {
-    this.experimentService.infoEmitted$.pipe(delay(0)).subscribe((name) => (this.modelName = name));
+    this.modelName = this.route.snapshot.params.name;
+    this.experimentService.emitInfo(this.modelName);
   }
 }
