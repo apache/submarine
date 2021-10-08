@@ -1,4 +1,4 @@
-/*!
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -17,21 +17,26 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { ExperimentService } from '@submarine/services/experiment.service';
-import { delay } from 'rxjs/operators';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { ModelComponent } from './model.component';
+import { ModelVersionComponent } from './model-version/model-version.component';
 
-@Component({
-  selector: 'submarine-model',
-  templateUrl: './model.component.html',
-  styleUrls: ['./model.component.scss']
+const routes: Routes = [
+  {
+    path: '',
+    component: ModelComponent,
+    children: [
+      {
+        path: ':name/:version',
+        component: ModelVersionComponent,
+      },
+    ],
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
-export class ModelComponent implements OnInit {
-  modelName: string = null;
-
-  constructor(private experimentService: ExperimentService) {}
-
-  ngOnInit() {
-    this.experimentService.infoEmitted$.pipe(delay(0)).subscribe((name) => (this.modelName = name));
-  }
-}
+export class ModelRoutingModule {}

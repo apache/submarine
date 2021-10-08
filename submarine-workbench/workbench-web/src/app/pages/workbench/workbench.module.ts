@@ -30,15 +30,16 @@ import { InterpreterModule } from './interpreter/interpreter.module';
 import { NotebookModule } from './notebook/notebook.module';
 
 import { HomeComponent } from './home/home.component';
-import { ModelComponent } from './model/model.component';
 import { WorkbenchComponent } from './workbench.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 import { DataComponent } from './data/data.component';
 import { EnvironmentModule } from './environment/environment.module';
 import { TemplateModule } from './template/template.module';
+import { ModelModule } from './model/model.module';
+
 
 @NgModule({
-  declarations: [WorkbenchComponent, HomeComponent, WorkspaceComponent, DataComponent, ModelComponent],
+  declarations: [WorkbenchComponent, HomeComponent, WorkspaceComponent, DataComponent],
   imports: [
     CommonModule,
     WorkbenchRoutingModule,
@@ -53,6 +54,7 @@ import { TemplateModule } from './template/template.module';
     NotebookModule,
     EnvironmentModule,
     TemplateModule,
+    ModelModule,
   ],
 })
 export class WorkbenchModule {}

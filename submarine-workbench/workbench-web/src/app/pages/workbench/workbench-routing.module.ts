@@ -23,7 +23,6 @@ import { WorkbenchComponent } from '@submarine/pages/workbench/workbench.compone
 import { DataComponent } from './data/data.component';
 import { HomeComponent } from './home/home.component';
 import { InterpreterComponent } from './interpreter/interpreter.component';
-import { ModelComponent } from './model/model.component';
 import { WorkspaceComponent } from './workspace/workspace.component';
 
 const routes: Routes = [
@@ -73,7 +72,7 @@ const routes: Routes = [
       },
       {
         path: 'model',
-        component: ModelComponent,
+        loadChildren: () => import('./model/model.module').then((m) => m.ModelModule),
         canActivate: ['canActivatePage'],
       },
       {
@@ -96,7 +95,7 @@ const routes: Routes = [
     {
       provide: 'canActivatePage',
       useValue: (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
-        const disablePaths = ['home', 'data', 'model', 'workspace', 'interpreter'];
+        const disablePaths = ['home', 'data', 'workspace', 'interpreter'];
         let currentPage = state.url.split('/')[2];
         console.log('currentPage', currentPage);
         if (disablePaths.includes(currentPage)) return false;
