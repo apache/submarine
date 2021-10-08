@@ -19,6 +19,7 @@ import re
 
 import submarine
 from submarine.entities import Metric, Param
+from submarine.exceptions import SubmarineException
 from submarine.tracking import utils
 from submarine.utils.validation import validate_metric, validate_param
 from submarine.artifacts.repository import Repository
@@ -111,8 +112,8 @@ class SubmarineClient(object):
         # Register model
         if registered_model_name is not None:
             try:
-                result = self.model_registry.get_registered_model(registered_model_name)
-            except:
+                self.model_registry.get_registered_model(registered_model_name)
+            except SubmarineException:
                 self.model_registry.create_registered_model(name=registered_model_name)
             self.model_registry.create_model_version(
                 name=registered_model_name,
