@@ -35,6 +35,10 @@ for ((i=0;i<$wait_times;++i)); do
     echo "Submarine is running!"
     kubectl describe submarine
     kubectl get all
+    kubectl port-forward svc/submarine-database 3306:3306 &
+    kubectl port-forward svc/submarine-server 8080:8080 &
+    kubectl port-forward svc/submarine-minio-service 9000:9000 &
+    kubectl port-forward svc/submarine-mlflow-service 5001:5000 &
     exit 0
   elif [[ "$state" == "FAILED" ]]; then
     echo "Submarine failed!" 1>&2
@@ -47,8 +51,3 @@ for ((i=0;i<$wait_times;++i)); do
 done
 echo "Timeout limit reached!" 1>&2
 exit 1
-
-kubectl port-forward svc/submarine-database 3306:3306 &
-kubectl port-forward svc/submarine-server 8080:8080 &
-kubectl port-forward svc/submarine-minio-service 9000:9000 &
-kubectl port-forward svc/submarine-mlflow-service 5001:5000 &
