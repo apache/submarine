@@ -12,23 +12,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import time
-import tempfile
 import os
 import re
+import tempfile
+import time
 
 import submarine
+from submarine.artifacts.repository import Repository
 from submarine.entities import Metric, Param
 from submarine.exceptions import SubmarineException
 from submarine.tracking import utils
 from submarine.utils.validation import validate_metric, validate_param
-from submarine.artifacts.repository import Repository
 
-from .constant import (
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
-    S3_ENDPOINT_URL,
-)
+from .constant import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_ENDPOINT_URL
 
 
 class SubmarineClient(object):
@@ -38,11 +34,11 @@ class SubmarineClient(object):
 
     def __init__(
         self,
-        db_uri=None,
-        s3_registry_uri=None,
-        aws_access_key_id=None,
-        aws_secret_access_key=None,
-    ):
+        db_uri: str = None,
+        s3_registry_uri: str = None,
+        aws_access_key_id: str = None,
+        aws_secret_access_key: str = None,
+    ) -> None:
         """
         :param db_uri: Address of local or remote tracking server. If not provided, defaults
                              to the service set by ``submarine.tracking.set_db_uri``. See
@@ -57,7 +53,15 @@ class SubmarineClient(object):
         self.store = utils.get_sqlalchemy_store(self.db_uri)
         self.model_registry = utils.get_model_registry_sqlalchemy_store(self.db_uri)
 
-    def log_metric(self, job_id, key, value, worker_index, timestamp=None, step=None):
+    def log_metric(
+        self,
+        job_id: str,
+        key: str,
+        value: float,
+        worker_index: str,
+        timestamp: int = None,
+        step: int = None,
+    ) -> None:
         """
         Log a metric against the run ID.
         :param job_id: The job name to which the metric should be logged.
@@ -75,7 +79,7 @@ class SubmarineClient(object):
         metric = Metric(key, value, worker_index, timestamp, step)
         self.store.log_metric(job_id, metric)
 
-    def log_param(self, job_id, key, value, worker_index):
+    def log_param(self, job_id: str, key: str, value: str, worker_index: str) -> None:
         """
         Log a parameter against the job name. Value is converted to a string.
         :param job_id: The job name to which the parameter should be logged.

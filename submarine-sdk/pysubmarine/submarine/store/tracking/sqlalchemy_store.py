@@ -19,9 +19,10 @@ from contextlib import contextmanager
 
 import sqlalchemy
 
+from submarine.entities import Param
 from submarine.exceptions import SubmarineException
-from submarine.store.tracking.abstract_store import AbstractStore
 from submarine.store.database.models import Base, SqlMetric, SqlParam
+from submarine.store.tracking.abstract_store import AbstractStore
 from submarine.utils import extract_db_type_from_uri
 
 _logger = logging.getLogger(__name__)
@@ -42,7 +43,7 @@ class SqlAlchemyStore(AbstractStore):
     :py:class:`submarine.store.database.models.SqlParam`.
     """
 
-    def __init__(self, db_uri):
+    def __init__(self, db_uri: str) -> None:
         """
         Create a database backed store.
         :param db_uri: The SQLAlchemy database URI string to connect to the database. See
@@ -151,7 +152,7 @@ class SqlAlchemyStore(AbstractStore):
             except sqlalchemy.exc.IntegrityError:
                 session.rollback()
 
-    def log_param(self, job_id, param):
+    def log_param(self, job_id: str, param: Param) -> None:
         with self.ManagedSessionMaker() as session:
             try:
                 self._get_or_create(
