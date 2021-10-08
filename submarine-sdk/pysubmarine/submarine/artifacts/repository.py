@@ -71,3 +71,4 @@ class Repository:
                     bucket=bucket,
                     key=os.path.join(upload_path, f),
                 )
+        return f"s3://{bucket}/{dest_path}"
