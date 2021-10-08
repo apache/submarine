@@ -18,7 +18,7 @@ import os
 import mock
 
 from submarine.store import DEFAULT_SUBMARINE_JDBC_URL
-from submarine.store.sqlalchemy_store import SqlAlchemyStore
+from submarine.store.tracking.sqlalchemy_store import SqlAlchemyStore
 from submarine.tracking.utils import (
     _JOB_ID_ENV_VAR,
     _TRACKING_URI_ENV_VAR,
@@ -40,7 +40,7 @@ def test_get_sqlalchemy_store():
     uri = DEFAULT_SUBMARINE_JDBC_URL
     env = {_TRACKING_URI_ENV_VAR: uri}
     with mock.patch.dict(os.environ, env), patch_create_engine as mock_create_engine, mock.patch(
-        "submarine.store.sqlalchemy_store.SqlAlchemyStore._initialize_tables"
+        "submarine.store.tracking.sqlalchemy_store.SqlAlchemyStore._initialize_tables"
     ):
         store = get_sqlalchemy_store(uri)
         assert isinstance(store, SqlAlchemyStore)

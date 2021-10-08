@@ -12,8 +12,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-
-DEFAULT_SUBMARINE_JDBC_URL = "mysql+pymysql://submarine:password@submarine-database:3306/submarine"
-
-__all__ = ["DEFAULT_SUBMARINE_JDBC_URL"]

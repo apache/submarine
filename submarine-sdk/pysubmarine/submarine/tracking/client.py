@@ -15,6 +15,7 @@
 import time
 import tempfile
 import os
+import re
 
 import submarine
 from submarine.entities import Metric, Param
@@ -50,12 +51,10 @@ class SubmarineClient(object):
         os.environ["MLFLOW_S3_ENDPOINT_URL"] = s3_registry_uri or S3_ENDPOINT_URL
         os.environ["AWS_ACCESS_KEY_ID"] = aws_access_key_id or AWS_ACCESS_KEY_ID
         os.environ["AWS_SECRET_ACCESS_KEY"] = aws_secret_access_key or AWS_SECRET_ACCESS_KEY
-        print("start repository")
         self.artifact_repo = Repository(utils.get_job_id())
-        print("finish repository")
         self.db_uri = db_uri or submarine.get_db_uri()
-        print(self.db_uri)
         self.store = utils.get_sqlalchemy_store(self.db_uri)
+        self.model_registry = utils.get_model_registry_sqlalchemy_store(self.db_uri)
 
     def log_metric(self, job_id, key, value, worker_index, timestamp=None, step=None):
         """
@@ -108,13 +107,16 @@ class SubmarineClient(object):
             else:
                 raise Exception("No valid type of model has been matched to {}".format(model_type))
             source = self.artifact_repo.log_artifacts(tempdir, artifact_path)
-        print(source)
+
         # Register model
-        # if registered_model_name != None:
-        #     result = self.store.get_registered_model(registered_model_name)
-        #     print(result)
-        #     if result == None:
-        #         self.store.create_registered_model(name=registered_model_name)
-        #     self.store.create_model_version(
-        #         name=registered_model_name, source="", user_id="", experiment_id=utils.get_job_id()
-        #     )
+        if registered_model_name is not None:
+            try:
+                result = self.model_registry.get_registered_model(registered_model_name)
+            except:
+                self.model_registry.create_registered_model(name=registered_model_name)
+            self.model_registry.create_model_version(
+                name=registered_model_name,
+                source=source,
+                user_id="TODO",
+                experiment_id=utils.get_job_id(),
+            )
