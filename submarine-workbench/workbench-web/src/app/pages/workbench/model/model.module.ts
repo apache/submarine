@@ -23,17 +23,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgZorroAntdModule } from 'ng-zorro-antd';
 import { ModelRoutingModule } from './model-routing.module';
 import { RouterModule } from '@angular/router';
-import { ModelHomeComponent } from './model-home/model-home.component';
 import { ModelComponent } from './model.component';
-import { ModelInfoComponent } from './model-info/model-info.component';
 import { ModelVersionComponent } from './model-version/model-version.component';
 import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 
 @NgModule({
   declarations: [
     ModelComponent,
-    ModelHomeComponent,
-    ModelInfoComponent,
     ModelVersionComponent,
   ],
   imports: [

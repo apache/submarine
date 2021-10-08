@@ -20,8 +20,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ModelComponent } from './model.component';
-import { ModelHomeComponent } from './model-home/model-home.component';
-import { ModelInfoComponent } from './model-info/model-info.component';
 import { ModelVersionComponent } from './model-version/model-version.component';
 
 const routes: Routes = [
@@ -30,16 +28,7 @@ const routes: Routes = [
     component: ModelComponent,
     children: [
       {
-        path: '',
-        pathMatch: 'full',
-        component: ModelHomeComponent,
-      },
-      {
-        path: 'info/:name',
-        component: ModelInfoComponent,
-      },
-      {
-        path: 'info/:name/:version',
+        path: ':name/:version',
         component: ModelVersionComponent,
       },
     ],
