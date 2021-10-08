@@ -25,6 +25,5 @@ RUN GOOS=linux go build -o submarine-operator
 FROM gcr.io/distroless/base-debian10
 WORKDIR /usr/src
 COPY --from=build-image /usr/src/submarine-operator /usr/src/submarine-operator
-ADD tmp/charts/ /usr/src/charts
 
-CMD ["/usr/src/submarine-operator", "-incluster=true"] 
+CMD ["/usr/src/submarine-operator", "-incluster=true"]
