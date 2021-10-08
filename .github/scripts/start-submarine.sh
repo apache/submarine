@@ -25,8 +25,8 @@ wait_times=$((wait_timeout / wait_interval))
 sudo ln -s /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
 sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
 
-helm install --wait submarine ./helm-charts/submarine
-kubectl apply -f artifacts/examples/example-submarine.yaml
+helm install --wait --set storageClass.provisioner=rancher.io/local-path --set storageClass.volumeBindingMode=WaitForFirstConsumer submarine ./helm-charts/submarine
+kubectl apply -f ./submarine-cloud-v2/artifacts/examples/example-submarine.yaml
 
 # Polling waiting for the submarine to be in the RUNNING state
 for ((i=0;i<$wait_times;++i)); do

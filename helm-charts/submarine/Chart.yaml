@@ -22,12 +22,11 @@ name: submarine
 version: 0.7.0-SNAPSHOT
 icon: https://submarine.apache.org/assets/themes/submarine/img/submarine_white_logo.png
 dependencies:
-- name: tfjob
-  version: "0.1.0"
-- name: pytorchjob
-  version: "0.1.0"
-- name: notebook-controller
-  version: "0.1.0"
-- name: traefik
-  version: "9.1.0"
-  condition: submarine.traefik.enabled
+  - name: tfjob
+    version: "0.1.0"
+  - name: pytorchjob
+    version: "0.1.0"
+  - name: notebook-controller
+    version: "0.1.0"
+  - name: traefik
+    version: "9.1.0"
