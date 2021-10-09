@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Type
+
+from sqlalchemy.sql.schema import Column
+
 from submarine.entities._submarine_object import _SubmarineObject
 
 
@@ -21,7 +25,14 @@ class RegisteredModel(_SubmarineObject):
     Registered model object.
     """
 
-    def __init__(self, name, creation_time, last_updated_time, description=None, tags=None):
+    def __init__(
+        self,
+        name: Type[Column],
+        creation_time: Type[Column],
+        last_updated_time: Type[Column],
+        description=None,
+        tags=None,
+    ):
         self._name = name
         self._creation_time = creation_time
         self._last_updated_time = last_updated_time

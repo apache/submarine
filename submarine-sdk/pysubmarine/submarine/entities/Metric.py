@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Type
+
+from sqlalchemy.sql.schema import Column
+
 from submarine.entities._submarine_object import _SubmarineObject
 
 
@@ -21,7 +25,14 @@ class Metric(_SubmarineObject):
     Metric object.
     """
 
-    def __init__(self, key, value, worker_index, timestamp, step):
+    def __init__(
+        self,
+        key: Type[Column],
+        value: Type[Column],
+        worker_index: Type[Column],
+        timestamp: Type[Column],
+        step: Type[Column],
+    ):
         self._key = key
         self._value = value
         self._worker_index = worker_index

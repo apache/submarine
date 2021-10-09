@@ -55,13 +55,13 @@ class RESTResponse(io.IOBase):
         """Returns a dictionary of the response headers."""
         return self.urllib3_response.getheaders()
 
-    def getheader(self, name, default=None):
+    def getheader(self, name: str, default=None):
         """Returns a given response header."""
         return self.urllib3_response.getheader(name, default)
 
 
 class RESTClientObject(object):
-    def __init__(self, configuration, pools_size=4, maxsize=None):
+    def __init__(self, configuration, pools_size: int = 4, maxsize: int = None):
         # urllib3.PoolManager will pass all kw parameters to connectionpool
         # https://github.com/shazow/urllib3/blob/f9409436f83aeb79fbaf090181cd81b784f1b8ce/urllib3/poolmanager.py#L75  # noqa: E501
         # https://github.com/shazow/urllib3/blob/f9409436f83aeb79fbaf090181cd81b784f1b8ce/urllib3/connectionpool.py#L680  # noqa: E501
@@ -158,7 +158,7 @@ class RESTClientObject(object):
 
         timeout = None
         if _request_timeout:
-            if isinstance(_request_timeout, (int,) if six.PY3 else (int, long)):  # noqa: E501,F821
+            if isinstance(_request_timeout, (int,) if six.PY3 else (int, long)):  # type: ignore # noqa: E501,F821
                 timeout = urllib3.Timeout(total=_request_timeout)
             elif isinstance(_request_timeout, tuple) and len(_request_timeout) == 2:
                 timeout = urllib3.Timeout(connect=_request_timeout[0], read=_request_timeout[1])
@@ -252,7 +252,12 @@ class RESTClientObject(object):
         return r
 
     def GET(
-        self, url, headers=None, query_params=None, _preload_content=True, _request_timeout=None
+        self,
+        url: str,
+        headers: dict = None,
+        query_params: dict = None,
+        _preload_content: bool = True,
+        _request_timeout=None,
     ):
         return self.request(
             "GET",
@@ -264,7 +269,12 @@ class RESTClientObject(object):
         )
 
     def HEAD(
-        self, url, headers=None, query_params=None, _preload_content=True, _request_timeout=None
+        self,
+        url: str,
+        headers: dict = None,
+        query_params: dict = None,
+        _preload_content: bool = True,
+        _request_timeout=None,
     ):
         return self.request(
             "HEAD",
@@ -277,12 +287,12 @@ class RESTClientObject(object):
 
     def OPTIONS(
         self,
-        url,
-        headers=None,
-        query_params=None,
+        url: str,
+        headers: dict = None,
+        query_params: dict = None,
         post_params=None,
         body=None,
-        _preload_content=True,
+        _preload_content: bool = True,
         _request_timeout=None,
     ):
         return self.request(
@@ -298,11 +308,11 @@ class RESTClientObject(object):
 
     def DELETE(
         self,
-        url,
-        headers=None,
-        query_params=None,
+        url: str,
+        headers: dict = None,
+        query_params: dict = None,
         body=None,
-        _preload_content=True,
+        _preload_content: bool = True,
         _request_timeout=None,
     ):
         return self.request(
@@ -317,12 +327,12 @@ class RESTClientObject(object):
 
     def POST(
         self,
-        url,
-        headers=None,
-        query_params=None,
-        post_params=None,
+        url: str,
+        headers: dict = None,
+        query_params: dict = None,
+        post_params: dict = None,
         body=None,
-        _preload_content=True,
+        _preload_content: bool = True,
         _request_timeout=None,
     ):
         return self.request(
@@ -338,12 +348,12 @@ class RESTClientObject(object):
 
     def PUT(
         self,
-        url,
-        headers=None,
-        query_params=None,
-        post_params=None,
+        url: str,
+        headers: dict = None,
+        query_params: dict = None,
+        post_params: dict = None,
         body=None,
-        _preload_content=True,
+        _preload_content: bool = True,
         _request_timeout=None,
     ):
         return self.request(
@@ -359,12 +369,12 @@ class RESTClientObject(object):
 
     def PATCH(
         self,
-        url,
-        headers=None,
-        query_params=None,
-        post_params=None,
+        url: str,
+        headers: dict = None,
+        query_params: dict = None,
+        post_params: dict = None,
         body=None,
-        _preload_content=True,
+        _preload_content: bool = True,
         _request_timeout=None,
     ):
         return self.request(

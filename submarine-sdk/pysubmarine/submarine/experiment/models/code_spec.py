@@ -52,7 +52,9 @@ class CodeSpec(object):
 
     attribute_map = {"sync_mode": "syncMode", "url": "url"}
 
-    def __init__(self, sync_mode=None, url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(
+        self, sync_mode: str = None, url: str = None, local_vars_configuration: Configuration = None
+    ):  # noqa: E501
         """CodeSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -78,7 +80,7 @@ class CodeSpec(object):
         return self._sync_mode
 
     @sync_mode.setter
-    def sync_mode(self, sync_mode):
+    def sync_mode(self, sync_mode: str):
         """Sets the sync_mode of this CodeSpec.
 
 
@@ -99,7 +101,7 @@ class CodeSpec(object):
         return self._url
 
     @url.setter
-    def url(self, url):
+    def url(self, url: str):
         """Sets the url of this CodeSpec.
 
 

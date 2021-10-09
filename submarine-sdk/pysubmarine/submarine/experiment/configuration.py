@@ -70,12 +70,12 @@ class Configuration(object):
 
     def __init__(
         self,
-        host="http://localhost/api",
-        api_key=None,
-        api_key_prefix=None,
-        username=None,
-        password=None,
-        discard_unknown_keys=False,
+        host: str = "http://localhost/api",
+        api_key: dict = None,
+        api_key_prefix: dict = None,
+        username: str = None,
+        password: str = None,
+        discard_unknown_keys: bool = False,
     ):
         """Constructor"""
         self.host = host
@@ -181,7 +181,7 @@ class Configuration(object):
         result.debug = self.debug
         return result
 
-    def __setattr__(self, name, value):
+    def __setattr__(self, name: str, value):
         object.__setattr__(self, name, value)
 
     @classmethod
@@ -283,7 +283,7 @@ class Configuration(object):
         return self.__logger_format
 
     @logger_format.setter
-    def logger_format(self, value):
+    def logger_format(self, value: str):
         """The logger format.
 
         The logger_formatter will be updated when sets logger_format.

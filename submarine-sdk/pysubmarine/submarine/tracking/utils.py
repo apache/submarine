@@ -88,5 +88,5 @@ def get_worker_index():
     return worker_index
 
 
-def get_sqlalchemy_store(store_uri):
+def get_sqlalchemy_store(store_uri: str):
     return SqlAlchemyStore(store_uri)
