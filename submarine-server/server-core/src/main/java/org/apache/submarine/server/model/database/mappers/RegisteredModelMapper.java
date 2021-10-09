@@ -22,14 +22,16 @@ package org.apache.submarine.server.model.database.mappers;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
+import org.apache.submarine.server.model.database.entities.RegisteredModelEntity;
 
-public interface ModelVersionMapper {
-  List<ModelVersionEntity> selectAllVersions(String name);
-  ModelVersionEntity select(@Param("name") String name, @Param("version") Integer version);
-  ModelVersionEntity selectWithTag(@Param("name") String name, @Param("version") Integer version);
-  void insert(ModelVersionEntity modelVersion);
-  void update(ModelVersionEntity modelVersion);
-  void delete(@Param("name") String name, @Param("version") Integer version);
-  List<ModelVersionEntity> list(String name);
+public interface RegisteredModelMapper {
+  List<RegisteredModelEntity> selectAll();
+  RegisteredModelEntity select(String name);
+  RegisteredModelEntity selectWithTag(String name);
+
+  void insert(RegisteredModelEntity registeredModel);
+  void update(RegisteredModelEntity registeredModel);
+  void rename(@Param("name")String name, @Param("newName")String newName);
+  void delete(String name);
+  void deleteAll();
 }

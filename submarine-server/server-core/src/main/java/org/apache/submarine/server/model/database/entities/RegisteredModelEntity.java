@@ -19,15 +19,20 @@
 
 package org.apache.submarine.server.model.database.entities;
 
-public class RegisteredModelNameEntity {
+import java.sql.Timestamp;
+import java.util.List;
+
+public class RegisteredModelEntity {
 
   private String name;
 
-  private Long createTime;
+  private Timestamp creationTime;
 
-  private Long lastUpdatedTime;
+  private Timestamp lastUpdatedTime;
 
   private String description;
+
+  private List<String> tags;
 
   public String getName() {
     return name;
@@ -37,19 +42,19 @@ public class RegisteredModelNameEntity {
     this.name = name;
   }
 
-  public Long getCreateTime() {
-    return createTime;
+  public Timestamp getCreationTime() {
+    return creationTime;
   }
 
-  public void setCreateTime(Long createTime) {
-    this.createTime = createTime;
+  public void setCreationTime(Timestamp creationTime) {
+    this.creationTime = creationTime;
   }
 
-  public Long getLastUpdatedTime() {
+  public Timestamp getLastUpdatedTime() {
     return lastUpdatedTime;
   }
 
-  public void setLastUpdatedTime(Long lastUpdatedTime) {
+  public void setLastUpdatedTime(Timestamp lastUpdatedTime) {
     this.lastUpdatedTime = lastUpdatedTime;
   }
 
@@ -61,14 +66,23 @@ public class RegisteredModelNameEntity {
     this.description = description;
   }
 
-  public RegisteredModelNameEntity() {}
+  public List<String> getTags() {
+    return tags;
+  }
+
+  public void setTags(List<String> tags) {
+    this.tags = tags;
+  }
+
+  public RegisteredModelEntity() {}
 
   public String toString() {
-    return "RegisteredModelNameEntity{" +
+    return "RegisteredModelEntity{" +
         "name='" + name + '\'' +
-        ", createTime='" + createTime + '\'' +
+        ", createTime='" + creationTime + '\'' +
         ", lastUpdatedTime=" + lastUpdatedTime + '\'' +
         ", description='" + description + '\'' +
+        ", tags='" + tags + '\'' +
         '}';
   }
 }

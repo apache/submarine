@@ -19,30 +19,31 @@
 
 package org.apache.submarine.server.model.database.entities;
 
+import java.sql.Timestamp;
+import java.util.List;
+
 public class ModelVersionEntity {
   private String name;
 
   private Integer version;
 
-  private Long createTime;
-
-  private Long lastUpdatedTime;
-
-  private String description;
+  private String source;
 
   private String userId;
 
+  private String experimentId;
+
   private String currentStage;
 
-  private String source;
+  private Timestamp creationTime;
 
-  private String runId;
+  private Timestamp lastUpdatedTime;
 
-  private String status;
+  private String dataset;
 
-  private String statusMessage;
+  private String description;
 
-  private String runLink;
+  private List<String> tags;
 
   public String getName() {
     return name;
@@ -60,28 +61,12 @@ public class ModelVersionEntity {
     this.version = version;
   }
 
-  public Long getCreateTime() {
-    return createTime;
+  public String getSource() {
+    return source;
   }
 
-  public void setCreateTime(Long createTime) {
-    this.createTime = createTime;
-  }
-
-  public Long getLastUpdatedTime() {
-    return lastUpdatedTime;
-  }
-
-  public void setLastUpdatedTime(Long lastUpdatedTime) {
-    this.lastUpdatedTime = lastUpdatedTime;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
+  public void setSource(String source) {
+    this.source = source;
   }
 
   public String getUserId() {
@@ -92,6 +77,14 @@ public class ModelVersionEntity {
     this.userId = userId;
   }
 
+  public String getExperimentId() {
+    return experimentId;
+  }
+
+  public void setExperimentId(String experimentId) {
+    this.experimentId = experimentId;
+  }
+
   public String getCurrentStage() {
     return currentStage;
   }
@@ -100,60 +93,61 @@ public class ModelVersionEntity {
     this.currentStage = currentStage;
   }
 
-  public String getSource() {
-    return source;
+  public Timestamp getCreationTime() {
+    return creationTime;
   }
 
-  public void setSource(String source) {
-    this.source = source;
+  public void setCreationTime(Timestamp creationTime) {
+    this.creationTime = creationTime;
   }
 
-  public String getRunId() {
-    return runId;
+  public Timestamp getLastUpdatedTime() {
+    return lastUpdatedTime;
   }
 
-  public void setRunId(String runId) {
-    this.runId = runId;
+  public void setLastUpdatedTime(Timestamp lastUpdatedTime) {
+    this.lastUpdatedTime = lastUpdatedTime;
   }
 
-  public String getStatus() {
-    return status;
+  public String getDataset() {
+    return dataset;
   }
 
-  public void setStatus(String status) {
-    this.status = status;
+  public void setDataset(String dataset) {
+    this.dataset = dataset;
   }
 
-  public String getStatusMessage() {
-    return statusMessage;
+  public String getDescription() {
+    return description;
   }
 
-  public void setStatusMessage(String statusMessage) {
-    this.statusMessage = statusMessage;
+  public void setDescription(String description) {
+    this.description = description;
   }
 
-  public String getRunLink() {
-    return runLink;
+  public List<String> getTags() {
+    return tags;
   }
 
-  public void setRunLink(String runLink) {
-    this.runLink = runLink;
+  public void setTags(List<String> tags) {
+    this.tags = tags;
   }
+
+  public ModelVersionEntity() {}
 
   public String toString() {
     return "ModelVersionEntity{" +
-        "name='" + name + '\'' +
-        ",version='" + version + '\'' +
-        ", createTime='" + createTime + '\'' +
-        ", lastUpdatedTime=" + lastUpdatedTime + '\'' +
-        ", description='" + description + '\'' +
-        ", userId='" + userId + '\'' +
-        ", currentStage='" + currentStage + '\'' +
-        ", source='" + source + '\'' +
-        ", runLink='" + runLink + '\'' +
-        ", runId='" + runId + '\'' +
-        ", status='" + status + '\'' +
-        ", statusMessage='" + statusMessage + '\'' +
-        '}';
+      "name='" + name + '\'' +
+      ",version='" + version + '\'' +
+      ", source='" + source + '\'' +
+      ", userId='" + userId + '\'' +
+      ", experimentId='" + experimentId + '\'' +
+      ", currentStage='" + currentStage + '\'' +
+      ", creationTime='" + creationTime + '\'' +
+      ", lastUpdatedTime=" + lastUpdatedTime + '\'' +
+      ", dataset=" + dataset + '\'' +
+      ", description='" + description + '\'' +
+      ", tags='" + tags + '\'' +
+      '}';
   }
 }
