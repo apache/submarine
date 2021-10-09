@@ -42,31 +42,31 @@ class Experiment(_SubmarineObject):
         self._update_time = update_time
 
     @property
-    def id(self):
+    def id(self) -> Type[Column]:
         """String ID of the experiment."""
         return self._id
 
     @property
-    def experiment_spec(self):
+    def experiment_spec(self) -> Type[Column]:
         """String of the experiment spec."""
         return self._experiment_spec
 
     @property
-    def create_by(self):
+    def create_by(self) -> Type[Column]:
         """String name of created user id."""
         return self.create_by
 
     @property
-    def create_time(self):
+    def create_time(self) -> Type[Column]:
         """Datetime of create time."""
         return self._create_time
 
     @property
-    def update_by(self):
+    def update_by(self) -> Type[Column]:
         """String name of updated user id"."""
         return self._update_by
 
     @property
-    def update_time(self):
+    def update_time(self) -> Type[Column]:
         """Datetime of update time."""
         return self._update_time

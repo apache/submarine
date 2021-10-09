@@ -40,26 +40,26 @@ class Metric(_SubmarineObject):
         self._step = step
 
     @property
-    def key(self):
+    def key(self) -> Type[Column]:
         """String key corresponding to the metric name."""
         return self._key
 
     @property
-    def value(self):
+    def value(self) -> Type[Column]:
         """Float value of the metric."""
         return self._value
 
     @property
-    def worker_index(self):
+    def worker_index(self) -> Type[Column]:
         """string value of the metric."""
         return self._worker_index
 
     @property
-    def timestamp(self):
+    def timestamp(self) -> Type[Column]:
         """Metric timestamp as aa datetime object."""
         return self._timestamp
 
     @property
-    def step(self):
+    def step(self) -> Type[Column]:
         """Integer metric step (x-coordinate)."""
         return self._step
