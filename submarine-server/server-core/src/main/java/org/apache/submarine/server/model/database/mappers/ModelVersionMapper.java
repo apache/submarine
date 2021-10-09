@@ -31,5 +31,4 @@ public interface ModelVersionMapper {
   void insert(ModelVersionEntity modelVersion);
   void update(ModelVersionEntity modelVersion);
   void delete(@Param("name") String name, @Param("version") Integer version);
-  List<ModelVersionEntity> list(String name);
 }
