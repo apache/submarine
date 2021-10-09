@@ -14,43 +14,24 @@
  specific language governing permissions and limitations
  under the License.
 """
-import os
-import re
-import tempfile
 import time
 
 import mlflow
 from mlflow.exceptions import MlflowException
 from mlflow.tracking import MlflowClient
 
-from submarine.artifacts.repository import Repository
-
-from .constant import (
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
-    MLFLOW_S3_ENDPOINT_URL,
-    MLFLOW_TRACKING_URI,
-)
 from .utils import exist_ps, get_job_id, get_worker_index
 
 
 class ModelsClient:
     def __init__(
         self,
-        tracking_uri=None,
-        registry_uri=None,
-        aws_access_key_id=None,
-        aws_secret_access_key=None,
     ):
         """
         Set up mlflow server connection, including: s3 endpoint, aws, tracking server
         """
         # if setting url in environment variable,
         # there is no need to set it by MlflowClient() or mlflow.set_tracking_uri() again
-        os.environ["MLFLOW_S3_ENDPOINT_URL"] = registry_uri or MLFLOW_S3_ENDPOINT_URL
-        os.environ["AWS_ACCESS_KEY_ID"] = aws_access_key_id or AWS_ACCESS_KEY_ID
-        os.environ["AWS_SECRET_ACCESS_KEY"] = aws_secret_access_key or AWS_SECRET_ACCESS_KEY
-        os.environ["MLFLOW_TRACKING_URI"] = tracking_uri or MLFLOW_TRACKING_URI
         self.client = MlflowClient()
         self.type_to_log_model = {
             "pytorch": mlflow.pytorch.log_model,
@@ -58,7 +39,6 @@ class ModelsClient:
             "tensorflow": mlflow.tensorflow.log_model,
             "keras": mlflow.keras.log_model,
         }
-        self.artifact_repo = Repository(get_job_id())
 
     def start(self):
         """
@@ -108,27 +88,6 @@ class ModelsClient:
                 )
             else:
                 raise MlflowException("No valid type of model has been matched")
-
-    def save_model_submarine(self, model_type, model, artifact_path, registered_model_name=None):
-        pattern = r"[0-9A-Za-z][0-9A-Za-z-_]*[0-9A-Za-z]|[0-9A-Za-z]"
-        if not re.fullmatch(pattern, artifact_path):
-            raise Exception(
-                "Artifact_path must only contains numbers, characters, hyphen and underscore.      "
-                "        Artifact_path must starts and ends with numbers or characters."
-            )
-        with tempfile.TemporaryDirectory() as tempdir:
-            if model_type == "pytorch":
-                import submarine.models.pytorch
-
-                submarine.models.pytorch.save_model(model, tempdir)
-            elif model_type == "tensorflow":
-                import submarine.models.tensorflow
-
-                submarine.models.tensorflow.save_model(model, tempdir)
-            else:
-                raise Exception("No valid type of model has been matched to {}".format(model_type))
-            self.artifact_repo.log_artifacts(tempdir, artifact_path)
-        # TODO for registering model ()
 
     def _get_or_create_experiment(self, experiment_name):
         """

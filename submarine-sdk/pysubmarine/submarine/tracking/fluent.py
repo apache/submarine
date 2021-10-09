@@ -52,3 +52,7 @@ def log_metric(key, value, step=None):
     job_id = get_job_id()
     worker_index = get_worker_index()
     SubmarineClient().log_metric(job_id, key, value, worker_index, datetime.now(), step or 0)
+
+
+def save_model(self, model_type: str, model, artifact_path: str, registered_model_name: str = None):
+    SubmarineClient().save_model(model_type, model, artifact_path, registered_model_name)
