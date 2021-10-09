@@ -35,11 +35,7 @@ class _SubmarineObject:
         return to_string(self)
 
 
-<<<<<<< HEAD
 def to_string(obj) -> str:
-=======
-def to_string(obj: dict):
->>>>>>> 1b6aa5b7a54ea07389917fda6c1a6e31e031749a
     return _SubmarineObjectPrinter().to_string(obj)
 
 
@@ -52,18 +48,10 @@ class _SubmarineObjectPrinter:
         super(_SubmarineObjectPrinter, self).__init__()
         self.printer = pprint.PrettyPrinter()
 
-<<<<<<< HEAD
     def to_string(self, obj) -> str:
-=======
-    def to_string(self, obj: dict):
->>>>>>> 1b6aa5b7a54ea07389917fda6c1a6e31e031749a
         if isinstance(obj, _SubmarineObject):
             return "<%s: %s>" % (get_classname(obj), self._entity_to_string(obj))
         return self.printer.pformat(obj)
 
-<<<<<<< HEAD
     def _entity_to_string(self, entity) -> str:
-=======
-    def _entity_to_string(self, entity: dict):
->>>>>>> 1b6aa5b7a54ea07389917fda6c1a6e31e031749a
         return ", ".join(["%s=%s" % (key, self.to_string(value)) for key, value in entity])
