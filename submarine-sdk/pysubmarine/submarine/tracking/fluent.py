@@ -29,7 +29,7 @@ _RUN_ID_ENV_VAR = "SUBMARINE_RUN_ID"
 _logger = logging.getLogger(__name__)
 
 
-def log_param(key, value):
+def log_param(key: str, value: str):
     """
     Log a parameter under the current run, creating a run if necessary.
     :param key: Parameter name (string)
@@ -40,7 +40,7 @@ def log_param(key, value):
     SubmarineClient().log_param(job_id, key, value, worker_index)
 
 
-def log_metric(key, value, step=None):
+def log_metric(key: str, value: float, step: int = None):
     """
     Log a metric under the current run, creating a run if necessary.
     :param key: Metric name (string).

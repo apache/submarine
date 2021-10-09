@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Type
+
+from sqlalchemy.sql.schema import Column
+
 from submarine.entities._submarine_object import _SubmarineObject
 
 
@@ -21,7 +25,15 @@ class Experiment(_SubmarineObject):
     Experiment object.
     """
 
-    def __init__(self, id, experiment_spec, create_by, create_time, update_by, update_time):
+    def __init__(
+        self,
+        id: Type[Column],
+        experiment_spec: Type[Column],
+        create_by: Type[Column],
+        create_time: Type[Column],
+        update_by: Type[Column],
+        update_time: Type[Column],
+    ):
         self._id = id
         self._experiment_spec = experiment_spec
         self._create_by = create_by

@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Type
+
+from sqlalchemy.sql.schema import Column
+
 from submarine.entities._submarine_object import _SubmarineObject
 
 
@@ -21,7 +25,7 @@ class ModelVersionTag(_SubmarineObject):
     Tag object associated with a model version.
     """
 
-    def __init__(self, tag):
+    def __init__(self, tag: Type[Column]):
         self._tag = tag
 
     @property

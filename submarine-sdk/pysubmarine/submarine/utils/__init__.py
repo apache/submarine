@@ -19,7 +19,7 @@ from submarine.exceptions import SubmarineException
 from submarine.utils.db_utils import get_db_uri, set_db_uri
 
 
-def extract_db_type_from_uri(db_uri):
+def extract_db_type_from_uri(db_uri: str):
     """
     Parse the specified DB URI to extract the database type. Confirm the database type is
     supported. If a driver is specified, confirm it passes a plausible regex.

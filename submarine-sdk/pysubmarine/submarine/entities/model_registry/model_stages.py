@@ -26,7 +26,7 @@ ALL_STAGES = [STAGE_NONE, STAGE_DEVELOPING, STAGE_PRODUCTION, STAGE_ARCHIVED]
 _CANONICAL_MAPPING = {stage.lower(): stage for stage in ALL_STAGES}
 
 
-def get_canonical_stage(stage):
+def get_canonical_stage(stage: str):
     key = stage.lower()
     if key not in _CANONICAL_MAPPING:
         raise SubmarineException(f"Invalid Model Version stage {stage}.")

@@ -18,5 +18,5 @@ import os
 import torch
 
 
-def save_model(model, artifact_path):
+def save_model(model, artifact_path: str):
     torch.save(model, os.path.join(artifact_path, "model.pth"))

@@ -53,7 +53,11 @@ class KernelSpec(object):
     attribute_map = {"name": "name", "channels": "channels", "dependencies": "dependencies"}
 
     def __init__(
-        self, name=None, channels=None, dependencies=None, local_vars_configuration=None
+        self,
+        name: str = None,
+        channels: list = None,
+        dependencies: str = None,
+        local_vars_configuration: Configuration = None,
     ):  # noqa: E501
         """KernelSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
@@ -83,7 +87,7 @@ class KernelSpec(object):
         return self._name
 
     @name.setter
-    def name(self, name):
+    def name(self, name: str):
         """Sets the name of this KernelSpec.
 
 
@@ -104,7 +108,7 @@ class KernelSpec(object):
         return self._channels
 
     @channels.setter
-    def channels(self, channels):
+    def channels(self, channels: list):
         """Sets the channels of this KernelSpec.
 
 
@@ -125,7 +129,7 @@ class KernelSpec(object):
         return self._dependencies
 
     @dependencies.setter
-    def dependencies(self, dependencies):
+    def dependencies(self, dependencies: list):
         """Sets the dependencies of this KernelSpec.
 
 

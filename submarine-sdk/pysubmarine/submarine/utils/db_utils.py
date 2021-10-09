@@ -29,7 +29,7 @@ def is_db_uri_set():
     return False
 
 
-def set_db_uri(uri):
+def set_db_uri(uri: str):
     """
     Set the DB URI. This does not affect the currently active run (if one exists),
     but takes effect for successive runs.

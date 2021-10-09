@@ -66,12 +66,12 @@ class ExperimentMeta(object):
 
     def __init__(
         self,
-        name=None,
-        namespace=None,
-        framework=None,
-        cmd=None,
-        env_vars=None,
-        local_vars_configuration=None,
+        name: str = None,
+        namespace: str = None,
+        framework: str = None,
+        cmd: str = None,
+        env_vars: dict = None,
+        local_vars_configuration: Configuration = None,
     ):  # noqa: E501
         """ExperimentMeta - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
@@ -107,7 +107,7 @@ class ExperimentMeta(object):
         return self._name
 
     @name.setter
-    def name(self, name):
+    def name(self, name: str):
         """Sets the name of this ExperimentMeta.
 
 
@@ -128,7 +128,7 @@ class ExperimentMeta(object):
         return self._namespace
 
     @namespace.setter
-    def namespace(self, namespace):
+    def namespace(self, namespace: str):
         """Sets the namespace of this ExperimentMeta.
 
 
@@ -149,7 +149,7 @@ class ExperimentMeta(object):
         return self._framework
 
     @framework.setter
-    def framework(self, framework):
+    def framework(self, framework: str):
         """Sets the framework of this ExperimentMeta.
 
 
@@ -170,7 +170,7 @@ class ExperimentMeta(object):
         return self._cmd
 
     @cmd.setter
-    def cmd(self, cmd):
+    def cmd(self, cmd: str):
         """Sets the cmd of this ExperimentMeta.
 
 
@@ -191,7 +191,7 @@ class ExperimentMeta(object):
         return self._env_vars
 
     @env_vars.setter
-    def env_vars(self, env_vars):
+    def env_vars(self, env_vars: dict):
         """Sets the env_vars of this ExperimentMeta.
 
 

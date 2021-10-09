@@ -22,7 +22,7 @@ class OptimizerKey:
     SGD = "sgd"
 
 
-def get_optimizer(key):
+def get_optimizer(key: str):
     key = key.lower()
     if key == OptimizerKey.ADAM:
         return optim.Adam

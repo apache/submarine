@@ -66,12 +66,12 @@ class EnvironmentSpec(object):
 
     def __init__(
         self,
-        name=None,
-        docker_image=None,
+        name: str = None,
+        docker_image: str = None,
         kernel_spec=None,
-        description=None,
-        image=None,
-        local_vars_configuration=None,
+        description: str = None,
+        image: str = None,
+        local_vars_configuration: Configuration = None,
     ):  # noqa: E501
         """EnvironmentSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
@@ -107,7 +107,7 @@ class EnvironmentSpec(object):
         return self._name
 
     @name.setter
-    def name(self, name):
+    def name(self, name: str):
         """Sets the name of this EnvironmentSpec.
 
 
@@ -128,7 +128,7 @@ class EnvironmentSpec(object):
         return self._docker_image
 
     @docker_image.setter
-    def docker_image(self, docker_image):
+    def docker_image(self, docker_image: str):
         """Sets the docker_image of this EnvironmentSpec.
 
 
@@ -170,7 +170,7 @@ class EnvironmentSpec(object):
         return self._description
 
     @description.setter
-    def description(self, description):
+    def description(self, description: str):
         """Sets the description of this EnvironmentSpec.
 
 
@@ -191,7 +191,7 @@ class EnvironmentSpec(object):
         return self._image
 
     @image.setter
-    def image(self, image):
+    def image(self, image: str):
         """Sets the image of this EnvironmentSpec.
 
 

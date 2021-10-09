@@ -25,7 +25,7 @@ class SubmarineClient(object):
     Client of an submarine Tracking Server that creates and manages experiments and runs.
     """
 
-    def __init__(self, db_uri=None):
+    def __init__(self, db_uri: str = None):
         """
         :param db_uri: Address of local or remote tracking server. If not provided, defaults
                              to the service set by ``submarine.tracking.set_db_uri``. See

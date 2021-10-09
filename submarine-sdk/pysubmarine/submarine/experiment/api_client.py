@@ -82,7 +82,12 @@ class ApiClient(object):
     _pool = None
 
     def __init__(
-        self, configuration=None, header_name=None, header_value=None, cookie=None, pool_threads=1
+        self,
+        configuration: Configuration = None,
+        header_name: str = None,
+        header_value=None,
+        cookie=None,
+        pool_threads: int = 1,
     ):
         if configuration is None:
             configuration = Configuration.get_default_copy()
@@ -131,7 +136,7 @@ class ApiClient(object):
     def user_agent(self, value):
         self.default_headers["User-Agent"] = value
 
-    def set_default_header(self, header_name, header_value):
+    def set_default_header(self, header_name: str, header_value):
         self.default_headers[header_name] = header_value
 
     def __call_api(
@@ -569,7 +574,7 @@ class ApiClient(object):
 
         return params
 
-    def select_header_accept(self, accepts):
+    def select_header_accept(self, accepts: list):
         """Returns `Accept` based on an array of accepts provided.
 
         :param accepts: List of headers.
@@ -585,7 +590,7 @@ class ApiClient(object):
         else:
             return ", ".join(accepts)
 
-    def select_header_content_type(self, content_types):
+    def select_header_content_type(self, content_types: list):
         """Returns `Content-Type` based on an array of content_types provided.
 
         :param content_types: List of content-types.
@@ -646,7 +651,7 @@ class ApiClient(object):
 
         return path
 
-    def __deserialize_primitive(self, data, klass):
+    def __deserialize_primitive(self, data: str, klass):
         """Deserializes string to primitive type.
 
         :param data: str.
@@ -668,7 +673,7 @@ class ApiClient(object):
         """
         return value
 
-    def __deserialize_date(self, string):
+    def __deserialize_date(self, string: str):
         """Deserializes string to date.
 
         :param string: str.
@@ -683,7 +688,7 @@ class ApiClient(object):
                 status=0, reason="Failed to parse `{0}` as date object".format(string)
             )
 
-    def __deserialize_datetime(self, string):
+    def __deserialize_datetime(self, string: str):
         """Deserializes string to datetime.
 
         The string should be in iso8601 datetime format.

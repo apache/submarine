@@ -59,7 +59,7 @@ def _can_parse_as_json(string):
         return False
 
 
-def verify_rest_response(response, endpoint):
+def verify_rest_response(response, endpoint: str):
     """Verify the return code and raise exception if the request was not successful."""
     if response.status_code != 200:
         if _can_parse_as_json(response.text):
