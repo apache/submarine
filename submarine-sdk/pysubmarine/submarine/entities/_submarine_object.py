@@ -35,11 +35,13 @@ class _SubmarineObject:
         return to_string(self)
 
 
-<<<<<<< HEAD
 def to_string(obj) -> str:
+<<<<<<< HEAD
 =======
 def to_string(obj: dict):
 >>>>>>> c8fd90cc (SUBMARINE-1045. Add static type parameter in submarine-sdk)
+=======
+>>>>>>> 015deddd (SUBMARINE-1045. Add static type parameter in submarine-sdk)
     return _SubmarineObjectPrinter().to_string(obj)
 
 
@@ -52,18 +54,22 @@ class _SubmarineObjectPrinter:
         super(_SubmarineObjectPrinter, self).__init__()
         self.printer = pprint.PrettyPrinter()
 
-<<<<<<< HEAD
     def to_string(self, obj) -> str:
+<<<<<<< HEAD
 =======
     def to_string(self, obj: dict):
 >>>>>>> c8fd90cc (SUBMARINE-1045. Add static type parameter in submarine-sdk)
+=======
+>>>>>>> 015deddd (SUBMARINE-1045. Add static type parameter in submarine-sdk)
         if isinstance(obj, _SubmarineObject):
             return "<%s: %s>" % (get_classname(obj), self._entity_to_string(obj))
         return self.printer.pformat(obj)
 
-<<<<<<< HEAD
     def _entity_to_string(self, entity) -> str:
+<<<<<<< HEAD
 =======
     def _entity_to_string(self, entity: dict):
 >>>>>>> c8fd90cc (SUBMARINE-1045. Add static type parameter in submarine-sdk)
+=======
+>>>>>>> 015deddd (SUBMARINE-1045. Add static type parameter in submarine-sdk)
         return ", ".join(["%s=%s" % (key, self.to_string(value)) for key, value in entity])

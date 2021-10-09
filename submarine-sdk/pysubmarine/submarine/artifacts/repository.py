@@ -19,11 +19,13 @@ import boto3
 
 
 class Repository:
-<<<<<<< HEAD
     def __init__(self, experiment_id: str) -> None:
+<<<<<<< HEAD
 =======
     def __init__(self, experiment_id: str):
 >>>>>>> c8fd90cc (SUBMARINE-1045. Add static type parameter in submarine-sdk)
+=======
+>>>>>>> 015deddd (SUBMARINE-1045. Add static type parameter in submarine-sdk)
         self.client = boto3.client(
             "s3",
             aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
@@ -32,11 +34,13 @@ class Repository:
         )
         self.dest_path = experiment_id
 
-<<<<<<< HEAD
     def _upload_file(self, local_file: str, bucket: str, key: str) -> None:
+<<<<<<< HEAD
 =======
     def _upload_file(self, local_file: str, bucket: str, key: str):
 >>>>>>> c8fd90cc (SUBMARINE-1045. Add static type parameter in submarine-sdk)
+=======
+>>>>>>> 015deddd (SUBMARINE-1045. Add static type parameter in submarine-sdk)
         self.client.upload_file(Filename=local_file, Bucket=bucket, Key=key)
 
     def _list_artifact_subfolder(self, artifact_path):
@@ -47,11 +51,13 @@ class Repository:
         )
         return response.get("CommonPrefixes")
 
-<<<<<<< HEAD
     def log_artifact(self, local_file: str, artifact_path: str) -> None:
+<<<<<<< HEAD
 =======
     def log_artifact(self, local_file: str, artifact_path: str):
 >>>>>>> c8fd90cc (SUBMARINE-1045. Add static type parameter in submarine-sdk)
+=======
+>>>>>>> 015deddd (SUBMARINE-1045. Add static type parameter in submarine-sdk)
         bucket = "submarine"
         dest_path = self.dest_path
         dest_path = os.path.join(dest_path, artifact_path)
@@ -62,11 +68,13 @@ class Repository:
             key=dest_path,
         )
 
-<<<<<<< HEAD
     def log_artifacts(self, local_dir: str, artifact_path: str) -> None:
+<<<<<<< HEAD
 =======
     def log_artifacts(self, local_dir: str, artifact_path: str):
 >>>>>>> c8fd90cc (SUBMARINE-1045. Add static type parameter in submarine-sdk)
+=======
+>>>>>>> 015deddd (SUBMARINE-1045. Add static type parameter in submarine-sdk)
         bucket = "submarine"
         dest_path = self.dest_path
         list_of_subfolder = self._list_artifact_subfolder(artifact_path)
