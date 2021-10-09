@@ -31,16 +31,16 @@ class Param(_SubmarineObject):
         self._worker_index = worker_index
 
     @property
-    def key(self):
+    def key(self) -> Type[Column]:
         """String key corresponding to the parameter name."""
         return self._key
 
     @property
-    def value(self):
+    def value(self) -> Type[Column]:
         """String value of the parameter."""
         return self._value
 
     @property
-    def worker_index(self):
+    def worker_index(self) -> Type[Column]:
         """String value of the parameter."""
         return self._worker_index

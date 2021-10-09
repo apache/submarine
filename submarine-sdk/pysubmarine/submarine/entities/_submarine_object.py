@@ -31,11 +31,11 @@ class _SubmarineObject:
         filtered_dict = {key: value for key, value in the_dict.items() if key in cls._properties()}
         return cls(**filtered_dict)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return to_string(self)
 
 
-def to_string(obj: dict):
+def to_string(obj) -> str:
     return _SubmarineObjectPrinter().to_string(obj)
 
 
@@ -48,10 +48,10 @@ class _SubmarineObjectPrinter:
         super(_SubmarineObjectPrinter, self).__init__()
         self.printer = pprint.PrettyPrinter()
 
-    def to_string(self, obj: dict):
+    def to_string(self, obj) -> str:
         if isinstance(obj, _SubmarineObject):
             return "<%s: %s>" % (get_classname(obj), self._entity_to_string(obj))
         return self.printer.pformat(obj)
 
-    def _entity_to_string(self, entity: dict):
+    def _entity_to_string(self, entity) -> str:
         return ", ".join(["%s=%s" % (key, self.to_string(value)) for key, value in entity])
