@@ -42,7 +42,7 @@ class SqlAlchemyStore(AbstractStore):
     :py:class:`submarine.store.database.models.SqlParam`.
     """
 
-    def __init__(self, db_uri):
+    def __init__(self, db_uri: str):
         """
         Create a database backed store.
         :param db_uri: The SQLAlchemy database URI string to connect to the database. See
@@ -102,7 +102,7 @@ class SqlAlchemyStore(AbstractStore):
         return make_managed_session
 
     @staticmethod
-    def _save_to_db(session, objs):
+    def _save_to_db(session, objs: object):
         """
         Store in db
         """

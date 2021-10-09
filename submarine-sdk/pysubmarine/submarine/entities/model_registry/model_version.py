@@ -13,6 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Type
+
+from sqlalchemy.sql.schema import Column
+
 from submarine.entities._submarine_object import _SubmarineObject
 
 
@@ -23,14 +27,14 @@ class ModelVersion(_SubmarineObject):
 
     def __init__(
         self,
-        name,
-        version,
-        source,
-        user_id,
-        experiment_id,
-        current_stage,
-        creation_time,
-        last_updated_time,
+        name: Type[Column],
+        version: Type[Column],
+        source: Type[Column],
+        user_id: Type[Column],
+        experiment_id: Type[Column],
+        current_stage: Type[Column],
+        creation_time: Type[Column],
+        last_updated_time: Type[Column],
         dataset=None,
         description=None,
         tags=None,

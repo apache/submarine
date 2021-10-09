@@ -43,12 +43,12 @@ def batch_norm_layer(x, train_phase, scope_bn, batch_norm_decay):
 
 def dnn_layer(
     inputs,
-    estimator_mode,
-    batch_norm,
-    deep_layers,
+    estimator_mode: str,
+    batch_norm: bool,
+    deep_layers: list,
     dropout,
-    batch_norm_decay=0.9,
-    l2_reg=0,
+    batch_norm_decay: float = 0.9,
+    l2_reg: float = 0,
     **kwargs
 ):
     """
@@ -100,7 +100,7 @@ def dnn_layer(
     return deep_out
 
 
-def linear_layer(features, feature_size, field_size, l2_reg=0, **kwargs):
+def linear_layer(features, feature_size, field_size, l2_reg: float = 0, **kwargs):
     """
     Layer which represents linear function.
     :param features: input features
@@ -131,7 +131,9 @@ def linear_layer(features, feature_size, field_size, l2_reg=0, **kwargs):
     return linear_out
 
 
-def embedding_layer(features, feature_size, field_size, embedding_size, l2_reg=0, **kwargs):
+def embedding_layer(
+    features, feature_size, field_size, embedding_size, l2_reg: float = 0, **kwargs
+):
     """
     Turns positive integers (indexes) into dense vectors of fixed size.
     eg. [[4], [20]] -> [[0.25, 0.1], [0.6, -0.2]]
@@ -199,7 +201,7 @@ class KMaxPooling(Layer):
       - **axis**: positive integer, the dimension to look for elements.
     """
 
-    def __init__(self, k=1, axis=-1, **kwargs):
+    def __init__(self, k: int = 1, axis: int = -1, **kwargs):
 
         self.dims = 1
         self.k = k

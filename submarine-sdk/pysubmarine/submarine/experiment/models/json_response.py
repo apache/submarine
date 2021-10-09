@@ -63,7 +63,12 @@ class JsonResponse(object):
     }
 
     def __init__(
-        self, code=None, success=None, result=None, attributes=None, local_vars_configuration=None
+        self,
+        code: int = None,
+        success: bool = None,
+        result: object = None,
+        attributes: dict = None,
+        local_vars_configuration: Configuration = None,
     ):  # noqa: E501
         """JsonResponse - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
@@ -96,7 +101,7 @@ class JsonResponse(object):
         return self._code
 
     @code.setter
-    def code(self, code):
+    def code(self, code: int):
         """Sets the code of this JsonResponse.
 
 
@@ -117,7 +122,7 @@ class JsonResponse(object):
         return self._success
 
     @success.setter
-    def success(self, success):
+    def success(self, success: bool):
         """Sets the success of this JsonResponse.
 
 
@@ -138,7 +143,7 @@ class JsonResponse(object):
         return self._result
 
     @result.setter
-    def result(self, result):
+    def result(self, result: object):
         """Sets the result of this JsonResponse.
 
 
@@ -159,7 +164,7 @@ class JsonResponse(object):
         return self._attributes
 
     @attributes.setter
-    def attributes(self, attributes):
+    def attributes(self, attributes: dict):
         """Sets the attributes of this JsonResponse.
 
 

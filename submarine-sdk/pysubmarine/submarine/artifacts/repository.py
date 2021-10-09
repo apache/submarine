@@ -19,7 +19,7 @@ import boto3
 
 
 class Repository:
-    def __init__(self, experiment_id):
+    def __init__(self, experiment_id: str):
         self.client = boto3.client(
             "s3",
             aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
@@ -28,7 +28,7 @@ class Repository:
         )
         self.dest_path = experiment_id
 
-    def _upload_file(self, local_file, bucket, key):
+    def _upload_file(self, local_file: str, bucket: str, key: str):
         self.client.upload_file(Filename=local_file, Bucket=bucket, Key=key)
 
     def _list_artifact_subfolder(self, artifact_path):
@@ -39,7 +39,7 @@ class Repository:
         )
         return response.get("CommonPrefixes")
 
-    def log_artifact(self, local_file, artifact_path):
+    def log_artifact(self, local_file: str, artifact_path: str):
         bucket = "submarine"
         dest_path = self.dest_path
         dest_path = os.path.join(dest_path, artifact_path)
@@ -50,7 +50,7 @@ class Repository:
             key=dest_path,
         )
 
-    def log_artifacts(self, local_dir, artifact_path):
+    def log_artifacts(self, local_dir: str, artifact_path: str):
         bucket = "submarine"
         dest_path = self.dest_path
         list_of_subfolder = self._list_artifact_subfolder(artifact_path)

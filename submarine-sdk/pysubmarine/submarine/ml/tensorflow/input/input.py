@@ -24,10 +24,10 @@ AUTOTUNE = tf.data.experimental.AUTOTUNE
 
 def libsvm_input_fn(
     filepath,
-    batch_size=256,
-    num_epochs=3,  # pylint: disable=W0613
-    perform_shuffle=False,
-    delimiter=" ",
+    batch_size: int = 256,
+    num_epochs: int = 3,  # pylint: disable=W0613
+    perform_shuffle: bool = False,
+    delimiter: str = " ",
     **kwargs
 ):
     def _input_fn():

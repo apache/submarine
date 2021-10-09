@@ -74,16 +74,16 @@ class ExperimentTaskSpec(object):
 
     def __init__(
         self,
-        replicas=None,
-        resources=None,
-        name=None,
-        image=None,
-        cmd=None,
-        env_vars=None,
-        cpu=None,
-        gpu=None,
-        memory=None,
-        local_vars_configuration=None,
+        replicas: int = None,
+        resources: str = None,
+        name: str = None,
+        image: str = None,
+        cmd: str = None,
+        env_vars: dict = None,
+        cpu: str = None,
+        gpu: str = None,
+        memory: str = None,
+        local_vars_configuration: Configuration = None,
     ):  # noqa: E501
         """ExperimentTaskSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
@@ -131,7 +131,7 @@ class ExperimentTaskSpec(object):
         return self._replicas
 
     @replicas.setter
-    def replicas(self, replicas):
+    def replicas(self, replicas: int):
         """Sets the replicas of this ExperimentTaskSpec.
 
 
@@ -152,7 +152,7 @@ class ExperimentTaskSpec(object):
         return self._resources
 
     @resources.setter
-    def resources(self, resources):
+    def resources(self, resources: str):
         """Sets the resources of this ExperimentTaskSpec.
 
 
@@ -173,7 +173,7 @@ class ExperimentTaskSpec(object):
         return self._name
 
     @name.setter
-    def name(self, name):
+    def name(self, name: str):
         """Sets the name of this ExperimentTaskSpec.
 
 
@@ -194,7 +194,7 @@ class ExperimentTaskSpec(object):
         return self._image
 
     @image.setter
-    def image(self, image):
+    def image(self, image: str):
         """Sets the image of this ExperimentTaskSpec.
 
 
@@ -215,7 +215,7 @@ class ExperimentTaskSpec(object):
         return self._cmd
 
     @cmd.setter
-    def cmd(self, cmd):
+    def cmd(self, cmd: str):
         """Sets the cmd of this ExperimentTaskSpec.
 
 
@@ -236,7 +236,7 @@ class ExperimentTaskSpec(object):
         return self._env_vars
 
     @env_vars.setter
-    def env_vars(self, env_vars):
+    def env_vars(self, env_vars: dict):
         """Sets the env_vars of this ExperimentTaskSpec.
 
 
@@ -257,7 +257,7 @@ class ExperimentTaskSpec(object):
         return self._cpu
 
     @cpu.setter
-    def cpu(self, cpu):
+    def cpu(self, cpu: str):
         """Sets the cpu of this ExperimentTaskSpec.
 
 
@@ -278,7 +278,7 @@ class ExperimentTaskSpec(object):
         return self._gpu
 
     @gpu.setter
-    def gpu(self, gpu):
+    def gpu(self, gpu: str):
         """Sets the gpu of this ExperimentTaskSpec.
 
 
@@ -299,7 +299,7 @@ class ExperimentTaskSpec(object):
         return self._memory
 
     @memory.setter
-    def memory(self, memory):
+    def memory(self, memory: str):
         """Sets the memory of this ExperimentTaskSpec.
 
 

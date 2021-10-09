@@ -58,7 +58,12 @@ class ExperimentSpec(object):
     attribute_map = {"meta": "meta", "environment": "environment", "spec": "spec", "code": "code"}
 
     def __init__(
-        self, meta=None, environment=None, spec=None, code=None, local_vars_configuration=None
+        self,
+        meta=None,
+        environment=None,
+        spec: dict = None,
+        code=None,
+        local_vars_configuration: Configuration = None,
     ):  # noqa: E501
         """ExperimentSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
@@ -133,7 +138,7 @@ class ExperimentSpec(object):
         return self._spec
 
     @spec.setter
-    def spec(self, spec):
+    def spec(self, spec: dict):
         """Sets the spec of this ExperimentSpec.
 
 
