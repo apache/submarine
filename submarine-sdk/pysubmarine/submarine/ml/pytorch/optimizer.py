@@ -27,7 +27,7 @@ def get_optimizer(key: str):
     if key == OptimizerKey.ADAM:
         return optim.Adam
     if key == OptimizerKey.ADAGRAD:
-        return optim.Adagrad
+        return optim.Adagrad  # type: ignore
     if key == OptimizerKey.SGD:
         return optim.SGD
     raise ValueError("Invalid optimizer_key:", key)
