@@ -79,7 +79,7 @@ Checkstyle plugin may help to detect violations directly from the IDE.
 1. Package the Submarine server into a new jar file
 
    ```bash
-   mvn package -DskipTests
+   mvn install -DskipTests
    ```
 
 2. Build the new server docker image in minikube
@@ -95,13 +95,11 @@ Checkstyle plugin may help to detect violations directly from the IDE.
    eval $(minikube docker-env -u)
    ```
 
-3. Update server pod
+3. Delete the server deployment and the operator will create a new one using the new image
 
    ```bash
-   helm upgrade --set submarine.server.dev=true submarine ./helm-charts/submarine
+   kubectl delete deployment submarine-server
    ```
-
-   Set `submarine.server.dev` to `true`, enabling the server pod to be launched with the new docker image.
 
 ## Develop workbench
 
@@ -147,75 +145,9 @@ Checkstyle plugin may help to detect violations directly from the IDE.
    ```bash
    helm upgrade --set submarine.database.dev=true submarine ./helm-charts/submarine
    ```
- ## Develop operator
+## Develop operator
 
-- Before building
-
-  1. We assume the developer use **minikube** as a local kubernetes cluster.
-  2. Make sure you have **NOT** installed the submarine helm-chart in the cluster.
-
-1. Start the minikube cluster
-
-    ```bash
-    minikube start --vm-driver=docker --kubernetes-version v1.15.11
-    ```
-
-2. Install the dependencies
-
-    ```bash
-    cd submarine-cloud-v2/
-    cp -r ../helm-charts/submarine/charts ./helm-charts/submarine-operator/
-    go mod vendor
-    helm install --set dev=true submarine-operator ./helm-charts/submarine-operator/
-    ```
-
-3. Run the operator out-of-cluster
-
-    ```bash
-    make
-    ./submarine-operator
-    ```
-
-4. Deploy a Submarine
-
-    ```bash
-    kubectl apply -f artifacts/examples/crd.yaml
-    kubectl create ns submarine-user-test
-    kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
-    ```
-
-5. Exposing service
-
-    ```bash
-    # Method1 -- use minikube ip
-    minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
-
-    # Method2 -- use port-forwarding
-    kubectl port-forward --address 0.0.0.0 -n submarine-user-test service/traefik 32080:80
-    ```
-
-6. View workbench
-
-    If you use method 1 in step 5, please go to `http://{minikube ip}:32080`, ex: http://192.168.49.2:32080
-
-    If you use method 2 in step 5, please go to http://127.0.0.1:32080
-
-7. Delete submarine
-
-    ```bash
-    kubectl delete submarine example-submarine -n submarine-user-test
-    ```
-
-8. Stop the operator
-
-    Press ctrl+c to stop the operator.
-
-9. Uninstall helm chart dependencies
-    ```bash
-    helm delete submarine-operator
-    ```
-
-For other details, please check out the [README](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/README.md) and [Developer Guide](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/docs/developer-guide.md) on GitHub.
+For details, please check out the [README](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/README.md) and [Developer Guide](https://github.com/apache/submarine/blob/master/submarine-cloud-v2/docs/developer-guide.md) on GitHub.
 
 ## Develop Submarine Website
 Submarine website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.

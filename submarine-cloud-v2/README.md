@@ -46,7 +46,7 @@ Documentation for storage class: https://kubernetes.io/docs/concepts/storage/sto
 
 ```bash
 # Step1: Install helm chart dependencies
-helm install --set dev=true submarine-operator ./helm-charts/submarine-operator/
+helm install --set dev=true submarine ../helm-charts/submarine/
 
 # Step2: Build & Run "submarine-operator"
 make
@@ -61,7 +61,7 @@ kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yam
 minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
 
 # Method2 -- use port-forwarding
-kubectl port-forward --address 0.0.0.0 service/submarine-operator-traefik 32080:80
+kubectl port-forward --address 0.0.0.0 service/submarine-traefik 32080:80
 
 # Step5: View Workbench
 # http://{minikube ip}:32080 (from Method 1), ex: http://192.168.49.2:32080
@@ -79,14 +79,14 @@ kubectl delete submarine example-submarine -n submarine-user-test
 # Press ctrl+c to stop the operator
 
 # Step7: Uninstall helm chart dependencies
-helm delete submarine-operator
+helm delete submarine
 ```
 
 ## Run operator in-cluster
 
 ```bash
 # Step1: Install submarine-operator
-helm install submarine-operator ./helm-charts/submarine-operator/
+helm install submarine ../helm-charts/submarine/
 
 # Step2: Deploy a submarine
 kubectl create ns submarine-user-test
@@ -100,7 +100,7 @@ kubectl logs -f $(kubectl get pods --output=name | grep submarine-operator)
 minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
 
 # Method2 -- use port-forwarding
-kubectl port-forward --address 0.0.0.0 service/submarine-operator-traefik 32080:80
+kubectl port-forward --address 0.0.0.0 service/submarine-traefik 32080:80
 
 # Step5: View Workbench
 # http://{minikube ip}:32080 (from Method 1), ex: http://192.168.49.2:32080
@@ -115,7 +115,7 @@ kubectl port-forward --address 0.0.0.0 service/submarine-operator-traefik 32080:
 kubectl delete submarine example-submarine -n submarine-user-test
 
 # Step7: Delete the submarine-operator
-helm delete submarine-operator
+helm delete submarine
 ```
 
 # Development
