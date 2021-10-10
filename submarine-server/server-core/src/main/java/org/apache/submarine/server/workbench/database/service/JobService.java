@@ -33,10 +33,15 @@ import java.util.Map;
 public class JobService {
   private static final Logger LOG = LoggerFactory.getLogger(JobService.class);
 
-  public List<JobEntity> queryJobList(String userName,
-                                      String column, String order, int pageNo, int pageSize) throws Exception {
+  public List<JobEntity> queryJobList(
+          String userName,
+          String column,
+          String order,
+          int pageNo,
+          int pageSize)
+          throws Exception {
     LOG.info("queryJobList owner:{}, column:{}, order:{}, pageNo:{}, pageSize:{}",
-        userName, column, order, pageNo, pageSize);
+            userName, column, order, pageNo, pageSize);
 
     List<JobEntity> list = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {

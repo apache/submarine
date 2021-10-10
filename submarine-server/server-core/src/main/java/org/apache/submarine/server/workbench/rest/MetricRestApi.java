@@ -79,7 +79,8 @@ public class MetricRestApi {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<List<MetricEntity>>(Response.Status.OK).success(true).result(metrics).build();
+    return new JsonResponse.Builder<List<MetricEntity>>(Response.Status.OK).success(true).
+            result(metrics).build();
   }
 
   @GET
@@ -149,6 +150,7 @@ public class MetricRestApi {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<List<MetricEntity>>(Response.Status.OK).success(true).result(metrics).build();
+    return new JsonResponse.Builder<List<MetricEntity>>(Response.Status.OK).success(true).
+            result(metrics).build();
   }
 }

@@ -57,7 +57,12 @@ public class JobServiceTest {
     Boolean ret = jobService.add(job);
     assertTrue(ret);
 
-    List<JobEntity> jobList = jobService.queryJobList("JobServiceTest-UserName", "create_time", "desc", 0, 100);
+    List<JobEntity> jobList = jobService.queryJobList(
+            "JobServiceTest-UserName",
+            "create_time",
+            "desc",
+            0,
+            100);
     assertEquals(jobList.size(), 1);
 
     JobEntity jobDb = jobList.get(0);

@@ -73,7 +73,8 @@ public class ParamRestApi {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<List<ParamEntity>>(Response.Status.OK).success(true).result(params).build();
+    return new JsonResponse.Builder<List<ParamEntity>>(Response.Status.OK).success(true).
+            result(params).build();
   }
 
   @GET
@@ -148,6 +149,7 @@ public class ParamRestApi {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<List<ParamEntity>>(Response.Status.OK).success(true).result(params).build();
+    return new JsonResponse.Builder<List<ParamEntity>>(Response.Status.OK).
+            success(true).result(params).build();
   }
 }

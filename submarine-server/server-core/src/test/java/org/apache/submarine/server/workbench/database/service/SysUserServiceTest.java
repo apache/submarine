@@ -68,7 +68,14 @@ public class SysUserServiceTest {
     Boolean ret = userService.add(sysUser);
     assertTrue(ret);
 
-    List<SysUserEntity> userList = userService.queryPageList(sysUser.getUserName(), null, null, null, null, 0, 10);
+    List<SysUserEntity> userList = userService.queryPageList(
+            sysUser.getUserName(),
+            null,
+            null,
+            null,
+            null,
+            0,
+            10);
     LOG.debug("userList.size():{}", userList.size());
     assertEquals(userList.size(), 1);
     SysUserEntity user = userList.get(0);
