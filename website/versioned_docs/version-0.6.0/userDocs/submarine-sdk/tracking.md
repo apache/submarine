@@ -44,7 +44,7 @@ set the tracking URI. You can also set the SUBMARINE_TRACKING_URI environment va
 
 > **Parameters**
   - **uri** \- Submarine record data to Mysql server. The database URL is expected in the format ``<dialect>+<driver>://<username>:<password>@<host>:<port>/<database>``.
-  By default it's `mysql+pymysql://submarine:password@localhost:3306/submarine`.
+  By default it's `mysql+pymysql://submarine:password@submarine-database:3306/submarine`.
   More detail : [SQLAlchemy docs](https://docs.sqlalchemy.org/en/latest/core/engines.html#database-urls)
 
 ### `submarine.log_param(key: str, value: str) -> None`

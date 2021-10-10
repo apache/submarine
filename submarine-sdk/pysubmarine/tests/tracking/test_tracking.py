@@ -21,13 +21,15 @@ import pytest
 import tensorflow
 
 import submarine
-from submarine.store.database import models
 from submarine.artifacts.repository import Repository
-from submarine.store.database.models import SqlExperiment, SqlMetric, SqlModelVersion, SqlParam
+from submarine.store.database import models
+from submarine.store.database.models import SqlExperiment, SqlMetric, SqlParam
+from submarine.tracking.client import SubmarineClient
 
 from .tf_model import LinearNNModel
 
 JOB_ID = "application_123456789"
+MLFLOW_S3_ENDPOINT_URL = "http://localhost:9000"
 
 
 @pytest.mark.e2e
@@ -38,6 +40,10 @@ class TestTracking(unittest.TestCase):
             "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test"
         )
         self.db_uri = submarine.get_db_uri()
+        self.client = SubmarineClient(
+            db_uri=self.db_uri,
+            s3_registry_uri=MLFLOW_S3_ENDPOINT_URL,
+        )
         from submarine.store.tracking.sqlalchemy_store import SqlAlchemyStore
 
         self.store = SqlAlchemyStore(self.db_uri)
@@ -60,6 +66,10 @@ class TestTracking(unittest.TestCase):
     def tearDown(self):
         submarine.set_db_uri(None)
         models.Base.metadata.drop_all(self.store.engine)
+        environ["MLFLOW_S3_ENDPOINT_URL"] = MLFLOW_S3_ENDPOINT_URL
+        environ["AWS_SECRET_ACCESS_KEY"] = "submarine_minio"
+        environ["AWS_SECRET_ACCESS_KEY"] = "submarine_minio"
+        Repository(JOB_ID).delete_folder()
 
     def test_log_param(self):
         submarine.log_param("name_1", "a")
@@ -88,8 +98,8 @@ class TestTracking(unittest.TestCase):
         model = LinearNNModel()
         model(input_arr)
         registered_model_name = "registerd_model_name"
-        submarine.save_model("tensorflow", model, "name_1", registered_model_name)
-        submarine.save_model("tensorflow", model, "name_2", registered_model_name)
+        self.client.save_model("tensorflow", model, "name_1", registered_model_name)
+        self.client.save_model("tensorflow", model, "name_2", registered_model_name)
         # Validate model_versions
         model_versions = self.model_registry.list_model_versions(registered_model_name)
         assert len(model_versions) == 2
@@ -99,4 +109,3 @@ class TestTracking(unittest.TestCase):
         assert model_versions[1].name == registered_model_name
         assert model_versions[1].version == 2
         assert model_versions[1].source == f"s3://submarine/{JOB_ID}/name_2/1"
-        Repository(JOB_ID).delete_folder()

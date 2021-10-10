@@ -75,8 +75,9 @@ class Repository:
 
     def delete_folder(self) -> None:
         objects_to_delete = self.client.list_objects(Bucket="submarine", Prefix=self.dest_path)
-        delete_keys = {"Objects": []}
-        delete_keys["Objects"] = [
-            {"Key": k} for k in [obj["Key"] for obj in objects_to_delete.get("Contents", [])]
-        ]
-        self.client.delete_objects(Bucket="submarine", Delete=delete_keys)
+        if objects_to_delete.get("Contents") is not None:
+            delete_keys: dict = {"Objects": []}
+            delete_keys["Objects"] = [
+                {"Key": k} for k in [obj["Key"] for obj in objects_to_delete.get("Contents")]
+            ]
+            self.client.delete_objects(Bucket="submarine", Delete=delete_keys)
