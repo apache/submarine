@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.database.service;
 
 import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.service.ExperimentService;
-import org.apache.submarine.server.workbench.database.entity.Param;
+import org.apache.submarine.server.workbench.database.entity.ParamEntity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,9 +50,9 @@ public class ParamServiceTest {
   }
   @After
   public void removeAllRecord() throws Exception {
-    List<Param> paramList = paramService.selectAll();
+    List<ParamEntity> paramList = paramService.selectAll();
     LOG.info("paramList.size():{}", paramList.size());
-    for (Param param : paramList) {
+    for (ParamEntity param : paramList) {
       paramService.deleteById(param.getId());
     }
 
@@ -61,27 +61,27 @@ public class ParamServiceTest {
 
   @Test
   public void testSelect() throws Exception {
-    Param param = new Param();
+    ParamEntity param = new ParamEntity();
     param.setId("test_application_12345");
     param.setKey("test_score");
     param.setValue("199");
     param.setWorkerIndex("test_worker-1");
     boolean result = paramService.insert(param);
     assertTrue(result);
-    List<Param> paramList = paramService.selectAll();
+    List<ParamEntity> paramList = paramService.selectAll();
 
     assertEquals(paramList.size(), 1);
 
-    Param paramDb = paramList.get(0);
+    ParamEntity paramDb = paramList.get(0);
     compareParams(param, paramDb);
 
-    Param paramDb2 = paramService.selectByPrimaryKeySelective(param).get(0);
+    ParamEntity paramDb2 = paramService.selectByPrimaryKeySelective(param).get(0);
     compareParams(param, paramDb2);
   }
 
   @Test
   public void testUpdate() throws Exception {
-    Param param = new Param();
+    ParamEntity param = new ParamEntity();
     param.setId("test_application_12345");
     param.setKey("test_score");
     param.setValue("100");
@@ -95,13 +95,13 @@ public class ParamServiceTest {
     boolean editResult = paramService.update(param);
     assertTrue(editResult);
 
-    Param paramDb2 = paramService.selectByPrimaryKeySelective(param).get(0);
+    ParamEntity paramDb2 = paramService.selectByPrimaryKeySelective(param).get(0);
     compareParams(param, paramDb2);
   }
 
   @Test
   public void testDelete() throws Exception {
-    Param param = new Param();
+    ParamEntity param = new ParamEntity();
     param.setId("test_application_12345");
     param.setKey("test_score");
     param.setValue("100");
@@ -110,13 +110,13 @@ public class ParamServiceTest {
     boolean result = paramService.insert(param);
     assertTrue(result);
 
-    Param paramDb2 = paramService.selectByPrimaryKeySelective(param).get(0);
+    ParamEntity paramDb2 = paramService.selectByPrimaryKeySelective(param).get(0);
 
     boolean deleteResult = paramService.deleteById(paramDb2.getId());
     assertTrue(deleteResult);
   }
 
-  private void compareParams(Param param, Param paramDb) {
+  private void compareParams(ParamEntity param, ParamEntity paramDb) {
     assertEquals(param.getId(), paramDb.getId());
     assertEquals(param.getId(), paramDb.getId());
     assertEquals(param.getKey(), paramDb.getKey());

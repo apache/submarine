@@ -21,11 +21,11 @@ package org.apache.submarine.server.workbench.rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import org.apache.submarine.server.workbench.database.entity.SysDept;
+import org.apache.submarine.server.workbench.database.entity.SysDeptEntity;
 import org.apache.submarine.server.workbench.database.entity.SysDeptTree;
-import org.apache.submarine.server.workbench.database.entity.SysDict;
-import org.apache.submarine.server.workbench.database.entity.SysDictItem;
-import org.apache.submarine.server.workbench.database.entity.SysUser;
+import org.apache.submarine.server.workbench.database.entity.SysDictEntity;
+import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
+import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.apache.submarine.server.workbench.database.service.SysUserService;
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.response.JsonResponse.ListResult;
@@ -92,20 +92,20 @@ public class CommonDataTest {
 
   private static void createDept() {
     // Correct department dependencies
-    SysDept deptA = new SysDept("A", "deptA");
-    SysDept deptAA = new SysDept("AA", "deptAA");
+    SysDeptEntity deptA = new SysDeptEntity("A", "deptA");
+    SysDeptEntity deptAA = new SysDeptEntity("AA", "deptAA");
     deptAA.setParentCode("A");
-    SysDept deptAB = new SysDept("AB", "deptAB");
+    SysDeptEntity deptAB = new SysDeptEntity("AB", "deptAB");
     deptAB.setParentCode("A");
-    SysDept deptAAA = new SysDept("AAA", "deptAAA");
+    SysDeptEntity deptAAA = new SysDeptEntity("AAA", "deptAAA");
     deptAAA.setParentCode("AA");
-    SysDept deptABA = new SysDept("ABA", "deptABA");
+    SysDeptEntity deptABA = new SysDeptEntity("ABA", "deptABA");
     deptABA.setParentCode("AB");
 
-    List<SysDept> depts = new ArrayList<>();
+    List<SysDeptEntity> depts = new ArrayList<>();
     depts.addAll(Arrays.asList(deptA, deptAA, deptAB, deptAAA, deptABA));
 
-    for (SysDept dept : depts) {
+    for (SysDeptEntity dept : depts) {
       Response response = deptRestApi.add(dept);
       assertDeptResponseSuccess(response);
     }
@@ -116,14 +116,14 @@ public class CommonDataTest {
   }
 
   private static void createDictAndItem() {
-    SysDict sexDict = new SysDict();
+    SysDictEntity sexDict = new SysDictEntity();
     sexDict.setDictCode("SYS_USER_SEX");
     sexDict.setDictName("name");
     sexDict.setDescription("description");
     Response response = dictRestApi.add(sexDict);
     assertDictResponseSuccess(response);
 
-    SysDictItem sysDictItem = new SysDictItem();
+    SysDictItemEntity sysDictItem = new SysDictItemEntity();
     sysDictItem.setDictCode("SYS_USER_SEX");
     sysDictItem.setItemCode("SYS_USER_SEX_MALE");
     sysDictItem.setItemName("name");
@@ -135,14 +135,14 @@ public class CommonDataTest {
     response = dictItemRestApi.add(sysDictItem);
     assertDictItemResponseSuccess(response);
 
-    SysDict statusDict = new SysDict();
+    SysDictEntity statusDict = new SysDictEntity();
     statusDict.setDictCode("SYS_USER_STATUS");
     statusDict.setDictName("name");
     statusDict.setDescription("description");
     response = dictRestApi.add(statusDict);
     assertDictResponseSuccess(response);
 
-    SysDictItem sysDictItem2 = new SysDictItem();
+    SysDictItemEntity sysDictItem2 = new SysDictItemEntity();
     sysDictItem2.setDictCode("SYS_USER_STATUS");
     sysDictItem2.setItemCode("SYS_USER_STATUS_AVAILABLE");
     sysDictItem2.setItemName("name");
@@ -161,7 +161,7 @@ public class CommonDataTest {
   }
 
   private static void createUser() {
-    SysUser sysUser = new SysUser();
+    SysUserEntity sysUser = new SysUserEntity();
     sysUser.setUserName("user_name");
     sysUser.setRealName("real_name");
     sysUser.setPassword("password");
@@ -178,13 +178,13 @@ public class CommonDataTest {
     sysUser.setUpdateTime(new Date());
 
     Response response = userRestApi.add(sysUser);
-    JsonResponse<SysUser> jsonResponse = assertUserResponseSuccess(response);
+    JsonResponse<SysUserEntity> jsonResponse = assertUserResponseSuccess(response);
     userId = jsonResponse.getResult().getId();
   }
 
   public static void clearUserTable() throws Exception {
-    List<SysUser> userList = userService.queryPageList("", null, null, null, null, 0, 10);
-    for (SysUser sysUser : userList) {
+    List<SysUserEntity> userList = userService.queryPageList("", null, null, null, null, 0, 10);
+    for (SysUserEntity sysUser : userList) {
       userRestApi.delete(sysUser.getId());
     }
   }
@@ -192,8 +192,8 @@ public class CommonDataTest {
   public static void clearDictItemTable() {
     Response response = dictItemRestApi.list(null, null, null, null, null, null, 1, 10);
     assertDictItemResponseSuccess(response);
-    JsonResponse<ListResult<SysDictItem>> jsonResponse = assertDictItemResponseSuccess(response);
-    for (SysDictItem dictItem : jsonResponse.getResult().getRecords()) {
+    JsonResponse<ListResult<SysDictItemEntity>> jsonResponse = assertDictItemResponseSuccess(response);
+    for (SysDictItemEntity dictItem : jsonResponse.getResult().getRecords()) {
       dictItemRestApi.remove(dictItem.getId());
     }
   }
@@ -201,8 +201,8 @@ public class CommonDataTest {
   public static void clearDictTable() {
     Response response = dictRestApi.list(null, null, null, null, null, 1, 10);
     assertDictResponseSuccess(response);
-    JsonResponse<ListResult<SysDict>> jsonResponse = assertDictResponseSuccess(response);
-    for (SysDict dict : jsonResponse.getResult().getRecords()) {
+    JsonResponse<ListResult<SysDictEntity>> jsonResponse = assertDictResponseSuccess(response);
+    for (SysDictEntity dict : jsonResponse.getResult().getRecords()) {
       dictRestApi.remove(dict.getId());
     }
   }
@@ -238,18 +238,18 @@ public class CommonDataTest {
     return jsonResponse;
   }
 
-  public static JsonResponse<SysDept> assertDeptResponseSuccess(Response response) {
+  public static JsonResponse<SysDeptEntity> assertDeptResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<SysDept>>() {}.getType();
-    JsonResponse<SysDept> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<SysDeptEntity>>() {}.getType();
+    JsonResponse<SysDeptEntity> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
   }
 
-  public static JsonResponse<SysUser> assertUserResponseSuccess(Response response) {
+  public static JsonResponse<SysUserEntity> assertUserResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<SysUser>>() {}.getType();
-    JsonResponse<SysUser> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<SysUserEntity>>() {}.getType();
+    JsonResponse<SysUserEntity> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
   }
@@ -261,18 +261,18 @@ public class CommonDataTest {
     Assert.assertTrue(jsonResponse.getSuccess());
   }
 
-  public static JsonResponse<ListResult<SysDict>> assertDictResponseSuccess(Response response) {
+  public static JsonResponse<ListResult<SysDictEntity>> assertDictResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {}.getType();
-    JsonResponse<ListResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<ListResult<SysDictEntity>>>() {}.getType();
+    JsonResponse<ListResult<SysDictEntity>> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
   }
 
-  public static JsonResponse<ListResult<SysDictItem>> assertDictItemResponseSuccess(Response response) {
+  public static JsonResponse<ListResult<SysDictItemEntity>> assertDictItemResponseSuccess(Response response) {
     String entity = (String) response.getEntity();
-    Type type = new TypeToken<JsonResponse<ListResult<SysDictItem>>>() {}.getType();
-    JsonResponse<ListResult<SysDictItem>> jsonResponse = gson.fromJson(entity, type);
+    Type type = new TypeToken<JsonResponse<ListResult<SysDictItemEntity>>>() {}.getType();
+    JsonResponse<ListResult<SysDictItemEntity>> jsonResponse = gson.fromJson(entity, type);
     assertTrue(jsonResponse.getSuccess());
     return jsonResponse;
   }

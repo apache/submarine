@@ -20,55 +20,51 @@ package org.apache.submarine.server.workbench.database.entity;
 
 import org.apache.submarine.server.database.entity.BaseEntity;
 
-public class SysMessage extends BaseEntity {
+public class SysDictEntity extends BaseEntity {
 
-  private String sender;
+  private String dictCode;
 
-  private String receiver;
+  private String dictName;
 
-  private String type;
+  private String description;
 
-  private Integer status;
+  private Integer deleted;
 
-  private String context;
+  private Integer type;
 
-  public String getSender() {
-    return sender;
+  public void setDictCode(String dictCode) {
+    this.dictCode = dictCode;
   }
 
-  public void setSender(String sender) {
-    this.sender = sender == null ? null : sender.trim();
+  public void setDictName(String dictName) {
+    this.dictName = dictName;
   }
 
-  public String getReceiver() {
-    return receiver;
+  public void setDescription(String description) {
+    this.description = description;
   }
 
-  public void setReceiver(String receiver) {
-    this.receiver = receiver == null ? null : receiver.trim();
+  public void setDeleted(Integer deleted) {
+    this.deleted = deleted;
   }
 
-  public String getType() {
-    return type;
+  public void setType(Integer type) {
+    this.type = type;
   }
 
-  public void setType(String type) {
-    this.type = type == null ? null : type.trim();
+  public String getDictCode() {
+    return dictCode;
   }
 
-  public Integer getStatus() {
-    return status;
+  public String getDictName() {
+    return dictName;
   }
 
-  public void setStatus(Integer status) {
-    this.status = status;
+  public String getDescription() {
+    return description;
   }
 
-  public String getContext() {
-    return context;
-  }
-
-  public void setContext(String context) {
-    this.context = context == null ? null : context.trim();
+  public Integer getDeleted() {
+    return deleted;
   }
 }

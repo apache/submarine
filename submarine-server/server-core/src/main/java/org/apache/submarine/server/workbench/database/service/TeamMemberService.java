@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.database.service;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.workbench.database.entity.TeamMember;
+import org.apache.submarine.server.workbench.database.entity.TeamMemberEntity;
 import org.apache.submarine.server.workbench.database.mappers.TeamMemberMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +32,10 @@ import java.util.Map;
 public class TeamMemberService {
   private static final Logger LOG = LoggerFactory.getLogger(TeamMemberService.class);
 
-  public List<TeamMember> queryList(String teamId) throws Exception {
+  public List<TeamMemberEntity> queryList(String teamId) throws Exception {
     LOG.info("queryList teamId:{}", teamId);
 
-    List<TeamMember> list = null;
+    List<TeamMemberEntity> list = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       TeamMemberMapper teamMemberMapper = sqlSession.getMapper(TeamMemberMapper.class);
       Map<String, Object> where = new HashMap<>();
@@ -48,7 +48,7 @@ public class TeamMemberService {
     return list;
   }
 
-  public boolean insertSelective(TeamMember teamMember) throws Exception {
+  public boolean insertSelective(TeamMemberEntity teamMember) throws Exception {
     LOG.info("insertSelective({})", teamMember.toString());
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {

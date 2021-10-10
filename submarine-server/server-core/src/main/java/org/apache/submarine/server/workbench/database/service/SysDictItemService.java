@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.database.service;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.workbench.database.entity.SysDictItem;
+import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysDictItemMapper;
 import org.apache.submarine.server.workbench.rest.SysDictRestApi;
 import org.slf4j.Logger;
@@ -31,8 +31,8 @@ import java.util.List;
 public class SysDictItemService {
   private static final Logger LOG = LoggerFactory.getLogger(SysDictRestApi.class);
 
-  public List<SysDictItem> queryDictByCode(String dictCode) {
-    List<SysDictItem> dictItems = null;
+  public List<SysDictItemEntity> queryDictByCode(String dictCode) {
+    List<SysDictItemEntity> dictItems = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDictItemMapper dictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
       dictItems = dictItemMapper.queryDictByCode(dictCode);

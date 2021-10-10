@@ -27,7 +27,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.SysUser" extends="BaseEntityResultMap">
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.SysUserEntity" extends="BaseEntityResultMap">
     <result column="user_name" property="userName"/>
     <result column="real_name" property="realName"/>
     <result column="dept_code" property="deptCode"/>
@@ -53,7 +53,7 @@
     SELECT * FROM sys_user WHERE user_name = #{username} AND password = #{password}
   </select>
 
-  <insert id="add" parameterType="org.apache.submarine.server.workbench.database.entity.SysUser">
+  <insert id="add" parameterType="org.apache.submarine.server.workbench.database.entity.SysUserEntity">
     <selectKey keyProperty="id" resultType="String" order="BEFORE">
       select REPLACE(UUID(),"-","")
     </selectKey>
@@ -90,7 +90,7 @@
     #{createBy}, now(), now())
   </insert>
 
-  <update id="updateBy" parameterType="org.apache.submarine.server.workbench.database.entity.SysUser">
+  <update id="updateBy" parameterType="org.apache.submarine.server.workbench.database.entity.SysUserEntity">
     UPDATE sys_user SET
     <if test="userName!=null and userName!=''">`user_name` = #{userName},</if>
     <if test="realName!=null and realName!=''">`real_name` = #{realName},</if>
@@ -138,7 +138,7 @@
     DELETE FROM sys_user WHERE id = #{id}
   </delete>
 
-  <update id="changePassword" parameterType="org.apache.submarine.server.workbench.database.entity.SysUser">
+  <update id="changePassword" parameterType="org.apache.submarine.server.workbench.database.entity.SysUserEntity">
     UPDATE sys_user SET password = #{password}, `update_time`=now()
     WHERE id = #{id}
   </update>

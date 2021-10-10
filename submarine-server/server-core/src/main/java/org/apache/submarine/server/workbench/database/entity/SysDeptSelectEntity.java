@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Corresponding to the workbench-web front-end tree select control
-public class SysDeptSelect {
+public class SysDeptSelectEntity {
   // TreeSelect key
   private String key;
 
@@ -35,20 +35,20 @@ public class SysDeptSelect {
   // TreeSelect disabled
   private Boolean disabled = false;
 
-  List<SysDeptSelect> children = new ArrayList<>();
+  List<SysDeptSelectEntity> children = new ArrayList<>();
 
-  public SysDeptSelect convert(SysDeptTree treeModel) {
+  public SysDeptSelectEntity convert(SysDeptTree treeModel) {
     this.key = treeModel.getDeptCode();
     this.value = treeModel.getDeptCode();
     this.title = "(" + treeModel.getDeptCode() + ") " + treeModel.getDeptName();
     return this;
   }
 
-  public List<SysDeptSelect> getChildren() {
+  public List<SysDeptSelectEntity> getChildren() {
     return children;
   }
 
-  public void setChildren(List<SysDeptSelect> children) {
+  public void setChildren(List<SysDeptSelectEntity> children) {
     this.children = children;
   }
 

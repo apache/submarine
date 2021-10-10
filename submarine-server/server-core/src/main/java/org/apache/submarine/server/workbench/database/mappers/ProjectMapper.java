@@ -19,23 +19,23 @@
 package org.apache.submarine.server.workbench.database.mappers;
 
 import org.apache.ibatis.session.RowBounds;
-import org.apache.submarine.server.workbench.database.entity.Project;
+import org.apache.submarine.server.workbench.database.entity.ProjectEntity;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ProjectMapper {
-  List<Project> selectAll(Map<String, Object> where, RowBounds rowBounds);
+  List<ProjectEntity> selectAll(Map<String, Object> where, RowBounds rowBounds);
 
   int deleteByPrimaryKey(String id);
 
-  int insert(Project record);
+  int insert(ProjectEntity record);
 
-  int insertSelective(Project record);
+  int insertSelective(ProjectEntity record);
 
-  Project selectByPrimaryKey(String id);
+  ProjectEntity selectByPrimaryKey(String id);
 
-  int updateByPrimaryKeySelective(Project record);
+  int updateByPrimaryKeySelective(ProjectEntity record);
 
-  int updateByPrimaryKey(Project record);
+  int updateByPrimaryKey(ProjectEntity record);
 }

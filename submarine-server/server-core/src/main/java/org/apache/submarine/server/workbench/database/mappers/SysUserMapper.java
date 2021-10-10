@@ -19,23 +19,23 @@
 package org.apache.submarine.server.workbench.database.mappers;
 
 import org.apache.ibatis.session.RowBounds;
-import org.apache.submarine.server.workbench.database.entity.SysUser;
+import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 
 import java.util.List;
 import java.util.Map;
 
 public interface SysUserMapper {
-  SysUser login(Map<String, String> where);
+  SysUserEntity login(Map<String, String> where);
 
-  List<SysUser> selectAll(Map<String, Object> where, RowBounds rowBounds);
+  List<SysUserEntity> selectAll(Map<String, Object> where, RowBounds rowBounds);
 
-  void add(SysUser sysOrg);
+  void add(SysUserEntity sysOrg);
 
-  SysUser getById(String id);
+  SysUserEntity getById(String id);
 
-  void updateBy(SysUser sysUser);
+  void updateBy(SysUserEntity sysUser);
 
   void deleteById(String id);
 
-  void changePassword(SysUser sysUser);
+  void changePassword(SysUserEntity sysUser);
 }

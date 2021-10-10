@@ -20,53 +20,42 @@ package org.apache.submarine.server.workbench.database.entity;
 
 import org.apache.submarine.server.database.entity.BaseEntity;
 
-public class SysDept extends BaseEntity {
-  private String deptCode;
-  private String deptName;
-  private String parentCode;
-  private String parentName;
-  private Integer sortOrder;
+public class SysDictItemEntity extends BaseEntity {
+
+  private String dictCode;
+
+  private String itemCode;
+
+  private String itemName;
+
   private String description;
+
+  private Integer sortOrder;
+
   private Integer deleted;
 
-  public SysDept() {
+  public String getDictCode() {
+    return dictCode;
   }
 
-  public SysDept(String deptCode, String deptName) {
-    this.deptCode = deptCode;
-    this.deptName = deptName;
+  public void setDictCode(String dictCode) {
+    this.dictCode = dictCode;
   }
 
-  public void setDeptCode(String deptCode) {
-    this.deptCode = deptCode;
+  public String getItemCode() {
+    return itemCode;
   }
 
-  public String getDeptCode() {
-    return deptCode;
+  public void setItemCode(String itemCode) {
+    this.itemCode = itemCode;
   }
 
-  public String getDeptName() {
-    return deptName;
+  public String getItemName() {
+    return itemName;
   }
 
-  public void setDeptName(String deptName) {
-    this.deptName = deptName;
-  }
-
-  public String getParentCode() {
-    return parentCode;
-  }
-
-  public void setParentCode(String parentCode) {
-    this.parentCode = parentCode;
-  }
-
-  public Integer getSortOrder() {
-    return sortOrder;
-  }
-
-  public void setSortOrder(Integer sortOrder) {
-    this.sortOrder = sortOrder;
+  public void setItemName(String itemName) {
+    this.itemName = itemName;
   }
 
   public String getDescription() {
@@ -77,19 +66,19 @@ public class SysDept extends BaseEntity {
     this.description = description;
   }
 
+  public Integer getSortOrder() {
+    return sortOrder;
+  }
+
+  public void setSortOrder(Integer sortOrder) {
+    this.sortOrder = sortOrder;
+  }
+
   public Integer getDeleted() {
     return deleted;
   }
 
   public void setDeleted(Integer deleted) {
     this.deleted = deleted;
-  }
-
-  public String getParentName() {
-    return parentName;
-  }
-
-  public void setParentName(String parentName) {
-    this.parentName = parentName;
   }
 }

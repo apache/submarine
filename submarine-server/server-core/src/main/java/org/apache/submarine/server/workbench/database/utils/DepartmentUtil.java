@@ -18,21 +18,21 @@
  */
 package org.apache.submarine.server.workbench.database.utils;
 
-import org.apache.submarine.server.workbench.database.entity.SysDeptSelect;
+import org.apache.submarine.server.workbench.database.entity.SysDeptSelectEntity;
 import org.apache.submarine.server.workbench.database.entity.SysDeptTree;
-import org.apache.submarine.server.workbench.database.entity.SysDept;
+import org.apache.submarine.server.workbench.database.entity.SysDeptEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DepartmentUtil {
-  public static void disableTargetDeptCode(List<SysDeptSelect> sysDeptSelects,
+  public static void disableTargetDeptCode(List<SysDeptSelectEntity> sysDeptSelects,
                                           String deptCode) {
     if (sysDeptSelects == null) {
       return;
     }
 
-    for (SysDeptSelect deptSelect : sysDeptSelects) {
+    for (SysDeptSelectEntity deptSelect : sysDeptSelects) {
       if (deptSelect.getKey().equalsIgnoreCase(deptCode)) {
         deptSelect.setDisabled(true);
       }
@@ -40,12 +40,12 @@ public class DepartmentUtil {
     }
   }
 
-  public static List<SysDeptTree> wrapDeptListToTree(List<SysDept> sysDeptList,
-                                                     List<SysDeptSelect> sysDeptSelects) {
+  public static List<SysDeptTree> wrapDeptListToTree(List<SysDeptEntity> sysDeptList,
+                                                     List<SysDeptSelectEntity> sysDeptSelects) {
     sysDeptSelects.clear();
     List<SysDeptTree> records = new ArrayList<>();
     for (int i = 0; i < sysDeptList.size(); i++) {
-      SysDept dept = sysDeptList.get(i);
+      SysDeptEntity dept = sysDeptList.get(i);
       records.add(new SysDeptTree(dept));
     }
     List<SysDeptTree> sysOrgTreeList = findChildren(records, sysDeptSelects);
@@ -69,13 +69,13 @@ public class DepartmentUtil {
 
   // Find and encapsulate the node of the top parent class to the TreeList collection
   private static List<SysDeptTree> findChildren(List<SysDeptTree> sysDeptList,
-                                                List<SysDeptSelect> sysDeptSelects) {
+                                                List<SysDeptSelectEntity> sysDeptSelects) {
     List<SysDeptTree> treeList = new ArrayList<>();
     for (int i = 0; i < sysDeptList.size(); i++) {
       SysDeptTree branch = sysDeptList.get(i);
       if (isEmpty(branch.getParentCode())) {
         treeList.add(branch);
-        SysDeptSelect departIdModel = new SysDeptSelect().convert(branch);
+        SysDeptSelectEntity departIdModel = new SysDeptSelectEntity().convert(branch);
         sysDeptSelects.add(departIdModel);
       }
     }
@@ -86,15 +86,15 @@ public class DepartmentUtil {
   // Find all child node collections under the top parent class and wrap them in a TreeList collection
   private static void getGrandChildren(List<SysDeptTree> treeList,
                                        List<SysDeptTree> recordList,
-                                       List<SysDeptSelect> sysDeptSelects) {
+                                       List<SysDeptSelectEntity> sysDeptSelects) {
     for (int i = 0; i < treeList.size(); i++) {
       SysDeptTree model = treeList.get(i);
-      SysDeptSelect idModel = sysDeptSelects.get(i);
+      SysDeptSelectEntity idModel = sysDeptSelects.get(i);
       for (int i1 = 0; i1 < recordList.size(); i1++) {
         SysDeptTree m = recordList.get(i1);
         if (m.getParentCode() != null && m.getParentCode().equals(model.getDeptCode())) {
           model.getChildren().add(m);
-          SysDeptSelect dim = new SysDeptSelect().convert(m);
+          SysDeptSelectEntity dim = new SysDeptSelectEntity().convert(m);
           idModel.getChildren().add(dim);
         }
       }

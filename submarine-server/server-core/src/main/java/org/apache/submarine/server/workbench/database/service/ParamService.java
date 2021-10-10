@@ -22,18 +22,18 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.workbench.database.entity.Param;
+import org.apache.submarine.server.workbench.database.entity.ParamEntity;
 import org.apache.submarine.server.workbench.database.mappers.ParamMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ParamService {
-  
+
   private static final Logger LOG = LoggerFactory.getLogger(ParamService.class);
 
-  public List<Param> selectAll() throws Exception {
+  public List<ParamEntity> selectAll() throws Exception {
     LOG.info("Param selectAll");
-    List<Param> params;
+    List<ParamEntity> params;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ParamMapper mapper = sqlSession.getMapper(ParamMapper.class);
       params = mapper.selectAll();
@@ -44,7 +44,7 @@ public class ParamService {
     }
     return params;
   }
-  
+
   public boolean deleteById(String id) throws Exception {
     LOG.info("Param deleteById {}", id);
 
@@ -60,7 +60,7 @@ public class ParamService {
     return true;
   }
 
-  public boolean insert(Param param) throws Exception {
+  public boolean insert(ParamEntity param) throws Exception {
     LOG.info("Param insert {}", param);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -73,10 +73,10 @@ public class ParamService {
     }
     return true;
   }
-  
-  public Param selectById(String id) throws Exception {
+
+  public ParamEntity selectById(String id) throws Exception {
     LOG.info("Param selectById {}", id);
-    Param param;
+    ParamEntity param;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ParamMapper mapper = sqlSession.getMapper(ParamMapper.class);
       param = mapper.selectById(id);
@@ -88,7 +88,7 @@ public class ParamService {
     return param;
   }
 
-  public boolean update(Param param) throws Exception {
+  public boolean update(ParamEntity param) throws Exception {
     LOG.info("Param update {}", param);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -102,8 +102,8 @@ public class ParamService {
     return true;
   }
 
-  public List<Param> selectByPrimaryKeySelective(Param param) throws Exception {
-    List<Param> result;
+  public List<ParamEntity> selectByPrimaryKeySelective(ParamEntity param) throws Exception {
+    List<ParamEntity> result;
     LOG.info("Param selectByPrimaryKeySelective");
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {

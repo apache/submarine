@@ -22,9 +22,9 @@ import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.SysDeptSelect;
+import org.apache.submarine.server.workbench.database.entity.SysDeptSelectEntity;
 import org.apache.submarine.server.workbench.database.entity.SysDeptTree;
-import org.apache.submarine.server.workbench.database.entity.SysDept;
+import org.apache.submarine.server.workbench.database.entity.SysDeptEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysDeptMapper;
 import org.apache.submarine.server.workbench.database.utils.DepartmentUtil;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
@@ -69,7 +69,7 @@ public class SysDeptRestApi {
                        @QueryParam("deptName") String likeDeptName) {
     LOG.info("SysDeptRestApi.tree()");
 
-    List<SysDept> sysDeptList = null;
+    List<SysDeptEntity> sysDeptList = null;
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
@@ -82,15 +82,15 @@ public class SysDeptRestApi {
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
     }
 
-    List<SysDeptSelect> sysDeptSelects = new ArrayList<>();
+    List<SysDeptSelectEntity> sysDeptSelects = new ArrayList<>();
     List<SysDeptTree> sysDeptTreeList = DepartmentUtil.wrapDeptListToTree(sysDeptList, sysDeptSelects);
-    PageInfo<SysDept> page = new PageInfo<>(sysDeptList);
+    PageInfo<SysDeptEntity> page = new PageInfo<>(sysDeptList);
 
     long sizeDeptTreeList = DepartmentUtil.getDeptTreeSize(sysDeptTreeList);
     if (sysDeptList.size() != sizeDeptTreeList) {
-      ListResult<SysDept> listResult = new ListResult(sysDeptList, page.getTotal());
+      ListResult<SysDeptEntity> listResult = new ListResult(sysDeptList, page.getTotal());
 
-      JsonResponse.Builder builder = new JsonResponse.Builder<ListResult<SysDept>>(Response.Status.OK)
+      JsonResponse.Builder builder = new JsonResponse.Builder<ListResult<SysDeptEntity>>(Response.Status.OK)
           .success(true).result(listResult);
       if (StringUtils.isEmpty(likeDeptCode) && StringUtils.isEmpty(likeDeptName)) {
         // Query some data, may not be a configuration error
@@ -111,10 +111,10 @@ public class SysDeptRestApi {
   public Response queryIdTree(@QueryParam("disableDeptCode") String disableDeptCode) {
     LOG.info("queryIdTree({})", disableDeptCode);
 
-    List<SysDeptSelect> sysDeptSelects = new ArrayList<>();
+    List<SysDeptSelectEntity> sysDeptSelects = new ArrayList<>();
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
-      List<SysDept> sysDeptList = sysDeptMapper.selectAll(new HashMap<>());
+      List<SysDeptEntity> sysDeptList = sysDeptMapper.selectAll(new HashMap<>());
 
       DepartmentUtil.wrapDeptListToTree(sysDeptList, sysDeptSelects);
 
@@ -126,14 +126,14 @@ public class SysDeptRestApi {
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
     }
 
-    return new JsonResponse.Builder<List<SysDeptSelect>>(Response.Status.OK)
+    return new JsonResponse.Builder<List<SysDeptSelectEntity>>(Response.Status.OK)
         .success(true).result(sysDeptSelects).build();
   }
 
   @POST
   @Path("/add")
   @SubmarineApi
-  public Response add(SysDept sysDept) {
+  public Response add(SysDeptEntity sysDept) {
     LOG.info("add({})", sysDept.toString());
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -146,19 +146,19 @@ public class SysDeptRestApi {
           .message("Save department failed!").build();
     }
 
-    return new JsonResponse.Builder<SysDept>(Response.Status.OK)
+    return new JsonResponse.Builder<SysDeptEntity>(Response.Status.OK)
         .success(true).message("Save department successfully!").result(sysDept).build();
   }
 
   @PUT
   @Path("/edit")
   @SubmarineApi
-  public Response edit(SysDept sysDept) {
+  public Response edit(SysDeptEntity sysDept) {
     LOG.info("edit({})", sysDept.toString());
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
 
-      SysDept dept = sysDeptMapper.getById(sysDept.getId());
+      SysDeptEntity dept = sysDeptMapper.getById(sysDept.getId());
       if (dept == null) {
         return new JsonResponse.Builder<>(Response.Status.OK)
             .message("Can not found department:" + sysDept.getId()).success(false).build();
@@ -208,7 +208,7 @@ public class SysDeptRestApi {
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDeptMapper sysDeptMapper = sqlSession.getMapper(SysDeptMapper.class);
 
-      SysDept dept = new SysDept();
+      SysDeptEntity dept = new SysDeptEntity();
       dept.setId(id);
       dept.setDeleted(deleted);
       sysDeptMapper.updateBy(dept);

@@ -23,7 +23,7 @@
     <id property="id" column="id"/>
   </resultMap>
 
-  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Param" extends="BaseEntityResultMap">
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.ParamEntity" extends="BaseEntityResultMap">
     <result column="key" jdbcType="VARCHAR" property="key" />
     <result column="value" jdbcType="FLOAT" property="value" />
     <result column="worker_index" jdbcType="VARCHAR" property="workerIndex" />
@@ -53,13 +53,13 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Param"
+  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.ParamEntity"
           keyProperty="id, key, worker_index">
     insert into param (id, `key`, value, worker_index)
     values (#{id,jdbcType=VARCHAR}, #{key,jdbcType=VARCHAR}, #{value,jdbcType=FLOAT}, #{workerIndex,jdbcType=VARCHAR})
   </insert>
 
-  <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Param">
+  <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.ParamEntity">
     update param
     set `key` = #{key,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},

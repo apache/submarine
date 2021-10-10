@@ -20,47 +20,55 @@ package org.apache.submarine.server.workbench.database.entity;
 
 import org.apache.submarine.server.database.entity.BaseEntity;
 
-public class TeamMember extends BaseEntity {
+public class SysMessageEntity extends BaseEntity {
 
-  private String teamId;
+  private String sender;
 
-  private String teamName;
+  private String receiver;
 
-  // user name
-  private String member;
+  private String type;
 
-  private Integer inviter;
+  private Integer status;
 
-  public String getTeamId() {
-    return teamId;
+  private String context;
+
+  public String getSender() {
+    return sender;
   }
 
-  public void setTeamId(String teamId) {
-    this.teamId = teamId;
+  public void setSender(String sender) {
+    this.sender = sender == null ? null : sender.trim();
   }
 
-  public String getTeamName() {
-    return teamName;
+  public String getReceiver() {
+    return receiver;
   }
 
-  public void setTeamName(String teamName) {
-    this.teamName = teamName;
+  public void setReceiver(String receiver) {
+    this.receiver = receiver == null ? null : receiver.trim();
   }
 
-  public String getMember() {
-    return member;
+  public String getType() {
+    return type;
   }
 
-  public void setMember(String member) {
-    this.member = member;
+  public void setType(String type) {
+    this.type = type == null ? null : type.trim();
   }
 
-  public Integer getInviter() {
-    return inviter;
+  public Integer getStatus() {
+    return status;
   }
 
-  public void setInviter(Integer inviter) {
-    this.inviter = inviter;
+  public void setStatus(Integer status) {
+    this.status = status;
   }
 
+  public String getContext() {
+    return context;
+  }
+
+  public void setContext(String context) {
+    this.context = context == null ? null : context.trim();
+  }
 }

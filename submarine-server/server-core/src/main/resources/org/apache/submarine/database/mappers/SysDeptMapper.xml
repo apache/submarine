@@ -28,7 +28,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.SysDept" extends="BaseEntityResultMap">
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.SysDeptEntity" extends="BaseEntityResultMap">
     <result column="dept_code" property="deptCode"/>
     <result column="dept_name" property="deptName"/>
     <result column="parent_code" property="parentCode"/>
@@ -47,7 +47,7 @@
     ORDER BY a.sort_order
   </select>
 
-  <insert id="add" parameterType="org.apache.submarine.server.workbench.database.entity.SysDept">
+  <insert id="add" parameterType="org.apache.submarine.server.workbench.database.entity.SysDeptEntity">
     <selectKey keyProperty="id" resultType="String" order="BEFORE">
       select REPLACE(UUID(),"-","")
     </selectKey>
@@ -72,7 +72,7 @@
     DELETE FROM sys_department WHERE id = #{id}
   </delete>
 
-  <update id="updateBy" parameterType="org.apache.submarine.server.workbench.database.entity.SysDept">
+  <update id="updateBy" parameterType="org.apache.submarine.server.workbench.database.entity.SysDeptEntity">
     UPDATE sys_department SET
     <if test="deptCode!=null and deptCode!=''">`dept_code` = #{deptCode},</if>
     <if test="deptName!=null and deptName!=''">`dept_name` = #{deptName},</if>

@@ -18,8 +18,8 @@
  */
 package org.apache.submarine.server.workbench.database.service;
 
-import org.apache.submarine.server.workbench.database.entity.Team;
-import org.apache.submarine.server.workbench.database.entity.TeamMember;
+import org.apache.submarine.server.workbench.database.entity.TeamEntity;
+import org.apache.submarine.server.workbench.database.entity.TeamMemberEntity;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -38,40 +38,40 @@ public class TeamServiceTest {
 
   @After
   public void removeAllRecord() throws Exception {
-    List<Team> teamList = teamService.queryPageList(null, "create_time", "desc", 0, 100);
+    List<TeamEntity> teamList = teamService.queryPageList(null, "create_time", "desc", 0, 100);
     LOG.info("teamList.size():{}", teamList.size());
-    for (Team team : teamList) {
+    for (TeamEntity team : teamList) {
       teamService.delete(team.getId());
     }
   }
 
   @Test
   public void queryPageList() throws Exception {
-    TeamMember teamMember = new TeamMember();
+    TeamMemberEntity teamMember = new TeamMemberEntity();
     teamMember.setTeamName("submarine");
     teamMember.setInviter(0);
     teamMember.setMember("admin");
     teamMember.setCreateBy("createByteamMember");
 
-    Team team = new Team();
+    TeamEntity team = new TeamEntity();
     team.setTeamName("submarine");
     team.setOwner("test_sub");
     team.setCreateBy("createByteam");
-    List list = new ArrayList<TeamMember>();
+    List list = new ArrayList<TeamMemberEntity>();
     list.add(teamMember);
     team.setCollaborators(list);
     Boolean ret = teamService.add(team);
     assertTrue(ret);
 
-    List<Team> teamList = teamService.queryPageList("test_sub", "create_time", "desc", 0, 100);
+    List<TeamEntity> teamList = teamService.queryPageList("test_sub", "create_time", "desc", 0, 100);
     assertEquals(teamList.size(), 1);
-    Team teamDb = teamList.get(0);
+    TeamEntity teamDb = teamList.get(0);
     assertEquals(team.getTeamName(), teamDb.getTeamName());
     assertEquals(team.getOwner(), teamDb.getOwner());
     assertEquals(team.getCreateBy(), teamDb.getCreateBy());
 
     assertEquals(teamDb.getCollaborators().size(), 1);
-    TeamMember teamMemberDb = teamDb.getCollaborators().get(0);
+    TeamMemberEntity teamMemberDb = teamDb.getCollaborators().get(0);
     assertEquals(team.getId(), teamMemberDb.getTeamId());
     assertEquals(teamMember.getTeamName(), teamMemberDb.getTeamName());
     assertEquals(teamMember.getInviter(), teamMemberDb.getInviter());
@@ -81,17 +81,17 @@ public class TeamServiceTest {
 
   @Test
   public void updateByPrimaryKeySelective() throws Exception {
-    TeamMember teamMember = new TeamMember();
+    TeamMemberEntity teamMember = new TeamMemberEntity();
     teamMember.setTeamName("submarine");
     teamMember.setInviter(0);
     teamMember.setMember("admin");
     teamMember.setCreateBy("createByteamMember");
 
-    Team team = new Team();
+    TeamEntity team = new TeamEntity();
     team.setTeamName("submarine");
     team.setOwner("test_sub");
     team.setCreateBy("createByteam");
-    List list = new ArrayList<TeamMember>();
+    List list = new ArrayList<TeamMemberEntity>();
     list.add(teamMember);
     team.setCollaborators(list);
     Boolean ret = teamService.add(team);
@@ -99,7 +99,7 @@ public class TeamServiceTest {
 
     team.setTeamName("submarine_update");
     team.setUpdateBy("submarine_user_update");
-    TeamMember teamMemberUpdate = new TeamMember();
+    TeamMemberEntity teamMemberUpdate = new TeamMemberEntity();
     teamMemberUpdate.setTeamName("submarine");
     teamMemberUpdate.setInviter(0);
     teamMemberUpdate.setMember("test_member");
@@ -108,14 +108,14 @@ public class TeamServiceTest {
 
     boolean editRet = teamService.updateByPrimaryKeySelective(team);
     assertTrue(editRet);
-    List<Team> teamList = teamService.queryPageList("test_sub", "create_time", "desc", 0, 100);
+    List<TeamEntity> teamList = teamService.queryPageList("test_sub", "create_time", "desc", 0, 100);
     assertEquals(teamList.size(), 1);
 
-    Team teamDb = teamList.get(0);
+    TeamEntity teamDb = teamList.get(0);
     assertEquals(team.getTeamName(), teamDb.getTeamName());
-    List<TeamMember> teamMemberList = teamDb.getCollaborators();
+    List<TeamMemberEntity> teamMemberList = teamDb.getCollaborators();
     assertEquals(teamMemberList.size(), 2);
-    for (TeamMember member : teamMemberList) {
+    for (TeamMemberEntity member : teamMemberList) {
       assertEquals(member.getTeamName(), team.getTeamName());
       assertEquals(team.getUpdateBy(), teamDb.getUpdateBy());
     }
@@ -124,17 +124,17 @@ public class TeamServiceTest {
 
   @Test
   public void delete() throws Exception {
-    TeamMember teamMember = new TeamMember();
+    TeamMemberEntity teamMember = new TeamMemberEntity();
     teamMember.setTeamName("submarine");
     teamMember.setInviter(0);
     teamMember.setMember("admin");
     teamMember.setCreateBy("createByteamMember");
 
-    Team team = new Team();
+    TeamEntity team = new TeamEntity();
     team.setTeamName("submarine");
     team.setOwner("test_sub");
     team.setCreateBy("createByteam");
-    List list = new ArrayList<TeamMember>();
+    List list = new ArrayList<TeamMemberEntity>();
     list.add(teamMember);
     team.setCollaborators(list);
     Boolean ret = teamService.add(team);
@@ -143,12 +143,12 @@ public class TeamServiceTest {
     Boolean deleteRet = teamService.delete(team.getId());
     assertTrue(deleteRet);
 
-    List<Team> teamList = teamService.queryPageList("test_sub",
+    List<TeamEntity> teamList = teamService.queryPageList("test_sub",
         "create_time", "desc", 0, 100);
     assertEquals(teamList.size(), 0);
 
     TeamMemberService teamMemberService = new TeamMemberService();
-    List<TeamMember> teamMemberList = teamMemberService.queryList(team.getId());
+    List<TeamMemberEntity> teamMemberList = teamMemberService.queryList(team.getId());
     assertEquals(teamMemberList.size(), 0);
   }
 }

@@ -20,51 +20,43 @@ package org.apache.submarine.server.workbench.database.entity;
 
 import org.apache.submarine.server.database.entity.BaseEntity;
 
-public class SysDict extends BaseEntity {
+/*
+# +-----------------------+----------+-------+--------------+
+# | id                    | key      | value | worker_index |
+# +-----------------------+----------+-------+--------------+
+# | application_123456898 | max_iter | 100   | worker-1     |
+# | application_123456898 | alpha    | 10    | worker-1     |
+# | application_123456898 | n_jobs   | 5     | worker-1     |
+# +-----------------------+----------+-------+--------------+
+*/
 
-  private String dictCode;
+public class ParamEntity extends BaseEntity {
 
-  private String dictName;
+  private String key;
+  private String value;
+  private String workerIndex;
 
-  private String description;
-
-  private Integer deleted;
-
-  private Integer type;
-
-  public void setDictCode(String dictCode) {
-    this.dictCode = dictCode;
+  public String getKey() {
+    return this.key;
   }
 
-  public void setDictName(String dictName) {
-    this.dictName = dictName;
+  public void setKey(String key) {
+    this.key = key;
   }
 
-  public void setDescription(String description) {
-    this.description = description;
+  public String getValue() {
+    return this.value;
   }
 
-  public void setDeleted(Integer deleted) {
-    this.deleted = deleted;
+  public void setValue(String value) {
+    this.value = value;
   }
 
-  public void setType(Integer type) {
-    this.type = type;
+  public String getWorkerIndex() {
+    return this.workerIndex;
   }
 
-  public String getDictCode() {
-    return dictCode;
-  }
-
-  public String getDictName() {
-    return dictName;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public Integer getDeleted() {
-    return deleted;
+  public void setWorkerIndex(String workerIndex) {
+    this.workerIndex = workerIndex;
   }
 }

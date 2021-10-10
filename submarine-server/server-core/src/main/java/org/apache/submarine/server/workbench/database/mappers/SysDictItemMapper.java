@@ -19,21 +19,21 @@
 package org.apache.submarine.server.workbench.database.mappers;
 
 import org.apache.ibatis.session.RowBounds;
-import org.apache.submarine.server.workbench.database.entity.SysDictItem;
+import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
 
 import java.util.List;
 import java.util.Map;
 
 public interface SysDictItemMapper {
-  List<SysDictItem> selectAll(Map where, RowBounds rowBounds);
+  List<SysDictItemEntity> selectAll(Map where, RowBounds rowBounds);
 
-  int insertSysDictItem(SysDictItem sysDictItem);
+  int insertSysDictItem(SysDictItemEntity sysDictItem);
 
-  boolean updateBy(SysDictItem sysDictItem);
+  boolean updateBy(SysDictItemEntity sysDictItem);
 
-  SysDictItem getById(String id);
+  SysDictItemEntity getById(String id);
 
   void deleteById(String id);
 
-  List<SysDictItem> queryDictByCode(String dictCode);
+  List<SysDictItemEntity> queryDictByCode(String dictCode);
 }

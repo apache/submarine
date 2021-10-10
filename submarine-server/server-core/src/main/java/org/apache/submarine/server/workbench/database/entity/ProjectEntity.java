@@ -24,7 +24,7 @@ import org.apache.submarine.server.workbench.annotation.Dict;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Project extends BaseEntity {
+public class ProjectEntity extends BaseEntity {
   private String name;
 
   @Dict(Code = "PROJECT_VISIBILITY")
@@ -55,7 +55,7 @@ public class Project extends BaseEntity {
 
   private String userName;
 
-  private List<ProjectFiles> projectFilesList = new ArrayList<>();
+  private List<ProjectFilesEntity> projectFilesList = new ArrayList<>();
 
   public String getName() {
     return name;
@@ -97,15 +97,15 @@ public class Project extends BaseEntity {
     this.userName = userName == null ? null : userName.trim();
   }
 
-  public List<ProjectFiles> getProjectFilesList() {
+  public List<ProjectFilesEntity> getProjectFilesList() {
     return projectFilesList;
   }
 
-  public void setProjectFilesList(List<ProjectFiles> projectFilesList) {
+  public void setProjectFilesList(List<ProjectFilesEntity> projectFilesList) {
     this.projectFilesList = projectFilesList;
   }
 
-  public void addProjectFilesList(ProjectFiles projectFiles) {
+  public void addProjectFilesList(ProjectFilesEntity projectFiles) {
     this.projectFilesList.add(projectFiles);
   }
 
