@@ -50,7 +50,7 @@ class Repository:
             key=dest_path,
         )
 
-    def log_artifacts(self, local_dir, artifact_path):
+    def log_artifacts(self, local_dir: str, artifact_path: str) -> str:
         bucket = "submarine"
         dest_path = self.dest_path
         list_of_subfolder = self._list_artifact_subfolder(artifact_path)
@@ -72,3 +72,11 @@ class Repository:
                     key=os.path.join(upload_path, f),
                 )
         return f"s3://{bucket}/{dest_path}"
+
+    def delete_folder(self) -> None:
+        objects_to_delete = self.client.list_objects(Bucket="submarine", Prefix=self.dest_path)
+        delete_keys = {"Objects": []}
+        delete_keys["Objects"] = [
+            {"Key": k} for k in [obj["Key"] for obj in objects_to_delete.get("Contents", [])]
+        ]
+        self.client.delete_objects(Bucket="submarine", Delete=delete_keys)

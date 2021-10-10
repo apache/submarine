@@ -87,7 +87,7 @@ def get_worker_index():
     return worker_index
 
 
-def get_sqlalchemy_store(store_uri: str):
+def get_tracking_sqlalchemy_store(store_uri: str):
     from submarine.store.tracking.sqlalchemy_store import SqlAlchemyStore
 
     return SqlAlchemyStore(store_uri)

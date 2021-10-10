@@ -50,7 +50,7 @@ class SubmarineClient(object):
         os.environ["AWS_SECRET_ACCESS_KEY"] = aws_secret_access_key or AWS_SECRET_ACCESS_KEY
         self.artifact_repo = Repository(utils.get_job_id())
         self.db_uri = db_uri or submarine.get_db_uri()
-        self.store = utils.get_sqlalchemy_store(self.db_uri)
+        self.store = utils.get_tracking_sqlalchemy_store(self.db_uri)
         self.model_registry = utils.get_model_registry_sqlalchemy_store(self.db_uri)
 
     def log_metric(
@@ -94,6 +94,14 @@ class SubmarineClient(object):
     def save_model(
         self, model_type: str, model, artifact_path: str, registered_model_name: str = None
     ) -> None:
+        """
+        Save a model into the minio pod.
+        :param model_type: The type of the model.
+        :param model: Model.
+        :param artifact_path: Relative path of the artifact in the minio pod.
+        :param registered_model_name: If none None, register model into the model registry with
+                                      this name. If None, the model only be saved in minio pod.
+        """
         pattern = r"[0-9A-Za-z][0-9A-Za-z-_]*[0-9A-Za-z]|[0-9A-Za-z]"
         if not re.fullmatch(pattern, artifact_path):
             raise Exception(
@@ -122,6 +130,6 @@ class SubmarineClient(object):
             self.model_registry.create_model_version(
                 name=registered_model_name,
                 source=source,
-                user_id="TODO",
+                user_id="",  # TODO(jeff-901): the user id is needed to be specified.
                 experiment_id=utils.get_job_id(),
             )
