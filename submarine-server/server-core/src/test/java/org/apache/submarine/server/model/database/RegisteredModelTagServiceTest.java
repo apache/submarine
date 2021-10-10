@@ -35,7 +35,7 @@ public class RegisteredModelTagServiceTest {
   RegisteredModelTagService registeredModelTagService = new RegisteredModelTagService();
 
   @After
-  public void cleanAll() throws Exception {
+  public void cleanAll() {
     registeredModelService.deleteAll();
   }
 

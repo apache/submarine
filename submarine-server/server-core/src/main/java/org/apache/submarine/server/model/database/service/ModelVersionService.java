@@ -33,7 +33,7 @@ public class ModelVersionService {
 
   private static final Logger LOG = LoggerFactory.getLogger(ModelVersionService.class);
 
-  public List<ModelVersionEntity> selectAllVersions(String name) {
+  public List<ModelVersionEntity> selectAllVersions(String name) throws SubmarineRuntimeException {
     LOG.info("Model Version select all versions:" + name);
     List<ModelVersionEntity> modelVersionEntities;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -47,7 +47,7 @@ public class ModelVersionService {
     return modelVersionEntities;
   }
 
-  public ModelVersionEntity select(String name, Integer version) {
+  public ModelVersionEntity select(String name, Integer version) throws SubmarineRuntimeException {
     LOG.info("Model Version select:" + name + " " + version.toString());
     ModelVersionEntity modelVersionEntity;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -60,7 +60,7 @@ public class ModelVersionService {
     }
     return modelVersionEntity;
   }
-  public ModelVersionEntity selectWithTag(String name, Integer version) {
+  public ModelVersionEntity selectWithTag(String name, Integer version) throws SubmarineRuntimeException {
     LOG.info("Model Version select with tag:" + name + " " + version.toString());
     ModelVersionEntity modelVersionEntity;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -74,7 +74,7 @@ public class ModelVersionService {
     return modelVersionEntity;
   }
 
-  public void insert(ModelVersionEntity modelVersion) {
+  public void insert(ModelVersionEntity modelVersion) throws SubmarineRuntimeException {
     LOG.info("Model Version insert " + modelVersion.getName());
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ModelVersionMapper mapper = sqlSession.getMapper(ModelVersionMapper.class);
@@ -86,7 +86,7 @@ public class ModelVersionService {
     }
   }
 
-  public void update(ModelVersionEntity modelVersion) {
+  public void update(ModelVersionEntity modelVersion) throws SubmarineRuntimeException {
     LOG.info("Model Version update " + modelVersion.getName());
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ModelVersionMapper mapper = sqlSession.getMapper(ModelVersionMapper.class);
@@ -98,7 +98,7 @@ public class ModelVersionService {
     }
   }
 
-  public void delete(String name, Integer version) {
+  public void delete(String name, Integer version) throws SubmarineRuntimeException {
     LOG.info("Model Version delete name:" + name + ", version:" + version.toString());
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ModelVersionMapper mapper = sqlSession.getMapper(ModelVersionMapper.class);
