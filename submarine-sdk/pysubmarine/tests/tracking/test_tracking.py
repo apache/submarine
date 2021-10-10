@@ -18,11 +18,12 @@ from datetime import datetime
 from os import environ
 
 import pytest
-from tf_model import LinearNNModel
 
 import submarine
 from submarine.store.database import models
 from submarine.store.database.models import SqlExperiment, SqlMetric, SqlModelVersion, SqlParam
+
+from .tf_model import LinearNNModel
 
 JOB_ID = "application_123456789"
 
