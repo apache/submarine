@@ -181,7 +181,7 @@
       </activation>
       <properties>
         <submarine.daemon.package.base>
-          ../../submarine-dist/target/submarine-dist-${project.version}-hadoop-2.9/submarine-dist-${project.version}-hadoop-2.9/bin
+          ../../submarine-dist/target/submarine-dist-${project.version}/submarine-dist-${project.version}/bin
         </submarine.daemon.package.base>
       </properties>
     </profile>
