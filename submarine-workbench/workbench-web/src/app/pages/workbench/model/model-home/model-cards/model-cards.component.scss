@@ -1,4 +1,4 @@
-/*
+/*!
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,33 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { ModelComponent } from './model.component';
-import { ModelVersionComponent } from './model-version/model-version.component';
-import { ModelHomeComponent } from './model-home/model-home.component';
-
-const routes: Routes = [
-  {
-    path: '',
-    component: ModelComponent,
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        component: ModelHomeComponent,
-      },
-      {
-        path: ':name/:version',
-        component: ModelVersionComponent,
-      },
-    ],
-  },
-];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class ModelRoutingModule {}
+p {
+margin: 0;
+}

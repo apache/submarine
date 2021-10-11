@@ -26,11 +26,15 @@ import { RouterModule } from '@angular/router';
 import { ModelComponent } from './model.component';
 import { ModelVersionComponent } from './model-version/model-version.component';
 import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
+import { ModelHomeComponent } from './model-home/model-home.component';
+import { ModelCardsComponent } from './model-home/model-cards/model-cards.component';
 
 @NgModule({
   declarations: [
     ModelComponent,
+    ModelHomeComponent,
     ModelVersionComponent,
+    ModelCardsComponent,
   ],
   imports: [
     CommonModule,

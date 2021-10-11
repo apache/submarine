@@ -17,32 +17,20 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { ModelComponent } from './model.component';
-import { ModelVersionComponent } from './model-version/model-version.component';
-import { ModelHomeComponent } from './model-home/model-home.component';
+import { Component, Input, OnInit } from '@angular/core';
+import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
 
-const routes: Routes = [
-  {
-    path: '',
-    component: ModelComponent,
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        component: ModelHomeComponent,
-      },
-      {
-        path: ':name/:version',
-        component: ModelVersionComponent,
-      },
-    ],
-  },
-];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+@Component({
+  selector: 'submarine-model-cards',
+  templateUrl: './model-cards.component.html',
+  styleUrls: ['./model-cards.component.scss'],
 })
-export class ModelRoutingModule {}
+export class ModelCardsComponent implements OnInit {
+  @Input() modelCards: Object[];
+
+  constructor() {}
+
+  ngOnInit() {
+    console.log(this.modelCards)
+  }
+}
