@@ -29,8 +29,6 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: "SUBMARINE-1006"
       - name: Setup python environment
         uses: actions/setup-python@v2
         with:

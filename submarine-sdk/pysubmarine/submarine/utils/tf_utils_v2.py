@@ -76,7 +76,6 @@ def get_tf_config(params):
     elif params["training"]["mode"] == "distributed":
         pass
         # need to be rewrite via tf2
-
         # ParameterServerStrategy = tf.distribute.experimental.ParameterServerStrategy()
         # tf_config = tf.estimator.RunConfig(
         #     train_distribute=ParameterServerStrategy,
