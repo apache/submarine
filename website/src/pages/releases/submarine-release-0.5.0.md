@@ -1,6 +1,3 @@
----
-title: "Apache Submarine Release 0.5.0"
----
 <!--
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,6 +12,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
+# Apache Submarine Release 0.5.0
 
 The Apache Submarine Community is pleased to announce the availability of the `0.5.0` release.
 

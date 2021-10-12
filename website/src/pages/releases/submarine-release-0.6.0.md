@@ -1,7 +1,3 @@
----
-title: "Apache Submarine Release 0.4.0"
----
-
 <!--
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,15 +12,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-The Apache Submarine Community is pleased to announce the availability of the `0.4.0` release.
+# Apache Submarine Release 0.6.0
+
+The Apache Submarine Community is pleased to announce the availability of the `0.6.0` release.
 
 The community put significant effort into improving Apache Submarine since the last release.
-175 patches for improvements and bug fixes. The highlighted features are as follows:
+248 patches for improvements and bug fixes. The highlighted features are as follows:
 
-- Submarine Experiments: Refactor the Job to experiment and redefined the experiment spec
-- Submarine Helm Charts: Provides one command to install the submarine into the Kubernetes cluster
-- PySubmarine: Submarine Python SDK
+- Support Tensorboard and mlflow in Experiment
+- Submarine model management
+- Submarine operator
+- Improve workbench UI/UX
 
 We encourage to [download](../download) the latest release. Feedback through the [mailing lists](../community/README) is very welcome.
 
-You can visit [issue tracker](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12322824&version=12346621) for full list of issues that are resolved.
+You can visit [issue tracker](https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12348821&styleName=Html&projectId=12322824) for full list of issues that are resolved.

@@ -22,6 +22,8 @@
  import Layout from '@theme/Layout';
  import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
  import {useVersions, useLatestVersion} from '@theme/hooks/useDocs';
+
+ import versionsReleaseNoteOnly from '@site/versionsReleaseNoteOnly.json';
  
 function Version() {
   const versions = useVersions();
@@ -56,7 +58,7 @@ function Version() {
                     <Link to={latestVersion.path}>Documentation</Link>
                   </td>
                   <td>
-                    <a href={`${repoUrl}/releases/tag/v${latestVersion.name}`}>
+                    <a href={`/releases/submarine-release-${latestVersion.name}`}>
                       Release Notes
                     </a>
                   </td>
@@ -89,7 +91,7 @@ function Version() {
           </div>
         )}
 
-        {pastVersions.length > 0 && (
+        {(pastVersions.length + versionsReleaseNoteOnly.length) > 0 && (
           <div className="margin-bottom--lg">
             <h3 id="archive">Past versions (Not maintained anymore)</h3>
             <p>
@@ -105,7 +107,20 @@ function Version() {
                       <Link to={version.path}>Documentation</Link>
                     </td>
                     <td>
-                      <a href={`${repoUrl}/releases/tag/v${version.name}`}>
+                      <a href={`/releases/submarine-release-${version.name}`}>
+                        Release Notes
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+                {versionsReleaseNoteOnly.map((version) => (
+                  <tr key={version}>
+                    <th>{version}</th>
+                    <td>
+                      Documentation                      
+                    </td>
+                    <td>
+                      <a href={`/releases/submarine-release-${version}`}>
                         Release Notes
                       </a>
                     </td>
