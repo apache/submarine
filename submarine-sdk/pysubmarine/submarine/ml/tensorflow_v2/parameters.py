@@ -13,17 +13,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
-import tensorflow as tf
-
-from submarine.ml.tensorflow.model import DeepFM
-
-
-@pytest.mark.skipif(tf.__version__ >= "2.0.0", reason="requires tf1")
-def test_run_deepfm(get_model_param):
-    params = get_model_param
-
-    model = DeepFM(model_params=params)
-    model.train()
-    model.evaluate()
-    model.predict()
+default_parameters = {
+    "output": {"save_model_dir": "./experiment", "metric": "auc"},
+    "training": {
+        "batch_size": 512,
+        "field_size": 39,
+        "num_epochs": 3,
+        "feature_size": 117581,
+        "embedding_size": 256,
+        "learning_rate": 0.0005,
+        "batch_norm_decay": 0.9,
+        "l2_reg": 0.0001,
+        "deep_layers": [400, 400, 400],
+        "conv_kernel_width": [6, 5],
+        "conv_filters": [4, 4],
+        "dropout": [0.3, 0.3, 0.3],
+        "batch_norm": "false",
+        "optimizer": "adam",
+        "log_steps": 10,
+        "num_threads": 4,
+        "num_gpu": 0,
+        "seed": 77,
+        "mode": "local",
+    },
+    "resource": {"num_cpu": 4, "num_gpu": 0, "num_thread": 0},  # tf determines automatically
+}

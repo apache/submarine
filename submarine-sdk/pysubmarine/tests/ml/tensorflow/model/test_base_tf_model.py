@@ -14,10 +14,12 @@
 # limitations under the License.
 
 import pytest
+import tensorflow as tf
 
 from submarine.ml.tensorflow.model.base_tf_model import BaseTFModel
 
 
+@pytest.mark.skipif(tf.__version__ >= "2.0.0", reason="requires tf1")
 def test_create_base_tf_model():
     params = {"learning rate": 0.05}
     with pytest.raises(AssertionError, match="Does not define any input parameters"):

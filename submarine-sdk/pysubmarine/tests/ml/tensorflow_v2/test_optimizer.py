@@ -16,14 +16,17 @@
 import pytest
 import tensorflow as tf
 
-from submarine.ml.tensorflow.model import DeepFM
+from submarine.ml.tensorflow_v2.optimizer import get_optimizer
 
 
-@pytest.mark.skipif(tf.__version__ >= "2.0.0", reason="requires tf1")
-def test_run_deepfm(get_model_param):
-    params = get_model_param
+@pytest.mark.skipif(tf.__version__ < "2.0.0", reason="requires tf2")
+def test_get_optimizer():
+    optimizer_keys = ["adam", "adagrad", "momentum", "ftrl"]
+    invalid_optimizer_keys = ["adddam"]
 
-    model = DeepFM(model_params=params)
-    model.train()
-    model.evaluate()
-    model.predict()
+    for optimizer_key in optimizer_keys:
+        get_optimizer(optimizer_key=optimizer_key, learning_rate=0.3)
+
+    for invalid_optimizer_key in invalid_optimizer_keys:
+        with pytest.raises(ValueError, match="Invalid optimizer_key :"):
+            get_optimizer(optimizer_key=invalid_optimizer_key, learning_rate=0.3)

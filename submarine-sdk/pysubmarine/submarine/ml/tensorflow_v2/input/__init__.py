@@ -13,17 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
-import tensorflow as tf
+from .input import libsvm_input_fn
 
-from submarine.ml.tensorflow.model import DeepFM
-
-
-@pytest.mark.skipif(tf.__version__ >= "2.0.0", reason="requires tf1")
-def test_run_deepfm(get_model_param):
-    params = get_model_param
-
-    model = DeepFM(model_params=params)
-    model.train()
-    model.evaluate()
-    model.predict()
+__all__ = ["libsvm_input_fn"]
