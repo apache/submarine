@@ -102,6 +102,7 @@ textarea.ng-invalid.ng-touched {
 /* utility */
 .single-field-group {
  display: flex;
+ flex-wrap: wrap;
  align-items: center;
  margin-bottom: 1.5rem;
  & label {
@@ -117,11 +118,21 @@ textarea.ng-invalid.ng-touched {
  }
 }
 
+.alert-message-container {
+   //display: flex;
+   flex: 0 0 100%;
+   //flex-direction: row-reverse;
+   //align-items: flex-end;
+}
 
 .alert-message {
+ position: relative;
  color: red;
- margin-top: .3rem;
- margin-left: .5rem;
+ left: 28%;
+ width: 48%;
+ //margin-top: .3rem;
+ //margin-left: .5rem;
+ //width: 72%;
 }
 
 /* For jobs */
