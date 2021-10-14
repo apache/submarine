@@ -119,10 +119,7 @@ textarea.ng-invalid.ng-touched {
 }
 
 .alert-message-container {
-   //display: flex;
    flex: 0 0 100%;
-   //flex-direction: row-reverse;
-   //align-items: flex-end;
 }
 
 .alert-message {
@@ -130,9 +127,6 @@ textarea.ng-invalid.ng-touched {
  color: red;
  left: 28%;
  width: 48%;
- //margin-top: .3rem;
- //margin-left: .5rem;
- //width: 72%;
 }
 
 /* For jobs */
