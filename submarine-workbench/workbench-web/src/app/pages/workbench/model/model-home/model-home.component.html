@@ -30,14 +30,17 @@
     </button>
   </div>
   <div align='left'>
-    <nz-input-group nzSearch style="width: 300px; margin: 10px 4px 10px 4px" [nzAddOnAfter]="suffixIconButton">
-      <input type="text" nz-input placeholder="input search text" />
+    <nz-input-group nzSearch style="width: 265px; margin: 10px 4px 10px 4px" [nzAddOnAfter]="suffixIconButton">
+      <input type="text" nz-input placeholder="Search by model name..." (keyup)="searchModel($event)" />
     </nz-input-group>
     <ng-template #suffixIconButton>
       <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
     </ng-template>
+    <nz-select nzMode="tags" style="width: 265px; margin: 10px 4px 10px 12px" nzPlaceHolder="Search by tags" [(ngModel)]="listOfChosenTags" (ngModelChange)="filterByTags()">
+      <nz-option *ngFor="let option of listOfTagsOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+    </nz-select>
   </div>
-  <submarine-model-cards [modelCards]="modelCards"></submarine-model-cards>
+  <submarine-model-cards [modelCards]="onDisplayModelCards"></submarine-model-cards>
   <!-- <submarine-template-form #form (updater)="updateTemplateList($event)"></submarine-template-form> -->
 </div>
   

@@ -32,14 +32,14 @@ export class ModelHomeComponent implements OnInit {
 
   modelCards = [
     {
-      'title': "Model One",
+      'name': "Model One",
       'createTime': "2021-10-12",
       'updatedTime': "2021-10-13", 
       'tags': ["image", 'text'],
       'description': "first model",
     }, 
     {
-      'title': "Model Two",
+      'name': "Model Two",
       'createTime': "2021-10-12",
       'updatedTime': "2021-10-13", 
       'tags': ["speech"],
@@ -47,11 +47,45 @@ export class ModelHomeComponent implements OnInit {
     },
   ];
 
+  onDisplayModelCards = [];
+  nameForFilter = "";
+
+  listOfTagsOption: Array<{ label: string; value: string }> = [];
+  listOfChosenTags = [];
+
 //   @ViewChild('form', { static: true }) form: TemplateFormComponent;
 
   ngOnInit() {
+    this.onDisplayModelCards = this.modelCards.map(card => card);
+    let tags = [];
+    this.modelCards.map((card) => {
+      Array.prototype.push.apply(tags, card.tags);
+    })
+    let tags_set = new Set(tags);
+    tags = Array.from(tags_set);
+    this.listOfTagsOption = tags.map((tag) => ({ "label": String(tag), "value": String(tag)}))
     // this.fetchTemplateList();
   }
+
+  searchModel(event: any) {
+    this.nameForFilter = event.target.value;
+    this.changeDisplayModelCards();
+  }
+  
+  filterByTags() {
+    this.changeDisplayModelCards();
+  }
+
+  changeDisplayModelCards() {
+    this.onDisplayModelCards = this.modelCards.filter((card) => card.name.toLowerCase().includes(this.nameForFilter.toLowerCase()));
+    this.onDisplayModelCards = this.onDisplayModelCards.filter((card) => {
+      for (let chosenTag of this.listOfChosenTags) {
+        if (!card.tags.includes(chosenTag)) return false;
+      }
+      return true;
+    })
+  }
+
 
 //   fetchTemplateList() {
 //     this.experimentService.fetchExperimentTemplateList().subscribe((res) => {
