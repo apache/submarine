@@ -19,8 +19,6 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { ModelInfo } from '@submarine/interfaces/model-info';
-// import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
-
 @Component({
   selector: 'submarine-model-card',
   templateUrl: './model-card.component.html',
