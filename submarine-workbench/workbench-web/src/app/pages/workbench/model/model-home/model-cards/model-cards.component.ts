@@ -31,6 +31,5 @@ export class ModelCardsComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    console.log(this.modelCards)
   }
 }
