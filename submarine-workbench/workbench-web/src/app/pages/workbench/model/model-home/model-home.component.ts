@@ -48,8 +48,8 @@ export class ModelHomeComponent implements OnInit {
   ];
 
   onDisplayModelCards = [];
+  
   nameForFilter = "";
-
   listOfTagsOption: Array<{ label: string; value: string }> = [];
   listOfChosenTags = [];
 
