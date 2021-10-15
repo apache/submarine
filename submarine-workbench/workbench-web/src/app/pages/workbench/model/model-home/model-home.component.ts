@@ -17,11 +17,9 @@
  * under the License.
  */
 
-import { Component, OnInit, ViewChild } from '@angular/core';
-// import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
+import { Component, OnInit } from '@angular/core';
 import { ModelInfo } from '@submarine/interfaces/model-info';
 import { ExperimentService } from '@submarine/services/experiment.service';
-// import { TemplateFormComponent } from './template-form/template-form.component';
 
 @Component({
   selector: 'submarine-model-home',
@@ -38,8 +36,6 @@ export class ModelHomeComponent implements OnInit {
   nameForFilter = "";
   listOfTagsOption: Array<{ label: string; value: string }> = [];
   listOfChosenTags = [];
-
-//   @ViewChild('form', { static: true }) form: TemplateFormComponent;
 
   ngOnInit() {
     this.modelCards = [
@@ -70,11 +66,10 @@ export class ModelHomeComponent implements OnInit {
     let tags = [];
     this.modelCards.map((card) => {
       Array.prototype.push.apply(tags, card.tags);
-    })
+    });
     let tags_set = new Set(tags);
     tags = Array.from(tags_set);
-    this.listOfTagsOption = tags.map((tag) => ({ "label": String(tag), "value": String(tag)}))
-    // this.fetchTemplateList();
+    this.listOfTagsOption = tags.map((tag) => ({ "label": String(tag), "value": String(tag)}));
   }
 
   searchModel(event: any) {
@@ -93,17 +88,6 @@ export class ModelHomeComponent implements OnInit {
         if (!card.tags.includes(chosenTag)) return false;
       }
       return true;
-    })
+    });
   }
-
-
-//   fetchTemplateList() {
-//     this.experimentService.fetchExperimentTemplateList().subscribe((res) => {
-//       this.templateList = res;
-//     });
-//   }
-
-//   updateTemplateList(msg: string) {
-//     this.fetchTemplateList();
-//   }
 }
