@@ -99,7 +99,7 @@ class SubmarineClient(object):
         :param model_type: The type of the model.
         :param model: Model.
         :param artifact_path: Relative path of the artifact in the minio pod.
-        :param registered_model_name: If none None, register model into the model registry with
+        :param registered_model_name: If not None, register model into the model registry with
                                       this name. If None, the model only be saved in minio pod.
         """
         pattern = r"[0-9A-Za-z][0-9A-Za-z-_]*[0-9A-Za-z]|[0-9A-Za-z]"
