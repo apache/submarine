@@ -40,26 +40,26 @@ class RegisteredModel(_SubmarineObject):
         self._tags = [tag.tag for tag in (tags or [])]
 
     @property
-    def name(self):
+    def name(self) -> Type[Column]:
         """String. Registered model name."""
         return self._name
 
     @property
-    def creation_time(self):
+    def creation_time(self) -> Type[Column]:
         """Datetime object. Registered model creation datetime."""
         return self._creation_time
 
     @property
-    def last_updated_time(self):
+    def last_updated_time(self) -> Type[Column]:
         """Datetime object. Datetime of last update for this model."""
         return self._last_updated_time
 
     @property
-    def description(self):
+    def description(self) -> Type[Column]:
         """String. Description"""
         return self._description
 
     @property
-    def tags(self):
+    def tags(self) -> list:
         """List of strings"""
         return self._tags

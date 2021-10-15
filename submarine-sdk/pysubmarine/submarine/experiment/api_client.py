@@ -83,11 +83,11 @@ class ApiClient(object):
 
     def __init__(
         self,
-        configuration: Configuration = None,
-        header_name: str = None,
+        configuration=None,
+        header_name=None,
         header_value=None,
         cookie=None,
-        pool_threads: int = 1,
+        pool_threads=1,
     ):
         if configuration is None:
             configuration = Configuration.get_default_copy()
@@ -109,7 +109,7 @@ class ApiClient(object):
     def __exit__(self, exc_type, exc_value, traceback):
         self.close()
 
-    def close(self):
+    def close(self) -> None:
         if self._pool:
             self._pool.close()
             self._pool.join()
@@ -118,7 +118,7 @@ class ApiClient(object):
                 atexit.unregister(self.close)
 
     @property
-    def pool(self):
+    def pool(self) -> ThreadPool:
         """Create thread pool on first request
         avoids instantiating unused threadpool for blocking clients.
         """
@@ -128,15 +128,15 @@ class ApiClient(object):
         return self._pool
 
     @property
-    def user_agent(self):
+    def user_agent(self) -> str:
         """User agent for this API client"""
         return self.default_headers["User-Agent"]
 
     @user_agent.setter
-    def user_agent(self, value):
+    def user_agent(self, value) -> None:
         self.default_headers["User-Agent"] = value
 
-    def set_default_header(self, header_name: str, header_value):
+    def set_default_header(self, header_name: str, header_value) -> None:
         self.default_headers[header_name] = header_value
 
     def __call_api(

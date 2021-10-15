@@ -29,6 +29,6 @@ class RegisteredModelTag(_SubmarineObject):
         self._tag = tag
 
     @property
-    def tag(self):
+    def tag(self) -> Type[Column]:
         """String tag"""
         return self._tag

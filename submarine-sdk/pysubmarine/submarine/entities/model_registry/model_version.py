@@ -52,56 +52,56 @@ class ModelVersion(_SubmarineObject):
         self._tags = [tag.tag for tag in (tags or [])]
 
     @property
-    def name(self):
+    def name(self) -> Type[Column]:
         """String. Registered model name"""
         return self._name
 
     @property
-    def version(self):
+    def version(self) -> Type[Column]:
         """Integer. version"""
         return self._version
 
     @property
-    def source(self):
+    def source(self) -> Type[Column]:
         """String. Source path for the model."""
         return self._source
 
     @property
-    def user_id(self):
+    def user_id(self) -> Type[Column]:
         """String. User ID that created this version."""
         return self._user_id
 
     @property
-    def experiment_id(self):
+    def experiment_id(self) -> Type[Column]:
         """String. Experiment ID that created this version."""
         return self._experiment_id
 
     @property
-    def creation_time(self):
+    def creation_time(self) -> Type[Column]:
         """Datetime object. The creation datetime of this version."""
         return self._creation_time
 
     @property
-    def last_updated_time(self):
+    def last_updated_time(self) -> Type[Column]:
         """Datetime object. Datetime of last update for this version."""
         return self._last_updated_time
 
     @property
-    def current_stage(self):
+    def current_stage(self) -> Type[Column]:
         """String. Current stage of this version."""
         return self._current_stage
 
     @property
-    def dataset(self):
+    def dataset(self) -> Type[Column]:
         """String. Dataset used for this version."""
         return self._dataset
 
     @property
-    def description(self):
+    def description(self) -> Type[Column]:
         """String. Description"""
         return self._description
 
     @property
-    def tags(self):
+    def tags(self) -> list:
         """List of strings."""
         return self._tags
