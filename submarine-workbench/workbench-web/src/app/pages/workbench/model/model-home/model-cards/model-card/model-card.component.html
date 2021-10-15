@@ -16,21 +16,15 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<!-- <nz-list-item>
-  <nz-card style="width:300px;" nzTitle={{card.name}} [nzExtra]="extraTemplate">
+<a [routerLink]="[card.name]">
+  <nz-list-item >
+    <nz-card style="width:300px;" nzTitle={{card.name}} [nzExtra]="extraTemplate">
     <p>Created: {{card.createTime}}</p>
     <p>Updated: {{card.updatedTime}}</p>
     <p>Tags: 
       <nz-tag *ngFor="let tag of card.tags">{{tag}}</nz-tag>
     </p>
-    <p >Description: {{card.description}}</p>
-  </nz-card>
-</nz-list-item> -->
-
-<nz-list nzGrid>
-  <div nz-row [nzGutter]="16">
-    <div nz-col [nzSpan]="6" *ngFor="let card of modelCards; let i = index">
-      <submarine-model-card [card]="card"></submarine-model-card>
-    </div>
-  </div>
-</nz-list>
+    <p>Description: {{description}}</p>
+    </nz-card>
+  </nz-list-item>
+</a>

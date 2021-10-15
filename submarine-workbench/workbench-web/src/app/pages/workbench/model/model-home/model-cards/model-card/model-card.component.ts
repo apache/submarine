@@ -22,15 +22,22 @@ import { ModelInfo } from '@submarine/interfaces/model-info';
 // import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
 
 @Component({
-  selector: 'submarine-model-cards',
-  templateUrl: './model-cards.component.html',
-  styleUrls: ['./model-cards.component.scss'],
+  selector: 'submarine-model-card',
+  templateUrl: './model-card.component.html',
+  styleUrls: ['./model-card.component.scss'],
 })
-export class ModelCardsComponent implements OnInit {
-  @Input() modelCards: ModelInfo[];
+export class ModelCardComponent implements OnInit {
+  @Input() card: ModelInfo;
+  description: string;
 
   constructor() {}
 
   ngOnInit() {
+    if (this.card.description.length > 15) {
+      this.description = this.card.description.substring(0,15) + "...";
+    }
+    else {
+      this.description = this.card.description;
+    }
   }
 }

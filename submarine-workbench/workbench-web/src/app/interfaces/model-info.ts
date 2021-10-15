@@ -17,20 +17,10 @@
  * under the License.
  */
 
-import { Component, Input, OnInit } from '@angular/core';
-import { ModelInfo } from '@submarine/interfaces/model-info';
-// import { ExperimentTemplate } from '@submarine/interfaces/experiment-template';
-
-@Component({
-  selector: 'submarine-model-cards',
-  templateUrl: './model-cards.component.html',
-  styleUrls: ['./model-cards.component.scss'],
-})
-export class ModelCardsComponent implements OnInit {
-  @Input() modelCards: ModelInfo[];
-
-  constructor() {}
-
-  ngOnInit() {
-  }
+export interface ModelInfo {
+  name: string;
+  createTime: string,
+  updatedTime: string, 
+  tags: string[],
+  description: string,
 }
