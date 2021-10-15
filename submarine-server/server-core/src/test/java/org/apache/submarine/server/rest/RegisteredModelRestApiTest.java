@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package org.apache.submarine.server.rest;
 
 import static org.junit.Assert.assertEquals;
@@ -14,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.Response;
 import org.apache.submarine.server.api.experiment.ExperimentId;
+import org.apache.submarine.server.api.spec.RegisteredModelTagSpec;
 import org.apache.submarine.server.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.gson.ExperimentIdSerializer;
 import org.apache.submarine.server.model.database.entities.RegisteredModelEntity;
@@ -21,8 +41,9 @@ import org.apache.submarine.server.model.database.service.RegisteredModelService
 
 public class RegisteredModelRestApiTest {
   private final RegisteredModelService registeredModelService = new RegisteredModelService();
-  private final String registered_model_name = "test_registered_model";
-  private final String registered_model_description = "test registered model description";
+  private final String registeredModelName = "test_registered_model";
+  private final String registeredModelDescription = "test registered model description";
+  private final String registeredModelTag = "testTag";
   private static final GsonBuilder gsonBuilder = new GsonBuilder()
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer());
@@ -34,10 +55,9 @@ public class RegisteredModelRestApiTest {
 
   @Before
   public void testCreateRegisteredModel() {
-    registeredModel.setName(registered_model_name);
-    registeredModel.setDescription(registered_model_description);
+    registeredModel.setName(registeredModelName);
+    registeredModel.setDescription(registeredModelDescription);
     registeredModelService.insert(registeredModel);
-
   }
 
   @Test
@@ -51,18 +71,43 @@ public class RegisteredModelRestApiTest {
 
   @Test
   public void testGetModelRegisteredModel(){
-    Response getModelVersionResponse = registeredModelRestApi.getRegisteredModel(registered_model_name);
+    Response getRegisteredModelResponse = registeredModelRestApi.getRegisteredModel(registeredModelName);
     RegisteredModelEntity result = getResultFromResponse(
-        getModelVersionResponse, RegisteredModelEntity.class);
+        getRegisteredModelResponse, RegisteredModelEntity.class);
     verifyResult(result, registeredModel);
   }
 
   @Test
+  public void testAddRegisteredModelTag(){
+    RegisteredModelTagSpec spec = new RegisteredModelTagSpec();
+    spec.setName(registeredModelName);
+    spec.setTag(registeredModelTag);
+    registeredModelRestApi.createRegisteredModelTag(spec);
+    Response getRegisteredModelResponse = registeredModelRestApi.getRegisteredModel(registeredModelName);
+    RegisteredModelEntity result = getResultFromResponse(
+        getRegisteredModelResponse, RegisteredModelEntity.class);
+    assertEquals(result.getTags().size(), 1);
+    assertEquals(result.getTags().get(0), registeredModelTag);
+  }
+
+  @Test
+  public void testDeleteRegisteredModelTag(){
+    RegisteredModelTagSpec spec = new RegisteredModelTagSpec();
+    spec.setName(registeredModelName);
+    spec.setTag(registeredModelTag);
+    registeredModelRestApi.deleteRegisteredModelTag(spec);
+    Response getRegisteredModelResponse = registeredModelRestApi.getRegisteredModel(registeredModelName);
+    RegisteredModelEntity result = getResultFromResponse(
+        getRegisteredModelResponse , RegisteredModelEntity.class);
+    assertEquals(result.getTags().size(), 0);
+  }
+
+  @Test
   public void testDeleteRegisteredModel(){
-    registeredModelRestApi.deleteRegisteredModel(registered_model_name);
-    Response listModelVersionResponse = registeredModelRestApi.listRegisteredModels();
+    registeredModelRestApi.deleteRegisteredModel(registeredModelName);
+    Response listRegisteredModelResponse = registeredModelRestApi.listRegisteredModels();
     List<RegisteredModelEntity> result = getResultListFromResponse(
-        listModelVersionResponse, RegisteredModelEntity.class);
+        listRegisteredModelResponse, RegisteredModelEntity.class);
     assertEquals(result.size(), 0);
   }
 

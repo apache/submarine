@@ -23,6 +23,8 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -35,10 +37,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
+import org.apache.submarine.server.api.spec.ModelVersionTagSpec;
 import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
+import org.apache.submarine.server.model.database.entities.ModelVersionTagEntity;
 import org.apache.submarine.server.model.database.service.ModelVersionService;
 
 
+import org.apache.submarine.server.model.database.service.ModelVersionTagService;
 import org.apache.submarine.server.response.JsonResponse;
 
 /**
@@ -50,6 +55,9 @@ public class ModelVersionRestApi {
 
   /* Model version service */
   private final ModelVersionService modelVersionService = new ModelVersionService();
+
+  /* Model version tag service */
+  private final ModelVersionTagService modelVersionTagService = new ModelVersionTagService();
 
   /**
    * Return the Pong message for test the connectivity.
@@ -68,9 +76,9 @@ public class ModelVersionRestApi {
   }
 
   /**
-   * List all model versions under same registered model.
+   * List all model versions under same registered model name.
    *
-   * @param name model version name
+   * @param name registered model name
    * @return model-version list
    */
   @GET
@@ -93,7 +101,7 @@ public class ModelVersionRestApi {
    *
    * @param name    model version name
    * @param version model version version
-   * @return detailed info about the model-version
+   * @return detailed info about the model version
    */
   @GET
   @Path("/{name}/{version}")
@@ -136,8 +144,133 @@ public class ModelVersionRestApi {
     }
   }
 
+  /**
+   * Update the model version.
+   *
+   * @param name    model version name
+   * @param version model version version
+   * @return success message
+   */
+  @PATCH
+  @Path("/{name}/{version}")
+  @Operation(summary = "Update the model version", tags = { "model-version" }, responses = {
+      @ApiResponse(description = "successful operation",
+          content = @Content(schema = @Schema(implementation = JsonResponse.class))),
+      @ApiResponse(responseCode = "404", description = "ModelVersionEntity not found") })
+  public Response updateModelVersion(
+      @PathParam(RestConstants.MODEL_VERSION_NAME) String name,
+      @PathParam(RestConstants.MODEL_VERSION_VERSION) Integer version,
+      String newDescription) {
+    try {
+      ModelVersionEntity oldModelVersion = modelVersionService.select(name, version);
+      if (oldModelVersion == null){
+        throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+            "Invalid. ModelVersionEntity with sane name abd version is not found.");
+      }
+      ModelVersionEntity modelVersion = new ModelVersionEntity();
+      modelVersion.setName(name);
+      modelVersion.setVersion(version);
+      modelVersion.setDescription(newDescription);
+      modelVersion.setExperimentId(oldModelVersion.getExperimentId());
+      modelVersion.setCurrentStage(oldModelVersion.getCurrentStage());
+      modelVersion.setUserId(oldModelVersion.getUserId());
+      modelVersion.setSource(oldModelVersion.getSource());
+      modelVersion.setCreationTime(oldModelVersion.getCreationTime());
+      modelVersion.setDataset(oldModelVersion.getDataset());
+      modelVersionService.update(modelVersion);
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
+          .message("Update the model version instance").build();
+    } catch (SubmarineRuntimeException e) {
+      return parseModelVersionServiceException(e);
+    }
+  }
+
+  /**
+   * Create a model version tag.
+   *
+   * @param spec model version tag spec
+   * @return success message
+   */
+  @POST
+  @Path("/tags")
+  @Consumes({ RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON })
+  @Operation(summary = "Create a model version tag instance", tags = { "model-version" }, responses = {
+      @ApiResponse(description = "successful operation",
+          content = @Content(schema = @Schema(implementation = JsonResponse.class))) })
+  public Response createModelVersionTag(ModelVersionTagSpec spec) {
+    try {
+      checkModelVersionTagSpec(spec);
+      ModelVersionTagEntity modelVersionTag = new ModelVersionTagEntity();
+      modelVersionTag.setName(spec.getName());
+      modelVersionTag.setVersion(spec.getVersion());
+      modelVersionTag.setTag(spec.getTag());
+      modelVersionTagService.insert(modelVersionTag);
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
+          .message("Create a model version tag instance").build();
+    } catch (SubmarineRuntimeException e) {
+      return parseModelVersionServiceException(e);
+    }
+  }
+
+  /**
+   * Delete a model version tag.
+   *
+   * @param spec model version tag spec
+   * @return success message
+   */
+  @DELETE
+  @Path("/tags")
+  @Consumes({ RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON })
+  @Operation(summary = "Delete a model version tag instance", tags = { "model-version" }, responses = {
+      @ApiResponse(description = "successful operation",
+          content = @Content(schema = @Schema(implementation = JsonResponse.class))) })
+  public Response deleteModelVersionTag(ModelVersionTagSpec spec) {
+    try {
+      checkModelVersionTagSpec(spec);
+      ModelVersionTagEntity modelVersionTag = new ModelVersionTagEntity();
+      modelVersionTag.setName(spec.getName());
+      modelVersionTag.setVersion(spec.getVersion());
+      modelVersionTag.setTag(spec.getTag());
+      modelVersionTagService.delete(modelVersionTag);
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
+          .message("Delete a model version tag instance").build();
+    } catch (SubmarineRuntimeException e) {
+      return parseModelVersionServiceException(e);
+    }
+  }
+
   private Response parseModelVersionServiceException(SubmarineRuntimeException e) {
     return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage()).build();
+  }
+
+  /**
+   * Check if model version tag is valid.
+   *
+   * @param spec model version tag spec
+   */
+  private void checkModelVersionTagSpec(ModelVersionTagSpec spec) {
+    if (spec == null){
+      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+          "Invalid. Model version spec object is null.");
+    }
+    if (spec.getName() == null) {
+      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+          "Invalid. Model version name is null.");
+    }
+    if (spec.getVersion() == null) {
+      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+          "Invalid. Model version's version is null.");
+    }
+    if (spec.getTag() == null || spec.getTag().equals("")) {
+      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+          "Invalid. Model version tag is null.");
+    }
+    ModelVersionEntity modelVersion = modelVersionService.select(spec.getName(),
+        spec.getVersion());
+    if (modelVersion == null){
+      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+          "Invalid. Model version with same name and version is not existed.");
+    }
   }
 
 }

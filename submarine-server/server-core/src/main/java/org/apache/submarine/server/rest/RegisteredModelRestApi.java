@@ -23,6 +23,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.PATCH;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -37,9 +38,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.spec.RegisteredModelSpec;
+import org.apache.submarine.server.api.spec.RegisteredModelTagSpec;
 import org.apache.submarine.server.model.database.entities.RegisteredModelEntity;
+import org.apache.submarine.server.model.database.entities.RegisteredModelTagEntity;
 import org.apache.submarine.server.model.database.service.RegisteredModelService;
 
+import org.apache.submarine.server.model.database.service.RegisteredModelTagService;
 import org.apache.submarine.server.response.JsonResponse;
 
 
@@ -54,6 +58,9 @@ public class RegisteredModelRestApi {
 
   /* Registered model service */
   private final RegisteredModelService registeredModelService = new RegisteredModelService();
+
+  /* Registered model tag service */
+  private final RegisteredModelTagService registeredModelTagService = new RegisteredModelTagService();
 
   /**
    * Return the Pong message for test the connectivity.
@@ -139,6 +146,33 @@ public class RegisteredModelRestApi {
   }
 
   /**
+   * Update the registered model with registered model name.
+   *
+   * @param name registered model name
+   * @param newDescription new description
+   * @return success message
+   */
+  @PATCH
+  @Path("/{name}")
+  @Operation(summary = "Update the registered model", tags = { "registered-model" }, responses = {
+      @ApiResponse(description = "successful operation",
+          content = @Content(schema = @Schema(implementation = JsonResponse.class))),
+      @ApiResponse(responseCode = "404", description = "RegisteredModelEntity not found") })
+  public Response updateRegisteredModel(
+      @PathParam(RestConstants.REGISTERED_MODEL_NAME) String name, String newDescription) {
+    try {
+      RegisteredModelEntity registeredModel = new RegisteredModelEntity();
+      registeredModel.setName(name);
+      registeredModel.setDescription(newDescription);
+      registeredModelService.update(registeredModel);
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
+          .message("Update the registered model instance").build();
+    } catch (SubmarineRuntimeException e) {
+      return parseRegisteredModelServiceException(e);
+    }
+  }
+
+  /**
    * Delete the registered model with registered model name.
    *
    * @param name registered model name
@@ -160,23 +194,75 @@ public class RegisteredModelRestApi {
     }
   }
 
+  /**
+   * Create a registered model tag.
+   *
+   * @param spec registered model tag spec
+   * @return success message
+   */
+  @POST
+  @Path("/tags")
+  @Consumes({ RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON })
+  @Operation(summary = "Create a registered model tag instance", tags = { "registered-model" }, responses = {
+      @ApiResponse(description = "successful operation",
+          content = @Content(schema = @Schema(implementation = JsonResponse.class))) })
+  public Response createRegisteredModelTag(RegisteredModelTagSpec spec) {
+    try {
+      checkRegisteredModelTagSpec(spec);
+      RegisteredModelTagEntity registeredModelTag = new RegisteredModelTagEntity();
+      registeredModelTag.setName(spec.getName());
+      registeredModelTag.setTag(spec.getTag());
+      registeredModelTagService.insert(registeredModelTag);
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
+          .message("Create a registered model tag instance").build();
+    } catch (SubmarineRuntimeException e) {
+      return parseRegisteredModelServiceException(e);
+    }
+  }
+
+  /**
+   * Delete a registered model tag.
+   *
+   * @param spec registered model tag spec
+   * @return success message
+   */
+  @DELETE
+  @Path("/tags")
+  @Consumes({ RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON })
+  @Operation(summary = "Delete a registered model tag instance", tags = { "registered-model" }, responses = {
+      @ApiResponse(description = "successful operation",
+          content = @Content(schema = @Schema(implementation = JsonResponse.class))) })
+  public Response deleteRegisteredModelTag(RegisteredModelTagSpec spec) {
+    try {
+      checkRegisteredModelTagSpec(spec);
+      RegisteredModelTagEntity registeredModelTag = new RegisteredModelTagEntity();
+      registeredModelTag.setName(spec.getName());
+      registeredModelTag.setTag(spec.getTag());
+      registeredModelTagService.delete(registeredModelTag);
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
+          .message("Delete a registered model tag instance").build();
+    } catch (SubmarineRuntimeException e) {
+      return parseRegisteredModelServiceException(e);
+    }
+  }
+
   private Response parseRegisteredModelServiceException(SubmarineRuntimeException e) {
     return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage()).build();
   }
 
   /**
-   * Check if register model spec is valid spec.
+   * Check if registered model spec is valid spec.
    *
-   * @param spec register model spec
+   * @param spec registered model spec
    */
   private void checkRegisteredModelSpec(RegisteredModelSpec spec) {
     if (spec == null) {
       throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-        "Invalid. RegisteredModel Spec object is null.");
+          "Invalid. Registered model spec object is null.");
     }
-    if (spec.getName() == null || spec.getName() == "") {
+    if (spec.getName() == null || spec.getName().equals("")) {
       throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-        "Invalid. RegisteredModel name is null.");
+          "Invalid. Registered model name is null.");
     }
     if (spec.getDescription() == null) {
       spec.setDescription("");
@@ -185,8 +271,33 @@ public class RegisteredModelRestApi {
     for (RegisteredModelEntity registerModel : registeredModels) {
       if (registerModel.getName().equals(spec.getName())) {
         throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-          "Invalid. RegisteredModel with same name is already existed.");
+            "Invalid. Registered model with same name is already existed.");
       }
+    }
+  }
+
+  /**
+   * Check if registered model tag is valid spec.
+   *
+   * @param spec registered model tag spec
+   */
+  private void checkRegisteredModelTagSpec(RegisteredModelTagSpec spec) {
+    if (spec == null) {
+      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+          "Invalid. Registered model tag spec object is null.");
+    }
+    if (spec.getName() == null || spec.getName().equals("")){
+      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+          "Invalid. Registered model name is null.");
+    }
+    if (spec.getTag() == null || spec.getTag().equals("")) {
+      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+          "Invalid. Registered model tag is null.");
+    }
+    RegisteredModelEntity registeredModel = registeredModelService.select(spec.getName());
+    if (registeredModel == null){
+      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+          "Invalid. Registered model with same name is not existed.");
     }
   }
 }

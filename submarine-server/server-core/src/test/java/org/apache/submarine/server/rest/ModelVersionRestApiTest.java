@@ -1,5 +1,23 @@
-package org.apache.submarine.server.rest;
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
+package org.apache.submarine.server.rest;
 
 import static org.junit.Assert.assertEquals;
 import com.google.gson.Gson;
@@ -15,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.Response;
 import org.apache.submarine.server.api.experiment.ExperimentId;
+import org.apache.submarine.server.api.spec.ModelVersionTagSpec;
 import org.apache.submarine.server.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.gson.ExperimentIdSerializer;
 import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
@@ -24,13 +43,14 @@ import org.apache.submarine.server.model.database.service.RegisteredModelService
 
 
 public class ModelVersionRestApiTest {
-  private ModelVersionRestApi modelVersionRestApi = new ModelVersionRestApi();;
-  private final String registered_model_name = "test_registered_model";
-  private final String registered_model_description = "test registered model description";
-  private final String model_version_description = "test model version description";
-  private final String model_version_source = "s3://submarine/test";
-  private final String model_version_uid = "test123";
-  private final String model_version_experiment_id = "experiment_123";
+  private ModelVersionRestApi modelVersionRestApi = new ModelVersionRestApi();
+  private final String registeredModelName = "test_registered_model";
+  private final String registeredModelDescription = "test registered model description";
+  private final String modelVersionDescription = "test model version description";
+  private final String modelVersionSource = "s3://submarine/test";
+  private final String modelVersionUid = "test123";
+  private final String modelVersionExperimentId = "experiment_123";
+  private final String modelVersionTag = "testTag";
 
   private final RegisteredModelService registeredModelService = new RegisteredModelService();
 
@@ -49,28 +69,28 @@ public class ModelVersionRestApiTest {
   @Before
   public void createModelVersion() {
     RegisteredModelEntity registeredModel = new RegisteredModelEntity();
-    registeredModel.setName(registered_model_name);
-    registeredModel.setDescription(registered_model_description);
+    registeredModel.setName(registeredModelName);
+    registeredModel.setDescription(registeredModelDescription);
     registeredModelService.insert(registeredModel);
-    modelVersion1.setName(registered_model_name);
-    modelVersion1.setDescription(model_version_description + "1");
+    modelVersion1.setName(registeredModelName);
+    modelVersion1.setDescription(modelVersionDescription + "1");
     modelVersion1.setVersion(1);
-    modelVersion1.setSource(model_version_source + "1");
-    modelVersion1.setUserId(model_version_uid);
-    modelVersion1.setExperimentId(model_version_experiment_id);
+    modelVersion1.setSource(modelVersionSource + "1");
+    modelVersion1.setUserId(modelVersionUid);
+    modelVersion1.setExperimentId(modelVersionExperimentId);
     modelVersionService.insert(modelVersion1);
-    modelVersion2.setName(registered_model_name);
-    modelVersion2.setDescription(model_version_description + "2");
+    modelVersion2.setName(registeredModelName);
+    modelVersion2.setDescription(modelVersionDescription + "2");
     modelVersion2.setVersion(2);
-    modelVersion2.setSource(model_version_source + "2");
-    modelVersion2.setUserId(model_version_uid);
-    modelVersion2.setExperimentId(model_version_experiment_id);
+    modelVersion2.setSource(modelVersionSource + "2");
+    modelVersion2.setUserId(modelVersionUid);
+    modelVersion2.setExperimentId(modelVersionExperimentId);
     modelVersionService.insert(modelVersion2);
   }
 
   @Test
   public void testListModelVersion(){
-    Response listModelVersionResponse = modelVersionRestApi.listModelVersions(registered_model_name);
+    Response listModelVersionResponse = modelVersionRestApi.listModelVersions(registeredModelName);
     List<ModelVersionEntity> result = getResultListFromResponse(
         listModelVersionResponse, ModelVersionEntity.class);
     assertEquals(result.size(), 2);
@@ -80,15 +100,42 @@ public class ModelVersionRestApiTest {
 
   @Test
   public void testGetModelVersion(){
-    Response getModelVersionResponse = modelVersionRestApi.getModelVersion(registered_model_name, 1);
+    Response getModelVersionResponse = modelVersionRestApi.getModelVersion(registeredModelName, 1);
     ModelVersionEntity result = getResultFromResponse(getModelVersionResponse, ModelVersionEntity.class);
     verifyResult(result, modelVersion1);
   }
 
   @Test
+  public void testAddModelVersionTag(){
+    ModelVersionTagSpec spec = new ModelVersionTagSpec();
+    spec.setName(registeredModelName);
+    spec.setVersion(1);
+    spec.setTag(modelVersionTag);
+    modelVersionRestApi.createModelVersionTag(spec);
+    Response getModelVersionResponse = modelVersionRestApi.getModelVersion(registeredModelName, 1);
+    ModelVersionEntity result = getResultFromResponse(
+        getModelVersionResponse, ModelVersionEntity.class);
+    assertEquals(result.getTags().size(), 1);
+    assertEquals(result.getTags().get(0), modelVersionTag);
+  }
+
+  @Test
+  public void testDeleteModelVersionTag(){
+    ModelVersionTagSpec spec = new ModelVersionTagSpec();
+    spec.setName(registeredModelName);
+    spec.setVersion(1);
+    spec.setTag(modelVersionTag);
+    modelVersionRestApi.deleteModelVersionTag(spec);
+    Response getModelVersionResponse = modelVersionRestApi.getModelVersion(registeredModelName, 1);
+    ModelVersionEntity result = getResultFromResponse(
+        getModelVersionResponse , ModelVersionEntity.class);
+    assertEquals(result.getTags().size(), 0);
+  }
+
+  @Test
   public void testDeleteModelVersion(){
-    modelVersionRestApi.deleteModelVersion(registered_model_name, 1);
-    Response listModelVersionResponse = modelVersionRestApi.listModelVersions(registered_model_name);
+    modelVersionRestApi.deleteModelVersion(registeredModelName, 1);
+    Response listModelVersionResponse = modelVersionRestApi.listModelVersions(registeredModelName);
     List<ModelVersionEntity> result = getResultListFromResponse(
         listModelVersionResponse, ModelVersionEntity.class);
     assertEquals(result.size(), 1);
