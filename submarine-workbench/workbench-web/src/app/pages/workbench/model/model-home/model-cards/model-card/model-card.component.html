@@ -16,26 +16,15 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-
-<nz-layout style="margin: -24px -24px 16px">
-  <div style="background-color: white; padding-left: 30px; padding-top: 20px">
-    <nz-breadcrumb>
-      <nz-breadcrumb-item>
-        <a>Home</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a [routerLink]="['/', 'workbench', 'model']" (click)="modelName = null">model</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item *ngIf="modelName != null">
-        {{ modelName }}
-      </nz-breadcrumb-item>
-    </nz-breadcrumb>
-    <div *ngIf="modelName == null">
-      <br />
-      <h2>Model</h2>
-    </div>
-    <br />
-  </div>
-  <router-outlet></router-outlet>
-</nz-layout>
-  
+<a [routerLink]="[card.name]">
+  <nz-list-item >
+    <nz-card style="width:300px;" nzTitle={{card.name}} [nzExtra]="extraTemplate">
+    <p>Created: {{card.createTime}}</p>
+    <p>Updated: {{card.updatedTime}}</p>
+    <p>Tags: 
+      <nz-tag *ngFor="let tag of card.tags">{{tag}}</nz-tag>
+    </p>
+    <p>Description: {{description}}</p>
+    </nz-card>
+  </nz-list-item>
+</a>

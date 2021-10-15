@@ -17,25 +17,10 @@
   ~ under the License.
   -->
 
-<nz-layout style="margin: -24px -24px 16px">
-  <div style="background-color: white; padding-left: 30px; padding-top: 20px">
-    <nz-breadcrumb>
-      <nz-breadcrumb-item>
-        <a>Home</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item>
-        <a [routerLink]="['/', 'workbench', 'model']" (click)="modelName = null">model</a>
-      </nz-breadcrumb-item>
-      <nz-breadcrumb-item *ngIf="modelName != null">
-        {{ modelName }}
-      </nz-breadcrumb-item>
-    </nz-breadcrumb>
-    <div *ngIf="modelName == null">
-      <br />
-      <h2>Model</h2>
+<nz-list nzGrid>
+  <div nz-row [nzGutter]="16">
+    <div nz-col [nzSpan]="6" *ngFor="let card of modelCards; let i = index">
+      <submarine-model-card [card]="card"></submarine-model-card>
     </div>
-    <br />
   </div>
-  <router-outlet></router-outlet>
-</nz-layout>
-  
+</nz-list>

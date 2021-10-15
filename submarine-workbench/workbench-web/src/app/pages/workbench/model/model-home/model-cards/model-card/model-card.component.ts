@@ -17,32 +17,25 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { ModelComponent } from './model.component';
-import { ModelVersionComponent } from './model-version/model-version.component';
-import { ModelHomeComponent } from './model-home/model-home.component';
-
-const routes: Routes = [
-  {
-    path: '',
-    component: ModelComponent,
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        component: ModelHomeComponent,
-      },
-      {
-        path: ':name/:version',
-        component: ModelVersionComponent,
-      },
-    ],
-  },
-];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+import { Component, Input, OnInit } from '@angular/core';
+import { ModelInfo } from '@submarine/interfaces/model-info';
+@Component({
+  selector: 'submarine-model-card',
+  templateUrl: './model-card.component.html',
+  styleUrls: ['./model-card.component.scss'],
 })
-export class ModelRoutingModule {}
+export class ModelCardComponent implements OnInit {
+  @Input() card: ModelInfo;
+  description: string;
+
+  constructor() {}
+
+  ngOnInit() {
+    if (this.card.description.length > 15) {
+      this.description = this.card.description.substring(0,15) + "...";
+    }
+    else {
+      this.description = this.card.description;
+    }
+  }
+}

@@ -17,32 +17,10 @@
  * under the License.
  */
 
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { ModelComponent } from './model.component';
-import { ModelVersionComponent } from './model-version/model-version.component';
-import { ModelHomeComponent } from './model-home/model-home.component';
-
-const routes: Routes = [
-  {
-    path: '',
-    component: ModelComponent,
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        component: ModelHomeComponent,
-      },
-      {
-        path: ':name/:version',
-        component: ModelVersionComponent,
-      },
-    ],
-  },
-];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class ModelRoutingModule {}
+export interface ModelInfo {
+  name: string;
+  createTime: string,
+  updatedTime: string, 
+  tags: string[],
+  description: string,
+}
