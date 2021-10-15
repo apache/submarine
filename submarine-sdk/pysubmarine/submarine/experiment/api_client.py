@@ -83,11 +83,19 @@ class ApiClient(object):
 
     def __init__(
         self,
+<<<<<<< HEAD
         configuration=None,
         header_name=None,
         header_value=None,
         cookie=None,
         pool_threads=1,
+=======
+        configuration: Configuration = None,
+        header_name: str = None,
+        header_value=None,
+        cookie=None,
+        pool_threads: int = 1,
+>>>>>>> 015deddd9e9842e5cef826a5074ec9798330a82d
     ):
         if configuration is None:
             configuration = Configuration.get_default_copy()
@@ -136,7 +144,11 @@ class ApiClient(object):
     def user_agent(self, value) -> None:
         self.default_headers["User-Agent"] = value
 
+<<<<<<< HEAD
     def set_default_header(self, header_name: str, header_value) -> None:
+=======
+    def set_default_header(self, header_name: str, header_value):
+>>>>>>> 015deddd9e9842e5cef826a5074ec9798330a82d
         self.default_headers[header_name] = header_value
 
     def __call_api(

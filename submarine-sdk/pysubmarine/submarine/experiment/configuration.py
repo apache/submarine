@@ -70,12 +70,12 @@ class Configuration(object):
 
     def __init__(
         self,
-        host="http://localhost/api",
-        api_key=None,
-        api_key_prefix=None,
-        username=None,
-        password=None,
-        discard_unknown_keys=False,
+        host: str = "http://localhost/api",
+        api_key: dict = None,
+        api_key_prefix: dict = None,
+        username: str = None,
+        password: str = None,
+        discard_unknown_keys: bool = False,
     ):
         """Constructor"""
         self.host = host
