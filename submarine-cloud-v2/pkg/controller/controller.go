@@ -25,26 +25,16 @@ import (
 
 	v1alpha1 "github.com/apache/submarine/submarine-cloud-v2/pkg/apis/submarine/v1alpha1"
 	clientset "github.com/apache/submarine/submarine-cloud-v2/pkg/client/clientset/versioned"
-	submarinescheme "github.com/apache/submarine/submarine-cloud-v2/pkg/client/clientset/versioned/scheme"
-	informers "github.com/apache/submarine/submarine-cloud-v2/pkg/client/informers/externalversions/submarine/v1alpha1"
 	listers "github.com/apache/submarine/submarine-cloud-v2/pkg/client/listers/submarine/v1alpha1"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
-	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
-	appsinformers "k8s.io/client-go/informers/apps/v1"
-	coreinformers "k8s.io/client-go/informers/core/v1"
-	extinformers "k8s.io/client-go/informers/extensions/v1beta1"
-	rbacinformers "k8s.io/client-go/informers/rbac/v1"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/kubernetes/scheme"
-	typedcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	appslisters "k8s.io/client-go/listers/apps/v1"
 	corelisters "k8s.io/client-go/listers/core/v1"
 	extlisters "k8s.io/client-go/listers/extensions/v1beta1"
@@ -55,9 +45,7 @@ import (
 	"k8s.io/klog/v2"
 
 	traefik "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
-	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions/traefik/v1alpha1"
 	traefiklisters "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/listers/traefik/v1alpha1"
-	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -132,175 +120,6 @@ type Controller struct {
 	recorder record.EventRecorder
 
 	incluster bool
-}
-
-// NewController returns a new sample controller
-func NewController(
-	incluster bool,
-	kubeclientset kubernetes.Interface,
-	submarineclientset clientset.Interface,
-	traefikclientset traefik.Interface,
-	namespaceInformer coreinformers.NamespaceInformer,
-	deploymentInformer appsinformers.DeploymentInformer,
-	serviceInformer coreinformers.ServiceInformer,
-	serviceaccountInformer coreinformers.ServiceAccountInformer,
-	persistentvolumeclaimInformer coreinformers.PersistentVolumeClaimInformer,
-	ingressInformer extinformers.IngressInformer,
-	ingressrouteInformer traefikinformers.IngressRouteInformer,
-	roleInformer rbacinformers.RoleInformer,
-	rolebindingInformer rbacinformers.RoleBindingInformer,
-	submarineInformer informers.SubmarineInformer) *Controller {
-
-	// Add Submarine types to the default Kubernetes Scheme so Events can be
-	// logged for Submarine types.
-	utilruntime.Must(submarinescheme.AddToScheme(scheme.Scheme))
-	klog.V(4).Info("Creating event broadcaster")
-	eventBroadcaster := record.NewBroadcaster()
-	eventBroadcaster.StartStructuredLogging(0)
-	eventBroadcaster.StartRecordingToSink(&typedcorev1.EventSinkImpl{Interface: kubeclientset.CoreV1().Events("")})
-	recorder := eventBroadcaster.NewRecorder(scheme.Scheme, corev1.EventSource{Component: controllerAgentName})
-
-	// Initialize controller
-	controller := &Controller{
-		kubeclientset:               kubeclientset,
-		submarineclientset:          submarineclientset,
-		traefikclientset:            traefikclientset,
-		submarinesLister:            submarineInformer.Lister(),
-		submarinesSynced:            submarineInformer.Informer().HasSynced,
-		namespaceLister:             namespaceInformer.Lister(),
-		deploymentLister:            deploymentInformer.Lister(),
-		serviceLister:               serviceInformer.Lister(),
-		serviceaccountLister:        serviceaccountInformer.Lister(),
-		persistentvolumeclaimLister: persistentvolumeclaimInformer.Lister(),
-		ingressLister:               ingressInformer.Lister(),
-		ingressrouteLister:          ingressrouteInformer.Lister(),
-		roleLister:                  roleInformer.Lister(),
-		rolebindingLister:           rolebindingInformer.Lister(),
-		workqueue:                   workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines"),
-		recorder:                    recorder,
-		incluster:                   incluster,
-	}
-
-	// Setting up event handler for Submarine
-	klog.Info("Setting up event handlers")
-	submarineInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.enqueueSubmarine,
-		UpdateFunc: func(old, new interface{}) {
-			controller.enqueueSubmarine(new)
-		},
-	})
-
-	// Setting up event handler for other resources
-	namespaceInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newNamespace := new.(*corev1.Namespace)
-			oldNamespace := old.(*corev1.Namespace)
-			if newNamespace.ResourceVersion == oldNamespace.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-	deploymentInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newDeployment := new.(*appsv1.Deployment)
-			oldDeployment := old.(*appsv1.Deployment)
-			if newDeployment.ResourceVersion == oldDeployment.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-	serviceInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newService := new.(*corev1.Service)
-			oldService := old.(*corev1.Service)
-			if newService.ResourceVersion == oldService.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-	serviceaccountInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newServiceAccount := new.(*corev1.ServiceAccount)
-			oldServiceAccount := old.(*corev1.ServiceAccount)
-			if newServiceAccount.ResourceVersion == oldServiceAccount.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-	persistentvolumeclaimInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newPVC := new.(*corev1.PersistentVolumeClaim)
-			oldPVC := old.(*corev1.PersistentVolumeClaim)
-			if newPVC.ResourceVersion == oldPVC.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-	ingressInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newIngress := new.(*extensionsv1beta1.Ingress)
-			oldIngress := old.(*extensionsv1beta1.Ingress)
-			if newIngress.ResourceVersion == oldIngress.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-	ingressrouteInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newIngressRoute := new.(*traefikv1alpha1.IngressRoute)
-			oldIngressRoute := old.(*traefikv1alpha1.IngressRoute)
-			if newIngressRoute.ResourceVersion == oldIngressRoute.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-	roleInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newRole := new.(*rbacv1.Role)
-			oldRole := old.(*rbacv1.Role)
-			if newRole.ResourceVersion == oldRole.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-	rolebindingInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newRoleBinding := new.(*rbacv1.RoleBinding)
-			oldRoleBinding := old.(*rbacv1.RoleBinding)
-			if newRoleBinding.ResourceVersion == oldRoleBinding.ResourceVersion {
-				return
-			}
-			controller.handleObject(new)
-		},
-		DeleteFunc: controller.handleObject,
-	})
-
-	return controller
 }
 
 func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
