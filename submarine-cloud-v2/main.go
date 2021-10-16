@@ -86,17 +86,15 @@ func main() {
 	//       ex: namespace informer
 
 	// Create a Submarine operator
-	submarineController := controller.NewController(incluster, kubeClient, submarineClient, traefikClient,
-		kubeInformerFactory.Core().V1().Namespaces(),
-		kubeInformerFactory.Apps().V1().Deployments(),
-		kubeInformerFactory.Core().V1().Services(),
-		kubeInformerFactory.Core().V1().ServiceAccounts(),
-		kubeInformerFactory.Core().V1().PersistentVolumeClaims(),
-		kubeInformerFactory.Extensions().V1beta1().Ingresses(),
-		traefikInformerFactory.Traefik().V1alpha1().IngressRoutes(),
-		kubeInformerFactory.Rbac().V1().Roles(),
-		kubeInformerFactory.Rbac().V1().RoleBindings(),
-		submarineInformerFactory.Submarine().V1alpha1().Submarines())
+	submarineController := NewSubmarineController(
+		incluster,
+		kubeClient,
+		submarineClient,
+		traefikClient,
+		kubeInformerFactory,
+		submarineInformerFactory,
+		traefikInformerFactory,
+	)
 
 	// notice that there is no need to run Start methods in a separate goroutine. (i.e. go kubeInformerFactory.Start(stopCh)
 	// Start method is non-blocking and runs all registered informers in a dedicated goroutine.
@@ -108,6 +106,36 @@ func main() {
 	if err = submarineController.Run(1, stopCh); err != nil {
 		klog.Fatalf("Error running controller: %s", err.Error())
 	}
+}
+
+func NewSubmarineController(
+	incluster bool,
+	kubeClient *kubernetes.Clientset,
+	submarineClient *clientset.Clientset,
+	traefikClient *traefikclientset.Clientset,
+	kubeInformerFactory kubeinformers.SharedInformerFactory,
+	submarineInformerFactory informers.SharedInformerFactory,
+	traefikInformerFactory traefikinformers.SharedInformerFactory,
+) *controller.Controller {
+	bc := controller.NewControllerBuilderConfig()
+	bc.
+		InCluster(incluster).
+		WithKubeClientset(kubeClient).
+		WithSubmarineClientset(submarineClient).
+		WithTraefikClientset(traefikClient).
+		WithSubmarineInformer(submarineInformerFactory.Submarine().V1alpha1().Submarines()).
+		WithDeploymentInformer(kubeInformerFactory.Apps().V1().Deployments()).
+		WithNamespaceInformer(kubeInformerFactory.Core().V1().Namespaces()).
+		WithServiceInformer(kubeInformerFactory.Core().V1().Services()).
+		WithServiceAccountInformer(kubeInformerFactory.Core().V1().ServiceAccounts()).
+		WithPersistentVolumeClaimInformer(kubeInformerFactory.Core().V1().PersistentVolumeClaims()).
+		WithIngressInformer(kubeInformerFactory.Extensions().V1beta1().Ingresses()).
+		WithIngressRouteInformer(traefikInformerFactory.Traefik().V1alpha1().IngressRoutes()).
+		WithRoleInformer(kubeInformerFactory.Rbac().V1().Roles()).
+		WithRoleBindingInformer(kubeInformerFactory.Rbac().V1().RoleBindings())
+
+	return controller.NewControllerBuilder(bc).Build()
+
 }
 
 func init() {
