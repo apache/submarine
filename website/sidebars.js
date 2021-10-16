@@ -96,13 +96,6 @@ module.exports = {
                     ],
                 },
             ],
-            Releases: [
-                "releases/submarine-release-0.2.0",
-                "releases/submarine-release-0.3.0",
-                "releases/submarine-release-0.4.0",
-                "releases/submarine-release-0.5.0",
-                "releases/submarine-release-0.6.0",
-            ],
             RoadMap: [],
         },
     ],
