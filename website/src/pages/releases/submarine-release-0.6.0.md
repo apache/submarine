@@ -24,6 +24,6 @@ The community put significant effort into improving Apache Submarine since the l
 - Submarine operator
 - Improve workbench UI/UX
 
-We encourage to [download](../download) the latest release. Feedback through the [mailing lists](../community/README) is very welcome.
+We encourage to [download](/docs/download) the latest release. Feedback through the [mailing lists](/docs/community/README) is very welcome.
 
 You can visit [issue tracker](https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12348821&styleName=Html&projectId=12322824) for full list of issues that are resolved.
