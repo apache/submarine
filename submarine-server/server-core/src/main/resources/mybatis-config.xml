@@ -70,5 +70,9 @@
     <mapper resource='org/apache/submarine/database/mappers/ExperimentTemplateMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/ExperimentMapper.xml'/>
     <mapper resource='org/apache/submarine/database/mappers/NotebookMapper.xml'/>
+    <mapper resource='org/apache/submarine/database/mappers/RegisteredModelMapper.xml'/>
+    <mapper resource='org/apache/submarine/database/mappers/RegisteredModelTagMapper.xml'/>
+    <mapper resource="org/apache/submarine/database/mappers/ModelVersionMapper.xml" />
+    <mapper resource="org/apache/submarine/database/mappers/ModelVersionTagMapper.xml" />
   </mappers>
 </configuration>

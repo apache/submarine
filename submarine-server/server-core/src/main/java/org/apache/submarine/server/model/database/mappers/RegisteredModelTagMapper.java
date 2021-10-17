@@ -19,16 +19,10 @@
 
 package org.apache.submarine.server.model.database.mappers;
 
-import java.util.List;
-import org.apache.submarine.server.model.database.entities.RegisteredModelNameEntity;
-
-public interface RegisteredModelNameMapper {
-  List<RegisteredModelNameEntity> selectAll();
-  RegisteredModelNameEntity select(String name);
-
-  int insert(RegisteredModelNameEntity registeredmodelNameEntity);
-  int update(RegisteredModelNameEntity registeredmodelNameEntity);
-  int delete(String name);
+import org.apache.submarine.server.model.database.entities.RegisteredModelTagEntity;
 
 
+public interface RegisteredModelTagMapper {
+  void insert(RegisteredModelTagEntity registeredModelTag);
+  void delete(RegisteredModelTagEntity registeredModelTag);
 }

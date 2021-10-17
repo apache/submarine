@@ -17,18 +17,47 @@
  * under the License.
  */
 
-package org.apache.submarine.server.model.database.mappers;
+package org.apache.submarine.server.model.database.entities;
 
-import java.util.List;
+public class ModelVersionTagEntity {
 
-import org.apache.ibatis.annotations.Param;
-import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
+  private String name;
 
-public interface ModelVersionMapper {
-  List<ModelVersionEntity> selectAllVersions(String name);
-  ModelVersionEntity select(@Param("name") String name, @Param("version") Integer version);
-  ModelVersionEntity selectWithTag(@Param("name") String name, @Param("version") Integer version);
-  void insert(ModelVersionEntity modelVersion);
-  void update(ModelVersionEntity modelVersion);
-  void delete(@Param("name") String name, @Param("version") Integer version);
+  private Integer version;
+
+  private String tag;
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Integer getVersion() {
+    return version;
+  }
+
+  public void setVersion(Integer version) {
+    this.version = version;
+  }
+
+  public String getTag() {
+    return tag;
+  }
+
+  public void setTag(String tag) {
+    this.tag = tag;
+  }
+
+  public ModelVersionTagEntity() {};
+
+  public String toString() {
+    return "ModelVersionEntity{" +
+      "name='" + name + '\'' +
+      ",version='" + version + '\'' +
+      ", tag='" + tag + '\'' +
+      '}';
+  }
 }

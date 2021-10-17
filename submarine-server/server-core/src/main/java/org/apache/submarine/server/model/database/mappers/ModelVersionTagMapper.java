@@ -19,16 +19,10 @@
 
 package org.apache.submarine.server.model.database.mappers;
 
-import java.util.List;
+import org.apache.submarine.server.model.database.entities.ModelVersionTagEntity;
 
-import org.apache.ibatis.annotations.Param;
-import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
 
-public interface ModelVersionMapper {
-  List<ModelVersionEntity> selectAllVersions(String name);
-  ModelVersionEntity select(@Param("name") String name, @Param("version") Integer version);
-  ModelVersionEntity selectWithTag(@Param("name") String name, @Param("version") Integer version);
-  void insert(ModelVersionEntity modelVersion);
-  void update(ModelVersionEntity modelVersion);
-  void delete(@Param("name") String name, @Param("version") Integer version);
+public interface ModelVersionTagMapper {
+  void insert(ModelVersionTagEntity registeredModelTag);
+  void delete(ModelVersionTagEntity registeredModelTag);
 }
