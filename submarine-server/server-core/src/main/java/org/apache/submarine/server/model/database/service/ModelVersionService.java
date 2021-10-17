@@ -94,7 +94,7 @@ public class ModelVersionService {
       sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
-      throw new SubmarineRuntimeException("Unable to insert model version from database");
+      throw new SubmarineRuntimeException("Unable to update model version from database");
     }
   }
 
