@@ -116,7 +116,7 @@ func NewSubmarineController(
 	kubeInformerFactory kubeinformers.SharedInformerFactory,
 	submarineInformerFactory informers.SharedInformerFactory,
 	traefikInformerFactory traefikinformers.SharedInformerFactory,
-) *controller.Controller {
+) controller.ControllerInterface {
 	bc := controller.NewControllerBuilderConfig()
 	bc.
 		InCluster(incluster).

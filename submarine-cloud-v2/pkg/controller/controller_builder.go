@@ -28,6 +28,10 @@ import (
 	"k8s.io/klog/v2"
 )
 
+type Builder interface {
+	Build() ControllerInterface
+}
+
 type ControllerFunc func()
 
 // Main controller builder
@@ -37,7 +41,7 @@ type ControllerBuilder struct {
 	actions    map[string]ControllerFunc
 }
 
-func NewControllerBuilder(config *BuilderConfig) *ControllerBuilder {
+func NewControllerBuilder(config *BuilderConfig) Builder {
 	return &ControllerBuilder{
 		controller: &Controller{},
 		config:     config,
@@ -52,7 +56,7 @@ func (cb *ControllerBuilder) Incluster(
 	return cb
 }
 
-func (cb *ControllerBuilder) Build() *Controller {
+func (cb *ControllerBuilder) Build() ControllerInterface {
 	cb.Initailize()
 	cb.AddClientsets()
 	cb.AddListers()
