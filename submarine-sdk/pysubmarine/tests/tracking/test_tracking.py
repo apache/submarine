@@ -18,13 +18,18 @@ from datetime import datetime
 from os import environ
 
 import pytest
+import tensorflow
 
 import submarine
+from submarine.artifacts.repository import Repository
 from submarine.store.database import models
 from submarine.store.database.models import SqlExperiment, SqlMetric, SqlParam
-from submarine.store.sqlalchemy_store import SqlAlchemyStore
+from submarine.tracking.client import SubmarineClient
+
+from .tf_model import LinearNNModel
 
 JOB_ID = "application_123456789"
+MLFLOW_S3_ENDPOINT_URL = "http://localhost:9000"
 
 
 @pytest.mark.e2e
@@ -35,7 +40,16 @@ class TestTracking(unittest.TestCase):
             "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test"
         )
         self.db_uri = submarine.get_db_uri()
+        self.client = SubmarineClient(
+            db_uri=self.db_uri,
+            s3_registry_uri=MLFLOW_S3_ENDPOINT_URL,
+        )
+        from submarine.store.tracking.sqlalchemy_store import SqlAlchemyStore
+
         self.store = SqlAlchemyStore(self.db_uri)
+        from submarine.store.model_registry.sqlalchemy_store import SqlAlchemyStore
+
+        self.model_registry = SqlAlchemyStore(self.db_uri)
         # TODO: use submarine.tracking.fluent to support experiment create
         with self.store.ManagedSessionMaker() as session:
             instance = SqlExperiment(
@@ -52,6 +66,10 @@ class TestTracking(unittest.TestCase):
     def tearDown(self):
         submarine.set_db_uri(None)
         models.Base.metadata.drop_all(self.store.engine)
+        environ["MLFLOW_S3_ENDPOINT_URL"] = MLFLOW_S3_ENDPOINT_URL
+        environ["AWS_ACCESS_KEY_ID"] = "submarine_minio"
+        environ["AWS_SECRET_ACCESS_KEY"] = "submarine_minio"
+        Repository(JOB_ID).delete_folder()
 
     def test_log_param(self):
         submarine.log_param("name_1", "a")
@@ -73,3 +91,21 @@ class TestTracking(unittest.TestCase):
             assert metrics[0].value == 5
             assert metrics[0].id == JOB_ID
             assert metrics[1].value == 6
+
+    @pytest.mark.skipif(tensorflow.version.VERSION < "2.0", reason="using tensorflow 2")
+    def test_save_model(self):
+        input_arr = tensorflow.random.uniform((1, 5))
+        model = LinearNNModel()
+        model(input_arr)
+        registered_model_name = "registerd_model_name"
+        self.client.save_model("tensorflow", model, "name_1", registered_model_name)
+        self.client.save_model("tensorflow", model, "name_2", registered_model_name)
+        # Validate model_versions
+        model_versions = self.model_registry.list_model_versions(registered_model_name)
+        assert len(model_versions) == 2
+        assert model_versions[0].name == registered_model_name
+        assert model_versions[0].version == 1
+        assert model_versions[0].source == f"s3://submarine/{JOB_ID}/name_1/1"
+        assert model_versions[1].name == registered_model_name
+        assert model_versions[1].version == 2
+        assert model_versions[1].source == f"s3://submarine/{JOB_ID}/name_2/1"

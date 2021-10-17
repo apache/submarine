@@ -15,15 +15,11 @@
  under the License.
 """
 import os
-import re
-import tempfile
 import time
 
 import mlflow
 from mlflow.exceptions import MlflowException
 from mlflow.tracking import MlflowClient
-
-from submarine.artifacts.repository import Repository
 
 from .constant import (
     AWS_ACCESS_KEY_ID,
@@ -58,7 +54,6 @@ class ModelsClient:
             "tensorflow": mlflow.tensorflow.log_model,
             "keras": mlflow.keras.log_model,
         }
-        self.artifact_repo = Repository(get_job_id())
 
     def start(self):
         """
@@ -108,27 +103,6 @@ class ModelsClient:
                 )
             else:
                 raise MlflowException("No valid type of model has been matched")
-
-    def save_model_submarine(self, model_type, model, artifact_path, registered_model_name=None):
-        pattern = r"[0-9A-Za-z][0-9A-Za-z-_]*[0-9A-Za-z]|[0-9A-Za-z]"
-        if not re.fullmatch(pattern, artifact_path):
-            raise Exception(
-                "Artifact_path must only contains numbers, characters, hyphen and underscore.      "
-                "        Artifact_path must starts and ends with numbers or characters."
-            )
-        with tempfile.TemporaryDirectory() as tempdir:
-            if model_type == "pytorch":
-                import submarine.models.pytorch
-
-                submarine.models.pytorch.save_model(model, tempdir)
-            elif model_type == "tensorflow":
-                import submarine.models.tensorflow
-
-                submarine.models.tensorflow.save_model(model, tempdir)
-            else:
-                raise Exception("No valid type of model has been matched to {}".format(model_type))
-            self.artifact_repo.log_artifacts(tempdir, artifact_path)
-        # TODO for registering model ()
 
     def _get_or_create_experiment(self, experiment_name):
         """

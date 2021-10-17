@@ -22,7 +22,7 @@ import submarine
 from submarine.entities import Metric, Param
 from submarine.store.database import models
 from submarine.store.database.models import SqlExperiment, SqlMetric, SqlParam
-from submarine.store.sqlalchemy_store import SqlAlchemyStore
+from submarine.store.tracking.sqlalchemy_store import SqlAlchemyStore
 
 JOB_ID = "application_123456789"
 
