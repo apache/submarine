@@ -67,7 +67,7 @@ class TestTracking(unittest.TestCase):
         submarine.set_db_uri(None)
         models.Base.metadata.drop_all(self.store.engine)
         environ["MLFLOW_S3_ENDPOINT_URL"] = MLFLOW_S3_ENDPOINT_URL
-        environ["AWS_SECRET_ACCESS_KEY"] = "submarine_minio"
+        environ["AWS_ACCESS_KEY_ID"] = "submarine_minio"
         environ["AWS_SECRET_ACCESS_KEY"] = "submarine_minio"
         Repository(JOB_ID).delete_folder()
 
