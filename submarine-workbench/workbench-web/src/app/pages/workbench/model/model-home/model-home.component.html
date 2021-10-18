@@ -30,15 +30,20 @@
     </button>
   </div>
   <div align='left'>
-    <nz-input-group nzSearch style="width: 265px; margin: 10px 4px 10px 4px" [nzAddOnAfter]="suffixIconButton">
+    <nz-input-group style="width: 265px; margin: 10px 10px 10px 2px" [nzPrefix]="preffixIcon">
       <input type="text" nz-input placeholder="Search by model name..." (keyup)="searchModel($event)" />
     </nz-input-group>
-    <ng-template #suffixIconButton>
-      <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
+    <ng-template #preffixIcon>
+      <i nz-icon nzType="search"></i>
     </ng-template>
-    <nz-select nzMode="tags" style="width: 265px; margin: 10px 4px 10px 12px" nzPlaceHolder="Search by tags" [(ngModel)]="listOfChosenTags" (ngModelChange)="filterByTags()">
-      <nz-option *ngFor="let option of listOfTagsOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
+    <nz-select nzMode="multiple" [nzCustomTemplate]="multipleTemplate" style="width: 265px; margin: 10px 4px 10px 10px" nzPlaceHolder="Filter by tags" [(ngModel)]="listOfChosenTags" (ngModelChange)="filterByTags()">
+      <nz-option *ngFor="let option of listOfTagsOption" [nzLabel]="option.label" [nzValue]="option.value" nzCustomContent>
+        <submarine-model-tag [tag]="option.label" [cssType]="'default'"></submarine-model-tag>
+      </nz-option>
     </nz-select>
+    <ng-template #multipleTemplate let-selected nzBorderless [ngClass]="'noPadding'">
+      <submarine-model-tag [tag]="selected.nzLabel" [cssType]="'selection'"></submarine-model-tag>
+    </ng-template>
   </div>
   <submarine-model-cards [modelCards]="onDisplayModelCards"></submarine-model-cards>
 </div>

@@ -16,7 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-.noPadding {
-  padding: -2px;
-  border: 0px;
+span {
+  border: 1.2px solid;
+  border-radius: 3px;
+  background-color: #fafafa;
+  padding: 0px 5px 1px 5px;
+}
+
+i {
+  color: rgba($color: #000000, $alpha: 0.0);
+}
+
+::ng-deep .ant-select-selection--multiple .ant-select-selection__choice {
+  position: relative;
+  float: left;
+  max-width: 99%;
+  margin-right: 4px;
+  padding: 0 20px 0 10px;
+  overflow: hidden;
+  color: rgba(0, 0, 0, 0.65);
+  background-color: #fafafa;
+  border: 0px solid #e8e8e8;
+  border-radius: 2px;
+  cursor: default;
+  transition: padding 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
 }

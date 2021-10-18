@@ -29,6 +29,7 @@ import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 import { ModelHomeComponent } from './model-home/model-home.component';
 import { ModelCardsComponent } from './model-home/model-cards/model-cards.component';
 import { ModelCardComponent } from './model-home/model-cards/model-card/model-card.component';
+import { ModelTagComponent } from './model-home/model-cards/model-card/model-tag/model-tag.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { ModelCardComponent } from './model-home/model-cards/model-card/model-ca
     ModelVersionComponent,
     ModelCardsComponent,
     ModelCardComponent,
+    ModelTagComponent,
   ],
   imports: [
     CommonModule,

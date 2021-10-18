@@ -16,15 +16,8 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<a [routerLink]="[card.name]">
-  <nz-list-item >
-    <nz-card style="width:300px;" nzTitle={{card.name}} [nzExtra]="extraTemplate">
-    <p>Created: {{card.createTime}}</p>
-    <p>Updated: {{card.updatedTime}}</p>
-    <p>Tags: 
-      <submarine-model-tag *ngFor="let tag of card.tags" [tag]="tag" [cssType]="'default'"></submarine-model-tag>
-    </p>
-    <p>Description: {{description}}</p>
-    </nz-card>
-  </nz-list-item>
-</a>
+<span [style.color]="textColor" [style.background-color]="backgroundColor" [style.border-color]="borderColor" [style.margin]="margin">
+  {{tag}}
+  <i *ngIf="closable" nz-icon nzType="close" style.color="'textColor'"></i>
+</span>
+  
