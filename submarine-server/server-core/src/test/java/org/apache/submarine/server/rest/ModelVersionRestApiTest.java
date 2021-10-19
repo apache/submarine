@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.Response;
 import org.apache.submarine.server.api.experiment.ExperimentId;
-import org.apache.submarine.server.api.spec.ModelVersionTagSpec;
 import org.apache.submarine.server.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.gson.ExperimentIdSerializer;
 import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
@@ -47,6 +46,7 @@ public class ModelVersionRestApiTest {
   private final String registeredModelName = "test_registered_model";
   private final String registeredModelDescription = "test registered model description";
   private final String modelVersionDescription = "test model version description";
+  private final String newModelVersionDescription = "new test registered model description";
   private final String modelVersionSource = "s3://submarine/test";
   private final String modelVersionUid = "test123";
   private final String modelVersionExperimentId = "experiment_123";
@@ -93,43 +93,45 @@ public class ModelVersionRestApiTest {
     Response listModelVersionResponse = modelVersionRestApi.listModelVersions(registeredModelName);
     List<ModelVersionEntity> result = getResultListFromResponse(
         listModelVersionResponse, ModelVersionEntity.class);
-    assertEquals(result.size(), 2);
-    verifyResult(result.get(0), modelVersion1);
-    verifyResult(result.get(1), modelVersion2);
+    assertEquals(2, result.size());
+    verifyResult(modelVersion1, result.get(0));
+    verifyResult(modelVersion2, result.get(1));
   }
 
   @Test
   public void testGetModelVersion(){
     Response getModelVersionResponse = modelVersionRestApi.getModelVersion(registeredModelName, 1);
     ModelVersionEntity result = getResultFromResponse(getModelVersionResponse, ModelVersionEntity.class);
-    verifyResult(result, modelVersion1);
+    verifyResult(modelVersion1, result);
   }
 
   @Test
-  public void testAddModelVersionTag(){
-    ModelVersionTagSpec spec = new ModelVersionTagSpec();
-    spec.setName(registeredModelName);
-    spec.setVersion(1);
-    spec.setTag(modelVersionTag);
-    modelVersionRestApi.createModelVersionTag(spec);
+  public void testAddAndDeleteModelVersionTag(){
+    modelVersionRestApi.createModelVersionTag(registeredModelName, "1", modelVersionTag);
     Response getModelVersionResponse = modelVersionRestApi.getModelVersion(registeredModelName, 1);
     ModelVersionEntity result = getResultFromResponse(
         getModelVersionResponse, ModelVersionEntity.class);
-    assertEquals(result.getTags().size(), 1);
-    assertEquals(result.getTags().get(0), modelVersionTag);
+    assertEquals(1, result.getTags().size());
+    assertEquals(modelVersionTag, result.getTags().get(0));
+
+    modelVersionRestApi.deleteModelVersionTag(registeredModelName, "1", modelVersionTag);
+    getModelVersionResponse = modelVersionRestApi.getModelVersion(registeredModelName, 1);
+    result = getResultFromResponse(
+        getModelVersionResponse , ModelVersionEntity.class);
+    assertEquals(0, result.getTags().size());
   }
 
   @Test
-  public void testDeleteModelVersionTag(){
-    ModelVersionTagSpec spec = new ModelVersionTagSpec();
-    spec.setName(registeredModelName);
-    spec.setVersion(1);
-    spec.setTag(modelVersionTag);
-    modelVersionRestApi.deleteModelVersionTag(spec);
+  public void testUpdateModelVersion(){
+    ModelVersionEntity newModelVersion = new ModelVersionEntity();
+    newModelVersion.setName(registeredModelName);
+    newModelVersion.setVersion(1);
+    newModelVersion.setDescription(newModelVersionDescription);
+    modelVersionRestApi.updateModelVersion(newModelVersion);
     Response getModelVersionResponse = modelVersionRestApi.getModelVersion(registeredModelName, 1);
     ModelVersionEntity result = getResultFromResponse(
         getModelVersionResponse , ModelVersionEntity.class);
-    assertEquals(result.getTags().size(), 0);
+    assertEquals(newModelVersionDescription, result.getDescription());
   }
 
   @Test
@@ -138,8 +140,8 @@ public class ModelVersionRestApiTest {
     Response listModelVersionResponse = modelVersionRestApi.listModelVersions(registeredModelName);
     List<ModelVersionEntity> result = getResultListFromResponse(
         listModelVersionResponse, ModelVersionEntity.class);
-    assertEquals(result.size(), 1);
-    verifyResult(result.get(0), modelVersion2);
+    assertEquals(1, result.size());
+    verifyResult(modelVersion2, result.get(0));
   }
 
   @After
