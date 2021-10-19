@@ -35,7 +35,7 @@
     <if test="itemName!=null and itemName!=''"> AND `item_name` like '%${itemName}%'</if>
     ORDER BY sort_order
   </select>
-  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.SysDictItem" extends="BaseEntityResultMap">
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.SysDictItemEntity" extends="BaseEntityResultMap">
     <result column="dict_code" property="dictCode"/>
     <result column="item_code" property="itemCode"/>
     <result column="item_name" property="itemName"/>
@@ -44,7 +44,7 @@
     <result column="deleted" property="deleted"/>
   </resultMap>
 
-  <insert id="insertSysDictItem" parameterType="org.apache.submarine.server.workbench.database.entity.SysDictItem">
+  <insert id="insertSysDictItem" parameterType="org.apache.submarine.server.workbench.database.entity.SysDictItemEntity">
     INSERT INTO sys_dict_item (`id`, `dict_code`, `item_code`, `item_name`, `description`,
     <if test="sortOrder!=null"> `sort_order`, </if>
     <if test="deleted!=null"> `deleted`, </if>
@@ -63,7 +63,7 @@
     DELETE FROM sys_dict_item WHERE id = #{id}
   </delete>
 
-  <update id="updateBy" parameterType="org.apache.submarine.server.workbench.database.entity.SysDictItem">
+  <update id="updateBy" parameterType="org.apache.submarine.server.workbench.database.entity.SysDictItemEntity">
     UPDATE sys_dict_item SET
     <if test="dictCode!=null and dictCode!=''">`dict_code` = #{dictCode},</if>
     <if test="itemCode!=null and itemCode!=''">`item_code` = #{itemCode},</if>

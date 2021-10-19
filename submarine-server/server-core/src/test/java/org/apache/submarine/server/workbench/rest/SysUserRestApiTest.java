@@ -21,7 +21,7 @@ package org.apache.submarine.server.workbench.rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.submarine.server.workbench.database.entity.SysUser;
+import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.apache.submarine.server.workbench.database.service.SysUserService;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ public class SysUserRestApiTest extends CommonDataTest {
 
   @Test
   public void editUserTest() throws Exception {
-    SysUser sysUser = new SysUser();
+    SysUserEntity sysUser = new SysUserEntity();
     sysUser.setId(CommonDataTest.userId);
     sysUser.setUserName("user_name_update");
     sysUser.setRealName("real_name_update");
@@ -67,10 +67,10 @@ public class SysUserRestApiTest extends CommonDataTest {
     Response response = userRestApi.edit(sysUser);
     CommonDataTest.assertUserResponseSuccess(response);
 
-    List<SysUser> userList = userService.queryPageList("", null, null, null, null, 0, 10);
+    List<SysUserEntity> userList = userService.queryPageList("", null, null, null, null, 0, 10);
     assertTrue(userList.size() > 0);
 
-    SysUser checkUser = userList.get(0);
+    SysUserEntity checkUser = userList.get(0);
     assertEquals(sysUser.getUserName(), checkUser.getUserName());
     assertEquals(sysUser.getRealName(), checkUser.getRealName());
     assertEquals(sysUser.getStatus(), checkUser.getStatus());

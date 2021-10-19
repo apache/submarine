@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.rest;
 
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.Metric;
+import org.apache.submarine.server.workbench.database.entity.MetricEntity;
 import org.apache.submarine.server.workbench.database.service.MetricService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class MetricRestApi {
                               @QueryParam("isNan") Boolean isNan,
                               @QueryParam("id") String id) {
 
-    Metric metric = new Metric();
+    MetricEntity metric = new MetricEntity();
     metric.setKey(metricKey);
     metric.setValue(value);
     metric.setWorkerIndex(workerIndex);
@@ -72,34 +72,35 @@ public class MetricRestApi {
 
     LOG.info("listMetric ({})", metric);
 
-    List<Metric> metrics;
+    List<MetricEntity> metrics;
     try {
       metrics = metricService.selectByPrimaryKeySelective(metric);
     } catch (Exception e) {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<List<Metric>>(Response.Status.OK).success(true).result(metrics).build();
+    return new JsonResponse.Builder<List<MetricEntity>>(Response.Status.OK).success(true).
+            result(metrics).build();
   }
 
   @GET
   @Path("/{id}")
   @SubmarineApi
   public Response getMetric(@PathParam("id") String id) {
-    Metric metric;
+    MetricEntity metric;
     try {
       metric = metricService.selectById(id);
     } catch (Exception e) {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).build();
     }
-    return new JsonResponse.Builder<Metric>(Response.Status.OK).success(true).result(metric).build();
+    return new JsonResponse.Builder<MetricEntity>(Response.Status.OK).success(true).result(metric).build();
   }
 
   @POST
   @Path("/add")
   @SubmarineApi
-  public Response postMetric(Metric metric) {
+  public Response postMetric(MetricEntity metric) {
     boolean result = false;
     try {
       result = metricService.insert(metric);
@@ -127,7 +128,7 @@ public class MetricRestApi {
   @PUT
   @Path("/edit")
   @SubmarineApi
-  public Response putMetric(Metric metric) {
+  public Response putMetric(MetricEntity metric) {
     boolean result = false;
     try {
       result = metricService.update(metric);
@@ -141,14 +142,15 @@ public class MetricRestApi {
   @POST
   @Path("/selective")
   @SubmarineApi
-  public Response selectByPrimaryKeySelective(Metric metric) {
-    List<Metric> metrics;
+  public Response selectByPrimaryKeySelective(MetricEntity metric) {
+    List<MetricEntity> metrics;
     try {
       metrics = metricService.selectByPrimaryKeySelective(metric);
     } catch (Exception e) {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<List<Metric>>(Response.Status.OK).success(true).result(metrics).build();
+    return new JsonResponse.Builder<List<MetricEntity>>(Response.Status.OK).success(true).
+            result(metrics).build();
   }
 }

@@ -23,7 +23,7 @@
     <id property="id" column="id"/>
   </resultMap>
 
-  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Metric" extends="BaseEntityResultMap">
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.MetricEntity" extends="BaseEntityResultMap">
     <result column="key" jdbcType="VARCHAR" property="key" />
     <result column="value" jdbcType="FLOAT" property="value" />
     <result column="worker_index" jdbcType="VARCHAR" property="workerIndex" />
@@ -56,7 +56,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Metric"
+  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.MetricEntity"
           keyProperty="id, key, worker_index, timestamp">
     insert into metric (id, `key`, value, worker_index, timestamp, step, is_nan)
     values (#{id,jdbcType=VARCHAR},
@@ -68,7 +68,7 @@
       #{isNan,jdbcType=BOOLEAN})
   </insert>
 
-  <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.Metric">
+  <update id="update" parameterType="org.apache.submarine.server.workbench.database.entity.MetricEntity">
     update metric
     set `key` = #{key,jdbcType=VARCHAR},
       value = #{value,jdbcType=FLOAT},

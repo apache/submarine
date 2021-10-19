@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.database.service;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.workbench.database.entity.SysMessage;
+import org.apache.submarine.server.workbench.database.entity.SysMessageEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysMessageMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 public class SysMessageService {
   private static final Logger LOG = LoggerFactory.getLogger(SysMessageService.class);
 
-  public void add(SysMessage sysMessage) throws Exception {
+  public void add(SysMessageEntity sysMessage) throws Exception {
     LOG.info("add({})", sysMessage.toString());
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {

@@ -27,7 +27,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.Job" extends="BaseEntityResultMap">
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.JobEntity" extends="BaseEntityResultMap">
     <result column="job_id" jdbcType="VARCHAR" property="jobId" />
     <result column="job_name" jdbcType="VARCHAR" property="jobName" />
     <result column="job_type" jdbcType="VARCHAR" property="jobType" />
@@ -75,7 +75,7 @@
     where job_id = #{jobId,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.Job"
+  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.JobEntity"
           useGeneratedKeys="true" keyProperty="id">
     insert into job (job_id, job_name, job_type, job_namespace,
       job_status, job_final_status, user_name,
@@ -86,7 +86,7 @@
       #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
   </insert>
 
-  <insert id="insertSelective" parameterType="org.apache.submarine.server.workbench.database.entity.Job">
+  <insert id="insertSelective" parameterType="org.apache.submarine.server.workbench.database.entity.JobEntity">
     insert into job
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -166,7 +166,7 @@
     </trim>
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.server.workbench.database.entity.Job">
+  <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.server.workbench.database.entity.JobEntity">
     update job
     <set>
       <if test="jobId != null">
@@ -201,7 +201,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.server.workbench.database.entity.Job">
+  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.server.workbench.database.entity.JobEntity">
     update job
     set job_id = #{jobId,jdbcType=VARCHAR},
       job_name = #{jobName,jdbcType=VARCHAR},

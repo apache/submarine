@@ -19,23 +19,23 @@
 package org.apache.submarine.server.workbench.database.mappers;
 
 import org.apache.ibatis.session.RowBounds;
-import org.apache.submarine.server.workbench.database.entity.Team;
+import org.apache.submarine.server.workbench.database.entity.TeamEntity;
 
 import java.util.List;
 import java.util.Map;
 
 public interface TeamMapper {
-  List<Team> selectAll(Map<String, Object> where, RowBounds rowBounds);
+  List<TeamEntity> selectAll(Map<String, Object> where, RowBounds rowBounds);
 
   int deleteByPrimaryKey(String id);
 
-  void insert(Team record);
+  void insert(TeamEntity record);
 
-  int insertSelective(Team record);
+  int insertSelective(TeamEntity record);
 
-  Team selectByPrimaryKey(String id);
+  TeamEntity selectByPrimaryKey(String id);
 
-  int updateByPrimaryKeySelective(Team record);
+  int updateByPrimaryKeySelective(TeamEntity record);
 
-  int updateByPrimaryKey(Team record);
+  int updateByPrimaryKey(TeamEntity record);
 }

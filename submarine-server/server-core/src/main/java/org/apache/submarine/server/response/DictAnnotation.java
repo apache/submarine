@@ -21,10 +21,10 @@ package org.apache.submarine.server.response;
 import net.sf.cglib.beans.BeanGenerator;
 import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.submarine.server.workbench.annotation.Dict;
-import org.apache.submarine.server.workbench.database.entity.SysDictItem;
-import org.apache.submarine.server.workbench.database.service.SysDictItemService;
 import org.apache.submarine.server.response.JsonResponse.ListResult;
+import org.apache.submarine.server.workbench.annotation.Dict;
+import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
+import org.apache.submarine.server.workbench.database.service.SysDictItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +89,7 @@ public class DictAnnotation {
     return fields;
   }
 
-  private static Object mergeDictText(Object object, Map<String, List<SysDictItem>> mapDictItems)
+  private static Object mergeDictText(Object object, Map<String, List<SysDictItemEntity>> mapDictItems)
       throws Exception {
     // Map<Field->Value>
     HashMap<String, Object> mapFieldValues = new HashMap<>();
@@ -117,8 +117,8 @@ public class DictAnnotation {
           // add new dict text field to object
           mapFieldAndType.put(propertyName + DICT_SUFFIX, String.class);
 
-          List<SysDictItem> dictItems = mapDictItems.get(propertyName);
-          for (SysDictItem dictItem : dictItems) {
+          List<SysDictItemEntity> dictItems = mapDictItems.get(propertyName);
+          for (SysDictItemEntity dictItem : dictItems) {
             if (StringUtils.equals(String.valueOf(result), dictItem.getItemCode())) {
               mapFieldValues.put(propertyName + DICT_SUFFIX, dictItem.getItemName());
               break;
@@ -150,14 +150,14 @@ public class DictAnnotation {
       }
 
       // Query all the dictionaries that need to be parsed at once
-      Map<String, List<SysDictItem>> mapDictItems = new HashMap<>();
+      Map<String, List<SysDictItemEntity>> mapDictItems = new HashMap<>();
       SysDictItemService sysDictItemService = new SysDictItemService();
       Object object = listResult.getRecords().get(0);
       Map<String, Map<String, String>> dictLib = new HashMap<>();
       for (Field field : getAllFields(object)) {
         if (field.getAnnotation(Dict.class) != null) {
           String code = field.getAnnotation(Dict.class).Code();
-          List<SysDictItem> dictItems = sysDictItemService.queryDictByCode(code);
+          List<SysDictItemEntity> dictItems = sysDictItemService.queryDictByCode(code);
           if (dictItems.size() > 0) {
             mapDictItems.put(field.getName(), dictItems);
           }

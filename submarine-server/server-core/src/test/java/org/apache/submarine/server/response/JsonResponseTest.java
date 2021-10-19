@@ -20,7 +20,7 @@ package org.apache.submarine.server.response;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.submarine.server.workbench.database.entity.SysDict;
+import org.apache.submarine.server.workbench.database.entity.SysDictEntity;
 import org.apache.submarine.server.response.JsonResponse.ListResult;
 import org.junit.Test;
 
@@ -38,21 +38,21 @@ public class JsonResponseTest {
 
   @Test
   public void serializeObject() {
-    SysDict sysDict = new SysDict();
+    SysDictEntity sysDict = new SysDictEntity();
     sysDict.setDictCode("code");
     sysDict.setDictName("name");
     sysDict.setDescription("desc");
 
-    Response response = new JsonResponse.Builder<SysDict>(Response.Status.OK)
+    Response response = new JsonResponse.Builder<SysDictEntity>(Response.Status.OK)
         .success(true).result(sysDict).build();
 
     String entity = (String) response.getEntity();
 
-    Type type = new TypeToken<JsonResponse<SysDict>>() {}.getType();
+    Type type = new TypeToken<JsonResponse<SysDictEntity>>() {}.getType();
 
-    JsonResponse<SysDict> jsonResponse = gson.fromJson(entity, type);
+    JsonResponse<SysDictEntity> jsonResponse = gson.fromJson(entity, type);
 
-    SysDict checkDict = jsonResponse.getResult();
+    SysDictEntity checkDict = jsonResponse.getResult();
     assertEquals(checkDict.getDictCode(), "code");
     assertEquals(checkDict.getDictName(), "name");
     assertEquals(checkDict.getDescription(), "desc");
@@ -60,27 +60,27 @@ public class JsonResponseTest {
 
   @Test
   public void serializeListResult() {
-    SysDict sysDict = new SysDict();
+    SysDictEntity sysDict = new SysDictEntity();
     sysDict.setDictCode("code");
     sysDict.setDictName("name");
     sysDict.setDescription("desc");
 
-    List<SysDict> list = new ArrayList();
+    List<SysDictEntity> list = new ArrayList();
     list.add(sysDict);
 
-    ListResult<SysDict> listResult = new ListResult(list, list.size());
+    ListResult<SysDictEntity> listResult = new ListResult(list, list.size());
 
-    Response response = new JsonResponse.Builder<ListResult<SysDict>>(Response.Status.OK)
+    Response response = new JsonResponse.Builder<ListResult<SysDictEntity>>(Response.Status.OK)
         .success(true).result(listResult).build();
 
     String entity = (String) response.getEntity();
 
-    Type type = new TypeToken<JsonResponse<ListResult<SysDict>>>() {}.getType();
+    Type type = new TypeToken<JsonResponse<ListResult<SysDictEntity>>>() {}.getType();
 
-    JsonResponse<ListResult<SysDict>> jsonResponse = gson.fromJson(entity, type);
+    JsonResponse<ListResult<SysDictEntity>> jsonResponse = gson.fromJson(entity, type);
 
-    ListResult<SysDict> check = jsonResponse.getResult();
-    assertTrue(check.getRecords().get(0) instanceof SysDict);
+    ListResult<SysDictEntity> check = jsonResponse.getResult();
+    assertTrue(check.getRecords().get(0) instanceof SysDictEntity);
     assertEquals(check.getRecords().size(), listResult.getRecords().size());
     assertEquals(check.getTotal(), listResult.getTotal());
     assertEquals(check.getRecords().get(0).getDictCode(), sysDict.getDictCode());

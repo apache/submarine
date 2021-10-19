@@ -23,7 +23,7 @@ import com.google.gson.Gson;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.SysDict;
+import org.apache.submarine.server.workbench.database.entity.SysDictEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysDictMapper;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.response.JsonResponse;
@@ -70,7 +70,7 @@ public class SysDictRestApi {
     LOG.info("queryDictList column:{}, field:{}, order:{}, pageNo:{}, pageSize:{}",
         column, field, order, pageNo, pageSize);
 
-    List<SysDict> list = null;
+    List<SysDictEntity> list = null;
     SqlSession sqlSession = MyBatisUtil.getSqlSession();
     SysDictMapper sysDictMapper = sqlSession.getMapper(SysDictMapper.class);
     try {
@@ -84,17 +84,17 @@ public class SysDictRestApi {
     } finally {
       sqlSession.close();
     }
-    PageInfo<SysDict> page = new PageInfo<>(list);
-    ListResult<SysDict> listResult = new ListResult(list, page.getTotal());
+    PageInfo<SysDictEntity> page = new PageInfo<>(list);
+    ListResult<SysDictEntity> listResult = new ListResult(list, page.getTotal());
 
-    return new JsonResponse.Builder<ListResult<SysDict>>(Response.Status.OK)
+    return new JsonResponse.Builder<ListResult<SysDictEntity>>(Response.Status.OK)
         .success(true).result(listResult).build();
   }
 
   @POST
   @Path("/add")
   @SubmarineApi
-  public Response add(SysDict sysDict) {
+  public Response add(SysDictEntity sysDict) {
     LOG.info("add Dict:{}", sysDict.toString());
 
     try {
@@ -121,10 +121,10 @@ public class SysDictRestApi {
   @PUT
   @Path("/edit")
   @SubmarineApi
-  public Response edit(SysDict sysDict) {
+  public Response edit(SysDictEntity sysDict) {
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysDictMapper sysDictMapper = sqlSession.getMapper(SysDictMapper.class);
-      SysDict dict = sysDictMapper.getById(sysDict.getId());
+      SysDictEntity dict = sysDictMapper.getById(sysDict.getId());
       if (dict == null) {
         return new JsonResponse.Builder<>(Response.Status.OK)
             .message("Can not found dict:" + sysDict.getId()).success(false).build();
@@ -154,7 +154,7 @@ public class SysDictRestApi {
       SqlSession sqlSession = MyBatisUtil.getSqlSession();
       SysDictMapper sysDictMapper = sqlSession.getMapper(SysDictMapper.class);
       try {
-        SysDict dict = new SysDict();
+        SysDictEntity dict = new SysDictEntity();
         dict.setId(dictId);
         dict.setDeleted(deleted);
         sysDictMapper.updateBy(dict);

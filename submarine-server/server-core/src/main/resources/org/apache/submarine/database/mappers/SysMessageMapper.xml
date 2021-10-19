@@ -27,7 +27,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.SysMessage" extends="BaseEntityResultMap">
+  <resultMap id="resultMap" type="org.apache.submarine.server.workbench.database.entity.SysMessageEntity" extends="BaseEntityResultMap">
     <result column="sender" jdbcType="VARCHAR" property="sender"/>
     <result column="receiver" jdbcType="VARCHAR" property="receiver"/>
     <result column="type" jdbcType="VARCHAR" property="type"/>
@@ -35,7 +35,7 @@
     <result column="context" jdbcType="LONGVARCHAR" property="context"/>
   </resultMap>
 
-  <resultMap extends="resultMap" id="ResultMapWithBLOBs" type="org.apache.submarine.server.workbench.database.entity.SysMessage">
+  <resultMap extends="resultMap" id="ResultMapWithBLOBs" type="org.apache.submarine.server.workbench.database.entity.SysMessageEntity">
     <result column="context" jdbcType="LONGVARCHAR" property="context"/>
   </resultMap>
 
@@ -60,7 +60,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.SysMessage">
+  <insert id="insert" parameterType="org.apache.submarine.server.workbench.database.entity.SysMessageEntity">
     insert into sys_message (id, sender, receiver,
       type, status, create_by,
       create_time, update_time,
@@ -71,7 +71,7 @@
       #{context,jdbcType=LONGVARCHAR})
   </insert>
 
-  <insert id="insertSelective" parameterType="org.apache.submarine.server.workbench.database.entity.SysMessage">
+  <insert id="insertSelective" parameterType="org.apache.submarine.server.workbench.database.entity.SysMessageEntity">
     insert into sys_message
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -139,7 +139,7 @@
     </trim>
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.server.workbench.database.entity.SysMessage">
+  <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.server.workbench.database.entity.SysMessageEntity">
     update sys_message
     <set>
       <if test="sender != null">
@@ -173,7 +173,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.apache.submarine.server.workbench.database.entity.SysMessage">
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.apache.submarine.server.workbench.database.entity.SysMessageEntity">
     update sys_message
     set sender = #{sender,jdbcType=VARCHAR},
       receiver = #{receiver,jdbcType=VARCHAR},
@@ -187,7 +187,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.server.workbench.database.entity.SysMessage">
+  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.server.workbench.database.entity.SysMessageEntity">
     update sys_message
     set sender = #{sender,jdbcType=VARCHAR},
       receiver = #{receiver,jdbcType=VARCHAR},

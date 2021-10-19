@@ -18,19 +18,19 @@
  */
 package org.apache.submarine.server.workbench.database.mappers;
 
-import org.apache.submarine.server.workbench.database.entity.SysDept;
+import org.apache.submarine.server.workbench.database.entity.SysDeptEntity;
 
 import java.util.List;
 import java.util.Map;
 
 public interface SysDeptMapper {
-  List<SysDept> selectAll(Map<String, Object> where);
+  List<SysDeptEntity> selectAll(Map<String, Object> where);
 
-  void add(SysDept sysOrg);
+  void add(SysDeptEntity sysOrg);
 
-  SysDept getById(String id);
+  SysDeptEntity getById(String id);
 
-  void updateBy(SysDept sysOrg);
+  void updateBy(SysDeptEntity sysOrg);
 
   void deleteById(String id);
 

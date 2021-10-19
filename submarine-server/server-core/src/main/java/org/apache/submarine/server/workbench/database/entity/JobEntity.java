@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.database.entity;
 
 import org.apache.submarine.server.database.entity.BaseEntity;
 
-public class Job extends BaseEntity {
+public class JobEntity extends BaseEntity {
 
   // Todo(Zac) Add dict configuration.
   private String jobId;

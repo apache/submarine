@@ -18,44 +18,36 @@
  */
 package org.apache.submarine.server.workbench.database.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.submarine.server.database.entity.BaseEntity;
 
-public class Team extends BaseEntity {
+public class ProjectFilesEntity extends BaseEntity {
+  private String projectId;
 
-  private String owner;
+  private String fileName;
 
-  private String teamName;
+  private String fileContent;
 
-  private List<TeamMember> collaborators = new ArrayList<>();;
-
-  public String getOwner() {
-    return owner;
+  public String getProjectId() {
+    return projectId;
   }
 
-  public void setOwner(String owner) {
-    this.owner = owner;
+  public void setProjectId(String projectId) {
+    this.projectId = projectId == null ? null : projectId.trim();
   }
 
-  public String getTeamName() {
-    return teamName;
+  public String getFileName() {
+    return fileName;
   }
 
-  public void setTeamName(String teamName) {
-    this.teamName = teamName;
+  public void setFileName(String fileName) {
+    this.fileName = fileName == null ? null : fileName.trim();
   }
 
-  public List<TeamMember> getCollaborators() {
-    return collaborators;
+  public String getFileContent() {
+    return fileContent;
   }
 
-  public void setCollaborators(List<TeamMember> collaborators) {
-    this.collaborators = collaborators;
-  }
-
-  public void addCollaborator(TeamMember member) {
-    this.collaborators.add(member);
+  public void setFileContent(String fileContent) {
+    this.fileContent = fileContent == null ? null : fileContent.trim();
   }
 }

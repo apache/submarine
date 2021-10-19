@@ -20,7 +20,7 @@ package org.apache.submarine.server.workbench.database.service;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.workbench.database.entity.ProjectFiles;
+import org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity;
 import org.apache.submarine.server.workbench.database.mappers.ProjectFilesMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +32,10 @@ import java.util.Map;
 public class ProjectFilesService {
   private static final Logger LOG = LoggerFactory.getLogger(ProjectFilesService.class);
 
-  public List<ProjectFiles> queryList(String projectId) throws Exception {
+  public List<ProjectFilesEntity> queryList(String projectId) throws Exception {
     LOG.info("queryPageList projectId:{}", projectId);
 
-    List<ProjectFiles> list = null;
+    List<ProjectFilesEntity> list = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ProjectFilesMapper projectFilesMapper = sqlSession.getMapper(ProjectFilesMapper.class);
       Map<String, Object> where = new HashMap<>();

@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.SysUser;
+import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysUserMapper;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.response.JsonResponse;
@@ -55,7 +55,7 @@ public class LoginRestApi {
     HashMap<String, String> mapParams
         = gson.fromJson(loginParams, new TypeToken<HashMap<String, String>>() {}.getType());
 
-    SysUser sysUser = null;
+    SysUserEntity sysUser = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
       sysUser = sysUserMapper.login(mapParams);
@@ -69,7 +69,7 @@ public class LoginRestApi {
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
     }
 
-    return new JsonResponse.Builder<SysUser>(Response.Status.OK).success(true).result(sysUser).build();
+    return new JsonResponse.Builder<SysUserEntity>(Response.Status.OK).success(true).result(sysUser).build();
   }
 
   @POST

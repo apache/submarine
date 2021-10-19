@@ -21,7 +21,7 @@ package org.apache.submarine.server.workbench.rest;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.SysUser;
+import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.apache.submarine.server.workbench.database.service.SysUserService;
 import org.apache.submarine.server.workbench.entity.Action;
 import org.apache.submarine.server.workbench.entity.Permission;
@@ -72,24 +72,24 @@ public class SysUserRestApi {
             "column:{}, field:{}, pageNo:{}, pageSize:{}",
         userName, email, deptCode, column, field, pageNo, pageSize);
 
-    List<SysUser> list = null;
+    List<SysUserEntity> list = null;
     try {
       list = userService.queryPageList(userName, email, deptCode, column, field, pageNo, pageSize);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
     }
-    PageInfo<SysUser> page = new PageInfo<>(list);
-    ListResult<SysUser> listResult = new ListResult(list, page.getTotal());
+    PageInfo<SysUserEntity> page = new PageInfo<>(list);
+    ListResult<SysUserEntity> listResult = new ListResult(list, page.getTotal());
 
-    return new JsonResponse.Builder<ListResult<SysUser>>(Response.Status.OK)
+    return new JsonResponse.Builder<ListResult<SysUserEntity>>(Response.Status.OK)
         .success(true).result(listResult).build();
   }
 
   @PUT
   @Path("/edit")
   @SubmarineApi
-  public Response edit(SysUser sysUser) {
+  public Response edit(SysUserEntity sysUser) {
     LOG.info("edit({})", sysUser.toString());
 
     try {
@@ -106,7 +106,7 @@ public class SysUserRestApi {
   @POST
   @Path("/add")
   @SubmarineApi
-  public Response add(SysUser sysUser) {
+  public Response add(SysUserEntity sysUser) {
     LOG.info("add({})", sysUser.toString());
 
     try {
@@ -117,7 +117,7 @@ public class SysUserRestApi {
           .message("Save user failed!").build();
     }
 
-    return new JsonResponse.Builder<SysUser>(Response.Status.OK)
+    return new JsonResponse.Builder<SysUserEntity>(Response.Status.OK)
         .success(true).message("Save user successfully!").result(sysUser).build();
   }
 
@@ -141,7 +141,7 @@ public class SysUserRestApi {
   @PUT
   @Path("/changePassword")
   @SubmarineApi
-  public Response changePassword(SysUser sysUser) {
+  public Response changePassword(SysUserEntity sysUser) {
     LOG.info("changePassword({})", sysUser.toString());
 
     try {

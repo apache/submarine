@@ -30,6 +30,9 @@
       <nz-form-control [nzSm]="14" [nzXs]="24">
         <input nz-input required type="text" name="notebookName" id="notebookName" formControlName="notebookName" />
       </nz-form-control>
+      <div class="alert-message" *ngIf="notebookForm.get('notebookName').hasError('pattern')">
+        Only letters(a-z), numbers(0-9), and hyphens are allowed, but you can't start with numbers/hyphens or end with hyphens.
+      </div>
     </nz-form-item>
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="environment">Environment</nz-form-label>

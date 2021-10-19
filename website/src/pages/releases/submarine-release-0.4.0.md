@@ -1,7 +1,3 @@
----
-title: "Apache Submarine Release 0.4.0"
----
-
 <!--
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +12,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
+# Apache Submarine Release 0.4.0
+
 The Apache Submarine Community is pleased to announce the availability of the `0.4.0` release.
 
 The community put significant effort into improving Apache Submarine since the last release.
@@ -25,6 +23,6 @@ The community put significant effort into improving Apache Submarine since the l
 - Submarine Helm Charts: Provides one command to install the submarine into the Kubernetes cluster
 - PySubmarine: Submarine Python SDK
 
-We encourage to [download](../download) the latest release. Feedback through the [mailing lists](../community/README) is very welcome.
+We encourage to [download](/docs/download) the latest release. Feedback through the [mailing lists](/docs/community/README) is very welcome.
 
 You can visit [issue tracker](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12322824&version=12346621) for full list of issues that are resolved.

@@ -16,38 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.database.entity;
 
-import org.apache.submarine.server.database.entity.BaseEntity;
-
-public class ProjectFiles extends BaseEntity {
-  private String projectId;
-
-  private String fileName;
-
-  private String fileContent;
-
-  public String getProjectId() {
-    return projectId;
-  }
-
-  public void setProjectId(String projectId) {
-    this.projectId = projectId == null ? null : projectId.trim();
-  }
-
-  public String getFileName() {
-    return fileName;
-  }
-
-  public void setFileName(String fileName) {
-    this.fileName = fileName == null ? null : fileName.trim();
-  }
-
-  public String getFileContent() {
-    return fileContent;
-  }
-
-  public void setFileContent(String fileContent) {
-    this.fileContent = fileContent == null ? null : fileContent.trim();
-  }
+export interface ModelInfo {
+  name: string;
+  createTime: string,
+  updatedTime: string, 
+  tags: string[],
+  description: string,
 }

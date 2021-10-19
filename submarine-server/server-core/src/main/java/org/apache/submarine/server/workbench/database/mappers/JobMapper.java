@@ -19,27 +19,27 @@
 package org.apache.submarine.server.workbench.database.mappers;
 
 import org.apache.ibatis.session.RowBounds;
-import org.apache.submarine.server.workbench.database.entity.Job;
+import org.apache.submarine.server.workbench.database.entity.JobEntity;
 
 import java.util.List;
 import java.util.Map;
 
 public interface JobMapper {
-  List<Job> selectAll(Map<String, Object> where, RowBounds rowBounds);
+  List<JobEntity> selectAll(Map<String, Object> where, RowBounds rowBounds);
 
   int deleteByPrimaryKey(String id);
 
   int deleteByJobId(String jobId);
 
-  int insert(Job job);
+  int insert(JobEntity job);
 
-  int insertSelective(Job job);
+  int insertSelective(JobEntity job);
 
-  Job selectByPrimaryKey(String id);
+  JobEntity selectByPrimaryKey(String id);
 
-  Job selectByJobId(String jobId);
+  JobEntity selectByJobId(String jobId);
 
-  int updateByPrimaryKeySelective(Job job);
+  int updateByPrimaryKeySelective(JobEntity job);
 
-  int updateByPrimaryKey(Job job);
+  int updateByPrimaryKey(JobEntity job);
 }

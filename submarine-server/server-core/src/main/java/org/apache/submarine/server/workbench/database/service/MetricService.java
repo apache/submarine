@@ -20,7 +20,7 @@
 package org.apache.submarine.server.workbench.database.service;
 
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.workbench.database.entity.Metric;
+import org.apache.submarine.server.workbench.database.entity.MetricEntity;
 import org.apache.submarine.server.workbench.database.mappers.MetricMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +35,8 @@ public class MetricService {
   public MetricService() {
   }
 
-  public List<Metric> selectAll() throws Exception {
-    List<Metric> result;
+  public List<MetricEntity> selectAll() throws Exception {
+    List<MetricEntity> result;
     LOG.info("Metric selectAll");
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -50,7 +50,7 @@ public class MetricService {
     }
     return result;
   }
-  
+
   public boolean deleteById(String id) throws Exception {
     LOG.info("Metric deleteByPrimaryKey {}", id);
 
@@ -66,7 +66,7 @@ public class MetricService {
     return true;
   }
 
-  public boolean insert(Metric metric) throws Exception {
+  public boolean insert(MetricEntity metric) throws Exception {
     LOG.info("Metric insert {}", metric);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -80,9 +80,9 @@ public class MetricService {
     return true;
   }
 
-  public Metric selectById(String id) throws Exception {
+  public MetricEntity selectById(String id) throws Exception {
     LOG.info("Metric selectByPrimaryKey {}", id);
-    Metric metric;
+    MetricEntity metric;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       MetricMapper mapper = sqlSession.getMapper(MetricMapper.class);
       metric = mapper.selectById(id);
@@ -93,8 +93,8 @@ public class MetricService {
     }
     return metric;
   }
-  
-  public boolean update(Metric metric) throws Exception {
+
+  public boolean update(MetricEntity metric) throws Exception {
     LOG.info("Metric update {}", metric);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -108,8 +108,8 @@ public class MetricService {
     return true;
   }
 
-  public List<Metric> selectByPrimaryKeySelective(Metric metric) throws Exception {
-    List<Metric> result;
+  public List<MetricEntity> selectByPrimaryKeySelective(MetricEntity metric) throws Exception {
+    List<MetricEntity> result;
     LOG.info("Metric selectByPrimaryKeySelective");
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {

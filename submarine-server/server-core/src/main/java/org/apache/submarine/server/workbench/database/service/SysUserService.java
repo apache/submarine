@@ -21,7 +21,7 @@ package org.apache.submarine.server.workbench.database.service;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.workbench.database.entity.SysUser;
+import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysUserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,8 +36,8 @@ public class SysUserService {
   private static String GET_USER_BY_NAME_STATEMENT
       = "org.apache.submarine.server.workbench.database.mappers.SysUserMapper.getUserByName";
 
-  public SysUser getUserByName(String name, String password) throws Exception {
-    SysUser sysUser = null;
+  public SysUserEntity getUserByName(String name, String password) throws Exception {
+    SysUserEntity sysUser = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       HashMap<String, Object> mapParams = new HashMap<>();
       mapParams.put("name", name);
@@ -54,8 +54,8 @@ public class SysUserService {
     return sysUser;
   }
 
-  public SysUser login(HashMap<String, String> mapParams) throws Exception {
-    SysUser sysUser = null;
+  public SysUserEntity login(HashMap<String, String> mapParams) throws Exception {
+    SysUserEntity sysUser = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
       sysUser = sysUserMapper.login(mapParams);
@@ -66,18 +66,18 @@ public class SysUserService {
     return sysUser;
   }
 
-  public List<SysUser> queryPageList(String userName,
-                                     String email,
-                                     String deptCode,
-                                     String column,
-                                     String field,
-                                     int pageNo,
-                                     int pageSize) throws Exception {
+  public List<SysUserEntity> queryPageList(String userName,
+                                           String email,
+                                           String deptCode,
+                                           String column,
+                                           String field,
+                                           int pageNo,
+                                           int pageSize) throws Exception {
     LOG.info("SysUserService::queryPageList userName:{}, email:{}, deptCode:{}, " +
             "column:{}, field:{}, pageNo:{}, pageSize:{}",
         userName, email, deptCode, column, field, pageNo, pageSize);
 
-    List<SysUser> list = null;
+    List<SysUserEntity> list = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
       Map<String, Object> where = new HashMap<>();
@@ -92,7 +92,7 @@ public class SysUserService {
     return list;
   }
 
-  public boolean add(SysUser sysUser) throws Exception {
+  public boolean add(SysUserEntity sysUser) throws Exception {
     LOG.info("add({})", sysUser.toString());
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -106,7 +106,7 @@ public class SysUserService {
     return true;
   }
 
-  public boolean edit(SysUser sysUser) throws Exception {
+  public boolean edit(SysUserEntity sysUser) throws Exception {
     LOG.info("edit({})", sysUser.toString());
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper userMapper = sqlSession.getMapper(SysUserMapper.class);
@@ -132,7 +132,7 @@ public class SysUserService {
     return true;
   }
 
-  public boolean changePassword(SysUser user) throws Exception {
+  public boolean changePassword(SysUserEntity user) throws Exception {
     LOG.info("changePassword({})", user.toString());
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       SysUserMapper userMapper = sqlSession.getMapper(SysUserMapper.class);

@@ -16,51 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.database.entity;
 
-import org.apache.submarine.server.database.entity.BaseEntity;
+import { Component, Input, OnInit } from '@angular/core';
+import { ModelInfo } from '@submarine/interfaces/model-info';
+@Component({
+  selector: 'submarine-model-cards',
+  templateUrl: './model-cards.component.html',
+  styleUrls: ['./model-cards.component.scss'],
+})
+export class ModelCardsComponent implements OnInit {
+  @Input() modelCards: ModelInfo[];
 
-public class TeamMember extends BaseEntity {
+  constructor() {}
 
-  private String teamId;
-
-  private String teamName;
-
-  // user name
-  private String member;
-
-  private Integer inviter;
-
-  public String getTeamId() {
-    return teamId;
+  ngOnInit() {
   }
-
-  public void setTeamId(String teamId) {
-    this.teamId = teamId;
-  }
-
-  public String getTeamName() {
-    return teamName;
-  }
-
-  public void setTeamName(String teamName) {
-    this.teamName = teamName;
-  }
-
-  public String getMember() {
-    return member;
-  }
-
-  public void setMember(String member) {
-    this.member = member;
-  }
-
-  public Integer getInviter() {
-    return inviter;
-  }
-
-  public void setInviter(Integer inviter) {
-    this.inviter = inviter;
-  }
-
 }

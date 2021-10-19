@@ -18,7 +18,7 @@
  */
 package org.apache.submarine.server.workbench.database.service;
 
-import org.apache.submarine.server.workbench.database.entity.Job;
+import org.apache.submarine.server.workbench.database.entity.JobEntity;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -35,16 +35,16 @@ public class JobServiceTest {
 
   @After
   public void removeAllRecord() throws Exception {
-    List<Job> jobList = jobService.queryJobList(null, "create_time", "desc", 0, 100);
+    List<JobEntity> jobList = jobService.queryJobList(null, "create_time", "desc", 0, 100);
     LOG.info("jobList.size():{}", jobList.size());
-    for (Job job : jobList) {
+    for (JobEntity job : jobList) {
       jobService.delete(job.getId());
     }
   }
 
   @Test
   public void testSelectJob() throws Exception {
-    Job job = new Job();
+    JobEntity job = new JobEntity();
     job.setJobId("9e93caeb-8a08-4278-a10a-ff60d5835716");
     job.setJobName("mnist");
     job.setJobNamespace("submarine");
@@ -57,19 +57,24 @@ public class JobServiceTest {
     Boolean ret = jobService.add(job);
     assertTrue(ret);
 
-    List<Job> jobList = jobService.queryJobList("JobServiceTest-UserName", "create_time", "desc", 0, 100);
+    List<JobEntity> jobList = jobService.queryJobList(
+            "JobServiceTest-UserName",
+            "create_time",
+            "desc",
+            0,
+            100);
     assertEquals(jobList.size(), 1);
 
-    Job jobDb = jobList.get(0);
+    JobEntity jobDb = jobList.get(0);
     compareJobs(job, jobDb);
 
-    Job jobDb2 = jobService.selectByJobId("9e93caeb-8a08-4278-a10a-ff60d5835716");
+    JobEntity jobDb2 = jobService.selectByJobId("9e93caeb-8a08-4278-a10a-ff60d5835716");
     compareJobs(job, jobDb2);
   }
 
   @Test
   public void testUpdateJob() throws Exception {
-    Job job = new Job();
+    JobEntity job = new JobEntity();
     job.setJobId("9e93caeb-8a08-4278-a10a-ff60d5835716");
     job.setJobName("mnist");
     job.setJobNamespace("submarine");
@@ -93,13 +98,13 @@ public class JobServiceTest {
     boolean editRet = jobService.updateByPrimaryKeySelective(job);
     assertTrue(editRet);
 
-    Job jobDb2 = jobService.selectByJobId("9e93caeb-8a08-4278-a10a-ff60d5835716");
+    JobEntity jobDb2 = jobService.selectByJobId("9e93caeb-8a08-4278-a10a-ff60d5835716");
     compareJobs(job, jobDb2);
   }
 
   @Test
   public void delete() throws Exception {
-    Job job = new Job();
+    JobEntity job = new JobEntity();
     job.setJobId("9e93caeb-8a08-4278-a10a-ff60d5835716");
     job.setJobName("mnist");
     job.setJobNamespace("submarine");
@@ -116,7 +121,7 @@ public class JobServiceTest {
     assertTrue(deleteRet);
   }
 
-  private void compareJobs(Job job, Job jobDb) {
+  private void compareJobs(JobEntity job, JobEntity jobDb) {
     assertEquals(job.getJobId(), jobDb.getJobId());
     assertEquals(job.getJobName(), jobDb.getJobName());
     assertEquals(job.getJobNamespace(), jobDb.getJobNamespace());

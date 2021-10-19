@@ -20,43 +20,47 @@ package org.apache.submarine.server.workbench.database.entity;
 
 import org.apache.submarine.server.database.entity.BaseEntity;
 
-/*
-# +-----------------------+----------+-------+--------------+
-# | id                    | key      | value | worker_index |
-# +-----------------------+----------+-------+--------------+
-# | application_123456898 | max_iter | 100   | worker-1     |
-# | application_123456898 | alpha    | 10    | worker-1     |
-# | application_123456898 | n_jobs   | 5     | worker-1     |
-# +-----------------------+----------+-------+--------------+
-*/
+public class TeamMemberEntity extends BaseEntity {
 
-public class Param extends BaseEntity {
+  private String teamId;
 
-  private String key;
-  private String value;
-  private String workerIndex;
+  private String teamName;
 
-  public String getKey() {
-    return this.key;
+  // user name
+  private String member;
+
+  private Integer inviter;
+
+  public String getTeamId() {
+    return teamId;
   }
 
-  public void setKey(String key) {
-    this.key = key;
+  public void setTeamId(String teamId) {
+    this.teamId = teamId;
   }
 
-  public String getValue() {
-    return this.value;
+  public String getTeamName() {
+    return teamName;
   }
 
-  public void setValue(String value) {
-    this.value = value;
+  public void setTeamName(String teamName) {
+    this.teamName = teamName;
   }
 
-  public String getWorkerIndex() {
-    return this.workerIndex;
+  public String getMember() {
+    return member;
   }
 
-  public void setWorkerIndex(String workerIndex) {
-    this.workerIndex = workerIndex;
+  public void setMember(String member) {
+    this.member = member;
   }
+
+  public Integer getInviter() {
+    return inviter;
+  }
+
+  public void setInviter(Integer inviter) {
+    this.inviter = inviter;
+  }
+
 }

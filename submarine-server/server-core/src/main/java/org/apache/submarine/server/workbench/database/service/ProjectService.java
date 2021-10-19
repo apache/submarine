@@ -21,8 +21,8 @@ package org.apache.submarine.server.workbench.database.service;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.workbench.database.entity.Project;
-import org.apache.submarine.server.workbench.database.entity.ProjectFiles;
+import org.apache.submarine.server.workbench.database.entity.ProjectEntity;
+import org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity;
 import org.apache.submarine.server.workbench.database.mappers.ProjectFilesMapper;
 import org.apache.submarine.server.workbench.database.mappers.ProjectMapper;
 import org.slf4j.Logger;
@@ -36,15 +36,15 @@ import java.util.Map;
 public class ProjectService {
   private static final Logger LOG = LoggerFactory.getLogger(ProjectService.class);
 
-  public List<Project> queryPageList(String userName,
-                                     String column,
-                                     String order,
-                                     int pageNo,
-                                     int pageSize) throws Exception {
+  public List<ProjectEntity> queryPageList(String userName,
+                                           String column,
+                                           String order,
+                                           int pageNo,
+                                           int pageSize) throws Exception {
     LOG.info("queryPageList owner:{}, column:{}, order:{}, pageNo:{}, pageSize:{}",
         userName, column, order, pageNo, pageSize);
 
-    List<Project> list = null;
+    List<ProjectEntity> list = null;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ProjectMapper projectMapper = sqlSession.getMapper(ProjectMapper.class);
       Map<String, Object> where = new HashMap<>();
@@ -55,11 +55,11 @@ public class ProjectService {
 
       ProjectFilesMapper projectFilesMapper = sqlSession.getMapper(ProjectFilesMapper.class);
       // Query from project_files table, And set to Project Object
-      for (Project project : list) {
+      for (ProjectEntity project : list) {
         Map<String, Object> whereMember = new HashMap<>();
         whereMember.put("projectId", project.getId());
-        List<ProjectFiles> projectFilesList = projectFilesMapper.selectAll(whereMember);
-        for (ProjectFiles projectFiles : projectFilesList) {
+        List<ProjectFilesEntity> projectFilesList = projectFilesMapper.selectAll(whereMember);
+        for (ProjectFilesEntity projectFiles : projectFilesList) {
           project.addProjectFilesList(projectFiles);
         }
       }
@@ -70,7 +70,7 @@ public class ProjectService {
     return list;
   }
 
-  public boolean add(Project project) throws Exception {
+  public boolean add(ProjectEntity project) throws Exception {
     LOG.info("add({})", project.toString());
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
@@ -79,8 +79,8 @@ public class ProjectService {
 
       ProjectFilesMapper projectFilesMapper = sqlSession.getMapper(ProjectFilesMapper.class);
       // add ProjectFiles, when add project, should insert 'ProjectFilesList' to ProjectFiles
-      List<ProjectFiles> list = project.getProjectFilesList();
-      for (ProjectFiles projectFiles : list) {
+      List<ProjectFilesEntity> list = project.getProjectFilesList();
+      for (ProjectFilesEntity projectFiles : list) {
         // ProjectId needs to be obtained after the Project is inserted into the database
         projectFiles.setProjectId(project.getId());
         projectFilesMapper.insert(projectFiles);
@@ -94,7 +94,7 @@ public class ProjectService {
     return true;
   }
 
-  public boolean updateByPrimaryKeySelective(Project project) throws Exception {
+  public boolean updateByPrimaryKeySelective(ProjectEntity project) throws Exception {
     LOG.info("updateByPrimaryKeySelective({})", project.toString());
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
       ProjectMapper projectMapper = sqlSession.getMapper(ProjectMapper.class);
@@ -104,29 +104,29 @@ public class ProjectService {
       Map<String, Object> where = new HashMap<>();
       where.put("projectId", project.getId());
       // Take two lists of difference
-      List<ProjectFiles> oldProjectFiles = projectFilesMapper.selectAll(where);
+      List<ProjectFilesEntity> oldProjectFiles = projectFilesMapper.selectAll(where);
       List<String> oldProjectFilesId = new ArrayList<>();
-      for (ProjectFiles oldProjectFile : oldProjectFiles) {
+      for (ProjectFilesEntity oldProjectFile : oldProjectFiles) {
         oldProjectFilesId.add(oldProjectFile.getId());
       }
-      List<ProjectFiles> currProjectFiles = project.getProjectFilesList();
+      List<ProjectFilesEntity> currProjectFiles = project.getProjectFilesList();
       List<String> currProjectFilesId = new ArrayList<>();
-      for (ProjectFiles currProjectFile : currProjectFiles) {
+      for (ProjectFilesEntity currProjectFile : currProjectFiles) {
         currProjectFilesId.add(currProjectFile.getId());
       }
 
-      for (ProjectFiles old : oldProjectFiles) {
+      for (ProjectFilesEntity old : oldProjectFiles) {
         if (!currProjectFilesId.contains(old.getId())) {
           projectFilesMapper.deleteByPrimaryKey(old.getId());
         } else {
-          for (ProjectFiles currProjectFile : currProjectFiles) {
+          for (ProjectFilesEntity currProjectFile : currProjectFiles) {
             if (currProjectFile.getId() != null && currProjectFile.getId().equals(old.getId())) {
               projectFilesMapper.updateByPrimaryKeySelective(currProjectFile);
             }
           }
         }
       }
-      for (ProjectFiles curr : currProjectFiles) {
+      for (ProjectFilesEntity curr : currProjectFiles) {
         if (curr.getId() == null) {
           // TODO(zhulinhao)：The front desk should pass the projectId
           curr.setProjectId(project.getId());
@@ -149,7 +149,7 @@ public class ProjectService {
       projectMapper.deleteByPrimaryKey(id);
 
       ProjectFilesMapper projectFilesMapper = sqlSession.getMapper(ProjectFilesMapper.class);
-      ProjectFiles projectFiles = new ProjectFiles();
+      ProjectFilesEntity projectFiles = new ProjectFilesEntity();
       projectFiles.setProjectId(id);
       projectFilesMapper.deleteSelective(projectFiles);
       sqlSession.commit();

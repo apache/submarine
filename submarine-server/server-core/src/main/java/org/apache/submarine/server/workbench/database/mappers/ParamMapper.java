@@ -21,19 +21,19 @@ package org.apache.submarine.server.workbench.database.mappers;
 
 import java.util.List;
 
-import org.apache.submarine.server.workbench.database.entity.Param;
+import org.apache.submarine.server.workbench.database.entity.ParamEntity;
 
 public interface ParamMapper {
 
-  List<Param> selectAll();
+  List<ParamEntity> selectAll();
 
   int deleteById(String id);
 
-  int insert(Param param);
-  
-  Param selectById(String id);
+  int insert(ParamEntity param);
 
-  int update(Param param);
+  ParamEntity selectById(String id);
 
-  List<Param> selectByPrimaryKeySelective(Param param);
+  int update(ParamEntity param);
+
+  List<ParamEntity> selectByPrimaryKeySelective(ParamEntity param);
 }
