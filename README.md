@@ -129,7 +129,7 @@ submarine_client.get_log(id)
 submarine_client.list_experiments(status='running')
 ```
 
-For a quick-start, see [Submarine On K8s](https://submarine.apache.org/docs/adminDocs/k8s/README)
+For a quick-start, see [Submarine On K8s](https://submarine.apache.org/docs/gettingStarted/quickstart)
 
 ### Example: Submit a pre-defined experiment template job
 
