@@ -105,4 +105,4 @@ submarine-cloud-v2/helm-charts/submarine-operator/charts/*
 *.log
 
 # installation binary
-dev-support/installation/istioctl
+submarine-serve/installation/istioctl
