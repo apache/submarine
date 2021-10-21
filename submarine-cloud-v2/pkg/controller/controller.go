@@ -89,10 +89,6 @@ const (
 	MessageResourceSynced = "Submarine synced successfully"
 )
 
-type ControllerInterface interface {
-	Run(threadiness int, stopCh <-chan struct{}) error
-}
-
 // Controller is the controller implementation for Submarine resources
 type Controller struct {
 	// kubeclientset is a standard kubernetes clientset

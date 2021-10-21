@@ -28,45 +28,28 @@ import (
 	"k8s.io/klog/v2"
 )
 
-type Builder interface {
-	Build() ControllerInterface
-}
-
-type ControllerFunc func()
-
-// Main controller builder
 type ControllerBuilder struct {
 	controller *Controller
 	config     *BuilderConfig
-	actions    map[string]ControllerFunc
 }
 
-func NewControllerBuilder(config *BuilderConfig) Builder {
+func NewControllerBuilder(config *BuilderConfig) *ControllerBuilder {
 	return &ControllerBuilder{
 		controller: &Controller{},
 		config:     config,
-		actions:    map[string]ControllerFunc{},
 	}
 }
 
-func (cb *ControllerBuilder) Incluster(
-	incluster bool,
-) *ControllerBuilder {
-	cb.controller.incluster = incluster
-	return cb
-}
-
-func (cb *ControllerBuilder) Build() ControllerInterface {
-	cb.Initailize()
+func (cb *ControllerBuilder) Build() *Controller {
+	cb.Initialize()
 	cb.AddClientsets()
 	cb.AddListers()
-	cb.RegisterEventHandlers()
 	cb.AddEventHandlers()
 
 	return cb.controller
 }
 
-func (cb *ControllerBuilder) Initailize() *ControllerBuilder {
+func (cb *ControllerBuilder) Initialize() *ControllerBuilder {
 	// Add Submarine types to the default Kubernetes Scheme so Events can be
 	// logged for Submarine types.
 	utilruntime.Must(submarinescheme.AddToScheme(scheme.Scheme))
@@ -111,30 +94,22 @@ func (cb *ControllerBuilder) AddListers() *ControllerBuilder {
 	return cb
 }
 
-func (cb *ControllerBuilder) RegisterEventHandlers() *ControllerBuilder {
-	// Setting up event handler for Submarine
-	cb.RegisterSubmarineEventHandlers()
-
-	// Setting up event handler for other resources
-	cb.RegisterNamespaceEventHandlers()
-	cb.RegisterDeploymentEventHandlers()
-	cb.RegisterServiceEventHandlers()
-	cb.RegisterServiceAccountEventHandlers()
-	cb.RegisterPersistentVolumeClaimEventHandlers()
-	cb.RegisterIngressEventHandlers()
-	cb.RegisterIngressRouteEventHandlers()
-	cb.RegisterRoleEventHandlers()
-	cb.RegisterRoleBindingEventHandlers()
-
-	return cb
-}
-
 func (cb *ControllerBuilder) AddEventHandlers() *ControllerBuilder {
 	klog.Info("Setting up event handlers")
 
-	for _, action := range cb.actions {
-		go action()
-	}
+	// Setting up event handler for Submarine
+	cb.AddSubmarineEventHandlers()
+
+	// Setting up event handler for other resources
+	cb.AddNamespaceEventHandlers()
+	cb.AddDeploymentEventHandlers()
+	cb.AddServiceEventHandlers()
+	cb.AddServiceAccountEventHandlers()
+	cb.AddPersistentVolumeClaimEventHandlers()
+	cb.AddIngressEventHandlers()
+	cb.AddIngressRouteEventHandlers()
+	cb.AddRoleEventHandlers()
+	cb.AddRoleBindingEventHandlers()
 
 	return cb
 }
