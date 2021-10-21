@@ -18,17 +18,22 @@ Submarine serve uses istio 1.6.8 and seldon-core 1.10.0 for serving.
 
 ## Install
 
-- Install submarine with istio and seldon-core
+- Install submarine first
 
 ```bash
 cd submarine
+helm install submarine ./helm-charts/submarine
+```
+
+- Install submarine serve package istio and seldon-core
+
+```bash
 ./submarine-serve/installation/install.sh
 ```
 
-### Uninstall Submarine
+### Uninstall Submarine Serve Package
 
 ```bash
-helm delete submarine
 kubectl delete ns istio-system
 kubectl delete ns seldon-system
 ```

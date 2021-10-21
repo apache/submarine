@@ -24,12 +24,6 @@ fi
 export CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
 SUBMARINE_HOME=${CURRENT_PATH}/../..
 
-echo "submarine: $SUBMARINE_HOME"
-
-helm install submarine ${SUBMARINE_HOME}/helm-charts/submarine
-
-INSTALLATION_HOME=""
-
 if [[ ! -f ${CURRENT_PATH}/istioctl ]]; then
     wget https://github.com/istio/istio/releases/download/1.6.8/istio-1.6.8-linux-amd64.tar.gz
     tar zxvf istio-1.6.8-linux-amd64.tar.gz
