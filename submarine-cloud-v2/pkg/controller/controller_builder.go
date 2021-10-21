@@ -41,15 +41,15 @@ func NewControllerBuilder(config *BuilderConfig) *ControllerBuilder {
 }
 
 func (cb *ControllerBuilder) Build() *Controller {
-	cb.Initialize()
-	cb.AddClientsets()
-	cb.AddListers()
-	cb.AddEventHandlers()
+	cb.initialize()
+	cb.addClientsets()
+	cb.addListers()
+	cb.addEventHandlers()
 
 	return cb.controller
 }
 
-func (cb *ControllerBuilder) Initialize() *ControllerBuilder {
+func (cb *ControllerBuilder) initialize() *ControllerBuilder {
 	// Add Submarine types to the default Kubernetes Scheme so Events can be
 	// logged for Submarine types.
 	utilruntime.Must(submarinescheme.AddToScheme(scheme.Scheme))
@@ -69,7 +69,7 @@ func (cb *ControllerBuilder) Initialize() *ControllerBuilder {
 	return cb
 }
 
-func (cb *ControllerBuilder) AddClientsets() *ControllerBuilder {
+func (cb *ControllerBuilder) addClientsets() *ControllerBuilder {
 	cb.controller.kubeclientset = cb.config.kubeclientset
 	cb.controller.submarineclientset = cb.config.submarineclientset
 	cb.controller.traefikclientset = cb.config.traefikclientset
@@ -77,7 +77,7 @@ func (cb *ControllerBuilder) AddClientsets() *ControllerBuilder {
 	return cb
 }
 
-func (cb *ControllerBuilder) AddListers() *ControllerBuilder {
+func (cb *ControllerBuilder) addListers() *ControllerBuilder {
 	cb.controller.submarinesLister = cb.config.submarineInformer.Lister()
 	cb.controller.submarinesSynced = cb.config.submarineInformer.Informer().HasSynced
 
@@ -94,7 +94,7 @@ func (cb *ControllerBuilder) AddListers() *ControllerBuilder {
 	return cb
 }
 
-func (cb *ControllerBuilder) AddEventHandlers() *ControllerBuilder {
+func (cb *ControllerBuilder) addEventHandlers() *ControllerBuilder {
 	klog.Info("Setting up event handlers")
 
 	// Setting up event handler for Submarine
