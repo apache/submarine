@@ -98,18 +98,18 @@ func (cb *ControllerBuilder) addEventHandlers() *ControllerBuilder {
 	klog.Info("Setting up event handlers")
 
 	// Setting up event handler for Submarine
-	cb.AddSubmarineEventHandlers()
+	cb.addSubmarineEventHandlers()
 
 	// Setting up event handler for other resources
-	cb.AddNamespaceEventHandlers()
-	cb.AddDeploymentEventHandlers()
-	cb.AddServiceEventHandlers()
-	cb.AddServiceAccountEventHandlers()
-	cb.AddPersistentVolumeClaimEventHandlers()
-	cb.AddIngressEventHandlers()
-	cb.AddIngressRouteEventHandlers()
-	cb.AddRoleEventHandlers()
-	cb.AddRoleBindingEventHandlers()
+	cb.addNamespaceEventHandlers()
+	cb.addDeploymentEventHandlers()
+	cb.addServiceEventHandlers()
+	cb.addServiceAccountEventHandlers()
+	cb.addPersistentVolumeClaimEventHandlers()
+	cb.addIngressEventHandlers()
+	cb.addIngressRouteEventHandlers()
+	cb.addRoleEventHandlers()
+	cb.addRoleBindingEventHandlers()
 
 	return cb
 }

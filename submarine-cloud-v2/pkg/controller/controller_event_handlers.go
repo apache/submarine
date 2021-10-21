@@ -26,7 +26,7 @@ import (
 	"k8s.io/client-go/tools/cache"
 )
 
-func (cb *ControllerBuilder) AddSubmarineEventHandlers() *ControllerBuilder {
+func (cb *ControllerBuilder) addSubmarineEventHandlers() *ControllerBuilder {
 	cb.config.submarineInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.enqueueSubmarine,
 		UpdateFunc: func(old, new interface{}) {
@@ -37,7 +37,7 @@ func (cb *ControllerBuilder) AddSubmarineEventHandlers() *ControllerBuilder {
 	return cb
 }
 
-func (cb *ControllerBuilder) AddNamespaceEventHandlers() *ControllerBuilder {
+func (cb *ControllerBuilder) addNamespaceEventHandlers() *ControllerBuilder {
 	cb.config.namespaceInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.handleObject,
 		UpdateFunc: func(old, new interface{}) {
@@ -54,7 +54,7 @@ func (cb *ControllerBuilder) AddNamespaceEventHandlers() *ControllerBuilder {
 	return cb
 }
 
-func (cb *ControllerBuilder) AddDeploymentEventHandlers() *ControllerBuilder {
+func (cb *ControllerBuilder) addDeploymentEventHandlers() *ControllerBuilder {
 	cb.config.deploymentInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.handleObject,
 		UpdateFunc: func(old, new interface{}) {
@@ -71,7 +71,7 @@ func (cb *ControllerBuilder) AddDeploymentEventHandlers() *ControllerBuilder {
 	return cb
 }
 
-func (cb *ControllerBuilder) AddServiceEventHandlers() *ControllerBuilder {
+func (cb *ControllerBuilder) addServiceEventHandlers() *ControllerBuilder {
 	cb.config.serviceInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.handleObject,
 		UpdateFunc: func(old, new interface{}) {
@@ -88,7 +88,7 @@ func (cb *ControllerBuilder) AddServiceEventHandlers() *ControllerBuilder {
 	return cb
 }
 
-func (cb *ControllerBuilder) AddServiceAccountEventHandlers() *ControllerBuilder {
+func (cb *ControllerBuilder) addServiceAccountEventHandlers() *ControllerBuilder {
 	cb.config.serviceaccountInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.handleObject,
 		UpdateFunc: func(old, new interface{}) {
@@ -105,7 +105,7 @@ func (cb *ControllerBuilder) AddServiceAccountEventHandlers() *ControllerBuilder
 	return cb
 }
 
-func (cb *ControllerBuilder) AddPersistentVolumeClaimEventHandlers() *ControllerBuilder {
+func (cb *ControllerBuilder) addPersistentVolumeClaimEventHandlers() *ControllerBuilder {
 	cb.config.persistentvolumeclaimInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.handleObject,
 		UpdateFunc: func(old, new interface{}) {
@@ -122,7 +122,7 @@ func (cb *ControllerBuilder) AddPersistentVolumeClaimEventHandlers() *Controller
 	return cb
 }
 
-func (cb *ControllerBuilder) AddIngressEventHandlers() *ControllerBuilder {
+func (cb *ControllerBuilder) addIngressEventHandlers() *ControllerBuilder {
 	cb.config.ingressInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.handleObject,
 		UpdateFunc: func(old, new interface{}) {
@@ -139,7 +139,7 @@ func (cb *ControllerBuilder) AddIngressEventHandlers() *ControllerBuilder {
 	return cb
 }
 
-func (cb *ControllerBuilder) AddIngressRouteEventHandlers() *ControllerBuilder {
+func (cb *ControllerBuilder) addIngressRouteEventHandlers() *ControllerBuilder {
 	cb.config.ingressrouteInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.handleObject,
 		UpdateFunc: func(old, new interface{}) {
@@ -156,7 +156,7 @@ func (cb *ControllerBuilder) AddIngressRouteEventHandlers() *ControllerBuilder {
 	return cb
 }
 
-func (cb *ControllerBuilder) AddRoleEventHandlers() *ControllerBuilder {
+func (cb *ControllerBuilder) addRoleEventHandlers() *ControllerBuilder {
 	cb.config.roleInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.handleObject,
 		UpdateFunc: func(old, new interface{}) {
@@ -173,7 +173,7 @@ func (cb *ControllerBuilder) AddRoleEventHandlers() *ControllerBuilder {
 	return cb
 }
 
-func (cb *ControllerBuilder) AddRoleBindingEventHandlers() *ControllerBuilder {
+func (cb *ControllerBuilder) addRoleBindingEventHandlers() *ControllerBuilder {
 	cb.config.rolebindingInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.handleObject,
 		UpdateFunc: func(old, new interface{}) {
