@@ -19,6 +19,7 @@
 package org.apache.submarine.server;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.submarine.server.database.utils.HibernateUtil;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.commons.cluster.ClusterServer;
@@ -35,6 +36,8 @@ import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.component.AbstractLifeCycle;
+import org.eclipse.jetty.util.component.LifeCycle;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
@@ -114,6 +117,14 @@ public class SubmarineServer extends ResourceConfig {
 
     // Notebook server
     setupNotebookServer(webApp, conf, sharedServiceLocator);
+
+    // close session when the server is stopped
+    jettyWebServer.addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener() {
+      @Override
+      public void lifeCycleStopped(LifeCycle event) {
+        HibernateUtil.close();
+      }
+    });
 
     // Cluster Server
     // Cluster Server is useless for submarine now. Shield it to improve performance.
