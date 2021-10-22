@@ -60,6 +60,27 @@ export class ModelHomeComponent implements OnInit {
         'tags': ["speech"],
         'description': "The third model has very long description for description shorten testing, 1234567890 A recurrent neural network (RNN) is a class of artificial neural networks where connections between nodes form a directed graph along a temporal sequence. This allows it to exhibit temporal dynamic behavior. Derived from feedforward neural networks, RNNs can use their internal state (memory) to process variable length sequences of inputs",
       },
+      {
+        'name': "ModelFour",
+        'createTime': "2021-10-18",
+        'updatedTime': "2021-10-19", 
+        'tags': ["nlp", 'ssl'],
+        'description': "BERT, a famous ssl model in NLP.",
+      },
+      {
+        'name': "ModelFive",
+        'createTime': "2021-10-18",
+        'updatedTime': "2021-10-19", 
+        'tags': ["speech", 'ssl'],
+        'description': "huBERT, a famous ssl model in SP.",
+      },
+      {
+        'name': "ModelSix",
+        'createTime': "2021-10-18",
+        'updatedTime': "2021-10-19", 
+        'tags': ["CV", 'ssl'],
+        'description': "SimCLR, a famous ssl model in CV.",
+      },
     ];
     
     this.onDisplayModelCards = this.modelCards.map(card => card);
@@ -89,18 +110,5 @@ export class ModelHomeComponent implements OnInit {
       }
       return true;
     });
-  }
-
-  stringToColour = (str: string) => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    let colour = '#';
-    for (let i = 0; i < 3; i++) {
-        let value = (hash >> (i * 8)) & 0xFF;
-        colour += ('00' + value.toString(16)).substr(-2);
-    }
-    return colour;
   }
 }

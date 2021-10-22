@@ -17,10 +17,13 @@
   ~ under the License.
   -->
 
-<nz-list nzGrid>
+<nz-list nzGrid [nzPagination]="pagination">
   <div nz-row [nzGutter]="16">
-    <div nz-col [nzSpan]="6" *ngFor="let card of modelCards; let i = index">
+    <div nz-col [nzSpan]="6" *ngFor="let card of onPageModelCards; let i = index">
       <submarine-model-card [card]="card"></submarine-model-card>
     </div>
   </div>
+  <ng-template #pagination>
+    <nz-pagination [nzPageIndex]="nowPage" [nzPageSize]="pageUnit" [nzTotal]="totalPages" (nzPageIndexChange)="loadOnPageModelCards($event)"></nz-pagination>
+  </ng-template>
 </nz-list>

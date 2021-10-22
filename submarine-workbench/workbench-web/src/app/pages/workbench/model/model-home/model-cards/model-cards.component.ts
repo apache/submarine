@@ -26,9 +26,29 @@ import { ModelInfo } from '@submarine/interfaces/model-info';
 })
 export class ModelCardsComponent implements OnInit {
   @Input() modelCards: ModelInfo[];
+  nowPage: number;
+  totalPages: number;
+  onPageModelCards: ModelInfo[];
+  pageUnit = 4;
 
   constructor() {}
 
   ngOnInit() {
+    this.loadPage();
+  }
+
+  ngOnChanges() {
+    this.loadPage();
+  }
+
+  loadPage() {
+    this.nowPage = 1;
+    this.totalPages = this.modelCards.length;
+    this.loadOnPageModelCards(this.nowPage);
+  }
+
+  loadOnPageModelCards = (newPage: number) => {
+    let start = this.pageUnit * (newPage - 1);
+    this.onPageModelCards = this.modelCards.filter((_, index) => index < start + this.pageUnit && index >= start);
   }
 }
