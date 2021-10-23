@@ -16,3 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+span {
+  border: 0.1em solid;
+  border-radius: 0.2em;
+  background-color: #fafafa;
+  padding: 0em 0.3em 0.1em 0.4em;
+}
+
+i {
+  color: rgba($color: #000000, $alpha: 0.0);
+}
+
+::ng-deep .ant-select-selection--multiple .ant-select-selection__choice {
+  margin-right: 0.1em;
+  padding: 0 0.9em 0 0.8em;
+  background-color: #ffffff;
+  border: 0em solid #e8e8e8;
+}

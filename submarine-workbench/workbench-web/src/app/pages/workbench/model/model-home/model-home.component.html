@@ -18,28 +18,27 @@
   -->
 
 <div style="margin: 15px; padding: 15px; background-color: white">
-  <div align="right">
-    <button
-      nz-button
-      id="btn-newModel"
-      nzType="primary"
-      style="margin: 10px 4px 10px 4px"
-    >
-      <i nz-icon nzType="plus"></i>
-      New Model
-    </button>
+  <div nz-row [nzGutter]="16">
+    <div nz-col [nzSpan]="6">
+      <nz-input-group style="width: 100%;" [nzPrefix]="preffixIcon">
+        <input type="text" nz-input placeholder="Search by model name..." (keyup)="searchModel($event)" />
+      </nz-input-group>
+      <ng-template #preffixIcon>
+        <i nz-icon nzType="search"></i>
+      </ng-template>
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-select nzMode="multiple" [nzCustomTemplate]="multipleTemplate" style="width: 100%;" nzPlaceHolder="Filter by tags" [(ngModel)]="listOfChosenTags" (ngModelChange)="filterByTags()">
+        <nz-option *ngFor="let option of listOfTagsOption" [nzLabel]="option.label" [nzValue]="option.value" nzCustomContent>
+          <submarine-model-tag [tag]="option.label" [cssType]="'default'"></submarine-model-tag>
+        </nz-option>
+      </nz-select>
+      <ng-template #multipleTemplate let-selected nzBorderless [ngClass]="'noPadding'">
+        <submarine-model-tag [tag]="selected.nzLabel" [cssType]="'selection'"></submarine-model-tag>
+      </ng-template>
+    </div>
   </div>
-  <div align='left'>
-    <nz-input-group nzSearch style="width: 265px; margin: 10px 4px 10px 4px" [nzAddOnAfter]="suffixIconButton">
-      <input type="text" nz-input placeholder="Search by model name..." (keyup)="searchModel($event)" />
-    </nz-input-group>
-    <ng-template #suffixIconButton>
-      <button nz-button nzType="primary" nzSearch><i nz-icon nzType="search"></i></button>
-    </ng-template>
-    <nz-select nzMode="tags" style="width: 265px; margin: 10px 4px 10px 12px" nzPlaceHolder="Search by tags" [(ngModel)]="listOfChosenTags" (ngModelChange)="filterByTags()">
-      <nz-option *ngFor="let option of listOfTagsOption" [nzLabel]="option.label" [nzValue]="option.value"></nz-option>
-    </nz-select>
-  </div>
+  <nz-divider></nz-divider>
   <submarine-model-cards [modelCards]="onDisplayModelCards"></submarine-model-cards>
 </div>
   
