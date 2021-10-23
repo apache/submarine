@@ -81,6 +81,27 @@ export class ModelHomeComponent implements OnInit {
         'tags': ["CV", 'ssl'],
         'description': "SimCLR, a famous ssl model in CV.",
       },
+      {
+        'name': "ModelFour",
+        'createTime': "2021-10-18",
+        'updatedTime': "2021-10-19", 
+        'tags': ["nlp", 'ssl'],
+        'description': "BERT, a famous ssl model in NLP.",
+      },
+      {
+        'name': "ModelFive",
+        'createTime': "2021-10-18",
+        'updatedTime': "2021-10-19", 
+        'tags': ["speech", 'ssl'],
+        'description': "huBERT, a famous ssl model in SP.",
+      },
+      {
+        'name': "ModelSix",
+        'createTime': "2021-10-18",
+        'updatedTime': "2021-10-19", 
+        'tags': ["CV", 'ssl'],
+        'description': "SimCLR, a famous ssl model in CV.",
+      },
     ];
     
     this.onDisplayModelCards = this.modelCards.map(card => card);

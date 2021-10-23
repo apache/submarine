@@ -29,25 +29,21 @@ export class ModelCardsComponent implements OnInit {
   nowPage: number;
   totalPages: number;
   onPageModelCards: ModelInfo[];
-  pageUnit = 4;
+  pageUnit = 8;
 
   constructor() {}
 
   ngOnInit() {
-    this.loadPage();
+    this.loadOnPageModelCards(1);
   }
 
   ngOnChanges() {
-    this.loadPage();
-  }
-
-  loadPage() {
-    this.nowPage = 1;
-    this.totalPages = this.modelCards.length;
-    this.loadOnPageModelCards(this.nowPage);
+    this.loadOnPageModelCards(1);
   }
 
   loadOnPageModelCards = (newPage: number) => {
+    this.nowPage = newPage;
+    this.totalPages = this.modelCards.length;
     let start = this.pageUnit * (newPage - 1);
     this.onPageModelCards = this.modelCards.filter((_, index) => index < start + this.pageUnit && index >= start);
   }

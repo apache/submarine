@@ -39,7 +39,7 @@ export class ModelTagComponent implements OnInit {
     this.textColor = this.stringToColour(this.tag, "text");
     this.backgroundColor = this.stringToColour(this.tag, "background");
     this.borderColor = this.stringToColour(this.tag, "border");
-    this.margin = this.cssType == "selection" ? "0px -20px 0px -10px" : "0 3px 0 3px";
+    this.margin = this.cssType == "selection" ? "0em -0.8em 0em -0.7em" : "0em 0.15em 0em 0.15em";
     this.closable = this.cssType == "selection";
   }
 
@@ -53,16 +53,15 @@ export class ModelTagComponent implements OnInit {
         let value = (hash >> (i * 8)) & 0xFF;
         colour += ('00' + value.toString(16)).substr(-2);
     }
-    const hexToRgb = (hex: string) => {
-      var bigint = parseInt(hex.substring(1,), 16);
-      var r = (bigint >> 16) & 255;
-      var g = (bigint >> 8) & 255;
-      var b = bigint & 255;
-  
-      return r + "," + g + "," + b;
+    var bigint = parseInt(colour.substring(1,), 16);
+    var r = (bigint >> 16) & 255;
+    var g = (bigint >> 8) & 255;
+    var b = bigint & 255;
+    if (Math.max(r, g, b) - Math.min(r, g, b) < 50 && r + g + b > 500) {
+      return this.stringToColour(str+"hashAgain", type);
     }
     const opacity = type == "background" ? "0.1" : type == "border" ? "0.4" : "1.0";
-    const rgb = "rgba(" + hexToRgb(colour) + "," + opacity + ")";
+    const rgb = "rgba(" + `${r},${g},${b}` + "," + opacity + ")";
     return rgb;
   }
 }

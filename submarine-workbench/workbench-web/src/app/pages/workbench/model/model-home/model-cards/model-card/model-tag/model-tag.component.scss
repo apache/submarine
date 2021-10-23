@@ -17,10 +17,10 @@
  * under the License.
  */
 span {
-  border: 1.2px solid;
-  border-radius: 3px;
+  border: 0.1em solid;
+  border-radius: 0.2em;
   background-color: #fafafa;
-  padding: 0px 5px 1px 5px;
+  padding: 0em 0.3em 0.1em 0.4em;
 }
 
 i {
@@ -28,16 +28,8 @@ i {
 }
 
 ::ng-deep .ant-select-selection--multiple .ant-select-selection__choice {
-  position: relative;
-  float: left;
-  max-width: 99%;
-  margin-right: 4px;
-  padding: 0 20px 0 10px;
-  overflow: hidden;
-  color: rgba(0, 0, 0, 0.65);
-  background-color: #fafafa;
-  border: 0px solid #e8e8e8;
-  border-radius: 2px;
-  cursor: default;
-  transition: padding 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  margin-right: 0.1em;
+  padding: 0 0.9em 0 0.8em;
+  background-color: #ffffff;
+  border: 0em solid #e8e8e8;
 }
