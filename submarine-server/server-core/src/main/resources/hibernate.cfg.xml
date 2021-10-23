@@ -36,6 +36,9 @@
     <property name="hibernate.connection.password">
       password
     </property>
+    <!-- Echo all executed SQL to stdout -->
     <property name="show_sql">true</property>
+    <!-- Validate schema matches to database -->
+    <property name="hibernate.hbm2ddl.auto">validate</property>
   </session-factory>
 </hibernate-configuration>
