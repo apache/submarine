@@ -635,6 +635,11 @@ public class K8sSubmitter implements Submitter {
               }
             } finally {
               LOG.info("WATCH TFJob END");
+              try {
+                watchTF.close();
+              } catch (Exception e){
+                LOG.error("{}", e.getMessage());
+              }
               throw new RuntimeException();
             }
         }
@@ -650,6 +655,11 @@ public class K8sSubmitter implements Submitter {
               }
             } finally {
               LOG.info("WATCH PytorchJob END");
+              try {
+                watchPytorch.close();
+              } catch (Exception e){
+                LOG.error("{}", e.getMessage());
+              }
               throw new RuntimeException();
             }
         }
