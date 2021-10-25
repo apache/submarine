@@ -80,7 +80,7 @@ public class ModelVersionRestApi {
    * List all model versions under same registered model name.
    *
    * @param name registered model name
-   * @return model-version list
+   * @return model version list
    */
   @GET
   @Path("/{name}")
@@ -100,8 +100,8 @@ public class ModelVersionRestApi {
   /**
    * Get detailed info about the model version by name and version.
    *
-   * @param name    model version name
-   * @param version model version version
+   * @param name    model version's name
+   * @param version model version's version
    * @return detailed info about the model version
    */
   @GET
@@ -124,8 +124,8 @@ public class ModelVersionRestApi {
   /**
    * Delete the model version with model version name and version.
    *
-   * @param name    model version name
-   * @param version model version version
+   * @param name    model version's name
+   * @param version model version's version
    * @return seccess message
    */
   @DELETE
