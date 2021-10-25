@@ -23,7 +23,7 @@ class LossKey:
     BCEWithLogitsLoss = "BCEWithLogitsLoss".lower()
 
 
-def get_loss_fn(key):
+def get_loss_fn(key: str):
     key = key.lower()
     if key == LossKey.BCELoss:
         return nn.BCELoss
