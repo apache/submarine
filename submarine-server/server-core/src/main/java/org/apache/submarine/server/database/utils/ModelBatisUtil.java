@@ -32,18 +32,13 @@ import java.util.Properties;
 public class ModelBatisUtil {
   private static final Logger LOG = LoggerFactory.getLogger(ModelBatisUtil.class);
 
-  private static SqlSessionFactory sqlSessionFactory;
+  private static final SqlSessionFactory sqlSessionFactory;
 
   static {
-    Reader reader = null;
-    try {
-      try {
-        reader = Resources.getResourceAsReader("modelbatis-config.xml");
-      } catch (IOException e) {
-        LOG.error(e.getMessage(), e);
-        throw new RuntimeException(e.getMessage());
-      }
 
+    try (Reader reader =
+                 Resources.getResourceAsReader("modelbatis-config.xml");
+    ) {
       String jdbcClassName = "com.mysql.jdbc.Driver";
       String jdbcUrl = "jdbc:mysql://127.0.0.1:3306/mlflowdb";
       String jdbcUserName = "mlflow";
@@ -58,21 +53,16 @@ public class ModelBatisUtil {
       props.setProperty("jdbc.password", jdbcPassword);
 
       sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, props);
-    } finally {
-      try {
-        if (null != reader) {
-          reader.close();
-        }
-      } catch (IOException e) {
-        LOG.error(e.getMessage(), e);
-      }
+    } catch (IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e.getMessage());
     }
   }
 
   /**
-   * Get Session
+   * Get Session.
    *
-   * @return
+   * @return SqlSession
    */
   public static SqlSession getSqlSession() {
     return sqlSessionFactory.openSession();

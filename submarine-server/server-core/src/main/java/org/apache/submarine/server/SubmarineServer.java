@@ -66,12 +66,12 @@ import java.io.InputStreamReader;
 public class SubmarineServer extends ResourceConfig {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineServer.class);
 
-  private static long serverTimeStamp = System.currentTimeMillis();
+  private static final long serverTimeStamp = System.currentTimeMillis();
 
   public static Server jettyWebServer;
   public static ServiceLocator sharedServiceLocator;
   private static WebAppContext webApp;
-  private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+  private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
   public static long getServerTimeStamp() {
     return serverTimeStamp;
@@ -81,9 +81,8 @@ public class SubmarineServer extends ResourceConfig {
       IOException {
     PropertyConfigurator.configure(ClassLoader.getSystemResource("log4j.properties"));
 
-    final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
     LOG.info("Submarine server Host: " + conf.getServerAddress());
-    if (conf.useSsl() == false) {
+    if (!conf.useSsl()) {
       LOG.info("Submarine server Port: " + conf.getServerPort());
     } else {
       LOG.info("Submarine server SSL Port: " + conf.getServerSslPort());
@@ -133,7 +132,8 @@ public class SubmarineServer extends ResourceConfig {
   private static void startServer() throws InterruptedException {
     LOG.info("Starting submarine server");
     try {
-      jettyWebServer.start(); // Instantiates SubmarineServer
+      // Instantiates SubmarineServer
+      jettyWebServer.start();
     } catch (Exception e) {
       LOG.error("Error while running jettyServer", e);
       System.exit(-1);
@@ -233,7 +233,7 @@ public class SubmarineServer extends ResourceConfig {
     // Set some timeout options to make debugging easier.
     int timeout = 1000 * 30;
     connector.setIdleTimeout(timeout);
-    connector.setSoLingerTime(-1);
+    // connector.setSoLingerTime(-1);
     connector.setHost(conf.getServerAddress());
     if (conf.useSsl()) {
       connector.setPort(conf.getServerSslPort());
@@ -318,32 +318,30 @@ public class SubmarineServer extends ResourceConfig {
       } else {
         // Product mode, read from war file
         File warFile = webApp.getTempDirectory();
-        if (false == warFile.exists()) {
+        if (!warFile.exists()) {
           throw new ServletException("Can't found war directory!");
         }
         indexFile = new File(warFile.getAbsolutePath() + "/webapp/index.html");
       }
 
-      InputStreamReader reader = null;
-      StringBuffer sbIndexBuf = new StringBuffer();
-      try {
-        if (indexFile.isFile() && indexFile.exists()) {
-          reader = new InputStreamReader(new FileInputStream(indexFile), "GBK");
-          BufferedReader bufferedReader = new BufferedReader(reader);
-          String lineTxt = null;
-
-          while ((lineTxt = bufferedReader.readLine()) != null) {
-            sbIndexBuf.append(lineTxt);
-          }
-          bufferedReader.close();
-        } else {
+      // If index.html does not exist, throw ServletException
+      if (!(indexFile.isFile() && indexFile.exists())) {
+        try {
           throw new Exception("Can't found index html!");
+        } catch (Exception e) {
+          LOG.error(e.getMessage(), e);
+          throw new ServletException("Can't found index html!");
         }
-      } catch (Exception e) {
-        LOG.error(e.getMessage(), e);
-        throw new ServletException("Can't found index html!");
-      } finally {
-        reader.close();
+      }
+
+      StringBuilder sbIndexBuf = new StringBuilder();
+      try (InputStreamReader reader =
+                   new InputStreamReader(new FileInputStream(indexFile), "GBK");
+           BufferedReader bufferedReader = new BufferedReader(reader);) {
+        String lineTxt = null;
+        while ((lineTxt = bufferedReader.readLine()) != null) {
+          sbIndexBuf.append(lineTxt);
+        }
       }
 
       response.getWriter().print(sbIndexBuf.toString());

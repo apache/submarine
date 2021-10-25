@@ -41,12 +41,11 @@ public class GitUtils {
   private static final Logger LOG = LoggerFactory.getLogger(GitUtils.class);
 
   /**
-   * To execute clone command
-   * @param remotePath
-   * @param localPath
-   * @param token
-   * @param branch
-   * @throws GitAPIException
+   * To execute clone command.
+   * @param remotePath the URI of the remote repository
+   * @param localPath the path of the local repository
+   * @param token the GitHub access token
+   * @param branch the git branch to use
    */
   public void clone(String remotePath, String localPath, String token, String branch) {
     // Clone the code base command
@@ -54,34 +53,30 @@ public class GitUtils {
     CredentialsProvider credentialsProvider =
         new UsernamePasswordCredentialsProvider("PRIVATE-TOKEN", token);
 
-    Git git = null;
-    try {
-      git = Git.cloneRepository().setURI(remotePath) // Set remote URI
-          .setBranch(branch) // Set the branch down from clone
-          .setDirectory(new File(localPath)) // Set the download path
-          .setCredentialsProvider(credentialsProvider) // Set permission validation
-          .call();
+    try (Git git = Git.cloneRepository().setURI(remotePath) // Set remote URI
+            .setBranch(branch) // Set the branch down from clone
+            .setDirectory(new File(localPath)) // Set the download path
+            .setCredentialsProvider(credentialsProvider) // Set permission validation
+            .call();) {
+
+      LOG.info("git.tag(): {}", git.tag());
     } catch (GitAPIException e) {
       LOG.error(e.getMessage(), e);
-    } finally {
-      if (git != null) {
-        git.close();
-      }
     }
-    LOG.info("git.tag(): {}", git.tag());
   }
 
   /**
-   * To execute add command
-   * @param localPath
-   * @param fileName
-   *          relative path
-   * @throws IOException
-   * @throws GitAPIException
+   * To execute add command.
+   * @param localPath the path of the local repository
+   * @param fileName the file name you want to add to the git stage area (relative path)
+   * @return DirCache
    */
   public DirCache add(String localPath, String fileName) {
     // Git repository address
-    File myfile = new File(localPath + fileName);
+
+    // File myfile = new File(localPath + fileName);
+    File myfile = new File(localPath, fileName);
+
     if (!myfile.exists()) {
       myfile.getParentFile().mkdirs();
       try {
@@ -90,25 +85,23 @@ public class GitUtils {
         LOG.error(e.getMessage(), e);
       }
     }
+
     DirCache dirCache = null;
     try (Git git = Git.open(new File(localPath))) {
       // Add files
       dirCache = git.add().addFilepattern(fileName.substring(1)).call();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (GitAPIException e) {
+    } catch (IOException | GitAPIException e) {
       LOG.error(e.getMessage(), e);
     }
+
     return dirCache;
   }
 
   /**
-   * To execute rm command
-   * @param localPath
-   * @param fileName
-   *          relative path
-   * @throws IOException
-   * @throws GitAPIException
+   * To execute rm command.
+   * @param localPath the path of the local repository
+   * @param fileName the file name you want to remove from the git repo (relative path)
+   * @return DirCache
    */
   public DirCache rm(String localPath, String fileName) {
     DirCache dirCache = null;
@@ -116,41 +109,34 @@ public class GitUtils {
     try (Git git = Git.open(new File(localPath))) {
       // rm files
       dirCache = git.rm().addFilepattern(fileName.substring(1)).call();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (GitAPIException e) {
+    } catch (IOException | GitAPIException e) {
       LOG.error(e.getMessage(), e);
     }
+
     return dirCache;
   }
 
 
   /**
-   * To execute reset command
-   * @param localPath
-   * @param fileName
-   *          relative path
-   * @throws IOException
-   * @throws GitAPIException
+   * To execute reset command.
+   * @param localPath the path of the local repository
+   * @param fileName the file name you want to reset (relative path)
    */
   public void reset(String localPath, String fileName) {
     // Git repository address
     try (Git git = Git.open(new File(localPath))) {
       // reset files
       git.reset().addPath(fileName.substring(1)).call();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (GitAPIException e) {
+    } catch (IOException | GitAPIException e) {
       LOG.error(e.getMessage(), e);
     }
   }
 
   /**
-   * To execute pull command
-   * @param localPath
-   * @param token
-   * @throws IOException
-   * @throws GitAPIException
+   * To execute pull command.
+   * @param localPath the path of the local repository
+   * @param token the GitHub access token
+   * @return PullResult
    */
   public PullResult pull(String localPath, String token, String branch) {
     CredentialsProvider credentialsProvider =
@@ -160,19 +146,17 @@ public class GitUtils {
     try (Git git = Git.open(new File(localPath))) {
       pullResult = git.pull().setRemoteBranchName(branch).
           setCredentialsProvider(credentialsProvider).call();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (GitAPIException e) {
+    } catch (IOException | GitAPIException e) {
       LOG.error(e.getMessage(), e);
     }
+
     return pullResult;
   }
 
   /**
-   * To execute commit command
-   * @param localPath
-   * @throws IOException
-   * @throws GitAPIException
+   * To execute commit command.
+   * @param localPath the path of the local repository
+   * @return RevCommit
    */
   public RevCommit commit(String localPath, String message) {
     RevCommit revCommit = null;
@@ -180,20 +164,19 @@ public class GitUtils {
     try (Git git = Git.open(new File(localPath))) {
       // Submit code
       revCommit = git.commit().setMessage(message).call();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (GitAPIException e) {
+    } catch (IOException | GitAPIException e) {
       LOG.error(e.getMessage(), e);
     }
+
     return revCommit;
   }
 
   /**
-   * To execute push command
-   * @param localPath
-   * @param token
-   * @throws IOException
-   * @throws GitAPIException
+   * To execute push command.
+   * @param localPath the path of the local repository
+   * @param token the GitHub access token
+   * @param remote the URI of remote repository
+   * @return Iterable<PushResult>
    */
   public Iterable<PushResult> push(String localPath, String token, String remote) {
     CredentialsProvider credentialsProvider =
@@ -202,20 +185,18 @@ public class GitUtils {
     // Git repository address
     try (Git git = Git.open(new File(localPath))) {
       iterable = git.push().setRemote(remote).setCredentialsProvider(credentialsProvider).call();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (GitAPIException e) {
+    } catch (IOException | GitAPIException e) {
       LOG.error(e.getMessage(), e);
     }
+
     return iterable;
   }
 
   /**
-   * To execute branchCreate command
-   * @param localPath
-   * @param branchName
-   * @throws IOException
-   * @throws GitAPIException
+   * To execute branchCreate command.
+   * @param localPath the path of the local repository
+   * @param branchName the branch you want to create
+   * @return Ref
    */
   public Ref branchCreate(String localPath, String branchName) {
     Ref result = null;
@@ -223,99 +204,86 @@ public class GitUtils {
       ListBranchCommand listBranchCommand = git.branchList();
       List<Ref> list = listBranchCommand.call();
       boolean existsBranch = false;
+
       for (Ref ref : list) {
         if (ref.getName().endsWith(branchName)) {
           existsBranch = true;
           break;
         }
       }
+
       if (!existsBranch) {
         // Create branch
         result = git.branchCreate().setName(branchName).call();
       } else {
         LOG.warn("{} already exists.", branchName);
       }
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (GitAPIException e) {
+    } catch (IOException | GitAPIException e) {
       LOG.error(e.getMessage(), e);
     }
+
     return result;
   }
 
   /**
-   * To execute branchDelete command
-   * @param localPath
-   * @param branchName
-   * @throws IOException
-   * @throws GitAPIException
+   * To execute branchDelete command.
+   * @param localPath the path of the local repository
+   * @param branchName the branch you want to delete
+   * @return List<String>
    */
   public List<String> branchDelete(String localPath, String branchName) {
     List<String> list = null;
     try (Git git = Git.open(new File(localPath))) {
       list = git.branchDelete().setForce(true).setBranchNames(branchName).call();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (GitAPIException e) {
+    } catch (IOException | GitAPIException e) {
       LOG.error(e.getMessage(), e);
     }
+
     return list;
   }
 
   /**
-   * To execute checkout command
-   * @param localPath
-   * @param branchName
-   * @throws IOException
-   * @throws GitAPIException
+   * To execute checkout command.
+   * @param localPath the path of the local repository
+   * @param branchName the branch you want to checkout to
+   * @return Ref
    */
   public Ref checkout(String localPath, String branchName) {
     Ref result = null;
     try (Git git = Git.open(new File(localPath))) {
       result = git.checkout().setName(branchName).call();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (GitAPIException e) {
+    } catch (IOException | GitAPIException e) {
       LOG.error(e.getMessage(), e);
     }
+
     return result;
   }
 
   /**
-   * To execute rebase command
-   * @param localPath
-   * @param branchName
-   * @param upstreamName
-   * @throws IOException
-   * @throws GitAPIException
+   * To execute rebase command.
+   * @param localPath the path of the local repository
+   * @param branchName the branch you want to rebase from
+   * @param upstreamName the name of upstream repository
    */
   public void rebase(String localPath, String branchName, String upstreamName) {
     try (Git git = Git.open(new File(localPath))) {
       git.rebase().setUpstream(branchName).setUpstreamName(upstreamName).call();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (GitAPIException e) {
+    } catch (IOException | GitAPIException e) {
       LOG.error(e.getMessage(), e);
     }
   }
 
   /**
-   * To execute remoteAdd command
-   * @param localPath
-   * @param uri
-   * @param remoteName
-   * @throws IOException
-   * @throws GitAPIException
+   * To execute remoteAdd command.
+   * @param localPath the path of the local repository
+   * @param uri the URI prefix of the remote repository
+   * @param remoteName the name of the remote repository
    */
   public void remoteAdd(String localPath, String uri, String remoteName) {
     try (Git git = Git.open(new File(localPath))) {
       URIish urIish = new URIish(uri);
       git.remoteAdd().setName(remoteName).setUri(urIish).call();
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (GitAPIException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (URISyntaxException e) {
+    } catch (IOException | GitAPIException | URISyntaxException e) {
       LOG.error(e.getMessage(), e);
     }
   }

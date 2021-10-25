@@ -120,9 +120,9 @@ public class NotebookService {
   }
 
   /**
-   * Create a NotebookEntity instance from experiment
+   * Create a NotebookEntity instance from experiment.
    *
-   * @param notebook
+   * @param notebook the Notebook used to create a NoteBookEntity
    * @return NotebookEntity
    */
   private NotebookEntity buildEntityFromNotebook(Notebook notebook) {
@@ -138,9 +138,9 @@ public class NotebookService {
   }
 
   /**
-   * Create a new notebook instance from entity
+   * Create a new notebook instance from entity.
    *
-   * @param entity
+   * @param entity the NotebookEntity used to create a Notebook
    * @return Notebook
    */
   private Notebook buildNotebookFromEntity(NotebookEntity entity) {
