@@ -14,5 +14,5 @@
 # limitations under the License.
 
 
-def save_model(model, artifact_path):
+def save_model(model, artifact_path: str):
     model.save(artifact_path)

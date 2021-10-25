@@ -24,7 +24,7 @@ class MetricKey:
     RECALL = "recall"
 
 
-def get_metric_fn(key):
+def get_metric_fn(key: str):
     key = key.lower()
     if key == MetricKey.F1_SCORE:
         return metrics.f1_score

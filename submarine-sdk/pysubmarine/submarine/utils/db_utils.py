@@ -22,14 +22,14 @@ _DB_URI_ENV_VAR = "SUBMARINE_DB_URI"
 _db_uri = None
 
 
-def is_db_uri_set():
+def is_db_uri_set() -> bool:
     """Returns True if the DB URI has been set, False otherwise."""
     if _db_uri or env.get_env(_DB_URI_ENV_VAR):
         return True
     return False
 
 
-def set_db_uri(uri):
+def set_db_uri(uri: str):
     """
     Set the DB URI. This does not affect the currently active run (if one exists),
     but takes effect for successive runs.
@@ -38,7 +38,7 @@ def set_db_uri(uri):
     _db_uri = uri
 
 
-def get_db_uri():
+def get_db_uri() -> str:
     """
     Get the current DB URI.
     :return: The DB URI.

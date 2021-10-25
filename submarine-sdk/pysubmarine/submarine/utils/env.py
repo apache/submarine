@@ -19,22 +19,22 @@ import os
 from collections.abc import Mapping
 
 
-def get_env(variable_name):
+def get_env(variable_name: str):
     return os.environ.get(variable_name)
 
 
-def unset_variable(variable_name):
+def unset_variable(variable_name: str) -> None:
     if variable_name in os.environ:
         del os.environ[variable_name]
 
 
-def check_env_exists(variable_name):
+def check_env_exists(variable_name: str) -> bool:
     if variable_name not in os.environ:
         return False
     return True
 
 
-def get_from_json(path, defaultParams):
+def get_from_json(path: str, defaultParams: dict):
     """
     If model parameters not specify in Json, use parameter in defaultParams
     :param path: The json file that specifies the model parameters.
@@ -50,7 +50,7 @@ def get_from_json(path, defaultParams):
     return get_from_dicts(params, defaultParams)
 
 
-def get_from_dicts(params, defaultParams):
+def get_from_dicts(params: dict, defaultParams: dict):
     """
     If model parameters not specify in params, use parameter in defaultParams
     :param params: parameters which will be merged
@@ -71,7 +71,7 @@ def get_from_dicts(params, defaultParams):
     return dct
 
 
-def get_from_registry(key, registry):
+def get_from_registry(key: str, registry: dict):
     if hasattr(key, "lower"):
         key = key.lower()
     if key in registry:

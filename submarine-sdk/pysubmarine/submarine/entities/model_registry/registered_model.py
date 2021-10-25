@@ -49,6 +49,6 @@ class RegisteredModel(_SubmarineObject):
         return self._description
 
     @property
-    def tags(self):
+    def tags(self) -> list:
         """List of strings"""
         return self._tags

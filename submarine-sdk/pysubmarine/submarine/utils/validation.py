@@ -37,7 +37,7 @@ _BAD_CHARACTERS_MESSAGE = (
 _UNSUPPORTED_DB_TYPE_MSG = "Supported database engines are {%s}" % ", ".join(DATABASE_ENGINES)
 
 
-def bad_path_message(name):
+def bad_path_message(name: str):
     return (
         "Names may be treated as files in certain cases, and must not resolve to other names"
         " when treated as such. This name would resolve to '%s'"
@@ -45,12 +45,12 @@ def bad_path_message(name):
     )
 
 
-def path_not_unique(name):
+def path_not_unique(name: str):
     norm = posixpath.normpath(name)
     return norm != name or norm == "." or norm.startswith("..") or norm.startswith("/")
 
 
-def _validate_param_name(name):
+def _validate_param_name(name: str):
     """Check that `name` is a valid parameter name and raise an exception if it isn't."""
     if not _VALID_PARAM_AND_METRIC_NAMES.match(name):
         raise SubmarineException(
@@ -63,7 +63,7 @@ def _validate_param_name(name):
         )
 
 
-def _validate_metric_name(name):
+def _validate_metric_name(name: str):
     """Check that `name` is a valid metric name and raise an exception if it isn't."""
     if not _VALID_PARAM_AND_METRIC_NAMES.match(name):
         raise SubmarineException(
@@ -74,7 +74,7 @@ def _validate_metric_name(name):
         raise SubmarineException("Invalid metric name: '%s'. %s" % (name, bad_path_message(name)))
 
 
-def _validate_length_limit(entity_name, limit, value):
+def _validate_length_limit(entity_name: str, limit: int, value):
     if len(value) > limit:
         raise SubmarineException(
             "%s '%s' had length %s, which exceeded length limit of %s"
@@ -82,7 +82,7 @@ def _validate_length_limit(entity_name, limit, value):
         )
 
 
-def validate_metric(key, value, timestamp, step):
+def validate_metric(key, value, timestamp, step) -> None:
     """
     Check that a param with the specified key, value, timestamp is valid and raise an exception if
     it isn't.
@@ -107,7 +107,7 @@ def validate_metric(key, value, timestamp, step):
         )
 
 
-def validate_param(key, value):
+def validate_param(key, value) -> None:
     """
     Check that a param with the specified key & value is valid and raise an exception if it
     isn't.
