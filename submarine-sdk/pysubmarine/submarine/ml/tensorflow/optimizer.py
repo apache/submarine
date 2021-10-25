@@ -29,7 +29,7 @@ class OptimizerKey(object):
     FTRL = "ftrl"
 
 
-def get_optimizer(optimizer_key, learning_rate):
+def get_optimizer(optimizer_key: str, learning_rate: float):
     optimizer_key = optimizer_key.lower()
 
     if optimizer_key == OptimizerKey.ADAM:

@@ -38,7 +38,7 @@ def generate_host():
 
 
 class ExperimentClient:
-    def __init__(self, host=generate_host()):
+    def __init__(self, host: str = generate_host()):
         """
         Submarine experiment client constructor
         :param host: An HTTP URI like http://submarine-server:8080.
@@ -59,7 +59,7 @@ class ExperimentClient:
         response = self.experiment_api.create_experiment(experiment_spec=experiment_spec)
         return response.result
 
-    def wait_for_finish(self, id, polling_interval=10):
+    def wait_for_finish(self, id, polling_interval: float = 10):
         """
         Waits until experiment is finished or failed
         :param id: submarine experiment id
@@ -75,7 +75,7 @@ class ExperimentClient:
             index = self._log_pod(id, index)
             time.sleep(polling_interval)
 
-    def _log_pod(self, id, index):
+    def _log_pod(self, id, index: int):
         response = self.experiment_api.get_log(id)
         log_contents = response.result["logContent"]
         if len(log_contents) == 0:

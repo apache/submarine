@@ -33,10 +33,10 @@ from .utils import exist_ps, get_job_id, get_worker_index
 class ModelsClient:
     def __init__(
         self,
-        tracking_uri=None,
-        registry_uri=None,
-        aws_access_key_id=None,
-        aws_secret_access_key=None,
+        tracking_uri: str = None,
+        registry_uri: str = None,
+        aws_access_key_id: str = None,
+        aws_secret_access_key: str = None,
     ):
         """
         Set up mlflow server connection, including: s3 endpoint, aws, tracking server
@@ -69,26 +69,26 @@ class ModelsClient:
         experiment_id = self._get_or_create_experiment(experiment_name)
         return mlflow.start_run(run_name=run_name, experiment_id=experiment_id)
 
-    def log_param(self, key, value):
+    def log_param(self, key: str, value: str):
         mlflow.log_param(key, value)
 
     def log_params(self, params):
         mlflow.log_params(params)
 
-    def log_metric(self, key, value, step=None):
+    def log_metric(self, key: str, value: str, step=None):
         mlflow.log_metric(key, value, step)
 
     def log_metrics(self, metrics, step=None):
         mlflow.log_metrics(metrics, step)
 
-    def load_model(self, name, version):
+    def load_model(self, name: str, version: str):
         model = mlflow.pyfunc.load_model(model_uri=f"models:/{name}/{version}")
         return model
 
-    def update_model(self, name, new_name):
+    def update_model(self, name: str, new_name: str):
         self.client.rename_registered_model(name=name, new_name=new_name)
 
-    def delete_model(self, name, version):
+    def delete_model(self, name: str, version: str):
         self.client.delete_model_version(name=name, version=version)
 
     def save_model(self, model_type, model, artifact_path, registered_model_name=None):

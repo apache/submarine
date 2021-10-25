@@ -103,7 +103,7 @@ class SqlAlchemyStore(AbstractStore):
         return make_managed_session
 
     @staticmethod
-    def _save_to_db(session, objs):
+    def _save_to_db(session, objs: object):
         """
         Store in db
         """

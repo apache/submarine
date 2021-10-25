@@ -52,7 +52,9 @@ class CodeSpec(object):
 
     attribute_map = {"sync_mode": "syncMode", "url": "url"}
 
-    def __init__(self, sync_mode=None, url=None, local_vars_configuration=None):  # noqa: E501
+    def __init__(
+        self, sync_mode: str = None, url: str = None, local_vars_configuration: Configuration = None
+    ):  # noqa: E501
         """CodeSpec - a model defined in OpenAPI"""  # noqa: E501
         if local_vars_configuration is None:
             local_vars_configuration = Configuration()
@@ -78,7 +80,7 @@ class CodeSpec(object):
         return self._sync_mode
 
     @sync_mode.setter
-    def sync_mode(self, sync_mode):
+    def sync_mode(self, sync_mode: str) -> None:
         """Sets the sync_mode of this CodeSpec.
 
 
@@ -99,7 +101,7 @@ class CodeSpec(object):
         return self._url
 
     @url.setter
-    def url(self, url):
+    def url(self, url: str) -> None:
         """Sets the url of this CodeSpec.
 
 
@@ -135,22 +137,22 @@ class CodeSpec(object):
 
         return result
 
-    def to_str(self):
+    def to_str(self) -> str:
         """Returns the string representation of the model"""
         return pprint.pformat(self.to_dict())
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """For `print` and `pprint`"""
         return self.to_str()
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         """Returns true if both objects are equal"""
         if not isinstance(other, CodeSpec):
             return False
 
         return self.to_dict() == other.to_dict()
 
-    def __ne__(self, other):
+    def __ne__(self, other) -> bool:
         """Returns true if both objects are not equal"""
         if not isinstance(other, CodeSpec):
             return True

@@ -19,7 +19,7 @@ from torch import nn
 
 # pylint: disable=W0223
 class FeatureLinear(nn.Module):
-    def __init__(self, num_features, out_features):
+    def __init__(self, num_features: int, out_features: int):
         """
         :param num_features: number of total features.
         :param out_features: The number of output features.
@@ -28,7 +28,7 @@ class FeatureLinear(nn.Module):
         self.weight = nn.Embedding(num_embeddings=num_features, embedding_dim=out_features)
         self.bias = nn.Parameter(torch.zeros((out_features,)))
 
-    def forward(self, feature_idx, feature_value):
+    def forward(self, feature_idx: torch.LongTensor, feature_value: torch.LongTensor):
         """
         :param feature_idx: torch.LongTensor (batch_size, num_fields)
         :param feature_value: torch.LongTensor (batch_size, num_fields)
@@ -39,11 +39,11 @@ class FeatureLinear(nn.Module):
 
 
 class FeatureEmbedding(nn.Module):
-    def __init__(self, num_features, embedding_dim):
+    def __init__(self, num_features: int, embedding_dim):
         super().__init__()
         self.weight = nn.Embedding(num_embeddings=num_features, embedding_dim=embedding_dim)
 
-    def forward(self, feature_idx, feature_value):
+    def forward(self, feature_idx: torch.LongTensor, feature_value: torch.LongTensor):
         """
         :param feature_idx: torch.LongTensor (batch_size, num_fields)
         :param feature_value: torch.LongTensor (batch_size, num_fields)
@@ -52,7 +52,7 @@ class FeatureEmbedding(nn.Module):
 
 
 class PairwiseInteraction(nn.Module):
-    def forward(self, x):
+    def forward(self, x: torch.Tensor):
         """
         :param x: torch.Tensor (batch_size, num_fields, embedding_dim)
         """
@@ -65,7 +65,7 @@ class PairwiseInteraction(nn.Module):
 
 
 class DNN(nn.Module):
-    def __init__(self, in_features, out_features, hidden_units, dropout_rates):
+    def __init__(self, in_features: int, out_features: int, hidden_units, dropout_rates):
         super().__init__()
         *layers, out_layer = list(zip([in_features, *hidden_units], [*hidden_units, out_features]))
         self.net = nn.Sequential(
@@ -81,7 +81,7 @@ class DNN(nn.Module):
             nn.Linear(*out_layer)
         )
 
-    def forward(self, x):
+    def forward(self, x: torch.FloatTensor):
         """
         :param x: torch.FloatTensor (batch_size, in_features)
         """
