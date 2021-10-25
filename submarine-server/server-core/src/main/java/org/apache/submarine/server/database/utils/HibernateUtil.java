@@ -31,10 +31,10 @@ public class HibernateUtil {
   private static final SessionFactory sessionFactory = buildSessionFactory();
 
   public static void close() {
-    System.out.println("session " + sessionFactory);
     if (sessionFactory != null){
       sessionFactory.close();
     }
+    LOG.info("Hibernate session is closed.")
   }
 
   public static SessionFactory getSessionFactory() {
