@@ -43,7 +43,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * Environment Management
+ * Environment Management.
  */
 public class EnvironmentManager {
 
@@ -57,13 +57,13 @@ public class EnvironmentManager {
   private static Boolean readedDB = true;
 
   /**
-   * Environment Cache
+   * Environment Cache.
    */
   private final ConcurrentMap<String, Environment> cachedEnvironments =
       new ConcurrentHashMap<>();
 
   /**
-   * Get the singleton instance
+   * Get the singleton instance.
    * @return object
    */
   public static EnvironmentManager getInstance() {
@@ -82,7 +82,7 @@ public class EnvironmentManager {
   }
 
   /**
-   * Create Environment
+   * Create Environment.
    * @param spec environment spec
    * @return Environment environment
    * @throws SubmarineRuntimeException the service error
@@ -95,7 +95,7 @@ public class EnvironmentManager {
   }
 
   /**
-   * Update environment
+   * Update environment.
    * @param name Name of the environment
    * @param spec environment spec
    * @return Environment environment
@@ -152,7 +152,7 @@ public class EnvironmentManager {
   }
 
   /**
-   * Delete environment
+   * Delete environment.
    * @param name Name of the environment
    * @return Environment environment
    * @throws SubmarineRuntimeException the service error
@@ -183,7 +183,7 @@ public class EnvironmentManager {
   }
 
   /**
-   * Get Environment
+   * Get Environment.
    * @param name Name of the environment
    * @return Environment environment
    * @throws SubmarineRuntimeException the service error
@@ -199,7 +199,7 @@ public class EnvironmentManager {
   }
 
   /**
-   * List environments
+   * List environments.
    * @param status environment status, if null will return all status
    * @return environment list
    * @throws SubmarineRuntimeException the service error
@@ -210,12 +210,12 @@ public class EnvironmentManager {
         new ArrayList<Environment>(cachedEnvironments.values());
 
     // Is it available in cache?
-    if (this.readedDB == true) {
+    if (readedDB) {
       try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
         EnvironmentMapper environmentMapper =
               sqlSession.getMapper(EnvironmentMapper.class);
-        List<EnvironmentEntity> environmentEntitys = environmentMapper.selectAll();
-        for (EnvironmentEntity environmentEntity : environmentEntitys) {
+        List<EnvironmentEntity> environmentEntities = environmentMapper.selectAll();
+        for (EnvironmentEntity environmentEntity : environmentEntities) {
           if (environmentEntity != null) {
             Environment env = new Environment();
             env.setEnvironmentSpec(new Gson().fromJson(
@@ -232,7 +232,7 @@ public class EnvironmentManager {
               "Unable to get the environment list.");
       }
     }
-    this.readedDB = false;
+    readedDB = false;
     return environmentList;
   }
 

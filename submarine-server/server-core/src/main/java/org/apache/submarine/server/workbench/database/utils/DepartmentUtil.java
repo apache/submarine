@@ -44,8 +44,7 @@ public class DepartmentUtil {
                                                      List<SysDeptSelectEntity> sysDeptSelects) {
     sysDeptSelects.clear();
     List<SysDeptTree> records = new ArrayList<>();
-    for (int i = 0; i < sysDeptList.size(); i++) {
-      SysDeptEntity dept = sysDeptList.get(i);
+    for (SysDeptEntity dept : sysDeptList) {
       records.add(new SysDeptTree(dept));
     }
     List<SysDeptTree> sysOrgTreeList = findChildren(records, sysDeptSelects);
@@ -71,8 +70,7 @@ public class DepartmentUtil {
   private static List<SysDeptTree> findChildren(List<SysDeptTree> sysDeptList,
                                                 List<SysDeptSelectEntity> sysDeptSelects) {
     List<SysDeptTree> treeList = new ArrayList<>();
-    for (int i = 0; i < sysDeptList.size(); i++) {
-      SysDeptTree branch = sysDeptList.get(i);
+    for (SysDeptTree branch : sysDeptList) {
       if (isEmpty(branch.getParentCode())) {
         treeList.add(branch);
         SysDeptSelectEntity departIdModel = new SysDeptSelectEntity().convert(branch);
@@ -90,8 +88,7 @@ public class DepartmentUtil {
     for (int i = 0; i < treeList.size(); i++) {
       SysDeptTree model = treeList.get(i);
       SysDeptSelectEntity idModel = sysDeptSelects.get(i);
-      for (int i1 = 0; i1 < recordList.size(); i1++) {
-        SysDeptTree m = recordList.get(i1);
+      for (SysDeptTree m : recordList) {
         if (m.getParentCode() != null && m.getParentCode().equals(model.getDeptCode())) {
           model.getChildren().add(m);
           SysDeptSelectEntity dim = new SysDeptSelectEntity().convert(m);
@@ -103,8 +100,7 @@ public class DepartmentUtil {
   }
 
   private static void setEmptyChildrenAsNull(List<SysDeptTree> treeList) {
-    for (int i = 0; i < treeList.size(); i++) {
-      SysDeptTree model = treeList.get(i);
+    for (SysDeptTree model : treeList) {
       if (model.getChildren().size() == 0) {
         model.setChildren(null);
       } else {

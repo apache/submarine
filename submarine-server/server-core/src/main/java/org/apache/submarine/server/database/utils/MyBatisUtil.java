@@ -33,18 +33,12 @@ import java.util.Properties;
 public class MyBatisUtil {
   private static final Logger LOG = LoggerFactory.getLogger(MyBatisUtil.class);
 
-  private static SqlSessionFactory sqlSessionFactory;
+  private static final SqlSessionFactory sqlSessionFactory;
 
   static {
-    Reader reader = null;
-    try {
-      try {
-        reader = Resources.getResourceAsReader("mybatis-config.xml");
-      } catch (IOException e) {
-        LOG.error(e.getMessage(), e);
-        throw new RuntimeException(e.getMessage());
-      }
-
+    try (Reader reader =
+                 Resources.getResourceAsReader("mybatis-config.xml");
+    ) {
       checkCalledByTestMethod();
 
       SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
@@ -62,21 +56,16 @@ public class MyBatisUtil {
       props.setProperty("jdbc.password", jdbcPassword);
 
       sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader, props);
-    } finally {
-      try {
-        if (null != reader) {
-          reader.close();
-        }
-      } catch (IOException e) {
-        LOG.error(e.getMessage(), e);
-      }
+    } catch (IOException e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e.getMessage());
     }
   }
 
   /**
-   * Get Session
+   * Get Session.
    *
-   * @return
+   * @return SqlSession
    */
   public static SqlSession getSqlSession() {
     return sqlSessionFactory.openSession();

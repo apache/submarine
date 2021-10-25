@@ -33,11 +33,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
- * Manager class for managing websocket connections
+ * Manager class for managing websocket connections.
  */
 public class ConnectionManager {
   private static final Logger LOG = LoggerFactory.getLogger(ConnectionManager.class);
-  private static Gson gson = new GsonBuilder()
+  private static final Gson gson = new GsonBuilder()
       .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
       .registerTypeAdapter(Date.class, new DateJsonDeserializer())
       .setPrettyPrinting()

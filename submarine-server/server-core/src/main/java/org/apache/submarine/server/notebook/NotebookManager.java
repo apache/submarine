@@ -56,7 +56,7 @@ public class NotebookManager {
   private final AtomicInteger notebookCounter = new AtomicInteger(0);
 
   /**
-   * Get the singleton instance
+   * Get the singleton instance.
    *
    * @return object
    */
@@ -72,7 +72,7 @@ public class NotebookManager {
   }
 
   /**
-   * Create a notebook instance
+   * Create a notebook instance.
    *
    * @param spec NotebookSpec
    * @return object
@@ -109,7 +109,7 @@ public class NotebookManager {
   }
 
   /**
-   * List notebook instances
+   * List notebook instances.
    *
    * @param namespace namespace, if null will return all notebooks
    * @return list
@@ -129,7 +129,7 @@ public class NotebookManager {
   }
 
   /**
-   * Get a list of notebook with user id
+   * Get a list of notebook with user id.
    *
    * @param id user id
    * @return a list of notebook
@@ -146,14 +146,13 @@ public class NotebookManager {
       } catch (SubmarineRuntimeException e) {
         LOG.warn("Submitter can not find notebook: {}, will delete it", nb.getNotebookId());
         notebookService.delete(nb.getNotebookId().toString());
-        continue;
       }
     }
     return notebookList;
   }
 
   /**
-   * Get a notebook instance
+   * Get a notebook instance.
    *
    * @param id notebook id
    * @return object
@@ -175,7 +174,7 @@ public class NotebookManager {
   }
 
   /**
-   * Delete the notebook instance
+   * Delete the notebook instance.
    *
    * @param id notebook id
    * @return object
@@ -190,7 +189,7 @@ public class NotebookManager {
   }
 
   /**
-   * Generate a unique notebook id
+   * Generate a unique notebook id.
    *
    * @return notebook id
    */
@@ -200,7 +199,7 @@ public class NotebookManager {
   }
 
   /**
-   * Check if notebook spec is valid
+   * Check if notebook spec is valid.
    *
    * @param spec notebook spec
    */

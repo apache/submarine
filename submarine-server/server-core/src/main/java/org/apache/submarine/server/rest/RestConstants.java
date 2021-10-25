@@ -48,30 +48,30 @@ public class RestConstants {
 
   public static final String LOGS = "logs";
   /**
-   * Environment
+   * Environment.
    */
   public static final String ENVIRONMENT = "environment";
 
   public static final String ENVIRONMENT_ID = "id";
 
   /**
-   * Experimect template
+   * Experiment template.
    */
   public static final String EXPERIMENT_TEMPLATES = "template";
-  
+
   public static final String EXPERIMENT_TEMPLATE_ID = "id";
 
   public static final String EXPERIMENT_TEMPLATE_SUBMIT = "submit";
 
   /**
-   * Notebook
+   * Notebook.
    */
   public static final String NOTEBOOK = "notebook";
 
   public static final String NOTEBOOK_ID = "id";
 
   /**
-   * Tensorboard
+   * Tensorboard.
    */
   public static final String LOG_DIR_KEY = "SUBMARINE_TENSORBOARD_LOG_DIR";
   public static final String LOG_DIR_VALUE = "/logs/mylog";

@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 import org.mlflow.tracking.MlflowClient;
 
 /**
- * It's responsible for managing the experiment CRUD and cache them
+ * It's responsible for managing the experiment CRUD and cache them.
  */
 public class ExperimentManager {
   private static final Logger LOG = LoggerFactory.getLogger(ExperimentManager.class);
@@ -74,7 +74,7 @@ public class ExperimentManager {
   private final ExperimentService experimentService;
 
   /**
-   * Get the singleton instance
+   * Get the singleton instance.
    *
    * @return object
    */
@@ -96,7 +96,7 @@ public class ExperimentManager {
   }
 
   /**
-   * Create experiment
+   * Create experiment.
    *
    * @param spec spec
    * @return object
@@ -134,7 +134,7 @@ public class ExperimentManager {
   }
 
   /**
-   * Get experiment
+   * Get experiment.
    *
    * @param id experiment id
    * @return object
@@ -152,7 +152,7 @@ public class ExperimentManager {
   }
 
   /**
-   * List experiments
+   * List experiments.
    *
    * @param status status, if null will return all experiments
    * @return list
@@ -183,9 +183,9 @@ public class ExperimentManager {
   }
 
   /**
-   * List experiments
+   * List experiments.
    *
-   * @param searchTag, if null will return all experiments
+   * @param searchTag String, if null will return all experiments
    * @return list
    * @throws SubmarineRuntimeException the service error
    */
@@ -222,7 +222,7 @@ public class ExperimentManager {
   }
 
   /**
-   * Patch the experiment
+   * Patch the experiment.
    *
    * @param id      experiment id
    * @param newSpec spec
@@ -253,7 +253,7 @@ public class ExperimentManager {
   }
 
   /**
-   * Delete experiment
+   * Delete experiment.
    *
    * @param id experiment id
    * @return object
@@ -281,7 +281,7 @@ public class ExperimentManager {
   }
 
   /**
-   * List experiment logs
+   * List experiment logs.
    *
    * @param status status, if null will return all experiment logs
    * @return log list
@@ -311,7 +311,7 @@ public class ExperimentManager {
   }
 
   /**
-   * Get experiment log
+   * Get experiment log.
    *
    * @param id experiment id
    * @return object
@@ -327,9 +327,9 @@ public class ExperimentManager {
   }
 
   /**
-   * Get tensorboard meta data
+   * Get tensorboard meta data.
    *
-   * @return tensorboardinfo
+   * @return TensorboardInfo
    * @throws SubmarineRuntimeException the service error
    */
   public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
@@ -337,9 +337,9 @@ public class ExperimentManager {
   }
 
   /**
-   * Get mlflow meta data
+   * Get mlflow meta data.
    *
-   * @return mlflowinfo
+   * @return MlflowInfo
    * @throws SubmarineRuntimeException the service error
    */
   public MlflowInfo getMLflowInfo() throws SubmarineRuntimeException {
@@ -347,7 +347,7 @@ public class ExperimentManager {
   }
 
   /**
-   * Create serve
+   * Create serve.
    *
    * @param spec spec
    * @return object
@@ -360,7 +360,7 @@ public class ExperimentManager {
   }
 
   /**
-   * Delete serve
+   * Delete serve.
    *
    * @param spec spec
    * @return object
@@ -400,11 +400,11 @@ public class ExperimentManager {
   }
 
   /**
-   * Create a new experiment instance from entity, and filled
+   * Create a new experiment instance from entity, and filled.
    * 1. experimentId
    * 2. spec
    *
-   * @param entity
+   * @param entity ExperimentEntity
    * @return Experiment
    */
   private Experiment buildExperimentFromEntity(ExperimentEntity entity) {
@@ -415,9 +415,9 @@ public class ExperimentManager {
   }
 
   /**
-   * Create a ExperimentEntity instance from experiment
+   * Create a ExperimentEntity instance from experiment.
    *
-   * @param experiment
+   * @param experiment Experiment
    * @return ExperimentEntity
    */
   private ExperimentEntity buildEntityFromExperiment(Experiment experiment) {

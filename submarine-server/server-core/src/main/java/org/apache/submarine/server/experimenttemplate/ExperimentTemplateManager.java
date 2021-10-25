@@ -61,7 +61,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
- * ExperimentTemplate Management
+ * ExperimentTemplate Management.
  */
 public class ExperimentTemplateManager {
 
@@ -72,19 +72,19 @@ public class ExperimentTemplateManager {
   private static final GsonBuilder gsonBuilder = new GsonBuilder()
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdSerializer())
       .registerTypeAdapter(ExperimentId.class, new ExperimentIdDeserializer());
-  private static Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+  private static final Gson gson = gsonBuilder.setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 
 
 
   /**
-   * ExperimentTemplate Cache
+   * ExperimentTemplate Cache.
    */
-  private final ConcurrentMap<String, ExperimentTemplate> cachedExperimentTemplates = 
+  private final ConcurrentMap<String, ExperimentTemplate> cachedExperimentTemplates =
         new ConcurrentHashMap<>();
 
   /**
-   * Get the singleton instance
-   * 
+   * Get the singleton instance.
+   *
    * @return object
    */
   public static ExperimentTemplateManager getInstance() {
@@ -103,13 +103,13 @@ public class ExperimentTemplateManager {
   }
 
   /**
-   * Create ExperimentTemplate
-   * 
+   * Create ExperimentTemplate.
+   *
    * @param spec experimentTemplate spec
    * @return ExperimentTemplate experimentTemplate
    * @throws SubmarineRuntimeException the service error
    */
-  public ExperimentTemplate createExperimentTemplate(ExperimentTemplateSpec spec) 
+  public ExperimentTemplate createExperimentTemplate(ExperimentTemplateSpec spec)
         throws SubmarineRuntimeException {
     checkSpec(spec);
     LOG.info("Create ExperimentTemplate using spec: " + spec.toString());
@@ -117,8 +117,8 @@ public class ExperimentTemplateManager {
   }
 
   /**
-   * Update experimentTemplate
-   * 
+   * Update experimentTemplate.
+   *
    * @param name Name of the experimentTemplate
    * @param spec experimentTemplate spec
    * @return ExperimentTemplate experimentTemplate
@@ -145,11 +145,11 @@ public class ExperimentTemplateManager {
     entity.setExperimentTemplateName(spec.getName());
     entity.setExperimentTemplateSpec(gsonBuilder.disableHtmlEscaping().create().toJson(spec));
 
-    
+
     parameterMapping(spec);
 
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
-      ExperimentTemplateMapper experimentTemplateMapper = 
+      ExperimentTemplateMapper experimentTemplateMapper =
             sqlSession.getMapper(ExperimentTemplateMapper.class);
 
       if (operation.equals("c")) {
@@ -158,7 +158,7 @@ public class ExperimentTemplateManager {
         experimentTemplateMapper.update(entity);
       }
       sqlSession.commit();
-      
+
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
@@ -170,7 +170,7 @@ public class ExperimentTemplateManager {
       experimentTemplate = new ExperimentTemplate();
       experimentTemplate.setExperimentTemplateId(ExperimentTemplateId.fromString(experimentTemplateId));
       experimentTemplate.setExperimentTemplateSpec(spec);
-      
+
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
@@ -188,8 +188,8 @@ public class ExperimentTemplateManager {
   }
 
   /**
-   * Delete experimentTemplate
-   * 
+   * Delete experimentTemplate.
+   *
    * @param name Name of the experimentTemplate
    * @return ExperimentTemplate experimentTemplate
    * @throws SubmarineRuntimeException the service error
@@ -202,7 +202,7 @@ public class ExperimentTemplateManager {
 
     LOG.info("Delete ExperimentTemplate for " + name);
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
-      ExperimentTemplateMapper experimentTemplateMapper = 
+      ExperimentTemplateMapper experimentTemplateMapper =
             sqlSession.getMapper(ExperimentTemplateMapper.class);
 
       experimentTemplateMapper.delete(name);
@@ -219,8 +219,8 @@ public class ExperimentTemplateManager {
   }
 
   /**
-   * Get ExperimentTemplate
-   * 
+   * Get ExperimentTemplate.
+   *
    * @param name Name of the experimentTemplate
    * @return ExperimentTemplate experimentTemplate
    * @throws SubmarineRuntimeException the service error
@@ -234,8 +234,8 @@ public class ExperimentTemplateManager {
   }
 
   /**
-   * List experimentTemplates
-   * 
+   * List experimentTemplates.
+   *
    * @param status experimentTemplate status, if null will return all status
    * @return experimentTemplate list
    * @throws SubmarineRuntimeException the service error
@@ -244,20 +244,20 @@ public class ExperimentTemplateManager {
     List<ExperimentTemplate> tpls = new ArrayList<>(cachedExperimentTemplates.values());
 
     // Is it available in cache?
-    if (tpls != null && tpls.size() != 0) {
+    if (tpls.size() != 0) {
       return tpls;
     }
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
-      ExperimentTemplateMapper experimentTemplateMapper = 
+      ExperimentTemplateMapper experimentTemplateMapper =
             sqlSession.getMapper(ExperimentTemplateMapper.class);
 
-      List<ExperimentTemplateEntity> experimentTemplateEntitys = experimentTemplateMapper.selectByKey(null);
-      for (ExperimentTemplateEntity experimentTemplateEntity : experimentTemplateEntitys) {
+      List<ExperimentTemplateEntity> experimentTemplateEntities = experimentTemplateMapper.selectByKey(null);
+      for (ExperimentTemplateEntity experimentTemplateEntity : experimentTemplateEntities) {
         if (experimentTemplateEntity != null) {
           ExperimentTemplate tpl = new ExperimentTemplate();
 
           tpl.setExperimentTemplateSpec(
-                gson.fromJson(experimentTemplateEntity.getExperimentTemplateSpec(), 
+                gson.fromJson(experimentTemplateEntity.getExperimentTemplateSpec(),
                 ExperimentTemplateSpec.class));
           tpls.add(tpl);
           cachedExperimentTemplates.put(tpl.getExperimentTemplateSpec().getName(), tpl);
@@ -273,7 +273,7 @@ public class ExperimentTemplateManager {
 
   private void checkSpec(ExperimentTemplateSpec spec) throws SubmarineRuntimeException {
     if (spec == null) {
-      throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(), 
+      throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
             "Invalid experimentTemplate spec.");
     }
   }
@@ -287,7 +287,7 @@ public class ExperimentTemplateManager {
     }
     ExperimentTemplateEntity experimentTemplateEntity;
     try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
-      ExperimentTemplateMapper experimentTemplateMapper = 
+      ExperimentTemplateMapper experimentTemplateMapper =
             sqlSession.getMapper(ExperimentTemplateMapper.class);
 
       experimentTemplateEntity = experimentTemplateMapper.select(name);
@@ -295,7 +295,7 @@ public class ExperimentTemplateManager {
       if (experimentTemplateEntity != null) {
         tpl = new ExperimentTemplate();
         tpl.setExperimentTemplateSpec(
-            gson.fromJson(experimentTemplateEntity.getExperimentTemplateSpec(), 
+            gson.fromJson(experimentTemplateEntity.getExperimentTemplateSpec(),
             ExperimentTemplateSpec.class));
       }
     } catch (Exception e) {
@@ -308,25 +308,25 @@ public class ExperimentTemplateManager {
 
 
   /**
-   * Create ExperimentTemplate
-   * 
-   * @param SubmittedParam experimentTemplate spec
+   * Create ExperimentTemplate.
+   *
+   * @param submittedParam experimentTemplate spec
    * @return Experiment experiment
    * @throws SubmarineRuntimeException the service error
    */
-  public Experiment submitExperimentTemplate(ExperimentTemplateSubmit SubmittedParam) 
+  public Experiment submitExperimentTemplate(ExperimentTemplateSubmit submittedParam)
         throws SubmarineRuntimeException {
 
-    if (SubmittedParam == null) {
-      throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(), 
+    if (submittedParam == null) {
+      throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
             "Invalid ExperimentTemplateSubmit spec.");
     }
 
-    ExperimentTemplate experimentTemplate = getExperimentTemplate(SubmittedParam.getName());
-    Map<String, String> params = SubmittedParam.getParams();
-    
-    
-    for (ExperimentTemplateParamSpec paramSpec: 
+    ExperimentTemplate experimentTemplate = getExperimentTemplate(submittedParam.getName());
+    Map<String, String> params = submittedParam.getParams();
+
+
+    for (ExperimentTemplateParamSpec paramSpec:
           experimentTemplate.getExperimentTemplateSpec().getExperimentTemplateParamSpec()) {
 
       String value = params.get(paramSpec.getName());
@@ -337,19 +337,19 @@ public class ExperimentTemplateManager {
     ExperimentTemplateSpec spec = experimentTemplate.getExperimentTemplateSpec();
 
     ExperimentSpec experimentSpec = parameterMapping(spec, params);
-    
+
     return ExperimentManager.getInstance().createExperiment(experimentSpec);
   }
-  
+
 
   private ExperimentTemplateSpec addResourcesParameter(ExperimentTemplateSpec tplSpec) {
-    
+
     for (Map.Entry<String, ExperimentTaskSpec> entrySet : tplSpec.getExperimentSpec().getSpec().entrySet()) {
 
       ExperimentTaskSpec taskSpec = entrySet.getValue();
       // parse resourceMap
       taskSpec.setResources(taskSpec.getResources());
-      
+
       ExperimentTemplateParamSpec parm1 = new ExperimentTemplateParamSpec();
       parm1.setName(String.format("spec.%s.replicas", entrySet.getKey()));
       parm1.setValue(taskSpec.getReplicas() == null ? "1" : taskSpec.getReplicas().toString());
@@ -391,10 +391,10 @@ public class ExperimentTemplateManager {
   }
 
   private ExperimentSpec parameterMapping(ExperimentTemplateSpec tplspec, Map<String, String> paramMap) {
-        
+
     String spec = gson.toJson(tplspec.getExperimentSpec());
     Map<String, Object> flattenJson = JsonFlattener.flattenAsMap(spec);
-    
+
     Log.info(flattenJson.toString());
     // illegalParamList: The parameters not in template parameters should not be used
     // Check at submission
@@ -408,12 +408,12 @@ public class ExperimentTemplateManager {
         illegalParamList.add(key);
       }
     }
-    
+
     if (illegalParamList.size() > 0) {
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
             "Parameters contains illegal key: " + illegalParamList.toString());
-    } 
-    
+    }
+
     // unmapedParamList: Parameters that should be used in the template but could not be found
     // Check at registration and submission
     Set<String> unmapedParamList = new HashSet<String>();
@@ -427,7 +427,7 @@ public class ExperimentTemplateManager {
         }
       }
     }
-   
+
     // unusedParamList: Parameters not used by the template
     // Check at registration
     Set<String> unusedParamList = new HashSet<String>();
@@ -439,7 +439,7 @@ public class ExperimentTemplateManager {
     for (Map.Entry<String, ExperimentTaskSpec> entrySet : tplspec.getExperimentSpec().getSpec().entrySet()) {
       String cpu = paramMap.get(String.format("spec.%s.resourceMap.cpu", entrySet.getKey()));
       String memory = paramMap.get(String.format("spec.%s.resourceMap.memory", entrySet.getKey()));
-      flattenJson.put(String.format("spec.%s.resources", entrySet.getKey()), 
+      flattenJson.put(String.format("spec.%s.resources", entrySet.getKey()),
             String.format("cpu=%s,memory=%s", cpu, memory));
     }
 
@@ -455,7 +455,7 @@ public class ExperimentTemplateManager {
         while (matcher.find()) {
           String name = matcher.group(1);
           String key = entry.getKey() + ":" + name;
-          
+
           // match path+placeholder  ("meta.cmd:parametername")
           if (paramMap.get(key) != null) {
             isMatch = true;
@@ -496,14 +496,14 @@ public class ExperimentTemplateManager {
     if (unmapedParamList.size() > 0) {
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
           "Template contains unmapped value: " + unmapedParamList.toString());
-    }  
+    }
 
     String json = flattenJson.toString();
     Log.info("flattenJson    " + json);
 
     String nestedJson = JsonUnflattener.unflatten(json);
     Log.info("nestedJson    " + nestedJson);
-    
+
     ExperimentSpec returnExperimentSpec = null;
     try {
       returnExperimentSpec = gson.fromJson(nestedJson, ExperimentSpec.class);

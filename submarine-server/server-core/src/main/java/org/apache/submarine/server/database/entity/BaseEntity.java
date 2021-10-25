@@ -80,7 +80,7 @@ public abstract class BaseEntity {
   }
 
   public String toString() {
-    StringBuffer buffer = new StringBuffer();
+    StringBuilder buffer = new StringBuilder();
 
     Class clazz = getClass();
     String fullName = clazz.getName();
@@ -92,16 +92,13 @@ public abstract class BaseEntity {
 
     Field[] fields = clazz.getDeclaredFields();
     Field.setAccessible(fields, true);
-    for (int i = 0; i < fields.length; i++) {
-      Field field = fields[i];
+    for (Field field: fields) {
       try {
         buffer.append(field.getName());
         buffer.append("=");
         buffer.append(field.get(this));
         buffer.append(", ");
-      } catch (IllegalArgumentException e) {
-        e.printStackTrace();
-      } catch (IllegalAccessException e) {
+      } catch (IllegalArgumentException | IllegalAccessException  e) {
         e.printStackTrace();
       }
     }
