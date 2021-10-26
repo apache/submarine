@@ -34,7 +34,7 @@ public class HibernateUtil {
     if (sessionFactory != null){
       sessionFactory.close();
     }
-    LOG.info("Hibernate session is closed.")
+    LOG.info("Hibernate session is closed.");
   }
 
   public static SessionFactory getSessionFactory() {

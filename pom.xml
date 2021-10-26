@@ -311,11 +311,6 @@
       </dependency>
       <!--  Submarine Server  -->
       <dependency>
-        <groupId>org.jboss.logging</groupId>
-        <artifactId>jboss-logging</artifactId>
-        <version>${jboss.logging.version}</version>
-      </dependency>
-      <dependency>
         <groupId>net.bytebuddy</groupId>
         <artifactId>byte-buddy</artifactId>
         <version>${bytebuddy.version}</version>
