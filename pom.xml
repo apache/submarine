@@ -81,6 +81,9 @@
     <commons-httpclient.version>3.1</commons-httpclient.version>
 
     <cglib.version>3.3.0</cglib.version>
+    <hibernate.version>5.6.0.Final</hibernate.version>
+    <jboss.logging.version>3.4.2.Final</jboss.logging.version>
+    <bytebuddy.version>1.11.20</bytebuddy.version>
     <mybatis.version>3.2.8</mybatis.version>
     <mysql-connector-java.version>5.1.41</mysql-connector-java.version>
     <grpc.version>1.25.0</grpc.version>
@@ -305,6 +308,12 @@
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
         <version>${snakeyaml.version}</version>
+      </dependency>
+      <!--  Submarine Server  -->
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>${bytebuddy.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
