@@ -26,164 +26,54 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/klog/v2"
 )
 
 func newSubmarineMlflowPersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	storageClassName := storageClassName
-	return &corev1.PersistentVolumeClaim{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: mlflowPvcName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: corev1.PersistentVolumeClaimSpec{
-			AccessModes: []corev1.PersistentVolumeAccessMode{
-				corev1.ReadWriteOnce,
-			},
-			Resources: corev1.ResourceRequirements{
-				Requests: corev1.ResourceList{
-					corev1.ResourceStorage: resource.MustParse(submarine.Spec.Mlflow.StorageSize),
-				},
-			},
-			StorageClassName: &storageClassName,
-		},
+	pvc, err := ParsePersistentVolumeClaimYaml(mlflowYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParsePersistentVolumeClaim", err)
 	}
+	pvc.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	return pvc
 }
 
 func newSubmarineMlflowDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployment {
-	return &appsv1.Deployment{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: mlflowName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: appsv1.DeploymentSpec{
-			Selector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"app": mlflowName,
-				},
-			},
-			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{
-					Labels: map[string]string{
-						"app": mlflowName,
-					},
-				},
-				Spec: corev1.PodSpec{
-					InitContainers: []corev1.Container{
-						{
-							Name:  "check-database-connection",
-							Image: "busybox:1.28",
-							Command: []string{
-								"sh",
-								"-c",
-								fmt.Sprintf("until nc -z %s %d; do echo waiting for database connection; sleep 20; done", databaseName, databasePort),
-							},
-						},
-					},
-					Containers: []corev1.Container{
-						{
-							Name:            mlflowName + "-container",
-							Image:           "apache/submarine:mlflow-0.7.0-SNAPSHOT",
-							ImagePullPolicy: "IfNotPresent",
-							Ports: []corev1.ContainerPort{
-								{
-									ContainerPort: 5000,
-								},
-							},
-							VolumeMounts: []corev1.VolumeMount{
-								{
-									MountPath: "/logs",
-									Name:      "volume",
-									SubPath:   mlflowName,
-								},
-							},
-							ReadinessProbe: &corev1.Probe{
-								Handler: corev1.Handler{
-									TCPSocket: &corev1.TCPSocketAction{
-										Port: intstr.FromInt(5000),
-									},
-								},
-								InitialDelaySeconds: 60,
-								PeriodSeconds:       10,
-							},
-						},
-					},
-					Volumes: []corev1.Volume{
-						{
-							Name: "volume",
-							VolumeSource: corev1.VolumeSource{
-								PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-									ClaimName: mlflowPvcName,
-								},
-							},
-						},
-					},
-				},
-			},
-		},
+	deployment, err := ParseDeploymentYaml(mlflowYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseDeploymentYaml", err)
 	}
+	deployment.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	return deployment
 }
 
 func newSubmarineMlflowService(submarine *v1alpha1.Submarine) *corev1.Service {
-	return &corev1.Service{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: mlflowServiceName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: corev1.ServiceSpec{
-			Type: corev1.ServiceTypeClusterIP,
-			Selector: map[string]string{
-				"app": mlflowName,
-			},
-			Ports: []corev1.ServicePort{
-				{
-					Protocol:   "TCP",
-					Port:       5000,
-					TargetPort: intstr.FromInt(5000),
-				},
-			},
-		},
+	service, err := ParseServiceYaml(mlflowYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseServiceYaml", err)
 	}
+	service.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+	return service
 }
 
 func newSubmarineMlflowIngressRoute(submarine *v1alpha1.Submarine) *traefikv1alpha1.IngressRoute {
-	return &traefikv1alpha1.IngressRoute{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: mlflowName + "-ingressroute",
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: traefikv1alpha1.IngressRouteSpec{
-			EntryPoints: []string{
-				"web",
-			},
-			Routes: []traefikv1alpha1.Route{
-				{
-					Kind:  "Rule",
-					Match: "PathPrefix(`/mlflow`)",
-					Services: []traefikv1alpha1.Service{
-						{
-							LoadBalancerSpec: traefikv1alpha1.LoadBalancerSpec{
-								Kind: "Service",
-								Name: mlflowServiceName,
-								Port: 5000,
-							},
-						},
-					},
-				},
-			},
-		},
+	ingressRoute, err := ParseIngressRouteYaml(mlflowYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseIngressRouteYaml", err)
 	}
+	ingressRoute.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+	return ingressRoute
 }
 
 // createSubmarineMlflow is a function to create submarine-mlflow.

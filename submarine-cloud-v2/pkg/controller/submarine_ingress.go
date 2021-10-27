@@ -27,39 +27,20 @@ import (
 	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/klog/v2"
 )
 
 func newSubmarineServerIngress(submarine *v1alpha1.Submarine) *extensionsv1beta1.Ingress {
-	return &extensionsv1beta1.Ingress{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      ingressName,
-			Namespace: submarine.Namespace,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: extensionsv1beta1.IngressSpec{
-			Rules: []extensionsv1beta1.IngressRule{
-				{
-					IngressRuleValue: extensionsv1beta1.IngressRuleValue{
-						HTTP: &extensionsv1beta1.HTTPIngressRuleValue{
-							Paths: []extensionsv1beta1.HTTPIngressPath{
-								{
-									Backend: extensionsv1beta1.IngressBackend{
-										ServiceName: serverName,
-										ServicePort: intstr.FromInt(8080),
-									},
-									Path: "/",
-								},
-							},
-						},
-					},
-				},
-			},
-		},
+	ingress, err := ParseIngressYaml(ingressYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseIngressYaml", err)
 	}
+
+	ingress.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	return ingress
 }
 
 // createIngress is a function to create Ingress.

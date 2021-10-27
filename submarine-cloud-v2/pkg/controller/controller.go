@@ -82,6 +82,14 @@ const (
 	minioPvcName                = minioName + "-pvc"
 	minioServiceName            = minioName + "-service"
 	minioIngressRouteName       = minioName + "-ingressroute"
+	artifactPath                = "./artifacts/submarine/"
+	databaseYamlPath            = artifactPath + "submarine-database.yaml"
+	ingressYamlPath             = artifactPath + "submarine-ingress.yaml"
+	minioYamlPath               = artifactPath + "submarine-minio.yaml"
+	mlflowYamlPath              = artifactPath + "submarine-mlflow.yaml"
+	serverYamlPath              = artifactPath + "submarine-server.yaml"
+	tensorboardYamlPath         = artifactPath + "submarine-tensorboard.yaml"
+	rbacYamlPath                = artifactPath + "submarine-rbac.yaml"
 )
 
 var dependents = []string{serverName, databaseName, tensorboardName, mlflowName, minioName}

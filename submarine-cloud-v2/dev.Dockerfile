@@ -34,4 +34,6 @@ RUN curl -LO https://dl.k8s.io/release/v1.14.2/bin/linux/amd64/kubectl &&\
     kubectl version --client
 
 ADD submarine-operator /usr/src
+COPY ["./artifacts", "/usr/src/artifacts"]
+
 CMD ["/usr/src/submarine-operator", "-incluster=true"]

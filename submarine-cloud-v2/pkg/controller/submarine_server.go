@@ -27,132 +27,75 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/klog/v2"
 )
 
 func newSubmarineServerServiceAccount(submarine *v1alpha1.Submarine) *corev1.ServiceAccount {
-	return &corev1.ServiceAccount{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: serverName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
+	serviceAccount, err := ParseServiceAccountYaml(serverYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseServiceAccountYaml", err)
 	}
+
+	serviceAccount.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	return serviceAccount
 }
 
 func newSubmarineServerService(submarine *v1alpha1.Submarine) *corev1.Service {
-	return &corev1.Service{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: serverName,
-			Labels: map[string]string{
-				"app": serverName,
-			},
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: corev1.ServiceSpec{
-			Ports: []corev1.ServicePort{
-				{
-					Port:       8080,
-					TargetPort: intstr.FromInt(8080),
-					Protocol:   "TCP",
-				},
-			},
-			Selector: map[string]string{
-				"app": serverName,
-			},
-		},
+	service, err := ParseServiceYaml(serverYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseServiceYaml", err)
 	}
+	service.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+	return service
 }
 
 func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployment {
-	serverImage := submarine.Spec.Server.Image
 	serverReplicas := *submarine.Spec.Server.Replicas
-	if serverImage == "" {
-		serverImage = "apache/submarine:server-" + submarine.Spec.Version
-	}
 
 	ownerReference := *metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine"))
-
-	return &appsv1.Deployment{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: serverName,
-			OwnerReferences: []metav1.OwnerReference{
-				ownerReference,
-			},
+	operatorEnv := []corev1.EnvVar{
+		{
+			Name:  "SUBMARINE_SERVER_DNS_NAME",
+			Value: serverName + "." + submarine.Namespace,
 		},
-		Spec: appsv1.DeploymentSpec{
-			Selector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"app": serverName,
-				},
-			},
-			Replicas: &serverReplicas,
-			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{
-					Labels: map[string]string{
-						"app": serverName,
-					},
-				},
-				Spec: corev1.PodSpec{
-					ServiceAccountName: serverName,
-					Containers: []corev1.Container{
-						{
-							Name:  serverName,
-							Image: serverImage,
-							Env: []corev1.EnvVar{
-								{
-									Name:  "SUBMARINE_SERVER_PORT",
-									Value: "8080",
-								},
-								{
-									Name:  "SUBMARINE_SERVER_PORT_8080_TCP",
-									Value: "8080",
-								},
-								{
-									Name:  "SUBMARINE_SERVER_DNS_NAME",
-									Value: serverName + "." + submarine.Namespace,
-								},
-								{
-									Name:  "K8S_APISERVER_URL",
-									Value: "kubernetes.default.svc",
-								},
-								{
-									Name:  "ENV_NAMESPACE",
-									Value: submarine.Namespace,
-								},
-								{
-									Name:  "SUBMARINE_APIVERSION",
-									Value: ownerReference.APIVersion,
-								},
-								{
-									Name:  "SUBMARINE_KIND",
-									Value: ownerReference.Kind,
-								},
-								{
-									Name:  "SUBMARINE_NAME",
-									Value: ownerReference.Name,
-								},
-								{
-									Name:  "SUBMARINE_UID",
-									Value: string(ownerReference.UID),
-								},
-							},
-							Ports: []corev1.ContainerPort{
-								{
-									ContainerPort: 8080,
-								},
-							},
-							ImagePullPolicy: "IfNotPresent",
-						},
-					},
-				},
-			},
+		{
+			Name:  "ENV_NAMESPACE",
+			Value: submarine.Namespace,
+		},
+		{
+			Name:  "SUBMARINE_APIVERSION",
+			Value: ownerReference.APIVersion,
+		},
+		{
+			Name:  "SUBMARINE_KIND",
+			Value: ownerReference.Kind,
+		},
+		{
+			Name:  "SUBMARINE_NAME",
+			Value: ownerReference.Name,
+		},
+		{
+			Name:  "SUBMARINE_UID",
+			Value: string(ownerReference.UID),
 		},
 	}
+
+	deployment, err := ParseDeploymentYaml(serverYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseDeploymentYaml", err)
+	}
+	deployment.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		ownerReference,
+	}
+	deployment.Spec.Replicas = &serverReplicas
+	deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, operatorEnv...)
+
+	return deployment
 }
 
 // createSubmarineServer is a function to create submarine-server.
