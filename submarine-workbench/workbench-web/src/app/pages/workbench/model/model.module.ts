@@ -30,6 +30,7 @@ import { ModelHomeComponent } from './model-home/model-home.component';
 import { ModelCardsComponent } from './model-home/model-cards/model-cards.component';
 import { ModelCardComponent } from './model-home/model-cards/model-card/model-card.component';
 import { ModelTagComponent } from './model-home/model-cards/model-card/model-tag/model-tag.component';
+import { RegisteredModelComponent } from './registered-model/registered-model.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { ModelTagComponent } from './model-home/model-cards/model-card/model-tag
     ModelCardsComponent,
     ModelCardComponent,
     ModelTagComponent,
+    RegisteredModelComponent,
   ],
   imports: [
     CommonModule,
