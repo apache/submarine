@@ -23,7 +23,6 @@
     "@angular/platform-browser-dynamic": "~8.2.9",
     "@angular/router": "~8.2.9",
     "@swimlane/ngx-charts": "^13.0.1",
-    "angular": "^1.8.2",
     "date-fns": "^2.6.0",
     "lodash": "^4.17.19",
     "md5": "^2.2.1",
