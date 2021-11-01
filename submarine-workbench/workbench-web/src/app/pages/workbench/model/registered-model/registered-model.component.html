@@ -16,55 +16,61 @@
   ~ specific language governing permissions and limitations
   ~ under tde License.
   -->
-<link rel="stylesheet" href="model-registration-info.component.scss">
-<div style="margin: 15px; padding: 15px; background-color: white;">
-    <div><h1 style="font-weight: lighter;">${Registered Model Name}</h1></div>
-    <div>
-        <div style="margin: 5px 0px 5px 0px; font-size: 17px; font-family: Arial;">Description: tdis is a description.</div>
-        <div style="margin-bottom: 5px; font-size: 17px; font-family: Arial;">
-            <div style="display: inline-block;">Tags:</div>
-            <div style="display: inline-block; background-color: #53c653; margin: 3px; padding: 3px;">image</div>
-        </div>
-        <div style="margin-bottom: 5px; font-size: 17px; font-family: Arial;">Created: 2021-09-01 07:57</div>
-        <div style="margin-bottom: 5px; font-size: 17px; font-family: Arial;">Updated: 2021-09-21 03:00</div>
+<link rel="stylesheet" href="model-registration-info.component.scss" />
+<div style="margin: 15px; padding: 15px; background-color: white">
+  <div><h1 style="font-weight: lighter">${Registered Model Name}</h1></div>
+  <div>
+    <div style="margin: 5px 0px 5px 0px; font-size: 17px; font-family: Arial">Description: tdis is a description.</div>
+    <div class="basic-box">
+      <div style="display: inline-block">Tags:</div>
+      <div style="display: inline-block; background-color: #53c653; margin: 3px; padding: 3px">image</div>
     </div>
-    <div style="margin-top: 20px;">
-        <div style="margin-bottom: 5px; font-size: 17px; font-family: Arial; font-weight: bold; display: inline-block;">Model versions info</div>
-        <div style="margin-left: 100px; display: inline-block;">
-            <div style="margin-bottom: 5px; font-size: 17px; font-family: Arial; display: inline-block;">Tags:</div>
-            <div style="margin-bottom: 5px; font-size: 17px; font-family: Arial; display: inline-block;">
-                <input type="text" style="height: 35px; width: 250px; border:1px solid black; font-size: 17px;" placeholder="Model Version tags...">
-            </div>
-        </div>
+    <div class="basic-box">Created: 2021-09-01 07:57</div>
+    <div class="basic-box">Updated: 2021-09-21 03:00</div>
+  </div>
+  <div style="margin-top: 20px">
+    <div style="margin-bottom: 5px; font-size: 17px; font-family: Arial; font-weight: bold; display: inline-block">
+      Model versions info
     </div>
-    <table>
-        <thead>
-            <tr>
-                <td>Version</td>
-                <td>Stage</td>
-                <td>Tags</td>
-                <td>Description</td>
-                <td>Created</td>
-                <td>Updated</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td></td>
-                <td></td>
-                <td>...</td>
-                <td>2021-09-01 07:57</td>
-                <td>2021-09-01 07:57</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td></td>
-                <td></td>
-                <td>...</td>
-                <td>2021-09-30 07:09</td>
-                <td>2021-09-30 09:57</td>
-            </tr>
-        </tbody>
-    </table>
+    <div style="margin-left: 100px; display: inline-block">
+      <div style="margin-bottom: 5px; font-size: 17px; font-family: Arial; display: inline-block">Tags:</div>
+      <div style="margin-bottom: 5px; font-size: 17px; font-family: Arial; display: inline-block">
+        <input
+          type="text"
+          style="height: 35px; width: 250px; border: 1px solid black; font-size: 17px"
+          placeholder="Model Version tags..."
+        />
+      </div>
+    </div>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <td>Version</td>
+        <td>Stage</td>
+        <td>Tags</td>
+        <td>Description</td>
+        <td>Created</td>
+        <td>Updated</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td></td>
+        <td></td>
+        <td>...</td>
+        <td>2021-09-01 07:57</td>
+        <td>2021-09-01 07:57</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td></td>
+        <td></td>
+        <td>...</td>
+        <td>2021-09-30 07:09</td>
+        <td>2021-09-30 09:57</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
