@@ -44,7 +44,7 @@ export class UserComponent implements OnInit {
     'createTime',
     'action'
   ];
-  accountName: string = '';
+  userName: string = '';
   email: string = '';
   deptCode: string = '';
   pageNo: number = 1;
@@ -74,15 +74,15 @@ export class UserComponent implements OnInit {
 
     this.form = this.fb.group({
       deptCode: [this.deptCode],
-      accountName: [this.accountName],
+      userName: [this.userName],
       email: [this.email]
     });
   }
 
   queryUserList() {
-    const { deptCode, accountName, email } = this.form.getRawValue();
+    const { deptCode, userName, email } = this.form.getRawValue();
     this.deptCode = deptCode;
-    this.accountName = accountName;
+    this.userName = userName;
     this.email = email;
 
     this.fetchUserList();
@@ -94,7 +94,7 @@ export class UserComponent implements OnInit {
         column: this.column,
         order: this.order,
         field: this.field.join(','),
-        accountName: this.accountName,
+        userName: this.userName,
         email: this.email,
         deptCode: this.deptCode ? this.deptCode : '',
         pageNo: '' + this.pageNo,

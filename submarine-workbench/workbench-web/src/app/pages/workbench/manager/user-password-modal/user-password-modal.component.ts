@@ -26,7 +26,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
   styleUrls: ['./user-password-modal.component.scss']
 })
 export class UserPasswordModalComponent implements OnChanges {
-  @Input() accountName: string;
+  @Input() userName: string;
   @Input() visible: boolean;
   @Output() readonly close: EventEmitter<any> = new EventEmitter();
   @Output() readonly ok: EventEmitter<string> = new EventEmitter();
@@ -34,7 +34,7 @@ export class UserPasswordModalComponent implements OnChanges {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      accountName: [''],
+      userName: [''],
       password: ['', Validators.required],
       confirm: ['', this.confirmValidator]
     });
@@ -42,7 +42,7 @@ export class UserPasswordModalComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.form.reset({
-      accountName: this.accountName,
+      userName: this.userName,
       password: '',
       confirm: ''
     });
