@@ -39,7 +39,7 @@ const routes: Routes = [
         component: ModelVersionComponent,
       },
       {
-        path: ':name',
+        path: ':name/',
         component: RegisteredModelComponent,
       },
     ],
