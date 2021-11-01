@@ -26,7 +26,7 @@ import { switchMap } from 'rxjs/operators';
 import { BaseApiService } from './base-api.service';
 
 interface UserListQueryParams {
-  accountName: string;
+  userName: string;
   email: string;
   deptCode: string;
   column: string;
