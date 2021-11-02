@@ -38,8 +38,9 @@ jobs:
           pip install --upgrade pip
           pip install --no-cache-dir tensorflow==${{ matrix.tf-version }}
           pip install --no-cache-dir torch==1.5.0
-          pip install --no-cache-dir tensorflow-addons
-          pip install --no-cache-dir tf_slim
+          pip install --no-cache-dir tensorflow-addons==0.14.0
+          pip install --no-cache-dir tf_slim==1.1.0
+          pip install --no-cache-dir tensorflow-estimator==2.6.0
           pip install --no-cache-dir ./submarine-sdk/pysubmarine/.
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
           pip install -r ./dev-support/style-check/python/lint-requirements.txt
