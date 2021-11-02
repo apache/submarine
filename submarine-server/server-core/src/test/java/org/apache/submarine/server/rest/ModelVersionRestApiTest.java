@@ -43,7 +43,7 @@ import org.apache.submarine.server.model.database.service.RegisteredModelService
 
 public class ModelVersionRestApiTest {
   private ModelVersionRestApi modelVersionRestApi = new ModelVersionRestApi();
-  private final String registeredModelName = "test_registered_model";
+  private final String registeredModelName = "testRegisteredModel";
   private final String registeredModelDescription = "test registered model description";
   private final String modelVersionDescription = "test model version description";
   private final String newModelVersionDescription = "new test registered model description";
