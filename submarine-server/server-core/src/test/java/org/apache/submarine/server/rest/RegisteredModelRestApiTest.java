@@ -58,6 +58,9 @@ public class RegisteredModelRestApiTest {
   public void testCreateRegisteredModel() {
     registeredModel.setName(registeredModelName);
     registeredModel.setDescription(registeredModelDescription);
+    List<String> tags = new ArrayList<>();
+    tags.add("tag1");
+    registeredModel.setTags(tags);
     registeredModelService.insert(registeredModel);
   }
 

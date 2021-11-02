@@ -102,10 +102,9 @@ public class RegisteredModelRestApi {
       registeredModelEntity.setName(entity.getName());
       registeredModelEntity.setDescription(entity.getDescription());
       List<String> tags = new ArrayList<>();
-      //      entity.getTags().forEach((tag) -> {
-      //        tags.add(tag);
-      //      });
-      tags.add("tyu");
+      entity.getTags().forEach((tag) -> {
+        tags.add(tag);
+      });
       registeredModelEntity.setTags(tags);
       registeredModelService.insert(registeredModelEntity);
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
