@@ -16,11 +16,12 @@
 import pytest
 import tensorflow as tf
 
-from submarine.ml.tensorflow_v2.model import FM
-
 
 @pytest.mark.skipif(tf.__version__ < "2.0.0", reason="requires tf2")
 def test_run_fm(get_model_param):
+
+    from submarine.ml.tensorflow_v2.model import FM
+
     params = get_model_param
 
     model = FM(model_params=params)

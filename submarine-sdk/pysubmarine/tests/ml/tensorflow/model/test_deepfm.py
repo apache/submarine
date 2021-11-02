@@ -16,11 +16,12 @@
 import pytest
 import tensorflow as tf
 
-from submarine.ml.tensorflow.model import DeepFM
-
 
 @pytest.mark.skipif(tf.__version__ >= "2.0.0", reason="requires tf1")
 def test_run_deepfm(get_model_param):
+
+    from submarine.ml.tensorflow.model import DeepFM
+
     params = get_model_param
 
     model = DeepFM(model_params=params)

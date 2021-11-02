@@ -28,7 +28,7 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*"]),
     install_requires=[
         "six>=1.10.0",
-        "numpy==1.18.5",
+        "numpy==1.19.2",
         "pandas",
         "sqlalchemy>=1.4.0",
         "sqlparse",
@@ -42,8 +42,13 @@ setup(
         "boto3>=1.17.58",
     ],
     extras_require={
-        "tf": ["tensorflow>=1.14.0,<2.0.0"],
-        "tf2": ["tensorflow==2.6.0", "tf_slim==1.1.0", "tensorflow-addons==0.14.0"],
+        "tf": ["tensorflow==1.15.0"],
+        "tf2": [
+            "tensorflow==2.6.0",
+            "tf_slim==1.1.0",
+            "tensorflow-addons==0.14.0",
+            "tensorflow-estimator==2.6.0",
+        ],
         "pytorch": ["torch>=1.5.0", "torchvision>=0.6.0"],
     },
     classifiers=[
