@@ -20,7 +20,7 @@
 package org.apache.submarine.server.model.database.service;
 
 import org.apache.ibatis.session.SqlSession;
-import org.apache.submarine.commons.runtime.exception.SubmarineRuntimeException;
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.model.database.entities.RegisteredModelEntity;
 import org.apache.submarine.server.model.database.mappers.RegisteredModelMapper;

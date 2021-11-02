@@ -149,6 +149,13 @@ public class ModelVersionRestApi {
    * Update the model version.
    *
    * @param entity model version entity
+   * example: {
+   *   'name': 'example_name',
+   *   'version': 1,
+   *   'description': 'new_description',
+   *   'currentStage': 'production',
+   *   'dataset': 'new_dataset'
+   * }
    * @return success message
    */
   @PATCH
@@ -249,7 +256,7 @@ public class ModelVersionRestApi {
     }
     ModelVersionEntity modelVersion = modelVersionService.select(entity.getName(), entity.getVersion());
     if (modelVersion == null) {
-      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+      throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
           "Invalid. Model version entity with same name and version is not existed.");
     }
   }
@@ -275,7 +282,7 @@ public class ModelVersionRestApi {
       versionNum = Integer.parseInt(version);
       if (versionNum < 1){
         throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-            "Invalid. Model version's version must be bigger than 1.");
+            "Invalid. Model version's version must be bigger than 0.");
       }
     } catch (NumberFormatException e){
       throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
@@ -288,7 +295,7 @@ public class ModelVersionRestApi {
     ModelVersionEntity modelVersion = modelVersionService.select(name,
         versionNum);
     if (modelVersion == null){
-      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+      throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
           "Invalid. Model version with same name and version is not existed.");
     }
   }
