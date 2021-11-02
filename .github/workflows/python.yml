@@ -35,18 +35,16 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install requirements
         run: |
-          pip install --upgrade pip
-          if ["${{ matrix.tf-version }}" = "1.15.0"]; then
-            pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
-            echo "tf1"
-          fi
-          if ["${{ matrix.tf-version }}" ="2.6.0"]; then
-            pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
-            echo "tf2"
-          fi          
+          pip install --upgrade pip  
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
           pip install -r ./dev-support/style-check/python/lint-requirements.txt
           pip install -r ./dev-support/style-check/python/mypy-requirements.txt
+      - name: Install pysubmarine with tf1 and pytorch
+        if: matrix.python-version == "1.15.0"
+        run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
+      - name: Install pysubmarine with tf2 and pytorch
+        if: matrix.python-version == "2.6.0"
+        run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
       - name: Check python sdk code style
         run: ./dev-support/style-check/python/lint.sh
       - name: Run unit test
