@@ -37,11 +37,11 @@ jobs:
         run: |
           pip install --upgrade pip
           if ["${{ matrix.tf-version }}" = "1.15.0"]; then
-            pip install --no-cache-dir ./submarine-sdk/pysubmarine/.[tf,pytorch]
+            pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
             echo "tf1"
           fi
           if ["${{ matrix.tf-version }}" ="2.6.0"]; then
-            pip install --no-cache-dir ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+            pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
             echo "tf2"
           fi          
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
