@@ -42,7 +42,7 @@ setup(
         "boto3>=1.17.58",
     ],
     extras_require={
-        "tf": ["tensorflow>=1.14.0,<2.0.0"],
+        "tf": ["tensorflow==1.15.0"],
         "tf2": [
             "tensorflow==2.6.0",
             "tf_slim==1.1.0",
