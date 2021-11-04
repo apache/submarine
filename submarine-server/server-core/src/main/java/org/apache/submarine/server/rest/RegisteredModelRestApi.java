@@ -19,7 +19,6 @@
 
 package org.apache.submarine.server.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -98,15 +97,7 @@ public class RegisteredModelRestApi {
   public Response createRegisteredModel(RegisteredModelEntity entity) {
     try {
       checkRegisteredModel(entity);
-      RegisteredModelEntity registeredModelEntity = new RegisteredModelEntity();
-      registeredModelEntity.setName(entity.getName());
-      registeredModelEntity.setDescription(entity.getDescription());
-      List<String> tags = new ArrayList<>();
-      entity.getTags().forEach((tag) -> {
-        tags.add(tag);
-      });
-      registeredModelEntity.setTags(tags);
-      registeredModelService.insert(registeredModelEntity);
+      registeredModelService.insert(entity);
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
         .message("Create a registered model instance").build();
     } catch (SubmarineRuntimeException e) {
@@ -159,9 +150,10 @@ public class RegisteredModelRestApi {
   /**
    * Update the registered model with registered model name.
    *
+   * @param name   old registered model name
    * @param entity registered model entity
    * example: {
-   *   'name': 'example_name'
+   *   'name': 'new_name'
    *   'description': 'new_description'
    * }
    * @return success message
@@ -175,6 +167,11 @@ public class RegisteredModelRestApi {
   public Response updateRegisteredModel(
       @PathParam(RestConstants.REGISTERED_MODEL_NAME) String name, RegisteredModelEntity entity) {
     try {
+      RegisteredModelEntity oldRegisteredModelEntity = registeredModelService.select(name);
+      if (oldRegisteredModelEntity == null) {
+        throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
+            "Invalid. Registered model " + name + " is not existed.");
+      }
       checkRegisteredModel(entity);
       if (!name.equals(entity.getName())) {
         registeredModelService.rename(name, entity.getName());
@@ -304,7 +301,7 @@ public class RegisteredModelRestApi {
     RegisteredModelEntity registeredModel = registeredModelService.select(name);
     if (registeredModel == null){
       throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
-          "Invalid. Registered model with same name is not existed.");
+          "Invalid. Registered model " + name + " is not existed.");
     }
   }
 }

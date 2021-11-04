@@ -28,7 +28,7 @@
       com.mysql.jdbc.Driver
     </property>
     <property name="hibernate.connection.url">
-      jdbc:mysql://127.0.0.1:3306/submarine?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false
+      jdbc:mysql://127.0.0.1:3306/submarine?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false&amp;allowMultiQueries=true
     </property>
     <property name="hibernate.connection.username">
       submarine

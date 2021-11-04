@@ -113,7 +113,7 @@
   </property>
   <property>
     <name>jdbc.url</name>
-    <value>jdbc:mysql://127.0.0.1:3306/submarine?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false</value>
+    <value>jdbc:mysql://127.0.0.1:3306/submarine?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false&amp;allowMultiQueries=true</value>
   </property>
   <property>
     <name>jdbc.username</name>

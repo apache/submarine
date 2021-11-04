@@ -296,7 +296,7 @@ public class ModelVersionRestApi {
         versionNum);
     if (modelVersion == null){
       throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
-          "Invalid. Model version with same name and version is not existed.");
+          "Invalid. Model version " + name + " version " + versionNum + " is not existed.");
     }
   }
 }
