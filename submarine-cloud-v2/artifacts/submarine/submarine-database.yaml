@@ -71,6 +71,9 @@ spec:
             - mountPath: /var/lib/mysql
               name: volume
               subPath: submarine-database
+          readinessProbe:
+            tcpSocket:
+              port: 3306
       volumes:
         - name: volume
           persistentVolumeClaim:

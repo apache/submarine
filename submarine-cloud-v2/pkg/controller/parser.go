@@ -34,7 +34,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/yaml"
 )
 
-// PathToOSFile gets the absolute path from relative path.
+// PathToOSFile turn the file at the relativePath into a type of *os.File.
 func pathToOSFile(relativePath string) (*os.File, error) {
 	path, err := filepath.Abs(relativePath)
 	if err != nil {
