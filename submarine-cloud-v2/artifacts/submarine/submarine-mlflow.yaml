@@ -59,6 +59,12 @@ spec:
         app: submarine-mlflow
     spec:
       initContainers:
+      - name: check-database-connection
+        image: busybox:1.28
+        command: ["sh", "-c",
+        "until nc -z submarine-database 3306;
+        do echo waiting for database connection;
+        sleep 20; done"]
       - name: submarine-mlflow-initcontainer
         image: "minio/mc"
         command: ["/bin/bash", "-c",
