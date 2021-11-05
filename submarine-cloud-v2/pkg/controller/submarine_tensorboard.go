@@ -26,158 +26,56 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/klog/v2"
 
 	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 )
 
 func newSubmarineTensorboardPersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	storageClassName := storageClassName
-	return &corev1.PersistentVolumeClaim{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: tensorboardPvcName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: corev1.PersistentVolumeClaimSpec{
-			AccessModes: []corev1.PersistentVolumeAccessMode{
-				corev1.ReadWriteOnce,
-			},
-			Resources: corev1.ResourceRequirements{
-				Requests: corev1.ResourceList{
-					corev1.ResourceStorage: resource.MustParse(submarine.Spec.Tensorboard.StorageSize),
-				},
-			},
-			StorageClassName: &storageClassName,
-		},
+	pvc, err := ParsePersistentVolumeClaimYaml(tensorboardYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParsePersistentVolumeClaim", err)
 	}
+	pvc.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	return pvc
 }
 
 func newSubmarineTensorboardDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployment {
-	return &appsv1.Deployment{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: tensorboardName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: appsv1.DeploymentSpec{
-			Selector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"app": tensorboardName,
-				},
-			},
-			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{
-					Labels: map[string]string{
-						"app": tensorboardName,
-					},
-				},
-				Spec: corev1.PodSpec{
-					Containers: []corev1.Container{
-						{
-							Name:  tensorboardName + "-container",
-							Image: "tensorflow/tensorflow:1.11.0",
-							Command: []string{
-								"tensorboard",
-								"--logdir=/logs",
-								"--path_prefix=/tensorboard",
-							},
-							ImagePullPolicy: "IfNotPresent",
-							Ports: []corev1.ContainerPort{
-								{
-									ContainerPort: 6006,
-								},
-							},
-							VolumeMounts: []corev1.VolumeMount{
-								{
-									MountPath: "/logs",
-									Name:      "volume",
-									SubPath:   tensorboardName,
-								},
-							},
-							ReadinessProbe: &corev1.Probe{
-								Handler: corev1.Handler{
-									TCPSocket: &corev1.TCPSocketAction{
-										Port: intstr.FromInt(6006),
-									},
-								},
-								PeriodSeconds: 10,
-							},
-						},
-					},
-					Volumes: []corev1.Volume{
-						{
-							Name: "volume",
-							VolumeSource: corev1.VolumeSource{
-								PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-									ClaimName: tensorboardPvcName,
-								},
-							},
-						},
-					},
-				},
-			},
-		},
+	deployment, err := ParseDeploymentYaml(tensorboardYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseDeploymentYaml", err)
 	}
+	deployment.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	return deployment
 }
 
 func newSubmarineTensorboardService(submarine *v1alpha1.Submarine) *corev1.Service {
-	return &corev1.Service{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: tensorboardServiceName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: corev1.ServiceSpec{
-			Selector: map[string]string{
-				"app": tensorboardName,
-			},
-			Ports: []corev1.ServicePort{
-				{
-					Protocol:   "TCP",
-					Port:       8080,
-					TargetPort: intstr.FromInt(6006),
-				},
-			},
-		},
+	service, err := ParseServiceYaml(tensorboardYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseServiceYaml", err)
 	}
+	service.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+	return service
 }
 
 func newSubmarineTensorboardIngressRoute(submarine *v1alpha1.Submarine) *traefikv1alpha1.IngressRoute {
-	return &traefikv1alpha1.IngressRoute{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: tensorboardName + "-ingressroute",
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: traefikv1alpha1.IngressRouteSpec{
-			EntryPoints: []string{
-				"web",
-			},
-			Routes: []traefikv1alpha1.Route{
-				{
-					Kind:  "Rule",
-					Match: "PathPrefix(`/tensorboard`)",
-					Services: []traefikv1alpha1.Service{
-						{
-							LoadBalancerSpec: traefikv1alpha1.LoadBalancerSpec{
-								Kind: "Service",
-								Name: tensorboardServiceName,
-								Port: 8080,
-							},
-						},
-					},
-				},
-			},
-		},
+	ingressRoute, err := ParseIngressRouteYaml(tensorboardYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseIngressRouteYaml", err)
 	}
+	ingressRoute.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+	return ingressRoute
 }
 
 // createSubmarineTensorboard is a function to create submarine-tensorboard.
