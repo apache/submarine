@@ -27,7 +27,7 @@ import { SysDictItem } from '@submarine/interfaces/sys-dict-item';
   styleUrls: ['./data-dict.component.scss']
 })
 export class DataDictComponent implements OnInit {
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
   dataDictForm: FormGroup;
   // TODO(kevin85421): (mock data) Replace it with sys-dict-item.ts
   sysDictList = [
@@ -81,6 +81,10 @@ export class DataDictComponent implements OnInit {
   // New Dict Item List
   newDictItemCode: string = '';
 
+  // For Filtering
+  isFiltered: boolean = false;
+  filterArr = [];
+
   ngOnInit() {
     this.dataDictForm = this.fb.group({
       dictName: [''],
@@ -88,9 +92,27 @@ export class DataDictComponent implements OnInit {
     });
   }
 
-  // TODO(kevin85421)
-  queryDataDict() {}
-  // TODO(kevin85421)
+  queryDataDict() {
+    this.filterArr = [];
+    if (
+      this.dataDictForm.get('dictCode').value === "" && 
+      this.dataDictForm.get('dictName').value === ""
+    ) {
+      this.isFiltered = false;
+    } else {
+      this.sysDictList.forEach((node) => {
+        if (
+          node.dictCode.includes(this.dataDictForm.get('dictCode').value) &&
+          node.dictName.includes(this.dataDictForm.get('dictName').value)
+        ) {
+          this.filterArr.push(node);
+        }
+      });
+      this.isFiltered = true;
+    }
+    this.filterArr = [...this.filterArr];
+  }
+
   onShowAddDataDictModal() {
     this.modalTitle = 'Add';
     this.selectedDictCode = '';
