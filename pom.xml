@@ -129,9 +129,6 @@
     <zeppelin.version>0.9.0-preview1</zeppelin.version>
     <jgit.version>5.5.1.201910021850-r</jgit.version>
     <atomix.version>3.1.5</atomix.version>
-    <spark.scala.version>2.11.8</spark.scala.version>
-    <spark.scala.binary.version>2.11</spark.scala.binary.version>
-    <hive.version>2.3.6</hive.version>
     <!--  Submarine on Kubernetes  -->
     <k8s.client-java.version>6.0.1</k8s.client-java.version>
     <jersey.test-framework>2.27</jersey.test-framework>
@@ -153,7 +150,6 @@
     <module>submarine-workbench</module>
     <module>submarine-dist</module>
     <module>submarine-test</module>
-    <module>submarine-security/spark-security</module>
   </modules>
 
   <dependencyManagement>
