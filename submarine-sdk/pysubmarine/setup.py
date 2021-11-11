@@ -48,6 +48,7 @@ setup(
             "tf_slim==1.1.0",
             "tensorflow-addons==0.14.0",
             "tensorflow-estimator==2.6.0",
+            "keras==2.6",
         ],
         "pytorch": ["torch>=1.5.0", "torchvision>=0.6.0"],
     },
