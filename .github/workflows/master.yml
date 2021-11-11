@@ -418,7 +418,6 @@ jobs:
     needs:
       - submarine-e2e
       - submarine-k8s
-      - submarine-security
       - submarine-submitter
       - submarine-server
       - submarine-client

@@ -44,12 +44,6 @@ module.exports = {
                     ],
                 },
                 {
-                    "Submarine Security": [
-                        "userDocs/submarine-security/spark-security/README",
-                        "userDocs/submarine-security/spark-security/build-submarine-spark-security-plugin",
-                    ],
-                },
-                {
                     Others: [
                         "userDocs/others/mlflow",
                         "userDocs/others/tensorboard",
