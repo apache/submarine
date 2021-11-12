@@ -41,8 +41,8 @@ class RangerSparkSQLExtension extends Extensions {
   override def apply(ext: SparkSessionExtensions): Unit = {
     ext.injectCheckRule(SubmarineConfigurationCheckExtension)
     ext.injectOptimizerRule(SubmarineSparkRangerAuthorizationExtension)
-    ext.injectOptimizerRule(SubmarineRowFilterExtension)
     ext.injectOptimizerRule(SubmarineDataMaskingExtension)
+    ext.injectOptimizerRule(SubmarineRowFilterExtension)
     ext.injectOptimizerRule(SubmarinePushPredicatesThroughExtensions)
     ext.injectPlannerStrategy(SubmarineSparkPlanOmitStrategy)
   }

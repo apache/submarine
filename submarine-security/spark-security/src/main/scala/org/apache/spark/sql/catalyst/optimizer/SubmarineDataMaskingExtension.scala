@@ -109,15 +109,17 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
     // sql expression text -> UnresolvedFunction
     val parsed = sqlParser.parseExpression(expr)
 
-    // Here we replace the attribute with the resolved one, e.g.
+    // Here we replace the attribute with a new resolved one, e.g.
     // 'mask_show_last_n('value, 4, x, x, x, -1, 1)
     // ->
-    // 'mask_show_last_n(value#37, 4, x, x, x, -1, 1)
+    // 'mask_show_last_n(value#38, 4, x, x, x, -1, 1) AS value#37
+    // value#38 will be pushed down to the relation and value#37 will be used for the associated parent node
     val resolved = parsed mapChildren {
-      case _: UnresolvedAttribute => attr
+      case u: UnresolvedAttribute => AttributeReference(attr.name, attr.dataType, attr.nullable, attr.metadata)(
+        qualifier = attr.qualifier)
       case o => o
     }
-    Alias(resolved, attr.name)()
+    Alias(resolved, attr.name)(attr.exprId, attr.qualifier, Option(attr.metadata))
   }
 
   /**
@@ -150,7 +152,7 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
         }
 
         if (!output.equals(newOutput)) {
-          val newAlias = Alias(newOutput, output.name)()
+          val newAlias = newOutput.asInstanceOf[Alias]
           aliasedMaskers.put(output.exprId, newAlias)
         }
       }
@@ -220,33 +222,86 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
     case _ =>
       val aliases = collectAllAliases(plan)
       val transformers = collectAllTransformers(plan, aliases)
-      val newPlan =
-        if (transformers.nonEmpty && plan.output.exists(o => transformers.get(o.exprId).nonEmpty)) {
-          val newOutput = plan.output.map(attr => transformers.getOrElse(attr.exprId, attr))
-          Project(newOutput, plan)
-        } else {
-          plan
-        }
+      val plansWithTables = plan.collectLeaves().map {
+        case h if h.nodeName == "HiveTableRelation" || h.nodeName == "LogicalRelation" =>
+          val newPlan = if (transformers.nonEmpty && h.output.exists(o => transformers.contains(o.exprId))) {
+            val newOutput = h.output.map(attr => transformers.getOrElse(attr.exprId, attr))
+            Project(newOutput, h)
+          } else {
+            h
+          }
+          // Call spark analysis here explicitly to resolve UnresolvedFunctions
+          val marked = analyzer.execute(newPlan) transformUp {
+            case p if hasCatalogTable(p) => SubmarineDataMasking(p)
+          }
+          // Extract global/local limit if any and apply after masking projection
+          val limitExpr: Option[Expression] = plan match {
+            case globalLimit: GlobalLimit => Some(globalLimit.limitExpr)
+            case localLimit: LocalLimit => Some(localLimit.limitExpr)
+            case _ => None
+          }
 
-      // Call spark analysis here explicitly to resolve UnresolvedFunctions
-      val marked = analyzer.execute(newPlan) transformUp {
-        case p if hasCatalogTable(p) => SubmarineDataMasking(p)
-      }
+          val markedWithLimit = if (limitExpr.isDefined) Limit(limitExpr.get, marked) else marked
 
-      // Extract global/local limit if any and apply after masking projection
-      val limitExpr: Option[Expression] = plan match {
-        case globalLimit: GlobalLimit => Some(globalLimit.limitExpr)
-        case localLimit: LocalLimit => Some(localLimit.limitExpr)
-        case _ => None
-      }
+          markedWithLimit transformAllExpressions {
+            case s: SubqueryExpression =>
+              val SubqueryCompatible(newPlan, _) = SubqueryCompatible(
+                SubmarineDataMasking(s.plan), SubqueryExpression.hasCorrelatedSubquery(s))
+              s.withNewPlan(newPlan)
+          }
+          (h, markedWithLimit)
+        case _ => null
+      }.filter(_ != null).toMap
 
-      val markedWithLimit = if (limitExpr.isDefined) Limit(limitExpr.get, marked) else marked
-
-      markedWithLimit transformAllExpressions {
-        case s: SubqueryExpression =>
-          val SubqueryCompatible(newPlan, _) = SubqueryCompatible(
-              SubmarineDataMasking(s.plan), SubqueryExpression.hasCorrelatedSubquery(s))
-          s.withNewPlan(newPlan)
+      plan transformUp {
+        case p: HiveTableRelation =>
+          if (plansWithTables.contains(p)) {
+            plansWithTables(p) transformUp {
+              case h: HiveTableRelation =>
+                var newAttributeReference = Seq[AttributeReference]()
+                h.dataCols.foreach(col => {
+                  if (!transformers.contains(col.exprId)) {
+                    newAttributeReference :+= col
+                  } else {
+                    val children = transformers(col.exprId).asInstanceOf[Alias].child.children
+                    if (children.isEmpty) {
+                      newAttributeReference :+= col
+                    } else {
+                      val exprId = children.head.asInstanceOf[AttributeReference].exprId
+                      newAttributeReference :+= AttributeReference(col.name, col.dataType, col.nullable,
+                        col.metadata)(exprId, col.qualifier)
+                    }
+                  }
+                })
+                HiveTableRelation(h.tableMeta, newAttributeReference, h.partitionCols)
+            }
+          } else {
+            p
+          }
+        case p: LogicalRelation =>
+          if (plansWithTables.contains(p)) {
+            plansWithTables(p) transformUp {
+              case l: LogicalRelation =>
+                var newOutput = Seq[AttributeReference]()
+                l.output.foreach(output => {
+                  if (!transformers.contains(output.exprId)) {
+                    newOutput :+= output
+                  } else {
+                    val children = transformers(output.exprId).asInstanceOf[Alias].child.children
+                    if (children.isEmpty) {
+                      newOutput :+= output
+                    } else {
+                      val exprId = children.head.asInstanceOf[AttributeReference].exprId
+                      newOutput :+= AttributeReference(output.name, output.dataType, output.nullable,
+                        output.metadata)(exprId, output.qualifier)
+                    }
+                  }
+                })
+                LogicalRelation(l.relation, newOutput, l.catalogTable, l.isStreaming)
+            }
+          } else {
+            p
+          }
       }
   }
 
