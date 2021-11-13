@@ -1,16 +1,18 @@
 {{ if .Values.submarine.traefik.enabled }}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Values.submarine.server.name}}-ingress
   namespace: {{ .Release.namespace }}
-
 spec:
   rules:
     - http:
         paths:
           - path: /
+            pathType: Prefix
             backend:
-              serviceName: {{ .Values.submarine.server.name }}
-              servicePort: {{ .Values.submarine.server.servicePort }}
+              service:
+                name: {{ .Values.submarine.server.name }}
+                port: 
+                  number: {{ .Values.submarine.server.servicePort }}
 {{ end }}
