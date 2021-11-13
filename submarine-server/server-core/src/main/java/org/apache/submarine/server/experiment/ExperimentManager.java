@@ -41,8 +41,6 @@ import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
-import org.apache.submarine.server.api.experiment.ServeRequest;
-import org.apache.submarine.server.api.experiment.ServeResponse;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.service.ExperimentService;
@@ -345,32 +343,6 @@ public class ExperimentManager {
   public MlflowInfo getMLflowInfo() throws SubmarineRuntimeException {
     return submitter.getMlflowInfo();
   }
-
-  /**
-   * Create serve.
-   *
-   * @param spec spec
-   * @return object
-   * @throws SubmarineRuntimeException the service error
-   */
-  public ServeResponse createServe(ServeRequest spec) throws SubmarineRuntimeException {
-    // TODO(byronhsu): use mlflow api to make sure the model exists. Otherwise, raise exception.
-    ServeResponse serve = submitter.createServe(spec);
-    return serve;
-  }
-
-  /**
-   * Delete serve.
-   *
-   * @param spec spec
-   * @return object
-   * @throws SubmarineRuntimeException the service error
-   */
-  public ServeResponse deleteServe(ServeRequest spec) throws SubmarineRuntimeException {
-    ServeResponse serve = submitter.deleteServe(spec);
-    return serve;
-  }
-
 
   private void checkSpec(ExperimentSpec spec) throws SubmarineRuntimeException {
     if (spec == null) {
