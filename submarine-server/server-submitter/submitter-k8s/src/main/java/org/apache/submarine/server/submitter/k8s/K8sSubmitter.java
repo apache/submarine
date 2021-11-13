@@ -49,7 +49,6 @@ import io.kubernetes.client.models.V1ObjectMeta;
 import io.kubernetes.client.models.V1PersistentVolumeClaim;
 import io.kubernetes.client.models.V1Pod;
 import io.kubernetes.client.models.V1PodList;
-import io.kubernetes.client.models.V1Service;
 import io.kubernetes.client.models.V1Status;
 import io.kubernetes.client.util.Watch;
 import io.kubernetes.client.util.ClientBuilder;
@@ -57,14 +56,15 @@ import io.kubernetes.client.util.KubeConfig;
 
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
+import org.apache.submarine.serve.seldon.SeldonDeployment;
+import org.apache.submarine.serve.tensorflow.SeldonTFServing;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
-import org.apache.submarine.server.api.experiment.ServeRequest;
-import org.apache.submarine.server.api.experiment.ServeResponse;
+import org.apache.submarine.server.api.model.ServeSpec;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
@@ -79,7 +79,6 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
-import org.apache.submarine.server.submitter.k8s.parser.ServeSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.VolumeSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
@@ -518,66 +517,56 @@ public class K8sSubmitter implements Submitter {
   }
 
   @Override
-  public ServeResponse createServe(ServeRequest spec)
+  public void createServe(ServeSpec spec)
       throws SubmarineRuntimeException {
     String modelName = spec.getModelName();
-    String modelVersion = spec.getModelVersion();
-    String namespace = spec.getNamespace();
+    Integer modelVersion = spec.getModelVersion();
+    String serveType = spec.getServeType();
 
-    ServeSpecParser parser = new ServeSpecParser(modelName, modelVersion, namespace);
-    V1Deployment deployment = parser.getDeployment();
-    V1Service svc = parser.getService();
-    IngressRoute ingressRoute = parser.getIngressRoute();
-    Middlewares middleware = parser.getMiddlewares();
-    ServeResponse serveInfo = new ServeResponse().url(parser.getRoutePath());
+    SeldonDeployment seldonDeployment;
+    if (serveType == "tensorflow"){
+      seldonDeployment = new SeldonTFServing(modelName);
+    } else if (serveType == "pytorch"){
+      // TODO(KUAN-HSUN LI): create pytorch serve
+      throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
+    } else throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
 
     try {
-      appsV1Api.createNamespacedDeployment(namespace, deployment, "true", null, null);
-      coreApi.createNamespacedService(namespace, svc, "true", null, null);
-
-      api.createNamespacedCustomObject(
-          middleware.getGroup(), middleware.getVersion(),
-          middleware.getMetadata().getNamespace(),
-          middleware.getPlural(), middleware, "true");
-
-      api.createNamespacedCustomObject(
-          ingressRoute.getGroup(), ingressRoute.getVersion(),
-          ingressRoute.getMetadata().getNamespace(),
-          ingressRoute.getPlural(), ingressRoute, "true");
-      return serveInfo;
+      api.createNamespacedCustomObject(seldonDeployment.getGroup(),
+              seldonDeployment.getVersion(),
+              "default",
+              seldonDeployment.getPlural(),
+              seldonDeployment,
+              "true");
     } catch (ApiException e) {
+      LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
   }
 
   @Override
-  public ServeResponse deleteServe(ServeRequest spec)
+  public void deleteServe(ServeSpec spec)
       throws SubmarineRuntimeException {
     String modelName = spec.getModelName();
-    String modelVersion = spec.getModelVersion();
-    String namespace = spec.getNamespace();
+    Integer modelVersion = spec.getModelVersion();
+    String serveType = spec.getServeType();
 
-    ServeSpecParser parser = new ServeSpecParser(modelName, modelVersion, namespace);
-    IngressRoute ingressRoute = parser.getIngressRoute();
-    Middlewares middleware = parser.getMiddlewares();
-    ServeResponse serveInfo = new ServeResponse().url(parser.getRoutePath());
+    SeldonDeployment seldonDeployment;
+    if (serveType == "tensorflow"){
+      seldonDeployment = new SeldonTFServing(modelName);
+    } else if (serveType == "pytorch"){
+      // TODO(KUAN-HSUN LI): create pytorch serve
+      throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
+    } else throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
 
     try {
-      appsV1Api.deleteNamespacedDeployment(parser.getGeneralName(), namespace, "true",
-          null, null, null, null, null);
-      coreApi.deleteNamespacedService(parser.getSvcName(), namespace, "true",
-          null, null, null, null, null);
-      api.deleteNamespacedCustomObject(
-          middleware.getGroup(), middleware.getVersion(),
-          middleware.getMetadata().getNamespace(), middleware.getPlural(), parser.getMiddlewareName(),
-          new V1DeleteOptionsBuilder().withApiVersion(middleware.getApiVersion()).build(),
-          null, null, null);
-      api.deleteNamespacedCustomObject(
-          ingressRoute.getGroup(), ingressRoute.getVersion(),
-          ingressRoute.getMetadata().getNamespace(), ingressRoute.getPlural(), parser.getRouteName(),
-          new V1DeleteOptionsBuilder().withApiVersion(ingressRoute.getApiVersion()).build(),
-          null, null, null);
-      return serveInfo;
+      Object object = api.deleteNamespacedCustomObject(seldonDeployment.getGroup(),
+              seldonDeployment.getVersion(),
+              "default",
+              seldonDeployment.getPlural(),
+              seldonDeployment.getMetadata().getName(),
+              new V1DeleteOptionsBuilder().withApiVersion(seldonDeployment.getApiVersion()).build(),
+              null, null, null);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
