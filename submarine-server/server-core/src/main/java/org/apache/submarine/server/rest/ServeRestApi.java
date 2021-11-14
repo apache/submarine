@@ -19,6 +19,7 @@
 package org.apache.submarine.server.rest;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -63,14 +64,29 @@ public class ServeRestApi {
 
   @POST
   @Consumes({ RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON })
-  @Operation(summary = "Create a model serve instance", tags = { "serve" }, responses = {
+  @Operation(summary = "Create a serve instance", tags = { "serve" }, responses = {
           @ApiResponse(description = "successful operation",
-                  content = @Content(schema = @Schema(implementation = JsonResponse.class))) })
+                  content = @Content(schema = @Schema(implementation = JsonResponse.class)))})
   public Response createServe(ServeSpec spec) {
     try {
       ServeResponse serveResponse = modelManager.createServe(spec);
       return new JsonResponse.Builder<ServeResponse>(Response.Status.OK).success(true)
-              .message("Create a model serve instance").result(serveResponse).build();
+              .message("Create a serve instance").result(serveResponse).build();
+    } catch (SubmarineRuntimeException e) {
+      return parseModelVersionServiceException(e);
+    }
+  }
+
+  @DELETE
+  @Operation(summary = "Delete the serve instance.", tags = { "serve" }, responses = {
+          @ApiResponse(description = "successful operation",
+                  content = @Content(schema = @Schema(implementation = JsonResponse.class))),
+          @ApiResponse(responseCode = "404", description = "Serve not found.")})
+  public Response deleteServe(ServeSpec spec) {
+    try {
+      modelManager.deleteServe(spec);
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
+              .message("Delete the model serve instance").build();
     } catch (SubmarineRuntimeException e) {
       return parseModelVersionServiceException(e);
     }

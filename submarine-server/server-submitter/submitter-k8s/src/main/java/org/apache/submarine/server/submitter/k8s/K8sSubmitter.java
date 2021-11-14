@@ -542,7 +542,7 @@ public class K8sSubmitter implements Submitter {
     SeldonDeployment seldonDeployment = parseServeSpec(spec);
 
     try {
-      Object object = api.deleteNamespacedCustomObject(seldonDeployment.getGroup(),
+      api.deleteNamespacedCustomObject(seldonDeployment.getGroup(),
               seldonDeployment.getVersion(),
               "default",
               seldonDeployment.getPlural(),

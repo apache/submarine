@@ -75,6 +75,17 @@ public class ModelManager {
     return serveResponse;
   }
 
+  /**
+   * Delete a model serve.
+   */
+  public void deleteServe(ServeSpec spec) throws SubmarineRuntimeException {
+    checkServeSpec(spec);
+    String modelURI = modelVersionService.select(spec.getModelName(), spec.getModelVersion()).getSource();
+    spec.setModelURI(modelURI);
+
+    submitter.deleteServe(spec);
+  }
+
   private void checkServeSpec(ServeSpec spec) throws SubmarineRuntimeException {
     if (spec == null) {
       throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
