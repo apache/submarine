@@ -90,6 +90,21 @@ public class ModelManager {
     if (spec == null) {
       throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
               "Invalid. Serve Spec object is null.");
+    } else {
+      if (spec.getModelName() == null) {
+        throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+                "Invalid. Model name in Serve Soec is null.");
+      }
+      Integer modelVersion = spec.getModelVersion();
+      if (modelVersion == null || modelVersion <= 0) {
+        throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+                "Invalid. Model version must be positive, but get " + modelVersion);
+      }
+      String serveType = spec.getServeType();
+      if (!serveType.equals("tensorflow") && !serveType.equals("pytorch")) {
+        throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
+                "Invalid. Serve Type can only be tensorflow or pytorch, but get " + serveType);
+      }
     }
   }
 }

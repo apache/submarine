@@ -550,6 +550,7 @@ public class K8sSubmitter implements Submitter {
               new V1DeleteOptionsBuilder().withApiVersion(seldonDeployment.getApiVersion()).build(),
               null, null, null);
     } catch (ApiException e) {
+      LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
   }
