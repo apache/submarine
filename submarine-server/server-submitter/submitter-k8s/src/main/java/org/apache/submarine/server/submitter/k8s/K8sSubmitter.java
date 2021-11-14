@@ -683,7 +683,6 @@ public class K8sSubmitter implements Submitter {
   }
 
   private String getJobLabelSelector(ExperimentSpec experimentSpec) {
-    // TODO(JohnTing): SELECTOR_KEY should be obtained from individual models in MLJOB
     if (experimentSpec.getMeta().getFramework()
         .equalsIgnoreCase(ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName())) {
       return TF_JOB_SELECTOR_KEY + experimentSpec.getMeta().getExperimentId();
