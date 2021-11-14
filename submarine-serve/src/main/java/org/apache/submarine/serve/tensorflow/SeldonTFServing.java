@@ -25,7 +25,7 @@ import org.apache.submarine.serve.seldon.SeldonPredictor;
 import org.apache.submarine.serve.utils.SeldonConstants;
 
 public class SeldonTFServing extends SeldonDeployment {
-  public SeldonTFServing(String name){
+  public SeldonTFServing(String name, String modelURI){
     V1ObjectMeta v1ObjectMeta = new V1ObjectMeta();
     v1ObjectMeta.setName(name);
     v1ObjectMeta.setNamespace(SeldonConstants.DEFAULT_NAMESPACE);
@@ -36,13 +36,10 @@ public class SeldonTFServing extends SeldonDeployment {
     SeldonGraph seldonGraph = new SeldonGraph();
     seldonGraph.setName(name);
     seldonGraph.setImplementation(SeldonConstants.TFSERVING_IMPLEMENTATION);
-    seldonGraph.setModelUri(SeldonConstants.S3_URI_BASE + name);
+    seldonGraph.setModelUri(modelURI);
     SeldonPredictor seldonPredictor = new SeldonPredictor();
     seldonPredictor.setSeldonGraph(seldonGraph);
 
     addPredictor(seldonPredictor);
   }
-
-
-
 }

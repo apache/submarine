@@ -64,6 +64,7 @@ import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
+import org.apache.submarine.server.api.model.ServeResponse;
 import org.apache.submarine.server.api.model.ServeSpec;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
@@ -115,6 +116,7 @@ public class K8sSubmitter implements Submitter {
   public void initialize(SubmarineConfiguration conf) {
     try {
       String path = System.getenv(KUBECONFIG_ENV);
+      //      path = System.getProperty("user.home") + "/.kube/config"; //TODO(tmp)
       KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(path));
       client = ClientBuilder.kubeconfig(config).build();
     } catch (Exception e) {
@@ -516,19 +518,9 @@ public class K8sSubmitter implements Submitter {
   }
 
   @Override
-  public void createServe(ServeSpec spec)
+  public ServeResponse createServe(ServeSpec spec)
       throws SubmarineRuntimeException {
-    String modelName = spec.getModelName();
-    Integer modelVersion = spec.getModelVersion();
-    String serveType = spec.getServeType();
-
-    SeldonDeployment seldonDeployment;
-    if (serveType == "tensorflow"){
-      seldonDeployment = new SeldonTFServing(modelName);
-    } else if (serveType == "pytorch"){
-      // TODO(KUAN-HSUN LI): create pytorch serve
-      throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
-    } else throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
+    SeldonDeployment seldonDeployment = parseServeSpec(spec);
 
     try {
       api.createNamespacedCustomObject(seldonDeployment.getGroup(),
@@ -541,22 +533,13 @@ public class K8sSubmitter implements Submitter {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
+    return new ServeResponse();
   }
 
   @Override
   public void deleteServe(ServeSpec spec)
       throws SubmarineRuntimeException {
-    String modelName = spec.getModelName();
-    Integer modelVersion = spec.getModelVersion();
-    String serveType = spec.getServeType();
-
-    SeldonDeployment seldonDeployment;
-    if (serveType == "tensorflow"){
-      seldonDeployment = new SeldonTFServing(modelName);
-    } else if (serveType == "pytorch"){
-      // TODO(KUAN-HSUN LI): create pytorch serve
-      throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
-    } else throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
+    SeldonDeployment seldonDeployment = parseServeSpec(spec);
 
     try {
       Object object = api.deleteNamespacedCustomObject(seldonDeployment.getGroup(),
@@ -762,6 +745,23 @@ public class K8sSubmitter implements Submitter {
     routes.add(route);
     spec.setRoutes(routes);
     return spec;
+  }
+
+  private SeldonDeployment parseServeSpec(ServeSpec spec) throws SubmarineRuntimeException {
+    String modelName = spec.getModelName();
+    String serveType = spec.getServeType();
+    String modelURI = spec.getModelURI();
+
+    SeldonDeployment seldonDeployment;
+    if (serveType.equals("tensorflow")){
+      seldonDeployment = new SeldonTFServing(modelName, modelURI);
+    } else if (serveType.equals("pytorch")){
+      // TODO(KUAN-HSUN LI): create pytorch serve
+      throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
+    } else {
+      throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
+    }
+    return seldonDeployment;
   }
 
   private void rollbackCreationPVC(String pvcName, String namespace) {

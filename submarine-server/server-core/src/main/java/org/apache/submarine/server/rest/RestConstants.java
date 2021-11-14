@@ -89,4 +89,8 @@ public class RestConstants {
   public static final String MODEL_VERSION_NAME = "name";
   public static final String MODEL_VERSION_VERSION = "version";
 
+  /**
+   * Serve.
+   */
+  public static final String SERVE = "serve";
 }
