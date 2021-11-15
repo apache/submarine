@@ -34,7 +34,7 @@ curl -X POST -H "Content-Type: application/json" -d '
 {
   "modelName": "simple", 
   "modelVersion":1, 
-  "serveType":"tensorflow"
+  "modelType":"tensorflow"
 }
 ' http://127.0.0.1:32080/api/v1/serve
 ```
@@ -60,7 +60,7 @@ curl -X DELETE -H "Content-Type: application/json" -d '
 {
   "modelName": "simple", 
   "modelVersion":1, 
-  "serveType":"tensorflow"
+  "modelType":"tensorflow"
 }
 ' http://127.0.0.1:32080/api/v1/serve
 ```

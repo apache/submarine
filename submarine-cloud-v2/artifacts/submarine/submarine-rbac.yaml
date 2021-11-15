@@ -55,6 +55,19 @@ rules:
   - patch
   - update
 - apiGroups:
+  - machinelearning.seldon.io
+  resources:
+  - seldondeployments
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - delete
+  - deletecollection
+  - patch
+  - update
+- apiGroups:
   - ""
   resources:
   - pods

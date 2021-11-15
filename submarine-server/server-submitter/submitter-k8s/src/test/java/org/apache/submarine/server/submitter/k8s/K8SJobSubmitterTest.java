@@ -67,7 +67,7 @@ public class K8SJobSubmitterTest extends SpecBuilder {
     ServeSpec spec = new ServeSpec();
     spec.setModelName("simple");
     spec.setModelVersion(1);
-    spec.setServeType("tensorflow");
+    spec.setModelType("tensorflow");
     spec.setModelURI("s3://submarine/simple");
     submitter.createServe(spec);
   }
@@ -78,7 +78,7 @@ public class K8SJobSubmitterTest extends SpecBuilder {
     ServeSpec spec = new ServeSpec();
     spec.setModelName("simple");
     spec.setModelVersion(1);
-    spec.setServeType("tensorflow");
+    spec.setModelType("tensorflow");
     submitter.deleteServe(spec);
   }
 

@@ -21,7 +21,7 @@ package org.apache.submarine.server.api.model;
 public class ServeSpec {
   private String modelName;
   private Integer modelVersion;
-  private String serveType;
+  private String modelType;
   private String modelURI;
 
   public String getModelName() {
@@ -40,12 +40,12 @@ public class ServeSpec {
     this.modelVersion = modelVersion;
   }
 
-  public String getServeType() {
-    return serveType;
+  public String getModelType() {
+    return modelType;
   }
 
-  public void setServeType(String serveType) {
-    this.serveType = serveType;
+  public void setModelType(String modelType) {
+    this.modelType = modelType;
   }
 
   public String getModelURI() {

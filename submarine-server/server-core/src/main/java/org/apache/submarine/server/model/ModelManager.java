@@ -100,10 +100,10 @@ public class ModelManager {
         throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
                 "Invalid. Model version must be positive, but get " + modelVersion);
       }
-      String serveType = spec.getServeType();
-      if (!serveType.equals("tensorflow") && !serveType.equals("pytorch")) {
+      String modelType = spec.getModelType();
+      if (!modelType.equals("tensorflow") && !modelType.equals("pytorch")) {
         throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-                "Invalid. Serve Type can only be tensorflow or pytorch, but get " + serveType);
+                "Invalid. Serve Type can only be tensorflow or pytorch, but get " + modelType);
       }
     }
   }

@@ -749,17 +749,17 @@ public class K8sSubmitter implements Submitter {
 
   private SeldonDeployment parseServeSpec(ServeSpec spec) throws SubmarineRuntimeException {
     String modelName = spec.getModelName();
-    String serveType = spec.getServeType();
+    String modelType = spec.getModelType();
     String modelURI = spec.getModelURI();
 
     SeldonDeployment seldonDeployment;
-    if (serveType.equals("tensorflow")){
+    if (modelType.equals("tensorflow")){
       seldonDeployment = new SeldonTFServing(modelName, modelURI);
-    } else if (serveType.equals("pytorch")){
+    } else if (modelType.equals("pytorch")){
       // TODO(KUAN-HSUN LI): create pytorch serve
-      throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
+      throw new SubmarineRuntimeException("Given serve type: " + modelType + " is not supported.");
     } else {
-      throw new SubmarineRuntimeException("Given serve type: " + serveType + " is not supported.");
+      throw new SubmarineRuntimeException("Given serve type: " + modelType + " is not supported.");
     }
     return seldonDeployment;
   }
