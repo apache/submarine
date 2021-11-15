@@ -118,42 +118,45 @@ class SubmarineClient(object):
                 "Artifact_path must only contains numbers, characters, hyphen and underscore. "
                 "Artifact_path must starts and ends with numbers or characters."
             )
-        description: Dict[str, Any] = dict()
         with tempfile.TemporaryDirectory() as tempdir:
+            description: Dict[str, Any] = dict()
             model_save_dir = os.path.join(tempdir, "1")
             os.mkdir(model_save_dir)
             if model_type == "pytorch":
                 import submarine.models.pytorch
 
                 submarine.models.pytorch.save_model(model, model_save_dir)
-                description["platform"] = "pytorch_libtorch"
+                description["model_type"] = "pytorch"
             elif model_type == "tensorflow":
                 import submarine.models.tensorflow
 
                 submarine.models.tensorflow.save_model(model, model_save_dir)
+                description["model_type"] = "tensorflow"
             else:
                 raise Exception("No valid type of model has been matched to {}".format(model_type))
-            source = self.artifact_repo.log_artifacts(tempdir, artifact_path)
 
-        # Write description file
-        if input_dim is not None:
-            description["input"] = [
-                {
-                    "name": "INPUT__0",
-                    "data_type": "TYPE_FP32",
-                    "dims": str(input_dim),
-                }
-            ]
-        if output_dim is not None:
-            description["output"] = [
-                {
-                    "name": "OUTPUT__0",
-                    "data_type": "TYPE_FP32",
-                    "dims": output_dim,
-                }
-            ]
-        with open(os.path.join(tempdir, "description.json"), "w") as f:
-            json.dump(description, f)
+            # Write description file
+            if input_dim is not None:
+                description["input"] = [
+                    {
+                        "name": "INPUT__0",
+                        "data_type": "TYPE_FP32",
+                        "dims": str(input_dim),
+                    }
+                ]
+            if output_dim is not None:
+                description["output"] = [
+                    {
+                        "name": "OUTPUT__0",
+                        "data_type": "TYPE_FP32",
+                        "dims": output_dim,
+                    }
+                ]
+            with open(os.path.join(tempdir, "description.json"), "w") as f:
+                json.dump(description, f)
+
+            # Log all files into minio
+            source = self.artifact_repo.log_artifacts(tempdir, artifact_path)
 
         # Register model
         if registered_model_name is not None:
