@@ -12,6 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import json
 import os
 import re
 import tempfile
@@ -92,7 +93,13 @@ class SubmarineClient(object):
         self.store.log_param(job_id, param)
 
     def save_model(
-        self, model_type: str, model, artifact_path: str, registered_model_name: str = None
+        self,
+        model_type: str,
+        model,
+        artifact_path: str,
+        registered_model_name: str = None,
+        input_dim: list = None,
+        output_dim: list = None,
     ) -> None:
         """
         Save a model into the minio pod.
@@ -101,25 +108,51 @@ class SubmarineClient(object):
         :param artifact_path: Relative path of the artifact in the minio pod.
         :param registered_model_name: If not None, register model into the model registry with
                                       this name. If None, the model only be saved in minio pod.
+        :param input_dim: Save the input dimension of the given model to the description file.
+        :param output_dim: Save the output dimension of the given model to the description file.
         """
         pattern = r"[0-9A-Za-z][0-9A-Za-z-_]*[0-9A-Za-z]|[0-9A-Za-z]"
         if not re.fullmatch(pattern, artifact_path):
             raise Exception(
-                "Artifact_path must only contains numbers, characters, hyphen and underscore.      "
-                "        Artifact_path must starts and ends with numbers or characters."
+                "Artifact_path must only contains numbers, characters, hyphen and underscore. "
+                "Artifact_path must starts and ends with numbers or characters."
             )
+        description = {}
         with tempfile.TemporaryDirectory() as tempdir:
+            model_save_dir = os.path.join(tempdir, "1")
+            os.mkdir(model_save_dir)
             if model_type == "pytorch":
                 import submarine.models.pytorch
 
-                submarine.models.pytorch.save_model(model, tempdir)
+                submarine.models.pytorch.save_model(model, model_save_dir)
+                description["platform"] = "pytorch_libtorch"
             elif model_type == "tensorflow":
                 import submarine.models.tensorflow
 
-                submarine.models.tensorflow.save_model(model, tempdir)
+                submarine.models.tensorflow.save_model(model, model_save_dir)
             else:
                 raise Exception("No valid type of model has been matched to {}".format(model_type))
             source = self.artifact_repo.log_artifacts(tempdir, artifact_path)
+
+        # Write description file
+        if input_dim != None:
+            description["input"] = [
+                {
+                    "name": "INPUT__0",
+                    "data_type": "TYPE_FP32",
+                    "dims": input_dim,
+                }
+            ]
+        if output_dim != None:
+            description["output"] = [
+                {
+                    "name": "OUTPUT__0",
+                    "data_type": "TYPE_FP32",
+                    "dims": output_dim,
+                }
+            ]
+        with open(os.path.join(tempdir, "description.json"), "w") as f:
+            json.dump(description, f)
 
         # Register model
         if registered_model_name is not None:
