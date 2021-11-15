@@ -27,7 +27,7 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
-import org.apache.submarine.server.api.experiment.ServeRequest;
+import org.apache.submarine.server.api.model.ServeSpec;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.junit.Assert;
 import org.junit.Before;
@@ -61,12 +61,25 @@ public class K8SJobSubmitterTest extends SpecBuilder {
     submitter.initialize(null);
   }
 
-  @Ignore // TODO(byronhsu): make sure saving a model before create serve
+  @Ignore // TODO(KUAN-HSUN LI): make sure saving a model before create serve
   @Test
-  public void tmpTest() {
-    ServeRequest request = new ServeRequest()
-          .modelName("simple-nn-model").modelVersion("1").namespace("default");
-    submitter.createServe(request);
+  public void testCreateTensorFlowServe() {
+    ServeSpec spec = new ServeSpec();
+    spec.setModelName("simple");
+    spec.setModelVersion(1);
+    spec.setModelType("tensorflow");
+    spec.setModelURI("s3://submarine/simple");
+    submitter.createServe(spec);
+  }
+
+  @Ignore // TODO(KUAN-HSUN LI): make sure saving a model before create serve
+  @Test
+  public void testDeleteTensorFlowServe() {
+    ServeSpec spec = new ServeSpec();
+    spec.setModelName("simple");
+    spec.setModelVersion(1);
+    spec.setModelType("tensorflow");
+    submitter.deleteServe(spec);
   }
 
   @Test

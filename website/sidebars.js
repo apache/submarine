@@ -102,5 +102,6 @@ module.exports = {
         "api/experiment",
         "api/experiment-template",
         "api/notebook",
+        "api/serve",
     ],
 };

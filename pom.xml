@@ -145,6 +145,7 @@
   <modules>
     <module>submarine-commons</module>
     <module>submarine-client</module>
+    <module>submarine-serve</module>
     <module>submarine-server</module>
     <module>submarine-all</module>
     <module>submarine-workbench</module>
