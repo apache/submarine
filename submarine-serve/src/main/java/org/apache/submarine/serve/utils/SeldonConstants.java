@@ -31,9 +31,7 @@ public class SeldonConstants {
 
   public static final String STORAGE_INITIALIZER_IMAGE = "seldonio/rclone-storage-initializer:1.10.0";
 
-  public static final String ENV_SECRET_REF_NAME = "seldon-init-container-secret";
-
-  public static final String S3_URI_BASE = "s3://submarine";
+  public static final String ENV_SECRET_REF_NAME = "submarine-serve-secret";
 
   public static final String DEFAULT_NAMESPACE = "default";
 
