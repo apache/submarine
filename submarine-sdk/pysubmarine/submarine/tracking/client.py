@@ -17,6 +17,7 @@ import os
 import re
 import tempfile
 import time
+from typing import Any, Dict
 
 import submarine
 from submarine.artifacts.repository import Repository
@@ -117,7 +118,7 @@ class SubmarineClient(object):
                 "Artifact_path must only contains numbers, characters, hyphen and underscore. "
                 "Artifact_path must starts and ends with numbers or characters."
             )
-        description = {}
+        description: Dict[str, Any] = dict()
         with tempfile.TemporaryDirectory() as tempdir:
             model_save_dir = os.path.join(tempdir, "1")
             os.mkdir(model_save_dir)
@@ -135,15 +136,15 @@ class SubmarineClient(object):
             source = self.artifact_repo.log_artifacts(tempdir, artifact_path)
 
         # Write description file
-        if input_dim != None:
+        if input_dim is not None:
             description["input"] = [
                 {
                     "name": "INPUT__0",
                     "data_type": "TYPE_FP32",
-                    "dims": input_dim,
+                    "dims": str(input_dim),
                 }
             ]
-        if output_dim != None:
+        if output_dim is not None:
             description["output"] = [
                 {
                     "name": "OUTPUT__0",

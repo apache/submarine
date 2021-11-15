@@ -70,7 +70,7 @@ class Repository:
                     bucket=self.bucket,
                     key=os.path.join(upload_path, f),
                 )
-        return f"s3://{bucket}/{dest_path}"
+        return f"s3://{self.bucket}/{dest_path}"
 
     def delete_folder(self) -> None:
         objects_to_delete = self.client.list_objects(Bucket=self.bucket, Prefix=self.dest_path)
