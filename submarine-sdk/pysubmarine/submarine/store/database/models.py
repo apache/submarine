@@ -196,6 +196,11 @@ class SqlModelVersion(Base):
     ID to which this version of model belongs to.
     """
 
+    model_type = Column(String(64), nullable=False)
+    """
+    Type of model.
+    """
+
     current_stage = Column(String(64), default=STAGE_NONE)
     """
     Current stage of this version of model: it can be `None`, `Developing`,
@@ -254,6 +259,7 @@ class SqlModelVersion(Base):
             source=self.source,
             user_id=self.user_id,
             experiment_id=self.experiment_id,
+            model_type=self.model_type,
             current_stage=self.current_stage,
             creation_time=self.creation_time,
             last_updated_time=self.last_updated_time,

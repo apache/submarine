@@ -169,4 +169,5 @@ class SubmarineClient(object):
                 source=source,
                 user_id="",  # TODO(jeff-901): the user id is needed to be specified.
                 experiment_id=utils.get_job_id(),
+                model_type=model_type,
             )
