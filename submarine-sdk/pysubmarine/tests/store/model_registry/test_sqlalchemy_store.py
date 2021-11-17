@@ -107,8 +107,12 @@ class TestSqlAlchemyStore(unittest.TestCase):
         name = "test_rename_RM"
         new_name = "test_rename_RN_new"
         rm = self.store.create_registered_model(name)
-        self.store.create_model_version(name, "path/to/source1", "test", "application_1234")
-        self.store.create_model_version(name, "path/to/source2", "test", "application_1235")
+        self.store.create_model_version(
+            name, "path/to/source1", "test", "application_1234", "tensorflow"
+        )
+        self.store.create_model_version(
+            name, "path/to/source2", "test", "application_1235", "tensorflow"
+        )
         mv1d = self.store.get_model_version(name, 1)
         mv2d = self.store.get_model_version(name, 2)
         self.assertEqual(rm.name, name)
@@ -142,10 +146,10 @@ class TestSqlAlchemyStore(unittest.TestCase):
         rm2 = self.store.create_registered_model(name2, tags=rm_tags)
         mv_tags = ["mv_tag1", "mv_tag2"]
         rm1mv1 = self.store.create_model_version(
-            rm1.name, "path/to/source1", "test", "application_1234", tags=mv_tags
+            rm1.name, "path/to/source1", "test", "application_1234", "tensorflow", tags=mv_tags
         )
         rm2mv1 = self.store.create_model_version(
-            rm2.name, "path/to/source2", "test", "application_1234", tags=mv_tags
+            rm2.name, "path/to/source2", "test", "application_1234", "tensorflow", tags=mv_tags
         )
 
         # check store
