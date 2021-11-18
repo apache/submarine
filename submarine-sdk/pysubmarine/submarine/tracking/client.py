@@ -127,7 +127,8 @@ class SubmarineClient(object):
 
                 if input_dim is None or output_dim is None:
                     raise Exception(
-                        "Saving pytorch model needs to provide input and output dimension for serving."
+                        "Saving pytorch model needs to provide input and output dimension for"
+                        " serving."
                     )
                 submarine.models.pytorch.save_model(model, model_save_dir)
             elif model_type == "tensorflow":
