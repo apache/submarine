@@ -25,7 +25,8 @@ Your journey of becoming a contributor and committer starts from here: improving
 You can reach out to the community members via any one of the following ways:
 
 - Slack Developer: [https://join.slack.com/t/the-asf/shared_invite/zt-vlfbf7ch-HkbNHiU_uDlcH_RvaHv9gQ](https://join.slack.com/t/the-asf/shared_invite/zt-vlfbf7ch-HkbNHiU_uDlcH_RvaHv9gQ)
-
+  ![slack_search_submarine](/img/slack_search_submarine.png)
+  ![slack_join_submarine](/img/slack_join_submarine.png)
 - Zoom: [https://cloudera.zoom.us/j/880548968](https://cloudera.zoom.us/j/880548968)
 
 - Sync Up: [https://docs.google.com/document/d/16pUO3TP4SxSeLduG817GhVAjtiph9HYpRHo_JgduDvw/edit](https://docs.google.com/document/d/16pUO3TP4SxSeLduG817GhVAjtiph9HYpRHo_JgduDvw/edit)
