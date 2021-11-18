@@ -125,13 +125,15 @@ class SubmarineClient(object):
             if model_type == "pytorch":
                 import submarine.models.pytorch
 
+                if input_dim is None or output_dim is None:
+                    raise Exception(
+                        "Saving pytorch model needs to provide input and output dimension for serving."
+                    )
                 submarine.models.pytorch.save_model(model, model_save_dir)
-                description["model_type"] = "pytorch"
             elif model_type == "tensorflow":
                 import submarine.models.tensorflow
 
                 submarine.models.tensorflow.save_model(model, model_save_dir)
-                description["model_type"] = "tensorflow"
             else:
                 raise Exception("No valid type of model has been matched to {}".format(model_type))
 
@@ -152,6 +154,7 @@ class SubmarineClient(object):
                         "dims": output_dim,
                     }
                 ]
+            description["model_type"] = model_type
             with open(os.path.join(tempdir, "description.json"), "w") as f:
                 json.dump(description, f)
 
