@@ -64,8 +64,8 @@ module.exports = {
                 "devDocs/IntegrationTestE2E",
             ],
             Community: [
-                "community/Bylaws",
                 "community/README",
+                "community/Bylaws",
                 "community/HowToCommit",
                 "community/contributing",
             ],
