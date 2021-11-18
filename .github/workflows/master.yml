@@ -20,8 +20,6 @@ on: [push, pull_request]
 
 env:
   VERSION: "0.7.0-SNAPSHOT"
-  HADOOP_VERSION: "2.9"
-  PROFILE: "-Phadoop-2.9"
   BUILD_FLAG: "clean install -ntp -DskipTests -am"
   TEST_FLAG: "test -DskipRat -ntp"
 
@@ -67,15 +65,15 @@ jobs:
           python3 ./dev-support/database/init-database.py
       - name: Build with Maven
         run: |
-          echo ">>> mvn ${BUILD_FLAG} ${PROFILE} -B"
-          mvn ${BUILD_FLAG} ${PROFILE} -B
+          echo ">>> mvn ${BUILD_FLAG} -B"
+          mvn ${BUILD_FLAG} -B
       - name: Test
         env:
           TEST_FLAG: "verify -DskipRat -ntp"
           TEST_MODULES: "-pl :submarine-test-e2e"
         run: |
-          echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B"
-          mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B
+          echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} -B"
+          mvn ${TEST_FLAG} ${TEST_MODULES} -B
   submarine-k8s:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -119,8 +117,8 @@ jobs:
           echo "environment-kubeconfig:" ${KUBECONFIG}
       - name: Build with Maven
         run: |
-          echo ">>> mvn ${BUILD_FLAG} ${PROFILE} -B"
-          mvn ${BUILD_FLAG} ${PROFILE} -B
+          echo ">>> mvn ${BUILD_FLAG} -B"
+          mvn ${BUILD_FLAG} -B
       - name: Build Image locally
         run: .github/scripts/build-image-locally.sh
       - name: Start submarine
@@ -130,8 +128,8 @@ jobs:
           TEST_FLAG: "verify -DskipRat -ntp"
           TEST_MODULES: "-pl :submarine-test-k8s"
         run: |
-          echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B"
-          mvn ${TEST_FLAG} ${TEST_MODULES} ${PROFILE} -B
+          echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} -B"
+          mvn ${TEST_FLAG} ${TEST_MODULES} -B
       - name: Failure status
         run: |
           kubectl describe nodes
@@ -171,14 +169,14 @@ jobs:
       env:
         MODULES: "-pl :submarine-commons-cluster"
       run: |
-        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
-        mvn $BUILD_FLAG $MODULES $PROFILE -B
+        echo ">>> mvn $BUILD_FLAG $MODULES -B"
+        mvn $BUILD_FLAG $MODULES -B
     - name: Test
       env:
         TEST_MODULES: "-pl :submarine-commons-cluster"
       run: |
-        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
-        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+        mvn $TEST_FLAG $TEST_MODULES -B
   submarine-commons-runtime:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -207,14 +205,14 @@ jobs:
       env:
         MODULES: "-pl :submarine-commons-runtime"
       run: |
-        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
-        mvn $BUILD_FLAG $MODULES $PROFILE -B
+        echo ">>> mvn $BUILD_FLAG $MODULES -B"
+        mvn $BUILD_FLAG $MODULES -B
     - name: Test
       env:
         TEST_MODULES: "-pl :submarine-commons-runtime"
       run: |
-        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
-        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+        mvn $TEST_FLAG $TEST_MODULES -B
   submarine-client:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -243,14 +241,14 @@ jobs:
       env:
         MODULES: "-pl :submarine-client"
       run: |
-        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
-        mvn $BUILD_FLAG $MODULES $PROFILE -B
+        echo ">>> mvn $BUILD_FLAG $MODULES -B"
+        mvn $BUILD_FLAG $MODULES -B
     - name: Test
       env:
         TEST_MODULES: "-pl :submarine-client"
       run: |
-        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
-        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+        mvn $TEST_FLAG $TEST_MODULES -B
   submarine-server:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -294,14 +292,14 @@ jobs:
       env:
         MODULES: "-pl :submarine-server-core"
       run: |
-        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
-        mvn $BUILD_FLAG $MODULES $PROFILE -B
+        echo ">>> mvn $BUILD_FLAG $MODULES -B"
+        mvn $BUILD_FLAG $MODULES -B
     - name: Test
       env:
         TEST_MODULES: "-pl :submarine-server-core"
       run: |
-        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
-        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+        mvn $TEST_FLAG $TEST_MODULES -B
   submarine-workbench:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -331,10 +329,6 @@ jobs:
   submarine-submitter:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    strategy:
-      matrix:
-        hadoop-version: ["2.9", "2.10", "3.1", "3.2"]
-      fail-fast: false
     steps:
     - uses: actions/checkout@v2
       with:
@@ -360,17 +354,15 @@ jobs:
     - name: Build
       env:
         MODULES: "-pl :submarine-server-submitter"
-        PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
       run: |
-        echo ">>> mvn $BUILD_FLAG $MODULES $PROFILE -B"
-        mvn $BUILD_FLAG $MODULES $PROFILE -B
+        echo ">>> mvn $BUILD_FLAG $MODULES -B"
+        mvn $BUILD_FLAG $MODULES -B
     - name: Test
       env:
         TEST_MODULES: "-pl :submarine-server-submitter"
-        PROFILE: "-Phadoop-${{ matrix.hadoop-version }}"
       run: |
-        echo ">>> mvn $TEST_FLAG $TEST_MODULES $PROFILE -B"
-        mvn $TEST_FLAG $TEST_MODULES $PROFILE -B
+        echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+        mvn $TEST_FLAG $TEST_MODULES -B
 
   rat:
     name: Check License
@@ -498,7 +490,7 @@ jobs:
         run: ./dev-support/cicd/coverage.sh
       - name: Build and analyze with JDK 11 # sonar-maven-plugin only support JDK 11
         run:
-          mvn -B verify -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -pl $EXCLUDE_MODULE -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_submarine
+          mvn -B verify -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_submarine
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
