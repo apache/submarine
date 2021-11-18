@@ -1,0 +1,90 @@
+---
+# Source: submarine/templates/submarine-server.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "submarine-server"
+---
+# Source: submarine/templates/submarine-server.yaml
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: "submarine-server"
+  labels:
+    app: "submarine-server"
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: "submarine-server"
+---
+# Source: submarine/templates/submarine-server.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "submarine-server"
+spec:
+  selector:
+    matchLabels:
+      app: "submarine-server"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "submarine-server"
+      
+    spec:
+      serviceAccountName: "submarine-server"
+      initContainers:
+      - name: submarine-server-initcontainer
+        image: "minio/mc"
+        command: ["/bin/bash", "-c", 
+        "cnt=0;
+        while ! /bin/bash -c 'mc config host add minio http://submarine-minio-service:9000 
+        submarine_minio submarine_minio' 2>&1; 
+        do
+          sleep 15;
+          ((cnt=cnt+1));
+          if [ $cnt -eq 80 ];then
+            echo 'ERROR: wait too long for minio pod';
+            exit 1;
+          fi;
+        done;
+        if /bin/bash -c 'mc ls minio/submarine' >/dev/null 2>&1; then
+          echo 'Bucket minio/submarine already exists, skipping creation.';
+        else
+          /bin/bash -c 'mc mb minio/submarine';
+        fi;"]
+      containers:
+      - name: "submarine-server"
+        env:
+        - name: SUBMARINE_SERVER_PORT
+          value: "8080"
+        - name: SUBMARINE_SERVER_PORT_8080_TCP
+          value: "8080"
+        - name: K8S_APISERVER_URL
+          value: "kubernetes.default.svc"
+
+        image: "apache/submarine:server-0.7.0-SNAPSHOT"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080

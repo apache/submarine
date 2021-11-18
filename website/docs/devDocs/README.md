@@ -43,24 +43,20 @@ Store the pre-release files.
 
 Provide Python SDK for submarine user.
 
-### 2.6. submarine-security
-
-Provide authorization for Apache Spark to talking to Ranger Admin.
-
-### 2.7. submarine-server
+### 2.6. submarine-server
 
 Include core server, restful api, and k8s/yarn submitter.
 
-### 2.8. submarine-test
+### 2.7. submarine-test
 
 Provide end-to-end and k8s test for submarine.
 
-### 2.9. submarine-workbench
+### 2.8. submarine-workbench
 
 - workbench-server: is a Jetty-based web server service. Workbench-server provides RESTful interface and Websocket interface. The RESTful interface provides workbench-web with management capabilities for databases such as project, department, user, and role.
 - workbench-web: is a web front-end service based on Angular.js framework. With workbench-web users can manage Submarine project, department, user, role through browser. You can also use the notebook to develop machine learning algorithms, model release and other lifecycle management.
 
-### 2.10 dev-support
+### 2.9 dev-support
 
 - **mini-submarine**: by using the docker image provided by Submarine, you can
   experience all the functions of Submarine in a single docker environment, while

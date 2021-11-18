@@ -36,7 +36,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,8 +61,8 @@ public class DictAnnotation {
     BeanGenerator generator = new BeanGenerator();
 
     Set keySet = mapProperty.keySet();
-    for (Iterator<String> it = keySet.iterator(); it.hasNext(); ) {
-      String key = it.next();
+    for (Object elem : keySet) {
+      String key = (String) elem;
       generator.addProperty(key, (Class) mapProperty.get(key));
     }
     return generator.create();
@@ -100,8 +99,7 @@ public class DictAnnotation {
     BeanInfo beanInfo = Introspector.getBeanInfo(objectClass);
     PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
     // Get data that already exists in the object
-    for (int i = 0; i < propertyDescriptors.length; i++) {
-      PropertyDescriptor descriptor = propertyDescriptors[i];
+    for (PropertyDescriptor descriptor : propertyDescriptors) {
       String propertyName = descriptor.getName();
       if (!propertyName.equals("class")) {
         Method readMethod = descriptor.getReadMethod();
@@ -131,13 +129,11 @@ public class DictAnnotation {
     // Map to entity object
     DictAnnotation bean = new DictAnnotation(mapFieldAndType);
     Set<String> keys = mapFieldAndType.keySet();
-    for (Iterator<String> it = keys.iterator(); it.hasNext(); ) {
-      String key = it.next();
+    for (String key : keys) {
       bean.setValue(key, mapFieldValues.get(key));
     }
 
-    Object newObj = bean.getObject();
-    return newObj;
+    return bean.getObject();
   }
 
   public static boolean parseDictAnnotation(Object result) throws Exception {

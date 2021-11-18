@@ -16,11 +16,11 @@
 import pytest
 import tensorflow as tf
 
-from submarine.ml.tensorflow.model import NFM
-
 
 @pytest.mark.skipif(tf.__version__ >= "2.0.0", reason="requires tf1")
 def test_run_nfm(get_model_param):
+    from submarine.ml.tensorflow.model import NFM
+
     params = get_model_param
 
     model = NFM(model_params=params)

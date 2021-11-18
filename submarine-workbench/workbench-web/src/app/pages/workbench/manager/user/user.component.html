@@ -21,6 +21,12 @@
   <div class="user-table-operate">
     <form nz-form [nzLayout]="'inline'" [formGroup]="form">
       <nz-form-item>
+        <nz-form-label>User Name</nz-form-label>
+        <nz-form-control>
+          <input nz-input formControlName="userName" />
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
         <nz-form-label>Department</nz-form-label>
         <nz-form-control>
           <nz-tree-select
@@ -32,12 +38,6 @@
             formControlName="deptCode"
             [nzNodes]="sysDeptTreeList"
           ></nz-tree-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label>Account Name</nz-form-label>
-        <nz-form-control>
-          <input nz-input formControlName="accountName" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -64,7 +64,7 @@
   <nz-table #table [nzData]="userList" [nzScroll]="{ x: '1100px' }" nzNoResult="No result" nzBordered>
     <thead>
       <tr>
-        <th>Account Name</th>
+        <th>User Name</th>
         <th>Real Name</th>
         <th>Department</th>
         <th>Role</th>
@@ -116,7 +116,7 @@
 
 <submarine-user-password-modal
   [visible]="resetPasswordModalVisible"
-  [accountName]="currentSysUser?.userName"
+  [userName]="currentSysUser?.userName"
   (close)="onHideResetPasswordModal()"
   (ok)="onChangePassword($event)"
 ></submarine-user-password-modal>

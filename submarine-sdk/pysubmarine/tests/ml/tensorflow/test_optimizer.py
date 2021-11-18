@@ -16,11 +16,11 @@
 import pytest
 import tensorflow as tf
 
-from submarine.ml.tensorflow.optimizer import get_optimizer
-
 
 @pytest.mark.skipif(tf.__version__ >= "2.0.0", reason="requires tf1")
 def test_get_optimizer():
+    from submarine.ml.tensorflow.optimizer import get_optimizer
+
     optimizer_keys = ["adam", "adagrad", "momentum", "ftrl"]
     invalid_optimizer_keys = ["adddam"]
 

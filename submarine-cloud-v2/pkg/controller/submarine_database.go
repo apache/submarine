@@ -26,131 +26,46 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 	"k8s.io/klog/v2"
 )
 
 func newSubmarineDatabasePersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
-	storageClassName := storageClassName
-	return &corev1.PersistentVolumeClaim{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: databasePvcName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: corev1.PersistentVolumeClaimSpec{
-			AccessModes: []corev1.PersistentVolumeAccessMode{
-				corev1.ReadWriteOnce,
-			},
-			Resources: corev1.ResourceRequirements{
-				Requests: corev1.ResourceList{
-					corev1.ResourceStorage: resource.MustParse(submarine.Spec.Database.StorageSize),
-				},
-			},
-			StorageClassName: &storageClassName,
-		},
+	pvc, err := ParsePersistentVolumeClaimYaml(databaseYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParsePersistentVolumeClaim", err)
 	}
+	pvc.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	return pvc
 }
 
 func newSubmarineDatabaseDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployment {
-	databaseImage := submarine.Spec.Database.Image
-	if databaseImage == "" {
-		databaseImage = "apache/submarine:database-" + submarine.Spec.Version
-	}
+	databaseReplicas := *submarine.Spec.Database.Replicas
 
-	return &appsv1.Deployment{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: databaseName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: appsv1.DeploymentSpec{
-			Selector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"app": databaseName,
-				},
-			},
-			Replicas: submarine.Spec.Database.Replicas,
-			Template: corev1.PodTemplateSpec{
-				ObjectMeta: metav1.ObjectMeta{
-					Labels: map[string]string{
-						"app": databaseName,
-					},
-				},
-				Spec: corev1.PodSpec{
-					Containers: []corev1.Container{
-						{
-							Name:            databaseName,
-							Image:           databaseImage,
-							ImagePullPolicy: "IfNotPresent",
-							Ports: []corev1.ContainerPort{
-								{
-									ContainerPort: databasePort,
-								},
-							},
-							Env: []corev1.EnvVar{
-								{
-									Name:  "MYSQL_ROOT_PASSWORD",
-									Value: "password",
-								},
-							},
-							VolumeMounts: []corev1.VolumeMount{
-								{
-									MountPath: "/var/lib/mysql",
-									Name:      "volume",
-									SubPath:   databaseName,
-								},
-							},
-							ReadinessProbe: &corev1.Probe{
-								Handler: corev1.Handler{
-									TCPSocket: &corev1.TCPSocketAction{
-										Port: intstr.FromInt(databasePort),
-									},
-								},
-							},
-						},
-					},
-					Volumes: []corev1.Volume{
-						{
-							Name: "volume",
-							VolumeSource: corev1.VolumeSource{
-								PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
-									ClaimName: databasePvcName,
-								},
-							},
-						},
-					},
-				},
-			},
-		},
+	deployment, err := ParseDeploymentYaml(databaseYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseDeploymentYaml", err)
 	}
+	deployment.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+	deployment.Spec.Replicas = &databaseReplicas
+
+	return deployment
 }
 
 func newSubmarineDatabaseService(submarine *v1alpha1.Submarine) *corev1.Service {
-	return &corev1.Service{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: databaseName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Spec: corev1.ServiceSpec{
-			Ports: []corev1.ServicePort{
-				{
-					Port:       databasePort,
-					TargetPort: intstr.FromInt(databasePort),
-					Name:       databaseName,
-				},
-			},
-			Selector: map[string]string{
-				"app": databaseName,
-			},
-		},
+	service, err := ParseServiceYaml(databaseYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseServiceYaml", err)
 	}
+	service.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+	return service
 }
 
 // createSubmarineDatabase is a function to create submarine-database.

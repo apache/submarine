@@ -28,7 +28,7 @@
     </commentGenerator>
 
     <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                    connectionURL="jdbc:mysql://127.0.0.1:3306/submarine"
+                    connectionURL="jdbc:mysql://127.0.0.1:3306/submarine?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false&amp;allowMultiQueries=true"
                     userId="submarine"
                     password="password">
     </jdbcConnection>

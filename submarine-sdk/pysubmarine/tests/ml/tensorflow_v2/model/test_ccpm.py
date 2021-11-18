@@ -16,11 +16,11 @@
 import pytest
 import tensorflow as tf
 
-from submarine.ml.tensorflow_v2.model import CCPM
-
 
 @pytest.mark.skipif(tf.__version__ < "2.0.0", reason="requires tf2")
 def test_run_ccpm(get_model_param):
+    from submarine.ml.tensorflow_v2.model import CCPM
+
     params = get_model_param
 
     model = CCPM(model_params=params)

@@ -26,26 +26,26 @@
   [nzBodyStyle]="{ height: 'calc(100% - 55px)', overflow: 'auto', 'padding-bottom': '53px' }"
 >
   <form nz-form [formGroup]="form" nzLayout="horizontal">
-    <!-- Account Name-->
+    <!-- User Name-->
     <nz-form-item>
       <nz-form-label [nzSpan]="labelSpan" nzRequired>
-        Account Name
+        User Name
       </nz-form-label>
       <nz-form-control [nzSpan]="controlSpan" nzHasFeedback [nzErrorTip]="usernameErrorTpl">
         <input
           type="text"
           nz-input
           formControlName="userName"
-          placeholder="User's account name"
+          placeholder="User's name"
           [readOnly]="sysUser?.id"
         />
 
         <ng-template #usernameErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">
-            Please input account's name!
+            Please input user's name!
           </ng-container>
           <ng-container *ngIf="control.hasError('duplicated')">
-            Account name already exist!
+            User name already exist!
           </ng-container>
           <ng-container *ngIf="control.hasError('error')">
             Error

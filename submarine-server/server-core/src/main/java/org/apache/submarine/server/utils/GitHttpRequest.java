@@ -29,6 +29,7 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
@@ -36,15 +37,15 @@ public class GitHttpRequest {
   private static final Logger LOG = LoggerFactory.getLogger(GitHttpRequest.class);
 
   /**
-   * Sends an HTTP request to the specified URL
-   * @param url
-   * @param parameter
-   * @param method
-   * @return
-   * @throws Exception
+   * Sends an HTTP request to the specified URL.
+   * @param url the URL you want to send request to
+   * @param headParams a map of HTTP header parameters
+   * @param content the content of request
+   * @param method the HTTP method
+   * @return String
    */
   public static String sendHttpRequest(String url, Map<String, String> headParams,
-                                       byte[] parameter, String method) {
+                                       byte[] content, String method) {
     // Create a URLConnection
     URLConnection urlConnection = null;
     try {
@@ -52,6 +53,7 @@ public class GitHttpRequest {
     } catch (IOException e) {
       LOG.error(e.getMessage(), e);
     }
+
     // Defines StringBuilder to facilitate string concatenation later
     // when reading web pages and returning byte stream information
     StringBuilder stringBuilder = new StringBuilder();
@@ -60,19 +62,22 @@ public class GitHttpRequest {
     HttpURLConnection httpURLConnection = (HttpURLConnection) urlConnection;
     httpURLConnection.setDoInput(true);
     httpURLConnection.setDoOutput(true);
-    // Set the request, which could be delete put post get
+
+    // Set the request, which could be deleted put post get
     try {
       httpURLConnection.setRequestMethod(method);
     } catch (ProtocolException e) {
       LOG.error(e.getMessage(), e);
     }
-    if (parameter != null) {
+
+    if (content != null) {
       // Sets the length of the content
-      httpURLConnection.setRequestProperty("Content-Length", String.valueOf(parameter.length));
+      httpURLConnection.setRequestProperty("Content-Length", String.valueOf(content.length));
     }
+
     // Set encoding format
     httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
-    // Sets the format of the receive return parameter
+    // Sets the format of the received return parameter
     httpURLConnection.setRequestProperty("accept", "application/json");
     httpURLConnection.setRequestProperty("connection", "Keep-Alive");
     httpURLConnection.setRequestProperty("user-agent",
@@ -85,19 +90,21 @@ public class GitHttpRequest {
         httpURLConnection.setRequestProperty(key, headParams.get(key));
       }
     }
+
     httpURLConnection.setUseCaches(false);
 
-    if (parameter != null) {
+    if (content != null) {
       try (BufferedOutputStream outputStream =
                new BufferedOutputStream(httpURLConnection.getOutputStream())) {
-        outputStream.write(parameter);
+        outputStream.write(content);
         outputStream.flush();
       } catch (IOException e) {
         LOG.error(e.getMessage(), e);
       }
     }
+
     try (InputStreamReader inputStreamReader =
-             new InputStreamReader(httpURLConnection.getInputStream(), "utf-8");
+             new InputStreamReader(httpURLConnection.getInputStream(), StandardCharsets.UTF_8);
          BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
       String line;
       while ((line = bufferedReader.readLine()) != null) {
@@ -107,7 +114,7 @@ public class GitHttpRequest {
       LOG.error(e.getMessage(), e);
     }
 
-    LOG.info("result:{}", stringBuilder.toString());
+    LOG.info("result:{}", stringBuilder);
     return stringBuilder.toString();
   }
 }

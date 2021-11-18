@@ -19,13 +19,26 @@ name: python-sdk
 on: [push, pull_request]
 
 jobs:
+  check-style:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip  
+          pip install -r ./dev-support/style-check/python/lint-requirements.txt
+          pip install -r ./dev-support/style-check/python/mypy-requirements.txt
+      - name: Check python sdk code style
+        run: ./dev-support/style-check/python/lint.sh
+
   unit:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       matrix:
         python-version: [3.6, 3.7]
-        tf-version: [1.14.0, 1.15.0, 2.6.0]
+        tf-version: [1.15.0, 2.6.0]
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
@@ -33,19 +46,16 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+      - name: Install requirements
         run: |
-          pip install --upgrade pip
-          pip install --no-cache-dir tensorflow==${{ matrix.tf-version }}
-          pip install --no-cache-dir torch==1.5.0
-          pip install --no-cache-dir tensorflow-addons
-          pip install --no-cache-dir tf_slim
-          pip install --no-cache-dir ./submarine-sdk/pysubmarine/.
+          pip install --upgrade pip  
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-          pip install -r ./dev-support/style-check/python/lint-requirements.txt
-          pip install -r ./dev-support/style-check/python/mypy-requirements.txt
-      - name: Check python sdk code style
-        run: ./dev-support/style-check/python/lint.sh
+      - name: Install pysubmarine with tf1 and pytorch
+        if: matrix.tf-version == '1.15.0'
+        run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
+      - name: Install pysubmarine with tf2 and pytorch
+        if: matrix.tf-version == '2.6.0'
+        run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
       - name: Run unit test
         run: pytest --cov=submarine -vs -m "not e2e"
 

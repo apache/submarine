@@ -26,14 +26,14 @@ import org.apache.submarine.server.experimenttemplate.database.entity.Experiment
 
 public interface ExperimentTemplateMapper {
 
-  ExperimentTemplateEntity select(String ExperimentTemplateName);
+  ExperimentTemplateEntity select(String experimentTemplateName);
 
-  int insert(ExperimentTemplateEntity ExperimentTemplate);
+  int insert(ExperimentTemplateEntity experimentTemplate);
 
-  int update(ExperimentTemplateEntity ExperimentTemplate);
+  int update(ExperimentTemplateEntity experimentTemplate);
 
-  int delete(String ExperimentTemplateName);
+  int delete(String experimentTemplateName);
 
-  List<ExperimentTemplateEntity> selectByKey(ExperimentTemplateEntity ExperimentTemplate);
-  
+  List<ExperimentTemplateEntity> selectByKey(ExperimentTemplateEntity experimentTemplate);
+
 }

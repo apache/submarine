@@ -31,59 +31,27 @@ import (
 )
 
 func newSubmarineServerRole(submarine *v1alpha1.Submarine) *rbacv1.Role {
-	return &rbacv1.Role{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: serverName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Rules: []rbacv1.PolicyRule{
-			{
-				Verbs:     []string{"get", "list", "watch", "create", "delete", "deletecollection", "patch", "update"},
-				APIGroups: []string{"kubeflow.org"},
-				Resources: []string{"tfjobs", "tfjobs/status", "pytorchjobs", "pytorchjobs/status", "notebooks", "notebooks/status"},
-			},
-			{
-				Verbs:     []string{"get", "list", "watch", "create", "delete", "deletecollection", "patch", "update"},
-				APIGroups: []string{"traefik.containo.us"},
-				Resources: []string{"ingressroutes"},
-			},
-			{
-				Verbs:     []string{"*"},
-				APIGroups: []string{""},
-				Resources: []string{"pods", "pods/log", "services", "persistentvolumes", "persistentvolumeclaims"},
-			},
-			{
-				Verbs:     []string{"*"},
-				APIGroups: []string{"apps"},
-				Resources: []string{"deployments", "deployments/status"},
-			},
-		},
+	role, err := ParseRoleYaml(rbacYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseRole", err)
 	}
+	role.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	return role
 }
 
 func newSubmarineServerRoleBinding(submarine *v1alpha1.Submarine) *rbacv1.RoleBinding {
-	return &rbacv1.RoleBinding{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: serverName,
-			OwnerReferences: []metav1.OwnerReference{
-				*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-			},
-		},
-		Subjects: []rbacv1.Subject{
-			{
-				Kind:      "ServiceAccount",
-				Namespace: submarine.Namespace,
-				Name:      serverName,
-			},
-		},
-		RoleRef: rbacv1.RoleRef{
-			Kind:     "Role",
-			Name:     serverName,
-			APIGroup: "rbac.authorization.k8s.io",
-		},
+	roleBinding, err := ParseRoleBindingYaml(rbacYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseRoleBinding", err)
 	}
+	roleBinding.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	return roleBinding
 }
 
 // createSubmarineServerRBAC is a function to create RBAC for submarine-server.

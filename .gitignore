@@ -82,9 +82,6 @@ submarine-cloud/hack/conf/*
 submarine-cloud/hack/output/*
 submarine-cloud/bin/*
 
-submarine-security/spark-security/dependency-reduced-pom.xml
-submarine-security/spark-security/derby.log
-
 # submarine-cloud-v2
 submarine-cloud-v2/vendor/*
 submarine-cloud-v2/submarine-operator
