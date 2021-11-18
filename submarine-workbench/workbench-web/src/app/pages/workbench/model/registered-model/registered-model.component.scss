@@ -16,3 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+.basic-box {
+  margin-bottom: 5px;
+  font-size: 17px;
+  font-family: Arial;
+}
+td {
+  border: 1px solid black;
+  width: 200px;
+  height: 35px;
+  padding-left: 5px;
+}
+::placeholder {
+  font-size: 17px;
+}
+.info-box {
+  margin-bottom: 5px;
+  font-size: 17px;
+  font-family: Arial;
+  display: inline-block;
+}

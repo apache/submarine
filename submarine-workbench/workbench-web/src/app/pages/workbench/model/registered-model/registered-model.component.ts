@@ -17,18 +17,21 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ModelInfo } from '@submarine/interfaces/model-info';
 
 @Component({
   selector: 'app-registered-model',
   templateUrl: './registered-model.component.html',
-  styleUrls: ['./registered-model.component.scss']
+  styleUrls: ['./registered-model.component.scss'],
 })
 export class RegisteredModelComponent implements OnInit {
+  name;
 
-  constructor() { }
+  constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
+    this.name = this.route.snapshot.params.name;
   }
-
 }

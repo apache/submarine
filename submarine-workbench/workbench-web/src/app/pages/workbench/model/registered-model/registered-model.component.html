@@ -16,32 +16,12 @@
   ~ specific language governing permissions and limitations
   ~ under tde License.
   -->
-<style>
-  .basic-box {
-    margin-bottom: 5px;
-    font-size: 17px;
-    font-family: Arial;
-  }
-  td {
-    border: 1px solid black;
-    width: 200px;
-    height: 35px;
-    padding-left: 5px;
-  }
-  ::placeholder {
-    font-size: 17px;
-  }
-  .info-box {
-    margin-bottom: 5px;
-    font-size: 17px;
-    font-family: Arial;
-    display: inline-block;
-  }
-</style>
 <div style="margin: 15px; padding: 15px; background-color: white">
-  <div><h1 style="font-weight: lighter">${Registered Model Name}</h1></div>
   <div>
-    <div style="margin: 5px 0px 5px 0px; font-size: 17px; font-family: Arial">Description: tdis is a description.</div>
+    <h1 style="font-weight: lighter">{{ name }}</h1>
+  </div>
+  <div>
+    <div style="margin: 5px 0px 5px 0px; font-size: 17px; font-family: Arial">Description: This is a description.</div>
     <div class="basic-box">
       <div style="display: inline-block">Tags:</div>
       <div style="display: inline-block; background-color: #53c653; margin: 3px; padding: 3px">image</div>
@@ -77,7 +57,7 @@
     </thead>
     <tbody>
       <tr>
-        <td>1</td>
+        <td><a [routerLink]="1">1</a></td>
         <td></td>
         <td></td>
         <td>...</td>
@@ -85,7 +65,7 @@
         <td>2021-09-01 07:57</td>
       </tr>
       <tr>
-        <td>2</td>
+        <td><a [routerLink]="2">2</a></td>
         <td></td>
         <td></td>
         <td>...</td>
