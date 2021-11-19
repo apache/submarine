@@ -21,18 +21,15 @@ title: How to Release
 
 ## 0. Preface
 
-Source Release is the focus of Apache’s attention and it is also a required content for release. Binary Release is optional, InLong can choose whether to release the binary package to the Apache warehouse or to the Maven central warehouse.
+Source Release is the focus of Apache’s attention and it is also a required content for release. Binary Release is optional, Submarine can choose whether to release the binary package to the Apache warehouse or to the Maven central warehouse.
 
 Please refer to the following link to find more ASF release guidelines:
 
 [Apache Release Guide](https://incubator.apache.org/guides/releasemanagement.html)
 
-[Apache incubator](https://incubator.apache.org/)
-
 ## 1. Add GPG KEY
 
-> Main references in this chapter:https://infra.apache.org/openpgp.html
-> **This chapter is only needed for the first release manager of the project.**
+> Main references in this chapter:https://infra.apache.org/openpgp.html > **This chapter is only needed for the first release manager of the project.**
 
 ### 1.1 Install gpg
 
@@ -141,29 +138,29 @@ The query results are as follows:
 
 > SVN is required for this step
 
-The svn library of the DEV branch is https://dist.apache.org/repos/dist/dev/incubator/inlong
+The svn library of the DEV branch is https://dist.apache.org/repos/dist/dev/incubator/Submarine
 
-The SVN library of the Release branch is https://dist.apache.org/repos/dist/release/incubator/inlong
+The SVN library of the Release branch is https://dist.apache.org/repos/dist/release/incubator/submarine
 
 #### 1.5.1 Add the public key to KEYS in the dev branch to release the RC version
 
 ```shell
-➜  ~ svn co https://dist.apache.org/repos/dist/dev/incubator/inlong /tmp/inlong-dist-dev
+➜  ~ svn co https://dist.apache.org/repos/dist/dev/incubator/submarine /tmp/submarine-dist-dev
 # This step is relatively slow, and all versions will be copied. If the network is disconnected, use svn cleanup to delete the lock and re-execute it, and the transfer will be resumed.
-➜  ~ cd inlong-dist-dev
-➜  inlong-dist-dev ~ (gpg --list-sigs YOUR_NAME@apache.org && gpg --export --armor YOUR_NAME@apache.org) >> KEYS # Append the KEY you generated to the file KEYS, it is best to check if it is correct after appending.
-➜  inlong-dist-dev ~ svn add .	# If there is a KEYS file before, it is not needed.
-➜  inlong-dist-dev ~ svn ci -m "add gpg key for YOUR_NAME" # Next, you will be asked to enter a username and password, just use your apache username and password.
+➜  ~ cd submarine-dist-dev
+➜  submarine-dist-dev ~ (gpg --list-sigs YOUR_NAME@apache.org && gpg --export --armor YOUR_NAME@apache.org) >> KEYS # Append the KEY you generated to the file KEYS, it is best to check if it is correct after appending.
+➜  submarine-dist-dev ~ svn add .	# If there is a KEYS file before, it is not needed.
+➜  submarine-dist-dev ~ svn ci -m "add gpg key for YOUR_NAME" # Next, you will be asked to enter a username and password, just use your apache username and password.
 ```
 
 #### 1.5.2 Add the public key to KEYS in the release branch to release the official version
 
 ```shell
-➜  ~ svn co https://dist.apache.org/repos/dist/release/incubator/inlong /tmp/inlong-dist-release
-➜  ~ cd inlong-dist-release
-➜  inlong-dist-release ~ (gpg --list-sigs YOUR_NAME@apache.org && gpg --export --armor YOUR_NAME@apache.org) >> KEYS	# Append the KEY you generated to the file KEYS, it is best to check if it is correct after appending.
-➜  inlong-dist-release ~ svn add .	# If there is a KEYS file before, it is not needed.
-➜  inlong-dist-release ~ svn ci -m "add gpg key for YOUR_NAME" # Next, you will be asked to enter a username and password, just use your apache username and password.
+➜  ~ svn co https://dist.apache.org/repos/dist/release/incubator/submarine /tmp/submarine-dist-release
+➜  ~ cd submarine-dist-release
+➜  submarine-dist-release ~ (gpg --list-sigs YOUR_NAME@apache.org && gpg --export --armor YOUR_NAME@apache.org) >> KEYS	# Append the KEY you generated to the file KEYS, it is best to check if it is correct after appending.
+➜  submarine-dist-release ~ svn add .	# If there is a KEYS file before, it is not needed.
+➜  submarine-dist-release ~ svn ci -m "add gpg key for YOUR_NAME" # Next, you will be asked to enter a username and password, just use your apache username and password.
 ```
 
 ### 1.6 Upload GPG public key to Github account
@@ -245,8 +242,8 @@ $ git config user.signingkey ${KEY_ID}
 > After the tag is successfully created, the tag source code should be packaged into a tar package.
 
 ```shell
-mkdir /tmp/apache-inlong-${release_version}-${rc_version}
-git archive --format=tar.gz --output="/tmp/apache-inlong-${release_version}-${rc_version}/apache-inlong-${release_version}-src.tar.gz" --prefix="apache-inlong-${release_version}/" $git_tag
+mkdir /tmp/apache-submarine-${release_version}-${rc_version}
+git archive --format=tar.gz --output="/tmp/apache-submarine-${release_version}-${rc_version}/apache-submarine-${release_version}-src.tar.gz" --prefix="apache-submarine-${release_version}/" $git_tag
 ```
 
 ### 3.4 Packaged binary package
@@ -254,11 +251,11 @@ git archive --format=tar.gz --output="/tmp/apache-inlong-${release_version}-${rc
 > Compile the source code packaged in the previous step
 
 ```shell
-cd /tmp/apache-inlong-${release_version}-${rc_version} # Enter the source package directory.
-tar xzvf apache-inlong-${release_version}-src.tar.gz # Unzip the source package.
-cd apache-inlong-${release_version} # Enter the source directory.
+cd /tmp/apache-submarine-${release_version}-${rc_version} # Enter the source package directory.
+tar xzvf apache-submarine-${release_version}-src.tar.gz # Unzip the source package.
+cd apache-submarine-${release_version} # Enter the source directory.
 mvn compile clean install package -DskipTests # Compile.
-cp ./inlong-distribution/target/apache-inlong-${release_version}-bin.tar.gz /tmp/apache-inlong-${release_version}-${rc_version}/  # Copy the binary package to the source package directory to facilitate signing the package in the next step.
+cp ./submarine-distribution/target/apache-submarine-${release_version}-bin.tar.gz /tmp/apache-submarine-${release_version}-${rc_version}/  # Copy the binary package to the source package directory to facilitate signing the package in the next step.
 ```
 
 ### 3.5 Sign the source package/binary package/sha512
@@ -282,9 +279,9 @@ for i in *.tar.gz; do echo $i; gpg --verify $i.asc $i ; done
 ### 4.1 Publish the jar package to the Apache Nexus repository
 
 ```shell
-cd /tmp/apache-inlong-${release_version}-${rc_version} # Enter the source package directory
-tar xzvf apache-inlong-${release_version}-src.tar.gz # Unzip the source package
-cd apache-inlong-${release_version}
+cd /tmp/apache-submarine-${release_version}-${rc_version} # Enter the source package directory
+tar xzvf apache-submarine-${release_version}-src.tar.gz # Unzip the source package
+cd apache-submarine-${release_version}
 mvn -DskipTests deploy -Papache-release -Dmaven.javadoc.skip=true  # Start upload
 ```
 
@@ -296,22 +293,22 @@ git push origin ${release_version}-${rc_version}
 
 ### 4.3 Upload the compiled file to dist
 
-> This step requires the use of SVN, the svn library of the DEV branch is https://dist.apache.org/repos/dist/dev/incubator/inlong
+> This step requires the use of SVN, the svn library of the DEV branch is https://dist.apache.org/repos/dist/dev/incubator/submarine
 
-### 4.3.1 Checkout InLong to a local directory
+### 4.3.1 Checkout Submarine to a local directory
 
 ```shell
 # This step may be slow, and all versions will be tested. If the network is broken, use svn cleanup to delete the lock and re-execute it, and the upload will be resumed.
-svn co https://dist.apache.org/repos/dist/dev/incubator/inlong /tmp/inlong-dist-dev
+svn co https://dist.apache.org/repos/dist/dev/incubator/submarine /tmp/submarine-dist-dev
 ```
 
 ### 4.3.2 Add the public key to the KEYS file and submit it to the SVN repository
 
 ```shell
-cd /tmp/inlong-dist-dev
+cd /tmp/submarine-dist-dev
 mkdir ${release_version}-${rc_version} # Create version directory
 # Copy the source code package and signed package here.
-cp /tmp/apache-inlong-${release_version}-${rc_version}/*tar.gz* ${release_version}-${rc_version}/
+cp /tmp/apache-submarine-${release_version}-${rc_version}/*tar.gz* ${release_version}-${rc_version}/
 svn status # Check svn status.
 svn add ${release_version}-${rc_version} # Add to svn version.
 svn status # Check svn status.
@@ -324,152 +321,94 @@ svn commit -m "prepare for ${release_version} ${rc_version}"     # Submit to svn
 
 1. **Log in** http://repository.apache.org , with Apache account
 2. Click on Staging repositories on the left.
-3. Search for InLong keywords and select the repository you uploaded recently.
+3. Search for Submarine keywords and select the repository you uploaded recently.
 4. Click the Close button above, and a series of checks will be performed during this process.
 5. After the check is passed, a link will appear on the Summary tab below. Please save this link and put it in the next voting email.
-   The link should look like: `https://repository.apache.org/content/repositories/orgapacheinlong-xxxx`
+   The link should look like: `https://repository.apache.org/content/repositories/orgapachesubmarine-xxxx`
 
 WARN: Please note that clicking Close may fail, please check the reason for the failure and deal with it.
 
 ## 5. Enter voting
 
-> InLong is an incubator project, which needs two votes.
+> To vote in the Submarine community, send an email to:`dev@submarine.apache.org`
 
-- To vote in the InLong community, send an email to:`dev@inlong.apache.org`
-- To vote in the incubator community, send an email to:`general@incubator.apache.org`
-  After InLong graduates, no longer need to vote in the incubator community.
+### Vote in the Submarine community
 
-### 5.1 Vote in the InLong community
-
-#### 5.1.1 Voting template
+#### Voting template
 
 ```html
-Title：[VOTE] Release Apache InLong ${release_version} ${rc_version} Content：
-Hello Apache InLong PPMC and Community, This is a call for a vote to release
-Apache InLong version ${release_version}-${rc_version}. The tag to be voted on
-is ${release_version}-${rc_version}:
-https://github.com/apache/incubator-inlong/tree/${release_version}-${rc_version}
+Title：[VOTE] Release Apache Submarine ${release_version} ${rc_version}
+Content： Hello Apache Submarine PPMC and Community, This is a call for a vote
+to release Apache Submarine version ${release_version}-${rc_version}. The tag to
+be voted on is ${release_version}-${rc_version}:
+https://github.com/apache/incubator-submarine/tree/${release_version}-${rc_version}
 The release tarball, signature, and checksums can be found at:
-https://dist.apache.org/repos/dist/dev/incubator/inlong/${release_version}-${rc_version}/
+https://dist.apache.org/repos/dist/dev/incubator/submarine/${release_version}-${rc_version}/
 Maven artifacts are available in a staging repository at:
-https://repository.apache.org/content/repositories/orgapacheinlong-{staging-id}
+https://repository.apache.org/content/repositories/orgapachesubmarine-{staging-id}
 Artifacts were signed with the {YOUR_PUB_KEY} key which can be found in:
-https://downloads.apache.org/incubator/inlong/KEYS ${release_version} includes ~
-${issue_count} bug fixes and improvements done since last versions which can be
-found at:
-https://github.com/apache/incubator-inlong/blob/${release_version}-${rc_version}/CHANGES.md
+https://downloads.apache.org/incubator/submarine/KEYS ${release_version}
+includes ~ ${issue_count} bug fixes and improvements done since last versions
+which can be found at:
+https://github.com/apache/incubator-submarine/blob/${release_version}-${rc_version}/CHANGES.md
 Please download, verify, and test. The VOTE will remain open for at least 72
-hours. [ ] +1 Release this package as Apache InLong ${release_version} [ ] +0 [
-] -1 Do not release this package because... To learn more about apache inlong,
-please see http://inlong.apache.org/ Checklist for reference: [ ] Download links
-are valid. [ ] Checksums and signatures. [ ] LICENSE/NOTICE/DISCLAIMER files
-exist [ ] No unexpected binary files [ ] All source files have ASF headers [ ]
-Can compile from source [ ] All Tests Passed More detailed checklist please
-refer to:
+hours. [ ] +1 Release this package as Apache Submarine ${release_version} [ ] +0
+[ ] -1 Do not release this package because... To learn more about apache
+Submarine, please see http://submarine.apache.org/ Checklist for reference: [ ]
+Download links are valid. [ ] Checksums and signatures. [ ]
+LICENSE/NOTICE/DISCLAIMER files exist [ ] No unexpected binary files [ ] All
+source files have ASF headers [ ] Can compile from source [ ] All Tests Passed
+More detailed checklist please refer to:
 https://cwiki.apache.org/confluence/display/INCUBATOR/Incubator+Release+Checklist
-Thanks, Your InLong Release Manager
+Thanks, Your Submarine Release Manager
 ```
 
-#### 5.1.2 Announce voting results template
+#### Announce voting results template
 
 ```html
-Title：[RESULT][VOTE] Release Apache InLong ${release_version} ${rc_version}
-Content： Hello Apache InLong PPMC and Community, The vote closes now as 72hr
+Title：[RESULT][VOTE] Release Apache Submarine ${release_version} ${rc_version}
+Content： Hello Apache Submarine PPMC and Community, The vote closes now as 72hr
 have passed. The vote PASSES with xx (+1 non-binding) votes from the PPMC, xx
 (+1 binding) vote from the IPMC, xx (+1 non-binding) vote from the rest of the
 developer community, and no further 0 or -1 votes. The vote thread:
 {vote_mail_address} I will now bring the vote to general@incubator.apache.org to
 get approval by the IPMC. If this vote passes also, the release is accepted and
-will be published. Thank you for your support. Your InLong Release Manager
-```
-
-### 5.2 Vote in the incubator community
-
-#### 5.2.1 Voting template
-
-```html
-Title：[VOTE] Release Apache InLong(Incubating) ${release_version} ${rc_version}
-Content： Hello Incubator Community, This is a call for a vote to release Apache
-InLong(Incubating) version ${release_version} ${rc_version} The Apache InLong
-community has voted on and approved a proposal to release Apache
-InLong(Incubating) version ${release_version} ${rc_version} We now kindly
-request the Incubator PMC members review and vote on this incubator release.
-InLong community vote thread: • [Voting link] Vote result thread: • [Voting
-result link] The release candidate: •
-https://dist.apache.org/repos/dist/dev/incubator/inlong/${release_version}-${rc_version}/
-Git tag for the release: •
-https://github.com/apache/incubator-inlong/releases/tag/${release_version}-${rc_version}
-Release notes: •
-https://github.com/apache/incubator-inlong/releases/tag/${release_version}-${rc_version}
-The artifacts signed with PGP key [Your KEY], corresponding to [Your email],
-that can be found in keys file: •
-https://downloads.apache.org/incubator/inlong/KEYS The vote will be open for at
-least 72 hours or until necessary number of votes are reached. Please vote
-accordingly: [ ] +1 approve [ ] +0 no opinion [ ] -1 disapprove with the reason
-Thanks, On behalf of Apache InLong(Incubating) community
-```
-
-#### 5.2.2 Announce voting results template
-
-```html
-Title：[RESULT][VOTE] Release Apache InLong ${release_version} {rc_version}
-Content： Hi all Thanks for reviewing and voting for Apache InLong(Incubating)
-${release_version} {rc_version} release, I am happy to announce the release
-voting has passed with [voting results] binding votes, no +0 or -1 votes.
-Binding votes are from IPMC - xxx - xxx - xxx The voting thread is: [Voting
-link] Many thanks for all our mentors helping us with the release procedure, and
-all IPMC helped us to review and vote for Apache InLong(Incubating) release. I
-will be working on publishing the artifacts soon. Thanks On behalf of Apache
-InLong(Incubating) community
+will be published. Thank you for your support. Your Submarine Release Manager
 ```
 
 ## 6. Officially released
 
 ### 6.1 Merge the changes from the release-${release_version} branch to the master branch
 
-### 6.2 Move the source and binary packages from the dev directory of svn to the release directory
-
-```shell
-svn mv https://dist.apache.org/repos/dist/dev/incubator/inlong/${release_version}-${rc_version} https://dist.apache.org/repos/dist/release/incubator/inlong/${release_version} -m "Release ${release_version}"
-```
-
-### 6.3 Confirm whether the packages under dev and release are correct
-
-1. Confirm that `${release_version}-${rc_version}` under [dev](https://dist.apache.org/repos/dist/dev/incubator/inlong/) has been deleted
-2. Delete the release package of the previous version in the [release](https://dist.apache.org/repos/dist/release/incubator/inlong/) directory, these packages will be automatically saved in [here](https://archive.apache.org/dist/incubator/inlong/)
-
-```shell
-svn delete https://dist.apache.org/repos/dist/release/incubator/inlong/${last_release_version} -m "Delete ${last_release_version}"
-```
-
-### 6.4 Release the version in the Apache Staging repository
+### 6.2 Release the version in the Apache Staging repository
 
 > Please make sure all artifacts are fine.
 
 1. Log in to http://repository.apache.org with your Apache account.
 2. Click on Staging repositories on the left.
-3. Search for InLong keywords, select your recently uploaded repository, the repository specified in the voting email.
+3. Search for Submarine keywords, select your recently uploaded repository, the repository specified in the voting email.
 4. Click the `Release` button above, and a series of checks will be carried out during this process.
    **It usually takes 24 hours to wait for the repository to synchronize to other data sources**
 
-### 6.5 Update official website link
+### 6.3 Update official website link
 
-### 6.6. Send an email to`dev@inlong.apache.org` 和 `general@incubator.apache.org`
+### 6.4. Send an email to`dev@submarine.apache.org`
 
 **Please make sure that the repository in 6.4 has been successfully released, generally the email is sent 24 hours after 6.4**
 
 Announce release email template:
 
 ```html
-Title： [ANNOUNCE] Release Apache InLong(incubating) ${release_version}
-Content： Hi all, The Apache InLong(incubating) community is pleased to announce
-that Apache InLong(incubating) ${release_version} has been released! Apache
-InLong is a one-stop data streaming platform that provides automatic, secure,
-distributed, and efficient data publishing and subscription capabilities. This
-platform helps you easily build stream-based data applications. Download Links:
-https://inlong.apache.org/download/main Release Notes:
-https://inlong.apache.org/download/release-${release_version} Website:
-https://inlong.apache.org/ InLong Resources: - Issue:
-https://github.com/apache/incubator-inlong/issues - Mailing list:
-dev@inlong.apache.org Thanks On behalf of Apache InLong(Incubating) community
+Title： [ANNOUNCE] Release Apache Submarine(incubating) ${release_version}
+Content： Hi all, The Apache Submarine(incubating) community is pleased to
+announce that Apache Submarine(incubating) ${release_version} has been released!
+Apache Submarine is a one-stop data streaming platform that provides automatic,
+secure, distributed, and efficient data publishing and subscription
+capabilities. This platform helps you easily build stream-based data
+applications. Download Links: https://submarine.apache.org/download/main Release
+Notes: https://submarine.apache.org/download/release-${release_version} Website:
+https://submarine.apache.org/ Submarine Resources: - Issue:
+https://github.com/apache/incubator-submarine/issues - Mailing list:
+dev@submarine.apache.org Thanks On behalf of Apache Submarine(Incubating)
+community
 ```
