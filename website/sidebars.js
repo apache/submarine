@@ -68,6 +68,7 @@ module.exports = {
                 "community/Bylaws",
                 "community/HowToCommit",
                 "community/contributing",
+                "community/HowToVoteCommitterOrPMC",
             ],
             "Design Docs": [
                 "designDocs/architecture-and-requirements",
