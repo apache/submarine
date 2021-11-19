@@ -17,7 +17,7 @@ title: How to vote a Committer or PMC
    limitations under the License.
 -->
 
-### The voting process of becoming an Submarine Committer or PMC
+### The voting process of becoming a Submarine Committer or PMC
 
 1. After the PMC members of Submarine discover any valuable contributions from the community contributors and obtain the consent of the candidate, they initiate a discussion on the private mailing list of Submarine:
 
