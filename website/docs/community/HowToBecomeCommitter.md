@@ -1,5 +1,5 @@
 ---
-title: How to become an Apache Submarine Committer and PMC
+title: How to become a Committer
 ---
 
 <!--
