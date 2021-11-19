@@ -17,9 +17,9 @@ title: How to become a Committer
    limitations under the License.
 -->
 
-Apache Submarine builds a community completely in accordance with Apache’s rules. Apache Committer is a term used in ASF (Apache Software Foundation) to indicate the person who submits a specific project. Apache Submarine Committer has the permission to write the Submarine codebase and can merge PR. Anyone who has made enough contributions to the community and gained enough trust can become an Apache Submarine Committer.
+Apache Submarine builds a community completely following Apache’s rules. Apache Committer is a term used in ASF (Apache Software Foundation) to indicate the person who submits a specific project. Apache Submarine Committer has permission to write the Submarine codebase and can merge PR. Anyone who has made enough contributions to the community and gained enough trust can become an Apache Submarine Committer.
 
-As long as anyone contributes to the Submarine project, then you are the officially recognized Contributor of the Submarine project. There is no exact standard for growing from Contributor to Committer, and there is no expected timetable, but Committer candidates are generally A long-term active contributor, becoming Committer does not require a huge architectural improvement contribution, or how many lines of code contribution. Contributing to the codebase, contributing to the documents, participating in the discussion of the mailing list, helping to answer questions, etc., are all ways to increase your influence.
+As long as anyone contributes to the Submarine project, you are the officially recognized Contributor of the Submarine project. There is no exact standard for growing from Contributor to Committer, and there is no expected timetable, but Committer candidates are generally long-term active contributors, becoming Committer does not require a huge architectural improvement contribution, or how many lines of code contribution. Contributing to the codebase, contributing to the documents, participating in the discussion of the mailing list, helping to answer questions, etc., are all ways to increase your influence.
 
 List of potential contributions (in no particular order):
 
@@ -30,7 +30,7 @@ List of potential contributions (in no particular order):
 - Participate in the discussion on the mailing list, usually there will be mails starting with [DISCUSS]
 - Answer questions from users or developers on the mailing list
 - Review the work of others (both code and non-code) and publish your own suggestions
-- Review the issues on JIRA and maintain the latest status of the issues, such as: closing outdated issues, changing the issue’s error information, etc.
+- Review the issues on JIRA and maintain the latest status of the issues, such as closing outdated issues, changing the issue’s error information, etc.
 - Guide new contributors and be familiar with the community process
 - Give speeches and blogs about Submarine, and add these to the official website of Submarine
 - Any contribution that is beneficial to the development of the Submarine community
