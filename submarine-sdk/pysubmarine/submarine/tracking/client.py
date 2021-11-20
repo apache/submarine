@@ -142,16 +142,12 @@ class SubmarineClient(object):
             if input_dim is not None:
                 description["input"] = [
                     {
-                        "name": "INPUT__0",
-                        "data_type": "TYPE_FP32",
-                        "dims": str(input_dim),
+                        "dims": input_dim,
                     }
                 ]
             if output_dim is not None:
                 description["output"] = [
                     {
-                        "name": "OUTPUT__0",
-                        "data_type": "TYPE_FP32",
                         "dims": output_dim,
                     }
                 ]
