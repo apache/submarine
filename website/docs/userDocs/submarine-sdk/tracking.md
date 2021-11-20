@@ -63,3 +63,15 @@ log a single key-value metric. The value must always be a number.
   - **key** - Metric name.
   - **value** - Metric value.
   - **step** - A single integer step at which to log the specified Metrics, by default it's 0.
+
+### `submarine.save_model(model_type: str, model, artifact_path: str, registered_model_name: str = None, input_dim: list = None, output_dim: list = None,) -> None`
+
+ Save a model into the minio pod.
+
+> **Parameters**
+  - **model_type** - The type of model. Only support `pytorch` and `tensorflow`.
+  - **model** - Model artifact.
+  - **artifact_path** - Model name.
+  - **registered_model_name** - If it is not `None`, the model will be registered into the model registry with this name.
+  - **input_dim** - The input dimension of the model.
+  - **output_dim** - The output dimension of the model.

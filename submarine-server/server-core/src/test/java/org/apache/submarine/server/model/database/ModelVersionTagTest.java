@@ -57,6 +57,7 @@ public class ModelVersionTagTest {
     modelVersionEntity.setSource("path/to/source");
     modelVersionEntity.setUserId("test");
     modelVersionEntity.setExperimentId("application_1234");
+    modelVersionEntity.setModelType("tensorflow");
     modelVersionService.insert(modelVersionEntity);
 
     ModelVersionTagEntity modelVersionTagEntity = new ModelVersionTagEntity();

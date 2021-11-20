@@ -19,16 +19,16 @@
 
 package org.apache.submarine.server.model.database;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Test;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
 import org.apache.submarine.server.model.database.entities.RegisteredModelEntity;
 import org.apache.submarine.server.model.database.service.ModelVersionService;
 import org.apache.submarine.server.model.database.service.RegisteredModelService;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ModelVersionTest {
   RegisteredModelService registeredModelService = new RegisteredModelService();
@@ -55,6 +55,7 @@ public class ModelVersionTest {
     modelVersionEntity.setSource("path/to/source");
     modelVersionEntity.setUserId("test");
     modelVersionEntity.setExperimentId("application_1234");
+    modelVersionEntity.setModelType("tensorflow");
     modelVersionEntity.setTags(tags);
     modelVersionService.insert(modelVersionEntity);
 
@@ -67,6 +68,7 @@ public class ModelVersionTest {
     modelVersionEntity2.setSource("path/to/source2");
     modelVersionEntity2.setUserId("test");
     modelVersionEntity2.setExperimentId("application_1234");
+    modelVersionEntity2.setModelType("tensorflow");
     modelVersionEntity2.setTags(tags2);
     modelVersionService.insert(modelVersionEntity2);
 
@@ -93,6 +95,7 @@ public class ModelVersionTest {
     modelVersionEntity.setSource("path/to/source");
     modelVersionEntity.setUserId("test");
     modelVersionEntity.setExperimentId("application_1234");
+    modelVersionEntity.setModelType("tensorflow");
     modelVersionEntity.setTags(tags);
     modelVersionService.insert(modelVersionEntity);
 
@@ -118,6 +121,7 @@ public class ModelVersionTest {
     modelVersionEntity.setSource("path/to/source");
     modelVersionEntity.setUserId("test");
     modelVersionEntity.setExperimentId("application_1234");
+    modelVersionEntity.setModelType("tensorflow");
     modelVersionService.insert(modelVersionEntity);
 
     ModelVersionEntity modelVersionEntitySelected = modelVersionService.select(name, version);
@@ -149,6 +153,7 @@ public class ModelVersionTest {
     modelVersionEntity.setSource("path/to/source");
     modelVersionEntity.setUserId("test");
     modelVersionEntity.setExperimentId("application_1234");
+    modelVersionEntity.setModelType("tensorflow");
     modelVersionService.insert(modelVersionEntity);
 
     modelVersionService.delete(name, version);
@@ -161,6 +166,7 @@ public class ModelVersionTest {
     Assert.assertEquals(expected.getSource(), actual.getSource());
     Assert.assertEquals(expected.getUserId(), actual.getUserId());
     Assert.assertEquals(expected.getExperimentId(), actual.getExperimentId());
+    Assert.assertEquals(expected.getModelType(), actual.getModelType());
     Assert.assertEquals(expected.getCurrentStage(), actual.getCurrentStage());
     Assert.assertNotNull(actual.getCreationTime());
     Assert.assertNotNull(actual.getLastUpdatedTime());

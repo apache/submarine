@@ -129,6 +129,7 @@ class AbstractStore:
         source: str,
         user_id: str,
         experiment_id: str,
+        model_type: str,
         dataset: str = None,
         description: str = None,
         tags: List[str] = None,
