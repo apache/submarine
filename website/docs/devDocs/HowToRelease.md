@@ -23,9 +23,10 @@ title: How to Release
 
 Source Release is the focus of Apache’s attention and it is also a required content for release. Binary Release is optional, Submarine can choose whether to release the binary package to the Apache warehouse or to the Maven central warehouse.
 
-Please refer to the following link to find more ASF release guidelines:
+Please refer to the following link to find more details about release guidelines:
 
-[Apache Release Guide](https://incubator.apache.org/guides/releasemanagement.html)
+[How to Release](https://cwiki.apache.org/confluence/display/SUBMARINE/How+to+release)  
+[Submarine Release Guidelines](https://cwiki.apache.org/confluence/display/SUBMARINE/Submarine+Release+Guidelines)
 
 ## 1. Add GPG KEY
 
@@ -138,14 +139,14 @@ The query results are as follows:
 
 > SVN is required for this step
 
-The svn library of the DEV branch is https://dist.apache.org/repos/dist/dev/incubator/Submarine
+The svn library of the DEV branch is https://dist.apache.org/repos/dist/dev/submarine
 
-The SVN library of the Release branch is https://dist.apache.org/repos/dist/release/incubator/submarine
+The SVN library of the Release branch is https://dist.apache.org/repos/dist/release/submarine
 
 #### 1.5.1 Add the public key to KEYS in the dev branch to release the RC version
 
 ```shell
-➜  ~ svn co https://dist.apache.org/repos/dist/dev/incubator/submarine /tmp/submarine-dist-dev
+➜  ~ svn co https://dist.apache.org/repos/dist/dev/submarine /tmp/submarine-dist-dev
 # This step is relatively slow, and all versions will be copied. If the network is disconnected, use svn cleanup to delete the lock and re-execute it, and the transfer will be resumed.
 ➜  ~ cd submarine-dist-dev
 ➜  submarine-dist-dev ~ (gpg --list-sigs YOUR_NAME@apache.org && gpg --export --armor YOUR_NAME@apache.org) >> KEYS # Append the KEY you generated to the file KEYS, it is best to check if it is correct after appending.
@@ -156,7 +157,7 @@ The SVN library of the Release branch is https://dist.apache.org/repos/dist/rele
 #### 1.5.2 Add the public key to KEYS in the release branch to release the official version
 
 ```shell
-➜  ~ svn co https://dist.apache.org/repos/dist/release/incubator/submarine /tmp/submarine-dist-release
+➜  ~ svn co https://dist.apache.org/repos/dist/release/submarine /tmp/submarine-dist-release
 ➜  ~ cd submarine-dist-release
 ➜  submarine-dist-release ~ (gpg --list-sigs YOUR_NAME@apache.org && gpg --export --armor YOUR_NAME@apache.org) >> KEYS	# Append the KEY you generated to the file KEYS, it is best to check if it is correct after appending.
 ➜  submarine-dist-release ~ svn add .	# If there is a KEYS file before, it is not needed.
@@ -267,7 +268,8 @@ for i in *.tar.gz; do echo $i; gpg --armor --output $i.asc --detach-sig $i ; don
 
 ### 3.6 Check whether the generated signature/sha512 is correct
 
-For details, please refer to:[Verify](how-to-verify.md)
+<!-- For details, please refer to:[Verify](how-to-verify.md) -->
+
 For example, verify that the signature is correct as follows:
 
 ```shell
@@ -293,13 +295,13 @@ git push origin ${release_version}-${rc_version}
 
 ### 4.3 Upload the compiled file to dist
 
-> This step requires the use of SVN, the svn library of the DEV branch is https://dist.apache.org/repos/dist/dev/incubator/submarine
+> This step requires the use of SVN, the svn library of the DEV branch is https://dist.apache.org/repos/dist/dev/submarine
 
 ### 4.3.1 Checkout Submarine to a local directory
 
 ```shell
 # This step may be slow, and all versions will be tested. If the network is broken, use svn cleanup to delete the lock and re-execute it, and the upload will be resumed.
-svn co https://dist.apache.org/repos/dist/dev/incubator/submarine /tmp/submarine-dist-dev
+svn co https://dist.apache.org/repos/dist/dev/submarine /tmp/submarine-dist-dev
 ```
 
 ### 4.3.2 Add the public key to the KEYS file and submit it to the SVN repository
@@ -336,44 +338,81 @@ WARN: Please note that clicking Close may fail, please check the reason for the 
 
 #### Voting template
 
-```html
-Title：[VOTE] Release Apache Submarine ${release_version} ${rc_version}
-Content： Hello Apache Submarine PPMC and Community, This is a call for a vote
-to release Apache Submarine version ${release_version}-${rc_version}. The tag to
-be voted on is ${release_version}-${rc_version}:
-https://github.com/apache/incubator-submarine/tree/${release_version}-${rc_version}
-The release tarball, signature, and checksums can be found at:
-https://dist.apache.org/repos/dist/dev/incubator/submarine/${release_version}-${rc_version}/
-Maven artifacts are available in a staging repository at:
-https://repository.apache.org/content/repositories/orgapachesubmarine-{staging-id}
-Artifacts were signed with the {YOUR_PUB_KEY} key which can be found in:
-https://downloads.apache.org/incubator/submarine/KEYS ${release_version}
-includes ~ ${issue_count} bug fixes and improvements done since last versions
-which can be found at:
-https://github.com/apache/incubator-submarine/blob/${release_version}-${rc_version}/CHANGES.md
-Please download, verify, and test. The VOTE will remain open for at least 72
-hours. [ ] +1 Release this package as Apache Submarine ${release_version} [ ] +0
-[ ] -1 Do not release this package because... To learn more about apache
-Submarine, please see http://submarine.apache.org/ Checklist for reference: [ ]
-Download links are valid. [ ] Checksums and signatures. [ ]
-LICENSE/NOTICE/DISCLAIMER files exist [ ] No unexpected binary files [ ] All
-source files have ASF headers [ ] Can compile from source [ ] All Tests Passed
-More detailed checklist please refer to:
-https://cwiki.apache.org/confluence/display/INCUBATOR/Incubator+Release+Checklist
-Thanks, Your Submarine Release Manager
+```
+Title：[VOTE] Submarine-${release_version}-${rc_version} is ready for a vote!
+
+Content：
+
+Hi folks,
+
+Thanks to everyone's help on this release.
+
+I've created a release candidate (${rc_version}) for submarine ${release_version}. The
+highlighted features are as follows:
+
+1. AAA
+2. BBB
+3. CCC
+
+The mini-submarine image is here:
+
+docker pull apache/submarine:mini-${release_version}-${rc_version}
+
+
+The RC tag in git is here:
+
+https://github.com/apache/submarine/releases/tag/release-${release_version}-${rc_version}
+
+The RC release artifacts are available at:
+
+http://home.apache.org/~pingsutw/submarine-${release_version}-${rc_version}
+
+
+The Maven staging repository is here:
+
+https://repository.apache.org/content/repositories/orgapachesubmarine-1030
+
+My public key is here:
+
+https://dist.apache.org/repos/dist/release/submarine/KEYS
+
+
+*This vote will run for 7 days, ending on DDDD/EE/FF at 11:59 pm PST.*
+
+
+For the testing, I have verified the
+
+1. Build from source, Install Submarine on minikube
+
+2. Workbench UI (Experiment / Notebook / Template / Environment)
+
+3. Experiment / Notebook / Template / Environment REST API
+
+
+My +1 to start. Thanks!
+
+BR,
+XXX
+
 ```
 
 #### Announce voting results template
 
-```html
+```
 Title：[RESULT][VOTE] Release Apache Submarine ${release_version} ${rc_version}
-Content： Hello Apache Submarine PPMC and Community, The vote closes now as 72hr
-have passed. The vote PASSES with xx (+1 non-binding) votes from the PPMC, xx
-(+1 binding) vote from the IPMC, xx (+1 non-binding) vote from the rest of the
-developer community, and no further 0 or -1 votes. The vote thread:
-{vote_mail_address} I will now bring the vote to general@incubator.apache.org to
-get approval by the IPMC. If this vote passes also, the release is accepted and
-will be published. Thank you for your support. Your Submarine Release Manager
+
+Content：
+
+Hello Apache Submarine PMC and Community,
+  The vote closes now as 72hr have passed. The vote PASSES with
+  xx (+1 non-binding) votes from the PMC,
+  xx (+1 non-binding) vote from the rest of the developer community,
+  and no further 0 or -1 votes.
+
+  The vote thread:{vote_mail_address}
+
+Thank you for your support.
+Your Submarine Release Manager
 ```
 
 ## 6. Officially released
@@ -398,17 +437,20 @@ will be published. Thank you for your support. Your Submarine Release Manager
 
 Announce release email template:
 
-```html
-Title： [ANNOUNCE] Release Apache Submarine(incubating) ${release_version}
-Content： Hi all, The Apache Submarine(incubating) community is pleased to
-announce that Apache Submarine(incubating) ${release_version} has been released!
-Apache Submarine is a one-stop data streaming platform that provides automatic,
-secure, distributed, and efficient data publishing and subscription
-capabilities. This platform helps you easily build stream-based data
-applications. Download Links: https://submarine.apache.org/download/main Release
-Notes: https://submarine.apache.org/download/release-${release_version} Website:
-https://submarine.apache.org/ Submarine Resources: - Issue:
-https://github.com/apache/incubator-submarine/issues - Mailing list:
-dev@submarine.apache.org Thanks On behalf of Apache Submarine(Incubating)
-community
+```
+Title： [ANNOUNCE] Apache Submarine ${release_version} release!
+Content：
+Hi folks, It's a great honor for me to announce that the Apache Submarine Community
+has released Apache Submarine ${release_version}!
+The highlighted features are:
+1. AAA
+2. BBB
+3. CCC
+
+Tons of thanks to our contributors and community!
+Let's keep fighting! *Apache Submarine ${release_version} released*:
+https://submarine.apache.org/docs/next/releases/submarine-release-${release_version}
+
+BR,
+XXXX
 ```
