@@ -27,11 +27,11 @@ import { ModelInfo } from '@submarine/interfaces/model-info';
   styleUrls: ['./registered-model.component.scss'],
 })
 export class RegisteredModelComponent implements OnInit {
-  name;
+  modelName;
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.name = this.route.snapshot.params.name;
+    this.modelName = this.route.snapshot.params.name;
   }
 }

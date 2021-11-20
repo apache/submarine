@@ -16,31 +16,25 @@
   ~ specific language governing permissions and limitations
   ~ under tde License.
   -->
-<div style="margin: 15px; padding: 15px; background-color: white">
+<div class="container">
   <div>
-    <h1 style="font-weight: lighter">{{ name }}</h1>
+    <h1>{{ modelName }}</h1>
   </div>
   <div>
-    <div style="margin: 5px 0px 5px 0px; font-size: 17px; font-family: Arial">Description: This is a description.</div>
+    <div class="discription">Description: This is a description.</div>
     <div class="basic-box">
-      <div style="display: inline-block">Tags:</div>
-      <div style="display: inline-block; background-color: #53c653; margin: 3px; padding: 3px">image</div>
+      <div class="tags-basic">Tags:</div>
+      <div class="tags-basic tags">image</div>
     </div>
     <div class="basic-box">Created: 2021-09-01 07:57</div>
     <div class="basic-box">Updated: 2021-09-21 03:00</div>
   </div>
-  <div style="margin-top: 20px; display: flex; align-items: center">
-    <div style="margin-bottom: 5px; font-size: 17px; font-family: Arial; font-weight: bold; display: inline-block">
-      Model versions info
-    </div>
-    <div style="margin-left: 30px; display: flex; align-items: center">
+  <div class="info-container">
+    <div class="info">Model versions info</div>
+    <div class="info-tag">
       <div class="info-box">Tags:</div>
       <div class="info-box">
-        <textarea
-          type="text"
-          style="height: 35px; width: 250px; border: 1px solid black; font-size: 17px"
-          placeholder="Model Version tags..."
-        ></textarea>
+        <textarea type="text" class="info-text" placeholder="Model Version tags..."></textarea>
       </div>
     </div>
   </div>
