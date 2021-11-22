@@ -23,6 +23,7 @@ WORKDIR /usr/src
 RUN GOOS=linux go build -o submarine-operator
 
 FROM gcr.io/distroless/base-debian10
+ADD tmp/submarine-cloud-v2/artifacts /usr/src/artifacts
 WORKDIR /usr/src
 COPY --from=build-image /usr/src/submarine-operator /usr/src/submarine-operator
 
