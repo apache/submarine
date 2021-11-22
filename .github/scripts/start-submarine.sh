@@ -50,4 +50,6 @@ for ((i=0;i<$wait_times;++i)); do
   fi
 done
 echo "Timeout limit reached!" 1>&2
+kubectl describe submarine
+kubectl get all
 exit 1

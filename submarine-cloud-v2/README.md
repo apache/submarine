@@ -26,8 +26,6 @@
 ## Initialization
 
 ```bash
-# Add helm-chart dependencies
-cp -r ../helm-charts/submarine/charts ./helm-charts/submarine-operator/
 # Install dependencies
 go mod vendor
 # Run the cluster
