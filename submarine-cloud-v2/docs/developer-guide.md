@@ -82,7 +82,7 @@ make image
 eval $(minikube docker-env -u)
 
 # Update the operator pod
-helm upgrade submarine-operator ./helm-charts/submarine-operator
+helm upgrade submarine ../helm-charts/submarine
 ```
 
 ## Rebuild Images for Other Components

@@ -29,7 +29,6 @@ export SUBMARINE_HOME=${CURRENT_PATH}/../../..
 
 mkdir -p "${CURRENT_PATH}/tmp"
 cp -r ${SUBMARINE_HOME}/submarine-cloud-v2/ "${CURRENT_PATH}/tmp/submarine-cloud-v2/"
-cp -r ${SUBMARINE_HOME}/helm-charts/submarine/charts/ "${CURRENT_PATH}/tmp/charts"
 
 cd ${CURRENT_PATH}
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."

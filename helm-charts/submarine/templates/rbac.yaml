@@ -15,83 +15,94 @@
 # limitations under the License.
 #
 
+kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
 metadata:
-  name: "{{ .Values.submarine.server.name }}"
+  name: submarine-operator
 rules:
-- apiGroups:
-  - kubeflow.org
-  resources:
-  - tfjobs
-  - tfjobs/status
-  - pytorchjobs
-  - pytorchjobs/status
-  - notebooks
-  - notebooks/status
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - delete
-  - deletecollection
-  - patch
-  - update
-- apiGroups:
-  - traefik.containo.us
-  resources:
-  - ingressroutes
-  - middlewares
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - delete
-  - deletecollection
-  - patch
-  - update
-- apiGroups:
-  - machinelearning.seldon.io
-  resources:
-  - seldondeployments
-  verbs:
-  - get
-  - list
-  - watch
-  - create
-  - delete
-  - deletecollection
-  - patch
-  - update
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  - pods/log
-  - services
-  - persistentvolumeclaims
-  - events
-  verbs:
-  - '*'
-- apiGroups:
-  - "apps"
-  resources:
-  - deployments
-  - deployments/status
-  verbs:
-  - '*'
+  - apiGroups:
+      - submarine.apache.org
+    resources:
+      - submarines
+    verbs:
+      - "*"
+  - apiGroups:
+      - traefik.containo.us
+    resources:
+      - ingressroutes
+      - ingressroutetcps
+      - ingressrouteudps
+      - middlewares
+      - tlsoptions
+      - tlsstores
+      - traefikservices
+    verbs:
+      - "*"
+  - apiGroups:
+      - kubeflow.org
+    resources:
+      - notebooks
+      - pytorchjobs
+      - tfjobs
+    verbs:
+      - "*"
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - secrets
+      - configmaps
+      - services
+      - namespaces
+      - jobs
+      - serviceaccounts
+      - persistentvolumeclaims
+      - pods/portforward
+      - events
+    verbs:
+      - "*"
+  - apiGroups:
+      - "apps"
+    resources:
+      - deployments
+      - replicasets
+    verbs:
+      - "*"
+  - apiGroups:
+      - "extensions"
+    resources:
+      - ingresses
+    verbs:
+      - "*"
+  - apiGroups:
+      - "rbac.authorization.k8s.io"
+    resources:
+      - roles
+      - rolebindings
+    verbs:
+      - "*"
+  - apiGroups:
+      - apiextensions.k8s.io
+    resources:
+      - customresourcedefinitions
+    verbs:
+      - "*"
 ---
-kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1
+apiVersion: v1
+kind: ServiceAccount
 metadata:
-  name: "{{ .Values.submarine.server.name }}"
-subjects:
-- kind: ServiceAccount
-  namespace: {{ .Release.Namespace }}
-  name: "{{ .Values.submarine.server.name }}"
+  name: submarine-operator
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: submarine-operator
 roleRef:
-  kind: Role
-  name: "{{ .Values.submarine.server.name }}"
   apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: submarine-operator
+subjects:
+  - kind: ServiceAccount
+    name: submarine-operator
+    namespace: default

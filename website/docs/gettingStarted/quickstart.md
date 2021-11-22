@@ -36,54 +36,63 @@ This document gives you a quick view on the basic usage of Submarine platform. Y
 
 2. Start minikube cluster
 ```
-$ minikube start --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.15.11
+minikube start --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.15.11
 ```
 
 ### Launch submarine in the cluster
 
 1. Clone the project
 ```
-$ git clone https://github.com/apache/submarine.git
+git clone https://github.com/apache/submarine.git
 ```
 
-2. Install the resources by helm chart
+2. Install the submarine operator and dependencies by helm chart
 ```
-$ cd submarine
-$ helm install submarine ./helm-charts/submarine
+cd submarine
+helm install submarine ./helm-charts/submarine
 ```
+
+3. Create a Submarine custom resource and the operator will create the submarine server, database, etc. for us.
+```
+kubectl apply -f submarine-cloud-v2/artifacts/examples/example-submarine.yaml
+```
+
 ### Ensure submarine is ready
 
 1. Use kubectl to query the status of pods
 ```
-$ kubectl get pods
+kubectl get pods
 ```
 
 2. Make sure each pod is `Running`
 ```
 NAME                                              READY   STATUS    RESTARTS   AGE
-notebook-controller-deployment-5d4f5f874c-vwds8   1/1     Running   0          3h33m
-pytorch-operator-844c866d54-q5ztd                 1/1     Running   0          3h33m
-submarine-database-674987ff7d-r8zqs               1/1     Running   0          3h33m
-submarine-minio-5fdd957785-xd987                  1/1     Running   0          3h33m
-submarine-mlflow-76bbf5c7b-g2ntd                  1/1     Running   0          3h33m
-submarine-server-66f7b8658b-sfmv8                 1/1     Running   0          3h33m
-submarine-tensorboard-6c44944dfb-tvbr9            1/1     Running   0          3h33m
-submarine-traefik-7cbcfd4bd9-4bczn                1/1     Running   0          3h33m
-tf-job-operator-6bb69fd44-mc8ww                   1/1     Running   0          3h33m
+notebook-controller-deployment-5d4f5f874c-mnbc8   1/1     Running   0          61m
+pytorch-operator-844c866d54-xm8nl                 1/1     Running   2          61m
+submarine-database-85bd68dbc5-qggtm               1/1     Running   0          11m
+submarine-minio-76465444f6-hdgdp                  1/1     Running   0          11m
+submarine-mlflow-75f86d8f4d-rj2z7                 1/1     Running   0          11m
+submarine-operator-5dd79cdf86-gpm2p               1/1     Running   0          61m
+submarine-server-68985b767-vjdvx                  1/1     Running   0          11m
+submarine-tensorboard-5df8499fd4-vnklf            1/1     Running   0          11m
+submarine-traefik-7cbcfd4bd9-wbf8b                1/1     Running   0          61m
+tf-job-operator-6bb69fd44-zmlmr                   1/1     Running   1          61m
 ```
 
 ### Connect to workbench
 
-1. Port-forwarding
+1. Exposing service
+  ```
+  # Method 1 -- use minikube ip
+  minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
+  
+  # Method 2 -- use port-forwarding
+  kubectl port-forward --address 0.0.0.0 service/submarine-traefik 32080:80
+  ```
 
-```
-# using port-forwarding
-$ kubectl port-forward --address 0.0.0.0 service/submarine-traefik 32080:80
-```
-
-2. Open `http://0.0.0.0:32080`
-
-![](/img/quickstart-worbench.png)
+2. View workbench
+  If you use method 1, go to `http://{minikube ip}:32080`. For example, `http://192.168.49.2:32080`. If you use method 2, go to `http://0.0.0.0:32080`.
+  ![](/img/quickstart-worbench.png)
 
 ## Example: Submit a mnist distributed example
 
@@ -173,7 +182,7 @@ if __name__ == '__main__':
 Build a docker image equipped with the requirement of the environment.
 
 ```bash
-$ ./dev-support/examples/quickstart/build.sh 
+./dev-support/examples/quickstart/build.sh 
 ```
 
 ### 3. Submit the experiment
