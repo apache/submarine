@@ -63,12 +63,14 @@ module.exports = {
                 "devDocs/IntegrationTestK8s",
                 "devDocs/IntegrationTestE2E",
                 "devDocs/HowToRelease",
+                "devDocs/HowToVerify",
             ],
             Community: [
                 "community/README",
                 "community/Bylaws",
                 "community/HowToCommit",
                 "community/contributing",
+                "community/HowToBecomeCommitter",
             ],
             "Design Docs": [
                 "designDocs/architecture-and-requirements",

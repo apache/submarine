@@ -26,6 +26,7 @@ class TestModelVersion:
         "source": "path/to/source",
         "user_id": "admin",
         "experiment_id": "experiment_1",
+        "model_type": "tensorflow",
         "current_stage": STAGE_NONE,
         "creation_time": datetime.now(),
         "last_updated_time": datetime.now(),
@@ -42,6 +43,7 @@ class TestModelVersion:
         source,
         user_id,
         experiment_id,
+        model_type,
         current_stage,
         creation_time,
         last_updated_time,
@@ -55,6 +57,7 @@ class TestModelVersion:
         assert model_metadata.source == source
         assert model_metadata.user_id == user_id
         assert model_metadata.experiment_id == experiment_id
+        assert model_metadata.model_type == model_type
         assert model_metadata.current_stage == current_stage
         assert model_metadata.creation_time == creation_time
         assert model_metadata.last_updated_time == last_updated_time
@@ -69,6 +72,7 @@ class TestModelVersion:
             self.default_data["source"],
             self.default_data["user_id"],
             self.default_data["experiment_id"],
+            self.default_data["model_type"],
             self.default_data["current_stage"],
             self.default_data["creation_time"],
             self.default_data["last_updated_time"],
@@ -83,6 +87,7 @@ class TestModelVersion:
             self.default_data["source"],
             self.default_data["user_id"],
             self.default_data["experiment_id"],
+            self.default_data["model_type"],
             self.default_data["current_stage"],
             self.default_data["creation_time"],
             self.default_data["last_updated_time"],
@@ -101,6 +106,7 @@ class TestModelVersion:
             self.default_data["source"],
             self.default_data["user_id"],
             self.default_data["experiment_id"],
+            self.default_data["model_type"],
             self.default_data["current_stage"],
             self.default_data["creation_time"],
             self.default_data["last_updated_time"],
@@ -115,6 +121,7 @@ class TestModelVersion:
             self.default_data["source"],
             self.default_data["user_id"],
             self.default_data["experiment_id"],
+            self.default_data["model_type"],
             self.default_data["current_stage"],
             self.default_data["creation_time"],
             self.default_data["last_updated_time"],

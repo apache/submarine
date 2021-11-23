@@ -25,6 +25,7 @@
     <result column="source" property="source" />
     <result column="user_id" property="userId" />
     <result column="experiment_id" property="experimentId" />
+    <result column="model_type" property="modelType" />
     <result column="current_stage" property="currentStage" />
     <result column="creation_time" property="creationTime" />
     <result column="last_updated_time" property="lastUpdatedTime" />
@@ -38,6 +39,7 @@
     <result column="source" property="source" />
     <result column="user_id" property="userId" />
     <result column="experiment_id" property="experimentId" />
+    <result column="model_type" property="modelType" />
     <result column="current_stage" property="currentStage" />
     <result column="creation_time" property="creationTime" />
     <result column="last_updated_time" property="lastUpdatedTime" />
@@ -49,7 +51,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    name, version, source, user_id, experiment_id, current_stage, creation_time,
+    name, version, source, user_id, experiment_id, model_type, current_stage, creation_time,
     last_updated_time, dataset, description
   </sql>
 
@@ -75,9 +77,9 @@
   </select>
 
   <insert id="insert" parameterType="org.apache.submarine.server.model.database.entities.ModelVersionEntity">
-    insert into model_version (name, version, source, user_id, experiment_id, current_stage, creation_time, last_updated_time, dataset, description)
+    insert into model_version (name, version, source, user_id, experiment_id, model_type, current_stage, creation_time, last_updated_time, dataset, description)
     values (#{name,jdbcType=VARCHAR}, #{version,jdbcType=INTEGER}, #{source,jdbcType=VARCHAR},
-    #{userId,jdbcType=VARCHAR}, #{experimentId,jdbcType=VARCHAR}, #{currentStage,jdbcType=VARCHAR},
+    #{userId,jdbcType=VARCHAR}, #{experimentId,jdbcType=VARCHAR}, #{modelType,jdbcType=VARCHAR}, #{currentStage,jdbcType=VARCHAR},
     NOW(3), NOW(3), #{dataset,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR});
     <if test="tags != null and !tags.isEmpty()">
       insert INTO model_version_tag (name, version, tag) values

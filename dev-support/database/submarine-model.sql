@@ -36,6 +36,7 @@ CREATE TABLE `model_version` (
 	`source` VARCHAR(512) NOT NULL COMMENT 'Model saved link',
 	`user_id` VARCHAR(64) NOT NULL COMMENT 'Id of the created user',
 	`experiment_id` VARCHAR(64) NOT NULL,
+	`model_type` VARCHAR(64) NOT NULL COMMENT 'Type of model',
 	`current_stage` VARCHAR(64) COMMENT 'Model stage ex: None, production...',
 	`creation_time` DATETIME(3) COMMENT 'Millisecond precision',
 	`last_updated_time` DATETIME(3) COMMENT 'Millisecond precision',

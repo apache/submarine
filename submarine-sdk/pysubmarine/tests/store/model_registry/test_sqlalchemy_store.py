@@ -107,8 +107,12 @@ class TestSqlAlchemyStore(unittest.TestCase):
         name = "test_rename_RM"
         new_name = "test_rename_RN_new"
         rm = self.store.create_registered_model(name)
-        self.store.create_model_version(name, "path/to/source1", "test", "application_1234")
-        self.store.create_model_version(name, "path/to/source2", "test", "application_1235")
+        self.store.create_model_version(
+            name, "path/to/source1", "test", "application_1234", "tensorflow"
+        )
+        self.store.create_model_version(
+            name, "path/to/source2", "test", "application_1235", "tensorflow"
+        )
         mv1d = self.store.get_model_version(name, 1)
         mv2d = self.store.get_model_version(name, 2)
         self.assertEqual(rm.name, name)
@@ -142,10 +146,10 @@ class TestSqlAlchemyStore(unittest.TestCase):
         rm2 = self.store.create_registered_model(name2, tags=rm_tags)
         mv_tags = ["mv_tag1", "mv_tag2"]
         rm1mv1 = self.store.create_model_version(
-            rm1.name, "path/to/source1", "test", "application_1234", tags=mv_tags
+            rm1.name, "path/to/source1", "test", "application_1234", "tensorflow", tags=mv_tags
         )
         rm2mv1 = self.store.create_model_version(
-            rm2.name, "path/to/source2", "test", "application_1234", tags=mv_tags
+            rm2.name, "path/to/source2", "test", "application_1234", "tensorflow", tags=mv_tags
         )
 
         # check store
@@ -380,7 +384,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.store.create_registered_model(model_name)
         fake_datetime = datetime.now()
         mv1 = self.store.create_model_version(
-            model_name, "path/to/source1", "test", "application_1234"
+            model_name, "path/to/source1", "test", "application_1234", "tensorflow"
         )
         self.assertEqual(mv1.name, model_name)
         self.assertEqual(mv1.version, 1)
@@ -390,6 +394,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.assertEqual(m1d.name, model_name)
         self.assertEqual(m1d.user_id, "test")
         self.assertEqual(m1d.experiment_id, "application_1234")
+        self.assertEqual(m1d.model_type, "tensorflow")
         self.assertEqual(m1d.current_stage, STAGE_NONE)
         self.assertEqual(m1d.creation_time, fake_datetime)
         self.assertEqual(m1d.last_updated_time, fake_datetime)
@@ -398,7 +403,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
 
         # new model for same registered model autoincrement version
         m2 = self.store.create_model_version(
-            model_name, "path/to/source2", "test", "application_1234"
+            model_name, "path/to/source2", "test", "application_1234", "tensorflow"
         )
         m2d = self.store.get_model_version(m2.name, m2.version)
         self.assertEqual(m2.version, 2)
@@ -407,7 +412,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
         # create model with tags
         tags = ["tag1", "tag2"]
         m3 = self.store.create_model_version(
-            model_name, "path/to/source3", "test", "application_1234", tags=tags
+            model_name, "path/to/source3", "test", "application_1234", "tensorflow", tags=tags
         )
         m3d = self.store.get_model_version(m3.name, m3.version)
         self.assertEqual(m3.version, 3)
@@ -418,7 +423,12 @@ class TestSqlAlchemyStore(unittest.TestCase):
         # create model with description
         description = "A test description."
         m4 = self.store.create_model_version(
-            model_name, "path/to/source4", "test", "application_1234", description=description
+            model_name,
+            "path/to/source4",
+            "test",
+            "application_1234",
+            "tensorflow",
+            description=description,
         )
         m4d = self.store.get_model_version(m4.name, m4.version)
         self.assertEqual(m4.version, 4)
@@ -429,7 +439,9 @@ class TestSqlAlchemyStore(unittest.TestCase):
     def test_update_model_version_description(self):
         name = "test_update_MV_description"
         self.store.create_registered_model(name)
-        mv1 = self.store.create_model_version(name, "path/to/source", "test", "application_1234")
+        mv1 = self.store.create_model_version(
+            name, "path/to/source", "test", "application_1234", "tensorflow"
+        )
         m1d = self.store.get_model_version(mv1.name, mv1.version)
         self.assertEqual(m1d.name, name)
         self.assertEqual(m1d.version, 1)
@@ -448,8 +460,12 @@ class TestSqlAlchemyStore(unittest.TestCase):
     def test_transition_model_version_stage(self):
         name = "test_transition_MV_stage"
         self.store.create_registered_model(name)
-        mv1 = self.store.create_model_version(name, "path/to/source1", "test", "application_1234")
-        m2 = self.store.create_model_version(name, "path/to/source2", "test", "application_1234")
+        mv1 = self.store.create_model_version(
+            name, "path/to/source1", "test", "application_1234", "tensorflow"
+        )
+        m2 = self.store.create_model_version(
+            name, "path/to/source2", "test", "application_1234", "tensorflow"
+        )
 
         fake_datetime = datetime.strptime("2021-11-11 11:11:11.111000", "%Y-%m-%d %H:%M:%S.%f")
         with freeze_time(fake_datetime):
@@ -508,7 +524,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
         tags = ["tag1", "tag2"]
         self.store.create_registered_model(name)
         mv = self.store.create_model_version(
-            name, "path/to/source", "test", "application_1234", tags=tags
+            name, "path/to/source", "test", "application_1234", "tensorflow", tags=tags
         )
         mvd = self.store.get_model_version(mv.name, mv.version)
         self.assertEqual(mvd.name, name)
@@ -548,6 +564,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
             source="path/to/source",
             user_id="test",
             experiment_id="application_1234",
+            model_type="tensorflow",
             tags=tags,
         )
         self.assertEqual(mv.creation_time, fake_datetime)
@@ -556,6 +573,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.assertEqual(mvd.name, name)
         self.assertEqual(mvd.user_id, "test")
         self.assertEqual(mvd.experiment_id, "application_1234")
+        self.assertEqual(mvd.model_type, "tensorflow")
         self.assertEqual(mvd.current_stage, STAGE_NONE)
         self.assertEqual(mvd.creation_time, fake_datetime)
         self.assertEqual(mvd.last_updated_time, fake_datetime)
@@ -578,18 +596,25 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.store.create_registered_model(name2)
         tags = ["tag1", "tag2", "tag3"]
         models = [
-            self.store.create_model_version(name1, "path/to/source1", "test", "application_1234"),
             self.store.create_model_version(
-                name1, "path/to/source2", "test", "application_1234", tags=[tags[0]]
+                name1, "path/to/source1", "test", "application_1234", "tensorflow"
             ),
             self.store.create_model_version(
-                name1, "path/to/source3", "test", "application_1234", tags=[tags[1]]
+                name1, "path/to/source2", "test", "application_1234", "tensorflow", tags=[tags[0]]
             ),
             self.store.create_model_version(
-                name1, "path/to/source4", "test", "application_1234", tags=[tags[0], tags[2]]
+                name1, "path/to/source3", "test", "application_1234", "tensorflow", tags=[tags[1]]
             ),
             self.store.create_model_version(
-                name1, "path/to/source5", "test", "application_1234", tags=tags
+                name1,
+                "path/to/source4",
+                "test",
+                "application_1234",
+                "tensorflow",
+                tags=[tags[0], tags[2]],
+            ),
+            self.store.create_model_version(
+                name1, "path/to/source5", "test", "application_1234", "tensorflow", tags=tags
             ),
         ]
 
@@ -623,7 +648,9 @@ class TestSqlAlchemyStore(unittest.TestCase):
     def test_get_model_version_uri(self):
         name = "test_get_model_version_uri"
         self.store.create_registered_model(name)
-        mv = self.store.create_model_version(name, "path/to/source", "test", "application_1234")
+        mv = self.store.create_model_version(
+            name, "path/to/source", "test", "application_1234", "tensorflow"
+        )
         uri = self.store.get_model_version_uri(mv.name, mv.version)
         self.assertEqual(uri, "path/to/source")
 
@@ -645,13 +672,13 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.store.create_registered_model(name1)
         self.store.create_registered_model(name2)
         rm1mv1 = self.store.create_model_version(
-            name1, "path/to/source1", "test", "application_1234", tags=tags
+            name1, "path/to/source1", "test", "application_1234", "tensorflow", tags=tags
         )
         rm1m2 = self.store.create_model_version(
-            name1, "path/to/source2", "test", "application_1234", tags=tags
+            name1, "path/to/source2", "test", "application_1234", "tensorflow", tags=tags
         )
         rm2mv1 = self.store.create_model_version(
-            name2, "path/to/source3", "test", "application_1234", tags=tags
+            name2, "path/to/source3", "test", "application_1234", "tensorflow", tags=tags
         )
         new_tag = "new tag"
         self.store.add_model_version_tag(rm1mv1.name, rm1mv1.version, new_tag)
@@ -692,13 +719,13 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.store.create_registered_model(name1)
         self.store.create_registered_model(name2)
         rm1mv1 = self.store.create_model_version(
-            name1, "path/to/source1", "test", "application_1234", tags=tags
+            name1, "path/to/source1", "test", "application_1234", "tensorflow", tags=tags
         )
         rm1m2 = self.store.create_model_version(
-            name1, "path/to/source2", "test", "application_1234", tags=tags
+            name1, "path/to/source2", "test", "application_1234", "tensorflow", tags=tags
         )
         rm2mv1 = self.store.create_model_version(
-            name2, "path/to/source3", "test", "application_1234", tags=tags
+            name2, "path/to/source3", "test", "application_1234", "tensorflow", tags=tags
         )
         new_tag = "new tag"
         self.store.add_model_version_tag(rm1mv1.name, rm1mv1.version, new_tag)
