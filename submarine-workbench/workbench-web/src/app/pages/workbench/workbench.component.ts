@@ -99,16 +99,16 @@ export class WorkbenchComponent implements OnInit {
       ],
     },
     {
-      title: 'Data',
-      iconType: 'bar-chart',
-      routerLink: '/workbench/data',
-      disabled: true,
-    },
-    {
       title: 'Model',
       iconType: 'experiment',
       routerLink: '/workbench/model',
       disabled: false,
+    },
+    {
+      title: 'Data',
+      iconType: 'bar-chart',
+      routerLink: '/workbench/data',
+      disabled: true,
     },
     {
       title: 'Workspace',
