@@ -97,6 +97,14 @@ export class UserDrawerComponent implements OnInit, OnChanges {
       const sysUser = this.sysUser;
       const readOnly = this.readonly;
 
+      // change validators for insert mode or edit mode
+      this.form.controls.password.clearValidators()
+      if (sysUser) {
+        this.form.controls.password.setValidators([Validators.required])
+      } else {
+        this.form.controls.password.setValidators([Validators.required, Validators.pattern(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/)])
+      }
+
       this.form.reset({
         userName: sysUser ? sysUser.userName : '',
         password: sysUser ? sysUser.password : '',
@@ -134,7 +142,6 @@ export class UserDrawerComponent implements OnInit, OnChanges {
       this.form.controls[key].markAsDirty();
       this.form.controls[key].updateValueAndValidity();
     }
-
     this.form.statusChanges
       .pipe(
         startWith(this.form.status),
