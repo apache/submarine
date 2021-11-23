@@ -28,6 +28,7 @@ class ModelVersion(_SubmarineObject):
         source,
         user_id,
         experiment_id,
+        model_type,
         current_stage,
         creation_time,
         last_updated_time,
@@ -40,6 +41,7 @@ class ModelVersion(_SubmarineObject):
         self._source = source
         self._user_id = user_id
         self._experiment_id = experiment_id
+        self._model_type = model_type
         self._current_stage = current_stage
         self._creation_time = creation_time
         self._last_updated_time = last_updated_time
@@ -71,6 +73,11 @@ class ModelVersion(_SubmarineObject):
     def experiment_id(self):
         """String. Experiment ID that created this version."""
         return self._experiment_id
+
+    @property
+    def model_type(self):
+        """String. Type of model."""
+        return self._model_type
 
     @property
     def creation_time(self):

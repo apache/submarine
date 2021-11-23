@@ -54,7 +54,9 @@ First of all, you need to get involved and be a Contributor.
 
 Based on your track-record as a contributor, Per Apache code, PMCs vote on committership, may invite you to be a committer (after we've called a vote). When that happens, if you accept, the following process kicks into place...
 
-Note that becoming a committer is not just about submitting some patches; it‘s also about helping out on the development and user [Slack User](https://the-asf.slack.com/submarine-user/), helping with documentation and the issues.
+Note that becoming a committer is not just about submitting some patches; it‘s also about helping out on the development and user, helping with documentation and the issues.
+
+See [How to become an Apache Submarine Committer and PMC](HowToBecomeCommitter.md) for more details.
 
 ## How to commit
 

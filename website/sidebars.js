@@ -62,6 +62,8 @@ module.exports = {
                 "devDocs/Development",
                 "devDocs/IntegrationTestK8s",
                 "devDocs/IntegrationTestE2E",
+                "devDocs/HowToRelease",
+                "devDocs/HowToVerify",
             ],
             Community: [
                 "community/README",
@@ -69,6 +71,7 @@ module.exports = {
                 "community/HowToCommit",
                 "community/contributing",
                 "community/HowToVoteCommitterOrPMC",
+                "community/HowToBecomeCommitter",
             ],
             "Design Docs": [
                 "designDocs/architecture-and-requirements",

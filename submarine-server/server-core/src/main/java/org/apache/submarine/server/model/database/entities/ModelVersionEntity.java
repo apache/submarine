@@ -33,6 +33,8 @@ public class ModelVersionEntity {
 
   private String experimentId;
 
+  private String modelType;
+
   private String currentStage;
 
   private Timestamp creationTime;
@@ -83,6 +85,14 @@ public class ModelVersionEntity {
 
   public void setExperimentId(String experimentId) {
     this.experimentId = experimentId;
+  }
+
+  public String getModelType() {
+    return modelType;
+  }
+
+  public void setModelType(String modelType) {
+    this.modelType = modelType;
   }
 
   public String getCurrentStage() {
@@ -142,6 +152,7 @@ public class ModelVersionEntity {
       ", source='" + source + '\'' +
       ", userId='" + userId + '\'' +
       ", experimentId='" + experimentId + '\'' +
+      ", modelType='" + modelType + '\'' +
       ", currentStage='" + currentStage + '\'' +
       ", creationTime='" + creationTime + '\'' +
       ", lastUpdatedTime=" + lastUpdatedTime + '\'' +

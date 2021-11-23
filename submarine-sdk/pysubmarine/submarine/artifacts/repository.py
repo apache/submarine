@@ -27,31 +27,30 @@ class Repository:
             endpoint_url=os.environ.get("MLFLOW_S3_ENDPOINT_URL"),
         )
         self.dest_path = experiment_id
+        self.bucket = "submarine"
 
     def _upload_file(self, local_file: str, bucket: str, key: str) -> None:
         self.client.upload_file(Filename=local_file, Bucket=bucket, Key=key)
 
     def _list_artifact_subfolder(self, artifact_path: str):
         response = self.client.list_objects(
-            Bucket="submarine",
+            Bucket=self.bucket,
             Prefix=os.path.join(self.dest_path, artifact_path) + "/",
             Delimiter="/",
         )
         return response.get("CommonPrefixes")
 
     def log_artifact(self, local_file: str, artifact_path: str) -> None:
-        bucket = "submarine"
         dest_path = self.dest_path
         dest_path = os.path.join(dest_path, artifact_path)
         dest_path = os.path.join(dest_path, os.path.basename(local_file))
         self._upload_file(
             local_file=local_file,
-            bucket=bucket,
+            bucket=self.bucket,
             key=dest_path,
         )
 
     def log_artifacts(self, local_dir: str, artifact_path: str) -> str:
-        bucket = "submarine"
         dest_path = self.dest_path
         list_of_subfolder = self._list_artifact_subfolder(artifact_path)
         if list_of_subfolder is None:
@@ -68,16 +67,16 @@ class Repository:
             for f in filenames:
                 self._upload_file(
                     local_file=os.path.join(root, f),
-                    bucket=bucket,
+                    bucket=self.bucket,
                     key=os.path.join(upload_path, f),
                 )
-        return f"s3://{bucket}/{dest_path}"
+        return f"s3://{self.bucket}/{dest_path}"
 
     def delete_folder(self) -> None:
-        objects_to_delete = self.client.list_objects(Bucket="submarine", Prefix=self.dest_path)
+        objects_to_delete = self.client.list_objects(Bucket=self.bucket, Prefix=self.dest_path)
         if objects_to_delete.get("Contents") is not None:
             delete_keys: dict = {"Objects": []}
             delete_keys["Objects"] = [
                 {"Key": k} for k in [obj["Key"] for obj in objects_to_delete.get("Contents")]
             ]
-            self.client.delete_objects(Bucket="submarine", Delete=delete_keys)
+            self.client.delete_objects(Bucket=self.bucket, Delete=delete_keys)
