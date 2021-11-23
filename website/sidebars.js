@@ -70,6 +70,7 @@ module.exports = {
                 "community/Bylaws",
                 "community/HowToCommit",
                 "community/contributing",
+                "community/HowToVoteCommitterOrPMC",
                 "community/HowToBecomeCommitter",
             ],
             "Design Docs": [
