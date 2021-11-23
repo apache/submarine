@@ -47,6 +47,8 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.service.ExperimentService;
 import org.apache.submarine.server.rest.RestConstants;
+import org.apache.submarine.server.serve.MlflowModelRegistryClient;
+import org.mlflow.api.proto.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.mlflow.tracking.MlflowClient;
@@ -61,8 +63,11 @@ public class ExperimentManager {
 
   private final AtomicInteger experimentCounter = new AtomicInteger(0);
 
-  private Optional<org.mlflow.api.proto.Service.Experiment> MlflowExperimentOptional;
+  private Optional<Service.Experiment> MlflowExperimentOptional;
   private org.mlflow.api.proto.Service.Experiment MlflowExperiment;
+
+  private static MlflowModelRegistryClient mlflowModelRegistryClient = new MlflowModelRegistryClient();
+
   /**
    * Used to cache the specs by the experiment id.
    * key: the string of experiment id
@@ -354,7 +359,7 @@ public class ExperimentManager {
    * @throws SubmarineRuntimeException the service error
    */
   public ServeResponse createServe(ServeRequest spec) throws SubmarineRuntimeException {
-    // TODO(byronhsu): use mlflow api to make sure the model exists. Otherwise, raise exception.
+    mlflowModelRegistryClient.checkModelExist(spec.getModelName(), spec.getModelVersion());
     ServeResponse serve = submitter.createServe(spec);
     return serve;
   }
