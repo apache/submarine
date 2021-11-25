@@ -47,7 +47,9 @@ public class MybatisGenerator {
     Configuration config = null;
     try {
       config = cp.parseConfiguration(configFile);
-    } catch (IOException | XMLParserException e) {
+    } catch (IOException e) {
+      LOG.error(e.getMessage(), e);
+    } catch (XMLParserException e) {
       LOG.error(e.getMessage(), e);
     }
 
@@ -60,7 +62,11 @@ public class MybatisGenerator {
     }
     try {
       myBatisGenerator.generate(null);
-    } catch (SQLException | IOException | InterruptedException e) {
+    } catch (SQLException e) {
+      LOG.error(e.getMessage(), e);
+    } catch (IOException e) {
+      LOG.error(e.getMessage(), e);
+    } catch (InterruptedException e) {
       LOG.error(e.getMessage(), e);
     }
   }
