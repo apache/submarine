@@ -559,7 +559,7 @@ public class K8sSubmitter implements Submitter {
 
     ExecutorService experimentThread = Executors.newFixedThreadPool(2);
 
-    try(Watch<MLJob> watchTF = Watch.createWatch(
+    try (Watch<MLJob> watchTF = Watch.createWatch(
         client,
         api.listNamespacedCustomObjectCall(
             TFJob.CRD_TF_GROUP_V1,
@@ -575,7 +575,8 @@ public class K8sSubmitter implements Submitter {
             null,
             null
         ),
-        new TypeToken<Watch.Response<MLJob>>() {}.getType()
+        new TypeToken<Watch.Response<MLJob>>() {
+        }.getType()
     )) {
       experimentThread.execute(new Runnable() {
         @Override
@@ -596,11 +597,11 @@ public class K8sSubmitter implements Submitter {
           }
         }
       });
-    } catch (Exception ex){
+    } catch (Exception ex) {
       throw new RuntimeException();
     }
 
-    try(Watch<MLJob> watchPytorch = Watch.createWatch(
+    try (Watch<MLJob> watchPytorch = Watch.createWatch(
         client,
         api.listNamespacedCustomObjectCall(
             PyTorchJob.CRD_PYTORCH_GROUP_V1,
@@ -616,29 +617,30 @@ public class K8sSubmitter implements Submitter {
             null,
             null
         ),
-        new TypeToken<Watch.Response<MLJob>>() {}.getType()
+        new TypeToken<Watch.Response<MLJob>>() {
+        }.getType()
     )) {
       experimentThread.execute(new Runnable() {
-          @Override
-          public void run() {
-              try {
-                LOG.info("Start watching on PytorchJobs...");
+        @Override
+        public void run() {
+          try {
+            LOG.info("Start watching on PytorchJobs...");
 
-                ;
-                for (Watch.Response<MLJob> experiment : watchPytorch) {
-                  LOG.info("{}", experiment.object.getStatus());
-                }
-              } finally {
-                LOG.info("WATCH PytorchJob END");
-                try {
-                  watchPytorch.close();
-                } catch (Exception e){
-                  LOG.error("{}", e.getMessage());
-                }
-              }
+            ;
+            for (Watch.Response<MLJob> experiment : watchPytorch) {
+              LOG.info("{}", experiment.object.getStatus());
+            }
+          } finally {
+            LOG.info("WATCH PytorchJob END");
+            try {
+              watchPytorch.close();
+            } catch (Exception e) {
+              LOG.error("{}", e.getMessage());
+            }
           }
+        }
       });
-    }catch(Exception ex){
+    } catch (Exception ex) {
       throw new RuntimeException();
     }
   }
