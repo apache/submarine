@@ -557,85 +557,90 @@ public class K8sSubmitter implements Submitter {
 
   public void watchExperiment() throws ApiException{
 
-    Watch<MLJob> watchTF = Watch.createWatch(
-              client,
-              api.listNamespacedCustomObjectCall(
-                      TFJob.CRD_TF_GROUP_V1,
-                      TFJob.CRD_TF_VERSION_V1,
-                      getServerNamespace(),
-                      TFJob.CRD_TF_PLURAL_V1,
-                      "true",
-                      null,
-                      null,
-                      null,
-                      null,
-                      Boolean.TRUE,
-                      null,
-                      null
-              ),
-              new TypeToken<Watch.Response<MLJob>>() {}.getType()
-      );
-
-    Watch<MLJob> watchPytorch = Watch.createWatch(
-            client,
-            api.listNamespacedCustomObjectCall(
-                    PyTorchJob.CRD_PYTORCH_GROUP_V1,
-                    PyTorchJob.CRD_PYTORCH_VERSION_V1,
-                    getServerNamespace(),
-                    PyTorchJob.CRD_PYTORCH_PLURAL_V1,
-                    "true",
-                    null,
-                    null,
-                    null,
-                    null,
-                    Boolean.TRUE,
-                    null,
-                    null
-            ),
-            new TypeToken<Watch.Response<MLJob>>() {}.getType()
-    );
-
     ExecutorService experimentThread = Executors.newFixedThreadPool(2);
 
-    experimentThread.execute(new Runnable() {
+    try(Watch<MLJob> watchTF = Watch.createWatch(
+        client,
+        api.listNamespacedCustomObjectCall(
+            TFJob.CRD_TF_GROUP_V1,
+            TFJob.CRD_TF_VERSION_V1,
+            getServerNamespace(),
+            TFJob.CRD_TF_PLURAL_V1,
+            "true",
+            null,
+            null,
+            null,
+            null,
+            Boolean.TRUE,
+            null,
+            null
+        ),
+        new TypeToken<Watch.Response<MLJob>>() {}.getType()
+    )) {
+      experimentThread.execute(new Runnable() {
         @Override
         public void run() {
-            try {
-              LOG.info("Start watching on TFJobs...");
-              for (Watch.Response<MLJob> experiment : watchTF) {
-                LOG.info("{}", experiment.object.getStatus());
-              }
-            } finally {
-              LOG.info("WATCH TFJob END");
-              try {
-                watchTF.close();
-              } catch (Exception e){
-                LOG.error("{}", e.getMessage());
-              }
-              throw new RuntimeException();
-            }
-        }
-    });
+          try {
+            LOG.info("Start watching on TFJobs...");
 
-    experimentThread.execute(new Runnable() {
-        @Override
-        public void run() {
-            try {
-              LOG.info("Start watching on PytorchJobs...");
-              for (Watch.Response<MLJob> experiment : watchPytorch) {
-                LOG.info("{}", experiment.object.getStatus());
-              }
-            } finally {
-              LOG.info("WATCH PytorchJob END");
-              try {
-                watchPytorch.close();
-              } catch (Exception e){
-                LOG.error("{}", e.getMessage());
-              }
-              throw new RuntimeException();
+            for (Watch.Response<MLJob> experiment : watchTF) {
+              LOG.info("{}", experiment.object.getStatus());
             }
+          } finally {
+            LOG.info("WATCH TFJob END");
+            try {
+              watchTF.close();
+            } catch (Exception e) {
+              LOG.error("{}", e.getMessage());
+            }
+          }
         }
-    });
+      });
+    } catch (Exception ex){
+      throw new RuntimeException();
+    }
+
+    try(Watch<MLJob> watchPytorch = Watch.createWatch(
+        client,
+        api.listNamespacedCustomObjectCall(
+            PyTorchJob.CRD_PYTORCH_GROUP_V1,
+            PyTorchJob.CRD_PYTORCH_VERSION_V1,
+            getServerNamespace(),
+            PyTorchJob.CRD_PYTORCH_PLURAL_V1,
+            "true",
+            null,
+            null,
+            null,
+            null,
+            Boolean.TRUE,
+            null,
+            null
+        ),
+        new TypeToken<Watch.Response<MLJob>>() {}.getType()
+    )) {
+      experimentThread.execute(new Runnable() {
+          @Override
+          public void run() {
+              try {
+                LOG.info("Start watching on PytorchJobs...");
+
+                ;
+                for (Watch.Response<MLJob> experiment : watchPytorch) {
+                  LOG.info("{}", experiment.object.getStatus());
+                }
+              } finally {
+                LOG.info("WATCH PytorchJob END");
+                try {
+                  watchPytorch.close();
+                } catch (Exception e){
+                  LOG.error("{}", e.getMessage());
+                }
+              }
+          }
+      });
+    }catch(Exception ex){
+      throw new RuntimeException();
+    }
   }
 
   public void createPersistentVolumeClaim(String pvcName, String namespace, String scName, String storage)
