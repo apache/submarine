@@ -35,12 +35,12 @@ const routes: Routes = [
         component: ModelHomeComponent,
       },
       {
-        path: ':name/:version',
-        component: ModelVersionComponent,
-      },
-      {
         path: ':name',
         component: RegisteredModelComponent,
+      },
+      {
+        path: ':name/:version',
+        component: ModelVersionComponent,
       },
     ],
   },

@@ -32,7 +32,7 @@ export class ModelCardComponent implements OnInit {
 
   ngOnInit() {
     if (this.card.description.length > 15) {
-      this.description = this.card.description.substring(0,15) + "...";
+      this.description = this.card.description.substring(0,50) + "...";
     }
     else {
       this.description = this.card.description;

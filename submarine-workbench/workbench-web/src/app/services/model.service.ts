@@ -33,14 +33,14 @@ export class ModelService {
     communicate between route-outlet and parent
     send experiment-id from ExperimentInfo to ExperimentHome
   */
-//   private emitInfoSource = new Subject<string>();
-//   infoEmitted$ = this.emitInfoSource.asObservable();
+  private emitInfoSource = new Subject<string>();
+  infoEmitted$ = this.emitInfoSource.asObservable();
 
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
-//   emitInfo(id: string) {
-//     this.emitInfoSource.next(id);
-//   }
+  emitInfo(name: string) {
+    this.emitInfoSource.next(name);
+  }
 
   fetchModelList(): Observable<ModelInfo[]> {
     const apiUrl = this.baseApi.getRestApi('/v1/registered-model');

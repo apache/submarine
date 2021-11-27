@@ -18,7 +18,7 @@
  */
 
 import { Component, OnInit } from '@angular/core';
-import { ExperimentService } from '@submarine/services/experiment.service';
+import { ModelService } from '@submarine/services/model.service';
 import { delay } from 'rxjs/operators';
 
 @Component({
@@ -29,9 +29,9 @@ import { delay } from 'rxjs/operators';
 export class ModelComponent implements OnInit {
   modelName: string = null;
 
-  constructor(private experimentService: ExperimentService) {}
+  constructor(private modelService: ModelService) {}
 
   ngOnInit() {
-    this.experimentService.infoEmitted$.pipe(delay(0)).subscribe((name) => (this.modelName = name));
+    this.modelService.infoEmitted$.pipe(delay(0)).subscribe((name) => (this.modelName = name));
   }
 }
