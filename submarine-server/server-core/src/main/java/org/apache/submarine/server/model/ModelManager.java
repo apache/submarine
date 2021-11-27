@@ -19,7 +19,6 @@
 
 package org.apache.submarine.server.model;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.ws.rs.core.Response;
@@ -29,6 +28,7 @@ import org.apache.submarine.server.SubmitterManager;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.model.ServeResponse;
 import org.apache.submarine.server.api.model.ServeSpec;
+import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
 import org.apache.submarine.server.model.database.service.ModelVersionService;
 
 
@@ -67,11 +67,14 @@ public class ModelManager {
    * Create a model serve.
    */
   public ServeResponse createServe(ServeSpec spec) throws SubmarineRuntimeException {
-    checkServeSpec(spec);
-    String modelURI = modelVersionService.select(spec.getModelName(), spec.getModelVersion()).getSource();
-    spec.setModelURI(modelURI);
+    setServeInfo(spec);
 
-    ServeResponse serveResponse = submitter.createServe(spec);
+
+    LOG.info("Create " + spec.getModelType() + " model serve");
+
+    submitter.createServe(spec);
+
+    ServeResponse serveResponse = getServeResponse(spec);
     return serveResponse;
   }
 
@@ -79,9 +82,9 @@ public class ModelManager {
    * Delete a model serve.
    */
   public void deleteServe(ServeSpec spec) throws SubmarineRuntimeException {
-    checkServeSpec(spec);
-    String modelURI = modelVersionService.select(spec.getModelName(), spec.getModelVersion()).getSource();
-    spec.setModelURI(modelURI);
+    setServeInfo(spec);
+
+    LOG.info("Delete " + spec.getModelType() + " model serve");
 
     submitter.deleteServe(spec);
   }
@@ -100,11 +103,19 @@ public class ModelManager {
         throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
                 "Invalid. Model version must be positive, but get " + modelVersion);
       }
-      String modelType = spec.getModelType();
-      if (!modelType.equals("tensorflow") && !modelType.equals("pytorch")) {
-        throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-                "Invalid. Serve Type can only be tensorflow or pytorch, but get " + modelType);
-      }
     }
+  }
+
+  private void setServeInfo(ServeSpec spec){
+    checkServeSpec(spec);
+
+    // Get model type and model uri from DB and set the value in the spec.
+    ModelVersionEntity modelVersion = modelVersionService.select(spec.getModelName(), spec.getModelVersion());
+    spec.setModelURI(modelVersion.getSource());
+    spec.setModelType(modelVersion.getModelType());
+  }
+
+  private ServeResponse getServeResponse(ServeSpec spec){
+    return new ServeResponse();
   }
 }

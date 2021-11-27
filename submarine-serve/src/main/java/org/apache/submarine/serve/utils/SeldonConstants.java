@@ -37,6 +37,11 @@ public class SeldonConstants {
 
   public static final String SELDON_PROTOCOL = "seldon";
 
+  public static final String KFSERVING_PROTOCOL = "kfserving";
+
   // TensorFlow
   public static final String TFSERVING_IMPLEMENTATION = "TENSORFLOW_SERVER";
+
+  // PyTorch
+  public static final String TRITON_IMPLEMENTATION = "TRITON_SERVER";
 }
