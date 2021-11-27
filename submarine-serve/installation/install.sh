@@ -41,5 +41,5 @@ helm install seldon-core seldon-core-operator \
     --namespace seldon-system \
     --version 1.10.0 \
     --set istio.enabled=true \
-    --set executor.defaultEnvSecretRefName=seldon-core-init-container-secret 2> /dev/null
+    --set executor.defaultEnvSecretRefName=submarine-serve-secret 2> /dev/null
 kubectl apply -f ${CURRENT_PATH}/seldon-gateway.yaml

@@ -23,7 +23,7 @@ under the License.
 
 > Note: The Serv API is in the alpha stage which is subjected to incompatible changes in future releases.
 
-## Create a TensorFlow model serve
+## Create a model serve
 `POST /api/v1/serve`
 
 **Example Request**
@@ -34,7 +34,6 @@ curl -X POST -H "Content-Type: application/json" -d '
 {
   "modelName": "simple", 
   "modelVersion":1, 
-  "modelType":"tensorflow"
 }
 ' http://127.0.0.1:32080/api/v1/serve
 ```
@@ -59,8 +58,7 @@ curl -X POST -H "Content-Type: application/json" -d '
 curl -X DELETE -H "Content-Type: application/json" -d '
 {
   "modelName": "simple", 
-  "modelVersion":1, 
-  "modelType":"tensorflow"
+  "modelVersion":1,
 }
 ' http://127.0.0.1:32080/api/v1/serve
 ```

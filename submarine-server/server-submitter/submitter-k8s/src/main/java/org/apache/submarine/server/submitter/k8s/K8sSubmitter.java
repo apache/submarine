@@ -23,12 +23,13 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -50,21 +51,21 @@ import io.kubernetes.client.models.V1PersistentVolumeClaim;
 import io.kubernetes.client.models.V1Pod;
 import io.kubernetes.client.models.V1PodList;
 import io.kubernetes.client.models.V1Status;
-import io.kubernetes.client.util.Watch;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
+import io.kubernetes.client.util.Watch;
 
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
+import org.apache.submarine.serve.pytorch.SeldonPytorchServing;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.serve.tensorflow.SeldonTFServing;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
-import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
-import org.apache.submarine.server.api.model.ServeResponse;
+import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.model.ServeSpec;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
@@ -518,7 +519,7 @@ public class K8sSubmitter implements Submitter {
   }
 
   @Override
-  public ServeResponse createServe(ServeSpec spec)
+  public void createServe(ServeSpec spec)
       throws SubmarineRuntimeException {
     SeldonDeployment seldonDeployment = parseServeSpec(spec);
 
@@ -533,7 +534,6 @@ public class K8sSubmitter implements Submitter {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
-    return new ServeResponse();
   }
 
   @Override
@@ -763,8 +763,7 @@ public class K8sSubmitter implements Submitter {
     if (modelType.equals("tensorflow")){
       seldonDeployment = new SeldonTFServing(modelName, modelURI);
     } else if (modelType.equals("pytorch")){
-      // TODO(KUAN-HSUN LI): create pytorch serve
-      throw new SubmarineRuntimeException("Given serve type: " + modelType + " is not supported.");
+      seldonDeployment = new SeldonPytorchServing(modelName, modelURI);
     } else {
       throw new SubmarineRuntimeException("Given serve type: " + modelType + " is not supported.");
     }

@@ -25,7 +25,6 @@ import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
-import org.apache.submarine.server.api.model.ServeResponse;
 import org.apache.submarine.server.api.model.ServeSpec;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
@@ -127,10 +126,9 @@ public interface Submitter {
   /**
    * Create Serve with spec
    * @param spec
-   * @return object
    * @throws SubmarineRuntimeException running error
    */
-  ServeResponse createServe(ServeSpec spec) throws SubmarineRuntimeException;
+  void createServe(ServeSpec spec) throws SubmarineRuntimeException;
 
 
   /**
