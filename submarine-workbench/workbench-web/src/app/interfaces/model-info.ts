@@ -19,8 +19,8 @@
 
 export interface ModelInfo {
   name: string;
-  createTime: string,
-  updatedTime: string, 
+  creationTime: string,
+  lastUpdatedTime: string, 
   tags: string[],
   description: string,
 }
