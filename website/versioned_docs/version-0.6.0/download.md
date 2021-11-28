@@ -22,7 +22,7 @@ under the License.
 
 The latest release of Apache Submarine is `0.5.0`.
 
-  - Apache Submarine `0.5.0` released on Dec 17, 2020 ([release notes](http://submarine.apache.org/releases/submarine-release-0.5.0.html)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.5.0))
+  - Apache Submarine `0.5.0` released on Dec 17, 2020 ([release notes](https://submarine.apache.org/releases/submarine-release-0.5.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.5.0))
     * Binary package:
       [submarine-dist-0.5.0-hadoop-2.9.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.5.0/submarine-dist-0.5.0-hadoop-2.9.tar.gz) (505 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.5.0/submarine-dist-0.5.0-hadoop-2.9.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.5.0/submarine-dist-0.5.0-hadoop-2.9.tar.gz.asc))
     * Source:
@@ -45,7 +45,7 @@ gpg --verify submarine-dist-X.Y.Z-src.tar.gz.asc
 ```
 
 ## Old releases
-  - Apache Submarine 0.4.0 released on Jul 05, 2020 ([release notes](http://submarine.apache.org/releases/submarine-release-0.4.0.html)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.4.0))
+  - Apache Submarine 0.4.0 released on Jul 05, 2020 ([release notes](https://submarine.apache.org/releases/submarine-release-0.4.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.4.0))
 
     * Binary package with submarine:
     [submarine-dist-0.4.0-hadoop-2.9.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.4.0/submarine-dist-0.4.0-hadoop-2.9.tar.gz) (550 MB,
@@ -58,7 +58,7 @@ gpg --verify submarine-dist-X.Y.Z-src.tar.gz.asc
     * Docker images:
     *[mini-submarine](https://hub.docker.com/layers/apache/submarine/mini-0.4.0/images/sha256-a8e7bd98f1f0325223d68e0ba64fd48bd56ee91736461d289945e70ad138e08f)* [(guide)](https://github.com/apache/submarine/blob/rel/release-0.4.0/dev-support/mini-submarine/README.md#mini-submarine)
     
-  - Apache Submarine 0.3.0 released on Feb 01, 2020 ([release notes](http://submarine.apache.org/releases/submarine-release-0.3.0.html)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.3.0))
+  - Apache Submarine 0.3.0 released on Feb 01, 2020 ([release notes](https://submarine.apache.org/releases/submarine-release-0.3.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.3.0))
 
     * Binary package with submarine:
     [submarine-dist-0.3.0-hadoop-2.9.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.3.0/submarine-dist-0.3.0-hadoop-2.9.tar.gz) (550 MB,
