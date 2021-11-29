@@ -46,13 +46,16 @@ go mod vendor
 Reference: [spark-on-k8s-operator e2e test](https://github.com/GoogleCloudPlatform/spark-on-k8s-operator/tree/master/test/e2e)
 
 ```bash
-# Step1: Build image "submarine-operator" to minikube's Docker 
+# Step1: Build image "submarine-operator" to minikube's Docker
 eval $(minikube docker-env)
 make image
 
-# Step2: Run Tests
+# Step2: Install helm dependencies
+helm install --wait --set dev=true submarine ../helm-charts/submarine
+
+# Step3: Run Tests
 ## one can add -v to see additional logs
-go test ./test/e2e
+go test -timeout 30m ./test/e2e
 ```
 
 ## Run Frontend End-to-end Tests

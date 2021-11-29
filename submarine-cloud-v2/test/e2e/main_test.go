@@ -34,9 +34,9 @@ var (
 	framework *operatorFramework.Framework
 )
 
-// Wait for test job to finish. Poll for updates once a second. Time out after 240 seconds.
-var TIMEOUT = 300 * time.Second
-var INTERVAL = 1 * time.Second
+// Wait for test job to finish.
+var TIMEOUT = 1200 * time.Second
+var INTERVAL = 2 * time.Second
 
 var STATES = [4]string{
 	"",
