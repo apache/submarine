@@ -24,6 +24,29 @@ env:
   TEST_FLAG: "test -DskipRat -ntp"
 
 jobs:
+  submarine-operator-verify-codegen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      working-directory: "github.com/apache/submarine"
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          path: ${{ env.working-directory }}
+      - name: Setup Golang
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.16.2"
+      - name: Check golang version
+        working-directory: ${{ env.working-directory }}/submarine-cloud-v2
+        run: go version
+      - name: Install Dependencies
+        working-directory: ${{ env.working-directory }}/submarine-cloud-v2
+        run: go mod vendor
+      - name: Verify Codegen
+        working-directory: ${{ env.working-directory }}/submarine-cloud-v2
+        run: ./hack/verify-codegen.sh
   submarine-e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -145,110 +168,110 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 50
-    - name: Cache jacoco.exec
-      uses: actions/cache@v2
-      with:
-        path: ./submarine-commons/commons-cluster/target/jacoco.exec
-        key: ${{ runner.os }}-docker-${{ github.sha }}
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: "1.8"
-    - name: Set up Maven 3.6.3
-      uses: stCarolas/setup-maven@v4
-      with:
-        maven-version: 3.6.3
-    - name: Check version
-      run: |
-        mvn --version
-        java -version
-    - name: Build
-      env:
-        MODULES: "-pl :submarine-commons-cluster"
-      run: |
-        echo ">>> mvn $BUILD_FLAG $MODULES -B"
-        mvn $BUILD_FLAG $MODULES -B
-    - name: Test
-      env:
-        TEST_MODULES: "-pl :submarine-commons-cluster"
-      run: |
-        echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
-        mvn $TEST_FLAG $TEST_MODULES -B
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 50
+      - name: Cache jacoco.exec
+        uses: actions/cache@v2
+        with:
+          path: ./submarine-commons/commons-cluster/target/jacoco.exec
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: "1.8"
+      - name: Set up Maven 3.6.3
+        uses: stCarolas/setup-maven@v4
+        with:
+          maven-version: 3.6.3
+      - name: Check version
+        run: |
+          mvn --version
+          java -version
+      - name: Build
+        env:
+          MODULES: "-pl :submarine-commons-cluster"
+        run: |
+          echo ">>> mvn $BUILD_FLAG $MODULES -B"
+          mvn $BUILD_FLAG $MODULES -B
+      - name: Test
+        env:
+          TEST_MODULES: "-pl :submarine-commons-cluster"
+        run: |
+          echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+          mvn $TEST_FLAG $TEST_MODULES -B
   submarine-commons-runtime:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 50
-    - name: Cache jacoco.exec
-      uses: actions/cache@v2
-      with:
-        path: ./submarine-commons/commons-runtime/target/jacoco.exec
-        key: ${{ runner.os }}-docker-${{ github.sha }}
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: "1.8"
-    - name: Set up Maven 3.6.3
-      uses: stCarolas/setup-maven@v4
-      with:
-        maven-version: 3.6.3
-    - name: Check version
-      run: |
-        mvn --version
-        java -version
-    - name: Build
-      env:
-        MODULES: "-pl :submarine-commons-runtime"
-      run: |
-        echo ">>> mvn $BUILD_FLAG $MODULES -B"
-        mvn $BUILD_FLAG $MODULES -B
-    - name: Test
-      env:
-        TEST_MODULES: "-pl :submarine-commons-runtime"
-      run: |
-        echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
-        mvn $TEST_FLAG $TEST_MODULES -B
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 50
+      - name: Cache jacoco.exec
+        uses: actions/cache@v2
+        with:
+          path: ./submarine-commons/commons-runtime/target/jacoco.exec
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: "1.8"
+      - name: Set up Maven 3.6.3
+        uses: stCarolas/setup-maven@v4
+        with:
+          maven-version: 3.6.3
+      - name: Check version
+        run: |
+          mvn --version
+          java -version
+      - name: Build
+        env:
+          MODULES: "-pl :submarine-commons-runtime"
+        run: |
+          echo ">>> mvn $BUILD_FLAG $MODULES -B"
+          mvn $BUILD_FLAG $MODULES -B
+      - name: Test
+        env:
+          TEST_MODULES: "-pl :submarine-commons-runtime"
+        run: |
+          echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+          mvn $TEST_FLAG $TEST_MODULES -B
   submarine-client:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 50
-    - name: Cache jacoco.exec
-      uses: actions/cache@v2
-      with:
-        path: ./submarine-client/target/jacoco.exec
-        key: ${{ runner.os }}-docker-${{ github.sha }}
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: "1.8"
-    - name: Set up Maven 3.6.3
-      uses: stCarolas/setup-maven@v4
-      with:
-        maven-version: 3.6.3
-    - name: Check version
-      run: |
-        mvn --version
-        java -version
-    - name: Build
-      env:
-        MODULES: "-pl :submarine-client"
-      run: |
-        echo ">>> mvn $BUILD_FLAG $MODULES -B"
-        mvn $BUILD_FLAG $MODULES -B
-    - name: Test
-      env:
-        TEST_MODULES: "-pl :submarine-client"
-      run: |
-        echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
-        mvn $TEST_FLAG $TEST_MODULES -B
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 50
+      - name: Cache jacoco.exec
+        uses: actions/cache@v2
+        with:
+          path: ./submarine-client/target/jacoco.exec
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: "1.8"
+      - name: Set up Maven 3.6.3
+        uses: stCarolas/setup-maven@v4
+        with:
+          maven-version: 3.6.3
+      - name: Check version
+        run: |
+          mvn --version
+          java -version
+      - name: Build
+        env:
+          MODULES: "-pl :submarine-client"
+        run: |
+          echo ">>> mvn $BUILD_FLAG $MODULES -B"
+          mvn $BUILD_FLAG $MODULES -B
+      - name: Test
+        env:
+          TEST_MODULES: "-pl :submarine-client"
+        run: |
+          echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+          mvn $TEST_FLAG $TEST_MODULES -B
   submarine-server:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -258,111 +281,111 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: "password"
         ports:
-        - 3306:3306
+          - 3306:3306
         # wait until mysql is health
         options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 10s --health-retries 10
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 50
-    - name: Cache jacoco.exec
-      uses: actions/cache@v2
-      with:
-        path: |
-          ./submarine-server/server-core/target/jacoco.exec
-        key: ${{ runner.os }}-docker-${{ github.sha }}
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: "1.8"
-    - name: Set up Maven 3.6.3
-      uses: stCarolas/setup-maven@v4
-      with:
-        maven-version: 3.6.3
-    - name: Check version
-      run: |
-        mvn --version
-        java -version
-    - name: Prepare default mysql-data
-      run: |
-        python3 -V
-        sudo apt-get install python3-mysql.connector
-        python3 ./dev-support/database/init-database.py
-    - name: Build
-      env:
-        MODULES: "-pl :submarine-server-core"
-      run: |
-        echo ">>> mvn $BUILD_FLAG $MODULES -B"
-        mvn $BUILD_FLAG $MODULES -B
-    - name: Test
-      env:
-        TEST_MODULES: "-pl :submarine-server-core"
-      run: |
-        echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
-        mvn $TEST_FLAG $TEST_MODULES -B
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 50
+      - name: Cache jacoco.exec
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./submarine-server/server-core/target/jacoco.exec
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: "1.8"
+      - name: Set up Maven 3.6.3
+        uses: stCarolas/setup-maven@v4
+        with:
+          maven-version: 3.6.3
+      - name: Check version
+        run: |
+          mvn --version
+          java -version
+      - name: Prepare default mysql-data
+        run: |
+          python3 -V
+          sudo apt-get install python3-mysql.connector
+          python3 ./dev-support/database/init-database.py
+      - name: Build
+        env:
+          MODULES: "-pl :submarine-server-core"
+        run: |
+          echo ">>> mvn $BUILD_FLAG $MODULES -B"
+          mvn $BUILD_FLAG $MODULES -B
+      - name: Test
+        env:
+          TEST_MODULES: "-pl :submarine-server-core"
+        run: |
+          echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+          mvn $TEST_FLAG $TEST_MODULES -B
   submarine-workbench:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 50
-    - name: Set up Maven 3.6.3
-      uses: stCarolas/setup-maven@v4
-      with:
-        maven-version: 3.6.3
-    - name: Check version
-      run: |
-        mvn --version
-    - name: Maven Build
-      env:
-        MODULES: "-pl :submarine-workbench-web"
-      run: |
-        echo ">>> mvn $BUILD_FLAG $MODULES -B"
-        mvn $BUILD_FLAG $MODULES -B
-    - name: Test with chrome
-      working-directory: ./submarine-workbench/workbench-web
-      run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
-    - name: Test with firefox
-      working-directory: ./submarine-workbench/workbench-web
-      run: npm run test -- --no-watch --no-progress --browsers=FirefoxHeadless
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 50
+      - name: Set up Maven 3.6.3
+        uses: stCarolas/setup-maven@v4
+        with:
+          maven-version: 3.6.3
+      - name: Check version
+        run: |
+          mvn --version
+      - name: Maven Build
+        env:
+          MODULES: "-pl :submarine-workbench-web"
+        run: |
+          echo ">>> mvn $BUILD_FLAG $MODULES -B"
+          mvn $BUILD_FLAG $MODULES -B
+      - name: Test with chrome
+        working-directory: ./submarine-workbench/workbench-web
+        run: npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI
+      - name: Test with firefox
+        working-directory: ./submarine-workbench/workbench-web
+        run: npm run test -- --no-watch --no-progress --browsers=FirefoxHeadless
   submarine-submitter:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 50
-    - name: Cache jacoco.exec
-      uses: actions/cache@v2
-      with:
-        path: |
-          ./submarine-server/server-submitter/target/jacoco.exec
-        key: ${{ runner.os }}-docker-${{ github.sha }}
-    - name: Set up JDK 1.8
-      uses: actions/setup-java@v1
-      with:
-        java-version: "1.8"
-    - name: Set up Maven 3.6.3
-      uses: stCarolas/setup-maven@v4
-      with:
-        maven-version: 3.6.3
-    - name: Check version
-      run: |
-        mvn --version
-        java -version
-    - name: Build
-      env:
-        MODULES: "-pl :submarine-server-submitter"
-      run: |
-        echo ">>> mvn $BUILD_FLAG $MODULES -B"
-        mvn $BUILD_FLAG $MODULES -B
-    - name: Test
-      env:
-        TEST_MODULES: "-pl :submarine-server-submitter"
-      run: |
-        echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
-        mvn $TEST_FLAG $TEST_MODULES -B
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 50
+      - name: Cache jacoco.exec
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./submarine-server/server-submitter/target/jacoco.exec
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: "1.8"
+      - name: Set up Maven 3.6.3
+        uses: stCarolas/setup-maven@v4
+        with:
+          maven-version: 3.6.3
+      - name: Check version
+        run: |
+          mvn --version
+          java -version
+      - name: Build
+        env:
+          MODULES: "-pl :submarine-server-submitter"
+        run: |
+          echo ">>> mvn $BUILD_FLAG $MODULES -B"
+          mvn $BUILD_FLAG $MODULES -B
+      - name: Test
+        env:
+          TEST_MODULES: "-pl :submarine-server-submitter"
+        run: |
+          echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+          mvn $TEST_FLAG $TEST_MODULES -B
 
   rat:
     name: Check License
@@ -371,7 +394,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
-          java-version: '1.8'
+          java-version: "1.8"
       - run: mvn org.apache.rat:apache-rat-plugin:check
   linter:
     name: Check Style
@@ -382,7 +405,7 @@ jobs:
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
-          java-version: '1.8'
+          java-version: "1.8"
       - name: Set up Maven 3.6.3
         uses: stCarolas/setup-maven@v4
         with:
@@ -418,7 +441,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Cache Maven packages
         uses: actions/cache@v1
         with:
@@ -489,8 +512,7 @@ jobs:
       - name: Calculate combined coverage
         run: ./dev-support/cicd/coverage.sh
       - name: Build and analyze with JDK 11 # sonar-maven-plugin only support JDK 11
-        run:
-          mvn -B verify -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_submarine
+        run: mvn -B verify -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_submarine
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
