@@ -47,12 +47,11 @@ export class ModelHomeComponent implements OnInit {
     this.modelService.fetchModelList().subscribe((res) => {
       this.modelCards = res;
       this.onDisplayModelCards = this.modelCards.map(card => card);
-      let tags = [];
+      let tags_set = new Set();
       this.modelCards.map((card) => {
-        Array.prototype.push.apply(tags, card.tags);
+        card.tags.forEach(tags_set.add, tags_set);
       });
-      let tags_set = new Set(tags);
-      tags = Array.from(tags_set);
+      let tags = Array.from(tags_set);
       this.listOfTagsOption = tags.map((tag) => ({ "label": String(tag), "value": String(tag)}));
       this.isModelCardsLoading = false;
     });
