@@ -19,7 +19,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ModelInfo } from '@submarine/interfaces/model-info';
-import { ExperimentService } from '@submarine/services/experiment.service';
+import { ModelService } from '@submarine/services/model.service';
 
 @Component({
   selector: 'submarine-model-home',
@@ -27,8 +27,9 @@ import { ExperimentService } from '@submarine/services/experiment.service';
   styleUrls: ['./model-home.component.scss'],
 })
 export class ModelHomeComponent implements OnInit {
-  constructor(private experimentService: ExperimentService) {}
+  constructor(private modelService: ModelService) {}
 
+  isModelCardsLoading: boolean = true;
   modelCards: ModelInfo[];
 
   onDisplayModelCards = [];
@@ -38,80 +39,22 @@ export class ModelHomeComponent implements OnInit {
   listOfChosenTags = [];
 
   ngOnInit() {
-    this.modelCards = [
-      {
-        'name': "Model One",
-        'createTime': "2021-10-12",
-        'updatedTime': "2021-10-13", 
-        'tags': ["image", 'text'],
-        'description': "first model",
-      }, 
-      {
-        'name': "Model Two",
-        'createTime': "2021-10-12",
-        'updatedTime': "2021-10-13", 
-        'tags': ["speech"],
-        'description': "second model",
-      },
-      {
-        'name': "Model Three",
-        'createTime': "2021-10-12",
-        'updatedTime': "2021-10-13", 
-        'tags': ["speech"],
-        'description': "The third model has very long description for description shorten testing, 1234567890 A recurrent neural network (RNN) is a class of artificial neural networks where connections between nodes form a directed graph along a temporal sequence. This allows it to exhibit temporal dynamic behavior. Derived from feedforward neural networks, RNNs can use their internal state (memory) to process variable length sequences of inputs",
-      },
-      {
-        'name': "ModelFour",
-        'createTime': "2021-10-18",
-        'updatedTime': "2021-10-19", 
-        'tags': ["nlp", 'ssl'],
-        'description': "BERT, a famous ssl model in NLP.",
-      },
-      {
-        'name': "ModelFive",
-        'createTime': "2021-10-18",
-        'updatedTime': "2021-10-19", 
-        'tags': ["speech", 'ssl'],
-        'description': "huBERT, a famous ssl model in SP.",
-      },
-      {
-        'name': "ModelSix",
-        'createTime': "2021-10-18",
-        'updatedTime': "2021-10-19", 
-        'tags': ["CV", 'ssl'],
-        'description': "SimCLR, a famous ssl model in CV.",
-      },
-      {
-        'name': "ModelFour",
-        'createTime': "2021-10-18",
-        'updatedTime': "2021-10-19", 
-        'tags': ["nlp", 'ssl'],
-        'description': "BERT, a famous ssl model in NLP.",
-      },
-      {
-        'name': "ModelFive",
-        'createTime': "2021-10-18",
-        'updatedTime': "2021-10-19", 
-        'tags': ["speech", 'ssl'],
-        'description': "huBERT, a famous ssl model in SP.",
-      },
-      {
-        'name': "ModelSix",
-        'createTime': "2021-10-18",
-        'updatedTime': "2021-10-19", 
-        'tags': ["CV", 'ssl'],
-        'description': "SimCLR, a famous ssl model in CV.",
-      },
-    ];
-    
-    this.onDisplayModelCards = this.modelCards.map(card => card);
-    let tags = [];
-    this.modelCards.map((card) => {
-      Array.prototype.push.apply(tags, card.tags);
+    this.fetchModelCards();
+    this.modelService.emitInfo(null);
+  }
+  
+  fetchModelCards = () => {
+    this.modelService.fetchModelList().subscribe((res) => {
+      this.modelCards = res;
+      this.onDisplayModelCards = this.modelCards.map(card => card);
+      let tags_set = new Set();
+      this.modelCards.map((card) => {
+        card.tags.forEach(tags_set.add, tags_set);
+      });
+      let tags = Array.from(tags_set);
+      this.listOfTagsOption = tags.map((tag) => ({ "label": String(tag), "value": String(tag)}));
+      this.isModelCardsLoading = false;
     });
-    let tags_set = new Set(tags);
-    tags = Array.from(tags_set);
-    this.listOfTagsOption = tags.map((tag) => ({ "label": String(tag), "value": String(tag)}));
   }
 
   searchModel(event: any) {

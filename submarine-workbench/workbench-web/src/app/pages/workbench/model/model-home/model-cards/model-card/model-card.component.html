@@ -19,8 +19,8 @@
 <a [routerLink]="[card.name]">
   <nz-list-item >
     <nz-card style="width:100%;" nzTitle={{card.name}} [nzExtra]="extraTemplate">
-    <p>Created: {{card.createTime}}</p>
-    <p>Updated: {{card.updatedTime}}</p>
+    <p>Created: {{card.creationTime}}</p>
+    <p>Last Updated: {{card.lastUpdatedTime}}</p>
     <p>Tags: 
       <submarine-model-tag *ngFor="let tag of card.tags" [tag]="tag" [cssType]="'default'"></submarine-model-tag>
     </p>

@@ -26,6 +26,7 @@ import { ModelInfo } from '@submarine/interfaces/model-info';
 })
 export class ModelCardsComponent implements OnInit {
   @Input() modelCards: ModelInfo[];
+  @Input() isLoading: boolean;
   nowPage: number;
   totalPages: number;
   onPageModelCards: ModelInfo[];
