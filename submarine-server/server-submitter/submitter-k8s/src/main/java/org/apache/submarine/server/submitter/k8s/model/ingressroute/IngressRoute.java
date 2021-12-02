@@ -20,7 +20,7 @@
 package org.apache.submarine.server.submitter.k8s.model.ingressroute;
 
 import com.google.gson.annotations.SerializedName;
-import io.kubernetes.client.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 
 public class IngressRoute {
   public static final String CRD_INGRESSROUTE_GROUP_V1 = "traefik.containo.us";

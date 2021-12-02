@@ -18,7 +18,7 @@
  */
 package org.apache.submarine.serve.tensorflow;
 
-import io.kubernetes.client.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.serve.seldon.SeldonGraph;
 import org.apache.submarine.serve.seldon.SeldonPredictor;

@@ -19,7 +19,7 @@
 package org.apache.submarine.serve.seldon;
 
 import com.google.gson.annotations.SerializedName;
-import io.kubernetes.client.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import org.apache.submarine.serve.utils.SeldonConstants;
 
 import java.util.ArrayList;

@@ -21,9 +21,9 @@ package org.apache.submarine.server.submitter.k8s.experiment.codelocalizer;
 
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 
-import io.kubernetes.client.models.V1EmptyDirVolumeSource;
-import io.kubernetes.client.models.V1PodSpec;
-import io.kubernetes.client.models.V1Volume;
+import io.kubernetes.client.openapi.models.V1EmptyDirVolumeSource;
+import io.kubernetes.client.openapi.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1Volume;
 
 public abstract class AbstractCodeLocalizer implements CodeLocalizer {
 
@@ -32,18 +32,18 @@ public abstract class AbstractCodeLocalizer implements CodeLocalizer {
   public static final String CODE_LOCALIZER_INIT_CONTAINER_NAME = "code-localizer";
   public static final String CODE_LOCALIZER_PATH_ENV_VAR = "CODE_PATH";
   private String url;
-  
+
   public AbstractCodeLocalizer(String url) {
     this.url = url;
   }
-  
+
   /**
    * @return the url
    */
   public String getUrl() {
     return url;
   }
-  
+
   @Override
   public void localize(V1PodSpec podSpec) {
     V1Volume volume = new V1Volume();

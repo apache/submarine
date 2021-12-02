@@ -130,7 +130,7 @@
     <jgit.version>5.13.0.202109080827-r</jgit.version>
     <atomix.version>3.1.5</atomix.version>
     <!--  Submarine on Kubernetes  -->
-    <k8s.client-java.version>12.0.1</k8s.client-java.version>
+    <k8s.client-java.version>11.0.1</k8s.client-java.version>
     <jersey.test-framework>2.27</jersey.test-framework>
     <!-- integration test-->
     <plugin.failsafe.version>2.17</plugin.failsafe.version>

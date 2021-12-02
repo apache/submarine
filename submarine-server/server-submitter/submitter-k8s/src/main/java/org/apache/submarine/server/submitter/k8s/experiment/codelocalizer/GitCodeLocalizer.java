@@ -26,10 +26,10 @@ import java.util.List;
 
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 
-import io.kubernetes.client.models.V1Container;
-import io.kubernetes.client.models.V1EnvVar;
-import io.kubernetes.client.models.V1PodSpec;
-import io.kubernetes.client.models.V1VolumeMount;
+import io.kubernetes.client.openapi.models.V1Container;
+import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1VolumeMount;
 
 public abstract class GitCodeLocalizer extends AbstractCodeLocalizer {
 
