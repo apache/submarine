@@ -63,7 +63,7 @@ import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.JSON;
 import io.kubernetes.client.openapi.apis.CustomObjectsApi;
 import io.kubernetes.client.util.ClientBuilder;
-import io.kubernetes.client.util.KubeConfig;te
+import io.kubernetes.client.util.KubeConfig;
 
 @SuppressWarnings("rawtypes")
 public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
