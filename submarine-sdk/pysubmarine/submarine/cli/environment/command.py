@@ -21,18 +21,18 @@ import click
 @click.command("environment")
 def list_environment():
     """List environment"""
-    click.echo("list!")
+    click.echo("list environment!")
 
 
 @click.command("environment")
 @click.argument("id")
 def get_environment(id):
     """Get environment"""
-    click.echo("get! id={}".format(id))
+    click.echo("get environment! id={}".format(id))
 
 
 @click.command("environment")
 @click.argument("id")
 def delete_environment(id):
     """Delete environment"""
-    click.echo("delete! id={}".format(id))
+    click.echo("delete environment! id={}".format(id))

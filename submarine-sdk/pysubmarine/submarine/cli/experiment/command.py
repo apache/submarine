@@ -21,18 +21,18 @@ import click
 @click.command("experiment")
 def list_experiment():
     """List experiments"""
-    click.echo("list!")
+    click.echo("list experiment!")
 
 
 @click.command("experiment")
 @click.argument("id")
-def get_experiment():
+def get_experiment(id):
     """Get experiments"""
-    click.echo("get! id={}".format(id))
+    click.echo("get experiment! id={}".format(id))
 
 
 @click.command("experiment")
 @click.argument("id")
 def delete_experiment(id):
     """Delete experiment"""
-    click.echo("delete! id={}".format(id))
+    click.echo("delete experiment! id={}".format(id))

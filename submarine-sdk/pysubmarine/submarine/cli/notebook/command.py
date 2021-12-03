@@ -21,18 +21,18 @@ import click
 @click.command("notebook")
 def list_notebook():
     """List notebooks"""
-    click.echo("list!")
+    click.echo("list notebook!")
 
 
 @click.command("notebook")
 @click.argument("id")
-def get_notebook():
+def get_notebook(id):
     """Get notebooks"""
-    click.echo("get! id={}".format(id))
+    click.echo("get notebook! id={}".format(id))
 
 
 @click.command("notebook")
 @click.argument("id")
 def delete_notebook(id):
     """Delete notebook"""
-    click.echo("delete! id={}".format(id))
+    click.echo("delete notebook! id={}".format(id))
