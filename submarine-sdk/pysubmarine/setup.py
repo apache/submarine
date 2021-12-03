@@ -40,6 +40,7 @@ setup(
         "pyarrow==0.17.0",
         "mlflow>=1.15.0",
         "boto3>=1.17.58",
+        "click==8.0.3"
     ],
     extras_require={
         "tf": ["tensorflow==1.15.0"],
@@ -58,6 +59,11 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
+    entry_points={
+        'console_scripts': [
+            'submarine = submarine.cli.main:entry_point',
+        ],
+    },
     license="Apache License, Version 2.0",
     maintainer="Apache Submarine Community",
     maintainer_email="dev@submarine.apache.org",
