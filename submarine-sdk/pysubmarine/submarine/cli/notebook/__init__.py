@@ -13,9 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.cli.notebook.command import get_notebook
-from submarine.cli.notebook.command import list_notebook
-from submarine.cli.notebook.command import delete_notebook
+from submarine.cli.notebook.command import delete_notebook, get_notebook, list_notebook
 
 __all__ = [
     "get_notebook",

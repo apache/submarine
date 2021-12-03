@@ -16,9 +16,10 @@
 """
 
 import click
+
+from submarine.cli.environment import command as environment_cmd
 from submarine.cli.experiment import command as experiment_cmd
 from submarine.cli.notebook import command as notebook_cmd
-from submarine.cli.environment import command as environment_cmd
 from submarine.cli.sandbox import command as sandbox_cmd
 
 

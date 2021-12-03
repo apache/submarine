@@ -13,9 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.cli.environment.command import get_environment
-from submarine.cli.environment.command import list_environment
-from submarine.cli.environment.command import delete_environment
+from submarine.cli.environment.command import delete_environment, get_environment, list_environment
 
 __all__ = [
     "get_environment",

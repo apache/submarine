@@ -13,9 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from submarine.cli.sandbox.command import start_sandbox
-from submarine.cli.sandbox.command import delete_sandbox
-
+from submarine.cli.sandbox.command import delete_sandbox, start_sandbox
 
 __all__ = [
     "start_sandbox",
