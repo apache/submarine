@@ -52,4 +52,3 @@ from __future__ import absolute_import
 # from submarine.experiment.models.kernel_spec import KernelSpec
 
 __version__ = "0.7.0-SNAPSHOT"
-

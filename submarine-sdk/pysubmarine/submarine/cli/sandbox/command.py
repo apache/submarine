@@ -17,13 +17,15 @@
 
 import click
 
-@click.command('start')
-@click.option('-v', '--version', 'version', help='Specify sandbox version',default='0.6.0')
+
+@click.command("start")
+@click.option("-v", "--version", "version", help="Specify sandbox version", default="0.6.0")
 def start_sandbox(version):
     """Start sandbox"""
-    click.echo('start sandbox! version={}'.format(version))
+    click.echo("start sandbox! version={}".format(version))
 
-@click.command('delete')
+
+@click.command("delete")
 def delete_sandbox():
     """Delete sandbox"""
-    click.echo('delete sandbox!')
+    click.echo("delete sandbox!")

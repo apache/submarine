@@ -17,19 +17,22 @@
 
 import click
 
-@click.command('notebook')
+
+@click.command("notebook")
 def list_notebook():
     """List notebooks"""
-    click.echo('list!')
+    click.echo("list!")
 
-@click.command('notebook')
-@click.argument('id')
+
+@click.command("notebook")
+@click.argument("id")
 def get_notebook():
     """Get notebooks"""
-    click.echo('get! id={}'.format(id))
+    click.echo("get! id={}".format(id))
 
-@click.command('notebook')
-@click.argument('id')
+
+@click.command("notebook")
+@click.argument("id")
 def delete_notebook(id):
     """Delete notebook"""
-    click.echo('delete! id={}'.format(id))
+    click.echo("delete! id={}".format(id))

@@ -21,27 +21,32 @@ from submarine.cli.notebook import command as notebook_cmd
 from submarine.cli.environment import command as environment_cmd
 from submarine.cli.sandbox import command as sandbox_cmd
 
+
 @click.group()
 def entry_point():
     """Submarine CLI Tool!"""
     pass
 
 
-@entry_point.group('list')
+@entry_point.group("list")
 def cmdgrp_list():
     pass
 
-@entry_point.group('get')
+
+@entry_point.group("get")
 def cmdgrp_get():
     pass
 
-@entry_point.group('delete')
+
+@entry_point.group("delete")
 def cmdgrp_delete():
     pass
 
-@entry_point.group('sandbox')
+
+@entry_point.group("sandbox")
 def cmdgrp_sandbox():
     pass
+
 
 # experiment
 cmdgrp_list.add_command(experiment_cmd.list_experiment)
