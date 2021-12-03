@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -16,21 +15,17 @@
 # limitations under the License.
 #
 
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-nodes:
-- role: control-plane
-  kubeadmConfigPatches:
-  - |
-    kind: InitConfiguration
-    nodeRegistration:
-      kubeletExtraArgs:
-        node-labels: "ingress-ready=true"
-        authorization-mode: "AlwaysAllow"
-  extraPortMappings:
-  - containerPort: 32080
-    hostPort: 80
-    protocol: TCP
-  - containerPort: 443
-    hostPort: 443
-    protocol: TCP
+---
+extends: default
+ignore: |
+  helm-charts/
+  submarine-client/src/test/resources/runjob-common-yaml/wrong-indentation.yaml
+  submarine-client/src/test/resources/runjob-common-yaml/wrong-property-name.yaml
+rules:
+  comments:
+    min-spaces-from-content: 1
+  empty-lines:
+    level: warning
+  line-length: disable
+  indentation:
+    indent-sequences: consistent

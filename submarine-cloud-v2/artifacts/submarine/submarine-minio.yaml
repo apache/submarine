@@ -23,7 +23,7 @@ metadata:
   name: submarine-minio-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   storageClassName: "submarine-storageclass"
   resources:
     requests:
@@ -72,13 +72,13 @@ spec:
         ports:
         - containerPort: 9000
         volumeMounts:
-          - mountPath: "/data"
-            name: "volume"
-            subPath: "submarine-minio"
+        - mountPath: "/data"
+          name: "volume"
+          subPath: "submarine-minio"
       volumes:
-        - name: "volume"
-          persistentVolumeClaim:
-            claimName: "submarine-minio-pvc"
+      - name: "volume"
+        persistentVolumeClaim:
+          claimName: "submarine-minio-pvc"
 ---
 # Source: submarine/templates/submarine-minio.yaml
 apiVersion: traefik.containo.us/v1alpha1
@@ -87,7 +87,7 @@ metadata:
   name: submarine-minio-ingressroute
 spec:
   entryPoints:
-    - web
+  - web
   routes:
   - kind: Rule
     match: "PathPrefix(`/minio`)"

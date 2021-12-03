@@ -35,7 +35,7 @@ spec:
       - name: manager
         image: apache/submarine:notebook-controller-v1.1.0-g253890cb
         command:
-          - /manager
+        - /manager
         imagePullPolicy: IfNotPresent
         env:
         - name: USE_ISTIO
