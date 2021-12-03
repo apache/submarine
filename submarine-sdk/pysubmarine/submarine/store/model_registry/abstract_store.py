@@ -143,7 +143,7 @@ class AbstractStore:
         :param dataset: Dataset which this version of model is used.
         :param description: Description of this version.
         :param tags: A list of string associated with this version of model.
-        :return: A single object of :py:class:`submarine.entities.model_registry.ModelMetadata`
+        :return: A single object of :py:class:`submarine.entities.model_registry.ModelVersion`
                  created in the backend.
         """
         pass

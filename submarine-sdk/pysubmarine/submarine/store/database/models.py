@@ -86,7 +86,7 @@ class SqlRegisteredModel(Base):
         "SqlModelVersion", back_populates="registered_model", cascade="all"
     )
     """
-    Metadatas reference to SqlRegisteredModel
+    MetaVersions reference to SqlRegisteredModel
     """
 
     __table_args__ = (PrimaryKeyConstraint("name", name="model_pk"),)
@@ -243,7 +243,7 @@ class SqlModelVersion(Base):
 
     def __repr__(self):
         return (
-            f"<SqlModelMetadata ({self.name}, {self.version}, {self.source}, {self.user_id},"
+            f"<SqlModelVersion ({self.name}, {self.version}, {self.source}, {self.user_id},"
             f" {self.experiment_id}, {self.current_stage}, {self.creation_time},"
             f" {self.last_updated_time}, {self.dataset}, {self.description})>"
         )
@@ -251,7 +251,7 @@ class SqlModelVersion(Base):
     def to_submarine_entity(self):
         """
         Convert DB model to corresponding Submarine entity.
-        :return: :py:class:`submarine.entities.ModelMetadata`.
+        :return: :py:class:`submarine.entities.ModelVersion`.
         """
         return ModelVersion(
             name=self.name,
@@ -285,13 +285,13 @@ class SqlModelVersionTag(Base):
     name = Column(String(256), nullable=False)
     """
     Name of registered model: Part of *Foreign Key* for ``model_version_tag`` table.
-                              Refer to name of ``model_metadata`` table.
+                              Refer to name of ``model_version`` table.
     """
 
     version = Column(Integer, nullable=False)
     """
     version of model: Part of *Foreign Key* for ``model_version_tag`` table.
-                      Refer to version of ``model_metadata`` table.
+                      Refer to version of ``model_version`` table.
     """
 
     tag = Column(String(256), nullable=False)

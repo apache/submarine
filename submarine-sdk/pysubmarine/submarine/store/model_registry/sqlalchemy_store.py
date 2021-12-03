@@ -357,7 +357,7 @@ class SqlAlchemyStore(AbstractStore):
         :param dataset: Dataset which this version of model is used.
         :param description: Description of this version.
         :param tags: A list of string associated with this version of model.
-        :return: A single object of :py:class:`submarine.entities.model_registry.ModelMetadata`
+        :return: A single object of :py:class:`submarine.entities.model_registry.ModelVersion`
                  created in the backend.
         """
 
@@ -375,7 +375,7 @@ class SqlAlchemyStore(AbstractStore):
                 creation_time = datetime.now()
                 sql_registered_model = self._get_sql_registered_model(session, name)
                 sql_registered_model.last_updated_time = creation_time
-                model_metadata = SqlModelVersion(
+                model_version = SqlModelVersion(
                     name=name,
                     version=next_version(sql_registered_model),
                     source=source,
@@ -388,9 +388,9 @@ class SqlAlchemyStore(AbstractStore):
                     description=description,
                     tags=[SqlModelVersionTag(tag=tag) for tag in tags or []],
                 )
-                self._save_to_db(session, [sql_registered_model, model_metadata])
+                self._save_to_db(session, [sql_registered_model, model_version])
                 session.flush()
-                return model_metadata.to_submarine_entity()
+                return model_version.to_submarine_entity()
             except sqlalchemy.exc.IntegrityError:
                 raise SubmarineException(f"Model create error (name={name}).")
 
