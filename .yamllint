@@ -19,8 +19,11 @@
 extends: default
 ignore: |
   helm-charts/
-  submarine-client/src/test/resources/runjob-common-yaml/wrong-indentation.yaml
-  submarine-client/src/test/resources/runjob-common-yaml/wrong-property-name.yaml
+  submarine-client/src/test/resources/
+  submarine-client/target/
+  submarine-workbench/workbench-web/node_modules/
+  submarine-workbench/workbench-web/target/
+
 rules:
   comments:
     min-spaces-from-content: 1

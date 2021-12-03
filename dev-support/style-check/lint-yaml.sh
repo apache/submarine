@@ -20,8 +20,7 @@
 pip install yamllint
 
 helm template helm-charts/submarine --output-dir _yamllint_helm_charts
-YAMLLINT_OUTPUT=$(yamllint . -c .yamllint)
-echo "$YAMLLINT_OUTPUT"
+yamllint . -c .yamllint -f parsable
 YAMLLINT_RETURN=$?
 rm -r _yamllint_helm_charts
 
