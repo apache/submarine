@@ -86,7 +86,7 @@ class SqlRegisteredModel(Base):
         "SqlModelVersion", back_populates="registered_model", cascade="all"
     )
     """
-    MetaVersions reference to SqlRegisteredModel
+    ModelVersions reference to SqlRegisteredModel
     """
 
     __table_args__ = (PrimaryKeyConstraint("name", name="model_pk"),)
