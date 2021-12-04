@@ -79,10 +79,15 @@ const (
 	minioPvcName                = minioName + "-pvc"
 	minioServiceName            = minioName + "-service"
 	minioIngressRouteName       = minioName + "-ingressroute"
+	grafanaName                 = "submarine-grafana"
+	grafanaPvcName              = grafanaName + "-pvc"
+	grafanaServiceName          = grafanaName + "-service"
+	grafanaIngressRouteName     = grafanaName + "-ingressroute"
 	artifactPath                = "./artifacts/submarine/"
 	databaseYamlPath            = artifactPath + "submarine-database.yaml"
 	ingressYamlPath             = artifactPath + "submarine-ingress.yaml"
 	minioYamlPath               = artifactPath + "submarine-minio.yaml"
+	grafanaYamlPath             = artifactPath + "submarine-grafana.yaml"
 	mlflowYamlPath              = artifactPath + "submarine-mlflow.yaml"
 	serverYamlPath              = artifactPath + "submarine-server.yaml"
 	tensorboardYamlPath         = artifactPath + "submarine-tensorboard.yaml"
@@ -509,6 +514,11 @@ func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 
 	err = c.createSubmarineMinio(submarine)
 	if err != nil && !errors.IsAlreadyExists(err) {
+		return err
+	}
+
+	err = c.createSubmarineGrafana(submarine)
+	if err != nil {
 		return err
 	}
 

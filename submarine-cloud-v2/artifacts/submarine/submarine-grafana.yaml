@@ -1,0 +1,133 @@
+---
+# Source: submarine/templates/submarine-mlflow.yaml
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: submarine-grafana-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: submarine-grafana
+  name: submarine-grafana
+spec:
+  selector:
+    matchLabels:
+      app: submarine-grafana
+  template:
+    metadata:
+      labels:
+        app: submarine-grafana
+    spec:
+      securityContext:
+        fsGroup: 472
+        supplementalGroups:
+          - 0
+      containers:
+        - name: submarine-grafana
+          image: grafana/grafana:7.5.2
+          #grafana/grafana-enterprise
+          #grafana/grafana:7.5.2
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: http-grafana
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /robots.txt
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 2
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 3000
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 250m
+              memory: 750Mi
+          volumeMounts:
+            - mountPath: /var/lib/grafana
+              name: submarine-grafana-pv
+            - mountPath: /etc/grafana
+              name: submarine-grafana-config
+      volumes:
+        - name: submarine-grafana-pv
+          persistentVolumeClaim:
+            claimName: submarine-grafana-pvc
+        - name: submarine-grafana-config
+          configMap:
+            name: submarine-grafana-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: submarine-grafana-service
+spec:
+  ports:
+    - port: 3000
+      protocol: TCP
+      targetPort: http-grafana
+  selector:
+    app: submarine-grafana
+  sessionAffinity: None
+  type: LoadBalancer
+# ---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: submarine-grafana-ingressroute
+# spec:
+#   entryPoints:
+#     - web
+#   routes:
+#   - kind: Rule
+#     match: "PathPrefix(`/grafana`)"
+#     services:
+#     - kind: Service
+#       name: submarine-grafana-service
+#       port: 3000
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: submarine-grafana-config
+data:
+  grafana.ini: |
+    [server]
+    protocol = http
+    domain = localhost
+    http_port = 3000
+    root_url = http://localhost:3000/grafana
