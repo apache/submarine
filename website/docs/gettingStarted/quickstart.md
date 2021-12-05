@@ -36,7 +36,7 @@ This document gives you a quick view on the basic usage of Submarine platform. Y
 
 2. Start minikube cluster
 ```
-minikube start --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.15.11
+minikube start --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.21.6
 ```
 
 ### Launch submarine in the cluster
@@ -85,7 +85,7 @@ tf-job-operator-6bb69fd44-zmlmr                   1/1     Running   1          6
   ```
   # Method 1 -- use minikube ip
   minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
-  
+
   # Method 2 -- use port-forwarding
   kubectl port-forward --address 0.0.0.0 service/submarine-traefik 32080:80
   ```
@@ -182,7 +182,7 @@ if __name__ == '__main__':
 Build a docker image equipped with the requirement of the environment.
 
 ```bash
-./dev-support/examples/quickstart/build.sh 
+./dev-support/examples/quickstart/build.sh
 ```
 
 ### 3. Submit the experiment

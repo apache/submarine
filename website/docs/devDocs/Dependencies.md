@@ -24,12 +24,9 @@ under the License.
 ## Kubernetes
 | Kubernetes Version   | Support?  |
 | ------------- |:-------------:|
-| 1.13.x (or earlier) | X |
-| 1.14.x | √ |
-| 1.15.x | √ |
-| 1.16.x | √ |
-| 1.17.x | To be verified |
-| 1.18.x | To be verified |
+| 1.14.x (or earlier) | X |
+| 1.15.x - 1.21.x | √ |
+| 1.22.x (or later) | X |
 
 ## KinD
 | KinD Version   | Support?  |
@@ -43,10 +40,34 @@ under the License.
 | 0.11.x | √ |
 
 ## Java
-* TODO
+| JDK Version   | Support?  |
+| ------------- |:-------------:|
+| 8 | √ |
+| 11 | X |
+| 17 | X |
 
 ## Maven
-* TODO
+* 3.3 or later ( < 3.8.1 )
 
 ## Docker
-* TODO
+* Latest
+
+## Helm
+* Version 3
+
+## NodeJS
+* 14 (or later)
+
+## Go
+| Go Version   | Support?  |
+| ------------- |:-------------:|
+| 1.15 | X |
+| 1.16 | √ |
+| 1.17 (or later) | To be verified |
+
+## Python
+| Python Version   | Support?  |
+| ------------- |:-------------:|
+| 3.5 (or earlier) | X |
+| 3.6, 3.7 | √ |
+| 3.8 (or later) | To be verified |
