@@ -1,5 +1,5 @@
 ---
-title: Running Submarine on YARN
+title: Running Submarine on YARN (deprecated)
 ---
 
 <!--
