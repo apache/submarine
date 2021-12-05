@@ -1,5 +1,5 @@
 ---
-title: Generic Expeiment Spec
+title: Generic Experiment Spec
 ---
 
 <!--
@@ -61,13 +61,13 @@ The library spec describes the info about machine learning framework. All the fi
 | envVars | key/value | YES | The public env vars for the task if not specified. |
 
 ### Submitter Spec
-It describes the info of submitter which the user specified, such as yarn, yarnservice or k8s. All the fields as below:
+It describes the info of submitter which the user specified, such as k8s. All the fields as below:
 
 | field | type | optional | description |
 |---|---|---|---|
 | type | string | NO | The submitter type, supports `k8s` now |
 | configPath | string | YES | The config path of the specified resource manager. You can set it in submarine-site.xml if run submarine-server locally |
-| namespace | string | NO | It's known as queue in Apache Hadoop YARN and namespace in Kubernetes. |
+| namespace | string | NO | It's known as namespace in Kubernetes. |
 | kind | string | YES | It's used for k8s submitter, supports TFJob and PyTorchJob |
 | apiVersion | string | YES | It should pair with the kind, such as the TFJob's api version is `kubeflow.org/v1` |
 

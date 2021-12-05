@@ -25,7 +25,7 @@ This document mainly describes the structure of each module of the Submarine pro
 
 ### 2.1. submarine-client
 
-Provide the CLI interface for submarine user. (Currently only support YARN service)
+Provide the CLI interface for submarine user. (Currently only support YARN service (deprecated))
 
 ### 2.2. submarine-cloud-v2
 
@@ -45,7 +45,7 @@ Provide Python SDK for submarine user.
 
 ### 2.6. submarine-server
 
-Include core server, restful api, and k8s/yarn submitter.
+Include core server, restful api, and k8s submitter.
 
 ### 2.7. submarine-test
 
