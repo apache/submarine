@@ -31,6 +31,14 @@ We use [code-generator](https://github.com/kubernetes/code-generator) to generat
 
 Everytime when you change the codes in `submarine-cloud-v2/pkg/apis`, you must run `make api` to re-generate the API.
 
+## Create New Custom Resources
+
+To modify the parameters of submarine resource, go to the location `submarine/submarine-cloud-v2/artifacts` to edit specific `yaml` files. In this case, you won't need to modify the code for operator.
+
+However, if you intend to create a new custom resource, you should also add a corresponding operator code in `submarine/submarine-cloud-v2/pkg/controller`.
+
+**Important**: Your `yaml` files should `NOT` include `helm` grammer.
+
 ## Add New Dependencies
 
 ```bash
