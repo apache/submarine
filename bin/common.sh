@@ -42,12 +42,12 @@ if [[ -f "${SUBMARINE_CONF_DIR}/submarine-env.sh" ]]; then
   . "${SUBMARINE_CONF_DIR}/submarine-env.sh"
 fi
 
-SUBMARINE_SERVER_CLASSPATH+=":${SUBMARINE_CONF_DIR}"
+SUBMARINE_APP_CLASSPATH+=":${SUBMARINE_CONF_DIR}"
 
 function add_each_jar_in_dir(){
   if [[ -d "${1}" ]]; then
     for jar in $(find -L "${1}" -maxdepth 1 -name '*jar'); do
-      SUBMARINE_SERVER_CLASSPATH="$jar:$SUBMARINE_SERVER_CLASSPATH"
+      SUBMARINE_APP_CLASSPATH="$jar:$SUBMARINE_APP_CLASSPATH"
     done
   fi
 }
@@ -55,14 +55,14 @@ function add_each_jar_in_dir(){
 function add_each_jar_in_dir_recursive(){
   if [[ -d "${1}" ]]; then
     for jar in $(find -L "${1}" -type f -name '*jar'); do
-      SUBMARINE_SERVER_CLASSPATH="$jar:$SUBMARINE_SERVER_CLASSPATH"
+      SUBMARINE_APP_CLASSPATH="$jar:$SUBMARINE_APP_CLASSPATH"
     done
   fi
 }
 
 function add_jar_in_dir(){
   if [[ -d "${1}" ]]; then
-    SUBMARINE_SERVER_CLASSPATH="${1}/*:${SUBMARINE_SERVER_CLASSPATH}"
+    SUBMARINE_APP_CLASSPATH="${1}/*:${SUBMARINE_APP_CLASSPATH}"
   fi
 }
 

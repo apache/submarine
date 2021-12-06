@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-USAGE="Usage: bin/submarine.sh [--config <conf-dir>]"
+USAGE="Usage: bin/agent.sh [--config <conf-dir>]"
 
 if [[ "$1" == "--config" ]]; then
   shift
@@ -43,10 +43,10 @@ GET_MYSQL_JAR=false
 
 cd ${BIN}/>/dev/null
 
-SUBMARINE_SERVER_NAME="Submarine Server"
-SUBMARINE_SERVER_LOGFILE="${SUBMARINE_LOG_DIR}/submarine.log"
-SUBMARINE_SERVER_MAIN=org.apache.submarine.server.SubmarineServer
-JAVA_OPTS+="${SUBMARINE_APP_JAVA_OPTS:-""} ${SUBMARINE_APP_MEM:-""} -Dsubmarine.log.file=${SUBMARINE_SERVER_LOGFILE}"
+SUBMARINE_AGENT_NAME="Submarine Agent"
+SUBMARINE_AGENT_LOGFILE="${SUBMARINE_LOG_DIR}/agent.log"
+SUBMARINE_AGENT_MAIN=org.apache.submarine.server.k8s.agent.SubmarineAgent
+JAVA_OPTS+="${SUBMARINE_APP_JAVA_OPTS:-""} ${SUBMARINE_APP_MEM:-""} -Dsubmarine.log.file=${SUBMARINE_AGENT_LOGFILE}"
 
 add_jar_in_dir "${BIN}/../lib"
 
@@ -55,4 +55,4 @@ if [[ ! -d "${SUBMARINE_LOG_DIR}" ]]; then
   $(mkdir -p "${SUBMARINE_LOG_DIR}")
 fi
 
-exec $JAVA_RUNNER $JAVA_OPTS -cp ${SUBMARINE_APP_CLASSPATH} ${SUBMARINE_SERVER_MAIN} "$@" | tee -a "${SUBMARINE_SERVER_LOGFILE}" 2>&1
+exec $JAVA_RUNNER $JAVA_OPTS -cp ${SUBMARINE_APP_CLASSPATH} ${SUBMARINE_AGENT_MAIN} "$@" | tee -a "${SUBMARINE_AGENT_LOGFILE}" 2>&1
