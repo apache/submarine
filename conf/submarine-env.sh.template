@@ -19,11 +19,11 @@
 # export JAVA_HOME=java
 
 # Debug Submarine server
-# export SUBMARINE_SERVER_JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"
+# export SUBMARINE_APP_JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"
 
 # Set Submarine server memory
-# export SUBMARINE_SERVER_MEM="-Xms1024m -Xmx1024m -XX:MaxPermSize=512m"
+# export SUBMARINE_APP_MEM="-Xms1024m -Xmx1024m -XX:MaxPermSize=512m"
 
 # Set Submarine server classpath. If you want to visit hdfs, just add hadoop
 # configuration path.
-# export SUBMARINE_SERVER_CLASSPATH+=":/usr/local/hadoop/etc/hadoop"
+# export SUBMARINE_APP_CLASSPATH+=":/usr/local/hadoop/etc/hadoop"
