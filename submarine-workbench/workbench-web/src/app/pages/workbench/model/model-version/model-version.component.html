@@ -21,15 +21,15 @@
   <p>Version: {{ modelVersion }}</p>
   <p>Description: {{ modelVersionInfo.description }}</p>
   <p>Tags: {{ modelVersionInfo.tags }}</p>
-  <p>Stage: {{modelVersionInfo.currentStage}}</p>
+  <p>Stage: {{ modelVersionInfo.currentStage }}</p>
   <h3>Model version info</h3>
-  <p>User id: {{modelVersionInfo.userId}}</p>
+  <p>User id: {{ modelVersionInfo.userId }}</p>
   <p>
     Experiment id:
-    <a href="#">{{modelVersionInfo.experimentId}}</a>
+    <a href="/workbench/experiment/info/{{modelVersionInfo.experimentId}}">{{ modelVersionInfo.experimentId }}</a>
   </p>
-  <p>Dataset: {{modelVersionInfo.dataset}}</p>
-  <p>Created: {{modelVersionInfo.creationTime }}</p>
-  <p>Updated: {{modelVersionInfo.lastUpdatedTime }}</p>
-  <p>Source: {{modelVersionInfo.source}}</p>
+  <p>Dataset: {{ modelVersionInfo.dataset }}</p>
+  <p>Created: {{ modelVersionInfo.creationTime }}</p>
+  <p>Updated: {{ modelVersionInfo.lastUpdatedTime }}</p>
+  <p>Source: {{ modelVersionInfo.source }}</p>
 </div>

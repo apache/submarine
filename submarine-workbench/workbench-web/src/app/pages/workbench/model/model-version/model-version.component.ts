@@ -34,7 +34,7 @@ export class ModelVersionComponent implements OnInit {
   modelName;
   modelVersion;
   modelVersionInfo: ModelVersionInfo;
-  test;
+  static_tags: Array<string> = ['tag1', 'tag2', 'tag3'];
 
   constructor(
     private router: Router, 
@@ -46,27 +46,11 @@ export class ModelVersionComponent implements OnInit {
   ngOnInit() {
     this.modelName = this.route.snapshot.params.name;
     this.modelVersion = this.route.snapshot.params.version;
-    this.test = 'test message';
-    this.modelVersionInfo = {
-      'name': "register",
-      'version': "1",
-      'source': "s3://submarine/experiment-1637939541827-0001/example/1",
-      'userId': "test_userId",
-      'experimentId': "experiment-1637939541827-0001",
-      'currentStage': "None",
-      'creationTime': "2021-11-26 15:12:29",
-      'lastUpdatedTime': "2021-11-26 15:12:29",
-      'dataset': null,
-      'description': null,
-      'tags': "123"
-    }
     this.experimentService.emitInfo(this.modelName);
-    console.log(this.modelVersionInfo);
-    /**
     this.modelVersionService.querySpecificModel(this.modelName, this.modelVersion).subscribe(
       (item) => {
         this.modelVersionInfo = item;
       }
-    )*/
+    );
   }
 }

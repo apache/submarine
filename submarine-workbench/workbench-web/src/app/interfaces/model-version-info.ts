@@ -19,7 +19,7 @@
 
 export interface ModelVersionInfo {
     name: string,
-    version: string,
+    version: number,
     source: string,
     userId: string,
     experimentId: string,
@@ -28,5 +28,5 @@ export interface ModelVersionInfo {
     lastUpdatedTime: string,
     dataset: string,
     description: string,
-    tags: string
+    tags: Array<string>
 }
