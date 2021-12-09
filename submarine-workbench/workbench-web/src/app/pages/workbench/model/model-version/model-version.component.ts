@@ -20,6 +20,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExperimentService } from '@submarine/services/experiment.service';
+import { ModelVersionInfo } from '@submarine/interfaces/model-version-info';
+import { ModelVersionService } from '@submarine/services/model-version.service';
+import { isThisSecond } from 'date-fns';
 
 @Component({
   selector: 'submarine-model-version',
@@ -30,12 +33,23 @@ export class ModelVersionComponent implements OnInit {
   isLoading = true;
   modelName;
   modelVersion;
+  modelVersionInfo: ModelVersionInfo;
 
-  constructor(private router: Router, private route: ActivatedRoute, private experimentService: ExperimentService) {}
+  constructor(
+    private router: Router, 
+    private route: ActivatedRoute, 
+    private experimentService: ExperimentService,
+    private modelVersionService: ModelVersionService
+  ) {}
 
   ngOnInit() {
     this.modelName = this.route.snapshot.params.name;
     this.modelVersion = this.route.snapshot.params.version;
     this.experimentService.emitInfo(this.modelName);
+    this.modelVersionService.querySpecificModel(this.modelName, this.modelVersion).subscribe(
+      (item) => {
+        this.modelVersionInfo = item;
+      }
+    );
   }
 }

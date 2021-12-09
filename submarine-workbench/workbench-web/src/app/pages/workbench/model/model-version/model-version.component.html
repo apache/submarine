@@ -19,17 +19,17 @@
 
 <div style="margin: 15px; padding: 15px; background-color: white">
   <p>Version: {{ modelVersion }}</p>
-  <p>Description: Resnet152</p>
-  <p>Tags:</p>
-  <p>Stage:</p>
+  <p>Description: {{ modelVersionInfo.description }}</p>
+  <p>Tags: {{ modelVersionInfo.tags }}</p>
+  <p>Stage: {{ modelVersionInfo.currentStage }}</p>
   <h3>Model version info</h3>
-  <p>User id: abcdef</p>
+  <p>User id: {{ modelVersionInfo.userId }}</p>
   <p>
     Experiment id:
-    <a href="#">123456789</a>
+    <a href="/workbench/experiment/info/{{modelVersionInfo.experimentId}}">{{ modelVersionInfo.experimentId }}</a>
   </p>
-  <p>Dataset: mnist</p>
-  <p>Created: 2021-09-01 07:57</p>
-  <p>Updated: 2021-09-21 03:00</p>
-  <p>Source: s3:/example/model</p>
+  <p>Dataset: {{ modelVersionInfo.dataset }}</p>
+  <p>Created: {{ modelVersionInfo.creationTime }}</p>
+  <p>Updated: {{ modelVersionInfo.lastUpdatedTime }}</p>
+  <p>Source: {{ modelVersionInfo.source }}</p>
 </div>
