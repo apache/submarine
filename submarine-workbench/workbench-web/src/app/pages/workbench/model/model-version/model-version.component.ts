@@ -34,7 +34,6 @@ export class ModelVersionComponent implements OnInit {
   modelName;
   modelVersion;
   modelVersionInfo: ModelVersionInfo;
-  static_tags: Array<string> = ['tag1', 'tag2', 'tag3'];
 
   constructor(
     private router: Router, 
