@@ -100,7 +100,7 @@ abstract public class AbstractSubmarineIT {
   }
 
   protected void waitURL(String URL, final long timeWait) {
-    new WebDriverWait(driver, timeWait).until(ExpectedConditions.urlToBe​(URL));
+    new WebDriverWait(driver, timeWait).until(ExpectedConditions.urlToBe(URL));
   }
 
   protected void waitVisibility(WebElement element, final long timeWait) {
