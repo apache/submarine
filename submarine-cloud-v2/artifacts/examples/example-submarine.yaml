@@ -38,3 +38,5 @@ spec:
   minio:
     enabled: true
     storageSize: "10Gi"
+  grafana:
+    enabled: true

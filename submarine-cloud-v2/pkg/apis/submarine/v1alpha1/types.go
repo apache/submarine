@@ -59,6 +59,10 @@ type SubmarineMinioSpec struct {
 	StorageSize string `json:"storageSize"`
 }
 
+type SubmarineGrafanaSpec struct {
+	Enabled *bool `json:"enabled"`
+}
+
 // SubmarineSpec is the spec for a Submarine resource
 type SubmarineSpec struct {
 	Version     string                    `json:"version"`
@@ -67,6 +71,7 @@ type SubmarineSpec struct {
 	Tensorboard *SubmarineTensorboardSpec `json:"tensorboard"`
 	Mlflow      *SubmarineMlflowSpec      `json:"mlflow"`
 	Minio       *SubmarineMinioSpec       `json:"minio"`
+	Grafana     *SubmarineGrafanaSpec     `json:"grafana"`
 }
 
 // SubmarineStateType represents the type of the current state of a submarine.
