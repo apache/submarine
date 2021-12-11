@@ -15,68 +15,66 @@
  under the License.
 """
 
-from typing import Tuple
-import click
-from submarine.experiment.api.experiment_client import ExperimentClient
-from submarine.experiment.exceptions import ApiException
 import json
-from rich.console import Console
-from rich.table import Table
-from rich.panel import Panel
-from rich.json import JSON as richJSON
 from time import sleep
 
+import click
+from rich.console import Console
+from rich.json import JSON as richJSON
+from rich.panel import Panel
+from rich.table import Table
 
-experimentClient = ExperimentClient("http://localhost:32080")
+from submarine.experiment.api.experiment_client import ExperimentClient
+from submarine.experiment.exceptions import ApiException
+
+experimentClient = ExperimentClient("http://localhost:8080")
+
 
 @click.command("experiment")
 def list_experiment():
     """List experiments"""
-    COLS_TO_SHOW = [
-        "Name",
-        "Id",
-        "Tags",
-        "Finished Time",
-        "Created Time",
-        "Running Time",
-        "Status"
-    ]
+    COLS_TO_SHOW = ["Name", "Id", "Tags", "Finished Time", "Created Time", "Running Time", "Status"]
     console = Console()
     try:
         thread = experimentClient.list_experiments_async()
-        with console.status("[bold green] Fetching Experiments...") as status:
+        with console.status("[bold green] Fetching Experiments..."):
             while not thread.ready():
                 sleep(1)
-        
+
         result = thread.get()
         results = result.result
 
-        results = list(map(lambda r:
-            [
-                r["spec"]['meta']['name'],
-                r["experimentId"],
-                ",".join(r["spec"]['meta']['tags']),
-                r["finishedTime"],
-                r["createdTime"],
-                r["runningTime"],
-                r["status"]
-            ]
-        ,results))
-        
+        results = list(
+            map(
+                lambda r: [
+                    r["spec"]["meta"]["name"],
+                    r["experimentId"],
+                    ",".join(r["spec"]["meta"]["tags"]),
+                    r["finishedTime"],
+                    r["createdTime"],
+                    r["runningTime"],
+                    r["status"],
+                ],
+                results,
+            )
+        )
+
         table = Table(title="List of Experiments")
 
-        for col in COLS_TO_SHOW: table.add_column(col,overflow="fold")
-        for res in results: table.add_row(*res)
+        for col in COLS_TO_SHOW:
+            table.add_column(col, overflow="fold")
+        for res in results:
+            table.add_row(*res)
 
         console.print(table)
-        
+
     except ApiException as err:
-        if not err.body == None:
+        if err.body is not None:
             errbody = json.loads(err.body)
             click.echo("[Api Error] {}".format(errbody["message"]))
         else:
             click.echo("[Api Error] {}".format(err))
-    
+
 
 @click.command("experiment")
 @click.argument("id")
@@ -85,17 +83,17 @@ def get_experiment(id):
     console = Console()
     try:
         thread = experimentClient.get_experiment_async(id)
-        with console.status("[bold green] Fetching Experiment(id = {} )...".format(id)) as status:
+        with console.status("[bold green] Fetching Experiment(id = {} )...".format(id)):
             while not thread.ready():
                 sleep(1)
-        
+
         result = thread.get()
         result = result.result
-        
+
         json_data = richJSON.from_data(result)
-        console.print(Panel(json_data,title="Experiment(id = {} )".format(id)))
+        console.print(Panel(json_data, title="Experiment(id = {} )".format(id)))
     except ApiException as err:
-        if not err.body == None:
+        if err.body is not None:
             errbody = json.loads(err.body)
             click.echo("[Api Error] {}".format(errbody["message"]))
         else:
@@ -109,22 +107,22 @@ def delete_experiment(id):
     console = Console()
     try:
         thread = experimentClient.delete_experiment_async(id)
-        with console.status("[bold green] Deleting Experiment(id = {} )...".format(id)) as status:
+        with console.status("[bold green] Deleting Experiment(id = {} )...".format(id)):
             while not thread.ready():
                 sleep(1)
-        
+
         result = thread.get()
         result = result.result
 
         if result["status"] == "Deleted":
             console.print("[bold green] Experiment(id = {} ) deleted".format(id))
         else:
-            console.print("[bold red] Failed".format(id))
+            console.print("[bold red] Failed")
             json_data = richJSON.from_data(result)
-            console.print(Panel(json_data,title="Experiment(id = {} )".format(id)))
-        
+            console.print(Panel(json_data, title="Experiment(id = {} )".format(id)))
+
     except ApiException as err:
-        if not err.body == None:
+        if err.body is not None:
             errbody = json.loads(err.body)
             click.echo("[Api Error] {}".format(errbody["message"]))
         else:

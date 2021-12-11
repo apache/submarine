@@ -106,14 +106,14 @@ class ExperimentClient:
         """
         response = self.experiment_api.get_experiment(id=id)
         return response.result
-    
+
     def get_experiment_async(self, id):
         """
         Get the experiment's detailed info by id (async)
         :param id: submarine experiment id
         :return: multiprocessing.pool.ApplyResult
         """
-        thread = self.experiment_api.get_experiment(id=id,async_req=True)
+        thread = self.experiment_api.get_experiment(id=id, async_req=True)
         return thread
 
     def list_experiments(self, status=None):
@@ -124,14 +124,14 @@ class ExperimentClient:
         """
         response = self.experiment_api.list_experiments(status=status)
         return response.result
-    
+
     def list_experiments_async(self, status=None):
         """
         List all experiment for the user (async)
         :param status: Accepted, Created, Running, Succeeded, Deleted
         :return: multiprocessing.pool.ApplyResult
         """
-        thread = self.experiment_api.list_experiments(status=status,async_req=True)
+        thread = self.experiment_api.list_experiments(status=status, async_req=True)
         return thread
 
     def delete_experiment(self, id):
@@ -142,14 +142,14 @@ class ExperimentClient:
         """
         response = self.experiment_api.delete_experiment(id)
         return response.result
-    
+
     def delete_experiment_async(self, id):
         """
         Delete the Submarine experiment (async)
         :param id: Submarine experiment id
         :return: The detailed info about deleted submarine experiment
         """
-        thread = self.experiment_api.delete_experiment(id,async_req=True)
+        thread = self.experiment_api.delete_experiment(id, async_req=True)
         return thread
 
     def get_log(self, id, onlyMaster=False):

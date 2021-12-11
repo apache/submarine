@@ -13,29 +13,57 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pytest
 from click.testing import CliRunner
 
+import submarine
 from submarine.cli import main
+from submarine.experiment.models.code_spec import CodeSpec
+from submarine.experiment.models.environment_spec import EnvironmentSpec
+from submarine.experiment.models.experiment_meta import ExperimentMeta
+from submarine.experiment.models.experiment_spec import ExperimentSpec
+from submarine.experiment.models.experiment_task_spec import ExperimentTaskSpec
 
 
-def test_list_experiment():
+@pytest.mark.e2e
+def test_list_experiment_e2e():
+    submarine_client = submarine.ExperimentClient(host="http://localhost:8080")
+    environment = EnvironmentSpec(image="apache/submarine:tf-dist-mnist-test-1.0")
+    experiment_meta = ExperimentMeta(
+        name="mnist-dist",
+        namespace="default",
+        framework="Tensorflow",
+        cmd="python /var/tf_dist_mnist/dist_mnist.py --train_steps=100",
+        env_vars={"ENV1": "ENV1"},
+    )
+
+    worker_spec = ExperimentTaskSpec(resources="cpu=1,memory=1024M", replicas=1)
+    ps_spec = ExperimentTaskSpec(resources="cpu=1,memory=1024M", replicas=1)
+
+    code_spec = CodeSpec(sync_mode="git", url="https://github.com/apache/submarine.git")
+
+    experiment_spec = ExperimentSpec(
+        meta=experiment_meta,
+        environment=environment,
+        code=code_spec,
+        spec={"Ps": ps_spec, "Worker": worker_spec},
+    )
+
+    experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
+
     runner = CliRunner()
+    # test list experiment
     result = runner.invoke(main.entry_point, ["list", "experiment"])
     assert result.exit_code == 0
     assert "List of Experiments" in result.output
+    assert experiment["experimentId"] in result.output
+    assert experiment["spec"]["meta"]["name"] in result.output
 
+    # test get experiment
+    result = runner.invoke(main.entry_point, ["get", "experiment", experiment["experimentId"]])
+    assert "Experiment(id = {} )".format(experiment["experimentId"]) in result.output
+    assert experiment["spec"]["environment"]["image"] in result.output
 
-# def test_get_experiment():
-#     mock_experiment_id = "0"
-#     runner = CliRunner()
-#     result = runner.invoke(main.entry_point, ["get", "experiment", mock_experiment_id])
-#     assert result.exit_code == 0
-#     assert "get experiment! id={}".format(mock_experiment_id) in result.output
-
-
-# def test_delete_experiment():
-#     mock_experiment_id = "0"
-#     runner = CliRunner()
-#     result = runner.invoke(main.entry_point, ["delete", "experiment", mock_experiment_id])
-#     assert result.exit_code == 0
-#     assert "delete experiment! id={}".format(mock_experiment_id) in result.output
+    # test delete experiment
+    result = runner.invoke(main.entry_point, ["delete", "experiment", experiment["experimentId"]])
+    assert "Experiment(id = {} ) deleted".format(experiment["experimentId"]) in result.output
