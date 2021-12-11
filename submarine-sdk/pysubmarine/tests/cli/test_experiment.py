@@ -22,20 +22,20 @@ def test_list_experiment():
     runner = CliRunner()
     result = runner.invoke(main.entry_point, ["list", "experiment"])
     assert result.exit_code == 0
-    assert "list experiment!" in result.output
+    assert "List of Experiments" in result.output
 
 
-def test_get_experiment():
-    mock_experiment_id = "0"
-    runner = CliRunner()
-    result = runner.invoke(main.entry_point, ["get", "experiment", mock_experiment_id])
-    assert result.exit_code == 0
-    assert "get experiment! id={}".format(mock_experiment_id) in result.output
+# def test_get_experiment():
+#     mock_experiment_id = "0"
+#     runner = CliRunner()
+#     result = runner.invoke(main.entry_point, ["get", "experiment", mock_experiment_id])
+#     assert result.exit_code == 0
+#     assert "get experiment! id={}".format(mock_experiment_id) in result.output
 
 
-def test_delete_experiment():
-    mock_experiment_id = "0"
-    runner = CliRunner()
-    result = runner.invoke(main.entry_point, ["delete", "experiment", mock_experiment_id])
-    assert result.exit_code == 0
-    assert "delete experiment! id={}".format(mock_experiment_id) in result.output
+# def test_delete_experiment():
+#     mock_experiment_id = "0"
+#     runner = CliRunner()
+#     result = runner.invoke(main.entry_point, ["delete", "experiment", mock_experiment_id])
+#     assert result.exit_code == 0
+#     assert "delete experiment! id={}".format(mock_experiment_id) in result.output
