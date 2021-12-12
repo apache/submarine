@@ -57,6 +57,7 @@ import io.kubernetes.client.util.Watch;
 
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
+import org.apache.submarine.serve.istio.IstioVirtualService;
 import org.apache.submarine.serve.pytorch.SeldonPytorchServing;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.serve.tensorflow.SeldonTFServing;
@@ -117,7 +118,6 @@ public class K8sSubmitter implements Submitter {
   public void initialize(SubmarineConfiguration conf) {
     try {
       String path = System.getenv(KUBECONFIG_ENV);
-      //      path = System.getProperty("user.home") + "/.kube/config"; //TODO(tmp)
       KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(path));
       client = ClientBuilder.kubeconfig(config).build();
     } catch (Exception e) {
@@ -522,16 +522,39 @@ public class K8sSubmitter implements Submitter {
   public void createServe(ServeSpec spec)
       throws SubmarineRuntimeException {
     SeldonDeployment seldonDeployment = parseServeSpec(spec);
-
+    IstioVirtualService istioVirtualService = new IstioVirtualService(spec.getModelName(),
+        spec.getModelVersion());
     try {
       api.createNamespacedCustomObject(seldonDeployment.getGroup(),
-              seldonDeployment.getVersion(),
+               seldonDeployment.getVersion(),
+               "default",
+               seldonDeployment.getPlural(),
+               seldonDeployment,
+               "true");
+    } catch (ApiException e) {
+      LOG.error(e.getMessage(), e);
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    }
+    try {
+      api.createNamespacedCustomObject(istioVirtualService.getGroup(),
+              istioVirtualService.getVersion(),
               "default",
-              seldonDeployment.getPlural(),
-              seldonDeployment,
+              istioVirtualService.getPlural(),
+              istioVirtualService,
               "true");
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
+      try {
+        api.deleteNamespacedCustomObject(seldonDeployment.getGroup(),
+              seldonDeployment.getVersion(),
+              "default",
+              seldonDeployment.getPlural(),
+              seldonDeployment.getMetadata().getName(),
+              new V1DeleteOptionsBuilder().withApiVersion(seldonDeployment.getApiVersion()).build(),
+              null, null, null);
+      } catch (ApiException e1) {
+        LOG.error(e1.getMessage(), e1);
+      }
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
   }
@@ -540,7 +563,8 @@ public class K8sSubmitter implements Submitter {
   public void deleteServe(ServeSpec spec)
       throws SubmarineRuntimeException {
     SeldonDeployment seldonDeployment = parseServeSpec(spec);
-
+    IstioVirtualService istioVirtualService = new IstioVirtualService(spec.getModelName(),
+        spec.getModelVersion());
     try {
       api.deleteNamespacedCustomObject(seldonDeployment.getGroup(),
               seldonDeployment.getVersion(),
@@ -548,6 +572,13 @@ public class K8sSubmitter implements Submitter {
               seldonDeployment.getPlural(),
               seldonDeployment.getMetadata().getName(),
               new V1DeleteOptionsBuilder().withApiVersion(seldonDeployment.getApiVersion()).build(),
+              null, null, null);
+      api.deleteNamespacedCustomObject(istioVirtualService.getGroup(),
+              istioVirtualService.getVersion(),
+              "default",
+              istioVirtualService.getPlural(),
+              istioVirtualService.getMetadata().getName(),
+              new V1DeleteOptionsBuilder().withApiVersion(istioVirtualService.getApiVersion()).build(),
               null, null, null);
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
