@@ -182,6 +182,7 @@ if __name__ == '__main__':
 Build a docker image equipped with the requirement of the environment.
 
 ```bash
+eval $(minikube docker-env)
 ./dev-support/examples/quickstart/build.sh
 ```
 
