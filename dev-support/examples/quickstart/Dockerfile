@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM continuumio/anaconda3
+FROM python:3.7
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 ADD ./tmp/submarine-sdk /opt/
 # install submarine-sdk locally
-RUN pip install /opt/pysubmarine/.[tf-latest] 
+RUN pip install /opt/pysubmarine/.[tf2]
 RUN pip install tensorflow_datasets
 
 ADD ./train.py /opt/
