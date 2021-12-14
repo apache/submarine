@@ -19,6 +19,7 @@
 
 import { Component, OnInit } from '@angular/core';
 import { ModelService } from '@submarine/services/model.service';
+import { ModelVersionService } from '@submarine/services/model-version.service';
 import { delay } from 'rxjs/operators';
 
 @Component({
@@ -28,10 +29,12 @@ import { delay } from 'rxjs/operators';
 })
 export class ModelComponent implements OnInit {
   modelName: string = null;
+  modelVersion: string = null;
 
-  constructor(private modelService: ModelService) {}
+  constructor(private modelService: ModelService, private modelVersionService: ModelVersionService) {}
 
   ngOnInit() {
     this.modelService.infoEmitted$.pipe(delay(0)).subscribe((name) => (this.modelName = name));
+    this.modelVersionService.infoEmitted$.pipe(delay(0)).subscribe((version) => this.modelVersion = version);
   }
 }

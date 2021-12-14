@@ -37,19 +37,32 @@ export class ModelVersionService {
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 
   emitInfo(id: string) {
-      this.emitInfoSource.next(id);
+    this.emitInfoSource.next(id);
   }
 
   querySpecificModel(name: string, version: string) : Observable<ModelVersionInfo> {
-      const apiUrl = this.baseApi.getRestApi('/v1/model-version/' + name + '/' + version + '/');
-      return this.httpClient.get<Rest<ModelVersionInfo>>(apiUrl).pipe(
-          switchMap((res) => {
-              if (res.success) {
-                  return of(res.result);
-              } else {
-                  throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
-              }
-          })
-      );
+    const apiUrl = this.baseApi.getRestApi('/v1/model-version/' + name + '/' + version + '/');
+    return this.httpClient.get<Rest<ModelVersionInfo>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
+  }
+
+  queryModelAllVersions(name: string) : Observable<ModelVersionInfo[]> {
+    const apiUrl = this.baseApi.getRestApi('/v1/model-version/' + name);
+    return this.httpClient.get<Rest<ModelVersionInfo[]>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
   }
 }

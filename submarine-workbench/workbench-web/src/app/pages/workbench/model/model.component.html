@@ -24,10 +24,13 @@
         <a>Home</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item>
-        <a [routerLink]="['/', 'workbench', 'model']" (click)="modelName = null">model</a>
+        <a [routerLink]="['/', 'workbench', 'model']" (click)="modelName = null; modelVersion=null;">model</a>
       </nz-breadcrumb-item>
       <nz-breadcrumb-item *ngIf="modelName != null">
-        {{ modelName }}
+        <a [routerLink]="['/', 'workbench', 'model', modelName]" (click)="modelVersion = null;">{{ modelName }}</a>
+      </nz-breadcrumb-item>
+      <nz-breadcrumb-item *ngIf="modelVersion != null">
+        {{ modelVersion }}
       </nz-breadcrumb-item>
     </nz-breadcrumb>
     <div *ngIf="modelName == null">

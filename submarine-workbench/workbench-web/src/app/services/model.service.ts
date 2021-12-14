@@ -56,7 +56,7 @@ export class ModelService {
   }
 
   querySpecificModel(name: string): Observable<ModelInfo> {
-    const apiUrl = this.baseApi.getRestApi(`/v1/regitstered-model/${name}`);
+    const apiUrl = this.baseApi.getRestApi(`/v1/registered-model/${name}`);
     return this.httpClient.get<Rest<ModelInfo>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
