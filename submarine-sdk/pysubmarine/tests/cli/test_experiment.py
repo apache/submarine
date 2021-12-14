@@ -13,6 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import click
 import pytest
 from click.testing import CliRunner
 
@@ -26,7 +27,7 @@ from submarine.experiment.models.experiment_task_spec import ExperimentTaskSpec
 
 
 @pytest.mark.e2e
-def test_list_experiment_e2e():
+def test_all_experiment_e2e():
     submarine_client = submarine.ExperimentClient(host="http://localhost:8080")
     environment = EnvironmentSpec(image="apache/submarine:tf-dist-mnist-test-1.0")
     experiment_meta = ExperimentMeta(
@@ -51,7 +52,8 @@ def test_list_experiment_e2e():
 
     experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
 
-    runner = CliRunner()
+    # set env to display full table
+    runner = CliRunner(env={"COLUMNS":"191"})
     # test list experiment
     result = runner.invoke(main.entry_point, ["list", "experiment"])
     assert result.exit_code == 0
