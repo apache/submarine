@@ -16,7 +16,7 @@
 """
 
 import json
-from time import sleep
+import time
 
 import click
 from rich.console import Console
@@ -29,6 +29,9 @@ from submarine.experiment.exceptions import ApiException
 
 experimentClient = ExperimentClient("http://localhost:8080")
 
+POLLING_INTERVAL = 1  # sec
+TIMEOUT = 30  # sec
+
 
 @click.command("experiment")
 def list_experiment():
@@ -37,9 +40,13 @@ def list_experiment():
     console = Console()
     try:
         thread = experimentClient.list_experiments_async()
+        timeout = time.time() + TIMEOUT
         with console.status("[bold green] Fetching Experiments..."):
             while not thread.ready():
-                sleep(1)
+                time.sleep(POLLING_INTERVAL)
+                if time.time() > timeout:
+                    console.print("[bold red] Timeout!")
+                    return
 
         result = thread.get()
         results = result.result
@@ -83,9 +90,13 @@ def get_experiment(id):
     console = Console()
     try:
         thread = experimentClient.get_experiment_async(id)
+        timeout = time.time() + TIMEOUT
         with console.status("[bold green] Fetching Experiment(id = {} )...".format(id)):
             while not thread.ready():
-                sleep(1)
+                time.sleep(POLLING_INTERVAL)
+                if time.time() > timeout:
+                    console.print("[bold red] Timeout!")
+                    return
 
         result = thread.get()
         result = result.result
@@ -107,9 +118,13 @@ def delete_experiment(id):
     console = Console()
     try:
         thread = experimentClient.delete_experiment_async(id)
+        timeout = time.time() + TIMEOUT
         with console.status("[bold green] Deleting Experiment(id = {} )...".format(id)):
             while not thread.ready():
-                sleep(1)
+                time.sleep(POLLING_INTERVAL)
+                if time.time() > timeout:
+                    console.print("[bold red] Timeout!")
+                    return
 
         result = thread.get()
         result = result.result

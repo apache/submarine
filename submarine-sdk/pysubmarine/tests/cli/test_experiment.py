@@ -24,6 +24,8 @@ from submarine.experiment.models.experiment_meta import ExperimentMeta
 from submarine.experiment.models.experiment_spec import ExperimentSpec
 from submarine.experiment.models.experiment_task_spec import ExperimentTaskSpec
 
+TEST_CONSOLE_WIDTH = 191
+
 
 @pytest.mark.e2e
 def test_all_experiment_e2e():
@@ -50,15 +52,20 @@ def test_all_experiment_e2e():
     )
 
     experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
-
+    # get experiment again to get createdTime,runningTime...
+    submarine_client.wait_for_finish(experiment["experimentId"])
+    experiment = submarine_client.get_experiment(experiment["experimentId"])
     # set env to display full table
-    runner = CliRunner(env={"COLUMNS": "191"})
+    runner = CliRunner(env={"COLUMNS": str(TEST_CONSOLE_WIDTH)})
     # test list experiment
     result = runner.invoke(main.entry_point, ["list", "experiment"])
     assert result.exit_code == 0
     assert "List of Experiments" in result.output
-    assert experiment["experimentId"] in result.output
     assert experiment["spec"]["meta"]["name"] in result.output
+    assert experiment["experimentId"] in result.output
+    assert experiment["createdTime"] in result.output
+    assert experiment["runningTime"] in result.output
+    assert experiment["status"] in result.output
 
     # test get experiment
     result = runner.invoke(main.entry_point, ["get", "experiment", experiment["experimentId"]])
@@ -68,3 +75,7 @@ def test_all_experiment_e2e():
     # test delete experiment
     result = runner.invoke(main.entry_point, ["delete", "experiment", experiment["experimentId"]])
     assert "Experiment(id = {} ) deleted".format(experiment["experimentId"]) in result.output
+
+    # test get experiment fail after delete
+    result = runner.invoke(main.entry_point, ["get", "experiment", experiment["experimentId"]])
+    assert "[Api Error] Not found experiment." in result.output
