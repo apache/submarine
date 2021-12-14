@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import click
 import pytest
 from click.testing import CliRunner
 
@@ -53,7 +52,7 @@ def test_all_experiment_e2e():
     experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
 
     # set env to display full table
-    runner = CliRunner(env={"COLUMNS":"191"})
+    runner = CliRunner(env={"COLUMNS": "191"})
     # test list experiment
     result = runner.invoke(main.entry_point, ["list", "experiment"])
     assert result.exit_code == 0
