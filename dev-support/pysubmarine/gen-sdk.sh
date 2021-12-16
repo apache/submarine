@@ -69,7 +69,7 @@ for filename in $(find ${SDK_OUTPUT_PATH}/submarine/${API_COMPONENT} -type f); d
 done
 
 echo "Move Experiment API to pysubmarine"
-cp -r s${SDK_OUTPUT_PATH}/submarine/${API_COMPONENT} ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine/submarine/
+cp -r ${SDK_OUTPUT_PATH}/submarine/${API_COMPONENT} ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine/submarine/
 
 echo "Fix Python SDK code style"
 ${SUBMARINE_PROJECT_PATH}/dev-support/style-check/python/auto-format.sh 
