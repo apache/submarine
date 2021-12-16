@@ -49,7 +49,12 @@ import java.util.Map;
 
 public class NotebookSpecParser {
 
-  private static SubmarineConfiguration conf =
+  // jupyter workspace path
+  private static final String DEFAULT_WORKSPACE_MOUNT_PATH = "/home/jovyan/workspace";
+  // jupyter user setting path, avoid losing user setting after pod restarted
+  private static final String DEFAULT_USER_SET_MOUNT_PATH = "/home/jovyan/.jupyter";
+
+  private static final SubmarineConfiguration conf =
           SubmarineConfiguration.getInstance();
 
 
@@ -75,13 +80,15 @@ public class NotebookSpecParser {
   }
 
   private static V1PodTemplateSpec parseTemplateSpec(NotebookSpec notebookSpec) {
+    String name = notebookSpec.getMeta().getName();
+
     NotebookPodSpec notebookPodSpec = notebookSpec.getSpec();
     V1PodTemplateSpec podTemplateSpec = new V1PodTemplateSpec();
     V1PodSpec podSpec = new V1PodSpec();
     // Set container
     List<V1Container> containers = new ArrayList<>();
     V1Container container = new V1Container();
-    container.setName(notebookSpec.getMeta().getName());
+    container.setName(name);
 
     // Environment variables
     if (notebookPodSpec.getEnvVars() != null) {
@@ -147,13 +154,17 @@ public class NotebookSpecParser {
     }
 
     // Volume spec
-    final String DEFAULT_MOUNT_PATH = "/home/jovyan/workspace";
-
     List<V1VolumeMount> volumeMountList = new ArrayList<>();
-    V1VolumeMount  volumeMount = new V1VolumeMount();
-    volumeMount.setMountPath(DEFAULT_MOUNT_PATH);
-    volumeMount.setName(NotebookUtils.STORAGE_PREFIX + notebookSpec.getMeta().getName());
-    volumeMountList.add(volumeMount);
+    // workspace path
+    V1VolumeMount workspace = new V1VolumeMount();
+    workspace.setMountPath(DEFAULT_WORKSPACE_MOUNT_PATH);
+    workspace.setName(String.format("%s-%s", NotebookUtils.STORAGE_PREFIX, name));
+    volumeMountList.add(workspace);
+    // user setting path
+    V1VolumeMount userSetting = new V1VolumeMount();
+    userSetting.setMountPath(DEFAULT_USER_SET_MOUNT_PATH);
+    userSetting.setName(String.format("%s-user-%s", NotebookUtils.STORAGE_PREFIX, name));
+    volumeMountList.add(userSetting);
     container.setVolumeMounts(volumeMountList);
 
     containers.add(container);
@@ -161,17 +172,24 @@ public class NotebookSpecParser {
 
     // create volume object for persistent volume
     List<V1Volume> volumeList = new ArrayList<>();
-    V1Volume volume = new V1Volume();
-    String volumeName = NotebookUtils.STORAGE_PREFIX + notebookSpec.getMeta().getName();
-    V1PersistentVolumeClaimVolumeSource persistentVolumeClaim = new V1PersistentVolumeClaimVolumeSource();
-    String claimName = NotebookUtils.PVC_PREFIX + notebookSpec.getMeta().getName();
-    persistentVolumeClaim.setClaimName(claimName);
-    volume.setName(volumeName);
-    volume.setPersistentVolumeClaim(persistentVolumeClaim);
-    volumeList.add(volume);
-    podSpec.setVolumes(volumeList);
+    // workspace
+    V1Volume workspaceVolume = new V1Volume();
+    workspaceVolume.setName(String.format("%s-%s", NotebookUtils.STORAGE_PREFIX, name));
+    V1PersistentVolumeClaimVolumeSource workspacePvc = new V1PersistentVolumeClaimVolumeSource();
+    workspacePvc.setClaimName(String.format("%s-%s", NotebookUtils.PVC_PREFIX, name));
+    workspaceVolume.setPersistentVolumeClaim(workspacePvc);
+    volumeList.add(workspaceVolume);
+    // user setting
+    V1Volume userVolume = new V1Volume();
+    userVolume.setName(String.format("%s-user-%s", NotebookUtils.STORAGE_PREFIX, name));
+    V1PersistentVolumeClaimVolumeSource userPvc = new V1PersistentVolumeClaimVolumeSource();
+    userPvc.setClaimName(String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name));
+    userVolume.setPersistentVolumeClaim(userPvc);
+    volumeList.add(userVolume);
 
+    podSpec.setVolumes(volumeList);
     podTemplateSpec.setSpec(podSpec);
+
     return podTemplateSpec;
   }
 
