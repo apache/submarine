@@ -344,7 +344,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
             + "\"$currentVersion\" | sort -V | head -n2 | tail -1 )\" "
             + "!= \"$currentVersion\" ]; then echo \"Conda version " +
             "should be between minVersion=\"4.0.1\"; " +
-            "and maxVersion=\"4.10.10\";\"; exit 1; else echo "
+            "and maxVersion=\"4.11.10\";\"; exit 1; else echo "
             + "\"Conda current version is " + currentVersion + ". "
             + "Moving forward with env creation and activation.\"; "
             + "fi && ";
