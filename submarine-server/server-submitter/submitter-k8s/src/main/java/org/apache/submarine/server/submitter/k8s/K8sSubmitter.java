@@ -384,8 +384,8 @@ public class K8sSubmitter implements Submitter {
     final String name = spec.getMeta().getName();
     final String scName = NotebookUtils.SC_NAME;
     final String host = NotebookUtils.HOST_PATH;
-    final String storage = NotebookUtils.STORAGE;
-    final String pvcName = NotebookUtils.PVC_PREFIX + name;
+    final String workspacePvc = String.format("%s-%s", NotebookUtils.PVC_PREFIX, name);
+    final String userPvc = String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name);
     String namespace = getServerNamespace();
 
     // parse notebook custom resource
@@ -402,7 +402,10 @@ public class K8sSubmitter implements Submitter {
 
     // create persistent volume claim
     try {
-      createPersistentVolumeClaim(pvcName, namespace, scName, storage);
+      // workspace
+      createPersistentVolumeClaim(workspacePvc, namespace, scName, NotebookUtils.STORAGE);
+      // user setting
+      createPersistentVolumeClaim(userPvc, namespace, scName, NotebookUtils.DEFAULT_USER_STORAGE);
     } catch (ApiException e) {
       LOG.error("K8s submitter: Create persistent volume claim for Notebook object failed by " +
           e.getMessage(), e);
@@ -417,11 +420,11 @@ public class K8sSubmitter implements Submitter {
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
-      rollbackCreationPVC(pvcName, namespace);
+      rollbackCreationPVC(namespace, workspacePvc, userPvc);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
     } catch (ApiException e) {
       LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
-      rollbackCreationPVC(pvcName, namespace);
+      rollbackCreationPVC(namespace, workspacePvc, userPvc);
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
           e.getMessage());
     }
@@ -433,7 +436,7 @@ public class K8sSubmitter implements Submitter {
       LOG.error("K8s submitter: Create ingressroute for Notebook object failed by " +
           e.getMessage(), e);
       rollbackCreationNotebook(notebookCR, namespace);
-      rollbackCreationPVC(pvcName, namespace);
+      rollbackCreationPVC(namespace, workspacePvc, userPvc);
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: ingressroute for Notebook " +
           "object failed by " + e.getMessage());
     }
@@ -482,7 +485,6 @@ public class K8sSubmitter implements Submitter {
   public Notebook deleteNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
     Notebook notebook;
     final String name = spec.getMeta().getName();
-    final String pvcName = NotebookUtils.PVC_PREFIX + name;
     String namespace = getServerNamespace();
 
     try {
@@ -494,7 +496,12 @@ public class K8sSubmitter implements Submitter {
           null, null, null);
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
       deleteIngressRoute(namespace, notebookCR.getMetadata().getName());
-      deletePersistentVolumeClaim(pvcName, namespace);
+
+      // delete pvc
+      // workspace pvc
+      deletePersistentVolumeClaim(String.format("%s-%s", NotebookUtils.PVC_PREFIX, name), namespace);
+      // user set pvc
+      deletePersistentVolumeClaim(String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name), namespace);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -770,9 +777,11 @@ public class K8sSubmitter implements Submitter {
     return seldonDeployment;
   }
 
-  private void rollbackCreationPVC(String pvcName, String namespace) {
+  private void rollbackCreationPVC(String namespace, String ... pvcNames) {
     try {
-      deletePersistentVolumeClaim(pvcName, namespace);
+      for (String pvcName : pvcNames) {
+        deletePersistentVolumeClaim(pvcName, namespace);
+      }
     } catch (ApiException e) {
       LOG.error("K8s submitter: delete persistent volume claim failed by {}, may cause some dirty data",
           e.getMessage());
