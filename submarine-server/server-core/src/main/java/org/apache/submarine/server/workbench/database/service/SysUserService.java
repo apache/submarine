@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SysUserService {
+
   private static final Logger LOG = LoggerFactory.getLogger(SysUserService.class);
 
   private static String GET_USER_BY_NAME_STATEMENT
@@ -47,6 +48,21 @@ public class SysUserService {
       params.put("mapParams", mapParams);
 
       sysUser = sqlSession.selectOne(GET_USER_BY_NAME_STATEMENT, params);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    }
+    return sysUser;
+  }
+
+  /**
+   * Get user by unique name
+   */
+  public SysUserEntity getUserByName(String name) throws Exception {
+    SysUserEntity sysUser = null;
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
+      sysUser = sysUserMapper.getUserByUniqueName(name);
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new Exception(e);

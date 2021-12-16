@@ -17,17 +17,25 @@
  * under the License.
  */
 
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-import { AuthService } from '@submarine/services';
+package org.apache.submarine.server.security;
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+import org.pac4j.core.config.Config;
+import org.pac4j.core.profile.CommonProfile;
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return true
-  }
+import javax.servlet.Filter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
+
+public interface SecurityProvider<T extends Filter, R extends CommonProfile> {
+
+  Class<T> getFilterClass();
+
+  Config getConfig();
+
+  String getClient(HttpServletRequest httpServletRequest);
+
+  R perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse);
+
+  Optional<R> getProfile(HttpServletRequest hsRequest, HttpServletResponse hsResponse);
 }

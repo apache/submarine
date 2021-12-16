@@ -36,11 +36,7 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private nzNotificationService: NzNotificationService,
     private router: Router
-  ) {
-    if (this.authService.isLoggedIn) {
-      this.router.navigate(['/workbench']);
-    }
-  }
+  ) { }
 
   submitForm(): void {
     for (const i in this.validateForm.controls) {

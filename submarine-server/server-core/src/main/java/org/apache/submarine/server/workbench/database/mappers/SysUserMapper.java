@@ -25,13 +25,18 @@ import java.util.List;
 import java.util.Map;
 
 public interface SysUserMapper {
+
   SysUserEntity login(Map<String, String> where);
+
+  SysUserEntity getUserByName(Map<String, String> where);
+
+  void activeUser(String id);
 
   List<SysUserEntity> selectAll(Map<String, Object> where, RowBounds rowBounds);
 
   void add(SysUserEntity sysOrg);
 
-  SysUserEntity getById(String id);
+  SysUserEntity getUserByUniqueName(String name);
 
   void updateBy(SysUserEntity sysUser);
 

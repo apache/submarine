@@ -133,20 +133,14 @@ export class WorkbenchComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.authService.isLoggedIn) {
-      this.userInfo$ = this.userService.fetchUserInfo().pipe(
-        tap((userInfo) => {
-          this.nzNotificationService.success('Welcome', `Welcome back, ${userInfo.name}`);
-        })
-      );
-    }
+    this.userInfo$ = this.userService.fetchUserInfo().pipe(
+      tap((userInfo) => {
+        this.nzNotificationService.success('Welcome', `Welcome back, ${userInfo.name}`);
+      })
+    );
   }
 
   logout() {
-    this.authService.logout().subscribe((isLogout) => {
-      if (isLogout) {
-        this.router.navigate(['/user/login']);
-      }
-    });
+    this.authService.logout();
   }
 }

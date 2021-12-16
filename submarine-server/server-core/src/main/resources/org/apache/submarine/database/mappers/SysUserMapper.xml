@@ -49,8 +49,16 @@
     SELECT id, user_name, real_name FROM sys_user WHERE user_name = #{mapParams.name} AND password = #{mapParams.password}
   </select>
 
+  <update id="activeUser" parameterType="String">
+    UPDATE sys_user SET delete = 0 where id = #{id}
+  </update>
+
+  <select id="getUserByUniqueName" parameterType="String" resultMap="resultMap">
+    SELECT * FROM sys_user WHERE user_name = #{mapParams.name}
+  </select>
+
   <select id="login" parameterType="java.util.Map" resultMap="resultMap">
-    SELECT * FROM sys_user WHERE user_name = #{username} AND password = #{password}
+    SELECT * FROM sys_user WHERE user_name = #{username} AND password = #{password} AND deleted = 0
   </select>
 
   <insert id="add" parameterType="org.apache.submarine.server.workbench.database.entity.SysUserEntity">

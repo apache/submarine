@@ -20,6 +20,8 @@ package org.apache.submarine.server.workbench.rest;
 
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
+import org.apache.submarine.server.security.SecurityFactory;
+import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.apache.submarine.server.workbench.database.service.SysUserService;
@@ -29,11 +31,15 @@ import org.apache.submarine.server.workbench.entity.Role;
 import org.apache.submarine.server.workbench.entity.UserInfo;
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.response.JsonResponse.ListResult;
+import org.pac4j.core.profile.CommonProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.servlet.Filter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -41,17 +47,26 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Path("/sys/user")
 @Produces("application/json")
 @Singleton
 public class SysUserRestApi {
+
+  public static final String DEFAULT_ADMIN_UID = "e9ca23d68d884d4ebb19d07889727dae";
+
+  // default password is `password` by angular markAsDirty method
+  public static final String DEFAULT_CREATE_USER_PASSWORD = "5f4dcc3b5aa765d61d8327deb882cf99";
+
   private static final Logger LOG = LoggerFactory.getLogger(SysUserRestApi.class);
 
-  private SysUserService userService = new SysUserService();
+  private static final SysUserService userService = new SysUserService();
+
   private static final Gson gson = new Gson();
 
   @Inject
@@ -158,7 +173,7 @@ public class SysUserRestApi {
   @GET
   @Path("/info")
   @SubmarineApi
-  public Response info() {
+  public Response info(@Context HttpServletRequest hsRequest, @Context HttpServletResponse hsResponse) {
     List<Action> actions = new ArrayList<Action>();
     Action action1 = new Action("add", false, "add");
     Action action2 = new Action("query", false, "query");
@@ -221,16 +236,47 @@ public class SysUserRestApi {
     permissions.add(permission11);
     permissions.add(permission12);
 
+    SecurityProvider<Filter, CommonProfile> securityProvider = SecurityFactory.getSecurityProvider();
+    Optional<CommonProfile> profile = securityProvider.getProfile(hsRequest, hsResponse);
+    // find match user in db
+    SysUserEntity sysUser;
+    if (profile.isPresent()) {
+      try {
+        sysUser = userService.getUserByName(profile.get().getUsername());
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+        return new JsonResponse.Builder<>(Response.Status.OK).success(false)
+                .message("Get error when searching user name!").build();
+      }
+      // user not found
+      if (sysUser == null || sysUser.getDeleted() == 1) {
+        return new JsonResponse.Builder<>(Response.Status.OK).success(false)
+                .message("User can not be found!").build();
+      }
+    } else {
+      return new JsonResponse.Builder<>(Response.Status.OK).success(false)
+              .message("User can not be found!").build();
+    }
+
     Role.Builder roleBuilder = new Role.Builder("admin", "admin");
     Role role = roleBuilder.describe("Permission").status(1).creatorId("system")
         .createTime(1497160610259L).deleted(0).permissions(permissions).build();
 
-    UserInfo.Builder userInfoBuilder = new UserInfo.Builder("4291d7da9005377ec9aec4a71ea837f", "admin");
-    UserInfo userInfo = userInfoBuilder.username("admin").password("")
-        .avatar("/avatar2.jpg").status(1).telephone("").lastLoginIp("27.154.74.117")
-        .lastLoginTime(1534837621348L).creatorId("admin")
-        .createTime(1497160610259L).merchantCode("TLif2btpzg079h15bk")
-        .deleted(0).roleId("admin").role(role).build();
+    UserInfo.Builder userInfoBuilder = new UserInfo.Builder(sysUser.getId(), sysUser.getUserName());
+    UserInfo userInfo = userInfoBuilder
+        .username(sysUser.getUserName())
+        .password("******")
+        .avatar(sysUser.getAvatar())
+        .status(sysUser.getStatus())
+        .telephone(sysUser.getPhone())
+        .lastLoginIp("******")
+        .lastLoginTime(1534837621348L)
+        .creatorId("admin")
+        .createTime(sysUser.getCreateTime().getTime())
+        .merchantCode("TLif2btpzg079h15bk")
+        .deleted(0)
+        .roleId("admin")
+        .role(role).build();
 
     return new JsonResponse.Builder<UserInfo>(Response.Status.OK).success(true).result(userInfo).build();
   }

@@ -17,17 +17,25 @@
  * under the License.
  */
 
-import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-import { AuthService } from '@submarine/services';
+package org.apache.submarine.server.security.common;
 
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 
-  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    return true
+public class CommonConfig {
+
+  public static final String LOGOUT_ENDPOINT = "/auth/logout";
+
+  public static final String SUBMARINE_AUTH_MAX_AGE_ENV = "SUBMARINE_AUTH_MAX_AGE";
+  public static final String SUBMARINE_AUTH_MAX_AGE_PROP = "submarine.auth.maxAge";
+
+  public static final String AUTH_HEADER = "Authorization";
+
+  public static final int MAX_AGE;
+
+  static {
+    SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+    MAX_AGE = conf.getInt(SUBMARINE_AUTH_MAX_AGE_ENV, SUBMARINE_AUTH_MAX_AGE_PROP,
+            60 * 60 * 24);
   }
+
 }

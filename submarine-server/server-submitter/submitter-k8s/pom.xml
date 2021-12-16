@@ -82,7 +82,17 @@
           <groupId>mysql</groupId>
           <artifactId>mysql-connector-java</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.objenesis</groupId>
+          <artifactId>objenesis</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.objenesis</groupId>
+      <artifactId>objenesis</artifactId>
+      <version>${objenesis.version}</version>
     </dependency>
 
     <!--  Unit Tests  -->

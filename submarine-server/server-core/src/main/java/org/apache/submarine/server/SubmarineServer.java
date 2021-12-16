@@ -21,6 +21,8 @@ package org.apache.submarine.server;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.submarine.server.database.utils.HibernateUtil;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
+import org.apache.submarine.server.security.SecurityFactory;
+import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.commons.cluster.ClusterServer;
 import org.eclipse.jetty.http.HttpVersion;
@@ -46,6 +48,7 @@ import org.glassfish.hk2.api.ServiceLocatorFactory;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.pac4j.core.profile.CommonProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +57,8 @@ import org.apache.submarine.commons.utils.SubmarineConfVars;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -63,6 +68,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.EnumSet;
 
 public class SubmarineServer extends ResourceConfig {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineServer.class);
@@ -196,6 +202,13 @@ public class SubmarineServer extends ResourceConfig {
     // you need to modify the `/workbench/*` here.
     webApp.addServlet(new ServletHolder(RefreshServlet.class), "/user/*");
     webApp.addServlet(new ServletHolder(RefreshServlet.class), "/workbench/*");
+
+    // add security filter
+    SecurityProvider<Filter, CommonProfile> securityProvider = SecurityFactory.getSecurityProvider();
+    Class<Filter> filter = securityProvider.getFilterClass();
+    if (filter != null) {
+      webApp.addFilter(filter, "/*", EnumSet.of(DispatcherType.REQUEST));
+    }
 
     handlers.setHandlers(new Handler[] { webApp });
 

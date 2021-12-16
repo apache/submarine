@@ -140,6 +140,9 @@
     <commons-compress.version>1.4.1</commons-compress.version>
     <guice-servlet.version>3.0</guice-servlet.version>
     <guice.version>3.0</guice.version>
+
+    <!--  pac4j  -->
+    <pac4j.version>4.5.3</pac4j.version>
   </properties>
 
   <modules>
