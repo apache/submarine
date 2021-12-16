@@ -108,11 +108,41 @@ pytest --cov=submarine -vs -m "e2e"
 We use [open-api generator](https://openapi-generator.tech/docs/installation/#jar)
 to generate pysubmarine client API that used to communicate with submarine server.
 
-If change below files, please run `./dev-support/pysubmarine/gen-sdk.sh`
-to generate latest version of SDK.
+To generate different API Component:
+1. Change [swagger_config.json](https://github.com/apache/submarine/blob/master/dev-support/pysubmarine/swagger_config.json)
 
-- [Bootstrap.java](https://github.com/apache/submarine/blob/master/submarine-server/server-core/src/main/java/org/apache/submarine/server/Bootstrap.java)
-- [ExperimentRestApi.java](https://github.com/apache/submarine/blob/master/submarine-server/server-core/src/main/java/org/apache/submarine/server/rest/ExperimentRestApi.java)
+    Ex: 
+
+    For `submarine.experiment`
+    ```json
+    {
+      "packageName" : "submarine.experiment",
+      "projectName" : "submarine.experiment",
+      "packageVersion": "0.7.0-SNAPSHOT"
+    }
+    ```
+
+    For `submarine.notebook`
+    ```json
+    {
+      "packageName" : "submarine.notebook",
+      "projectName" : "submarine.notebook",
+      "packageVersion": "0.7.0-SNAPSHOT"
+    }
+    ```
+
+
+2. Execute `./dev-support/pysubmarine/gen-sdk.sh <component_name>` to generate latest version of SDK.
+
+    Ex:
+    For `submarine.experiment` : execute `./dev-support/pysubmarine/gen-sdk.sh experiment`
+
+    > Notice: Please install required package before running the script: [lint-requirements.txt](https://github.com/apache/submarine/blob/master/dev-support/style-check/python/lint-requirements.txt)
+
+3. Take `submarine.experiment` for example, if the following files change, please execute the script again to get the latest version of SDK
+
+    - [Bootstrap.java](https://github.com/apache/submarine/blob/master/submarine-server/server-core/src/main/java/org/apache/submarine/server/Bootstrap.java)
+    - [ExperimentRestApi.java](https://github.com/apache/submarine/blob/master/submarine-server/server-core/src/main/java/org/apache/submarine/server/rest/ExperimentRestApi.java)
 
 ### Model Management Model Development
 
