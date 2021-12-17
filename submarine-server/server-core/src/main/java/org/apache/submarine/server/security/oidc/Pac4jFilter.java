@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class Pac4jFilter extends CommonFilter implements Filter{
+public class Pac4jFilter extends CommonFilter implements Filter {
 
   private static final Logger LOG = LoggerFactory.getLogger(Pac4jFilter.class);
 

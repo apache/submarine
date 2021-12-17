@@ -58,6 +58,8 @@ import org.apache.submarine.server.gson.EnvironmentIdDeserializer;
 import org.apache.submarine.server.gson.EnvironmentIdSerializer;
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.rest.RestConstants;
+import org.apache.submarine.server.security.SecurityFactory;
+import org.apache.submarine.server.security.test.TestSecurityProvider;
 import org.apache.submarine.server.utils.TestUtils;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
@@ -122,6 +124,10 @@ public abstract class AbstractSubmarineServerTest {
     LOG.info("Starting SubmarineServer testClassName: {}", testClassName);
 
     if (!WAS_RUNNING) {
+      // add test filter
+      System.setProperty(SubmarineConfVars.ConfVars.SUBMARINE_AUTH_TYPE.getVarName(), "test");
+      SecurityFactory.addProvider("test", new TestSecurityProvider());
+
       // copy the resources files to a temp folder
       submarineServerHome = new File("..");
       LOG.info("SUBMARINE_SERVER_HOME: "

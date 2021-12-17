@@ -18,6 +18,7 @@
  */
 package org.apache.submarine.server;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.submarine.server.database.utils.HibernateUtil;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
@@ -25,6 +26,7 @@ import org.apache.submarine.server.security.SecurityFactory;
 import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.commons.cluster.ClusterServer;
+import org.eclipse.jetty.http.HttpCookie;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -118,6 +120,9 @@ public class SubmarineServer extends ResourceConfig {
 
     setupRestApiContextHandler(webApp, conf);
 
+    // Cookie config
+    setCookieConfig(webApp);
+
     // Notebook server
     setupNotebookServer(webApp, conf, sharedServiceLocator);
 
@@ -174,6 +179,25 @@ public class SubmarineServer extends ResourceConfig {
     servletHolder.setForcedPath("rest");
     webapp.setSessionHandler(new SessionHandler());
     webapp.addServlet(servletHolder, "/api/*");
+  }
+
+  /**
+   * Session cookie config
+   */
+  public static void setCookieConfig(WebAppContext webapp) {
+    // http only
+    webapp.getSessionHandler().getSessionCookieConfig().setHttpOnly(
+        conf.getBoolean(SubmarineConfVars.ConfVars.SUBMARINE_COOKIE_HTTP_ONLY)
+    );
+    // same site: NONE("None"), STRICT("Strict"), LAX("Lax");
+    String sameSite = conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_COOKIE_SAMESITE);
+    if (StringUtils.isNoneBlank(sameSite)) {
+      webapp.getSessionHandler().setSameSite(HttpCookie.SameSite.valueOf(sameSite.toUpperCase()));
+    }
+    // secure
+    webapp.getSessionHandler().getSessionCookieConfig().setSecure(
+        conf.getBoolean(SubmarineConfVars.ConfVars.SUBMARINE_COOKIE_SECURE)
+    );
   }
 
   private static WebAppContext setupWebAppContext(HandlerList handlers,
