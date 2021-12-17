@@ -19,11 +19,15 @@
 
 package org.apache.submarine.server.security;
 
+import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.security.oidc.Pac4jSecurityProvider;
 import org.apache.submarine.server.security.defaultlogin.DefaultSecurityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SecurityFactory {
 
@@ -31,32 +35,35 @@ public class SecurityFactory {
 
   private static final String AUTH_TYPE;
 
-  private static final Pac4jSecurityProvider pac4jsp = new Pac4jSecurityProvider();
-  private static final DefaultSecurityProvider defaultsp = new DefaultSecurityProvider();
+  private static final Map<String, SecurityProvider> providerMap;
 
   public static Pac4jSecurityProvider getPac4jSecurityProvider() {
-    return pac4jsp;
+    return (Pac4jSecurityProvider) providerMap.get("oidc");
   }
 
   public static DefaultSecurityProvider getDefaultSecurityProvider() {
-    return defaultsp;
+    return (DefaultSecurityProvider) providerMap.get("default");
   }
 
   static {
     SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-    AUTH_TYPE = conf.getString("SUBMARINE_AUTH_TYPE", "submarine.auth.type",
-            "default");
+    AUTH_TYPE = conf.getString(SubmarineConfVars.ConfVars.SUBMARINE_AUTH_TYPE);
+    // int provider map
+    providerMap = new HashMap<>();
+    providerMap.put("oidc", new Pac4jSecurityProvider());
+    providerMap.put("default", new DefaultSecurityProvider());
+  }
+
+  public static void addProvider(String name, SecurityProvider provider) {
+    providerMap.put(name, provider);
   }
 
   public static SecurityProvider getSecurityProvider() {
-    switch (AUTH_TYPE) {
-      case "oidc":
-        return pac4jsp;
-      case "default":
-        return defaultsp;
-      default:
-        LOG.warn("current auth type is {} but we can not recognize, so use default!", AUTH_TYPE);
-        return defaultsp;
+    if (providerMap.containsKey(AUTH_TYPE)) {
+      return providerMap.get(AUTH_TYPE);
+    } else {
+      LOG.warn("current auth type is {} but we can not recognize, so use default!", AUTH_TYPE);
+      return getDefaultSecurityProvider();
     }
   }
 

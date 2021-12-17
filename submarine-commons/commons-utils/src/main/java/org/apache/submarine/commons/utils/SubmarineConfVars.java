@@ -63,6 +63,14 @@ public class SubmarineConfVars {
     METASTORE_JDBC_USERNAME("metastore.jdbc.username", "metastore"),
     METASTORE_JDBC_PASSWORD("metastore.jdbc.password", "password"),
 
+    /* cookie setting */
+    SUBMARINE_COOKIE_HTTP_ONLY("submarine.cookie.http.only", false),
+    SUBMARINE_COOKIE_SECURE("submarine.cookie.secure", false),
+    SUBMARINE_COOKIE_SAMESITE("submarine.cookie.samesite", ""),
+
+    /* auth */
+    SUBMARINE_AUTH_TYPE("submarine.auth.type", "default"),
+
     WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
         "workbench.websocket.max.text.message.size", "1024000"),
     WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),

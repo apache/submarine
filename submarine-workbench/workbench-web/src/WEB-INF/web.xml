@@ -32,7 +32,7 @@
     </init-param>
     <init-param>
       <param-name>openApi.configuration.resourceClasses</param-name>
-      <param-value>org.apache.submarine.server.rest.ExperimentRestApi, 
+      <param-value>org.apache.submarine.server.rest.ExperimentRestApi,
       org.apache.submarine.server.rest.ExperimentTemplateRestApi</param-value>
     </init-param>
     <init-param>
@@ -61,10 +61,4 @@
     <load-on-startup>2</load-on-startup>
   </servlet>
 
-  <session-config>
-    <cookie-config>
-      <http-only>true</http-only>
-      <secure>true</secure>
-    </cookie-config>
-  </session-config>
 </web-app>
