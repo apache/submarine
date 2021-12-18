@@ -537,8 +537,8 @@ public class K8sSubmitter implements Submitter {
       api.createNamespacedCustomObject(istioVirtualService.getGroup(),
               istioVirtualService.getVersion(),
               "default",
-              seldonDeployment.getPlural(),
-              seldonDeployment,
+              istioVirtualService.getPlural(),
+              istioVirtualService,
               "true", null, null);
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
