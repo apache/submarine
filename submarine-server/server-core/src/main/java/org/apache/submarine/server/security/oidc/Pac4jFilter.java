@@ -67,7 +67,9 @@ public class Pac4jFilter extends CommonFilter implements Filter {
     HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
     JEEContext context = new JEEContext(httpServletRequest, httpServletResponse, SESSION_STORE);
 
-    if (Pac4jCallbackResource.SELF_URL.equals(httpServletRequest.getRequestURI())) {
+    if (isUserAgent(httpServletRequest)) {
+      filterChain.doFilter(servletRequest, servletResponse);
+    } else if (Pac4jCallbackResource.SELF_URL.equals(httpServletRequest.getRequestURI())) {
       CALLBACK_LOGIC.perform(
           context,
           pac4jConfig,

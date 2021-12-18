@@ -67,7 +67,9 @@ public class DefaultFilter extends CommonFilter implements Filter {
     HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
     JEEContext context = new JEEContext(httpServletRequest, httpServletResponse, SESSION_STORE);
 
-    if (OIDCConfig.LOGOUT_ENDPOINT.equals(httpServletRequest.getRequestURI())) {
+    if (isUserAgent(httpServletRequest)) {
+      filterChain.doFilter(servletRequest, servletResponse);
+    } else if (OIDCConfig.LOGOUT_ENDPOINT.equals(httpServletRequest.getRequestURI())) {
       LOGOUT_LOGIC.perform(
           context,
           pac4jConfig,

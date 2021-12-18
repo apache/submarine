@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.security.common;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 
 public class CommonConfig {
@@ -30,12 +31,19 @@ public class CommonConfig {
 
   public static final String AUTH_HEADER = "Authorization";
 
+  public static final String AGENT_HEADER = "User-Agent";
+  public static final String PYTHON_USER_AGENT;
+
   public static final int MAX_AGE;
 
   static {
     SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
     MAX_AGE = conf.getInt(SUBMARINE_AUTH_MAX_AGE_ENV, SUBMARINE_AUTH_MAX_AGE_PROP,
             60 * 60 * 24);
+
+    String version = System.getenv("SUBMARINE_VERSION");
+    if (StringUtils.isBlank(version)) version = "0.7.0-SNAPSHOT";
+    PYTHON_USER_AGENT = String.format("OpenAPI-Generator/%s/python", version);
   }
 
 }

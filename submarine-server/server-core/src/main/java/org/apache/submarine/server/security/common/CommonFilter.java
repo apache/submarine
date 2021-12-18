@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.security.common;
 
+import org.apache.commons.lang3.StringUtils;
 import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.context.session.JEESessionStore;
 import org.pac4j.core.context.session.SessionStore;
@@ -29,6 +30,8 @@ import org.pac4j.core.http.adapter.HttpActionAdapter;
 import org.pac4j.core.http.adapter.JEEHttpActionAdapter;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.UserProfile;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class CommonFilter {
 
@@ -43,4 +46,14 @@ public class CommonFilter {
   public static final DefaultLogoutLogic<UserProfile, JEEContext> LOGOUT_LOGIC = new DefaultLogoutLogic<>();
 
   public static final SessionStore<JEEContext> SESSION_STORE = new JEESessionStore();
+
+  /**
+   * If it is called by python, temporarily passed
+   */
+  protected boolean isUserAgent(HttpServletRequest httpServletRequest) {
+    String agentHeader = httpServletRequest.getHeader(CommonConfig.AGENT_HEADER);
+    if (StringUtils.isNoneBlank(agentHeader)) return CommonConfig.PYTHON_USER_AGENT.equals(agentHeader);
+    return false;
+  }
+
 }
