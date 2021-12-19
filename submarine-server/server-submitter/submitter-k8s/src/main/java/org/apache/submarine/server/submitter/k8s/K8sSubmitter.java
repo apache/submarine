@@ -550,13 +550,6 @@ public class K8sSubmitter implements Submitter {
               seldonDeployment.getMetadata().getName(),
               null, null, null, null,
               new V1DeleteOptionsBuilder().withApiVersion(seldonDeployment.getApiVersion()).build());
-        api.deleteNamespacedCustomObject(istioVirtualService.getGroup(),
-              istioVirtualService.getVersion(),
-              "default",
-              istioVirtualService.getPlural(),
-              istioVirtualService.getMetadata().getName(),
-              null, null, null, null,
-              new V1DeleteOptionsBuilder().withApiVersion(istioVirtualService.getApiVersion()).build());
       } catch (ApiException e1) {
         LOG.error(e1.getMessage(), e1);
       }
@@ -577,6 +570,13 @@ public class K8sSubmitter implements Submitter {
               seldonDeployment.getPlural(),
               seldonDeployment.getMetadata().getName(), null, null, null,
               null, new V1DeleteOptionsBuilder().withApiVersion(seldonDeployment.getApiVersion()).build());
+        api.deleteNamespacedCustomObject(istioVirtualService.getGroup(),
+                istioVirtualService.getVersion(),
+                "default",
+                istioVirtualService.getPlural(),
+                istioVirtualService.getMetadata().getName(),
+                null, null, null, null,
+                new V1DeleteOptionsBuilder().withApiVersion(istioVirtualService.getApiVersion()).build());
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
