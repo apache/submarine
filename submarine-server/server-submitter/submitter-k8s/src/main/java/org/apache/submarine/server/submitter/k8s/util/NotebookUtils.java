@@ -21,9 +21,9 @@ package org.apache.submarine.server.submitter.k8s.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import io.kubernetes.client.JSON;
-import io.kubernetes.client.models.V1ContainerState;
-import io.kubernetes.client.models.V1Status;
+import io.kubernetes.client.openapi.JSON;
+import io.kubernetes.client.openapi.models.V1ContainerState;
+import io.kubernetes.client.openapi.models.V1Status;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;

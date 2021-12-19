@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.submitter.k8s.experiment.codelocalizer;
 
-import io.kubernetes.client.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1PodSpec;
 
 public class DummyCodeLocalizer extends AbstractCodeLocalizer {
 

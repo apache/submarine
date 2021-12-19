@@ -20,7 +20,7 @@
 package org.apache.submarine.server.submitter.k8s.model.middlewares;
 
 import com.google.gson.annotations.SerializedName;
-import io.kubernetes.client.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
 
 public class Middlewares {
   // reference: https://doc.traefik.io/traefik/reference/dynamic-configuration/kubernetes-crd/#definitions

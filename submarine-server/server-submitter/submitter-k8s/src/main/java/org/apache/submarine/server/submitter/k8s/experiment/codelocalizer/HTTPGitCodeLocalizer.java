@@ -19,14 +19,14 @@
 
 package org.apache.submarine.server.submitter.k8s.experiment.codelocalizer;
 
-import io.kubernetes.client.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1PodSpec;
 
 public class HTTPGitCodeLocalizer extends GitCodeLocalizer {
 
   public HTTPGitCodeLocalizer(String url) {
     super(url);
   }
-  
+
   @Override
   public void localize(V1PodSpec podSpec) {
     super.localize(podSpec);

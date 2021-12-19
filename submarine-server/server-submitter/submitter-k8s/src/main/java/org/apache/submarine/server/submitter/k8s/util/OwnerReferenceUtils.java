@@ -21,7 +21,7 @@ package org.apache.submarine.server.submitter.k8s.util;
 
 import java.util.ArrayList;
 
-import io.kubernetes.client.models.V1OwnerReference;
+import io.kubernetes.client.openapi.models.V1OwnerReference;
 
 public class OwnerReferenceUtils {
   private static final String SUBMARINE_APIVERSION = "SUBMARINE_APIVERSION";

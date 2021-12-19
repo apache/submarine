@@ -20,12 +20,12 @@
 package org.apache.submarine.server.submitter.k8s.util;
 
 import java.util.List;
-import io.kubernetes.client.models.V1DeleteOptions;
-import io.kubernetes.client.models.V1DeleteOptionsBuilder;
-import io.kubernetes.client.models.V1JobCondition;
-import io.kubernetes.client.models.V1JobStatus;
-import io.kubernetes.client.models.V1Status;
-import io.kubernetes.client.models.V1StatusDetails;
+import io.kubernetes.client.openapi.models.V1DeleteOptions;
+import io.kubernetes.client.openapi.models.V1DeleteOptionsBuilder;
+import io.kubernetes.client.openapi.models.V1JobCondition;
+import io.kubernetes.client.openapi.models.V1JobStatus;
+import io.kubernetes.client.openapi.models.V1Status;
+import io.kubernetes.client.openapi.models.V1StatusDetails;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.joda.time.DateTime;

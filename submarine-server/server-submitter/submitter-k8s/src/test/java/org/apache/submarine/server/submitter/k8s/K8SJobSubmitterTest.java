@@ -22,7 +22,7 @@ package org.apache.submarine.server.submitter.k8s;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import io.kubernetes.client.ApiException;
+import io.kubernetes.client.openapi.ApiException;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;

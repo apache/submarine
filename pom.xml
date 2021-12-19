@@ -67,7 +67,7 @@
 
     <!--library versions-->
     <tony.version>0.4.7</tony.version>
-    <jersey.version>2.27</jersey.version>
+    <jersey.version>2.35</jersey.version>
     <jersey.servlet.version>1.13</jersey.servlet.version>
     <jetty.version>9.4.35.v20201120</jetty.version>
     <javax.ws.rsapi.version>2.1</javax.ws.rsapi.version>
@@ -127,10 +127,10 @@
     <mybatis-generator.version>1.3.7</mybatis-generator.version>
     <derby.version>10.15.1.3</derby.version>
     <zeppelin.version>0.9.0-preview1</zeppelin.version>
-    <jgit.version>5.5.1.201910021850-r</jgit.version>
+    <jgit.version>5.13.0.202109080827-r</jgit.version>
     <atomix.version>3.1.5</atomix.version>
     <!--  Submarine on Kubernetes  -->
-    <k8s.client-java.version>6.0.1</k8s.client-java.version>
+    <k8s.client-java.version>11.0.1</k8s.client-java.version>
     <jersey.test-framework>2.27</jersey.test-framework>
     <!-- integration test-->
     <plugin.failsafe.version>2.17</plugin.failsafe.version>

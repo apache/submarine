@@ -20,7 +20,7 @@
 package org.apache.submarine.server.submitter.k8s.model;
 
 import com.google.gson.GsonBuilder;
-import io.kubernetes.client.models.V1ListMeta;
+import io.kubernetes.client.openapi.models.V1ListMeta;
 
 /**
  * ListMeta describes metadata that synthetic resources must have, including lists and various

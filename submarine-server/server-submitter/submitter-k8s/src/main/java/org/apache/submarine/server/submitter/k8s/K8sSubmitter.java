@@ -28,32 +28,31 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.squareup.okhttp.OkHttpClient;
-import io.kubernetes.client.ApiClient;
-import io.kubernetes.client.ApiException;
-import io.kubernetes.client.Configuration;
-import io.kubernetes.client.JSON;
-import io.kubernetes.client.apis.AppsV1Api;
-import io.kubernetes.client.apis.CoreV1Api;
-import io.kubernetes.client.apis.CustomObjectsApi;
-import io.kubernetes.client.models.V1DeleteOptionsBuilder;
-import io.kubernetes.client.models.V1Deployment;
-import io.kubernetes.client.models.V1Event;
-import io.kubernetes.client.models.V1EventList;
-import io.kubernetes.client.models.V1ObjectMeta;
-import io.kubernetes.client.models.V1PersistentVolumeClaim;
-import io.kubernetes.client.models.V1Pod;
-import io.kubernetes.client.models.V1PodList;
-import io.kubernetes.client.models.V1Status;
+import okhttp3.OkHttpClient;
+import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.Configuration;
+import io.kubernetes.client.openapi.JSON;
+import io.kubernetes.client.openapi.apis.AppsV1Api;
+import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.openapi.apis.CustomObjectsApi;
+import io.kubernetes.client.openapi.models.V1DeleteOptionsBuilder;
+import io.kubernetes.client.openapi.models.V1Deployment;
+import io.kubernetes.client.openapi.models.CoreV1Event;
+import io.kubernetes.client.openapi.models.CoreV1EventList;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1PersistentVolumeClaim;
+import io.kubernetes.client.openapi.models.V1Pod;
+import io.kubernetes.client.openapi.models.V1PodList;
+import io.kubernetes.client.openapi.models.V1Status;
+import io.kubernetes.client.util.Watch;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
-import io.kubernetes.client.util.Watch;
 
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
@@ -130,8 +129,8 @@ public class K8sSubmitter implements Submitter {
       }
     } finally {
       // let watcher can wait until the next change
+      client.setReadTimeout(0);
       OkHttpClient httpClient = client.getHttpClient();
-      httpClient.setReadTimeout(0, TimeUnit.SECONDS);
       client.setHttpClient(httpClient);
       Configuration.setDefaultApiClient(client);
     }
@@ -164,7 +163,7 @@ public class K8sSubmitter implements Submitter {
       mlJob.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
 
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
-          mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true");
+          mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true", null, null);
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
@@ -206,7 +205,7 @@ public class K8sSubmitter implements Submitter {
 
       Object object = api.patchNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
-          mlJob);
+          mlJob, null, null, false);
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
@@ -224,8 +223,8 @@ public class K8sSubmitter implements Submitter {
       mlJob.getMetadata().setNamespace(getServerNamespace());
 
       Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
-          mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
-          MLJobConverter.toDeleteOptionsFromMLJob(mlJob), null, null, null);
+          mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(), 0,
+              false, null, null, MLJobConverter.toDeleteOptionsFromMLJob(mlJob));
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_DELETE);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
@@ -261,9 +260,9 @@ public class K8sSubmitter implements Submitter {
     try {
       final V1PodList podList = coreApi.listNamespacedPod(
           getServerNamespace(),
-          "false", null, null,
+          "false", false,  null, null,
           getJobLabelSelector(spec), null, null,
-          null, null);
+          null, null, null);
       for (V1Pod pod : podList.getItems()) {
         String podName = pod.getMetadata().getName();
         experimentLog.addPodLog(podName, null);
@@ -280,15 +279,15 @@ public class K8sSubmitter implements Submitter {
     experimentLog.setExperimentId(id);
     try {
       final V1PodList podList = coreApi.listNamespacedPod(
-          getServerNamespace(),
-          "false", null, null,
-          getJobLabelSelector(spec), null, null,
-          null, null);
+              getServerNamespace(),
+              "false", false,  null, null,
+              getJobLabelSelector(spec), null, null,
+              null, null, null);
 
       for (V1Pod pod : podList.getItems()) {
         String podName = pod.getMetadata().getName();
         String podLog = coreApi.readNamespacedPodLog(
-            podName, getServerNamespace(), null, Boolean.FALSE,
+            podName, getServerNamespace(), null, Boolean.FALSE, null,
             Integer.MAX_VALUE, null, Boolean.FALSE,
             Integer.MAX_VALUE, null, Boolean.FALSE);
 
@@ -413,7 +412,7 @@ public class K8sSubmitter implements Submitter {
     // create notebook custom resource
     try {
       Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
-          namespace, notebookCR.getPlural(), notebookCR, "true");
+          namespace, notebookCR.getPlural(), notebookCR, "true", null, null);
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
@@ -459,13 +458,13 @@ public class K8sSubmitter implements Submitter {
         String podLabelSelector = String.format("%s=%s", NotebookCR.NOTEBOOK_ID,
             spec.getMeta().getLabels().get(NotebookCR.NOTEBOOK_ID).toString());
 
-        V1PodList podList = coreApi.listNamespacedPod(namespace, null, null, null, podLabelSelector,
-            null, null, null, null);
+        V1PodList podList = coreApi.listNamespacedPod(namespace, null, null, null, null,
+                podLabelSelector, null, null, null, null, null);
         String podName = podList.getItems().get(0).getMetadata().getName();
         String fieldSelector = String.format("involvedObject.name=%s", podName);
-        V1EventList events = coreApi.listNamespacedEvent(namespace, null, null, fieldSelector,
-            null, null, null, null, null);
-        V1Event latestEvent = events.getItems().get(events.getItems().size() - 1);
+        CoreV1EventList events = coreApi.listNamespacedEvent(namespace, null, null, null, fieldSelector,
+            null, null, null, null, null, null);
+        CoreV1Event latestEvent = events.getItems().get(events.getItems().size() - 1);
 
         if (latestEvent.getReason().equalsIgnoreCase("Pulling")) {
           notebook.setStatus(Notebook.Status.STATUS_PULLING.getValue());
@@ -489,9 +488,8 @@ public class K8sSubmitter implements Submitter {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
           namespace, notebookCR.getPlural(),
-          notebookCR.getMetadata().getName(),
-          new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
-          null, null, null);
+          notebookCR.getMetadata().getName(), null, null, null,
+              null, new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build());
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
       deleteIngressRoute(namespace, notebookCR.getMetadata().getName());
       deletePersistentVolumeClaim(pvcName, namespace);
@@ -509,8 +507,8 @@ public class K8sSubmitter implements Submitter {
     try {
       Object object = api.listNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
           NotebookCR.CRD_NOTEBOOK_VERSION_V1, namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1,
-          "true", null, NotebookCR.NOTEBOOK_OWNER_SELECTOR_KEY + "=" + id,
-          null, null, null);
+          "true", null, null, NotebookCR.NOTEBOOK_OWNER_SELECTOR_KEY + "=" + id,
+          null, null, null, null);
       notebookList = NotebookUtils.parseObjectForList(object);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -530,7 +528,7 @@ public class K8sSubmitter implements Submitter {
                "default",
                seldonDeployment.getPlural(),
                seldonDeployment,
-               "true");
+               "true", null, null);
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -541,7 +539,7 @@ public class K8sSubmitter implements Submitter {
               "default",
               istioVirtualService.getPlural(),
               istioVirtualService,
-              "true");
+              "true", null, null);
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
       try {
@@ -550,8 +548,8 @@ public class K8sSubmitter implements Submitter {
               "default",
               seldonDeployment.getPlural(),
               seldonDeployment.getMetadata().getName(),
-              new V1DeleteOptionsBuilder().withApiVersion(seldonDeployment.getApiVersion()).build(),
-              null, null, null);
+              null, null, null, null,
+              new V1DeleteOptionsBuilder().withApiVersion(seldonDeployment.getApiVersion()).build());
       } catch (ApiException e1) {
         LOG.error(e1.getMessage(), e1);
       }
@@ -570,16 +568,15 @@ public class K8sSubmitter implements Submitter {
               seldonDeployment.getVersion(),
               "default",
               seldonDeployment.getPlural(),
-              seldonDeployment.getMetadata().getName(),
-              new V1DeleteOptionsBuilder().withApiVersion(seldonDeployment.getApiVersion()).build(),
-              null, null, null);
+              seldonDeployment.getMetadata().getName(), null, null, null,
+              null, new V1DeleteOptionsBuilder().withApiVersion(seldonDeployment.getApiVersion()).build());
       api.deleteNamespacedCustomObject(istioVirtualService.getGroup(),
               istioVirtualService.getVersion(),
               "default",
               istioVirtualService.getPlural(),
               istioVirtualService.getMetadata().getName(),
-              new V1DeleteOptionsBuilder().withApiVersion(istioVirtualService.getApiVersion()).build(),
-              null, null, null);
+              null, null, null, null,
+              new V1DeleteOptionsBuilder().withApiVersion(istioVirtualService.getApiVersion()).build());
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -602,8 +599,9 @@ public class K8sSubmitter implements Submitter {
             null,
             null,
             null,
-            Boolean.TRUE,
             null,
+            null,
+            Boolean.TRUE,
             null
         ),
         new TypeToken<Watch.Response<MLJob>>() {
@@ -644,8 +642,9 @@ public class K8sSubmitter implements Submitter {
             null,
             null,
             null,
-            Boolean.TRUE,
             null,
+            null,
+            Boolean.TRUE,
             null
         ),
         new TypeToken<Watch.Response<MLJob>>() {
@@ -697,7 +696,7 @@ public class K8sSubmitter implements Submitter {
     but it can still work fine and delete the PVC
     */
     try {
-      V1Status result = coreApi.deleteNamespacedPersistentVolumeClaim(
+      V1PersistentVolumeClaim result = coreApi.deleteNamespacedPersistentVolumeClaim(
           pvcName, namespace, "true",
           null, null, null,
           null, null
@@ -741,7 +740,7 @@ public class K8sSubmitter implements Submitter {
       api.createNamespacedCustomObject(
           ingressRoute.getGroup(), ingressRoute.getVersion(),
           ingressRoute.getMetadata().getNamespace(),
-          ingressRoute.getPlural(), ingressRoute, "true");
+          ingressRoute.getPlural(), ingressRoute, "true", null, null);
     } catch (ApiException e) {
       LOG.error("K8s submitter: Create Traefik custom resource object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -755,9 +754,8 @@ public class K8sSubmitter implements Submitter {
     try {
       api.deleteNamespacedCustomObject(
           IngressRoute.CRD_INGRESSROUTE_GROUP_V1, IngressRoute.CRD_INGRESSROUTE_VERSION_V1,
-          namespace, IngressRoute.CRD_INGRESSROUTE_PLURAL_V1, name,
-          new V1DeleteOptionsBuilder().withApiVersion(IngressRoute.CRD_APIVERSION_V1).build(),
-          null, null, null);
+          namespace, IngressRoute.CRD_INGRESSROUTE_PLURAL_V1, name, null, null, null,
+              null, new V1DeleteOptionsBuilder().withApiVersion(IngressRoute.CRD_APIVERSION_V1).build());
     } catch (ApiException e) {
       LOG.error("K8s submitter: Delete Traefik custom resource object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -815,9 +813,8 @@ public class K8sSubmitter implements Submitter {
     try {
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
           namespace, notebookCR.getPlural(),
-          notebookCR.getMetadata().getName(),
-          new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build(),
-          null, null, null);
+          notebookCR.getMetadata().getName(), null, null, null, null,
+          new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build());
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
