@@ -27,18 +27,6 @@ rules:
     verbs:
       - "*"
   - apiGroups:
-      - traefik.containo.us
-    resources:
-      - ingressroutes
-      - ingressroutetcps
-      - ingressrouteudps
-      - middlewares
-      - tlsoptions
-      - tlsstores
-      - traefikservices
-    verbs:
-      - "*"
-  - apiGroups:
       - kubeflow.org
     resources:
       - notebooks

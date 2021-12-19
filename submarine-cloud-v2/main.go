@@ -32,9 +32,6 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/klog/v2"
-
-	traefikclientset "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
-	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions"
 )
 
 var (
@@ -73,14 +70,14 @@ func main() {
 		klog.Fatalf("Error building submarine clientset: %s", err.Error())
 	}
 
-	traefikClient, err := traefikclientset.NewForConfig(cfg)
-	if err != nil {
-		klog.Fatalf("Error building traefik clientset: %s", err.Error())
-	}
+	// traefikClient, err := traefikclientset.NewForConfig(cfg)
+	// if err != nil {
+	// 	klog.Fatalf("Error building traefik clientset: %s", err.Error())
+	// }
 
 	kubeInformerFactory := kubeinformers.NewSharedInformerFactory(kubeClient, time.Second*30)
 	submarineInformerFactory := informers.NewSharedInformerFactory(submarineClient, time.Second*30)
-	traefikInformerFactory := traefikinformers.NewSharedInformerFactory(traefikClient, time.Second*30)
+	// traefikInformerFactory := traefikinformers.NewSharedInformerFactory(traefikClient, time.Second*30)
 
 	// TODO: Pass informers to NewController()
 	//       ex: namespace informer
@@ -90,17 +87,17 @@ func main() {
 		incluster,
 		kubeClient,
 		submarineClient,
-		traefikClient,
+		// traefikClient,
 		kubeInformerFactory,
 		submarineInformerFactory,
-		traefikInformerFactory,
+		// traefikInformerFactory,
 	)
 
 	// notice that there is no need to run Start methods in a separate goroutine. (i.e. go kubeInformerFactory.Start(stopCh)
 	// Start method is non-blocking and runs all registered informers in a dedicated goroutine.
 	kubeInformerFactory.Start(stopCh)
 	submarineInformerFactory.Start(stopCh)
-	traefikInformerFactory.Start(stopCh)
+	// traefikInformerFactory.Start(stopCh)
 
 	// Run controller
 	if err = submarineController.Run(1, stopCh); err != nil {
@@ -112,25 +109,25 @@ func NewSubmarineController(
 	incluster bool,
 	kubeClient *kubernetes.Clientset,
 	submarineClient *clientset.Clientset,
-	traefikClient *traefikclientset.Clientset,
+	// traefikClient *traefikclientset.Clientset,
 	kubeInformerFactory kubeinformers.SharedInformerFactory,
 	submarineInformerFactory informers.SharedInformerFactory,
-	traefikInformerFactory traefikinformers.SharedInformerFactory,
+	// traefikInformerFactory traefikinformers.SharedInformerFactory,
 ) *controller.Controller {
 	bc := controller.NewControllerBuilderConfig()
 	bc.
 		InCluster(incluster).
 		WithKubeClientset(kubeClient).
 		WithSubmarineClientset(submarineClient).
-		WithTraefikClientset(traefikClient).
+		// WithTraefikClientset(traefikClient).
 		WithSubmarineInformer(submarineInformerFactory.Submarine().V1alpha1().Submarines()).
 		WithDeploymentInformer(kubeInformerFactory.Apps().V1().Deployments()).
 		WithNamespaceInformer(kubeInformerFactory.Core().V1().Namespaces()).
 		WithServiceInformer(kubeInformerFactory.Core().V1().Services()).
 		WithServiceAccountInformer(kubeInformerFactory.Core().V1().ServiceAccounts()).
 		WithPersistentVolumeClaimInformer(kubeInformerFactory.Core().V1().PersistentVolumeClaims()).
-		WithIngressInformer(kubeInformerFactory.Extensions().V1beta1().Ingresses()).
-		WithIngressRouteInformer(traefikInformerFactory.Traefik().V1alpha1().IngressRoutes()).
+		// WithIngressInformer(kubeInformerFactory.Extensions().V1beta1().Ingresses()).
+		// WithIngressRouteInformer(traefikInformerFactory.Traefik().V1alpha1().IngressRoutes()).
 		WithRoleInformer(kubeInformerFactory.Rbac().V1().Roles()).
 		WithRoleBindingInformer(kubeInformerFactory.Rbac().V1().RoleBindings())
 

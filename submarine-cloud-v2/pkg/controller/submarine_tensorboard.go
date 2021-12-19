@@ -154,27 +154,27 @@ func (c *Controller) createSubmarineTensorboard(submarine *v1alpha1.Submarine) e
 	}
 
 	// Step 4: Create IngressRoute
-	ingressroute, err := c.ingressrouteLister.IngressRoutes(submarine.Namespace).Get(tensorboardIngressRouteName)
-	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(err) {
-		ingressroute, err = c.traefikclientset.TraefikV1alpha1().IngressRoutes(submarine.Namespace).Create(context.TODO(), newSubmarineTensorboardIngressRoute(submarine), metav1.CreateOptions{})
-		if err != nil {
-			klog.Info(err)
-		}
-		klog.Info(" Create IngressRoute: ", ingressroute.Name)
-	}
-	// If an error occurs during Get/Create, we'll requeue the item so we can
-	// attempt processing again later. This could have been caused by a
-	// temporary network failure, or any other transient reason.
-	if err != nil {
-		return err
-	}
+	// ingressroute, err := c.ingressrouteLister.IngressRoutes(submarine.Namespace).Get(tensorboardIngressRouteName)
+	// // If the resource doesn't exist, we'll create it
+	// if errors.IsNotFound(err) {
+	// 	ingressroute, err = c.traefikclientset.TraefikV1alpha1().IngressRoutes(submarine.Namespace).Create(context.TODO(), newSubmarineTensorboardIngressRoute(submarine), metav1.CreateOptions{})
+	// 	if err != nil {
+	// 		klog.Info(err)
+	// 	}
+	// 	klog.Info(" Create IngressRoute: ", ingressroute.Name)
+	// }
+	// // If an error occurs during Get/Create, we'll requeue the item so we can
+	// // attempt processing again later. This could have been caused by a
+	// // temporary network failure, or any other transient reason.
+	// if err != nil {
+	// 	return err
+	// }
 
-	if !metav1.IsControlledBy(ingressroute, submarine) {
-		msg := fmt.Sprintf(MessageResourceExists, ingressroute.Name)
-		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return fmt.Errorf(msg)
-	}
+	// if !metav1.IsControlledBy(ingressroute, submarine) {
+	// 	msg := fmt.Sprintf(MessageResourceExists, ingressroute.Name)
+	// 	c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
+	// 	return fmt.Errorf(msg)
+	// }
 
 	return nil
 }

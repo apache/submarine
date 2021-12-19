@@ -27,7 +27,7 @@ spec:
   template:
     metadata:
       annotations:
-        sidecar.istio.io/inject: "false"
+        sidecar.istio.io/inject: "true"
       labels:
         app: notebook-controller
     spec:
@@ -39,7 +39,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: USE_ISTIO
-          value: "false"
+          value: "true"
         livenessProbe:
           httpGet:
             path: /metrics

@@ -432,10 +432,10 @@ func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 		return err
 	}
 
-	err = c.createIngress(submarine)
-	if err != nil {
-		return err
-	}
+	// err = c.createIngress(submarine)
+	// if err != nil {
+	// 	return err
+	// }
 
 	err = c.createSubmarineServerRBAC(submarine)
 	if err != nil {

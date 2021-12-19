@@ -105,17 +105,17 @@ spec:
             claimName: "submarine-mlflow-pvc"
 ---
 # Source: submarine/templates/submarine-mlflow.yaml
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: submarine-mlflow-ingressroute
-spec:
-  entryPoints:
-    - web
-  routes:
-  - kind: Rule
-    match: "PathPrefix(`/mlflow`)"
-    services:
-    - kind: Service
-      name: submarine-mlflow-service
-      port: 5000
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: submarine-mlflow-ingressroute
+# spec:
+#   entryPoints:
+#     - web
+#   routes:
+#   - kind: Rule
+#     match: "PathPrefix(`/mlflow`)"
+#     services:
+#     - kind: Service
+#       name: submarine-mlflow-service
+#       port: 5000

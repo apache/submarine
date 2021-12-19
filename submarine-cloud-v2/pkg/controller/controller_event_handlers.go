@@ -18,10 +18,8 @@
 package controller
 
 import (
-	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/client-go/tools/cache"
 )
@@ -122,39 +120,39 @@ func (cb *ControllerBuilder) addPersistentVolumeClaimEventHandlers() *Controller
 	return cb
 }
 
-func (cb *ControllerBuilder) addIngressEventHandlers() *ControllerBuilder {
-	cb.config.ingressInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: cb.controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newIngress := new.(*extensionsv1beta1.Ingress)
-			oldIngress := old.(*extensionsv1beta1.Ingress)
-			if newIngress.ResourceVersion == oldIngress.ResourceVersion {
-				return
-			}
-			cb.controller.handleObject(new)
-		},
-		DeleteFunc: cb.controller.handleObject,
-	})
+// func (cb *ControllerBuilder) addIngressEventHandlers() *ControllerBuilder {
+// 	cb.config.ingressInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+// 		AddFunc: cb.controller.handleObject,
+// 		UpdateFunc: func(old, new interface{}) {
+// 			newIngress := new.(*extensionsv1beta1.Ingress)
+// 			oldIngress := old.(*extensionsv1beta1.Ingress)
+// 			if newIngress.ResourceVersion == oldIngress.ResourceVersion {
+// 				return
+// 			}
+// 			cb.controller.handleObject(new)
+// 		},
+// 		DeleteFunc: cb.controller.handleObject,
+// 	})
 
-	return cb
-}
+// 	return cb
+// }
 
-func (cb *ControllerBuilder) addIngressRouteEventHandlers() *ControllerBuilder {
-	cb.config.ingressrouteInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: cb.controller.handleObject,
-		UpdateFunc: func(old, new interface{}) {
-			newIngressRoute := new.(*traefikv1alpha1.IngressRoute)
-			oldIngressRoute := old.(*traefikv1alpha1.IngressRoute)
-			if newIngressRoute.ResourceVersion == oldIngressRoute.ResourceVersion {
-				return
-			}
-			cb.controller.handleObject(new)
-		},
-		DeleteFunc: cb.controller.handleObject,
-	})
+// func (cb *ControllerBuilder) addIngressRouteEventHandlers() *ControllerBuilder {
+// 	cb.config.ingressrouteInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+// 		AddFunc: cb.controller.handleObject,
+// 		UpdateFunc: func(old, new interface{}) {
+// 			newIngressRoute := new.(*traefikv1alpha1.IngressRoute)
+// 			oldIngressRoute := old.(*traefikv1alpha1.IngressRoute)
+// 			if newIngressRoute.ResourceVersion == oldIngressRoute.ResourceVersion {
+// 				return
+// 			}
+// 			cb.controller.handleObject(new)
+// 		},
+// 		DeleteFunc: cb.controller.handleObject,
+// 	})
 
-	return cb
-}
+// 	return cb
+// }
 
 func (cb *ControllerBuilder) addRoleEventHandlers() *ControllerBuilder {
 	cb.config.roleInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{

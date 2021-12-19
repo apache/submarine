@@ -81,17 +81,17 @@ spec:
             claimName: "submarine-minio-pvc"
 ---
 # Source: submarine/templates/submarine-minio.yaml
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: submarine-minio-ingressroute
-spec:
-  entryPoints:
-    - web
-  routes:
-  - kind: Rule
-    match: "PathPrefix(`/minio`)"
-    services:
-    - kind: Service
-      name: submarine-minio-service
-      port: 9000
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: submarine-minio-ingressroute
+# spec:
+#   entryPoints:
+#     - web
+#   routes:
+#   - kind: Rule
+#     match: "PathPrefix(`/minio`)"
+#     services:
+#     - kind: Service
+#       name: submarine-minio-service
+#       port: 9000

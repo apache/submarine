@@ -20,30 +20,27 @@ package controller
 import (
 	clientset "github.com/apache/submarine/submarine-cloud-v2/pkg/client/clientset/versioned"
 	informers "github.com/apache/submarine/submarine-cloud-v2/pkg/client/informers/externalversions/submarine/v1alpha1"
-	traefik "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
-	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions/traefik/v1alpha1"
 	appsinformers "k8s.io/client-go/informers/apps/v1"
 	coreinformers "k8s.io/client-go/informers/core/v1"
-	extinformers "k8s.io/client-go/informers/extensions/v1beta1"
 	rbacinformers "k8s.io/client-go/informers/rbac/v1"
 	"k8s.io/client-go/kubernetes"
 )
 
 type BuilderConfig struct {
-	incluster                     bool
-	kubeclientset                 kubernetes.Interface
-	submarineclientset            clientset.Interface
-	traefikclientset              traefik.Interface
+	incluster          bool
+	kubeclientset      kubernetes.Interface
+	submarineclientset clientset.Interface
+	// traefikclientset              traefik.Interface
 	namespaceInformer             coreinformers.NamespaceInformer
 	deploymentInformer            appsinformers.DeploymentInformer
 	serviceInformer               coreinformers.ServiceInformer
 	serviceaccountInformer        coreinformers.ServiceAccountInformer
 	persistentvolumeclaimInformer coreinformers.PersistentVolumeClaimInformer
-	ingressInformer               extinformers.IngressInformer
-	ingressrouteInformer          traefikinformers.IngressRouteInformer
-	roleInformer                  rbacinformers.RoleInformer
-	rolebindingInformer           rbacinformers.RoleBindingInformer
-	submarineInformer             informers.SubmarineInformer
+	// ingressInformer               extinformers.IngressInformer
+	// ingressrouteInformer          traefikinformers.IngressRouteInformer
+	roleInformer        rbacinformers.RoleInformer
+	rolebindingInformer rbacinformers.RoleBindingInformer
+	submarineInformer   informers.SubmarineInformer
 }
 
 func NewControllerBuilderConfig() *BuilderConfig {
@@ -71,12 +68,12 @@ func (bc *BuilderConfig) WithSubmarineClientset(
 	return bc
 }
 
-func (bc *BuilderConfig) WithTraefikClientset(
-	traefikclientset traefik.Interface,
-) *BuilderConfig {
-	bc.traefikclientset = traefikclientset
-	return bc
-}
+// func (bc *BuilderConfig) WithTraefikClientset(
+// 	traefikclientset traefik.Interface,
+// ) *BuilderConfig {
+// 	bc.traefikclientset = traefikclientset
+// 	return bc
+// }
 
 func (bc *BuilderConfig) WithSubmarineInformer(
 	submarineInformer informers.SubmarineInformer,
@@ -120,19 +117,19 @@ func (bc *BuilderConfig) WithPersistentVolumeClaimInformer(
 	return bc
 }
 
-func (bc *BuilderConfig) WithIngressInformer(
-	ingressInformer extinformers.IngressInformer,
-) *BuilderConfig {
-	bc.ingressInformer = ingressInformer
-	return bc
-}
+// func (bc *BuilderConfig) WithIngressInformer(
+// 	ingressInformer extinformers.IngressInformer,
+// ) *BuilderConfig {
+// 	bc.ingressInformer = ingressInformer
+// 	return bc
+// }
 
-func (bc *BuilderConfig) WithIngressRouteInformer(
-	ingressrouteInformer traefikinformers.IngressRouteInformer,
-) *BuilderConfig {
-	bc.ingressrouteInformer = ingressrouteInformer
-	return bc
-}
+// func (bc *BuilderConfig) WithIngressRouteInformer(
+// 	ingressrouteInformer traefikinformers.IngressRouteInformer,
+// ) *BuilderConfig {
+// 	bc.ingressrouteInformer = ingressrouteInformer
+// 	return bc
+// }
 
 func (bc *BuilderConfig) WithRoleInformer(
 	roleInformer rbacinformers.RoleInformer,
