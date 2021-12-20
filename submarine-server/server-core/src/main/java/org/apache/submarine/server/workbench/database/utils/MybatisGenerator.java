@@ -47,27 +47,26 @@ public class MybatisGenerator {
     Configuration config = null;
     try {
       config = cp.parseConfiguration(configFile);
-    } catch (IOException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (XMLParserException e) {
+    } catch (IOException | XMLParserException e) {
       LOG.error(e.getMessage(), e);
     }
 
     DefaultShellCallback callback = new DefaultShellCallback(overwrite);
     MyBatisGenerator myBatisGenerator = null;
     try {
+      assert config != null;
       myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
     } catch (InvalidConfigurationException e) {
       LOG.error(e.getMessage(), e);
     }
     try {
+      assert myBatisGenerator != null;
       myBatisGenerator.generate(null);
-    } catch (SQLException e) {
-      LOG.error(e.getMessage(), e);
-    } catch (IOException e) {
+    } catch (SQLException | IOException e) {
       LOG.error(e.getMessage(), e);
     } catch (InterruptedException e) {
       LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
     }
   }
 }
