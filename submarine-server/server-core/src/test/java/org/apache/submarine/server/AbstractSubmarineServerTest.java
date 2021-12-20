@@ -112,6 +112,10 @@ public abstract class AbstractSubmarineServerTest {
     public void run() {
       try {
         TestUtils.clearInstances();
+        // add test filter
+        System.setProperty(SubmarineConfVars.ConfVars.SUBMARINE_AUTH_TYPE.getVarName(), "test");
+        SecurityFactory.addProvider("test", new TestSecurityProvider());
+
         SubmarineServer.main(new String[]{""});
       } catch (Exception e) {
         LOG.error("Exception in WebDriverManager while getWebDriver ", e);
