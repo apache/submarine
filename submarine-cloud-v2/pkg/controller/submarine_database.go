@@ -43,6 +43,7 @@ func newSubmarineDatabasePersistentVolumeClaim(submarine *v1alpha1.Submarine) *c
 }
 
 func newSubmarineDatabaseDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployment {
+	databaseImage := submarine.Spec.Database.Image
 	databaseReplicas := *submarine.Spec.Database.Replicas
 
 	deployment, err := ParseDeploymentYaml(databaseYamlPath)
@@ -51,6 +52,9 @@ func newSubmarineDatabaseDeployment(submarine *v1alpha1.Submarine) *appsv1.Deplo
 	}
 	deployment.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
 		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+	if databaseImage != "" {
+		deployment.Spec.Template.Spec.Containers[0].Image = databaseImage
 	}
 	deployment.Spec.Replicas = &databaseReplicas
 
