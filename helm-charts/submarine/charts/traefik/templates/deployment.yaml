@@ -121,92 +121,92 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
-          - name: data
-            mountPath: {{ .Values.persistence.path }}
-            {{- if .Values.persistence.subPath }}
-            subPath: {{ .Values.persistence.subPath }}
-            {{- end }}
-          - name: tmp
-            mountPath: /tmp
-          {{- range .Values.volumes }}
-          - name: {{ .name }}
-            mountPath: {{ .mountPath }}
-            readOnly: true
+        - name: data
+          mountPath: {{ .Values.persistence.path }}
+          {{- if .Values.persistence.subPath }}
+          subPath: {{ .Values.persistence.subPath }}
           {{- end }}
+        - name: tmp
+          mountPath: /tmp
+        {{- range .Values.volumes }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+          readOnly: true
+        {{- end }}
         args:
-          {{- with .Values.globalArguments }}
-          {{- range . }}
-          - {{ . | quote }}
-          {{- end }}
-          {{- end }}
-          {{- range $name, $config := .Values.ports }}
-          {{- if $config }}
-          - "--entryPoints.{{$name}}.address=:{{ $config.port }}/{{ default "tcp" $config.protocol | lower }}"
-          {{- end }}
-          {{- end }}
-          - "--api.dashboard=true"
-          - "--ping=true"
-          {{- if .Values.providers.kubernetesCRD.enabled }}
-          - "--providers.kubernetescrd"
-          {{- end }}
-          {{- if .Values.providers.kubernetesIngress.enabled }}
-          - "--providers.kubernetesingress"
-          {{- if and .Values.service.enabled .Values.providers.kubernetesIngress.publishedService.enabled }}
-          - "--providers.kubernetesingress.ingressendpoint.publishedservice={{ template "providers.kubernetesIngress.publishedServicePath" . }}"
-          {{- end }}
-          {{- end }}
-          {{- if and .Values.rbac.enabled .Values.rbac.namespaced }}
-          - "--providers.kubernetescrd.namespaces={{ .Release.Namespace }}"
-          - "--providers.kubernetesingress.namespaces={{ .Release.Namespace }}"
-          {{- end }}
-          {{- range $entrypoint, $config := $.Values.ports }}
-          {{- if $config.redirectTo }}
-          {{- $toPort := index $.Values.ports $config.redirectTo }}
-          - "--entrypoints.{{ $entrypoint }}.http.redirections.entryPoint.to=:{{ $toPort.exposedPort }}"
-          - "--entrypoints.{{ $entrypoint }}.http.redirections.entryPoint.scheme=https"
-          {{- end }}
-          {{- end }}
-          {{- with .Values.logs }}
-          {{- if .general.format }}
-          - "--log.format={{ .general.format }}"
-          {{- end }}
-          {{- if ne .general.level "ERROR" }}
-          - "--log.level={{ .general.level | upper }}"
-          {{- end }}
-          {{- if .access.enabled }}
-          - "--accesslog=true"
-          {{- if .access.format }}
-          - "--accesslog.format={{ .access.format }}"
-          {{- end }}
-          {{- if .access.bufferingsize }}
-          - "--accesslog.bufferingsize={{ .access.bufferingsize }}"
-          {{- end }}
-          {{- if .access.filters }}
-          {{- if .access.filters.statuscodes }}
-          - "--accesslog.filters.statuscodes={{ .access.filters.statuscodes }}"
-          {{- end }}
-          {{- if .access.filters.retryattempts }}
-          - "--accesslog.filters.retryattempts"
-          {{- end }}
-          {{- if .access.filters.minduration }}
-          - "--accesslog.filters.minduration={{ .access.filters.minduration }}"
-          {{- end }}
-          {{- end }}
-          - "--accesslog.fields.defaultmode={{ .access.fields.general.defaultmode }}"
-          {{- range $fieldname, $fieldaction := .access.fields.general.names }}
-          - "--accesslog.fields.names.{{ $fieldname }}={{ $fieldaction }}"
-          {{- end }}
-          - "--accesslog.fields.headers.defaultmode={{ .access.fields.headers.defaultmode }}"
-          {{- range $fieldname, $fieldaction := .access.fields.headers.names }}
-          - "--accesslog.fields.headers.names.{{ $fieldname }}={{ $fieldaction }}"
-          {{- end }}
-          {{- end }}
-          {{- end }}
-          {{- with .Values.additionalArguments }}
-          {{- range . }}
-          - {{ . | quote }}
-          {{- end }}
-          {{- end }}
+        {{- with .Values.globalArguments }}
+        {{- range . }}
+        - {{ . | quote }}
+        {{- end }}
+        {{- end }}
+        {{- range $name, $config := .Values.ports }}
+        {{- if $config }}
+        - "--entryPoints.{{$name}}.address=:{{ $config.port }}/{{ default "tcp" $config.protocol | lower }}"
+        {{- end }}
+        {{- end }}
+        - "--api.dashboard=true"
+        - "--ping=true"
+        {{- if .Values.providers.kubernetesCRD.enabled }}
+        - "--providers.kubernetescrd"
+        {{- end }}
+        {{- if .Values.providers.kubernetesIngress.enabled }}
+        - "--providers.kubernetesingress"
+        {{- if and .Values.service.enabled .Values.providers.kubernetesIngress.publishedService.enabled }}
+        - "--providers.kubernetesingress.ingressendpoint.publishedservice={{ template "providers.kubernetesIngress.publishedServicePath" . }}"
+        {{- end }}
+        {{- end }}
+        {{- if and .Values.rbac.enabled .Values.rbac.namespaced }}
+        - "--providers.kubernetescrd.namespaces={{ .Release.Namespace }}"
+        - "--providers.kubernetesingress.namespaces={{ .Release.Namespace }}"
+        {{- end }}
+        {{- range $entrypoint, $config := $.Values.ports }}
+        {{- if $config.redirectTo }}
+        {{- $toPort := index $.Values.ports $config.redirectTo }}
+        - "--entrypoints.{{ $entrypoint }}.http.redirections.entryPoint.to=:{{ $toPort.exposedPort }}"
+        - "--entrypoints.{{ $entrypoint }}.http.redirections.entryPoint.scheme=https"
+        {{- end }}
+        {{- end }}
+        {{- with .Values.logs }}
+        {{- if .general.format }}
+        - "--log.format={{ .general.format }}"
+        {{- end }}
+        {{- if ne .general.level "ERROR" }}
+        - "--log.level={{ .general.level | upper }}"
+        {{- end }}
+        {{- if .access.enabled }}
+        - "--accesslog=true"
+        {{- if .access.format }}
+        - "--accesslog.format={{ .access.format }}"
+        {{- end }}
+        {{- if .access.bufferingsize }}
+        - "--accesslog.bufferingsize={{ .access.bufferingsize }}"
+        {{- end }}
+        {{- if .access.filters }}
+        {{- if .access.filters.statuscodes }}
+        - "--accesslog.filters.statuscodes={{ .access.filters.statuscodes }}"
+        {{- end }}
+        {{- if .access.filters.retryattempts }}
+        - "--accesslog.filters.retryattempts"
+        {{- end }}
+        {{- if .access.filters.minduration }}
+        - "--accesslog.filters.minduration={{ .access.filters.minduration }}"
+        {{- end }}
+        {{- end }}
+        - "--accesslog.fields.defaultmode={{ .access.fields.general.defaultmode }}"
+        {{- range $fieldname, $fieldaction := .access.fields.general.names }}
+        - "--accesslog.fields.names.{{ $fieldname }}={{ $fieldaction }}"
+        {{- end }}
+        - "--accesslog.fields.headers.defaultmode={{ .access.fields.headers.defaultmode }}"
+        {{- range $fieldname, $fieldaction := .access.fields.headers.names }}
+        - "--accesslog.fields.headers.names.{{ $fieldname }}={{ $fieldaction }}"
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- with .Values.additionalArguments }}
+        {{- range . }}
+        - {{ . | quote }}
+        {{- end }}
+        {{- end }}
         {{- with .Values.env }}
         env:
           {{- toYaml . | nindent 10 }}
@@ -219,25 +219,25 @@ spec:
         {{- toYaml .Values.deployment.additionalContainers | nindent 6 }}
       {{- end }}
       volumes:
-        - name: data
-          {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ default (include "traefik.fullname" .) .Values.persistence.existingClaim }}
-          {{- else }}
-          emptyDir: {}
-          {{- end }}
-        - name: tmp
-          emptyDir: {}
-        {{- range .Values.volumes }}
-        - name: {{ .name }}
-          {{- if eq .type "secret" }}
-          secret:
-            secretName: {{ .name }}
-          {{- else if eq .type "configMap" }}
-          configMap:
-            name: {{ .name }}
-          {{- end }}
+      - name: data
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ default (include "traefik.fullname" .) .Values.persistence.existingClaim }}
+        {{- else }}
+        emptyDir: {}
         {{- end }}
+      - name: tmp
+        emptyDir: {}
+      {{- range .Values.volumes }}
+      - name: {{ .name }}
+        {{- if eq .type "secret" }}
+        secret:
+          secretName: {{ .name }}
+        {{- else if eq .type "configMap" }}
+        configMap:
+          name: {{ .name }}
+        {{- end }}
+      {{- end }}
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}

@@ -2,7 +2,7 @@
 # when we push commit to https://github.com/apache/submarine-site
 publish:
   whoami: asf-site
-  
+
 github:
   description: "Apache Submarine website"
   homepage: https://submarine.apache.org/

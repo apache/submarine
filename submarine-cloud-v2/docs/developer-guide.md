@@ -21,7 +21,7 @@
 
 For `go` files, please use [gofmt](https://golang.org/pkg/cmd/gofmt/) to format the code.
 
-For `yaml` files, please use [prettier](https://prettier.io/) to format the code.
+For `yaml` files, please use `dev-support/style-check/lint-yaml.sh` to lint the code.
 
 ## Generate API
 

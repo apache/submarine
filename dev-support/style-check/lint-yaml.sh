@@ -1,4 +1,5 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash                                                        
+
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -16,21 +17,16 @@
 # limitations under the License.
 #
 
-kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
-nodes:
-- role: control-plane
-  kubeadmConfigPatches:
-  - |
-    kind: InitConfiguration
-    nodeRegistration:
-      kubeletExtraArgs:
-        node-labels: "ingress-ready=true"
-        authorization-mode: "AlwaysAllow"
-  extraPortMappings:
-  - containerPort: 32080
-    hostPort: 80
-    protocol: TCP
-  - containerPort: 443
-    hostPort: 443
-    protocol: TCP
+pip install yamllint
+
+helm template helm-charts/submarine --output-dir _yamllint_helm_charts
+yamllint . -c .yamllint -f parsable
+YAMLLINT_RETURN=$?
+rm -r _yamllint_helm_charts
+
+if test $YAMLLINT_RETURN -ne 0; then
+    echo -e "yamllint checks failed with 1 or more errors.\n"
+    exit 1
+else
+    echo -e "Checkstyle checks passed."
+fi

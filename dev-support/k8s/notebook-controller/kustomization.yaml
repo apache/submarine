@@ -21,8 +21,8 @@ images:
 configMapGenerator:
 - name: parameters
   literals:
-    - USE_ISTIO=false
-    - ISTIO_GATEWAY=
+  - USE_ISTIO=false
+  - ISTIO_GATEWAY=
 generatorOptions:
   disableNameSuffixHash: true
 vars:

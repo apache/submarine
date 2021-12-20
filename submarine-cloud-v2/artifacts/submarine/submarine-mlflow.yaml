@@ -24,7 +24,7 @@ metadata:
   name: submarine-mlflow-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   storageClassName: "submarine-storageclass"
   resources:
     requests:
@@ -61,29 +61,34 @@ spec:
       initContainers:
       - name: check-database-connection
         image: busybox:1.28
-        command: ["sh", "-c",
-        "until nc -z submarine-database 3306;
-        do echo waiting for database connection;
-        sleep 20; done"]
+        command: [
+          "sh",
+          "-c",
+          "until nc -z submarine-database 3306;
+          do echo waiting for database connection;
+          sleep 20; done"
+        ]
       - name: submarine-mlflow-initcontainer
         image: "minio/mc"
-        command: ["/bin/bash", "-c",
-        "cnt=0;
-        while ! /bin/bash -c 'mc config host add minio http://submarine-minio-service:9000
-        submarine_minio submarine_minio' 2>&1;
-        do
-          sleep 15;
-          ((cnt=cnt+1));
-          if [ $cnt -eq 80 ];then
-            echo 'ERROR: wait too long for minio pod';
-            exit 1;
-          fi;
-        done;
-        if /bin/bash -c 'mc ls minio/mlflow' >/dev/null 2>&1; then
-          echo 'Bucket minio/mlflow already exists, skipping creation.';
-        else
-          /bin/bash -c 'mc mb minio/mlflow';
-        fi;"]
+        command: [
+          "/bin/bash", "-c",
+          "cnt=0;
+          while ! /bin/bash -c 'mc config host add minio http://submarine-minio-service:9000
+          submarine_minio submarine_minio' 2>&1;
+          do
+            sleep 15;
+            ((cnt=cnt+1));
+            if [ $cnt -eq 80 ];then
+              echo 'ERROR: wait too long for minio pod';
+              exit 1;
+            fi;
+          done;
+          if /bin/bash -c 'mc ls minio/mlflow' >/dev/null 2>&1; then
+            echo 'Bucket minio/mlflow already exists, skipping creation.';
+          else
+            /bin/bash -c 'mc mb minio/mlflow';
+            fi;"
+        ]
       containers:
       - name: submarine-mlflow-container
         image: apache/submarine:mlflow-0.7.0-SNAPSHOT
@@ -91,18 +96,18 @@ spec:
         ports:
         - containerPort: 5000
         volumeMounts:
-          - mountPath: "/logs"
-            name: "volume"
-            subPath: "submarine-mlflow"
+        - mountPath: "/logs"
+          name: "volume"
+          subPath: "submarine-mlflow"
         readinessProbe:
           tcpSocket:
             port: 5000
           initialDelaySeconds: 60
           periodSeconds: 10
       volumes:
-        - name: "volume"
-          persistentVolumeClaim:
-            claimName: "submarine-mlflow-pvc"
+      - name: "volume"
+        persistentVolumeClaim:
+          claimName: "submarine-mlflow-pvc"
 ---
 # Source: submarine/templates/submarine-mlflow.yaml
 apiVersion: traefik.containo.us/v1alpha1
@@ -111,7 +116,7 @@ metadata:
   name: submarine-mlflow-ingressroute
 spec:
   entryPoints:
-    - web
+  - web
   routes:
   - kind: Rule
     match: "PathPrefix(`/mlflow`)"
