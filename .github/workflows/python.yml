@@ -18,6 +18,9 @@ name: python-sdk
 # Trigger the workflow on push or pull request
 on: [push, pull_request]
 
+env:
+  KUBERNETES_VERSION: "v1.21.2"
+
 jobs:
   check-style:
     runs-on: ubuntu-latest
@@ -79,7 +82,7 @@ jobs:
           mvn --version
           java -version
       - name: Create kind cluster
-        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:v1.15.12
+        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${KUBERNETES_VERSION}
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
