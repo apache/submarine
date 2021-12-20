@@ -1,0 +1,101 @@
+{{- if eq .Values.storageClass.provisioner "kubernetes.io/no-provisioner"}}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: database-pv
+  labels:
+    type: local
+spec:
+  storageClassName: submarine-storageclass
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: /submarine
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - kind-control-plane
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minio-pv
+  labels:
+    type: local
+spec:
+  storageClassName: submarine-storageclass
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: /submarine
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - kind-control-plane
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mlflow-pv
+  labels:
+    type: local
+spec:
+  storageClassName: submarine-storageclass
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: /submarine
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - kind-control-plane
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tensorboard-pv
+  labels:
+    type: local
+spec:
+  storageClassName: submarine-storageclass
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  local:
+    path: /submarine
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - kind-control-plane
+
+{{- end }}
+
