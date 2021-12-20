@@ -36,7 +36,7 @@ This document gives you a quick view on the basic usage of Submarine platform. Y
 
 2. Start minikube cluster
 ```
-minikube start --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.21.6
+minikube start --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.21.2
 ```
 
 ### Launch submarine in the cluster

@@ -22,6 +22,7 @@ env:
   VERSION: "0.7.0-SNAPSHOT"
   BUILD_FLAG: "clean install -ntp -DskipTests -am"
   TEST_FLAG: "test -DskipRat -ntp"
+  KUBERNETES_VERSION: "v1.21.2"
 
 jobs:
   submarine-operator-verify-codegen:
@@ -80,7 +81,7 @@ jobs:
           helm version
           kind version
       - name: Create kind cluster
-        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:v1.15.12
+        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${KUBERNETES_VERSION}
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
@@ -196,7 +197,7 @@ jobs:
           helm version
           kind version
       - name: Create kind cluster
-        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:v1.15.12
+        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${KUBERNETES_VERSION}
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
