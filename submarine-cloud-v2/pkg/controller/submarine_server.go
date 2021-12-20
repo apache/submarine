@@ -55,6 +55,7 @@ func newSubmarineServerService(submarine *v1alpha1.Submarine) *corev1.Service {
 }
 
 func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployment {
+	serverImage := submarine.Spec.Server.Image
 	serverReplicas := *submarine.Spec.Server.Replicas
 
 	ownerReference := *metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine"))
@@ -91,6 +92,9 @@ func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 	}
 	deployment.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
 		ownerReference,
+	}
+	if serverImage != "" {
+		deployment.Spec.Template.Spec.Containers[0].Image = serverImage
 	}
 	deployment.Spec.Replicas = &serverReplicas
 	deployment.Spec.Template.Spec.Containers[0].Env = append(deployment.Spec.Template.Spec.Containers[0].Env, operatorEnv...)
