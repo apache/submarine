@@ -493,6 +493,8 @@ jobs:
         run: ./dev-support/style-check/lint-scala.sh
       - name: Angular Style
         run: ./dev-support/style-check/lint-angular.sh
+      - name: Go Style
+        run: ./dev-support/style-check/lint-go.sh
   sonarcloud:
     if: github.repository == 'apache/submarine' && github.event_name == 'push' && github.ref == 'refs/heads/master'
     name: SonarCloud
