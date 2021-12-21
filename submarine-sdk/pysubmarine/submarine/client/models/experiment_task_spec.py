@@ -16,9 +16,9 @@
 # coding: utf-8
 
 """
-    Submarine Experiment API
+    Submarine API
 
-    The Submarine REST API allows you to create, list, and get experiments. The API is hosted under the /v1/experiment route on the Submarine server. For example, to list experiments on a server hosted at http://localhost:8080, access http://localhost:8080/api/v1/experiment/  # noqa: E501
+    The Submarine REST API allows you to access Submarine resources such as,  experiments, environments and notebooks. The  API is hosted under the /v1 path on the Submarine server. For example,  to list experiments on a server hosted at http://localhost:8080, access http://localhost:8080/api/v1/experiment/  # noqa: E501
 
     The version of the OpenAPI document: 0.7.0-SNAPSHOT
     Contact: dev@submarine.apache.org
@@ -31,7 +31,7 @@ import re  # noqa: F401
 
 import six
 
-from submarine.experiment.configuration import Configuration
+from submarine.client.configuration import Configuration
 
 
 class ExperimentTaskSpec(object):
@@ -56,8 +56,8 @@ class ExperimentTaskSpec(object):
         "cmd": "str",
         "env_vars": "dict(str, str)",
         "cpu": "str",
-        "gpu": "str",
         "memory": "str",
+        "gpu": "str",
     }
 
     attribute_map = {
@@ -68,8 +68,8 @@ class ExperimentTaskSpec(object):
         "cmd": "cmd",
         "env_vars": "envVars",
         "cpu": "cpu",
-        "gpu": "gpu",
         "memory": "memory",
+        "gpu": "gpu",
     }
 
     def __init__(
@@ -81,8 +81,8 @@ class ExperimentTaskSpec(object):
         cmd=None,
         env_vars=None,
         cpu=None,
-        gpu=None,
         memory=None,
+        gpu=None,
         local_vars_configuration=None,
     ):  # noqa: E501
         """ExperimentTaskSpec - a model defined in OpenAPI"""  # noqa: E501
@@ -97,8 +97,8 @@ class ExperimentTaskSpec(object):
         self._cmd = None
         self._env_vars = None
         self._cpu = None
-        self._gpu = None
         self._memory = None
+        self._gpu = None
         self.discriminator = None
 
         if replicas is not None:
@@ -115,10 +115,10 @@ class ExperimentTaskSpec(object):
             self.env_vars = env_vars
         if cpu is not None:
             self.cpu = cpu
-        if gpu is not None:
-            self.gpu = gpu
         if memory is not None:
             self.memory = memory
+        if gpu is not None:
+            self.gpu = gpu
 
     @property
     def replicas(self):
@@ -268,27 +268,6 @@ class ExperimentTaskSpec(object):
         self._cpu = cpu
 
     @property
-    def gpu(self):
-        """Gets the gpu of this ExperimentTaskSpec.  # noqa: E501
-
-
-        :return: The gpu of this ExperimentTaskSpec.  # noqa: E501
-        :rtype: str
-        """
-        return self._gpu
-
-    @gpu.setter
-    def gpu(self, gpu):
-        """Sets the gpu of this ExperimentTaskSpec.
-
-
-        :param gpu: The gpu of this ExperimentTaskSpec.  # noqa: E501
-        :type: str
-        """
-
-        self._gpu = gpu
-
-    @property
     def memory(self):
         """Gets the memory of this ExperimentTaskSpec.  # noqa: E501
 
@@ -308,6 +287,27 @@ class ExperimentTaskSpec(object):
         """
 
         self._memory = memory
+
+    @property
+    def gpu(self):
+        """Gets the gpu of this ExperimentTaskSpec.  # noqa: E501
+
+
+        :return: The gpu of this ExperimentTaskSpec.  # noqa: E501
+        :rtype: str
+        """
+        return self._gpu
+
+    @gpu.setter
+    def gpu(self, gpu):
+        """Sets the gpu of this ExperimentTaskSpec.
+
+
+        :param gpu: The gpu of this ExperimentTaskSpec.  # noqa: E501
+        :type: str
+        """
+
+        self._gpu = gpu
 
     def to_dict(self):
         """Returns the model properties as a dict"""
