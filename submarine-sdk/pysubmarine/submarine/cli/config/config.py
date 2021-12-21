@@ -60,7 +60,7 @@ class ConnectionConfig(BaseConfig):
     )
 
     port: Optional[int] = field(
-        default=8080,
+        default=32080,
         metadata={"help": "Port for submarine CLI to connect"},
     )
 
