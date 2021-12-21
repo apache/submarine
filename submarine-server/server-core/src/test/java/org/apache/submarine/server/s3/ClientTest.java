@@ -26,7 +26,7 @@ import java.util.List;
 
 
 public class ClientTest {
-  private Client client = new Client("localhost:9000");
+  private Client client = new Client("http://localhost:9000");
   private final String testExperimentId = "experiment-sample";
   private final String bucket = "s3://submarine";
 
