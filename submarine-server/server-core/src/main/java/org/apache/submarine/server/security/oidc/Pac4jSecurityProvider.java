@@ -104,7 +104,7 @@ public class Pac4jSecurityProvider implements SecurityProvider<Pac4jFilter, Oidc
           }
         },
         CommonFilter.DEFAULT_HTTP_ACTION_ADAPTER,
-        getClient(hsRequest), null, null, null);
+        getClient(hsRequest), DEFAULT_AUTHORIZER, null, null);
     return (OidcProfile) profile;
   }
 

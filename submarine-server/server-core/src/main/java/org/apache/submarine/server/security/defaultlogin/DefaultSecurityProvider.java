@@ -97,7 +97,7 @@ public class DefaultSecurityProvider implements SecurityProvider<DefaultFilter, 
           }
         },
         CommonFilter.DEFAULT_HTTP_ACTION_ADAPTER,
-        getClient(hsRequest), null, "static,api", null);
+        getClient(hsRequest), DEFAULT_AUTHORIZER, "static,api", null);
     return (JwtProfile) profile;
   }
 

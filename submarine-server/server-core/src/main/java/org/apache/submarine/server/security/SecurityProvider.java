@@ -29,6 +29,8 @@ import java.util.Optional;
 
 public interface SecurityProvider<T extends Filter, R extends CommonProfile> {
 
+  String DEFAULT_AUTHORIZER = "isAuthenticated";
+
   Class<T> getFilterClass();
 
   Config getConfig();
