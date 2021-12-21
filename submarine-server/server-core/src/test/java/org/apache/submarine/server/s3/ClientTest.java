@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- 
+
 package org.apache.submarine.server.s3;
 
 import org.junit.After;
@@ -26,7 +26,7 @@ import java.util.List;
 
 
 public class ClientTest {
-  private Client client = new Client();
+  private Client client = new Client("localhost:9000");
   private final String testExperimentId = "experiment-sample";
   private final String bucket = "s3://submarine";
 

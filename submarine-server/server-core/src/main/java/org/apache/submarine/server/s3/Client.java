@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
- 
+
 package org.apache.submarine.server.s3;
 
 import java.io.ByteArrayInputStream;
@@ -38,11 +38,21 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 
 
 public class Client {
-  MinioClient minioClient =
-      MinioClient.builder()
-          .endpoint(S3Constants.ENDPOINT)
-          .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
-          .build();
+  public MinioClient minioClient;
+
+  public Client() {
+    minioClient = MinioClient.builder()
+        .endpoint(S3Constants.ENDPOINT)
+        .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
+        .build();
+  }
+
+  public Client(String endpoint) {
+    minioClient = MinioClient.builder()
+        .endpoint(endpoint)
+        .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
+        .build();
+  }
 
   /**
    * Get a list of artifact path under the experiment
