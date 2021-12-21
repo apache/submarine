@@ -44,7 +44,7 @@ setup(
         "click==8.0.3",
         "rich==10.15.2",
         "dacite==1.6.0",
-        "dataclasses==0.8",
+        "dataclasses>=0.6",
         "pyaml==21.10.1",
     ],
     extras_require={

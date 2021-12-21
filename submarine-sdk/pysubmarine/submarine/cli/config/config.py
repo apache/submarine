@@ -35,7 +35,7 @@ class BaseConfig:
         """
         # ignore this line for mypy checking, since there is some errors for mypy to check dataclass
         _field = self.__dataclass_fields__[__name]  # type: ignore
-        if type(_field.type) == type(Union):
+        if hasattr(_field.type, "__origin__") and _field.type.__origin__ == Union:
             if not isinstance(__value, _field.type.__args__):
                 msg = (
                     "Field `{0.name}` is of type {1}, should be one of the type: {0.type.__args__}"
@@ -43,7 +43,7 @@ class BaseConfig:
                 )
                 raise TypeError(msg)
         else:
-            if not isinstance(__value, _field.type):
+            if not type(__value) == _field.type:
                 msg = "Field {0.name} is of type {1}, should be {0.type}".format(
                     _field, type(__value)
                 )
