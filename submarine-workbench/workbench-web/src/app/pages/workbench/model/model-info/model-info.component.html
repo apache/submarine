@@ -21,8 +21,12 @@
     <article nz-typography>
       <h3 nz-typography>{{modelName}}</h3>
       <p nz-typography>
-        <span><strong>Description: </strong></span>
-        {{ isModelInfoLoading ? null : selectedModelInfo.description }}
+        <span><strong>Creation Time: </strong></span>
+        {{ isModelInfoLoading ? null : selectedModelInfo.creationTime }}
+      </p>
+      <p nz-typography>
+        <span><strong>Last Updated Time: </strong></span>
+        {{ isModelInfoLoading ? null : selectedModelInfo.lastUpdatedTime }}
       </p>
       <p nz-typography>
         <span><strong>Tags: </strong></span>
@@ -31,12 +35,8 @@
         </span>
       </p>
       <p nz-typography>
-        <span><strong>Creation Time: </strong></span>
-        {{ isModelInfoLoading ? null : selectedModelInfo.creationTime }}
-      </p>
-      <p nz-typography>
-        <span><strong>Last Updated Time: </strong></span>
-        {{ isModelInfoLoading ? null : selectedModelInfo.lastUpdatedTime }}
+        <span><strong>Description: </strong></span>
+        {{ isModelInfoLoading ? null : selectedModelInfo.description }}
       </p>
     </article>
   </nz-spin>
@@ -58,22 +58,22 @@
       <tr>
         <th>Version</th>
         <th>Stage</th>
-        <th>Tags</th>
-        <th>Description</th>
         <th>Created</th>
         <th>Updated</th>
+        <th>Tags</th>
+        <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let data of basicTable.data; let i = index">
         <td><a [routerLink]="data.version">{{ data.version }}</a></td>
         <td>{{ data.currentStage }}</td>
+        <td>{{ data.creationTime | date: 'M/d/yyyy, h:mm a' }}</td>
+        <td>{{ data.lastUpdatedTime | date: 'M/d/yyyy, h:mm a' }}</td>
         <td>
           <submarine-model-tag *ngFor="let tag of data.tags" [tag]="tag" [cssType]="'default'"></submarine-model-tag>
         </td>
         <td>{{ data.description }}</td>
-        <td>{{ data.creationTime | date: 'M/d/yyyy, h:mm a' }}</td>
-        <td>{{ data.lastUpdatedTime | date: 'M/d/yyyy, h:mm a' }}</td>
       </tr>
     </tbody>
   </nz-table>

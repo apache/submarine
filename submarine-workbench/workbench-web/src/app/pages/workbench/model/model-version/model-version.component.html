@@ -21,25 +21,9 @@
     <article nz-typography>
       <h3 nz-typography>Version {{ modelVersion }}</h3>
       <p nz-typography>
-        <span><strong>Description: </strong></span>
-        {{ isLoading ? null : modelVersionInfo.description }}
-      </p>
-      <p nz-typography>
-        <span><strong>Tags: </strong></span>
-        <span  *ngIf="!isLoading">
-          <submarine-model-tag *ngFor="let tag of modelVersionInfo.tags" [tag]="tag" [cssType]="'default'"></submarine-model-tag>
-        </span>
-      </p>
-      <p nz-typography>
         <span><strong>Stage: </strong></span>
         {{ isLoading ? null : modelVersionInfo.currentStage }}
       </p>
-      <nz-divider [nzText]="text" nzOrientation="left">
-        <ng-template #text>
-          Model Version Info
-          <i nz-icon nzType="info-circle"></i>
-        </ng-template>
-      </nz-divider>
       <p nz-typography>
         <span><strong>User id: </strong></span>
         {{ isLoading ? null : modelVersionInfo.userId }}
@@ -65,6 +49,16 @@
       <p nz-typography>
         <span><strong>Source: </strong></span>
         {{ isLoading ? null : modelVersionInfo.source }}
+      </p>
+      <p nz-typography>
+        <span><strong>Tags: </strong></span>
+        <span  *ngIf="!isLoading">
+          <submarine-model-tag *ngFor="let tag of modelVersionInfo.tags" [tag]="tag" [cssType]="'default'"></submarine-model-tag>
+        </span>
+      </p>
+      <p nz-typography>
+        <span><strong>Description: </strong></span>
+        {{ isLoading ? null : modelVersionInfo.description }}
       </p>
     </article>
   </nz-spin>
