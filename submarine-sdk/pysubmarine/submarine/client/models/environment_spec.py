@@ -16,9 +16,9 @@
 # coding: utf-8
 
 """
-    Submarine Experiment API
+    Submarine API
 
-    The Submarine REST API allows you to create, list, and get experiments. The API is hosted under the /v1/experiment route on the Submarine server. For example, to list experiments on a server hosted at http://localhost:8080, access http://localhost:8080/api/v1/experiment/  # noqa: E501
+    The Submarine REST API allows you to access Submarine resources such as,  experiments, environments and notebooks. The  API is hosted under the /v1 path on the Submarine server. For example,  to list experiments on a server hosted at http://localhost:8080, access http://localhost:8080/api/v1/experiment/  # noqa: E501
 
     The version of the OpenAPI document: 0.7.0-SNAPSHOT
     Contact: dev@submarine.apache.org
@@ -31,7 +31,7 @@ import re  # noqa: F401
 
 import six
 
-from submarine.experiment.configuration import Configuration
+from submarine.client.configuration import Configuration
 
 
 class EnvironmentSpec(object):

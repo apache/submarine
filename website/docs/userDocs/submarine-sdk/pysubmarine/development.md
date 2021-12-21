@@ -108,11 +108,49 @@ pytest --cov=submarine -vs -m "e2e"
 We use [open-api generator](https://openapi-generator.tech/docs/installation/#jar)
 to generate pysubmarine client API that used to communicate with submarine server.
 
-If change below files, please run `./dev-support/pysubmarine/gen-sdk.sh`
-to generate latest version of SDK.
+1. To generate different API Component, please change the code in [Bootstrap.java](https://github.com/apache/submarine/blob/master/submarine-server/server-core/src/main/java/org/apache/submarine/server/Bootstrap.java). If just updating java code for `NotebookRestApi` , `ExperimentRestApi` or `EnvironmentRestApi`, please skip step 1.
 
-- [Bootstrap.java](https://github.com/apache/submarine/blob/master/submarine-server/server-core/src/main/java/org/apache/submarine/server/Bootstrap.java)
-- [ExperimentRestApi.java](https://github.com/apache/submarine/blob/master/submarine-server/server-core/src/main/java/org/apache/submarine/server/rest/ExperimentRestApi.java)
+    ```java
+    SwaggerConfiguration oasConfig = new SwaggerConfiguration()
+                .openAPI(oas)
+                .resourcePackages(Stream.of("org.apache.submarine.server.rest")
+                        .collect(Collectors.toSet()))
+                .resourceClasses(Stream.of("org.apache.submarine.server.rest.NotebookRestApi",
+                        "org.apache.submarine.server.rest.ExperimentRestApi",
+                        "org.apache.submarine.server.rest.EnvironmentRestApi")
+                        .collect(Collectors.toSet()));
+    ```
+    > After starting the server, `http://localhost:8080/v1/openapi.json` will includes API specs for `NotebookRestApi`, `ExperimentRestApi` and `EnvironmentRestApi`
+
+
+2. [swagger_config.json](https://github.com/apache/submarine/blob/master/dev-support/pysubmarine/swagger_config.json) defines the import path for python SDK
+
+    Ex: 
+
+    For `submarine.client`
+    ```json
+    {
+      "packageName" : "submarine.client",
+      "projectName" : "submarine.client",
+      "packageVersion": "0.7.0-SNAPSHOT"
+    }
+    ```
+
+    > Usage: `import submarine.client...`
+
+2. Execute `./dev-support/pysubmarine/gen-sdk.sh` to generate latest version of SDK.
+
+    > Notice: Please install required package before running the script: [lint-requirements.txt](https://github.com/apache/submarine/blob/master/dev-support/style-check/python/lint-requirements.txt)
+3. In `submarine/submarine-sdk/pysubmarine/client/api_client.py` line 74
+
+    Please change
+    ```python
+    "long": int if six.PY3 else long,  # noqa: F821
+    ```
+    to 
+    ```python
+    "long": int,
+    ```
 
 ### Model Management Model Development
 

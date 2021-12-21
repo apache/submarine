@@ -24,6 +24,13 @@ SWAGGER_CODEGEN_CONF="swagger_config.json"
 SWAGGER_CODEGEN_FILE="openapi.json"
 SDK_OUTPUT_PATH="sdk/python"
 
+# Please also match with the content in `swagger_config.json`
+API_DIR_NAME="client"
+
+echo "API_DIR_NAME ${API_DIR_NAME}"
+# clear SDK_OUTPUT_PATH
+rm -rf "${SDK_OUTPUT_PATH}/*"
+
 submarine_dist_exists=$(find -L "${SUBMARINE_PROJECT_PATH}/submarine-dist/target" -name "submarine-dist-*.tar.gz")
 # Build source code if the package doesn't exist.
 if [[ -z "${submarine_dist_exists}" ]]; then
@@ -55,13 +62,15 @@ java -jar ${SWAGGER_CODEGEN_JAR} generate \
      -c ${SWAGGER_CODEGEN_CONF}
 
 echo "Insert apache license at the top of file ..."
-for filename in $(find ${SDK_OUTPUT_PATH}/submarine/experiment -type f); do
+for filename in $(find ${SDK_OUTPUT_PATH}/submarine/${API_DIR_NAME} -type f); do
   echo "$filename"
-  sed -i -e '1 e cat license-header.txt' "$filename"
+  cat license-header.txt "$filename" > "${filename}_1"
+  rm "$filename"
+  mv "${filename}_1" "${filename}"
 done
 
-echo "Move Experiment API to pysubmarine"
-cp -r sdk/python/submarine/experiment ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine/submarine/
+echo "Move APIs to pysubmarine"
+cp -r ${SDK_OUTPUT_PATH}/submarine/${API_DIR_NAME} ${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine/submarine/
 
 echo "Fix Python SDK code style"
-${SUBMARINE_PROJECT_PATH}/submarine-sdk/pysubmarine/github-actions/auto-format.sh
+${SUBMARINE_PROJECT_PATH}/dev-support/style-check/python/auto-format.sh

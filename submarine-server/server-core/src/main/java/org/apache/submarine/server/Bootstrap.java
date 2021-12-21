@@ -62,11 +62,15 @@ public class Bootstrap extends HttpServlet {
 
     SwaggerConfiguration oasConfig = new SwaggerConfiguration()
             .openAPI(oas)
-            .resourcePackages(Stream.of("org.apache.submarine.server.rest").collect(Collectors.toSet()));
+            .resourcePackages(Stream.of("org.apache.submarine.server.rest")
+                    .collect(Collectors.toSet()))
+            .resourceClasses(Stream.of("org.apache.submarine.server.rest.NotebookRestApi",
+                    "org.apache.submarine.server.rest.ExperimentRestApi",
+                    "org.apache.submarine.server.rest.EnvironmentRestApi")
+                    .collect(Collectors.toSet()));
 
     try {
       new JaxrsOpenApiContextBuilder()
-              .servletConfig(config)
               .openApiConfiguration(oasConfig)
               .buildContext(true);
     } catch (OpenApiConfigurationException e) {

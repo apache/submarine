@@ -17,9 +17,9 @@ import logging
 import os
 import time
 
-from submarine.experiment.api.experiment_api import ExperimentApi
-from submarine.experiment.api_client import ApiClient
-from submarine.experiment.configuration import Configuration
+from submarine.client.api.experiment_api import ExperimentApi
+from submarine.client.api_client import ApiClient
+from submarine.client.configuration import Configuration
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(message)s")
