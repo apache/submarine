@@ -16,20 +16,39 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.submarine.serve.istio;
 
-package org.apache.submarine.server.submitter.k8s.experiment.codelocalizer;
+import com.google.gson.annotations.SerializedName;
+import org.apache.submarine.serve.utils.IstioConstants;
 
-import io.kubernetes.client.openapi.models.V1PodSpec;
+public class IstioHTTPDestination {
+  @SerializedName("destination")
+  private IstioDestination destination;
 
-public class HTTPGitCodeLocalizer extends GitCodeLocalizer {
-
-  public HTTPGitCodeLocalizer(String url) {
-    super(url);
+  public IstioHTTPDestination(String host){
+    this.destination = new IstioDestination(host);
   }
 
-  @Override
-  public void localize(V1PodSpec podSpec) {
-    super.localize(podSpec);
+
+  public static class IstioDestination{
+    @SerializedName("host")
+    private String host;
+
+    @SerializedName("port")
+    private IstioPort port;
+
+    public IstioDestination(String host) {
+      this.host = host;
+      this.port = new IstioPort(IstioConstants.DEFAULT_SERVE_POD_PORT);
+    }
   }
 
+  public static class IstioPort {
+    @SerializedName("number")
+    private Integer number;
+
+    public IstioPort(Integer port){
+      this.number = port;
+    }
+  }
 }

@@ -19,7 +19,7 @@
 package org.apache.submarine.server.submitter.k8s.model;
 
 import com.google.gson.annotations.SerializedName;
-import io.kubernetes.client.models.V1ContainerState;
+import io.kubernetes.client.openapi.models.V1ContainerState;
 
 import java.util.List;
 

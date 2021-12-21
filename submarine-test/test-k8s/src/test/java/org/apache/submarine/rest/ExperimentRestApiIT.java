@@ -57,11 +57,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import io.kubernetes.client.ApiClient;
-import io.kubernetes.client.ApiException;
-import io.kubernetes.client.Configuration;
-import io.kubernetes.client.JSON;
-import io.kubernetes.client.apis.CustomObjectsApi;
+import io.kubernetes.client.openapi.ApiClient;
+import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.Configuration;
+import io.kubernetes.client.openapi.JSON;
+import io.kubernetes.client.openapi.apis.CustomObjectsApi;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
 
@@ -344,7 +344,7 @@ public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
             + "\"$currentVersion\" | sort -V | head -n2 | tail -1 )\" "
             + "!= \"$currentVersion\" ]; then echo \"Conda version " +
             "should be between minVersion=\"4.0.1\"; " +
-            "and maxVersion=\"4.10.10\";\"; exit 1; else echo "
+            "and maxVersion=\"4.11.10\";\"; exit 1; else echo "
             + "\"Conda current version is " + currentVersion + ". "
             + "Moving forward with env creation and activation.\"; "
             + "fi && ";

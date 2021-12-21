@@ -36,7 +36,7 @@ import org.apache.submarine.server.model.database.service.ModelVersionService;
 public class ModelManager {
   private static final Logger LOG = LoggerFactory.getLogger(ModelManager.class);
 
-  private static volatile ModelManager manager;
+  private static ModelManager manager;
 
   private final Submitter submitter;
 

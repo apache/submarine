@@ -21,9 +21,9 @@ package org.apache.submarine.server.submitter.k8s.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import io.kubernetes.client.JSON;
-import io.kubernetes.client.models.V1ContainerState;
-import io.kubernetes.client.models.V1Status;
+import io.kubernetes.client.openapi.JSON;
+import io.kubernetes.client.openapi.models.V1ContainerState;
+import io.kubernetes.client.openapi.models.V1Status;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
@@ -44,10 +44,11 @@ public class NotebookUtils {
 
   private static final Logger LOG = LoggerFactory.getLogger(NotebookUtils.class);
   public static final String STORAGE = "10Gi";
+  public static final String DEFAULT_USER_STORAGE = "100Mi";
   public static final String SC_NAME = "submarine-storageclass";
-  public static final String STORAGE_PREFIX = "notebook-storage-";
-  public static final String PV_PREFIX = "notebook-pv-";
-  public static final String PVC_PREFIX = "notebook-pvc-";
+  public static final String STORAGE_PREFIX = "notebook-storage";
+  public static final String PV_PREFIX = "notebook-pv";
+  public static final String PVC_PREFIX = "notebook-pvc";
   public static final String HOST_PATH = "/mnt";
 
   public enum ParseOpt {

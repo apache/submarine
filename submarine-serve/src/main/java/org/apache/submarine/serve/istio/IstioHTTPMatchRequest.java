@@ -16,19 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.submarine.serve.istio;
 
-package org.apache.submarine.server.submitter.k8s.model;
+import com.google.gson.annotations.SerializedName;
 
-import com.google.gson.GsonBuilder;
-import io.kubernetes.client.openapi.models.V1ListMeta;
+public class IstioHTTPMatchRequest {
+  @SerializedName("uri")
+  private IstioPrefix prefix;
 
-/**
- * ListMeta describes metadata that synthetic resources must have, including lists and various
- * status objects.
- */
-public class ListMeta extends V1ListMeta {
-  @Override
-  public String toString() {
-    return new GsonBuilder().setPrettyPrinting().create().toJson(this);
+  public IstioHTTPMatchRequest(String prefix) {
+    this.prefix = new IstioPrefix(prefix);
+  }
+
+  public static class IstioPrefix {
+    @SerializedName("prefix")
+    private String path;
+
+    public IstioPrefix(String path){
+      this.path = path;
+    }
   }
 }

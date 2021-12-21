@@ -21,11 +21,11 @@ package org.apache.submarine.server.submitter.k8s.experiment.codelocalizer;
 
 import java.util.List;
 
-import io.kubernetes.client.models.V1Container;
-import io.kubernetes.client.models.V1EnvVar;
-import io.kubernetes.client.models.V1PodSpec;
-import io.kubernetes.client.models.V1SecurityContext;
-import io.kubernetes.client.models.V1VolumeMount;
+import io.kubernetes.client.openapi.models.V1Container;
+import io.kubernetes.client.openapi.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1PodSpec;
+import io.kubernetes.client.openapi.models.V1SecurityContext;
+import io.kubernetes.client.openapi.models.V1VolumeMount;
 
 public class SSHGitCodeLocalizer extends GitCodeLocalizer {
 
@@ -36,7 +36,7 @@ public class SSHGitCodeLocalizer extends GitCodeLocalizer {
   public static final long GIT_SYNC_USER = 65533L;
   public static final String GIT_SYNC_SSH_NAME = "GIT_SYNC_SSH";
   public static final String GIT_SYNC_SSH_VALUE = "true";
-  
+
   public SSHGitCodeLocalizer(String url) {
     super(url);
   }
@@ -51,14 +51,14 @@ public class SSHGitCodeLocalizer extends GitCodeLocalizer {
         sshEnv.setName(GIT_SYNC_SSH_NAME);
         sshEnv.setValue(GIT_SYNC_SSH_VALUE);
         gitSyncEnvVars.add(sshEnv);
-        
+
         List<V1VolumeMount> mounts = container.getVolumeMounts();
         V1VolumeMount mount = new V1VolumeMount();
         mount.setName(GIT_SECRET_MOUNT_NAME);
         mount.setMountPath(GIT_SECRET_PATH);
         mount.setReadOnly(true);
         mounts.add(mount);
-        
+
         V1SecurityContext containerSecurityContext =
             new V1SecurityContext();
         containerSecurityContext

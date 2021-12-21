@@ -16,19 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.submarine.serve.utils;
 
-package org.apache.submarine.server.submitter.k8s.model;
+public class IstioConstants {
+  public static final String API_VERSION = "networking.istio.io/v1beta1";
 
-import com.google.gson.GsonBuilder;
-import io.kubernetes.client.openapi.models.V1ListMeta;
+  public static final String KIND = "VirtualService";
 
-/**
- * ListMeta describes metadata that synthetic resources must have, including lists and various
- * status objects.
- */
-public class ListMeta extends V1ListMeta {
-  @Override
-  public String toString() {
-    return new GsonBuilder().setPrettyPrinting().create().toJson(this);
-  }
+  public static final String GROUP = "networking.istio.io";
+
+  public static final String VERSION = "v1beta1";
+
+  public static final String PLURAL = "virtualservices";
+
+  public static final String REWRITE_URL = "/"; 
+
+  public static final String DEFAULT_NAMESPACE = "default";
+
+  public static final String DEFAULT_GATEWAY = "istio-system/seldon-gateway";
+
+  public static final Integer DEFAULT_SERVE_POD_PORT = 8000;
+
+  public static final String DEFAULT_INGRESS_HOST = "*"; 
+
 }

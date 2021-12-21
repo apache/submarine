@@ -24,8 +24,8 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.kubernetes.client.models.V1ObjectMeta;
-import io.kubernetes.client.models.V1Volume;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1Volume;
 
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
@@ -49,9 +49,9 @@ import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.GitCod
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.SSHGitCodeLocalizer;
 import org.junit.Assert;
 import org.junit.Test;
-import io.kubernetes.client.models.V1Container;
-import io.kubernetes.client.models.V1EmptyDirVolumeSource;
-import io.kubernetes.client.models.V1EnvVar;
+import io.kubernetes.client.openapi.models.V1Container;
+import io.kubernetes.client.openapi.models.V1EmptyDirVolumeSource;
+import io.kubernetes.client.openapi.models.V1EnvVar;
 
 
 public class ExperimentSpecParserTest extends SpecBuilder {
@@ -255,7 +255,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
                + "\"$currentVersion\" | sort -V | head -n2 | tail -1 )\" "
                     + "!= \"$currentVersion\" ]; then echo \"Conda version " +
                     "should be between minVersion=\"4.0.1\"; " +
-                    "and maxVersion=\"4.10.10\";\"; exit 1; else echo "
+                    "and maxVersion=\"4.11.10\";\"; exit 1; else echo "
                     + "\"Conda current version is " + currentVersion + ". "
                         + "Moving forward with env creation and activation.\"; "
                         + "fi && " +
