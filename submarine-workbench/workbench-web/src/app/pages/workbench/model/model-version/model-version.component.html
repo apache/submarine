@@ -16,20 +16,50 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-
 <div style="margin: 15px; padding: 15px; background-color: white">
-  <p>Version: {{ modelVersion }}</p>
-  <p>Description: {{ modelVersionInfo.description }}</p>
-  <p>Tags: {{ modelVersionInfo.tags }}</p>
-  <p>Stage: {{ modelVersionInfo.currentStage }}</p>
-  <h3>Model version info</h3>
-  <p>User id: {{ modelVersionInfo.userId }}</p>
-  <p>
-    Experiment id:
-    <a href="/workbench/experiment/info/{{modelVersionInfo.experimentId}}">{{ modelVersionInfo.experimentId }}</a>
-  </p>
-  <p>Dataset: {{ modelVersionInfo.dataset }}</p>
-  <p>Created: {{ modelVersionInfo.creationTime }}</p>
-  <p>Updated: {{ modelVersionInfo.lastUpdatedTime }}</p>
-  <p>Source: {{ modelVersionInfo.source }}</p>
+  <nz-spin [nzSpinning]="isLoading">
+    <article nz-typography>
+      <h3 nz-typography>Version {{ modelVersion }}</h3>
+      <p nz-typography>
+        <span><strong>Stage: </strong></span>
+        {{ isLoading ? null : modelVersionInfo.currentStage }}
+      </p>
+      <p nz-typography>
+        <span><strong>User id: </strong></span>
+        {{ isLoading ? null : modelVersionInfo.userId }}
+      </p>
+      <p nz-typography>
+        <span><strong>Experiment id: </strong></span>
+        <span *ngIf="!isLoading">
+          <a href="/workbench/experiment/info/{{modelVersionInfo.experimentId}}">{{ modelVersionInfo.experimentId }}</a>
+        </span>
+      </p>
+      <p nz-typography>
+        <span><strong>Dataset: </strong></span>
+        {{ isLoading ? null : modelVersionInfo.dataset }}
+      </p>
+      <p nz-typography>
+        <span><strong>Created: </strong></span>
+        {{ isLoading ? null : modelVersionInfo.creationTime }}
+      </p>
+      <p nz-typography>
+        <span><strong>Updated: </strong></span>
+        {{ isLoading ? null : modelVersionInfo.lastUpdatedTime }}
+      </p>
+      <p nz-typography>
+        <span><strong>Source: </strong></span>
+        {{ isLoading ? null : modelVersionInfo.source }}
+      </p>
+      <p nz-typography>
+        <span><strong>Tags: </strong></span>
+        <span  *ngIf="!isLoading">
+          <submarine-model-tag *ngFor="let tag of modelVersionInfo.tags" [tag]="tag" [cssType]="'default'"></submarine-model-tag>
+        </span>
+      </p>
+      <p nz-typography>
+        <span><strong>Description: </strong></span>
+        {{ isLoading ? null : modelVersionInfo.description }}
+      </p>
+    </article>
+  </nz-spin>
 </div>

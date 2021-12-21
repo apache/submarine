@@ -22,7 +22,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ModelComponent } from './model.component';
 import { ModelVersionComponent } from './model-version/model-version.component';
 import { ModelHomeComponent } from './model-home/model-home.component';
-import { RegisteredModelComponent } from './registered-model/registered-model.component';
+import { ModelInfoComponent } from './model-info/model-info.component';
 
 const routes: Routes = [
   {
@@ -36,7 +36,7 @@ const routes: Routes = [
       },
       {
         path: ':name',
-        component: RegisteredModelComponent,
+        component: ModelInfoComponent,
       },
       {
         path: ':name/:version',

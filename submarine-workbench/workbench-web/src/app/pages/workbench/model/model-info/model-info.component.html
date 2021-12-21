@@ -1,0 +1,80 @@
+<!--
+  ~ Licensed to tde Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See tde NOTICE file
+  ~ distributed witd tdis work for additional information
+  ~ regarding copyright ownership.  tde ASF licenses tdis file
+  ~ to you under tde Apache License, Version 2.0 (tde
+  ~ "License"); you may not use tdis file except in compliance
+  ~ witd tde License.  You may obtain a copy of tde License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under tde License is distributed on an
+  ~ "AS IS" BASIS, WItdOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, eitder express or implied.  See tde License for tde
+  ~ specific language governing permissions and limitations
+  ~ under tde License.
+  -->
+<div style="margin: 15px; padding: 15px; background-color: white">
+  <nz-spin [nzSpinning]="isModelInfoLoading">
+    <article nz-typography>
+      <h3 nz-typography>{{modelName}}</h3>
+      <p nz-typography>
+        <span><strong>Creation Time: </strong></span>
+        {{ isModelInfoLoading ? null : selectedModelInfo.creationTime }}
+      </p>
+      <p nz-typography>
+        <span><strong>Last Updated Time: </strong></span>
+        {{ isModelInfoLoading ? null : selectedModelInfo.lastUpdatedTime }}
+      </p>
+      <p nz-typography>
+        <span><strong>Tags: </strong></span>
+        <span *ngIf="!isModelInfoLoading">
+          <submarine-model-tag *ngFor="let tag of selectedModelInfo.tags" [tag]="tag" [cssType]="'default'"></submarine-model-tag>
+        </span>
+      </p>
+      <p nz-typography>
+        <span><strong>Description: </strong></span>
+        {{ isModelInfoLoading ? null : selectedModelInfo.description }}
+      </p>
+    </article>
+  </nz-spin>
+  <nz-divider [nzText]="text" nzOrientation="left">
+    <ng-template #text>
+      Model Versions
+      <i nz-icon nzType="form"></i>
+    </ng-template>
+  </nz-divider>
+  <nz-table
+    id="modelVersionsTable"
+    nzBordered
+    #basicTable
+    [nzData]="modelVersions"
+    [nzNoResult]="'No data'"
+    [nzLoading]="isModelVersionsLoading"
+  >
+    <thead>
+      <tr>
+        <th>Version</th>
+        <th>Stage</th>
+        <th>Created</th>
+        <th>Updated</th>
+        <th>Tags</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data; let i = index">
+        <td><a [routerLink]="data.version">{{ data.version }}</a></td>
+        <td>{{ data.currentStage }}</td>
+        <td>{{ data.creationTime | date: 'M/d/yyyy, h:mm a' }}</td>
+        <td>{{ data.lastUpdatedTime | date: 'M/d/yyyy, h:mm a' }}</td>
+        <td>
+          <submarine-model-tag *ngFor="let tag of data.tags" [tag]="tag" [cssType]="'default'"></submarine-model-tag>
+        </td>
+        <td>{{ data.description }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
