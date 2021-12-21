@@ -42,6 +42,7 @@ setup(
         "mlflow>=1.15.0",
         "boto3>=1.17.58",
         "click==8.0.3",
+        "rich==10.15.2",
         "dacite==1.6.0",
         "dataclasses==0.8",
         "pyaml==21.10.1",
