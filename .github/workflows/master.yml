@@ -356,6 +356,7 @@ jobs:
         env:
           MINIO_ACCESS_KEY: "submarine_minio"
           MINIO_SECRET_KEY: "submarine_minio"
+          MINIO_DEFAULT_BUCKETS: "submarine"
         ports:
           - 9000:9000
     steps:
