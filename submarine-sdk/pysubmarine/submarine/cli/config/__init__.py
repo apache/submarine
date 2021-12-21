@@ -1,11 +1,11 @@
 # Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements. See the NOTICE file distributed with
+# contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
 # The ASF licenses this file to You under the Apache License, Version 2.0
 # (the "License"); you may not use this file except in compliance with
-# the License. You may obtain a copy of the License at
+# the License.  You may obtain a copy of the License at
 #
-# http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,11 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-mypy==0.910
-types-requests==2.25.6
-types-certifi==2020.4.0
-types-six==1.16.1
-types-python-dateutil==2.8.0
-types-dataclasses==0.6.1
-types-PyYAML==6.0.1
-sqlalchemy[mypy]
+from submarine.cli.config.command import get_config, init_config, list_config, set_config
+
+__all__ = [
+    "list_config",
+    "get_config",
+    "set_config",
+    "init_config",
+]
