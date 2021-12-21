@@ -53,6 +53,8 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobSpec
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobSpec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +64,7 @@ import java.util.Map;
 
 public class ExperimentSpecParser {
   private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-
+  private static final Logger LOG = LoggerFactory.getLogger(ExperimentSpecParser.class);
   public static MLJob parseJob(ExperimentSpec experimentSpec) throws InvalidSpecException {
     String framework = experimentSpec.getMeta().getFramework();
     if (ExperimentMeta.SupportedMLFramework.TENSORFLOW.
@@ -137,6 +139,11 @@ public class ExperimentSpecParser {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
         replicaSpec.setTemplate(parseTemplateSpec(taskSpec, experimentSpec));
+        if (replicaType.equals(TFJobReplicaType.Master.getTypeName()) ||
+                replicaType.equals(TFJobReplicaType.Worker.getTypeName())) {
+          appendSidecar(replicaSpec);
+        }
+        
         replicaSpecMap.put(TFJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {
         throw new InvalidSpecException("Unrecognized replica type name: " +
@@ -321,6 +328,25 @@ public class ExperimentSpecParser {
     return templateSpec;
   }
 
+  private static void appendSidecar(MLJobReplicaSpec mlJobReplicaSpec) {
+    List<V1Container> containers = mlJobReplicaSpec.getTemplate().getSpec().getContainers();
+    V1Container agentContainer = new V1Container();
+    agentContainer.setName("agent");
+    agentContainer.setImage("apache/submarine:sidecar-agent-0.7.0-SNAPSHOT");
+   
+    List<V1EnvVar> envVarList = new ArrayList<>();
+    V1EnvVar crType = new V1EnvVar();
+    crType.setName("CUSTOM_RESOURCE_TYPE");
+    crType.setValue("TFJob");
+    V1EnvVar crName = new V1EnvVar();
+    crName.setName("CUSTOM_RESOURCE_NAME");
+    crName.setValue("CRName");
+    envVarList.add(crType);
+    envVarList.add(crName);
+    agentContainer.env(envVarList);
+    containers.add(agentContainer);
+  }
+  
   private static List<V1EnvVar> parseEnvVars(ExperimentTaskSpec spec,
       Map<String, String> defaultEnvs) {
     if (spec.getEnvVars() != null) {

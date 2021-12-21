@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.k8s.agent;
 
-import org.apache.submarine.server.k8s.agent.bean.CustomResourceType;
+import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.k8s.agent.handler.CustomResourceHandler;
 
 public class HandlerFactory {

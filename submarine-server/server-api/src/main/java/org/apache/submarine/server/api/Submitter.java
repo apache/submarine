@@ -44,10 +44,11 @@ public interface Submitter {
   /**
    * Create experiment with spec
    * @param spec experiment spec
+   * @param id experimentId 
    * @return object
    * @throws SubmarineRuntimeException running error
    */
-  Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException;
+  Experiment createExperiment(ExperimentSpec spec, String experimentId) throws SubmarineRuntimeException;
 
   /**
    * Find experiment by spec
@@ -94,10 +95,11 @@ public interface Submitter {
   /**
    * Create a notebook with spec
    * @param spec notebook spec
+   * @param notebookId noteebookId
    * @return object
    * @throws SubmarineRuntimeException running error
    */
-  Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException;
+  Notebook createNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException;
 
   /**
    * Find a notebook with spec

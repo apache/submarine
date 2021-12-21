@@ -21,7 +21,7 @@ package org.apache.submarine.server.k8s.agent;
 
 import java.io.IOException;
 
-import org.apache.submarine.server.k8s.agent.bean.CustomResourceType;
+import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.k8s.agent.handler.CustomResourceHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,14 +40,18 @@ public class SubmarineAgent {
     private String namespace;
     private String customResourceType;
     private String customResourceName;
+    private String resourceId;
     private CustomResourceType type;
     private CustomResourceHandler handler;
     
     
-    public SubmarineAgent(String namespace, String customResourceType, String customResourceName) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    public SubmarineAgent(String namespace, String customResourceType,
+            String customResourceName, String resourceId) throws ClassNotFoundException,
+    InstantiationException, IllegalAccessException, IOException {
         this.namespace = namespace;
         this.customResourceType = customResourceType;
         this.customResourceName = customResourceName;
+        this.resourceId = resourceId;
         this.type = CustomResourceType.valueOf(customResourceType);
         this.handler = HandlerFactory.getHandler(this.type);
 
@@ -62,11 +66,13 @@ public class SubmarineAgent {
         String namespace = System.getenv("NAMESPACE");
         String customResourceType = System.getenv("CUSTOM_RESOURCE_TYPE");
         String customResourceName = System.getenv("CUSTOM_RESOURCE_NAME");
+        String customResourceId = System.getenv("CUSTOM_RESOURCE_ID");
         LOG.info(String.format("NAMESPACE:%s", customResourceType));
         LOG.info(String.format("CUSTOM_RESOURCE_TYPE:%s", customResourceType));
         LOG.info(String.format("CUSTOM_RESOURCE_NAME:%s", customResourceName));
+        LOG.info(String.format("CUSTOM_RESOURCE_ID:%s", customResourceId));
         
-        SubmarineAgent agent = new SubmarineAgent(customResourceType, customResourceType, customResourceName);
+        SubmarineAgent agent = new SubmarineAgent(customResourceType, customResourceType, customResourceName, customResourceId);
         agent.start();
         
     }

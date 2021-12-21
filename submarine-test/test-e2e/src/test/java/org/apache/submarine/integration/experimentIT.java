@@ -69,7 +69,7 @@ public class experimentIT extends AbstractSubmarineIT {
     experimentPage.customizedBtnClick();
     experimentPage.advancedButtonCLick();
     experimentPage.envBtnClick();
-    String experimentName = "experiment-e2e-test";
+    String experimentName = "experiment-e2e-test3";
     experimentPage.fillExperimentMeta(experimentName, "e2e des", "default", new String[]{"stable","default","v1.0"},
             "python /var/tf_mnist/mnist_with_summaries.py --log_dir=/train/log" + " --learning_rate=0.01 --batch_size=150",
             "apache/submarine:tf-mnist-with-summaries-1.0",
@@ -86,7 +86,7 @@ public class experimentIT extends AbstractSubmarineIT {
     // Successful request
     LOG.info("In spec success");
     experimentPage.deleteSpec();
-    experimentPage.fillTfSpec(2, new String[]{"Ps", "Worker"}, new int[]{1, 1}, new int[]{1, 1}, new int[]{1024, 1024});
+    experimentPage.fillTfSpec(2, new String[]{"Ps", "Worker"}, new int[]{1, 1}, new int[]{1, 1}, new int[]{256, 256});
     Assert.assertTrue(experimentPage.getGoButton().isEnabled());
     experimentPage.goButtonClick();
 

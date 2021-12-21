@@ -17,19 +17,18 @@
  * under the License.
  */
 
-package org.apache.submarine.server.k8s.agent.bean;
+package org.apache.submarine.server.api.common;
 
 public enum CustomResourceType {
     TFJob("tfJob"), PYTORCHJob("pytorchJob"), Notebook("notebook");
     
-    private String customResourceType;
+  private String customResourceType;
     
-    CustomResourceType(String customResourceType) {
-        this.customResourceType = customResourceType; 
-    }
+  CustomResourceType(String customResourceType) {
+    this.customResourceType = customResourceType; 
+  }
     
-    public String getCustomResourceType() {
-        return this.customResourceType;
-    }
-    
+  public String getCustomResourceType() {
+    return this.customResourceType;
+  }
 }

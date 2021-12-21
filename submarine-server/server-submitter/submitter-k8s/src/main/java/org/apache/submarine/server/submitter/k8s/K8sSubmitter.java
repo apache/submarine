@@ -156,7 +156,8 @@ public class K8sSubmitter implements Submitter {
   }
 
   @Override
-  public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
+  public Experiment createExperiment(ExperimentSpec spec, String experimentIO) 
+        throws SubmarineRuntimeException {
     Experiment experiment;
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
@@ -379,7 +380,7 @@ public class K8sSubmitter implements Submitter {
 
 
   @Override
-  public Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
+  public Notebook createNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
     Notebook notebook;
     final String name = spec.getMeta().getName();
     final String scName = NotebookUtils.SC_NAME;

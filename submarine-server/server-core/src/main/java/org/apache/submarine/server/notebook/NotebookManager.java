@@ -92,7 +92,7 @@ public class NotebookManager {
     labels.put("notebook-owner-id", spec.getMeta().getOwnerId());
     labels.put("notebook-id", notebookId.toString());
     spec.getMeta().setLabels(labels);
-    Notebook notebook = submitter.createNotebook(spec);
+    Notebook notebook = submitter.createNotebook(spec, notebookId.toString());
 
     notebook.setNotebookId(notebookId);
     notebook.setSpec(spec);
