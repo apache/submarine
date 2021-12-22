@@ -42,11 +42,12 @@ class SubmarineSqlParser(val delegate: ParserInterface) extends ParserInterface 
   }
 
   // scalastyle:off line.size.limit
+
   /**
-    * Fork from `org.apache.spark.sql.catalyst.parser.AbstractSqlParser#parse(java.lang.String, scala.Function1)`.
-    *
-    * @see https://github.com/apache/spark/blob/v2.4.4/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/parser/ParseDriver.scala#L81
-    */
+   * Fork from `org.apache.spark.sql.catalyst.parser.AbstractSqlParser#parse(java.lang.String, scala.Function1)`.
+   *
+   * @see https://github.com/apache/spark/blob/v2.4.4/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/parser/ParseDriver.scala#L81
+   */
   // scalastyle:on
   private def parse[T](command: String)(toResult: SubmarineSqlBaseParser => T): T = {
     val lexer = new SubmarineSqlBaseLexer(new UpperCaseCharStream(CharStreams.fromString(command)))
@@ -109,8 +110,8 @@ class SubmarineSqlParser(val delegate: ParserInterface) extends ParserInterface 
     delegate.parseMultipartIdentifier(sqlText)
   }
 
-  override def parseRawDataType(sqlText: String): DataType = {
-    delegate.parseRawDataType(sqlText)
-  }
+  //  override def parseRawDataType(sqlText: String): DataType = {
+  //    delegate.parseRawDataType(sqlText)
+  //  }
 
 }

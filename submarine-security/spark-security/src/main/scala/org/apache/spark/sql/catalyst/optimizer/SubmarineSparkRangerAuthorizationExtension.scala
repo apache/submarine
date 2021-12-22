@@ -24,11 +24,10 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.catalyst.plans.logical.{Command, LogicalPlan}
 import org.apache.spark.sql.catalyst.rules.Rule
 import org.apache.spark.sql.execution.{SubmarineShowDatabasesCommand, SubmarineShowTablesCommand}
-import org.apache.spark.sql.execution.command._
+import org.apache.spark.sql.execution.command.{ResetCommand, _}
 import org.apache.spark.sql.execution.datasources.{CreateTempViewUsing, InsertIntoDataSourceCommand, InsertIntoHadoopFsRelationCommand}
 import org.apache.spark.sql.hive.PrivilegesBuilder
 import org.apache.spark.sql.hive.execution.CreateHiveTableAsSelectCommand
-
 import org.apache.submarine.spark.compatible.CompatibleCommand._
 import org.apache.submarine.spark.security.{RangerSparkAuthorizer, SparkAccessControlException}
 
@@ -39,6 +38,7 @@ import org.apache.submarine.spark.security.{RangerSparkAuthorizer, SparkAccessCo
  */
 case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession)
   extends Rule[LogicalPlan] {
+
   import org.apache.submarine.spark.security.SparkOperationType._
 
   private val LOG = LogFactory.getLog(classOf[SubmarineSparkRangerAuthorizationExtension])
@@ -48,6 +48,7 @@ case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession)
    *
    * If the user is authorized, then the original plan will be returned; otherwise, interrupted by
    * some particular privilege exceptions.
+   *
    * @param plan a spark LogicalPlan for verifying privileges
    * @return a plan itself which has gone through the privilege check.
    */
@@ -57,7 +58,7 @@ case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession)
       case s: SubmarineShowDatabasesCommand => s
       case s: ShowTablesCommand => SubmarineShowTablesCommand(s)
       case s: SubmarineShowTablesCommand => s
-      case ResetCommand => SubmarineResetCommand
+      case ResetCommand(_) => SubmarineResetCommand
       case _ =>
         val operationType: SparkOperationType = toOperationType(plan)
         val (in, out) = PrivilegesBuilder.build(plan)
@@ -83,6 +84,7 @@ case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession)
 
   /**
    * Mapping of [[LogicalPlan]] -> [[SparkOperationType]]
+   *
    * @param plan a spark LogicalPlan
    * @return
    */
