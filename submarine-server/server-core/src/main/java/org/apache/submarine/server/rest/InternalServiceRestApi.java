@@ -10,7 +10,6 @@ import javax.ws.rs.core.Response;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.common.CustomResourceType;
-import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.internal.InternalServiceManager;
 import org.apache.submarine.server.response.JsonResponse;
 import org.slf4j.Logger;
@@ -52,12 +51,12 @@ public class InternalServiceRestApi {
                       responseCode = "404", 
                       description = "resource not found")})
   public Response updateEnvironment(
-      @PathParam(RestConstants.CUSTOM_RESOURCE_TYPE) CustomResourceType type,
+      @PathParam(RestConstants.CUSTOM_RESOURCE_TYPE) String type,
       @PathParam(RestConstants.CUSTOM_RESOURCE_ID) String resourceId,
       @PathParam(RestConstants.CUSTOM_RESOURCE_STATUS) String status) {
     try {
-      internalServiceManager.updateCRStatus(type, resourceId, status);
-      return new JsonResponse.Builder<Environment>(Response.Status.OK)
+      internalServiceManager.updateCRStatus(CustomResourceType.valueOf(type), resourceId, status);
+      return new JsonResponse.Builder<String>(Response.Status.OK)
         .success(true).build();
     } catch (SubmarineRuntimeException e) {
       return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage())

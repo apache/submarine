@@ -247,7 +247,7 @@ CREATE TABLE `experiment` (
   `create_time` datetime DEFAULT NULL COMMENT 'create time',
   `update_by` varchar(32) DEFAULT NULL COMMENT 'last update user',
   `update_time` datetime DEFAULT NULL COMMENT 'last update time',
-  `status` varchar(20) DEFAULT NULL COMMENT 'status',
+  `experiment_status` varchar(20) DEFAULT NULL COMMENT 'experiment status',
    PRIMARY KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -262,7 +262,7 @@ CREATE TABLE `notebook` (
   `create_time` datetime DEFAULT NULL COMMENT 'create time',
   `update_by` varchar(32) DEFAULT NULL COMMENT 'last update user',
   `update_time` datetime DEFAULT NULL COMMENT 'last update time',
-  `status` varchar(20) DEFAULT NULL COMMENT 'status',
+  `notebook_status` varchar(20) DEFAULT NULL COMMENT 'notebook status',
    PRIMARY KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

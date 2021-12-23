@@ -40,18 +40,9 @@ fi
 mkdir -p "${CURRENT_PATH}/tmp"
 cp ${SUBMARINE_HOME}/submarine-server/server-submitter/submarine-k8s-agent/target/submarine-k8s-agent-${SUBMARINE_VERSION}.tar.gz "${CURRENT_PATH}/tmp"
 
-# download mysql connect java
-MYSQL_VERSION=5.1.39
-MYSQL_JAR_URL="https://repo1.maven.org/maven2/mysql/mysql-connector-java/${MYSQL_VERSION}/mysql-connector-java-${MYSQL_VERSION}.jar"
-tmpfile=$(mktemp)
-trap "test -f $tmpfile && rm $tmpfile" RETURN
-curl -L -o $tmpfile ${MYSQL_JAR_URL}
-mv $tmpfile ${CURRENT_PATH}/tmp/mysql-connector-java-${MYSQL_VERSION}.jar
-
-# Replace the mysql jdbc.url in the submarine-site.xml file with the link name of the submarine container
-# `submarine-database` is submarine database container name
+# Replace the submarine.server.addr in the submarine-site.xml file with the link name of the submarine container
+# `submarine-server` is submarine server container name
 cp ${SUBMARINE_HOME}/conf/submarine-site.xml "${CURRENT_PATH}/tmp/"
-sed -i.bak 's/127.0.0.1:3306/submarine-database:3306/g' "${CURRENT_PATH}/tmp/submarine-site.xml"
 
 # build image
 cd ${CURRENT_PATH}

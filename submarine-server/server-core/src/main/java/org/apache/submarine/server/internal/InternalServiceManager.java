@@ -1,5 +1,8 @@
 package org.apache.submarine.server.internal;
 
+import javax.ws.rs.core.Response.Status;
+
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
@@ -29,12 +32,20 @@ public class InternalServiceManager {
     
   private void updateExperimentStatus(String resourceId, String status) {
     ExperimentEntity experimentEntity = experimentService.select(resourceId);
-    experimentEntity.setStatus(status);
+    if (experimentEntity == null) {
+      throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(),
+        String.format("cannot find experiment with id:%s", resourceId));
+    }
+    experimentEntity.setExperimentStatus(status);
     experimentService.update(experimentEntity);
   }
     
   private void updateNotebookStatus(String resourceId, String status) {
     Notebook notebook = notebookService.select(resourceId);
+    if (notebook == null) {
+      throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(),
+        String.format("cannot find notebook with id:%s", resourceId));
+    }
     notebook.setStatus(status);
     notebookService.update(notebook);
   }

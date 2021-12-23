@@ -20,8 +20,7 @@
 package org.apache.submarine.server.api.common;
 
 public enum CustomResourceType {
-    TFJob("tfJob"), PYTORCHJob("pytorchJob"), Notebook("notebook");
-    
+  TFJob("TFJob"), PYTORCHJob("PYTORCHJob"), Notebook("Notebook");
   private String customResourceType;
     
   CustomResourceType(String customResourceType) {

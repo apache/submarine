@@ -27,7 +27,7 @@ public class ExperimentEntity extends BaseEntity {
   */
   private String experimentSpec;
 
-  private String status;
+  private String experimentStatus;
   
   public ExperimentEntity() {}
 
@@ -38,13 +38,13 @@ public class ExperimentEntity extends BaseEntity {
   public void setExperimentSpec(String experimentSpec) {
     this.experimentSpec = experimentSpec;
   }
-
-  public String getStatus() {
-    return status;
+ 
+  public String getExperimentStatus() {
+    return experimentStatus;
   }
 
-  public void setStatus(String status) {
-    this.status = status;
+  public void setExperimentStatus(String experimentStatus) {
+    this.experimentStatus = experimentStatus;
   }
 
   @Override
@@ -56,7 +56,7 @@ public class ExperimentEntity extends BaseEntity {
       ", createTime=" + createTime +
       ", updateBy='" + updateBy + '\'' +
       ", updateTime='" + updateTime + '\'' +
-      ", status='" + status + "\'" +
+      ", experimentStatus='" + experimentStatus + "\'" +
       '}';
   }
 }

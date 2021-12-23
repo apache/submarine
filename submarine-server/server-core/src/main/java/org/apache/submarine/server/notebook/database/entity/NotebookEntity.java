@@ -27,7 +27,7 @@ public class NotebookEntity extends BaseEntity {
   */
   private String notebookSpec;
   
-  private String status;
+  private String notebookStatus;
 
   public NotebookEntity() {
   }
@@ -39,13 +39,13 @@ public class NotebookEntity extends BaseEntity {
   public void setNotebookSpec(String notebookSpec) {
     this.notebookSpec = notebookSpec;
   }
-  
-  public String getStatus() {
-    return status;
+ 
+  public String getNotebookStatus() {
+    return notebookStatus;
   }
 
-  public void setStatus(String status) {
-    this.status = status;
+  public void setNotebookStatus(String noteStatus) {
+    this.notebookStatus = noteStatus;
   }
 
   @Override
@@ -57,7 +57,7 @@ public class NotebookEntity extends BaseEntity {
         ", createTime=" + createTime +
         ", updateBy='" + updateBy + '\'' +
         ", updateTime=" + updateTime + '\'' +
-        ", status='" + status + "\'" +
+        ", notebookStatus='" + notebookStatus + "\'" +
         '}';
   }
 }

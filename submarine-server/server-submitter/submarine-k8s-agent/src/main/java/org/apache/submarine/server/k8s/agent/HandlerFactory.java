@@ -28,7 +28,7 @@ public class HandlerFactory {
     private static String HANDLER_PACKAGE = "org.apache.submarine.server.k8s.agent.handler";
     
     public static CustomResourceHandler getHandler(CustomResourceType crType) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String handlerClassStr = HANDLER_PACKAGE + "." +  crType.getCustomResourceType() + HANDLER_POSTFIX;
+        String handlerClassStr = HANDLER_PACKAGE + "." +  crType.toString() + HANDLER_POSTFIX;
         Class handlerClass = Class.forName(handlerClassStr);
         return (CustomResourceHandler)handlerClass.newInstance();
     }

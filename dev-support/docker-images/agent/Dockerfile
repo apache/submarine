@@ -35,7 +35,6 @@ ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
 ADD ./tmp/submarine-k8s-agent-*.tar.gz /opt/
 RUN ln -s /opt/submarine-k8s-agent-* "/opt/submarine-current"
 ADD ./tmp/submarine-site.xml "/opt/submarine-current/conf/"
-ADD ./tmp/mysql-connector-java-5.1.39.jar "/opt/submarine-current/lib/"
 
 WORKDIR /opt/submarine-current
 
