@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-mypy==0.910
+mypy==0.930
 types-requests==2.25.6
 types-certifi==2020.4.0
 types-six==1.16.1
