@@ -113,7 +113,8 @@ def get_experiment(id):
 
 @click.command("experiment")
 @click.argument("id")
-def delete_experiment(id):
+@click.option("--wait/--no-wait", is_flag=True, default=True)
+def delete_experiment(id, wait):
     """Delete experiment"""
     console = Console()
     try:
@@ -129,12 +130,13 @@ def delete_experiment(id):
         result = thread.get()
         result = result.result
 
-        if result["status"] == "Deleted":
-            console.print("[bold green] Experiment(id = {} ) deleted".format(id))
-        else:
-            console.print("[bold red] Failed")
-            json_data = richJSON.from_data(result)
-            console.print(Panel(json_data, title="Experiment(id = {} )".format(id)))
+        if wait:
+            if result["status"] == "Deleted":
+                console.print("[bold green] Experiment(id = {} ) deleted".format(id))
+            else:
+                console.print("[bold red] Failed")
+                json_data = richJSON.from_data(result)
+                console.print(Panel(json_data, title="Experiment(id = {} )".format(id)))
 
     except ApiException as err:
         if err.body is not None:
