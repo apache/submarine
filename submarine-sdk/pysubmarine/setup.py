@@ -26,6 +26,7 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/apache/submarine",
     packages=find_packages(exclude=["tests", "tests.*"]),
+    package_data={"submarine.cli.config": ["cli_config.yaml"]},
     install_requires=[
         "six>=1.10.0",
         "numpy==1.19.2",
@@ -41,6 +42,10 @@ setup(
         "mlflow>=1.15.0",
         "boto3>=1.17.58",
         "click==8.0.3",
+        "rich==10.15.2",
+        "dacite==1.6.0",
+        "dataclasses>=0.6",
+        "pyaml==21.10.1",
     ],
     extras_require={
         "tf": ["tensorflow==1.15.0"],

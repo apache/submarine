@@ -17,6 +17,7 @@
 
 import click
 
+from submarine.cli.config import command as config_cmd
 from submarine.cli.environment import command as environment_cmd
 from submarine.cli.experiment import command as experiment_cmd
 from submarine.cli.notebook import command as notebook_cmd
@@ -49,6 +50,11 @@ def cmdgrp_sandbox():
     pass
 
 
+@entry_point.group("config")
+def cmdgrp_config():
+    pass
+
+
 # experiment
 cmdgrp_list.add_command(experiment_cmd.list_experiment)
 cmdgrp_get.add_command(experiment_cmd.get_experiment)
@@ -65,3 +71,9 @@ cmdgrp_delete.add_command(environment_cmd.delete_environment)
 # sandbox
 cmdgrp_sandbox.add_command(sandbox_cmd.start_sandbox)
 cmdgrp_sandbox.add_command(sandbox_cmd.delete_sandbox)
+
+# config
+cmdgrp_config.add_command(config_cmd.set_config)
+cmdgrp_config.add_command(config_cmd.list_config)
+cmdgrp_config.add_command(config_cmd.get_config)
+cmdgrp_config.add_command(config_cmd.init_config)
