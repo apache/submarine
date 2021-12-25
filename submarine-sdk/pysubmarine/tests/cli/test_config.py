@@ -16,7 +16,7 @@
 from click.testing import CliRunner
 
 from submarine.cli import main
-from submarine.cli.config.config import initConfig, loadConfig
+from submarine.cli.config.config import SubmarineCliConfig, initConfig, loadConfig
 
 
 def test_list_config():
@@ -28,6 +28,16 @@ def test_list_config():
     assert "SubmarineCliConfig" in result.output
     assert '"hostname": "{}"'.format(_config.connection.hostname) in result.output
     assert '"port": {}'.format(_config.connection.port) in result.output
+
+
+def test_init_config():
+    runner = CliRunner()
+    result = runner.invoke(main.entry_point, ["config", "init"])
+    result = runner.invoke(main.entry_point, ["config", "list"])
+    _default_config = SubmarineCliConfig()
+    assert result.exit_code == 0
+    assert '"hostname": "{}"'.format(_default_config.connection.hostname) in result.output
+    assert '"port": {}'.format(_default_config.connection.port) in result.output
 
 
 def test_get_set_experiment():
