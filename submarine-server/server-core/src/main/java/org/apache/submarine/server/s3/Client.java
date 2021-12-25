@@ -103,15 +103,13 @@ public class Client {
    * @return an array of byte
    */
   public byte[] downloadArtifact(String path) {
-    InputStream is;
     byte[] buffer;
     int b;
-    try {
-      is = minioClient.getObject(
+    try (InputStream is = minioClient.getObject(
       GetObjectArgs.builder()
       .bucket(S3Constants.BUCKET)
       .object(path)
-      .build());
+      .build())) {
       b = is.read();
       if (b == -1) {
         return new byte[0];
@@ -123,7 +121,6 @@ public class Client {
         buffer[i] = (byte) b;
         i += 1;
       }
-      is.close();
     } catch (Exception e) {
       throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
           e.getMessage());
