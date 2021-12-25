@@ -113,7 +113,7 @@ def get_experiment(id):
 
 @click.command("experiment")
 @click.argument("id")
-@click.option("--wait/--no-wait", is_flag=True, default=True)
+@click.option("--wait/--no-wait", is_flag=True, default=False)
 def delete_experiment(id, wait):
     """Delete experiment"""
     console = Console()
