@@ -351,6 +351,14 @@ jobs:
           - 3306:3306
         # wait until mysql is health
         options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 10s --health-retries 10
+      minio:
+        image: bitnami/minio:latest
+        env:
+          MINIO_ACCESS_KEY: "submarine_minio"
+          MINIO_SECRET_KEY: "submarine_minio"
+          MINIO_DEFAULT_BUCKETS: "submarine"
+        ports:
+          - 9000:9000
     steps:
       - uses: actions/checkout@v2
         with:
