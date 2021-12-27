@@ -24,8 +24,8 @@ from rich.json import JSON as richJSON
 from rich.panel import Panel
 from rich.table import Table
 
-from submarine.experiment.api.experiment_client import ExperimentClient
-from submarine.experiment.exceptions import ApiException
+from submarine.client.api.experiment_client import ExperimentClient
+from submarine.client.exceptions import ApiException
 
 experimentClient = ExperimentClient("http://localhost:8080")
 
