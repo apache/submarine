@@ -18,11 +18,11 @@ from click.testing import CliRunner
 
 import submarine
 from submarine.cli import main
-from submarine.experiment.models.code_spec import CodeSpec
-from submarine.experiment.models.environment_spec import EnvironmentSpec
-from submarine.experiment.models.experiment_meta import ExperimentMeta
-from submarine.experiment.models.experiment_spec import ExperimentSpec
-from submarine.experiment.models.experiment_task_spec import ExperimentTaskSpec
+from submarine.client.models.code_spec import CodeSpec
+from submarine.client.models.environment_spec import EnvironmentSpec
+from submarine.client.models.experiment_meta import ExperimentMeta
+from submarine.client.models.experiment_spec import ExperimentSpec
+from submarine.client.models.experiment_task_spec import ExperimentTaskSpec
 
 TEST_CONSOLE_WIDTH = 191
 
