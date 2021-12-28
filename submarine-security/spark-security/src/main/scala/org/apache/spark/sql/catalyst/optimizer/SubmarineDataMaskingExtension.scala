@@ -254,7 +254,7 @@ case class SubmarineDataMaskingExtension(spark: SparkSession) extends Rule[Logic
     case c: Command => c match {
       case c: CreateDataSourceTableAsSelectCommand => c.copy(query = doMasking(c.query))
       case c: CreateHiveTableAsSelectCommand => c.copy(query = doMasking(c.query))
-      case c: CreateViewCommand => c.copy(child = doMasking(c.child))
+      case c: CreateViewCommand => c.copy(plan = doMasking(c.plan))
       case i: InsertIntoDataSourceCommand => i.copy(query = doMasking(i.query))
       case i: InsertIntoDataSourceDirCommand => i.copy(query = doMasking(i.query))
       case i: InsertIntoHadoopFsRelationCommand => i.copy(query = doMasking(i.query))

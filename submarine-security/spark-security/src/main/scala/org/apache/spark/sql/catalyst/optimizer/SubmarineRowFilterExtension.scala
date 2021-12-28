@@ -43,7 +43,8 @@ case class SubmarineRowFilterExtension(spark: SparkSession) extends Rule[Logical
 
   /**
    * Transform a Relation to a parsed [[LogicalPlan]] with specified row filter expressions
-   * @param plan the original [[LogicalPlan]]
+   *
+   * @param plan  the original [[LogicalPlan]]
    * @param table a Spark [[CatalogTable]] representation
    * @return A new Spark [[LogicalPlan]] with specified row filter expressions
    */
@@ -96,6 +97,7 @@ case class SubmarineRowFilterExtension(spark: SparkSession) extends Rule[Logical
     val markNum = plan.collect { case _: SubmarineRowFilter => true }.size
     markNum >= getPlanWithTables(plan).size
   }
+
   private def doFiltering(plan: LogicalPlan): LogicalPlan = plan match {
     case rf: SubmarineRowFilter => rf
     case plan if isFixed(plan) => plan
@@ -112,6 +114,7 @@ case class SubmarineRowFilterExtension(spark: SparkSession) extends Rule[Logical
 
   /**
    * Transform a spark logical plan to another plan with the row filer expressions
+   *
    * @param plan the original [[LogicalPlan]]
    * @return the logical plan with row filer expressions applied
    */
@@ -119,7 +122,7 @@ case class SubmarineRowFilterExtension(spark: SparkSession) extends Rule[Logical
     case c: Command => c match {
       case c: CreateDataSourceTableAsSelectCommand => c.copy(query = doFiltering(c.query))
       case c: CreateHiveTableAsSelectCommand => c.copy(query = doFiltering(c.query))
-      case c: CreateViewCommand => c.copy(child = doFiltering(c.child))
+      case c: CreateViewCommand => c.copy(plan = doFiltering(c.plan))
       case i: InsertIntoDataSourceCommand => i.copy(query = doFiltering(i.query))
       case i: InsertIntoDataSourceDirCommand => i.copy(query = doFiltering(i.query))
       case i: InsertIntoHadoopFsRelationCommand => i.copy(query = doFiltering(i.query))

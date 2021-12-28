@@ -168,7 +168,7 @@ private[sql] object PrivilegesBuilder {
         addTableOrViewLevelObjs(a.tableName, inputObjs)
         addTableOrViewLevelObjs(a.tableName, outputObjs)
 
-      case a: AlterTableRecoverPartitionsCommand =>
+      case a: RepairTableCommand =>
         addTableOrViewLevelObjs(a.tableName, inputObjs)
         addTableOrViewLevelObjs(a.tableName, outputObjs)
 
@@ -220,9 +220,9 @@ private[sql] object PrivilegesBuilder {
         addTableOrViewLevelObjs(a.tableIdent, inputObjs, columns = Seq("RAW__DATA__SIZE"))
         addTableOrViewLevelObjs(a.tableIdent, outputObjs)
 
-      case c: CacheTableCommand => c.plan.foreach {
-        buildQuery(_, inputObjs)
-      }
+//      case c: CacheTableCommand => c.plan.foreach {
+      //        buildQuery(_, inputObjs)
+      //      }
 
       case c: CreateDatabaseCommand => addDbLevelObjs(c.databaseName, outputObjs)
 
@@ -261,7 +261,7 @@ private[sql] object PrivilegesBuilder {
             addTableOrViewLevelObjs(c.name, outputObjs)
           case _ =>
         }
-        buildQuery(c.child, inputObjs)
+        buildQuery(c.plan, inputObjs)
 
       case d if d.nodeName == "DescribeColumnCommand" =>
         addTableOrViewLevelObjs(

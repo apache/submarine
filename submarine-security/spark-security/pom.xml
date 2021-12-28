@@ -387,7 +387,7 @@
         <configuration>
           <scalaVersion>${scala.version}</scalaVersion>
           <recompileMode>incremental</recompileMode>
-          <useZincServer>true</useZincServer>
+<!--          <useZincServer>true</useZincServer>-->
           <args>
             <arg>-unchecked</arg>
             <arg>-deprecation</arg>
@@ -573,10 +573,10 @@
 
   <profiles>
     <profile>
-      <id>spark-3.1</id>
+      <id>spark-3.2</id>
       <properties>
-        <spark.version>3.1.1</spark.version>
-        <scala.version>2.12.10</scala.version>
+        <spark.version>3.2.0</spark.version>
+        <scala.version>2.12.14</scala.version>
         <scala.binary.version>2.12</scala.binary.version>
         <!--<scalatest.version>3.2.0</scalatest.version>-->
         <spark.compatible.version>3</spark.compatible.version>
