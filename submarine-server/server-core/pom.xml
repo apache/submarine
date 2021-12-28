@@ -418,12 +418,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.mlflow</groupId>
-      <artifactId>mlflow-client</artifactId>
-      <version>1.18.0</version>
-    </dependency>
-
-    <dependency>
       <groupId>io.minio</groupId>
       <artifactId>minio</artifactId>
       <version>${minio.version}</version>

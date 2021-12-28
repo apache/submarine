@@ -101,7 +101,7 @@ helm upgrade submarine ../helm-charts/submarine
 Use the following helper script to build images and update the images used by running pods.
 
 ```bash
-./hack/build_image.sh [all|server|database|jupyter|jupyter-gpu|mlflow]
+./hack/build_image.sh [all|server|database|jupyter|jupyter-gpu]
 ```
 
 Examples:

@@ -57,16 +57,12 @@ const (
 	databaseName                = "submarine-database"
 	databasePort                = 3306
 	tensorboardName             = "submarine-tensorboard"
-	mlflowName                  = "submarine-mlflow"
 	minioName                   = "submarine-minio"
 	ingressName                 = serverName + "-ingress"
 	databasePvcName             = databaseName + "-pvc"
 	tensorboardPvcName          = tensorboardName + "-pvc"
 	tensorboardServiceName      = tensorboardName + "-service"
 	tensorboardIngressRouteName = tensorboardName + "-ingressroute"
-	mlflowPvcName               = mlflowName + "-pvc"
-	mlflowServiceName           = mlflowName + "-service"
-	mlflowIngressRouteName      = mlflowName + "-ingressroute"
 	minioPvcName                = minioName + "-pvc"
 	minioServiceName            = minioName + "-service"
 	minioIngressRouteName       = minioName + "-ingressroute"
@@ -74,13 +70,12 @@ const (
 	databaseYamlPath            = artifactPath + "submarine-database.yaml"
 	ingressYamlPath             = artifactPath + "submarine-ingress.yaml"
 	minioYamlPath               = artifactPath + "submarine-minio.yaml"
-	mlflowYamlPath              = artifactPath + "submarine-mlflow.yaml"
 	serverYamlPath              = artifactPath + "submarine-server.yaml"
 	tensorboardYamlPath         = artifactPath + "submarine-tensorboard.yaml"
 	rbacYamlPath                = artifactPath + "submarine-rbac.yaml"
 )
 
-var dependents = []string{serverName, databaseName, tensorboardName, mlflowName, minioName}
+var dependents = []string{serverName, databaseName, tensorboardName, minioName}
 
 const (
 	// SuccessSynced is used as part of the Event 'reason' when a Submarine is synced

@@ -17,10 +17,9 @@
 #
 
 SUBMARINE_VERSION="0.7.0-SNAPSHOT"
-FOLDER_LIST=("database" "mlflow" "submarine" "operator")
+FOLDER_LIST=("database" "submarine" "operator")
 IMAGE_LIST=(
   "apache/submarine:database-${SUBMARINE_VERSION}"
-  "apache/submarine:mlflow-${SUBMARINE_VERSION}"
   "apache/submarine:server-${SUBMARINE_VERSION}"
   "apache/submarine:operator-${SUBMARINE_VERSION}"
 )

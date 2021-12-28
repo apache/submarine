@@ -24,7 +24,6 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
-import org.apache.submarine.server.api.experiment.MlflowInfo;
 import org.apache.submarine.server.api.model.ServeSpec;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
@@ -146,11 +145,4 @@ public interface Submitter {
    */
   TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException;
 
-  /**
-   * Get mlflow meta data
-   * @param
-   * @return object
-   * @throws SubmarineRuntimeException running error
-   */
-  MlflowInfo getMlflowInfo() throws SubmarineRuntimeException;
 }

@@ -46,7 +46,6 @@ image:
     database        build submarine database
     jupyter         build submarine jupyter-notebook
     jupyter-gpu     build submarine jupyter-notebook-gpu
-    mlflow          build submarine mlflow
 ```
 
 `server-rapid-builder.sh`

@@ -49,10 +49,6 @@ export class ExperimentHomeComponent implements OnInit {
   reloadInterval = interval(this.reloadPeriod);
   reloadSub = null;
 
-  //mlflow
-  isMlflowLoading: boolean = true;
-  mlflowUrl: string = '';
-
   // tensorboard
   isTensorboardLoading: boolean = true;
   tensorboardUrl: string = '';

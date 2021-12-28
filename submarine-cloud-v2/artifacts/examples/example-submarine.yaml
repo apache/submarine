@@ -32,9 +32,6 @@ spec:
   tensorboard:
     enabled: true
     storageSize: "10Gi"
-  mlflow:
-    enabled: true
-    storageSize: "10Gi"
   minio:
     enabled: true
     storageSize: "10Gi"

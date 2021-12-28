@@ -40,7 +40,3 @@ mysql -e "CREATE DATABASE IF NOT EXISTS metastore;"
 mysql -e "CREATE USER IF NOT EXISTS 'metastore'@'%' IDENTIFIED BY 'password';"
 mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'metastore'@'%';"
 mysql -e "use metastore; source ./metastore.sql; show tables;"
-
-mysql -e "CREATE DATABASE IF NOT EXISTS mlflowdb;"
-mysql -e "CREATE USER IF NOT EXISTS 'mlflow'@'%' IDENTIFIED BY 'password';"
-mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'mlflow'@'%';"
