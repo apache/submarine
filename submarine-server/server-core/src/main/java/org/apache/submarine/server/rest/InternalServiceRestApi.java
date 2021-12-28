@@ -33,6 +33,8 @@ import org.apache.submarine.server.response.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -47,8 +49,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 public class InternalServiceRestApi {
     
   private static final Logger LOG = LoggerFactory.getLogger(InternalServiceRestApi.class);
-  private final InternalServiceManager internalServiceManager = InternalServiceManager.getInstance();
-    
+  private InternalServiceManager internalServiceManager = InternalServiceManager.getInstance();
+  
+  @VisibleForTesting
+  public void setInternalServiceManager(InternalServiceManager internalServiceManager) {
+    this.internalServiceManager = internalServiceManager;
+  }
+  
   /**
    * Update status of custom resource
    * @param name Name of the environment

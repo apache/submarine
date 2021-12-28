@@ -27,44 +27,53 @@ import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.service.ExperimentService;
 import org.apache.submarine.server.notebook.database.service.NotebookService;
 
+import com.google.common.annotations.VisibleForTesting;
+
 public class InternalServiceManager {
   private static volatile InternalServiceManager internalServiceManager;
     
-  private final ExperimentService experimentService = new ExperimentService();
-  private final NotebookService notebookService = new NotebookService(); 
+  private final ExperimentService experimentService;
+  private final NotebookService notebookService; 
     
   public static InternalServiceManager getInstance() {
     if (internalServiceManager == null) {
-      internalServiceManager = new InternalServiceManager();
+      internalServiceManager = new InternalServiceManager(new ExperimentService(), new NotebookService());
     }
     return internalServiceManager;
   }
-    
-  public void updateCRStatus(CustomResourceType crType, String resourceId, String status) {
+  
+  @VisibleForTesting
+  protected InternalServiceManager(ExperimentService experimentService, NotebookService notebookService) {
+    this.experimentService = experimentService;
+    this.notebookService = notebookService;
+  }
+  
+  public boolean updateCRStatus(CustomResourceType crType, String resourceId, String status) {
     if (crType.equals(CustomResourceType.Notebook)) {
-      updateNotebookStatus(resourceId, status);
+      return updateNotebookStatus(resourceId, status);
     } else if (crType.equals(CustomResourceType.TFJob) || crType.equals(CustomResourceType.PYTORCHJob)) {
-      updateExperimentStatus(resourceId, status);
+      return updateExperimentStatus(resourceId, status);
     }
+    return false;
   }
     
-  private void updateExperimentStatus(String resourceId, String status) {
+  private boolean updateExperimentStatus(String resourceId, String status) {
     ExperimentEntity experimentEntity = experimentService.select(resourceId);
     if (experimentEntity == null) {
       throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(),
         String.format("cannot find experiment with id:%s", resourceId));
     }
     experimentEntity.setExperimentStatus(status);
-    experimentService.update(experimentEntity);
+    return experimentService.update(experimentEntity);
   }
     
-  private void updateNotebookStatus(String resourceId, String status) {
+  private boolean updateNotebookStatus(String resourceId, String status) {
     Notebook notebook = notebookService.select(resourceId);
     if (notebook == null) {
       throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(),
         String.format("cannot find notebook with id:%s", resourceId));
     }
     notebook.setStatus(status);
-    notebookService.update(notebook);
+    return notebookService.update(notebook);
   }
 }
