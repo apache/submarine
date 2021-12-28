@@ -98,7 +98,7 @@ public class K8SJobSubmitterTest extends SpecBuilder {
   @Test
   public void testCreateTFJob() throws IOException, URISyntaxException {
     ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfTfboardJobReqFile);
-    Experiment experiment = submitter.createExperiment(spec, "ExperimentId-001");
+    Experiment experiment = submitter.createExperiment(spec);
   }
 
   @Test
@@ -119,7 +119,7 @@ public class K8SJobSubmitterTest extends SpecBuilder {
 
   private void run(ExperimentSpec spec) throws SubmarineRuntimeException {
     // create
-    Experiment experimentCreated = submitter.createExperiment(spec, "ExperimentId-001");
+    Experiment experimentCreated = submitter.createExperiment(spec);
     Assert.assertNotNull(experimentCreated);
 
     // find

@@ -48,7 +48,7 @@ public interface Submitter {
    * @return object
    * @throws SubmarineRuntimeException running error
    */
-  Experiment createExperiment(ExperimentSpec spec, String experimentId) throws SubmarineRuntimeException;
+  Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException;
 
   /**
    * Find experiment by spec

@@ -155,8 +155,7 @@ public class K8sSubmitter implements Submitter {
   }
 
   @Override
-  public Experiment createExperiment(ExperimentSpec spec, String experimentIO) 
-        throws SubmarineRuntimeException {
+  public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);

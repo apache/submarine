@@ -117,7 +117,7 @@ public class ExperimentManager {
     spec.getMeta().setName(lowerName);
     spec.getMeta().setExperimentId(id.toString());
 
-    Experiment experiment = submitter.createExperiment(spec, id.toString());
+    Experiment experiment = submitter.createExperiment(spec);
     experiment.setExperimentId(id);
 
     spec.getMeta().getEnvVars().remove(RestConstants.JOB_ID);

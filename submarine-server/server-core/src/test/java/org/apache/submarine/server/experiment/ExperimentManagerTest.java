@@ -99,7 +99,7 @@ public class ExperimentManagerTest {
     doReturn(experimentId).when(spyExperimentManager).generateExperimentId();
 
     // Stub mockSubmitter createExperiment
-    when(mockSubmitter.createExperiment(any(ExperimentSpec.class), any(String.class))).thenReturn(result);
+    when(mockSubmitter.createExperiment(any(ExperimentSpec.class))).thenReturn(result);
 
     // actual experiment should == expected experiment
     Experiment actualExperiment = spyExperimentManager.createExperiment(spec);
