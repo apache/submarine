@@ -19,6 +19,7 @@
 
 package org.apache.spark.sql.execution.command
 
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.{Row, SparkSession}
 
 /**
@@ -35,4 +36,6 @@ case object SubmarineResetCommand extends RunnableCommand {
     }
     Seq.empty[Row]
   }
+
+  override protected def withNewChildrenInternal(newChildren: IndexedSeq[LogicalPlan]): LogicalPlan = ???
 }

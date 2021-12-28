@@ -19,9 +19,9 @@
 
 package org.apache.spark.sql.execution
 
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.execution.command.RunnableCommand
-
 import org.apache.submarine.spark.compatible.CompatibleCommand.ShowDatabasesCommandCompatible
 import org.apache.submarine.spark.compatible.CompatibleFunc
 import org.apache.submarine.spark.security.{RangerSparkAuthorizer, SparkPrivilegeObject, SparkPrivilegeObjectType}
@@ -42,4 +42,6 @@ case class SubmarineShowDatabasesCommand(child: ShowDatabasesCommandCompatible)
     val database = row.getString(0)
     new SparkPrivilegeObject(SparkPrivilegeObjectType.DATABASE, database, database)
   }
+
+  override protected def withNewChildrenInternal(newChildren: IndexedSeq[LogicalPlan]): LogicalPlan = ???
 }

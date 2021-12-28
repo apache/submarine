@@ -27,4 +27,6 @@ import org.apache.spark.sql.catalyst.expressions.Attribute
  */
 case class SubmarineDataMasking(child: LogicalPlan) extends UnaryNode {
   override def output: Seq[Attribute] = child.output
+
+  override protected def withNewChildInternal(newChild: LogicalPlan): LogicalPlan = ???
 }

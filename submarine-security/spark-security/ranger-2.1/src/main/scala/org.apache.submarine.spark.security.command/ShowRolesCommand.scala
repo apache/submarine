@@ -21,13 +21,12 @@ package org.apache.submarine.spark.security.command
 
 import scala.collection.JavaConverters._
 import scala.util.control.NonFatal
-
 import org.apache.hadoop.security.UserGroupInformation
 import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference}
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.execution.command.RunnableCommand
 import org.apache.spark.sql.types.StringType
-
 import org.apache.submarine.spark.security.{RangerSparkAuditHandler, RangerSparkPlugin, SparkAccessControlException}
 
 case class ShowRolesCommand () extends RunnableCommand {
@@ -47,4 +46,6 @@ case class ShowRolesCommand () extends RunnableCommand {
       // TODO: support auditHandler.flushAudit()
     }
   }
+
+  override protected def withNewChildrenInternal(newChildren: IndexedSeq[LogicalPlan]): LogicalPlan = ???
 }

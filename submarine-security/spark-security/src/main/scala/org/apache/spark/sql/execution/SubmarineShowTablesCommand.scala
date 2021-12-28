@@ -21,8 +21,8 @@ package org.apache.spark.sql.execution
 
 import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.catalyst.expressions.Attribute
+import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.execution.command.{RunnableCommand, ShowTablesCommand}
-
 import org.apache.submarine.spark.security.{RangerSparkAuthorizer, SparkPrivilegeObject, SparkPrivilegeObjectType}
 
 case class SubmarineShowTablesCommand(child: ShowTablesCommand) extends RunnableCommand {
@@ -38,4 +38,6 @@ case class SubmarineShowTablesCommand(child: ShowTablesCommand) extends Runnable
     val table = row.getString(1)
     new SparkPrivilegeObject(SparkPrivilegeObjectType.TABLE_OR_VIEW, database, table)
   }
+
+  override protected def withNewChildrenInternal(newChildren: IndexedSeq[LogicalPlan]): LogicalPlan = ???
 }
