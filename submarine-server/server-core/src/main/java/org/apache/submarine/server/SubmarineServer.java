@@ -21,6 +21,7 @@ package org.apache.submarine.server;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
+import org.apache.submarine.server.websocket.EventServer;
 import org.apache.submarine.commons.cluster.ClusterServer;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Handler;
@@ -117,13 +118,16 @@ public class SubmarineServer extends ResourceConfig {
     // Cluster Server is useless for submarine now. Shield it to improve performance.
     // setupClusterServer();
 
+    // websocket server
+    setupWebSocketServer();
+
     startServer();
   }
 
   @Inject
   public SubmarineServer() {
     packages("org.apache.submarine.server.workbench.rest",
-             "org.apache.submarine.server.rest"
+        "org.apache.submarine.server.rest"
     );
     register(YamlEntityProvider.class);
   }
@@ -170,7 +174,7 @@ public class SubmarineServer extends ResourceConfig {
   }
 
   private static WebAppContext setupWebAppContext(HandlerList handlers,
-      SubmarineConfiguration conf) {
+                                                  SubmarineConfiguration conf) {
     WebAppContext webApp = new WebAppContext();
     webApp.setContextPath("/");
     File warPath = new File(conf.getString(SubmarineConfVars.ConfVars.WORKBENCH_WEB_WAR));
@@ -196,7 +200,7 @@ public class SubmarineServer extends ResourceConfig {
     webApp.addServlet(new ServletHolder(RefreshServlet.class), "/user/*");
     webApp.addServlet(new ServletHolder(RefreshServlet.class), "/workbench/*");
 
-    handlers.setHandlers(new Handler[] { webApp });
+    handlers.setHandlers(new Handler[]{webApp});
 
     return webApp;
   }
@@ -223,9 +227,9 @@ public class SubmarineServer extends ResourceConfig {
       httpsConfig.addCustomizer(src);
 
       connector = new ServerConnector(
-              server,
-              new SslConnectionFactory(getSslContextFactory(conf), HttpVersion.HTTP_1_1.asString()),
-              new HttpConnectionFactory(httpsConfig));
+          server,
+          new SslConnectionFactory(getSslContextFactory(conf), HttpVersion.HTTP_1_1.asString()),
+          new HttpConnectionFactory(httpsConfig));
     } else {
       connector = new ServerConnector(server);
     }
@@ -246,7 +250,7 @@ public class SubmarineServer extends ResourceConfig {
   }
 
   private static void setupNotebookServer(WebAppContext webapp,
-      SubmarineConfiguration conf, ServiceLocator serviceLocator) {
+                                          SubmarineConfiguration conf, ServiceLocator serviceLocator) {
     String maxTextMessageSize = conf.getWebsocketMaxTextMessageSize();
     final ServletHolder servletHolder =
         new ServletHolder(serviceLocator.getService(NotebookServer.class));
@@ -254,6 +258,16 @@ public class SubmarineServer extends ResourceConfig {
 
     final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     webapp.addServlet(servletHolder, "/ws/*");
+  }
+
+  private static void setupWebSocketServer() {
+    EventServer webSocketServer = new EventServer();
+    try {
+      webSocketServer.start(null);
+      LOG.info("WebSocket Sever started");
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+    }
   }
 
   private static void setupClusterServer() {
@@ -331,7 +345,7 @@ public class SubmarineServer extends ResourceConfig {
 
       StringBuilder sbIndexBuf = new StringBuilder();
       try (InputStreamReader reader =
-                   new InputStreamReader(new FileInputStream(indexFile), "GBK");
+               new InputStreamReader(new FileInputStream(indexFile), "GBK");
            BufferedReader bufferedReader = new BufferedReader(reader);) {
         String lineTxt = null;
         while ((lineTxt = bufferedReader.readLine()) != null) {
