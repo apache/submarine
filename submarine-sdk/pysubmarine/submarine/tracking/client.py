@@ -171,3 +171,17 @@ class SubmarineClient(object):
                 experiment_id=utils.get_job_id(),
                 model_type=model_type,
             )
+
+    def create_serve(self, model_name: str, model_version: int) -> None:
+        """
+        Create serve of a model through Seldon Core
+        :param model_name: Name of a registered model
+        :param model_version: Version of a registered model
+        """
+        
+    def delete_serve(self, model_name: str, model_version: int) -> None:
+        """
+        Delete a serving model
+        :param model_name: Name of a registered model
+        :param model_version: Version of a registered model
+        """

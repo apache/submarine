@@ -36,6 +36,7 @@ __version__ = "0.7.0-SNAPSHOT"
 from submarine.client.api.environment_api import EnvironmentApi
 from submarine.client.api.experiment_api import ExperimentApi
 from submarine.client.api.notebook_api import NotebookApi
+from submarine.client.api.serve_api import ServeApi
 
 # import ApiClient
 from submarine.client.api_client import ApiClient
@@ -60,3 +61,4 @@ from submarine.client.models.kernel_spec import KernelSpec
 from submarine.client.models.notebook_meta import NotebookMeta
 from submarine.client.models.notebook_pod_spec import NotebookPodSpec
 from submarine.client.models.notebook_spec import NotebookSpec
+from submarine.client.models.serve_spec import ServeSpec

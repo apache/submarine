@@ -19,5 +19,6 @@ from __future__ import absolute_import
 from submarine.client.api.environment_api import EnvironmentApi
 from submarine.client.api.experiment_api import ExperimentApi
 from submarine.client.api.notebook_api import NotebookApi
+from submarine.client.api.serve_api import ServeApi
 
 # flake8: noqa

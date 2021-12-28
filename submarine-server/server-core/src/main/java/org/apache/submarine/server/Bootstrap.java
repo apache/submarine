@@ -66,7 +66,8 @@ public class Bootstrap extends HttpServlet {
                     .collect(Collectors.toSet()))
             .resourceClasses(Stream.of("org.apache.submarine.server.rest.NotebookRestApi",
                     "org.apache.submarine.server.rest.ExperimentRestApi",
-                    "org.apache.submarine.server.rest.EnvironmentRestApi")
+                    "org.apache.submarine.server.rest.EnvironmentRestApi",
+                    "org.apache.submarine.server.rest.ServeRestApi")
                     .collect(Collectors.toSet()));
 
     try {
