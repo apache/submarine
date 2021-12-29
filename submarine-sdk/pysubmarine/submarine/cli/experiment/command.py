@@ -27,7 +27,7 @@ from rich.table import Table
 from submarine.client.api.experiment_client import ExperimentClient
 from submarine.client.exceptions import ApiException
 
-experimentClient = ExperimentClient("http://localhost:8080")
+experimentClient = ExperimentClient()
 
 POLLING_INTERVAL = 1  # sec
 TIMEOUT = 30  # sec

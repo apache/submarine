@@ -20,10 +20,14 @@ import time
 from submarine.client.api.experiment_api import ExperimentApi
 from submarine.client.api_client import ApiClient
 from submarine.client.configuration import Configuration
+from submarine.cli.config.config import loadConfig
+from submarine.cli.config.config import SubmarineCliConfig
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(message)s")
 logging.getLogger().setLevel(logging.INFO)
+submarineCliConfig : SubmarineCliConfig = loadConfig()
 
 
 def generate_host():
@@ -31,9 +35,9 @@ def generate_host():
     Generate submarine host
     :return: submarine host
     """
-    submarine_server_dns_name = str(os.environ.get("SUBMARINE_SERVER_DNS_NAME"))
-    submarine_server_port = str(os.environ.get("SUBMARINE_SERVER_PORT"))
-    host = submarine_server_dns_name + ":" + submarine_server_port
+    submarine_server_dns_name = str(submarineCliConfig.connection.hostname)
+    submarine_server_port = str(submarineCliConfig.connection.port)
+    host = "http://" + submarine_server_dns_name + ":" + submarine_server_port
     return host
 
 

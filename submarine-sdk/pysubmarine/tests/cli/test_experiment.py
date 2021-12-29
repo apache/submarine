@@ -57,6 +57,9 @@ def test_all_experiment_e2e():
     experiment = submarine_client.get_experiment(experiment["experimentId"])
     # set env to display full table
     runner = CliRunner(env={"COLUMNS": str(TEST_CONSOLE_WIDTH)})
+    # set to test environment config
+    result = runner.invoke(main.entry_point, ["config", "set","connection.hostname","localhost"])
+    result = runner.invoke(main.entry_point, ["config", "set","connection.port","8080"])
     # test list experiment
     result = runner.invoke(main.entry_point, ["list", "experiment"])
     assert result.exit_code == 0
@@ -79,3 +82,6 @@ def test_all_experiment_e2e():
     # test get experiment fail after delete
     result = runner.invoke(main.entry_point, ["get", "experiment", experiment["experimentId"]])
     assert "[Api Error] Not found experiment." in result.output
+
+    # restore config to init
+    result = runner.invoke(main.entry_point, ["config", "init"])
