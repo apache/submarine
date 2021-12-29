@@ -58,8 +58,8 @@ def test_all_experiment_e2e():
     # set env to display full table
     runner = CliRunner(env={"COLUMNS": str(TEST_CONSOLE_WIDTH)})
     # set to test environment config
-    result = runner.invoke(main.entry_point, ["config", "set","connection.hostname","localhost"])
-    result = runner.invoke(main.entry_point, ["config", "set","connection.port","8080"])
+    result = runner.invoke(main.entry_point, ["config", "set", "connection.hostname", "localhost"])
+    result = runner.invoke(main.entry_point, ["config", "set", "connection.port", "8080"])
     # test list experiment
     result = runner.invoke(main.entry_point, ["list", "experiment"])
     assert result.exit_code == 0
