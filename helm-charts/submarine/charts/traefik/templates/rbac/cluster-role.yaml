@@ -63,4 +63,7 @@ rules:
       - get
       - list
       - watch
+      - create
+      - update
+      - delete
 {{- end -}}
