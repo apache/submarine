@@ -28,7 +28,7 @@ import torch.optim as optim
 from tensorboardX import SummaryWriter
 from torchvision import datasets, transforms
 
-from submarine import ModelsClient
+import submarine
 
 WORLD_SIZE = int(os.environ.get("WORLD_SIZE", 1))
 rank = int(os.environ.get("RANK", 0))
@@ -55,7 +55,7 @@ class Net(nn.Module):
         return F.log_softmax(x, dim=1)
 
 
-def train(args, model, device, train_loader, optimizer, epoch, writer, periscope):
+def train(args, model, device, train_loader, optimizer, epoch, writer):
     model.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         data, target = data.to(device), target.to(device)
@@ -76,10 +76,10 @@ def train(args, model, device, train_loader, optimizer, epoch, writer, periscope
             )
             niter = epoch * len(train_loader) + batch_idx
             writer.add_scalar("loss", loss.item(), niter)
-            periscope.log_metric("loss", loss.item(), niter)
+            submarine.log_metric("loss", loss.item(), niter)
 
 
-def test(args, model, device, test_loader, writer, epoch, periscope):
+def test(args, model, device, test_loader, writer, epoch):
     model.eval()
     test_loss = 0
     correct = 0
@@ -94,7 +94,7 @@ def test(args, model, device, test_loader, writer, epoch, periscope):
     test_loss /= len(test_loader.dataset)
     print("\naccuracy={:.4f}\n".format(float(correct) / len(test_loader.dataset)))
     writer.add_scalar("accuracy", float(correct) / len(test_loader.dataset), epoch)
-    periscope.log_metric("accuracy", float(correct) / len(test_loader.dataset), epoch)
+    submarine.log_metric("accuracy", float(correct) / len(test_loader.dataset), epoch)
 
 
 def should_distribute():
@@ -219,13 +219,11 @@ if __name__ == "__main__":
         model = Distributor(model)
 
     optimizer = optim.SGD(model.parameters(), lr=args.lr, momentum=args.momentum)
-    periscope = ModelsClient()
-    with periscope.start() as run:
-        periscope.log_param("learning_rate", args.lr)
-        periscope.log_param("batch_size", args.batch_size)
-        for epoch in range(1, args.epochs + 1):
-            train(args, model, device, train_loader, optimizer, epoch, writer, periscope)
-            test(args, model, device, test_loader, writer, epoch, periscope)
+    submarine.log_param("learning_rate", args.lr)
+    submarine.log_param("batch_size", args.batch_size)
+    for epoch in range(1, args.epochs + 1):
+        train(args, model, device, train_loader, optimizer, epoch, writer)
+        test(args, model, device, test_loader, writer, epoch)
     if args.save_model:
         torch.save(model.state_dict(), "mnist_cnn.pt")
 

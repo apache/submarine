@@ -5,7 +5,7 @@ This is an easy example of how to track the metric and paramater in submarine-sd
 
 For example, you start an experiment with 3 workers. Suppose the experiment is assigned with an ID `experiment_12345678`, and the operator launches 3 pods with worker_id `worker-0`, `worker-1` and `worker-2` respectively. 
 
-The logging of `worker-i` will be directed to `experiment_12345678` / `worker-i` in the mlflow server 
+The logging of `worker-i` will be directed to `experiment_12345678` / `worker-i` in the submarine server 
 
 ## How to execute
 

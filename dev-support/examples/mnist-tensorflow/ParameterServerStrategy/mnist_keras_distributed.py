@@ -19,7 +19,7 @@ import os
 
 import tensorflow as tf
 
-from submarine import ModelsClient
+import submarine
 
 print(tf.__version__)
 
@@ -74,14 +74,12 @@ checkpoint_dir = "./training_checkpoints"
 
 model.fit(dc, epochs=5, steps_per_epoch=20, callbacks=callbacks)
 if __name__ == "__main__":
-    modelClient = ModelsClient()
-    with modelClient.start() as run:
-        EPOCHS = 5
-        hist = model.fit(dc, epochs=EPOCHS, steps_per_epoch=20, callbacks=callbacks)
-        for i in range(EPOCHS):
-            modelClient.log_metric("val_loss", hist.history["loss"][i])
-            modelClient.log_metric("Val_accuracy", hist.history["accuracy"][i])
-        model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
+    EPOCHS = 5
+    hist = model.fit(dc, epochs=EPOCHS, steps_per_epoch=20, callbacks=callbacks)
+    for i in range(EPOCHS):
+        submarine.log_metric("val_loss", hist.history["loss"][i], i)
+        submarine.log_metric("Val_accuracy", hist.history["accuracy"][i], i)
+    model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
 
 """
 Reference:

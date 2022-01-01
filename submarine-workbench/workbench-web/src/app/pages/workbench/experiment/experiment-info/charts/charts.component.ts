@@ -81,8 +81,8 @@ export class ChartsComponent implements OnInit {
           metrics = [];
         }
         key = data.key;
-        const d = new Date(0);
-        d.setUTCMilliseconds(data.timestamp);
+        data.timestamp = data.timestamp.replace(" ", "T")
+        const d = new Date(data.timestamp);
         const metric = { name: d, value: data.value };
         metrics.push(metric);
       }

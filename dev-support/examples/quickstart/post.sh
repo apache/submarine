@@ -26,7 +26,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   },
   "environment": {
-    "image": "quickstart:0.7.0-SNAPSHOT"
+    "image": "apache/submarine:quickstart-0.7.0-SNAPSHOT"
   },
   "spec": {
     "Worker": {

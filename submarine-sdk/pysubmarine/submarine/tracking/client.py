@@ -16,7 +16,7 @@ import json
 import os
 import re
 import tempfile
-import time
+from datetime import datetime
 from typing import Any, Dict
 
 import submarine
@@ -61,7 +61,7 @@ class SubmarineClient(object):
         key: str,
         value: float,
         worker_index: str,
-        timestamp: int = None,
+        timestamp: datetime = None,
         step: int = None,
     ) -> None:
         """
@@ -75,7 +75,7 @@ class SubmarineClient(object):
         :param timestamp: Time when this metric was calculated. Defaults to the current system time.
         :param step: Training step (iteration) at which was the metric calculated. Defaults to 0.
         """
-        timestamp = timestamp if timestamp is not None else int(time.time())
+        timestamp = timestamp if timestamp is not None else datetime.now()
         step = step if step is not None else 0
         validate_metric(key, value, timestamp, step)
         metric = Metric(key, value, worker_index, timestamp, step)

@@ -20,7 +20,7 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 from tensorflow.keras import layers, models
 
-from submarine import ModelsClient
+import submarine
 
 
 def make_datasets_unbatched():
@@ -77,12 +77,11 @@ def main():
         def on_epoch_end(self, epoch, logs=None):
             # monitor the loss and accuracy
             print(logs)
-            modelClient.log_metrics({"loss": logs["loss"], "accuracy": logs["accuracy"]}, epoch)
+            submarine.log_metric("loss", logs["loss"], epoch)
+            submarine.log_metric("accuracy", logs["accuracy"], epoch)
 
-    with modelClient.start():
-        multi_worker_model.fit(ds_train, epochs=10, steps_per_epoch=70, callbacks=[MyCallback()])
+    multi_worker_model.fit(ds_train, epochs=10, steps_per_epoch=70, callbacks=[MyCallback()])
 
 
 if __name__ == "__main__":
-    modelClient = ModelsClient()
     main()

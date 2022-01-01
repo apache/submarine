@@ -18,13 +18,11 @@
 import random
 import time
 
-from submarine import ModelsClient
+import submarine
 
 if __name__ == "__main__":
-    modelClient = ModelsClient()
-    with modelClient.start() as run:
-        modelClient.log_param("learning_rate", random.random())
-        for i in range(100):
-            time.sleep(1)
-            modelClient.log_metric("mse", random.random() * 100, i)
-            modelClient.log_metric("acc", random.random(), i)
+    submarine.log_param("learning_rate", random.random())
+    for i in range(100):
+        time.sleep(1)
+        submarine.log_metric("mse", random.random() * 100, i)
+        submarine.log_metric("acc", random.random(), i)
