@@ -16,7 +16,7 @@
 """
 import torch
 
-from submarine import ModelsClient
+import submarine
 
 
 class LinearNNModel(torch.nn.Module):
@@ -30,11 +30,12 @@ class LinearNNModel(torch.nn.Module):
 
 
 if __name__ == "__main__":
-    client = ModelsClient()
     net = LinearNNModel()
-    client.save_model(
+    submarine.save_model(
         model_type="pytorch",
         model=net,
         artifact_path="pytorch-nn-model",
         registered_model_name="simple-nn-model",
+        input_dim=[2],
+        output_dim=[1],
     )

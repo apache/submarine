@@ -20,7 +20,7 @@ import os
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
-from submarine import ModelsClient
+import submarine
 
 BUFFER_SIZE = 10000
 BATCH_SIZE = 32
@@ -93,15 +93,11 @@ with strategy.scope():
 # attention:   x=train_datasets_no_auto_shard , not x = train_datasets
 
 if __name__ == "__main__":
-    modelClient = ModelsClient()
-    with modelClient.start() as run:
-        EPOCHS = 5
-        hist = multi_worker_model.fit(
-            x=train_datasets_no_auto_shard, epochs=EPOCHS, steps_per_epoch=5
-        )
-        for i in range(EPOCHS):
-            modelClient.log_metric("val_loss", hist.history["loss"][i])
-            modelClient.log_metric("Val_accuracy", hist.history["accuracy"][i])
+    EPOCHS = 5
+    hist = multi_worker_model.fit(x=train_datasets_no_auto_shard, epochs=EPOCHS, steps_per_epoch=5)
+    for i in range(EPOCHS):
+        submarine.log_metric("val_loss", hist.history["loss"][i], i)
+        submarine.log_metric("Val_accuracy", hist.history["accuracy"][i], i)
 
 
 """Reference

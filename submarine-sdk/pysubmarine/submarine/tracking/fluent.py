@@ -54,7 +54,14 @@ def log_metric(key, value, step=None):
     SubmarineClient().log_metric(job_id, key, value, worker_index, datetime.now(), step or 0)
 
 
-def save_model(model_type: str, model, artifact_path: str, registered_model_name: str = None):
+def save_model(
+    model_type: str,
+    model,
+    artifact_path: str,
+    registered_model_name: str = None,
+    input_dim: list = None,
+    output_dim: list = None,
+):
     """
     Save a model into the minio pod.
     :param model_type: The type of the model.
@@ -63,4 +70,6 @@ def save_model(model_type: str, model, artifact_path: str, registered_model_name
     :param registered_model_name: If none None, register model into the model registry with
                                   this name. If None, the model only be saved in minio pod.
     """
-    SubmarineClient().save_model(model_type, model, artifact_path, registered_model_name)
+    SubmarineClient().save_model(
+        model_type, model, artifact_path, registered_model_name, input_dim, output_dim
+    )

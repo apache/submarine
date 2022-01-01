@@ -20,7 +20,7 @@ import os
 import tensorflow as tf
 import tensorflow_datasets as tfds
 
-from submarine import ModelsClient
+import submarine
 
 datasets, info = tfds.load(name="mnist", with_info=True, as_supervised=True)
 mnist_train, mnist_test = datasets["train"], datasets["test"]
@@ -89,7 +89,7 @@ def decay(epoch):
 class PrintLR(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         print("\nLearning rate for epoch {} is {}".format(epoch + 1, model.optimizer.lr.numpy()))
-        modelClient.log_metric("lr", model.optimizer.lr.numpy())
+        submarine.log_metric("lr", model.optimizer.lr.numpy())
 
 
 # Put all the callbacks together.
@@ -101,18 +101,16 @@ callbacks = [
 ]
 
 if __name__ == "__main__":
-    modelClient = ModelsClient()
-    with modelClient.start() as run:
-        EPOCHS = 5
-        hist = model.fit(train_dataset, epochs=EPOCHS, callbacks=callbacks)
-        for i in range(EPOCHS):
-            modelClient.log_metric("val_loss", hist.history["loss"][i])
-            modelClient.log_metric("Val_accuracy", hist.history["accuracy"][i])
-        model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
-        eval_loss, eval_acc = model.evaluate(eval_dataset)
-        print("Eval loss: {}, Eval accuracy: {}".format(eval_loss, eval_acc))
-        modelClient.log_param("loss", eval_loss)
-        modelClient.log_param("acc", eval_acc)
+    EPOCHS = 5
+    hist = model.fit(train_dataset, epochs=EPOCHS, callbacks=callbacks)
+    for i in range(EPOCHS):
+        submarine.log_metric("val_loss", hist.history["loss"][i], i)
+        submarine.log_metric("Val_accuracy", hist.history["accuracy"][i], i)
+    model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
+    eval_loss, eval_acc = model.evaluate(eval_dataset)
+    print("Eval loss: {}, Eval accuracy: {}".format(eval_loss, eval_acc))
+    submarine.log_param("loss", eval_loss)
+    submarine.log_param("acc", eval_acc)
 
 """Reference:
 https://www.tensorflow.org/api_docs/python/tf/distribute/MirroredStrategy
