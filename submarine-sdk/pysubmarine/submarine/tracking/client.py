@@ -16,7 +16,7 @@ import json
 import os
 import re
 import tempfile
-import datetime
+from datetime import datetime
 from typing import Any, Dict
 
 import submarine
@@ -61,7 +61,7 @@ class SubmarineClient(object):
         key: str,
         value: float,
         worker_index: str,
-        timestamp: int = None,
+        timestamp: datetime = None,
         step: int = None,
     ) -> None:
         """
