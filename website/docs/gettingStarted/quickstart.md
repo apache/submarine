@@ -71,7 +71,6 @@ notebook-controller-deployment-5d4f5f874c-mnbc8   1/1     Running   0          6
 pytorch-operator-844c866d54-xm8nl                 1/1     Running   2          61m
 submarine-database-85bd68dbc5-qggtm               1/1     Running   0          11m
 submarine-minio-76465444f6-hdgdp                  1/1     Running   0          11m
-submarine-mlflow-75f86d8f4d-rj2z7                 1/1     Running   0          11m
 submarine-operator-5dd79cdf86-gpm2p               1/1     Running   0          61m
 submarine-server-68985b767-vjdvx                  1/1     Running   0          11m
 submarine-tensorboard-5df8499fd4-vnklf            1/1     Running   0          11m
@@ -111,7 +110,7 @@ Reference: https://github.com/kubeflow/tf-operator/blob/master/examples/v1/distr
 import tensorflow_datasets as tfds
 import tensorflow as tf
 from tensorflow.keras import layers, models
-from submarine import ModelsClient
+import submarine
 
 def make_datasets_unbatched():
   BUFFER_SIZE = 10000
@@ -167,14 +166,12 @@ def main():
     def on_epoch_end(self, epoch, logs=None):
       # monitor the loss and accuracy
       print(logs)
-      modelClient.log_metrics({"loss": logs["loss"], "accuracy": logs["accuracy"]}, epoch)
+      submarine.log_metrics({"loss": logs["loss"], "accuracy": logs["accuracy"]}, epoch)
 
-  with modelClient.start() as run:
-    multi_worker_model.fit(ds_train, epochs=10, steps_per_epoch=70, callbacks=[MyCallback()])
+  multi_worker_model.fit(ds_train, epochs=10, steps_per_epoch=70, callbacks=[MyCallback()])
 
 
 if __name__ == '__main__':
-  modelClient = ModelsClient()
   main()
 ```
 
@@ -200,14 +197,9 @@ eval $(minikube docker-env)
     4. The experiment is successfully submitted
     ![](/img/quickstart-submit-4.png)
 
-### 4. Monitor the process (modelClient)
+### 4. Monitor the process
 
-1. In our code, we use `modelClient` from `submarine-sdk` to record the metrics. To see the result, click `MLflow UI` in the workbench.
-2. To compare the metrics of each worker, you can select all workers and then click `compare`
-
-  ![](/img/quickstart-mlflow.png)
-
-  ![](/img/quickstart-mlflow-2.png)
-
+1. In our code, we use `submarine` from `submarine-sdk` to record the metrics. To see the result, click corresponding experiment with name `quickstart` in the workbench.
+2. To see the metrics of each worker, you can select a worker from the left top list.
 
 ### 5. Serve the model (In development)

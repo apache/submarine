@@ -45,7 +45,6 @@ module.exports = {
                 },
                 {
                     Others: [
-                        "userDocs/others/mlflow",
                         "userDocs/others/tensorboard",
                     ],
                 },

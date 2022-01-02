@@ -32,9 +32,8 @@ A brief introduction about these components:
 4. **submarine-traefik**: Kubernetes Ingress controller
 5. **submarine-database**: A MySQL database to store metadata
 6. **submarine-minio**: An object store for machine learning artifacts
-7. **submarine-mlflow**: A platform for model management
-8. **submarine-tensorboard**: A visualization tool for distributed training experiments
-9. **submarine-server**: Handle API requests, and submit distributed training experiments to Kubernetes.
+7. **submarine-tensorboard**: A visualization tool for distributed training experiments
+8. **submarine-server**: Handle API requests, and submit distributed training experiments to Kubernetes.
 
 # Submarine Development
 ## Video
