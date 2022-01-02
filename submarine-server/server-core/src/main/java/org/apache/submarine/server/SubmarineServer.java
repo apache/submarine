@@ -67,7 +67,7 @@ import java.io.InputStreamReader;
 public class SubmarineServer extends ResourceConfig {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineServer.class);
 
-  private static final long serverTimeStamp = System.currentTimeMillis();
+  private static final long SERVERTIMESTAMP = System.currentTimeMillis();
 
   public static Server jettyWebServer;
   public static ServiceLocator sharedServiceLocator;
@@ -75,11 +75,10 @@ public class SubmarineServer extends ResourceConfig {
   private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
   public static long getServerTimeStamp() {
-    return serverTimeStamp;
+    return SERVERTIMESTAMP;
   }
 
-  public static void main(String[] args) throws InterruptedException,
-      IOException {
+  public static void main(String[] args) throws InterruptedException {
     PropertyConfigurator.configure(ClassLoader.getSystemResource("log4j.properties"));
 
     LOG.info("Submarine server Host: " + conf.getServerAddress());
@@ -235,7 +234,6 @@ public class SubmarineServer extends ResourceConfig {
     // Set some timeout options to make debugging easier.
     int timeout = 1000 * 30;
     connector.setIdleTimeout(timeout);
-    // connector.setSoLingerTime(-1);
     connector.setHost(conf.getServerAddress());
     if (conf.useSsl()) {
       connector.setPort(conf.getServerSslPort());
@@ -328,12 +326,7 @@ public class SubmarineServer extends ResourceConfig {
 
       // If index.html does not exist, throw ServletException
       if (!(indexFile.isFile() && indexFile.exists())) {
-        try {
-          throw new Exception("Can't found index html!");
-        } catch (Exception e) {
-          LOG.error(e.getMessage(), e);
-          throw new ServletException("Can't found index html!");
-        }
+        throw new ServletException("Can't found index html!");
       }
 
       StringBuilder sbIndexBuf = new StringBuilder();
@@ -344,6 +337,8 @@ public class SubmarineServer extends ResourceConfig {
         while ((lineTxt = bufferedReader.readLine()) != null) {
           sbIndexBuf.append(lineTxt);
         }
+      } catch (IOException e) {
+        LOG.error(e.getMessage(), e);
       }
 
       response.getWriter().print(sbIndexBuf.toString());
