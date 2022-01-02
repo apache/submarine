@@ -55,9 +55,7 @@ public class ModelManager {
   public static ModelManager getInstance() {
     if (manager == null) {
       synchronized (ModelManager.class) {
-        if (manager == null) {
-          manager = new ModelManager(SubmitterManager.loadSubmitter(), new ModelVersionService());
-        }
+        manager = new ModelManager(SubmitterManager.loadSubmitter(), new ModelVersionService());
       }
     }
     return manager;
@@ -70,12 +68,11 @@ public class ModelManager {
     setServeInfo(spec);
 
 
-    LOG.info("Create " + spec.getModelType() + " model serve");
+    LOG.info("Create {} + model serve", spec.getModelType());
 
     submitter.createServe(spec);
 
-    ServeResponse serveResponse = getServeResponse(spec);
-    return serveResponse;
+    return getServeResponse();
   }
 
   /**
@@ -84,7 +81,7 @@ public class ModelManager {
   public void deleteServe(ServeSpec spec) throws SubmarineRuntimeException {
     setServeInfo(spec);
 
-    LOG.info("Delete " + spec.getModelType() + " model serve");
+    LOG.info("Delete {} model serve", spec.getModelType());
 
     submitter.deleteServe(spec);
   }
@@ -115,7 +112,7 @@ public class ModelManager {
     spec.setModelType(modelVersion.getModelType());
   }
 
-  private ServeResponse getServeResponse(ServeSpec spec){
+  private ServeResponse getServeResponse(){
     return new ServeResponse();
   }
 }

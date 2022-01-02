@@ -423,37 +423,37 @@ func (c *Controller) validateSubmarine(submarine *v1alpha1.Submarine) error {
 func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 	var err error
 	err = c.createSubmarineServer(submarine)
-	if err != nil {
+	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}
 
 	err = c.createSubmarineDatabase(submarine)
-	if err != nil {
+	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}
 
 	err = c.createIngress(submarine)
-	if err != nil {
+	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}
 
 	err = c.createSubmarineServerRBAC(submarine)
-	if err != nil {
+	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}
 
 	err = c.createSubmarineTensorboard(submarine)
-	if err != nil {
+	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}
 
 	err = c.createSubmarineMlflow(submarine)
-	if err != nil {
+	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}
 
 	err = c.createSubmarineMinio(submarine)
-	if err != nil {
+	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}
 

@@ -66,7 +66,7 @@ public class MybatisGenerator {
       LOG.error(e.getMessage(), e);
     } catch (InterruptedException e) {
       LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
+      Thread.currentThread().interrupt();
     }
   }
 }
