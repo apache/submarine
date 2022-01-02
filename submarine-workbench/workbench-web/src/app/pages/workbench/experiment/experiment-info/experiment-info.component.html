@@ -102,6 +102,10 @@
           <i nz-icon nzType="desktop" nzTheme="outline"></i>
           Outputs
         </li>
+        <li nz-menu-item (click)="currentState = 4">
+          <i nz-icon nzType="experiment" nzTheme="outline"></i>
+          Artifacts
+        </li>
       </ul>
     </nz-sider>
     <nz-layout>
@@ -119,6 +123,11 @@
           [experimentID]="experimentID"
           [podLogArr]="podLogArr"
         ></submarine-outputs>
+        <submarine-artifacts
+          *ngSwitchCase="4"
+          [artifactPaths]="artifactPaths"
+          [experimentID]="experimentID"
+        ></submarine-artifacts>
       </div>
     </nz-layout>
   </nz-layout>

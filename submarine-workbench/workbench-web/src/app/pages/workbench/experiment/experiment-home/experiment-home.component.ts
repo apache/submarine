@@ -72,7 +72,6 @@ export class ExperimentHomeComponent implements OnInit {
 
     this.experimentService.emitInfo(null);
     this.getTensorboardInfo(1000, 50000);
-    this.getMlflowInfo(1000, 100000);
     this.onSwitchAutoReload();
   }
 
@@ -169,25 +168,6 @@ export class ExperimentHomeComponent implements OnInit {
         (res) => {
           this.isTensorboardLoading = !res.available;
           this.tensorboardUrl = res.url;
-        },
-        (err) => console.log(err)
-      );
-  }
-
-  getMlflowInfo(period: number, due: number) {
-    interval(period)
-      .pipe(
-        mergeMap(() => this.experimentService.getMlflowInfo()),
-        retryWhen((error) => error),
-        tap((x) => console.log(x)),
-        filter((res) => res.available),
-        take(1),
-        timeout(due)
-      )
-      .subscribe(
-        (res) => {
-          this.isMlflowLoading = !res.available;
-          this.mlflowUrl = res.url;
         },
         (err) => console.log(err)
       );

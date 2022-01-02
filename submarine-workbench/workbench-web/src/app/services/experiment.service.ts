@@ -173,6 +173,19 @@ export class ExperimentService {
     );
   }
 
+  getExperimentArtifactPaths(id: string): Observable<any> {
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment/artifacts/' + id);
+    return this.httpClient.get<Rest<any>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get', id);
+        }
+      })
+    );
+  }
+
   fetchExperimentTemplateList(): Observable<ExperimentTemplate[]> {
     const apiUrl = this.baseApi.getRestApi('/v1/template');
     return this.httpClient.get<Rest<ExperimentTemplate[]>>(apiUrl).pipe(
@@ -255,19 +268,6 @@ export class ExperimentService {
   getTensorboardInfo(): Observable<TensorboardInfo> {
     const apiUrl = this.baseApi.getRestApi('/v1/experiment/tensorboard');
     return this.httpClient.get<Rest<TensorboardInfo>>(apiUrl).pipe(
-      switchMap((res) => {
-        if (res.success) {
-          return of(res.result);
-        } else {
-          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
-        }
-      })
-    );
-  }
-
-  getMlflowInfo(): Observable<MlflowInfo> {
-    const apiUrl = this.baseApi.getRestApi('/v1/experiment/mlflow');
-    return this.httpClient.get<Rest<MlflowInfo>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
           return of(res.result);
