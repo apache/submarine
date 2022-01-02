@@ -32,6 +32,7 @@ import { HyperParamsComponent } from './experiment-info/hyper-params/hyper-param
 import { MetricsComponent } from './experiment-info/metrics/metrics.component';
 import { ChartsComponent } from './experiment-info/charts/charts.component';
 import { OutputsComponent } from './experiment-info/outputs/outputs.component';
+import { ArtifactsComponent } from './experiment-info/artifacts/artifacts.component';
 import { ExperimentHomeComponent } from './experiment-home/experiment-home.component';
 import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentFormComponent } from './experiment-home/experiment-form/experiment-form.component';
@@ -59,6 +60,7 @@ import { ExperimentCustomizedFormComponent } from './experiment-home/experiment-
     MetricsComponent,
     ChartsComponent,
     OutputsComponent,
+    ArtifactsComponent,
     ExperimentHomeComponent,
     ExperimentFormComponent,
     ExperimentPredefinedFormComponent,

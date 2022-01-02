@@ -38,6 +38,7 @@ export class ExperimentInfoComponent implements OnInit {
   podLogArr;
   paramData;
   metricData;
+  artifactPaths;
 
   constructor(
     private router: Router,
@@ -78,6 +79,7 @@ export class ExperimentInfoComponent implements OnInit {
     );
 
     this.getExperimentPod();
+    this.getExperimentArtifactPaths();
     this.experimentService.emitInfo(this.experimentID);
   }
 
@@ -118,6 +120,20 @@ export class ExperimentInfoComponent implements OnInit {
         },
         (err) => {
           this.nzMessageService.error('Cannot load metric of ' + this.experimentID);
+          console.log(err);
+        }
+      );
+  }
+
+  getExperimentArtifactPaths() {
+    this.experimentService
+      .getExperimentArtifactPaths(this.experimentID)
+      .subscribe(
+        (result) => {
+          this.artifactPaths = result;
+        },
+        (err) => {
+          this.nzMessageService.error('Cannot load artifact paths of ' + this.experimentID);
           console.log(err);
         }
       );

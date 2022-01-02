@@ -49,6 +49,7 @@ import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateSubmit;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.s3.Client;
 
 /**
  * Experiment Service REST API v1
@@ -57,6 +58,7 @@ import org.apache.submarine.server.response.JsonResponse;
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
 public class ExperimentRestApi {
   private ExperimentManager experimentManager = ExperimentManager.getInstance();
+  private Client minioClient = new Client();
 
   @VisibleForTesting
   public void setExperimentManager(ExperimentManager experimentManager) {
@@ -256,6 +258,25 @@ public class ExperimentRestApi {
       ExperimentLog experimentLog = experimentManager.getExperimentLog(id);
       return new JsonResponse.Builder<ExperimentLog>(Response.Status.OK).success(true)
           .result(experimentLog).build();
+
+    } catch (SubmarineRuntimeException e) {
+      return parseExperimentServiceException(e);
+    }
+  }
+
+  @GET
+  @Path("/artifacts/{id}")
+  @Operation(summary = "List artifact paths by id",
+      tags = {"experiment"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class))),
+          @ApiResponse(responseCode = "404", description = "Experiment not found")})
+  public Response getArtifactPaths(@PathParam(RestConstants.ID) String id) {
+    try {
+      List<String> artifactPaths = minioClient.listArtifactByExperimentId(id);
+      return new JsonResponse.Builder<List<String>>(Response.Status.OK).success(true)
+          .result(artifactPaths).build();
 
     } catch (SubmarineRuntimeException e) {
       return parseExperimentServiceException(e);
