@@ -39,7 +39,6 @@ module.exports = {
                 {
                     "Submarine SDK": [
                         "userDocs/submarine-sdk/experiment-client",
-                        "userDocs/submarine-sdk/model-client",
                         "userDocs/submarine-sdk/tracking",
                     ],
                 },
