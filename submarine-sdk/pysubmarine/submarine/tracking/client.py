@@ -176,18 +176,18 @@ class SubmarineClient(object):
                 model_type=model_type,
             )
 
-    def create_serve(self, model_name: str, model_version: int):
+    def create_serve(self, model_name: str, model_version: int, async_req: bool = True):
         """
         Create serve of a model through Seldon Core
         :param model_name: Name of a registered model
         :param model_version: Version of a registered model
         """
-        return self.serve_client.create_serve(model_name, model_version)
+        return self.serve_client.create_serve(model_name, model_version, async_req)
 
-    def delete_serve(self, model_name: str, model_version: int):
+    def delete_serve(self, model_name: str, model_version: int, async_req: bool = True):
         """
         Delete a serving model
         :param model_name: Name of a registered model
         :param model_version: Version of a registered model
         """
-        return self.serve_client.delete_serve(model_name, model_version)
+        return self.serve_client.delete_serve(model_name, model_version, async_req=async_req)

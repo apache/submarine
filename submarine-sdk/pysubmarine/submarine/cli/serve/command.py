@@ -22,12 +22,16 @@ from rich.console import Console
 from rich.json import JSON as richJSON
 from rich.panel import Panel
 
-from submarine.cli.config import get_config
+from submarine.cli.config.config import loadConfig
 from submarine.client.api.serve_client import ServeClient
 from submarine.client.api_client import ApiException
 
-config = get_config()
-serveClient = ServeClient("http://localhost:32080")
+submarineCliConfig = loadConfig()
+serveClient = ServeClient(
+    f"http://{submarineCliConfig.connection.hostname}:{submarineCliConfig.connection.port}"
+    if submarineCliConfig
+    else "http://localhost:32080"
+)
 
 POLLING_INTERVAL = 1  # sec
 TIMEOUT = 30  # sec
@@ -52,29 +56,22 @@ def get_serve(model_name: str, model_version: int):
 @click.command("serve")
 @click.argument("model_name")
 @click.argument("model_version", type=int)
-@click.option("--wait", is_flag=True, default=False)
-def create_serve(model_name: str, model_version: int, wait: bool):
+def create_serve(model_name: str, model_version: int):
     """Create serve"""
     console = Console()
     try:
-        thread = serveClient.delete_serve(model_name, model_version)
+        thread = serveClient.create_serve(model_name, model_version, async_req=True)
         timeout = time.time() + TIMEOUT
-        with console.status("[bold green] Deleting Experiment(id = {} )...".format(id)):
+        with console.status(
+            f"[bold green] Creating Serve with name: {model_name}, version: {model_version}"
+        ):
             while not thread.ready():
                 time.sleep(POLLING_INTERVAL)
                 if time.time() > timeout:
                     console.print("[bold red] Timeout!")
                     return
         result = thread.get()
-        result = result.result
-
-        if wait:
-            if result["status"] == "Deleted":
-                console.print("[bold green] Experiment(id = {} ) deleted".format(id))
-            else:
-                console.print("[bold red] Failed")
-                json_data = richJSON.from_data(result)
-                console.print(Panel(json_data, title="Experiment(id = {} )".format(id)))
+        click.echo(result)
 
     except ApiException as err:
         if err.body is not None:
@@ -92,9 +89,11 @@ def delete_serve(model_name: str, model_version: int, wait: bool):
     """Delete serve"""
     console = Console()
     try:
-        thread = serveClient.create_serve(model_name, model_version)
+        thread = serveClient.delete_serve(model_name, model_version, async_req=True)
         timeout = time.time() + TIMEOUT
-        with console.status("[bold green] Deleting Experiment(id = {} )...".format(id)):
+        with console.status(
+            f"[bold green] Deleting Serve with name: {model_name}, version: {model_version}"
+        ):
             while not thread.ready():
                 time.sleep(POLLING_INTERVAL)
                 if time.time() > timeout:
@@ -102,7 +101,7 @@ def delete_serve(model_name: str, model_version: int, wait: bool):
                     return
 
         result = thread.get()
-        result = result.result
+        click.echo(result)
 
         if wait:
             if result["status"] == "Deleted":

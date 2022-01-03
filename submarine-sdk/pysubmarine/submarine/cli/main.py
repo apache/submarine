@@ -73,7 +73,7 @@ cmdgrp_delete.add_command(notebook_cmd.delete_notebook)
 cmdgrp_list.add_command(environment_cmd.list_environment)
 cmdgrp_get.add_command(environment_cmd.get_environment)
 cmdgrp_delete.add_command(environment_cmd.delete_environment)
-# serve
+# # serve
 cmdgrp_list.add_command(serve_cmd.list_serve)
 cmdgrp_get.add_command(serve_cmd.get_serve)
 cmdgrp_create.add_command(serve_cmd.create_serve)

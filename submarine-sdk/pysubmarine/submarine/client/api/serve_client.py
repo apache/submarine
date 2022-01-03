@@ -32,22 +32,22 @@ class ServeClient:
         api_client = get_api_client(host)
         self.serve_api = ServeApi(api_client=api_client)
 
-    def create_serve(self, model_name: str, model_version: int):
+    def create_serve(self, model_name: str, model_version: int, async_req: bool):
         """
         Create a model serve
         :param model_name: Name of a registered model
         :param model_version: Version of a registered model
         """
-        spec = {"modelName": model_name, "modelVersion": model_version}
-        response = self.serve_api.create_serve(*spec)
-        return response.result
+        serve_spec = {"modelName": model_name, "modelVersion": model_version}
+        response = self.serve_api.create_serve(serve_spec=serve_spec, async_req=async_req)
+        return response
 
-    def delete_serve(self, model_name: str, model_version: int):
+    def delete_serve(self, model_name: str, model_version: int, async_req: bool):
         """
         Delete a serving model
         :param model_name: Name of a registered model
         :param model_version: Version of a registered model
         """
-        spec = {"modelName": model_name, "modelVersion": model_version}
-        response = self.serve_api.create_serve(*spec)
-        return response.result
+        serve_spec = {"modelName": model_name, "modelVersion": model_version}
+        response = self.serve_api.delete_serve(serve_spec=serve_spec, async_req=async_req)
+        return response

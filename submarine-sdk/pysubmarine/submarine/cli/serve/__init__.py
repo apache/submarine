@@ -15,7 +15,7 @@
  under the License.
 """
 
-from submarine.cli.serve.command import list_serve, get_serve, create_serve, delete_serve
+from submarine.cli.serve.command import create_serve, delete_serve, get_serve, list_serve
 
 __all__ = [
     "list_serve",
