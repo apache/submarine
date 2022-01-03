@@ -21,6 +21,8 @@ from typing import Any, Dict
 
 import submarine
 from submarine.artifacts.repository import Repository
+from submarine.client.api.serve_client import ServeClient
+from submarine.client.utils.api_utils import generate_host
 from submarine.entities import Metric, Param
 from submarine.exceptions import SubmarineException
 from submarine.tracking import utils
@@ -40,6 +42,7 @@ class SubmarineClient(object):
         s3_registry_uri: str = None,
         aws_access_key_id: str = None,
         aws_secret_access_key: str = None,
+        host: str = generate_host(),
     ) -> None:
         """
         :param db_uri: Address of local or remote tracking server. If not provided, defaults
@@ -54,6 +57,7 @@ class SubmarineClient(object):
         self.db_uri = db_uri or submarine.get_db_uri()
         self.store = utils.get_tracking_sqlalchemy_store(self.db_uri)
         self.model_registry = utils.get_model_registry_sqlalchemy_store(self.db_uri)
+        self.serve_client = ServeClient(host)
 
     def log_metric(
         self,
@@ -130,7 +134,7 @@ class SubmarineClient(object):
                         "Saving pytorch model needs to provide input and output dimension for"
                         " serving."
                     )
-                submarine.models.pytorch.save_model(model, model_save_dir)
+                submarine.models.pytorch.save_model(model, model_save_dir, input_dim)
             elif model_type == "tensorflow":
                 import submarine.models.tensorflow
 
@@ -172,16 +176,18 @@ class SubmarineClient(object):
                 model_type=model_type,
             )
 
-    def create_serve(self, model_name: str, model_version: int) -> None:
+    def create_serve(self, model_name: str, model_version: int):
         """
         Create serve of a model through Seldon Core
         :param model_name: Name of a registered model
         :param model_version: Version of a registered model
         """
-        
-    def delete_serve(self, model_name: str, model_version: int) -> None:
+        return self.serve_client.create_serve(model_name, model_version)
+
+    def delete_serve(self, model_name: str, model_version: int):
         """
         Delete a serving model
         :param model_name: Name of a registered model
         :param model_version: Version of a registered model
         """
+        return self.serve_client.delete_serve(model_name, model_version)
