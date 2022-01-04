@@ -21,11 +21,11 @@ package org.apache.spark.sql.catalyst.optimizer
 
 import org.apache.commons.logging.LogFactory
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.catalyst.plans.logical.{Command, LogicalPlan, RecoverPartitions}
+import org.apache.spark.sql.catalyst.plans.logical.{CacheTable, Command, LogicalPlan, UncacheTable}
 import org.apache.spark.sql.catalyst.rules.Rule
-import org.apache.spark.sql.execution.{SubmarineShowDatabasesCommand, SubmarineShowTablesCommand}
-import org.apache.spark.sql.execution.command.{ResetCommand, _}
+import org.apache.spark.sql.execution.command._
 import org.apache.spark.sql.execution.datasources.{CreateTempViewUsing, InsertIntoDataSourceCommand, InsertIntoHadoopFsRelationCommand}
+import org.apache.spark.sql.execution.{SubmarineShowDatabasesCommand, SubmarineShowTablesCommand}
 import org.apache.spark.sql.hive.PrivilegesBuilder
 import org.apache.spark.sql.hive.execution.CreateHiveTableAsSelectCommand
 import org.apache.submarine.spark.compatible.CompatibleCommand._
@@ -119,7 +119,7 @@ case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession)
              | _: CreateDataSourceTableCommand => CREATETABLE
         case _: CreateTableLikeCommand => CREATETABLE
         case _: CreateViewCommand
-//             | _: CacheTableCommand
+             | _: CacheTable
              | _: CreateTempViewUsing => CREATEVIEW
 
         case p if p.nodeName == "DescribeColumnCommand" => DESCTABLE
@@ -160,7 +160,7 @@ case class SubmarineSparkRangerAuthorizationExtension(spark: SparkSession)
 
         case _: TruncateTableCommand => TRUNCATETABLE
 
-//        case _: UncacheTableCommand => DROPVIEW
+        case _: UncacheTable => DROPVIEW
 
         // Commands that do not need build privilege goes as explain type
         case _ =>

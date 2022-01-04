@@ -48,8 +48,8 @@
     <ranger.version>1.2.0</ranger.version>
     <ranger.major.version>1</ranger.major.version>
     <spark.compatible.version>2</spark.compatible.version>
-    <scala.version>2.11.8</scala.version>
-    <scala.binary.version>2.11</scala.binary.version>
+    <scala.version>2.12.15</scala.version>
+    <scala.binary.version>2.12</scala.binary.version>
     <scalatest.version>2.2.6</scalatest.version>
     <solr.version>8.4.0</solr.version>
     <spark.version>2.4.7</spark.version>
