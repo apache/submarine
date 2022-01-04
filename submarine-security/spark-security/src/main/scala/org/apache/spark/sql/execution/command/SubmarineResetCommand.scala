@@ -19,7 +19,6 @@
 
 package org.apache.spark.sql.execution.command
 
-import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.{Row, SparkSession}
 
 /**
@@ -27,7 +26,7 @@ import org.apache.spark.sql.{Row, SparkSession}
  * wipe out all configuration including our security-specific ones
  * see: https://issues.apache.org/jira/browse/SPARK-31234
  */
-case object SubmarineResetCommand extends RunnableCommand {
+case object SubmarineResetCommand extends LeafRunnableCommand {
   override def run(sparkSession: SparkSession): Seq[Row] = {
     val conf = sparkSession.sessionState.conf
     conf.clear()
@@ -36,6 +35,4 @@ case object SubmarineResetCommand extends RunnableCommand {
     }
     Seq.empty[Row]
   }
-
-  override protected def withNewChildrenInternal(newChildren: IndexedSeq[LogicalPlan]): LogicalPlan = ???
 }

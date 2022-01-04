@@ -25,11 +25,11 @@ import org.apache.hadoop.security.UserGroupInformation
 import org.apache.spark.sql.{Row, SparkSession}
 import org.apache.spark.sql.catalyst.expressions.{Attribute, AttributeReference}
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
-import org.apache.spark.sql.execution.command.RunnableCommand
+import org.apache.spark.sql.execution.command.LeafRunnableCommand
 import org.apache.spark.sql.types.StringType
 import org.apache.submarine.spark.security.{RangerSparkAuditHandler, RangerSparkPlugin, SparkAccessControlException}
 
-case class ShowCurrentRolesCommand() extends RunnableCommand {
+case class ShowCurrentRolesCommand() extends LeafRunnableCommand {
 
   override def output: Seq[Attribute] =
     Seq(AttributeReference("Role Name", StringType, nullable = false)())
@@ -47,6 +47,4 @@ case class ShowCurrentRolesCommand() extends RunnableCommand {
       // TODO: support auditHandler.flushAudit()
     }
   }
-
-  override protected def withNewChildrenInternal(newChildren: IndexedSeq[LogicalPlan]): LogicalPlan = ???
 }

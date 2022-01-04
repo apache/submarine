@@ -19,10 +19,10 @@
 
 package org.apache.submarine.spark.security.command
 
+import org.apache.spark.sql.execution.command.LeafRunnableCommand
 import org.apache.spark.sql.{Row, SparkSession}
-import org.apache.spark.sql.execution.command.RunnableCommand
 
-case class DropRoleCommand (roleName: String) extends RunnableCommand {
+case class DropRoleCommand (roleName: String) extends LeafRunnableCommand {
   override def run(sparkSession: SparkSession): Seq[Row] = {
     throw new UnsupportedOperationException("DROP ROLE")
   }

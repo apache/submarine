@@ -23,10 +23,10 @@ import scala.util.control.NonFatal
 import org.apache.hadoop.security.UserGroupInformation
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.{Row, SparkSession}
-import org.apache.spark.sql.execution.command.RunnableCommand
+import org.apache.spark.sql.execution.command.{LeafRunnableCommand, RunnableCommand}
 import org.apache.submarine.spark.security.{RangerSparkAuditHandler, RangerSparkPlugin, SparkAccessControlException}
 
-case class DropRoleCommand(roleName: String) extends RunnableCommand {
+case class DropRoleCommand(roleName: String) extends LeafRunnableCommand {
   override def run(sparkSession: SparkSession): Seq[Row] = {
     CommandUtils.validateRoleName(roleName)
 
@@ -41,6 +41,4 @@ case class DropRoleCommand(roleName: String) extends RunnableCommand {
       // TODO: support auditHandler.flushAudit()
     }
   }
-
-  override protected def withNewChildrenInternal(newChildren: IndexedSeq[LogicalPlan]): LogicalPlan = ???
 }
