@@ -17,9 +17,10 @@
 FROM continuumio/miniconda3
 
 # mlflow serve dependency
-RUN pip install boto3
+RUN pip install mlflow boto3
 
 # some envs
 ENV MLFLOW_S3_ENDPOINT_URL="http://submarine-minio-service:9000"
 ENV AWS_ACCESS_KEY_ID="submarine_minio"
 ENV AWS_SECRET_ACCESS_KEY="submarine_minio"
+ENV MLFLOW_TRACKING_URI="http://submarine-mlflow-service:5000"

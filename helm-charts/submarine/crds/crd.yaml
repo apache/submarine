@@ -65,6 +65,13 @@ spec:
                   type: boolean
                 storageSize:
                   type: string
+            mlflow:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                storageSize:
+                  type: string
             minio:
               type: object
               properties:
