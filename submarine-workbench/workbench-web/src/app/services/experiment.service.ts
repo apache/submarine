@@ -25,6 +25,7 @@ import { ExperimentSpec } from '@submarine/interfaces/experiment-spec';
 import { ExperimentTemplate, ExperimentTemplateSpec } from '@submarine/interfaces/experiment-template';
 import { ExperimentTemplateSubmit } from '@submarine/interfaces/experiment-template-submit';
 import { TensorboardInfo } from '@submarine/interfaces/tensorboard-info';
+import { MlflowInfo } from '@submarine/interfaces/mlflow-info';
 import { BaseApiService } from '@submarine/services/base-api.service';
 import { of, throwError, Observable, Subject } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
@@ -167,6 +168,19 @@ export class ExperimentService {
           return of(res.result);
         } else {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post', param);
+        }
+      })
+    );
+  }
+
+  getExperimentArtifactPaths(id: string): Observable<any> {
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment/artifacts/' + id);
+    return this.httpClient.get<Rest<any>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get', id);
         }
       })
     );
