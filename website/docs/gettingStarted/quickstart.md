@@ -71,6 +71,7 @@ notebook-controller-deployment-5d4f5f874c-mnbc8   1/1     Running   0          6
 pytorch-operator-844c866d54-xm8nl                 1/1     Running   2          61m
 submarine-database-85bd68dbc5-qggtm               1/1     Running   0          11m
 submarine-minio-76465444f6-hdgdp                  1/1     Running   0          11m
+submarine-mlflow-75f86d8f4d-rj2z7                 1/1     Running   0          11m
 submarine-operator-5dd79cdf86-gpm2p               1/1     Running   0          61m
 submarine-server-68985b767-vjdvx                  1/1     Running   0          11m
 submarine-tensorboard-5df8499fd4-vnklf            1/1     Running   0          11m
