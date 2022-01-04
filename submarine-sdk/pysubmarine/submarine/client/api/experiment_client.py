@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import logging
+import os
 import time
 
 from submarine.cli.config.config import loadConfig
@@ -32,8 +33,12 @@ def generate_host():
     Generate submarine host
     :return: submarine host
     """
-    submarine_server_dns_name = str(submarineCliConfig.connection.hostname)
-    submarine_server_port = str(submarineCliConfig.connection.port)
+    env_dns_name = str(os.environ.get("SUBMARINE_SERVER_DNS_NAME"))
+    env_port = str(os.environ.get("SUBMARINE_SERVER_PORT"))
+    submarine_server_dns_name = (
+        env_dns_name if env_dns_name else str(submarineCliConfig.connection.hostname)
+    )
+    submarine_server_port = env_port if env_port else str(submarineCliConfig.connection.port)
     host = "http://" + submarine_server_dns_name + ":" + submarine_server_port
     return host
 
