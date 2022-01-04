@@ -21,6 +21,7 @@ package org.apache.submarine.server.experiment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -39,12 +40,14 @@ import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
+import org.apache.submarine.server.api.experiment.MlflowInfo;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.service.ExperimentService;
 import org.apache.submarine.server.rest.RestConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.mlflow.tracking.MlflowClient;
 
 /**
  * It's responsible for managing the experiment CRUD and cache them.
@@ -56,6 +59,8 @@ public class ExperimentManager {
 
   private final AtomicInteger experimentCounter = new AtomicInteger(0);
 
+  private Optional<org.mlflow.api.proto.Service.Experiment> MlflowExperimentOptional;
+  private org.mlflow.api.proto.Service.Experiment MlflowExperiment;
   /**
    * Used to cache the specs by the experiment id.
    * key: the string of experiment id
@@ -262,7 +267,15 @@ public class ExperimentManager {
 
     experiment.rebuild(deletedExperiment);
 
-    return experiment;
+    MlflowClient mlflowClient = new MlflowClient("http://submarine-mlflow-service:5000");
+    try {
+      MlflowExperimentOptional = mlflowClient.getExperimentByName(id);
+      MlflowExperiment = MlflowExperimentOptional.get();
+      String mlflowId = MlflowExperiment.getExperimentId();
+      mlflowClient.deleteExperiment(mlflowId);
+    } finally {
+      return experiment;
+    }
   }
 
   /**
@@ -319,6 +332,16 @@ public class ExperimentManager {
    */
   public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
     return submitter.getTensorboardInfo();
+  }
+
+  /**
+   * Get mlflow meta data.
+   *
+   * @return MlflowInfo
+   * @throws SubmarineRuntimeException the service error
+   */
+  public MlflowInfo getMLflowInfo() throws SubmarineRuntimeException {
+    return submitter.getMlflowInfo();
   }
 
   private void checkSpec(ExperimentSpec spec) throws SubmarineRuntimeException {

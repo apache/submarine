@@ -64,6 +64,7 @@ import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
+import org.apache.submarine.server.api.experiment.MlflowInfo;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.model.ServeSpec;
 import org.apache.submarine.server.api.notebook.Notebook;
@@ -336,6 +337,45 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
   }
+
+  @Override
+  public MlflowInfo getMlflowInfo() throws SubmarineRuntimeException {
+    final String name = "submarine-mlflow";
+    final String ingressRouteName = "submarine-mlflow-ingressroute";
+    String namespace = getServerNamespace();
+
+    try {
+      V1Deployment deploy = appsV1Api.readNamespacedDeploymentStatus(name, namespace, "true");
+      boolean available = deploy.getStatus().getAvailableReplicas() > 0; // at least one replica is running
+
+      IngressRoute ingressRoute = new IngressRoute();
+      V1ObjectMeta meta = new V1ObjectMeta();
+      meta.setName(ingressRouteName);
+      meta.setNamespace(namespace);
+      ingressRoute.setMetadata(meta);
+      Object object = api.getNamespacedCustomObject(
+          ingressRoute.getGroup(), ingressRoute.getVersion(),
+          ingressRoute.getMetadata().getNamespace(),
+          ingressRoute.getPlural(), ingressRouteName
+      );
+
+      Gson gson = new JSON().getGson();
+      String jsonString = gson.toJson(object);
+      IngressRoute result = gson.fromJson(jsonString, IngressRoute.class);
+
+
+      String route = result.getSpec().getRoutes().stream().findFirst().get().getMatch();
+
+      String url = route.replace("PathPrefix(`", "").replace("`)", "/");
+
+      MlflowInfo mlflowInfo = new MlflowInfo(available, url);
+
+      return mlflowInfo;
+    } catch (ApiException e) {
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    }
+  }
+
 
   @Override
   public Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
