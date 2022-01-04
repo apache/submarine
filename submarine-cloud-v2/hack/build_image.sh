@@ -32,6 +32,7 @@ image:
     database        build submarine database
     jupyter         build submarine jupyter-notebook
     jupyter-gpu     build submarine jupyter-notebook-gpu
+    mlflow          build submarine mlflow"
 }
 
 build_server() {
@@ -65,6 +66,14 @@ build_jupyter_gpu() {
   eval $(minikube docker-env -u)
 }
 
+build_mlflow() {
+  eval $(minikube docker-env)
+  ./dev-support/docker-images/mlflow/build.sh
+  # Delete the deployment and the operator will create a new one using new image
+  kubectl delete -n "$NAMESPACE" deployments submarine-mlflow
+  eval $(minikube docker-env -u)
+}
+
 # ========================================
 
 if [[ "$#" -ne 1 ]]; then
@@ -81,6 +90,7 @@ case "$1" in
     build_database
     build_jupyter
     build_jupyter_gpu
+    build_mlflow
     ;;
   "server")
     build_server
@@ -93,6 +103,9 @@ case "$1" in
     ;;
   "jupyter-gpu")
     build_jupyter_gpu
+    ;;
+  "mlflow")
+    build_mlflow
     ;;
   *)
     help_message >&2
