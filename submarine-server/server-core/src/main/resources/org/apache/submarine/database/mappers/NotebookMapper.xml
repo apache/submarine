@@ -29,10 +29,11 @@
 
   <resultMap id="NotebookEntityResultMap" type="org.apache.submarine.server.notebook.database.entity.NotebookEntity" extends="BaseEntityResultMap">
     <result column="notebook_spec" jdbcType="VARCHAR" property="notebookSpec" />
+    <result column="notebook_status" jdbcType="VARCHAR" property="notebookStatus" />
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, notebook_spec, create_by, create_time, update_by, update_time
+    id, notebook_spec, create_by, create_time, update_by, update_time, notebook_status
   </sql>
 
   <select id="selectAll" parameterType="java.lang.String" resultMap="NotebookEntityResultMap">
@@ -54,16 +55,18 @@
   </delete>
 
   <insert id="insert" parameterType="org.apache.submarine.server.notebook.database.entity.NotebookEntity">
-    insert into notebook (id, notebook_spec, create_by, create_time, update_by, update_time)
+    insert into notebook (id, notebook_spec, create_by, create_time, update_by, update_time, notebook_status)
     values (#{id,jdbcType=VARCHAR}, #{notebookSpec,jdbcType=VARCHAR},
-            #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
+            #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now(),
+            #{notebookStatus,jdbcType=VARCHAR})
   </insert>
 
   <update id="update" parameterType="org.apache.submarine.server.notebook.database.entity.NotebookEntity">
     update notebook
     <set>
-      <if test="notebookSpec != null">
+      <if test="notebookSpec != null and notebookStatus != null">
         notebook_spec = #{notebookSpec,jdbcType=VARCHAR},
+        notebook_status = #{notebookStatus,jdbcType=VARCHAR},
       </if>
       update_time = now()
     </set>

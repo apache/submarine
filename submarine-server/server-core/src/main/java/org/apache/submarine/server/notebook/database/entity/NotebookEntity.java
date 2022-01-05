@@ -26,6 +26,8 @@ public class NotebookEntity extends BaseEntity {
     Take id (inherited from BaseEntity) as the primary key for notebook table
   */
   private String notebookSpec;
+  
+  private String notebookStatus;
 
   public NotebookEntity() {
   }
@@ -37,6 +39,14 @@ public class NotebookEntity extends BaseEntity {
   public void setNotebookSpec(String notebookSpec) {
     this.notebookSpec = notebookSpec;
   }
+ 
+  public String getNotebookStatus() {
+    return notebookStatus;
+  }
+
+  public void setNotebookStatus(String noteStatus) {
+    this.notebookStatus = noteStatus;
+  }
 
   @Override
   public String toString() {
@@ -46,7 +56,8 @@ public class NotebookEntity extends BaseEntity {
         ", createBy='" + createBy + '\'' +
         ", createTime=" + createTime +
         ", updateBy='" + updateBy + '\'' +
-        ", updateTime=" + updateTime +
+        ", updateTime=" + updateTime + '\'' +
+        ", notebookStatus='" + notebookStatus + "\'" +
         '}';
   }
 }

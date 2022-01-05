@@ -130,6 +130,7 @@ public class NotebookService {
     try {
       entity.setId(notebook.getNotebookId().toString());
       entity.setNotebookSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(notebook.getSpec()));
+      entity.setNotebookStatus(notebook.getStatus());
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException("Unable to build entity from notebook");
@@ -149,6 +150,7 @@ public class NotebookService {
       notebook.setNotebookId(NotebookId.fromString(entity.getId()));
       notebook.setSpec(new Gson().fromJson(entity.getNotebookSpec(), NotebookSpec.class));
       notebook.setName(notebook.getSpec().getMeta().getName());
+      notebook.setStatus(entity.getNotebookStatus());
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException("Unable to build notebook from entity");

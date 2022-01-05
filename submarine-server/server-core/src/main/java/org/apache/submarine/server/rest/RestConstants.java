@@ -93,4 +93,12 @@ public class RestConstants {
    * Serve.
    */
   public static final String SERVE = "serve";
+  
+  /**
+   *  Internal
+   */
+  public static final String INTERNAL = "internal";
+  public static final String CUSTOM_RESOURCE_TYPE = "customResourceType";
+  public static final String CUSTOM_RESOURCE_ID = "resourceId";
+  public static final String CUSTOM_RESOURCE_STATUS = "status";
 }

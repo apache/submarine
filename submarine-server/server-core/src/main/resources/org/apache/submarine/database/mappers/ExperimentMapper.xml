@@ -29,10 +29,11 @@
 
   <resultMap id="ExperimentEntityResultMap" type="org.apache.submarine.server.experiment.database.entity.ExperimentEntity" extends="BaseEntityResultMap">
     <result column="experiment_spec" jdbcType="VARCHAR" property="experimentSpec" />
+    <result column="experiment_status" property="experimentStatus"/>
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, experiment_spec, create_by, create_time, update_by, update_time
+    id, experiment_spec, create_by, create_time, update_by, update_time, experiment_status
   </sql>
 
   <select id="selectAll" parameterType="java.lang.String" resultMap="ExperimentEntityResultMap">
@@ -54,16 +55,17 @@
   </delete>
 
   <insert id="insert" parameterType="org.apache.submarine.server.experiment.database.entity.ExperimentEntity">
-    insert into experiment (id, experiment_spec, create_by, create_time, update_by, update_time)
+    insert into experiment (id, experiment_spec, create_by, create_time, update_by, update_time, experiment_status)
     values (#{id,jdbcType=VARCHAR}, #{experimentSpec,jdbcType=VARCHAR},
-            #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
+            #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now(), #{experimentStatus,jdbcType=VARCHAR})
   </insert>
 
   <update id="update" parameterType="org.apache.submarine.server.experiment.database.entity.ExperimentEntity">
     update experiment
     <set>
-      <if test="experimentSpec != null">
+      <if test="experimentSpec != null and experimentStatus != null">
         experiment_spec = #{experimentSpec,jdbcType=VARCHAR},
+        experiment_status = #{experimentStatus, jdbcType=VARCHAR},
       </if>
       update_time = now()
     </set>

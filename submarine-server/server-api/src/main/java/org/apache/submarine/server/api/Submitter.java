@@ -94,10 +94,11 @@ public interface Submitter {
   /**
    * Create a notebook with spec
    * @param spec notebook spec
+   * @param notebookId notebookId
    * @return object
    * @throws SubmarineRuntimeException running error
    */
-  Notebook createNotebook(NotebookSpec spec) throws SubmarineRuntimeException;
+  Notebook createNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException;
 
   /**
    * Find a notebook with spec

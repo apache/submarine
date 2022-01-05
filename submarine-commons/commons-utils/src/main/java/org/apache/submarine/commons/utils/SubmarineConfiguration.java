@@ -311,6 +311,10 @@ public class SubmarineConfiguration extends XMLConfiguration {
     return getString(SubmarineConfVars.ConfVars.WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE);
   }
 
+  public String getServerServiceName() {
+    return getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SERVICE_NAME);
+  }
+  
   private String getStringValue(String name, String d) {
     String value = this.properties.get(name);
     if (value != null) {

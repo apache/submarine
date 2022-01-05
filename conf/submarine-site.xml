@@ -161,4 +161,10 @@
     <description>The submitter which you want used in the server. Build-in k8s</description>
   </property>
 
+  <property>
+    <name>submarine.server.service.name</name>
+    <value>submarine-server</value>
+    <description>The name of submarine server deployment</description>
+  </property>
+
 </configuration>

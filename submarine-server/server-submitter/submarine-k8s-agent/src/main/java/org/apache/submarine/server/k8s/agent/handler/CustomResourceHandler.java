@@ -21,6 +21,8 @@ package org.apache.submarine.server.k8s.agent.handler;
 
 import java.io.IOException;
 
+import org.apache.submarine.server.k8s.agent.util.RestClient;
+
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
@@ -32,6 +34,10 @@ public abstract class CustomResourceHandler {
     private String namespace;
     private String crType;
     private String crName;
+    private String serverHost;
+    private Integer serverPort;
+    private RestClient restClient;
+    
     
     public CustomResourceHandler() throws IOException {
         this.client = Config.defaultClient();
@@ -39,7 +45,8 @@ public abstract class CustomResourceHandler {
         this.coreApi = new CoreV1Api(this.client);
     }
     
-    public abstract void init(String namespace, String crType, String crName);
+    public abstract void init(String serverHost, Integer serverPort,
+            String namespace, String crType, String crName);
     public abstract void run();
     public abstract void onAddEvent();
     public abstract void onModifyEvent();

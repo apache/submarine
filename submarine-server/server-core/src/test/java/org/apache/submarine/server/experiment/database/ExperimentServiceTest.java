@@ -85,10 +85,12 @@ public class ExperimentServiceTest {
     String id = "experiment_1230";
     String spec = "{\"value\": 1}";
     entity.setId(id);
+    entity.setExperimentStatus("running");
     entity.setExperimentSpec(spec);
     experimentService.insert(entity);
 
     String new_spec = "{\"value\": 2}";
+    entity.setExperimentStatus("complete");
     entity.setExperimentSpec(new_spec);
     experimentService.update(entity);
 
@@ -117,5 +119,6 @@ public class ExperimentServiceTest {
   private void compareEntity(ExperimentEntity expected, ExperimentEntity actual) {
     Assert.assertEquals(expected.getId(), actual.getId());
     Assert.assertEquals(expected.getExperimentSpec(), actual.getExperimentSpec());
+    Assert.assertEquals(expected.getExperimentStatus(), actual.getExperimentStatus());
   }
 }
