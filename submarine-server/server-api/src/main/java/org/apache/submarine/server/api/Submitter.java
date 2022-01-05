@@ -44,7 +44,6 @@ public interface Submitter {
   /**
    * Create experiment with spec
    * @param spec experiment spec
-   * @param id experimentId 
    * @return object
    * @throws SubmarineRuntimeException running error
    */
@@ -95,7 +94,7 @@ public interface Submitter {
   /**
    * Create a notebook with spec
    * @param spec notebook spec
-   * @param notebookId noteebookId
+   * @param notebookId notebookId
    * @return object
    * @throws SubmarineRuntimeException running error
    */
