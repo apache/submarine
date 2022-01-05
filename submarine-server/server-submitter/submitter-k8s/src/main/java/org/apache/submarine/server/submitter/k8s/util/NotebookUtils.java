@@ -98,7 +98,6 @@ public class NotebookUtils {
     Notebook notebook = new Notebook();
     notebook.setUid(notebookCR.getMetadata().getUid());
     notebook.setName(notebookCR.getMetadata().getName());
-    notebook.setCreatedTime(notebookCR.getMetadata().getCreationTimestamp().toString());
     if (notebookCR.getMetadata().getCreationTimestamp() != null) {
       notebook.setCreatedTime(notebookCR.getMetadata().getCreationTimestamp().toString());
     }
