@@ -21,6 +21,8 @@ package org.apache.submarine.server.notebook.database.service;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
@@ -138,6 +140,8 @@ public class NotebookService {
     return entity;
   }
 
+  private static final DateFormat RESOURCE_TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+
   /**
    * Create a new notebook instance from entity.
    *
@@ -151,6 +155,7 @@ public class NotebookService {
       notebook.setSpec(new Gson().fromJson(entity.getNotebookSpec(), NotebookSpec.class));
       notebook.setName(notebook.getSpec().getMeta().getName());
       notebook.setStatus(entity.getNotebookStatus());
+      notebook.setCreatedTime(RESOURCE_TIME_FORMAT.format(entity.getCreateTime()));
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException("Unable to build notebook from entity");

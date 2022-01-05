@@ -142,10 +142,12 @@ public class NotebookManager {
         Notebook notebook = submitter.findNotebook(nb.getSpec());
         notebook.setNotebookId(nb.getNotebookId());
         notebook.setSpec(nb.getSpec());
+        if (notebook.getCreatedTime() == null) {
+          notebook.setCreatedTime(nb.getCreatedTime());
+        }
         notebookList.add(notebook);
       } catch (SubmarineRuntimeException e) {
-        LOG.warn("Submitter can not find notebook: {}, will delete it", nb.getNotebookId());
-        notebookService.delete(nb.getNotebookId().toString());
+        LOG.error("Error when get notebook resource, skip this row!", e);
       }
     }
     return notebookList;
