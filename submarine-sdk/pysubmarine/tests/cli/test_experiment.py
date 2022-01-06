@@ -64,6 +64,10 @@ def test_all_experiment_e2e():
     experiment = submarine_client.get_experiment(experiment["experimentId"])
     # set env to display full table
     runner = CliRunner(env={"COLUMNS": str(TEST_CONSOLE_WIDTH)})
+    # check cli config
+    result = runner.invoke(main.entry_point, ["config", "get", "connection.port"])
+    assert result.exit_code == 0
+    assert "connection.hostname={}".format(8080) in result.output
 
     # test list experiment
     result = runner.invoke(main.entry_point, ["list", "experiment"])
