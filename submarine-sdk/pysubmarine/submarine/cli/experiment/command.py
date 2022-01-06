@@ -24,10 +24,18 @@ from rich.json import JSON as richJSON
 from rich.panel import Panel
 from rich.table import Table
 
+from submarine.cli.config.config import loadConfig
 from submarine.client.api.experiment_client import ExperimentClient
 from submarine.client.exceptions import ApiException
 
-experimentClient = ExperimentClient()
+submarineCliConfig = loadConfig()
+if submarineCliConfig is None:
+    exit(1)
+experimentClient = ExperimentClient(
+    host="http://{}:{}".format(
+        submarineCliConfig.connection.hostname, submarineCliConfig.connection.port
+    )
+)
 
 POLLING_INTERVAL = 1  # sec
 TIMEOUT = 30  # sec

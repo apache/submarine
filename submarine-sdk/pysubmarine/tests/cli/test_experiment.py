@@ -29,6 +29,13 @@ TEST_CONSOLE_WIDTH = 191
 
 @pytest.mark.e2e
 def test_all_experiment_e2e():
+    """E2E Test for using submarine CLI to access submarine experiment
+    To run this test, you should first set
+        your submarine CLI config `port` to 8080 and `hostname` to localhost
+    i.e. please execute the commands in your terminal:
+        submarine config set connection.hostname localhost
+        submarine config set connection.port 8080
+    """
     submarine_client = submarine.ExperimentClient(host="http://localhost:8080")
     environment = EnvironmentSpec(image="apache/submarine:tf-dist-mnist-test-1.0")
     experiment_meta = ExperimentMeta(
@@ -57,9 +64,7 @@ def test_all_experiment_e2e():
     experiment = submarine_client.get_experiment(experiment["experimentId"])
     # set env to display full table
     runner = CliRunner(env={"COLUMNS": str(TEST_CONSOLE_WIDTH)})
-    # set to test environment config
-    result = runner.invoke(main.entry_point, ["config", "set", "connection.hostname", "localhost"])
-    result = runner.invoke(main.entry_point, ["config", "set", "connection.port", "8080"])
+
     # test list experiment
     result = runner.invoke(main.entry_point, ["list", "experiment"])
     assert result.exit_code == 0
@@ -75,8 +80,10 @@ def test_all_experiment_e2e():
     assert "Experiment(id = {} )".format(experiment["experimentId"]) in result.output
     assert experiment["spec"]["environment"]["image"] in result.output
 
-    # test delete experiment
-    result = runner.invoke(main.entry_point, ["delete", "experiment", experiment["experimentId"]])
+    # test delete experiment (blocking mode)
+    result = runner.invoke(
+        main.entry_point, ["delete", "experiment", experiment["experimentId"], "--wait"]
+    )
     assert "Experiment(id = {} ) deleted".format(experiment["experimentId"]) in result.output
 
     # test get experiment fail after delete
