@@ -16,15 +16,31 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-span {
+.body {
   border: 0.1em solid;
-  border-radius: 0.2em;
+  border-radius: 1em;
   background-color: #fafafa;
   padding: 0em 0.3em 0.1em 0.4em;
 }
 
-i {
+.expand {
   color: rgba($color: #000000, $alpha: 0.0);
+}
+
+.delete {
+  color: rgba($color: #000000, $alpha: 0.6);
+  .icon {
+    &:hover{
+      color: rgba($color: #000000, $alpha: 0.9);
+    }
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: all 0.3s;
+      transition-property: all;
+      transition-duration: 0.3s;
+      transition-timing-function: ease;
+      transition-delay: 0s;
+  }
 }
 
 ::ng-deep .ant-select-selection--multiple .ant-select-selection__choice {

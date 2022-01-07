@@ -30,11 +30,11 @@
     <div nz-col [nzSpan]="6">
       <nz-select nzMode="multiple" [nzCustomTemplate]="multipleTemplate" style="width: 100%;" nzPlaceHolder="Filter by tags" [(ngModel)]="listOfChosenTags" (ngModelChange)="filterByTags()">
         <nz-option *ngFor="let option of listOfTagsOption" [nzLabel]="option.label" [nzValue]="option.value" nzCustomContent>
-          <submarine-model-tag [tag]="option.label" [cssType]="'default'"></submarine-model-tag>
+          <submarine-model-tag [tag]="option.label" [type]="'default'"></submarine-model-tag>
         </nz-option>
       </nz-select>
       <ng-template #multipleTemplate let-selected nzBorderless [ngClass]="'noPadding'">
-        <submarine-model-tag [tag]="selected.nzLabel" [cssType]="'selection'"></submarine-model-tag>
+        <submarine-model-tag [tag]="selected.nzLabel" [type]="'selection'"></submarine-model-tag>
       </ng-template>
     </div>
   </div>

@@ -20,13 +20,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'submarine-model-tag',
-  templateUrl: './model-tag.component.html',
-  styleUrls: ['./model-tag.component.scss'],
+  selector: 'submarine-model-version-tag',
+  templateUrl: './model-version-tag.component.html',
+  styleUrls: ['./model-version-tag.component.scss'],
 })
-export class ModelTagComponent implements OnInit {
+export class ModelVersionTagComponent implements OnInit {
   @Input() tag: string;
-  @Input() cssType: string;
+  @Input() type: string;
+  @Input() deleteTag: Function = null;
   textColor: string;
   backgroundColor: string;
   borderColor: string;
@@ -39,8 +40,8 @@ export class ModelTagComponent implements OnInit {
     this.textColor = this.stringToColour(this.tag, "text");
     this.backgroundColor = this.stringToColour(this.tag, "background");
     this.borderColor = this.stringToColour(this.tag, "border");
-    this.margin = this.cssType == "selection" ? "0em -0.8em 0em -0.7em" : "0em 0.15em 0em 0.15em";
-    this.closable = this.cssType == "selection";
+    this.margin = this.type == "selection" ? "0em -0.8em 0em -0.7em" : "0em 0.15em 0em 0.15em";
+    this.closable = this.type == "selection";
   }
 
   stringToColour = (str: string, type: string) => {
@@ -63,5 +64,14 @@ export class ModelTagComponent implements OnInit {
     const opacity = type == "background" ? "0.1" : type == "border" ? "0.4" : "1.0";
     const rgb = "rgba(" + `${r},${g},${b}` + "," + opacity + ")";
     return rgb;
+  }
+
+  onDeleteTag = (tag: string) => {
+    if (this.deleteTag !== null) {
+      this.deleteTag(tag);
+    }
+    else {
+      console.warn(`Can not handle tag deletion!`);
+    }
   }
 }

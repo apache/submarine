@@ -54,7 +54,6 @@ export class ModelInfoComponent implements OnInit {
     this.modelService.querySpecificModel(this.modelName).subscribe(
       (res) => {
         this.selectedModelInfo = res;
-        console.log(this.selectedModelInfo);
         this.isModelInfoLoading = false;
       }
     )
@@ -63,7 +62,6 @@ export class ModelInfoComponent implements OnInit {
   fetchModelAllVersions = () => {
     this.modelVersionService.queryModelAllVersions(this.modelName).subscribe(
       (res) => {
-        console.log(res);
         this.modelVersions = res;
         this.isModelVersionsLoading = false;
       }
