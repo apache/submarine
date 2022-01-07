@@ -53,7 +53,7 @@
       <p nz-typography>
         <span><strong>Tags: </strong></span>
         <span  *ngIf="!isLoading">
-          <submarine-model-tag *ngFor="let tag of modelVersionInfo.tags" [tag]="tag" [cssType]="'default'"></submarine-model-tag>
+          <submarine-model-tags [modelName]="modelName" [modelVersion]="modelVersion" [tags]="modelVersionInfo.tags" [useVersionTags]="true"></submarine-model-tags>
         </span>
       </p>
       <p nz-typography>

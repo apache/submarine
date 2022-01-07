@@ -68,6 +68,34 @@ export class ModelService {
     );
   }
 
+  deleteModelTag(modelName: string, tag: string): Observable<string> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/registered-model/tag?name=${modelName}&tag=${tag}`);
+    return this.httpClient.delete<Rest<any>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.message);
+        }
+        else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete');
+        }
+      })
+    )
+  }
+
+  createModelTag(modelName: string, tag: string) : Observable<string> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/registered-model/tag?name=${modelName}&tag=${tag}`);
+    return this.httpClient.post<Rest<any>>(apiUrl, {}).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.message);
+        }
+        else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post');
+        }
+      })
+    )
+  }
+
   durationHandle(secs: number) {
     const hr = Math.floor(secs / 3600);
     const min = Math.floor((secs - hr * 3600) / 60);
