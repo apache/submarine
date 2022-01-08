@@ -69,7 +69,7 @@ def test_all_experiment_e2e():
     result = runner.invoke(main.entry_point, ["config", "get", "connection.port"])
     print("myoutput",result.output)
     assert result.exit_code == 0
-    assert "connection.hostname={}".format(8080) in result.output
+    assert "connection.port={}".format(8080) in result.output
 
     # # test list experiment
     # result = runner.invoke(main.entry_point, ["list", "experiment"])
