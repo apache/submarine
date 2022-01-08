@@ -72,8 +72,6 @@ def test_all_experiment_e2e():
     result = runner.invoke(main.entry_point, ["list", "experiment"])
     assert result.exit_code == 0
     assert "List of Experiments" in result.output
-    print(result.output)
-    print(experiment)
     assert experiment["spec"]["meta"]["name"] in result.output
     assert experiment["experimentId"] in result.output
     assert experiment["createdTime"] in result.output
