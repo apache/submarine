@@ -62,7 +62,7 @@ def test_all_experiment_e2e():
     experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
     print("Experiment created")
     # get experiment again to get createdTime,runningTime...
-    submarine_client.wait_for_finish(experiment["experimentId"])
+    # submarine_client.wait_for_finish(experiment["experimentId"])
     print("Experiment finished")
     experiment = submarine_client.get_experiment(experiment["experimentId"])
     # set env to display full table
