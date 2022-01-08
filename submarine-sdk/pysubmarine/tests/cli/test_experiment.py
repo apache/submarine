@@ -58,45 +58,36 @@ def test_all_experiment_e2e():
         spec={"Ps": ps_spec, "Worker": worker_spec},
     )
 
-    print("Experiment creating")
     experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
-    print("Experiment created")
-    # get experiment again to get createdTime,runningTime...
-    # submarine_client.wait_for_finish(experiment["experimentId"])
-    print("Experiment finished")
     experiment = submarine_client.get_experiment(experiment["experimentId"])
     # set env to display full table
     runner = CliRunner(env={"COLUMNS": str(TEST_CONSOLE_WIDTH)})
     # check cli config
     result = runner.invoke(main.entry_point, ["config", "get", "connection.port"])
-    print("myoutput", result.output)
     assert result.exit_code == 0
     assert "connection.port={}".format(8080) in result.output
 
-    # # test list experiment
-    # result = runner.invoke(main.entry_point, ["list", "experiment"])
-    # assert result.exit_code == 0
-    # assert "List of Experiments" in result.output
-    # assert experiment["spec"]["meta"]["name"] in result.output
-    # assert experiment["experimentId"] in result.output
-    # assert experiment["createdTime"] in result.output
-    # assert experiment["runningTime"] in result.output
-    # assert experiment["status"] in result.output
+    # test list experiment
+    result = runner.invoke(main.entry_point, ["list", "experiment"])
+    assert result.exit_code == 0
+    assert "List of Experiments" in result.output
+    assert experiment["spec"]["meta"]["name"] in result.output
+    assert experiment["experimentId"] in result.output
+    assert experiment["createdTime"] in result.output
+    assert experiment["runningTime"] in result.output
+    assert experiment["status"] in result.output
 
-    # # test get experiment
-    # result = runner.invoke(main.entry_point, ["get", "experiment", experiment["experimentId"]])
-    # assert "Experiment(id = {} )".format(experiment["experimentId"]) in result.output
-    # assert experiment["spec"]["environment"]["image"] in result.output
+    # test get experiment
+    result = runner.invoke(main.entry_point, ["get", "experiment", experiment["experimentId"]])
+    assert "Experiment(id = {} )".format(experiment["experimentId"]) in result.output
+    assert experiment["spec"]["environment"]["image"] in result.output
 
-    # # test delete experiment (blocking mode)
-    # result = runner.invoke(
-    #     main.entry_point, ["delete", "experiment", experiment["experimentId"], "--wait"]
-    # )
-    # assert "Experiment(id = {} ) deleted".format(experiment["experimentId"]) in result.output
+    # test delete experiment (blocking mode)
+    result = runner.invoke(
+        main.entry_point, ["delete", "experiment", experiment["experimentId"], "--wait"]
+    )
+    assert "Experiment(id = {} ) deleted".format(experiment["experimentId"]) in result.output
 
-    # # test get experiment fail after delete
-    # result = runner.invoke(main.entry_point, ["get", "experiment", experiment["experimentId"]])
-    # assert "[Api Error] Not found experiment." in result.output
-
-    # # restore config to init
-    # result = runner.invoke(main.entry_point, ["config", "init"])
+    # test get experiment fail after delete
+    result = runner.invoke(main.entry_point, ["get", "experiment", experiment["experimentId"]])
+    assert "[Api Error] Not found experiment." in result.output
