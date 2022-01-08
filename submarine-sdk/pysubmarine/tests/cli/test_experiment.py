@@ -36,6 +36,13 @@ def test_all_experiment_e2e():
         submarine config set connection.hostname localhost
         submarine config set connection.port 8080
     """
+    # set env to display full table
+    runner = CliRunner(env={"COLUMNS": str(TEST_CONSOLE_WIDTH)})
+    # check if cli config is correct for testing
+    result = runner.invoke(main.entry_point, ["config", "get", "connection.port"])
+    assert result.exit_code == 0
+    assert "connection.port={}".format(8080) in result.output
+
     submarine_client = submarine.ExperimentClient(host="http://localhost:8080")
     environment = EnvironmentSpec(image="apache/submarine:tf-dist-mnist-test-1.0")
     experiment_meta = ExperimentMeta(
@@ -60,22 +67,20 @@ def test_all_experiment_e2e():
 
     experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
     experiment = submarine_client.get_experiment(experiment["experimentId"])
-    # set env to display full table
-    runner = CliRunner(env={"COLUMNS": str(TEST_CONSOLE_WIDTH)})
-    # check cli config
-    result = runner.invoke(main.entry_point, ["config", "get", "connection.port"])
-    assert result.exit_code == 0
-    assert "connection.port={}".format(8080) in result.output
 
     # test list experiment
     result = runner.invoke(main.entry_point, ["list", "experiment"])
     assert result.exit_code == 0
     assert "List of Experiments" in result.output
+    print(result.output)
+    print(experiment)
     assert experiment["spec"]["meta"]["name"] in result.output
     assert experiment["experimentId"] in result.output
     assert experiment["createdTime"] in result.output
-    assert experiment["runningTime"] in result.output
-    assert experiment["status"] in result.output
+    if experiment["runningTime"] is not None:
+        assert experiment["runningTime"] in result.output
+    if experiment["status"] is not None:
+        assert experiment["status"] in result.output
 
     # test get experiment
     result = runner.invoke(main.entry_point, ["get", "experiment", experiment["experimentId"]])
