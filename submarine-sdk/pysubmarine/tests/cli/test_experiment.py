@@ -16,14 +16,13 @@
 import pytest
 from click.testing import CliRunner
 
-# import submarine
+import submarine
 from submarine.cli import main
-
-# from submarine.client.models.code_spec import CodeSpec
-# from submarine.client.models.environment_spec import EnvironmentSpec
-# from submarine.client.models.experiment_meta import ExperimentMeta
-# from submarine.client.models.experiment_spec import ExperimentSpec
-# from submarine.client.models.experiment_task_spec import ExperimentTaskSpec
+from submarine.client.models.code_spec import CodeSpec
+from submarine.client.models.environment_spec import EnvironmentSpec
+from submarine.client.models.experiment_meta import ExperimentMeta
+from submarine.client.models.experiment_spec import ExperimentSpec
+from submarine.client.models.experiment_task_spec import ExperimentTaskSpec
 
 TEST_CONSOLE_WIDTH = 191
 
@@ -37,32 +36,35 @@ def test_all_experiment_e2e():
         submarine config set connection.hostname localhost
         submarine config set connection.port 8080
     """
-    # submarine_client = submarine.ExperimentClient(host="http://localhost:8080")
-    # environment = EnvironmentSpec(image="apache/submarine:tf-dist-mnist-test-1.0")
-    # experiment_meta = ExperimentMeta(
-    #     name="mnist-dist",
-    #     namespace="default",
-    #     framework="Tensorflow",
-    #     cmd="python /var/tf_dist_mnist/dist_mnist.py --train_steps=100",
-    #     env_vars={"ENV1": "ENV1"},
-    # )
+    submarine_client = submarine.ExperimentClient(host="http://localhost:8080")
+    environment = EnvironmentSpec(image="apache/submarine:tf-dist-mnist-test-1.0")
+    experiment_meta = ExperimentMeta(
+        name="mnist-dist",
+        namespace="default",
+        framework="Tensorflow",
+        cmd="python /var/tf_dist_mnist/dist_mnist.py --train_steps=100",
+        env_vars={"ENV1": "ENV1"},
+    )
 
-    # worker_spec = ExperimentTaskSpec(resources="cpu=1,memory=1024M", replicas=1)
-    # ps_spec = ExperimentTaskSpec(resources="cpu=1,memory=1024M", replicas=1)
+    worker_spec = ExperimentTaskSpec(resources="cpu=1,memory=1024M", replicas=1)
+    ps_spec = ExperimentTaskSpec(resources="cpu=1,memory=1024M", replicas=1)
 
-    # code_spec = CodeSpec(sync_mode="git", url="https://github.com/apache/submarine.git")
+    code_spec = CodeSpec(sync_mode="git", url="https://github.com/apache/submarine.git")
 
-    # experiment_spec = ExperimentSpec(
-    #     meta=experiment_meta,
-    #     environment=environment,
-    #     code=code_spec,
-    #     spec={"Ps": ps_spec, "Worker": worker_spec},
-    # )
+    experiment_spec = ExperimentSpec(
+        meta=experiment_meta,
+        environment=environment,
+        code=code_spec,
+        spec={"Ps": ps_spec, "Worker": worker_spec},
+    )
 
-    # experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
-    # # get experiment again to get createdTime,runningTime...
-    # submarine_client.wait_for_finish(experiment["experimentId"])
-    # experiment = submarine_client.get_experiment(experiment["experimentId"])
+    print("Experiment creating")
+    experiment = submarine_client.create_experiment(experiment_spec=experiment_spec)
+    print("Experiment created")
+    # get experiment again to get createdTime,runningTime...
+    submarine_client.wait_for_finish(experiment["experimentId"])
+    print("Experiment finished")
+    experiment = submarine_client.get_experiment(experiment["experimentId"])
     # set env to display full table
     runner = CliRunner(env={"COLUMNS": str(TEST_CONSOLE_WIDTH)})
     # check cli config
