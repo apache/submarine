@@ -20,6 +20,7 @@
 package org.apache.submarine.server.submitter.k8s.parser;
 
 import io.kubernetes.client.custom.Quantity;
+import io.kubernetes.client.openapi.models.V1ConfigMapVolumeSource;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
@@ -30,6 +31,7 @@ import io.kubernetes.client.openapi.models.V1Volume;
 import io.kubernetes.client.openapi.models.V1VolumeMount;
 import io.kubernetes.client.openapi.models.V1PersistentVolumeClaimVolumeSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.environment.Environment;
@@ -53,6 +55,9 @@ public class NotebookSpecParser {
   private static final String DEFAULT_WORKSPACE_MOUNT_PATH = "/home/jovyan/workspace";
   // jupyter user setting path, avoid losing user setting after pod restarted
   private static final String DEFAULT_USER_SET_MOUNT_PATH = "/home/jovyan/.jupyter";
+  // overrides.json application settings directory
+  // https://jupyterlab.readthedocs.io/en/stable/user/directories.html#overrides-json
+  private static final String DEFAULT_APPLICATION_SETTING_PATH = "/opt/conda/share/jupyter/lab/settings";
 
   private static final SubmarineConfiguration conf =
           SubmarineConfiguration.getInstance();
@@ -165,10 +170,6 @@ public class NotebookSpecParser {
     userSetting.setMountPath(DEFAULT_USER_SET_MOUNT_PATH);
     userSetting.setName(String.format("%s-user-%s", NotebookUtils.STORAGE_PREFIX, name));
     volumeMountList.add(userSetting);
-    container.setVolumeMounts(volumeMountList);
-
-    containers.add(container);
-    podSpec.setContainers(containers);
 
     // create volume object for persistent volume
     List<V1Volume> volumeList = new ArrayList<>();
@@ -187,6 +188,31 @@ public class NotebookSpecParser {
     userVolume.setPersistentVolumeClaim(userPvc);
     volumeList.add(userVolume);
 
+    // add overwrite.json configmap
+    String overwriteJson = conf.getString(
+            SubmarineConfVars.ConfVars.SUBMARINE_NOTEBOOK_DEFAULT_OVERWRITE_JSON);
+    if (StringUtils.isNotBlank(overwriteJson)) {
+      // Volume Mount
+      V1VolumeMount overwriteVm = new V1VolumeMount();
+      overwriteVm.setMountPath(String.format("%s/%s", DEFAULT_APPLICATION_SETTING_PATH,
+              NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME));
+      overwriteVm.setSubPath(NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME);
+      overwriteVm.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name));
+      volumeMountList.add(overwriteVm);
+
+      // Volume
+      V1Volume overwriteVolume = new V1Volume();
+      overwriteVolume.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name));
+      V1ConfigMapVolumeSource overwriteCm = new V1ConfigMapVolumeSource();
+      overwriteCm.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name));
+      overwriteVolume.setConfigMap(overwriteCm);
+      volumeList.add(overwriteVolume);
+    }
+
+    // add volume mounts and volumes
+    container.setVolumeMounts(volumeMountList);
+    containers.add(container);
+    podSpec.setContainers(containers);
     podSpec.setVolumes(volumeList);
     podTemplateSpec.setSpec(podSpec);
 

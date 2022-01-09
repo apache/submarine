@@ -63,6 +63,8 @@ public class SubmarineConfVars {
     METASTORE_JDBC_USERNAME("metastore.jdbc.username", "metastore"),
     METASTORE_JDBC_PASSWORD("metastore.jdbc.password", "password"),
 
+    SUBMARINE_NOTEBOOK_DEFAULT_OVERWRITE_JSON("submarine.notebook.default.overwrite_json", ""),
+
     WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
         "workbench.websocket.max.text.message.size", "1024000"),
     WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),
