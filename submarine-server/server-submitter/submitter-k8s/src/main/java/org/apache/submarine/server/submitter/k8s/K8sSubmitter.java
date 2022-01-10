@@ -547,9 +547,9 @@ public class K8sSubmitter implements Submitter {
 
     try {
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
-              namespace, notebookCR.getPlural(),
-              notebookCR.getMetadata().getName(), null, null, null,
-              null, new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build());
+          namespace, notebookCR.getPlural(),
+          notebookCR.getMetadata().getName(), null, null, null,
+          null, new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build());
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
     } catch (ApiException e) {
       API_EXCEPTION_404_CONSUMER.apply(e);
@@ -572,7 +572,7 @@ public class K8sSubmitter implements Submitter {
     deletePersistentVolumeClaim(String.format("%s-%s", NotebookUtils.PVC_PREFIX, name), namespace);
     // user set pvc
     deletePersistentVolumeClaim(String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name), namespace);
-    
+
     // configmap
     if (StringUtils.isNoneBlank(OVERWRITE_JSON)) {
       deleteConfigMap(namespace, String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name));
@@ -899,7 +899,7 @@ public class K8sSubmitter implements Submitter {
   /**
    * Delete ConfigMap
    */
-  public void deleteConfigMap(String namespace, String name) throws ApiException {
+  public void deleteConfigMap(String namespace, String name) {
     try {
       coreApi.deleteNamespacedConfigMap(name, namespace,
           "true", null, null, null,
@@ -915,12 +915,8 @@ public class K8sSubmitter implements Submitter {
    */
   private void rollbackCreationConfigMap(String namespace, String ... names)
           throws SubmarineRuntimeException {
-    try {
-      for (String name : names) {
-        deleteConfigMap(namespace, name);
-      }
-    } catch (ApiException e) {
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    for (String name : names) {
+      deleteConfigMap(namespace, name);
     }
   }
 
