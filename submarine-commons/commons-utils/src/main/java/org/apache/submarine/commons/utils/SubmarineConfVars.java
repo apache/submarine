@@ -54,7 +54,9 @@ public class SubmarineConfVars {
     JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
     JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarine" +
         "?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true&" +
-        "failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false"),
+        "failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false&" +
+        // use timezone for dateformat, current default database timezone is utc
+        "serverTimezone=UTC&useTimezone=true&useLegacyDatetimeCode=true"),
     JDBC_USERNAME("jdbc.username", "submarine"),
     JDBC_PASSWORD("jdbc.password", "password"),
     METASTORE_JDBC_URL("metastore.jdbc.url", "jdbc:mysql://127.0.0.1:3306/metastore" +

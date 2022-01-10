@@ -96,11 +96,14 @@ public class NotebookUtils {
     throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
   }
 
-  private static Notebook buildNotebookResponse(NotebookCR notebookCR) {
+  public static Notebook buildNotebookResponse(NotebookCR notebookCR) {
     Notebook notebook = new Notebook();
     notebook.setUid(notebookCR.getMetadata().getUid());
     notebook.setName(notebookCR.getMetadata().getName());
-    notebook.setCreatedTime(notebookCR.getMetadata().getCreationTimestamp().toString());
+    if (notebookCR.getMetadata().getCreationTimestamp() != null) {
+      notebook.setCreatedTime(notebookCR.getMetadata().getCreationTimestamp().toString());
+    }
+
     // notebook url
     notebook.setUrl("/notebook/" + notebookCR.getMetadata().getNamespace() + "/" +
             notebookCR.getMetadata().getName() + "/lab");
