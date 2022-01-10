@@ -29,7 +29,9 @@ import { PipeSharedModule } from '@submarine/pipe/pipe-shared.module';
 import { ModelHomeComponent } from './model-home/model-home.component';
 import { ModelCardsComponent } from './model-home/model-cards/model-cards.component';
 import { ModelCardComponent } from './model-home/model-cards/model-card/model-card.component';
-import { ModelTagComponent } from './model-tag/model-tag.component';
+import { ModelTagComponent } from './model-tags/model-tag/model-tag.component';
+import { ModelVersionTagComponent } from './model-tags/model-version-tag/model-version-tag.component';
+import { ModelTagsComponent } from './model-tags/model-tags.component';
 import { ModelInfoComponent } from './model-info/model-info.component';
 
 @NgModule({
@@ -40,6 +42,8 @@ import { ModelInfoComponent } from './model-info/model-info.component';
     ModelCardsComponent,
     ModelCardComponent,
     ModelTagComponent,
+    ModelVersionTagComponent,
+    ModelTagsComponent,
     ModelInfoComponent,
   ],
   imports: [

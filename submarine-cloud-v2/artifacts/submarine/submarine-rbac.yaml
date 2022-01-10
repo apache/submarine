@@ -79,7 +79,7 @@ rules:
   - delete
   - deletecollection
   - patch
-  - update  
+  - update
 - apiGroups:
   - ""
   resources:
@@ -88,6 +88,7 @@ rules:
   - services
   - persistentvolumeclaims
   - events
+  - configmaps
   verbs:
   - '*'
 - apiGroups:

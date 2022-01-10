@@ -49,7 +49,9 @@ public class NotebookUtils {
   public static final String STORAGE_PREFIX = "notebook-storage";
   public static final String PV_PREFIX = "notebook-pv";
   public static final String PVC_PREFIX = "notebook-pvc";
+  public static final String OVERWRITE_PREFIX = "overwrite-configmap";
   public static final String HOST_PATH = "/mnt";
+  public static final String DEFAULT_OVERWRITE_FILE_NAME = "overrides.json";
 
   public enum ParseOpt {
     PARSE_OPT_CREATE,

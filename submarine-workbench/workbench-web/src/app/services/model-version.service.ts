@@ -65,4 +65,32 @@ export class ModelVersionService {
       })
     );
   }
+
+  deleteModelVersionTag(modelName: string, modelVersion: string, tag: string) : Observable<string> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/model-version/tag?name=${modelName}&version=${modelVersion}&tag=${tag}`);
+    return this.httpClient.delete<Rest<any>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.message);
+        }
+        else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete');
+        }
+      })
+    )
+  }
+
+  createModelVersionTag(modelName: string, modelVersion: string, tag: string) : Observable<string> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/model-version/tag?name=${modelName}&version=${modelVersion}&tag=${tag}`);
+    return this.httpClient.post<Rest<any>>(apiUrl, {}).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.message);
+        }
+        else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post');
+        }
+      })
+    )
+  }
 }

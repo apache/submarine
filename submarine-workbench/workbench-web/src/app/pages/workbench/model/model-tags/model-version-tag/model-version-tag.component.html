@@ -16,8 +16,11 @@
   ~ specific language governing permissions and limitations
   ~ under the License.
   -->
-<span [style.color]="textColor" [style.background-color]="backgroundColor" [style.border-color]="borderColor" [style.margin]="margin">
+<span class="body" [style.color]="textColor" [style.background-color]="backgroundColor" [style.border-color]="borderColor" [style.margin]="margin">
   {{tag}}
-  <i *ngIf="closable" nz-icon nzType="close" style.color="'textColor'"></i>
+  <i class="expand" *ngIf="type==='selection'" nz-icon nzType="close" style.color="'textColor'"></i>
+  <span class="delete" *ngIf="type==='editable'" >
+    <i class="icon" (click)="onDeleteTag(tag)" nz-icon nzType="close"></i>
+  </span>
 </span>
-  
+    
