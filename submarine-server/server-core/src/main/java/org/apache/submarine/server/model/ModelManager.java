@@ -19,8 +19,11 @@
 
 package org.apache.submarine.server.model;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.nio.file.Paths;
 import javax.ws.rs.core.Response;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
@@ -28,15 +31,16 @@ import org.apache.submarine.server.SubmitterManager;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.model.ServeResponse;
 import org.apache.submarine.server.api.model.ServeSpec;
+import org.apache.submarine.server.api.proto.TritonModelConfig;
 import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
 import org.apache.submarine.server.model.database.service.ModelVersionService;
-
+import org.apache.submarine.server.s3.Client;
 
 
 public class ModelManager {
   private static final Logger LOG = LoggerFactory.getLogger(ModelManager.class);
 
-  private static ModelManager manager;
+  private static volatile ModelManager manager;
 
   private final Submitter submitter;
 
@@ -55,7 +59,9 @@ public class ModelManager {
   public static ModelManager getInstance() {
     if (manager == null) {
       synchronized (ModelManager.class) {
-        manager = new ModelManager(SubmitterManager.loadSubmitter(), new ModelVersionService());
+        if (manager == null) {
+          manager = new ModelManager(SubmitterManager.loadSubmitter(), new ModelVersionService());
+        }
       }
     }
     return manager;
@@ -67,12 +73,15 @@ public class ModelManager {
   public ServeResponse createServe(ServeSpec spec) throws SubmarineRuntimeException {
     setServeInfo(spec);
 
+    LOG.info("Create " + spec.getModelType() + " model serve.");
 
-    LOG.info("Create {} + model serve", spec.getModelType());
+    if (spec.getModelType().equals("pytorch")){
+      transferDescription(spec);
+    }
 
     submitter.createServe(spec);
 
-    return getServeResponse();
+    return getServeResponse(spec);
   }
 
   /**
@@ -81,7 +90,7 @@ public class ModelManager {
   public void deleteServe(ServeSpec spec) throws SubmarineRuntimeException {
     setServeInfo(spec);
 
-    LOG.info("Delete {} model serve", spec.getModelType());
+    LOG.info("Delete " + spec.getModelType() + " model serve");
 
     submitter.deleteServe(spec);
   }
@@ -112,7 +121,43 @@ public class ModelManager {
     spec.setModelType(modelVersion.getModelType());
   }
 
-  private ServeResponse getServeResponse(){
-    return new ServeResponse();
+  private void transferDescription(ServeSpec spec) {
+    Client s3Client = new Client();
+    String res  = new String(s3Client.downloadArtifact(
+            Paths.get(spec.getModelName(), "description.json").toString()));
+    JSONObject description = new JSONObject(res);
+
+    TritonModelConfig.ModelConfig.Builder modelConfig = TritonModelConfig.ModelConfig.newBuilder();
+    modelConfig.setPlatform("pytorch_libtorch");
+
+    JSONArray inputs = (JSONArray) description.get("input");
+    for (int idx = 0; idx < inputs.length(); idx++) {
+      JSONArray dims = (JSONArray) ((JSONObject) inputs.get(idx)).get("dims");
+      TritonModelConfig.ModelInput.Builder modelInput = TritonModelConfig.ModelInput.newBuilder();
+      modelInput.setName("INPUT__" + idx);
+      modelInput.setDataType(TritonModelConfig.DataType.valueOf("TYPE_FP32"));
+      dims.forEach(dim -> modelInput.addDims((Integer) dim));
+      modelConfig.addInput(modelInput);
+    }
+
+    JSONArray outputs = (JSONArray) description.get("output");
+    for (int idx = 0; idx < outputs.length(); idx++) {
+      JSONArray dims = (JSONArray) ((JSONObject) outputs.get(idx)).get("dims");
+      TritonModelConfig.ModelOutput.Builder modelOutput = TritonModelConfig.ModelOutput.newBuilder();
+      modelOutput.setName("OUTPUT__" + idx);
+      modelOutput.setDataType(TritonModelConfig.DataType.valueOf("TYPE_FP32"));
+      dims.forEach(dim -> modelOutput.addDims((Integer) dim));
+      modelConfig.addOutput(modelOutput);
+    }
+
+    s3Client.logArtifact(Paths.get(spec.getModelName(), "config.pbtxt").toString(),
+            modelConfig.toString().getBytes());
+  }
+
+  private ServeResponse getServeResponse(ServeSpec spec){
+    ServeResponse serveResponse = new ServeResponse();
+    serveResponse.setUrl(String.format("http://{submarine ip}/%s/%d/api/v1.0/predictions",
+            spec.getModelName(), spec.getModelVersion()));
+    return serveResponse;
   }
 }

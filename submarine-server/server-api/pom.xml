@@ -36,6 +36,11 @@
       <groupId>org.apache.submarine</groupId>
       <artifactId>submarine-commons-utils</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>${protobuf-java.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -44,6 +49,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
+          <excludes>**/proto/**</excludes>
           <skip>false</skip>
         </configuration>
       </plugin>

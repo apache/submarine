@@ -128,10 +128,6 @@
           <groupId>io.grpc</groupId>
           <artifactId>grpc-protobuf</artifactId>
         </exclusion>
-        <exclusion>
-          <groupId>com.google.protobuf</groupId>
-          <artifactId>protobuf-java</artifactId>
-        </exclusion>
       </exclusions>
     </dependency>
     <dependency>
@@ -289,6 +285,12 @@
       <groupId>org.apache.derby</groupId>
       <artifactId>derby</artifactId>
       <version>${derby.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>${json.version}</version>
     </dependency>
 
     <!-- Test libraries -->

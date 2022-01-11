@@ -132,6 +132,7 @@
     <zeppelin.version>0.9.0-preview1</zeppelin.version>
     <jgit.version>5.13.0.202109080827-r</jgit.version>
     <atomix.version>3.1.5</atomix.version>
+    <json.version>20211205</json.version>
     <!--  Submarine on Kubernetes  -->
     <k8s.client-java.version>11.0.1</k8s.client-java.version>
     <jersey.test-framework>2.27</jersey.test-framework>
@@ -143,6 +144,8 @@
     <commons-compress.version>1.4.1</commons-compress.version>
     <guice-servlet.version>3.0</guice-servlet.version>
     <guice.version>3.0</guice.version>
+    <!--  server API  -->
+    <protobuf-java.version>3.14.0</protobuf-java.version>
   </properties>
 
   <modules>
