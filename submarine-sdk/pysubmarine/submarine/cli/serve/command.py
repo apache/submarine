@@ -113,7 +113,11 @@ def delete_serve(model_name: str, model_version: int, wait: bool):
                 json_data = richJSON.from_data(result)
                 console.print(
                     Panel(
-                        json_data, title=f"[bold green] Serve Deleted: model name:{model_name}, version: {model_version}"
+                        json_data,
+                        title=(
+                            f"[bold green] Serve Deleted: model name:{model_name}, version:"
+                            f" {model_version}"
+                        ),
                     )
                 )
     except ApiException as err:
