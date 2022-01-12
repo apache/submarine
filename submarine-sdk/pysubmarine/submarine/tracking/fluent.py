@@ -73,3 +73,22 @@ def save_model(
     SubmarineClient().save_model(
         model_type, model, artifact_path, registered_model_name, input_dim, output_dim
     )
+    SubmarineClient().save_model(model_type, model, artifact_path, registered_model_name)
+
+
+def create_serve(model_name: str, model_version: int):
+    """
+    Create serve of a model through Seldon Core
+    :param model_name: Name of a registered model
+    :param model_version: Version of a registered model
+    """
+    SubmarineClient().create_serve(model_name, model_version)
+
+
+def delete_serve(model_name: str, model_version: int):
+    """
+    Delete a serving model
+    :param model_name: Name of a registered model
+    :param model_version: Version of a registered model
+    """
+    SubmarineClient().delete_serve(model_name, model_version)

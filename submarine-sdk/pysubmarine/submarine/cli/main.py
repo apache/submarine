@@ -22,6 +22,7 @@ from submarine.cli.environment import command as environment_cmd
 from submarine.cli.experiment import command as experiment_cmd
 from submarine.cli.notebook import command as notebook_cmd
 from submarine.cli.sandbox import command as sandbox_cmd
+from submarine.cli.serve import command as serve_cmd
 
 
 @click.group()
@@ -37,6 +38,11 @@ def cmdgrp_list():
 
 @entry_point.group("get")
 def cmdgrp_get():
+    pass
+
+
+@entry_point.group("create")
+def cmdgrp_create():
     pass
 
 
@@ -67,6 +73,11 @@ cmdgrp_delete.add_command(notebook_cmd.delete_notebook)
 cmdgrp_list.add_command(environment_cmd.list_environment)
 cmdgrp_get.add_command(environment_cmd.get_environment)
 cmdgrp_delete.add_command(environment_cmd.delete_environment)
+# # serve
+cmdgrp_list.add_command(serve_cmd.list_serve)
+cmdgrp_get.add_command(serve_cmd.get_serve)
+cmdgrp_create.add_command(serve_cmd.create_serve)
+cmdgrp_delete.add_command(serve_cmd.delete_serve)
 
 # sandbox
 cmdgrp_sandbox.add_command(sandbox_cmd.start_sandbox)

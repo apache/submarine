@@ -13,12 +13,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
+import os
 
-# import apis into api package
-from submarine.client.api.environment_api import EnvironmentApi
-from submarine.client.api.experiment_api import ExperimentApi
-from submarine.client.api.notebook_api import NotebookApi
-from submarine.client.api.serve_api import ServeApi
+from submarine.client.api_client import ApiClient
+from submarine.client.configuration import Configuration
 
-# flake8: noqa
+
+def generate_host() -> str:
+    """
+    Generate submarine host
+    :return: submarine host
+    """
+    submarine_server_dns_name = str(os.environ.get("SUBMARINE_SERVER_DNS_NAME"))
+    submarine_server_port = str(os.environ.get("SUBMARINE_SERVER_PORT"))
+    host = "http://" + submarine_server_dns_name + ":" + submarine_server_port
+    return host
+
+
+def get_api_client(host: str) -> ApiClient:
+    configuration = Configuration()
+    configuration.host = host + "/api"
+    api_client = ApiClient(configuration=configuration)
+
+    return api_client

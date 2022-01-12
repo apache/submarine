@@ -18,5 +18,7 @@ import os
 import torch
 
 
-def save_model(model, artifact_path: str):
-    torch.save(model, os.path.join(artifact_path, "model.pth"))
+def save_model(model, artifact_path: str, input_dim: list) -> None:
+    example_forward_example = torch.rand(input_dim)
+    scripted_model = torch.jit.trace(model, example_forward_example)
+    scripted_model.save(model, os.path.join(artifact_path, "model.pth"))

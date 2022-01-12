@@ -14,27 +14,14 @@
 # limitations under the License.
 
 import logging
-import os
 import time
 
 from submarine.client.api.experiment_api import ExperimentApi
-from submarine.client.api_client import ApiClient
-from submarine.client.configuration import Configuration
+from submarine.client.utils.api_utils import generate_host, get_api_client
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(message)s")
 logging.getLogger().setLevel(logging.INFO)
-
-
-def generate_host():
-    """
-    Generate submarine host
-    :return: submarine host
-    """
-    submarine_server_dns_name = str(os.environ.get("SUBMARINE_SERVER_DNS_NAME"))
-    submarine_server_port = str(os.environ.get("SUBMARINE_SERVER_PORT"))
-    host = "http://" + submarine_server_dns_name + ":" + submarine_server_port
-    return host
 
 
 class ExperimentClient:
@@ -44,10 +31,7 @@ class ExperimentClient:
         :param host: An HTTP URI like http://submarine-server:8080.
         """
         # TODO(pingsutw): support authentication for talking to the submarine server
-        self.host = host
-        configuration = Configuration()
-        configuration.host = host + "/api"
-        api_client = ApiClient(configuration=configuration)
+        api_client = get_api_client(host)
         self.experiment_api = ExperimentApi(api_client=api_client)
 
     def create_experiment(self, experiment_spec):
