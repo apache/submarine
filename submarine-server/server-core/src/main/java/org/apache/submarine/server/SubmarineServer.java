@@ -149,6 +149,8 @@ public class SubmarineServer extends ResourceConfig {
                     HibernateUtil.close();
                     jettyWebServer.stop();
                     Thread.sleep(3000);
+                  } catch (InterruptedException e) {
+                    LOG.error("Interrupted exception:", e);
                   } catch (Exception e) {
                     LOG.error("Error while stopping servlet container", e);
                   }

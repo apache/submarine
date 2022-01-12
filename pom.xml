@@ -84,7 +84,7 @@
     <minio.version>7.1.4</minio.version>
 
     <cglib.version>3.3.0</cglib.version>
-    <hibernate.version>5.6.0.Final</hibernate.version>
+    <hibernate.version>5.6.3.Final</hibernate.version>
     <jboss.logging.version>3.4.2.Final</jboss.logging.version>
     <bytebuddy.version>1.11.20</bytebuddy.version>
     <mybatis.version>3.2.8</mybatis.version>
@@ -310,6 +310,11 @@
         <version>${snakeyaml.version}</version>
       </dependency>
       <!--  Submarine Server  -->
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>${jboss.logging.version}</version>
+      </dependency>
       <dependency>
         <groupId>net.bytebuddy</groupId>
         <artifactId>byte-buddy</artifactId>
