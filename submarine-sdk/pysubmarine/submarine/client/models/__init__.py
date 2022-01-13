@@ -31,8 +31,6 @@ from __future__ import absolute_import
 
 # import models into model package
 from submarine.client.models.code_spec import CodeSpec
-from submarine.client.models.environment import Environment
-from submarine.client.models.environment_id import EnvironmentId
 from submarine.client.models.environment_spec import EnvironmentSpec
 from submarine.client.models.experiment_meta import ExperimentMeta
 from submarine.client.models.experiment_spec import ExperimentSpec

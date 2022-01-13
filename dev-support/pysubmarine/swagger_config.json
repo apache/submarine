@@ -1,5 +1,5 @@
 {
-  "packageName" : "submarine.experiment",
-  "projectName" : "submarine.experiment",
+  "packageName" : "submarine.client",
+  "projectName" : "submarine.client",
   "packageVersion": "0.7.0-SNAPSHOT"
 }
