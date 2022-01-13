@@ -67,7 +67,7 @@ public class EnvironmentRestApi {
                   @ApiResponse(description = "successful operation", 
                       content = @Content(
                           schema = @Schema(
-                              implementation = Environment.class)))})
+                              implementation = JsonResponse.class)))})
   public Response createEnvironment(EnvironmentSpec spec) {
     try {
       Environment environment = environmentManager.createEnvironment(spec);
@@ -88,12 +88,12 @@ public class EnvironmentRestApi {
   @Path("/{id}")
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
   @Operation(summary = "Update the environment with job spec",
-          tags = {"environments"},
+          tags = {"environment"},
           responses = {
                   @ApiResponse(description = "successful operation", 
                       content = @Content(
                           schema = @Schema(
-                              implementation = Environment.class))),
+                              implementation = JsonResponse.class))),
                   @ApiResponse(
                       responseCode = "404", 
                       description = "Environment not found")})
@@ -118,11 +118,11 @@ public class EnvironmentRestApi {
   @DELETE
   @Path("/{id}")
   @Operation(summary = "Delete the environment",
-          tags = {"environments"},
+          tags = {"environment"},
           responses = {
                   @ApiResponse(description = "successful operation", 
                       content = @Content(
-                          schema = @Schema(implementation = Environment.class))),
+                          schema = @Schema(implementation = JsonResponse.class))),
                   @ApiResponse(
                       responseCode = "404", description = "Environment not found")})
   public Response deleteEnvironment(
@@ -142,12 +142,12 @@ public class EnvironmentRestApi {
    */
   @GET
   @Operation(summary = "List of Environments",
-          tags = {"environments"},
+          tags = {"environment"},
           responses = {
                   @ApiResponse(description = "successful operation", 
                       content = @Content(
                           schema = @Schema(
-                              implementation = Environment.class)))})
+                              implementation = JsonResponse.class)))})
   public Response listEnvironment(@QueryParam("status") String status) {
     try {
       List<Environment> environmentList =
@@ -171,7 +171,7 @@ public class EnvironmentRestApi {
           responses = {
                   @ApiResponse(description = "successful operation", 
                       content = @Content(
-                          schema = @Schema(implementation = Environment.class))),
+                          schema = @Schema(implementation = JsonResponse.class))),
                   @ApiResponse(
                       responseCode = "404", 
                       description = "Environment not found")})
