@@ -15,7 +15,6 @@
 
 import logging
 import os
-import time
 
 from submarine.client.api.environment_api import EnvironmentApi
 from submarine.client.api_client import ApiClient
@@ -65,7 +64,9 @@ class EnvironmentClient:
         :param environment_spec: submarine environment spec
         :return: thread
         """
-        thread = self.environment_api.create_environment(environment_spec=environment_spec,async_req=True)
+        thread = self.environment_api.create_environment(
+            environment_spec=environment_spec, async_req=True
+        )
         return thread
 
     def update_environment(self, name, environment_spec):
@@ -75,7 +76,9 @@ class EnvironmentClient:
         :param environment_spec: submarine environment spec
         :return: submarine environment
         """
-        response = self.environment_api.update_environment(id=name, environment_spec=environment_spec)
+        response = self.environment_api.update_environment(
+            id=name, environment_spec=environment_spec
+        )
         return response.result
 
     def get_environment(self, name):
@@ -93,13 +96,13 @@ class EnvironmentClient:
         :param name: submarine environment name
         :return: thread
         """
-        thread = self.environment_api.get_environment(id=name,async_req=True)
+        thread = self.environment_api.get_environment(id=name, async_req=True)
         return thread
 
     def list_environments(self, status=None):
         """
         List all environments for the user
-        :param status: 
+        :param status:
         :return: List of submarine environments
         """
         response = self.environment_api.list_environment(status=status)
@@ -108,10 +111,10 @@ class EnvironmentClient:
     def list_environments_async(self, status=None):
         """
         List all environments for the user (async)
-        :param status: 
+        :param status:
         :return: thread
         """
-        thread = self.environment_api.list_environment(status=status,async_req=True)
+        thread = self.environment_api.list_environment(status=status, async_req=True)
         return thread
 
     def delete_environment(self, name):
@@ -122,13 +125,12 @@ class EnvironmentClient:
         """
         response = self.environment_api.delete_environment(name)
         return response.result
-    
+
     def delete_environment_async(self, name):
         """
         Delete the Submarine environment (async)
         :param name: Submarine environment name
         :return: thread
         """
-        thread = self.environment_api.delete_environment(name,async_req=True)
+        thread = self.environment_api.delete_environment(name, async_req=True)
         return thread
-    

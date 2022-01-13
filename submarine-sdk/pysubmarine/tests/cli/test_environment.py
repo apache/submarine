@@ -15,8 +15,8 @@
 
 import pytest
 from click.testing import CliRunner
-from submarine.cli import main
 
+from submarine.cli import main
 from submarine.client.api.environment_client import EnvironmentClient
 from submarine.client.models.environment_spec import EnvironmentSpec
 from submarine.client.models.kernel_spec import KernelSpec
@@ -45,17 +45,16 @@ def test_all_environment_e2e():
         name="submarine_jupyter_py3",
         channels=["defaults"],
         conda_dependencies=[],
-        pip_dependencies=[]
+        pip_dependencies=[],
     )
     environment_spec = EnvironmentSpec(
         name="mytest",
-        kernel_spec = kernel_spec,
-        docker_image = "apache/submarine:jupyter-notebook-gpu-0.7.0-SNAPSHOT"
+        kernel_spec=kernel_spec,
+        docker_image="apache/submarine:jupyter-notebook-gpu-0.7.0-SNAPSHOT",
     )
-    
+
     environment = submarine_client.create_environment(environment_spec=environment_spec)
     environment_name = environment["environmentSpec"]["name"]
-
 
     # test list environment
     result = runner.invoke(main.entry_point, ["list", "environment"])
@@ -71,9 +70,7 @@ def test_all_environment_e2e():
     assert environment["environmentSpec"]["name"] in result.output
 
     # test delete environment
-    result = runner.invoke(
-        main.entry_point, ["delete", "environment", environment_name]
-    )
+    result = runner.invoke(main.entry_point, ["delete", "environment", environment_name])
     assert "Environment(name = {} ) deleted".format(environment_name) in result.output
 
     # test get environment fail after delete

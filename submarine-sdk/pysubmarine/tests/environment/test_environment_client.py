@@ -27,14 +27,14 @@ def test_environment_e2e():
         name="submarine_jupyter_py3",
         channels=["defaults"],
         conda_dependencies=[],
-        pip_dependencies=[]
+        pip_dependencies=[],
     )
     environment_spec = EnvironmentSpec(
         name="mytest",
-        kernel_spec = kernel_spec,
-        docker_image = "apache/submarine:jupyter-notebook-gpu-0.7.0-SNAPSHOT"
+        kernel_spec=kernel_spec,
+        docker_image="apache/submarine:jupyter-notebook-gpu-0.7.0-SNAPSHOT",
     )
-    
+
     environment = submarine_client.create_environment(environment_spec=environment_spec)
     environment_name = environment["environmentSpec"]["name"]
     submarine_client.get_environment(environment_name)
