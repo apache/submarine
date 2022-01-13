@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.Response;
+
 import io.minio.GetObjectArgs;
 import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
@@ -42,9 +43,9 @@ public class Client {
 
   public Client() {
     minioClient = MinioClient.builder()
-        .endpoint(S3Constants.ENDPOINT)
-        .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
-        .build();
+            .endpoint(S3Constants.ENDPOINT)
+            .credentials(S3Constants.ACCESSKEY, S3Constants.SECRETKEY)
+            .build();
   }
 
   public Client(String endpoint) {
@@ -55,7 +56,7 @@ public class Client {
   }
 
   /**
-   * Get a list of artifact path under the experiment
+   * Get a list of artifact path under the experiment.
    *
    * @param experimentId experiment id
    * @return a list of artifact path
@@ -81,7 +82,7 @@ public class Client {
   }
 
   /**
-   * Delete all the artifacts under given experiment name
+   * Delete all the artifacts under given experiment name.
    *
    * @param experimentId experiment id
    */
@@ -90,14 +91,14 @@ public class Client {
   }
 
   /**
-   * Delete all the artifacts under s3://submarine
+   * Delete all the artifacts under s3://submarine.
    */
   public void deleteAllArtifacts() {
     deleteAllArtifactsByFolder("");
   }
 
   /**
-   * Download an artifact
+   * Download an artifact.
    *
    * @param path artifact path
    * @return an array of byte
@@ -129,7 +130,7 @@ public class Client {
   }
 
   /**
-   * Upload an artifact
+   * Upload an artifact.
    *
    * @param path path of the file
    * @param content content of the given file
@@ -147,7 +148,7 @@ public class Client {
   }
 
   /**
-   * Delete all elements under the given folder path
+   * Delete all elements under the given folder path.
    */
   private void deleteAllArtifactsByFolder(String folder) {
     Iterable<Result<Item>> artifactNames = minioClient.listObjects(ListObjectsArgs.builder()
