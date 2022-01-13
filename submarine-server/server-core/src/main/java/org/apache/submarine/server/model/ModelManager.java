@@ -59,7 +59,7 @@ public class ModelManager {
   public static ModelManager getInstance() {
     if (manager == null) {
       synchronized (ModelManager.class) {
-          manager = new ModelManager(SubmitterManager.loadSubmitter(), new ModelVersionService());
+        manager = new ModelManager(SubmitterManager.loadSubmitter(), new ModelVersionService());
       }
     }
     return manager;
