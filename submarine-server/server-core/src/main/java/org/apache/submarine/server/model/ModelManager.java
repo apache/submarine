@@ -40,7 +40,7 @@ import org.apache.submarine.server.s3.Client;
 public class ModelManager {
   private static final Logger LOG = LoggerFactory.getLogger(ModelManager.class);
 
-  private static volatile ModelManager manager;
+  private static ModelManager manager;
 
   private final Submitter submitter;
 
@@ -59,9 +59,7 @@ public class ModelManager {
   public static ModelManager getInstance() {
     if (manager == null) {
       synchronized (ModelManager.class) {
-        if (manager == null) {
           manager = new ModelManager(SubmitterManager.loadSubmitter(), new ModelVersionService());
-        }
       }
     }
     return manager;
@@ -73,7 +71,7 @@ public class ModelManager {
   public ServeResponse createServe(ServeSpec spec) throws SubmarineRuntimeException {
     setServeInfo(spec);
 
-    LOG.info("Create " + spec.getModelType() + " model serve.");
+    LOG.info("Create {} model serve.", spec.getModelType());
 
     if (spec.getModelType().equals("pytorch")){
       transferDescription(spec);
@@ -90,7 +88,7 @@ public class ModelManager {
   public void deleteServe(ServeSpec spec) throws SubmarineRuntimeException {
     setServeInfo(spec);
 
-    LOG.info("Delete " + spec.getModelType() + " model serve");
+    LOG.info("Delete {} model serve", spec.getModelType());
 
     submitter.deleteServe(spec);
   }
