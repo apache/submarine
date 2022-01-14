@@ -33,7 +33,6 @@ def generate_host():
     """
     submarine_server_dns_name = str(os.environ.get("SUBMARINE_SERVER_DNS_NAME"))
     submarine_server_port = str(os.environ.get("SUBMARINE_SERVER_PORT"))
-    host = submarine_server_dns_name + ":" + submarine_server_port
     host = "http://" + submarine_server_dns_name + ":" + submarine_server_port
     return host
 
