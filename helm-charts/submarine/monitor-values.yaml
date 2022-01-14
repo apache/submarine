@@ -625,6 +625,26 @@ grafana:
   enabled: true
   namespaceOverride: ""
 
+  env: 
+    GF_SERVER_SERVE_FROM_SUB_PATH: true
+
+  grafana.ini:
+    server:
+      root_url: http://localhost:32080/grafana/
+    session:
+      cookie_secure: false
+    paths:
+      data: /var/lib/grafana/
+      logs: /var/log/grafana
+      plugins: /var/lib/grafana/plugins
+      provisioning: /etc/grafana/provisioning
+    analytics:
+      check_for_updates: true
+    log:
+      mode: console
+    grafana_net:
+      url: https://grafana.net
+      
   ## ForceDeployDatasources Create datasource configmap even if grafana deployment has been disabled
   ##
   forceDeployDatasources: false
