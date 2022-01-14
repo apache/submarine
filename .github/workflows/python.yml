@@ -112,6 +112,11 @@ jobs:
           pip install --no-cache-dir tensorflow-addons
           pip install --no-cache-dir tf_slim
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+      - name: Set CLI config for e2e pytest
+        run: |
+          submarine config set connection.hostname localhost
+          submarine config set connection.port 8080
+          submarine config list
       - name: Run integration test
         working-directory: ./submarine-sdk/pysubmarine
         run: pytest --cov=submarine -vs -m "e2e"
