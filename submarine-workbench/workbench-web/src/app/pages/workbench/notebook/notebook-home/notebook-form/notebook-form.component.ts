@@ -66,7 +66,7 @@ export class NotebookFormComponent implements OnInit {
       ],
       envName: [null, Validators.required], // Environment
       envVars: this.fb.array([], [this.experimentValidatorService.nameValidatorFactory('key')]),
-      cpus: [null, [Validators.min(0.5), Validators.required]],
+      cpus: [null, [Validators.min(0.1), Validators.required]],
       gpus: [null],
       memoryNum: [null, [Validators.required]],
       unit: [this.MEMORY_UNITS[0], [Validators.required]],
