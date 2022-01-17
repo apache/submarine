@@ -15,18 +15,11 @@
 
 import pytest
 
-import submarine
 from submarine.client.api.notebook_client import NotebookClient
-from submarine.client.models.code_spec import CodeSpec
 from submarine.client.models.environment_spec import EnvironmentSpec
-from submarine.client.models.experiment_meta import ExperimentMeta
-from submarine.client.models.experiment_spec import ExperimentSpec
-from submarine.client.models.notebook_spec import NotebookSpec
 from submarine.client.models.notebook_meta import NotebookMeta
 from submarine.client.models.notebook_pod_spec import NotebookPodSpec
-
-
-
+from submarine.client.models.notebook_spec import NotebookSpec
 
 
 @pytest.mark.e2e
@@ -35,26 +28,16 @@ def test_notebook_e2e():
 
     mock_user_id = "4291d7da9005377ec9aec4a71ea837f"
 
-    notebook_meta = NotebookMeta(
-        name="mocknotebook_name",
-        namespace="default",
-        owner_id=mock_user_id
-        )
+    notebook_meta = NotebookMeta(name="test-nb", namespace="default", owner_id=mock_user_id)
     environment = EnvironmentSpec(name="notebook-env")
     notebook_podSpec = NotebookPodSpec(
-        env_vars={
-                "TEST_ENV": "test"
-            },
-        resources="cpu=1,memory=1.0Gi"
-        )
-    notebookSpec = NotebookSpec(
-        meta=notebook_meta,
-        environment=environment,
-        spec=notebook_podSpec)
+        env_vars={"TEST_ENV": "test"}, resources="cpu=1,memory=1.0Gi"
+    )
+    notebookSpec = NotebookSpec(meta=notebook_meta, environment=environment, spec=notebook_podSpec)
 
     notebook = submarine_client.create_notebook(notebookSpec)
 
     notebookId = notebook["notebookId"]
     submarine_client.get_notebook(notebookId)
-    submarine_client.list_notebooks()
+    submarine_client.list_notebooks(user_id=mock_user_id)
     submarine_client.delete_notebook(notebookId)
