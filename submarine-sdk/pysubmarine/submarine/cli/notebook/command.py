@@ -29,8 +29,7 @@ from submarine.client.api.notebook_client import NotebookClient
 from submarine.client.exceptions import ApiException
 
 submarineCliConfig = loadConfig()
-if submarineCliConfig is None:
-    exit(1)
+
 notebookClient = NotebookClient(
     host="http://{}:{}".format(
         submarineCliConfig.connection.hostname, submarineCliConfig.connection.port
