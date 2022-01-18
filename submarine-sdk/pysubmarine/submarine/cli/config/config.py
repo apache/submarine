@@ -100,7 +100,7 @@ def rsetattr(obj, attr, val):
         return setattr(obj, post, val)
 
 
-def loadConfig(config_path: str = CONFIG_YAML_PATH) -> Optional[SubmarineCliConfig]:
+def loadConfig(config_path: str = CONFIG_YAML_PATH) -> SubmarineCliConfig:
     with open(config_path, "r") as stream:
         try:
             parsed_yaml: dict = yaml.safe_load(stream)
@@ -111,7 +111,7 @@ def loadConfig(config_path: str = CONFIG_YAML_PATH) -> Optional[SubmarineCliConf
         except yaml.YAMLError as exc:
             click.echo("Error Reading Config")
             click.echo(exc)
-            return None
+            exit(1)
 
 
 def saveConfig(config: SubmarineCliConfig, config_path: str = CONFIG_YAML_PATH):

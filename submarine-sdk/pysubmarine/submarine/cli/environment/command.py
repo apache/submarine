@@ -29,8 +29,7 @@ from submarine.client.api.environment_client import EnvironmentClient
 from submarine.client.exceptions import ApiException
 
 submarineCliConfig = loadConfig()
-if submarineCliConfig is None:
-    exit(1)
+
 environmentClient = EnvironmentClient(
     host="http://{}:{}".format(
         submarineCliConfig.connection.hostname, submarineCliConfig.connection.port
