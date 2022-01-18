@@ -105,7 +105,5 @@ class TestTracking(unittest.TestCase):
         assert len(model_versions) == 2
         assert model_versions[0].name == registered_model_name
         assert model_versions[0].version == 1
-        assert model_versions[0].source == f"s3://submarine/{JOB_ID}/name_1/1"
         assert model_versions[1].name == registered_model_name
         assert model_versions[1].version == 2
-        assert model_versions[1].source == f"s3://submarine/{JOB_ID}/name_2/1"

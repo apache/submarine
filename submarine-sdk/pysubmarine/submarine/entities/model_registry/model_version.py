@@ -25,7 +25,6 @@ class ModelVersion(_SubmarineObject):
         self,
         name,
         version,
-        source,
         user_id,
         experiment_id,
         model_type,
@@ -38,7 +37,6 @@ class ModelVersion(_SubmarineObject):
     ):
         self._name = name
         self._version = version
-        self._source = source
         self._user_id = user_id
         self._experiment_id = experiment_id
         self._model_type = model_type
@@ -58,11 +56,6 @@ class ModelVersion(_SubmarineObject):
     def version(self):
         """Integer. version"""
         return self._version
-
-    @property
-    def source(self):
-        """String. Source path for the model."""
-        return self._source
 
     @property
     def user_id(self):

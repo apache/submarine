@@ -22,7 +22,6 @@ public class ServeSpec {
   private String modelName;
   private Integer modelVersion;
   private String modelType;
-  private String modelURI;
 
   public String getModelName() {
     return modelName;
@@ -49,10 +48,6 @@ public class ServeSpec {
   }
 
   public String getModelURI() {
-    return modelURI;
-  }
-
-  public void setModelURI(String modelURI) {
-    this.modelURI = modelURI;
+    return String.format("s3://submarine/serve/%s/%d", modelName, modelVersion);
   }
 }

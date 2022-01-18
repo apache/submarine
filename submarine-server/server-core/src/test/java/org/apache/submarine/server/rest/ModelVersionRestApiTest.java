@@ -47,7 +47,6 @@ public class ModelVersionRestApiTest {
   private final String registeredModelDescription = "test registered model description";
   private final String modelVersionDescription = "test model version description";
   private final String newModelVersionDescription = "new test registered model description";
-  private final String modelVersionSource = "s3://submarine/test";
   private final String modelVersionUid = "test123";
   private final String modelVersionExperimentId = "experiment_123";
   private final String modelVersionModelType = "experiment_123";
@@ -76,7 +75,6 @@ public class ModelVersionRestApiTest {
     modelVersion1.setName(registeredModelName);
     modelVersion1.setDescription(modelVersionDescription + "1");
     modelVersion1.setVersion(1);
-    modelVersion1.setSource(modelVersionSource + "1");
     modelVersion1.setUserId(modelVersionUid);
     modelVersion1.setExperimentId(modelVersionExperimentId);
     modelVersion1.setModelType(modelVersionModelType);
@@ -84,7 +82,6 @@ public class ModelVersionRestApiTest {
     modelVersion2.setName(registeredModelName);
     modelVersion2.setDescription(modelVersionDescription + "2");
     modelVersion2.setVersion(2);
-    modelVersion2.setSource(modelVersionSource + "2");
     modelVersion2.setUserId(modelVersionUid);
     modelVersion2.setExperimentId(modelVersionExperimentId);
     modelVersion2.setModelType(modelVersionModelType);
@@ -175,7 +172,6 @@ public class ModelVersionRestApiTest {
     assertEquals(result.getName(), actual.getName());
     assertEquals(result.getDescription(), actual.getDescription());
     assertEquals(result.getVersion(), actual.getVersion());
-    assertEquals(result.getSource(), actual.getSource());
     assertEquals(result.getExperimentId(), actual.getExperimentId());
     assertEquals(result.getModelType(), actual.getModelType());
   }

@@ -160,7 +160,7 @@ class SubmarineClient(object):
                 json.dump(description, f)
 
             # Log all files into minio
-            source = self.artifact_repo.log_artifacts(tempdir, artifact_path)
+            self.artifact_repo.log_artifacts(tempdir, artifact_path)
 
         # Register model
         if registered_model_name is not None:
@@ -170,7 +170,6 @@ class SubmarineClient(object):
                 self.model_registry.create_registered_model(name=registered_model_name)
             self.model_registry.create_model_version(
                 name=registered_model_name,
-                source=source,
                 user_id="",  # TODO(jeff-901): the user id is needed to be specified.
                 experiment_id=utils.get_job_id(),
                 model_type=model_type,

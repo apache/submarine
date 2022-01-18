@@ -115,7 +115,6 @@ public class ModelManager {
 
     // Get model type and model uri from DB and set the value in the spec.
     ModelVersionEntity modelVersion = modelVersionService.select(spec.getModelName(), spec.getModelVersion());
-    spec.setModelURI(modelVersion.getSource());
     spec.setModelType(modelVersion.getModelType());
   }
 

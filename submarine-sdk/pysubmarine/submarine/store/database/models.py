@@ -154,13 +154,13 @@ class SqlRegisteredModelTag(Base):
         return RegisteredModelTag(self.tag)
 
 
-# +----------+---------+-------------------------------+-----+
-# | name     | version | source                        | ... |
-# +----------+---------+-------------------------------+-----+
-# | ResNet50 | 1       | s3://submarine/ResNet50/1/    | ... |
-# | ResNet50 | 2       | s3://submarine/ResNet50/2/    | ... |
-# | BERT     | 1       | s3://submarine/BERT/1/        | ... |
-# +----------+---------+-------------------------------+-----+
+# +----------+---------+-----+
+# | name     | version | ... |
+# +----------+---------+-----+
+# | ResNet50 | 1       | ... |
+# | ResNet50 | 2       | ... |
+# | BERT     | 1       | ... |
+# +----------+---------+-----+
 
 
 class SqlModelVersion(Base):
@@ -178,12 +178,6 @@ class SqlModelVersion(Base):
     version = Column(Integer, nullable=False)
     """
     Version of registered model: Part of *Primary Key* for ``model_version`` table.
-    """
-
-    source = Column(String(512), nullable=False, unique=True)
-    """
-    Source of model: Part of *Primary Key* for ``model_version`` table.
-                     database link refer to this version of model.
     """
 
     user_id = Column(String(64), nullable=False)
@@ -239,11 +233,11 @@ class SqlModelVersion(Base):
         "SqlRegisteredModel", back_populates="model_versions"
     )
 
-    __table_args__ = (PrimaryKeyConstraint("name", "version", "source", name="model_version_pk"),)
+    __table_args__ = (PrimaryKeyConstraint("name", "version", name="model_version_pk"),)
 
     def __repr__(self):
         return (
-            f"<SqlModelVersion ({self.name}, {self.version}, {self.source}, {self.user_id},"
+            f"<SqlModelVersion ({self.name}, {self.version}, {self.user_id},"
             f" {self.experiment_id}, {self.current_stage}, {self.creation_time},"
             f" {self.last_updated_time}, {self.dataset}, {self.description})>"
         )
@@ -256,7 +250,6 @@ class SqlModelVersion(Base):
         return ModelVersion(
             name=self.name,
             version=self.version,
-            source=self.source,
             user_id=self.user_id,
             experiment_id=self.experiment_id,
             model_type=self.model_type,

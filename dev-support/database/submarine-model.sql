@@ -33,7 +33,6 @@ DROP TABLE IF EXISTS `model_version`;
 CREATE TABLE `model_version` (
 	`name` VARCHAR(256) NOT NULL COMMENT 'Name of model',
 	`version` INTEGER NOT NULL,
-	`source` VARCHAR(512) NOT NULL COMMENT 'Model saved link',
 	`user_id` VARCHAR(64) NOT NULL COMMENT 'Id of the created user',
 	`experiment_id` VARCHAR(64) NOT NULL,
 	`model_type` VARCHAR(64) NOT NULL COMMENT 'Type of model',
@@ -43,8 +42,7 @@ CREATE TABLE `model_version` (
 	`dataset` VARCHAR(256) COMMENT 'Which dataset is used',
 	`description` VARCHAR(5000),
 	CONSTRAINT `model_version_pk` PRIMARY KEY (`name`, `version`),
-	FOREIGN KEY(`name`) REFERENCES `registered_model` (`name`) ON UPDATE CASCADE ON DELETE CASCADE,
-	UNIQUE(`source`)
+	FOREIGN KEY(`name`) REFERENCES `registered_model` (`name`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `model_version_tag`;
@@ -62,7 +60,7 @@ CREATE TABLE `metric` (
 	`key` VARCHAR(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metric`` table.',
 	`value` FLOAT NOT NULL COMMENT 'Metric value: `Float`. Defined as *Non-null* in schema.',
 	`worker_index` VARCHAR(32) NOT NULL COMMENT 'Metric worker_index: `String` (limit 32 characters). Part of *Primary Key* for\r\n    ``metrics`` table.',
-	`timestamp` DATETIME(3) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `DATETIME` (millisecond precision). 
+	`timestamp` DATETIME(3) NOT NULL COMMENT 'Timestamp recorded for this metric entry: `DATETIME` (millisecond precision).
 											 Part of *Primary Key* for   ``metrics`` table.',
 	`step` INTEGER NOT NULL COMMENT 'Step recorded for this metric entry: `INTEGER`.',
 	`is_nan` BOOLEAN NOT NULL COMMENT 'True if the value is in fact NaN.',
