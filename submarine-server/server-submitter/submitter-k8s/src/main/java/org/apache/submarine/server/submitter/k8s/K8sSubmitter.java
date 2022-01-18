@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -52,6 +51,9 @@ import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodList;
 import io.kubernetes.client.openapi.models.V1Status;
 import io.kubernetes.client.util.Watch;
+import io.kubernetes.client.util.Watchable;
+import io.kubernetes.client.util.generic.GenericKubernetesApi;
+import io.kubernetes.client.util.generic.options.ListOptions;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
 
@@ -76,6 +78,7 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
+import org.apache.submarine.server.submitter.k8s.model.NotebookCRList;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRouteSpec;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
@@ -121,6 +124,9 @@ public class K8sSubmitter implements Submitter {
   private AppsV1Api appsV1Api;
 
   private ApiClient client = null;
+
+  private GenericKubernetesApi<NotebookCR, NotebookCRList> notebookClient;
+  private Watchable<NotebookCR> watcher;
 
   public K8sSubmitter() {
   }
@@ -400,11 +406,26 @@ public class K8sSubmitter implements Submitter {
     final String configmap = String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name);
     String namespace = getServerNamespace();
 
+    if (notebookClient == null) {
+      notebookClient = new GenericKubernetesApi<>(NotebookCR.class, NotebookCRList.class
+                , NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_APIVERSION_V1
+                , NotebookCR.CRD_NOTEBOOK_PLURAL_V1, this.client);
+      notebookClient.list(namespace);
+      ListOptions listOption = new ListOptions();
+      listOption.setFieldSelector(String.format("metadata.name=%s", name));
+      try {
+        notebookClient.watch(namespace, listOption);
+      } catch (ApiException e) {
+        LOG.error(e.getMessage(), e);
+        throw new SubmarineRuntimeException(e.getMessage());
+      }
+
+    }
+    
     // parse notebook custom resource
     NotebookCR notebookCR;
     try {
-      notebookCR = NotebookSpecParser.parseNotebook(spec);
-
+      notebookCR = NotebookSpecParser.parseNotebook(spec, notebookId, namespace);
       notebookCR.getMetadata().setNamespace(namespace);
       notebookCR.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
     } catch (JsonSyntaxException e) {
@@ -472,7 +493,6 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: ingressroute for Notebook " +
           "object failed by " + e.getMessage());
     }
-
     return notebook;
   }
 
@@ -482,7 +502,7 @@ public class K8sSubmitter implements Submitter {
     String namespace = getServerNamespace();
 
     try {
-      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
+      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null, null);
 
       Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
           namespace,
@@ -520,7 +540,7 @@ public class K8sSubmitter implements Submitter {
     String namespace = getServerNamespace();
 
     try {
-      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
+      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null, null);
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
           namespace, notebookCR.getPlural(),
           notebookCR.getMetadata().getName(), null, null, null,

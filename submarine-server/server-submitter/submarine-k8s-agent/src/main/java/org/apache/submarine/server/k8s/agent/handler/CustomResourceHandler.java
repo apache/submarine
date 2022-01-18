@@ -26,27 +26,27 @@ import org.apache.submarine.server.k8s.agent.util.RestClient;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
+import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.Config;
 
 public abstract class CustomResourceHandler {
-    private CoreV1Api coreApi;
-    private ApiClient client = null;  
-    private String namespace;
-    private String crType;
-    private String crName;
-    private String serverHost;
-    private Integer serverPort;
-    private RestClient restClient;
-    
+    protected CoreV1Api coreApi;
+    protected ApiClient client = null;  
+    protected String namespace;
+    protected String crType;
+    protected String crName;
+    protected String serverHost;
+    protected Integer serverPort;
+    protected RestClient restClient;
     
     public CustomResourceHandler() throws IOException {
-        this.client = Config.defaultClient();
+        this.client = ClientBuilder.standard().build();
         Configuration.setDefaultApiClient(client);
         this.coreApi = new CoreV1Api(this.client);
     }
     
     public abstract void init(String serverHost, Integer serverPort,
-            String namespace, String crType, String crName);
+            String namespace, String crName);
     public abstract void run();
     public abstract void onAddEvent();
     public abstract void onModifyEvent();
@@ -75,7 +75,29 @@ public abstract class CustomResourceHandler {
     public void setCrName(String crName) {
         this.crName = crName;
     }
-    
-    
+
+    public String getServerHost() {
+        return serverHost;
+    }
+
+    public void setServerHost(String serverHost) {
+        this.serverHost = serverHost;
+    }
+
+    public Integer getServerPort() {
+        return serverPort;
+    }
+
+    public void setServerPort(Integer serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    public RestClient getRestClient() {
+        return restClient;
+    }
+
+    public void setRestClient(RestClient restClient) {
+        this.restClient = restClient;
+    }
     
 }

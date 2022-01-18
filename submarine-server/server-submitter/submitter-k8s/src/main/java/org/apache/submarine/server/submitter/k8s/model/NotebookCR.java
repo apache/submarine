@@ -20,9 +20,11 @@
 package org.apache.submarine.server.submitter.k8s.model;
 
 import com.google.gson.annotations.SerializedName;
+
+import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 
-public class NotebookCR {
+public class NotebookCR implements KubernetesObject{
 
   public static final String CRD_NOTEBOOK_VERSION_V1 = "v1";
   public static final String CRD_NOTEBOOK_GROUP_V1 = "kubeflow.org";
