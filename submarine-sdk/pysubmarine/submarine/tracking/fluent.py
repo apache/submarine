@@ -55,9 +55,8 @@ def log_metric(key, value, step=None):
 
 
 def save_model(
-    model_type: str,
     model,
-    artifact_path: str,
+    model_type: str,
     registered_model_name: str = None,
     input_dim: list = None,
     output_dim: list = None,
@@ -66,14 +65,10 @@ def save_model(
     Save a model into the minio pod.
     :param model_type: The type of the model.
     :param model: Model.
-    :param artifact_path: Relative path of the artifact in the minio pod.
     :param registered_model_name: If none None, register model into the model registry with
                                   this name. If None, the model only be saved in minio pod.
     """
-    SubmarineClient().save_model(
-        model_type, model, artifact_path, registered_model_name, input_dim, output_dim
-    )
-    SubmarineClient().save_model(model_type, model, artifact_path, registered_model_name)
+    SubmarineClient().save_model(model, model_type, registered_model_name, input_dim, output_dim)
 
 
 def create_serve(model_name: str, model_version: int):
@@ -92,3 +87,4 @@ def delete_serve(model_name: str, model_version: int):
     :param model_version: Version of a registered model
     """
     SubmarineClient().delete_serve(model_name, model_version)
+    

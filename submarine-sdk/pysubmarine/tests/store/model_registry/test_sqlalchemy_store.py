@@ -107,12 +107,8 @@ class TestSqlAlchemyStore(unittest.TestCase):
         name = "test_rename_RM"
         new_name = "test_rename_RN_new"
         rm = self.store.create_registered_model(name)
-        self.store.create_model_version(
-            name, "test", "application_1234", "tensorflow"
-        )
-        self.store.create_model_version(
-            name, "test", "application_1235", "tensorflow"
-        )
+        self.store.create_model_version(name, "test", "application_1234", "tensorflow")
+        self.store.create_model_version(name, "test", "application_1235", "tensorflow")
         mv1d = self.store.get_model_version(name, 1)
         mv2d = self.store.get_model_version(name, 2)
         self.assertEqual(rm.name, name)
@@ -383,9 +379,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
         model_name = "test_create_MV"
         self.store.create_registered_model(model_name)
         fake_datetime = datetime.now()
-        mv1 = self.store.create_model_version(
-            model_name, "test", "application_1234", "tensorflow"
-        )
+        mv1 = self.store.create_model_version(model_name, "test", "application_1234", "tensorflow")
         self.assertEqual(mv1.name, model_name)
         self.assertEqual(mv1.version, 1)
         self.assertEqual(mv1.creation_time, fake_datetime)
@@ -401,9 +395,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.assertEqual(m1d.dataset, None)
 
         # new model for same registered model autoincrement version
-        m2 = self.store.create_model_version(
-            model_name, "test", "application_1234", "tensorflow"
-        )
+        m2 = self.store.create_model_version(model_name, "test", "application_1234", "tensorflow")
         m2d = self.store.get_model_version(m2.name, m2.version)
         self.assertEqual(m2.version, 2)
         self.assertEqual(m2d.version, 2)
@@ -437,9 +429,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
     def test_update_model_version_description(self):
         name = "test_update_MV_description"
         self.store.create_registered_model(name)
-        mv1 = self.store.create_model_version(
-            name, "test", "application_1234", "tensorflow"
-        )
+        mv1 = self.store.create_model_version(name, "test", "application_1234", "tensorflow")
         m1d = self.store.get_model_version(mv1.name, mv1.version)
         self.assertEqual(m1d.name, name)
         self.assertEqual(m1d.version, 1)
@@ -458,12 +448,8 @@ class TestSqlAlchemyStore(unittest.TestCase):
     def test_transition_model_version_stage(self):
         name = "test_transition_MV_stage"
         self.store.create_registered_model(name)
-        mv1 = self.store.create_model_version(
-            name, "test", "application_1234", "tensorflow"
-        )
-        m2 = self.store.create_model_version(
-            name, "test", "application_1234", "tensorflow"
-        )
+        mv1 = self.store.create_model_version(name, "test", "application_1234", "tensorflow")
+        m2 = self.store.create_model_version(name, "test", "application_1234", "tensorflow")
 
         fake_datetime = datetime.strptime("2021-11-11 11:11:11.111000", "%Y-%m-%d %H:%M:%S.%f")
         with freeze_time(fake_datetime):
@@ -592,9 +578,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.store.create_registered_model(name2)
         tags = ["tag1", "tag2", "tag3"]
         models = [
-            self.store.create_model_version(
-                name1, "test", "application_1234", "tensorflow"
-            ),
+            self.store.create_model_version(name1, "test", "application_1234", "tensorflow"),
             self.store.create_model_version(
                 name1, "test", "application_1234", "tensorflow", tags=[tags[0]]
             ),
@@ -643,9 +627,7 @@ class TestSqlAlchemyStore(unittest.TestCase):
     def test_get_model_version_uri(self):
         name = "test_get_model_version_uri"
         self.store.create_registered_model(name)
-        mv = self.store.create_model_version(
-            name, "test", "application_1234", "tensorflow"
-        )
+        mv = self.store.create_model_version(name, "test", "application_1234", "tensorflow")
         uri = self.store.get_model_version_uri(mv.name, mv.version)
         self.assertEqual(uri, f"s3://submarine/serve/{mv.name}/{mv.version}")
 
