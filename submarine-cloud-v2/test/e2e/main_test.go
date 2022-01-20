@@ -45,10 +45,10 @@ var STATES = [4]string{
 	"FAILED",
 }
 
-func GetJobStatus(t *testing.T, submarineNs, submarineName string) v1alpha1.SubmarineStateType {
+func GetJobState(t *testing.T, submarineNs, submarineName string) v1alpha1.SubmarineState {
 	submarine, err := operatorFramework.GetSubmarine(framework.SubmarineClient, submarineNs, submarineName)
 	assert.Equal(t, nil, err)
-	return submarine.Status.SubmarineState.State
+	return submarine.Status.SubmarineState
 }
 
 func TestMain(m *testing.M) {
