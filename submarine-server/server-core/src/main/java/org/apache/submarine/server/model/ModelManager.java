@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.model;
 
+import org.apache.submarine.server.s3.S3Constants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -115,7 +116,20 @@ public class ModelManager {
 
     // Get model type and model uri from DB and set the value in the spec.
     ModelVersionEntity modelVersion = modelVersionService.select(spec.getModelName(), spec.getModelVersion());
-    spec.setModelType(modelVersion.getModelType());
+    String modelType = modelVersion.getModelType();
+    String modelId = modelVersion.getId();
+    spec.setModelType(modelType);
+    spec.setModelId(modelId);
+
+    if (spec.getModelType().equals("pytorch")) {
+      spec.setModelURI(String.format("s3://%s/registry/%s", S3Constants.BUCKET, modelId));
+    } else if (spec.getModelType().equals("tensorflow")) {
+      spec.setModelURI(String.format("s3://%s/registry/%s/%s", S3Constants.BUCKET, modelId,
+          spec.getModelName()));
+    } else {
+      throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+          String.format("Unexpected model type: %s", modelType));
+    }
   }
 
   private void transferDescription(ServeSpec spec) {
@@ -147,7 +161,8 @@ public class ModelManager {
       modelConfig.addOutput(modelOutput);
     }
 
-    s3Client.logArtifact(Paths.get(spec.getModelName(), "config.pbtxt").toString(),
+    s3Client.logArtifact(String.format("s3://%s/registry/%s/%s/config.pbtxt", S3Constants.BUCKET,
+            spec.getModelId(), spec.getModelName()),
             modelConfig.toString().getBytes());
   }
 

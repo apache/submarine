@@ -27,6 +27,8 @@ public class ModelVersionEntity {
 
   private Integer version;
 
+  private String id;
+
   private String userId;
 
   private String experimentId;
@@ -59,6 +61,14 @@ public class ModelVersionEntity {
 
   public void setVersion(Integer version) {
     this.version = version;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getUserId() {
@@ -138,7 +148,8 @@ public class ModelVersionEntity {
   public String toString() {
     return "ModelVersionEntity{" +
       "name='" + name + '\'' +
-      ",version='" + version + '\'' +
+      ", version='" + version + '\'' +
+      ", id='" + id + '\'' +
       ", userId='" + userId + '\'' +
       ", experimentId='" + experimentId + '\'' +
       ", modelType='" + modelType + '\'' +
