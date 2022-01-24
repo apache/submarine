@@ -53,6 +53,12 @@
 
     <dependency>
       <groupId>org.apache.submarine</groupId>
+      <artifactId>submarine-k8s-utils</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.submarine</groupId>
       <artifactId>submarine-server-api</artifactId>
       <version>${project.version}</version>
     </dependency>
