@@ -71,7 +71,7 @@ class TestTracking(unittest.TestCase):
         environ["AWS_ACCESS_KEY_ID"] = "submarine_minio"
         environ["AWS_SECRET_ACCESS_KEY"] = "submarine_minio"
         Repository().delete_folder(f"experiment/{JOB_ID}")
-        Repository().delete_folder(f"serve/{REGISTERED_MODEL_NAME}")
+        Repository().delete_folder(f"registry/{REGISTERED_MODEL_NAME}")
 
     def test_log_param(self):
         submarine.log_param("name_1", "a")

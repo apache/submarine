@@ -33,6 +33,7 @@ DROP TABLE IF EXISTS `model_version`;
 CREATE TABLE `model_version` (
 	`name` VARCHAR(256) NOT NULL COMMENT 'Name of model',
 	`version` INTEGER NOT NULL,
+	`id` VARCHAR(64) NOT NULL COMMENT 'Id of the model',
 	`user_id` VARCHAR(64) NOT NULL COMMENT 'Id of the created user',
 	`experiment_id` VARCHAR(64) NOT NULL,
 	`model_type` VARCHAR(64) NOT NULL COMMENT 'Type of model',
@@ -42,6 +43,7 @@ CREATE TABLE `model_version` (
 	`dataset` VARCHAR(256) COMMENT 'Which dataset is used',
 	`description` VARCHAR(5000),
 	CONSTRAINT `model_version_pk` PRIMARY KEY (`name`, `version`),
+	UNIQUE (`name`, `id`),
 	FOREIGN KEY(`name`) REFERENCES `registered_model` (`name`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

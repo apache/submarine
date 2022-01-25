@@ -22,11 +22,12 @@ package org.apache.submarine.server.s3;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.util.List;
 
 
 public class ClientTest {
-  private Client client = new Client("http://localhost:9000");
+  private final Client client = new Client("http://localhost:9000");
   private final String testExperimentId = "experiment-sample";
   private final String bucket = "s3://submarine";
 
@@ -63,5 +64,19 @@ public class ClientTest {
     client.deleteArtifactsByExperiment(testExperimentId);
     results = client.listArtifactByExperimentId(testExperimentId);
     Assert.assertArrayEquals(new String[0], results.toArray());
+  }
+
+  @Test
+  public void testCopyObject() {
+    String path = "sample_folder/sample_file";
+    byte[] content = "0123456789".getBytes();;
+    client.logArtifact(path, content);
+    byte[] response = client.downloadArtifact(path);
+    Assert.assertArrayEquals(content, response);
+
+    String copyPath = "sample_folder_copy/sample_file";
+    client.copyArtifact("sample_folder/sample_file", "sample_folder_copy/sample_file");
+    response = client.downloadArtifact(copyPath);
+    Assert.assertArrayEquals(content, response);
   }
 }

@@ -101,7 +101,7 @@ public class ModelManager {
     } else {
       if (spec.getModelName() == null) {
         throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-                "Invalid. Model name in Serve Soec is null.");
+                "Invalid. Model name in Serve Spec is null.");
       }
       Integer modelVersion = spec.getModelVersion();
       if (modelVersion == null || modelVersion <= 0) {

@@ -123,9 +123,11 @@ class SubmarineClient(object):
                 " characters."
             )
 
+        model_id = utils.generate_model_id()
+
         # log artifact under the experiment directory
         self._log_artifact(
-            model, model_type, f"experiment/{self.experiment_id}", input_dim, output_dim
+            model, f"experiment/{self.experiment_id}", model_type, model_id, input_dim, output_dim
         )
 
         # Register model
@@ -135,9 +137,14 @@ class SubmarineClient(object):
             except SubmarineException:
                 self.model_registry.create_registered_model(name=registered_model_name)
 
-            # log artifact under the serve directory
+            # log artifact under the registry directory
             self._log_artifact(
-                model, model_type, f"serve/{registered_model_name}", input_dim, output_dim
+                model,
+                f"registry/{model_id}/{registered_model_name}",
+                model_type,
+                model_id,
+                input_dim,
+                output_dim,
             )
             self.model_registry.create_model_version(
                 name=registered_model_name,
@@ -151,6 +158,7 @@ class SubmarineClient(object):
         model,
         dest_path: str,
         model_type: str,
+        model_id: str,
         input_dim: list = None,
         output_dim: list = None,
     ):
@@ -159,13 +167,15 @@ class SubmarineClient(object):
         :param model: Model.
         :param dest_path: Destination path of the submarine bucket in the minio pod.
         :param model_type: The type of the model.
+        :param model_id: ID of the model.
         :param input_dim: Save the input dimension of the given model to the description file.
         :param output_dim: Save the output dimension of the given model to the description file.
         """
         with tempfile.TemporaryDirectory() as tempdir:
             description: Dict[str, Any] = dict()
             model_save_dir = tempdir
-            os.mkdir(model_save_dir)
+            if not os.path.exists(model_save_dir):
+                os.mkdir(model_save_dir)
             if model_type == "pytorch":
                 import submarine.models.pytorch
 
@@ -183,6 +193,7 @@ class SubmarineClient(object):
                 raise Exception("No valid type of model has been matched to {}".format(model_type))
 
             # Write description file
+            description["id"] = model_id
             if input_dim is not None:
                 description["input"] = [
                     {

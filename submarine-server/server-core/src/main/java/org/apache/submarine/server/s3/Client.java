@@ -26,6 +26,8 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.Response;
 
+import io.minio.CopyObjectArgs;
+import io.minio.CopySource;
 import io.minio.GetObjectArgs;
 import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
@@ -63,7 +65,7 @@ public class Client {
    */
   public List<String> listArtifactByExperimentId(String experimentId) throws SubmarineRuntimeException {
     Iterable<Result<Item>> artifactNames = minioClient.listObjects(ListObjectsArgs.builder()
-        .bucket(S3Constants.BUCKET).prefix(experimentId + "/").delimiter("/").build());
+        .bucket(S3Constants.BUCKET).prefix("experiment/" + experimentId + "/").delimiter("/").build());
     List<String> response = new ArrayList<>();
     Iterable<Result<Item>> artifacts;
     for (Result<Item> artifactName : artifactNames) {
@@ -127,6 +129,29 @@ public class Client {
           e.getMessage());
     }
     return buffer;
+  }
+
+
+  /**
+   * Copy an artifact.
+   *
+   * @param targetPath path of the target file
+   * @param sourcePath path of the source file
+   */
+  public void copyArtifact(String targetPath, String sourcePath) {
+    try {
+      minioClient.copyObject(CopyObjectArgs.builder()
+          .bucket(S3Constants.BUCKET)
+          .object(targetPath)
+          .source(CopySource.builder()
+              .bucket(S3Constants.BUCKET)
+              .object(sourcePath)
+              .build())
+          .build());
+    } catch (Exception e) {
+      throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+          e.getMessage());
+    }
   }
 
   /**

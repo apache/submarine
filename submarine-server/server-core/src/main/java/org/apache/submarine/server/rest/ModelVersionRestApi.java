@@ -19,6 +19,8 @@
 
 package org.apache.submarine.server.rest;
 
+import org.apache.submarine.server.s3.S3Constants;
+import org.json.JSONObject;
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,7 +39,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
 import org.apache.submarine.server.model.database.entities.ModelVersionTagEntity;
@@ -46,6 +47,7 @@ import org.apache.submarine.server.model.database.service.ModelVersionService;
 
 import org.apache.submarine.server.model.database.service.ModelVersionTagService;
 import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.s3.Client;
 
 /**
  * Model version REST API v1.
@@ -59,6 +61,8 @@ public class ModelVersionRestApi {
 
   /* Model version tag service */
   private final ModelVersionTagService modelVersionTagService = new ModelVersionTagService();
+
+  private final Client s3Client = new Client();
 
   /**
    * Return the Pong message for test the connectivity.
@@ -74,6 +78,44 @@ public class ModelVersionRestApi {
           content = @Content(schema = @Schema(implementation = String.class)))})
   public Response ping() {
     return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("Pong").build();
+  }
+
+  /**
+   * Create a model version.
+   *
+   * @param entity registered model entity
+   * example: {
+   *   "name": "example_name"
+   *   "id" : "42ae7f58ba354872a95f6872e16c3544"
+   *   "experimentId" : "4d4d02f06f6f437fa29e1ee8a9276d87"
+   *   "description" : "example_description"
+   *   "tags": ["123", "456"]
+   * }
+   * @return success message
+   */
+  @POST
+  @Consumes({ RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON })
+  @Operation(summary = "Create a model version instance", tags = { "model-version" }, responses = {
+      @ApiResponse(description = "successful operation",
+                   content = @Content(schema = @Schema(implementation = JsonResponse.class)))})
+  public Response createModelVersion(ModelVersionEntity entity) {
+    try {
+
+      String res = new String(s3Client.downloadArtifact(
+          String.format("s3://%s/experiment/%s/description.json", S3Constants.BUCKET,
+          entity.getExperimentId())));
+      JSONObject description = new JSONObject(res);
+      String modelType =  description.get("model_type").toString();
+      String id = description.get("id").toString();
+      entity.setId(id);
+      entity.setModelType(modelType);
+      modelVersionService.insert(entity);
+
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
+        .message("Create a model version instance").build();
+    } catch (SubmarineRuntimeException e) {
+      return parseModelVersionServiceException(e);
+    }
   }
 
   /**
@@ -126,7 +168,7 @@ public class ModelVersionRestApi {
    *
    * @param name    model version's name
    * @param version model version's version
-   * @return seccess message
+   * @return success message
    */
   @DELETE
   @Path("/{name}/{version}")
@@ -277,7 +319,7 @@ public class ModelVersionRestApi {
       throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
           "Invalid. Model version's version is null.");
     }
-    Integer versionNum;
+    int versionNum;
     try {
       versionNum = Integer.parseInt(version);
       if (versionNum < 1){
