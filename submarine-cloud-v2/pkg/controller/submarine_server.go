@@ -65,6 +65,14 @@ func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 			Value: serverName + "." + submarine.Namespace,
 		},
 		{
+			Name: "ENV_NAMESPACE",
+			ValueFrom: &corev1.EnvVarSource{
+				FieldRef: &corev1.ObjectFieldSelector{
+					FieldPath: "metadata.namespace",
+				},
+			},
+		},
+		{
 			Name:  "SUBMARINE_APIVERSION",
 			Value: ownerReference.APIVersion,
 		},

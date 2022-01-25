@@ -19,9 +19,6 @@
 
 package org.apache.submarine.server.k8s.utils;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,17 +39,11 @@ public abstract class K8sUtils {
    */
   public static String getNamespace() {
     if (namespace == null) {
-      String filename = "/var/run/secrets/kubernetes.io/serviceaccount/namespace";
-      try {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-          namespace = reader.readLine();
-        }
-        if (namespace == null) {
-          throw new IllegalStateException("No content in " + filename);
-        }
-      } catch (Throwable e) {
-        LOG.error("Error occurs when reading the current namespace value.", e);
+      namespace = System.getenv("ENV_NAMESPACE");
+      if (namespace == null) {
+        namespace = "default";
       }
+      LOG.info("Namespace: {}", namespace);
     }
     return namespace;
   }
