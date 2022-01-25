@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.submarine.server.k8s.utils.K8sUtils;
+
 /**
  * ExperimentMeta is metadata that all experiments must have.
  */
@@ -33,20 +35,14 @@ public class ExperimentMeta {
 
   private String experimentId;
   private String name;
-  private String namespace;
+  private final String namespace;
   private String framework;
   private String cmd;
   private Map<String, String> envVars = new HashMap<>();
   private List<String> tags = new ArrayList<>();
 
   public ExperimentMeta() {
-    namespace = "default";
-    /* The environment variable "ENV_NAMESPACE" will be set by submarine-operator. Hence, 
-     * if the user creates Submarine with Helm, the variable "namespace" will always be "default". 
-     */
-    if (System.getenv("ENV_NAMESPACE") != null) { 
-      namespace = System.getenv("ENV_NAMESPACE");
-    }
+    namespace = K8sUtils.getNamespace();
   }
 
   /**

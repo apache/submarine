@@ -37,6 +37,11 @@
       <artifactId>submarine-commons-utils</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.submarine</groupId>
+      <artifactId>submarine-k8s-utils</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
       <version>${protobuf-java.version}</version>
