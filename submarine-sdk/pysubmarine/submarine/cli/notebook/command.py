@@ -29,8 +29,7 @@ from submarine.client.api.notebook_client import NotebookClient
 from submarine.client.exceptions import ApiException
 
 submarineCliConfig = loadConfig()
-if submarineCliConfig is None:
-    exit(1)
+
 notebookClient = NotebookClient(
     host="http://{}:{}".format(
         submarineCliConfig.connection.hostname, submarineCliConfig.connection.port
@@ -47,6 +46,7 @@ def list_notebook():
     COLS_TO_SHOW = ["Name", "ID", "Environment", "Resources", "Status"]
     console = Console()
     # using user_id hard coded in SysUserRestApi.java
+    # https://github.com/apache/submarine/blob/5040068d7214a46c52ba87e10e9fa64411293cf7/submarine-server/server-core/src/main/java/org/apache/submarine/server/workbench/rest/SysUserRestApi.java#L228
     try:
         thread = notebookClient.list_notebooks_async(user_id="4291d7da9005377ec9aec4a71ea837f")
         timeout = time.time() + TIMEOUT
