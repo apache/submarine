@@ -22,6 +22,7 @@
   <resultMap id="resultMap" type="org.apache.submarine.server.model.database.entities.ModelVersionEntity">
     <result column="name" property="name" />
     <result column="version" property="version" />
+    <result column="id" property="id" />
     <result column="user_id" property="userId" />
     <result column="experiment_id" property="experimentId" />
     <result column="model_type" property="modelType" />
@@ -35,6 +36,7 @@
   <resultMap id="resultMapWithTag" type="org.apache.submarine.server.model.database.entities.ModelVersionEntity">
     <result column="name" property="name" />
     <result column="version" property="version" />
+    <result column="id" property="id" />
     <result column="user_id" property="userId" />
     <result column="experiment_id" property="experimentId" />
     <result column="model_type" property="modelType" />
@@ -49,7 +51,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    name, version, user_id, experiment_id, model_type, current_stage, creation_time,
+    name, version, id, user_id, experiment_id, model_type, current_stage, creation_time,
     last_updated_time, dataset, description
   </sql>
 
@@ -75,8 +77,8 @@
   </select>
 
   <insert id="insert" parameterType="org.apache.submarine.server.model.database.entities.ModelVersionEntity">
-    insert into model_version (name, version, user_id, experiment_id, model_type, current_stage, creation_time, last_updated_time, dataset, description)
-    values (#{name,jdbcType=VARCHAR}, #{version,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR},
+    insert into model_version (name, version, id, user_id, experiment_id, model_type, current_stage, creation_time, last_updated_time, dataset, description)
+    values (#{name,jdbcType=VARCHAR}, #{version,jdbcType=INTEGER}, #{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
             #{experimentId,jdbcType=VARCHAR}, #{modelType,jdbcType=VARCHAR}, #{currentStage,jdbcType=VARCHAR},
             NOW(3), NOW(3), #{dataset,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR});
     <if test="tags != null and !tags.isEmpty()">

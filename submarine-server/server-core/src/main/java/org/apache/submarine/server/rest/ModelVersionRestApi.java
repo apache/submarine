@@ -21,6 +21,7 @@ package org.apache.submarine.server.rest;
 
 import org.apache.submarine.server.s3.S3Constants;
 import org.json.JSONObject;
+
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -91,6 +92,8 @@ public class ModelVersionRestApi {
    *   "description" : "example_description"
    *   "tags": ["123", "456"]
    * }
+   * @param baseDir artifact base directory
+   * example: "experiment/experiment-1643015349312-0001/1"
    * @return success message
    */
   @POST
@@ -98,18 +101,31 @@ public class ModelVersionRestApi {
   @Operation(summary = "Create a model version instance", tags = { "model-version" }, responses = {
       @ApiResponse(description = "successful operation",
                    content = @Content(schema = @Schema(implementation = JsonResponse.class)))})
-  public Response createModelVersion(ModelVersionEntity entity) {
+  public Response createModelVersion(ModelVersionEntity entity,
+                                     @QueryParam("baseDir") String baseDir) {
     try {
-
       String res = new String(s3Client.downloadArtifact(
-          String.format("s3://%s/experiment/%s/description.json", S3Constants.BUCKET,
-          entity.getExperimentId())));
+          String.format("%s/description.json", baseDir)));
       JSONObject description = new JSONObject(res);
       String modelType =  description.get("model_type").toString();
       String id = description.get("id").toString();
       entity.setId(id);
       entity.setModelType(modelType);
+
+      int version = modelVersionService.selectAllVersions(entity.getName()).stream().mapToInt(
+          ModelVersionEntity::getVersion
+      ).max().orElse(1);
+
+      entity.setVersion(version);
       modelVersionService.insert(entity);
+      String prefix = String.format("s3://%s/%s", S3Constants.BUCKET, baseDir);
+
+      // copy artifacts
+      s3Client.listAllObjects(baseDir).forEach(s -> {
+        String relativePath = s.substring(prefix.length());
+        s3Client.copyArtifact(s, String.format("registry/%s/%s/%d/%s", id,
+            entity.getName(), entity.getVersion(), relativePath));
+      });
 
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
         .message("Create a model version instance").build();

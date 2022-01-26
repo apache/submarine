@@ -126,6 +126,7 @@ class AbstractStore:
     def create_model_version(
         self,
         name: str,
+        id: str,
         user_id: str,
         experiment_id: str,
         model_type: str,
@@ -136,6 +137,7 @@ class AbstractStore:
         """
         Create a new version of the registered model
         :param name: Registered model name.
+        :param id: Model ID generated when model is created and stored in the description.json
         :param user_id: User ID from server that created this model
         :param experiment_id: Experiment ID which this model is created.
         :param dataset: Dataset which this version of model is used.

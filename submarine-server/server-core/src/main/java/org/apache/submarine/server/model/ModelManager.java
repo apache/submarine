@@ -19,12 +19,10 @@
 
 package org.apache.submarine.server.model;
 
-import org.apache.submarine.server.s3.S3Constants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.nio.file.Paths;
 import javax.ws.rs.core.Response;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
@@ -36,6 +34,7 @@ import org.apache.submarine.server.api.proto.TritonModelConfig;
 import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
 import org.apache.submarine.server.model.database.service.ModelVersionService;
 import org.apache.submarine.server.s3.Client;
+import org.apache.submarine.server.s3.S3Constants;
 
 
 public class ModelManager {
@@ -134,8 +133,8 @@ public class ModelManager {
 
   private void transferDescription(ServeSpec spec) {
     Client s3Client = new Client();
-    String res  = new String(s3Client.downloadArtifact(
-            Paths.get(spec.getModelName(), "description.json").toString()));
+    String res  = new String(s3Client.downloadArtifact(String.format("registry/%s/%s/%d/description.json",
+        spec.getModelId(), spec.getModelName(), spec.getModelVersion())));
     JSONObject description = new JSONObject(res);
 
     TritonModelConfig.ModelConfig.Builder modelConfig = TritonModelConfig.ModelConfig.newBuilder();
@@ -161,8 +160,7 @@ public class ModelManager {
       modelConfig.addOutput(modelOutput);
     }
 
-    s3Client.logArtifact(String.format("s3://%s/registry/%s/%s/config.pbtxt", S3Constants.BUCKET,
-            spec.getModelId(), spec.getModelName()),
+    s3Client.logArtifact(String.format("registry/%s/%s/config.pbtxt", spec.getModelId(), spec.getModelName()),
             modelConfig.toString().getBytes());
   }
 

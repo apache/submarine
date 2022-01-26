@@ -90,6 +90,7 @@ class PrintLR(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         print("\nLearning rate for epoch {} is {}".format(epoch + 1, model.optimizer.lr.numpy()))
         submarine.log_metric("lr", model.optimizer.lr.numpy())
+        submarine.save_model(model, "tensorflow", "mnist-tf")
 
 
 # Put all the callbacks together.
@@ -101,7 +102,7 @@ callbacks = [
 ]
 
 if __name__ == "__main__":
-    EPOCHS = 5
+    EPOCHS = 2
     hist = model.fit(train_dataset, epochs=EPOCHS, callbacks=callbacks)
     for i in range(EPOCHS):
         submarine.log_metric("val_loss", hist.history["loss"][i], i)
@@ -111,7 +112,6 @@ if __name__ == "__main__":
     print("Eval loss: {}, Eval accuracy: {}".format(eval_loss, eval_acc))
     submarine.log_param("loss", eval_loss)
     submarine.log_param("acc", eval_acc)
-
 """Reference:
 https://www.tensorflow.org/api_docs/python/tf/distribute/MirroredStrategy
 """

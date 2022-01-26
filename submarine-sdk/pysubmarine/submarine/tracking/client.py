@@ -148,6 +148,7 @@ class SubmarineClient(object):
             )
             self.model_registry.create_model_version(
                 name=registered_model_name,
+                id=model_id,
                 user_id="",  # TODO(jeff-901): the user id is needed to be specified.
                 experiment_id=self.experiment_id,
                 model_type=model_type,

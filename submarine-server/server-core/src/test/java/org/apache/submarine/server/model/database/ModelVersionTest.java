@@ -52,6 +52,7 @@ public class ModelVersionTest {
     ModelVersionEntity modelVersionEntity = new ModelVersionEntity();
     modelVersionEntity.setName(name);
     modelVersionEntity.setVersion(version);
+    modelVersionEntity.setId("model_version_id");
     modelVersionEntity.setUserId("test");
     modelVersionEntity.setExperimentId("application_1234");
     modelVersionEntity.setModelType("tensorflow");
@@ -64,6 +65,7 @@ public class ModelVersionTest {
     ModelVersionEntity modelVersionEntity2 = new ModelVersionEntity();
     modelVersionEntity2.setName(name);
     modelVersionEntity2.setVersion(version2);
+    modelVersionEntity2.setId("model_version_id2");
     modelVersionEntity2.setUserId("test");
     modelVersionEntity2.setExperimentId("application_1234");
     modelVersionEntity2.setModelType("tensorflow");
@@ -90,6 +92,7 @@ public class ModelVersionTest {
     ModelVersionEntity modelVersionEntity = new ModelVersionEntity();
     modelVersionEntity.setName(name);
     modelVersionEntity.setVersion(version);
+    modelVersionEntity.setId("model_version_id");
     modelVersionEntity.setUserId("test");
     modelVersionEntity.setExperimentId("application_1234");
     modelVersionEntity.setModelType("tensorflow");
@@ -115,6 +118,7 @@ public class ModelVersionTest {
     ModelVersionEntity modelVersionEntity = new ModelVersionEntity();
     modelVersionEntity.setName(name);
     modelVersionEntity.setVersion(version);
+    modelVersionEntity.setId("model_version_id");
     modelVersionEntity.setUserId("test");
     modelVersionEntity.setExperimentId("application_1234");
     modelVersionEntity.setModelType("tensorflow");
@@ -146,6 +150,7 @@ public class ModelVersionTest {
     ModelVersionEntity modelVersionEntity = new ModelVersionEntity();
     modelVersionEntity.setName(name);
     modelVersionEntity.setVersion(version);
+    modelVersionEntity.setId("model_version_id");
     modelVersionEntity.setUserId("test");
     modelVersionEntity.setExperimentId("application_1234");
     modelVersionEntity.setModelType("tensorflow");
@@ -158,6 +163,7 @@ public class ModelVersionTest {
   private void compareModelVersion(ModelVersionEntity expected, ModelVersionEntity actual) {
     Assert.assertEquals(expected.getName(), actual.getName());
     Assert.assertEquals(expected.getVersion(), actual.getVersion());
+    Assert.assertEquals(expected.getId(), actual.getId());
     Assert.assertEquals(expected.getUserId(), actual.getUserId());
     Assert.assertEquals(expected.getExperimentId(), actual.getExperimentId());
     Assert.assertEquals(expected.getModelType(), actual.getModelType());

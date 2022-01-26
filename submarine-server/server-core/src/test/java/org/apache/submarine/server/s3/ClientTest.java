@@ -29,7 +29,6 @@ import java.util.List;
 public class ClientTest {
   private final Client client = new Client("http://localhost:9000");
   private final String testExperimentId = "experiment-sample";
-  private final String bucket = "s3://submarine";
 
   @After
   public void cleanAll() {
@@ -39,43 +38,44 @@ public class ClientTest {
   @Test
   public void testLogArtifactAndDownloadArtifact() {
     String path = "sample_folder/sample_file";
-    byte[] content = "0123456789".getBytes();;
+    byte[] content = "0123456789".getBytes();
     client.logArtifact(path, content);
     byte[] response = client.downloadArtifact(path);
     Assert.assertArrayEquals(content, response);
   }
 
   @Test
-  public void testListArtifactByExperimentIdAndDeleteArtifactByExperiment() {
-    String testModelName  = "sample";
+  public void testListAndDeleteArtifactByExperimentId() {
     byte[] content = "0123456789".getBytes();
 
     String[] artifactPaths = {
-        testExperimentId + "/" + testModelName + "/1",
-        testExperimentId + "/" + testModelName + "/2"};
+        String.format("experiment/%s/1", testExperimentId),
+        String.format("experiment/%s/2", testExperimentId)
+    };
     String[] actualResults = {
-        bucket + "/" + testExperimentId + "/" + testModelName + "/1",
-        bucket + "/" + testExperimentId + "/" + testModelName + "/2"};
+        String.format("s3://%s/experiment/%s/1", S3Constants.BUCKET, testExperimentId),
+        String.format("s3://%s/experiment/%s/2", S3Constants.BUCKET, testExperimentId)
+    };
     client.logArtifact(artifactPaths[0], content);
     client.logArtifact(artifactPaths[1], content);
-    List<String> results = client.listArtifactByExperimentId(testExperimentId);
+    List<String> results = client.listArtifact(String.format("experiment/%s", testExperimentId));
     Assert.assertArrayEquals(actualResults, results.toArray());
 
     client.deleteArtifactsByExperiment(testExperimentId);
-    results = client.listArtifactByExperimentId(testExperimentId);
+    results = client.listArtifact(testExperimentId);
     Assert.assertArrayEquals(new String[0], results.toArray());
   }
 
   @Test
   public void testCopyObject() {
     String path = "sample_folder/sample_file";
-    byte[] content = "0123456789".getBytes();;
+    byte[] content = "0123456789".getBytes();
     client.logArtifact(path, content);
     byte[] response = client.downloadArtifact(path);
     Assert.assertArrayEquals(content, response);
 
     String copyPath = "sample_folder_copy/sample_file";
-    client.copyArtifact("sample_folder/sample_file", "sample_folder_copy/sample_file");
+    client.copyArtifact(copyPath, path);
     response = client.downloadArtifact(copyPath);
     Assert.assertArrayEquals(content, response);
   }

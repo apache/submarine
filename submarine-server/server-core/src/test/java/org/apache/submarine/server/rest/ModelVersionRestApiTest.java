@@ -47,7 +47,9 @@ public class ModelVersionRestApiTest {
   private final String registeredModelDescription = "test registered model description";
   private final String modelVersionDescription = "test model version description";
   private final String newModelVersionDescription = "new test registered model description";
-  private final String modelVersionUid = "test123";
+  private final String modelVersionId = "model_version_id";
+  private final String modelVersionId2 = "model_version_id2";
+  private final String modelVersionUserId = "test123";
   private final String modelVersionExperimentId = "experiment_123";
   private final String modelVersionModelType = "experiment_123";
   private final String modelVersionTag = "testTag";
@@ -73,19 +75,27 @@ public class ModelVersionRestApiTest {
     registeredModel.setDescription(registeredModelDescription);
     registeredModelService.insert(registeredModel);
     modelVersion1.setName(registeredModelName);
-    modelVersion1.setDescription(modelVersionDescription + "1");
+    modelVersion1.setDescription(String.format("%s1", modelVersionDescription));
     modelVersion1.setVersion(1);
-    modelVersion1.setUserId(modelVersionUid);
+    modelVersion1.setId(modelVersionId);
+    modelVersion1.setUserId(modelVersionUserId);
     modelVersion1.setExperimentId(modelVersionExperimentId);
     modelVersion1.setModelType(modelVersionModelType);
     modelVersionService.insert(modelVersion1);
+
     modelVersion2.setName(registeredModelName);
-    modelVersion2.setDescription(modelVersionDescription + "2");
+    modelVersion2.setDescription(String.format("%s2", modelVersionDescription));
     modelVersion2.setVersion(2);
-    modelVersion2.setUserId(modelVersionUid);
+    modelVersion2.setId(modelVersionId2);
+    modelVersion2.setUserId(modelVersionUserId);
     modelVersion2.setExperimentId(modelVersionExperimentId);
     modelVersion2.setModelType(modelVersionModelType);
     modelVersionService.insert(modelVersion2);
+  }
+
+  @After
+  public void tearDown(){
+    registeredModelService.deleteAll();
   }
 
   @Test
@@ -144,10 +154,7 @@ public class ModelVersionRestApiTest {
     verifyResult(modelVersion2, result.get(0));
   }
 
-  @After
-  public void tearDown(){
-    registeredModelService.deleteAll();
-  }
+
 
   private <T> T getResultFromResponse(Response response, Class<T> typeT) {
     String entity = (String) response.getEntity();
@@ -172,6 +179,7 @@ public class ModelVersionRestApiTest {
     assertEquals(result.getName(), actual.getName());
     assertEquals(result.getDescription(), actual.getDescription());
     assertEquals(result.getVersion(), actual.getVersion());
+    assertEquals(result.getId(), actual.getId());
     assertEquals(result.getExperimentId(), actual.getExperimentId());
     assertEquals(result.getModelType(), actual.getModelType());
   }

@@ -93,7 +93,7 @@ public class RestConstants {
    * Serve.
    */
   public static final String SERVE = "serve";
-  
+
   /**
    *  Internal
    */
