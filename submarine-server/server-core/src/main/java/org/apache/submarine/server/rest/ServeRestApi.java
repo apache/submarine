@@ -64,16 +64,18 @@ public class ServeRestApi {
 
   @POST
   @Consumes({ RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON })
-  @Operation(summary = "Create a serve instance", tags = { "serve" }, responses = {
-          @ApiResponse(description = "successful operation",
-                  content = @Content(schema = @Schema(implementation = JsonResponse.class)))})
+  @Operation(summary = "Create a serve instance",
+      tags = {"serve"},
+      responses = {
+          @ApiResponse(description = "successful operation", content = @Content(
+              schema = @Schema(implementation = JsonResponse.class)))})
   public Response createServe(ServeSpec spec) {
     try {
       ServeResponse serveResponse = modelManager.createServe(spec);
       return new JsonResponse.Builder<ServeResponse>(Response.Status.OK).success(true)
               .message("Create a serve instance").result(serveResponse).build();
     } catch (SubmarineRuntimeException e) {
-      return parseModelVersionServiceException(e);
+      return parseServeServiceException(e);
     }
   }
 
@@ -88,11 +90,11 @@ public class ServeRestApi {
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
               .message("Delete the model serve instance").build();
     } catch (SubmarineRuntimeException e) {
-      return parseModelVersionServiceException(e);
+      return parseServeServiceException(e);
     }
   }
 
-  private Response parseModelVersionServiceException(SubmarineRuntimeException e) {
+  private Response parseServeServiceException(SubmarineRuntimeException e) {
     return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage()).build();
   }
 }

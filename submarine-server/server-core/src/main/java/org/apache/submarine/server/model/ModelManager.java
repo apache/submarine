@@ -120,10 +120,11 @@ public class ModelManager {
     spec.setModelType(modelType);
     spec.setModelId(modelId);
 
+    String modelUniquePath = String.format("%s-%d-%s", spec.getModelName(), spec.getModelVersion(), modelId);
     if (spec.getModelType().equals("pytorch")) {
-      spec.setModelURI(String.format("s3://%s/registry/%s", S3Constants.BUCKET, modelId));
+      spec.setModelURI(String.format("s3://%s/registry/%s", S3Constants.BUCKET, modelUniquePath));
     } else if (spec.getModelType().equals("tensorflow")) {
-      spec.setModelURI(String.format("s3://%s/registry/%s/%s", S3Constants.BUCKET, modelId,
+      spec.setModelURI(String.format("s3://%s/registry/%s/%s", S3Constants.BUCKET, modelUniquePath,
           spec.getModelName()));
     } else {
       throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
@@ -133,8 +134,10 @@ public class ModelManager {
 
   private void transferDescription(ServeSpec spec) {
     Client s3Client = new Client();
+    String modelUniquePath = String.format("%s-%d-%s",
+        spec.getModelName(), spec.getModelVersion(), spec.getModelId());
     String res  = new String(s3Client.downloadArtifact(String.format("registry/%s/%s/%d/description.json",
-        spec.getModelId(), spec.getModelName(), spec.getModelVersion())));
+        modelUniquePath, spec.getModelName(), spec.getModelVersion())));
     JSONObject description = new JSONObject(res);
 
     TritonModelConfig.ModelConfig.Builder modelConfig = TritonModelConfig.ModelConfig.newBuilder();
@@ -160,14 +163,20 @@ public class ModelManager {
       modelConfig.addOutput(modelOutput);
     }
 
-    s3Client.logArtifact(String.format("registry/%s/%s/config.pbtxt", spec.getModelId(), spec.getModelName()),
+    s3Client.logArtifact(String.format("registry/%s/%s/config.pbtxt", modelUniquePath, spec.getModelName()),
             modelConfig.toString().getBytes());
   }
 
   private ServeResponse getServeResponse(ServeSpec spec){
     ServeResponse serveResponse = new ServeResponse();
-    serveResponse.setUrl(String.format("http://{submarine ip}/%s/%d/api/v1.0/predictions",
-            spec.getModelName(), spec.getModelVersion()));
+    if (spec.getModelType().equals("pytorch")) {
+      serveResponse.setUrl(String.format("http://{submarine ip}/%s/%d/v2/models/%s/infer",
+          spec.getModelName(), spec.getModelVersion(), spec.getModelName()));
+    } else {
+      serveResponse.setUrl(String.format("http://{submarine ip}/%s/%d/api/v1.0/predictions",
+          spec.getModelName(), spec.getModelVersion()));
+    }
+
     return serveResponse;
   }
 }

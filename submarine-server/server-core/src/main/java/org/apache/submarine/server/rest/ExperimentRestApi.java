@@ -274,7 +274,7 @@ public class ExperimentRestApi {
           @ApiResponse(responseCode = "404", description = "Experiment not found")})
   public Response getArtifactPaths(@PathParam(RestConstants.ID) String id) {
     try {
-      List<String> artifactPaths = minioClient.listArtifact(id);
+      List<String> artifactPaths = minioClient.listArtifact(String.format("experiment/%s", id));
       return new JsonResponse.Builder<List<String>>(Response.Status.OK).success(true)
           .result(artifactPaths).build();
 

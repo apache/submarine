@@ -19,7 +19,6 @@
 
 package org.apache.submarine.server.rest;
 
-import org.apache.submarine.server.s3.S3Constants;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -87,8 +86,8 @@ public class ModelVersionRestApi {
    * @param entity registered model entity
    * example: {
    *   "name": "example_name"
-   *   "id" : "42ae7f58ba354872a95f6872e16c3544"
    *   "experimentId" : "4d4d02f06f6f437fa29e1ee8a9276d87"
+   *   "userId": ""
    *   "description" : "example_description"
    *   "tags": ["123", "456"]
    * }
@@ -118,13 +117,15 @@ public class ModelVersionRestApi {
 
       entity.setVersion(version);
       modelVersionService.insert(entity);
-      String prefix = String.format("s3://%s/%s", S3Constants.BUCKET, baseDir);
+
+      // the directory of storing a single model must be unique for serving
+      String uniqueModelPath = String.format("%s-%d-%s", entity.getName(), version, id);
 
       // copy artifacts
       s3Client.listAllObjects(baseDir).forEach(s -> {
-        String relativePath = s.substring(prefix.length());
-        s3Client.copyArtifact(s, String.format("registry/%s/%s/%d/%s", id,
-            entity.getName(), entity.getVersion(), relativePath));
+        String relativePath = s.substring(String.format("%s/", baseDir).length());
+        s3Client.copyArtifact(String.format("registry/%s/%s/%d/%s", uniqueModelPath,
+            entity.getName(), entity.getVersion(), relativePath), s);
       });
 
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)

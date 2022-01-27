@@ -31,7 +31,7 @@ class Repository:
     def _upload_file(self, local_file: str, bucket: str, key: str) -> None:
         self.client.upload_file(Filename=local_file, Bucket=bucket, Key=key)
 
-    def _list_artifact_subfolder(self, dest_path):
+    def list_artifact_subfolder(self, dest_path):
         response = self.client.list_objects(
             Bucket=self.bucket,
             Prefix=f"{dest_path}/",
@@ -49,12 +49,6 @@ class Repository:
         )
 
     def log_artifacts(self, dest_path: str, local_dir: str) -> str:
-        list_of_subfolder = self._list_artifact_subfolder(dest_path)
-        if list_of_subfolder is None:
-            dest_path = os.path.join(dest_path, "1")
-        else:
-            dest_path = os.path.join(dest_path, str(len(list_of_subfolder) + 1))
-
         local_dir = os.path.abspath(local_dir)
         for (root, _, filenames) in os.walk(local_dir):
             upload_path = dest_path

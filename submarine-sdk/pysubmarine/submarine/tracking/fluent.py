@@ -87,4 +87,3 @@ def delete_serve(model_name: str, model_version: int):
     :param model_version: Version of a registered model
     """
     SubmarineClient().delete_serve(model_name, model_version)
-    

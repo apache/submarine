@@ -125,10 +125,10 @@ class SubmarineClient(object):
 
         model_id = utils.generate_model_id()
 
+        dest_path = self._generate_experiment_artifact_path(f"experiment/{self.experiment_id}")
+
         # log artifact under the experiment directory
-        self._log_artifact(
-            model, f"experiment/{self.experiment_id}", model_type, model_id, input_dim, output_dim
-        )
+        self._log_artifact(model, dest_path, model_type, model_id, input_dim, output_dim)
 
         # Register model
         if registered_model_name is not None:
@@ -137,21 +137,22 @@ class SubmarineClient(object):
             except SubmarineException:
                 self.model_registry.create_registered_model(name=registered_model_name)
 
-            # log artifact under the registry directory
-            self._log_artifact(
-                model,
-                f"registry/{model_id}/{registered_model_name}",
-                model_type,
-                model_id,
-                input_dim,
-                output_dim,
-            )
-            self.model_registry.create_model_version(
+            mv = self.model_registry.create_model_version(
                 name=registered_model_name,
                 id=model_id,
                 user_id="",  # TODO(jeff-901): the user id is needed to be specified.
                 experiment_id=self.experiment_id,
                 model_type=model_type,
+            )
+
+            # log artifact under the registry directory
+            self._log_artifact(
+                model,
+                f"registry/{mv.name}-{mv.version}-{model_id}/{mv.name}/{mv.version}",
+                model_type,
+                model_id,
+                input_dim,
+                output_dim,
             )
 
     def _log_artifact(
@@ -162,6 +163,7 @@ class SubmarineClient(object):
         model_id: str,
         input_dim: list = None,
         output_dim: list = None,
+        registered: bool = False,
     ):
         """
         Save a model into the minio pod.
@@ -213,6 +215,17 @@ class SubmarineClient(object):
 
             # Log all files into minio
             self.artifact_repo.log_artifacts(dest_path, model_save_dir)
+
+    def _generate_experiment_artifact_path(self, dest_path: str) -> str:
+        """
+        :param dest_path: destination of current experiment directory
+        """
+        list_of_subfolder = self.artifact_repo.list_artifact_subfolder(dest_path)
+        return (
+            os.path.join(dest_path, str(len(list_of_subfolder) + 1))
+            if list_of_subfolder
+            else os.path.join(dest_path, "1")
+        )
 
     def create_serve(self, model_name: str, model_version: int, async_req: bool = True):
         """
