@@ -31,8 +31,6 @@ RUN apk update && \
 
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
 
-ADD ./tmp/kubectl /opt
-
 # Install Submarine
 ADD ./tmp/submarine-k8s-agent-*.tar.gz /opt/
 RUN ln -s /opt/submarine-k8s-agent-* "/opt/submarine-current"
