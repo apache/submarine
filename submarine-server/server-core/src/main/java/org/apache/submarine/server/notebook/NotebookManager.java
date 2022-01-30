@@ -104,7 +104,7 @@ public class NotebookManager {
     if (environment.getEnvironmentSpec() != null) {
       notebookSpec.setEnvironment(environment.getEnvironmentSpec());
     }
-    notebook.setStatus(Notebook.Status.STATUS_WAITING.getValue());
+    notebook.setStatus(Notebook.Status.STATUS_CREATING.getValue());
     notebookService.insert(notebook);
     return notebook;
   }
