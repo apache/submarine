@@ -159,7 +159,6 @@
         <exclude>submarine-commons-cluster-${project.version}.jar</exclude>
         <exclude>submarine-commons-metastore-${project.version}.jar</exclude>
         <exclude>grpc-*.jar</exclude>
-        <exclude>protobuf-java*.jar</exclude>
         <!-- mysql-connector-java uses the GPL license. So we need exclude mysql-connector-java jar -->
         <exclude>mysql-connector-java-*.jar</exclude>
         <!-- atomix & netty-4.1.27.Final already shade in submarine-commons-cluster-${project.version}-shade.jar -->

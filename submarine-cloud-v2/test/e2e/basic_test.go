@@ -56,16 +56,16 @@ func TestSubmitSubmarineCustomResourceYaml(t *testing.T) {
 	assert.Equal(t, nil, err)
 
 	// wait for submarine to be in RUNNING state
-	status := GetJobStatus(t, submarineNs, submarineName)
+	state := GetJobState(t, submarineNs, submarineName)
 	err = wait.Poll(INTERVAL, TIMEOUT, func() (done bool, err error) {
-		if status == v1alpha1.RunningState {
+		if state.State == v1alpha1.RunningState {
 			return true, nil
 		}
-		if status == v1alpha1.FailedState {
-			return true, fmt.Errorf("fail to create submarine %s/%s", submarineNs, submarineName)
+		if state.State == v1alpha1.FailedState {
+			return true, fmt.Errorf("fail to create submarine %s/%s: %s", submarineNs, submarineName, state.ErrorMessage)
 		}
 
-		status = GetJobStatus(t, submarineNs, submarineName)
+		state = GetJobState(t, submarineNs, submarineName)
 
 		return false, nil
 	})

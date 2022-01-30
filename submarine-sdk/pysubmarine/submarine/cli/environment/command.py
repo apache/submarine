@@ -15,24 +15,128 @@
  under the License.
 """
 
+import json
+import time
+
 import click
+from rich.console import Console
+from rich.json import JSON as richJSON
+from rich.panel import Panel
+from rich.table import Table
+
+from submarine.cli.config.config import loadConfig
+from submarine.client.api.environment_client import EnvironmentClient
+from submarine.client.exceptions import ApiException
+
+submarineCliConfig = loadConfig()
+
+environmentClient = EnvironmentClient(
+    host="http://{}:{}".format(
+        submarineCliConfig.connection.hostname, submarineCliConfig.connection.port
+    )
+)
+
+POLLING_INTERVAL = 1  # sec
+TIMEOUT = 30  # sec
 
 
 @click.command("environment")
 def list_environment():
     """List environment"""
-    click.echo("list environment!")
+    COLS_TO_SHOW = ["Name", "Id", "dockerImage"]
+    console = Console()
+    try:
+        thread = environmentClient.list_environments_async()
+        timeout = time.time() + TIMEOUT
+        with console.status("[bold green] Fetching Environments..."):
+            while not thread.ready():
+                time.sleep(POLLING_INTERVAL)
+                if time.time() > timeout:
+                    console.print("[bold red] Timeout!")
+                    return
+
+        result = thread.get()
+        results = result.result
+
+        results = list(
+            map(
+                lambda r: [
+                    r["environmentSpec"]["name"],
+                    r["environmentId"],
+                    r["environmentSpec"]["dockerImage"],
+                ],
+                results,
+            )
+        )
+
+        table = Table(title="List of Environments")
+
+        for col in COLS_TO_SHOW:
+            table.add_column(col, overflow="fold")
+        for res in results:
+            table.add_row(*res)
+
+        console.print(table)
+
+    except ApiException as err:
+        if err.body is not None:
+            errbody = json.loads(err.body)
+            click.echo("[Api Error] {}".format(errbody["message"]))
+        else:
+            click.echo("[Api Error] {}".format(err))
 
 
 @click.command("environment")
-@click.argument("id")
-def get_environment(id):
+@click.argument("name")
+def get_environment(name):
     """Get environment"""
-    click.echo("get environment! id={}".format(id))
+    console = Console()
+    try:
+        thread = environmentClient.get_environment_async(name)
+        timeout = time.time() + TIMEOUT
+        with console.status("[bold green] Fetching Environment(name = {} )...".format(name)):
+            while not thread.ready():
+                time.sleep(POLLING_INTERVAL)
+                if time.time() > timeout:
+                    console.print("[bold red] Timeout!")
+                    return
+
+        result = thread.get()
+        result = result.result
+
+        json_data = richJSON.from_data(result)
+        console.print(Panel(json_data, title="Environment(name = {} )".format(name)))
+    except ApiException as err:
+        if err.body is not None:
+            errbody = json.loads(err.body)
+            click.echo("[Api Error] {}".format(errbody["message"]))
+        else:
+            click.echo("[Api Error] {}".format(err))
 
 
 @click.command("environment")
-@click.argument("id")
-def delete_environment(id):
+@click.argument("name")
+def delete_environment(name):
     """Delete environment"""
-    click.echo("delete environment! id={}".format(id))
+    console = Console()
+    try:
+        thread = environmentClient.delete_environment_async(name)
+        timeout = time.time() + TIMEOUT
+        with console.status("[bold green] Deleting Environment(name = {} )...".format(name)):
+            while not thread.ready():
+                time.sleep(POLLING_INTERVAL)
+                if time.time() > timeout:
+                    console.print("[bold red] Timeout!")
+                    return
+
+        result = thread.get()
+        result = result.result
+
+        console.print("[bold green] Environment(name = {} ) deleted".format(name))
+
+    except ApiException as err:
+        if err.body is not None:
+            errbody = json.loads(err.body)
+            click.echo("[Api Error] {}".format(errbody["message"]))
+        else:
+            click.echo("[Api Error] {}".format(err))

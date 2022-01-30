@@ -15,7 +15,11 @@
  under the License.
 """
 
-MLFLOW_S3_ENDPOINT_URL = "http://submarine-minio-service:9000"
-AWS_ACCESS_KEY_ID = "submarine_minio"
-AWS_SECRET_ACCESS_KEY = "submarine_minio"
-MLFLOW_TRACKING_URI = "http://submarine-mlflow-service:5000"
+from submarine.cli.serve.command import create_serve, delete_serve, get_serve, list_serve
+
+__all__ = [
+    "list_serve",
+    "get_serve",
+    "create_serve",
+    "delete_serve",
+]

@@ -151,8 +151,7 @@ public class NotebookManager {
           notebookList.add(nb);
         }
       } catch (SubmarineRuntimeException e) {
-        LOG.warn("Submitter can not find notebook: {}, will delete it", nb.getNotebookId());
-        notebookService.delete(nb.getNotebookId().toString());
+        LOG.error("Error when get notebook resource, skip this row!", e);
       }
     }
     return notebookList;

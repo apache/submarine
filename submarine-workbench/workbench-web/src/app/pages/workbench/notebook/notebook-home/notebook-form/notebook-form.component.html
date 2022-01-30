@@ -50,7 +50,7 @@
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cpus">CPU</nz-form-label>
       <nz-form-control [nzSm]="14" [nzXs]="24">
-        <input nz-input min="0" required type="number" name="cpus" id="cpus" formControlName="cpus" />
+        <input nz-input min="0" required type="number" name="cpus" id="cpus" step="0.1" formControlName="cpus" />
       </nz-form-control>
     </nz-form-item>
     <nz-form-item>

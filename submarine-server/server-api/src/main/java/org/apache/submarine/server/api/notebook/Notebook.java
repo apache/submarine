@@ -113,7 +113,8 @@ public class Notebook {
     STATUS_WAITING("waiting"),
     STATUS_TERMINATING("terminating"),
     STATUS_PULLING("pulling"),
-    STATUS_FAILED("failed");
+    STATUS_FAILED("failed"),
+    STATUS_NOT_FOUND("not_found");
 
     private String value;
     Status(String value) {

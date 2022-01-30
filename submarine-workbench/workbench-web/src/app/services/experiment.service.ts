@@ -278,6 +278,19 @@ export class ExperimentService {
     );
   }
 
+  getMlflowInfo(): Observable<MlflowInfo> {
+    const apiUrl = this.baseApi.getRestApi('/v1/experiment/mlflow');
+    return this.httpClient.get<Rest<MlflowInfo>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'get');
+        }
+      })
+    );
+  }
+
   durationHandle(secs: number) {
     const hr = Math.floor(secs / 3600);
     const min = Math.floor((secs - hr * 3600) / 60);

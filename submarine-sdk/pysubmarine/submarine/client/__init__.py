@@ -34,9 +34,9 @@ __version__ = "0.7.0-SNAPSHOT"
 
 # import apis into sdk package
 from submarine.client.api.environment_api import EnvironmentApi
-from submarine.client.api.environments_api import EnvironmentsApi
 from submarine.client.api.experiment_api import ExperimentApi
 from submarine.client.api.notebook_api import NotebookApi
+from submarine.client.api.serve_api import ServeApi
 
 # import ApiClient
 from submarine.client.api_client import ApiClient
@@ -51,8 +51,6 @@ from submarine.client.exceptions import (
 
 # import models into sdk package
 from submarine.client.models.code_spec import CodeSpec
-from submarine.client.models.environment import Environment
-from submarine.client.models.environment_id import EnvironmentId
 from submarine.client.models.environment_spec import EnvironmentSpec
 from submarine.client.models.experiment_meta import ExperimentMeta
 from submarine.client.models.experiment_spec import ExperimentSpec
@@ -63,3 +61,4 @@ from submarine.client.models.kernel_spec import KernelSpec
 from submarine.client.models.notebook_meta import NotebookMeta
 from submarine.client.models.notebook_pod_spec import NotebookPodSpec
 from submarine.client.models.notebook_spec import NotebookSpec
+from submarine.client.models.serve_spec import ServeSpec

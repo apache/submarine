@@ -16,7 +16,6 @@
 import submarine.tracking.fluent
 import submarine.utils as utils
 from submarine.client.api.experiment_client import ExperimentClient
-from submarine.models.client import ModelsClient
 
 log_param = submarine.tracking.fluent.log_param
 log_metric = submarine.tracking.fluent.log_metric
@@ -31,5 +30,4 @@ __all__ = [
     "set_db_uri",
     "get_db_uri",
     "ExperimentClient",
-    "ModelsClient",
 ]

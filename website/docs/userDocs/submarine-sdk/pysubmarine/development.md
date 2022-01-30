@@ -27,17 +27,17 @@ in its own conda environment by running the following
 conda create --name submarine-dev python=3.6
 conda activate submarine-dev
 
-# Install auto-format and lints (lint-requirements.txt is in ./dev-support/style-check/python)
-pip install -r lint-requirements.txt
+# Install auto-format and lints from current checkout
+pip install -r ./dev-support/style-check/python/lint-requirements.txt
 
-# Install mypy (mypy-requirements.txt is in ./dev-support/style-check/python)
-pip install -r mypy-requirements.txt
+# Install mypy from current checkout
+pip install -r ./dev-support/style-check/python/mypy-requirements.txt
 
-# test-requirements.txt is in ./submarine-sdk/pysubmarine/github-actions
-pip install -r test-requirements.txt
+# test-requirements.txt from current checkout
+pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
 
 # Installs pysubmarine from current checkout
-pip install ./submarine-sdk/pysubmarine
+pip install -e ./submarine-sdk/pysubmarine
 ```
 
 ### PySubmarine Docker
@@ -155,7 +155,7 @@ to generate pysubmarine client API that used to communicate with submarine serve
 ### Model Management Model Development
 
 For local development, we can access cluster's service easily thanks to [telepresence](https://www.telepresence.io/).
-To elaborate, we can develop the sdk in local but can reach out to mlflow server by proxy.
+To elaborate, we can develop the sdk in local but can reach out to database and minio server by proxy.
 
 1. Install telepresence follow [the instruction](https://www.telepresence.io/reference/install).
 2. Start proxy pod
