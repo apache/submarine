@@ -54,7 +54,7 @@ const storageClassName = "submarine-storageclass"
 
 const (
 	serverName                  = "submarine-server"
-	observerName				= "submarine-observer"
+	observerName                = "submarine-observer"
 	databaseName                = "submarine-database"
 	databasePort                = 3306
 	tensorboardName             = "submarine-tensorboard"
@@ -79,7 +79,7 @@ const (
 	serverYamlPath              = artifactPath + "submarine-server.yaml"
 	tensorboardYamlPath         = artifactPath + "submarine-tensorboard.yaml"
 	rbacYamlPath                = artifactPath + "submarine-rbac.yaml"
-	observerRbacYamlPath                = artifactPath + "submarine-observer-rbac.yaml"
+	observerRbacYamlPath        = artifactPath + "submarine-observer-rbac.yaml"
 )
 
 var dependents = []string{serverName, databaseName, tensorboardName, mlflowName, minioName}
