@@ -216,8 +216,9 @@ public class NotebookSpecParser {
     containers.add(container);
     podSpec.setContainers(containers);
     podSpec.setVolumes(volumeList);
+    podSpec.setTerminationGracePeriodSeconds(120L);
     podTemplateSpec.setSpec(podSpec);
-
+    
     return podTemplateSpec;
   }
 
@@ -289,7 +290,7 @@ public class NotebookSpecParser {
     V1Container agentContainer = new V1Container();
     agentContainer.setName("agent");
     agentContainer.setImage("apache/submarine:sidecar-agent-0.7.0-SNAPSHOT");
-
+    
     List<V1EnvVar> envVarList = new ArrayList<>();
     V1EnvVar crTypeVar = new V1EnvVar();
     crTypeVar.setName("CUSTOM_RESOURCE_TYPE");
@@ -323,6 +324,7 @@ public class NotebookSpecParser {
     envVarList.add(customResourceIdVar);
     
     agentContainer.env(envVarList);
-    containers.add(agentContainer);
+    
+    containers.add(0, agentContainer);    
   }
 }

@@ -104,6 +104,7 @@ public class NotebookManager {
     if (environment.getEnvironmentSpec() != null) {
       notebookSpec.setEnvironment(environment.getEnvironmentSpec());
     }
+    notebook.setStatus(Notebook.Status.STATUS_WAITING.getValue());
     notebookService.insert(notebook);
     return notebook;
   }
@@ -118,11 +119,14 @@ public class NotebookManager {
   public List<Notebook> listNotebooksByNamespace(String namespace) throws SubmarineRuntimeException {
     List<Notebook> notebookList = new ArrayList<>();
     for (Notebook notebook : notebookService.selectAll()) {
-      Notebook patchNotebook = submitter.findNotebook(notebook.getSpec());
-      if (namespace == null || namespace.length() == 0
-          || namespace.toLowerCase().equals(patchNotebook.getSpec().getMeta().getNamespace())) {
-        notebook.rebuild(patchNotebook);
-        notebookList.add(notebook);
+      if (namespace == null || namespace.length() == 0 ){
+        if (notebook.getStatus().equals(Notebook.Status.STATUS_CREATING.getValue())) {
+          Notebook patchNotebook = submitter.findNotebook(notebook.getSpec());
+          notebook.rebuild(patchNotebook);
+          notebookList.add(notebook);
+        } else {
+          notebookList.add(notebook);
+        }
       }
     }
     return notebookList;
@@ -139,10 +143,13 @@ public class NotebookManager {
     List<Notebook> notebookList = new ArrayList<>();
     for (Notebook nb : serviceNotebooks) {
       try {
-        Notebook notebook = submitter.findNotebook(nb.getSpec());
-        notebook.setNotebookId(nb.getNotebookId());
-        notebook.setSpec(nb.getSpec());
-        notebookList.add(notebook);
+        if (nb.getStatus().equals(Notebook.Status.STATUS_CREATING.getValue())) {
+          Notebook patchNotebook = submitter.findNotebook(nb.getSpec());
+          nb.rebuild(patchNotebook);
+          notebookList.add(nb);
+        } else {
+          notebookList.add(nb);
+        }
       } catch (SubmarineRuntimeException e) {
         LOG.warn("Submitter can not find notebook: {}, will delete it", nb.getNotebookId());
         notebookService.delete(nb.getNotebookId().toString());
@@ -182,9 +189,8 @@ public class NotebookManager {
    */
   public Notebook deleteNotebook(String id) throws SubmarineRuntimeException {
     Notebook notebook = getNotebook(id);
-    Notebook patchNotebook = submitter.deleteNotebook(notebook.getSpec());
+    submitter.deleteNotebook(notebook.getSpec());
     notebookService.delete(id);
-    notebook.rebuild(patchNotebook);
     return notebook;
   }
 

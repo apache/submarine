@@ -112,7 +112,8 @@ public class Notebook {
     STATUS_RUNNING("running"),
     STATUS_WAITING("waiting"),
     STATUS_TERMINATING("terminating"),
-    STATUS_PULLING("pulling");
+    STATUS_PULLING("pulling"),
+    STATUS_FAILED("failed");
 
     private String value;
     Status(String value) {

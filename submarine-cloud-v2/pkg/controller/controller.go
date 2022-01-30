@@ -54,6 +54,7 @@ const storageClassName = "submarine-storageclass"
 
 const (
 	serverName                  = "submarine-server"
+	observerName				= "submarine-observer"
 	databaseName                = "submarine-database"
 	databasePort                = 3306
 	tensorboardName             = "submarine-tensorboard"
@@ -78,6 +79,7 @@ const (
 	serverYamlPath              = artifactPath + "submarine-server.yaml"
 	tensorboardYamlPath         = artifactPath + "submarine-tensorboard.yaml"
 	rbacYamlPath                = artifactPath + "submarine-rbac.yaml"
+	observerRbacYamlPath                = artifactPath + "submarine-observer-rbac.yaml"
 )
 
 var dependents = []string{serverName, databaseName, tensorboardName, mlflowName, minioName}
@@ -438,6 +440,11 @@ func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 	}
 
 	err = c.createSubmarineServerRBAC(submarine)
+	if err != nil && !errors.IsAlreadyExists(err) {
+		return err
+	}
+
+	err = c.createSubmarineObserverRBAC(submarine)
 	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}

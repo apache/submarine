@@ -23,13 +23,15 @@ MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 # INSTALL openjdk
 RUN apk update && \
-    apk add --no-cache openjdk8 tzdata bash tini&& \
+    apk add --no-cache openjdk8 tzdata bash curl tini&& \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo Asia/Shanghai > /etc/timezone && \
     apk del tzdata && \
     rm -rf /tmp/* /var/cache/apk/*
 
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
+
+ADD ./tmp/kubectl /opt
 
 # Install Submarine
 ADD ./tmp/submarine-k8s-agent-*.tar.gz /opt/
