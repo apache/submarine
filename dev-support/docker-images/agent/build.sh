@@ -47,10 +47,6 @@ cp ${SUBMARINE_HOME}/conf/submarine-site.xml "${CURRENT_PATH}/tmp/"
 # build image
 cd ${CURRENT_PATH}
 
-#
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-mv kubectl ./tmp
-
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
 docker build -t ${SUBMARINE_IMAGE_NAME} .
 

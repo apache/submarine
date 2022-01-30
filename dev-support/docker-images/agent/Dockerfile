@@ -23,7 +23,7 @@ MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 # INSTALL openjdk
 RUN apk update && \
-    apk add --no-cache openjdk8 tzdata bash curl tini&& \
+    apk add --no-cache openjdk8 tzdata bash tini&& \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo Asia/Shanghai > /etc/timezone && \
     apk del tzdata && \
