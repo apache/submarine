@@ -1,0 +1,44 @@
+# Source: submarine/templates/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: "submarine-observer"
+rules:
+- apiGroups:
+  - kubeflow.org
+  resources:
+  - tfjobs
+  - tfjobs/status
+  - pytorchjobs
+  - pytorchjobs/status
+  - notebooks
+  - notebooks/status
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/log
+  - services
+  - persistentvolumeclaims
+  - events
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: "submarine-observer"
+subjects:
+- kind: ServiceAccount
+  name: "default"
+roleRef:
+  kind: Role
+  name: "submarine-observer"
+  apiGroup: rbac.authorization.k8s.io

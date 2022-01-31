@@ -104,6 +104,7 @@ public class NotebookManager {
     if (environment.getEnvironmentSpec() != null) {
       notebookSpec.setEnvironment(environment.getEnvironmentSpec());
     }
+    notebook.setStatus(Notebook.Status.STATUS_CREATING.getValue());
     notebookService.insert(notebook);
     return notebook;
   }
@@ -118,11 +119,14 @@ public class NotebookManager {
   public List<Notebook> listNotebooksByNamespace(String namespace) throws SubmarineRuntimeException {
     List<Notebook> notebookList = new ArrayList<>();
     for (Notebook notebook : notebookService.selectAll()) {
-      Notebook patchNotebook = submitter.findNotebook(notebook.getSpec());
-      if (namespace == null || namespace.length() == 0
-          || namespace.toLowerCase().equals(patchNotebook.getSpec().getMeta().getNamespace())) {
-        notebook.rebuild(patchNotebook);
-        notebookList.add(notebook);
+      if (namespace == null || namespace.length() == 0 ){
+        if (notebook.getStatus().equals(Notebook.Status.STATUS_CREATING.getValue())) {
+          Notebook patchNotebook = submitter.findNotebook(notebook.getSpec());
+          notebook.rebuild(patchNotebook);
+          notebookList.add(notebook);
+        } else {
+          notebookList.add(notebook);
+        }
       }
     }
     return notebookList;
@@ -139,13 +143,13 @@ public class NotebookManager {
     List<Notebook> notebookList = new ArrayList<>();
     for (Notebook nb : serviceNotebooks) {
       try {
-        Notebook notebook = submitter.findNotebook(nb.getSpec());
-        notebook.setNotebookId(nb.getNotebookId());
-        notebook.setSpec(nb.getSpec());
-        if (notebook.getCreatedTime() == null) {
-          notebook.setCreatedTime(nb.getCreatedTime());
+        if (nb.getStatus().equals(Notebook.Status.STATUS_CREATING.getValue())) {
+          Notebook patchNotebook = submitter.findNotebook(nb.getSpec());
+          nb.rebuild(patchNotebook);
+          notebookList.add(nb);
+        } else {
+          notebookList.add(nb);
         }
-        notebookList.add(notebook);
       } catch (SubmarineRuntimeException e) {
         LOG.error("Error when get notebook resource, skip this row!", e);
       }

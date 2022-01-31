@@ -6,6 +6,12 @@ metadata:
   name: "submarine-server"
 ---
 # Source: submarine/templates/submarine-server.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "default"
+---
+# Source: submarine/templates/submarine-server.yaml
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

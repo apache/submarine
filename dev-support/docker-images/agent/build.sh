@@ -46,6 +46,7 @@ cp ${SUBMARINE_HOME}/conf/submarine-site.xml "${CURRENT_PATH}/tmp/"
 
 # build image
 cd ${CURRENT_PATH}
+
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
 docker build -t ${SUBMARINE_IMAGE_NAME} .
 

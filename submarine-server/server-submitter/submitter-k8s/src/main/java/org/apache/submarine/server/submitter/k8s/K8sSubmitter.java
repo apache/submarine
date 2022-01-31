@@ -33,6 +33,7 @@ import java.util.function.Function;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+
 import okhttp3.OkHttpClient;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
@@ -185,7 +186,7 @@ public class K8sSubmitter implements Submitter {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       mlJob.getMetadata().setNamespace(getServerNamespace());
       mlJob.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
-
+      
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob, "true", null, null);
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
@@ -415,8 +416,7 @@ public class K8sSubmitter implements Submitter {
     // parse notebook custom resource
     NotebookCR notebookCR;
     try {
-      notebookCR = NotebookSpecParser.parseNotebook(spec);
-
+      notebookCR = NotebookSpecParser.parseNotebook(spec, notebookId, namespace);
       notebookCR.getMetadata().setNamespace(namespace);
       notebookCR.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
     } catch (JsonSyntaxException e) {
@@ -484,7 +484,6 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: ingressroute for Notebook " +
           "object failed by " + e.getMessage());
     }
-
     return notebook;
   }
 
@@ -494,7 +493,7 @@ public class K8sSubmitter implements Submitter {
     String namespace = getServerNamespace();
 
     try {
-      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
+      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null, null);
 
       Object object = api.getNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
           namespace,
@@ -541,8 +540,7 @@ public class K8sSubmitter implements Submitter {
     Notebook notebook = null;
     final String name = spec.getMeta().getName();
     String namespace = getServerNamespace();
-    NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec);
-
+    NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null, null);
     try {
       Object object = api.deleteNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
           namespace, notebookCR.getPlural(),

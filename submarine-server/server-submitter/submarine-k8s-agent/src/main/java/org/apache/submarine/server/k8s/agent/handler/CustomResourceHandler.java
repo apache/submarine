@@ -19,38 +19,66 @@
 
 package org.apache.submarine.server.k8s.agent.handler;
 
+import java.io.FileReader;
 import java.io.IOException;
 
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.k8s.agent.util.RestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.util.Config;
+import io.kubernetes.client.openapi.apis.CustomObjectsApi;
+import io.kubernetes.client.util.ClientBuilder;
+import io.kubernetes.client.util.KubeConfig;
+import okhttp3.OkHttpClient;
 
 public abstract class CustomResourceHandler {
-    private CoreV1Api coreApi;
-    private ApiClient client = null;  
-    private String namespace;
-    private String crType;
-    private String crName;
-    private String serverHost;
-    private Integer serverPort;
-    private RestClient restClient;
+    private static final Logger LOG = LoggerFactory.getLogger(CustomResourceHandler.class);
+    private static final String KUBECONFIG_ENV = "KUBECONFIG";
     
+    protected ApiClient client = null;  
+    protected CustomObjectsApi customObjectsApi = null;
+    protected CoreV1Api coreV1Api = null;
+    protected String namespace;
+    protected String crType;
+    protected String crName;
+    protected String serverHost;
+    protected Integer serverPort;
+    protected String resourceId;
+    protected RestClient restClient;
     
     public CustomResourceHandler() throws IOException {
-        this.client = Config.defaultClient();
+      try {
+        String path = System.getenv(KUBECONFIG_ENV);
+        LOG.info("PATH:" + path);
+        KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(path));
+        client = ClientBuilder.kubeconfig(config).build();
+      } catch (Exception e) {
+        LOG.info("Maybe in cluster mode, try to initialize the client again.");
+        try {
+          client = ClientBuilder.cluster().build();
+        } catch (IOException e1) {
+           LOG.error("Initialize K8s submitter failed. " + e.getMessage(), e1);
+           throw new SubmarineRuntimeException(500, "Initialize K8s submitter failed.");
+        }
+      } finally {
+        // let watcher can wait until the next change
+        client.setReadTimeout(0);
+        OkHttpClient httpClient = client.getHttpClient();
+        this.client.setHttpClient(httpClient);
         Configuration.setDefaultApiClient(client);
-        this.coreApi = new CoreV1Api(this.client);
+      }
+      
+      customObjectsApi = new CustomObjectsApi(client);
+      coreV1Api = new CoreV1Api(client);
     }
     
     public abstract void init(String serverHost, Integer serverPort,
-            String namespace, String crType, String crName);
+            String namespace, String crName, String resourceId);
     public abstract void run();
-    public abstract void onAddEvent();
-    public abstract void onModifyEvent();
-    public abstract void onDeleteEvent();
 
     public String getNamespace() {
         return namespace;
@@ -75,7 +103,29 @@ public abstract class CustomResourceHandler {
     public void setCrName(String crName) {
         this.crName = crName;
     }
-    
-    
+
+    public String getServerHost() {
+        return serverHost;
+    }
+
+    public void setServerHost(String serverHost) {
+        this.serverHost = serverHost;
+    }
+
+    public Integer getServerPort() {
+        return serverPort;
+    }
+
+    public void setServerPort(Integer serverPort) {
+        this.serverPort = serverPort;
+    }
+
+    public RestClient getRestClient() {
+        return restClient;
+    }
+
+    public void setRestClient(RestClient restClient) {
+        this.restClient = restClient;
+    }
     
 }

@@ -51,11 +51,11 @@ public class SubmarineAgent {
         this.resourceId = resourceId;
         this.type = CustomResourceType.valueOf(customResourceType);
         this.handler = HandlerFactory.getHandler(this.type);
-        this.handler.init(serverHost, serverPort, namespace, customResourceType, customResourceName);
+        this.handler.init(serverHost, serverPort, namespace, customResourceName, resourceId);
     }
     
     public void start() {
-        
+        handler.run();
     }
     
     public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
@@ -74,7 +74,7 @@ public class SubmarineAgent {
         LOG.info(String.format("CUSTOM_RESOURCE_NAME:%s", customResourceName));
         LOG.info(String.format("CUSTOM_RESOURCE_ID:%s", customResourceId));
 
-        SubmarineAgent agent = new SubmarineAgent(serverHost, serverPort, customResourceType,
+        SubmarineAgent agent = new SubmarineAgent(serverHost, serverPort, namespace,
                 customResourceType, customResourceName, customResourceId);
         
         agent.start();
