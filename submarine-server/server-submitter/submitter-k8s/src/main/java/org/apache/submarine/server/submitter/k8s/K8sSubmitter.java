@@ -26,11 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Function;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -52,9 +49,10 @@ import io.kubernetes.client.openapi.models.V1PersistentVolumeClaim;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodList;
 import io.kubernetes.client.openapi.models.V1Status;
-import io.kubernetes.client.util.Watch;
 import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
+import io.kubernetes.client.util.generic.GenericKubernetesApi;
+import io.kubernetes.client.util.generic.KubernetesApiResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
@@ -78,11 +76,14 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
+import org.apache.submarine.server.submitter.k8s.model.NotebookCRList;
+import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
+import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobList;
+import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
+import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobList;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRouteSpec;
 import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
-import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
-import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.parser.ConfigmapSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
@@ -90,6 +91,7 @@ import org.apache.submarine.server.submitter.k8s.parser.VolumeSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
+
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -129,6 +131,12 @@ public class K8sSubmitter implements Submitter {
   // K8s API client for CRD
   private CustomObjectsApi api;
 
+  private GenericKubernetesApi<TFJob, TFJobList> tfJobClient;
+
+  private GenericKubernetesApi<PyTorchJob, PyTorchJobList> pyTorchJobClient;
+
+  private GenericKubernetesApi<NotebookCR, NotebookCRList> notebookCRClient;
+
   private CoreV1Api coreApi;
 
   private AppsV1Api appsV1Api;
@@ -153,8 +161,6 @@ public class K8sSubmitter implements Submitter {
         throw new SubmarineRuntimeException(500, "Initialize K8s submitter failed.");
       }
     } finally {
-      // let watcher can wait until the next change
-      client.setReadTimeout(0);
       OkHttpClient httpClient = client.getHttpClient();
       client.setHttpClient(httpClient);
       Configuration.setDefaultApiClient(client);
@@ -171,12 +177,23 @@ public class K8sSubmitter implements Submitter {
       appsV1Api = new AppsV1Api();
     }
 
-    try {
-      watchExperiment();
-    } catch (Exception e){
-      LOG.error("Experiment watch failed. " + e.getMessage(), e);
-    }
+    tfJobClient =
+            new GenericKubernetesApi<>(
+                    TFJob.class, TFJobList.class,
+                    TFJob.CRD_TF_GROUP_V1, TFJob.CRD_TF_VERSION_V1,
+                    TFJob.CRD_TF_PLURAL_V1, client);
 
+    pyTorchJobClient =
+            new GenericKubernetesApi<>(
+                    PyTorchJob.class, PyTorchJobList.class,
+                    PyTorchJob.CRD_PYTORCH_GROUP_V1, PyTorchJob.CRD_PYTORCH_VERSION_V1,
+                    PyTorchJob.CRD_PYTORCH_PLURAL_V1, client);
+
+    notebookCRClient =
+            new GenericKubernetesApi<>(
+                    NotebookCR.class, NotebookCRList.class,
+                    NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
+                    NotebookCR.CRD_NOTEBOOK_PLURAL_V1, client);
   }
 
   @Override
@@ -456,9 +473,10 @@ public class K8sSubmitter implements Submitter {
 
     // create notebook custom resource
     try {
-      Object object = api.createNamespacedCustomObject(notebookCR.getGroup(), notebookCR.getVersion(),
-          namespace, notebookCR.getPlural(), notebookCR, "true", null, null);
-      notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
+      KubernetesApiResponse<NotebookCR>
+              createResponse = notebookCRClient.create(notebookCR).throwsApiException();
+      notebook = NotebookUtils.parseObject(createResponse.getObject(),
+              NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
       if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
@@ -469,7 +487,7 @@ public class K8sSubmitter implements Submitter {
       if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
       rollbackCreationPVC(namespace, workspacePvc, userPvc);
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
-          e.getMessage());
+              e.getMessage());
     }
 
     // create notebook Traefik custom resource
@@ -658,98 +676,6 @@ public class K8sSubmitter implements Submitter {
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
-    }
-  }
-
-  public void watchExperiment() throws ApiException{
-
-    ExecutorService experimentThread = Executors.newFixedThreadPool(2);
-
-    try (Watch<MLJob> watchTF = Watch.createWatch(
-        client,
-        api.listNamespacedCustomObjectCall(
-            TFJob.CRD_TF_GROUP_V1,
-            TFJob.CRD_TF_VERSION_V1,
-            getServerNamespace(),
-            TFJob.CRD_TF_PLURAL_V1,
-            "true",
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            Boolean.TRUE,
-            null
-        ),
-        new TypeToken<Watch.Response<MLJob>>() {
-        }.getType()
-    )) {
-      experimentThread.execute(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            LOG.info("Start watching on TFJobs...");
-
-            for (Watch.Response<MLJob> experiment : watchTF) {
-              LOG.info("{}", experiment.object.getStatus());
-            }
-          } finally {
-            LOG.info("WATCH TFJob END");
-            try {
-              watchTF.close();
-            } catch (Exception e) {
-              LOG.error("{}", e.getMessage());
-            }
-          }
-        }
-      });
-    } catch (Exception ex) {
-      throw new RuntimeException();
-    }
-
-    try (Watch<MLJob> watchPytorch = Watch.createWatch(
-        client,
-        api.listNamespacedCustomObjectCall(
-            PyTorchJob.CRD_PYTORCH_GROUP_V1,
-            PyTorchJob.CRD_PYTORCH_VERSION_V1,
-            getServerNamespace(),
-            PyTorchJob.CRD_PYTORCH_PLURAL_V1,
-            "true",
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            Boolean.TRUE,
-            null
-        ),
-        new TypeToken<Watch.Response<MLJob>>() {
-        }.getType()
-    )) {
-      experimentThread.execute(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            LOG.info("Start watching on PytorchJobs...");
-
-            ;
-            for (Watch.Response<MLJob> experiment : watchPytorch) {
-              LOG.info("{}", experiment.object.getStatus());
-            }
-          } finally {
-            LOG.info("WATCH PytorchJob END");
-            try {
-              watchPytorch.close();
-            } catch (Exception e) {
-              LOG.error("{}", e.getMessage());
-            }
-          }
-        }
-      });
-    } catch (Exception ex) {
-      throw new RuntimeException();
     }
   }
 
