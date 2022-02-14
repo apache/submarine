@@ -26,6 +26,7 @@ import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.k8s.agent.util.RestClient;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,9 @@ public class NotebookHandler extends CustomResourceHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(NotebookHandler.class);
   private Watchable<CoreV1Event> watcher;
+
   private CustomObjectsApi customObjectsApi;
+
   private String podName;
   public NotebookHandler() throws IOException {
     super();
@@ -71,7 +74,9 @@ public class NotebookHandler extends CustomResourceHandler {
                null, null, null, null, null, true, null);
        
        watcher = Watch.createWatch(client, call, new TypeToken<Response<CoreV1Event>>(){}.getType());
+
        customObjectsApi = new CustomObjectsApi();
+
     } catch (ApiException e) {
       e.printStackTrace();
     }
@@ -122,6 +127,7 @@ public class NotebookHandler extends CustomResourceHandler {
               notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
               notebook.setStatus(Notebook.Status.STATUS_TERMINATING.getValue());  
               restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
+
               LOG.info("Receive terminating event, exit progress");
               return;
             default:

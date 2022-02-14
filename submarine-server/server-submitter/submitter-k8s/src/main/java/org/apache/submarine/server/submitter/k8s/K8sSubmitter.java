@@ -64,6 +64,7 @@ import org.apache.submarine.serve.istio.IstioVirtualService;
 import org.apache.submarine.serve.pytorch.SeldonPytorchServing;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.serve.tensorflow.SeldonTFServing;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
@@ -105,9 +106,6 @@ public class K8sSubmitter implements Submitter {
 
   private static final String TF_JOB_SELECTOR_KEY = "tf-job-name=";
   private static final String PYTORCH_JOB_SELECTOR_KEY = "pytorch-job-name=";
-
-  private static final String ENV_NAMESPACE = "ENV_NAMESPACE";
-
 
   // Add an exception Consumer, handle the problem that delete operation does not have the resource
   public static final Function<ApiException, Object> API_EXCEPTION_404_CONSUMER = e -> {
@@ -937,11 +935,7 @@ public class K8sSubmitter implements Submitter {
   }
 
   private String getServerNamespace() {
-    String namespace = "default";
-    if (System.getenv(ENV_NAMESPACE) != null) {
-      namespace = System.getenv(ENV_NAMESPACE);
-    }
-    return namespace;
+    return K8sUtils.getNamespace();
   }
 
   private enum ParseOp {
