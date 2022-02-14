@@ -19,7 +19,12 @@
 
 package org.apache.submarine.server.notebook.database.entity;
 
+import java.util.Date;
+
 import org.apache.submarine.server.database.entity.BaseEntity;
+import org.apache.submarine.server.workbench.database.utils.CustomJsonDateDeserializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class NotebookEntity extends BaseEntity {
   /*
@@ -28,6 +33,12 @@ public class NotebookEntity extends BaseEntity {
   private String notebookSpec;
   
   private String notebookStatus;
+
+  private String notebookUrl;
+  private String reason;
+  @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+  private Date deletedTime = new Date();
+
 
   public NotebookEntity() {
   }
@@ -48,6 +59,31 @@ public class NotebookEntity extends BaseEntity {
     this.notebookStatus = noteStatus;
   }
 
+
+  public String getNotebookUrl() {
+    return notebookUrl;
+  }
+
+  public void setNotebookUrl(String notebookUrl) {
+    this.notebookUrl = notebookUrl;
+  }
+
+  public String getReason() {
+    return reason;
+  }
+
+  public void setReason(String reason) {
+    this.reason = reason;
+  }
+
+  public Date getDeletedTime() {
+    return deletedTime;
+  }
+
+  public void setDeletedTime(Date deletedTime) {
+    this.deletedTime = deletedTime;
+  }
+
   @Override
   public String toString() {
     return "NotebookEntity{" +
@@ -58,6 +94,9 @@ public class NotebookEntity extends BaseEntity {
         ", updateBy='" + updateBy + '\'' +
         ", updateTime=" + updateTime + '\'' +
         ", notebookStatus='" + notebookStatus + "\'" +
+        ", notebookUrl= '" + notebookUrl + "\'" +
+        ", reason= '" + reason + "\'" +
+        ", deletedTime= '" + deletedTime + "\'" +
         '}';
   }
 }

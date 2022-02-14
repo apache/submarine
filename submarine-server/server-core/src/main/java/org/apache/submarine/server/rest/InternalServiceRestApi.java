@@ -18,6 +18,8 @@
  */
 package org.apache.submarine.server.rest;
 
+import java.util.Map;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -63,7 +65,7 @@ public class InternalServiceRestApi {
    * @return the detailed info about updated environment
   */
   @POST
-  @Path("/{customResourceType}/{resourceId}/{status}")
+  @Path("/{customResourceType}/{resourceId}")
   @Consumes({RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON})
   @Operation(summary = "Update the environment with job spec",
           tags = {"environments"},
@@ -78,9 +80,10 @@ public class InternalServiceRestApi {
   public Response updateEnvironment(
       @PathParam(RestConstants.CUSTOM_RESOURCE_TYPE) String type,
       @PathParam(RestConstants.CUSTOM_RESOURCE_ID) String resourceId,
-      @PathParam(RestConstants.CUSTOM_RESOURCE_STATUS) String status) {
+      Map<String, Object> updatedCustomObject) {
     try {
-      internalServiceManager.updateCRStatus(CustomResourceType.valueOf(type), resourceId, status);
+      internalServiceManager.updateCRStatus(CustomResourceType.valueOf(type)
+              , resourceId, updatedCustomObject);
       return new JsonResponse.Builder<String>(Response.Status.OK)
         .success(true).build();
     } catch (SubmarineRuntimeException e) {

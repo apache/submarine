@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.experiment.database.entity;
 
+
 import org.apache.submarine.server.database.entity.BaseEntity;
 
 public class ExperimentEntity extends BaseEntity {
@@ -28,7 +29,7 @@ public class ExperimentEntity extends BaseEntity {
   private String experimentSpec;
 
   private String experimentStatus;
-  
+
   public ExperimentEntity() {}
 
   public String getExperimentSpec() {

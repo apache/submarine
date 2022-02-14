@@ -25,12 +25,14 @@ import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.k8s.agent.util.RestClient;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
+import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.reflect.TypeToken;
 
 import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.apis.CustomObjectsApi;
 import io.kubernetes.client.openapi.models.CoreV1Event;
 import io.kubernetes.client.openapi.models.V1PodList;
 import io.kubernetes.client.util.Watch;
@@ -42,6 +44,7 @@ public class NotebookHandler extends CustomResourceHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(NotebookHandler.class);
   private Watchable<CoreV1Event> watcher;
+  private CustomObjectsApi customObjectsApi;
   private String podName;
   public NotebookHandler() throws IOException {
     super();
@@ -68,7 +71,7 @@ public class NotebookHandler extends CustomResourceHandler {
                null, null, null, null, null, true, null);
        
        watcher = Watch.createWatch(client, call, new TypeToken<Response<CoreV1Event>>(){}.getType());
-
+       customObjectsApi = new CustomObjectsApi();
     } catch (ApiException e) {
       e.printStackTrace();
     }
@@ -77,30 +80,56 @@ public class NotebookHandler extends CustomResourceHandler {
 
   @Override
   public void run() {
+    Notebook notebook = null;
     while (true) {    
       for (Response<CoreV1Event> event: watcher) {
-          String reason = event.object.getReason();
+        String reason = event.object.getReason();
+        Object object = null;
+        try {
           switch (reason) {
             case "Created":
             case "Scheduled":    
-              restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, Notebook.Status.STATUS_CREATING.getValue());
+              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
+                        namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1, crName);
+              notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
+              notebook.setStatus(Notebook.Status.STATUS_CREATING.getValue());
+              restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               break;
             case "Started":
-              restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, Notebook.Status.STATUS_RUNNING.getValue());
+              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
+                        namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1, crName);
+              notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
+              notebook.setStatus(Notebook.Status.STATUS_RUNNING.getValue());  
+              restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               break;
             case "Failed":
-              restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, Notebook.Status.STATUS_FAILED.getValue());
+              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
+                        namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1, crName);
+              notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
+              notebook.setStatus(Notebook.Status.STATUS_FAILED.getValue());  
+              restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               break;
             case "Pulling":
-              restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, Notebook.Status.STATUS_PULLING.getValue());
+              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
+                        namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1, crName);
+              notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
+              notebook.setStatus(Notebook.Status.STATUS_PULLING.getValue());  
+              restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               break;
             case "Killing":
-              restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, Notebook.Status.STATUS_TERMINATING.getValue());
+              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
+                        namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1, crName);
+              notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
+              notebook.setStatus(Notebook.Status.STATUS_TERMINATING.getValue());  
+              restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               LOG.info("Receive terminating event, exit progress");
               return;
             default:
               LOG.info(String.format("Unprocessed event type:%s", reason));  
           }
+        } catch(ApiException e) {
+            LOG.error("error while accessing k8s", e);
+        }
       }
     }
   }

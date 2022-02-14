@@ -24,6 +24,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.ws.rs.core.Response;
 
 import org.apache.submarine.server.api.common.CustomResourceType;
@@ -46,12 +49,12 @@ public class InternalServiceRestApiTest {
   @Test
   public void testUpdateCRStatus() {
     when(internalServiceRestApi.updateEnvironment(any(String.class),
-        any(String.class), any(String.class))).thenReturn(new JsonResponse.
+        any(String.class), any(Map.class))).thenReturn(new JsonResponse.
         Builder<String>(Response.Status.OK).
         success(true).build());
 
     Response response = internalServiceRestApi.updateEnvironment(CustomResourceType.
-            Notebook.getCustomResourceType(), "notebookId", "running");
+            Notebook.getCustomResourceType(), "notebookId", new HashMap<String, Object>());
     assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
   }
 }

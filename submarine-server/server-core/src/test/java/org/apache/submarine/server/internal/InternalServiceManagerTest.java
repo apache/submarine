@@ -36,6 +36,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class InternalServiceManagerTest {
   private final Logger LOG = LoggerFactory.getLogger(InternalServiceManagerTest.class);
   private InternalServiceManager internalServiceManager;
@@ -51,20 +54,19 @@ public class InternalServiceManagerTest {
   
   @Test
   public void testUpdateNotebook() {
-    Notebook notebook = new Notebook();
-    notebook.setNotebookId(new NotebookId());
-    notebook.setName("test");
-    notebook.setReason("test");
-    notebook.setSpec(new NotebookSpec());
-    notebook.setStatus("running");
-    notebook.setUid("mock-user");
-    notebook.setUrl("http://submarine.org");
-      
-    when(notebookService.select(any(String.class))).thenReturn(notebook);
+    Map<String, Object> updateObject = new HashMap<>();  
+    updateObject.put("name", "test");  
+    updateObject.put("notebookId", new NotebookId());
+    updateObject.put("reason", "test");  
+    updateObject.put("spec", new NotebookSpec());
+    updateObject.put("status", "running");
+    updateObject.put("uid", "mock-user");
+    updateObject.put("url", "http://submarine.org");
+    
     when(notebookService.update(any(Notebook.class))).thenReturn(true);
       
     assertEquals(internalServiceManager.updateCRStatus(CustomResourceType.Notebook,
-        notebook.getNotebookId().toString(), "complete"), true);
+            updateObject.get("notebookId").toString(), updateObject), true);
   }
   
   @Test
@@ -74,10 +76,14 @@ public class InternalServiceManagerTest {
     experimentEntity.setExperimentSpec("");
     experimentEntity.setExperimentStatus("running");
     
-    when(experimentService.select(any(String.class))).thenReturn(experimentEntity);
+    Map<String, Object> updateObject = new HashMap<>();  
+    updateObject.put("id", "test");  
+    updateObject.put("experimentSpec", "");
+    updateObject.put("status", "running");  
+    
     when(experimentService.update(any(ExperimentEntity.class))).thenReturn(true);
     
     assertEquals(internalServiceManager.updateCRStatus(CustomResourceType.TFJob,
-        experimentEntity.getId(), "complete"), true);
+        experimentEntity.getId(), updateObject), true);
   }
 }

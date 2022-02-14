@@ -17,7 +17,7 @@
 set -euxo pipefail
 
 SUBMARINE_VERSION=0.7.0-SNAPSHOT
-SUBMARINE_IMAGE_NAME="apache/submarine:sidecar-agent-${SUBMARINE_VERSION}"
+SUBMARINE_IMAGE_NAME="apache/submarine:agent-${SUBMARINE_VERSION}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
   PWD=$(dirname $(readlink "${BASH_SOURCE-$0}"))

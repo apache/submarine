@@ -289,7 +289,7 @@ public class NotebookSpecParser {
     List<V1Container> containers = notebookCRSpec.getTemplate().getSpec().getContainers();
     V1Container agentContainer = new V1Container();
     agentContainer.setName("agent");
-    agentContainer.setImage("apache/submarine:sidecar-agent-0.7.0-SNAPSHOT");
+    agentContainer.setImage("apache/submarine:agent-0.7.0-SNAPSHOT");
     
     List<V1EnvVar> envVarList = new ArrayList<>();
     V1EnvVar crTypeVar = new V1EnvVar();
