@@ -61,7 +61,7 @@
     insert into notebook (id, notebook_spec, create_by, create_time, update_by, update_time,
      notebook_status, notebook_url, reason, deleted_time)
     values (#{id,jdbcType=VARCHAR}, #{notebookSpec,jdbcType=VARCHAR},
-            #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{updateBy,jdbcType=VARCHAR},
+            #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},
             now(), #{notebookStatus,jdbcType=VARCHAR}, #{notebookUrl,jdbcType=VARCHAR},
             #{reason,jdbcType=VARCHAR},null)
   </insert>
@@ -71,11 +71,11 @@
     <set>
       <if test="notebookSpec != null and notebookStatus != null">
         notebook_spec = #{notebookSpec,jdbcType=VARCHAR},
-        create_time = #{createTime,jdbcType=DATE},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
         notebook_status = #{notebookStatus,jdbcType=VARCHAR},
         notebook_url = #{notebookUrl,jdbcType=VARCHAR},
         reason = #{reason,jdbcType=VARCHAR},
-        deleted_time = #{deletedTime,jdbcType=DATE},
+        deleted_time = #{deletedTime,jdbcType=TIMESTAMP},
       </if>
       update_time = now()
     </set>
