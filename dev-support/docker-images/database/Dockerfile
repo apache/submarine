@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM submarinehub/mysql:5.7.27
+FROM mariadb:10.7
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 ENV AUTO_RUN_DIR /docker-entrypoint-initdb.d
