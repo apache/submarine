@@ -158,7 +158,7 @@ public class NotebookService {
       notebook.setSpec(new Gson().fromJson(entity.getNotebookSpec(), NotebookSpec.class));
       notebook.setName(notebook.getSpec().getMeta().getName());
       notebook.setStatus(entity.getNotebookStatus());
-      notebook.setCreatedTime(entity.getCreateTime().toString());
+      notebook.setCreatedTime(new DateTime(entity.getCreateTime()).toString());
       notebook.setUrl(entity.getNotebookUrl());
       notebook.setReason(entity.getReason());
       if (entity.getDeletedTime() != null) {
