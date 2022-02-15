@@ -32,6 +32,7 @@ import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.notebook.database.entity.NotebookEntity;
 import org.apache.submarine.server.notebook.database.mappers.NotebookMapper;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,11 +159,11 @@ public class NotebookService {
       notebook.setSpec(new Gson().fromJson(entity.getNotebookSpec(), NotebookSpec.class));
       notebook.setName(notebook.getSpec().getMeta().getName());
       notebook.setStatus(entity.getNotebookStatus());
-      notebook.setCreatedTime(new DateTime(entity.getCreateTime()).toString());
+      notebook.setCreatedTime(new DateTime(entity.getCreateTime(), DateTimeZone.UTC).toString());
       notebook.setUrl(entity.getNotebookUrl());
       notebook.setReason(entity.getReason());
       if (entity.getDeletedTime() != null) {
-        notebook.setDeletedTime(new DateTime(entity.getDeletedTime()).toString());
+        notebook.setDeletedTime(new DateTime(entity.getDeletedTime(), DateTimeZone.UTC).toString());
       }
       
     } catch (Exception e) {
