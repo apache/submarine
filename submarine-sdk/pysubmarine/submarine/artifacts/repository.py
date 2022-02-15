@@ -40,7 +40,6 @@ class Repository:
         return response.get("CommonPrefixes")
 
     def log_artifact(self, dest_path: str, local_file: str) -> None:
-        dest_path = os.path.join(dest_path)
         dest_path = os.path.join(dest_path, os.path.basename(local_file))
         self._upload_file(
             local_file=local_file,
