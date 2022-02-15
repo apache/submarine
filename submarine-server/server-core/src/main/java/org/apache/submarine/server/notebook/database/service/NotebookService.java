@@ -32,7 +32,6 @@ import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.notebook.database.entity.NotebookEntity;
 import org.apache.submarine.server.notebook.database.mappers.NotebookMapper;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -136,6 +135,9 @@ public class NotebookService {
       entity.setNotebookStatus(notebook.getStatus());
       entity.setNotebookUrl(notebook.getUrl());
       entity.setReason(notebook.getReason());
+      if (notebook.getCreatedTime() != null) {
+        entity.setCreateTime(DateTime.parse(notebook.getCreatedTime()).toDate());
+      }
       if (notebook.getDeletedTime() != null) {
         entity.setDeletedTime(DateTime.parse(notebook.getDeletedTime()).toDate());
       }
@@ -159,11 +161,11 @@ public class NotebookService {
       notebook.setSpec(new Gson().fromJson(entity.getNotebookSpec(), NotebookSpec.class));
       notebook.setName(notebook.getSpec().getMeta().getName());
       notebook.setStatus(entity.getNotebookStatus());
-      notebook.setCreatedTime(new DateTime(entity.getCreateTime(), DateTimeZone.UTC).toString());
+      notebook.setCreatedTime(new DateTime(entity.getCreateTime()).toString());
       notebook.setUrl(entity.getNotebookUrl());
       notebook.setReason(entity.getReason());
       if (entity.getDeletedTime() != null) {
-        notebook.setDeletedTime(new DateTime(entity.getDeletedTime(), DateTimeZone.UTC).toString());
+        notebook.setDeletedTime(new DateTime(entity.getDeletedTime()).toString());
       }
       
     } catch (Exception e) {

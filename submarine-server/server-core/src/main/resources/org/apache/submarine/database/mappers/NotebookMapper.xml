@@ -71,6 +71,7 @@
     <set>
       <if test="notebookSpec != null and notebookStatus != null">
         notebook_spec = #{notebookSpec,jdbcType=VARCHAR},
+        create_time = #{createTime,jdbcType=DATE},
         notebook_status = #{notebookStatus,jdbcType=VARCHAR},
         notebook_url = #{notebookUrl,jdbcType=VARCHAR},
         reason = #{reason,jdbcType=VARCHAR},

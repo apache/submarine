@@ -82,6 +82,11 @@ public class InternalServiceManager {
     if (updateObject.containsKey("status")) {
       notebook.setStatus(updateObject.get("status").toString());
     }
+    
+    if (updateObject.get("createTime") != null) {
+      notebook.setCreatedTime(updateObject.get("createTime").toString());
+    }
+    
     if (updateObject.get("deletedTime") != null) {
       notebook.setDeletedTime(updateObject.get("deletedTime").toString());
     }
