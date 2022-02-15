@@ -54,6 +54,18 @@ public class InternalServiceManagerTest {
   
   @Test
   public void testUpdateNotebook() {
+    
+    Notebook notebook = new Notebook();
+    notebook.setNotebookId(new NotebookId());
+    notebook.setName("test");
+    notebook.setReason("test");
+    notebook.setSpec(new NotebookSpec());
+    notebook.setStatus("running");
+    notebook.setUid("mock-user");
+    notebook.setUrl("http://submarine.org");
+
+    when(notebookService.select(any(String.class))).thenReturn(notebook);  
+      
     Map<String, Object> updateObject = new HashMap<>();  
     updateObject.put("name", "test");  
     updateObject.put("notebookId", new NotebookId());
@@ -75,6 +87,7 @@ public class InternalServiceManagerTest {
     experimentEntity.setId("test");
     experimentEntity.setExperimentSpec("");
     experimentEntity.setExperimentStatus("running");
+    when(experimentService.select(any(String.class))).thenReturn(experimentEntity);
     
     Map<String, Object> updateObject = new HashMap<>();  
     updateObject.put("id", "test");  
