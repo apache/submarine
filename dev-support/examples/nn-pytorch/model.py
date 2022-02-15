@@ -32,10 +32,9 @@ class LinearNNModel(torch.nn.Module):
 if __name__ == "__main__":
     net = LinearNNModel()
     submarine.save_model(
-        model_type="pytorch",
         model=net,
-        artifact_path="pytorch-nn-model",
-        registered_model_name="simple-nn-model",
+        model_type="pytorch",
+        registered_model_name="simple-pytorch-model",
         input_dim=[2],
         output_dim=[1],
     )

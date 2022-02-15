@@ -24,8 +24,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 import javax.ws.rs.core.Response;
 
+import io.minio.CopyObjectArgs;
+import io.minio.CopySource;
 import io.minio.GetObjectArgs;
 import io.minio.ListObjectsArgs;
 import io.minio.MinioClient;
@@ -58,27 +61,22 @@ public class Client {
   /**
    * Get a list of artifact path under the experiment.
    *
-   * @param experimentId experiment id
+   * @param path path of the artifact directory
    * @return a list of artifact path
    */
-  public List<String> listArtifactByExperimentId(String experimentId) throws SubmarineRuntimeException {
-    Iterable<Result<Item>> artifactNames = minioClient.listObjects(ListObjectsArgs.builder()
-        .bucket(S3Constants.BUCKET).prefix(experimentId + "/").delimiter("/").build());
-    List<String> response = new ArrayList<>();
-    Iterable<Result<Item>> artifacts;
-    for (Result<Item> artifactName : artifactNames) {
-      try {
-        artifacts = minioClient.listObjects(ListObjectsArgs.builder().bucket(S3Constants.BUCKET)
-            .prefix(artifactName.get().objectName()).delimiter("/").build());
-        for (Result<Item> artifact: artifacts) {
-          response.add("s3://" + S3Constants.BUCKET + "/" + artifact.get().objectName());
-        }
-      } catch (Exception e) {
-        throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
-          e.getMessage());
+  public List<String> listArtifact(String path) throws SubmarineRuntimeException {
+    try {
+      Iterable<Result<Item>> artifacts = minioClient.listObjects(ListObjectsArgs.builder()
+          .bucket(S3Constants.BUCKET).prefix(path + "/").delimiter("/").build());
+      List<String> response = new ArrayList<>();
+      for (Result<Item> artifact: artifacts) {
+        response.add("s3://" + S3Constants.BUCKET + "/" + artifact.get().objectName());
       }
+      return response;
+    } catch (Exception e) {
+      throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+          e.getMessage());
     }
-    return response;
   }
 
   /**
@@ -129,6 +127,29 @@ public class Client {
     return buffer;
   }
 
+
+  /**
+   * Copy an artifact.
+   *
+   * @param targetPath path of the target file
+   * @param sourcePath path of the source file
+   */
+  public void copyArtifact(String targetPath, String sourcePath) {
+    try {
+      minioClient.copyObject(CopyObjectArgs.builder()
+          .bucket(S3Constants.BUCKET)
+          .object(targetPath)
+          .source(CopySource.builder()
+              .bucket(S3Constants.BUCKET)
+              .object(sourcePath)
+              .build())
+          .build());
+    } catch (Exception e) {
+      throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+          e.getMessage());
+    }
+  }
+
   /**
    * Upload an artifact.
    *
@@ -145,6 +166,32 @@ public class Client {
       throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
           e.getMessage());
     }
+  }
+
+  public List<String> listAllObjects(String path) throws SubmarineRuntimeException {
+    List<String> result = new ArrayList<>();
+    Stack<String> dirs = new Stack<>();
+    dirs.add(path);
+    while (!dirs.empty()) {
+      String dir = dirs.pop();
+      try {
+        Iterable<Result<Item>> artifacts = minioClient.listObjects(ListObjectsArgs.builder()
+            .bucket(S3Constants.BUCKET).prefix(dir).delimiter("/").build());
+        for (Result<Item> artifact: artifacts) {
+          String objectName = artifact.get().objectName();
+          if (objectName.endsWith("/")) {
+            dirs.add(objectName);
+          } else {
+            result.add(objectName);
+          }
+        }
+      } catch (Exception e) {
+        throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+            e.getMessage());
+      }
+    }
+
+    return result;
   }
 
   /**

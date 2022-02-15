@@ -53,11 +53,12 @@ class SubmarineClient(object):
         os.environ["MLFLOW_S3_ENDPOINT_URL"] = s3_registry_uri or S3_ENDPOINT_URL
         os.environ["AWS_ACCESS_KEY_ID"] = aws_access_key_id or AWS_ACCESS_KEY_ID
         os.environ["AWS_SECRET_ACCESS_KEY"] = aws_secret_access_key or AWS_SECRET_ACCESS_KEY
-        self.artifact_repo = Repository(utils.get_job_id())
+        self.artifact_repo = Repository()
         self.db_uri = db_uri or submarine.get_db_uri()
         self.store = utils.get_tracking_sqlalchemy_store(self.db_uri)
         self.model_registry = utils.get_model_registry_sqlalchemy_store(self.db_uri)
         self.serve_client = ServeClient(host)
+        self.experiment_id = utils.get_job_id()
 
     def log_metric(
         self,
@@ -99,33 +100,85 @@ class SubmarineClient(object):
 
     def save_model(
         self,
-        model_type: str,
         model,
-        artifact_path: str,
+        model_type: str,
         registered_model_name: str = None,
         input_dim: list = None,
         output_dim: list = None,
     ) -> None:
         """
-        Save a model into the minio pod.
-        :param model_type: The type of the model.
+        Save a model into the minio pod or even register a model.
         :param model: Model.
-        :param artifact_path: Relative path of the artifact in the minio pod.
+        :param model_type: The type of the model.
         :param registered_model_name: If not None, register model into the model registry with
                                       this name. If None, the model only be saved in minio pod.
         :param input_dim: Save the input dimension of the given model to the description file.
         :param output_dim: Save the output dimension of the given model to the description file.
         """
         pattern = r"[0-9A-Za-z][0-9A-Za-z-_]*[0-9A-Za-z]|[0-9A-Za-z]"
-        if not re.fullmatch(pattern, artifact_path):
+        if registered_model_name and not re.fullmatch(pattern, registered_model_name):
             raise Exception(
-                "Artifact_path must only contains numbers, characters, hyphen and underscore. "
-                "Artifact_path must starts and ends with numbers or characters."
+                "Registered_model_name must only contains numbers, characters, hyphen and"
+                " underscore. Registered_model_name must starts and ends with numbers or"
+                " characters."
             )
+
+        model_id = utils.generate_model_id()
+
+        dest_path = self._generate_experiment_artifact_path(f"experiment/{self.experiment_id}")
+
+        # log artifact under the experiment directory
+        self._log_artifact(model, dest_path, model_type, model_id, input_dim, output_dim)
+
+        # Register model
+        if registered_model_name is not None:
+            try:
+                self.model_registry.get_registered_model(registered_model_name)
+            except SubmarineException:
+                self.model_registry.create_registered_model(name=registered_model_name)
+
+            mv = self.model_registry.create_model_version(
+                name=registered_model_name,
+                id=model_id,
+                user_id="",  # TODO(jeff-901): the user id is needed to be specified.
+                experiment_id=self.experiment_id,
+                model_type=model_type,
+            )
+
+            # log artifact under the registry directory
+            self._log_artifact(
+                model,
+                f"registry/{mv.name}-{mv.version}-{model_id}/{mv.name}/{mv.version}",
+                model_type,
+                model_id,
+                input_dim,
+                output_dim,
+            )
+
+    def _log_artifact(
+        self,
+        model,
+        dest_path: str,
+        model_type: str,
+        model_id: str,
+        input_dim: list = None,
+        output_dim: list = None,
+        registered: bool = False,
+    ):
+        """
+        Save a model into the minio pod.
+        :param model: Model.
+        :param dest_path: Destination path of the submarine bucket in the minio pod.
+        :param model_type: The type of the model.
+        :param model_id: ID of the model.
+        :param input_dim: Save the input dimension of the given model to the description file.
+        :param output_dim: Save the output dimension of the given model to the description file.
+        """
         with tempfile.TemporaryDirectory() as tempdir:
             description: Dict[str, Any] = dict()
-            model_save_dir = os.path.join(tempdir, "1")
-            os.mkdir(model_save_dir)
+            model_save_dir = tempdir
+            if not os.path.exists(model_save_dir):
+                os.mkdir(model_save_dir)
             if model_type == "pytorch":
                 import submarine.models.pytorch
 
@@ -143,6 +196,7 @@ class SubmarineClient(object):
                 raise Exception("No valid type of model has been matched to {}".format(model_type))
 
             # Write description file
+            description["id"] = model_id
             if input_dim is not None:
                 description["input"] = [
                     {
@@ -156,25 +210,22 @@ class SubmarineClient(object):
                     }
                 ]
             description["model_type"] = model_type
-            with open(os.path.join(tempdir, "description.json"), "w") as f:
+            with open(os.path.join(model_save_dir, "description.json"), "w") as f:
                 json.dump(description, f)
 
             # Log all files into minio
-            source = self.artifact_repo.log_artifacts(tempdir, artifact_path)
+            self.artifact_repo.log_artifacts(dest_path, model_save_dir)
 
-        # Register model
-        if registered_model_name is not None:
-            try:
-                self.model_registry.get_registered_model(registered_model_name)
-            except SubmarineException:
-                self.model_registry.create_registered_model(name=registered_model_name)
-            self.model_registry.create_model_version(
-                name=registered_model_name,
-                source=source,
-                user_id="",  # TODO(jeff-901): the user id is needed to be specified.
-                experiment_id=utils.get_job_id(),
-                model_type=model_type,
-            )
+    def _generate_experiment_artifact_path(self, dest_path: str) -> str:
+        """
+        :param dest_path: destination of current experiment directory
+        """
+        list_of_subfolder = self.artifact_repo.list_artifact_subfolder(dest_path)
+        return (
+            os.path.join(dest_path, str(len(list_of_subfolder) + 1))
+            if list_of_subfolder
+            else os.path.join(dest_path, "1")
+        )
 
     def create_serve(self, model_name: str, model_version: int, async_req: bool = True):
         """

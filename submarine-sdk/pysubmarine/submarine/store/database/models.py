@@ -27,6 +27,7 @@ from sqlalchemy import (
     PrimaryKeyConstraint,
     String,
     Text,
+    UniqueConstraint,
 )
 from sqlalchemy.dialects.mysql import DATETIME
 from sqlalchemy.ext.declarative import declarative_base
@@ -154,13 +155,13 @@ class SqlRegisteredModelTag(Base):
         return RegisteredModelTag(self.tag)
 
 
-# +----------+---------+-------------------------------+-----+
-# | name     | version | source                        | ... |
-# +----------+---------+-------------------------------+-----+
-# | ResNet50 | 1       | s3://submarine/ResNet50/1/    | ... |
-# | ResNet50 | 2       | s3://submarine/ResNet50/2/    | ... |
-# | BERT     | 1       | s3://submarine/BERT/1/        | ... |
-# +----------+---------+-------------------------------+-----+
+# +----------+---------+----------------------------------+-----+
+# | name     | version |                id                | ... |
+# +----------+---------+----------------------------------+-----+
+# | ResNet50 | 1       | 4ed6572b74a54020b0987ebf53170940 | ... |
+# | ResNet50 | 2       | 1a67f138c1ff41778edf83451d5fd52f | ... |
+# | BERT     | 1       | 42ae7f58ba354872a95f6872e16c3544 | ... |
+# +----------+---------+----------------------------------+-----+
 
 
 class SqlModelVersion(Base):
@@ -180,10 +181,9 @@ class SqlModelVersion(Base):
     Version of registered model: Part of *Primary Key* for ``model_version`` table.
     """
 
-    source = Column(String(512), nullable=False, unique=True)
+    id = Column(String(64), nullable=False)
     """
-    Source of model: Part of *Primary Key* for ``model_version`` table.
-                     database link refer to this version of model.
+    ID of the model.
     """
 
     user_id = Column(String(64), nullable=False)
@@ -239,11 +239,14 @@ class SqlModelVersion(Base):
         "SqlRegisteredModel", back_populates="model_versions"
     )
 
-    __table_args__ = (PrimaryKeyConstraint("name", "version", "source", name="model_version_pk"),)
+    __table_args__ = (
+        PrimaryKeyConstraint("name", "version", name="model_version_pk"),
+        UniqueConstraint("name", "id"),
+    )
 
     def __repr__(self):
         return (
-            f"<SqlModelVersion ({self.name}, {self.version}, {self.source}, {self.user_id},"
+            f"<SqlModelVersion ({self.name}, {self.version}, {self.user_id},"
             f" {self.experiment_id}, {self.current_stage}, {self.creation_time},"
             f" {self.last_updated_time}, {self.dataset}, {self.description})>"
         )
@@ -256,7 +259,7 @@ class SqlModelVersion(Base):
         return ModelVersion(
             name=self.name,
             version=self.version,
-            source=self.source,
+            id=self.id,
             user_id=self.user_id,
             experiment_id=self.experiment_id,
             model_type=self.model_type,

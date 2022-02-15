@@ -19,30 +19,27 @@ import boto3
 
 
 class Repository:
-    def __init__(self, experiment_id: str):
+    def __init__(self):
         self.client = boto3.client(
             "s3",
             aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
             aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
             endpoint_url=os.environ.get("MLFLOW_S3_ENDPOINT_URL"),
         )
-        self.dest_path = experiment_id
         self.bucket = "submarine"
 
     def _upload_file(self, local_file: str, bucket: str, key: str) -> None:
         self.client.upload_file(Filename=local_file, Bucket=bucket, Key=key)
 
-    def _list_artifact_subfolder(self, artifact_path: str):
+    def list_artifact_subfolder(self, dest_path):
         response = self.client.list_objects(
             Bucket=self.bucket,
-            Prefix=os.path.join(self.dest_path, artifact_path) + "/",
+            Prefix=f"{dest_path}/",
             Delimiter="/",
         )
         return response.get("CommonPrefixes")
 
-    def log_artifact(self, local_file: str, artifact_path: str) -> None:
-        dest_path = self.dest_path
-        dest_path = os.path.join(dest_path, artifact_path)
+    def log_artifact(self, dest_path: str, local_file: str) -> None:
         dest_path = os.path.join(dest_path, os.path.basename(local_file))
         self._upload_file(
             local_file=local_file,
@@ -50,14 +47,7 @@ class Repository:
             key=dest_path,
         )
 
-    def log_artifacts(self, local_dir: str, artifact_path: str) -> str:
-        dest_path = self.dest_path
-        list_of_subfolder = self._list_artifact_subfolder(artifact_path)
-        if list_of_subfolder is None:
-            artifact_path = os.path.join(artifact_path, "1")
-        else:
-            artifact_path = os.path.join(artifact_path, str(len(list_of_subfolder) + 1))
-        dest_path = os.path.join(dest_path, artifact_path)
+    def log_artifacts(self, dest_path: str, local_dir: str) -> str:
         local_dir = os.path.abspath(local_dir)
         for (root, _, filenames) in os.walk(local_dir):
             upload_path = dest_path
@@ -72,8 +62,8 @@ class Repository:
                 )
         return f"s3://{self.bucket}/{dest_path}"
 
-    def delete_folder(self) -> None:
-        objects_to_delete = self.client.list_objects(Bucket=self.bucket, Prefix=self.dest_path)
+    def delete_folder(self, dest_path) -> None:
+        objects_to_delete = self.client.list_objects(Bucket=self.bucket, Prefix=dest_path)
         if objects_to_delete.get("Contents") is not None:
             delete_keys: dict = {"Objects": []}
             delete_keys["Objects"] = [

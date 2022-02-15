@@ -340,7 +340,7 @@ class SqlAlchemyStore(AbstractStore):
     def create_model_version(
         self,
         name: str,
-        source: str,
+        id: str,
         user_id: str,
         experiment_id: str,
         model_type: str,
@@ -351,7 +351,7 @@ class SqlAlchemyStore(AbstractStore):
         """
         Create a new version of the registered model
         :param name: Registered model name.
-        :param source: Source path where this version of model is stored.
+        :param id: Model ID generated when model is created and stored in the description.json
         :param user_id: User ID from server that created this model
         :param experiment_id: Experiment ID which this model is created.
         :param dataset: Dataset which this version of model is used.
@@ -378,7 +378,7 @@ class SqlAlchemyStore(AbstractStore):
                 model_version = SqlModelVersion(
                     name=name,
                     version=next_version(sql_registered_model),
-                    source=source,
+                    id=id,
                     user_id=user_id,
                     experiment_id=experiment_id,
                     model_type=model_type,
@@ -517,8 +517,8 @@ class SqlAlchemyStore(AbstractStore):
         :return: A single URI location.
         """
         with self.ManagedSessionMaker() as session:
-            sql_model = self._get_sql_model_version(session, name, version)
-            return sql_model.to_submarine_entity().source
+            mv = self._get_sql_model_version(session, name, version)
+            return f"s3://submarine/registry/{mv.id}/{mv.name}/{mv.version}"
 
     @classmethod
     def _get_sql_model_version_tag(

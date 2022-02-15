@@ -97,3 +97,7 @@ def get_model_registry_sqlalchemy_store(store_uri: str):
     from submarine.store.model_registry.sqlalchemy_store import SqlAlchemyStore
 
     return SqlAlchemyStore(store_uri)
+
+
+def generate_model_id() -> str:
+    return uuid.uuid4().hex

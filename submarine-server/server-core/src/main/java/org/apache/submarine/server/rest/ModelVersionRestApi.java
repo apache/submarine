@@ -19,6 +19,8 @@
 
 package org.apache.submarine.server.rest;
 
+import org.json.JSONObject;
+
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -37,7 +39,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
 import org.apache.submarine.server.model.database.entities.ModelVersionTagEntity;
@@ -46,6 +47,7 @@ import org.apache.submarine.server.model.database.service.ModelVersionService;
 
 import org.apache.submarine.server.model.database.service.ModelVersionTagService;
 import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.s3.Client;
 
 /**
  * Model version REST API v1.
@@ -59,6 +61,8 @@ public class ModelVersionRestApi {
 
   /* Model version tag service */
   private final ModelVersionTagService modelVersionTagService = new ModelVersionTagService();
+
+  private final Client s3Client = new Client();
 
   /**
    * Return the Pong message for test the connectivity.
@@ -74,6 +78,61 @@ public class ModelVersionRestApi {
           content = @Content(schema = @Schema(implementation = String.class)))})
   public Response ping() {
     return new JsonResponse.Builder<String>(Response.Status.OK).success(true).result("Pong").build();
+  }
+
+  /**
+   * Create a model version.
+   *
+   * @param entity registered model entity
+   * example: {
+   *   "name": "example_name"
+   *   "experimentId" : "4d4d02f06f6f437fa29e1ee8a9276d87"
+   *   "userId": ""
+   *   "description" : "example_description"
+   *   "tags": ["123", "456"]
+   * }
+   * @param baseDir artifact base directory
+   * example: "experiment/experiment-1643015349312-0001/1"
+   * @return success message
+   */
+  @POST
+  @Consumes({ RestConstants.MEDIA_TYPE_YAML, MediaType.APPLICATION_JSON })
+  @Operation(summary = "Create a model version instance", tags = { "model-version" }, responses = {
+      @ApiResponse(description = "successful operation",
+                   content = @Content(schema = @Schema(implementation = JsonResponse.class)))})
+  public Response createModelVersion(ModelVersionEntity entity,
+                                     @QueryParam("baseDir") String baseDir) {
+    try {
+      String res = new String(s3Client.downloadArtifact(
+          String.format("%s/description.json", baseDir)));
+      JSONObject description = new JSONObject(res);
+      String modelType =  description.get("model_type").toString();
+      String id = description.get("id").toString();
+      entity.setId(id);
+      entity.setModelType(modelType);
+
+      int version = modelVersionService.selectAllVersions(entity.getName()).stream().mapToInt(
+          ModelVersionEntity::getVersion
+      ).max().orElse(1);
+
+      entity.setVersion(version);
+      modelVersionService.insert(entity);
+
+      // the directory of storing a single model must be unique for serving
+      String uniqueModelPath = String.format("%s-%d-%s", entity.getName(), version, id);
+
+      // copy artifacts
+      s3Client.listAllObjects(baseDir).forEach(s -> {
+        String relativePath = s.substring(String.format("%s/", baseDir).length());
+        s3Client.copyArtifact(String.format("registry/%s/%s/%d/%s", uniqueModelPath,
+            entity.getName(), entity.getVersion(), relativePath), s);
+      });
+
+      return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
+        .message("Create a model version instance").build();
+    } catch (SubmarineRuntimeException e) {
+      return parseModelVersionServiceException(e);
+    }
   }
 
   /**
@@ -126,7 +185,7 @@ public class ModelVersionRestApi {
    *
    * @param name    model version's name
    * @param version model version's version
-   * @return seccess message
+   * @return success message
    */
   @DELETE
   @Path("/{name}/{version}")
@@ -277,7 +336,7 @@ public class ModelVersionRestApi {
       throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
           "Invalid. Model version's version is null.");
     }
-    Integer versionNum;
+    int versionNum;
     try {
       versionNum = Integer.parseInt(version);
       if (versionNum < 1){

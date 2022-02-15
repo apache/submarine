@@ -23,7 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.nio.file.Paths;
 import javax.ws.rs.core.Response;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
@@ -35,6 +34,7 @@ import org.apache.submarine.server.api.proto.TritonModelConfig;
 import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
 import org.apache.submarine.server.model.database.service.ModelVersionService;
 import org.apache.submarine.server.s3.Client;
+import org.apache.submarine.server.s3.S3Constants;
 
 
 public class ModelManager {
@@ -100,7 +100,7 @@ public class ModelManager {
     } else {
       if (spec.getModelName() == null) {
         throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-                "Invalid. Model name in Serve Soec is null.");
+                "Invalid. Model name in Serve Spec is null.");
       }
       Integer modelVersion = spec.getModelVersion();
       if (modelVersion == null || modelVersion <= 0) {
@@ -115,14 +115,29 @@ public class ModelManager {
 
     // Get model type and model uri from DB and set the value in the spec.
     ModelVersionEntity modelVersion = modelVersionService.select(spec.getModelName(), spec.getModelVersion());
-    spec.setModelURI(modelVersion.getSource());
-    spec.setModelType(modelVersion.getModelType());
+    String modelType = modelVersion.getModelType();
+    String modelId = modelVersion.getId();
+    spec.setModelType(modelType);
+    spec.setModelId(modelId);
+
+    String modelUniquePath = String.format("%s-%d-%s", spec.getModelName(), spec.getModelVersion(), modelId);
+    if (spec.getModelType().equals("pytorch")) {
+      spec.setModelURI(String.format("s3://%s/registry/%s", S3Constants.BUCKET, modelUniquePath));
+    } else if (spec.getModelType().equals("tensorflow")) {
+      spec.setModelURI(String.format("s3://%s/registry/%s/%s", S3Constants.BUCKET, modelUniquePath,
+          spec.getModelName()));
+    } else {
+      throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+          String.format("Unexpected model type: %s", modelType));
+    }
   }
 
   private void transferDescription(ServeSpec spec) {
     Client s3Client = new Client();
-    String res  = new String(s3Client.downloadArtifact(
-            Paths.get(spec.getModelName(), "description.json").toString()));
+    String modelUniquePath = String.format("%s-%d-%s",
+        spec.getModelName(), spec.getModelVersion(), spec.getModelId());
+    String res  = new String(s3Client.downloadArtifact(String.format("registry/%s/%s/%d/description.json",
+        modelUniquePath, spec.getModelName(), spec.getModelVersion())));
     JSONObject description = new JSONObject(res);
 
     TritonModelConfig.ModelConfig.Builder modelConfig = TritonModelConfig.ModelConfig.newBuilder();
@@ -148,14 +163,20 @@ public class ModelManager {
       modelConfig.addOutput(modelOutput);
     }
 
-    s3Client.logArtifact(Paths.get(spec.getModelName(), "config.pbtxt").toString(),
+    s3Client.logArtifact(String.format("registry/%s/%s/config.pbtxt", modelUniquePath, spec.getModelName()),
             modelConfig.toString().getBytes());
   }
 
   private ServeResponse getServeResponse(ServeSpec spec){
     ServeResponse serveResponse = new ServeResponse();
-    serveResponse.setUrl(String.format("http://{submarine ip}/%s/%d/api/v1.0/predictions",
-            spec.getModelName(), spec.getModelVersion()));
+    if (spec.getModelType().equals("pytorch")) {
+      serveResponse.setUrl(String.format("http://{submarine ip}/%s/%d/v2/models/%s/infer",
+          spec.getModelName(), spec.getModelVersion(), spec.getModelName()));
+    } else {
+      serveResponse.setUrl(String.format("http://{submarine ip}/%s/%d/api/v1.0/predictions",
+          spec.getModelName(), spec.getModelVersion()));
+    }
+
     return serveResponse;
   }
 }

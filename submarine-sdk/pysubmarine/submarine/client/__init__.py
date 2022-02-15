@@ -62,3 +62,6 @@ from submarine.client.models.notebook_meta import NotebookMeta
 from submarine.client.models.notebook_pod_spec import NotebookPodSpec
 from submarine.client.models.notebook_spec import NotebookSpec
 from submarine.client.models.serve_spec import ServeSpec
+
+# import utils
+from submarine.client.utils.api_utils import *

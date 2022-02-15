@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from datetime import datetime
+from typing import Optional
+
 from submarine.entities._submarine_object import _SubmarineObject
 
 
@@ -23,22 +26,22 @@ class ModelVersion(_SubmarineObject):
 
     def __init__(
         self,
-        name,
-        version,
-        source,
-        user_id,
-        experiment_id,
-        model_type,
-        current_stage,
-        creation_time,
-        last_updated_time,
-        dataset=None,
-        description=None,
-        tags=None,
+        name: str,
+        version: int,
+        id: str,
+        user_id: str,
+        experiment_id: str,
+        model_type: str,
+        current_stage: str,
+        creation_time: datetime,
+        last_updated_time: datetime,
+        dataset: Optional[str] = None,
+        description: Optional[str] = None,
+        tags: Optional[list] = None,
     ):
         self._name = name
         self._version = version
-        self._source = source
+        self._id = id
         self._user_id = user_id
         self._experiment_id = experiment_id
         self._model_type = model_type
@@ -60,9 +63,9 @@ class ModelVersion(_SubmarineObject):
         return self._version
 
     @property
-    def source(self):
-        """String. Source path for the model."""
-        return self._source
+    def id(self):
+        """String. ID of the model"""
+        return self._id
 
     @property
     def user_id(self):

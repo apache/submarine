@@ -29,6 +29,7 @@ from submarine.tracking.client import SubmarineClient
 from .tf_model import LinearNNModel
 
 JOB_ID = "application_123456789"
+REGISTERED_MODEL_NAME = "registerd_model_name"
 MLFLOW_S3_ENDPOINT_URL = "http://localhost:9000"
 
 
@@ -69,7 +70,8 @@ class TestTracking(unittest.TestCase):
         environ["MLFLOW_S3_ENDPOINT_URL"] = MLFLOW_S3_ENDPOINT_URL
         environ["AWS_ACCESS_KEY_ID"] = "submarine_minio"
         environ["AWS_SECRET_ACCESS_KEY"] = "submarine_minio"
-        Repository(JOB_ID).delete_folder()
+        Repository().delete_folder(f"experiment/{JOB_ID}")
+        Repository().delete_folder(f"registry/{REGISTERED_MODEL_NAME}")
 
     def test_log_param(self):
         submarine.log_param("name_1", "a")
@@ -97,15 +99,12 @@ class TestTracking(unittest.TestCase):
         input_arr = tensorflow.random.uniform((1, 5))
         model = LinearNNModel()
         model(input_arr)
-        registered_model_name = "registerd_model_name"
-        self.client.save_model("tensorflow", model, "name_1", registered_model_name)
-        self.client.save_model("tensorflow", model, "name_2", registered_model_name)
+        self.client.save_model(model, "tensorflow", "name_1", REGISTERED_MODEL_NAME)
+        self.client.save_model(model, "tensorflow", "name_2", REGISTERED_MODEL_NAME)
         # Validate model_versions
-        model_versions = self.model_registry.list_model_versions(registered_model_name)
+        model_versions = self.model_registry.list_model_versions(REGISTERED_MODEL_NAME)
         assert len(model_versions) == 2
-        assert model_versions[0].name == registered_model_name
+        assert model_versions[0].name == REGISTERED_MODEL_NAME
         assert model_versions[0].version == 1
-        assert model_versions[0].source == f"s3://submarine/{JOB_ID}/name_1/1"
-        assert model_versions[1].name == registered_model_name
+        assert model_versions[1].name == REGISTERED_MODEL_NAME
         assert model_versions[1].version == 2
-        assert model_versions[1].source == f"s3://submarine/{JOB_ID}/name_2/1"

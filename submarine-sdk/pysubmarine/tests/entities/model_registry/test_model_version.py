@@ -23,7 +23,7 @@ class TestModelVersion:
     default_data = {
         "name": "test",
         "version": 1,
-        "source": "path/to/source",
+        "id": "1f94b4fadbe144ea8ced0ce195855cfc",
         "user_id": "admin",
         "experiment_id": "experiment_1",
         "model_type": "tensorflow",
@@ -40,7 +40,7 @@ class TestModelVersion:
         model_metadata,
         name,
         version,
-        source,
+        id,
         user_id,
         experiment_id,
         model_type,
@@ -54,7 +54,7 @@ class TestModelVersion:
         isinstance(model_metadata, ModelVersion)
         assert model_metadata.name == name
         assert model_metadata.version == version
-        assert model_metadata.source == source
+        assert model_metadata.id == id
         assert model_metadata.user_id == user_id
         assert model_metadata.experiment_id == experiment_id
         assert model_metadata.model_type == model_type
@@ -69,7 +69,7 @@ class TestModelVersion:
         mv = ModelVersion(
             self.default_data["name"],
             self.default_data["version"],
-            self.default_data["source"],
+            self.default_data["id"],
             self.default_data["user_id"],
             self.default_data["experiment_id"],
             self.default_data["model_type"],
@@ -84,7 +84,7 @@ class TestModelVersion:
             mv,
             self.default_data["name"],
             self.default_data["version"],
-            self.default_data["source"],
+            self.default_data["id"],
             self.default_data["user_id"],
             self.default_data["experiment_id"],
             self.default_data["model_type"],
@@ -103,7 +103,7 @@ class TestModelVersion:
         mv = ModelVersion(
             self.default_data["name"],
             self.default_data["version"],
-            self.default_data["source"],
+            self.default_data["id"],
             self.default_data["user_id"],
             self.default_data["experiment_id"],
             self.default_data["model_type"],
@@ -118,7 +118,7 @@ class TestModelVersion:
             mv,
             self.default_data["name"],
             self.default_data["version"],
-            self.default_data["source"],
+            self.default_data["id"],
             self.default_data["user_id"],
             self.default_data["experiment_id"],
             self.default_data["model_type"],
