@@ -61,8 +61,8 @@
     insert into notebook (id, notebook_spec, create_by, create_time, update_by, update_time,
      notebook_status, notebook_url, reason, deleted_time)
     values (#{id,jdbcType=VARCHAR}, #{notebookSpec,jdbcType=VARCHAR},
-            #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now(),
-            #{notebookStatus,jdbcType=VARCHAR}, #{notebookUrl,jdbcType=VARCHAR},
+            #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=DATE}, #{updateBy,jdbcType=VARCHAR},
+            now(), #{notebookStatus,jdbcType=VARCHAR}, #{notebookUrl,jdbcType=VARCHAR},
             #{reason,jdbcType=VARCHAR},null)
   </insert>
 
