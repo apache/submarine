@@ -440,7 +440,7 @@ public class K8sSubmitter implements Submitter {
     final String name = "submarine-tensorboard";
     final String ingressRouteName = "submarine-tensorboard-ingressroute";
     try {
-      return (TensorboardInfo) getInfo(name, ingressRouteName);
+      return new TensorboardInfo(getInfo(name, ingressRouteName));
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -451,7 +451,7 @@ public class K8sSubmitter implements Submitter {
     final String name = "submarine-mlflow";
     final String ingressRouteName = "submarine-mlflow-ingressroute";
     try {
-      return (MlflowInfo) getInfo(name, ingressRouteName);
+      return new MlflowInfo(getInfo(name, ingressRouteName));
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -483,8 +483,7 @@ public class K8sSubmitter implements Submitter {
 
     String url = route.replace("PathPrefix(`", "").replace("`)", "/");
 
-    Info info = new Info(available, url);
-    return info;
+    return new Info(available, url);
   }
   @Override
   public Notebook createNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {

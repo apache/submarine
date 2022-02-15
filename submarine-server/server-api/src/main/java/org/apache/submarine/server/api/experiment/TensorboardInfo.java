@@ -21,8 +21,8 @@ package org.apache.submarine.server.api.experiment;
 
 public class TensorboardInfo extends Info{
 
-  public TensorboardInfo(boolean available, String url) {
-    super(available, url);
+  public TensorboardInfo(Info info) {
+    super(info.isAvailable(), info.getUrl());
   }
 
   @Override
