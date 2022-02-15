@@ -19,13 +19,14 @@
 package org.apache.submarine.serve.seldon;
 
 import com.google.gson.annotations.SerializedName;
+import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import org.apache.submarine.serve.utils.SeldonConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeldonDeployment {
+public class SeldonDeployment implements KubernetesObject {
   @SerializedName("apiVersion")
   private String apiVersion = SeldonConstants.API_VERSION;
 

@@ -19,17 +19,28 @@
 
 package org.apache.submarine.server.api.experiment;
 
-public class MlflowInfo extends Info{
+public class Info {
+  public boolean available;
+  public String url;
 
-  public MlflowInfo(boolean available, String url) {
-    super(available, url);
+  public Info(boolean available, String url) {
+    this.available = available;
+    this.url = url;
   }
 
-  @Override
-  public String toString() {
-    return "MLflowInfo{" +
-            "available=" + available +
-            ", url='" + url + '\'' +
-            '}';
+  public boolean isAvailable() {
+    return available;
+  }
+
+  public void setAvailable(boolean available) {
+    this.available = available;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
   }
 }
