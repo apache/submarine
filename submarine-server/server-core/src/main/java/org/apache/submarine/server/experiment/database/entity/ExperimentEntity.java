@@ -28,7 +28,7 @@ public class ExperimentEntity extends BaseEntity {
   private String experimentSpec;
 
   private String experimentStatus;
-  
+
   public ExperimentEntity() {}
 
   public String getExperimentSpec() {

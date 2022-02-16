@@ -263,6 +263,9 @@ CREATE TABLE `notebook` (
   `update_by` varchar(32) DEFAULT NULL COMMENT 'last update user',
   `update_time` datetime DEFAULT NULL COMMENT 'last update time',
   `notebook_status` varchar(20) DEFAULT NULL COMMENT 'notebook status',
+  `notebook_url` varchar(256) DEFAULT NULL COMMENT 'notebook url',
+  `reason` varchar(512) DEFAULT NULL COMMENT 'reason of state',
+  `deleted_time`  datetime DEFAULT NULL COMMENT 'delete time',
    PRIMARY KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

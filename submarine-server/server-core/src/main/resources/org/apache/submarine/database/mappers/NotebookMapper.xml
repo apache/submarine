@@ -30,10 +30,13 @@
   <resultMap id="NotebookEntityResultMap" type="org.apache.submarine.server.notebook.database.entity.NotebookEntity" extends="BaseEntityResultMap">
     <result column="notebook_spec" jdbcType="VARCHAR" property="notebookSpec" />
     <result column="notebook_status" jdbcType="VARCHAR" property="notebookStatus" />
+    <result column="notebook_url" jdbcType="VARCHAR" property="notebookUrl" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="deleted_time" property="deletedTime" />
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, notebook_spec, create_by, create_time, update_by, update_time, notebook_status
+    id, notebook_spec, create_by, create_time, update_by, update_time, notebook_status, notebook_url, reason, deleted_time
   </sql>
 
   <select id="selectAll" parameterType="java.lang.String" resultMap="NotebookEntityResultMap">
@@ -55,10 +58,12 @@
   </delete>
 
   <insert id="insert" parameterType="org.apache.submarine.server.notebook.database.entity.NotebookEntity">
-    insert into notebook (id, notebook_spec, create_by, create_time, update_by, update_time, notebook_status)
+    insert into notebook (id, notebook_spec, create_by, create_time, update_by, update_time,
+     notebook_status, notebook_url, reason, deleted_time)
     values (#{id,jdbcType=VARCHAR}, #{notebookSpec,jdbcType=VARCHAR},
-            #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now(),
-            #{notebookStatus,jdbcType=VARCHAR})
+            #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},
+            now(), #{notebookStatus,jdbcType=VARCHAR}, #{notebookUrl,jdbcType=VARCHAR},
+            #{reason,jdbcType=VARCHAR},null)
   </insert>
 
   <update id="update" parameterType="org.apache.submarine.server.notebook.database.entity.NotebookEntity">
@@ -66,7 +71,11 @@
     <set>
       <if test="notebookSpec != null and notebookStatus != null">
         notebook_spec = #{notebookSpec,jdbcType=VARCHAR},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
         notebook_status = #{notebookStatus,jdbcType=VARCHAR},
+        notebook_url = #{notebookUrl,jdbcType=VARCHAR},
+        reason = #{reason,jdbcType=VARCHAR},
+        deleted_time = #{deletedTime,jdbcType=TIMESTAMP},
       </if>
       update_time = now()
     </set>
