@@ -19,7 +19,6 @@
 
 package org.apache.submarine.server.experiment.database.entity;
 
-
 import org.apache.submarine.server.database.entity.BaseEntity;
 
 public class ExperimentEntity extends BaseEntity {

@@ -146,6 +146,7 @@
     <guice.version>3.0</guice.version>
     <!--  server API  -->
     <protobuf-java.version>3.14.0</protobuf-java.version>
+    <joda-time.version>2.10.8</joda-time.version>
   </properties>
 
   <modules>
@@ -322,6 +323,11 @@
         <groupId>net.bytebuddy</groupId>
         <artifactId>byte-buddy</artifactId>
         <version>${bytebuddy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>${joda-time.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
