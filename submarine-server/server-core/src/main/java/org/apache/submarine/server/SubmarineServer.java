@@ -118,10 +118,12 @@ public class SubmarineServer extends ResourceConfig {
     // Cluster Server is useless for submarine now. Shield it to improve performance.
     // setupClusterServer();
 
-    startServer();
+    setupWebSocketServer();
     LOG.info("XXXXXXXXXXXXXXXXXXXXXXX");
+    startServer();
+    // LOG.info("XXXXXXXXXXXXXXXXXXXXXXX");
     // websocket server
-    //setupWebSocketServer();
+    // setupWebSocketServer();
   }
 
   @Inject

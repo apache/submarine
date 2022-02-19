@@ -432,12 +432,15 @@
         </exclusion>
       </exclusions>
     </dependency>
+<<<<<<< HEAD
 
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
     </dependency>
 
+=======
+>>>>>>> trivial
     <!-- To write basic websockets against -->
     <dependency>
       <groupId>org.eclipse.jetty.websocket</groupId>
@@ -456,6 +459,10 @@
       <artifactId>websocket-client</artifactId>
       <version>${jetty.version}</version>
     </dependency>
+<<<<<<< HEAD
+=======
+
+>>>>>>> trivial
   </dependencies>
 
   <build>
