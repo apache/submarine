@@ -50,11 +50,6 @@ module.exports = {
                     ],
                 },
             ],
-            "Administrator Docs": [
-                {
-                    "Submarine on Yarn": ["adminDocs/yarn/README"],
-                },
-            ],
             "Developer Docs": [
                 "devDocs/README",
                 "devDocs/Dependencies",
