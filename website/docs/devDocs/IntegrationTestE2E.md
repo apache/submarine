@@ -40,7 +40,7 @@ title: How to Run Frontend Integration Test
    # at submarine-test/test_e2e/run_frontend_e2e.sh
    ...
    # ======= Modifiable Variables ======= #
-    # Note: URL must start with "http" 
+    # Note: URL must start with "http"
     # (Ref: https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebDriver.html#get(java.lang.String))
     WORKBENCH_PORT=8080 #<= modify this
     URL="http://127.0.0.1" #<=modify this
@@ -48,7 +48,7 @@ title: How to Run Frontend Integration Test
     ...
    ```
 
-4. Run run_frontend_e2e.sh (Run a specific test case)
+4. Run `run_frontend_e2e.sh` (Run a specific test case)
 
    This script will check whether the port can be accessed or not, and run the test case.
    ```bash
@@ -62,7 +62,7 @@ title: How to Run Frontend Integration Test
     ```bash
     # Make sure the Submarine workbench is running on 127.0.0.1:8080
     cd submarine/submarine-test/test-e2e
-    # Method 1: 
+    # Method 1:
     mvn verify
 
     # Method 2:

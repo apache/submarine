@@ -47,48 +47,10 @@ Build submarine database image:
 ./dev-support/docker-images/database/build.sh
 ```
 
-### Building source code / binary distribution
-
-+ Checking releases for licenses
+### Checking releases for licenses
 
 ```
 mvn clean org.apache.rat:apache-rat-plugin:check
-```
-
-+ Create binary distribution with default hadoop version
-
-```
-mvn clean package -DskipTests
-```
-
-+ Create binary distribution with hadoop-2.9.x version
-
-```
-mvn clean package -DskipTests -Phadoop-2.9
-```
-
-+ Create binary distribution with hadoop-2.10.x version
-
-```
-mvn clean package -DskipTests -Phadoop-2.10
-```
-
-+ Create binary distribution with hadoop-3.1.x version
-
-```
-mvn clean package -DskipTests -Phadoop-3.1
-```
-
-+ Create binary distribution with hadoop-3.2.x version
-
-```
-mvn clean package -DskipTests -Phadoop-3.2
-```
-
-+ Create source code distribution
-
-```
-mvn clean package -DskipTests -Psrc
 ```
 
 ### Building source code / binary distribution with Maven Wrapper
