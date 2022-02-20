@@ -75,9 +75,10 @@ RUN mv /tini /usr/local/bin/tini && chmod +x /usr/local/bin/tini
 # Install conda
 USER $NB_UID
 ARG PYTHON_VERSION=default
-ENV MINICONDA_VERSION=4.8.3 \
-    MINICONDA_MD5=751786b92c00b1aeae3f017b781018df \
-    CONDA_VERSION=4.8.3
+# update conda version to 4.11.0
+ENV MINICONDA_VERSION=4.11.0 \
+    MINICONDA_MD5=7675bd23411179956bcc4692f16ef27d \
+    CONDA_VERSION=4.11.0
 
 WORKDIR /tmp
 RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh && \
@@ -91,30 +92,33 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     conda config --system --set channel_priority strict && \
     if [ ! $PYTHON_VERSION = 'default' ]; then conda install --yes python=$PYTHON_VERSION; fi && \
     conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
-    conda clean --all -f -y && \
-    rm -rf /home/$NB_USER/.cache/yarn
-
-RUN conda init bash
-# Install latest sumbarine python sdk and notebook
-RUN source ~/.bashrc && conda activate && \
-    git clone https://github.com/apache/submarine && \
-    pip install submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
+    conda init bash && \
+    source ~/.bashrc && conda activate && \
+    # it is used for jupyter lab build
     conda install nodejs && \
-    conda install -c conda-forge jupyterlab jupyterlab-git && \
-    jupyter lab build
+    conda install -c conda-forge jupyterlab jupyterlab-git cvxpy==1.0.21 && \
+    jupyter lab build && \
+    # remove node_modules
+    rm -rf /home/$NB_USER/.cache/yarn && \
+    rm -rf /opt/conda/share/jupyter/lab/staging/node_modules/* && \
+    # uninstall nodejs, nodejs should not be used after jupyter lab has been built
+    conda uninstall nodejs -y && \
+    # clear conda to remove index cache, lock files, unused cache packages, and tarballs in /opt/conda/pkgs
+    conda clean -a -y
 
-# Add DeepFM example into notebook
-RUN cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
+RUN pip --no-cache-dir install pyqlib==0.6.2
+
+# Install latest sumbarine python sdk and notebook
+RUN git clone --depth=1 https://github.com/apache/submarine && \
+    # replace numpy==1.19.2 to numpy>=1.20.0
+    sed -i "s/numpy==1.19.2/numpy>=1.20.0/" submarine/submarine-sdk/pysubmarine/setup.py && \
+    pip --no-cache-dir install submarine/submarine-sdk/pysubmarine[tf,pytorch] && \
+    cp submarine/submarine-sdk/pysubmarine/example/submarine_experiment_sdk.ipynb $HOME && \
     cp -r submarine/submarine-sdk/pysubmarine/example/{data,deepfm_example.ipynb,deepfm.json} $HOME && \
     rm submarine -rf
 
-# Install latest stable qlib
-RUN conda install -c conda-forge cvxpy==1.0.21
-RUN pip install numpy==1.20.0 pyqlib==0.6.2
-
 # Add qlib example in notebook
 RUN wget https://raw.githubusercontent.com/microsoft/qlib/main/examples/workflow_by_code.ipynb -P $HOME
-
 
 ENV MLFLOW_S3_ENDPOINT_URL http://submarine-minio-service:9000
 ENV AWS_ACCESS_KEY_ID submarine_minio
