@@ -38,7 +38,7 @@ jobs:
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
-          java-version: '1.8'
+          java-version: "1.8"
       - name: Set up Maven 3.6.3
         uses: stCarolas/setup-maven@v4
         with:
@@ -58,7 +58,7 @@ jobs:
       - name: Build submarine agent
         run: ./dev-support/docker-images/agent/build.sh
       - name: Push submarine-agent docker image
-        run: docker push apache/submarine:agent-$SUBMARINE_VERSION
+        run: docker push apache/submarine:sidecar-agent-$SUBMARINE_VERSION
 
       - name: Build submarine database
         run: ./dev-support/docker-images/database/build.sh
