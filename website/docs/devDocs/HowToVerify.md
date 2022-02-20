@@ -159,4 +159,3 @@ Unzip `apache-submarine-client-${release_version}-src.tar.gz` and ` apache-subma
 - Whether the deployment is successful.
 - Deploy a test environment to verify whether production and consumption can run normally.
 - Verify what you think might go wrong.
-- ....

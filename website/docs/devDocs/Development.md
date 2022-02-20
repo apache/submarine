@@ -24,7 +24,7 @@ The document [Submarine Local Deployment](../gettingStarted/localDeployment.md) 
 kubectl get pods -n ${your_namespace}
 ```
 
-A brief introduction about these components: 
+A brief introduction about these components:
 
 1. **tf-operator**: Enable users to run TensorFlow jobs distributedly
 2. **pytorch-operator**: Enable users to run PyTorch jobs distributedly
@@ -52,13 +52,13 @@ A brief introduction about these components:
 
 Checkstyle plugin may help to detect violations directly from the IDE.
 
-1. Install Checkstyle+IDEA plugin from Preference -> Plugins
-2. Open Preference -> Tools -> Checkstyle ->
+1. Install Checkstyle+IDEA plugin from `Preference` -> `Plugins`
+2. Open `Preference` -> `Tools` -> `Checkstyle`
    1. Set Checkstyle version:
       - Checkstyle version: 8.0
    2. Add (+) a new Configuration File
       - Description: Submarine
-      - Use a local checkstyle ${SUBMARINE_HOME}/dev-support/maven-config/checkstyle.xml
+      - Use a local checkstyle `${SUBMARINE_HOME}/dev-support/maven-config/checkstyle.xml`
 3. Open the Checkstyle Tool Window, select the Submarine rule and execute the check
 
 ### Testing
@@ -123,7 +123,7 @@ Checkstyle plugin may help to detect violations directly from the IDE.
    1. The request sent to `http://localhost:4200` will be redirected to `http://localhost:32080`.
    2. Open `http://localhost:4200` in browser to see the real-time change of workbench.
 
-4. Frontend E2E test: [IntegrationTestE2E.md](./IntegrationTestE2E.md) 
+4. Frontend E2E test: [IntegrationTestE2E.md](./IntegrationTestE2E.md)
 
 ## Develop database
 
@@ -159,7 +159,7 @@ To update the website, click “Edit this page” on the website.
 ![](https://lh4.googleusercontent.com/gYcKpxbsGAKv2giTRqkxOehPGnuvnhE31WjsAsYhFmACIZF3Wh2ipar7mZ7F_KRwecM-L1J8YJAgNigJsJUjqc-5IXeO2XGxCIcYpP9CdSc3YByuUkjT_Bezby2HHtkBLyE1ZY_F)
 
 ### Add a new page
-If you want to add a new page to the website, make sure to add the file path to [sidebars.js](https://github.com/apache/submarine/blob/master/website/sidebars.js). 
+If you want to add a new page to the website, make sure to add the file path to [sidebars.js](https://github.com/apache/submarine/blob/master/website/sidebars.js).
 
 ### Installation
 We use the yarn package manager to install all dependencies for the website
