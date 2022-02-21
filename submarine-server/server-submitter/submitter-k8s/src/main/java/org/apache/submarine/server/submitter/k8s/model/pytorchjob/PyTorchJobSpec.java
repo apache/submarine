@@ -21,26 +21,23 @@ package org.apache.submarine.server.submitter.k8s.model.pytorchjob;
 
 import com.google.gson.annotations.SerializedName;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
-import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
-import org.apache.submarine.server.submitter.k8s.model.MLJobSpec;
 
 import java.util.Map;
 
-public class PyTorchJobSpec extends MLJobSpec {
+public class PyTorchJobSpec {
 
   /**
    * Key: Master, Worker
    */
   @SerializedName("pytorchReplicaSpecs")
-  private Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecs; 
+  private Map<PyTorchJobReplicaType, MLJobReplicaSpec> replicaSpecs;
 
   /**
    * Get the replica specs.
    *
    * @return map
    */
-  @Override
-  public Map<MLJobReplicaType, MLJobReplicaSpec> getReplicaSpecs() {
+  public Map<PyTorchJobReplicaType, MLJobReplicaSpec> getReplicaSpecs() {
     return replicaSpecs;
   }
 
@@ -49,9 +46,8 @@ public class PyTorchJobSpec extends MLJobSpec {
    *
    * @param replicaSpecs map
    */
-  @Override
   public void setReplicaSpecs(
-      Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecs) {
+      Map<PyTorchJobReplicaType, MLJobReplicaSpec> replicaSpecs) {
     this.replicaSpecs = replicaSpecs;
   }
 

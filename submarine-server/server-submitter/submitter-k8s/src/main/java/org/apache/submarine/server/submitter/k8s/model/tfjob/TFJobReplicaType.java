@@ -62,7 +62,6 @@ public enum TFJobReplicaType implements MLJobReplicaType {
     }
     return names;
   }
-
   @Override
   public String getTypeName() {
     return this.typeName;

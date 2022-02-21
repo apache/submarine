@@ -21,20 +21,18 @@ package org.apache.submarine.server.submitter.k8s.model.tfjob;
 
 import com.google.gson.annotations.SerializedName;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
-import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
-import org.apache.submarine.server.submitter.k8s.model.MLJobSpec;
 
 import java.util.Map;
 
 /**
  * The replica spec of TFJob.
  */
-public class TFJobSpec extends MLJobSpec {
+public class TFJobSpec {
   /**
    * Key: Chief, Ps, Worker, Evaluator
    */
   @SerializedName("tfReplicaSpecs")
-  private Map<MLJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs;
+  private Map<TFJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs;
 
 
   /**
@@ -42,8 +40,7 @@ public class TFJobSpec extends MLJobSpec {
    *
    * @return map
    */
-  @Override
-  public Map<MLJobReplicaType, MLJobReplicaSpec> getReplicaSpecs() {
+  public Map<TFJobReplicaType, MLJobReplicaSpec> getReplicaSpecs() {
     return tfReplicaSpecs;
   }
 
@@ -52,9 +49,8 @@ public class TFJobSpec extends MLJobSpec {
    *
    * @param tfReplicaSpecs map
    */
-  @Override
   public void setReplicaSpecs(
-      Map<MLJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs) {
+      Map<TFJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs) {
     this.tfReplicaSpecs = tfReplicaSpecs;
   }
 

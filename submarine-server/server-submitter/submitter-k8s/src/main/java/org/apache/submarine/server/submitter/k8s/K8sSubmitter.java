@@ -44,7 +44,6 @@ import io.kubernetes.client.openapi.models.CoreV1Event;
 import io.kubernetes.client.openapi.models.CoreV1EventList;
 import io.kubernetes.client.openapi.models.V1ConfigMap;
 import io.kubernetes.client.openapi.models.V1ConfigMapList;
-import io.kubernetes.client.openapi.models.V1DeleteOptionsBuilder;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PersistentVolumeClaim;
@@ -265,7 +264,7 @@ public class K8sSubmitter implements Submitter {
     Experiment experiment;
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      // mlJob.getMetadata().setNamespace(getServerNamespace());
+      mlJob.getMetadata().setNamespace(getServerNamespace());
       mlJob.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
 
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
@@ -292,7 +291,7 @@ public class K8sSubmitter implements Submitter {
     Experiment experiment;
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      // mlJob.getMetadata().setNamespace(getServerNamespace());
+      mlJob.getMetadata().setNamespace(getServerNamespace());
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.get(getServerNamespace(), mlJob.getMetadata().getName())
                       .throwsApiException().getObject()
@@ -316,7 +315,7 @@ public class K8sSubmitter implements Submitter {
     Experiment experiment;
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      // mlJob.getMetadata().setNamespace(getServerNamespace());
+      mlJob.getMetadata().setNamespace(getServerNamespace());
 
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.patch(getServerNamespace(), mlJob.getMetadata().getName(),
@@ -343,14 +342,15 @@ public class K8sSubmitter implements Submitter {
     Experiment experiment;
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      // mlJob.getMetadata().setNamespace(getServerNamespace());
+      mlJob.getMetadata().setNamespace(getServerNamespace());
+
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.delete(getServerNamespace(), mlJob.getMetadata().getName(),
-              (DeleteOptions) MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
-              .throwsApiException().getObject()
+              MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
+              .throwsApiException().getStatus()
               : pyTorchJobClient.delete(getServerNamespace(), mlJob.getMetadata().getName(),
-              (DeleteOptions) MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
-              .throwsApiException().getObject();
+              MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
+              .throwsApiException().getStatus();
       // Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
       //     mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(), 0,
       //         false, null, null, MLJobConverter.toDeleteOptionsFromMLJob(mlJob));
@@ -638,10 +638,8 @@ public class K8sSubmitter implements Submitter {
       //          namespace, notebookCR.getPlural(),
       //          notebookCR.getMetadata().getName(), null, null, null,
       //          null, new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build());
-
       Object object = notebookCRClient.delete(namespace, name,
-              (DeleteOptions) new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build())
-              .throwsApiException().getObject();
+              getDeleteOptions(notebookCR.getApiVersion())).throwsApiException().getStatus();
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
     } catch (ApiException e) {
       API_EXCEPTION_404_CONSUMER.apply(e);
@@ -706,7 +704,7 @@ public class K8sSubmitter implements Submitter {
       //               seldonDeployment.getPlural(),
       //               seldonDeployment,
       //               "true", null, null);
-      seldonDeploymentClient.create("default", seldonDeployment, null).throwsApiException();
+      seldonDeploymentClient.create("default", seldonDeployment, new CreateOptions()).throwsApiException();
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -718,7 +716,8 @@ public class K8sSubmitter implements Submitter {
       //              istioVirtualService.getPlural(),
       //              istioVirtualService,
       //              "true", null, null);
-      istioVirtualServiceClient.create("default", istioVirtualService, null).throwsApiException();
+      istioVirtualServiceClient.create("default", istioVirtualService, new CreateOptions())
+              .throwsApiException();
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
       try {
@@ -730,8 +729,7 @@ public class K8sSubmitter implements Submitter {
         //              null, null, null, null,
         //             new V1DeleteOptionsBuilder().withApiVersion(seldonDeployment.getApiVersion()).build());
         seldonDeploymentClient.delete("default", seldonDeployment.getMetadata().getName(),
-            (DeleteOptions) new V1DeleteOptionsBuilder()
-                    .withApiVersion(seldonDeployment.getApiVersion()).build()).throwsApiException();
+            getDeleteOptions(seldonDeployment.getApiVersion())).throwsApiException();
       } catch (ApiException e1) {
         LOG.error(e1.getMessage(), e1);
       }
@@ -760,11 +758,9 @@ public class K8sSubmitter implements Submitter {
       //              null, null, null, null,
       //            new V1DeleteOptionsBuilder().withApiVersion(istioVirtualService.getApiVersion()).build());
       seldonDeploymentClient.delete("default", seldonDeployment.getMetadata().getName(),
-              (DeleteOptions) new V1DeleteOptionsBuilder().
-                      withApiVersion(seldonDeployment.getApiVersion()).build()).throwsApiException();
+              getDeleteOptions(seldonDeployment.getApiVersion())).throwsApiException();
       istioVirtualServiceClient.delete("default", istioVirtualService.getMetadata().getName(),
-              (DeleteOptions) new V1DeleteOptionsBuilder()
-                      .withApiVersion(istioVirtualService.getApiVersion()).build()).throwsApiException();
+              getDeleteOptions(istioVirtualService.getApiVersion())).throwsApiException();
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -779,8 +775,7 @@ public class K8sSubmitter implements Submitter {
       //      V1PersistentVolumeClaim result = coreApi.createNamespacedPersistentVolumeClaim(
       //          namespace, pvc, "true", null, null
       //      );
-      V1PersistentVolumeClaim result = persistentVolumeClaimClient.create(namespace, pvc, null)
-              .throwsApiException().getObject();
+      persistentVolumeClaimClient.create(namespace, pvc, new CreateOptions()).throwsApiException();
     } catch (ApiException e) {
       LOG.error("Exception when creating persistent volume claim " + e.getMessage(), e);
       throw e;
@@ -841,7 +836,7 @@ public class K8sSubmitter implements Submitter {
       //          ingressRoute.getMetadata().getNamespace(),
       //          ingressRoute.getPlural(), ingressRoute, "true", null, null);
 
-      ingressRouteClient.create(namespace, ingressRoute, null).throwsApiException();
+      ingressRouteClient.create(namespace, ingressRoute, new CreateOptions()).throwsApiException();
     } catch (ApiException e) {
       LOG.error("K8s submitter: Create Traefik custom resource object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -859,8 +854,7 @@ public class K8sSubmitter implements Submitter {
       //              null, new V1DeleteOptionsBuilder().
       //              withApiVersion(IngressRoute.CRD_APIVERSION_V1).build());
       ingressRouteClient.delete(namespace, name,
-          (DeleteOptions) new V1DeleteOptionsBuilder().withApiVersion(IngressRoute.CRD_APIVERSION_V1).build())
-          .throwsApiException();
+          getDeleteOptions(IngressRoute.CRD_APIVERSION_V1)).throwsApiException();
     } catch (ApiException e) {
       LOG.error("K8s submitter: Delete Traefik custom resource object failed by " + e.getMessage(), e);
       API_EXCEPTION_404_CONSUMER.apply(e);
@@ -913,7 +907,7 @@ public class K8sSubmitter implements Submitter {
     configMap.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
     try {
       // coreApi.createNamespacedConfigMap(namespace, configMap, "true", null, null);
-      configMapClient.create(namespace, configMap, null).throwsApiException();
+      configMapClient.create(namespace, configMap, new CreateOptions()).throwsApiException();
     } catch (ApiException e) {
       LOG.error("Exception when creating configmap " + e.getMessage(), e);
       throw e;
@@ -959,8 +953,7 @@ public class K8sSubmitter implements Submitter {
       //          notebookCR.getMetadata().getName(), null, null, null, null,
       //          new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build());
       notebookCRClient.delete(namespace, notebookCR.getMetadata().getName(),
-              (DeleteOptions) new V1DeleteOptionsBuilder().withApiVersion(notebookCR.getApiVersion()).build())
-              .throwsApiException();
+              getDeleteOptions(notebookCR.getApiVersion())).throwsApiException();
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -968,6 +961,12 @@ public class K8sSubmitter implements Submitter {
 
   private String getServerNamespace() {
     return K8sUtils.getNamespace();
+  }
+
+  private DeleteOptions getDeleteOptions(String apiVersion){
+    DeleteOptions deleteOptions = new DeleteOptions();
+    deleteOptions.setApiVersion(apiVersion);
+    return deleteOptions;
   }
 
   private enum ParseOp {
