@@ -36,96 +36,95 @@ import io.kubernetes.client.util.KubeConfig;
 import okhttp3.OkHttpClient;
 
 public abstract class CustomResourceHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(CustomResourceHandler.class);
-    private static final String KUBECONFIG_ENV = "KUBECONFIG";
+  private static final Logger LOG = LoggerFactory.getLogger(CustomResourceHandler.class);
+  private static final String KUBECONFIG_ENV = "KUBECONFIG";
     
-    protected ApiClient client = null;  
-    protected CustomObjectsApi customObjectsApi = null;
-    protected CoreV1Api coreV1Api = null;
-    protected String namespace;
-    protected String crType;
-    protected String crName;
-    protected String serverHost;
-    protected Integer serverPort;
-    protected String resourceId;
-    protected RestClient restClient;
+  protected ApiClient client = null;  
+  protected CustomObjectsApi customObjectsApi = null;
+  protected CoreV1Api coreV1Api = null;
+  protected String namespace;
+  protected String crType;
+  protected String crName;
+  protected String serverHost;
+  protected Integer serverPort;
+  protected String resourceId;
+  protected RestClient restClient;
     
-    public CustomResourceHandler() throws IOException {
+  public CustomResourceHandler() throws IOException {
+    try {
+      String path = System.getenv(KUBECONFIG_ENV);
+      LOG.info("PATH:" + path);
+      KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(path));
+      client = ClientBuilder.kubeconfig(config).build();
+    } catch (Exception e) {
+      LOG.info("Maybe in cluster mode, try to initialize the client again.");
       try {
-        String path = System.getenv(KUBECONFIG_ENV);
-        LOG.info("PATH:" + path);
-        KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(path));
-        client = ClientBuilder.kubeconfig(config).build();
-      } catch (Exception e) {
-        LOG.info("Maybe in cluster mode, try to initialize the client again.");
-        try {
-          client = ClientBuilder.cluster().build();
-        } catch (IOException e1) {
-           LOG.error("Initialize K8s submitter failed. " + e.getMessage(), e1);
-           throw new SubmarineRuntimeException(500, "Initialize K8s submitter failed.");
-        }
-      } finally {
-        // let watcher can wait until the next change
-        client.setReadTimeout(0);
-        OkHttpClient httpClient = client.getHttpClient();
-        this.client.setHttpClient(httpClient);
-        Configuration.setDefaultApiClient(client);
+        client = ClientBuilder.cluster().build();
+      } catch (IOException e1) {
+        LOG.error("Initialize K8s submitter failed. " + e.getMessage(), e1);
+        throw new SubmarineRuntimeException(500, "Initialize K8s submitter failed.");
       }
-      
-      customObjectsApi = new CustomObjectsApi(client);
-      coreV1Api = new CoreV1Api(client);
-    }
+    } finally {
+      // let watcher can wait until the next change
+      client.setReadTimeout(0);
+      OkHttpClient httpClient = client.getHttpClient();
+      this.client.setHttpClient(httpClient);
+      Configuration.setDefaultApiClient(client);
+    }    
+    customObjectsApi = new CustomObjectsApi(client);
+    coreV1Api = new CoreV1Api(client);
+  }
     
-    public abstract void init(String serverHost, Integer serverPort,
-            String namespace, String crName, String resourceId);
-    public abstract void run();
+  public abstract void init(String serverHost, Integer serverPort,
+        String namespace, String crName, String resourceId);
+  public abstract void run();
 
-    public String getNamespace() {
-        return namespace;
-    }
+  public String getNamespace() {
+    return namespace;
+  }
 
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
-    }
+  public void setNamespace(String namespace) {
+    this.namespace = namespace;
+  }
 
-    public String getCrType() {
-        return crType;
-    }
+  public String getCrType() {
+    return crType;
+  }
 
-    public void setCrType(String crType) {
-        this.crType = crType;
-    }
+  public void setCrType(String crType) {
+    this.crType = crType;
+  }
 
-    public String getCrName() {
-        return crName;
-    }
+  public String getCrName() {
+    return crName;
+  }
 
-    public void setCrName(String crName) {
-        this.crName = crName;
-    }
+  public void setCrName(String crName) {
+    this.crName = crName;
+  }
 
-    public String getServerHost() {
-        return serverHost;
-    }
+  public String getServerHost() {
+    return serverHost;
+  }
 
-    public void setServerHost(String serverHost) {
-        this.serverHost = serverHost;
-    }
+  public void setServerHost(String serverHost) {
+    this.serverHost = serverHost;
+  }
 
-    public Integer getServerPort() {
-        return serverPort;
-    }
+  public Integer getServerPort() {
+    return serverPort;
+  }
 
-    public void setServerPort(Integer serverPort) {
-        this.serverPort = serverPort;
-    }
+  public void setServerPort(Integer serverPort) {
+    this.serverPort = serverPort;
+  }
 
-    public RestClient getRestClient() {
-        return restClient;
-    }
+  public RestClient getRestClient() {
+    return restClient;
+  }
 
-    public void setRestClient(RestClient restClient) {
-        this.restClient = restClient;
-    }
+  public void setRestClient(RestClient restClient) {
+    this.restClient = restClient;
+  }
     
 }

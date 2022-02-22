@@ -41,15 +41,15 @@ public class RestClient {
   }
   
   public void callStatusUpdate(CustomResourceType type, String resourceId, Object updateObject) {
-      
-      String uri = String.format("api/%s/%s/%s/%s", RestConstants.V1,
-              RestConstants.INTERNAL, type.toString(), resourceId);
-      LOG.info("Targeting uri:" + uri);
+
+    String uri = String.format("api/%s/%s/%s/%s", RestConstants.V1,
+          RestConstants.INTERNAL, type.toString(), resourceId);
+    LOG.info("Targeting uri:" + uri);
             
-      client.target(API_SERVER_URL)
+    client.target(API_SERVER_URL)
       .path(uri)      
       .request(MediaType.APPLICATION_JSON)
       .post(Entity.entity(updateObject, MediaType.APPLICATION_JSON), String.class);        
   }
-  
+
 }

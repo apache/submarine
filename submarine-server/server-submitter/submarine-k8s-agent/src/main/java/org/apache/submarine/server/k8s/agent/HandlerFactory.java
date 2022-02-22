@@ -24,12 +24,13 @@ import org.apache.submarine.server.k8s.agent.handler.CustomResourceHandler;
 
 public class HandlerFactory {
 
-    private static String HANDLER_POSTFIX = "Handler";
-    private static String HANDLER_PACKAGE = "org.apache.submarine.server.k8s.agent.handler";
+  private static String HANDLER_POSTFIX = "Handler";
+  private static String HANDLER_PACKAGE = "org.apache.submarine.server.k8s.agent.handler";
     
-    public static CustomResourceHandler getHandler(CustomResourceType crType) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        String handlerClassStr = HANDLER_PACKAGE + "." +  crType.toString() + HANDLER_POSTFIX;
-        Class handlerClass = Class.forName(handlerClassStr);
-        return (CustomResourceHandler)handlerClass.newInstance();
-    }
+  public static CustomResourceHandler getHandler(CustomResourceType crType) 
+          throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    String handlerClassStr = HANDLER_PACKAGE + "." +  crType.toString() + HANDLER_POSTFIX;
+    Class handlerClass = Class.forName(handlerClassStr);
+    return (CustomResourceHandler) handlerClass.newInstance();
+  }
 }

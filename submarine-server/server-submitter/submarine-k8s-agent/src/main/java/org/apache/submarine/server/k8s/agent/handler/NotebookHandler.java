@@ -63,19 +63,19 @@ public class NotebookHandler extends CustomResourceHandler {
     this.resourceId = resourceId;
 
     try {
-       String podLabelSelector = String.format("%s=%s", NotebookCR.NOTEBOOK_ID,
-                this.resourceId); 
-       V1PodList podList = this.coreV1Api.listNamespacedPod(namespace, null, null, null, null,
-               podLabelSelector, null, null, null, null, null);
-       this.podName = podList.getItems().get(0).getMetadata().getName();
-       String fieldSelector = String.format("involvedObject.name=%s", this.podName);
+      String podLabelSelector = String.format("%s=%s", NotebookCR.NOTEBOOK_ID,
+           this.resourceId); 
+      V1PodList podList = this.coreV1Api.listNamespacedPod(namespace, null, null, null, null,
+           podLabelSelector, null, null, null, null, null);
+      this.podName = podList.getItems().get(0).getMetadata().getName();
+      String fieldSelector = String.format("involvedObject.name=%s", this.podName);
 
-       Call call =  coreV1Api.listNamespacedEventCall(namespace, null, null, null, fieldSelector,
-               null, null, null, null, null, true, null);
+      Call call =  coreV1Api.listNamespacedEventCall(namespace, null, null, null, fieldSelector,
+           null, null, null, null, null, true, null);
        
-       watcher = Watch.createWatch(client, call, new TypeToken<Response<CoreV1Event>>(){}.getType());
+      watcher = Watch.createWatch(client, call, new TypeToken<Response<CoreV1Event>>(){}.getType());
 
-       customObjectsApi = new CustomObjectsApi();
+      customObjectsApi = new CustomObjectsApi();
 
     } catch (ApiException e) {
       e.printStackTrace();
@@ -94,35 +94,40 @@ public class NotebookHandler extends CustomResourceHandler {
           switch (reason) {
             case "Created":
             case "Scheduled":    
-              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
+              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
+                        NotebookCR.CRD_NOTEBOOK_VERSION_V1,
                         namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1, crName);
               notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
               notebook.setStatus(Notebook.Status.STATUS_CREATING.getValue());
               restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               break;
             case "Started":
-              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
+              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
+                        NotebookCR.CRD_NOTEBOOK_VERSION_V1,
                         namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1, crName);
               notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
               notebook.setStatus(Notebook.Status.STATUS_RUNNING.getValue());  
               restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               break;
             case "Failed":
-              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
+              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
+                        NotebookCR.CRD_NOTEBOOK_VERSION_V1,
                         namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1, crName);
               notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
               notebook.setStatus(Notebook.Status.STATUS_FAILED.getValue());  
               restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               break;
             case "Pulling":
-              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
+              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
+                        NotebookCR.CRD_NOTEBOOK_VERSION_V1,
                         namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1, crName);
               notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
               notebook.setStatus(Notebook.Status.STATUS_PULLING.getValue());  
               restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               break;
             case "Killing":
-              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
+              object = customObjectsApi.getNamespacedCustomObject(NotebookCR.CRD_NOTEBOOK_GROUP_V1,
+                        NotebookCR.CRD_NOTEBOOK_VERSION_V1,
                         namespace, NotebookCR.CRD_NOTEBOOK_PLURAL_V1, crName);
               notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
               notebook.setStatus(Notebook.Status.STATUS_TERMINATING.getValue());  
@@ -133,8 +138,8 @@ public class NotebookHandler extends CustomResourceHandler {
             default:
               LOG.info(String.format("Unprocessed event type:%s", reason));  
           }
-        } catch(ApiException e) {
-            LOG.error("error while accessing k8s", e);
+        } catch (ApiException e) {
+          LOG.error("error while accessing k8s", e);
         }
       }
     }
