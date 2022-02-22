@@ -28,58 +28,58 @@ import org.slf4j.LoggerFactory;
 
 
 public class SubmarineAgent {
-    private static final Logger LOG = LoggerFactory.getLogger(SubmarineAgent.class);
-    private String serverHost;
-    private Integer serverPort;
-    private String namespace;
-    private String customResourceType;
-    private String customResourceName;
-    private String resourceId;
-    private CustomResourceType type;
-    private CustomResourceHandler handler;
+  private static final Logger LOG = LoggerFactory.getLogger(SubmarineAgent.class);
+  private String serverHost;
+  private Integer serverPort;
+  private String namespace;
+  private String customResourceType;
+  private String customResourceName;
+  private String resourceId;
+  private CustomResourceType type;
+  private CustomResourceHandler handler;
     
     
-    public SubmarineAgent(String serverHost, Integer serverPort, String namespace,
+  public SubmarineAgent(String serverHost, Integer serverPort, String namespace,
             String customResourceType, String customResourceName,
             String resourceId) throws ClassNotFoundException,
-    InstantiationException, IllegalAccessException, IOException {
-        this.serverHost = serverHost;
-        this.serverPort = serverPort;
-        this.namespace = namespace;
-        this.customResourceType = customResourceType;
-        this.customResourceName = customResourceName;
-        this.resourceId = resourceId;
-        this.type = CustomResourceType.valueOf(customResourceType);
-        this.handler = HandlerFactory.getHandler(this.type);
-        this.handler.init(serverHost, serverPort, namespace, customResourceName, resourceId);
-    }
+  InstantiationException, IllegalAccessException, IOException {
+    this.serverHost = serverHost;
+    this.serverPort = serverPort;
+    this.namespace = namespace;
+    this.customResourceType = customResourceType;
+    this.customResourceName = customResourceName;
+    this.resourceId = resourceId;
+    this.type = CustomResourceType.valueOf(customResourceType);
+    this.handler = HandlerFactory.getHandler(this.type);
+    this.handler.init(serverHost, serverPort, namespace, customResourceName, resourceId);
+  }
     
-    public void start() {
-        handler.run();
-    }
+  public void start() {
+    handler.run();
+  }
     
-    public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
-        String serverHost = System.getenv("SERVER_HOST");
-        Integer serverPort = Integer.parseInt(System.getenv("SERVER_PORT"));
-        LOG.info(String.format("SERVER_HOST:%s", serverHost));
-        LOG.info(String.format("SERVER_PORT:%d", serverPort));
+  public static void main(String[] args) 
+          throws ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+    String serverHost = System.getenv("SERVER_HOST");
+    Integer serverPort = Integer.parseInt(System.getenv("SERVER_PORT"));
+    LOG.info(String.format("SERVER_HOST:%s", serverHost));
+    LOG.info(String.format("SERVER_PORT:%d", serverPort));
         
-        String namespace = System.getenv("NAMESPACE");
-        String customResourceType = System.getenv("CUSTOM_RESOURCE_TYPE");
-        String customResourceName = System.getenv("CUSTOM_RESOURCE_NAME");
-        String customResourceId = System.getenv("CUSTOM_RESOURCE_ID");
+    String namespace = System.getenv("NAMESPACE");
+    String customResourceType = System.getenv("CUSTOM_RESOURCE_TYPE");
+    String customResourceName = System.getenv("CUSTOM_RESOURCE_NAME");
+    String customResourceId = System.getenv("CUSTOM_RESOURCE_ID");
         
-        LOG.info(String.format("NAMESPACE:%s", namespace));
-        LOG.info(String.format("CUSTOM_RESOURCE_TYPE:%s", customResourceType));
-        LOG.info(String.format("CUSTOM_RESOURCE_NAME:%s", customResourceName));
-        LOG.info(String.format("CUSTOM_RESOURCE_ID:%s", customResourceId));
+    LOG.info(String.format("NAMESPACE:%s", namespace));
+    LOG.info(String.format("CUSTOM_RESOURCE_TYPE:%s", customResourceType));
+    LOG.info(String.format("CUSTOM_RESOURCE_NAME:%s", customResourceName));
+    LOG.info(String.format("CUSTOM_RESOURCE_ID:%s", customResourceId));
 
-        SubmarineAgent agent = new SubmarineAgent(serverHost, serverPort, namespace,
-                customResourceType, customResourceName, customResourceId);
+    SubmarineAgent agent = new SubmarineAgent(serverHost, serverPort, namespace,
+            customResourceType, customResourceName, customResourceId);
         
-        agent.start();
-        
-    }
+    agent.start();
+       
+  }
     
-
 }
