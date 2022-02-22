@@ -26,7 +26,6 @@ github:
     - ai
     - notebook
     - kubernetes
-    - yarn
     - docker
   enabled_merge_buttons:
     # enable squash button:
