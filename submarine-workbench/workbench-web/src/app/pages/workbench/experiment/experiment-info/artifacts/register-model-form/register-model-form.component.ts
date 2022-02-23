@@ -29,7 +29,7 @@ import { NzMessageService } from 'ng-zorro-antd';
     templateUrl: './register-model-form.component.html',
     styleUrls: ['./register-model-form.component.scss']
 })
-export class RegisterModelForm implements OnInit {
+export class RegisterModelFormComponent implements OnInit {
   @Input()  baseDir : string;
   @Input() experimentId : string;
   

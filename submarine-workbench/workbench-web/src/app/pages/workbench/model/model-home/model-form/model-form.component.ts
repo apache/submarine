@@ -65,7 +65,6 @@ export class ModelFormComponent implements OnInit {
 
   initModal() {
       this.isVisible = true;
-      console.log("what?");
   }
 
   closeModal(){

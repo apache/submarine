@@ -34,7 +34,7 @@ import { ModelVersionTagComponent } from './model-tags/model-version-tag/model-v
 import { ModelTagsComponent } from './model-tags/model-tags.component';
 import { ModelInfoComponent } from './model-info/model-info.component';
 import { ModelFormComponent } from './model-home/model-form/model-form.component';
-import { ModelFormTagsComponent } from './model-home/model-form/model-form-tag/model-form-tags.component';
+import { ModelFormTagsComponent } from './model-home/model-form/model-form-tags/model-form-tags.component';
 
 @NgModule({
   declarations: [

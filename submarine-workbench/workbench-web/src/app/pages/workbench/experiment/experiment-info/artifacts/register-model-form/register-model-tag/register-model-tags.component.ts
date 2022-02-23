@@ -24,7 +24,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
     templateUrl: './register-model-tags.component.html',
     styleUrls: ['./register-model-tags.component.scss'],
 })
-export class RegisterModelTags implements OnInit {    
+export class RegisterModelTagsComponent implements OnInit {    
   @Input() tags: any
   @ViewChild('inputElement', { static: false }) inputElement?: ElementRef;
   inputVisible: boolean = false;

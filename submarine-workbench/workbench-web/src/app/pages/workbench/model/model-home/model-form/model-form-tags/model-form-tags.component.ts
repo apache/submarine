@@ -31,7 +31,6 @@ export class ModelFormTagsComponent implements OnInit {
   inputValue: string = "";
 
   ngOnInit(): void {
-      console.log(this.tags);
   }
 
   handleInputConfirm = () => {

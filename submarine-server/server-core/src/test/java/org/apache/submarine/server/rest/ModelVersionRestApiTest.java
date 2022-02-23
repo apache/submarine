@@ -28,6 +28,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,6 +145,8 @@ public class ModelVersionRestApiTest {
     assertEquals(newModelVersionDescription, result.getDescription());
   }
 
+  // TODO(KUAN-HSUN LI): mock the s3Client
+  @Ignore
   @Test
   public void testDeleteModelVersion(){
     modelVersionRestApi.deleteModelVersion(registeredModelName, 1);

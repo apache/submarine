@@ -21,7 +21,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { Component, Input, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { BaseApiService } from '@submarine/services/base-api.service';
-import { RegisterModelForm } from './register-model-form/register-model-form.component';
+import { RegisterModelFormComponent } from './register-model-form/register-model-form.component';
 
 @Component({
   selector: 'submarine-artifacts',
@@ -32,16 +32,12 @@ export class ArtifactsComponent implements OnInit {
   @Input() artifactPaths : string;
   @Input() experimentID : string;
 
-  @ViewChild('form', { static: true }) form: RegisterModelForm;
+  @ViewChild('form', { static: true }) form: RegisterModelFormComponent;
 
   private emitInfoSource = new Subject<string>();
   infoEmitted$ = this.emitInfoSource.asObservable();
 
   constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
-
-  // emitInfo(id: string) {
-  //   this.emitInfoSource.next(id);
-  // }
 
   ngOnInit() {}
 

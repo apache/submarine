@@ -38,8 +38,8 @@ import { ExperimentService } from '@submarine/services/experiment.service';
 import { ExperimentFormComponent } from './experiment-home/experiment-form/experiment-form.component';
 import { ExperimentPredefinedFormComponent } from './experiment-home/experiment-form/experiment-predefined-form/experiment-predefined-form.component';
 import { ExperimentCustomizedFormComponent } from './experiment-home/experiment-form/experiment-customized-form/experiment-customized-form.component';
-import { RegisterModelForm } from './experiment-info/artifacts/register-model-form/register-model-form.component';
-import { RegisterModelTags } from './experiment-info/artifacts/register-model-form/register-model-tag/register-model-tags.component';
+import { RegisterModelFormComponent } from './experiment-info/artifacts/register-model-form/register-model-form.component';
+import { RegisterModelTagsComponent } from './experiment-info/artifacts/register-model-form/register-model-tag/register-model-tags.component';
 import { ModelModule } from '../model/model.module';
 
 @NgModule({
@@ -69,8 +69,8 @@ import { ModelModule } from '../model/model.module';
     ExperimentFormComponent,
     ExperimentPredefinedFormComponent,
     ExperimentCustomizedFormComponent,
-    RegisterModelForm,
-    RegisterModelTags,
+    RegisterModelFormComponent,
+    RegisterModelTagsComponent,
   ],
 })
 export class ExperimentModule {}
