@@ -58,7 +58,7 @@ import org.apache.submarine.server.s3.Client;
 @Produces({MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8})
 public class ExperimentRestApi {
   private ExperimentManager experimentManager = ExperimentManager.getInstance();
-  private Client minioClient = new Client();
+  private final Client minioClient = new Client();
 
   @VisibleForTesting
   public void setExperimentManager(ExperimentManager experimentManager) {
@@ -138,7 +138,7 @@ public class ExperimentRestApi {
   }
 
   /**
-   * List all experiment for the user
+   * List all experiment for the user.
    *
    * @return experiment list
    */
@@ -218,6 +218,7 @@ public class ExperimentRestApi {
   public Response deleteExperiment(@PathParam(RestConstants.ID) String id) {
     Experiment experiment;
     try {
+      minioClient.deleteArtifactsByExperiment(id);
       experiment = experimentManager.deleteExperiment(id);
     } catch (SubmarineRuntimeException e) {
       return parseExperimentServiceException(e);

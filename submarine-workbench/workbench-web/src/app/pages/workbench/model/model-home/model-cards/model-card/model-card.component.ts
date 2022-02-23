@@ -19,6 +19,10 @@
 
 import { Component, Input, OnInit } from '@angular/core';
 import { ModelInfo } from '@submarine/interfaces/model-info';
+import { ModelVersionService } from '@submarine/services/model-version.service';
+import { ModelService } from '@submarine/services/model.service';
+import { NzMessageService } from 'ng-zorro-antd';
+
 @Component({
   selector: 'submarine-model-card',
   templateUrl: './model-card.component.html',
@@ -28,14 +32,41 @@ export class ModelCardComponent implements OnInit {
   @Input() card: ModelInfo;
   description: string;
 
-  constructor() {}
+  constructor(private modelService: ModelService, private modelVersionService: ModelVersionService,
+    private nzMessageService: NzMessageService) {}
 
   ngOnInit() {
-    if (this.card.description.length > 15) {
+    if (this.card.description && this.card.description.length > 15) {
       this.description = this.card.description.substring(0,50) + "...";
     }
     else {
       this.description = this.card.description;
     }
+  }
+
+  onDeleteModelRegistry(modelName: string){
+    this.modelVersionService.queryModelAllVersions(modelName).subscribe((res) => {
+      res.forEach(e => {
+        if (e.currentStage === "Production"){
+          this.nzMessageService.warning("This model cannot be deleted since some version of models are in production stage.")
+          return;
+        } 
+      })
+    });
+    this.modelService.deleteModel(modelName).subscribe({
+      next: (result) => {
+        this.nzMessageService.success('Delete registered model success!');
+      },
+      error: (msg) => {
+        this.nzMessageService.error(`Delete registered model fail!`, {
+          nzPauseOnHover: true,
+        });
+      },
+    })
+  }
+
+  preventEvent(e) {
+    e.preventDefault();
+    e.stopPropagation();
   }
 }

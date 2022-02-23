@@ -24,6 +24,9 @@ import { ModelService } from '@submarine/services/model.service';
 import { ModelInfo } from '@submarine/interfaces/model-info';
 import { ModelVersionInfo } from '@submarine/interfaces/model-version-info';
 import {humanizeTime} from '@submarine/pages/workbench/utils/humanize-time'
+import { ModelServeService } from '@submarine/services/model-serve.service';
+import { NzMessageService } from 'ng-zorro-antd/message';
+
 
 @Component({
   selector: 'submarine-model-info',
@@ -43,7 +46,9 @@ export class ModelInfoComponent implements OnInit {
     private router: Router, 
     private route: ActivatedRoute, 
     private modelVersionService: ModelVersionService, 
-    private modelService: ModelService
+    private modelService: ModelService,
+    private modelServeService: ModelServeService,
+    private nzMessageService: NzMessageService,
   ) {}
 
   ngOnInit(): void {
@@ -71,6 +76,48 @@ export class ModelInfoComponent implements OnInit {
         this.isModelVersionsLoading = false;
       }
     );
+  }
+
+  onCreateServe = (version: number) => {
+    this.modelServeService.createServe(this.modelName, version).subscribe({
+      next: (result) => {
+        this.nzMessageService.success(`The model serve with name: ${this.modelName} and version: ${version} is created.`)
+      },
+      error: (msg) => {
+        this.nzMessageService.error(`${msg}, please try again`, {
+          nzPauseOnHover: true,
+        });
+      },
+    })
+  }
+
+  onDeleteServe = (version: number) => {
+    this.modelServeService.deleteServe(this.modelName, version).subscribe({
+      next: (result) => {
+        this.nzMessageService.success(`The model serve with name: ${this.modelName} and version: ${version} is deleted.`)
+      },
+      error: (msg) => {
+        this.nzMessageService.error(`${msg}, please try again`, {
+          nzPauseOnHover: true,
+        });
+      },
+    })
+  }
+
+  onDeleteModelVersion = (version:number) => {
+    this.modelVersionService.deleteModelVersion(this.modelName, version).subscribe({
+      next: (result) => {},
+      error: (msg) => {
+        this.nzMessageService.error(`${msg}, please try again`, {
+          nzPauseOnHover: true,
+        });
+      },
+    })
+  }
+
+  preventEvent(e){
+    e.preventDefault();
+    e.stopPropagation();
   }
 }
 

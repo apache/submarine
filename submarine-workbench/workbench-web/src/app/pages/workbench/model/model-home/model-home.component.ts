@@ -17,9 +17,10 @@
  * under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ModelInfo } from '@submarine/interfaces/model-info';
 import { ModelService } from '@submarine/services/model.service';
+import { ModelFormComponent } from './model-form/model-form.component';
 
 @Component({
   selector: 'submarine-model-home',
@@ -28,6 +29,8 @@ import { ModelService } from '@submarine/services/model.service';
 })
 export class ModelHomeComponent implements OnInit {
   constructor(private modelService: ModelService) {}
+
+  @ViewChild('form', { static: true }) form: ModelFormComponent;
 
   isModelCardsLoading: boolean = true;
   modelCards: ModelInfo[];

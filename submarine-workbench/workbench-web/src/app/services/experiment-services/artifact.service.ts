@@ -17,15 +17,14 @@
  * under the License.
  */
 
-export interface ModelVersionInfo {
-    name: string,
-    version: number,
-    userId: string,
-    experimentId: string,
-    currentStage: string,
-    creationTime: string,
-    lastUpdatedTime: string,
-    dataset: string,
-    description: string,
-    tags: Array<string>
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BaseApiService } from '@submarine/services/base-api.service';
+
+
+@Injectable({
+    providedIn: 'root',
+})
+export class ExperimentArtifactService {
+    constructor(private baseApi: BaseApiService, private httpClient: HttpClient) {}
 }

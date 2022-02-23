@@ -25,11 +25,11 @@ import { ModelInfo } from '@submarine/interfaces/model-info';
   styleUrls: ['./model-cards.component.scss'],
 })
 export class ModelCardsComponent implements OnInit {
-  @Input() modelCards: ModelInfo[];
+  @Input() modelCards: Array<ModelInfo>;
   @Input() isLoading: boolean;
   nowPage: number;
   totalPages: number;
-  onPageModelCards: ModelInfo[];
+  onPageModelCards: Array<ModelInfo>;
   pageUnit = 8;
 
   constructor() {}

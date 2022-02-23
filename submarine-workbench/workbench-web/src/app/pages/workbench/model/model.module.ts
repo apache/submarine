@@ -33,6 +33,8 @@ import { ModelTagComponent } from './model-tags/model-tag/model-tag.component';
 import { ModelVersionTagComponent } from './model-tags/model-version-tag/model-version-tag.component';
 import { ModelTagsComponent } from './model-tags/model-tags.component';
 import { ModelInfoComponent } from './model-info/model-info.component';
+import { ModelFormComponent } from './model-home/model-form/model-form.component';
+import { ModelFormTagsComponent } from './model-home/model-form/model-form-tag/model-form-tags.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { ModelInfoComponent } from './model-info/model-info.component';
     ModelVersionTagComponent,
     ModelTagsComponent,
     ModelInfoComponent,
+    ModelFormComponent,
+    ModelFormTagsComponent,
   ],
   imports: [
     CommonModule,
@@ -56,6 +60,6 @@ import { ModelInfoComponent } from './model-info/model-info.component';
     PipeSharedModule,
   ],
   providers: [],
-  exports: [ModelComponent],
+  exports: [ModelComponent, ModelVersionTagComponent],
 })
 export class ModelModule {}
