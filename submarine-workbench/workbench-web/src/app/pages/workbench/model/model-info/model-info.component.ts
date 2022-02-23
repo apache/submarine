@@ -106,7 +106,9 @@ export class ModelInfoComponent implements OnInit {
 
   onDeleteModelVersion = (version:number) => {
     this.modelVersionService.deleteModelVersion(this.modelName, version).subscribe({
-      next: (result) => {},
+      next: (result) => {
+        this.nzMessageService.success(`The model with name: ${this.modelName} and version: ${version} is deleted.`)
+      },
       error: (msg) => {
         this.nzMessageService.error(`${msg}, please try again`, {
           nzPauseOnHover: true,

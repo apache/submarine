@@ -45,24 +45,30 @@ export class ModelCardComponent implements OnInit {
   }
 
   onDeleteModelRegistry(modelName: string){
-    this.modelVersionService.queryModelAllVersions(modelName).subscribe((res) => {
-      res.forEach(e => {
-        if (e.currentStage === "Production"){
-          this.nzMessageService.warning("This model cannot be deleted since some version of models are in production stage.")
-          return;
-        } 
-      })
+    let isProduction = false;
+    this.modelVersionService.queryModelAllVersions(modelName).subscribe({
+      next: res => res.forEach(e => {
+        if (e.currentStage === "Production") {
+          this.nzMessageService.error("This model cannot be deleted since some version of models are in production stage.");
+          isProduction = true;
+        }
+      }),
+      error: msg => console.error(msg),
+      complete: () => {
+        if (!isProduction){
+          this.modelService.deleteModel(modelName).subscribe({
+            next: (result) => {
+              this.nzMessageService.success('Delete registered model success!');
+            },
+            error: (msg) => {
+              this.nzMessageService.error(`Delete registered model fail!`, {
+                nzPauseOnHover: true,
+              });
+            },
+          })
+        }
+      }
     });
-    this.modelService.deleteModel(modelName).subscribe({
-      next: (result) => {
-        this.nzMessageService.success('Delete registered model success!');
-      },
-      error: (msg) => {
-        this.nzMessageService.error(`Delete registered model fail!`, {
-          nzPauseOnHover: true,
-        });
-      },
-    })
   }
 
   preventEvent(e) {
