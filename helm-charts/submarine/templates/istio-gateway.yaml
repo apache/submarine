@@ -1,0 +1,16 @@
+{{ if .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: submarine-gateway
+spec:
+  selector:
+    istio: {{ .Values.istio.gatewaySelector }}
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+{{ end }}

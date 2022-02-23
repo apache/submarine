@@ -1,15 +1,39 @@
----
-# Source: submarine/templates/submarine-ingress.yaml
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
 metadata:
-  name: submarine-server-ingress
-
+  name: submarine-virtual-service
 spec:
-  rules:
-    - http:
-        paths:
-          - path: /
-            backend:
-              serviceName: submarine-server
-              servicePort: 8080
+  hosts:
+    - "*"
+  gateways:
+    - submarine/submarine-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /tensorboard
+      route:
+        - destination:
+            host: submarine-tensorboard-service
+            port:
+              number: 8080
+    - match:
+        - uri:
+            prefix: /mlflow
+      route:
+        - destination:
+            host: submarine-mlflow-service
+            port:
+              number: 5000
+    - match:
+        - uri:
+            prefix: /minio
+      route:
+        - destination:
+            host: submarine-minio-service
+            port:
+              number: 9000
+    - route:
+        - destination:
+            host: submarine-server
+            port:
+              number: 8080

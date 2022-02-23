@@ -23,7 +23,7 @@
 
 - In this section, we provide two methods, including **out-of-cluter** method and **in-cluster** method, for you to deploy your **submarine-operator**. In addition, the out-of-cluster method is convenient for operator developers. On the other hand, the in-cluster method is suitable for production.
 
-Golang version: `1.16.2`
+Golang version: `1.17`
 
 ## Initialization
 

@@ -38,9 +38,10 @@ spec:
   selector:
     app: submarine-tensorboard
   ports:
-  - protocol: TCP
-    port: 8080
-    targetPort: 6006
+    - protocol: TCP
+      port: 8080
+      targetPort: 6006
+      name: http
 ---
 # Source: submarine/templates/submarine-tensorboard.yaml
 apiVersion: apps/v1
@@ -58,40 +59,24 @@ spec:
     spec:
       serviceAccountName: "submarine-storage"
       containers:
-      - name: submarine-tensorboard-container
-        image: tensorflow/tensorflow:1.11.0
-        command:
-          - "tensorboard"
-          - "--logdir=/logs"
-          - "--path_prefix=/tensorboard"
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 6006
-        volumeMounts:
-          - mountPath: "/logs"
-            name: "volume"
-            subPath: "submarine-tensorboard"
-        readinessProbe:
-          tcpSocket:
-            port: 6006
-          periodSeconds: 10
+        - name: submarine-tensorboard-container
+          image: tensorflow/tensorflow:1.11.0
+          command:
+            - "tensorboard"
+            - "--logdir=/logs"
+            - "--path_prefix=/tensorboard"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 6006
+          volumeMounts:
+            - mountPath: "/logs"
+              name: "volume"
+              subPath: "submarine-tensorboard"
+          readinessProbe:
+            tcpSocket:
+              port: 6006
+            periodSeconds: 10
       volumes:
         - name: "volume"
           persistentVolumeClaim:
             claimName: "submarine-tensorboard-pvc"
----
-# Source: submarine/templates/submarine-tensorboard.yaml
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: submarine-tensorboard-ingressroute
-spec:
-  entryPoints:
-    - web
-  routes:
-  - kind: Rule
-    match: "PathPrefix(`/tensorboard`)"
-    services:
-    - kind: Service
-      name: submarine-tensorboard-service
-      port: 8080

@@ -43,6 +43,7 @@ spec:
   - protocol: TCP
     port: 5000
     targetPort: 5000
+    name: http
 ---
 # Source: submarine/templates/submarine-mlflow.yaml
 apiVersion: apps/v1
@@ -108,20 +109,4 @@ spec:
           persistentVolumeClaim:
             claimName: "submarine-mlflow-pvc"
         - name: mc-config-vol
-          emptyDir: { }
----
-# Source: submarine/templates/submarine-mlflow.yaml
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: submarine-mlflow-ingressroute
-spec:
-  entryPoints:
-    - web
-  routes:
-  - kind: Rule
-    match: "PathPrefix(`/mlflow`)"
-    services:
-    - kind: Service
-      name: submarine-mlflow-service
-      port: 5000
+          emptyDir: {}

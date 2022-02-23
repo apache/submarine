@@ -22,6 +22,8 @@ import (
 	informers "github.com/apache/submarine/submarine-cloud-v2/pkg/client/informers/externalversions/submarine/v1alpha1"
 	traefik "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
 	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions/traefik/v1alpha1"
+	istio "istio.io/client-go/pkg/clientset/versioned"
+	istioInformers "istio.io/client-go/pkg/informers/externalversions/networking/v1alpha3"
 	appsinformers "k8s.io/client-go/informers/apps/v1"
 	coreinformers "k8s.io/client-go/informers/core/v1"
 	extinformers "k8s.io/client-go/informers/extensions/v1beta1"
@@ -36,6 +38,7 @@ type BuilderConfig struct {
 	kubeclientset                 kubernetes.Interface
 	submarineclientset            clientset.Interface
 	traefikclientset              traefik.Interface
+	istioClientset                istio.Interface
 	namespaceInformer             coreinformers.NamespaceInformer
 	deploymentInformer            appsinformers.DeploymentInformer
 	statefulsetInformer           appsinformers.StatefulSetInformer
@@ -44,6 +47,7 @@ type BuilderConfig struct {
 	persistentvolumeclaimInformer coreinformers.PersistentVolumeClaimInformer
 	ingressInformer               extinformers.IngressInformer
 	ingressrouteInformer          traefikinformers.IngressRouteInformer
+	virtualServiceInformer        istioInformers.VirtualServiceInformer
 	roleInformer                  rbacinformers.RoleInformer
 	rolebindingInformer           rbacinformers.RoleBindingInformer
 	submarineInformer             informers.SubmarineInformer
@@ -92,6 +96,13 @@ func (bc *BuilderConfig) WithTraefikClientset(
 	traefikclientset traefik.Interface,
 ) *BuilderConfig {
 	bc.traefikclientset = traefikclientset
+	return bc
+}
+
+func (bc *BuilderConfig) WithVirtualServiceClientset(
+	istioClientset istio.Interface,
+) *BuilderConfig {
+	bc.istioClientset = istioClientset
 	return bc
 }
 
@@ -155,6 +166,13 @@ func (bc *BuilderConfig) WithIngressRouteInformer(
 	ingressrouteInformer traefikinformers.IngressRouteInformer,
 ) *BuilderConfig {
 	bc.ingressrouteInformer = ingressrouteInformer
+	return bc
+}
+
+func (bc *BuilderConfig) WithVirtualServiceInformer(
+	virtualServiceInformer istioInformers.VirtualServiceInformer,
+) *BuilderConfig {
+	bc.virtualServiceInformer = virtualServiceInformer
 	return bc
 }
 

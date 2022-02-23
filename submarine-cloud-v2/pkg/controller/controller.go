@@ -47,6 +47,9 @@ import (
 
 	traefik "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
 	traefiklisters "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/listers/traefik/v1alpha1"
+
+	istioClientset "istio.io/client-go/pkg/clientset/versioned"
+	istioListers "istio.io/client-go/pkg/listers/networking/v1alpha3"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -63,6 +66,7 @@ const (
 	minioName                   = "submarine-minio"
 	storageName                 = "submarine-storage"
 	ingressName                 = serverName + "-ingress"
+	virtualServiceName          = "submarine-virtual-service"
 	databasePvcName             = databaseName + "-pvc"
 	tensorboardPvcName          = tensorboardName + "-pvc"
 	tensorboardServiceName      = tensorboardName + "-service"
@@ -125,6 +129,7 @@ type Controller struct {
 	// sampleclientset is a clientset for our own API group
 	submarineclientset clientset.Interface
 	traefikclientset   traefik.Interface
+	istioClientset     istioClientset.Interface
 
 	submarinesLister listers.SubmarineLister
 	submarinesSynced cache.InformerSynced
@@ -137,6 +142,7 @@ type Controller struct {
 	persistentvolumeclaimLister corelisters.PersistentVolumeClaimLister
 	ingressLister               extlisters.IngressLister
 	ingressrouteLister          traefiklisters.IngressRouteLister
+	virtualServiceLister        istioListers.VirtualServiceLister
 	roleLister                  rbaclisters.RoleLister
 	rolebindingLister           rbaclisters.RoleBindingLister
 	// workqueue is a rate limited work queue. This is used to queue work to be

@@ -35,6 +35,9 @@ import (
 
 	traefikclientset "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
 	traefikinformers "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/informers/externalversions"
+
+	istioClientset "istio.io/client-go/pkg/clientset/versioned"
+	istioInformers "istio.io/client-go/pkg/informers/externalversions"
 )
 
 var (
@@ -80,9 +83,15 @@ func main() {
 		klog.Fatalf("Error building traefik clientset: %s", err.Error())
 	}
 
+	istioClient, err := istioClientset.NewForConfig(cfg)
+	if err != nil {
+		klog.Fatalf("Error building istio clientset: %s", err.Error())
+	}
+
 	kubeInformerFactory := kubeinformers.NewSharedInformerFactory(kubeClient, time.Second*30)
 	submarineInformerFactory := informers.NewSharedInformerFactory(submarineClient, time.Second*30)
 	traefikInformerFactory := traefikinformers.NewSharedInformerFactory(traefikClient, time.Second*30)
+	istioInformerFactory := istioInformers.NewSharedInformerFactory(istioClient, time.Second*30)
 
 	// TODO: Pass informers to NewController()
 	//       ex: namespace informer
@@ -95,9 +104,11 @@ func main() {
 		kubeClient,
 		submarineClient,
 		traefikClient,
+		istioClient,
 		kubeInformerFactory,
 		submarineInformerFactory,
 		traefikInformerFactory,
+		istioInformerFactory,
 	)
 
 	// notice that there is no need to run Start methods in a separate goroutine. (i.e. go kubeInformerFactory.Start(stopCh)
@@ -105,6 +116,7 @@ func main() {
 	kubeInformerFactory.Start(stopCh)
 	submarineInformerFactory.Start(stopCh)
 	traefikInformerFactory.Start(stopCh)
+	istioInformerFactory.Start(stopCh)
 
 	// Run controller
 	if err = submarineController.Run(1, stopCh); err != nil {
@@ -119,9 +131,11 @@ func NewSubmarineController(
 	kubeClient *kubernetes.Clientset,
 	submarineClient *clientset.Clientset,
 	traefikClient *traefikclientset.Clientset,
+	istioClient *istioClientset.Clientset,
 	kubeInformerFactory kubeinformers.SharedInformerFactory,
 	submarineInformerFactory informers.SharedInformerFactory,
 	traefikInformerFactory traefikinformers.SharedInformerFactory,
+	istioInformerFactory istioInformers.SharedInformerFactory,
 ) *controller.Controller {
 	bc := controller.NewControllerBuilderConfig()
 	bc.
@@ -131,6 +145,7 @@ func NewSubmarineController(
 		WithKubeClientset(kubeClient).
 		WithSubmarineClientset(submarineClient).
 		WithTraefikClientset(traefikClient).
+		WithVirtualServiceClientset(istioClient).
 		WithSubmarineInformer(submarineInformerFactory.Submarine().V1alpha1().Submarines()).
 		WithDeploymentInformer(kubeInformerFactory.Apps().V1().Deployments()).
 		WithStatefulSetInformer(kubeInformerFactory.Apps().V1().StatefulSets()).
@@ -140,6 +155,7 @@ func NewSubmarineController(
 		WithPersistentVolumeClaimInformer(kubeInformerFactory.Core().V1().PersistentVolumeClaims()).
 		WithIngressInformer(kubeInformerFactory.Extensions().V1beta1().Ingresses()).
 		WithIngressRouteInformer(traefikInformerFactory.Traefik().V1alpha1().IngressRoutes()).
+		WithVirtualServiceInformer(istioInformerFactory.Networking().V1alpha3().VirtualServices()).
 		WithRoleInformer(kubeInformerFactory.Rbac().V1().Roles()).
 		WithRoleBindingInformer(kubeInformerFactory.Rbac().V1().RoleBindings())
 
