@@ -38,7 +38,6 @@ import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.JSON;
 import io.kubernetes.client.openapi.apis.AppsV1Api;
 import io.kubernetes.client.openapi.apis.CoreV1Api;
-import io.kubernetes.client.openapi.apis.CustomObjectsApi;
 import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.openapi.models.CoreV1Event;
 import io.kubernetes.client.openapi.models.CoreV1EventList;
@@ -139,8 +138,6 @@ public class K8sSubmitter implements Submitter {
 
 
   // K8s API client for CRD
-  private CustomObjectsApi api;
-
   private GenericKubernetesApi<V1Pod, V1PodList> podClient;
 
   private GenericKubernetesApi<CoreV1Event, CoreV1EventList> eventClient;
@@ -191,9 +188,6 @@ public class K8sSubmitter implements Submitter {
       Configuration.setDefaultApiClient(client);
     }
 
-    if (api == null) {
-      api = new CustomObjectsApi();
-    }
     if (coreApi == null) {
       coreApi = new CoreV1Api(client);
     }
