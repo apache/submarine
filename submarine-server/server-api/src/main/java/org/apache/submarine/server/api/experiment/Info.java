@@ -19,17 +19,28 @@
 
 package org.apache.submarine.server.api.experiment;
 
-public class TensorboardInfo extends Info{
+public class Info {
+  public boolean available;
+  public String url;
 
-  public TensorboardInfo(Info info) {
-    super(info.isAvailable(), info.getUrl());
+  public Info(boolean available, String url) {
+    this.available = available;
+    this.url = url;
   }
 
-  @Override
-  public String toString() {
-    return "TensorboardInfo{" +
-      "available=" + available +
-      ", url='" + url + '\'' +
-      '}';
+  public boolean isAvailable() {
+    return available;
+  }
+
+  public void setAvailable(boolean available) {
+    this.available = available;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
   }
 }

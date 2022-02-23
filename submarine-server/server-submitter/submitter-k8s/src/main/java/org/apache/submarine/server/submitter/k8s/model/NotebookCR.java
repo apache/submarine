@@ -28,7 +28,8 @@ public class NotebookCR implements KubernetesObject{
 
   public static final String CRD_NOTEBOOK_VERSION_V1 = "v1";
   public static final String CRD_NOTEBOOK_GROUP_V1 = "kubeflow.org";
-  public static final String CRD_APIVERSION_V1 = CRD_NOTEBOOK_GROUP_V1 + "/" + CRD_NOTEBOOK_VERSION_V1;
+  public static final String CRD_NOTEBOOK_APIVERSION_V1 =
+          CRD_NOTEBOOK_GROUP_V1 + "/" + CRD_NOTEBOOK_VERSION_V1;
   public static final String CRD_NOTEBOOK_KIND_V1 = "Notebook";
   public static final String CRD_NOTEBOOK_PLURAL_V1 = "notebooks";
   public static final String NOTEBOOK_OWNER_SELECTOR_KEY = "notebook-owner-id";
@@ -56,7 +57,7 @@ public class NotebookCR implements KubernetesObject{
   private NotebookStatus status;
 
   public NotebookCR() {
-    setApiVersion(CRD_APIVERSION_V1);
+    setApiVersion(CRD_NOTEBOOK_APIVERSION_V1);
     setKind(CRD_NOTEBOOK_KIND_V1);
     setPlural(CRD_NOTEBOOK_PLURAL_V1);
     setGroup(CRD_NOTEBOOK_GROUP_V1);

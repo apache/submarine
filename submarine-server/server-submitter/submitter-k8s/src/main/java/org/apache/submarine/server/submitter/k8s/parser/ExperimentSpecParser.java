@@ -46,7 +46,6 @@ import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.CodeLo
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.SSHGitCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
-import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobSpec;
@@ -89,7 +88,7 @@ public class ExperimentSpecParser {
   public static PyTorchJobSpec parsePyTorchJobSpec(ExperimentSpec experimentSpec)
       throws InvalidSpecException {
     PyTorchJobSpec pyTorchJobSpec = new PyTorchJobSpec();
-    Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
+    Map<PyTorchJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
     for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
       ExperimentTaskSpec taskSpec = entry.getValue();
@@ -129,7 +128,7 @@ public class ExperimentSpecParser {
 
   private static TFJobSpec parseTFJobSpec(ExperimentSpec experimentSpec) throws InvalidSpecException {
     TFJobSpec tfJobSpec = new TFJobSpec();
-    Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
+    Map<TFJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
     for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
       ExperimentTaskSpec taskSpec = entry.getValue();
@@ -320,7 +319,7 @@ public class ExperimentSpecParser {
     templateSpec.setSpec(podSpec);
     return templateSpec;
   }
-  
+
   private static List<V1EnvVar> parseEnvVars(ExperimentTaskSpec spec,
       Map<String, String> defaultEnvs) {
     if (spec.getEnvVars() != null) {

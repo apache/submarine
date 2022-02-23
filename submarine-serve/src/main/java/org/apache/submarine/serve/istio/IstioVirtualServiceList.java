@@ -17,27 +17,18 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model;
+package org.apache.submarine.serve.istio;
 
 import com.google.gson.annotations.SerializedName;
-
-import io.kubernetes.client.common.KubernetesListObject;
-import io.kubernetes.client.openapi.models.V1ListMeta;
-
 import java.util.List;
 
-public class NotebookCRList implements KubernetesListObject{
+import io.kubernetes.client.common.KubernetesListObject;
+import io.kubernetes.client.common.KubernetesObject;
+import io.kubernetes.client.openapi.models.V1ListMeta;
+import org.apache.submarine.serve.utils.IstioConstants;
 
-  public static final String CRD_NOTEBOOK_VERSION_V1 = "v1alpha1";
-  public static final String CRD_NOTEBOOK_GROUP_V1 = "kubeflow.org";
-  public static final String CRD_APIVERSION_V1 = CRD_NOTEBOOK_GROUP_V1 + "/" + CRD_NOTEBOOK_VERSION_V1;
-  public static final String CRD_NOTEBOOK_LIST_KIND_V1 = "NotebookList";
+public class IstioVirtualServiceList implements KubernetesListObject{
 
-  public NotebookCRList() {
-    setApiVersion(CRD_APIVERSION_V1);
-    setKind(CRD_NOTEBOOK_LIST_KIND_V1);
-  }
-  
   @SerializedName("apiVersion")
   private String apiVersion;
 
@@ -46,17 +37,9 @@ public class NotebookCRList implements KubernetesListObject{
 
   @SerializedName("metadata")
   private V1ListMeta metadata;
-    
-  @SerializedName("items")
-  private List<NotebookCR> items;
-  
-  public void setApiVersion(String apiVersion) {
-    this.apiVersion = apiVersion;
-  }
 
-  public void setKind(String kind) {
-    this.kind = kind;
-  }
+  @SerializedName("items")
+  private List<IstioVirtualService> items;
 
   @Override
   public V1ListMeta getMetadata() {
@@ -64,19 +47,17 @@ public class NotebookCRList implements KubernetesListObject{
   }
 
   @Override
-  public List<NotebookCR> getItems() {
+  public List<? extends KubernetesObject> getItems() {
     return items;
   }
 
   @Override
   public String getApiVersion() {
-    return apiVersion;
+    return IstioConstants.API_VERSION;
   }
 
   @Override
   public String getKind() {
-  
-    return kind;
+    return IstioConstants.KIND + "List";
   }
 }
-
