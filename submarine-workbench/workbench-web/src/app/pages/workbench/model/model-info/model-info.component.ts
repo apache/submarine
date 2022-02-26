@@ -23,6 +23,7 @@ import { ModelVersionService } from '@submarine/services/model-version.service';
 import { ModelService } from '@submarine/services/model.service';
 import { ModelInfo } from '@submarine/interfaces/model-info';
 import { ModelVersionInfo } from '@submarine/interfaces/model-version-info';
+import {humanizeTime} from '@submarine/pages/workbench/utils/humanize-time'
 
 @Component({
   selector: 'submarine-model-info',
@@ -35,6 +36,8 @@ export class ModelInfoComponent implements OnInit {
   modelName: string;
   selectedModelInfo: ModelInfo; 
   modelVersions: ModelVersionInfo[];
+  humanizedCreationTime: string;
+  humanizedLastUpdatedTime: string;
 
   constructor(
     private router: Router, 
@@ -54,6 +57,8 @@ export class ModelInfoComponent implements OnInit {
     this.modelService.querySpecificModel(this.modelName).subscribe(
       (res) => {
         this.selectedModelInfo = res;
+        this.humanizedCreationTime = humanizeTime(res.creationTime);
+        this.humanizedLastUpdatedTime = humanizeTime(res.lastUpdatedTime);
         this.isModelInfoLoading = false;
       }
     )
@@ -68,3 +73,4 @@ export class ModelInfoComponent implements OnInit {
     );
   }
 }
+
