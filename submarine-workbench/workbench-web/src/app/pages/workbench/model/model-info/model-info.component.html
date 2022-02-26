@@ -22,11 +22,11 @@
       <h3 nz-typography>{{modelName}}</h3>
       <p nz-typography>
         <span><strong>Creation Time: </strong></span>
-        {{ isModelInfoLoading ? null : selectedModelInfo.creationTime }}
+        {{ isModelInfoLoading ? null : humanizedCreationTime }}
       </p>
       <p nz-typography>
         <span><strong>Last Updated Time: </strong></span>
-        {{ isModelInfoLoading ? null : selectedModelInfo.lastUpdatedTime }}
+        {{ isModelInfoLoading ? null : humanizedLastUpdatedTime }}
       </p>
       <p nz-typography>
         <span><strong>Tags: </strong></span>
