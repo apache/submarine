@@ -20,8 +20,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModelInfo } from '@submarine/interfaces/model-info';
-import { ModelVersionInfo } from '@submarine/interfaces/model-version-info';
-import { ModelVersionService } from '@submarine/services/model-version.service';
 import { ModelService } from '@submarine/services/model.service';
 import { NzMessageService } from 'ng-zorro-antd';
 
@@ -105,17 +103,5 @@ export class ModelFormComponent implements OnInit {
         });
       },
     })
-    // this.modelVersionService.createModelVersion(modelVersionInfo, this.reviseBaseDir(this.baseDir)).subscribe({
-    //   next: (result) => {
-    //     this.nzMessageService.success('Register Model Success!');
-    //     this.closeModal();
-    //   },
-    //   error: (msg) => {
-    //     console.log(msg)
-    //     this.nzMessageService.error(`Current model has been registered in this registered model.`, {
-    //       nzPauseOnHover: true,
-    //     });
-    //   },
-    // })
   }
 }

@@ -25,7 +25,7 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
     styleUrls: ['./register-model-tags.component.scss'],
 })
 export class RegisterModelTagsComponent implements OnInit {    
-  @Input() tags: any
+  @Input() tags: Array<string>
   @ViewChild('inputElement', { static: false }) inputElement?: ElementRef;
   inputVisible: boolean = false;
   inputValue: string = "";
@@ -36,7 +36,7 @@ export class RegisterModelTagsComponent implements OnInit {
   handleInputConfirm = () => {
     if (this.inputValue) {
       const newTag = this.inputValue;
-      this.tags.push(newTag);
+      if (!this.tags.includes(newTag)) this.tags.push(newTag);
     }
     this.inputValue = "";
     this.inputVisible = false;

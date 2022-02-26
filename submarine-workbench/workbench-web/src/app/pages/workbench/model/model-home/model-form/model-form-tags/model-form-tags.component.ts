@@ -36,7 +36,7 @@ export class ModelFormTagsComponent implements OnInit {
   handleInputConfirm = () => {
     if (this.inputValue) {
       const newTag = this.inputValue;
-      this.tags.push(newTag);
+      if (!this.tags.includes(newTag)) this.tags.push(newTag);
     }
     this.inputValue = "";
     this.inputVisible = false;
