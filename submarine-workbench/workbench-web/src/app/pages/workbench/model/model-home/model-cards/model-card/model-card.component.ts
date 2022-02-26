@@ -17,8 +17,13 @@
  * under the License.
  */
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { ModelInfo } from '@submarine/interfaces/model-info';
+import { ModelVersionService } from '@submarine/services/model-version.service';
+import { ModelService } from '@submarine/services/model.service';
+import { NzMessageService } from 'ng-zorro-antd';
+
 @Component({
   selector: 'submarine-model-card',
   templateUrl: './model-card.component.html',
@@ -28,14 +33,34 @@ export class ModelCardComponent implements OnInit {
   @Input() card: ModelInfo;
   description: string;
 
-  constructor() {}
+  constructor(private modelService: ModelService, private modelVersionService: ModelVersionService,
+    private nzMessageService: NzMessageService) {}
 
   ngOnInit() {
-    if (this.card.description.length > 15) {
+    if (this.card.description && this.card.description.length > 15) {
       this.description = this.card.description.substring(0,50) + "...";
     }
     else {
       this.description = this.card.description;
     }
+  }
+
+  onDeleteModelRegistry(modelName: string){
+    this.modelService.deleteModel(modelName).subscribe({
+      next: (result) => {
+        this.nzMessageService.success('Delete registered model success!');
+      },
+      error: (err: HttpErrorResponse ) => {
+        console.log(err)
+        this.nzMessageService.error(`${err.error.message}`, {
+          nzPauseOnHover: true,
+        });
+      },
+    })
+  }
+
+  preventEvent(e) {
+    e.preventDefault();
+    e.stopPropagation();
   }
 }

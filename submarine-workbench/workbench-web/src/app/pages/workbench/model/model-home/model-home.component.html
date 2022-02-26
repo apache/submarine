@@ -32,12 +32,24 @@
         <nz-option *ngFor="let option of listOfTagsOption" [nzLabel]="option.label" [nzValue]="option.value" nzCustomContent>
           <submarine-model-tag [tag]="option.label" [type]="'default'"></submarine-model-tag>
         </nz-option>
+        <ng-template #multipleTemplate let-selected nzBorderless>
+          <submarine-model-tag [tag]="selected.nzLabel" [type]="'selection'"></submarine-model-tag>
+        </ng-template>
       </nz-select>
-      <ng-template #multipleTemplate let-selected nzBorderless [ngClass]="'noPadding'">
-        <submarine-model-tag [tag]="selected.nzLabel" [type]="'selection'"></submarine-model-tag>
-      </ng-template>
+      
+    </div>
+    <div nz-col [nzOffset]="12" align="right">
+      <button
+        nz-button
+        nzType="primary"
+        (click)="form.initModal()"
+      >
+        <i nz-icon nzType="plus"></i>
+        Create model registry
+      </button>
     </div>
   </div>
+  <model-form #form></model-form>
   <nz-divider></nz-divider>
   <submarine-model-cards [modelCards]="onDisplayModelCards" [isLoading]="isModelCardsLoading"></submarine-model-cards>
 </div>

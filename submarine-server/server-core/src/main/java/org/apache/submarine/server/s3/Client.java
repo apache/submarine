@@ -85,7 +85,7 @@ public class Client {
    * @param experimentId experiment id
    */
   public void deleteArtifactsByExperiment(String experimentId) {
-    deleteAllArtifactsByFolder(experimentId);
+    deleteAllArtifactsByFolder(String.format("experiment/%s", experimentId));
   }
 
   /**
@@ -94,6 +94,16 @@ public class Client {
   public void deleteAllArtifacts() {
     deleteAllArtifactsByFolder("");
   }
+
+  /**
+   * Delete all the artifacts under given experiment name.
+   */
+  public void deleteArtifactsByModelVersion(String modelName, Integer version, String modelId) {
+    // the directory of storing a single model must be unique for serving
+    String uniqueModelPath = String.format("%s-%d-%s", modelName, version, modelId);
+    deleteAllArtifactsByFolder(String.format("registry/%s", uniqueModelPath));
+  }
+
 
   /**
    * Download an artifact.

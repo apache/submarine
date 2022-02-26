@@ -18,7 +18,7 @@
  */
 
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { EnvironmentService } from '@submarine/services/environment-services/environment.service';
 import { NzMessageService } from 'ng-zorro-antd';
 import { parse } from 'yaml';
@@ -32,7 +32,7 @@ export class EnvironmentFormComponent implements OnInit {
   @Output() private updater = new EventEmitter<string>();
 
   isVisible: boolean;
-  environmentForm;
+  environmentForm: FormGroup;
   previewCondaConfig = '';
 
   constructor(

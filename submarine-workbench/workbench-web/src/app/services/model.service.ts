@@ -68,6 +68,32 @@ export class ModelService {
     );
   }
 
+  createModel(modelInfo: ModelInfo) {
+    const apiUrl = this.baseApi.getRestApi(`/v1/registered-model`);
+    return this.httpClient.post<Rest<string>>(apiUrl, modelInfo).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post');
+        }
+      })
+    )
+  }
+
+  deleteModel(modelName: string) {
+    const apiUrl = this.baseApi.getRestApi(`/v1/registered-model/${modelName}`);
+    return this.httpClient.delete<Rest<string>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.result);
+        } else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete');
+        }
+      })
+    )
+  }
+
   deleteModelTag(modelName: string, tag: string): Observable<string> {
     const apiUrl = this.baseApi.getRestApi(`/v1/registered-model/tag?name=${modelName}&tag=${tag}`);
     return this.httpClient.delete<Rest<any>>(apiUrl).pipe(

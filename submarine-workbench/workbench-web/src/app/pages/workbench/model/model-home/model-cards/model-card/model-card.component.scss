@@ -19,3 +19,12 @@
 p {
   margin: 0.2em;
 }
+
+.icon-link{
+  color: black;
+  font-size: 1.5rem; 
+  :hover{
+      color: #1890FF;
+      cursor: pointer;
+  }
+}

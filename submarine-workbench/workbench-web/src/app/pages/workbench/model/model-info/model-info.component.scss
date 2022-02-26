@@ -16,3 +16,18 @@
 //  * specific language governing permissions and limitations
 //  * under the License.
 //  */
+
+.model-info-item{
+    :hover{
+        cursor: pointer;
+    }
+}
+
+.icon-link{
+    color: black;
+    font-size: 1.5rem; 
+    :hover{
+        color: #1890FF;
+        cursor: pointer;
+    }
+}

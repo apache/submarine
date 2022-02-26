@@ -17,15 +17,8 @@
  * under the License.
  */
 
-export interface ModelVersionInfo {
-    name: string,
-    version: number,
-    userId: string,
-    experimentId: string,
-    currentStage: string,
-    creationTime: string,
-    lastUpdatedTime: string,
-    dataset: string,
-    description: string,
-    tags: Array<string>
+
+export interface ServeSpec {
+    modelName: string,
+    modelVersion: number,
 }

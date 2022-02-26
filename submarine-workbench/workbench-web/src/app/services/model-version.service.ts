@@ -19,11 +19,12 @@
 
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, throwError, Observable, Subject } from 'rxjs';
+import { of, Observable, Subject } from 'rxjs';
 import { BaseApiService } from '@submarine/services/base-api.service';
 import { Rest } from '@submarine/interfaces';
 import { ModelVersionInfo } from '@submarine/interfaces/model-version-info';
 import { switchMap } from 'rxjs/operators';
+import { ModelInfo } from '@submarine/interfaces/model-info';
 
 @Injectable({
     providedIn: 'root',
@@ -66,8 +67,22 @@ export class ModelVersionService {
     );
   }
 
-  deleteModelVersionTag(modelName: string, modelVersion: string, tag: string) : Observable<string> {
-    const apiUrl = this.baseApi.getRestApi(`/v1/model-version/tag?name=${modelName}&version=${modelVersion}&tag=${tag}`);
+  createModelVersion(modelVersionInfo: ModelVersionInfo, baseDir: string) : Observable<string> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/model-version?baseDir=${baseDir}`)
+    return this.httpClient.post<Rest<any>>(apiUrl, modelVersionInfo).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.message);
+        }
+        else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post');
+        }
+      })
+    )
+  }
+
+  deleteModelVersion(modelName: string, modelVersion: number){
+    const apiUrl = this.baseApi.getRestApi(`/v1/model-version/${modelName}/${modelVersion}`);
     return this.httpClient.delete<Rest<any>>(apiUrl).pipe(
       switchMap((res) => {
         if (res.success) {
@@ -89,6 +104,20 @@ export class ModelVersionService {
         }
         else {
           throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'post');
+        }
+      })
+    )
+  }
+
+  deleteModelVersionTag(modelName: string, modelVersion: string, tag: string) : Observable<string> {
+    const apiUrl = this.baseApi.getRestApi(`/v1/model-version/tag?name=${modelName}&version=${modelVersion}&tag=${tag}`);
+    return this.httpClient.delete<Rest<any>>(apiUrl).pipe(
+      switchMap((res) => {
+        if (res.success) {
+          return of(res.message);
+        }
+        else {
+          throw this.baseApi.createRequestError(res.message, res.code, apiUrl, 'delete');
         }
       })
     )

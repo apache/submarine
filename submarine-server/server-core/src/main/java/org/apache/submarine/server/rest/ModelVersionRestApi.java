@@ -113,7 +113,7 @@ public class ModelVersionRestApi {
 
       int version = modelVersionService.selectAllVersions(entity.getName()).stream().mapToInt(
           ModelVersionEntity::getVersion
-      ).max().orElse(1);
+      ).max().orElse(0) + 1;
 
       entity.setVersion(version);
       modelVersionService.insert(entity);
@@ -196,6 +196,8 @@ public class ModelVersionRestApi {
   public Response deleteModelVersion(@PathParam(RestConstants.MODEL_VERSION_NAME) String name,
                                      @PathParam(RestConstants.MODEL_VERSION_VERSION) Integer version) {
     try {
+      ModelVersionEntity spec = modelVersionService.select(name, version);
+      s3Client.deleteArtifactsByModelVersion(name, version, spec.getId());
       modelVersionService.delete(name, version);
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
           .message("Delete the model version instance").build();
