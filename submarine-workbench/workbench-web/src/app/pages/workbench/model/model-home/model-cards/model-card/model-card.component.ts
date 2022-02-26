@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { ModelInfo } from '@submarine/interfaces/model-info';
 import { ModelVersionService } from '@submarine/services/model-version.service';
@@ -45,30 +46,17 @@ export class ModelCardComponent implements OnInit {
   }
 
   onDeleteModelRegistry(modelName: string){
-    let isProduction = false;
-    this.modelVersionService.queryModelAllVersions(modelName).subscribe({
-      next: res => res.forEach(e => {
-        if (e.currentStage === "Production") {
-          this.nzMessageService.error("This model cannot be deleted since some version of models are in production stage.");
-          isProduction = true;
-        }
-      }),
-      error: msg => console.error(msg),
-      complete: () => {
-        if (!isProduction){
-          this.modelService.deleteModel(modelName).subscribe({
-            next: (result) => {
-              this.nzMessageService.success('Delete registered model success!');
-            },
-            error: (msg) => {
-              this.nzMessageService.error(`Delete registered model fail!`, {
-                nzPauseOnHover: true,
-              });
-            },
-          })
-        }
-      }
-    });
+    this.modelService.deleteModel(modelName).subscribe({
+      next: (result) => {
+        this.nzMessageService.success('Delete registered model success!');
+      },
+      error: (err: HttpErrorResponse ) => {
+        console.log(err)
+        this.nzMessageService.error(`${err.error.message}`, {
+          nzPauseOnHover: true,
+        });
+      },
+    })
   }
 
   preventEvent(e) {
