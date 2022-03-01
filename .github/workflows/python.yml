@@ -83,6 +83,13 @@ jobs:
           java -version
       - name: Create kind cluster
         run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${KUBERNETES_VERSION}
+      - name: Download Istio 1.13.0
+        run: |
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.0 sh -
+          cd istio-1.13.0
+          echo "$PWD/bin" >> $GITHUB_PATH
+      - name: Install Istio
+        run: istioctl install -y
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
