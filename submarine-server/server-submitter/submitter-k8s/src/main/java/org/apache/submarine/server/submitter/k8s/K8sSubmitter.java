@@ -62,8 +62,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
+import org.apache.submarine.serve.istio.IstioHTTPRoute;
 import org.apache.submarine.serve.istio.IstioVirtualService;
 import org.apache.submarine.serve.istio.IstioVirtualServiceList;
+import org.apache.submarine.serve.istio.IstioVirtualServiceSpec;
 import org.apache.submarine.serve.pytorch.SeldonPytorchServing;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.serve.seldon.SeldonDeploymentList;
@@ -102,7 +104,6 @@ import org.apache.submarine.server.submitter.k8s.parser.VolumeSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
-
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -534,6 +535,7 @@ public class K8sSubmitter implements Submitter {
     }
 
     // create notebook Traefik custom resource
+    /*
     try {
       createIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
     } catch (ApiException e) {
@@ -545,6 +547,21 @@ public class K8sSubmitter implements Submitter {
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: ingressroute for Notebook " +
           "object failed by " + e.getMessage());
     }
+    */
+
+    // create notebook VirtualService custom resource
+    try {
+      createVirtualService(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: Create VirtualService for Notebook object failed by " +
+              e.getMessage(), e);
+      rollbackCreationNotebook(notebookCR, namespace);
+      if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
+      rollbackCreationPVC(namespace, workspacePvc, userPvc);
+      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: VirtualService for Notebook " +
+              "object failed by " + e.getMessage());
+    }
+
     return notebook;
   }
 
@@ -602,7 +619,10 @@ public class K8sSubmitter implements Submitter {
     }
 
     // delete ingress route
-    deleteIngressRoute(namespace, name);
+    // deleteIngressRoute(namespace, name);
+
+    // delete VirtualService
+    deleteVirtualService(namespace, name);
 
     // delete pvc
     // workspace pvc
@@ -776,6 +796,46 @@ public class K8sSubmitter implements Submitter {
     Set<SpecRoute> routes = new HashSet<>();
     routes.add(route);
     spec.setRoutes(routes);
+    return spec;
+  }
+
+  private void createVirtualService(String namespace, String name) throws ApiException {
+    try {
+      V1ObjectMeta meta = new V1ObjectMeta();
+      meta.setName(name);
+      meta.setNamespace(namespace);
+      meta.setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
+      IstioVirtualServiceSpec spec = parseVirtualServiceSpec(meta.getNamespace(), meta.getName());
+      IstioVirtualService virtualService = new IstioVirtualService(meta, spec);
+      istioVirtualServiceClient.create(namespace, virtualService, new CreateOptions()).throwsApiException();
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: Create notebook VirtualService custom resource object failed by " +
+              e.getMessage(), e);
+      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    } catch (JsonSyntaxException e) {
+      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
+    }
+  }
+
+  private void deleteVirtualService(String namespace, String name) {
+    try {
+      istioVirtualServiceClient.delete(namespace, name, getDeleteOptions(IstioConstants.API_VERSION))
+              .throwsApiException();
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: Delete notebook VirtualService custom resource object failed by " +
+              e.getMessage(), e);
+      API_EXCEPTION_404_CONSUMER.apply(e);
+    }
+  }
+
+  private IstioVirtualServiceSpec parseVirtualServiceSpec(String namespace, String name) {
+    IstioVirtualServiceSpec spec = new IstioVirtualServiceSpec();
+    spec.addHost(IstioConstants.DEFAULT_INGRESS_HOST);
+    // TODO(operator): Do not hard code the gateway
+    spec.addGateway("submarine/submarine-gateway");
+    String matchURIPrefix = "/notebook/" + namespace + "/" + name;
+    spec.setHTTPRoute(new IstioHTTPRoute(matchURIPrefix, name, 80));
     return spec;
   }
 

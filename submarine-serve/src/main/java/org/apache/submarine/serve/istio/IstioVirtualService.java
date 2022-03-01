@@ -23,9 +23,6 @@ import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import org.apache.submarine.serve.utils.IstioConstants;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class IstioVirtualService implements KubernetesObject {
   @SerializedName("apiVersion")
   private String apiVersion = IstioConstants.API_VERSION;
@@ -45,6 +42,11 @@ public class IstioVirtualService implements KubernetesObject {
   private transient String version = IstioConstants.VERSION;
 
   private transient String plural = IstioConstants.PLURAL;
+
+  public IstioVirtualService(V1ObjectMeta metadata, IstioVirtualServiceSpec spec) {
+    this.metadata = metadata;
+    this.spec = spec;
+  }
 
   public IstioVirtualService(String modelName, Integer modelVersion) {
     V1ObjectMeta metadata = new V1ObjectMeta();
@@ -110,45 +112,4 @@ public class IstioVirtualService implements KubernetesObject {
     this.spec = istioVirtualServiceSpec;
   }
 
-  public static class IstioVirtualServiceSpec {
-    @SerializedName("hosts")
-    private List<String> hosts = new ArrayList<>();
-    @SerializedName("gateways")
-    private List<String> gateways = new ArrayList<>();
-    @SerializedName("http")
-    private List<IstioHTTPRoute> httpRoute = new ArrayList<>();
-
-    public IstioVirtualServiceSpec(String modelName, Integer modelVersion) {
-      hosts.add(IstioConstants.DEFAULT_INGRESS_HOST);
-      gateways.add(IstioConstants.DEFAULT_GATEWAY);
-      IstioHTTPDestination destination = new IstioHTTPDestination(
-          modelName + "-" + IstioConstants.DEFAULT_NAMESPACE);
-      IstioHTTPMatchRequest matchRequest = new IstioHTTPMatchRequest("/" + modelName
-          + "/"  + String.valueOf(modelVersion) + "/");
-      IstioHTTPRoute httpRoute = new IstioHTTPRoute();
-      httpRoute.addHTTPDestination(destination);
-      httpRoute.addHTTPMatchRequest(matchRequest);
-      setHTTPRoute(httpRoute);
-    }
-
-    public List<String> getHosts() {
-      return this.hosts;
-    }
-
-    public void addHost(String host) {
-      hosts.add(host);
-    }
-
-    public List<String> getGateways() {
-      return this.gateways;
-    }
-
-    public void addGateway(String gateway) {
-      gateways.add(gateway);
-    }
-
-    public void setHTTPRoute(IstioHTTPRoute istioHTTPRoute){
-      this.httpRoute.add(istioHTTPRoute);
-    }
-  }
 }

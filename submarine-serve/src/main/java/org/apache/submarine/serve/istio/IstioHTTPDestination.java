@@ -25,12 +25,14 @@ public class IstioHTTPDestination {
   @SerializedName("destination")
   private IstioDestination destination;
 
-  public IstioHTTPDestination(String host){
+  public IstioHTTPDestination(String host) {
     this.destination = new IstioDestination(host);
   }
+  public IstioHTTPDestination(String host, Integer port) {
+    this.destination = new IstioDestination(host, port);
+  }
 
-
-  public static class IstioDestination{
+  public static class IstioDestination {
     @SerializedName("host")
     private String host;
 
@@ -38,8 +40,12 @@ public class IstioHTTPDestination {
     private IstioPort port;
 
     public IstioDestination(String host) {
+      this(host, IstioConstants.DEFAULT_SERVE_POD_PORT);
+    }
+
+    public IstioDestination(String host, Integer port) {
       this.host = host;
-      this.port = new IstioPort(IstioConstants.DEFAULT_SERVE_POD_PORT);
+      this.port = new IstioPort(port);
     }
   }
 
@@ -47,7 +53,7 @@ public class IstioHTTPDestination {
     @SerializedName("number")
     private Integer number;
 
-    public IstioPort(Integer port){
+    public IstioPort(Integer port) {
       this.number = port;
     }
   }
