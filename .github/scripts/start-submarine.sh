@@ -26,7 +26,6 @@ wait_times=$((wait_timeout / wait_interval))
 sudo ln -s /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
 sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
 
-istioctl install -y
 kubectl create namespace submarine
 kubectl create namespace "$submarine_user_namespace"
 kubectl label namespace submarine istio-injection=enabled

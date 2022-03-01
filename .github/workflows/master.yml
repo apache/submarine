@@ -98,6 +98,8 @@ jobs:
           curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.0 sh -
           cd istio-1.13.0
           echo "$PWD/bin" >> $GITHUB_PATH
+      - name: Install Istio
+        run: istioctl install -y
       - name: Show K8s cluster information
         run: |
           istioctl version
@@ -219,16 +221,14 @@ jobs:
           helm version
           kind version
       - name: Create kind cluster
-<<<<<<< HEAD
         run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${{ matrix.k8s-version }}
-=======
-        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${KUBERNETES_VERSION}
       - name: Download Istio 1.13.0
         run: |
           curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.0 sh -
           cd istio-1.13.0
           echo "$PWD/bin" >> $GITHUB_PATH
->>>>>>> Update github actions
+      - name: Install Istio
+        run: istioctl install -y
       - name: Show K8s cluster information
         run: |
           istioctl version
@@ -465,7 +465,7 @@ jobs:
           fetch-depth: 50
       - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: "14"
       - name: Check version
         run: node --version
       - name: Install dependencies
@@ -541,7 +541,7 @@ jobs:
           go-version: "1.16.2"
       - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: "14"
       - name: Check version
         run: |
           mvn --version
