@@ -20,9 +20,10 @@
 package org.apache.submarine.server.submitter.k8s.model.ingressroute;
 
 import com.google.gson.annotations.SerializedName;
+import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 
-public class IngressRoute {
+public class IngressRoute implements KubernetesObject {
   public static final String CRD_INGRESSROUTE_GROUP_V1 = "traefik.containo.us";
   public static final String CRD_INGRESSROUTE_VERSION_V1 = "v1alpha1";
   public static final String CRD_APIVERSION_V1 = CRD_INGRESSROUTE_GROUP_V1 +

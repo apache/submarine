@@ -17,6 +17,30 @@
   ~ under the License.
   -->
 
-<div id="showArtifactDiv">
-  <p style="white-space: nowrap;" *ngFor="let artifactPath of artifactPaths;">{{ artifactPath }}</p>
+<div id="artifactTable">
+  <nz-table #artifactTable nzSize="middle" [nzBordered]="true" [nzData]="artifactPaths" [nzNoResult]="'No data'">
+    <thead>
+      <tr>
+        <th>ArtifactPath</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let artifactPath of artifactPaths;">
+        <td>{{ artifactPath }}</td>
+        <td>
+          <button
+            nz-button
+            id="btn-registerModel"
+            nzType="primary"
+            style="margin: 10px 4px 10px 4px"
+            (click)="form.initModal()"
+          >
+            Register model
+          </button>
+        </td>
+        <register-model-form #form [baseDir]="artifactPath" [experimentId]="experimentID"></register-model-form>
+      </tr>
+    </tbody>
+  </nz-table>
 </div>

@@ -69,7 +69,10 @@ public class ModelManager {
    * Create a model serve.
    */
   public ServeResponse createServe(ServeSpec spec) throws SubmarineRuntimeException {
-    setServeInfo(spec);
+    // Get model type and model uri from DB and set the value in the spec.
+    ModelVersionEntity modelVersion = modelVersionService.select(spec.getModelName(), spec.getModelVersion());
+
+    setServeInfo(spec, modelVersion);
 
     LOG.info("Create {} model serve.", spec.getModelType());
 
@@ -79,6 +82,9 @@ public class ModelManager {
 
     submitter.createServe(spec);
 
+    modelVersion.setCurrentStage("Production");
+    modelVersionService.update(modelVersion);
+
     return getServeResponse(spec);
   }
 
@@ -86,11 +92,15 @@ public class ModelManager {
    * Delete a model serve.
    */
   public void deleteServe(ServeSpec spec) throws SubmarineRuntimeException {
-    setServeInfo(spec);
+    // Get model type and model uri from DB and set the value in the spec.
+    ModelVersionEntity modelVersion = modelVersionService.select(spec.getModelName(), spec.getModelVersion());
+    setServeInfo(spec, modelVersion);
 
     LOG.info("Delete {} model serve", spec.getModelType());
 
     submitter.deleteServe(spec);
+    modelVersion.setCurrentStage("None");
+    modelVersionService.update(modelVersion);
   }
 
   private void checkServeSpec(ServeSpec spec) throws SubmarineRuntimeException {
@@ -110,11 +120,9 @@ public class ModelManager {
     }
   }
 
-  private void setServeInfo(ServeSpec spec){
+  private void setServeInfo(ServeSpec spec, ModelVersionEntity modelVersion){
     checkServeSpec(spec);
 
-    // Get model type and model uri from DB and set the value in the spec.
-    ModelVersionEntity modelVersion = modelVersionService.select(spec.getModelName(), spec.getModelVersion());
     String modelType = modelVersion.getModelType();
     String modelId = modelVersion.getId();
     spec.setModelType(modelType);

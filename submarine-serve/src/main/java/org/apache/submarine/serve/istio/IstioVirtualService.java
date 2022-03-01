@@ -19,13 +19,14 @@
 package org.apache.submarine.serve.istio;
 
 import com.google.gson.annotations.SerializedName;
+import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import org.apache.submarine.serve.utils.IstioConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class IstioVirtualService {
+public class IstioVirtualService implements KubernetesObject {
   @SerializedName("apiVersion")
   private String apiVersion = IstioConstants.API_VERSION;
 

@@ -39,14 +39,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
+import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
 import org.apache.submarine.server.model.database.entities.RegisteredModelEntity;
 import org.apache.submarine.server.model.database.entities.RegisteredModelTagEntity;
+import org.apache.submarine.server.model.database.service.ModelVersionService;
 import org.apache.submarine.server.model.database.service.RegisteredModelService;
 
 import org.apache.submarine.server.model.database.service.RegisteredModelTagService;
 import org.apache.submarine.server.response.JsonResponse;
-
-
+import org.apache.submarine.server.s3.Client;
 
 
 /**
@@ -59,8 +60,13 @@ public class RegisteredModelRestApi {
   /* Registered model service */
   private final RegisteredModelService registeredModelService = new RegisteredModelService();
 
+  /* Model version service */
+  private final ModelVersionService modelVersionService = new ModelVersionService();
+
   /* Registered model tag service */
   private final RegisteredModelTagService registeredModelTagService = new RegisteredModelTagService();
+
+  private final Client s3Client = new Client();
 
   /**
    * Return the Pong message for test the connectivity.
@@ -196,9 +202,20 @@ public class RegisteredModelRestApi {
   @Operation(summary = "Delete the registered model", tags = { "registered-model" }, responses = {
       @ApiResponse(description = "successful operation",
         content = @Content(schema = @Schema(implementation = JsonResponse.class))),
-      @ApiResponse(responseCode = "404", description = "RegisteredModelEntity not found") })
+      @ApiResponse(responseCode = "404", description = "RegisteredModelEntity not found"),
+      @ApiResponse(responseCode = "406", description = "Some version of models are in the production stage"),
+      @ApiResponse(responseCode = "500", description = "Some error happen in server")})
   public Response deleteRegisteredModel(@PathParam(RestConstants.REGISTERED_MODEL_NAME) String name) {
     try {
+      List<ModelVersionEntity> modelVersions = modelVersionService.selectAllVersions(name);
+      modelVersions.forEach(modelVersion -> {
+        String stage = modelVersion.getCurrentStage();
+        if (stage.equals("Production")) {
+          throw new SubmarineRuntimeException(Response.Status.NOT_ACCEPTABLE.getStatusCode(),
+              "Invalid. Some version of models are in the production stage");
+        }
+      });
+      this.deleteModelInS3(modelVersions);
       registeredModelService.delete(name);
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
         .message("Delete the registered model instance").build();
@@ -281,6 +298,22 @@ public class RegisteredModelRestApi {
       throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
           "Invalid. Registered model name is null.");
     }
+  }
+
+
+  private void deleteModelInS3(List<ModelVersionEntity> modelVersions) throws SubmarineRuntimeException {
+    try {
+      modelVersions.forEach(modelVersion -> s3Client.deleteArtifactsByModelVersion(
+          modelVersion.getName(),
+          modelVersion.getVersion(),
+          modelVersion.getId()
+      )
+      );
+    } catch (SubmarineRuntimeException e) {
+      throw new SubmarineRuntimeException(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+            "Some error happen when deleting the model in s3 bucket.");
+    }
+
   }
 
   /**

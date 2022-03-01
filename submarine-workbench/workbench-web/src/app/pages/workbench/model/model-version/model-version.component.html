@@ -47,10 +47,6 @@
         {{ isLoading ? null : modelVersionInfo.lastUpdatedTime }}
       </p>
       <p nz-typography>
-        <span><strong>Source: </strong></span>
-        {{ isLoading ? null : modelVersionInfo.source }}
-      </p>
-      <p nz-typography>
         <span><strong>Tags: </strong></span>
         <span  *ngIf="!isLoading">
           <submarine-model-tags [modelName]="modelName" [modelVersion]="modelVersion" [tags]="modelVersionInfo.tags" [useVersionTags]="true"></submarine-model-tags>

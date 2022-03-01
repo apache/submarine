@@ -58,6 +58,12 @@ public class NotebookCRList implements KubernetesListObject{
     this.kind = kind;
   }
 
+  @Override
+  public V1ListMeta getMetadata() {
+    return metadata;
+  }
+
+  @Override
   public List<NotebookCR> getItems() {
     return items;
   }
@@ -72,9 +78,5 @@ public class NotebookCRList implements KubernetesListObject{
   
     return kind;
   }
-
-  @Override
-  public V1ListMeta getMetadata() {
-    return metadata;
-  }
 }
+

@@ -20,7 +20,6 @@
 export interface ModelVersionInfo {
     name: string,
     version: number,
-    source: string,
     userId: string,
     experimentId: string,
     currentStage: string,

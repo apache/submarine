@@ -22,16 +22,16 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import zh from '@angular/common/locales/zh';
+import en from '@angular/common/locales/en';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LocalStorageService } from '@submarine/services';
-import { zh_CN, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
+import { en_US, NgZorroAntdModule, NZ_I18N } from 'ng-zorro-antd';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { IconsProviderModule } from './icons-provider.module';
 
-registerLocaleData(zh);
+registerLocaleData(en);
 
 @NgModule({
   declarations: [AppComponent],
@@ -44,7 +44,7 @@ registerLocaleData(zh);
     HttpClientModule,
     BrowserAnimationsModule
   ],
-  providers: [{ provide: NZ_I18N, useValue: zh_CN }, LocalStorageService],
+  providers: [{ provide: NZ_I18N, useValue: en_US }, LocalStorageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
