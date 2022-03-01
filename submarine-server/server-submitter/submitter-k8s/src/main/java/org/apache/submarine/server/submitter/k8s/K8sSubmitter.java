@@ -183,8 +183,7 @@ public class K8sSubmitter implements Submitter {
   public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
     try {
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      mlJob.getMetadata().setNamespace(getServerNamespace());
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec, getServerNamespace());
       mlJob.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
       
       Object object = api.createNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
@@ -205,8 +204,7 @@ public class K8sSubmitter implements Submitter {
   public Experiment findExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
     try {
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      mlJob.getMetadata().setNamespace(getServerNamespace());
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec, getServerNamespace());
 
       Object object = api.getNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName());
@@ -225,8 +223,7 @@ public class K8sSubmitter implements Submitter {
   public Experiment patchExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
     try {
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      mlJob.getMetadata().setNamespace(getServerNamespace());
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec, getServerNamespace());
 
       Object object = api.patchNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(),
@@ -244,8 +241,7 @@ public class K8sSubmitter implements Submitter {
   public Experiment deleteExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
     try {
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      mlJob.getMetadata().setNamespace(getServerNamespace());
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec, getServerNamespace());
 
       Object object = api.deleteNamespacedCustomObject(mlJob.getGroup(), mlJob.getVersion(),
           mlJob.getMetadata().getNamespace(), mlJob.getPlural(), mlJob.getMetadata().getName(), 0,

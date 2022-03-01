@@ -20,38 +20,42 @@
 package org.apache.submarine.server.submitter.k8s.model.tfjob;
 
 import com.google.gson.annotations.SerializedName;
-import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
+import java.util.List;
 
-import java.util.Map;
+import io.kubernetes.client.common.KubernetesListObject;
+import io.kubernetes.client.openapi.models.V1ListMeta;
 
-/**
- * The replica spec of TFJob.
- */
-public class TFJobSpec {
-  /**
-   * Key: Chief, Ps, Worker, Evaluator
-   */
-  @SerializedName("tfReplicaSpecs")
-  private Map<TFJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs;
+public class TFJobList implements KubernetesListObject{
 
+  @SerializedName("apiVersion")
+  private String apiVersion;
 
-  /**
-   * Get the replica specs.
-   *
-   * @return map
-   */
-  public Map<TFJobReplicaType, MLJobReplicaSpec> getReplicaSpecs() {
-    return tfReplicaSpecs;
+  @SerializedName("kind")
+  private String kind;
+
+  @SerializedName("metadata")
+  private V1ListMeta metadata;
+
+  @SerializedName("items")
+  private List<TFJob> items;
+
+  @Override
+  public V1ListMeta getMetadata() {
+    return metadata;
   }
 
-  /**
-   * Set replica specs, the key's range is [Chief, Ps, Worker, Evaluator]
-   *
-   * @param tfReplicaSpecs map
-   */
-  public void setReplicaSpecs(
-      Map<TFJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs) {
-    this.tfReplicaSpecs = tfReplicaSpecs;
+  @Override
+  public List<TFJob> getItems() {
+    return items;
   }
 
+  @Override
+  public String getApiVersion() {
+    return TFJob.CRD_TF_API_VERSION_V1;
+  }
+
+  @Override
+  public String getKind() {
+    return TFJob.CRD_TF_KIND_V1 + "List";
+  }
 }
