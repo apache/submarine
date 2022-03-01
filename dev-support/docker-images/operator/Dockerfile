@@ -13,7 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.16.2 AS build-image
+FROM golang:1.17.2 AS build-image
+MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 ADD tmp/submarine-cloud-v2 /usr/src
 
