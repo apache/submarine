@@ -98,7 +98,7 @@ Checkstyle plugin may help to detect violations directly from the IDE.
 3. Delete the server deployment and the operator will create a new one using the new image
 
    ```bash
-   kubectl delete deployment submarine-server
+   kubectl delete deployment submarine-server -n submarine-user-test
    ```
 
 ## Develop workbench
