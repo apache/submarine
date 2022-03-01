@@ -40,7 +40,7 @@ for ((i=0;i<$wait_times;++i)); do
   if [[ "$state" == "RUNNING" ]]; then
     echo "Submarine is running!"
     kubectl describe submarine -n "$submarine_user_namespace"
-    kubectl get all
+    kubectl get all -n "$submarine_user_namespace"
     kubectl port-forward -n "$submarine_user_namespace" svc/submarine-database 3306:3306 &
     kubectl port-forward -n "$submarine_user_namespace" svc/submarine-server 8080:8080 &
     kubectl port-forward -n "$submarine_user_namespace" svc/submarine-minio-service 9000:9000 &
@@ -48,14 +48,14 @@ for ((i=0;i<$wait_times;++i)); do
     exit 0
   elif [[ "$state" == "FAILED" ]]; then
     echo "Submarine failed!" 1>&2
-    kubectl describe submarine
-    kubectl get all
+    kubectl describe submarine -n "$submarine_user_namespace"
+    kubectl get all -n "$submarine_user_namespace"
     exit 1
   else
     sleep $wait_interval
   fi
 done
 echo "Timeout limit reached!" 1>&2
-kubectl describe submarine
-kubectl get all
+kubectl describe submarine -n "$submarine_user_namespace"
+kubectl get all -n "$submarine_user_namespace"
 exit 1
