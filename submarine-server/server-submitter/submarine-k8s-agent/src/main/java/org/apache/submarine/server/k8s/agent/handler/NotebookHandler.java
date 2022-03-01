@@ -52,7 +52,7 @@ public class NotebookHandler extends CustomResourceHandler {
   private GenericKubernetesApi<CoreV1Event, CoreV1EventList> eventClient;
   private GenericKubernetesApi<NotebookCR, NotebookCRList> notebookCRClient;
 
-  private String podName;
+  private String uid;
   public NotebookHandler() throws IOException {
     super();
   }
@@ -86,10 +86,10 @@ public class NotebookHandler extends CustomResourceHandler {
       listOptions.setLabelSelector(podLabelSelector);
       V1PodList podList = podClient.list(namespace, listOptions).throwsApiException().getObject();
 
-      this.podName = podList.getItems().get(0).getMetadata().getName();
+      this.uid = podList.getItems().get(podList.getItems().size() - 1).getMetadata().getUid();
 
       listOptions = new ListOptions();
-      String fieldSelector = String.format("involvedObject.name=%s", this.podName);
+      String fieldSelector = String.format("involvedObject.uid=%s", this.uid);
       listOptions.setFieldSelector(fieldSelector);
       watcher = eventClient.watch(namespace, listOptions);
 
