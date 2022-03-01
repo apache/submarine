@@ -20,12 +20,15 @@
 package org.apache.submarine.server.submitter.k8s.model.tfjob;
 
 import com.google.gson.annotations.SerializedName;
+
+import io.kubernetes.client.common.KubernetesObject;
+
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 
 /**
  * It's the tf-operator's entry model.
  */
-public class TFJob extends MLJob {
+public class TFJob extends MLJob implements KubernetesObject {
 
   public static final  String CRD_TF_KIND_V1 = "TFJob";
   public static final  String CRD_TF_PLURAL_V1 = "tfjobs";

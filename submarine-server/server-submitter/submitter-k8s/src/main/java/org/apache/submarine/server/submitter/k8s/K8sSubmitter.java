@@ -71,6 +71,7 @@ import org.apache.submarine.server.k8s.utils.K8sUtils;
 import org.apache.submarine.serve.utils.IstioConstants;
 import org.apache.submarine.serve.utils.SeldonConstants;
 import org.apache.submarine.server.api.Submitter;
+import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
@@ -82,6 +83,7 @@ import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
+import org.apache.submarine.server.submitter.k8s.model.AgentPod;
 import org.apache.submarine.server.submitter.k8s.model.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCRList;
@@ -257,14 +259,22 @@ public class K8sSubmitter implements Submitter {
   public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
     try {
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec, getServerNamespace());
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
+      mlJob.getMetadata().setNamespace(getServerNamespace());
       mlJob.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
-
+      AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(),
+              mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1) 
+              ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
+              spec.getMeta().getExperimentId());
+            
+      
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.create(getServerNamespace(), (TFJob) mlJob,
                       new CreateOptions()).throwsApiException().getObject()
               : pyTorchJobClient.create(getServerNamespace(), (PyTorchJob) mlJob,
                       new CreateOptions()).throwsApiException().getObject();
+
+      V1Pod agentPodResult = podClient.create(agentPod).throwsApiException().getObject();
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
@@ -282,7 +292,7 @@ public class K8sSubmitter implements Submitter {
     Experiment experiment;
     try {
 
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec, getServerNamespace());
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       mlJob.getMetadata().setNamespace(getServerNamespace());
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.get(getServerNamespace(), mlJob.getMetadata().getName())
@@ -305,8 +315,8 @@ public class K8sSubmitter implements Submitter {
   public Experiment patchExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
     try {
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec, getServerNamespace());
-
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
+      mlJob.getMetadata().setNamespace(getServerNamespace());
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.patch(getServerNamespace(), mlJob.getMetadata().getName(),
               V1Patch.PATCH_FORMAT_JSON_PATCH,
@@ -328,8 +338,8 @@ public class K8sSubmitter implements Submitter {
   public Experiment deleteExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
     Experiment experiment;
     try {
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec, getServerNamespace());
-
+      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
+      mlJob.getMetadata().setNamespace(getServerNamespace());
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.delete(getServerNamespace(), mlJob.getMetadata().getName(),
               MLJobConverter.toDeleteOptionsFromMLJob(mlJob))

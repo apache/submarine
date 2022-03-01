@@ -34,7 +34,6 @@ import io.kubernetes.client.openapi.models.V1Volume;
 import io.kubernetes.client.openapi.models.V1VolumeMount;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
-import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
@@ -63,14 +62,14 @@ import java.util.Map;
 public class ExperimentSpecParser {
   private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
-  public static MLJob parseJob(ExperimentSpec experimentSpec, String namespace) throws InvalidSpecException {
+  public static MLJob parseJob(ExperimentSpec experimentSpec) throws InvalidSpecException {
     String framework = experimentSpec.getMeta().getFramework();
     if (ExperimentMeta.SupportedMLFramework.TENSORFLOW.
         getName().equalsIgnoreCase(framework)) {
-      return parseTFJob(experimentSpec, namespace);
+      return parseTFJob(experimentSpec);
     } else if (ExperimentMeta.SupportedMLFramework.PYTORCH.
         getName().equalsIgnoreCase(framework)) {
-      return parsePyTorchJob(experimentSpec, namespace);
+      return parsePyTorchJob(experimentSpec);
     } else {
       throw new InvalidSpecException("Unsupported framework name: " + framework +
           ". Supported frameworks are: " +
@@ -79,18 +78,17 @@ public class ExperimentSpecParser {
   }
 
   public static PyTorchJob parsePyTorchJob(
-      ExperimentSpec experimentSpec, String namespace) throws InvalidSpecException {
+      ExperimentSpec experimentSpec) throws InvalidSpecException {
     PyTorchJob pyTorchJob = new PyTorchJob();
-    pyTorchJob.setMetadata(parseMetadata(experimentSpec, namespace));
-    pyTorchJob.setSpec(parsePyTorchJobSpec(experimentSpec, namespace));
+    pyTorchJob.setMetadata(parseMetadata(experimentSpec));
+    pyTorchJob.setSpec(parsePyTorchJobSpec(experimentSpec));
     return pyTorchJob;
   }
 
-  public static PyTorchJobSpec parsePyTorchJobSpec(ExperimentSpec experimentSpec, String namespace)
+  public static PyTorchJobSpec parsePyTorchJobSpec(ExperimentSpec experimentSpec)
       throws InvalidSpecException {
     PyTorchJobSpec pyTorchJobSpec = new PyTorchJobSpec();
 
-    boolean agentAdded = false;
     Map<PyTorchJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
     for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
@@ -99,13 +97,7 @@ public class ExperimentSpecParser {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
         V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
-        if (!agentAdded && replicaType.equals(TFJobReplicaType.Worker.toString())) {
-          appendSidecar(podTemplateSpec, CustomResourceType.PYTORCHJob.toString(),
-                    experimentSpec.getMeta().getName(),
-                    namespace,
-                    experimentSpec.getMeta().getExperimentId().toString());
-          agentAdded = true;
-        }        
+      
         replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(PyTorchJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {
@@ -119,30 +111,28 @@ public class ExperimentSpecParser {
     return pyTorchJobSpec;
   }
 
-  public static TFJob parseTFJob(ExperimentSpec experimentSpec, String namespace)
+  public static TFJob parseTFJob(ExperimentSpec experimentSpec)
       throws InvalidSpecException {
     TFJob tfJob = new TFJob();
-    tfJob.setMetadata(parseMetadata(experimentSpec, namespace));
-    tfJob.setSpec(parseTFJobSpec(experimentSpec, namespace));
+    tfJob.setMetadata(parseMetadata(experimentSpec));
+    tfJob.setSpec(parseTFJobSpec(experimentSpec));
     return tfJob;
   }
 
-  private static V1ObjectMeta parseMetadata(ExperimentSpec experimentSpec, String namespace) {
+  private static V1ObjectMeta parseMetadata(ExperimentSpec experimentSpec) {
     V1ObjectMeta meta = new V1ObjectMeta();
     meta.setName(experimentSpec.getMeta().getExperimentId());
     Map<String, String> labels = new HashMap<>();
     labels.put(ExperimentMeta.SUBMARINE_EXPERIMENT_NAME, experimentSpec.getMeta().getName());
     meta.setLabels(labels);
-    meta.setNamespace(namespace);
+
     return meta;
   }
 
-  private static TFJobSpec parseTFJobSpec(ExperimentSpec experimentSpec, String namespace)
+  private static TFJobSpec parseTFJobSpec(ExperimentSpec experimentSpec)
           throws InvalidSpecException {
     TFJobSpec tfJobSpec = new TFJobSpec();
     Map<TFJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
-
-    boolean agentAdded = false;
 
     for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
@@ -152,13 +142,6 @@ public class ExperimentSpecParser {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
         V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
-        if (!agentAdded && replicaType.equals(TFJobReplicaType.Worker.toString())) {
-          appendSidecar(podTemplateSpec, CustomResourceType.TFJob.toString(),
-                  experimentSpec.getMeta().getName(),
-                  namespace,
-                  experimentSpec.getMeta().getExperimentId().toString());
-          agentAdded = true;
-        }
         
         replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(TFJobReplicaType.valueOf(replicaType), replicaSpec);
@@ -398,50 +381,4 @@ public class ExperimentSpecParser {
       return null;
     }
   }
-  
-  private static void appendSidecar(V1PodTemplateSpec podTemplateSpec, String type,
-          String name, String namespace, String experimentId) {
-      
-    List<V1Container> containers = podTemplateSpec.getSpec().getContainers();
-    V1Container agentContainer = new V1Container();
-    agentContainer.setName("agent");
-    agentContainer.setImage("apache/submarine:agent-0.7.0-SNAPSHOT");
-      
-    List<V1EnvVar> envVarList = new ArrayList<>();
-    V1EnvVar crTypeVar = new V1EnvVar();
-    crTypeVar.setName("CUSTOM_RESOURCE_TYPE");
-    crTypeVar.setValue(type);
-
-    V1EnvVar crNameVar = new V1EnvVar();
-    crNameVar.setName("CUSTOM_RESOURCE_NAME");
-    crNameVar.setValue(name);
-
-    V1EnvVar namespaceVar = new V1EnvVar();
-    namespaceVar.setName("NAMESPACE");
-    namespaceVar.setValue(namespace);
-      
-    V1EnvVar serverHostVar = new V1EnvVar();
-    serverHostVar.setName("SERVER_HOST");
-    serverHostVar.setValue(conf.getServerServiceName());
-      
-    V1EnvVar serverPortVar = new V1EnvVar();
-    serverPortVar.setName("SERVER_PORT");
-    serverPortVar.setValue(String.valueOf(conf.getServerPort()));
-      
-    V1EnvVar customResourceIdVar = new V1EnvVar();
-    customResourceIdVar.setName("CUSTOM_RESOURCE_ID");
-    customResourceIdVar.setValue(experimentId);
-      
-    envVarList.add(crTypeVar);
-    envVarList.add(crNameVar);
-    envVarList.add(namespaceVar);
-    envVarList.add(serverHostVar);
-    envVarList.add(serverPortVar);
-    envVarList.add(customResourceIdVar);
-      
-    agentContainer.env(envVarList);
-
-    containers.add(agentContainer);    
-  }
-  
 }

@@ -86,10 +86,10 @@ public class NotebookHandler extends CustomResourceHandler {
       V1PodList podList = podClient.list(namespace, listOptions).throwsApiException().getObject();
 
       this.uid = podList.getItems().get(podList.getItems().size() - 1).getMetadata().getUid();
-      podList.getItems().get(podList.getItems().size() - 1).getMetadata().getUid();
+
+
       listOptions = new ListOptions();
       String fieldSelector = String.format("involvedObject.uid=%s", this.uid);
-
 
       listOptions.setFieldSelector(fieldSelector);
       watcher = eventClient.watch(namespace, listOptions);

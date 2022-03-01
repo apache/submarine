@@ -248,6 +248,9 @@ CREATE TABLE `experiment` (
   `update_by` varchar(32) DEFAULT NULL COMMENT 'last update user',
   `update_time` datetime DEFAULT NULL COMMENT 'last update time',
   `experiment_status` varchar(20) DEFAULT NULL COMMENT 'experiment status',
+  `accepted_time` datetime DEFAULT NULL COMMENT 'accept time',
+  `running_time` datetime DEFAULT NULL COMMENT 'running time',
+  `finished_time`  datetime DEFAULT NULL COMMENT 'finished time',
    PRIMARY KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

@@ -325,6 +325,6 @@ public class NotebookSpecParser {
     
     agentContainer.env(envVarList);
     
-    containers.add(0, agentContainer);    
+    containers.add(agentContainer);    
   }
 }

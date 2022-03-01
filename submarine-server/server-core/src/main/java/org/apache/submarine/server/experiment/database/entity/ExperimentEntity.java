@@ -19,7 +19,12 @@
 
 package org.apache.submarine.server.experiment.database.entity;
 
+import java.util.Date;
+
 import org.apache.submarine.server.database.entity.BaseEntity;
+import org.apache.submarine.server.workbench.database.utils.CustomJsonDateDeserializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class ExperimentEntity extends BaseEntity {
   /*
@@ -28,6 +33,15 @@ public class ExperimentEntity extends BaseEntity {
   private String experimentSpec;
 
   private String experimentStatus;
+
+  @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+  private Date acceptedTime = new Date();
+
+  @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+  private Date runningTime = new Date();
+
+  @JsonDeserialize(using = CustomJsonDateDeserializer.class)
+  private Date finishedTime = new Date();
 
   public ExperimentEntity() {}
 
@@ -46,6 +60,30 @@ public class ExperimentEntity extends BaseEntity {
   public void setExperimentStatus(String experimentStatus) {
     this.experimentStatus = experimentStatus;
   }
+  
+  public Date getAcceptedTime() {
+    return acceptedTime;
+  }
+
+  public void setAcceptedTime(Date acceptedTime) {
+    this.acceptedTime = acceptedTime;
+  }
+
+  public Date getRunningTime() {
+    return runningTime;
+  }
+
+  public void setRunningTime(Date runningTime) {
+    this.runningTime = runningTime;
+  }
+
+  public Date getFinishedTime() {
+    return finishedTime;
+  }
+
+  public void setFinishedTime(Date finishedTime) {
+    this.finishedTime = finishedTime;
+  }
 
   @Override
   public String toString() {
@@ -57,6 +95,9 @@ public class ExperimentEntity extends BaseEntity {
       ", updateBy='" + updateBy + '\'' +
       ", updateTime='" + updateTime + '\'' +
       ", experimentStatus='" + experimentStatus + "\'" +
+      ", acceptedTime='" + acceptedTime + '\'' +
+      ", runningTime='" + runningTime + '\'' +
+      ", finishedTime='" + finishedTime + '\'' +
       '}';
   }
 }

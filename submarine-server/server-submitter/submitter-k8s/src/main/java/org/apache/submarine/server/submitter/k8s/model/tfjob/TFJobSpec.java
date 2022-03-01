@@ -33,7 +33,8 @@ public class TFJobSpec {
    */
   @SerializedName("tfReplicaSpecs")
   private Map<TFJobReplicaType, MLJobReplicaSpec> tfReplicaSpecs;
-
+  @SerializedName("backoffLimit")
+  private Integer backoffLimit = 3;
 
   /**
    * Get the replica specs.

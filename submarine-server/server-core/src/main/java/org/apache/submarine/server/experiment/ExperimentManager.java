@@ -45,6 +45,7 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.service.ExperimentService;
 import org.apache.submarine.server.rest.RestConstants;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.mlflow.tracking.MlflowClient;
@@ -126,8 +127,8 @@ public class ExperimentManager {
 
     experiment.setSpec(spec);
     ExperimentEntity entity = buildEntityFromExperiment(experiment);
+    entity.setExperimentStatus(Experiment.Status.STATUS_ACCEPTED.toString());
     experimentService.insert(entity);
-
     return experiment;
   }
 
@@ -143,8 +144,6 @@ public class ExperimentManager {
 
     ExperimentEntity entity = experimentService.select(id);
     Experiment experiment = buildExperimentFromEntity(entity);
-    Experiment foundExperiment = submitter.findExperiment(experiment.getSpec());
-    experiment.rebuild(foundExperiment);
 
     return experiment;
   }
@@ -162,19 +161,7 @@ public class ExperimentManager {
 
     for (ExperimentEntity entity : entities) {
       Experiment experiment = buildExperimentFromEntity(entity);
-      Experiment foundExperiment;
-      try {
-        foundExperiment = submitter.findExperiment(experiment.getSpec());
-      } catch (SubmarineRuntimeException e) {
-        LOG.warn("Submitter can not find experiment: {}, will delete it", entity.getId());
-        experimentService.delete(entity.getId());
-        continue;
-      }
-      LOG.info("Found experiment: {}", foundExperiment.getStatus());
-      if (status == null || status.toLowerCase().equals(foundExperiment.getStatus().toLowerCase())) {
-        experiment.rebuild(foundExperiment);
-        experimentList.add(experiment);
-      }
+      experimentList.add(experiment);
     }
     LOG.info("List experiment: {}", experimentList.size());
     return experimentList;
@@ -193,22 +180,11 @@ public class ExperimentManager {
 
     for (ExperimentEntity entity : entities) {
       Experiment experiment = buildExperimentFromEntity(entity);
-      Experiment foundExperiment;
-      try {
-        foundExperiment = submitter.findExperiment(experiment.getSpec());
-      } catch (SubmarineRuntimeException e) {
-        LOG.warn("Submitter can not find experiment: {}, will delete it", entity.getId());
-        experimentService.delete(entity.getId());
-        continue;
-      }
-      LOG.info("Found experiment: {}", foundExperiment.getSpec().getMeta().getTags());
       if (searchTag == null) {
-        experiment.rebuild(foundExperiment);
         experimentList.add(experiment);
       } else {
         for (String tag: experiment.getSpec().getMeta().getTags()) {
           if (tag.equalsIgnoreCase(searchTag)) {
-            experiment.rebuild(foundExperiment);
             experimentList.add(experiment);
             break;
           }
@@ -291,12 +267,8 @@ public class ExperimentManager {
 
     for (ExperimentEntity entity : entities) {
       Experiment experiment = buildExperimentFromEntity(entity);
-      Experiment foundExperiment = submitter.findExperiment(experiment.getSpec());
 
-      LOG.info("Found experiment: {}", foundExperiment.getStatus());
-
-      if (status == null || status.toLowerCase().equals(foundExperiment.getStatus().toLowerCase())) {
-        experiment.rebuild(foundExperiment);
+      if (status == null || status.toLowerCase().equals(experiment.getStatus().toLowerCase())) {
 
         experimentLogList.add(submitter.getExperimentLogName(
             experiment.getSpec(),
@@ -383,6 +355,20 @@ public class ExperimentManager {
     Experiment experiment = new Experiment();
     experiment.setExperimentId(ExperimentId.fromString(entity.getId()));
     experiment.setSpec(new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class));
+    experiment.setStatus(entity.getExperimentStatus());
+    
+    if (entity.getCreateTime() != null) {
+      experiment.setCreatedTime(new DateTime(entity.getCreateTime()).toString());
+    }
+    if (entity.getAcceptedTime() != null) {
+      experiment.setAcceptedTime(new DateTime(entity.getAcceptedTime()).toString());
+    }
+    if (entity.getRunningTime() != null) {
+      experiment.setRunningTime(new DateTime(entity.getRunningTime()).toString());
+    }
+    if (entity.getFinishedTime() != null) {
+      experiment.setFinishedTime(new DateTime(entity.getFinishedTime()).toString());
+    }
     return experiment;
   }
 
@@ -396,6 +382,19 @@ public class ExperimentManager {
     ExperimentEntity entity = new ExperimentEntity();
     entity.setId(experiment.getSpec().getMeta().getExperimentId());
     entity.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(experiment.getSpec()));
+    if (experiment.getCreatedTime() != null) {
+      entity.setCreateTime(DateTime.parse(experiment.getCreatedTime()).toDate());
+    }
+    if (experiment.getAcceptedTime() != null) {
+      entity.setAcceptedTime(DateTime.parse(experiment.getAcceptedTime()).toDate());
+    }
+    if (experiment.getRunningTime() != null) {
+      entity.setRunningTime(DateTime.parse(experiment.getRunningTime()).toDate());
+    }
+    if (experiment.getFinishedTime() != null) {
+      entity.setFinishedTime(DateTime.parse(experiment.getFinishedTime()).toDate());
+    }
+    
     return entity;
   }
 }
