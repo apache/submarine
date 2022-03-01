@@ -19,9 +19,9 @@
 
 package org.apache.submarine.server.api.experiment;
 
-public class Info {
+public abstract class Info {
   public boolean available;
-  public String url;
+  public final String url;
 
   public Info(boolean available, String url) {
     this.available = available;
@@ -40,7 +40,8 @@ public class Info {
     return url;
   }
 
-  public void setUrl(String url) {
-    this.url = url;
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName() + "{" + "available=" + available + ", url='" + url + "'" + "}";
   }
 }

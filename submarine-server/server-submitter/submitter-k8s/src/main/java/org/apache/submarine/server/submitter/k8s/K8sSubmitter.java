@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -77,7 +76,6 @@ import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
-import org.apache.submarine.server.api.experiment.Info;
 import org.apache.submarine.server.api.experiment.MlflowInfo;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.model.ServeSpec;
@@ -442,9 +440,8 @@ public class K8sSubmitter implements Submitter {
   @Override
   public TensorboardInfo getTensorboardInfo() throws SubmarineRuntimeException {
     final String name = "submarine-tensorboard";
-    final String ingressRouteName = "submarine-tensorboard-ingressroute";
     try {
-      return new TensorboardInfo(getInfo(name, ingressRouteName));
+      return new TensorboardInfo(isDeploymentAvailable(name));
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
@@ -453,34 +450,18 @@ public class K8sSubmitter implements Submitter {
   @Override
   public MlflowInfo getMlflowInfo() throws SubmarineRuntimeException {
     final String name = "submarine-mlflow";
-    final String ingressRouteName = "submarine-mlflow-ingressroute";
     try {
-      return new MlflowInfo(getInfo(name, ingressRouteName));
+      return new MlflowInfo(isDeploymentAvailable(name));
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
   }
 
-  public Info getInfo(String name, String ingressRouteName) throws ApiException {
+  private boolean isDeploymentAvailable(String name) throws ApiException{
     V1Deployment deploy = appsV1Api.readNamespacedDeploymentStatus(name, getServerNamespace(), "true");
-    boolean available = Optional.ofNullable(deploy.getStatus().getAvailableReplicas())
-            .map(ar -> ar > 0).orElse(false); // at least one replica is running
-
-    IngressRoute ingressRoute = new IngressRoute();
-    V1ObjectMeta meta = new V1ObjectMeta();
-    meta.setName(ingressRouteName);
-    meta.setNamespace(getServerNamespace());
-    ingressRoute.setMetadata(meta);
-
-    IngressRoute result = ingressRouteClient.get(getServerNamespace(), ingressRouteName)
-            .throwsApiException().getObject();
-
-    String route = result.getSpec().getRoutes().stream().findFirst().get().getMatch();
-
-    String url = route.replace("PathPrefix(`", "").replace("`)", "/");
-
-    return new Info(available, url);
+    return deploy.getStatus().getAvailableReplicas() > 0; // at least one replica is running
   }
+
   @Override
   public Notebook createNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
     Notebook notebook;
