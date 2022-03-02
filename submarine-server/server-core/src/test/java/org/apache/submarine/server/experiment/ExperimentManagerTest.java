@@ -57,10 +57,14 @@ public class ExperimentManagerTest {
   private ExperimentManager experimentManager;
   private Submitter mockSubmitter;
   private ExperimentService mockService;
-  private String specFile = "/experiment/spec.json";
-  private String newSpecFile = "/experiment/new_spec.json";
-  private String resultFile = "/experiment/result.json";
-  private String statusFile = "/experiment/status.json";
+  private String specFile = "/Users/brandonlin/yahoo/submarine/submarine-server/server-core"
+          + "/src/test/resources/experiment/spec.json";
+  private String newSpecFile = "/Users/brandonlin/yahoo/submarine/submarine-server/server-core"
+          + "/src/test/resources/experiment/new_spec.json";
+  private String resultFile = "/Users/brandonlin/yahoo/submarine/submarine-server/server-core"
+          + "/src/test/resources/experiment/result.json";
+  private String statusFile = "/Users/brandonlin/yahoo/submarine/submarine-server/server-core"
+          + "/src/test/resources/experiment/status.json";
 
   private ExperimentSpec spec;
   private ExperimentSpec newSpec;
@@ -153,6 +157,7 @@ public class ExperimentManagerTest {
     ExperimentEntity entity = new ExperimentEntity();
     entity.setExperimentSpec(toJson(spec));
     entity.setId(experimentId.toString());
+    entity.setUid(result.getUid());
 
     // Construct expected result
     Experiment expectedExperiment = new Experiment();
@@ -225,8 +230,8 @@ public class ExperimentManagerTest {
     expectedExperiment.setSpec(spec);
     expectedExperiment.setExperimentId(experimentId);
     expectedExperiment.rebuild(status);
-
-
+    System.out.println("expectedExperiment:" + expectedExperiment);
+    System.out.println("entity:" + entity);
     // Stub service select
     // Pretend there is a entity in db
     when(mockService.select(any(String.class))).thenReturn(entity);
