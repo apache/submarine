@@ -43,6 +43,8 @@ public class ExperimentEntity extends BaseEntity {
   @JsonDeserialize(using = CustomJsonDateDeserializer.class)
   private Date finishedTime = new Date();
 
+  private String uid;
+  
   public ExperimentEntity() {}
 
   public String getExperimentSpec() {
@@ -84,6 +86,14 @@ public class ExperimentEntity extends BaseEntity {
   public void setFinishedTime(Date finishedTime) {
     this.finishedTime = finishedTime;
   }
+  
+  public String getUid() {
+    return uid;
+  }
+
+  public void setUid(String uid) {
+    this.uid = uid;
+  }
 
   @Override
   public String toString() {
@@ -98,6 +108,7 @@ public class ExperimentEntity extends BaseEntity {
       ", acceptedTime='" + acceptedTime + '\'' +
       ", runningTime='" + runningTime + '\'' +
       ", finishedTime='" + finishedTime + '\'' +
+      ", uid='" + uid + '\'' +
       '}';
   }
 }

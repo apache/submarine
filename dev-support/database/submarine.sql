@@ -251,6 +251,7 @@ CREATE TABLE `experiment` (
   `accepted_time` datetime DEFAULT NULL COMMENT 'accept time',
   `running_time` datetime DEFAULT NULL COMMENT 'running time',
   `finished_time`  datetime DEFAULT NULL COMMENT 'finished time',
+  `uid` varchar(64) DEFAULT NULL COMMENT 'uid of experiment',
    PRIMARY KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

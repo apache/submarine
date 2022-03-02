@@ -33,10 +33,11 @@
     <result column="accepted_time" property="acceptedTime"/>
     <result column="running_time" property="runningTime"/>
     <result column="finished_time" property="finishedTime"/>
+    <result column="uid" property="uid"/>
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, experiment_spec, create_by, create_time, update_by, update_time, experiment_status, accepted_time, running_time, finished_time
+    id, experiment_spec, create_by, create_time, update_by, update_time, experiment_status, accepted_time, running_time, finished_time, uid
   </sql>
 
   <select id="selectAll" parameterType="java.lang.String" resultMap="ExperimentEntityResultMap">
@@ -58,10 +59,10 @@
   </delete>
 
   <insert id="insert" parameterType="org.apache.submarine.server.experiment.database.entity.ExperimentEntity">
-    insert into experiment (id, experiment_spec, create_by, create_time, update_by, update_time, experiment_status, accepted_time, running_time, finished_time)
+    insert into experiment (id, experiment_spec, create_by, create_time, update_by, update_time, experiment_status, accepted_time, running_time, finished_time, uid)
     values (#{id,jdbcType=VARCHAR}, #{experimentSpec,jdbcType=VARCHAR},
             #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now(), #{experimentStatus,jdbcType=VARCHAR},
-            #{acceptedTime,jdbcType=TIMESTAMP}, #{runningTime,jdbcType=TIMESTAMP}, #{finishedTime,jdbcType=TIMESTAMP})
+            #{acceptedTime,jdbcType=TIMESTAMP}, #{runningTime,jdbcType=TIMESTAMP}, #{finishedTime,jdbcType=TIMESTAMP}, #{uid,jdbcType=VARCHAR})
   </insert>
 
   <update id="update" parameterType="org.apache.submarine.server.experiment.database.entity.ExperimentEntity">
@@ -74,6 +75,7 @@
         accepted_time = #{acceptedTime,jdbcType=TIMESTAMP},
         running_time = #{runningTime,jdbcType=TIMESTAMP},
         finished_time = #{finishedTime,jdbcType=TIMESTAMP},
+        uid = #{uid,jdbcType=VARCHAR},
       </if>
       update_time = now()
     </set>

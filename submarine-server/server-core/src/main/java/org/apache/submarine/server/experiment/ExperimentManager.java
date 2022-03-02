@@ -353,22 +353,33 @@ public class ExperimentManager {
    */
   private Experiment buildExperimentFromEntity(ExperimentEntity entity) {
     Experiment experiment = new Experiment();
+
     experiment.setExperimentId(ExperimentId.fromString(entity.getId()));
     experiment.setSpec(new Gson().fromJson(entity.getExperimentSpec(), ExperimentSpec.class));
     experiment.setStatus(entity.getExperimentStatus());
     
     if (entity.getCreateTime() != null) {
       experiment.setCreatedTime(new DateTime(entity.getCreateTime()).toString());
+    } else {
+      experiment.setCreatedTime(null);
     }
     if (entity.getAcceptedTime() != null) {
       experiment.setAcceptedTime(new DateTime(entity.getAcceptedTime()).toString());
+    } else {
+      experiment.setAcceptedTime(null);
     }
     if (entity.getRunningTime() != null) {
       experiment.setRunningTime(new DateTime(entity.getRunningTime()).toString());
+    } else {
+      experiment.setRunningTime(null);
     }
     if (entity.getFinishedTime() != null) {
       experiment.setFinishedTime(new DateTime(entity.getFinishedTime()).toString());
+    } else {
+      experiment.setFinishedTime(null);
     }
+    experiment.setUid(entity.getUid());
+    
     return experiment;
   }
 
@@ -384,17 +395,25 @@ public class ExperimentManager {
     entity.setExperimentSpec(new GsonBuilder().disableHtmlEscaping().create().toJson(experiment.getSpec()));
     if (experiment.getCreatedTime() != null) {
       entity.setCreateTime(DateTime.parse(experiment.getCreatedTime()).toDate());
+    } else {
+      entity.setCreateTime(null);  
     }
     if (experiment.getAcceptedTime() != null) {
       entity.setAcceptedTime(DateTime.parse(experiment.getAcceptedTime()).toDate());
+    } else {
+      entity.setAcceptedTime(null);
     }
     if (experiment.getRunningTime() != null) {
       entity.setRunningTime(DateTime.parse(experiment.getRunningTime()).toDate());
+    } else {
+      entity.setRunningTime(null);      
     }
     if (experiment.getFinishedTime() != null) {
       entity.setFinishedTime(DateTime.parse(experiment.getFinishedTime()).toDate());
+    } else {
+      entity.setFinishedTime(null);
     }
-    
+    entity.setUid(experiment.getUid());
     return entity;
   }
 }
