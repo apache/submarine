@@ -176,6 +176,7 @@ public class ExperimentManagerTest {
     } else {
       entity.setFinishedTime(null);
     }    
+    entity.setExperimentStatus(result.getStatus());
     
     // Construct expected result
     Experiment expectedExperiment = new Experiment();
@@ -248,8 +249,6 @@ public class ExperimentManagerTest {
     expectedExperiment.setSpec(spec);
     expectedExperiment.setExperimentId(experimentId);
     expectedExperiment.rebuild(status);
-    System.out.println("expectedExperiment:" + expectedExperiment);
-    System.out.println("entity:" + entity);
     // Stub service select
     // Pretend there is a entity in db
     when(mockService.select(any(String.class))).thenReturn(entity);
