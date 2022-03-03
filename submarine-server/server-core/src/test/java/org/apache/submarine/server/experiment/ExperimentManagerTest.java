@@ -46,6 +46,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -279,12 +280,12 @@ public class ExperimentManagerTest {
 
   private void verifyResult(Experiment expected, Experiment actual) {
     assertEquals(expected.getUid(), actual.getUid());
-    assertEquals(expected.getCreatedTime(), actual.getCreatedTime());
-    assertEquals(expected.getRunningTime(), actual.getRunningTime());
-    assertEquals(expected.getAcceptedTime(), actual.getAcceptedTime());
+    verifyTimeResult(expected.getCreatedTime(), actual.getCreatedTime());
+    verifyTimeResult(expected.getRunningTime(), actual.getRunningTime());
+    verifyTimeResult(expected.getAcceptedTime(), actual.getAcceptedTime());
     assertEquals(expected.getStatus(), actual.getStatus());
     assertEquals(expected.getExperimentId(), actual.getExperimentId());
-    assertEquals(expected.getFinishedTime(), actual.getFinishedTime());
+    verifyTimeResult(expected.getFinishedTime(), actual.getFinishedTime());
     assertEquals(expected.getSpec().getMeta().getName(), actual.getSpec().getMeta().getName());
     assertEquals(expected.getSpec().getMeta().getFramework(), actual.getSpec().getMeta().getFramework());
     assertEquals(expected.getSpec().getMeta().getNamespace(), actual.getSpec().getMeta().getNamespace());
@@ -299,6 +300,17 @@ public class ExperimentManagerTest {
     ;
   }
 
+  private void verifyTimeResult(String expected, String actual) {
+    if ((expected == null && actual == null) || ((expected != null && actual == null) ||
+            (expected == null && actual != null))) {
+      assertEquals(expected, actual);   
+    } else {
+      DateTime expectedTime = DateTime.parse(expected);
+      DateTime actualTime = DateTime.parse(actual);
+      assertTrue(expectedTime.isEqual(actualTime));
+    }
+  }
+  
   private Object buildFromJsonFile(Object obj, String filePath) throws SubmarineException {
     Gson gson = new GsonBuilder().create();
     try (Reader reader = Files.newBufferedReader(getCustomJobSpecFile(filePath).toPath(),
