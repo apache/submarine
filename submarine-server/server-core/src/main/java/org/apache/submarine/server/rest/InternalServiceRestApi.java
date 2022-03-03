@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.annotations.VisibleForTesting;
-
+import com.google.gson.Gson;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -82,6 +82,7 @@ public class InternalServiceRestApi {
       @PathParam(RestConstants.CUSTOM_RESOURCE_ID) String resourceId,
       Map<String, Object> updatedCustomObject) {
     try {
+      LOG.info("In:" + new Gson().toJson(updatedCustomObject));
       internalServiceManager.updateCRStatus(CustomResourceType.valueOf(type)
               , resourceId, updatedCustomObject);
       return new JsonResponse.Builder<String>(Response.Status.OK)

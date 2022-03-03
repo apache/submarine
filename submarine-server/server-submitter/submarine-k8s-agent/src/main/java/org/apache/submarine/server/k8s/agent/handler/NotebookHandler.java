@@ -32,8 +32,6 @@ import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.NotebookCRList;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 import io.kubernetes.client.util.generic.GenericKubernetesApi;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +51,7 @@ public class NotebookHandler extends CustomResourceHandler {
   private GenericKubernetesApi<NotebookCR, NotebookCRList> notebookCRClient;
 
   private String uid;
+
   public NotebookHandler() throws IOException {
     super();
   }
@@ -88,8 +87,10 @@ public class NotebookHandler extends CustomResourceHandler {
 
       this.uid = podList.getItems().get(podList.getItems().size() - 1).getMetadata().getUid();
 
+
       listOptions = new ListOptions();
       String fieldSelector = String.format("involvedObject.uid=%s", this.uid);
+
       listOptions.setFieldSelector(fieldSelector);
       watcher = eventClient.watch(namespace, listOptions);
 
@@ -105,6 +106,7 @@ public class NotebookHandler extends CustomResourceHandler {
     while (true) {
       for (Response<CoreV1Event> event: watcher) {
         String reason = event.object.getReason();
+      
         Object object = null;
         try {
           switch (reason) {

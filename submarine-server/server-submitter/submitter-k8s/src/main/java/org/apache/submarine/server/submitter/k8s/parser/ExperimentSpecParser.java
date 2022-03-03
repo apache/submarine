@@ -88,6 +88,7 @@ public class ExperimentSpecParser {
   public static PyTorchJobSpec parsePyTorchJobSpec(ExperimentSpec experimentSpec)
       throws InvalidSpecException {
     PyTorchJobSpec pyTorchJobSpec = new PyTorchJobSpec();
+
     Map<PyTorchJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
     for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
@@ -95,7 +96,9 @@ public class ExperimentSpecParser {
       if (PyTorchJobReplicaType.isSupportedReplicaType(replicaType)) {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
-        replicaSpec.setTemplate(parseTemplateSpec(taskSpec, experimentSpec));
+        V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
+      
+        replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(PyTorchJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {
         throw new InvalidSpecException("Unrecognized replica type name: " +
@@ -122,20 +125,25 @@ public class ExperimentSpecParser {
     Map<String, String> labels = new HashMap<>();
     labels.put(ExperimentMeta.SUBMARINE_EXPERIMENT_NAME, experimentSpec.getMeta().getName());
     meta.setLabels(labels);
-    meta.setNamespace(experimentSpec.getMeta().getNamespace());
+
     return meta;
   }
 
-  private static TFJobSpec parseTFJobSpec(ExperimentSpec experimentSpec) throws InvalidSpecException {
+  private static TFJobSpec parseTFJobSpec(ExperimentSpec experimentSpec)
+          throws InvalidSpecException {
     TFJobSpec tfJobSpec = new TFJobSpec();
     Map<TFJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
+
     for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
       ExperimentTaskSpec taskSpec = entry.getValue();
+      
       if (TFJobReplicaType.isSupportedReplicaType(replicaType)) {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
-        replicaSpec.setTemplate(parseTemplateSpec(taskSpec, experimentSpec));
+        V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
+        
+        replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(TFJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {
         throw new InvalidSpecException("Unrecognized replica type name: " +

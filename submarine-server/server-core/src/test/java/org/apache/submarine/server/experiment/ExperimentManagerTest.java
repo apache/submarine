@@ -30,6 +30,7 @@ import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.service.ExperimentService;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -153,7 +155,29 @@ public class ExperimentManagerTest {
     ExperimentEntity entity = new ExperimentEntity();
     entity.setExperimentSpec(toJson(spec));
     entity.setId(experimentId.toString());
-
+    entity.setUid(result.getUid());
+    if (result.getCreatedTime() != null) {
+      entity.setCreateTime(DateTime.parse(result.getCreatedTime()).toDate());
+    } else {
+      entity.setCreateTime(null);  
+    }
+    if (result.getAcceptedTime() != null) {
+      entity.setAcceptedTime(DateTime.parse(result.getAcceptedTime()).toDate());
+    } else {
+      entity.setAcceptedTime(null);
+    }
+    if (result.getRunningTime() != null) {
+      entity.setRunningTime(DateTime.parse(result.getRunningTime()).toDate());
+    } else {
+      entity.setRunningTime(null);      
+    }
+    if (result.getFinishedTime() != null) {
+      entity.setFinishedTime(DateTime.parse(result.getFinishedTime()).toDate());
+    } else {
+      entity.setFinishedTime(null);
+    }    
+    entity.setExperimentStatus(result.getStatus());
+    
     // Construct expected result
     Experiment expectedExperiment = new Experiment();
     expectedExperiment.setSpec(spec);
@@ -225,8 +249,6 @@ public class ExperimentManagerTest {
     expectedExperiment.setSpec(spec);
     expectedExperiment.setExperimentId(experimentId);
     expectedExperiment.rebuild(status);
-
-
     // Stub service select
     // Pretend there is a entity in db
     when(mockService.select(any(String.class))).thenReturn(entity);
@@ -257,12 +279,12 @@ public class ExperimentManagerTest {
 
   private void verifyResult(Experiment expected, Experiment actual) {
     assertEquals(expected.getUid(), actual.getUid());
-    assertEquals(expected.getCreatedTime(), actual.getCreatedTime());
-    assertEquals(expected.getRunningTime(), actual.getRunningTime());
-    assertEquals(expected.getAcceptedTime(), actual.getAcceptedTime());
+    verifyTimeResult(expected.getCreatedTime(), actual.getCreatedTime());
+    verifyTimeResult(expected.getRunningTime(), actual.getRunningTime());
+    verifyTimeResult(expected.getAcceptedTime(), actual.getAcceptedTime());
     assertEquals(expected.getStatus(), actual.getStatus());
     assertEquals(expected.getExperimentId(), actual.getExperimentId());
-    assertEquals(expected.getFinishedTime(), actual.getFinishedTime());
+    verifyTimeResult(expected.getFinishedTime(), actual.getFinishedTime());
     assertEquals(expected.getSpec().getMeta().getName(), actual.getSpec().getMeta().getName());
     assertEquals(expected.getSpec().getMeta().getFramework(), actual.getSpec().getMeta().getFramework());
     assertEquals(expected.getSpec().getMeta().getNamespace(), actual.getSpec().getMeta().getNamespace());
@@ -277,6 +299,17 @@ public class ExperimentManagerTest {
     ;
   }
 
+  private void verifyTimeResult(String expected, String actual) {
+    if ((expected == null && actual == null) || ((expected != null && actual == null) ||
+            (expected == null && actual != null))) {
+      assertEquals(expected, actual);   
+    } else {
+      DateTime expectedTime = DateTime.parse(expected);
+      DateTime actualTime = DateTime.parse(actual);
+      assertTrue(expectedTime.isEqual(actualTime));
+    }
+  }
+  
   private Object buildFromJsonFile(Object obj, String filePath) throws SubmarineException {
     Gson gson = new GsonBuilder().create();
     try (Reader reader = Files.newBufferedReader(getCustomJobSpecFile(filePath).toPath(),

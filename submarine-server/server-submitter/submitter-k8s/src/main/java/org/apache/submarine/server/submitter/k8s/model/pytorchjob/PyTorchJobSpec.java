@@ -31,7 +31,8 @@ public class PyTorchJobSpec {
    */
   @SerializedName("pytorchReplicaSpecs")
   private Map<PyTorchJobReplicaType, MLJobReplicaSpec> replicaSpecs;
-
+  @SerializedName("backoffLimit")
+  private Integer backoffLimit = 3;
   /**
    * Get the replica specs.
    *

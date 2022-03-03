@@ -157,15 +157,23 @@ public class Experiment {
       }
       if (experiment.getAcceptedTime() != null) {
         this.setAcceptedTime(experiment.getAcceptedTime());
+      } else {
+        this.setAcceptedTime(null);
       }
       if (experiment.getCreatedTime() != null) {
         this.setCreatedTime(experiment.getCreatedTime());
+      }  else {
+        this.setCreatedTime(null);
       }
       if (experiment.getRunningTime() != null) {
         this.setRunningTime(experiment.getRunningTime());
+      } else {
+        this.setRunningTime(null);
       }
       if (experiment.getFinishedTime() != null) {
         this.setFinishedTime(experiment.getFinishedTime());
+      } else {
+        this.setFinishedTime(null);    
       }
     }
   }

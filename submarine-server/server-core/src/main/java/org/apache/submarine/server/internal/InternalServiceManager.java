@@ -28,6 +28,7 @@ import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.service.ExperimentService;
 import org.apache.submarine.server.notebook.database.service.NotebookService;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,8 +57,8 @@ public class InternalServiceManager {
           Map<String, Object> updateObject) {
     if (crType.equals(CustomResourceType.Notebook)) {
       return updateNotebookStatus(resourceId, updateObject);
-    } else if (crType.equals(CustomResourceType.TFJob) || crType.equals(CustomResourceType.PYTORCHJob)) {
-      return updateExperimentStatus(resourceId, null);
+    } else if (crType.equals(CustomResourceType.TFJob) || crType.equals(CustomResourceType.PyTorchJob)) {
+      return updateExperimentStatus(resourceId, updateObject);
     }
     return false;
   }
@@ -68,7 +69,27 @@ public class InternalServiceManager {
       throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(),
         String.format("cannot find experiment with id:%s", resourceId));
     }
-    // experimentEntity.setExperimentStatus(status);
+    
+    if (updateObject.get("status") != null) {
+      experimentEntity.setExperimentStatus(updateObject.get("status").toString());
+    }
+    if (updateObject.get("acceptedTime") != null) {
+      experimentEntity.setAcceptedTime(
+                DateTime.parse(updateObject.get("acceptedTime").toString()).toDate());
+    }
+    if (updateObject.get("createdTime") != null) {
+      experimentEntity.setCreateTime(
+               DateTime.parse(updateObject.get("createdTime").toString()).toDate());          
+    }
+    if (updateObject.get("runningTime") != null) {
+      experimentEntity.setRunningTime(
+              DateTime.parse(updateObject.get("runningTime").toString()).toDate()); 
+    }
+    if (updateObject.get("finishedTime") != null) {
+      experimentEntity.setFinishedTime(
+              DateTime.parse(updateObject.get("finishedTime").toString()).toDate());          
+    }
+    
     return experimentService.update(experimentEntity);
   }
     

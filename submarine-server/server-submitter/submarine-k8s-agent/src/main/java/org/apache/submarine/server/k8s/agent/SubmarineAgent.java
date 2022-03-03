@@ -79,7 +79,6 @@ public class SubmarineAgent {
             customResourceType, customResourceName, customResourceId);
         
     agent.start();
-       
   }
     
 }
