@@ -35,13 +35,13 @@ public class ExperimentEntity extends BaseEntity {
   private String experimentStatus;
 
   @JsonDeserialize(using = CustomJsonDateDeserializer.class)
-  private Date acceptedTime = new Date();
+  private Date acceptedTime;
 
   @JsonDeserialize(using = CustomJsonDateDeserializer.class)
-  private Date runningTime = new Date();
+  private Date runningTime;
 
   @JsonDeserialize(using = CustomJsonDateDeserializer.class)
-  private Date finishedTime = new Date();
+  private Date finishedTime;
 
   private String uid;
   

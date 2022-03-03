@@ -30,6 +30,7 @@ import org.apache.submarine.server.api.experiment.ExperimentId;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.service.ExperimentService;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -154,7 +155,27 @@ public class ExperimentManagerTest {
     entity.setExperimentSpec(toJson(spec));
     entity.setId(experimentId.toString());
     entity.setUid(result.getUid());
-
+    if (result.getCreatedTime() != null) {
+      entity.setCreateTime(DateTime.parse(result.getCreatedTime()).toDate());
+    } else {
+      entity.setCreateTime(null);  
+    }
+    if (result.getAcceptedTime() != null) {
+      entity.setAcceptedTime(DateTime.parse(result.getAcceptedTime()).toDate());
+    } else {
+      entity.setAcceptedTime(null);
+    }
+    if (result.getRunningTime() != null) {
+      entity.setRunningTime(DateTime.parse(result.getRunningTime()).toDate());
+    } else {
+      entity.setRunningTime(null);      
+    }
+    if (result.getFinishedTime() != null) {
+      entity.setFinishedTime(DateTime.parse(result.getFinishedTime()).toDate());
+    } else {
+      entity.setFinishedTime(null);
+    }    
+    
     // Construct expected result
     Experiment expectedExperiment = new Experiment();
     expectedExperiment.setSpec(spec);
