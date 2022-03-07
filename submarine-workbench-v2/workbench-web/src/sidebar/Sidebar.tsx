@@ -38,7 +38,7 @@ import { Link } from 'react-router-dom'
 
 function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
-  const [key, setKey] = useState("")
+  const [key, setKey] = useState("experiment")
 
   const handleClick = (e: { key: string; }) => setKey(key => e.key);
 
@@ -53,7 +53,7 @@ function Sidebar() {
         }}>
         <Link to='/experiment' onClick={() => setKey("experiment")}>
           <div className='sidebar-logo'>
-            <img className='sidebar-logo-img' src="/assets/logo.png" alt="logo" />
+            <img className='sidebar-logo-img' src="/logo.png" alt="logo" />
             <h1>Submarine</h1>
           </div>
         </Link>
