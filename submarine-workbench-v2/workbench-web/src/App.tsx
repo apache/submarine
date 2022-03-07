@@ -17,12 +17,31 @@
  * under the License.
  */
 
-import Sidebar from './sidebar/Sidebar'
-
+import Sidebar from '@submarine/sidebar/Sidebar'
+import { Navigate, Route, Routes } from 'react-router-dom';
+import Notebook from '@submarine/pages/workbench/notebook/Notebook'
+import Experiment from '@submarine/pages/workbench/experiment/Experiment'
+import Template from '@submarine/pages/workbench/template/Template'
+import Environment from '@submarine/pages/workbench/environment/Environment'
+import User from '@submarine/pages/workbench/user/User'
+import DataDict from '@submarine/pages/workbench/data_dict/DataDict'
+import Department from '@submarine/pages/workbench/department/Department'
+import Model from '@submarine/pages/workbench/model/Model'
 function App() {
   return (
     <div style={{width: "100%", height: "100%"}}>
       <Sidebar></Sidebar>
+      <Routes>
+        <Route path="/" element={<Navigate replace to="experiment" />} />
+        <Route path="notebook" element={<Notebook />} />
+        <Route path="experiment" element={<Experiment />} />
+        <Route path="template" element={<Template />} />
+        <Route path="environment" element={<Environment />} />
+        <Route path="user" element={<User />} />
+        <Route path="dataDict" element={<DataDict />} />
+        <Route path="department" element={<Department />} />
+        <Route path="model" element={<Model />} />
+      </Routes>
     </div>
   )
 }

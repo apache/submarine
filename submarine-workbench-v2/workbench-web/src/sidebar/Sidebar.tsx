@@ -34,6 +34,7 @@ import {
 } from '@ant-design/icons';
 import Sider from 'antd/lib/layout/Sider';
 import './Sidebar.scss'
+import { Link } from 'react-router-dom'
 
 function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -50,10 +51,12 @@ function Sidebar() {
         onCollapse={(collapsed, type) => {
           setIsCollapsed(() => collapsed);
         }}>
-        <div className='sidebar-logo'>
-          <img className='sidebar-logo-img' src="/assets/logo.png" alt="logo"/>
-          <h1>Submarine</h1>
-        </div>
+        <Link to='/experiment' onClick={() => setKey("experiment")}>
+          <div className='sidebar-logo'>
+            <img className='sidebar-logo-img' src="/assets/logo.png" alt="logo" />
+            <h1>Submarine</h1>
+          </div>
+        </Link>
         <Menu
           onClick={handleClick}
           theme='dark'
@@ -63,41 +66,71 @@ function Sidebar() {
           mode="inline"
           inlineCollapsed={isCollapsed}
         >
-          <Menu.Item key='1' icon={<HomeOutlined />} disabled={true}>
-            Home
+          <Menu.Item key='home' icon={<HomeOutlined />} disabled={true}>
+            <Link to='/home'>
+              Home
+            </Link>
           </Menu.Item>
-          <Menu.Item key='2' icon={<BookOutlined />}>
-            Notebook
+          <Menu.Item key='notebook' icon={<BookOutlined />}>
+            <Link to='/notebook'>
+              Notebook
+            </Link>
           </Menu.Item>
-          <Menu.Item key='3' icon={<ExperimentOutlined />}>
-            Experiment
+          <Menu.Item key='experiment' icon={<ExperimentOutlined />}>
+            <Link to='/experiment'>
+              Experiment
+            </Link>
           </Menu.Item>
-          <Menu.Item key='4' icon={<FileOutlined />}>
-            Template
+          <Menu.Item key='template' icon={<FileOutlined />}>
+            <Link to='/template'>
+              Template
+            </Link>
           </Menu.Item>
-          <Menu.Item key='5' icon={<CodepenOutlined />}>
-            Environment
+          <Menu.Item key='environment' icon={<CodepenOutlined />}>
+            <Link to='/environment'>
+              Environment
+            </Link>
           </Menu.Item>
           <SubMenu key="sub2" icon={<SettingOutlined />} title="Manager">
-            <Menu.Item key="6">User</Menu.Item>
-            <Menu.Item key="7">Data dict</Menu.Item>
-            <Menu.Item key="8">Department</Menu.Item>
+            <Menu.Item key="user">
+              <Link to='/user'>
+                User
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="dataDict">
+              <Link to='/dataDict'>
+                Data Dict
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="department">
+              <Link to='/department'>
+                Department
+              </Link>
+            </Menu.Item>
           </SubMenu>
-          <Menu.Item key='9' icon={<InboxOutlined />}>
-            Model
+          <Menu.Item key='model' icon={<InboxOutlined />}>
+            <Link to='/model'>
+              Model
+            </Link>
           </Menu.Item>
-          <Menu.Item key='10' icon={<BarChartOutlined />} disabled={true}>
-            Data
+          <Menu.Item key='data' icon={<BarChartOutlined />} disabled={true}>
+            <Link to='/data'>
+              Data
+            </Link>
           </Menu.Item>
-          <Menu.Item key='11' icon={<DesktopOutlined />} disabled={true}>
-            Workspace
+          <Menu.Item key='workspace' icon={<DesktopOutlined />} disabled={true}>
+            <Link to='/workspace'>
+              Workspace
+            </Link>
           </Menu.Item>
-          <Menu.Item key='12' icon={<ApiOutlined />} disabled={true}>
-            Interpreter
+          <Menu.Item key='interpreter' icon={<ApiOutlined />} disabled={true}>
+            <Link to='/interpreter'>
+              Interpreter
+            </Link>
           </Menu.Item>
         </Menu>
       </Sider>
-      
+
     </Layout>
   )
 }
