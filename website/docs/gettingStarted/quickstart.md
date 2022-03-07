@@ -187,6 +187,7 @@ eval $(minikube docker-env)
 ### 3. Submit the experiment
 
 1. Open submarine workbench and click `+ New Experiment`
+2. Choose `Define your experiment`
 2. Fill the form accordingly. Here we set 3 workers.
 
     1. Step 1
@@ -200,10 +201,9 @@ eval $(minikube docker-env)
 
 ### 4. Monitor the process
 
-1. In our code, we use `submarine` from `submarine-sdk` to record the metrics. To see the result, click corresponding experiment with name `quickstart` in the workbench.
+1. In our code, we use `submarine` from `submarine-sdk` to record the metrics. To see the result, click corresponding experiment with name `mnist-example` in the workbench.
 2. To see the metrics of each worker, you can select a worker from the left top list.
 
-![](/img/quickstart-ui-1.png)
-![](/img/quickstart-ui-2.png)
+![](/img/quickstart-ui.png)
 
 ### 5. Serve the model (In development)
