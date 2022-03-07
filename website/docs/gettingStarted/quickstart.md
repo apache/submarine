@@ -188,7 +188,7 @@ eval $(minikube docker-env)
 
 1. Open submarine workbench and click `+ New Experiment`
 2. Choose `Define your experiment`
-2. Fill the form accordingly. Here we set 3 workers.
+3. Fill the form accordingly. Here we set 3 workers.
 
     1. Step 1
     ![](/img/quickstart-submit-1.png)
