@@ -352,7 +352,7 @@ jobs:
         # wait until mysql is health
         options: --health-cmd "mysqladmin ping" --health-interval 10s --health-timeout 10s --health-retries 10
       minio:
-        image: bitnami/minio:latest
+        image: bitnami/minio:2022.2.24
         env:
           MINIO_ACCESS_KEY: "submarine_minio"
           MINIO_SECRET_KEY: "submarine_minio"
