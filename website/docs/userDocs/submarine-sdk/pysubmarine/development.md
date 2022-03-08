@@ -125,14 +125,14 @@ to generate pysubmarine client API that used to communicate with submarine serve
 
 2. [swagger_config.json](https://github.com/apache/submarine/blob/master/dev-support/pysubmarine/swagger_config.json) defines the import path for python SDK
 
-    Ex: 
+    Ex:
 
     For `submarine.client`
     ```json
     {
       "packageName" : "submarine.client",
       "projectName" : "submarine.client",
-      "packageVersion": "0.7.0-SNAPSHOT"
+      "packageVersion": "0.7.0"
     }
     ```
 
@@ -147,7 +147,7 @@ to generate pysubmarine client API that used to communicate with submarine serve
     ```python
     "long": int if six.PY3 else long,  # noqa: F821
     ```
-    to 
+    to
     ```python
     "long": int,
     ```

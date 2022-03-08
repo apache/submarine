@@ -60,7 +60,7 @@ spec:
     spec:
       containers:
         - name: "submarine-database"
-          image: "apache/submarine:database-0.7.0-SNAPSHOT"
+          image: "apache/submarine:database-0.7.0"
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 3306

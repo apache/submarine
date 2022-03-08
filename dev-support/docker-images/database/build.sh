@@ -24,7 +24,7 @@ fi
 export CURRENT_PATH=$(cd "${PWD}">/dev/null; pwd)
 SUBMARINE_HOME=${CURRENT_PATH}/../../..
 
-SUBMARINE_VERSION="0.7.0-SNAPSHOT"
+SUBMARINE_VERSION="0.7.0"
 SUBMARINE_IMAGE_NAME="apache/submarine:database-${SUBMARINE_VERSION}"
 
 cp -rf "${SUBMARINE_HOME}/dev-support/database" "${CURRENT_PATH}"

@@ -19,7 +19,7 @@ apiVersion: v2
 appVersion: "0.5.0"
 description: Submarine is Cloud Native Machine Learning Platform.
 name: submarine
-version: 0.7.0-SNAPSHOT
+version: 0.7.0
 icon: https://submarine.apache.org/assets/themes/submarine/img/submarine_white_logo.png
 dependencies:
   - name: tfjob

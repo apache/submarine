@@ -57,16 +57,16 @@ spec:
     metadata:
       labels:
         app: "submarine-server"
-      
+
     spec:
       serviceAccountName: "submarine-server"
       initContainers:
       - name: submarine-server-initcontainer
         image: "minio/mc"
-        command: ["/bin/bash", "-c", 
+        command: ["/bin/bash", "-c",
         "cnt=0;
-        while ! /bin/bash -c 'mc config host add minio http://submarine-minio-service:9000 
-        submarine_minio submarine_minio' 2>&1; 
+        while ! /bin/bash -c 'mc config host add minio http://submarine-minio-service:9000
+        submarine_minio submarine_minio' 2>&1;
         do
           sleep 15;
           ((cnt=cnt+1));
@@ -90,7 +90,7 @@ spec:
         - name: K8S_APISERVER_URL
           value: "kubernetes.default.svc"
 
-        image: "apache/submarine:server-0.7.0-SNAPSHOT"
+        image: "apache/submarine:server-0.7.0"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080

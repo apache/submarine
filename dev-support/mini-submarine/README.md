@@ -57,24 +57,24 @@ In this scenario, we can do this:
 Put submarine candidate artifacts to a folder like "~/releases/submarine-release"
 ```
 $ ls $release_candidates_path
-submarine-dist-0.7.0-SNAPSHOT-hadoop-2.9.tar.gz        submarine-dist-0.7.0-SNAPSHOT-src.tar.gz.asc
-submarine-dist-0.7.0-SNAPSHOT-hadoop-2.9.tar.gz.asc    submarine-dist-0.7.0-SNAPSHOT-src.tar.gz.sha512
-submarine-dist-0.7.0-SNAPSHOT-hadoop-2.9.tar.gz.sha512 submarine-dist-0.7.0-SNAPSHOT-src.tar.gz
+submarine-dist-0.7.0-hadoop-2.9.tar.gz        submarine-dist-0.7.0-src.tar.gz.asc
+submarine-dist-0.7.0-hadoop-2.9.tar.gz.asc    submarine-dist-0.7.0-src.tar.gz.sha512
+submarine-dist-0.7.0-hadoop-2.9.tar.gz.sha512 submarine-dist-0.7.0-src.tar.gz
 ```
 ```
-export submarine_version=0.7.0-SNAPSHOT
+export submarine_version=0.7.0
 export release_candidates_path=~/releases/submarine-release
 ./build_mini-submarine.sh
-#docker run -it -h submarine-dev --net=bridge --privileged -P local/mini-submarine:0.7.0-SNAPSHOT /bin/bash
-docker tag local/mini-submarine:0.7.0-SNAPSHOT apache/mini-submarine:0.7.0-SNAPSHOT:RC0
-docker push apache/mini-submarine:0.7.0-SNAPSHOT:RC0
+#docker run -it -h submarine-dev --net=bridge --privileged -P local/mini-submarine:0.7.0 /bin/bash
+docker tag local/mini-submarine:0.7.0 apache/mini-submarine:0.7.0:RC0
+docker push apache/mini-submarine:0.7.0:RC0
 ```
-In the container, we can verify that the submarine jar version is the expected 0.7.0-SNAPSHOT. Then we can upload this image with a "RC" tag for a vote.
+In the container, we can verify that the submarine jar version is the expected 0.7.0. Then we can upload this image with a "RC" tag for a vote.
 
 ### Run mini-submarine image
 
 ```
-docker run -it -h submarine-dev --name mini-submarine --net=bridge --privileged -P local/mini-submarine:0.7.0-SNAPSHOT /bin/bash
+docker run -it -h submarine-dev --name mini-submarine --net=bridge --privileged -P local/mini-submarine:0.7.0 /bin/bash
 
 # In the container, use root user to bootstrap hdfs and yarn
 /tmp/hadoop-config/bootstrap.sh
@@ -83,7 +83,7 @@ docker run -it -h submarine-dev --name mini-submarine --net=bridge --privileged 
 yarn node -list -showDetails
 ```
 
-If you pull the image directly, please replace "local/mini-submarine:0.7.0-SNAPSHOT" with "apache/submarine:mini-0.7.0-SNAPSHOT".
+If you pull the image directly, please replace "local/mini-submarine:0.7.0" with "apache/submarine:mini-0.7.0".
 
 ### You should see info like this:
 

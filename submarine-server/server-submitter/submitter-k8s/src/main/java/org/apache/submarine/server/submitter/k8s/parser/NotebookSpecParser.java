@@ -218,7 +218,7 @@ public class NotebookSpecParser {
     podSpec.setVolumes(volumeList);
     podSpec.setTerminationGracePeriodSeconds(120L);
     podTemplateSpec.setSpec(podSpec);
-    
+
     return podTemplateSpec;
   }
 
@@ -283,14 +283,14 @@ public class NotebookSpecParser {
             + "activation.\"; fi");
     return condaVersionValidationCommand.toString();
   }
-  
+
   private static void appendSidecar(NotebookCR notebookCR, String notebookId, String namespace) {
     NotebookCRSpec notebookCRSpec = notebookCR.getSpec();
     List<V1Container> containers = notebookCRSpec.getTemplate().getSpec().getContainers();
     V1Container agentContainer = new V1Container();
     agentContainer.setName("agent");
-    agentContainer.setImage("apache/submarine:agent-0.7.0-SNAPSHOT");
-    
+    agentContainer.setImage("apache/submarine:agent-0.7.0");
+
     List<V1EnvVar> envVarList = new ArrayList<>();
     V1EnvVar crTypeVar = new V1EnvVar();
     crTypeVar.setName("CUSTOM_RESOURCE_TYPE");
@@ -303,28 +303,28 @@ public class NotebookSpecParser {
     V1EnvVar namespaceVar = new V1EnvVar();
     namespaceVar.setName("NAMESPACE");
     namespaceVar.setValue(namespace);
-    
+
     V1EnvVar serverHostVar = new V1EnvVar();
     serverHostVar.setName("SERVER_HOST");
     serverHostVar.setValue(conf.getServerServiceName());
-    
+
     V1EnvVar serverPortVar = new V1EnvVar();
     serverPortVar.setName("SERVER_PORT");
     serverPortVar.setValue(String.valueOf(conf.getServerPort()));
-    
+
     V1EnvVar customResourceIdVar = new V1EnvVar();
     customResourceIdVar.setName("CUSTOM_RESOURCE_ID");
     customResourceIdVar.setValue(notebookId);
-    
+
     envVarList.add(crTypeVar);
     envVarList.add(crNameVar);
     envVarList.add(namespaceVar);
     envVarList.add(serverHostVar);
     envVarList.add(serverPortVar);
     envVarList.add(customResourceIdVar);
-    
+
     agentContainer.env(envVarList);
-    
-    containers.add(agentContainer);    
+
+    containers.add(agentContainer);
   }
 }

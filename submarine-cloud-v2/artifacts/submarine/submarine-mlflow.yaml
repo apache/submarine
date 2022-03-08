@@ -86,7 +86,7 @@ spec:
         fi;"]
       containers:
       - name: submarine-mlflow-container
-        image: apache/submarine:mlflow-0.7.0-SNAPSHOT
+        image: apache/submarine:mlflow-0.7.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000

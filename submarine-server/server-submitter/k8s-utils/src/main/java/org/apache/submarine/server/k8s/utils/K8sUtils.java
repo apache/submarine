@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * Utility methods for common k8s operations.
  *
  * @author Chi-Sheng Liu
- * @since 0.7.0-SNAPSHOT
+ * @since 0.7.0
  */
 public abstract class K8sUtils {
 

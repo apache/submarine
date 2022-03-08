@@ -26,7 +26,7 @@ curl -X POST -H "Content-Type: application/json" -d '
     }
   },
   "environment": {
-    "image": "ddp:0.7.0-SNAPSHOT"
+    "image": "ddp:0.7.0"
   },
   "spec": {
     "Master": {

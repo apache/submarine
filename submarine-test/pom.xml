@@ -25,10 +25,10 @@
   <parent>
     <artifactId>submarine</artifactId>
     <groupId>org.apache.submarine</groupId>
-    <version>0.7.0-SNAPSHOT</version>
+    <version>0.7.0</version>
   </parent>
   <artifactId>submarine-test</artifactId>
-  <version>0.7.0-SNAPSHOT</version>
+  <version>0.7.0</version>
   <name>Submarine: Test</name>
   <packaging>pom</packaging>
 

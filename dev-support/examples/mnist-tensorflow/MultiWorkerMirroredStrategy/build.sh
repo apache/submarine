@@ -16,7 +16,7 @@
 
 set -euxo pipefail
 
-SUBMARINE_VERSION=0.7.0-SNAPSHOT
+SUBMARINE_VERSION=0.7.0
 SUBMARINE_IMAGE_NAME="multi-worker-mirrored:${SUBMARINE_VERSION}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then
