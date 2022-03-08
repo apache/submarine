@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.entity;
+package org.apache.submarine.server.api.workbench;
 
 public class UserInfo {
   private final String id;
