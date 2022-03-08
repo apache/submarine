@@ -21,7 +21,7 @@ package org.apache.submarine.server;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
-import org.apache.submarine.server.websocket.EventServer;
+//import org.apache.submarine.server.websocket.EventServer;
 import org.apache.submarine.commons.cluster.ClusterServer;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Handler;
@@ -110,15 +110,15 @@ public class SubmarineServer extends ResourceConfig {
         });
 
     setupRestApiContextHandler(webApp, conf);
-
+    LOG.info("YYYYYYYYYYYYYYYYYYYYY");
     // Notebook server
     setupNotebookServer(webApp, conf, sharedServiceLocator);
 
     // Cluster Server
     // Cluster Server is useless for submarine now. Shield it to improve performance.
     // setupClusterServer();
-
-    setupWebSocketServer();
+    LOG.info("ZZZZZZZZZZZZZZZZZZZZZZ");
+    setupWebSocketServer(webApp, conf, sharedServiceLocator);
     LOG.info("XXXXXXXXXXXXXXXXXXXXXXX");
     startServer();
     // LOG.info("XXXXXXXXXXXXXXXXXXXXXXX");
@@ -262,16 +262,26 @@ public class SubmarineServer extends ResourceConfig {
     webapp.addServlet(servletHolder, "/ws/*");
   }
 
-  private static void setupWebSocketServer() {
+  private static void setupWebSocketServer(WebAppContext webapp,
+                                           SubmarineConfiguration conf, ServiceLocator serviceLocator) {
+    String maxTextMessageSize = conf.getWebsocketMaxTextMessageSize();
+    final ServletHolder servletHolder =
+        new ServletHolder(serviceLocator.getService(NotebookServer.class));
+    servletHolder.setInitParameter("maxTextMessageSize", maxTextMessageSize);
+
+    final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    webapp.addServlet(servletHolder, "/wss/*");
     LOG.info("Before WebSocket Sever started");
-    EventServer webSocketServer = new EventServer();
-    LOG.info("After WebSocket Sever started");
-    try {
-      webSocketServer.start(null);
-      LOG.info("WebSocket Sever started");
-    } catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-    }
+
+    // LOG.info("Before WebSocket Sever started");
+    // EventServer webSocketServer = new EventServer();
+    // LOG.info("After WebSocket Sever started");
+    // try {
+    //   webSocketServer.start(null);
+    //   LOG.info("WebSocket Sever started");
+    // } catch (Exception e) {
+    //   LOG.error(e.getMessage(), e);
+    // }
   }
 
   private static void setupClusterServer() {
