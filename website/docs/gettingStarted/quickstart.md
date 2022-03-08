@@ -191,19 +191,19 @@ eval $(minikube docker-env)
 3. Fill the form accordingly. Here we set 3 workers.
 
     1. Step 1
-    ![](/img/quickstart-submit-1.png)
+    ![](/img/quickstart-submit-1-0-7-0.png)
     2. Step 2
-    ![](/img/quickstart-submit-2.png)
+    ![](/img/quickstart-submit-2-0-7-0.png)
     3. Step 3
-    ![](/img/quickstart-submit-3.png)
+    ![](/img/quickstart-submit-3-0-7-0.png)
     4. The experiment is successfully submitted
-    ![](/img/quickstart-submit-4.png)
+    ![](/img/quickstart-submit-4-0-7-0.png)
 
 ### 4. Monitor the process
 
 1. In our code, we use `submarine` from `submarine-sdk` to record the metrics. To see the result, click corresponding experiment with name `mnist-example` in the workbench.
 2. To see the metrics of each worker, you can select a worker from the left top list.
 
-![](/img/quickstart-ui.png)
+![](/img/quickstart-ui-0-7-0.png)
 
 ### 5. Serve the model (In development)
