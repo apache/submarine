@@ -33,7 +33,7 @@ We recommend using Web UI to manage notebooks.
 Notebooks can be started from the Web UI. You can click the “Notebook” tab in the
 left-hand panel to manage your notebooks.
 
-![](/img/notebook-list.png)
+![](/img/notebook-list-0-7-0.png)
 
 To create a new notebook server, click “New Notebook”. You should see a form for entering
 details of your new notebook server.
@@ -59,11 +59,11 @@ The list of prerequisites for running the NVIDIA device plugin is described belo
 **If you’re not sure which environment you need, please choose the environment “notebook-env”
 for the new notebook.**
 
-![](/img/notebook-form.png)
+![](/img/notebook-form-0-7-0.png)
 
 You should see your new notebook server. Click the name of your notebook server to connect to it.
 
-![](/img/created-notebook.png)
+![](/img/created-notebook-0-7-0.png)
 
 ## Experiment with your notebook
 
