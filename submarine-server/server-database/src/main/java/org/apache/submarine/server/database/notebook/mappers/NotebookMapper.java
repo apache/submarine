@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.database.notebook.mappers;
 
-import org.apache.submarine.server.notebook.database.entity.NotebookEntity;
+import org.apache.submarine.server.database.notebook.entity.NotebookEntity;
 
 import java.util.List;
 

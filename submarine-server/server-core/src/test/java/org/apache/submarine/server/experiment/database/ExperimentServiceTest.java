@@ -17,10 +17,10 @@
  * under the License.
  */
 
-package org.apache.submarine.server.experiment.database;
+package org.apache.submarine.server.database.experiment;
 
-import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
-import org.apache.submarine.server.experiment.database.service.ExperimentService;
+import org.apache.submarine.server.database.experiment.entity.ExperimentEntity;
+import org.apache.submarine.server.database.experiment.service.ExperimentService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;

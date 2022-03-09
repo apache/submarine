@@ -47,7 +47,7 @@ import org.apache.submarine.server.api.spec.ExperimentTemplateParamSpec;
 import org.apache.submarine.server.api.spec.ExperimentTemplateSpec;
 import org.apache.submarine.server.database.database.utils.MyBatisUtil;
 import org.apache.submarine.server.database.experiment.ExperimentManager;
-import org.apache.submarine.server.experimenttemplate.database.entity.ExperimentTemplateEntity;
+import org.apache.submarine.server.database.experimenttemplate.entity.ExperimentTemplateEntity;
 import org.apache.submarine.server.database.experimenttemplate.mappers.ExperimentTemplateMapper;
 import org.apache.submarine.server.utils.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.utils.gson.ExperimentIdSerializer;

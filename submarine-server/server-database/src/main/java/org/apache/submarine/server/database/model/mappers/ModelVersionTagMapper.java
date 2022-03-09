@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.database.model.mappers;
 
-import org.apache.submarine.server.model.database.entities.ModelVersionTagEntity;
+import org.apache.submarine.server.database.model.entities.ModelVersionTagEntity;
 
 
 public interface ModelVersionTagMapper {

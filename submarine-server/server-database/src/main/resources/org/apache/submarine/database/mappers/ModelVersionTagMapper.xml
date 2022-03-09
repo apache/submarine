@@ -19,7 +19,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.apache.submarine.server.database.model.mappers.ModelVersionTagMapper">
-  <resultMap id="resultMap" type="org.apache.submarine.server.model.database.entities.ModelVersionTagEntity">
+  <resultMap id="resultMap" type="org.apache.submarine.server.database.model.entities.ModelVersionTagEntity">
     <result column="name" property="name" />
     <result column="tag" property="tag" />
   </resultMap>
@@ -33,7 +33,7 @@
     where name = #{name,jdbcType=VARCHAR} AND tag = #{tag,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.model.database.entities.ModelVersionTagEntity">
+  <insert id="insert" parameterType="org.apache.submarine.server.database.model.entities.ModelVersionTagEntity">
     insert into model_version_tag (name, version, tag)
     values (#{name,jdbcType=VARCHAR}, #{version,jdbcType=INTEGER}, #{tag,jdbcType=VARCHAR})
   </insert>

@@ -19,7 +19,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.apache.submarine.server.database.model.mappers.ModelVersionMapper">
-  <resultMap id="resultMap" type="org.apache.submarine.server.model.database.entities.ModelVersionEntity">
+  <resultMap id="resultMap" type="org.apache.submarine.server.database.model.entities.ModelVersionEntity">
     <result column="name" property="name" />
     <result column="version" property="version" />
     <result column="id" property="id" />
@@ -33,7 +33,7 @@
     <result column="description" property="description" />
   </resultMap>
 
-  <resultMap id="resultMapWithTag" type="org.apache.submarine.server.model.database.entities.ModelVersionEntity">
+  <resultMap id="resultMapWithTag" type="org.apache.submarine.server.database.model.entities.ModelVersionEntity">
     <result column="name" property="name" />
     <result column="version" property="version" />
     <result column="id" property="id" />
@@ -76,7 +76,7 @@
     where mv.name = #{name,jdbcType=VARCHAR}
   </select>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.model.database.entities.ModelVersionEntity">
+  <insert id="insert" parameterType="org.apache.submarine.server.database.model.entities.ModelVersionEntity">
     insert into model_version (name, version, id, user_id, experiment_id, model_type, current_stage, creation_time, last_updated_time, dataset, description)
     values (#{name,jdbcType=VARCHAR}, #{version,jdbcType=INTEGER}, #{id,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
             #{experimentId,jdbcType=VARCHAR}, #{modelType,jdbcType=VARCHAR}, #{currentStage,jdbcType=VARCHAR},
@@ -89,7 +89,7 @@
     </if>
   </insert>
 
-  <update id="update" parameterType="org.apache.submarine.server.model.database.entities.ModelVersionEntity">
+  <update id="update" parameterType="org.apache.submarine.server.database.model.entities.ModelVersionEntity">
     update model_version
     <set>
       <if test="currentStage != null">

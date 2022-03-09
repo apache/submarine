@@ -29,7 +29,7 @@ import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.notebook.NotebookId;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.database.database.utils.MyBatisUtil;
-import org.apache.submarine.server.notebook.database.entity.NotebookEntity;
+import org.apache.submarine.server.database.notebook.entity.NotebookEntity;
 import org.apache.submarine.server.database.notebook.mappers.NotebookMapper;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;

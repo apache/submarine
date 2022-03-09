@@ -22,7 +22,7 @@ package org.apache.submarine.server.database.model.mappers;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import org.apache.submarine.server.model.database.entities.RegisteredModelEntity;
+import org.apache.submarine.server.database.model.entities.RegisteredModelEntity;
 
 public interface RegisteredModelMapper {
   List<RegisteredModelEntity> selectAll();

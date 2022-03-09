@@ -19,7 +19,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.apache.submarine.server.database.model.mappers.RegisteredModelTagMapper">
-  <resultMap id="resultMap" type="org.apache.submarine.server.model.database.entities.RegisteredModelTagEntity">
+  <resultMap id="resultMap" type="org.apache.submarine.server.database.model.entities.RegisteredModelTagEntity">
     <result column="name" property="name" />
     <result column="tag" property="tag" />
   </resultMap>
@@ -28,12 +28,12 @@
     name, tag
   </sql>
 
-  <delete id="delete" parameterType="org.apache.submarine.server.model.database.entities.RegisteredModelTagEntity">
+  <delete id="delete" parameterType="org.apache.submarine.server.database.model.entities.RegisteredModelTagEntity">
     delete from registered_model_tag
     where name = #{name,jdbcType=VARCHAR} AND tag = #{tag,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.model.database.entities.RegisteredModelTagEntity">
+  <insert id="insert" parameterType="org.apache.submarine.server.database.model.entities.RegisteredModelTagEntity">
     insert into registered_model_tag (name, tag)
     values (#{name,jdbcType=VARCHAR}, #{tag,jdbcType=VARCHAR})
   </insert>

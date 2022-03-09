@@ -21,7 +21,7 @@ package org.apache.submarine.server.database.experimenttemplate.mappers;
 
 import java.util.List;
 
-import org.apache.submarine.server.experimenttemplate.database.entity.ExperimentTemplateEntity;
+import org.apache.submarine.server.database.experimenttemplate.entity.ExperimentTemplateEntity;
 
 
 public interface ExperimentTemplateMapper {

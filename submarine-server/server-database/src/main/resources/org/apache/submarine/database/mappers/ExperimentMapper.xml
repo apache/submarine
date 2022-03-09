@@ -27,7 +27,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="ExperimentEntityResultMap" type="org.apache.submarine.server.experiment.database.entity.ExperimentEntity" extends="BaseEntityResultMap">
+  <resultMap id="ExperimentEntityResultMap" type="org.apache.submarine.server.database.experiment.entity.ExperimentEntity" extends="BaseEntityResultMap">
     <result column="experiment_spec" jdbcType="VARCHAR" property="experimentSpec" />
     <result column="experiment_status" property="experimentStatus"/>
     <result column="accepted_time" property="acceptedTime"/>
@@ -58,14 +58,14 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.experiment.database.entity.ExperimentEntity">
+  <insert id="insert" parameterType="org.apache.submarine.server.database.experiment.entity.ExperimentEntity">
     insert into experiment (id, experiment_spec, create_by, create_time, update_by, update_time, experiment_status, accepted_time, running_time, finished_time, uid)
     values (#{id,jdbcType=VARCHAR}, #{experimentSpec,jdbcType=VARCHAR},
             #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now(), #{experimentStatus,jdbcType=VARCHAR},
             #{acceptedTime,jdbcType=TIMESTAMP}, #{runningTime,jdbcType=TIMESTAMP}, #{finishedTime,jdbcType=TIMESTAMP}, #{uid,jdbcType=VARCHAR})
   </insert>
 
-  <update id="update" parameterType="org.apache.submarine.server.experiment.database.entity.ExperimentEntity">
+  <update id="update" parameterType="org.apache.submarine.server.database.experiment.entity.ExperimentEntity">
     update experiment
     <set>
       <if test="experimentSpec != null and experimentStatus != null">

@@ -17,12 +17,12 @@
  * under the License.
  */
 
-package org.apache.submarine.server.model.database;
+package org.apache.submarine.server.database.model;
 
-import org.apache.submarine.server.model.database.entities.RegisteredModelEntity;
-import org.apache.submarine.server.model.database.entities.RegisteredModelTagEntity;
-import org.apache.submarine.server.model.database.service.RegisteredModelService;
-import org.apache.submarine.server.model.database.service.RegisteredModelTagService;
+import org.apache.submarine.server.database.model.entities.RegisteredModelEntity;
+import org.apache.submarine.server.database.model.entities.RegisteredModelTagEntity;
+import org.apache.submarine.server.database.model.service.RegisteredModelService;
+import org.apache.submarine.server.database.model.service.RegisteredModelTagService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;

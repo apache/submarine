@@ -18,8 +18,8 @@
  */
 package org.apache.submarine.server.database.workbench.service;
 
-import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
-import org.apache.submarine.server.experiment.database.service.ExperimentService;
+import org.apache.submarine.server.database.experiment.entity.ExperimentEntity;
+import org.apache.submarine.server.database.experiment.service.ExperimentService;
 import org.apache.submarine.server.database.workbench.entity.ParamEntity;
 import org.junit.After;
 import org.junit.Before;

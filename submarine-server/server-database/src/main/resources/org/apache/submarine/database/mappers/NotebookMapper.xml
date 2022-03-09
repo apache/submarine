@@ -27,7 +27,7 @@
     <result column="update_time" property="updateTime"/>
   </resultMap>
 
-  <resultMap id="NotebookEntityResultMap" type="org.apache.submarine.server.notebook.database.entity.NotebookEntity" extends="BaseEntityResultMap">
+  <resultMap id="NotebookEntityResultMap" type="org.apache.submarine.server.database.notebook.entity.NotebookEntity" extends="BaseEntityResultMap">
     <result column="notebook_spec" jdbcType="VARCHAR" property="notebookSpec" />
     <result column="notebook_status" jdbcType="VARCHAR" property="notebookStatus" />
     <result column="notebook_url" jdbcType="VARCHAR" property="notebookUrl" />
@@ -57,7 +57,7 @@
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.notebook.database.entity.NotebookEntity">
+  <insert id="insert" parameterType="org.apache.submarine.server.database.notebook.entity.NotebookEntity">
     insert into notebook (id, notebook_spec, create_by, create_time, update_by, update_time,
      notebook_status, notebook_url, reason, deleted_time)
     values (#{id,jdbcType=VARCHAR}, #{notebookSpec,jdbcType=VARCHAR},
@@ -66,7 +66,7 @@
             #{reason,jdbcType=VARCHAR},null)
   </insert>
 
-  <update id="update" parameterType="org.apache.submarine.server.notebook.database.entity.NotebookEntity">
+  <update id="update" parameterType="org.apache.submarine.server.database.notebook.entity.NotebookEntity">
     update notebook
     <set>
       <if test="notebookSpec != null and notebookStatus != null">

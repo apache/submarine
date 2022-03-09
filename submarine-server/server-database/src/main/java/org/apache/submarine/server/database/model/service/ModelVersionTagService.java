@@ -22,7 +22,7 @@ package org.apache.submarine.server.database.model.service;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.database.database.utils.MyBatisUtil;
-import org.apache.submarine.server.model.database.entities.ModelVersionTagEntity;
+import org.apache.submarine.server.database.model.entities.ModelVersionTagEntity;
 import org.apache.submarine.server.database.model.mappers.ModelVersionTagMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

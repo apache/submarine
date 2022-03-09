@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.database.experiment.mappers;
 
-import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
+import org.apache.submarine.server.database.experiment.entity.ExperimentEntity;
 
 import java.util.List;
 

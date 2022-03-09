@@ -31,8 +31,8 @@ import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.model.ServeResponse;
 import org.apache.submarine.server.api.model.ServeSpec;
 import org.apache.submarine.server.api.proto.TritonModelConfig;
-import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
-import org.apache.submarine.server.model.database.service.ModelVersionService;
+import org.apache.submarine.server.database.model.entities.ModelVersionEntity;
+import org.apache.submarine.server.database.model.service.ModelVersionService;
 import org.apache.submarine.server.s3.Client;
 import org.apache.submarine.server.s3.S3Constants;
 

@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.database.model.mappers;
 
-import org.apache.submarine.server.model.database.entities.RegisteredModelTagEntity;
+import org.apache.submarine.server.database.model.entities.RegisteredModelTagEntity;
 
 
 public interface RegisteredModelTagMapper {

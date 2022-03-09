@@ -79,11 +79,16 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.submarine</groupId>
-      <artifactId>submarine-server-core</artifactId>
-      <version>${project.version}</version>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
     </dependency>
   </dependencies>
+
+  <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <version>${javax.ws.rsapi.version}</version>
+    </dependency>
 
   <build>
     <plugins>

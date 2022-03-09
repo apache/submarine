@@ -19,19 +19,19 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.apache.submarine.server.database.model.mappers.RegisteredModelMapper">
-  <resultMap id="RegisteredModelTagMap" type="org.apache.submarine.server.model.database.entities.RegisteredModelTagEntity">
+  <resultMap id="RegisteredModelTagMap" type="org.apache.submarine.server.database.model.entities.RegisteredModelTagEntity">
     <result column="name" property="name" />
     <result column="tag" property="tag" />
   </resultMap>
 
-  <resultMap id="resultMap" type="org.apache.submarine.server.model.database.entities.RegisteredModelEntity">
+  <resultMap id="resultMap" type="org.apache.submarine.server.database.model.entities.RegisteredModelEntity">
     <result column="name" property="name" />
     <result column="creation_time" property="creationTime" />
     <result column="last_updated_time" property="lastUpdatedTime" />
     <result column="description" property="description" />
   </resultMap>
 
-  <resultMap id="resultMapWithTag" type="org.apache.submarine.server.model.database.entities.RegisteredModelEntity">
+  <resultMap id="resultMapWithTag" type="org.apache.submarine.server.database.model.entities.RegisteredModelEntity">
     <result column="name" property="name" />
     <result column="creation_time" property="creationTime" />
     <result column="last_updated_time" property="lastUpdatedTime" />
@@ -63,7 +63,7 @@
     from registered_model rm left join registered_model_tag tag on tag.name = rm.name
   </select>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.model.database.entities.RegisteredModelEntity">
+  <insert id="insert" parameterType="org.apache.submarine.server.database.model.entities.RegisteredModelEntity">
     insert into registered_model (name, creation_time, last_updated_time, description)
     values (#{name,jdbcType=VARCHAR}, NOW(3), NOW(3), #{description,jdbcType=VARCHAR});
     <if test="tags != null and !tags.isEmpty()">
@@ -74,7 +74,7 @@
     </if>
   </insert>
 
-  <update id="update" parameterType="org.apache.submarine.server.model.database.entities.RegisteredModelEntity">
+  <update id="update" parameterType="org.apache.submarine.server.database.model.entities.RegisteredModelEntity">
     update registered_model
     <set>
       <if test="description != null">

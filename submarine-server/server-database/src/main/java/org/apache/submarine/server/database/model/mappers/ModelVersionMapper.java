@@ -22,7 +22,7 @@ package org.apache.submarine.server.database.model.mappers;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
-import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
+import org.apache.submarine.server.database.model.entities.ModelVersionEntity;
 
 public interface ModelVersionMapper {
   List<ModelVersionEntity> selectAllVersions(String name);
