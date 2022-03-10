@@ -120,13 +120,7 @@ public class NotebookManager {
     List<Notebook> notebookList = new ArrayList<>();
     for (Notebook notebook : notebookService.selectAll()) {
       if (namespace == null || namespace.length() == 0 ){
-        if (notebook.getStatus().equals(Notebook.Status.STATUS_CREATING.getValue())) {
-          Notebook patchNotebook = submitter.findNotebook(notebook.getSpec());
-          notebook.rebuild(patchNotebook);
-          notebookList.add(notebook);
-        } else {
-          notebookList.add(notebook);
-        }
+        notebookList.add(notebook);
       }
     }
     return notebookList;
@@ -142,17 +136,7 @@ public class NotebookManager {
     List<Notebook> serviceNotebooks = notebookService.selectAll();
     List<Notebook> notebookList = new ArrayList<>();
     for (Notebook nb : serviceNotebooks) {
-      try {
-        if (nb.getStatus().equals(Notebook.Status.STATUS_CREATING.getValue())) {
-          Notebook patchNotebook = submitter.findNotebook(nb.getSpec());
-          nb.rebuild(patchNotebook);
-          notebookList.add(nb);
-        } else {
-          notebookList.add(nb);
-        }
-      } catch (SubmarineRuntimeException e) {
-        LOG.error("Error when get notebook resource, skip this row!", e);
-      }
+      notebookList.add(nb);
     }
     return notebookList;
   }

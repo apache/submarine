@@ -34,7 +34,6 @@ import io.kubernetes.client.openapi.models.V1PersistentVolumeClaimVolumeSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
-import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.api.spec.KernelSpec;
@@ -68,7 +67,6 @@ public class NotebookSpecParser {
     NotebookCR notebookCR = new NotebookCR();
     notebookCR.setMetadata(parseMetadata(spec));
     notebookCR.setSpec(parseNotebookCRSpec(spec));
-    appendSidecar(notebookCR, notebookId, namespace);
     return notebookCR;
   }
 
@@ -282,49 +280,5 @@ public class NotebookSpecParser {
             + currentVersion + ". Moving forward with env creation and "
             + "activation.\"; fi");
     return condaVersionValidationCommand.toString();
-  }
-
-  private static void appendSidecar(NotebookCR notebookCR, String notebookId, String namespace) {
-    NotebookCRSpec notebookCRSpec = notebookCR.getSpec();
-    List<V1Container> containers = notebookCRSpec.getTemplate().getSpec().getContainers();
-    V1Container agentContainer = new V1Container();
-    agentContainer.setName("agent");
-    agentContainer.setImage("apache/submarine:agent-0.7.0");
-
-    List<V1EnvVar> envVarList = new ArrayList<>();
-    V1EnvVar crTypeVar = new V1EnvVar();
-    crTypeVar.setName("CUSTOM_RESOURCE_TYPE");
-    crTypeVar.setValue(CustomResourceType.Notebook.toString());
-
-    V1EnvVar crNameVar = new V1EnvVar();
-    crNameVar.setName("CUSTOM_RESOURCE_NAME");
-    crNameVar.setValue(notebookCR.getMetadata().getName());
-
-    V1EnvVar namespaceVar = new V1EnvVar();
-    namespaceVar.setName("NAMESPACE");
-    namespaceVar.setValue(namespace);
-
-    V1EnvVar serverHostVar = new V1EnvVar();
-    serverHostVar.setName("SERVER_HOST");
-    serverHostVar.setValue(conf.getServerServiceName());
-
-    V1EnvVar serverPortVar = new V1EnvVar();
-    serverPortVar.setName("SERVER_PORT");
-    serverPortVar.setValue(String.valueOf(conf.getServerPort()));
-
-    V1EnvVar customResourceIdVar = new V1EnvVar();
-    customResourceIdVar.setName("CUSTOM_RESOURCE_ID");
-    customResourceIdVar.setValue(notebookId);
-
-    envVarList.add(crTypeVar);
-    envVarList.add(crNameVar);
-    envVarList.add(namespaceVar);
-    envVarList.add(serverHostVar);
-    envVarList.add(serverPortVar);
-    envVarList.add(customResourceIdVar);
-
-    agentContainer.env(envVarList);
-
-    containers.add(agentContainer);
   }
 }
