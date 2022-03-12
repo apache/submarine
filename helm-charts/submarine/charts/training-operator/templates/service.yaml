@@ -14,18 +14,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
+
+apiVersion: v1
+kind: Service
 metadata:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
   labels:
-    app: tf-job-operator
-  name: tf-job-operator
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: tf-job-operator
-subjects:
-- kind: ServiceAccount
-  name: tf-job-operator
-  namespace: {{ .Release.Namespace }}
+    app: training-operator
+  name: training-operator
+spec:
+  ports:
+    - name: monitoring-port
+      port: 8080
+      targetPort: 8080
+  selector:
+    control-plane: kubeflow-training-operator
+  type: ClusterIP
