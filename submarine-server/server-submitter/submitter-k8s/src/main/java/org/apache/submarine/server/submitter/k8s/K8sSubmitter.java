@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -263,11 +264,11 @@ public class K8sSubmitter implements Submitter {
       mlJob.getMetadata().setNamespace(getServerNamespace());
       mlJob.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
       AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(),
-              mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1) 
+              mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
               spec.getMeta().getExperimentId());
-            
-      
+
+
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.create(getServerNamespace(), (TFJob) mlJob,
                       new CreateOptions()).throwsApiException().getObject()
@@ -440,9 +441,10 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public Info getInfo(String name, String ingressRouteName) throws ApiException{
+  public Info getInfo(String name, String ingressRouteName) throws ApiException {
     V1Deployment deploy = appsV1Api.readNamespacedDeploymentStatus(name, getServerNamespace(), "true");
-    boolean available = deploy.getStatus().getAvailableReplicas() > 0; // at least one replica is running
+    boolean available = Optional.ofNullable(deploy.getStatus().getAvailableReplicas())
+            .map(ar -> ar > 0).orElse(false); // at least one replica is running
 
     IngressRoute ingressRoute = new IngressRoute();
     V1ObjectMeta meta = new V1ObjectMeta();
