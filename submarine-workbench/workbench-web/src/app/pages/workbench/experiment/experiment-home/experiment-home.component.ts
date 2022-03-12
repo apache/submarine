@@ -76,6 +76,12 @@ export class ExperimentHomeComponent implements OnInit {
     this.onSwitchAutoReload();
   }
 
+  ngOnDestroy() {
+    if (this.reloadSub) {
+      this.reloadSub.unsubscribe();
+    }
+  }
+
   fetchExperimentList(isAutoReload: boolean) {
     this.experimentService.fetchExperimentList().subscribe(
       (list) => {
