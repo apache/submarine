@@ -23,7 +23,7 @@ This is a docker image built for submarine development and quick start test.
 ### Use the image we provide
 
 ```
-docker pull apache/submarine:mini-0.5.0
+docker pull apache/submarine:mini-0.6.0
 ```
 
 ### Create image by yourself
@@ -66,8 +66,8 @@ export submarine_version=0.7.0
 export release_candidates_path=~/releases/submarine-release
 ./build_mini-submarine.sh
 #docker run -it -h submarine-dev --net=bridge --privileged -P local/mini-submarine:0.7.0 /bin/bash
-docker tag local/mini-submarine:0.7.0 apache/mini-submarine:0.7.0:RC0
-docker push apache/mini-submarine:0.7.0:RC0
+docker tag local/mini-submarine:0.7.0 apache/mini-submarine:0.7.0-RC0
+docker push apache/mini-submarine:0.7.0-RC0
 ```
 In the container, we can verify that the submarine jar version is the expected 0.7.0. Then we can upload this image with a "RC" tag for a vote.
 
