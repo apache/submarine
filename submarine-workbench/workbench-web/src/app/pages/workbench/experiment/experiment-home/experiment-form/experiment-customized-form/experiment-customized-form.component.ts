@@ -97,6 +97,17 @@ export class ExperimentCustomizedFormComponent implements OnInit, OnDestroy {
       gitRepo: new FormControl(null, [])
     });
 
+    this.experimentService.fetchExperimentList().subscribe(
+      (list) => {
+        list.forEach((item) => {
+          this.imageList.push(item.spec.environment.image);
+        });
+      },
+      (error) => {
+        console.error(error);
+      }
+    )
+
     // Bind the component method for callback
     this.checkStatus = this.checkStatus.bind(this);
 
