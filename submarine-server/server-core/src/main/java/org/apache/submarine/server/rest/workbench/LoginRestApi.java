@@ -21,7 +21,7 @@ package org.apache.submarine.server.rest.workbench;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.submarine.server.workbench.annotation.SubmarineApi;
+import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysUserMapper;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
