@@ -27,9 +27,11 @@ import User from '@submarine/pages/workbench/user/User'
 import DataDict from '@submarine/pages/workbench/data_dict/DataDict'
 import Department from '@submarine/pages/workbench/department/Department'
 import Model from '@submarine/pages/workbench/model/Model'
+import { Layout } from 'antd';
+
 function App() {
   return (
-    <div style={{width: "100%", height: "100%"}}>
+    <Layout>
       <Sidebar></Sidebar>
       <Routes>
         <Route path="/" element={<Navigate replace to="experiment" />} />
@@ -42,7 +44,7 @@ function App() {
         <Route path="department" element={<Department />} />
         <Route path="model" element={<Model />} />
       </Routes>
-    </div>
+    </Layout>
   )
 }
 

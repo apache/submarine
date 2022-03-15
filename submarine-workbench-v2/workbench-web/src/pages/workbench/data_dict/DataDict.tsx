@@ -1,8 +1,14 @@
+import { Layout } from 'antd';
+
+const { Content } = Layout;
+
 function DataDict(){
     return (
-        <div>
-            DataDict
-        </div>
+        <Layout>
+            <Content>
+                DataDict
+            </Content>
+        </Layout>
     )
 }
 export default DataDict;

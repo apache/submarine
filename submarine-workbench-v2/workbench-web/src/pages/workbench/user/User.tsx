@@ -1,8 +1,14 @@
+import { Layout } from 'antd';
+
+const { Content } = Layout;
+
 function User(){
     return (
-        <div>
-            User
-        </div>
+        <Layout>
+            <Content>
+                User
+            </Content>
+        </Layout>
     )
 }
 export default User;

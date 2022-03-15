@@ -32,9 +32,10 @@ import {
   DesktopOutlined,
   ApiOutlined
 } from '@ant-design/icons';
-import Sider from 'antd/lib/layout/Sider';
 import './Sidebar.scss'
 import { Link } from 'react-router-dom'
+
+const { Sider } = Layout;
 
 function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -43,7 +44,7 @@ function Sidebar() {
   const handleClick = (e: { key: string; }) => setKey(key => e.key);
 
   return (
-    <Layout>
+    <>
       <Sider
         className='menu-sidebar'
         width='256px'
@@ -130,8 +131,7 @@ function Sidebar() {
           </Menu.Item>
         </Menu>
       </Sider>
-
-    </Layout>
+    </>
   )
 }
 

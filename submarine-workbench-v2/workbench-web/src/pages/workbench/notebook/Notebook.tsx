@@ -1,8 +1,14 @@
+import { Layout } from 'antd';
+
+const { Content } = Layout;
+
 function Notebook(){
     return (
-        <div>
-            Notebook
-        </div>
+        <Layout>
+            <Content>
+                Notebook
+            </Content>
+        </Layout>
     )
 }
 export default Notebook;

@@ -1,8 +1,14 @@
+import { Layout } from 'antd';
+
+const { Content } = Layout;
+
 function Environment(){
     return (
-        <div>
-            Environment
-        </div>
+        <Layout>
+            <Content>
+                Environment
+            </Content>
+        </Layout>
     )
 }
 export default Environment;

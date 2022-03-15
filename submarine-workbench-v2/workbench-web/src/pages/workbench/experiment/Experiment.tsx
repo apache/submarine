@@ -1,8 +1,14 @@
-function Experiment(){
+import { Layout } from 'antd';
+
+const { Content } = Layout;
+
+function Experiment() {
     return (
-        <div>
-            Experiment
-        </div>
+        <Layout>
+            <Content>
+                Experiment
+            </Content>
+        </Layout>
     )
 }
 export default Experiment;

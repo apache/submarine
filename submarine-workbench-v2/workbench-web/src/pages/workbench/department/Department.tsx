@@ -1,8 +1,14 @@
+import { Layout } from 'antd';
+
+const { Content } = Layout;
+
 function Department(){
     return (
-        <div>
-            Department
-        </div>
+        <Layout>
+            <Content>
+                Department
+            </Content>
+        </Layout>
     )
 }
 export default Department;
