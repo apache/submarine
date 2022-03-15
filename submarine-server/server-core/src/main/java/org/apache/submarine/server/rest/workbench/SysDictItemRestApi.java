@@ -16,15 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.rest;
+package org.apache.submarine.server.rest.workbench;
 
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.SysDictEntity;
-import org.apache.submarine.server.workbench.database.mappers.SysDictMapper;
+import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
+import org.apache.submarine.server.workbench.database.mappers.SysDictItemMapper;
+import org.apache.submarine.server.workbench.database.service.SysDictItemService;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.response.JsonResponse.ListResult;
@@ -38,6 +39,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -45,63 +47,65 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Path("/sys/dict")
+@Path("/sys/dictItem")
 @Produces("application/json")
 @Singleton
-public class SysDictRestApi {
-  private static final Logger LOG = LoggerFactory.getLogger(SysDictRestApi.class);
+public class SysDictItemRestApi {
+  private static final Logger LOG = LoggerFactory.getLogger(SysDictItemRestApi.class);
 
   private static final Gson gson = new Gson();
 
   @Inject
-  public SysDictRestApi() {
+  public SysDictItemRestApi() {
   }
 
   @GET
   @Path("/list")
   @SubmarineApi
   public Response list(@QueryParam("dictCode") String dictCode,
-                       @QueryParam("dictName") String dictName,
+                       @QueryParam("itemText") String itemText,
+                       @QueryParam("itemValue") String itemValue,
                        @QueryParam("column") String column,
                        @QueryParam("field") String field,
                        @QueryParam("order") String order,
                        @QueryParam("pageNo") int pageNo,
                        @QueryParam("pageSize") int pageSize) {
-    LOG.info("queryDictList column:{}, field:{}, order:{}, pageNo:{}, pageSize:{}",
-        column, field, order, pageNo, pageSize);
+    LOG.info("queryList dictId:{}, itemText:{}, itemValue:{}, pageNo:{}, pageSize:{}",
+        dictCode, itemText, itemValue, pageNo, pageSize);
 
-    List<SysDictEntity> list = null;
+    List<SysDictItemEntity> list = null;
     SqlSession sqlSession = MyBatisUtil.getSqlSession();
-    SysDictMapper sysDictMapper = sqlSession.getMapper(SysDictMapper.class);
+    SysDictItemMapper sysDictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
     try {
       Map<String, Object> where = new HashMap<>();
       where.put("dictCode", dictCode);
-      where.put("dictName", dictName);
-      list = sysDictMapper.selectAll(where, new RowBounds(pageNo, pageSize));
+      where.put("itemText", itemText);
+      where.put("itemValue", itemValue);
+      list = sysDictItemMapper.selectAll(where, new RowBounds(pageNo, pageSize));
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
     } finally {
       sqlSession.close();
     }
-    PageInfo<SysDictEntity> page = new PageInfo<>(list);
-    ListResult<SysDictEntity> listResult = new ListResult(list, page.getTotal());
+    PageInfo<SysDictItemEntity> page = new PageInfo<>(list);
+    ListResult<SysDictItemEntity> listResult = new ListResult(list, page.getTotal());
 
-    return new JsonResponse.Builder<ListResult<SysDictEntity>>(Response.Status.OK)
+    return new JsonResponse.Builder<ListResult>(Response.Status.OK)
         .success(true).result(listResult).build();
   }
 
   @POST
   @Path("/add")
   @SubmarineApi
-  public Response add(SysDictEntity sysDict) {
-    LOG.info("add Dict:{}", sysDict.toString());
+  public Response add(SysDictItemEntity sysDictItem) {
+    LOG.info("addDict sysDictItem:{}", sysDictItem.toString());
 
     try {
       SqlSession sqlSession = MyBatisUtil.getSqlSession();
-      SysDictMapper sysDictMapper = sqlSession.getMapper(SysDictMapper.class);
+      SysDictItemMapper sysDictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
       try {
-        sysDictMapper.insertSysDict(sysDict);
+        sysDictItemMapper.insertSysDictItem(sysDictItem);
         sqlSession.commit();
       } catch (Exception e) {
         LOG.error(e.getMessage(), e);
@@ -115,22 +119,29 @@ public class SysDictRestApi {
     }
 
     return new JsonResponse.Builder<>(Response.Status.OK)
-        .message("Save dictionary successfully!").success(true).build();
+        .message("Save the dictionary successfully!").success(true).build();
   }
 
   @PUT
   @Path("/edit")
   @SubmarineApi
-  public Response edit(SysDictEntity sysDict) {
-    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
-      SysDictMapper sysDictMapper = sqlSession.getMapper(SysDictMapper.class);
-      SysDictEntity dict = sysDictMapper.getById(sysDict.getId());
-      if (dict == null) {
-        return new JsonResponse.Builder<>(Response.Status.OK)
-            .message("Can not found dict:" + sysDict.getId()).success(false).build();
+  public Response edit(SysDictItemEntity sysDictItem) {
+    try {
+      SqlSession sqlSession = MyBatisUtil.getSqlSession();
+      SysDictItemMapper sysDictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
+      try {
+        SysDictItemEntity dictItem = sysDictItemMapper.getById(sysDictItem.getId());
+        if (dictItem == null) {
+          return new JsonResponse.Builder<>(Response.Status.OK)
+              .message("Can not found dict item:" + sysDictItem.getId()).success(false).build();
+        }
+        sysDictItemMapper.updateBy(sysDictItem);
+        sqlSession.commit();
+      } catch (Exception e) {
+        LOG.error(e.getMessage(), e);
+      } finally {
+        sqlSession.close();
       }
-      sysDictMapper.updateBy(sysDict);
-      sqlSession.commit();
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
@@ -144,7 +155,7 @@ public class SysDictRestApi {
   @DELETE
   @Path("/delete")
   @SubmarineApi
-  public Response delete(@QueryParam("id") String dictId, @QueryParam("deleted") int deleted) {
+  public Response delete(@QueryParam("id") String id, @QueryParam("deleted") int deleted) {
     String msgOperation = "Delete";
     if (deleted == 0) {
       msgOperation = "Restore";
@@ -152,12 +163,12 @@ public class SysDictRestApi {
 
     try {
       SqlSession sqlSession = MyBatisUtil.getSqlSession();
-      SysDictMapper sysDictMapper = sqlSession.getMapper(SysDictMapper.class);
+      SysDictItemMapper sysDictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
       try {
-        SysDictEntity dict = new SysDictEntity();
-        dict.setId(dictId);
-        dict.setDeleted(deleted);
-        sysDictMapper.updateBy(dict);
+        SysDictItemEntity dictItem = new SysDictItemEntity();
+        dictItem.setId(id);
+        dictItem.setDeleted(deleted);
+        sysDictItemMapper.updateBy(dictItem);
         sqlSession.commit();
       } catch (Exception e) {
         LOG.error(e.getMessage(), e);
@@ -167,22 +178,22 @@ public class SysDictRestApi {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
-          .message(msgOperation + " dictionary failed!").success(false).build();
+          .message(msgOperation + " dict item failed!").success(false).build();
     }
 
     return new JsonResponse.Builder<>(Response.Status.OK)
-        .message(msgOperation + " the dictionary successfully!").success(true).build();
+        .message(msgOperation + " the dict item successfully!").success(true).build();
   }
 
   @DELETE
   @Path("/remove")
   @SubmarineApi
-  public Response remove(String dictId) {
+  public Response remove(String id) {
     try {
       SqlSession sqlSession = MyBatisUtil.getSqlSession();
-      SysDictMapper sysDictMapper = sqlSession.getMapper(SysDictMapper.class);
+      SysDictItemMapper sysDictItemMapper = sqlSession.getMapper(SysDictItemMapper.class);
       try {
-        sysDictMapper.deleteById(dictId);
+        sysDictItemMapper.deleteById(id);
         sqlSession.commit();
       } catch (Exception e) {
         LOG.error(e.getMessage(), e);
@@ -192,10 +203,24 @@ public class SysDictRestApi {
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
       return new JsonResponse.Builder<>(Response.Status.OK)
-          .message("Delete dictionary failed!").success(false).build();
+          .message("Delete dict item failed!").success(false).build();
     }
 
     return new JsonResponse.Builder<>(Response.Status.OK)
-        .message("Delete the dictionary successfully!").success(true).build();
+        .message("Delete the dict item successfully!").success(true).build();
+  }
+
+  @GET
+  @Path("/getDictItems/{dictCode}")
+  @SubmarineApi
+  public Response getDictItems(@PathParam("dictCode") String dictCode) {
+    LOG.info("dictCode : " + dictCode);
+
+    SysDictItemService sysDictItemService = new SysDictItemService();
+    List<SysDictItemEntity> dictItems = sysDictItemService.queryDictByCode(dictCode);
+    ListResult<SysDictItemEntity> listResult = new ListResult(dictItems, dictItems.size());
+
+    return new JsonResponse.Builder<ListResult<SysDictItemEntity>>(Response.Status.OK)
+        .success(true).result(listResult).build();
   }
 }

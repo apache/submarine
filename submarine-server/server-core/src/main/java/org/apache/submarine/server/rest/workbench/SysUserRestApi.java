@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.rest;
+package org.apache.submarine.server.rest.workbench;
 
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;

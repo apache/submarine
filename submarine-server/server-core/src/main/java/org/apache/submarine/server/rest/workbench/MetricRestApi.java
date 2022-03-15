@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.rest;
+package org.apache.submarine.server.rest.workbench;
 
 import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.workbench.annotation.SubmarineApi;
