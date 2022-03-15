@@ -92,7 +92,7 @@ public class AgentPod extends V1Pod{
   }
   
   private String getNormalizePodName(CustomResourceType type, String name, String resourceId) {
-    return String.format("%s-%s-%s-%s", type.toString().toLowerCase(), 
-            name, resourceId.toString().toLowerCase().replace('_', '-'), CONTAINER_NAME);
+    return String.format("%s-%s-%s-%s", resourceId.toString().toLowerCase().replace('_', '-'), 
+            type.toString().toLowerCase(), name, CONTAINER_NAME);
   }
 }
