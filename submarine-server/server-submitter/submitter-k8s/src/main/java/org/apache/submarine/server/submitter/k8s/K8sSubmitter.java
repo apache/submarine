@@ -482,7 +482,8 @@ public class K8sSubmitter implements Submitter {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
     }
-
+    AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
+            CustomResourceType.Notebook, notebookId);
     // create persistent volume claim
     try {
       // workspace
@@ -517,6 +518,7 @@ public class K8sSubmitter implements Submitter {
     try {
       Object object = notebookCRClient.create(notebookCR).throwsApiException().getObject();
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
+      V1Pod agentPodResult = podClient.create(agentPod).throwsApiException().getObject();
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
       if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
@@ -555,28 +557,6 @@ public class K8sSubmitter implements Submitter {
       Object object = notebookCRClient.get(namespace, notebookCR.getMetadata().getName())
               .throwsApiException().getObject();
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
-      if (notebook.getStatus().equals(Notebook.Status.STATUS_WAITING.toString())) {
-        LOG.info(String.format("notebook status: waiting; check the pods in namespace:[%s] to "
-            + "ensure is the waiting caused by image pulling", namespace));
-        String podLabelSelector = String.format("%s=%s", NotebookCR.NOTEBOOK_ID,
-            spec.getMeta().getLabels().get(NotebookCR.NOTEBOOK_ID).toString());
-        ListOptions listOptions = new ListOptions();
-        listOptions.setLabelSelector(podLabelSelector);
-        final V1PodList podList = podClient.list(getServerNamespace(), listOptions)
-                .throwsApiException().getObject();
-        String podName = podList.getItems().get(0).getMetadata().getName();
-
-        String fieldSelector = String.format("involvedObject.name=%s", podName);
-        listOptions = new ListOptions();
-        listOptions.setFieldSelector(fieldSelector);
-        CoreV1EventList events = eventClient.list(namespace, listOptions).throwsApiException().getObject();
-        CoreV1Event latestEvent = events.getItems().get(events.getItems().size() - 1);
-
-        if (latestEvent.getReason().equalsIgnoreCase("Pulling")) {
-          notebook.setStatus(Notebook.Status.STATUS_PULLING.getValue());
-          notebook.setReason(latestEvent.getReason());
-        }
-      }
     } catch (ApiException e) {
       // SUBMARINE-1124
       // The exception that obtaining CRD resources is not necessarily because the CRD is deleted,

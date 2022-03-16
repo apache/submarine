@@ -41,9 +41,7 @@ public class AgentPod extends V1Pod{
     super();
     V1ObjectMeta meta = new V1ObjectMeta();
 
-    meta.setName(
-            String.format("%s-%s-%s-%s", type.toString().toLowerCase(), name,
-                    resourceId.toLowerCase(), CONTAINER_NAME));
+    meta.setName(getNormalizePodName(type, name, resourceId));
     meta.setNamespace(namespace);
     this.setMetadata(meta);
 
@@ -91,5 +89,10 @@ public class AgentPod extends V1Pod{
 
     spec.setRestartPolicy("OnFailure");
     this.setSpec(spec);
+  }
+  
+  private String getNormalizePodName(CustomResourceType type, String name, String resourceId) {
+    return String.format("%s-%s-%s-%s", resourceId.toString().toLowerCase().replace('_', '-'), 
+            type.toString().toLowerCase(), name, CONTAINER_NAME);
   }
 }

@@ -83,11 +83,11 @@ public class NotebookHandler extends CustomResourceHandler {
       ListOptions listOptions = new ListOptions();
       String podLabelSelector = String.format("%s=%s", NotebookCR.NOTEBOOK_ID, this.resourceId);
       listOptions.setLabelSelector(podLabelSelector);
+      
+      
       V1PodList podList = podClient.list(namespace, listOptions).throwsApiException().getObject();
-
       this.uid = podList.getItems().get(podList.getItems().size() - 1).getMetadata().getUid();
-
-
+      
       listOptions = new ListOptions();
       String fieldSelector = String.format("involvedObject.uid=%s", this.uid);
 
@@ -140,7 +140,6 @@ public class NotebookHandler extends CustomResourceHandler {
               notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
               notebook.setStatus(Notebook.Status.STATUS_TERMINATING.getValue());
               restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
-
               LOG.info("Receive terminating event, exit progress");
               return;
             default:
