@@ -136,6 +136,10 @@ public class NotebookHandler extends CustomResourceHandler {
               restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               break;
             case "Killing":
+              object = notebookCRClient.get(namespace, crName).throwsApiException().getObject();
+              notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
+              notebook.setStatus(Notebook.Status.STATUS_TERMINATING.getValue());
+              restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               LOG.info("Receive terminating event, exit progress");
               return;
             default:
