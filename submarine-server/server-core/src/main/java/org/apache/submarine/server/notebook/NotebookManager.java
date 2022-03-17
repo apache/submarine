@@ -172,7 +172,7 @@ public class NotebookManager {
    */
   public Notebook deleteNotebook(String id) throws SubmarineRuntimeException {
     Notebook notebook = getNotebook(id);
-    Notebook patchNotebook = submitter.deleteNotebook(notebook.getSpec());
+    Notebook patchNotebook = submitter.deleteNotebook(notebook.getSpec(), id);
     notebookService.delete(id);
     notebook.rebuild(patchNotebook);
     return notebook;
