@@ -41,7 +41,7 @@ public class NotebookSpecParserTest extends SpecBuilder {
   @Test
   public void testValidNotebook() throws IOException, URISyntaxException {
     NotebookSpec notebookSpec = (NotebookSpec) buildFromJsonFile(NotebookSpec.class, notebookReqFile);
-    NotebookCR notebook = NotebookSpecParser.parseNotebook(notebookSpec, null, null);
+    NotebookCR notebook = NotebookSpecParser.parseNotebook(notebookSpec, null);
 
     validateMetadata(notebookSpec.getMeta(), notebook.getMetadata());
     validateEnvironment(notebookSpec, notebook.getSpec());

@@ -63,7 +63,7 @@ public class NotebookSpecParser {
           SubmarineConfiguration.getInstance();
 
 
-  public static NotebookCR parseNotebook(NotebookSpec spec, String notebookId, String namespace) {
+  public static NotebookCR parseNotebook(NotebookSpec spec, String namespace) {
     NotebookCR notebookCR = new NotebookCR();
     notebookCR.setMetadata(parseMetadata(spec));
     notebookCR.setSpec(parseNotebookCRSpec(spec));

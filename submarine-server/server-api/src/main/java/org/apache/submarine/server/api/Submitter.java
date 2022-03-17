@@ -111,10 +111,11 @@ public interface Submitter {
   /**
    * Delete a notebook with spec
    * @param spec spec
+   * @param notebookId notebookId
    * @return object
    * @throws SubmarineRuntimeException running error
    */
-  Notebook deleteNotebook(NotebookSpec spec) throws SubmarineRuntimeException;
+  Notebook deleteNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException;
 
   /**
    * List notebooks with userID

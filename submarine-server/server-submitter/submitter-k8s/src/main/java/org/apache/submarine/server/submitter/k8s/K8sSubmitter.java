@@ -341,6 +341,12 @@ public class K8sSubmitter implements Submitter {
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       mlJob.getMetadata().setNamespace(getServerNamespace());
+      
+      AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(),
+              mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
+              ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
+              spec.getMeta().getExperimentId());
+      
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.delete(getServerNamespace(), mlJob.getMetadata().getName(),
               MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
@@ -348,6 +354,10 @@ public class K8sSubmitter implements Submitter {
               : pyTorchJobClient.delete(getServerNamespace(), mlJob.getMetadata().getName(),
               MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
               .throwsApiException().getStatus();
+      
+      LOG.info(String.format("Experiment:%s had been deleted, start to delete agent pod:%s",
+              spec.getMeta().getName(), agentPod.getMetadata().getName()));
+      podClient.delete(agentPod.getMetadata().getNamespace(), agentPod.getMetadata().getName());
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_DELETE);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
@@ -475,7 +485,7 @@ public class K8sSubmitter implements Submitter {
     // parse notebook custom resource
     NotebookCR notebookCR;
     try {
-      notebookCR = NotebookSpecParser.parseNotebook(spec, notebookId, namespace);
+      notebookCR = NotebookSpecParser.parseNotebook(spec, namespace);
       notebookCR.getMetadata().setNamespace(namespace);
       notebookCR.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
     } catch (JsonSyntaxException e) {
@@ -553,7 +563,7 @@ public class K8sSubmitter implements Submitter {
     String namespace = getServerNamespace();
 
     try {
-      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null, null);
+      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null);
       Object object = notebookCRClient.get(namespace, notebookCR.getMetadata().getName())
               .throwsApiException().getObject();
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
@@ -575,11 +585,14 @@ public class K8sSubmitter implements Submitter {
   }
 
   @Override
-  public Notebook deleteNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
+  public Notebook deleteNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
     Notebook notebook = null;
     final String name = spec.getMeta().getName();
     String namespace = getServerNamespace();
-    NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null, null);
+    NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null);
+    AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
+            CustomResourceType.Notebook, notebookId);
+
     try {
       Object object = notebookCRClient.delete(namespace, name,
               getDeleteOptions(notebookCR.getApiVersion())).throwsApiException().getStatus();
@@ -610,6 +623,9 @@ public class K8sSubmitter implements Submitter {
     if (StringUtils.isNoneBlank(OVERWRITE_JSON)) {
       deleteConfigMap(namespace, String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name));
     }
+    LOG.info(String.format("Experiment:%s had been deleted, start to delete agent pod:%s",
+            spec.getMeta().getName(), agentPod.getMetadata().getName()));
+    podClient.delete(agentPod.getMetadata().getNamespace(), agentPod.getMetadata().getName());
 
     return notebook;
   }
