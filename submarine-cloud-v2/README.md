@@ -31,7 +31,7 @@ Golang version: `1.16.2`
 # Install dependencies
 go mod vendor
 # Run the cluster
-minikube start --vm-driver=docker  --kubernetes-version v1.15.11
+minikube start --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.21.2
 ```
 
 ## Set up storage class fields

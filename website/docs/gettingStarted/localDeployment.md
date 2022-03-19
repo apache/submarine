@@ -31,7 +31,7 @@ under the License.
 ## Deploy Kubernetes Cluster
 
 ```
-$ minikube start --vm-driver=docker --cpus 8 --memory 4096 --disk-size=20G --kubernetes-version v1.15.11
+$ minikube start --vm-driver=docker --cpus 8 --memory 4096 --disk-size=20G --kubernetes-version v1.21.2
 ```
 
 ## Install Submarine on Kubernetes
