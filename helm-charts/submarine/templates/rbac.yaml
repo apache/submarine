@@ -24,6 +24,7 @@ rules:
       - submarine.apache.org
     resources:
       - submarines
+      - submarines/status
     verbs:
       - "*"
   - apiGroups:
