@@ -15,67 +15,100 @@
 # limitations under the License.
 #
 
-apiVersion: apiextensions.k8s.io/v1beta1
+apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   name: submarines.submarine.apache.org
+  labels:
+    app.kubernetes.io/name: submarine-operator
+    app.kubernetes.io/version: "0.7.0"
+    app.kubernetes.io/component: submarine-operator
+    app.kubernetes.io/managed-by: helm
 spec:
   group: submarine.apache.org
-  version: v1alpha1
   names:
     kind: Submarine
+    listKind: SubmarineList
     plural: submarines
+    singular: submarine
+    shortNames:
+    - sm
+    categories:
+    - all
   scope: Namespaced
-  validation:
-    openAPIV3Schema:
-      type: object
-      required: ["spec"]
-      properties:
-        spec:
-          type: object
-          required:
-            - version
-          properties:
-            version: # submarine docker image version
-              type: string
-            server:
-              type: object
-              properties:
-                image: # Use this to overwrite the image when development
-                  type: string
-                replicas:
-                  type: integer
-                  minimum: 1
-            database:
-              type: object
-              properties:
-                image: # Use this to overwrite the image when development
-                  type: string
-                replicas:
-                  type: integer
-                  minimum: 1
-                storageSize:
-                  type: string
-                mysqlRootPasswordSecret:
-                  type: string
-            tensorboard:
-              type: object
-              properties:
-                enabled:
-                  type: boolean
-                storageSize:
-                  type: string
-            mlflow:
-              type: object
-              properties:
-                enabled:
-                  type: boolean
-                storageSize:
-                  type: string
-            minio:
-              type: object
-              properties:
-                enabled:
-                  type: boolean
-                storageSize:
-                  type: string
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        type: object
+        required: ["spec"]
+        properties:
+          spec:
+            type: object
+            required:
+              - version
+            properties:
+              version: 
+                description: submarine docker image version
+                type: string
+              server:
+                type: object
+                properties:
+                  image: 
+                    description: Use this to overwrite the image when development
+                    type: string
+                  replicas:
+                    type: integer
+                    minimum: 1
+              database:
+                type: object
+                properties:
+                  image: 
+                    description: Use this to overwrite the image when development
+                    type: string
+                  replicas:
+                    type: integer
+                    minimum: 1
+                  storageSize:
+                    type: string
+                  mysqlRootPasswordSecret:
+                    type: string
+              tensorboard:
+                type: object
+                properties:
+                  enabled:
+                    type: boolean
+                  storageSize:
+                    type: string
+              mlflow:
+                type: object
+                properties:
+                  enabled:
+                    type: boolean
+                  storageSize:
+                    type: string
+              minio:
+                type: object
+                properties:
+                  enabled:
+                    type: boolean
+                  storageSize:
+                    type: string
+          status:
+            type: object
+            properties:
+              availableServerReplicas:
+                type: integer
+              availableDatabaseReplicas:
+                type: integer
+              submarineState:
+                type: object
+                properties:
+                  state:
+                    type: string
+                  errorMessage:
+                    type: string
+    served: true
+    storage: true
+    subresources:
+      status: {}

@@ -24,6 +24,7 @@ rules:
       - submarine.apache.org
     resources:
       - submarines
+      - submarines/status
     verbs:
       - "*"
   - apiGroups:
@@ -85,6 +86,7 @@ rules:
       - apiextensions.k8s.io
     resources:
       - customresourcedefinitions
+      - customresourcedefinitions/status
     verbs:
       - "*"
 ---
