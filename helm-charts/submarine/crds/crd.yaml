@@ -94,5 +94,21 @@ spec:
                     type: boolean
                   storageSize:
                     type: string
+          status:
+            type: object
+            properties:
+              availableServerReplicas:
+                type: integer
+              availableDatabaseReplicas:
+                type: integer
+              submarineState:
+                type: object
+                properties:
+                  state:
+                    type: string
+                  errorMessage:
+                    type: string
     served: true
     storage: true
+    subresources:
+      status: {}

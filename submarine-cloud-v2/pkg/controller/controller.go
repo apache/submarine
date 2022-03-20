@@ -324,7 +324,8 @@ func (c *Controller) updateSubmarineStatus(submarine, submarineCopy *v1alpha1.Su
 		return nil
 	}
 
-	_, err = c.submarineclientset.SubmarineV1alpha1().Submarines(submarine.Namespace).Update(context.TODO(), submarineCopy, metav1.UpdateOptions{})
+	// Update submarine status
+	_, err = c.submarineclientset.SubmarineV1alpha1().Submarines(submarine.Namespace).UpdateStatus(context.TODO(), submarineCopy, metav1.UpdateOptions{})
 	if err != nil {
 		return err
 	}
