@@ -89,7 +89,7 @@ jobs:
           cd istio-1.13.0
           echo "$PWD/bin" >> $GITHUB_PATH
       - name: Install Istio
-        run: istioctl install -y
+        run: istioctl install -y --set values.global.proxy.resources.requests.cpu=10m
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
