@@ -20,7 +20,7 @@
 package org.apache.submarine.server.submitter.k8s.model.pytorchjob;
 
 import com.google.gson.annotations.SerializedName;
-import org.apache.submarine.server.submitter.k8s.model.MLJob;
+import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
 
 public class PyTorchJob extends MLJob {
 

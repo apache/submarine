@@ -16,36 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.submitter.k8s.model;
 
-import com.google.gson.annotations.SerializedName;
-import io.kubernetes.client.openapi.models.V1ContainerState;
+package org.apache.submarine.server.submitter.k8s.model.mljob;
 
-import java.util.List;
-
-public class NotebookStatus {
-
-  @SerializedName("conditions")
-  private List<NotebookCondition> conditions;
-
-  @SerializedName("readyReplicas")
-  private int readyReplicas;
-
-  @SerializedName("containerState")
-  private V1ContainerState containerState;
-
-  NotebookStatus() {
-  }
-
-  public int getReadyReplicas() {
-    return readyReplicas;
-  }
-
-  public V1ContainerState getContainerState() {
-    return containerState;
-  }
-
-  public List<NotebookCondition> getConditions() {
-    return conditions;
-  }
+/**
+ * Interface for enum like <code>PyTorchJobReplicaType</code> to implement
+ * */
+public interface MLJobReplicaType {
+  String getTypeName();
 }

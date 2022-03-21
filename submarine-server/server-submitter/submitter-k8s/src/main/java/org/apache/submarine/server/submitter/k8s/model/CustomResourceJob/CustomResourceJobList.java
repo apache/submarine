@@ -17,46 +17,67 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model;
+package org.apache.submarine.server.submitter.k8s.model.CustomResourceJob;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.SerializedName;
+import org.apache.submarine.server.submitter.k8s.model.ListMeta;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
- * The response job for CRD API.
- *   POST:   /apis/{group}/{version}/namespaces/{namespace}/{plural}
- *   GET:    /apis/{group}/{version}/namespaces/{namespace}/{plural}/{name}
- *   DELETE: /apis/{group}/{version}/namespaces/{namespace}/{plural}/{name}
+ * The response for CRD API.
+ *   GET: /apis/{group}/{version}/namespaces/{namespace}/{plural}
  */
-public class CustomResourceJob {
+public class CustomResourceJobList {
   @SerializedName("apiVersion")
   private String apiVersion;
+
+  @SerializedName("items")
+  private List<Object> items = new ArrayList<>();
 
   @SerializedName("kind")
   protected String kind;
 
   @SerializedName("metadata")
-  private ObjectMeta metadata;
-
-  @SerializedName("spec")
-  private Map<String, Object> spec;
+  private ListMeta metadata;
 
   public String getApiVersion() {
     return apiVersion;
+  }
+
+  public List<Object> getItems() {
+    return items;
   }
 
   public String getKind() {
     return kind;
   }
 
-  public ObjectMeta getMetadata() {
+  public ListMeta getMetadata() {
     return metadata;
   }
 
-  public Map<String, Object> getSpec() {
-    return spec;
+  @Override
+  public int hashCode() {
+    return Objects.hash(apiVersion, items, kind, metadata);
+  }
+
+  @Override
+  public boolean equals(java.lang.Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    CustomResourceJobList jobList = (CustomResourceJobList) o;
+    return Objects.equals(this.apiVersion, jobList.apiVersion) &&
+        Objects.equals(this.items, jobList.items) &&
+        Objects.equals(this.kind, jobList.kind) &&
+        Objects.equals(this.metadata, jobList.metadata);
   }
 
   @Override

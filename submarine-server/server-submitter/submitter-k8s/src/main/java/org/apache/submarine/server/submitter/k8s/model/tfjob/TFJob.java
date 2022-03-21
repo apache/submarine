@@ -23,7 +23,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.kubernetes.client.common.KubernetesObject;
 
-import org.apache.submarine.server.submitter.k8s.model.MLJob;
+import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
 
 /**
  * It's the tf-operator's entry model.

@@ -35,7 +35,7 @@ import org.apache.submarine.server.api.exception.InvalidSpecException;
 import org.apache.submarine.server.api.experiment.Experiment;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
-import org.apache.submarine.server.submitter.k8s.model.MLJob;
+import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.joda.time.DateTime;
 import org.junit.Assert;

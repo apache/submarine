@@ -20,7 +20,7 @@
 package org.apache.submarine.server.submitter.k8s.model.tfjob;
 
 import com.google.gson.annotations.SerializedName;
-import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaSpec;
+import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaSpec;
 
 import java.util.Map;
 

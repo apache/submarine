@@ -40,8 +40,8 @@ import org.apache.submarine.server.api.spec.KernelSpec;
 import org.apache.submarine.server.api.spec.NotebookPodSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.environment.EnvironmentManager;
-import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
-import org.apache.submarine.server.submitter.k8s.model.NotebookCRSpec;
+import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCR;
+import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCRSpec;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 
 import java.util.ArrayList;
