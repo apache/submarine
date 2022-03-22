@@ -89,14 +89,13 @@ RUN wget --quiet https://repo.continuum.io/miniconda/Miniconda3-py37_${MINICONDA
     conda config --system --prepend channels conda-forge && \
     conda config --system --set auto_update_conda false && \
     conda config --system --set show_channel_urls true && \
-    conda config --system --set channel_priority strict && \
-    if [ ! $PYTHON_VERSION = 'default' ]; then conda install --yes python=$PYTHON_VERSION; fi && \
+    conda config --system --set channel_priority flexible && \
+    if [ ! $PYTHON_VERSION = 'default' ]; then conda install --freeze-installed --yes python=$PYTHON_VERSION; fi && \
     conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
     conda init bash && \
     source ~/.bashrc && conda activate && \
     # it is used for jupyter lab build
-    conda install nodejs && \
-    conda install -c conda-forge jupyterlab jupyterlab-git cvxpy==1.0.21 && \
+    conda install --freeze-installed -c conda-forge nodejs jupyterlab jupyterlab-git cvxpy==1.0.21 && \
     jupyter lab build && \
     # remove node_modules
     rm -rf /home/$NB_USER/.cache/yarn && \
