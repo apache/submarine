@@ -20,7 +20,7 @@
 package org.apache.submarine.server.submitter.k8s.model.pytorchjob;
 
 import com.google.gson.annotations.SerializedName;
-import org.apache.submarine.server.submitter.k8s.model.MLJobReplicaType;
+import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaType;
 
 public enum PyTorchJobReplicaType implements MLJobReplicaType {
 

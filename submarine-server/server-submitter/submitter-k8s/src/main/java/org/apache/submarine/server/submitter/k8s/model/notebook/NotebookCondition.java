@@ -16,36 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.submitter.k8s.model;
+package org.apache.submarine.server.submitter.k8s.model.notebook;
 
 import com.google.gson.annotations.SerializedName;
-import io.kubernetes.client.openapi.models.V1ContainerState;
+import org.joda.time.DateTime;
 
-import java.util.List;
+public class NotebookCondition {
 
-public class NotebookStatus {
+  public NotebookCondition() {
 
-  @SerializedName("conditions")
-  private List<NotebookCondition> conditions;
-
-  @SerializedName("readyReplicas")
-  private int readyReplicas;
-
-  @SerializedName("containerState")
-  private V1ContainerState containerState;
-
-  NotebookStatus() {
   }
 
-  public int getReadyReplicas() {
-    return readyReplicas;
-  }
+  @SerializedName("type")
+  private String type;
 
-  public V1ContainerState getContainerState() {
-    return containerState;
-  }
+  @SerializedName("lastProbeTime")
+  private DateTime lastProbeTime;
 
-  public List<NotebookCondition> getConditions() {
-    return conditions;
-  }
+  @SerializedName("reason")
+  private String reason;
+
+  @SerializedName("message")
+  private String message;
+
 }

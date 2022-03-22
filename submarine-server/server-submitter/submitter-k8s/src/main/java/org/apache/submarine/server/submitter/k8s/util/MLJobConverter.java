@@ -26,7 +26,7 @@ import io.kubernetes.client.openapi.models.V1Status;
 import io.kubernetes.client.openapi.models.V1StatusDetails;
 import io.kubernetes.client.util.generic.options.DeleteOptions;
 import org.apache.submarine.server.api.experiment.Experiment;
-import org.apache.submarine.server.submitter.k8s.model.MLJob;
+import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
 import org.joda.time.DateTime;
 
 /**

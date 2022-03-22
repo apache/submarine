@@ -17,25 +17,11 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model;
+package org.apache.submarine.server.submitter.k8s.model.mljob;
 
-import java.util.Map;
-
-import com.google.gson.annotations.SerializedName;
-
-public abstract class MLJobSpec {
-  
-  @SerializedName("backoffLimit")
-  private Integer backoffLimit = 3;
-  
-  public abstract Map<MLJobReplicaType, MLJobReplicaSpec> getReplicaSpecs();
-  public abstract void setReplicaSpecs(Map<MLJobReplicaType, MLJobReplicaSpec> replicaSpecs);
-  public Integer getBackoffLimit() {
-    return backoffLimit;
-  }
-  
-  public void setBackoffLimit(Integer backoffLimit) {
-    this.backoffLimit = backoffLimit;
-  }
-
+/**
+ * Interface for enum like <code>PyTorchJobReplicaType</code> to implement
+ * */
+public interface MLJobReplicaType {
+  String getTypeName();
 }

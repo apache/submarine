@@ -26,8 +26,8 @@ import io.kubernetes.client.openapi.models.V1ContainerState;
 import io.kubernetes.client.openapi.models.V1Status;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.notebook.Notebook;
-import org.apache.submarine.server.submitter.k8s.model.NotebookCR;
-import org.apache.submarine.server.submitter.k8s.model.NotebookCRList;
+import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCR;
+import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCRList;
 
 import java.util.ArrayList;
 import java.util.HashMap;

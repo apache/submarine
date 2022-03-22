@@ -17,11 +17,10 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model;
+package org.apache.submarine.server.submitter.k8s.model.mljob;
 
 import com.google.gson.annotations.SerializedName;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
-
 import java.math.BigDecimal;
 
 /**
