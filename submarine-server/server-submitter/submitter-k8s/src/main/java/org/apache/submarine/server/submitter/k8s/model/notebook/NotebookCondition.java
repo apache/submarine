@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.submitter.k8s.model;
+package org.apache.submarine.server.submitter.k8s.model.notebook;
 
 import com.google.gson.annotations.SerializedName;
 import org.joda.time.DateTime;
