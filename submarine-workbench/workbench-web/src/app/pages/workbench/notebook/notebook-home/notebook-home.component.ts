@@ -52,7 +52,7 @@ export class NotebookHomeComponent implements OnInit, OnDestroy {
       this.userId = res.id;
     });
 
-    const resourceSub = interval(1000).subscribe(() => {
+    const resourceSub = interval(10000).subscribe(() => {
       this.notebookService.fetchNotebookList(this.userId).subscribe((res) => {
         if (!isEqual(this.notebookList, res)) {
           this.notebookList = res;
