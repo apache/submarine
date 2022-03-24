@@ -15,6 +15,9 @@
 # limitations under the License.
 set -euo pipefail
 
+# activate python 3.9.9 environment
+. ${PYTHON_VENV_PATH}/venv3.9/bin/activate
+
 function merge_pr(){
   printf "==== Merge PR Begin ====\n"
   jira_name="n"
@@ -57,8 +60,9 @@ function merge_pr(){
   git config user.email "${apache_id}@apache.org"
   export JIRA_USERNAME=${jira_name}
   export JIRA_PASSWORD=${jira_pwd}
-  python dev-support/cicd/merge_submarine_pr.py
+  python3 /merge_submarine_pr.py
   printf "==== Merge PR END ====\n"
 }
 
 merge_pr
+deactivate

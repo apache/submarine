@@ -19,7 +19,10 @@ RUN \
   apt-get install -y wget vim git python-pip zlib1g-dev libssl-dev && \
   wget https://www.python.org/ftp/python/3.9.9/Python-3.9.9.tgz && \
   tar xzf Python-3.9.9.tgz && cd Python-3.9.9 && ./configure --with-zlib && make install && make altinstall && \
-  pip install jira
+  cd /root && python3 -m venv venv3.9 && \
+  . venv3.9/bin/activate && \
+  pip install jira && \
+  deactivate
 
 RUN \
   git clone https://gitbox.apache.org/repos/asf/submarine.git && \
@@ -28,6 +31,8 @@ RUN \
   git remote add apache-github https://github.com/apache/submarine.git
 ADD \
   entry.sh /entry.sh
+ADD \
+  merge_submarine_pr.py /merge_submarine_pr.py
 ENV \
   SUBMARINE_HOME=/submarine \
   PYTHON_VENV_PATH=/root

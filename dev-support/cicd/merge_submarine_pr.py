@@ -76,9 +76,9 @@ def fail(msg):
 def run_cmd(cmd):
     print(cmd)
     if isinstance(cmd, list):
-        return subprocess.check_output(cmd)
+        return subprocess.check_output(cmd).decode()
     else:
-        return subprocess.check_output(cmd.split(" "))
+        return subprocess.check_output(cmd.split(" ")).decode()
 
 
 def continue_maybe(prompt):
@@ -118,9 +118,8 @@ def merge_pr(pr_num, target_ref):
         msg = "Okay, please fix any conflicts and 'git add' conflicting files... Finished?"
         continue_maybe(msg)
         had_conflicts = True
-
     commit_authors = run_cmd(
-        ["git", "log", "HEAD..%s" % pr_branch_name, "--pretty=format:%an <%ae>"]
+        ["git", "log", "HEAD..%s" % pr_branch_name, r"--pretty=format:%an <%ae>"]
     ).split("\n")
     commit_date = run_cmd(["git", "log", "%s" % pr_branch_name, "-1", "--pretty=format:%ad"])
     distinct_authors = sorted(
@@ -137,7 +136,7 @@ def merge_pr(pr_num, target_ref):
     if body is not None:
         # We remove @ symbols from the body to avoid triggering e-mails
         # to people every time someone creates a public fork of Submarine.
-        merge_message_flags += ["-m", body.encode("utf-8").replace("@", "")]
+        merge_message_flags += ["-m", body.replace("@", "")]
 
     authors = "\n".join(["Author: %s" % a for a in distinct_authors])
 
