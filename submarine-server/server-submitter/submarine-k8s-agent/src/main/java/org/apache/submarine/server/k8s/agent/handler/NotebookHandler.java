@@ -35,7 +35,6 @@ import io.kubernetes.client.util.generic.GenericKubernetesApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.models.CoreV1Event;
 import io.kubernetes.client.util.Watch.Response;
@@ -106,7 +105,6 @@ public class NotebookHandler extends CustomResourceHandler {
     while (true) {
       for (Response<CoreV1Event> event: watcher) {
         String reason = event.object.getReason();
-      
         Object object = null;
         try {
           switch (reason) {
@@ -118,11 +116,13 @@ public class NotebookHandler extends CustomResourceHandler {
               restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               break;
             case "Started":
+            case "Pulled":
               object = notebookCRClient.get(namespace, crName).throwsApiException().getObject();
               notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
               notebook.setStatus(Notebook.Status.STATUS_RUNNING.getValue());
               restClient.callStatusUpdate(CustomResourceType.Notebook, this.resourceId, notebook);
               break;
+            case "BackOff":
             case "Failed":
               object = notebookCRClient.get(namespace, crName).throwsApiException().getObject();
               notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
