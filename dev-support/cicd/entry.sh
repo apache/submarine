@@ -14,9 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 set -euo pipefail
-# activate python 2.7.13 environment
-. ${PYTHON_VENV_PATH}/venv2.7/bin/activate
-
 
 function merge_pr(){
   printf "==== Merge PR Begin ====\n"
@@ -65,4 +62,3 @@ function merge_pr(){
 }
 
 merge_pr
-deactivate

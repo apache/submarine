@@ -17,14 +17,9 @@ FROM ubuntu:18.04
 RUN \
   apt-get update && \
   apt-get install -y wget vim git python-pip zlib1g-dev libssl-dev && \
-  wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz && \
-  tar xzf Python-2.7.13.tgz && cd Python-2.7.13 && ./configure --with-zlib && make install && make altinstall && \
-  cd /root && wget https://files.pythonhosted.org/packages/59/38/55dd25a965990bd93f77eb765b189e72cf581ce1c2de651cb7b1dea74ed1/virtualenv-16.2.0.tar.gz && \
-  tar xf virtualenv-16.2.0.tar.gz && \
-  python virtualenv-16.2.0/virtualenv.py venv2.7 && \
-  . venv2.7/bin/activate && \
-  pip install jira && \
-  deactivate
+  wget https://www.python.org/ftp/python/3.9.9/Python-3.9.9.tgz && \
+  tar xzf Python-3.9.9.tgz && cd Python-3.9.9 && ./configure --with-zlib && make install && make altinstall && \
+  pip install jira
 
 RUN \
   git clone https://gitbox.apache.org/repos/asf/submarine.git && \
