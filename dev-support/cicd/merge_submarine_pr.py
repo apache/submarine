@@ -119,7 +119,7 @@ def merge_pr(pr_num, target_ref):
         continue_maybe(msg)
         had_conflicts = True
     commit_authors = run_cmd(
-        ["git", "log", "HEAD..%s" % pr_branch_name, r"--pretty=format:%an <%ae>"]
+        ["git", "log", "HEAD..%s" % pr_branch_name, "--pretty=format:%an <%ae>"]
     ).split("\n")
     commit_date = run_cmd(["git", "log", "%s" % pr_branch_name, "-1", "--pretty=format:%ad"])
     distinct_authors = sorted(
@@ -181,8 +181,8 @@ def merge_pr(pr_num, target_ref):
 
     merge_hash = run_cmd("git rev-parse %s" % target_branch_name)[:8]
     clean_up()
-    print(("Pull request #%s merged!" % pr_num))
-    print(("Merge hash: %s" % merge_hash))
+    print("Pull request #%s merged!" % pr_num)
+    print("Merge hash: %s" % merge_hash)
     return merge_hash
 
 
@@ -217,8 +217,8 @@ def cherry_pick(pr_num, merge_hash, default_branch):
     pick_hash = run_cmd("git rev-parse %s" % pick_branch_name)[:8]
     clean_up()
 
-    print(("Pull request #%s picked into %s!" % (pr_num, pick_ref)))
-    print(("Pick hash: %s" % pick_hash))
+    print("Pull request #%s picked into %s!" % (pr_num, pick_ref))
+    print("Pick hash: %s" % pick_hash)
     return pick_ref
 
 
@@ -352,8 +352,8 @@ if not bool(pr["mergeable"]):
     )
     continue_maybe(msg)
 
-print(("\n=== Pull Request #%s ===" % pr_num))
-print(("title\t%s\nsource\t%s\ntarget\t%s\nurl\t%s" % (title, pr_repo_desc, target_ref, url)))
+print("\n=== Pull Request #%s ===" % pr_num)
+print("title\t%s\nsource\t%s\ntarget\t%s\nurl\t%s" % (title, pr_repo_desc, target_ref, url))
 continue_maybe("Proceed with merging pull request #%s?" % pr_num)
 
 merged_refs = [target_ref]
