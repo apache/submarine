@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.rest.workbecnh;
+package org.apache.submarine.server.rest.workbench;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
