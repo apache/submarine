@@ -21,7 +21,6 @@ package org.apache.submarine.server.rest.workbench;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.submarine.server.rest.workbench.SysUserRestApi;
 import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.apache.submarine.server.workbench.database.service.SysUserService;
 import org.junit.Test;
