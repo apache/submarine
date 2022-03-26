@@ -473,6 +473,8 @@ func (c *Controller) checkSubmarineDependentsReady(submarine *v1alpha1.Submarine
 		deployment, err := c.getDeployment(submarine.Namespace, name)
 		if err != nil {
 			return false, err
+		} else if deployment == nil {
+			return false, nil
 		}
 		// check if deployment replicas failed
 		for _, condition := range deployment.Status.Conditions {
