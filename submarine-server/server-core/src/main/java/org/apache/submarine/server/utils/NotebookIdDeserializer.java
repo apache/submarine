@@ -17,19 +17,20 @@
  * under the License.
  */
 
-package org.apache.submarine.server.gson;
+package org.apache.submarine.server.utils;
 
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.JsonParseException;
 import org.apache.submarine.server.api.notebook.NotebookId;
 
 import java.lang.reflect.Type;
 
-public class NotebookIdSerializer implements JsonSerializer<NotebookId> {
+public class NotebookIdDeserializer implements JsonDeserializer<NotebookId> {
   @Override
-  public JsonElement serialize(NotebookId src, Type typeOfSrc, JsonSerializationContext context) {
-    return new JsonPrimitive(src.toString());
+  public NotebookId deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+          throws JsonParseException {
+    return NotebookId.fromString(json.getAsJsonPrimitive().getAsString());
   }
 }

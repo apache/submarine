@@ -18,7 +18,7 @@
  */
 package org.apache.submarine.server.rest.workbench;
 
-import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.utils.JsonResponse;
 import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.MetricEntity;
 import org.apache.submarine.server.workbench.database.service.MetricService;

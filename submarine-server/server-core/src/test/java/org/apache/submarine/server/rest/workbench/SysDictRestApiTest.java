@@ -21,9 +21,10 @@ package org.apache.submarine.server.rest.workbench;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+
+import org.apache.submarine.server.utils.JsonResponse;
+import org.apache.submarine.server.utils.JsonResponse.ListResult;
 import org.apache.submarine.server.workbench.database.entity.SysDictEntity;
-import org.apache.submarine.server.response.JsonResponse;
-import org.apache.submarine.server.response.JsonResponse.ListResult;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -31,7 +31,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.internal.InternalServiceManager;
-import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.utils.JsonResponse;
 import org.junit.Before;
 import org.junit.Test;
 

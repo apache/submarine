@@ -19,11 +19,12 @@
 package org.apache.submarine.server.rest.workbench;
 
 import com.github.pagehelper.PageInfo;
+
+import org.apache.submarine.server.utils.JsonResponse;
+import org.apache.submarine.server.utils.JsonResponse.ListResult;
 import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.ProjectEntity;
 import org.apache.submarine.server.workbench.database.service.ProjectService;
-import org.apache.submarine.server.response.JsonResponse;
-import org.apache.submarine.server.response.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

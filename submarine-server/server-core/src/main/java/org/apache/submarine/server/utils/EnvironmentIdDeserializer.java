@@ -16,17 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.response;
 
-import com.google.gson.ExclusionStrategy;
-import com.google.gson.FieldAttributes;
+package org.apache.submarine.server.utils;
 
-public class JsonExclusionStrategy implements ExclusionStrategy {
-  public boolean shouldSkipClass(Class<?> arg0) {
-    return false;
-  }
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import org.apache.submarine.server.api.environment.EnvironmentId;
 
-  public boolean shouldSkipField(FieldAttributes f) {
-    return false;
+import java.lang.reflect.Type;
+
+public class EnvironmentIdDeserializer implements JsonDeserializer<EnvironmentId> {
+
+  @Override
+  public EnvironmentId deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+      throws JsonParseException {
+    return EnvironmentId.fromString(json.getAsJsonPrimitive().getAsString());
   }
 }

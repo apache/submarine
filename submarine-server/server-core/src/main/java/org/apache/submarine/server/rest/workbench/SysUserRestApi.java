@@ -20,6 +20,9 @@ package org.apache.submarine.server.rest.workbench;
 
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
+
+import org.apache.submarine.server.utils.JsonResponse;
+import org.apache.submarine.server.utils.JsonResponse.ListResult;
 import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.apache.submarine.server.workbench.database.service.SysUserService;
@@ -27,8 +30,6 @@ import org.apache.submarine.server.api.workbench.Action;
 import org.apache.submarine.server.api.workbench.Permission;
 import org.apache.submarine.server.api.workbench.Role;
 import org.apache.submarine.server.api.workbench.UserInfo;
-import org.apache.submarine.server.response.JsonResponse;
-import org.apache.submarine.server.response.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
