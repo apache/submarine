@@ -24,7 +24,7 @@ import org.apache.submarine.commons.cluster.meta.ClusterMeta;
 import org.apache.submarine.commons.cluster.meta.ClusterMetaType;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.response.JsonResponse;
-import org.apache.submarine.server.workbench.annotation.SubmarineApi;
+import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

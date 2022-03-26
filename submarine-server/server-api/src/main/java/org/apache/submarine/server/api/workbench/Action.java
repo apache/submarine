@@ -16,15 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.annotation;
+package org.apache.submarine.server.api.workbench;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+public class Action {
+  private String action;
+  private boolean defaultCheck = false;
+  private String describe;
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Dict {
-  String Code();
+  public Action(String action, boolean defaultCheck, String describe) {
+    this.action = action;
+    this.defaultCheck = defaultCheck;
+    this.describe = describe;
+  }
+
+  public void setAction(String action) {
+    this.action = action;
+  }
+
+  public void setDefaultCheck(boolean defaultCheck) {
+    this.defaultCheck = defaultCheck;
+  }
+
+  public void setDescribe(String describe) {
+    this.describe = describe;
+  }
 }

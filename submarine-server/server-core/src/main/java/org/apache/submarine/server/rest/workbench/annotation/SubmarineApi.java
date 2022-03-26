@@ -16,28 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.entity;
+package org.apache.submarine.server.rest.workbench.annotation;
 
-public class Action {
-  private String action;
-  private boolean defaultCheck = false;
-  private String describe;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  public Action(String action, boolean defaultCheck, String describe) {
-    this.action = action;
-    this.defaultCheck = defaultCheck;
-    this.describe = describe;
-  }
-
-  public void setAction(String action) {
-    this.action = action;
-  }
-
-  public void setDefaultCheck(boolean defaultCheck) {
-    this.defaultCheck = defaultCheck;
-  }
-
-  public void setDescribe(String describe) {
-    this.describe = describe;
-  }
+/**
+ * APIs exposed to extends pluggable components or exposed to enduser
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER,
+    ElementType.CONSTRUCTOR, ElementType.LOCAL_VARIABLE, ElementType.PACKAGE})
+public @interface SubmarineApi {
 }

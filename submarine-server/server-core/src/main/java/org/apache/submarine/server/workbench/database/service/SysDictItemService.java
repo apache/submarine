@@ -20,9 +20,9 @@ package org.apache.submarine.server.workbench.database.service;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
+import org.apache.submarine.server.rest.workbench.SysDictRestApi;
 import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysDictItemMapper;
-import org.apache.submarine.server.workbench.rest.SysDictRestApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -16,14 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.rest;
+package org.apache.submarine.server.rest.workbench;
 
+import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
+import org.apache.submarine.server.workbench.database.entity.ParamEntity;
+import org.apache.submarine.server.workbench.database.service.ParamService;
 import org.apache.submarine.server.response.JsonResponse;
-import org.apache.submarine.server.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.MetricEntity;
-import org.apache.submarine.server.workbench.database.service.MetricService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -36,74 +38,69 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import java.sql.Timestamp;
-import java.util.List;
 
-@Path("/metric")
+@Path("/param")
 @Produces("application/json")
 @Singleton
-public class MetricRestApi {
+public class ParamRestApi {
   private static final Logger LOG = LoggerFactory.getLogger(LoginRestApi.class);
-  MetricService metricService = new MetricService();
+  ParamService paramService = new ParamService();
 
   @Inject
-  public MetricRestApi() {
+  public ParamRestApi() {
   }
 
   @GET
   @Path("/list")
   @SubmarineApi
-  public Response listMetric(@QueryParam("metricKey") String metricKey,
-                              @QueryParam("value") Float value,
-                              @QueryParam("workerIndex") String workerIndex,
-                              @QueryParam("timestamp") Timestamp timestamp,
-                              @QueryParam("step") Integer step,
-                              @QueryParam("isNan") Boolean isNan,
-                              @QueryParam("id") String id) {
+  public Response listParam(@QueryParam("id") String id,
+                            @QueryParam("paramKey") String paramKey,
+                            @QueryParam("value") String value,
+                            @QueryParam("workerIndex") String workerIndex) {
 
-    MetricEntity metric = new MetricEntity();
-    metric.setKey(metricKey);
-    metric.setValue(value);
-    metric.setWorkerIndex(workerIndex);
-    metric.setTimestamp(timestamp);
-    metric.setStep(step);
-    metric.setIsNan(isNan);
-    metric.setId(id);
+    ParamEntity param = new ParamEntity();
+    param.setId(id);
+    param.setKey(paramKey);
+    param.setValue(value);
+    param.setWorkerIndex(workerIndex);
 
-    LOG.info("listMetric ({})", metric);
+    LOG.info("listParam ({})", param);
 
-    List<MetricEntity> metrics;
+    List<ParamEntity> params;
     try {
-      metrics = metricService.selectByPrimaryKeySelective(metric);
+      params = paramService.selectByPrimaryKeySelective(param);
     } catch (Exception e) {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<List<MetricEntity>>(Response.Status.OK).success(true).
-            result(metrics).build();
+    return new JsonResponse.Builder<List<ParamEntity>>(Response.Status.OK).success(true).
+            result(params).build();
   }
 
   @GET
   @Path("/{id}")
   @SubmarineApi
-  public Response getMetric(@PathParam("id") String id) {
-    MetricEntity metric;
+  public Response getParam(@PathParam("id") String id) {
+    LOG.info("getParam ({})", id);
+
+    ParamEntity param;
     try {
-      metric = metricService.selectById(id);
+      param = paramService.selectById(id);
     } catch (Exception e) {
       LOG.error(e.toString());
-      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(true).build();
+      return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<MetricEntity>(Response.Status.OK).success(true).result(metric).build();
+    return new JsonResponse.Builder<ParamEntity>(Response.Status.OK).success(true).result(param).build();
   }
 
   @POST
   @Path("/add")
   @SubmarineApi
-  public Response postMetric(MetricEntity metric) {
-    boolean result = false;
+  public Response postParam(ParamEntity param) {
+    LOG.info("postParam ({})", param);
+    boolean result;
     try {
-      result = metricService.insert(metric);
+      result = paramService.insert(param);
     } catch (Exception e) {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
@@ -114,10 +111,11 @@ public class MetricRestApi {
   @DELETE
   @Path("/delete")
   @SubmarineApi
-  public Response deleteMetric(@QueryParam("id") String id) {
-    boolean result = false;
+  public Response deleteParam(@QueryParam("id") String id) {
+    LOG.info("deleteParam ({})", id);
+    boolean result;
     try {
-      result = metricService.deleteById(id);
+      result = paramService.deleteById(id);
     } catch (Exception e) {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
@@ -128,10 +126,11 @@ public class MetricRestApi {
   @PUT
   @Path("/edit")
   @SubmarineApi
-  public Response putMetric(MetricEntity metric) {
+  public Response putParam(ParamEntity param) {
+    LOG.info("putParam ({})", param);
     boolean result = false;
     try {
-      result = metricService.update(metric);
+      result = paramService.update(param);
     } catch (Exception e) {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
@@ -142,15 +141,15 @@ public class MetricRestApi {
   @POST
   @Path("/selective")
   @SubmarineApi
-  public Response selectByPrimaryKeySelective(MetricEntity metric) {
-    List<MetricEntity> metrics;
+  public Response selectByPrimaryKeySelective(ParamEntity metric) {
+    List<ParamEntity> params;
     try {
-      metrics = metricService.selectByPrimaryKeySelective(metric);
+      params = paramService.selectByPrimaryKeySelective(metric);
     } catch (Exception e) {
       LOG.error(e.toString());
       return new JsonResponse.Builder<Boolean>(Response.Status.OK).success(false).build();
     }
-    return new JsonResponse.Builder<List<MetricEntity>>(Response.Status.OK).success(true).
-            result(metrics).build();
+    return new JsonResponse.Builder<List<ParamEntity>>(Response.Status.OK).
+            success(true).result(params).build();
   }
 }

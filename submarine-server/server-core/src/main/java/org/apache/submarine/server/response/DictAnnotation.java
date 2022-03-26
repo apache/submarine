@@ -22,7 +22,7 @@ import net.sf.cglib.beans.BeanGenerator;
 import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.submarine.server.response.JsonResponse.ListResult;
-import org.apache.submarine.server.workbench.annotation.Dict;
+import org.apache.submarine.server.rest.workbench.annotation.Dict;
 import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
 import org.apache.submarine.server.workbench.database.service.SysDictItemService;
 import org.slf4j.Logger;

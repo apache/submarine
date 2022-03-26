@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.rest;
+package org.apache.submarine.server.rest.workbench;
 
 import com.github.pagehelper.PageInfo;
-import org.apache.submarine.server.workbench.annotation.SubmarineApi;
+import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.TeamEntity;
 import org.apache.submarine.server.workbench.database.service.TeamService;
 import org.apache.submarine.server.response.JsonResponse;

@@ -16,13 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.rest;
+package org.apache.submarine.server.rest.workbench;
 
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.submarine.server.workbench.annotation.SubmarineApi;
+import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.SysDictEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysDictMapper;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
