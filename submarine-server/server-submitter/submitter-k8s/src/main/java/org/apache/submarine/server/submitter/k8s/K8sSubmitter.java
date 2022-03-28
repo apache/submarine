@@ -320,10 +320,10 @@ public class K8sSubmitter implements Submitter {
       mlJob.getMetadata().setNamespace(getServerNamespace());
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.patch(getServerNamespace(), mlJob.getMetadata().getName(),
-              V1Patch.PATCH_FORMAT_JSON_PATCH,
+              V1Patch.PATCH_FORMAT_APPLY_YAML,
               new V1Patch(new Gson().toJson(((TFJob) mlJob).getSpec()))).throwsApiException().getObject()
               : pyTorchJobClient.patch(getServerNamespace(), mlJob.getMetadata().getName(),
-              V1Patch.PATCH_FORMAT_JSON_PATCH,
+              V1Patch.PATCH_FORMAT_APPLY_YAML,
               new V1Patch(new Gson().toJson(((PyTorchJob) mlJob).getSpec()))).throwsApiException().getObject()
               ;
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
@@ -341,12 +341,12 @@ public class K8sSubmitter implements Submitter {
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       mlJob.getMetadata().setNamespace(getServerNamespace());
-      
+
       AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(),
               mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
               spec.getMeta().getExperimentId());
-      
+
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.delete(getServerNamespace(), mlJob.getMetadata().getName(),
               MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
@@ -354,7 +354,7 @@ public class K8sSubmitter implements Submitter {
               : pyTorchJobClient.delete(getServerNamespace(), mlJob.getMetadata().getName(),
               MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
               .throwsApiException().getStatus();
-      
+
       LOG.info(String.format("Experiment:%s had been deleted, start to delete agent pod:%s",
               spec.getMeta().getName(), agentPod.getMetadata().getName()));
       podClient.delete(agentPod.getMetadata().getNamespace(), agentPod.getMetadata().getName());
