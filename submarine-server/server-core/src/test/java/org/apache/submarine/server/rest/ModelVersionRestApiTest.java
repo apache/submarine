@@ -38,8 +38,8 @@ import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
 import org.apache.submarine.server.model.database.entities.RegisteredModelEntity;
 import org.apache.submarine.server.model.database.service.ModelVersionService;
 import org.apache.submarine.server.model.database.service.RegisteredModelService;
-import org.apache.submarine.server.utils.ExperimentIdDeserializer;
-import org.apache.submarine.server.utils.ExperimentIdSerializer;
+import org.apache.submarine.server.utils.gson.ExperimentIdDeserializer;
+import org.apache.submarine.server.utils.gson.ExperimentIdSerializer;
 
 
 public class ModelVersionRestApiTest {

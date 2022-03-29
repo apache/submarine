@@ -35,9 +35,9 @@ import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateSubm
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTemplateSpec;
 import org.apache.submarine.server.rest.RestConstants;
-import org.apache.submarine.server.utils.ExperimentIdDeserializer;
-import org.apache.submarine.server.utils.ExperimentIdSerializer;
-import org.apache.submarine.server.utils.JsonResponse;
+import org.apache.submarine.server.utils.gson.ExperimentIdDeserializer;
+import org.apache.submarine.server.utils.gson.ExperimentIdSerializer;
+import org.apache.submarine.server.utils.response.JsonResponse;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -27,8 +27,8 @@ import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysDictItemMapper;
 import org.apache.submarine.server.workbench.database.service.SysDictItemService;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.utils.JsonResponse;
-import org.apache.submarine.server.utils.JsonResponse.ListResult;
+import org.apache.submarine.server.utils.response.JsonResponse;
+import org.apache.submarine.server.utils.response.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.utils;
+package org.apache.submarine.server.utils.gson;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

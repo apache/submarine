@@ -21,8 +21,8 @@ package org.apache.submarine.server.rest.workbench;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 
-import org.apache.submarine.server.utils.JsonResponse;
-import org.apache.submarine.server.utils.JsonResponse.ListResult;
+import org.apache.submarine.server.utils.response.JsonResponse;
+import org.apache.submarine.server.utils.response.JsonResponse.ListResult;
 import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
 import org.apache.submarine.server.workbench.database.service.SysUserService;

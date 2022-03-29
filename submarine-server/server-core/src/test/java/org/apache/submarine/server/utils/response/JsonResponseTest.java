@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.submarine.server.utils;
+package org.apache.submarine.server.utils.response;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.apache.submarine.server.utils.JsonResponse.ListResult;
+import org.apache.submarine.server.utils.response.JsonResponse.ListResult;
 import org.apache.submarine.server.workbench.database.entity.SysDictEntity;
 import org.junit.Test;
 

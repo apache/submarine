@@ -28,7 +28,7 @@ import org.apache.submarine.commons.cluster.meta.ClusterMetaType;
 import org.apache.submarine.commons.utils.NetworkUtils;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.rest.RestConstants;
-import org.apache.submarine.server.utils.JsonResponse;
+import org.apache.submarine.server.utils.response.JsonResponse;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;

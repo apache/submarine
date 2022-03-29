@@ -47,7 +47,7 @@ import org.apache.submarine.server.model.database.service.ModelVersionService;
 
 import org.apache.submarine.server.model.database.service.ModelVersionTagService;
 import org.apache.submarine.server.s3.Client;
-import org.apache.submarine.server.utils.JsonResponse;
+import org.apache.submarine.server.utils.response.JsonResponse;
 
 /**
  * Model version REST API v1.

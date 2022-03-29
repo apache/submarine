@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.utils;
+package org.apache.submarine.server.utils.response;
 
 import net.sf.cglib.beans.BeanGenerator;
 import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.submarine.server.utils.JsonResponse.ListResult;
+import org.apache.submarine.server.utils.response.JsonResponse.ListResult;
 import org.apache.submarine.server.rest.workbench.annotation.Dict;
 import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
 import org.apache.submarine.server.workbench.database.service.SysDictItemService;

@@ -17,19 +17,19 @@
  * under the License.
  */
 
-package org.apache.submarine.server.utils;
+package org.apache.submarine.server.utils.gson;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import org.apache.submarine.server.api.experiment.ExperimentId;
+import org.apache.submarine.server.api.notebook.NotebookId;
 
 import java.lang.reflect.Type;
 
-public class ExperimentIdSerializer implements JsonSerializer<ExperimentId> {
+public class NotebookIdSerializer implements JsonSerializer<NotebookId> {
   @Override
-  public JsonElement serialize(ExperimentId src, Type typeOfSrc, JsonSerializationContext context) {
+  public JsonElement serialize(NotebookId src, Type typeOfSrc, JsonSerializationContext context) {
     return new JsonPrimitive(src.toString());
   }
 }
