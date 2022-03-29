@@ -48,8 +48,8 @@ import org.apache.submarine.server.experimenttemplate.ExperimentTemplateManager;
 import org.apache.submarine.server.api.experiment.ExperimentLog;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplateSubmit;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
-import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.s3.Client;
+import org.apache.submarine.server.utils.response.JsonResponse;
 
 /**
  * Experiment Service REST API v1

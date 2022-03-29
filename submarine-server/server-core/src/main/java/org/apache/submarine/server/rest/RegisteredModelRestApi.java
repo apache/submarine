@@ -46,8 +46,8 @@ import org.apache.submarine.server.model.database.service.ModelVersionService;
 import org.apache.submarine.server.model.database.service.RegisteredModelService;
 
 import org.apache.submarine.server.model.database.service.RegisteredModelTagService;
-import org.apache.submarine.server.response.JsonResponse;
 import org.apache.submarine.server.s3.Client;
+import org.apache.submarine.server.utils.response.JsonResponse;
 
 
 /**

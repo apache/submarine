@@ -35,7 +35,7 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.model.ServeResponse;
 import org.apache.submarine.server.api.model.ServeSpec;
 import org.apache.submarine.server.model.ModelManager;
-import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.utils.response.JsonResponse;
 
 
 

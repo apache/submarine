@@ -28,8 +28,8 @@ import org.apache.submarine.server.workbench.database.entity.SysDeptEntity;
 import org.apache.submarine.server.workbench.database.mappers.SysDeptMapper;
 import org.apache.submarine.server.workbench.database.utils.DepartmentUtil;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
-import org.apache.submarine.server.response.JsonResponse;
-import org.apache.submarine.server.response.JsonResponse.ListResult;
+import org.apache.submarine.server.utils.response.JsonResponse;
+import org.apache.submarine.server.utils.response.JsonResponse.ListResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

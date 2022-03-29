@@ -25,7 +25,7 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplate;
 import org.apache.submarine.server.api.spec.ExperimentTemplateSpec;
-import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.utils.response.JsonResponse;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

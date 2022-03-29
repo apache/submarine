@@ -31,7 +31,7 @@ import javax.ws.rs.core.Response;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.internal.InternalServiceManager;
-import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.utils.response.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

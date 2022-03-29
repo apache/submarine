@@ -28,7 +28,7 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.notebook.NotebookManager;
-import org.apache.submarine.server.response.JsonResponse;
+import org.apache.submarine.server.utils.response.JsonResponse;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;

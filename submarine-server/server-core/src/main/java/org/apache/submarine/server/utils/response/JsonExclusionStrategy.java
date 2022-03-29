@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.response;
+package org.apache.submarine.server.utils.response;
 
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;

@@ -49,8 +49,8 @@ import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.experiment.ExperimentManager;
 import org.apache.submarine.server.experimenttemplate.database.entity.ExperimentTemplateEntity;
 import org.apache.submarine.server.experimenttemplate.database.mappers.ExperimentTemplateMapper;
-import org.apache.submarine.server.gson.ExperimentIdDeserializer;
-import org.apache.submarine.server.gson.ExperimentIdSerializer;
+import org.apache.submarine.server.utils.gson.ExperimentIdDeserializer;
+import org.apache.submarine.server.utils.gson.ExperimentIdSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
