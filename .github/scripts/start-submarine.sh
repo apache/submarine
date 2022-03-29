@@ -18,7 +18,7 @@
 
 wait_interval=5
 wait_timeout=2000
-submarine_user_namespace=submarine-user-test
+submarine_user_namespace=default
 
 wait_times=$((wait_timeout / wait_interval))
 

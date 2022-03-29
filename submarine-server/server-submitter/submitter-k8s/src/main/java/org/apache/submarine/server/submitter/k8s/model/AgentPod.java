@@ -20,7 +20,9 @@
 package org.apache.submarine.server.submitter.k8s.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.common.CustomResourceType;
@@ -40,9 +42,11 @@ public class AgentPod extends V1Pod{
           String resourceId) {
     super();
     V1ObjectMeta meta = new V1ObjectMeta();
-
+    Map<String, String> labels = new HashMap<>();
+    labels.put("app", type.toString().toLowerCase());
     meta.setName(getNormalizePodName(type, name, resourceId));
     meta.setNamespace(namespace);
+    meta.setLabels(labels);
     this.setMetadata(meta);
 
     V1PodSpec spec = new V1PodSpec();
