@@ -33,66 +33,77 @@ This document gives you a quick view on the basic usage of Submarine platform. Y
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [helm](https://helm.sh/docs/intro/install/) (Helm v3 is minimum requirement.)
 - [minikube](https://minikube.sigs.k8s.io/docs/start/).
+- [istioctl](https://istio.io/latest/docs/setup/getting-started/#download)
 
-2. Start minikube cluster
+2. Start minikube cluster and install Istio
+
 ```
-minikube start --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.21.2
+minikube start --vm-driver=docker --cpus 8 --memory 8192 --kubernetes-version v1.21.2
+istioctl install -y
+# Or if you want to support Pod Security Policy (https://minikube.sigs.k8s.io/docs/tutorials/using_psp), you can use the following command to start cluster
+minikube start --extra-config=apiserver.enable-admission-plugins=PodSecurityPolicy --addons=pod-security-policy --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.21.2
 ```
 
 ### Launch submarine in the cluster
 
 1. Clone the project
+
 ```
 git clone https://github.com/apache/submarine.git
-```
-
-2. Install the submarine operator and dependencies by helm chart
-```
 cd submarine
-helm install submarine ./helm-charts/submarine
 ```
 
-3. Create a Submarine custom resource and the operator will create the submarine server, database, etc. for us.
+2. Create necessary namespaces
+
 ```
-kubectl apply -f submarine-cloud-v2/artifacts/examples/example-submarine.yaml
+kubectl create namespace submarine
+kubectl create namespace submarine-user-test
+kubectl label namespace submarine istio-injection=enabled
+kubectl label namespace submarine-user-test istio-injection=enabled
+```
+
+3. Install the submarine operator and dependencies by helm chart
+
+```
+helm install submarine ./helm-charts/submarine -n submarine
+```
+
+4. Create a Submarine custom resource and the operator will create the submarine server, database, etc. for us.
+
+```
+kubectl apply -f submarine-cloud-v2/artifacts/examples/example-submarine.yaml -n submarine-user-test
 ```
 
 ### Ensure submarine is ready
 
-1. Use kubectl to query the status of pods
 ```
-kubectl get pods
-```
-
-2. Make sure each pod is `Running`
-```
+$ kubectl get pods -n submarine
 NAME                                              READY   STATUS    RESTARTS   AGE
-notebook-controller-deployment-5d4f5f874c-mnbc8   1/1     Running   0          61m
-pytorch-operator-844c866d54-xm8nl                 1/1     Running   2          61m
-submarine-database-85bd68dbc5-qggtm               1/1     Running   0          11m
-submarine-minio-76465444f6-hdgdp                  1/1     Running   0          11m
-submarine-mlflow-75f86d8f4d-rj2z7                 1/1     Running   0          11m
-submarine-operator-5dd79cdf86-gpm2p               1/1     Running   0          61m
-submarine-server-68985b767-vjdvx                  1/1     Running   0          11m
-submarine-tensorboard-5df8499fd4-vnklf            1/1     Running   0          11m
-submarine-traefik-7cbcfd4bd9-wbf8b                1/1     Running   0          61m
-tf-job-operator-6bb69fd44-zmlmr                   1/1     Running   1          61m
+notebook-controller-deployment-66d85984bf-x562z   1/1     Running   0          7h7m
+pytorch-operator-7d778f4859-g7xph                 2/2     Running   0          7h7m
+tf-job-operator-7d895bf77c-75n72                  2/2     Running   0          7h7m
+
+$ kubectl get pods -n submarine-user-test
+NAME                                     READY   STATUS    RESTARTS   AGE
+submarine-database-bdcb77549-rq2ds       2/2     Running   0          7h6m
+submarine-minio-686b8777ff-zg4d2         2/2     Running   0          7h6m
+submarine-mlflow-68c5559dcb-lkq4g        2/2     Running   0          7h6m
+submarine-server-7c6d7bcfd8-5p42w        2/2     Running   0          9m33s
+submarine-tensorboard-57c5b64778-t4lww   2/2     Running   0          7h6m
 ```
 
 ### Connect to workbench
 
 1. Exposing service
-  ```
-  # Method 1 -- use minikube ip
-  minikube ip  # you'll get the IP address of minikube, ex: 192.168.49.2
 
-  # Method 2 -- use port-forwarding
-  kubectl port-forward --address 0.0.0.0 service/submarine-traefik 32080:80
-  ```
+```
+kubectl port-forward --address 0.0.0.0 -n istio-system service/istio-ingressgateway 32080:80
+```
 
 2. View workbench
-  If you use method 1, go to `http://{minikube ip}:32080`. For example, `http://192.168.49.2:32080`. If you use method 2, go to `http://0.0.0.0:32080`.
-  ![](/img/quickstart-worbench.png)
+
+Go to `http://0.0.0.0:32080`
+![](/img/quickstart-worbench.png)
 
 ## Example: Submit a mnist distributed example
 
@@ -177,6 +188,7 @@ if __name__ == '__main__':
 ```
 
 ### 2. Prepare an environment compatible with the training
+
 Build a docker image equipped with the requirement of the environment.
 
 ```bash
@@ -190,14 +202,14 @@ eval $(minikube docker-env)
 2. Choose `Define your experiment`
 3. Fill the form accordingly. Here we set 3 workers.
 
-    1. Step 1
-    ![](/img/quickstart-submit-1-0-7-0.png)
-    2. Step 2
-    ![](/img/quickstart-submit-2-0-7-0.png)
-    3. Step 3
-    ![](/img/quickstart-submit-3-0-7-0.png)
-    4. The experiment is successfully submitted
-    ![](/img/quickstart-submit-4-0-7-0.png)
+   1. Step 1
+      ![](/img/quickstart-submit-1-0-7-0.png)
+   2. Step 2
+      ![](/img/quickstart-submit-2-0-7-0.png)
+   3. Step 3
+      ![](/img/quickstart-submit-3-0-7-0.png)
+   4. The experiment is successfully submitted
+      ![](/img/quickstart-submit-4-0-7-0.png)
 
 ### 4. Monitor the process
 

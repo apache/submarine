@@ -22,25 +22,25 @@ import (
 	"fmt"
 
 	v1alpha1 "github.com/apache/submarine/submarine-cloud-v2/pkg/apis/submarine/v1alpha1"
+	istiov1alpha3 "istio.io/client-go/pkg/apis/networking/v1alpha3"
 
 	corev1 "k8s.io/api/core/v1"
-	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 )
 
-func newSubmarineServerIngress(submarine *v1alpha1.Submarine) *extensionsv1beta1.Ingress {
-	ingress, err := ParseIngressYaml(ingressYamlPath)
+func newSubmarineVirtualService(submarine *v1alpha1.Submarine) *istiov1alpha3.VirtualService {
+	virtualService, err := ParseVirtualService(ingressYamlPath)
 	if err != nil {
-		klog.Info("[Error] ParseIngressYaml", err)
+		klog.Info("[Error] ParseGatewayYaml", err)
 	}
 
-	ingress.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+	virtualService.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
 		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 	}
 
-	return ingress
+	return virtualService
 }
 
 // createIngress is a function to create Ingress.
@@ -48,14 +48,13 @@ func newSubmarineServerIngress(submarine *v1alpha1.Submarine) *extensionsv1beta1
 func (c *Controller) createIngress(submarine *v1alpha1.Submarine) error {
 	klog.Info("[createIngress]")
 
-	// Step1: Create ServiceAccount
-	ingress, err := c.ingressLister.Ingresses(submarine.Namespace).Get(ingressName)
+	virtualService, err := c.virtualServiceLister.VirtualServices(submarine.Namespace).Get(virtualServiceName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
-		ingress, err = c.kubeclientset.ExtensionsV1beta1().Ingresses(submarine.Namespace).Create(context.TODO(),
-			newSubmarineServerIngress(submarine),
+		virtualService, err = c.istioClientset.NetworkingV1alpha3().VirtualServices(submarine.Namespace).Create(context.TODO(),
+			newSubmarineVirtualService(submarine),
 			metav1.CreateOptions{})
-		klog.Info("	Create Ingress: ", ingress.Name)
+		klog.Info("	Create Ingress: ", virtualService.Name)
 	}
 
 	// If an error occurs during Get/Create, we'll requeue the item so we can
@@ -65,8 +64,8 @@ func (c *Controller) createIngress(submarine *v1alpha1.Submarine) error {
 		return err
 	}
 
-	if !metav1.IsControlledBy(ingress, submarine) {
-		msg := fmt.Sprintf(MessageResourceExists, ingress.Name)
+	if !metav1.IsControlledBy(virtualService, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, virtualService.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}

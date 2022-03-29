@@ -7,12 +7,13 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.7.0
 	github.com/traefik/traefik/v2 v2.4.8
-	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
-	k8s.io/api v0.20.4
-	k8s.io/apimachinery v0.20.4
-	k8s.io/client-go v0.20.4
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
+	istio.io/client-go v1.13.0
+	k8s.io/api v0.23.1
+	k8s.io/apimachinery v0.23.1
+	k8s.io/client-go v0.23.1
 	k8s.io/code-generator v0.21.2
-	k8s.io/klog/v2 v2.8.0
+	k8s.io/klog/v2 v2.30.0
 )
 
 replace (

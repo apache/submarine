@@ -15,28 +15,19 @@
 # limitations under the License.
 #
 
-{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) -}}
-apiVersion: v1
-kind: PersistentVolumeClaim
+{{ if .Values.istio.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
 metadata:
-  name: {{ template "traefik.fullname" . }}
-  annotations:
-  {{- with .Values.persistence.annotations  }}
-  {{ toYaml . | indent 4 }}
-  {{- end }}
-  labels:
-    app.kubernetes.io/name: {{ template "traefik.name" . }}
-    helm.sh/chart: {{ template "traefik.chart" . }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
+  name: submarine-gateway
 spec:
-  accessModes:
-    - {{ .Values.persistence.accessMode | quote }}
-  resources:
-    requests:
-      storage: {{ .Values.persistence.size | quote }}
-  {{- if .Values.persistence.storageClass }}
-  storageClassName: {{ .Values.persistence.storageClass | quote }}
-  {{- end }}
-{{- end -}}
-
+  selector:
+    istio: {{ .Values.istio.gatewaySelector }}
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+{{ end }}

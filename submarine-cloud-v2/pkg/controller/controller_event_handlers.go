@@ -18,7 +18,7 @@
 package controller
 
 import (
-	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
+	// traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
@@ -139,6 +139,7 @@ func (cb *ControllerBuilder) addIngressEventHandlers() *ControllerBuilder {
 	return cb
 }
 
+/*
 func (cb *ControllerBuilder) addIngressRouteEventHandlers() *ControllerBuilder {
 	cb.config.ingressrouteInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.handleObject,
@@ -155,6 +156,7 @@ func (cb *ControllerBuilder) addIngressRouteEventHandlers() *ControllerBuilder {
 
 	return cb
 }
+*/
 
 func (cb *ControllerBuilder) addRoleEventHandlers() *ControllerBuilder {
 	cb.config.roleInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{

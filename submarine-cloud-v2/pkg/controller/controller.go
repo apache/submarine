@@ -27,6 +27,8 @@ import (
 	clientset "github.com/apache/submarine/submarine-cloud-v2/pkg/client/clientset/versioned"
 	listers "github.com/apache/submarine/submarine-cloud-v2/pkg/client/listers/submarine/v1alpha1"
 
+	// traefik "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
+
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	rbacv1 "k8s.io/api/rbac/v1"
@@ -45,8 +47,11 @@ import (
 	"k8s.io/client-go/util/workqueue"
 	"k8s.io/klog/v2"
 
-	traefik "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
-	traefiklisters "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/listers/traefik/v1alpha1"
+	// traefik "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/clientset/versioned"
+	// traefiklisters "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/generated/listers/traefik/v1alpha1"
+
+	istioClientset "istio.io/client-go/pkg/clientset/versioned"
+	istioListers "istio.io/client-go/pkg/listers/networking/v1alpha3"
 )
 
 const controllerAgentName = "submarine-controller"
@@ -63,6 +68,7 @@ const (
 	minioName                   = "submarine-minio"
 	storageName                 = "submarine-storage"
 	ingressName                 = serverName + "-ingress"
+	virtualServiceName          = "submarine-virtual-service"
 	databasePvcName             = databaseName + "-pvc"
 	tensorboardPvcName          = tensorboardName + "-pvc"
 	tensorboardServiceName      = tensorboardName + "-service"
@@ -124,7 +130,8 @@ type Controller struct {
 	kubeclientset kubernetes.Interface
 	// sampleclientset is a clientset for our own API group
 	submarineclientset clientset.Interface
-	traefikclientset   traefik.Interface
+	// traefikclientset   traefik.Interface
+	istioClientset istioClientset.Interface
 
 	submarinesLister listers.SubmarineLister
 	submarinesSynced cache.InformerSynced
@@ -136,9 +143,10 @@ type Controller struct {
 	serviceLister               corelisters.ServiceLister
 	persistentvolumeclaimLister corelisters.PersistentVolumeClaimLister
 	ingressLister               extlisters.IngressLister
-	ingressrouteLister          traefiklisters.IngressRouteLister
-	roleLister                  rbaclisters.RoleLister
-	rolebindingLister           rbaclisters.RoleBindingLister
+	// ingressrouteLister          traefiklisters.IngressRouteLister
+	virtualServiceLister istioListers.VirtualServiceLister
+	roleLister           rbaclisters.RoleLister
+	rolebindingLister    rbaclisters.RoleBindingLister
 	// workqueue is a rate limited work queue. This is used to queue work to be
 	// processed instead of performing it as soon as a change happens. This
 	// means we can ensure we only process a fixed amount of resources at a

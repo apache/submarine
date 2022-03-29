@@ -74,7 +74,8 @@ func (cb *ControllerBuilder) initialize() *ControllerBuilder {
 func (cb *ControllerBuilder) addClientsets() *ControllerBuilder {
 	cb.controller.kubeclientset = cb.config.kubeclientset
 	cb.controller.submarineclientset = cb.config.submarineclientset
-	cb.controller.traefikclientset = cb.config.traefikclientset
+	// cb.controller.traefikclientset = cb.config.traefikclientset
+	cb.controller.istioClientset = cb.config.istioClientset
 
 	return cb
 }
@@ -90,7 +91,8 @@ func (cb *ControllerBuilder) addListers() *ControllerBuilder {
 	cb.controller.serviceaccountLister = cb.config.serviceaccountInformer.Lister()
 	cb.controller.persistentvolumeclaimLister = cb.config.persistentvolumeclaimInformer.Lister()
 	cb.controller.ingressLister = cb.config.ingressInformer.Lister()
-	cb.controller.ingressrouteLister = cb.config.ingressrouteInformer.Lister()
+	// cb.controller.ingressrouteLister = cb.config.ingressrouteInformer.Lister()
+	cb.controller.virtualServiceLister = cb.config.virtualServiceInformer.Lister()
 	cb.controller.roleLister = cb.config.roleInformer.Lister()
 	cb.controller.rolebindingLister = cb.config.rolebindingInformer.Lister()
 
@@ -110,7 +112,7 @@ func (cb *ControllerBuilder) addEventHandlers() *ControllerBuilder {
 	cb.addServiceAccountEventHandlers()
 	cb.addPersistentVolumeClaimEventHandlers()
 	cb.addIngressEventHandlers()
-	cb.addIngressRouteEventHandlers()
+	// cb.addIngressRouteEventHandlers()
 	cb.addRoleEventHandlers()
 	cb.addRoleBindingEventHandlers()
 

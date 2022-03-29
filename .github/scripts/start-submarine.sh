@@ -17,7 +17,8 @@
 #
 
 wait_interval=5
-wait_timeout=900
+wait_timeout=2000
+submarine_user_namespace=default
 
 wait_times=$((wait_timeout / wait_interval))
 
@@ -25,31 +26,35 @@ wait_times=$((wait_timeout / wait_interval))
 sudo ln -s /etc/apparmor.d/usr.sbin.mysqld /etc/apparmor.d/disable/
 sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
 
-helm install --wait --set storageClass.provisioner=rancher.io/local-path --set storageClass.volumeBindingMode=WaitForFirstConsumer submarine ./helm-charts/submarine
-kubectl apply -f ./submarine-cloud-v2/artifacts/examples/example-submarine.yaml
+kubectl create namespace submarine
+kubectl create namespace "$submarine_user_namespace"
+kubectl label namespace submarine istio-injection=enabled
+kubectl label namespace "$submarine_user_namespace" istio-injection=enabled
+helm install --wait --set storageClass.provisioner=rancher.io/local-path --set storageClass.volumeBindingMode=WaitForFirstConsumer submarine ./helm-charts/submarine -n submarine
+kubectl apply -f ./submarine-cloud-v2/artifacts/examples/example-submarine.yaml -n "$submarine_user_namespace"
 
 # Polling waiting for the submarine to be in the RUNNING state
 for ((i=0;i<$wait_times;++i)); do
-  state=$(kubectl get submarine -o=jsonpath='{.items[0].status.submarineState.state}')
+  state=$(kubectl get submarine -n "$submarine_user_namespace" -o=jsonpath='{.items[0].status.submarineState.state}')
   if [[ "$state" == "RUNNING" ]]; then
     echo "Submarine is running!"
-    kubectl describe submarine
-    kubectl get all
-    kubectl port-forward svc/submarine-database 3306:3306 &
-    kubectl port-forward svc/submarine-server 8080:8080 &
-    kubectl port-forward svc/submarine-minio-service 9000:9000 &
-    kubectl port-forward svc/submarine-mlflow-service 5001:5000 &
+    kubectl describe submarine -n "$submarine_user_namespace"
+    kubectl get all -n "$submarine_user_namespace"
+    kubectl port-forward -n "$submarine_user_namespace" svc/submarine-database 3306:3306 &
+    kubectl port-forward -n "$submarine_user_namespace" svc/submarine-server 8080:8080 &
+    kubectl port-forward -n "$submarine_user_namespace" svc/submarine-minio-service 9000:9000 &
+    kubectl port-forward -n "$submarine_user_namespace" svc/submarine-mlflow-service 5001:5000 &
     exit 0
   elif [[ "$state" == "FAILED" ]]; then
     echo "Submarine failed!" 1>&2
-    kubectl describe submarine
-    kubectl get all
+    kubectl describe submarine -n "$submarine_user_namespace"
+    kubectl get all -n "$submarine_user_namespace"
     exit 1
   else
     sleep $wait_interval
   fi
 done
 echo "Timeout limit reached!" 1>&2
-kubectl describe submarine
-kubectl get all
+kubectl describe submarine -n "$submarine_user_namespace"
+kubectl get all -n "$submarine_user_namespace"
 exit 1

@@ -28,8 +28,6 @@ import (
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
-
-	traefikv1alpha1 "github.com/traefik/traefik/v2/pkg/provider/kubernetes/crd/traefik/v1alpha1"
 )
 
 func newSubmarineTensorboardPersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
@@ -65,17 +63,6 @@ func newSubmarineTensorboardService(submarine *v1alpha1.Submarine) *corev1.Servi
 		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
 	}
 	return service
-}
-
-func newSubmarineTensorboardIngressRoute(submarine *v1alpha1.Submarine) *traefikv1alpha1.IngressRoute {
-	ingressRoute, err := ParseIngressRouteYaml(tensorboardYamlPath)
-	if err != nil {
-		klog.Info("[Error] ParseIngressRouteYaml", err)
-	}
-	ingressRoute.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
-		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-	}
-	return ingressRoute
 }
 
 // createSubmarineTensorboard is a function to create submarine-tensorboard.
@@ -149,29 +136,6 @@ func (c *Controller) createSubmarineTensorboard(submarine *v1alpha1.Submarine) e
 
 	if !metav1.IsControlledBy(service, submarine) {
 		msg := fmt.Sprintf(MessageResourceExists, service.Name)
-		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return fmt.Errorf(msg)
-	}
-
-	// Step 4: Create IngressRoute
-	ingressroute, err := c.ingressrouteLister.IngressRoutes(submarine.Namespace).Get(tensorboardIngressRouteName)
-	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(err) {
-		ingressroute, err = c.traefikclientset.TraefikV1alpha1().IngressRoutes(submarine.Namespace).Create(context.TODO(), newSubmarineTensorboardIngressRoute(submarine), metav1.CreateOptions{})
-		if err != nil {
-			klog.Info(err)
-		}
-		klog.Info(" Create IngressRoute: ", ingressroute.Name)
-	}
-	// If an error occurs during Get/Create, we'll requeue the item so we can
-	// attempt processing again later. This could have been caused by a
-	// temporary network failure, or any other transient reason.
-	if err != nil {
-		return err
-	}
-
-	if !metav1.IsControlledBy(ingressroute, submarine) {
-		msg := fmt.Sprintf(MessageResourceExists, ingressroute.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
 	}
