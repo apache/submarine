@@ -15,28 +15,6 @@
 # limitations under the License.
 #
 
-apiVersion: submarine.apache.org/v1alpha1
-kind: Submarine
-metadata:
-  name: example-submarine
-spec:
-  version: "0.7.0"
-  server:
-    # image: "apache/submarine:server-0.7.0" # overwrite the image when development
-    replicas: 1
-  database:
-    # image: "apache/submarine:database-0.7.0" # overwrite the image when development
-    replicas: 1
-    storageSize: "1Gi"
-    mysqlRootPasswordSecret: "root-pass-secret"
-  tensorboard:
-    enabled: true
-    storageSize: "10Gi"
-  mlflow:
-    enabled: true
-    storageSize: "10Gi"
-  minio:
-    enabled: true
-    storageSize: "10Gi"
-  grafana:
-    enabled: true
+helm install submarine ./helm-charts/submarine
+kubectl apply -f submarine-cloud-v2/artifacts/examples/example-submarine.yaml
+helm install monitor prometheus-community/kube-prometheus-stack -f ./helm-charts/submarine/monitor-values.yaml

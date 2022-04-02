@@ -1,4 +1,4 @@
-#
+---
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -15,28 +15,17 @@
 # limitations under the License.
 #
 
-apiVersion: submarine.apache.org/v1alpha1
-kind: Submarine
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
-  name: example-submarine
+  name: submarine-grafana-ingressroute
 spec:
-  version: "0.7.0"
-  server:
-    # image: "apache/submarine:server-0.7.0" # overwrite the image when development
-    replicas: 1
-  database:
-    # image: "apache/submarine:database-0.7.0" # overwrite the image when development
-    replicas: 1
-    storageSize: "1Gi"
-    mysqlRootPasswordSecret: "root-pass-secret"
-  tensorboard:
-    enabled: true
-    storageSize: "10Gi"
-  mlflow:
-    enabled: true
-    storageSize: "10Gi"
-  minio:
-    enabled: true
-    storageSize: "10Gi"
-  grafana:
-    enabled: true
+  entryPoints:
+    - web
+  routes:
+  - kind: Rule
+    match: "PathPrefix(`/grafana`)"
+    services:
+    - kind: Service
+      name: monitor-grafana
+      port: 80

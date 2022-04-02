@@ -30,3 +30,4 @@ dependencies:
     version: "0.1.0"
   - name: traefik
     version: "9.1.0"
+    

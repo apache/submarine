@@ -60,6 +60,7 @@ const (
 	tensorboardName             = "submarine-tensorboard"
 	mlflowName                  = "submarine-mlflow"
 	minioName                   = "submarine-minio"
+	grafanaName                 = "submarine-grafana"
 	ingressName                 = serverName + "-ingress"
 	databasePvcName             = databaseName + "-pvc"
 	tensorboardPvcName          = tensorboardName + "-pvc"
@@ -71,18 +72,20 @@ const (
 	minioPvcName                = minioName + "-pvc"
 	minioServiceName            = minioName + "-service"
 	minioIngressRouteName       = minioName + "-ingressroute"
+	grafanaIngressRouteName     = grafanaName + "-ingressroute"
 	artifactPath                = "./artifacts/submarine/"
 	databaseYamlPath            = artifactPath + "submarine-database.yaml"
 	ingressYamlPath             = artifactPath + "submarine-ingress.yaml"
 	minioYamlPath               = artifactPath + "submarine-minio.yaml"
 	mlflowYamlPath              = artifactPath + "submarine-mlflow.yaml"
+	grafanaYamlPath             = artifactPath + "submarine-grafana.yaml"
 	serverYamlPath              = artifactPath + "submarine-server.yaml"
 	tensorboardYamlPath         = artifactPath + "submarine-tensorboard.yaml"
 	rbacYamlPath                = artifactPath + "submarine-rbac.yaml"
 	observerRbacYamlPath        = artifactPath + "submarine-observer-rbac.yaml"
 )
 
-var dependents = []string{serverName, databaseName, tensorboardName, mlflowName, minioName}
+var dependents = []string{serverName, databaseName, tensorboardName, mlflowName, minioName, grafanaName}
 
 const (
 	// SuccessSynced is used as part of the Event 'reason' when a Submarine is synced
@@ -462,6 +465,11 @@ func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 
 	err = c.createSubmarineMinio(submarine)
 	if err != nil && !errors.IsAlreadyExists(err) {
+		return err
+	}
+
+	err = c.createSubmarineGrafana(submarine)
+	if err != nil {
 		return err
 	}
 
