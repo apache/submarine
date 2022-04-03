@@ -44,7 +44,6 @@ func newSubmarineDatabasePersistentVolumeClaim(submarine *v1alpha1.Submarine) *c
 
 func newSubmarineDatabaseDeployment(submarine *v1alpha1.Submarine) *appsv1.Deployment {
 	databaseImage := submarine.Spec.Database.Image
-	databaseReplicas := *submarine.Spec.Database.Replicas
 
 	deployment, err := ParseDeploymentYaml(databaseYamlPath)
 	if err != nil {
@@ -56,9 +55,25 @@ func newSubmarineDatabaseDeployment(submarine *v1alpha1.Submarine) *appsv1.Deplo
 	if databaseImage != "" {
 		deployment.Spec.Template.Spec.Containers[0].Image = databaseImage
 	}
-	deployment.Spec.Replicas = &databaseReplicas
 
 	return deployment
+}
+
+func newSubmarineDatabaseStatefulSet(submarine *v1alpha1.Submarine) *appsv1.StatefulSet {
+	statefulset, err := ParseStatefulSetYaml(databaseYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseStatefulSetYaml", err)
+	}
+	statefulset.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	databaseImage := submarine.Spec.Database.Image
+	if databaseImage != "" {
+		statefulset.Spec.Template.Spec.Containers[0].Image = databaseImage
+	}
+
+	return statefulset
 }
 
 func newSubmarineDatabaseService(submarine *v1alpha1.Submarine) *corev1.Service {
@@ -100,15 +115,15 @@ func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) erro
 		return fmt.Errorf(msg)
 	}
 
-	// Step 2: Create Deployment
-	deployment, err := c.deploymentLister.Deployments(submarine.Namespace).Get(databaseName)
+	// Step 2: Create Statefulset
+	statefulset, err := c.statefulsetLister.StatefulSets(submarine.Namespace).Get(databaseName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
-		deployment, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Create(context.TODO(), newSubmarineDatabaseDeployment(submarine), metav1.CreateOptions{})
+		statefulset, err = c.kubeclientset.AppsV1().StatefulSets(submarine.Namespace).Create(context.TODO(), newSubmarineDatabaseStatefulSet(submarine), metav1.CreateOptions{})
 		if err != nil {
 			klog.Info(err)
 		}
-		klog.Info("	Create Deployment: ", deployment.Name)
+		klog.Info("	Create StatefulSet: ", statefulset.Name)
 	}
 	// If an error occurs during Get/Create, we'll requeue the item so we can
 	// attempt processing again later. This could have been caused by a
@@ -117,16 +132,10 @@ func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) erro
 		return err
 	}
 
-	if !metav1.IsControlledBy(deployment, submarine) {
-		msg := fmt.Sprintf(MessageResourceExists, deployment.Name)
+	if !metav1.IsControlledBy(statefulset, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, statefulset.Name)
 		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
 		return fmt.Errorf(msg)
-	}
-
-	// Update the replicas of the database deployment if it is not equal to spec
-	if submarine.Spec.Database.Replicas != nil && *submarine.Spec.Database.Replicas != *deployment.Spec.Replicas {
-		klog.V(4).Infof("Submarine %s database spec replicas: %d, actual replicas: %d", submarine.Name, *submarine.Spec.Database.Replicas, *deployment.Spec.Replicas)
-		_, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Update(context.TODO(), newSubmarineDatabaseDeployment(submarine), metav1.UpdateOptions{})
 	}
 
 	if err != nil {

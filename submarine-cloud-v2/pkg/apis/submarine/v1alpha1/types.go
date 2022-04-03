@@ -39,7 +39,6 @@ type SubmarineServerSpec struct {
 
 type SubmarineDatabaseSpec struct {
 	Image                   string `json:"image"`
-	Replicas                *int32 `json:"replicas"`
 	StorageSize             string `json:"storageSize"`
 	MysqlRootPasswordSecret string `json:"mysqlRootPasswordSecret"`
 }

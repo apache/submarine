@@ -36,6 +36,7 @@ type BuilderConfig struct {
 	traefikclientset              traefik.Interface
 	namespaceInformer             coreinformers.NamespaceInformer
 	deploymentInformer            appsinformers.DeploymentInformer
+	statefulsetInformer           appsinformers.StatefulSetInformer
 	serviceInformer               coreinformers.ServiceInformer
 	serviceaccountInformer        coreinformers.ServiceAccountInformer
 	persistentvolumeclaimInformer coreinformers.PersistentVolumeClaimInformer
@@ -96,6 +97,13 @@ func (bc *BuilderConfig) WithDeploymentInformer(
 	deploymentInformer appsinformers.DeploymentInformer,
 ) *BuilderConfig {
 	bc.deploymentInformer = deploymentInformer
+	return bc
+}
+
+func (bc *BuilderConfig) WithStatefulSetInformer(
+	statefulsetInformer appsinformers.StatefulSetInformer,
+) *BuilderConfig {
+	bc.statefulsetInformer = statefulsetInformer
 	return bc
 }
 

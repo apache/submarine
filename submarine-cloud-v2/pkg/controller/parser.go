@@ -102,6 +102,17 @@ func ParseDeploymentYaml(relativePath string) (*appsv1.Deployment, error) {
 	return &deployment, nil
 }
 
+// ParseStatefulSetYaml parse StatefulSets from yaml file.
+func ParseStatefulSetYaml(relativePath string) (*appsv1.StatefulSet, error) {
+	var statefulset appsv1.StatefulSet
+	marshaled, err := parseYaml(relativePath, "StatefulSet")
+	if err != nil {
+		return nil, err
+	}
+	json.Unmarshal(marshaled, &statefulset)
+	return &statefulset, nil
+}
+
 // ParseServiceYaml parse Service from yaml file.
 func ParseServiceYaml(relativePath string) (*v1.Service, error) {
 	var service v1.Service

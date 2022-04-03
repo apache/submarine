@@ -23,7 +23,7 @@ metadata:
     app.kubernetes.io/name: submarine-operator
     app.kubernetes.io/version: "0.7.0"
     app.kubernetes.io/component: submarine-operator
-    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/managed-by: Helm
 spec:
   group: submarine.apache.org
   names:
@@ -48,13 +48,13 @@ spec:
             required:
               - version
             properties:
-              version: 
+              version:
                 description: submarine docker image version
                 type: string
               server:
                 type: object
                 properties:
-                  image: 
+                  image:
                     description: Use this to overwrite the image when development
                     type: string
                   replicas:
@@ -63,12 +63,9 @@ spec:
               database:
                 type: object
                 properties:
-                  image: 
+                  image:
                     description: Use this to overwrite the image when development
                     type: string
-                  replicas:
-                    type: integer
-                    minimum: 1
                   storageSize:
                     type: string
                   mysqlRootPasswordSecret:

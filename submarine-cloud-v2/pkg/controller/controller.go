@@ -82,7 +82,7 @@ const (
 	observerRbacYamlPath        = artifactPath + "submarine-observer-rbac.yaml"
 )
 
-var dependents = []string{serverName, databaseName, tensorboardName, mlflowName, minioName}
+var dependents = []string{serverName, tensorboardName, mlflowName, minioName}
 
 const (
 	// SuccessSynced is used as part of the Event 'reason' when a Submarine is synced
@@ -112,6 +112,7 @@ type Controller struct {
 
 	namespaceLister             corelisters.NamespaceLister
 	deploymentLister            appslisters.DeploymentLister
+	statefulsetLister           appslisters.StatefulSetLister
 	serviceaccountLister        corelisters.ServiceAccountLister
 	serviceLister               corelisters.ServiceLister
 	persistentvolumeclaimLister corelisters.PersistentVolumeClaimLister
@@ -311,12 +312,12 @@ func (c *Controller) updateSubmarineStatus(submarine, submarineCopy *v1alpha1.Su
 	}
 
 	// Update database replicas
-	databaseDeployment, err := c.getDeployment(submarine.Namespace, databaseName)
+	statefulset, err := c.getStatefulSet(submarine.Namespace, databaseName)
 	if err != nil {
 		return err
 	}
-	if databaseDeployment != nil {
-		submarineCopy.Status.AvailableDatabaseReplicas = databaseDeployment.Status.AvailableReplicas
+	if statefulset != nil {
+		submarineCopy.Status.AvailableDatabaseReplicas = statefulset.Status.ReadyReplicas
 	}
 
 	// Skip update if nothing changed.
@@ -410,6 +411,17 @@ func (c *Controller) getDeployment(namespace, name string) (*appsv1.Deployment, 
 	return deployment, nil
 }
 
+func (c *Controller) getStatefulSet(namespace, name string) (*appsv1.StatefulSet, error) {
+	statefulset, err := c.statefulsetLister.StatefulSets(namespace).Get(name)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return statefulset, nil
+}
+
 func (c *Controller) validateSubmarine(submarine *v1alpha1.Submarine) error {
 
 	// Print out the spec of the Submarine resource
@@ -469,6 +481,7 @@ func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 }
 
 func (c *Controller) checkSubmarineDependentsReady(submarine *v1alpha1.Submarine) (bool, error) {
+	// deployment dependents check
 	for _, name := range dependents {
 		deployment, err := c.getDeployment(submarine.Namespace, name)
 		if err != nil {
@@ -486,6 +499,16 @@ func (c *Controller) checkSubmarineDependentsReady(submarine *v1alpha1.Submarine
 		if deployment.Status.ReadyReplicas != deployment.Status.Replicas {
 			return false, nil
 		}
+	}
+	// database check
+	// statefulset.Status.Conditions does not have the specified type enum like
+	// deployment.Status.Conditions => DeploymentConditionType ,
+	// so we will ignore the verification status for the time being
+	statefulset, err := c.getStatefulSet(submarine.Namespace, databaseName)
+	if err != nil {
+		return false, err
+	} else if statefulset == nil || statefulset.Status.Replicas != statefulset.Status.ReadyReplicas {
+		return false, nil
 	}
 
 	return true, nil
