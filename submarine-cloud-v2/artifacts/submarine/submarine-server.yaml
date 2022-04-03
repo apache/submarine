@@ -65,7 +65,7 @@ spec:
         image: "minio/mc"
         command: ["/bin/bash", "-c",
         "cnt=0;
-        while ! /bin/bash -c 'mc config host add minio http://submarine-minio-service:9000
+        while ! /bin/bash -c 'mc --config-dir /root/.mc config host add minio http://submarine-minio-service:9000
         submarine_minio submarine_minio' 2>&1;
         do
           sleep 15;
@@ -75,11 +75,17 @@ spec:
             exit 1;
           fi;
         done;
-        if /bin/bash -c 'mc ls minio/submarine' >/dev/null 2>&1; then
+        if /bin/bash -c 'mc --config-dir /root/.mc ls minio/submarine' >/dev/null 2>&1; then
           echo 'Bucket minio/submarine already exists, skipping creation.';
         else
-          /bin/bash -c 'mc mb minio/submarine';
+          /bin/bash -c 'mc --config-dir /root/.mc mb minio/submarine';
         fi;"]
+        volumeMounts:
+          - name: mc-config-vol
+            mountPath: /root/.mc
+      volumes:
+        - name: mc-config-vol
+          emptyDir: { }
       containers:
       - name: "submarine-server"
         env:
