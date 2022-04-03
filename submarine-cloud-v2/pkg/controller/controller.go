@@ -82,7 +82,7 @@ const (
 	observerRbacYamlPath        = artifactPath + "submarine-observer-rbac.yaml"
 )
 
-var dependents = []string{serverName, databaseName, tensorboardName, mlflowName, minioName}
+var dependents = []string{serverName, tensorboardName, mlflowName, minioName}
 
 const (
 	// SuccessSynced is used as part of the Event 'reason' when a Submarine is synced
@@ -481,6 +481,7 @@ func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 }
 
 func (c *Controller) checkSubmarineDependentsReady(submarine *v1alpha1.Submarine) (bool, error) {
+	// deployment dependents check
 	for _, name := range dependents {
 		deployment, err := c.getDeployment(submarine.Namespace, name)
 		if err != nil {
@@ -498,6 +499,16 @@ func (c *Controller) checkSubmarineDependentsReady(submarine *v1alpha1.Submarine
 		if deployment.Status.ReadyReplicas != deployment.Status.Replicas {
 			return false, nil
 		}
+	}
+	// database check
+	// statefulset.Status.Conditions does not have the specified type enum like
+	// deployment.Status.Conditions => DeploymentConditionType ,
+	// so we will ignore the verification status for the time being
+	statefulset, err := c.getStatefulSet(submarine.Namespace, databaseName)
+	if err != nil {
+		return false, err
+	} else if statefulset == nil || statefulset.Status.Replicas != statefulset.Status.ReadyReplicas {
+		return false, nil
 	}
 
 	return true, nil
