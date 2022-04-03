@@ -69,7 +69,7 @@ spec:
         image: "minio/mc"
         command: ["/bin/bash", "-c",
         "cnt=0;
-        while ! /bin/bash -c 'mc config host add minio http://submarine-minio-service:9000
+        while ! /bin/bash -c 'mc --config-dir /root/.mc config host add minio http://submarine-minio-service:9000
         submarine_minio submarine_minio' 2>&1;
         do
           sleep 15;
@@ -79,11 +79,14 @@ spec:
             exit 1;
           fi;
         done;
-        if /bin/bash -c 'mc ls minio/mlflow' >/dev/null 2>&1; then
+        if /bin/bash -c 'mc --config-dir /root/.mc ls minio/mlflow' >/dev/null 2>&1; then
           echo 'Bucket minio/mlflow already exists, skipping creation.';
         else
-          /bin/bash -c 'mc mb minio/mlflow';
+          /bin/bash -c 'mc --config-dir /root/.mc mb minio/mlflow';
         fi;"]
+        volumeMounts:
+          - name: mc-config-vol
+            mountPath: /root/.mc
       containers:
       - name: submarine-mlflow-container
         image: apache/submarine:mlflow-0.7.0
@@ -103,6 +106,8 @@ spec:
         - name: "volume"
           persistentVolumeClaim:
             claimName: "submarine-mlflow-pvc"
+        - name: mc-config-vol
+          emptyDir: { }
 ---
 # Source: submarine/templates/submarine-mlflow.yaml
 apiVersion: traefik.containo.us/v1alpha1
