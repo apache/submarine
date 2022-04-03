@@ -115,7 +115,7 @@ func (c *Controller) createSubmarineDatabase(submarine *v1alpha1.Submarine) erro
 		return fmt.Errorf(msg)
 	}
 
-	// Step 2: Create Deployment
+	// Step 2: Create Statefulset
 	statefulset, err := c.statefulsetLister.StatefulSets(submarine.Namespace).Get(databaseName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
