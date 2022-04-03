@@ -82,6 +82,7 @@ func (cb *ControllerBuilder) addListers() *ControllerBuilder {
 	cb.controller.submarinesSynced = cb.config.submarineInformer.Informer().HasSynced
 
 	cb.controller.deploymentLister = cb.config.deploymentInformer.Lister()
+	cb.controller.statefulsetLister = cb.config.statefulsetInformer.Lister()
 	cb.controller.namespaceLister = cb.config.namespaceInformer.Lister()
 	cb.controller.serviceLister = cb.config.serviceInformer.Lister()
 	cb.controller.serviceaccountLister = cb.config.serviceaccountInformer.Lister()

@@ -26,7 +26,6 @@ spec:
     replicas: 1
   database:
     # image: "apache/submarine:database-0.7.0" # overwrite the image when development
-    replicas: 1
     storageSize: "1Gi"
     mysqlRootPasswordSecret: "root-pass-secret"
   tensorboard:

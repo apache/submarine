@@ -125,6 +125,7 @@ func NewSubmarineController(
 		WithTraefikClientset(traefikClient).
 		WithSubmarineInformer(submarineInformerFactory.Submarine().V1alpha1().Submarines()).
 		WithDeploymentInformer(kubeInformerFactory.Apps().V1().Deployments()).
+		WithStatefulSetInformer(kubeInformerFactory.Apps().V1().StatefulSets()).
 		WithNamespaceInformer(kubeInformerFactory.Core().V1().Namespaces()).
 		WithServiceInformer(kubeInformerFactory.Core().V1().Services()).
 		WithServiceAccountInformer(kubeInformerFactory.Core().V1().ServiceAccounts()).
