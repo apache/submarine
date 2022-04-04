@@ -20,7 +20,6 @@
 module.exports = {
     docs: [
         {
-            Introduction: [],
             "Getting Started": [
                 "gettingStarted/quickstart",
                 "gettingStarted/notebook",
@@ -90,7 +89,6 @@ module.exports = {
                     ],
                 },
             ],
-            RoadMap: [],
         },
     ],
     api: [
