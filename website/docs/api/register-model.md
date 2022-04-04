@@ -1,5 +1,5 @@
 ---
-title: Serve REST API
+title: Register Model REST API
 ---
 
 <!--

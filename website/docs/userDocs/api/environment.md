@@ -68,7 +68,7 @@ curl -X POST -H "Content-Type: application/json" -d '
       "anaconda-client=1.7.2=py37_0",
       "anaconda-navigator=1.9.12=py37_0"],
     "pipDependencies" :
-      ["apache-submarine==0.5.0",
+      ["apache-submarine==0.7.0",
       "pyarrow==0.17.0"]
   }
 }
@@ -84,22 +84,26 @@ curl -X POST -H "Content-Type: application/json" -d '
   "success":true,
   "message":null,
   "result":{
-    "environmentId":"environment_1626160071451_0001",
+    "environmentId":"environment_1646619331994_0001",
     "environmentSpec":{
       "name":"my-submarine-env",
       "dockerImage":"continuumio/anaconda3",
       "kernelSpec":{
         "name":"team_default_python_3.7",
-        "channels":["defaults"],
-        "condaDependencies":
-          ["_ipyw_jlab_nb_ext_conf\u003d0.1.0\u003dpy37_0",
+        "channels":[
+          "defaults"
+        ],
+        "condaDependencies":[
+          "_ipyw_jlab_nb_ext_conf\u003d0.1.0\u003dpy37_0",
           "alabaster\u003d0.7.12\u003dpy37_0",
           "anaconda\u003d2020.02\u003dpy37_0",
           "anaconda-client\u003d1.7.2\u003dpy37_0",
-          "anaconda-navigator\u003d1.9.12\u003dpy37_0"],
-        "pipDependencies":
-          ["apache-submarine\u003d\u003d0.5.0",
-          "pyarrow\u003d\u003d0.17.0"]
+          "anaconda-navigator\u003d1.9.12\u003dpy37_0"
+        ],
+        "pipDependencies":[
+          "apache-submarine\u003d\u003d0.6.0",
+          "pyarrow\u003d\u003d0.17.0"
+        ]
       },
       "description":null,
       "image":null

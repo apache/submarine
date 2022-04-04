@@ -56,31 +56,34 @@ curl -X POST -H "Content-Type: application/json" -d '
   "success":true,
   "message":"Create a notebook instance",
   "result":{
-    "notebookId":"notebook_1597931805405_0001",
+    "notebookId":"notebook_1647574374688_0001",
     "name":"test-nb",
-    "uid":"5a94c01d-6a92-4222-bc66-c610c277546d",
-    "url":"/notebook/default/test-nb/",
+    "uid":"4a839fef-b4c9-483a-b4e8-c17236588118",
+    "url":"/notebook/default/test-nb/lab",
     "status":"creating",
     "reason":"The notebook instance is creating",
-    "createdTime":"2020-08-20T21:58:27.000+08:00",
+    "createdTime":"2022-03-18T16:13:16.000+08:00",
     "deletedTime":null,
     "spec":{
       "meta":{
         "name":"test-nb",
         "namespace":"default",
-        "ownerId":"e9ca23d68d884d4ebb19d07889727dae"
+        "ownerId":"e9ca23d68d884d4ebb19d07889727dae",
+        "labels":{
+          "notebook-owner-id":"e9ca23d68d884d4ebb19d07889727dae",
+          "notebook-id":"notebook_1647574374688_0001"
+        }
       },
       "environment":{
         "name":"notebook-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-0.5.0",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.7.0",
         "kernelSpec":{
-          "name": "team_default_python_3.7",
-          "channels": [
+          "name":"submarine_jupyter_py3",
+          "channels":[
             "defaults"
           ],
-          "dependencies": [
-            ""
-          ]
+          "condaDependencies":[],
+          "pipDependencies":[]
         },
         "description":null,
         "image":null
@@ -89,7 +92,7 @@ curl -X POST -H "Content-Type: application/json" -d '
         "envVars":{
           "TEST_ENV":"test"
         },
-        "resources":"cpu=1,memory=1.0Gi"
+        "resources":"cpu\u003d1,memory\u003d1.0Gi"
       }
     }
   },
@@ -114,31 +117,34 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook?id={user_id}
   "message":"List all notebook instances",
   "result":[
     {
-      "notebookId":"notebook_1597931805405_0001",
+      "notebookId":"notebook_1647574374688_0001",
       "name":"test-nb",
-      "uid":"5a94c01d-6a92-4222-bc66-c610c277546d",
-      "url":"/notebook/default/test-nb/",
-      "status": "running",
-      "reason": "The notebook instance is running",
-      "createdTime":"2020-08-20T21:58:27.000+08:00",
-      "deletedTime":null,
+      "uid":null,
+      "url":"/notebook/default/test-nb/lab",
+      "status":"running",
+      "reason":"The notebook instance is running",
+      "createdTime":"2022-03-18T16:13:16.000+08:00",
+      "deletedTime":"2022-03-18T16:13:21.000+08:00",
       "spec":{
         "meta":{
           "name":"test-nb",
           "namespace":"default",
-          "ownerId":"e9ca23d68d884d4ebb19d07889727dae"
+          "ownerId":"e9ca23d68d884d4ebb19d07889727dae",
+          "labels":{
+            "notebook-owner-id":"e9ca23d68d884d4ebb19d07889727dae",
+            "notebook-id":"notebook_1647574374688_0001"
+          }
         },
         "environment":{
           "name":"notebook-env",
-          "dockerImage":"apache/submarine:jupyter-notebook-0.5.0",
+          "dockerImage":"apache/submarine:jupyter-notebook-0.7.0",
           "kernelSpec":{
-            "name": "team_default_python_3.7",
-            "channels": [
+            "name":"submarine_jupyter_py3",
+            "channels":[
               "defaults"
             ],
-            "dependencies": [
-              ""
-            ]
+            "condaDependencies":[],
+            "pipDependencies":[]
           },
           "description":null,
           "image":null
@@ -147,7 +153,7 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook?id={user_id}
           "envVars":{
             "TEST_ENV":"test"
           },
-          "resources":"cpu=1,memory=1.0Gi"
+          "resources":"cpu\u003d1,memory\u003d1.0Gi"
         }
       }
     }
@@ -172,31 +178,34 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook/{id}
   "success":true,
   "message":"Get the notebook instance",
   "result":{
-    "notebookId":"notebook_1597931805405_0001",
+    "notebookId":"notebook_1647574374688_0001",
     "name":"test-nb",
-    "uid":"5a94c01d-6a92-4222-bc66-c610c277546d",
-    "url":"/notebook/default/test-nb/",
+    "uid":"4a839fef-b4c9-483a-b4e8-c17236588118",
+    "url":"/notebook/default/test-nb/lab",
     "status":"running",
     "reason":"The notebook instance is running",
-    "createdTime":"2020-08-20T21:58:27.000+08:00",
-    "deletedTime":null,
+    "createdTime":"2022-03-18T16:13:16.000+08:00",
+    "deletedTime":"2022-03-18T16:13:21.000+08:00",
     "spec":{
       "meta":{
         "name":"test-nb",
         "namespace":"default",
-        "ownerId":"e9ca23d68d884d4ebb19d07889727dae"
+        "ownerId":"e9ca23d68d884d4ebb19d07889727dae",
+        "labels":{
+          "notebook-owner-id":"e9ca23d68d884d4ebb19d07889727dae",
+          "notebook-id":"notebook_1647574374688_0001"
+        }
       },
       "environment":{
         "name":"notebook-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-0.5.0",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.7.0-SNAPSHOT",
         "kernelSpec":{
-          "name": "team_default_python_3.7",
-          "channels": [
+          "name":"submarine_jupyter_py3",
+          "channels":[
             "defaults"
           ],
-          "dependencies": [
-            ""
-          ]
+          "condaDependencies":[],
+          "pipDependencies":[]
         },
         "description":null,
         "image":null
@@ -205,7 +214,7 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook/{id}
         "envVars":{
           "TEST_ENV":"test"
         },
-        "resources":"cpu=1,memory=1.0Gi"
+        "resources":"cpu\u003d1,memory\u003d1.0Gi"
       }
     }
   },
@@ -224,48 +233,51 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/notebook/{id}
 **Example Response:**
 ```json
 {
-  "status": "OK",
-  "code": 200,
-  "success": true,
-  "message": "Delete the notebook instance",
-  "result": {
-    "notebookId": "notebook_1597931805405_0001",
-    "name": "test-nb",
-    "uid": "5a94c01d-6a92-4222-bc66-c610c277546d",
-    "url": "/notebook/default/test-nb/",
-    "status": "terminating",
-    "reason": "The notebook instance is terminating",
-    "createdTime": "2020-08-22T14:03:19.000+08:00",
-    "deletedTime": "2020-08-22T14:46:28+0800",
-    "spec": {
-      "meta": {
-        "name": "test-nb",
-        "namespace": "default",
-        "ownerId":"e9ca23d68d884d4ebb19d07889727dae"
+  "status":"OK",
+  "code":200,
+  "success":true,
+  "message":"Delete the notebook instance",
+  "result":{
+    "notebookId":"notebook_1647574374688_0001",
+    "name":"test-nb",
+    "uid":"4a839fef-b4c9-483a-b4e8-c17236588118",
+    "url":"/notebook/default/test-nb/lab",
+    "status":"terminating",
+    "reason":"The notebook instance is terminating",
+    "createdTime":"2022-03-18T16:13:16.000+08:00",
+    "deletedTime":"2022-03-18T16:13:21.000+08:00",
+    "spec":{
+      "meta":{
+        "name":"test-nb",
+        "namespace":"default",
+        "ownerId":"e9ca23d68d884d4ebb19d07889727dae",
+        "labels":{
+          "notebook-owner-id":"e9ca23d68d884d4ebb19d07889727dae",
+          "notebook-id":"notebook_1647574374688_0001"
+        }
       },
-      "environment": {
-        "name": "notebook-env",
-        "dockerImage": "apache/submarine:jupyter-notebook-0.5.0",
-        "kernelSpec": {
-          "name": "team_default_python_3.7",
-          "channels": [
+      "environment":{
+        "name":"notebook-env",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.7.0-SNAPSHOT",
+        "kernelSpec":{
+          "name":"submarine_jupyter_py3",
+          "channels":[
             "defaults"
           ],
-          "dependencies": [
-            ""
-          ]
+          "condaDependencies":[],
+          "pipDependencies":[]
         },
-        "description": null,
-        "image": null
+        "description":null,
+        "image":null
       },
-      "spec": {
-        "envVars": {
-          "TEST_ENV": "test"
+      "spec":{
+        "envVars":{
+          "TEST_ENV":"test"
         },
-        "resources": "cpu=1,memory=1.0Gi"
+        "resources":"cpu\u003d1,memory\u003d1.0Gi"
       }
     }
   },
-  "attributes": {}
+  "attributes":{}
 }
 ```

@@ -43,7 +43,7 @@ curl -X POST -H "Content-Type: application/json" -d '
       "anaconda-client=1.7.2=py37_0",
       "anaconda-navigator=1.9.12=py37_0"],
     "pipDependencies" : 
-      ["apache-submarine==0.5.0",
+      ["apache-submarine==0.7.0",
       "pyarrow==0.17.0"]
   }
 }
@@ -70,7 +70,7 @@ curl -X POST -H "Content-Type: application/json" -d '
           "anaconda-client=1.7.2=py37_0",
           "anaconda-navigator=1.9.12=py37_0"],
         "pipDependencies" : 
-          ["apache-submarine==0.5.0",
+          ["apache-submarine==0.7.0",
           "pyarrow==0.17.0"]
       }
     }
@@ -89,45 +89,73 @@ curl -X GET http://127.0.0.1:32080/api/v1/environment
 **Example Response:**
 ```json
 {
-  "status": "OK",
-  "code": 200,
-  "result": [
-  {
-    "environmentId": "environment_1586156073228_0001",
-    "environmentSpec": {
-      "name": "my-submarine-env",
-      "dockerImage" : "continuumio/anaconda3",
-      "kernelSpec" : {
-        "name" : "team_default_python_3.7",
-        "channels" : ["defaults"],
-        "condaDependencies" : 
-          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
-          "alabaster=0.7.12=py37_0",
-          "anaconda=2020.02=py37_0",
-          "anaconda-client=1.7.2=py37_0",
-          "anaconda-navigator=1.9.12=py37_0"],
-        "pipDependencies" : 
-          ["apache-submarine==0.5.0",
-          "pyarrow==0.17.0"]
+  "status":"OK",
+  "code":200,
+  "success":true,
+  "message":null,
+  "result":[
+    {
+      "environmentId":"environment_1600862964725_0002",
+      "environmentSpec":{
+        "name":"notebook-gpu-env",
+        "dockerImage":"apache/submarine:jupyter-notebook-gpu-0.7.0-SNAPSHOT",
+        "kernelSpec":{
+          "name":"submarine_jupyter_py3",
+          "channels":[
+            "defaults"
+          ],
+          "condaDependencies":[],
+          "pipDependencies":[]
+        },
+        "description":null,
+        "image":null
+      }
+    },
+    {
+      "environmentId":"environment_1647192232698_0003",
+      "environmentSpec":{
+        "name":"my-submarine-env",
+        "dockerImage":"continuumio/anaconda3",
+        "kernelSpec":{
+          "name":"team_default_python_3.7",
+          "channels":[
+            "defaults"
+          ],
+          "condaDependencies":[
+            "_ipyw_jlab_nb_ext_conf\u003d0.1.0\u003dpy37_0",
+            "alabaster\u003d0.7.12\u003dpy37_0",
+            "anaconda\u003d2020.02\u003dpy37_0",
+            "anaconda-client\u003d1.7.2\u003dpy37_0",
+            "anaconda-navigator\u003d1.9.12\u003dpy37_0"
+          ],
+          "pipDependencies":[
+            "apache-submarine\u003d\u003d0.7.0",
+            "pyarrow\u003d\u003d0.17.0"
+          ]
+        },
+        "description":null,
+        "image":null
+      }
+    },
+    {
+      "environmentId":"environment_1600862964725_0001",
+      "environmentSpec":{
+        "name":"notebook-env",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.7.0-SNAPSHOT",
+        "kernelSpec":{
+          "name":"submarine_jupyter_py3",
+          "channels":[
+            "defaults"
+          ],
+          "condaDependencies":[],
+          "pipDependencies":[]
+        },
+        "description":null,
+        "image":null
       }
     }
-  },
-  {
-    "environmentId": "environment_1586156073228_0002",
-    "environmentSpec": {
-      "name": "my-submarine-env-2",
-      "dockerImage" : "continuumio/miniconda",
-      "kernelSpec" : {
-        "name" : "team_miniconda_python_3.7",
-        "channels" : ["defaults"],
-        "condaDependencies" : 
-          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0"],
-        "pipDependencies" : 
-          [],
-      }
-    }
-  }
-  ]
+  ],
+  "attributes":{}
 }
 ```
 
@@ -142,28 +170,37 @@ curl -X GET http://127.0.0.1:32080/api/v1/environment/my-submarine-env
 **Example Response:**
 ```json
 {
-  "status": "OK",
-  "code": 200,
-  "result": {
-    "environmentId": "environment_1586156073228_0001",
-    "environmentSpec": {
-      "name": "my-submarine-env",
-      "dockerImage" : "continuumio/anaconda3",
-      "kernelSpec" : {
-        "name" : "team_default_python_3.7",
-        "channels" : ["defaults"],
-        "condaDependencies" : 
-          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
-          "alabaster=0.7.12=py37_0",
-          "anaconda=2020.02=py37_0",
-          "anaconda-client=1.7.2=py37_0",
-          "anaconda-navigator=1.9.12=py37_0"],
-        "pipDependencies" : 
-          ["apache-submarine==0.5.0",
-          "pyarrow==0.17.0"]
-      }
+  "status":"OK",
+  "code":200,
+  "success":true,
+  "message":null,
+  "result":{
+    "environmentId":"environment_1647192232698_0003",
+    "environmentSpec":{
+      "name":"my-submarine-env",
+      "dockerImage":"continuumio/anaconda3",
+      "kernelSpec":{
+        "name":"team_default_python_3.7",
+        "channels":[
+          "defaults"
+        ],
+        "condaDependencies":[
+          "_ipyw_jlab_nb_ext_conf\u003d0.1.0\u003dpy37_0",
+          "alabaster\u003d0.7.12\u003dpy37_0",
+          "anaconda\u003d2020.02\u003dpy37_0",
+          "anaconda-client\u003d1.7.2\u003dpy37_0",
+          "anaconda-navigator\u003d1.9.12\u003dpy37_0"
+        ],
+        "pipDependencies":[
+          "apache-submarine\u003d\u003d0.7.0",
+          "pyarrow\u003d\u003d0.17.0"
+        ]
+      },
+      "description":null,
+      "image":null
     }
-  }
+  },
+  "attributes":{}
 }
 ```
 
@@ -192,29 +229,35 @@ curl -X PATCH -H "Content-Type: application/json" -d '
 **Example Response:**
 ```json
 {
-  "status": "OK",
-  "code": 200,
-  "success": true,
-  "result": {
-    "environmentId": "environment_1586156073228_0001",
-    "environmentSpec": {
-      "name": "my-submarine-env",
-      "dockerImage" : "continuumio/anaconda3",
-      "kernelSpec" : {
-        "name" : "team_default_python_3.7_updated",
-        "channels" : ["defaults"],
-        "condaDependencies" : 
-          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
-          "alabaster=0.7.12=py37_0"],
-        "pipDependencies" :
-          []
-      }
+  "status":"OK",
+  "code":200,
+  "success":true,
+  "message":null,
+  "result":{
+    "environmentId":"environment_1647192232698_0004",
+    "environmentSpec":{
+      "name":"my-submarine-env",
+      "dockerImage":"continuumio/anaconda3",
+      "kernelSpec":{
+        "name":"team_default_python_3.7_updated",
+        "channels":[
+          "defaults"
+        ],
+        "condaDependencies":[
+          "_ipyw_jlab_nb_ext_conf\u003d0.1.0\u003dpy37_0",
+          "alabaster\u003d0.7.12\u003dpy37_0"
+        ],
+        "pipDependencies":[]
+      },
+      "description":null,
+      "image":null
     }
-  }
+  },
+  "attributes":{}
 }
 ```
 > dockerImage, "name" (of kernelSpec), "channels", "condaDependencies", "pipDependencies" etc can be updated using this API.
-"name" of EnvironmentSpec is not supported.
+"name" of environmentSpec is not supported.
 
 ### Delete environment
 `GET /api/v1/environment/{name}`
@@ -227,23 +270,36 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/environment/my-submarine-env
 **Example Response:**
 ```json
 {
-  "status": "OK",
-  "code": 200,
-  "result": {
-    "environmentId": "environment_1586156073228_0001",
-    "environmentSpec": {
-      "name": "my-submarine-env",
-      "dockerImage" : "continuumio/anaconda3",
-      "kernelSpec" : {
-        "name" : "team_default_python_3.7_updated",
-        "channels" : ["defaults"],
-        "condaDependencies" : 
-          ["_ipyw_jlab_nb_ext_conf=0.1.0=py37_0",
-          "alabaster=0.7.12=py37_0"],
-        "pipDependencies" :
-          []
-      }
+  "status":"OK",
+  "code":200,
+  "success":true,
+  "message":null,
+  "result":{
+    "environmentId":"environment_1647192232698_0003",
+    "environmentSpec":{
+      "name":"my-submarine-env",
+      "dockerImage":"continuumio/anaconda3",
+      "kernelSpec":{
+        "name":"team_default_python_3.7",
+        "channels":[
+          "defaults"
+        ],
+        "condaDependencies":[
+          "_ipyw_jlab_nb_ext_conf\u003d0.1.0\u003dpy37_0",
+          "alabaster\u003d0.7.12\u003dpy37_0",
+          "anaconda\u003d2020.02\u003dpy37_0",
+          "anaconda-client\u003d1.7.2\u003dpy37_0",
+          "anaconda-navigator\u003d1.9.12\u003dpy37_0"
+        ],
+        "pipDependencies":[
+          "apache-submarine\u003d\u003d0.7.0",
+          "pyarrow\u003d\u003d0.17.0"
+        ]
+      },
+      "description":null,
+      "image":null
     }
-  }
+  },
+  "attributes":{}
 }
 ```

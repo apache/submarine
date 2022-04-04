@@ -92,26 +92,32 @@ curl -X POST -H "Content-Type: application/json" -d '
   "success":true,
   "message":"Create a notebook instance",
   "result":{
-    "notebookId":"notebook_1626160071451_0001",
+    "notebookId":"notebook_1647574374688_0001",
     "name":"test-nb",
-    "uid":"a56713da-f2a3-40d0-ae2e-45fdc0bb15f5",
+    "uid":"4a839fef-b4c9-483a-b4e8-c17236588118",
     "url":"/notebook/default/test-nb/lab",
     "status":"creating",
     "reason":"The notebook instance is creating",
-    "createdTime":"2021-07-13T16:23:38.000+08:00",
+    "createdTime":"2022-03-18T16:13:16.000+08:00",
     "deletedTime":null,
     "spec":{
       "meta":{
         "name":"test-nb",
         "namespace":"default",
-        "ownerId":"e9ca23d68d884d4ebb19d07889727dae"
+        "ownerId":"e9ca23d68d884d4ebb19d07889727dae",
+        "labels":{
+          "notebook-owner-id":"e9ca23d68d884d4ebb19d07889727dae",
+          "notebook-id":"notebook_1647574374688_0001"
+        }
       },
       "environment":{
         "name":"notebook-env",
         "dockerImage":"apache/submarine:jupyter-notebook-0.8.0-SNAPSHOT",
         "kernelSpec":{
           "name":"submarine_jupyter_py3",
-          "channels":["defaults"],
+          "channels":[
+            "defaults"
+          ],
           "condaDependencies":[],
           "pipDependencies":[]
         },
@@ -119,7 +125,9 @@ curl -X POST -H "Content-Type: application/json" -d '
         "image":null
       },
       "spec":{
-        "envVars":{"TEST_ENV":"test"},
+        "envVars":{
+          "TEST_ENV":"test"
+        },
         "resources":"cpu\u003d1,memory\u003d1.0Gi"
       }
     }
@@ -145,7 +153,7 @@ GET /api/v1/notebook
 **shell**
 
 ```sh
-curl -X GET http://127.0.0.1:32080/api/v1/notebook?id=e9ca23d68d884d4ebb19d07889727dae
+curl -X GET http://127.0.0.1:32080/api/v1/notebook?id={user_id}
 ```
 
 **response**
@@ -185,11 +193,38 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook?id=e9ca23d68d884d4ebb19d07889
         "image":null
       },
       "spec":{
-        "envVars":{"TEST_ENV":"test"},
-        "resources":"cpu\u003d1,memory\u003d1.0Gi"
+        "meta":{
+          "name":"test-nb",
+          "namespace":"default",
+          "ownerId":"e9ca23d68d884d4ebb19d07889727dae",
+          "labels":{
+            "notebook-owner-id":"e9ca23d68d884d4ebb19d07889727dae",
+            "notebook-id":"notebook_1647574374688_0001"
+          }
+        },
+        "environment":{
+          "name":"notebook-env",
+          "dockerImage":"apache/submarine:jupyter-notebook-0.7.0",
+          "kernelSpec":{
+            "name":"submarine_jupyter_py3",
+            "channels":[
+              "defaults"
+            ],
+            "condaDependencies":[],
+            "pipDependencies":[]
+          },
+          "description":null,
+          "image":null
+        },
+        "spec":{
+          "envVars":{
+            "TEST_ENV":"test"
+          },
+          "resources":"cpu\u003d1,memory\u003d1.0Gi"
+        }
       }
     }
-  }],
+  ],
   "attributes":{}
 }
 ```
@@ -223,26 +258,32 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook/notebook_1626160071451_0001
   "success":true,
   "message":"Get the notebook instance",
   "result":{
-    "notebookId":"notebook_1626160071451_0001",
+    "notebookId":"notebook_1647574374688_0001",
     "name":"test-nb",
-    "uid":"a56713da-f2a3-40d0-ae2e-45fdc0bb15f5",
+    "uid":"4a839fef-b4c9-483a-b4e8-c17236588118",
     "url":"/notebook/default/test-nb/lab",
-    "status":"waiting",
-    "reason":"ContainerCreating",
-    "createdTime":"2021-07-13T16:23:38.000+08:00",
-    "deletedTime":null,
+    "status":"running",
+    "reason":"The notebook instance is running",
+    "createdTime":"2022-03-18T16:13:16.000+08:00",
+    "deletedTime":"2022-03-18T16:13:21.000+08:00",
     "spec":{
       "meta":{
         "name":"test-nb",
         "namespace":"default",
-        "ownerId":"e9ca23d68d884d4ebb19d07889727dae"
+        "ownerId":"e9ca23d68d884d4ebb19d07889727dae",
+        "labels":{
+          "notebook-owner-id":"e9ca23d68d884d4ebb19d07889727dae",
+          "notebook-id":"notebook_1647574374688_0001"
+        }
       },
       "environment":{
         "name":"notebook-env",
         "dockerImage":"apache/submarine:jupyter-notebook-0.8.0-SNAPSHOT",
         "kernelSpec":{
           "name":"submarine_jupyter_py3",
-          "channels":["defaults"],
+          "channels":[
+            "defaults"
+          ],
           "condaDependencies":[],
           "pipDependencies":[]
         },
@@ -250,7 +291,9 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook/notebook_1626160071451_0001
         "image":null
       },
       "spec":{
-        "envVars":{"TEST_ENV":"test"},
+        "envVars":{
+          "TEST_ENV":"test"
+        },
         "resources":"cpu\u003d1,memory\u003d1.0Gi"
       }
     }
@@ -288,26 +331,32 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/notebook/notebook_1626160071451_000
   "success":true,
   "message":"Delete the notebook instance",
   "result":{
-    "notebookId":"notebook_1626160071451_0001",
+    "notebookId":"notebook_1647574374688_0001",
     "name":"test-nb",
-    "uid":"a56713da-f2a3-40d0-ae2e-45fdc0bb15f5",
+    "uid":"4a839fef-b4c9-483a-b4e8-c17236588118",
     "url":"/notebook/default/test-nb/lab",
     "status":"terminating",
     "reason":"The notebook instance is terminating",
-    "createdTime":"2021-07-13T16:23:38.000+08:00",
-    "deletedTime":null,
+    "createdTime":"2022-03-18T16:13:16.000+08:00",
+    "deletedTime":"2022-03-18T16:13:21.000+08:00",
     "spec":{
       "meta":{
         "name":"test-nb",
         "namespace":"default",
-        "ownerId":"e9ca23d68d884d4ebb19d07889727dae"
+        "ownerId":"e9ca23d68d884d4ebb19d07889727dae",
+        "labels":{
+          "notebook-owner-id":"e9ca23d68d884d4ebb19d07889727dae",
+          "notebook-id":"notebook_1647574374688_0001"
+        }
       },
       "environment":{
         "name":"notebook-env",
         "dockerImage":"apache/submarine:jupyter-notebook-0.8.0-SNAPSHOT",
         "kernelSpec":{
           "name":"submarine_jupyter_py3",
-          "channels":["defaults"],
+          "channels":[
+            "defaults"
+          ],
           "condaDependencies":[],
           "pipDependencies":[]
         },
@@ -315,7 +364,9 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/notebook/notebook_1626160071451_000
         "image":null
       },
       "spec":{
-        "envVars":{"TEST_ENV":"test"},
+        "envVars":{
+          "TEST_ENV":"test"
+        },
         "resources":"cpu\u003d1,memory\u003d1.0Gi"
       }
     }

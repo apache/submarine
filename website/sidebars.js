@@ -98,6 +98,8 @@ module.exports = {
         "api/experiment",
         "api/experiment-template",
         "api/notebook",
+        "api/register-model",
+        "api/model-version",
         "api/serve",
     ],
 };
