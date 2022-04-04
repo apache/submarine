@@ -32,6 +32,7 @@ import java.util.function.Function;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import io.kubernetes.client.util.generic.options.PatchOptions;
 import okhttp3.OkHttpClient;
 import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
@@ -318,19 +319,28 @@ public class K8sSubmitter implements Submitter {
     try {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       mlJob.getMetadata().setNamespace(getServerNamespace());
+      // Using apply yaml patch, field manager must be set, and it must be forced.
+      // https://kubernetes.io/docs/reference/using-api/server-side-apply/#field-management
+      PatchOptions patchOptions = new PatchOptions();
+      patchOptions.setFieldManager(spec.getMeta().getExperimentId());
+      patchOptions.setForce(true);
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
               ? tfJobClient.patch(getServerNamespace(), mlJob.getMetadata().getName(),
               V1Patch.PATCH_FORMAT_APPLY_YAML,
-              new V1Patch(new Gson().toJson(((TFJob) mlJob).getSpec()))).throwsApiException().getObject()
+              new V1Patch(new Gson().toJson(mlJob)),
+              patchOptions).throwsApiException().getObject()
               : pyTorchJobClient.patch(getServerNamespace(), mlJob.getMetadata().getName(),
               V1Patch.PATCH_FORMAT_APPLY_YAML,
-              new V1Patch(new Gson().toJson(((PyTorchJob) mlJob).getSpec()))).throwsApiException().getObject()
+              new V1Patch(new Gson().toJson(mlJob)),
+              patchOptions).throwsApiException().getObject()
               ;
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
-      throw new SubmarineRuntimeException(200, e.getMessage());
+      throw new SubmarineRuntimeException(409, e.getMessage());
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+    } catch (Error e) {
+      throw new SubmarineRuntimeException(500, String.format("Unhandled error: %s", e.getMessage()));
     }
     return experiment;
   }
