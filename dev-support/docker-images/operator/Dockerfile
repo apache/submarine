@@ -27,4 +27,4 @@ ADD tmp/submarine-cloud-v2/artifacts /usr/src/artifacts
 WORKDIR /usr/src
 COPY --from=build-image /usr/src/submarine-operator /usr/src/submarine-operator
 
-CMD ["/usr/src/submarine-operator", "-incluster=true"]
+CMD ["/usr/src/submarine-operator", "-incluster=true", "-clustertype=${SUBMARINE_CLUSTER_TYPE}", "-createpsp=${SUBMARINE_POD_SECURITY_POLICY_ENABLE}"]

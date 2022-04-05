@@ -14,31 +14,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-{{/*
-Set up storage class fields
-*/}}
-{{ define "storageClass.fields" }}
-{{ with .Values.storageClass }}
-reclaimPolicy: {{ .reclaimPolicy | default "Delete" }}
-volumeBindingMode: {{ .volumeBindingMode | default "Immediate" }}
-provisioner: {{ .provisioner | default "k8s.io/minikube-hostpath" }}
-{{ if .parameters }}
-parameters:
-  {{ range $key, $val := .parameters }}
-  {{ $key }}: {{ $val | quote }}
-  {{ end }}
-{{ end }}
-{{ end }}
-{{ end }}
-
-{{/*
-Return the apiVersion for PodSecurityPolicy.
-*/}}
-{{- define "podSecurityPolicy.apiVersion" -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-{{- print "policy/v1beta1" -}}
-{{- else -}}
-{{- print "extensions/v1beta1" -}}
-{{- end -}}
-{{- end -}}
+{{- if .Values.podSecurityPolicy.create }}
+kind: PodSecurityPolicy
+apiVersion: {{ template "podSecurityPolicy.apiVersion" . }}
+metadata:
+  name: submarine-anyuid
+spec:
+  volumes:
+    - configMap
+    - downwardAPI
+    - emptyDir
+    - persistentVolumeClaim
+    - projected
+    - secret
+  seLinux:
+    rule: RunAsAny
+  runAsUser:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+  allowPrivilegeEscalation: false
+{{- end }}

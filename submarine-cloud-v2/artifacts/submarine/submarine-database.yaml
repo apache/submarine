@@ -60,6 +60,7 @@ spec:
       labels:
         app: "submarine-database"
     spec:
+      serviceAccountName: "submarine-storage"
       containers:
         - name: "submarine-database"
           image: "apache/submarine:database-0.7.0"

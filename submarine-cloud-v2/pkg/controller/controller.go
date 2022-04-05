@@ -29,6 +29,7 @@ import (
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -60,6 +61,7 @@ const (
 	tensorboardName             = "submarine-tensorboard"
 	mlflowName                  = "submarine-mlflow"
 	minioName                   = "submarine-minio"
+	storageName                 = "submarine-storage"
 	ingressName                 = serverName + "-ingress"
 	databasePvcName             = databaseName + "-pvc"
 	tensorboardPvcName          = tensorboardName + "-pvc"
@@ -80,6 +82,7 @@ const (
 	tensorboardYamlPath         = artifactPath + "submarine-tensorboard.yaml"
 	rbacYamlPath                = artifactPath + "submarine-rbac.yaml"
 	observerRbacYamlPath        = artifactPath + "submarine-observer-rbac.yaml"
+	storageRbacYamlPath         = artifactPath + "submarine-storage-rbac.yaml"
 )
 
 var dependents = []string{serverName, tensorboardName, mlflowName, minioName}
@@ -98,6 +101,22 @@ const (
 	// Submarine is synced successfully
 	MessageResourceSynced = "Submarine synced successfully"
 )
+
+// Default k8s anyuid role rule
+var k8sAnyuidRoleRule = rbacv1.PolicyRule{
+	APIGroups:     []string{"policy"},
+	Verbs:         []string{"use"},
+	Resources:     []string{"podsecuritypolicies"},
+	ResourceNames: []string{"submarine-anyuid"},
+}
+
+// Openshift anyuid role rule
+var openshiftAnyuidRoleRule = rbacv1.PolicyRule{
+	APIGroups:     []string{"security.openshift.io"},
+	Verbs:         []string{"use"},
+	Resources:     []string{"securitycontextconstraints"},
+	ResourceNames: []string{"anyuid"},
+}
 
 // Controller is the controller implementation for Submarine resources
 type Controller struct {
@@ -130,7 +149,9 @@ type Controller struct {
 	// Kubernetes API.
 	recorder record.EventRecorder
 
-	incluster bool
+	incluster               bool
+	clusterType             string
+	createPodSecurityPolicy bool
 }
 
 func (c *Controller) Run(threadiness int, stopCh <-chan struct{}) error {
@@ -437,6 +458,22 @@ func (c *Controller) validateSubmarine(submarine *v1alpha1.Submarine) error {
 
 func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 	var err error
+	// We create rbac first, this ensures that any dependency based on it will not go wrong
+	err = c.createSubmarineServerRBAC(submarine)
+	if err != nil && !errors.IsAlreadyExists(err) {
+		return err
+	}
+
+	err = c.createSubmarineStorageRBAC(submarine)
+	if err != nil && !errors.IsAlreadyExists(err) {
+		return err
+	}
+
+	err = c.createSubmarineObserverRBAC(submarine)
+	if err != nil && !errors.IsAlreadyExists(err) {
+		return err
+	}
+
 	err = c.createSubmarineServer(submarine)
 	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
@@ -448,16 +485,6 @@ func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 	}
 
 	err = c.createIngress(submarine)
-	if err != nil && !errors.IsAlreadyExists(err) {
-		return err
-	}
-
-	err = c.createSubmarineServerRBAC(submarine)
-	if err != nil && !errors.IsAlreadyExists(err) {
-		return err
-	}
-
-	err = c.createSubmarineObserverRBAC(submarine)
 	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}

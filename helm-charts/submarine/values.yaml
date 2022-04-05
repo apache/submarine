@@ -30,3 +30,13 @@ storageClass:
   provisioner: k8s.io/minikube-hostpath
   # parameters describe volumes belonging to the storage class
   parameters:
+
+# k8s cluster type. can be: kubernetes or openshift
+clusterType: kubernetes
+
+# PodSecurityPolicy configuration
+# ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+podSecurityPolicy:
+  # Specifies whether a PodSecurityPolicy should be created,
+  # This configuration enables the database/minio/server to set securityContext.runAsUser
+  create: true

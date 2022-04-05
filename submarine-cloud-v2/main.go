@@ -38,9 +38,11 @@ import (
 )
 
 var (
-	masterURL  string
-	kubeconfig string
-	incluster  bool
+	masterURL               string
+	kubeconfig              string
+	incluster               bool
+	clusterType             string
+	createPodSecurityPolicy bool
 )
 
 func initKubeConfig() (*rest.Config, error) {
@@ -88,6 +90,8 @@ func main() {
 	// Create a Submarine operator
 	submarineController := NewSubmarineController(
 		incluster,
+		clusterType,
+		createPodSecurityPolicy,
 		kubeClient,
 		submarineClient,
 		traefikClient,
@@ -110,6 +114,8 @@ func main() {
 
 func NewSubmarineController(
 	incluster bool,
+	clusterType string,
+	createPodSecurityPolicy bool,
 	kubeClient *kubernetes.Clientset,
 	submarineClient *clientset.Clientset,
 	traefikClient *traefikclientset.Clientset,
@@ -120,6 +126,8 @@ func NewSubmarineController(
 	bc := controller.NewControllerBuilderConfig()
 	bc.
 		InCluster(incluster).
+		WithClusterType(clusterType).
+		WithCreatePodSecurityPolicy(createPodSecurityPolicy).
 		WithKubeClientset(kubeClient).
 		WithSubmarineClientset(submarineClient).
 		WithTraefikClientset(traefikClient).
@@ -143,4 +151,6 @@ func init() {
 	flag.BoolVar(&incluster, "incluster", false, "Run submarine-operator in-cluster")
 	flag.StringVar(&kubeconfig, "kubeconfig", os.Getenv("HOME")+"/.kube/config", "Path to a kubeconfig. Only required if out-of-cluster.")
 	flag.StringVar(&masterURL, "master", "", "The address of the Kubernetes API server. Overrides any value in kubeconfig. Only required if out-of-cluster.")
+	flag.StringVar(&clusterType, "clustertype", "kubernetes", "K8s cluster type, can be kubernetes or openshift")
+	flag.BoolVar(&createPodSecurityPolicy, "createpsp", true, "Specifies whether a PodSecurityPolicy should be created. This configuration enables the database/minio/server to set securityContext.runAsUser")
 }
