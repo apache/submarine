@@ -25,6 +25,7 @@ rules:
     resources:
       - submarines
       - submarines/status
+      - submarines/finalizers
     verbs:
       - "*"
   - apiGroups:
