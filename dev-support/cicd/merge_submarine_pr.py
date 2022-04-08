@@ -30,6 +30,7 @@ import re
 import subprocess
 import sys
 import urllib
+from typing import List
 
 try:
     import jira.client
@@ -96,7 +97,7 @@ def clean_up():
 
     branches = run_cmd("git branch").replace(" ", "").split("\n")
 
-    for branch in filter(lambda x: x.startswith(BRANCH_PREFIX), branches):
+    for branch in list(filter(lambda x: x.startswith(BRANCH_PREFIX), branches)):
         print("Deleting local branch %s" % branch)
         run_cmd("git branch -D %s" % branch)
 
@@ -222,13 +223,13 @@ def cherry_pick(pr_num, merge_hash, default_branch):
     return pick_ref
 
 
-def fix_version_from_branch(branch, versions):
+def fix_version_from_branch(branch, versions) -> List:
     # Note: Assumes this is a sorted (newest->oldest) list of un-released versions
     if branch == "master":
         return versions[0]
     else:
         branch_ver = branch.replace("branch-", "")
-        return filter(lambda x: x.name.startswith(branch_ver), versions)[-1]
+        return list(filter(lambda x: x.name.startswith(branch_ver), versions))[-1]
 
 
 def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
@@ -267,8 +268,8 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
     # Consider only x.y.z versions
     versions = filter(lambda x: re.match("\d+\.\d+\.\d+", x.name), versions)
 
-    default_fix_versions = map(
-        lambda x: fix_version_from_branch(x, list(versions)).name, merge_branches
+    default_fix_versions: List = list(
+        map(lambda x: fix_version_from_branch(x, list(versions)).name, merge_branches)
     )
     for v in default_fix_versions:
         # Handles the case where we have forked a release branch but not yet made the release.
@@ -279,7 +280,7 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
         if patch == "0":
             previous = "%s.%s.%s" % (major, int(minor) - 1, 0)
             if previous in default_fix_versions:
-                default_fix_versions = filter(lambda x: x != v, default_fix_versions)
+                default_fix_versions: List = list(filter(lambda x: x != v, default_fix_versions))
     default_fix_versions = ",".join(default_fix_versions)
 
     fix_versions = input("Enter comma-separated fix version(s) [%s]: " % default_fix_versions)
@@ -288,11 +289,11 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
     fix_versions = fix_versions.replace(" ", "").split(",")
 
     def get_version_json(version_str):
-        return filter(lambda v: v.name == version_str, versions)[0].raw
+        return list(filter(lambda v: v.name == version_str, versions))[0].raw
 
-    jira_fix_versions = map(lambda v: get_version_json(v), fix_versions)
+    jira_fix_versions = list(map(lambda v: get_version_json(v), fix_versions))
 
-    resolve = filter(lambda a: a["name"] == "Resolve Issue", asf_jira.transitions(jira_id))[0]
+    resolve = list(filter(lambda a: a["name"] == "Resolve Issue", asf_jira.transitions(jira_id)))[0]
     asf_jira.transition_issue(
         jira_id, resolve["id"], fixVersions=jira_fix_versions, comment=comment
     )
