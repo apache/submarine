@@ -30,13 +30,35 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func newSubmarineServerRole(submarine *v1alpha1.Submarine) *rbacv1.Role {
+func newSubmarineServerServiceAccount(submarine *v1alpha1.Submarine) *corev1.ServiceAccount {
+	serviceAccount, err := ParseServiceAccountYaml(serverYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseServiceAccountYaml", err)
+	}
+
+	serviceAccount.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	return serviceAccount
+}
+
+func newSubmarineServerRole(c *Controller, submarine *v1alpha1.Submarine) *rbacv1.Role {
 	role, err := ParseRoleYaml(rbacYamlPath)
 	if err != nil {
 		klog.Info("[Error] ParseRole", err)
 	}
 	role.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
 		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	if c.createPodSecurityPolicy {
+		// If cluster type is openshift and need create pod security policy, we need add anyuid scc, or we add k8s psp
+		if c.clusterType == "openshift" {
+			role.Rules = append(role.Rules, openshiftAnyuidRoleRule)
+		} else {
+			role.Rules = append(role.Rules, k8sAnyuidRoleRule)
+		}
 	}
 
 	return role
@@ -59,11 +81,32 @@ func newSubmarineServerRoleBinding(submarine *v1alpha1.Submarine) *rbacv1.RoleBi
 func (c *Controller) createSubmarineServerRBAC(submarine *v1alpha1.Submarine) error {
 	klog.Info("[createSubmarineServerRBAC]")
 
-	// Step1: Create Role
+	// Step1: Create ServiceAccount
+	serviceaccount, err := c.serviceaccountLister.ServiceAccounts(submarine.Namespace).Get(serverName)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(err) {
+		serviceaccount, err = c.kubeclientset.CoreV1().ServiceAccounts(submarine.Namespace).Create(context.TODO(), newSubmarineServerServiceAccount(submarine), metav1.CreateOptions{})
+		klog.Info("	Create ServiceAccount: ", serviceaccount.Name)
+	}
+
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if err != nil {
+		return err
+	}
+
+	if !metav1.IsControlledBy(serviceaccount, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, serviceaccount.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
+		return fmt.Errorf(msg)
+	}
+
+	// Step2: Create Role
 	role, err := c.roleLister.Roles(submarine.Namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
-		role, err = c.kubeclientset.RbacV1().Roles(submarine.Namespace).Create(context.TODO(), newSubmarineServerRole(submarine), metav1.CreateOptions{})
+		role, err = c.kubeclientset.RbacV1().Roles(submarine.Namespace).Create(context.TODO(), newSubmarineServerRole(c, submarine), metav1.CreateOptions{})
 		klog.Info("	Create Role: ", role.Name)
 	}
 
@@ -80,6 +123,7 @@ func (c *Controller) createSubmarineServerRBAC(submarine *v1alpha1.Submarine) er
 		return fmt.Errorf(msg)
 	}
 
+	// Step3: Create Role Binding
 	rolebinding, rolebinding_err := c.rolebindingLister.RoleBindings(submarine.Namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(rolebinding_err) {

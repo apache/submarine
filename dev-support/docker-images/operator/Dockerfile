@@ -14,17 +14,20 @@
 # limitations under the License.
 
 FROM golang:1.16.2 AS build-image
-MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 ADD tmp/submarine-cloud-v2 /usr/src
 
 WORKDIR /usr/src
 
-RUN GOOS=linux go build -o submarine-operator
+# use CGO_ENABLED=0 to support alpine image
+RUN GOOS=linux CGO_ENABLED=0 go build -o submarine-operator
 
-FROM gcr.io/distroless/base-debian10
+# we use alpine to support shell params
+FROM alpine
+MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
+
 ADD tmp/submarine-cloud-v2/artifacts /usr/src/artifacts
 WORKDIR /usr/src
 COPY --from=build-image /usr/src/submarine-operator /usr/src/submarine-operator
 
-CMD ["/usr/src/submarine-operator", "-incluster=true"]
+CMD /usr/src/submarine-operator -incluster=true -clustertype=${SUBMARINE_CLUSTER_TYPE:kubernetes} -createpsp=${SUBMARINE_POD_SECURITY_POLICY_ENABLE:-true}

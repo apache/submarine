@@ -42,6 +42,11 @@ spec:
           name: "{{ .Values.name }}"
           resources: {}
           imagePullPolicy: IfNotPresent
+          env:
+            - name: SUBMARINE_POD_SECURITY_POLICY_ENABLE
+              value: "{{ .Values.podSecurityPolicy.create }}"
+            - name: SUBMARINE_CLUSTER_TYPE
+              value: {{ .Values.clusterType }}
       serviceAccountName: submarine-operator
 status: {}
 {{ end }}

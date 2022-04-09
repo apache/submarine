@@ -1,3 +1,5 @@
+---
+# Source: submarine/templates/rbac.yaml
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -15,30 +17,25 @@
 # limitations under the License.
 #
 
-{{/*
-Set up storage class fields
-*/}}
-{{ define "storageClass.fields" }}
-{{ with .Values.storageClass }}
-reclaimPolicy: {{ .reclaimPolicy | default "Delete" }}
-volumeBindingMode: {{ .volumeBindingMode | default "Immediate" }}
-provisioner: {{ .provisioner | default "k8s.io/minikube-hostpath" }}
-{{ if .parameters }}
-parameters:
-  {{ range $key, $val := .parameters }}
-  {{ $key }}: {{ $val | quote }}
-  {{ end }}
-{{ end }}
-{{ end }}
-{{ end }}
-
-{{/*
-Return the apiVersion for PodSecurityPolicy.
-*/}}
-{{- define "podSecurityPolicy.apiVersion" -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-{{- print "policy/v1beta1" -}}
-{{- else -}}
-{{- print "extensions/v1beta1" -}}
-{{- end -}}
-{{- end -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: "submarine-storage"
+rules: []
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: submarine-storage
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: "submarine-storage"
+subjects:
+  - kind: ServiceAccount
+    name: "submarine-storage"
+roleRef:
+  kind: Role
+  name: "submarine-storage"
+  apiGroup: rbac.authorization.k8s.io

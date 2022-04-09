@@ -31,6 +31,8 @@ import (
 
 type BuilderConfig struct {
 	incluster                     bool
+	clusterType                   string
+	createPodSecurityPolicy       bool
 	kubeclientset                 kubernetes.Interface
 	submarineclientset            clientset.Interface
 	traefikclientset              traefik.Interface
@@ -55,6 +57,20 @@ func (bc *BuilderConfig) InCluster(
 	incluster bool,
 ) *BuilderConfig {
 	bc.incluster = incluster
+	return bc
+}
+
+func (bc *BuilderConfig) WithClusterType(
+	clusterType string,
+) *BuilderConfig {
+	bc.clusterType = clusterType
+	return bc
+}
+
+func (bc *BuilderConfig) WithCreatePodSecurityPolicy(
+	createPodSecurityPolicy bool,
+) *BuilderConfig {
+	bc.createPodSecurityPolicy = createPodSecurityPolicy
 	return bc
 }
 

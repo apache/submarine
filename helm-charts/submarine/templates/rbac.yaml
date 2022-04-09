@@ -25,6 +25,7 @@ rules:
     resources:
       - submarines
       - submarines/status
+      - submarines/finalizers
     verbs:
       - "*"
   - apiGroups:
@@ -90,6 +91,27 @@ rules:
       - customresourcedefinitions/status
     verbs:
       - "*"
+{{- if .Values.podSecurityPolicy.create }}
+{{- if (eq "openshift" .Values.clusterType) }}
+  - apiGroups:
+      - security.openshift.io
+    resources:
+      - securitycontextconstraints
+    verbs:
+      - use
+    resourceNames:
+      - anyuid
+{{- else }}
+  - apiGroups:
+      - policy
+    resources:
+      - podsecuritypolicies
+    verbs:
+      - use
+    resourceNames:
+      - submarine-anyuid
+{{- end }}
+{{- end }}
 ---
 apiVersion: v1
 kind: ServiceAccount

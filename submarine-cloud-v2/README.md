@@ -32,6 +32,8 @@ Golang version: `1.16.2`
 go mod vendor
 # Run the cluster
 minikube start --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.21.2
+# Or if you want to support Pod Security Policy (https://minikube.sigs.k8s.io/docs/tutorials/using_psp), you can use the following command to start cluster
+minikube start --extra-config=apiserver.enable-admission-plugins=PodSecurityPolicy --addons=pod-security-policy --vm-driver=docker --cpus 8 --memory 4096 --kubernetes-version v1.21.2
 ```
 
 ## Set up storage class fields

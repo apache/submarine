@@ -63,6 +63,8 @@ func (cb *ControllerBuilder) initialize() *ControllerBuilder {
 	workqueue := workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "Submarines")
 
 	cb.controller.incluster = cb.config.incluster
+	cb.controller.clusterType = cb.config.clusterType
+	cb.controller.createPodSecurityPolicy = cb.config.createPodSecurityPolicy
 	cb.controller.recorder = recorder
 	cb.controller.workqueue = workqueue
 

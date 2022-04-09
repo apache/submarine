@@ -30,19 +30,6 @@ import (
 	"k8s.io/klog/v2"
 )
 
-func newSubmarineServerServiceAccount(submarine *v1alpha1.Submarine) *corev1.ServiceAccount {
-	serviceAccount, err := ParseServiceAccountYaml(serverYamlPath)
-	if err != nil {
-		klog.Info("[Error] ParseServiceAccountYaml", err)
-	}
-
-	serviceAccount.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
-		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
-	}
-
-	return serviceAccount
-}
-
 func newSubmarineServerService(submarine *v1alpha1.Submarine) *corev1.Service {
 	service, err := ParseServiceYaml(serverYamlPath)
 	if err != nil {
@@ -111,28 +98,7 @@ func newSubmarineServerDeployment(submarine *v1alpha1.Submarine) *appsv1.Deploym
 func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine) error {
 	klog.Info("[createSubmarineServer]")
 
-	// Step1: Create ServiceAccount
-	serviceaccount, err := c.serviceaccountLister.ServiceAccounts(submarine.Namespace).Get(serverName)
-	// If the resource doesn't exist, we'll create it
-	if errors.IsNotFound(err) {
-		serviceaccount, err = c.kubeclientset.CoreV1().ServiceAccounts(submarine.Namespace).Create(context.TODO(), newSubmarineServerServiceAccount(submarine), metav1.CreateOptions{})
-		klog.Info("	Create ServiceAccount: ", serviceaccount.Name)
-	}
-
-	// If an error occurs during Get/Create, we'll requeue the item so we can
-	// attempt processing again later. This could have been caused by a
-	// temporary network failure, or any other transient reason.
-	if err != nil {
-		return err
-	}
-
-	if !metav1.IsControlledBy(serviceaccount, submarine) {
-		msg := fmt.Sprintf(MessageResourceExists, serviceaccount.Name)
-		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
-		return fmt.Errorf(msg)
-	}
-
-	// Step2: Create Service
+	// Step1: Create Service
 	service, err := c.serviceLister.Services(submarine.Namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
@@ -153,7 +119,7 @@ func (c *Controller) createSubmarineServer(submarine *v1alpha1.Submarine) error 
 		return fmt.Errorf(msg)
 	}
 
-	// Step3: Create Deployment
+	// Step2: Create Deployment
 	deployment, err := c.deploymentLister.Deployments(submarine.Namespace).Get(serverName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
