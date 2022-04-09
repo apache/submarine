@@ -56,6 +56,7 @@ spec:
       labels:
         app: submarine-tensorboard
     spec:
+      serviceAccountName: "submarine-storage"
       containers:
       - name: submarine-tensorboard-container
         image: tensorflow/tensorflow:1.11.0

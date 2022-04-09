@@ -58,6 +58,7 @@ spec:
       labels:
         app: submarine-mlflow
     spec:
+      serviceAccountName: "submarine-storage"
       initContainers:
       - name: check-database-connection
         image: busybox:1.28

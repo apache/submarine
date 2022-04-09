@@ -14,12 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
 {{- if .Values.podSecurityPolicy.create }}
 kind: PodSecurityPolicy
 apiVersion: {{ template "podSecurityPolicy.apiVersion" . }}
 metadata:
   name: submarine-anyuid
 spec:
+  privileged: false
   volumes:
     - configMap
     - downwardAPI
@@ -35,5 +37,4 @@ spec:
     rule: RunAsAny
   fsGroup:
     rule: RunAsAny
-  allowPrivilegeEscalation: false
 {{- end }}
