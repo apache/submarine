@@ -74,7 +74,7 @@ public class ExperimentSpecParser {
         getName().equalsIgnoreCase(framework)) {
       return parsePyTorchJob(experimentSpec);
     } else if (ExperimentMeta.SupportedMLFramework.XGBOOST.
-      getName().equalsIgnoreCase(framework)) {
+        getName().equalsIgnoreCase(framework)) {
       return parseXGBoostJob(experimentSpec);
     } else {
       throw new InvalidSpecException("Unsupported framework name: " + framework +
