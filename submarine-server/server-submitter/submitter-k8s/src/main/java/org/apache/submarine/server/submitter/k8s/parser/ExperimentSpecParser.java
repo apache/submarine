@@ -86,8 +86,38 @@ public class ExperimentSpecParser {
   public static XGBoostJob parseXGBoostJob(
       ExperimentSpec experimentSpec) throws InvalidSpecException {
     XGBoostJob xGBoostJob = new XGBoostJob();
-    // need to be added
+    xGBoostJob.setMetadata(parseMetadata(experimentSpec));
+    xGBoostJob.setSpec(parseXGBoostJobSpec(experimentSpec));
     return xGBoostJob;
+  }
+
+  public static XGBoostJobSpec parseXGBoostJobSpec(ExperimentSpec experimentSpec)
+      throws InvalidSpecException {
+    XGBoostJobSpec xGBoostJobSpec = new XGBoostJobSpec();
+
+    Map<XGBoostJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
+
+    for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
+      String replicaType = entry.getKey();
+      ExperimentTaskSpec taskSpec = entry.getValue();
+      
+      if (TFJobReplicaType.isSupportedReplicaType(replicaType)) {
+        MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
+        replicaSpec.setReplicas(taskSpec.getReplicas());
+        V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
+        
+        replicaSpec.setTemplate(podTemplateSpec);
+        replicaSpecMap.put(XGBoostJobReplicaType.valueOf(replicaType), replicaSpec);
+      } else {
+        throw new InvalidSpecException("Unrecognized replica type name: " +
+            entry.getKey() +
+            ", it should be " +
+            String.join(",", XGBoostJobReplicaType.names()) +
+            " for TensorFlow experiment.");
+      }
+    }
+    xGBoostJobSpec.setReplicaSpecs(replicaSpecMap);
+    return xGBoostJobSpec;
   }
 
   public static PyTorchJob parsePyTorchJob(

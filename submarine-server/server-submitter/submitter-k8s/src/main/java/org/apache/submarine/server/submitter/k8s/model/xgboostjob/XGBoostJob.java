@@ -47,7 +47,7 @@ public class XGBoostJob extends MLJob {
    * @return job spec
    */
   public XGBoostJobSpec getSpec() {
-  return spec;
+    return spec;
   }
 
   /**
@@ -55,7 +55,7 @@ public class XGBoostJob extends MLJob {
    * @param spec job spec
    */
   public void setSpec(XGBoostJobSpec spec) {
-  this.spec = spec;
+    this.spec = spec;
   }
 }
 
