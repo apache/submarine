@@ -52,6 +52,9 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobSpec
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobSpec;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJob;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJobReplicaType;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJobSpec;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,11 +73,21 @@ public class ExperimentSpecParser {
     } else if (ExperimentMeta.SupportedMLFramework.PYTORCH.
         getName().equalsIgnoreCase(framework)) {
       return parsePyTorchJob(experimentSpec);
+    } else if (ExperimentMeta.SupportedMLFramework.XGBOOST.
+      getName().equalsIgnoreCase(framework)) {
+      return parseXGBoostJob(experimentSpec);
     } else {
       throw new InvalidSpecException("Unsupported framework name: " + framework +
           ". Supported frameworks are: " +
           String.join(",", ExperimentMeta.SupportedMLFramework.names()));
     }
+  }
+
+  public static XGBoostJob parseXGBoostJob(
+      ExperimentSpec experimentSpec) throws InvalidSpecException {
+    XGBoostJob xGBoostJob = new XGBoostJob();
+    // need to be added
+    return xGBoostJob;
   }
 
   public static PyTorchJob parsePyTorchJob(

@@ -150,7 +150,8 @@ public class ExperimentMeta {
    */
   public enum SupportedMLFramework {
     TENSORFLOW("tensorflow"),
-    PYTORCH("pytorch");
+    PYTORCH("pytorch"),
+    XGBOOST("xgboost");
 
     private final String name;
 
