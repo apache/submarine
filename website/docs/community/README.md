@@ -30,7 +30,7 @@ You can reach out to the community members via any one of the following ways:
   :::
   ![slack_search_submarine](/img/slack_search_submarine.png)
   ![slack_join_submarine](/img/slack_join_submarine.png)
-- Zoom: [https://cloudera.zoom.us/j/880548968](https://cloudera.zoom.us/j/880548968)
+- Zoom: [https://cloudera.zoom.us/j/97264903288](https://cloudera.zoom.us/j/97264903288)
 
 - Sync Up: [https://docs.google.com/document/d/16pUO3TP4SxSeLduG817GhVAjtiph9HYpRHo_JgduDvw/edit](https://docs.google.com/document/d/16pUO3TP4SxSeLduG817GhVAjtiph9HYpRHo_JgduDvw/edit)
 
@@ -48,7 +48,7 @@ If you want to work on a new idea of relatively small scope:
 
 3. Submit a [pull request of Submarine](https://github.com/apache/submarine) containing a tested change.
 
-Contributions are welcomed and greatly appreciated. See [CONTRIBUTING](contributing) for details on submitting patches and the contribution workflow.
+Contributions are welcomed and greatly appreciated. See [CONTRIBUTING](contributing.md) for details on submitting patches and the contribution workflow.
 
 ## How Do I Become a Committer?
 

@@ -29,7 +29,7 @@ Client of a submarine server that creates and manages experients and logs.
 
 Create an experiment.
 > **Parameters**
-  - **experiment_spec**: Submarine experiment spec. More detailed information can be found at [Experiment API](https://submarine.apache.org/docs/userDocs/api/experiment).
+  - **experiment_spec**: Submarine experiment spec. More detailed information can be found at [Experiment API](../api/experiment.md).
 
 > **Returns**: The detailed info about the submarine experiment.
 
@@ -69,7 +69,7 @@ client.create_experiment({
 Patch an experiment.
 > **Parameters**
   - **id**: Submarine experiment id. 
-  - **experiment_spec**: Submarine experiment spec. More detailed information can be found at [Experiment API](https://submarine.apache.org/docs/userDocs/api/experiment).
+  - **experiment_spec**: Submarine experiment spec. More detailed information can be found at [Experiment API](../api/experiment.md).
 
 
 > **Returns**

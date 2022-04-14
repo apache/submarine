@@ -21,7 +21,7 @@ title: How to Run Frontend Integration Test
 
 ## Run E2E test locally
 
-1. Ensure you have setup the submarine locally. If not, you can refer to `Submarine Local Deployment`.
+1. Ensure you have setup the submarine locally. If not, you can refer to [Quickstart](../gettingStarted/quickstart.md).
 
 2. Forward port
 

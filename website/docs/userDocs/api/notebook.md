@@ -49,7 +49,7 @@ NotebookSpec in request body.
 
 #### **EnvironmentSpec**
 
-See more details in [environment api](https://submarine.apache.org/docs/userDocs/api/environment).
+See more details in [environment api](environment.md).
 
 #### **NotebookPodSpec**
 

@@ -1,6 +1,5 @@
 ---
 title: Submarine Local Deployment
-slug: /
 ---
 
 <!--

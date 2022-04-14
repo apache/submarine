@@ -29,7 +29,7 @@ This document gives you a quick view on the basic usage of Submarine platform. Y
 
 1. Prerequisite
 
-- Check [dependency page](https://github.com/apache/submarine/blob/master/website/docs/devDocs/Dependencies.md) for the compatible version
+- Check [dependency page](../devDocs/Dependencies.md) for the compatible version
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [helm](https://helm.sh/docs/intro/install/) (Helm v3 is minimum requirement.)
 - [minikube](https://minikube.sigs.k8s.io/docs/start/).
