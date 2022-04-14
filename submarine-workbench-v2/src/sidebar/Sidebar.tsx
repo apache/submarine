@@ -65,7 +65,6 @@ function Sidebar() {
           defaultOpenKeys={['sub1']}
           selectedKeys={[key]}
           mode="inline"
-          inlineCollapsed={isCollapsed}
         >
           <Menu.Item key='home' icon={<HomeOutlined />} disabled={true}>
             <Link to='/home'>
@@ -92,7 +91,7 @@ function Sidebar() {
               Environment
             </Link>
           </Menu.Item>
-          <SubMenu key="sub2" icon={<SettingOutlined />} title="Manager">
+          <Menu.SubMenu key="sub2" icon={<SettingOutlined />} title="Manager">
             <Menu.Item key="user">
               <Link to='/user'>
                 User
@@ -108,7 +107,7 @@ function Sidebar() {
                 Department
               </Link>
             </Menu.Item>
-          </SubMenu>
+          </Menu.SubMenu>
           <Menu.Item key='model' icon={<InboxOutlined />}>
             <Link to='/model'>
               Model
