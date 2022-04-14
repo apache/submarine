@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { useState } from 'react'
-import { Layout, Menu } from 'antd';
-import SubMenu from 'antd/lib/menu/SubMenu';
+import { useState } from "react";
+import { Layout, Menu } from "antd";
+import SubMenu from "antd/lib/menu/SubMenu";
 import {
   HomeOutlined,
   ExperimentOutlined,
@@ -30,108 +30,78 @@ import {
   SettingOutlined,
   BarChartOutlined,
   DesktopOutlined,
-  ApiOutlined
-} from '@ant-design/icons';
-import './Sidebar.scss'
-import { Link } from 'react-router-dom'
+  ApiOutlined,
+} from "@ant-design/icons";
+import "./Sidebar.scss";
+import { Link } from "react-router-dom";
 
 const { Sider } = Layout;
 
 function Sidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const [key, setKey] = useState("experiment")
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [key, setKey] = useState("experiment");
 
-  const handleClick = (e: { key: string; }) => setKey(key => e.key);
+  const handleClick = (e: { key: string }) => setKey((key) => e.key);
 
   return (
     <>
       <Sider
-        className='menu-sidebar'
-        width='256px'
-        breakpoint='md'
+        className="menu-sidebar"
+        width="256px"
+        breakpoint="md"
         onCollapse={(collapsed, type) => {
           setIsCollapsed(() => collapsed);
-        }}>
-        <Link to='/experiment' onClick={() => setKey("experiment")}>
-          <div className='sidebar-logo'>
-            <img className='sidebar-logo-img' src="/logo.png" alt="logo" />
+        }}
+      >
+        <Link to="/experiment" onClick={() => setKey("experiment")}>
+          <div className="sidebar-logo">
+            <img className="sidebar-logo-img" src="/logo.png" alt="logo" />
             <h1>Submarine</h1>
           </div>
         </Link>
-        <Menu
-          onClick={handleClick}
-          theme='dark'
-
-          defaultOpenKeys={['sub1']}
-          selectedKeys={[key]}
-          mode="inline"
-        >
-          <Menu.Item key='home' icon={<HomeOutlined />} disabled={true}>
-            <Link to='/home'>
-              Home
-            </Link>
+        <Menu onClick={handleClick} theme="dark" defaultOpenKeys={["sub1"]} selectedKeys={[key]} mode="inline">
+          <Menu.Item key="home" icon={<HomeOutlined />} disabled={true}>
+            <Link to="/home">Home</Link>
           </Menu.Item>
-          <Menu.Item key='notebook' icon={<BookOutlined />}>
-            <Link to='/notebook'>
-              Notebook
-            </Link>
+          <Menu.Item key="notebook" icon={<BookOutlined />}>
+            <Link to="/notebook">Notebook</Link>
           </Menu.Item>
-          <Menu.Item key='experiment' icon={<ExperimentOutlined />}>
-            <Link to='/experiment'>
-              Experiment
-            </Link>
+          <Menu.Item key="experiment" icon={<ExperimentOutlined />}>
+            <Link to="/experiment">Experiment</Link>
           </Menu.Item>
-          <Menu.Item key='template' icon={<FileOutlined />}>
-            <Link to='/template'>
-              Template
-            </Link>
+          <Menu.Item key="template" icon={<FileOutlined />}>
+            <Link to="/template">Template</Link>
           </Menu.Item>
-          <Menu.Item key='environment' icon={<CodepenOutlined />}>
-            <Link to='/environment'>
-              Environment
-            </Link>
+          <Menu.Item key="environment" icon={<CodepenOutlined />}>
+            <Link to="/environment">Environment</Link>
           </Menu.Item>
           <Menu.SubMenu key="sub2" icon={<SettingOutlined />} title="Manager">
             <Menu.Item key="user">
-              <Link to='/user'>
-                User
-              </Link>
+              <Link to="/user">User</Link>
             </Menu.Item>
             <Menu.Item key="dataDict">
-              <Link to='/dataDict'>
-                Data Dict
-              </Link>
+              <Link to="/dataDict">Data Dict</Link>
             </Menu.Item>
             <Menu.Item key="department">
-              <Link to='/department'>
-                Department
-              </Link>
+              <Link to="/department">Department</Link>
             </Menu.Item>
           </Menu.SubMenu>
-          <Menu.Item key='model' icon={<InboxOutlined />}>
-            <Link to='/model'>
-              Model
-            </Link>
+          <Menu.Item key="model" icon={<InboxOutlined />}>
+            <Link to="/model">Model</Link>
           </Menu.Item>
-          <Menu.Item key='data' icon={<BarChartOutlined />} disabled={true}>
-            <Link to='/data'>
-              Data
-            </Link>
+          <Menu.Item key="data" icon={<BarChartOutlined />} disabled={true}>
+            <Link to="/data">Data</Link>
           </Menu.Item>
-          <Menu.Item key='workspace' icon={<DesktopOutlined />} disabled={true}>
-            <Link to='/workspace'>
-              Workspace
-            </Link>
+          <Menu.Item key="workspace" icon={<DesktopOutlined />} disabled={true}>
+            <Link to="/workspace">Workspace</Link>
           </Menu.Item>
-          <Menu.Item key='interpreter' icon={<ApiOutlined />} disabled={true}>
-            <Link to='/interpreter'>
-              Interpreter
-            </Link>
+          <Menu.Item key="interpreter" icon={<ApiOutlined />} disabled={true}>
+            <Link to="/interpreter">Interpreter</Link>
           </Menu.Item>
         </Menu>
       </Sider>
     </>
-  )
+  );
 }
 
 export default Sidebar;

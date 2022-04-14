@@ -17,17 +17,15 @@
  * under the License.
  */
 
-import { Layout } from 'antd';
+import { Layout } from "antd";
 
 const { Content } = Layout;
 
-function Template(){
-    return (
-        <Layout>
-            <Content>
-                Template
-            </Content>
-        </Layout>
-    )
+function Template() {
+  return (
+    <Layout>
+      <Content>Template</Content>
+    </Layout>
+  );
 }
 export default Template;

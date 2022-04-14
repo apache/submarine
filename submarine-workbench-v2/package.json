@@ -5,10 +5,12 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "autoformat": "prettier --config .prettierrc --write 'src/**/*.{js,jsx,json,ts,tsx,html}'"
   },
   "dependencies": {
     "antd": "^4.19.5",
+    "prettier": "^2.6.2",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-router-dom": "6"

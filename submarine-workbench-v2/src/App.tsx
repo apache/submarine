@@ -17,17 +17,17 @@
  * under the License.
  */
 
-import Sidebar from '@submarine/sidebar/Sidebar'
-import { Navigate, Route, Routes } from 'react-router-dom';
-import Notebook from '@submarine/pages/workbench/notebook/Notebook'
-import Experiment from '@submarine/pages/workbench/experiment/Experiment'
-import Template from '@submarine/pages/workbench/template/Template'
-import Environment from '@submarine/pages/workbench/environment/Environment'
-import User from '@submarine/pages/workbench/user/User'
-import DataDict from '@submarine/pages/workbench/data_dict/DataDict'
-import Department from '@submarine/pages/workbench/department/Department'
-import Model from '@submarine/pages/workbench/model/Model'
-import { Layout } from 'antd';
+import Sidebar from "@submarine/sidebar/Sidebar";
+import { Navigate, Route, Routes } from "react-router-dom";
+import Notebook from "@submarine/pages/workbench/notebook/Notebook";
+import Experiment from "@submarine/pages/workbench/experiment/Experiment";
+import Template from "@submarine/pages/workbench/template/Template";
+import Environment from "@submarine/pages/workbench/environment/Environment";
+import User from "@submarine/pages/workbench/user/User";
+import DataDict from "@submarine/pages/workbench/data_dict/DataDict";
+import Department from "@submarine/pages/workbench/department/Department";
+import Model from "@submarine/pages/workbench/model/Model";
+import { Layout } from "antd";
 
 function App() {
   return (
@@ -45,7 +45,7 @@ function App() {
         <Route path="model" element={<Model />} />
       </Routes>
     </Layout>
-  )
+  );
 }
 
-export default App
+export default App;
