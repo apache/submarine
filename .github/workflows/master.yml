@@ -169,7 +169,7 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        k8s-version: ["v1.20", "v1.21", "v1.22", "v1.23"]
+        k8s-version: ["v1.21.11", "v1.22.8", "v1.23.5"]
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
