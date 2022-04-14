@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import Sidebar from "@submarine/sidebar/Sidebar";
+import Sidebar from "@submarine/components/Sidebar";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Notebook from "@submarine/pages/workbench/notebook/Notebook";
 import Experiment from "@submarine/pages/workbench/experiment/Experiment";
