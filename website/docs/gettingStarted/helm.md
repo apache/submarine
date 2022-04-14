@@ -1,5 +1,5 @@
 ---
-title: Deploy Submarine with Helm
+title: Custom Configuation
 ---
 
 <!--
@@ -20,40 +20,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 -->
-# Deploy Submarine with Helm
-With the help of [Helm](https://helm.sh/), users can deploy Submarine service to Kubernetes in one command. 
-Check [helm-charts/submarine](https://github.com/apache/submarine/tree/master/helm-charts/submarine) for more details.
-
-## Prerequisite
-* Install Helm v3: https://helm.sh/docs/intro/install/ 
-* A Kubernetes environment (ex: minikube or kind)
-
-## Deploy Submarine to Kubernetes
-```bash
-git clone https://github.com/apache/submarine.git
-cd submarine
-helm install submarine ./helm-charts/submarine
-```
-* With these commands, the Submarine service will be deployed to the "default" namespace.
-* The first time installation will take about 10 mins because the docker images are pulled from [apache/submarine](https://hub.docker.com/r/apache/submarine) on DockerHub.
-
-
-## Verify installation
-```bash
-kubectl get all
-```
-* TODO: screenshot
-
-## Uninstall Submarine
-```bash
-helm uninstall submarine
-
-# Check
-helm ls 
-``` 
-
-# Helm chart configuation (values.yaml)
-## Volume Type
+## Helm Chart Volume Type
 Submarine can support various [volume types](https://kubernetes.io/docs/concepts/storage/volumes/#nfs), currently including hostPath (default) and NFS. It can be easily configured in the `./helm-charts/submarine/values.yaml`, or you can override the default values in `values.yaml` by [helm CLI](https://helm.sh/docs/helm/helm_install/).
 
 #### hostPath
@@ -146,3 +113,38 @@ If minikube is installed, use the following command to find the URL to the Subma
 ```
 $ minikube service submarine-traefik --url
 ```
+
+## Kubernetes Dashboard (optional)
+
+### Deploy
+To deploy Dashboard, execute the following command:
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml
+```
+
+### Create RBAC
+Run the following commands to grant the cluster access permission of dashboard:
+```
+kubectl create serviceaccount dashboard-admin-sa
+kubectl create clusterrolebinding dashboard-admin-sa --clusterrole=cluster-admin --serviceaccount=default:dashboard-admin-sa
+```
+
+### Get access token (optional)
+If you want to use the token to login the dashboard, run the following commands to get key:
+```
+kubectl get secrets
+# select the right dashboard-admin-sa-token to describe the secret
+kubectl describe secret dashboard-admin-sa-token-6nhkx
+```
+
+### Start dashboard service
+```
+kubectl proxy
+```
+
+Now access Dashboard at:
+> http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+
+Dashboard screenshot:
+
+![](/img/kind-dashboard.png)

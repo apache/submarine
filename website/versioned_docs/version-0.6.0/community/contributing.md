@@ -27,7 +27,7 @@ There are several ways to contribute to Submarine:
 * The document [How It Works](http://www.apache.org/foundation/how-it-works.html) can help you understand Apache Software Foundation further.
 
 ## Build Submarine
-* [Build From Code](https://github.com/apache/submarine/blob/master/website/docs/devDocs/BuildFromCode.md)
+* [Build From Code](../devDocs/BuildFromCode.md)
 
 ## Creating patches
 Submarine follows [Fork & Pull](https://github.com/sevntu-checkstyle/sevntu.checkstyle/wiki/Development-workflow-with-Git:-Fork,-Branching,-Commits,-and-Pull-Request) model.

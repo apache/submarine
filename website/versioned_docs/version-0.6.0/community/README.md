@@ -28,7 +28,7 @@ You can reach out to the community members via any one of the following ways:
 
 + Slack User: [https://the-asf.slack.com/submarine-user/](https://the-asf.slack.com/submarine-user/)
 
-+ Zoom: [https://cloudera.zoom.us/j/880548968](https://cloudera.zoom.us/j/880548968)
++ Zoom: [https://cloudera.zoom.us/j/97264903288](https://cloudera.zoom.us/j/97264903288)
 
 + Sync Up: [https://docs.google.com/document/d/16pUO3TP4SxSeLduG817GhVAjtiph9HYpRHo_JgduDvw/edit](https://docs.google.com/document/d/16pUO3TP4SxSeLduG817GhVAjtiph9HYpRHo_JgduDvw/edit)
 

@@ -56,7 +56,7 @@ There are two types of environment: Anonymous and Predefined.
 - Anonymous environment: only specify `dockerImage` in environment spec. The container will be built on the docker image.
 - Embedded environment: specify `name` in environment spec. The container will be built on the existing environment (including dockerImage and kernalSpec).
 
-See more details in [environment api](https://submarine.apache.org/docs/userDocs/api/environment).
+See more details in [environment api](environment.md).
 
 #### **ExperimentTaskSpec**
 
@@ -212,7 +212,7 @@ curl -X POST -H "Content-Type: application/json" -d '
 }
 ' http://127.0.0.1:32080/api/v1/experiment
 ```
-Above example assume environment "my-submarine-env" already exists in Submarine. Please refer Environment API Reference doc to [environment rest api](https://submarine.apache.org/docs/userDocs/api/environment).
+Above example assume environment "my-submarine-env" already exists in Submarine. Please refer Environment API Reference doc to [environment rest api](environment.md).
 
 **response**
 

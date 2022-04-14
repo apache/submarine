@@ -23,9 +23,9 @@ module.exports = {
             Introduction: [],
             "Getting Started": [
                 "gettingStarted/quickstart",
-                // "gettingStarted/localDeployment",
                 "gettingStarted/notebook",
-                // "gettingStarted/python-sdk",
+                "gettingStarted/python-sdk",
+                "gettingStarted/helm",
             ],
             "User Docs": [
                 {
