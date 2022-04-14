@@ -37,6 +37,8 @@ function Version() {
   );
   const repoUrl = `https://github.com/${siteConfig.organizationName}/${siteConfig.projectName}`;
 	console.log(siteConfig);
+  console.log(latestVersion);
+  console.log(currentVersion);
   return (
     <Layout
       title="Versions"
@@ -55,7 +57,7 @@ function Version() {
                 <tr>
                   <th>{latestVersion.label}</th>
                   <td>
-                    <Link to={latestVersion.path}>Documentation</Link>
+                    <Link to={latestVersion.path + "/" + latestVersion.mainDocId}>Documentation</Link>
                   </td>
                   <td>
                     <a href={`/releases/submarine-release-${latestVersion.name}`}>
@@ -80,7 +82,7 @@ function Version() {
                 <tr>
                   <th>{currentVersion.label}</th>
                   <td>
-                    <Link to={currentVersion.path}>Documentation</Link>
+                    <Link to={currentVersion.path + "/" + currentVersion.mainDocId}>Documentation</Link>
                   </td>
 									<td>
                     <Link to={repoUrl}>Source code</Link>
