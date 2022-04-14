@@ -167,6 +167,10 @@ jobs:
   submarine-k8s:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    strategy:
+      matrix:
+        k8s-version: ["v1.20", "v1.21", "v1.22", "v1.23"]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v2
         with:
@@ -197,7 +201,7 @@ jobs:
           helm version
           kind version
       - name: Create kind cluster
-        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${KUBERNETES_VERSION}
+        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${{ matrix.k8s-version }}
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
