@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.database.utils;
+package org.apache.submarine.server.database.workbench.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

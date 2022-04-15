@@ -40,7 +40,7 @@ import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
-import org.apache.submarine.server.environment.EnvironmentManager;
+import org.apache.submarine.server.database.environment.EnvironmentManager;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.CodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.SSHGitCodeLocalizer;

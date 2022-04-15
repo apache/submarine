@@ -257,6 +257,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.submarine</groupId>
+      <artifactId>submarine-server-database</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- <dependency>
       <groupId>org.mybatis</groupId>
       <artifactId>mybatis</artifactId>
       <version>${mybatis.version}</version>
@@ -266,7 +272,7 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <version>${hibernate.version}</version>
-    </dependency>
+    </dependency> -->
 
     <dependency>
       <groupId>mysql</groupId>

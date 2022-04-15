@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.database.utils;
+package org.apache.submarine.server.database.workbench.utils;
 
-import org.apache.submarine.server.workbench.database.entity.SysDeptEntity;
-import org.apache.submarine.server.workbench.database.entity.SysDeptSelectEntity;
-import org.apache.submarine.server.workbench.database.entity.SysDeptTree;
+import org.apache.submarine.server.database.workbench.entity.SysDeptEntity;
+import org.apache.submarine.server.database.workbench.entity.SysDeptSelectEntity;
+import org.apache.submarine.server.database.workbench.entity.SysDeptTree;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

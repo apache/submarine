@@ -16,10 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.database.service;
+package org.apache.submarine.server.database.workbench.service;
 
-import org.apache.submarine.server.workbench.database.entity.ProjectEntity;
-import org.apache.submarine.server.workbench.database.entity.ProjectFilesEntity;
+import org.apache.submarine.server.database.workbench.entity.ProjectEntity;
+import org.apache.submarine.server.database.workbench.entity.ProjectFilesEntity;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;

@@ -16,11 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.workbench.database.service;
+package org.apache.submarine.server.database.workbench.service;
 
 import org.apache.submarine.server.experiment.database.entity.ExperimentEntity;
 import org.apache.submarine.server.experiment.database.service.ExperimentService;
-import org.apache.submarine.server.workbench.database.entity.MetricEntity;
+import org.apache.submarine.server.database.workbench.entity.MetricEntity;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

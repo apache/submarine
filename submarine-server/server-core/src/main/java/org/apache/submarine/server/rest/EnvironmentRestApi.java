@@ -36,7 +36,7 @@ import javax.ws.rs.core.Response;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
-import org.apache.submarine.server.environment.EnvironmentManager;
+import org.apache.submarine.server.database.environment.EnvironmentManager;
 import org.apache.submarine.server.utils.response.JsonResponse;
 
 import io.swagger.v3.oas.annotations.Operation;

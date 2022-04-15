@@ -36,7 +36,7 @@ import javax.ws.rs.core.Response;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.experimenttemplate.ExperimentTemplate;
 import org.apache.submarine.server.api.spec.ExperimentTemplateSpec;
-import org.apache.submarine.server.experimenttemplate.ExperimentTemplateManager;
+import org.apache.submarine.server.database.experimenttemplate.ExperimentTemplateManager;
 import org.apache.submarine.server.utils.response.JsonResponse;
 
 import io.swagger.v3.oas.annotations.Operation;

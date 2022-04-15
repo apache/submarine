@@ -32,7 +32,7 @@ import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.KernelSpec;
-import org.apache.submarine.server.experiment.ExperimentManager;
+import org.apache.submarine.server.database.experiment.ExperimentManager;
 import org.apache.submarine.server.utils.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.utils.gson.ExperimentIdSerializer;
 import org.junit.Ignore;

@@ -20,8 +20,8 @@ package org.apache.submarine.server.rest.workbench;
 
 import org.apache.submarine.server.utils.response.JsonResponse;
 import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
-import org.apache.submarine.server.workbench.database.entity.ParamEntity;
-import org.apache.submarine.server.workbench.database.service.ParamService;
+import org.apache.submarine.server.database.workbench.entity.ParamEntity;
+import org.apache.submarine.server.database.workbench.service.ParamService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

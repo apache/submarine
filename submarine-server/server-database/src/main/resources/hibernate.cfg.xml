@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<!DOCTYPE hibernate-configuration SYSTEM
+  "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">
+      org.hibernate.dialect.MySQL57Dialect
+    </property>
+    <property name="hibernate.connection.driver_class">
+      com.mysql.jdbc.Driver
+    </property>
+    <property name="hibernate.connection.url">
+      jdbc:mysql://127.0.0.1:3306/submarine?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;failOverReadOnly=false&amp;zeroDateTimeBehavior=convertToNull&amp;useSSL=false&amp;allowMultiQueries=true
+    </property>
+    <property name="hibernate.connection.username">
+      submarine
+    </property>
+    <property name="hibernate.connection.password">
+      password
+    </property>
+    <!-- Echo all executed SQL to stdout -->
+    <property name="show_sql">true</property>
+    <!-- Validate schema matches to database -->
+    <property name="hibernate.hbm2ddl.auto">validate</property>
+  </session-factory>
+</hibernate-configuration>

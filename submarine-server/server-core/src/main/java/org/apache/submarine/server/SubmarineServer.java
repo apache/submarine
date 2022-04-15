@@ -19,7 +19,7 @@
 package org.apache.submarine.server;
 
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.submarine.server.database.utils.HibernateUtil;
+import org.apache.submarine.server.database.database.utils.HibernateUtil;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.commons.cluster.ClusterServer;

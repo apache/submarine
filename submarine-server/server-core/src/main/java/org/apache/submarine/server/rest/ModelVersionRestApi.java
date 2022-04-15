@@ -40,10 +40,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
-import org.apache.submarine.server.model.database.entities.ModelVersionTagEntity;
-import org.apache.submarine.server.model.database.service.ModelVersionService;
-
+import org.apache.submarine.server.database.model.entities.ModelVersionEntity;
+import org.apache.submarine.server.database.model.entities.ModelVersionTagEntity;
+import org.apache.submarine.server.database.model.service.ModelVersionService;
 
 import org.apache.submarine.server.model.database.service.ModelVersionTagService;
 import org.apache.submarine.server.s3.Client;
