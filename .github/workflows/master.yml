@@ -523,14 +523,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Java Style
+        if: always()
         run: ./dev-support/style-check/lint-java.sh
       - name: Scala Style
+        if: always()
         run: ./dev-support/style-check/lint-scala.sh
       - name: Angular Style
+        if: always()
         run: ./dev-support/style-check/lint-angular.sh
       - name: Go Style
+        if: always()
         run: ./dev-support/style-check/lint-go.sh
       - name: React Style
+        if: always()
         working-directory: ./submarine-workbench-v2
         run: |
           yarn add prettier@^2.6.2
