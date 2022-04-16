@@ -485,10 +485,15 @@ jobs:
         uses: stCarolas/setup-maven@v4
         with:
           maven-version: 3.6.3
+      - name: Setup Golang 1.16.2
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.16.2"
       - name: Check version
         run: |
           mvn --version
           java -version
+          go version
       - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
