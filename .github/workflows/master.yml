@@ -424,6 +424,24 @@ jobs:
       - name: Test with firefox
         working-directory: ./submarine-workbench/workbench-web
         run: npm run test -- --no-watch --no-progress --browsers=FirefoxHeadless
+  submarine-workbench-v2:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 50
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
+      - name: Check version
+        run: node --version
+      - name: Install dependencies
+        working-directory: ./submarine-workbench-v2
+        run: yarn
+      - name: Run test
+        working-directory: ./submarine-workbench-v2
+        run: yarn test --run --coverage
   submarine-submitter:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -489,11 +507,15 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: "1.16.2"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '14'
       - name: Check version
         run: |
           mvn --version
           java -version
           go version
+          node --version
       - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
@@ -508,6 +530,11 @@ jobs:
         run: ./dev-support/style-check/lint-angular.sh
       - name: Go Style
         run: ./dev-support/style-check/lint-go.sh
+      - name: React Style
+        working-directory: ./submarine-workbench-v2
+        run: |
+          yarn add prettier@^2.6.2
+          yarn checkformat
   sonarcloud:
     if: github.repository == 'apache/submarine' && github.event_name == 'push' && github.ref == 'refs/heads/master'
     name: SonarCloud

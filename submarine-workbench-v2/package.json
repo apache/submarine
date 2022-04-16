@@ -7,7 +7,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",
-    "autoformat": "prettier --config .prettierrc --write 'src/**/*.{js,jsx,json,ts,tsx,html}' 'tests/**/*.{js,jsx,json,ts,tsx,html}'"
+    "autoformat": "prettier --config .prettierrc --write 'src/**/*.{js,jsx,json,ts,tsx,html}' 'tests/**/*.{js,jsx,json,ts,tsx,html}'",
+    "checkformat": "prettier --config .prettierrc --check 'src/**/*.{js,jsx,json,ts,tsx,html}' 'tests/**/*.{js,jsx,json,ts,tsx,html}'"
   },
   "dependencies": {
     "antd": "^4.19.5",
