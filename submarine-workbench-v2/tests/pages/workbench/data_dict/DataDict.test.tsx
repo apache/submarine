@@ -17,15 +17,12 @@
  * under the License.
  */
 
-import { Layout } from "antd";
+import DataDict from "@submarine/pages/workbench/data_dict/DataDict";
+import { render } from "@submarine-test/utils/test-utils";
 
-const { Content } = Layout;
-
-function Environment() {
-  return (
-    <Layout data-testid="environment-page">
-      <Content>Environment</Content>
-    </Layout>
-  );
-}
-export default Environment;
+describe("DataDict page test", () => {
+  it("render", () => {
+    const { getByText } = render(<DataDict />);
+    expect(getByText("DataDict")).toBeInTheDocument();
+  });
+});

@@ -23,7 +23,7 @@ const { Content } = Layout;
 
 function Notebook() {
   return (
-    <Layout>
+    <Layout data-testid="notebook-page">
       <Content>Notebook</Content>
     </Layout>
   );

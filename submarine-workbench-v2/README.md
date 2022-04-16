@@ -24,5 +24,11 @@ npm run preview (or yarn preview)
 
 ## Formatting the code
 ```
-npm autoformat (or yarn autoformat)
+npm run autoformat (or yarn autoformat)
 ```
+
+## Unit test
+```
+npm run test (or yarn test)
+```
+> with coverage arugment can show the code coverage

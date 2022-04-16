@@ -17,15 +17,6 @@
  * under the License.
  */
 
-import { Layout } from "antd";
+import "@testing-library/jest-dom";
 
-const { Content } = Layout;
-
-function Environment() {
-  return (
-    <Layout data-testid="environment-page">
-      <Content>Environment</Content>
-    </Layout>
-  );
-}
-export default Environment;
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;

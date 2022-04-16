@@ -23,7 +23,7 @@ const { Content } = Layout;
 
 function Model() {
   return (
-    <Layout>
+    <Layout data-testid="model-page">
       <Content>Model</Content>
     </Layout>
   );

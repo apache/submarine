@@ -23,7 +23,7 @@ const { Content } = Layout;
 
 function DataDict() {
   return (
-    <Layout>
+    <Layout data-testid="data_dict-page">
       <Content>DataDict</Content>
     </Layout>
   );

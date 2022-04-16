@@ -17,15 +17,12 @@
  * under the License.
  */
 
-import { Layout } from "antd";
+import Template from "@submarine/pages/workbench/template/Template";
+import { render } from "@submarine-test/utils/test-utils";
 
-const { Content } = Layout;
-
-function Environment() {
-  return (
-    <Layout data-testid="environment-page">
-      <Content>Environment</Content>
-    </Layout>
-  );
-}
-export default Environment;
+describe("Template page test", () => {
+  it("render", () => {
+    const { getByText } = render(<Template />);
+    expect(getByText("Template")).toBeInTheDocument();
+  });
+});

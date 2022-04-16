@@ -32,7 +32,7 @@ import { Layout } from "antd";
 function App() {
   return (
     <Layout>
-      <Sidebar></Sidebar>
+      <Sidebar data-test-id="sidebar"></Sidebar>
       <Routes>
         <Route path="/" element={<Navigate replace to="experiment" />} />
         <Route path="notebook" element={<Notebook />} />

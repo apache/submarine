@@ -23,7 +23,7 @@ const { Content } = Layout;
 
 function Department() {
   return (
-    <Layout>
+    <Layout data-testid="department-page">
       <Content>Department</Content>
     </Layout>
   );

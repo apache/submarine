@@ -17,15 +17,17 @@
  * under the License.
  */
 
-import { Layout } from "antd";
+/* eslint-disable import/export */
+import { render } from "@testing-library/react";
 
-const { Content } = Layout;
+const customRender = (ui: React.ReactElement, options = {}) =>
+  render(ui, {
+    // wrap provider(s) here if needed
+    wrapper: ({ children }) => children,
+    ...options,
+  });
 
-function Environment() {
-  return (
-    <Layout data-testid="environment-page">
-      <Content>Environment</Content>
-    </Layout>
-  );
-}
-export default Environment;
+export * from "@testing-library/react";
+export { default as userEvent } from "@testing-library/user-event";
+// override render export
+export { customRender as render };

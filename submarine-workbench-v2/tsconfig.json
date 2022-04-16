@@ -2,9 +2,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@submarine/*": [
-        "./src/*",
-      ]
+      "@submarine/*": ["./src/*"],
+      "@submarine-test/*": ["./tests/*"]
     },
     "target": "ESNext",
     "useDefineForClassFields": true,
@@ -22,6 +21,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"],
+  "include": ["src", "tests"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
