@@ -11,6 +11,7 @@
   See the License for the specific language governing permissions and
   limitations under the License. See accompanying LICENSE file.
 -->
+
 # CICD Introduction
 
 > Please note that cicd is a tool provided to submarine committers for PR merging and release. Only submarine committers have permission to execute.
@@ -21,44 +22,53 @@ To use them more easily, we provide a Docker image to help committer to handle t
 
 ## Docker mode
 
+Build the image and start the container
+
 ```
 ./build_and_start_cicd_image.sh
 ```
 
-Or
+Or separate image building and container running process
 
 ```
-cd <path-to-submarine-home>/dev-support/cicd
-docker build -t submarine-cicd .
-docker run -it --rm submarine-cicd
+./build.sh
+docker run -it --rm apache/submarine:cicd-0.7.0
 ```
 
-Jira username, password, apache id and apache username are required in the docker container. You can
-add them to the local environment variable.
+Or directly use the image on docker hub
 
 ```
-vi ~/.bash_profile
-export JIRA_USERNAME='Your jira username'
-export JIRA_PASSWORD='Your jira password'
-export APACHE_ID='Your apache id' # Your apache email prefix
-export APACHE_NAME='Your apache name'
+docker run -it --rm apache/submarine:cicd-0.7.0
 ```
 
-And you'll see output like below and then you can decide what to accomplish.
-```
-$ docker run -it -e JIRA_USERNAME="${JIRA_USERNAME}" -e JIRA_PASSWORD="${JIRA_PASSWORD}" -e APACHE_ID="${APACHE_ID}" -e APACHE_NAME="${APACHE_NAME}" -p 4000:4000 --rm submarine-cicd
-```
-
-The screen outputs the following information: 
+After successfully running the container, you will see output like below and then you can decide what to accomplish.
 
 ```
 Start Submarine CI/CD.
 ==== Merge PR Begin ====
-Enter Your Apache JIRA User name: 
+Enter Your Apache JIRA User name:
 ```
+
+Jira username, password, apache id and apache username can be provided to the docker container so that you do not need to type them everytime. You can add them to the local environment variable file.
+
+For example, create a file named `~/.secrets/submarine-cicd.env` and write the following content to it.
+
+```
+JIRA_USERNAME=YOUR_JIRA_USERNAME
+JIRA_PASSWORD=YOUR_JIRA_PASSWORD
+APACHE_ID=YOUR_APACHE_ID
+APACHE_NAME=YOUR_APACHE_NAME
+```
+
+And then you can run the docker image with the following command
+
+```
+docker run -it --env-file ~/.secrets/submarine-cicd.env -p 4000:4000 --rm apache/submarine:cicd-0.7.0
+```
+
 ## Manual mode (Not Recommended)
 
-First, You need install `python 2.7.13` and `pip insall jira`
+First, You need to have `python 3` and run `pip insall jira`
 
 ### The Procedure of Merging PR
 
@@ -68,9 +78,8 @@ First, You need install `python 2.7.13` and `pip insall jira`
 4. cd submarine
 5. git remote rename origin apache
 6. git remote add apache-github https://github.com/apache/submarine.git
-7. optional: git config --local --add user.name {name} 
+7. optional: git config --local --add user.name {name}
 8. optional: git config --local --add user.email {username}@apache.org
 9. optional: echo -e "JIRA_USERNAME={jira_username}\nJIRA_PASSWORD={jira_password}" >> ~/.bashrc
 10. optional: source ~/.bashrc
-11. dev-support/cicd/merge_submarine_pr.py
-
+11. ./dev-support/cicd/merge_submarine_pr.py
