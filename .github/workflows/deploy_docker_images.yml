@@ -70,6 +70,11 @@ jobs:
       - name: Push submarine-jupyter docker image
         run: docker push apache/submarine:jupyter-notebook-$SUBMARINE_VERSION
 
+      - name: Build submarine jupyter gpu
+        run: ./dev-support/docker-images/jupyter-gpu/build.sh
+      - name: Push submarine-jupyter-gpu docker image
+        run: docker push apache/submarine:jupyter-notebook-gpu-$SUBMARINE_VERSION
+
       - name: Build submarine operator
         run: ./dev-support/docker-images/operator/build.sh
       - name: Push submarine-operator docker image
@@ -89,3 +94,8 @@ jobs:
         run: ./dev-support/examples/quickstart/build.sh
       - name: Push submarine quickstart docker image
         run: docker push apache/submarine:quickstart-$SUBMARINE_VERSION
+
+      - name: Build submarine cicd
+        run: ./dev-support/cicd/build.sh
+      - name: Push submarine-cicd docker image
+        run: docker push apache/submarine:cicd-$SUBMARINE_VERSION
