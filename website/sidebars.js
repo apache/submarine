@@ -67,6 +67,7 @@ module.exports = {
                 "community/contributing",
                 "community/HowToVoteCommitterOrPMC",
                 "community/HowToBecomeCommitter",
+                "community/Resources",
             ],
             "Design Docs": [
                 "designDocs/architecture-and-requirements",
