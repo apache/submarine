@@ -731,6 +731,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Code coverage
         uses: codecov/codecov-action@v2
+        with:
+          files: ./target/coverage/all.xml
       - name: Delete temporary build artifacts before caching
         run: |
           #Never cache local artifacts
