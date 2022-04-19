@@ -646,6 +646,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Code coverage
+        uses: codecov/codecov-action@v2
       - name: Delete temporary build artifacts before caching
         run: |
           #Never cache local artifacts
