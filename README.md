@@ -163,6 +163,10 @@ See [Developer Guide Home Page](https://submarine.apache.org/docs/devDocs/Develo
 
 What to know more about what's coming for Submarine? Please check the roadmap out: https://cwiki.apache.org/confluence/display/SUBMARINE/Roadmap
 
+## Resources
+
+[Apache submarine: a unified machine learning platform made simple](https://dl.acm.org/doi/abs/10.1145/3517207.3526984) at EuroMLSys '22
+
 ## License
 
 The Apache Submarine project is licensed under the Apache 2.0 License. See the [LICENSE](./LICENSE) file for details.
