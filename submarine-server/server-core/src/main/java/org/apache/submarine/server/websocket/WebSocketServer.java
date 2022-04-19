@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.submarine.server.workbench.websocket;
+package org.apache.submarine.server.websocket;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -38,8 +38,8 @@ import org.slf4j.LoggerFactory;
  * no-parameter constructor
  */
 @ManagedObject
-public class NotebookServer extends WebSocketServlet
-    implements org.apache.submarine.server.workbench.websocket.NotebookSocketListener {
+public class WebSocketServer extends WebSocketServlet
+    implements org.apache.submarine.server.websocket.WebSocketListener {
 
   /**
    * Job manager service type.
@@ -57,38 +57,38 @@ public class NotebookServer extends WebSocketServlet
     }
   }
 
-  private static final Logger LOG = LoggerFactory.getLogger(NotebookServer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(WebSocketServer.class);
   private static Gson gson = new GsonBuilder()
       .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
       .registerTypeAdapter(Date.class, new DateJsonDeserializer())
       .setPrettyPrinting()
       .create();
 
-  private static AtomicReference<NotebookServer> self = new AtomicReference<>();
+  private static AtomicReference<WebSocketServer> self = new AtomicReference<>();
 
   private ConnectionManager connectionManager;
 
   private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-  public NotebookServer() {
+  public WebSocketServer() {
     this.connectionManager = new ConnectionManager();
-    NotebookServer.self.set(this);
-    LOG.info("NotebookServer instantiated: {}", this);
+    WebSocketServer.self.set(this);
+    LOG.info("WebSocketServer instantiated: {}", this);
   }
 
   @Override
   public void configure(WebSocketServletFactory factory) {
-    factory.setCreator(new NotebookWebSocketCreator(this));
+    factory.setCreator(new BasicWebSocketCreator(this));
   }
 
   @Override
-  public void onOpen(NotebookSocket conn) {
+  public void onOpen(WebSocket conn) {
     LOG.info("New connection from {}", conn);
     connectionManager.addConnection(conn);
   }
 
   @Override
-  public void onMessage(NotebookSocket conn, String msg) {
+  public void onMessage(WebSocket conn, String msg) {
     try {
       LOG.info("Got Message: " + msg);
       if (StringUtils.isEmpty(conn.getUser())) {
@@ -106,7 +106,7 @@ public class NotebookServer extends WebSocketServlet
   }
 
   @Override
-  public void onClose(NotebookSocket conn, int code, String reason) {
+  public void onClose(WebSocket conn, int code, String reason) {
     LOG.info("Closed connection to {} ({}) {}", conn, code, reason);
     connectionManager.removeConnection(conn);
     connectionManager.removeUserConnection(conn.getUser(), conn);

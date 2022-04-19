@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.submarine.server.workbench.websocket;
+package org.apache.submarine.server.websocket;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.websocket.api.Session;
@@ -27,15 +27,15 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Notebook websocket.
  */
-public class NotebookSocket extends WebSocketAdapter {
+public class WebSocket extends WebSocketAdapter {
   private Session connection;
-  private org.apache.submarine.server.workbench.websocket.NotebookSocketListener listener;
+  private WebSocketListener listener;
   private HttpServletRequest request;
   private String protocol;
   private String user;
 
-  public NotebookSocket(HttpServletRequest req, String protocol,
-      org.apache.submarine.server.workbench.websocket.NotebookSocketListener listener) {
+  public WebSocket(HttpServletRequest req, String protocol,
+      WebSocketListener listener) {
     this.listener = listener;
     this.request = req;
     this.protocol = protocol;

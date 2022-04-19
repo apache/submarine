@@ -21,7 +21,7 @@ package org.apache.submarine.server;
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
-//import org.apache.submarine.server.websocket.EventServer;
+import org.apache.submarine.server.websocket.WebSocketServer;
 import org.apache.submarine.commons.cluster.ClusterServer;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Handler;
@@ -104,6 +104,9 @@ public class SubmarineServer extends ResourceConfig {
           @Override
           protected void configure() {
             bindAsContract(NotebookServer.class)
+                .to(WebSocketServlet.class)
+                .in(Singleton.class);
+            bindAsContract(WebSocketServer.class)
                 .to(WebSocketServlet.class)
                 .in(Singleton.class);
           }
@@ -259,29 +262,30 @@ public class SubmarineServer extends ResourceConfig {
     servletHolder.setInitParameter("maxTextMessageSize", maxTextMessageSize);
 
     final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-    webapp.addServlet(servletHolder, "/ws/*");
+    webapp.addServlet(servletHolder, "/wss/");
   }
 
   private static void setupWebSocketServer(WebAppContext webapp,
                                            SubmarineConfiguration conf, ServiceLocator serviceLocator) {
     String maxTextMessageSize = conf.getWebsocketMaxTextMessageSize();
-    final ServletHolder servletHolder =
-        new ServletHolder(serviceLocator.getService(NotebookServer.class));
-    servletHolder.setInitParameter("maxTextMessageSize", maxTextMessageSize);
+    final ServletHolder notebookServletHolder =
+        new ServletHolder(serviceLocator.getService(WebSocketServer.class));
+    notebookServletHolder.setInitParameter("maxTextMessageSize", maxTextMessageSize);
+
+    final ServletHolder experimentServletHolder =
+        new ServletHolder(serviceLocator.getService(WebSocketServer.class));
+    experimentServletHolder.setInitParameter("maxTextMessageSize", maxTextMessageSize);
+
+    final ServletHolder environmentServletHolder =
+        new ServletHolder(serviceLocator.getService(WebSocketServer.class));
+    environmentServletHolder.setInitParameter("maxTextMessageSize", maxTextMessageSize);
+
+
 
     final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-    webapp.addServlet(servletHolder, "/wss/*");
-    LOG.info("Before WebSocket Sever started");
-
-    // LOG.info("Before WebSocket Sever started");
-    // EventServer webSocketServer = new EventServer();
-    // LOG.info("After WebSocket Sever started");
-    // try {
-    //   webSocketServer.start(null);
-    //   LOG.info("WebSocket Sever started");
-    // } catch (Exception e) {
-    //   LOG.error(e.getMessage(), e);
-    // }
+    webapp.addServlet(notebookServletHolder, "/ws/notebook/*");
+    webapp.addServlet(experimentServletHolder, "/ws/experiment/*");
+    webapp.addServlet(environmentServletHolder, "/ws/environment/*");
   }
 
   private static void setupClusterServer() {
