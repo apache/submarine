@@ -634,13 +634,9 @@ jobs:
           path: target/artifacts
       - name: Calculate combined coverage
         run: ./dev-support/cicd/coverage.sh
-      - name: Build and analyze with JDK 11 # sonar-maven-plugin only support JDK 11
-        run: mvn -B verify -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=apache -Dsonar.projectKey=apache_submarine
-        env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Code coverage
         uses: codecov/codecov-action@v2
+        files: ./target/coverage/all.xml
       - name: Delete temporary build artifacts before caching
         run: |
           #Never cache local artifacts
