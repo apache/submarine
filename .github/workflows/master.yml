@@ -632,7 +632,8 @@ jobs:
         run: ./dev-support/cicd/coverage.sh
       - name: Code coverage
         uses: codecov/codecov-action@v2
-        files: ./target/coverage/all.xml
+        with:
+          files: ./target/coverage/all.xml
       - name: Delete temporary build artifacts before caching
         run: |
           #Never cache local artifacts
