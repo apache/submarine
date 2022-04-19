@@ -21,8 +21,8 @@ This document contains some resources that may help you understand more about Su
 
 # Conferences
 
-[Apache submarine: a unified machine learning platform made simple](https://dl.acm.org/doi/abs/10.1145/3517207.3526984) at EuroMLSys '22
+- **[Apache submarine: a unified machine learning platform made simple](https://dl.acm.org/doi/abs/10.1145/3517207.3526984) at EuroMLSys '22**
 
-- **ABSTRACT**
+  - **ABSTRACT**
 
-  As machine learning is applied more widely, it is necessary to have a machine-learning platform for both infrastructure administrators and users including expert data scientists and citizen data scientists [24] to improve their productivity. However, existing machine-learning platforms are ill-equipped to address the "Machine Learning tech debts" [36] such as glue code, reproducibility, and portability. Furthermore, existing platforms only take expert data scientists into consideration, and thus they are inflexible for infrastructure administrators and non-user-friendly for citizen data scientists. We propose Submarine, a unified machine-learning platform, and takes all infrastructure administrators, expert data scientists, and citizen data scientists into consideration. Submarine has been widely used in many technology companies, including Ke.com and LinkedIn. We present two use cases in Section 5.
+    As machine learning is applied more widely, it is necessary to have a machine-learning platform for both infrastructure administrators and users including expert data scientists and citizen data scientists [24] to improve their productivity. However, existing machine-learning platforms are ill-equipped to address the "Machine Learning tech debts" [36] such as glue code, reproducibility, and portability. Furthermore, existing platforms only take expert data scientists into consideration, and thus they are inflexible for infrastructure administrators and non-user-friendly for citizen data scientists. We propose Submarine, a unified machine-learning platform, and takes all infrastructure administrators, expert data scientists, and citizen data scientists into consideration. Submarine has been widely used in many technology companies, including Ke.com and LinkedIn. We present two use cases in Section 5.
