@@ -19,4 +19,5 @@
 
 import "@testing-library/jest-dom";
 
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+// react 18 env variable
+// globalThis.IS_REACT_ACT_ENVIRONMENT = true;
