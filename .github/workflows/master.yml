@@ -60,7 +60,7 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        k8s-version: ${{fromJSON(needs.generate-k8s-versions-array.outputs.matrix.outputs.matrix)}}
+        k8s-version: ${{fromJSON(needs.generate-k8s-versions-array.outputs.matrix)}}
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
