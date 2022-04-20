@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: manager
-        image: apache/submarine:notebook-controller-v1.1.0-g253890cb
+        image: apache/submarine:notebook-controller-v1.4
         command:
           - /manager
         imagePullPolicy: IfNotPresent
