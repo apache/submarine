@@ -21,7 +21,7 @@ package org.apache.submarine.server.database.workbench.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.submarine.server.database.database.entity.BaseEntity;
+import org.apache.submarine.server.database.entity.BaseEntity;
 
 public class TeamEntity extends BaseEntity {
 

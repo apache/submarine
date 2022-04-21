@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.database.database.utils;
+package org.apache.submarine.server.database.utils;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;

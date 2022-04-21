@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.experiment;
+package org.apache.submarine.server.manager;
 
 
 import com.google.gson.Gson;
@@ -159,7 +159,7 @@ public class ExperimentManagerTest {
     if (result.getCreatedTime() != null) {
       entity.setCreateTime(DateTime.parse(result.getCreatedTime()).toDate());
     } else {
-      entity.setCreateTime(null);  
+      entity.setCreateTime(null);
     }
     if (result.getAcceptedTime() != null) {
       entity.setAcceptedTime(DateTime.parse(result.getAcceptedTime()).toDate());
@@ -169,15 +169,15 @@ public class ExperimentManagerTest {
     if (result.getRunningTime() != null) {
       entity.setRunningTime(DateTime.parse(result.getRunningTime()).toDate());
     } else {
-      entity.setRunningTime(null);      
+      entity.setRunningTime(null);
     }
     if (result.getFinishedTime() != null) {
       entity.setFinishedTime(DateTime.parse(result.getFinishedTime()).toDate());
     } else {
       entity.setFinishedTime(null);
-    }    
+    }
     entity.setExperimentStatus(result.getStatus());
-    
+
     // Construct expected result
     Experiment expectedExperiment = new Experiment();
     expectedExperiment.setSpec(spec);
@@ -302,14 +302,14 @@ public class ExperimentManagerTest {
   private void verifyTimeResult(String expected, String actual) {
     if ((expected == null && actual == null) || ((expected != null && actual == null) ||
             (expected == null && actual != null))) {
-      assertEquals(expected, actual);   
+      assertEquals(expected, actual);
     } else {
       DateTime expectedTime = DateTime.parse(expected);
       DateTime actualTime = DateTime.parse(actual);
       assertTrue(expectedTime.isEqual(actualTime));
     }
   }
-  
+
   private Object buildFromJsonFile(Object obj, String filePath) throws SubmarineException {
     Gson gson = new GsonBuilder().create();
     try (Reader reader = Files.newBufferedReader(getCustomJobSpecFile(filePath).toPath(),

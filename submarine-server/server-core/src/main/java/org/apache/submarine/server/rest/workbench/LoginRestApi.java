@@ -24,7 +24,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
 import org.apache.submarine.server.database.workbench.mappers.SysUserMapper;
-import org.apache.submarine.server.database.database.utils.MyBatisUtil;
+import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.utils.response.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

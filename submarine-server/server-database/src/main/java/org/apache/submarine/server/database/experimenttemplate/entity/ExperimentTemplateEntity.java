@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.database.experimenttemplate.entity;
 
-import org.apache.submarine.server.database.database.entity.BaseEntity;
+import org.apache.submarine.server.database.entity.BaseEntity;
 
 public class ExperimentTemplateEntity extends BaseEntity {
 

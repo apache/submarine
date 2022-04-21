@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.database.model;
+package org.apache.submarine.server.manager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

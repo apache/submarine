@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.database.experimenttemplate;
+package org.apache.submarine.server.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,8 +45,7 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.api.spec.ExperimentTemplateParamSpec;
 import org.apache.submarine.server.api.spec.ExperimentTemplateSpec;
-import org.apache.submarine.server.database.database.utils.MyBatisUtil;
-import org.apache.submarine.server.database.experiment.ExperimentManager;
+import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.database.experimenttemplate.entity.ExperimentTemplateEntity;
 import org.apache.submarine.server.database.experimenttemplate.mappers.ExperimentTemplateMapper;
 import org.apache.submarine.server.utils.gson.ExperimentIdDeserializer;

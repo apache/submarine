@@ -28,7 +28,7 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.notebook.NotebookId;
 import org.apache.submarine.server.api.spec.NotebookSpec;
-import org.apache.submarine.server.database.database.utils.MyBatisUtil;
+import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.database.notebook.entity.NotebookEntity;
 import org.apache.submarine.server.database.notebook.mappers.NotebookMapper;
 import org.joda.time.DateTime;

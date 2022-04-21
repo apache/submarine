@@ -27,7 +27,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.NotebookSpec;
-import org.apache.submarine.server.database.notebook.NotebookManager;
+import org.apache.submarine.server.manager.NotebookManager;
 import org.apache.submarine.server.utils.response.JsonResponse;
 
 import javax.ws.rs.Consumes;

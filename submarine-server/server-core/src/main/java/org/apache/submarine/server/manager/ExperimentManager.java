@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.database.experiment;
+package org.apache.submarine.server.manager;
 
 import java.util.ArrayList;
 import java.util.List;

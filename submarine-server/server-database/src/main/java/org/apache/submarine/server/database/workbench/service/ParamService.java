@@ -21,7 +21,7 @@ package org.apache.submarine.server.database.workbench.service;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
-import org.apache.submarine.server.database.database.utils.MyBatisUtil;
+import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.database.workbench.entity.ParamEntity;
 import org.apache.submarine.server.database.workbench.mappers.ParamMapper;
 import org.slf4j.Logger;

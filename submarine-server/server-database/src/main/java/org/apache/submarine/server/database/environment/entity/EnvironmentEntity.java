@@ -18,7 +18,7 @@
  */
 package org.apache.submarine.server.database.environment.entity;
 
-import org.apache.submarine.server.database.database.entity.BaseEntity;
+import org.apache.submarine.server.database.entity.BaseEntity;
 
 public class EnvironmentEntity extends BaseEntity {
 

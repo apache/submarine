@@ -35,7 +35,7 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.api.spec.KernelSpec;
-import org.apache.submarine.server.database.environment.EnvironmentManager;
+import org.apache.submarine.server.manager.EnvironmentManager;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaType;

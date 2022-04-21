@@ -18,7 +18,7 @@
  */
 package org.apache.submarine.server.database.workbench.entity;
 
-import org.apache.submarine.server.database.database.entity.BaseEntity;
+import org.apache.submarine.server.database.entity.BaseEntity;
 
 public class SysMessageEntity extends BaseEntity {
 

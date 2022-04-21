@@ -20,9 +20,9 @@ package org.apache.submarine.server.database.workbench.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-import org.apache.submarine.server.database.database.entity.BaseEntity;
+import org.apache.submarine.server.database.entity.BaseEntity;
 import org.apache.submarine.server.database.workbench.utils.CustomJsonDateDeserializer;
-import org.apache.submarine.server.rest.workbench.annotation.Dict;
+// import org.apache.submarine.server.rest.workbench.annotation.Dict;
 
 import java.util.Date;
 
@@ -32,9 +32,9 @@ public class SysUserEntity extends BaseEntity {
   private String password;
   private String avatar;
 
-  @Dict(Code = "SYS_USER_SEX")
+  // @Dict(Code = "SYS_USER_SEX")
   private String sex;
-  @Dict(Code = "SYS_USER_STATUS")
+  // @Dict(Code = "SYS_USER_STATUS")
   private String status;
   private String phone;
   private String email;

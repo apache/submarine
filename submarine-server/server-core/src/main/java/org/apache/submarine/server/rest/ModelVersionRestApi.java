@@ -44,7 +44,7 @@ import org.apache.submarine.server.database.model.entities.ModelVersionEntity;
 import org.apache.submarine.server.database.model.entities.ModelVersionTagEntity;
 import org.apache.submarine.server.database.model.service.ModelVersionService;
 
-import org.apache.submarine.server.model.database.service.ModelVersionTagService;
+import org.apache.submarine.server.database.model.service.ModelVersionTagService;
 import org.apache.submarine.server.s3.Client;
 import org.apache.submarine.server.utils.response.JsonResponse;
 

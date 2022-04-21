@@ -19,17 +19,16 @@
 package org.apache.submarine.server.database.workbench.service;
 
 import org.apache.ibatis.session.SqlSession;
-import org.apache.submarine.server.database.database.utils.MyBatisUtil;
+import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.database.workbench.entity.SysDictItemEntity;
 import org.apache.submarine.server.database.workbench.mappers.SysDictItemMapper;
-import org.apache.submarine.server.rest.workbench.SysDictRestApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class SysDictItemService {
-  private static final Logger LOG = LoggerFactory.getLogger(SysDictRestApi.class);
+  private static final Logger LOG = LoggerFactory.getLogger(SysDictItemService.class);
 
   public List<SysDictItemEntity> queryDictByCode(String dictCode) {
     List<SysDictItemEntity> dictItems = null;

@@ -36,7 +36,7 @@ import javax.ws.rs.core.Response;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
-import org.apache.submarine.server.database.environment.EnvironmentManager;
+import org.apache.submarine.server.manager.EnvironmentManager;
 import org.apache.submarine.server.utils.response.JsonResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,7 +64,7 @@ public class EnvironmentRestApi {
   @Operation(summary = "Create a environment",
           tags = {"environment"},
           responses = {
-                  @ApiResponse(description = "successful operation", 
+                  @ApiResponse(description = "successful operation",
                       content = @Content(
                           schema = @Schema(
                               implementation = JsonResponse.class)))})
@@ -77,7 +77,7 @@ public class EnvironmentRestApi {
       return parseEnvironmentServiceException(e);
     }
   }
-  
+
   /**
    * Update environment.
    * @param name Name of the environment
@@ -90,12 +90,12 @@ public class EnvironmentRestApi {
   @Operation(summary = "Update the environment with job spec",
           tags = {"environment"},
           responses = {
-                  @ApiResponse(description = "successful operation", 
+                  @ApiResponse(description = "successful operation",
                       content = @Content(
                           schema = @Schema(
                               implementation = JsonResponse.class))),
                   @ApiResponse(
-                      responseCode = "404", 
+                      responseCode = "404",
                       description = "Environment not found")})
   public Response updateEnvironment(
       @PathParam(RestConstants.ENVIRONMENT_ID) String name,
@@ -120,7 +120,7 @@ public class EnvironmentRestApi {
   @Operation(summary = "Delete the environment",
           tags = {"environment"},
           responses = {
-                  @ApiResponse(description = "successful operation", 
+                  @ApiResponse(description = "successful operation",
                       content = @Content(
                           schema = @Schema(implementation = JsonResponse.class))),
                   @ApiResponse(
@@ -135,7 +135,7 @@ public class EnvironmentRestApi {
       return parseEnvironmentServiceException(e);
     }
   }
-  
+
   /**
    * List all environments.
    * @return environment list
@@ -144,7 +144,7 @@ public class EnvironmentRestApi {
   @Operation(summary = "List of Environments",
           tags = {"environment"},
           responses = {
-                  @ApiResponse(description = "successful operation", 
+                  @ApiResponse(description = "successful operation",
                       content = @Content(
                           schema = @Schema(
                               implementation = JsonResponse.class)))})
@@ -169,11 +169,11 @@ public class EnvironmentRestApi {
   @Operation(summary = "Find environment by name",
           tags = {"environment"},
           responses = {
-                  @ApiResponse(description = "successful operation", 
+                  @ApiResponse(description = "successful operation",
                       content = @Content(
                           schema = @Schema(implementation = JsonResponse.class))),
                   @ApiResponse(
-                      responseCode = "404", 
+                      responseCode = "404",
                       description = "Environment not found")})
   public Response getEnvironment(
       @PathParam(RestConstants.ENVIRONMENT_ID) String name) {

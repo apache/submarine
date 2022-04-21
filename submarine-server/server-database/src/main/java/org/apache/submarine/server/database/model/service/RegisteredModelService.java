@@ -21,7 +21,7 @@ package org.apache.submarine.server.database.model.service;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-import org.apache.submarine.server.database.database.utils.MyBatisUtil;
+import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.database.model.entities.RegisteredModelEntity;
 import org.apache.submarine.server.database.model.mappers.RegisteredModelMapper;
 import org.slf4j.Logger;

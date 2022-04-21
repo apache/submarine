@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.database.environment;
+package org.apache.submarine.server.manager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import org.apache.submarine.server.SubmarineServer;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
-import org.apache.submarine.server.database.database.utils.MyBatisUtil;
+import org.apache.submarine.server.database.utils.MyBatisUtil;
 import org.apache.submarine.server.database.environment.entity.EnvironmentEntity;
 import org.apache.submarine.server.database.environment.mappers.EnvironmentMapper;
 import org.slf4j.Logger;

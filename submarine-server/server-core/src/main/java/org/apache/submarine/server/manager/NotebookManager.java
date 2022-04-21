@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.apache.submarine.server.database.notebook;
+package org.apache.submarine.server.manager;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.SubmarineServer;
@@ -27,7 +27,6 @@ import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.notebook.NotebookId;
 import org.apache.submarine.server.api.spec.NotebookSpec;
-import org.apache.submarine.server.environment.EnvironmentManager;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;

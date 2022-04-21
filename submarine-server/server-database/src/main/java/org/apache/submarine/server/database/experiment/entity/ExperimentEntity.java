@@ -21,7 +21,7 @@ package org.apache.submarine.server.database.experiment.entity;
 
 import java.util.Date;
 
-import org.apache.submarine.server.database.database.entity.BaseEntity;
+import org.apache.submarine.server.database.entity.BaseEntity;
 import org.apache.submarine.server.database.workbench.utils.CustomJsonDateDeserializer;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
