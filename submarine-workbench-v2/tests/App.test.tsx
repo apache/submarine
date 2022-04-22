@@ -55,6 +55,12 @@ describe("Router test", () => {
     expect(getByTestId("experiment-page")).toBeInTheDocument();
   });
 
+  it("Logo click", () => {
+    const { getByTestId } = renderPage();
+    fireEvent.click(getByTestId("logo"));
+    expect(getByTestId("experiment-page")).toBeInTheDocument();
+  });
+
   it("DataDict page router", () => {
     testSubItemRouter("data_dict");
   });
