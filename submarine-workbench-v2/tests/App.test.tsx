@@ -89,3 +89,19 @@ describe("Router test", () => {
 
   afterEach(cleanup);
 });
+
+describe("Collapsible test", () => {
+  it("Collapsible test", () => {
+    const { getByTestId } = renderPage();
+    const experimentPage = getByTestId("page-layout");
+    const sidebar = getByTestId("sidebar");
+    expect(getComputedStyle(experimentPage).paddingLeft).toBe("256px");
+    expect(getComputedStyle(sidebar).width).toBe("256px");
+    const collapseElem = document.getElementsByClassName("ant-layout-sider-trigger")[0];
+    fireEvent.click(collapseElem);
+    expect(getComputedStyle(experimentPage).paddingLeft).toBe("80px");
+    expect(getComputedStyle(sidebar).width).toBe("80px");
+  });
+
+  afterEach(cleanup);
+});

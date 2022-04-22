@@ -18,9 +18,10 @@
  */
 
 .menu-sidebar {
-  position: relative;
+  position: fixed;
   z-index: 10;
   min-height: 100vh;
+  height: 100vh;
 }
 
 .sidebar-logo {

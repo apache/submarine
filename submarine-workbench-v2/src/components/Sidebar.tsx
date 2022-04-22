@@ -36,28 +36,31 @@ import { Link } from "react-router-dom";
 
 const { Sider } = Layout;
 
-function Sidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+function Sidebar(props: any) {
   const [key, setKey] = useState("experiment");
 
-  const handleClick = (e: { key: string }) => setKey(() => e.key);
+  const handleClick = (e: { key: string }) => {
+    setKey(() => e.key);
+  };
 
+  const { isCollapsed, setIsCollapsed } = props;
   return (
-    <>
-      <Sider
-        className="menu-sidebar"
-        width="256px"
-        breakpoint="md"
-        onCollapse={(collapsed, type) => {
-          setIsCollapsed(() => collapsed);
-        }}
-      >
-        <Link to="/experiment" onClick={() => setKey("experiment")}>
-          <div className="sidebar-logo">
-            <img className="sidebar-logo-img" src="/logo.png" alt="logo" />
-            <h1>Submarine</h1>
-          </div>
-        </Link>
+    <Sider
+      data-testid="sidebar"
+      className="menu-sidebar"
+      width="256px"
+      breakpoint="md"
+      collapsible
+      onCollapse={(isCollapsed) => setIsCollapsed(isCollapsed)}
+      collapsed={isCollapsed}
+    >
+      <Link data-testid="logo" to="/experiment" onClick={() => setKey("experiment")}>
+        <div className="sidebar-logo">
+          <img className="sidebar-logo-img" src="/logo.png" alt="logo" />
+          <h1>Submarine</h1>
+        </div>
+      </Link>
+      <div style={{ height: "calc(100% - 64px)", overflow: "overlay" }}>
         <Menu
           data-testid="menu"
           onClick={handleClick}
@@ -65,8 +68,9 @@ function Sidebar() {
           defaultOpenKeys={["sub1"]}
           selectedKeys={[key]}
           mode="inline"
+          className="menu"
         >
-          <Menu.Item key="home" icon={<HomeOutlined />} disabled={true}>
+          <Menu.Item className="menu-item" key="home" icon={<HomeOutlined />} disabled={true}>
             <Link to="/home">Home</Link>
           </Menu.Item>
           <Menu.Item data-testid="notebook-item" key="notebook" icon={<BookOutlined />}>
@@ -127,9 +131,8 @@ function Sidebar() {
             </Link>
           </Menu.Item>
         </Menu>
-      </Sider>
-    </>
+      </div>
+    </Sider>
   );
 }
-
 export default Sidebar;

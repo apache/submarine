@@ -28,22 +28,35 @@ import DataDict from "@submarine/pages/workbench/data_dict/DataDict";
 import Department from "@submarine/pages/workbench/department/Department";
 import Model from "@submarine/pages/workbench/model/Model";
 import { Layout } from "antd";
+import { useState } from "react";
 
 function App() {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
   return (
-    <Layout>
-      <Sidebar data-test-id="sidebar"></Sidebar>
-      <Routes>
-        <Route path="/" element={<Navigate replace to="experiment" />} />
-        <Route path="notebook" element={<Notebook />} />
-        <Route path="experiment" element={<Experiment />} />
-        <Route path="template" element={<Template />} />
-        <Route path="environment" element={<Environment />} />
-        <Route path="user" element={<User />} />
-        <Route path="dataDict" element={<DataDict />} />
-        <Route path="department" element={<Department />} />
-        <Route path="model" element={<Model />} />
-      </Routes>
+    <Layout hasSider>
+      <Sidebar
+        {...{
+          isCollapsed: isCollapsed,
+          setIsCollapsed: setIsCollapsed,
+        }}
+      ></Sidebar>
+      <Layout
+        data-testid="page-layout"
+        style={isCollapsed ? { paddingLeft: "80px", height: "100vh" } : { paddingLeft: "256px", height: "100vh" }}
+      >
+        <Routes>
+          <Route path="/" element={<Navigate replace to="experiment" />} />
+          <Route path="notebook" element={<Notebook />} />
+          <Route path="experiment" element={<Experiment />} />
+          <Route path="template" element={<Template />} />
+          <Route path="environment" element={<Environment />} />
+          <Route path="user" element={<User />} />
+          <Route path="dataDict" element={<DataDict />} />
+          <Route path="department" element={<Department />} />
+          <Route path="model" element={<Model />} />
+        </Routes>
+      </Layout>
     </Layout>
   );
 }
