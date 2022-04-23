@@ -29,6 +29,7 @@ import Department from "@submarine/pages/workbench/department/Department";
 import Model from "@submarine/pages/workbench/model/Model";
 import { Layout } from "antd";
 import { useState } from "react";
+import "./App.scss";
 
 function App() {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -43,6 +44,7 @@ function App() {
       ></Sidebar>
       <Layout
         data-testid="page-layout"
+        className="app-layout"
         style={isCollapsed ? { paddingLeft: "80px", height: "100vh" } : { paddingLeft: "256px", height: "100vh" }}
       >
         <Routes>
