@@ -28,7 +28,7 @@ npm run dev --open (or yarn dev --open)
 
 ## How to Build
 ```
-npm build (or yarn build)
+npm run build (or yarn build)
 ```
 
 ## preview the build result
