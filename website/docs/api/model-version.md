@@ -21,17 +21,48 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-> Note: The Model Version API is in the alpha stage which is subjected to incompatible changes in future releases.
+:::caution
+The Model Version API is in the alpha stage which is subjected to incompatible changes in future releases.
+:::
 
-### List model versions under a registered model
+## Create a model version
+`POST /api/v1/model-version?baseDir={baseDir}`
+
+### Parameters
+
+| Field Name   | Type          | In   | Description                               | Required |
+| ------------ | ------------- | ---- | ----------------------------------------- | :------: |
+| baseDir      | String        | path | experiment directory path.                |    o     |
+| name         | String        | body | registered model name.                    |    o     |
+| experimentId | String        | body | Add a tag for the registered model.       |    o     |
+| description  | String        | body | Add description for the version of model. |    x     |
+| tags         | List<String\> | body | Add tags for the version of model.        |    x     |
+### Example
+
+## List model versions under a registered model
 `GET /api/v1/model-version/{name}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description            | Required |
+| ---------- | ------ | ---- | ---------------------- | :------: |
+| name       | String | path | registered model name. |    o     |
+
+### Example
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/model-version/register
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
    "attributes" : {},
@@ -66,49 +97,39 @@ curl -X GET http://127.0.0.1:32080/api/v1/model-version/register
          "userId" : "",
          "version" : 2
       },
-      {
-         "creationTime" : "2021-12-12 02:27:05",
-         "currentStage" : "None",
-         "dataset" : null,
-         "description" : null,
-         "experimentId" : "experiment-1639276018590-0001",
-         "lastUpdatedTime" : "2021-12-12 02:27:05",
-         "modelType" : "tensorflow",
-         "name" : "register",
-         "source" : "s3://submarine/experiment-1639276018590-0001/example1/1",
-         "tags" : [],
-         "userId" : "",
-         "version" : 3
-      },
-      {
-         "creationTime" : "2021-12-12 02:27:06",
-         "currentStage" : "None",
-         "dataset" : null,
-         "description" : null,
-         "experimentId" : "experiment-1639276018590-0001",
-         "lastUpdatedTime" : "2021-12-12 02:27:06",
-         "modelType" : "tensorflow",
-         "name" : "register",
-         "source" : "s3://submarine/experiment-1639276018590-0001/example2/1",
-         "tags" : [],
-         "userId" : "",
-         "version" : 4
-      },
    ],
    "status" : "OK",
    "success" : true
 }
 ```
+</div>
+</details>
 
-### Get a model version
+## Get a model version
 `GET /api/v1/model-version/{name}/{version}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description               | Required |
+| ---------- | ------ | ---- | ------------------------- | :------: |
+| name       | String | path | Registered model name.    |    o     |
+| version    | String | path | Registered model version. |    o     |
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/model-version/register/1
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
    "attributes" : {},
@@ -132,12 +153,28 @@ curl -X GET http://127.0.0.1:32080/api/v1/model-version/register/1
    "success" : true
 }
 ```
+</div>
+</details>
 
-### Patch a model version
+## Patch a model version
 `PATCH /api/v1/model-version`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name   | Type   | In   | Description               | Required |
+| ------------ | ------ | ---- | ------------------------- | :------: |
+| name         | String | body | Registered model name.    |    o     |
+| version      | String | body | Registered model version. |    o     |
+| description  | String | body | New description.          |    x     |
+| currentStage | String | body | Stage of the model.       |    x     |
+| dataset      | String | body | Dataset use in the model. |    x     |
+
+### Example
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X PATCH -H "Content-Type: application/json" -d '
 {
     "name": "register",
@@ -147,8 +184,13 @@ curl -X PATCH -H "Content-Type: application/json" -d '
     "dataset": "new_dataset"
 }' http://127.0.0.1:32080/api/v1/model-version
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
    "attributes" : {},
@@ -159,16 +201,35 @@ curl -X PATCH -H "Content-Type: application/json" -d '
    "success" : true
 }
 ```
+</div>
+</details>
 
 ## Delete a model version
 `DELETE /api/v1/model-version/{name}/{version}`
 
-**Example Request**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description               | Required |
+| ---------- | ------ | ---- | ------------------------- | :------: |
+| name       | String | path | Registered model name.    |    o     |
+| version    | String | path | Registered model version. |    o     |
+
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X DELETE http://127.0.0.1:32080/api/v1/model-version/register/1
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
    "attributes" : {},
@@ -179,16 +240,36 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/model-version/register/1
    "success" : true
 }
 ```
+</div>
+</details>
 
 ## Create a model version tag
 `POST /api/v1/model-version/tag?name={name}&version={version}&tag={tag}`
 
-**Example Request**
-```sh
+### Parameters
+
+| Field Name | Type   | In    | Description                          | Required |
+| ---------- | ------ | ----- | ------------------------------------ | :------: |
+| name       | String | query | Registered model name.               |    o     |
+| version    | String | query | Registered model version.            |    o     |
+| tag        | String | query | Tag of the registered model version. |    o     |
+
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X POST http://127.0.0.1:32080/api/v1/model-version/tag?name=register&version=2&tag=789
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
    "attributes" : {},
@@ -199,16 +280,35 @@ curl -X POST http://127.0.0.1:32080/api/v1/model-version/tag?name=register&versi
    "success" : true
 }
 ```
+</div>
+</details>
 
 ## Delete a model version tag
 `DELETE /api/v1/model-version/tag?name={name}&version={version}&tag={tag}`
 
-**Example Request**
-```sh
+### Parameters
+
+| Field Name | Type   | In    | Description                          | Required |
+| ---------- | ------ | ----- | ------------------------------------ | :------: |
+| name       | String | query | Registered model name.               |    o     |
+| version    | String | query | Registered model version.            |    o     |
+| tag        | String | query | Tag of the registered model version. |    o     |
+
+### Example
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X DELETE http://127.0.0.1:32080/api/v1/model-version/tag?name=register&version=2&tag=789
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
     "status":"OK",
@@ -219,3 +319,5 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/model-version/tag?name=register&ver
     "attributes":{}
 }
 ```
+</div>
+</details>

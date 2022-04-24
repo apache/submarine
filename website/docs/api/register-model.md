@@ -21,13 +21,28 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-> Note: The Registered Model API is in the alpha stage which is subjected to incompatible changes in future releases.
+:::caution
+The Registered Model API is in the alpha stage which is subjected to incompatible changes in future releases.
+:::
 
 ## Create a registered model
 `POST /api/v1/registered-model`
 
-**Example Request**
-```sh
+### Parameters
+
+| Field Name  | Type          | Description                   | Required |
+| ----------- | ------------- | ----------------------------- | :------: |
+| name        | String        | Registered model name.        |    o     |
+| description | String        | Registered model description. |    x     |
+| tags        | List<String\> | Registered model tags.        |    x     |
+
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X POST -H "Content-Type: application/json" -d '
 {
    "name": "example_name",
@@ -36,8 +51,13 @@ curl -X POST -H "Content-Type: application/json" -d '
    }
 ' http://127.0.0.1:32080/api/v1/registered-model
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
     "status":"OK",
@@ -48,16 +68,28 @@ curl -X POST -H "Content-Type: application/json" -d '
     "attributes":{}
 }
 ```
+</div>
+</details>
 
 ### List registered models
 `GET /api/v1/registered-model`
 
-**Example Request:**
-```sh
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/registered-model
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
    "attributes" : {},
@@ -96,16 +128,33 @@ curl -X GET http://127.0.0.1:32080/api/v1/registered-model
    "success" : true
 }
 ```
+</div>
+</details>
 
 ### Get a registered model
 `GET /api/v1/registered-model/{name}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description            | Required |
+| ---------- | ------ | ---- | ---------------------- | :------: |
+| name       | String | path | registered model name. |    o     |
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/registered-model/example_name
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
    "attributes" : {},
@@ -125,20 +174,41 @@ curl -X GET http://127.0.0.1:32080/api/v1/registered-model/example_name
    "success" : true
 }
 ```
+</div>
+</details>
 
-### Patch a registered model
+## Patch a registered model
 `PATCH /api/v1/registered-model/{name}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name  | Type   | In   | Description            | Required |
+| ----------- | ------ | ---- | ---------------------- | :------: |
+| name        | String | path | registered model name. |    o     |
+| name        | String | body | New model name.        |    x     |
+| description | String | path | New model description. |    x     |
+
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X PATCH -H "Content-Type: application/json" -d '
 {
     "name": "new_name",
     "description": "new_description"
 }' http://127.0.0.1:32080/api/v1/registered-model/example_name
 ```
+</div>
+</details>
 
-**Example Response:**
+
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
    "attributes" : {},
@@ -149,16 +219,34 @@ curl -X PATCH -H "Content-Type: application/json" -d '
    "success" : true
 }
 ```
+</div>
+</details>
+
 
 ## Delete a registered model
 `DELETE /api/v1/registered-model/{name}`
 
-**Example Request**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description            | Required |
+| ---------- | ------ | ---- | ---------------------- | :------: |
+| name       | String | path | registered model name. |    o     |
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X DELETE http://127.0.0.1:32080/api/v1/registered-model/example_name
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
    "attributes" : {},
@@ -169,16 +257,34 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/registered-model/example_name
    "success" : true
 }
 ```
+</div>
+</details>
 
 ## Create a registered model tag
 `POST /api/v1/registered-model/tag?name={name}&tag={tag}`
 
-**Example Request**
-```sh
-curl -X POST http://127.0.0.1:32080/api/v1/registered-model/tag?name=example_name&tag=789
-```
+### Parameters
 
-**Example Response:**
+| Field Name | Type   | In    | Description                         | Required |
+| ---------- | ------ | ----- | ----------------------------------- | :------: |
+| name       | String | query | registered model name.              |    o     |
+| tag        | String | query | Add a tag for the registered model. |    o     |
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
+curl -X POST http://127.0.0.1:32080/api/v1/registered-model/tag?name=example_name&tag=example_tag
+```
+</div>
+</details>
+
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
     "status":"OK",
@@ -189,16 +295,34 @@ curl -X POST http://127.0.0.1:32080/api/v1/registered-model/tag?name=example_nam
     "attributes":{}
 }
 ```
+</div>
+</details>
 
 ## Delete a registered model tag
 `DELETE /api/v1/registered-model/tag?name={name}&tag={tag}`
 
-**Example Request**
-```sh
-curl -X DELETE http://127.0.0.1:32080/api/v1/registered-model/tag?name=example_name&tag=789
-```
+### Parameters
 
-**Example Response:**
+| Field Name | Type   | In    | Description                           | Required |
+| ---------- | ------ | ----- | ------------------------------------- | :------: |
+| name       | String | query | registered model name.                |    o     |
+| tag        | String | query | Delete a tag in the registered model. |    o     |
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
+curl -X DELETE http://127.0.0.1:32080/api/v1/registered-model/tag?name=example_name&tag=example_tag
+```
+</div>
+</details>
+
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
    "attributes" : {},
@@ -209,3 +333,5 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/registered-model/tag?name=example_n
    "success" : true
 }
 ```
+</div>
+</details>

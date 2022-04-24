@@ -21,14 +21,70 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-> Note: The Experiment API is in the alpha stage which is subjected to incompatible changes in
-> future releases.
+:::caution
+The Experiment API is in the alpha stage which is subjected to incompatible changes in future releases.
+:::
 
 ## Create Experiment (Using Anonymous/Embedded Environment)
 `POST /api/v1/experiment`
 
-**Example Request**
-```sh
+### Parameters
+
+Put ExperimentSpec in request body.
+
+#### **ExperimentSpec**
+
+| Field Name  | Type                            | Description                             | Required |
+| ----------- | ------------------------------- | --------------------------------------- | :------: |
+| meta        | ExperimentMeta                  | Meta data of the experiment template.   |    o     |
+| environment | EnvironmentSpec                 | Environment of the experiment template. |    o     |
+| spec        | Map<String, ExperimentTaskSpec> | Spec of pods.                           |    o     |
+| code        | CodeSpec                        | Experiment codespec.                    |    x     |
+
+#### **ExperimentMeta**
+
+| Field Name | Type                | Description              | Required |
+| ---------- | ------------------- | ------------------------ | :------: |
+| name       | String              | Experiment name.         |    o     |
+| namespace  | String              | Experiment namespace.    |    o     |
+| framework  | String              | Experiemnt framework.    |    o     |
+| cmd        | String              | Command.                 |    o     |
+| envVars    | Map<String, String> | Environmental variables. |    x     |
+
+#### **EnvironmentSpec**
+
+There are two types of environment: Anonymous and Predefined.
+- Anonymous environment: only specify `dockerImage` in environment spec. The container will be built on the docker image.
+- Embedded environment: specify `name` in environment spec. The container will be built on the existing environment (including dockerImage and kernalSpec).
+
+See more details in [environment api](https://submarine.apache.org/docs/next/api/environment).
+
+#### **ExperimentTaskSpec**
+
+| Field Name | Type                | Description              | Required |
+| ---------- | ------------------- | ------------------------ | :------: |
+| replicas   | Integer             | Numbers of replicas.     |    o     |
+| resoureces | String              | Resouces of the task     |    o     |
+| name       | String              | Task name.               |    o     |
+| image      | String              | Image name.              |    o     |
+| cmd        | String              | Command.                 |    x     |
+| envVars    | Map<String, String> | Environmental variables. |    x     |
+
+#### **CodeSpec**
+
+Currently only support pulling from github. HDFS, NFS and s3 are in development
+
+| Field Name | Type                          | Description             | Required |
+| ---------- | ----------------------------- | ----------------------- | :------: |
+| syncMode   | String \(git\|hdfs\|nfs\|s3\) | sync mode of code spec. |    o     |
+| url        | String                        | url of code spec.       |    o     |
+
+### Example
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X POST -H "Content-Type: application/json" -d '
 {
   "meta": {
@@ -57,7 +113,13 @@ curl -X POST -H "Content-Type: application/json" -d '
 ' http://127.0.0.1:32080/api/v1/experiment
 ```
 
-**Example Response:**
+</div>
+</details>
+
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -124,15 +186,29 @@ curl -X POST -H "Content-Type: application/json" -d '
 }
 ```
 
-### List experiment
+</div>
+</details>
+
+
+
+## List experiment
 `GET /api/v1/experiment`
 
-**Example Request:**
-```sh
+### Example
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/experiment
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -200,16 +276,32 @@ curl -X GET http://127.0.0.1:32080/api/v1/experiment
   "attributes":{}
 }
 ```
+</div>
+</details>
 
-### Get experiment
-`GET /api/v1/experiment/{experiment id}`
+## Get experiment
+`GET /api/v1/experiment/{id}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description    | Required |
+| ---------- | ------ | ---- | -------------- | :------: |
+| id         | String | path | Experiment id. |    o     |
+### Example
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/experiment/experiment-1647574374688-0002
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -275,12 +367,28 @@ curl -X GET http://127.0.0.1:32080/api/v1/experiment/experiment-1647574374688-00
   "attributes":{}
 }
 ```
+</div>
+</details>
 
-### Patch experiment
-`PATCH /api/v1/experiment/{experiment id}`
+## Patch experiment
+`PATCH /api/v1/experiment/{id}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name  | Type                            | In   | Description                             | Required |
+| ----------- | ------------------------------- | ---- | --------------------------------------- | :------: |
+| id          | String                          | path | Experiment id.                          |    o     |
+| meta        | ExperimentMeta                  | body | Meta data of the experiment template.   |    o     |
+| environment | EnvironmentSpec                 | body | Environment of the experiment template. |    o     |
+| spec        | Map<String, ExperimentTaskSpec> | body | Spec of pods.                           |    o     |
+| code        | CodeSpec                        | body | TODO                                    |    x     |
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X PATCH -H "Content-Type: application/json" -d '
 {
   "meta": {
@@ -308,8 +416,13 @@ curl -X PATCH -H "Content-Type: application/json" -d '
 }
 ' http://127.0.0.1:32080/api/v1/experiment/experiment-1647574374688-0002
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -375,16 +488,34 @@ curl -X PATCH -H "Content-Type: application/json" -d '
   "attributes":{}
 }
 ```
+</div>
+</details>
 
-### Delete experiment
-`GET /api/v1/experiment/{experiment id}`
+## Delete experiment
+`DELETE /api/v1/experiment/{id}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description    | Required |
+| ---------- | ------ | ---- | -------------- | :------: |
+| id         | String | path | Experiment id. |    o     |
+
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X DELETE http://127.0.0.1:32080/api/v1/experiment/experiment-1647574374688-0002
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -450,16 +581,28 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/experiment/experiment-1647574374688
   "attributes":{}
 }
 ```
+</div>
+</details>
 
-### List experiment Log
+## List experiment Log
 `GET /api/v1/experiment/logs`
 
-**Example Request:**
-```sh
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/experiment/logs
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -486,16 +629,33 @@ curl -X GET http://127.0.0.1:32080/api/v1/experiment/logs
   "attributes":{}
 }
 ```
+</div>
+</details>
 
-### Get experiment Log
+## Get experiment Log
 `GET /api/v1/experiment/logs/{id}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description    | Required |
+| ---------- | ------ | ---- | -------------- | :------: |
+| id         | String | path | Experiment id. |    o     |
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/experiment/logs/experiment-1647574374688-0002
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -794,3 +954,5 @@ curl -X GET http://127.0.0.1:32080/api/v1/experiment/logs/experiment-16475743746
   "attributes":{}
 }
 ```
+</div>
+</details>

@@ -21,14 +21,39 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-> Note: The Environment API is in the alpha stage which is subjected to incompatible changes in
-> future releases.
-
+:::caution
+The Environment API is in the alpha stage which is subjected to incompatible changes in future releases.
+:::
 ## Create Environment
 `POST /api/v1/environment`
 
-**Example Request**
-```sh
+### Parameters
+
+Put EnvironmentSpec in request body.
+#### **EnvironmentSpec**
+
+| Field Name  | Type       | Description                 | Required |
+| ----------- | ---------- | --------------------------- | :------: |
+| name        | String     | Environment name.           |    o     |
+| dockerImage | String     | Docker image name.          |    o     |
+| kernelSpec  | KernelSpec | Environment spec.           |    o     |
+| description | String     | Description of environment. |    x     |
+
+#### **KernelSpec**
+
+| Field Name        | Type          | Description                        | Required |
+| ----------------- | ------------- | ---------------------------------- | :------: |
+| name              | String        | Kernel name.                       |    o     |
+| channels          | List<String\> | Names of the channels.             |    o     |
+| condaDependencies | List<String\> | List of kernel conda dependencies. |    o     |
+| pipDependencies   | List<String\> | List of kernel pip dependencies.   |    o     |
+
+### Example
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X POST -H "Content-Type: application/json" -d '
 {
   "name": "my-submarine-env",
@@ -49,8 +74,12 @@ curl -X POST -H "Content-Type: application/json" -d '
 }
 ' http://127.0.0.1:32080/api/v1/environment
 ```
+</div>
+</details>
+<details>
+<summary>Example Response</summary>
+<div>
 
-**Example Response:**
 ```json
 {
   "status": "OK",
@@ -77,16 +106,29 @@ curl -X POST -H "Content-Type: application/json" -d '
   }
 }
 ```
+</div>
+</details>
 
-### List environment
+
+## List environment
 `GET /api/v1/environment`
 
-**Example Request:**
-```sh
+### Example
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/environment
 ```
 
-**Example Response:**
+</div>
+</details>
+
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -158,16 +200,35 @@ curl -X GET http://127.0.0.1:32080/api/v1/environment
   "attributes":{}
 }
 ```
+</div>
+</details>
 
-### Get environment
+
+## Get environment
 `GET /api/v1/environment/{name}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description       | Required |
+| ---------- | ------ | ---- | ----------------- | :------: |
+| name       | String | path | Environment name. |    o     |
+
+### Example
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/environment/my-submarine-env
 ```
 
-**Example Response:**
+</div>
+</details>
+
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -203,12 +264,29 @@ curl -X GET http://127.0.0.1:32080/api/v1/environment/my-submarine-env
   "attributes":{}
 }
 ```
+</div>
+</details>
 
-### Patch environment
+
+## Patch environment
 `PATCH /api/v1/environment/{name}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name  | Type       | In            | Description                                         | Required |
+| ----------- | ---------- | ------------- | --------------------------------------------------- | :------: |
+| name        | String     | path and body | Environment name.                                   |    o     |
+| dockerImage | String     | body          | Docker image name.                                  |    o     |
+| kernelSpec  | KernelSpec | body          | Environment spec.                                   |    o     |
+| description | String     | body          | Description of environment. This field is optional. |    x     |
+
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X PATCH -H "Content-Type: application/json" -d '
 {
   "name": "my-submarine-env",
@@ -226,7 +304,13 @@ curl -X PATCH -H "Content-Type: application/json" -d '
 ' http://127.0.0.1:32080/api/v1/environment/my-submarine-env
 ```
 
-**Example Response:**
+</div>
+</details>
+
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -256,18 +340,39 @@ curl -X PATCH -H "Content-Type: application/json" -d '
   "attributes":{}
 }
 ```
-> dockerImage, "name" (of kernelSpec), "channels", "condaDependencies", "pipDependencies" etc can be updated using this API.
-"name" of environmentSpec is not supported.
+</div>
+</details>
 
-### Delete environment
+:::note
+dockerImage, "name" (of kernelSpec), "channels", "condaDependencies", "pipDependencies" etc can be updated using this API.
+"name" of environmentSpec is not supported.
+:::
+
+## Delete environment
 `GET /api/v1/environment/{name}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description       | Required |
+| ---------- | ------ | ---- | ----------------- | :------: |
+| name       | String | path | Environment name. |    o     |
+
+### Example
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X DELETE http://127.0.0.1:32080/api/v1/environment/my-submarine-env
 ```
 
-**Example Response:**
+</div>
+</details>
+
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -303,3 +408,6 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/environment/my-submarine-env
   "attributes":{}
 }
 ```
+
+</div>
+</details>

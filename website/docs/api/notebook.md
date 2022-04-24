@@ -21,13 +21,51 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-> Note: The Notebook API is in the alpha stage which is subjected to incompatible changes in future releases.
+:::caution
+The Notebook API is in the alpha stage which is subjected to incompatible changes in future releases.
+:::
 
 ## Create a notebook instance
 `POST /api/v1/notebook`
 
-**Example Request**
-```sh
+### Parameters
+
+NotebookSpec in request body.
+
+#### **NotebookSpec**
+
+| Field Name  | Type            | Description                             | Required |
+| ----------- | --------------- | --------------------------------------- | :------: |
+| meta        | NotebookMeta    | Meta data of the notebook.              |    o     |
+| environment | EnvironmentSpec | Environment of the experiment template. |    o     |
+| spec        | NotebookPodSpec | Spec of the notebook pods.              |    o     |
+
+#### **NotebookMeta**
+
+| Field Name | Type   | Description         | Required |
+| ---------- | ------ | ------------------- | :------: |
+| name       | String | Notebook name.      |    o     |
+| namespace  | String | Notebook namespace. |    o     |
+| ownerId    | String | User id.            |    o     |
+
+#### **EnvironmentSpec**
+
+See more details in [environment api](environment.md).
+
+#### **NotebookPodSpec**
+
+| Field Name | Type                 | Description              | Required |
+| ---------- | -------------------- | ------------------------ | :------: |
+| envVars    | Map<String, String\> | Environmental variables. |    x     |
+| resources  | String               | Resourecs of the pod.    |    o     |
+
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X POST -H "Content-Type: application/json" -d '
 {
   "meta": {
@@ -47,8 +85,13 @@ curl -X POST -H "Content-Type: application/json" -d '
 }
 ' http://127.0.0.1:32080/api/v1/notebook
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -99,16 +142,35 @@ curl -X POST -H "Content-Type: application/json" -d '
   "attributes":{}
 }
 ```
+</div>
+</details>
+
 
 ## List notebook instances which belong to user
-`GET /api/v1/notebook`
+`GET /api/v1/notebook?id={user_id}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name | Type   | In    | Description | Required |
+| ---------- | ------ | ----- | ----------- | :------: |
+| id         | String | query | User id.    |    o     |
+
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/notebook?id={user_id}
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -161,16 +223,33 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook?id={user_id}
   "attributes":{}
 }
 ```
+</div>
+</details>
 
 ## Get the notebook instance
 `GET /api/v1/notebook/{id}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description  | Required |
+| ---------- | ------ | ---- | ------------ | :------: |
+| id         | String | path | Notebook id. |    o     |
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X GET http://127.0.0.1:32080/api/v1/notebook/{id}
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -221,16 +300,34 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook/{id}
   "attributes":{}
 }
 ```
+</div>
+</details>
 
 ## Delete the notebook instance
 `DELETE /api/v1/notebook/{id}`
 
-**Example Request:**
-```sh
+### Parameters
+
+| Field Name | Type   | In   | Description  | Required |
+| ---------- | ------ | ---- | ------------ | :------: |
+| id         | String | path | Notebook id. |    o     |
+
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X DELETE http://127.0.0.1:32080/api/v1/notebook/{id}
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -281,3 +378,5 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/notebook/{id}
   "attributes":{}
 }
 ```
+</div>
+</details>
