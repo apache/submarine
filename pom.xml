@@ -481,6 +481,8 @@
             <exclude>**/*.yaml</exclude>
             <exclude>**/*.yapf</exclude>
             <exclude>**/*.libsvm</exclude>
+            <exclude>**/*.prettierrc</exclude>
+            <exclude>**/*.prettierignore</exclude>
             <exclude>**/src/main/resources/META-INF/services/org.apache.hadoop.security.SecurityInfo</exclude>
             <exclude>**/src/test/resources/typicalHistFolder/job1/application123-1-1-user1-SUCCEEDED.jhist</exclude>
             <exclude>**/conf/routes</exclude>
