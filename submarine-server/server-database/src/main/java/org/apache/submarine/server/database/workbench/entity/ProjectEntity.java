@@ -19,7 +19,7 @@
 package org.apache.submarine.server.database.workbench.entity;
 
 import org.apache.submarine.server.database.entity.BaseEntity;
-// import org.apache.submarine.server.rest.workbench.annotation.Dict;
+import org.apache.submarine.server.database.workbench.annotation.Dict;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +27,13 @@ import java.util.List;
 public class ProjectEntity extends BaseEntity {
   private String name;
 
-  // @Dict(Code = "PROJECT_VISIBILITY")
+  @Dict(Code = "PROJECT_VISIBILITY")
   private String visibility;
 
-  // @Dict(Code = "PROJECT_TYPE")
+  @Dict(Code = "PROJECT_TYPE")
   private String type;
 
-  // @Dict(Code = "PROJECT_PERMISSION")
+  @Dict(Code = "PROJECT_PERMISSION")
   private String permission;
 
   // Comma separated tag
