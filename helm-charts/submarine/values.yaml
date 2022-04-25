@@ -17,7 +17,7 @@
 
 name: submarine-operator
 replicas: 1
-image: apache/submarine:operator-0.7.0
+image: apache/submarine:operator-0.8.0-SNAPSHOT
 # dev is to tell helm to install submarine-operator or not
 dev: false
 # storageClass is for dynamically creating persistent volumes

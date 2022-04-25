@@ -26,7 +26,7 @@
 
   <groupId>org.apache.submarine</groupId>
   <artifactId>submarine</artifactId>
-  <version>0.7.0</version>
+  <version>0.8.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Submarine</name>
   <description>Submarine project</description>

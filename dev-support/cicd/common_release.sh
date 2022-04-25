@@ -52,7 +52,7 @@ usage() {
 function git_clone() {
   echo "Clone the source"
   # clone source
-  git clone https://git-wip-us.apache.org/repos/asf/submarine.git "${WORKING_DIR}/submarine"
+  git clone https://gitbox.apache.org/repos/asf/submarine.git "${WORKING_DIR}/submarine"
 
   if [[ $? -ne 0 ]]; then
     echo "Can not clone source repository"

@@ -19,7 +19,7 @@ name: Submarine
 on: [push, pull_request]
 
 env:
-  VERSION: "0.7.0"
+  VERSION: "0.8.0-SNAPSHOT"
   BUILD_FLAG: "clean install -ntp -DskipTests -am"
   TEST_FLAG: "test -DskipRat -ntp"
   KUBERNETES_VERSION: "v1.21.2"

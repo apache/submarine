@@ -33,7 +33,7 @@ import io.kubernetes.client.openapi.models.V1PodSpec;
 
 public class AgentPod extends V1Pod{
   private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
-  private static final String AGENT_IMAGE = "apache/submarine:agent-0.7.0";
+  private static final String AGENT_IMAGE = "apache/submarine:agent-0.8.0-SNAPSHOT";
   private static final String CONTAINER_NAME = "agent";
   public AgentPod(String namespace, String name,
           CustomResourceType type,
@@ -90,9 +90,9 @@ public class AgentPod extends V1Pod{
     spec.setRestartPolicy("OnFailure");
     this.setSpec(spec);
   }
-  
+
   private String getNormalizePodName(CustomResourceType type, String name, String resourceId) {
-    return String.format("%s-%s-%s-%s", resourceId.toString().toLowerCase().replace('_', '-'), 
+    return String.format("%s-%s-%s-%s", resourceId.toString().toLowerCase().replace('_', '-'),
             type.toString().toLowerCase(), name, CONTAINER_NAME);
   }
 }

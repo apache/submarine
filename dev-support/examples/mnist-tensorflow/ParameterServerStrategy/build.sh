@@ -16,7 +16,7 @@
 
 set -euxo pipefail
 
-SUBMARINE_VERSION=0.7.0
+SUBMARINE_VERSION=0.8.0-SNAPSHOT
 SUBMARINE_IMAGE_NAME="parameter-server:${SUBMARINE_VERSION}"
 
 if [ -L ${BASH_SOURCE-$0} ]; then

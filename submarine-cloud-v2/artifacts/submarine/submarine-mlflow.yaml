@@ -90,7 +90,7 @@ spec:
             mountPath: /root/.mc
       containers:
       - name: submarine-mlflow-container
-        image: apache/submarine:mlflow-0.7.0
+        image: apache/submarine:mlflow-0.8.0-SNAPSHOT
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000

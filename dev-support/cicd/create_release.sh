@@ -75,7 +75,7 @@ function make_source_package() {
 }
 
 function make_binary_release() {
-  R_DIR_NAME=submarine-dist-${RELEASE_VERSION}-hadoop-2.9
+  R_DIR_NAME=submarine-dist-${RELEASE_VERSION}
   cd ${WORKING_DIR}/submarine/submarine-dist/target
   mv "${R_DIR_NAME}.tar.gz" ${WORKING_DIR}
   # sign bin package

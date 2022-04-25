@@ -132,7 +132,7 @@ to generate pysubmarine client API that used to communicate with submarine serve
     {
       "packageName" : "submarine.client",
       "projectName" : "submarine.client",
-      "packageVersion": "0.7.0"
+      "packageVersion": "0.8.0-SNAPSHOT"
     }
     ```
 

@@ -96,7 +96,7 @@ spec:
         - name: K8S_APISERVER_URL
           value: "kubernetes.default.svc"
 
-        image: "apache/submarine:server-0.7.0"
+        image: "apache/submarine:server-0.8.0-SNAPSHOT"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
