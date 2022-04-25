@@ -108,7 +108,7 @@ curl -X POST -H "Content-Type: application/json" -d '
       },
       "environment":{
         "name":"notebook-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-0.8.0-SNAPSHOT",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.6.0",
         "kernelSpec":{
           "name":"submarine_jupyter_py3",
           "channels":["defaults"],
@@ -174,7 +174,7 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook?id=e9ca23d68d884d4ebb19d07889
       },
       "environment":{
         "name":"notebook-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-0.8.0-SNAPSHOT",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.6.0",
         "kernelSpec":{
           "name":"submarine_jupyter_py3",
           "channels":["defaults"],
@@ -239,7 +239,7 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook/notebook_1626160071451_0001
       },
       "environment":{
         "name":"notebook-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-0.8.0-SNAPSHOT",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.6.0",
         "kernelSpec":{
           "name":"submarine_jupyter_py3",
           "channels":["defaults"],
@@ -304,7 +304,7 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/notebook/notebook_1626160071451_000
       },
       "environment":{
         "name":"notebook-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-0.8.0-SNAPSHOT",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.6.0",
         "kernelSpec":{
           "name":"submarine_jupyter_py3",
           "channels":["defaults"],

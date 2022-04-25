@@ -277,7 +277,7 @@ curl -X GET http://127.0.0.1:32080/api/v1/notebook/{id}
       },
       "environment":{
         "name":"notebook-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-0.7.0-SNAPSHOT",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.7.0",
         "kernelSpec":{
           "name":"submarine_jupyter_py3",
           "channels":[
@@ -355,7 +355,7 @@ curl -X DELETE http://127.0.0.1:32080/api/v1/notebook/{id}
       },
       "environment":{
         "name":"notebook-env",
-        "dockerImage":"apache/submarine:jupyter-notebook-0.7.0-SNAPSHOT",
+        "dockerImage":"apache/submarine:jupyter-notebook-0.7.0",
         "kernelSpec":{
           "name":"submarine_jupyter_py3",
           "channels":[
