@@ -550,6 +550,7 @@ jobs:
       - name: Go Style
         if: always()
         run: ./dev-support/style-check/lint-go.sh
+<<<<<<< HEAD
       - name: React Style
         if: always()
         working-directory: ./submarine-workbench-v2
@@ -640,8 +641,11 @@ jobs:
           rm -rf ~/.m2/repository/org/apache/submarine
         if: always()
   sonarcloud:
+=======
+sonarcloud-and-codecov:
+>>>>>>> 01883c18 (SUBMARINE-1235. delete testCodeCov job)
     if: github.repository == 'apache/submarine' && github.event_name == 'push' && github.ref == 'refs/heads/master'
-    name: SonarCloud
+    name: SonarCloud and Codecov
     runs-on: ubuntu-latest
     needs:
       - submarine-e2e
@@ -729,7 +733,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Code coverage
+      - name: Upload coverage report to Codecov
         uses: codecov/codecov-action@v2
         with:
           files: ./target/coverage/all.xml
