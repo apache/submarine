@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.submarine.server.workbench.websocket;
+package org.apache.submarine.server.websocket;
 
-import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.StatusCode;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
@@ -24,16 +23,17 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import java.net.URI;
 import java.util.concurrent.Future;
+import org.apache.submarine.server.AbstractSubmarineServerTest;
 
-public class NotebookServerTest {
+
+public class ExperimentWebsocketTest {
 
   @BeforeClass
   public static void init() throws Exception {
     AbstractSubmarineServerTest.startUp(
-        NotebookServerTest.class.getSimpleName());
+        ExperimentWebsocketTest.class.getSimpleName());
   }
 
   @AfterClass
@@ -44,8 +44,9 @@ public class NotebookServerTest {
   @Test
   public void testWebsocketConnection() throws Exception{
     URI uri = URI.create(
-        AbstractSubmarineServerTest.getWebsocketApiUrlToTest("wss"));
+        AbstractSubmarineServerTest.getWebsocketApiUrlToTest("experiment"));
     WebSocketClient client = new WebSocketClient();
+
     try {
       client.start();
       // The socket that receives events
