@@ -141,7 +141,7 @@
     <!--  embedded-ldap-junit  -->
     <embedded-ldap-junit.version>0.7</embedded-ldap-junit.version>
     <jaxb-api.version>2.2.11</jaxb-api.version>
-    <commons-compress.version>1.4.1</commons-compress.version>
+    <commons-compress.version>1.21</commons-compress.version>
     <guice-servlet.version>3.0</guice-servlet.version>
     <guice.version>3.0</guice.version>
     <!--  server API  -->
