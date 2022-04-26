@@ -22,9 +22,15 @@ env:
   VERSION: "0.8.0-SNAPSHOT"
   BUILD_FLAG: "clean install -ntp -DskipTests -am"
   TEST_FLAG: "test -DskipRat -ntp"
-  KUBERNETES_VERSION: "v1.21.2"
-
 jobs:
+  generate-k8s-versions-array:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          echo "::set-output name=matrix::[\"v1.18.20\", \"v1.19.16\", \"v1.20.15\", \"v1.21.10\"]"
   submarine-operator-verify-codegen:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -49,8 +55,13 @@ jobs:
         working-directory: ${{ env.working-directory }}/submarine-cloud-v2
         run: ./hack/verify-codegen.sh
   submarine-operator-e2e-test:
+    needs: generate-k8s-versions-array
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    strategy:
+      matrix:
+        k8s-version: ${{fromJSON(needs.generate-k8s-versions-array.outputs.matrix)}}
+      fail-fast: false
     steps:
       - uses: actions/checkout@v2
         with:
@@ -81,7 +92,7 @@ jobs:
           helm version
           kind version
       - name: Create kind cluster
-        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${KUBERNETES_VERSION}
+        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${{ matrix.k8s-version }}
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
@@ -165,8 +176,13 @@ jobs:
           echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} -B"
           mvn ${TEST_FLAG} ${TEST_MODULES} -B
   submarine-k8s:
+    needs: generate-k8s-versions-array
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    strategy:
+      matrix:
+        k8s-version: ${{fromJson(needs.generate-k8s-versions-array.outputs.matrix)}}
+      fail-fast: false
     steps:
       - uses: actions/checkout@v2
         with:
@@ -197,7 +213,7 @@ jobs:
           helm version
           kind version
       - name: Create kind cluster
-        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${KUBERNETES_VERSION}
+        run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${{ matrix.k8s-version }}
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
