@@ -92,7 +92,7 @@ public abstract class AbstractSubmarineServerTest {
   public static String getWebsocketApiUrlToTest(String serverName) {
 
     String websocketUrl = "ws://localhost:8080";
-    if(serverName.equals("wss")) {
+    if (serverName.equals("wss")) {
       websocketUrl = "ws://localhost:8080" + WEBSOCKET_API_URL;
     } else if (serverName.equals("notebook")) {
       websocketUrl = "ws://localhost:8080" + WEBSOCKET_NOTEBOOK_API_URL;
