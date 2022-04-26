@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.database.workbench.utils;
+package org.apache.submarine.server.rest.workbench;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,8 +25,6 @@ import com.google.gson.reflect.TypeToken;
 
 import org.apache.submarine.server.utils.response.DictAnnotation;
 import org.apache.submarine.server.utils.response.JsonResponse;
-import org.apache.submarine.server.rest.workbench.CommonDataTest;
-import org.apache.submarine.server.rest.workbench.SysUserRestApi;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;
