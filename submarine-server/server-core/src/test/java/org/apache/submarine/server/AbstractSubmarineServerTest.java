@@ -75,7 +75,7 @@ public abstract class AbstractSubmarineServerTest {
   protected static final Logger LOG =
       LoggerFactory.getLogger(AbstractSubmarineServerTest.class);
 
-  static final String WEBSOCKET_API_URL = "/ws";
+  static final String WEBSOCKET_API_URL = "/wss";
   static final String URL = getUrlToTest();
   protected static final boolean WAS_RUNNING = checkIfServerIsRunning();
 
