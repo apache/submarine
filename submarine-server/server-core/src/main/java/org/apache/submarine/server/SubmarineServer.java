@@ -259,7 +259,7 @@ public class SubmarineServer extends ResourceConfig {
     servletHolder.setInitParameter("maxTextMessageSize", maxTextMessageSize);
 
     final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-    webapp.addServlet(servletHolder, "/wss/");
+    webapp.addServlet(servletHolder, "/wss/*");
   }
 
   private static void setupWebSocketServer(WebAppContext webapp,
