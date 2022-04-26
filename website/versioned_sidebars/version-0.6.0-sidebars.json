@@ -1,7 +1,6 @@
 {
 	"docs": [
 		{
-			"Introduction": [],
 			"Getting Started": [
 				"version-0.6.0/gettingStarted/quickstart",
 				"version-0.6.0/gettingStarted/notebook"
@@ -75,8 +74,7 @@
 						"version-0.6.0/designDocs/wip-designs/security-implementation"
 					]
 				}
-			],
-			"RoadMap": []
+			]
 		}
 	],
 	"api": [

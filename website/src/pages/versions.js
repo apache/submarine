@@ -17,18 +17,21 @@
  * under the License.
  */
 
- import React from 'react';
- import Link from '@docusaurus/Link';
- import Layout from '@theme/Layout';
- import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
- import {useVersions, useLatestVersion} from '@theme/hooks/useDocs';
+import React from 'react';
+import Link from '@docusaurus/Link';
+import Layout from '@theme/Layout';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import {
+  useVersions,
+  useLatestVersion,
+} from '@docusaurus/plugin-content-docs/client';
 
- import versionsReleaseNoteOnly from '@site/versionsReleaseNoteOnly.json';
- 
+import versionsReleaseNoteOnly from '@site/versionsReleaseNoteOnly.json';
+
 function Version() {
   const versions = useVersions();
   const latestVersion = useLatestVersion();
-	const {
+  const {
     siteConfig
   } = useDocusaurusContext();
   const currentVersion = versions.find((version) => version.name === 'current');
@@ -36,9 +39,6 @@ function Version() {
     (version) => version !== latestVersion && version.name !== 'current',
   );
   const repoUrl = `https://github.com/${siteConfig.organizationName}/${siteConfig.projectName}`;
-	console.log(siteConfig);
-  console.log(latestVersion);
-  console.log(currentVersion);
   return (
     <Layout
       title="Versions"
@@ -84,7 +84,7 @@ function Version() {
                   <td>
                     <Link to={currentVersion.path + "/" + currentVersion.mainDocId}>Documentation</Link>
                   </td>
-									<td>
+                  <td>
                     <Link to={repoUrl}>Source code</Link>
                   </td>
                 </tr>
@@ -119,7 +119,7 @@ function Version() {
                   <tr key={version}>
                     <th>{version}</th>
                     <td>
-                      Documentation                      
+                      Documentation
                     </td>
                     <td>
                       <a href={`/releases/submarine-release-${version}`}>

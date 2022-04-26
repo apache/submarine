@@ -23,6 +23,6 @@ The community put significant effort into improving Apache Submarine since the l
 - Submarine Helm Charts: Provides one command to install the submarine into the Kubernetes cluster
 - PySubmarine: Submarine Python SDK
 
-We encourage to [download](/docs/download) the latest release. Feedback through the [mailing lists](/docs/community/README) is very welcome.
+We encourage to [download](/docs/download) the latest release. Feedback through the [mailing lists](/docs/community/) is very welcome.
 
 You can visit [issue tracker](https://issues.apache.org/jira/secure/ReleaseNote.jspa?projectId=12322824&version=12346621) for full list of issues that are resolved.

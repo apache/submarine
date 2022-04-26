@@ -21,15 +21,31 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-> Note: The Serv API is in the alpha stage which is subjected to incompatible changes in future releases.
+:::caution
+The Serve API is in the alpha stage which is subjected to incompatible changes in future releases.
+:::
 
 ## Create a model serve
 `POST /api/v1/serve`
 
-**Example Request**
-> Make sure there is a model named `simple` with version `1` in the database.
+### Parameters
 
-```sh
+| Field Name   | Type   | Description               | Required |
+| ------------ | ------ | ------------------------- | :------: |
+| modelName    | String | Registered model name.    |    o     |
+| modelVersion | String | Registered model version. |    o     |
+
+### Example
+
+:::note
+Make sure there is a model named `simple` with version `1` in the database.
+:::
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X POST -H "Content-Type: application/json" -d '
 {
   "modelName": "simple", 
@@ -37,8 +53,13 @@ curl -X POST -H "Content-Type: application/json" -d '
 }
 ' http://127.0.0.1:32080/api/v1/serve
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -49,12 +70,25 @@ curl -X POST -H "Content-Type: application/json" -d '
   "attributes":{}
 }
 ```
+</div>
+</details>
 
 ## Delete the TensorFlow model serve
 `DELETE /api/v1/serve`
 
-**Example Request**
-```sh
+### Parameters
+
+| Field Name   | Type   | Description               | Required |
+| ------------ | ------ | ------------------------- | :------: |
+| modelName    | String | Registered model name.    |    o     |
+| modelVersion | String | Registered model version. |    o     |
+### Example
+
+<details>
+<summary>Example Request</summary>
+<div>
+
+```shell
 curl -X DELETE -H "Content-Type: application/json" -d '
 {
   "modelName": "simple", 
@@ -62,8 +96,13 @@ curl -X DELETE -H "Content-Type: application/json" -d '
 }
 ' http://127.0.0.1:32080/api/v1/serve
 ```
+</div>
+</details>
 
-**Example Response:**
+<details>
+<summary>Example Response</summary>
+<div>
+
 ```json
 {
   "status":"OK",
@@ -74,3 +113,5 @@ curl -X DELETE -H "Content-Type: application/json" -d '
   "attributes":{}
 }
 ```
+</div>
+</details>

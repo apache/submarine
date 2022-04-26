@@ -18,9 +18,8 @@
  */
 
 module.exports = {
-    docs: [
+    "docs": [
         {
-            Introduction: [],
             "Getting Started": [
                 "gettingStarted/quickstart",
                 "gettingStarted/notebook",
@@ -29,14 +28,6 @@ module.exports = {
             ],
             "User Docs": [
                 {
-                    "API documentation": [
-                        "userDocs/api/experiment",
-                        "userDocs/api/environment",
-                        "userDocs/api/experiment-template",
-                        "userDocs/api/notebook",
-                    ],
-                },
-                {
                     "Submarine SDK": [
                         "userDocs/submarine-sdk/experiment-client",
                         "userDocs/submarine-sdk/submarine-cli",
@@ -44,7 +35,7 @@ module.exports = {
                     ],
                 },
                 {
-                    Others: [
+                    "Others": [
                         "userDocs/others/mlflow",
                         "userDocs/others/tensorboard",
                     ],
@@ -60,7 +51,7 @@ module.exports = {
                 "devDocs/HowToRelease",
                 "devDocs/HowToVerify",
             ],
-            Community: [
+            "Community": [
                 "community/README",
                 "community/Bylaws",
                 "community/HowToCommit",
@@ -90,14 +81,15 @@ module.exports = {
                     ],
                 },
             ],
-            RoadMap: [],
         },
     ],
-    api: [
+    "api": [
         "api/environment",
         "api/experiment",
         "api/experiment-template",
         "api/notebook",
+        "api/register-model",
+        "api/model-version",
         "api/serve",
     ],
 };
