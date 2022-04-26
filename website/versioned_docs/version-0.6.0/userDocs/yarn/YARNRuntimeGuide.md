@@ -19,7 +19,7 @@ title: YARN Runtime Quick Start Guide
 
 ## Prerequisite
 
-Check out the [Running Submarine on YARN](../../adminDocs/yarn/README)
+Check out the [Running Submarine on YARN](../../adminDocs/yarn/README.md)
 
 ## Build your own Docker image
 

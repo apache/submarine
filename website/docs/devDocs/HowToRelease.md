@@ -268,7 +268,7 @@ for i in *.tar.gz; do echo $i; gpg --armor --output $i.asc --detach-sig $i ; don
 
 ### 3.6 Check whether the generated signature/sha512 is correct
 
-<!-- For details, please refer to:[Verify](how-to-verify.md) -->
+<!-- For details, please refer to:[Verify](HowToVerify.md) -->
 
 For example, verify that the signature is correct as follows:
 

@@ -100,7 +100,7 @@ Explanations:
 - `>1` num_workers indicates it is a distributed training.
 - Parameters / resources / Docker image of parameter server can be specified separately. For many cases, parameter server doesn't require GPU.We don't need parameter server here
 
-For the meaning of the individual parameters, see the [QuickStart](../../adminDocs/yarn/README) page!
+For the meaning of the individual parameters, see the [QuickStart](../../adminDocs/yarn/README.md) page!
 
 *Outputs of distributed training*
 

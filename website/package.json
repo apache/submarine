@@ -14,11 +14,11 @@
   "dependencies": {
     "@docusaurus/core": "2.0.0-beta.18",
     "@docusaurus/preset-classic": "2.0.0-beta.18",
-    "@mdx-js/react": "^1.6.21",
+    "@mdx-js/react": "^1.6.22",
     "clsx": "^1.1.1",
-    "docusaurus-lunr-search": "^2.1.10",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4"
+    "docusaurus-lunr-search": "^2.1.15",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "browserslist": {
     "production": [

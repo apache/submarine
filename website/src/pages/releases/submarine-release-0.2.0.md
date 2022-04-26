@@ -19,7 +19,7 @@ The Apache Submarine community is pleased to announce the availability of the `0
 The community put significant effort into improving Apache Submarine since the last release.
 46 patches for improvements and bug fixes.
 
-We encourage to [download](/docs/download) the latest release. Feedback through the [mailing lists](/docs/community/README) is very welcome.
+We encourage to [download](/docs/download) the latest release. Feedback through the [mailing lists](/docs/community/) is very welcome.
 
 You can visit [issue tracker](https://issues.apache.org/jira/secure/ReleaseNote.jspa?version=12343240&styleName=&projectId=12316221) for full list of issues that are resolved.
 
