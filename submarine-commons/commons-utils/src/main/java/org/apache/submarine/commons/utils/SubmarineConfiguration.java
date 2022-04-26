@@ -129,6 +129,11 @@ public class SubmarineConfiguration extends XMLConfiguration {
   //   return submarineConfig;
   // }
 
+  // Debug
+  public int getTestConfig() {
+    return getInt(SubmarineConfVars.ConfVars.TEST_CONFIG);
+  }
+
   public String getServerAddress() {
     return getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_ADDR);
   }
