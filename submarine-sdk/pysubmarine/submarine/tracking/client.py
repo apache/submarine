@@ -163,7 +163,6 @@ class SubmarineClient(object):
         model_id: str,
         input_dim: list = None,
         output_dim: list = None,
-        registered: bool = False,
     ):
         """
         Save a model into the minio pod.
