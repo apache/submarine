@@ -149,6 +149,8 @@ Read the [Apache Submarine Community Guide](https://submarine.apache.org/docs/co
 
 How to contribute [Contributing Guide](https://submarine.apache.org/docs/community/contributing)
 
+Login Submarine slack channel: [https://join.slack.com/t/asf-submarine/shared_invite](https://join.slack.com/t/asf-submarine/shared_invite/zt-18614cyqs-UhspdUOneiyg~ZPiVomDqw)
+
 Issue Tracking: https://issues.apache.org/jira/projects/SUBMARINE
 
 ## User Document
