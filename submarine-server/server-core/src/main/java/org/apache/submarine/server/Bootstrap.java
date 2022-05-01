@@ -64,9 +64,12 @@ public class Bootstrap extends HttpServlet {
             .openAPI(oas)
             .resourcePackages(Stream.of("org.apache.submarine.server.rest")
                     .collect(Collectors.toSet()))
-            .resourceClasses(Stream.of("org.apache.submarine.server.rest.NotebookRestApi",
+            .resourceClasses(Stream.of("org.apache.submarine.server.rest.EnvironmentRestApi",
                     "org.apache.submarine.server.rest.ExperimentRestApi",
-                    "org.apache.submarine.server.rest.EnvironmentRestApi",
+                    "org.apache.submarine.server.rest.ExperimentTemplateRestApi",
+                    "org.apache.submarine.server.rest.ModelVersionRestApi",
+                    "org.apache.submarine.server.rest.NotebookRestApi",
+                    "org.apache.submarine.server.rest.RegisteredModelRestApi",
                     "org.apache.submarine.server.rest.ServeRestApi")
                     .collect(Collectors.toSet()));
 

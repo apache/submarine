@@ -22,7 +22,7 @@ SWAGGER_JAR_URL="https://repo1.maven.org/maven2/org/openapitools/openapi-generat
 SWAGGER_CODEGEN_JAR="openapi-generator-cli.jar"
 SWAGGER_CODEGEN_CONF="swagger_config.json"
 SWAGGER_CODEGEN_FILE="openapi.json"
-SDK_OUTPUT_PATH="sdk/typescript-angular"
+SDK_OUTPUT_PATH="sdk/typescript-axios"
 
 submarine_dist_exists=$(find -L "${SUBMARINE_PROJECT_PATH}/submarine-dist/target" -name "submarine-dist-*.tar.gz")
 # Build source code if the package doesn't exist.
@@ -46,10 +46,21 @@ if [[ -z "${openapi_generator_cli_exists}" ]]; then
   wget -O "${SWAGGER_CODEGEN_JAR}" "${SWAGGER_JAR_URL}"
 fi
 
-echo "Generating typescript-angular SDK for Submarine ..."
+echo "Generating typescript-axios SDK for Submarine ..."
 rm -r sdk/
 java -jar ${SWAGGER_CODEGEN_JAR} generate \
      -i "${SWAGGER_CODEGEN_FILE}" \
-     -g typescript-angular \
+     -g typescript-axios \
      -o ${SDK_OUTPUT_PATH} \
      -c ${SWAGGER_CODEGEN_CONF}
+
+echo "Insert apache license at the top of file ..."
+for filename in $(find ${SDK_OUTPUT_PATH}/*.ts -type f); do
+  echo "$filename"
+  cat license-header.ts.txt "$filename" > "${filename}_1"
+  rm "$filename"
+  mv "${filename}_1" "${filename}"
+done
+
+echo "Move APIs to pysubmarine"
+cp -r ${SDK_OUTPUT_PATH}/*.ts ${SUBMARINE_PROJECT_PATH}/submarine-workbench-v2/src/rest
