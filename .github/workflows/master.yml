@@ -552,6 +552,7 @@ jobs:
         run: ./dev-support/style-check/lint-go.sh
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
       - name: React Style
         if: always()
         working-directory: ./submarine-workbench-v2
@@ -646,6 +647,9 @@ jobs:
 sonarcloud-and-codecov:
 >>>>>>> 01883c18 (SUBMARINE-1235. delete testCodeCov job)
 =======
+=======
+  
+>>>>>>> d46f5f7f (SUBMARINE-1235. resolve conflic)
   sonarcloud-and-codecov:
 >>>>>>> 1f3b32e3 (fix indentation)
     if: github.repository == 'apache/submarine' && github.event_name == 'push' && github.ref == 'refs/heads/master'
