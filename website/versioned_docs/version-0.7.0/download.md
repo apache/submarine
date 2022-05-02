@@ -21,26 +21,25 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-The latest release of Apache Submarine is `0.6.0`.
+The latest release of Apache Submarine is `0.7.0`.
 
-- Apache Submarine `0.6.0` released on Oct 21, 2021 ([release notes](https://submarine.apache.org/releases/submarine-release-0.6.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.6.0))
+- Apache Submarine `0.7.0` released on Oct 21, 2021 ([release notes](https://submarine.apache.org/releases/submarine-release-0.7.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.7.0))
   - Binary package:
-    [submarine-dist-0.6.0-hadoop-2.9.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.6.0/submarine-dist-0.6.0-hadoop-2.9.tar.gz) (518 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-hadoop-2.9.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-hadoop-2.9.tar.gz.asc))
+    [submarine-dist-0.7.0.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.7.0/submarine-dist-0.7.0.tar.gz) (148 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0.tar.gz.asc))
   - Source:
-    [submarine-dist-0.6.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.6.0/submarine-dist-0.6.0-src.tar.gz) (8.3 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-src.tar.gz.asc)))
+    [submarine-dist-0.7.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.7.0/submarine-dist-0.7.0-src.tar.gz) (8.3 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0-src.tar.gz.asc)))
   - Docker images:
-
-    - [mini-submarine](https://hub.docker.com/layers/apache/submarine/mini-0.6.0/images/sha256-a068563409735c4e5c64d529936de614919b7fb9f11cc55c0302a19fe20bf37d?context=explore) `docker pull apache/submarine:mini-0.6.0`
-    - [submarine server](https://hub.docker.com/layers/apache/submarine/server-0.6.0/images/sha256-e224668d76b7c758f67fdbfb1d478e26dfc49837eb49592da16041fe1ee1df2a?context=explore) `docker pull apache/submarine:server-0.6.0`
-    - [submarine database](https://hub.docker.com/layers/apache/submarine/database-0.6.0/images/sha256-543bb90bc1c1dc6282934dbbaaae145f38fc494e134c916a17c49b69f171c911?context=explore) `docker pull apache/submarine:database-0.6.0`
-    - [submarine jupyter-notebook](https://hub.docker.com/layers/apache/submarine/jupyter-notebook-0.6.0/images/sha256-c3464987598c2aee312f2e538b250dc2ec9d4b0ea15b760c67c52a7489e36130?context=explore) `docker pull apache/submarine:jupyter-notebook-0.6.0`
-    - [submarine quickstart](https://hub.docker.com/layers/apache/submarine/quickstart-0.6.0/images/sha256-7f019c7fe71bbd34b5abced68736758908cc6f32696cf2c2a5f7b0d7200fde29?context=explore) `docker pull apache/submarine:quickstart-0.6.0`
-    - [submarine serve](https://hub.docker.com/layers/apache/submarine/serve-0.6.0/images/sha256-d510a8e294a26b0c2f3043531dfd92b698adec1993f47171630ccc5612fe9930?context=explore) `docker pull apache/submarine:serve-0.6.0`
-    - [submarine mlflow](https://hub.docker.com/layers/apache/submarine/mlflow-0.6.0/images/sha256-b395838b6c30e21c48c3304f20315788e2416bb4cf410779ad2d1530688e7fa9?context=explore) `docker pull apache/submarine:mlflow-0.6.0`
-    - [submarine operator](https://hub.docker.com/layers/apache/submarine/operator-0.6.0/images/sha256-c7e7a0c47a9ddf693bbe01b28c707ac1f05a710a4b86e8baaf59395da13a9a42?context=explore) `docker pull apache/submarine:operator-0.6.0`
+    - [submarine server](https://hub.docker.com/layers/submarine/apache/submarine/server-0.7.0/images/sha256-4f9c8e41d9242f2d92f9a9def0b9e43efdd6a9b42e23ae3a1fa25afee48d0370?context=explore) `docker pull apache/submarine:server-0.7.0`
+    - [submarine database](https://hub.docker.com/layers/submarine/apache/submarine/database-0.7.0/images/sha256-2a4a724b7919a1ca362e89ca1a7dbb6e8201536386631a49fe8c69b4ebbf221c?context=explore) `docker pull apache/submarine:database-0.7.0`
+    - [submarine jupyter-notebook](https://hub.docker.com/layers/submarine/apache/submarine/jupyter-notebook-0.7.0/images/sha256-0cacc189c7d2f220c23a89e6c9f0a542c274985f3a349e71613b5a92a0afea31?context=explore) `docker pull apache/submarine:jupyter-notebook-0.7.0`
+    - [submarine quickstart](https://hub.docker.com/layers/submarine/apache/submarine/quickstart-0.7.0/images/sha256-eefbfde93d279a5bb69aecd74111addbdee4a5462eb0adb1805a0116532e75cb?context=explore) `docker pull apache/submarine:quickstart-0.7.0`
+    - [submarine serve](https://hub.docker.com/layers/submarine/apache/submarine/serve-0.7.0/images/sha256-0bfed0744174c8c1d87fe8441f9fe006ab060ffcc2b207b4d013eef45267d103?context=explore) `docker pull apache/submarine:serve-0.7.0`
+    - [submarine mlflow](https://hub.docker.com/layers/apache/submarine/mlflow-0.6.0/images/sha256-b395838b6c30e21c48c3304f20315788e2416bb4cf410779ad2d1530688e7fa9?context=explore) `docker pull apache/submarine:mlflow-0.7.0`
+    - [submarine operator](https://hub.docker.com/layers/submarine/apache/submarine/operator-0.7.0/images/sha256-cd8b9a3c1e4a367ecf9df45e4ea8e78b9be0d347db5a70b3910cca87e73c4f28?context=explore) `docker pull apache/submarine:operator-0.7.0`
+    - [submarine agent](https://hub.docker.com/layers/submarine/apache/submarine/agent-0.7.0/images/sha256-9c14c62478786eb9d7bbe74ca1aed48cd6ae4cb318bd9da149456926cd5c6474?context=explore) `docker pull apache/submarine:agent-0.7.0`
 
   - SDK:
-    - [PySubmarine](https://pypi.org/project/apache-submarine/0.6.0/) `pip install apache-submarine==0.6.0`
+    - [PySubmarine](https://pypi.org/project/apache-submarine/0.6.0/) `pip install apache-submarine==0.7.0`
 
 ## Verify the integrity of the files
 
@@ -52,6 +51,24 @@ gpg --verify submarine-dist-X.Y.Z-src.tar.gz.asc
 ```
 
 ## Old releases
+
+- Apache Submarine `0.6.0` released on Oct 21, 2021 ([release notes](https://submarine.apache.org/releases/submarine-release-0.6.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.6.0))
+  - Binary package:
+    [submarine-dist-0.6.0-hadoop-2.9.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.6.0/submarine-dist-0.6.0-hadoop-2.9.tar.gz) (518 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-hadoop-2.9.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-hadoop-2.9.tar.gz.asc))
+  - Source:
+    [submarine-dist-0.6.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.6.0/submarine-dist-0.6.0-src.tar.gz) (8.3 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-src.tar.gz.asc)))
+  - Docker images:
+    - [mini-submarine](https://hub.docker.com/layers/apache/submarine/mini-0.6.0/images/sha256-a068563409735c4e5c64d529936de614919b7fb9f11cc55c0302a19fe20bf37d?context=explore) `docker pull apache/submarine:mini-0.6.0`
+    - [submarine server](https://hub.docker.com/layers/apache/submarine/server-0.6.0/images/sha256-e224668d76b7c758f67fdbfb1d478e26dfc49837eb49592da16041fe1ee1df2a?context=explore) `docker pull apache/submarine:server-0.6.0`
+    - [submarine database](https://hub.docker.com/layers/apache/submarine/database-0.6.0/images/sha256-543bb90bc1c1dc6282934dbbaaae145f38fc494e134c916a17c49b69f171c911?context=explore) `docker pull apache/submarine:database-0.6.0`
+    - [submarine jupyter-notebook](https://hub.docker.com/layers/apache/submarine/jupyter-notebook-0.6.0/images/sha256-c3464987598c2aee312f2e538b250dc2ec9d4b0ea15b760c67c52a7489e36130?context=explore) `docker pull apache/submarine:jupyter-notebook-0.6.0`
+    - [submarine quickstart](https://hub.docker.com/layers/apache/submarine/quickstart-0.6.0/images/sha256-7f019c7fe71bbd34b5abced68736758908cc6f32696cf2c2a5f7b0d7200fde29?context=explore) `docker pull apache/submarine:quickstart-0.6.0`
+    - [submarine serve](https://hub.docker.com/layers/apache/submarine/serve-0.6.0/images/sha256-d510a8e294a26b0c2f3043531dfd92b698adec1993f47171630ccc5612fe9930?context=explore) `docker pull apache/submarine:serve-0.6.0`
+    - [submarine mlflow](https://hub.docker.com/layers/apache/submarine/mlflow-0.6.0/images/sha256-b395838b6c30e21c48c3304f20315788e2416bb4cf410779ad2d1530688e7fa9?context=explore) `docker pull apache/submarine:mlflow-0.6.0`
+    - [submarine operator](https://hub.docker.com/layers/apache/submarine/operator-0.6.0/images/sha256-c7e7a0c47a9ddf693bbe01b28c707ac1f05a710a4b86e8baaf59395da13a9a42?context=explore) `docker pull apache/submarine:operator-0.6.0`
+
+  - SDK:
+    - [PySubmarine](https://pypi.org/project/apache-submarine/0.6.0/) `pip install apache-submarine==0.6.0`
 
 - Apache Submarine `0.5.0` released on Dec 17, 2020 ([release notes](https://submarine.apache.org/releases/submarine-release-0.5.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.5.0))
   - Binary package:
