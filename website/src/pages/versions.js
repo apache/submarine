@@ -106,7 +106,7 @@ function Version() {
                   <tr key={version.name}>
                     <th>{version.label}</th>
                     <td>
-                      <Link to={version.path}>Documentation</Link>
+                      <Link to={version.path + "/" + version.mainDocId}>Documentation</Link>
                     </td>
                     <td>
                       <a href={`/releases/submarine-release-${version.name}`}>
