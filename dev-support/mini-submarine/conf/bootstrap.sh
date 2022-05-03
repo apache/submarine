@@ -36,15 +36,15 @@ for f in slaves core-site.xml hdfs-site.xml mapred-site.xml yarn-site.xml contai
   fi
 done
 
-# Copy submarine config
-for f in slaves submarine-site.xml submarine-env.sh; do
-  if [[ -e ${CONFIG_DIR}/$f ]]; then
-    cp ${CONFIG_DIR}/$f /opt/submarine-current/conf/$f
-  else
-    echo "ERROR: Could not find $f in $CONFIG_DIR"
-    exit 1
-  fi
-done
+# # Copy submarine config
+# for f in slaves submarine-site.xml submarine-env.sh; do
+#   if [[ -e ${CONFIG_DIR}/$f ]]; then
+#     cp ${CONFIG_DIR}/$f /opt/submarine-current/conf/$f
+#   else
+#     echo "ERROR: Could not find $f in $CONFIG_DIR"
+#     exit 1
+#   fi
+# done
 
 # create cgroups
 mkdir -p /sys/fs/cgroup/cpu/hadoop-yarn

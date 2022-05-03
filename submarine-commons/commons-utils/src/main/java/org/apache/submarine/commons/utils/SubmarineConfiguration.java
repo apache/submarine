@@ -19,17 +19,13 @@
 package org.apache.submarine.commons.utils;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SubmarineConfiguration extends XMLConfiguration {
@@ -41,26 +37,6 @@ public class SubmarineConfiguration extends XMLConfiguration {
   private static volatile SubmarineConfiguration conf;
 
   private Map<String, String> properties = new HashMap<>();
-
-  private SubmarineConfiguration(URL url) throws ConfigurationException {
-    setDelimiterParsingDisabled(true);
-    load(url);
-    initProperties();
-  }
-
-  private void initProperties() {
-    List<ConfigurationNode> nodes = getRootNode().getChildren();
-    if (nodes == null || nodes.isEmpty()) {
-      return;
-    }
-    for (ConfigurationNode p : nodes) {
-      String name = (String) p.getChildren("name").get(0).getValue();
-      String value = (String) p.getChildren("value").get(0).getValue();
-      if (!StringUtils.isEmpty(name)) {
-        properties.put(name, value);
-      }
-    }
-  }
 
   private SubmarineConfiguration() {
     SubmarineConfVars.ConfVars[] vars = SubmarineConfVars.ConfVars.values();
@@ -129,10 +105,6 @@ public class SubmarineConfiguration extends XMLConfiguration {
   //   return submarineConfig;
   // }
 
-  // Debug
-  public int getTestConfig() {
-    return getInt(SubmarineConfVars.ConfVars.TEST_CONFIG);
-  }
 
   public String getServerAddress() {
     return getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_ADDR);
