@@ -24,8 +24,8 @@ import com.google.gson.reflect.TypeToken;
 
 import org.apache.submarine.server.utils.response.JsonResponse;
 import org.apache.submarine.server.utils.response.JsonResponse.ListResult;
-import org.apache.submarine.server.workbench.database.entity.SysDictEntity;
-import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
+import org.apache.submarine.server.database.workbench.entity.SysDictEntity;
+import org.apache.submarine.server.database.workbench.entity.SysDictItemEntity;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

@@ -33,8 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.core.Response;
 import org.apache.submarine.server.api.experiment.ExperimentId;
-import org.apache.submarine.server.model.database.entities.RegisteredModelEntity;
-import org.apache.submarine.server.model.database.service.RegisteredModelService;
+import org.apache.submarine.server.database.model.entities.RegisteredModelEntity;
+import org.apache.submarine.server.database.model.service.RegisteredModelService;
 import org.apache.submarine.server.utils.gson.ExperimentIdDeserializer;
 import org.apache.submarine.server.utils.gson.ExperimentIdSerializer;
 

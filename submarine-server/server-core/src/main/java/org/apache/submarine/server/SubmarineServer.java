@@ -19,7 +19,6 @@
 package org.apache.submarine.server;
 
 import org.apache.log4j.PropertyConfigurator;
-import org.apache.submarine.server.database.utils.HibernateUtil;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.commons.cluster.ClusterServer;
@@ -146,7 +145,6 @@ public class SubmarineServer extends ResourceConfig {
                 () -> {
                   LOG.info("Shutting down Submarine Server ... ");
                   try {
-                    HibernateUtil.close();
                     jettyWebServer.stop();
                     Thread.sleep(3000);
                   } catch (InterruptedException e) {

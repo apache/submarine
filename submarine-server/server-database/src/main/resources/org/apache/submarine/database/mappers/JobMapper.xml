@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.submarine.server.database.workbench.mappers.JobMapper">
+  <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.database.entity.BaseEntity">
+    <id property="id" column="id"/>
+    <result column="create_by" property="createBy"/>
+    <result column="create_time" property="createTime"/>
+    <result column="update_by" property="updateBy"/>
+    <result column="update_time" property="updateTime"/>
+  </resultMap>
+
+  <resultMap id="resultMap" type="org.apache.submarine.server.database.workbench.entity.JobEntity" extends="BaseEntityResultMap">
+    <result column="job_id" jdbcType="VARCHAR" property="jobId" />
+    <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+    <result column="job_type" jdbcType="VARCHAR" property="jobType" />
+    <result column="job_namespace" jdbcType="VARCHAR" property="jobNamespace" />
+    <result column="job_status" jdbcType="VARCHAR" property="jobStatus" />
+    <result column="job_final_status" jdbcType="VARCHAR" property="jobFinalStatus" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, job_id, job_name, job_type, job_namespace, job_status, job_final_status, user_name,
+    create_by, create_time, update_by, update_time
+  </sql>
+
+  <select id="selectAll" parameterType="java.util.Map" resultMap="resultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM job
+    WHERE 1 = 1
+    <if test="userName!=null and userName!=''">AND `user_name` = #{userName}</if>
+    ORDER BY #{column} #{order}
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List" />
+    from job
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByJobId" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List" />
+    from job
+    where job_id = #{jobId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from job
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+
+  <delete id="deleteByJobId" parameterType="java.lang.String">
+    delete from job
+    where job_id = #{jobId,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="org.apache.submarine.server.database.workbench.entity.JobEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    insert into job (job_id, job_name, job_type, job_namespace,
+      job_status, job_final_status, user_name,
+      create_by, create_time, update_by, update_time)
+    values (#{jobId,jdbcType=VARCHAR}, #{jobName,jdbcType=VARCHAR},
+      #{jobType,jdbcType=VARCHAR}, #{jobNamespace,jdbcType=VARCHAR}, #{jobStatus,jdbcType=VARCHAR},
+      #{jobFinalStatus,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},
+      #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
+  </insert>
+
+  <insert id="insertSelective" parameterType="org.apache.submarine.server.database.workbench.entity.JobEntity">
+    insert into job
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="jobId != null">
+        job_id,
+      </if>
+      <if test="jobName != null">
+        job_name,
+      </if>
+      <if test="jobType != null">
+        job_type,
+      </if>
+      <if test="jobNamespace != null">
+        job_namespace,
+      </if>
+      <if test="jobStatus != null">
+        job_status,
+      </if>
+      <if test="jobFinalStatus != null">
+        job_final_status,
+      </if>
+      <if test="userName != null">
+        user_name,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="jobId != null">
+        #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="jobName != null">
+        #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobType != null">
+        #{jobType,jdbcType=VARCHAR},
+      </if>
+      <if test="jobNamespace != null">
+        #{jobNamespace,jdbcType=VARCHAR},
+      </if>
+      <if test="jobStatus != null">
+        #{jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="jobFinalStatus != null">
+        #{jobFinalStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="org.apache.submarine.server.database.workbench.entity.JobEntity">
+    update job
+    <set>
+      <if test="jobId != null">
+        job_id = #{jobId,jdbcType=VARCHAR},
+      </if>
+      <if test="jobName != null">
+        job_name = #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="jobType != null">
+        job_type = #{jobType,jdbcType=VARCHAR},
+      </if>
+      <if test="jobNamespace != null">
+        job_namespace = #{jobNamespace,jdbcType=VARCHAR},
+      </if>
+      <if test="jobStatus != null">
+        job_status = #{jobStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="jobFinalStatus != null">
+        job_final_status = #{jobFinalStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null">
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      update_time = now()
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="org.apache.submarine.server.database.workbench.entity.JobEntity">
+    update job
+    set job_id = #{jobId,jdbcType=VARCHAR},
+      job_name = #{jobName,jdbcType=VARCHAR},
+      job_type = #{jobType,jdbcType=VARCHAR},
+      job_namespace = #{jobNamespace,jdbcType=VARCHAR},
+      job_status = #{jobStatus,jdbcType=VARCHAR},
+      job_final_status = #{jobFinalStatus,jdbcType=VARCHAR},
+      user_name = #{userName,jdbcType=VARCHAR},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

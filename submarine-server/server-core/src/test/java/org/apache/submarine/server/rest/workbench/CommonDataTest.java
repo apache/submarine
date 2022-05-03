@@ -24,12 +24,12 @@ import com.google.gson.reflect.TypeToken;
 
 import org.apache.submarine.server.utils.response.JsonResponse;
 import org.apache.submarine.server.utils.response.JsonResponse.ListResult;
-import org.apache.submarine.server.workbench.database.entity.SysDeptEntity;
-import org.apache.submarine.server.workbench.database.entity.SysDeptTree;
-import org.apache.submarine.server.workbench.database.entity.SysDictEntity;
-import org.apache.submarine.server.workbench.database.entity.SysDictItemEntity;
-import org.apache.submarine.server.workbench.database.entity.SysUserEntity;
-import org.apache.submarine.server.workbench.database.service.SysUserService;
+import org.apache.submarine.server.database.workbench.entity.SysDeptEntity;
+import org.apache.submarine.server.database.workbench.entity.SysDeptTree;
+import org.apache.submarine.server.database.workbench.entity.SysDictEntity;
+import org.apache.submarine.server.database.workbench.entity.SysDictItemEntity;
+import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
+import org.apache.submarine.server.database.workbench.service.SysUserService;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

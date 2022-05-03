@@ -37,6 +37,7 @@
     <module>server-submitter</module>
     <module>server-core</module>
     <module>server-api</module>
+    <module>server-database</module>
   </modules>
 
   <dependencyManagement>

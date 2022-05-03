@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one
+  or more contributor license agreements.  See the NOTICE file
+  distributed with this work for additional information
+  regarding copyright ownership.  The ASF licenses this file
+  to you under the Apache License, Version 2.0 (the
+  "License"); you may not use this file except in compliance
+  with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.apache.submarine.server.database.experimenttemplate.mappers.ExperimentTemplateMapper">
+  <resultMap id="BaseEntityResultMap" type="org.apache.submarine.server.database.entity.BaseEntity">
+  	<id property="id" column="id"/>
+    <result column="create_by" property="createBy"/>
+    <result column="create_time" property="createTime"/>
+    <result column="update_by" property="updateBy"/>
+    <result column="update_time" property="updateTime"/>
+  </resultMap>
+
+  <resultMap id="resultMap" type="org.apache.submarine.server.database.experimenttemplate.entity.ExperimentTemplateEntity" extends="BaseEntityResultMap">
+    <result column="experimentTemplate_name" jdbcType="VARCHAR" property="experimentTemplateName" />
+    <result column="experimentTemplate_spec" jdbcType="VARCHAR" property="experimentTemplateSpec" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, experimentTemplate_name, experimentTemplate_spec, create_by, create_time, update_by, update_time
+  </sql>
+
+  <select id="select" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List" />
+    from experiment_template
+    where experimentTemplate_name = #{experimentTemplate_name,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="delete" parameterType="java.lang.String">
+    delete from experiment_template
+    where experimentTemplate_name = #{experimentTemplate_name,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insert" parameterType="org.apache.submarine.server.database.experimenttemplate.entity.ExperimentTemplateEntity">
+    insert into experiment_template (id, experimentTemplate_name, experimentTemplate_spec,
+      create_by, create_time, update_by, update_time)
+    values (#{id,jdbcType=VARCHAR}, 
+    #{experimentTemplateName,jdbcType=VARCHAR}, 
+    #{experimentTemplateSpec,jdbcType=VARCHAR},
+    #{createBy,jdbcType=VARCHAR}, now(), #{updateBy,jdbcType=VARCHAR}, now())
+  </insert>
+
+  <update id="update" parameterType="org.apache.submarine.server.database.experimenttemplate.entity.ExperimentTemplateEntity">
+    update experiment_template
+    <set>
+      <if test="experimentTemplateSpec != null">
+        experimentTemplate_spec = #{experimentTemplateSpec,jdbcType=VARCHAR},
+      </if>
+      update_time = now()
+    </set>
+    where experimentTemplate_name = #{experimentTemplateName,jdbcType=VARCHAR}
+  </update>
+
+  <select id="selectByKey" parameterType="java.lang.String" resultMap="resultMap">
+    select
+    <include refid="Base_Column_List" />
+    from experiment_template
+    where 1 = 1
+    <if test="id != null">
+      AND id = #{id,jdbcType=VARCHAR}
+    </if>
+    <if test="experimentTemplateName != null">
+      AND experimentTemplate_name = #{experimentTemplateName,jdbcType=VARCHAR}
+    </if>
+    <!-- AND JSON_EXTRACT(`experimentTemplate_spec`, "$.name") ==  -->
+
+
+  </select>
+  
+</mapper>
