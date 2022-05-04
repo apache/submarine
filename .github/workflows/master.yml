@@ -628,8 +628,12 @@ jobs:
         uses: stCarolas/setup-maven@v4
         with:
           maven-version: 3.6.3
+      - name: find jacoco(before)
+        run: . -name 'jacoco*.exec'
       - name: Build the project with JDK 8
-        run: mvn install
+        run: mvn install -DskipTests
+      - name: find jacoco(after)
+        run: . -name 'jacoco*.exec'
       - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
