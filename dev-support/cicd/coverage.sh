@@ -35,6 +35,9 @@ jacoco() {
   java -jar target/dependency/org.jacoco.cli-0.8.0-nodeps.jar "$@"
 }
 
+echo 'merge following jacoco reports into one'
+find $DIR/../.. -name 'jacoco*.exec'
+
 #Merge all the jacoco.exec files
 jacoco merge $(find $DIR/../.. -name 'jacoco*.exec') --destfile "$REPORT_DIR/jacoco-all.exec"
 
@@ -50,3 +53,6 @@ find target/coverage-classes/javax/xml/bind -name 'ModuleUtil.class'| xargs rm -
 
 #generate the reports
 jacoco report "$REPORT_DIR/jacoco-all.exec" --classfiles target/coverage-classes --html "$REPORT_DIR/all" --xml "$REPORT_DIR/all.xml"
+
+echo '=====report====='
+cat $REPORT_DIR/all.xml
