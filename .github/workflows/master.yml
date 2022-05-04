@@ -175,6 +175,8 @@ jobs:
         run: |
           echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} -B"
           mvn ${TEST_FLAG} ${TEST_MODULES} -B
+      - name: find jacoco repo
+        run: find . -name 'jacoco*.exec'
   submarine-k8s:
     needs: generate-k8s-versions-array
     runs-on: ubuntu-latest
@@ -236,6 +238,8 @@ jobs:
         run: |
           echo ">>> mvn ${TEST_FLAG} ${TEST_MODULES} -B"
           mvn ${TEST_FLAG} ${TEST_MODULES} -B
+      - name: find jacoco repo
+        run: find . -name 'jacoco*.exec'
       - name: Failure status
         run: |
           kubectl describe nodes
@@ -414,6 +418,8 @@ jobs:
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
           mvn $TEST_FLAG $TEST_MODULES -B
+      - name: find jacoco repo
+        run: find . -name 'jacoco*.exec'
   submarine-workbench:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -495,7 +501,8 @@ jobs:
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
           mvn $TEST_FLAG $TEST_MODULES -B
-
+      - name: find jacoco repo
+        run: find . -name 'jacoco*.exec'
   rat:
     name: Check License
     runs-on: ubuntu-latest
