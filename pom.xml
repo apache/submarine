@@ -329,6 +329,12 @@
         <artifactId>joda-time</artifactId>
         <version>${joda-time.version}</version>
       </dependency>
+      <dependency>
+        <groupId>jacoco-maven-plugin</groupId>
+        <artifactId>testng</artifactId>
+        <version>${jacoco-testng.version}</version>
+        <scope>test</scope>
+       </dependency>      
     </dependencies>
   </dependencyManagement>
 
@@ -506,6 +512,10 @@
         <configuration>
           <destFile>${basedir}/target/jacoco.exec</destFile>
           <dataFile>${basedir}/target/jacoco.exec</dataFile>
+          <includes>
+          	<include>**/*IT*</include>
+          	<include>**/*Test*</include>
+          </includes>
         </configuration>
         <executions>
           <execution>
