@@ -36,9 +36,9 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 
 
-public class datadictIT extends AbstractSubmarineIT {
+public class datadictTest extends AbstractSubmarineIT {
 
-  public final static Logger LOG = LoggerFactory.getLogger(datadictIT.class);
+  public final static Logger LOG = LoggerFactory.getLogger(datadictTest.class);
 
 
   @BeforeClass
