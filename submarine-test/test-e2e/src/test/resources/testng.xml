@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Converted JUnit suite" >
+    <test name="JUnitTests" junit="true">
+        <classes>
+            <class name="org.apache.submarine.integration.datadictIT" />
+            <class name="org.apache.submarine.integration.dataIT" />
+            <class name="org.apache.submarine.integration.departmentIT" />
+            <class name="org.apache.submarine.integration.environmentIT" />
+            <class name="org.apache.submarine.integration.experimentIT" />
+            <class name="org.apache.submarine.integration.homeIT" />
+            <class name="org.apache.submarine.integration.interpreterIT" />
+            <class name="org.apache.submarine.integration.loginIT" />
+            <class name="org.apache.submarine.integration.notebookIT" />
+            <class name="org.apache.submarine.integration.registerIT" />
+            <class name="org.apache.submarine.integration.SubmarineLogIT" />
+            <class name="org.apache.submarine.integration.teamIT" />
+            <class name="org.apache.submarine.integration.workspaceIT" />
+        </classes>
+    </test>
+</suite>
