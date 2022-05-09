@@ -19,24 +19,26 @@ package org.apache.submarine.integration;
 
 import org.apache.submarine.AbstractSubmarineIT;
 import org.apache.submarine.integration.pages.LoginPage;
+import org.apache.submarine.integration.components.Sidebars;
 import org.apache.submarine.WebDriverManager;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.Assert;
+
 
 @Ignore("SUBMARINE-628")
-public class teamIT extends AbstractSubmarineIT {
+public class dataTest extends AbstractSubmarineIT {
 
-  public final static Logger LOG = LoggerFactory.getLogger(teamIT.class);
+  public final static Logger LOG = LoggerFactory.getLogger(dataTest.class);
 
   @BeforeClass
   public static void startUp(){
-    LOG.info("[Testcase]: teamIT");
+    LOG.info("[Testcase]: dataIT");
     driver =  WebDriverManager.getWebDriver();
   }
 
@@ -45,27 +47,31 @@ public class teamIT extends AbstractSubmarineIT {
     driver.quit();
   }
 
+
   @Test
-  public void teamTest() throws Exception {
+  public void dataNavigation() throws Exception {
     String URL = getURL("http://127.0.0.1", 8080);
-    LoginPage loginPage = new LoginPage();
+
+    Sidebars sidebars = new Sidebars(URL);
 
     // Login
+    LoginPage loginPage = new LoginPage();
+
     LOG.info("Login");
     loginPage.Login();
 
-    // Routing to workspace
-    pollingWait(By.xpath("//span[contains(text(), \"Workspace\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertEquals(driver.getCurrentUrl(), URL.concat("/workbench/workspace"));
+    // Routing to data page
+    sidebars.gotoData();
 
-    //Test team part
-    pollingWait(By.xpath("//li[contains(text(), \"Team\")]"), MAX_BROWSER_TIMEOUT_SEC).click();
-    Assert.assertTrue(pollingWait(By.xpath("//div[@id='teamDiv']"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
+    // Test create new Table
+    pollingWait(By.xpath("//button[@id='createBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertTrue(pollingWait(By.xpath("//form"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
 
-    clickAndWait(By.cssSelector("button[id='btnAddTeam']"));
-    pollingWait(By.xpath("//input[@id='inputNewTeamName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamNameTest");
-    pollingWait(By.xpath("//input[@id='inputNewTeamOwner']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("NewTeamOwnerTest");
-    clickAndWait(By.cssSelector("button[id='submitNewTeamBtn']"));
-    Assert.assertTrue(pollingWait(By.xpath("//td[contains(., 'NewTeamNameTest')]"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
+    pollingWait(By.xpath("//button[@id='firstNextBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    pollingWait(By.xpath("//input[@id='tableName']"), MAX_BROWSER_TIMEOUT_SEC).sendKeys("e2e test Table");
+    pollingWait(By.xpath("//button[@id='secondNextBtn']"), MAX_BROWSER_TIMEOUT_SEC).click();
+
+    pollingWait(By.xpath("//button[@id='submit']"), MAX_BROWSER_TIMEOUT_SEC).click();
+    Assert.assertTrue(pollingWait(By.xpath("//thead"), MAX_BROWSER_TIMEOUT_SEC).isDisplayed());
   }
 }

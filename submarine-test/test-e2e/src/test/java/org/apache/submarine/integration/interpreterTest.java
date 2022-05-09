@@ -31,9 +31,9 @@ import org.junit.Test;
 import org.junit.Assert;
 
 @Ignore("SUBMARINE-628")
-public class interpreterIT extends AbstractSubmarineIT {
+public class interpreterTest extends AbstractSubmarineIT {
 
-  public final static Logger LOG = LoggerFactory.getLogger(interpreterIT.class);
+  public final static Logger LOG = LoggerFactory.getLogger(interpreterTest.class);
 
   @BeforeClass
   public static void startUp(){

@@ -27,10 +27,11 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,9 +40,9 @@ import java.nio.file.Paths;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 
-public class environmentIT extends AbstractSubmarineIT {
+public class environmentTest extends AbstractSubmarineIT {
 
-  public final static Logger LOG = LoggerFactory.getLogger(experimentIT.class);
+  public final static Logger LOG = LoggerFactory.getLogger(experimentTest.class);
 
   @BeforeClass
   public static void startUp(){

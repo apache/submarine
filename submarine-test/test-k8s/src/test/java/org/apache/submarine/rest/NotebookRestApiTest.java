@@ -60,9 +60,9 @@ import java.lang.Thread;
 import java.util.Date;
 
 @SuppressWarnings("rawtypes")
-public class NotebookRestApiIT extends AbstractSubmarineServerTest {
+public class NotebookRestApiTest extends AbstractSubmarineServerTest {
 
-  private static final Logger LOG = LoggerFactory.getLogger(NotebookRestApiIT.class);
+  private static final Logger LOG = LoggerFactory.getLogger(NotebookRestApiTest.class);
 
   private static CustomObjectsApi k8sApi;
   private static final String BASE_API_PATH = "/api/" + RestConstants.V1 + "/" + RestConstants.NOTEBOOK;

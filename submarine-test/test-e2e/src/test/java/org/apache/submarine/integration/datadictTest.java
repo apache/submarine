@@ -27,18 +27,19 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 
 
-public class datadictIT extends AbstractSubmarineIT {
+public class datadictTest extends AbstractSubmarineIT {
 
-  public final static Logger LOG = LoggerFactory.getLogger(datadictIT.class);
+  public final static Logger LOG = LoggerFactory.getLogger(datadictTest.class);
 
 
   @BeforeClass

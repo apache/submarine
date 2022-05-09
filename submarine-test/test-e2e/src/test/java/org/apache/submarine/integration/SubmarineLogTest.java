@@ -21,12 +21,12 @@ package org.apache.submarine.integration;
 import org.apache.submarine.AbstractSubmarineIT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.io.File;
 
-public class SubmarineLogIT extends AbstractSubmarineIT {
-  public final static Logger LOG = LoggerFactory.getLogger(SubmarineLogIT.class);
+public class SubmarineLogTest extends AbstractSubmarineIT {
+  public final static Logger LOG = LoggerFactory.getLogger(SubmarineLogTest.class);
 
   @Test
   public void submarineLog() throws Exception {

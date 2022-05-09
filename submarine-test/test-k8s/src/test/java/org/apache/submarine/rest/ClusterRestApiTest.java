@@ -26,8 +26,8 @@ import org.slf4j.LoggerFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ClusterRestApiIT extends AbstractSubmarineServerTest {
-  public final static Logger LOG = LoggerFactory.getLogger(ClusterRestApiIT.class);
+public class ClusterRestApiTest extends AbstractSubmarineServerTest {
+  public final static Logger LOG = LoggerFactory.getLogger(ClusterRestApiTest.class);
 
   @BeforeClass
   public static void startUp(){

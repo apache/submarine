@@ -22,13 +22,13 @@ import org.apache.submarine.WebDriverManager;
 import org.apache.submarine.integration.pages.LoginPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.testng.Assert;
-
-public class loginIT extends AbstractSubmarineIT {
-  public final static Logger LOG = LoggerFactory.getLogger(loginIT.class);
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
+public class loginTest extends AbstractSubmarineIT {
+  public final static Logger LOG = LoggerFactory.getLogger(loginTest.class);
 
   @BeforeClass
   public static void startUp(){

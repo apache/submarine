@@ -509,7 +509,6 @@ jobs:
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
           mvn $TEST_FLAG $TEST_MODULES -B
-
   rat:
     name: Check License
     runs-on: ubuntu-latest
