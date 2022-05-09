@@ -17,6 +17,43 @@
 
 # Developer Guide
 
+Golang version: `1.17`
+
+## Prerequisites
+
+First finish the prerequisites specified in the [QuickStart](quickstart) section on the submarine website.
+
+Next, install golang dependencies.
+
+```bash
+go mod vendor
+```
+
+## Run operator in-cluster
+
+If you follow the [QuickStart][quickstart] section on the submarine website, you are running operator in-cluster.
+
+## Run operator out-of-cluster
+
+Running operator out-of-cluster is very handy for development
+
+```bash
+# Step1: Install helm chart dependencies, --set dev=true option will not install the operator deployment to the cluster
+helm install --set dev=true submarine ../helm-charts/submarine/ -n submarine
+
+# Step2: Build & Run "submarine-operator"
+make
+./submarine-operator
+
+# Step3: Deploy a Submarine
+kubectl create ns submarine-user-test
+kubectl apply -n submarine-user-test -f artifacts/examples/example-submarine.yaml
+```
+
+If you follow the above steps, you can view the submarine workbench via the same approach specified in the [QuickStart][quickstart] section on the submarine website.
+
+Whenever you change the operator code, simply shutdown the operator and recompile the operator using `make` and re-run again.
+
 ## Coding Style
 
 For `go` files, please use [gofmt](https://golang.org/pkg/cmd/gofmt/) to format the code.
@@ -30,6 +67,14 @@ For `yaml` files, please use [prettier](https://prettier.io/) to format the code
 We use [code-generator](https://github.com/kubernetes/code-generator) to generate a typed client, informers, listers and deep-copy functions.
 
 Everytime when you change the codes in `submarine-cloud-v2/pkg/apis`, you must run `make api` to re-generate the API.
+
+## Set up storage class fields
+
+One can set up storage class fields in `values.yaml` or using helm with `--set`. We've set up minikube's provisioner for storage class as default.
+
+For example, if you are using kind in local, please add `--set storageClass.provisioner=rancher.io/local-path --set storageClass.volumeBindingMode=WaitForFirstConsumer` to helm install command.
+
+Documentation for storage class: https://kubernetes.io/docs/concepts/storage/storage-classes/
 
 ## Create New Custom Resources
 
@@ -110,3 +155,5 @@ Examples:
 ./hack/build_image.sh all     # build all images
 ./hack/build_image.sh server  # only build the server image
 ```
+
+[quickstart]: https://submarine.apache.org/docs/next/gettingStarted/quickstart

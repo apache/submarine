@@ -66,8 +66,8 @@ class SubmarineClient(object):
         key: str,
         value: float,
         worker_index: str,
-        timestamp: datetime = None,
-        step: int = None,
+        timestamp: datetime = datetime.now(),
+        step: int = 0,
     ) -> None:
         """
         Log a metric against the run ID.
@@ -80,8 +80,6 @@ class SubmarineClient(object):
         :param timestamp: Time when this metric was calculated. Defaults to the current system time.
         :param step: Training step (iteration) at which was the metric calculated. Defaults to 0.
         """
-        timestamp = timestamp if timestamp is not None else datetime.now()
-        step = step if step is not None else 0
         validate_metric(key, value, timestamp, step)
         metric = Metric(key, value, worker_index, timestamp, step)
         self.store.log_metric(job_id, metric)

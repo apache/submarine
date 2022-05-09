@@ -41,6 +41,12 @@ rules:
     verbs:
       - "*"
   - apiGroups:
+      - networking.istio.io
+    resources:
+      - virtualservices
+    verbs:
+      - "*"
+  - apiGroups:
       - kubeflow.org
     resources:
       - notebooks

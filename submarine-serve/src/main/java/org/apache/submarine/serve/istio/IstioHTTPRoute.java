@@ -38,6 +38,11 @@ public class IstioHTTPRoute {
     this.rewrite = new IstioRewrite(IstioConstants.REWRITE_URL);
   }
 
+  public IstioHTTPRoute(String matchURIPrefix, String routeDestinationHost, Integer routeDestinationPort) {
+    this.match.add(new IstioHTTPMatchRequest(matchURIPrefix));
+    this.route.add(new IstioHTTPDestination(routeDestinationHost, routeDestinationPort));
+  }
+
   @Override
   public String toString() {
     return "'rewrite': {'uri': " + rewrite.getRewrite() + "}";

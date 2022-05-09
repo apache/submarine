@@ -29,7 +29,7 @@ storageClass:
   # provisioner is to determine what volume plugin is used for provisioning PVs
   provisioner: k8s.io/minikube-hostpath
   # parameters describe volumes belonging to the storage class
-  parameters:
+  parameters: {}
 
 # k8s cluster type. can be: kubernetes or openshift
 clusterType: kubernetes
@@ -40,3 +40,8 @@ podSecurityPolicy:
   # Specifies whether a PodSecurityPolicy should be created,
   # This configuration enables the database/minio/server to set securityContext.runAsUser
   create: true
+
+# Istio configuration
+istio:
+  enabled: true
+  gatewaySelector: ingressgateway

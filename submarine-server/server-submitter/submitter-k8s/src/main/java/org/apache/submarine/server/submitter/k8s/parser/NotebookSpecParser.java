@@ -39,7 +39,7 @@ import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.api.spec.KernelSpec;
 import org.apache.submarine.server.api.spec.NotebookPodSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
-import org.apache.submarine.server.environment.EnvironmentManager;
+import org.apache.submarine.server.manager.EnvironmentManager;
 import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCRSpec;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;

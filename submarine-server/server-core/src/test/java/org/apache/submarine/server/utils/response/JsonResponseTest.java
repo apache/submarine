@@ -22,7 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.apache.submarine.server.utils.response.JsonResponse.ListResult;
-import org.apache.submarine.server.workbench.database.entity.SysDictEntity;
+import org.apache.submarine.server.database.workbench.entity.SysDictEntity;
 import org.junit.Test;
 
 import javax.ws.rs.core.Response;

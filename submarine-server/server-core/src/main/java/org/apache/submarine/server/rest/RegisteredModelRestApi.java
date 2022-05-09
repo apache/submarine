@@ -39,13 +39,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-import org.apache.submarine.server.model.database.entities.ModelVersionEntity;
-import org.apache.submarine.server.model.database.entities.RegisteredModelEntity;
-import org.apache.submarine.server.model.database.entities.RegisteredModelTagEntity;
-import org.apache.submarine.server.model.database.service.ModelVersionService;
-import org.apache.submarine.server.model.database.service.RegisteredModelService;
+import org.apache.submarine.server.database.model.entities.ModelVersionEntity;
+import org.apache.submarine.server.database.model.entities.RegisteredModelEntity;
+import org.apache.submarine.server.database.model.entities.RegisteredModelTagEntity;
+import org.apache.submarine.server.database.model.service.ModelVersionService;
+import org.apache.submarine.server.database.model.service.RegisteredModelService;
 
-import org.apache.submarine.server.model.database.service.RegisteredModelTagService;
+import org.apache.submarine.server.database.model.service.RegisteredModelTagService;
 import org.apache.submarine.server.s3.Client;
 import org.apache.submarine.server.utils.response.JsonResponse;
 

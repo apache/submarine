@@ -41,10 +41,10 @@ jobs:
         with:
           fetch-depth: 0
           path: ${{ env.working-directory }}
-      - name: Setup Golang 1.16.2
+      - name: Setup Golang 1.17.2
         uses: actions/setup-go@v2
         with:
-          go-version: "1.16.2"
+          go-version: "1.17.2"
       - name: Check golang version
         working-directory: ${{ env.working-directory }}/submarine-cloud-v2
         run: go version
@@ -74,10 +74,10 @@ jobs:
         uses: stCarolas/setup-maven@v4
         with:
           maven-version: 3.6.3
-      - name: Setup Golang 1.16.2
+      - name: Setup Golang 1.17.2
         uses: actions/setup-go@v2
         with:
-          go-version: "1.16.2"
+          go-version: "1.17.2"
       - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
@@ -93,6 +93,13 @@ jobs:
           kind version
       - name: Create kind cluster
         run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${{ matrix.k8s-version }}
+      - name: Download Istio 1.13.0
+        run: |
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.0 sh -
+          cd istio-1.13.0
+          echo "$PWD/bin" >> $GITHUB_PATH
+      - name: Install Istio
+        run: istioctl install -y --set values.global.proxy.resources.requests.cpu=10m
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
@@ -214,6 +221,13 @@ jobs:
           kind version
       - name: Create kind cluster
         run: kind create cluster --config ./.github/config/kind-config-kind.yaml --wait 3m --image kindest/node:${{ matrix.k8s-version }}
+      - name: Download Istio 1.13.0
+        run: |
+          curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.0 sh -
+          cd istio-1.13.0
+          echo "$PWD/bin" >> $GITHUB_PATH
+      - name: Install Istio
+        run: istioctl install -y --set values.global.proxy.resources.requests.cpu=10m
       - name: Show K8s cluster information
         run: |
           kubectl cluster-info
@@ -449,7 +463,7 @@ jobs:
           fetch-depth: 50
       - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: "14"
       - name: Check version
         run: node --version
       - name: Install dependencies
@@ -524,7 +538,7 @@ jobs:
           go-version: "1.16.2"
       - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: "14"
       - name: Check version
         run: |
           mvn --version
