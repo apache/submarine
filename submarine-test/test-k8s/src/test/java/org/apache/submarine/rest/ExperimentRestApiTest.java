@@ -66,8 +66,8 @@ import io.kubernetes.client.util.ClientBuilder;
 import io.kubernetes.client.util.KubeConfig;
 
 @SuppressWarnings("rawtypes")
-public class ExperimentRestApiIT extends AbstractSubmarineServerTest {
-  private static final Logger LOG = LoggerFactory.getLogger(ExperimentRestApiIT.class);
+public class ExperimentRestApiTest extends AbstractSubmarineServerTest {
+  private static final Logger LOG = LoggerFactory.getLogger(ExperimentRestApiTest.class);
 
   private static CustomObjectsApi k8sApi;
   /**

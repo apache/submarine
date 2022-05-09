@@ -47,7 +47,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 @SuppressWarnings("rawtypes")
-public class ExperimentTemplateManagerRestApiIT extends AbstractSubmarineServerTest {
+public class ExperimentTemplateManagerRestApiTest extends AbstractSubmarineServerTest {
 
   protected static String TPL_PATH =
       "/api/" + RestConstants.V1 + "/" + RestConstants.EXPERIMENT_TEMPLATES;

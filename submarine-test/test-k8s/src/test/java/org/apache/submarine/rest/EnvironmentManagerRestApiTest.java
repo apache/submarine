@@ -38,7 +38,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @SuppressWarnings("rawtypes")
-public class EnvironmentManagerRestApiIT extends AbstractSubmarineServerTest {
+public class EnvironmentManagerRestApiTest extends AbstractSubmarineServerTest {
 
   @BeforeClass
   public static void startUp() throws Exception {
