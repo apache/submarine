@@ -25,14 +25,15 @@ import org.apache.submarine.integration.pages.LoginPage;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class experimentIT extends AbstractSubmarineIT {
+public class experimentTest extends AbstractSubmarineIT {
 
-  public final static Logger LOG = LoggerFactory.getLogger(experimentIT.class);
+  public final static Logger LOG = LoggerFactory.getLogger(experimentTest.class);
 
   @BeforeClass
   public static void startUp(){

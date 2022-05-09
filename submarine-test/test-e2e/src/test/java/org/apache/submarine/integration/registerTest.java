@@ -24,14 +24,15 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-import org.testng.Assert;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class registerIT extends AbstractSubmarineIT {
+public class registerTest extends AbstractSubmarineIT {
 
-  public final static Logger LOG = LoggerFactory.getLogger(registerIT.class);
+  public final static Logger LOG = LoggerFactory.getLogger(registerTest.class);
 
   @BeforeClass
   public static void startUp(){

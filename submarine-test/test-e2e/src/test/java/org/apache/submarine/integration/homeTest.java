@@ -32,9 +32,9 @@ import org.junit.Assert;
 import java.util.List;
 
 @Ignore("SUBMARINE-628")
-public class homeIT extends AbstractSubmarineIT {
+public class homeTest extends AbstractSubmarineIT {
 
-  public final static Logger LOG = LoggerFactory.getLogger(homeIT.class);
+  public final static Logger LOG = LoggerFactory.getLogger(homeTest.class);
 
   @BeforeClass
   public static void startUp(){

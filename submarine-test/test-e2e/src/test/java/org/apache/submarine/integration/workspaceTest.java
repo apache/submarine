@@ -33,9 +33,9 @@ import org.junit.Test;
 import org.junit.Assert;
 
 @Ignore("SUBMARINE-628")
-public class workspaceIT extends AbstractSubmarineIT {
+public class workspaceTest extends AbstractSubmarineIT {
 
-  public final static Logger LOG = LoggerFactory.getLogger(workspaceIT.class);
+  public final static Logger LOG = LoggerFactory.getLogger(workspaceTest.class);
 
   @BeforeClass
   public static void startUp(){
