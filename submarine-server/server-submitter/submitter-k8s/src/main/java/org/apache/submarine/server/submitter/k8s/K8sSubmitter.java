@@ -468,6 +468,7 @@ public class K8sSubmitter implements Submitter {
     Notebook notebook;
     // final String name = spec.getMeta().getName();
     final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
+    LOG.info(String.format("Create notebook with name: %s", name));
     final String scName = NotebookUtils.SC_NAME;
     final String host = NotebookUtils.HOST_PATH;
     final String workspacePvc = String.format("%s-%s", NotebookUtils.PVC_PREFIX, name);
@@ -565,17 +566,18 @@ public class K8sSubmitter implements Submitter {
     }
 
     notebook.setName(spec.getMeta().getName());
-
     return notebook;
   }
 
   @Override
-  public Notebook findNotebook(NotebookSpec spec) throws SubmarineRuntimeException {
+  public Notebook findNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
     Notebook notebook = null;
     String namespace = getServerNamespace();
+    final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
 
     try {
       NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null);
+      notebookCR.getMetadata().setName(name);
       Object object = notebookCRClient.get(namespace, notebookCR.getMetadata().getName())
               .throwsApiException().getObject();
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
@@ -593,6 +595,8 @@ public class K8sSubmitter implements Submitter {
       notebook.setReason(e.getMessage());
       notebook.setStatus(Notebook.Status.STATUS_NOT_FOUND.getValue());
     }
+    
+    notebook.setName(spec.getMeta().getName());
     return notebook;
   }
 
@@ -644,7 +648,6 @@ public class K8sSubmitter implements Submitter {
     podClient.delete(agentPod.getMetadata().getNamespace(), agentPod.getMetadata().getName());
 
     notebook.setName(spec.getMeta().getName());
-
     return notebook;
   }
 
