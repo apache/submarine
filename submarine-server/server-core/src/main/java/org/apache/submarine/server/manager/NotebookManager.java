@@ -155,7 +155,7 @@ public class NotebookManager {
       throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
           "Notebook not found.");
     }
-    Notebook foundNotebook = submitter.findNotebook(notebook.getSpec(), id);
+    Notebook foundNotebook = submitter.findNotebook(notebook.getSpec());
     foundNotebook.rebuild(notebook);
     foundNotebook.setNotebookId(NotebookId.fromString(id));
 
