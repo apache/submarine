@@ -466,7 +466,8 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook createNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
     Notebook notebook;
-    final String name = spec.getMeta().getName();
+    // final String name = spec.getMeta().getName();
+    final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
     final String scName = NotebookUtils.SC_NAME;
     final String host = NotebookUtils.HOST_PATH;
     final String workspacePvc = String.format("%s-%s", NotebookUtils.PVC_PREFIX, name);
@@ -478,6 +479,7 @@ public class K8sSubmitter implements Submitter {
     NotebookCR notebookCR;
     try {
       notebookCR = NotebookSpecParser.parseNotebook(spec, namespace);
+      notebookCR.getMetadata().setName(name);
       notebookCR.getMetadata().setNamespace(namespace);
       notebookCR.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
     } catch (JsonSyntaxException e) {
@@ -562,6 +564,8 @@ public class K8sSubmitter implements Submitter {
               "object failed by " + e.getMessage());
     }
 
+    notebook.setName(spec.getMeta().getName());
+
     return notebook;
   }
 
@@ -595,7 +599,8 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook deleteNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
     Notebook notebook = null;
-    final String name = spec.getMeta().getName();
+    // final String name = spec.getMeta().getName();
+    final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
     String namespace = getServerNamespace();
     NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null);
     AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
@@ -637,6 +642,8 @@ public class K8sSubmitter implements Submitter {
     LOG.info(String.format("Experiment:%s had been deleted, start to delete agent pod:%s",
             spec.getMeta().getName(), agentPod.getMetadata().getName()));
     podClient.delete(agentPod.getMetadata().getNamespace(), agentPod.getMetadata().getName());
+
+    notebook.setName(spec.getMeta().getName());
 
     return notebook;
   }
