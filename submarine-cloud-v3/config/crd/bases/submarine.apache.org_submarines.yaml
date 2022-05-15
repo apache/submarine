@@ -35,13 +35,118 @@ spec:
           spec:
             description: SubmarineSpec defines the desired state of Submarine
             properties:
-              foo:
-                description: Foo is an example field of Submarine. Edit submarine_types.go
-                  to remove/update
+              database:
+                description: Database is the spec that defines the submarine database
+                properties:
+                  image:
+                    description: Image is the submarine database's docker image
+                    type: string
+                  mysqlRootPasswordSecret:
+                    description: MysqlRootPasswordSecret is the mysql root password
+                      secret
+                    type: string
+                  storageSize:
+                    description: StorageSize is the storage size of the database
+                    type: string
+                required:
+                - image
+                - mysqlRootPasswordSecret
+                - storageSize
+                type: object
+              minio:
+                description: Minio is the spec that defines the submarine minio
+                properties:
+                  enabled:
+                    description: Enabled defines whether to enable minio or not
+                    type: boolean
+                  storageSize:
+                    description: StorageSize defines the storage size of minio
+                    type: string
+                required:
+                - enabled
+                - storageSize
+                type: object
+              mlflow:
+                description: Mlflow is the spec that defines the submarine mlflow
+                properties:
+                  enabled:
+                    description: Enabled defines whether to enable mlflow or not
+                    type: boolean
+                  storageSize:
+                    description: StorageSize defines the storage size of mlflow
+                    type: string
+                required:
+                - enabled
+                - storageSize
+                type: object
+              server:
+                description: Server is the spec that defines the submarine server
+                properties:
+                  image:
+                    description: Image is the submarine server's docker image
+                    type: string
+                  replicas:
+                    description: Replicas is the number of submarine server's replica
+                    format: int32
+                    minimum: 1
+                    type: integer
+                required:
+                - image
+                - replicas
+                type: object
+              tensorboard:
+                description: Tensorboard is the spec that defines the submarine tensorboard
+                properties:
+                  enabled:
+                    description: Enabled defines whether to enable tensorboard or
+                      not
+                    type: boolean
+                  storageSize:
+                    description: StorageSize defines the storage size of tensorboard
+                    type: string
+                required:
+                - enabled
+                - storageSize
+                type: object
+              version:
+                description: Version is the submarine docker image version
                 type: string
+            required:
+            - database
+            - minio
+            - mlflow
+            - server
+            - tensorboard
+            - version
             type: object
           status:
             description: SubmarineStatus defines the observed state of Submarine
+            properties:
+              availableDatabaseReplicas:
+                description: AvailableServerReplicas is the current available replicas
+                  of submarine database
+                format: int32
+                type: integer
+              availableServerReplicas:
+                description: AvailableServerReplicas is the current available replicas
+                  of submarine server
+                format: int32
+                type: integer
+              submarineState:
+                description: SubmarineState tells the overall submarine state.
+                properties:
+                  errorMessage:
+                    type: string
+                  state:
+                    description: SubmarineStateType represents the type of the current
+                      state of a submarine.
+                    type: string
+                required:
+                - state
+                type: object
+            required:
+            - availableDatabaseReplicas
+            - availableServerReplicas
             type: object
         type: object
     served: true

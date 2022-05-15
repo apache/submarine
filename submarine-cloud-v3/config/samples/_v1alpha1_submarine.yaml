@@ -1,7 +1,22 @@
 apiVersion: submarine.apache.org/v1alpha1
 kind: Submarine
 metadata:
-  name: submarine-sample
+  name: example-submarine
 spec:
-  # TODO(user): Add fields here
-  foo: hello
+  version: "0.8.0-SNAPSHOT"
+  server:
+    image: "apache/submarine:server-0.8.0-SNAPSHOT" # overwrite the image when development
+    replicas: 1
+  database:
+    image: "apache/submarine:database-0.8.0-SNAPSHOT" # overwrite the image when development
+    storageSize: "1Gi"
+    mysqlRootPasswordSecret: "root-pass-secret"
+  tensorboard:
+    enabled: true
+    storageSize: "10Gi"
+  mlflow:
+    enabled: true
+    storageSize: "10Gi"
+  minio:
+    enabled: true
+    storageSize: "10Gi"
