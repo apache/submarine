@@ -1,0 +1,24 @@
+# permissions for end users to edit submarines.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: submarine-editor-role
+rules:
+- apiGroups:
+  - submarine.apache.org
+  resources:
+  - submarines
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - submarine.apache.org
+  resources:
+  - submarines/status
+  verbs:
+  - get

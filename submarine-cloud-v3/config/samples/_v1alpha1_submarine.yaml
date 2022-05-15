@@ -1,0 +1,7 @@
+apiVersion: submarine.apache.org/v1alpha1
+kind: Submarine
+metadata:
+  name: submarine-sample
+spec:
+  # TODO(user): Add fields here
+  foo: hello
