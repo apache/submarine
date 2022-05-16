@@ -583,22 +583,6 @@ public class K8sSubmitter implements Submitter {
       Object object = notebookCRClient.get(namespace, notebookCR.getMetadata().getName())
               .throwsApiException().getObject();
       notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
-      
-      // List all notebook and return the notebook with <notebookId>-spec.getMeta().getName()
-      // Object object = notebookCRClient.list(namespace, new ListOptions()).throwsApiException().getObject();
-      // notebookList = NotebookUtils.parseObjectForList(object);
-      // String notebookNames = String.format("Listing all notebook in namespace \"%s\"\n", namespace);
-      // for (Notebook _notebook: notebookList) {
-      //   notebookNames += String.format("NotebookId: %s\n", _notebook.getNotebookId().toString());
-      //   notebookNames += String.format("NotebookName: %s\n", _notebook.getName());
-      //   LOG.info(String.format("!!!!!!!!!!!!\nAll notebooks: %s", notebookNames));
-      //   final String notebookId = _notebook.getNotebookId().toString().replace("_", "-");
-      //   final String name = String.format("%s-%s", notebookId, spec.getMeta().getName());
-      //   if (_notebook.getName() == name) {
-      //     notebook = _notebook;
-      //     break;
-      //   }
-      // }
     } catch (ApiException e) {
       // SUBMARINE-1124
       // The exception that obtaining CRD resources is not necessarily because the CRD is deleted,
