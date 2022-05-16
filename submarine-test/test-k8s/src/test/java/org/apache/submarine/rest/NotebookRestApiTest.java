@@ -287,8 +287,11 @@ public class NotebookRestApiTest extends AbstractSubmarineServerTest {
   }
 
   private void assertGetK8sResult(Notebook notebook) throws Exception {
+    final String k8sName = String.format("%s-%s", notebook.getNotebookId().toString().replace('_', '-'),
+        notebook.getName());
+        
     JsonObject rootObject = getNotebookByK8sApi(GROUP, VERSION, notebook.getSpec().getMeta().getNamespace(),
-        PLURAL, notebook.getName());
+        PLURAL, k8sName);
 
     JsonObject metadataObject = rootObject.getAsJsonObject("metadata");
     String uid = metadataObject.getAsJsonPrimitive("uid").getAsString();
@@ -312,9 +315,11 @@ public class NotebookRestApiTest extends AbstractSubmarineServerTest {
 
   private void assertDeleteK8sResult(Notebook notebook) {
     JsonObject rootObject = null;
+    final String k8sName = String.format("%s-%s", notebook.getNotebookId().toString().replace('_', '-'),
+        notebook.getName());
     try {
       rootObject = getNotebookByK8sApi(GROUP, VERSION, notebook.getSpec().getMeta().getNamespace(),
-          PLURAL, notebook.getName());
+          PLURAL, k8sName);
     } catch (ApiException e) {
       Assert.assertEquals(Response.Status.NOT_FOUND.getStatusCode(), e.getCode());
     } finally {
