@@ -466,9 +466,7 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook createNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
     Notebook notebook;
-    // final String name = spec.getMeta().getName();
     final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
-    LOG.info(String.format("Create notebook with name: %s", name));
     final String scName = NotebookUtils.SC_NAME;
     final String host = NotebookUtils.HOST_PATH;
     final String workspacePvc = String.format("%s-%s", NotebookUtils.PVC_PREFIX, name);
@@ -571,10 +569,8 @@ public class K8sSubmitter implements Submitter {
 
   @Override
   public Notebook findNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
-    // List<Notebook> notebookList;
     Notebook notebook = null;
     final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
-    LOG.info(String.format("Find notebook with name: %s", name));
     String namespace = getServerNamespace();
 
     try {
@@ -605,7 +601,6 @@ public class K8sSubmitter implements Submitter {
   @Override
   public Notebook deleteNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
     Notebook notebook = null;
-    // final String name = spec.getMeta().getName();
     final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
     String namespace = getServerNamespace();
     NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null);
