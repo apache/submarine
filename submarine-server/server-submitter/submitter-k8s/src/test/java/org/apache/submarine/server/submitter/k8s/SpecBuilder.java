@@ -36,6 +36,7 @@ public abstract class SpecBuilder {
   // The spec files in test/resources
   protected final String tfJobReqFile = "/tf_mnist_req.json";
   protected final String pytorchJobReqFile = "/pytorch_job_req.json";
+  protected final String xgboostJobReqFile = "/xgboost_job_req.json";
   protected final String pytorchJobWithEnvReqFile = "/pytorch_job_req_env.json";
   protected final String pytorchJobWithInvalidEnvReqFile =
       "/pytorch_job_req_invalid_env.json";
