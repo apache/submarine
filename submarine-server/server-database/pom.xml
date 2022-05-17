@@ -177,6 +177,12 @@
       <version>${javax.ws.rsapi.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper</artifactId>
+      <version>${pagehelper.version}</version>
+    </dependency>
+
 	<dependency>
 	  <groupId>commons-logging</groupId>
   	  <artifactId>commons-logging</artifactId>
