@@ -45,7 +45,6 @@ public class WebSocketServer extends WebSocketServlet
    * Job manager service type.
    */
   protected enum JobManagerServiceType {
-    JOB_MANAGER_PAGE("JOB_MANAGER_PAGE");
     private String serviceTypeKey;
 
     JobManagerServiceType(String serviceType) {
@@ -82,13 +81,13 @@ public class WebSocketServer extends WebSocketServlet
   }
 
   @Override
-  public void onOpen(WebSocket conn) {
+  public void onOpen(WebSocketHandler conn) {
     LOG.info("New connection from {}", conn);
     connectionManager.addConnection(conn);
   }
 
   @Override
-  public void onMessage(WebSocket conn, String msg) {
+  public void onMessage(WebSocketHandler conn, String msg) {
     try {
       LOG.info("Got Message: " + msg);
       if (StringUtils.isEmpty(conn.getUser())) {
@@ -106,7 +105,7 @@ public class WebSocketServer extends WebSocketServlet
   }
 
   @Override
-  public void onClose(WebSocket conn, int code, String reason) {
+  public void onClose(WebSocketHandler conn, int code, String reason) {
     LOG.info("Closed connection to {} ({}) {}", conn, code, reason);
     connectionManager.removeConnection(conn);
     connectionManager.removeUserConnection(conn.getUser(), conn);

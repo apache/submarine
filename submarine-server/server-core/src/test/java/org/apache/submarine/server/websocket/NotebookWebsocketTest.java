@@ -24,13 +24,17 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.concurrent.Future;
 
+import static junit.framework.TestCase.assertEquals;
 
 public class NotebookWebsocketTest {
 
+  private static final Logger LOG = LoggerFactory.getLogger(NotebookWebsocketTest.class);
   @BeforeClass
   public static void init() throws Exception {
     AbstractSubmarineServerTest.startUp(
@@ -72,21 +76,24 @@ public class NotebookWebsocketTest {
     public void onWebSocketConnect(Session sess)
     {
       super.onWebSocketConnect(sess);
-      System.out.println("Socket Connected: " + sess);
+      LOG.info("Socket Connected: " + sess);
     }
 
     @Override
     public void onWebSocketText(String message)
     {
       super.onWebSocketText(message);
-      System.out.println("Received TEXT message: " + message);
+      LOG.info("Received TEXT message: " + message);
+      assertEquals(message, "Hello");
     }
 
     @Override
     public void onWebSocketClose(int statusCode, String reason)
     {
       super.onWebSocketClose(statusCode, reason);
-      System.out.println("Socket Closed: [" + statusCode + "] " + reason);
+      LOG.info("Socket Closed: [" + statusCode + "] " + reason);
+      assertEquals(statusCode, StatusCode.NORMAL);
+      assertEquals(reason, "I'm done");
     }
 
     @Override

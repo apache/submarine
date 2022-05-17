@@ -43,10 +43,12 @@ public class DateJsonDeserializer implements JsonDeserializer{
       try {
         return new SimpleDateFormat(format, Locale.US).parse(jsonElement.getAsString());
       } catch (ParseException e) {
-        // do nothing
+        throw new JsonParseException("Unparsable date: \"" + jsonElement.getAsString()
+            + "\". Supported formats: " + Arrays.toString(DATE_FORMATS));
+      } catch (Exception e){
+        e.printStackTrace();
       }
     }
-    throw new JsonParseException("Unparsable date: \"" + jsonElement.getAsString()
-      + "\". Supported formats: " + Arrays.toString(DATE_FORMATS));
+    throw new RuntimeException("Unexpected Error in Deserialize Date");
   }
 }

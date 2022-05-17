@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  */
 @ManagedObject
 public class NotebookServer extends WebSocketServlet
-    implements org.apache.submarine.server.workbench.websocket.NotebookSocketListener {
+    implements NotebookSocketListener {
 
   /**
    * Job manager service type.

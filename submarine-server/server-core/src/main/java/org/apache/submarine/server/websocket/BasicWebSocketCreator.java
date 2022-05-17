@@ -33,7 +33,7 @@ public class BasicWebSocketCreator implements WebSocketCreator {
     this.webSocketServer = webSocketServer;
   }
   public Object createWebSocket(ServletUpgradeRequest request, ServletUpgradeResponse response) {
-    return new WebSocket(request.getHttpServletRequest(), "", webSocketServer);
+    return new WebSocketHandler(request.getHttpServletRequest(), "", webSocketServer);
   }
 
 }

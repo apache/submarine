@@ -29,13 +29,13 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class NotebookSocket extends WebSocketAdapter {
   private Session connection;
-  private org.apache.submarine.server.workbench.websocket.NotebookSocketListener listener;
+  private NotebookSocketListener listener;
   private HttpServletRequest request;
   private String protocol;
   private String user;
 
   public NotebookSocket(HttpServletRequest req, String protocol,
-      org.apache.submarine.server.workbench.websocket.NotebookSocketListener listener) {
+      NotebookSocketListener listener) {
     this.listener = listener;
     this.request = req;
     this.protocol = protocol;

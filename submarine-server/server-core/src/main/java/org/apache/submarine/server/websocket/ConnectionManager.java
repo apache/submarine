@@ -43,31 +43,31 @@ public class ConnectionManager {
       .setPrettyPrinting()
       .create();
 
-  final Queue<WebSocket> connectedSockets = new ConcurrentLinkedQueue<>();
+  final Queue<WebSocketHandler> connectedSockets = new ConcurrentLinkedQueue<>();
   // user -> connection
-  final Map<String, Queue<WebSocket>> userSocketMap = new ConcurrentHashMap<>();
+  final Map<String, Queue<WebSocketHandler>> userSocketMap = new ConcurrentHashMap<>();
 
-  public void addConnection(WebSocket conn) {
+  public void addConnection(WebSocketHandler conn) {
     connectedSockets.add(conn);
   }
 
-  public void removeConnection(WebSocket conn) {
+  public void removeConnection(WebSocketHandler conn) {
     connectedSockets.remove(conn);
   }
 
-  public void addUserConnection(String user, WebSocket conn) {
+  public void addUserConnection(String user, WebSocketHandler conn) {
     LOG.info("Add user connection {} for user: {}", conn, user);
     conn.setUser(user);
     if (userSocketMap.containsKey(user)) {
       userSocketMap.get(user).add(conn);
     } else {
-      Queue<WebSocket> socketQueue = new ConcurrentLinkedQueue<>();
+      Queue<WebSocketHandler> socketQueue = new ConcurrentLinkedQueue<>();
       socketQueue.add(conn);
       userSocketMap.put(user, socketQueue);
     }
   }
 
-  public void removeUserConnection(String user, WebSocket conn) {
+  public void removeUserConnection(String user, WebSocketHandler conn) {
     LOG.info("Remove user connection {} for user: {}", conn, user);
     if (userSocketMap.containsKey(user)) {
       userSocketMap.get(user).remove(conn);
@@ -82,7 +82,7 @@ public class ConnectionManager {
 
   public void broadcast(Message m) {
     synchronized (connectedSockets) {
-      for (WebSocket ns : connectedSockets) {
+      for (WebSocketHandler ns : connectedSockets) {
         try {
           ns.send(serializeMessage(m));
         } catch (IOException | WebSocketException e) {
@@ -94,7 +94,7 @@ public class ConnectionManager {
 
   public Set<String> getConnectedUsers() {
     Set<String> connectedUsers = Sets.newHashSet();
-    for (WebSocket notebookSocket : connectedSockets) {
+    for (WebSocketHandler notebookSocket : connectedSockets) {
       connectedUsers.add(notebookSocket.getUser());
     }
     return connectedUsers;

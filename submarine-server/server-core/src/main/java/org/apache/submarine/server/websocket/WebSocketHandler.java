@@ -25,16 +25,16 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Notebook websocket.
+ * Websocket handler.
  */
-public class WebSocket extends WebSocketAdapter {
+public class WebSocketHandler extends WebSocketAdapter {
   private Session connection;
   private WebSocketListener listener;
   private HttpServletRequest request;
   private String protocol;
   private String user;
 
-  public WebSocket(HttpServletRequest req, String protocol,
+  public WebSocketHandler(HttpServletRequest req, String protocol,
       WebSocketListener listener) {
     this.listener = listener;
     this.request = req;

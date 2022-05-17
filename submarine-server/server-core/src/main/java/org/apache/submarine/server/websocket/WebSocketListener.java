@@ -20,7 +20,7 @@ package org.apache.submarine.server.websocket;
  * NotebookSocket listener.
  */
 public interface WebSocketListener {
-  void onClose(WebSocket socket, int code, String message);
-  void onOpen(WebSocket socket);
-  void onMessage(WebSocket socket, String message);
+  void onClose(WebSocketHandler socket, int code, String message);
+  void onOpen(WebSocketHandler socket);
+  void onMessage(WebSocketHandler socket, String message);
 }
