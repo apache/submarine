@@ -45,6 +45,7 @@ public class WebSocketServer extends WebSocketServlet
    * Job manager service type.
    */
   protected enum JobManagerServiceType {
+    JOB_MANAGER_PAGE("JOB_MANAGER_PAGE");
     private String serviceTypeKey;
 
     JobManagerServiceType(String serviceType) {

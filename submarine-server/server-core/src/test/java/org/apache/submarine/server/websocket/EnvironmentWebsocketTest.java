@@ -17,7 +17,6 @@
 package org.apache.submarine.server.websocket;
 
 import org.apache.submarine.server.AbstractSubmarineServerTest;
-import org.apache.submarine.server.SubmarineServer;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.StatusCode;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
