@@ -45,7 +45,7 @@ rm -rf target/coverage-classes || true
 mkdir -p target/coverage-classes
 
 #Unzip all the classes from the last build
-find submarine-dist/target/* -name 'submarine-all*.jar' | \
+find submarine-dist/target/* -name 'submarine*.jar' | \
     xargs -n1 unzip -o -q -d target/coverage-classes
 
 #Exclude some classes from the coverage
@@ -54,5 +54,3 @@ find target/coverage-classes/javax/xml/bind -name 'ModuleUtil.class'| xargs rm -
 #generate the reports
 jacoco report "$REPORT_DIR/jacoco-all.exec" --classfiles target/coverage-classes --html "$REPORT_DIR/all" --xml "$REPORT_DIR/all.xml"
 
-echo '=====report====='
-cat $REPORT_DIR/all.xml
