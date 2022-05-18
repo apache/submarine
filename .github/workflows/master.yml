@@ -389,6 +389,9 @@ jobs:
           MINIO_DEFAULT_BUCKETS: "submarine"
         ports:
           - 9000:9000
+        # wait until minio is health
+        options: --health-cmd "curl http://localhost:9000/minio/health/live" --health-interval 10s --health-timeout 10s --health-retries 10
+
     steps:
       - uses: actions/checkout@v2
         with:
