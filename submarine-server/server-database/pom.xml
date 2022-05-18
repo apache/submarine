@@ -178,6 +178,27 @@
     </dependency>
 
     <dependency>
+      <groupId>com.github.pagehelper</groupId>
+      <artifactId>pagehelper</artifactId>
+      <version>${pagehelper.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${mysql-connector-java.version}</version>
+	  <scope>test</scope>
+    </dependency>
+
+	<dependency>
+	  <groupId>commons-logging</groupId>
+  	  <artifactId>commons-logging</artifactId>
+  	  <version>${commons.logging.version}</version>
+  	  <scope>test</scope>
+	</dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>

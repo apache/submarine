@@ -389,11 +389,20 @@ jobs:
           MINIO_DEFAULT_BUCKETS: "submarine"
         ports:
           - 9000:9000
+        # wait until minio is health
+        options: --health-cmd "curl http://localhost:9000/minio/health/live" --health-interval 10s --health-timeout 10s --health-retries 10
+
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 50
-      - name: Cache jacoco.exec
+      - name: Cache server-database jacoco.exec
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./submarine-server/server-database/target/jacoco.exec
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+      - name: Cache server-core jacoco.exec
         uses: actions/cache@v2
         with:
           path: |
@@ -416,13 +425,25 @@ jobs:
           python3 -V
           sudo apt-get install python3-mysql.connector
           python3 ./dev-support/database/init-database.py
-      - name: Build
+      - name: Build submarine-server-database
+        env:
+          MODULES: "-pl :submarine-server-database"
+        run: |
+          echo ">>> mvn $BUILD_FLAG $MODULES -B"
+          mvn $BUILD_FLAG $MODULES -B
+      - name: Test submarine-server-database
+        env:
+          TEST_MODULES: "-pl :submarine-server-database"
+        run: |
+          echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
+          mvn $TEST_FLAG $TEST_MODULES -B          
+      - name: Build submarine-server-database
         env:
           MODULES: "-pl :submarine-server-core"
         run: |
           echo ">>> mvn $BUILD_FLAG $MODULES -B"
           mvn $BUILD_FLAG $MODULES -B
-      - name: Test
+      - name: Test submarine-server-core
         env:
           TEST_MODULES: "-pl :submarine-server-core"
         run: |
@@ -615,7 +636,13 @@ jobs:
         with:
           path: ./submarine-client/target/jacoco.exec
           key: ${{ runner.os }}-docker-${{ github.sha }}
-      - name: Cache submarine-server data
+      - name: Cache submarine-server-database data
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./submarine-server/server-database/target/jacoco.exec
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+      - name: Cache submarine-server-core data
         uses: actions/cache@v2
         with:
           path: |
