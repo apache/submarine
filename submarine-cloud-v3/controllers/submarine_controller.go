@@ -29,8 +29,12 @@ import (
 
 // SubmarineReconciler reconciles a Submarine object
 type SubmarineReconciler struct {
+	// Fields required by the operator
 	client.Client
 	Scheme *runtime.Scheme
+	// Fields required by submarine
+	ClusterType             string
+	CreatePodSecurityPolicy bool
 }
 
 //+kubebuilder:rbac:groups=submarine.apache.org,resources=submarines,verbs=get;list;watch;create;update;patch;delete
