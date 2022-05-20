@@ -19,22 +19,56 @@
 
 Golang version: `1.17`
 
+## Prerequisites
+
+First finish the prerequisites specified in the [QuickStart](quickstart) section on the submarine website. Prepare a minikube cluster with Istio installed. Prepare namespaces `submarine` and `submarine-user-test` and label them `istio-injection=enabled`.
+
+Verify with kubectl:
+
+```bash
+$ kubectl get namespace --show-labels
+NAME                  STATUS   AGE    LABELS
+istio-system          Active   7d8h   kubernetes.io/metadata.name=istio-system
+submarine             Active   7d8h   istio-injection=enabled,kubernetes.io/metadata.name=submarine
+submarine-user-test   Active   27h    istio-injection=enabled,kubernetes.io/metadata.name=submarine-user-test
+
+$ kubectl get pod -n istio-system
+NAME                                    READY   STATUS    RESTARTS   AGE
+istio-ingressgateway-77968dbd74-wq4vb   1/1     Running   1          7d4h
+istiod-699b647f8b-nx9rt                 1/1     Running   2          7d4h
+```
+
+Next, install submarine dependencies with helm. `--set dev=true` option will not install the operator deployment to the cluster.
+
+```bash
+helm install --set dev=true submarine ../helm-charts/submarine/ -n submarine
+```
+
 ## Run operator out-of-cluster
 
 ```bash
-# Step1: Run the operator in a terminal.
-make install run
+# Step1: Apply the submarine CRD.
+make install
 
-# Step2: Deploy a submarine.
-kubectl create ns submarine-user-test
+# Step2: Run the operator in a terminal.
+make run
+
+# Step3: Deploy a submarine.
 kubectl apply -n submarine-user-test -f config/samples/_v1alpha1_submarine.yaml
+```
 
-# Step3: Cleanup submarine.
+If you follow the above steps, you can view the submarine workbench via the same approach specified in the [QuickStart][quickstart] section on the submarine website.
+
+
+```bash
+# Step4: Cleanup submarine.
 kubectl delete -n submarine-user-test submarine example-submarine
-kubectl delete ns submarine-user-test
 
-# Step4: Cleanup operator.
-# Just close the running process at Step1.
+# Step5: Cleanup operator.
+# Just close the running process at Step2.
+
+# Step6: Delete the submarine CRD.
+make uninstall
 ```
 
 ## Run operator in-cluster
@@ -52,12 +86,12 @@ make deploy
 kubectl get deployment -n submarine-cloud-v3-system
 
 # Step4: Deploy a submarine.
-kubectl create ns submarine-user-test
 kubectl apply -n submarine-user-test -f config/samples/_v1alpha1_submarine.yaml
+
+# You can now view the submarine workbench
 
 # Step5: Cleanup submarine.
 kubectl delete -n submarine-user-test submarine example-submarine
-kubectl delete ns submarine-user-test
 
 # Step6: Cleanup operator.
 make undeploy
@@ -65,7 +99,7 @@ make undeploy
 
 ### Rebuild Operator Image
 
-When running operator in-cluster , we need to rebuild the operator image for changes to take effect.
+When running operator in-cluster, we need to rebuild the operator image for changes to take effect.
 
 ```bash
 eval $(minikube docker-env)
@@ -89,4 +123,12 @@ Steps to modify custom resource definition (CRD):
 
 One can add [marker comments](https://book.kubebuilder.io/reference/markers.html) in Go code to control the manifests generation.
 
+## Add resource
 
+Steps to add new resource created and controlled by the operator:
+1. Add or modify yaml files under `artifacts/`.
+2. Modify `createSubmarine` in `contorllers/submarine_controller.go` to create resource from yaml files.
+3. If needed, modify reconcile logic in `contorllers/submarine_controller.go`.
+4. If needed, import new scheme in `main.go`.
+5. If there are new resource types, add RBAC marker comments in `contorllers/submarine_controller.go`.
+6. Run `make manifests` to update cluster role rules in `config/rbac/role.yaml`.
