@@ -20,6 +20,8 @@ import (
 	"context"
 
 	"github.com/go-logr/logr"
+
+	rbacv1 "k8s.io/api/rbac/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -28,6 +30,72 @@ import (
 
 	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
 )
+
+// Defines resource names and path to artifact yaml files
+// Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/artifacts/
+const (
+	serverName             = "submarine-server"
+	observerName           = "submarine-observer"
+	databaseName           = "submarine-database"
+	tensorboardName        = "submarine-tensorboard"
+	mlflowName             = "submarine-mlflow"
+	minioName              = "submarine-minio"
+	storageName            = "submarine-storage"
+	virtualServiceName     = "submarine-virtual-service"
+	databasePvcName        = databaseName + "-pvc"
+	tensorboardPvcName     = tensorboardName + "-pvc"
+	tensorboardServiceName = tensorboardName + "-service"
+	mlflowPvcName          = mlflowName + "-pvc"
+	mlflowServiceName      = mlflowName + "-service"
+	minioPvcName           = minioName + "-pvc"
+	minioServiceName       = minioName + "-service"
+	artifactPath           = "./artifacts/"
+	databaseYamlPath       = artifactPath + "submarine-database.yaml"
+	minioYamlPath          = artifactPath + "submarine-minio.yaml"
+	mlflowYamlPath         = artifactPath + "submarine-mlflow.yaml"
+	serverYamlPath         = artifactPath + "submarine-server.yaml"
+	tensorboardYamlPath    = artifactPath + "submarine-tensorboard.yaml"
+	serverRbacYamlPath     = artifactPath + "submarine-server-rbac.yaml"
+	observerRbacYamlPath   = artifactPath + "submarine-observer-rbac.yaml"
+	storageRbacYamlPath    = artifactPath + "submarine-storage-rbac.yaml"
+	virtualServiceYamlPath = artifactPath + "submarine-virtualservice.yaml"
+)
+
+// Name of deployments whose replica count and readiness need to be checked
+var dependents = []string{serverName, tensorboardName, mlflowName, minioName}
+
+const (
+	// SuccessSynced is used as part of the Event 'reason' when a Submarine is synced
+	//SuccessSynced = "Synced"
+
+	// MessageResourceSynced is the message used for an Event fired when a
+	// Submarine is synced successfully
+	//MessageResourceSynced = "Submarine synced successfully"
+
+	// ErrResourceExists is used as part of the Event 'reason' when a Submarine fails
+	// to sync due to a Deployment of the same name already existing.
+	ErrResourceExists = "ErrResourceExists"
+
+	// MessageResourceExists is the message used for Events when a resource
+	// fails to sync due to a Deployment already existing
+	MessageResourceExists = "Resource %q already exists and is not managed by Submarine"
+)
+
+// Default k8s anyuid role rule
+var k8sAnyuidRoleRule = rbacv1.PolicyRule{
+	APIGroups:     []string{"policy"},
+	Verbs:         []string{"use"},
+	Resources:     []string{"podsecuritypolicies"},
+	ResourceNames: []string{"submarine-anyuid"},
+}
+
+// Openshift anyuid role rule
+var openshiftAnyuidRoleRule = rbacv1.PolicyRule{
+	APIGroups:     []string{"security.openshift.io"},
+	Verbs:         []string{"use"},
+	Resources:     []string{"securitycontextconstraints"},
+	ResourceNames: []string{"anyuid"},
+}
 
 // SubmarineReconciler reconciles a Submarine object
 type SubmarineReconciler struct {
