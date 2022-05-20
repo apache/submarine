@@ -31,6 +31,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
+	istioscheme "istio.io/client-go/pkg/clientset/versioned/scheme"
+
 	submarineapacheorgv1alpha1 "github.com/apache/submarine/submarine-cloud-v3/api/v1alpha1"
 	"github.com/apache/submarine/submarine-cloud-v3/controllers"
 	//+kubebuilder:scaffold:imports
@@ -63,6 +65,7 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
+	utilruntime.Must(istioscheme.AddToScheme(scheme))
 
 	utilruntime.Must(submarineapacheorgv1alpha1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
