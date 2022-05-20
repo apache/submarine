@@ -23,7 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Responsible to create the WebSockets for the NotebookServer.
+ * Responsible to create the WebSockets for WebSocketServer.
  */
 public class BasicWebSocketCreator implements WebSocketCreator {
   private static final Logger LOG = LoggerFactory.getLogger(BasicWebSocketCreator.class);
