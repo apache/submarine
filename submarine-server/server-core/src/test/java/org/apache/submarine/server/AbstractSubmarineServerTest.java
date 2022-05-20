@@ -75,7 +75,10 @@ public abstract class AbstractSubmarineServerTest {
   protected static final Logger LOG =
       LoggerFactory.getLogger(AbstractSubmarineServerTest.class);
 
-  static final String WEBSOCKET_API_URL = "/ws";
+  static final String WEBSOCKET_API_URL = "/wss";
+  static final String WEBSOCKET_NOTEBOOK_API_URL = "/ws/notebook";
+  static final String WEBSOCKET_EXPERIMENT_API_URL = "/ws/experiment";
+  static final String WEBSOCKET_ENVIRONMENT_API_URL = "/ws/environment";
   static final String URL = getUrlToTest();
   protected static final boolean WAS_RUNNING = checkIfServerIsRunning();
 
@@ -86,8 +89,20 @@ public abstract class AbstractSubmarineServerTest {
       "/api/" + RestConstants.V1 + "/" + RestConstants.ENVIRONMENT;
   protected static String ENV_NAME = "my-submarine-env";
 
-  public static String getWebsocketApiUrlToTest() {
-    String websocketUrl = "ws://localhost:8080" + WEBSOCKET_API_URL;
+  public static String getWebsocketApiUrlToTest(String serverName) {
+
+    String websocketUrl = "ws://localhost:8080";
+    if (serverName.equals("wss")) {
+      websocketUrl = "ws://localhost:8080" + WEBSOCKET_API_URL;
+    } else if (serverName.equals("notebook")) {
+      websocketUrl = "ws://localhost:8080" + WEBSOCKET_NOTEBOOK_API_URL;
+    }
+    else if (serverName.equals("environment")) {
+      websocketUrl = "ws://localhost:8080" + WEBSOCKET_ENVIRONMENT_API_URL;
+    }
+    else if (serverName.equals("experiment")) {
+      websocketUrl = "ws://localhost:8080" + WEBSOCKET_EXPERIMENT_API_URL;
+    }
     if (System.getProperty("websocketUrl") != null) {
       websocketUrl = System.getProperty("websocketurl");
     }

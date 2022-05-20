@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.submarine.server.workbench.websocket;
+package org.apache.submarine.server.websocket;
 
-import org.apache.submarine.server.AbstractSubmarineServerTest;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.StatusCode;
 import org.eclipse.jetty.websocket.api.WebSocketAdapter;
@@ -24,16 +23,21 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.util.concurrent.Future;
+import org.apache.submarine.server.AbstractSubmarineServerTest;
 
-public class NotebookServerTest {
+import static junit.framework.TestCase.assertEquals;
 
+public class ExperimentWebsocketTest {
+
+  private static final Logger LOG = LoggerFactory.getLogger(ExperimentWebsocketTest.class);
   @BeforeClass
   public static void init() throws Exception {
     AbstractSubmarineServerTest.startUp(
-        NotebookServerTest.class.getSimpleName());
+        ExperimentWebsocketTest.class.getSimpleName());
   }
 
   @AfterClass
@@ -44,8 +48,9 @@ public class NotebookServerTest {
   @Test
   public void testWebsocketConnection() throws Exception{
     URI uri = URI.create(
-        AbstractSubmarineServerTest.getWebsocketApiUrlToTest("wss"));
+        AbstractSubmarineServerTest.getWebsocketApiUrlToTest("experiment"));
     WebSocketClient client = new WebSocketClient();
+
     try {
       client.start();
       // The socket that receives events
@@ -70,21 +75,24 @@ public class NotebookServerTest {
     public void onWebSocketConnect(Session sess)
     {
       super.onWebSocketConnect(sess);
-      System.out.println("Socket Connected: " + sess);
+      LOG.info("Socket Connected: " + sess);
     }
 
     @Override
     public void onWebSocketText(String message)
     {
       super.onWebSocketText(message);
-      System.out.println("Received TEXT message: " + message);
+      LOG.info("Received TEXT message: " + message);
+      assertEquals(message, "Hello");
     }
 
     @Override
     public void onWebSocketClose(int statusCode, String reason)
     {
       super.onWebSocketClose(statusCode, reason);
-      System.out.println("Socket Closed: [" + statusCode + "] " + reason);
+      LOG.info("Socket Closed: [" + statusCode + "] " + reason);
+      assertEquals(statusCode, StatusCode.NORMAL);
+      assertEquals(reason, "I'm done");
     }
 
     @Override
