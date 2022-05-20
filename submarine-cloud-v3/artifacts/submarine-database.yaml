@@ -1,0 +1,80 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: submarine-database-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: submarine-storageclass
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "submarine-database"
+spec:
+  ports:
+    - name: "submarine-database"
+      port: 3306
+      targetPort: 3306
+  clusterIP: None
+  type: ClusterIP
+  selector:
+    app: "submarine-database"
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "submarine-database"
+spec:
+  serviceName: submarine-database
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "submarine-database"
+  template:
+    metadata:
+      labels:
+        app: "submarine-database"
+    spec:
+      serviceAccountName: "submarine-storage"
+      containers:
+        - name: "submarine-database"
+          image: "apache/submarine:database-0.8.0-SNAPSHOT"
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "password"
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: volume
+              subPath: submarine-database
+          readinessProbe:
+            tcpSocket:
+              port: 3306
+      volumes:
+        - name: volume
+          persistentVolumeClaim:
+            claimName: submarine-database-pvc
