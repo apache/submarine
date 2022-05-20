@@ -19,7 +19,9 @@ package controllers
 import (
 	"context"
 
+	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/tools/record"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
@@ -31,15 +33,25 @@ import (
 type SubmarineReconciler struct {
 	// Fields required by the operator
 	client.Client
-	Scheme *runtime.Scheme
+	Scheme   *runtime.Scheme
+	Log      logr.Logger
+	Recorder record.EventRecorder
 	// Fields required by submarine
 	ClusterType             string
 	CreatePodSecurityPolicy bool
 }
 
+// kubebuilder RBAC markers generates rules for the operator ClusterRole
+// On change, run `make manifest` to update config/rbac/role.yaml
+// Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/config/rbac/role.yaml
+
+// Submarine resource
 //+kubebuilder:rbac:groups=submarine.apache.org,resources=submarines,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=submarine.apache.org,resources=submarines/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=submarine.apache.org,resources=submarines/finalizers,verbs=update
+
+// Event
+//+kubebuilder:rbac:groups="",resources=events,verbs=create;patch
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.

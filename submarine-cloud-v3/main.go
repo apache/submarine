@@ -53,6 +53,9 @@ var (
 	createPodSecurityPolicy bool
 )
 
+// Used for "source" field of events. Appears in the "FROM" column of `kubectl describe`
+const controllerAgentName = "submarine-controller"
+
 var (
 	scheme   = runtime.NewScheme()
 	setupLog = ctrl.Log.WithName("setup")
@@ -101,6 +104,8 @@ func main() {
 	if err = (&controllers.SubmarineReconciler{
 		Client:                  mgr.GetClient(),
 		Scheme:                  mgr.GetScheme(),
+		Recorder:                mgr.GetEventRecorderFor(controllerAgentName),
+		Log:                     ctrl.Log.WithName(controllerAgentName),
 		ClusterType:             clusterType,
 		CreatePodSecurityPolicy: createPodSecurityPolicy,
 	}).SetupWithManager(mgr); err != nil {
