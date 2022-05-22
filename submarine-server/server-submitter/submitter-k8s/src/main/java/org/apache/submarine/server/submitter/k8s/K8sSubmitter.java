@@ -477,7 +477,7 @@ public class K8sSubmitter implements Submitter {
     // parse notebook custom resource
     NotebookCR notebookCR;
     try {
-      notebookCR = NotebookSpecParser.parseNotebook(spec, namespace);
+      notebookCR = NotebookSpecParser.parseNotebook(spec, namespace, workspacePvc, userPvc);
       notebookCR.getMetadata().setName(name);
       notebookCR.getMetadata().setNamespace(namespace);
       notebookCR.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
@@ -574,7 +574,7 @@ public class K8sSubmitter implements Submitter {
     String namespace = getServerNamespace();
 
     try {
-      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null);
+      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null, "", "");
       notebookCR.getMetadata().setName(name);
       Object object = notebookCRClient.get(namespace, notebookCR.getMetadata().getName())
               .throwsApiException().getObject();
@@ -603,7 +603,7 @@ public class K8sSubmitter implements Submitter {
     Notebook notebook = null;
     final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
     String namespace = getServerNamespace();
-    NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null);
+    NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null, "", "");
     AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
             CustomResourceType.Notebook, notebookId);
 
