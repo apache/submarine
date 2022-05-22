@@ -64,10 +64,10 @@ public class NotebookSpecParser {
 
 
   public static NotebookCR parseNotebook(NotebookSpec spec, String namespace, 
-      String workspacePvc, String userPvc) {
+      String workspacePvcName, String userPvcName) {
     NotebookCR notebookCR = new NotebookCR();
     notebookCR.setMetadata(parseMetadata(spec));
-    notebookCR.setSpec(parseNotebookCRSpec(spec, workspacePvc, userPvc));
+    notebookCR.setSpec(parseNotebookCRSpec(spec, workspacePvcName, userPvcName));
     return notebookCR;
   }
 
@@ -79,14 +79,15 @@ public class NotebookSpecParser {
     return meta;
   }
 
-  private static NotebookCRSpec parseNotebookCRSpec(NotebookSpec spec, String workspacePvc, String userPvc) {
+  private static NotebookCRSpec parseNotebookCRSpec(NotebookSpec spec, String workspacePvcName, 
+      String userPvcName) {
     NotebookCRSpec CRSpec = new NotebookCRSpec();
-    CRSpec.setTemplate(parseTemplateSpec(spec, workspacePvc, userPvc));
+    CRSpec.setTemplate(parseTemplateSpec(spec, workspacePvcName, userPvcName));
     return CRSpec;
   }
 
   private static V1PodTemplateSpec parseTemplateSpec(NotebookSpec notebookSpec, 
-      String workspacePvcName, String userPvcName) {
+      String workspacePvcNameName, String userPvcNameName) {
     String name = notebookSpec.getMeta().getName();
 
     NotebookPodSpec notebookPodSpec = notebookSpec.getSpec();
@@ -178,16 +179,16 @@ public class NotebookSpecParser {
     // workspace
     V1Volume workspaceVolume = new V1Volume();
     workspaceVolume.setName(String.format("%s-%s", NotebookUtils.STORAGE_PREFIX, name));
-    V1PersistentVolumeClaimVolumeSource workspacePvc = new V1PersistentVolumeClaimVolumeSource();
-    workspacePvc.setClaimName(workspacePvcName);
-    workspaceVolume.setPersistentVolumeClaim(workspacePvc);
+    V1PersistentVolumeClaimVolumeSource workspacePvcName = new V1PersistentVolumeClaimVolumeSource();
+    workspacePvcName.setClaimName(workspacePvcNameName);
+    workspaceVolume.setPersistentVolumeClaim(workspacePvcName);
     volumeList.add(workspaceVolume);
     // user setting
     V1Volume userVolume = new V1Volume();
     userVolume.setName(String.format("%s-user-%s", NotebookUtils.STORAGE_PREFIX, name));
-    V1PersistentVolumeClaimVolumeSource userPvc = new V1PersistentVolumeClaimVolumeSource();
-    userPvc.setClaimName(userPvcName);
-    userVolume.setPersistentVolumeClaim(userPvc);
+    V1PersistentVolumeClaimVolumeSource userPvcName = new V1PersistentVolumeClaimVolumeSource();
+    userPvcName.setClaimName(userPvcNameName);
+    userVolume.setPersistentVolumeClaim(userPvcName);
     volumeList.add(userVolume);
 
     // add overwrite.json configmap

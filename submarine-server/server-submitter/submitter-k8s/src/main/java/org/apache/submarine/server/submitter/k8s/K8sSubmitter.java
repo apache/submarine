@@ -469,15 +469,15 @@ public class K8sSubmitter implements Submitter {
     final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
     final String scName = NotebookUtils.SC_NAME;
     final String host = NotebookUtils.HOST_PATH;
-    final String workspacePvc = String.format("%s-%s", NotebookUtils.PVC_PREFIX, name);
-    final String userPvc = String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name);
+    final String workspacePvcName = String.format("%s-%s", NotebookUtils.PVC_PREFIX, name);
+    final String userPvcName = String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name);
     final String configmap = String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name);
     String namespace = getServerNamespace();
 
     // parse notebook custom resource
     NotebookCR notebookCR;
     try {
-      notebookCR = NotebookSpecParser.parseNotebook(spec, namespace, workspacePvc, userPvc);
+      notebookCR = NotebookSpecParser.parseNotebook(spec, namespace, workspacePvcName, userPvcName);
       notebookCR.getMetadata().setName(name);
       notebookCR.getMetadata().setNamespace(namespace);
       notebookCR.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
@@ -490,9 +490,9 @@ public class K8sSubmitter implements Submitter {
     // create persistent volume claim
     try {
       // workspace
-      createPersistentVolumeClaim(workspacePvc, namespace, scName, NotebookUtils.STORAGE);
+      createPersistentVolumeClaim(workspacePvcName, namespace, scName, NotebookUtils.STORAGE);
       // user setting
-      createPersistentVolumeClaim(userPvc, namespace, scName, NotebookUtils.DEFAULT_USER_STORAGE);
+      createPersistentVolumeClaim(userPvcName, namespace, scName, NotebookUtils.DEFAULT_USER_STORAGE);
     } catch (ApiException e) {
       LOG.error("K8s submitter: Create persistent volume claim for Notebook object failed by " +
           e.getMessage(), e);
@@ -507,11 +507,11 @@ public class K8sSubmitter implements Submitter {
         createConfigMap(configmap, namespace, NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME, OVERWRITE_JSON);
       } catch (JsonSyntaxException e) {
         LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
-        rollbackCreationPVC(namespace, workspacePvc, userPvc);
+        rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
         throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
       } catch (ApiException e) {
         LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
-        rollbackCreationPVC(namespace, workspacePvc, userPvc);
+        rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
         throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
                 e.getMessage());
       }
@@ -525,12 +525,12 @@ public class K8sSubmitter implements Submitter {
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
       if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
-      rollbackCreationPVC(namespace, workspacePvc, userPvc);
+      rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
     } catch (ApiException e) {
       LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
       if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
-      rollbackCreationPVC(namespace, workspacePvc, userPvc);
+      rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
               e.getMessage());
     }
@@ -544,7 +544,7 @@ public class K8sSubmitter implements Submitter {
           e.getMessage(), e);
       rollbackCreationNotebook(notebookCR, namespace);
       if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
-      rollbackCreationPVC(namespace, workspacePvc, userPvc);
+      rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: ingressroute for Notebook " +
           "object failed by " + e.getMessage());
     }
@@ -558,7 +558,7 @@ public class K8sSubmitter implements Submitter {
               e.getMessage(), e);
       rollbackCreationNotebook(notebookCR, namespace);
       if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
-      rollbackCreationPVC(namespace, workspacePvc, userPvc);
+      rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: VirtualService for Notebook " +
               "object failed by " + e.getMessage());
     }
