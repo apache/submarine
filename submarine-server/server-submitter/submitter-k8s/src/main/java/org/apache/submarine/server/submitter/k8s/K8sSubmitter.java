@@ -485,7 +485,7 @@ public class K8sSubmitter implements Submitter {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
     }
-    AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
+    AgentPod agentPod = new AgentPod(namespace, notebookCR.getMetadata().getName(),
             CustomResourceType.Notebook, notebookId);
     // create persistent volume claim
     try {
