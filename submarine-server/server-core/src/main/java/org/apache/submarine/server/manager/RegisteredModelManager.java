@@ -119,6 +119,10 @@ public class RegisteredModelManager {
       throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
         "Invalid. Registered model " + name + " is not existed.");
     }
+    checkRegisteredModel(entity);
+    if (!name.equals(entity.getName())) {
+      registeredModelService.rename(name, entity.getName());
+    }
     registeredModelService.update(entity);
   }
 
