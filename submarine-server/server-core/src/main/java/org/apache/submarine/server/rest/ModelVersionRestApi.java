@@ -19,8 +19,6 @@
 
 package org.apache.submarine.server.rest;
 
-import org.json.JSONObject;
-
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -41,11 +39,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.database.model.entities.ModelVersionEntity;
-import org.apache.submarine.server.database.model.entities.ModelVersionTagEntity;
-import org.apache.submarine.server.database.model.service.ModelVersionService;
-
-import org.apache.submarine.server.database.model.service.ModelVersionTagService;
-import org.apache.submarine.server.s3.Client;
+import org.apache.submarine.server.manager.ModelVersionManager;
 import org.apache.submarine.server.utils.response.JsonResponse;
 
 /**
@@ -55,13 +49,8 @@ import org.apache.submarine.server.utils.response.JsonResponse;
 @Produces({ MediaType.APPLICATION_JSON + "; " + RestConstants.CHARSET_UTF8 })
 public class ModelVersionRestApi {
 
-  /* Model version service */
-  private final ModelVersionService modelVersionService = new ModelVersionService();
-
-  /* Model version tag service */
-  private final ModelVersionTagService modelVersionTagService = new ModelVersionTagService();
-
-  private final Client s3Client = new Client();
+  /* ModelVersion manager  */
+  private final ModelVersionManager modelVersionManager = ModelVersionManager.getInstance();
 
   /**
    * Return the Pong message for test the connectivity.
@@ -102,31 +91,7 @@ public class ModelVersionRestApi {
   public Response createModelVersion(ModelVersionEntity entity,
                                      @QueryParam("baseDir") String baseDir) {
     try {
-      String res = new String(s3Client.downloadArtifact(
-          String.format("%s/description.json", baseDir)));
-      JSONObject description = new JSONObject(res);
-      String modelType =  description.get("model_type").toString();
-      String id = description.get("id").toString();
-      entity.setId(id);
-      entity.setModelType(modelType);
-
-      int version = modelVersionService.selectAllVersions(entity.getName()).stream().mapToInt(
-          ModelVersionEntity::getVersion
-      ).max().orElse(0) + 1;
-
-      entity.setVersion(version);
-      modelVersionService.insert(entity);
-
-      // the directory of storing a single model must be unique for serving
-      String uniqueModelPath = String.format("%s-%d-%s", entity.getName(), version, id);
-
-      // copy artifacts
-      s3Client.listAllObjects(baseDir).forEach(s -> {
-        String relativePath = s.substring(String.format("%s/", baseDir).length());
-        s3Client.copyArtifact(String.format("registry/%s/%s/%d/%s", uniqueModelPath,
-            entity.getName(), entity.getVersion(), relativePath), s);
-      });
-
+      modelVersionManager.createModelVersion(entity, baseDir);
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
         .message("Create a model version instance").build();
     } catch (SubmarineRuntimeException e) {
@@ -147,7 +112,7 @@ public class ModelVersionRestApi {
           content = @Content(schema = @Schema(implementation = JsonResponse.class)))})
   public Response listModelVersions(@PathParam(RestConstants.MODEL_VERSION_NAME) String name) {
     try {
-      List<ModelVersionEntity> modelVersionList = modelVersionService.selectAllVersions(name);
+      List<ModelVersionEntity> modelVersionList = modelVersionManager.listModelVersions(name);
       return new JsonResponse.Builder<List<ModelVersionEntity>>(Response.Status.OK).success(true)
           .message("List all model version instances").result(modelVersionList).build();
     } catch (SubmarineRuntimeException e) {
@@ -171,7 +136,7 @@ public class ModelVersionRestApi {
   public Response getModelVersion(@PathParam(RestConstants.MODEL_VERSION_NAME) String name,
                                   @PathParam(RestConstants.MODEL_VERSION_VERSION) Integer version) {
     try {
-      ModelVersionEntity modelVersion = modelVersionService.selectWithTag(name, version);
+      ModelVersionEntity modelVersion = modelVersionManager.getModelVersion(name, version);
       return new JsonResponse.Builder<ModelVersionEntity>(Response.Status.OK).success(true)
           .message("Get the model version instance").result(modelVersion).build();
     } catch (SubmarineRuntimeException e) {
@@ -195,9 +160,7 @@ public class ModelVersionRestApi {
   public Response deleteModelVersion(@PathParam(RestConstants.MODEL_VERSION_NAME) String name,
                                      @PathParam(RestConstants.MODEL_VERSION_VERSION) Integer version) {
     try {
-      ModelVersionEntity spec = modelVersionService.select(name, version);
-      s3Client.deleteArtifactsByModelVersion(name, version, spec.getId());
-      modelVersionService.delete(name, version);
+      modelVersionManager.deleteModelVersion(name, version);
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
           .message("Delete the model version instance").build();
     } catch (SubmarineRuntimeException e) {
@@ -226,8 +189,7 @@ public class ModelVersionRestApi {
       @ApiResponse(responseCode = "404", description = "ModelVersionEntity not found")})
   public Response updateModelVersion(ModelVersionEntity entity) {
     try {
-      checkModelVersion(entity);
-      modelVersionService.update(entity);
+      modelVersionManager.updateModelVersion(entity);
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
           .message("Update the model version instance").build();
     } catch (SubmarineRuntimeException e) {
@@ -253,12 +215,7 @@ public class ModelVersionRestApi {
                                         @DefaultValue("") @QueryParam("version") String version,
                                         @DefaultValue("") @QueryParam("tag") String tag) {
     try {
-      checkModelVersionTag(name, version, tag);
-      ModelVersionTagEntity modelVersionTag = new ModelVersionTagEntity();
-      modelVersionTag.setName(name);
-      modelVersionTag.setVersion(Integer.parseInt(version));
-      modelVersionTag.setTag(tag);
-      modelVersionTagService.insert(modelVersionTag);
+      modelVersionManager.createModelVersionTag(name, version, tag);
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
           .message("Create a model version tag instance").build();
     } catch (SubmarineRuntimeException e) {
@@ -284,12 +241,7 @@ public class ModelVersionRestApi {
                                         @DefaultValue("") @QueryParam("version") String version,
                                         @DefaultValue("") @QueryParam("tag") String tag) {
     try {
-      checkModelVersionTag(name, version, tag);
-      ModelVersionTagEntity modelVersionTag = new ModelVersionTagEntity();
-      modelVersionTag.setName(name);
-      modelVersionTag.setVersion(Integer.parseInt(version));
-      modelVersionTag.setTag(tag);
-      modelVersionTagService.delete(modelVersionTag);
+      modelVersionManager.deleteModelVersionTag(name, version, tag);
       return new JsonResponse.Builder<String>(Response.Status.OK).success(true)
           .message("Delete a model version tag instance").build();
     } catch (SubmarineRuntimeException e) {
@@ -299,64 +251,5 @@ public class ModelVersionRestApi {
 
   private Response parseModelVersionServiceException(SubmarineRuntimeException e) {
     return new JsonResponse.Builder<String>(e.getCode()).message(e.getMessage()).build();
-  }
-
-  private void checkModelVersion(ModelVersionEntity entity) {
-    if (entity == null) {
-      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-          "Invalid. Model version entity object is null.");
-    }
-    if (entity.getName() == null || entity.getName().equals("")) {
-      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-          "Invalid. Model version's name is null.");
-    }
-    if (entity.getVersion() == null) {
-      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-          "Invalid. Model version's version is null.");
-    }
-    ModelVersionEntity modelVersion = modelVersionService.select(entity.getName(), entity.getVersion());
-    if (modelVersion == null) {
-      throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
-          "Invalid. Model version entity with same name and version is not existed.");
-    }
-  }
-
-  /**
-   * Check if model version tag is valid.
-   *
-   * @param name    model version's name
-   * @param version model version's version
-   * @param tag     tag name
-   */
-  private void checkModelVersionTag(String name, String version, String tag) {
-    if (name.equals("")){
-      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-          "Invalid. Model version's name is null.");
-    }
-    if (version.equals("")) {
-      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-          "Invalid. Model version's version is null.");
-    }
-    int versionNum;
-    try {
-      versionNum = Integer.parseInt(version);
-      if (versionNum < 1){
-        throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-            "Invalid. Model version's version must be bigger than 0.");
-      }
-    } catch (NumberFormatException e){
-      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-          "Invalid. Model version's version must be an integer.");
-    }
-    if (tag.equals("")) {
-      throw new SubmarineRuntimeException(Response.Status.OK.getStatusCode(),
-          "Invalid. Tag name is null.");
-    }
-    ModelVersionEntity modelVersion = modelVersionService.select(name,
-        versionNum);
-    if (modelVersion == null){
-      throw new SubmarineRuntimeException(Response.Status.NOT_FOUND.getStatusCode(),
-          "Invalid. Model version " + name + " version " + versionNum + " is not existed.");
-    }
   }
 }
