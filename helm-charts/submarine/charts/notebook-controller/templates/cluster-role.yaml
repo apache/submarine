@@ -51,6 +51,7 @@ rules:
   - list
   - watch
   - create
+  - patch
 - apiGroups:
   - kubeflow.org
   resources:
