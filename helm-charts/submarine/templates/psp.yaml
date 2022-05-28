@@ -21,7 +21,10 @@ apiVersion: {{ template "podSecurityPolicy.apiVersion" . }}
 metadata:
   name: submarine-anyuid
 spec:
-  privileged: false
+  privileged: true
+  allowedCapabilities:
+    - NET_ADMIN
+    - NET_RAW
   volumes:
     - configMap
     - downwardAPI
