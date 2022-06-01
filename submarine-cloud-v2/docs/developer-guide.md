@@ -21,7 +21,7 @@ Golang version: `1.17`
 
 ## Prerequisites
 
-First finish the prerequisites specified in the [QuickStart](quickstart) section on the submarine website.
+First finish the prerequisites specified in the [QuickStart](https://submarine.apache.org/docs/next/gettingStarted/quickstart) section on the submarine website.
 
 Next, install golang dependencies.
 
@@ -31,7 +31,7 @@ go mod vendor
 
 ## Run operator in-cluster
 
-If you follow the [QuickStart][quickstart] section on the submarine website, you are running operator in-cluster.
+If you follow the [QuickStart](https://submarine.apache.org/docs/next/gettingStarted/quickstart) section on the submarine website, you are running operator in-cluster.
 
 ## Run operator out-of-cluster
 

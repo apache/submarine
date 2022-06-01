@@ -18,10 +18,11 @@
 # Developer Guide
 
 Golang version: `1.17`
+Kubernetes version: `1.21.0`
 
 ## Prerequisites
 
-First finish the prerequisites specified in the [QuickStart](quickstart) section on the submarine website. Prepare a minikube cluster with Istio installed. Prepare namespaces `submarine` and `submarine-user-test` and label them `istio-injection=enabled`.
+First finish the prerequisites specified in the [QuickStart](https://submarine.apache.org/docs/next/gettingStarted/quickstart) section on the submarine website. Prepare a minikube cluster with Istio installed. Prepare namespaces `submarine` and `submarine-user-test` and label them `istio-injection=enabled`.
 
 Verify with kubectl:
 
@@ -57,7 +58,7 @@ make run
 kubectl apply -n submarine-user-test -f config/samples/_v1alpha1_submarine.yaml
 ```
 
-If you follow the above steps, you can view the submarine workbench via the same approach specified in the [QuickStart][quickstart] section on the submarine website.
+If you follow the above steps, you can view the submarine workbench via the same approach specified in the [QuickStart](https://submarine.apache.org/docs/next/gettingStarted/quickstart) section on the submarine website.
 
 
 ```bash
