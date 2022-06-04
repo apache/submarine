@@ -56,6 +56,21 @@ public class IstioVirtualService implements KubernetesObject {
     setSpec(new IstioVirtualServiceSpec(modelName, modelVersion));
   }
 
+  public IstioVirtualService(V1ObjectMeta metadata) {
+    this.metadata = metadata;
+    this.spec = parseVirtualServiceSpec(metadata.getNamespace(), metadata.getName());
+  }
+
+  protected IstioVirtualServiceSpec parseVirtualServiceSpec(String namespace, String name) {
+    IstioVirtualServiceSpec spec = new IstioVirtualServiceSpec();
+    spec.addHost(IstioConstants.DEFAULT_INGRESS_HOST);
+    // TODO(operator): Do not hard code the gateway
+    spec.addGateway("submarine/submarine-gateway");
+    String matchURIPrefix = "/notebook/" + namespace + "/" + name;
+    spec.setHTTPRoute(new IstioHTTPRoute(matchURIPrefix, name, 80));
+    return spec;
+  }
+
   public String getApiVersion() {
     return apiVersion;
   }

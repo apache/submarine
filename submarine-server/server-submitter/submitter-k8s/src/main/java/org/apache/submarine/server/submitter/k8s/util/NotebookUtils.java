@@ -56,6 +56,7 @@ public class NotebookUtils {
   public enum ParseOpt {
     PARSE_OPT_CREATE,
     PARSE_OPT_GET,
+    PARSE_OPT_REPLACE,
     PARSE_OPT_DELETE;
   }
 

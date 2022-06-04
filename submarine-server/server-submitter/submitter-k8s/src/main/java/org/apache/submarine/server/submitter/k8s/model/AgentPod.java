@@ -24,7 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.kubernetes.client.openapi.ApiException;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.common.CustomResourceType;
 
 import io.kubernetes.client.openapi.models.V1Container;
@@ -32,14 +34,22 @@ import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodSpec;
+import org.apache.submarine.server.submitter.k8s.client.K8sClient;
+import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class AgentPod extends V1Pod{
+public class AgentPod extends V1Pod implements K8sResource<AgentPod> {
+
+  private static final Logger LOG = LoggerFactory.getLogger(AgentPod.class);
+
   private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
   private static final String AGENT_IMAGE = "apache/submarine:agent-0.8.0-SNAPSHOT";
   private static final String CONTAINER_NAME = "agent";
+
   public AgentPod(String namespace, String name,
-          CustomResourceType type,
-          String resourceId) {
+                  CustomResourceType type,
+                  String resourceId) {
     super();
     V1ObjectMeta meta = new V1ObjectMeta();
     Map<String, String> labels = new HashMap<>();
@@ -98,5 +108,41 @@ public class AgentPod extends V1Pod{
   private String getNormalizePodName(CustomResourceType type, String name, String resourceId) {
     return String.format("%s-%s-%s-%s", resourceId.toString().toLowerCase().replace('_', '-'),
             type.toString().toLowerCase(), name, CONTAINER_NAME);
+  }
+
+  @Override
+  public AgentPod read(K8sClient api) {
+    return null;
+  }
+
+  @Override
+  public AgentPod create(K8sClient api) {
+    // create notebook custom resource
+    try {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Create AgentPod resource: \n{}", YamlUtils.toPrettyYaml(this));
+      }
+      api.getPodClient().create(this).throwsApiException();
+    } catch (ApiException e) {
+      LOG.error("K8s submitter: create AgentPod object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: create AgentPod object failed by " +
+              e.getMessage());
+    }
+    return this;
+  }
+
+  @Override
+  public AgentPod replace(K8sClient api) {
+    return null;
+  }
+
+  @Override
+  public AgentPod delete(K8sClient api) {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Delete AgentPod resource in namespace: {} and name: {}",
+              this.getMetadata().getNamespace(), this.getMetadata().getName());
+    }
+    api.getPodClient().delete(this.getMetadata().getNamespace(), this.getMetadata().getName());
+    return this;
   }
 }

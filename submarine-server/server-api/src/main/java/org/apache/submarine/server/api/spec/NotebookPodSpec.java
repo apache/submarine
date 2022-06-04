@@ -97,7 +97,7 @@ public class NotebookPodSpec {
    * @return String or null
    */
   public String getCpu() {
-    return resourceMap.get("cpu");
+    return resourceMap == null ? null : resourceMap.get("cpu");
   }
 
   /**
@@ -105,7 +105,7 @@ public class NotebookPodSpec {
    * @return String or null
    */
   public String getMemory() {
-    return resourceMap.get("memory");
+    return resourceMap == null ? null : resourceMap.get("memory");
   }
 
   /**
@@ -113,7 +113,7 @@ public class NotebookPodSpec {
    * @return String or null
    */
   public String getGpu() {
-    return resourceMap.get("nvidia.com/gpu");
+    return resourceMap == null ? null : resourceMap.get("nvidia.com/gpu");
   }
 
 }

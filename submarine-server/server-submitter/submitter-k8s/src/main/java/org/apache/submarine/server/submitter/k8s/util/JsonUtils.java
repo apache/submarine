@@ -17,39 +17,22 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model.ingressroute;
 
-import com.google.gson.annotations.SerializedName;
+package org.apache.submarine.server.submitter.k8s.util;
 
-import java.util.Set;
+import com.google.gson.Gson;
+import io.kubernetes.client.openapi.JSON;
 
-@Deprecated
-public class IngressRouteSpec {
+public class JsonUtils {
 
-  public IngressRouteSpec() {
+  public static final Gson defaultGson = new JSON().getGson();
 
+  public static String toJson(Object object) {
+    return defaultGson.toJson(object);
   }
 
-  @SerializedName("entryPoints")
-  private Set<String> entryPoints;
-
-  @SerializedName("routes")
-  private Set<SpecRoute> routes;
-
-  public Set<String> getEntryPoints() {
-    return entryPoints;
-  }
-
-  public void setEntryPoints(Set<String> entryPoints) {
-    this.entryPoints = entryPoints;
-  }
-
-  public Set<SpecRoute> getRoutes() {
-    return routes;
-  }
-
-  public void setRoutes(Set<SpecRoute> routes) {
-    this.routes = routes;
+  public static <T> T fromJson(String json, Class<T> classOfT) {
+    return defaultGson.fromJson(json, classOfT);
   }
 
 }

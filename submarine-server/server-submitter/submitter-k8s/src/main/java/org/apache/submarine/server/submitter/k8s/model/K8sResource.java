@@ -17,39 +17,22 @@
  * under the License.
  */
 
-package org.apache.submarine.server.submitter.k8s.model.ingressroute;
+package org.apache.submarine.server.submitter.k8s.model;
 
-import com.google.gson.annotations.SerializedName;
+import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import org.apache.submarine.server.submitter.k8s.client.K8sClient;
 
-import java.util.Set;
+public interface K8sResource<R> {
 
-@Deprecated
-public class IngressRouteSpec {
+  String getKind();
 
-  public IngressRouteSpec() {
+  V1ObjectMeta getMetadata();
 
-  }
+  R read(K8sClient api);
 
-  @SerializedName("entryPoints")
-  private Set<String> entryPoints;
+  R create(K8sClient api);
 
-  @SerializedName("routes")
-  private Set<SpecRoute> routes;
+  R replace(K8sClient api);
 
-  public Set<String> getEntryPoints() {
-    return entryPoints;
-  }
-
-  public void setEntryPoints(Set<String> entryPoints) {
-    this.entryPoints = entryPoints;
-  }
-
-  public Set<SpecRoute> getRoutes() {
-    return routes;
-  }
-
-  public void setRoutes(Set<SpecRoute> routes) {
-    this.routes = routes;
-  }
-
+  R delete(K8sClient api);
 }

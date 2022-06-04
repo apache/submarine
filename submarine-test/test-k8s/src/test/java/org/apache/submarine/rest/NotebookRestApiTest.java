@@ -289,7 +289,7 @@ public class NotebookRestApiTest extends AbstractSubmarineServerTest {
   private void assertGetK8sResult(Notebook notebook) throws Exception {
     final String k8sName = String.format("%s-%s", notebook.getNotebookId().toString().replace('_', '-'),
         notebook.getName());
-        
+
     JsonObject rootObject = getNotebookByK8sApi(GROUP, VERSION, notebook.getSpec().getMeta().getNamespace(),
         PLURAL, k8sName);
 
@@ -329,10 +329,17 @@ public class NotebookRestApiTest extends AbstractSubmarineServerTest {
 
   private JsonObject getNotebookByK8sApi(String group, String version, String namespace, String plural,
                                          String name) throws ApiException {
-    Object obj = k8sApi.getNamespacedCustomObject(group, version, namespace, plural, name);
-    Gson gson = new JSON().getGson();
-    JsonObject rootObject = gson.toJsonTree(obj).getAsJsonObject();
-    Assert.assertNotNull("Parse the K8s API Server response failed.", rootObject);
-    return rootObject;
+    try {
+      Object obj = k8sApi.getNamespacedCustomObject(group, version, namespace, plural, name);
+      Gson gson = new JSON().getGson();
+      JsonObject rootObject = gson.toJsonTree(obj).getAsJsonObject();
+      Assert.assertNotNull("Parse the K8s API Server response failed.", rootObject);
+      return rootObject;
+    } catch (ApiException e) {
+      // We have declared the specific parameters for debugging during testing
+      LOG.error("Get Notebook error! group: {}, version: {}, namespace: {}, plural: {}, name: {}",
+              group, version, namespace, plural, name);
+      throw e;
+    }
   }
 }

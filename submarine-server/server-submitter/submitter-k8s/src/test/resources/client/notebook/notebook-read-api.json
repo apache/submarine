@@ -1,0 +1,107 @@
+{
+  "apiVersion": "kubeflow.org/v1",
+  "kind": "Notebook",
+  "metadata": {
+    "resourceVersion": "487596193",
+    "name": "notebook-1642402491519-0003-test-notebook",
+    "uid": "90f0c378-2027-47fc-9e49-15a0c52dac02",
+    "creationTimestamp": "2022-01-17T07:04:49Z",
+    "namespace": "submarine",
+    "labels": {
+      "notebook-id": "notebook_1642402491519_0003",
+      "notebook-owner-id": "e9ca23d68d884d4ebb19d07889727dae"
+    }
+  },
+  "spec": {
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "env": [
+              {
+                "name": "SUBMARINE_SERVER_DNS_NAME"
+              },
+              {
+                "name": "SUBMARINE_SERVER_PORT",
+                "value": "32080"
+              },
+              {
+                "name": "INSTALL_ENVIRONMENT_COMMAND",
+                "value": "minVersion=\"4.0.1\";maxVersion=\"4.11.10\";currentVersion=$(conda -V | cut -f2 -d' ');if [ \"$(printf '%s\\n' \"$minVersion\" \"$maxVersion\" \"$currentVersion\" | sort -V | head -n2 | tail -1 )\" != \"$currentVersion\" ]; then echo \"Conda version should be between minVersion=\"4.0.1\"; and maxVersion=\"4.11.10\";\"; exit 1; else echo \"Conda current version is currentVersion=$(conda -V | cut -f2 -d' ');. Moving forward with env creation and activation.\"; fi"
+              }
+            ],
+            "image": "syharbor.sypesco.com:5000/apache/submarine:jupyter-notebook-0.7.0-syzh",
+            "imagePullPolicy": "Always",
+            "name": "test-notebook",
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "512M"
+              }
+            },
+            "volumeMounts": [
+              {
+                "mountPath": "/home/jovyan/workspace",
+                "name": "notebook-storage-test-notebook"
+              },
+              {
+                "mountPath": "/home/jovyan/.jupyter",
+                "name": "notebook-storage-user-test-notebook"
+              },
+              {
+                "mountPath": "/opt/conda/share/jupyter/lab/settings/overrides.json",
+                "name": "overwrite-configmap-test-notebook",
+                "subPath": "overrides.json"
+              },
+              {
+                "mountPath": "/home/jovyan/.jupyter/jupyter_notebook_config.py",
+                "name": "jupyter-configmap-test-notebook",
+                "subPath": "jupyter_notebook_config.py"
+              }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "notebook-storage-test-notebook",
+            "persistentVolumeClaim": {
+              "claimName": "notebook-pvc-test-notebook"
+            }
+          },
+          {
+            "name": "notebook-storage-user-test-notebook",
+            "persistentVolumeClaim": {
+              "claimName": "notebook-pvc-user-test-notebook"
+            }
+          },
+          {
+            "configMap": {
+              "name": "overwrite-configmap-test-notebook"
+            },
+            "name": "overwrite-configmap-test-notebook"
+          },
+          {
+            "configMap": {
+              "name": "submarine-jupyter-config"
+            },
+            "name": "jupyter-configmap-test-notebook"
+          }
+        ]
+      }
+    }
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastProbeTime": "2022-05-17T07:10:49Z",
+        "type": "Running"
+      }
+    ],
+    "containerState": {
+      "running": {
+        "startedAt": "2022-05-17T07:10:48Z"
+      }
+    },
+    "readyReplicas": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "apiVersion": "v1",
+  "details": {
+    "group": "kubeflow.org",
+    "kind": "notebooks",
+    "name": "notebook-1642402491519-0003-test-notebook",
+    "uid": "375ac48a-4d90-43bb-a056-a5d857a0d8dc"
+  },
+  "kind": "Status",
+  "metadata": {},
+  "status": "Success"
+}

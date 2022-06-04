@@ -23,7 +23,6 @@ import io.kubernetes.client.custom.Quantity;
 import io.kubernetes.client.openapi.models.V1ConfigMapVolumeSource;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EnvVar;
-import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import io.kubernetes.client.openapi.models.V1ResourceRequirements;
@@ -40,7 +39,6 @@ import org.apache.submarine.server.api.spec.KernelSpec;
 import org.apache.submarine.server.api.spec.NotebookPodSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.manager.EnvironmentManager;
-import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCRSpec;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 
@@ -62,41 +60,20 @@ public class NotebookSpecParser {
   private static final SubmarineConfiguration conf =
           SubmarineConfiguration.getInstance();
 
-
-  public static NotebookCR parseNotebook(NotebookSpec spec, String namespace, 
-      String workspacePvcName, String userPvcName) {
-    NotebookCR notebookCR = new NotebookCR();
-    notebookCR.setMetadata(parseMetadata(spec));
-    notebookCR.setSpec(parseNotebookCRSpec(spec, workspacePvcName, userPvcName));
-    return notebookCR;
-  }
-
-  private static V1ObjectMeta parseMetadata(NotebookSpec spec) {
-    V1ObjectMeta meta = new V1ObjectMeta();
-    meta.setName(spec.getMeta().getName());
-    meta.setNamespace(spec.getMeta().getNamespace());
-    meta.setLabels(spec.getMeta().getLabels());
-    return meta;
-  }
-
-  private static NotebookCRSpec parseNotebookCRSpec(NotebookSpec spec, String workspacePvcName, 
-      String userPvcName) {
+  public static NotebookCRSpec parseNotebookCRSpec(NotebookSpec spec, String notebookName) {
     NotebookCRSpec CRSpec = new NotebookCRSpec();
-    CRSpec.setTemplate(parseTemplateSpec(spec, workspacePvcName, userPvcName));
+    CRSpec.setTemplate(parseTemplateSpec(spec, notebookName));
     return CRSpec;
   }
 
-  private static V1PodTemplateSpec parseTemplateSpec(NotebookSpec notebookSpec, 
-      String workspacePvcNameName, String userPvcNameName) {
-    String name = notebookSpec.getMeta().getName();
-
+  private static V1PodTemplateSpec parseTemplateSpec(NotebookSpec notebookSpec, String notebookName) {
     NotebookPodSpec notebookPodSpec = notebookSpec.getSpec();
     V1PodTemplateSpec podTemplateSpec = new V1PodTemplateSpec();
     V1PodSpec podSpec = new V1PodSpec();
     // Set container
     List<V1Container> containers = new ArrayList<>();
     V1Container container = new V1Container();
-    container.setName(name);
+    container.setName(notebookName);
 
     // Environment variables
     if (notebookPodSpec.getEnvVars() != null) {
@@ -166,29 +143,29 @@ public class NotebookSpecParser {
     // workspace path
     V1VolumeMount workspace = new V1VolumeMount();
     workspace.setMountPath(DEFAULT_WORKSPACE_MOUNT_PATH);
-    workspace.setName(String.format("%s-%s", NotebookUtils.STORAGE_PREFIX, name));
+    workspace.setName(String.format("%s-%s", NotebookUtils.STORAGE_PREFIX, notebookName));
     volumeMountList.add(workspace);
     // user setting path
     V1VolumeMount userSetting = new V1VolumeMount();
     userSetting.setMountPath(DEFAULT_USER_SET_MOUNT_PATH);
-    userSetting.setName(String.format("%s-user-%s", NotebookUtils.STORAGE_PREFIX, name));
+    userSetting.setName(String.format("%s-user-%s", NotebookUtils.STORAGE_PREFIX, notebookName));
     volumeMountList.add(userSetting);
 
     // create volume object for persistent volume
     List<V1Volume> volumeList = new ArrayList<>();
     // workspace
     V1Volume workspaceVolume = new V1Volume();
-    workspaceVolume.setName(String.format("%s-%s", NotebookUtils.STORAGE_PREFIX, name));
-    V1PersistentVolumeClaimVolumeSource workspacePvcName = new V1PersistentVolumeClaimVolumeSource();
-    workspacePvcName.setClaimName(workspacePvcNameName);
-    workspaceVolume.setPersistentVolumeClaim(workspacePvcName);
+    workspaceVolume.setName(String.format("%s-%s", NotebookUtils.STORAGE_PREFIX, notebookName));
+    V1PersistentVolumeClaimVolumeSource workspacePvc = new V1PersistentVolumeClaimVolumeSource();
+    workspacePvc.setClaimName(String.format("%s-%s", NotebookUtils.PVC_PREFIX, notebookName));
+    workspaceVolume.setPersistentVolumeClaim(workspacePvc);
     volumeList.add(workspaceVolume);
     // user setting
     V1Volume userVolume = new V1Volume();
-    userVolume.setName(String.format("%s-user-%s", NotebookUtils.STORAGE_PREFIX, name));
-    V1PersistentVolumeClaimVolumeSource userPvcName = new V1PersistentVolumeClaimVolumeSource();
-    userPvcName.setClaimName(userPvcNameName);
-    userVolume.setPersistentVolumeClaim(userPvcName);
+    userVolume.setName(String.format("%s-user-%s", NotebookUtils.STORAGE_PREFIX, notebookName));
+    V1PersistentVolumeClaimVolumeSource userPvc = new V1PersistentVolumeClaimVolumeSource();
+    userPvc.setClaimName(String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, notebookName));
+    userVolume.setPersistentVolumeClaim(userPvc);
     volumeList.add(userVolume);
 
     // add overwrite.json configmap
@@ -200,14 +177,14 @@ public class NotebookSpecParser {
       overwriteVm.setMountPath(String.format("%s/%s", DEFAULT_APPLICATION_SETTING_PATH,
               NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME));
       overwriteVm.setSubPath(NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME);
-      overwriteVm.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name));
+      overwriteVm.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, notebookName));
       volumeMountList.add(overwriteVm);
 
       // Volume
       V1Volume overwriteVolume = new V1Volume();
-      overwriteVolume.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name));
+      overwriteVolume.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, notebookName));
       V1ConfigMapVolumeSource overwriteCm = new V1ConfigMapVolumeSource();
-      overwriteCm.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name));
+      overwriteCm.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, notebookName));
       overwriteVolume.setConfigMap(overwriteCm);
       volumeList.add(overwriteVolume);
     }
