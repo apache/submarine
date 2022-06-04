@@ -28,6 +28,12 @@ tracking experiment metrics, parameters.
 git clone https://github.com/apache/submarine.git
 cd submarine/submarine-sdk/pysubmarine
 pip install .
+
+# install extras_require
+## bash
+pip install -e .[tf2,pytorch]
+## zsh
+pip install -e ".[tf2,pytorch]"
 ```
 
 - Install package from pypi
