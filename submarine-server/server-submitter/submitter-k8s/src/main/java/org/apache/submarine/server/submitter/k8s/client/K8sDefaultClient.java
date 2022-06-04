@@ -175,56 +175,65 @@ public class K8sDefaultClient implements K8sClient {
                     IstioConstants.PLURAL, client);
   }
 
+  private <T> T checkApi(T api, Class<?> classOfT) {
+    if (api == null) {
+      throw new SubmarineRuntimeException(String.format("%s api is null, can not get this object!",
+          classOfT.getName()));
+    } else {
+      return api;
+    }
+  }
+
   public ApiClient getApiClient() {
-    return client;
+    return checkApi(client, ApiClient.class);
   }
 
   public CustomObjectsApi getCustomObjectsApi() {
-    return customObjectsApi;
+    return checkApi(customObjectsApi, CustomObjectsApi.class);
   }
 
   public CoreV1Api getCoreApi() {
-    return coreApi;
+    return checkApi(coreApi, CoreV1Api.class);
   }
 
   public AppsV1Api getAppsV1Api() {
-    return appsV1Api;
+    return checkApi(appsV1Api, AppsV1Api.class);
   }
 
   public GenericKubernetesApi<V1Pod, V1PodList> getPodClient() {
-    return podClient;
+    return checkApi(podClient, V1Pod.class);
   }
 
   public GenericKubernetesApi<CoreV1Event, CoreV1EventList> getEventClient() {
-    return eventClient;
+    return checkApi(eventClient, CoreV1Event.class);
   }
 
   public GenericKubernetesApi<V1PersistentVolumeClaim, V1PersistentVolumeClaimList>
       getPersistentVolumeClaimClient() {
-    return persistentVolumeClaimClient;
+    return checkApi(persistentVolumeClaimClient, V1PersistentVolumeClaim.class);
   }
 
   public GenericKubernetesApi<V1ConfigMap, V1ConfigMapList> getConfigMapClient() {
-    return configMapClient;
+    return checkApi(configMapClient, V1ConfigMap.class);
   }
 
   public GenericKubernetesApi<TFJob, TFJobList> getTfJobClient() {
-    return tfJobClient;
+    return checkApi(tfJobClient, TFJob.class);
   }
 
   public GenericKubernetesApi<PyTorchJob, PyTorchJobList> getPyTorchJobClient() {
-    return pyTorchJobClient;
+    return checkApi(pyTorchJobClient, PyTorchJob.class);
   }
 
   public GenericKubernetesApi<NotebookCR, NotebookCRList> getNotebookCRClient() {
-    return notebookCRClient;
+    return checkApi(notebookCRClient, NotebookCR.class);
   }
 
   public GenericKubernetesApi<SeldonDeployment, SeldonDeploymentList> getSeldonDeploymentClient() {
-    return seldonDeploymentClient;
+    return checkApi(seldonDeploymentClient, SeldonDeployment.class);
   }
 
   public GenericKubernetesApi<IstioVirtualService, IstioVirtualServiceList> getIstioVirtualServiceClient() {
-    return istioVirtualServiceClient;
+    return checkApi(istioVirtualServiceClient, IstioVirtualService.class);
   }
 }

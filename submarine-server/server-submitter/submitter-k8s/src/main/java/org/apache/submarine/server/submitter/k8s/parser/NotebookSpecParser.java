@@ -143,26 +143,26 @@ public class NotebookSpecParser {
     // workspace path
     V1VolumeMount workspace = new V1VolumeMount();
     workspace.setMountPath(DEFAULT_WORKSPACE_MOUNT_PATH);
-    workspace.setName(String.format("%s-%s", NotebookUtils.STORAGE_PREFIX, notebookName));
+    workspace.setName("workspace");
     volumeMountList.add(workspace);
     // user setting path
     V1VolumeMount userSetting = new V1VolumeMount();
     userSetting.setMountPath(DEFAULT_USER_SET_MOUNT_PATH);
-    userSetting.setName(String.format("%s-user-%s", NotebookUtils.STORAGE_PREFIX, notebookName));
+    userSetting.setName("user-setting");
     volumeMountList.add(userSetting);
 
     // create volume object for persistent volume
     List<V1Volume> volumeList = new ArrayList<>();
     // workspace
     V1Volume workspaceVolume = new V1Volume();
-    workspaceVolume.setName(String.format("%s-%s", NotebookUtils.STORAGE_PREFIX, notebookName));
+    workspaceVolume.setName("workspace");
     V1PersistentVolumeClaimVolumeSource workspacePvc = new V1PersistentVolumeClaimVolumeSource();
     workspacePvc.setClaimName(String.format("%s-%s", NotebookUtils.PVC_PREFIX, notebookName));
     workspaceVolume.setPersistentVolumeClaim(workspacePvc);
     volumeList.add(workspaceVolume);
     // user setting
     V1Volume userVolume = new V1Volume();
-    userVolume.setName(String.format("%s-user-%s", NotebookUtils.STORAGE_PREFIX, notebookName));
+    userVolume.setName("user-setting");
     V1PersistentVolumeClaimVolumeSource userPvc = new V1PersistentVolumeClaimVolumeSource();
     userPvc.setClaimName(String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, notebookName));
     userVolume.setPersistentVolumeClaim(userPvc);
@@ -177,12 +177,12 @@ public class NotebookSpecParser {
       overwriteVm.setMountPath(String.format("%s/%s", DEFAULT_APPLICATION_SETTING_PATH,
               NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME));
       overwriteVm.setSubPath(NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME);
-      overwriteVm.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, notebookName));
+      overwriteVm.setName("overwrite-config");
       volumeMountList.add(overwriteVm);
 
       // Volume
       V1Volume overwriteVolume = new V1Volume();
-      overwriteVolume.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, notebookName));
+      overwriteVolume.setName("overwrite-config");
       V1ConfigMapVolumeSource overwriteCm = new V1ConfigMapVolumeSource();
       overwriteCm.setName(String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, notebookName));
       overwriteVolume.setConfigMap(overwriteCm);
