@@ -26,6 +26,7 @@ import io.kubernetes.client.common.KubernetesListObject;
 import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ListMeta;
 
+@Deprecated
 public class IngressRouteList implements KubernetesListObject{
 
   @SerializedName("apiVersion")

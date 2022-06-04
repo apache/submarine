@@ -19,16 +19,14 @@
 
 package org.apache.submarine.server.submitter.k8s;
 
-import io.kubernetes.client.openapi.models.V1ConfigMap;
 import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import org.apache.submarine.server.api.spec.NotebookMeta;
 import org.apache.submarine.server.api.spec.NotebookPodSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
+import org.apache.submarine.server.submitter.k8s.model.common.Configmap;
 import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCRSpec;
-import org.apache.submarine.server.submitter.k8s.parser.ConfigmapSpecParser;
-import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -41,7 +39,7 @@ public class NotebookSpecParserTest extends SpecBuilder {
   @Test
   public void testValidNotebook() throws IOException, URISyntaxException {
     NotebookSpec notebookSpec = (NotebookSpec) buildFromJsonFile(NotebookSpec.class, notebookReqFile);
-    NotebookCR notebook = NotebookSpecParser.parseNotebook(notebookSpec, null, "", "");
+    NotebookCR notebook = new NotebookCR(notebookSpec, "notebook_1642402491519_0003", "default");
 
     validateMetadata(notebookSpec.getMeta(), notebook.getMetadata());
     validateEnvironment(notebookSpec, notebook.getSpec());
@@ -91,13 +89,13 @@ public class NotebookSpecParserTest extends SpecBuilder {
   public void testConfigMap() {
     String overwriteJson = "{ \"@jupyterlab/translation-extension:plugin\": " +
             "{ \"locale\": \"zh_CN\" } }";
-    V1ConfigMap configMap = ConfigmapSpecParser.parseConfigMap("test",
+    Configmap configMap = new Configmap("default", "test",
             "overwrite.json", overwriteJson);
     Map<String, String> data = configMap.getData();
     Assert.assertEquals(data.size(), 1);
     Assert.assertEquals(data.get("overwrite.json"), overwriteJson);
 
-    V1ConfigMap configMap2 = ConfigmapSpecParser.parseConfigMap("test", data);
+    Configmap configMap2 = new Configmap("default", "test", data);
     Map<String, String> data2 = configMap2.getData();
     Assert.assertEquals(data2.size(), 1);
     Assert.assertEquals(data2.get("overwrite.json"), overwriteJson);

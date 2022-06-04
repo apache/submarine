@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.submitter.k8s.model.notebook;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.annotations.SerializedName;
 import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
@@ -55,6 +56,7 @@ public class NotebookCRSpec {
    * Get memory resource for container
    * @return memory in Gi
    */
+  @JsonIgnore
   public String getContainerMemory() {
     V1PodTemplateSpec podSpec = getTemplate();
     return String.join(" ",
@@ -67,6 +69,7 @@ public class NotebookCRSpec {
    * Get CPU resource for container
    * @return CPU in VCores
    */
+  @JsonIgnore
   public String getContainerCpu() {
     V1PodTemplateSpec podSpec = getTemplate();
     return podSpec.getSpec().getContainers().get(0)
@@ -77,6 +80,7 @@ public class NotebookCRSpec {
    * Get GPU resource for container
    * @return GPU
    */
+  @JsonIgnore
   public String getContainerGpu() {
     V1PodTemplateSpec podSpec = getTemplate();
     return podSpec.getSpec().getContainers().get(0)
@@ -87,11 +91,13 @@ public class NotebookCRSpec {
    * Get the image name
    * @return image name
    */
+  @JsonIgnore
   public String getContainerImageName() {
     V1PodTemplateSpec podSpec = getTemplate();
     return podSpec.getSpec().getContainers().get(0).getImage();
   }
 
+  @JsonIgnore
   public List<V1EnvVar> getEnvs() {
     V1PodTemplateSpec podSpec = getTemplate();
     return podSpec.getSpec().getContainers().get(0).getEnv();

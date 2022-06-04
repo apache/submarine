@@ -19,60 +19,36 @@
 
 package org.apache.submarine.server.submitter.k8s;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import io.kubernetes.client.util.generic.options.PatchOptions;
-import okhttp3.OkHttpClient;
-import io.kubernetes.client.openapi.ApiClient;
 import io.kubernetes.client.openapi.ApiException;
-import io.kubernetes.client.openapi.Configuration;
 import io.kubernetes.client.openapi.JSON;
-import io.kubernetes.client.openapi.apis.AppsV1Api;
-import io.kubernetes.client.openapi.apis.CoreV1Api;
 import io.kubernetes.client.custom.V1Patch;
-import io.kubernetes.client.openapi.models.CoreV1Event;
-import io.kubernetes.client.openapi.models.CoreV1EventList;
-import io.kubernetes.client.openapi.models.V1ConfigMap;
-import io.kubernetes.client.openapi.models.V1ConfigMapList;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
-import io.kubernetes.client.openapi.models.V1PersistentVolumeClaim;
-import io.kubernetes.client.openapi.models.V1PersistentVolumeClaimList;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodList;
 import io.kubernetes.client.openapi.models.V1Status;
 import io.kubernetes.client.util.generic.options.CreateOptions;
 import io.kubernetes.client.util.generic.options.DeleteOptions;
 import io.kubernetes.client.util.generic.options.ListOptions;
-import io.kubernetes.client.util.ClientBuilder;
-import io.kubernetes.client.util.KubeConfig;
-import io.kubernetes.client.util.generic.GenericKubernetesApi;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-import org.apache.submarine.serve.istio.IstioHTTPRoute;
-import org.apache.submarine.serve.istio.IstioVirtualService;
-import org.apache.submarine.serve.istio.IstioVirtualServiceList;
-import org.apache.submarine.serve.istio.IstioVirtualServiceSpec;
 import org.apache.submarine.serve.pytorch.SeldonPytorchServing;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
-import org.apache.submarine.serve.seldon.SeldonDeploymentList;
 import org.apache.submarine.serve.tensorflow.SeldonTFServing;
 import org.apache.submarine.server.k8s.utils.K8sUtils;
-import org.apache.submarine.serve.utils.IstioConstants;
-import org.apache.submarine.serve.utils.SeldonConstants;
 import org.apache.submarine.server.api.Submitter;
 import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
@@ -85,27 +61,23 @@ import org.apache.submarine.server.api.notebook.Notebook;
 import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
+import org.apache.submarine.server.submitter.k8s.client.K8sClient;
+import org.apache.submarine.server.submitter.k8s.client.K8sDefaultClient;
 import org.apache.submarine.server.submitter.k8s.model.AgentPod;
+import org.apache.submarine.server.submitter.k8s.model.K8sResource;
+import org.apache.submarine.server.submitter.k8s.model.common.Configmap;
+import org.apache.submarine.server.submitter.k8s.model.istio.IstioVirtualService;
+import org.apache.submarine.server.submitter.k8s.model.common.NullResource;
+import org.apache.submarine.server.submitter.k8s.model.common.PersistentVolumeClaim;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCR;
-import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCRList;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
-import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobList;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
-import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobList;
-import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRoute;
-import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRouteSpec;
-import org.apache.submarine.server.submitter.k8s.model.ingressroute.IngressRouteList;
-import org.apache.submarine.server.submitter.k8s.model.ingressroute.SpecRoute;
-import org.apache.submarine.server.submitter.k8s.parser.ConfigmapSpecParser;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
-import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
-import org.apache.submarine.server.submitter.k8s.parser.VolumeSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,8 +87,6 @@ import org.slf4j.LoggerFactory;
 public class K8sSubmitter implements Submitter {
 
   private static final Logger LOG = LoggerFactory.getLogger(K8sSubmitter.class);
-
-  private static final String KUBECONFIG_ENV = "KUBECONFIG";
 
   private static final String TF_JOB_SELECTOR_KEY = "tf-job-name=";
   private static final String PYTORCH_JOB_SELECTOR_KEY = "pytorch-job-name=";
@@ -139,121 +109,81 @@ public class K8sSubmitter implements Submitter {
             SubmarineConfVars.ConfVars.SUBMARINE_NOTEBOOK_DEFAULT_OVERWRITE_JSON);
   }
 
-
   // K8s API client for CRD
-  private GenericKubernetesApi<V1Pod, V1PodList> podClient;
-
-  private GenericKubernetesApi<CoreV1Event, CoreV1EventList> eventClient;
-
-  private GenericKubernetesApi<V1PersistentVolumeClaim, V1PersistentVolumeClaimList>
-          persistentVolumeClaimClient;
-
-  private GenericKubernetesApi<V1ConfigMap, V1ConfigMapList> configMapClient;
-
-  private GenericKubernetesApi<TFJob, TFJobList> tfJobClient;
-
-  private GenericKubernetesApi<PyTorchJob, PyTorchJobList> pyTorchJobClient;
-
-  private GenericKubernetesApi<NotebookCR, NotebookCRList> notebookCRClient;
-
-  private GenericKubernetesApi<IngressRoute, IngressRouteList> ingressRouteClient;
-
-  private GenericKubernetesApi<SeldonDeployment, SeldonDeploymentList> seldonDeploymentClient;
-
-  private GenericKubernetesApi<IstioVirtualService, IstioVirtualServiceList> istioVirtualServiceClient;
-
-  private CoreV1Api coreApi;
-
-  private AppsV1Api appsV1Api;
-
-  private ApiClient client = null;
+  private K8sClient k8sClient;
 
   public K8sSubmitter() {
   }
 
+  public K8sSubmitter(K8sClient k8sClient) {
+    this.k8sClient = k8sClient;
+  }
+
   @Override
   public void initialize(SubmarineConfiguration conf) {
+    // move k8s clients init to org.apache.submarine.server.submitter.k8s.K8sClient
+    // For the compatibility of the current codes, several variables about api client are exposed temporarily
+    if (k8sClient == null) {
+      k8sClient = new K8sDefaultClient();
+    }
+  }
+
+  /**
+   * Commit resources with transaction
+   * @return committed return objects
+   */
+  public List<Object> resourceTransaction(K8sResource... resources) {
+    Map<K8sResource, Object> commits = new LinkedHashMap<>();
     try {
-      String path = System.getenv(KUBECONFIG_ENV);
-      KubeConfig config = KubeConfig.loadKubeConfig(new FileReader(path));
-      client = ClientBuilder.kubeconfig(config).build();
-    } catch (Exception e) {
-      LOG.info("Maybe in cluster mode, try to initialize the client again.");
-      try {
-        client = ClientBuilder.cluster().build();
-      } catch (IOException e1) {
-        LOG.error("Initialize K8s submitter failed. " + e.getMessage(), e1);
-        throw new SubmarineRuntimeException(500, "Initialize K8s submitter failed.");
+      for (K8sResource resource : resources) {
+        if (resource != null) {
+          commits.put(resource, resource.create(k8sClient));
+        } else {
+          commits.put(new NullResource(), null);
+        }
       }
-    } finally {
-      OkHttpClient httpClient = client.getHttpClient();
-      client.setHttpClient(httpClient);
-      Configuration.setDefaultApiClient(client);
+      return new ArrayList<>(commits.values());
+    } catch (Exception e) {
+      if (!commits.isEmpty()) {
+        // Rollback is performed in the reverse order of commits
+        List<K8sResource> rollbacks = new ArrayList<>(commits.keySet());
+        for (int i = rollbacks.size() - 1; i >= 0; i--) {
+          K8sResource rollback = rollbacks.get(i);
+          if (!(rollback instanceof NullResource)) {
+            LOG.info("Rollback resources {}/{}", rollback.getKind(), rollback.getMetadata().getName());
+            try {
+              rollbacks.get(i).delete(k8sClient);
+            } catch (Exception deleteErr) {
+              LOG.error("Failed to delete resource. You may need to delete it manually!", deleteErr);
+            }
+          }
+        }
+      }
+      throw e;
     }
+  }
 
-    if (coreApi == null) {
-      coreApi = new CoreV1Api(client);
-    }
+  public static V1ObjectMeta createMeta(String namespace, String name) {
+    V1ObjectMeta metadata = new V1ObjectMeta();
+    metadata.setNamespace(namespace);
+    metadata.setName(name);
+    metadata.setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
+    return metadata;
+  }
 
-    if (appsV1Api == null) {
-      appsV1Api = new AppsV1Api();
-    }
+  private String getServerNamespace() {
+    return K8sUtils.getNamespace();
+  }
 
-    podClient =
-            new GenericKubernetesApi<>(
-                    V1Pod.class, V1PodList.class,
-                    "", "v1", "pods", client);
+  public static DeleteOptions getDeleteOptions(String apiVersion){
+    DeleteOptions deleteOptions = new DeleteOptions();
+    deleteOptions.setApiVersion(apiVersion);
+    return deleteOptions;
+  }
 
-    eventClient =
-            new GenericKubernetesApi<>(
-                    CoreV1Event.class, CoreV1EventList.class,
-                    "", "v1", "events", client);
-
-    persistentVolumeClaimClient =
-            new GenericKubernetesApi<>(
-                    V1PersistentVolumeClaim.class, V1PersistentVolumeClaimList.class,
-                    "", "v1", "persistentvolumeclaims", client);
-
-    configMapClient =
-            new GenericKubernetesApi<>(
-                    V1ConfigMap.class, V1ConfigMapList.class,
-                    "", "v1", "configmaps", client);
-
-    tfJobClient =
-            new GenericKubernetesApi<>(
-                    TFJob.class, TFJobList.class,
-                    TFJob.CRD_TF_GROUP_V1, TFJob.CRD_TF_VERSION_V1,
-                    TFJob.CRD_TF_PLURAL_V1, client);
-
-    pyTorchJobClient =
-            new GenericKubernetesApi<>(
-                    PyTorchJob.class, PyTorchJobList.class,
-                    PyTorchJob.CRD_PYTORCH_GROUP_V1, PyTorchJob.CRD_PYTORCH_VERSION_V1,
-                    PyTorchJob.CRD_PYTORCH_PLURAL_V1, client);
-
-    notebookCRClient =
-            new GenericKubernetesApi<>(
-                    NotebookCR.class, NotebookCRList.class,
-                    NotebookCR.CRD_NOTEBOOK_GROUP_V1, NotebookCR.CRD_NOTEBOOK_VERSION_V1,
-                    NotebookCR.CRD_NOTEBOOK_PLURAL_V1, client);
-
-    ingressRouteClient =
-            new GenericKubernetesApi<>(
-                    IngressRoute.class, IngressRouteList.class,
-                    IngressRoute.CRD_INGRESSROUTE_GROUP_V1, IngressRoute.CRD_INGRESSROUTE_VERSION_V1,
-                    IngressRoute.CRD_INGRESSROUTE_PLURAL_V1, client);
-
-    seldonDeploymentClient =
-            new GenericKubernetesApi<>(
-                   SeldonDeployment.class, SeldonDeploymentList.class,
-                    SeldonConstants.GROUP, SeldonConstants.VERSION,
-                    SeldonConstants.PLURAL, client);
-
-    istioVirtualServiceClient =
-            new GenericKubernetesApi<>(
-                    IstioVirtualService.class, IstioVirtualServiceList.class,
-                    IstioConstants.GROUP, IstioConstants.VERSION,
-                    IstioConstants.PLURAL, client);
+  private enum ParseOp {
+    PARSE_OP_RESULT,
+    PARSE_OP_DELETE
   }
 
   @Override
@@ -265,17 +195,17 @@ public class K8sSubmitter implements Submitter {
       mlJob.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
       AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(),
               mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
-              ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
+                      ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
               spec.getMeta().getExperimentId());
 
 
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
-              ? tfJobClient.create(getServerNamespace(), (TFJob) mlJob,
-                      new CreateOptions()).throwsApiException().getObject()
-              : pyTorchJobClient.create(getServerNamespace(), (PyTorchJob) mlJob,
-                      new CreateOptions()).throwsApiException().getObject();
+              ? k8sClient.getTfJobClient().create(getServerNamespace(), (TFJob) mlJob,
+              new CreateOptions()).throwsApiException().getObject()
+              : k8sClient.getPyTorchJobClient().create(getServerNamespace(), (PyTorchJob) mlJob,
+              new CreateOptions()).throwsApiException().getObject();
 
-      V1Pod agentPodResult = podClient.create(agentPod).throwsApiException().getObject();
+      V1Pod agentPodResult = k8sClient.getPodClient().create(agentPod).throwsApiException().getObject();
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
@@ -283,7 +213,7 @@ public class K8sSubmitter implements Submitter {
     } catch (ApiException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Job object failed by " +
-          e.getMessage());
+              e.getMessage());
     }
     return experiment;
   }
@@ -296,10 +226,10 @@ public class K8sSubmitter implements Submitter {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       mlJob.getMetadata().setNamespace(getServerNamespace());
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
-              ? tfJobClient.get(getServerNamespace(), mlJob.getMetadata().getName())
-                      .throwsApiException().getObject()
-              : pyTorchJobClient.get(getServerNamespace(), mlJob.getMetadata().getName())
-                      .throwsApiException().getObject();
+              ? k8sClient.getTfJobClient().get(getServerNamespace(), mlJob.getMetadata().getName())
+              .throwsApiException().getObject()
+              : k8sClient.getPyTorchJobClient().get(getServerNamespace(), mlJob.getMetadata().getName())
+              .throwsApiException().getObject();
 
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
 
@@ -324,11 +254,11 @@ public class K8sSubmitter implements Submitter {
       patchOptions.setFieldManager(spec.getMeta().getExperimentId());
       patchOptions.setForce(true);
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
-              ? tfJobClient.patch(getServerNamespace(), mlJob.getMetadata().getName(),
+              ? k8sClient.getTfJobClient().patch(getServerNamespace(), mlJob.getMetadata().getName(),
               V1Patch.PATCH_FORMAT_APPLY_YAML,
               new V1Patch(new Gson().toJson(mlJob)),
               patchOptions).throwsApiException().getObject()
-              : pyTorchJobClient.patch(getServerNamespace(), mlJob.getMetadata().getName(),
+              : k8sClient.getPyTorchJobClient().patch(getServerNamespace(), mlJob.getMetadata().getName(),
               V1Patch.PATCH_FORMAT_APPLY_YAML,
               new V1Patch(new Gson().toJson(mlJob)),
               patchOptions).throwsApiException().getObject()
@@ -353,20 +283,21 @@ public class K8sSubmitter implements Submitter {
 
       AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(),
               mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
-              ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
+                      ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
               spec.getMeta().getExperimentId());
 
       Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
-              ? tfJobClient.delete(getServerNamespace(), mlJob.getMetadata().getName(),
-              MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
+              ? k8sClient.getTfJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
+                      MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
               .throwsApiException().getStatus()
-              : pyTorchJobClient.delete(getServerNamespace(), mlJob.getMetadata().getName(),
-              MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
+              : k8sClient.getPyTorchJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
+                      MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
               .throwsApiException().getStatus();
 
       LOG.info(String.format("Experiment:%s had been deleted, start to delete agent pod:%s",
               spec.getMeta().getName(), agentPod.getMetadata().getName()));
-      podClient.delete(agentPod.getMetadata().getNamespace(), agentPod.getMetadata().getName());
+      k8sClient.getPodClient().delete(agentPod.getMetadata().getNamespace(),
+              agentPod.getMetadata().getName());
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_DELETE);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
@@ -377,7 +308,7 @@ public class K8sSubmitter implements Submitter {
   }
 
   private Experiment parseExperimentResponseObject(Object object, ParseOp op)
-      throws SubmarineRuntimeException {
+          throws SubmarineRuntimeException {
     Gson gson = new JSON().getGson();
     String jsonString = gson.toJson(object);
     LOG.info("Upstream response JSON: {}", jsonString);
@@ -402,7 +333,7 @@ public class K8sSubmitter implements Submitter {
     try {
       ListOptions listOptions = new ListOptions();
       listOptions.setLabelSelector(getJobLabelSelector(spec));
-      final V1PodList podList = podClient.list(getServerNamespace(), listOptions)
+      final V1PodList podList = k8sClient.getPodClient().list(getServerNamespace(), listOptions)
               .throwsApiException().getObject();
       for (V1Pod pod : podList.getItems()) {
         String podName = pod.getMetadata().getName();
@@ -421,14 +352,14 @@ public class K8sSubmitter implements Submitter {
     try {
       ListOptions listOptions = new ListOptions();
       listOptions.setLabelSelector(getJobLabelSelector(spec));
-      final V1PodList podList = podClient.list(getServerNamespace(), listOptions)
+      final V1PodList podList = k8sClient.getPodClient().list(getServerNamespace(), listOptions)
               .throwsApiException().getObject();
       for (V1Pod pod : podList.getItems()) {
         String podName = pod.getMetadata().getName();
-        String podLog = coreApi.readNamespacedPodLog(
-            podName, getServerNamespace(), null, Boolean.FALSE, null,
-            Integer.MAX_VALUE, null, Boolean.FALSE,
-            Integer.MAX_VALUE, null, Boolean.FALSE);
+        String podLog = k8sClient.getCoreApi().readNamespacedPodLog(
+                podName, getServerNamespace(), null, Boolean.FALSE, null,
+                Integer.MAX_VALUE, null, Boolean.FALSE,
+                Integer.MAX_VALUE, null, Boolean.FALSE);
 
         experimentLog.addPodLog(podName, podLog);
       }
@@ -459,192 +390,86 @@ public class K8sSubmitter implements Submitter {
   }
 
   private boolean isDeploymentAvailable(String name) throws ApiException{
-    V1Deployment deploy = appsV1Api.readNamespacedDeploymentStatus(name, getServerNamespace(), "true");
+    V1Deployment deploy = k8sClient.getAppsV1Api()
+            .readNamespacedDeploymentStatus(name, getServerNamespace(), "true");
     return deploy.getStatus().getAvailableReplicas() > 0; // at least one replica is running
   }
 
   @Override
   public Notebook createNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
-    Notebook notebook;
-    final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
-    final String scName = NotebookUtils.SC_NAME;
-    final String host = NotebookUtils.HOST_PATH;
-    final String workspacePvcName = String.format("%s-%s", NotebookUtils.PVC_PREFIX, name);
-    final String userPvcName = String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name);
-    final String configmap = String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name);
-    String namespace = getServerNamespace();
+    // index-3: parse notebook custom resource
+    NotebookCR notebookCR = new NotebookCR(spec, notebookId, getServerNamespace());
+    final String name = notebookCR.getMetadata().getName();
+    final String namespace = notebookCR.getMetadata().getNamespace();
 
-    // parse notebook custom resource
-    NotebookCR notebookCR;
-    try {
-      notebookCR = NotebookSpecParser.parseNotebook(spec, namespace, workspacePvcName, userPvcName);
-      notebookCR.getMetadata().setName(name);
-      notebookCR.getMetadata().setNamespace(namespace);
-      notebookCR.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
-    } catch (JsonSyntaxException e) {
-      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
+    // index-0: workspace pvc
+    PersistentVolumeClaim workspace = new PersistentVolumeClaim(namespace,
+            String.format("%s-%s", NotebookUtils.PVC_PREFIX, name), NotebookUtils.STORAGE);
+    // index-1: user setting pvc
+    PersistentVolumeClaim userset = new PersistentVolumeClaim(namespace,
+            String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name), NotebookUtils.DEFAULT_USER_STORAGE);
+    // index-2: overwrite.json configmap
+    Configmap overwrite = null;
+    if (StringUtils.isNotBlank(OVERWRITE_JSON)) {
+      overwrite = new Configmap(namespace, String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name),
+              NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME, OVERWRITE_JSON);
     }
-    AgentPod agentPod = new AgentPod(namespace, notebookCR.getMetadata().getName(),
+    // index-4: agent
+    AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
             CustomResourceType.Notebook, notebookId);
-    // create persistent volume claim
-    try {
-      // workspace
-      createPersistentVolumeClaim(workspacePvcName, namespace, scName, NotebookUtils.STORAGE);
-      // user setting
-      createPersistentVolumeClaim(userPvcName, namespace, scName, NotebookUtils.DEFAULT_USER_STORAGE);
-    } catch (ApiException e) {
-      LOG.error("K8s submitter: Create persistent volume claim for Notebook object failed by " +
-          e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: Create persistent volume claim for " +
-          "Notebook object failed by " + e.getMessage());
-    }
+    // index-5: notebook VirtualService custom resource
+    IstioVirtualService istioVirtualService = new IstioVirtualService(createMeta(namespace, name));
 
-    // create configmap if needed
-    boolean needOverwrite = StringUtils.isNotBlank(OVERWRITE_JSON);
-    if (needOverwrite) {
-      try {
-        createConfigMap(configmap, namespace, NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME, OVERWRITE_JSON);
-      } catch (JsonSyntaxException e) {
-        LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
-        rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
-        throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
-      } catch (ApiException e) {
-        LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
-        rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
-        throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
-                e.getMessage());
-      }
-    }
-
-    // create notebook custom resource
-    try {
-      Object object = notebookCRClient.create(notebookCR).throwsApiException().getObject();
-      notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_CREATE);
-      V1Pod agentPodResult = podClient.create(agentPod).throwsApiException().getObject();
-    } catch (JsonSyntaxException e) {
-      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
-      if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
-      rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
-      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
-    } catch (ApiException e) {
-      LOG.error("K8s submitter: parse Notebook object failed by " + e.getMessage(), e);
-      if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
-      rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
-      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Notebook object failed by " +
-              e.getMessage());
-    }
-
-    // create notebook Traefik custom resource
-    /*
-    try {
-      createIngressRoute(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
-    } catch (ApiException e) {
-      LOG.error("K8s submitter: Create ingressroute for Notebook object failed by " +
-          e.getMessage(), e);
-      rollbackCreationNotebook(notebookCR, namespace);
-      if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
-      rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
-      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: ingressroute for Notebook " +
-          "object failed by " + e.getMessage());
-    }
-    */
-
-    // create notebook VirtualService custom resource
-    try {
-      createVirtualService(notebookCR.getMetadata().getNamespace(), notebookCR.getMetadata().getName());
-    } catch (ApiException e) {
-      LOG.error("K8s submitter: Create VirtualService for Notebook object failed by " +
-              e.getMessage(), e);
-      rollbackCreationNotebook(notebookCR, namespace);
-      if (needOverwrite) rollbackCreationConfigMap(namespace, configmap);
-      rollbackCreationPVC(namespace, workspacePvcName, userPvcName);
-      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: VirtualService for Notebook " +
-              "object failed by " + e.getMessage());
-    }
-
-    notebook.setName(spec.getMeta().getName());
-    return notebook;
+    // commit resources/CRD with transaction
+    List<Object> values = resourceTransaction(workspace, userset, overwrite, notebookCR,
+            agentPod, istioVirtualService);
+    return (Notebook) values.get(3);
   }
 
   @Override
   public Notebook findNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
-    Notebook notebook = null;
-    final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
-    String namespace = getServerNamespace();
-
-    try {
-      NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null, "", "");
-      notebookCR.getMetadata().setName(name);
-      Object object = notebookCRClient.get(namespace, notebookCR.getMetadata().getName())
-              .throwsApiException().getObject();
-      notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_GET);
-    } catch (ApiException e) {
-      // SUBMARINE-1124
-      // The exception that obtaining CRD resources is not necessarily because the CRD is deleted,
-      // but maybe due to timeout or API error caused by network and other reasons.
-      // Therefore, the status of the notebook should be set to a new enum NOTFOUND.
-      LOG.warn("Get error when submitter is finding notebook: {}", spec.getMeta().getName());
-      if (notebook == null) {
-        notebook = new Notebook();
-      }
-      notebook.setName(spec.getMeta().getName());
+    NotebookCR notebookCR = new NotebookCR(spec, notebookId, getServerNamespace());
+    Notebook notebook = notebookCR.read(k8sClient);
+    if (notebook.getSpec() == null) {
       notebook.setSpec(spec);
-      notebook.setReason(e.getMessage());
-      notebook.setStatus(Notebook.Status.STATUS_NOT_FOUND.getValue());
     }
-    
-    notebook.setName(spec.getMeta().getName());
     return notebook;
   }
 
   @Override
   public Notebook deleteNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
-    Notebook notebook = null;
-    final String name = String.format("%s-%s", notebookId.replace("_", "-"), spec.getMeta().getName());
-    String namespace = getServerNamespace();
-    NotebookCR notebookCR = NotebookSpecParser.parseNotebook(spec, null, "", "");
-    AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
-            CustomResourceType.Notebook, notebookId);
+    NotebookCR notebookCR = new NotebookCR(spec, notebookId, getServerNamespace());
+    final String name = notebookCR.getMetadata().getName();
+    final String namespace = notebookCR.getMetadata().getNamespace();
 
-    try {
-      Object object = notebookCRClient.delete(namespace, name,
-              getDeleteOptions(notebookCR.getApiVersion())).throwsApiException().getStatus();
-      notebook = NotebookUtils.parseObject(object, NotebookUtils.ParseOpt.PARSE_OPT_DELETE);
-    } catch (ApiException e) {
-      API_EXCEPTION_404_CONSUMER.apply(e);
-    } finally {
-      if (notebook == null) {
-        // add metadata time info
-        notebookCR.getMetadata().setDeletionTimestamp(new DateTime());
-        // build notebook response
-        notebook = NotebookUtils.buildNotebookResponse(notebookCR);
-        notebook.setStatus(Notebook.Status.STATUS_NOT_FOUND.getValue());
-        notebook.setReason("The notebook instance is not found");
-      }
-    }
-
-    // delete ingress route
-    // deleteIngressRoute(namespace, name);
+    // delete crd
+    Notebook notebook = notebookCR.delete(k8sClient);
 
     // delete VirtualService
-    deleteVirtualService(namespace, name);
+    new IstioVirtualService(createMeta(namespace, name)).delete(k8sClient);
 
     // delete pvc
-    // workspace pvc
-    deletePersistentVolumeClaim(String.format("%s-%s", NotebookUtils.PVC_PREFIX, name), namespace);
-    // user set pvc
-    deletePersistentVolumeClaim(String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name), namespace);
+    //  workspace pvc
+    new PersistentVolumeClaim(namespace, String.format("%s-%s", NotebookUtils.PVC_PREFIX, name),
+            NotebookUtils.STORAGE).delete(k8sClient);
+    //  user set pvc
+    new PersistentVolumeClaim(namespace, String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name),
+            NotebookUtils.DEFAULT_USER_STORAGE).delete(k8sClient);
 
     // configmap
     if (StringUtils.isNoneBlank(OVERWRITE_JSON)) {
-      deleteConfigMap(namespace, String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name));
+      new Configmap(namespace, String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name))
+              .delete(k8sClient);
     }
-    LOG.info(String.format("Experiment:%s had been deleted, start to delete agent pod:%s",
-            spec.getMeta().getName(), agentPod.getMetadata().getName()));
-    podClient.delete(agentPod.getMetadata().getNamespace(), agentPod.getMetadata().getName());
 
-    notebook.setName(spec.getMeta().getName());
+    // delete agent
+    AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
+            CustomResourceType.Notebook, notebookId);
+    LOG.info(String.format("Notebook:%s had been deleted, start to delete agent pod:%s",
+            spec.getMeta().getName(), agentPod.getMetadata().getName()));
+    new AgentPod(namespace, spec.getMeta().getName(), CustomResourceType.Notebook, notebookId)
+            .delete(k8sClient);
+
     return notebook;
   }
 
@@ -656,7 +481,8 @@ public class K8sSubmitter implements Submitter {
     try {
       ListOptions listOptions = new ListOptions();
       listOptions.setLabelSelector(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KEY + "=" + id);
-      Object object = notebookCRClient.list(namespace, listOptions).throwsApiException().getObject();
+      Object object = k8sClient.getNotebookCRClient().list(namespace, listOptions)
+              .throwsApiException().getObject();
       notebookList = NotebookUtils.parseObjectForList(object);
     } catch (ApiException e) {
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
@@ -666,24 +492,25 @@ public class K8sSubmitter implements Submitter {
 
   @Override
   public void createServe(ServeSpec spec)
-      throws SubmarineRuntimeException {
+          throws SubmarineRuntimeException {
     SeldonDeployment seldonDeployment = parseServeSpec(spec);
     IstioVirtualService istioVirtualService = new IstioVirtualService(spec.getModelName(),
-        spec.getModelVersion());
+            spec.getModelVersion());
     try {
-      seldonDeploymentClient.create("default", seldonDeployment, new CreateOptions()).throwsApiException();
+      k8sClient.getSeldonDeploymentClient().create("default", seldonDeployment,
+              new CreateOptions()).throwsApiException();
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
     try {
-      istioVirtualServiceClient.create("default", istioVirtualService, new CreateOptions())
+      k8sClient.getIstioVirtualServiceClient().create("default", istioVirtualService, new CreateOptions())
               .throwsApiException();
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
       try {
-        seldonDeploymentClient.delete("default", seldonDeployment.getMetadata().getName(),
-            getDeleteOptions(seldonDeployment.getApiVersion())).throwsApiException();
+        k8sClient.getSeldonDeploymentClient().delete("default", seldonDeployment.getMetadata().getName(),
+                getDeleteOptions(seldonDeployment.getApiVersion())).throwsApiException();
       } catch (ApiException e1) {
         LOG.error(e1.getMessage(), e1);
       }
@@ -693,14 +520,14 @@ public class K8sSubmitter implements Submitter {
 
   @Override
   public void deleteServe(ServeSpec spec)
-      throws SubmarineRuntimeException {
+          throws SubmarineRuntimeException {
     SeldonDeployment seldonDeployment = parseServeSpec(spec);
     IstioVirtualService istioVirtualService = new IstioVirtualService(spec.getModelName(),
-        spec.getModelVersion());
+            spec.getModelVersion());
     try {
-      seldonDeploymentClient.delete("default", seldonDeployment.getMetadata().getName(),
+      k8sClient.getSeldonDeploymentClient().delete("default", seldonDeployment.getMetadata().getName(),
               getDeleteOptions(seldonDeployment.getApiVersion())).throwsApiException();
-      istioVirtualServiceClient.delete("default", istioVirtualService.getMetadata().getName(),
+      k8sClient.getIstioVirtualServiceClient().delete("default", istioVirtualService.getMetadata().getName(),
               getDeleteOptions(istioVirtualService.getApiVersion())).throwsApiException();
     } catch (ApiException e) {
       LOG.error(e.getMessage(), e);
@@ -708,142 +535,13 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
-  public void createPersistentVolumeClaim(String pvcName, String namespace, String scName, String storage)
-      throws ApiException {
-    V1PersistentVolumeClaim pvc = VolumeSpecParser.parsePersistentVolumeClaim(pvcName, scName, storage);
-    pvc.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
-    try {
-      persistentVolumeClaimClient.create(namespace, pvc, new CreateOptions()).throwsApiException();
-    } catch (ApiException e) {
-      LOG.error("Exception when creating persistent volume claim " + e.getMessage(), e);
-      throw e;
-    }
-  }
-
-  public void deletePersistentVolumeClaim(String pvcName, String namespace) {
-    /*
-    This version of Kubernetes-client/java has bug here.
-    It will trigger exception as in https://github.com/kubernetes-client/java/issues/86
-    but it can still work fine and delete the PVC
-    */
-    try {
-      persistentVolumeClaimClient.delete(namespace, pvcName).throwsApiException();
-    } catch (ApiException e) {
-      LOG.error("Exception when deleting persistent volume claim " + e.getMessage(), e);
-      API_EXCEPTION_404_CONSUMER.apply(e);
-    } catch (JsonSyntaxException e) {
-      if (e.getCause() instanceof IllegalStateException) {
-        IllegalStateException ise = (IllegalStateException) e.getCause();
-        if (ise.getMessage() != null && ise.getMessage().contains("Expected a string but was BEGIN_OBJECT")) {
-          LOG.debug("Catching exception because of issue " +
-              "https://github.com/kubernetes-client/java/issues/86", e);
-        } else {
-          throw e;
-        }
-      } else {
-        throw e;
-      }
-    }
-  }
-
   private String getJobLabelSelector(ExperimentSpec experimentSpec) {
     if (experimentSpec.getMeta().getFramework()
-        .equalsIgnoreCase(ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName())) {
+            .equalsIgnoreCase(ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName())) {
       return TF_JOB_SELECTOR_KEY + experimentSpec.getMeta().getExperimentId();
     } else {
       return PYTORCH_JOB_SELECTOR_KEY + experimentSpec.getMeta().getExperimentId();
     }
-  }
-
-  private void createIngressRoute(String namespace, String name) throws ApiException {
-    try {
-      IngressRoute ingressRoute = new IngressRoute();
-      V1ObjectMeta meta = new V1ObjectMeta();
-      meta.setName(name);
-      meta.setNamespace(namespace);
-      meta.setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
-      ingressRoute.setMetadata(meta);
-      ingressRoute.setSpec(parseIngressRouteSpec(meta.getNamespace(), meta.getName()));
-
-      ingressRouteClient.create(namespace, ingressRoute, new CreateOptions()).throwsApiException();
-    } catch (ApiException e) {
-      LOG.error("K8s submitter: Create Traefik custom resource object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
-    } catch (JsonSyntaxException e) {
-      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
-    }
-  }
-
-  private void deleteIngressRoute(String namespace, String name) {
-    try {
-      ingressRouteClient.delete(namespace, name,
-          getDeleteOptions(IngressRoute.CRD_APIVERSION_V1)).throwsApiException();
-    } catch (ApiException e) {
-      LOG.error("K8s submitter: Delete Traefik custom resource object failed by " + e.getMessage(), e);
-      API_EXCEPTION_404_CONSUMER.apply(e);
-    }
-  }
-
-  private IngressRouteSpec parseIngressRouteSpec(String namespace, String name) {
-    IngressRouteSpec spec = new IngressRouteSpec();
-    Set<String> entryPoints = new HashSet<>();
-    entryPoints.add("web");
-    spec.setEntryPoints(entryPoints);
-
-    SpecRoute route = new SpecRoute();
-    route.setKind("Rule");
-    route.setMatch("PathPrefix(`/notebook/" + namespace + "/" + name + "/`)");
-    Set<Map<String, Object>> serviceMap = new HashSet<>();
-    Map<String, Object> service = new HashMap<>();
-    service.put("name", name);
-    service.put("port", 80);
-    serviceMap.add(service);
-    route.setServices(serviceMap);
-    Set<SpecRoute> routes = new HashSet<>();
-    routes.add(route);
-    spec.setRoutes(routes);
-    return spec;
-  }
-
-  private void createVirtualService(String namespace, String name) throws ApiException {
-    try {
-      V1ObjectMeta meta = new V1ObjectMeta();
-      meta.setName(name);
-      meta.setNamespace(namespace);
-      meta.setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
-      IstioVirtualServiceSpec spec = parseVirtualServiceSpec(meta.getNamespace(), meta.getName());
-      IstioVirtualService virtualService = new IstioVirtualService(meta, spec);
-      istioVirtualServiceClient.create(namespace, virtualService, new CreateOptions()).throwsApiException();
-    } catch (ApiException e) {
-      LOG.error("K8s submitter: Create notebook VirtualService custom resource object failed by " +
-              e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
-    } catch (JsonSyntaxException e) {
-      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
-    }
-  }
-
-  private void deleteVirtualService(String namespace, String name) {
-    try {
-      istioVirtualServiceClient.delete(namespace, name, getDeleteOptions(IstioConstants.API_VERSION))
-              .throwsApiException();
-    } catch (ApiException e) {
-      LOG.error("K8s submitter: Delete notebook VirtualService custom resource object failed by " +
-              e.getMessage(), e);
-      API_EXCEPTION_404_CONSUMER.apply(e);
-    }
-  }
-
-  private IstioVirtualServiceSpec parseVirtualServiceSpec(String namespace, String name) {
-    IstioVirtualServiceSpec spec = new IstioVirtualServiceSpec();
-    spec.addHost(IstioConstants.DEFAULT_INGRESS_HOST);
-    // TODO(operator): Do not hard code the gateway
-    spec.addGateway("submarine/submarine-gateway");
-    String matchURIPrefix = "/notebook/" + namespace + "/" + name;
-    spec.setHTTPRoute(new IstioHTTPRoute(matchURIPrefix, name, 80));
-    return spec;
   }
 
   private SeldonDeployment parseServeSpec(ServeSpec spec) throws SubmarineRuntimeException {
@@ -862,71 +560,4 @@ public class K8sSubmitter implements Submitter {
     return seldonDeployment;
   }
 
-  /**
-   * Create ConfigMap with values (key1, value1, key2, value2, ...)
-   */
-  public void createConfigMap(String name, String namespace, String ... values)
-          throws ApiException {
-    V1ConfigMap configMap = ConfigmapSpecParser.parseConfigMap(name, values);
-    configMap.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
-    try {
-      configMapClient.create(namespace, configMap, new CreateOptions()).throwsApiException();
-    } catch (ApiException e) {
-      LOG.error("Exception when creating configmap " + e.getMessage(), e);
-      throw e;
-    }
-  }
-
-  /**
-   * Delete ConfigMap
-   */
-  public void deleteConfigMap(String namespace, String name) {
-    try {
-      configMapClient.delete(namespace, name).throwsApiException();
-    } catch (ApiException e) {
-      LOG.error("Exception when deleting config map " + e.getMessage(), e);
-      API_EXCEPTION_404_CONSUMER.apply(e);
-    }
-  }
-
-  /**
-   * Rollback to delete ConfigMap
-   */
-  private void rollbackCreationConfigMap(String namespace, String ... names)
-          throws SubmarineRuntimeException {
-    for (String name : names) {
-      deleteConfigMap(namespace, name);
-    }
-  }
-
-  private void rollbackCreationPVC(String namespace, String ... pvcNames) {
-    for (String pvcName : pvcNames) {
-      deletePersistentVolumeClaim(pvcName, namespace);
-    }
-  }
-
-  private void rollbackCreationNotebook(NotebookCR notebookCR, String namespace)
-      throws SubmarineRuntimeException {
-    try {
-      notebookCRClient.delete(namespace, notebookCR.getMetadata().getName(),
-              getDeleteOptions(notebookCR.getApiVersion())).throwsApiException();
-    } catch (ApiException e) {
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
-    }
-  }
-
-  private String getServerNamespace() {
-    return K8sUtils.getNamespace();
-  }
-
-  private DeleteOptions getDeleteOptions(String apiVersion){
-    DeleteOptions deleteOptions = new DeleteOptions();
-    deleteOptions.setApiVersion(apiVersion);
-    return deleteOptions;
-  }
-
-  private enum ParseOp {
-    PARSE_OP_RESULT,
-    PARSE_OP_DELETE
-  }
 }
