@@ -44,6 +44,13 @@ spec:
   selector:
     app: "submarine-server"
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: submarine-config
+data:
+  test: "helloworld"
+---
 # Source: submarine/templates/submarine-server.yaml
 apiVersion: apps/v1
 kind: Deployment
