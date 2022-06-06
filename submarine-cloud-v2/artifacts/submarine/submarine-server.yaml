@@ -50,6 +50,7 @@ metadata:
   name: submarine-config
 data:
   test: "helloworld"
+  submarine.conf.dir: "conf"
 ---
 # Source: submarine/templates/submarine-server.yaml
 apiVersion: apps/v1
