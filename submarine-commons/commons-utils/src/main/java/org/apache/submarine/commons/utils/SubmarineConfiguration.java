@@ -36,8 +36,6 @@ public class SubmarineConfiguration extends XMLConfiguration {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineConfiguration.class);
   private static final long serialVersionUID = 4749303235693848035L;
 
-  private static final String SUBMARINE_SITE_XML = "submarine-site.xml";
-
   public static final String SUBMARINE_RUNTIME_APP_TYPE = "SUBMARINE";
 
   private static volatile SubmarineConfiguration conf;
@@ -95,11 +93,6 @@ public class SubmarineConfiguration extends XMLConfiguration {
       }
     }
     return conf;
-  }
-
-  // Testing: get a new default instance
-  public static SubmarineConfiguration getDefaultInstance() {
-    return new SubmarineConfiguration();
   }
 
   // Create a new instance

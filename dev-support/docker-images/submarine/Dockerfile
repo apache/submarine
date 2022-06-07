@@ -34,7 +34,6 @@ ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
 # Install Submarine
 ADD ./tmp/submarine-dist-*.tar.gz /opt/
 RUN ln -s /opt/submarine-dist-* "/opt/submarine-current"
-ADD ./tmp/submarine-site.xml "/opt/submarine-current/conf/"
 ADD ./tmp/submarine.sh "/opt/submarine-current/bin/"
 ADD ./tmp/mysql-connector-java-5.1.39.jar "/opt/submarine-current/lib/"
 

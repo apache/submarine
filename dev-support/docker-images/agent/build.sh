@@ -40,10 +40,6 @@ fi
 mkdir -p "${CURRENT_PATH}/tmp"
 cp ${SUBMARINE_HOME}/submarine-server/server-submitter/submarine-k8s-agent/target/submarine-k8s-agent-${SUBMARINE_VERSION}.tar.gz "${CURRENT_PATH}/tmp"
 
-# Replace the submarine.server.addr in the submarine-site.xml file with the link name of the submarine container
-# `submarine-server` is submarine server container name
-cp ${SUBMARINE_HOME}/conf/submarine-site.xml "${CURRENT_PATH}/tmp/"
-
 # build image
 cd ${CURRENT_PATH}
 

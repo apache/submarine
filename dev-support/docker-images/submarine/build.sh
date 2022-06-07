@@ -48,11 +48,6 @@ trap "test -f $tmpfile && rm $tmpfile" RETURN
 curl -L -o $tmpfile ${MYSQL_JAR_URL}
 mv $tmpfile ${CURRENT_PATH}/tmp/mysql-connector-java-${MYSQL_VERSION}.jar
 
-# Replace the mysql jdbc.url in the submarine-site.xml file with the link name of the submarine container
-# `submarine-database` is submarine database container name
-cp ${SUBMARINE_HOME}/conf/submarine-site.xml "${CURRENT_PATH}/tmp/"
-sed -i.bak 's/127.0.0.1:3306/submarine-database:3306/g' "${CURRENT_PATH}/tmp/submarine-site.xml"
-
 cp ${SUBMARINE_HOME}/bin/submarine.sh "${CURRENT_PATH}/tmp/"
 
 # build image
