@@ -89,46 +89,52 @@ public class SubmarineConfiguration extends XMLConfiguration {
     if (conf == null) {
       synchronized (SubmarineConfiguration.class) {
         if  (conf == null) {
-          conf = newInstance();
+          // conf = newInstance();
+          conf = new SubmarineConfiguration();
         }
       }
     }
     return conf;
   }
 
+  // Testing: get a new default instance
+  public static SubmarineConfiguration getDefaultInstance() {
+    return new SubmarineConfiguration();
+  }
+
   // Create a new instance
   // Note: Cannot be mixed with getInstance()
-  public static SubmarineConfiguration newInstance() {
-    SubmarineConfiguration submarineConfig;
-    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    URL url;
+  // public static SubmarineConfiguration newInstance() {
+  //   SubmarineConfiguration submarineConfig;
+  //   ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+  //   URL url;
 
-    url = SubmarineConfiguration.class.getResource(SUBMARINE_SITE_XML);
-    if (url == null) {
-      ClassLoader cl = SubmarineConfiguration.class.getClassLoader();
-      if (cl != null) {
-        url = cl.getResource(SUBMARINE_SITE_XML);
-      }
-    }
-    if (url == null) {
-      url = classLoader.getResource(SUBMARINE_SITE_XML);
-    }
+  //   url = SubmarineConfiguration.class.getResource(SUBMARINE_SITE_XML);
+  //   if (url == null) {
+  //     ClassLoader cl = SubmarineConfiguration.class.getClassLoader();
+  //     if (cl != null) {
+  //       url = cl.getResource(SUBMARINE_SITE_XML);
+  //     }
+  //   }
+  //   if (url == null) {
+  //     url = classLoader.getResource(SUBMARINE_SITE_XML);
+  //   }
 
-    if (url == null) {
-      LOG.warn("Failed to load configuration, proceeding with a default");
-      submarineConfig = new SubmarineConfiguration();
-    } else {
-      try {
-        LOG.info("Load configuration from " + url);
-        submarineConfig = new SubmarineConfiguration(url);
-      } catch (ConfigurationException e) {
-        LOG.warn("Failed to load configuration from " + url + " proceeding with a default", e);
-        submarineConfig = new SubmarineConfiguration();
-      }
-    }
+  //   if (url == null) {
+  //     LOG.warn("Failed to load configuration, proceeding with a default");
+  //     submarineConfig = new SubmarineConfiguration();
+  //   } else {
+  //     try {
+  //       LOG.info("Load configuration from " + url);
+  //       submarineConfig = new SubmarineConfiguration(url);
+  //     } catch (ConfigurationException e) {
+  //       LOG.warn("Failed to load configuration from " + url + " proceeding with a default", e);
+  //       submarineConfig = new SubmarineConfiguration();
+  //     }
+  //   }
 
-    return submarineConfig;
-  }
+  //   return submarineConfig;
+  // }
 
   public String getServerAddress() {
     return getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_ADDR);

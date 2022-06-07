@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 public class SubmarineConfVars {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineConfVars.class);
   public enum ConfVars {
+    FLOAT_TEST("float.test", -123.456f),
     SUBMARINE_CONF_DIR("submarine.conf.dir", "conf"),
     SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB(
         "submarine.localization.max-allowed-file-size-mb", 2048L),
@@ -91,7 +92,19 @@ public class SubmarineConfVars {
     ConfVars(String varName, String varValue) {
       this.varName = varName;
       this.varClass = String.class;
-      this.stringValue = varValue;
+      this.stringValue = (varValue == null ? "" : varValue);
+      if (varName.equals("submarine.runtime.class")) {
+        LOG.info("!!!!!!!!!!! input: " + varValue);
+        LOG.info("!!!!!!!!!!! this.stringValue: " + this.stringValue);
+      }
+      String stringValueFromEnv = System.getenv(varName);
+      if (this.stringValue.equals(stringValueFromEnv)) {
+        LOG.info(varName + ": Equal");
+      } else {
+        LOG.info("--------------- Error ---------------");
+        LOG.info(varName + ": " + this.stringValue + " != " + stringValueFromEnv);
+        LOG.info("-------------------------------------");
+      }
       this.intValue = -1;
       this.floatValue = -1;
       this.longValue = -1;
@@ -104,6 +117,14 @@ public class SubmarineConfVars {
       this.varClass = Integer.class;
       this.stringValue = null;
       this.intValue = intValue;
+      int intValueFromEnv = Integer.valueOf(System.getenv(varName));
+      if (this.intValue == intValueFromEnv) {
+        LOG.info(varName + ": Equal");
+      } else {
+        LOG.info("--------------- Error ---------------");
+        LOG.info(varName + ": " + this.intValue + " != " + intValueFromEnv);
+        LOG.info("-------------------------------------");
+      }
       this.floatValue = -1;
       this.longValue = -1;
       this.booleanValue = false;
@@ -117,6 +138,14 @@ public class SubmarineConfVars {
       this.intValue = -1;
       this.floatValue = -1;
       this.longValue = longValue;
+      long longValueFromEnv =  Long.parseLong(System.getenv(varName), 10);
+      if (this.longValue == longValueFromEnv) {
+        LOG.info(varName + ": Equal");
+      } else {
+        LOG.info("--------------- Error ---------------");
+        LOG.info(varName + ": " + this.longValue + " != " + longValueFromEnv);
+        LOG.info("-------------------------------------");
+      }
       this.booleanValue = false;
       this.type = VarType.LONG;
     }
@@ -128,6 +157,14 @@ public class SubmarineConfVars {
       this.intValue = -1;
       this.longValue = -1;
       this.floatValue = floatValue;
+      float floatValueFromEnv =  Float.parseFloat(System.getenv(varName));
+      if (this.floatValue == floatValueFromEnv) {
+        LOG.info(varName + ": Equal");
+      } else {
+        LOG.info("--------------- Error ---------------");
+        LOG.info(varName + ": " + this.floatValue + " != " + floatValueFromEnv);
+        LOG.info("-------------------------------------");
+      }
       this.booleanValue = false;
       this.type = VarType.FLOAT;
     }
@@ -140,6 +177,14 @@ public class SubmarineConfVars {
       this.longValue = -1;
       this.floatValue = -1;
       this.booleanValue = booleanValue;
+      boolean booleanValueFromEnv = Boolean.parseBoolean(System.getenv(varName));
+      if (this.booleanValue == booleanValueFromEnv) {
+        LOG.info(varName + ": Equal");
+      } else {
+        LOG.info("--------------- Error ---------------");
+        LOG.info(varName + ": " + this.booleanValue + " != " + booleanValueFromEnv);
+        LOG.info("-------------------------------------");
+      }
       this.type = VarType.BOOLEAN;
     }
 

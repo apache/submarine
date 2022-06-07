@@ -80,6 +80,11 @@ public class SubmarineServer extends ResourceConfig {
 
   public static void main(String[] args) throws InterruptedException {
     PropertyConfigurator.configure(ClassLoader.getSystemResource("log4j.properties"));
+    // //////////////    Configmap Test Message    //////////////
+    // LOG.info("Print all configurations");
+    // SubmarineConfiguration.getDefaultInstance();
+    // LOG.info("//////////////////////////////////////////////");
+    // //////////////////////////////////////////////////////////
 
     LOG.info("Submarine server Host: " + conf.getServerAddress());
     if (!conf.useSsl()) {
