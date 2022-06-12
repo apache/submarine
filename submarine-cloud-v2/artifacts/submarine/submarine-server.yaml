@@ -85,7 +85,7 @@ data:
   metastore.jdbc.password: "password"
   submarine.notebook.default.overwrite_json: ""
   workbench.websocket.max.text.message.size: "1024000"
-  workbench.web.war: "submarine-workbench/workbench-web/dist"
+  workbench.web.war: "../submarine-workbench-web.war"  # latest: "submarine-workbench/workbench-web/dist"
   submarine.runtime.class: "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"
   submarine.submitter: "k8s"
   submarine.server.service.name: "submarine-server"
