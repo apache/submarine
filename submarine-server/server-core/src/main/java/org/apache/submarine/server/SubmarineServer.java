@@ -212,6 +212,15 @@ public class SubmarineServer extends ResourceConfig {
         new QueuedThreadPool(conf.getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_MAX),
             conf.getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_MIN),
             conf.getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_TIMEOUT));
+    // Debug
+    LOG.info("////////////////////    setupJettyServer Debug    //////////////////");
+    LOG.info("SUBMARINE_SERVER_JETTY_THREAD_POOL_MAX: " +
+        Integer.toString(conf.getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_MAX)));
+    LOG.info("SUBMARINE_SERVER_JETTY_THREAD_POOL_MIN: " +
+        Integer.toString(conf.getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_MIN)));
+    LOG.info("SUBMARINE_SERVER_JETTY_THREAD_POOL_TIMEOUT: " +
+        Integer.toString(conf.getInt(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_JETTY_THREAD_POOL_TIMEOUT)));
+
     final Server server = new Server(threadPool);
     ServerConnector connector;
 
@@ -235,8 +244,12 @@ public class SubmarineServer extends ResourceConfig {
     } else {
       connector = new ServerConnector(server);
     }
+    // Debug
+    LOG.info("useSsl: " + Boolean.toString(conf.useSsl()));
 
     configureRequestHeaderSize(conf, connector);
+    // Debug
+    LOG.info("getJettyRequestHeaderSize: " + Integer.toString(conf.getJettyRequestHeaderSize()));
     // Set some timeout options to make debugging easier.
     int timeout = 1000 * 30;
     connector.setIdleTimeout(timeout);
@@ -246,6 +259,12 @@ public class SubmarineServer extends ResourceConfig {
     } else {
       connector.setPort(conf.getServerPort());
     }
+    // Debug
+    LOG.info("getServerAddress: " + conf.getServerAddress());
+    LOG.info("getServerSslPort: " + conf.getServerSslPort());
+    LOG.info("getServerPort: " + conf.getServerPort());
+
+    LOG.info("////////////////////////////////////////////////////////////////////");
 
     server.addConnector(connector);
     return server;

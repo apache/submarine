@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 public class SubmarineConfVars {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineConfVars.class);
   public enum ConfVars {
+    
     FLOAT_TEST("float.test", VarType.FLOAT),
     SUBMARINE_CONF_DIR("submarine.conf.dir", VarType.STRING),
     SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB(
@@ -71,7 +72,62 @@ public class SubmarineConfVars {
     SUBMARINE_SERVER_SERVICE_NAME("submarine.server.service.name", VarType.STRING),
     ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", VarType.STRING),
     ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", VarType.STRING);
+    
+    /*
+    FLOAT_TEST("float.test", -123.456f),
+    SUBMARINE_CONF_DIR("submarine.conf.dir", "conf"),
+    SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB(
+        "submarine.localization.max-allowed-file-size-mb", 2048L),
+    SUBMARINE_SERVER_ADDR("submarine.server.addr", "0.0.0.0"),
+    SUBMARINE_SERVER_PORT("submarine.server.port", 8080),
+    SUBMARINE_SERVER_SSL("submarine.server.ssl", false),
+    SUBMARINE_SERVER_SSL_PORT("submarine.server.ssl.port", 8443),
+    SUBMARINE_SERVER_JETTY_THREAD_POOL_MAX("submarine.server.jetty.thread.pool.max", 400),
+    SUBMARINE_SERVER_JETTY_THREAD_POOL_MIN("submarine.server.jetty.thread.pool.min", 8),
+    SUBMARINE_SERVER_JETTY_THREAD_POOL_TIMEOUT("submarine.server.jetty.thread.pool.timeout", 30),
+    SUBMARINE_SERVER_JETTY_REQUEST_HEADER_SIZE("submarine.server.jetty.request.header.size", 8192),
+    SUBMARINE_SERVER_SSL_CLIENT_AUTH("submarine.server.ssl.client.auth", false),
+    SUBMARINE_SERVER_SSL_KEYSTORE_PATH("submarine.server.ssl.keystore.path", "keystore"),
+    SUBMARINE_SERVER_SSL_KEYSTORE_TYPE("submarine.server.ssl.keystore.type", "JKS"),
+    SUBMARINE_SERVER_SSL_KEYSTORE_PASSWORD("submarine.server.ssl.keystore.password", ""),
+    SUBMARINE_SERVER_SSL_KEY_MANAGER_PASSWORD("submarine.server.ssl.key.manager.password", null),
+    SUBMARINE_SERVER_SSL_TRUSTSTORE_PATH("submarine.server.ssl.truststore.path", null),
+    SUBMARINE_SERVER_SSL_TRUSTSTORE_TYPE("submarine.server.ssl.truststore.type", null),
+    SUBMARINE_SERVER_SSL_TRUSTSTORE_PASSWORD("submarine.server.ssl.truststore.password", null),
+    SUBMARINE_CLUSTER_ADDR("submarine.cluster.addr", ""),
+    SUBMARINE_SERVER_RPC_ENABLED(
+        "submarine.server.rpc.enabled", false),
+    SUBMARINE_SERVER_RPC_PORT(
+        "submarine.server.rpc.port", 8980),
+    CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", 3000),
+    CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", 9000),
 
+    JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
+    JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarine" +
+        "?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true&" +
+        "failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false&" +
+        // use timezone for dateformat, current default database timezone is utc
+        "serverTimezone=UTC&useTimezone=true&useLegacyDatetimeCode=true"),
+    JDBC_USERNAME("jdbc.username", "submarine"),
+    JDBC_PASSWORD("jdbc.password", "password"),
+    METASTORE_JDBC_URL("metastore.jdbc.url", "jdbc:mysql://127.0.0.1:3306/metastore" +
+        "?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&" +
+        "failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false"),
+    METASTORE_JDBC_USERNAME("metastore.jdbc.username", "metastore"),
+    METASTORE_JDBC_PASSWORD("metastore.jdbc.password", "password"),
+
+    SUBMARINE_NOTEBOOK_DEFAULT_OVERWRITE_JSON("submarine.notebook.default.overwrite_json", ""),
+
+    WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
+        "workbench.websocket.max.text.message.size", "1024000"),
+    WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),
+    SUBMARINE_RUNTIME_CLASS("submarine.runtime.class",
+        "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"),
+    SUBMARINE_SUBMITTER("submarine.submitter", "k8s"),
+    SUBMARINE_SERVER_SERVICE_NAME("submarine.server.service.name", "submarine-server"),
+    ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", "4.0.1"),
+    ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", "4.11.10");
+    */
     private String varName;
     @SuppressWarnings("rawtypes")
     private Class varClass;
@@ -82,7 +138,7 @@ public class SubmarineConfVars {
     private boolean booleanValue;
     private long longValue;
 
-
+    
     ConfVars(String varName, VarType type) {
       switch(type) {
         case STRING:
