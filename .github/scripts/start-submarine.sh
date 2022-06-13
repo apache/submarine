@@ -30,9 +30,9 @@ kubectl create namespace submarine
 kubectl create namespace "$submarine_user_namespace"
 kubectl label namespace submarine istio-injection=enabled
 kubectl label namespace "$submarine_user_namespace" istio-injection=enabled
-kubectl apply -f ./submarine-cloud-v2/artifacts/submarine/submarine-server.yaml -n "$submarine_user_namespace" # For github action
 helm install --wait --set storageClass.provisioner=rancher.io/local-path --set storageClass.volumeBindingMode=WaitForFirstConsumer submarine ./helm-charts/submarine -n submarine
 kubectl apply -f ./submarine-cloud-v2/artifacts/examples/example-submarine.yaml -n "$submarine_user_namespace"
+kubectl apply -f ./submarine-cloud-v2/artifacts/submarine/submarine-server.yaml -n "$submarine_user_namespace" # For github action
 
 # Polling waiting for the submarine to be in the RUNNING state
 for ((i=0;i<$wait_times;++i)); do
