@@ -1,0 +1,23 @@
+.tab_header{
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap:1rem;
+    background-color: #fff;
+    font-family: inherit;
+    padding-bottom: 1.5rem;
+
+    .accordion{
+        display: flex;
+        color: #aaa;
+        font-weight: 400;
+    }
+    .page{
+        display: flex;
+        align-items: center;
+        font-size: 1.4rem;
+        font-weight: 500;
+    }
+}
+
+

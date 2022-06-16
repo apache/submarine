@@ -1,15 +1,20 @@
 .header{
     display: flex;
+    position: sticky;
+    top: 0;
+    width: 100%;
     justify-content: space-between;
     align-items: center;
     padding: 1rem ;
-    background-color: #f5f5f5;
+    background-color: #fff;
     font-family: inherit;
+    border-bottom: 2px solid #e5e5e5;
 
     svg{
         width: 1.5rem;
         height: 1.5rem;
         fill: #000;
+        cursor: pointer;
     }
 
     .profile{
@@ -21,11 +26,14 @@
         svg{
             background-color: #ccc;
             padding: 4px;
-            border-radius: 1rem;
+            fill: #fff;
+            border-radius: 50%;
         }
         .user{
             margin-left: 0.5rem;
             font-size: 1rem;
+            font-weight: bold;
+
         }
 
 }
