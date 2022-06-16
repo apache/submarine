@@ -1,0 +1,32 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem ;
+    background-color: #f5f5f5;
+    font-family: inherit;
+
+    svg{
+        width: 1.5rem;
+        height: 1.5rem;
+        fill: #000;
+    }
+
+    .profile{
+        display: flex;
+        align-items: flex-start;
+        width: 4rem;
+        justify-content: space-between;
+        margin-right: 1rem;
+        svg{
+            background-color: #ccc;
+            padding: 4px;
+            border-radius: 1rem;
+        }
+        .user{
+            margin-left: 0.5rem;
+            font-size: 1rem;
+        }
+
+}
+}

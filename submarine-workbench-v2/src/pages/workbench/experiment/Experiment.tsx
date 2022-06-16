@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import Header from "@submarine/components/Header";
 import { Layout } from "antd";
 
 const { Content } = Layout;
@@ -24,7 +25,10 @@ const { Content } = Layout;
 function Experiment() {
   return (
     <Layout data-testid="experiment-page">
-      <Content>Experiment</Content>
+      <Content>
+        <Header />
+        Experiment
+      </Content>
     </Layout>
   );
 }
