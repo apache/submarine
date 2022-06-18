@@ -29,5 +29,4 @@ Here're sub topics of Submarine implementations:
 
 Working-in-progress designs, Below are designs which are working-in-progress, we will move them to the upper section once design & review is finished:
 
-- [Submarine HA Design](./wip-designs/submarine-clusterServer.md): How Submarine HA can be achieved, using RAFT, etc.
 - [Submarine services deployment module:](./wip-designs/submarine-launcher.md) How to deploy submarine services to k8s or cloud.
