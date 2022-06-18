@@ -77,7 +77,6 @@ module.exports = {
                 {
                     "WIP Design Docs": [
                         "designDocs/wip-designs/submarine-launcher",
-                        "designDocs/wip-designs/submarine-clusterServer",
                         "designDocs/wip-designs/security-implementation",
                     ],
                 },
