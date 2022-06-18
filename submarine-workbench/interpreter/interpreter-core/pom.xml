@@ -43,12 +43,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.apache.submarine</groupId>
-      <artifactId>submarine-commons-cluster</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.zeppelin</groupId>
       <artifactId>zeppelin-interpreter</artifactId>
       <version>${zeppelin.version}</version>

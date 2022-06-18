@@ -37,7 +37,6 @@
   <modules>
     <module>commons-utils</module>
     <module>commons-runtime</module>
-    <module>commons-cluster</module>
   </modules>
 
 </project>
