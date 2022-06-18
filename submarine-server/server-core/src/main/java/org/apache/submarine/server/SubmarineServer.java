@@ -22,7 +22,6 @@ import org.apache.log4j.PropertyConfigurator;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.server.websocket.WebSocketServer;
-import org.apache.submarine.commons.cluster.ClusterServer;
 import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.HttpConfiguration;
@@ -283,13 +282,6 @@ public class SubmarineServer extends ResourceConfig {
     webapp.addServlet(notebookServletHolder, "/ws/notebook/*");
     webapp.addServlet(experimentServletHolder, "/ws/experiment/*");
     webapp.addServlet(environmentServletHolder, "/ws/environment/*");
-  }
-
-  private static void setupClusterServer() {
-    if (conf.isClusterMode()) {
-      ClusterServer clusterServer = ClusterServer.getInstance();
-      clusterServer.start();
-    }
   }
 
   private static SslContextFactory getSslContextFactory(SubmarineConfiguration conf) {

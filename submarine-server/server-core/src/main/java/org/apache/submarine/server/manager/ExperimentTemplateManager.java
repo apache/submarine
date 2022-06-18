@@ -53,7 +53,6 @@ import org.apache.submarine.server.utils.gson.ExperimentIdSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.esotericsoftware.minlog.Log;
 import com.github.wnameless.json.flattener.JsonFlattener;
 import com.github.wnameless.json.unflattener.JsonUnflattener;
 import com.google.gson.Gson;
@@ -394,7 +393,7 @@ public class ExperimentTemplateManager {
     String spec = gson.toJson(tplspec.getExperimentSpec());
     Map<String, Object> flattenJson = JsonFlattener.flattenAsMap(spec);
 
-    Log.info(flattenJson.toString());
+    LOG.info(flattenJson.toString());
     // illegalParamList: The parameters not in template parameters should not be used
     // Check at submission
     Map<String, ExperimentTemplateParamSpec> tplparamMap = new HashMap<String, ExperimentTemplateParamSpec>();
@@ -498,15 +497,15 @@ public class ExperimentTemplateManager {
     }
 
     String json = flattenJson.toString();
-    Log.info("flattenJson    " + json);
+    LOG.info("flattenJson    " + json);
 
     String nestedJson = JsonUnflattener.unflatten(json);
-    Log.info("nestedJson    " + nestedJson);
+    LOG.info("nestedJson    " + nestedJson);
 
     ExperimentSpec returnExperimentSpec = null;
     try {
       returnExperimentSpec = gson.fromJson(nestedJson, ExperimentSpec.class);
-      Log.info("ExperimentSpec " + returnExperimentSpec.toString());
+      LOG.info("ExperimentSpec " + returnExperimentSpec.toString());
 
     } catch (Exception e) {
       throw new SubmarineRuntimeException(Status.BAD_REQUEST.getStatusCode(),
