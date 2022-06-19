@@ -15,8 +15,12 @@
 import os
 from fs_prehandler.hdfs_prehandler import HDFSPreHandler 
 
+def get_file_system_prehandler():
+    if os.environ['FILE_SYSTEM_TYPE'] == 'HDFS':
+        return HDFSPreHandler()
+
 if __name__ == "__main__":
-    fsPrehandler = HDFSPreHandler()
+    fsPrehandler = get_file_system_prehandler()
     fsPrehandler.process()
 
     

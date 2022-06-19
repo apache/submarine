@@ -27,7 +27,7 @@ ENV HADOOP_HOME=/opt/hadoop-3.3.3
 ENV ARROW_LIBHDFS_DIR=/opt/hadoop-3.3.3/lib/native
 
 RUN python3 -m pip install --upgrade pip \
-    && pip3 install fsspec pyarrow
+    && pip3 install fsspec pyarrow --no-cache-dir
  
 ENTRYPOINT ["/bin/bash"]
 CMD ["/opt/submarine-experiment-prehandler/experiment-prehandler.sh"]

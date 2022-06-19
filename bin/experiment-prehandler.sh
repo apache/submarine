@@ -16,5 +16,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+export SUBMARINE_HOME="$(cd "${FWDIR}/.."; pwd)"
+export SUBMARINE_LOG_DIR="${SUBMARINE_HOME}/logs"
+
+if [[ ! -d "${SUBMARINE_LOG_DIR}" ]]; then
+  echo "Log dir doesn't exist, create ${SUBMARINE_LOG_DIR}"
+  $(mkdir -p "${SUBMARINE_LOG_DIR}")
+fi
+
 export CLASSPATH=`$HADOOP_HOME/bin/hadoop classpath --glob`
+
 python3 /opt/submarine-experiment-prehandler/prehandler_main.py
