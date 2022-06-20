@@ -37,7 +37,7 @@ public class ExperimentTaskSpec {
   private String cmd;
   private Map<String, String> envVars;
 
-  // should ignored in JSON Serialization
+  // should be ignored in JSON Serialization
   private Map<String, String> resourceMap;
 
   public ExperimentTaskSpec() {

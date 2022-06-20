@@ -100,12 +100,12 @@ public class ExperimentSpecParser {
     for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
       ExperimentTaskSpec taskSpec = entry.getValue();
-      
+
       if (TFJobReplicaType.isSupportedReplicaType(replicaType)) {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
         V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
-        
+
         replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(XGBoostJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {
@@ -140,7 +140,7 @@ public class ExperimentSpecParser {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
         V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
-      
+
         replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(PyTorchJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {
@@ -181,12 +181,12 @@ public class ExperimentSpecParser {
     for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
       ExperimentTaskSpec taskSpec = entry.getValue();
-      
+
       if (TFJobReplicaType.isSupportedReplicaType(replicaType)) {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
         V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
-        
+
         replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(TFJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {

@@ -61,30 +61,23 @@ public class ExperimentSpecParserTest extends SpecBuilder {
   private static SubmarineConfiguration conf =
       SubmarineConfiguration.getInstance();
 
-
   @Test
-  public void testValidTensorFlowExperiment() {
-    int x = 100;
-    Assert.assertTrue(x == (int)100.0);
+  public void testValidTensorFlowExperiment() throws IOException,
+      URISyntaxException, InvalidSpecException {
+    ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
+    TFJob tfJob = (TFJob) ExperimentSpecParser.parseJob(experimentSpec);
+    validateMetadata(experimentSpec.getMeta(), tfJob.getMetadata(),
+        ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName().toLowerCase()
+    );
+    // Validate ExperimentMeta without envVars. Related to SUBMARINE-534.
+    experimentSpec.getMeta().setEnvVars(null);
+    validateMetadata(experimentSpec.getMeta(), tfJob.getMetadata(),
+            ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName().toLowerCase()
+    );
+
+    validateReplicaSpec(experimentSpec, tfJob, TFJobReplicaType.Ps);
+    validateReplicaSpec(experimentSpec, tfJob, TFJobReplicaType.Worker);
   }
-
-  // @Test
-  // public void testValidTensorFlowExperiment() throws IOException,
-  //     URISyntaxException, InvalidSpecException {
-  //   ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
-  //   TFJob tfJob = (TFJob) ExperimentSpecParser.parseJob(experimentSpec);
-  //   validateMetadata(experimentSpec.getMeta(), tfJob.getMetadata(),
-  //       ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName().toLowerCase()
-  //   );
-  //   // Validate ExperimentMeta without envVars. Related to SUBMARINE-534.
-  //   experimentSpec.getMeta().setEnvVars(null);
-  //   validateMetadata(experimentSpec.getMeta(), tfJob.getMetadata(),
-  //           ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName().toLowerCase()
-  //   );
-
-  //   validateReplicaSpec(experimentSpec, tfJob, TFJobReplicaType.Ps);
-  //   validateReplicaSpec(experimentSpec, tfJob, TFJobReplicaType.Worker);
-  // }
 
   @Test
   public void testInvalidTensorFlowExperiment() throws IOException,
@@ -160,7 +153,8 @@ public class ExperimentSpecParserTest extends SpecBuilder {
   @Test
   public void testValidXGBoostExperiment() throws IOException,
       URISyntaxException, InvalidSpecException {
-    ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, xgboostJobReqFile);
+    ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class,
+        xgboostJobReqFile);
     XGBoostJob xgboostJob = (XGBoostJob) ExperimentSpecParser.parseJob(experimentSpec);
     validateMetadata(experimentSpec.getMeta(), xgboostJob.getMetadata(),
         ExperimentMeta.SupportedMLFramework.XGBOOST.getName().toLowerCase()
@@ -173,7 +167,8 @@ public class ExperimentSpecParserTest extends SpecBuilder {
   @Test
   public void testInvalidXGBoostExperiment() throws IOException,
       URISyntaxException {
-    ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, xgboostJobReqFile);
+    ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class,
+        xgboostJobReqFile);
     // Case 1. Invalid framework name
     experimentSpec.getMeta().setFramework("fooframework");
     try {
@@ -185,7 +180,8 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
     // Case 2. Invalid XGBoost Replica name. It can only be "master" and "worker"
     experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, xgboostJobReqFile);
-    experimentSpec.getSpec().put("foo", experimentSpec.getSpec().get(XGBoostJobReplicaType.Master.getTypeName()));
+    experimentSpec.getSpec().put("foo", experimentSpec.getSpec().get(
+        XGBoostJobReplicaType.Master.getTypeName()));
     experimentSpec.getSpec().remove(XGBoostJobReplicaType.Master.getTypeName());
     try {
       ExperimentSpecParser.parseJob(experimentSpec);
@@ -213,14 +209,15 @@ public class ExperimentSpecParserTest extends SpecBuilder {
       mlJobReplicaSpec = ((XGBoostJob) mlJob).getSpec().getReplicaSpecs().get(type);
     }
     Assert.assertNotNull(mlJobReplicaSpec);
-
+    
     ExperimentTaskSpec definedPyTorchMasterTask = experimentSpec.getSpec().
         get(type.getTypeName());
+
     // replica
     int expectedMasterReplica = definedPyTorchMasterTask.getReplicas();
     Assert.assertEquals(expectedMasterReplica,
         (int) mlJobReplicaSpec.getReplicas());
-    // Image
+    // image
     String expectedMasterImage = definedPyTorchMasterTask.getImage() == null ?
         experimentSpec.getEnvironment().getImage() : definedPyTorchMasterTask.getImage();
     String actualMasterImage = mlJobReplicaSpec.getContainerImageName();
