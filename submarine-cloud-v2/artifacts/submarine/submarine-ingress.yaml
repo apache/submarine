@@ -49,6 +49,14 @@ spec:
             host: submarine-minio-service
             port:
               number: 9000
+    - match:
+        - uri:
+            prefix: /grafana
+      route:
+        - destination:
+            host: submarine-grafana-service
+            port:
+              number: 3000
     - route:
         - destination:
             host: submarine-server

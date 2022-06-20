@@ -518,7 +518,7 @@ func (c *Controller) createSubmarine(submarine *v1alpha1.Submarine) error {
 	}
 
 	err = c.createSubmarineGrafana(submarine)
-	if err != nil {
+	if err != nil && !errors.IsAlreadyExists(err) {
 		return err
 	}
 

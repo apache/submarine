@@ -95,30 +95,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: submarine-grafana-service
+  labels:
+    app: submarine-grafana
 spec:
   ports:
     - port: 3000
+      targetPort: 3000
       protocol: TCP
       targetPort: http-grafana
   selector:
     app: submarine-grafana
-  sessionAffinity: None
-  type: LoadBalancer
-# ---
-# apiVersion: traefik.containo.us/v1alpha1
-# kind: IngressRoute
-# metadata:
-#   name: submarine-grafana-ingressroute
-# spec:
-#   entryPoints:
-#     - web
-#   routes:
-#   - kind: Rule
-#     match: "PathPrefix(`/grafana`)"
-#     services:
-#     - kind: Service
-#       name: submarine-grafana-service
-#       port: 3000
 ---
 apiVersion: v1
 kind: ConfigMap
