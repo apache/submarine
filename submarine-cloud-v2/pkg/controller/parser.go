@@ -169,6 +169,17 @@ func ParsePersistentVolumeClaimYaml(relativePath string) (*v1.PersistentVolumeCl
 	return &pvc, nil
 }
 
+// ParseConfigMap parse ConfigMap from yaml file.
+func ParseConfigMapYaml(relativePath string) (*v1.ConfigMap, error) {
+	var configMap v1.ConfigMap
+	marshaled, err := parseYaml(relativePath, "ConfigMap")
+	if err != nil {
+		return nil, err
+	}
+	json.Unmarshal(marshaled, &configMap)
+	return &configMap, nil
+}
+
 // ParseIngressRouteYaml parse IngressRoute from yaml file.
 func ParseIngressRouteYaml(relativePath string) (*traefikv1alpha1.IngressRoute, error) {
 	var ingressRoute traefikv1alpha1.IngressRoute

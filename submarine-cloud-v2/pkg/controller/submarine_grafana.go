@@ -30,6 +30,18 @@ import (
 	"k8s.io/klog/v2"
 )
 
+func newSubmarineGrafanaConfigMap(submarine *v1alpha1.Submarine) *corev1.ConfigMap {
+	configMap, err := ParseConfigMapYaml(grafanaYamlPath)
+	if err != nil {
+		klog.Info("[Error] ParseConfigMap", err)
+	}
+	configMap.ObjectMeta.OwnerReferences = []metav1.OwnerReference{
+		*metav1.NewControllerRef(submarine, v1alpha1.SchemeGroupVersion.WithKind("Submarine")),
+	}
+
+	return configMap
+}
+
 func newSubmarineGrafanaPersistentVolumeClaim(submarine *v1alpha1.Submarine) *corev1.PersistentVolumeClaim {
 	pvc, err := ParsePersistentVolumeClaimYaml(grafanaYamlPath)
 	if err != nil {
@@ -69,7 +81,34 @@ func newSubmarineGrafanaService(submarine *v1alpha1.Submarine) *corev1.Service {
 func (c *Controller) createSubmarineGrafana(submarine *v1alpha1.Submarine) error {
 	klog.Info("[createSubmarineGrafana]")
 
-	// Step 1: Create PersistentVolumeClaim
+	// Step 1: Create ConfigMap
+	configMap, err := c.configMapLister.ConfigMaps(submarine.Namespace).Get(grafanaConfigMapName)
+	klog.Info("	Create ConfigMap: ", configMap)
+	// If the resource doesn't exist, we'll create it
+	if errors.IsNotFound(err) {
+		klog.Info("Into not found")
+		configMap, err = c.kubeclientset.CoreV1().ConfigMaps(submarine.Namespace).Create(context.TODO(),
+			newSubmarineGrafanaConfigMap(submarine),
+			metav1.CreateOptions{})
+		if err != nil {
+			klog.Info(err)
+		}
+		klog.Info("	Create ConfigMap: ", configMap.Name)
+	}
+	// If an error occurs during Get/Create, we'll requeue the item so we can
+	// attempt processing again later. This could have been caused by a
+	// temporary network failure, or any other transient reason.
+	if err != nil {
+		return err
+	}
+
+	if !metav1.IsControlledBy(configMap, submarine) {
+		msg := fmt.Sprintf(MessageResourceExists, configMap.Name)
+		c.recorder.Event(submarine, corev1.EventTypeWarning, ErrResourceExists, msg)
+		return fmt.Errorf(msg)
+	}
+
+	// Step 2: Create PersistentVolumeClaim
 	pvc, err := c.persistentvolumeclaimLister.PersistentVolumeClaims(submarine.Namespace).Get(grafanaPvcName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {
@@ -94,7 +133,7 @@ func (c *Controller) createSubmarineGrafana(submarine *v1alpha1.Submarine) error
 		return fmt.Errorf(msg)
 	}
 
-	// Step 2: Create Deployment
+	// Step 3: Create Deployment
 	deployment, err := c.deploymentLister.Deployments(submarine.Namespace).Get(grafanaName)
 	if errors.IsNotFound(err) {
 		deployment, err = c.kubeclientset.AppsV1().Deployments(submarine.Namespace).Create(context.TODO(), newSubmarineGrafanaDeployment(submarine), metav1.CreateOptions{})
@@ -116,7 +155,7 @@ func (c *Controller) createSubmarineGrafana(submarine *v1alpha1.Submarine) error
 		return fmt.Errorf(msg)
 	}
 
-	// Step 3: Create Service
+	// Step 4: Create Service
 	service, err := c.serviceLister.Services(submarine.Namespace).Get(grafanaServiceName)
 	// If the resource doesn't exist, we'll create it
 	if errors.IsNotFound(err) {

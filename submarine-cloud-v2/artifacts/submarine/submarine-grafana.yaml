@@ -17,6 +17,16 @@
 # limitations under the License.
 #
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: submarine-grafana-config
+data:
+  grafana.ini: |
+    [server]
+    root_url = http://submarine-grafana-service/grafana/
+    serve_from_sub_path = true
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: submarine-grafana-pvc
@@ -48,9 +58,7 @@ spec:
           - 0
       containers:
         - name: submarine-grafana
-          image: grafana/grafana:7.5.2
-          #grafana/grafana-enterprise
-          #grafana/grafana:7.5.2
+          image: grafana/grafana:8.3.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
@@ -74,10 +82,6 @@ spec:
             tcpSocket:
               port: 3000
             timeoutSeconds: 1
-          resources:
-            requests:
-              cpu: 250m
-              memory: 750Mi
           volumeMounts:
             - mountPath: /var/lib/grafana
               name: submarine-grafana-pv
@@ -105,15 +109,3 @@ spec:
       targetPort: http-grafana
   selector:
     app: submarine-grafana
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: submarine-grafana-config
-data:
-  grafana.ini: |
-    [server]
-    protocol = http
-    domain = localhost
-    http_port = 3000
-    root_url = http://localhost:3000/grafana

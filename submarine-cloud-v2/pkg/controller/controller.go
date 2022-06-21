@@ -82,7 +82,7 @@ const (
 	grafanaName                 = "submarine-grafana"
 	grafanaPvcName              = grafanaName + "-pvc"
 	grafanaServiceName          = grafanaName + "-service"
-	grafanaIngressRouteName     = grafanaName + "-ingressroute"
+	grafanaConfigMapName        = grafanaName + "-config"
 	artifactPath                = "./artifacts/submarine/"
 	databaseYamlPath            = artifactPath + "submarine-database.yaml"
 	ingressYamlPath             = artifactPath + "submarine-ingress.yaml"
@@ -147,6 +147,7 @@ type Controller struct {
 	serviceaccountLister        corelisters.ServiceAccountLister
 	serviceLister               corelisters.ServiceLister
 	persistentvolumeclaimLister corelisters.PersistentVolumeClaimLister
+	configMapLister             corelisters.ConfigMapLister
 	ingressLister               extlisters.IngressLister
 	// ingressrouteLister          traefiklisters.IngressRouteLister
 	virtualServiceLister istioListers.VirtualServiceLister
