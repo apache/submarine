@@ -29,7 +29,7 @@ setup(
     package_data={"submarine.cli.config": ["cli_config.yaml"]},
     install_requires=[
         "six>=1.10.0",
-        "numpy==1.19.2",
+        "numpy==1.22.0",
         "pandas",
         "sqlalchemy>=1.4.0",
         "sqlparse",
