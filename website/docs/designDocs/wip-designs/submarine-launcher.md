@@ -66,7 +66,7 @@ Submarine cluster management will automatically maintain the relationship betwee
 ### Launcher
 
 The submarine launcher module defines the complete interface.
-By using this interface, you can run the submarine server, and workspace in k8s / docker / AWS / GCE / Azure.
+By using this interface, you can run the submarine server, and workspace in k8s / docker / Rancher / OpenShift / AWS / GCE / Azure.
 
 
 ### Launcher On Docker
@@ -81,6 +81,27 @@ and run the service or workspace container in this cluster through scheduling al
 ### Launcher On Kubernetes
 
 submarine operator
+
+### Launcher On Rancher
+
+This section is currently described based on the Rancher Desktop.
+
+Since we have replaced Traefik with Istio from 0.8.0, we need to turn off the Traefik in `Kubernetes Settings`.
+At the same time, we need to set kubernetes version to 1.21+, the minimum CPUs to 4, and the minimum Memory to 8G.
+
+Rancher Desktop use [Local Path Provisioner](https://github.com/rancher/local-path-provisioner) as the provisioner for StorageClass by default,
+so we need to modify the relevant configuration of StorageClass when using Helm to install Submarine.
+```yaml
+storageClass:
+  volumeBindingMode: WaitForFirstConsumer
+  provisioner: rancher.io/local-path
+```
+
+For other installation, please refer to [Launch submarine in the cluster](https://submarine.apache.org/docs/next/gettingStarted/quickstart#launch-submarine-in-the-cluster).
+In addition, we can use [kube-explorer](https://github.com/cnrancher/kube-explorer) to open Rancher Dashboard.
+
+### Launcher On OpenShift
+[TODO]
 
 ### Launcher On AWS
 [TODO]
