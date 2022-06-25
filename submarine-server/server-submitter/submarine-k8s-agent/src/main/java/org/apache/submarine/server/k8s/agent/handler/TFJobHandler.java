@@ -50,7 +50,6 @@ public class TFJobHandler extends CustomResourceHandler {
     super();
   }
 
-
   @Override
   public void init(String serverHost, Integer serverPort,
           String namespace, String crName, String resourceId) {
@@ -68,7 +67,7 @@ public class TFJobHandler extends CustomResourceHandler {
       String fieldSelector = String.format("involvedObject.name=%s", resourceId);
       LOG.info("fieldSelector:" + fieldSelector);
       Call call =  coreV1Api.listNamespacedEventCall(namespace, null, null, null, fieldSelector,
-            null, null, null, null, null, true, null);        
+            null, null, null, null, null, true, null);
 
       watcher = Watch.createWatch(client, call, new TypeToken<Response<CoreV1Event>>(){}.getType());
     } catch (ApiException e) {
@@ -79,30 +78,34 @@ public class TFJobHandler extends CustomResourceHandler {
 
   @Override
   public void run() {
-
     while (true) {
       for (Response<CoreV1Event> event: watcher) {
-        TFJob job = tfJobClient.get(this.namespace, this.resourceId).getObject();  
-        List<V1JobCondition> conditionList = job.getStatus().getConditions();
-        V1JobCondition lastCondition = conditionList.get(conditionList.size() - 1);
-        Experiment experiment = MLJobConverter.toJobFromMLJob(job);
-        
-        this.restClient.callStatusUpdate(CustomResourceType.TFJob, resourceId, experiment);
-        LOG.info(String.format("receiving condition:%s", lastCondition.getReason()));
-        LOG.info(String.format("current status of tfjob:%s is %s", resourceId, experiment.getStatus()));
-        
-        switch (lastCondition.getReason()) {
-          case "TFJobSucceeded":
-            LOG.info(String.format("TfJob:%s is succeeded, exit", this.resourceId));
-            return;
-          case "TFJobFailed":
-            LOG.info(String.format("TfJob:%s is failed, exit", this.resourceId));
-            return;
-          default:    
-            break;    
+        try {
+          TFJob job = tfJobClient.get(this.namespace, this.resourceId).getObject();
+          List<V1JobCondition> conditionList = job.getStatus().getConditions();
+          if (conditionList == null || conditionList.isEmpty()) continue;
+          V1JobCondition lastCondition = conditionList.get(conditionList.size() - 1);
+          Experiment experiment = MLJobConverter.toJobFromMLJob(job);
+
+          this.restClient.callStatusUpdate(CustomResourceType.TFJob, resourceId, experiment);
+          LOG.info(String.format("receiving condition:%s", lastCondition.getReason()));
+          LOG.info(String.format("current status of tfjob:%s is %s", resourceId, experiment.getStatus()));
+
+          // The reason value can refer to https://github.com/kubeflow/common/blob/master/pkg/util/status.go
+          switch (lastCondition.getReason()) {
+            case "JobSucceeded":
+              LOG.info(String.format("TfJob:%s is succeeded, exit", this.resourceId));
+              return;
+            case "JobFailed":
+              LOG.info(String.format("TfJob:%s is failed, exit", this.resourceId));
+              return;
+            default:
+              break;
+          }
+        } catch (Exception e) {
+          LOG.error("Exception while processing the TfJob event! " + e.getMessage(), e);
         }
-        
-      }   
+      }
     }
   }
 }
