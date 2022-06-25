@@ -21,6 +21,7 @@ package org.apache.submarine.server.k8s.agent.handler;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.experiment.Experiment;
@@ -92,7 +93,7 @@ public class TFJobHandler extends CustomResourceHandler {
           LOG.info(String.format("current status of tfjob:%s is %s", resourceId, experiment.getStatus()));
 
           // The reason value can refer to https://github.com/kubeflow/common/blob/master/pkg/util/status.go
-          switch (lastCondition.getReason()) {
+          switch (Objects.requireNonNull(lastCondition.getReason())) {
             case "JobSucceeded":
               LOG.info(String.format("TfJob:%s is succeeded, exit", this.resourceId));
               return;
