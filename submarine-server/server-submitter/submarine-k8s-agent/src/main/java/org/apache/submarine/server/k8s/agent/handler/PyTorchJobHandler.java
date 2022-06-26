@@ -21,6 +21,7 @@ package org.apache.submarine.server.k8s.agent.handler;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.experiment.Experiment;
@@ -31,7 +32,6 @@ import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import io.kubernetes.client.openapi.ApiException;
@@ -69,7 +69,7 @@ public class PyTorchJobHandler extends CustomResourceHandler {
       String fieldSelector = String.format("involvedObject.name=%s", resourceId);
       LOG.info("fieldSelector:" + fieldSelector);
       Call call =  coreV1Api.listNamespacedEventCall(namespace, null, null, null, fieldSelector,
-            null, null, null, null, null, true, null);        
+            null, null, null, null, null, true, null);
 
       watcher = Watch.createWatch(client, call, new TypeToken<Response<CoreV1Event>>(){}.getType());
     } catch (ApiException e) {
@@ -80,30 +80,35 @@ public class PyTorchJobHandler extends CustomResourceHandler {
 
   @Override
   public void run() {
-    Gson gson = new Gson();
     while (true) {
       for (Response<CoreV1Event> event: watcher) {
-        PyTorchJob job = pytorchJobClient.get(this.namespace, this.resourceId).getObject();  
-        List<V1JobCondition> conditionList = job.getStatus().getConditions();
-        V1JobCondition lastCondition = conditionList.get(conditionList.size() - 1);
-        Experiment experiment = MLJobConverter.toJobFromMLJob(job);
-           
-        this.restClient.callStatusUpdate(CustomResourceType.PyTorchJob, resourceId, experiment);
-        LOG.info(String.format("receiving condition:%s", lastCondition.getReason()));
-        LOG.info(String.format("current status of PyTorchjob:%s is %s", resourceId, experiment.getStatus()));
-        
-        switch (lastCondition.getReason()) {
-          case "PyTorchJobSucceeded":
-            LOG.info(String.format("PyTorchjob:%s is succeeded, exit", this.resourceId));
-            return;
-          case "PyTorchJobFailed":
-            LOG.info(String.format("PyTorchjob:%s is failed, exit", this.resourceId));
-            return;
-          default:    
-            break;    
+        try {
+          PyTorchJob job = pytorchJobClient.get(this.namespace, this.resourceId).getObject();
+          List<V1JobCondition> conditionList = job.getStatus().getConditions();
+          if (conditionList == null || conditionList.isEmpty()) continue;
+          V1JobCondition lastCondition = conditionList.get(conditionList.size() - 1);
+          Experiment experiment = MLJobConverter.toJobFromMLJob(job);
+
+          this.restClient.callStatusUpdate(CustomResourceType.PyTorchJob, resourceId, experiment);
+          LOG.info(String.format("receiving condition:%s", lastCondition.getReason()));
+          LOG.info(String.format("current status of PyTorchjob:%s is %s", resourceId,
+              experiment.getStatus()));
+
+          // The reason value can refer to https://github.com/kubeflow/common/blob/master/pkg/util/status.go
+          switch (Objects.requireNonNull(lastCondition.getReason())) {
+            case "JobSucceeded":
+              LOG.info(String.format("PyTorchjob:%s is succeeded, exit", this.resourceId));
+              return;
+            case "JobFailed":
+              LOG.info(String.format("PyTorchjob:%s is failed, exit", this.resourceId));
+              return;
+            default:
+              break;
+          }
+        } catch (Exception e) {
+          LOG.error("Exception while processing the PyTorch event! " + e.getMessage(), e);
         }
-        
-      }   
+      }
     }
   }
 }
