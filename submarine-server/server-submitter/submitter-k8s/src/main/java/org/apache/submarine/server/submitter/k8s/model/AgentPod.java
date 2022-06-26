@@ -20,18 +20,16 @@
 package org.apache.submarine.server.submitter.k8s.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import io.kubernetes.client.openapi.ApiException;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.common.CustomResourceType;
 
+import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EnvVar;
-import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1ObjectMetaBuilder;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodSpec;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
@@ -43,7 +41,7 @@ public class AgentPod extends V1Pod implements K8sResource<AgentPod> {
 
   private static final Logger LOG = LoggerFactory.getLogger(AgentPod.class);
 
-  private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+  private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
   private static final String AGENT_IMAGE = "apache/submarine:agent-0.8.0-SNAPSHOT";
   private static final String CONTAINER_NAME = "agent";
 
@@ -51,13 +49,15 @@ public class AgentPod extends V1Pod implements K8sResource<AgentPod> {
                   CustomResourceType type,
                   String resourceId) {
     super();
-    V1ObjectMeta meta = new V1ObjectMeta();
-    Map<String, String> labels = new HashMap<>();
-    labels.put("app", type.toString().toLowerCase());
-    meta.setName(getNormalizePodName(type, name, resourceId));
-    meta.setNamespace(namespace);
-    meta.setLabels(labels);
-    this.setMetadata(meta);
+
+    V1ObjectMetaBuilder metaBuilder = new V1ObjectMetaBuilder();
+    metaBuilder.withName(getNormalizePodName(type, name, resourceId))
+        .withNamespace(namespace)
+        .addToLabels("app", type.toString().toLowerCase())
+        // There is no need to add istio sidecar. Otherwise, the pod may not end normally
+        // https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/#controlling-the-injection-policy
+        .addToAnnotations("sidecar.istio.io/inject", "false");
+    this.setMetadata(metaBuilder.build());
 
     V1PodSpec spec = new V1PodSpec();
     List<V1Container> containers = spec.getContainers();
@@ -133,7 +133,7 @@ public class AgentPod extends V1Pod implements K8sResource<AgentPod> {
 
   @Override
   public AgentPod replace(K8sClient api) {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
