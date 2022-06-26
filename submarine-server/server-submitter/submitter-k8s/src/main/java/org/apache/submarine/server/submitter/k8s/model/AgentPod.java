@@ -55,7 +55,8 @@ public class AgentPod extends V1Pod implements K8sResource<AgentPod> {
         .withNamespace(namespace)
         .addToLabels("app", type.toString().toLowerCase())
         // There is no need to add istio sidecar. Otherwise, the pod may not end normally
-        // https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/#controlling-the-injection-policy
+        // https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/
+        // Controlling the injection policy Section
         .addToAnnotations("sidecar.istio.io/inject", "false");
     this.setMetadata(metaBuilder.build());
 
