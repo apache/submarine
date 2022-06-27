@@ -400,7 +400,7 @@ jobs:
           TEST_MODULES: "-pl :submarine-server-database"
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
-          mvn $TEST_FLAG $TEST_MODULES -B          
+          mvn $TEST_FLAG $TEST_MODULES -B
       - name: Build submarine-server-database
         env:
           MODULES: "-pl :submarine-server-core"
@@ -490,7 +490,7 @@ jobs:
           mvn $BUILD_FLAG $MODULES -B
       - name: Test
         env:
-          TEST_MODULES: "-pl :submarine-server-submitter"
+          TEST_MODULES: "-pl :submarine-server-submitter:"
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
           mvn $TEST_FLAG $TEST_MODULES -B
