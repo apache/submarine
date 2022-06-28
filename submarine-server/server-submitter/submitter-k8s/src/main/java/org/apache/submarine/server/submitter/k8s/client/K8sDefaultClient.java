@@ -49,6 +49,8 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobList;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobList;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJob;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJobList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +76,8 @@ public class K8sDefaultClient implements K8sClient {
   private final GenericKubernetesApi<TFJob, TFJobList> tfJobClient;
 
   private final GenericKubernetesApi<PyTorchJob, PyTorchJobList> pyTorchJobClient;
+
+  private final GenericKubernetesApi<XGBoostJob, XGBoostJobList> xgboostJobClient;
 
   private final GenericKubernetesApi<NotebookCR, NotebookCRList> notebookCRClient;
 
@@ -156,6 +160,12 @@ public class K8sDefaultClient implements K8sClient {
                     PyTorchJob.CRD_PYTORCH_GROUP_V1, PyTorchJob.CRD_PYTORCH_VERSION_V1,
                     PyTorchJob.CRD_PYTORCH_PLURAL_V1, client);
 
+    xgboostJobClient =
+            new GenericKubernetesApi<>(
+                    XGBoostJob.class, XGBoostJobList.class,
+                    XGBoostJob.CRD_XGBOOST_GROUP_V1, XGBoostJob.CRD_XGBOOST_API_VERSION_V1,
+                    XGBoostJob.CRD_XGBOOST_PLURAL_V1, client);
+
     notebookCRClient =
             new GenericKubernetesApi<>(
                     NotebookCR.class, NotebookCRList.class,
@@ -223,6 +233,10 @@ public class K8sDefaultClient implements K8sClient {
 
   public GenericKubernetesApi<PyTorchJob, PyTorchJobList> getPyTorchJobClient() {
     return checkApi(pyTorchJobClient, PyTorchJob.class);
+  }
+
+  public GenericKubernetesApi<XGBoostJob, XGBoostJobList> getXGBoostJobClient() {
+    return checkApi(xgboostJobClient, XGBoostJob.class);
   }
 
   public GenericKubernetesApi<NotebookCR, NotebookCRList> getNotebookCRClient() {

@@ -73,6 +73,7 @@ import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
 import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJob;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
@@ -198,12 +199,17 @@ public class K8sSubmitter implements Submitter {
                       ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
               spec.getMeta().getExperimentId());
 
-
-      Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
-              ? k8sClient.getTfJobClient().create(getServerNamespace(), (TFJob) mlJob,
-              new CreateOptions()).throwsApiException().getObject()
-              : k8sClient.getPyTorchJobClient().create(getServerNamespace(), (PyTorchJob) mlJob,
-              new CreateOptions()).throwsApiException().getObject();
+      Object object;
+      if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
+        object = k8sClient.getTfJobClient().create(getServerNamespace(), (TFJob) mlJob,
+                new CreateOptions()).throwsApiException().getObject();
+      } else if (mlJob.getPlural().equals(PyTorchJob.CRD_PYTORCH_PLURAL_V1)) {
+        object = k8sClient.getPyTorchJobClient().create(getServerNamespace(), (PyTorchJob) mlJob,
+                new CreateOptions()).throwsApiException().getObject();
+      } else {
+        object = k8sClient.getXGBoostJobClient().create(getServerNamespace(), (XGBoostJob) mlJob,
+                new CreateOptions()).throwsApiException().getObject();
+      }
 
       V1Pod agentPodResult = k8sClient.getPodClient().create(agentPod).throwsApiException().getObject();
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
@@ -225,11 +231,18 @@ public class K8sSubmitter implements Submitter {
 
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       mlJob.getMetadata().setNamespace(getServerNamespace());
-      Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
-              ? k8sClient.getTfJobClient().get(getServerNamespace(), mlJob.getMetadata().getName())
-              .throwsApiException().getObject()
-              : k8sClient.getPyTorchJobClient().get(getServerNamespace(), mlJob.getMetadata().getName())
-              .throwsApiException().getObject();
+
+      Object object;
+      if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
+        object = k8sClient.getTfJobClient().get(getServerNamespace(),
+                mlJob.getMetadata().getName()).throwsApiException().getObject();
+      } else if (mlJob.getPlural().equals(PyTorchJob.CRD_PYTORCH_PLURAL_V1)) {
+        object = k8sClient.getPyTorchJobClient().get(getServerNamespace(),
+                mlJob.getMetadata().getName()).throwsApiException().getObject();
+      } else {
+        object = k8sClient.getXGBoostJobClient().get(getServerNamespace(),
+                mlJob.getMetadata().getName()).throwsApiException().getObject();
+      }
 
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
 
@@ -253,16 +266,24 @@ public class K8sSubmitter implements Submitter {
       PatchOptions patchOptions = new PatchOptions();
       patchOptions.setFieldManager(spec.getMeta().getExperimentId());
       patchOptions.setForce(true);
-      Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
-              ? k8sClient.getTfJobClient().patch(getServerNamespace(), mlJob.getMetadata().getName(),
-              V1Patch.PATCH_FORMAT_APPLY_YAML,
-              new V1Patch(new Gson().toJson(mlJob)),
-              patchOptions).throwsApiException().getObject()
-              : k8sClient.getPyTorchJobClient().patch(getServerNamespace(), mlJob.getMetadata().getName(),
-              V1Patch.PATCH_FORMAT_APPLY_YAML,
-              new V1Patch(new Gson().toJson(mlJob)),
-              patchOptions).throwsApiException().getObject()
-              ;
+      Object object;
+      if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
+        object = k8sClient.getTfJobClient().patch(getServerNamespace(), mlJob.getMetadata().getName(),
+                V1Patch.PATCH_FORMAT_APPLY_YAML,
+                new V1Patch(new Gson().toJson(mlJob)),
+                patchOptions).throwsApiException().getObject();
+      } else if (mlJob.getPlural().equals(PyTorchJob.CRD_PYTORCH_PLURAL_V1)) {
+        object = k8sClient.getPyTorchJobClient().patch(getServerNamespace(), mlJob.getMetadata().getName(),
+                V1Patch.PATCH_FORMAT_APPLY_YAML,
+                new V1Patch(new Gson().toJson(mlJob)),
+                patchOptions).throwsApiException().getObject();
+      } else {
+        object = k8sClient.getXGBoostJobClient().patch(getServerNamespace(), mlJob.getMetadata().getName(),
+                V1Patch.PATCH_FORMAT_APPLY_YAML,
+                new V1Patch(new Gson().toJson(mlJob)),
+                patchOptions).throwsApiException().getObject();
+      }
+
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(409, e.getMessage());
@@ -286,14 +307,20 @@ public class K8sSubmitter implements Submitter {
                       ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
               spec.getMeta().getExperimentId());
 
-      Object object = mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
-              ? k8sClient.getTfJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
-                      MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
-              .throwsApiException().getStatus()
-              : k8sClient.getPyTorchJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
-                      MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
-              .throwsApiException().getStatus();
-
+      Object object = null;
+      if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
+        object = k8sClient.getTfJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
+                MLJobConverter.toDeleteOptionsFromMLJob(mlJob));
+      } else if (mlJob.getPlural().equals(PyTorchJob.CRD_PYTORCH_PLURAL_V1)) {
+        object = k8sClient.getPyTorchJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
+                        MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
+                .throwsApiException().getStatus();
+      } else {
+        k8sClient.getXGBoostJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
+                        MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
+                .throwsApiException().getStatus();
+      }
+      
       LOG.info(String.format("Experiment:%s had been deleted, start to delete agent pod:%s",
               spec.getMeta().getName(), agentPod.getMetadata().getName()));
       k8sClient.getPodClient().delete(agentPod.getMetadata().getNamespace(),
