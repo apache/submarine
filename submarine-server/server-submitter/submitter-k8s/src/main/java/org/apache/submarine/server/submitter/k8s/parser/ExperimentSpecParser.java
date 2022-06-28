@@ -208,7 +208,6 @@ public class ExperimentSpecParser {
     V1Container container = new V1Container();
     container.setName(experimentSpec.getMeta().getFramework().toLowerCase());
     // image
-
     if (taskSpec.getImage() != null) {
       container.setImage(taskSpec.getImage());
     } else {
