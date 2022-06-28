@@ -52,6 +52,7 @@ rules:
       - notebooks
       - pytorchjobs
       - tfjobs
+      - xgboostjobs
     verbs:
       - "*"
   - apiGroups:

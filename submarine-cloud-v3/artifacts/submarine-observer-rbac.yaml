@@ -28,6 +28,8 @@ rules:
   - tfjobs/status
   - pytorchjobs
   - pytorchjobs/status
+  - xgboostjobs
+  - xgboostjobs/status
   - notebooks
   - notebooks/status
   verbs:

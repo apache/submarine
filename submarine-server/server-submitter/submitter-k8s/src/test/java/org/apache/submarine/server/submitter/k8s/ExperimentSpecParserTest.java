@@ -43,6 +43,8 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJob;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.GitCodeLocalizer;
@@ -148,6 +150,47 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     }
   }
 
+  @Test
+  public void testValidXGBoostExperiment() throws IOException,
+      URISyntaxException, InvalidSpecException {
+    ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class,
+        xgboostJobReqFile);
+    XGBoostJob xgboostJob = (XGBoostJob) ExperimentSpecParser.parseJob(experimentSpec);
+    validateMetadata(experimentSpec.getMeta(), xgboostJob.getMetadata(),
+        ExperimentMeta.SupportedMLFramework.XGBOOST.getName().toLowerCase()
+    );
+
+    validateReplicaSpec(experimentSpec, xgboostJob, XGBoostJobReplicaType.Master);
+    validateReplicaSpec(experimentSpec, xgboostJob, XGBoostJobReplicaType.Worker);
+  }
+
+  @Test
+  public void testInvalidXGBoostExperiment() throws IOException,
+      URISyntaxException {
+    ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class,
+        xgboostJobReqFile);
+    // Case 1. Invalid framework name
+    experimentSpec.getMeta().setFramework("fooframework");
+    try {
+      ExperimentSpecParser.parseJob(experimentSpec);
+      Assert.fail("It should throw InvalidSpecException");
+    } catch (InvalidSpecException e) {
+      Assert.assertTrue(e.getMessage().contains("Unsupported framework name"));
+    }
+
+    // Case 2. Invalid XGBoost Replica name. It can only be "master" and "worker"
+    experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, xgboostJobReqFile);
+    experimentSpec.getSpec().put("foo", experimentSpec.getSpec().get(
+        XGBoostJobReplicaType.Master.getTypeName()));
+    experimentSpec.getSpec().remove(XGBoostJobReplicaType.Master.getTypeName());
+    try {
+      ExperimentSpecParser.parseJob(experimentSpec);
+      Assert.fail("It should throw InvalidSpecException");
+    } catch (InvalidSpecException e) {
+      Assert.assertTrue(e.getMessage().contains("Unrecognized replica type name"));
+    }
+  }
+
   private void validateMetadata(ExperimentMeta expectedMeta, V1ObjectMeta actualMeta,
       String actualFramework) {
     Assert.assertEquals(expectedMeta.getName(), actualMeta.getName());
@@ -160,18 +203,21 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     MLJobReplicaSpec mlJobReplicaSpec = null;
     if (mlJob instanceof PyTorchJob) {
       mlJobReplicaSpec = ((PyTorchJob) mlJob).getSpec().getReplicaSpecs().get(type);
-    } else if (mlJob instanceof TFJob){
+    } else if (mlJob instanceof TFJob) {
       mlJobReplicaSpec = ((TFJob) mlJob).getSpec().getReplicaSpecs().get(type);
+    } else if (mlJob instanceof XGBoostJob) {
+      mlJobReplicaSpec = ((XGBoostJob) mlJob).getSpec().getReplicaSpecs().get(type);
     }
     Assert.assertNotNull(mlJobReplicaSpec);
-
+    
     ExperimentTaskSpec definedPyTorchMasterTask = experimentSpec.getSpec().
         get(type.getTypeName());
+
     // replica
     int expectedMasterReplica = definedPyTorchMasterTask.getReplicas();
     Assert.assertEquals(expectedMasterReplica,
         (int) mlJobReplicaSpec.getReplicas());
-    // Image
+    // image
     String expectedMasterImage = definedPyTorchMasterTask.getImage() == null ?
         experimentSpec.getEnvironment().getImage() : definedPyTorchMasterTask.getImage();
     String actualMasterImage = mlJobReplicaSpec.getContainerImageName();

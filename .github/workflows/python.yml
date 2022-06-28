@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: |
-          pip install --upgrade pip  
+          pip install --upgrade pip
           pip install -r ./dev-support/style-check/python/lint-requirements.txt
           pip install -r ./dev-support/style-check/python/mypy-requirements.txt
       - name: Check python sdk code style
@@ -51,7 +51,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install requirements
         run: |
-          pip install --upgrade pip  
+          pip install --upgrade pip
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
       - name: Install pysubmarine with tf1 and pytorch
         if: matrix.tf-version == '1.15.0'

@@ -46,6 +46,8 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobList;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobList;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJob;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJobList;
 
 import java.io.File;
 import java.io.IOException;
@@ -195,6 +197,11 @@ public class K8sMockClient implements K8sClient {
 
   @Override
   public GenericKubernetesApi<PyTorchJob, PyTorchJobList> getPyTorchJobClient() {
+    return null;
+  }
+
+  @Override
+  public GenericKubernetesApi<XGBoostJob, XGBoostJobList> getXGBoostJobClient() {
     return null;
   }
 

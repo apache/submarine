@@ -52,6 +52,9 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobSpec
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobSpec;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJob;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJobReplicaType;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJobSpec;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,11 +73,51 @@ public class ExperimentSpecParser {
     } else if (ExperimentMeta.SupportedMLFramework.PYTORCH.
         getName().equalsIgnoreCase(framework)) {
       return parsePyTorchJob(experimentSpec);
+    } else if (ExperimentMeta.SupportedMLFramework.XGBOOST.
+        getName().equalsIgnoreCase(framework)) {
+      return parseXGBoostJob(experimentSpec);
     } else {
       throw new InvalidSpecException("Unsupported framework name: " + framework +
           ". Supported frameworks are: " +
           String.join(",", ExperimentMeta.SupportedMLFramework.names()));
     }
+  }
+
+  public static XGBoostJob parseXGBoostJob(
+      ExperimentSpec experimentSpec) throws InvalidSpecException {
+    XGBoostJob xGBoostJob = new XGBoostJob();
+    xGBoostJob.setMetadata(parseMetadata(experimentSpec));
+    xGBoostJob.setSpec(parseXGBoostJobSpec(experimentSpec));
+    return xGBoostJob;
+  }
+
+  public static XGBoostJobSpec parseXGBoostJobSpec(ExperimentSpec experimentSpec)
+      throws InvalidSpecException {
+    XGBoostJobSpec xGBoostJobSpec = new XGBoostJobSpec();
+
+    Map<XGBoostJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
+
+    for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
+      String replicaType = entry.getKey();
+      ExperimentTaskSpec taskSpec = entry.getValue();
+
+      if (XGBoostJobReplicaType.isSupportedReplicaType(replicaType)) {
+        MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
+        replicaSpec.setReplicas(taskSpec.getReplicas());
+        V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
+
+        replicaSpec.setTemplate(podTemplateSpec);
+        replicaSpecMap.put(XGBoostJobReplicaType.valueOf(replicaType), replicaSpec);
+      } else {
+        throw new InvalidSpecException("Unrecognized replica type name: " +
+            entry.getKey() +
+            ", it should be " +
+            String.join(",", XGBoostJobReplicaType.names()) +
+            " for XGBoost experiment.");
+      }
+    }
+    xGBoostJobSpec.setReplicaSpecs(replicaSpecMap);
+    return xGBoostJobSpec;
   }
 
   public static PyTorchJob parsePyTorchJob(
@@ -97,7 +140,7 @@ public class ExperimentSpecParser {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
         V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
-      
+
         replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(PyTorchJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {
@@ -137,12 +180,12 @@ public class ExperimentSpecParser {
     for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
       String replicaType = entry.getKey();
       ExperimentTaskSpec taskSpec = entry.getValue();
-      
+
       if (TFJobReplicaType.isSupportedReplicaType(replicaType)) {
         MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
         replicaSpec.setReplicas(taskSpec.getReplicas());
         V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
-        
+
         replicaSpec.setTemplate(podTemplateSpec);
         replicaSpecMap.put(TFJobReplicaType.valueOf(replicaType), replicaSpec);
       } else {
@@ -165,7 +208,6 @@ public class ExperimentSpecParser {
     V1Container container = new V1Container();
     container.setName(experimentSpec.getMeta().getFramework().toLowerCase());
     // image
-
     if (taskSpec.getImage() != null) {
       container.setImage(taskSpec.getImage());
     } else {

@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "name": "xgboost-dist-mnist",
+    "namespace": "submarine",
+    "framework": "XGBoost",
+    "cmd": "python /opt/mlkube/main.py --job_type=Train --xgboost_parameter=objective:multi:softprob,num_class:3  --n_estimators=10 --learning_rate=0.1",
+    "envVars": {
+      "ENV_1": "ENV1"
+    }
+  },
+  "environment": {
+    "image": "apache/submarine:xgboost-dist-iris-1.0"
+  },
+  "spec": {
+    "Master": {
+      "name": "master",
+      "replicas": 1,
+      "resources": "cpu=2,memory=2048M"
+    },
+    "Worker": {
+      "name": "worker",
+      "replicas": 2,
+      "resources": "cpu=1,memory=1024M"
+    }
+  }
+}

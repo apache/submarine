@@ -38,38 +38,40 @@ public class InternalServiceManager {
   private static volatile InternalServiceManager internalServiceManager;
   private static final Logger LOG = LoggerFactory.getLogger(InternalServiceManager.class);
   private final ExperimentService experimentService;
-  private final NotebookService notebookService; 
-    
+  private final NotebookService notebookService;
+
   public static InternalServiceManager getInstance() {
     if (internalServiceManager == null) {
       internalServiceManager = new InternalServiceManager(new ExperimentService(), new NotebookService());
     }
     return internalServiceManager;
   }
-  
+
   @VisibleForTesting
   protected InternalServiceManager(ExperimentService experimentService, NotebookService notebookService) {
     this.experimentService = experimentService;
     this.notebookService = notebookService;
   }
-  
+
   public boolean updateCRStatus(CustomResourceType crType, String resourceId,
           Map<String, Object> updateObject) {
     if (crType.equals(CustomResourceType.Notebook)) {
       return updateNotebookStatus(resourceId, updateObject);
-    } else if (crType.equals(CustomResourceType.TFJob) || crType.equals(CustomResourceType.PyTorchJob)) {
+    } else if (crType.equals(CustomResourceType.TFJob)
+            || crType.equals(CustomResourceType.PyTorchJob)
+            || crType.equals(CustomResourceType.XGBoost)) {
       return updateExperimentStatus(resourceId, updateObject);
     }
     return false;
   }
-    
+
   private boolean updateExperimentStatus(String resourceId, Map<String, Object> updateObject) {
     ExperimentEntity experimentEntity = experimentService.select(resourceId);
     if (experimentEntity == null) {
       throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(),
         String.format("cannot find experiment with id:%s", resourceId));
     }
-    
+
     if (updateObject.get("status") != null) {
       experimentEntity.setExperimentStatus(updateObject.get("status").toString());
     }
@@ -79,35 +81,35 @@ public class InternalServiceManager {
     }
     if (updateObject.get("createdTime") != null) {
       experimentEntity.setCreateTime(
-               DateTime.parse(updateObject.get("createdTime").toString()).toDate());          
+               DateTime.parse(updateObject.get("createdTime").toString()).toDate());
     }
     if (updateObject.get("runningTime") != null) {
       experimentEntity.setRunningTime(
-              DateTime.parse(updateObject.get("runningTime").toString()).toDate()); 
+              DateTime.parse(updateObject.get("runningTime").toString()).toDate());
     }
     if (updateObject.get("finishedTime") != null) {
       experimentEntity.setFinishedTime(
-              DateTime.parse(updateObject.get("finishedTime").toString()).toDate());          
+              DateTime.parse(updateObject.get("finishedTime").toString()).toDate());
     }
-    
+
     return experimentService.update(experimentEntity);
   }
-    
+
   private boolean updateNotebookStatus(String resourceId, Map<String, Object> updateObject) {
     Notebook notebook = notebookService.select(resourceId);
     if (notebook == null) {
       throw new SubmarineRuntimeException(Status.NOT_FOUND.getStatusCode(),
         String.format("cannot find notebook with id:%s", resourceId));
     }
-    
+
     if (updateObject.containsKey("status")) {
       notebook.setStatus(updateObject.get("status").toString());
     }
-    
+
     if (updateObject.get("createTime") != null) {
       notebook.setCreatedTime(updateObject.get("createTime").toString());
     }
-    
+
     if (updateObject.get("deletedTime") != null) {
       notebook.setDeletedTime(updateObject.get("deletedTime").toString());
     }
