@@ -307,7 +307,7 @@ public class K8sSubmitter implements Submitter {
                       ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
               spec.getMeta().getExperimentId());
 
-      Object object = null;
+      Object object;
       if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
         object = k8sClient.getTfJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
                 MLJobConverter.toDeleteOptionsFromMLJob(mlJob));
@@ -316,7 +316,7 @@ public class K8sSubmitter implements Submitter {
                         MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
                 .throwsApiException().getStatus();
       } else {
-        k8sClient.getXGBoostJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
+        object = k8sClient.getXGBoostJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
                         MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
                 .throwsApiException().getStatus();
       }

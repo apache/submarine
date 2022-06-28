@@ -31,7 +31,7 @@ public class XGBoostJobSpec {
   /**
    * Key: Master, Worker
    */
-  @SerializedName("xgboostRelicaSpecs")
+  @SerializedName("xgbReplicaSpecs")
   private Map<XGBoostJobReplicaType, MLJobReplicaSpec> replicaSpecs;
   @SerializedName("backoffLimit")
   private Integer backoffLimit = 3;
