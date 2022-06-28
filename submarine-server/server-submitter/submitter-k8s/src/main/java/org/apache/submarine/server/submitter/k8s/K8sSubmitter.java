@@ -222,7 +222,7 @@ public class K8sSubmitter implements Submitter {
       k8sClient.getPodClient().create(agentPod).throwsApiException().getObject();
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
-      LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
+      LOG.error("K8s submitter: test parse Job object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(400, e.getMessage());
     } catch (ApiException e) {
       LOG.error("K8s submitter: failed to create pod " + e.getMessage(), e);
