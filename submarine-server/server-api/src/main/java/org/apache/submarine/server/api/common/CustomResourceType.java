@@ -20,13 +20,13 @@
 package org.apache.submarine.server.api.common;
 
 public enum CustomResourceType {
-  TFJob("TFJob"), PyTorchJob("PyTorchJob"), Notebook("Notebook");
+  TFJob("TFJob"), PyTorchJob("PyTorchJob"), XGBoost("XGBoost"), Notebook("Notebook");
   private String customResourceType;
-    
+
   CustomResourceType(String customResourceType) {
-    this.customResourceType = customResourceType; 
+    this.customResourceType = customResourceType;
   }
-    
+
   public String getCustomResourceType() {
     return this.customResourceType;
   }

@@ -194,9 +194,17 @@ public class K8sSubmitter implements Submitter {
       MLJob mlJob = ExperimentSpecParser.parseJob(spec);
       mlJob.getMetadata().setNamespace(getServerNamespace());
       mlJob.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
-      AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(),
-              mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)
-                      ? CustomResourceType.TFJob : CustomResourceType.PyTorchJob,
+
+      CustomResourceType customResourceType;
+      if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
+        customResourceType = CustomResourceType.TFJob;
+      } else if (mlJob.getPlural().equals(PyTorchJob.CRD_PYTORCH_PLURAL_V1)) {
+        customResourceType = CustomResourceType.PyTorchJob;
+      } else {
+        customResourceType = CustomResourceType.XGBoost;
+      }
+
+      AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(), customResourceType,
               spec.getMeta().getExperimentId());
 
       Object object;
@@ -211,14 +219,14 @@ public class K8sSubmitter implements Submitter {
                 new CreateOptions()).throwsApiException().getObject();
       }
 
-      V1Pod agentPodResult = k8sClient.getPodClient().create(agentPod).throwsApiException().getObject();
+      k8sClient.getPodClient().create(agentPod).throwsApiException().getObject();
       experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
     } catch (InvalidSpecException e) {
       LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
       throw new SubmarineRuntimeException(400, e.getMessage());
     } catch (ApiException e) {
-      LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: parse Job object failed by " +
+      LOG.error("K8s submitter: failed to create pod " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: failed to create pod " +
               e.getMessage());
     }
     return experiment;
