@@ -95,7 +95,7 @@ public class K8sDefaultClient implements K8sClient {
 
   public K8sDefaultClient() {
     String path = System.getenv(KUBECONFIG_ENV);
-    if (StringUtils.isNotBlank(path)) {//
+    if (StringUtils.isNotBlank(path)) {
       try (FileReader reader = new FileReader(path)) {
         LOG.info("init by kubeconfig env path {}", path);
         KubeConfig config = KubeConfig.loadKubeConfig(reader);
@@ -163,7 +163,7 @@ public class K8sDefaultClient implements K8sClient {
     xgboostJobClient =
             new GenericKubernetesApi<>(
                     XGBoostJob.class, XGBoostJobList.class,
-                    XGBoostJob.CRD_XGBOOST_GROUP_V1, XGBoostJob.CRD_XGBOOST_API_VERSION_V1,
+                    XGBoostJob.CRD_XGBOOST_GROUP_V1, XGBoostJob.CRD_XGBOOST_VERSION_V1,
                     XGBoostJob.CRD_XGBOOST_PLURAL_V1, client);
 
     notebookCRClient =
