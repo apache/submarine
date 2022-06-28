@@ -23,14 +23,14 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaType;
 
 public enum XGBoostJobReplicaType implements MLJobReplicaType {
-  
+
   @SerializedName("Master")
   Master("Master"),
 
   @SerializedName("Worker")
   Worker("Worker");
 
-  private String typeName;
+  private final String typeName;
 
   XGBoostJobReplicaType(String n) {
     this.typeName = n;
@@ -40,7 +40,7 @@ public enum XGBoostJobReplicaType implements MLJobReplicaType {
     return type.equalsIgnoreCase("Master") ||
         type.equalsIgnoreCase("Worker");
   }
-  
+
   public static String[] names() {
     XGBoostJobReplicaType[] types = values();
     String[] names = new String[types.length];

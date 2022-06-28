@@ -320,7 +320,7 @@ public class K8sSubmitter implements Submitter {
                         MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
                 .throwsApiException().getStatus();
       }
-      
+
       LOG.info(String.format("Experiment:%s had been deleted, start to delete agent pod:%s",
               spec.getMeta().getName(), agentPod.getMetadata().getName()));
       k8sClient.getPodClient().delete(agentPod.getMetadata().getNamespace(),
