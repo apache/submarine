@@ -24,7 +24,7 @@ import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
 
 public class XGBoostJob extends MLJob {
 
-  public static final  String CRD_XGBOOST_KIND_V1 = "XGBppstJob";
+  public static final  String CRD_XGBOOST_KIND_V1 = "XGBoostJob";
   public static final  String CRD_XGBOOST_PLURAL_V1 = "xgboostjobs";
   public static final  String CRD_XGBOOST_GROUP_V1 = "kubeflow.org";
   public static final  String CRD_XGBOOST_VERSION_V1 = "v1";

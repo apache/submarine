@@ -59,7 +59,7 @@ cp ${SUBMARINE_HOME}/bin/submarine.sh "${CURRENT_PATH}/tmp/"
 cd ${CURRENT_PATH}
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
 
-docker build -t ${SUBMARINE_IMAGE_NAME} .
+docker build -t ${SUBMARINE_IMAGE_NAME} . --no-cache
 
 # clean temp file
 rm -rf "${CURRENT_PATH}/tmp"

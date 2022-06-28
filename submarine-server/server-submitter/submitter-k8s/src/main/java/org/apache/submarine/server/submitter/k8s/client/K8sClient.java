@@ -42,6 +42,8 @@ import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobList;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobList;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJob;
+import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJobList;
 
 public interface K8sClient {
 
@@ -65,6 +67,8 @@ public interface K8sClient {
   GenericKubernetesApi<TFJob, TFJobList> getTfJobClient();
 
   GenericKubernetesApi<PyTorchJob, PyTorchJobList> getPyTorchJobClient();
+
+  GenericKubernetesApi<XGBoostJob, XGBoostJobList> getXGBoostJobClient();
 
   GenericKubernetesApi<NotebookCR, NotebookCRList> getNotebookCRClient();
 
