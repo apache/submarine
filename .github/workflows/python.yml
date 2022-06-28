@@ -16,7 +16,7 @@
 name: python-sdk
 
 # Trigger the workflow on push or pull request
-on: [push]
+on: [push, pull_request]
 
 env:
   KUBERNETES_VERSION: "v1.21.2"
