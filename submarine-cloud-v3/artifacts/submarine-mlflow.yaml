@@ -1,0 +1,108 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: submarine-mlflow-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: "submarine-storageclass"
+  resources:
+    requests:
+      storage: "10Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: submarine-mlflow-service
+spec:
+  type: ClusterIP
+  selector:
+    app: submarine-mlflow
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+    name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: submarine-mlflow
+spec:
+  selector:
+    matchLabels:
+      app: submarine-mlflow
+  template:
+    metadata:
+      labels:
+        app: submarine-mlflow
+    spec:
+      serviceAccountName: "submarine-storage"
+      initContainers:
+      - name: check-database-connection
+        image: busybox:1.28
+        command: ["sh", "-c",
+        "until nc -z submarine-database 3306;
+        do echo waiting for database connection;
+        sleep 20; done"]
+      - name: submarine-mlflow-initcontainer
+        image: "minio/mc"
+        command: ["/bin/bash", "-c",
+        "cnt=0;
+        while ! /bin/bash -c 'mc --config-dir /root/.mc config host add minio http://submarine-minio-service:9000
+        submarine_minio submarine_minio' 2>&1;
+        do
+          sleep 15;
+          ((cnt=cnt+1));
+          if [ $cnt -eq 80 ];then
+            echo 'ERROR: wait too long for minio pod';
+            exit 1;
+          fi;
+        done;
+        if /bin/bash -c 'mc --config-dir /root/.mc ls minio/mlflow' >/dev/null 2>&1; then
+          echo 'Bucket minio/mlflow already exists, skipping creation.';
+        else
+          /bin/bash -c 'mc --config-dir /root/.mc mb minio/mlflow';
+        fi;"]
+        volumeMounts:
+          - name: mc-config-vol
+            mountPath: /root/.mc
+      containers:
+      - name: submarine-mlflow-container
+        image: apache/submarine:mlflow-0.8.0-SNAPSHOT
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+          - mountPath: "/logs"
+            name: "volume"
+            subPath: "submarine-mlflow"
+        readinessProbe:
+          tcpSocket:
+            port: 5000
+          initialDelaySeconds: 60
+          periodSeconds: 10
+      volumes:
+        - name: "volume"
+          persistentVolumeClaim:
+            claimName: "submarine-mlflow-pvc"
+        - name: mc-config-vol
+          emptyDir: {}
