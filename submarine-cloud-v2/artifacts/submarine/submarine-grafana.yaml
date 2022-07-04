@@ -25,6 +25,13 @@ data:
     [server]
     root_url = http://submarine-grafana-service/grafana/
     serve_from_sub_path = true
+    [database]
+    type = mysql
+    name = grafana
+    host = submarine-database:3306
+    user = grafana
+    password = password
+    url = mysql://grafana:password@submarine-database:3306/grafana
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
