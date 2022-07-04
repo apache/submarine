@@ -46,6 +46,7 @@ type BuilderConfig struct {
 	serviceInformer               coreinformers.ServiceInformer
 	serviceaccountInformer        coreinformers.ServiceAccountInformer
 	persistentvolumeclaimInformer coreinformers.PersistentVolumeClaimInformer
+	configMapInformer             coreinformers.ConfigMapInformer
 	ingressInformer               extinformers.IngressInformer
 	// ingressrouteInformer          traefikinformers.IngressRouteInformer
 	virtualServiceInformer istioInformers.VirtualServiceInformer
@@ -155,6 +156,13 @@ func (bc *BuilderConfig) WithPersistentVolumeClaimInformer(
 	persistentvolumeclaimInformer coreinformers.PersistentVolumeClaimInformer,
 ) *BuilderConfig {
 	bc.persistentvolumeclaimInformer = persistentvolumeclaimInformer
+	return bc
+}
+
+func (bc *BuilderConfig) WithConfigMapClaimInformer(
+	configMapInformer coreinformers.ConfigMapInformer,
+) *BuilderConfig {
+	bc.configMapInformer = configMapInformer
 	return bc
 }
 

@@ -36,4 +36,7 @@ use metastore; source /tmp/database/metastore.sql;
 CREATE DATABASE mlflowdb;
 CREATE USER 'mlflow'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON * . * TO 'mlflow'@'%';
+CREATE DATABASE grafana;
+CREATE USER 'grafana'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO 'grafana'@'%';
 EOF

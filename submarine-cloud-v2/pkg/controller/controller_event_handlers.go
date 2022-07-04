@@ -122,6 +122,23 @@ func (cb *ControllerBuilder) addPersistentVolumeClaimEventHandlers() *Controller
 	return cb
 }
 
+func (cb *ControllerBuilder) addConfigMapEventHandlers() *ControllerBuilder {
+	cb.config.configMapInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
+		AddFunc: cb.controller.handleObject,
+		UpdateFunc: func(old, new interface{}) {
+			newConfigMap := new.(*corev1.ConfigMap)
+			oldConfigMap := old.(*corev1.ConfigMap)
+			if newConfigMap.ResourceVersion == oldConfigMap.ResourceVersion {
+				return
+			}
+			cb.controller.handleObject(new)
+		},
+		DeleteFunc: cb.controller.handleObject,
+	})
+
+	return cb
+}
+
 func (cb *ControllerBuilder) addIngressEventHandlers() *ControllerBuilder {
 	cb.config.ingressInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: cb.controller.handleObject,
