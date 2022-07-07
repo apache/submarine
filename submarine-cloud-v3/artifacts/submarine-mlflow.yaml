@@ -20,6 +20,10 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: submarine-mlflow-pvc
+  labels:
+    app.kubernetes.io/name: submarine-mlflow
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: mlflow
 spec:
   accessModes:
     - ReadWriteOnce
@@ -32,6 +36,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: submarine-mlflow-service
+  labels:
+    app.kubernetes.io/name: submarine-mlflow
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: mlflow
 spec:
   type: ClusterIP
   selector:
@@ -46,6 +54,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: submarine-mlflow
+  labels:
+    app.kubernetes.io/name: submarine-mlflow
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: mlflow
 spec:
   selector:
     matchLabels:

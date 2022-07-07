@@ -20,6 +20,10 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: submarine-tensorboard-pvc
+  labels:
+    app.kubernetes.io/name: submarine-tensorboard
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: tensorboard
 spec:
   accessModes:
     - ReadWriteOnce
@@ -32,6 +36,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: submarine-tensorboard-service
+  labels:
+    app.kubernetes.io/name: submarine-tensorboard
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: tensorboard
 spec:
   selector:
     app: submarine-tensorboard
@@ -45,6 +53,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: submarine-tensorboard
+  labels:
+    app.kubernetes.io/name: submarine-tensorboard
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: tensorboard
 spec:
   selector:
     matchLabels:
