@@ -159,3 +159,7 @@ Steps to add new resource created and controlled by the operator:
 4. If needed, import new scheme in `main.go`.
 5. If there are new resource types, add RBAC marker comments in `contorllers/submarine_controller.go`.
 6. Run `make manifests` to update cluster role rules in `config/rbac/role.yaml`.
+
+## Run Operator End-to-end Tests
+
+Have the submarine operator running in-cluster or out-of-cluster before running `make test`. For verbose mode, instead run `go test ./controllers/ -v -ginkgo.v`, which outputs anything written to `GinkgoWriter` to stdout.
