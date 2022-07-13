@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/go-logr/logr"
 
@@ -222,7 +223,10 @@ func (r *SubmarineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
-	return ctrl.Result{}, nil
+	// Re-run Reconcile regularly
+	result := ctrl.Result{}
+	result.RequeueAfter = time.Second * 30 // default resync period
+	return result, nil
 }
 
 func (r *SubmarineReconciler) updateSubmarineStatus(ctx context.Context, submarine, submarineCopy *submarineapacheorgv1alpha1.Submarine) error {
