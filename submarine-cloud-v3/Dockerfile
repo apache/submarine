@@ -16,7 +16,8 @@
 #
 
 # Build the manager binary
-FROM golang:1.17 as builder
+FROM golang:1.17.2 as builder
+MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 WORKDIR /workspace
 # Copy the Go Modules manifests
@@ -32,13 +33,22 @@ COPY api/ api/
 COPY controllers/ controllers/
 
 # Build
+# use CGO_ENABLED=0 to support alpine image
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager main.go
 
-# Use distroless as minimal base image to package the manager binary
-# Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM gcr.io/distroless/static:nonroot
-WORKDIR /
-COPY --from=builder /workspace/manager .
-USER 65532:65532
+# use alpine to support shell params
+FROM alpine
+MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
-ENTRYPOINT ["/manager"]
+WORKDIR /usr/src
+COPY artifacts/ /usr/src/artifacts/
+COPY --from=builder /workspace/manager /usr/src/manager
+
+# manager is run as non-root user
+# See config/manager/manager.yaml
+RUN addgroup -g 1000 -S mygroup
+RUN adduser -u 1000 -S myuser -G mygroup
+USER myuser
+
+# CMD ls
+CMD /usr/src/manager

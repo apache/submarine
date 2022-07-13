@@ -41,11 +41,32 @@ bases:
 # [PROMETHEUS] To enable prometheus monitor, uncomment all sections with 'PROMETHEUS'.
 #- ../prometheus
 
+patchesJson6902:
+# [PSP] To create a PodSecurityPolicy, uncomment all the sections with [PSP]
+# ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+# This configuration enables the database/minio/server to set securityContext.runAsUser
+# [PSP] To create a PodSecurityPolicy, you must set the value of cluster type as "kubernetes" or "openshift"
+# To set it to "kubernetes", uncomment the following sections
+- path: patches/psp-clustertype-kubernetes-patch.yaml
+  target:
+    group: rbac.authorization.k8s.io
+    version: v1
+    kind: ClusterRole
+    name: manager-role
+# [PSP] To create a PodSecurityPolicy, you must set the value of cluster type as "kubernetes" or "openshift"
+# To set it to "openshift", uncomment the following sections
+# - path: patches/psp-clustertype-openshift-patch.yaml
+#   target:
+#     group: rbac.authorization.k8s.io
+#     version: v1
+#     kind: ClusterRole
+#     name: manager-role
+
 patchesStrategicMerge:
 # Protect the /metrics endpoint by putting it behind auth.
 # If you want your controller-manager to expose the /metrics
 # endpoint w/o any authn/z, please comment the following line.
-- manager_auth_proxy_patch.yaml
+# - manager_auth_proxy_patch.yaml
 
 # Mount the controller config file for loading manager configurations
 # through a ComponentConfig type
