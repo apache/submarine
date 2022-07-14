@@ -20,6 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/go-logr/logr"
 
@@ -119,23 +120,27 @@ type SubmarineReconciler struct {
 // On change, run `make manifest` to update config/rbac/role.yaml
 // Reference: https://github.com/apache/submarine/blob/master/submarine-cloud-v3/config/rbac/role.yaml
 
-// Submarine resource
+// Submarine resources
 //+kubebuilder:rbac:groups=submarine.apache.org,resources=submarines,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=submarine.apache.org,resources=submarines/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=submarine.apache.org,resources=submarines/finalizers,verbs=update
 
 // Event
 //+kubebuilder:rbac:groups="",resources=events,verbs=create;patch
+//+kubebuilder:rbac:groups="",resources=pods;secrets;configmaps;namespaces;jobs,verbs="*"
+//+kubebuilder:rbac:groups="apiextensions.k8s.io",resources=customresourcedefinitions,verbs="*"
 
-// Other resources
-//+kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=core,resources=services,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=core,resources=serviceaccounts,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=core,resources=persistentvolumeclaims,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=apps,resources=statefulsets,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=rbac,resources=roles,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=rbac,resources=rolebindings,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=networking.istio.io,resources=virtualservices,verbs=get;list;watch;create;update;patch;delete
+// k8s resources
+//+kubebuilder:rbac:groups=apps,resources=deployments;statefulsets,verbs="*"
+//+kubebuilder:rbac:groups=apps,resources=replicasets,verbs="*"
+//+kubebuilder:rbac:groups=core,resources=persistentvolumeclaims;serviceaccounts;services,verbs="*"
+//+kubebuilder:rbac:groups=rbac.authorization.k8s.io,resources=roles;rolebindings,verbs="*"
+
+// kubeflow resources
+//+kubebuilder:rbac:groups=kubeflow.org,resources=notebooks;pytorchjobs;tfjobs;xgboostjobs,verbs="*"
+
+// Istio resources
+//+kubebuilder:rbac:groups=networking.istio.io,resources=virtualservices,verbs="*"
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -222,7 +227,10 @@ func (r *SubmarineReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		return ctrl.Result{}, err
 	}
 
-	return ctrl.Result{}, nil
+	// Re-run Reconcile regularly
+	result := ctrl.Result{}
+	result.RequeueAfter = time.Second * 30 // default resync period
+	return result, nil
 }
 
 func (r *SubmarineReconciler) updateSubmarineStatus(ctx context.Context, submarine, submarineCopy *submarineapacheorgv1alpha1.Submarine) error {

@@ -15,24 +15,16 @@
 # limitations under the License.
 #
 
+# Adapted from submarine-cloud-v3/Dockerfile and dev-support/docker-images/operator/Dockerfile
+
 # Build the manager binary
-FROM golang:1.17.2 as builder
+FROM golang:1.17.2 as build-image
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
-WORKDIR /workspace
-# Copy the Go Modules manifests
-COPY go.mod go.mod
-COPY go.sum go.sum
-# cache deps before building and copying source so that we don't need to re-download as much
-# and so that source changes don't invalidate our downloaded layer
-RUN go mod download
+ADD tmp/submarine-cloud-v3 /usr/src
 
-# Copy the go source
-COPY main.go main.go
-COPY api/ api/
-COPY controllers/ controllers/
+WORKDIR /usr/src
 
-# Build
 # use CGO_ENABLED=0 to support alpine image
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o manager main.go
 
@@ -41,14 +33,13 @@ FROM alpine
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 WORKDIR /usr/src
-COPY artifacts/ /usr/src/artifacts/
-COPY --from=builder /workspace/manager /usr/src/manager
+COPY tmp/submarine-cloud-v3/artifacts/ /usr/src/artifacts/
+COPY --from=build-image /usr/src/manager /usr/src/manager
 
 # manager is run as non-root user
-# See config/manager/manager.yaml
+# See submarine-cloud-v3/config/manager/manager.yaml
 RUN addgroup -g 1000 -S submarine
 RUN adduser -u 1000 -S submarine -G submarine
 USER submarine
 
-# CMD ls
 CMD /usr/src/manager
