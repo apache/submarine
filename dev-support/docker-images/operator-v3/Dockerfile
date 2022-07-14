@@ -38,8 +38,8 @@ COPY --from=build-image /usr/src/manager /usr/src/manager
 
 # manager is run as non-root user
 # See submarine-cloud-v3/config/manager/manager.yaml
-RUN addgroup -g 1000 -S mygroup
-RUN adduser -u 1000 -S myuser -G mygroup
-USER myuser
+RUN addgroup -g 1000 -S submarine
+RUN adduser -u 1000 -S submarine -G submarine
+USER submarine
 
 CMD /usr/src/manager
