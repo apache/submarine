@@ -16,30 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.database.workbench.mappers;
 
-import org.apache.ibatis.session.RowBounds;
-import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
+package org.apache.submarine.server.security.common;
 
-import java.util.List;
-import java.util.Map;
+import org.pac4j.core.engine.DefaultCallbackLogic;
+import org.pac4j.core.engine.DefaultLogoutLogic;
+import org.pac4j.core.engine.DefaultSecurityLogic;
+import org.pac4j.core.http.adapter.HttpActionAdapter;
+import org.pac4j.jee.http.adapter.JEEHttpActionAdapter;
 
-public interface SysUserMapper {
-  SysUserEntity login(Map<String, String> where);
+public class CommonFilter {
 
-  List<SysUserEntity> selectAll(Map<String, Object> where, RowBounds rowBounds);
+  public static final HttpActionAdapter DEFAULT_HTTP_ACTION_ADAPTER = JEEHttpActionAdapter.INSTANCE;
 
-  void add(SysUserEntity sysOrg);
+  public static final DefaultCallbackLogic CALLBACK_LOGIC =
+          new DefaultCallbackLogic();
 
-  SysUserEntity getUserByName(Map<String, String> where);
+  public static final DefaultSecurityLogic SECURITY_LOGIC = new DefaultSecurityLogic();
 
-  void activeUser(String id);
-
-  SysUserEntity getUserByUniqueName(String name);
-
-  void updateBy(SysUserEntity sysUser);
-
-  void deleteById(String id);
-
-  void changePassword(SysUserEntity sysUser);
+  public static final DefaultLogoutLogic LOGOUT_LOGIC = new DefaultLogoutLogic();
 }
