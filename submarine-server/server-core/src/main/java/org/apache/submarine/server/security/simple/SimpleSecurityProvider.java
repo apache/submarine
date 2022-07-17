@@ -23,14 +23,11 @@ import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.security.common.CommonConfig;
 import org.apache.submarine.server.security.common.CommonFilter;
 import org.pac4j.core.config.Config;
-import org.pac4j.core.context.WebContext;
-import org.pac4j.core.context.session.SessionStore;
+import org.pac4j.core.context.JEEContext;
 import org.pac4j.core.matching.matcher.PathMatcher;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.http.client.direct.HeaderClient;
-import org.pac4j.jee.context.JEEContext;
-import org.pac4j.jee.context.session.JEESessionStore;
 import org.pac4j.jwt.profile.JwtProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,29 +76,27 @@ public class SimpleSecurityProvider implements SecurityProvider<SimpleFilter, Jw
 
   @Override
   public Optional<JwtProfile> perform(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
-    final JEEContext context = new JEEContext(hsRequest, hsResponse);
-    UserProfile profile = (UserProfile) CommonFilter.SECURITY_LOGIC.perform(
+    JEEContext context = new JEEContext(hsRequest, hsResponse, CommonFilter.SESSION_STORE);
+    UserProfile profile = CommonFilter.SECURITY_LOGIC.perform(
         context,
-        JEESessionStore.INSTANCE,
         pac4jConfig,
-        (WebContext webContext, SessionStore sessionStore, Collection<UserProfile> profiles,
-          Object... parameters) -> {
-            if (profiles.isEmpty()) {
-              LOG.warn("No profiles found with default auth.");
-              return null;
-            } else {
-              return profiles.iterator().next();
-            }
+        (JEEContext ctx, Collection<UserProfile> profiles, Object... parameters) -> {
+          if (profiles.isEmpty()) {
+            LOG.warn("No profiles found with default auth.");
+            return null;
+          } else {
+            return profiles.iterator().next();
+          }
         },
         CommonFilter.DEFAULT_HTTP_ACTION_ADAPTER,
-        getClient(hsRequest), DEFAULT_AUTHORIZER, "static,api");
+        getClient(hsRequest), DEFAULT_AUTHORIZER, "static,api", null);
     return Optional.ofNullable((JwtProfile) profile);
   }
 
   @Override
   public Optional<JwtProfile> getProfile(HttpServletRequest hsRequest, HttpServletResponse hsResponse) {
-    JEEContext context = new JEEContext(hsRequest, hsResponse);
-    ProfileManager manager = new ProfileManager(context, JEESessionStore.INSTANCE);
-    return manager.getProfile(JwtProfile.class);
+    JEEContext context = new JEEContext(hsRequest, hsResponse, CommonFilter.SESSION_STORE);
+    ProfileManager<JwtProfile> manager = new ProfileManager<>(context);
+    return manager.get(true);
   }
 }

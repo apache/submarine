@@ -441,24 +441,16 @@
 
     <dependency>
       <groupId>org.pac4j</groupId>
-      <artifactId>pac4j-javaee</artifactId>
-      <version>${pac4j.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-databind</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.pac4j</groupId>
       <artifactId>pac4j-jwt</artifactId>
       <version>${pac4j.version}</version>
       <exclusions>
         <exclusion>
           <groupId>org.bouncycastle</groupId>
           <artifactId>bcprov-jdk15on</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.ow2.asm</groupId>
+          <artifactId>asm</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
