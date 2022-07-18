@@ -28,7 +28,6 @@ import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
 import org.apache.submarine.server.rest.workbench.LoginRestApi;
 import org.apache.submarine.server.security.simple.SimpleFilter;
-import org.apache.submarine.server.security.simple.SimpleSecurityProvider;
 import org.apache.submarine.server.utils.gson.EnvironmentIdDeserializer;
 import org.apache.submarine.server.utils.gson.EnvironmentIdSerializer;
 import org.apache.submarine.server.utils.response.JsonResponse;
@@ -82,7 +81,6 @@ public class SubmarineAuthSimpleTest {
     conf.setJdbcUserName("submarine_test");
     conf.setJdbcPassword("password_test");
     loginRestApi = new LoginRestApi();
-    SecurityFactory.addProvider("simple", new SimpleSecurityProvider());
   }
 
   @Test
