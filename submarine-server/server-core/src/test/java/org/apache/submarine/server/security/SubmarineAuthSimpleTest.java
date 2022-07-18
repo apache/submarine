@@ -28,10 +28,11 @@ import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
 import org.apache.submarine.server.rest.workbench.LoginRestApi;
 import org.apache.submarine.server.security.simple.SimpleFilter;
+import org.apache.submarine.server.security.simple.SimpleSecurityProvider;
 import org.apache.submarine.server.utils.gson.EnvironmentIdDeserializer;
 import org.apache.submarine.server.utils.gson.EnvironmentIdSerializer;
 import org.apache.submarine.server.utils.response.JsonResponse;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.pac4j.core.config.Config;
@@ -68,8 +69,8 @@ public class SubmarineAuthSimpleTest {
 
   private static LoginRestApi loginRestApi;
 
-  @BeforeClass
-  public static void before() {
+  @Before
+  public void before() {
     conf.updateConfiguration("submarine.auth.type", "simple");
     conf.setJdbcUrl("jdbc:mysql://127.0.0.1:3306/submarine_test?" +
             "useUnicode=true&" +
@@ -81,6 +82,7 @@ public class SubmarineAuthSimpleTest {
     conf.setJdbcUserName("submarine_test");
     conf.setJdbcPassword("password_test");
     loginRestApi = new LoginRestApi();
+    SecurityFactory.addProvider("simple", new SimpleSecurityProvider());
   }
 
   @Test
