@@ -91,7 +91,6 @@ public class SubmarineAuthSimpleTest {
 
     // test provider
     Optional<SecurityProvider> providerOptional = SecurityFactory.getSecurityProvider();
-    assertTrue(providerOptional.isPresent());
     SecurityProvider provider = providerOptional.get();
     assertNotNull(provider);
     assertEquals(provider.getFilterClass(), SimpleFilter.class);
