@@ -27,6 +27,7 @@ import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.environment.EnvironmentId;
 import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
 import org.apache.submarine.server.rest.workbench.LoginRestApi;
+import org.apache.submarine.server.rest.workbench.SysUserRestApi;
 import org.apache.submarine.server.security.simple.SimpleFilter;
 import org.apache.submarine.server.utils.gson.EnvironmentIdDeserializer;
 import org.apache.submarine.server.utils.gson.EnvironmentIdSerializer;
@@ -67,6 +68,7 @@ public class SubmarineAuthSimpleTest {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineAuthSimpleTest.class);
 
   private static LoginRestApi loginRestApi;
+  private static SysUserRestApi sysUserRestApi;
 
   @Before
   public void before() {
@@ -81,6 +83,14 @@ public class SubmarineAuthSimpleTest {
     conf.setJdbcUserName("submarine_test");
     conf.setJdbcPassword("password_test");
     loginRestApi = new LoginRestApi();
+    // add a test user
+    sysUserRestApi = new SysUserRestApi();
+    SysUserEntity user = new SysUserEntity();
+    user.setUserName("test");
+    user.setRealName("test");
+    user.setPassword("test");
+    user.setDeleted(0);
+    sysUserRestApi.add(user);
   }
 
   @Test
@@ -98,7 +108,7 @@ public class SubmarineAuthSimpleTest {
     assertTrue(config.getClients().findClient("headerClient").isPresent());
 
     // test login api
-    String testUsrJson = "{\"username\":\"admin\",\"password\":\"21232f297a57a5a743894a0e4a801fc3\"}";
+    String testUsrJson = "{\"username\":\"test\",\"password\":\"test\"}";
     Response loginResp = loginRestApi.login(testUsrJson);
     assertEquals(loginResp.getStatus(), Response.Status.OK.getStatusCode());
     String entity = (String) loginResp.getEntity();
