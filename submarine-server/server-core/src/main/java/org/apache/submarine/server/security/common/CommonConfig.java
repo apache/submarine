@@ -16,30 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.server.database.workbench.mappers;
 
-import org.apache.ibatis.session.RowBounds;
-import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
+package org.apache.submarine.server.security.common;
 
-import java.util.List;
-import java.util.Map;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
 
-public interface SysUserMapper {
-  SysUserEntity login(Map<String, String> where);
+import static org.apache.submarine.commons.utils.SubmarineConfVars.ConfVars;
 
-  List<SysUserEntity> selectAll(Map<String, Object> where, RowBounds rowBounds);
+public class CommonConfig {
 
-  void add(SysUserEntity sysOrg);
+  public static final String LOGOUT_ENDPOINT = "/auth/logout";
+  public static final String AUTH_HEADER = "Authorization";
+  public static final String BEARER_HEADER_PREFIX = "Bearer ";
 
-  SysUserEntity getUserByName(Map<String, String> where);
+  public static final int MAX_AGE;
 
-  void activeUser(String id);
+  static {
+    SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+    MAX_AGE = conf.getInt(ConfVars.SUBMARINE_AUTH_MAX_AGE_ENV);
+  }
 
-  SysUserEntity getUserByUniqueName(String name);
-
-  void updateBy(SysUserEntity sysUser);
-
-  void deleteById(String id);
-
-  void changePassword(SysUserEntity sysUser);
 }

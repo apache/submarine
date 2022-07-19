@@ -20,6 +20,8 @@ package org.apache.submarine.server;
 
 import org.apache.log4j.PropertyConfigurator;
 import org.apache.submarine.server.rest.provider.YamlEntityProvider;
+import org.apache.submarine.server.security.SecurityFactory;
+import org.apache.submarine.server.security.SecurityProvider;
 import org.apache.submarine.server.workbench.websocket.NotebookServer;
 import org.apache.submarine.server.websocket.WebSocketServer;
 import org.eclipse.jetty.http.HttpVersion;
@@ -53,6 +55,8 @@ import org.apache.submarine.commons.utils.SubmarineConfVars;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -62,6 +66,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.EnumSet;
+import java.util.Optional;
 
 public class SubmarineServer extends ResourceConfig {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineServer.class);
@@ -200,6 +206,14 @@ public class SubmarineServer extends ResourceConfig {
     // you need to modify the `/workbench/*` here.
     webApp.addServlet(new ServletHolder(RefreshServlet.class), "/user/*");
     webApp.addServlet(new ServletHolder(RefreshServlet.class), "/workbench/*");
+
+    // add security filter
+    Optional<SecurityProvider> securityProvider = SecurityFactory.getSecurityProvider();
+    if (securityProvider.isPresent()) {
+      Class<Filter> filterClass = securityProvider.get().getFilterClass();
+      LOG.info("Add {} to support auth", filterClass);
+      webApp.addFilter(filterClass, "/*", EnumSet.of(DispatcherType.REQUEST));
+    }
 
     handlers.setHandlers(new Handler[]{webApp});
 

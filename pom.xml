@@ -148,6 +148,8 @@
     <!--  server API  -->
     <protobuf-java.version>3.14.0</protobuf-java.version>
     <joda-time.version>2.10.8</joda-time.version>
+    <!--  pac4j  -->
+    <pac4j.version>4.5.6</pac4j.version>
   </properties>
 
   <modules>

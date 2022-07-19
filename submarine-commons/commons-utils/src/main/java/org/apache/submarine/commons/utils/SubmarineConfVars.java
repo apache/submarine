@@ -75,7 +75,12 @@ public class SubmarineConfVars {
     SUBMARINE_SUBMITTER("submarine.submitter", "k8s"),
     SUBMARINE_SERVER_SERVICE_NAME("submarine.server.service.name", "submarine-server"),
     ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", "4.0.1"),
-    ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", "4.11.10");
+    ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", "4.11.10"),
+
+    /* auth */
+    SUBMARINE_AUTH_TYPE("submarine.auth.type", "none"),
+    SUBMARINE_AUTH_DEFAULT_SECRET("submarine.auth.default.secret", "SUBMARINE_SECRET_12345678901234567890"),
+    SUBMARINE_AUTH_MAX_AGE_ENV("submarine.auth.maxAge", 60 * 60 * 24);
 
     private String varName;
     @SuppressWarnings("rawtypes")
