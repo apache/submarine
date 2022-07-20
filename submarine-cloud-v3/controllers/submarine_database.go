@@ -38,6 +38,7 @@ func (r *SubmarineReconciler) newSubmarineDatabasePersistentVolumeClaim(ctx cont
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
 	pvc.Namespace = submarine.Namespace
+	pvc.Labels = map[string]string{"app.kubernetes.io/name": databasePvcName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "database"}
 	err = controllerutil.SetControllerReference(submarine, pvc, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set PVC ControllerReference")
@@ -52,6 +53,7 @@ func (r *SubmarineReconciler) newSubmarineDatabaseStatefulSet(ctx context.Contex
 	}
 
 	statefulset.Namespace = submarine.Namespace
+	statefulset.Labels = map[string]string{"app.kubernetes.io/name": databaseName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "database"}
 	err = controllerutil.SetControllerReference(submarine, statefulset, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Stateful Set ControllerReference")
@@ -71,6 +73,7 @@ func (r *SubmarineReconciler) newSubmarineDatabaseService(ctx context.Context, s
 		r.Log.Error(err, "ParseServiceYaml")
 	}
 	service.Namespace = submarine.Namespace
+	service.Labels = map[string]string{"app.kubernetes.io/name": databaseName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "database"}
 	err = controllerutil.SetControllerReference(submarine, service, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Service ControllerReference")

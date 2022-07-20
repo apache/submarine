@@ -38,6 +38,7 @@ func (r *SubmarineReconciler) newSubmarineTensorboardPersistentVolumeClaim(ctx c
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
 	pvc.Namespace = submarine.Namespace
+	pvc.Labels = map[string]string{"app.kubernetes.io/name": tensorboardPvcName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "tensorboard"}
 	err = controllerutil.SetControllerReference(submarine, pvc, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set PersistentVolumeClaim ControllerReference")
@@ -51,6 +52,7 @@ func (r *SubmarineReconciler) newSubmarineTensorboardDeployment(ctx context.Cont
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
 	deployment.Namespace = submarine.Namespace
+	deployment.Labels = map[string]string{"app.kubernetes.io/name": tensorboardName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "tensorboard"}
 	err = controllerutil.SetControllerReference(submarine, deployment, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Deployment ControllerReference")
@@ -64,6 +66,7 @@ func (r *SubmarineReconciler) newSubmarineTensorboardService(ctx context.Context
 		r.Log.Error(err, "ParseServiceYaml")
 	}
 	service.Namespace = submarine.Namespace
+	service.Labels = map[string]string{"app.kubernetes.io/name": tensorboardServiceName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "tensorboard"}
 	err = controllerutil.SetControllerReference(submarine, service, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Service ControllerReference")

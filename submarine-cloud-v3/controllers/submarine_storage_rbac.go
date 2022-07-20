@@ -38,6 +38,7 @@ func (r *SubmarineReconciler) newSubmarineStorageRole(ctx context.Context, subma
 		r.Log.Error(err, "ParseRoleYaml")
 	}
 	role.Namespace = submarine.Namespace
+	role.Labels = map[string]string{"app.kubernetes.io/name": storageName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "storage"}
 	err = controllerutil.SetControllerReference(submarine, role, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Role ControllerReference")
@@ -59,6 +60,7 @@ func (r *SubmarineReconciler) newSubmarineStorageRoleBinding(ctx context.Context
 		r.Log.Error(err, "Set RoleBinding ControllerReference")
 	}
 	roleBinding.Namespace = submarine.Namespace
+	roleBinding.Labels = map[string]string{"app.kubernetes.io/name": storageName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "storage"}
 	err = controllerutil.SetControllerReference(submarine, roleBinding, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set RoleBinding ControllerReference")
@@ -72,6 +74,7 @@ func (r *SubmarineReconciler) newSubmarineStorageServiceAccount(ctx context.Cont
 		r.Log.Error(err, "ParseServiceAccountYaml")
 	}
 	serviceAccount.Namespace = submarine.Namespace
+	serviceAccount.Labels = map[string]string{"app.kubernetes.io/name": storageName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "storage"}
 	err = controllerutil.SetControllerReference(submarine, serviceAccount, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set ServiceAccount ControllerReference")

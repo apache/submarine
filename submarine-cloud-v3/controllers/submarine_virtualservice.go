@@ -39,6 +39,7 @@ func (r *SubmarineReconciler) newSubmarineVirtualService(ctx context.Context, su
 		r.Log.Error(err, "ParseVirtualService")
 	}
 	virtualService.Namespace = submarine.Namespace
+	virtualService.Labels = map[string]string{"app.kubernetes.io/name": virtualServiceName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "virtual-service"}
 	err = controllerutil.SetControllerReference(submarine, virtualService, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set VirtualService ControllerReference")

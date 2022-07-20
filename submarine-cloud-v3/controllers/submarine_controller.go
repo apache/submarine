@@ -65,6 +65,7 @@ const (
 	observerRbacYamlPath   = artifactPath + "submarine-observer-rbac.yaml"
 	storageRbacYamlPath    = artifactPath + "submarine-storage-rbac.yaml"
 	virtualServiceYamlPath = artifactPath + "submarine-virtualservice.yaml"
+	appVersion             = "0.8.0-SNAPSHOT"
 )
 
 // Name of deployments whose replica count and readiness need to be checked

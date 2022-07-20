@@ -38,6 +38,7 @@ func (r *SubmarineReconciler) newSubmarineServerServiceAccount(ctx context.Conte
 		r.Log.Error(err, "ParseServiceAccountYaml")
 	}
 	serviceAccount.Namespace = submarine.Namespace
+	serviceAccount.Labels = map[string]string{"app.kubernetes.io/name": serverName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "server"}
 	err = controllerutil.SetControllerReference(submarine, serviceAccount, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set ServiceAccount ControllerReference")
@@ -51,6 +52,7 @@ func (r *SubmarineReconciler) newSubmarineServerService(ctx context.Context, sub
 		r.Log.Error(err, "ParseServiceYaml")
 	}
 	service.Namespace = submarine.Namespace
+	service.Labels = map[string]string{"app.kubernetes.io/name": serverName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "server"}
 	err = controllerutil.SetControllerReference(submarine, service, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Service ControllerReference")
@@ -92,6 +94,7 @@ func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, 
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
 	deployment.Namespace = submarine.Namespace
+	deployment.Labels = map[string]string{"app.kubernetes.io/name": serverName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "server"}
 	err = controllerutil.SetControllerReference(submarine, deployment, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Deployment ControllerReference")

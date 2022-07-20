@@ -38,6 +38,7 @@ func (r *SubmarineReconciler) newSubmarineMinioPersistentVolumeClaim(ctx context
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
 	pvc.Namespace = submarine.Namespace
+	pvc.Labels = map[string]string{"app.kubernetes.io/name": minioPvcName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "minio"}
 	err = controllerutil.SetControllerReference(submarine, pvc, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set PersistentVolumeClaim ControllerReference")
@@ -51,6 +52,7 @@ func (r *SubmarineReconciler) newSubmarineMinioDeployment(ctx context.Context, s
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
 	deployment.Namespace = submarine.Namespace
+	deployment.Labels = map[string]string{"app.kubernetes.io/name": minioName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "minio"}
 	err = controllerutil.SetControllerReference(submarine, deployment, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Deployment ControllerReference")
@@ -64,6 +66,7 @@ func (r *SubmarineReconciler) newSubmarineMinioService(ctx context.Context, subm
 		r.Log.Error(err, "ParseServiceYaml")
 	}
 	service.Namespace = submarine.Namespace
+	service.Labels = map[string]string{"app.kubernetes.io/name": minioServiceName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "minio"}
 	err = controllerutil.SetControllerReference(submarine, service, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Service ControllerReference")
