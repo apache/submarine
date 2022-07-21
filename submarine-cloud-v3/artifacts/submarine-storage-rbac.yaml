@@ -20,29 +20,17 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: "submarine-storage"
-  labels:
-    app.kubernetes.io/name: submarine-storage
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: storage
 rules: []
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: submarine-storage
-  labels:
-    app.kubernetes.io/name: submarine-storage
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: storage
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: "submarine-storage"
-  labels:
-    app.kubernetes.io/name: submarine-storage
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: storage
 subjects:
   - kind: ServiceAccount
     name: "submarine-storage"

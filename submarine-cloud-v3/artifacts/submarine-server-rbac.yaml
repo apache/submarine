@@ -20,10 +20,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: "submarine-server"
-  labels:
-    app.kubernetes.io/name: submarine-server
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: server
 rules:
 - apiGroups:
   - kubeflow.org
@@ -108,10 +104,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: "observer"
-  labels:
-    app.kubernetes.io/name: submarine-server
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: server
 rules:
 - apiGroups:
   - kubeflow.org
@@ -133,10 +125,6 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: "submarine-server"
-  labels:
-    app.kubernetes.io/name: submarine-server
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: server
 subjects:
 - kind: ServiceAccount
   name: "submarine-server"
@@ -149,10 +137,6 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: "observer"
-  labels:
-    app.kubernetes.io/name: submarine-server
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: server
 subjects:
 - kind: ServiceAccount
   name: "default"

@@ -20,10 +20,6 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: submarine-minio-pvc
-  labels:
-    app.kubernetes.io/name: submarine-minio
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: minio
 spec:
   accessModes:
     - ReadWriteOnce
@@ -36,10 +32,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: submarine-minio-service
-  labels:
-    app.kubernetes.io/name: submarine-minio
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: minio
 spec:
   type: ClusterIP
   selector:
@@ -54,10 +46,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: submarine-minio
-  labels:
-    app.kubernetes.io/name: submarine-minio
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: minio
 spec:
   selector:
     matchLabels:

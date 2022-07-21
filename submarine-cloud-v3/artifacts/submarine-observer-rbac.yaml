@@ -20,10 +20,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: "submarine-observer"
-  labels:
-    app.kubernetes.io/name: submarine-observer
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: observer
 rules:
 - apiGroups:
   - kubeflow.org
@@ -58,10 +54,6 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: "submarine-observer"
-  labels:
-    app.kubernetes.io/name: submarine-observer
-    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
-    app.kubernetes.io/component: observer
 subjects:
 - kind: ServiceAccount
   name: "default"
