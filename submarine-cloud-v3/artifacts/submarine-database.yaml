@@ -20,6 +20,10 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: submarine-database-pvc
+  labels:
+    app.kubernetes.io/name: submarine-database
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: database
 spec:
   accessModes:
     - ReadWriteOnce
@@ -32,6 +36,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: "submarine-database"
+  labels:
+    app.kubernetes.io/name: submarine-database
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: database
 spec:
   ports:
     - name: "submarine-database"
@@ -46,6 +54,10 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: "submarine-database"
+  labels:
+    app.kubernetes.io/name: submarine-database
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: database
 spec:
   serviceName: submarine-database
   replicas: 1

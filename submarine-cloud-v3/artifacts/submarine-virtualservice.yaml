@@ -20,6 +20,10 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: submarine-virtual-service
+  labels:
+    app.kubernetes.io/name: submarine-virtual-service
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: virtual-service
 spec:
   hosts:
     - "*"

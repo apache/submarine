@@ -20,11 +20,19 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: "submarine-server"
+  labels:
+    app.kubernetes.io/name: submarine-server
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: server
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: "default"
+  labels:
+    app.kubernetes.io/name: submarine-server
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: server
 ---
 apiVersion: v1
 kind: Service
@@ -32,6 +40,9 @@ metadata:
   name: "submarine-server"
   labels:
     app: "submarine-server"
+    app.kubernetes.io/name: submarine-server
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: server
 spec:
   ports:
   - port: 8080
@@ -45,6 +56,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "submarine-server"
+  labels:
+    app.kubernetes.io/name: submarine-server
+    app.kubernetes.io/version: "0.8.0-SNAPSHOT"
+    app.kubernetes.io/component: server
 spec:
   selector:
     matchLabels:
