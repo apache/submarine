@@ -23,20 +23,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-
-import io.kubernetes.client.util.generic.options.PatchOptions;
 import io.kubernetes.client.openapi.ApiException;
-import io.kubernetes.client.openapi.JSON;
-import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.openapi.models.V1Deployment;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Pod;
 import io.kubernetes.client.openapi.models.V1PodList;
-import io.kubernetes.client.openapi.models.V1Status;
 import io.kubernetes.client.util.generic.options.CreateOptions;
 import io.kubernetes.client.util.generic.options.DeleteOptions;
 import io.kubernetes.client.util.generic.options.ListOptions;
@@ -70,12 +64,8 @@ import org.apache.submarine.server.submitter.k8s.model.istio.IstioVirtualService
 import org.apache.submarine.server.submitter.k8s.model.common.NullResource;
 import org.apache.submarine.server.submitter.k8s.model.common.PersistentVolumeClaim;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
+import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobFactory;
 import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCR;
-import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
-import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
-import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJob;
-import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
-import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
 import org.apache.submarine.server.submitter.k8s.util.NotebookUtils;
 import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
 
@@ -165,6 +155,30 @@ public class K8sSubmitter implements Submitter {
     }
   }
 
+  /**
+   * Delete resources with transaction
+   * This is an experimental API, Our main consideration is that:
+   * k8s resources transactional deletion cannot handle the rollback of transactions well,
+   * so we only guarantee the deletion of primary resource for the time being.
+   * We can tolerate the deletion failure of other dependent resources,
+   * so as to maximize the availability of the deletion API.
+   * @param primary primary resource, Failure of this resource will cause API exceptions
+   * @param dependentResources dependent resources
+   */
+  public <T> T deleteResourcesTransaction(K8sResource<T> primary, K8sResource... dependentResources) {
+    T returnResource = primary.delete(k8sClient);
+    for (K8sResource dependent : dependentResources) {
+      try {
+        dependent.delete(k8sClient);
+      } catch (Exception e) {
+        LOG.warn(String.format("Delete %s/%s failed. %s", dependent.getKind(),
+                dependent.getMetadata().getName(), e.getMessage()), e);
+        // TODO(cdmikechen): Record the error information into audit service for later tracking
+      }
+    }
+    return returnResource;
+  }
+
   public static V1ObjectMeta createMeta(String namespace, String name) {
     V1ObjectMeta metadata = new V1ObjectMeta();
     metadata.setNamespace(namespace);
@@ -183,190 +197,64 @@ public class K8sSubmitter implements Submitter {
     return deleteOptions;
   }
 
-  private enum ParseOp {
-    PARSE_OP_RESULT,
-    PARSE_OP_DELETE
-  }
-
   @Override
   public Experiment createExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
-    Experiment experiment;
     try {
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      mlJob.getMetadata().setNamespace(getServerNamespace());
+      // MLJob K8s resource object
+      MLJob mlJob = MLJobFactory.getMLJob(spec);
       mlJob.getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
-
-      CustomResourceType customResourceType;
-      if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
-        customResourceType = CustomResourceType.TFJob;
-      } else if (mlJob.getPlural().equals(XGBoostJob.CRD_XGBOOST_PLURAL_V1)) {
-        customResourceType = CustomResourceType.XGBoost;
-      } else {
-        customResourceType = CustomResourceType.PyTorchJob;
-      }
-
-      AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(), customResourceType,
-              spec.getMeta().getExperimentId());
-
-      Object object;
-      if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
-        object = k8sClient.getTfJobClient().create(getServerNamespace(), (TFJob) mlJob,
-                new CreateOptions()).throwsApiException().getObject();
-      } else if (mlJob.getPlural().equals(XGBoostJob.CRD_XGBOOST_PLURAL_V1)) {
-        object = k8sClient.getXGBoostJobClient().create(getServerNamespace(), (XGBoostJob) mlJob,
-                new CreateOptions()).throwsApiException().getObject();
-      } else {
-        object = k8sClient.getPyTorchJobClient().create(getServerNamespace(), (PyTorchJob) mlJob,
-                new CreateOptions()).throwsApiException().getObject();
-      }
-
-      k8sClient.getPodClient().create(agentPod).throwsApiException().getObject();
-      experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
+      // Agent pod K8s resource object
+      AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(),
+          mlJob.getResourceType(), spec.getMeta().getExperimentId());
+      // commit resources/CRD with transaction
+      List<Object> values = resourceTransaction(mlJob, agentPod);
+      return (Experiment) values.get(0);
     } catch (InvalidSpecException e) {
-      LOG.error("K8s submitter: parse Job object failed by " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(400, e.getMessage());
-    } catch (ApiException e) {
-      LOG.error("K8s submitter: failed to create pod " + e.getMessage(), e);
-      throw new SubmarineRuntimeException(e.getCode(), "K8s submitter: failed to create pod " +
-              e.getMessage());
+      LOG.error(String.format("K8s submitter: parse %s object failed by %s",
+              spec.getMeta().getFramework(), e.getMessage()), e);
+      throw new SubmarineRuntimeException(500, e.getMessage());
     }
-    return experiment;
   }
 
   @Override
   public Experiment findExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
-    Experiment experiment;
     try {
-
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      mlJob.getMetadata().setNamespace(getServerNamespace());
-
-      Object object;
-      if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
-        object = k8sClient.getTfJobClient().get(getServerNamespace(),
-                mlJob.getMetadata().getName()).throwsApiException().getObject();
-      } else if (mlJob.getPlural().equals(XGBoostJob.CRD_XGBOOST_PLURAL_V1)) {
-        object = k8sClient.getXGBoostJobClient().get(getServerNamespace(),
-                mlJob.getMetadata().getName()).throwsApiException().getObject();
-      } else {
-        object = k8sClient.getPyTorchJobClient().get(getServerNamespace(),
-                mlJob.getMetadata().getName()).throwsApiException().getObject();
-      }
-
-      experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
-
+      // MLJob K8s resource object
+      MLJob mlJob = MLJobFactory.getMLJob(spec);
+      // Read Experiment
+      return mlJob.read(k8sClient);
     } catch (InvalidSpecException e) {
-      throw new SubmarineRuntimeException(200, e.getMessage());
-    } catch (ApiException e) {
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
+      throw new SubmarineRuntimeException(400, e.getMessage());
     }
-
-    return experiment;
   }
 
   @Override
   public Experiment patchExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
-    Experiment experiment;
     try {
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      mlJob.getMetadata().setNamespace(getServerNamespace());
-      // Using apply yaml patch, field manager must be set, and it must be forced.
-      // https://kubernetes.io/docs/reference/using-api/server-side-apply/#field-management
-      PatchOptions patchOptions = new PatchOptions();
-      patchOptions.setFieldManager(spec.getMeta().getExperimentId());
-      patchOptions.setForce(true);
-      Object object;
-      if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
-        object = k8sClient.getTfJobClient().patch(getServerNamespace(), mlJob.getMetadata().getName(),
-                V1Patch.PATCH_FORMAT_APPLY_YAML,
-                new V1Patch(new Gson().toJson(mlJob)),
-                patchOptions).throwsApiException().getObject();
-      } else if (mlJob.getPlural().equals(XGBoostJob.CRD_XGBOOST_PLURAL_V1)) {
-        object = k8sClient.getXGBoostJobClient().patch(getServerNamespace(), mlJob.getMetadata().getName(),
-                V1Patch.PATCH_FORMAT_APPLY_YAML,
-                new V1Patch(new Gson().toJson(mlJob)),
-                patchOptions).throwsApiException().getObject();
-      } else {
-        object = k8sClient.getPyTorchJobClient().patch(getServerNamespace(), mlJob.getMetadata().getName(),
-                V1Patch.PATCH_FORMAT_APPLY_YAML,
-                new V1Patch(new Gson().toJson(mlJob)),
-                patchOptions).throwsApiException().getObject();
-      }
-
-      experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_RESULT);
+      // MLJob K8s resource object
+      MLJob mlJob = MLJobFactory.getMLJob(spec);
+      // Patch Experiment
+      return mlJob.replace(k8sClient);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(409, e.getMessage());
-    } catch (ApiException e) {
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     } catch (Error e) {
       throw new SubmarineRuntimeException(500, String.format("Unhandled error: %s", e.getMessage()));
     }
-    return experiment;
   }
 
   @Override
   public Experiment deleteExperiment(ExperimentSpec spec) throws SubmarineRuntimeException {
-    Experiment experiment;
     try {
-      MLJob mlJob = ExperimentSpecParser.parseJob(spec);
-      mlJob.getMetadata().setNamespace(getServerNamespace());
-
-      CustomResourceType customResourceType;
-      if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
-        customResourceType = CustomResourceType.TFJob;
-      } else if (mlJob.getPlural().equals(XGBoostJob.CRD_XGBOOST_PLURAL_V1)) {
-        customResourceType = CustomResourceType.XGBoost;
-      } else {
-        customResourceType = CustomResourceType.PyTorchJob;
-      }
-
-      AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(), customResourceType,
-              spec.getMeta().getExperimentId());
-
-      Object object;
-      if (mlJob.getPlural().equals(TFJob.CRD_TF_PLURAL_V1)) {
-        object = k8sClient.getTfJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
-                MLJobConverter.toDeleteOptionsFromMLJob(mlJob)).throwsApiException().getStatus();
-      } else if (mlJob.getPlural().equals(XGBoostJob.CRD_XGBOOST_PLURAL_V1)) {
-        object = k8sClient.getXGBoostJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
-                        MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
-                .throwsApiException().getStatus();
-      } else {
-        object = k8sClient.getPyTorchJobClient().delete(getServerNamespace(), mlJob.getMetadata().getName(),
-                        MLJobConverter.toDeleteOptionsFromMLJob(mlJob))
-                .throwsApiException().getStatus();
-      }
-
-      LOG.info(String.format("Experiment:%s had been deleted, start to delete agent pod:%s",
-              spec.getMeta().getName(), agentPod.getMetadata().getName()));
-      k8sClient.getPodClient().delete(agentPod.getMetadata().getNamespace(),
-              agentPod.getMetadata().getName());
-      experiment = parseExperimentResponseObject(object, ParseOp.PARSE_OP_DELETE);
+      // MLJob K8s resource object
+      MLJob mlJob = MLJobFactory.getMLJob(spec);
+      // Agent pod K8s resource object
+      AgentPod agentPod = new AgentPod(getServerNamespace(), spec.getMeta().getName(),
+              mlJob.getResourceType(), spec.getMeta().getExperimentId());
+      // Delete with transaction
+      return deleteResourcesTransaction(mlJob, agentPod);
     } catch (InvalidSpecException e) {
       throw new SubmarineRuntimeException(200, e.getMessage());
-    } catch (ApiException e) {
-      throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     }
-    return experiment;
-  }
-
-  private Experiment parseExperimentResponseObject(Object object, ParseOp op)
-          throws SubmarineRuntimeException {
-    Gson gson = new JSON().getGson();
-    String jsonString = gson.toJson(object);
-    LOG.info("Upstream response JSON: {}", jsonString);
-    try {
-      if (op == ParseOp.PARSE_OP_RESULT) {
-        MLJob mlJob = gson.fromJson(jsonString, MLJob.class);
-        return MLJobConverter.toJobFromMLJob(mlJob);
-      } else if (op == ParseOp.PARSE_OP_DELETE) {
-        V1Status status = gson.fromJson(jsonString, V1Status.class);
-        return MLJobConverter.toJobFromStatus(status);
-      }
-    } catch (JsonSyntaxException e) {
-      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
-    }
-    throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
   }
 
   @Override
@@ -435,7 +323,8 @@ public class K8sSubmitter implements Submitter {
   private boolean isDeploymentAvailable(String name) throws ApiException{
     V1Deployment deploy = k8sClient.getAppsV1Api()
             .readNamespacedDeploymentStatus(name, getServerNamespace(), "true");
-    return deploy.getStatus().getAvailableReplicas() > 0; // at least one replica is running
+    return deploy == null ? false : Optional.ofNullable(deploy.getStatus().getAvailableReplicas())
+        .map(ar -> ar > 0).orElse(false); // at least one replica is running
   }
 
   @Override

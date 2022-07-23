@@ -88,6 +88,10 @@
           <groupId>mysql</groupId>
           <artifactId>mysql-connector-java</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.derby</groupId>
+          <artifactId>derby</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -120,6 +124,13 @@
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-joda</artifactId>
       <version>${jackson-databind.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2-connector-java.version}</version>
+      <scope>test</scope>
     </dependency>
 
   </dependencies>

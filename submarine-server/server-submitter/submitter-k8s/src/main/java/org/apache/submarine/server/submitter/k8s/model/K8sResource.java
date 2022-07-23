@@ -28,11 +28,23 @@ public interface K8sResource<R> {
 
   V1ObjectMeta getMetadata();
 
+  /**
+   * Resource get api
+   */
   R read(K8sClient api);
 
+  /**
+   * Resource create api
+   */
   R create(K8sClient api);
 
+  /**
+   * Resource patch api
+   */
   R replace(K8sClient api);
 
+  /**
+   * Resource delete api
+   */
   R delete(K8sClient api);
 }

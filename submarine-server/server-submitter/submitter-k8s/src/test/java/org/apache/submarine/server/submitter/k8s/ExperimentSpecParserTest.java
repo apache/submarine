@@ -21,6 +21,10 @@ package org.apache.submarine.server.submitter.k8s;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +39,10 @@ import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
 import org.apache.submarine.server.api.spec.KernelSpec;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
 import org.apache.submarine.server.manager.EnvironmentManager;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
+import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobFactory;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaSpec;
 import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
@@ -45,11 +51,11 @@ import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
 import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
 import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJob;
 import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJobReplicaType;
-import org.apache.submarine.server.submitter.k8s.parser.ExperimentSpecParser;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.GitCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.SSHGitCodeLocalizer;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EmptyDirVolumeSource;
@@ -58,14 +64,29 @@ import io.kubernetes.client.openapi.models.V1EnvVar;
 
 public class ExperimentSpecParserTest extends SpecBuilder {
 
-  private static SubmarineConfiguration conf =
+  private static final SubmarineConfiguration conf =
       SubmarineConfiguration.getInstance();
+
+  @Before
+  public void beforeInit() {
+    conf.setJdbcUrl(H2_JDBC_URL);
+    conf.setJdbcDriverClassName(H2_JDBC_DRIVERCLASS);
+    conf.setJdbcUserName(H2_JDBC_USERNAME);
+    conf.setJdbcPassword(H2_JDBC_PASSWORD);
+    try (Connection conn = DriverManager.getConnection(H2_JDBC_URL,
+            H2_JDBC_USERNAME, H2_JDBC_PASSWORD);
+         Statement stmt = conn.createStatement()) {
+      stmt.execute("RUNSCRIPT FROM 'classpath:/db/experiment.sql'");
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
 
   @Test
   public void testValidTensorFlowExperiment() throws IOException,
       URISyntaxException, InvalidSpecException {
     ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
-    TFJob tfJob = (TFJob) ExperimentSpecParser.parseJob(experimentSpec);
+    TFJob tfJob = (TFJob) MLJobFactory.getMLJob(experimentSpec);
     validateMetadata(experimentSpec.getMeta(), tfJob.getMetadata(),
         ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName().toLowerCase()
     );
@@ -86,7 +107,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     // Case 1. Invalid framework name
     experimentSpec.getMeta().setFramework("fooframework");
     try {
-      ExperimentSpecParser.parseJob(experimentSpec);
+      MLJobFactory.getMLJob(experimentSpec);
       Assert.fail("It should throw InvalidSpecException");
     } catch (InvalidSpecException e) {
       Assert.assertTrue(e.getMessage().contains("Unsupported framework name"));
@@ -97,7 +118,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     experimentSpec.getSpec().put("foo", experimentSpec.getSpec().get(TFJobReplicaType.Ps.getTypeName()));
     experimentSpec.getSpec().remove(TFJobReplicaType.Ps.getTypeName());
     try {
-      ExperimentSpecParser.parseJob(experimentSpec);
+      MLJobFactory.getMLJob(experimentSpec);
       Assert.fail("It should throw InvalidSpecException");
     } catch (InvalidSpecException e) {
       Assert.assertTrue(e.getMessage().contains("Unrecognized replica type name"));
@@ -109,7 +130,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
       URISyntaxException, InvalidSpecException {
     ExperimentSpec experimentSpec =
             (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, pytorchJobReqFile);
-    PyTorchJob pyTorchJob = (PyTorchJob) ExperimentSpecParser.parseJob(experimentSpec);
+    PyTorchJob pyTorchJob = (PyTorchJob) MLJobFactory.getMLJob(experimentSpec);
     validateMetadata(experimentSpec.getMeta(), pyTorchJob.getMetadata(),
         ExperimentMeta.SupportedMLFramework.PYTORCH.getName().toLowerCase()
     );
@@ -131,7 +152,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     // Case 1. Invalid framework name
     experimentSpec.getMeta().setFramework("fooframework");
     try {
-      ExperimentSpecParser.parseJob(experimentSpec);
+      MLJobFactory.getMLJob(experimentSpec);
       Assert.fail("It should throw InvalidSpecException");
     } catch (InvalidSpecException e) {
       Assert.assertTrue(e.getMessage().contains("Unsupported framework name"));
@@ -143,7 +164,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
         PyTorchJobReplicaType.Master.getTypeName()));
     experimentSpec.getSpec().remove(PyTorchJobReplicaType.Master.getTypeName());
     try {
-      ExperimentSpecParser.parseJob(experimentSpec);
+      MLJobFactory.getMLJob(experimentSpec);
       Assert.fail("It should throw InvalidSpecException");
     } catch (InvalidSpecException e) {
       Assert.assertTrue(e.getMessage().contains("Unrecognized replica type name"));
@@ -155,7 +176,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
       URISyntaxException, InvalidSpecException {
     ExperimentSpec experimentSpec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class,
         xgboostJobReqFile);
-    XGBoostJob xgboostJob = (XGBoostJob) ExperimentSpecParser.parseJob(experimentSpec);
+    XGBoostJob xgboostJob = (XGBoostJob) MLJobFactory.getMLJob(experimentSpec);
     validateMetadata(experimentSpec.getMeta(), xgboostJob.getMetadata(),
         ExperimentMeta.SupportedMLFramework.XGBOOST.getName().toLowerCase()
     );
@@ -172,7 +193,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     // Case 1. Invalid framework name
     experimentSpec.getMeta().setFramework("fooframework");
     try {
-      ExperimentSpecParser.parseJob(experimentSpec);
+      MLJobFactory.getMLJob(experimentSpec);
       Assert.fail("It should throw InvalidSpecException");
     } catch (InvalidSpecException e) {
       Assert.assertTrue(e.getMessage().contains("Unsupported framework name"));
@@ -184,7 +205,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
         XGBoostJobReplicaType.Master.getTypeName()));
     experimentSpec.getSpec().remove(XGBoostJobReplicaType.Master.getTypeName());
     try {
-      ExperimentSpecParser.parseJob(experimentSpec);
+      MLJobFactory.getMLJob(experimentSpec);
       Assert.fail("It should throw InvalidSpecException");
     } catch (InvalidSpecException e) {
       Assert.assertTrue(e.getMessage().contains("Unrecognized replica type name"));
@@ -193,8 +214,8 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
   private void validateMetadata(ExperimentMeta expectedMeta, V1ObjectMeta actualMeta,
       String actualFramework) {
-    Assert.assertEquals(expectedMeta.getName(), actualMeta.getName());
-    Assert.assertEquals(expectedMeta.getNamespace(), actualMeta.getNamespace());
+    Assert.assertEquals(expectedMeta.getExperimentId(), actualMeta.getName());
+    Assert.assertEquals(K8sUtils.getNamespace(), actualMeta.getNamespace());
     Assert.assertEquals(expectedMeta.getFramework().toLowerCase(), actualFramework);
   }
 
@@ -209,7 +230,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
       mlJobReplicaSpec = ((XGBoostJob) mlJob).getSpec().getReplicaSpecs().get(type);
     }
     Assert.assertNotNull(mlJobReplicaSpec);
-    
+
     ExperimentTaskSpec definedPyTorchMasterTask = experimentSpec.getSpec().
         get(type.getTypeName());
 
@@ -273,7 +294,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
     ExperimentSpec jobSpec =
             (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, pytorchJobWithEnvReqFile);
-    PyTorchJob pyTorchJob = (PyTorchJob) ExperimentSpecParser.parseJob(jobSpec);
+    PyTorchJob pyTorchJob = (PyTorchJob) MLJobFactory.getMLJob(jobSpec);
 
     MLJobReplicaSpec mlJobReplicaSpec = pyTorchJob.getSpec().getReplicaSpecs()
         .get(PyTorchJobReplicaType.Master);
@@ -319,7 +340,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     ExperimentSpec jobSpec =
         (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class,
             pytorchJobWithHTTPGitCodeLocalizerFile);
-    PyTorchJob pyTorchJob = (PyTorchJob) ExperimentSpecParser.parseJob(jobSpec);
+    PyTorchJob pyTorchJob = (PyTorchJob) MLJobFactory.getMLJob(jobSpec);
 
     MLJobReplicaSpec mlJobReplicaSpec = pyTorchJob.getSpec().getReplicaSpecs()
         .get(PyTorchJobReplicaType.Master);
@@ -351,8 +372,10 @@ public class ExperimentSpecParserTest extends SpecBuilder {
       }
     }
 
-    V1Volume V1Volume =
-        mlJobReplicaSpec.getTemplate().getSpec().getVolumes().get(0);
+    // we need to filter code-dir first
+    V1Volume V1Volume = mlJobReplicaSpec.getTemplate().getSpec().getVolumes().stream()
+        .filter(v -> v.getName().equals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME))
+        .findFirst().get();
     Assert.assertEquals(new V1EmptyDirVolumeSource(), V1Volume.getEmptyDir());
     Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME,
         V1Volume.getName());
@@ -364,7 +387,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     ExperimentSpec jobSpec =
         (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class,
             pytorchJobWithSSHGitCodeLocalizerFile);
-    PyTorchJob pyTorchJob = (PyTorchJob) ExperimentSpecParser.parseJob(jobSpec);
+    PyTorchJob pyTorchJob = (PyTorchJob) MLJobFactory.getMLJob(jobSpec);
 
     MLJobReplicaSpec mlJobReplicaSpec = pyTorchJob.getSpec().getReplicaSpecs()
         .get(PyTorchJobReplicaType.Master);
@@ -402,8 +425,10 @@ public class ExperimentSpecParserTest extends SpecBuilder {
       }
     }
 
-    V1Volume V1Volume =
-        mlJobReplicaSpec.getTemplate().getSpec().getVolumes().get(0);
+    // we need to filter code-dir first
+    V1Volume V1Volume = mlJobReplicaSpec.getTemplate().getSpec().getVolumes().stream()
+        .filter(v -> v.getName().equals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME))
+        .findFirst().get();
     Assert.assertEquals(new V1EmptyDirVolumeSource(), V1Volume.getEmptyDir());
     Assert.assertEquals(AbstractCodeLocalizer.CODE_LOCALIZER_MOUNT_NAME,
         V1Volume.getName());

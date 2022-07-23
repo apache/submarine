@@ -101,7 +101,7 @@ public class MLJobReplicaSpec {
     V1PodTemplateSpec podSpec = getTemplate();
     return String.join(" ",
         podSpec.getSpec().getContainers().get(0)
-            .getResources().getLimits().get("memory").
+            .getResources().getRequests().get("memory").
             getNumber().divide(BigDecimal.valueOf(1000000)).toString() + "M");
   }
 

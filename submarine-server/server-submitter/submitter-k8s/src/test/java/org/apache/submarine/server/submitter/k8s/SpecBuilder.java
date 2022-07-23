@@ -47,6 +47,11 @@ public abstract class SpecBuilder {
       "/pytorch_job_req_ssh_git_code_localizer.json";
   protected final String tfTfboardJobReqFile = "/tf_tfboard_mnist_req.json";
 
+  protected final String H2_JDBC_URL = "jdbc:h2:mem:submarine-test;MODE=MYSQL;DB_CLOSE_DELAY=-1";
+  protected final String H2_JDBC_DRIVERCLASS = "org.h2.Driver";
+  protected final String H2_JDBC_USERNAME = "root";
+  protected final String H2_JDBC_PASSWORD = "";
+
   protected Object buildFromJsonFile(Object obj, String filePath) throws IOException,
       URISyntaxException {
     Gson gson = new GsonBuilder().create();
@@ -55,7 +60,11 @@ public abstract class SpecBuilder {
       if (obj.equals(NotebookSpec.class)) {
         return gson.fromJson(reader, NotebookSpec.class);
       } else {
-        return gson.fromJson(reader, ExperimentSpec.class);
+        ExperimentSpec experimentSpec = gson.fromJson(reader, ExperimentSpec.class);
+        experimentSpec.getMeta().setExperimentId(
+            String.format("experiment-%s-0001", System.currentTimeMillis())
+        );
+        return experimentSpec;
       }
     }
   }

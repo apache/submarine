@@ -151,7 +151,8 @@ public class ExperimentMeta {
   public enum SupportedMLFramework {
     TENSORFLOW("tensorflow"),
     PYTORCH("pytorch"),
-    XGBOOST("xgboost");
+    XGBOOST("xgboost"),
+    UNKNOWN("known");
 
     private final String name;
 
@@ -170,6 +171,15 @@ public class ExperimentMeta {
         names[i] = frameworks[i].name();
       }
       return names;
+    }
+
+    public static SupportedMLFramework valueOfName(String name) {
+      for (SupportedMLFramework framework : values()) {
+        if (framework.getName().equalsIgnoreCase(name)) {
+          return framework;
+        }
+      }
+      return UNKNOWN;
     }
   }
 

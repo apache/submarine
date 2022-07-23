@@ -24,6 +24,10 @@ import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaSpec;
 
 import java.util.Map;
 
+/**
+ * For the entity definition of PyTorchJobSpec, refer to
+ * https://github.com/kubeflow/training-operator/tree/master/examples/pytorch/mnist/v1
+ */
 public class PyTorchJobSpec {
 
   /**
