@@ -93,14 +93,14 @@ public class SubmitterPyTorchApiTest extends SpecBuilder {
               .withStatus(200)
               .withBody(getResourceFileContent("client/experiment/pytorch-read-api.json")));
     // save pod agent url
+    String agentName = AgentPod.getNormalizePodName(
+            CustomResourceType.PyTorchJob, "pytorch-dist-mnist", experimentId);
     MappingBuilder agentPost = post(urlPathEqualTo("/api/v1/namespaces/default/pods"))
         .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
         .willReturn(
             aResponse()
                 .withStatus(200)
-                .withBody("{\"metadata\":" +
-                    "{\"name\":\"experiment-1658656683252-0001-tfjob-tensorflow-dist-mnist-agent\"," +
-                    "\"namespace\":\"default\"}}"));
+                .withBody("{\"metadata\":{\"name\":\"" + agentName + "\"," + "\"namespace\":\"default\"}}"));
     // get pytorch url
     MappingBuilder pytorchGet = get(urlPathEqualTo(
         MockClientUtil.getPytorchJobUrl(namespace, experimentId)))
@@ -119,8 +119,6 @@ public class SubmitterPyTorchApiTest extends SpecBuilder {
                 .withStatus(200)
                 .withBody(getResourceFileContent("client/experiment/pytorch-delete-api.json")));
     //  delete agent pod url
-    String agentName = AgentPod.getNormalizePodName(
-        CustomResourceType.PyTorchJob, "pytorch-dist-mnist", experimentId);
     MappingBuilder podDelete = delete(urlPathEqualTo(MockClientUtil.getPodUrl(namespace, agentName)))
         .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
         .willReturn(
