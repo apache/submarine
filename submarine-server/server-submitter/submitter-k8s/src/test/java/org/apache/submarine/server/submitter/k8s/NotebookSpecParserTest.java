@@ -21,20 +21,45 @@ package org.apache.submarine.server.submitter.k8s;
 
 import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import org.apache.submarine.commons.utils.SubmarineConfiguration;
+import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.spec.NotebookMeta;
 import org.apache.submarine.server.api.spec.NotebookPodSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.submitter.k8s.model.common.Configmap;
 import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCR;
 import org.apache.submarine.server.submitter.k8s.model.notebook.NotebookCRSpec;
+import org.apache.submarine.server.submitter.k8s.parser.NotebookSpecParser;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Map;
 
 public class NotebookSpecParserTest extends SpecBuilder {
+
+  private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
+
+  @Before
+  public void beforeInit() {
+    conf.setJdbcUrl(H2_JDBC_URL);
+    conf.setJdbcDriverClassName(H2_JDBC_DRIVERCLASS);
+    conf.setJdbcUserName(H2_JDBC_USERNAME);
+    conf.setJdbcPassword(H2_JDBC_PASSWORD);
+    try (Connection conn = DriverManager.getConnection(H2_JDBC_URL,
+            H2_JDBC_USERNAME, H2_JDBC_PASSWORD);
+         Statement stmt = conn.createStatement()) {
+      stmt.execute("RUNSCRIPT FROM 'classpath:/db/notebook.sql'");
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
 
   @Test
   public void testValidNotebook() throws IOException, URISyntaxException {
@@ -47,14 +72,15 @@ public class NotebookSpecParserTest extends SpecBuilder {
   }
 
   private void validateMetadata(NotebookMeta meta, V1ObjectMeta actualMeta) {
-    Assert.assertEquals(meta.getName(), actualMeta.getName());
+    Assert.assertEquals("notebook-1642402491519-0003-my-nb", actualMeta.getName());
     Assert.assertEquals(meta.getNamespace(), actualMeta.getNamespace());
     Assert.assertEquals(meta.getOwnerId(),
             actualMeta.getLabels().get(NotebookCR.NOTEBOOK_OWNER_SELECTOR_KEY));
   }
 
   private void validateEnvironment(NotebookSpec spec, NotebookCRSpec actualPodSpec) {
-    String expectedImage = spec.getEnvironment().getImage();
+    Environment env = NotebookSpecParser.getEnvironment(spec);
+    String expectedImage = env.getEnvironmentSpec().getDockerImage();
     String actualImage = actualPodSpec.getContainerImageName();
     Assert.assertEquals(expectedImage, actualImage);
   }
@@ -70,7 +96,7 @@ public class NotebookSpecParserTest extends SpecBuilder {
     for (Map.Entry<String, String> entry : podSpec.getEnvVars().entrySet()) {
       V1EnvVar env = new V1EnvVar();
       env.setName(entry.getKey());
-      env.setValue(env.getValue());
+      env.setValue(entry.getValue());
       Assert.assertTrue(notebook.getSpec().getEnvs().contains(env));
     }
 
