@@ -1,0 +1,156 @@
+{
+  "apiVersion": "kubeflow.org/v1",
+  "kind": "PyTorchJob",
+  "metadata": {
+    "creationTimestamp": "2022-07-24T17:54:23.000+08:00",
+    "generation": 1,
+    "labels": {
+      "submarine-experiment-name": "pytorch-dist-mnist"
+    },
+    "name": "experiment-1658656463509-0001",
+    "namespace": "default",
+    "resourceVersion": "26841",
+    "uid": "b95d6769-26ff-469c-a346-d5399f543f39"
+  },
+  "spec": {
+    "pytorchReplicaSpecs": {
+      "Master": {
+        "replicas": 1,
+        "template": {
+          "metadata": {
+            "annotations": {
+              "sidecar.istio.io/inject": "false"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "command": [
+                  "python",
+                  "/var/mnist.py",
+                  "--backend",
+                  "gloo"
+                ],
+                "env": [
+                  {
+                    "name": "ENV_1",
+                    "value": "ENV1"
+                  }
+                ],
+                "image": "apache/submarine:pytorch-dist-mnist-1.0",
+                "name": "pytorch",
+                "resources": {
+                  "limits": {
+                    "cpu": "2",
+                    "memory": "4096M"
+                  },
+                  "requests": {
+                    "cpu": "2",
+                    "memory": "2048M"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "mountPath": "/logs",
+                    "name": "volume",
+                    "subPath": "submarine-tensorboard/pytorch-dist-mnist"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "volume",
+                "persistentVolumeClaim": {
+                  "claimName": "submarine-tensorboard-pvc"
+                }
+              }
+            ]
+          }
+        },
+        "restartPolicy": "OnFailure"
+      },
+      "Worker": {
+        "replicas": 2,
+        "template": {
+          "metadata": {
+            "annotations": {
+              "sidecar.istio.io/inject": "false"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "command": [
+                  "python",
+                  "/var/mnist.py",
+                  "--backend",
+                  "gloo"
+                ],
+                "env": [
+                  {
+                    "name": "ENV_1",
+                    "value": "ENV1"
+                  }
+                ],
+                "image": "apache/submarine:pytorch-dist-mnist-1.0",
+                "name": "pytorch",
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "2048M"
+                  },
+                  "requests": {
+                    "cpu": "1",
+                    "memory": "1024M"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "mountPath": "/logs",
+                    "name": "volume",
+                    "subPath": "submarine-tensorboard/pytorch-dist-mnist"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "volume",
+                "persistentVolumeClaim": {
+                  "claimName": "submarine-tensorboard-pvc"
+                }
+              }
+            ]
+          }
+        },
+        "restartPolicy": "OnFailure"
+      }
+    },
+    "backoffLimit": 3
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastTransitionTime": "2022-07-24T11:23:25Z",
+        "lastUpdateTime": "2022-07-24T11:23:25Z",
+        "message": "PyTorchJob experiment-1658656463509-0001 is created.",
+        "reason": "PyTorchJobCreated",
+        "status": "True",
+        "type": "Created"
+      },
+      {
+        "lastTransitionTime": "2022-07-24T11:23:26Z",
+        "lastUpdateTime": "2022-07-24T11:23:26Z",
+        "message": "PyTorchJob experiment-1658656463509-0001 is running.",
+        "reason": "JobRunning",
+        "status": "True",
+        "type": "Running"
+      }
+    ],
+    "replicaStatuses": {
+      "Master": {},
+      "Worker": {}
+    }
+  }
+}
