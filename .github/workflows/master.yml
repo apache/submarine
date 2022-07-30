@@ -653,7 +653,6 @@ jobs:
       - submarine-e2e
       - submarine-k8s
       - submarine-submitter
-      - submarine-submitter-k8s
       - submarine-server
       - submarine-client
       - submarine-commons-runtime
