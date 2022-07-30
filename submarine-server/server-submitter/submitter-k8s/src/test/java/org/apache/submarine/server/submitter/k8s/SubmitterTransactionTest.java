@@ -29,8 +29,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 public class SubmitterTransactionTest {
 
   private static final Logger LOG = LoggerFactory.getLogger(SubmitterTransactionTest.class);
@@ -53,28 +51,40 @@ public class SubmitterTransactionTest {
   }
 
   @Test
-  public void testOneFailedCommit() {
-    List<Object> commits = submitter.resourceTransaction(new FailedResource());
-    Assert.assertEquals(commits.size(), 0);
-  }
-
-  @Test
   public void testCombineCommit() {
-    List<Object> commits = submitter.resourceTransaction(new SuccessResource("test1"),
-            new FailedResource());
-    Assert.assertEquals(commits.size(), 1);
+    SuccessResource resource1 = new SuccessResource("test1");
+    FailedResource resource2 = new FailedResource();
+    try {
+      submitter.resourceTransaction(resource1, resource2);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    Assert.assertFalse(resource1.isCommit());
   }
 
   @Test
   public void testCommitOrder() {
-    List<Object> commits = submitter.resourceTransaction(new SuccessResource("test1"),
-            new FailedResource(), new SuccessResource("test3"));
-    Assert.assertEquals(commits.size(), 1);
+    SuccessResource resource1 = new SuccessResource("test1");
+    FailedResource resource2 = new FailedResource();
+    SuccessResource resource3 = new SuccessResource("test3\"");
+    try {
+      submitter.resourceTransaction(resource1, resource2, resource3);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    Assert.assertFalse(resource1.isCommit());
+    Assert.assertFalse(resource3.isCommit());
   }
 
 }
 
 class SuccessResource implements K8sResource<SuccessResource> {
+
+  private boolean commit = false;
+
+  public boolean isCommit() {
+    return commit;
+  }
 
   private final String name;
 
@@ -99,16 +109,19 @@ class SuccessResource implements K8sResource<SuccessResource> {
 
   @Override
   public SuccessResource create(K8sClient api) {
+    this.commit = true;
     return this;
   }
 
   @Override
   public SuccessResource replace(K8sClient api) {
+    this.commit = true;
     return this;
   }
 
   @Override
   public SuccessResource delete(K8sClient api) {
+    this.commit = false;
     return this;
   }
 }
