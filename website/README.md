@@ -35,6 +35,12 @@ yarn start
 
 This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
 
+If you want to switch to zh-cn, you can use the following command to start.
+
+```console
+yarn start -- --locale zh-cn
+```
+
 ## Build
 
 ```console

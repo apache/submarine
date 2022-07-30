@@ -1,5 +1,5 @@
 ---
-title: Download Apache Submarine
+title: 下载 Apache Submarine
 ---
 
 <!--
@@ -21,14 +21,14 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-The latest release of Apache Submarine is `0.7.0`.
+Apache Submarine 的最新版本是 `0.7.0`.
 
-- Apache Submarine `0.7.0` released on Oct 21, 2021 ([release notes](https://submarine.apache.org/releases/submarine-release-0.7.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.7.0))
-  - Binary package:
+- Apache Submarine `0.7.0` 于 2021年10月21日发布 ([发布日志](./releases/submarine-release-0.7.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.7.0))
+  - 二进制部署包:
     [submarine-dist-0.7.0.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.7.0/submarine-dist-0.7.0.tar.gz) (148 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0.tar.gz.asc))
-  - Source:
+  - 源代码:
     [submarine-dist-0.7.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.7.0/submarine-dist-0.7.0-src.tar.gz) (8.3 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0-src.tar.gz.asc)))
-  - Docker images:
+  - Docker 镜像:
     - [submarine server](https://hub.docker.com/layers/submarine/apache/submarine/server-0.7.0/images/sha256-4f9c8e41d9242f2d92f9a9def0b9e43efdd6a9b42e23ae3a1fa25afee48d0370?context=explore) `docker pull apache/submarine:server-0.7.0`
     - [submarine database](https://hub.docker.com/layers/submarine/apache/submarine/database-0.7.0/images/sha256-2a4a724b7919a1ca362e89ca1a7dbb6e8201536386631a49fe8c69b4ebbf221c?context=explore) `docker pull apache/submarine:database-0.7.0`
     - [submarine jupyter-notebook](https://hub.docker.com/layers/submarine/apache/submarine/jupyter-notebook-0.7.0/images/sha256-0cacc189c7d2f220c23a89e6c9f0a542c274985f3a349e71613b5a92a0afea31?context=explore) `docker pull apache/submarine:jupyter-notebook-0.7.0`
@@ -41,23 +41,24 @@ The latest release of Apache Submarine is `0.7.0`.
   - SDK:
     - [PySubmarine](https://pypi.org/project/apache-submarine/0.7.0/) `pip install apache-submarine==0.7.0`
 
-## Verify the integrity of the files
+## 验证文件完整性
 
-It is essential that you [verify](https://www.apache.org/info/verification.html) the integrity of the downloaded files using the PGP or MD5 signatures. This signature should be matched against the [KEYS](https://www.apache.org/dist/submarine/KEYS) file.
+您必须使用 PGP 或 MD5 签名来 [验证](https://www.apache.org/info/verification.html) 下载文件的完整性。 
+此签名应与 [KEYS](https://www.apache.org/dist/submarine/KEYS) 文件匹配。
 
 ```
 gpg --import KEYS
 gpg --verify submarine-dist-X.Y.Z-src.tar.gz.asc
 ```
 
-## Old releases
+## 旧版本
 
-- Apache Submarine `0.6.0` released on Oct 21, 2021 ([release notes](https://submarine.apache.org/releases/submarine-release-0.6.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.6.0))
-  - Binary package:
+- Apache Submarine `0.6.0` 于2021年10月21日发布 ([发布日志](./releases/submarine-release-0.6.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.6.0))
+  - 二进制部署包:
     [submarine-dist-0.6.0-hadoop-2.9.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.6.0/submarine-dist-0.6.0-hadoop-2.9.tar.gz) (518 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-hadoop-2.9.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-hadoop-2.9.tar.gz.asc))
-  - Source:
+  - 源代码:
     [submarine-dist-0.6.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.6.0/submarine-dist-0.6.0-src.tar.gz) (8.3 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.6.0/submarine-dist-0.6.0-src.tar.gz.asc)))
-  - Docker images:
+  - Docker 镜像:
     - [mini-submarine](https://hub.docker.com/layers/apache/submarine/mini-0.6.0/images/sha256-a068563409735c4e5c64d529936de614919b7fb9f11cc55c0302a19fe20bf37d?context=explore) `docker pull apache/submarine:mini-0.6.0`
     - [submarine server](https://hub.docker.com/layers/apache/submarine/server-0.6.0/images/sha256-e224668d76b7c758f67fdbfb1d478e26dfc49837eb49592da16041fe1ee1df2a?context=explore) `docker pull apache/submarine:server-0.6.0`
     - [submarine database](https://hub.docker.com/layers/apache/submarine/database-0.6.0/images/sha256-543bb90bc1c1dc6282934dbbaaae145f38fc494e134c916a17c49b69f171c911?context=explore) `docker pull apache/submarine:database-0.6.0`
@@ -70,66 +71,67 @@ gpg --verify submarine-dist-X.Y.Z-src.tar.gz.asc
   - SDK:
     - [PySubmarine](https://pypi.org/project/apache-submarine/0.6.0/) `pip install apache-submarine==0.6.0`
 
-- Apache Submarine `0.5.0` released on Dec 17, 2020 ([release notes](https://submarine.apache.org/releases/submarine-release-0.5.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.5.0))
-  - Binary package:
+- Apache Submarine `0.5.0` 于2020年12月17日发布 ([发布日志](./releases/submarine-release-0.5.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.5.0))
+  - 二进制部署包:
     [submarine-dist-0.5.0-hadoop-2.9.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.5.0/submarine-dist-0.5.0-hadoop-2.9.tar.gz) (505 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.5.0/submarine-dist-0.5.0-hadoop-2.9.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.5.0/submarine-dist-0.5.0-hadoop-2.9.tar.gz.asc))
-  - Source:
+  - 源代码:
     [submarine-dist-0.5.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.5.0/submarine-dist-0.5.0-src.tar.gz) (5.0 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.5.0/submarine-dist-0.5.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.5.0/submarine-dist-0.5.0-src.tar.gz.asc)))
-  - Docker images:
+  - Docker 镜像:
     - [mini-submarine](https://hub.docker.com/layers/apache/submarine/mini-0.5.0/images/sha256-e3248c8c6336b245539028043783b91135eaffe9302dec05fe13571a0f2902a6) `docker pull apache/submarine:mini-0.5.0`
     - [submarine server](https://hub.docker.com/layers/apache/submarine/server-0.5.0/images/sha256-1805df8fd8e5274d16be8cdf39900d8576119c0caac7598db29990ebe138bf5c) `docker pull apache/submarine:server-0.5.0`
     - [submarine database](https://hub.docker.com/layers/apache/submarine/database-0.5.0/images/sha256-073889e773c1b44cef9f518dc2fc468ebc420200f6087e2a943438677dadc9e5) `docker pull apache/submarine:database-0.5.0`
     - [submarine jupyter-notebook](https://hub.docker.com/layers/apache/submarine/jupyter-notebook-0.5.0/images/sha256-f3cc2510c208b752ef4be7b383ee8f2325e4fc538696078bdb604d62fa47e4be) `docker pull apache/submarine:jupyter-notebook-0.5.0`
   - SDK:
     - [PySubmarine](https://pypi.org/project/apache-submarine/0.5.0/) `pip install apache-submarine==0.5.0`
-- Apache Submarine 0.4.0 released on Jul 05, 2020 ([release notes](https://submarine.apache.org/releases/submarine-release-0.4.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.4.0))
 
-  - Binary package with submarine:
+- Apache Submarine `0.4.0`于2020年7月5日发布 ([发布日志](./releases/submarine-release-0.4.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.4.0))
+
+  - 二进制部署包:
     [submarine-dist-0.4.0-hadoop-2.9.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.4.0/submarine-dist-0.4.0-hadoop-2.9.tar.gz) (550 MB,
     [checksum](https://www.apache.org/dist/submarine/submarine-0.4.0/submarine-dist-0.4.0-hadoop-2.9.tar.gz.sha512),
     [signature](https://www.apache.org/dist/submarine/submarine-0.4.0/submarine-dist-0.4.0-hadoop-2.9.tar.gz.asc))
-  - Source:
+  - 源代码:
     [submarine-dist-0.4.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.4.0/submarine-dist-0.4.0-src.tar.gz) (6 MB,
     [checksum](https://www.apache.org/dist/submarine/submarine-0.4.0/submarine-dist-0.4.0-src.tar.gz.sha512),
     [signature](https://www.apache.org/dist/submarine/submarine-0.4.0/submarine-dist-0.4.0-src.tar.gz.asc))
-  - Docker images:
+  - Docker 镜像:
     _[mini-submarine](https://hub.docker.com/layers/apache/submarine/mini-0.4.0/images/sha256-a8e7bd98f1f0325223d68e0ba64fd48bd56ee91736461d289945e70ad138e08f)_ [(guide)](https://github.com/apache/submarine/blob/rel/release-0.4.0/dev-support/mini-submarine/README.md#mini-submarine)
 
-- Apache Submarine 0.3.0 released on Feb 01, 2020 ([release notes](https://submarine.apache.org/releases/submarine-release-0.3.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.3.0))
+- Apache Submarine `0.3.0` 于2020年2月1日发布 ([发布日志](./releases/submarine-release-0.3.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.3.0))
 
-  - Binary package with submarine:
+  - submarine 二进制部署包:
     [submarine-dist-0.3.0-hadoop-2.9.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.3.0/submarine-dist-0.3.0-hadoop-2.9.tar.gz) (550 MB,
     [checksum](https://www.apache.org/dist/submarine/submarine-0.3.0/submarine-dist-0.3.0-hadoop-2.9.tar.gz.sha512),
     [signature](https://www.apache.org/dist/submarine/submarine-0.3.0/submarine-dist-0.3.0-hadoop-2.9.tar.gz.asc))
-  - Source:
+  - 源代码:
     [submarine-dist-0.3.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.3.0/submarine-dist-0.3.0-src.tar.gz) (6 MB,
     [checksum](https://www.apache.org/dist/submarine/submarine-0.3.0/submarine-dist-0.3.0-src.tar.gz.sha512),
     [signature](https://www.apache.org/dist/submarine/submarine-0.3.0/submarine-dist-0.3.0-src.tar.gz.asc))
-  - Docker images:
+  - Docker 镜像:
     _[mini-submarine](https://hub.docker.com/layers/apache/submarine/mini-0.3.0/images/sha256-3dd49054bf8a91521f5743c675278d626a5fa568e91651c67867b8ba6ceba340)_ [(guide)](https://github.com/apache/submarine/blob/rel/release-0.3.0/dev-support/mini-submarine/README.md#mini-submarine)
 
-- Apache Submarine 0.2.0 released on Jul 2, 2019
+- Apache Submarine `0.2.0` 于2019年7月2日发布
 
-  - Binary package with submarine:
+  - submarine 二进制部署包:
     [hadoop-submarine-0.2.0.tar.gz](https://www.apache.org/dyn/closer.cgi/hadoop/submarine/submarine-0.2.0/hadoop-submarine-0.2.0.tar.gz) (111 MB,
     [checksum](https://dist.apache.org/repos/dist/release/hadoop/submarine/submarine-0.2.0/hadoop-submarine-0.2.0.tar.gz.mds),
     [signature](https://dist.apache.org/repos/dist/release/hadoop/submarine/submarine-0.2.0/hadoop-submarine-0.2.0.tar.gz.asc),
     [Announcement](http://hadoop.apache.org/submarine/release/0.2.0/))
 
-  - Source:
+  - 源代码:
     [hadoop-submarine-0.2.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/hadoop/submarine/submarine-0.2.0/hadoop-submarine-0.2.0-src.tar.gz) (1.4 MB,
     [checksum](https://dist.apache.org/repos/dist/release/hadoop/submarine/submarine-0.2.0/hadoop-submarine-0.2.0-src.tar.gz.mds),
     [signature](https://dist.apache.org/repos/dist/release/hadoop/submarine/submarine-0.2.0/hadoop-submarine-0.2.0-src.tar.gz.asc))
 
-- Apache Submarine 0.1.0 released on Jan 16, 2019
+- Apache Submarine `0.1.0` 于2019年1月16日发布
 
-  - Binary package with submarine:
+  - submarine 二进制部署包:
     [submarine-0.2.0-bin-all.tgz](https://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-3.2.0/hadoop-3.2.0.tar.gz) (97 MB,
     [checksum](https://www.apache.org/dist/hadoop/common/hadoop-3.2.0/hadoop-3.2.0.tar.gz.mds),
     [signature](https://www.apache.org/dist/hadoop/common/hadoop-3.2.0/hadoop-3.2.0.tar.gz.asc),
     [Announcement](https://hadoop.apache.org/docs/r3.2.0/index.html))
 
-  - Source:
+  - 源代码:
     [submarine-hadoop-3.2.0-src.tar.gz](https://www.apache.org/dyn/closer.cgi/hadoop/common/hadoop-3.2.0/hadoop-3.2.0-src.tar.gz) (1.1 MB,
     [checksum](https://www.apache.org/dist/hadoop/common/hadoop-3.2.0/hadoop-3.2.0-src.tar.gz.mds),
     [signature](https://www.apache.org/dist/hadoop/common/hadoop-3.2.0/hadoop-3.2.0-src.tar.gz.asc))

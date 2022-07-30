@@ -1,0 +1,23 @@
+{
+    "item.label.Docs": {
+        "message": "文档"
+    },
+    "item.label.Download": {
+        "message": "下载"
+    },    
+    "item.label.Apache Software Foundation": {
+        "message": "Apache 软件基金会"
+    },
+    "item.label.Apache License": {
+        "message": "Apache 授权"
+    },
+    "item.label.Thanks": {
+        "message": "感谢"
+    },
+    "item.label.Security": {
+        "message": "安全"
+    },
+    "item.label.Sponsorship": {
+        "message": "赞助"
+    }
+}

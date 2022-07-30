@@ -27,6 +27,18 @@ module.exports = {
   favicon: 'img/submarine.ico',
   organizationName: 'apache', // Usually your GitHub org/user name.
   projectName: 'submarine-site', // Don't change the project name, the website will be updated to submarine-site repo
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'zh-cn'],
+    localeConfigs: {
+      en: {
+        label: 'English',
+      },
+      "zh-cn": {
+        label: '中文',
+      },
+    },
+  },
   themeConfig: {
     navbar: {
       title: 'Apache Submarine',

@@ -1,0 +1,20 @@
+{
+    "link.item.label.API docs": {
+        "message": "API 文档"
+    },
+    "link.item.label.Getting Started": {
+        "message": "入门教程"
+    },
+    "link.title.Docs": {
+        "message": "文档"
+    },
+    "link.title.Community": {
+        "message": "社区"
+    },
+    "link.title.More": {
+        "message": "更多"
+    },
+    "link.item.label.Blog": {
+        "message": "博客"
+    }
+}
