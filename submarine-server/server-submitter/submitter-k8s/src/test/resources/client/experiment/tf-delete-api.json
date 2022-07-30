@@ -1,0 +1,12 @@
+{
+  "apiVersion": "v1",
+  "details": {
+    "group": "kubeflow.org",
+    "kind": "TFJob",
+    "name": "experiment-1659167632755-0001",
+    "uid": "d9b3c2dd-ce17-400a-a4f7-2781294ff3d5"
+  },
+  "kind": "Status",
+  "metadata": {},
+  "status": "Success"
+}

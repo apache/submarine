@@ -1,20 +1,20 @@
 {
   "apiVersion": "kubeflow.org/v1",
-  "kind": "PyTorchJob",
+  "kind": "TFJob",
   "metadata": {
-    "creationTimestamp": "2022-07-24T17:54:23.000+08:00",
+    "creationTimestamp": "2022-07-30T15:53:52.000+08:00",
     "generation": 1,
     "labels": {
-      "submarine-experiment-name": "pytorch-dist-mnist"
+      "submarine-experiment-name": "tensorflow-dist-mnist"
     },
-    "name": "experiment-1658656463509-0001",
+    "name": "experiment-1659167632755-0001",
     "namespace": "default",
-    "resourceVersion": "26841",
-    "uid": "b95d6769-26ff-469c-a346-d5399f543f39"
+    "resourceVersion": "39556",
+    "uid": "d9b3c2dd-ce17-400a-a4f7-2781294ff3d5"
   },
   "spec": {
-    "pytorchReplicaSpecs": {
-      "Master": {
+    "tfReplicaSpecs": {
+      "Ps": {
         "replicas": 1,
         "template": {
           "metadata": {
@@ -27,9 +27,10 @@
               {
                 "command": [
                   "python",
-                  "/var/mnist.py",
-                  "--backend",
-                  "gloo"
+                  "/var/tf_mnist/mnist_with_summaries.py",
+                  "--log_dir\u003d/train/log",
+                  "--learning_rate\u003d0.01",
+                  "--batch_size\u003d150"
                 ],
                 "env": [
                   {
@@ -37,15 +38,15 @@
                     "value": "ENV1"
                   }
                 ],
-                "image": "apache/submarine:pytorch-dist-mnist-1.0",
-                "name": "pytorch",
+                "image": "apache/submarine:tf-mnist-with-summaries-1.0",
+                "name": "tensorflow",
                 "resources": {
                   "limits": {
-                    "cpu": "2",
+                    "cpu": "4",
                     "memory": "4096M"
                   },
                   "requests": {
-                    "cpu": "2",
+                    "cpu": "4",
                     "memory": "2048M"
                   }
                 },
@@ -53,7 +54,7 @@
                   {
                     "mountPath": "/logs",
                     "name": "volume",
-                    "subPath": "submarine-tensorboard/pytorch-dist-mnist"
+                    "subPath": "submarine-tensorboard/tensorflow-dist-mnist"
                   }
                 ]
               }
@@ -83,9 +84,10 @@
               {
                 "command": [
                   "python",
-                  "/var/mnist.py",
-                  "--backend",
-                  "gloo"
+                  "/var/tf_mnist/mnist_with_summaries.py",
+                  "--log_dir\u003d/train/log",
+                  "--learning_rate\u003d0.01",
+                  "--batch_size\u003d150"
                 ],
                 "env": [
                   {
@@ -93,23 +95,25 @@
                     "value": "ENV1"
                   }
                 ],
-                "image": "apache/submarine:pytorch-dist-mnist-1.0",
-                "name": "pytorch",
+                "image": "apache/submarine:tf-mnist-with-summaries-1.0",
+                "name": "tensorflow",
                 "resources": {
                   "limits": {
-                    "cpu": "1",
-                    "memory": "2048M"
+                    "cpu": "2",
+                    "memory": "2048M",
+                    "nvidia.com/gpu": "1"
                   },
                   "requests": {
-                    "cpu": "1",
-                    "memory": "1024M"
+                    "cpu": "2",
+                    "memory": "1024M",
+                    "nvidia.com/gpu": "1"
                   }
                 },
                 "volumeMounts": [
                   {
                     "mountPath": "/logs",
                     "name": "volume",
-                    "subPath": "submarine-tensorboard/pytorch-dist-mnist"
+                    "subPath": "submarine-tensorboard/tensorflow-dist-mnist"
                   }
                 ]
               }
@@ -132,28 +136,28 @@
   "status": {
     "conditions": [
       {
-        "lastTransitionTime": "2022-07-24T11:23:25Z",
-        "lastUpdateTime": "2022-07-24T11:23:25Z",
-        "message": "PyTorchJob experiment-1658656463509-0001 is created.",
-        "reason": "PyTorchJobCreated",
+        "lastTransitionTime": "2022-07-30T07:59:01Z",
+        "lastUpdateTime": "2022-07-30T07:59:01Z",
+        "message": "TFJob experiment-1659167632755-0001 is created.",
+        "reason": "TFJobCreated",
         "status": "True",
         "type": "Created"
       },
       {
-        "lastTransitionTime": "2022-07-24T11:23:26Z",
-        "lastUpdateTime": "2022-07-24T11:23:26Z",
-        "message": "PyTorchJob experiment-1658656463509-0001 is running.",
-        "reason": "PyTorchJobRunning",
+        "lastTransitionTime": "2022-07-30T07:59:02Z",
+        "lastUpdateTime": "2022-07-30T07:59:02Z",
+        "message": "TFJob default/experiment-1659167632755-0001 is running.",
+        "reason": "TFJobRunning",
         "status": "True",
         "type": "Running"
       }
     ],
     "replicaStatuses": {
-      "Master": {
+      "PS": {
         "active": 1
       },
       "Worker": {
-        "active": 1
+        "active": 2
       }
     }
   }

@@ -1,19 +1,19 @@
 {
   "apiVersion": "kubeflow.org/v1",
-  "kind": "PyTorchJob",
+  "kind": "XGBoostJob",
   "metadata": {
-    "creationTimestamp": "2022-07-24T17:54:23.000+08:00",
+    "creationTimestamp": "2022-07-30T19:48:15.000+08:00",
     "generation": 1,
     "labels": {
-      "submarine-experiment-name": "pytorch-dist-mnist"
+      "submarine-experiment-name": "xgboost-dist-mnist"
     },
-    "name": "experiment-1658656463509-0001",
+    "name": "experiment-1659181695811-0001",
     "namespace": "default",
-    "resourceVersion": "26841",
-    "uid": "b95d6769-26ff-469c-a346-d5399f543f39"
+    "resourceVersion": "52320",
+    "uid": "2e5a067e-153a-4a29-bee0-4e3ebfefad22"
   },
   "spec": {
-    "pytorchReplicaSpecs": {
+    "xgbReplicaSpecs": {
       "Master": {
         "replicas": 1,
         "template": {
@@ -27,9 +27,12 @@
               {
                 "command": [
                   "python",
-                  "/var/mnist.py",
-                  "--backend",
-                  "gloo"
+                  "/opt/mlkube/main.py",
+                  "--job_type\u003dTrain",
+                  "--xgboost_parameter\u003dobjective:multi:softprob,num_class:3",
+                  "",
+                  "--n_estimators\u003d10",
+                  "--learning_rate\u003d0.1"
                 ],
                 "env": [
                   {
@@ -37,8 +40,8 @@
                     "value": "ENV1"
                   }
                 ],
-                "image": "apache/submarine:pytorch-dist-mnist-1.0",
-                "name": "pytorch",
+                "image": "apache/submarine:xgboost-dist-iris-1.0",
+                "name": "xgboost",
                 "resources": {
                   "limits": {
                     "cpu": "2",
@@ -53,7 +56,7 @@
                   {
                     "mountPath": "/logs",
                     "name": "volume",
-                    "subPath": "submarine-tensorboard/pytorch-dist-mnist"
+                    "subPath": "submarine-tensorboard/xgboost-dist-mnist"
                   }
                 ]
               }
@@ -83,9 +86,12 @@
               {
                 "command": [
                   "python",
-                  "/var/mnist.py",
-                  "--backend",
-                  "gloo"
+                  "/opt/mlkube/main.py",
+                  "--job_type\u003dTrain",
+                  "--xgboost_parameter\u003dobjective:multi:softprob,num_class:3",
+                  "",
+                  "--n_estimators\u003d10",
+                  "--learning_rate\u003d0.1"
                 ],
                 "env": [
                   {
@@ -93,8 +99,8 @@
                     "value": "ENV1"
                   }
                 ],
-                "image": "apache/submarine:pytorch-dist-mnist-1.0",
-                "name": "pytorch",
+                "image": "apache/submarine:xgboost-dist-iris-1.0",
+                "name": "xgboost",
                 "resources": {
                   "limits": {
                     "cpu": "1",
@@ -109,7 +115,7 @@
                   {
                     "mountPath": "/logs",
                     "name": "volume",
-                    "subPath": "submarine-tensorboard/pytorch-dist-mnist"
+                    "subPath": "submarine-tensorboard/xgboost-dist-mnist"
                   }
                 ]
               }
@@ -132,28 +138,28 @@
   "status": {
     "conditions": [
       {
-        "lastTransitionTime": "2022-07-24T11:23:25Z",
-        "lastUpdateTime": "2022-07-24T11:23:25Z",
-        "message": "PyTorchJob experiment-1658656463509-0001 is created.",
-        "reason": "PyTorchJobCreated",
+        "lastTransitionTime": "2022-07-30T11:51:39Z",
+        "lastUpdateTime": "2022-07-30T11:51:39Z",
+        "message": "xgboostJob experiment-1659181695811-0001 is created.",
+        "reason": "XGBoostJobCreated",
         "status": "True",
         "type": "Created"
       },
       {
-        "lastTransitionTime": "2022-07-24T11:23:26Z",
-        "lastUpdateTime": "2022-07-24T11:23:26Z",
-        "message": "PyTorchJob experiment-1658656463509-0001 is running.",
-        "reason": "PyTorchJobRunning",
+        "lastTransitionTime": "2022-07-30T11:51:40Z",
+        "lastUpdateTime": "2022-07-30T11:51:40Z",
+        "message": "xgboostJob experiment-1659181695811-0001 is running.",
+        "reason": "XGBoostJobRunning",
         "status": "True",
         "type": "Running"
       }
     ],
     "replicaStatuses": {
-      "Master": {
+      "PS": {
         "active": 1
       },
       "Worker": {
-        "active": 1
+        "active": 2
       }
     }
   }

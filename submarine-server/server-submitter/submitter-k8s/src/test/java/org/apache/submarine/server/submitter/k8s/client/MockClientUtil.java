@@ -54,6 +54,10 @@ public class MockClientUtil {
     return String.format("/apis/kubeflow.org/v1/namespaces/%s/pytorchjobs/%s", namespace, name);
   }
 
+  public static String getXGBoostJobUrl(String namespace, String name) {
+    return String.format("/apis/kubeflow.org/v1/namespaces/%s/xgboostjobs/%s", namespace, name);
+  }
+
   public static String getMockSuccessStatus(String name) {
     V1Status status = new V1Status();
     status.setApiVersion("v1");

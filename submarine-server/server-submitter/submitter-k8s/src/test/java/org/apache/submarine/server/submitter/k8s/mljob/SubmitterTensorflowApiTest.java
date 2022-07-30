@@ -49,14 +49,14 @@ import static org.apache.submarine.server.submitter.k8s.client.K8sMockClient.get
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class SubmitterPyTorchApiTest {
+public class SubmitterTensorflowApiTest {
 
-  private static final Logger LOG = LoggerFactory.getLogger(SubmitterPyTorchApiTest.class);
+  private static final Logger LOG = LoggerFactory.getLogger(SubmitterTensorflowApiTest.class);
 
   private K8sSubmitter submitter;
 
   private static final String namespace = "default";
-  private static final String experimentId = "experiment-1658656463509-0001";
+  private static final String experimentId = "experiment-1659167632755-0001";
   private ExperimentSpec experimentSpec;
 
   @Rule
@@ -64,19 +64,19 @@ public class SubmitterPyTorchApiTest {
 
   @Before
   public void setup() throws IOException, URISyntaxException {
-    experimentSpec = SubmitterFileUtil.buildFromJsonFile(experimentId, SpecBuilder.pytorchJobReqFile);
+    experimentSpec = SubmitterFileUtil.buildFromJsonFile(experimentId, SpecBuilder.tfJobReqFile);
 
-    // save pytorch url
-    MappingBuilder pytorchPost = post(urlPathEqualTo(
-            "/apis/kubeflow.org/v1/namespaces/default/pytorchjobs"))
+    // save tf url
+    MappingBuilder tfPost = post(urlPathEqualTo(
+        "/apis/kubeflow.org/v1/namespaces/default/tfjobs"))
         .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
         .willReturn(
             aResponse()
-              .withStatus(200)
-              .withBody(getResourceFileContent("client/experiment/pytorch-read-api.json")));
+                .withStatus(200)
+                .withBody(getResourceFileContent("client/experiment/tf-read-api.json")));
     // save pod agent url
     String agentName = AgentPod.getNormalizePodName(
-            CustomResourceType.PyTorchJob, "pytorch-dist-mnist", experimentId);
+        CustomResourceType.TFJob, "tensorflow-dist-mnist", experimentId);
     MappingBuilder agentPost = post(urlPathEqualTo("/api/v1/namespaces/default/pods"))
         .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
         .willReturn(
@@ -84,23 +84,23 @@ public class SubmitterPyTorchApiTest {
                 .withStatus(200)
                 .withBody("{\"metadata\":{\"name\":\"" + agentName + "\"," + "\"namespace\":\"default\"}}"));
 
-    // get pytorch url
-    MappingBuilder pytorchGet = get(urlPathEqualTo(
-        MockClientUtil.getPytorchJobUrl(namespace, experimentId)))
+    // get tf url
+    MappingBuilder tfGet = get(urlPathEqualTo(
+        MockClientUtil.getTfJobUrl(namespace, experimentId)))
         .withHeader("Content-Type", new EqualToPattern("application/json"))
         .willReturn(
             aResponse()
                 .withStatus(200)
-                .withBody(getResourceFileContent("client/experiment/pytorch-read-api.json")));
+                .withBody(getResourceFileContent("client/experiment/tf-read-api.json")));
 
-    //  delete pytorch url
-    MappingBuilder pytorchDelete = delete(urlPathEqualTo(
-        MockClientUtil.getPytorchJobUrl(namespace, experimentId)))
+    //  delete tf url
+    MappingBuilder tfDelete = delete(urlPathEqualTo(
+        MockClientUtil.getTfJobUrl(namespace, experimentId)))
         .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
         .willReturn(
             aResponse()
                 .withStatus(200)
-                .withBody(getResourceFileContent("client/experiment/pytorch-delete-api.json")));
+                .withBody(getResourceFileContent("client/experiment/tf-delete-api.json")));
     //  delete agent pod url
     MappingBuilder agentDelete = delete(urlPathEqualTo(MockClientUtil.getPodUrl(namespace, agentName)))
         .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
@@ -109,7 +109,7 @@ public class SubmitterPyTorchApiTest {
                 .withStatus(200)
                 .withBody(MockClientUtil.getMockSuccessStatus(agentName)));
 
-    K8sClient k8sClient = new K8sMockClient(pytorchPost, agentPost, pytorchGet, pytorchDelete, agentDelete);
+    K8sClient k8sClient = new K8sMockClient(tfPost, agentPost, tfGet, tfDelete, agentDelete);
     try {
       submitter = new K8sSubmitter(k8sClient);
       submitter.initialize(null);
@@ -119,8 +119,8 @@ public class SubmitterPyTorchApiTest {
   }
 
   @Test
-  public void testCreatePyTorchJob() {
-    // create pytorch
+  public void testCreateTensorflowJob() {
+    // create tensorflow
     Experiment experiment = submitter.createExperiment(experimentSpec);
     // check return value
     assertNotNull(experiment);
@@ -129,8 +129,8 @@ public class SubmitterPyTorchApiTest {
   }
 
   @Test
-  public void testFindPyTorchJob() {
-    // get pytorch
+  public void testFindTensorflowJob() {
+    // get tensorflow
     Experiment experiment = submitter.findExperiment(experimentSpec);
     // check return value
     assertNotNull(experiment);
@@ -139,8 +139,8 @@ public class SubmitterPyTorchApiTest {
   }
 
   @Test
-  public void testDeletePyTorchJob() {
-    // delete pytorch
+  public void testDeleteTensorflowJob() {
+    // delete tensorflow
     Experiment experiment = submitter.deleteExperiment(experimentSpec);
     // check return value
     assertNotNull(experiment);

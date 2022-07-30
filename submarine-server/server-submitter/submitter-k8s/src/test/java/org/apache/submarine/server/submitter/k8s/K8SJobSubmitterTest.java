@@ -90,7 +90,7 @@ public class K8SJobSubmitterTest extends SpecBuilder {
 
   @Test
   public void testRunTFJobPerRequest() throws URISyntaxException, IOException, SubmarineRuntimeException {
-    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, tfJobReqFile);
+    ExperimentSpec spec = (ExperimentSpec) buildFromJsonFile(ExperimentSpec.class, xgboostJobReqFile);
     run(spec);
   }
 
