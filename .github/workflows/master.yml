@@ -575,7 +575,7 @@ jobs:
           java -version
       - name: Build
         env:
-          MODULES: "-pl :submarine-server-submitter"
+          MODULES: "-pl :submarine-server-submitter,:submarine-submitter-k8s"
         run: |
           echo ">>> mvn $BUILD_FLAG $MODULES -B"
           mvn $BUILD_FLAG $MODULES -B
