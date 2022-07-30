@@ -240,6 +240,10 @@ public class SubmarineConfiguration extends XMLConfiguration {
     properties.put(SubmarineConfVars.ConfVars.METASTORE_JDBC_URL.getVarName(), testMetastoreJdbcUrl);
   }
 
+  @VisibleForTesting
+  public void setJdbcDriverClassName(String driverClassName) {
+    properties.put(SubmarineConfVars.ConfVars.JDBC_DRIVERCLASSNAME.getVarName(), driverClassName);
+  }
 
   @VisibleForTesting
   public void setJdbcUrl(String testJdbcUrl) {
@@ -314,7 +318,7 @@ public class SubmarineConfiguration extends XMLConfiguration {
   public String getServerServiceName() {
     return getString(SubmarineConfVars.ConfVars.SUBMARINE_SERVER_SERVICE_NAME);
   }
-  
+
   private String getStringValue(String name, String d) {
     String value = this.properties.get(name);
     if (value != null) {

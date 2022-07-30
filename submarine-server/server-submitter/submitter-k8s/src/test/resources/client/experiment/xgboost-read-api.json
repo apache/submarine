@@ -1,0 +1,166 @@
+{
+  "apiVersion": "kubeflow.org/v1",
+  "kind": "XGBoostJob",
+  "metadata": {
+    "creationTimestamp": "2022-07-30T19:48:15.000+08:00",
+    "generation": 1,
+    "labels": {
+      "submarine-experiment-name": "xgboost-dist-mnist"
+    },
+    "name": "experiment-1659181695811-0001",
+    "namespace": "default",
+    "resourceVersion": "52320",
+    "uid": "2e5a067e-153a-4a29-bee0-4e3ebfefad22"
+  },
+  "spec": {
+    "xgbReplicaSpecs": {
+      "Master": {
+        "replicas": 1,
+        "template": {
+          "metadata": {
+            "annotations": {
+              "sidecar.istio.io/inject": "false"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "command": [
+                  "python",
+                  "/opt/mlkube/main.py",
+                  "--job_type\u003dTrain",
+                  "--xgboost_parameter\u003dobjective:multi:softprob,num_class:3",
+                  "",
+                  "--n_estimators\u003d10",
+                  "--learning_rate\u003d0.1"
+                ],
+                "env": [
+                  {
+                    "name": "ENV_1",
+                    "value": "ENV1"
+                  }
+                ],
+                "image": "apache/submarine:xgboost-dist-iris-1.0",
+                "name": "xgboost",
+                "resources": {
+                  "limits": {
+                    "cpu": "2",
+                    "memory": "4096M"
+                  },
+                  "requests": {
+                    "cpu": "2",
+                    "memory": "2048M"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "mountPath": "/logs",
+                    "name": "volume",
+                    "subPath": "submarine-tensorboard/xgboost-dist-mnist"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "volume",
+                "persistentVolumeClaim": {
+                  "claimName": "submarine-tensorboard-pvc"
+                }
+              }
+            ]
+          }
+        },
+        "restartPolicy": "OnFailure"
+      },
+      "Worker": {
+        "replicas": 2,
+        "template": {
+          "metadata": {
+            "annotations": {
+              "sidecar.istio.io/inject": "false"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "command": [
+                  "python",
+                  "/opt/mlkube/main.py",
+                  "--job_type\u003dTrain",
+                  "--xgboost_parameter\u003dobjective:multi:softprob,num_class:3",
+                  "",
+                  "--n_estimators\u003d10",
+                  "--learning_rate\u003d0.1"
+                ],
+                "env": [
+                  {
+                    "name": "ENV_1",
+                    "value": "ENV1"
+                  }
+                ],
+                "image": "apache/submarine:xgboost-dist-iris-1.0",
+                "name": "xgboost",
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "2048M"
+                  },
+                  "requests": {
+                    "cpu": "1",
+                    "memory": "1024M"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "mountPath": "/logs",
+                    "name": "volume",
+                    "subPath": "submarine-tensorboard/xgboost-dist-mnist"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "volume",
+                "persistentVolumeClaim": {
+                  "claimName": "submarine-tensorboard-pvc"
+                }
+              }
+            ]
+          }
+        },
+        "restartPolicy": "OnFailure"
+      }
+    },
+    "backoffLimit": 3
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastTransitionTime": "2022-07-30T11:51:39Z",
+        "lastUpdateTime": "2022-07-30T11:51:39Z",
+        "message": "xgboostJob experiment-1659181695811-0001 is created.",
+        "reason": "XGBoostJobCreated",
+        "status": "True",
+        "type": "Created"
+      },
+      {
+        "lastTransitionTime": "2022-07-30T11:51:40Z",
+        "lastUpdateTime": "2022-07-30T11:51:40Z",
+        "message": "xgboostJob experiment-1659181695811-0001 is running.",
+        "reason": "XGBoostJobRunning",
+        "status": "True",
+        "type": "Running"
+      }
+    ],
+    "replicaStatuses": {
+      "PS": {
+        "active": 1
+      },
+      "Worker": {
+        "active": 2
+      }
+    }
+  }
+}

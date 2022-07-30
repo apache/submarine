@@ -106,19 +106,18 @@ public class AgentPod extends V1Pod implements K8sResource<AgentPod> {
     this.setSpec(spec);
   }
 
-  private String getNormalizePodName(CustomResourceType type, String name, String resourceId) {
-    return String.format("%s-%s-%s-%s", resourceId.toString().toLowerCase().replace('_', '-'),
+  public static String getNormalizePodName(CustomResourceType type, String name, String resourceId) {
+    return String.format("%s-%s-%s-%s", resourceId.toLowerCase().replace('_', '-'),
             type.toString().toLowerCase(), name, CONTAINER_NAME);
   }
 
   @Override
   public AgentPod read(K8sClient api) {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public AgentPod create(K8sClient api) {
-    // create notebook custom resource
     try {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Create AgentPod resource: \n{}", YamlUtils.toPrettyYaml(this));

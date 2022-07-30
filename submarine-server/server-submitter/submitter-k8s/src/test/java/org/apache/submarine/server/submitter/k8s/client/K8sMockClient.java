@@ -88,6 +88,11 @@ public class K8sMockClient implements K8sClient {
   private final GenericKubernetesApi<IstioVirtualService, IstioVirtualServiceList> istioVirtualServiceClient;
   private final GenericKubernetesApi<V1Pod, V1PodList> podClient;
 
+  // train operator client
+  private final GenericKubernetesApi<TFJob, TFJobList> tfJobClient;
+  private final GenericKubernetesApi<PyTorchJob, PyTorchJobList> pyTorchJobClient;
+  private final GenericKubernetesApi<XGBoostJob, XGBoostJobList> xgboostJobClient;
+
   private static final WireMockRule wireMockRule = new WireMockRule(8384);
 
   public static WireMockRule getWireMockRule() {
@@ -139,6 +144,22 @@ public class K8sMockClient implements K8sClient {
             new GenericKubernetesApi<>(
                     V1Pod.class, V1PodList.class,
                     "", "v1", "pods", apiClient);
+
+    tfJobClient =
+            new GenericKubernetesApi<>(
+                    TFJob.class, TFJobList.class,
+                    TFJob.CRD_TF_GROUP_V1, TFJob.CRD_TF_VERSION_V1,
+                    TFJob.CRD_TF_PLURAL_V1, apiClient);
+    pyTorchJobClient =
+            new GenericKubernetesApi<>(
+                    PyTorchJob.class, PyTorchJobList.class,
+                    PyTorchJob.CRD_PYTORCH_GROUP_V1, PyTorchJob.CRD_PYTORCH_VERSION_V1,
+                    PyTorchJob.CRD_PYTORCH_PLURAL_V1, apiClient);
+    xgboostJobClient =
+            new GenericKubernetesApi<>(
+                    XGBoostJob.class, XGBoostJobList.class,
+                    XGBoostJob.CRD_XGBOOST_GROUP_V1, XGBoostJob.CRD_XGBOOST_VERSION_V1,
+                    XGBoostJob.CRD_XGBOOST_PLURAL_V1, apiClient);
   }
 
   public K8sMockClient(MappingBuilder... mappingBuilders) throws IOException {
@@ -192,17 +213,17 @@ public class K8sMockClient implements K8sClient {
 
   @Override
   public GenericKubernetesApi<TFJob, TFJobList> getTfJobClient() {
-    return null;
+    return tfJobClient;
   }
 
   @Override
   public GenericKubernetesApi<PyTorchJob, PyTorchJobList> getPyTorchJobClient() {
-    return null;
+    return pyTorchJobClient;
   }
 
   @Override
   public GenericKubernetesApi<XGBoostJob, XGBoostJobList> getXGBoostJobClient() {
-    return null;
+    return xgboostJobClient;
   }
 
   @Override

@@ -1,0 +1,164 @@
+{
+  "apiVersion": "kubeflow.org/v1",
+  "kind": "TFJob",
+  "metadata": {
+    "creationTimestamp": "2022-07-30T15:53:52.000+08:00",
+    "generation": 1,
+    "labels": {
+      "submarine-experiment-name": "tensorflow-dist-mnist"
+    },
+    "name": "experiment-1659167632755-0001",
+    "namespace": "default",
+    "resourceVersion": "39556",
+    "uid": "d9b3c2dd-ce17-400a-a4f7-2781294ff3d5"
+  },
+  "spec": {
+    "tfReplicaSpecs": {
+      "Ps": {
+        "replicas": 1,
+        "template": {
+          "metadata": {
+            "annotations": {
+              "sidecar.istio.io/inject": "false"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "command": [
+                  "python",
+                  "/var/tf_mnist/mnist_with_summaries.py",
+                  "--log_dir\u003d/train/log",
+                  "--learning_rate\u003d0.01",
+                  "--batch_size\u003d150"
+                ],
+                "env": [
+                  {
+                    "name": "ENV_1",
+                    "value": "ENV1"
+                  }
+                ],
+                "image": "apache/submarine:tf-mnist-with-summaries-1.0",
+                "name": "tensorflow",
+                "resources": {
+                  "limits": {
+                    "cpu": "4",
+                    "memory": "4096M"
+                  },
+                  "requests": {
+                    "cpu": "4",
+                    "memory": "2048M"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "mountPath": "/logs",
+                    "name": "volume",
+                    "subPath": "submarine-tensorboard/tensorflow-dist-mnist"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "volume",
+                "persistentVolumeClaim": {
+                  "claimName": "submarine-tensorboard-pvc"
+                }
+              }
+            ]
+          }
+        },
+        "restartPolicy": "OnFailure"
+      },
+      "Worker": {
+        "replicas": 2,
+        "template": {
+          "metadata": {
+            "annotations": {
+              "sidecar.istio.io/inject": "false"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "command": [
+                  "python",
+                  "/var/tf_mnist/mnist_with_summaries.py",
+                  "--log_dir\u003d/train/log",
+                  "--learning_rate\u003d0.01",
+                  "--batch_size\u003d150"
+                ],
+                "env": [
+                  {
+                    "name": "ENV_1",
+                    "value": "ENV1"
+                  }
+                ],
+                "image": "apache/submarine:tf-mnist-with-summaries-1.0",
+                "name": "tensorflow",
+                "resources": {
+                  "limits": {
+                    "cpu": "2",
+                    "memory": "2048M",
+                    "nvidia.com/gpu": "1"
+                  },
+                  "requests": {
+                    "cpu": "2",
+                    "memory": "1024M",
+                    "nvidia.com/gpu": "1"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "mountPath": "/logs",
+                    "name": "volume",
+                    "subPath": "submarine-tensorboard/tensorflow-dist-mnist"
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "volume",
+                "persistentVolumeClaim": {
+                  "claimName": "submarine-tensorboard-pvc"
+                }
+              }
+            ]
+          }
+        },
+        "restartPolicy": "OnFailure"
+      }
+    },
+    "backoffLimit": 3
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastTransitionTime": "2022-07-30T07:59:01Z",
+        "lastUpdateTime": "2022-07-30T07:59:01Z",
+        "message": "TFJob experiment-1659167632755-0001 is created.",
+        "reason": "TFJobCreated",
+        "status": "True",
+        "type": "Created"
+      },
+      {
+        "lastTransitionTime": "2022-07-30T07:59:02Z",
+        "lastUpdateTime": "2022-07-30T07:59:02Z",
+        "message": "TFJob default/experiment-1659167632755-0001 is running.",
+        "reason": "TFJobRunning",
+        "status": "True",
+        "type": "Running"
+      }
+    ],
+    "replicaStatuses": {
+      "PS": {
+        "active": 1
+      },
+      "Worker": {
+        "active": 2
+      }
+    }
+  }
+}

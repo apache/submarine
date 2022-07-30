@@ -23,7 +23,7 @@ import io.kubernetes.client.custom.Quantity;
 
 import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1EnvVar;
-import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1ObjectMetaBuilder;
 import io.kubernetes.client.openapi.models.V1PersistentVolumeClaimVolumeSource;
 import io.kubernetes.client.openapi.models.V1PodSecurityContext;
 import io.kubernetes.client.openapi.models.V1PodSpec;
@@ -36,7 +36,6 @@ import org.apache.submarine.commons.utils.SubmarineConfVars;
 import org.apache.submarine.commons.utils.SubmarineConfiguration;
 import org.apache.submarine.server.api.environment.Environment;
 import org.apache.submarine.server.api.exception.InvalidSpecException;
-import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.ExperimentTaskSpec;
 import org.apache.submarine.server.api.spec.EnvironmentSpec;
@@ -44,17 +43,6 @@ import org.apache.submarine.server.manager.EnvironmentManager;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.AbstractCodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.CodeLocalizer;
 import org.apache.submarine.server.submitter.k8s.experiment.codelocalizer.SSHGitCodeLocalizer;
-import org.apache.submarine.server.submitter.k8s.model.mljob.MLJob;
-import org.apache.submarine.server.submitter.k8s.model.mljob.MLJobReplicaSpec;
-import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJob;
-import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobReplicaType;
-import org.apache.submarine.server.submitter.k8s.model.pytorchjob.PyTorchJobSpec;
-import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJob;
-import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobReplicaType;
-import org.apache.submarine.server.submitter.k8s.model.tfjob.TFJobSpec;
-import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJob;
-import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJobReplicaType;
-import org.apache.submarine.server.submitter.k8s.model.xgboostjob.XGBoostJobSpec;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,146 +51,18 @@ import java.util.List;
 import java.util.Map;
 
 public class ExperimentSpecParser {
-  private static SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
-  public static MLJob parseJob(ExperimentSpec experimentSpec) throws InvalidSpecException {
-    String framework = experimentSpec.getMeta().getFramework();
-    if (ExperimentMeta.SupportedMLFramework.TENSORFLOW.
-        getName().equalsIgnoreCase(framework)) {
-      return parseTFJob(experimentSpec);
-    } else if (ExperimentMeta.SupportedMLFramework.PYTORCH.
-        getName().equalsIgnoreCase(framework)) {
-      return parsePyTorchJob(experimentSpec);
-    } else if (ExperimentMeta.SupportedMLFramework.XGBOOST.
-        getName().equalsIgnoreCase(framework)) {
-      return parseXGBoostJob(experimentSpec);
-    } else {
-      throw new InvalidSpecException("Unsupported framework name: " + framework +
-          ". Supported frameworks are: " +
-          String.join(",", ExperimentMeta.SupportedMLFramework.names()));
-    }
-  }
+  private static final SubmarineConfiguration conf = SubmarineConfiguration.getInstance();
 
-  public static XGBoostJob parseXGBoostJob(
-      ExperimentSpec experimentSpec) throws InvalidSpecException {
-    XGBoostJob xGBoostJob = new XGBoostJob();
-    xGBoostJob.setMetadata(parseMetadata(experimentSpec));
-    xGBoostJob.setSpec(parseXGBoostJobSpec(experimentSpec));
-    return xGBoostJob;
-  }
-
-  public static XGBoostJobSpec parseXGBoostJobSpec(ExperimentSpec experimentSpec)
-      throws InvalidSpecException {
-    XGBoostJobSpec xGBoostJobSpec = new XGBoostJobSpec();
-
-    Map<XGBoostJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
-
-    for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
-      String replicaType = entry.getKey();
-      ExperimentTaskSpec taskSpec = entry.getValue();
-
-      if (XGBoostJobReplicaType.isSupportedReplicaType(replicaType)) {
-        MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
-        replicaSpec.setReplicas(taskSpec.getReplicas());
-        V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
-
-        replicaSpec.setTemplate(podTemplateSpec);
-        replicaSpecMap.put(XGBoostJobReplicaType.valueOf(replicaType), replicaSpec);
-      } else {
-        throw new InvalidSpecException("Unrecognized replica type name: " +
-            entry.getKey() +
-            ", it should be " +
-            String.join(",", XGBoostJobReplicaType.names()) +
-            " for XGBoost experiment.");
-      }
-    }
-    xGBoostJobSpec.setReplicaSpecs(replicaSpecMap);
-    return xGBoostJobSpec;
-  }
-
-  public static PyTorchJob parsePyTorchJob(
-      ExperimentSpec experimentSpec) throws InvalidSpecException {
-    PyTorchJob pyTorchJob = new PyTorchJob();
-    pyTorchJob.setMetadata(parseMetadata(experimentSpec));
-    pyTorchJob.setSpec(parsePyTorchJobSpec(experimentSpec));
-    return pyTorchJob;
-  }
-
-  public static PyTorchJobSpec parsePyTorchJobSpec(ExperimentSpec experimentSpec)
-      throws InvalidSpecException {
-    PyTorchJobSpec pyTorchJobSpec = new PyTorchJobSpec();
-
-    Map<PyTorchJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
-    for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
-      String replicaType = entry.getKey();
-      ExperimentTaskSpec taskSpec = entry.getValue();
-      if (PyTorchJobReplicaType.isSupportedReplicaType(replicaType)) {
-        MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
-        replicaSpec.setReplicas(taskSpec.getReplicas());
-        V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
-
-        replicaSpec.setTemplate(podTemplateSpec);
-        replicaSpecMap.put(PyTorchJobReplicaType.valueOf(replicaType), replicaSpec);
-      } else {
-        throw new InvalidSpecException("Unrecognized replica type name: " +
-            entry.getKey() + ", it should be " +
-            String.join(",", PyTorchJobReplicaType.names()) +
-            " for PyTorch experiment.");
-      }
-    }
-    pyTorchJobSpec.setReplicaSpecs(replicaSpecMap);
-    return pyTorchJobSpec;
-  }
-
-  public static TFJob parseTFJob(ExperimentSpec experimentSpec)
-      throws InvalidSpecException {
-    TFJob tfJob = new TFJob();
-    tfJob.setMetadata(parseMetadata(experimentSpec));
-    tfJob.setSpec(parseTFJobSpec(experimentSpec));
-    return tfJob;
-  }
-
-  private static V1ObjectMeta parseMetadata(ExperimentSpec experimentSpec) {
-    V1ObjectMeta meta = new V1ObjectMeta();
-    meta.setName(experimentSpec.getMeta().getExperimentId());
-    Map<String, String> labels = new HashMap<>();
-    labels.put(ExperimentMeta.SUBMARINE_EXPERIMENT_NAME, experimentSpec.getMeta().getName());
-    meta.setLabels(labels);
-
-    return meta;
-  }
-
-  private static TFJobSpec parseTFJobSpec(ExperimentSpec experimentSpec)
-          throws InvalidSpecException {
-    TFJobSpec tfJobSpec = new TFJobSpec();
-    Map<TFJobReplicaType, MLJobReplicaSpec> replicaSpecMap = new HashMap<>();
-
-    for (Map.Entry<String, ExperimentTaskSpec> entry : experimentSpec.getSpec().entrySet()) {
-      String replicaType = entry.getKey();
-      ExperimentTaskSpec taskSpec = entry.getValue();
-
-      if (TFJobReplicaType.isSupportedReplicaType(replicaType)) {
-        MLJobReplicaSpec replicaSpec = new MLJobReplicaSpec();
-        replicaSpec.setReplicas(taskSpec.getReplicas());
-        V1PodTemplateSpec podTemplateSpec = parseTemplateSpec(taskSpec, experimentSpec);
-
-        replicaSpec.setTemplate(podTemplateSpec);
-        replicaSpecMap.put(TFJobReplicaType.valueOf(replicaType), replicaSpec);
-      } else {
-        throw new InvalidSpecException("Unrecognized replica type name: " +
-            entry.getKey() +
-            ", it should be " +
-            String.join(",", TFJobReplicaType.names()) +
-            " for TensorFlow experiment.");
-      }
-    }
-    tfJobSpec.setReplicaSpecs(replicaSpecMap);
-    return tfJobSpec;
-  }
-
-  private static V1PodTemplateSpec parseTemplateSpec(
+  public static V1PodTemplateSpec parseTemplateSpec(
       ExperimentTaskSpec taskSpec, ExperimentSpec experimentSpec) throws InvalidSpecException {
     V1PodTemplateSpec templateSpec = new V1PodTemplateSpec();
+    // There is no need to add istio sidecar. Otherwise, the pod may not end normally
+    // https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/
+    // Controlling the injection policy Section
+    V1ObjectMetaBuilder metaBuilder = new V1ObjectMetaBuilder()
+            .addToAnnotations("sidecar.istio.io/inject", "false");
+    templateSpec.setMetadata(metaBuilder.build());
     V1PodSpec podSpec = new V1PodSpec();
     List<V1Container> containers = new ArrayList<>();
     V1Container container = new V1Container();
@@ -402,6 +262,7 @@ public class ExperimentSpecParser {
       if (request) {
         resources.put("memory", new Quantity(memoryRequest)); // ex: 1024M
       } else {
+        // SUBMARINE-948. Allow experiments to overcommit memory
         String suffix = memoryRequest.substring(memoryRequest.length() - 1);
         String value = memoryRequest.substring(0, memoryRequest.length() - 1);
         String memoryLimit = String.valueOf(Integer.parseInt(value) * 2) + suffix;

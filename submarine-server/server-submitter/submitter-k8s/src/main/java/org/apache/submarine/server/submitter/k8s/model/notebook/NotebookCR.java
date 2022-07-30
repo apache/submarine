@@ -39,6 +39,9 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.apache.submarine.server.submitter.k8s.K8sSubmitter.getDeleteOptions;
 
 public class NotebookCR implements KubernetesObject, K8sResource<Notebook> {
@@ -170,7 +173,14 @@ public class NotebookCR implements KubernetesObject, K8sResource<Notebook> {
       V1ObjectMeta meta = new V1ObjectMeta();
       meta.setName(notebookName);
       meta.setNamespace(namespace);
-      meta.setLabels(notebookSpec.getMeta().getLabels());
+      // we need to use some labels to define/filter the properties of notebook
+      Map<String, String> labels = notebookSpec.getMeta().getLabels();
+      if (labels == null) {
+        labels = new HashMap<>(2);
+      }
+      labels.put("notebook-owner-id", notebookSpec.getMeta().getOwnerId());
+      labels.put("notebook-id", notebookId);
+      meta.setLabels(labels);
       meta.setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
       this.setMetadata(meta);
       // set spec

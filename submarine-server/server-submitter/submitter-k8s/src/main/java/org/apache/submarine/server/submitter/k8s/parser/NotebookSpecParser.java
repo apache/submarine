@@ -230,7 +230,7 @@ public class NotebookSpecParser {
     return resources;
   }
 
-  private static Environment getEnvironment(NotebookSpec notebookSpec) {
+  public static Environment getEnvironment(NotebookSpec notebookSpec) {
     if (notebookSpec.getEnvironment().getName() != null) {
       EnvironmentManager environmentManager = EnvironmentManager.getInstance();
       return environmentManager

@@ -555,11 +555,17 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 50
-      - name: Cache jacoco.exec
+      - name: Cache submarine-server jacoco.exec
         uses: actions/cache@v2
         with:
           path: |
             ./submarine-server/server-submitter/target/jacoco.exec
+          key: ${{ runner.os }}-docker-${{ github.sha }}      
+      - name: Cache submitter-k8s jacoco.exec
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./submarine-server/server-submitter/submitter-k8s/target/jacoco.exec
           key: ${{ runner.os }}-docker-${{ github.sha }}
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
@@ -575,13 +581,14 @@ jobs:
           java -version
       - name: Build
         env:
-          MODULES: "-pl :submarine-server-submitter"
+          MODULES: "-pl :submarine-server-submitter,:submarine-submitter-k8s"
         run: |
           echo ">>> mvn $BUILD_FLAG $MODULES -B"
           mvn $BUILD_FLAG $MODULES -B
       - name: Test
         env:
-          TEST_MODULES: "-pl :submarine-server-submitter"
+          # There is a `submarine-submitter-k8s` package under the `submarine-server-submitter` that also needs to be tested
+          TEST_MODULES: "-pl :submarine-server-submitter,:submarine-submitter-k8s"
         run: |
           echo ">>> mvn $TEST_FLAG $TEST_MODULES -B"
           mvn $TEST_FLAG $TEST_MODULES -B
@@ -707,6 +714,12 @@ jobs:
         with:
           path: |
             ./submarine-server/server-submitter/target/jacoco.exec
+          key: ${{ runner.os }}-docker-${{ github.sha }}
+      - name: Cache submarine-submitter-k8s data
+        uses: actions/cache@v2
+        with:
+          path: |
+            ./submarine-server/server-submitter/submitter-k8s/target/jacoco.exec
           key: ${{ runner.os }}-docker-${{ github.sha }}
       - name: Cache SonarCloud packages
         uses: actions/cache@v1

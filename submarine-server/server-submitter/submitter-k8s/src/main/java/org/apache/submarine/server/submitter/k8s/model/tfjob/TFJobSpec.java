@@ -26,6 +26,8 @@ import java.util.Map;
 
 /**
  * The replica spec of TFJob.
+ * For the entity definition of TFJobSpec, refer to
+ * https://github.com/kubeflow/training-operator/blob/master/examples/tensorflow/dist-mnist/tf_job_mnist.yaml
  */
 public class TFJobSpec {
   /**
