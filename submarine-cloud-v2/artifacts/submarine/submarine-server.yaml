@@ -44,6 +44,53 @@ spec:
   selector:
     app: "submarine-server"
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: submarine-config
+data:
+  SUBMARINE_SERVER_PORT: "8080"
+  SUBMARINE_SERVER_PORT_8080_TCP: "8080"
+  K8S_APISERVER_URL: "kubernetes.default.svc"
+  submarine.conf.dir: "conf"
+  submarine.localization.max-allowed-file-size-mb: "2048"
+  submarine.server.addr: "0.0.0.0"
+  submarine.server.port: "8080"
+  submarine.server.ssl: "false"
+  submarine.server.ssl.port: "8443"
+  submarine.server.jetty.thread.pool.max: "400"
+  submarine.server.jetty.thread.pool.min: "8"
+  submarine.server.jetty.thread.pool.timeout: "30"
+  submarine.server.jetty.request.header.size: "8192"
+  submarine.server.ssl.client.auth: "false"
+  submarine.server.ssl.keystore.path: "keystore"
+  submarine.server.ssl.keystore.type: "JKS"
+  submarine.server.ssl.keystore.password: ""
+  submarine.server.ssl.key.manager.password: ""  # Saved as null in SubmarineConfVars.java
+  submarine.server.ssl.truststore.path: ""  # Saved as null in SubmarineConfVars.java
+  submarine.server.ssl.truststore.type: ""  # Saved as null in SubmarineConfVars.java
+  submarine.server.ssl.truststore.password: ""  # Saved as null in SubmarineConfVars.java
+  submarine.cluster.addr: ""
+  ubmarine.server.rpc.enabled: "false"
+  submarine.server.rpc.port: "8980"
+  cluster.heartbeat.interval: "3000"
+  cluster.heartbeat.timeout: "9000"
+  jdbc.driverClassName: "com.mysql.jdbc.Driver"
+  jdbc.url: "jdbc:mysql://127.0.0.1:3306/submarine?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=UTC&useTimezone=true&useLegacyDatetimeCode=true"
+  jdbc.username: "submarine"
+  jdbc.password: "password"
+  metastore.jdbc.url: "jdbc:mysql://127.0.0.1:3306/metastore?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false"
+  metastore.jdbc.username: "metastore"
+  metastore.jdbc.password: "password"
+  submarine.notebook.default.overwrite_json: ""
+  workbench.websocket.max.text.message.size: "1024000"
+  workbench.web.war: "../submarine-workbench-web.war"  # latest: "submarine-workbench/workbench-web/dist"
+  submarine.runtime.class: "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"
+  submarine.submitter: "k8s"
+  submarine.server.service.name: "submarine-server"
+  environment.conda.min.version: "4.0.1"
+  environment.conda.max.version: "4.11.10"
+---
 # Source: submarine/templates/submarine-server.yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -89,15 +136,11 @@ spec:
           emptyDir: { }
       containers:
       - name: "submarine-server"
-        env:
-        - name: SUBMARINE_SERVER_PORT
-          value: "8080"
-        - name: SUBMARINE_SERVER_PORT_8080_TCP
-          value: "8080"
-        - name: K8S_APISERVER_URL
-          value: "kubernetes.default.svc"
 
         image: "apache/submarine:server-0.8.0-SNAPSHOT"
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: submarine-config

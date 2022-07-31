@@ -24,59 +24,52 @@ import org.slf4j.LoggerFactory;
 public class SubmarineConfVars {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineConfVars.class);
   public enum ConfVars {
-    SUBMARINE_CONF_DIR("submarine.conf.dir", "conf"),
+    
+    SUBMARINE_CONF_DIR("submarine.conf.dir", VarType.STRING),
     SUBMARINE_LOCALIZATION_MAX_ALLOWED_FILE_SIZE_MB(
-        "submarine.localization.max-allowed-file-size-mb", 2048L),
-    SUBMARINE_SERVER_ADDR("submarine.server.addr", "0.0.0.0"),
-    SUBMARINE_SERVER_PORT("submarine.server.port", 8080),
-    SUBMARINE_SERVER_SSL("submarine.server.ssl", false),
-    SUBMARINE_SERVER_SSL_PORT("submarine.server.ssl.port", 8443),
-    SUBMARINE_SERVER_JETTY_THREAD_POOL_MAX("submarine.server.jetty.thread.pool.max", 400),
-    SUBMARINE_SERVER_JETTY_THREAD_POOL_MIN("submarine.server.jetty.thread.pool.min", 8),
-    SUBMARINE_SERVER_JETTY_THREAD_POOL_TIMEOUT("submarine.server.jetty.thread.pool.timeout", 30),
-    SUBMARINE_SERVER_JETTY_REQUEST_HEADER_SIZE("submarine.server.jetty.request.header.size", 8192),
-    SUBMARINE_SERVER_SSL_CLIENT_AUTH("submarine.server.ssl.client.auth", false),
-    SUBMARINE_SERVER_SSL_KEYSTORE_PATH("submarine.server.ssl.keystore.path", "keystore"),
-    SUBMARINE_SERVER_SSL_KEYSTORE_TYPE("submarine.server.ssl.keystore.type", "JKS"),
-    SUBMARINE_SERVER_SSL_KEYSTORE_PASSWORD("submarine.server.ssl.keystore.password", ""),
-    SUBMARINE_SERVER_SSL_KEY_MANAGER_PASSWORD("submarine.server.ssl.key.manager.password", null),
-    SUBMARINE_SERVER_SSL_TRUSTSTORE_PATH("submarine.server.ssl.truststore.path", null),
-    SUBMARINE_SERVER_SSL_TRUSTSTORE_TYPE("submarine.server.ssl.truststore.type", null),
-    SUBMARINE_SERVER_SSL_TRUSTSTORE_PASSWORD("submarine.server.ssl.truststore.password", null),
-    SUBMARINE_CLUSTER_ADDR("submarine.cluster.addr", ""),
+        "submarine.localization.max-allowed-file-size-mb", VarType.LONG),
+    SUBMARINE_SERVER_ADDR("submarine.server.addr", VarType.STRING),
+    SUBMARINE_SERVER_PORT("submarine.server.port", VarType.INT),
+    SUBMARINE_SERVER_SSL("submarine.server.ssl", VarType.BOOLEAN),
+    SUBMARINE_SERVER_SSL_PORT("submarine.server.ssl.port", VarType.INT),
+    SUBMARINE_SERVER_JETTY_THREAD_POOL_MAX("submarine.server.jetty.thread.pool.max", VarType.INT),
+    SUBMARINE_SERVER_JETTY_THREAD_POOL_MIN("submarine.server.jetty.thread.pool.min", VarType.INT),
+    SUBMARINE_SERVER_JETTY_THREAD_POOL_TIMEOUT("submarine.server.jetty.thread.pool.timeout", VarType.INT),
+    SUBMARINE_SERVER_JETTY_REQUEST_HEADER_SIZE("submarine.server.jetty.request.header.size", VarType.INT),
+    SUBMARINE_SERVER_SSL_CLIENT_AUTH("submarine.server.ssl.client.auth", VarType.BOOLEAN),
+    SUBMARINE_SERVER_SSL_KEYSTORE_PATH("submarine.server.ssl.keystore.path", VarType.STRING),
+    SUBMARINE_SERVER_SSL_KEYSTORE_TYPE("submarine.server.ssl.keystore.type", VarType.STRING),
+    SUBMARINE_SERVER_SSL_KEYSTORE_PASSWORD("submarine.server.ssl.keystore.password", VarType.STRING),
+    SUBMARINE_SERVER_SSL_KEY_MANAGER_PASSWORD("submarine.server.ssl.key.manager.password", VarType.STRING),
+    SUBMARINE_SERVER_SSL_TRUSTSTORE_PATH("submarine.server.ssl.truststore.path", VarType.STRING),
+    SUBMARINE_SERVER_SSL_TRUSTSTORE_TYPE("submarine.server.ssl.truststore.type", VarType.STRING),
+    SUBMARINE_SERVER_SSL_TRUSTSTORE_PASSWORD("submarine.server.ssl.truststore.password", VarType.STRING),
+    SUBMARINE_CLUSTER_ADDR("submarine.cluster.addr", VarType.STRING),
     SUBMARINE_SERVER_RPC_ENABLED(
-        "submarine.server.rpc.enabled", false),
+        "submarine.server.rpc.enabled", VarType.BOOLEAN),
     SUBMARINE_SERVER_RPC_PORT(
-        "submarine.server.rpc.port", 8980),
-    CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", 3000),
-    CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", 9000),
+        "submarine.server.rpc.port", VarType.INT),
+    CLUSTER_HEARTBEAT_INTERVAL("cluster.heartbeat.interval", VarType.INT),
+    CLUSTER_HEARTBEAT_TIMEOUT("cluster.heartbeat.timeout", VarType.INT),
 
-    JDBC_DRIVERCLASSNAME("jdbc.driverClassName", "com.mysql.jdbc.Driver"),
-    JDBC_URL("jdbc.url", "jdbc:mysql://127.0.0.1:3306/submarine" +
-        "?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&allowMultiQueries=true&" +
-        "failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false&" +
-        // use timezone for dateformat, current default database timezone is utc
-        "serverTimezone=UTC&useTimezone=true&useLegacyDatetimeCode=true"),
-    JDBC_USERNAME("jdbc.username", "submarine"),
-    JDBC_PASSWORD("jdbc.password", "password"),
-    METASTORE_JDBC_URL("metastore.jdbc.url", "jdbc:mysql://127.0.0.1:3306/metastore" +
-        "?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&" +
-        "failOverReadOnly=false&zeroDateTimeBehavior=convertToNull&useSSL=false"),
-    METASTORE_JDBC_USERNAME("metastore.jdbc.username", "metastore"),
-    METASTORE_JDBC_PASSWORD("metastore.jdbc.password", "password"),
+    JDBC_DRIVERCLASSNAME("jdbc.driverClassName", VarType.STRING),
+    JDBC_URL("jdbc.url", VarType.STRING),
+    JDBC_USERNAME("jdbc.username", VarType.STRING),
+    JDBC_PASSWORD("jdbc.password", VarType.STRING),
+    METASTORE_JDBC_URL("metastore.jdbc.url", VarType.STRING),
+    METASTORE_JDBC_USERNAME("metastore.jdbc.username", VarType.STRING),
+    METASTORE_JDBC_PASSWORD("metastore.jdbc.password", VarType.STRING),
 
-    SUBMARINE_NOTEBOOK_DEFAULT_OVERWRITE_JSON("submarine.notebook.default.overwrite_json", ""),
+    SUBMARINE_NOTEBOOK_DEFAULT_OVERWRITE_JSON("submarine.notebook.default.overwrite_json", VarType.STRING),
 
     WORKBENCH_WEBSOCKET_MAX_TEXT_MESSAGE_SIZE(
-        "workbench.websocket.max.text.message.size", "1024000"),
-    WORKBENCH_WEB_WAR("workbench.web.war", "submarine-workbench/workbench-web/dist"),
-    SUBMARINE_RUNTIME_CLASS("submarine.runtime.class",
-        "org.apache.submarine.server.submitter.yarn.YarnRuntimeFactory"),
-    SUBMARINE_SUBMITTER("submarine.submitter", "k8s"),
-    SUBMARINE_SERVER_SERVICE_NAME("submarine.server.service.name", "submarine-server"),
-    ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", "4.0.1"),
-    ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", "4.11.10");
-
+        "workbench.websocket.max.text.message.size", VarType.STRING),
+    WORKBENCH_WEB_WAR("workbench.web.war", VarType.STRING),
+    SUBMARINE_SUBMITTER("submarine.submitter", VarType.STRING),
+    SUBMARINE_SERVER_SERVICE_NAME("submarine.server.service.name", VarType.STRING),
+    ENVIRONMENT_CONDA_MIN_VERSION("environment.conda.min.version", VarType.STRING),
+    ENVIRONMENT_CONDA_MAX_VERSION("environment.conda.max.version", VarType.STRING);
+    
     private String varName;
     @SuppressWarnings("rawtypes")
     private Class varClass;
@@ -87,60 +80,69 @@ public class SubmarineConfVars {
     private boolean booleanValue;
     private long longValue;
 
+    
+    ConfVars(String varName, VarType type) {
+      switch(type) {
+        case STRING:
+          this.varName = varName;
+          this.varClass = String.class;
+          if (varName == "submarine.server.ssl.key.manager.password" ||
+              varName == "submarine.server.ssl.truststore.path" || 
+              varName == "submarine.server.ssl.truststore.type" ||
+              varName == "submarine.server.ssl.truststore.password"
+          ) {
+            this.stringValue = null;
+          } else {
+            this.stringValue = System.getenv(varName);
+          }
+          this.intValue = -1;
+          this.floatValue = -1;
+          this.longValue = -1;
+          this.booleanValue = false;
+          break;
 
-    ConfVars(String varName, String varValue) {
-      this.varName = varName;
-      this.varClass = String.class;
-      this.stringValue = varValue;
-      this.intValue = -1;
-      this.floatValue = -1;
-      this.longValue = -1;
-      this.booleanValue = false;
-      this.type = VarType.STRING;
-    }
+        case INT:
+          this.varName = varName;
+          this.varClass = Integer.class;
+          this.stringValue = null;
+          this.intValue = Integer.valueOf(System.getenv(varName));
+          this.floatValue = -1;
+          this.longValue = -1;
+          this.booleanValue = false;
+          break;
 
-    ConfVars(String varName, int intValue) {
-      this.varName = varName;
-      this.varClass = Integer.class;
-      this.stringValue = null;
-      this.intValue = intValue;
-      this.floatValue = -1;
-      this.longValue = -1;
-      this.booleanValue = false;
-      this.type = VarType.INT;
-    }
+        case LONG:
+          this.varName = varName;
+          this.varClass = Integer.class;
+          this.stringValue = null;
+          this.intValue = -1;
+          this.floatValue = -1;
+          this.longValue = Long.parseLong(System.getenv(varName), 10);
+          this.booleanValue = false;
+          break;
 
-    ConfVars(String varName, long longValue) {
-      this.varName = varName;
-      this.varClass = Integer.class;
-      this.stringValue = null;
-      this.intValue = -1;
-      this.floatValue = -1;
-      this.longValue = longValue;
-      this.booleanValue = false;
-      this.type = VarType.LONG;
-    }
+        case FLOAT:
+          this.varName = varName;
+          this.varClass = Float.class;
+          this.stringValue = null;
+          this.intValue = -1;
+          this.longValue = -1;
+          this.floatValue = Float.parseFloat(System.getenv(varName));
+          this.booleanValue = false;
+          break;
 
-    ConfVars(String varName, float floatValue) {
-      this.varName = varName;
-      this.varClass = Float.class;
-      this.stringValue = null;
-      this.intValue = -1;
-      this.longValue = -1;
-      this.floatValue = floatValue;
-      this.booleanValue = false;
-      this.type = VarType.FLOAT;
-    }
-
-    ConfVars(String varName, boolean booleanValue) {
-      this.varName = varName;
-      this.varClass = Boolean.class;
-      this.stringValue = null;
-      this.intValue = -1;
-      this.longValue = -1;
-      this.floatValue = -1;
-      this.booleanValue = booleanValue;
-      this.type = VarType.BOOLEAN;
+        case BOOLEAN:
+          this.varName = varName;
+          this.varClass = Boolean.class;
+          this.stringValue = null;
+          this.intValue = -1;
+          this.longValue = -1;
+          this.floatValue = -1;
+          this.booleanValue = Boolean.parseBoolean(System.getenv(varName));
+          break;
+      }
+      this.type = type;
+      LOG.info(varName + ": Using new constructor!!!");
     }
 
     public String getVarName() {

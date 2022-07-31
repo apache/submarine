@@ -34,7 +34,6 @@ ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
 # Install Submarine
 ADD ./tmp/submarine-k8s-agent-*.tar.gz /opt/
 RUN ln -s /opt/submarine-k8s-agent-* "/opt/submarine-current"
-ADD ./tmp/submarine-site.xml "/opt/submarine-current/conf/"
 
 WORKDIR /opt/submarine-current
 

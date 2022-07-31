@@ -19,50 +19,24 @@
 package org.apache.submarine.commons.utils;
 
 import com.google.common.annotations.VisibleForTesting;
-import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.configuration.tree.ConfigurationNode;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SubmarineConfiguration extends XMLConfiguration {
   private static final Logger LOG = LoggerFactory.getLogger(SubmarineConfiguration.class);
   private static final long serialVersionUID = 4749303235693848035L;
 
-  private static final String SUBMARINE_SITE_XML = "submarine-site.xml";
-
   public static final String SUBMARINE_RUNTIME_APP_TYPE = "SUBMARINE";
 
   private static volatile SubmarineConfiguration conf;
 
   private Map<String, String> properties = new HashMap<>();
-
-  private SubmarineConfiguration(URL url) throws ConfigurationException {
-    setDelimiterParsingDisabled(true);
-    load(url);
-    initProperties();
-  }
-
-  private void initProperties() {
-    List<ConfigurationNode> nodes = getRootNode().getChildren();
-    if (nodes == null || nodes.isEmpty()) {
-      return;
-    }
-    for (ConfigurationNode p : nodes) {
-      String name = (String) p.getChildren("name").get(0).getValue();
-      String value = (String) p.getChildren("value").get(0).getValue();
-      if (!StringUtils.isEmpty(name)) {
-        properties.put(name, value);
-      }
-    }
-  }
 
   private SubmarineConfiguration() {
     SubmarineConfVars.ConfVars[] vars = SubmarineConfVars.ConfVars.values();
@@ -89,45 +63,12 @@ public class SubmarineConfiguration extends XMLConfiguration {
     if (conf == null) {
       synchronized (SubmarineConfiguration.class) {
         if  (conf == null) {
-          conf = newInstance();
+          // conf = newInstance();
+          conf = new SubmarineConfiguration();
         }
       }
     }
     return conf;
-  }
-
-  // Create a new instance
-  // Note: Cannot be mixed with getInstance()
-  public static SubmarineConfiguration newInstance() {
-    SubmarineConfiguration submarineConfig;
-    ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-    URL url;
-
-    url = SubmarineConfiguration.class.getResource(SUBMARINE_SITE_XML);
-    if (url == null) {
-      ClassLoader cl = SubmarineConfiguration.class.getClassLoader();
-      if (cl != null) {
-        url = cl.getResource(SUBMARINE_SITE_XML);
-      }
-    }
-    if (url == null) {
-      url = classLoader.getResource(SUBMARINE_SITE_XML);
-    }
-
-    if (url == null) {
-      LOG.warn("Failed to load configuration, proceeding with a default");
-      submarineConfig = new SubmarineConfiguration();
-    } else {
-      try {
-        LOG.info("Load configuration from " + url);
-        submarineConfig = new SubmarineConfiguration(url);
-      } catch (ConfigurationException e) {
-        LOG.warn("Failed to load configuration from " + url + " proceeding with a default", e);
-        submarineConfig = new SubmarineConfiguration();
-      }
-    }
-
-    return submarineConfig;
   }
 
   public String getServerAddress() {
