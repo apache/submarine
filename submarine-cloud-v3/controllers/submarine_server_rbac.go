@@ -38,7 +38,14 @@ func (r *SubmarineReconciler) newSubmarineServerRole(ctx context.Context, submar
 		r.Log.Error(err, "ParseRoleYaml")
 	}
 	role.Namespace = submarine.Namespace
-	role.Labels = map[string]string{"app.kubernetes.io/name": serverName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "server"}
+	roleLabels := role.GetLabels()
+	if roleLabels == nil {
+		role.SetLabels(make(map[string]string))
+		roleLabels = role.GetLabels()
+	}
+	for k, v := range serverAdditionalLabels {
+		roleLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, role, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Role ControllerReference")
@@ -62,7 +69,14 @@ func (r *SubmarineReconciler) newSubmarineServerRoleBinding(ctx context.Context,
 		r.Log.Error(err, "Set RoleBinding ControllerReference")
 	}
 	roleBinding.Namespace = submarine.Namespace
-	roleBinding.Labels = map[string]string{"app.kubernetes.io/name": serverName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "server"}
+	roleBindingLabels := roleBinding.GetLabels()
+	if roleBindingLabels == nil {
+		roleBinding.SetLabels(make(map[string]string))
+		roleBindingLabels = roleBinding.GetLabels()
+	}
+	for k, v := range serverAdditionalLabels {
+		roleBindingLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, roleBinding, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set RoleBinding ControllerReference")

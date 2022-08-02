@@ -32,13 +32,22 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
+var observerAdditionalLabels = map[string]string{"app.kubernetes.io/name": observerName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "observer"}
+
 func (r *SubmarineReconciler) newSubmarineObserverRole(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *rbacv1.Role {
 	role, err := ParseRoleYaml(observerRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseRoleYaml")
 	}
 	role.Namespace = submarine.Namespace
-	role.Labels = map[string]string{"app.kubernetes.io/name": observerName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "observer"}
+	roleLabels := role.GetLabels()
+	if roleLabels == nil {
+		role.SetLabels(make(map[string]string))
+		roleLabels = role.GetLabels()
+	}
+	for k, v := range observerAdditionalLabels {
+		roleLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, role, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Role ControllerReference")
@@ -52,7 +61,14 @@ func (r *SubmarineReconciler) newSubmarineObserverRoleBinding(ctx context.Contex
 		r.Log.Error(err, "Set RoleBinding ControllerReference")
 	}
 	roleBinding.Namespace = submarine.Namespace
-	roleBinding.Labels = map[string]string{"app.kubernetes.io/name": observerName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "observer"}
+	roleBindingLabels := roleBinding.GetLabels()
+	if roleBindingLabels == nil {
+		roleBinding.SetLabels(make(map[string]string))
+		roleBindingLabels = roleBinding.GetLabels()
+	}
+	for k, v := range observerAdditionalLabels {
+		roleBindingLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, roleBinding, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set RoleBinding ControllerReference")
