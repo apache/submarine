@@ -32,13 +32,22 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
+var mlflowAdditionalLabels = map[string]string{"app.kubernetes.io/name": mlflowName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "mlflow"}
+
 func (r *SubmarineReconciler) newSubmarineMlflowPersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
 	pvc, err := ParsePersistentVolumeClaimYaml(mlflowYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
 	pvc.Namespace = submarine.Namespace
-	pvc.Labels = map[string]string{"app.kubernetes.io/name": mlflowPvcName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "mlflow"}
+	pvcLabels := pvc.GetLabels()
+	if pvcLabels == nil {
+		pvc.SetLabels(make(map[string]string))
+		pvcLabels = pvc.GetLabels()
+	}
+	for k, v := range mlflowAdditionalLabels {
+		pvcLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, pvc, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set PersistentVolumeClaim ControllerReference")
@@ -52,7 +61,20 @@ func (r *SubmarineReconciler) newSubmarineMlflowDeployment(ctx context.Context, 
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
 	deployment.Namespace = submarine.Namespace
-	deployment.Labels = map[string]string{"app.kubernetes.io/name": mlflowName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "mlflow"}
+	deploymentLabels := deployment.GetLabels()
+	if deploymentLabels == nil {
+		deployment.SetLabels(make(map[string]string))
+		deploymentLabels = deployment.GetLabels()
+	}
+	podLabels := deployment.Spec.Template.GetLabels()
+	if podLabels == nil {
+		deployment.Spec.Template.SetLabels(make(map[string]string))
+		podLabels = deployment.Spec.Template.GetLabels()
+	}
+	for k, v := range mlflowAdditionalLabels {
+		deploymentLabels[k] = v
+		podLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, deployment, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Deployment ControllerReference")
@@ -66,7 +88,14 @@ func (r *SubmarineReconciler) newSubmarineMlflowService(ctx context.Context, sub
 		r.Log.Error(err, "ParseServiceYaml")
 	}
 	service.Namespace = submarine.Namespace
-	service.Labels = map[string]string{"app.kubernetes.io/name": mlflowServiceName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "mlflow"}
+	serviceLabels := service.GetLabels()
+	if serviceLabels == nil {
+		service.SetLabels(make(map[string]string))
+		serviceLabels = service.GetLabels()
+	}
+	for k, v := range mlflowAdditionalLabels {
+		serviceLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, service, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Service ControllerReference")
