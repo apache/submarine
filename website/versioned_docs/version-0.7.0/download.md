@@ -23,7 +23,7 @@ under the License.
 
 The latest release of Apache Submarine is `0.7.0`.
 
-- Apache Submarine `0.7.0` released on Oct 21, 2021 ([release notes](https://submarine.apache.org/releases/submarine-release-0.7.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.7.0))
+- Apache Submarine `0.7.0` released on April 25, 2022 ([release notes](https://submarine.apache.org/releases/submarine-release-0.7.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.7.0))
   - Binary package:
     [submarine-dist-0.7.0.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.7.0/submarine-dist-0.7.0.tar.gz) (148 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0.tar.gz.asc))
   - Source:

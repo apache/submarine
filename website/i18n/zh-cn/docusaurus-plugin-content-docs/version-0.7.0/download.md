@@ -23,7 +23,7 @@ under the License.
 
 Apache Submarine 的最新版本是 `0.7.0`.
 
-- Apache Submarine `0.7.0` 于 2021年10月21日发布 ([发布公告](../releases/submarine-release-0.7.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.7.0))
+- Apache Submarine `0.7.0` 于2022年4月25日发布 ([发布公告](../releases/submarine-release-0.7.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.7.0))
   - 二进制部署包:
     [submarine-dist-0.7.0.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.7.0/submarine-dist-0.7.0.tar.gz) (148 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0.tar.gz.asc))
   - 源代码:
