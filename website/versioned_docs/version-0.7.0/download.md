@@ -23,7 +23,7 @@ under the License.
 
 The latest release of Apache Submarine is `0.7.0`.
 
-- Apache Submarine `0.7.0` released on Oct 21, 2021 ([release notes](https://submarine.apache.org/releases/submarine-release-0.7.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.7.0))
+- Apache Submarine `0.7.0` released on April 25, 2022 ([release notes](https://submarine.apache.org/releases/submarine-release-0.7.0)) ([git tag](https://github.com/apache/submarine/tree/rel/release-0.7.0))
   - Binary package:
     [submarine-dist-0.7.0.tar.gz](https://www.apache.org/dyn/closer.cgi/submarine/submarine-0.7.0/submarine-dist-0.7.0.tar.gz) (148 MB, [checksum](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0-src.tar.gz.sha512), [signature](https://www.apache.org/dist/submarine/submarine-0.7.0/submarine-dist-0.7.0.tar.gz.asc))
   - Source:
@@ -39,7 +39,7 @@ The latest release of Apache Submarine is `0.7.0`.
     - [submarine agent](https://hub.docker.com/layers/submarine/apache/submarine/agent-0.7.0/images/sha256-9c14c62478786eb9d7bbe74ca1aed48cd6ae4cb318bd9da149456926cd5c6474?context=explore) `docker pull apache/submarine:agent-0.7.0`
 
   - SDK:
-    - [PySubmarine](https://pypi.org/project/apache-submarine/0.6.0/) `pip install apache-submarine==0.7.0`
+    - [PySubmarine](https://pypi.org/project/apache-submarine/0.7.0/) `pip install apache-submarine==0.7.0`
 
 ## Verify the integrity of the files
 
