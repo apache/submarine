@@ -47,7 +47,7 @@ Before running submarine operator, install submarine dependencies with helm. `--
 helm install --set dev=true submarine ../helm-charts/submarine/ -n submarine-cloud-v3-system
 ```
 
-Now we run the submarine operator.
+Run the submarine operator.
 
 ```bash
 # Step1: Apply the submarine CRD.
@@ -62,17 +62,63 @@ make run
 kubectl apply -n submarine-user-test -f config/samples/_v1alpha1_submarine.yaml
 ```
 
-If you follow the above steps, you can view the submarine workbench via the same approach specified in the [QuickStart](https://submarine.apache.org/docs/next/gettingStarted/quickstart) section on the submarine website.
+Ensure that submarine is ready.
+
+```bash
+$ kubectl get pods -n submarine-cloud-v3-system
+NAME                                                     READY   STATUS    RESTARTS   AGE
+notebook-controller-deployment-5b489cf59d-52lff          1/1     Running   2          22h
+submarine-cloud-v3-controller-manager-7b5787d8bc-hvpbk   2/2     Running   5          22h
+training-operator-6dcd5b9c64-v7k7k                       1/1     Running   1          22h
+
+$ kubectl get pods -n submarine-user-test
+NAME                                     READY   STATUS    RESTARTS   AGE
+submarine-database-0                     2/2     Running   0          24m
+submarine-minio-6d757cc97c-qwft5         2/2     Running   0          24m
+submarine-mlflow-657f5f8f6-9zxt6         2/2     Running   0          24m
+submarine-server-6c787c69b5-pv2dr        2/2     Running   0          24m
+submarine-tensorboard-7b447d94dd-d6kkm   2/2     Running   0          24m
+
+$ kubectl get virtualservices -n submarine-user-test
+NAME                        GATEWAYS                                          HOSTS                               AGE
+submarine-virtual-service   ["submarine-cloud-v3-system/submarine-gateway"]   ["submarine-user-test.submarine"]   24m
+```
+
+The Istio virtual service now accepts traffic sent to destination `<submarine namespace>.submarine`. In our case it's `submarine-user-test.submarine`. Expose the service by forwarding traffic from local port 80 to the Istio ingress gateway.
+
+```bash
+# You may need to grant kubectl the capacity to bind to previleged ports without root.
+# sudo setcap CAP_NET_BIND_SERVICE=+ep <full path to kubectl binary>
+
+# Step4: Expose the service using kubectl port-forward
+kubectl port-forward --address 127.0.0.1 -n istio-system service/istio-ingressgateway 80:80
+
+# Alternatively, use minikube tunnel, which asks for sudo and does not require setcap.
+# It may provide an external IP address other than 127.0.0.1.
+# minikube tunnel
+# kubectl get service/istio-ingressgateway -n istio-system
+```
+
+For local development, resolve `submarine-user-test.submarine` to IP address `127.0.0.1` by adding the following line to the file `~/etc/hosts`.
+
+```bash
+127.0.0.1 submarine-user-test.submarine # For submarine local development
+```
+
+Now we can connect to the submarine workbench at `http://submarine-user-test.submarine`.
 
 
 ```bash
-# Step4: Cleanup submarine.
+# Step5: Stop exposing the service
+# Just close the running process at Step4.
+
+# Step6: Cleanup submarine.
 kubectl delete -n submarine-user-test submarine example-submarine
 
-# Step5: Cleanup operator.
+# Step7: Cleanup operator.
 # Just close the running process at Step2.
 
-# Step6: Delete the submarine CRD.
+# Step8: Delete the submarine CRD.
 make uninstall
 ```
 
@@ -107,7 +153,7 @@ kubectl get deployment -n submarine-cloud-v3-system
 # Step5: Deploy a submarine.
 kubectl apply -n submarine-user-test -f config/samples/_v1alpha1_submarine.yaml
 
-# You can now view the submarine workbench
+# We can now expose the service like before and connect to the submarine workbench
 
 # Step6: Cleanup submarine.
 kubectl delete -n submarine-user-test submarine example-submarine
