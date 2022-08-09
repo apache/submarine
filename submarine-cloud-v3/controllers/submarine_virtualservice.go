@@ -39,6 +39,7 @@ func (r *SubmarineReconciler) newSubmarineVirtualService(ctx context.Context, su
 		r.Log.Error(err, "ParseVirtualService")
 	}
 	virtualService.Namespace = submarine.Namespace
+	virtualService.Spec.Hosts = append(virtualService.Spec.Hosts, submarine.Namespace+".submarine")
 	err = controllerutil.SetControllerReference(submarine, virtualService, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set VirtualService ControllerReference")

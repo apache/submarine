@@ -21,8 +21,6 @@ kind: VirtualService
 metadata:
   name: submarine-virtual-service
 spec:
-  hosts:
-    - "*"
   gateways:
     - submarine-cloud-v3-system/submarine-gateway
   http:
