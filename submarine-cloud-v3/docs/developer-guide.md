@@ -170,6 +170,14 @@ make undeploy
 
 By default, the Istio virtual service created by the operator binds to the Istio gateway `submarine-cloud-v3-system/submarine-gateway`, which should be installed in the `submarine-cloud-v3-system` namespace via Helm. If `helm install` is run with `-n <your_namespace>`, edit the spec `spec.gateways` of the virtual service to be `<your_namespace>/submarine-gateway` manually once it's created by the operator.
 
+### Use custom hostname
+
+By default, the Istio virtual service has `hosts` field of its spec set to `<namespace>.submarine`. This can be manually configured after the virtual service has been created. In our example, the namespace is `submarine-user-test`:
+
+```bash
+kubectl edit -n submarine-user-test virtualservices/submarine-virtual-service
+```
+
 ### Rebuild Operator Image
 
 When running operator in-cluster, we need to rebuild the operator image for changes to take effect.
