@@ -32,6 +32,7 @@ import org.apache.submarine.server.security.simple.SimpleFilter;
 import org.apache.submarine.server.utils.gson.EnvironmentIdDeserializer;
 import org.apache.submarine.server.utils.gson.EnvironmentIdSerializer;
 import org.apache.submarine.server.utils.response.JsonResponse;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -141,6 +142,11 @@ public class SubmarineAuthSimpleTest {
     filterTest.doFilter(mockRequest, mockResponse, mockFilterChain);
     verify(mockFilterChain).doFilter(mockRequest, mockResponse);
     assertNotNull(mockRequest.getAttribute(Pac4jConstants.USER_PROFILES));
+  }
+
+  @After
+  public void after() {
+    conf.updateConfiguration("submarine.auth.type", "none");
   }
 
 }
