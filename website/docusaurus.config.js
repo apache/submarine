@@ -67,6 +67,10 @@ module.exports = {
         },
           // right
         {
+          type: 'localeDropdown',
+          position: 'right',
+        },
+        {
           type: 'docsVersionDropdown',
           dropdownItemsAfter: [{to: '/versions', label: 'All versions'}],
           dropdownActiveClassDisabled: true,
