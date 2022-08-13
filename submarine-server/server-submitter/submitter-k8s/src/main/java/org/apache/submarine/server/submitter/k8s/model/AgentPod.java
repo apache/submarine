@@ -51,9 +51,10 @@ public class AgentPod extends V1Pod implements K8sResource<AgentPod> {
     super();
 
     V1ObjectMetaBuilder metaBuilder = new V1ObjectMetaBuilder();
-    metaBuilder.withName(getNormalizePodName(type, name, resourceId))
+    metaBuilder.withName(getNormalizePodName(type, resourceId))
         .withNamespace(namespace)
         .addToLabels("app", type.toString().toLowerCase())
+        .addToLabels("resource-name", name)
         // There is no need to add istio sidecar. Otherwise, the pod may not end normally
         // https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/
         // Controlling the injection policy Section
@@ -103,12 +104,16 @@ public class AgentPod extends V1Pod implements K8sResource<AgentPod> {
     containers.add(agentContainer);
 
     spec.setRestartPolicy("OnFailure");
+    // Add service account, we temporarily use the service account of submarine-server
+    // TODO(cdmikechen): We need to add a service account and role/rolebinding in the operator
+    //  to manage the resource permission that the agent can list/get, subsequently.
+    spec.serviceAccount("submarine-server");
     this.setSpec(spec);
   }
 
-  public static String getNormalizePodName(CustomResourceType type, String name, String resourceId) {
-    return String.format("%s-%s-%s-%s", resourceId.toLowerCase().replace('_', '-'),
-            type.toString().toLowerCase(), name, CONTAINER_NAME);
+  public static String getNormalizePodName(CustomResourceType type, String resourceId) {
+    return String.format("%s-%s-%s", resourceId.toLowerCase().replace('_', '-'),
+            type.toString().toLowerCase(), CONTAINER_NAME);
   }
 
   @Override

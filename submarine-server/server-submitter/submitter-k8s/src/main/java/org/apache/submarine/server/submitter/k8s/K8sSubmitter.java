@@ -347,8 +347,7 @@ public class K8sSubmitter implements Submitter {
               NotebookUtils.DEFAULT_OVERWRITE_FILE_NAME, OVERWRITE_JSON);
     }
     // index-4: agent
-    AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
-            CustomResourceType.Notebook, notebookId);
+    AgentPod agentPod = new AgentPod(namespace, name, CustomResourceType.Notebook, notebookId);
     // index-5: notebook VirtualService custom resource
     IstioVirtualService istioVirtualService = new IstioVirtualService(createMeta(namespace, name));
 
@@ -370,39 +369,38 @@ public class K8sSubmitter implements Submitter {
 
   @Override
   public Notebook deleteNotebook(NotebookSpec spec, String notebookId) throws SubmarineRuntimeException {
+    // delete notebook
     NotebookCR notebookCR = new NotebookCR(spec, notebookId, getServerNamespace());
     final String name = notebookCR.getMetadata().getName();
     final String namespace = notebookCR.getMetadata().getNamespace();
 
-    // delete crd
-    Notebook notebook = notebookCR.delete(k8sClient);
+    // dependent resources
+    List<K8sResource> dependents = new ArrayList<K8sResource>();
 
     // delete VirtualService
-    new IstioVirtualService(createMeta(namespace, name)).delete(k8sClient);
+    dependents.add(new IstioVirtualService(createMeta(namespace, name)));
 
     // delete pvc
     //  workspace pvc
-    new PersistentVolumeClaim(namespace, String.format("%s-%s", NotebookUtils.PVC_PREFIX, name),
-            NotebookUtils.STORAGE).delete(k8sClient);
+    dependents.add(new PersistentVolumeClaim(namespace,
+          String.format("%s-%s", NotebookUtils.PVC_PREFIX, name), NotebookUtils.STORAGE));
     //  user set pvc
-    new PersistentVolumeClaim(namespace, String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name),
-            NotebookUtils.DEFAULT_USER_STORAGE).delete(k8sClient);
+    dependents.add(new PersistentVolumeClaim(namespace,
+          String.format("%s-user-%s", NotebookUtils.PVC_PREFIX, name), NotebookUtils.DEFAULT_USER_STORAGE));
 
     // configmap
     if (StringUtils.isNoneBlank(OVERWRITE_JSON)) {
-      new Configmap(namespace, String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name))
-              .delete(k8sClient);
+      dependents.add(new Configmap(namespace, String.format("%s-%s", NotebookUtils.OVERWRITE_PREFIX, name)));
     }
 
     // delete agent
-    AgentPod agentPod = new AgentPod(namespace, spec.getMeta().getName(),
-            CustomResourceType.Notebook, notebookId);
+    AgentPod agentPod = new AgentPod(namespace, name, CustomResourceType.Notebook, notebookId);
     LOG.info(String.format("Notebook:%s had been deleted, start to delete agent pod:%s",
             spec.getMeta().getName(), agentPod.getMetadata().getName()));
-    new AgentPod(namespace, spec.getMeta().getName(), CustomResourceType.Notebook, notebookId)
-            .delete(k8sClient);
+    dependents.add(agentPod);
 
-    return notebook;
+    // delete resources
+    return deleteResourcesTransaction(notebookCR, dependents.toArray(dependents.toArray(new K8sResource[0])));
   }
 
   @Override
