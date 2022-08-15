@@ -33,6 +33,9 @@ trap "test -f $tmpfile && rm $tmpfile" RETURN
 curl -L -o $tmpfile ${HADOOP_TAR_URL}
 mv $tmpfile ${CURRENT_PATH}/tmp/hadoop-3.3.3.tar.gz
 
+curl -L -o ${CURRENT_PATH}/tmp/hadoop-aws-3.3.3.jar https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.3/hadoop-aws-3.3.3.jar 
+curl -L -o ${CURRENT_PATH}/tmp/aws-java-sdk-bundle-1.12.267.jar https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.12.267/aws-java-sdk-bundle-1.12.267.jar
+
 echo "Start building the ${SUBMARINE_IMAGE_NAME} docker image ..."
 docker build -t ${SUBMARINE_IMAGE_NAME} .
 
