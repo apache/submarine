@@ -128,6 +128,22 @@ spec:
               version:
                 description: Version is the submarine docker image version
                 type: string
+              virtualservice:
+                description: Virtualservice is the spec that defines the submarine
+                  virtualservice
+                properties:
+                  gateways:
+                    description: Hosts is the submarine virtualservice's gateways
+                    items:
+                      type: string
+                    type: array
+                  hosts:
+                    description: Hosts is the submarine virtualservice's destination
+                      hosts
+                    items:
+                      type: string
+                    type: array
+                type: object
             required:
             - database
             - minio
@@ -135,6 +151,7 @@ spec:
             - server
             - tensorboard
             - version
+            - virtualservice
             type: object
           status:
             description: SubmarineStatus defines the observed state of Submarine

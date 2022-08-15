@@ -46,6 +46,8 @@ type SubmarineSpec struct {
 	Server *SubmarineServerSpec `json:"server"`
 	// Database is the spec that defines the submarine database
 	Database *SubmarineDatabaseSpec `json:"database"`
+	// Virtualservice is the spec that defines the submarine virtualservice
+	Virtualservice *SubmarineVirtualserviceSpec `json:"virtualservice"`
 	// Tensorboard is the spec that defines the submarine tensorboard
 	Tensorboard *SubmarineTensorboardSpec `json:"tensorboard"`
 	// Mlflow is the spec that defines the submarine mlflow
@@ -54,7 +56,7 @@ type SubmarineSpec struct {
 	Minio *SubmarineMinioSpec `json:"minio"`
 }
 
-// SubmarineServerSpec defins the desired submarine server
+// SubmarineServerSpec defines the desired submarine server
 type SubmarineServerSpec struct {
 	// Image is the submarine server's docker image
 	Image string `json:"image"`
@@ -63,7 +65,7 @@ type SubmarineServerSpec struct {
 	Replicas *int32 `json:"replicas"`
 }
 
-// SubmarineServerSpec defins the desired submarine database
+// SubmarineServerSpec defines the desired submarine database
 type SubmarineDatabaseSpec struct {
 	// Image is the submarine database's docker image
 	Image string `json:"image"`
@@ -73,7 +75,15 @@ type SubmarineDatabaseSpec struct {
 	MysqlRootPasswordSecret string `json:"mysqlRootPasswordSecret"`
 }
 
-// SubmarineServerSpec defins the desired submarine tensorboard
+// SubmarineVirtualserviceSpec defines the desired submarine virtualservice
+type SubmarineVirtualserviceSpec struct {
+	// Hosts is the submarine virtualservice's destination hosts
+	Hosts []string `json:"hosts,omitempty"`
+	// Hosts is the submarine virtualservice's gateways
+	Gateways []string `json:"gateways,omitempty"`
+}
+
+// SubmarineServerSpec defines the desired submarine tensorboard
 type SubmarineTensorboardSpec struct {
 	// Enabled defines whether to enable tensorboard or not
 	Enabled *bool `json:"enabled"`
@@ -81,7 +91,7 @@ type SubmarineTensorboardSpec struct {
 	StorageSize string `json:"storageSize"`
 }
 
-// SubmarineServerSpec defins the desired submarine mlflow
+// SubmarineServerSpec defines the desired submarine mlflow
 type SubmarineMlflowSpec struct {
 	// Enabled defines whether to enable mlflow or not
 	Enabled *bool `json:"enabled"`
@@ -89,7 +99,7 @@ type SubmarineMlflowSpec struct {
 	StorageSize string `json:"storageSize"`
 }
 
-// SubmarineServerSpec defins the desired submarine minio
+// SubmarineServerSpec defines the desired submarine minio
 type SubmarineMinioSpec struct {
 	// Enabled defines whether to enable minio or not
 	Enabled *bool `json:"enabled"`
