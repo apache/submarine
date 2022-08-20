@@ -18,6 +18,7 @@ https://github.com/kubeflow/tf-operator/blob/master/examples/v1/distribution_str
 """
 import tensorflow as tf
 import tensorflow_datasets as tfds
+from packaging.version import Version
 from tensorflow.keras import layers, models
 
 import submarine
@@ -31,7 +32,10 @@ def make_datasets_unbatched():
         image = tf.cast(image, tf.float32)
         image /= 255
         return image, label
-
+    # If we use tensorflow_datasets > 3.1.0, we need to disable GCS
+    # https://github.com/tensorflow/datasets/issues/2761#issuecomment-1187413141
+    if Version(tfds.__version__) > Version('3.1.0'):
+        tfds.core.utils.gcs_utils._is_gcs_disabled = True
     datasets, _ = tfds.load(name="mnist", with_info=True, as_supervised=True)
 
     return datasets["train"].map(scale).cache().shuffle(BUFFER_SIZE)
