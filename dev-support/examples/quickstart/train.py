@@ -32,9 +32,10 @@ def make_datasets_unbatched():
         image = tf.cast(image, tf.float32)
         image /= 255
         return image, label
+
     # If we use tensorflow_datasets > 3.1.0, we need to disable GCS
     # https://github.com/tensorflow/datasets/issues/2761#issuecomment-1187413141
-    if Version(tfds.__version__) > Version('3.1.0'):
+    if Version(tfds.__version__) > Version("3.1.0"):
         tfds.core.utils.gcs_utils._is_gcs_disabled = True
     datasets, _ = tfds.load(name="mnist", with_info=True, as_supervised=True)
 
