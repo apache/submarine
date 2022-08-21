@@ -65,7 +65,11 @@ module.exports = {
           label: 'Download',
           position: 'left'
         },
-          // right
+        // right
+        {
+          type: 'localeDropdown',
+          position: 'right',
+        },
         {
           type: 'docsVersionDropdown',
           dropdownItemsAfter: [{to: '/versions', label: 'All versions'}],
