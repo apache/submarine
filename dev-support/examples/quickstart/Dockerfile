@@ -19,6 +19,6 @@ MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 ADD ./tmp/submarine-sdk /opt/
 # install submarine-sdk locally
 RUN pip install /opt/pysubmarine/.[tf2]
-RUN pip install tensorflow_datasets
+RUN pip install tensorflow_datasets packaging
 
 ADD ./train.py /opt/

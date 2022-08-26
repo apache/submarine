@@ -24,7 +24,7 @@ spec:
   hosts:
     - "*"
   gateways:
-    - submarine/submarine-gateway
+    - submarine-cloud-v3-system/submarine-gateway
   http:
     - match:
         - uri:

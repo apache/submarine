@@ -20,6 +20,7 @@ kind: Namespace
 metadata:
   labels:
     control-plane: controller-manager
+    istio-injection: enabled
   name: system
 ---
 apiVersion: apps/v1
@@ -43,11 +44,13 @@ spec:
     spec:
       securityContext:
         runAsNonRoot: true
+        runAsUser: 1000
       containers:
       - command:
-        - /manager
+        - /usr/src/manager
         args:
-        - --leader-elect
+        - -clustertype=kubernetes
+        - -createpsp=true
         image: controller:latest
         name: manager
         securityContext:

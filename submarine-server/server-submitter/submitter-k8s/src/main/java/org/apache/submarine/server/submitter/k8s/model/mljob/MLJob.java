@@ -19,16 +19,52 @@
 
 package org.apache.submarine.server.submitter.k8s.model.mljob;
 
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1JobStatus;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1ObjectMetaBuilder;
+import io.kubernetes.client.openapi.models.V1Status;
+import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
+import org.apache.submarine.server.api.common.CustomResourceType;
+import org.apache.submarine.server.api.experiment.Experiment;
+import org.apache.submarine.server.api.spec.ExperimentMeta;
+import org.apache.submarine.server.api.spec.ExperimentSpec;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
+import org.apache.submarine.server.submitter.k8s.client.K8sClient;
+import org.apache.submarine.server.submitter.k8s.model.K8sResource;
+import org.apache.submarine.server.submitter.k8s.util.JsonUtils;
+import org.apache.submarine.server.submitter.k8s.util.MLJobConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The machine learning job for the CRD job.
- * It be serialized as body input to k8s api client
+ * It is serialized as body input to k8s api client.
+ * <p>
+ * For job resource definitions and related information,
+ * please refer to https://github.com/kubeflow/training-operator
  */
-public class MLJob implements KubernetesObject{
+public abstract class MLJob implements KubernetesObject, K8sResource<Experiment> {
+
+  protected final Logger LOG = LoggerFactory.getLogger(getClass());
+
+  public MLJob(ExperimentSpec experimentSpec) {
+    // set metadata
+    V1ObjectMetaBuilder metaBuilder = new V1ObjectMetaBuilder();
+    metaBuilder.withNamespace(K8sUtils.getNamespace())
+        // SUBMARINE-880 replace name to experimentId
+        .withName(experimentSpec.getMeta().getExperimentId())
+        //.addAllToOwnerReferences(OwnerReferenceUtils.getOwnerReference())
+        .addToLabels(ExperimentMeta.SUBMARINE_EXPERIMENT_NAME, experimentSpec.getMeta().getName());
+    setMetadata(metaBuilder.build());
+    // set framework
+    setFramework(experimentSpec.getMeta().getFramework());
+    // set experimentId
+    setExperimentId(experimentSpec.getMeta().getExperimentId());
+  }
+
   @SerializedName("apiVersion")
   private String apiVersion;
 
@@ -47,6 +83,10 @@ public class MLJob implements KubernetesObject{
 
   @SerializedName("status")
   private V1JobStatus status;
+
+  private String framework;
+
+  private String experimentId;
 
   /**
    * Set the api with version
@@ -147,5 +187,77 @@ public class MLJob implements KubernetesObject{
 
   public void setStatus(V1JobStatus status) {
     this.status = status;
+  }
+
+  public String getFramework() {
+    return framework;
+  }
+
+  public void setFramework(String framework) {
+    this.framework = framework;
+  }
+
+  public String getExperimentId() {
+    return experimentId;
+  }
+
+  public void setExperimentId(String experimentId) {
+    this.experimentId = experimentId;
+  }
+
+  /**
+   * Convert MLJob object to return Experiment object
+   */
+  protected <T extends MLJob> Experiment parseExperimentResponseObject(T object, Class<T> tClass)
+          throws SubmarineRuntimeException {
+    String jsonString = JsonUtils.toJson(object);
+    LOG.info("Upstream response JSON: {}", jsonString);
+    try {
+      return MLJobConverter.toJobFromMLJob(JsonUtils.fromJson(jsonString, tClass));
+    } catch (JsonSyntaxException e) {
+      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
+    }
+  }
+
+  /**
+   * Convert MLJob status to return Experiment object
+   */
+  protected Experiment parseExperimentResponseStatus(V1Status status)
+          throws SubmarineRuntimeException {
+    String jsonString = JsonUtils.toJson(status);
+    LOG.info("Upstream response JSON: {}", jsonString);
+    try {
+      return MLJobConverter.toJobFromStatus(JsonUtils.fromJson(jsonString, V1Status.class));
+    } catch (JsonSyntaxException e) {
+      LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
+      throw new SubmarineRuntimeException(500, "K8s Submitter parse upstream response failed.");
+    }
+  }
+
+  /**
+   * Get custom resource type
+   * This method is mainly used by pod agent
+   */
+  public abstract CustomResourceType getResourceType();
+
+  @Override
+  public Experiment read(K8sClient api) {
+    throw new UnsupportedOperationException("MLJob does not implement this method!");
+  }
+
+  @Override
+  public Experiment create(K8sClient api) {
+    throw new UnsupportedOperationException("MLJob does not implement this method!");
+  }
+
+  @Override
+  public Experiment replace(K8sClient api) {
+    throw new UnsupportedOperationException("MLJob does not implement this method!");
+  }
+
+  @Override
+  public Experiment delete(K8sClient api) {
+    throw new UnsupportedOperationException("MLJob does not implement this method!");
   }
 }

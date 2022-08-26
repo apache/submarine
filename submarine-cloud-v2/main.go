@@ -155,6 +155,7 @@ func NewSubmarineController(
 		WithServiceInformer(kubeInformerFactory.Core().V1().Services()).
 		WithServiceAccountInformer(kubeInformerFactory.Core().V1().ServiceAccounts()).
 		WithPersistentVolumeClaimInformer(kubeInformerFactory.Core().V1().PersistentVolumeClaims()).
+		WithConfigMapClaimInformer(kubeInformerFactory.Core().V1().ConfigMaps()).
 		WithIngressInformer(kubeInformerFactory.Extensions().V1beta1().Ingresses()).
 		// WithIngressRouteInformer(traefikInformerFactory.Traefik().V1alpha1().IngressRoutes()).
 		WithVirtualServiceInformer(istioInformerFactory.Networking().V1alpha3().VirtualServices()).

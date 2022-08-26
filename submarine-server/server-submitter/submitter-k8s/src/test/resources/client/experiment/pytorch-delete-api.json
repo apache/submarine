@@ -1,0 +1,12 @@
+{
+  "apiVersion": "v1",
+  "details": {
+    "group": "kubeflow.org",
+    "kind": "PyTorchJob",
+    "name": "experiment-1658656463509-0001",
+    "uid": "b95d6769-26ff-469c-a346-d5399f543f39"
+  },
+  "kind": "Status",
+  "metadata": {},
+  "status": "Success"
+}

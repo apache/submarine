@@ -25,6 +25,8 @@ import org.apache.submarine.server.rest.workbench.annotation.SubmarineApi;
 import org.apache.submarine.server.database.workbench.entity.SysUserEntity;
 import org.apache.submarine.server.database.workbench.mappers.SysUserMapper;
 import org.apache.submarine.server.database.utils.MyBatisUtil;
+import org.apache.submarine.server.security.common.CommonConfig;
+import org.apache.submarine.server.security.simple.SimpleLoginConfig;
 import org.apache.submarine.server.utils.response.JsonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import java.util.Date;
 import java.util.HashMap;
 
 @Path("/auth")
@@ -60,16 +63,61 @@ public class LoginRestApi {
       SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
       sysUser = sysUserMapper.login(mapParams);
       if (sysUser != null) {
-        sysUser.setToken("mock_token");
+        HashMap<String, Object> claimsMap = new HashMap<>();
+        claimsMap.put("username", sysUser.getUserName());
+        claimsMap.put("realName", sysUser.getRealName());
+        claimsMap.put("password", sysUser.getPassword());
+        claimsMap.put("avatar", sysUser.getAvatar());
+        claimsMap.put("sex", sysUser.getSex());
+        claimsMap.put("status", sysUser.getStatus());
+        claimsMap.put("phone", sysUser.getPhone());
+        claimsMap.put("email", sysUser.getEmail());
+        claimsMap.put("deptCode", sysUser.getDeptCode());
+        claimsMap.put("deptName", sysUser.getDeptName());
+        claimsMap.put("roleCode", sysUser.getRoleCode());
+        claimsMap.put("birthday", sysUser.getBirthday());
+        claimsMap.put("iat", new Date().getTime());
+        claimsMap.put("exp", new Date().getTime() + CommonConfig.MAX_AGE);
+        claimsMap.put("sub", "submarine");
+        claimsMap.put("jti", sysUser.getId());
+
+        String token = SimpleLoginConfig.getJwtGenerator().generate(claimsMap);
+        sysUser.setToken(token);
       } else {
-        LOG.info("User Not Found. Please try again");
+        LOG.warn("Can not find user {}", mapParams);
+        return new JsonResponse.Builder<>(Response.Status.UNAUTHORIZED)
+            .message("User Not Found. Please try again!")
+            .success(false)
+            .build();
       }
     } catch (Exception e) {
       LOG.error(e.getMessage(), e);
-      return new JsonResponse.Builder<>(Response.Status.OK).success(false).build();
+      return new JsonResponse.Builder<>(Response.Status.OK)
+          .message(e.getMessage())
+          .success(false)
+          .build();
     }
 
-    return new JsonResponse.Builder<SysUserEntity>(Response.Status.OK).success(true).result(sysUser).build();
+    return new JsonResponse.Builder<SysUserEntity>(Response.Status.OK)
+        .message("Login successfully!")
+        .success(true)
+        .result(sysUser)
+        .build();
+  }
+
+  /**
+   * Get user by unique name
+   */
+  public SysUserEntity getUserByName(String name) throws Exception {
+    SysUserEntity sysUser = null;
+    try (SqlSession sqlSession = MyBatisUtil.getSqlSession()) {
+      SysUserMapper sysUserMapper = sqlSession.getMapper(SysUserMapper.class);
+      sysUser = sysUserMapper.getUserByUniqueName(name);
+    } catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new Exception(e);
+    }
+    return sysUser;
   }
 
   @POST

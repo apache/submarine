@@ -19,7 +19,7 @@
 
 package org.apache.submarine.server.api.exception;
 
-public class InvalidSpecException extends Exception {
+public class InvalidSpecException extends RuntimeException {
   private static final long serialVersionUID = -1148223492821245434L;
 
   public InvalidSpecException(String message) {

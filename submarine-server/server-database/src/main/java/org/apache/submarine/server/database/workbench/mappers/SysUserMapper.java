@@ -31,7 +31,11 @@ public interface SysUserMapper {
 
   void add(SysUserEntity sysOrg);
 
-  SysUserEntity getById(String id);
+  SysUserEntity getUserByName(Map<String, String> where);
+
+  void activeUser(String id);
+
+  SysUserEntity getUserByUniqueName(String name);
 
   void updateBy(SysUserEntity sysUser);
 
