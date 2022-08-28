@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SeldonDeployment implements KubernetesObject {
+
+  public static final String MODEL_NAME_LABEL = "model-name";
+
   @SerializedName("apiVersion")
   private String apiVersion = SeldonConstants.API_VERSION;
 

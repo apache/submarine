@@ -18,23 +18,26 @@
  */
 package org.apache.submarine.serve.tensorflow;
 
-import io.kubernetes.client.openapi.models.V1ObjectMeta;
+import io.kubernetes.client.openapi.models.V1ObjectMetaBuilder;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.serve.seldon.SeldonGraph;
 import org.apache.submarine.serve.seldon.SeldonPredictor;
 import org.apache.submarine.serve.utils.SeldonConstants;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
 
 public class SeldonTFServing extends SeldonDeployment {
-  public SeldonTFServing(String name, String modelURI){
-    V1ObjectMeta v1ObjectMeta = new V1ObjectMeta();
-    v1ObjectMeta.setName(name);
-    v1ObjectMeta.setNamespace(SeldonConstants.DEFAULT_NAMESPACE);
-    setMetadata(v1ObjectMeta);
+
+  public SeldonTFServing(String resourceName, String modelName, String modelURI) {
+    V1ObjectMetaBuilder metaBuilder = new V1ObjectMetaBuilder();
+    metaBuilder.withNamespace(K8sUtils.getNamespace())
+        .withName(resourceName)
+        .addToLabels(MODEL_NAME_LABEL, modelName);
+    setMetadata(metaBuilder.build());
 
     setSpec(new SeldonDeploymentSpec(SeldonConstants.SELDON_PROTOCOL));
 
     SeldonGraph seldonGraph = new SeldonGraph();
-    seldonGraph.setName(name);
+    seldonGraph.setName(modelName);
     seldonGraph.setImplementation(SeldonConstants.TFSERVING_IMPLEMENTATION);
     seldonGraph.setModelUri(modelURI);
     SeldonPredictor seldonPredictor = new SeldonPredictor();

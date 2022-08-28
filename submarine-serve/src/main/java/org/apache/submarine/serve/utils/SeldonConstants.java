@@ -33,8 +33,6 @@ public class SeldonConstants {
 
   public static final String ENV_SECRET_REF_NAME = "submarine-serve-secret";
 
-  public static final String DEFAULT_NAMESPACE = "default";
-
   public static final String SELDON_PROTOCOL = "seldon";
 
   public static final String KFSERVING_PROTOCOL = "kfserving";

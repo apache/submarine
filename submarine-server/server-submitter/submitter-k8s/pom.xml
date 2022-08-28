@@ -100,11 +100,11 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+
     <dependency>
         <groupId>org.apache.submarine</groupId>
         <artifactId>submarine-serve</artifactId>
         <version>${project.version}</version>
-        <scope>compile</scope>
     </dependency>
 
     <dependency>
