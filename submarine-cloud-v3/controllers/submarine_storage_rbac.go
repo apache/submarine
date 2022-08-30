@@ -32,12 +32,22 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
+var storageAdditionalLabels = map[string]string{"app.kubernetes.io/name": storageName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "storage"}
+
 func (r *SubmarineReconciler) newSubmarineStorageRole(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *rbacv1.Role {
 	role, err := ParseRoleYaml(storageRbacYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseRoleYaml")
 	}
 	role.Namespace = submarine.Namespace
+	roleLabels := role.GetLabels()
+	if roleLabels == nil {
+		role.SetLabels(make(map[string]string))
+		roleLabels = role.GetLabels()
+	}
+	for k, v := range storageAdditionalLabels {
+		roleLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, role, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Role ControllerReference")
@@ -59,6 +69,14 @@ func (r *SubmarineReconciler) newSubmarineStorageRoleBinding(ctx context.Context
 		r.Log.Error(err, "Set RoleBinding ControllerReference")
 	}
 	roleBinding.Namespace = submarine.Namespace
+	roleBindingLabels := roleBinding.GetLabels()
+	if roleBindingLabels == nil {
+		roleBinding.SetLabels(make(map[string]string))
+		roleBindingLabels = roleBinding.GetLabels()
+	}
+	for k, v := range storageAdditionalLabels {
+		roleBindingLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, roleBinding, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set RoleBinding ControllerReference")
@@ -72,6 +90,14 @@ func (r *SubmarineReconciler) newSubmarineStorageServiceAccount(ctx context.Cont
 		r.Log.Error(err, "ParseServiceAccountYaml")
 	}
 	serviceAccount.Namespace = submarine.Namespace
+	serviceAccountLabels := serviceAccount.GetLabels()
+	if serviceAccountLabels == nil {
+		serviceAccount.SetLabels(make(map[string]string))
+		serviceAccountLabels = serviceAccount.GetLabels()
+	}
+	for k, v := range storageAdditionalLabels {
+		serviceAccountLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, serviceAccount, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set ServiceAccount ControllerReference")

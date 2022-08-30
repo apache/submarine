@@ -32,12 +32,22 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
+var tensorboardAdditionalLabels = map[string]string{"app.kubernetes.io/name": tensorboardName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "tensorboard"}
+
 func (r *SubmarineReconciler) newSubmarineTensorboardPersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
 	pvc, err := ParsePersistentVolumeClaimYaml(tensorboardYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
 	pvc.Namespace = submarine.Namespace
+	pvcLabels := pvc.GetLabels()
+	if pvcLabels == nil {
+		pvc.SetLabels(make(map[string]string))
+		pvcLabels = pvc.GetLabels()
+	}
+	for k, v := range tensorboardAdditionalLabels {
+		pvcLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, pvc, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set PersistentVolumeClaim ControllerReference")
@@ -51,6 +61,20 @@ func (r *SubmarineReconciler) newSubmarineTensorboardDeployment(ctx context.Cont
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
 	deployment.Namespace = submarine.Namespace
+	deploymentLabels := deployment.GetLabels()
+	if deploymentLabels == nil {
+		deployment.SetLabels(make(map[string]string))
+		deploymentLabels = deployment.GetLabels()
+	}
+	podLabels := deployment.Spec.Template.GetLabels()
+	if podLabels == nil {
+		deployment.Spec.Template.SetLabels(make(map[string]string))
+		podLabels = deployment.Spec.Template.GetLabels()
+	}
+	for k, v := range tensorboardAdditionalLabels {
+		deploymentLabels[k] = v
+		podLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, deployment, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Deployment ControllerReference")
@@ -64,6 +88,14 @@ func (r *SubmarineReconciler) newSubmarineTensorboardService(ctx context.Context
 		r.Log.Error(err, "ParseServiceYaml")
 	}
 	service.Namespace = submarine.Namespace
+	serviceLabels := service.GetLabels()
+	if serviceLabels == nil {
+		service.SetLabels(make(map[string]string))
+		serviceLabels = service.GetLabels()
+	}
+	for k, v := range tensorboardAdditionalLabels {
+		serviceLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, service, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Service ControllerReference")

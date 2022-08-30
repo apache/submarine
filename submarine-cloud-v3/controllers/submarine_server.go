@@ -32,12 +32,22 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
+var serverAdditionalLabels = map[string]string{"app.kubernetes.io/name": serverName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "server"}
+
 func (r *SubmarineReconciler) newSubmarineServerServiceAccount(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.ServiceAccount {
 	serviceAccount, err := ParseServiceAccountYaml(serverYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParseServiceAccountYaml")
 	}
 	serviceAccount.Namespace = submarine.Namespace
+	serviceAccountLabels := serviceAccount.GetLabels()
+	if serviceAccountLabels == nil {
+		serviceAccount.SetLabels(make(map[string]string))
+		serviceAccountLabels = serviceAccount.GetLabels()
+	}
+	for k, v := range serverAdditionalLabels {
+		serviceAccountLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, serviceAccount, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set ServiceAccount ControllerReference")
@@ -51,6 +61,14 @@ func (r *SubmarineReconciler) newSubmarineServerService(ctx context.Context, sub
 		r.Log.Error(err, "ParseServiceYaml")
 	}
 	service.Namespace = submarine.Namespace
+	serviceLabels := service.GetLabels()
+	if serviceLabels == nil {
+		service.SetLabels(make(map[string]string))
+		serviceLabels = service.GetLabels()
+	}
+	for k, v := range serverAdditionalLabels {
+		serviceLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, service, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Service ControllerReference")
@@ -92,6 +110,20 @@ func (r *SubmarineReconciler) newSubmarineServerDeployment(ctx context.Context, 
 		r.Log.Error(err, "ParseDeploymentYaml")
 	}
 	deployment.Namespace = submarine.Namespace
+	deploymentLabels := deployment.GetLabels()
+	if deploymentLabels == nil {
+		deployment.SetLabels(make(map[string]string))
+		deploymentLabels = deployment.GetLabels()
+	}
+	podLabels := deployment.Spec.Template.GetLabels()
+	if podLabels == nil {
+		deployment.Spec.Template.SetLabels(make(map[string]string))
+		podLabels = deployment.Spec.Template.GetLabels()
+	}
+	for k, v := range serverAdditionalLabels {
+		deploymentLabels[k] = v
+		podLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, deployment, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Deployment ControllerReference")

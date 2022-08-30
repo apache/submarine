@@ -32,12 +32,22 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 )
 
+var databaseAdditionalLabels = map[string]string{"app.kubernetes.io/name": databaseName, "app.kubernetes.io/version": appVersion, "app.kubernetes.io/component": "database"}
+
 func (r *SubmarineReconciler) newSubmarineDatabasePersistentVolumeClaim(ctx context.Context, submarine *submarineapacheorgv1alpha1.Submarine) *corev1.PersistentVolumeClaim {
 	pvc, err := ParsePersistentVolumeClaimYaml(databaseYamlPath)
 	if err != nil {
 		r.Log.Error(err, "ParsePersistentVolumeClaimYaml")
 	}
 	pvc.Namespace = submarine.Namespace
+	pvcLabels := pvc.GetLabels()
+	if pvcLabels == nil {
+		pvc.SetLabels(make(map[string]string))
+		pvcLabels = pvc.GetLabels()
+	}
+	for k, v := range databaseAdditionalLabels {
+		pvcLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, pvc, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set PVC ControllerReference")
@@ -52,6 +62,20 @@ func (r *SubmarineReconciler) newSubmarineDatabaseStatefulSet(ctx context.Contex
 	}
 
 	statefulset.Namespace = submarine.Namespace
+	statefulsetLabels := statefulset.GetLabels()
+	if statefulsetLabels == nil {
+		statefulset.SetLabels(make(map[string]string))
+		statefulsetLabels = statefulset.GetLabels()
+	}
+	podLabels := statefulset.Spec.Template.GetLabels()
+	if podLabels == nil {
+		statefulset.Spec.Template.SetLabels(make(map[string]string))
+		podLabels = statefulset.Spec.Template.GetLabels()
+	}
+	for k, v := range databaseAdditionalLabels {
+		statefulsetLabels[k] = v
+		podLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, statefulset, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Stateful Set ControllerReference")
@@ -71,6 +95,14 @@ func (r *SubmarineReconciler) newSubmarineDatabaseService(ctx context.Context, s
 		r.Log.Error(err, "ParseServiceYaml")
 	}
 	service.Namespace = submarine.Namespace
+	serviceLabels := service.GetLabels()
+	if serviceLabels == nil {
+		service.SetLabels(make(map[string]string))
+		serviceLabels = service.GetLabels()
+	}
+	for k, v := range databaseAdditionalLabels {
+		serviceLabels[k] = v
+	}
 	err = controllerutil.SetControllerReference(submarine, service, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set Service ControllerReference")
