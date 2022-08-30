@@ -399,7 +399,7 @@ public class K8sSubmitter implements Submitter {
             spec.getMeta().getName(), agentPod.getMetadata().getName()));
     dependents.add(agentPod);
 
-    // delete resources
+    // delete resources 
     return deleteResourcesTransaction(notebookCR, dependents.toArray(dependents.toArray(new K8sResource[0])));
   }
 
