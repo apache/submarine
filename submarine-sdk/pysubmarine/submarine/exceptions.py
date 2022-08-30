@@ -24,7 +24,7 @@ class SubmarineException(Exception):
         :param message: The message describing the error that occurred.
         """
         self.message = message
-        super(SubmarineException, self).__init__(message)
+        super().__init__(message)
 
 
 class RestException(SubmarineException):
@@ -32,9 +32,9 @@ class RestException(SubmarineException):
 
     def __init__(self, json):
         error_code = json.get("error_code")
-        message = "%s: %s" % (
+        message = "{}: {}".format(
             error_code,
             json["message"] if "message" in json else "Response: " + str(json),
         )
-        super(RestException, self).__init__(message)
+        super().__init__(message)
         self.json = json

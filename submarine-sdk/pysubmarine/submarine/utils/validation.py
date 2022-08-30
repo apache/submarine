@@ -40,8 +40,7 @@ _UNSUPPORTED_DB_TYPE_MSG = "Supported database engines are {%s}" % ", ".join(DAT
 def bad_path_message(name: str):
     return (
         "Names may be treated as files in certain cases, and must not resolve to other names"
-        " when treated as such. This name would resolve to '%s'"
-        % posixpath.normpath(name)
+        " when treated as such. This name would resolve to '%s'" % posixpath.normpath(name)
     )
 
 
@@ -54,24 +53,22 @@ def _validate_param_name(name: str):
     """Check that `name` is a valid parameter name and raise an exception if it isn't."""
     if not _VALID_PARAM_AND_METRIC_NAMES.match(name):
         raise SubmarineException(
-            "Invalid parameter name: '%s'. %s" % (name, _BAD_CHARACTERS_MESSAGE),
+            f"Invalid parameter name: '{name}'. {_BAD_CHARACTERS_MESSAGE}",
         )
 
     if path_not_unique(name):
-        raise SubmarineException(
-            "Invalid parameter name: '%s'. %s" % (name, bad_path_message(name))
-        )
+        raise SubmarineException(f"Invalid parameter name: '{name}'. {bad_path_message(name)}")
 
 
 def _validate_metric_name(name: str):
     """Check that `name` is a valid metric name and raise an exception if it isn't."""
     if not _VALID_PARAM_AND_METRIC_NAMES.match(name):
         raise SubmarineException(
-            "Invalid metric name: '%s'. %s" % (name, _BAD_CHARACTERS_MESSAGE),
+            f"Invalid metric name: '{name}'. {_BAD_CHARACTERS_MESSAGE}",
         )
 
     if path_not_unique(name):
-        raise SubmarineException("Invalid metric name: '%s'. %s" % (name, bad_path_message(name)))
+        raise SubmarineException(f"Invalid metric name: '{name}'. {bad_path_message(name)}")
 
 
 def _validate_length_limit(entity_name: str, limit: int, value):
@@ -130,7 +127,7 @@ def validate_tag(tag: str) -> None:
     if tag is None or tag == "":
         raise SubmarineException("Tag cannot be empty.")
     if not _VALID_PARAM_AND_METRIC_NAMES.match(tag):
-        raise SubmarineException("Invalid tag name: '%s'. %s" % (tag, _BAD_CHARACTERS_MESSAGE))
+        raise SubmarineException(f"Invalid tag name: '{tag}'. {_BAD_CHARACTERS_MESSAGE}")
 
 
 def validate_model_name(name: str) -> None:
@@ -149,14 +146,10 @@ def validate_description(description: Optional[str]) -> None:
     if not isinstance(description, str) and description is not None:
         raise SubmarineException(f"Description must be String or None, but got {type(description)}")
     if isinstance(description, str) and len(description) > 5000:
-        raise SubmarineException(
-            f"Description must less than 5000 words, but got {len(description)}"
-        )
+        raise SubmarineException(f"Description must less than 5000 words, but got {len(description)}")
 
 
 def _validate_db_type_string(db_type):
     """validates db_type parsed from DB URI is supported"""
     if db_type not in DATABASE_ENGINES:
-        raise SubmarineException(
-            f"Invalid database engine: '{db_type}'. '{_UNSUPPORTED_DB_TYPE_MSG}'"
-        )
+        raise SubmarineException(f"Invalid database engine: '{db_type}'. '{_UNSUPPORTED_DB_TYPE_MSG}'")

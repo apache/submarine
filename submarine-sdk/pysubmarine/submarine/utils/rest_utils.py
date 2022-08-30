@@ -65,9 +65,9 @@ def verify_rest_response(response, endpoint: str):
         if _can_parse_as_json(response.text):
             raise RestException(json.loads(response.text))
         else:
-            base_msg = "API request to endpoint %s failed with error code %s != 200" % (
+            base_msg = "API request to endpoint {} failed with error code {} != 200".format(
                 endpoint,
                 response.status_code,
             )
-            raise SubmarineException("%s. Response body: '%s'" % (base_msg, response.text))
+            raise SubmarineException(f"{base_msg}. Response body: '{response.text}'")
     return response

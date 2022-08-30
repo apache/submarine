@@ -35,13 +35,11 @@ class _AFM(nn.Module):
         attention_dim: int,
         out_features: int,
         dropout_rate: float,
-        **kwargs
+        **kwargs,
     ):
         super().__init__()
         self.feature_linear = FeatureLinear(num_features=num_features, out_features=out_features)
-        self.feature_embedding = FeatureEmbedding(
-            num_features=num_features, embedding_dim=embedding_dim
-        )
+        self.feature_embedding = FeatureEmbedding(num_features=num_features, embedding_dim=embedding_dim)
         self.attentional_interaction = AttentionalInteratction(
             embedding_dim=embedding_dim,
             attention_dim=attention_dim,
@@ -60,9 +58,7 @@ class _AFM(nn.Module):
 
 
 class AttentionalInteratction(nn.Module):
-    def __init__(
-        self, embedding_dim: int, attention_dim: int, out_features: int, dropout_rate: float
-    ):
+    def __init__(self, embedding_dim: int, attention_dim: int, out_features: int, dropout_rate: float):
         super().__init__()
         self.attention_score = nn.Sequential(
             nn.Linear(in_features=embedding_dim, out_features=attention_dim),

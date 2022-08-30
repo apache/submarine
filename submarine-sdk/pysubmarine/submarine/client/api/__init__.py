@@ -13,7 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
 
 # import apis into api package
 from submarine.client.api.environment_api import EnvironmentApi

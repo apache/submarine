@@ -27,8 +27,6 @@
 """
 
 
-from __future__ import absolute_import
-
 # import models into model package
 from submarine.client.models.code_spec import CodeSpec
 from submarine.client.models.environment_spec import EnvironmentSpec

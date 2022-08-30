@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from six.moves import urllib
+import urllib.parse
 
 from submarine.exceptions import SubmarineException
 from submarine.utils.db_utils import get_db_uri, set_db_uri
@@ -32,7 +32,7 @@ def extract_db_type_from_uri(db_uri: str):
     elif scheme_plus_count == 1:
         db_type, _ = scheme.split("+")
     else:
-        error_msg = "Invalid database URI: '%s'. %s" % (db_uri, "INVALID_DB_URI_MSG")
+        error_msg = "Invalid database URI: '{}'. {}".format(db_uri, "INVALID_DB_URI_MSG")
         raise SubmarineException(error_msg)
 
     return db_type

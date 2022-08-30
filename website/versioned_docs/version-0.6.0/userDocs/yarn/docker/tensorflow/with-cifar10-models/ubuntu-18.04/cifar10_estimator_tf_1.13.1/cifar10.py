@@ -25,7 +25,7 @@ WIDTH = 32
 DEPTH = 3
 
 
-class Cifar10DataSet(object):
+class Cifar10DataSet:
     """Cifar10 data set.
 
     Described by http://www.cs.toronto.edu/~kriz/cifar.html.
@@ -58,9 +58,7 @@ class Cifar10DataSet(object):
         image.set_shape([DEPTH * HEIGHT * WIDTH])
 
         # Reshape from [depth * height * width] to [depth, height, width].
-        image = tf.cast(
-            tf.transpose(tf.reshape(image, [DEPTH, HEIGHT, WIDTH]), [1, 2, 0]), tf.float32
-        )
+        image = tf.cast(tf.transpose(tf.reshape(image, [DEPTH, HEIGHT, WIDTH]), [1, 2, 0]), tf.float32)
         label = tf.cast(features["label"], tf.int32)
 
         # Custom preprocessing.

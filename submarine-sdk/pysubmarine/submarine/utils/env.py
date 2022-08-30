@@ -77,4 +77,4 @@ def get_from_registry(key: str, registry: dict):
     if key in registry:
         return registry[key]
     else:
-        raise ValueError("Key {} not supported, available options: {}".format(key, registry.keys()))
+        raise ValueError(f"Key {key} not supported, available options: {registry.keys()}")

@@ -28,7 +28,12 @@ import logging
 
 import tensorflow as tf
 
-from submarine.ml.tensorflow.layers.core import dnn_layer, embedding_layer, fm_layer, linear_layer
+from submarine.ml.tensorflow.layers.core import (
+    dnn_layer,
+    embedding_layer,
+    fm_layer,
+    linear_layer,
+)
 from submarine.ml.tensorflow.model.base_tf_model import BaseTFModel
 from submarine.utils.tf_utils import get_estimator_spec
 

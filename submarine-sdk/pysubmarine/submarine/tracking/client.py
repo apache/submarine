@@ -31,7 +31,7 @@ from submarine.utils.validation import validate_metric, validate_param
 from .constant import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, S3_ENDPOINT_URL
 
 
-class SubmarineClient(object):
+class SubmarineClient:
     """
     Client of an submarine Tracking Server that creates and manages experiments and runs.
     """
@@ -181,8 +181,7 @@ class SubmarineClient(object):
 
                 if input_dim is None or output_dim is None:
                     raise Exception(
-                        "Saving pytorch model needs to provide input and output dimension for"
-                        " serving."
+                        "Saving pytorch model needs to provide input and output dimension for" " serving."
                     )
                 submarine.models.pytorch.save_model(model, model_save_dir, input_dim)
             elif model_type == "tensorflow":
@@ -190,7 +189,7 @@ class SubmarineClient(object):
 
                 submarine.models.tensorflow.save_model(model, model_save_dir)
             else:
-                raise Exception("No valid type of model has been matched to {}".format(model_type))
+                raise Exception(f"No valid type of model has been matched to {model_type}")
 
             # Write description file
             description["id"] = model_id

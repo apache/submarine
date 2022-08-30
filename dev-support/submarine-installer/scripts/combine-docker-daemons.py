@@ -31,6 +31,6 @@ def combineJsons(jsonFile1, jsonFile2, outputFile):
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        raise Exception(u"3 arguments needed")
+        raise Exception("3 arguments needed")
 
     print(combineJsons(sys.argv[1], sys.argv[2], sys.argv[3]))

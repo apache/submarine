@@ -49,7 +49,7 @@ def dnn_layer(
     dropout,
     batch_norm_decay: float = 0.9,
     l2_reg: float = 0,
-    **kwargs
+    **kwargs,
 ):
     """
     The Multi Layer Perceptron
@@ -116,9 +116,7 @@ def linear_layer(features, feature_size, field_size, l2_reg: float = 0, **kwargs
 
     regularizer = tf.contrib.layers.l2_regularizer(l2_reg)
     with tf.variable_scope("LinearLayer_Layer"):
-        linear_bias = tf.get_variable(
-            name="linear_bias", shape=[1], initializer=tf.constant_initializer(0.0)
-        )
+        linear_bias = tf.get_variable(name="linear_bias", shape=[1], initializer=tf.constant_initializer(0.0))
         linear_weight = tf.get_variable(
             name="linear_weight",
             shape=[feature_size],
@@ -131,9 +129,7 @@ def linear_layer(features, feature_size, field_size, l2_reg: float = 0, **kwargs
     return linear_out
 
 
-def embedding_layer(
-    features, feature_size, field_size, embedding_size, l2_reg: float = 0, **kwargs
-):
+def embedding_layer(features, feature_size, field_size, embedding_size, l2_reg: float = 0, **kwargs):
     """
     Turns positive integers (indexes) into dense vectors of fixed size.
     eg. [[4], [20]] -> [[0.25, 0.1], [0.6, -0.2]]
@@ -206,7 +202,7 @@ class KMaxPooling(Layer):
         self.dims = 1
         self.k = k
         self.axis = axis
-        super(KMaxPooling, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def build(self, input_shape):
 
@@ -216,7 +212,7 @@ class KMaxPooling(Layer):
         if self.k < 1 or self.k > input_shape[self.axis]:
             raise ValueError("k must be in 1 ~ %d,now k is %d" % (input_shape[self.axis], self.k))
         self.dims = len(input_shape)
-        super(KMaxPooling, self).build(input_shape)
+        super().build(input_shape)
 
     def call(self, inputs):
 
@@ -238,5 +234,5 @@ class KMaxPooling(Layer):
         self,
     ):
         config = {"k": self.k, "axis": self.axis}
-        base_config = super(KMaxPooling, self).get_config()
+        base_config = super().get_config()
         return dict(list(base_config.items()) + list(config.items()))

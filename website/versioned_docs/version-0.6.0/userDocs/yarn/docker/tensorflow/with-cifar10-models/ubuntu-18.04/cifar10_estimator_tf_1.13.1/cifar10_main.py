@@ -25,7 +25,6 @@ http://www.cs.toronto.edu/~kriz/cifar.html
 
 
 """
-from __future__ import division, print_function
 
 import argparse
 import functools
@@ -36,9 +35,7 @@ import cifar10
 import cifar10_model
 import cifar10_utils
 import numpy as np
-import six
 import tensorflow as tf
-from six.moves import xrange  # pylint: disable=redefined-builtin
 
 tf.logging.set_verbosity(tf.logging.INFO)
 
@@ -91,7 +88,7 @@ def get_model_fn(num_gpus, variable_strategy, num_workers):
             device_type = "gpu"
 
         for i in range(num_devices):
-            worker_device = "/{}:{}".format(device_type, i)
+            worker_device = f"/{device_type}:{i}"
             if variable_strategy == "CPU":
                 device_setter = cifar10_utils.local_device_setter(worker_device=worker_device)
             elif variable_strategy == "GPU":
@@ -133,7 +130,7 @@ def get_model_fn(num_gpus, variable_strategy, num_workers):
             for grad, var in itertools.chain(*tower_gradvars):
                 if grad is not None:
                     all_grads.setdefault(var, []).append(grad)
-            for var, grads in six.iteritems(all_grads):
+            for var, grads in all_grads.items():
                 # Average gradients on the same device as the variables
                 # to which they apply.
                 with tf.device(var.device):
@@ -151,20 +148,14 @@ def get_model_fn(num_gpus, variable_strategy, num_workers):
             num_batches_per_epoch = cifar10.Cifar10DataSet.num_examples_per_epoch("train") // (
                 params.train_batch_size * num_workers
             )
-            boundaries = [
-                num_batches_per_epoch * x for x in np.array([82, 123, 300], dtype=np.int64)
-            ]
+            boundaries = [num_batches_per_epoch * x for x in np.array([82, 123, 300], dtype=np.int64)]
             staged_lr = [params.learning_rate * x for x in [1, 0.1, 0.01, 0.002]]
 
-            learning_rate = tf.train.piecewise_constant(
-                tf.train.get_global_step(), boundaries, staged_lr
-            )
+            learning_rate = tf.train.piecewise_constant(tf.train.get_global_step(), boundaries, staged_lr)
 
             loss = tf.reduce_mean(tower_losses, name="loss")
 
-            examples_sec_hook = cifar10_utils.ExamplesPerSecondHook(
-                params.train_batch_size, every_n_steps=10
-            )
+            examples_sec_hook = cifar10_utils.ExamplesPerSecondHook(params.train_batch_size, every_n_steps=10)
 
             tensors_to_log = {"learning_rate": learning_rate, "loss": loss}
 
@@ -175,9 +166,7 @@ def get_model_fn(num_gpus, variable_strategy, num_workers):
             optimizer = tf.train.MomentumOptimizer(learning_rate=learning_rate, momentum=momentum)
 
             if params.sync:
-                optimizer = tf.train.SyncReplicasOptimizer(
-                    optimizer, replicas_to_aggregate=num_workers
-                )
+                optimizer = tf.train.SyncReplicasOptimizer(optimizer, replicas_to_aggregate=num_workers)
                 sync_replicas_hook = optimizer.make_session_run_hook(params.is_chief)
                 train_hooks.append(sync_replicas_hook)
 
@@ -285,7 +274,7 @@ def input_fn(data_dir, subset, num_shards, batch_size, use_distortion_for_traini
         label_batch = tf.unstack(label_batch, num=batch_size, axis=0)
         feature_shards = [[] for i in range(num_shards)]
         label_shards = [[] for i in range(num_shards)]
-        for i in xrange(batch_size):
+        for i in range(batch_size):
             idx = i % num_shards
             feature_shards[idx].append(image_batch[i])
             label_shards[idx].append(label_batch[i])
@@ -371,7 +360,7 @@ def main(
     use_distortion_for_training,
     log_device_placement,
     num_intra_threads,
-    **hparams
+    **hparams,
 ):
     # The env variable is on deprecation path, default is set to off.
     os.environ["TF_SYNC_ON_FINISH"] = "0"
@@ -417,24 +406,14 @@ if __name__ == "__main__":
         default=1,
         help="The number of gpus used. Uses only CPU if set to 0.",
     )
-    parser.add_argument(
-        "--num-layers", type=int, default=44, help="The number of layers of the model."
-    )
+    parser.add_argument("--num-layers", type=int, default=44, help="The number of layers of the model.")
     parser.add_argument(
         "--train-steps", type=int, default=80000, help="The number of steps to use for training."
     )
-    parser.add_argument(
-        "--train-batch-size", type=int, default=128, help="Batch size for training."
-    )
-    parser.add_argument(
-        "--eval-batch-size", type=int, default=100, help="Batch size for validation."
-    )
-    parser.add_argument(
-        "--momentum", type=float, default=0.9, help="Momentum for MomentumOptimizer."
-    )
-    parser.add_argument(
-        "--weight-decay", type=float, default=2e-4, help="Weight decay for convolutions."
-    )
+    parser.add_argument("--train-batch-size", type=int, default=128, help="Batch size for training.")
+    parser.add_argument("--eval-batch-size", type=int, default=100, help="Batch size for validation.")
+    parser.add_argument("--momentum", type=float, default=0.9, help="Momentum for MomentumOptimizer.")
+    parser.add_argument("--weight-decay", type=float, default=2e-4, help="Weight decay for convolutions.")
     parser.add_argument(
         "--learning-rate",
         type=float,
@@ -483,7 +462,7 @@ if __name__ == "__main__":
         type=str,
         default=None,
         help="""\
-      If not set, the data format best for the training device is used. 
+      If not set, the data format best for the training device is used.
       Allowed values: channels_first (NCHW) channels_last (NHWC).\
       """,
     )
@@ -493,12 +472,8 @@ if __name__ == "__main__":
         default=False,
         help="Whether to log device placement.",
     )
-    parser.add_argument(
-        "--batch-norm-decay", type=float, default=0.997, help="Decay for batch norm."
-    )
-    parser.add_argument(
-        "--batch-norm-epsilon", type=float, default=1e-5, help="Epsilon for batch norm."
-    )
+    parser.add_argument("--batch-norm-decay", type=float, default=0.997, help="Decay for batch norm.")
+    parser.add_argument("--batch-norm-epsilon", type=float, default=1e-5, help="Epsilon for batch norm.")
     args = parser.parse_args()
 
     if args.num_gpus > 0:
@@ -506,9 +481,7 @@ if __name__ == "__main__":
     if args.num_gpus < 0:
         raise ValueError('Invalid GPU count: "--num-gpus" must be 0 or a positive integer.')
     if args.num_gpus == 0 and args.variable_strategy == "GPU":
-        raise ValueError(
-            "num-gpus=0, CPU must be used as parameter server. Set--variable-strategy=CPU."
-        )
+        raise ValueError("num-gpus=0, CPU must be used as parameter server. Set--variable-strategy=CPU.")
     if (args.num_layers - 2) % 6 != 0:
         raise ValueError("Invalid --num-layers parameter.")
     if args.num_gpus != 0 and args.train_batch_size % args.num_gpus != 0:

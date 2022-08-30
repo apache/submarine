@@ -31,9 +31,7 @@ from submarine.client.exceptions import ApiException
 submarineCliConfig = loadConfig()
 
 notebookClient = NotebookClient(
-    host="http://{}:{}".format(
-        submarineCliConfig.connection.hostname, submarineCliConfig.connection.port
-    )
+    host=f"http://{submarineCliConfig.connection.hostname}:{submarineCliConfig.connection.port}"
 )
 
 POLLING_INTERVAL = 1  # sec
@@ -87,7 +85,7 @@ def list_notebook():
             errbody = json.loads(err.body)
             click.echo("[Api Error] {}".format(errbody["message"]))
         else:
-            click.echo("[Api Error] {}".format(err))
+            click.echo(f"[Api Error] {err}")
 
 
 @click.command("notebook")
@@ -98,7 +96,7 @@ def get_notebook(id):
     try:
         thread = notebookClient.get_notebook_async(id)
         timeout = time.time() + TIMEOUT
-        with console.status("[bold green] Fetching Notebook(id = {} )...".format(id)):
+        with console.status(f"[bold green] Fetching Notebook(id = {id} )..."):
             while not thread.ready():
                 time.sleep(POLLING_INTERVAL)
                 if time.time() > timeout:
@@ -109,13 +107,13 @@ def get_notebook(id):
         result = result.result
 
         json_data = richJSON.from_data(result)
-        console.print(Panel(json_data, title="Notebook(id = {} )".format(id)))
+        console.print(Panel(json_data, title=f"Notebook(id = {id} )"))
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
             click.echo("[Api Error] {}".format(errbody["message"]))
         else:
-            click.echo("[Api Error] {}".format(err))
+            click.echo(f"[Api Error] {err}")
 
 
 @click.command("notebook")
@@ -126,7 +124,7 @@ def delete_notebook(id):
     try:
         thread = notebookClient.delete_notebook_async(id)
         timeout = time.time() + TIMEOUT
-        with console.status("[bold green] Deleting Notebook(id = {} )...".format(id)):
+        with console.status(f"[bold green] Deleting Notebook(id = {id} )..."):
             while not thread.ready():
                 time.sleep(POLLING_INTERVAL)
                 if time.time() > timeout:
@@ -136,11 +134,11 @@ def delete_notebook(id):
         result = thread.get()
         result = result.result
 
-        console.print("[bold green] Notebook(id = {} ) deleted".format(id))
+        console.print(f"[bold green] Notebook(id = {id} ) deleted")
 
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
             click.echo("[Api Error] {}".format(errbody["message"]))
         else:
-            click.echo("[Api Error] {}".format(err))
+            click.echo(f"[Api Error] {err}")

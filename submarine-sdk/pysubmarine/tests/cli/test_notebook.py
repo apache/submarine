@@ -40,7 +40,7 @@ def test_all_notbook_e2e():
     # check if cli config is correct for testing
     result = runner.invoke(main.entry_point, ["config", "get", "connection.port"])
     assert result.exit_code == 0
-    assert "connection.port={}".format(8080) in result.output
+    assert f"connection.port={8080}" in result.output
 
     submarine_client = NotebookClient(host="http://localhost:8080")
 
@@ -48,9 +48,7 @@ def test_all_notbook_e2e():
 
     notebook_meta = NotebookMeta(name="test-nb", namespace="default", owner_id=mock_user_id)
     environment = EnvironmentSpec(name="notebook-env")
-    notebook_podSpec = NotebookPodSpec(
-        env_vars={"TEST_ENV": "test"}, resources="cpu=1,memory=1.0Gi"
-    )
+    notebook_podSpec = NotebookPodSpec(env_vars={"TEST_ENV": "test"}, resources="cpu=1,memory=1.0Gi")
     notebookSpec = NotebookSpec(meta=notebook_meta, environment=environment, spec=notebook_podSpec)
 
     notebook = submarine_client.create_notebook(notebookSpec)
@@ -68,12 +66,12 @@ def test_all_notbook_e2e():
 
     # test get notebook
     result = runner.invoke(main.entry_point, ["get", "notebook", notebookId])
-    assert "Notebook(id = {} )".format(notebookId) in result.output
+    assert f"Notebook(id = {notebookId} )" in result.output
     assert notebook["spec"]["environment"]["name"] in result.output
 
     # test delete notebook
     result = runner.invoke(main.entry_point, ["delete", "notebook", notebookId])
-    assert "Notebook(id = {} ) deleted".format(notebookId) in result.output
+    assert f"Notebook(id = {notebookId} ) deleted" in result.output
 
     # test get environment fail after delete
     result = runner.invoke(main.entry_point, ["get", "notebook", notebookId])

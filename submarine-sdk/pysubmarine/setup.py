@@ -28,7 +28,6 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*"]),
     package_data={"submarine.cli.config": ["cli_config.yaml"]},
     install_requires=[
-        "six>=1.10.0",
         "numpy==1.19.2",
         "pandas",
         "sqlalchemy>=1.4.0",
@@ -43,7 +42,6 @@ setup(
         "click==8.0.3",
         "rich==10.15.2",
         "dacite==1.6.0",
-        "dataclasses>=0.6",
         "pyaml==21.10.1",
     ],
     extras_require={
@@ -53,15 +51,12 @@ setup(
             "tf_slim==1.1.0",
             "tensorflow-addons==0.14.0",
             "tensorflow-estimator==2.6.0",
-            "keras==2.6",
             "protobuf<=3.20.1",
         ],
         "pytorch": ["torch>=1.5.0", "torchvision>=0.6.0"],
     },
     classifiers=[
         "Intended Audience :: Developers",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
     ],
     entry_points={

@@ -19,7 +19,7 @@ import tensorflow as tf
 
 class LinearNNModel(tf.keras.Model):
     def __init__(self):
-        super(LinearNNModel, self).__init__()
+        super().__init__()
         self.dense1 = tf.keras.layers.Dense(1, activation=tf.nn.relu)  # One in and one out
 
     def call(self, x):

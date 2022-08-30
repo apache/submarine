@@ -37,16 +37,13 @@ class BaseConfig:
         _field = self.__dataclass_fields__[__name]  # type: ignore
         if hasattr(_field.type, "__origin__") and _field.type.__origin__ == Union:
             if not isinstance(__value, _field.type.__args__):
-                msg = (
-                    "Field `{0.name}` is of type {1}, should be one of the type: {0.type.__args__}"
-                    .format(_field, type(__value))
+                msg = "Field `{0.name}` is of type {1}, should be one of the type: {0.type.__args__}".format(
+                    _field, type(__value)
                 )
                 raise TypeError(msg)
         else:
             if not type(__value) == _field.type:
-                msg = "Field {0.name} is of type {1}, should be {0.type}".format(
-                    _field, type(__value)
-                )
+                msg = "Field {0.name} is of type {1}, should be {0.type}".format(_field, type(__value))
                 raise TypeError(msg)
 
         super().__setattr__(__name, __value)
@@ -101,7 +98,7 @@ def rsetattr(obj, attr, val):
 
 
 def loadConfig(config_path: str = CONFIG_YAML_PATH) -> SubmarineCliConfig:
-    with open(config_path, "r") as stream:
+    with open(config_path) as stream:
         try:
             parsed_yaml: dict = yaml.safe_load(stream)
             return_config: SubmarineCliConfig = dacite.from_dict(
