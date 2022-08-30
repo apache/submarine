@@ -33,7 +33,7 @@
     "prettier": "^2.6.2",
     "sass": "^1.49.9",
     "typescript": "^4.5.4",
-    "vite": "^2.9.2",
+    "vite": "^2.9.13",
     "vite-plugin-imp": "^2.1.6",
     "vite-tsconfig-paths": "^3.4.1",
     "vitest": "^0.9.3"
