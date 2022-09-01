@@ -40,7 +40,8 @@ _UNSUPPORTED_DB_TYPE_MSG = "Supported database engines are {%s}" % ", ".join(DAT
 def bad_path_message(name: str):
     return (
         "Names may be treated as files in certain cases, and must not resolve to other names"
-        " when treated as such. This name would resolve to '%s'" % posixpath.normpath(name)
+        " when treated as such. This name would resolve to '%s'"
+        % posixpath.normpath(name)
     )
 
 

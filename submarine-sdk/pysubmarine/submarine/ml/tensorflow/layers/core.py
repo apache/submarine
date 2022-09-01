@@ -202,14 +202,12 @@ class KMaxPooling(Layer):
     """
 
     def __init__(self, k: int = 1, axis: int = -1, **kwargs):
-
         self.dims = 1
         self.k = k
         self.axis = axis
         super().__init__(**kwargs)
 
     def build(self, input_shape):
-
         if self.axis < 1 or self.axis > len(input_shape):
             raise ValueError("axis must be 1~%d,now is %d" % (len(input_shape), self.axis))
 
@@ -219,7 +217,6 @@ class KMaxPooling(Layer):
         super().build(input_shape)
 
     def call(self, inputs):
-
         perm = list(range(self.dims))
         perm[-1], perm[self.axis] = perm[self.axis], perm[-1]
         shifted_input = tf.transpose(inputs, perm)

@@ -37,8 +37,9 @@ class BaseConfig:
         _field = self.__dataclass_fields__[__name]  # type: ignore
         if hasattr(_field.type, "__origin__") and _field.type.__origin__ == Union:
             if not isinstance(__value, _field.type.__args__):
-                msg = "Field `{0.name}` is of type {1}, should be one of the type: {0.type.__args__}".format(
-                    _field, type(__value)
+                msg = (
+                    "Field `{0.name}` is of type {1}, should be one of the type: {0.type.__args__}"
+                    .format(_field, type(__value))
                 )
                 raise TypeError(msg)
         else:
