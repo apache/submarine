@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7]
-        tf-version: [1.15.0, 2.6.0]
+        tf-version: [1.15.3, 2.6.5]
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
@@ -54,10 +54,10 @@ jobs:
           pip install --upgrade pip
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
       - name: Install pysubmarine with tf1 and pytorch
-        if: matrix.tf-version == '1.15.0'
+        if: matrix.tf-version == '1.15.3'
         run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
       - name: Install pysubmarine with tf2 and pytorch
-        if: matrix.tf-version == '2.6.0'
+        if: matrix.tf-version == '2.6.5'
         run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
       - name: Run unit test
         run: pytest --cov=submarine -vs -m "not e2e"

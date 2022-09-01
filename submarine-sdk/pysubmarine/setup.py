@@ -45,7 +45,7 @@ setup(
         "pyaml==21.10.1",
     ],
     extras_require={
-        "tf": ["tensorflow==1.15.0", "protobuf<=3.20.1"],
+        "tf": ["tensorflow==1.15.3", "protobuf<=3.20.1"],
         "tf2": [
             "tensorflow==2.6.5",
             "tf_slim==1.1.0",
