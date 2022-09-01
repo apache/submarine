@@ -23,6 +23,6 @@ cd ../../../
 # Sort imports
 isort submarine-sdk/ dev-support/ website/
 # Autoformat code
-black submarine-sdk/ dev-support/ website/ --experimental-string-processing
+black submarine-sdk/ dev-support/ website/
 
 set +euxo pipefail

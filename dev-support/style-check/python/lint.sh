@@ -27,6 +27,6 @@ black submarine-sdk/ dev-support/ website/ --check --experimental-string-process
 # Check lint: Not checking the code in website
 flake8 submarine-sdk/ dev-support/
 # Check static typing for Python
-mypy --ignore-missing-imports submarine-sdk/pysubmarine/submarine/
+mypy submarine-sdk/pysubmarine/submarine/
 
 set +euxo pipefail
