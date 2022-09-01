@@ -24,7 +24,7 @@ This is required for developing & testing changes, we recommend installing pysub
 in its own conda environment by running the following
 
 ```bash
-conda create --name submarine-dev python=3.6
+conda create --name submarine-dev python=3.7
 conda activate submarine-dev
 
 # Install auto-format and lints from current checkout
