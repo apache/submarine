@@ -47,10 +47,11 @@ setup(
     extras_require={
         "tf": ["tensorflow==1.15.0", "protobuf<=3.20.1"],
         "tf2": [
-            "tensorflow==2.6.0",
+            "tensorflow==2.6.5",
             "tf_slim==1.1.0",
             "tensorflow-addons==0.14.0",
             "tensorflow-estimator==2.6.0",
+            "keras==2.6.0",
             "protobuf<=3.20.1",
         ],
         "pytorch": ["torch>=1.5.0", "torchvision>=0.6.0"],
