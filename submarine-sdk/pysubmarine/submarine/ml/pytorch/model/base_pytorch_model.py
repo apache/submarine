@@ -95,7 +95,9 @@ class BasePyTorchModel(AbstractModel, ABC):
                 outputs.append(output)
                 labels.append(label)
 
-        return self.metric(torch.cat(labels, dim=0).cpu().numpy(), torch.cat(outputs, dim=0).cpu().numpy())
+        return self.metric(
+            torch.cat(labels, dim=0).cpu().numpy(), torch.cat(outputs, dim=0).cpu().numpy()
+        )
 
     def predict(self):
         outputs = []
@@ -140,7 +142,9 @@ class BasePyTorchModel(AbstractModel, ABC):
                 {"model": self.model.module.state_dict(), "optimizer": self.optimizer.state_dict()},
                 buffer,
             )
-            write_file(buffer, uri=os.path.join(self.params["output"]["save_model_dir"], "ckpt.pkl"))
+            write_file(
+                buffer, uri=os.path.join(self.params["output"]["save_model_dir"], "ckpt.pkl")
+            )
 
     def model_fn(self, params):
         seed = params["training"]["seed"]

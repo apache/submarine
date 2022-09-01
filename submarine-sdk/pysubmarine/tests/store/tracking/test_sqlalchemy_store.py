@@ -30,7 +30,9 @@ JOB_ID = "application_123456789"
 @pytest.mark.e2e
 class TestSqlAlchemyStore(unittest.TestCase):
     def setUp(self):
-        submarine.set_db_uri("mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test")
+        submarine.set_db_uri(
+            "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test"
+        )
         self.db_uri = submarine.get_db_uri()
         self.store = SqlAlchemyStore(self.db_uri)
         # TODO(KUAN-HSUN-LI): use submarine.tracking.fluent to support experiment create

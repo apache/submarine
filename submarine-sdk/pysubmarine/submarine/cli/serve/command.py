@@ -62,7 +62,9 @@ def create_serve(model_name: str, model_version: int):
     try:
         thread = serveClient.create_serve(model_name, model_version, async_req=True)
         timeout = time.time() + TIMEOUT
-        with console.status(f"[bold green] Creating Serve with name: {model_name}, version: {model_version}"):
+        with console.status(
+            f"[bold green] Creating Serve with name: {model_name}, version: {model_version}"
+        ):
             while not thread.ready():
                 time.sleep(POLLING_INTERVAL)
                 if time.time() > timeout:
@@ -89,7 +91,9 @@ def delete_serve(model_name: str, model_version: int, wait: bool):
     try:
         thread = serveClient.delete_serve(model_name, model_version, async_req=True)
         timeout = time.time() + TIMEOUT
-        with console.status(f"[bold green] Deleting Serve with name: {model_name}, version: {model_version}"):
+        with console.status(
+            f"[bold green] Deleting Serve with name: {model_name}, version: {model_version}"
+        ):
             while not thread.ready():
                 time.sleep(POLLING_INTERVAL)
                 if time.time() > timeout:
@@ -101,7 +105,9 @@ def delete_serve(model_name: str, model_version: int, wait: bool):
 
         if wait:
             if result["status"] == "Deleted":
-                console.print(f"[bold green] Serve: model name:{model_name}, version: {model_version}")
+                console.print(
+                    f"[bold green] Serve: model name:{model_name}, version: {model_version}"
+                )
             else:
                 console.print("[bold red] Failed")
                 json_data = richJSON.from_data(result)

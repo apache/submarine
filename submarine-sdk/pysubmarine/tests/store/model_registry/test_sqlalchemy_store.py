@@ -39,7 +39,9 @@ freezegun.configure(default_ignore_list=["threading", "tensorflow"])
 @pytest.mark.e2e
 class TestSqlAlchemyStore(unittest.TestCase):
     def setUp(self):
-        submarine.set_db_uri("mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test")
+        submarine.set_db_uri(
+            "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test"
+        )
         self.db_uri = submarine.get_db_uri()
         self.store = SqlAlchemyStore(self.db_uri)
 
@@ -105,8 +107,12 @@ class TestSqlAlchemyStore(unittest.TestCase):
         name = "test_rename_RM"
         new_name = "test_rename_RN_new"
         rm = self.store.create_registered_model(name)
-        self.store.create_model_version(name, "model_id_0", "test", "application_1234", "tensorflow")
-        self.store.create_model_version(name, "model_id_1", "test", "application_1235", "tensorflow")
+        self.store.create_model_version(
+            name, "model_id_0", "test", "application_1234", "tensorflow"
+        )
+        self.store.create_model_version(
+            name, "model_id_1", "test", "application_1235", "tensorflow"
+        )
         mv1d = self.store.get_model_version(name, 1)
         mv2d = self.store.get_model_version(name, 2)
         self.assertEqual(rm.name, name)
@@ -187,7 +193,9 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.assertEqual(rm2mv1.name, rm2mv1.name)
         self.assertEqual(rm2mv1.tags, rm2mv1.tags)
 
-    def _compare_registered_model_names(self, results: List[RegisteredModel], rms: List[RegisteredModel]):
+    def _compare_registered_model_names(
+        self, results: List[RegisteredModel], rms: List[RegisteredModel]
+    ):
         result_names = {result.name for result in results}
         rm_names = {rm.name for rm in rms}
 
@@ -431,7 +439,9 @@ class TestSqlAlchemyStore(unittest.TestCase):
     def test_update_model_version_description(self):
         name = "test_update_MV_description"
         self.store.create_registered_model(name)
-        mv1 = self.store.create_model_version(name, "model_id_0", "test", "application_1234", "tensorflow")
+        mv1 = self.store.create_model_version(
+            name, "model_id_0", "test", "application_1234", "tensorflow"
+        )
         m1d = self.store.get_model_version(mv1.name, mv1.version)
         self.assertEqual(m1d.name, name)
         self.assertEqual(m1d.version, 1)
@@ -452,8 +462,12 @@ class TestSqlAlchemyStore(unittest.TestCase):
     def test_transition_model_version_stage(self):
         name = "test_transition_MV_stage"
         self.store.create_registered_model(name)
-        mv1 = self.store.create_model_version(name, "model_id_0", "test", "application_1234", "tensorflow")
-        mv2 = self.store.create_model_version(name, "model_id_1", "test", "application_1234", "tensorflow")
+        mv1 = self.store.create_model_version(
+            name, "model_id_0", "test", "application_1234", "tensorflow"
+        )
+        mv2 = self.store.create_model_version(
+            name, "model_id_1", "test", "application_1234", "tensorflow"
+        )
 
         fake_datetime = datetime.strptime("2021-11-11 11:11:11.111000", "%Y-%m-%d %H:%M:%S.%f")
         with freeze_time(fake_datetime):
@@ -579,7 +593,9 @@ class TestSqlAlchemyStore(unittest.TestCase):
         self.store.create_registered_model(name2)
         tags = ["tag1", "tag2", "tag3"]
         models = [
-            self.store.create_model_version(name1, "model_id_0", "test", "application_1234", "tensorflow"),
+            self.store.create_model_version(
+                name1, "model_id_0", "test", "application_1234", "tensorflow"
+            ),
             self.store.create_model_version(
                 name1, "model_id_1", "test", "application_1234", "tensorflow", tags=[tags[0]]
             ),
@@ -629,7 +645,9 @@ class TestSqlAlchemyStore(unittest.TestCase):
     def test_get_model_version_uri(self):
         name = "test_get_model_version_uri"
         self.store.create_registered_model(name)
-        mv = self.store.create_model_version(name, "model_id_0", "test", "application_1234", "tensorflow")
+        mv = self.store.create_model_version(
+            name, "model_id_0", "test", "application_1234", "tensorflow"
+        )
         uri = self.store.get_model_version_uri(mv.name, mv.version)
         self.assertEqual(uri, f"s3://submarine/registry/{mv.id}/{mv.name}/{mv.version}")
 

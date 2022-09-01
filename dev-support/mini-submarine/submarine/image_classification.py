@@ -66,7 +66,9 @@ parser.add_argument(
     type=int,
     help="number of workers for dataloader",
 )
-parser.add_argument("--batch-size", type=int, default=32, help="training batch size per device (CPU/GPU).")
+parser.add_argument(
+    "--batch-size", type=int, default=32, help="training batch size per device (CPU/GPU)."
+)
 parser.add_argument(
     "--gpus",
     type=str,
@@ -78,7 +80,9 @@ parser.add_argument("--lr", type=float, default=0.1, help="learning rate. defaul
 parser.add_argument(
     "--momentum", type=float, default=0.9, help="momentum value for optimizer, default is 0.9."
 )
-parser.add_argument("--wd", type=float, default=0.0001, help="weight decay rate. default is 0.0001.")
+parser.add_argument(
+    "--wd", type=float, default=0.0001, help="weight decay rate. default is 0.0001."
+)
 parser.add_argument("--seed", type=int, default=123, help="random seed to use. Default=123.")
 parser.add_argument(
     "--mode",
@@ -96,7 +100,9 @@ parser.add_argument(
     action="store_true",
     help="enable batch normalization or not in vgg. default is false.",
 )
-parser.add_argument("--use-pretrained", action="store_true", help="enable using pretrained model from gluon.")
+parser.add_argument(
+    "--use-pretrained", action="store_true", help="enable using pretrained model from gluon."
+)
 parser.add_argument(
     "--prefix",
     default="",
@@ -106,7 +112,9 @@ parser.add_argument(
 parser.add_argument(
     "--start-epoch", default=0, type=int, help="starting epoch, 0 for fresh training, > 0 to resume"
 )
-parser.add_argument("--resume", type=str, default="", help="path to saved weight where you want resume")
+parser.add_argument(
+    "--resume", type=str, default="", help="path to saved weight where you want resume"
+)
 parser.add_argument("--lr-factor", default=0.1, type=float, help="learning rate decay ratio")
 parser.add_argument(
     "--lr-steps", default="30,60,90", type=str, help="list of learning rate decay epochs as in str"
@@ -120,8 +128,12 @@ parser.add_argument(
     type=int,
     help="epoch frequence to save model, best model will always be saved",
 )
-parser.add_argument("--kvstore", type=str, default="device", help="kvstore to use for trainer/module.")
-parser.add_argument("--log-interval", type=int, default=50, help="Number of batches to wait before logging.")
+parser.add_argument(
+    "--kvstore", type=str, default="device", help="kvstore to use for trainer/module."
+)
+parser.add_argument(
+    "--log-interval", type=int, default=50, help="Number of batches to wait before logging."
+)
 parser.add_argument(
     "--profile",
     action="store_true",
@@ -130,7 +142,9 @@ parser.add_argument(
         "and prints out the memory usage by python function at the end."
     ),
 )
-parser.add_argument("--builtin-profiler", type=int, default=0, help="Enable built-in profiler (0=off, 1=on)")
+parser.add_argument(
+    "--builtin-profiler", type=int, default=0, help="Enable built-in profiler (0=off, 1=on)"
+)
 opt = parser.parse_args()
 
 # global variables
@@ -177,7 +191,9 @@ def get_cifar10_iterator(batch_size, data_shape, resize=-1, num_parts=1, part_in
 
 def get_imagenet_transforms(data_shape=224, dtype="float32"):
     def train_transform(image, label):
-        image, _ = mx.image.random_size_crop(image, (data_shape, data_shape), 0.08, (3 / 4.0, 4 / 3.0))
+        image, _ = mx.image.random_size_crop(
+            image, (data_shape, data_shape), 0.08, (3 / 4.0, 4 / 3.0)
+        )
         image = mx.nd.image.random_flip_left_right(image)
         image = mx.nd.image.to_tensor(image)
         image = mx.nd.image.normalize(image, mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
@@ -280,7 +296,9 @@ def dummy_iterator(batch_size, data_shape):
 
 
 class ImagePairIter(mx.io.DataIter):
-    def __init__(self, path, data_shape, label_shape, batch_size=64, flag=0, input_aug=None, target_aug=None):
+    def __init__(
+        self, path, data_shape, label_shape, batch_size=64, flag=0, input_aug=None, target_aug=None
+    ):
         def is_image_file(fn):
             return any(fn.endswith(ext) for ext in [".png", ".jpg", ".jpeg"])
 
@@ -447,8 +465,12 @@ def train(opt, ctx):
         metric.reset()
         btic = time.time()
         for i, batch in enumerate(train_data):
-            data = gluon.utils.split_and_load(batch.data[0].astype(opt.dtype), ctx_list=ctx, batch_axis=0)
-            label = gluon.utils.split_and_load(batch.label[0].astype(opt.dtype), ctx_list=ctx, batch_axis=0)
+            data = gluon.utils.split_and_load(
+                batch.data[0].astype(opt.dtype), ctx_list=ctx, batch_axis=0
+            )
+            label = gluon.utils.split_and_load(
+                batch.label[0].astype(opt.dtype), ctx_list=ctx, batch_axis=0
+            )
             outputs = []
             Ls = []
             with ag.record():
@@ -490,7 +512,10 @@ def train(opt, ctx):
         logger.info("[Epoch %d] training: %s=%f, %s=%f" % (epoch, name[0], acc[0], name[1], acc[1]))
         logger.info("[Epoch %d] time cost: %f" % (epoch, epoch_time))
         name, val_acc = test(ctx, val_data)
-        logger.info("[Epoch %d] validation: %s=%f, %s=%f" % (epoch, name[0], val_acc[0], name[1], val_acc[1]))
+        logger.info(
+            "[Epoch %d] validation: %s=%f, %s=%f"
+            % (epoch, name[0], val_acc[0], name[1], val_acc[1])
+        )
 
         # save model if meet requirements
         save_checkpoint(epoch, val_acc[0], best_acc)

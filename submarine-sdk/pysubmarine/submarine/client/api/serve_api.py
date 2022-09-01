@@ -91,11 +91,15 @@ class ServeApi:
         local_var_params = locals()
 
         all_params = ["serve_spec"]
-        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
+        all_params.extend(
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
+        )
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method create_serve" % key)
+                raise ApiTypeError(
+                    "Got an unexpected keyword argument '%s' to method create_serve" % key
+                )
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -195,11 +199,15 @@ class ServeApi:
         local_var_params = locals()
 
         all_params = ["serve_spec"]
-        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
+        all_params.extend(
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
+        )
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method delete_serve" % key)
+                raise ApiTypeError(
+                    "Got an unexpected keyword argument '%s' to method delete_serve" % key
+                )
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -294,7 +302,9 @@ class ServeApi:
         local_var_params = locals()
 
         all_params = []
-        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
+        all_params.extend(
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
+        )
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:

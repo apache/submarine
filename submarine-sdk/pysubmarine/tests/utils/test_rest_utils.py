@@ -23,7 +23,9 @@ from submarine.utils.rest_utils import http_request, verify_rest_response
 
 
 def test_http_request():
-    dummy_json = json.dumps({"result": {"jobId": "job_1234567", "name": "submarine", "identifier": "test"}})
+    dummy_json = json.dumps(
+        {"result": {"jobId": "job_1234567", "name": "submarine", "identifier": "test"}}
+    )
 
     with patch("requests.request") as mock_requests:
         mock_requests.return_value.text = dummy_json

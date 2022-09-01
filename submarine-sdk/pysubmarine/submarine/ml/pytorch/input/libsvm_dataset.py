@@ -85,7 +85,9 @@ class LIBSVMDataset(Dataset):
             )
 
     @classmethod
-    def _locate_sample_offsets_job(cls, data_uri: str, task: Tuple[int, Tuple[int, int]]) -> List[int]:
+    def _locate_sample_offsets_job(
+        cls, data_uri: str, task: Tuple[int, Tuple[int, int]]
+    ) -> List[int]:
         _, (start, end) = task
         offsets = [start]
         with open_buffered_file_reader(data_uri) as infile:

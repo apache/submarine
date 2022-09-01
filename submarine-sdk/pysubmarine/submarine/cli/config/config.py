@@ -43,7 +43,9 @@ class BaseConfig:
                 raise TypeError(msg)
         else:
             if not type(__value) == _field.type:
-                msg = "Field {0.name} is of type {1}, should be {0.type}".format(_field, type(__value))
+                msg = "Field {0.name} is of type {1}, should be {0.type}".format(
+                    _field, type(__value)
+                )
                 raise TypeError(msg)
 
         super().__setattr__(__name, __value)

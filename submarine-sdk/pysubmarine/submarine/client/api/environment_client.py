@@ -64,7 +64,9 @@ class EnvironmentClient:
         :param environment_spec: submarine environment spec
         :return: thread
         """
-        thread = self.environment_api.create_environment(environment_spec=environment_spec, async_req=True)
+        thread = self.environment_api.create_environment(
+            environment_spec=environment_spec, async_req=True
+        )
         return thread
 
     def update_environment(self, name, environment_spec):
@@ -74,7 +76,9 @@ class EnvironmentClient:
         :param environment_spec: submarine environment spec
         :return: submarine environment
         """
-        response = self.environment_api.update_environment(id=name, environment_spec=environment_spec)
+        response = self.environment_api.update_environment(
+            id=name, environment_spec=environment_spec
+        )
         return response.result
 
     def get_environment(self, name):

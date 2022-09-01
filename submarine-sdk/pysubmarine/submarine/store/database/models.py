@@ -124,7 +124,9 @@ class SqlRegisteredModel(Base):
 class SqlRegisteredModelTag(Base):
     __tablename__ = "registered_model_tag"
 
-    name = Column(String(256), ForeignKey("registered_model.name", onupdate="cascade", ondelete="cascade"))
+    name = Column(
+        String(256), ForeignKey("registered_model.name", onupdate="cascade", ondelete="cascade")
+    )
     """
     Name of registered model: Part of *Primary Key* for ``registered_model_tag`` table.
                               Refer to name of ``registered_model`` table.
@@ -233,7 +235,9 @@ class SqlModelVersion(Base):
     """
 
     # linked entities
-    registered_model: SqlRegisteredModel = relationship("SqlRegisteredModel", back_populates="model_versions")
+    registered_model: SqlRegisteredModel = relationship(
+        "SqlRegisteredModel", back_populates="model_versions"
+    )
 
     __table_args__ = (
         PrimaryKeyConstraint("name", "version", name="model_version_pk"),
@@ -432,7 +436,9 @@ class SqlMetric(Base):
     True if the value is in fact NaN.
     """
 
-    __table_args__ = (PrimaryKeyConstraint("id", "key", "timestamp", "worker_index", name="metric_pk"),)
+    __table_args__ = (
+        PrimaryKeyConstraint("id", "key", "timestamp", "worker_index", name="metric_pk"),
+    )
 
     def __repr__(self):
         return "<SqlMetric({}, {}, {}, {}, {})>".format(

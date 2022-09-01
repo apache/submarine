@@ -91,7 +91,9 @@ class EnvironmentApi:
         local_var_params = locals()
 
         all_params = ["environment_spec"]
-        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
+        all_params.extend(
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
+        )
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
@@ -197,7 +199,9 @@ class EnvironmentApi:
         local_var_params = locals()
 
         all_params = ["id"]
-        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
+        all_params.extend(
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
+        )
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
@@ -305,11 +309,15 @@ class EnvironmentApi:
         local_var_params = locals()
 
         all_params = ["id"]
-        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
+        all_params.extend(
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
+        )
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method get_environment" % key)
+                raise ApiTypeError(
+                    "Got an unexpected keyword argument '%s' to method get_environment" % key
+                )
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
@@ -411,11 +419,15 @@ class EnvironmentApi:
         local_var_params = locals()
 
         all_params = ["status"]
-        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
+        all_params.extend(
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
+        )
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method list_environment" % key)
+                raise ApiTypeError(
+                    "Got an unexpected keyword argument '%s' to method list_environment" % key
+                )
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -512,7 +524,9 @@ class EnvironmentApi:
         local_var_params = locals()
 
         all_params = ["id", "environment_spec"]
-        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
+        all_params.extend(
+            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
+        )
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:

@@ -125,11 +125,15 @@ if __name__ == "__main__":
     parser.add_argument(
         "--epochs", type=int, default=5, metavar="N", help="number of epochs to train (default: 5)"
     )
-    parser.add_argument("--lr", type=float, default=0.01, metavar="LR", help="learning rate (default: 0.01)")
+    parser.add_argument(
+        "--lr", type=float, default=0.01, metavar="LR", help="learning rate (default: 0.01)"
+    )
     parser.add_argument(
         "--momentum", type=float, default=0.5, metavar="M", help="SGD momentum (default: 0.5)"
     )
-    parser.add_argument("--no-cuda", action="store_true", default=False, help="disables CUDA training")
+    parser.add_argument(
+        "--no-cuda", action="store_true", default=False, help="disables CUDA training"
+    )
     parser.add_argument("--seed", type=int, default=1, metavar="S", help="random seed (default: 1)")
     parser.add_argument(
         "--log-interval",
@@ -141,7 +145,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--save-model", action="store_true", default=False, help="For Saving the current Model"
     )
-    parser.add_argument("--dir", default="logs", metavar="L", help="directory where summary logs are stored")
+    parser.add_argument(
+        "--dir", default="logs", metavar="L", help="directory where summary logs are stored"
+    )
     if dist.is_available():
         parser.add_argument(
             "--backend",
@@ -173,7 +179,9 @@ if __name__ == "__main__":
         "../data",
         train=True,
         download=True,
-        transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]),
+        transform=transforms.Compose(
+            [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+        ),
     )
     train_sampler = torch.utils.data.distributed.DistributedSampler(
         train_dataset, num_replicas=WORLD_SIZE, rank=rank
@@ -191,7 +199,9 @@ if __name__ == "__main__":
         datasets.FashionMNIST(
             "../data",
             train=False,
-            transform=transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]),
+            transform=transforms.Compose(
+                [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+            ),
         ),
         batch_size=args.test_batch_size,
         shuffle=False,
@@ -202,7 +212,9 @@ if __name__ == "__main__":
 
     if is_distributed():
         Distributor = (
-            nn.parallel.DistributedDataParallel if use_cuda else nn.parallel.DistributedDataParallelCPU
+            nn.parallel.DistributedDataParallel
+            if use_cuda
+            else nn.parallel.DistributedDataParallelCPU
         )
         model = Distributor(model)
 

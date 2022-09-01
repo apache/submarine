@@ -43,7 +43,9 @@ TB_PORT_ENV_VAR = "TB_PORT"
 tf.flags.DEFINE_string("mnist_data_url", "", "Url for mnist handwritten digits dataset")
 
 # Input/output directories
-tf.flags.DEFINE_string("data_dir", "/tmp/tensorflow/mnist/input_data", "Directory for storing input data")
+tf.flags.DEFINE_string(
+    "data_dir", "/tmp/tensorflow/mnist/input_data", "Directory for storing input data"
+)
 tf.flags.DEFINE_string(
     "working_dir",
     "/tmp/tensorflow/mnist/working_dir",
@@ -203,7 +205,9 @@ def main(_):
     elif job_name == "worker":
         # Create our model graph. Assigns ops to the local worker by default.
         with tf.device(
-            tf.train.replica_device_setter(worker_device="/job:worker/task:%d" % task_index, cluster=cluster)
+            tf.train.replica_device_setter(
+                worker_device="/job:worker/task:%d" % task_index, cluster=cluster
+            )
         ):
             features, labels, keep_prob, global_step, train_step, accuracy, merged = create_model()
 
@@ -218,7 +222,9 @@ def main(_):
         # avoid hanging issues when one worker finishes. We are using
         # asynchronous training so there is no need for the workers to
         # communicate.
-        config_proto = tf.ConfigProto(device_filters=["/job:ps", "/job:worker/task:%d" % task_index])
+        config_proto = tf.ConfigProto(
+            device_filters=["/job:ps", "/job:worker/task:%d" % task_index]
+        )
 
         with tf.train.MonitoredTrainingSession(
             master=server.target,

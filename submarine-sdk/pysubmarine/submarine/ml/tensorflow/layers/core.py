@@ -116,7 +116,9 @@ def linear_layer(features, feature_size, field_size, l2_reg: float = 0, **kwargs
 
     regularizer = tf.contrib.layers.l2_regularizer(l2_reg)
     with tf.variable_scope("LinearLayer_Layer"):
-        linear_bias = tf.get_variable(name="linear_bias", shape=[1], initializer=tf.constant_initializer(0.0))
+        linear_bias = tf.get_variable(
+            name="linear_bias", shape=[1], initializer=tf.constant_initializer(0.0)
+        )
         linear_weight = tf.get_variable(
             name="linear_weight",
             shape=[feature_size],
@@ -129,7 +131,9 @@ def linear_layer(features, feature_size, field_size, l2_reg: float = 0, **kwargs
     return linear_out
 
 
-def embedding_layer(features, feature_size, field_size, embedding_size, l2_reg: float = 0, **kwargs):
+def embedding_layer(
+    features, feature_size, field_size, embedding_size, l2_reg: float = 0, **kwargs
+):
     """
     Turns positive integers (indexes) into dense vectors of fixed size.
     eg. [[4], [20]] -> [[0.25, 0.1], [0.6, -0.2]]

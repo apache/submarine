@@ -26,7 +26,12 @@ def _get_session_config_from_env_var(params):
     tf.compat.v1.disable_v2_behavior()
     tf_config = json.loads(os.environ.get("TF_CONFIG", "{}"))
 
-    if tf_config and "task" in tf_config and "type" in tf_config["task"] and "index" in tf_config["task"]:
+    if (
+        tf_config
+        and "task" in tf_config
+        and "type" in tf_config["task"]
+        and "index" in tf_config["task"]
+    ):
         # Master should only communicate with itself and ps.
         if tf_config["task"]["type"] == "master":
             return tf.compat.v1.ConfigProto(
@@ -109,7 +114,9 @@ def get_estimator_spec(logit, labels, mode, params):
     }
     # Provide an estimator spec for `ModeKeys.PREDICT`
     if mode == tf.estimator.ModeKeys.PREDICT:
-        return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions, export_outputs=export_outputs)
+        return tf.estimator.EstimatorSpec(
+            mode=mode, predictions=predictions, export_outputs=export_outputs
+        )
 
     with tf.compat.v1.name_scope("Loss"):
         loss = tf.reduce_mean(
@@ -134,4 +141,6 @@ def get_estimator_spec(logit, labels, mode, params):
 
     # Provide an estimator spec for `ModeKeys.TRAIN` modes
     if mode == tf.estimator.ModeKeys.TRAIN:
-        return tf.estimator.EstimatorSpec(mode=mode, predictions=predictions, loss=loss, train_op=train_op)
+        return tf.estimator.EstimatorSpec(
+            mode=mode, predictions=predictions, loss=loss, train_op=train_op
+        )

@@ -21,7 +21,9 @@ from urllib.parse import urlparse
 from pyarrow import fs
 
 
-def open_buffered_file_reader(uri: str, buffer_size: int = io.DEFAULT_BUFFER_SIZE) -> io.BufferedReader:
+def open_buffered_file_reader(
+    uri: str, buffer_size: int = io.DEFAULT_BUFFER_SIZE
+) -> io.BufferedReader:
     try:
         input_file = open_input_file(uri)
         return io.BufferedReader(input_file, buffer_size=buffer_size)
@@ -30,7 +32,9 @@ def open_buffered_file_reader(uri: str, buffer_size: int = io.DEFAULT_BUFFER_SIZ
         raise e
 
 
-def open_buffered_stream_writer(uri: str, buffer_size: int = io.DEFAULT_BUFFER_SIZE) -> io.BufferedWriter:
+def open_buffered_stream_writer(
+    uri: str, buffer_size: int = io.DEFAULT_BUFFER_SIZE
+) -> io.BufferedWriter:
     try:
         output_stream = open_output_stream(uri)
         return io.BufferedWriter(output_stream, buffer_size=buffer_size)
