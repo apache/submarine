@@ -22,15 +22,13 @@ package org.apache.submarine.server.submitter.k8s.model.seldon;
 import io.kubernetes.client.openapi.ApiException;
 import io.kubernetes.client.util.generic.options.CreateOptions;
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
-import org.apache.submarine.serve.pytorch.SeldonPytorchServing;
+import org.apache.submarine.serve.seldon.pytorch.SeldonPytorchServing;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
 import org.apache.submarine.server.submitter.k8s.model.istio.IstioVirtualService;
 import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
 
 import static org.apache.submarine.server.submitter.k8s.K8sSubmitter.getDeleteOptions;
 
@@ -41,17 +39,12 @@ public class SeldonDeploymentPytorchServing extends SeldonPytorchServing impleme
 
   private static final Logger LOG = LoggerFactory.getLogger(SeldonDeploymentPytorchServing.class);
 
-  private String modelName;
-  private Integer modelVersion;
-
   public SeldonDeploymentPytorchServing() {
   }
 
   public SeldonDeploymentPytorchServing(String resourceName, String modelName, Integer modelVersion,
-                                        String modelURI) {
-    super(resourceName, modelName, modelURI);
-    this.modelVersion = modelVersion;
-    this.modelName = modelName;
+                                        String modelId, String modelURI) {
+    super(resourceName, modelName, modelVersion, modelId, modelURI);
   }
 
   @Override
@@ -100,9 +93,10 @@ public class SeldonDeploymentPytorchServing extends SeldonPytorchServing impleme
 
   @Override
   public IstioVirtualService getIstioVirtualService() {
-    IstioVirtualService service = new IstioVirtualService(getMetadata().getName(), this.modelVersion);
-    service.getMetadata()
-        .setLabels(new HashMap<String, String>() {{ put(MODEL_NAME_LABEL, modelName); }});
+    IstioVirtualService service = new IstioVirtualService(getMetadata().getName(), getModelVersion());
+    service.getMetadata().putLabelsItem(MODEL_NAME_LABEL, getModelName());
+    service.getMetadata().putLabelsItem(MODEL_ID_LABEL, getModelId());
+    service.getMetadata().putLabelsItem(MODEL_VERSION_LABEL, String.valueOf(getModelVersion()));
     return service;
   }
 }

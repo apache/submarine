@@ -16,33 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.serve.tensorflow;
+package org.apache.submarine.serve.seldon.tensorflow;
 
-import io.kubernetes.client.openapi.models.V1ObjectMetaBuilder;
 import org.apache.submarine.serve.seldon.PredictorAnnotations;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.serve.seldon.SeldonDeploymentSpec;
 import org.apache.submarine.serve.seldon.SeldonGraph;
 import org.apache.submarine.serve.seldon.SeldonPredictor;
 import org.apache.submarine.serve.utils.SeldonConstants;
-import org.apache.submarine.server.k8s.utils.K8sUtils;
 
 public class SeldonTFServing extends SeldonDeployment {
 
   public SeldonTFServing() {
   }
 
-  public SeldonTFServing(String resourceName, String modelName, String modelURI) {
-    V1ObjectMetaBuilder metaBuilder = new V1ObjectMetaBuilder();
-    metaBuilder.withNamespace(K8sUtils.getNamespace())
-        .withName(resourceName)
-        .addToLabels(MODEL_NAME_LABEL, modelName);
-    setMetadata(metaBuilder.build());
+  public SeldonTFServing(String resourceName, String modelName, Integer modelVersion,
+                         String modelId, String modelURI) {
+    super(resourceName, modelName, modelVersion, modelId, modelURI);
 
     setSpec(new SeldonDeploymentSpec(SeldonConstants.SELDON_PROTOCOL));
 
     SeldonGraph seldonGraph = new SeldonGraph();
-    seldonGraph.setName(modelName);
+    seldonGraph.setName(String.format("version-%s", modelVersion));
     seldonGraph.setImplementation(SeldonConstants.TFSERVING_IMPLEMENTATION);
     seldonGraph.setModelUri(modelURI);
     SeldonPredictor seldonPredictor = new SeldonPredictor();

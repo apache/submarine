@@ -16,33 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.serve.pytorch;
+package org.apache.submarine.serve.seldon.pytorch;
 
-import io.kubernetes.client.openapi.models.V1ObjectMetaBuilder;
 import org.apache.submarine.serve.seldon.PredictorAnnotations;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.serve.seldon.SeldonDeploymentSpec;
 import org.apache.submarine.serve.seldon.SeldonGraph;
 import org.apache.submarine.serve.seldon.SeldonPredictor;
 import org.apache.submarine.serve.utils.SeldonConstants;
-import org.apache.submarine.server.k8s.utils.K8sUtils;
 
 public class SeldonPytorchServing extends SeldonDeployment {
 
   public SeldonPytorchServing() {
   }
 
-  public SeldonPytorchServing(String resourceName, String modelName, String modelURI) {
-    V1ObjectMetaBuilder metaBuilder = new V1ObjectMetaBuilder();
-    metaBuilder.withNamespace(K8sUtils.getNamespace())
-        .withName(resourceName)
-        .addToLabels(MODEL_NAME_LABEL, modelName);
-    setMetadata(metaBuilder.build());
+  public SeldonPytorchServing(String resourceName, String modelName, Integer modelVersion,
+                              String modelId, String modelURI) {
+    super(resourceName, modelName, modelVersion, modelId, modelURI);
 
     setSpec(new SeldonDeploymentSpec(SeldonConstants.KFSERVING_PROTOCOL));
 
     SeldonGraph seldonGraph = new SeldonGraph();
-    seldonGraph.setName(modelName);
+    seldonGraph.setName(String.format("version-%s", modelVersion));
     seldonGraph.setImplementation(SeldonConstants.TRITON_IMPLEMENTATION);
     seldonGraph.setModelUri(modelURI);
     SeldonPredictor seldonPredictor = new SeldonPredictor();

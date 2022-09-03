@@ -41,9 +41,11 @@ public class SeldonDeploymentFactory {
 
     switch (modelType) {
       case "tensorflow":
-        return new SeldonDeploymentTFServing(resourceName, modelName, modelVersion, modelURI);
+        return new SeldonDeploymentTFServing(resourceName, modelName, modelVersion,
+            modelId, modelURI);
       case "pytorch":
-        return new SeldonDeploymentPytorchServing(resourceName, modelName, modelVersion, modelURI);
+        return new SeldonDeploymentPytorchServing(resourceName, modelName, modelVersion,
+            modelId, modelURI);
       case "xgboost":// TODO(cdmikechen): Will fix https://issues.apache.org/jira/browse/SUBMARINE-1316
       default:
         throw new SubmarineRuntimeException("Given serve type: " + modelType + " is not supported.");
