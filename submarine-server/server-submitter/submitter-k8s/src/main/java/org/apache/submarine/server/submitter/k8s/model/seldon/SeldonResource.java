@@ -19,6 +19,7 @@
 
 package org.apache.submarine.server.submitter.k8s.model.seldon;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.server.submitter.k8s.model.K8sResource;
 import org.apache.submarine.server.submitter.k8s.model.istio.IstioVirtualService;
@@ -29,6 +30,7 @@ public interface SeldonResource extends K8sResource<SeldonDeployment> {
    * Get IstioVirtualService, Using the name directly may result in illegal characters,
    * so we need to do a conversion using the resource name of the SeldonResource
    */
+  @JsonIgnore
   IstioVirtualService getIstioVirtualService();
 
 }

@@ -11,6 +11,8 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
+-- Since the associated tables have primary and foreign key constraints,
+-- we need to delete them all before creating them
 DROP TABLE IF EXISTS `param`;
 DROP TABLE IF EXISTS `metric`;
 DROP TABLE IF EXISTS `model_version_tag`;
@@ -18,6 +20,9 @@ DROP TABLE IF EXISTS `model_version`;
 DROP TABLE IF EXISTS `registered_model_tag`;
 DROP TABLE IF EXISTS `registered_model`;
 
+-- Add model_id primary key
+-- It is currently designed to solve some of the problems with the model serve,
+-- and does not solve the same name problem for multiple users at the moment
 CREATE TABLE `registered_model` (
     `model_id` BIGINT AUTO_INCREMENT,
 	`name` VARCHAR(256) NOT NULL,
@@ -35,6 +40,9 @@ CREATE TABLE `registered_model_tag` (
 	FOREIGN KEY(`name`) REFERENCES `registered_model` (`name`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Add model_version_id primary key
+-- It is currently designed to solve some of the problems with the model serve,
+-- and does not solve the same name problem for multiple users at the moment
 CREATE TABLE `model_version` (
     `model_version_id` BIGINT AUTO_INCREMENT,
 	`name` VARCHAR(256) NOT NULL COMMENT 'Name of model',

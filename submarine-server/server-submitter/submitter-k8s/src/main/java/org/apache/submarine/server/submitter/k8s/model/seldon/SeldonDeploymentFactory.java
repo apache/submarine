@@ -32,7 +32,7 @@ public class SeldonDeploymentFactory {
    */
   public static SeldonResource getSeldonDeployment(ServeSpec spec) throws SubmarineRuntimeException {
     String modelId = spec.getModelId();
-    String resourceName = String.format("model-%s", modelId);
+    String resourceName = String.format("submarine-model-%s-%s", spec.getId(), modelId);
 
     String modelName = spec.getModelName();
     String modelType = spec.getModelType();

@@ -25,6 +25,7 @@ import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.serve.tensorflow.SeldonTFServing;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
 import org.apache.submarine.server.submitter.k8s.model.istio.IstioVirtualService;
+import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +40,11 @@ public class SeldonDeploymentTFServing extends SeldonTFServing implements Seldon
 
   private static final Logger LOG = LoggerFactory.getLogger(SeldonDeploymentTFServing.class);
 
-  private final String modelName;
-  private final Integer modelVersion;
+  private String modelName;
+  private Integer modelVersion;
+
+  public SeldonDeploymentTFServing() {
+  }
 
   public SeldonDeploymentTFServing(String resourceName, String modelName, Integer modelVersion,
                                    String modelURI) {
@@ -57,6 +61,9 @@ public class SeldonDeploymentTFServing extends SeldonTFServing implements Seldon
   @Override
   public SeldonTFServing create(K8sClient api) {
     try {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Create Seldon TFServing resource: \n{}", YamlUtils.toPrettyYaml(this));
+      }
       api.getSeldonDeploymentClient()
           .create(getMetadata().getNamespace(), this, new CreateOptions())
           .throwsApiException();
@@ -75,6 +82,10 @@ public class SeldonDeploymentTFServing extends SeldonTFServing implements Seldon
   @Override
   public SeldonTFServing delete(K8sClient api) {
     try {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Delete Seldon TFServing resource in namespace: {} and name: {}",
+            this.getMetadata().getNamespace(), this.getMetadata().getName());
+      }
       api.getSeldonDeploymentClient()
           .delete(getMetadata().getNamespace(), getMetadata().getName(),
               getDeleteOptions(getApiVersion()))

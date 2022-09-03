@@ -19,13 +19,18 @@
 package org.apache.submarine.serve.tensorflow;
 
 import io.kubernetes.client.openapi.models.V1ObjectMetaBuilder;
+import org.apache.submarine.serve.seldon.PredictorAnnotations;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
+import org.apache.submarine.serve.seldon.SeldonDeploymentSpec;
 import org.apache.submarine.serve.seldon.SeldonGraph;
 import org.apache.submarine.serve.seldon.SeldonPredictor;
 import org.apache.submarine.serve.utils.SeldonConstants;
 import org.apache.submarine.server.k8s.utils.K8sUtils;
 
 public class SeldonTFServing extends SeldonDeployment {
+
+  public SeldonTFServing() {
+  }
 
   public SeldonTFServing(String resourceName, String modelName, String modelURI) {
     V1ObjectMetaBuilder metaBuilder = new V1ObjectMetaBuilder();
@@ -41,6 +46,7 @@ public class SeldonTFServing extends SeldonDeployment {
     seldonGraph.setImplementation(SeldonConstants.TFSERVING_IMPLEMENTATION);
     seldonGraph.setModelUri(modelURI);
     SeldonPredictor seldonPredictor = new SeldonPredictor();
+    seldonPredictor.setAnnotations(PredictorAnnotations.service(resourceName));
     seldonPredictor.setSeldonGraph(seldonGraph);
 
     addPredictor(seldonPredictor);

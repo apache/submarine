@@ -26,6 +26,7 @@ import org.apache.submarine.serve.pytorch.SeldonPytorchServing;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
 import org.apache.submarine.server.submitter.k8s.model.istio.IstioVirtualService;
+import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +41,11 @@ public class SeldonDeploymentPytorchServing extends SeldonPytorchServing impleme
 
   private static final Logger LOG = LoggerFactory.getLogger(SeldonDeploymentPytorchServing.class);
 
-  private final String modelName;
-  private final Integer modelVersion;
+  private String modelName;
+  private Integer modelVersion;
+
+  public SeldonDeploymentPytorchServing() {
+  }
 
   public SeldonDeploymentPytorchServing(String resourceName, String modelName, Integer modelVersion,
                                         String modelURI) {
@@ -58,6 +62,9 @@ public class SeldonDeploymentPytorchServing extends SeldonPytorchServing impleme
   @Override
   public SeldonDeployment create(K8sClient api) {
     try {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Create Seldon PytorchServing resource: \n{}", YamlUtils.toPrettyYaml(this));
+      }
       api.getSeldonDeploymentClient()
           .create(getMetadata().getNamespace(), this, new CreateOptions())
           .throwsApiException();
@@ -76,6 +83,10 @@ public class SeldonDeploymentPytorchServing extends SeldonPytorchServing impleme
   @Override
   public SeldonDeployment delete(K8sClient api) {
     try {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Delete Seldon PytorchServing resource in namespace: {} and name: {}",
+            this.getMetadata().getNamespace(), this.getMetadata().getName());
+      }
       api.getSeldonDeploymentClient()
           .delete(getMetadata().getNamespace(), getMetadata().getName(),
               getDeleteOptions(getApiVersion()))

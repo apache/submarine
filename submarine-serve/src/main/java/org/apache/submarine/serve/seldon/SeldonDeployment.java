@@ -23,9 +23,6 @@ import io.kubernetes.client.common.KubernetesObject;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import org.apache.submarine.serve.utils.SeldonConstants;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class SeldonDeployment implements KubernetesObject {
 
   public static final String MODEL_NAME_LABEL = "model-name";
@@ -101,30 +98,11 @@ public class SeldonDeployment implements KubernetesObject {
     this.spec = seldonDeploymentSpec;
   }
 
-  public void addPredictor(SeldonPredictor seldonPredictor) {
-    this.spec.addPredictor(seldonPredictor);
+  public SeldonDeploymentSpec getSpec() {
+    return spec;
   }
 
-  public static class SeldonDeploymentSpec {
-    public SeldonDeploymentSpec(String protocol) {
-      setProtocol(protocol);
-    }
-
-    @SerializedName("protocol")
-    private String protocol;
-    @SerializedName("predictors")
-    private List<SeldonPredictor> predictors = new ArrayList<>();
-
-    public String getProtocol() {
-      return protocol;
-    }
-
-    public void setProtocol(String protocol) {
-      this.protocol = protocol;
-    }
-
-    public void addPredictor(SeldonPredictor seldonPredictor) {
-      predictors.add(seldonPredictor);
-    }
+  public void addPredictor(SeldonPredictor seldonPredictor) {
+    this.spec.addPredictor(seldonPredictor);
   }
 }

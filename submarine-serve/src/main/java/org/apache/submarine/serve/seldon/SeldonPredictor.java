@@ -21,6 +21,7 @@ package org.apache.submarine.serve.seldon;
 import com.google.gson.annotations.SerializedName;
 
 public class SeldonPredictor {
+
   @SerializedName("name")
   private String name = "default";
 
@@ -29,6 +30,9 @@ public class SeldonPredictor {
 
   @SerializedName("graph")
   private SeldonGraph seldonGraph = new SeldonGraph();
+
+  @SerializedName("annotations")
+  private PredictorAnnotations annotations;
 
   public SeldonPredictor(String name, Integer replicas, SeldonGraph graph) {
     setName(name);
@@ -61,4 +65,13 @@ public class SeldonPredictor {
   public void setSeldonGraph(SeldonGraph seldonGraph) {
     this.seldonGraph = seldonGraph;
   }
+
+  public PredictorAnnotations getAnnotations() {
+    return annotations;
+  }
+
+  public void setAnnotations(PredictorAnnotations annotations) {
+    this.annotations = annotations;
+  }
+
 }
