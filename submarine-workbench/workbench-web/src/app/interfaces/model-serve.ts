@@ -17,8 +17,8 @@
  * under the License.
  */
 
-
 export interface ServeSpec {
+    id: number,
     modelName: string,
     modelVersion: number,
 }

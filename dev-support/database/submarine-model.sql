@@ -11,17 +11,23 @@
 -- See the License for the specific language governing permissions and
 -- limitations under the License.
 
+DROP TABLE IF EXISTS `param`;
+DROP TABLE IF EXISTS `metric`;
+DROP TABLE IF EXISTS `model_version_tag`;
+DROP TABLE IF EXISTS `model_version`;
+DROP TABLE IF EXISTS `registered_model_tag`;
 DROP TABLE IF EXISTS `registered_model`;
+
 CREATE TABLE `registered_model` (
+    `model_id` BIGINT AUTO_INCREMENT,
 	`name` VARCHAR(256) NOT NULL,
 	`creation_time` DATETIME(3) COMMENT 'Millisecond precision',
 	`last_updated_time` DATETIME(3) COMMENT 'Millisecond precision',
 	`description` VARCHAR(5000),
-	CONSTRAINT `registered_model_pk` PRIMARY KEY (`name`),
+	CONSTRAINT `registered_model_pk` PRIMARY KEY (`model_id`),
 	UNIQUE (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `registered_model_tag`;
 CREATE TABLE `registered_model_tag` (
 	`name` VARCHAR(256) NOT NULL,
 	`tag` VARCHAR(256) NOT NULL,
@@ -29,8 +35,8 @@ CREATE TABLE `registered_model_tag` (
 	FOREIGN KEY(`name`) REFERENCES `registered_model` (`name`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `model_version`;
 CREATE TABLE `model_version` (
+    `model_version_id` BIGINT AUTO_INCREMENT,
 	`name` VARCHAR(256) NOT NULL COMMENT 'Name of model',
 	`version` INTEGER NOT NULL,
 	`id` VARCHAR(64) NOT NULL COMMENT 'Id of the model',
@@ -42,12 +48,12 @@ CREATE TABLE `model_version` (
 	`last_updated_time` DATETIME(3) COMMENT 'Millisecond precision',
 	`dataset` VARCHAR(256) COMMENT 'Which dataset is used',
 	`description` VARCHAR(5000),
-	CONSTRAINT `model_version_pk` PRIMARY KEY (`name`, `version`),
+	CONSTRAINT `model_version_pk` PRIMARY KEY (`model_version_id`),
+    UNIQUE (`name`, `version`),
 	UNIQUE (`name`, `id`),
 	FOREIGN KEY(`name`) REFERENCES `registered_model` (`name`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `model_version_tag`;
 CREATE TABLE `model_version_tag` (
 	`name` VARCHAR(256) NOT NULL COMMENT 'Name of model',
 	`version` INTEGER NOT NULL,
@@ -56,7 +62,6 @@ CREATE TABLE `model_version_tag` (
 	FOREIGN KEY(`name`, `version`) REFERENCES `model_version` (`name`, `version`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `metric`;
 CREATE TABLE `metric` (
 	`id` VARCHAR(64) NOT NULL COMMENT 'Id of the Experiment',
 	`key` VARCHAR(190) NOT NULL COMMENT 'Metric key: `String` (limit 190 characters). Part of *Primary Key* for ``metric`` table.',
@@ -70,7 +75,6 @@ CREATE TABLE `metric` (
 	FOREIGN KEY(`id`) REFERENCES `experiment` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `param`;
 CREATE TABLE `param` (
 	`id` VARCHAR(64) NOT NULL COMMENT 'Id of the Experiment',
 	`key` VARCHAR(190) NOT NULL COMMENT '`String` (limit 190 characters). Part of *Primary Key* for ``param`` table.',

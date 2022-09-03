@@ -38,9 +38,10 @@ export class ModelServeService {
     this.emitInfoSource.next(id);
   }
 
-  createServe(modelName: string, modelVersion: number) : Observable<string> {
+  createServe(id: number, modelName: string, modelVersion: number) : Observable<string> {
     const apiUrl = this.baseApi.getRestApi('/v1/serve');
     const serveSpec : ServeSpec = {
+      id,
       modelName,
       modelVersion
     }
@@ -64,9 +65,10 @@ export class ModelServeService {
     );
   }
 
-  deleteServe(modelName: string, modelVersion: number) : Observable<string> {
+  deleteServe(id: number, modelName: string, modelVersion: number) : Observable<string> {
     const apiUrl = this.baseApi.getRestApi(`/v1/serve`);
     const serveSpec : ServeSpec = {
+      id,
       modelName,
       modelVersion
     }

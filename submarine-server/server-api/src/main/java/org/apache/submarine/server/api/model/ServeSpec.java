@@ -19,11 +19,21 @@
 package org.apache.submarine.server.api.model;
 
 public class ServeSpec {
+
+  private Long id;
   private String modelName;
   private Integer modelVersion;
   private String modelId;
   private String modelType;
   private String modelURI;
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public String getModelName() {
     return modelName;
