@@ -44,7 +44,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, name, creation_time, last_updated_time, description
+    model_id, name, creation_time, last_updated_time, description
   </sql>
 
   <select id="select" parameterType="java.lang.String" resultMap="resultMap">
