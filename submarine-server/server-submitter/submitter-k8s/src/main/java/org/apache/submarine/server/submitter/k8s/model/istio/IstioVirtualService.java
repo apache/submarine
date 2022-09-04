@@ -44,8 +44,8 @@ public class IstioVirtualService extends org.apache.submarine.serve.istio.IstioV
     super(metadata, spec);
   }
 
-  public IstioVirtualService(String modelName, Integer modelVersion) {
-    super(modelName, modelVersion);
+  public IstioVirtualService(Long id, String modelResourceName, Integer modelVersion) {
+    super(id, modelResourceName, modelVersion);
   }
 
   public IstioVirtualService(V1ObjectMeta metadata) {
@@ -72,7 +72,7 @@ public class IstioVirtualService extends org.apache.submarine.serve.istio.IstioV
       return this;
     } catch (ApiException e) {
       LOG.error("K8s submitter: Create notebook VirtualService custom resource object failed by " +
-              e.getMessage(), e);
+          e.getMessage(), e);
       throw new SubmarineRuntimeException(e.getCode(), e.getMessage());
     } catch (JsonSyntaxException e) {
       LOG.error("K8s submitter: parse response object failed by " + e.getMessage(), e);
@@ -90,7 +90,7 @@ public class IstioVirtualService extends org.apache.submarine.serve.istio.IstioV
     try {
       if (LOG.isDebugEnabled()) {
         LOG.debug("Delete VirtualService resource in namespace: {} and name: {}",
-                this.getMetadata().getNamespace(), this.getMetadata().getName());
+            this.getMetadata().getNamespace(), this.getMetadata().getName());
       }
       api.getIstioVirtualServiceClient()
         .delete(
@@ -100,7 +100,7 @@ public class IstioVirtualService extends org.apache.submarine.serve.istio.IstioV
         ).throwsApiException();
     } catch (ApiException e) {
       LOG.error("K8s submitter: Delete notebook VirtualService custom resource object failed by " +
-              e.getMessage(), e);
+          e.getMessage(), e);
       K8sSubmitter.API_EXCEPTION_404_CONSUMER.apply(e);
     }
     return this;

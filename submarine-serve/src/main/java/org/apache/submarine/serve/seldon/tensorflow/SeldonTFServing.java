@@ -30,9 +30,9 @@ public class SeldonTFServing extends SeldonDeployment {
   public SeldonTFServing() {
   }
 
-  public SeldonTFServing(String resourceName, String modelName, Integer modelVersion,
+  public SeldonTFServing(Long id, String resourceName, String modelName, Integer modelVersion,
                          String modelId, String modelURI) {
-    super(resourceName, modelName, modelVersion, modelId, modelURI);
+    super(id, resourceName, modelName, modelVersion, modelId, modelURI);
 
     setSpec(new SeldonDeploymentSpec(SeldonConstants.SELDON_PROTOCOL));
 

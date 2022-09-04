@@ -41,9 +41,9 @@ public class SeldonDeploymentTFServing extends SeldonTFServing implements Seldon
   public SeldonDeploymentTFServing() {
   }
 
-  public SeldonDeploymentTFServing(String resourceName, String modelName, Integer modelVersion,
+  public SeldonDeploymentTFServing(Long id, String resourceName, String modelName, Integer modelVersion,
                                    String modelId, String modelURI) {
-    super(resourceName, modelName, modelVersion, modelId, modelURI);
+    super(id, resourceName, modelName, modelVersion, modelId, modelURI);
   }
 
   @Override
@@ -92,7 +92,9 @@ public class SeldonDeploymentTFServing extends SeldonTFServing implements Seldon
 
   @Override
   public IstioVirtualService getIstioVirtualService() {
-    IstioVirtualService service = new IstioVirtualService(getMetadata().getName(), getModelVersion());
+    IstioVirtualService service = new IstioVirtualService(
+        getId(), getMetadata().getName(), getModelVersion()
+    );
     service.getMetadata().putLabelsItem(MODEL_NAME_LABEL, getModelName());
     service.getMetadata().putLabelsItem(MODEL_ID_LABEL, getModelId());
     service.getMetadata().putLabelsItem(MODEL_VERSION_LABEL, String.valueOf(getModelVersion()));

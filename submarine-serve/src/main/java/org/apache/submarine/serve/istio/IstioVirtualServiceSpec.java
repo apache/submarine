@@ -19,30 +19,38 @@
 
 package org.apache.submarine.serve.istio;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 import org.apache.submarine.serve.utils.IstioConstants;
+import org.apache.submarine.server.k8s.utils.K8sUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class IstioVirtualServiceSpec {
+
   @SerializedName("hosts")
   private List<String> hosts = new ArrayList<>();
   @SerializedName("gateways")
   private List<String> gateways = new ArrayList<>();
   @SerializedName("http")
+  @JsonProperty("http")
   private List<IstioHTTPRoute> httpRoute = new ArrayList<>();
 
   public IstioVirtualServiceSpec() {
   }
 
-  public IstioVirtualServiceSpec(String modelName, Integer modelVersion) {
+  public IstioVirtualServiceSpec(Long id, String modelResourceName, Integer modelVersion) {
     hosts.add(IstioConstants.DEFAULT_INGRESS_HOST);
     gateways.add(IstioConstants.DEFAULT_GATEWAY);
-    IstioHTTPDestination destination = new IstioHTTPDestination(
-        modelName + "-" + IstioConstants.DEFAULT_NAMESPACE);
-    IstioHTTPMatchRequest matchRequest = new IstioHTTPMatchRequest("/" + modelName
-        + "/" + String.valueOf(modelVersion) + "/");
+    // model resource name is service name
+    IstioHTTPDestination destination = new IstioHTTPDestination(modelResourceName);
+    IstioHTTPMatchRequest matchRequest = new IstioHTTPMatchRequest(
+        // use namespace to avoid multi tenant problems
+        // use model_version_id replaced model_name to avoid illegal characters and other problems
+        // use model_version as the identification of the model
+        String.format("/seldon/%s/%s/%s/", K8sUtils.getNamespace(), id, modelVersion)
+    );
     IstioHTTPRoute httpRoute = new IstioHTTPRoute();
     httpRoute.addHTTPDestination(destination);
     httpRoute.addHTTPMatchRequest(matchRequest);
@@ -67,5 +75,21 @@ public class IstioVirtualServiceSpec {
 
   public void setHTTPRoute(IstioHTTPRoute istioHTTPRoute) {
     this.httpRoute.add(istioHTTPRoute);
+  }
+
+  public void setHosts(List<String> hosts) {
+    this.hosts = hosts;
+  }
+
+  public void setGateways(List<String> gateways) {
+    this.gateways = gateways;
+  }
+
+  public List<IstioHTTPRoute> getHttpRoute() {
+    return httpRoute;
+  }
+
+  public void setHttpRoute(List<IstioHTTPRoute> httpRoute) {
+    this.httpRoute = httpRoute;
   }
 }

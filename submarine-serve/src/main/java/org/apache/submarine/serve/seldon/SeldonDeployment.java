@@ -45,6 +45,9 @@ public class SeldonDeployment implements KubernetesObject {
   private SeldonDeploymentSpec spec;
 
   @JsonIgnore
+  private Long id;
+
+  @JsonIgnore
   private String resourceName;
 
   @JsonIgnore
@@ -58,6 +61,14 @@ public class SeldonDeployment implements KubernetesObject {
 
   @JsonIgnore
   private String modelId;
+
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public String getResourceName() {
     return resourceName;
@@ -102,8 +113,9 @@ public class SeldonDeployment implements KubernetesObject {
   public SeldonDeployment() {
   }
 
-  public SeldonDeployment(String resourceName, String modelName, Integer modelVersion,
+  public SeldonDeployment(Long id, String resourceName, String modelName, Integer modelVersion,
                           String modelId, String modelURI) {
+    this.id = id;
     this.resourceName = resourceName;
     this.modelName = modelName;
     this.modelVersion = modelVersion;

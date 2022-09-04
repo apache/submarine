@@ -31,6 +31,7 @@ public class SeldonDeploymentFactory {
    * Get SeldonDeployment by model type
    */
   public static SeldonResource getSeldonDeployment(ServeSpec spec) throws SubmarineRuntimeException {
+    Long id = spec.getId();
     String modelId = spec.getModelId();
     String resourceName = String.format("submarine-model-%s-%s", spec.getId(), modelId);
 
@@ -41,10 +42,10 @@ public class SeldonDeploymentFactory {
 
     switch (modelType) {
       case "tensorflow":
-        return new SeldonDeploymentTFServing(resourceName, modelName, modelVersion,
+        return new SeldonDeploymentTFServing(id, resourceName, modelName, modelVersion,
             modelId, modelURI);
       case "pytorch":
-        return new SeldonDeploymentPytorchServing(resourceName, modelName, modelVersion,
+        return new SeldonDeploymentPytorchServing(id, resourceName, modelName, modelVersion,
             modelId, modelURI);
       case "xgboost":// TODO(cdmikechen): Will fix https://issues.apache.org/jira/browse/SUBMARINE-1316
       default:

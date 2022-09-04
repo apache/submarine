@@ -30,9 +30,9 @@ public class SeldonPytorchServing extends SeldonDeployment {
   public SeldonPytorchServing() {
   }
 
-  public SeldonPytorchServing(String resourceName, String modelName, Integer modelVersion,
+  public SeldonPytorchServing(Long id, String resourceName, String modelName, Integer modelVersion,
                               String modelId, String modelURI) {
-    super(resourceName, modelName, modelVersion, modelId, modelURI);
+    super(id, resourceName, modelName, modelVersion, modelId, modelURI);
 
     setSpec(new SeldonDeploymentSpec(SeldonConstants.KFSERVING_PROTOCOL));
 

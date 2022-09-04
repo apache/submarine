@@ -18,6 +18,7 @@
  */
 package org.apache.submarine.serve.seldon;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
 public class SeldonPredictor {
@@ -29,6 +30,7 @@ public class SeldonPredictor {
   private Integer replicas = 1;
 
   @SerializedName("graph")
+  @JsonProperty("graph")
   private SeldonGraph seldonGraph = new SeldonGraph();
 
   @SerializedName("annotations")

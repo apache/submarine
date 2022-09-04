@@ -42,9 +42,9 @@ public class SeldonDeploymentPytorchServing extends SeldonPytorchServing impleme
   public SeldonDeploymentPytorchServing() {
   }
 
-  public SeldonDeploymentPytorchServing(String resourceName, String modelName, Integer modelVersion,
+  public SeldonDeploymentPytorchServing(Long id, String resourceName, String modelName, Integer modelVersion,
                                         String modelId, String modelURI) {
-    super(resourceName, modelName, modelVersion, modelId, modelURI);
+    super(id, resourceName, modelName, modelVersion, modelId, modelURI);
   }
 
   @Override
@@ -93,7 +93,9 @@ public class SeldonDeploymentPytorchServing extends SeldonPytorchServing impleme
 
   @Override
   public IstioVirtualService getIstioVirtualService() {
-    IstioVirtualService service = new IstioVirtualService(getMetadata().getName(), getModelVersion());
+    IstioVirtualService service = new IstioVirtualService(
+        getId(), getMetadata().getName(), getModelVersion()
+    );
     service.getMetadata().putLabelsItem(MODEL_NAME_LABEL, getModelName());
     service.getMetadata().putLabelsItem(MODEL_ID_LABEL, getModelId());
     service.getMetadata().putLabelsItem(MODEL_VERSION_LABEL, String.valueOf(getModelVersion()));

@@ -33,6 +33,9 @@ public class SeldonGraph {
   @SerializedName("envSecretRefName")
   private String envSecretRefName = SeldonConstants.ENV_SECRET_REF_NAME;
 
+  public SeldonGraph() {
+  }
+
   public String getName() {
     return name;
   }
