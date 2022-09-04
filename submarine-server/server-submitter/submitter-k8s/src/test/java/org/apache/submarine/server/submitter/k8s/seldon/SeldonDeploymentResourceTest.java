@@ -55,14 +55,14 @@ public class SeldonDeploymentResourceTest {
         sdtfs.getMetadata().getName());
     Assert.assertEquals(1, sdtfs.getSpec().getPredictors().size());
     Assert.assertEquals("seldon", sdtfs.getSpec().getProtocol());
-    Assert.assertEquals("test-model", sdtfs.getSpec().getPredictors().get(0).getSeldonGraph().getName());
+    Assert.assertEquals("version-1", sdtfs.getSpec().getPredictors().get(0).getSeldonGraph().getName());
   }
 
   @Test
   public void testSeldonDeploymentPytorchServingResourceToYaml() {
     ServeSpec serveSpec = new ServeSpec();
     serveSpec.setId(2L);
-    serveSpec.setModelVersion(1);
+    serveSpec.setModelVersion(5);
     serveSpec.setModelName("test-model");
     serveSpec.setModelType("pytorch");
     serveSpec.setModelId("5f0a43f251064fa8979660eddf04ede8");
@@ -80,7 +80,7 @@ public class SeldonDeploymentResourceTest {
             sdpts.getMetadata().getName());
     Assert.assertEquals("kfserving", sdpts.getSpec().getProtocol());
     Assert.assertEquals(1, sdpts.getSpec().getPredictors().size());
-    Assert.assertEquals("test-model", sdpts.getSpec().getPredictors().get(0).getSeldonGraph().getName());
+    Assert.assertEquals("version-5", sdpts.getSpec().getPredictors().get(0).getSeldonGraph().getName());
   }
 
 }
