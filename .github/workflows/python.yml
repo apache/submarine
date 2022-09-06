@@ -35,7 +35,7 @@ jobs:
       - name: Check python sdk code style
         run: ./dev-support/style-check/python/lint.sh
 
-  unit-tf15:
+  unit-tf1:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -55,7 +55,7 @@ jobs:
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
           pip check
       - name: Install pysubmarine with tf1 and pytorch
-        run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf1,pytorch]
+        run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
       - name: Run unit test
         run: pytest --cov=submarine -vs -m "not e2e"
 
