@@ -28,7 +28,7 @@ setup(
     packages=find_packages(exclude=["tests", "tests.*"]),
     package_data={"submarine.cli.config": ["cli_config.yaml"]},
     install_requires=[
-        "numpy==1.19.2",
+        "numpy>=1.16.0",  # The minimum required version for Tensorflow 1.15
         "pandas",
         "sqlalchemy>=1.4.0",
         "sqlparse",
