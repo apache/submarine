@@ -35,7 +35,7 @@ jobs:
       - name: Check python sdk code style
         run: ./dev-support/style-check/python/lint.sh
 
-  unit-tf1:
+  unit-tf15:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -53,6 +53,7 @@ jobs:
         run: |
           pip install --upgrade pip setuptools wheel
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+          pip check
       - name: Install pysubmarine with tf1 and pytorch
         run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf1,pytorch]
       - name: Run unit test
@@ -76,6 +77,7 @@ jobs:
         run: |
           pip install --upgrade pip setuptools wheel
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+          pip check
       - name: Install pysubmarine with tf1 and pytorch
         run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
       - name: Run unit test
