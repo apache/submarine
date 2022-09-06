@@ -30,3 +30,4 @@ python_dateutil >= 2.5.3
 setuptools >= 21.0.0
 urllib3 >= 1.15.1
 freezegun==1.1.0
+numpy==1.8.2  # scikit-learn requires NumPy >= 1.8.2.
