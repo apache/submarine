@@ -34,8 +34,6 @@ jobs:
           pip install -r ./dev-support/style-check/python/mypy-requirements.txt
       - name: List installed packages
         run: pip list
-      - name: Verify installed packages have compatible dependencies
-        run: pip check
       - name: Check python sdk code style
         run: ./dev-support/style-check/python/lint.sh
 
@@ -125,7 +123,7 @@ jobs:
           echo "current-context:" $(kubectl config current-context)
           echo "environment-kubeconfig:" ${KUBECONFIG}
       # Cache maven (for submarine server)
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
