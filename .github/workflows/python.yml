@@ -32,6 +32,10 @@ jobs:
           pip install --upgrade pip
           pip install -r ./dev-support/style-check/python/lint-requirements.txt
           pip install -r ./dev-support/style-check/python/mypy-requirements.txt
+      - name: List installed packages
+        run: pip list
+      - name: Verify installed packages have compatible dependencies
+        run: pip check
       - name: Check python sdk code style
         run: ./dev-support/style-check/python/lint.sh
 
@@ -54,7 +58,9 @@ jobs:
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
       - name: Install pysubmarine with tf1 and pytorch
         run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
-      - name: Run pip check
+      - name: List installed packages
+        run: pip list
+      - name: Verify installed packages have compatible dependencies
         run: pip check
       - name: Run unit test
         run: pytest --cov=submarine -vs -m "not e2e"
@@ -78,7 +84,9 @@ jobs:
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
       - name: Install pysubmarine with tf1 and pytorch
         run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
-      - name: Run pip check
+      - name: List installed packages
+        run: pip list
+      - name: Verify installed packages have compatible dependencies
         run: pip check
       - name: Run unit test
         run: pytest --cov=submarine -vs -m "not e2e"
@@ -144,7 +152,9 @@ jobs:
           pip install --no-cache-dir tensorflow-addons
           pip install --no-cache-dir tf_slim
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-      - name: Run pip check
+      - name: List installed packages
+        run: pip list
+      - name: Verify installed packages have compatible dependencies
         run: pip check
       - name: Set CLI config for e2e pytest
         run: |
