@@ -25,3 +25,7 @@ skip-string-normalization = true
 
 [tool.mypy]
 plugins = "sqlalchemy.ext.mypy.plugin"
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers"
+markers = ["e2e"]
