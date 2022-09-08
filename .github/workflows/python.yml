@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           pip install --upgrade pip
@@ -40,8 +40,7 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        python-version: ['3.6', '3.7']
-        tf-version: ['1.15.5']
+        python-version: ['3.7']
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -53,9 +52,10 @@ jobs:
         run: |
           pip install --upgrade pip setuptools wheel
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-          pip check
       - name: Install pysubmarine with tf1 and pytorch
         run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
+      - name: Run pip check
+        run: pip check
       - name: Run unit test
         run: pytest --cov=submarine -vs -m "not e2e"
 
@@ -65,7 +65,6 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.7', '3.8', '3.9', '3.10']
-        tf-version: ['2.8.2', '2.9.1']
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -77,17 +76,22 @@ jobs:
         run: |
           pip install --upgrade pip setuptools wheel
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-          pip check
       - name: Install pysubmarine with tf1 and pytorch
         run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+      - name: Run pip check
+        run: pip check
       - name: Run unit test
         run: pytest --cov=submarine -vs -m "not e2e"
 
   integration:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
+      fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 50
       - name: Set up JDK 1.8
@@ -130,9 +134,9 @@ jobs:
       - name: Start submarine
         run: bash ./.github/scripts/start-submarine.sh
       - name: Setup python environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.7
+          python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
           pip install --upgrade pip
@@ -140,6 +144,8 @@ jobs:
           pip install --no-cache-dir tensorflow-addons
           pip install --no-cache-dir tf_slim
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+      - name: Run pip check
+        run: pip check
       - name: Set CLI config for e2e pytest
         run: |
           submarine config set connection.hostname localhost
