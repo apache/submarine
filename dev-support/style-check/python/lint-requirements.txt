@@ -17,4 +17,6 @@ black[jupyter]
 # https://github.com/psf/black/issues/3111
 click==8.1.3
 flake8
+# flake8 5.0.4 requires importlib-metadata<4.3,>=1.1.0; python_version < "3.8", but you have importlib-metadata 4.12.0 which is incompatible.
+importlib-metadata<4.3,>=1.1.0; python_version < "3.8"
 isort
