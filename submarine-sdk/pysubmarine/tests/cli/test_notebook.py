@@ -48,9 +48,7 @@ def test_all_notbook_e2e():
 
     notebook_meta = NotebookMeta(name="test-nb", namespace="default", owner_id=mock_user_id)
     environment = EnvironmentSpec(name="notebook-env")
-    notebook_podSpec = NotebookPodSpec(
-        env_vars={"TEST_ENV": "test"}, resources="cpu=1,memory=1.0Gi"
-    )
+    notebook_podSpec = NotebookPodSpec(env_vars={"TEST_ENV": "test"}, resources="cpu=1,memory=1.0Gi")
     notebookSpec = NotebookSpec(meta=notebook_meta, environment=environment, spec=notebook_podSpec)
 
     notebook = submarine_client.create_notebook(notebookSpec)

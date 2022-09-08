@@ -37,9 +37,7 @@ MLFLOW_S3_ENDPOINT_URL = "http://localhost:9000"
 class TestTracking(unittest.TestCase):
     def setUp(self):
         environ["JOB_ID"] = JOB_ID
-        submarine.set_db_uri(
-            "mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test"
-        )
+        submarine.set_db_uri("mysql+pymysql://submarine_test:password_test@localhost:3306/submarine_test")
         self.db_uri = submarine.get_db_uri()
         self.client = SubmarineClient(
             db_uri=self.db_uri,

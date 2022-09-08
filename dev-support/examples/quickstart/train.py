@@ -71,9 +71,7 @@ def main():
     with strategy.scope():
         ds_train = make_datasets_unbatched().batch(BATCH_SIZE).repeat()
         options = tf.data.Options()
-        options.experimental_distribute.auto_shard_policy = (
-            tf.data.experimental.AutoShardPolicy.DATA
-        )
+        options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.DATA
         ds_train = ds_train.with_options(options)
         # Model building/compiling need to be within `strategy.scope()`.
         multi_worker_model = build_and_compile_cnn_model()

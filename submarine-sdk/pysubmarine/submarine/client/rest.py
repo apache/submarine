@@ -248,9 +248,7 @@ class RESTClientObject:
 
         return r
 
-    def GET(
-        self, url, headers=None, query_params=None, _preload_content=True, _request_timeout=None
-    ):
+    def GET(self, url, headers=None, query_params=None, _preload_content=True, _request_timeout=None):
         return self.request(
             "GET",
             url,
@@ -260,9 +258,7 @@ class RESTClientObject:
             query_params=query_params,
         )
 
-    def HEAD(
-        self, url, headers=None, query_params=None, _preload_content=True, _request_timeout=None
-    ):
+    def HEAD(self, url, headers=None, query_params=None, _preload_content=True, _request_timeout=None):
         return self.request(
             "HEAD",
             url,

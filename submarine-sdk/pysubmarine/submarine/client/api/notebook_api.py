@@ -91,15 +91,11 @@ class NotebookApi:
         local_var_params = locals()
 
         all_params = ["notebook_spec"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method create_notebook" % key
-                )
+                raise ApiTypeError("Got an unexpected keyword argument '%s' to method create_notebook" % key)
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -199,15 +195,11 @@ class NotebookApi:
         local_var_params = locals()
 
         all_params = ["id"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method delete_notebook" % key
-                )
+                raise ApiTypeError("Got an unexpected keyword argument '%s' to method delete_notebook" % key)
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
@@ -309,15 +301,11 @@ class NotebookApi:
         local_var_params = locals()
 
         all_params = ["id"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method get_notebook" % key
-                )
+                raise ApiTypeError("Got an unexpected keyword argument '%s' to method get_notebook" % key)
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
@@ -419,15 +407,11 @@ class NotebookApi:
         local_var_params = locals()
 
         all_params = ["id"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method list_notebooks" % key
-                )
+                raise ApiTypeError("Got an unexpected keyword argument '%s' to method list_notebooks" % key)
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -522,9 +506,7 @@ class NotebookApi:
         local_var_params = locals()
 
         all_params = []
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:

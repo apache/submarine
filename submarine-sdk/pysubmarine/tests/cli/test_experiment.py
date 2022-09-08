@@ -86,9 +86,7 @@ def test_all_experiment_e2e():
     assert experiment["spec"]["environment"]["image"] in result.output
 
     # test delete experiment (blocking mode)
-    result = runner.invoke(
-        main.entry_point, ["delete", "experiment", experiment["experimentId"], "--wait"]
-    )
+    result = runner.invoke(main.entry_point, ["delete", "experiment", experiment["experimentId"], "--wait"])
     assert "Experiment(id = {} ) deleted".format(experiment["experimentId"]) in result.output
 
     # test get experiment fail after delete

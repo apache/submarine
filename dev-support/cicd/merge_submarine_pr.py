@@ -119,17 +119,15 @@ def merge_pr(pr_num, target_ref):
         msg = "Okay, please fix any conflicts and 'git add' conflicting files... Finished?"
         continue_maybe(msg)
         had_conflicts = True
-    commit_authors = run_cmd(
-        ["git", "log", "HEAD..%s" % pr_branch_name, "--pretty=format:%an <%ae>"]
-    ).split("\n")
-    commit_date = run_cmd(["git", "log", "%s" % pr_branch_name, "-1", "--pretty=format:%ad"])
-    distinct_authors = sorted(
-        set(commit_authors), key=lambda x: commit_authors.count(x), reverse=True
+    commit_authors = run_cmd(["git", "log", "HEAD..%s" % pr_branch_name, "--pretty=format:%an <%ae>"]).split(
+        "\n"
     )
+    commit_date = run_cmd(["git", "log", "%s" % pr_branch_name, "-1", "--pretty=format:%ad"])
+    distinct_authors = sorted(set(commit_authors), key=lambda x: commit_authors.count(x), reverse=True)
     primary_author = distinct_authors[0]
-    commits = run_cmd(
-        ["git", "log", "HEAD..%s" % pr_branch_name, "--pretty=format:%h [%an] %s"]
-    ).split("\n\n")
+    commits = run_cmd(["git", "log", "HEAD..%s" % pr_branch_name, "--pretty=format:%h [%an] %s"]).split(
+        "\n\n"
+    )
 
     merge_message_flags = []
 
@@ -166,8 +164,7 @@ def merge_pr(pr_num, target_ref):
         merge_message_flags += ["-m", c]
 
     run_cmd(
-        ["git", "commit", '--author="%s"' % primary_author, '--date="%s"' % commit_date]
-        + merge_message_flags
+        ["git", "commit", '--author="%s"' % primary_author, '--date="%s"' % commit_date] + merge_message_flags
     )
 
     continue_maybe(f"Merge complete (local ref {target_branch_name}). Push to {PUSH_REMOTE_NAME}?")
@@ -229,9 +226,7 @@ def fix_version_from_branch(branch, versions) -> List:
 
 
 def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
-    asf_jira = jira.client.JIRA(
-        {"server": JIRA_API_BASE}, basic_auth=(JIRA_USERNAME, JIRA_PASSWORD)
-    )
+    asf_jira = jira.client.JIRA({"server": JIRA_API_BASE}, basic_auth=(JIRA_USERNAME, JIRA_PASSWORD))
 
     jira_id = input("Enter a JIRA id [%s]: " % default_jira_id)
     if jira_id == "":
@@ -290,9 +285,7 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
     jira_fix_versions = list(map(lambda v: get_version_json(v), fix_versions))
 
     resolve = list(filter(lambda a: a["name"] == "Resolve Issue", asf_jira.transitions(jira_id)))[0]
-    asf_jira.transition_issue(
-        jira_id, resolve["id"], fixVersions=jira_fix_versions, comment=comment
-    )
+    asf_jira.transition_issue(jira_id, resolve["id"], fixVersions=jira_fix_versions, comment=comment)
 
     print(f"Successfully resolved {jira_id} with fixVersions={fix_versions}!")
 
@@ -334,8 +327,7 @@ if merge_commits:
 
     print("Pull request %s has already been merged, assuming you want to backport" % pr_num)
     commit_is_downloaded = (
-        run_cmd(["git", "rev-parse", "--quiet", "--verify", "%s^{commit}" % merge_hash]).strip()
-        != ""
+        run_cmd(["git", "rev-parse", "--quiet", "--verify", "%s^{commit}" % merge_hash]).strip() != ""
     )
     if not commit_is_downloaded:
         fail("Couldn't find any merge commit for #%s, you may need to update HEAD." % pr_num)
@@ -345,10 +337,7 @@ if merge_commits:
     sys.exit(0)
 
 if not bool(pr["mergeable"]):
-    msg = (
-        "Pull request %s is not mergeable in its current form.\n" % pr_num
-        + "Continue? (experts only!)"
-    )
+    msg = "Pull request %s is not mergeable in its current form.\n" % pr_num + "Continue? (experts only!)"
     continue_maybe(msg)
 
 print("\n=== Pull Request #%s ===" % pr_num)

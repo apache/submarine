@@ -41,9 +41,7 @@ def batch_norm_layer(x, train_phase, scope_bn, batch_norm_decay):
         reuse=True,
         scope=scope_bn,
     )
-    return tf.cond(
-        pred=tf.cast(train_phase, tf.bool), true_fn=lambda: bn_train, false_fn=lambda: bn_infer
-    )
+    return tf.cond(pred=tf.cast(train_phase, tf.bool), true_fn=lambda: bn_train, false_fn=lambda: bn_infer)
 
 
 def dnn_layer(
@@ -132,9 +130,7 @@ def linear_layer(features, feature_size, field_size, l2_reg=0, **kwargs):
         )
 
         feat_weights = tf.nn.embedding_lookup(params=linear_weight, ids=feat_ids)
-        linear_out = (
-            tf.reduce_sum(input_tensor=tf.multiply(feat_weights, feat_vals), axis=1) + linear_bias
-        )
+        linear_out = tf.reduce_sum(input_tensor=tf.multiply(feat_weights, feat_vals), axis=1) + linear_bias
     return linear_out
 
 

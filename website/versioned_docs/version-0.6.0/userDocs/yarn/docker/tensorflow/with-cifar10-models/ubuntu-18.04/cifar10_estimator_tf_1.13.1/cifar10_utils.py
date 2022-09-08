@@ -111,9 +111,7 @@ class ExamplesPerSecondHook(session_run_hook.SessionRunHook):
                 self._step_train_time += elapsed_time
                 self._total_steps += elapsed_steps
 
-                average_examples_per_sec = self._batch_size * (
-                    self._total_steps / self._step_train_time
-                )
+                average_examples_per_sec = self._batch_size * (self._total_steps / self._step_train_time)
                 current_examples_per_sec = steps_per_sec * self._batch_size
                 # Average examples/sec followed by current examples/sec
                 logging.info(

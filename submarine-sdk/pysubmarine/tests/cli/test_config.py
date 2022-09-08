@@ -49,9 +49,7 @@ def test_get_set_experiment():
     _config = loadConfig()
     assert f"connection.hostname={_config.connection.hostname}" in result.output
 
-    result = runner.invoke(
-        main.entry_point, ["config", "set", "connection.hostname", mock_hostname]
-    )
+    result = runner.invoke(main.entry_point, ["config", "set", "connection.hostname", mock_hostname])
     assert result.exit_code == 0
 
     result = runner.invoke(main.entry_point, ["config", "get", "connection.hostname"])

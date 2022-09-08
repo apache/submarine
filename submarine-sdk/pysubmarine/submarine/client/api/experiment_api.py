@@ -91,9 +91,7 @@ class ExperimentApi:
         local_var_params = locals()
 
         all_params = ["experiment_spec"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
@@ -199,9 +197,7 @@ class ExperimentApi:
         local_var_params = locals()
 
         all_params = ["id"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
@@ -309,15 +305,11 @@ class ExperimentApi:
         local_var_params = locals()
 
         all_params = ["id"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method get_experiment" % key
-                )
+                raise ApiTypeError("Got an unexpected keyword argument '%s' to method get_experiment" % key)
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
@@ -419,24 +411,18 @@ class ExperimentApi:
         local_var_params = locals()
 
         all_params = ["id"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method get_log" % key
-                )
+                raise ApiTypeError("Got an unexpected keyword argument '%s' to method get_log" % key)
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
         if self.api_client.client_side_validation and (
             "id" not in local_var_params or local_var_params["id"] is None  # noqa: E501
         ):  # noqa: E501
-            raise ApiValueError(
-                "Missing the required parameter `id` when calling `get_log`"
-            )  # noqa: E501
+            raise ApiValueError("Missing the required parameter `id` when calling `get_log`")  # noqa: E501
 
         collection_formats = {}
 
@@ -527,9 +513,7 @@ class ExperimentApi:
         local_var_params = locals()
 
         all_params = []
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
@@ -628,15 +612,11 @@ class ExperimentApi:
         local_var_params = locals()
 
         all_params = ["status"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method list_experiments" % key
-                )
+                raise ApiTypeError("Got an unexpected keyword argument '%s' to method list_experiments" % key)
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -731,15 +711,11 @@ class ExperimentApi:
         local_var_params = locals()
 
         all_params = ["status"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method list_log" % key
-                )
+                raise ApiTypeError("Got an unexpected keyword argument '%s' to method list_log" % key)
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -836,15 +812,11 @@ class ExperimentApi:
         local_var_params = locals()
 
         all_params = ["id", "experiment_spec"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method patch_experiment" % key
-                )
+                raise ApiTypeError("Got an unexpected keyword argument '%s' to method patch_experiment" % key)
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
@@ -953,9 +925,7 @@ class ExperimentApi:
         local_var_params = locals()
 
         all_params = []
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
@@ -1054,15 +1024,12 @@ class ExperimentApi:
         local_var_params = locals()
 
         all_params = ["name", "experiment_template_submit"]
-        all_params.extend(
-            ["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"]
-        )
+        all_params.extend(["async_req", "_return_http_data_only", "_preload_content", "_request_timeout"])
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
                 raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method submit_experiment_template"
-                    % key
+                    "Got an unexpected keyword argument '%s' to method submit_experiment_template" % key
                 )
             local_var_params[key] = val
         del local_var_params["kwargs"]

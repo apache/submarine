@@ -48,7 +48,8 @@ setup(
         "tf": ["tensorflow==1.15.5", "numpy>=1.16.0,<1.19.0", "protobuf>=3.6.1,<3.20"],
         "tf2": [
             "tensorflow==2.9.1",
-            "numpy>=1.20" "keras==2.9.0",
+            "numpy>=1.20",
+            "keras==2.9.0",
             "protobuf>=3.9.2,<3.20",
             "tensorflow-addons==0.17.0",
             "tensorflow-estimator>=2.9.0rc0,<2.10.0",

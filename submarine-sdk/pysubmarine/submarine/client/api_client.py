@@ -78,9 +78,7 @@ class ApiClient:
     }
     _pool = None
 
-    def __init__(
-        self, configuration=None, header_name=None, header_value=None, cookie=None, pool_threads=1
-    ):
+    def __init__(self, configuration=None, header_name=None, header_value=None, cookie=None, pool_threads=1):
         if configuration is None:
             configuration = Configuration.get_default_copy()
         self.configuration = configuration
@@ -690,9 +688,7 @@ class ApiClient:
         except ImportError:
             return string
         except ValueError:
-            raise rest.ApiException(
-                status=0, reason=f"Failed to parse `{string}` as datetime object"
-            )
+            raise rest.ApiException(status=0, reason=f"Failed to parse `{string}` as datetime object")
 
     def __deserialize_model(self, data, klass):
         """Deserializes list or dict to model.

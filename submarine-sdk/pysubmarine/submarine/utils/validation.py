@@ -40,7 +40,8 @@ _UNSUPPORTED_DB_TYPE_MSG = "Supported database engines are {%s}" % ", ".join(DAT
 def bad_path_message(name: str):
     return (
         "Names may be treated as files in certain cases, and must not resolve to other names"
-        " when treated as such. This name would resolve to '%s'" % posixpath.normpath(name)
+        " when treated as such. This name would resolve to '%s'"
+        % posixpath.normpath(name)
     )
 
 
@@ -93,14 +94,14 @@ def validate_metric(key, value, timestamp, step) -> None:
 
     if not isinstance(timestamp, datetime):
         raise SubmarineException(
-            "Got invalid timestamp %s for metric '%s' (value=%s). Timestamp must be a datetime "
-            "object." % (timestamp, key, value),
+            "Got invalid timestamp %s for metric '%s' (value=%s). Timestamp must be a datetime object."
+            % (timestamp, key, value),
         )
 
     if not isinstance(step, numbers.Number):
         raise SubmarineException(
-            "Got invalid step %s for metric '%s' (value=%s). Step must be a valid long "
-            "(64-bit integer)." % (step, key, value),
+            "Got invalid step %s for metric '%s' (value=%s). Step must be a valid long (64-bit integer)."
+            % (step, key, value),
         )
 
 
