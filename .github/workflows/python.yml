@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
-          pip install --upgrade pip
+          pip install --upgrade pip setuptools wheel
           pip install -r ./dev-support/style-check/python/lint-requirements.txt
           pip install -r ./dev-support/style-check/python/mypy-requirements.txt
       - name: List installed packages
