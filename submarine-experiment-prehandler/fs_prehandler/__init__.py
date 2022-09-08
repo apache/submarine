@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from fs_prehandler.fs_prehandler import FsPreHandler
+from fs_prehandler.fs_prehandler import FsPreHandler  # noqa: F401
