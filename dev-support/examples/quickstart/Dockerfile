@@ -17,8 +17,8 @@ FROM python:3.7
 MAINTAINER Apache Software Foundation <dev@submarine.apache.org>
 
 ADD ./tmp/submarine-sdk /opt/
-# install submarine-sdk locally
-RUN pip install /opt/pysubmarine/.[tf2]
-RUN pip install tensorflow_datasets packaging
+# install submarine-sdk locally with no cache
+RUN pip install --no-cache-dir /opt/pysubmarine/.[tf2]
+RUN pip install --no-cache-dir tensorflow_datasets packaging
 
 ADD ./train.py /opt/
