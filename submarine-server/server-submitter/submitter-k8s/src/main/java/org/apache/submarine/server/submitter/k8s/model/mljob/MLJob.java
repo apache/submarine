@@ -22,10 +22,17 @@ package org.apache.submarine.server.submitter.k8s.model.mljob;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.SerializedName;
 import io.kubernetes.client.common.KubernetesObject;
+import io.kubernetes.client.openapi.models.V1Container;
+import io.kubernetes.client.openapi.models.V1EnvVar;
 import io.kubernetes.client.openapi.models.V1JobStatus;
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1ObjectMetaBuilder;
 import io.kubernetes.client.openapi.models.V1Status;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.submarine.commons.utils.exception.SubmarineRuntimeException;
 import org.apache.submarine.server.api.common.CustomResourceType;
 import org.apache.submarine.server.api.experiment.Experiment;
@@ -205,6 +212,89 @@ public abstract class MLJob implements KubernetesObject, K8sResource<Experiment>
     this.experimentId = experimentId;
   }
 
+  public V1Container getExperimentHandlerContainer(ExperimentSpec spec) {
+    Map<String, String> handlerSpec = spec.getExperimentHandlerSpec();
+    if (checkExperimentHanderArg(handlerSpec)) {
+      V1Container initContainer = new V1Container();
+      initContainer.setImage("apache/submarine:experiment-prehandler-0.8.0-SNAPSHOT");
+      initContainer.setName("ExperimentHandler");
+      List<V1EnvVar> envVar = new ArrayList<>();
+      
+      V1EnvVar hdfsVar = new V1EnvVar();
+      hdfsVar.setName("HDFS_HOST");
+      hdfsVar.setValue(handlerSpec.get("hdfsHost"));
+      envVar.add(hdfsVar);
+      
+      V1EnvVar hdfsHostVar = new V1EnvVar();
+      hdfsHostVar.setName("HDFS_HOST");
+      hdfsHostVar.setValue(handlerSpec.get("HDFS_HOST"));
+      envVar.add(hdfsHostVar);
+      
+      V1EnvVar hdfsPortVar = new V1EnvVar();
+      hdfsVar.setName("HDFS_PORT");
+      hdfsVar.setValue(handlerSpec.get("HDFS_PORT"));
+      envVar.add(hdfsPortVar);
+      
+      V1EnvVar hdfsSourceVar = new V1EnvVar();
+      hdfsVar.setName("HDFS_SOURCE");
+      hdfsVar.setValue(handlerSpec.get("HDFS_SOURCE"));
+      envVar.add(hdfsSourceVar);
+      
+      V1EnvVar hdfsEnableKerberosVar = new V1EnvVar();
+      hdfsVar.setName("ENABLE_KERBEROS");
+      hdfsVar.setValue(handlerSpec.get("ENABLE_KERBEROS"));
+      envVar.add(hdfsEnableKerberosVar);
+      
+      V1EnvVar destMinIOHostVar = new V1EnvVar();
+      hdfsVar.setName("DEST_MINIO_HOST");
+      hdfsVar.setValue("submarine-minio-service");
+      envVar.add(destMinIOHostVar);
+      
+      V1EnvVar destMinIOPortVar = new V1EnvVar();
+      hdfsVar.setName("DEST_MINIO_PORT");
+      hdfsVar.setValue("9000");
+      envVar.add(destMinIOPortVar);
+      
+      V1EnvVar minIOAccessKeyVar = new V1EnvVar();
+      hdfsVar.setName("MINIO_ACCESS_KEY");
+      hdfsVar.setValue("submarine_minio");
+      envVar.add(minIOAccessKeyVar);
+      
+      V1EnvVar minIOSecretKeyVar = new V1EnvVar();
+      hdfsVar.setName("MINIO_SECRET_KEY");
+      hdfsVar.setValue("submarine_minio");
+      envVar.add(minIOSecretKeyVar);
+      
+      V1EnvVar fileSystemTypeVar = new V1EnvVar();
+      hdfsVar.setName("FILE_SYSTEM_TYPE");
+      hdfsVar.setValue(handlerSpec.get("FILE_SYSTEM_TYPE"));
+      envVar.add(fileSystemTypeVar);
+      
+      V1EnvVar experimentIdVar = new V1EnvVar();
+      hdfsVar.setName("EXPERIMENT_ID");
+      hdfsVar.setValue(this.experimentId);
+      envVar.add(experimentIdVar);
+      
+      initContainer.setEnv(envVar);
+      return initContainer;
+    }
+    return null;
+  }
+  
+  private boolean checkExperimentHanderArg(Map<String, String> handlerSpec) {
+    if (handlerSpec == null)
+      return false;
+    if (handlerSpec.get("FILE_SYSTEM_TYPE") == null)
+      return false;
+    else if (handlerSpec.get("FILE_SYSTEM_TYPE") == "HDFS") {
+      if ((handlerSpec.get("HDFS_HOST") == null) || (handlerSpec.get("HDFS_PORT") == null) ||
+          (handlerSpec.get("HDFS_SOURCE") == null) || (handlerSpec.get("ENABLE_KERBEROS") == null)) {
+        return false;
+      }
+    }
+    return true;
+  }
+  
   /**
    * Convert MLJob object to return Experiment object
    */

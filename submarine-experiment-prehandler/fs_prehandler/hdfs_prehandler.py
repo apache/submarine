@@ -25,29 +25,29 @@ class HDFSPreHandler(FsPreHandler):
         self.hdfs_host=os.environ['HDFS_HOST']
         self.hdfs_port=os.environ['HDFS_PORT']
         self.hdfs_source=os.environ['HDFS_SOURCE']
-        self.dest_path=os.environ['DEST_PATH']
         self.enable_kerberos=os.environ['ENABLE_KERBEROS']
         self.hadoop_home=os.environ['HADOOP_HOME']
         self.dest_minio_host=os.environ['DEST_MINIO_HOST']
         self.dest_minio_port=os.environ['DEST_MINIO_PORT']
         self.minio_access_key=os.environ['MINIO_ACCESS_KEY']
         self.minio_secert_key=os.environ['MINIO_SECRET_KEY']
+        self.experiment_id=os.environ['EXPERIMENT_ID']
 
         logging.info('HDFS_HOST:%s' % self.hdfs_host)
         logging.info('HDFS_PORT:%s' % self.hdfs_port)
         logging.info('HDFS_SOURCE:%s' % self.hdfs_source)
         logging.info('MINIO_DEST_HOST:%s' % self.dest_minio_host)
         logging.info('MINIO_DEST_PORT:%s' % self.dest_minio_port)
-        logging.info('DEST_PATH:%s' % self.dest_path)
         logging.info('ENABLE_KERBEROS:%s' % self.enable_kerberos)
+        logging.info('EXPERIMENT_ID:%s' % self.experiment_id)
 
     def process(self):
-
+        dest_path = 'submarine/experiment/' + self.experiment_id
         p = subprocess.run([self.hadoop_home+'/bin/hadoop', 'distcp'
             , '-Dfs.s3a.endpoint=http://' + self.dest_minio_host + ':' + self.dest_minio_port + '/'
             , '-Dfs.s3a.access.key=' + self.minio_access_key
             , '-Dfs.s3a.secret.key=' + self.minio_secert_key
+            , '-Dfs.s3a.path.style.access=true'
             , 'hdfs://'+self.hdfs_host + ':' + self.hdfs_port + '/' + self.hdfs_source
-            , 's3a://'+self.dest_minio_host + ':' + self.dest_minio_port + '/'+self.dest_path])
-        print(p)
-        logging.info('fetch data from hdfs://%s:%d/%s to %s complete' % (self.hdfs_host, self.hdfs_port, self.hdfs_source, self.dest_path))
+            , 's3a://' + dest_path])
+        logging.info('fetch data from hdfs://%s:%s/%s to %s complete' % (self.hdfs_host, self.hdfs_port, self.hdfs_source, dest_path))

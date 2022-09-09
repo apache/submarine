@@ -23,6 +23,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.kubernetes.client.custom.V1Patch;
 import io.kubernetes.client.openapi.ApiException;
+import io.kubernetes.client.openapi.models.V1Container;
 import io.kubernetes.client.openapi.models.V1PodTemplateSpec;
 import io.kubernetes.client.openapi.models.V1Status;
 import io.kubernetes.client.util.generic.options.CreateOptions;
@@ -68,6 +69,17 @@ public class TFJob extends MLJob {
     setGroup(CRD_TF_GROUP_V1);
     // set spec
     setSpec(parseTFJobSpec(experimentSpec));
+    
+    V1Container initContainer = this.getExperimentHandlerContainer(experimentSpec);
+    if (initContainer != null) {
+      Map<TFJobReplicaType, MLJobReplicaSpec> replicaSet = this.getSpec().getReplicaSpecs();
+      if (replicaSet.keySet().contains(TFJobReplicaType.Ps)) {
+        MLJobReplicaSpec psSpec = replicaSet.get(TFJobReplicaType.Ps);
+        psSpec.getTemplate().getSpec().addInitContainersItem(initContainer);
+      } else {
+        throw new InvalidSpecException("PreHandler only support TFJob with PS for now");
+      }
+    }
   }
 
   @Override
