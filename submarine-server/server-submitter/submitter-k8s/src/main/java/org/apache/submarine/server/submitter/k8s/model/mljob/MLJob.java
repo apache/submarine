@@ -30,6 +30,7 @@ import io.kubernetes.client.openapi.models.V1ObjectMetaBuilder;
 import io.kubernetes.client.openapi.models.V1Status;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -214,16 +215,12 @@ public abstract class MLJob implements KubernetesObject, K8sResource<Experiment>
 
   public V1Container getExperimentHandlerContainer(ExperimentSpec spec) {
     Map<String, String> handlerSpec = spec.getExperimentHandlerSpec();
+    
     if (checkExperimentHanderArg(handlerSpec)) {
       V1Container initContainer = new V1Container();
       initContainer.setImage("apache/submarine:experiment-prehandler-0.8.0-SNAPSHOT");
-      initContainer.setName("ExperimentHandler");
+      initContainer.setName("ExperimentHandler".toLowerCase());
       List<V1EnvVar> envVar = new ArrayList<>();
-      
-      V1EnvVar hdfsVar = new V1EnvVar();
-      hdfsVar.setName("HDFS_HOST");
-      hdfsVar.setValue(handlerSpec.get("hdfsHost"));
-      envVar.add(hdfsVar);
       
       V1EnvVar hdfsHostVar = new V1EnvVar();
       hdfsHostVar.setName("HDFS_HOST");
@@ -231,48 +228,48 @@ public abstract class MLJob implements KubernetesObject, K8sResource<Experiment>
       envVar.add(hdfsHostVar);
       
       V1EnvVar hdfsPortVar = new V1EnvVar();
-      hdfsVar.setName("HDFS_PORT");
-      hdfsVar.setValue(handlerSpec.get("HDFS_PORT"));
+      hdfsPortVar.setName("HDFS_PORT");
+      hdfsPortVar.setValue(handlerSpec.get("HDFS_PORT"));
       envVar.add(hdfsPortVar);
       
       V1EnvVar hdfsSourceVar = new V1EnvVar();
-      hdfsVar.setName("HDFS_SOURCE");
-      hdfsVar.setValue(handlerSpec.get("HDFS_SOURCE"));
+      hdfsSourceVar.setName("HDFS_SOURCE");
+      hdfsSourceVar.setValue(handlerSpec.get("HDFS_SOURCE"));
       envVar.add(hdfsSourceVar);
       
       V1EnvVar hdfsEnableKerberosVar = new V1EnvVar();
-      hdfsVar.setName("ENABLE_KERBEROS");
-      hdfsVar.setValue(handlerSpec.get("ENABLE_KERBEROS"));
+      hdfsEnableKerberosVar.setName("ENABLE_KERBEROS");
+      hdfsEnableKerberosVar.setValue(handlerSpec.get("ENABLE_KERBEROS"));
       envVar.add(hdfsEnableKerberosVar);
       
       V1EnvVar destMinIOHostVar = new V1EnvVar();
-      hdfsVar.setName("DEST_MINIO_HOST");
-      hdfsVar.setValue("submarine-minio-service");
+      destMinIOHostVar.setName("DEST_MINIO_HOST");
+      destMinIOHostVar.setValue("submarine-minio-service");
       envVar.add(destMinIOHostVar);
       
       V1EnvVar destMinIOPortVar = new V1EnvVar();
-      hdfsVar.setName("DEST_MINIO_PORT");
-      hdfsVar.setValue("9000");
+      destMinIOPortVar.setName("DEST_MINIO_PORT");
+      destMinIOPortVar.setValue("9000");
       envVar.add(destMinIOPortVar);
       
       V1EnvVar minIOAccessKeyVar = new V1EnvVar();
-      hdfsVar.setName("MINIO_ACCESS_KEY");
-      hdfsVar.setValue("submarine_minio");
+      minIOAccessKeyVar.setName("MINIO_ACCESS_KEY");
+      minIOAccessKeyVar.setValue("submarine_minio");
       envVar.add(minIOAccessKeyVar);
       
       V1EnvVar minIOSecretKeyVar = new V1EnvVar();
-      hdfsVar.setName("MINIO_SECRET_KEY");
-      hdfsVar.setValue("submarine_minio");
+      minIOSecretKeyVar.setName("MINIO_SECRET_KEY");
+      minIOSecretKeyVar.setValue("submarine_minio");
       envVar.add(minIOSecretKeyVar);
       
       V1EnvVar fileSystemTypeVar = new V1EnvVar();
-      hdfsVar.setName("FILE_SYSTEM_TYPE");
-      hdfsVar.setValue(handlerSpec.get("FILE_SYSTEM_TYPE"));
+      fileSystemTypeVar.setName("FILE_SYSTEM_TYPE");
+      fileSystemTypeVar.setValue(handlerSpec.get("FILE_SYSTEM_TYPE"));
       envVar.add(fileSystemTypeVar);
       
       V1EnvVar experimentIdVar = new V1EnvVar();
-      hdfsVar.setName("EXPERIMENT_ID");
-      hdfsVar.setValue(this.experimentId);
+      experimentIdVar.setName("EXPERIMENT_ID");
+      experimentIdVar.setValue(this.experimentId);
       envVar.add(experimentIdVar);
       
       initContainer.setEnv(envVar);
