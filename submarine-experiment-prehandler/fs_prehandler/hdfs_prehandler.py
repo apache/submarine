@@ -50,4 +50,8 @@ class HDFSPreHandler(FsPreHandler):
             , '-Dfs.s3a.path.style.access=true'
             , 'hdfs://'+self.hdfs_host + ':' + self.hdfs_port + '/' + self.hdfs_source
             , 's3a://' + dest_path])
-        logging.info('fetch data from hdfs://%s:%s/%s to %s complete' % (self.hdfs_host, self.hdfs_port, self.hdfs_source, dest_path))
+
+        if p.returncode == 0:
+            logging.info('fetch data from hdfs://%s:%s/%s to %s complete' % (self.hdfs_host, self.hdfs_port, self.hdfs_source, dest_path))
+        else:
+            raise Exception( 'error occured when fetching data from hdfs://%s:%s/%s to %s' % (self.hdfs_host, self.hdfs_port, self.hdfs_source, dest_path) )
