@@ -15,6 +15,7 @@
 """
 The code is mainly referenced from:
 https://docs.seldon.io/projects/seldon-core/en/latest/examples/tfserving_mnist.html
+https://www.tensorflow.org/tfx/tutorials/serving/rest_simple
 And the parameters of the predictions call have been modified.
 """
 
