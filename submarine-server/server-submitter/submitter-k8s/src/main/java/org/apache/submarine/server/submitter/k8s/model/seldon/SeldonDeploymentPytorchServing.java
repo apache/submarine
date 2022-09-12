@@ -26,6 +26,7 @@ import org.apache.submarine.serve.seldon.pytorch.SeldonPytorchServing;
 import org.apache.submarine.serve.seldon.SeldonDeployment;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
 import org.apache.submarine.server.submitter.k8s.model.istio.IstioVirtualService;
+import org.apache.submarine.server.submitter.k8s.util.OwnerReferenceUtils;
 import org.apache.submarine.server.submitter.k8s.util.YamlUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +46,8 @@ public class SeldonDeploymentPytorchServing extends SeldonPytorchServing impleme
   public SeldonDeploymentPytorchServing(Long id, String resourceName, String modelName, Integer modelVersion,
                                         String modelId, String modelURI) {
     super(id, resourceName, modelName, modelVersion, modelId, modelURI);
+    // add owner reference so that we can automatically delete it when submarine CR has been deleted
+    getMetadata().setOwnerReferences(OwnerReferenceUtils.getOwnerReference());
   }
 
   @Override
