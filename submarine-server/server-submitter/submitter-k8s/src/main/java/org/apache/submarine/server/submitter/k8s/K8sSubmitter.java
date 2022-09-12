@@ -48,7 +48,6 @@ import org.apache.submarine.server.api.experiment.MlflowInfo;
 import org.apache.submarine.server.api.experiment.TensorboardInfo;
 import org.apache.submarine.server.api.model.ServeSpec;
 import org.apache.submarine.server.api.notebook.Notebook;
-import org.apache.submarine.server.api.spec.ExperimentMeta;
 import org.apache.submarine.server.api.spec.ExperimentSpec;
 import org.apache.submarine.server.api.spec.NotebookSpec;
 import org.apache.submarine.server.submitter.k8s.client.K8sClient;
@@ -76,10 +75,6 @@ import org.slf4j.LoggerFactory;
 public class K8sSubmitter implements Submitter {
 
   private static final Logger LOG = LoggerFactory.getLogger(K8sSubmitter.class);
-
-  private static final String TF_JOB_SELECTOR_KEY = "tf-job-name=";
-  private static final String PYTORCH_JOB_SELECTOR_KEY = "pytorch-job-name=";
-  private static final String XGBoost_JOB_SELECTOR_KEY = "xgboost-job-name=";
 
   // Add an exception Consumer, handle the problem that delete operation does not have the resource
   public static final Function<ApiException, Object> API_EXCEPTION_404_CONSUMER = e -> {
@@ -261,7 +256,7 @@ public class K8sSubmitter implements Submitter {
     experimentLog.setExperimentId(id);
     try {
       ListOptions listOptions = new ListOptions();
-      listOptions.setLabelSelector(getJobLabelSelector(spec));
+      listOptions.setLabelSelector(MLJobFactory.getJobLabelSelector(spec));
       final V1PodList podList = k8sClient.getPodClient().list(getServerNamespace(), listOptions)
               .throwsApiException().getObject();
       for (V1Pod pod : podList.getItems()) {
@@ -280,7 +275,7 @@ public class K8sSubmitter implements Submitter {
     experimentLog.setExperimentId(id);
     try {
       ListOptions listOptions = new ListOptions();
-      listOptions.setLabelSelector(getJobLabelSelector(spec));
+      listOptions.setLabelSelector(MLJobFactory.getJobLabelSelector(spec));
       final V1PodList podList = k8sClient.getPodClient().list(getServerNamespace(), listOptions)
               .throwsApiException().getObject();
       for (V1Pod pod : podList.getItems()) {
@@ -397,7 +392,7 @@ public class K8sSubmitter implements Submitter {
             spec.getMeta().getName(), agentPod.getMetadata().getName()));
     dependents.add(agentPod);
 
-    // delete resources 
+    // delete resources
     return deleteResourcesTransaction(notebookCR, dependents.toArray(dependents.toArray(new K8sResource[0])));
   }
 
@@ -436,19 +431,6 @@ public class K8sSubmitter implements Submitter {
     IstioVirtualService istioVirtualService = seldonDeployment.getIstioVirtualService();
     // Delete SeldonResource and IstioVirtualService with transaction
     deleteResourcesTransaction(seldonDeployment, istioVirtualService);
-  }
-
-  private String getJobLabelSelector(ExperimentSpec experimentSpec) {
-    if (experimentSpec.getMeta().getFramework()
-            .equalsIgnoreCase(ExperimentMeta.SupportedMLFramework.TENSORFLOW.getName())) {
-      return TF_JOB_SELECTOR_KEY + experimentSpec.getMeta().getExperimentId();
-    } else if (experimentSpec.getMeta().getFramework()
-            .equalsIgnoreCase(ExperimentMeta.SupportedMLFramework.XGBOOST.getName())) {
-      return XGBoost_JOB_SELECTOR_KEY + experimentSpec.getMeta().getExperimentId();
-    }
-    else {
-      return PYTORCH_JOB_SELECTOR_KEY + experimentSpec.getMeta().getExperimentId();
-    }
   }
 
 }
