@@ -42,6 +42,34 @@ def rest_request_ambassador(endpoint="localhost:32080", prefix="/", arr=None):
     from tensorflow.python.ops.numpy_ops import np_config
 
     np_config.enable_numpy_behavior()
+    """
+    you can use `saved_model_cli` command to show model inputs and outputs:
+    saved_model_cli show --dir ${model_path} --all
+
+    MetaGraphDef with tag-set: 'serve' contains the following SignatureDefs:
+
+    signature_def['__saved_model_init_op']:
+      The given SavedModel SignatureDef contains the following input(s):
+      The given SavedModel SignatureDef contains the following output(s):
+        outputs['__saved_model_init_op'] tensor_info:
+            dtype: DT_INVALID
+            shape: unknown_rank
+            name: NoOp
+      Method name is:
+
+    signature_def['serving_default']:
+      The given SavedModel SignatureDef contains the following input(s):
+        inputs['conv2d_input'] tensor_info:
+            dtype: DT_FLOAT
+            shape: (-1, 28, 28, 1)
+            name: serving_default_conv2d_input:0
+      The given SavedModel SignatureDef contains the following output(s):
+        outputs['dense_1'] tensor_info:
+            dtype: DT_FLOAT
+            shape: (-1, 10)
+            name: StatefulPartitionedCall:0
+      Method name is: tensorflow/serving/predict
+    """
     payload = {
         "data": {
             "names": ["image_predictions"],
