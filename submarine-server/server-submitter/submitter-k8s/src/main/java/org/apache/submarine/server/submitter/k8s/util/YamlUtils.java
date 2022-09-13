@@ -50,11 +50,25 @@ public class YamlUtils {
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
   }
 
+  /**
+   * Pretty yaml
+   */
   public static String toPrettyYaml(Object pojoObject) {
     try {
       return YAML_MAPPER.writeValueAsString(pojoObject);
     } catch (JsonProcessingException ex) {
       throw new RuntimeException("Parse yaml failed! " + pojoObject.getClass().getName(), ex);
+    }
+  }
+
+  /**
+   * Read yaml to class
+   */
+  public static <T> T readValue(String content, Class<T> tClass) {
+    try {
+      return YAML_MAPPER.readValue(content, tClass);
+    } catch (JsonProcessingException ex) {
+      throw new RuntimeException("Read yaml failed! " + tClass.getName(), ex);
     }
   }
 }

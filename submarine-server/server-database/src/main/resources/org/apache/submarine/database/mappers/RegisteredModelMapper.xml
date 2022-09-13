@@ -25,6 +25,7 @@
   </resultMap>
 
   <resultMap id="resultMap" type="org.apache.submarine.server.database.model.entities.RegisteredModelEntity">
+    <result column="model_id" property="modelId" />
     <result column="name" property="name" />
     <result column="creation_time" property="creationTime" />
     <result column="last_updated_time" property="lastUpdatedTime" />
@@ -32,6 +33,7 @@
   </resultMap>
 
   <resultMap id="resultMapWithTag" type="org.apache.submarine.server.database.model.entities.RegisteredModelEntity">
+    <result column="model_id" property="modelId" />
     <result column="name" property="name" />
     <result column="creation_time" property="creationTime" />
     <result column="last_updated_time" property="lastUpdatedTime" />
@@ -42,7 +44,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    name, creation_time, last_updated_time, description
+    model_id, name, creation_time, last_updated_time, description
   </sql>
 
   <select id="select" parameterType="java.lang.String" resultMap="resultMap">
@@ -63,7 +65,7 @@
     from registered_model rm left join registered_model_tag tag on tag.name = rm.name
   </select>
 
-  <insert id="insert" parameterType="org.apache.submarine.server.database.model.entities.RegisteredModelEntity">
+  <insert id="insert" parameterType="org.apache.submarine.server.database.model.entities.RegisteredModelEntity" useGeneratedKeys="true" keyProperty="id">
     insert into registered_model (name, creation_time, last_updated_time, description)
     values (#{name,jdbcType=VARCHAR}, NOW(3), NOW(3), #{description,jdbcType=VARCHAR});
     <if test="tags != null and !tags.isEmpty()">

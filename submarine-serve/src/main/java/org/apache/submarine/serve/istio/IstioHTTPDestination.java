@@ -22,22 +22,31 @@ import com.google.gson.annotations.SerializedName;
 import org.apache.submarine.serve.utils.IstioConstants;
 
 public class IstioHTTPDestination {
+
   @SerializedName("destination")
   private IstioDestination destination;
+
+  public IstioHTTPDestination() {
+  }
 
   public IstioHTTPDestination(String host) {
     this.destination = new IstioDestination(host);
   }
+
   public IstioHTTPDestination(String host, Integer port) {
     this.destination = new IstioDestination(host, port);
   }
 
   public static class IstioDestination {
+
     @SerializedName("host")
     private String host;
 
     @SerializedName("port")
     private IstioPort port;
+
+    public IstioDestination() {
+    }
 
     public IstioDestination(String host) {
       this(host, IstioConstants.DEFAULT_SERVE_POD_PORT);
@@ -47,14 +56,50 @@ public class IstioHTTPDestination {
       this.host = host;
       this.port = new IstioPort(port);
     }
+
+    public String getHost() {
+      return host;
+    }
+
+    public void setHost(String host) {
+      this.host = host;
+    }
+
+    public IstioPort getPort() {
+      return port;
+    }
+
+    public void setPort(IstioPort port) {
+      this.port = port;
+    }
   }
 
   public static class IstioPort {
+
     @SerializedName("number")
     private Integer number;
+
+    public IstioPort() {
+    }
 
     public IstioPort(Integer port) {
       this.number = port;
     }
+
+    public Integer getNumber() {
+      return number;
+    }
+
+    public void setNumber(Integer number) {
+      this.number = number;
+    }
+  }
+
+  public IstioDestination getDestination() {
+    return destination;
+  }
+
+  public void setDestination(IstioDestination destination) {
+    this.destination = destination;
   }
 }

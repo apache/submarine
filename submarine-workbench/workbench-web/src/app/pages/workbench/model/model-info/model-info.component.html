@@ -85,7 +85,7 @@
             nzTitle="Are you sure you want to serve the model?"
             nzCancelText="Cancel"
             nzOkText="Ok"
-            (nzOnConfirm)="onCreateServe(data.version)"
+            (nzOnConfirm)="onCreateServe(data.modelVersionId, data.version)"
             (click)="preventEvent($event)"
           >
             <i id="icon-createServe{{ i }}" nz-icon nzType="play-circle" nzTheme="fill" class="model-info-icon" ></i>
@@ -99,7 +99,7 @@
             nzTitle="Are you sure you want to delete the model serve?"
             nzCancelText="Cancel"
             nzOkText="Ok"
-            (nzOnConfirm)="onDeleteServe(data.version)"
+            (nzOnConfirm)="onDeleteServe(data.modelVersionId, data.version)"
             (click)="preventEvent($event)"
           >
             <i id="icon-pause{{ i }}" nz-icon nzType="pause-circle" nzTheme="fill" class="model-info-icon"></i>
@@ -115,7 +115,7 @@
             nzCancelText="Cancel"
             nzOkText="Ok"
             (nzOnConfirm)="onDeleteModelVersion(data.version)"
-            (click)="preventEvent($event)"  
+            (click)="preventEvent($event)"
           >
             <i nz-icon nzType="delete" nzTheme="fill" class="model-info-icon" ></i>
           </a>

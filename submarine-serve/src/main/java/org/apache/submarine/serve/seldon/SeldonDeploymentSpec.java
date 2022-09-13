@@ -16,51 +16,46 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.serve.istio;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+package org.apache.submarine.serve.seldon;
+
 import com.google.gson.annotations.SerializedName;
 
-public class IstioHTTPMatchRequest {
+import java.util.ArrayList;
+import java.util.List;
 
-  @SerializedName("uri")
-  @JsonProperty("uri")
-  private IstioPrefix prefix;
+public class SeldonDeploymentSpec {
 
-  public IstioHTTPMatchRequest() {
+  public SeldonDeploymentSpec() {
   }
 
-  public IstioHTTPMatchRequest(String prefix) {
-    this.prefix = new IstioPrefix(prefix);
+  public SeldonDeploymentSpec(String protocol) {
+    setProtocol(protocol);
   }
 
-  public static class IstioPrefix {
+  @SerializedName("protocol")
+  private String protocol;
 
-    @SerializedName("prefix")
-    @JsonProperty("prefix")
-    private String path;
+  @SerializedName("predictors")
+  private List<SeldonPredictor> predictors = new ArrayList<>();
 
-    public IstioPrefix() {
-    }
-
-    public IstioPrefix(String path){
-      this.path = path;
-    }
-
-    public String getPath() {
-      return path;
-    }
-
-    public void setPath(String path) {
-      this.path = path;
-    }
+  public String getProtocol() {
+    return protocol;
   }
 
-  public IstioPrefix getPrefix() {
-    return prefix;
+  public void setProtocol(String protocol) {
+    this.protocol = protocol;
   }
 
-  public void setPrefix(IstioPrefix prefix) {
-    this.prefix = prefix;
+  public void addPredictor(SeldonPredictor seldonPredictor) {
+    predictors.add(seldonPredictor);
+  }
+
+  public List<SeldonPredictor> getPredictors() {
+    return predictors;
+  }
+
+  public void setPredictors(List<SeldonPredictor> predictors) {
+    this.predictors = predictors;
   }
 }

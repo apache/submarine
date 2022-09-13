@@ -33,6 +33,9 @@ public class SeldonGraph {
   @SerializedName("envSecretRefName")
   private String envSecretRefName = SeldonConstants.ENV_SECRET_REF_NAME;
 
+  public SeldonGraph() {
+  }
+
   public String getName() {
     return name;
   }
@@ -55,5 +58,21 @@ public class SeldonGraph {
 
   public void setModelUri(String modelUri) {
     this.modelUri = modelUri;
+  }
+
+  public String getStorageInitializerImage() {
+    return storageInitializerImage;
+  }
+
+  public void setStorageInitializerImage(String storageInitializerImage) {
+    this.storageInitializerImage = storageInitializerImage;
+  }
+
+  public String getEnvSecretRefName() {
+    return envSecretRefName;
+  }
+
+  public void setEnvSecretRefName(String envSecretRefName) {
+    this.envSecretRefName = envSecretRefName;
   }
 }

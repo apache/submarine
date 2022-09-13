@@ -37,15 +37,15 @@ export class ModelInfoComponent implements OnInit {
   isModelInfoLoading: boolean = true;
   isModelVersionsLoading: boolean = true;
   modelName: string;
-  selectedModelInfo: ModelInfo; 
+  selectedModelInfo: ModelInfo;
   modelVersions: ModelVersionInfo[];
   humanizedCreationTime: string;
   humanizedLastUpdatedTime: string;
 
   constructor(
-    private router: Router, 
-    private route: ActivatedRoute, 
-    private modelVersionService: ModelVersionService, 
+    private router: Router,
+    private route: ActivatedRoute,
+    private modelVersionService: ModelVersionService,
     private modelService: ModelService,
     private modelServeService: ModelServeService,
     private nzMessageService: NzMessageService,
@@ -78,10 +78,12 @@ export class ModelInfoComponent implements OnInit {
     );
   }
 
-  onCreateServe = (version: number) => {
-    this.modelServeService.createServe(this.modelName, version).subscribe({
+  onCreateServe = (id: number, version: number) => {
+    this.modelServeService.createServe(id, this.modelName, version).subscribe({
       next: (result) => {
         this.nzMessageService.success(`The model serve with name: ${this.modelName} and version: ${version} is created.`)
+        // refresh model version status after created serve
+        this.fetchModelAllVersions();
       },
       error: (msg) => {
         this.nzMessageService.error(`${msg}, please try again`, {
@@ -91,10 +93,12 @@ export class ModelInfoComponent implements OnInit {
     })
   }
 
-  onDeleteServe = (version: number) => {
-    this.modelServeService.deleteServe(this.modelName, version).subscribe({
+  onDeleteServe = (id: number, version: number) => {
+    this.modelServeService.deleteServe(id, this.modelName, version).subscribe({
       next: (result) => {
         this.nzMessageService.success(`The model serve with name: ${this.modelName} and version: ${version} is deleted.`)
+        // refresh model version status after deleted serve
+        this.fetchModelAllVersions();
       },
       error: (msg) => {
         this.nzMessageService.error(`${msg}, please try again`, {

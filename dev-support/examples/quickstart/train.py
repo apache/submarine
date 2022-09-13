@@ -86,6 +86,8 @@ def main():
             submarine.log_metric("accuracy", logs["accuracy"], epoch)
 
     multi_worker_model.fit(ds_train, epochs=10, steps_per_epoch=70, callbacks=[MyCallback()])
+    # save model
+    submarine.save_model(multi_worker_model, "tensorflow")
 
 
 if __name__ == "__main__":

@@ -16,51 +16,40 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.submarine.serve.istio;
+
+package org.apache.submarine.serve.seldon;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.SerializedName;
 
-public class IstioHTTPMatchRequest {
+/**
+ * SeldonDeployment.spec.predictors[*].annotations
+ */
+public class PredictorAnnotations {
 
-  @SerializedName("uri")
-  @JsonProperty("uri")
-  private IstioPrefix prefix;
+  /**
+   * <a href="https://docs.seldon.io/projects/seldon-core/en/latest/graph/custom_svc_name.html">
+   *   Model with Custom Service Name Annotations
+   * </a>
+   */
+  @SerializedName("seldon.io/svc-name")
+  @JsonProperty("seldon.io/svc-name")
+  private String serviceName;
 
-  public IstioHTTPMatchRequest() {
+  /**
+   * Get predictor annotations with custom service name
+   */
+  public static PredictorAnnotations service(String serviceName) {
+    return new PredictorAnnotations()
+            .setServiceName(serviceName);
   }
 
-  public IstioHTTPMatchRequest(String prefix) {
-    this.prefix = new IstioPrefix(prefix);
+  public String getServiceName() {
+    return serviceName;
   }
 
-  public static class IstioPrefix {
-
-    @SerializedName("prefix")
-    @JsonProperty("prefix")
-    private String path;
-
-    public IstioPrefix() {
-    }
-
-    public IstioPrefix(String path){
-      this.path = path;
-    }
-
-    public String getPath() {
-      return path;
-    }
-
-    public void setPath(String path) {
-      this.path = path;
-    }
-  }
-
-  public IstioPrefix getPrefix() {
-    return prefix;
-  }
-
-  public void setPrefix(IstioPrefix prefix) {
-    this.prefix = prefix;
+  public PredictorAnnotations setServiceName(String serviceName) {
+    this.serviceName = serviceName;
+    return this;
   }
 }

@@ -23,6 +23,9 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class ModelVersionEntity {
+
+  private Long modelVersionId;
+
   private String name;
 
   private Integer version;
@@ -46,6 +49,14 @@ public class ModelVersionEntity {
   private String description;
 
   private List<String> tags;
+
+  public Long getModelVersionId() {
+    return modelVersionId;
+  }
+
+  public void setModelVersionId(Long modelVersionId) {
+    this.modelVersionId = modelVersionId;
+  }
 
   public String getName() {
     return name;
@@ -147,7 +158,8 @@ public class ModelVersionEntity {
 
   public String toString() {
     return "ModelVersionEntity{" +
-      "name='" + name + '\'' +
+      "modelVersionId=" + modelVersionId +
+      ", name='" + name + '\'' +
       ", version='" + version + '\'' +
       ", id='" + id + '\'' +
       ", userId='" + userId + '\'' +
