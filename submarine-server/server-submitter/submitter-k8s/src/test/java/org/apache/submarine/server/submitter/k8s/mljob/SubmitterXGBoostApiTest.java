@@ -75,8 +75,7 @@ public class SubmitterXGBoostApiTest {
                 .withStatus(200)
                 .withBody(getResourceFileContent("client/experiment/xgboost-read-api.json")));
     // save pod agent url
-    String agentName = AgentPod.getNormalizePodName(
-          CustomResourceType.XGBoost, "xgboost-dist-mnist", experimentId);
+    String agentName = AgentPod.getNormalizePodName(CustomResourceType.XGBoost, experimentId);
     MappingBuilder agentPost = post(urlPathEqualTo("/api/v1/namespaces/default/pods"))
         .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
         .willReturn(

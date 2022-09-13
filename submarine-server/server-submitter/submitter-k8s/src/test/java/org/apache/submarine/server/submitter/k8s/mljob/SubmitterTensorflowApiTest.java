@@ -75,8 +75,7 @@ public class SubmitterTensorflowApiTest {
                 .withStatus(200)
                 .withBody(getResourceFileContent("client/experiment/tf-read-api.json")));
     // save pod agent url
-    String agentName = AgentPod.getNormalizePodName(
-        CustomResourceType.TFJob, "tensorflow-dist-mnist", experimentId);
+    String agentName = AgentPod.getNormalizePodName(CustomResourceType.TFJob, experimentId);
     MappingBuilder agentPost = post(urlPathEqualTo("/api/v1/namespaces/default/pods"))
         .withHeader("Content-Type", new EqualToPattern("application/json; charset=UTF-8"))
         .willReturn(
