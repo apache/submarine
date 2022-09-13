@@ -28,6 +28,11 @@ spec:
     image: "apache/submarine:database-0.8.0-SNAPSHOT" # overwrite the image when development
     storageSize: "1Gi"
     mysqlRootPasswordSecret: "root-pass-secret"
+  virtualservice:
+    hosts: 
+    #   - "yourHost" # configure when using custom hosts
+    gateways:
+    #   - "yourNamespace/submarine-gateway" # configure when installing Helm in a different namespace
   tensorboard:
     enabled: true
     storageSize: "10Gi"

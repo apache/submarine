@@ -39,6 +39,22 @@ func (r *SubmarineReconciler) newSubmarineVirtualService(ctx context.Context, su
 		r.Log.Error(err, "ParseVirtualService")
 	}
 	virtualService.Namespace = submarine.Namespace
+
+	virtualserviceHosts := submarine.Spec.Virtualservice.Hosts
+	if virtualserviceHosts != nil {
+		// Use `Hosts` defined in submarine spec
+		virtualService.Spec.Hosts = virtualserviceHosts
+	} else {
+		// Use default `<namespace>.submarine`
+		virtualService.Spec.Hosts = append(virtualService.Spec.Hosts, submarine.Namespace+".submarine")
+	}
+
+	virtualserviceGateways := submarine.Spec.Virtualservice.Gateways
+	if virtualserviceGateways != nil {
+		// Use `Gateways` defined in submarine spec
+		virtualService.Spec.Gateways = virtualserviceGateways
+	}
+
 	err = controllerutil.SetControllerReference(submarine, virtualService, r.Scheme)
 	if err != nil {
 		r.Log.Error(err, "Set VirtualService ControllerReference")
