@@ -65,7 +65,7 @@ class ApiClient:
         to the API. More threads means more concurrent API requests.
     """
 
-    PRIMITIVE_TYPES = (float, bool, bytes, str, int)
+    PRIMITIVE_TYPES = (bool, bytes, float, int, str)
     NATIVE_TYPES_MAPPING = {
         "int": int,
         "long": int,

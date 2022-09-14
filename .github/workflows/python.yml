@@ -43,14 +43,18 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.7', '3.8', '3.9', '3.10']
-        tf-version: ['tf1', 'tf2']
+        tf-version: ['tf15', 'tf26', 'tf27', 'tf28', 'tf29']
         exclude:
           - python-version: '3.8'
-            tf-version: 'tf1'
+            tf-version: 'tf15'
           - python-version: '3.9'
-            tf-version: 'tf1'
+            tf-version: 'tf15'
           - python-version: '3.10'
-            tf-version: 'tf1'
+            tf-version: 'tf15'
+          - python-version: '3.10'
+            tf-version: 'tf26'
+          - python-version: '3.10'
+            tf-version: 'tf27'
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -62,12 +66,21 @@ jobs:
         run: |
           pip install --upgrade pip setuptools wheel
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-      - name: Install pysubmarine with tf1 and pytorch
-        if: ${{ matrix.tf-version == 'tf1' }}
+      - name: Install pysubmarine with tf1.5 and pytorch
+        if: ${{ matrix.tf-version == 'tf15' }}
         run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
-      - name: Install pysubmarine with tf2 and pytorch
-        if: ${{ matrix.tf-version == 'tf2' }}
-        run: pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+      - name: Install pysubmarine with tf2.6 and pytorch
+        if: ${{ matrix.tf-version == 'tf26' }}
+        run: pip install --no-cache-dir tensorflow==2.6.5 && pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+      - name: Install pysubmarine with tf2.7 and pytorch
+        if: ${{ matrix.tf-version == 'tf27' }}
+        run: pip install --no-cache-dir tensorflow==2.7.3 && pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+      - name: Install pysubmarine with tf2.8 and pytorch
+        if: ${{ matrix.tf-version == 'tf28' }}
+        run: pip install --no-cache-dir tensorflow==2.8.2 && pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+      - name: Install pysubmarine with tf2.9 and pytorch
+        if: ${{ matrix.tf-version == 'tf29' }}
+        run: pip install --no-cache-dir tensorflow==2.9.2 && pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
       - name: List installed packages
         run: pip list
       - name: Verify installed packages have compatible dependencies
@@ -81,14 +94,18 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.7', '3.8', '3.9', '3.10']
-        tf-version: ['tf1', 'tf2']
+        tf-version: ['tf15', 'tf26', 'tf27', 'tf28', 'tf29']
         exclude:
           - python-version: '3.8'
-            tf-version: 'tf1'
+            tf-version: 'tf15'
           - python-version: '3.9'
-            tf-version: 'tf1'
+            tf-version: 'tf15'
           - python-version: '3.10'
-            tf-version: 'tf1'
+            tf-version: 'tf15'
+          - python-version: '3.10'
+            tf-version: 'tf26'
+          - python-version: '3.10'
+            tf-version: 'tf27'
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -137,17 +154,35 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install tf1 dependencies
-        if: ${{ matrix.tf-version == 'tf1' }}
+      - name: Install tf1.5 dependencies
+        if: ${{ matrix.tf-version == 'tf15' }}
         run: |
           pip install --upgrade pip setuptools wheel
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
-      - name: Install tf2 dependencies
-        if: ${{ matrix.tf-version == 'tf2' }}
+      - name: Install tf2.6 dependencies
+        if: ${{ matrix.tf-version == 'tf26' }}
         run: |
           pip install --upgrade pip setuptools wheel
-          pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+          pip install --no-cache-dir tensorflow==2.6.5 && pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+          pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+      - name: Install tf2.7 dependencies
+        if: ${{ matrix.tf-version == 'tf27' }}
+        run: |
+          pip install --upgrade pip setuptools wheel
+          pip install --no-cache-dir tensorflow==2.7.3 && pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+          pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+      - name: Install tf2.8 dependencies
+        if: ${{ matrix.tf-version == 'tf28' }}
+        run: |
+          pip install --upgrade pip setuptools wheel
+          pip install --no-cache-dir tensorflow==2.8.2 && pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
+          pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
+      - name: Install tf2.9 dependencies
+        if: ${{ matrix.tf-version == 'tf29' }}
+        run: |
+          pip install --upgrade pip setuptools wheel
+          pip install --no-cache-dir tensorflow==2.9.2 && pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
       - name: List installed packages
         run: pip list
