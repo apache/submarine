@@ -97,8 +97,8 @@ class TestTracking(unittest.TestCase):
         input_arr = tensorflow.random.uniform((1, 5))
         model = LinearNNModel()
         model(input_arr)
-        self.client.save_model(model, "tensorflow", "name_1", REGISTERED_MODEL_NAME)
-        self.client.save_model(model, "tensorflow", "name_2", REGISTERED_MODEL_NAME)
+        self.client.save_model(model, "tensorflow", REGISTERED_MODEL_NAME)
+        self.client.save_model(model, "tensorflow", REGISTERED_MODEL_NAME)
         # Validate model_versions
         model_versions = self.model_registry.list_model_versions(REGISTERED_MODEL_NAME)
         assert len(model_versions) == 2
