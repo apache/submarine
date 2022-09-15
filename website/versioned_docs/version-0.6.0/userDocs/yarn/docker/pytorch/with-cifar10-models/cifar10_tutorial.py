@@ -71,12 +71,7 @@ We will do the following steps in order:
 
 Using ``torchvision``, it’s extremely easy to load CIFAR10.
 """
-import matplotlib.pyplot as plt
-import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 
@@ -88,16 +83,23 @@ transform = transforms.Compose(
     [transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
 )
 
-trainset = torchvision.datasets.CIFAR10(root="./data", train=True, download=True, transform=transform)
+trainset = torchvision.datasets.CIFAR10(
+    root="./data", train=True, download=True, transform=transform
+)
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=4, shuffle=True, num_workers=2)
 
-testset = torchvision.datasets.CIFAR10(root="./data", train=False, download=True, transform=transform)
+testset = torchvision.datasets.CIFAR10(
+    root="./data", train=False, download=True, transform=transform
+)
 testloader = torch.utils.data.DataLoader(testset, batch_size=4, shuffle=False, num_workers=2)
 
 classes = ("plane", "car", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck")
 
 ########################################################################
 # Let us show some of the training images, for fun.
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 # functions to show an image
 
@@ -124,10 +126,13 @@ print(" ".join("%5s" % classes[labels[j]] for j in range(4)))
 # Copy the neural network from the Neural Networks section before and modify it to
 # take 3-channel images (instead of 1-channel images as it was defined).
 
+import torch.nn as nn
+import torch.nn.functional as F
+
 
 class Net(nn.Module):
     def __init__(self):
-        super().__init__()
+        super(Net, self).__init__()
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
@@ -152,6 +157,8 @@ net = Net()
 # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # Let's use a Classification Cross-Entropy loss and SGD with momentum.
 
+import torch.optim as optim
+
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
@@ -164,6 +171,7 @@ optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 # network and optimize.
 
 for epoch in range(2):  # loop over the dataset multiple times
+
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
         # get the inputs
@@ -327,9 +335,9 @@ print(device)
 # -  `Discuss PyTorch on the Forums`_
 # -  `Chat with other users on Slack`_
 #
-# .. _Train a state-of-the-art ResNet network on imagenet: https://github.com/pytorch/examples/tree/master/imagenet  # noqa: E501
-# .. _Train a face generator using Generative Adversarial Networks: https://github.com/pytorch/examples/tree/master/dcgan  # noqa: E501
-# .. _Train a word-level language model using Recurrent LSTM networks: https://github.com/pytorch/examples/tree/master/word_language_model  # noqa: E501
+# .. _Train a state-of-the-art ResNet network on imagenet: https://github.com/pytorch/examples/tree/master/imagenet
+# .. _Train a face generator using Generative Adversarial Networks: https://github.com/pytorch/examples/tree/master/dcgan
+# .. _Train a word-level language model using Recurrent LSTM networks: https://github.com/pytorch/examples/tree/master/word_language_model
 # .. _More examples: https://github.com/pytorch/examples
 # .. _More tutorials: https://github.com/pytorch/tutorials
 # .. _Discuss PyTorch on the Forums: https://discuss.pytorch.org/

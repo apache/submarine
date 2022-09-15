@@ -14,6 +14,7 @@
 # ==============================================================================
 import collections
 
+import six
 import tensorflow as tf
 from tensorflow.contrib.learn.python.learn import run_config
 from tensorflow.core.framework import node_def_pb2
@@ -56,7 +57,7 @@ class RunConfig(tf.contrib.learn.RunConfig):
             ordered_state["_cluster_spec"] = collections.OrderedDict(
                 sorted(ordered_state["_cluster_spec"].as_dict().items(), key=lambda t: t[0])
             )
-        return ", ".join(f"{k}={v!r}" for (k, v) in ordered_state.items())
+        return ", ".join("%s=%r" % (k, v) for (k, v) in six.iteritems(ordered_state))
 
 
 class ExamplesPerSecondHook(session_run_hook.SessionRunHook):
@@ -111,7 +112,9 @@ class ExamplesPerSecondHook(session_run_hook.SessionRunHook):
                 self._step_train_time += elapsed_time
                 self._total_steps += elapsed_steps
 
-                average_examples_per_sec = self._batch_size * (self._total_steps / self._step_train_time)
+                average_examples_per_sec = self._batch_size * (
+                    self._total_steps / self._step_train_time
+                )
                 current_examples_per_sec = steps_per_sec * self._batch_size
                 # Average examples/sec followed by current examples/sec
                 logging.info(
@@ -126,12 +129,12 @@ class ExamplesPerSecondHook(session_run_hook.SessionRunHook):
 def local_device_setter(
     num_devices=1, ps_device_type="cpu", worker_device="/cpu:0", ps_ops=None, ps_strategy=None
 ):
-    if ps_ops is None:
+    if ps_ops == None:
         ps_ops = ["Variable", "VariableV2", "VarHandleOp"]
 
     if ps_strategy is None:
         ps_strategy = device_setter._RoundRobinStrategy(num_devices)
-    if not callable(ps_strategy):
+    if not six.callable(ps_strategy):
         raise TypeError("ps_strategy must be callable")
 
     def _local_device_chooser(op):
@@ -139,7 +142,9 @@ def local_device_setter(
 
         node_def = op if isinstance(op, node_def_pb2.NodeDef) else op.node_def
         if node_def.op in ps_ops:
-            ps_device_spec = pydev.DeviceSpec.from_string(f"/{ps_device_type}:{ps_strategy(op)}")
+            ps_device_spec = pydev.DeviceSpec.from_string(
+                "/{}:{}".format(ps_device_type, ps_strategy(op))
+            )
 
             ps_device_spec.merge_from(current_device)
             return ps_device_spec.to_string()
