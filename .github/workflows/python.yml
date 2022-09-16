@@ -92,8 +92,6 @@ jobs:
           pip install no-cache-dir 'tensorflow~=2.9.0'
       - name: List installed packages
         run: pip list
-      - name: Verify installed packages have compatible dependencies
-        run: pip check
       - name: Run unit test
         run: pytest --cov=submarine -vs -m "not e2e"
 
@@ -199,8 +197,6 @@ jobs:
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
       - name: List installed packages
         run: pip list
-      - name: Verify installed packages have compatible dependencies
-        run: pip check
       - name: Set CLI config for e2e pytest
         run: |
           submarine config set connection.hostname localhost
