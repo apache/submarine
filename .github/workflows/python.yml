@@ -71,7 +71,7 @@ jobs:
         run: |
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
       - name: Install pysubmarine with tf2 and pytorch
-        if: startsWith(matrix.version, '2.')
+        if: startsWith(matrix.tf-version, '2.')
         run: |
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
           pip install --no-cache-dir 'tensorflow~=${{ matrix.tf-version }}'
@@ -153,7 +153,7 @@ jobs:
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf,pytorch]
           pip install -r ./submarine-sdk/pysubmarine/github-actions/test-requirements.txt
       - name: Install tf2 dependencies
-        if: startsWith(matrix.version, '2.')
+        if: startsWith(matrix.tf-version, '2.')
         run: |
           pip install --upgrade pip setuptools wheel
           pip install --no-cache-dir -e ./submarine-sdk/pysubmarine/.[tf2,pytorch]
