@@ -104,10 +104,10 @@ def clean_up():
 
 # merge the requested PR and return the merge hash
 def merge_pr(pr_num, target_ref):
-    pr_branch_name = f"{BRANCH_PREFIX}_MERGE_PR_{pr_num}"
-    target_branch_name = f"{BRANCH_PREFIX}_MERGE_PR_{pr_num}_{target_ref.upper()}"
-    run_cmd(f"git fetch {PR_REMOTE_NAME} pull/{pr_num}/head:{pr_branch_name}")
-    run_cmd(f"git fetch {PUSH_REMOTE_NAME} {target_ref}:{target_branch_name}")
+    pr_branch_name = "{}_MERGE_PR_{}".format(BRANCH_PREFIX, pr_num)
+    target_branch_name = "{}_MERGE_PR_{}_{}".format(BRANCH_PREFIX, pr_num, target_ref.upper())
+    run_cmd("git fetch {} pull/{}/head:{}".format(PR_REMOTE_NAME, pr_num, pr_branch_name))
+    run_cmd("git fetch {} {}:{}".format(PUSH_REMOTE_NAME, target_ref, target_branch_name))
     run_cmd("git checkout %s" % target_branch_name)
 
     had_conflicts = False
@@ -145,20 +145,20 @@ def merge_pr(pr_num, target_ref):
     committer_email = run_cmd("git config --get user.email").strip()
     merge_message_flags += [
         "-m",
-        "\n" + f"Signed-off-by: {committer_name} <{committer_email}>",
+        "\n" + "Signed-off-by: {} <{}>".format(committer_name, committer_email),
     ]
 
     if had_conflicts:
-        message = (
-            "This patch had conflicts when merged, resolved by\nCommitter:"
-            f" {committer_name} <{committer_email}>"
+        message = "This patch had conflicts when merged, resolved by\nCommitter: {} <{}>".format(
+            committer_name,
+            committer_email,
         )
         merge_message_flags += ["-m", message]
 
     # The string "Closes #%s" string is required for GitHub to correctly close the PR
     merge_message_flags += [
         "-m",
-        f"Closes #{pr_num} from {pr_repo_desc} and squashes the following commits:",
+        "Closes #{} from {} and squashes the following commits:".format(pr_num, pr_repo_desc),
     ]
     for c in commits:
         merge_message_flags += ["-m", c]
@@ -167,10 +167,10 @@ def merge_pr(pr_num, target_ref):
         ["git", "commit", '--author="%s"' % primary_author, '--date="%s"' % commit_date] + merge_message_flags
     )
 
-    continue_maybe(f"Merge complete (local ref {target_branch_name}). Push to {PUSH_REMOTE_NAME}?")
+    continue_maybe("Merge complete (local ref {}). Push to {}?".format(target_branch_name, PUSH_REMOTE_NAME))
 
     try:
-        run_cmd(f"git push {PUSH_REMOTE_NAME} {target_branch_name}:{target_ref}")
+        run_cmd("git push {} {}:{}".format(PUSH_REMOTE_NAME, target_branch_name, target_ref))
     except Exception as e:
         clean_up()
         fail("Exception while pushing: %s" % e)
@@ -187,9 +187,9 @@ def cherry_pick(pr_num, merge_hash, default_branch):
     if pick_ref == "":
         pick_ref = default_branch
 
-    pick_branch_name = f"{BRANCH_PREFIX}_PICK_PR_{pr_num}_{pick_ref.upper()}"
+    pick_branch_name = "{}_PICK_PR_{}_{}".format(BRANCH_PREFIX, pr_num, pick_ref.upper())
 
-    run_cmd(f"git fetch {PUSH_REMOTE_NAME} {pick_ref}:{pick_branch_name}")
+    run_cmd("git fetch {} {}:{}".format(PUSH_REMOTE_NAME, pick_ref, pick_branch_name))
     run_cmd("git checkout %s" % pick_branch_name)
 
     try:
@@ -200,10 +200,10 @@ def cherry_pick(pr_num, merge_hash, default_branch):
         msg = "Okay, please fix any conflicts and finish the cherry-pick. Finished?"
         continue_maybe(msg)
 
-    continue_maybe(f"Pick complete (local ref {pick_branch_name}). Push to {PUSH_REMOTE_NAME}?")
+    continue_maybe("Pick complete (local ref {}). Push to {}?".format(pick_branch_name, PUSH_REMOTE_NAME))
 
     try:
-        run_cmd(f"git push {PUSH_REMOTE_NAME} {pick_branch_name}:{pick_ref}")
+        run_cmd("git push {} {}:{}".format(PUSH_REMOTE_NAME, pick_branch_name, pick_ref))
     except Exception as e:
         clean_up()
         fail("Exception while pushing: %s" % e)
@@ -211,7 +211,7 @@ def cherry_pick(pr_num, merge_hash, default_branch):
     pick_hash = run_cmd("git rev-parse %s" % pick_branch_name)[:8]
     clean_up()
 
-    print(f"Pull request #{pr_num} picked into {pick_ref}!")
+    print("Pull request #{} picked into {}!".format(pr_num, pick_ref))
     print("Pick hash: %s" % pick_hash)
     return pick_ref
 
@@ -235,7 +235,7 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
     try:
         issue = asf_jira.issue(jira_id)
     except Exception as e:
-        fail(f"ASF JIRA could not find {jira_id}\n{e}")
+        fail("ASF JIRA could not find {}\n{}".format(jira_id, e))
 
     cur_status = issue.fields.status.name
     cur_summary = issue.fields.summary
@@ -246,7 +246,7 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
         cur_assignee = cur_assignee.displayName
 
     if cur_status == "Resolved" or cur_status == "Closed":
-        fail(f"JIRA issue {jira_id} already has status '{cur_status}'")
+        fail("JIRA issue {} already has status '{}'".format(jira_id, cur_status))
     print("=== JIRA %s ===" % jira_id)
     print(
         "summary\t\t%s\nassignee\t%s\nstatus\t\t%s\nurl\t\t%s/%s\n"
@@ -269,7 +269,7 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
         # both 1.1.0 and 1.0.0 as fix versions.
         (major, minor, patch) = v.split(".")
         if patch == "0":
-            previous = f"{major}.{int(minor) - 1}.0"
+            previous = "{}.{}.{}".format(major, int(minor) - 1, 0)
             if previous in default_fix_versions:
                 default_fix_versions: List = list(filter(lambda x: x != v, default_fix_versions))
     default_fix_versions = ",".join(default_fix_versions)
@@ -287,7 +287,7 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
     resolve = list(filter(lambda a: a["name"] == "Resolve Issue", asf_jira.transitions(jira_id)))[0]
     asf_jira.transition_issue(jira_id, resolve["id"], fixVersions=jira_fix_versions, comment=comment)
 
-    print(f"Successfully resolved {jira_id} with fixVersions={fix_versions}!")
+    print("Successfully resolved {} with fixVersions={}!".format(jira_id, fix_versions))
 
 
 def resolve_jira_issues(title, merge_branches, comment):
@@ -306,8 +306,8 @@ def resolve_jira_issues(title, merge_branches, comment):
 latest_branch = "master"
 
 pr_num = input("Which pull request would you like to merge? (e.g. 23): ")
-pr = get_json(f"{GITHUB_API_BASE}/pulls/{pr_num}")
-pr_events = get_json(f"{GITHUB_API_BASE}/issues/{pr_num}/events")
+pr = get_json("{}/pulls/{}".format(GITHUB_API_BASE, pr_num))
+pr_events = get_json("{}/issues/{}/events".format(GITHUB_API_BASE, pr_num))
 
 url = pr["url"]
 title = pr["title"]
@@ -315,7 +315,7 @@ body = pr["body"]
 target_ref = pr["base"]["ref"]
 user_login = pr["user"]["login"]
 base_ref = pr["head"]["ref"]
-pr_repo_desc = f"{user_login}/{base_ref}"
+pr_repo_desc = "{}/{}".format(user_login, base_ref)
 
 # Merged pull requests don't appear as merged in the GitHub API;
 # Instead, they're closed by asfgit.
@@ -323,7 +323,7 @@ merge_commits = [e for e in pr_events if e["actor"]["login"] == "asfgit" and e["
 
 if merge_commits:
     merge_hash = merge_commits[0]["commit_id"]
-    message = get_json(f"{GITHUB_API_BASE}/commits/{merge_hash}")["commit"]["message"]
+    message = get_json("{}/commits/{}".format(GITHUB_API_BASE, merge_hash))["commit"]["message"]
 
     print("Pull request %s has already been merged, assuming you want to backport" % pr_num)
     commit_is_downloaded = (
@@ -332,7 +332,7 @@ if merge_commits:
     if not commit_is_downloaded:
         fail("Couldn't find any merge commit for #%s, you may need to update HEAD." % pr_num)
 
-    print(f"Found commit {merge_hash}:\n{message}")
+    print("Found commit {}:\n{}".format(merge_hash, message))
     cherry_pick(pr_num, merge_hash, latest_branch)
     sys.exit(0)
 
@@ -341,7 +341,7 @@ if not bool(pr["mergeable"]):
     continue_maybe(msg)
 
 print("\n=== Pull Request #%s ===" % pr_num)
-print(f"title\t{title}\nsource\t{pr_repo_desc}\ntarget\t{target_ref}\nurl\t{url}")
+print("title\t{}\nsource\t{}\ntarget\t{}\nurl\t{}".format(title, pr_repo_desc, target_ref, url))
 continue_maybe("Proceed with merging pull request #%s?" % pr_num)
 
 merged_refs = [target_ref]
@@ -355,7 +355,7 @@ while input("\n%s (y/n): " % pick_prompt).lower() == "y":
 if JIRA_IMPORTED:
     if JIRA_USERNAME and JIRA_PASSWORD:
         continue_maybe("Would you like to update an associated JIRA?")
-        jira_comment = f"Issue resolved by pull request {pr_num}\n[{GITHUB_BASE}/{pr_num}]"
+        jira_comment = "Issue resolved by pull request {}\n[{}/{}]".format(pr_num, GITHUB_BASE, pr_num)
         resolve_jira_issues(title, merged_refs, jira_comment)
     else:
         print("JIRA_USERNAME and JIRA_PASSWORD not set")
