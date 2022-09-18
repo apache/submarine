@@ -25,5 +25,5 @@ if __name__ == "__main__":
     submarine.log_param("max_iter", 100)
     lr.fit(X, y)
     score = lr.score(X, y)
-    print("Score: %s" % score)
+    print(f"Score: {score}")
     submarine.log_metric("score", score)

@@ -95,9 +95,7 @@ class ExperimentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method create_experiment" % key
-                )
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method create_experiment")
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -201,9 +199,7 @@ class ExperimentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method delete_experiment" % key
-                )
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method delete_experiment")
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
@@ -309,7 +305,7 @@ class ExperimentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method get_experiment" % key)
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method get_experiment")
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
@@ -415,7 +411,7 @@ class ExperimentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method get_log" % key)
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method get_log")
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
@@ -518,7 +514,7 @@ class ExperimentApi:
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
                 raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method get_tensorboard_info" % key
+                    f"Got an unexpected keyword argument '{key}' to method get_tensorboard_info"
                 )
             local_var_params[key] = val
         del local_var_params["kwargs"]
@@ -616,7 +612,7 @@ class ExperimentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method list_experiments" % key)
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method list_experiments")
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -715,7 +711,7 @@ class ExperimentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method list_log" % key)
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method list_log")
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -816,7 +812,7 @@ class ExperimentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method patch_experiment" % key)
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method patch_experiment")
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
@@ -929,7 +925,7 @@ class ExperimentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method ping" % key)
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method ping")
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -1029,7 +1025,7 @@ class ExperimentApi:
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
                 raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method submit_experiment_template" % key
+                    f"Got an unexpected keyword argument '{key}' to method submit_experiment_template"
                 )
             local_var_params[key] = val
         del local_var_params["kwargs"]

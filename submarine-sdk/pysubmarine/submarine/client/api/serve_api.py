@@ -95,7 +95,7 @@ class ServeApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method create_serve" % key)
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method create_serve")
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -199,7 +199,7 @@ class ServeApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method delete_serve" % key)
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method delete_serve")
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -298,7 +298,7 @@ class ServeApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method ping2" % key)
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method ping2")
             local_var_params[key] = val
         del local_var_params["kwargs"]
 

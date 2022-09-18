@@ -95,9 +95,7 @@ class EnvironmentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method create_environment" % key
-                )
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method create_environment")
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -201,9 +199,7 @@ class EnvironmentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method delete_environment" % key
-                )
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method delete_environment")
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
@@ -309,7 +305,7 @@ class EnvironmentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method get_environment" % key)
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method get_environment")
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set
@@ -415,7 +411,7 @@ class EnvironmentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError("Got an unexpected keyword argument '%s' to method list_environment" % key)
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method list_environment")
             local_var_params[key] = val
         del local_var_params["kwargs"]
 
@@ -516,9 +512,7 @@ class EnvironmentApi:
 
         for key, val in local_var_params["kwargs"].items():
             if key not in all_params:
-                raise ApiTypeError(
-                    "Got an unexpected keyword argument '%s' to method update_environment" % key
-                )
+                raise ApiTypeError(f"Got an unexpected keyword argument '{key}' to method update_environment")
             local_var_params[key] = val
         del local_var_params["kwargs"]
         # verify the required parameter 'id' is set

@@ -94,14 +94,14 @@ def validate_metric(key, value, timestamp, step) -> None:
 
     if not isinstance(timestamp, datetime):
         raise SubmarineException(
-            "Got invalid timestamp %s for metric '%s' (value=%s). Timestamp must be a datetime object."
-            % (timestamp, key, value),
+            f"Got invalid timestamp {timestamp} for metric '{key}' (value={value}). Timestamp must be a"
+            " datetime object."
         )
 
     if not isinstance(step, numbers.Number):
         raise SubmarineException(
-            "Got invalid step %s for metric '%s' (value=%s). Step must be a valid long (64-bit integer)."
-            % (step, key, value),
+            f"Got invalid step (step) for metric '{key}' (value={value}). Step must be a valid long (64-bit"
+            " integer)."
         )
 
 

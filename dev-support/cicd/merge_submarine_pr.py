@@ -149,9 +149,9 @@ def merge_pr(pr_num, target_ref):
     ]
 
     if had_conflicts:
-        message = "This patch had conflicts when merged, resolved by\nCommitter: {} <{}>".format(
-            committer_name,
-            committer_email,
+        message = (
+            "This patch had conflicts when merged, resolved by\nCommitter:"
+            f" {committer_name} <{committer_email}>"
         )
         merge_message_flags += ["-m", message]
 
@@ -269,7 +269,7 @@ def resolve_jira_issue(merge_branches, comment, default_jira_id=""):
         # both 1.1.0 and 1.0.0 as fix versions.
         (major, minor, patch) = v.split(".")
         if patch == "0":
-            previous = f"{major}.{int(minor) - 1}.{0}"
+            previous = f"{major}.{int(minor) - 1}.0"
             if previous in default_fix_versions:
                 default_fix_versions: List = list(filter(lambda x: x != v, default_fix_versions))
     default_fix_versions = ",".join(default_fix_versions)
