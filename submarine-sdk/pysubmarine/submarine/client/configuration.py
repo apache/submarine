@@ -337,10 +337,10 @@ class Configuration:
         """
         return (
             "Python SDK Debug Report:\n"
-            "OS: {env}\n"
-            "Python Version: {pyversion}\n"
+            f"OS: {sys.platform}\n"
+            f"Python Version: {sys.version}\n"
             "Version of the API: 0.8.0-SNAPSHOT\n"
-            "SDK Package Version: 0.8.0-SNAPSHOT".format(env=sys.platform, pyversion=sys.version)
+            "SDK Package Version: 0.8.0-SNAPSHOT"
         )
 
     def get_host_settings(self):
@@ -368,9 +368,7 @@ class Configuration:
             server = servers[index]
         except IndexError:
             raise ValueError(
-                "Invalid index {} when selecting the host settings. Must be less than {}".format(
-                    index, len(servers)
-                )
+                f"Invalid index {index} when selecting the host settings. Must be less than {len(servers)}"
             )
 
         url = server["url"]
@@ -381,9 +379,8 @@ class Configuration:
 
             if "enum_values" in variable and used_value not in variable["enum_values"]:
                 raise ValueError(
-                    "The variable `{}` in the host URL has invalid value {}. Must be {}.".format(
-                        variable_name, variables[variable_name], variable["enum_values"]
-                    )
+                    f"The variable `{variable_name}` in the host URL has invalid value"
+                    f" {variables[variable_name]}. Must be {variable['enum_values']}."
                 )
 
             url = url.replace("{" + variable_name + "}", used_value)

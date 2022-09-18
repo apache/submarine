@@ -364,13 +364,9 @@ class SqlExperiment(Base):
     __table_args__ = (PrimaryKeyConstraint("id"),)
 
     def __repr__(self):
-        return "<SqlMetric({}, {}, {}, {}, {}, {})>".format(
-            self.id,
-            self.experiment_spec,
-            self.create_by,
-            self.create_time,
-            self.update_by,
-            self.update_time,
+        return (
+            f"<SqlMetric({self.id}, {self.experiment_spec}, {self.create_by}, {self.create_time},"
+            f" {self.update_by}, {self.update_time})>"
         )
 
     def to_submarine_entity(self):
@@ -435,9 +431,7 @@ class SqlMetric(Base):
     __table_args__ = (PrimaryKeyConstraint("id", "key", "timestamp", "worker_index", name="metric_pk"),)
 
     def __repr__(self):
-        return "<SqlMetric({}, {}, {}, {}, {})>".format(
-            self.key, self.value, self.worker_index, self.timestamp, self.step
-        )
+        return f"<SqlMetric({self.key}, {self.value}, {self.worker_index}, {self.timestamp}, {self.step})>"
 
     def to_submarine_entity(self):
         """

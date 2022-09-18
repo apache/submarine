@@ -32,9 +32,7 @@ class RestException(SubmarineException):
 
     def __init__(self, json):
         error_code = json.get("error_code")
-        message = "{}: {}".format(
-            error_code,
-            json["message"] if "message" in json else "Response: " + str(json),
-        )
+        error_msg = json["message"] if "message" in json else "Response: " + str(json)
+        message = f"{error_code}: {error_msg}"
         super().__init__(message)
         self.json = json

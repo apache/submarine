@@ -83,7 +83,7 @@ def list_experiment():
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
             click.echo(f"[Api Error] {err}")
 
@@ -111,7 +111,7 @@ def get_experiment(id):
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
             click.echo(f"[Api Error] {err}")
 
@@ -146,6 +146,6 @@ def delete_experiment(id, wait):
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
             click.echo(f"[Api Error] {err}")

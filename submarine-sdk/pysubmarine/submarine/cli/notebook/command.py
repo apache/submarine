@@ -83,7 +83,7 @@ def list_notebook():
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
             click.echo(f"[Api Error] {err}")
 
@@ -111,7 +111,7 @@ def get_notebook(id):
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
             click.echo(f"[Api Error] {err}")
 
@@ -139,6 +139,6 @@ def delete_notebook(id):
     except ApiException as err:
         if err.body is not None:
             errbody = json.loads(err.body)
-            click.echo("[Api Error] {}".format(errbody["message"]))
+            click.echo(f"[Api Error] {errbody['message']}")
         else:
             click.echo(f"[Api Error] {err}")

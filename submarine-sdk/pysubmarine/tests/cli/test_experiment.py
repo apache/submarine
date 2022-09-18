@@ -82,12 +82,12 @@ def test_all_experiment_e2e():
 
     # test get experiment
     result = runner.invoke(main.entry_point, ["get", "experiment", experiment["experimentId"]])
-    assert "Experiment(id = {} )".format(experiment["experimentId"]) in result.output
+    assert f"Experiment(id = {experiment['experimentId']} )" in result.output
     assert experiment["spec"]["environment"]["image"] in result.output
 
     # test delete experiment (blocking mode)
     result = runner.invoke(main.entry_point, ["delete", "experiment", experiment["experimentId"], "--wait"])
-    assert "Experiment(id = {} ) deleted".format(experiment["experimentId"]) in result.output
+    assert f"Experiment(id = {experiment['experimentId']} ) deleted" in result.output
 
     # test get experiment fail after delete
     result = runner.invoke(main.entry_point, ["get", "experiment", experiment["experimentId"]])

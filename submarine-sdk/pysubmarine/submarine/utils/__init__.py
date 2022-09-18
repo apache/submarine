@@ -32,7 +32,7 @@ def extract_db_type_from_uri(db_uri: str):
     elif scheme_plus_count == 1:
         db_type, _ = scheme.split("+")
     else:
-        error_msg = "Invalid database URI: '{}'. {}".format(db_uri, "INVALID_DB_URI_MSG")
+        error_msg = f"Invalid database URI: '{db_uri}'. INVALID_DB_URI_MSG"
         raise SubmarineException(error_msg)
 
     return db_type
