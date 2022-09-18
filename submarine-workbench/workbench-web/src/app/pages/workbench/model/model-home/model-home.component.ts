@@ -36,7 +36,7 @@ export class ModelHomeComponent implements OnInit {
   modelCards: ModelInfo[];
 
   onDisplayModelCards = [];
-  
+
   nameForFilter = "";
   listOfTagsOption: Array<{ label: string; value: string }> = [];
   listOfChosenTags = [];
@@ -45,7 +45,7 @@ export class ModelHomeComponent implements OnInit {
     this.fetchModelCards();
     this.modelService.emitInfo(null);
   }
-  
+
   fetchModelCards = () => {
     this.modelService.fetchModelList().subscribe((res) => {
       this.modelCards = res;
@@ -64,7 +64,7 @@ export class ModelHomeComponent implements OnInit {
     this.nameForFilter = event.target.value;
     this.changeDisplayModelCards();
   }
-  
+
   filterByTags() {
     this.changeDisplayModelCards();
   }
