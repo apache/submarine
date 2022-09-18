@@ -122,7 +122,7 @@ Take a simple mnist tensorflow script as an example. We choose `MultiWorkerMirro
 ```python
 """
 ./dev-support/examples/quickstart/train.py
-Reference: https://github.com/kubeflow/tf-operator/blob/master/examples/v1/distribution_strategy/keras-API/multi_worker_strategy-with-keras.py
+Reference: https://github.com/kubeflow/training-operator/blob/master/examples/tensorflow/distribution_strategy/keras-API/multi_worker_strategy-with-keras.py
 """
 
 import tensorflow as tf

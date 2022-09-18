@@ -14,7 +14,7 @@
 # ==============================================================================
 """
 An example of multi-worker training with Keras model using Strategy API.
-https://github.com/kubeflow/tf-operator/blob/master/examples/v1/distribution_strategy/keras-API/multi_worker_strategy-with-keras.py
+https://github.com/kubeflow/training-operator/blob/master/examples/tensorflow/distribution_strategy/keras-API/multi_worker_strategy-with-keras.py
 """
 import tensorflow as tf
 import tensorflow_datasets as tfds
