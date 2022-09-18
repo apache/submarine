@@ -27,6 +27,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.kubernetes.client.openapi.models.V1ObjectMeta;
 import io.kubernetes.client.openapi.models.V1Volume;
@@ -98,6 +100,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
     validateReplicaSpec(experimentSpec, tfJob, TFJobReplicaType.Ps);
     validateReplicaSpec(experimentSpec, tfJob, TFJobReplicaType.Worker);
+    validateExperimentHandlerMetadata(experimentSpec, tfJob);
   }
 
   @Test
@@ -142,6 +145,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
     validateReplicaSpec(experimentSpec, pyTorchJob, PyTorchJobReplicaType.Master);
     validateReplicaSpec(experimentSpec, pyTorchJob, PyTorchJobReplicaType.Worker);
+    validateExperimentHandlerMetadata(experimentSpec, pyTorchJob);
   }
 
   @Test
@@ -183,6 +187,7 @@ public class ExperimentSpecParserTest extends SpecBuilder {
 
     validateReplicaSpec(experimentSpec, xgboostJob, XGBoostJobReplicaType.Master);
     validateReplicaSpec(experimentSpec, xgboostJob, XGBoostJobReplicaType.Worker);
+    validateExperimentHandlerMetadata(experimentSpec, xgboostJob);
   }
 
   @Test
@@ -218,7 +223,44 @@ public class ExperimentSpecParserTest extends SpecBuilder {
     Assert.assertEquals(K8sUtils.getNamespace(), actualMeta.getNamespace());
     Assert.assertEquals(expectedMeta.getFramework().toLowerCase(), actualFramework);
   }
-
+  
+  private void validateExperimentHandlerMetadata(ExperimentSpec experimentSpec,
+      MLJob mlJob) {
+    
+    if (experimentSpec.getExperimentHandlerSpec() == null || 
+        experimentSpec.getExperimentHandlerSpec().isEmpty()) {
+      return;
+    }
+      
+    V1Container initContainer = null;
+    
+    MLJobReplicaSpec mlJobReplicaSpec = null;
+    if (mlJob instanceof PyTorchJob) {
+      mlJobReplicaSpec = ((PyTorchJob) mlJob).getSpec()
+        .getReplicaSpecs().get(PyTorchJobReplicaType.Master);
+    } else if (mlJob instanceof TFJob) {
+      mlJobReplicaSpec = ((TFJob) mlJob).getSpec()
+        .getReplicaSpecs().get(TFJobReplicaType.Ps);
+    } else if (mlJob instanceof XGBoostJob) {
+      mlJobReplicaSpec = ((XGBoostJob) mlJob).getSpec()
+        .getReplicaSpecs().get(XGBoostJobReplicaType.Master);
+    }
+    initContainer = mlJobReplicaSpec.getTemplate().getSpec().getInitContainers().get(0);
+    Map<String, String> varMap = initContainer.getEnv().stream()
+        .collect(Collectors.toMap(V1EnvVar::getName, V1EnvVar::getValue));
+    Assert.assertEquals(experimentSpec.getExperimentHandlerSpec().get("FILE_SYSTEM_TYPE")
+        , varMap.get("FILE_SYSTEM_TYPE"));
+    Assert.assertEquals(experimentSpec.getExperimentHandlerSpec().get("HDFS_HOST")
+        , varMap.get("HDFS_HOST"));
+    Assert.assertEquals(experimentSpec.getExperimentHandlerSpec().get("HDFS_PORT")
+        , varMap.get("HDFS_PORT"));
+    Assert.assertEquals(experimentSpec.getExperimentHandlerSpec().get("HDFS_SOURCE")
+        , varMap.get("HDFS_SOURCE"));
+    Assert.assertEquals(experimentSpec.getExperimentHandlerSpec().get("ENABLE_KERBEROS")
+        , varMap.get("ENABLE_KERBEROS"));
+    Assert.assertEquals(mlJob.getExperimentId(), varMap.get("EXPERIMENT_ID")); 
+  }
+  
   private void validateReplicaSpec(ExperimentSpec experimentSpec,
       MLJob mlJob, MLJobReplicaType type) {
     MLJobReplicaSpec mlJobReplicaSpec = null;
