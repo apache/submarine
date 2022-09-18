@@ -41,7 +41,7 @@ def test_all_experiment_e2e():
     # check if cli config is correct for testing
     result = runner.invoke(main.entry_point, ["config", "get", "connection.port"])
     assert result.exit_code == 0
-    assert f"connection.port={8080}" in result.output
+    assert "connection.port=8080" in result.output
 
     submarine_client = submarine.ExperimentClient(host="http://localhost:8080")
     environment = EnvironmentSpec(image="apache/submarine:tf-dist-mnist-test-1.0")
