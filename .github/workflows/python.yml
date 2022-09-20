@@ -42,19 +42,22 @@ jobs:
     timeout-minutes: 30
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
-        tf-version: ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
-        exclude:
-          - python-version: '3.8'
-            tf-version: '1.15.0'
-          - python-version: '3.9'
-            tf-version: '1.15.0'
-          - python-version: '3.10'
-            tf-version: '1.15.0'
-          - python-version: '3.10'
-            tf-version: '2.6.0'
-          - python-version: '3.10'
-            tf-version: '2.7.0'
+        # TODO: restore
+        python-version: ['3.10']
+        tf-version: ['2.9.0']
+        # python-version: ['3.7', '3.8', '3.9', '3.10']
+        # tf-version: ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
+        # exclude:
+        #  - python-version: '3.8'
+        #      tf-version: '1.15.0'
+        #  - python-version: '3.9'
+        #      tf-version: '1.15.0'
+        #  - python-version: '3.10'
+        #      tf-version: '1.15.0'
+        #  - python-version: '3.10'
+        #      tf-version: '2.6.0'
+        #  - python-version: '3.10'
+        #      tf-version: '2.7.0'
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
@@ -85,19 +88,22 @@ jobs:
     timeout-minutes: 60
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
-        tf-version: ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
-        exclude:
-          - python-version: '3.8'
-            tf-version: '1.15.0'
-          - python-version: '3.9'
-            tf-version: '1.15.0'
-          - python-version: '3.10'
-            tf-version: '1.15.0'
-          - python-version: '3.10'
-            tf-version: '2.6.0'
-          - python-version: '3.10'
-            tf-version: '2.7.0'
+        # TODO: restore
+        python-version: ['3.10']
+        tf-version: ['2.9.0']
+        # python-version: ['3.7', '3.8', '3.9', '3.10']
+        # tf-version: ['1.15.0', '2.6.0', '2.7.0', '2.8.0', '2.9.0']
+        # exclude:
+        #  - python-version: '3.8'
+        #      tf-version: '1.15.0'
+        #  - python-version: '3.9'
+        #      tf-version: '1.15.0'
+        #  - python-version: '3.10'
+        #      tf-version: '1.15.0'
+        #  - python-version: '3.10'
+        #      tf-version: '2.6.0'
+        #  - python-version: '3.10'
+        #      tf-version: '2.7.0'
       fail-fast: false
     steps:
       - uses: actions/checkout@v3
